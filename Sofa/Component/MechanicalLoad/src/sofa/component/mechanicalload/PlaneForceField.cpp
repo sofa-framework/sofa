@@ -30,14 +30,15 @@ namespace sofa::component::mechanicalload
 
 using namespace sofa::defaulttype;
 
-int PlaneForceFieldClass = core::RegisterObject("Repulsion applied by a plane toward the exterior (half-space)")
-.add< PlaneForceField<Vec3Types> >()
-.add< PlaneForceField<Vec2Types> >()
-.add< PlaneForceField<Vec1Types> >()
-.add< PlaneForceField<Vec6Types> >()
-.add< PlaneForceField<Rigid3Types> >()
-
-;
+void registerPlaneForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Repulsion along the normal to a plane.")
+        .add< PlaneForceField<Vec3Types> >()
+        .add< PlaneForceField<Vec2Types> >()
+        .add< PlaneForceField<Vec1Types> >()
+        .add< PlaneForceField<Vec6Types> >()
+        .add< PlaneForceField<Rigid3Types> >());
+}
 template class SOFA_COMPONENT_MECHANICALLOAD_API PlaneForceField<Vec3Types>;
 template class SOFA_COMPONENT_MECHANICALLOAD_API PlaneForceField<Vec2Types>;
 template class SOFA_COMPONENT_MECHANICALLOAD_API PlaneForceField<Vec1Types>;

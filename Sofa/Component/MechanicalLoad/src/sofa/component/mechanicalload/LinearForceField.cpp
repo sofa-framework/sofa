@@ -30,21 +30,21 @@ namespace sofa::component::mechanicalload
 
 using namespace sofa::defaulttype;
 
-int LinearForceFieldClass = core::RegisterObject("Linearly interpolated force applied to given degrees of freedom")
+void registerLinearForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Linearly-interpolated force applied to given degrees of freedom.")
         .add< LinearForceField<Vec3Types> >()
         .add< LinearForceField<Vec2Types> >()
         .add< LinearForceField<Vec1Types> >()
         .add< LinearForceField<Vec6Types> >()
-        .add< LinearForceField<Rigid3Types> >()
-// .add< LinearForceField<Rigid2Types> >()
+        .add< LinearForceField<Rigid3Types> >());
+}
 
-        ;
 template class SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<Vec3Types>;
 template class SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<Vec2Types>;
 template class SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<Vec1Types>;
 template class SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<Vec6Types>;
 template class SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<Rigid3Types>;
-// template class SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<Rigid2Types>;
 
 
 template <>
