@@ -31,14 +31,15 @@
 
 namespace sofa::component::topology::mapping
 {
-using namespace sofa::defaulttype;
+
 using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
-// Register in the Factory
-int CenterPointTopologicalMappingClass = core::RegisterObject ( "" )
-        .add< CenterPointTopologicalMapping >()
-        ;
+void registerCenterPointTopologicalMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Each primitive in the input Topology will be mapped to a point in the output topology.")
+        .add< CenterPointTopologicalMapping >());
+}
 
 // Implementation
 CenterPointTopologicalMapping::CenterPointTopologicalMapping ()

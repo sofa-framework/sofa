@@ -784,6 +784,15 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"ImplicitEulerSolver", Dealiased("v24.12","EulerImplicitSolver")},
     {"ImplicitEuler", Dealiased("v24.12","EulerImplicitSolver")},
     {"VariationalSolver", Dealiased("v24.12","VariationalSymplecticSolver")},
+    {"Mesh", Dealiased("v24.12","MeshTopology")},
+    {"SphereQuad", Dealiased("v24.12","SphereQuadTopology")},
+    {"CylinderGrid", Dealiased("v24.12","CylinderGridTopology")},
+    {"Grid", Dealiased("v24.12","GridTopology")},
+    {"RegularGrid", Dealiased("v24.12","RegularGridTopology")},
+    {"SparseGridMultiple", Dealiased("v24.12","SparseGridMultipleTopology")},
+    {"SparseGridRamification", Dealiased("v24.12","SparseGridRamificationTopology")},
+    {"SparseGrid", Dealiased("v24.12","SparseGridTopology")},
+    {"SphereGrid", Dealiased("v24.12","SphereGridTopology")},
 
 };
 

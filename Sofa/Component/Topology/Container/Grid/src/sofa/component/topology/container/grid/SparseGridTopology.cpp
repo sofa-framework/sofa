@@ -42,11 +42,11 @@ using namespace sofa::helper;
 namespace sofa::component::topology::container::grid
 {
 
-int SparseGridTopologyClass = core::RegisterObject("Sparse grid in 3D")
-        .addAlias("SparseGrid")
-        .add< SparseGridTopology >()
-        ;
-
+void registerSparseGridTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Sparse grid in 3D.")
+        .add< SparseGridTopology >());
+}
 
 const float SparseGridTopology::WEIGHT27[8][27] =
 {

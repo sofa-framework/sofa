@@ -26,13 +26,12 @@
 
 namespace sofa::component::topology::container::dynamic
 {
-using namespace std;
-using namespace sofa::defaulttype;
 
-
-int TriangleSetTopologyContainerClass = core::RegisterObject("Triangle set topology container")
-        .add< TriangleSetTopologyContainer >()
-        ;
+void registerTriangleSetTopologyContainer(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Triangle set topology container.")
+        .add< TriangleSetTopologyContainer >());
+}
 
 TriangleSetTopologyContainer::TriangleSetTopologyContainer()
     : EdgeSetTopologyContainer()

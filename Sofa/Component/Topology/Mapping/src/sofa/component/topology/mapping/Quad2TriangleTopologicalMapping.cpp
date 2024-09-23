@@ -53,13 +53,11 @@ typedef BaseMeshTopology In;
 /// Output Topology
 typedef BaseMeshTopology Out;
 
-// Register in the Factory
-int Quad2TriangleTopologicalMappingClass = core::RegisterObject("Special case of mapping where QuadSetTopology is converted to TriangleSetTopology")
-        .add< Quad2TriangleTopologicalMapping >()
-
-        ;
-
-// Implementation
+void registerQuad2TriangleTopologicalMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topological mapping where QuadSetTopology is converted to TriangleSetTopology")
+        .add< Quad2TriangleTopologicalMapping >());
+}
 
 Quad2TriangleTopologicalMapping::Quad2TriangleTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()

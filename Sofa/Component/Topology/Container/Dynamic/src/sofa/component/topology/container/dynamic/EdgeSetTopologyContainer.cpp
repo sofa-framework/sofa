@@ -36,11 +36,13 @@
 namespace sofa::component::topology::container::dynamic
 {
 
-using namespace std;
 using namespace sofa::defaulttype;
-int EdgeSetTopologyContainerClass = core::RegisterObject("Edge set topology container")
-        .add< EdgeSetTopologyContainer >()
-        ;
+
+void registerEdgeSetTopologyContainer(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Edge set topology container.")
+        .add< EdgeSetTopologyContainer >());
+}
 
 EdgeSetTopologyContainer::EdgeSetTopologyContainer()
     : PointSetTopologyContainer( )

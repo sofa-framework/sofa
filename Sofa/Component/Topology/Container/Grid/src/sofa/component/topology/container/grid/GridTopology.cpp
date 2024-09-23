@@ -27,11 +27,11 @@
 namespace sofa::component::topology::container::grid
 {
 
-int GridTopologyClass = core::RegisterObject("Base class fo a regular grid in 3D")
-        .addAlias("Grid")
-        .add< GridTopology >()
-        ;
-
+void registerGridTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Base class fo a regular grid in 3D.")
+        .add< GridTopology >());
+}
 
 GridTopology::GridUpdate::GridUpdate(GridTopology *t):
     m_topology(t)
