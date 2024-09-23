@@ -107,7 +107,7 @@ public:
             createObject(m_root, topoType + "SetGeometryAlgorithms", { { "name", "topoGeo" } });
 
             // Add some mechanical components
-            createObject(m_root, "MeshMatrixMass");
+            createObject(m_root, "MeshMatrixMass", { { "totalMass", "1.0" } });
 
             if (m_topoType == sofa::geometry::ElementType::EDGE) {
                 sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
