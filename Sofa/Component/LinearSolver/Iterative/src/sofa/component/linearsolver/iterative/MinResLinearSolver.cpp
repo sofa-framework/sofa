@@ -31,21 +31,19 @@ using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::linearalgebra;
 
-
-int MinResLinearSolverClass = core::RegisterObject("Linear system solver using the MINRES iterative algorithm")
+void registerMinResLinearSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Linear system solver using the MINRES iterative algorithm.")
         .add< MinResLinearSolver< GraphScatteredMatrix, GraphScatteredVector > >(true)
         .add< MinResLinearSolver< FullMatrix<SReal>, FullVector<SReal> > >()
         .add< MinResLinearSolver< SparseMatrix<SReal>, FullVector<SReal> > >()
         .add< MinResLinearSolver< CompressedRowSparseMatrix<SReal>, FullVector<SReal> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<2,2,SReal> >, FullVector<SReal> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<3,3,SReal> >, FullVector<SReal> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<4,4,SReal> >, FullVector<SReal> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<6,6,SReal> >, FullVector<SReal> > >()
-        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<8,8,SReal> >, FullVector<SReal> > >()
-
-        .addAlias("MINRESSolver")
-        .addAlias("MinResSolver")
-        ;
+        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<2, 2, SReal> >, FullVector<SReal> > >()
+        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<3, 3, SReal> >, FullVector<SReal> > >()
+        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<4, 4, SReal> >, FullVector<SReal> > >()
+        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<6, 6, SReal> >, FullVector<SReal> > >()
+        .add< MinResLinearSolver< CompressedRowSparseMatrix<Mat<8, 8, SReal> >, FullVector<SReal> > >());
+}
 
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MinResLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MinResLinearSolver< FullMatrix<SReal>, FullVector<SReal> >;

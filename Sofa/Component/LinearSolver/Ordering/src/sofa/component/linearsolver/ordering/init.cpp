@@ -21,13 +21,20 @@
 ******************************************************************************/
 #include <sofa/component/linearsolver/ordering/init.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+
 namespace sofa::component::linearsolver::ordering
 {
+
+extern void registerAMDOrderingMethod(sofa::core::ObjectFactory* factory);
+extern void registerCOLAMDOrderingMethod(sofa::core::ObjectFactory* factory);
+extern void registerNaturalOrderingMethod(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -45,11 +52,21 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerAMDOrderingMethod(factory);
+    registerCOLAMDOrderingMethod(factory);
+    registerNaturalOrderingMethod(factory);
+}
+
 void init()
 {
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         first = false;
     }
 }

@@ -28,11 +28,11 @@ namespace sofa::component::linearsolver::preconditioner
 
 using namespace sofa::linearalgebra;
 
-int JacobiPreconditionerClass = core::RegisterObject("Linear solver based on a diagonal matrix (i.e. Jacobi preconditioner)")
-        .add< JacobiPreconditioner<DiagonalMatrix<SReal>, FullVector<SReal> > >(true)
-        .addAlias("JacobiLinearSolver")
-        .addAlias("JacobiSolver")
-        ;
+void registerJacobiPreconditioner(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Linear solver based on a diagonal matrix (i.e. Jacobi preconditioner).")
+        .add< JacobiPreconditioner<DiagonalMatrix<SReal>, FullVector<SReal> > >());
+}
 
 template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API JacobiPreconditioner<DiagonalMatrix<SReal>, FullVector<SReal> >;
 

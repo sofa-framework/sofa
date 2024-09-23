@@ -784,6 +784,17 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"ImplicitEulerSolver", Dealiased("v24.12","EulerImplicitSolver")},
     {"ImplicitEuler", Dealiased("v24.12","EulerImplicitSolver")},
     {"VariationalSolver", Dealiased("v24.12","VariationalSymplecticSolver")},
+    {"SVDLinear", Dealiased("v24.12","SVDLinearSolver")},
+    {"SVD", Dealiased("v24.12","SVDLinearSolver")},
+    {"CGSolver", Dealiased("v24.12","CGLinearSolver")},
+    {"ConjugateGradient", Dealiased("v24.12","CGLinearSolver")},
+    {"MINRESSolver", Dealiased("v24.12","MinResLinearSolver")},
+    {"MinResSolver", Dealiased("v24.12","MinResLinearSolver")},
+    {"PCGLinearSolver", Dealiased("v24.12","ShewchukPCGLinearSolver")},
+    {"JacobiLinearSolver", Dealiased("v24.12","JacobiPreconditioner")},
+    {"JacobiSolver", Dealiased("v24.12","JacobiPreconditioner")},
+    {"SSORLinearSolver", Dealiased("v24.12","SSORPreconditioner")},
+    {"SSORSolver", Dealiased("v24.12","SSORPreconditioner")},
 
 };
 
