@@ -27,14 +27,12 @@
 namespace sofa::component::engine::select
 {
 
-int MeshSamplerClass = core::RegisterObject("Select uniformly distributed points on a mesh based on Euclidean or Geodesic distance measure")
-        .add< MeshSampler<Vec3Types> >(true)
- 
-        ;
+void registerMeshSampler(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Select uniformly distributed points on a mesh based on Euclidean or Geodesic distance measure.")
+        .add< MeshSampler<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API MeshSampler<Vec3Types>;
- 
-
-
 
 } //namespace sofa::component::engine::select

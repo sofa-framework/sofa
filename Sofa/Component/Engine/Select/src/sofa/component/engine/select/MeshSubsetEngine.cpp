@@ -26,12 +26,12 @@
 namespace sofa::component::engine::select
 {
 
-int MeshSubsetEngineClass = core::RegisterObject("Extract a mesh subset based on selected vertices")
-        .add< MeshSubsetEngine<defaulttype::Vec3Types> >(true) // default template
-        ;
+void registerMeshSubsetEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Extract a mesh subset based on selected vertices.")
+        .add< MeshSubsetEngine<defaulttype::Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API MeshSubsetEngine<defaulttype::Vec3Types>;
- 
-
 
 } //namespace sofa::component::engine::select

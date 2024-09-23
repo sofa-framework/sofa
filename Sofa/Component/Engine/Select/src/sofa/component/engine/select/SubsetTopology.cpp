@@ -30,15 +30,14 @@ namespace sofa::component::engine::select
 
 using namespace sofa::defaulttype;
 
-int SubsetTopologyClass = core::RegisterObject("Engine used to create subset topology given box, sphere, plan, ...")
+void registerSubsetTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Engine used to create subset topology given box, sphere, plan, ...")
         .add< SubsetTopology<Vec3Types> >()
-        .add< SubsetTopology<Rigid3Types> >()
- 
-        ;
+        .add< SubsetTopology<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API SubsetTopology<Vec3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API SubsetTopology<Rigid3Types>;
- 
-
 
 } //namespace sofa::component::engine::select

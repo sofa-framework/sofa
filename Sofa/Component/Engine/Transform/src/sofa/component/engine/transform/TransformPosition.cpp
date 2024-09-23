@@ -30,12 +30,12 @@ namespace sofa::component::engine::transform
 
 using namespace sofa::defaulttype;
 
-int TransformPositionClass = core::RegisterObject("Transform position of 3d points")
-        .add< TransformPosition<Vec3Types> >(true)
-        ;
+void registerTransformPosition(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Transform position of 3d points.")
+        .add< TransformPosition<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformPosition<Vec3Types>;
- 
-
 
 } //namespace sofa::component::engine::transform

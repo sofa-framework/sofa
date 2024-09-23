@@ -34,9 +34,11 @@ namespace sofa::component::engine::generate
 using namespace sofa::defaulttype;
 using type::vector;
 
-int MeshTetraStuffingClass = core::RegisterObject("Create a tetrahedral volume mesh from a surface, using the algorithm from F. Labelle and J.R. Shewchuk, \"Isosurface Stuffing: Fast Tetrahedral Meshes with Good Dihedral Angles\", SIGGRAPH 2007.")
-        .add< MeshTetraStuffing >()
-        ;
+void registerMeshTetraStuffing(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Create a tetrahedral volume mesh from a surface, using the algorithm from F. Labelle and J.R. Shewchuk, \"Isosurface Stuffing: Fast Tetrahedral Meshes with Good Dihedral Angles\", SIGGRAPH 2007.")
+        .add< MeshTetraStuffing >());
+}
 
 MeshTetraStuffing::MeshTetraStuffing()
     : d_vbbox(initData(&d_vbbox, "vbbox", "BBox to restrict the volume to"))
