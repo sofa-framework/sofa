@@ -42,7 +42,7 @@ FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionCo
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
 FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : BaseUnilateralContactResponse<TCollisionModel1, TCollisionModel2, constraint::lagrangian::model::UnilateralLagrangianContactParameters, ResponseDataTypes>(model1,model2,intersectionMethod)
-      , d_mu (initData(&d_mu, 0.0, "mu", "friction coefficient (0 for frictionless contacts)"))
+      , d_mu (initData(&d_mu, 0.8, "mu", "friction coefficient (0 for frictionless contacts)"))
 {
 
 }
