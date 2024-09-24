@@ -32,6 +32,8 @@
 #include <list>
 
 #include <sofa/component/linearsolver/iterative/GraphScatteredTypes.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 
 namespace sofa::component::constraint::lagrangian::correction
 {
@@ -84,9 +86,9 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
     }
     else
     {
-        if (l_linearSolver.get()->getTemplateName() == "GraphScattered")
+        if (l_linearSolver->getTemplateName() == "GraphScattered")
         {
-            msg_error() << "Can not use the solver " << l_linearSolver.get()->getName() << " because it is templated on GraphScatteredType";
+            msg_error() << "Can not use the solver " << l_linearSolver->getName() << " because it is templated on GraphScatteredType";
             sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
@@ -130,21 +132,24 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
 }
 
 template<class TDataTypes>
-void LinearSolverConstraintCorrection<TDataTypes>::computeJ(sofa::linearalgebra::BaseMatrix* W, const MatrixDeriv& c)
+void LinearSolverConstraintCorrection<TDataTypes>::convertConstraintMatrix(const sofa::SignedIndex numberOfConstraints, const MatrixDeriv& inputConstraintMatrix)
 {
-    if(d_componentState.getValue() != ComponentState::Valid)
+    if (d_componentState.getValue() != ComponentState::Valid)
+    {
         return ;
+    }
+
+    SCOPED_TIMER("convertConstraintMatrix");
 
     const unsigned int numDOFs = mstate->getSize();
-    const unsigned int N = Deriv::size();
-    const unsigned int numDOFReals = numDOFs*N;
-    const unsigned int totalNumConstraints = W->rowSize();
+    static constexpr unsigned int N = Deriv::size();
+    const unsigned int numDOFReals = numDOFs * N;
 
-    J.resize(totalNumConstraints, numDOFReals);
+    m_constraintMatrix.resize(numberOfConstraints, numDOFReals);
 
-    MatrixDerivRowConstIterator rowItEnd = c.end();
+    MatrixDerivRowConstIterator rowItEnd = inputConstraintMatrix.end();
 
-    for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
+    for (MatrixDerivRowConstIterator rowIt = inputConstraintMatrix.begin(); rowIt != rowItEnd; ++rowIt)
     {
         const int cid = rowIt.index();
 
@@ -153,11 +158,11 @@ void LinearSolverConstraintCorrection<TDataTypes>::computeJ(sofa::linearalgebra:
         for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
             const unsigned int dof = colIt.index();
-            const Deriv n = colIt.val();
+            const Deriv& n = colIt.val();
 
             for (unsigned int r = 0; r < N; ++r)
             {
-                J.add(cid, dof * N + r, n[r]);
+                m_constraintMatrix.add(cid, dof * N + r, n[r]);
             }
         }
     }
@@ -188,19 +193,22 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
         break;
     }
 
-    // Compute J
-    this->computeJ(W, cparams->readJ(this->mstate)->getValue());
+    {
+        helper::ReadAccessor inputConstraintMatrix ( *cparams->readJ(this->mstate) );
+        const sofa::SignedIndex numberOfConstraints = W->rowSize();
+        convertConstraintMatrix(numberOfConstraints, inputConstraintMatrix.ref());
+    }
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    l_linearSolver.get()->setSystemLHVector(sofa::core::MultiVecDerivId::null());
-    l_linearSolver.get()->addJMInvJt(W, &J, factor);
+    l_linearSolver->setSystemLHVector(sofa::core::MultiVecDerivId::null());
+    l_linearSolver->addJMInvJt(W, &m_constraintMatrix, factor);
 }
 
 
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::rebuildSystem(SReal massFactor, SReal forceFactor)
 {
-    l_linearSolver.get()->rebuildSystem(massFactor, forceFactor);
+    l_linearSolver->rebuildSystem(massFactor, forceFactor);
 }
 
 template<class DataTypes>
@@ -225,7 +233,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(linearalge
     Minv->resize(numDOFReals,numDOFReals);
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    l_linearSolver.get()->addJMInvJt(Minv, &J, factor);
+    l_linearSolver->addJMInvJt(Minv, &J, factor);
 }
 
 template< class DataTypes >
@@ -233,9 +241,9 @@ void LinearSolverConstraintCorrection< DataTypes >::computeMotionCorrection(cons
 {
     if (mstate && l_linearSolver.get())
     {
-        l_linearSolver.get()->setSystemRHVector(f);
-        l_linearSolver.get()->setSystemLHVector(dx);
-        l_linearSolver.get()->solveSystem();
+        l_linearSolver->setSystemRHVector(f);
+        l_linearSolver->setSystemLHVector(dx);
+        l_linearSolver->solveSystem();
     }
 }
 
@@ -359,9 +367,9 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const linear
             }
         }
     }
-    l_linearSolver.get()->setSystemRHVector(forceID);
-    l_linearSolver.get()->setSystemLHVector(dxID);
-    l_linearSolver.get()->solveSystem();
+    l_linearSolver->setSystemRHVector(forceID);
+    l_linearSolver->setSystemLHVector(dxID);
+    l_linearSolver->solveSystem();
 
     //TODO: tell the solver not to recompute the matrix
 
@@ -529,13 +537,13 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SRea
     core::VecDerivId forceID(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
     core::VecDerivId dxID = core::VecDerivId::dx();
 
-    l_linearSolver.get()->setSystemRHVector(forceID);
-    l_linearSolver.get()->setSystemLHVector(dxID);
+    l_linearSolver->setSystemRHVector(forceID);
+    l_linearSolver->setSystemLHVector(dxID);
 
 
-    systemMatrix_buf   = l_linearSolver.get()->getSystemBaseMatrix();
-    systemRHVector_buf = l_linearSolver.get()->getSystemRHBaseVector();
-    systemLHVector_buf = l_linearSolver.get()->getSystemLHBaseVector();
+    systemMatrix_buf   = l_linearSolver->getSystemBaseMatrix();
+    systemRHVector_buf = l_linearSolver->getSystemRHBaseVector();
+    systemLHVector_buf = l_linearSolver->getSystemLHBaseVector();
     systemLHVector_buf_fullvector = dynamic_cast<linearalgebra::FullVector<Real>*>(systemLHVector_buf); // Cast checking whether the LH vector is a FullVector to improve performances
 
     constexpr const auto derivDim = Deriv::total_size;
@@ -550,7 +558,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SRea
     }
 
     // Init the internal data of the solver for partial solving
-    l_linearSolver.get()->init_partial_solve();
+    l_linearSolver->init_partial_solve();
 
 
     ///////// new : precalcul des liste d'indice ///////
@@ -687,14 +695,14 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
     const SReal factor = l_ODESolver.get()->getPositionIntegrationFactor(); //*m_ODESolver->getPositionIntegrationFactor(); // dt*dt
 
     const unsigned int numDOFs = mstate->getSize();
-    const unsigned int N = Deriv::size();
-    const unsigned int numDOFReals = numDOFs*N;
+    static constexpr unsigned int N = Deriv::size();
+    const unsigned int numDOFReals = numDOFs * N;
 
     // Compute J
     const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
-    const unsigned int totalNumConstraints = W->rowSize();
+    const sofa::SignedIndex totalNumConstraints = W->rowSize();
 
-    J.resize(totalNumConstraints, numDOFReals);
+    m_constraintMatrix.resize(totalNumConstraints, numDOFReals);
 
     for (int i = begin; i <= end; i++)
     {
@@ -715,7 +723,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
                 const Deriv n = colIt.val();
 
                 for (unsigned int r = 0; r < N; ++r)
-                    J.add(i, dof * N + r, n[r]);
+                    m_constraintMatrix.add(i, dof * N + r, n[r]);
 
                 if (debug!=0)
                 {
@@ -730,7 +738,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
     }
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    l_linearSolver.get()->addJMInvJt(W, &J, factor);
+    l_linearSolver->addJMInvJt(W, &m_constraintMatrix, factor);
 
     // construction of  Vec_I_list_dof : vector containing, for each constraint block, the list of dof concerned
 

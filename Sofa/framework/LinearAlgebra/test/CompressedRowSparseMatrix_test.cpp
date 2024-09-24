@@ -89,6 +89,35 @@ void generateMatrix(sofa::linearalgebra::CompressedRowSparseMatrix<TBlock>& matr
     matrix.compress();
 }
 
+template<typename TBlock>
+void generateMatrix(sofa::linearalgebra::CompressedRowSparseMatrixConstraint<TBlock>& matrix,
+    sofa::SignedIndex nbRows, sofa::SignedIndex nbCols,
+    typename sofa::linearalgebra::CompressedRowSparseMatrixConstraint<TBlock>::Real sparsity,
+    long seed)
+{
+    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrixConstraint<TBlock>;
+    using Real = typename Matrix::Real;
+    const auto nbNonZero = static_cast<sofa::SignedIndex>(sparsity * static_cast<Real>(nbRows*nbCols));
+
+    sofa::helper::RandomGenerator randomGenerator;
+    randomGenerator.initSeed(seed);
+
+    matrix.resizeBlock(nbRows / Matrix::NL, nbCols / Matrix::NC);
+
+    for (sofa::SignedIndex i = 0; i < nbNonZero; ++i)
+    {
+        const auto value = static_cast<Real>(sofa::helper::drand(1));
+        const auto row = randomGenerator.random<sofa::Index>(0, nbRows);
+        const auto col = randomGenerator.random<sofa::Index>(0, nbCols);
+
+        auto line = matrix.writeLine(row);
+        TBlock block;
+        block[col % Matrix::NC] = value;
+        line.addCol(col, block);
+    }
+    matrix.compress();
+}
+
 /**
  * Two matrices A and B are generated randomly as CompressedRowSparseMatrix.
  * The test checks the consistency of the results of A^T * B, computed using 3 methods:
@@ -380,4 +409,23 @@ TEST(CompressedRowSparseMatrixConstraint, emptyMatrixGetRowRange)
 
     checkIterator(begin);
     checkIterator(end);
+}
+
+TEST(CompressedRowSparseMatrixConstraint, ostream)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrixConstraint<sofa::type::Vec3> A;
+
+    generateMatrix(A, 5, 15, 0.1, 7);
+
+    std::stringstream ss;
+    ss << A;
+
+    static const std::string expectedOutput =
+R"(Constraint ID : 0  dof ID : 1  value : 0 0.170019 0  dof ID : 10  value : 0 0.617481 0
+Constraint ID : 1  dof ID : 1  value : 0 0.127171 0  dof ID : 10  value : 0 -0.997497 0
+Constraint ID : 2  dof ID : 4  value : 0 -0.613392 0  dof ID : 13  value : 0 -0.299417 0
+Constraint ID : 3  dof ID : 13  value : 0 -0.0402539 0
+)";
+
+    EXPECT_EQ(ss.str(), expectedOutput);
 }

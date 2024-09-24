@@ -130,6 +130,12 @@ public:
 
     /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
     ///
+    /// This method can compute the Schur complement of the constrained system:
+    /// W = H A^{-1} H^T, where:
+    /// - A is the mechanical matrix
+    /// - H is the constraints matrix
+    /// - W is the compliance matrix projected in the constraints space
+    ///
     /// @param result the variable where the result will be added
     /// @param J the matrix J to use
     /// @param fact integrator parameter
