@@ -162,18 +162,15 @@ public:
     void addDForce (const core::MechanicalParams* mparams, DataVecDeriv& df,
                             const DataVecDeriv& dx) override;
 
-    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
-                                     const DataVecCoord&  /* x */) const override;
-
-    // getPotentialEnergy is implemented for polar method
-    SReal getPotentialEnergy(const core::MechanicalParams*) const override;
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
 
     const Transformation& getElementRotation(const sofa::Index elemidx);
 
     void getNodeRotation(Transformation& R, sofa::Index nodeIdx) ;
     void getRotations(linearalgebra::BaseMatrix * rotations,int offset = 0) override ;
 
-    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    using Inherit1::addKToMatrix;
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
     void buildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}
 

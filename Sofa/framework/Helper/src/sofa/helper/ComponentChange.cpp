@@ -773,7 +773,18 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"SofaDefaultPath", Dealiased("v24.12","SofaDefaultPathSetting")},
     {"Stats", Dealiased("v24.12","StatsSetting")},
     {"Viewer", Dealiased("v24.12","ViewerSetting")},
-    
+    {"MeshObjLoader", Dealiased("v24.12","MeshOBJLoader")},
+    {"ObjExporter", Dealiased("v24.12","VisualModelOBJExporter")},
+    {"OBJExporter", Dealiased("v24.12","VisualModelOBJExporter")},
+    {"CentralDifference", Dealiased("v24.12","CentralDifferenceSolver")},
+    {"DampVelocity", Dealiased("v24.12","DampVelocitySolver")},
+    {"RungeKutta2", Dealiased("v24.12","RungeKutta2Solver")},
+    {"RungeKutta4", Dealiased("v24.12","RungeKutta4Solver")},
+    {"EulerImplicit", Dealiased("v24.12","EulerImplicitSolver")},
+    {"ImplicitEulerSolver", Dealiased("v24.12","EulerImplicitSolver")},
+    {"ImplicitEuler", Dealiased("v24.12","EulerImplicitSolver")},
+    {"VariationalSolver", Dealiased("v24.12","VariationalSymplecticSolver")},
+
 };
 
 } // namespace sofa::helper::lifecycle

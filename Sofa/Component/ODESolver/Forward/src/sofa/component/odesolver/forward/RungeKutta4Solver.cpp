@@ -35,10 +35,11 @@ using core::VecId;
 using namespace core::behavior;
 using namespace sofa::defaulttype;
 
-int RungeKutta4SolverClass = core::RegisterObject("A popular explicit time integrator")
-        .add< RungeKutta4Solver >()
-        .addAlias("RungeKutta4")
-        ;
+void registerRungeKutta4Solver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A popular explicit time integrator.")
+        .add< RungeKutta4Solver >());
+}
 
 void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {

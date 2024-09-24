@@ -66,9 +66,12 @@ void LCPForceFeedback< Rigid3Types >::computeWrench(const sofa::type::Transform<
     W_tool_world.setTorque(getVOrientation(forces[0]));
 }
 
-int lCPForceFeedbackClass = sofa::core::RegisterObject("LCP force feedback for the device")
+void registerLCPForceFeedback(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("LCP force feedback for the device.")
         .add< LCPForceFeedback<defaulttype::Vec1Types> >()
-        .add< LCPForceFeedback<defaulttype::Rigid3Types> >();
+        .add< LCPForceFeedback<defaulttype::Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_HAPTICS_API LCPForceFeedback<defaulttype::Vec1Types>;
 template class SOFA_COMPONENT_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3Types>;

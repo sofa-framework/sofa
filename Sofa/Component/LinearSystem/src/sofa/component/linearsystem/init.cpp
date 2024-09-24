@@ -22,16 +22,25 @@
 #include <sofa/component/linearsystem/init.h>
 
 #include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
+#include <sofa/helper/system/PluginManager.h>
 
 namespace sofa::component::linearsystem
 {
+
+extern void registerCompositeLinearSystem(sofa::core::ObjectFactory* factory);
+extern void registerConstantSparsityPatternSystem(sofa::core::ObjectFactory* factory);
+extern void registerConstantSparsityProjectionMethod(sofa::core::ObjectFactory* factory);
+extern void registerMatrixLinearSystem(sofa::core::ObjectFactory* factory);
+extern void registerMatrixProjectionMethod(sofa::core::ObjectFactory* factory);
 
 void init()
 {
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         first = false;
     }
 }
@@ -42,6 +51,7 @@ extern "C" {
     SOFA_COMPONENT_LINEARSYSTEM_API const char* getModuleVersion();
     SOFA_COMPONENT_LINEARSYSTEM_API const char* getModuleLicense();
     SOFA_COMPONENT_LINEARSYSTEM_API const char* getModuleDescription();
+    SOFA_COMPONENT_LINEARSYSTEM_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -67,6 +77,15 @@ const char* getModuleLicense()
 const char* getModuleDescription()
 {
     return "This plugin defines a linear system and provides components able to assemble one from the scene.";
+}
+
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerCompositeLinearSystem(factory);
+    registerConstantSparsityPatternSystem(factory);
+    registerConstantSparsityProjectionMethod(factory);
+    registerMatrixLinearSystem(factory);
+    registerMatrixProjectionMethod(factory);
 }
 
 } // namespace sofa::component::linearsystem

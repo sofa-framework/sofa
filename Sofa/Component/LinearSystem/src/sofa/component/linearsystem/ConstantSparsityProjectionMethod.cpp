@@ -27,7 +27,10 @@ namespace sofa::component::linearsystem
 {
 template class SOFA_COMPONENT_LINEARSYSTEM_API ConstantSparsityProjectionMethod<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> >;
 
-int ConstantSparsityProjectionMethodClass = core::RegisterObject("Matrix mapping computing the matrix projection taking advantage of the constant sparsity pattern")
-        .add< ConstantSparsityProjectionMethod<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> > >(true)
-        ;
+void registerConstantSparsityProjectionMethod(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Matrix mapping computing the matrix projection taking advantage of the constant sparsity pattern.")
+        .add< ConstantSparsityProjectionMethod<sofa::linearalgebra::CompressedRowSparseMatrix<SReal> > >(true));
+}
+
 }

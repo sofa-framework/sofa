@@ -31,11 +31,11 @@
 namespace sofa::component::io::mesh
 {
 
-using namespace sofa::defaulttype;
-
-int OffSequenceLoaderClass = core::RegisterObject("Read and load an .off file at each timestep")
-        .add< OffSequenceLoader >();
-
+void registerOffSequenceLoader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Read and load an .off file at each timestep.")
+        .add< OffSequenceLoader >());
+}
 
 OffSequenceLoader::OffSequenceLoader()
     : MeshOffLoader()

@@ -554,7 +554,7 @@ UniformMass<DataTypes>::getMomentum ( const core::MechanicalParams* params, cons
 
 /// Add Mass contribution to global Matrix assembling
 template <class DataTypes>
-void UniformMass<DataTypes>::addMToMatrix (const MechanicalParams *mparams, const MultiMatrixAccessor* matrix)
+void UniformMass<DataTypes>::addMToMatrix (sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset)
 {
     if (!this->isComponentStateValid())
         return;
@@ -564,14 +564,11 @@ void UniformMass<DataTypes>::addMToMatrix (const MechanicalParams *mparams, cons
     static constexpr auto N = Deriv::total_size;
 
     AddMToMatrixFunctor<Deriv,MassType, linearalgebra::BaseMatrix> calc;
-    MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate);
-
-    const Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
 
     const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
     for (auto id : *indices)
     {
-        calc ( r.matrix, m, int(r.offset + N * id), mFactor);
+        calc ( mat, m, int(offset + N * id), mFact);
     }
 }
 
