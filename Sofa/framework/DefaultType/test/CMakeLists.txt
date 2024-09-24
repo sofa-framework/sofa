@@ -13,8 +13,8 @@ set(SOURCE_FILES
     RigidDeriv_test.cpp
     TypeInfoRepository_test.cpp
     TypeInfoRepository_tu1_test.cpp
-    TypeInfoRepository_tu2_test.cpp
     TypeInfo_test.cpp
+    TypeInfoRepository_tu2_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
