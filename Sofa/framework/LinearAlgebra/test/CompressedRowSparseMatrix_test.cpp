@@ -99,16 +99,15 @@ void generateMatrix(sofa::linearalgebra::CompressedRowSparseMatrixConstraint<TBl
     using Real = typename Matrix::Real;
     const auto nbNonZero = static_cast<sofa::SignedIndex>(sparsity * static_cast<Real>(nbRows*nbCols));
 
-    sofa::helper::RandomGenerator randomGenerator;
-    randomGenerator.initSeed(seed);
+    sofa::testing::LinearCongruentialRandomGenerator lcg(seed);
 
     matrix.resizeBlock(nbRows / Matrix::NL, nbCols / Matrix::NC);
 
     for (sofa::SignedIndex i = 0; i < nbNonZero; ++i)
     {
-        const auto value = static_cast<Real>(sofa::helper::drand(1));
-        const auto row = randomGenerator.random<sofa::Index>(0, nbRows);
-        const auto col = randomGenerator.random<sofa::Index>(0, nbCols);
+        const auto value = lcg.generateInUnitRange<Real>();
+        const auto row = static_cast<sofa::Index>(lcg.generateInRange(0., nbRows));
+        const auto col = static_cast<sofa::Index>(lcg.generateInRange(0., nbCols));
 
         auto line = matrix.writeLine(row);
         TBlock block;
@@ -421,10 +420,10 @@ TEST(CompressedRowSparseMatrixConstraint, ostream)
     ss << A;
 
     static const std::string expectedOutput =
-R"(Constraint ID : 0  dof ID : 1  value : 0 0.170019 0  dof ID : 10  value : 0 0.617481 0
-Constraint ID : 1  dof ID : 1  value : 0 0.127171 0  dof ID : 10  value : 0 -0.997497 0
-Constraint ID : 2  dof ID : 4  value : 0 -0.613392 0  dof ID : 13  value : 0 -0.299417 0
-Constraint ID : 3  dof ID : 13  value : 0 -0.0402539 0
+R"(Constraint ID : 0  dof ID : 1  value : 0 0.360985 0  dof ID : 12  value : 0.926981 0 0
+Constraint ID : 2  dof ID : 9  value : 0.451858 0 0
+Constraint ID : 3  dof ID : 6  value : 0.777417 0 0
+Constraint ID : 4  dof ID : 5  value : 0 0 0.474108  dof ID : 7  value : 0 0.983937 0  dof ID : 9  value : 0.238781 0 0
 )";
 
     EXPECT_EQ(ss.str(), expectedOutput);
