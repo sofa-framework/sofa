@@ -33,8 +33,8 @@ init()
 {
     core::Mapping<TIn, TOut>::init();
 
-    this->baseMatrices.resize( 1 );
-    this->baseMatrices[0] = &this->jacobian;
+    m_baseMatrices.resize( 1 );
+    m_baseMatrices[0] = &this->jacobian;
 }
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
@@ -94,11 +94,11 @@ void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyDJT(
 
     const SReal kFactor = mparams->kFactor();
 
-    if( K.compressedMatrix.nonZeros() )
+    if( m_geometricStiffnessMatrix.compressedMatrix.nonZeros() )
     {
         helper::WriteAccessor parentForceAccessor(parentForce);
         helper::ReadAccessor parentDisplacementAccessor(parentDisplacement);
-        K.addMult( parentForceAccessor.wref(), parentDisplacementAccessor.ref(), static_cast<Real>(kFactor) );
+        m_geometricStiffnessMatrix.addMult( parentForceAccessor.wref(), parentDisplacementAccessor.ref(), static_cast<Real>(kFactor) );
     }
     else
     {
@@ -112,13 +112,13 @@ void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyDJT(
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
 const linearalgebra::BaseMatrix* BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::getK()
 {
-    return &K;
+    return &m_geometricStiffnessMatrix;
 }
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
 const type::vector<sofa::linearalgebra::BaseMatrix*>* BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::getJs()
 {
-    return &baseMatrices;
+    return &m_baseMatrices;
 }
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
@@ -126,18 +126,18 @@ void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::
 updateK(const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId)
 {
     const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
-    if( !geometricStiffness ) { this->K.resize(0,0); return; }
+    if( !geometricStiffness ) { this->m_geometricStiffnessMatrix.resize(0,0); return; }
 
     const Data<VecDeriv_t<Out> >& childForce = *childForceId[this->toModel.get()].read();
 
     {
         unsigned int kSize = this->fromModel->getSize();
-        K.resizeBlocks(kSize, kSize);
+        m_geometricStiffnessMatrix.resizeBlocks(kSize, kSize);
     }
 
-    doUpdateK(mparams, childForce, K);
+    doUpdateK(mparams, childForce, m_geometricStiffnessMatrix);
 
-    K.compress();
+    m_geometricStiffnessMatrix.compress();
 }
 
 

@@ -90,8 +90,8 @@ protected:
 
 private:
 
-    SparseKMatrixEigen K; ///< Assembled geometric stiffness matrix
-    type::vector<linearalgebra::BaseMatrix*> baseMatrices; ///< Jacobian of the mapping, in a vector
+    SparseKMatrixEigen m_geometricStiffnessMatrix; ///< Assembled geometric stiffness matrix
+    type::vector<linearalgebra::BaseMatrix*> m_baseMatrices;
 };
 
 }
