@@ -145,7 +145,7 @@ void LinearSolverConstraintCorrection<TDataTypes>::convertConstraintMatrix(const
     static constexpr unsigned int N = Deriv::size();
     const unsigned int numDOFReals = numDOFs * N;
 
-    m_constraintMatrix.resize(numberOfConstraints, numDOFReals);
+    m_constraintJacobian.resize(numberOfConstraints, numDOFReals);
 
     MatrixDerivRowConstIterator rowItEnd = inputConstraintMatrix.end();
 
@@ -162,7 +162,7 @@ void LinearSolverConstraintCorrection<TDataTypes>::convertConstraintMatrix(const
 
             for (unsigned int r = 0; r < N; ++r)
             {
-                m_constraintMatrix.add(cid, dof * N + r, n[r]);
+                m_constraintJacobian.add(cid, dof * N + r, n[r]);
             }
         }
     }
@@ -201,7 +201,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
     l_linearSolver->setSystemLHVector(sofa::core::MultiVecDerivId::null());
-    l_linearSolver->addJMInvJt(W, &m_constraintMatrix, factor);
+    l_linearSolver->addJMInvJt(W, &m_constraintJacobian, factor);
 }
 
 
@@ -702,7 +702,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
     const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
     const sofa::SignedIndex totalNumConstraints = W->rowSize();
 
-    m_constraintMatrix.resize(totalNumConstraints, numDOFReals);
+    m_constraintJacobian.resize(totalNumConstraints, numDOFReals);
 
     for (int i = begin; i <= end; i++)
     {
@@ -723,7 +723,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
                 const Deriv n = colIt.val();
 
                 for (unsigned int r = 0; r < N; ++r)
-                    m_constraintMatrix.add(i, dof * N + r, n[r]);
+                    m_constraintJacobian.add(i, dof * N + r, n[r]);
 
                 if (debug!=0)
                 {
@@ -738,7 +738,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
     }
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    l_linearSolver->addJMInvJt(W, &m_constraintMatrix, factor);
+    l_linearSolver->addJMInvJt(W, &m_constraintJacobian, factor);
 
     // construction of  Vec_I_list_dof : vector containing, for each constraint block, the list of dof concerned
 

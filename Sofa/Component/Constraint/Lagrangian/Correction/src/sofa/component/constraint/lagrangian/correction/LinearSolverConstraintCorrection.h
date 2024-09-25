@@ -112,7 +112,7 @@ public:
 protected:
     DeprecatedAndRemoved J; ///< use m_constraintMatrix instead
 
-    linearalgebra::SparseMatrix<Real> m_constraintMatrix;
+    linearalgebra::SparseMatrix<Real> m_constraintJacobian;
 
     SOFA_ATTRIBUTE_DEPRECATED__FORCES_IN_LINEARSOLVERCONSTRAINTCORRECTION()
     linearalgebra::FullVector<SReal> F; ///< forces computed from the constraints
