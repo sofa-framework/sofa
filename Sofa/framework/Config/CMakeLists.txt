@@ -296,13 +296,22 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
   MAP_IMPORTED_CONFIG_MINSIZEREL Release
   MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release
   )
-target_compile_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELEASE>:${SOFACONFIG_COMPILE_OPTIONS_RELEASE}>")
-target_compile_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:DEBUG>:${SOFACONFIG_COMPILE_OPTIONS_DEBUG}>")
-target_compile_options(${PROJECT_NAME} PUBLIC "${SOFACONFIG_COMPILE_OPTIONS}")
 
-target_link_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELEASE>:${SOFACONFIG_LINK_OPTIONS_RELEASE}>")
-target_link_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:DEBUG>:${SOFACONFIG_LINK_OPTIONS_DEBUG}>")
-target_link_options(${PROJECT_NAME} PUBLIC "${SOFACONFIG_LINK_OPTIONS}")
+set(is_cxx "$<COMPILE_LANGUAGE:CXX>")
+set(is_c "$<COMPILE_LANGUAGE:C>")
+set(is_c_cxx "$<OR:${is_cxx},${is_c}>")
+set(is_release "$<CONFIG:RELEASE>")
+set(is_debug "$<CONFIG:DEBUG>")
+set(is_c_cxx_release "$<AND:${is_c_cxx},${is_release}>")
+set(is_c_cxx_debug "$<AND:${is_c_cxx},${is_debug}>")
+
+target_compile_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx_release}:${SOFACONFIG_COMPILE_OPTIONS_RELEASE}>")
+target_compile_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx_debug}:${SOFACONFIG_COMPILE_OPTIONS_DEBUG}>")
+target_compile_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx}:${SOFACONFIG_COMPILE_OPTIONS}>")
+
+target_link_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx_release}:${SOFACONFIG_LINK_OPTIONS_RELEASE}>")
+target_link_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx_debug}:${SOFACONFIG_LINK_OPTIONS_DEBUG}>")
+target_link_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx}:${SOFACONFIG_LINK_OPTIONS}>")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
