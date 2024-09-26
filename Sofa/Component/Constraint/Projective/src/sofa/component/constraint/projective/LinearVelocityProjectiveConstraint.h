@@ -71,6 +71,9 @@ public :
     /// the coordinates on which to applay velocities
     SetIndex d_coordinates;
 
+    /// If set to true then the last velocity will still be applied after all the key events
+    Data<bool> d_continueAfterEnd;
+
     /// the key times surrounding the current simulation time (for interpolation)
     Real prevT, nextT;
     ///the velocities corresponding to the surrouding key times
@@ -108,6 +111,13 @@ public:
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
+
+    void applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+
+    void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
+
+    void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
