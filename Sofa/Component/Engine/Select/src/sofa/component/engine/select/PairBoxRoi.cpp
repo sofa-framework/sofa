@@ -39,6 +39,6 @@ void registerPairBoxROI(sofa::core::ObjectFactory* factory)
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<Vec3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<Rigid3Types>;
-template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<Vec6Types>; //Phuoc
+template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<Vec6Types>;
 
 } //namespace sofa::component::engine::select
