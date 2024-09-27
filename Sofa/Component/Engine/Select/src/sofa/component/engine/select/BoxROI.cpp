@@ -31,7 +31,7 @@ using namespace sofa::defaulttype;
 
 void registerBoxROI(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Find the primitives (vertex/edge/triangle/quad/tetrahedron/hexahedron) inside given boxes.")
+    factory->registerObjects(core::ObjectRegistrationData("Engine selecting the any primitives (vertex/edge/triangle/quad/tetrahedron/hexahedron) inside given boxes.")
         .add< BoxROI<Vec3Types> >(true) //default
         .add< BoxROI<Vec2Types> >()
         .add< BoxROI<Vec1Types> >()

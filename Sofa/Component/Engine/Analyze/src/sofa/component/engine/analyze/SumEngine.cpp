@@ -30,7 +30,7 @@ using namespace sofa::type;
 
 void registerSumEngine(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Computing the Sum between two vector of dofs.")
+    factory->registerObjects(core::ObjectRegistrationData("Computing the sum between two vector of dofs.")
         .add< SumEngine<Vec1> >()
         .add< SumEngine<Vec3> >(true));
 }

@@ -30,7 +30,7 @@ using namespace sofa::defaulttype;
 
 void registerGenerateCylinder(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Generate a Cylindrical Tetrahedral Mesh.")
+    factory->registerObjects(core::ObjectRegistrationData("Engine generating a cylindrical tetrahedral mesh.")
         .add< GenerateCylinder<Vec3Types> >());
 }
 

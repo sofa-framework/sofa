@@ -31,7 +31,7 @@ using namespace sofa::defaulttype;
 
 void registerGenerateRigidMass(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("An engine computing the RigidMass of a mesh : mass, volume and inertia matrix.")
+    factory->registerObjects(core::ObjectRegistrationData("Engine computing the RigidMass of a mesh: mass, volume and inertia matrix.")
         .add< GenerateRigidMass<Rigid3Types, Rigid3Mass> >());
 }
 

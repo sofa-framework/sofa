@@ -28,7 +28,7 @@ namespace sofa::component::engine::select
 
 void registerMeshSplittingEngine(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("This class breaks a mesh in multiple parts, based on selected vertices or cells.")
+    factory->registerObjects(core::ObjectRegistrationData("Engine breaking a mesh in multiple parts, based on selected vertices or cells.")
         .add< MeshSplittingEngine<defaulttype::Vec3Types> >());
 }
 

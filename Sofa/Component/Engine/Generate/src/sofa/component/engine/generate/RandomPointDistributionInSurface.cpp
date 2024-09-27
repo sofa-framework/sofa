@@ -31,7 +31,7 @@ using namespace sofa::defaulttype;
 
 void registerRandomPointDistributionInSurface(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("This class truns on spiral any topological model.")
+    factory->registerObjects(core::ObjectRegistrationData("Engine distributing points over a surface randomly.")
         .add< RandomPointDistributionInSurface<Vec3Types> >());
 }
 

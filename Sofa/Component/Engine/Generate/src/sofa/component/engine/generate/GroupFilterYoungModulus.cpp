@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerGroupFilterYoungModulus(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("This class gives a vector of young modulus according of a list of defined groups.")
+    factory->registerObjects(core::ObjectRegistrationData("Engine defining a vector of young modulus according of a list of defined groups.")
         .add< GroupFilterYoungModulus<Vec3Types> >());
 }
 

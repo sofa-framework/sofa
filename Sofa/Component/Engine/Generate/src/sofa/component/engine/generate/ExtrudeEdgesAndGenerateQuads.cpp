@@ -31,7 +31,7 @@ using namespace sofa::defaulttype;
 
 void registerExtrudeEdgesAndGenerateQuads(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("This engine extrudes an edge-based curve into a quad surface patch.")
+    factory->registerObjects(core::ObjectRegistrationData("Engine extruding an edge-based curve into a quad surface patch.")
         .add< ExtrudeEdgesAndGenerateQuads<Vec3Types> >(true));
 }
 

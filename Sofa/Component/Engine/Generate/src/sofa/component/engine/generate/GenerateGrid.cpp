@@ -30,7 +30,7 @@ using namespace sofa::defaulttype;
 
 void registerGenerateGrid(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Generate a Grid Tetrahedral or Hexahedral Mesh.")
+    factory->registerObjects(core::ObjectRegistrationData("Engine generating a grid tetrahedral or hexahedral mesh.")
         .add< GenerateGrid<Vec3Types> >()
         .add< GenerateGrid<Vec2Types> >());
 }

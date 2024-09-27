@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerMeshBarycentricMapperEngine(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("This class maps a set of points in a topological model and provide barycentric coordinates")
+    factory->registerObjects(core::ObjectRegistrationData("Engine mapping a set of points in a topological model and provide barycentric coordinates")
         .add< MeshBarycentricMapperEngine<Vec3Types> >());
 }
 

@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerExtrudeSurface(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("This component creates a mesh from the extrusion of the surface of a given mesh.")
+    factory->registerObjects(core::ObjectRegistrationData("Engine creating a mesh from the extrusion of the surface of a given mesh.")
         .add< ExtrudeSurface<Vec3Types> >());
 }
 

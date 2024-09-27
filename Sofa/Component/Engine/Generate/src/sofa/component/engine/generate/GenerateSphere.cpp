@@ -30,7 +30,7 @@ using namespace sofa::defaulttype;
 
 void registerGenerateSphere(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Generate a sphereical (Bezier) Tetrahedral and Triangular Mesh.")
+    factory->registerObjects(core::ObjectRegistrationData("Engine generating a spherical (Bezier) tetrahedral and triangular mesh.")
         .add< GenerateSphere<Vec3Types> >());
 }
 

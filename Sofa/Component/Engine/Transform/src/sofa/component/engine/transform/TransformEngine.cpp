@@ -28,7 +28,7 @@ namespace sofa::component::engine::transform
 
 void registerTransformEngine(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Transform position of 3d points.")
+    factory->registerObjects(core::ObjectRegistrationData("Engine applying a transformation on 3d points (translation / rotation).")
         .add< TransformEngine<defaulttype::Vec3Types> >(true) // default template
         .add< TransformEngine<defaulttype::Vec1Types> >()
         .add< TransformEngine<defaulttype::Vec2Types> >()

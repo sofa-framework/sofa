@@ -31,7 +31,7 @@ using namespace sofa::defaulttype;
 
 void registerExtrudeQuadsAndGenerateHexas(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("This engine extrudes a quad-based surface into a set of hexahedral elements.")
+    factory->registerObjects(core::ObjectRegistrationData("Engine extruding a quad-based surface into a set of hexahedral elements.")
         .add< ExtrudeQuadsAndGenerateHexas<Vec3Types> >());
 }
 

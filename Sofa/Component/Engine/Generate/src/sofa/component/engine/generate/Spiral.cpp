@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerSpiral(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("This class truns on spiral any topological model.")
+    factory->registerObjects(core::ObjectRegistrationData("Engine turning on spiral any topological model.")
         .add< Spiral<Vec3Types> >());
 }
 

@@ -30,7 +30,7 @@ namespace sofa::component::engine::select
 
 void registerIndicesFromValues(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Find the indices of a list of values within a larger set of values.")
+    factory->registerObjects(core::ObjectRegistrationData("Engine finding the indices of a list of values within a larger set of values.")
         .add< IndicesFromValues<std::string> >()
         .add< IndicesFromValues<int> >()
         .add< IndicesFromValues<unsigned int> >()
