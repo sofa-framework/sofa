@@ -31,7 +31,7 @@ template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API TypedMatrixLinearSystem< l
 
 void registerTypedMatrixLinearSystemBTDMatrix(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Linear system.")
+    factory->registerObjects(core::ObjectRegistrationData("Linear system dedicated to a Band Tri Diagonal typed matrix.")
         .add<TypedMatrixLinearSystem< linearalgebra::BTDMatrix<6, SReal>, linearalgebra::BlockVector<6, SReal> > >());
 }
 

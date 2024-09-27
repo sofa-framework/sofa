@@ -33,7 +33,7 @@ template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSparseLU< sofa::type:
 
 void registerEigenSparseLU(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Direct Linear Solver using a Sparse LU factorization.")
+    factory->registerObjects(core::ObjectRegistrationData("Direct linear solver using a Sparse LU factorization.")
         .add< EigenSparseLU< SReal > >()
         .add< EigenSparseLU< sofa::type::Mat<3, 3, SReal> > >());
 }

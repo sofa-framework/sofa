@@ -33,7 +33,7 @@ template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSparseQR< sofa::type:
 
 void registerEigenSparseQR(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Direct Linear Solver using a Sparse QR factorization.")
+    factory->registerObjects(core::ObjectRegistrationData("Direct linear solver using a Sparse QR factorization.")
         .add< EigenSparseQR< SReal > >()
         .add< EigenSparseQR< sofa::type::Mat<3, 3, SReal> > >());
 }

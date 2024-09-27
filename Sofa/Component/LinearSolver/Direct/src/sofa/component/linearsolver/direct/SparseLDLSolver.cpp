@@ -31,7 +31,7 @@ using namespace sofa::linearalgebra;
 
 void registerSparseLDLSolver(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Direct Linear Solver using a Sparse LDL^T factorization.")
+    factory->registerObjects(core::ObjectRegistrationData("Direct linear solver using a Sparse LDL^T factorization.")
         .add< SparseLDLSolver< CompressedRowSparseMatrix<SReal>, FullVector<SReal> > >(true)
         .add< SparseLDLSolver< CompressedRowSparseMatrix<type::Mat<3, 3, SReal> >, FullVector<SReal> > >());
 }

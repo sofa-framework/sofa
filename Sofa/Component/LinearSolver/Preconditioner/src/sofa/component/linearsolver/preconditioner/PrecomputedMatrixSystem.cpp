@@ -34,7 +34,7 @@ template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API PrecomputedMatrixS
 
 void registerPrecomputedMatrixSystem(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Matrix system.")
+    factory->registerObjects(core::ObjectRegistrationData("Precomputed matrix system.")
         .add<PrecomputedMatrixSystem< CompressedRowSparseMatrix<SReal>, FullVector<SReal> > >());
 }
 

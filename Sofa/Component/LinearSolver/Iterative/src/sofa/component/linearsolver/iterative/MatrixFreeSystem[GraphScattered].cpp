@@ -33,7 +33,7 @@ template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixFreeSystem<linear
 
 void registerMatrixFreeSystemGraphScattered(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Matrix-free linear system.")
+    factory->registerObjects(core::ObjectRegistrationData("Matrix-free (unbuilt) linear system.")
         .add< MatrixFreeSystem<GraphScatteredMatrix, GraphScatteredVector> >());
 }
 

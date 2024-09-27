@@ -33,7 +33,7 @@ template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSimplicialLLT< sofa::
 
 void registerEigenSimplicialLLT(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Direct Linear Solver using a Sparse LL^T factorization.")
+    factory->registerObjects(core::ObjectRegistrationData("Direct linear solver using a Sparse LL^T factorization.")
         .add< EigenSimplicialLLT< SReal > >()
         .add< EigenSimplicialLLT< sofa::type::Mat<3, 3, SReal> > >());
 }
