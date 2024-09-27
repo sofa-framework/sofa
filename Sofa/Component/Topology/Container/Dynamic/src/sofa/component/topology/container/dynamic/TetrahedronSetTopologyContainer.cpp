@@ -31,7 +31,7 @@ using sofa::core::topology::edgesInTetrahedronArray;
 
 void registerTetrahedronSetTopologyContainer(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Tetrahedron set topology container.")
+    factory->registerObjects(core::ObjectRegistrationData("Topology container dedicated to a tetrahedral topology.")
         .add< TetrahedronSetTopologyContainer >());
 }
 

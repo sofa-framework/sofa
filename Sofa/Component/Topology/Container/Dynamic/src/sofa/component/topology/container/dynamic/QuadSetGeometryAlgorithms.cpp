@@ -33,7 +33,7 @@ using namespace sofa::defaulttype;
 
 void registerQuadSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Quad set geometry algorithms.")
+    factory->registerObjects(core::ObjectRegistrationData("Geometry algorithms dedicated to a quad topology.")
         .add< QuadSetGeometryAlgorithms<Vec3Types> >(true) // default template
         .add< QuadSetGeometryAlgorithms<Vec2Types> >());
 }

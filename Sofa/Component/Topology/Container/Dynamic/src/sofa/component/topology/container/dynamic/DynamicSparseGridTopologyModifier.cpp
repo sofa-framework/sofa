@@ -32,7 +32,7 @@ namespace sofa::component::topology::container::dynamic
 
 void registerDynamicSparseGridTopologyModifier(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Dynamic Sparse grid geometry modifier.")
+    factory->registerObjects(core::ObjectRegistrationData("Dynamic sparse grid geometry modifier.")
         .add< DynamicSparseGridTopologyModifier >());
 }
 

@@ -35,7 +35,7 @@ using namespace sofa::defaulttype;
 
 void registerDynamicSparseGridTopologyContainer(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Dynamic Sparse grid geometry container.")
+    factory->registerObjects(core::ObjectRegistrationData("Dynamic sparse grid geometry container.")
         .add< DynamicSparseGridTopologyContainer >());
 }
 

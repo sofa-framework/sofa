@@ -37,7 +37,7 @@ using namespace sofa::core::topology;
 
 void registerCenterPointTopologicalMapping(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Each primitive in the input Topology will be mapped to a point in the output topology.")
+    factory->registerObjects(core::ObjectRegistrationData("Topological mapping where each primitive in the input topology will be mapped to a point in the output topology.")
         .add< CenterPointTopologicalMapping >());
 }
 

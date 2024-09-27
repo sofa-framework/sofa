@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerPointSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Point set geometry algorithms.")
+    factory->registerObjects(core::ObjectRegistrationData("Geometry algorithms dedicated to a point topology.")
         .add< PointSetGeometryAlgorithms<Vec3Types> >(true) // default template
         .add< PointSetGeometryAlgorithms<Vec2Types> >()
         .add< PointSetGeometryAlgorithms<Vec1Types> >());

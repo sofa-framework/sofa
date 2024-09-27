@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerTopologyBoundingTrasher(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("A class to remove all elements going outside from the given Bounding Box.")
+    factory->registerObjects(core::ObjectRegistrationData("Component removing all elements going outside from the given bounding box.")
         .add< TopologyBoundingTrasher<Vec3Types>  >());
 }
 

@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerTriangleSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Triangle set geometry algorithms.")
+    factory->registerObjects(core::ObjectRegistrationData("Geometry algorithms dedicated to a triangular topology.")
         .add< TriangleSetGeometryAlgorithms<Vec3Types> >(true) // default template
         .add< TriangleSetGeometryAlgorithms<Vec2Types> >());
 }

@@ -40,7 +40,7 @@ using namespace sofa::defaulttype;
 
 void registerEdgeSetTopologyContainer(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Edge set topology container.")
+    factory->registerObjects(core::ObjectRegistrationData("Topology container for an edge topology.")
         .add< EdgeSetTopologyContainer >());
 }
 

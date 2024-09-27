@@ -51,7 +51,7 @@ struct GeneratePointID
 
 void registerPointSetTopologyContainer(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Point set topology container.")
+    factory->registerObjects(core::ObjectRegistrationData("Topology container dedicated to a point topology.")
         .add< PointSetTopologyContainer >());
 }
 

@@ -36,7 +36,7 @@ namespace sofa::component::topology::container::dynamic
 
 void registerTetrahedronSetTopologyModifier(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Tetrahedron set topology modifier.")
+    factory->registerObjects(core::ObjectRegistrationData("Topology modifier dedicated to a tetrahedral topology.")
         .add< TetrahedronSetTopologyModifier >());
 }
 

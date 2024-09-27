@@ -33,7 +33,7 @@ using namespace sofa::defaulttype;
 
 void registerEdgeSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Edge set geometry algorithms.")
+    factory->registerObjects(core::ObjectRegistrationData("Geometry algorithms dedicated to an edge topology.")
         .add< EdgeSetGeometryAlgorithms<Vec3Types> >(true) // default template
         .add< EdgeSetGeometryAlgorithms<Vec2Types> >()
         .add< EdgeSetGeometryAlgorithms<Vec1Types> >()

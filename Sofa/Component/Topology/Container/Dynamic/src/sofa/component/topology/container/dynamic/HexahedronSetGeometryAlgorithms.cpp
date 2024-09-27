@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerHexahedronSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Hexahedron set geometry algorithms.")
+    factory->registerObjects(core::ObjectRegistrationData("Geometry algorithms dedicated to an hexahedral topology.")
         .add< HexahedronSetGeometryAlgorithms<Vec3Types> >(true) // default template
         .add< HexahedronSetGeometryAlgorithms<Vec2Types> >());
 }

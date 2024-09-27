@@ -31,7 +31,7 @@ using namespace sofa::defaulttype;
 
 void registerDynamicSparseGridGeometryAlgorithms(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Dynamic Sparse grid geometry algorithms.")
+    factory->registerObjects(core::ObjectRegistrationData("Dynamic sparse grid geometry algorithms.")
         .add< DynamicSparseGridGeometryAlgorithms<Vec3Types> >(true) // default template
         .add< DynamicSparseGridGeometryAlgorithms<Vec2Types> >());
 }

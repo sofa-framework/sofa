@@ -36,7 +36,7 @@ namespace sofa::component::topology::container::dynamic
 
 void registerTriangleSetTopologyModifier(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Triangle set topology modifier.")
+    factory->registerObjects(core::ObjectRegistrationData("Topology modifier dedicated to a triangular topology.")
         .add< TriangleSetTopologyModifier >());
 }
 

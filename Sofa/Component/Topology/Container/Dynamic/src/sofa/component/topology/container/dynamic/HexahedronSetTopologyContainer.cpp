@@ -34,7 +34,7 @@ using sofa::core::topology::verticesInHexahedronArray;
 
 void registerHexahedronSetTopologyContainer(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Hexahedron set topology container.")
+    factory->registerObjects(core::ObjectRegistrationData("Topology container dedicated to an hexahedral topology.")
         .add< HexahedronSetTopologyContainer >());
 }
 

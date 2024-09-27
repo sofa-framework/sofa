@@ -36,7 +36,7 @@ namespace sofa::component::topology::container::dynamic
 
 void registerPointSetTopologyModifier(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Point set topology modifier.")
+    factory->registerObjects(core::ObjectRegistrationData("Topology modifier dedicated to a point topology.")
         .add< PointSetTopologyModifier >());
 }
 

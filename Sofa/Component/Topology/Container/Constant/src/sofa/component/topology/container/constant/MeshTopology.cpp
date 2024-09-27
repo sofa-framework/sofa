@@ -480,7 +480,7 @@ using core::topology::BaseMeshTopology;
 
 void registerMeshTopology(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Generic mesh topology.")
+    factory->registerObjects(core::ObjectRegistrationData("Generic constant topology loaded from a mesh file.")
         .add< MeshTopology >());
 }
 

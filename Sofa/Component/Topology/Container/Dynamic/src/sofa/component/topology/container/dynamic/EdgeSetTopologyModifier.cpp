@@ -43,7 +43,7 @@ namespace sofa::component::topology::container::dynamic
 
 void registerEdgeSetTopologyModifier(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Edge set topology modifier.")
+    factory->registerObjects(core::ObjectRegistrationData("Topology modifier dedicated to an edge topology.")
         .add< EdgeSetTopologyModifier >());
 }
 

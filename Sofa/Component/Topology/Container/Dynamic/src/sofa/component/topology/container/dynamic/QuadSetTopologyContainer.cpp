@@ -30,7 +30,7 @@ namespace sofa::component::topology::container::dynamic
 
 void registerQuadSetTopologyContainer(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Quad set topology container.")
+    factory->registerObjects(core::ObjectRegistrationData("Topology container dedicated to a quad topology.")
         .add< QuadSetTopologyContainer >());
 }
 

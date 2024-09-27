@@ -33,7 +33,7 @@ namespace sofa::component::topology::container::dynamic
 
 void registerHexahedronSetTopologyModifier(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Hexahedron set topology modifier.")
+    factory->registerObjects(core::ObjectRegistrationData("Topology modifier dedicated to an hexahedral topology.")
         .add< HexahedronSetTopologyModifier >());
 }
 

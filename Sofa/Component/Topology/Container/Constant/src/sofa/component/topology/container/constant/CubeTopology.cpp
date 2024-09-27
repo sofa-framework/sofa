@@ -59,7 +59,7 @@ void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 
 void registerCubeTopology(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Surface of a cube in 3D.")
+    factory->registerObjects(core::ObjectRegistrationData("Surface topology of a cube in 3D (points, edges and quads).")
         .add< CubeTopology >());
 }
 

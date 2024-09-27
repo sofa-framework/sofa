@@ -33,7 +33,7 @@ namespace sofa::component::topology::container::dynamic
 
 void registerQuadSetTopologyModifier(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Quad set topology modifier.")
+    factory->registerObjects(core::ObjectRegistrationData("Topology modifier dedicated to a quad topology.")
         .add< QuadSetTopologyModifier >());
 }
 

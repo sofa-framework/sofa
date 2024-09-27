@@ -52,7 +52,7 @@ using namespace defaulttype;
 
 void registerTopologicalChangeProcessor(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Read topological Changes and process them.")
+    factory->registerObjects(core::ObjectRegistrationData("Read topological changes and process them.")
         .add< TopologicalChangeProcessor >());
 }
 
