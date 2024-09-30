@@ -71,16 +71,12 @@ void RungeKutta2Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     newV.peq(acc, dt/2.); // newV = vel + acc dt/2
 #else // single-operation optimization
     {
+        core::behavior::VMultiOp ops(2);
 
-        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-        VMultiOp ops;
-        ops.resize(2);
-        ops[0].first = newX;
-        ops[0].second.push_back(std::make_pair(pos.id(),1.0));
-        ops[0].second.push_back(std::make_pair(vel.id(),dt/2));
-        ops[1].first = newV;
-        ops[1].second.push_back(std::make_pair(vel.id(),1.0));
-        ops[1].second.push_back(std::make_pair(acc.id(),dt/2));
+        ops[0] = VMultiOpEntry{newX,
+            ScaledConstMultiVecId{pos.id(), 1._sreal} + ScaledConstMultiVecId{vel.id(), dt/2}};
+        ops[1] = VMultiOpEntry{newV,
+            ScaledConstMultiVecId{vel.id(), 1._sreal} + ScaledConstMultiVecId{acc.id(), dt/2}};
 
         vop.v_multiop(ops);
     }
@@ -97,15 +93,13 @@ void RungeKutta2Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
 #else // single-operation optimization
     {
-        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-        VMultiOp ops;
-        ops.resize(2);
-        ops[0].first = pos2;
-        ops[0].second.push_back(std::make_pair(pos.id(),1.0));
-        ops[0].second.push_back(std::make_pair(newV.id(),dt));
-        ops[1].first = vel2;
-        ops[1].second.push_back(std::make_pair(vel.id(),1.0));
-        ops[1].second.push_back(std::make_pair(acc.id(),dt));
+        core::behavior::VMultiOp ops(2);
+
+        ops[0] = VMultiOpEntry{pos2,
+            ScaledConstMultiVecId{pos.id(), 1._sreal} + ScaledConstMultiVecId{newV.id(), dt}};
+        ops[1] = VMultiOpEntry{vel2,
+            ScaledConstMultiVecId{vel.id(), 1._sreal} + ScaledConstMultiVecId{acc.id(), dt}};
+
         vop.v_multiop(ops);
 
         mop.solveConstraint(vel2,core::ConstraintOrder::VEL);

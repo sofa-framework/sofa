@@ -260,27 +260,20 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 #ifndef SOFA_NO_VMULTIOP
     else
     {
-        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-        VMultiOp ops;
+        typedef core::behavior::VMultiOp VMultiOp;
+        VMultiOp ops(2);
         if (firstOrder)
         {
-            ops.resize(2);
-            ops[0].first = newVel;
-            ops[0].second.push_back(std::make_pair(x.id(),1.0));
-            ops[1].first = newPos;
-            ops[1].second.push_back(std::make_pair(pos.id(),1.0));
-            ops[1].second.push_back(std::make_pair(newVel.id(),h));
+            ops[0] = VMultiOpEntry{newVel,
+                ScaledConstMultiVecId{x.id(), 1._sreal}};
         }
         else
         {
-            ops.resize(2);
-            ops[0].first = newVel;
-            ops[0].second.push_back(std::make_pair(vel.id(),1.0));
-            ops[0].second.push_back(std::make_pair(x.id(),1.0));
-            ops[1].first = newPos;
-            ops[1].second.push_back(std::make_pair(pos.id(),1.0));
-            ops[1].second.push_back(std::make_pair(newVel.id(),h));
+            ops[0] = VMultiOpEntry{newVel,
+                ScaledConstMultiVecId{vel.id(), 1._sreal} + ScaledConstMultiVecId{x.id(), 1._sreal}};
         }
+        ops[1] = VMultiOpEntry{newPos,
+            ScaledConstMultiVecId{pos.id(), 1._sreal} + ScaledConstMultiVecId{newVel.id(), h}};
 
         SCOPED_TIMER_VARNAME(updateVAndXTimer, "UpdateVAndX");
         vop.v_multiop(ops);

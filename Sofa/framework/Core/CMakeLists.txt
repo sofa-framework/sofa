@@ -106,6 +106,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/StateAccessor.h
     ${SRC_ROOT}/behavior/SingleMatrixAccessor.h
     ${SRC_ROOT}/behavior/SingleStateAccessor.h
+    ${SRC_ROOT}/behavior/VMultiOpEntry.h
     ${SRC_ROOT}/behavior/fwd.h
     ${SRC_ROOT}/collision/BroadPhaseDetection.h
     ${SRC_ROOT}/collision/CollisionAlgorithm.h

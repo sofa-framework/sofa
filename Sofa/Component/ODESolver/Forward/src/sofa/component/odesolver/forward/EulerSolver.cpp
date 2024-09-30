@@ -168,7 +168,7 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
     }
 #else // single-operation optimization
     {
-        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        typedef core::behavior::VMultiOp VMultiOp;
 
         // Create a set of linear operations that will be executed on two vectors
         // In our case, the operations will be executed to compute the new velocity vector,
@@ -180,34 +180,15 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
         const VMultiOp::size_type posId = d_symplectic.getValue(); // 1 if symplectic, 0 otherwise
         const VMultiOp::size_type velId = 1 - posId; // 0 if symplectic, 1 otherwise
 
-        // Access the set of operations corresponding to the velocity vector
-        // In case of symplectic solver, these operations are executed first.
-        auto& ops_vel = ops[velId];
+        const auto previousVelId = d_symplectic.getValue() ? newVel.id() : vel.id();
 
-        // Associate the new velocity vector as the result to this set of operations
-        ops_vel.first = newVel;
+        // Define the following operation: newPos = pos + dt * v
+        ops[posId] = VMultiOpEntry{ newPos,
+            ScaledConstMultiVecId{pos.id(), 1_sreal} + ScaledConstMultiVecId{previousVelId, dt}};
 
-        // The two following operations are actually a unique operation: newVel = vel + dt * acc
-        // The value 1.0 indicates that the first operation is based on the values
-        // in the second pair and, therefore, the second operation is discarded.
-        ops_vel.second.emplace_back(vel.id(), 1.0);
-        ops_vel.second.emplace_back(acc.id(), dt);
-
-        // Access the set of operations corresponding to the position vector
-        // In case of symplectic solver, these operations are executed second.
-        auto& ops_pos = ops[posId];
-
-        // Associate the new position vector as the result to this set of operations
-        ops_pos.first = newPos;
-
-        // The two following operations are actually a unique operation: newPos = pos + dt * v
-        // where v is "newVel" in case of a symplectic solver, and "vel" otherwise.
-        // If symplectic: newPos = pos + dt * newVel, executed after newVel has been computed
-        // If not symplectic: newPos = pos + dt * vel
-        // The value 1.0 indicates that the first operation is based on the values
-        // in the second pair and, therefore, the second operation is discarded.
-        ops_pos.second.emplace_back(pos.id(), 1.0);
-        ops_pos.second.emplace_back(d_symplectic.getValue() ? newVel.id() : vel.id(), dt);
+        // Define the following operation: newVel = vel + dt * acc
+        ops[velId] = VMultiOpEntry{ newVel,
+            ScaledConstMultiVecId{vel.id(), 1_sreal} + ScaledConstMultiVecId{acc.id(), dt}};
 
         // Execute the defined operations to compute the new velocity vector and
         // the new position vector.
