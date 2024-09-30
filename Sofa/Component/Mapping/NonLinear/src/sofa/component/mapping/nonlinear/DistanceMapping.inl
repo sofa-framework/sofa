@@ -70,7 +70,7 @@ void DistanceMapping<TIn, TOut>::init()
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
 
     this->getToModel()->resize( links.size() );
-    this->jacobian.resizeBlocks(links.size(),pos.size());
+    this->m_jacobian.resizeBlocks(links.size(),pos.size());
 
     directions.resize(links.size());
     invlengths.resize(links.size());
@@ -108,7 +108,7 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
     helper::ReadAccessor<Data<type::vector<Real> > > restLengths(d_restLengths);
     const SeqEdges& links = l_topology->getEdges();
 
-    this->jacobian.clear();
+    this->m_jacobian.clear();
 
     for (unsigned int i = 0; i < links.size(); ++i)
     {
@@ -144,17 +144,17 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
         //invert to insert in increasing column order
         std::sort(jacobianEntries.begin(), jacobianEntries.end());
 
-        this->jacobian.beginRow(i);
+        this->m_jacobian.beginRow(i);
         for (const auto& [vertexId, jacobianValue] : jacobianEntries)
         {
             for (unsigned k = 0; k < In::spatial_dimensions; ++k)
             {
-                this->jacobian.insertBack(i, vertexId * Nin + k, jacobianValue[k]);
+                this->m_jacobian.insertBack(i, vertexId * Nin + k, jacobianValue[k]);
             }
         }
     }
 
-    this->jacobian.compress();
+    this->m_jacobian.compress();
 }
 
 template <class TIn, class TOut>

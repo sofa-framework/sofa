@@ -88,7 +88,7 @@ void SquareDistanceMapping<TIn, TOut>::apply(
     const helper::ReadAccessor in (dIn);
     const SeqEdges& links = l_topology->getEdges();
 
-    this->jacobian.resizeBlocks(out.size(),in.size());
+    this->m_jacobian.resizeBlocks(out.size(),in.size());
 
 
     Direction gap;
@@ -118,24 +118,24 @@ void SquareDistanceMapping<TIn, TOut>::apply(
 //        }
 
 
-        this->jacobian.beginRow(i);
+        this->m_jacobian.beginRow(i);
         if( links[i][1]<links[i][0] )
         {
             for(unsigned k=0; k<In::spatial_dimensions; k++ )
-                this->jacobian.insertBack( i, links[i][1]*Nin+k, gap[k] );
+                this->m_jacobian.insertBack( i, links[i][1]*Nin+k, gap[k] );
             for(unsigned k=0; k<In::spatial_dimensions; k++ )
-                this->jacobian.insertBack( i, links[i][0]*Nin+k, -gap[k] );
+                this->m_jacobian.insertBack( i, links[i][0]*Nin+k, -gap[k] );
         }
         else
         {
             for(unsigned k=0; k<In::spatial_dimensions; k++ )
-                this->jacobian.insertBack( i, links[i][0]*Nin+k, -gap[k] );
+                this->m_jacobian.insertBack( i, links[i][0]*Nin+k, -gap[k] );
             for(unsigned k=0; k<In::spatial_dimensions; k++ )
-                this->jacobian.insertBack( i, links[i][1]*Nin+k, gap[k] );
+                this->m_jacobian.insertBack( i, links[i][1]*Nin+k, gap[k] );
         }
     }
 
-    this->jacobian.compress();
+    this->m_jacobian.compress();
 }
 
 template <class TIn, class TOut>

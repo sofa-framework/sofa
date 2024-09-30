@@ -123,7 +123,7 @@ void AreaMapping<TIn, TOut>::init()
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
 
     this->getToModel()->resize( nbTriangles );
-    this->jacobian.resizeBlocks(nbTriangles, pos.size());
+    this->m_jacobian.resizeBlocks(nbTriangles, pos.size());
 
     Inherit1::init();
 
@@ -146,7 +146,7 @@ void AreaMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
 
     const auto& triangles = l_topology->getTriangles();
 
-    this->jacobian.clear();
+    this->m_jacobian.clear();
 
     for (unsigned int triangleId = 0; triangleId < triangles.size(); ++triangleId)
     {
@@ -176,17 +176,17 @@ void AreaMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
         //insertion in increasing column order
         std::sort(jacobianEntries.begin(), jacobianEntries.end());
 
-        this->jacobian.beginRow(triangleId);
+        this->m_jacobian.beginRow(triangleId);
         for (const auto& [vertexId, jacobianValue] : jacobianEntries)
         {
             for (unsigned d = 0; d < In::spatial_dimensions; ++d)
             {
-                this->jacobian.insertBack(triangleId, vertexId * Nin + d, jacobianValue[d]);
+                this->m_jacobian.insertBack(triangleId, vertexId * Nin + d, jacobianValue[d]);
             }
         }
     }
 
-    this->jacobian.compress();
+    this->m_jacobian.compress();
 }
 
 template <class TIn, class TOut>

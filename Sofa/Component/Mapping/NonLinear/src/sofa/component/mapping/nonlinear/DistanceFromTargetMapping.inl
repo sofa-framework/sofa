@@ -137,7 +137,7 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
     const helper::ReadAccessor indices(d_indices);
     const helper::ReadAccessor targetPositions(d_targetPositions);
 
-    this->jacobian.resizeBlocks(out.size(),in.size());
+    this->m_jacobian.resizeBlocks(out.size(),in.size());
     directions.resize(out.size());
     invlengths.resize(out.size());
 
@@ -166,15 +166,15 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
 
         for(unsigned j=0; j<Nout; j++)
         {
-            this->jacobian.beginRow(i*Nout+j);
+            this->m_jacobian.beginRow(i*Nout+j);
             for(unsigned k=0; k<Nin; k++ )
             {
-                this->jacobian.insertBack( i*Nout+j, indices[i]*Nin+k, gap[k] );
+                this->m_jacobian.insertBack( i*Nout+j, indices[i]*Nin+k, gap[k] );
             }
         }
     }
 
-    this->jacobian.compress();
+    this->m_jacobian.compress();
 }
 
 template <class TIn, class TOut>

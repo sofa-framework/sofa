@@ -42,19 +42,19 @@ void SquareMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
 
     size_t size = in.size();
     this->getToModel()->resize( size );
-    this->jacobian.resizeBlocks( size, size );
-    this->jacobian.reserve( size );
+    this->m_jacobian.resizeBlocks( size, size );
+    this->m_jacobian.reserve( size );
 
     for( unsigned i=0 ; i<size ; ++i )
     {
         const Real& x = in[i][0];
         out[i][0] = x*x;
 
-        this->jacobian.beginRow(i);
-        this->jacobian.insertBack( i, i, 2.0*x );
+        this->m_jacobian.beginRow(i);
+        this->m_jacobian.insertBack( i, i, 2.0*x );
     }
 
-    this->jacobian.compress();
+    this->m_jacobian.compress();
 }
 
 template <class TIn, class TOut>

@@ -34,7 +34,7 @@ init()
     core::Mapping<TIn, TOut>::init();
 
     m_baseMatrices.resize( 1 );
-    m_baseMatrices[0] = &this->jacobian;
+    m_baseMatrices[0] = &this->m_jacobian;
 }
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
@@ -43,11 +43,11 @@ void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyJ(
     const DataVecDeriv_t<In>& in)
 {
     SOFA_UNUSED( mparams );
-    if( jacobian.rowSize() )
+    if( m_jacobian.rowSize() )
     {
         auto dOutWa = sofa::helper::getWriteOnlyAccessor(out);
         auto dInRa = sofa::helper::getReadAccessor(in);
-        jacobian.mult(dOutWa.wref(),dInRa.ref());
+        m_jacobian.mult(dOutWa.wref(),dInRa.ref());
     }
 }
 
@@ -57,11 +57,11 @@ void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyJT(
     const DataVecDeriv_t<Out>& in)
 {
     SOFA_UNUSED( mparams );
-    if( jacobian.rowSize() )
+    if( m_jacobian.rowSize() )
     {
         auto dOutRa = sofa::helper::getReadAccessor(in);
         auto dInWa = sofa::helper::getWriteOnlyAccessor(out);
-        jacobian.addMultTranspose(dInWa.wref(),dOutRa.ref());
+        m_jacobian.addMultTranspose(dInWa.wref(),dOutRa.ref());
     }
 }
 
@@ -73,7 +73,7 @@ void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyJT(
     SOFA_UNUSED(cparams);
     auto childMatRa  = sofa::helper::getReadAccessor(in);
     auto parentMatWa = sofa::helper::getWriteAccessor(out);
-    addMultTransposeEigen(parentMatWa.wref(), jacobian.compressedMatrix, childMatRa.ref());
+    addMultTransposeEigen(parentMatWa.wref(), m_jacobian.compressedMatrix, childMatRa.ref());
 }
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>

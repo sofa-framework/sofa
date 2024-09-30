@@ -67,7 +67,7 @@ protected:
                                    const Data<VecDeriv_t<In> >& parentDisplacement,
                                    const Data<VecDeriv_t<Out> >& childForce) = 0;
 
-    SparseMatrixEigen jacobian; ///< Jacobian of the mapping
+    SparseMatrixEigen m_jacobian; ///< Jacobian of the mapping
 
     virtual void doUpdateK(
         const core::MechanicalParams* mparams, const Data<VecDeriv_t<Out> >& childForce,
