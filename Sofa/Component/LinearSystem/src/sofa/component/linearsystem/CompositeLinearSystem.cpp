@@ -46,18 +46,20 @@ template class SOFA_COMPONENT_LINEARSYSTEM_API CompositeLinearSystem< DiagonalMa
 template class SOFA_COMPONENT_LINEARSYSTEM_API CompositeLinearSystem< BlockDiagonalMatrix<3,SReal>, FullVector<SReal> >;
 template class SOFA_COMPONENT_LINEARSYSTEM_API CompositeLinearSystem< RotationMatrix<SReal>, FullVector<SReal> >;
 
-int CompositeLinearSystemClass = sofa::core::RegisterObject("Component acting like a linear system, but delegates the linear system functionalities to a list of real linear systems")
-    .add<CompositeLinearSystem< FullMatrix<SReal>, FullVector<SReal> > >()
-    .add<CompositeLinearSystem< SparseMatrix<SReal>, FullVector<SReal> > >()
-    .add<CompositeLinearSystem< CompressedRowSparseMatrix<SReal>, FullVector<SReal> > >()
-    .add<CompositeLinearSystem< CompressedRowSparseMatrix<type::Mat<2,2,SReal> >, FullVector<SReal> > >()
-    .add<CompositeLinearSystem< CompressedRowSparseMatrix<type::Mat<3,3,SReal> >, FullVector<SReal> > >()
-    .add<CompositeLinearSystem< CompressedRowSparseMatrix<type::Mat<4,4,SReal> >, FullVector<SReal> > >()
-    .add<CompositeLinearSystem< CompressedRowSparseMatrix<type::Mat<6,6,SReal> >, FullVector<SReal> > >()
-    .add<CompositeLinearSystem< CompressedRowSparseMatrix<type::Mat<8,8,SReal> >, FullVector<SReal> > >()
-    .add<CompositeLinearSystem< DiagonalMatrix<SReal>, FullVector<SReal> > >()
-    .add<CompositeLinearSystem< BlockDiagonalMatrix<3,SReal>, FullVector<SReal> > >()
-    .add<CompositeLinearSystem< RotationMatrix<SReal>, FullVector<SReal> > >()
-;
+void registerCompositeLinearSystem(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Component acting like a linear system, but delegates the linear system functionalities to a list of real linear systems.")
+        .add<CompositeLinearSystem< FullMatrix<SReal>, FullVector<SReal> > >()
+        .add<CompositeLinearSystem< SparseMatrix<SReal>, FullVector<SReal> > >()
+        .add<CompositeLinearSystem< CompressedRowSparseMatrix<SReal>, FullVector<SReal> > >()
+        .add<CompositeLinearSystem< CompressedRowSparseMatrix<type::Mat<2, 2, SReal> >, FullVector<SReal> > >()
+        .add<CompositeLinearSystem< CompressedRowSparseMatrix<type::Mat<3, 3, SReal> >, FullVector<SReal> > >()
+        .add<CompositeLinearSystem< CompressedRowSparseMatrix<type::Mat<4, 4, SReal> >, FullVector<SReal> > >()
+        .add<CompositeLinearSystem< CompressedRowSparseMatrix<type::Mat<6, 6, SReal> >, FullVector<SReal> > >()
+        .add<CompositeLinearSystem< CompressedRowSparseMatrix<type::Mat<8, 8, SReal> >, FullVector<SReal> > >()
+        .add<CompositeLinearSystem< DiagonalMatrix<SReal>, FullVector<SReal> > >()
+        .add<CompositeLinearSystem< BlockDiagonalMatrix<3, SReal>, FullVector<SReal> > >()
+        .add<CompositeLinearSystem< RotationMatrix<SReal>, FullVector<SReal> > >());
 }
 
+}

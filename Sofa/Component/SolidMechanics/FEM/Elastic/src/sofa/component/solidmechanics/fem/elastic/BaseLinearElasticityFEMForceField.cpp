@@ -25,4 +25,5 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseLinearElasticityFEMForceField<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseLinearElasticityFEMForceField<defaulttype::Rigid3Types>;
 }

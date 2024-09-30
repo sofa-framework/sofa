@@ -46,11 +46,11 @@ template <class DataTypes>  TrianglePressureForceField<DataTypes>::TrianglePress
     , d_trianglePressureMap(initData(&d_trianglePressureMap, "trianglePressureMap", "Map between triangle indices and their pressure"))
     , m_topology(nullptr)
 {
-    pressure.setParent(&d_pressure);
-    cauchyStress.setParent(&d_cauchyStress);
-    triangleList.setParent(&d_triangleList);
-    p_showForces.setParent(&d_showForces);
-    p_useConstantForce.setParent(&d_useConstantForce);
+    pressure.setOriginalData(&d_pressure);
+    cauchyStress.setOriginalData(&d_cauchyStress);
+    triangleList.setOriginalData(&d_triangleList);
+    p_showForces.setOriginalData(&d_showForces);
+    p_useConstantForce.setOriginalData(&d_useConstantForce);
 
 
     this->addUpdateCallback("pressure_change", { &pressure }, [this](const core::DataTracker& t)

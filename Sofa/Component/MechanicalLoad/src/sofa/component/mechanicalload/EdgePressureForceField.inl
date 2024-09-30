@@ -47,17 +47,17 @@ EdgePressureForceField<DataTypes>::EdgePressureForceField()
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
 {
-    edgePressureMap.setParent(&d_edgePressureMap);
-    pressure.setParent(&d_pressure);
-    edgeIndices.setParent(&d_edgeIndices);
-    edges.setParent(&d_edges);
-    normal.setParent(&d_normal);
-    dmin.setParent(&d_dmin);
-    dmax.setParent(&d_dmax);
-    arrowSizeCoef.setParent(&d_arrowSizeCoef);
-    p_intensity.setParent(&d_intensity);
-    p_binormal.setParent(&d_binormal);
-    p_showForces.setParent(&d_showForces);
+    edgePressureMap.setOriginalData(&d_edgePressureMap);
+    pressure.setOriginalData(&d_pressure);
+    edgeIndices.setOriginalData(&d_edgeIndices);
+    edges.setOriginalData(&d_edges);
+    normal.setOriginalData(&d_normal);
+    dmin.setOriginalData(&d_dmin);
+    dmax.setOriginalData(&d_dmax);
+    arrowSizeCoef.setOriginalData(&d_arrowSizeCoef);
+    p_intensity.setOriginalData(&d_intensity);
+    p_binormal.setOriginalData(&d_binormal);
+    p_showForces.setOriginalData(&d_showForces);
 
 }
 

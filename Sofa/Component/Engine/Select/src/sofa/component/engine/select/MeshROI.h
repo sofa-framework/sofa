@@ -34,6 +34,8 @@
 
 #include <sofa/component/engine/select/BaseROI.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::engine::select
 {
 
@@ -107,11 +109,11 @@ public:
     static bool isPointInIndices(const unsigned int i, const SetIndex& indices);
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    Data<VecCoord> d_X0_i;
+    sofa::core::objectmodel::RenamedData<VecCoord> d_X0_i;
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    Data<type::vector<Edge> > d_edges_i;;
+    sofa::core::objectmodel::RenamedData<type::vector<Edge> > d_edges_i;;
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    Data<type::vector<Triangle> > d_triangles_i;
+    sofa::core::objectmodel::RenamedData<type::vector<Triangle> > d_triangles_i;
 };
 
 #if !defined(SOFA_COMPONENT_ENGINE_MESHROI_CPP)

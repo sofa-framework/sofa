@@ -30,11 +30,12 @@ namespace sofa::component::mechanicalload
 
 using namespace sofa::defaulttype;
 
-int TorsionForceFieldClass = core::RegisterObject("Applies a torque to specified points")
+void registerTorsionForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Applies a torque to specified degrees of freedom.")
 		.add< TorsionForceField<Vec3Types> >()
-		.add< TorsionForceField<Rigid3Types> >()
-
-;
+		.add< TorsionForceField<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_MECHANICALLOAD_API TorsionForceField<Vec3Types>;
 template class SOFA_COMPONENT_MECHANICALLOAD_API TorsionForceField<Rigid3Types>;

@@ -30,9 +30,11 @@ namespace sofa::component::mechanicalload
 
 using namespace sofa::defaulttype;
 
-int EdgePressureForceFieldClass = core::RegisterObject("Apply a force on edges, distributed on the edge nodes")
-        .add< EdgePressureForceField<Vec3Types> >()
-        ;
+void registerEdgePressureForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Apply a force on edges, distributed on the edge nodes.")
+        .add< EdgePressureForceField<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_MECHANICALLOAD_API EdgePressureForceField<Vec3Types>;
 

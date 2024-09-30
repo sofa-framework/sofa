@@ -31,6 +31,8 @@
 #include <sofa/type/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::mapping::nonlinear
 {
 
@@ -84,13 +86,13 @@ public:
     typedef type::Vec<In::deriv_total_size> Direction;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_NONLINEAR()
-    Data<type::vector<unsigned>> f_indices;
+    sofa::core::objectmodel::RenamedData<type::vector<unsigned>> f_indices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_NONLINEAR()
-    Data<InVecCoord> f_targetPositions;
+    sofa::core::objectmodel::RenamedData<InVecCoord> f_targetPositions;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_NONLINEAR()
-    Data<type::vector<Real>> f_restDistances;
+    sofa::core::objectmodel::RenamedData<type::vector<Real>> f_restDistances;
 
 // d_showObjectScale and d_color are already up-to-date with the new naming convention, so they do not require deprecation notices.
 

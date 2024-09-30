@@ -55,8 +55,8 @@ FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionCo
     contacts.clear();
     mappedContacts.clear();
 
-    mu.setParent(&d_mu);
-    tol.setParent(&d_tol);
+    mu.setOriginalData(&d_mu);
+    tol.setOriginalData(&d_tol);
 
 }
 

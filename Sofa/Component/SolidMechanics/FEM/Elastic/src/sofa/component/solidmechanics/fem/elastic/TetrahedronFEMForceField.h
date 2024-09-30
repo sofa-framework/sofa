@@ -157,7 +157,6 @@ protected:
 
     SReal m_potentialEnergy;
 
-    core::topology::BaseMeshTopology* m_topology;
     const VecElement *_indexedElements;
     bool needUpdateTopology;
 
@@ -199,7 +198,7 @@ public:
     core::objectmodel::RenamedData<std::string> f_method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::RenamedData<Real> _poissonRatio;
+    DeprecatedAndRemoved _poissonRatio;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     core::objectmodel::RenamedData<VecReal> _youngModulus;

@@ -82,7 +82,7 @@ struct SceneChecker_test : public BaseSimulationTest
 
     void checkRequiredPlugin(bool missing)
     {
-        PluginManager::getInstance().loadPluginByName("Sofa.Component.ODESolver.Forward");
+        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Forward");
 
         const std::string missStr = missing ? "" : "<RequiredPlugin name='Sofa.Component.ODESolver.Forward'/> \n";
         std::stringstream scene;

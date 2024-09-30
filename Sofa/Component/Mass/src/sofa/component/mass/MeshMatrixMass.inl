@@ -2190,7 +2190,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addGravityToV(const core::Mech
 
 
 template <class DataTypes, class GeometricalTypes>
-void MeshMatrixMass<DataTypes, GeometricalTypes>::addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void MeshMatrixMass<DataTypes, GeometricalTypes>::addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset)
 {
     const auto &vertexMass= d_vertexMass.getValue();
     const auto &edgeMass= d_edgeMass.getValue();
@@ -2200,9 +2200,6 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMToMatrix(const core::Mecha
 
     static constexpr auto N = Deriv::total_size;
     AddMToMatrixFunctor<Deriv,MassType, sofa::linearalgebra::BaseMatrix> calc;
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    sofa::linearalgebra::BaseMatrix* mat = r.matrix;
-    const Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
 
     if((mat->colSize()) != (linearalgebra::BaseMatrix::Index)(l_topology->getNbPoints()*N) || (mat->rowSize()) != (linearalgebra::BaseMatrix::Index)(l_topology->getNbPoints()*N))
     {
@@ -2217,7 +2214,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMToMatrix(const core::Mecha
         unsigned int i {};
         for (const auto& v : vertexMass)
         {
-            calc(r.matrix, v * m_massLumpingCoeff, r.offset + N * i, mFactor);
+            calc(mat, v * m_massLumpingCoeff, offset + N * i, mFact);
             massTotal += v * m_massLumpingCoeff;
             ++i;
         }
@@ -2239,7 +2236,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMToMatrix(const core::Mecha
         unsigned int i {};
         for (const auto& v : vertexMass)
         {
-            calc(r.matrix, v, r.offset + N * i, mFactor);
+            calc(mat, v, offset + N * i, mFact);
             massTotal += v;
             ++i;
         }
@@ -2250,8 +2247,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMToMatrix(const core::Mecha
             v0 = edges[j][0];
             v1 = edges[j][1];
 
-            calc(r.matrix, edgeMass[j], r.offset + N*v0, r.offset + N*v1, mFactor);
-            calc(r.matrix, edgeMass[j], r.offset + N*v1, r.offset + N*v0, mFactor);
+            calc(mat, edgeMass[j], offset + N*v0, offset + N*v1, mFact);
+            calc(mat, edgeMass[j], offset + N*v1, offset + N*v0, mFact);
 
             massTotal += 2 * edgeMass[j];
         }

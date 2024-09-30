@@ -421,7 +421,6 @@ public:
     SOFA_BASE_CAST_DEFINITION( core,        BehaviorModel                          )
     SOFA_BASE_CAST_DEFINITION( core,        CollisionModel                         )
     SOFA_BASE_CAST_DEFINITION( core,        DataEngine                             )
-    SOFA_BASE_CAST_DEFINITION( core,        DevBaseMonitor                         )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseContext                            )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseObject                             )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseNode                               )

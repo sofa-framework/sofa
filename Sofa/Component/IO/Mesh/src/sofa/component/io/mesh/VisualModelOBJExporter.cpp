@@ -32,13 +32,6 @@ using sofa::core::objectmodel::KeypressedEvent ;
 namespace sofa::component::_visualmodelobjexporter_
 {
 
-int VisualModelOBJExporterClass = core::RegisterObject("Export the scene under the Wavefront OBJ format."
-                                            "When several frames are exported the file name have the following pattern: outfile000.obj outfile001.obj.")
-        .add< VisualModelOBJExporter >()
-        .addAlias("ObjExporter")
-        .addAlias("OBJExporter");
-
-
 VisualModelOBJExporter::~VisualModelOBJExporter()
 {
 }
@@ -96,3 +89,15 @@ void VisualModelOBJExporter::handleEvent(Event *event)
 }
 
 } // namespace sofa::component::_visualmodelobjexporter_
+
+namespace sofa::component::io::mesh
+{
+
+void registerVisualModelOBJExporter(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Export the scene under the Wavefront OBJ format."
+        "When several frames are exported the file name have the following pattern: outfile000.obj outfile001.obj.")
+        .add< VisualModelOBJExporter >());
+}
+
+} // namespace sofa::component::io::mesh

@@ -66,8 +66,8 @@ struct TriangleFEMForceField_stepTest : public ForceField_test<_TriangleFEMForce
         f.resize(3);
 
         // Set force parameters
-        this->force->d_poisson.setValue(0.);
-        this->force->d_young.setValue(40.);
+        this->force->setPoissonRatio(0);
+        this->force->setYoungModulus(40);
         this->force->d_method.setValue("large");
 
         sofa::simulation::node::initRoot(this->node.get());

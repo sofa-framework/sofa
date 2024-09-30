@@ -78,11 +78,11 @@ GearSpringForceField<DataTypes>::GearSpringForceField(MechanicalState* object1, 
     , lastTime((Real)0.0)
     , d_showFactorSize(initData(&d_showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
 {
-    springs.setParent(&d_springs);
+    springs.setOriginalData(&d_springs);
     f_filename.setParent(&d_filename);
-    f_period.setParent(&d_period);
-    f_reinit.setParent(&d_reinit);
-    showFactorSize.setParent(&d_showFactorSize);
+    f_period.setOriginalData(&d_period);
+    f_reinit.setOriginalData(&d_reinit);
+    showFactorSize.setOriginalData(&d_showFactorSize);
 }
 
 template<class DataTypes>

@@ -42,9 +42,9 @@ PointCollisionModel<DataTypes>::PointCollisionModel()
 {
     enum_type = POINT_TYPE;
 
-    bothSide.setParent(&d_bothSide);
-    computeNormals.setParent(&d_computeNormals);
-    m_displayFreePosition.setParent(&d_displayFreePosition);
+    bothSide.setOriginalData(&d_bothSide);
+    computeNormals.setOriginalData(&d_computeNormals);
+    m_displayFreePosition.setOriginalData(&d_displayFreePosition);
 }
 
 template<class DataTypes>

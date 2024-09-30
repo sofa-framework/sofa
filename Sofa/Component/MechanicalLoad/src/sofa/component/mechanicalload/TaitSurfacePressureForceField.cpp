@@ -29,17 +29,17 @@ namespace sofa::component::mechanicalload
 
 using namespace sofa::defaulttype;
 
-int TaitSurfacePressureForceFieldClass = core::RegisterObject("\
+void registerTaitSurfacePressureForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("\
 This component computes the volume enclosed by a surface mesh \
 and apply a pressure force following Tait's equation: $P = P_0 - B((V/V_0)^\\gamma - 1)$.\n\
 This ForceField can be used to apply :\n\
  * a constant pressure (set $B=0$ and use $P_0$)\n\
  * an ideal gas pressure (set $\\gamma=1$ and use $B$)\n\
  * a pressure from water (set $\\gamma=7$ and use $B$)")
-        .add< TaitSurfacePressureForceField<Vec3Types> >()
-
-        ;
-
+        .add< TaitSurfacePressureForceField<Vec3Types> >());
+}
 template class SOFA_COMPONENT_MECHANICALLOAD_API TaitSurfacePressureForceField<Vec3Types>;
 
 } // namespace sofa::component::mechanicalload

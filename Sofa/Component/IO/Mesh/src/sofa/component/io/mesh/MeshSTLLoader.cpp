@@ -38,8 +38,11 @@ using sofa::helper::getWriteOnlyAccessor;
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-static int MeshSTLLoaderClass = core::RegisterObject("Loader for the STL file format. STL can be used to represent the surface of object using with a triangulation.")
-        .add< MeshSTLLoader >();
+void registerMeshSTLLoader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Loader for the STL file format. STL can be used to represent the surface of object using with a triangulation.")
+        .add< MeshSTLLoader >());
+}
 
 //Base VTK Loader
 MeshSTLLoader::MeshSTLLoader() : MeshLoader()
@@ -47,8 +50,8 @@ MeshSTLLoader::MeshSTLLoader() : MeshLoader()
     , d_forceBinary(initData(&d_forceBinary, false, "forceBinary", "Force reading in binary mode. Even in first keyword of the file is solid."))
     , d_mergePositionUsingMap(initData(&d_mergePositionUsingMap, true, "mergePositionUsingMap","Since positions are duplicated in a STL, they have to be merged. Using a map to do so will temporarily duplicate memory but should be more efficient. Disable it if memory is really an issue."))
 {
-    _headerSize.setParent(&d_headerSize);
-    _forceBinary.setParent(&d_forceBinary);
+    _headerSize.setOriginalData(&d_headerSize);
+    _forceBinary.setOriginalData(&d_forceBinary);
 
 }
 

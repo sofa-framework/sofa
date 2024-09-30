@@ -31,6 +31,7 @@
 #include <sofa/type/Mat.h>
 #include <sofa/type/trait/Rebind.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -116,37 +117,37 @@ public:
     using VecMat3x3 = type::rebind_to<VecCoord, Mat3x3>;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index > pointInfo;
+    sofa::core::objectmodel::RenamedData<VecMat3x3 > pointInfo;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index >  edgeInfo;
+    sofa::core::objectmodel::RenamedData<VecMat3x3 >  edgeInfo;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<VecTetrahedronRestInformation >  tetrahedronInfo;
+    sofa::core::objectmodel::RenamedData<VecTetrahedronRestInformation >  tetrahedronInfo;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<std::string> f_method;
+    sofa::core::objectmodel::RenamedData<std::string> f_method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<Real> f_poissonRatio;
+    sofa::core::objectmodel::RenamedData<Real> f_poissonRatio;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     SOFA_ATTRIBUTE_DISABLED("", "v24.12", "Use d_youngModulus instead") DeprecatedAndRemoved f_youngModulus;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> f_drawing;
+    sofa::core::objectmodel::RenamedData<bool> f_drawing;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::type::RGBAColor> drawColor1;
+    sofa::core::objectmodel::RenamedData<sofa::type::RGBAColor> drawColor1;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::type::RGBAColor> drawColor2;
+    sofa::core::objectmodel::RenamedData<sofa::type::RGBAColor> drawColor2;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::type::RGBAColor> drawColor3;
+    sofa::core::objectmodel::RenamedData<sofa::type::RGBAColor> drawColor3;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::type::RGBAColor> drawColor4;
+    sofa::core::objectmodel::RenamedData<sofa::type::RGBAColor> drawColor4;
 
 
     core::topology::PointData<VecMat3x3 > d_pointInfo; ///< Internal point data
@@ -195,11 +196,6 @@ public:
     }
     void draw(const core::visual::VisualParams* vparams) override;
 
-    /// compute lambda and mu based on the Young modulus and Poisson ratio
-    static void computeLameCoefficients(Real inYoung, Real inPoisson, Real& outLambda, Real& outMu);
-
-
-
 protected :
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
@@ -212,8 +208,6 @@ protected :
         const sofa::type::vector<SReal>&);
 
     core::topology::EdgeData< VecMat3x3 > &getEdgeInfo() {return d_edgeInfo;}
-    
-    sofa::core::topology::BaseMeshTopology* m_topology;    
 
     bool updateMatrix;
 

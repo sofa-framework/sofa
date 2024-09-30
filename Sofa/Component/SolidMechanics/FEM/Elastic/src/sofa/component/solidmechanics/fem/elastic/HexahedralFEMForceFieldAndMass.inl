@@ -41,12 +41,12 @@ HexahedralFEMForceFieldAndMass<DataTypes>::HexahedralFEMForceFieldAndMass()
     , d_particleMasses(initData(&d_particleMasses, "particleMasses", "Mass per particle", false))
     , d_lumpedMasses(initData(&d_lumpedMasses, "lumpedMasses", "Lumped masses", false))
 {
-    _density.setParent(&d_density);
-    _useLumpedMass.setParent(&d_useLumpedMass);
-    _elementMasses.setParent(&d_elementMasses);
-    _elementTotalMass.setParent(&d_elementTotalMass);
-    _particleMasses.setParent(&d_particleMasses);
-    _lumpedMasses.setParent(&d_lumpedMasses);
+    _density.setOriginalData(&d_density);
+    _useLumpedMass.setOriginalData(&d_useLumpedMass);
+    _elementMasses.setOriginalData(&d_elementMasses);
+    _elementTotalMass.setOriginalData(&d_elementTotalMass);
+    _particleMasses.setOriginalData(&d_particleMasses);
+    _lumpedMasses.setOriginalData(&d_lumpedMasses);
 
 }
 
@@ -56,12 +56,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::init( )
 {
     BaseLinearElasticityFEMForceField<DataTypes>::init();
 
-    this->_topology = this->l_topology.get();
-
-    if(this->_topology == nullptr)
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
     {
-        msg_error() << "object must have a HexahedronSetTopology.";
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -83,8 +79,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::reinit( )
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::computeParticleMasses(  )
 {
-    unsigned int numPoints = this->_topology->getNbPoints();
-    const VecElement& hexahedra = this->_topology->getHexahedra();
+    unsigned int numPoints = this->l_topology->getNbPoints();
+    const VecElement& hexahedra = this->l_topology->getHexahedra();
 
     type::vector<Real>&	particleMasses = *this->d_particleMasses.beginEdit();
 
@@ -107,8 +103,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::computeParticleMasses(  )
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::computeLumpedMasses(  )
 {
-    unsigned int numPoints = this->_topology->getNbPoints();
-    const VecElement& hexahedra = this->_topology->getHexahedra();
+    unsigned int numPoints = this->l_topology->getNbPoints();
+    const VecElement& hexahedra = this->l_topology->getHexahedra();
 
     if( d_useLumpedMass.getValue() )
     {
@@ -141,7 +137,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 {
     const VecCoord& initialPoints = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    const VecElement& hexahedra = this->_topology->getHexahedra();
+    const VecElement& hexahedra = this->l_topology->getHexahedra();
 
     type::vector<ElementMass>& elementMasses = *this->d_elementMasses.beginEdit();
     type::vector<Real>& elementTotalMass = *this->d_elementTotalMass.beginEdit();
@@ -233,7 +229,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
 
     if( ! d_useLumpedMass.getValue() )
     {
-        const VecElement& hexahedra = this->_topology->getHexahedra();
+        const VecElement& hexahedra = this->l_topology->getHexahedra();
         for(unsigned int i=0; i<hexahedra.size(); ++i)
         {
             type::Vec<24, Real> actualDx, actualF;
@@ -261,21 +257,18 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
 }
 
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void HexahedralFEMForceFieldAndMass<DataTypes>::addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset)
 {
     // Build Matrix Block for this ForceField
     int i, j, n1, n2;
     int node1, node2;
 
-    const VecElement& hexahedra = this->_topology->getHexahedra();
-
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    const VecElement& hexahedra = this->l_topology->getHexahedra();
 
     for(unsigned int e=0; e<hexahedra.size(); ++e)
     {
         const ElementMass &Me = d_elementMasses.getValue()[e];
 
-        Real mFactor = (Real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
@@ -292,7 +285,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
                         Coord(Me[3*n1+2][3*n2+0],Me[3*n1+2][3*n2+1],Me[3*n1+2][3*n2+2]));
                 for(i=0; i<3; i++)
                     for (j=0; j<3; j++)
-                        r.matrix->add(r.offset+3*node1+i, r.offset+3*node2+j, tmp[i][j]*mFactor);
+                        mat->add(offset+3*node1+i, offset+3*node2+j, tmp[i][j]*mFact);
             }
         }
     }
@@ -300,7 +293,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
 
 ///// WARNING this method only add diagonal elements in the given matrix !
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset)
 {
     // Build Matrix Block for this ForceField
     int i,j,n1, n2, e;
@@ -309,16 +302,13 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(const core::Mechani
     typename type::vector<HexahedronInformation>::const_iterator it;
 
     Index node1, node2;
-    const VecElement& hexahedra = this->_topology->getHexahedra();
-
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    const VecElement& hexahedra = this->l_topology->getHexahedra();
 
     for(it = this->d_hexahedronInfo.getValue().begin(), e=0 ; it != this->d_hexahedronInfo.getValue().end() ; ++it,++e)
     {
         const Element hexa = hexahedra[e];
         const ElementStiffness &Ke = it->stiffness;
 
-        Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
@@ -335,7 +325,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(const core::Mechani
                         Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * it->rotation;
                 for(i=0; i<3; i++)
                     for (j=0; j<3; j++)
-                        r.matrix->add(r.offset+3*node1+i, r.offset+3*node2+j, - tmp[i][j]*kFactor);
+                        matrix->add(offset+3*node1+i, offset+3*node2+j, - tmp[i][j]*kFact);
             }
         }
     }
@@ -348,7 +338,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix (const core::Mech
     int i, j, n1, n2;
     Index node1, node2;
 
-    const VecElement& hexahedra = this->_topology->getHexahedra();
+    const VecElement& hexahedra = this->l_topology->getHexahedra();
 
     if (this->d_hexahedronInfo.getValue().size() != hexahedra.size())
     {
