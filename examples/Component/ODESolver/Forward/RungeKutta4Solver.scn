@@ -14,7 +14,7 @@
     
     <Node name="DeformableObject">
         <RungeKutta4Solver name="odeExplicitSolver" />
-        <SparseLDLSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
+        <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" />
