@@ -677,7 +677,7 @@ public:
             currentNbLines++;
         }
 
-        assert(nbLines != currentNbLines);
+        assert(nbLines == currentNbLines);
 
         sc.compress();
 
