@@ -620,30 +620,24 @@ public:
     /// write to an output stream
     inline friend std::ostream& operator << ( std::ostream& out, const CompressedRowSparseMatrixConstraint<TBlock, Policy>& sc)
     {
-        for (RowConstIterator rowIt = sc.begin(); rowIt !=  sc.end(); ++rowIt)
+        std::ostringstream ossrow;
+        std::size_t nbLines = 0;
+        for (RowConstIterator rowIt = sc.begin(); rowIt != sc.end(); ++rowIt)
         {
-            out << "Constraint ID : ";
-            out << rowIt.index();
-            const auto colToString = [](const ColConstIterator& colIt)
-            {
-                std::stringstream ss;
-                ss << "dof ID : " << colIt.index() << "  value : " << colIt.val();
-                return ss.str();
-            };
+            ossrow << rowIt.index() << " ";
 
-            ColConstIterator colIt = rowIt.begin();
-            const ColConstIterator colItEnd = rowIt.end();
-            if (colIt != colItEnd)
+            std::ostringstream ossline;
+            std::size_t n = 0;
+            for (ColConstIterator colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
             {
-                out << "  " << colToString(colIt++);
-                while(colIt != colItEnd)
-                {
-                    out << "  " << colToString(colIt++);
-                }
+                ossline << colIt.index() << " " << colIt.val() << " ";
+                n++;
             }
-
-            out << "\n";
+            ossrow << n << " " << ossline.str();
+            nbLines++ ;
         }
+
+        out << nbLines << " " << ossrow.str();
 
         return out;
     }
@@ -653,16 +647,25 @@ public:
     {
         sc.clear();
 
+        unsigned int nbLines;
         unsigned int c_id;
         unsigned int c_number;
         unsigned int c_dofIndex;
         TBlock c_value;
 
-        while (!(in.rdstate() & std::istream::eofbit))
+        if (in.rdstate() & std::istream::eofbit)
+        {
+            return in;
+        }
+
+        in >> nbLines;
+
+        unsigned int currentNbLines = 0;
+        while (currentNbLines < nbLines && !(in.rdstate() & std::istream::eofbit))
         {
             in >> c_id;
             in >> c_number;
-
+         
             auto c_it = sc.writeLine(c_id);
 
             for (unsigned int i = 0; i < c_number; i++)
@@ -671,9 +674,13 @@ public:
                 in >> c_value;
                 c_it.addCol(c_dofIndex, c_value);
             }
+            currentNbLines++;
         }
 
+        assert(nbLines != currentNbLines);
+
         sc.compress();
+
         return in;
     }
 
