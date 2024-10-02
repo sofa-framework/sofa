@@ -554,7 +554,7 @@ public:
         }
         else
         {
-            return RowConstIterator(this, this->rowIndex.size());
+            return this->end();
         }
     }
 
