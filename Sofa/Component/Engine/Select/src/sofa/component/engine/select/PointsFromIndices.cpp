@@ -30,15 +30,12 @@ namespace sofa::component::engine::select
 
 using namespace sofa::defaulttype;
 
-int PointsFromIndicesClass = core::RegisterObject("Find the points given a list of indices")
-        .add< PointsFromIndices<Vec3Types> >()
-// .add< PointsFromIndices<Rigid3Types> >()
- 
-        ;
+void registerPointsFromIndices(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Find the points given a list of indices.")
+        .add< PointsFromIndices<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API PointsFromIndices<Vec3Types>;
-// template class SOFA_COMPONENT_ENGINE_SELECT_API PointsFromIndices<Rigid3Types>;
- 
-
 
 } //namespace sofa::component::engine::select

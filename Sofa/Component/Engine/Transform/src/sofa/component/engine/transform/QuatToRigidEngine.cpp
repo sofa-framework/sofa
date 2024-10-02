@@ -29,13 +29,12 @@
 namespace sofa::component::engine::transform
 {
 
-int QuatToRigidEngineClass = core::RegisterObject("Transform a vector of Rigids into two independant vectors for positions (Vec3) and orientations (Quat).")
-        .add< QuatToRigidEngine<sofa::defaulttype::Vec3Types> >()
- 
-        ;
+void registerQuatToRigidEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Transform a vector of Rigids into two independant vectors for positions (Vec3) and orientations (Quat).")
+        .add< QuatToRigidEngine<sofa::defaulttype::Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API QuatToRigidEngine<sofa::defaulttype::Vec3Types>;
- 
-
 
 } //namespace sofa::component::engine::transform

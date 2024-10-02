@@ -30,13 +30,12 @@ namespace sofa::component::engine::generate
 
 using namespace sofa::defaulttype;
 
-int GroupFilterYoungModulusClass = core::RegisterObject("This class gives a vector of young modulus according of a list of defined groups")
-        .add< GroupFilterYoungModulus<Vec3Types> >()
- 
-        ;
+void registerGroupFilterYoungModulus(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Engine defining a vector of young modulus according of a list of defined groups.")
+        .add< GroupFilterYoungModulus<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API GroupFilterYoungModulus<Vec3Types>;
- 
-
 
 } //namespace sofa::component::engine::generate

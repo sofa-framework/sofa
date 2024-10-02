@@ -29,17 +29,16 @@ namespace sofa::component::engine::select
 
 using namespace sofa::defaulttype;
 
-int MeshROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given mesh")
+void registerMeshROI(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given mesh.")
         .add< MeshROI<Vec3Types> >(true) //default template
         .add< MeshROI<Rigid3Types> >()
-        .add< MeshROI<Vec6Types> >()
- 
-        ;
+        .add< MeshROI<Vec6Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<Vec3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<Rigid3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<Vec6Types>;
- 
-
 
 } //namespace sofa::component::engine::select

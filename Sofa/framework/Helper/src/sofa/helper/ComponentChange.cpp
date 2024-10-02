@@ -784,6 +784,7 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"ImplicitEulerSolver", Dealiased("v24.12","EulerImplicitSolver")},
     {"ImplicitEuler", Dealiased("v24.12","EulerImplicitSolver")},
     {"VariationalSolver", Dealiased("v24.12","VariationalSymplecticSolver")},
+    {"RigidEngine", Dealiased("v24.12","RigidToQuatEngine")},
 
 };
 
