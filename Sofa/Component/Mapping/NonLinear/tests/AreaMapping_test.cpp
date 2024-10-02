@@ -69,7 +69,6 @@ TEST(AreaMapping, firstDerivative)
 
     const sofa::type::Mat<3,3,SReal> dA = computeDerivativeArea(vertices);
 
-    static constexpr SReal h = 1e-6;
     for (unsigned int vId = 0; vId < 3; ++vId)
     {
         for (unsigned int axis = 0; axis < 3; ++axis)
