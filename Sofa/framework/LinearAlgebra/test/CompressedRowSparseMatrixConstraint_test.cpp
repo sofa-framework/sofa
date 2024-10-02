@@ -1716,15 +1716,12 @@ TYPED_TEST(SparseMatrixTest, CheckThatTheContentOfALineRemainsSortedByColIndex)
         itRow.setCol(789, data2);
     }
 
-    std::cout << "azerty " << std::endl << matrix << std::endl;
-
     {
         typename Matrix::Data data3;
         TestHelpers::createData(data3, 23 + 2);
         itRow.setCol(456, data3);
     }
 
-    std::cout << matrix << std::endl;
 }
 
 ////////////////////////////////////////////////////
@@ -1742,12 +1739,10 @@ TYPED_TEST(SparseMatrixTest, CheckThatElementsHaveTheExpectedValuesWhenTryingToS
         Matrix sourceMatrix;
         sourceLine = TestHelpers::WriteLine(sourceMatrix, 42);
 
-        std::cout << sourceMatrix << std::endl;
         typename Matrix::RowIterator itRow = matrix.writeLine(rowIndex);
         itRow.setCol(1u, data1);
         matrix.compress();
 
-        std::cout << matrix << std::endl;
         matrix.addLine(rowIndex, sourceMatrix.begin().row());
     }
 
@@ -1938,7 +1933,7 @@ TYPED_TEST(CompressedRowSparseMatrixConstraintTest, checkRowDeletionUntilMatrixI
         bThree[i] = 3;
     }
 
-    matrix.resizeBloc(3, 4);
+    matrix.resizeBlock(3, 4);
 
     matrix.setBlock(0, 0, bOne);
     matrix.setBlock(0, 2, bOne);
@@ -2018,7 +2013,7 @@ TEST(CompressedRowSparseMatrixTest, checkTransposition)
 
     BSRMatrix matrix;
 
-    matrix.resizeBloc(4, 5);
+    matrix.resizeBlock(4, 5);
 
     matrix.addBlock(1, 1, b);
     matrix.addBlock(1, 2, b);
