@@ -795,6 +795,7 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"JacobiSolver", Dealiased("v24.12","JacobiPreconditioner")},
     {"SSORLinearSolver", Dealiased("v24.12","SSORPreconditioner")},
     {"SSORSolver", Dealiased("v24.12","SSORPreconditioner")},
+    {"RigidEngine", Dealiased("v24.12","RigidToQuatEngine")},
 
 };
 

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/forward/EulerSolver.h>
+#include <sofa/component/odesolver/forward/EulerExplicitSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>

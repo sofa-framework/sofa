@@ -30,14 +30,14 @@ namespace sofa::component::engine::select
 
 using namespace sofa::defaulttype;
 
-int SphereROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given sphere")
+void registerSphereROI(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Engine selecting the primitives (vertex/edge/triangle/tetrahedron) inside a given sphere.")
         .add< SphereROI<Vec3Types> >(true)
-        .add< SphereROI<Rigid3Types> >()
-        ;
+        .add< SphereROI<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API SphereROI<Vec3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API SphereROI<Rigid3Types>;
- 
-
 
 } //namespace sofa::component::engine::select

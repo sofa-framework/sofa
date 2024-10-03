@@ -29,17 +29,16 @@ namespace sofa::component::engine::select
 
 using namespace sofa::defaulttype;
 
-int PairBoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given box")
-        .add< PairBoxROI<Vec3Types> >()
+void registerPairBoxROI(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Find all the points located between two boxes.")
+        .add< PairBoxROI<Vec3Types> >(true)
         .add< PairBoxROI<Rigid3Types> >()
-        .add< PairBoxROI<Vec6Types> >() //Phuoc
- 
-        ;
+        .add< PairBoxROI<Vec6Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<Vec3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<Rigid3Types>;
-template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<Vec6Types>; //Phuoc
- 
-
+template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<Vec6Types>;
 
 } //namespace sofa::component::engine::select

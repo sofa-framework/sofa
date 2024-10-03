@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 #include <sofa/linearalgebra/CompressedRowSparseMatrixConstraint.h>
 #include <Eigen/Sparse>
 #include <sofa/type/Vec.h>
