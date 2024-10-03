@@ -352,6 +352,13 @@ void FreeMotionAnimationLoop::computeFreeMotionAndCollisionDetection(const sofa:
         preCollisionComputation(params);
 
         {
+            ScopedAdvancedTimer collisionResetTimer("ProcessGeometricalData");
+            ProcessGeometricalDataVisitor act(params);
+            act.setTags(this->getTags());
+            act.execute(node);
+        }
+
+        {
             ScopedAdvancedTimer collisionResetTimer("CollisionReset");
             CollisionResetVisitor act(params);
             act.setTags(this->getTags());

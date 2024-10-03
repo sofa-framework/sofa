@@ -30,13 +30,10 @@ namespace sofa::simulation
 {
 
 
-/// Compute collision reset, detection and response in one step
-class SOFA_SIMULATION_CORE_API CollisionVisitor : public Visitor
+class SOFA_SIMULATION_CORE_API BaseCollisionVisitor : public Visitor
 {
-public:
-    CollisionVisitor(const core::ExecParams* params) :Visitor(params) , m_primitiveTestCount(0) {}
-
-    virtual void fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet);
+   public:
+    BaseCollisionVisitor(const core::ExecParams* params) :Visitor(params) , m_primitiveTestCount(0) {}
 
     virtual void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
 
@@ -45,37 +42,73 @@ public:
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
     const char* getCategoryName() const override { return "collision"; }
-    const char* getClassName() const override { return "CollisionVisitor"; }
+    const char* getClassName() const override { return "BaseCollisionVisitor"; }
 
     size_t getPrimitiveTestCount() const {return m_primitiveTestCount;}
-private:
+   private:
     size_t m_primitiveTestCount;
 };
 
+class BaseProcessGeometricalData
+{
+public:
+    virtual void fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet);
+};
+
+class SOFA_SIMULATION_CORE_API ProcessGeometricalDataVisitor : public Visitor, public BaseProcessGeometricalData
+{
+   public:
+    ProcessGeometricalDataVisitor(const core::ExecParams* params) :Visitor(params) {}
+
+    Result processNodeTopDown(simulation::Node* node) override;
+
+    /// Return a category name for this action.
+    /// Only used for debugging / profiling purposes
+    const char* getCategoryName() const override { return "collision"; }
+    const char* getClassName() const override { return "ProcessGeometricalDataVisitor"; }
+
+};
+
+/// Compute collision reset, detection and response in one step
+class SOFA_SIMULATION_CORE_API CollisionVisitor :  public BaseCollisionVisitor, public BaseProcessGeometricalData
+{
+public:
+    CollisionVisitor(const core::ExecParams* params) : BaseCollisionVisitor(params) {}
+
+
+    Result processNodeTopDown(simulation::Node* node) override;
+
+    /// Return a category name for this action.
+    /// Only used for debugging / profiling purposes
+    const char* getCategoryName() const override { return "collision"; }
+    const char* getClassName() const override { return "CollisionVisitor"; }
+
+};
+
 /// Remove collision response from last step
-class SOFA_SIMULATION_CORE_API CollisionResetVisitor : public CollisionVisitor
+class SOFA_SIMULATION_CORE_API CollisionResetVisitor : public BaseCollisionVisitor
 {
 
 public:
-    CollisionResetVisitor(const core::ExecParams* params) :CollisionVisitor(params) {}
+    CollisionResetVisitor(const core::ExecParams* params) :BaseCollisionVisitor(params) {}
     void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj) override;
     const char* getClassName() const override { return "CollisionResetVisitor"; }
 };
 
 /// Compute collision detection
-class SOFA_SIMULATION_CORE_API CollisionDetectionVisitor : public CollisionVisitor
+class SOFA_SIMULATION_CORE_API CollisionDetectionVisitor : public BaseCollisionVisitor
 {
 public:
-    CollisionDetectionVisitor(const core::ExecParams* params) :CollisionVisitor(params) {}
+    CollisionDetectionVisitor(const core::ExecParams* params) :BaseCollisionVisitor(params) {}
     void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj) override;
     const char* getClassName() const override { return "CollisionDetectionVisitor"; }
 };
 
 /// Compute collision response
-class SOFA_SIMULATION_CORE_API CollisionResponseVisitor : public CollisionVisitor
+class SOFA_SIMULATION_CORE_API CollisionResponseVisitor : public BaseCollisionVisitor
 {
 public:
-    CollisionResponseVisitor(const core::ExecParams* params) :CollisionVisitor(params) {}
+    CollisionResponseVisitor(const core::ExecParams* params) :BaseCollisionVisitor(params) {}
     void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj) override;
     const char* getClassName() const override { return "CollisionResponseVisitor"; }
 };

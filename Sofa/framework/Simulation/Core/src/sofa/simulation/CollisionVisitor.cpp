@@ -30,34 +30,12 @@ namespace sofa::simulation
 {
 
 
-Visitor::Result CollisionVisitor::processNodeTopDown(simulation::Node* node)
-{
-    for_each(this, node, node->constraintSet, &CollisionVisitor::fwdConstraintSet);
-    for_each(this, node, node->collisionPipeline, &CollisionVisitor::processCollisionPipeline);
-    return RESULT_CONTINUE;
-}
 
-void CollisionVisitor::fwdConstraintSet(simulation::Node*
+void BaseCollisionVisitor::processCollisionPipeline(simulation::Node*
 #ifdef SOFA_DUMP_VISITOR_INFO
-        node
+                                                    node
 #endif
-        , core::behavior::BaseConstraintSet* c)
-{
-#ifdef SOFA_DUMP_VISITOR_INFO
-    printComment("computeCollisionDetectionInConstraints");
-    ctime_t t0=begin(node, c);
-#endif
-    c->processGeometricalData();
-#ifdef SOFA_DUMP_VISITOR_INFO
-    end(node, c,t0);
-#endif
-}
-
-void CollisionVisitor::processCollisionPipeline(simulation::Node*
-#ifdef SOFA_DUMP_VISITOR_INFO
-        node
-#endif
-        , core::collision::Pipeline* obj)
+                                                , core::collision::Pipeline* obj)
 {
     //msg_info()<<"CollisionVisitor::processCollisionPipeline"<<std::endl;
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -90,6 +68,46 @@ void CollisionVisitor::processCollisionPipeline(simulation::Node*
     end(node, obj,t0);
 #endif
 }
+
+
+
+Visitor::Result BaseCollisionVisitor::processNodeTopDown(simulation::Node* node)
+{
+    for_each(this, node, node->collisionPipeline, &BaseCollisionVisitor::processCollisionPipeline);
+    return RESULT_CONTINUE;
+}
+
+
+void BaseProcessGeometricalData::fwdConstraintSet(simulation::Node*
+#ifdef SOFA_DUMP_VISITOR_INFO
+                                            node
+#endif
+                                        , core::behavior::BaseConstraintSet* c)
+{
+#ifdef SOFA_DUMP_VISITOR_INFO
+    printComment("computeCollisionDetectionInConstraints");
+    ctime_t t0=begin(node, c);
+#endif
+    c->processGeometricalData();
+#ifdef SOFA_DUMP_VISITOR_INFO
+    end(node, c,t0);
+#endif
+}
+
+Visitor::Result ProcessGeometricalDataVisitor::processNodeTopDown(simulation::Node* node)
+{
+    for_each<ProcessGeometricalDataVisitor,simulation::Node, NodeSequence<sofa::core::behavior::BaseConstraintSet>,core::behavior::BaseConstraintSet>(this, node, node->constraintSet, &ProcessGeometricalDataVisitor::fwdConstraintSet);
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result CollisionVisitor::processNodeTopDown(simulation::Node* node)
+{
+    for_each<CollisionVisitor,simulation::Node, NodeSequence<sofa::core::behavior::BaseConstraintSet>,core::behavior::BaseConstraintSet>(this, node, node->constraintSet, &CollisionVisitor::fwdConstraintSet);
+    for_each<CollisionVisitor,simulation::Node, NodeSingle<sofa::core::collision::Pipeline>,sofa::core::collision::Pipeline>(this, node, node->collisionPipeline, &CollisionVisitor::processCollisionPipeline);
+    return RESULT_CONTINUE;
+}
+
+
 
 void CollisionResetVisitor::processCollisionPipeline(simulation::Node*
 #ifdef SOFA_DUMP_VISITOR_INFO
