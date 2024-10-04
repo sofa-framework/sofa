@@ -86,6 +86,8 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     factory->registerObjectsFromPlugin("Sofa.Component.Haptics");
     factory->registerObjectsFromPlugin("Sofa.Component.Diffusion");
     factory->registerObjectsFromPlugin("Sofa.Component.ODESolver");
+    factory->registerObjectsFromPlugin("Sofa.Component.Topology");
+    factory->registerObjectsFromPlugin("Sofa.Component.LinearSolver");
     factory->registerObjectsFromPlugin("Sofa.Component.Engine");
 }
 

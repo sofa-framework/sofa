@@ -33,12 +33,13 @@
 
 namespace sofa::component::topology::container::dynamic
 {
-int TriangleSetTopologyModifierClass = core::RegisterObject("Triangle set topology modifier")
-        .add< TriangleSetTopologyModifier >()
-        ;
 
-using namespace std;
-using namespace sofa::defaulttype;
+void registerTriangleSetTopologyModifier(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology modifier dedicated to a triangular topology.")
+        .add< TriangleSetTopologyModifier >());
+}
+
 using namespace sofa::core::topology;
 
 void TriangleSetTopologyModifier::init()

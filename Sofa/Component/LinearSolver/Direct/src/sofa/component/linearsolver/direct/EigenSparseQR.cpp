@@ -27,12 +27,15 @@
 
 namespace sofa::component::linearsolver::direct
 {
-    template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSparseQR< SReal >;
-    template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSparseQR< sofa::type::Mat<3,3,SReal>>;
 
-    int EigenSparseQRCRSClass = sofa::core::RegisterObject("Direct Linear Solver using a Sparse QR factorization.")
-    .add< EigenSparseQR< SReal > >()
-    .add< EigenSparseQR< sofa::type::Mat<3,3,SReal> > >()
-    ;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSparseQR< SReal >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSparseQR< sofa::type::Mat<3,3,SReal>>;
+
+void registerEigenSparseQR(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Direct linear solver using a Sparse QR factorization.")
+        .add< EigenSparseQR< SReal > >()
+        .add< EigenSparseQR< sofa::type::Mat<3, 3, SReal> > >());
+}
 
 }

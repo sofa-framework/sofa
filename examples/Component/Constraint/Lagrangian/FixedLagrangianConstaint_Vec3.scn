@@ -29,7 +29,7 @@
 
     <!-- $$$$$$$$$$$$$$$$$$$$$$ TOPOLOGY 1 $$$$$$$$$$$$$$$$$$$$$$ -->
     <Node name="BEAMVOLUME">
-        <RegularGrid name="HexaTop" n="25 5 5" min="0 0 0" max="0.5 0.1 0.1"/>
+        <RegularGridTopology name="HexaTop" n="25 5 5" min="0 0 0" max="0.5 0.1 0.1"/>
         <TetrahedronSetTopologyContainer name="Container" position="@HexaTop.position"/>
         <TetrahedronSetTopologyModifier name="Modifier"/>
         <Hexa2TetraTopologicalMapping input="@HexaTop" output="@Container" swapping="true"/>

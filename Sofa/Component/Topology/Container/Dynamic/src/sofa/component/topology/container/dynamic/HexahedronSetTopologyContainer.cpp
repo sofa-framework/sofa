@@ -28,15 +28,15 @@
 namespace sofa::component::topology::container::dynamic
 {
 
-using namespace std;
-using namespace sofa::defaulttype;
 using sofa::core::topology::edgesInHexahedronArray;
 using sofa::core::topology::quadsOrientationInHexahedronArray;
 using sofa::core::topology::verticesInHexahedronArray;
 
-int HexahedronSetTopologyContainerClass = core::RegisterObject("Hexahedron set topology container")
-        .add< HexahedronSetTopologyContainer >()
-        ;
+void registerHexahedronSetTopologyContainer(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology container dedicated to an hexahedral topology.")
+        .add< HexahedronSetTopologyContainer >());
+}
 
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
     : QuadSetTopologyContainer()

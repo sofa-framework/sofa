@@ -33,13 +33,13 @@
 namespace sofa::component::topology::utility
 {
 
-using namespace defaulttype;
 using namespace sofa::core::topology;
 
-
-int TopologyCheckerClass = core::RegisterObject("Read topological Changes and process them.")
-        .add< TopologyChecker >();
-
+void registerTopologyChecker(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Read topological Changes and process them.")
+        .add< TopologyChecker >());
+}
 
 TopologyChecker::TopologyChecker()
     : d_eachStep(initData(&d_eachStep, false, "eachStep", "Check topology at each step"))

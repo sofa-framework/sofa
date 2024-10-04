@@ -27,15 +27,17 @@
 
 namespace sofa::component::topology::container::dynamic
 {
-using namespace sofa::defaulttype;
-int TetrahedronSetGeometryAlgorithmsClass = core::RegisterObject("Tetrahedron set geometry algorithms")
-        .add< TetrahedronSetGeometryAlgorithms<Vec3Types> >(true) // default template
-        .add< TetrahedronSetGeometryAlgorithms<Vec2Types> >()
 
-        ;
+using namespace sofa::defaulttype;
+
+void registerTetrahedronSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Geometry algorithms dedicated to a tetrahedral topology.")
+        .add< TetrahedronSetGeometryAlgorithms<Vec3Types> >(true) // default template
+        .add< TetrahedronSetGeometryAlgorithms<Vec2Types> >());
+}
 
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TetrahedronSetGeometryAlgorithms<Vec3Types>;
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TetrahedronSetGeometryAlgorithms<Vec2Types>;
-
 
 } //namespace sofa::component::topology::container::dynamic

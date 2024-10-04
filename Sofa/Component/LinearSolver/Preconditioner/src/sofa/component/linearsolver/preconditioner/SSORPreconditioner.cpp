@@ -170,12 +170,12 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3
     }
 }
 
-int SSORPreconditionerClass = core::RegisterObject("Linear system solver / preconditioner based on Symmetric Successive Over-Relaxation (SSOR). If the matrix is decomposed as $A = D + L + L^T$, this solver computes $(1/(2-w))(D/w+L)(D/w)^{-1}(D/w+L)^T x = b, or $(D+L)D^{-1}(D+L)^T x = b$ if $w=1$.")
+void registerSSORPreconditioner(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Linear system solver / preconditioner based on Symmetric Successive Over-Relaxation (SSOR). If the matrix is decomposed as $A = D + L + L^T$, this solver computes $(1/(2-w))(D/w+L)(D/w)^{-1}(D/w+L)^T x = b, or $(D+L)D^{-1}(D+L)^T x = b$ if $w=1$.")
         .add< SSORPreconditioner< CompressedRowSparseMatrix<SReal>, FullVector<SReal> > >(true)
-        .add< SSORPreconditioner< CompressedRowSparseMatrix< type::Mat<3,3,SReal> >, FullVector<SReal> > >()
-        .addAlias("SSORLinearSolver")
-        .addAlias("SSORSolver")
-        ;
+        .add< SSORPreconditioner< CompressedRowSparseMatrix< type::Mat<3, 3, SReal> >, FullVector<SReal> > >());
+}
 
 template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix<SReal>, linearalgebra::FullVector<SReal> >;
 template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3, 3, SReal> >, linearalgebra::FullVector<SReal> >;
