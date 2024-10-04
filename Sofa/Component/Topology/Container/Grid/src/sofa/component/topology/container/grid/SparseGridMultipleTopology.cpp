@@ -27,18 +27,19 @@
 namespace sofa::component::topology::container::grid
 {
 
-int SparseGridMultipleTopologyClass = core::RegisterObject("Sparse grid in 3D")
-        .addAlias("SparseGridMultiple")
-        .add< SparseGridMultipleTopology >()
-        ;
+void registerSparseGridMultipleTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Sparse grid in 3D.")
+        .add< SparseGridMultipleTopology >());
+}
 
-
-SparseGridMultipleTopology::SparseGridMultipleTopology( bool _isVirtual ) : SparseGridRamificationTopology(_isVirtual),
-                                                                            d_fileTopologies(initData(&d_fileTopologies, type::vector< std::string >() , "fileTopologies", "All topology filenames")),
-                                                                            d_dataStiffnessCoefs(initData(&d_dataStiffnessCoefs, type::vector< float >() , "stiffnessCoefs", "A stiffness coefficient for each topology filename")),
-                                                                            d_dataMassCoefs(initData(&d_dataMassCoefs, type::vector< float >() , "massCoefs", "A mass coefficient for each topology filename")),
-                                                                            d_computeRamifications(initData(&d_computeRamifications, true , "computeRamifications", "Are ramifications wanted?")),
-                                                                            d_erasePreviousCoef(initData(&d_erasePreviousCoef, false , "erasePreviousCoef", "Does a new stiffness/mass coefficient replace the previous or blend half/half with it?"))
+SparseGridMultipleTopology::SparseGridMultipleTopology( bool _isVirtual ) 
+    : SparseGridRamificationTopology(_isVirtual)
+    , d_fileTopologies(initData(&d_fileTopologies, type::vector< std::string >() , "fileTopologies", "All topology filenames"))
+    , d_dataStiffnessCoefs(initData(&d_dataStiffnessCoefs, type::vector< float >() , "stiffnessCoefs", "A stiffness coefficient for each topology filename"))
+    , d_dataMassCoefs(initData(&d_dataMassCoefs, type::vector< float >() , "massCoefs", "A mass coefficient for each topology filename"))
+    , d_computeRamifications(initData(&d_computeRamifications, true , "computeRamifications", "Are ramifications wanted?"))
+    , d_erasePreviousCoef(initData(&d_erasePreviousCoef, false , "erasePreviousCoef", "Does a new stiffness/mass coefficient replace the previous or blend half/half with it?"))
 {
     _fileTopologies.setOriginalData(&d_fileTopologies);
     _dataStiffnessCoefs.setOriginalData(&d_dataStiffnessCoefs);

@@ -42,18 +42,14 @@
 namespace sofa::component::topology::mapping
 {
 
-using namespace sofa::defaulttype;
-
 using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
-// Register in the Factory
-int Tetra2TriangleTopologicalMappingClass = core::RegisterObject("Special case of mapping where TetrahedronSetTopology is converted to TriangleSetTopology")
-        .add< Tetra2TriangleTopologicalMapping >()
-
-        ;
-
-// Implementation
+void registerTetra2TriangleTopologicalMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topological mapping where TetrahedronSetTopology is converted to TriangleSetTopology")
+        .add< Tetra2TriangleTopologicalMapping >());
+}
 
 Tetra2TriangleTopologicalMapping::Tetra2TriangleTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()

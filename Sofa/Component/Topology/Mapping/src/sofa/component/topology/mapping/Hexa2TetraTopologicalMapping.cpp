@@ -41,18 +41,14 @@
 namespace sofa::component::topology::mapping
 {
 
-using namespace sofa::defaulttype;
-
 using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
-// Register in the Factory
-int Hexa2TetraTopologicalMappingClass = core::RegisterObject("Special case of mapping where HexahedronSetTopology is converted to TetrahedronSetTopology")
-        .add< Hexa2TetraTopologicalMapping >()
-
-        ;
-
-// Implementation
+void registerHexa2TetraTopologicalMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topological mapping where HexahedronSetTopology is converted to TetrahedronSetTopology")
+        .add< Hexa2TetraTopologicalMapping >());
+}
 
 Hexa2TetraTopologicalMapping::Hexa2TetraTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()

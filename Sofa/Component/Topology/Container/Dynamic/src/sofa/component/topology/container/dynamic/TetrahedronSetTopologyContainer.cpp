@@ -27,13 +27,13 @@
 namespace sofa::component::topology::container::dynamic
 {
 
-using namespace std;
-using namespace sofa::defaulttype;
 using sofa::core::topology::edgesInTetrahedronArray;
 
-int TetrahedronSetTopologyContainerClass = core::RegisterObject("Tetrahedron set topology container")
-        .add< TetrahedronSetTopologyContainer >()
-        ;
+void registerTetrahedronSetTopologyContainer(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology container dedicated to a tetrahedral topology.")
+        .add< TetrahedronSetTopologyContainer >());
+}
 
 ///convention triangles in tetra (orientation interior)
 
