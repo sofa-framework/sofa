@@ -784,8 +784,28 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"ImplicitEulerSolver", Dealiased("v24.12","EulerImplicitSolver")},
     {"ImplicitEuler", Dealiased("v24.12","EulerImplicitSolver")},
     {"VariationalSolver", Dealiased("v24.12","VariationalSymplecticSolver")},
+    {"Mesh", Dealiased("v24.12","MeshTopology")},
+    {"SphereQuad", Dealiased("v24.12","SphereQuadTopology")},
+    {"CylinderGrid", Dealiased("v24.12","CylinderGridTopology")},
+    {"Grid", Dealiased("v24.12","GridTopology")},
+    {"RegularGrid", Dealiased("v24.12","RegularGridTopology")},
+    {"SparseGridMultiple", Dealiased("v24.12","SparseGridMultipleTopology")},
+    {"SparseGridRamification", Dealiased("v24.12","SparseGridRamificationTopology")},
+    {"SparseGrid", Dealiased("v24.12","SparseGridTopology")},
+    {"SphereGrid", Dealiased("v24.12","SphereGridTopology")},
+    {"SVDLinear", Dealiased("v24.12","SVDLinearSolver")},
+    {"SVD", Dealiased("v24.12","SVDLinearSolver")},
+    {"CGSolver", Dealiased("v24.12","CGLinearSolver")},
+    {"ConjugateGradient", Dealiased("v24.12","CGLinearSolver")},
+    {"MINRESSolver", Dealiased("v24.12","MinResLinearSolver")},
+    {"MinResSolver", Dealiased("v24.12","MinResLinearSolver")},
+    {"PCGLinearSolver", Dealiased("v24.12","ShewchukPCGLinearSolver")},
+    {"JacobiLinearSolver", Dealiased("v24.12","JacobiPreconditioner")},
+    {"JacobiSolver", Dealiased("v24.12","JacobiPreconditioner")},
+    {"SSORLinearSolver", Dealiased("v24.12","SSORPreconditioner")},
+    {"SSORSolver", Dealiased("v24.12","SSORPreconditioner")},
     {"RigidEngine", Dealiased("v24.12","RigidToQuatEngine")},
-
+  
 };
 
 } // namespace sofa::helper::lifecycle

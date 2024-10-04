@@ -25,8 +25,11 @@
 namespace sofa::component::linearsolver::ordering
 {
 
-int AMDOrderingMethodClass = sofa::core::RegisterObject("Approximate minimum degree ordering implemented in the Eigen library")
-    .add<AMDOrderingMethod>();
+void registerAMDOrderingMethod(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Approximate minimum degree ordering implemented in the Eigen library.")
+        .add<AMDOrderingMethod>());
+}
 
 std::string AMDOrderingMethod::methodName() const
 {

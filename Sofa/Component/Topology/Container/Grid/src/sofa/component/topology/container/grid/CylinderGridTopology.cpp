@@ -29,12 +29,11 @@ namespace sofa::component::topology::container::grid
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-
-
-int CylinderGridTopologyClass = core::RegisterObject("Cylinder grid in 3D")
-        .addAlias("CylinderGrid")
-        .add< CylinderGridTopology >()
-        ;
+void registerCylinderGridTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Cylinder grid in 3D.")
+        .add< CylinderGridTopology >());
+}
 
 CylinderGridTopology::CylinderGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz)

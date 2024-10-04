@@ -32,13 +32,13 @@ namespace sofa::component::linearsolver::direct
 
 using namespace sofa::linearalgebra;
 
-int SVDLinearSolverClass = core::RegisterObject("Linear system solver using a SVD decomposition of a dense matrix")
+void registerSVDLinearSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Linear system solver using a SVD decomposition of a dense matrix.")
         .add< SVDLinearSolver< FullMatrix<SReal>, FullVector<SReal> > >()
         .add< SVDLinearSolver< CompressedRowSparseMatrix<SReal>, FullVector<SReal> > >()
-        .add< SVDLinearSolver< CompressedRowSparseMatrix<type::Mat<3,3, SReal>>, FullVector<SReal> > >()
-        .addAlias("SVDLinear")
-        .addAlias("SVD")
-        ;
+        .add< SVDLinearSolver< CompressedRowSparseMatrix<type::Mat<3, 3, SReal>>, FullVector<SReal> > >());
+}
 
 template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< FullMatrix<SReal>, FullVector<SReal> >;
 template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< CompressedRowSparseMatrix<SReal>, FullVector<SReal> >;

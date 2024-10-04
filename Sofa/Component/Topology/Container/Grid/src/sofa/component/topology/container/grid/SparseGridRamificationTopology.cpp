@@ -27,10 +27,11 @@
 namespace sofa::component::topology::container::grid
 {
 
-int SparseGridRamificationTopologyClass = core::RegisterObject("Sparse grid in 3D (modified)")
-        .addAlias("SparseGridRamification")
-        .add< SparseGridRamificationTopology >()
-        ;
+void registerSparseGridRamificationTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Sparse grid in 3D (modified).")
+        .add< SparseGridRamificationTopology >());
+}
 
 SparseGridRamificationTopology::SparseGridRamificationTopology(bool isVirtual)
     : SparseGridTopology(isVirtual)

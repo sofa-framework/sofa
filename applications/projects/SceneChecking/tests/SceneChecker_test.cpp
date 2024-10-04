@@ -209,15 +209,15 @@ struct SceneChecker_test : public BaseSimulationTest
 
     void checkUsingAlias(bool sceneWithAlias)
     {
-        const std::string withAlias = "Mesh";
-        const std::string withoutAlias = "MeshTopology";
+        const std::string withAlias = "VisualModel";
+        const std::string withoutAlias = "VisualModelImpl";
         const std::string componentName = sceneWithAlias ? withAlias : withoutAlias;
 
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                           \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
               << "    <RequiredPlugin name='Sofa.Component.StateContainer'/>      \n"
-              << "    <RequiredPlugin name='Sofa.Component.Topology.Container.Constant'/>      \n"
+              << "    <RequiredPlugin name='Sofa.Component.Visual'/>              \n"
               << "    <MechanicalObject template='Vec3d' />                       \n"
               << "    <" << componentName << "/>                                  \n"
               << "</Node>                                                         \n";

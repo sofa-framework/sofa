@@ -30,9 +30,11 @@
 namespace sofa::component::topology::container::dynamic
 {
 
-int DynamicSparseGridTopologyModifierClass = core::RegisterObject ( "Hexahedron set topology modifier" )
-        .add< DynamicSparseGridTopologyModifier >();
-
+void registerDynamicSparseGridTopologyModifier(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Dynamic sparse grid geometry modifier.")
+        .add< DynamicSparseGridTopologyModifier >());
+}
 
 void DynamicSparseGridTopologyModifier::init()
 {

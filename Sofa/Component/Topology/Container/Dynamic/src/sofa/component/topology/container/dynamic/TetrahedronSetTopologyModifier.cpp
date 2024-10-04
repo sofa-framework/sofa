@@ -33,11 +33,13 @@
 
 namespace sofa::component::topology::container::dynamic
 {
-int TetrahedronSetTopologyModifierClass = core::RegisterObject("Tetrahedron set topology modifier")
-        .add< TetrahedronSetTopologyModifier >();
 
-using namespace std;
-using namespace sofa::defaulttype;
+void registerTetrahedronSetTopologyModifier(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology modifier dedicated to a tetrahedral topology.")
+        .add< TetrahedronSetTopologyModifier >());
+}
+
 using namespace sofa::core::topology;
 
 //const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
