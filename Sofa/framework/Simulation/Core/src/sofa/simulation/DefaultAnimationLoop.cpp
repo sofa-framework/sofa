@@ -240,6 +240,7 @@ void DefaultAnimationLoop::propagateOnlyPositionAndVelocity(const SReal nextTime
 
 void DefaultAnimationLoop::propagateCollisionBeginEvent(const core::ExecParams* params) const
 {
+    SCOPED_TIMER("CollisionBeginEvent");
     CollisionBeginEvent evBegin;
     PropagateEventVisitor eventPropagation( params, &evBegin);
     eventPropagation.execute(m_node);
@@ -247,6 +248,7 @@ void DefaultAnimationLoop::propagateCollisionBeginEvent(const core::ExecParams* 
 
 void DefaultAnimationLoop::propagateCollisionEndEvent(const core::ExecParams* params) const
 {
+    SCOPED_TIMER("CollisionEndEvent");
     CollisionEndEvent evEnd;
     PropagateEventVisitor eventPropagation( params, &evEnd);
     eventPropagation.execute(m_node);
