@@ -352,14 +352,14 @@ void FreeMotionAnimationLoop::computeFreeMotionAndCollisionDetection(const sofa:
         preCollisionComputation(params);
 
         {
-            ScopedAdvancedTimer collisionResetTimer("ProcessGeometricalData");
+            SCOPED_TIMER("ProcessGeometricalData");
             ProcessGeometricalDataVisitor act(params);
             act.setTags(this->getTags());
             act.execute(node);
         }
 
         {
-            ScopedAdvancedTimer collisionResetTimer("CollisionReset");
+            SCOPED_TIMER("CollisionReset");
             CollisionResetVisitor act(params);
             act.setTags(this->getTags());
             act.execute(node);
@@ -369,19 +369,19 @@ void FreeMotionAnimationLoop::computeFreeMotionAndCollisionDetection(const sofa:
         taskScheduler->addTask(freeMotionTaskStatus, [&]() { computeFreeMotion(params, cparams, dt, pos, freePos, freeVel, mop); });
 
         {
-            ScopedAdvancedTimer collisionDetectionTimer("CollisionDetection");
+            SCOPED_TIMER("CollisionDetection");
             CollisionDetectionVisitor act(params);
             act.setTags(this->getTags());
             act.execute(node);
         }
 
         {
-            ScopedAdvancedTimer waitFreeMotionTimer("WaitFreeMotion");
+            SCOPED_TIMER("WaitFreeMotion");
             taskScheduler->workUntilDone(&freeMotionTaskStatus);
         }
 
         {
-            ScopedAdvancedTimer collisionResponseTimer("CollisionResponse");
+            SCOPED_TIMER("CollisionResponse");
             CollisionResponseVisitor act(params);
             act.setTags(this->getTags());
             act.execute(node);
