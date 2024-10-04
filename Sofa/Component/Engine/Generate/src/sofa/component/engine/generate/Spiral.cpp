@@ -30,13 +30,12 @@ namespace sofa::component::engine::generate
 
 using namespace sofa::defaulttype;
 
-int SpiralClass = core::RegisterObject("This class truns on spiral any topological model")
-        .add< Spiral<Vec3Types> >()
- 
-        ;
+void registerSpiral(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Engine turning on spiral any topological model.")
+        .add< Spiral<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API Spiral<Vec3Types>;
- 
-
 
 } //namespace sofa::component::engine::generate

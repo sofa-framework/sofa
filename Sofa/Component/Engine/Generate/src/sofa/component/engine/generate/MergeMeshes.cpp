@@ -26,21 +26,20 @@
 namespace sofa::component::engine::generate
 {
 
-int MergeMeshesClass = core::RegisterObject("Merge several meshes")
+void registerMergeMeshes(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Merge several meshes.")
         .add< MergeMeshes<defaulttype::Vec3Types> >(true) // default template
         .add< MergeMeshes<defaulttype::Vec1Types> >()
         .add< MergeMeshes<defaulttype::Vec2Types> >()
         .add< MergeMeshes<defaulttype::Rigid2Types> >()
-        .add< MergeMeshes<defaulttype::Rigid3Types> >()
- 
-        ;
+        .add< MergeMeshes<defaulttype::Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeMeshes<defaulttype::Vec1Types>;
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeMeshes<defaulttype::Vec2Types>;
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeMeshes<defaulttype::Vec3Types>;
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeMeshes<defaulttype::Rigid2Types>;
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeMeshes<defaulttype::Rigid3Types>;
- 
-
 
 } //namespace sofa::component::engine::generate

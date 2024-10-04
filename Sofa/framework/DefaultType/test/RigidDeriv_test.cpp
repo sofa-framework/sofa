@@ -19,31 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_MAPINDICES_CPP
-#include <sofa/component/engine/transform/MapIndices.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <gtest/gtest.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 
-namespace sofa::component::engine::transform
+template<sofa::Size N, typename real>
+void testName(const std::string& expectedName)
 {
-
-void registerMapIndices(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Apply a permutation to a set of indices.")
-        .add< MapIndices<int> >()
-        .add< MapIndices<unsigned int> >()
-        .add< MapIndices< type::fixed_array<unsigned int, 2> > >()
-        .add< MapIndices< type::fixed_array<unsigned int, 3> > >()
-        .add< MapIndices< type::fixed_array<unsigned int, 4> > >()
-        .add< MapIndices< type::fixed_array<unsigned int, 8> > >());
+    using Deriv = sofa::defaulttype::RigidDeriv<N, real>;
+    using Bloc = sofa::linearalgebra::matrix_bloc_traits<Deriv, sofa::Index >;
+    EXPECT_EQ(std::string(Bloc::Name()), expectedName);
 }
 
-template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MapIndices<int>;
-template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MapIndices<unsigned int>;
-template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MapIndices< type::fixed_array<unsigned int, 2> >;
-template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MapIndices< type::fixed_array<unsigned int, 3> >;
-template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MapIndices< type::fixed_array<unsigned int, 4> >;
-template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MapIndices< type::fixed_array<unsigned int, 8> >;
+TEST(RigidDerivTest, Name)
+{
+    testName<3, float>("RigidDeriv3f");
+    testName<3, double>("RigidDeriv3d");
 
-} //namespace sofa::component::engine::transform
+    testName<2, float>("RigidDeriv2f");
+    testName<2, double>("RigidDeriv2d");
+}

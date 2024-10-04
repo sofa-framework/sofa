@@ -34,7 +34,7 @@ template<class M1, class M2>
 class MatrixAddition;
 
 template<class M1, class M2>
-class MatrixSubstraction;
+class MatrixSubtraction;
 
 template<class M1>
 class MatrixTranspose;
@@ -66,9 +66,9 @@ public:
         return MatrixExpr { MatrixAddition< Expr, typename M2::Expr >(*this, m) };
     }
     template<class M2>
-    MatrixExpr< MatrixSubstraction< Expr, typename M2::Expr > > operator-(const M2& m) const
+    MatrixExpr< MatrixSubtraction< Expr, typename M2::Expr > > operator-(const M2& m) const
     {
-        return MatrixExpr { MatrixSubstraction< Expr, typename M2::Expr >(*this, m) };
+        return MatrixExpr { MatrixSubtraction< Expr, typename M2::Expr >(*this, m) };
     }
     MatrixExpr< MatrixNegative< Expr > > operator-() const
     {
@@ -98,9 +98,9 @@ public:
         return MatrixExpr { MatrixAddition< typename M1::Expr, Expr >(m1,m2) };
     }
     template<class M1>
-    friend MatrixExpr< MatrixSubstraction< typename M1::Expr, Expr > > operator-(const M1& m1, const MatrixExpr<Expr>& m2)
+    friend MatrixExpr< MatrixSubtraction< typename M1::Expr, Expr > > operator-(const M1& m1, const MatrixExpr<Expr>& m2)
     {
-        return MatrixExpr { MatrixSubstraction< typename M1::Expr, Expr >(m1,m2) };
+        return MatrixExpr { MatrixSubtraction< typename M1::Expr, Expr >(m1,m2) };
     }
 };
 
@@ -442,10 +442,10 @@ public:
 };
 
 template<class M1, class M2>
-class MatrixSubstraction
+class MatrixSubtraction
 {
 public:
-    typedef MatrixSubstraction<M1, M2> Expr;
+    typedef MatrixSubtraction<M1, M2> Expr;
     enum { operand = 0 };
     enum { category = ((int)M1::category>(int)M2::category) ? (int)M1::category : (int)M2::category };
     enum { m_index = (((int)M1::category>(int)M2::category)?0:1) };
@@ -453,7 +453,7 @@ public:
 
     const M1& m1;
     const M2& m2;
-    MatrixSubstraction(const M1& m1, const M2& m2) : m1(m1), m2(m2)
+    MatrixSubtraction(const M1& m1, const M2& m2) : m1(m1), m2(m2)
     {}
 
     bool valid() const
@@ -501,6 +501,9 @@ public:
         m2.addTo(&myd);
     }
 };
+
+template<class M1, class M2>
+using MatrixSubstraction SOFA_ATTRIBUTE_DEPRECATED__MATRIXSUBTRACTION() = MatrixSubtraction<M1, M2>;
 
 template<class M1, class M2>
 class MatrixProduct

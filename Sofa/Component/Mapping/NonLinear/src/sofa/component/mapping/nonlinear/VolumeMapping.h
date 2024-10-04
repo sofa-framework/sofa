@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/component/mapping/nonlinear/config.h>
-#include <sofa/core/Mapping.h>
+#include <sofa/component/mapping/nonlinear/BaseNonLinearMapping.h>
 #include <sofa/component/mapping/nonlinear/NonLinearMappingData.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
@@ -32,17 +32,16 @@ namespace sofa::component::mapping::nonlinear
 {
 
 template <class TIn, class TOut>
-class VolumeMapping : public core::Mapping<TIn, TOut>, public StabilizedNonLinearMappingData
+class VolumeMapping : public BaseNonLinearMapping<TIn, TOut, true>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(VolumeMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(VolumeMapping,TIn,TOut), SOFA_TEMPLATE3(BaseNonLinearMapping,TIn,TOut, true));
 
     using In = TIn;
     using Out = TOut;
 
     using Real = Real_t<Out>;
 
-    typedef linearalgebra::EigenSparseMatrix<TIn,TOut> SparseMatrixEigen;
     static constexpr auto Nin = In::deriv_total_size;
 
     SingleLink<VolumeMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -52,44 +51,25 @@ public:
     void init() override;
 
     void apply(const core::MechanicalParams* mparams, DataVecCoord_t<Out>& out, const DataVecCoord_t<In>& in) override;
-    void applyJ(const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& out, const DataVecDeriv_t<In>& in) override;
-    void applyJT(const core::MechanicalParams* mparams, DataVecDeriv_t<In>& out, const DataVecDeriv_t<Out>& in) override;
-    void applyJT(const core::ConstraintParams *cparams, DataMatrixDeriv_t<In>& out, const DataMatrixDeriv_t<Out>& in) override;
-    void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceId, core::ConstMultiVecDerivId childForceId) override;
-
-    void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId) override;
-    const linearalgebra::BaseMatrix* getK() override;
     void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
-
-    const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
 protected:
     VolumeMapping();
 
-    using SparseKMatrixEigen = linearalgebra::EigenSparseMatrix<TIn,TIn>;
+    void matrixFreeApplyDJT(const core::MechanicalParams* mparams, Real kFactor,
+                            Data<VecDeriv_t<In> >& parentForce,
+                            const Data<VecDeriv_t<In> >& parentDisplacement,
+                            const Data<VecDeriv_t<Out> >& childForce) override;
 
-    SparseMatrixEigen jacobian; ///< Jacobian of the mapping
-    type::vector<linearalgebra::BaseMatrix*> baseMatrices; ///< Jacobian of the mapping, in a vector
-    typename VolumeMapping::SparseKMatrixEigen K; ///< Assembled geometric stiffness matrix
+    using typename Inherit1::SparseKMatrixEigen;
 
-    /**
-     * @brief Represents an entry in the Jacobian matrix.
-     *
-     * The JacobianEntry struct is used to store information about an entry in the
-     * Jacobian matrix, specifically the vertex identifier and the corresponding
-     * Jacobian value. It also provides a comparison operator for sorting entries
-     * by vertex ID.
-     */
-    struct JacobianEntry
-    {
-        sofa::Index vertexId;
-        typename In::Coord jacobianValue;
-        bool operator<(const JacobianEntry& other) const { return vertexId < other.vertexId;}
-    };
+    void doUpdateK(
+        const core::MechanicalParams* mparams, const Data<VecDeriv_t<Out> >& childForce,
+        SparseKMatrixEigen& matrix) override;
 
     const VecCoord_t<In>* m_vertices{nullptr};
 
-
+    using JacobianEntry = typename Inherit1::JacobianEntry;
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_NONLINEAR_VOLUMEMAPPING_CPP)

@@ -793,7 +793,8 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"SparseGridRamification", Dealiased("v24.12","SparseGridRamificationTopology")},
     {"SparseGrid", Dealiased("v24.12","SparseGridTopology")},
     {"SphereGrid", Dealiased("v24.12","SphereGridTopology")},
-
+    {"RigidEngine", Dealiased("v24.12","RigidToQuatEngine")},
+  
 };
 
 } // namespace sofa::helper::lifecycle

@@ -30,12 +30,12 @@ namespace sofa::component::engine::select
 
 using namespace sofa::defaulttype;
 
-int ComplementaryROIClass = core::RegisterObject("Find the points that are NOT in the input sets")
-        .add<ComplementaryROI<Vec3Types> >()
- 
-        ;
+void registerComplementaryROI(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Find the points that are NOT in the input sets.")
+        .add<ComplementaryROI<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API ComplementaryROI<Vec3Types>;
  
-
 } //namespace sofa::component::engine::select

@@ -30,14 +30,12 @@ namespace sofa::component::engine::generate
 {
 using namespace sofa::defaulttype;
 
-int MeshBarycentricMapperEngineClass = core::RegisterObject("This class maps a set of points in a topological model and provide barycentric coordinates")
-        .add< MeshBarycentricMapperEngine<Vec3Types> >()
- 
-        ;
+void registerMeshBarycentricMapperEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Engine mapping a set of points in a topological model and provide barycentric coordinates")
+        .add< MeshBarycentricMapperEngine<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MeshBarycentricMapperEngine<Vec3Types>;
- 
-
-
 
 } //namespace sofa::component::engine::generate

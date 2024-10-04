@@ -33,17 +33,29 @@ namespace sofa::component::engine::transform
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-int TranslateTransformMatrixEngineClass = core::RegisterObject("Compose the input transform (if any) with the given translation")
-        .add< TranslateTransformMatrixEngine >();
+void registerTranslateTransformMatrixEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compose the input transform (if any) with the given translation.")
+        .add< TranslateTransformMatrixEngine >());
+}
 
-int InvertTransformMatrixEngineClass = core::RegisterObject("Inverts the input transform")
-        .add< InvertTransformMatrixEngine >();
+void registerInvertTransformMatrixEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Inverts the input transform.")
+        .add< InvertTransformMatrixEngine >());
+}
 
-int ScaleTransformMatrixEngineClass = core::RegisterObject("Compose the input transform (if any) with the given scale transformation")
-        .add< ScaleTransformMatrixEngine >();
+void registerScaleTransformMatrixEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compose the input transform (if any) with the given scale transformation.")
+        .add< ScaleTransformMatrixEngine >());
+}
 
-int RotateTransformMatrixEngineClass = core::RegisterObject("Compose the input transform (if any) with the given rotation")
-        .add< RotateTransformMatrixEngine >();
+void registerRotateTransformMatrixEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compose the input transform (if any) with the given rotation.")
+        .add< RotateTransformMatrixEngine >());
+}
 
 /*
  * AbstractTransformMatrixEngine

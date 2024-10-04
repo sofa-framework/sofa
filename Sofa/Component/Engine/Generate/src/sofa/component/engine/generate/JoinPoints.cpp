@@ -29,12 +29,12 @@ namespace sofa::component::engine::generate
 
 using namespace sofa::defaulttype;
 
-int JoinPointsClass = core::RegisterObject("?")
-        .add< JoinPoints<Vec3Types> >()
- 
-        ;
+void registerJoinPoints(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Merge points from a set of points within a given distance.")
+        .add< JoinPoints<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API JoinPoints<Vec3Types>;
- 
 
 } //namespace sofa::component::engine::generate

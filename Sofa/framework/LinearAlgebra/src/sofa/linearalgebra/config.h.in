@@ -59,3 +59,13 @@
         "v23.06", "v23.12", \
         "bloc has been renamed to block. ")
 #endif // SOFA_BUILD_SOFA_LINEARALGEBRA
+
+
+#ifdef SOFA_BUILD_SOFA_LINEARALGEBRA
+#define SOFA_ATTRIBUTE_DEPRECATED__MATRIXSUBTRACTION()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__MATRIXSUBTRACTION() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.12", "v25.06", \
+        "Use MatrixSubtraction instead (typo in the deprecated name).")
+#endif // SOFA_BUILD_SOFA_LINEARALGEBRA
