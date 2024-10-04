@@ -49,17 +49,12 @@ class SOFA_SIMULATION_CORE_API BaseCollisionVisitor : public Visitor
     size_t m_primitiveTestCount;
 };
 
-class BaseProcessGeometricalData
-{
-public:
-    virtual void fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet);
-};
-
-class SOFA_SIMULATION_CORE_API ProcessGeometricalDataVisitor : public Visitor, public BaseProcessGeometricalData
+class SOFA_SIMULATION_CORE_API ProcessGeometricalDataVisitor : public Visitor
 {
    public:
     ProcessGeometricalDataVisitor(const core::ExecParams* params) :Visitor(params) {}
 
+    virtual void fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet);
     Result processNodeTopDown(simulation::Node* node) override;
 
     /// Return a category name for this action.
@@ -70,12 +65,12 @@ class SOFA_SIMULATION_CORE_API ProcessGeometricalDataVisitor : public Visitor, p
 };
 
 /// Compute collision reset, detection and response in one step
-class SOFA_SIMULATION_CORE_API CollisionVisitor :  public BaseCollisionVisitor, public BaseProcessGeometricalData
+class SOFA_SIMULATION_CORE_API CollisionVisitor :  public BaseCollisionVisitor
 {
 public:
     CollisionVisitor(const core::ExecParams* params) : BaseCollisionVisitor(params) {}
 
-
+    virtual void fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet);
     Result processNodeTopDown(simulation::Node* node) override;
 
     /// Return a category name for this action.

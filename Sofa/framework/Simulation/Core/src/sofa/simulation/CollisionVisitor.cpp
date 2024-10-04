@@ -78,7 +78,23 @@ Visitor::Result BaseCollisionVisitor::processNodeTopDown(simulation::Node* node)
 }
 
 
-void BaseProcessGeometricalData::fwdConstraintSet(simulation::Node*
+void CollisionVisitor::fwdConstraintSet(simulation::Node*
+#ifdef SOFA_DUMP_VISITOR_INFO
+                                            node
+#endif
+                                        , core::behavior::BaseConstraintSet* c)
+{
+#ifdef SOFA_DUMP_VISITOR_INFO
+    printComment("computeCollisionDetectionInConstraints");
+    ctime_t t0=begin(node, c);
+#endif
+    c->processGeometricalData();
+#ifdef SOFA_DUMP_VISITOR_INFO
+    end(node, c,t0);
+#endif
+}
+
+void ProcessGeometricalDataVisitor::fwdConstraintSet(simulation::Node*
 #ifdef SOFA_DUMP_VISITOR_INFO
                                             node
 #endif
