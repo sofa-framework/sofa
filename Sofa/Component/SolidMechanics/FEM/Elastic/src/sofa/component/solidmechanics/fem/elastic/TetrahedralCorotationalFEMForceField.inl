@@ -904,7 +904,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initLarge(int i, Index&a, 
             matVert[k][l] = X0[ix][l - 1];
     }
 
-    const bool canInvert = type::invertMatrix(tetrahedronInf[i].elemShapeFun, matVert);
+    [[maybe_unused]] const bool canInvert = type::invertMatrix(tetrahedronInf[i].elemShapeFun, matVert);
 
     tetrahedronInfo.endEdit();
 }
@@ -1253,7 +1253,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
         const TetrahedronInformation& tetraInfo = tetrahedronInf[i];
 
         computeRotationLarge(R_0_2, X, tetra[0], tetra[1], tetra[2]);
-        //tetraInfo.rotation.transpose(R_0_2);
 
         // positions of the deformed and displaced Tetrahedron in its frame
         type::fixed_array<Coord, 4> deforme;

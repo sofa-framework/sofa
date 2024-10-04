@@ -197,7 +197,7 @@ public:
     Data<type::vector<Real> > d_vonMisesPerElement; ///< von Mises Stress per element
     Data<type::vector<Real> > d_vonMisesPerNode; ///< von Mises Stress per node
     
-    sofa::helper::ColorMap* m_VonMisesColorMap;
+    sofa::helper::ColorMap* m_vonMisesColorMap;
     Real prevMaxStress = -1.0;
 
     using Inherit1::l_topology;
