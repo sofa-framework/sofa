@@ -531,8 +531,6 @@ void GenericConstraintSolver::applyMotionCorrection(
 
 void GenericConstraintSolver::computeAndApplyMotionCorrection(const core::ConstraintParams* cParams, MultiVecId res1, MultiVecId res2) const
 {
-    SCOPED_TIMER("Compute And Apply Motion Correction");
-
     static constexpr auto supportedCorrections = {
         sofa::core::ConstraintOrder::POS_AND_VEL,
         sofa::core::ConstraintOrder::POS,
@@ -544,11 +542,11 @@ void GenericConstraintSolver::computeAndApplyMotionCorrection(const core::Constr
         for (const auto& constraintCorrection : filteredConstraintCorrections())
         {
             {
-                SCOPED_TIMER("ComputeCorrection");
+                SCOPED_TIMER("doComputeCorrection");
                 constraintCorrection->computeMotionCorrectionFromLambda(cParams, this->getDx(), &current_cp->f);
             }
 
-            SCOPED_TIMER("ApplyCorrection");
+            SCOPED_TIMER("doApplyCorrection");
             applyMotionCorrection(cParams, res1, res2, constraintCorrection);
         }
     }
