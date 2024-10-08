@@ -54,6 +54,9 @@ void NarrowPhaseDetection::draw(const core::visual::VisualParams* vparams)
 {
     if(! vparams->displayFlags().getShowDetectionOutputs()) return;
 
+    [[maybe_unused]] auto state = vparams->drawTool()->makeStateLifeCycle();
+    vparams->drawTool()->disableLighting();
+
     std::vector<type::Vec3> points;
 
     for (auto mapIt = m_outputsMap.begin(); mapIt!=m_outputsMap.end() ; ++mapIt)
