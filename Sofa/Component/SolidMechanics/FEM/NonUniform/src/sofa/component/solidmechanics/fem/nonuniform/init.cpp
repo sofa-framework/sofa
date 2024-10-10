@@ -38,9 +38,9 @@ extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
-void init()
+void initExternalModule()
 {
-    initExternalModule();
+    init();
 }
 
 const char* getModuleName()
@@ -61,7 +61,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerNonUniformHexahedronFEMForceFieldAndMass(factory);
 }
 
-void initExternalModule()
+void init()
 {
     static bool first = true;
     if (first)
