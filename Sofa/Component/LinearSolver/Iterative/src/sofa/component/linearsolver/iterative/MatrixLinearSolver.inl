@@ -528,10 +528,10 @@ bool MatrixLinearSolver<Matrix, Vector>::singleThreadAddJMInvJtLocal(Matrix* M, 
 template<class Matrix, class Vector>
 bool MatrixLinearSolver<Matrix,Vector>::addMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, SReal fact)
 {
-    for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
+    for (typename JMatrixType::Index row = 0; row < J->rowSize(); ++row)
     {
         // STEP 1 : put each line of matrix Jt in the right hand term of the system
-        for (typename JMatrixType::Index i=0; i<J->colSize(); i++)
+        for (typename JMatrixType::Index i = 0; i < J->colSize(); ++i)
         {
             getSystemRHVector()->set(i, J->element(row, i)); // linearSystem.systemMatrix->rowSize()
         }
@@ -540,7 +540,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJtLocal(Matrix * /*M*/,ResMatrixT
         solveSystem();
 
         // STEP 3 : project the result using matrix J
-        for (typename JMatrixType::Index i=0; i<J->colSize(); i++)
+        for (typename JMatrixType::Index i = 0; i < J->colSize(); ++i)
         {
             result->add(row, i, getSystemRHVector()->element(i) * fact);
         }
@@ -552,7 +552,10 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJtLocal(Matrix * /*M*/,ResMatrixT
 template<class Matrix, class Vector>
 bool MatrixLinearSolver<Matrix,Vector>::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact)
 {
-    if (J->rowSize()==0) return true;
+    if (J->rowSize() == 0)
+    {
+        return true;
+    }
 
     const JMatrixType * j_local = internalData.getLocalJ(J);
     ResMatrixType * res_local = internalData.getLocalRes(result);
@@ -585,9 +588,9 @@ bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::
         return true;
     }
 
-    executeVisitor(MechanicalGetConstraintJacobianVisitor(cparams,j_local));
+    executeVisitor(MechanicalGetConstraintJacobianVisitor(cparams, j_local));
 
-    return addJMInvJt(result,j_local,fact);
+    return addJMInvJt(result, j_local, fact);
 }
 
 template<class Matrix, class Vector>

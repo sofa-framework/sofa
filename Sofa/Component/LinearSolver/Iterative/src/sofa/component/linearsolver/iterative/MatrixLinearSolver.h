@@ -36,6 +36,7 @@
 #include <sofa/linearalgebra/RotationMatrix.h>
 #include <sofa/component/linearsystem/TypedMatrixLinearSystem.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSystem[GraphScattered].h>
+#include <sofa/type/trait/Rebind.h>
 
 #if SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR
 #include <sofa/core/behavior/CRSMultiMatrixAccessor.h>
@@ -86,25 +87,6 @@ public:
     typedef sofa::linearalgebra::SparseMatrix<Real> JMatrixType;
     typedef linearalgebra::BaseMatrix ResMatrixType;
 
-    template<typename MReal>
-    JMatrixType * copyJmatrix(linearalgebra::SparseMatrix<MReal> * J)
-    {
-        J_local.clear();
-        J_local.resize(J->rowSize(),J->colSize());
-
-        for (auto jit1 = J->begin(); jit1 != J->end(); jit1++)
-        {
-            auto l = jit1->first;
-            for (auto i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
-            {
-                auto c = i1->first;
-                MReal val = i1->second;
-                J_local.set(l,c,val);
-            }
-        }
-        return &J_local;
-    }
-
     void projectForceInConstraintSpace(linearalgebra::BaseVector* r,const linearalgebra::BaseVector* f) {
         for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = J_local.begin(), jitend = J_local.end(); jit != jitend; ++jit) {
             auto row = jit->first;
@@ -121,35 +103,43 @@ public:
         return &J_local;
     }
 
+    /**
+     * Returns a JMatrixType as a pointer to the input matrix (if the input
+     * matrix type is a JMatrixType), or a copy of the input matrix as a pointer
+     * to the class member @J_local.
+     */
     JMatrixType * getLocalJ(linearalgebra::BaseMatrix * J)
     {
         if (JMatrixType * j = dynamic_cast<JMatrixType *>(J))
         {
             return j;
         }
-        else if (linearalgebra::SparseMatrix<double> * j = dynamic_cast<linearalgebra::SparseMatrix<double> *>(J))
-        {
-            return copyJmatrix(j);
-        }
-        else if (linearalgebra::SparseMatrix<float> * j = dynamic_cast<linearalgebra::SparseMatrix<float> *>(J))
-        {
-            return copyJmatrix(j);
-        }
-        else
-        {
-            J_local.clear();
-            J_local.resize(J->rowSize(),J->colSize());
 
-            for (typename JMatrixType::Index j=0; j<J->rowSize(); j++)
+        using OtherReal = std::conditional_t<std::is_same_v<Real, double>, float, double>;
+
+        //in case the matrix J is not the same type as JMatrixType, it is
+        //copied in the local variable. There are 2 cases:
+
+        //Case 1: J can be rebound: the copy is optimized
+        if (auto * j_d = dynamic_cast<sofa::type::rebind_to<JMatrixType, OtherReal> *>(J))
+        {
+            return convertMatrix(*j_d);
+        }
+
+        //Case 2: generic case: slow copy
+        J_local.clear();
+        J_local.resize(J->rowSize(),J->colSize());
+
+        using Index = typename JMatrixType::Index;
+        for (Index j = 0; j < J->rowSize(); ++j)
+        {
+            for (Index i = 0; i < J->colSize(); ++i)
             {
-                for (typename JMatrixType::Index i=0; i<J->colSize(); i++)
-                {
-                    J_local.set(j,i,J->element(j,i));
-                }
+                J_local.set(j, i, J->element(j, i));
             }
-
-            return &J_local;
         }
+
+        return &J_local;
     }
 
     ResMatrixType * getLocalRes(linearalgebra::BaseMatrix * R)
@@ -160,6 +150,27 @@ public:
 
     void addLocalRes(linearalgebra::BaseMatrix * /*R*/)
     {}
+
+protected:
+
+    template<typename MReal>
+    JMatrixType * convertMatrix(const linearalgebra::SparseMatrix<MReal>& inputMatrix)
+    {
+        J_local.clear();
+        J_local.resize(inputMatrix.rowSize(), inputMatrix.colSize());
+
+        for (auto jit1 = inputMatrix.begin(); jit1 != inputMatrix.end(); ++jit1)
+        {
+            const auto l = jit1->first;
+            for (auto i1 = jit1->second.begin(); i1 != jit1->second.end(); ++i1)
+            {
+                const auto c = i1->first;
+                const MReal val = i1->second;
+                J_local.set(l, c, val);
+            }
+        }
+        return &J_local;
+    }
 
 private :
     JMatrixType J_local;
