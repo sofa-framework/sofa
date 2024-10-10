@@ -28,22 +28,13 @@ namespace sofa::component::mapping::linear
 {
 
 using namespace defaulttype;
-using namespace core;
 
-
-// Register in the Factory
-int SkinningMappingClass = core::RegisterObject("skin a model from a set of rigid dofs")
-
-// Rigid Types
-        .add< SkinningMapping< Rigid3Types, Vec3Types > >()
-
-
-
-        ;
+void registerSkinningMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Skin a model from a set of rigid dofs.")
+        .add< SkinningMapping< Rigid3Types, Vec3Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_LINEAR_API SkinningMapping< Rigid3Types, Vec3Types >;
-
-
-
 
 } //namespace sofa::component::mapping::linear
