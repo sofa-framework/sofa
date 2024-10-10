@@ -1331,7 +1331,10 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
 
 }
 
-int LCPConstraintSolverClass = core::RegisterObject("A Constraint Solver using the Linear Complementarity Problem formulation to solve BaseConstraint based components")
-        .add< LCPConstraintSolver >();
+void registerLCPConstraintSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A Constraint Solver using the Linear Complementarity Problem formulation to solve BaseConstraint based components.")
+        .add< LCPConstraintSolver >());
+}
 
 } //namespace sofa::component::constraint::lagrangian::solver

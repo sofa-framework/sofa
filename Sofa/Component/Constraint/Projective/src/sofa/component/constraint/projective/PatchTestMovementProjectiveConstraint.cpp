@@ -28,11 +28,12 @@
 namespace sofa::component::constraint::projective
 {
 
-//declaration of the class, for the factory
-int PatchTestMovementProjectiveConstraintClass = core::RegisterObject("bilinear constraint")
+void registerPatchTestMovementProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Impose a motion to all the boundary points of a mesh.")
         .add< PatchTestMovementProjectiveConstraint<defaulttype::Vec3Types> >()
-        .add< PatchTestMovementProjectiveConstraint<defaulttype::Rigid3Types> >()
-        ;
+        .add< PatchTestMovementProjectiveConstraint<defaulttype::Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PatchTestMovementProjectiveConstraint<defaulttype::Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PatchTestMovementProjectiveConstraint<defaulttype::Rigid3Types>;

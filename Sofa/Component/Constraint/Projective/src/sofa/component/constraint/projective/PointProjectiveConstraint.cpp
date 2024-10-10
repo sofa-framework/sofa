@@ -29,15 +29,15 @@ namespace sofa::component::constraint::projective
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
-
-int PointProjectiveConstraintClass = core::RegisterObject("Project particles to a point")
+void registerPointProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Project particles to a point")
         .add< PointProjectiveConstraint<Vec3Types> >()
         .add< PointProjectiveConstraint<Vec2Types> >()
         .add< PointProjectiveConstraint<Vec1Types> >()
-        .add< PointProjectiveConstraint<Vec6Types> >()
-        ;
+        .add< PointProjectiveConstraint<Vec6Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PointProjectiveConstraint<Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PointProjectiveConstraint<Vec2Types>;

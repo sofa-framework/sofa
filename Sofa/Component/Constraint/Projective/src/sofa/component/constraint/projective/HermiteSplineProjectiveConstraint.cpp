@@ -28,12 +28,14 @@
 namespace sofa::component::constraint::projective
 {
 
-int HermiteSplineProjectiveConstraintClass = core::RegisterObject("Apply a hermite cubic spline trajectory to given points")
+void registerHermiteSplineProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Apply a hermite cubic spline trajectory to given points.")
         .add< HermiteSplineProjectiveConstraint<defaulttype::Vec3Types> >()
-        .add< HermiteSplineProjectiveConstraint<defaulttype::Rigid3Types> >()
-        ;
+        .add< HermiteSplineProjectiveConstraint<defaulttype::Rigid3Types> >());
+}
 
-template <>
+template <> SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API
 void HermiteSplineProjectiveConstraint<defaulttype::Rigid3Types>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<defaulttype::Rigid3Types>::init();

@@ -28,17 +28,17 @@ namespace sofa::component::constraint::projective
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
-
-int PartialFixedProjectiveConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
+void registerPartialFixedProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Attach given particles to their initial positions, in some directions only.")
         .add< PartialFixedProjectiveConstraint<Vec3Types> >()
         .add< PartialFixedProjectiveConstraint<Vec2Types> >()
         .add< PartialFixedProjectiveConstraint<Vec1Types> >()
         .add< PartialFixedProjectiveConstraint<Vec6Types> >()
         .add< PartialFixedProjectiveConstraint<Rigid3Types> >()
-        .add< PartialFixedProjectiveConstraint<Rigid2Types> >()
-        ;
+        .add< PartialFixedProjectiveConstraint<Rigid2Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PartialFixedProjectiveConstraint<Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PartialFixedProjectiveConstraint<Vec2Types>;

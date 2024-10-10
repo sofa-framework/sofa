@@ -121,17 +121,15 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void PrecomputedConstraintCo
 {
 }
 
-
-
-
 using namespace sofa::defaulttype;
 
-int PrecomputedConstraintCorrectionClass = core::RegisterObject("Component computing constraint forces within a simulated body using the compliance method.")
+void registerPrecomputedConstraintCorrection(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Component precomputing constraint forces within a simulated body using the compliance method.")
         .add< PrecomputedConstraintCorrection<Vec3Types> >()
         .add< PrecomputedConstraintCorrection<Vec1Types> >()
-        .add< PrecomputedConstraintCorrection<Rigid3Types> >()
-
-        ;
+        .add< PrecomputedConstraintCorrection<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API PrecomputedConstraintCorrection<Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API PrecomputedConstraintCorrection<Vec1Types>;

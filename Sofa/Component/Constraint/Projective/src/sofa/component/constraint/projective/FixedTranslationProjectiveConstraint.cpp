@@ -29,17 +29,17 @@ namespace sofa::component::constraint::projective
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
-int FixedTranslationProjectiveConstraintClass = core::RegisterObject("Attach given rigids to their initial positions but they still can have rotations")
+void registerFixedTranslationProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Attach given rigids to their initial positions but they still can have rotations.")
         .add< FixedTranslationProjectiveConstraint<Rigid3Types> >()
         .add< FixedTranslationProjectiveConstraint<Rigid2Types> >()
-        .add< FixedTranslationProjectiveConstraint<Vec6Types> >()
-    ;
+        .add< FixedTranslationProjectiveConstraint<Vec6Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedTranslationProjectiveConstraint<Rigid3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedTranslationProjectiveConstraint<Rigid2Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedTranslationProjectiveConstraint<Vec6Types>;
-
 
 } // namespace sofa::component::constraint::projective

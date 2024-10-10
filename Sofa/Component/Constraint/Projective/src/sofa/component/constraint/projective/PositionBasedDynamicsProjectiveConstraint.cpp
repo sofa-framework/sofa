@@ -32,26 +32,23 @@ namespace sofa::component::constraint::projective
 
 using namespace sofa::type;
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
-
-int PositionBasedDynamicsProjectiveConstraintClass = core::RegisterObject("Position-based dynamics")
+void registerPositionBasedDynamicsProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Position-based dynamics")
 
         .add< PositionBasedDynamicsProjectiveConstraint<Vec3Types> >(true)
         .add< PositionBasedDynamicsProjectiveConstraint<Vec2Types> >()
         .add< PositionBasedDynamicsProjectiveConstraint<Vec1Types> >()
         .add< PositionBasedDynamicsProjectiveConstraint<Vec6Types> >()
-        .add< PositionBasedDynamicsProjectiveConstraint<Rigid3Types> >()
-        ;
+        .add< PositionBasedDynamicsProjectiveConstraint<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsProjectiveConstraint<Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsProjectiveConstraint<Vec2Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsProjectiveConstraint<Vec1Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsProjectiveConstraint<Vec6Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsProjectiveConstraint<Rigid3Types>;
-//template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PositionBasedDynamicsProjectiveConstraint<Rigid2Types>;
-
-
 
 // specialization for rigids
 

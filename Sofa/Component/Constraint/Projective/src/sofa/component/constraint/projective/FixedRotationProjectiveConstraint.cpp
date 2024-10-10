@@ -30,11 +30,11 @@ namespace sofa::component::constraint::projective
 
 using namespace sofa::defaulttype;
 
-
-int FixedRotationProjectiveConstraintClass = core::RegisterObject("Prevents rotation around x or/and y or/and z axis")
-        .add< FixedRotationProjectiveConstraint<Rigid3Types> >()
-
-        ;
+void registerFixedRotationProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Prevents rotation around x or/and y or/and z axis.")
+        .add< FixedRotationProjectiveConstraint<Rigid3Types> >());
+}
 
 template class FixedRotationProjectiveConstraint<Rigid3Types>;
 

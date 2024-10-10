@@ -40,16 +40,15 @@ void LinearMovementProjectiveConstraint<defaulttype::Rigid3Types>::init()
     finished = false;
 }
 
-
-//declaration of the class, for the factory
-int LinearMovementProjectiveConstraintClass = core::RegisterObject("translate given particles")
+void registerLinearMovementProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Impose a motion to given DOFs (translation and rotation).")
         .add< LinearMovementProjectiveConstraint<defaulttype::Vec3Types> >()
         .add< LinearMovementProjectiveConstraint<defaulttype::Vec2Types> >()
         .add< LinearMovementProjectiveConstraint<defaulttype::Vec1Types> >()
         .add< LinearMovementProjectiveConstraint<defaulttype::Vec6Types> >()
-        .add< LinearMovementProjectiveConstraint<defaulttype::Rigid3Types> >()
-    ;
-
+        .add< LinearMovementProjectiveConstraint<defaulttype::Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearMovementProjectiveConstraint<defaulttype::Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearMovementProjectiveConstraint<defaulttype::Vec2Types>;

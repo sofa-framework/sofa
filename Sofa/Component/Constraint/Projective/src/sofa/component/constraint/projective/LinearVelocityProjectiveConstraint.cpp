@@ -29,16 +29,16 @@ namespace sofa::component::constraint::projective
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
-//declaration of the class, for the factory
-int LinearVelocityProjectiveConstraintClass = core::RegisterObject("apply velocity to given particles")
+void registerLinearVelocityProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Impose a velocity to given DOFs (translation and rotation).")
         .add< LinearVelocityProjectiveConstraint<Vec3Types> >()
         .add< LinearVelocityProjectiveConstraint<Vec2Types> >()
         .add< LinearVelocityProjectiveConstraint<Vec1Types> >()
         .add< LinearVelocityProjectiveConstraint<Vec6Types> >()
-        .add< LinearVelocityProjectiveConstraint<Rigid3Types> >()
-        ;
+        .add< LinearVelocityProjectiveConstraint<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearVelocityProjectiveConstraint<Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearVelocityProjectiveConstraint<Vec2Types>;
