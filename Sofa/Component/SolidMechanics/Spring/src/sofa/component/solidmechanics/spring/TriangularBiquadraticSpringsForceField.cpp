@@ -30,11 +30,11 @@ namespace sofa::component::solidmechanics::spring
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int TriangularBiquadraticSpringsForceFieldClass = core::RegisterObject("Biquadratic Springs on a Triangular Mesh")
-        .add< TriangularBiquadraticSpringsForceField<Vec3Types> >()
-
-        ;
+void registerTriangularBiquadraticSpringsForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Biquadratic Springs on a Triangular Mesh.")
+        .add< TriangularBiquadraticSpringsForceField<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API TriangularBiquadraticSpringsForceField<Vec3Types>;
 

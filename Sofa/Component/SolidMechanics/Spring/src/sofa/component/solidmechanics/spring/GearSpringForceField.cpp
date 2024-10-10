@@ -33,16 +33,14 @@ namespace sofa::component::solidmechanics::spring
 
 using namespace sofa::defaulttype;
 
-
-// Register in the Factory
-int GearSpringForceFieldClass = core::RegisterObject("Gear springs for Rigids")
-        .add< GearSpringForceField<Rigid3Types> >()
-
-        ;
+void registerGearSpringForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Gear springs for Rigids.")
+        .add< GearSpringForceField<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API GearSpring<defaulttype::Rigid3Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API GearSpringForceField<defaulttype::Rigid3Types>;
-
 
 } // namespace sofa::component::solidmechanics::spring
 
