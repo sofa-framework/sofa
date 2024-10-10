@@ -30,12 +30,13 @@ namespace sofa::component::constraint::lagrangian::model
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
-int SlidingLagrangianConstraintClass = core::RegisterObject("TODO-SlidingLagrangianConstraint")
-        .add< SlidingLagrangianConstraint<Vec3Types> >(true);
+void registerSlidingLagrangianConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Lagrangian-based partial fixation of DOFs of the model, along an axis.")
+        .add< SlidingLagrangianConstraint<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API SlidingLagrangianConstraint<Vec3Types>;
-
 
 } //namespace sofa::component::constraint::lagrangian::model

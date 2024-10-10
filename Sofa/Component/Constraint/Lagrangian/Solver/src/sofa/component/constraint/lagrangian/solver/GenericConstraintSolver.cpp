@@ -617,8 +617,10 @@ sofa::core::MultiVecDerivId GenericConstraintSolver::getDx() const
     return m_dxId;
 }
 
-
-int GenericConstraintSolverClass = core::RegisterObject("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
-        .add< GenericConstraintSolver >();
+void registerGenericConstraintSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
+        .add< GenericConstraintSolver >());
+}
 
 } //namespace sofa::component::constraint::lagrangian::solver

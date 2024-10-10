@@ -29,15 +29,14 @@ namespace sofa::component::constraint::projective
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
-
-int FixedPlaneProjectiveConstraintClass = core::RegisterObject("Project particles on a given plane")
+void registerFixedPlaneProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Project particles on a given plane.")
         .add< FixedPlaneProjectiveConstraint<Rigid3Types> >()
         .add< FixedPlaneProjectiveConstraint<Vec3Types> >()
-        .add< FixedPlaneProjectiveConstraint<Vec6Types> >()
-
-        ;
+        .add< FixedPlaneProjectiveConstraint<Vec6Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedPlaneProjectiveConstraint<defaulttype::Rigid3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedPlaneProjectiveConstraint<defaulttype::Vec3Types>;
