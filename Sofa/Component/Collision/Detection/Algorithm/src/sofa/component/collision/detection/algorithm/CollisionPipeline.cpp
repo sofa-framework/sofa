@@ -48,10 +48,11 @@ using namespace core::objectmodel;
 using namespace core::collision;
 using namespace sofa::defaulttype;
 
-int CollisionPipelineClass = core::RegisterObject("The default collision detection and modeling pipeline")
-        .add< CollisionPipeline >()
-        .addAlias("DefaultPipeline")
-        ;
+void registerCollisionPipeline(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("The default collision detection and modeling pipeline.")
+        .add< CollisionPipeline >());
+}
 
 const int CollisionPipeline::defaultDepthValue = 6;
 

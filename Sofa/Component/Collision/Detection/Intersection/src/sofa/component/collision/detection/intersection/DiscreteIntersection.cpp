@@ -37,9 +37,11 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace sofa::component::collision::geometry;
 
-int DiscreteIntersectionClass = core::RegisterObject("TODO-DiscreteIntersectionClass")
-        .add< DiscreteIntersection >()
-        ;
+void registerDiscreteIntersection(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Detect intersection using discrete methods.")
+        .add< DiscreteIntersection >());
+}
 
 DiscreteIntersection::DiscreteIntersection()
 {
