@@ -135,7 +135,7 @@ public:
     /// convert matrix to sym
     static void Mat2Sym( const Mat<D, D, real>& M, MatSym<D, real>& W)
     {
-        for (int j = 0; j < D; j++)
+        for (sofa::Size j = 0; j < D; j++)
         {
             for (int i = 0; i <= j; i++)
             {
