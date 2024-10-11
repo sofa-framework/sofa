@@ -104,6 +104,7 @@ public:
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
 
         simulation = simulation::getSimulation();
         root = simulation::getSimulation()->createNewGraph("root");
