@@ -503,30 +503,16 @@ Vec6 UniformMass<Rigid3Types>::getMomentum ( const MechanicalParams* params,
     return getMomentumRigid3DImpl<Rigid3Types>(params, d_x, d_v);
 }
 
-
-
-
-//////////////////////////////////////////// REGISTERING TO FACTORY /////////////////////////////////////////
-/// Registering the component
-/// see: https://www.sofa-framework.org/community/doc/programming-with-sofa/components-api/the-objectfactory/
-/// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
-/// 2-RegisterObject("description") + .add<> : Register the component
-/// 3-.add<>(true) : Set default template
-// Register in the Factory
-int UniformMassClass = core::RegisterObject("Define the same mass for all the particles")
-
+void registerUniformMass(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Define the same mass for all the particles.")
         .add< UniformMass<Vec3Types> >()
         .add< UniformMass<Vec2Types> >()
         .add< UniformMass<Vec1Types> >()
         .add< UniformMass<Vec6Types> >()
         .add< UniformMass<Rigid3Types> >()
-        .add< UniformMass<Rigid2Types> >()
-
-        ;
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
+        .add< UniformMass<Rigid2Types> >());
+}
 
 ////////////////////////////// TEMPLATE INITIALIZATION /////////////////////////////////////////////////
 /// Force template specialization for the most common sofa type.
