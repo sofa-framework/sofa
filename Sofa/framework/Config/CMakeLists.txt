@@ -105,8 +105,8 @@ if((CMAKE_SYSTEM_NAME STREQUAL Windows) AND SOFA_USE_DEPENDENCY_PACK)
 endif()
 
 # Compile options
-# Set C++17
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+# Set C++20
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
 set(SOFACONFIG_COMPILE_OPTIONS_DEBUG "")
 set(SOFACONFIG_COMPILE_OPTIONS_RELEASE "")
