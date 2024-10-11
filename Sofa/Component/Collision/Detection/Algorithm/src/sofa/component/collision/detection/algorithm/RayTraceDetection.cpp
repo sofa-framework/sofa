@@ -28,9 +28,11 @@
 namespace sofa::component::collision::detection::algorithm
 {
 
-int RayTraceDetectionClass = core::RegisterObject(
-        "Collision detection using TriangleOctreeModel").add<RayTraceDetection>();
-
+void registerRayTraceDetection(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Collision detection using TriangleOctreeModel.")
+        .add<RayTraceDetection>());
+}
 
 void RayTraceDetection::init()
 {

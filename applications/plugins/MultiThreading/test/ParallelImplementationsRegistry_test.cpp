@@ -31,9 +31,10 @@ namespace multithreading
 
 TEST(ParallelImplementationsRegistry, existInObjectFactory)
 {
-     // sequential versions will be added to the ObjectFactory
+    // sequential versions will be added to the ObjectFactory
     sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
-    sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
+    sofa::simpleapi::importPlugin("Sofa.Component.Collision.Detection.Algorithm");
+    sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");    
 
     const auto implementations = ParallelImplementationsRegistry::getImplementations();
 
@@ -46,4 +47,5 @@ TEST(ParallelImplementationsRegistry, existInObjectFactory)
         EXPECT_TRUE(sofa::core::ObjectFactory::getInstance()->hasCreator(par)) << par;
     }
 }
+
 }

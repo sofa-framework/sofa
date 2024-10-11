@@ -36,7 +36,11 @@ namespace sofa::component::collision::response::contact
 using namespace sofa::core;
 using namespace sofa::core::collision;
 
-int ContactListenerClass = core::RegisterObject("ContactListener .. ").add< ContactListener >();
+void registerContactListener(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Utility component to retrieve information about contacts.")
+        .add< ContactListener >());
+}
 
 ContactListener::ContactListener(  CollisionModel* collModel1 , CollisionModel* collModel2 )
     :  m_NarrowPhase(nullptr)

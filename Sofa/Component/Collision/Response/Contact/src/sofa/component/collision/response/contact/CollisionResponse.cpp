@@ -30,10 +30,11 @@
 namespace sofa::component::collision::response::contact
 {
 
-int CollisionResponseClass = core::RegisterObject("Default class to create reactions to the collisions")
-        .add< CollisionResponse >()
-        .addAlias("DefaultContactManager")
-        ;
+void registerCollisionResponse(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Default class to create reactions to the collisions.")
+        .add< CollisionResponse >());
+}
 
 CollisionResponse::CollisionResponse()
     : d_response(initData(&d_response, "response", "contact response class"))

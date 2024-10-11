@@ -26,9 +26,11 @@
 namespace sofa::component::collision::geometry
 {
 
-int TriangleCollisionModelClass = core::RegisterObject("collision model using a triangular mesh, as described in BaseMeshTopology")
-        .add< TriangleCollisionModel<defaulttype::Vec3Types> >()
-        ;
+void registerTriangleCollisionModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Collision model using a triangular mesh, as described in BaseMeshTopology.")
+        .add< TriangleCollisionModel<defaulttype::Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TTriangle<defaulttype::Vec3Types>;
 template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleCollisionModel<defaulttype::Vec3Types>;
