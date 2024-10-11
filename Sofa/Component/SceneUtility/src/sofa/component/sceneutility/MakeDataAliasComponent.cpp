@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <sofa/component/sceneutility/config.h>
 #include <sofa/core/ObjectFactory.h>
-using sofa::core::RegisterObject ;
 using sofa::core::ObjectFactory ;
 
 using sofa::core::objectmodel::ComponentState ;

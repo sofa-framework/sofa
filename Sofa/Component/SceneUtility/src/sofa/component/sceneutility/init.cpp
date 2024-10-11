@@ -29,7 +29,8 @@ namespace sofa::component::sceneutility
 extern void registerAddDataRepository(sofa::core::ObjectFactory* factory);
 extern void registerAddPluginRepository(sofa::core::ObjectFactory* factory);
 extern void registerAPIVersion(sofa::core::ObjectFactory* factory);
-extern void registerInfoComponent(sofa::core::ObjectFactory* factory);;
+extern void registerFileMessageHandlerComponent(sofa::core::ObjectFactory* factory);
+extern void registerInfoComponent(sofa::core::ObjectFactory* factory);
 extern void registerMakeAliasComponent(sofa::core::ObjectFactory* factory);
 extern void registerMakeDataAliasComponent(sofa::core::ObjectFactory* factory);
 extern void registerMessageHandlerComponent(sofa::core::ObjectFactory* factory);
@@ -62,6 +63,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerAddDataRepository(factory);
     registerAddPluginRepository(factory);
     registerAPIVersion(factory);
+    registerFileMessageHandlerComponent(factory);
     registerInfoComponent(factory);;
     registerMakeAliasComponent(factory);
     registerMakeDataAliasComponent(factory);
