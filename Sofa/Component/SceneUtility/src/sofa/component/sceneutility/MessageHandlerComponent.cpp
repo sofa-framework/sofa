@@ -25,7 +25,6 @@
 ******************************************************************************/
 #include <sofa/component/sceneutility/config.h>
 #include <sofa/core/ObjectFactory.h>
-using sofa::core::RegisterObject ;
 
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::ConsoleMessageHandler ;
@@ -155,8 +154,10 @@ void FileMessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescripti
     m_isValid = true ;
 }
 
-int FileMessageHandlerComponentClass = RegisterObject("This component dump all the messages into"
-                                                      "a file.")
-        .add< FileMessageHandlerComponent >()
-        ;
+void registerFileMessageHandlerComponent(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("This component dump all the messages into a file.")
+        .add< FileMessageHandlerComponent >());
+}
+
 } // namespace sofa::component::sceneutility
