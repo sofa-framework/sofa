@@ -71,16 +71,16 @@ Vec6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, con
     return momentum;
 }
 
-
-// Register in the Factory
-int MeshMatrixMassClass = core::RegisterObject("Define a specific mass for each particle")
+void registerMeshMatrixMass(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Define a specific mass for each particle.")
         .add< MeshMatrixMass<Vec3Types> >()
         .add< MeshMatrixMass<Vec2Types> >()
         .add< MeshMatrixMass<Vec2Types, Vec3Types> >()
         .add< MeshMatrixMass<Vec1Types> >()
         .add< MeshMatrixMass<Vec1Types, Vec2Types> >()
-        .add< MeshMatrixMass<Vec1Types, Vec3Types> >()
-;
+        .add< MeshMatrixMass<Vec1Types, Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec3Types>;
 template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec2Types>;
