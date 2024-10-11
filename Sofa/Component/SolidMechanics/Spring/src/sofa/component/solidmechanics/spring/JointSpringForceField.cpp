@@ -31,14 +31,11 @@ namespace sofa::component::solidmechanics::spring
 
 using namespace sofa::defaulttype;
 
-
-// Register in the Factory
-int JointSpringForceFieldClass = core::RegisterObject("Springs for Rigids")
-        .add< JointSpringForceField<Rigid3Types> >()
-
-        ;
-
+void registerNonUniformHexahedronFEMForceFieldAndMass(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Springs for Rigids.")
+        .add< JointSpringForceField<Rigid3Types> >());
+}
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API JointSpringForceField<defaulttype::Rigid3Types>;
-
 
 } // namespace sofa::component::solidmechanics::spring

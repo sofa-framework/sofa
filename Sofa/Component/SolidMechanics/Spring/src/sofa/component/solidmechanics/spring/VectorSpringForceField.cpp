@@ -30,13 +30,12 @@ namespace sofa::component::solidmechanics::spring
 
 using namespace sofa::defaulttype;
 
-int VectorSpringForceFieldClass = core::RegisterObject("Spring force field acting along the edges of a mesh")
-        .add< VectorSpringForceField<Vec3Types> >()
-
-        ;
+void registerVectorSpringForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Spring force field acting along the edges of a mesh.")
+        .add< VectorSpringForceField<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API VectorSpringForceField<Vec3Types>;
-
-
 
 } // namespace sofa::component::solidmechanics::spring

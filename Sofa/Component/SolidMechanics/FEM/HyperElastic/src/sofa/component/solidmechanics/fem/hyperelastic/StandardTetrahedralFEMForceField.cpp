@@ -31,11 +31,11 @@ namespace sofa::component::solidmechanics::fem::hyperelastic
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int StandardTetrahedralFEMForceFieldClass = core::RegisterObject("Generic Tetrahedral finite elements")
-.add< StandardTetrahedralFEMForceField<Vec3Types> >()
-
-;
+void registerStandardTetrahedralFEMForceField(sofa::core::ObjectFactory* factory)
+{
+	factory->registerObjects(core::ObjectRegistrationData("Generic Tetrahedral finite elements.")
+		.add< StandardTetrahedralFEMForceField<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API StandardTetrahedralFEMForceField<Vec3Types>;
 

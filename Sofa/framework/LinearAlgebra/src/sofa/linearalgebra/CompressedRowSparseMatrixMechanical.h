@@ -71,13 +71,16 @@ public:
     typedef typename CRSMatrix::IndexedBlock IndexedBlock;
     typedef typename CRSMatrix::VecIndexedBlock VecIndexedBlock;
 
+    template<class TBlock2>
+    using rebind_to = CompressedRowSparseMatrixMechanical< TBlock2, Policy >;
+
     typedef Matrix Expr;
     typedef CompressedRowSparseMatrixMechanical<double> matrix_type;
     enum { category = MATRIX_SPARSE };
     enum { operand = 1 };
 
-    enum { NL = CRSMatrix::NL };  ///< Number of rows of a block
-    enum { NC = CRSMatrix::NC };  ///< Number of columns of a block
+    static constexpr sofa::Index NL = traits::NL;  ///< Number of rows of a block
+    static constexpr sofa::Index NC = traits::NC;  ///< Number of columns of a block
 
     /// Size
     Index nRow,nCol;         ///< Mathematical size of the matrix, in scalars

@@ -62,7 +62,7 @@ public:
 protected:
     LinearSolverConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr);
 
-    virtual ~LinearSolverConstraintCorrection();
+    ~LinearSolverConstraintCorrection() override;
 public:
     void init() override;
 
@@ -110,13 +110,22 @@ public:
     void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
 
 protected:
-    linearalgebra::SparseMatrix<SReal> J; ///< constraint matrix
+    DeprecatedAndRemoved J; ///< use m_constraintMatrix instead
+
+    linearalgebra::SparseMatrix<Real> m_constraintJacobian;
+
+    SOFA_ATTRIBUTE_DEPRECATED__FORCES_IN_LINEARSOLVERCONSTRAINTCORRECTION()
     linearalgebra::FullVector<SReal> F; ///< forces computed from the constraints
 
     /**
-    * @brief Compute the compliance matrix
+    * @brief Convert the constraint matrix
     */
-    virtual void computeJ(sofa::linearalgebra::BaseMatrix* W, const MatrixDeriv& j);
+    void convertConstraintMatrix(sofa::SignedIndex numberOfConstraints, const MatrixDeriv& inputConstraintMatrix);
+
+    virtual void computeJ(sofa::linearalgebra::BaseMatrix* W, const MatrixDeriv& j)
+    {
+        convertConstraintMatrix(W->rowSize(), j);
+    }
 
 
     ////////////////////////// Inherited attributes ////////////////////////////

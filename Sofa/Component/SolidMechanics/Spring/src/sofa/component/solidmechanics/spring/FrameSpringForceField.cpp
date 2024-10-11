@@ -31,15 +31,12 @@ namespace sofa::component::solidmechanics::spring
 
 using namespace sofa::defaulttype;
 
-
-// Register in the Factory
-
-int FrameSpringForceFieldClass = core::RegisterObject ( "Springs for Flexibles" )
-        .add< FrameSpringForceField<Rigid3Types> >()
-
-        ;
+void registerFrameSpringForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Springs for Flexibles.")
+        .add< FrameSpringForceField<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API FrameSpringForceField<Rigid3Types>;
-
 
 } // namespace sofa::component::solidmechanics::spring
