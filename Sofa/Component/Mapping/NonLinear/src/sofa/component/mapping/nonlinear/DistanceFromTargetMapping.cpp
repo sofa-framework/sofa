@@ -29,13 +29,13 @@ namespace sofa::component::mapping::nonlinear
 
 using namespace defaulttype;
 
-// Register in the Factory
-int DistanceFromTargetMappingClass = core::RegisterObject("Compute edge extensions")
+void registerDistanceFromTargetMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Maps point positions to distances from target points.")
         .add< DistanceFromTargetMapping< Vec3Types, Vec1Types > >()
         .add< DistanceFromTargetMapping< Vec1Types, Vec1Types > >()
-        .add< DistanceFromTargetMapping< Rigid3Types, Vec1Types > >()
-
-        ;
+        .add< DistanceFromTargetMapping< Rigid3Types, Vec1Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceFromTargetMapping< Vec3Types, Vec1Types >;
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceFromTargetMapping< Vec1Types, Vec1Types >;

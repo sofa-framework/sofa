@@ -26,14 +26,10 @@
 namespace sofa::component::mapping::linear
 {
 
-using namespace sofa::defaulttype;
-using namespace core;
-using namespace core::behavior;
-
-
-// Register in the Factory
-int VoidMappingClass = core::RegisterObject("Special mapping that 'map' points for void ( no input DOF ). This is useful to be able to create animated objects mixed with real DOFs.")
-        .add< VoidMapping >()
-        ;
+void registerVoidMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Special mapping that 'map' points for void ( no input DOF ). This is useful to be able to create animated objects mixed with real DOFs.")
+        .add< VoidMapping >());
+}
 
 } // namespace sofa::component::mapping::linear

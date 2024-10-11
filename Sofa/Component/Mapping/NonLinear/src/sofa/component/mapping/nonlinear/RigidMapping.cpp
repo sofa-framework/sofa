@@ -41,13 +41,13 @@ void RigidMapping<Rigid3Types, Rigid3Types>::updateOmega(typename InDeriv::Rot& 
     omega += getVOrientation(out) + (typename InDeriv::Rot)cross(Out::getCPos(rotatedpoint), Out::getDPos(out));
 }
 
-
-// Register in the Factory
-int RigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
+void registerRigidMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Set the positions and velocities of points attached to a rigid parent.")
         .add< RigidMapping< Rigid3Types, Vec3Types > >(true)
         .add< RigidMapping< Rigid3Types, Rigid3Types > >()
-        .add< RigidMapping< Rigid2Types, Vec2Types > >()
-        ;
+        .add< RigidMapping< Rigid2Types, Vec2Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidMapping< Rigid3Types, Vec3Types >;
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidMapping< Rigid3Types, Rigid3Types >;

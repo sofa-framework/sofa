@@ -42,10 +42,11 @@ using namespace sofa::component::topology::container::dynamic;
 using namespace sofa::core::topology;
 using sofa::type::fixed_array;
 
-// Register in the Factory
-int SimpleTesselatedTetraTopologicalMappingClass = core::RegisterObject ( "Special case of mapping where TetrahedronSetTopology is converted into a finer TetrahedronSetTopology" )
-        .add< SimpleTesselatedTetraTopologicalMapping >()
-        ;
+void registerSimpleTesselatedTetraTopologicalMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Special case of mapping where TetrahedronSetTopology is converted into a finer TetrahedronSetTopology.")
+        .add< SimpleTesselatedTetraTopologicalMapping >());
+}
 
 // Implementation
 SimpleTesselatedTetraTopologicalMapping::SimpleTesselatedTetraTopologicalMapping ()

@@ -31,15 +31,15 @@ using namespace sofa::defaulttype;
 namespace sofa::component::mapping::linear
 {
 
-// Register in the Factory
-int SubsetMultiMappingClass = core::RegisterObject("Compute a subset of the input MechanicalObjects according to a dof index list")
-    .add< SubsetMultiMapping< Vec3Types, Vec3Types > >()
-    .add< SubsetMultiMapping< Vec2Types, Vec2Types > >()
-    .add< SubsetMultiMapping< Vec1Types, Vec1Types > >()
-    .add< SubsetMultiMapping< Rigid3Types, Rigid3Types > >()
-    .add< SubsetMultiMapping< Rigid3Types, Vec3Types > >()
-
-        ;
+void registerSubsetMultiMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compute a subset of the input MechanicalObjects according to a dof index list.")
+        .add< SubsetMultiMapping< Vec3Types, Vec3Types > >()
+        .add< SubsetMultiMapping< Vec2Types, Vec2Types > >()
+        .add< SubsetMultiMapping< Vec1Types, Vec1Types > >()
+        .add< SubsetMultiMapping< Rigid3Types, Rigid3Types > >()
+        .add< SubsetMultiMapping< Rigid3Types, Vec3Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< Vec3Types, Vec3Types >;
 template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< Vec2Types, Vec2Types >;

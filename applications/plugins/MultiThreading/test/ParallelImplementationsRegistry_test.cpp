@@ -31,7 +31,9 @@ namespace multithreading
 
 TEST(ParallelImplementationsRegistry, existInObjectFactory)
 {
-    sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative"); // sequential version will be added to the ObjectFactory
+    // sequential version will be added to the ObjectFactory
+    sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
+    sofa::simpleapi::importPlugin("Sofa.Component.Mapping.Linear");
 
     const auto implementations = ParallelImplementationsRegistry::getImplementations();
 

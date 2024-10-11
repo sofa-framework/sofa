@@ -30,12 +30,10 @@ namespace sofa::component::mapping::linear
 {
 
 using namespace sofa::defaulttype;
-using namespace core;
-using namespace core::behavior;
 
-
-// Register in the Factory
-int IdentityMappingClass = core::RegisterObject("Special case of mapping where the child points are the same as the parent points")
+void registerIdentityMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Special case of mapping where the child points are the same as the parent points")
         .add< IdentityMapping< Vec3Types, Vec3Types > >()
         .add< IdentityMapping< Vec2Types, Vec2Types > >()
         .add< IdentityMapping< Vec1Types, Vec1Types > >()
@@ -43,12 +41,9 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
         .add< IdentityMapping< Vec6Types, Vec6Types > >()
         .add< IdentityMapping< Rigid3Types, Rigid3Types > >()
         .add< IdentityMapping< Rigid2Types, Rigid2Types > >()
-
-// Rigid -> Vec
         .add< IdentityMapping< Rigid3Types, Vec3Types > >()
-        .add< IdentityMapping< Rigid2Types, Vec2Types > >()
-
-        ;
+        .add< IdentityMapping< Rigid2Types, Vec2Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_LINEAR_API IdentityMapping< Vec3Types, Vec3Types >;
 template class SOFA_COMPONENT_MAPPING_LINEAR_API IdentityMapping< Vec2Types, Vec2Types >;

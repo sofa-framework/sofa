@@ -29,12 +29,12 @@ namespace sofa::component::mapping::nonlinear
 
 using namespace defaulttype;
 
-
-// Register in the Factory
-int DistanceMappingClass = core::RegisterObject("Mapping each connected pair of Degrees of Freedom (DoFs) in a topology to a scalar value representing the distance between them.")
+void registerDistanceMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Mapping each connected pair of Degrees of Freedom(DoFs) in a topology to a scalar value representing the distance between them.")
         .add< DistanceMapping< Vec3Types, Vec1Types > >()
-        .add< DistanceMapping< Rigid3Types, Vec1Types > >()
-        ;
+        .add< DistanceMapping< Rigid3Types, Vec1Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMapping< Vec3Types, Vec1Types >;
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMapping< Rigid3Types, Vec1Types >;

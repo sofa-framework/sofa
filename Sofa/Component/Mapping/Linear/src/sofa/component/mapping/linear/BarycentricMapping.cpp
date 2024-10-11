@@ -30,12 +30,11 @@ namespace sofa::component::mapping::linear
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
-        .add< BarycentricMapping< Vec3Types, Vec3Types > >(true)
-
-
-        ;
+void registerBarycentricMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Mapping using barycentric coordinates of the child with respect to cells of its parent.")
+        .add< BarycentricMapping< Vec3Types, Vec3Types > >(true));
+}
 
 template class SOFA_COMPONENT_MAPPING_LINEAR_API BarycentricMapping< Vec3Types, Vec3Types >;
 

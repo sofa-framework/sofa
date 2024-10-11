@@ -24,7 +24,6 @@
 #include <sofa/component/mapping/nonlinear/DistanceMultiMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
-
 namespace sofa::component::mapping::nonlinear
 {
 
@@ -32,11 +31,14 @@ using defaulttype::Vec3Types;
 using defaulttype::Vec1Types;
 using defaulttype::Rigid3Types;
 
-int DistanceMultiMappingClass = core::RegisterObject("Compute edge extensions")
+void registerDistanceMultiMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Maps point positions from serveral mstates to distances (in distance unit).")
         .add< DistanceMultiMapping< Vec3Types, Vec1Types > >()
-        .add< DistanceMultiMapping< Rigid3Types, Vec1Types > >()
-        ;
+        .add< DistanceMultiMapping< Rigid3Types, Vec1Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMultiMapping< Vec3Types, Vec1Types >;
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMultiMapping< Rigid3Types, Vec1Types >;
+
 }
