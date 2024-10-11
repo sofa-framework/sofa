@@ -29,15 +29,13 @@ namespace sofa::component::solidmechanics::spring
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int FastTriangularBendingSpringsClass = core::RegisterObject("Springs added to a triangular mesh to prevent bending")
-        .add< FastTriangularBendingSprings<Vec3Types> >()
-
-        ;
+void registerFastTriangularBendingSprings(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Springs added to a triangular mesh to prevent bending.")
+        .add< FastTriangularBendingSprings<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API FastTriangularBendingSprings<Vec3Types>;
-
-
 
 } // namespace sofa::component::solidmechanics::spring
 

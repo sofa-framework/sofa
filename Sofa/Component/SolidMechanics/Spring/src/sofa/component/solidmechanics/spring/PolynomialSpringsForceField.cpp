@@ -33,11 +33,11 @@ namespace sofa::component::solidmechanics::spring
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(PolynomialSpringsForceField)
-
-int PolynomialSpringsForceFieldClass = core::RegisterObject("Simple elastic springs applied to given degrees of freedom between their current and rest shape position")
-        .add< PolynomialSpringsForceField<Vec3Types> >()
-        ;
+void registerPolynomialSpringsForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Simple elastic springs applied to given degrees of freedom between their current and rest shape position.")
+        .add< PolynomialSpringsForceField<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API PolynomialSpringsForceField<Vec3Types>;
 
