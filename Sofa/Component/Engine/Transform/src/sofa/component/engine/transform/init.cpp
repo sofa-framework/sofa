@@ -28,6 +28,7 @@ namespace sofa::component::engine::transform
     
 extern void registerDifferenceEngine(sofa::core::ObjectFactory* factory);
 extern void registerDilateEngine(sofa::core::ObjectFactory* factory);
+extern void registerDisplacementMatrixEngine(sofa::core::ObjectFactory* factory);
 extern void registerDisplacementTransformEngine(sofa::core::ObjectFactory* factory);
 extern void registerIndexValueMapper(sofa::core::ObjectFactory* factory);
 extern void registerIndices2ValuesMapper(sofa::core::ObjectFactory* factory);
@@ -73,6 +74,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
 {
     registerDifferenceEngine(factory);
     registerDilateEngine(factory);
+    registerDisplacementMatrixEngine(factory);
     registerDisplacementTransformEngine(factory);
     registerIndexValueMapper(factory);
     registerIndices2ValuesMapper(factory);
