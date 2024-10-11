@@ -67,11 +67,11 @@ void DisplacementTransformEngine<Rigid3Types,Mat4x4>::mult( Mat4x4& out, const M
     out = out * inv;
 }
 
-/////////////////////////////////////////
-
-int DisplacementMatrixEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement matrices.")
-    .add< DisplacementMatrixEngine<Rigid3Types> >()
-;
+void registerDisplacementMatrixEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Converts a vector of Rigid to a vector of displacement matrices.")
+        .add< DisplacementMatrixEngine<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DisplacementMatrixEngine<Rigid3Types>;
 
