@@ -7,7 +7,7 @@
   glew,
   gtest,
   lib,
-  libsForQt5,
+  qt6Packages,
   libGL,
   metis,
   stdenv,
@@ -42,7 +42,7 @@ stdenv.mkDerivation {
 
   propagatedNativeBuildInputs = [
     cmake
-    libsForQt5.wrapQtAppsHook
+    qt6Packages.wrapQtAppsHook
   ];
   propagatedBuildInputs = [
     boost
@@ -50,7 +50,8 @@ stdenv.mkDerivation {
     eigen
     glew
     gtest
-    libsForQt5.libqglviewer
+    qt6Packages.libqglviewer
+    qt6Packages.qtbase
     libGL
     metis
     tinyxml-2
