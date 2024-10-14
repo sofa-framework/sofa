@@ -26,8 +26,7 @@
 #include <sofa/helper/logging/ComponentInfo.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/type/fixed_array.h>
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
+#include <map>
 
 
 namespace sofa::helper
