@@ -66,7 +66,7 @@ protected:
     SlidingLagrangianConstraint(MechanicalState* object);
     SlidingLagrangianConstraint(MechanicalState* object1, MechanicalState* object2);
 
-    virtual ~SlidingLagrangianConstraint(){}
+    ~SlidingLagrangianConstraint() override {}
 
 
 

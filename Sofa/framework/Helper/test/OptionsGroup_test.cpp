@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <sofa/helper/OptionsGroup.h>
 #include <gtest/gtest.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
+
 
 namespace sofa
 {
@@ -48,6 +50,11 @@ TEST(OptionsGroup, constructors)
     EXPECT_EQ(opt3.getSelectedItem(), "optionB");
     EXPECT_EQ(opt4.getSelectedItem(), "optionA");
     EXPECT_EQ(opt5.getSelectedItem(), "optionB");
+}
+
+TEST(OptionsGroup, DataTypeInfo)
+{
+    EXPECT_EQ(defaulttype::DataTypeInfo<OptionsGroup>::GetTypeName(), "OptionsGroup");
 }
 
 }

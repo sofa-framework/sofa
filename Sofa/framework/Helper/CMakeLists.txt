@@ -42,6 +42,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/RandomGenerator.h
     ${SRC_ROOT}/SimpleTimer.h
     ${SRC_ROOT}/ScopedAdvancedTimer.h
+    ${SRC_ROOT}/SelectableItem.h
     ${SRC_ROOT}/SortedPermutation.h
     ${SRC_ROOT}/StringUtils.h
     ${SRC_ROOT}/TagFactory.h
