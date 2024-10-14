@@ -64,6 +64,13 @@ stdenv.mkDerivation {
 
   doCheck = true;
 
+  postFixup = lib.optionalString stdenv.hostPlatform.isDarwin ''
+    install_name_tool -change \
+      $out/lib/libSceneChecking.24.12.99.dylib \
+      $out/plugins/SceneChecking/lib/libSceneChecking.24.12.99.dylib \
+      $out/bin/.runSofa-24.12.99-wrapped
+  '';
+
   meta = {
     description = "Real-time multi-physics simulation with an emphasis on medical simulation";
     homepage = "https://github.com/sofa-framework/sofa";
