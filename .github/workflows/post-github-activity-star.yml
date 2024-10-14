@@ -15,9 +15,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install python-graphql-client
-          pip install python-dateutil
-          pip install requests
+          apt install pipx
+          pipx install python-graphql-client
+          pipx install python-dateutil
+          pipx install requests
         working-directory: ${{ github.workspace }}
 
       # Star/watch related event
