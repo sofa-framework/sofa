@@ -14,8 +14,8 @@ if(NOT TARGET QGLViewer)
 
   if(NOT QGLViewer_INCLUDE_DIR)
     find_path(QGLViewer_INCLUDE_DIR
-      NAMES qglviewer.h
-      PATH_SUFFIXES include/QGLViewer
+      NAMES QGLViewer/qglviewer.h
+      PATH_SUFFIXES include Headers
     )
   endif()
 
