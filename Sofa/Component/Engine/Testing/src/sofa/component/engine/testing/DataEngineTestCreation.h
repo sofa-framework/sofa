@@ -115,7 +115,7 @@ struct DataEngine_test : public BaseTest
 
     /// Testing the number of call to the DataEngine::update() function
     /// @warning DO NOT test the values computed by the engine
-    /// To do so, you can inherit this class and add a test function that takes inputs and ouputs to test
+    /// To do so, you can inherit this class and add a test function that takes inputs and outputs to test
     void run_basic_test()
     {
         /// The comp

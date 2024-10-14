@@ -421,7 +421,7 @@ public:
 
 
 /** @brief The WriteOnlyAccessor provides an access to the Data without triggering an engine update.
- * This should be the prefered writeAccessor for most of the cases as it avoids uncessary Data updates.
+ * This should be the preferred writeAccessor for most of the cases as it avoids unnecessary Data updates.
  * @warning read access to the Data is NOT up-to-date
  */
 template<class T>

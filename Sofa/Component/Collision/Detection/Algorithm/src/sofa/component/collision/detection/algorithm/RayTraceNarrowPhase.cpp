@@ -52,7 +52,7 @@ void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisi
         return;
 
 
-    /*construct the octree of both models, when it still doesn't exisits */
+    /*construct the octree of both models, when it still doesn't exists */
     if (!tm1->octreeRoot)
     {
 

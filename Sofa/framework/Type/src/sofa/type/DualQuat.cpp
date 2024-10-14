@@ -27,7 +27,7 @@
 namespace sofa::type
 {
 
-// instanciate the classes
+// instantiate the classes
 template class SOFA_TYPE_API DualQuatCoord3<double>;
 template class SOFA_TYPE_API DualQuatCoord3<float>;
 

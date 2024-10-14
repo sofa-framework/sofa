@@ -230,7 +230,7 @@ set(CUDA_SOURCES
 sofa_find_package(Sofa.GL QUIET)
 if(NOT Sofa.GL_FOUND)
     message(WARNING "Sofa.GL is not active.")
-    message("OpenGL-related code wont be enabled (Sharing OpenGL buffers with CUDA)")
+    message("OpenGL-related code won't be enabled (Sharing OpenGL buffers with CUDA)")
 else()
     list(APPEND HEADER_FILES
         sofa/gpu/cuda/CudaVisualModel.h

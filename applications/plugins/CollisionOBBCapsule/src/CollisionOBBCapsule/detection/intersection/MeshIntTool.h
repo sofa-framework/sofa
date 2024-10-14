@@ -66,7 +66,7 @@ public:
     static int doCapLineInt(const type::Vec3 & p1,const type::Vec3 & p2,SReal cap_rad,
                          const type::Vec3 & q1, const type::Vec3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1 = false,bool ignore_p2 = false);
 
-    ////!\ CAUTION : uninitialized fields detection->elem and detection->id and detection->value, you have to substract contactDist, because
+    ////!\ CAUTION : uninitialized fields detection->elem and detection->id and detection->value, you have to subtract contactDist, because
     ///this function can be used also as doIntersectionTriangleSphere where the contactDist = getContactDist() + sphere_radius
     static int doIntersectionTrianglePoint(SReal dist2, int flags, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& p3,const type::Vec3& q, OutputVector* contacts,bool swapElems = false);
 

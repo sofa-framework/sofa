@@ -57,7 +57,7 @@
 #define SOFA_ATTRIBUTE_DISABLED__CRS_BLOCK_RENAMING() \
     SOFA_ATTRIBUTE_DISABLED( \
         "v23.06", "v23.12", \
-        "bloc has been renamed to block. ")
+        "block has been renamed to block. ")
 #endif // SOFA_BUILD_SOFA_LINEARALGEBRA
 
 

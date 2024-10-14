@@ -90,7 +90,7 @@ public:
         assert(canInvert);
         SOFA_UNUSED(canInvert);
 
-        // invW is unsused in this scope, remove the warning:
+        // invW is unused in this scope, remove the warning:
         SOFA_UNUSED(invW);
 
         if(_f)

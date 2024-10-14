@@ -75,7 +75,7 @@ const char* getModuleVersion()
 
 const char* getModuleDescription()
 {
-    return "Force feedback with sensable devices into SOFA Framework";
+    return "Force feedback with sensible devices into SOFA Framework";
 }
 
 const char* getModuleComponentList()

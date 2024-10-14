@@ -30,7 +30,7 @@ using namespace defaulttype;
 
 void registerReadTopology(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Read topology containers informations from file at each timestep.")
+    factory->registerObjects(core::ObjectRegistrationData("Read topology containers information from file at each timestep.")
         .add< ReadTopology >());
 }
 

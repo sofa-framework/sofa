@@ -172,7 +172,7 @@ if(${ICU_PUBLIC_VAR_NS}_INCLUDE_DIR)
         set(${ICU_PUBLIC_VAR_NS}_VERSION_PATCH "0")
     elseif(${ICU_PRIVATE_VAR_NS}_VERSION_HEADER_CONTENTS MATCHES ".*# *define *U_ICU_VERSION_MAJOR_NUM *([0-9]+).*")
         #
-        # Since version 4.9.1, ICU release version numbering was totaly changed, see:
+        # Since version 4.9.1, ICU release version numbering was totally changed, see:
         # - http://site.icu-project.org/download/49
         # - http://userguide.icu-project.org/design#TOC-Version-Numbers-in-ICU
         #
@@ -339,9 +339,9 @@ endfunction(_icu_extract_locale_from_rb)
 #   - none (default):
 #       * PACKAGE     : if present, package all resource bundles together. Default is to stop after building individual *.res files
 #       * TYPE <name> : one of :
-#           + common or archive (default) : archive all ressource bundles into a single .dat file
-#           + library or dll              : assemble all ressource bundles into a separate and loadable library (.dll/.so)
-#           + static                      : integrate all ressource bundles to targets designed by DEPENDS parameter (as a static library)
+#           + common or archive (default) : archive all resource bundles into a single .dat file
+#           + library or dll              : assemble all resource bundles into a separate and loadable library (.dll/.so)
+#           + static                      : integrate all resource bundles to targets designed by DEPENDS parameter (as a static library)
 #       * NO_SHARED_FLAGS                 : only with TYPE in ['library', 'dll', 'static'], do not append ICU_C(XX)_SHARED_FLAGS to targets given as DEPENDS argument
 #   - JAVA:
 #       * BUNDLE <name> : required, prefix for generated classnames

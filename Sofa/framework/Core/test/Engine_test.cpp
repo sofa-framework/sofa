@@ -55,13 +55,13 @@ struct Engine_test : public BaseTest
        engine1->f_factor.setValue(2);
        engine1->init();
 
-       // Engine 2 linked to the ouput of engine 1
+       // Engine 2 linked to the output of engine 1
        engine2 = sofa::core::objectmodel::New<TestEngine>();
        engine2->f_numberToMultiply.setParent(&engine1->f_result);
        engine2->f_factor.setValue(3);
        engine2->init();
 
-       // Engine 3 linked to the ouput of engine 1
+       // Engine 3 linked to the output of engine 1
        engine3 = sofa::core::objectmodel::New<TestEngine>();
        engine3->f_numberToMultiply.setParent(&engine1->f_result);
        engine3->f_factor.setValue(3);
@@ -128,7 +128,7 @@ struct Engine_test : public BaseTest
 
     }
 
-    // Test the propagation: if the ouput is changed the input must not changed
+    // Test the propagation: if the output is changed the input must not changed
     void testPropagationDirection()
     {
         // Check propagation direction

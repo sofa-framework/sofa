@@ -107,7 +107,7 @@ public :
 
     /// the key times surrounding the current simulation time (for interpolation)
     Real prevT, nextT;
-    ///the motions corresponding to the surrouding key times
+    ///the motions corresponding to the surrounding key times
     Deriv prevM, nextM;
     ///initial constrained DOFs position
     VecCoord x0;

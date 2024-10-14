@@ -22,7 +22,7 @@ else()
     # Workaround: on OS X, "${GLUT_glut_LIBRARY}" is not a target (it is
     # actually "-framework GLUT"), so we use find_library to find
     # something better (like /System/Library/Frameworks/GLUT.framework.)
-    # (Fun fact: FindGLUT.cmake litterally reads "These values for Apple
+    # (Fun fact: FindGLUT.cmake literally reads "These values for Apple
     # could probably do with improvement.)"
 	find_library(ACTUAL_GLUT_LIBRARIES "GLUT")
 	set(GLUT_ACTUAL_LIBRARIES  ${ACTUAL_GLUT_LIBRARIES} )

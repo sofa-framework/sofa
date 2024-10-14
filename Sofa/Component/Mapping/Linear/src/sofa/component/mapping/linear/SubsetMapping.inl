@@ -98,7 +98,7 @@ void SubsetMapping<TIn, TOut>::init()
     else if (d_indices.getValue().empty())
     {
 
-        // We have to construct the correspondance index
+        // We have to construct the correspondence index
         const InVecCoord& in   =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
         const OutVecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
         IndexArray& indices = *d_indices.beginEdit();

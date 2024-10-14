@@ -582,7 +582,7 @@ simulation::Node::SPtr createScene()
     multiMapping->addInputModel(insertionFrameDof.get()); // third parent
     multiMapping->addOutputModel(frameDof.get()); // deformable structure
 	////////// init subsetmultimapping position //////////
-	// origin and inertion
+	// origin and insertion
 	multiMapping->addPoint( originFrameDof.get(), 0 );
 	multiMapping->addPoint( insertionFrameDof.get(), 0 );
 	// moving frame

@@ -256,7 +256,7 @@ public:
         int user_device_number = (int)this->deviceID.getValue();
         if (freenect_open_device(f_ctx, &f_dev, user_device_number) < 0) { serr<<"Could not open device "<<user_device_number<<sendl; return; }
 
-        // allocate buffers with maximum posible resolution (used in kinect thread)
+        // allocate buffers with maximum possible resolution (used in kinect thread)
         depth_back = (unsigned char*)malloc(640*480*3);
         depth_mid = (unsigned char*)malloc(640*480*3);
         rgb_back = (unsigned char*)malloc(1280*1024*3);

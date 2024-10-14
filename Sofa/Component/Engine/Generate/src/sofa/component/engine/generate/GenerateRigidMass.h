@@ -89,7 +89,7 @@ protected:
     type::fixed_array<SReal,10> afIntegral;
 
 public:
-    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
+    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name parameters
     /// instead of the default one generated automatically by the SOFA_CLASS() macro.
     static std::string GetCustomTemplateName();
 

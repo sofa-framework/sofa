@@ -662,7 +662,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
     EigenMatrix Kg = EigenMatrix::Zero(sizeass * 3, 8 * 3); // stiffness of contrained nodes
-    EigenMatrix A = EigenMatrix::Zero(sizeass * 3, sizeass * 3); // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
+    EigenMatrix A = EigenMatrix::Zero(sizeass * 3, sizeass * 3); // [Kf -G] ==  Kf (stiffness of free nodes) with the constraints
 
     for ( std::size_t i=0; i<sizeass; ++i)
     {
@@ -946,7 +946,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
         type::Mat<27*3, 8*3, Real> Kg; // stiffness of contrained nodes
-        type::Mat<27*3, 27*3, Real> A; // [Kf -G]  Kf (stiffness of free nodes) with the constaints
+        type::Mat<27*3, 27*3, Real> A; // [Kf -G]  Kf (stiffness of free nodes) with the constraints
         type::Mat<27*3, 27*3, Real> Ainv;
 
 
@@ -1332,7 +1332,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
         EigenMatrix Kg = EigenMatrix::Zero(sizeass * 3, idxcutasscoarse * 3);// stiffness of contrained nodes
-        EigenMatrix A = EigenMatrix::Zero(sizeass * 3, sizeass * 3); // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
+        EigenMatrix A = EigenMatrix::Zero(sizeass * 3, sizeass * 3); // [Kf -G] ==  Kf (stiffness of free nodes) with the constraints
         
         for( auto it = map_idxq_idxcutass.begin(); it!=map_idxq_idxcutass.end(); ++it)
         {

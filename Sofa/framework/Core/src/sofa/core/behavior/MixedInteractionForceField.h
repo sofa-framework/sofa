@@ -100,7 +100,7 @@ public:
 
     /// Get the potential energy associated to this ForceField.
     ///
-    /// Used to extimate the total energy of the system by some
+    /// Used to estimate the total energy of the system by some
     /// post-stabilization techniques.
     ///
     /// This method retrieves the x vector from the MechanicalState and call
@@ -137,7 +137,7 @@ public:
 
     /// Get the potential energy associated to this ForceField.
     ///
-    /// Used to extimate the total energy of the system by some
+    /// Used to estimate the total energy of the system by some
     /// post-stabilization techniques.
     ///
     /// This method must be implemented by the component, and is usually called

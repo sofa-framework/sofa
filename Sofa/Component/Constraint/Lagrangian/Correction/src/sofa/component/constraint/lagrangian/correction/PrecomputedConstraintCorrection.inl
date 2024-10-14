@@ -261,7 +261,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         // Buffer Allocation
         invM->data = new Real[nbRows * nbCols];
 
-        // for the intial computation, the gravity has to be put at 0
+        // for the initial computation, the gravity has to be put at 0
         const sofa::type::Vec3& gravity = this->getContext()->getGravity();
 
         static constexpr sofa::type::Vec3 gravity_zero(0_sreal, 0_sreal, 0_sreal);
@@ -397,7 +397,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             cgLinearSolver->d_smallDenominatorThreshold.setValue(buf_threshold);
         }
 
-        // Retore velocity
+        // Restore velocity
         for (unsigned int i = 0; i < velocity.size(); i++)
             velocity[i] = prev_velocity[i];
 

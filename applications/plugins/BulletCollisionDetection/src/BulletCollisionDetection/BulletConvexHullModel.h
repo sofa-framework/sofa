@@ -143,7 +143,7 @@ public:
     Data<VecCoord> CHPoints; ///< points defining the convex hull
     Data<bool> computeNormals; ///< set to false to disable computation of triangles normal
     Data<bool> positionDefined; ///< set to true if the collision model position is defined in the mechanical object
-    Data<SReal> concavityThreeshold; ///< Threeshold used in the decomposition
+    Data<SReal> concavityThreeshold; ///< Threshold used in the decomposition
 protected:
     void draw_without_decomposition(const core::visual::VisualParams* vparams);
     void draw_decomposition(const core::visual::VisualParams* vparams);

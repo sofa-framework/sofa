@@ -31,7 +31,7 @@ namespace sofa::component::linearsystem
 using core::behavior::BaseMechanicalState;
 
 /**
- * Connexions betweeen objects through mappings
+ * Connexions between objects through mappings
  *
  * Graph must be built with the build() function.
  */

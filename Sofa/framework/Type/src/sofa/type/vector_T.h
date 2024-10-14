@@ -75,7 +75,7 @@ public:
     explicit vector(Size n): std::vector<T,Alloc>(n) {}
     /// Constructor
     vector(const std::vector<T, Alloc>& x): std::vector<T,Alloc>(x) {}
-    /// Brace initalizer constructor
+    /// Brace initializer constructor
     vector(const std::initializer_list<T>& t) : std::vector<T,Alloc>(t) {}
     /// Move constructor
     vector(std::vector<T,Alloc>&& v): std::vector<T,Alloc>(std::move(v)) {}
@@ -154,8 +154,8 @@ public:
         std::fill(this->begin(), this->end(), value);
     }
 
-    /// this function is usefull for vector_device because it resize the vector without device operation (if device is not valid).
-    /// Therefore the function is used in asynchronous code to safly resize a vector which is either cuda of type::vector
+    /// this function is useful for vector_device because it resize the vector without device operation (if device is not valid).
+    /// Therefore the function is used in asynchronous code to safely resize a vector which is either cuda of type::vector
     void fastResize(Size n)
     {
         this->resize(n);

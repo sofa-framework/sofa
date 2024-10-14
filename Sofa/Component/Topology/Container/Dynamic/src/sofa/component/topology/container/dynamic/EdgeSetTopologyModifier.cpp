@@ -232,7 +232,7 @@ void EdgeSetTopologyModifier::removeEdgesProcess(const sofa::type::vector<EdgeID
     size_t lastEdgeIndex = m_container->getNumberOfEdges() - 1;
     for (size_t i=0; i<indices.size(); ++i, --lastEdgeIndex)
     {
-        // now updates the shell information of the edge formely at the end of the array
+        // now updates the shell information of the edge formerly at the end of the array
         if(m_container->hasEdgesAroundVertex())
         {
 
@@ -270,7 +270,7 @@ void EdgeSetTopologyModifier::removeEdgesProcess(const sofa::type::vector<EdgeID
 
         // removes the edge from the edgelist
         m_edge[ indices[i] ] = m_edge[ lastEdgeIndex ]; // overwriting with last valid value.
-        m_edge.resize( lastEdgeIndex ); // resizing to erase multiple occurence of the edge.
+        m_edge.resize( lastEdgeIndex ); // resizing to erase multiple occurrence of the edge.
     }
 
     if (! vertexToBeRemoved.empty())
@@ -779,7 +779,7 @@ void EdgeSetTopologyModifier::splitEdges( sofa::type::vector<EdgeID> &indices,
     m_container->checkTopology();
 }
 
-// Give the optimal vertex permutation according to the Reverse CuthillMckee algorithm (use BOOST GRAPH LIBRAIRY)
+// Give the optimal vertex permutation according to the Reverse CuthillMckee algorithm (use BOOST GRAPH LIBRARY)
 void EdgeSetTopologyModifier::resortCuthillMckee(sofa::type::vector<int>& inverse_permutation)
 {
     using namespace boost;

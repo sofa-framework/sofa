@@ -67,7 +67,7 @@ using type::Mat;
 using namespace cimg_library;
 
 /**
- * This class coorespond to a label visualized by imagetoolbox
+ * This class corresponds to a label visualized by imagetoolbox
  */
 
 class SOFA_IMAGE_GUI_API LabelImageToolBox : public core::DataEngine

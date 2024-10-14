@@ -471,7 +471,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const V
         f[b] += R_2_0 * Coord(F[2], F[3], 0);
         f[c] += R_2_0 * Coord(F[4], F[5], 0);
 
-        // store for re-use in matrix-vector products
+        // store for reuse in matrix-vector products
         if (implicit)
         {
             _strainDisplacements[elementIndex] = J;

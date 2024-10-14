@@ -66,9 +66,9 @@ Light::Light()
     , d_shadowsEnabled(initData(&d_shadowsEnabled, (bool) true, "shadowsEnabled", "[Shadowing] Enable Shadow from this light"))
     , d_softShadows(initData(&d_softShadows, (bool) false, "softShadows", "[Shadowing] Turn on Soft Shadow from this light"))
     , d_shadowFactor(initData(&d_shadowFactor, (float) 1.0, "shadowFactor", "[Shadowing] Shadow Factor (decrease/increase darkness)"))
-    , d_VSMLightBleeding(initData(&d_VSMLightBleeding, (float) 0.05, "VSMLightBleeding", "[Shadowing] (VSM only) Light bleeding paramter"))
+    , d_VSMLightBleeding(initData(&d_VSMLightBleeding, (float) 0.05, "VSMLightBleeding", "[Shadowing] (VSM only) Light bleeding parameter"))
     , d_VSMMinVariance(initData(&d_VSMMinVariance, (float) 0.001, "VSMMinVariance", "[Shadowing] (VSM only) Minimum variance parameter"))
-    , d_textureUnit(initData(&d_textureUnit, (unsigned short) 1, "textureUnit", "[Shadowing] Texture unit for the genereated shadow texture"))
+    , d_textureUnit(initData(&d_textureUnit, (unsigned short) 1, "textureUnit", "[Shadowing] Texture unit for the generated shadow texture"))
     , d_modelViewMatrix(initData(&d_modelViewMatrix, "modelViewMatrix", "[Shadowing] ModelView Matrix"))
     , d_projectionMatrix(initData(&d_projectionMatrix, "projectionMatrix", "[Shadowing] Projection Matrix"))
     , b_needUpdate(false)
@@ -443,7 +443,7 @@ void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa:
 
 
     //2-compute orientation to fit the bbox from light's pov
-    // bounding box in light space = frustrum
+    // bounding box in light space = frustum
     const double epsilon = 0.0000001;
     Vec3 zAxis = -direction;
     zAxis.normalize();

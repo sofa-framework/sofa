@@ -42,7 +42,7 @@ namespace sofa::component::playback
 {
 
 /** Write State vectors to file at a given set of time instants
- * A period can be etablished at the last time instant
+ * A period can be established at the last time instant
  * The DoFs to print can be chosen using DOFsX and DOFsV
  * Stop to write the state if the kinematic energy reach a given threshold (stopAt)
  * The energy will be measured at each period determined by keperiod

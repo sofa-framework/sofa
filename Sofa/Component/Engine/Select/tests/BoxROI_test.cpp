@@ -140,7 +140,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
 
         boxroi->reinit();
 
-        EXPECT_EQ(boxroi->getComponentState(), ComponentState::Invalid ) << "Reinit shouln't crash or change the state because there is still no MechanicalObject. ";
+        EXPECT_EQ(boxroi->getComponentState(), ComponentState::Invalid ) << "Reinit shouldn't crash or change the state because there is still no MechanicalObject. ";
 
     }
 

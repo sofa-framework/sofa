@@ -150,7 +150,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel0(
 
 
         /**
-        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symetric)
+        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symmetric)
         */
         float C11, C12, C13, C22, C23, C33;
         C11 = XT[0][0]*XT[0][0] + XT[0][1]*XT[0][1] + XT[0][2]*XT[0][2];
@@ -329,7 +329,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(
 
 
         /**
-        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symetric)
+        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symmetric)
         */
         float C11, C12, C13, C22, C23, C33;
         C11 = XT[0][0]*XT[0][0] + XT[0][1]*XT[0][1] + XT[0][2]*XT[0][2];
@@ -515,7 +515,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel2(
 
 
         /**
-        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symetric)
+        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symmetric)
         */
         float C11, C12, C13, C22, C23, C33;
         C11 = XT[0][0]*XT[0][0] + XT[0][1]*XT[0][1] + XT[0][2]*XT[0][2];
@@ -740,7 +740,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel3(
 
 
         /**
-        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symetric)
+        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symmetric)
         */
         float C11, C12, C13, C22, C23, C33;
         C11 = XT[0][0]*XT[0][0] + XT[0][1]*XT[0][1] + XT[0][2]*XT[0][2];

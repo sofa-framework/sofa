@@ -37,7 +37,7 @@ namespace sofa::helper::logging
     {
         if( m.type()>=Message::Error )
         {
-           ErrorMessageException errorMessageException/*(some Message's informations could be added to the exception)*/;
+           ErrorMessageException errorMessageException/*(some Message's information could be added to the exception)*/;
            throw errorMessageException;
         }
     }

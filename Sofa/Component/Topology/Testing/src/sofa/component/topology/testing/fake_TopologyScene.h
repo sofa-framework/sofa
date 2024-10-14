@@ -122,7 +122,7 @@ public:
         return true;
     }
 
-    /// Method to get acces to node containing the meshLoader and the toplogy container.
+    /// Method to get access to node containing the meshLoader and the topology container.
     sofa::simulation::Node::SPtr getNode() { return m_root; }
 
 private:

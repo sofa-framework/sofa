@@ -31,14 +31,14 @@ namespace sofa::defaulttype
  * @brief Encodes the different kind of type infos stored in the TypeInfoRegistry
  *
  * In the TyepeInfoRegistry we can store different type of type info depending
- * on how much the developper want to provide precise information (or not)
+ * on how much the developer want to provide precise information (or not)
  * on its data type.
  *
  * MISSING indicates that there was absolutely no valid information to trust in
  * an AbstractTypeInfo object.
  *
  * NAMEONLY indicates that only the getName() and getTypeName() function are returning
- * valid informations.
+ * valid information.
  *
  * COMPLETE indicates that all the function like size/getSize/etc... are implemented.
  *

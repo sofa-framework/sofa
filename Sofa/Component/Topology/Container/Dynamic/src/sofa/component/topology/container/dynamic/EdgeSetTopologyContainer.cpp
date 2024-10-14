@@ -196,7 +196,7 @@ const EdgeSetTopologyContainer::Edge EdgeSetTopologyContainer::getEdge (EdgeID i
 }
 
 
-// Return the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
+// Return the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRARY)
 int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::type::vector<EdgeID>& components)
 {
     using namespace boost;
@@ -274,7 +274,7 @@ bool EdgeSetTopologyContainer::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-		msg_warning() << "CheckConnexity: Edges are missings. There is more than one connexe component.";
+		msg_warning() << "CheckConnexity: Edges are missing. There is more than one connexe component.";
         return false;
     }
 
@@ -396,7 +396,7 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
     {
         const EdgesAroundVertex& edgeAV = this->getEdgesAroundVertex(the_edge[i]);
         if (edgeAV.empty()) {
-            msg_error() << "No edge found aroud of vertex id: " << the_edge[i] << ". Should at least found edge id: " << elem;
+            msg_error() << "No edge found around vertex id: " << the_edge[i] << ". Should at least found edge id: " << elem;
             continue;
         }
 

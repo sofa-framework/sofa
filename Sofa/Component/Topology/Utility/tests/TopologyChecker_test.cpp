@@ -41,7 +41,7 @@ using namespace sofa::core::topology;
 using namespace sofa::simulation;
 using sofa::component::topology::utility::TopologyChecker;
 
-/**  Test TopologyChecker class on different valid and unvalid topology containers
+/**  Test TopologyChecker class on different valid and invalid topology containers
   */
 
 struct TopologyChecker_test: public BaseSimulationTest
@@ -203,7 +203,7 @@ struct EdgeTopologyChecker_test : TopologyChecker_test
         // mix edge
         edges[0][0] = edges[0][1];
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
 
         return checker->checkEdgeTopology() == false;
@@ -233,7 +233,7 @@ struct EdgeTopologyChecker_test : TopologyChecker_test
         // container should be ok
         EXPECT_EQ(checker->checkEdgeContainer(), true);
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
         return checker->checkEdgeToVertexCrossContainer() == false;
     }
@@ -328,7 +328,7 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
         // mix triangle
         triangles[0][0] = triangles[0][1];
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
 
         return checker->checkTriangleTopology() == false;
@@ -357,7 +357,7 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
         // container should be ok
         EXPECT_EQ(checker->checkTriangleContainer(), true);
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
         EXPECT_EQ(checker->checkTriangleToEdgeCrossContainer(), false);
         // restore good container
@@ -423,7 +423,7 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
         // container should be ok
         EXPECT_EQ(checker->checkTriangleContainer(), true);
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
         EXPECT_EQ(checker->checkTriangleToVertexCrossContainer(), false);
         // restore good container
@@ -550,7 +550,7 @@ struct QuadTopologyChecker_test : TopologyChecker_test
         // mix triangle
         quads[0][0] = quads[0][1];
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
 
         return checker->checkQuadTopology() == false;
@@ -579,7 +579,7 @@ struct QuadTopologyChecker_test : TopologyChecker_test
         // container should be ok
         EXPECT_EQ(checker->checkQuadContainer(), true);
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
         EXPECT_EQ(checker->checkQuadToEdgeCrossContainer(), false);
         // restore good container
@@ -642,7 +642,7 @@ struct QuadTopologyChecker_test : TopologyChecker_test
         // Add triangle without updating cross container
         quads.push_back(Topology::Quad(0, 2, 4, 8));
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
         EXPECT_EQ(checker->checkQuadToVertexCrossContainer(), false);
         // restore good container
@@ -771,7 +771,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         // mix triangle
         tetra[0][0] = tetra[0][1];
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
 
         return checker->checkTetrahedronTopology() == false;
@@ -799,7 +799,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         // container should be ok
         EXPECT_EQ(checker->checkTetrahedronContainer(), true);
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
         EXPECT_EQ(checker->checkTetrahedronToTriangleCrossContainer(), false);
         // restore good container
@@ -927,7 +927,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         // Add triangle without updating cross container
         tetra.push_back(Topology::Tetrahedron(0, 2, 8, 12));
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
         EXPECT_EQ(checker->checkTetrahedronToVertexCrossContainer(), false);
         // restore good container
@@ -1055,7 +1055,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         // mix triangle
         hexahedra[0][0] = hexahedra[0][1];
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
 
         return checker->checkHexahedronTopology() == false;
@@ -1083,7 +1083,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         // container should be ok
         EXPECT_EQ(checker->checkHexahedronContainer(), true);
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
         EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), false);
         // restore good container
@@ -1150,7 +1150,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         // Add triangle without updating cross container
         hexa.push_back(Topology::Hexahedron(0, 2, 4, 12, 14, 18, 20, 22));
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
         EXPECT_EQ(checker->checkHexahedronToEdgeCrossContainer(), false);
         // restore good container
@@ -1211,7 +1211,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         // Add triangle without updating cross container
         hexa.push_back(Topology::Hexahedron(0, 2, 4, 12, 14, 18, 20, 22));
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
         EXPECT_EQ(checker->checkHexahedronToVertexCrossContainer(), false);
         // restore good container

@@ -87,7 +87,7 @@ SOFA_TYPE_API unsigned int getUnsignedInteger(const std::string& s, std::strings
 }
 
 /// Input stream
-/// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
+/// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B, optionally specifying a step using "A-B-step" notation.
 template<>
 SOFA_TYPE_API std::istream& vector<int>::read( std::istream& in )
 {

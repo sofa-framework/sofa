@@ -275,7 +275,7 @@ void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
     application = new QSOFAApplication ( *argc,argv );
 
     //force locale to Standard C
-    //(must be done immediatly after the QApplication has been created)
+    //(must be done immediately after the QApplication has been created)
     const QLocale locale(QLocale::C);
     QLocale::setDefault(locale);
 }
@@ -436,7 +436,7 @@ RealGUI::RealGUI ( const char* viewername)
 
     currentTabChanged ( tabs->currentIndex() );
 
-    createBackgroundGUIInfos(); // add GUI for Background Informations
+    createBackgroundGUIInfos(); // add GUI for Background Information
 
     createWindowVisitor();
 

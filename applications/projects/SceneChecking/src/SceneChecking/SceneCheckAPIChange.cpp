@@ -107,7 +107,7 @@ void SceneCheckAPIChange::doCheckOn(sofa::simulation::Node* node)
 void SceneCheckAPIChange::installDefaultChangeSets()
 {
     // Template of addHookInChangeSet
-    // addHookInChangeSet warns the user about changes that occured within a component
+    // addHookInChangeSet warns the user about changes that occurred within a component
     // (change in API, behavior, default values, etc.)
     /*
     addHookInChangeSet("17.06", [this](Base* o){

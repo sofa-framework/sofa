@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!--
-	The mapping do that the beam do not fall in a symetric way. (try to delete the forcefield in the MappedTetrahedronA node) 
+	The mapping do that the beam do not fall in a symmetric way. (try to delete the forcefield in the MappedTetrahedronA node) 
 	Accuracy of matrix computation can compare with the iterative solver (CG) 
 -->
 <Node name="root" gravity="0 -9.8 0" dt="0.01">

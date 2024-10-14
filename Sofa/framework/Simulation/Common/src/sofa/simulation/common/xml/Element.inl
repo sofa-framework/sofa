@@ -60,4 +60,4 @@ sofa::core::objectmodel::Base* Element<Object>::getObject()
 //template<class Object> class Factory< std::string, Object, Node<Object>* >;
 
 
-} // namespace sofa::simlation::xml
+} // namespace sofa::simulation::xml

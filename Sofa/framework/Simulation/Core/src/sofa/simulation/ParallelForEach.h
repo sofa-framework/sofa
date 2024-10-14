@@ -59,7 +59,7 @@ void advance(InputIt& it, Distance n)
  * The number of ranges depends on:
  *  1) the desired number of ranges provided in a parameter
  *  2) the number of elements in the container
- * The number of elements in each range is homogenous, except for the last range which may contain
+ * The number of elements in each range is homogeneous, except for the last range which may contain
  * more elements.
  */
 template<class InputIt>
@@ -148,7 +148,7 @@ UnaryFunction forEachRange(InputIt first, InputIt last, UnaryFunction f)
  * void fun(const Range<InputIt>& a);
  * The signature does not need to have const &.
  *
- * A task scheduler must be provided and correctly initiallized. The number of generated ranges
+ * A task scheduler must be provided and correctly initialized. The number of generated ranges
  * depends on the threads available in the task scheduler.
  */
 template<class InputIt, class UnaryFunction>

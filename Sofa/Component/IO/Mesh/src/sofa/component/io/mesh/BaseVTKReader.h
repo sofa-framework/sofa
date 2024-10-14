@@ -122,7 +122,7 @@ public:
 namespace sofa::component::io::mesh
 {
 /// Importing the names defined in the per-file namespace into the classical
-/// sofa namespace structre so that the classes are accessible with
+/// sofa namespace structure so that the classes are accessible with
 /// sofa::component::loader::BaseVTKReader instead of
 /// sofa::component::loader::basevtkreader::BaseVTKReader which is a bit longer to read and write.
 using basevtkreader::VTKDatasetFormat ;

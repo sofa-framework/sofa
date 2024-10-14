@@ -34,7 +34,7 @@
 namespace sofa::component::mechanicalload
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template<class DataTypes>
 class SphereForceFieldInternalData
 {
@@ -121,7 +121,7 @@ public:
     Data<Real> d_damping; ///< force damping
     Data<sofa::type::RGBAColor> d_color; ///< sphere color. (default=[0,0,1,1])
 
-    /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
+    /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitioning)
     Data< type::Vec<2,int> > d_localRange;
     /// option bilateral : if true, the force field is applied on both side of the plane
     Data<bool> d_bilateral;

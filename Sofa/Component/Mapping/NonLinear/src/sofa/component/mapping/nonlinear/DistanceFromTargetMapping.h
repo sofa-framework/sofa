@@ -35,7 +35,7 @@
 namespace sofa::component::mapping::nonlinear
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template<class InDataTypes, class OutDataTypes>
 class DistanceFromTargetMappingInternalData
 {

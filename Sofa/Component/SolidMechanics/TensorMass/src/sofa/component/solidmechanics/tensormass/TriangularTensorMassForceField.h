@@ -119,7 +119,7 @@ protected:
     void applyTriangleDestruction(const sofa::type::vector<Index>& triangleRemoved);
 
     
-    VecCoord  _initialPoints;///< the intial positions of the points
+    VecCoord  _initialPoints;///< the initial positions of the points
 
     bool updateMatrix;
 

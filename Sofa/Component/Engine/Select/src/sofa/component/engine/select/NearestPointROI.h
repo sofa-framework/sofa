@@ -36,7 +36,7 @@ namespace sofa::component::engine::select
 {
 
 /**
- * Given two mechanical states, find correspondance between degrees of freedom, based on the minimal distance.
+ * Given two mechanical states, find correspondence between degrees of freedom, based on the minimal distance.
  *
  * Project all the points from the second mechanical state on the first one. This done by finding the point in the
  * first mechanical state closest to each point in the second mechanical state. If the distance is less than a provided

@@ -78,7 +78,7 @@ sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::
 
     dpositions.endEdit();
 
-    //Editting the velocity of the OBB
+    //Editing the velocity of the OBB
     Data<MechanicalObject3::VecDeriv> & dvelocities = *triDOF->write( sofa::core::VecId::velocity() );
 
     MechanicalObject3::VecDeriv & velocities = *dvelocities.beginEdit();
@@ -103,7 +103,7 @@ sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::
     tri->addObject(triCollisionModel);
 
 
-    //editting the OBBModel
+    //editing the OBBModel
     triCollisionModel->init();
 
     return triCollisionModel;
@@ -144,7 +144,7 @@ sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Ri
 
     dpositions.endEdit();
 
-    //Editting the velocity of the OBB
+    //Editing the velocity of the OBB
     Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *sphereDOF->write( sofa::core::VecId::velocity() );
 
     MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
@@ -187,7 +187,7 @@ sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Ve
 
     dpositions.endEdit();
 
-    //Editting the velocity of the OBB
+    //Editing the velocity of the OBB
     Data<MechanicalObject3::VecDeriv> & dvelocities = *sphereDOF->write( sofa::core::VecId::velocity() );
 
     MechanicalObject3::VecDeriv & velocities = *dvelocities.beginEdit();
@@ -201,7 +201,7 @@ sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Ve
     sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr sphereCollisionModel = New<sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>>();
     sphere->addObject(sphereCollisionModel);
 
-    //editting the RigidSphereModel
+    //editing the RigidSphereModel
     sphereCollisionModel->init();
     sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>::VecReal & vecRad = *(sphereCollisionModel->radius.beginEdit());
 

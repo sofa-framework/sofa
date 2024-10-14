@@ -131,7 +131,7 @@ class DeformableOnRigidFrameMapping : public LinearMulti2Mapping<TIn, TInRoot, T
 
     /// Return true if the destination model has the same topology as the source model.
     ///
-    /// This is the case for mapping keeping a one-to-one correspondance between
+    /// This is the case for mapping keeping a one-to-one correspondence between
     /// input and output DOFs (mostly identity or data-conversion mappings).
     bool sameTopology() const override { return true; }
 

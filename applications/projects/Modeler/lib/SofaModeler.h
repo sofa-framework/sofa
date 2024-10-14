@@ -244,7 +244,7 @@ protected:
     QMenu *windowMenu;
 
     QTextBrowser *infoItem;
-    /// Correspondance between a name clicked in the menu and a path to the preset
+    /// Correspondence between a name clicked in the menu and a path to the preset
     std::map< QMenu*, std::map< std::string, std::string > > mapPreset;
 
 

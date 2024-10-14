@@ -1205,7 +1205,7 @@ class CircleGesture : public Gesture
  * The ScreenTapGesture class represents a tapping gesture by a finger or tool.
  *
  * A screen tap gesture is recognized when the tip of a finger pokes forward
- * and then springs back to approximately the original postion, as if
+ * and then springs back to approximately the original position, as if
  * tapping a vertical screen. The tapping finger must pause briefly before beginning the tap.
  *
  * \image html images/Leap_Gesture_Tap2.png
@@ -1276,7 +1276,7 @@ class ScreenTapGesture : public Gesture
     LEAP_EXPORT Vector direction() const;
 
     /**
-     * The progess value is always 1.0 for a screen tap gesture.
+     * The progress value is always 1.0 for a screen tap gesture.
      *
      * @returns float The value 1.0.
      */
@@ -1294,7 +1294,7 @@ class ScreenTapGesture : public Gesture
  * The KeyTapGesture class represents a tapping gesture by a finger or tool.
  *
  * A key tap gesture is recognized when the tip of a finger rotates down toward the
- * palm and then springs back to approximately the original postion, as if
+ * palm and then springs back to approximately the original position, as if
  * tapping. The tapping finger must pause briefly before beginning the tap.
  *
  * \image html images/Leap_Gesture_Tap.png
@@ -1367,7 +1367,7 @@ class KeyTapGesture : public Gesture
     LEAP_EXPORT Vector direction() const;
 
     /**
-     * The progess value is always 1.0 for a key tap gesture.
+     * The progress value is always 1.0 for a key tap gesture.
      *
      * @returns float The value 1.0.
      */
@@ -1800,21 +1800,21 @@ class PointableList : public Interface {
     LEAP_EXPORT Pointable operator[](int index) const;
 
     /**
-     * Appends the members of the specifed PointableList to this PointableList.
+     * Appends the members of the specified PointableList to this PointableList.
      * @param other A PointableList object containing Pointable objects
      * to append to the end of this PointableList.
      */
     LEAP_EXPORT PointableList& append(const PointableList& other);
 
     /**
-     * Appends the members of the specifed FingerList to this PointableList.
+     * Appends the members of the specified FingerList to this PointableList.
      * @param other A FingerList object containing Finger objects
      * to append to the end of this PointableList.
      */
     LEAP_EXPORT PointableList& append(const FingerList& other);
 
     /**
-     * Appends the members of the specifed ToolList to this PointableList.
+     * Appends the members of the specified ToolList to this PointableList.
      * @param other A ToolList object containing Tool objects
      * to append to the end of this PointableList.
      */
@@ -1894,7 +1894,7 @@ class FingerList : public Interface {
     LEAP_EXPORT Finger operator[](int index) const;
 
     /**
-     * Appends the members of the specifed FingerList to this FingerList.
+     * Appends the members of the specified FingerList to this FingerList.
      * @param other A FingerList object containing Finger objects
      * to append to the end of this FingerList.
      */
@@ -1973,7 +1973,7 @@ class ToolList : public Interface {
     LEAP_EXPORT Tool operator[](int index) const;
 
     /**
-     * Appends the members of the specifed ToolList to this ToolList.
+     * Appends the members of the specified ToolList to this ToolList.
      * @param other A ToolList object containing Tool objects
      * to append to the end of this ToolList.
      */
@@ -2052,7 +2052,7 @@ class HandList : public Interface {
     LEAP_EXPORT Hand operator[](int index) const;
 
     /**
-     * Appends the members of the specifed HandList to this HandList.
+     * Appends the members of the specified HandList to this HandList.
      * @param other A HandList object containing Hand objects
      * to append to the end of this HandList.
      */
@@ -2445,13 +2445,13 @@ class Frame : public Interface {
     LEAP_EXPORT GestureList gestures() const;
 
     /**
-     * Returns a GestureList containing all gestures that have occured since
+     * Returns a GestureList containing all gestures that have occurred since
      * the specified frame.
      *
      * @param sinceFrame An earlier Frame object. The starting frame must
      * still be in the frame history cache, which has a default length of
      * 60 frames.
-     * @return GestureList The list of the Gesture objects that have occured
+     * @return GestureList The list of the Gesture objects that have occurred
      * since the specified frame.
      */
     LEAP_EXPORT GestureList gestures(const Frame& sinceFrame) const;
@@ -2699,7 +2699,7 @@ class Frame : public Interface {
  *
  * After setting a configuration value, you must call the Config::save method
  * to commit the changes. The configuration value changes are not persistent;
- * your application needs to set the values everytime it runs.
+ * your application needs to set the values every time it runs.
  *
  * @see CircleGesture
  * @see KeyTapGesture
@@ -2771,7 +2771,7 @@ class Config : public Interface {
      * Call ``save()`` after making a set of configuration changes. The
      * ``save()`` function transfers the configuration changes to the Leap
      * application. The configuration value changes are not persistent; your
-     * application needs to set the values everytime it runs.
+     * application needs to set the values every time it runs.
      *
      * @returns true on success, false on failure.
      */

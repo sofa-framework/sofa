@@ -338,14 +338,14 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::ConstraintPar
                 const OutDeriv data = colIt.val();
                 const unsigned int verticeIndex = colIt.index();
 
-                //printf(" normale : %f %f %f",d.x(), d.y(), d.z());
+                //printf(" normal : %f %f %f",d.x(), d.y(), d.z());
                 for (unsigned int lineInfluencedIndex = 0; lineInfluencedIndex < linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
                 {
                     influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
                     type::Vec<3,Real> IP = xfrom[m_topology->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
                     InDeriv direction;
                     getVCenter(direction) = data * iline.weight;
-                    //printf("\n Weighted normale : %f %f %f",direction.getVCenter().x(), direction.getVCenter().y(), direction.getVCenter().z());
+                    //printf("\n Weighted normal : %f %f %f",direction.getVCenter().x(), direction.getVCenter().y(), direction.getVCenter().z());
                     getVOrientation(direction) = IP.cross(data) * iline.weight;
 
                     o.addCol(m_topology->getLine(iline.lineIndex)[0], direction);

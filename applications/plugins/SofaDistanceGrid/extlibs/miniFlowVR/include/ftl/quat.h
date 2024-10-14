@@ -86,7 +86,7 @@ class Quat
 
 };
 
-// Assignement from typed data
+// Assignment from typed data
 
 namespace Type
 {

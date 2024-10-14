@@ -64,7 +64,7 @@ inline sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaul
 
     dpositions.endEdit();
 
-    //Editting the velocity of the OBB
+    //Editing the velocity of the OBB
     Data<MechanicalObject3::VecDeriv>& dvelocities = *triDOF->write(sofa::core::VecId::velocity());
 
     MechanicalObject3::VecDeriv& velocities = *dvelocities.beginEdit();
@@ -89,7 +89,7 @@ inline sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaul
     tri->addObject(triCollisionModel);
 
 
-    //editting the OBBModel
+    //editing the OBBModel
     triCollisionModel->init();
 
     return triCollisionModel;

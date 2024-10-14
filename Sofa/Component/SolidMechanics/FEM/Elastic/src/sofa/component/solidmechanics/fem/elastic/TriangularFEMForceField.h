@@ -252,7 +252,7 @@ protected :
 
 public:
 
-    /// Forcefield intern paramaters
+    /// Forcefield intern parameters
     int method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
@@ -295,7 +295,7 @@ public:
     Data< sofa::type::vector<Transformation> > d_initialTransformation; ///< Flag activating rendering of stress directions within each triangle
 
     /// Fracture parameters
-    Data<Real> d_hosfordExponant; ///< Exponant in the Hosford yield criteria
+    Data<Real> d_hosfordExponant; ///< Exponent in the Hosford yield criteria
     Data<Real> d_criteriaValue; ///< Fracturable threshold used to draw fracturable triangles
 
     /// Display parameters

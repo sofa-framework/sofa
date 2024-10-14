@@ -214,7 +214,7 @@ public:
     }
 
     /// Given two quaternions, add them together to get a third quaternion.
-    /// Adding quaternions to get a compound rotation is analagous to adding
+    /// Adding quaternions to get a compound rotation is analogous to adding
     /// translations to get a compound translation.
     auto operator+(const Quat &q1) const -> Quat;
     constexpr auto operator*(const Quat& q1) const -> Quat

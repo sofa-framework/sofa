@@ -222,7 +222,7 @@ public:
 	mat.shininess = (float)strtod(skip(c),(char**)&c);
       }
       else if (t == "Tf")
-      { // transmisssion filter
+      { // transmission filter
 	mat.alpha = readColor(c)[0];
       }
       else if (t == "d")

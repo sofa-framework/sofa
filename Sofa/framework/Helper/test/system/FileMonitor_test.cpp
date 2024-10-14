@@ -86,7 +86,7 @@ void waitUntilFileExists(const std::string& filename, double timeout)
 
 void waitABit()
 {
-    // on windows we use file date, which resoution is assumed (by us) to be below this value in ms
+    // on windows we use file date, which resolution is assumed (by us) to be below this value in ms
 #ifdef WIN32
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 #endif

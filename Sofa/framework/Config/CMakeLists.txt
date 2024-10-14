@@ -26,7 +26,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 ### Sofa using type double or float
 set(SOFA_FLOATING_POINT_TYPE double CACHE STRING
     "Type used for floating point values in SOFA. It actually determines:
-    - what template instanciations will be compiled (via the definition of the
+    - what template instantiations will be compiled (via the definition of the
     SOFA_FLOAT and SOFA_DOUBLE macros)
     - what is the type behind the 'SReal' typedef used throughout SOFA.")
 set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double)

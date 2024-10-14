@@ -464,7 +464,7 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
                     d_springs.cleanDirty();
                     //Clean the indices list of the unmodified topology to match the size of the newly modified one
                     updateTopologyIndicesFromSprings();
-                    //Clean dirtyness of springs because we just updated the indices lists from the spring data itself
+                    //Clean dirtiness of springs because we just updated the indices lists from the spring data itself
                     d_springs.cleanDirty();
                     areSpringIndicesDirty = false;
                 }

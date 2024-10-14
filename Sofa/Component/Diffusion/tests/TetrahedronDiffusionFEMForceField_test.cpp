@@ -184,12 +184,12 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
 };
 
 
-// ========= Define the list of types to instanciate.
+// ========= Define the list of types to instantiate.
 //using ::testing::Types;
-typedef ::testing::Types<component::diffusion::TetrahedronDiffusionFEMForceField<defaulttype::Vec1Types> > TestTypes; // the types to instanciate.
+typedef ::testing::Types<component::diffusion::TetrahedronDiffusionFEMForceField<defaulttype::Vec1Types> > TestTypes; // the types to instantiate.
 
 
-// ========= Tests to run for each instanciated type
+// ========= Tests to run for each instantiated type
 TYPED_TEST_SUITE(TetrahedronDiffusionFEMForceField_test, TestTypes);
 
 // test case

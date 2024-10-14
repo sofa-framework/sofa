@@ -75,8 +75,8 @@ protected:
     /// List of component name not to be display in the graph.
     std::vector<std::string> m_exceptions;
 
-    SReal m_scaleX; ///< Scale paramater to apply between nodes for display in abscissa.    
-    SReal m_scaleY; ///< Scale paramater to apply between nodes for display in ordinate.
+    SReal m_scaleX; ///< Scale parameter to apply between nodes for display in abscissa.    
+    SReal m_scaleY; ///< Scale parameter to apply between nodes for display in ordinate.
 
     int m_posX; ///< Increment position counter on abscissa for Node display.
     int m_posY; ///< Increment position counter on ordinate for Node display.

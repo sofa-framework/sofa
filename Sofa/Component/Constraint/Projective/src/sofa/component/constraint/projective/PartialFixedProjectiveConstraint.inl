@@ -97,7 +97,7 @@ void PartialFixedProjectiveConstraint<DataTypes>::projectResponse(const core::Me
 
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
 // Each fixed point received a null velocity vector.
-// When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
+// When a new fixed point is added while its velocity vector is already null, projectVelocity is not useful.
 // But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null or 
 // to set the projectVelocity option to True. If not, the fixed point is going to drift.
 template <class DataTypes>
@@ -112,7 +112,7 @@ void PartialFixedProjectiveConstraint<DataTypes>::projectVelocity(const core::Me
 
     if ( this->d_fixAll.getValue() )
     {
-        // fix everyting
+        // fix everything
         for (Size i = 0; i < res.size(); i++)
         {
             for (unsigned int c = 0; c < NumDimensions; ++c)

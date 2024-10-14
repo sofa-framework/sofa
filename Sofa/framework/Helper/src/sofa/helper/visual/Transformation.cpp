@@ -88,7 +88,7 @@ Transformation& Transformation::operator=(const Transformation& transform)
 
 //----------------------------------------------------------------------------
 //--- Inversion for 4x4 matrix only containing rotations and translations
-//--- Transpose rotation matrix and mutiple by -1 translation row
+//--- Transpose rotation matrix and multiple by -1 translation row
 //----------------------------------------------------------------------------
 void Transformation::InvertTransRotMatrix(SReal matrix[4][4])
 {
@@ -115,7 +115,7 @@ void Transformation::InvertTransRotMatrix(SReal matrix[4][4])
 //----------------------------------------------------------------------------
 //--- Invert the source matrix sMatrix and put the result in the destination matrix dMatrix
 //--- Inversion for 4x4 matrix only containing rotations and translations
-//--- Transpose rotation matrix and mutiple by -1 translation row
+//--- Transpose rotation matrix and multiple by -1 translation row
 //----------------------------------------------------------------------------
 void Transformation::InvertTransRotMatrix(SReal sMatrix[4][4],
         SReal dMatrix[4][4])

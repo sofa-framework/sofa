@@ -45,7 +45,7 @@ namespace sofa::core::collision
  *  - deltaT: estimated of time of contact.
  *
  *  The contact id is used to filter redundant contacts (only the contact with
- *  the smallest distance is kept), and to store persistant data over time for
+ *  the smallest distance is kept), and to store persistent data over time for
  *  the response.
  *
  */
@@ -69,7 +69,7 @@ public:
     /// Normal of the contact, pointing outward from the first model
     type::Vec3 normal;
     /*
-    /// Signed distance (negative if objects are interpenetrating). If using a proximity-based detection, this is the actual distance between the objets minus the specified contact distance.
+    /// Signed distance (negative if objects are interpenetrating). If using a proximity-based detection, this is the actual distance between the objects minus the specified contact distance.
     */
     /// Store information for the collision Response. Depending on the kind of contact, can be a distance, or a pression, ...
     double value;

@@ -47,7 +47,7 @@ public:
 protected:
     StartNavigationButtonSetting(){};
 public:
-    std::string getOperationType() override {return "Start navigation if some view poins have been saved";}
+    std::string getOperationType() override {return "Start navigation if some view points have been saved";}
 };
 
 } // namespace sofa::gui::component

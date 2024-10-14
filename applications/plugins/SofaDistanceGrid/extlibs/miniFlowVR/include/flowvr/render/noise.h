@@ -82,7 +82,7 @@ inline float rrand()
 
 // a nice piecewise-cubic spline function, defined between 0.0<=x<=2.0
 // approximates a windowed sinc function - negative lobes (sharpens slightly)
-// using a = -0.75 = contraint parameter -0.5<=a<=-1.0 recommended
+// using a = -0.75 = constraint parameter -0.5<=a<=-1.0 recommended
 inline float cubic(float x)
 {
   const float a = -0.75;

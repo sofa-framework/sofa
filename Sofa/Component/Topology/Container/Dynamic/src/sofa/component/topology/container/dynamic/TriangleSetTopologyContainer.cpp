@@ -78,7 +78,7 @@ void TriangleSetTopologyContainer::init()
 
 void TriangleSetTopologyContainer::initTopology()
 {
-    // Force creation of Edge Neighboordhood buffers.
+    // Force creation of Edge Neighborhood buffers.
     EdgeSetTopologyContainer::initTopology();
 
     // Create triangle cross element buffers.
@@ -759,7 +759,7 @@ bool TriangleSetTopologyContainer::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-        msg_warning() << "CheckConnexity: Triangles are missings. There is more than one connexe component.";
+        msg_warning() << "CheckConnexity: Triangles are missing. There is more than one connexe component.";
         return false;
     }
     return true;

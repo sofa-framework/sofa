@@ -32,7 +32,7 @@ namespace sofa::component::statecontainer
 {
 //using core::objectmodel::Data;
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template<class DataTypes>
 class MappedObjectInternalData
 {

@@ -26,7 +26,7 @@ vec4 Pow(vec4 x, vec4 y) { POW }
 #define Saturate(x) clamp(x, 0.0, 1.0)
 
 ///////////////////////////////////////////////////////////////////////////////
-// Constrast adjustment.
+// Contrast adjustment.
 ///////////////////////////////////////////////////////////////////////////////
 
 vec3 AdjustContrast(vec3 Color, vec2 ScaleBias)
@@ -69,9 +69,9 @@ vec3 BluredNormal(vec3 Position, vec3 Tangent, sampler3D NoiseMap)
 vec3 BrushedMetalNormal(vec3 Normal, vec3 Position, vec3 Direction, float Roughness, float Distance, float Strength, sampler3D NoiseMap)
 {
     vec3 Tangent = normalize(VectorOrthogonalize(Normal, Direction));
-    vec3 Blured = BluredNormal(Position * Roughness, Tangent * Distance, NoiseMap);
+    vec3 Blurred = BluredNormal(Position * Roughness, Tangent * Distance, NoiseMap);
 
-    return normalize(Normal + Blured * Strength);
+    return normalize(Normal + Blurred * Strength);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

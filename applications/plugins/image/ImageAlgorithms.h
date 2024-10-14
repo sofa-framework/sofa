@@ -159,7 +159,7 @@ real Eikonal(const sofa::type::Vec<6,real>& d,const sofa::type::Vec<6,real>& d2,
 * Update geodesic distances in the image, given a bias distance function b(x).
 * This is equivalent to solve for the eikonal equation || grad d(x) || = 1/b(x) with d(p)=0 at @param pos
 * using fast marching method presented from sethian http://math.berkeley.edu/~sethian/2006/Publications/Book/2006/
-* distances should be intialized (<0 outside the object, >=0 inside, and = 0 for seeds)
+* distances should be initialized (<0 outside the object, >=0 inside, and = 0 for seeds)
 * returns @param voronoi and @param distances
 */
 
@@ -229,7 +229,7 @@ void fastMarching (std::set<std::pair<real,sofa::type::Vec<3,int> > > &trial,cim
 * Update geodesic distances in the image given a bias distance function b(x).
 * This is equivalent to solve for the eikonal equation || grad d(x) || = 1/b(x) with d(p)=0 at @param pos
 * using dijkstra minimum path algorithm
-* distances should be intialized (<0 outside the object, >=0 inside, and = 0 for seeds)
+* distances should be initialized (<0 outside the object, >=0 inside, and = 0 for seeds)
 * returns @param voronoi and @param distances
 */
 

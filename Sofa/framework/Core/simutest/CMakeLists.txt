@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 
 project(Sofa.Core_simutest)
 
-# Do not find dependencies explicitely, let CMake decide the appropriate time to do it
+# Do not find dependencies explicitly, let CMake decide the appropriate time to do it
 #sofa_find_package(SofaBase REQUIRED)
 
 set(SOURCE_FILES

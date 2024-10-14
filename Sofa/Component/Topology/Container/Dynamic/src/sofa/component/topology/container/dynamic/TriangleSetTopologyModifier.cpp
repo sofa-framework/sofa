@@ -458,12 +458,12 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::type::vecto
         {
 
             m_container->m_edgesInTriangle[ indices[i] ] = m_container->m_edgesInTriangle[ lastTriangle ]; // overwriting with last valid value.
-            m_container->m_edgesInTriangle.resize( lastTriangle ); // resizing to erase multiple occurence of the triangle.
+            m_container->m_edgesInTriangle.resize( lastTriangle ); // resizing to erase multiple occurrence of the triangle.
         }
 
         // removes the triangle from the triangleArray
         m_triangle[ indices[i] ] = m_triangle[ lastTriangle ]; // overwriting with last valid value.
-        m_triangle.resize( lastTriangle ); // resizing to erase multiple occurence of the triangle.
+        m_triangle.resize( lastTriangle ); // resizing to erase multiple occurrence of the triangle.
     }
 
     removeTrianglesPostProcessing(edgeToBeRemoved, vertexToBeRemoved); // Arrange the current topology.

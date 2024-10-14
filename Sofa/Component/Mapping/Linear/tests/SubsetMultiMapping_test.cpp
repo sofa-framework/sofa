@@ -111,14 +111,14 @@ struct SubsetMultiMappingTest : public MultiMapping_test<_SubsetMultiMapping>
 };
 
 
-// Define the list of types to instanciate. We do not necessarily need to test all combinations.
+// Define the list of types to instantiate. We do not necessarily need to test all combinations.
 using ::testing::Types;
 typedef Types<
 mapping::linear::SubsetMultiMapping<defaulttype::Rigid3Types,defaulttype::Rigid3Types>,
 mapping::linear::SubsetMultiMapping<defaulttype::Vec3Types,defaulttype::Vec3Types>
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(SubsetMultiMappingTest, DataTypes);
 // first test case
 TYPED_TEST( SubsetMultiMappingTest , two_parents_one_child )

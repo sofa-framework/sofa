@@ -101,10 +101,10 @@ struct BarycentricMapperTriangleSetTopologyTest :  public BaseTest, public Baryc
         const Node::SPtr nodeMapping = node->createChild("nodeToMap");
         const TriangleSetTopologyContainer::SPtr triangleContainer = New<TriangleSetTopologyContainer>();
         const TetrahedronSetTopologyContainer::SPtr tetraContainer = New<TetrahedronSetTopologyContainer>();
-        const MechanicalObject<Vec3Types>::SPtr mecanical = New<MechanicalObject<Vec3Types>>();
+        const MechanicalObject<Vec3Types>::SPtr mechanical = New<MechanicalObject<Vec3Types>>();
 
         node->addObject(tetraContainer);
-        node->addObject(mecanical);
+        node->addObject(mechanical);
         node->addChild(nodeMapping);
         nodeMapping->addObject(triangleContainer);
         nodeMapping->addObject(thisObject);

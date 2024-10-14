@@ -70,7 +70,7 @@ void FilesRecentlyOpenedManager::openFile(const std::string &path)
     if (path.empty() || !FileSystem::exists(path))
         return;
 
-    // Remove previous occurence of the file, if any
+    // Remove previous occurrence of the file, if any
     const type::vector<std::string>::iterator fileFound = std::find(files.begin(), files.end(), path);
     if (fileFound != files.end())
         files.erase(fileFound);

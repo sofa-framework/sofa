@@ -462,7 +462,7 @@ bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionEleme
         {
             const bool isCut = this->incisionTriangleModel (model, incision.indexTriangle, incision.coordPoint, model, elem.getIndex(), pos, snapingValue, snapingBorderValue);
 
-            if (isCut && !incision.firstCut) // cut has been reached, and will possible be continue. Stocking informations.
+            if (isCut && !incision.firstCut) // cut has been reached, and will possible be continue. Stocking information.
             {
                 incision.coordPoint[0] = pos[0];
                 incision.coordPoint[1] = pos[1];
@@ -565,7 +565,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
         sofa::type::vector<Index> indices_list;
         sofa::type::vector< Vec3 > coords2_list;
 
-        // Snaping value: input are percentages, we need to transform it as real epsilon value;
+        // Snapping value: input are percentages, we need to transform it as real epsilon value;
         const double epsilonSnap = (double)snapingValue/200;
         const double epsilonBorderSnap = (double)snapingBorderValue/210; // magic number (0.5 is max value and must not be reached, as threshold is compared to barycoord value)
 

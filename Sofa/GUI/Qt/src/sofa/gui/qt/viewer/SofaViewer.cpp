@@ -506,7 +506,7 @@ void SofaViewer::configure(sofa::component::setting::ViewerSetting* viewerConf)
 
 }
 
-//Fonctions needed to take a screenshot
+//Functions needed to take a screenshot
 const std::string SofaViewer::screenshotName()
 {
     return m_backend->screenshotName();

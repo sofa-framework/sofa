@@ -6,7 +6,7 @@
 # OPENCTM_INCLUDE_PATH
 # OPENCTM_LIBRARY
 # 
-# lib directory of OpenCTM library should be linked to on of the path below under teh directory openctm
+# lib directory of OpenCTM library should be linked to on of the path below under the directory openctm
 
 #include( Common )
 

@@ -248,7 +248,7 @@ void generateRigid( GenerateRigidInfo& res
     res.mass = rigidMass.mass;
     res.inertia = res.mass * rigidMass.inertiaMatrix;
 
-    // a threshol to test if inertia is diagonal in function of diagonal values
+    // a threshold to test if inertia is diagonal in function of diagonal values
     const SReal threshold = type::trace( res.inertia ) * 1e-6;
 
     // if not diagonal, extracting principal axes basis to get the corresponding rotation with a diagonal inertia

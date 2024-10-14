@@ -87,7 +87,7 @@ public:
     void lock();
     void unLock();
 
-    /// Returns true if the view is not syncrhonized anymore with the simulation graph.
+    /// Returns true if the view is not synchronized anymore with the simulation graph.
     /// To re-syncronize the view you can:
     ///     - call unfreeze() so any future change will be reflected
     ///     - call update(), to update one time the graph.
@@ -101,7 +101,7 @@ public:
     void setViewToDirty();
 
 Q_SIGNALS:
-    /// Connect to this signal to be notified when the dirtyness status of the QSofaListView changed.
+    /// Connect to this signal to be notified when the dirtiness status of the QSofaListView changed.
     void dirtynessChanged(bool isDirty);
 
     /// Connect to this signal to be notified when the locking status changed

@@ -115,7 +115,7 @@ public:
         return false;
     }
 
-    /// Apply the contactforce dx = Minv * J^t * f and store the resut in dx VecId
+    /// Apply the contactforce dx = Minv * J^t * f and store the result in dx VecId
     virtual void applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/,sofa::core::MultiVecDerivId /*dx*/, const linearalgebra::BaseVector* /*f*/) {
         msg_error() << "applyConstraintForce has not been implemented.";
     }

@@ -140,7 +140,7 @@ class SOFA_IMAGE_GUI_API ImageToolBoxCentralWidget: public QWidget
     Q_OBJECT
 
 public slots:
-    virtual void handleSliderPolicies()=0; // needed for synchronization of slider visiblity
+    virtual void handleSliderPolicies()=0; // needed for synchronization of slider visibility
     virtual void setVisibleXY(bool)=0;
     virtual void setVisibleXZ(bool)=0;
     virtual void setVisibleZY(bool)=0;

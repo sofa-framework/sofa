@@ -152,7 +152,7 @@ public:
     /// returns true if algorithm uses proximity detection
     virtual bool useProximity() const { return false; }
 
-    /// returns true if algorithm uses continous detection
+    /// returns true if algorithm uses continuous detection
     virtual bool useContinuous() const { return false; }
 
     /// Return the alarm distance (must return 0 if useProximity() is false)

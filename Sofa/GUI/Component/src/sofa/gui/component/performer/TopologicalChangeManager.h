@@ -55,8 +55,8 @@ public:
 
     /** Handles Cutting (activated only for a triangular topology)
      *
-     * Only one model is given. This function perform incision beetween input point and stocked
-     * informations. If it is the first point of the incision, these informations are stocked.
+     * Only one model is given. This function perform incision between input point and stocked
+     * information. If it is the first point of the incision, these information are stocked.
      * i.e element index and picked point coordinates.
      *
      * \sa incisionTriangleSetTopology
@@ -145,7 +145,7 @@ private:
 
 
 private:
-    /// Global variables to register intermediate informations for point to point incision.(incision along one segment in a triangular mesh)
+    /// Global variables to register intermediate information for point to point incision.(incision along one segment in a triangular mesh)
     struct Incision
     {
         /// Temporary point index for successive incisions

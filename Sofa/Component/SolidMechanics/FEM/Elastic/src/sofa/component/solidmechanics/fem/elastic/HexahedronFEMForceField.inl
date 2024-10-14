@@ -308,7 +308,7 @@ const typename HexahedronFEMForceField<DataTypes>::Transformation& HexahedronFEM
 /////////////////////////////////////////////////
 // enable to use generic matrix computing code instead of the original optimized code specific to parallelepipeds
 #define GENERIC_STIFFNESS_MATRIX
-// enable to use the full content of the MaterialStiffness matrix, instead of only the 3x3 upper bloc
+// enable to use the full content of the MaterialStiffness matrix, instead of only the 3x3 upper block
 #define MAT_STIFFNESS_USE_W
 // enable to use J when computing qx/qy/qz, instead of computing the matrix relative to (x1,x2,x3) and pre/post multiply by J^-1 afterward.
 // note that this does not matter if the element is a cube.

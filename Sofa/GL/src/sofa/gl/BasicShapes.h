@@ -60,7 +60,7 @@ void drawCone(const V& p1, const V& p2, const float& radius1, const float& radiu
         ct = (float)cos(theta);
         /* construct normal */
         tmp = p*ct+q*st;
-        /* set the normal for the two subseqent points */
+        /* set the normal for the two subsequent points */
         gl::glNormalT(tmp);
         /* point on disk 1 */
         V w(p1);

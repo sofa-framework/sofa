@@ -92,7 +92,7 @@ private:
 
 public:
     /**
-     *  \brief clear some graphical resources (generaly called before the deleteVisitor).
+     *  \brief clear some graphical resources (generally called before the deleteVisitor).
      *  \note: for more general usage you can use the cleanup visitor
      */
     virtual void clearVisual() { }

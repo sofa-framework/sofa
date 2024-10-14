@@ -39,8 +39,8 @@ namespace sofa::component::engine::analyze
 
 /**
  * This class groups points into overlapping clusters according to a user defined number of clusters and radius
- * It takes input positions (and optionally a meshtopology if geodesic distances are prefered)
- * ouput clusters can then be fed to
+ * It takes input positions (and optionally a meshtopology if geodesic distances are preferred)
+ * output clusters can then be fed to
  *     - shape matching engine
  *     - blendSkinningMapping
  *
@@ -75,7 +75,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    Data<bool> d_useTopo; ///< Use avalaible topology to compute neighborhood.
+    Data<bool> d_useTopo; ///< Use available topology to compute neighborhood.
     //Data<unsigned int> maxIter;
 
     Data<Real> d_radius; ///< Neighborhood range.

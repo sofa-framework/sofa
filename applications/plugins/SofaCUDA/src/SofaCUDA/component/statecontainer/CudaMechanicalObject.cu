@@ -2255,7 +2255,7 @@ void MechanicalObjectCudaVec1f_vDot(unsigned int size, float* res, const void* a
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocks=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<float>*/ <<< grid, threads , RED_BSIZE * sizeof(float) >>>(size, (float*)tmp, (const float*)a, (const float*)b);
         if (nblocs == 1)
         {
@@ -2294,7 +2294,7 @@ void MechanicalObjectCudaVec2f_vDot(unsigned int size, float* res, const void* a
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocks=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<float>*/ <<< grid, threads , RED_BSIZE * sizeof(float) >>>(size, (float*)tmp, (const float*)a, (const float*)b);
         if (nblocs == 1)
         {
@@ -2339,7 +2339,7 @@ void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocks=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<float>*/ <<< grid, threads , RED_BSIZE * sizeof(float) >>>(size, (float*)tmp, (const float*)a, (const float*)b);
         if (nblocs == 1)
         {
@@ -2384,7 +2384,7 @@ void MechanicalObjectCudaVec3f1_vDot(unsigned int size, float* res, const void* 
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocks=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<float>*/ <<< grid, threads , RED_BSIZE * sizeof(float) >>>(size, (float*)tmp, (const float*)a, (const float*)b);
         if (nblocs == 1)
         {
@@ -2429,7 +2429,7 @@ void MechanicalObjectCudaVec6f_vDot(unsigned int size, float* res, const void* a
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocks=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<float>*/ <<< grid, threads , RED_BSIZE * sizeof(float) >>>(size, (float*)tmp, (const float*)a, (const float*)b);
         if (nblocs == 1)
         {
@@ -2474,7 +2474,7 @@ void MechanicalObjectCudaRigid3f_vDot(unsigned int size, float* res, const void*
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocks=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<float>*/ <<< grid, threads , RED_BSIZE * sizeof(float) >>>(size, (float*)tmp, (const float*)a, (const float*)b);
         if (nblocs == 1)
         {
@@ -3071,7 +3071,7 @@ void MechanicalObjectCudaVec2d_vDot(unsigned int size, double* res, const void* 
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocks=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<double>*/ <<< grid, threads , RED_BSIZE * sizeof(double) >>>(size, (double*)tmp, (const double*)a, (const double*)b);
         if (nblocs == 1)
         {
@@ -3116,7 +3116,7 @@ void MechanicalObjectCudaVec3d_vDot(unsigned int size, double* res, const void* 
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocks=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<double>*/ <<< grid, threads , RED_BSIZE * sizeof(double) >>>(size, (double*)tmp, (const double*)a, (const double*)b);
         if (nblocs == 1)
         {
@@ -3161,7 +3161,7 @@ void MechanicalObjectCudaVec3d1_vDot(unsigned int size, double* res, const void*
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocks=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<double>*/ <<< grid, threads , RED_BSIZE * sizeof(double) >>>(size, (double*)tmp, (const double*)a, (const double*)b);
         if (nblocs == 1)
         {
@@ -3206,7 +3206,7 @@ void MechanicalObjectCudaVec6d_vDot(unsigned int size, double* res, const void* 
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocks=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<double>*/ <<< grid, threads , RED_BSIZE * sizeof(double) >>>(size, (double*)tmp, (const double*)a, (const double*)b);
         if (nblocs == 1)
         {
@@ -3251,7 +3251,7 @@ void MechanicalObjectCudaRigid3d_vDot(unsigned int size, double* res, const void
         if (nblocs > 256) nblocs = 256;
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
-        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        //myprintf("size=%d, blocks=%dx%d\n",size,nblocs,RED_BSIZE);
         MechanicalObjectCudaVec_vDot_kernel /*<double>*/ <<< grid, threads , RED_BSIZE * sizeof(double) >>>(size, (double*)tmp, (const double*)a, (const double*)b);
         if (nblocs == 1)
         {

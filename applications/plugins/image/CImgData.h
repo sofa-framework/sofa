@@ -229,7 +229,7 @@ public:
         return res;
     }
 
-    // returns an image corresponing to a plane indexed by "coord" along "axis" and inside a bounding box
+    // returns an image corresponding to a plane indexed by "coord" along "axis" and inside a bounding box
     cimg_library::CImg<T> get_plane(const unsigned int coord,const unsigned int axis,const type::Mat<2,3,unsigned int>& ROI,const unsigned int t=0, const bool mergeChannels=false) const
     {
         if(mergeChannels)    return get_plane(coord,axis,ROI,t,false).norm();
@@ -581,7 +581,7 @@ struct ImageTypeInfo : public BaseImageTypeInfo
 
     enum { ValidInfo       = BaseTypeInfo::ValidInfo       }; ///< 1 if this type has valid infos
     enum { FixedSize       = 1                             }; ///< 1 if this type has a fixed size  -> always 1 Image
-    enum { ZeroConstructor = 0                             }; ///< 1 if the constructor is equivalent to setting memory to 0  -> I guess so, a default Image is initialzed with nothing
+    enum { ZeroConstructor = 0                             }; ///< 1 if the constructor is equivalent to setting memory to 0  -> I guess so, a default Image is initialized with nothing
     enum { SimpleCopy      = 0                             }; ///< 1 if copying the data can be done with a memcpy
     enum { SimpleLayout    = 0                             }; ///< 1 if the layout in memory is simply N values of the same base type
     enum { Integer         = 0                             }; ///< 1 if this type uses integer values

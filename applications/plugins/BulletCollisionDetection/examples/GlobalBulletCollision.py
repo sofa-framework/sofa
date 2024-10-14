@@ -4,13 +4,13 @@ from PrimitiveCreation import *
 from cmath import *
 
 ############################################################################################
-# following defs are optionnal entry points, called by the PythonScriptController component;
+# following defs are optional entry points, called by the PythonScriptController component;
 ############################################################################################
 
 
 class GlobalCollision(Sofa.PythonScriptController):
 
-	# optionnally, script can create a graph...
+	# optionally, script can create a graph...
 	def createGraph(self,node):
 
 		node.findData('dt').value=0.05

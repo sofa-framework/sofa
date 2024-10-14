@@ -37,7 +37,7 @@
 namespace sofa::component::solidmechanics::spring
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template<class DataTypes>
 class SpringForceFieldInternalData
 {

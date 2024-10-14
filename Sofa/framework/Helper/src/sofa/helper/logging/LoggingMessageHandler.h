@@ -35,7 +35,7 @@ namespace sofa::helper::logging
 {
 
 /// I use a per-file namespace so that I can employ the 'using' keywords without
-/// fearing it will leack names into the global namespace.
+/// fearing it will leak names into the global namespace.
 /// When closing this namespace selected objects from this per-file namespace
 /// are then imported into their parent namespace for ease of use.
 namespace loggingmessagehandler
@@ -49,7 +49,7 @@ using std::vector ;
 /// Once set the class can start copying the messages passing through
 /// the MessageDispatcher in a buffer.
 ///
-/// Dedicated function allows to activate/deactive the saving of the messages as well
+/// Dedicated function allows to activate/deactivate the saving of the messages as well
 /// as to clear the content of the buffer. The class keeps tracks of its
 /// number of activation/deactivation. Message logging is activated as long
 /// as there is not a paired number of activation/deactivation.

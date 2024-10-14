@@ -34,7 +34,7 @@ namespace sofa::gl::component::engine
 {
 
 /**
- * This class give texture coordinate in 1D according to an imput state vector.
+ * This class give texture coordinate in 1D according to an input state vector.
  */
 template <class DataTypes>
 class TextureInterpolation : public core::DataEngine

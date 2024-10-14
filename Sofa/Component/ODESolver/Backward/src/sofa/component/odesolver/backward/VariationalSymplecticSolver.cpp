@@ -91,7 +91,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 
     MultiVecDeriv newp(&vop);
     MultiVecDeriv vel_1(&vop, vResult); // vector of final  velocity
-    MultiVecDeriv p(&vop); // vector of momemtum
+    MultiVecDeriv p(&vop); // vector of momentum
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
     MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
@@ -101,10 +101,10 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 
     if (cpt == 0 || this->getContext()->getTime()==0.0)
     {
-		vop.v_alloc(pID); // allocate a new vector in Mechanical Object to store the momemtum
-		MultiVecDeriv pInit(&vop, pID); // initialize the first value of the momemtum to M*v
+		vop.v_alloc(pID); // allocate a new vector in Mechanical Object to store the momentum
+		MultiVecDeriv pInit(&vop, pID); // initialize the first value of the momentum to M*v
 		pInit.clear();
-		mop.addMdx(pInit,vel_1,1.0); // momemtum is initialized to M*vinit (assume 0 acceleration)
+		mop.addMdx(pInit,vel_1,1.0); // momentum is initialized to M*vinit (assume 0 acceleration)
 
         // Compute potential energy at time t=0
         SReal KineticEnergy;
@@ -122,8 +122,8 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
     }
 
 	cpt++;
-    MultiVecDeriv pPrevious(&vop, pID); // get previous momemtum value
-    p.eq(pPrevious); // set p to previous momemtum
+    MultiVecDeriv pPrevious(&vop, pID); // get previous momentum value
+    p.eq(pPrevious); // set p to previous momentum
 
     typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
  
@@ -357,7 +357,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
         mop.solveConstraint(x_1,core::ConstraintOrder::POS);
     }
 
-	// update the previous momemtum as the current one for next step
+	// update the previous momentum as the current one for next step
     pPrevious.eq(newp);
 }
 
