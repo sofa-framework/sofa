@@ -24,7 +24,10 @@ endif()
 
 if (Qt6Core_FOUND)
     message("${PROJECT_NAME}: will use Qt6")
-    sofa_find_package(Qt6 COMPONENTS Gui GuiTools Widgets WidgetsTools OpenGLWidgets REQUIRED)
+    find_package(Qt6 COMPONENTS Gui GuiTools Widgets WidgetsTools OpenGLWidgets REQUIRED)
+    # GuiTools & WidgetsTools does not define a Qt6::component CMake target
+    # So we can't look for those target to know how we should define SOFA_GUI_QT_HAVE_QT6
+    sofa_find_package(Qt6 COMPONENTS Gui Widgets OpenGLWidgets REQUIRED)
     set(SOFA_GUI_QT_TARGETS ${SOFA_GUI_QT_TARGETS} Qt::Core Qt::Gui Qt::Widgets Qt::OpenGLWidgets )
 elseif (Qt5Core_FOUND)
     message("${PROJECT_NAME}: will use Qt5 (deprecated)")
