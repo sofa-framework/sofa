@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gpu/cuda/CudaCommon.h>
-#include <sofa/gpu/cuda/CudaMath.h>
+#include <vector_types.h>
+#include <sofa/gpu/cuda/mycuda.h>
 #include "cuda.h"
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
@@ -34,7 +34,7 @@ namespace cuda
 
 extern "C"
 {
-    void SubsetContactMapperCuda3f_setPoints1(unsigned int size, unsigned int nbTests, unsigned int maxPoints, unsigned int nbPointsPerElem, const void* tests, const void* contacts, void* map);
+    void RigidContactMapperCuda3f_setPoints2(unsigned int size, unsigned int nbTests, unsigned int maxPoints, const void* tests, const void* contacts, void* map);
 }
 
 struct /*__align__(16)*/ GPUContact
@@ -54,13 +54,9 @@ struct /*__align__(8)*/ GPUTestEntry
     int elem1,elem2;
 };
 
-//////////////////////
-// GPU-side methods //
-//////////////////////
-
 __shared__ GPUTestEntry curTestEntry;
 
-__global__ void SubsetContactMapperCuda3f_setPoints1_kernel(unsigned int nbPointsPerElem, const GPUTestEntry* tests, const GPUContact* contacts, int* map)
+__global__ void RigidContactMapperCuda3f_setPoints2_kernel(const GPUTestEntry* tests, const GPUContact* contacts, float3* map)
 {
     if (threadIdx.x == 0)
         curTestEntry = tests[blockIdx.x];
@@ -70,27 +66,21 @@ __global__ void SubsetContactMapperCuda3f_setPoints1_kernel(unsigned int nbPoint
     GPUContact c = contacts[curTestEntry.firstIndex + threadIdx.x];
     if (threadIdx.x < curTestEntry.curSize)
     {
-        map[curTestEntry.newIndex + threadIdx.x] = curTestEntry.elem1 * nbPointsPerElem + c.p1;
+        map[curTestEntry.newIndex + threadIdx.x] = c.p2;
     }
 }
 
-
-//////////////////////
-// CPU-side methods //
-//////////////////////
-
-void SubsetContactMapperCuda3f_setPoints1(unsigned int size, unsigned int nbTests, unsigned int maxPoints, unsigned int nbPointsPerElem, const void* tests, const void* contacts, void* map)
+void RigidContactMapperCuda3f_setPoints2(unsigned int size, unsigned int nbTests, unsigned int maxPoints, const void* tests, const void* contacts, void* map)
 {
     // round up to 16
     //maxPoints = (maxPoints+15)&-16;
     dim3 threads(maxPoints,1);
     dim3 grid(nbTests,1);
-    {SubsetContactMapperCuda3f_setPoints1_kernel<<< grid, threads >>>(nbPointsPerElem, (const GPUTestEntry*)tests, (GPUContact*)contacts, (int*)map); mycudaDebugError("SubsetContactMapperCuda3f_setPoints1_kernel");}
-
+    {RigidContactMapperCuda3f_setPoints2_kernel<<< grid, threads >>>((const GPUTestEntry*)tests, (GPUContact*)contacts, (float3*)map); mycudaDebugError("RigidContactMapperCuda3f_setPoints2_kernel");}
 }
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
+}
+}
+}
 #endif
