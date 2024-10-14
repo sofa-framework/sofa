@@ -614,7 +614,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(SRea
 
     const auto positionIntegrationFactor = l_ODESolver->getPositionIntegrationFactor();
 
-    // TODO => optimisation => for each bloc store J[bloc,dof]
+    // TODO => optimisation => for each block store J[block,dof]
     for (int i = begin; i <= end; i++)
     {
         MatrixDerivRowConstIterator rowIt = constraints.readLine(i);
@@ -674,7 +674,7 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(SReal* df,
         }
     }
 
-    // course on indices of the dofs involved invoved in the bloc //
+    // course on indices of the dofs involved invoved in the block //
     auto it_dof(Vec_I_list_dof[last_force].cbegin()), it_end(Vec_I_list_dof[last_force].cend());
     for(; it_dof!=it_end; ++it_dof)
     {

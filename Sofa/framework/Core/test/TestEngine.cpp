@@ -78,7 +78,7 @@ void TestEngine::doUpdate()
     const SReal factor = f_factor.getValue();
 
 
-///// THEN tell everthing is (will be) up to date now
+///// THEN tell everything is (will be) up to date now
 /// @warning This must be done AFTER updating all inputs
 /// can be done before or after setting up the outputs
     cleanDirty();

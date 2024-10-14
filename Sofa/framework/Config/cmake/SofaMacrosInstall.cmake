@@ -781,7 +781,7 @@ function(sofa_set_project_install_relocatable project_name binary_dir install_di
         set(custom_target ${project_name}_${binary_dirname}_relocatable_install)
     endif()
 
-    # Hack to make installed plugin independant and keep the add_subdirectory mechanism
+    # Hack to make installed plugin independent and keep the add_subdirectory mechanism
     # Does not fail if cmakepatch file already exists thanks to "|| true"
     if(WIN32)
         set(escaped_dollar "\$\$")

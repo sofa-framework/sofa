@@ -220,7 +220,7 @@ bool MeshROI<DataTypes>::isPointInROI(const CPos& p) const
             const CPos& p0 =  DataTypes::getCPos(x0[t[0]]);
             const CPos& p1 =  DataTypes::getCPos(x0[t[1]]);
             const CPos& p2 =  DataTypes::getCPos(x0[t[2]]);
-            // Normal N compuation of the ROI mesh triangle
+            // Normal N computation of the ROI mesh triangle
             CPos N;
             N[0] = (p1[1]-p0[1])*(p2[2]-p1[2]) - (p1[2]-p0[2])*(p2[1]-p1[1]);
             N[1] = (p1[2]-p0[2])*(p2[0]-p1[0]) - (p1[0]-p0[0])*(p2[2]-p1[2]);

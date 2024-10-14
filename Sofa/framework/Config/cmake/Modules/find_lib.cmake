@@ -31,7 +31,7 @@ set(_FIND_LIB_CMAKE_INCLUDED_ true)
 ## Optional flag 1: FORCE_DEBUG   -> If no DEBUG LIBRARY found, set the debug variable library to the release variable.   \\n
 ## Optional flag 2: FORCE_RELEASE -> If no RELEASE LIBRARY found, set the release variable library to the debug variable.   \\n
 ## Usage 1          : FIND_LIB( ${CMAKE_PROJECT_LIB_NAME} ${REAL_PROJECT_LIB_NAME} ).   \\n
-## full usage exemple:
+## full usage example:
 ##\\code
 ## FIND_LIB(${CMAKE_SOFA_LIB_NAME} ${REAL_SOFA_LIB_NAME}    \n
 ##         PATHSLIST_DEBUG                                  \n

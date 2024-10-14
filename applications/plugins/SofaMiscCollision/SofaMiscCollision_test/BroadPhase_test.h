@@ -162,7 +162,7 @@ void randMoving(sofa::core::CollisionModel* cm,const Vector3 & min_vect,const Ve
     Data<MechanicalObjectRigid3::VecCoord> & dpositions = *dof->write( sofa::core::VecId::position() );
     MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
-    //Editting the velocity of the OBB
+    //Editing the velocity of the OBB
     Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *dof->write( sofa::core::VecId::velocity() );
     MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
 
@@ -417,7 +417,7 @@ sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::S
 
     dpositions.endEdit();
 
-    //Editting the velocity of the OBB
+    //Editing the velocity of the OBB
     Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *obbDOF->write( sofa::core::VecId::velocity() );
 
     MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
@@ -432,7 +432,7 @@ sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::S
     sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbCollisionModel = New<sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types> >();
     obb->addObject(obbCollisionModel);
 
-    //editting the OBBModel
+    //editing the OBBModel
     sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::Real & def_ext = *(obbCollisionModel->default_ext.beginEdit());
     def_ext = default_extent;
 

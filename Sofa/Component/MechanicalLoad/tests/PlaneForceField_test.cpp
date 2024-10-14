@@ -220,7 +220,7 @@ struct PlaneForceField_test : public BaseSimulationTest
         return true;
     }
 
-    /// This kind of test is important as it enforce the developper to take a wider range of
+    /// This kind of test is important as it enforce the developer to take a wider range of
     /// input values and check that they are gracefully handled.
     bool testMonkeyValuesForAttributes()
     {
@@ -339,7 +339,7 @@ struct PlaneForceField_test : public BaseSimulationTest
 
 };
 
-// Define the list of DataTypes to instanciate
+// Define the list of DataTypes to instantiate
 using ::testing::Types;
 typedef Types<
               TypeTuple<Rigid3Types, Rigid3Mass>
@@ -349,7 +349,7 @@ typedef Types<
               ,TypeTuple<Vec6Types, SReal>
 > DataTypes;
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(PlaneForceField_test, DataTypes);// first test case
 TYPED_TEST( PlaneForceField_test , testPlaneForceField )
 {

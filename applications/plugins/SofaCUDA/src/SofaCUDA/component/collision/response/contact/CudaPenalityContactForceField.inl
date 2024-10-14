@@ -179,7 +179,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addDForce(const core::Mechanical
             Coord du = dx2[i]-dx1[i];
             Coord norm(c[0],c[1],c[2]);
             Real dpen = - du*norm;
-            //if (c.pen < 0) dpen += c.pen; // start penality at distance 0
+            //if (c.pen < 0) dpen += c.pen; // start penalty at distance 0
             //Real dfN = c.ks * dpen;
             Deriv dforce = -norm*(dpen*kFactor); //dfN;
             df1[i]+=dforce;

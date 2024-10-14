@@ -99,7 +99,7 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3
         typename Matrix::Range rowRange = M.getRowRange(jb);
         Index xi = rowRange.begin();
         while (xi < rowRange.end() && static_cast<Index>(colsIndex[xi]) < jb) ++xi;
-        // bloc on the diagonal
+        // block on the diagonal
         const typename Matrix::Block& bdiag = colsValue[xi];
         // upper triangle matrix
         for (++xi; xi < rowRange.end(); ++xi)

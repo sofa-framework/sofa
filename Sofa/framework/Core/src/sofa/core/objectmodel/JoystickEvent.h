@@ -124,7 +124,7 @@ public:
 
 
     /**
-     * @brief Implements an event notifiying changes about a directionnal hat on a device (like a joystick).
+     * @brief Implements an event notifying changes about a directionnal hat on a device (like a joystick).
      */
     class SOFA_CORE_API HatEvent
     {

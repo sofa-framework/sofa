@@ -181,7 +181,7 @@ public:
     int GATHER_PT;
     int GATHER_BSIZE;
 
-    /// Index of elements attached to each points (layout per bloc of NBLOC vertices, with first element of each vertex, then second element, etc)
+    /// Index of elements attached to each points (layout per block of NBLOC vertices, with first element of each vertex, then second element, etc)
     /// Note that each integer is actually equal to the index of the element * 8 + the index of this vertex inside the hexahedron.
     gpu::cuda::CudaVector<int> velems;
 
@@ -217,9 +217,9 @@ public:
     void setV(int vertex, int num, int index)
     {
         vertex -= vertex0;
-        const int bloc = vertex/BSIZE;
+        const int block = vertex/BSIZE;
         const int b_x = vertex%BSIZE;
-        velems[ bloc*BSIZE*nbElementPerVertex // start of the bloc
+        velems[ block*BSIZE*nbElementPerVertex // start of the block
               + num*BSIZE                     // offset to the element
               + b_x                           // offset to the vertex
               ] = index+1;

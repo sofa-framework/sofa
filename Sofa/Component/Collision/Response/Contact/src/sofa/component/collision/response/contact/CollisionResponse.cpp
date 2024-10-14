@@ -172,7 +172,7 @@ void CollisionResponse::createNewContacts(const core::collision::ContactManager:
 
                 if (contact == nullptr)
                 {
-                    //contact couln't be created: write an error and collision detection output is no longer considered
+                    //contact couldn't be created: write an error and collision detection output is no longer considered
                     contactCreationError(errorStream, model1, model2, responseUsed);
                     contactMap.erase(contactIt);
                 }

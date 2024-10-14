@@ -54,7 +54,7 @@ Base::Base()
     : ref_counter(0)
     , name(initData(&name,unnamed_label,"name","object name"))
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, emits extra messages at runtime."))
-    , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
+    , f_tags(initData( &f_tags, "tags", "list of the subsets the object belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
     , d_componentState(initData(&d_componentState, ComponentState::Undefined, "componentState", "The state of the component among (Dirty, Valid, Undefined, Loading, Invalid)."))
 {
@@ -567,7 +567,7 @@ void  Base::parse ( BaseObjectDescription* arg )
     {
         const std::string& attrName = it.first;
 
-        // FIX: "type" is already used to define the type of object to instanciate, any Data with
+        // FIX: "type" is already used to define the type of object to instantiate, any Data with
         // the same name cannot be extracted from BaseObjectDescription
         if (attrName == std::string("type"))
             continue;

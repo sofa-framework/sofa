@@ -39,7 +39,7 @@ namespace sofa::component::solidmechanics::fem::elastic
 template<class DataTypes>
 class FastTetrahedralCorotationalForceField;
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template<class DataTypes>
 class FastTetrahedralCorotationalForceFieldData
 {
@@ -154,7 +154,7 @@ public:
     core::topology::EdgeData<VecMat3x3 > d_edgeInfo; ///< Internal edge data
     core::topology::TetrahedronData<VecTetrahedronRestInformation > d_tetrahedronInfo; ///< Internal tetrahedron data
 
-    VecCoord  _initialPoints;///< the intial positions of the points
+    VecCoord  _initialPoints;///< the initial positions of the points
     Data<std::string> d_method; ///<  method for rotation computation :"qr" (by QR) or "polar" or "polar2" or "none" (Linear elastic)
     RotationDecompositionMethod m_decompositionMethod;
 

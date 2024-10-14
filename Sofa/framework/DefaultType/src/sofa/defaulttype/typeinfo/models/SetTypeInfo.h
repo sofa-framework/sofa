@@ -73,7 +73,7 @@ struct SetTypeInfo
 
     static bool setSize(DataType& data, sofa::Size /*size*/)
     {
-        data.clear(); // we can't "resize" a set, so the only meaningfull operation is to clear it, as values will be added dynamically in setValue
+        data.clear(); // we can't "resize" a set, so the only meaningful operation is to clear it, as values will be added dynamically in setValue
         return true;
     }
 

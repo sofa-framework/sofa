@@ -306,7 +306,7 @@ public:
   /** Parse the arguments.
    * @param error Pointer to a boolean for retrieving if the command line has errors.
    * @return True if the program should continue, false if the program should end
-   *  (either because the option --help was used or because an error occured).
+   *  (either because the option --help was used or because an error occurred).
    */
   bool parse(int argc, char** argv, bool* error=NULL);
 

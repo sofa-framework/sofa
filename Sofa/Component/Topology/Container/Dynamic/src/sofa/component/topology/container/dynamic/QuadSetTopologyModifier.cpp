@@ -323,12 +323,12 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::type::vector<QuadID
         if(m_container->hasEdgesInQuad())
         {
             m_container->m_edgesInQuad[ indices[i] ] = m_container->m_edgesInQuad[ lastQuad ]; // overwriting with last valid value.
-            m_container->m_edgesInQuad.resize( lastQuad ); // resizing to erase multiple occurence of the quad.
+            m_container->m_edgesInQuad.resize( lastQuad ); // resizing to erase multiple occurrence of the quad.
         }
 
         // removes the quad from the quadArray
         m_quad[ indices[i] ] = m_quad[ lastQuad ]; // overwriting with last valid value.
-        m_quad.resize( lastQuad ); // resizing to erase multiple occurence of the quad.
+        m_quad.resize( lastQuad ); // resizing to erase multiple occurrence of the quad.
     }
 
     if(!edgeToBeRemoved.empty())

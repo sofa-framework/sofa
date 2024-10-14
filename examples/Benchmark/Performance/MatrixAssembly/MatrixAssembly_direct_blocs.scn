@@ -29,7 +29,7 @@ The differences are in the way the global system matrix is built and solved:
         <!--
             Direct solver: the system matrix is explicitly built by the ODE solver
             and provided to the linear solver.
-            The template CompressedRowSparseMatrixMat3x3d indicates that the matrix is defined by 3x3 blocs.
+            The template CompressedRowSparseMatrixMat3x3d indicates that the matrix is defined by 3x3 blocks.
          -->
         <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3"/>
 
