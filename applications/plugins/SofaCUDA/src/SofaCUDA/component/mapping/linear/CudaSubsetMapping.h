@@ -146,10 +146,10 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::apply
 
 
 #ifndef SOFA_GPU_CUDA_CUDASUBSETMAPPING_CPP
-extern template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3fTypes, CudaVec3fTypes >;
-extern template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3f1Types, CudaVec3f1Types >;
-extern template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3f1Types, CudaVec3fTypes >;
-extern template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3fTypes, CudaVec3f1Types >;
+extern template class SOFA_GPU_CUDA_API SubsetMapping< sofa::gpu::cuda::CudaVec3fTypes, sofa::gpu::cuda::CudaVec3fTypes >;
+extern template class SOFA_GPU_CUDA_API SubsetMapping< sofa::gpu::cuda::CudaVec3f1Types, sofa::gpu::cuda::CudaVec3f1Types >;
+extern template class SOFA_GPU_CUDA_API SubsetMapping< sofa::gpu::cuda::CudaVec3f1Types, sofa::gpu::cuda::CudaVec3fTypes >;
+extern template class SOFA_GPU_CUDA_API SubsetMapping< sofa::gpu::cuda::CudaVec3fTypes, sofa::gpu::cuda::CudaVec3f1Types >;
 #endif
 
 } // namespace sofa::component::mapping::linear

@@ -86,7 +86,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addContact(int /*m1*/, int /*m2*
     pen.push_back(0);
 }
 
-void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffness, sofa::core::collision::GPUDetectionOutputVector* outputs, bool useDistance, type::Mat3x3f* normXForm)
+void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffness, sofacuda::GPUDetectionOutputVector* outputs, bool useDistance, type::Mat3x3f* normXForm)
 {
 #if 1
     int n = outputs->size();

@@ -23,7 +23,8 @@
 #include <SofaCUDA/component/solidmechanics/spring/CudaSpringForceField.inl>
 #include <SofaCUDA/component/statecontainer/CudaMechanicalObject.inl>
 #include <SofaCUDA/component/mapping/linear/CudaIdentityMapping.inl>
-#include "CudaContactMapper.h"
+#include <SofaCUDA/sofa/gpu/cuda/CudaContactMapper.h>
+#include <SofaDistanceGrid/CUDA/CudaDistanceGridContactMapper.h>
 #include <SofaCUDA/component/collision/response/contact/CudaPenalityContactForceField.h>
 #include "CudaDistanceGridCollisionModel.h"
 #include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
@@ -56,7 +57,7 @@ using namespace sofa::gpu::cuda;
 template <>
 void BarycentricPenalityContact<CudaPointCollisionModel,CudaRigidDistanceGridCollisionModel,CudaVec3fTypes>::setDetectionOutputs(OutputVector* o)
 {
-    TOutputVector& outputs = *static_cast<TOutputVector*>(o);
+    GPUDetectionOutputVector& outputs = *dynamic_cast<GPUDetectionOutputVector*>(o);
     //const bool printLog = this->f_printLog.getValue();
     if (ff==NULL)
     {
@@ -109,7 +110,7 @@ template <>
 void BarycentricPenalityContact<CudaSphereCollisionModel,CudaRigidDistanceGridCollisionModel,CudaVec3fTypes>::setDetectionOutputs(OutputVector* o)
 {
 
-    TOutputVector& outputs = *static_cast<TOutputVector*>(o);
+    GPUDetectionOutputVector& outputs = *dynamic_cast<GPUDetectionOutputVector*>(o);
     //const bool printLog = this->f_printLog.getValue();
     if (ff==NULL)
     {

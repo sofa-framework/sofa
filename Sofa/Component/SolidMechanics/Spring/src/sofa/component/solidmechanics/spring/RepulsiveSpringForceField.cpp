@@ -29,13 +29,14 @@ namespace sofa::component::solidmechanics::spring
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int RepulsiveSpringForceFieldClass = core::RegisterObject("Springs which only repell")
+void registerRepulsiveSpringForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Springs which only repel.")
         .add< RepulsiveSpringForceField<Vec3Types> >()
         .add< RepulsiveSpringForceField<Vec2Types> >()
-        .add< RepulsiveSpringForceField<Vec1Types> >()
+        .add< RepulsiveSpringForceField<Vec1Types> >());
+}
 
-        ;
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API RepulsiveSpringForceField<Vec3Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API RepulsiveSpringForceField<Vec2Types>;

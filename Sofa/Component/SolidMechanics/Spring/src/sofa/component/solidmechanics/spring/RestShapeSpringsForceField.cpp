@@ -31,19 +31,18 @@
 namespace sofa::component::solidmechanics::spring
 {
 
-using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-int RestShapeSpringsForceFieldClass = core::RegisterObject("Elastic springs generating forces on degrees of freedom between their current and rest shape position")
+void registerRestShapeSpringsForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Elastic springs generating forces on degrees of freedom between their current and rest shape position.")
         .add< RestShapeSpringsForceField<Vec3Types> >()
         .add< RestShapeSpringsForceField<Vec1Types> >()
-        .add< RestShapeSpringsForceField<Rigid3Types> >()
-
-        ;
+        .add< RestShapeSpringsForceField<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API RestShapeSpringsForceField<Vec3Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API RestShapeSpringsForceField<Vec1Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API RestShapeSpringsForceField<Rigid3Types>;
-
 
 } // namespace sofa::component::solidmechanics::spring

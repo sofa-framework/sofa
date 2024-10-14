@@ -449,11 +449,10 @@ inline void DSAPBox::show()const
                         <<"MAX "<<cube.maxVect() ;
 }
 
-using namespace sofa::defaulttype;
-using namespace collision;
-
-int DirectSAPNarrowPhaseClass = core::RegisterObject("Collision detection using sweep and prune")
-        .add< DirectSAPNarrowPhase >()
-;
+void registerDirectSAPNarrowPhase(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Narrow phase of the collision detection using sweep and prune.")
+        .add< DirectSAPNarrowPhase >());
+}
 
 }

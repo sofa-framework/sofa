@@ -31,11 +31,11 @@ using namespace sofa::core;
 namespace sofa::component::solidmechanics::fem::nonuniform
 {
 
-// Register in the Factory
-int NonUniformHexahedralFEMForceFieldAndMassClass = RegisterObject("Non uniform Hexahedral finite elements")
-        .add< NonUniformHexahedralFEMForceFieldAndMass<Vec3Types> >()
-
-        ;
+void registerNonUniformHexahedralFEMForceFieldAndMass(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Non uniform Hexahedral finite elements.")
+        .add< NonUniformHexahedralFEMForceFieldAndMass<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_NONUNIFORM_API NonUniformHexahedralFEMForceFieldAndMass<Vec3Types>;
 

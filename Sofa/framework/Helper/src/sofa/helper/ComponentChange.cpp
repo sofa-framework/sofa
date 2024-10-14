@@ -805,7 +805,12 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"SSORLinearSolver", Dealiased("v24.12","SSORPreconditioner")},
     {"SSORSolver", Dealiased("v24.12","SSORPreconditioner")},
     {"RigidEngine", Dealiased("v24.12","RigidToQuatEngine")},
-  
+    {"DefaultPipeline", Dealiased("v24.12","CollisionPipeline")},
+    {"IncrementalSAP", Dealiased("v24.12","IncrSAP")},
+    {"IncrementalSweepAndPrune", Dealiased("v24.12","IncrSAP")},
+    {"TriangleOctree", Dealiased("v24.12","TriangleOctreeModel")},
+    {"DefaultContactManager", Dealiased("v24.12","CollisionResponse")},
+    {"RuleBasedCollisionResponse", Dealiased("v24.12","RuleBasedContactManager")},
 };
 
 } // namespace sofa::helper::lifecycle

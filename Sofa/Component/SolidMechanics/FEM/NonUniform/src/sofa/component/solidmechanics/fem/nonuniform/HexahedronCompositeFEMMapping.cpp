@@ -32,17 +32,12 @@ using namespace defaulttype;
 using namespace core;
 using namespace core::behavior;
 
-
-// Register in the Factory
-int HexahedronCompositeFEMMappingClass = core::RegisterObject("Set the point to the center of mass of the DOFs it is attached to")
-        .add< HexahedronCompositeFEMMapping< Mapping< Vec3Types, Vec3Types > > >()
-
-//
-
-        ;
+void registerHexahedronCompositeFEMMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Set the point to the center of mass of the DOFs it is attached to.")
+        .add< HexahedronCompositeFEMMapping< Mapping< Vec3Types, Vec3Types > > >());
+}
 
 template class HexahedronCompositeFEMMapping< Mapping< Vec3Types, Vec3Types > >;
-
-
 
 } // namespace sofa::component::solidmechanics::fem::nonuniform

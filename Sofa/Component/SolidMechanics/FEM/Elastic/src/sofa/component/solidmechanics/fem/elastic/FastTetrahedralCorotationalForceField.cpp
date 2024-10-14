@@ -31,11 +31,11 @@ namespace sofa::component::solidmechanics::fem::elastic
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int FastTetrahedralCorotationalForceFieldClass = core::RegisterObject("Fast Corotational Tetrahedral Mesh")
-        .add< FastTetrahedralCorotationalForceField<Vec3Types> >()
-
-        ;
+void registerFastTetrahedralCorotationalForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Fast Corotational Tetrahedral Mesh.")
+        .add< FastTetrahedralCorotationalForceField<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FastTetrahedralCorotationalForceField<Vec3Types>;
 

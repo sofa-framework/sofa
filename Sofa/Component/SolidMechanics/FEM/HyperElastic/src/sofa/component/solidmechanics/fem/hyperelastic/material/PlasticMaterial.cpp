@@ -24,7 +24,11 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <Eigen/SVD>
-namespace sofa::component::solidmechanics::fem::hyperelastic::material
+
+namespace sofa::component::solidmechanics::fem::hyperelastic
+{
+
+namespace material
 {
 
 PlasticMaterial::PlasticMaterial()
@@ -112,8 +116,12 @@ void PlasticMaterial::computeStressOnSection(Vec3& Stress, Vec3 Strain, int sect
 
 }
 
-int PlasticMaterialClass = core::RegisterObject("Plastic material")
-.add< PlasticMaterial >()
-;
+} // namespace material
 
-} // namespace sofa::component::solidmechanics::fem::hyperelastic::material
+void registerPlasticMaterial(sofa::core::ObjectFactory* factory)
+{
+	factory->registerObjects(core::ObjectRegistrationData("Plastic material.")
+		.add< material::PlasticMaterial >());
+}
+
+} // namespace sofa::component::solidmechanics::fem::hyperelastic

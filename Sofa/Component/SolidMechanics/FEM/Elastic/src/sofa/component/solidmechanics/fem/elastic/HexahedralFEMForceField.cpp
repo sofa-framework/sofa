@@ -30,11 +30,11 @@ namespace sofa::component::solidmechanics::fem::elastic
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int HexahedralFEMForceFieldClass = core::RegisterObject("Hexahedral finite elements")
-        .add< HexahedralFEMForceField<Vec3Types> >()
-
-        ;
+void registerHexahedralFEMForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Hexahedral finite elements.")
+        .add< HexahedralFEMForceField<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API HexahedralFEMForceField<Vec3Types>;
 

@@ -25,17 +25,22 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa::component::solidmechanics::fem::elastic::_beamfemforcefield_
+namespace sofa::component::solidmechanics::fem::elastic
 {
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int BeamFEMForceFieldClass = core::RegisterObject("Beam finite elements")
-        .add< BeamFEMForceField<Rigid3Types> >()
-        ;
+void registerBeamFEMForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Beam finite elements.")
+        .add< BeamFEMForceField<Rigid3Types> >());
+}
 
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BeamFEMForceField<Rigid3Types>;
+namespace _beamfemforcefield_
+{
 
+    template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BeamFEMForceField<Rigid3Types>;
 
-} // namespace sofa::component::solidmechanics::fem::elastic::_beamfemforcefield_
+} // namespace _beamfemforcefield_
+
+} // namespace sofa::component::solidmechanics::fem::elastic

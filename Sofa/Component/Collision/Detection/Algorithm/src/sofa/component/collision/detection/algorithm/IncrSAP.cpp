@@ -783,14 +783,10 @@ bool ISAPBox::overlaps(const ISAPBox & other,double alarmDist) const{
     return true;
 }
 
-
-using namespace sofa::defaulttype;
-using namespace collision;
-
-int IncrSAPClassSofaVector = core::RegisterObject("Collision detection using incremental sweep and prune")
-        .addAlias( "IncrementalSAP" )
-        .addAlias( "IncrementalSweepAndPrune" )
-        .add< IncrSAP >( true )
-        ;
+void registerIncrSAP(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Collision detection using incremental sweep and prune.")
+        .add< IncrSAP >());
+}
 
 } // namespace sofa::component::collision::detection::algorithm

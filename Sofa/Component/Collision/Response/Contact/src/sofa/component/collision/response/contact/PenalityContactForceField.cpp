@@ -30,12 +30,12 @@ namespace sofa::component::collision::response::contact
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int PenalityContactForceFieldClass = core::RegisterObject("Contact using repulsive springs")
-        .add< PenalityContactForceField<Vec3Types> >()
-        ;
+void registerPenalityContactForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Contact using repulsive springs.")
+        .add< PenalityContactForceField<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API PenalityContactForceField<Vec3Types>;
-
 
 } // namespace sofa::component::collision::response::contact

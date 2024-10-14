@@ -29,9 +29,11 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
 
-int RigidCylinderCollisionModelClass = core::RegisterObject("Collision model which represents a set of rigid cylinders")
-        .add<  CylinderCollisionModel<defaulttype::Rigid3Types> >()
-        ;
+void registerCylinderCollisionModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Collision model which represents a set of rigid cylinders.")
+        .add<  CylinderCollisionModel<defaulttype::Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TCylinder<defaulttype::Rigid3Types>;
 template class SOFA_COMPONENT_COLLISION_GEOMETRY_API CylinderCollisionModel<defaulttype::Rigid3Types>;

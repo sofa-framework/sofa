@@ -36,7 +36,7 @@ using namespace sofa::defaulttype;
 
 class CudaPointCollisionModel;
 
-class CudaPoint : public core::TCollisionElementIterator<CudaPointCollisionModel>
+class SOFA_GPU_CUDA_API CudaPoint : public core::TCollisionElementIterator<CudaPointCollisionModel>
 {
 public:
     CudaPoint(CudaPointCollisionModel* model, Index index);
@@ -47,7 +47,7 @@ public:
     explicit CudaPoint(const core::CollisionElementIterator& i);
 };
 
-class CudaPointCollisionModel : public core::CollisionModel
+class SOFA_GPU_CUDA_API CudaPointCollisionModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(CudaPointCollisionModel,core::CollisionModel);

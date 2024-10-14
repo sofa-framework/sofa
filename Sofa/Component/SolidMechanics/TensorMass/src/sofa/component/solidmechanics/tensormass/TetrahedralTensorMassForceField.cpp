@@ -31,11 +31,11 @@ namespace sofa::component::solidmechanics::tensormass
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int TetrahedralTensorMassForceFieldClass = core::RegisterObject("Linear Elastic Tetrahedral Mesh")
-        .add< TetrahedralTensorMassForceField<Vec3Types> >()
-
-        ;
+void registerTetrahedralTensorMassForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Linear Elastic Tetrahedral Mesh")
+        .add< TetrahedralTensorMassForceField<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_TENSORMASS_API TetrahedralTensorMassForceField<Vec3Types>;
 

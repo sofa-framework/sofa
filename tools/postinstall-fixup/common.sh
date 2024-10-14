@@ -26,6 +26,7 @@ function clean_default_plugins()
           SofaAssimp                \
           SofaCarving               \
           SofaDistanceGrid          \
+          SofaDistanceGrid.CUDA     \
           SofaEulerianFluid         \
           SofaImplicitField         \
           SofaMatrix                \

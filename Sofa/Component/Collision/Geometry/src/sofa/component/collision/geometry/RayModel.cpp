@@ -29,9 +29,11 @@
 namespace sofa::component::collision::geometry
 {
 
-int RayCollisionModelClass = core::RegisterObject("Collision model representing a ray in space, e.g. a mouse click")
-        .add< RayCollisionModel >()
-        ;
+void registerRayCollisionModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Collision model representing a ray in space, e.g. a mouse click")
+        .add< RayCollisionModel >());
+}
 
 using namespace sofa::type;
 using namespace sofa::defaulttype;

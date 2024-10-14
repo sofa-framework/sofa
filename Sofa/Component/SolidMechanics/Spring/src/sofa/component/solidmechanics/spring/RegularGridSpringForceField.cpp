@@ -30,19 +30,18 @@ namespace sofa::component::solidmechanics::spring
 
 using namespace sofa::defaulttype;
 
-
-// Register in the Factory
-int RegularGridSpringForceFieldClass = core::RegisterObject("Spring acting on the edges and faces of a regular grid")
+void registerRegularGridSpringForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Spring acting on the edges and faces of a regular grid.")
         .add< RegularGridSpringForceField<Vec3Types> >(true) // default template
         .add< RegularGridSpringForceField<Vec2Types> >()
         .add< RegularGridSpringForceField<Vec1Types> >()
-        .add< RegularGridSpringForceField<Vec6Types> >()
+        .add< RegularGridSpringForceField<Vec6Types> >());
+}
 
-        ;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API RegularGridSpringForceField<Vec3Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API RegularGridSpringForceField<Vec2Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API RegularGridSpringForceField<Vec1Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API RegularGridSpringForceField<Vec6Types>;
-
 
 } // namespace sofa::component::solidmechanics::spring
