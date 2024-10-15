@@ -15,10 +15,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          apt install pipx
-          pipx install python-graphql-client
-          pipx install python-dateutil
-          pipx install requests
+          python -m venv vm-venv && source vm-venv/bin/activate
+          python --version
+          pip install python-graphql-client
+          pip install python-dateutil
+          pip install requests
         working-directory: ${{ github.workspace }}
 
       # Star/watch related event
