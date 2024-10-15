@@ -21,6 +21,8 @@ jobs:
 
       - name: Install dependencies
         run: |
+          python -m venv vm-venv && source vm-venv/bin/activate
+          python --version
           pip install python-graphql-client
           pip install python-dateutil
         working-directory: ${{ github.workspace }}

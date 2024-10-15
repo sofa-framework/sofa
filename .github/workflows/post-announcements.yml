@@ -17,6 +17,8 @@ jobs:
       - name: Install dependencies
         if: ( github.event.discussion.category.name == 'Announcement' ) || ( github.event.discussion.category.name == 'Share your achievements' )
         run: |
+          python -m venv vm-venv && source vm-venv/bin/activate
+          python --version
           pip install python-graphql-client
           pip install python-dateutil
           pip install requests
