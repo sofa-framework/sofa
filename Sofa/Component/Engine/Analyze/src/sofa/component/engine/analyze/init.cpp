@@ -21,13 +21,23 @@
 ******************************************************************************/
 #include <sofa/component/engine/analyze/init.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+
 namespace sofa::component::engine::analyze
 {
-    
+
+extern void registerAverageCoord(sofa::core::ObjectFactory* factory);
+extern void registerClusteringEngine(sofa::core::ObjectFactory* factory);
+extern void registerDistances(sofa::core::ObjectFactory* factory);
+extern void registerHausdorffDistance(sofa::core::ObjectFactory* factory);
+extern void registerShapeMatching(sofa::core::ObjectFactory* factory);
+extern void registerSumEngine(sofa::core::ObjectFactory* factory);
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -45,11 +55,24 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerAverageCoord(factory);
+    registerClusteringEngine(factory);
+    registerDistances(factory);
+    registerHausdorffDistance(factory);
+    registerShapeMatching(factory);
+    registerSumEngine(factory);
+}
+
 void init()
 {
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         first = false;
     }
 }

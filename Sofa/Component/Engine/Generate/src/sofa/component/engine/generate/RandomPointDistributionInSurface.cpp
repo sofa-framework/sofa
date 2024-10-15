@@ -29,13 +29,12 @@ namespace sofa::component::engine::generate
 
 using namespace sofa::defaulttype;
 
-int RandomPointDistributionInSurfaceClass = core::RegisterObject("This class truns on spiral any topological model")
-        .add< RandomPointDistributionInSurface<Vec3Types> >()
- 
-        ;
+void registerRandomPointDistributionInSurface(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Engine distributing points over a surface randomly.")
+        .add< RandomPointDistributionInSurface<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API RandomPointDistributionInSurface<Vec3Types>;
- 
-
 
 } //namespace sofa::component::engine::generate

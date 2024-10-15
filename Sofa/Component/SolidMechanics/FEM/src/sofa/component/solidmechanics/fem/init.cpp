@@ -23,6 +23,10 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/init.h>
 #include <sofa/component/solidmechanics/fem/hyperelastic/init.h>
+#include <sofa/component/solidmechanics/fem/nonuniform/init.h>
+
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
 
 namespace sofa::component::solidmechanics::fem
 {
@@ -31,6 +35,7 @@ extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -48,6 +53,13 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjectsFromPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
+    factory->registerObjectsFromPlugin("Sofa.Component.SolidMechanics.FEM.HyperElastic");
+    factory->registerObjectsFromPlugin("Sofa.Component.SolidMechanics.FEM.NonUniform");
+}
+
 void init()
 {
     static bool first = true;
@@ -56,6 +68,10 @@ void init()
         // force dependencies at compile-time
         sofa::component::solidmechanics::fem::elastic::init();
         sofa::component::solidmechanics::fem::hyperelastic::init();
+        sofa::component::solidmechanics::fem::nonuniform::init();
+
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
 
         first = false;
     }

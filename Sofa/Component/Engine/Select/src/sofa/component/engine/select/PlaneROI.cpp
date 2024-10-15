@@ -29,15 +29,14 @@ namespace sofa::component::engine::select
 
 using namespace sofa::defaulttype;
 
-int PlaneROIClass = core::RegisterObject("Find the primitives inside a given plane")
+void registerPlaneROI(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Find the primitives inside a given plane.")
         .add< PlaneROI<Vec3Types> >()
-        .add< PlaneROI<Rigid3Types> >()
- 
-        ;
+        .add< PlaneROI<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API PlaneROI<Vec3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API PlaneROI<Rigid3Types>;
- 
-
 
 } //namespace sofa::component::engine::select

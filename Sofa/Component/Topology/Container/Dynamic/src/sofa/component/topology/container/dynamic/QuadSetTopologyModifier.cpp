@@ -30,14 +30,14 @@
 
 namespace sofa::component::topology::container::dynamic
 {
-int QuadSetTopologyModifierClass = core::RegisterObject("Quad set topology modifier")
-        .add< QuadSetTopologyModifier >();
 
+void registerQuadSetTopologyModifier(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology modifier dedicated to a quad topology.")
+        .add< QuadSetTopologyModifier >());
+}
 
-using namespace std;
-using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
-
 
 void QuadSetTopologyModifier::init()
 {

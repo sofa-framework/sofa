@@ -39,11 +39,11 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
-// Register in the Factory
-int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of mapping where EdgeSetTopology is converted to QuadSetTopology.")
-        .add< Edge2QuadTopologicalMapping >()
-
-        ;
+void registerEdge2QuadTopologicalMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topological mapping where EdgeSetTopology is converted to QuadSetTopology.")
+        .add< Edge2QuadTopologicalMapping >());
+}
 
 // Implementation
 Edge2QuadTopologicalMapping::Edge2QuadTopologicalMapping()

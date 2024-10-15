@@ -26,12 +26,12 @@
 namespace sofa::component::engine::generate
 {
 
-int NormEngineClass = core::RegisterObject("Convert Vec in Real")
-        .add< NormEngine<type::Vec3> >(true) // default template
-
-        ;
+void registerNormEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Convert Vec in Real")
+        .add< NormEngine<type::Vec3> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API NormEngine<type::Vec3>;
-
 
 } //namespace sofa::component::engine::generate

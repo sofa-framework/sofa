@@ -19,6 +19,7 @@ set(HEADER_FILES
     ### Common
     sofa/gpu/cuda/CudaBaseVector.h
     sofa/gpu/cuda/CudaCommon.h
+    sofa/gpu/cuda/CudaContactMapper.h
     sofa/gpu/cuda/CudaMath.h
     sofa/gpu/cuda/CudaMath.inl
     sofa/gpu/cuda/CudaMathRigid.h
@@ -105,6 +106,7 @@ set(SOURCE_FILES
     ### Common
     init.cpp
     sofa/gpu/cuda/CudaBaseVector.cpp
+    sofa/gpu/cuda/CudaContactMapper.cpp
     sofa/gpu/cuda/mycuda.cpp
 
     ### Mechanical
@@ -182,6 +184,7 @@ set(CUDA_SOURCES
     ### Common
     sofa/gpu/cuda/mycuda.cu
     sofa/gpu/cuda/CudaBaseVector.cu
+    sofa/gpu/cuda/CudaContactMapper.cu
     sofa/gpu/cuda/CudaScan.cu
     sofa/gpu/cuda/CudaSort.cu
 
@@ -267,33 +270,6 @@ sofa_find_package(Sofa.GUI.Qt QUIET)
 if(Sofa.GUI.Qt_FOUND)
     list(APPEND HEADER_FILES sofa/gpu/gui/CudaDataWidget.h)
     list(APPEND SOURCE_FILES sofa/gpu/gui/CudaDataWidget.cpp)
-endif()
-
-
-find_package(SofaDistanceGrid QUIET)
-if(SofaDistanceGrid_FOUND)
-    sofa_find_package(MiniFlowVR QUIET)
-    if(MiniFlowVR_FOUND)
-        message(STATUS "SofaCUDA: MiniFlowVR enabled.")
-    else()
-        message(STATUS "SofaCUDA: MiniFlowVR was not enabled, therefore some feature of CudaDistanceGridCollisionModel will not be compiled.")
-    endif()
-
-    list(APPEND HEADER_FILES
-        sofa/gpu/cuda/CudaDistanceGridCollisionModel.h
-        sofa/gpu/cuda/CudaContactMapper.h
-        sofa/gpu/cuda/CudaCollisionDetection.h)
-
-    list(APPEND SOURCE_FILES
-        sofa/gpu/cuda/CudaDistanceGridCollisionModel.cpp
-        sofa/gpu/cuda/CudaCollisionDistanceGrid.cpp
-        sofa/gpu/cuda/CudaCollisionDetection.cpp)
-
-    list(APPEND CUDA_SOURCES
-        sofa/gpu/cuda/CudaContactMapper.cu
-        sofa/gpu/cuda/CudaCollisionDetection.cu)
-else()
-    message(STATUS "SofaCUDA: SofaDistanceGrid was not enabled, therefore CudaDistanceGridCollisionModel will not be compiled.")
 endif()
 
 find_package(SofaSphFluid QUIET)
@@ -425,14 +401,6 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GL)
 endif()
-
-if(SofaDistanceGrid_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaDistanceGrid)
-    if(MiniFlowVR_FOUND)
-        target_link_libraries(${PROJECT_NAME} miniFlowVR)
-    endif()
-endif()
-
 
 if(Sofa.GUI_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GUI)

@@ -72,9 +72,11 @@ void MergeROIs::doUpdate()
         for(size_t i=0 ; i<indices.size() ; i++) outputIndices[j][i]=indices[i];
     }
 }
-int MergeROIsClass = core::RegisterObject("Merge a list of ROIs (vector<Indices>) into a single Data (vector<svector<Indices>>)")
-        .add< MergeROIs >(true)
-        ;
 
+void registerMergeROIs(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Merge a list of ROIs (vector<Indices>) into a single Data (vector<svector<Indices>>).")
+        .add< MergeROIs >());
+}
 
 } //namespace sofa::component::engine::select

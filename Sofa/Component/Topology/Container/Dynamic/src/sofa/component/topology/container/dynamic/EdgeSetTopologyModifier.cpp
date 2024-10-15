@@ -40,12 +40,13 @@
 
 namespace sofa::component::topology::container::dynamic
 {
-using namespace sofa::defaulttype;
-int EdgeSetTopologyModifierClass = core::RegisterObject("Edge set topology modifier")
-        .add< EdgeSetTopologyModifier >();
 
-using namespace std;
-using namespace sofa::defaulttype;
+void registerEdgeSetTopologyModifier(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology modifier dedicated to an edge topology.")
+        .add< EdgeSetTopologyModifier >());
+}
+
 using namespace sofa::core::topology;
 
 void EdgeSetTopologyModifier::init()

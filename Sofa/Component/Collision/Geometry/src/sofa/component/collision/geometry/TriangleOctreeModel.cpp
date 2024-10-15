@@ -34,7 +34,11 @@ typedef core::topology::BaseMeshTopology::Triangle	Triangle;
 namespace sofa::component::collision::geometry
 {
 
-int TriangleOctreeModelClass =	core::RegisterObject ("collision model using a triangular mesh mapped to an Octree").add <	TriangleOctreeModel > ().addAlias ("TriangleOctree");
+void registerTriangleOctreeModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Collision model using a triangular mesh mapped to an Octree.")
+        .add <	TriangleOctreeModel >());
+}
 
 TriangleOctreeModel::TriangleOctreeModel ()
 {

@@ -28,12 +28,11 @@
 namespace sofa::component::topology::container::dynamic
 {
 
-using namespace std;
-using namespace sofa::defaulttype;
-
-int QuadSetTopologyContainerClass = core::RegisterObject("Quad set topology container")
-        .add< QuadSetTopologyContainer >()
-        ;
+void registerQuadSetTopologyContainer(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology container dedicated to a quad topology.")
+        .add< QuadSetTopologyContainer >());
+}
 
 QuadSetTopologyContainer::QuadSetTopologyContainer()
     : EdgeSetTopologyContainer()

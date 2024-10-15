@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 #include <sofa/linearalgebra/CompressedRowSparseMatrixConstraint.h>
 #include <Eigen/Sparse>
 #include <sofa/type/Vec.h>
@@ -39,15 +40,19 @@ struct CompressedRowSparseMatrixToEigenSparse
 template <typename TVec>
 struct CompressedRowSparseMatrixToEigenSparseVec
 {
-    typedef typename TVec::Real Real;
     typedef CompressedRowSparseMatrixConstraint< TVec > TCompressedRowSparseMatrix;
+    typedef typename TCompressedRowSparseMatrix::Real Real;
     typedef Eigen::SparseMatrix<Real, Eigen::RowMajor> EigenSparseMatrix;
 
-
-    EigenSparseMatrix operator() (const TCompressedRowSparseMatrix& mat, std::size_t size)
+    EigenSparseMatrix operator() (const TCompressedRowSparseMatrix& mat, std::size_t size) const
     {
-        const std::size_t eigenMatSize = size * TVec::size();
-        EigenSparseMatrix eigenMat(eigenMatSize, eigenMatSize);
+        SOFA_UNUSED(size);
+        return operator()(mat);
+    }
+
+    EigenSparseMatrix operator() (const TCompressedRowSparseMatrix& mat) const
+    {
+        EigenSparseMatrix eigenMat(mat.nBlockRow * NL, mat.nBlockCol * NC);
 
         sofa::type::vector<Eigen::Triplet<Real> > triplets;
 
@@ -56,25 +61,45 @@ struct CompressedRowSparseMatrixToEigenSparseVec
             for (auto col = row.begin(), colend = row.end(); col !=colend; ++col)
             {
                 const TVec& vec = col.val();
-                const int   colIndex  = col.index() * TVec::size();
+                const int colIndex  = col.index() * NC;
 
                 for (std::size_t i = 0; i < TVec::size(); ++i)
                 {
-                    triplets.emplace_back(row.index(), colIndex + i, vec[i]);
+                    if (row.index() < eigenMat.rows())
+                    {
+                        const auto colInsertion = colIndex + i;
+                        if (colInsertion < eigenMat.cols())
+                        {
+                            triplets.emplace_back(row.index(), colInsertion, vec[i]);
+                        }
+                        else
+                        {
+                            msg_error("CompressedRowSparseMatrixToEigenSparseVec") << "Trying to insert in col " << colInsertion << " whereas matrix size is " << eigenMat.rows() << "x" << eigenMat.cols();
+                        }
+                    }
+                    else
+                    {
+                        msg_error("CompressedRowSparseMatrixToEigenSparseVec") << "Trying to insert in row " << row.index() << " whereas matrix size is " << eigenMat.rows() << "x" << eigenMat.cols();
+                    }
                 }
 
             }
         }
 
-        eigenMat.setFromTriplets(triplets.begin(), triplets.end());;
+        eigenMat.setFromTriplets(triplets.begin(), triplets.end());
 
         return eigenMat;
     }
 
+private:
+
+    static constexpr sofa::Index NL = TCompressedRowSparseMatrix::NL;  ///< Number of rows of a block
+    static constexpr sofa::Index NC = TCompressedRowSparseMatrix::NC;  ///< Number of columns of a block
+
 };
 
 template< int N, typename Real >
-class CompressedRowSparseMatrixToEigenSparse< sofa::type::Vec<N,Real> >
+struct CompressedRowSparseMatrixToEigenSparse< sofa::type::Vec<N,Real> >
     : public  CompressedRowSparseMatrixToEigenSparseVec< sofa::type::Vec<N, Real> >
 {
 

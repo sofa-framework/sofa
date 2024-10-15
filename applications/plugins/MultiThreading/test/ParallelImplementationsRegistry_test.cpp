@@ -24,11 +24,18 @@
 #include <MultiThreading/ParallelImplementationsRegistry.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/simpleapi/SimpleApi.h>
+
 namespace multithreading
 {
 
 TEST(ParallelImplementationsRegistry, existInObjectFactory)
 {
+    // sequential versions will be added to the ObjectFactory
+    sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
+    sofa::simpleapi::importPlugin("Sofa.Component.Collision.Detection.Algorithm");
+    sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");    
+
     const auto implementations = ParallelImplementationsRegistry::getImplementations();
 
     for (const auto& [seq, par] : implementations)
@@ -40,4 +47,5 @@ TEST(ParallelImplementationsRegistry, existInObjectFactory)
         EXPECT_TRUE(sofa::core::ObjectFactory::getInstance()->hasCreator(par)) << par;
     }
 }
+
 }

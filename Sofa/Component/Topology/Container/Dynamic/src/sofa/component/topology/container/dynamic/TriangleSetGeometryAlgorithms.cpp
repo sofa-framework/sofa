@@ -27,14 +27,15 @@
 
 namespace sofa::component::topology::container::dynamic
 {
+
 using namespace sofa::defaulttype;
 
-int TriangleSetGeometryAlgorithmsClass = core::RegisterObject("Triangle set geometry algorithms")
+void registerTriangleSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Geometry algorithms dedicated to a triangular topology.")
         .add< TriangleSetGeometryAlgorithms<Vec3Types> >(true) // default template
-        .add< TriangleSetGeometryAlgorithms<Vec2Types> >()
-        ;
-
-
+        .add< TriangleSetGeometryAlgorithms<Vec2Types> >());
+}
 
 // methods specilizations declaration
 template<> SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API
@@ -50,11 +51,8 @@ int TriangleSetGeometryAlgorithms<defaulttype::Vec1Types>::SplitAlongPath(PointI
     sofa::type::vector< sofa::type::Vec3 >& coords_list,
     sofa::type::vector<EdgeID>& new_edges, SReal epsilonSnapPath, SReal epsilonSnapBorder);
 
-
-
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSetGeometryAlgorithms<Vec3Types>;
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSetGeometryAlgorithms<Vec2Types>;
-
 
 template<>
 int TriangleSetGeometryAlgorithms<defaulttype::Vec2Types>::SplitAlongPath(PointID, Coord&, PointID, Coord&,

@@ -29,12 +29,11 @@ namespace sofa::component::topology::container::grid
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-
-
-int SphereGridTopologyClass = core::RegisterObject("Sphere grid in 3D")
-        .addAlias("SphereGrid")
-        .add< SphereGridTopology >()
-        ;
+void registerSphereGridTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Sphere grid in 3D.")
+        .add< SphereGridTopology >());
+}
 
 SphereGridTopology::SphereGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz)

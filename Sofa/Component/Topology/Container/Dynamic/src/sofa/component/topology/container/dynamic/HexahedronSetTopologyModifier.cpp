@@ -30,11 +30,13 @@
 
 namespace sofa::component::topology::container::dynamic
 {
-int HexahedronSetTopologyModifierClass = core::RegisterObject("Hexahedron set topology modifier")
-        .add< HexahedronSetTopologyModifier >();
 
-using namespace std;
-using namespace sofa::defaulttype;
+void registerHexahedronSetTopologyModifier(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology modifier dedicated to an hexahedral topology.")
+        .add< HexahedronSetTopologyModifier >());
+}
+
 using namespace sofa::core::topology;
 
 void HexahedronSetTopologyModifier::init()

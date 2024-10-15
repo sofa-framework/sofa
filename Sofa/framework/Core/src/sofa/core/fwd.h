@@ -37,7 +37,6 @@ class BehaviorModel;
 class CollisionModel;
 class CollisionElementIterator;
 class DataEngine;
-class DevBaseMonitor;
 
 class ExecParams;
 class ConstraintParams;
