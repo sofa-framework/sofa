@@ -22,6 +22,7 @@
 #include <sofa/helper/SelectableItem.h>
 #include <gtest/gtest.h>
 #include <sofa/testing/TestMessageHandler.h>
+#include <sofa/core/objectmodel/Data.h>
 
 
 struct TestSelectableItem final : sofa::helper::SelectableItem<TestSelectableItem>
