@@ -112,6 +112,19 @@ public:
         inertiaMassMatrix /= fact;
         invInertiaMassMatrix *= fact;
     }
+
+    constexpr RigidMass<3,real> rotate(const type::Quat<real>& d) const
+    {
+        type::Mat3x3 quatMat;
+        RigidMass<3, real> res;
+
+        d.toMatrix(quatMat);
+        res.inertiaMatrix = quatMat * inertiaMatrix * quatMat.transposed();
+        res.mass = mass;
+        res.recalc();
+        return res;
+    }
+
 };
 
 template<typename real>
@@ -131,6 +144,8 @@ constexpr RigidDeriv<3,real> operator*(const RigidMass<3,real>& m, const RigidDe
     getVOrientation(res) = m.inertiaMassMatrix * getVOrientation(d);
     return res;
 }
+
+
 
 template<typename real>
 constexpr RigidDeriv<3,real> operator/(const RigidDeriv<3,real>& d, const RigidMass<3, real>& m)
@@ -251,6 +266,7 @@ constexpr RigidDeriv<2,real> operator*(const RigidDeriv<2,real>& d, const RigidM
     getVOrientation(res) = m.inertiaMassMatrix * getVOrientation(d);
     return res;
 }
+
 
 template<typename real>
 constexpr RigidDeriv<2,real> operator/(const RigidDeriv<2,real>& d, const RigidMass<2, real>& m)
