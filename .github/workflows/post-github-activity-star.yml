@@ -13,12 +13,16 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Install dependencies
+      - name: Set up python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pip packages
         run: |
-          apt install pipx
-          pipx install python-graphql-client
-          pipx install python-dateutil
-          pipx install requests
+          pip install python-graphql-client
+          pip install python-dateutil
+          pip install requests
         working-directory: ${{ github.workspace }}
 
       # Star/watch related event
