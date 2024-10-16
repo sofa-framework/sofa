@@ -13,12 +13,17 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
+        if: ( github.event.discussion.category.name == 'Announcement' ) || ( github.event.discussion.category.name == 'Share your achievements' )
 
-      - name: Install dependencies
+      - name: Set up python
+        uses: actions/setup-python@v5
+        if: ( github.event.discussion.category.name == 'Announcement' ) || ( github.event.discussion.category.name == 'Share your achievements' )
+        with:
+          python-version: '3.12'
+
+      - name: Install pip packages
         if: ( github.event.discussion.category.name == 'Announcement' ) || ( github.event.discussion.category.name == 'Share your achievements' )
         run: |
-          python -m venv vm-venv && source vm-venv/bin/activate
-          python --version
           pip install python-graphql-client
           pip install python-dateutil
           pip install requests

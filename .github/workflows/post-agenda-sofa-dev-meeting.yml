@@ -18,10 +18,13 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Install dependencies
+      - name: Set up python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pip packages
         run: |
-          python -m venv vm-venv && source vm-venv/bin/activate
-          python --version
           pip install python-graphql-client
           pip install python-dateutil
           pip install requests
