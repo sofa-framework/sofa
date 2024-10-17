@@ -124,6 +124,7 @@ public:
         node->addObject(topologyContainer);
         node->addObject(geometryAlgorithms);
         mass = New<MeshMatrixMass<DataTypes> >();
+        mass->setTotalMass(1.0);
         node->addObject(mass);
     }
 
@@ -179,7 +180,7 @@ public:
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
                 "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
-                "    <MeshMatrixMass name='m_mass' />                                                               "
+                "    <MeshMatrixMass name='m_mass' totalMass='1.0'/>                                                               "
                 "</Node>                                                                                            " ;
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
@@ -190,14 +191,14 @@ public:
         mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        EXPECT_TRUE( mass->findData("vertexMass") != nullptr );
         EXPECT_TRUE( mass->findData("totalMass") != nullptr );
         EXPECT_TRUE( mass->findData("massDensity") != nullptr );
 
         EXPECT_TRUE( mass->findData("showGravityCenter") != nullptr );
         EXPECT_TRUE( mass->findData("showAxisSizeFactor") != nullptr );
 
-        if(mass!=nullptr){
+        if(mass!=nullptr)
+        {
             static const MassType volume = 8.0;
             static const MassType expectedTotalMass = 1.0f;
             static const MassType expectedDensity = expectedTotalMass / volume;
@@ -230,7 +231,8 @@ public:
         mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        if(mass!=nullptr){
+        if(mass!=nullptr)
+        {
             static const MassType volume = 8.0;
             static const MassType volumeElem = volume / 8.0; // 8 hexa in the grid
             static const MassType expectedTotalMass = 2.0f;
@@ -272,7 +274,8 @@ public:
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        if(mass!=nullptr){
+        if(mass!=nullptr)
+        {
             static const MassType volume = 8.0;
             static const MassType volumeElem = volume / 8.0; // 8 hexa in the grid            
             static const MassType expectedDensity = 1.0;
@@ -294,7 +297,7 @@ public:
     }
 
 
-    void check_VertexMass_Lumping_Initialization_Hexa(){
+    void check_TotalMass_Lumping_Initialization_Hexa(){
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
@@ -303,38 +306,38 @@ public:
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
                 "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
-                "    <MeshMatrixMass name='m_mass' lumping='1'                                                      "
-                "               vertexMass='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />               "
+                "    <MeshMatrixMass name='m_mass' totalMass='1.0' lumping='1'/>                                    "
                 "</Node>                                                                                            " ;
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
-    
+
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        if(mass!=nullptr){
+        EXPECT_TRUE( mass->findData("totalMass") != nullptr );
+        EXPECT_TRUE( mass->findData("massDensity") != nullptr );
 
+        EXPECT_TRUE( mass->findData("showGravityCenter") != nullptr );
+        EXPECT_TRUE( mass->findData("showAxisSizeFactor") != nullptr );
+
+        if(mass!=nullptr)
+        {
             static const MassType volume = 8.0;
-            static const MassType expectedTotalMass = 27.0;
+            static const MassType volumeElem = volume / 8.0; // 8 hexa in the grid
+            static const MassType expectedTotalMass = 1.0f;
             static const MassType expectedDensity = expectedTotalMass / volume;
 
-            EXPECT_EQ(mass->getMassCount(), 27);
-            EXPECT_EQ(mass->d_edgeMass.getValue().size(), 90);
+            EXPECT_EQ( mass->isLumped(), true ); // check lumping
 
-            EXPECT_EQ(mass->isLumped(), true);
+            EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], expectedDensity);
-            EXPECT_EQ(mass->getVertexMass()[0], 1.0);
-
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], 0.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], 0.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 20)); // still the same: lumping coefficient will weight the vertexMass
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], (MassType)(expectedDensity * volumeElem * 1 / 20 * 2)); // vertex shared by 2 hexa
         }
-
         return ;
     }
 
@@ -364,7 +367,8 @@ public:
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        if(mass!=nullptr){
+        if(mass!=nullptr)
+        {
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0_sreal);
             EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], SReal(mass->getTotalMass() / 8.0)); // 8 hexa
@@ -390,13 +394,16 @@ public:
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Warning);
+
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        if(mass!=nullptr){
+        if(mass!=nullptr)
+        {
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0_sreal);
@@ -423,19 +430,46 @@ public:
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Warning);
+
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        if(mass!=nullptr){
+        if(mass!=nullptr)
+        {
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 8.0_sreal);
             EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.05_sreal);
         }
+
+        return ;
+    }
+
+
+    /// Check if vertexMass is used as input
+    void check_VertexMass_Initialization_Hexa(){
+        static const string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
+                "    <MechanicalObject />                                                                           "
+                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
+                "    <MeshMatrixMass name='m_mass' vertexMass='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />                                                               "
+                "</Node>                                                                                            " ;
+
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+
+        EXPECT_MSG_EMIT(Error);
+
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
         return ;
     }
@@ -458,18 +492,10 @@ public:
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Error);
+
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
-        EXPECT_TRUE( mass != nullptr );
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
-        }
 
         return ;
     }
@@ -489,18 +515,10 @@ public:
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Error);
+
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
-        EXPECT_TRUE( mass != nullptr );
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
-        }
 
         return ;
     }
@@ -520,81 +538,10 @@ public:
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
-        ASSERT_NE(root.get(), nullptr);
-        root->init(sofa::core::execparams::defaultInstance());
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
-        EXPECT_TRUE( mass != nullptr );
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
-        }
-
-        return ;
-    }
-
-
-    void check_VertexMass_WrongValue_Hexa(){
-        static const string scene =
-                "<?xml version='1.0'?>                                                                              "
-                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <DefaultAnimationLoop />                                                                       "
-                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
-                "    <MechanicalObject />                                                                           "
-                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
-                "    <MeshMatrixMass name='m_mass' lumping='1'                                                      "
-                "               vertexMass='1 -1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />              "
-                "</Node>                                                                                            " ;
-
-        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        EXPECT_MSG_EMIT(Error);
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
-        EXPECT_TRUE( mass != nullptr );
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
-        }
-
-        return ;
-    }
-
-
-    void check_VertexMass_WrongSize_Hexa(){
-        static const string scene =
-                "<?xml version='1.0'?>                                                                              "
-                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <DefaultAnimationLoop />                                                                       "
-                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
-                "    <MechanicalObject />                                                                           "
-                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
-                "    <MeshMatrixMass name='m_mass' lumping='1' vertexMass='1 2' />                                  "
-                "</Node>                                                                                            " ;
-
-        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
-
-        ASSERT_NE(root.get(), nullptr);
-        root->init(sofa::core::execparams::defaultInstance());
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
-        EXPECT_TRUE( mass != nullptr );
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
-        }
 
         return ;
     }
@@ -618,18 +565,10 @@ public:
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Error);
+
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
-        EXPECT_TRUE( mass != nullptr );
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
-        }
 
         return ;
     }
@@ -651,13 +590,16 @@ public:
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Warning);
+
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        if(mass!=nullptr){
+        if(mass!=nullptr)
+        {
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
@@ -688,7 +630,7 @@ public:
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
-                "        <MeshMatrixMass name='m_mass' />                                                           "
+                "        <MeshMatrixMass name='m_mass' totalMass='1.0'/>                                                           "
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
@@ -700,14 +642,14 @@ public:
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        EXPECT_TRUE( mass->findData("vertexMass") != nullptr );
         EXPECT_TRUE( mass->findData("totalMass") != nullptr );
         EXPECT_TRUE( mass->findData("massDensity") != nullptr );
 
         EXPECT_TRUE( mass->findData("showGravityCenter") != nullptr );
         EXPECT_TRUE( mass->findData("showAxisSizeFactor") != nullptr );
 
-        if(mass!=nullptr){
+        if(mass!=nullptr)
+        {
             EXPECT_EQ( mass->getMassCount(), 8 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
@@ -744,7 +686,8 @@ public:
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        if(mass!=nullptr){
+        if(mass!=nullptr)
+        {
             EXPECT_EQ( mass->getMassCount(), 8 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
@@ -782,7 +725,8 @@ public:
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        if(mass!=nullptr){
+        if(mass!=nullptr)
+        {
             EXPECT_EQ( mass->getMassCount(), 8 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0_sreal);
@@ -793,7 +737,7 @@ public:
     }
 
 
-    void check_VertexMass_Lumping_Initialization_Tetra(){
+    void check_TotalMass_Lumping_Initialization_Tetra(){
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
@@ -807,7 +751,7 @@ public:
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
-                "        <MeshMatrixMass name='m_mass' lumping='1' vertexMass='1 1 1 1 1 1 1 1' />                  "
+                "        <MeshMatrixMass name='m_mass' totalMass='1.0' lumping='1'/>                                "
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
@@ -819,12 +763,14 @@ public:
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->isLumped(), true );
+        if(mass!=nullptr)
+        {
+            EXPECT_EQ( mass->isLumped(), true ); // check lumping
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[7], SReal(0.25/3.0) );
         }
 
         return ;
@@ -856,13 +802,16 @@ public:
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Warning);
+
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        if(mass!=nullptr){
+        if(mass!=nullptr)
+        {
             EXPECT_EQ( mass->getMassCount(), 8 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
@@ -893,13 +842,16 @@ public:
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Warning);
+
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        if(mass!=nullptr){
+        if(mass!=nullptr)
+        {
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 8 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
@@ -931,19 +883,52 @@ public:
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Warning);
+
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        if(mass!=nullptr){
+        if(mass!=nullptr)
+        {
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 8 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(2.0/3.0) );
         }
+
+        return ;
+    }
+
+
+    /// Check if vertexMass is used as input
+    void check_VertexMass_Initialization_Tetra(){
+        static const string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
+                "        <MeshMatrixMass name='m_mass' vertexMass='1 1 1 1 1 1 1 1' />                              "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+
+        EXPECT_MSG_EMIT(Error);
+
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
         return ;
     }
@@ -970,20 +955,12 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());   
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+
+        EXPECT_MSG_EMIT(Error);
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
-        EXPECT_TRUE( mass != nullptr );
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
-        }
 
         return ;
     }
@@ -1009,18 +986,10 @@ public:
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Error);
+
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
-        EXPECT_TRUE( mass != nullptr );
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
-        }
 
         return ;
     }
@@ -1046,91 +1015,10 @@ public:
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
-        ASSERT_NE(root.get(), nullptr);
-        root->init(sofa::core::execparams::defaultInstance());
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
-        EXPECT_TRUE( mass != nullptr );
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
-        }
-
-        return ;
-    }
-
-
-    void check_VertexMass_WrongValue_Tetra(){
-        static const string scene =
-                "<?xml version='1.0'?>                                                                              "
-                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
-                "    <DefaultAnimationLoop />                                                                       "
-                "    <MechanicalObject />                                                                           "
-                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-                "    <Node name='Tetra' >                                                                           "
-                "        <MechanicalObject src='@../grid'/>                                                         "
-                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
-                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
-                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
-                "        <MeshMatrixMass name='m_mass' vertexMass='1 -1 1 1 1 1 1 1' lumping='1' />                 "
-                "    </Node>                                                                                        "
-                "</Node>                                                                                            ";
-
-        const Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam", scene.c_str());
+        EXPECT_MSG_EMIT(Error);
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
-        EXPECT_TRUE( mass != nullptr );
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
-        }
-
-        return ;
-    }
-
-
-    void check_VertexMass_WrongSize_Tetra(){
-        static const string scene =
-                "<?xml version='1.0'?>                                                                              "
-                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
-                "    <DefaultAnimationLoop />                                                                       "
-                "    <MechanicalObject />                                                                           "
-                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-                "    <Node name='Tetra' >                                                                           "
-                "        <MechanicalObject src='@../grid'/>                                                         "
-                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
-                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
-                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
-                "        <MeshMatrixMass name='m_mass' vertexMass='1.0 2.0' lumping='1' />                          "
-                "    </Node>                                                                                        "
-                "</Node>                                                                                            ";
-        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
-
-        ASSERT_NE(root.get(), nullptr);
-        root->init(sofa::core::execparams::defaultInstance());
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
-        EXPECT_TRUE( mass != nullptr );
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
-        }
 
         return ;
     }
@@ -1160,18 +1048,10 @@ public:
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Error);
+
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
-        EXPECT_TRUE( mass != nullptr );
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
-        }
 
         return ;
     }
@@ -1199,13 +1079,16 @@ public:
 
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Warning);
+
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
         EXPECT_TRUE( mass != nullptr );
 
-        if(mass!=nullptr){
+        if(mass!=nullptr)
+        {
             EXPECT_EQ( mass->getMassCount(), 8 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
@@ -2037,8 +1920,8 @@ TEST_F(MeshMatrixMass3_test, check_MassDensity_Initialization_Hexa){
 }
 
 
-TEST_F(MeshMatrixMass3_test, check_VertexMass_Lumping_Initialization_Hexa){
-    check_VertexMass_Lumping_Initialization_Hexa();
+TEST_F(MeshMatrixMass3_test, check_TotalMass_Lumping_Initialization_Hexa){
+        check_TotalMass_Lumping_Initialization_Hexa();
 }
 
 
@@ -2057,6 +1940,11 @@ TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_MassDensityAndVertexMass_He
 }
 
 
+TEST_F(MeshMatrixMass3_test, check_VertexMass_Initialization_Hexa){
+        check_VertexMass_Initialization_Hexa();
+}
+
+
 TEST_F(MeshMatrixMass3_test, check_TotalMass_WrongValue_Hexa){
     check_TotalMass_WrongValue_Hexa();
 }
@@ -2069,16 +1957,6 @@ TEST_F(MeshMatrixMass3_test, check_MassDensity_WrongValue_Hexa){
 
 TEST_F(MeshMatrixMass3_test, check_MassDensity_WrongSize_Hexa){
     check_MassDensity_WrongSize_Hexa();
-}
-
-
-TEST_F(MeshMatrixMass3_test, check_VertexMass_WrongValue_Hexa){
-    check_VertexMass_WrongValue_Hexa();
-}
-
-
-TEST_F(MeshMatrixMass3_test, check_VertexMass_WrongSize_Hexa){
-    check_VertexMass_WrongSize_Hexa();
 }
 
 
@@ -2105,8 +1983,8 @@ TEST_F(MeshMatrixMass3_test, check_MassDensity_Initialization_Tetra){
 }
 
 
-TEST_F(MeshMatrixMass3_test, check_VertexMass_Lumping_Initialization_Tetra){
-    check_VertexMass_Lumping_Initialization_Tetra();
+TEST_F(MeshMatrixMass3_test, check_TotalMass_Lumping_Initialization_Tetra){
+        check_TotalMass_Lumping_Initialization_Tetra();
 }
 
 
@@ -2125,6 +2003,11 @@ TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_MassDensityAndVertexMass_Te
 }
 
 
+TEST_F(MeshMatrixMass3_test, check_VertexMass_Initialization_Tetra){
+    check_VertexMass_Initialization_Tetra();
+}
+
+
 TEST_F(MeshMatrixMass3_test, check_TotalMass_WrongValue_Tetra){
     check_TotalMass_WrongValue_Tetra();
 }
@@ -2140,19 +2023,10 @@ TEST_F(MeshMatrixMass3_test, check_MassDensity_WrongSize_Tetra){
 }
 
 
-TEST_F(MeshMatrixMass3_test, check_VertexMass_WrongValue_Tetra){
-    check_VertexMass_WrongValue_Tetra();
-}
-
-
-TEST_F(MeshMatrixMass3_test, check_VertexMass_WrongSize_Tetra){
-    check_VertexMass_WrongSize_Tetra();
-}
-
-
 TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Tetra){
     check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Tetra();
 }
+
 
 TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Tetra){
     check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Tetra();

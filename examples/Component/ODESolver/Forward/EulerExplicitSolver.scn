@@ -30,15 +30,16 @@ trivially, it requires a linear solver, here SparseLDLSolver.
         <EulerExplicitSolver name="odeExplicitSolver" symplectic="false"/>
         <SparseLDLSolver />
 
-        <MechanicalObject name="dofs"/>
-
         <RegularGridTopology name="topology" nx="4" ny="4" nz="11" xmin="-1.5" xmax="1.5" ymin="-1.5" ymax="1.5" zmin="0" zmax="10" />
         <HexahedronSetGeometryAlgorithms/>
+
+        <MechanicalObject name="dofs"/>
+
         <MeshMatrixMass totalMass="15"/>
+        <MeshSpringForceField stiffness="3E2"/>
 
         <BoxROI box="-1.5 -1.5 0 1.5 1.5 0.0001" name="box"/>
         <FixedProjectiveConstraint indices="@box.indices" />
-        <MeshSpringForceField stiffness="3E2"/>
 
         <Node name="visual">
             <QuadSetTopologyContainer  name="Container" />
