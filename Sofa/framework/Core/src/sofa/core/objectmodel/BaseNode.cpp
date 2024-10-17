@@ -26,8 +26,13 @@
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/visual/VisualLoop.h>
 
+namespace sofa
+{
 
-namespace sofa::core::objectmodel
+namespace core
+{
+
+namespace objectmodel
 {
 
 BaseNode::BaseNode()
@@ -94,6 +99,15 @@ std::string BaseNode::internalGetPathName() const {
         // no smarter choice without breaking the "Node" heritage
         str = parents[0]->internalGetPathName();
         str += '/';
+//        bool strIsFine = false;
+//        for(unsigned int i=0 ; i < str.length() ; i++)
+//        {
+//            if(str[i] != '/')
+//            {
+//                strIsFine = true;
+//            }
+//        }
+//        if(strIsFine)
         str += getName();
     }
     return str;
@@ -116,8 +130,8 @@ std::string BaseNode::getRootPath() const {
     return str;
 }
 
-} // namespace sofa::core::objectmodel
+} // namespace objectmodel
 
+} // namespace core
 
-
-
+} // namespace sofa

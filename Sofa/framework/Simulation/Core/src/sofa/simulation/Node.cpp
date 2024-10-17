@@ -833,6 +833,8 @@ void Node::setDefaultVisualContextValue()
     */
 }
 
+
+
 void Node::initialize()
 {
     initialized = true;  // flag telling is the node is initialized
@@ -1001,11 +1003,13 @@ void Node::printComponents()
     msg_info() << sstream.str();
 }
 
-Node::SPtr Node::create( const std::string& name )
+Node::SPtr Node::create(core::objectmodel::BaseObjectDescription *arg)
 {
     if (Simulation* simulation = getSimulation())
     {
-        return simulation->createNewNode(name);
+        Node::SPtr obj = simulation->createNewNode(arg->getName());
+        obj->parse(arg);
+        return obj;
     }
     return nullptr;
 }

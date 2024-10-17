@@ -81,7 +81,10 @@ class SOFA_GUI_QT_API SofaSceneGraphWidget : public QTreeWidget
 {
     Q_OBJECT
 public:
-    SofaSceneGraphWidget(QWidget* parent) : QTreeWidget(parent){}
+    SofaSceneGraphWidget(QWidget* parent) : QTreeWidget(parent)
+    {
+        m_isLocked = false;
+    }
     ~SofaSceneGraphWidget(){}
 
     void lock();

@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
 #include <string>
 #include <sofa/core/config.h>
 #include <sofa/core/fwd.h>

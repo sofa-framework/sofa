@@ -29,7 +29,13 @@
 #include <iostream>
 
 
-namespace sofa::core::objectmodel
+namespace sofa
+{
+
+namespace core
+{
+
+namespace objectmodel
 {
 
 BaseObject::BaseObject()
@@ -363,13 +369,22 @@ std::string BaseObject::getPathName() const {
         }
 
     }
+//    bool strIsFine = false;
+//    for(unsigned int i=0 ; i < result.length() ; i++)
+//    {
+//        if(result[i] != '/')
+//        {
+//            strIsFine = true;
+//        }
+//    }
+//    if(strIsFine)
     result += getName();
     return result;
 }
 
-} // namespace sofa::core::objectmodel
+} // namespace objectmodel
 
+} // namespace core
 
-
-
+} // namespace sofa
 

@@ -515,8 +515,7 @@ public:
     template <class RealObject>
     static Node::SPtr create(RealObject*, sofa::core::objectmodel::BaseObjectDescription* arg);
 
-    SOFA_ATTRIBUTE_DISABLED_NODECREATENODE()
-    static Node::SPtr create( const std::string& name );
+    static Node::SPtr create(sofa::core::objectmodel::BaseObjectDescription* arg);
 
     /// return the smallest common parent between this and node2 (returns nullptr if separated sub-graphes)
     virtual Node* findCommonParent( simulation::Node* node2 ) = 0;

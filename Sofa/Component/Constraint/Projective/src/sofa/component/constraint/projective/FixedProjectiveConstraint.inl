@@ -130,6 +130,11 @@ template <class DataTypes>
 void  FixedProjectiveConstraint<DataTypes>::checkIndices()
 {
     // Check value of given indices
+    if (!this->mstate.get())
+    {
+        msg_warning() << "Missing mstate, cannot check indices .!";
+        return;
+    }
     Index maxIndex=this->mstate->getSize();
 
     const SetIndexArray & indices = d_indices.getValue();
