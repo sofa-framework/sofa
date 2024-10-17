@@ -23,6 +23,8 @@
 
 #include <sofa/component/constraint/projective/LinearVelocityProjectiveConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
+
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -40,6 +42,7 @@ LinearVelocityProjectiveConstraint<TDataTypes>::LinearVelocityProjectiveConstrai
     , d_keyTimes(  initData(&d_keyTimes,"keyTimes","key times for the movements") )
     , d_keyVelocities(  initData(&d_keyVelocities,"velocities","velocities corresponding to the key times") )
     , d_coordinates( initData(&d_coordinates, "coordinates", "coordinates on which to apply velocities") )
+    , d_continueAfterEnd( initData(&d_continueAfterEnd, false, "continueAfterEnd", "If set to true then the last velocity will still be applied after all the key events") )
     , l_topology(initLink("topology", "link to the topology container"))
     , finished(false)
 {
@@ -156,7 +159,7 @@ void LinearVelocityProjectiveConstraint<TDataTypes>::projectResponse(const core:
         findKeyTimes();
     }
 
-    if (finished && nextT != prevT)
+    if ((finished || d_continueAfterEnd.getValue()) && nextT != prevT)
     {
         const SetIndexArray & indices = d_indices.getValue();
 
@@ -180,7 +183,7 @@ void LinearVelocityProjectiveConstraint<TDataTypes>::projectVelocity(const core:
         findKeyTimes();
     }
 
-    if (finished && nextT != prevT)
+    if ((finished || d_continueAfterEnd.getValue()) && nextT != prevT)
     {
         //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
         Deriv v = ((nextV - prevV)*((cT - prevT)/(nextT - prevT))) + prevV;
@@ -239,7 +242,7 @@ void LinearVelocityProjectiveConstraint<TDataTypes>::projectPosition(const core:
     Real dTsimu = (Real) this->getContext()->getDt();
 
 
-    if(finished)
+    if((finished || d_continueAfterEnd.getValue()))
     {
         Real dt = (cT - prevT) / (nextT - prevT);
         Deriv m = (nextV-prevV)*dt + prevV;
@@ -308,6 +311,88 @@ void LinearVelocityProjectiveConstraint<DataTypes>::findKeyTimes()
 template <class TDataTypes>
 void LinearVelocityProjectiveConstraint<TDataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /*cData*/)
 {
+
+}
+
+template <class DataTypes>
+void LinearVelocityProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+{
+    SOFA_UNUSED(mparams);
+    const int o = matrix->getGlobalOffset(this->mstate.get());
+    if (o >= 0)
+    {
+        const unsigned int offset = (unsigned int)o;
+        const unsigned int N = Deriv::size();
+
+        const SetIndexArray & indices = this->d_indices.getValue();
+        for (const unsigned int index : indices)
+        {
+            for (unsigned int c = 0; c < N; ++c)
+            {
+                vector->clear(offset + N * index + c);
+            }
+        }
+
+    }
+}
+
+template <class DataTypes>
+void LinearVelocityProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+{
+    SOFA_UNUSED(mparams);
+    if(const core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get()))
+    {
+        const unsigned int N = Deriv::size();
+        const SetIndexArray & indices = this->d_indices.getValue();
+
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            // Reset Fixed Row and Col
+            for (unsigned int c=0; c<N; ++c)
+            {
+                r.matrix->clearRowCol(r.offset + N * (*it) + c);
+            }
+            // Set Fixed Vertex
+            for (unsigned int c=0; c<N; ++c)
+            {
+                r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+            }
+        }
+
+    }
+}
+
+template <class DataTypes>
+void LinearVelocityProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
+{
+    static const unsigned blockSize = DataTypes::deriv_total_size;
+
+    const SetIndexArray & indices = this->d_indices.getValue();
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    {
+        for (unsigned int c = 0; c < blockSize; ++c)
+        {
+            M->clearRowCol( offset + (*it) * blockSize + c);
+        }
+    }
+
+}
+
+template <class DataTypes>
+void LinearVelocityProjectiveConstraint<DataTypes>::applyConstraint(
+    sofa::core::behavior::ZeroDirichletCondition* matrix)
+{
+    static constexpr unsigned int N = Deriv::size();
+
+    const SetIndexArray & indices = this->d_indices.getValue();
+
+    for (const auto index : indices)
+    {
+        for (unsigned int c = 0; c < N; ++c)
+        {
+            matrix->discardRowCol(N * index + c, N * index + c);
+        }
+    }
 
 }
 
