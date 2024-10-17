@@ -86,6 +86,9 @@ protected:
 public:
     void init() override;
 
+    /// Method called by component Init method. Will create all the topology buffers
+    void computeCrossElementArrays() override;
+
     Size getNbPoints() const override;
 
     void setNbPoints(Size  n) override;
