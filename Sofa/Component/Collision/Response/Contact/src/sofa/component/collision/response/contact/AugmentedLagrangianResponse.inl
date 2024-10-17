@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/collision/response/contact/FrictionContact.h>
+#include <sofa/component/collision/response/contact/AugmentedLagrangianResponse.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/response/contact/CollisionResponse.h>
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
@@ -33,31 +33,32 @@ namespace sofa::component::collision::response::contact
 {
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
-FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionContact()
-    : FrictionContact(nullptr, nullptr, nullptr)
+AugmentedLagrangianResponse<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::AugmentedLagrangianResponse()
+    : AugmentedLagrangianResponse(nullptr, nullptr, nullptr)
 {
 }
 
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
-FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
-    : BaseUnilateralContactResponse<TCollisionModel1, TCollisionModel2, constraint::lagrangian::model::UnilateralLagrangianContactParameters, ResponseDataTypes>(model1,model2,intersectionMethod)
-      , d_mu (initData(&d_mu, 0.8, "mu", "friction coefficient (0 for frictionless contacts)"))
+AugmentedLagrangianResponse<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::AugmentedLagrangianResponse(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
+    : BaseUnilateralContactResponse<TCollisionModel1, TCollisionModel2, constraint::lagrangian::model::AugmentedLagrangianContactParameters, ResponseDataTypes>(model1,model2,intersectionMethod)
+    , d_mu (initData(&d_mu, 0.0, "mu", "friction coefficient (0 for frictionless contacts)"))
+    , d_epsilon (initData(&d_epsilon, 0.0, "epsilon", "Penalty parameter"))
 {
 
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
-constraint::lagrangian::model::UnilateralLagrangianContactParameters FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::getParameterFromDatas() const
+constraint::lagrangian::model::AugmentedLagrangianContactParameters AugmentedLagrangianResponse<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::getParameterFromDatas() const
 {
-    return {d_mu.getValue()};
+    return {d_mu.getValue(),d_epsilon.getValue()};
 }
 
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
-void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setupConstraint(MechanicalState1 * mmodel1,MechanicalState2 * mmodel2)
+void AugmentedLagrangianResponse<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setupConstraint(MechanicalState1 * mmodel1,MechanicalState2 * mmodel2)
 {
-    this->m_constraint = sofa::core::objectmodel::New<constraint::lagrangian::model::UnilateralLagrangianConstraint<defaulttype::Vec3Types> >(mmodel1, mmodel2);
+    this->m_constraint = sofa::core::objectmodel::New<constraint::lagrangian::model::AugmentedLagrangianConstraint<defaulttype::Vec3Types> >(mmodel1, mmodel2);
 }
 
 

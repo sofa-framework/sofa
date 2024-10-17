@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/constraint/lagrangian/model/BaseContactLagrangianConstraint.h>
-#include <sofa/component/constraint/lagrangian/model/UnilateralConstraintResolution.h>
+#include <sofa/component/constraint/lagrangian/model/AugmentedLagrangianResolution.h>
 #include <iostream>
 #include <map>
 #include <deque>
@@ -35,10 +35,10 @@
 namespace sofa::component::constraint::lagrangian::model
 {
 
-struct UnilateralLagrangianContactParameters : public BaseContactParams
+struct AugmentedLagrangianContactParameters : public BaseContactParams
 {
-    UnilateralLagrangianContactParameters() : mu(0.0) {};
-    UnilateralLagrangianContactParameters(SReal _mu) : mu(_mu) {};
+    AugmentedLagrangianContactParameters() : mu(0.0), epsilon(0.0) {};
+    AugmentedLagrangianContactParameters(SReal _mu, SReal _epsilon) : mu(_mu), epsilon(_epsilon) {};
 
     virtual bool hasTangentialComponent() const override
     {
@@ -46,20 +46,21 @@ struct UnilateralLagrangianContactParameters : public BaseContactParams
     }
 
     SReal mu;
+    SReal epsilon;
 };
 
 template<class DataTypes>
-class UnilateralLagrangianConstraint : public BaseContactLagrangianConstraint<DataTypes,UnilateralLagrangianContactParameters>
+class AugmentedLagrangianConstraint : public BaseContactLagrangianConstraint<DataTypes,AugmentedLagrangianContactParameters>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(UnilateralLagrangianConstraint,DataTypes), SOFA_TEMPLATE2(BaseContactLagrangianConstraint,DataTypes,UnilateralLagrangianContactParameters));
-    typedef BaseContactLagrangianConstraint<DataTypes,UnilateralLagrangianContactParameters> Inherit;
+    SOFA_CLASS(SOFA_TEMPLATE(AugmentedLagrangianConstraint,DataTypes), SOFA_TEMPLATE2(BaseContactLagrangianConstraint,DataTypes,AugmentedLagrangianContactParameters));
+    typedef BaseContactLagrangianConstraint<DataTypes,AugmentedLagrangianContactParameters> Inherit;
     typedef typename Inherit::MechanicalState MechanicalState;
     typedef typename Inherit::Contact Contact;
 
 protected:
-    UnilateralLagrangianConstraint(MechanicalState* object1=nullptr, MechanicalState* object2=nullptr);
-    virtual ~UnilateralLagrangianConstraint() = default;
+    AugmentedLagrangianConstraint(MechanicalState* object1=nullptr, MechanicalState* object2=nullptr);
+    virtual ~AugmentedLagrangianConstraint() = default;
 
 public:
     virtual void getConstraintResolution(const core::ConstraintParams *,std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) override;
@@ -67,9 +68,9 @@ public:
 };
 
 
-#if !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALLAGRANGIANCONSTRAINT_CPP)
-    extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BaseContactLagrangianConstraint<defaulttype::Vec3Types,UnilateralLagrangianContactParameters>;
-    extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UnilateralLagrangianConstraint<defaulttype::Vec3Types>;
+#if !defined(SOFA_COMPONENT_CONSTRAINTSET_AugmentedLagrangianConstraint_CPP)
+    extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BaseContactLagrangianConstraint<defaulttype::Vec3Types,AugmentedLagrangianContactParameters>;
+    extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API AugmentedLagrangianConstraint<defaulttype::Vec3Types>;
 #endif
 
 

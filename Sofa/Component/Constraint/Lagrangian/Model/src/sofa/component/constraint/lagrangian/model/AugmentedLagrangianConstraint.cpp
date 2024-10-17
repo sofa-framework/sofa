@@ -19,11 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALLAGRANGIANCONSTRAINT_CPP
-#include <sofa/component/constraint/lagrangian/model/BaseContactLagrangianConstraint.h>
+#define SOFA_COMPONENT_CONSTRAINTSET_AugmentedLagrangianConstraint_CPP
 #include <sofa/component/constraint/lagrangian/model/BaseContactLagrangianConstraint.inl>
-#include <sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.h>
-#include <sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.inl>
+#include <sofa/component/constraint/lagrangian/model/AugmentedLagrangianConstraint.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -33,17 +31,18 @@ namespace sofa::component::constraint::lagrangian::model
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
+int AugmentedLagrangianConstraintClass = core::RegisterObject("AugmentedLagrangianConstraint")
+        .add< AugmentedLagrangianConstraint<Vec3Types> >()
+
+        ;
 
 
-int UnilateralLagrangianConstraintClass = core::RegisterObject("UnilateralLagrangianConstraint")
-        .add< UnilateralLagrangianConstraint<Vec3Types> >();
-
-template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BaseContactLagrangianConstraint<Vec3Types,UnilateralLagrangianContactParameters>;
-template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UnilateralLagrangianConstraint<Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BaseContactLagrangianConstraint<Vec3Types,AugmentedLagrangianContactParameters>;
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API AugmentedLagrangianConstraint<Vec3Types>;
 
 
 
-void UnilateralConstraintResolutionWithFriction::init(int line, SReal** w, SReal* force)
+void AugmentedLagrangianResolutionWithFriction::init(int line, SReal** w, SReal* force)
 {
     _W[0]=w[line  ][line  ];
     _W[1]=w[line  ][line+1];
@@ -62,13 +61,9 @@ void UnilateralConstraintResolutionWithFriction::init(int line, SReal** w, SReal
 
 }
 
-void UnilateralConstraintResolutionWithFriction::resolution(int line, SReal** /*w*/, SReal* d, SReal* force, SReal * /*dfree*/)
+void AugmentedLagrangianResolutionWithFriction::resolution(int line, SReal** /*w*/, SReal* d, SReal* force, SReal * /*dfree*/)
 {
-    SReal f[2];
-    SReal normFt;
-
-    f[0] = force[line]; f[1] = force[line+1];
-    force[line] -= d[line] / _W[0];
+    force[line] -= d[line] * _epsilon;
 
     if(force[line] < 0)
     {
@@ -76,23 +71,25 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, SReal** /*
         return;
     }
 
-    d[line+1] += _W[1] * (force[line]-f[0]);
-    d[line+2] += _W[2] * (force[line]-f[0]);
-    force[line+1] -= 2*d[line+1] / (_W[3] +_W[5]) ;
-    force[line+2] -= 2*d[line+2] / (_W[3] +_W[5]) ;
+    const SReal f_t_0 = force[line + 1] - d[line+ 1] * _epsilon;
+    const SReal f_t_1 = force[line + 2] - d[line+ 2] * _epsilon;
 
-    normFt = sqrt(force[line+1]*force[line+1] + force[line+2]*force[line+2]);
+    const SReal criteria = sqrt(pow(f_t_0,2.0) + pow(f_t_1,2.0)) - _mu * fabs(force[line]);
 
-    const SReal fN = _mu*force[line];
-    if(normFt > fN)
+    if(criteria<0)
     {
-        const SReal factor = fN / normFt;
-        force[line+1] *= factor;
-        force[line+2] *= factor;
+        force[line+1] = f_t_0 ;
+        force[line+2] = f_t_1 ;
+    }
+    else
+    {
+        const SReal norm_s = sqrt(pow(d[line+ 1],2.0) + pow(d[line+ 2],2.0));
+        force[line+1] -= _mu * d[line] * _epsilon * d[line+ 1]/norm_s;
+        force[line+2] -= _mu * d[line] * _epsilon * d[line+ 2]/norm_s;
     }
 }
 
-void UnilateralConstraintResolutionWithFriction::store(int line, SReal* force, bool /*convergence*/)
+void AugmentedLagrangianResolutionWithFriction::store(int line, SReal* force, bool /*convergence*/)
 {
     if(_prev)
     {

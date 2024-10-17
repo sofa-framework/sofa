@@ -22,55 +22,53 @@
 #pragma once
 #include <sofa/component/constraint/lagrangian/model/config.h>
 
-#include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/constraint/lagrangian/model/BaseContactLagrangianConstraint.h>
 #include <sofa/component/constraint/lagrangian/model/UnilateralConstraintResolution.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <iostream>
 #include <map>
 #include <deque>
 
+
 namespace sofa::component::constraint::lagrangian::model
 {
 
-struct UnilateralLagrangianContactParameters : public BaseContactParams
+class AugmentedLagrangianResolution : public core::behavior::ConstraintResolution
 {
-    UnilateralLagrangianContactParameters() : mu(0.0) {};
-    UnilateralLagrangianContactParameters(SReal _mu) : mu(_mu) {};
+   public:
+    AugmentedLagrangianResolution(SReal epsilon) : core::behavior::ConstraintResolution(1), m_epsilon(epsilon) {}
 
-    virtual bool hasTangentialComponent() const override
+    void resolution(int line, SReal** w, SReal* d, SReal* force, SReal* dfree) override
     {
-        return mu>0.0;
+        SOFA_UNUSED(dfree);
+        force[line] -= d[line] / w[line][line];
+        if (force[line] < 0) force[line] = 0.0;
+    }
+private:
+    SReal m_epsilon;
+};
+
+
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API AugmentedLagrangianResolutionWithFriction
+    : public core::behavior::ConstraintResolution
+{
+   public:
+    AugmentedLagrangianResolutionWithFriction(SReal mu, SReal epsilon, PreviousForcesContainer* prev = nullptr,
+                                               bool* active = nullptr)
+        : core::behavior::ConstraintResolution(3), _mu(mu), _epsilon(epsilon), _prev(prev), _active(active)
+    {
     }
 
-    SReal mu;
+    void init(int line, SReal** w, SReal* force) override;
+    void resolution(int line, SReal** w, SReal* d, SReal* force, SReal* dFree) override;
+    void store(int line, SReal* force, bool /*convergence*/) override;
+
+   protected:
+    SReal _mu;
+    SReal _epsilon;
+    SReal _W[6];
+    PreviousForcesContainer* _prev;
+    bool* _active;  // Will set this after the resolution
 };
 
-template<class DataTypes>
-class UnilateralLagrangianConstraint : public BaseContactLagrangianConstraint<DataTypes,UnilateralLagrangianContactParameters>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(UnilateralLagrangianConstraint,DataTypes), SOFA_TEMPLATE2(BaseContactLagrangianConstraint,DataTypes,UnilateralLagrangianContactParameters));
-    typedef BaseContactLagrangianConstraint<DataTypes,UnilateralLagrangianContactParameters> Inherit;
-    typedef typename Inherit::MechanicalState MechanicalState;
-    typedef typename Inherit::Contact Contact;
-
-protected:
-    UnilateralLagrangianConstraint(MechanicalState* object1=nullptr, MechanicalState* object2=nullptr);
-    virtual ~UnilateralLagrangianConstraint() = default;
-
-public:
-    virtual void getConstraintResolution(const core::ConstraintParams *,std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) override;
-
-};
-
-
-#if !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALLAGRANGIANCONSTRAINT_CPP)
-    extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BaseContactLagrangianConstraint<defaulttype::Vec3Types,UnilateralLagrangianContactParameters>;
-    extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UnilateralLagrangianConstraint<defaulttype::Vec3Types>;
-#endif
-
-
-} //namespace sofa::component::constraint::lagrangian::model
+}
