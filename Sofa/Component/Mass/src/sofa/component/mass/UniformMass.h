@@ -78,6 +78,9 @@ public:
     DataSetIndex     d_indices; ///< optional local DOF indices. Any computation involving only indices outside of this list are discarded
     Data<bool> d_preserveTotalMass; ///< Prevent totalMass from decreasing when removing particles.
 
+    bool m_isTotalMassUsed; ///< Boolean specifying whether the data totalMass has been initially given (else vertexMass vector is being used)
+
+
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
     /// Bring inherited attributes and function in the current lookup context.
@@ -86,6 +89,7 @@ public:
     using core::behavior::ForceField<DataTypes>::mstate ;
     using core::objectmodel::BaseObject::getContext;
     ////////////////////////////////////////////////////////////////////////////
+
 
     /// Link to be set to the topology container in the component graph.
     SingleLink <UniformMass<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -115,10 +119,8 @@ public:
 
     void loadRigidMass(const std::string& filename);
 
-    void reinit() override;
     void init() override;
     void initDefaultImpl() ;
-    void doUpdateInternal() override;
 
     /// @name Check and standard initialization functions from mass information
     /// @{
@@ -126,9 +128,12 @@ public:
     virtual void initFromVertexMass();
 
     virtual bool checkTotalMass();
-    virtual void checkTotalMassInit();
     virtual void initFromTotalMass();
     /// @}
+
+    /// Functions updating data
+    sofa::core::objectmodel::ComponentState updateFromTotalMass();
+    sofa::core::objectmodel::ComponentState updateFromVertexMass();
 
     void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
     void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;

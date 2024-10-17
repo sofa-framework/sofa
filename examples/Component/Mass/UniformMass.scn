@@ -14,6 +14,7 @@
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> 
 
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceBroadPhase/>
@@ -21,6 +22,8 @@
     <CollisionResponse response="PenalityContactForceField" name="collision response" />
     <DiscreteIntersection />
     <DefaultAnimationLoop/>
+
+    <InteractiveCamera position="-2 2.6 17.9" orientation="0 0 0 1" distance="17.9" />
 
     <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
     <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
@@ -32,7 +35,7 @@
         <!-- Container for the tetrahedra-->
         <TetrahedronSetTopologyContainer name="TetraTopo" src="@../loader" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
-        <UniformMass totalMass="60"  name="uniformlyConstantMass" />
+        <UniformMass totalMass="60" name="uniformlyConstantMass" printLog="1"/>
         <TetrahedralCorotationalFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.45" youngModulus="5000" />
         <FixedProjectiveConstraint name="FixedProjectiveConstraint" indices="3 39 64" />
         

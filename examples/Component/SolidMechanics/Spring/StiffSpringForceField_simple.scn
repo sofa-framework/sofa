@@ -24,25 +24,25 @@
 
     <Node name="sphere1">
         <MechanicalObject template="Vec3" name="dofs" position="1 0 0" showObject="true"/>
-        <UniformMass/>
+        <UniformMass totalMass="1.0"/>
         <SphereCollisionModel listRadius="0.25"/>
     </Node>
 
     <Node name="sphere2">
         <MechanicalObject template="Vec3" name="dofs" position="2 0 0" showObject="true"/>
-        <UniformMass/>
+        <UniformMass totalMass="1.0"/>
         <SphereCollisionModel listRadius="0.25"/>
     </Node>
 
     <Node name="sphere3-4">
         <MechanicalObject template="Vec3" name="dofs" position="3 0 0 4 0 0" showObject="true"/>
-        <UniformMass/>
+        <UniformMass totalMass="1.0"/>
         <SphereCollisionModel listRadius="0.25 0.25"/>
     </Node>
 
     <Node name="sphere5-6">
         <MechanicalObject template="Vec3" name="dofs" position="5 0 0 6 0 0" showObject="true"/>
-        <UniformMass/>
+        <UniformMass totalMass="1.0"/>
         <SphereCollisionModel listRadius="0.25 0.25"/>
         <SpringForceField template="Vec3" name="spring" spring="0 1 50 1 1" showArrowSize="0.05" drawMode="2"/>
     </Node>

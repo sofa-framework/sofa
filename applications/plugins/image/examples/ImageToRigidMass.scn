@@ -32,10 +32,10 @@
   	<MechanicalObject template="Rigid3d" position="@../imagemass.position" showObject="0" showObjectScale="1"/>
 
 <!--COMPLIANT API-->
-<!--  	<RigidMass template="Rigid3d" inertia="@../imagemass.inertia" mass="@../imagemass.mass" draw="1" /> -->
+<!--  	<RigidMass template="Rigid3d" inertia="@../imagemass.inertia" vertexMass="@../imagemass.mass" draw="1" /> -->
 
 <!--SOFA API-->
-  	<UniformMass template="Rigid3d" mass="@../imagemass.rigidMass" showAxisSizeFactor="1"/>
+  	<UniformMass template="Rigid3d" vertexMass="@../imagemass.rigidMass" showAxisSizeFactor="1"/>
 	
 	<Node 	name="visual" >
   		<MechanicalObject name="dofs"  position="@../../mesh.position" /> 

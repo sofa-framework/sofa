@@ -19,14 +19,14 @@
     <CGLinearSolver template="GraphScattered" name="Conjugate Gradient" iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <Node name="FirstObject" gravity="0 -9.81 0">
         <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 0 0 1 0 0" showObject="1" showObjectScale="10"/>
-        <UniformMass template="Vec3" name="Mass" />
+        <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>
         <FixedProjectiveConstraint template="Vec3" name="Fix Particles" indices="0" />
         <SpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1&#x0A;" />
     </Node>
     <Node name="SecondObject" gravity="0 -9.81 0">
         <VisualStyle displayFlags="showVisual hideBehavior hideCollision hideMapping hideOptions" />
         <MechanicalObject template="Vec3" name="Particles" restScale="1" position="2 0 0" showObject="1" showObjectScale="10"/>
-        <UniformMass template="Vec3" name="Mass" />
+        <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>
     </Node>
     <SpringForceField template="Vec3" name="Interaction Spring" object1="@FirstObject" object2="@SecondObject" spring="1 0 10 0.1 1&#x0A;" />
 </Node>
