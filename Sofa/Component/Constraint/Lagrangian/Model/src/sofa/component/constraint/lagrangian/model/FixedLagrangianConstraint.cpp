@@ -237,14 +237,15 @@ void FixedLagrangianConstraint<Rigid3Types>::doGetSingleConstraintResolution(std
     offset += 3;
 }
 
-
-
-int FixedLagrangianConstraintClass = core::RegisterObject("Lagrangian-based fixation of DOFs of the model")
+void registerFixedLagrangianConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Lagrangian-based fixation of DOFs of the model.")
         .add< FixedLagrangianConstraint<Vec6Types> >()
         .add< FixedLagrangianConstraint<Vec3Types> >()
         .add< FixedLagrangianConstraint<Vec2Types> >()
         .add< FixedLagrangianConstraint<Vec1Types> >()
-        .add< FixedLagrangianConstraint<Rigid3Types> >();
+        .add< FixedLagrangianConstraint<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint<Vec6Types>;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API FixedLagrangianConstraint<Vec3Types>;

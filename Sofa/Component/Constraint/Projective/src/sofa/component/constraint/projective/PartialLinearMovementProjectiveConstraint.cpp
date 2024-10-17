@@ -28,14 +28,15 @@
 namespace sofa::component::constraint::projective
 {
 
-//declaration of the class, for the factory
-int PartialLinearMovementProjectiveConstraintClass = core::RegisterObject("translate given particles")
+void registerPartialLinearMovementProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Impose a motion to given DOFs (translation and rotation) in some directions only.")
         .add< PartialLinearMovementProjectiveConstraint<defaulttype::Vec3Types> >()
         .add< PartialLinearMovementProjectiveConstraint<defaulttype::Vec2Types> >()
         .add< PartialLinearMovementProjectiveConstraint<defaulttype::Vec1Types> >()
         .add< PartialLinearMovementProjectiveConstraint<defaulttype::Vec6Types> >()
-        .add< PartialLinearMovementProjectiveConstraint<defaulttype::Rigid3Types> >()
-        ;
+        .add< PartialLinearMovementProjectiveConstraint<defaulttype::Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PartialLinearMovementProjectiveConstraint<defaulttype::Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PartialLinearMovementProjectiveConstraint<defaulttype::Vec2Types>;

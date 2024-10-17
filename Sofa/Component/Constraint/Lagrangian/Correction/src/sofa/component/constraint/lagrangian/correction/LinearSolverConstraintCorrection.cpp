@@ -27,20 +27,21 @@
 
 namespace sofa::component::constraint::lagrangian::correction
 {
+
 using namespace sofa::defaulttype;
 
-int LinearSolverContactCorrectionClass = core::RegisterObject("")
+void registerLinearSolverConstraintCorrection(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Constraint Correction for Linear Solvers.")
         .add< LinearSolverConstraintCorrection<Vec3Types> >()
         .add< LinearSolverConstraintCorrection<Vec2Types> >()
         .add< LinearSolverConstraintCorrection<Vec1Types> >()
-        .add< LinearSolverConstraintCorrection<Rigid3Types> >()
+        .add< LinearSolverConstraintCorrection<Rigid3Types> >());
+}
 
-        ;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API LinearSolverConstraintCorrection<Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API LinearSolverConstraintCorrection<Vec2Types>;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API LinearSolverConstraintCorrection<Vec1Types>;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API LinearSolverConstraintCorrection<Rigid3Types>;
-
-
 
 } //namespace sofa::component::constraint::lagrangian::correction

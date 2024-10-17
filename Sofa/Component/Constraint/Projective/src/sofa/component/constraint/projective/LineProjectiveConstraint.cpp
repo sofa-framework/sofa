@@ -27,13 +27,13 @@ namespace sofa::component::constraint::projective
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
-
-int LineProjectiveConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
+void registerLineProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Attach given particles to their initial positions.")
         .add< LineProjectiveConstraint<Vec3Types> >()
-        .add< LineProjectiveConstraint<Vec2Types> >()
-        ;
+        .add< LineProjectiveConstraint<Vec2Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LineProjectiveConstraint<Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LineProjectiveConstraint<Vec2Types>;
