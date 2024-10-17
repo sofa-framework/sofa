@@ -36,14 +36,14 @@ class AbstractTypeInfo;
  * @brief An unique singleton to register all the type info defined in Sofa
  *
  * AbstractTypeInfo offers an API to manipulate the data content of a specific type
- * without requiering the inner details of the type. Have a look in AbstractTypeInfo
- * for more informations.
+ * without requiring the inner details of the type. Have a look in AbstractTypeInfo
+ * for more information.
  *
- * On its side, TypeInfoRegistry holds all the instances of object thats inherits
+ * On its side, TypeInfoRegistry holds all the instances of object that inherits
  * from AbstractTypeInfo
  *
  * The common use case is get the type id to access a full AbstractTypeInfo from
- * the TypeInfoRegistry. The acces is done with a TypeInfoId instance that stores
+ * the TypeInfoRegistry. The access is done with a TypeInfoId instance that stores
  * an unique identifier for each data type.
  *
  * Example of use:
@@ -62,7 +62,7 @@ public:
     /// provides the compilationTarget where the typeinfo is declared to ease the tracking of DataTypes.
     static int Set(const TypeInfoId& tid, AbstractTypeInfo* info, const std::string& compilationTarget);
 
-    /// Returns a vecotr with all the AbstractTypeInfo that have been registered in the specified target.
+    /// Returns a vector with all the AbstractTypeInfo that have been registered in the specified target.
     /// An empty target select everything that is in the registry.
     static std::vector<const AbstractTypeInfo*> GetRegisteredTypes(const std::string& target="");
 

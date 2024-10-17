@@ -76,13 +76,13 @@ int CapsuleIntTool::computeIntersection(geometry::TCapsule<DataTypes1> & e1,geom
     }
     else{//Capsule segments on a same plane. Here the idea to find the nearest points
         //is to project segment apexes on the other segment.
-        //Visual example with semgents AB and CD :
+        //Visual example with segments AB and CD :
         //            A----------------B
         //                     C----------------D
         //After projection :
         //            A--------c-------B
         //                     C-------b--------D
-        //So the nearest points are p and q which are respecively in the middle of cB and Cb:
+        //So the nearest points are p and q which are respectively in the middle of cB and Cb:
         //            A--------c---p---B
         //                     C---q---b--------D
 

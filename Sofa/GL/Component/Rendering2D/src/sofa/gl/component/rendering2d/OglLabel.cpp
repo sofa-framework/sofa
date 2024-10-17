@@ -45,7 +45,7 @@ OglLabel::OglLabel():
   ,d_y(initData(&d_y, (unsigned int)10, "y", "The y position of the text on the screen"))
   ,d_fontsize(initData(&d_fontsize, (unsigned int)14, "fontsize", "The size of the font used to display the text on the screen"))
   ,d_color(initData(&d_color, sofa::type::RGBAColor::gray(), "color", "The color of the text to display. (default='gray')"))
-  ,d_selectContrastingColor(initData(&d_selectContrastingColor, false, "selectContrastingColor", "Overide the color value but one that contrast with the background color"))
+  ,d_selectContrastingColor(initData(&d_selectContrastingColor, false, "selectContrastingColor", "Override the color value but one that contrast with the background color"))
   ,d_updateLabelEveryNbSteps(initData(&d_updateLabelEveryNbSteps, (unsigned int)0, "updateLabelEveryNbSteps", "Update the display of the label every nb of time steps"))
   ,m_stepCounter(0)
 {
@@ -84,7 +84,7 @@ void OglLabel::reinit()
 {
     if( d_selectContrastingColor.isSet() && d_color.isSet() ){
         msg_warning() << "The selectContrastingColor and color attributes are both set. " << msgendl
-                      << "The color attribute will be overriden by the contrasting color. ";
+                      << "The color attribute will be overridden by the contrasting color. ";
     }
 
     m_internalLabel = d_label.getValue();

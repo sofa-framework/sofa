@@ -129,7 +129,7 @@ void ITPDriver::bwdInit()
     if (dynamic_cast<core::behavior::MechanicalState<Vec1dTypes>*>(context->getMechanicalState()) == NULL)
     {
         this->f_printLog.setValue(true);
-        serr<<"ERROR : no MechanicalState<Vec1dTypes> defined... init of ITPDriver faild "<<sendl;
+        serr<<"ERROR : no MechanicalState<Vec1dTypes> defined... init of ITPDriver failed "<<sendl;
         this->_mstate = NULL;
         return ;
     }
@@ -220,7 +220,7 @@ void ITPDriver::handleEvent(core::objectmodel::Event *event)
     {
 
 
-        // calcul des angles à partir de la direction proposée par l'interface...
+        // calcul des angles ï¿½ partir de la direction proposï¿½e par l'interface...
         // cos(ThetaX) = cx   sin(ThetaX) = sx  cos(ThetaZ) = cz   sin(ThetaZ) = sz .
         // au repos (si cx=1 et cz=1) on a  Axe y
         // on commence par tourner autour de x   puis autour de z
@@ -236,7 +236,7 @@ void ITPDriver::handleEvent(core::objectmodel::Event *event)
         xiTrocarQueryStates();
         xiTrocarGetState(indexTool.getValue(), &state);
 
-        // saving informations in class structure.
+        // saving information in class structure.
         data.simuState = state;
 
         Vector3 dir;

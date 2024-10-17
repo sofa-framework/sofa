@@ -1187,7 +1187,7 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
         }
     }
 
-    //retrive plugins
+    //retrieve plugins
     typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
     PluginMap& pluginMap = PluginManager::getInstance().getPluginMap();
     PluginManager::PluginIterator it;

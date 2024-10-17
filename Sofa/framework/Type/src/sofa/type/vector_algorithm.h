@@ -26,7 +26,7 @@
 
 namespace sofa::type
 {
-/** Remove the first occurence of a given value.
+/** Remove the first occurrence of a given value.
     The remaining values are shifted.
 */
 template<class T1, class T2>
@@ -43,7 +43,7 @@ void remove( T1& v, const T2& elem )
     v.pop_back();
 }
 
-/** Remove the first occurence of a given value.
+/** Remove the first occurrence of a given value.
 
 The last value is moved to where the value was found, and the other values are not shifted.
 */

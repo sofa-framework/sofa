@@ -47,11 +47,11 @@ public:
     void add(const std::type_info& class1, const std::type_info& class2, F fun) ;
     void ignore(const std::type_info& class1, const std::type_info& class2) ;
 
-    template <class ConcreteClass1,class ConcreteClass2,ResulT (*F)(ConcreteClass1&,ConcreteClass2&), bool symetric>
+    template <class ConcreteClass1,class ConcreteClass2,ResulT (*F)(ConcreteClass1&,ConcreteClass2&), bool symmetric>
     void ignore()
     {
         this->BasicDispatcher<BaseClass, ResulT>::add(typeid(ConcreteClass1), typeid(ConcreteClass2), &ignoreFn);
-        if (symetric)
+        if (symmetric)
         {
             this->BasicDispatcher<BaseClass, ResulT>::add(typeid(ConcreteClass2), typeid(ConcreteClass1), &ignoreFn);
         }
@@ -69,7 +69,7 @@ class FnDispatcher : public BasicDispatcher<BaseClass, ResulT>
 {
 public:
 
-    template <class ConcreteClass1, class ConcreteClass2, ResulT (*F)(ConcreteClass1&,ConcreteClass2&), bool symetric>
+    template <class ConcreteClass1, class ConcreteClass2, ResulT (*F)(ConcreteClass1&,ConcreteClass2&), bool symmetric>
     void add()
     {
         struct Local
@@ -85,17 +85,17 @@ public:
             }
         };
         this->BasicDispatcher<BaseClass, ResulT>::add(typeid(ConcreteClass1), typeid(ConcreteClass2), &Local::trampoline);
-        if (symetric)
+        if (symmetric)
         {
             this->BasicDispatcher<BaseClass, ResulT>::add(typeid(ConcreteClass2), typeid(ConcreteClass1), &Local::trampolineR);
         }
     }
 
-    template <class ConcreteClass1, class ConcreteClass2, bool symetric>
+    template <class ConcreteClass1, class ConcreteClass2, bool symmetric>
     void ignore()
     {
         this->BasicDispatcher<BaseClass, ResulT>::ignore(typeid(ConcreteClass1), typeid(ConcreteClass2));
-        if (symetric)
+        if (symmetric)
         {
             this->BasicDispatcher<BaseClass, ResulT>::ignore(typeid(ConcreteClass2), typeid(ConcreteClass1));
         }

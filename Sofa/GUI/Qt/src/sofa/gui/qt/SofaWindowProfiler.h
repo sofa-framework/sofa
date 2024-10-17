@@ -55,9 +55,9 @@ namespace sofa::gui::qt
 typedef sofa::helper::system::thread::ctime_t ctime_t;
 
 /**
- * @brief The ProfilerChartView class is a overide of QtCharts::QChartView
+ * @brief The ProfilerChartView class is a override of QtCharts::QChartView
  * to be able to catch mouse selection and update all widgets of \sa SofaWindowProfiler
- * Will also overide drawForeground to draw a line to show the selected step.
+ * Will also override drawForeground to draw a line to show the selected step.
  */
 class ProfilerChartView : public QChartView
 {
@@ -69,13 +69,13 @@ public:
     void updateYMax(int y) {m_maxY = y;}
 
 protected:
-    /// Overide to catch mouse selection on the graph.
+    /// Override to catch mouse selection on the graph.
     virtual void mousePressEvent(QMouseEvent *event);
-    /// Overide to draw line at the step selected.
+    /// Override to draw line at the step selected.
     virtual void drawForeground(QPainter *painter, const QRectF &rect);
 
 signals:
-    /// signal emited when a step has been selected on the graph @param int is the step number
+    /// signal emitted when a step has been selected on the graph @param int is the step number
     void pointSelected(int);
 
 public slots:
@@ -83,7 +83,7 @@ public slots:
     void updateSelection(int x);
 
 protected:
-    /// copy of the serie size to check if selection is not out of bound
+    /// copy of the series size to check if selection is not out of bound
     int m_bufferSize;
 
     /// 2D point of the line to draw the selection
@@ -101,7 +101,7 @@ protected:
  * This class is a QDialog widget to display information recorded by AdvancedTimer mechanism
  * At each step, info will be gathered from the AdvancedTimer using class sofa::helper::StepData
  * Info will be displayed by:
- * - ploting the step duration into a graph
+ * - plotting the step duration into a graph
  * - Showing information duration/step number
  * - Showing all substep of an animation step with their own duration in ms and the corresponding percentage over the whole step.
  */
@@ -243,10 +243,10 @@ protected:
     /// Buffer of \sa AnimationStepData (data for each step), deque size correspond to \sa m_bufferSize
     std::deque<AnimationStepData*> m_profilingData;
 
-    /// Serie of step duration in ms to be plot on the graph. size = \sa m_bufferSize
+    /// Series of step duration in ms to be plot on the graph. size = \sa m_bufferSize
     QLineSeries *m_series;
 
-    /// Serie of selection substep duration in ms to be plot on the graph. size = \sa m_bufferSize
+    /// Series of selection substep duration in ms to be plot on the graph. size = \sa m_bufferSize
     QLineSeries *m_selectionSeries;
 
     struct CheckedSeries

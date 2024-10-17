@@ -88,7 +88,7 @@ void tesselateMesh(Mesh& obj, int rec=1, bool onSphere=false)
 
     for (int r=0; r<rec; r++)
     {
-        std::cout << "Tesselation level "<<r+1<<"..."<<std::endl;
+        std::cout << "Tessellation level "<<r+1<<"..."<<std::endl;
         obj.calcEdges();
 
         std::cout << "Creating new points..."<<std::endl;
@@ -235,7 +235,7 @@ void tesselateMesh(Mesh& obj, int rec=1, bool onSphere=false)
                 projectOnSphere(obj.PP(i),obj.PN(i),center,radius[0]);
             obj.calcNormals();
         }
-        std::cout << "Tesselation level "<<r<<" DONE: "<<obj.nbp()<<" points, "<<obj.nbf()<<" faces."<<std::endl;
+        std::cout << "Tessellation level "<<r<<" DONE: "<<obj.nbp()<<" points, "<<obj.nbf()<<" faces."<<std::endl;
     }
     if (!groups)
     {

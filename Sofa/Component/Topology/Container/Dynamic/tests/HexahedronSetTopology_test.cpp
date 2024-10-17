@@ -188,7 +188,7 @@ bool HexahedronSetTopology_test::testQuadBuffers()
     EXPECT_EQ(elemAQuad[1], 1);
 
 
-    // check QuadsInHexahedron buffer acces
+    // check QuadsInHexahedron buffer access
     const sofa::type::vector< HexahedronSetTopologyContainer::QuadsInHexahedron > & quadInHexahedra = topoCon->getQuadsInHexahedronArray();
     EXPECT_EQ(quadInHexahedra.size(), nbrHexahedron);
 
@@ -283,7 +283,7 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
     EXPECT_EQ(elemAEdge[1], 2);
 
 
-    // check EdgesInHexahedron buffer acces
+    // check EdgesInHexahedron buffer access
     const sofa::type::vector< HexahedronSetTopologyContainer::EdgesInHexahedron > & edgeInHexahedra = topoCon->getEdgesInHexahedronArray();
     EXPECT_EQ(edgeInHexahedra.size(), nbrHexahedron);
 

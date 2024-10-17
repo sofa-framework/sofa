@@ -228,7 +228,7 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (!isMoving() && !cubeModel->empty() && !m_needsUpdate)
         return; // No need to recompute BBox if immobile nor if mesh didn't change.
 
-    // set to false to avoid excesive loop
+    // set to false to avoid excessive loop
     m_needsUpdate=false;
 
     type::Vec3 minElem, maxElem;

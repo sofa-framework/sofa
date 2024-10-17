@@ -37,7 +37,7 @@ HermiteSplineProjectiveConstraint<DataTypes>::HermiteSplineProjectiveConstraint(
     , d_x0(initData(&d_x0, "X0", "first control point") )
     , d_dx0(initData(&d_dx0, "dX0", "first control tangente") )
     , d_x1(initData(&d_x1, "X1", "second control point") )
-    , d_dx1(initData(&d_dx1, "dX1", "sceond control tangente") )
+    , d_dx1(initData(&d_dx1, "dX1", "second control tangente") )
     , d_sx0(initData(&d_sx0, "SX0", "first interpolation vector") )
     , d_sx1(initData(&d_sx1, "SX1", "second interpolation vector") )
     , l_topology(initLink("topology", "link to the topology container"))

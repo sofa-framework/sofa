@@ -489,7 +489,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
             if (this->selfCollision && use_mapper_for_state1 != use_mapper_for_state2)
             {
                 this->f_printLog.setValue(true);
-                serr << "Problem : selfColision but not same targetting state => constraint not created" << sendl;
+                serr << "Problem : selfColision but not same targeting state => constraint not created" << sendl;
                 return;
             }
 

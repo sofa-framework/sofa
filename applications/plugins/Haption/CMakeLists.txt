@@ -41,4 +41,4 @@ install(TARGETS ${PROJECT_NAME}
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
-install(DIRECTORY exemple/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

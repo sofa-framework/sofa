@@ -74,7 +74,7 @@ public:
     Data< VecReal > d_stiffness; ///< stiffness values between the actual position and the rest shape position
     Data< VecReal > d_angularStiffness; ///< angularStiffness assigned when controlling the rotation of the points
     Data< type::vector< CPos > > d_pivotPoints; ///< global pivot points used when translations instead of the rigid mass centers
-    Data< VecIndex > d_external_points; ///< points from the external Mechancial State that define the rest shape springs
+    Data< VecIndex > d_external_points; ///< points from the external Mechanical State that define the rest shape springs
     Data< bool > d_recompute_indices; ///< Recompute indices (should be false for BBOX)
     Data< bool > d_drawSpring; ///< draw Spring
     Data< sofa::type::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])

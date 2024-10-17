@@ -229,7 +229,7 @@ protected :
 
 public:
 
-    /// Forcefield intern paramaters
+    /// Forcefield intern parameters
     int method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()

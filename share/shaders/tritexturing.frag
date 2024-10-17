@@ -19,7 +19,7 @@ uniform sampler2D normalMap;
 
 void main()
 {
-	// To compute unlit color and normal, only vPositionW and vNormalW should be used, so that it is independant of the current deformation
+	// To compute unlit color and normal, only vPositionW and vNormalW should be used, so that it is independent of the current deformation
 	//XY = 1 0 0
 	//XZ = 0 1 0
 	//YZ = 0 0 1

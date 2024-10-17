@@ -142,7 +142,7 @@ void MatrixLinearSystem<TMatrix, TVector>::assembleSystem(const core::Mechanical
 {
     if (this->getSystemMatrix()->rowSize() == 0 || this->getSystemMatrix()->colSize() == 0)
     {
-        msg_error() << "Global system matrix is not resized appropriatly (" << this->getPathName() << ")";
+        msg_error() << "Global system matrix is not resized appropriately (" << this->getPathName() << ")";
         return;
     }
 
@@ -1122,7 +1122,7 @@ void MatrixLinearSystem<TMatrix, TVector>::assembleMappedMatrices(const core::Me
 {
     if (this->getSystemMatrix()->rowSize() == 0 || this->getSystemMatrix()->colSize() == 0)
     {
-        msg_error() << "Global system matrix is not resized appropriatly";
+        msg_error() << "Global system matrix is not resized appropriately";
         return;
     }
 

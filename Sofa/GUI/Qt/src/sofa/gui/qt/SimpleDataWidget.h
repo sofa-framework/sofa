@@ -852,7 +852,7 @@ public:
     {
         bool canwrite = d.setPath ( w->text().toStdString() );
         if(!canwrite)
-            msg_info()<<"canot set Path "<<w->text().toStdString()<<std::endl;
+            msg_info()<<"cannot set Path "<<w->text().toStdString()<<std::endl;
     }
     static void setReadOnly(Widget* w, bool readOnly)
     {

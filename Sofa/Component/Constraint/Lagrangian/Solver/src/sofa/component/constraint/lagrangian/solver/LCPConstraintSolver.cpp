@@ -948,7 +948,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::v
 
             ///////// verifier si Delta force vaut 0 => pas la peine d'ajouter la force
 
-            // set Delta force on object 1 for evaluating the followings displacement
+            // set Delta force on object 1 for evaluating the following displacement
 
             if(update)
             {

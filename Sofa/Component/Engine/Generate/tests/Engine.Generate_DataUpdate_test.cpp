@@ -84,9 +84,9 @@ TestDataEngine< component::engine::generate::NormEngine<type::Vec3> >,
 TestDataEngine< component::engine::generate::NormalsFromPoints<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::generate::RandomPointDistributionInSurface<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::generate::Spiral<defaulttype::Vec3Types> >
-> TestTypes; // the types to instanciate.
+> TestTypes; // the types to instantiate.
 
-//// ========= Tests to run for each instanciated type
+//// ========= Tests to run for each instantiated type
 TYPED_TEST_SUITE(DataEngine_test, TestTypes);
 
 //// test number of call to DataEngine::update

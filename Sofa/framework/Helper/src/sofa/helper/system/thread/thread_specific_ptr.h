@@ -57,7 +57,7 @@ private:
     pthread_key_t key;
 
     thread_specific_ptr(thread_specific_ptr&); // NO COPY
-    thread_specific_ptr& operator=(thread_specific_ptr&); // NO ASSIGNEMENT
+    thread_specific_ptr& operator=(thread_specific_ptr&); // NO ASSIGNMENT
 
     T* get() const
     {

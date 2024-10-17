@@ -68,7 +68,7 @@ namespace misc
    *
    *  <b>plane</b> -
    *
-   *  <b>vectorvis</b> - Describes the settings for vizualizing vectors and tensors. Input string should be in the form:
+   *  <b>vectorvis</b> - Describes the settings for visualizing vectors and tensors. Input string should be in the form:
    *	"subsampleXY subsampleZ scale rgb shape tensorOrder", where:
    *	subsampleXY is an integer <i>n</i> where in the X and Y planes, a shape is drawn every <i>n</i> voxels.
    *    subsampleZ is an integer <i>n</i> where in the Z plane, a shape is drawn every <i>n</i> voxels.

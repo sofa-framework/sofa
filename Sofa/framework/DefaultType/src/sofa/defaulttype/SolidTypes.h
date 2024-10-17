@@ -63,7 +63,7 @@ public:
 
     /**
      * \brief A twist aka a SpatialVector representing a velocity
-     * This is pratically a SpatialVector (screw) with the additionnal semantics
+     * This is practically a SpatialVector (screw) with the additional semantics
      * that this screw represents a twist (velocity) and not a wrench (force and torque)
      * @author Anthony Truchet, CEA, 2006
      */
@@ -76,7 +76,7 @@ public:
 
     /**
         * \brief A wrench aka a SpatialVector representing a force and a torque
-     * This is pratically a SpatialVector (screw) with the additionnal semantics
+     * This is practically a SpatialVector (screw) with the additional semantics
      * that this screw represents a wrench (force and torque) and not a twist (velocity)
      * @author Anthony Truchet, CEA, 2006
      */

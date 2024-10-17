@@ -26,7 +26,7 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
-/** Apply projective constaints of the whole scene */
+/** Apply projective constraints of the whole scene */
 class SOFA_SIMULATION_CORE_API MechanicalApplyProjectiveConstraint_ToMatrixVisitor : public MechanicalVisitor
 {
 public:

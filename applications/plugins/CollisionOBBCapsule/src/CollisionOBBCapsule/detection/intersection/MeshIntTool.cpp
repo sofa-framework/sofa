@@ -75,13 +75,13 @@ int MeshIntTool::doCapLineInt(const type::Vec3 & p1,const type::Vec3 & p2,SReal 
     }
     else{//Segments on a same plane. Here the idea to find the nearest points
         //is to project segment apexes on the other segment.
-        //Visual example with semgents AB and CD :
+        //Visual example with segments AB and CD :
         //            A----------------B
         //                     C----------------D
         //After projection :
         //            A--------c-------B
         //                     C-------b--------D
-        //So the nearest points are p and q which are respecively in the middle of cB and Cb:
+        //So the nearest points are p and q which are respectively in the middle of cB and Cb:
         //            A--------c---p---B
         //                     C---q---b--------D
 
@@ -289,7 +289,7 @@ int MeshIntTool::doIntersectionTrianglePoint(SReal dist2, int flags, const type:
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
 
-    ///!\ CAUTION : uninitialized fields detection->elem and detection->id and detection->value, you have to substract contactDist
+    ///!\ CAUTION : uninitialized fields detection->elem and detection->id and detection->value, you have to subtract contactDist
 
     return 1;
 }

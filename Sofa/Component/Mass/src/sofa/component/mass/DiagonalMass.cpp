@@ -156,9 +156,9 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::initRigidImpl()
         
     if(!l_topology)
     {
-        msg_error(this) << "Unable to retreive a valid MeshTopology component in the current context. \n"
+        msg_error(this) << "Unable to retrieve a valid MeshTopology component in the current context. \n"
                              "The component cannot be initialized and thus is de-activated. \n "
-                             "To supress this warning you can add a Topology component in the parent node of'<"<< this->getName() <<">'.\n" ;
+                             "To suppress this warning you can add a Topology component in the parent node of'<"<< this->getName() <<">'.\n" ;
         this->d_componentState.setValue(ComponentState::Invalid) ;
     }
     else

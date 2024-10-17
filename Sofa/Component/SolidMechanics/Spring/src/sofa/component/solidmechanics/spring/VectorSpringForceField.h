@@ -121,7 +121,7 @@ public:
     /// By default, assume that all edges have the same viscosity
     Data<SReal> d_viscosity;
 
-    Data<bool> d_useTopology; ///< Activate/Desactivate topology mode of the component (springs on each edge)
+    Data<bool> d_useTopology; ///< Activate/Deactivate topology mode of the component (springs on each edge)
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<VectorSpringForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

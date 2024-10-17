@@ -54,15 +54,15 @@ public:
         _program=*program;
     }
 
-    // find args used by the fonction
+    // find args used by the function
     void parseFonction(std::string name = "__OP__")
     {
-        //find the name of the fonction
+        //find the name of the function
         int begin = _operation.find(name);
         begin = _operation.find("(",begin+name.size());
         int end = _operation.find(")",begin);
 
-        //find args of the fonction
+        //find args of the function
         int i,n;
         int j=begin;
         while(begin<=j && j<end)
@@ -86,16 +86,16 @@ public:
         			std::cout << (*it).first << " => " << (*it).second << std::endl;*/
     }
 
-    // find args used by the program for fonction
+    // find args used by the program for function
     void parseProgram(int beginParser, int &beginFunction, int &endFunction,std::string name = "__OP__")
     {
-        //find the fonction
+        //find the function
         beginFunction = _program.find(name,beginParser);
         int beginArg = _program.find("(",beginFunction);
         endFunction = _program.find(")",beginFunction);
 
 
-        //find args of the fonction
+        //find args of the function
         int i,n;
         int j=beginArg;
         std::map<std::string,std::string>::iterator it=_map.begin();

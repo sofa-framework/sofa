@@ -86,7 +86,7 @@ bool RegularGridTopology_test::regularGridSize(const std::vector<int>& p, bool f
     int nbHexa = (nx - 1) * (ny - 1) * (nz - 1);
     int nbQuads = (nx - 1) * (ny - 1) * nz + (nx - 1) * ny * (nz - 1) + nx * (ny - 1) * (nz - 1);
 
-    /// Dimmension invariant assumption
+    /// Dimension invariant assumption
     EXPECT_EQ(regGrid->getNbPoints(), nx * ny * nz);
     if (fromTriangleList)
     {
@@ -99,8 +99,8 @@ bool RegularGridTopology_test::regularGridSize(const std::vector<int>& p, bool f
         EXPECT_EQ(regGrid->getNbEdges(), nbEgdes);
     }
 
-    /// Compute the dimmension.
-    const int d = (p[0] == 1) + (p[1] == 1) + (p[2] == 1); /// Check if there is reduced dimmension
+    /// Compute the dimension.
+    const int d = (p[0] == 1) + (p[1] == 1) + (p[2] == 1); /// Check if there is reduced dimension
     const int e = (p[0] <= 0) + (p[1] <= 0) + (p[2] <= 0); /// Check if there is an error
     if (e == 0)
     {
@@ -211,11 +211,11 @@ TEST_F(RegularGridTopology_test, regularGridFindPoint)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-/// Test on various dimmensions
+/// Test on various dimensions
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 std::vector<std::vector<int>> dimvalues = {
-    /// The first three values are for the dimmension of the grid.
+    /// The first three values are for the dimension of the grid.
     /// The fourth is to encode if we need to catch a Warning message
     /// The fith is to indicate that the component should be initialized with
     /// the default values of

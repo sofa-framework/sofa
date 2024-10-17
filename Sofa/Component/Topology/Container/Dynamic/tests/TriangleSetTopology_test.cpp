@@ -173,7 +173,7 @@ bool TriangleSetTopology_test::testEdgeBuffers()
     EXPECT_EQ(triAEdge[1], 15);
 
 
-    // check EdgesInTriangle buffer acces
+    // check EdgesInTriangle buffer access
     const sofa::type::vector< TriangleSetTopologyContainer::EdgesInTriangle > & edgeInTriangles = topoCon->getEdgesInTriangleArray();
     EXPECT_EQ(edgeInTriangles.size(), nbrTriangle);
 

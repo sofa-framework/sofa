@@ -117,7 +117,7 @@ void ArticulatedHierarchyBVHController::applyController(void)
                 if (!articulatedObjects.empty())
                 {
                     // Reference potential initial articulations value for interaction springs
-                    // and Current articulation value at the coresponding artculation
+                    // and Current articulation value at the corresponding artculation
 
                     std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1Types>* >::iterator articulatedObjIt = articulatedObjects.begin();
                     //std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjItEnd = articulatedObjects.end();

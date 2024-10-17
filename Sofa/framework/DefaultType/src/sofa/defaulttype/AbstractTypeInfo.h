@@ -36,9 +36,9 @@ namespace sofa::defaulttype
     should be allocated to copy it?), and allows manipulating Data generically,
     without knowing their exact type.
 
-    This class is primarily used to copy information accross BaseData objects,
+    This class is primarily used to copy information across BaseData objects,
     for example when there exists a link between two instances of BaseData.
-    E.g. this mecanism allows you to copy the content of a Data<vector<int>>
+    E.g. this mechanism allows you to copy the content of a Data<vector<int>>
     into a Data<vector<double>>, because there is an acceptable conversion
     between integer and double, and because both Data use a resizable container.
 

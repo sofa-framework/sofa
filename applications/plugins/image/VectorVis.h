@@ -78,7 +78,7 @@ public:
     /**@}*/
 
     /**
-    * Stream operator that allows data to be recieved from the GUI
+    * Stream operator that allows data to be received from the GUI
     */
     inline friend std::istream& operator >> (std::istream& in, VectorVis& v)
     {

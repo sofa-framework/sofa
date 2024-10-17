@@ -142,7 +142,7 @@ public:
     virtual void setDataReadOnly(bool readOnly) = 0;
     /// Helper method to give a size.
     virtual unsigned int sizeWidget() {return 1;}
-    /// Helper method for colum.
+    /// Helper method for column.
     virtual unsigned int numColumnWidget() {return 3;}
 
 protected:

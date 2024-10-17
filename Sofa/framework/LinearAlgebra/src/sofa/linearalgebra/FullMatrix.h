@@ -132,7 +132,7 @@ public:
     static const char* Name();
 };
 
-/// Simple full matrix container, with an additionnal pointer per line, to be able do get a T** pointer and use [i][j] directly
+/// Simple full matrix container, with an additional pointer per line, to be able do get a T** pointer and use [i][j] directly
 template<typename T>
 class SOFA_LINEARALGEBRA_API LPtrFullMatrix : public FullMatrix<T>
 {

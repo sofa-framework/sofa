@@ -46,7 +46,7 @@ class RegularGridTopology;
 
 /** A sparse grid topology. Like a sparse FFD building from the bounding box of the object. Starting from a RegularGrid, only valid cells containing matter (ie intersecting the original surface mesh or totally inside the object) are considered.
  * Valid cells are tagged by a Type BOUNDARY or INSIDE
- * WARNING: the corresponding node in the XML file has to be placed BEFORE the MechanicalObject node, in order to excute its init() before the MechanicalObject one in order to be able to give dofs
+ * WARNING: the corresponding node in the XML file has to be placed BEFORE the MechanicalObject node, in order to execute its init() before the MechanicalObject one in order to be able to give dofs
  */
 class SOFA_COMPONENT_TOPOLOGY_CONTAINER_GRID_API SparseGridTopology : public container::constant::MeshTopology
 {
@@ -74,7 +74,7 @@ public:
     /// building from a mesh file
     virtual void buildAsFinest();
 
-    /// building by condensating a finer sparse grid (used if setFinerSparseGrid has initializated _finerSparseGrid before calling init() )
+    /// building by condensating a finer sparse grid (used if setFinerSparseGrid has initialized _finerSparseGrid before calling init() )
     virtual void buildFromFiner();
 
     /// building eventual virtual finer levels (cf d_nbVirtualFinerLevels)
@@ -82,7 +82,7 @@ public:
 
     typedef std::map<type::Vec3, Index> MapBetweenCornerPositionAndIndice;///< a vertex indice for a given vertex position in space
 
-    /// connexion between several coarsened levels
+    /// connection between several coarsened levels
     typedef std::vector<type::fixed_array<Index,8> > HierarchicalCubeMap; ///< a cube indice -> corresponding 8 child indices on the potential _finerSparseGrid
     HierarchicalCubeMap _hierarchicalCubeMap;
     typedef type::vector<Index> InverseHierarchicalCubeMap; ///< a fine cube indice -> corresponding coarser cube indice
@@ -233,7 +233,7 @@ protected:
     Data< type::Vec3 > d_min; ///< Min
     Data< type::Vec3 > d_max; ///< Max
     Data< SReal > d_cellWidth; ///< if > 0 : dimension of each cell in the created grid
-    Data< int > d_nbVirtualFinerLevels; ///< create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)
+    Data< int > d_nbVirtualFinerLevels; ///< create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (useful to compute better mechanical properties for example)
 
 public:
 

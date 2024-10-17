@@ -31,7 +31,7 @@ namespace sofa::helper
 
 std::wstring widenString(const std::string& s)
 {
-    // Set LC_CTYPE according to the environnement variable, for mbsrtowcs().
+    // Set LC_CTYPE according to the environment variable, for mbsrtowcs().
     system::TemporaryLocale locale(LC_CTYPE, "");
 
     const char * src = s.c_str();
@@ -66,7 +66,7 @@ std::wstring widenString(const std::string& s)
 
 std::string narrowString(const std::wstring& ws)
 {
-    // Set LC_CTYPE according to the environnement variable, for wcstombs().
+    // Set LC_CTYPE according to the environment variable, for wcstombs().
     system::TemporaryLocale locale(LC_CTYPE, "");
 
     const wchar_t * src = ws.c_str();

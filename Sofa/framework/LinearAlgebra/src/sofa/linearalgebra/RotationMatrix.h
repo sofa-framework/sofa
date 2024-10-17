@@ -78,7 +78,7 @@ public:
     void opMulV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const override;
     void opMulTV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const override;
 
-    /// multiply the transpose current matrix by m matrix and strore the result in m
+    /// multiply the transpose current matrix by m matrix and store the result in m
     void opMulTM(linearalgebra::BaseMatrix * bresult,linearalgebra::BaseMatrix * bm) const override;
 
     void rotateMatrix(linearalgebra::BaseMatrix * mat,const linearalgebra::BaseMatrix * Jmat);

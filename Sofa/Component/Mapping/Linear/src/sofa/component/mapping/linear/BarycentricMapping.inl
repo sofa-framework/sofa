@@ -384,7 +384,7 @@ void BarycentricMapping<TIn, TOut>::applyJT(const core::ConstraintParams * cpara
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topology* t )
 {
-    //foward topological modifications to the mapper
+    //forward topological modifications to the mapper
     if (this->d_mapper.get()){
         this->d_mapper->processTopologicalChanges(((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(),
                                                   ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue(),

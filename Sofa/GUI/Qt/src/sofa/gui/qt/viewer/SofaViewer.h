@@ -76,7 +76,7 @@ public:
     virtual void mouseReleaseEvent ( QMouseEvent * e);
     virtual bool mouseEvent(QMouseEvent *e);
 
-    // Overriden from BaseViewer
+    // Overridden from BaseViewer
     virtual void configure(sofa::component::setting::ViewerSetting* viewerConf) override;
     const std::string screenshotName() override;
     void setPrefix(const std::string& prefix, bool prependDirectory = true) override;

@@ -64,9 +64,9 @@ TestDataEngine< component::engine::select::SelectLabelROI<unsigned int> >,
 TestDataEngine< component::engine::select::SubsetTopology<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::select::ValuesFromIndices<int> >,
 TestDataEngine< component::engine::select::ValuesFromPositions<defaulttype::Vec3Types> >
-> TestTypes; // the types to instanciate.
+> TestTypes; // the types to instantiate.
 
-//// ========= Tests to run for each instanciated type
+//// ========= Tests to run for each instantiated type
 TYPED_TEST_SUITE(DataEngine_test, TestTypes);
 
 //// test number of call to DataEngine::update

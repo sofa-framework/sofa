@@ -57,7 +57,7 @@ void OglTetrahedralModel<DataTypes>::init()
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     m_topology = context->getMeshTopology();
 
-    //instanciate the mapping tables
+    //instantiate the mapping tables
     //Useful for the PT algorithm only
     sofa::type::vector<sofa::gl::component::shader::OglFloatVector4Variable::SPtr > listVec4Variables;
     this->getContext()->core::objectmodel::BaseContext::template get<sofa::gl::component::shader::OglFloatVector4Variable, sofa::type::vector<sofa::gl::component::shader::OglFloatVector4Variable::SPtr> >
@@ -80,7 +80,7 @@ void OglTetrahedralModel<DataTypes>::init()
 
     if (!m_mappingTableValues)
     {
-        msg_info() << "No MappingTable found, instanciating one";
+        msg_info() << "No MappingTable found, instantiating one";
         m_mappingTableValues = sofa::core::objectmodel::New<sofa::gl::component::shader::OglFloatVector4Variable>();
         m_mappingTableValues->setName("MappingTable");
         m_mappingTableValues->setID("MappingTable");
@@ -103,7 +103,7 @@ void OglTetrahedralModel<DataTypes>::init()
     }
     if (!m_runSelectTableValues)
     {
-        msg_info() << "No RunSelectTable found, instanciating one";
+        msg_info() << "No RunSelectTable found, instantiating one";
 
         m_runSelectTableValues = sofa::core::objectmodel::New<sofa::gl::component::shader::OglFloatVector4Variable>();
         m_runSelectTableValues->setName("RunSelectTable");

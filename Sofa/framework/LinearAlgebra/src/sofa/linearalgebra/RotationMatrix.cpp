@@ -132,7 +132,7 @@ void RotationMatrix<Real>::opMulTV(linearalgebra::BaseVector* result, const line
     }
 }
 
-/// multiply the transpose current matrix by m matrix and strore the result in m
+/// multiply the transpose current matrix by m matrix and store the result in m
 template<class Real>
 void RotationMatrix<Real>::opMulTM(linearalgebra::BaseMatrix * bresult,linearalgebra::BaseMatrix * bm) const
 {

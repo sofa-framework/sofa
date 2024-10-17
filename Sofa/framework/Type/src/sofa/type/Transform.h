@@ -27,7 +27,7 @@ namespace sofa::type
 {
 
 /**
- * Define a frame (child) whith respect to another (parent). A frame represents a local coordinate system.
+ * Define a frame (child) with respect to another (parent). A frame represents a local coordinate system.
  *
  * Internal data represents the orientation of the child wrt the parent, BUT the
  * translation vector represents the origin of the parent with respect to the
@@ -35,7 +35,7 @@ namespace sofa::type
  * coordinates M_c of the same point in child are given by:
  * M_p = orientation * ( M_c - origin ). This is due to Featherstone's
  * conventions. Use method setTranslationRotation( const Vec& t, const Rot& q )
- * to model the Transform the standard way (i.e. translation givne in the parent frame).
+ * to model the Transform the standard way (i.e. translation given in the parent frame).
  **/
 template<class TReal>
 class Transform

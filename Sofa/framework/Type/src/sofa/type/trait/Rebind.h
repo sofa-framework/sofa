@@ -77,7 +77,7 @@ namespace sofa::type
     };
 
     /**
-     * Conveniant alias to ease usage of Rebind.
+     * Convenient alias to ease usage of Rebind.
      *
      * Example:
      * 1) sofa::type::rebind_to< sofa::type::vector<int>, float> is of type sofa::type::vector<float>. In this example,

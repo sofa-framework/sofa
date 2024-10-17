@@ -34,7 +34,7 @@
 namespace sofa::component::linearsolver::direct
 {
 
-//defaut structure for a LDL factorization
+//default structure for a LDL factorization
 template<class VecInt,class VecReal>
 class SparseLDLImplInvertData : public MatrixInvertData {
 public :
@@ -333,7 +333,7 @@ protected :
             }
         }
 
-        // split the bloc diag in data->Bdiag
+        // split the block diag in data->Bdiag
 
         if (data->new_factorization_needed  || !d_precomputeSymbolicDecomposition.getValue() )
         {

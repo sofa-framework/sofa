@@ -50,7 +50,7 @@ const std::string BaseMechanicalVisitor::bwdVisitorType = "bwd";
 BaseMechanicalVisitor::BaseMechanicalVisitor(const sofa::core::ExecParams *params)
         : Visitor(params), root(nullptr), rootData(nullptr)
 {
-    // mechanical visitors shouldn't be able to acess a sleeping node, only visual visitor should
+    // mechanical visitors shouldn't be able to access a sleeping node, only visual visitor should
     canAccessSleepingNode = false;
 }
 

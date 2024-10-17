@@ -268,7 +268,7 @@ protected:
     void startDumpVisitor();
     void stopDumpVisitor();
 
-    /// init the viewer for the GUI (embeded or not we have to connect some info about viewer in the GUI)
+    /// init the viewer for the GUI (embedded or not we have to connect some info about viewer in the GUI)
     void initViewer(common::BaseViewer* _viewer) override;
 
     virtual int exitApplication(unsigned int _retcode = 0)
@@ -357,7 +357,7 @@ public slots:
     virtual void toolsDockMoved();
 
 protected slots:
-    /// Allow to dynamicly change viewer. Called when click on another viewer in GUI Qt viewer list (see viewerMap).
+    /// Allow to dynamically change viewer. Called when click on another viewer in GUI Qt viewer list (see viewerMap).
     /// TODO: find a better way to propagate the argument when we construct the viewer
     virtual void changeViewer();
 
@@ -368,7 +368,7 @@ protected slots:
     /// Update the scenegraph and activate the automatic refresh.
     virtual void onSceneGraphRefreshButtonClicked();
 
-    /// Update the SceneGraph update button to reflect the dirtyness status.
+    /// Update the SceneGraph update button to reflect the dirtiness status.
     virtual void sceneGraphViewDirtynessChanged(bool isDirty);
 
     /// Update the SceneGraph update button to reflect the locking status.

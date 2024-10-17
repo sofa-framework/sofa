@@ -134,7 +134,7 @@ public:
         }
     }
 
-    /// \return the index of the first occurence, if !present \return -1
+    /// \return the index of the first occurrence, if !present \return -1
     int find( const T& v ) const
     {
         for( unsigned i = 0 ; i<_size ; ++i )
@@ -150,7 +150,7 @@ public:
         return false;
     }
 
-    /// \return the index of the occurence, if !present \return -1
+    /// \return the index of the occurrence, if !present \return -1
     int getOffset( const T* v ) const
     {
         int offset = v - _array;

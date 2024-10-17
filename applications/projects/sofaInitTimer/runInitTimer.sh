@@ -48,7 +48,7 @@ declare -i nerrors=0
 if [[ $resetMode == 1 ]] 
 then
     arguments=$(echo $arguments -r)
-    echo Reseting the InitTimer of files
+    echo Resetting the InitTimer of files
 else
     echo Run InitTimer with $iterations iterations: Set of files $iniFile
 fi

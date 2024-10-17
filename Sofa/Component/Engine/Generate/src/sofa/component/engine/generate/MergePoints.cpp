@@ -28,7 +28,7 @@ namespace sofa::component::engine::generate
 
 void registerMergePoints(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Merge 2 cordinate vectors.")
+    factory->registerObjects(core::ObjectRegistrationData("Merge 2 coordinate vectors.")
         .add< MergePoints<defaulttype::Vec3Types> >(true) // default template
         .add< MergePoints<defaulttype::Vec1Types> >()
         .add< MergePoints<defaulttype::Vec2Types> >()

@@ -917,7 +917,7 @@ bool HexahedronSetTopologyContainer::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-        msg_warning() << "CheckConnexity: Hexahedra are missings. There is more than one connexe component.";
+        msg_warning() << "CheckConnexity: Hexahedra are missing. There is more than one connexe component.";
         return false;
     }
 

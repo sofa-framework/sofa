@@ -43,7 +43,7 @@ def oneParticleSample(node):
 
 
 ############################################################################################
-# following defs are optionnal entry points, called by the PythonScriptController component;
+# following defs are optional entry points, called by the PythonScriptController component;
 ############################################################################################
 
 
@@ -54,7 +54,7 @@ class MyController(Sofa.PythonScriptController):
 		print 'Controller script loaded from node %s'%node.findData('name').value
 		return 0
 
-	# optionnally, script can create a graph...
+	# optionally, script can create a graph...
 	def createGraph(self,node):
 		print 'createGraph called (python side)'
 

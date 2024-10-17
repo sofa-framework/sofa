@@ -112,7 +112,7 @@ HDCallbackCode HDCALLBACK stateCallbackOmni(void *userData)
 
     //cout << "OmniDriver::stateCallback BEGIN" << endl;
     OmniData* data = static_cast<OmniData*>(userData);
-    //FIXME : Apparenlty, this callback is run before the mechanical state initialisation. I've found no way to know whether the mechcanical state is initialized or not, so i wait ...
+    //FIXME : Apparently, this callback is run before the mechanical state initialisation. I've found no way to know whether the mechcanical state is initialized or not, so i wait ...
     //static int wait = 0;
 
     if (data->servoDeviceData.stop)

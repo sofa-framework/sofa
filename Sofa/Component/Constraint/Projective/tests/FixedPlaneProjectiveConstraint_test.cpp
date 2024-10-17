@@ -127,15 +127,15 @@ struct FixedPlaneProjectiveConstraint_test : public BaseSimulationTest
     }
 };
 
-// Define the list of DataTypes to instanciate
+// Define the list of DataTypes to instantiate
 using ::testing::Types;
 typedef Types<
     defaulttype::Vec3Types,
     defaulttype::Vec6Types,
     defaulttype::Rigid3Types
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(FixedPlaneProjectiveConstraint_test, DataTypes);
 
 // test cases

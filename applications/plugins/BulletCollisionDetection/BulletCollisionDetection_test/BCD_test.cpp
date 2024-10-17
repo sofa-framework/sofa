@@ -71,7 +71,7 @@ sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Typ
 
     dpositions.endEdit();
 
-    //Editting the velocity of the OBB
+    //Editing the velocity of the OBB
     Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *obbDOF->write( sofa::core::VecId::velocity() );
 
     MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
@@ -85,7 +85,7 @@ sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Typ
     sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbCollisionModel = New<sofa::component::collision::BulletOBBModel >();
     obb->addObject(obbCollisionModel);
 
-    //editting the OBBModel
+    //editing the OBBModel
     //obbCollisionModel->init();
     obbCollisionModel->resize(1);
 
@@ -148,7 +148,7 @@ struct copyBulletOBB{
         sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbCollisionModel = New<sofa::component::collision::BulletOBBModel >();
         obb->addObject(obbCollisionModel);
 
-        //editting the OBBModel
+        //editing the OBBModel
         //obbCollisionModel->init();
         obbCollisionModel->resize(1);
 
@@ -191,7 +191,7 @@ struct copyBulletConvexHull{
         sofa::component::collision::BulletConvexHullModel::SPtr cv_hull_model = New<sofa::component::collision::BulletConvexHullModel >();
         obb->addObject(cv_hull_model);
 
-        //editting the OBBModel
+        //editing the OBBModel
         //obbCollisionModel->init();
         cv_hull_model->resize(1);
 
@@ -244,7 +244,7 @@ struct copyBulletConvexHull{
 //    sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbCollisionModel = New<sofa::component::collision::OBBModel >();
 //    obb->addObject(obbCollisionModel);
 
-//    //editting the OBBModel
+//    //editing the OBBModel
 //    //obbCollisionModel->init();
 //    obbCollisionModel->resize(1);
 

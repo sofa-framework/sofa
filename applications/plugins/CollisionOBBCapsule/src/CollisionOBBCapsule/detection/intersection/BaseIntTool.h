@@ -38,7 +38,7 @@ public:
 
     template <class Elem1,class Elem2>
     static bool testIntersection(Elem1&,Elem2&,SReal){
-        msg_info("BaseIntTool")<<"testIntersection should not be used with theese types";
+        msg_info("BaseIntTool")<<"testIntersection should not be used with these types";
         return false;
     }
 
@@ -90,8 +90,8 @@ public:
         return CapsuleIntTool::computeIntersection(cap,sph,alarmDist,contactDist,contacts);
     }
 
-    template <class DataTyes>
-    inline static int computeIntersection(geometry::TCapsule<DataTyes> &cap, geometry::OBB & obb, SReal alarmDist, SReal contactDist, OutputVector *contacts){
+    template <class DataTypes>
+    inline static int computeIntersection(geometry::TCapsule<DataTypes> &cap, geometry::OBB & obb, SReal alarmDist, SReal contactDist, OutputVector *contacts){
         return CapsuleIntTool::computeIntersection(cap,obb,alarmDist,contactDist,contacts);
     }
 

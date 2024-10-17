@@ -851,7 +851,7 @@ bool TetrahedronSetTopologyContainer::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-        msg_warning() << "CheckConnexity: Tetrahedra are missings. There is more than one connexe component.";
+        msg_warning() << "CheckConnexity: Tetrahedra are missing. There is more than one connexe component.";
         return false;
     }
 

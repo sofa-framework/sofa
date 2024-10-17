@@ -119,7 +119,7 @@ TEST_P(SingleLink_simutest, CheckPath)
 std::vector<std::vector<std::string>> singleLinkValues={
     {"@/obj", "The linked type is an InfoComponent type while the link should point to a  object. CheckPath should return", "false"},
     {"@/child1/mstate1 @/child1/mstate1", "Using multiple link in a SingleLink::CheckPath function should fail and return", "false"},
-    {"@../mstate", "The path is not pointing to a valid mstate. CheckLink shoud return", "false"},
+    {"@../mstate", "The path is not pointing to a valid mstate. CheckLink should return", "false"},
     {"@../mstate1", "The link's target exists and is of same type. CheckPath should return", "true"}
 };
 

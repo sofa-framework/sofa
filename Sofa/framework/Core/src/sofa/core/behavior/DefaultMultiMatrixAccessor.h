@@ -32,7 +32,7 @@ namespace sofa::core::behavior
  * This class allow only cases where there are several Mechanical State on simulation scene
  * and interactions between them.
  *
- * CRSMultiMatrixAccessor is a more powerfull class managing the global system matrix.
+ * CRSMultiMatrixAccessor is a more powerful class managing the global system matrix.
  * This class allow the scene where there are mappings so mapped Mechanical State. It compute
  * The contribution of stiffness on mapped Mechanical State to the root State related by mapping.
  *
@@ -51,12 +51,12 @@ public:
     // setting the global matrix for the system. Its size must have the sum of all real Mechanical state
     virtual void setGlobalMatrix(linearalgebra::BaseMatrix* matrix);
 
-    // When a real MS is visited by the visitor, it must be registed in a local data here (realStateOffsets)
-    // the global size of the system must be ajusted.
+    // When a real MS is visited by the visitor, it must be registered in a local data here (realStateOffsets)
+    // the global size of the system must be adjusted.
     void addMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate) override;
 
     // When a mapping is visited by the visitor, satisfying that is a mechanical mapping
-    // and having implemented getJ, this mapping must be registed in a local data here (mappingList)
+    // and having implemented getJ, this mapping must be registered in a local data here (mappingList)
     void addMechanicalMapping(sofa::core::BaseMapping* mapping) override;
 
     //do nothing for instance
@@ -89,7 +89,7 @@ public:
     static linearalgebra::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2);
     static linearalgebra::BaseMatrix* createMatrixImpl(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2, bool doPrintInfo);
 
-    //Activate/deactive the printing of extra information related to the numerical system that is being solved.
+    //Activate/deactivate the printing of extra information related to the numerical system that is being solved.
     void setDoPrintInfo(bool value){ m_doPrintInfo = value; }
 
 protected:
@@ -120,7 +120,7 @@ protected:
     //by method "getMatrix" in order to fill its matrix
     mutable std::map< const sofa::core::behavior::BaseMechanicalState*, linearalgebra::BaseMatrix* > mappedMatrices;
 
-    //The data structure included mapped and on mapped state, the diagonal stiffness bloc and interaction stiffnessbloc
+    //The data structure included mapped and on mapped state, the diagonal stiffness block and interaction stiffnessbloc
     mutable std::map< const sofa::core::behavior::BaseMechanicalState*, MatrixRef > diagonalStiffnessBloc;//todo remove
     mutable std::map< std::pair<const sofa::core::behavior::BaseMechanicalState*, const sofa::core::behavior::BaseMechanicalState*>, InteractionMatrixRef > interactionStiffnessBloc;//todo remove
 

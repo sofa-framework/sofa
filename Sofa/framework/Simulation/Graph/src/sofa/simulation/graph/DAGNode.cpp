@@ -522,7 +522,7 @@ sofa::core::topology::BaseMeshTopology* DAGNode::getMeshTopologyLink(SearchDirec
 
 void DAGNode::precomputeTraversalOrder( const sofa::core::ExecParams* params )
 {
-    // acumulating traversed Nodes
+    // accumulating traversed Nodes
     class TraversalOrderVisitor : public Visitor
     {
         NodeList& _orderList;
@@ -594,7 +594,7 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrde
             //
             // A child node is visited only when all its parents have been visited.
             // A child node is 'pruned' only if all its parents are 'pruned'.
-            // Every excecuted node in the forward traversal are stored in 'executedNodes',
+            // Every executed node in the forward traversal are stored in 'executedNodes',
             // its reverse order is used for the backward traversal.
 
             // Note that a newly 'pruned' node is still traversed (w/o execution) to be sure to execute its child nodes,

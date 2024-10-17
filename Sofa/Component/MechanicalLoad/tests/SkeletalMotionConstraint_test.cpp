@@ -177,13 +177,13 @@ struct SkeletalMotionProjectiveConstraint_test : public BaseSimulationTest, Nume
  };
 
 
-// Define the list of DataTypes to instanciate
+// Define the list of DataTypes to instantiate
 using ::testing::Types;
 typedef Types<
     Rigid3Types
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(SkeletalMotionProjectiveConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( SkeletalMotionProjectiveConstraint_test , twoConstrainedBones )

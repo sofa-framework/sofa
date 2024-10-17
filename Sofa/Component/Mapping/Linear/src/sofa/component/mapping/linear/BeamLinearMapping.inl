@@ -200,7 +200,7 @@ void BeamLinearMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpar
 // if one constraint along (vector n) with a value (v) is applied on the childModel (like collision model)
 // then this constraint is transformed by (Jt.n) with value (v) for the rigid model
 // There is a specificity of this propagateConstraint: we have to find the application point on the childModel
-// in order to compute the right constaint on the rigidModel.
+// in order to compute the right constraint on the rigidModel.
 template <class TIn, class TOut>
 void BeamLinearMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/, Data< typename In::MatrixDeriv >& _out, const Data< typename Out::MatrixDeriv >& _in)
 {

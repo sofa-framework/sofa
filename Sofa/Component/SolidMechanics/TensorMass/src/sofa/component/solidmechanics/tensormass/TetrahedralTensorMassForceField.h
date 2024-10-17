@@ -84,7 +84,7 @@ protected:
     };
     using edgeRestInfoVector = type::rebind_to<VecCoord, EdgeRestInformation>;
 
-    VecCoord  _initialPoints;///< the intial positions of the points
+    VecCoord  _initialPoints;///< the initial positions of the points
 
     bool updateMatrix;
 

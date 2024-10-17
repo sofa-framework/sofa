@@ -89,7 +89,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
         typedef typename ImageSamplerT::Hexa Hexa;
 
 
-        // get tranform and image at time t
+        // get transform and image at time t
         typename ImageSamplerT::raImage in(sampler->image);
         typename ImageSamplerT::raTransform inT(sampler->transform);
         const cimg_library::CImg<T>& inimg = in->getCImg(sampler->time);
@@ -161,7 +161,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
 
         clock_t timer = clock();
 
-        // get tranform and image at time t
+        // get transform and image at time t
         typename ImageSamplerT::raImage in(sampler->image);
         typename ImageSamplerT::raTransform inT(sampler->transform);
         const cimg_library::CImg<T>& inimg = in->getCImg(sampler->time);
@@ -276,7 +276,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
 
         clock_t timer = clock();
 
-        // get tranform and image at time t
+        // get transform and image at time t
         typename ImageSamplerT::raImage in(sampler->image);
         typename ImageSamplerT::raTransform inT(sampler->transform);
         const cimg_library::CImg<T>& inimg = in->getCImg(sampler->time);

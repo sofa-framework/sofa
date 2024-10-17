@@ -37,7 +37,7 @@ namespace sofa::component::mapping::linear
  * This class, called SimpleTesselatedTetraTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
  *
  * INPUT TOPOLOGY = TetrahedronSetTopology
- * OUTPUT TOPOLOGY = TetrahedronSetTopology which is a finer tesselated version of the INPUT TOPOLOGY
+ * OUTPUT TOPOLOGY = TetrahedronSetTopology which is a finer tessellated version of the INPUT TOPOLOGY
  *
  * Each tetrahedron in the input Topology will be divided in eight tetrahedra in the output topology
  *

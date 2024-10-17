@@ -109,7 +109,7 @@ def transformToData(scale,offset,timeOffset=0,timeScale=1,isPerspective=0):
     """
     return concat(offset[:3])+' '+concat(quat.to_euler(offset[3:])*180./math.pi)+' '+concat(scale)+' '+str(timeOffset)+' '+str(timeScale)+' '+str(int(isPerspective))
 
-# controller you must derived from and instanciate in the same context than your ImageViewer if you want to define actions to manually add / remove point from an image plane
+# controller you must derived from and instantiate in the same context than your ImageViewer if you want to define actions to manually add / remove point from an image plane
 class ImagePlaneController(Sofa.PythonScriptController):
     def addPoint(self, id, x, y, z):
         return

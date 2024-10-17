@@ -116,9 +116,9 @@ public:
     /// Returns ids of the constraint jacobian matrices
     MultiMatrixDerivId& j()              { return m_j; }
 
-    /// Returns ids of the contraint correction vectors
+    /// Returns ids of the constraint correction vectors
     const MultiVecDerivId& dx() const { return m_dx;  }
-    /// Returns ids of the contraint correction vectors
+    /// Returns ids of the constraint correction vectors
     MultiVecDerivId&  dx()            { return m_dx;  }
 
     /// Returns ids of the constraint lambda vectors
@@ -177,7 +177,7 @@ protected:
     /// Ids of the constraint jacobian matrix
     MultiMatrixDerivId m_j;
 
-    /// Ids of contraint correction vector
+    /// Ids of constraint correction vector
     MultiVecDerivId      m_dx;
 
     /// Ids of constraint lambda vector

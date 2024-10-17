@@ -170,7 +170,7 @@ protected:
 
 
     /// Associate a local matrix to the provided component. The type of the local matrix depends on
-    /// the situtation of the component: type of the component, mapped vs non-mapped
+    /// the situation of the component: type of the component, mapped vs non-mapped
     template<Contribution c>
     void associateLocalMatrixTo(sofa::core::matrixaccumulator::get_component_type<c>* component,
                                 const core::MechanicalParams* mparams);

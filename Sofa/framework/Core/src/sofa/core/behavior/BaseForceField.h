@@ -135,7 +135,7 @@ public:
     /// \brief Get the potential energy associated to this ForceField during the
     /// last call of addForce( const MechanicalParams* mparams );
     ///
-    /// Used to extimate the total energy of the system by some
+    /// Used to estimate the total energy of the system by some
     /// post-stabilization techniques.
     virtual SReal getPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const=0;
     /// @}

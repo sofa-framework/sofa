@@ -77,7 +77,7 @@ protected:
     /// Pointer to the chart Data
     QChart *m_chart;
 
-    /// vector of series to be ploted
+    /// vector of series to be plotted
     std::vector< QLineSeries *> m_curves;
 
     /// x axis pointer

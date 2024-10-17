@@ -33,7 +33,7 @@ namespace
 }
 
 /** \brief Define a cylinder grid topology
- * Paramenters are its @sa d_radius and @sa d_length .
+ * Parameters are its @sa d_radius and @sa d_length .
  * Position and direction are set by @sa d_center and @sa d_axis
  * nz discretisation is along the cylinder axis
   */

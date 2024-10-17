@@ -103,7 +103,7 @@ public:
     //@}
 
     /**
-     * @brief Apply the controller current modifications to its controled component.
+     * @brief Apply the controller current modifications to its controlled component.
      */
     virtual void applyController(void);
 

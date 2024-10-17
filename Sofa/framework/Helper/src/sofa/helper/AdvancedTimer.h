@@ -78,7 +78,7 @@ namespace sofa::helper
   * When a noteworthy value must be accumulated:
     AdvancedTimer::valAdd("dofs",mstate->getSize());
 
-  * When reloading/reseting the simulation:
+  * When reloading/resetting the simulation:
     AdvancedTimer::clear();
 
 
@@ -365,7 +365,7 @@ public:
 
 
     /**
-     * @brief end Ovveride fo the end method in which you can use JSON or old format
+     * @brief end Override fo the end method in which you can use JSON or old format
      * @param id IdTimer, the id of the used timer
      * @param time double, current time (from the context)
      * @param time dt, current delta time or dt (from the context)

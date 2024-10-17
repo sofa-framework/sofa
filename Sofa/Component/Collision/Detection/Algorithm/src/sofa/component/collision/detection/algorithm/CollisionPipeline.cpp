@@ -58,7 +58,7 @@ const int CollisionPipeline::defaultDepthValue = 6;
 
 CollisionPipeline::CollisionPipeline()
     : d_doPrintInfoMessage(initData(&d_doPrintInfoMessage, false, "verbose",
-                                    "Display extra informations at each computation step. (default=false)"))
+                                    "Display extra information at each computation step. (default=false)"))
     , d_doDebugDraw(initData(&d_doDebugDraw, false, "draw",
                              "Draw the detected collisions. (default=false)"))
 

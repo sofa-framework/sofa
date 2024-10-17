@@ -145,12 +145,12 @@ extern template class SOFA_COMPONENT_MAPPING_LINEAR_API BarycentricMapperHexahed
 namespace _topologybarycentricmapper_
 {
     extern template class SOFA_COMPONENT_MAPPING_LINEAR_API TopologyBarycentricMapper< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
-} // namesapce _topologybarycentricmapper_
+} // namespace _topologybarycentricmapper_
 
 namespace _barycentricmapper_
 {
     extern template class SOFA_COMPONENT_MAPPING_LINEAR_API BarycentricMapper< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
-} // namesapce _barycentricmapper_
+} // namespace _barycentricmapper_
 
 } // namespace sofa::component::mapping::linear
 

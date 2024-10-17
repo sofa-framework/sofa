@@ -58,7 +58,7 @@ public:
      */
     void setScene( simulation::Node* graph );
     /**
-     * @brief Print the scene graph on the standard ouput, for debugging.
+     * @brief Print the scene graph on the standard output, for debugging.
      */
     void printGraph();
     /**

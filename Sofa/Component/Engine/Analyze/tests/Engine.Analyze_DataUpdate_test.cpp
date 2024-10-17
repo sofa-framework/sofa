@@ -44,9 +44,9 @@ typedef ::testing::Types<
 //TestDataEngine< component::engine::analyze::ShapeMatching<defaulttype::Vec3Types> >, // getObject pb -> require a scene
 TestDataEngine< component::engine::analyze::ClusteringEngine<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::analyze::SumEngine<type::Vec3> >
-> TestTypes; // the types to instanciate.
+> TestTypes; // the types to instantiate.
 
-//// ========= Tests to run for each instanciated type
+//// ========= Tests to run for each instantiated type
 TYPED_TEST_SUITE(DataEngine_test, TestTypes);
 
 //// test number of call to DataEngine::update

@@ -118,7 +118,7 @@ public:
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
-    /// Overide method to lock or unlock the force feedback computation. According to parameter, value == true (resp. false) will lock (resp. unlock) mutex @sa lockForce
+    /// Override method to lock or unlock the force feedback computation. According to parameter, value == true (resp. false) will lock (resp. unlock) mutex @sa lockForce
     void setLock(bool value) override;
 
 protected:

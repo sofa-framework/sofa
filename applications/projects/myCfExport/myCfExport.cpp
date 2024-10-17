@@ -140,7 +140,7 @@ int main(int argc, char** argv)
         fileName = files[0];
     else
     {
-        fileName = "scenes"; // defaut file for storing the list of scenes
+        fileName = "scenes"; // default file for storing the list of scenes
     }
 
     fileName = std::string(MyCfExport_DIR) + "/" + fileName;  // MyCfExport_DIR defined in CMakeLists.txt

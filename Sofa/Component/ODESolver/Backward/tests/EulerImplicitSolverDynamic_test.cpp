@@ -145,13 +145,13 @@ struct EulerImplicitDynamic_test : public component::odesolver::testing::ODESolv
 
 };
 
-// Define the list of DataTypes to instanciate
+// Define the list of DataTypes to instantiate
 using ::testing::Types;
 typedef Types<
     Vec3Types
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(EulerImplicitDynamic_test, DataTypes);
 
 // Test case: h=0.1 k=100 m =10 rm=0 rk=0

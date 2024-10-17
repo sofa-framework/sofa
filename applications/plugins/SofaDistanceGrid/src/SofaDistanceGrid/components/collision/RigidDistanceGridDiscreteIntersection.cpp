@@ -399,7 +399,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 #if 0
             // -rotationT*translation is the position of cube2 center in cube1 space
             // we use its largest component as the dominant contact face normal
-            /// \TODO use the relative velocity as an additionnal factor
+            /// \TODO use the relative velocity as an additional factor
             type::Vec3 normal = rotation.multTranspose(-translation);
             //normal[2] *= 1.1f; // we like Z contact better ;)
             if (rabs(normal[0]) > rabs(normal[1]))

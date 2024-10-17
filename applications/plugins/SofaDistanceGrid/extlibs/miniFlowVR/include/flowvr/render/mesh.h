@@ -368,7 +368,7 @@ public:
   /// Check if the mesh is closed
   bool isClosed();
 
-  /// Close the mesh, creating intermediate vertices no further appart than given dist.
+  /// Close the mesh, creating intermediate vertices no further apart than given dist.
   /// Note: the mesh must be correctly flipped
   void closeDist(float dist);
 

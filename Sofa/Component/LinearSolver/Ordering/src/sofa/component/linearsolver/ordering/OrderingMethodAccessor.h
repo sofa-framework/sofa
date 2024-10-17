@@ -94,7 +94,7 @@ public:
         //To remove for v24.12:
         if (arg->getAttribute("ordering"))
         {
-            //map storing the correspondance between the ordering method name
+            //map storing the correspondence between the ordering method name
             //as a Data, and its associated component
             static const std::map<std::string, std::string> orderingMethodComponentsMap
             {

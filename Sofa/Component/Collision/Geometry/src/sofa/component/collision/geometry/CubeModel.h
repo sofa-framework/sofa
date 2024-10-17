@@ -57,9 +57,9 @@ public:
     {
         sofa::type::Vec3 minBBox, maxBBox;
         std::pair<Cube,Cube> subcells;
-        std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children; ///< Note that children is only meaningfull if subcells in empty
+        std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children; ///< Note that children is only meaningful if subcells in empty
 
-        // additional datas for implementing Volino's method for efficient cloth self collision 
+        // additional data for implementing Volino's method for efficient cloth self collision 
         sofa::type::Vec3 coneAxis;
         SReal coneAngle;
     };

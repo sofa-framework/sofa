@@ -255,25 +255,25 @@ protected:
 
 
 
-    /** \brief Precondition to fulfill before removing triangles. No preconditions are needed in this class. This function should be inplemented in children classes.
+    /** \brief Precondition to fulfill before removing triangles. No preconditions are needed in this class. This function should be implemented in children classes.
      *
      */
     virtual bool removeTrianglesPreconditions(const sofa::type::vector< TriangleID >& items);
 
 
-    /**\brief: Postprocessing to apply to topology triangles. Nothing to do in this class. This function should be inplemented in children classes.
+    /**\brief: Postprocessing to apply to topology triangles. Nothing to do in this class. This function should be implemented in children classes.
      *
      */
     virtual void removeTrianglesPostProcessing(const sofa::type::vector< TriangleID >& edgeToBeRemoved, const sofa::type::vector< TriangleID >& vertexToBeRemoved );
 
 
-    /** \brief Precondition to fulfill before adding triangles. No preconditions are needed in this class. This function should be inplemented in children classes.
+    /** \brief Precondition to fulfill before adding triangles. No preconditions are needed in this class. This function should be implemented in children classes.
      *
      */
     virtual bool addTrianglesPreconditions(const sofa::type::vector<Triangle>& triangles);
 
 
-    /**\brief: Postprocessing to apply to topology triangles. Nothing to do in this class. This function should be inplemented in children classes.
+    /**\brief: Postprocessing to apply to topology triangles. Nothing to do in this class. This function should be implemented in children classes.
      *
      */
     virtual void addTrianglesPostProcessing(const sofa::type::vector<Triangle>& triangles);

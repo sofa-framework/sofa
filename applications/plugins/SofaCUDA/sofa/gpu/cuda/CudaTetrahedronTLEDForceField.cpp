@@ -191,7 +191,7 @@ void CudaTetrahedronTLEDForceField::reinit()
             }
         }
 
-        // Tesselation of each cube into 6 tetrahedra
+        // Tessellation of each cube into 6 tetrahedra
         inputElems.reserve(nbcubes*6);
         for (int i=0; i<nbcubes; i++)
         {

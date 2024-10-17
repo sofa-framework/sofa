@@ -33,7 +33,7 @@ namespace sofa::component::mapping::nonlinear
 {
 
 
-/** Maps point positions from serveral mstates to distances (in distance unit).
+/** Maps point positions from several mstates to distances (in distance unit).
  * @tparam TIn parent point positions
  * @tparam TOut corresponds to a scalar value: distance between point pairs, minus a rest distance.
  * The pairs are given in a topology with edges in the same node.
@@ -82,7 +82,7 @@ public:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_NONLINEAR()
     sofa::core::objectmodel::RenamedData<type::vector<Real>>  f_restLengths;
 
-    Data<bool> d_computeDistance; ///< if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them
+    Data<bool> d_computeDistance; ///< if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial length of each of them
     Data<type::vector<Real>> d_restLengths; ///< Rest lengths of the connections
     Data<Real> d_showObjectScale; ///< Scale for object display
     Data<sofa::type::RGBAColor> d_color; ///< Color for object display. (default=[1.0,1.0,0.0,1.0])

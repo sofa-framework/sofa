@@ -128,8 +128,8 @@ public:
 protected:
     /**
     * Internal method called at the end of @sa swap method to apply internal mechanism, such as map swap.
-    * @param i1 First element index to be swaped.
-    * @param i2 Second element index to be swaped with first one.
+    * @param i1 First element index to be swapped.
+    * @param i2 Second element index to be swapped with first one.
     */
     virtual void swapPostProcess(Index i1, Index i2);
 
@@ -155,7 +155,7 @@ protected:
     /// same size as this SubsetData but contains id of element link to each data[]
     sofa::type::vector<Index> m_map2Elements;
 
-    /** Boolen to allow this TopologySubsetData to add new elements. If true, for every new Element added in the topology container
+    /** Boolean to allow this TopologySubsetData to add new elements. If true, for every new Element added in the topology container
     * linked by this TopologyData, the index of the new element will be added into this TopologySubsetData.
     */
     bool m_addNewElements = false;

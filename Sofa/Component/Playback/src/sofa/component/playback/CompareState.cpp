@@ -55,7 +55,7 @@ look for potential CompareStateFile formatted likewise
 with
 - %0 the current scene name
 - %1 the current comparestate counter value
-- %2 the name of the mstate which will undergo comparizons.
+- %2 the name of the mstate which will undergo comparisons.
 */
 std::string lookForValidCompareStateFile( const std::string& sceneName,
         const std::string& mstateName,

@@ -29,7 +29,7 @@ namespace sofa::helper
 
 std::vector<std::tuple<std::string, SReal>> SOFA_HELPER_API getClosestMatch(const std::string& needle,
                                                                             const std::vector<std::string>& haystack,
-                                                                            const Size numEntries, const SReal thresold)
+                                                                            const Size numEntries, const SReal threshold)
 {
     class Tuple
     {
@@ -53,7 +53,7 @@ std::vector<std::tuple<std::string, SReal>> SOFA_HELPER_API getClosestMatch(cons
     std::vector<std::tuple<std::string, SReal>> result;
     while(!q3.empty() && result.size()<=numEntries)
     {
-        if(q3.top().ratio < thresold)
+        if(q3.top().ratio < threshold)
             break;
         result.push_back(std::make_tuple(q3.top().value, q3.top().ratio));
         q3.pop();

@@ -45,7 +45,7 @@ public:
     /// Resolution of the constraint for one Gauss-Seidel iteration
     virtual void resolution(int line, SReal** w, SReal* d, SReal* force, SReal* dFree);
 
-    /// Called after Gauss-Seidel last iteration, in order to store last computed forces for the inital guess
+    /// Called after Gauss-Seidel last iteration, in order to store last computed forces for the initial guess
     virtual void store(int /*line*/, SReal* /*force*/, bool /*convergence*/);
 
     void setNbLines(unsigned int nbLines)

@@ -69,7 +69,7 @@ public:
         this->convolutionSize = convolutionSize;
     }
 
-    /// Set the bounding box from real coords to apply mCube localy.
+    /// Set the bounding box from real coords to apply mCube locally.
     void setBoundingBoxFromRealCoords ( const type::Vec3& min, const type::Vec3& max )
     {
         type::Vec3 gridSize = dataVoxelSize * cubeStep;
@@ -82,7 +82,7 @@ public:
                     {static_cast<int>(max.x()), static_cast<int>(max.y()), static_cast<int>(max.z())});
     }
 
-    /// Set the bounding box (in the data space) to apply mCube localy.
+    /// Set the bounding box (in the data space) to apply mCube locally.
     void setROI ( const type::Vec3i& min, const type::Vec3i& max )
     {
         this->roi.min = min;
@@ -95,7 +95,7 @@ public:
         if ( roi.max[2] > dataResolution[2] )roi.max[2] = dataResolution[2];
     }
 
-    /// Set the bounding box (in the data space) to apply mCube localy.
+    /// Set the bounding box (in the data space) to apply mCube locally.
     void setBoundingBox ( const type::Vec6i& roi )
     {
         const type::Vec3i _min( roi[0], roi[1], roi[2]);
@@ -103,7 +103,7 @@ public:
         setBoundingBox( _min, _max);
     }
 
-    /// Set the bounding box (in the data space) to apply mCube localy.
+    /// Set the bounding box (in the data space) to apply mCube locally.
     void setBoundingBox ( const type::Vec3i& min, const type::Vec3i& max )
     {
         this->bbox.min = min;
@@ -119,7 +119,7 @@ public:
     /// given a set of data (size of the data and size of the marching cube beeing defined previously),
     /// we construct the surface.
     /// mesh is a vector containing the triangles defined as a sequence of three indices
-    /// map_indices gives the correspondance between an indice and a 3d position in space
+    /// map_indices gives the correspondence between an indice and a 3d position in space
     void run ( unsigned char *data, const float isolevel,
                sofa::type::vector< PointID > &triangles,
                sofa::type::vector< type::Vec3>  &vertices,

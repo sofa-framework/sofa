@@ -139,7 +139,7 @@ protected:
     void clearObjectContext(BaseObject::SPtr obj);
 
 
-    /// @name virtual functions to add/remove special components direclty in the right Sequence
+    /// @name virtual functions to add/remove special components directly in the right Sequence
     /// Note it is useful for Node, but is not mandatory for every BaseNode Inheritances
     /// so the default implementation does nothing
     /// @{

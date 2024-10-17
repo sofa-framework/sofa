@@ -245,7 +245,7 @@ void UnilateralLagrangianConstraint<DataTypes>::getPositionViolation(linearalgeb
 
         v->set(c.id, dfree);
 
-        c.dfree = dfree; // PJ : For isActive() method. Don't know if it's still usefull.
+        c.dfree = dfree; // PJ : For isActive() method. Don't know if it's still useful.
 
         if (c.mu > 0.0)
         {

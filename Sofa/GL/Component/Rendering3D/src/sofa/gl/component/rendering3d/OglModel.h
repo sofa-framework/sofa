@@ -66,7 +66,7 @@ protected:
     DeprecatedAndRemoved isEnabled;
 
     // primitive types
-    Data<sofa::helper::OptionsGroup> primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tesselation)
+    Data<sofa::helper::OptionsGroup> primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tessellation)
 
     //alpha blend function
     Data<sofa::helper::OptionsGroup> blendEquation; ///< if alpha blending is enabled this specifies how source and destination colors are combined

@@ -65,7 +65,7 @@ inline double drand(double max)
 }
 
 // Random double in [-max,-min] U [min,max]
-// min and max must be positve
+// min and max must be positive
 inline double drand(double min, double max)
 {
    assert( max >= 0 );

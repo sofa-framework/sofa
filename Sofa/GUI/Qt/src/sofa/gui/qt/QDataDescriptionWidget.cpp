@@ -174,7 +174,7 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
 
         box->setLayout(boxLayout);
 
-        box->setTitle(QString("Extra informations"));
+        box->setTitle(QString("Extra information"));
 
         unsigned int row = 0;
         for(const auto& data : selecteddatum)

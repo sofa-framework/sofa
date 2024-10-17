@@ -143,7 +143,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(Index i, Triangle
         ab *= restScale;
         ac *= restScale;
     }
-    // equivalent to computeRotationLarge but in 2D == do not store the ortogonal vector are framex ^ framey
+    // equivalent to computeRotationLarge but in 2D == do not store the orthogonal vector are framex ^ framey
     computeTriangleRotation(ti.init_frame, ab, ac);
 
     // compute initial position in local space A[0, 0] B[x, 0] C[x, y]
@@ -265,7 +265,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
         // | 0      gamma1  0      gamma2   0      gamma3 | / (2 * A)
         // | gamma1 beta1   gamma2 beta2    gamma3 beta3 |
 
-        // As no displacement for Pa nor in Pb[y], Beta1, gamma1 and beta3 are not considered. Therefor we obtain:
+        // As no displacement for Pa nor in Pb[y], Beta1, gamma1 and beta3 are not considered. Therefore we obtain:
         // | beta2  0        beta3  0      |
         // | 0      gamma2   0      gamma3 | / (2 * A)
         // | gamma2 beta2    gamma3 beta3 |
@@ -309,7 +309,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
         f[t[1]] += fb;
         f[t[2]] += fc;
 
-        // store data for re-use
+        // store data for reuse
         ts.stress = stress;
     }
 

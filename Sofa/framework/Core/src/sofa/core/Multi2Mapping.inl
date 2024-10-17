@@ -30,7 +30,7 @@ namespace sofa::core
 template < class In1, class In2, class Out >
 Multi2Mapping<In1,In2,Out>::Multi2Mapping()
     : fromModels1(initLink("input1", "Input Object(s) (1st Data type)"))
-    , fromModels2(initLink("input2", "Input Object(s) (2st Data type)"))
+    , fromModels2(initLink("input2", "Input Object(s) (2nd Data type)"))
     , toModels(initLink("output", "Output Object(s)"))
     , f_applyRestPosition( initData( &f_applyRestPosition, false, "applyRestPosition", "set to true to apply this mapping to restPosition at init"))
 {

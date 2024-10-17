@@ -97,7 +97,7 @@ void TopologyData <ElementType, VecT>::linkToPointDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToPointDataArray ";
     }
     else
-        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToPointDataArray as toplogy is not dynamic";
+        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToPointDataArray as topology is not dynamic";
 }
 
 /// Method used to link Data to edge Data array, using the TopologyHandler's method
@@ -110,7 +110,7 @@ void TopologyData <ElementType, VecT>::linkToEdgeDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToEdgeDataArray ";
     }
     else
-        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToEdgeDataArray as toplogy is not dynamic";
+        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToEdgeDataArray as topology is not dynamic";
 }
 
 /// Method used to link Data to triangle Data array, using the TopologyHandler's method
@@ -123,7 +123,7 @@ void TopologyData <ElementType, VecT>::linkToTriangleDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToTriangleDataArray ";
     }
     else
-        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToTriangleDataArray as toplogy is not dynamic";
+        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToTriangleDataArray as topology is not dynamic";
 }
 
 /// Method used to link Data to quad Data array, using the TopologyHandler's method
@@ -136,7 +136,7 @@ void TopologyData <ElementType, VecT>::linkToQuadDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToQuadDataArray ";
     }
     else
-        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToQuadDataArray as toplogy is not dynamic";
+        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToQuadDataArray as topology is not dynamic";
 }
 
 /// Method used to link Data to tetrahedron Data array, using the TopologyHandler's method
@@ -149,7 +149,7 @@ void TopologyData <ElementType, VecT>::linkToTetrahedronDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToTetrahedronDataArray ";
     }
     else
-        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToTetrahedronDataArray as toplogy is not dynamic";
+        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToTetrahedronDataArray as topology is not dynamic";
 }
 
 /// Method used to link Data to hexahedron Data array, using the TopologyHandler's method
@@ -162,7 +162,7 @@ void TopologyData <ElementType, VecT>::linkToHexahedronDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToHexahedronDataArray ";
     }
     else
-        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToHexahedronDataArray as toplogy is not dynamic";
+        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToHexahedronDataArray as topology is not dynamic";
 }
 
 

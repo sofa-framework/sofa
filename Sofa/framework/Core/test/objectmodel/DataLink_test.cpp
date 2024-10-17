@@ -30,7 +30,7 @@ using sofa::type::Vec3d;
 using sofa::type::Vec3f;
 
 /**  Test suite for data link.
-Create two datas and a link between them.
+Create two data and a link between them.
 Set the value of data1 and check if the boolean is dirty of data2 is true and that the value of data2 is right.
   */
 struct DataLink_test: public BaseTest
@@ -43,7 +43,7 @@ struct DataLink_test: public BaseTest
     /// This method is defined in gtest framework to setting the test up.
     void SetUp() override
     {
-        /// Setup the data and create a link between the two datas
+        /// Setup the data and create a link between the two data
         data1.setName("data1");
         data2.setName("data2");
 

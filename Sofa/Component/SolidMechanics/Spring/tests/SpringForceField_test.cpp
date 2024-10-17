@@ -204,16 +204,16 @@ struct SpringForceField_test : public ForceField_test<_SpringForceField>
 
 
 
-// ========= Define the list of types to instanciate.
+// ========= Define the list of types to instantiate.
 //using ::testing::Types;
 typedef ::testing::Types<
 component::solidmechanics::spring::SpringForceField<defaulttype::Vec2Types>,  // 2D
 component::solidmechanics::spring::SpringForceField<defaulttype::Vec3Types>   // 3D
-> TestTypes; // the types to instanciate.
+> TestTypes; // the types to instantiate.
 
 
 
-// ========= Tests to run for each instanciated type
+// ========= Tests to run for each instantiated type
 TYPED_TEST_SUITE(SpringForceField_test, TestTypes);
 
 // first test case: extension, no velocity

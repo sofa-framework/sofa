@@ -262,7 +262,7 @@ public:
     SReal getTotalMass() const { return d_totalMass.getValue(); }
     std::size_t getMassCount() { return d_vertexMass.getValue().size(); }
 
-    /// Print key mass informations (totalMass, vertexMass and massDensity)
+    /// Print key mass information (totalMass, vertexMass and massDensity)
     void printMass();
 
     /// @name Read and write access functions in mass information

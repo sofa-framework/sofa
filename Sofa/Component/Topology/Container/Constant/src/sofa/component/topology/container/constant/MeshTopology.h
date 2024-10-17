@@ -288,13 +288,13 @@ public:
 
 
     // test whether p0p1 has the same orientation as triangle t
-    // opposite dirction: return -1
+    // opposite direction: return -1
     // same direction: return 1
     // otherwise: return 0
     int computeRelativeOrientationInTri(const PointID ind_p0, const PointID ind_p1, const PointID ind_t);
 
     // test whether p0p1 has the same orientation as triangle t
-    // opposite dirction: return -1
+    // opposite direction: return -1
     // same direction: return 1
     // otherwise: return 0
     int computeRelativeOrientationInQuad(const PointID ind_p0, const PointID ind_p1, const PointID ind_q);

@@ -227,7 +227,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
     }
 };
 
-// Define the list of DataTypes to instanciate
+// Define the list of DataTypes to instantiate
 using ::testing::Types;
 typedef Types<
 TypeTuple<Rigid2Types, Rigid2Mass>
@@ -240,7 +240,7 @@ TypeTuple<Rigid2Types, Rigid2Mass>
 
 > DataTypes;
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(ConstantForceField_test, DataTypes);// first test case
 TYPED_TEST( ConstantForceField_test , testBasicAttributes )
 {

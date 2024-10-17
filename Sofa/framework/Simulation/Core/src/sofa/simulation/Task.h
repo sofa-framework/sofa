@@ -78,7 +78,7 @@ public:
     // no array new and delete operators
     static void* operator new[](std::size_t sz) = delete;
             
-    // visual studio 2015 complains about the = delete but it doens't explain where this operator is call
+    // visual studio 2015 complains about the = delete but it doesn't explain where this operator is call
     // no problem with other sompilers included visual studio 2017
     // static void operator delete[](void* ptr) = delete;
             
