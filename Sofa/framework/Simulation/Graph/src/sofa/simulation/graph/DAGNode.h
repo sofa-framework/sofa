@@ -108,10 +108,6 @@ public:
     /// (within it or its parents until a mapping is reached that does not preserve topologies).
     sofa::core::topology::BaseMeshTopology* getMeshTopologyLink(SearchDirection dir = SearchUp) const override;
 
-
-    /// Called during initialization to correctly propagate the visual context to the children
-    void initVisualContext() override;
-
     /// Update the whole context values, based on parent and local ContextObjects
     void updateContext() override;
 
