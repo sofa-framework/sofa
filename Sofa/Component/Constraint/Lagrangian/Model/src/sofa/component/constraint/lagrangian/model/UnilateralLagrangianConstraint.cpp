@@ -30,12 +30,8 @@ namespace sofa::component::constraint::lagrangian::model
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-//TODO(dmarchal) What does this TODO mean ?
-int UnilateralLagrangianConstraintClass = core::RegisterObject("TODO-UnilateralLagrangianConstraint")
-        .add< UnilateralLagrangianConstraint<Vec3Types> >()
-
-        ;
-
+int UnilateralLagrangianConstraintClass = core::RegisterObject("UnilateralLagrangianConstraint")
+        .add< UnilateralLagrangianConstraint<Vec3Types> >();
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UnilateralLagrangianConstraint<Vec3Types>;
 
@@ -87,6 +83,8 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, SReal** /*
         const SReal factor = fN / normFt;
         force[line+1] *= factor;
         force[line+2] *= factor;
+        force[line+1] -= _drag*d[line+1];
+        force[line+2] -= _drag*d[line+2];
     }
 }
 
@@ -105,6 +103,5 @@ void UnilateralConstraintResolutionWithFriction::store(int line, SReal* force, b
         _active = nullptr; // Won't be used in the haptic thread
     }
 }
-
 
 } //namespace sofa::component::constraint::lagrangian::model

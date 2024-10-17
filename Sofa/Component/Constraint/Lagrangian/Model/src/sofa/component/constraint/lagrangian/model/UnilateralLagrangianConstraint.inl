@@ -55,18 +55,18 @@ void UnilateralLagrangianConstraint<DataTypes>::clear(int reserve)
 }
 
 template<class DataTypes>
-void UnilateralLagrangianConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id, PersistentID localid)
+void UnilateralLagrangianConstraint<DataTypes>::addContact(SReal mu, SReal drag, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id, PersistentID localid)
 {
-    addContact(mu, norm, P, Q, contactDistance, m1, m2,
+    addContact(mu, drag, norm, P, Q, contactDistance, m1, m2,
             this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
             this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
             id, localid);
 }
 
 template<class DataTypes>
-void UnilateralLagrangianConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Real contactDistance, int m1, int m2, long id, PersistentID localid)
+void UnilateralLagrangianConstraint<DataTypes>::addContact(SReal mu, SReal drag, Deriv norm, Real contactDistance, int m1, int m2, long id, PersistentID localid)
 {
-    addContact(mu, norm,
+    addContact(mu, drag, norm,
             this->getMState2()->read(core::ConstVecCoordId::position())->getValue()[m2],
             this->getMState1()->read(core::ConstVecCoordId::position())->getValue()[m1],
             contactDistance, m1, m2,
@@ -76,23 +76,24 @@ void UnilateralLagrangianConstraint<DataTypes>::addContact(SReal mu, Deriv norm,
 }
 
 template<class DataTypes>
-void UnilateralLagrangianConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long id, PersistentID localid)
+void UnilateralLagrangianConstraint<DataTypes>::addContact(SReal mu, SReal drag, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long id, PersistentID localid)
 {
     contacts.resize(contacts.size() + 1);
     Contact &c = contacts.back();
 
-    c.P			= P;
-    c.Q			= Q;
-    c.m1		= m1;
-    c.m2		= m2;
-    c.norm		= norm;
-    c.t			= Deriv(norm.z(), norm.x(), norm.y());
-    c.s			= cross(norm, c.t);
-    c.s			= c.s / c.s.norm();
-    c.t			= cross((-norm), c.s);
-    c.mu		= mu;
+    c.P         = P;
+    c.Q         = Q;
+    c.m1        = m1;
+    c.m2        = m2;
+    c.norm      = norm;
+    c.t         = Deriv(norm.z(), norm.x(), norm.y());
+    c.s         = cross(norm, c.t);
+    c.s         = c.s / c.s.norm();
+    c.t         = cross((-norm), c.s);
+    c.mu        = mu;
+    c.drag      = drag;
     c.contactId = id;
-    c.localId	= localid;
+    c.localId   = localid;
     c.contactDistance = contactDistance;
 }
 
@@ -119,7 +120,7 @@ void UnilateralLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core
             c1_it.addCol(c.m1, -c.norm);
             c1_it.addCol(c.m2, c.norm);
 
-            if (c.mu > 0.0)
+            if (c.mu > 0.0 || c.drag > 0.0)
             {
                 c1_it = c1.writeLine(c.id + 1);
                 c1_it.setCol(c.m1, -c.t);
@@ -152,7 +153,7 @@ void UnilateralLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core
             MatrixDerivRowIterator c2_it = c2.writeLine(c.id);
             c2_it.addCol(c.m2, c.norm);
 
-            if (c.mu > 0.0)
+            if (c.mu > 0.0 || c.drag > 0.0)
             {
                 c1_it = c1.writeLine(c.id + 1);
                 c1_it.setCol(c.m1, -c.t);
@@ -247,7 +248,7 @@ void UnilateralLagrangianConstraint<DataTypes>::getPositionViolation(linearalgeb
 
         c.dfree = dfree; // PJ : For isActive() method. Don't know if it's still usefull.
 
-        if (c.mu > 0.0)
+        if (c.mu > 0.0 || c.drag > 0.0)
         {
             v->set(c.id + 1, dfree_t);
             v->set(c.id + 2, dfree_s);
@@ -280,7 +281,7 @@ void UnilateralLagrangianConstraint<DataTypes>::getVelocityViolation(linearalgeb
 
         v->set(c.id, dot(dFreeVec, c.norm) - c.contactDistance*invDt ); // dvfree = 1/dt *  [ dot ( P - Q, n) - contactDist ] + dot(v_P - v_Q , n ) ]  
 
-        if (c.mu > 0.0)
+        if (c.mu > 0.0 || c.drag > 0.0)
         {
             v->set(c.id + 1, dot(QP_vfree, c.t)); // dfree_t
             v->set(c.id + 2, dot(QP_vfree, c.s)); // dfree_s
@@ -362,13 +363,14 @@ void UnilateralLagrangianConstraint<DataTypes>::getConstraintResolution(const co
     for(unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i];
-        if(c.mu > 0.0)
+        if(c.mu > 0.0 || c.drag > 0.0)
         {
-            UnilateralConstraintResolutionWithFriction* ucrwf = new UnilateralConstraintResolutionWithFriction(c.mu, nullptr, &contactsStatus[i]);
+            UnilateralConstraintResolutionWithFriction* ucrwf;
+            ucrwf = new UnilateralConstraintResolutionWithFriction(c.mu, c.drag, nullptr, &contactsStatus[i]);
             ucrwf->setTolerance(customTolerance);
             resTab[offset] = ucrwf;
 
-            // TODO : cette méthode de stockage des forces peu mal fonctionner avec 2 threads quand on utilise l'haptique
+            // TODO : cette méthode de stockage des forces peut mal fonctionner avec 2 threads quand on utilise l'haptique
             offset += 3;
         }
         else
