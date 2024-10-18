@@ -23,7 +23,6 @@
 
 #include <sofa/component/mapping/linear/init.h>
 #include <sofa/component/mapping/nonlinear/init.h>
-#include <sofa/component/mapping/mappedmatrix/init.h>
 
 namespace sofa::component::mapping
 {
@@ -56,7 +55,6 @@ void init()
     {
         sofa::component::mapping::linear::init();
         sofa::component::mapping::nonlinear::init();
-        sofa::component::mapping::mappedmatrix::init();
 
         first = false;
     }
