@@ -33,7 +33,7 @@
     <Node name="Grasper">
       <IHPDriver toolIndex="0" permanent="true" RefreshFrequency="500" forceScale="0.1"/>
       <MechanicalObject name="Articulations" template="Vec1d" position="0 0 0 0 0 0" rest_position="0 0 0 0 0 0"/>
-      <!--	<UniformMass mass="10.0 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
+      <!--	<UniformMass vertexMass="10.0 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
       <RestShapeSpringsForceField points="0 1 2 3 4 5" stiffness="1000 1000 1000 10000 1000 1000 " />
       <UncoupledConstraintCorrection compliance="0.01 0.01 0.01 0.0001 0.001 0.001 " />
       <VMechanismsForceFeedback activate="true"/>
@@ -42,7 +42,7 @@
 
       <Node name="Jaws">
         <MechanicalObject name="GrasperDOFs" template="Rigid3d" position="0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  "/>
-        <!--	<UniformMass mass="0.1 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
+        <!--	<UniformMass vertexMass="0.1 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
 
         <Node name="Tool1VM">
           <OglModel name="VM" fileMesh="dt/aspi.trian" scale="0.001" rx="90.0" />

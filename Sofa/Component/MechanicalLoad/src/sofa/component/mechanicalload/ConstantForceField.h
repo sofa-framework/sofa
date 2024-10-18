@@ -127,7 +127,7 @@ protected:
     /// Save system size for update of indices (doUpdateInternal)
     size_t m_systemSize;
 
-    /// Boolean specifying whether the data totalMass has been initially given
+    /// Boolean specifying whether the data totalForce has been initially given
     /// (else forces vector is being used)
     bool m_isTotalForceUsed;
 };

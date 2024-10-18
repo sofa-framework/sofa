@@ -98,7 +98,7 @@ TEST(SparseLDLSolver, TopologyChangeEmptyMState)
     sofa::simpleapi::createObject(root, "PointSetTopologyContainer", {{"position", "0 0 0"}});
     sofa::simpleapi::createObject(root, "PointSetTopologyModifier");
     sofa::simpleapi::createObject(root, "MechanicalObject", {{"template", "Vec3"}});
-    sofa::simpleapi::createObject(root, "UniformMass");
+    sofa::simpleapi::createObject(root, "UniformMass", {{"totalMass", "1.0"}});
     sofa::simpleapi::createObject(root, "TopologicalChangeProcessor",
                                   {{"useDataInputs", "true"}, {"timeToRemove", "0.05"},
                                    {"pointsToRemove", "0"}});

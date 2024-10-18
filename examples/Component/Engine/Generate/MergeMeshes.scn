@@ -25,6 +25,6 @@
     	  
         <MeshTopology src="@basis" drawTriangles="1"/>
         <MechanicalObject showObject="1"/>
-        <UniformMass />
+        <UniformMass totalMass="1.0"/>
     </Node>
 </Node>

@@ -186,7 +186,7 @@ void UniformMass<RigidTypes>::loadFromFileRigidImpl(const string& filename)
                         }
                         else		// it's an unknown keyword
                         {
-                            msg_warning(this) << "error reading file '" << filename << "'. \n"
+                            msg_error(this) << "error reading file '" << filename << "'. \n"
                                               << "Unable to decode an unknow command '"<< cmd << "'. \n" ;
                             skipToEOL(file);
                         }
