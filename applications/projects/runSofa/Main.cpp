@@ -108,6 +108,8 @@ void addGUIParameters(sofa::gui::common::ArgumentParser* argumentParser)
     GUIManager::RegisterParameters(argumentParser);
 }
 
+static std::string appName { "runSofa" };
+
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
@@ -359,7 +361,7 @@ int main(int argc, char** argv)
         MessageDispatcher::addHandler( new ExceptionMessageHandler() ) ;
     }
     else{
-        msg_warning("") << "Invalid argument '" << messageHandler << "' for '--formatting'";
+        msg_warning(appName) << "Invalid argument '" << messageHandler << "' for '--formatting'";
     }
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 #ifdef TRACY_ENABLE
@@ -367,9 +369,9 @@ int main(int argc, char** argv)
 #endif
 
     // Output FileRepositories
-    msg_info("runSofa") << "PluginRepository paths = " << PluginRepository.getPathsJoined();
-    msg_info("runSofa") << "DataRepository paths = " << DataRepository.getPathsJoined();
-    msg_info("runSofa") << "GuiDataRepository paths = " << GuiDataRepository.getPathsJoined();
+    msg_info(appName) << "PluginRepository paths = " << PluginRepository.getPathsJoined();
+    msg_info(appName) << "DataRepository paths = " << DataRepository.getPathsJoined();
+    msg_info(appName) << "GuiDataRepository paths = " << GuiDataRepository.getPathsJoined();
 
     // Initialise paths
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
@@ -392,22 +394,22 @@ int main(int argc, char** argv)
 
         if (PluginRepository.findFile(configPluginPath, "", nullptr))
         {
-            msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
+            msg_info(appName) << "Loading automatically plugin list in " << configPluginPath;
             pluginManager.readFromIniFile(configPluginPath);
         }
         else if (PluginRepository.findFile(defaultConfigPluginPath, "", nullptr))
         {
-            msg_info("runSofa") << "Loading automatically plugin list in " << defaultConfigPluginPath;
+            msg_info(appName) << "Loading automatically plugin list in " << defaultConfigPluginPath;
             pluginManager.readFromIniFile(defaultConfigPluginPath);
         }
         else
         {
-            msg_info("runSofa") << "No plugin list found. No plugin will be automatically loaded.";
+            msg_info(appName) << "No plugin list found. No plugin will be automatically loaded.";
         }
     }
     else
     {
-        msg_info("runSofa") << "Automatic plugin loading disabled.";
+        msg_info(appName) << "Automatic plugin loading disabled.";
     }
 
     sofa::core::ObjectFactory* objectFactory = sofa::core::ObjectFactory::getInstance();
@@ -489,7 +491,7 @@ int main(int argc, char** argv)
     sofa::simulation::node::initRoot(groot.get());
     if( computationTimeAtBegin )
     {
-        msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot->getTime(), groot->getDt());
+        msg_info(appName) << sofa::helper::AdvancedTimer::end("Init", groot->getTime(), groot->getDt());
     }
 
     //=======================================
@@ -504,9 +506,9 @@ int main(int argc, char** argv)
 
     if (printFactory)
     {
-        msg_info("") << "////////// FACTORY //////////" ;
+        msg_info(appName) << "////////// FACTORY //////////" ;
         sofa::helper::printFactoryLog();
-        msg_info("") << "//////// END FACTORY ////////" ;
+        msg_info(appName) << "//////// END FACTORY ////////" ;
     }
 
     if( computationTimeSampling>0 )
