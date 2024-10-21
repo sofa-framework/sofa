@@ -259,10 +259,9 @@ int FileSystem::findFiles(const std::string& directoryPath,
         return -1;
 
     // Filter files
-    for (std::size_t i=0 ; i!=files.size() ; i++)
+    for (const auto& filename : files)
     {
-        const std::string& filename = files[i];
-        const std::string& filepath = directoryPath + "/" + files[i];
+        const std::string& filepath = append(directoryPath, filename);
 
         if ( isDirectory(filepath) && filename[0] != '.' && depth > 0 )
         {
@@ -385,7 +384,7 @@ std::string FileSystem::findOrCreateAValidPath(const std::string path)
 
     const std::string parentPath = FileSystem::getParentDirectory(path) ;
     const std::string currentFile = FileSystem::stripDirectory(path) ;
-    FileSystem::createDirectory(findOrCreateAValidPath( parentPath )+"/"+currentFile) ;
+    FileSystem::createDirectory(append(findOrCreateAValidPath( parentPath ), currentFile)) ;
     return path ;
 }
 
