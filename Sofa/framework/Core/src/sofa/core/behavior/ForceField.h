@@ -191,23 +191,26 @@ public:
     {
         const std::string attributeName {"mstate"};
         std::string mstateLink = arg->getAttribute(attributeName,"");
-        if (mstateLink.empty())
+        if (context)
         {
-            if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+            if (mstateLink.empty())
             {
-                arg->logError("Since the attribute '" + attributeName + "' has not been specified, a mechanical state "
-                    "with the datatype '" + DataTypes::Name() + "' has been searched in the current context, but not found.");
-                return false;
+                if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+                {
+                    arg->logError("Since the attribute '" + attributeName + "' has not been specified, a mechanical state "
+                        "with the datatype '" + DataTypes::Name() + "' has been searched in the current context, but not found.");
+                    return false;
+                }
             }
-        }
-        else
-        {
-            MechanicalState<DataTypes>* mstate = nullptr;
-            context->findLinkDest(mstate, mstateLink, nullptr);
-            if (!mstate)
+            else
             {
-                arg->logError("Data attribute '" + attributeName + "' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
-                return false;
+                MechanicalState<DataTypes>* mstate = nullptr;
+                context->findLinkDest(mstate, mstateLink, nullptr);
+                if (!mstate)
+                {
+                    arg->logError("Data attribute '" + attributeName + "' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
+                    return false;
+                }
             }
         }
         return BaseObject::canCreate(obj, context, arg);
