@@ -238,21 +238,38 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         using sofa::helper::lifecycle::dealiasedComponents;
         if(it == registry.end())
         {
-            arg->logError("The object '" + classname + "' is not in the factory.");
+            arg->logError("The component '" + classname + "' cannot be found in the factory.");
             auto uncreatableComponent = uncreatableComponents.find(classname);
             auto movedComponent = movedComponents.find(classname);
             auto dealiasedComponent = dealiasedComponents.find(classname);
-            if( uncreatableComponent != uncreatableComponents.end() )
+
+            const bool isUncreatable =  uncreatableComponent != uncreatableComponents.end();
+            const bool isMoved = movedComponent != movedComponents.end();
+            const bool isDealiased = dealiasedComponent != dealiasedComponents.end();
+
+            const bool multipleReasons = static_cast<std::size_t>(isUncreatable) + static_cast<std::size_t>(isMoved) + static_cast<std::size_t>(isDealiased) > 1;
+            std::size_t reasonNumber = 1;
+            const auto number = [&reasonNumber, multipleReasons]() -> std::string
             {
-                arg->logError( uncreatableComponent->second.getMessage() );
+                return multipleReasons ? std::to_string(reasonNumber++) + ") " : "";
+            };
+
+            if (multipleReasons)
+            {
+                arg->logError("Several reasons are possible:");
             }
-            else if (movedComponent != movedComponents.end())
+
+            if(isUncreatable)
             {
-                arg->logError( movedComponent->second.getMessage() );
+                arg->logError(number() + uncreatableComponent->second.getMessage() );
             }
-            else if (dealiasedComponent != dealiasedComponents.end())
+            if (isMoved)
             {
-                arg->logError(dealiasedComponent->second.getMessage());
+                arg->logError(number() + movedComponent->second.getMessage() );
+            }
+            if (isDealiased)
+            {
+                arg->logError(number() + dealiasedComponent->second.getMessage());
             }
             else
             {
