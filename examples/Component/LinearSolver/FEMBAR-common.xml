@@ -12,7 +12,7 @@
         <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->  
         <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->  
         <RequiredPlugin name="Sofa.Component.LinearSolver.Preconditioner"/> <!-- Needed to use components [BlockJacobiPreconditioner] -->
-
+        <RequiredPlugin name="Sofa.Component.LinearSolver.Ordering"/>
     </Node>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
