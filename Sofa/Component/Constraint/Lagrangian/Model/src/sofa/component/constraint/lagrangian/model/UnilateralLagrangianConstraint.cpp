@@ -31,7 +31,7 @@ using namespace sofa::defaulttype;
 
 void registerUnilateralLagrangianConstraint(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("TODO-UnilateralLagrangianConstraint")
+    factory->registerObjects(core::ObjectRegistrationData("Lagrangian-based inequality constraint")
         .add< UnilateralLagrangianConstraint<Vec3Types> >());
 }
 

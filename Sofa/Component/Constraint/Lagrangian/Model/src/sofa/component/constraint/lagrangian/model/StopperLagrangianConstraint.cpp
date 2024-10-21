@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerStopperLagrangianConstraint(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("TODO-StopperLagrangianConstraint")
+    factory->registerObjects(core::ObjectRegistrationData("Lagrangian-based constraint forcing a 1D DoF to be  inside a given range.")
         .add< StopperLagrangianConstraint<Vec1Types> >());
 }
 
