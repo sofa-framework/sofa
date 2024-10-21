@@ -31,13 +31,14 @@ namespace sofa::component::mapping::linear
 {
 
 using namespace sofa::defaulttype;
-
-int SubsetMappingClass = core::RegisterObject("TODO-SubsetMappingClass")
+        ;
+void registerSubsetMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compute a subset of input points.")
         .add< SubsetMapping< Vec3Types, Vec3Types > >()
         .add< SubsetMapping< Vec1Types, Vec1Types > >()
-        .add< SubsetMapping< Rigid3Types, Rigid3Types > >()
-        .addAlias("SurfaceIdentityMapping")
-        ;
+        .add< SubsetMapping< Rigid3Types, Rigid3Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMapping< Vec3Types, Vec3Types >;
 template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMapping< Vec1Types, Vec1Types >;

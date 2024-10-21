@@ -29,16 +29,14 @@ namespace sofa::component::mapping::nonlinear
 
 using namespace defaulttype;
 
-
-// Register in the Factory
-int SquareDistanceMappingClass = core::RegisterObject("Compute square edge extensions")
+void registerSquareDistanceMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Maps point positions to square distances.")
         .add< SquareDistanceMapping< Vec3Types, Vec1Types > >()
-        .add< SquareDistanceMapping< Rigid3Types, Vec1Types > >()
-
-        ;
+        .add< SquareDistanceMapping< Rigid3Types, Vec1Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API SquareDistanceMapping< Vec3Types, Vec1Types >;
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API SquareDistanceMapping< Rigid3Types, Vec1Types >;
-
 
 } // namespace sofa::component::mapping::nonlinear

@@ -28,13 +28,12 @@ namespace sofa::component::mapping::linear
 
 using namespace defaulttype;
 
-// Register in the Factory
-int DeformableOnRigidFrameMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
-        .add< DeformableOnRigidFrameMapping< Vec3Types, Rigid3Types, Vec3Types > >()
-
-        ;
+void registerDeformableOnRigidFrameMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Set the positions and velocities of points attached to a rigid parent.")
+        .add< DeformableOnRigidFrameMapping< Vec3Types, Rigid3Types, Vec3Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_LINEAR_API DeformableOnRigidFrameMapping< Vec3Types, Rigid3Types, Vec3Types >;
-
 
 } // namespace sofa::component::mapping::linear

@@ -31,14 +31,14 @@ namespace sofa::component::mapping::linear
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int CenterOfMassMappingClass = core::RegisterObject("Set the point to the center of mass of the DOFs it is attached to")
+void registerCenterOfMassMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Set the point to the center of mass of the DOFs it is attached to")
         .add< CenterOfMassMapping< Rigid3Types, Vec3Types > >()
-        .add< CenterOfMassMapping< Rigid2Types, Vec2Types > >()
-;
+        .add< CenterOfMassMapping< Rigid2Types, Vec2Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_LINEAR_API CenterOfMassMapping< Rigid3Types, Vec3Types >;
 template class SOFA_COMPONENT_MAPPING_LINEAR_API CenterOfMassMapping< Rigid2Types, Vec2Types >;
-
 
 } // namespace sofa::component::mapping::linear

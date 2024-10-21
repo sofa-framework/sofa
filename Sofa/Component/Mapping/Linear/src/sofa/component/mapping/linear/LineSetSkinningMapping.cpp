@@ -29,17 +29,12 @@ namespace sofa::component::mapping::linear
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int HandMappingClass = core::RegisterObject("skin a model from a set of rigid lines")
-        .add< LineSetSkinningMapping< Rigid3Types, Vec3Types > >()
-
-
-        ;
-
+void registerLineSetSkinningMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Skin a model from a set of rigid lines.")
+        .add< LineSetSkinningMapping< Rigid3Types, Vec3Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_LINEAR_API LineSetSkinningMapping< Rigid3Types, Vec3Types >;
-
-
-
 
 } //namespace sofa::component::mapping::linear

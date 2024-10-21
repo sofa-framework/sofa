@@ -811,6 +811,7 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"TriangleOctree", Dealiased("v24.12","TriangleOctreeModel")},
     {"DefaultContactManager", Dealiased("v24.12","CollisionResponse")},
     {"RuleBasedCollisionResponse", Dealiased("v24.12","RuleBasedContactManager")},
+    {"SurfaceIdentityMapping", Dealiased("v24.12","SubsetMapping")},
 };
 
 } // namespace sofa::helper::lifecycle

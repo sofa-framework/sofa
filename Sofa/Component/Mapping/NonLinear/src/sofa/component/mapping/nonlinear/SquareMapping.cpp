@@ -29,13 +29,12 @@ namespace sofa::component::mapping::nonlinear
 
 using namespace defaulttype;
 
-
-// Register in the Factory
-int SquareMappingClass = core::RegisterObject("Compute the square")
-        .add< SquareMapping< Vec1Types, Vec1Types > >()
-        ;
+void registerSquareMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compute the square value from the inputs.")
+        .add< SquareMapping< Vec1Types, Vec1Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API SquareMapping< Vec1Types, Vec1Types >;
-
 
 } // namespace sofa::component::mapping::nonlinear

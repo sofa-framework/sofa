@@ -28,12 +28,12 @@ namespace sofa::component::mapping::nonlinear
 
 using namespace defaulttype;
 
-// Register in the Factory
-int AreaMappingClass = core::RegisterObject("Mapping each triangle in a topology to a scalar value representing its area")
-        .add< AreaMapping< Vec3Types, Vec1Types > >()
-        ;
+void registerAreaMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Mapping each triangle in a topology to a scalar value representing its area.")
+        .add< AreaMapping< Vec3Types, Vec1Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API AreaMapping< Vec3Types, Vec1Types >;
-
 
 }

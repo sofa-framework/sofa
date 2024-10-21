@@ -31,15 +31,14 @@ using namespace sofa::defaulttype;
 namespace sofa::component::mapping::linear
 {
 
-// Register in the Factory
-int IdentityMultiMappingClass = core::RegisterObject("Concatenate several States together")
-    .add< IdentityMultiMapping< Vec3Types, Vec3Types > >()
-    .add< IdentityMultiMapping< Rigid3Types, Rigid3Types > >()
-
-        ;
+void registerIdentityMultiMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Concatenate several States together.")
+        .add< IdentityMultiMapping< Vec3Types, Vec3Types > >()
+        .add< IdentityMultiMapping< Rigid3Types, Rigid3Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_LINEAR_API IdentityMultiMapping< Vec3Types, Vec3Types >;
 template class SOFA_COMPONENT_MAPPING_LINEAR_API IdentityMultiMapping< Rigid3Types, Rigid3Types >;
-
 
 } // namespace sofa::component::mapping::linear
