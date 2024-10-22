@@ -332,8 +332,9 @@ type::Vec6 DiagonalMass<Rigid3Types>::getMomentum ( const MechanicalParams* mpar
     return getMomentumRigid3Impl<Rigid3Types>(mparams, vx, vv) ;
 }
 
-// Register in the Factory
-int DiagonalMassClass = core::RegisterObject("Define a specific mass for each particle")
+void registerDiagonalMass(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Define a specific mass for each particle.")
         .add< DiagonalMass<Vec3Types> >()
         .add< DiagonalMass<Vec2Types, Vec3Types> >()
         .add< DiagonalMass<Vec1Types> >()
@@ -341,9 +342,8 @@ int DiagonalMassClass = core::RegisterObject("Define a specific mass for each pa
         .add< DiagonalMass<Vec1Types, Vec3Types> >()
         .add< DiagonalMass<Rigid3Types> >()
         .add< DiagonalMass<Rigid2Types> >()
-        .add< DiagonalMass<Rigid2Types, Rigid3Types> >()
-
-        ;
+        .add< DiagonalMass<Rigid2Types, Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec3Types>;
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec2Types>;

@@ -91,6 +91,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     factory->registerObjectsFromPlugin("Sofa.Component.Engine");
     factory->registerObjectsFromPlugin("Sofa.Component.Collision");
     factory->registerObjectsFromPlugin("Sofa.Component.SolidMechanics");
+    factory->registerObjectsFromPlugin("Sofa.Component.Mass");
 }
 
 void init()
