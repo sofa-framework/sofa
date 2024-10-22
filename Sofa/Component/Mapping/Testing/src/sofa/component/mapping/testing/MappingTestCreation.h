@@ -253,15 +253,16 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         return succeed;
     }
 
-    VecDeriv_t<Out> generateRandomVecDeriv(const std::size_t sizeOut, const Real_t<In> minMagnitude, const Real_t<In> maxMagnitude)
+    template<class DataTypes>
+    VecDeriv_t<DataTypes> generateRandomVecDeriv(const std::size_t size, const Real_t<DataTypes> minMagnitude, const Real_t<DataTypes> maxMagnitude)
     {
-        VecDeriv_t<Out> forceOut;
-        forceOut.reserve(sizeOut);
-        for (std::size_t i = 0; i < sizeOut; i++)
+        VecDeriv_t<DataTypes> randomForce;
+        randomForce.reserve(size);
+        for (std::size_t i = 0; i < size; i++)
         {
-            forceOut.push_back(Out::randomDeriv(minMagnitude, maxMagnitude));
+            randomForce.push_back(DataTypes::randomDeriv(minMagnitude, maxMagnitude));
         }
-        return forceOut;
+        return randomForce;
     }
 
     /**
@@ -317,7 +318,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         sofa::testing::copyFromData( positionOut, outDofs->readPositions() ); // positions and have already been propagated
 
         // set random child forces and propagate them to the parent
-        VecDeriv_t<Out> forceOut = generateRandomVecDeriv(sizeOut, 0.1, 1.);
+        VecDeriv_t<Out> forceOut = generateRandomVecDeriv<Out>(sizeOut, 0.1, 1.);
 
         forceIn2.fill( Deriv_t<In>() );
         sofa::helper::WriteAccessor fin = inDofs->writeForces();
@@ -329,15 +330,9 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         sofa::testing::copyFromData( forceIn, inDofs->readForces() );
 
         // set small parent velocities and use them to update the child
-        VecDeriv_t<In> velocityIn;
-        velocityIn.reserve(sizeIn);
-        for (unsigned i = 0; i < sizeIn; ++i)
-        {
-            velocityIn.push_back(
-                In::randomDeriv(
-                    this->epsilon() * deltaRange.first,
-                    this->epsilon() * deltaRange.second ));
-        }
+        VecDeriv_t<In> velocityIn = generateRandomVecDeriv<In>(sizeIn,
+            this->epsilon() * deltaRange.first,
+            this->epsilon() * deltaRange.second);
 
         const sofa::helper::ReadAccessor positionIn = inDofs->readPositions();
 
