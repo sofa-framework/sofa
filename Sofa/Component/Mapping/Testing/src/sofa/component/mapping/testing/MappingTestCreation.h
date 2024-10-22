@@ -310,12 +310,11 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         VecDeriv_t<In> forceIn(sizeIn);
         VecDeriv_t<In> forceIn2(sizeIn);
 
-        VecCoord_t<Out> positionOut(sizeOut);
         VecCoord_t<Out> positionOut1(sizeOut);
         VecDeriv_t<Out> velocityOut(sizeOut);
 
         // get position data
-        sofa::testing::copyFromData( positionOut, outDofs->readPositions() ); // positions and have already been propagated
+        VecCoord_t<Out> positionOut = outDofs->readPositions().ref();
 
         // set random child forces and propagate them to the parent
         VecDeriv_t<Out> forceOut = generateRandomVecDeriv<Out>(sizeOut, 0.1, 1.);
