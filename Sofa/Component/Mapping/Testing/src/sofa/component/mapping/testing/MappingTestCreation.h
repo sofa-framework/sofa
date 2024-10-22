@@ -274,6 +274,25 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         forceIn = inDofs->readForces().ref();
     }
 
+    void computeVelocityOutFromVelocityIn(core::MechanicalParams mparams, VecDeriv_t<Out>& velocityOut, const VecDeriv_t<In>& velocityIn)
+    {
+        inDofs->writeVelocities().wref() = velocityIn;
+        mapping->applyJ( &mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
+        velocityOut = outDofs->readVelocities().ref();
+    }
+
+    const VecDeriv_t<In>& applyDJT(core::MechanicalParams mparams, bool updateK)
+    {
+        inDofs->writeForces()->fill(Deriv_t<In>()); //reset force
+
+        if (updateK)
+        {
+            mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
+        }
+        mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        return inDofs->readForces().ref();
+    }
+
     /**
      * Test the mapping using the given values and small changes.
      * Return true in case of success, if all errors are below maxError*epsilon.
@@ -320,7 +339,6 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         VecDeriv_t<In> forceIn2(sizeIn);
 
         VecCoord_t<Out> positionOut1(sizeOut);
-        VecDeriv_t<Out> velocityOut(sizeOut);
 
         // get position data
         VecCoord_t<Out> positionOut = outDofs->readPositions().ref();
@@ -331,7 +349,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         computeForceInFromForceOut(mparams, forceIn, forceOut);
 
         // set small parent velocities and use them to update the child
-        VecDeriv_t<In> velocityIn = generateRandomVecDeriv<In>(sizeIn,
+        const VecDeriv_t<In> velocityIn = generateRandomVecDeriv<In>(sizeIn,
             this->epsilon() * deltaRange.first,
             this->epsilon() * deltaRange.second);
 
@@ -343,53 +361,37 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
             xp1[i] = positionIn[i] + velocityIn[i];
         }
 
-        // propagate small velocity
-        sofa::helper::WriteAccessor vin = inDofs->writeVelocities();
-        sofa::testing::copyToData( vin, velocityIn );
-        mapping->applyJ( &mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
-        sofa::helper::ReadAccessor vout = outDofs->readVelocities();
-        sofa::testing::copyFromData( velocityOut, vout);
+        VecDeriv_t<Out> velocityOut;
+        computeVelocityOutFromVelocityIn(mparams, velocityOut, velocityIn);
 
         // apply geometric stiffness
         inDofs->vRealloc( &mparams, core::VecDerivId::dx() ); // dx is not allocated by default
-        sofa::helper::WriteAccessor dxin = inDofs->writeDx();
-        sofa::testing::copyToData( dxin, velocityIn );
-        VecDeriv_t<In> dfp_a(sizeIn);
-        VecDeriv_t<In> dfp_b(sizeIn);
-        dfp_a.fill( Deriv_t<In>() );
-        dfp_b.fill( Deriv_t<In>() );
-        sofa::testing::copyToData( inDofs->writeForces(), dfp_a );
-        sofa::testing::copyToData( inDofs->writeForces(), dfp_b );
+        inDofs->writeDx().wref() = velocityIn;
 
-        //calling applyDJT without updateK before
-        mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        sofa::testing::copyFromData( dfp_a, inDofs->readForces() ); // fp + df due to geometric stiffness
-        sofa::testing::copyToData( inDofs->writeForces(), forceIn2 ); //reset forces
-
-        //calling applyDJT after updateK
-        mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
-        mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        sofa::testing::copyFromData( dfp_b, inDofs->readForces() ); // fp + df due to geometric stiffness
+        const VecDeriv_t<In> dfp_withoutUpdateK = applyDJT(mparams, false);
+        const VecDeriv_t<In> dfp_withUpdateK = applyDJT(mparams, true);
 
         // Jacobian will be obsolete after applying new positions
         if( isTestExecuted(TEST_getJs) )
         {
             EigenSparseMatrix* J = this->getMatrix<EigenSparseMatrix>(mapping->getJs());
-            //        cout<<"J = "<< endl << *J << endl;
             VecDeriv_t<Out> Jv(sizeOut);
-            J->mult(Jv,velocityIn);
+            J->mult(Jv, velocityIn);
 
             // ================ test applyJT()
             VecDeriv_t<In> jfc( (long)sizeIn,Deriv_t<In>());
             J->addMultTranspose(jfc,forceOut);
-            if( this->vectorMaxDiff(jfc,forceIn)>errorThreshold ){
+            if (this->vectorMaxDiff(jfc, forceIn) > errorThreshold)
+            {
                 succeed = false;
                 ADD_FAILURE() << "applyJT test failed, difference should be less than " << errorThreshold << " (" << this->vectorMaxDiff(jfc,forceIn) << ")" << std::endl
                               << "jfc = " << jfc << std::endl<<" fp = " << forceIn << std::endl;
             }
+
             // ================ test getJs()
             // check that J.vp = vc
-            if(this->vectorMaxDiff(Jv,velocityOut)>errorThreshold ){
+            if (this->vectorMaxDiff(Jv, velocityOut) > errorThreshold)
+            {
                 succeed = false;
                 std::cout<<"vp = " << velocityIn << std::endl;
                 std::cout<<"Jvp = " << Jv << std::endl;
@@ -471,19 +473,19 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         {
             //we test the function applyDJT in two different contexts because
             //the implementation usually depends on the context
-            if (this->vectorMaxDiff(dfp_a,fp12) > errorThreshold * errorFactorDJ)
+            if (this->vectorMaxDiff(dfp_withoutUpdateK,fp12) > errorThreshold * errorFactorDJ)
             {
                 succeed = false;
                 ADD_FAILURE() << "applyDJT (no call to updateK) test failed" << std::endl
-                    << "dfp    = " << dfp_a << std::endl
+                    << "dfp    = " << dfp_withoutUpdateK << std::endl
                     << "fp2-fp = " << fp12 << std::endl
                     << "error threshold = " << errorThreshold * errorFactorDJ << std::endl;
             }
-            if (this->vectorMaxDiff(dfp_b, fp12) > errorThreshold * errorFactorDJ)
+            if (this->vectorMaxDiff(dfp_withUpdateK, fp12) > errorThreshold * errorFactorDJ)
             {
                 succeed = false;
                 ADD_FAILURE() << "applyDJT (after call to updateK) test failed" << std::endl
-                    << "dfp    = " << dfp_b << std::endl
+                    << "dfp    = " << dfp_withUpdateK << std::endl
                     << "fp2-fp = " << fp12 << std::endl
                     << "error threshold = " << errorThreshold * errorFactorDJ << std::endl;
             }
