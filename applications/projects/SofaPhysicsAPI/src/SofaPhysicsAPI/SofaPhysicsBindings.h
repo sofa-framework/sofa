@@ -64,7 +64,7 @@ EXPORT_API float sofaPhysicsAPI_time(void* api_ptr); ///< Getter to the current 
 EXPORT_API float sofaPhysicsAPI_timeStep(void* api_ptr); ///< Getter to the current simulation time stepping
 EXPORT_API void sofaPhysicsAPI_setTimeStep(void* api_ptr, double value); ///< Setter to the current simulation time stepping
 
-EXPORT_API int sofaPhysicsAPI_getGravity(void* api_ptr, double* values); ///< Getter of scene gravity using the ouptut @param values which is a double[3]. Return error code.
+EXPORT_API int sofaPhysicsAPI_getGravity(void* api_ptr, double* values); ///< Getter of scene gravity using the output @param values which is a double[3]. Return error code.
 EXPORT_API int sofaPhysicsAPI_setGravity(void* api_ptr, double* values); ///< Setter of current scene gravity using the input @param gravity which is a double[3]. Return error code.
 
 // API for message logging
@@ -84,15 +84,15 @@ EXPORT_API const char* sofaVisualModel_getName(void* api_api_ptr, int VModelID);
 /// API to get SofaPhysicsOutputMesh position and topology information. 
 /// SofaPhysicsOutputMesh Name is used as identifier as the index of registration could change from one loading to another. Or if scene is modified.
 EXPORT_API int sofaVisualModel_getNbVertices(void* api_api_ptr, const char* name); ///< Return the number of vertices of the SofaPhysicsOutputMesh with name: @param name
-EXPORT_API int sofaVisualModel_getVertices(void* api_api_ptr, const char* name, float* buffer); ///< Get the positions/vertices using ouput @param values (type float[ 3*nbVertices ]) of the SofaPhysicsOutputMesh with name: @param name. Return error code.
-EXPORT_API int sofaVisualModel_getNormals(void* api_ptr, const char* name, float* buffer); ///< Get the normals using ouput @param values (type float[ 3*nbVertices ]) of the SofaPhysicsOutputMesh with name: @param name. Return error code.
-EXPORT_API int sofaVisualModel_getTexCoords(void* api_ptr, const char* name, float* buffer); ///< Get the texture coordinates using ouput @param values (type float[ 2*nbVertices ]) of the SofaPhysicsOutputMesh with name: @param name. Return error code.
+EXPORT_API int sofaVisualModel_getVertices(void* api_api_ptr, const char* name, float* buffer); ///< Get the positions/vertices using output @param values (type float[ 3*nbVertices ]) of the SofaPhysicsOutputMesh with name: @param name. Return error code.
+EXPORT_API int sofaVisualModel_getNormals(void* api_ptr, const char* name, float* buffer); ///< Get the normals using output @param values (type float[ 3*nbVertices ]) of the SofaPhysicsOutputMesh with name: @param name. Return error code.
+EXPORT_API int sofaVisualModel_getTexCoords(void* api_ptr, const char* name, float* buffer); ///< Get the texture coordinates using output @param values (type float[ 2*nbVertices ]) of the SofaPhysicsOutputMesh with name: @param name. Return error code.
 
 EXPORT_API int sofaVisualModel_getNbEdges(void* api_ptr, const char* name); ///< Return the number of edges of the SofaPhysicsOutputMesh with name: @param name
-EXPORT_API int sofaVisualModel_getEdges(void* api_ptr, const char* name, int* buffer); ///< Get the edges using ouput @param values (type int[ 2*nbEdges ]) of the SofaPhysicsOutputMesh with name: @param name. Return error code.
+EXPORT_API int sofaVisualModel_getEdges(void* api_ptr, const char* name, int* buffer); ///< Get the edges using output @param values (type int[ 2*nbEdges ]) of the SofaPhysicsOutputMesh with name: @param name. Return error code.
 
 EXPORT_API int sofaVisualModel_getNbTriangles(void* api_ptr, const char* name); ///< Return the number of triangles of the SofaPhysicsOutputMesh with name: @param name
-EXPORT_API int sofaVisualModel_getTriangles(void* api_ptr, const char* name, int* buffer); ///< Get the triangles using ouput @param values (type int[ 3*nbTriangles ]) of the SofaPhysicsOutputMesh with name: @param name. Return error code.
+EXPORT_API int sofaVisualModel_getTriangles(void* api_ptr, const char* name, int* buffer); ///< Get the triangles using output @param values (type int[ 3*nbTriangles ]) of the SofaPhysicsOutputMesh with name: @param name. Return error code.
 
 EXPORT_API int sofaVisualModel_getNbQuads(void* api_ptr, const char* name); ///< Return the number of quads of the SofaPhysicsOutputMesh with name: @param name
-EXPORT_API int sofaVisualModel_getQuads(void* api_ptr, const char* name, int* buffer); ///< Get the quads using ouput @param values (type int[ 4*nbQuads ]) of the SofaPhysicsOutputMesh with name: @param name. Return error code.
+EXPORT_API int sofaVisualModel_getQuads(void* api_ptr, const char* name, int* buffer); ///< Get the quads using output @param values (type int[ 4*nbQuads ]) of the SofaPhysicsOutputMesh with name: @param name. Return error code.

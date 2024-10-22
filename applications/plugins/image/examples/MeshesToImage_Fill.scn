@@ -12,7 +12,7 @@
   <MeshOBJLoader name="mesh3" filename="mesh/bubille_out.obj" triangulate="1"/>
 
 
-  <Node name="Voxelizing several meshes in one image (the prefered solution in most cases)" >
+  <Node name="Voxelizing several meshes in one image (the preferred solution in most cases)" >
     
     
     <!-- First, rasterize outside and 1 ball with multiple values -->

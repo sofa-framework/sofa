@@ -377,7 +377,7 @@ int main(int argc, char** argv)
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
     BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
 
-    // Add Batch GUI (runSofa without any GUIs wont be useful)
+    // Add Batch GUI (runSofa without any GUIs won't be useful)
     sofa::gui::batch::init();
 
     auto& pluginManager = PluginManager::getInstance();
@@ -413,7 +413,7 @@ int main(int argc, char** argv)
     }
 
     sofa::core::ObjectFactory* objectFactory = sofa::core::ObjectFactory::getInstance();
-    // calling explicitely registerObjects from loadedPlugins
+    // calling explicitly registerObjects from loadedPlugins
     for (const auto& [pluginPath, plugin] : pluginManager.getPluginMap())
     {
         const auto& pluginName = plugin.getModuleName();
@@ -424,7 +424,7 @@ int main(int argc, char** argv)
     addGUIParameters(argParser);
     argParser->parse();
 
-    // Fetching file name must be done after the additionnal potential options have been added
+    // Fetching file name must be done after the additional potential options have been added
     // otherwise the first parsing will take the unknown options as the file name
     // (because of its positional parameter)
     files = argParser->getInputFileList();

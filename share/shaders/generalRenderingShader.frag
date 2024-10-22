@@ -241,11 +241,11 @@ vec4 dnoise(vec3 p)
 	return dnoise(p.x,p.y,p.z);
 }
 
-float perlin_noise(vec3 p, float freq, int octave, float persistance)
+float perlin_noise(vec3 p, float freq, int octave, float persistence)
 {
     float res = 0.0;
     float o=freq;
-    float f=persistance;
+    float f=persistence;
         
     for(int i = 0;i<octave;i++)
     {
@@ -257,11 +257,11 @@ float perlin_noise(vec3 p, float freq, int octave, float persistance)
     return res;
 }
 
-vec4 perlin_dnoise(vec3 p, float freq, int octave, float persistance)
+vec4 perlin_dnoise(vec3 p, float freq, int octave, float persistence)
 {
     vec4 res = vec4(0.0,0.0,0.0,0.0);
     float o=freq;
-    float f=persistance;
+    float f=persistence;
         
     for(int i = 0;i<octave;i++)
     {
@@ -289,7 +289,7 @@ void main()
 #endif //TEXTURE_UNIT_0
 
 #ifdef TRI_TEXTURING
-	// To compute unlit color and normal, only vPositionW and vNormalW should be used, so that it is independant of the current deformation
+	// To compute unlit color and normal, only vPositionW and vNormalW should be used, so that it is independent of the current deformation
 	//XY = 1 0 0
 	//XZ = 0 1 0
 	//YZ = 0 0 1

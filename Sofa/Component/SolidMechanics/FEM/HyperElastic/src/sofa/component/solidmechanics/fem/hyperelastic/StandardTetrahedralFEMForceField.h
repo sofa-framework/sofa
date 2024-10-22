@@ -41,7 +41,7 @@ namespace sofa::component::solidmechanics::fem::hyperelastic
 //***************** Tetrahedron FEM code for several elastic models: StandardTetrahedralFEMForceField*******************************************************************
 //********************************** Based on classical discretization : Fi=-Bi^T S V and Kij=Bi^T N Bj +Di^T S Dj **********************************************
 //***************************************** where Bi is the strain displacement (6*3 matrix), S SPK tensor N=dS/dC, Di shape vector ************************************
-//**************************** Code dependant on HyperelasticMatrialFEM and inherited classes *********************************************************************
+//**************************** Code dependent on HyperelasticMatrialFEM and inherited classes *********************************************************************
 
 /** Compute Finite Element forces based on tetrahedral elements.
 */
@@ -105,7 +105,7 @@ public :
 	  //Matrix63 matB[4];
 	  Real strainEnergy;
 
-      //Tetrahedron Points Indicies for CUDA
+      //Tetrahedron Points Indices for CUDA
       float tetraIndices[4]{};
       //Tetrahedron Edges for CUDA
       float tetraEdges[6]{};
@@ -140,7 +140,7 @@ public :
 
  protected :
    core::topology::BaseMeshTopology* m_topology;
-   VecCoord  _initialPoints;	/// the intial positions of the points
+   VecCoord  _initialPoints;	/// the initial positions of the points
    bool updateMatrix;
    bool  _meshSaved ;
    Data<std::string> f_materialName; ///< the name of the material to be used

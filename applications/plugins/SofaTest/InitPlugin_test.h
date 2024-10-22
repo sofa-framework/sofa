@@ -97,7 +97,7 @@ Other solver tests are available in Compliant_test: AssembledSolver_test and Dam
 
 Some projective constraint tests are available in SofaTest_test: LineProjectiveConstraint and ProjectToPlaneConstraint.
 
-- Engine test: To test engine you set input values and check if the ouput values correspond to the expected ones. The test Engine_test tests if the update method is called only if necessary. To test this a minimal engine TestEngine was created with a counter in its update method.
+- Engine test: To test engine you set input values and check if the output values correspond to the expected ones. The test Engine_test tests if the update method is called only if necessary. To test this a minimal engine TestEngine was created with a counter in its update method.
 
 
 <h3> Test entirely written in python </h3>

@@ -134,7 +134,7 @@ if(APPLE)
             # the optix library.
             get_filename_component(_optix_name_of_optixu "${optixu_LIBRARY}" NAME)
             if(EXISTS "${_optix_path_to_optix}/${_optix_name_of_optixu}")
-                message(WARNING " optixu library found next to optix library that is not being used.  Due to the way we are usin
+                message(WARNING " optixu library found next to optix library that is not being used.  Due to the way we are using
 g rpath, the copy of optixu next to optix will be used during loading instead of the one you intended.  Consider putting the libraries in the same directory or moving ${optixu_LIBRARY} out of the way.")
             endif()
         endif()

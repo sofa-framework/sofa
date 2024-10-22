@@ -11,7 +11,7 @@ This plugin proposes a simple API to include Sofa in a graphics interface:
 
 The main differences with the standard Sofa GUI are:
 
-- The main loop is controled by the user application
+- The main loop is controlled by the user application
 - No viewer nor camera are provided, but helpers are available in SofaGL
 - Picking simply returns basic information about the particle under the cursor:
   PickedPoint. Based on this, it is the application's job to create, manage and

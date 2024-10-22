@@ -33,7 +33,7 @@ namespace internal {
 
 inline bool isMsysPty(int fd) noexcept
 {
-    // Dynamic load for binary compability with old Windows
+    // Dynamic load for binary compatibility with old Windows
     const auto ptrGetFileInformationByHandleEx
       = reinterpret_cast<decltype(&GetFileInformationByHandleEx)>(
         GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")),

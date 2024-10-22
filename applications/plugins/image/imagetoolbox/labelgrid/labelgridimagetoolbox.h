@@ -438,7 +438,7 @@ public:
      * @brief cutSection
      * @return
      *
-     * @todo fix error when the vector is composed of 2 points (out of the box, the lines pass throuth the box )
+     * @todo fix error when the vector is composed of 2 points (out of the box, the lines pass through the box )
      */
 
     bool cutSection()

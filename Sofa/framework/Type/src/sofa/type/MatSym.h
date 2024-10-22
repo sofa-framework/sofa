@@ -399,7 +399,7 @@ public:
         }
     }
 
-    /// Substraction assignment operator.
+    /// Subtraction assignment operator.
     void operator -=(const MatSym< D,real>& m)
     {
         for (sofa::Size i = 0; i < NumberStoredValues; i++)

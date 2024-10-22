@@ -42,7 +42,7 @@ void Visitor::execute(sofa::core::objectmodel::BaseContext* c, bool precomputedO
     c->executeVisitor(this, precomputedOrder);
 }
 
-//method to compare the tags of the objet with the ones of the visitor
+//method to compare the tags of the object with the ones of the visitor
 // return true if the object has all the tags of the visitor
 // or if no tag is set to the visitor
 bool Visitor::testTags(core::objectmodel::BaseObject* obj)
