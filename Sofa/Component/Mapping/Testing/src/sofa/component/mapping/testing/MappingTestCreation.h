@@ -106,7 +106,14 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
     /// Defines if a test of the method corresponding to the flag parameter must be executed or not.
     void setTestExecution(const unsigned char testFlag, const bool doTheTest)
     {
-        flags = (flags & ~testFlag) | (-doTheTest & testFlag);
+        if (doTheTest)
+        {
+            flags |= testFlag;  // Set the flag
+        }
+        else
+        {
+            flags &= ~testFlag; // Unset the flag
+        }
     }
 
 
@@ -164,135 +171,6 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         
     }
 
-
-    /** Returns OutCoord subtraction a-b */
-    virtual Deriv_t<Out> difference( const Coord_t<Out>& a, const Coord_t<Out>& b )
-    {
-        return Out::coordDifference(a,b);
-    }
-
-    virtual VecDeriv_t<Out> difference( const VecDeriv_t<Out>& a, const VecDeriv_t<Out>& b )
-    {
-        if (a.size() != b.size())
-        {
-            ADD_FAILURE() << "VecDeriv_t<Out> have different sizes";
-            return {};
-        }
-
-        VecDeriv_t<Out> c;
-        c.reserve(a.size());
-        std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(c), std::minus());
-
-        return c;
-    }
-
-    /** Possible child force pre-treatment, does nothing by default
-      */
-    virtual VecDeriv_t<Out> preTreatment( const VecDeriv_t<Out>& f )
-    {
-        return f;
-    }
-
-
-    void checkComparisonThreshold()
-    {
-        if( deltaRange.second / errorMax <= sofa::testing::g_minDeltaErrorRatio )
-        {
-            ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
-        }
-    }
-
-    void warnMissingTests() const
-    {
-        msg_warning_when(!isTestExecuted(TEST_getJs), "MappingTest") << "getJs is not tested";
-        msg_warning_when(!isTestExecuted(TEST_getK)           , "MappingTest") << "getK is not tested";
-        msg_warning_when(!isTestExecuted(TEST_applyJT_matrix) , "MappingTest") << "applyJT on matrices is not tested";
-        msg_warning_when(!isTestExecuted(TEST_applyDJT)       , "MappingTest") << "applyDJT is not tested";
-        msg_warning_when(!isTestExecuted(TEST_buildGeometricStiffnessMatrix) , "MappingTest") << "buildGeometricStiffnessMatrix is not tested";
-    }
-
-    bool testMappingPositionVelocity(const VecCoord_t<In>& parentInit,
-                                     const VecCoord_t<Out>& childInit,
-                                     const VecCoord_t<In>& parentNew,
-                                     const VecCoord_t<Out>& expectedChildNew,
-                                     const Real_t<In> errorThreshold,
-                                     core::MechanicalParams mparams)
-    {
-        helper::WriteAccessor positionAccessorIn = inDofs->writePositions();
-        positionAccessorIn.wref() = parentInit;
-
-        helper::WriteAccessor positionAccessorOut = outDofs->writePositions();
-        positionAccessorOut.wref() = childInit;
-
-        /// Init based on parentInit
-        sofa::simulation::node::initRoot(root.get());
-
-        /// Updated to parentNew
-        positionAccessorIn.wref() = parentNew;
-        mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
-        mapping->applyJ(&mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity());
-
-        bool succeed = true;
-
-        if (expectedChildNew.size() != positionAccessorOut.size())
-        {
-            ADD_FAILURE() << "Size of output dofs is wrong: " << positionAccessorOut.size() << " expected: " << expectedChildNew.size();
-            succeed = false;
-        }
-
-        for (unsigned i = 0; i < positionAccessorOut.size(); ++i)
-        {
-            if (!this->isSmall(difference(positionAccessorOut[i], expectedChildNew[i]).norm(), errorMax))
-            {
-                ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: \n" << positionAccessorOut[i] <<"\nexpected: \n" << expectedChildNew[i]
-                        <<  "\ndifference should be less than " << errorThreshold << " (" << difference(positionAccessorOut[i],expectedChildNew[i]).norm() << ")" << std::endl;
-                succeed = false;
-            }
-        }
-
-        return succeed;
-    }
-
-    template<class DataTypes>
-    VecDeriv_t<DataTypes> generateRandomVecDeriv(const std::size_t size, const Real_t<DataTypes> minMagnitude, const Real_t<DataTypes> maxMagnitude)
-    {
-        VecDeriv_t<DataTypes> randomForce;
-        randomForce.reserve(size);
-        for (std::size_t i = 0; i < size; i++)
-        {
-            randomForce.push_back(DataTypes::randomDeriv(minMagnitude, maxMagnitude));
-        }
-        return randomForce;
-    }
-
-    void computeForceInFromForceOut(core::MechanicalParams mparams, VecDeriv_t<In>& forceIn, const VecDeriv_t<Out>& forceOut)
-    {
-        inDofs->writeForces()->fill(Deriv_t<In>());  // reset parent forces before accumulating child forces
-
-        outDofs->writeForces().wref() = forceOut;
-        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        forceIn = inDofs->readForces().ref();
-    }
-
-    void computeVelocityOutFromVelocityIn(core::MechanicalParams mparams, VecDeriv_t<Out>& velocityOut, const VecDeriv_t<In>& velocityIn)
-    {
-        inDofs->writeVelocities().wref() = velocityIn;
-        mapping->applyJ( &mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
-        velocityOut = outDofs->readVelocities().ref();
-    }
-
-    const VecDeriv_t<In>& applyDJT(core::MechanicalParams mparams, bool updateK)
-    {
-        inDofs->writeForces()->fill(Deriv_t<In>()); //reset force
-
-        if (updateK)
-        {
-            mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
-        }
-        mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        return inDofs->readForces().ref();
-    }
-
     /**
      * Test the mapping using the given values and small changes.
      * Return true in case of success, if all errors are below maxError*epsilon.
@@ -334,14 +212,13 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         const std::size_t sizeIn = inDofs->getSize();
         const std::size_t sizeOut = outDofs->getSize();
 
-        VecDeriv_t<In> forceIn(sizeIn);
-
         // get position data
         VecCoord_t<Out> positionOut = outDofs->readPositions().ref();
 
         // set random child forces and propagate them to the parent
         VecDeriv_t<Out> forceOut = generateRandomVecDeriv<Out>(sizeOut, 0.1, 1.);
 
+        VecDeriv_t<In> forceIn(sizeIn);
         computeForceInFromForceOut(mparams, forceIn, forceOut);
 
         // set small parent velocities and use them to update the child
@@ -349,13 +226,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
             this->epsilon() * deltaRange.first,
             this->epsilon() * deltaRange.second);
 
-        const sofa::helper::ReadAccessor positionIn = inDofs->readPositions();
-
-        VecCoord_t<In> xp1(sizeIn);
-        for (std::size_t i = 0; i < sizeIn; ++i)             // and small displacements
-        {
-            xp1[i] = positionIn[i] + velocityIn[i];
-        }
+        const VecCoord_t<In> perturbedPositionIn = computePerturbedPositions(sizeIn, velocityIn);
 
         VecDeriv_t<Out> velocityOut;
         computeVelocityOutFromVelocityIn(mparams, velocityOut, velocityIn);
@@ -374,7 +245,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
             VecDeriv_t<Out> Jv(sizeOut);
             J->mult(Jv, velocityIn);
 
-            // ================ test applyJT()
+            // Verification that J*dx is equivalent to calling applyJT
             VecDeriv_t<In> jfc( (long)sizeIn,Deriv_t<In>());
             J->addMultTranspose(jfc,forceOut);
             if (this->vectorMaxDiff(jfc, forceIn) > errorThreshold)
@@ -416,10 +287,10 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         // compute parent forces from pre-treated child forces (in most cases, the pre-treatment does nothing)
         // the pre-treatement can be useful to be able to compute 2 comparable results of applyJT with a small displacement to test applyDJT
         forceIn.fill( Deriv_t<In>() );
-        sofa::testing::copyToData( inDofs->writeForces(), forceIn );  // reset parent forces before accumulating child forces
-        sofa::testing::copyToData( outDofs->writeForces(), preTreatment(forceOut) );
+        inDofs->writeForces().wref() = forceIn;
+        outDofs->writeForces().wref() = preTreatment(forceOut);
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        sofa::testing::copyFromData( forceIn, inDofs->readForces() );
+        forceIn = inDofs->readForces().ref();
 
 
 
@@ -427,8 +298,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
 
         // propagate small displacement
-        sofa::helper::WriteAccessor pin (inDofs->writePositions());
-        sofa::testing::copyToData( pin, xp1 );
+        inDofs->writePositions().wref() = perturbedPositionIn;
 
         mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
         const VecCoord_t<Out>& positionOut1 = outDofs->readPositions();
@@ -452,7 +322,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
         // update parent force based on the same child forces
         inDofs->writeForces()->fill(Deriv_t<In>());
-        sofa::testing::copyToData( outDofs->writeForces(), preTreatment(forceOut) );
+        outDofs->writeForces().wref() = preTreatment(forceOut);
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         const VecDeriv_t<In>& forceIn2 = inDofs->readForces().ref();
 
@@ -596,6 +466,149 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
     }
 
 protected:
+
+
+
+    /** Returns OutCoord substraction a-b */
+    virtual Deriv_t<Out> difference( const Coord_t<Out>& a, const Coord_t<Out>& b )
+    {
+        return Out::coordDifference(a,b);
+    }
+
+    virtual VecDeriv_t<Out> difference( const VecDeriv_t<Out>& a, const VecDeriv_t<Out>& b )
+    {
+        if (a.size() != b.size())
+        {
+            ADD_FAILURE() << "VecDeriv_t<Out> have different sizes";
+            return {};
+        }
+
+        VecDeriv_t<Out> c;
+        c.reserve(a.size());
+        std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(c), std::minus());
+
+        return c;
+    }
+
+    /** Possible child force pre-treatment, does nothing by default
+      */
+    virtual VecDeriv_t<Out> preTreatment( const VecDeriv_t<Out>& f )
+    {
+        return f;
+    }
+
+
+    void checkComparisonThreshold()
+    {
+        if( deltaRange.second / errorMax <= sofa::testing::g_minDeltaErrorRatio )
+        {
+            ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
+        }
+    }
+
+    void warnMissingTests() const
+    {
+        msg_warning_when(!isTestExecuted(TEST_getJs), "MappingTest") << "getJs is not tested";
+        msg_warning_when(!isTestExecuted(TEST_getK)           , "MappingTest") << "getK is not tested";
+        msg_warning_when(!isTestExecuted(TEST_applyJT_matrix) , "MappingTest") << "applyJT on matrices is not tested";
+        msg_warning_when(!isTestExecuted(TEST_applyDJT)       , "MappingTest") << "applyDJT is not tested";
+        msg_warning_when(!isTestExecuted(TEST_buildGeometricStiffnessMatrix) , "MappingTest") << "buildGeometricStiffnessMatrix is not tested";
+    }
+
+    bool testMappingPositionVelocity(const VecCoord_t<In>& parentInit,
+                                     const VecCoord_t<Out>& childInit,
+                                     const VecCoord_t<In>& parentNew,
+                                     const VecCoord_t<Out>& expectedChildNew,
+                                     const Real_t<In> errorThreshold,
+                                     core::MechanicalParams mparams)
+    {
+        helper::WriteAccessor positionAccessorIn = inDofs->writePositions();
+        positionAccessorIn.wref() = parentInit;
+
+        helper::WriteAccessor positionAccessorOut = outDofs->writePositions();
+        positionAccessorOut.wref() = childInit;
+
+        /// Init based on parentInit
+        sofa::simulation::node::initRoot(root.get());
+
+        /// Updated to parentNew
+        positionAccessorIn.wref() = parentNew;
+        mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
+        mapping->applyJ(&mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity());
+
+        bool succeed = true;
+
+        if (expectedChildNew.size() != positionAccessorOut.size())
+        {
+            ADD_FAILURE() << "Size of output dofs is wrong: " << positionAccessorOut.size() << " expected: " << expectedChildNew.size();
+            succeed = false;
+        }
+
+        for (unsigned i = 0; i < positionAccessorOut.size(); ++i)
+        {
+            if (!this->isSmall(difference(positionAccessorOut[i], expectedChildNew[i]).norm(), errorMax))
+            {
+                ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: \n" << positionAccessorOut[i] <<"\nexpected: \n" << expectedChildNew[i]
+                        <<  "\ndifference should be less than " << errorThreshold << " (" << difference(positionAccessorOut[i],expectedChildNew[i]).norm() << ")" << std::endl;
+                succeed = false;
+            }
+        }
+
+        return succeed;
+    }
+
+    template<class DataTypes>
+    VecDeriv_t<DataTypes> generateRandomVecDeriv(const std::size_t size, const Real_t<DataTypes> minMagnitude, const Real_t<DataTypes> maxMagnitude)
+    {
+        VecDeriv_t<DataTypes> randomForce;
+        randomForce.reserve(size);
+        for (std::size_t i = 0; i < size; i++)
+        {
+            randomForce.push_back(DataTypes::randomDeriv(minMagnitude, maxMagnitude));
+        }
+        return randomForce;
+    }
+
+    void computeForceInFromForceOut(core::MechanicalParams mparams, VecDeriv_t<In>& forceIn, const VecDeriv_t<Out>& forceOut)
+    {
+        inDofs->writeForces()->fill(Deriv_t<In>());  // reset parent forces before accumulating child forces
+
+        outDofs->writeForces().wref() = forceOut;
+        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        forceIn = inDofs->readForces().ref();
+    }
+
+    void computeVelocityOutFromVelocityIn(core::MechanicalParams mparams, VecDeriv_t<Out>& velocityOut, const VecDeriv_t<In>& velocityIn)
+    {
+        inDofs->writeVelocities().wref() = velocityIn;
+        mapping->applyJ( &mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
+        velocityOut = outDofs->readVelocities().ref();
+    }
+
+    const VecDeriv_t<In>& applyDJT(core::MechanicalParams mparams, bool updateK)
+    {
+        inDofs->writeForces()->fill(Deriv_t<In>()); //reset force
+
+        if (updateK)
+        {
+            mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
+        }
+        mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        return inDofs->readForces().ref();
+    }
+
+    VecCoord_t<In> computePerturbedPositions(const std::size_t sizeIn, const VecDeriv_t<In> velocityIn)
+    {
+        VecCoord_t<In> perturbedPositionIn;
+        perturbedPositionIn.reserve(sizeIn);
+        const helper::ReadAccessor positionIn = inDofs->readPositions();
+        for (std::size_t i = 0; i < sizeIn; ++i)
+        {
+            perturbedPositionIn.push_back(positionIn[i] + velocityIn[i]);
+        }
+        return perturbedPositionIn;
+    }
+
 
     /// Get one EigenSparseMatrix out of a list. Error if not one single matrix in the list.
     template<class EigenSparseMatrixType>
