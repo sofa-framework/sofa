@@ -334,11 +334,8 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         const std::size_t sizeIn = inDofs->getSize();
         const std::size_t sizeOut = outDofs->getSize();
 
-
         VecDeriv_t<In> forceIn(sizeIn);
         VecDeriv_t<In> forceIn2(sizeIn);
-
-        VecCoord_t<Out> positionOut1(sizeOut);
 
         // get position data
         VecCoord_t<Out> positionOut = outDofs->readPositions().ref();
@@ -435,8 +432,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         sofa::testing::copyToData( pin, xp1 );
 
         mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
-        sofa::helper::ReadAccessor pout = outDofs->readPositions();
-        sofa::testing::copyFromData( positionOut1, pout );
+        const VecCoord_t<Out>& positionOut1 = outDofs->readPositions();
 
         // ================ test applyJ: compute the difference between propagated displacements and velocities
         VecDeriv_t<Out> dxc(sizeOut);
