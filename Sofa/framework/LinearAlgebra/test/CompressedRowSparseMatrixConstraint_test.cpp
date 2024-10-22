@@ -30,15 +30,13 @@
 #include <sofa/linearalgebra/CompressedRowSparseMatrixConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/testing/LinearCongruentialRandomGenerator.h>
 
 #ifndef SOFA_ASSERT
 #define SOFA_ASSERT(condition)
 #endif
 
 namespace sofa
-{
-
-namespace test
 {
 
 /// Specific policy for benchmark on CRSMatrixConstraint
@@ -2058,6 +2056,79 @@ TEST(CompressedRowSparseMatrixTest, checkTransposition)
     ASSERT_EQ(matrixTranspose.getBlock(2, 2), b);
 }
 
-} // namespace test
+template<typename TBlock>
+void generateMatrix(sofa::linearalgebra::CompressedRowSparseMatrixConstraint<TBlock>& matrix,
+    sofa::SignedIndex nbRows, sofa::SignedIndex nbCols,
+    typename sofa::linearalgebra::CompressedRowSparseMatrixConstraint<TBlock>::Real sparsity,
+    long seed)
+{
+    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrixConstraint<TBlock>;
+    using Real = typename Matrix::Real;
+    const auto nbNonZero = static_cast<sofa::SignedIndex>(sparsity * static_cast<Real>(nbRows*nbCols));
+
+    sofa::testing::LinearCongruentialRandomGenerator lcg(seed);
+
+    matrix.resizeBlock(nbRows / Matrix::NL, nbCols / Matrix::NC);
+
+    for (sofa::SignedIndex i = 0; i < nbNonZero; ++i)
+    {
+        const auto value = lcg.generateInUnitRange<Real>();
+        const auto row = static_cast<sofa::Index>(lcg.generateInRange(0., nbRows));
+        const auto col = static_cast<sofa::Index>(lcg.generateInRange(0., nbCols));
+
+        auto line = matrix.writeLine(row);
+        TBlock block;
+        block[col % Matrix::NC] = value;
+        line.addCol(col, block);
+    }
+    matrix.compress();
+}
+
+TEST(CompressedRowSparseMatrixConstraint, emptyMatrixGetRowRange)
+{
+    EXPECT_EQ(sofa::linearalgebra::CompressedRowSparseMatrixConstraint<SReal>::s_invalidIndex, std::numeric_limits<sofa::SignedIndex>::lowest());
+
+    const sofa::linearalgebra::CompressedRowSparseMatrixConstraint<SReal> A;
+
+    const auto begin = A.begin();
+    EXPECT_EQ(begin.getInternal(), sofa::linearalgebra::CompressedRowSparseMatrixConstraint<SReal>::s_invalidIndex);
+
+    const auto end = A.end();
+    EXPECT_EQ(end.getInternal(), sofa::linearalgebra::CompressedRowSparseMatrixConstraint<SReal>::s_invalidIndex);
+
+    EXPECT_EQ(begin, end);
+
+    const auto checkIterator = [](const auto& iterator)
+    {
+        const auto itBegin = iterator.begin();
+        const auto itEnd = iterator.end();
+
+        EXPECT_EQ(itBegin.getInternal(), sofa::linearalgebra::CompressedRowSparseMatrixConstraint<SReal>::s_invalidIndex);
+        EXPECT_EQ(itEnd.getInternal(), sofa::linearalgebra::CompressedRowSparseMatrixConstraint<SReal>::s_invalidIndex);
+        EXPECT_EQ(itBegin, itEnd);
+    };
+
+    checkIterator(begin);
+    checkIterator(end);
+}
+
+TEST(CompressedRowSparseMatrixConstraint, ostream)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrixConstraint<sofa::type::Vec3> A;
+
+    generateMatrix(A, 5, 15, 0.1, 7);
+
+    std::stringstream ss;
+    ss << A;
+
+    static const std::string expectedOutput =
+R"(Constraint ID : 0  dof ID : 1  value : 0 0.360985 0  dof ID : 12  value : 0.926981 0 0
+Constraint ID : 2  dof ID : 9  value : 0.451858 0 0
+Constraint ID : 3  dof ID : 6  value : 0.777417 0 0
+Constraint ID : 4  dof ID : 5  value : 0 0 0.474108  dof ID : 7  value : 0 0.983937 0  dof ID : 9  value : 0.238781 0 0
+)";
+
+    EXPECT_EQ(ss.str(), expectedOutput);
+}
 
 } // namespace sofa
