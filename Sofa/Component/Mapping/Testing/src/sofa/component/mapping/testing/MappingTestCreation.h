@@ -319,9 +319,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         // set random child forces and propagate them to the parent
         VecDeriv_t<Out> forceOut = generateRandomVecDeriv<Out>(sizeOut, 0.1, 1.);
 
-        forceIn2.fill( Deriv_t<In>() );
-        sofa::helper::WriteAccessor fin = inDofs->writeForces();
-        sofa::testing::copyToData( fin, forceIn2 );  // reset parent forces before accumulating child forces
+        inDofs->writeForces()->fill(Deriv_t<In>());  // reset parent forces before accumulating child forces
 
         sofa::helper::WriteAccessor fout = outDofs->writeForces();
         sofa::testing::copyToData( fout, forceOut );
@@ -356,13 +354,13 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         VecDeriv_t<In> dfp_b(sizeIn);
         dfp_a.fill( Deriv_t<In>() );
         dfp_b.fill( Deriv_t<In>() );
-        sofa::testing::copyToData( fin, dfp_a );
-        sofa::testing::copyToData( fin, dfp_b );
+        sofa::testing::copyToData( inDofs->writeForces(), dfp_a );
+        sofa::testing::copyToData( inDofs->writeForces(), dfp_b );
 
         //calling applyDJT without updateK before
         mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         sofa::testing::copyFromData( dfp_a, inDofs->readForces() ); // fp + df due to geometric stiffness
-        sofa::testing::copyToData( fin, forceIn2 ); //reset forces
+        sofa::testing::copyToData( inDofs->writeForces(), forceIn2 ); //reset forces
 
         //calling applyDJT after updateK
         mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
@@ -416,7 +414,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         // compute parent forces from pre-treated child forces (in most cases, the pre-treatment does nothing)
         // the pre-treatement can be useful to be able to compute 2 comparable results of applyJT with a small displacement to test applyDJT
         forceIn.fill( Deriv_t<In>() );
-        sofa::testing::copyToData( fin, forceIn );  // reset parent forces before accumulating child forces
+        sofa::testing::copyToData( inDofs->writeForces(), forceIn );  // reset parent forces before accumulating child forces
         sofa::testing::copyToData( fout, preTreatment(forceOut) );
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         sofa::testing::copyFromData( forceIn, inDofs->readForces() );
@@ -453,7 +451,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
         // update parent force based on the same child forces
         forceIn2.fill( Deriv_t<In>() );
-        sofa::testing::copyToData( fin, forceIn2 );  // reset parent forces before accumulating child forces
+        sofa::testing::copyToData( inDofs->writeForces(), forceIn2 );  // reset parent forces before accumulating child forces
         sofa::testing::copyToData( fout, preTreatment(forceOut) );
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         sofa::testing::copyFromData( forceIn2, inDofs->readForces() );
