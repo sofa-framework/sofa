@@ -156,7 +156,7 @@ void FileMessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescripti
 
 void registerFileMessageHandlerComponent(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("This component dump all the messages into a file.")
+    factory->registerObjects(core::ObjectRegistrationData("This component dumps all the messages into a file.")
         .add< FileMessageHandlerComponent >());
 }
 

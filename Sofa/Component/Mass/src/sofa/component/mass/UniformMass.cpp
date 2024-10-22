@@ -505,7 +505,7 @@ Vec6 UniformMass<Rigid3Types>::getMomentum ( const MechanicalParams* params,
 
 void registerUniformMass(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Define the same mass for all the particles.")
+    factory->registerObjects(core::ObjectRegistrationData("Compute a mass equally spread over the number of nodes.")
         .add< UniformMass<Vec3Types> >()
         .add< UniformMass<Vec2Types> >()
         .add< UniformMass<Vec1Types> >()

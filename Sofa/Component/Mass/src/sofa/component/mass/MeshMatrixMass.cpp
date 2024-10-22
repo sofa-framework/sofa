@@ -73,7 +73,7 @@ Vec6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, con
 
 void registerMeshMatrixMass(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Define a specific mass for each particle.")
+    factory->registerObjects(core::ObjectRegistrationData("Compute a mass matrix resulting from the space integration of a density over a domain.")
         .add< MeshMatrixMass<Vec3Types> >()
         .add< MeshMatrixMass<Vec2Types> >()
         .add< MeshMatrixMass<Vec2Types, Vec3Types> >()
