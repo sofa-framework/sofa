@@ -265,6 +265,15 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         return randomForce;
     }
 
+    void computeForceInFromForceOut(core::MechanicalParams mparams, VecDeriv_t<In>& forceIn, const VecDeriv_t<Out>& forceOut)
+    {
+        inDofs->writeForces()->fill(Deriv_t<In>());  // reset parent forces before accumulating child forces
+
+        outDofs->writeForces().wref() = forceOut;
+        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        forceIn = inDofs->readForces().ref();
+    }
+
     /**
      * Test the mapping using the given values and small changes.
      * Return true in case of success, if all errors are below maxError*epsilon.
@@ -319,12 +328,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         // set random child forces and propagate them to the parent
         VecDeriv_t<Out> forceOut = generateRandomVecDeriv<Out>(sizeOut, 0.1, 1.);
 
-        inDofs->writeForces()->fill(Deriv_t<In>());  // reset parent forces before accumulating child forces
-
-        sofa::helper::WriteAccessor fout = outDofs->writeForces();
-        sofa::testing::copyToData( fout, forceOut );
-        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        sofa::testing::copyFromData( forceIn, inDofs->readForces() );
+        computeForceInFromForceOut(mparams, forceIn, forceOut);
 
         // set small parent velocities and use them to update the child
         VecDeriv_t<In> velocityIn = generateRandomVecDeriv<In>(sizeIn,
@@ -415,7 +419,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         // the pre-treatement can be useful to be able to compute 2 comparable results of applyJT with a small displacement to test applyDJT
         forceIn.fill( Deriv_t<In>() );
         sofa::testing::copyToData( inDofs->writeForces(), forceIn );  // reset parent forces before accumulating child forces
-        sofa::testing::copyToData( fout, preTreatment(forceOut) );
+        sofa::testing::copyToData( outDofs->writeForces(), preTreatment(forceOut) );
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         sofa::testing::copyFromData( forceIn, inDofs->readForces() );
 
@@ -452,7 +456,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         // update parent force based on the same child forces
         forceIn2.fill( Deriv_t<In>() );
         sofa::testing::copyToData( inDofs->writeForces(), forceIn2 );  // reset parent forces before accumulating child forces
-        sofa::testing::copyToData( fout, preTreatment(forceOut) );
+        sofa::testing::copyToData( outDofs->writeForces(), preTreatment(forceOut) );
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         sofa::testing::copyFromData( forceIn2, inDofs->readForces() );
 
