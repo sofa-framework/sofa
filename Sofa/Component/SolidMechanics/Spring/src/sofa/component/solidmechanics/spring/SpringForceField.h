@@ -75,8 +75,8 @@ public:
 
     Data<float> d_showArrowSize; ///< size of the axis
     Data<int> d_drawMode; ///< The way springs will be drawn: - 0: Line - 1:Cylinder - 2: Arrow
-    Data<type::vector<SReal> > d_kd;  ///< List of damping for the all springs. Must have the same size as indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
     Data<type::vector<SReal> > d_ks;  ///< List of stiffness for the all springs. Must have the same size as indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
+    Data<type::vector<SReal> > d_kd;  ///< List of damping for the all springs. Must have the same size as indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
     Data<type::vector<Spring> > d_springs; ///< pairs of indices, stiffness, damping, rest length
     Data<type::vector<SReal> > d_lengths; ///< List of lengths to create the springs. Must have the same size as indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
     Data<type::vector<bool> > d_elongationOnly; ///< List of boolean stating on the fact that the spring should only apply forces on elongations. Must have the same size as indices1 & indices2, or if only one element, it will be applied to all springs. If empty, False will be applied everywhere
@@ -93,7 +93,7 @@ public:
 
     // Make other overloaded version of getPotentialEnergy() to show up in subclass.
     SReal getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const override;
-    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) override;
 

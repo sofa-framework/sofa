@@ -345,7 +345,7 @@ public:
             for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
                 Block& b = this->colsValue[xj];
-                for (Index bj = 0; bj < NC; ++bj)
+                for (Index bj = 0; bj < (Index)NC; ++bj)
                     traits::vset(b, bi, bj, 0);
             }
         }
@@ -367,7 +367,7 @@ public:
             Block* b = this->wblock(i,j,false);
             if (b)
             {
-                for (Index bi = 0; bi < NL; ++bi)
+                for (Index bi = 0; bi < (Index)NL; ++bi)
                     traits::vset(*b, bi, bj, 0);
             }
         }
@@ -398,7 +398,7 @@ public:
                 {
                     Block* b = &this->colsValue[xj];
                     // first clear (i,j)
-                    for (Index bj = 0; bj < NC; ++bj)
+                    for (Index bj = 0; bj < (Index)NC; ++bj)
                         traits::vset(*b, bi, bj, 0);
 
                     // then clear (j,i) 
@@ -416,7 +416,7 @@ public:
                         }
                     }
 
-                    for (Index bj = 0; bj < NL; ++bj)
+                    for (Index bj = 0; bj < (Index)NL; ++bj)
                         traits::vset(*b, bj, bi, 0);
              
                 }
@@ -478,8 +478,8 @@ public:
     static bool nonzeros(Index /*i*/, Index /*j*/, Block& val, const Real /*ref*/) { return (!traits::empty(val)); }
     static bool nonsmall(Index /*i*/, Index /*j*/, Block& val, const Real   ref  )
     {
-        for (Index bi = 0; bi < NL; ++bi)
-            for (Index bj = 0; bj < NC; ++bj)
+        for (Index bi = 0; bi < (Index)NL; ++bi)
+            for (Index bj = 0; bj < (Index)NC; ++bj)
                 if (type::rabs(traits::v(val, bi, bj)) >= ref) return true;
         return false;
     }
@@ -487,7 +487,7 @@ public:
     {
         if (NL>1 && i*NL == j*NC)
         {
-            for (Index bi = 1; bi < NL; ++bi)
+            for (Index bi = 1; bi < (Index)NL; ++bi)
                 for (Index bj = 0; bj < bi; ++bj)
                     traits::vset(val, bi, bj, 0);
         }
@@ -497,8 +497,8 @@ public:
     {
         if (NL>1 && i*NL == j*NC)
         {
-            for (Index bi = 0; bi < NL-1; ++bi)
-                for (Index bj = bi+1; bj < NC; ++bj)
+            for (Index bi = 0; bi < (Index)NL-1; ++bi)
+                for (Index bj = bi+1; bj < (Index)NC; ++bj)
                     traits::vset(val, bi, bj, 0);
         }
         return i*NL >= j*NC;
@@ -670,8 +670,8 @@ protected:
     {
         Index index = b->data;
         const Block& data = (index >= 0) ? this->colsValue[index] : this->btemp[-index-1].value;
-        for (Index l=0; l<NL; ++l)
-            for (Index c=0; c<NC; ++c)
+        for (Index l=0; l < (Index)NL; ++l)
+            for (Index c=0; c < (Index)NC; ++c)
                 buffer[l*NC+c] = static_cast<T>(traits::v(data, l, c));
         return buffer;
     }
@@ -693,8 +693,8 @@ protected:
     {
         Index index = b->data;
         Block& data = (index >= 0) ? this->colsValue[index] : this->btemp[-index-1].value;
-        for (Index l=0; l<NL; ++l)
-            for (Index c=0; c<NC; ++c)
+        for (Index l=0; l <( Index)NL; ++l)
+            for (Index c=0; c < (Index)NC; ++c)
                 traits::vset(data, l, c, static_cast<Real>(buffer[l*NC+c]) );
     }
     virtual void bAccessorSet(InternalBlockAccessor* b, const float* buffer) override
@@ -715,8 +715,8 @@ protected:
     {
         Index index = b->data;
         Block& data = (index >= 0) ? this->colsValue[index] : this->btemp[-index-1].value;
-        for (Index l=0; l<NL; ++l)
-            for (Index c=0; c<NC; ++c)
+        for (Index l=0; l < (Index)NL; ++l)
+            for (Index c=0; c < (Index)NC; ++c)
                 traits::vadd(data, l, c,static_cast<Real>(buffer[l*NC+c]) );
     }
     virtual void bAccessorAdd(InternalBlockAccessor* b, const float* buffer) override
@@ -1001,8 +1001,8 @@ protected:
     //            Index rowIndex = this->rowIndex[xi] * NL;
     //            Index colIndex = this->colsIndex[xj] * NC;
     //            std::copy(vec.begin() + colIndex, vec.begin() + colIndex + NC, vi.begin());
-    //            for (Index bi = 0; bi < NL; ++bi)
-    //                for (Index bj = 0; bj < NC; ++bj)
+    //            for (Index bi = 0; bi < (Index)NL; ++bi)
+    //                for (Index bj = 0; bj < (Index)NC; ++bj)
     //                    res[rowIndex + bi] += traits::v(b, bi, bj) * vi[bj];
 
     //            if constexpr (!Policy::StoreLowerTriangularBlock)
@@ -1011,8 +1011,8 @@ protected:
     //                {
     //                    sofa::type::Vec<NL,Real2> vj;
     //                    std::copy(vec.begin() + rowIndex, vec.begin() + rowIndex + NL, vj.begin());
-    //                    for (Index bi = 0; bi < NL; ++bi)
-    //                        for (Index bj = 0; bj < NC; ++bj)
+    //                    for (Index bi = 0; bi < (Index)NL; ++bi)
+    //                        for (Index bj = 0; bj < (Index)NC; ++bj)
     //                            res[colIndex + bi] += traits::v(b, bj, bi) * vj[bj];
     //                }
     //            }
@@ -1039,19 +1039,19 @@ protected:
                 // transfer a chunk of large vector to a local block-sized vector
                 type::Vec<NC, Real2> v;
                 //Index jN = colsIndex[xj] * NC;    // scalar column index
-                for (Index bj = 0; bj < NC; ++bj)
+                for (Index bj = 0; bj < (Index)NC; ++bj)
                     v[bj] = vget(vec, this->colsIndex[xj], NC, bj);
 
                 // multiply the block with the local vector
                 const Block& b = this->colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
-                for (Index bi = 0; bi < NL; ++bi)
-                    for (Index bj = 0; bj < NC; ++bj)
+                for (Index bi = 0; bi < (Index)NL; ++bi)
+                    for (Index bj = 0; bj < (Index)NC; ++bj)
                         r[bi] += traits::v(b, bi, bj) * v[bj];
             }
 
             // transfer the local result  to the large result vector
             //Index iN = rowIndex[xi] * NL;                      // scalar row index
-            for (Index bi = 0; bi < NL; ++bi)
+            for (Index bi = 0; bi < (Index)NL; ++bi)
                 vset(res, this->rowIndex[xi], NL, bi, r[bi]);
         }
     }
@@ -1076,8 +1076,8 @@ protected:
                 Index rowIndex = this->rowIndex[xi] * NL;
                 Index colIndex = this->colsIndex[xj] * NC;
                 std::copy(vec.begin() + colIndex, vec.begin() + colIndex + NC, vi.begin());
-                for (Index bi = 0; bi < NL; ++bi)
-                    for (Index bj = 0; bj < NC; ++bj)
+                for (Index bi = 0; bi < (Index)NL; ++bi)
+                    for (Index bj = 0; bj < (Index)NC; ++bj)
                         res[rowIndex + bi] += traits::v(b, bi, bj) * vi[bj];
 
                 if constexpr (!Policy::StoreLowerTriangularBlock)
@@ -1086,8 +1086,8 @@ protected:
                     {
                         sofa::type::Vec<NL,Real2> vj;
                         std::copy(vec.begin() + rowIndex, vec.begin() + rowIndex + NL, vj.begin());
-                        for (Index bi = 0; bi < NL; ++bi)
-                            for (Index bj = 0; bj < NC; ++bj)
+                        for (Index bi = 0; bi < (Index)NL; ++bi)
+                            for (Index bj = 0; bj < (Index)NC; ++bj)
                                 res[colIndex + bi] += traits::v(b, bj, bi) * vj[bj];
                     }
                 }
@@ -1113,16 +1113,16 @@ protected:
                 const Block& b = this->colsValue[xj];
                 Index rowIndex = this->rowIndex[xi] * NL;
                 Index colIndex = this->colsIndex[xj] * NC;
-                for (Index bi = 0; bi < NL; ++bi)
-                    for (Index bj = 0; bj < NC; ++bj)
+                for (Index bi = 0; bi < (Index)NL; ++bi)
+                    for (Index bj = 0; bj < (Index)NC; ++bj)
                         res[rowIndex + bi] += traits::v(b, bi, bj) * vec[bj];
 
                 if constexpr (!Policy::StoreLowerTriangularBlock)
                 {
                     if (colIndex != rowIndex)
                     {
-                        for (Index bi = 0; bi < NL; ++bi)
-                            for (Index bj = 0; bj < NC; ++bj)
+                        for (Index bi = 0; bi < (Index)NL; ++bi)
+                            for (Index bj = 0; bj < (Index)NC; ++bj)
                                 res[colIndex + bi] += traits::v(b, bj, bi) * vec[bj];
                     }
                 }
@@ -1150,7 +1150,7 @@ protected:
             // copy the corresponding chunk of the input to a local vector
             type::Vec<NL,Real2> v;
             //Index iN = rowIndex[xi] * NL;    // index of the row in the vector
-            for (Index bi = 0; bi < NL; ++bi)
+            for (Index bi = 0; bi < (Index)NL; ++bi)
                 v[bi] = vget(vec, this->rowIndex[xi], NL, bi);
 
             // accumulate the product of the column with the local vector
@@ -1163,14 +1163,14 @@ protected:
                 //Index jN = colsIndex[xj] * NC;
 
                 // columnwise block-vector product
-                for (Index bj = 0; bj < NC; ++bj)
+                for (Index bj = 0; bj < (Index)NC; ++bj)
                     r[bj] = traits::v(b, 0, bj) * v[0];
-                for (Index bi = 1; bi < NL; ++bi)
-                    for (Index bj = 0; bj < NC; ++bj)
+                for (Index bi = 1; bi < (Index)NL; ++bi)
+                    for (Index bj = 0; bj < (Index)NC; ++bj)
                         r[bj] += traits::v(b, bi, bj) * v[bi];
 
                 // accumulate the product to the result
-                for (Index bj = 0; bj < NC; ++bj)
+                for (Index bj = 0; bj < (Index)NC; ++bj)
                     vadd(res, this->colsIndex[xj], NC, bj, r[bj]);
             }
         }
@@ -1279,8 +1279,8 @@ public:
             {
                 Index jN = this->colsIndex[xj] * NC;
                 const Block& b = this->colsValue[xj];
-                for (Index bi = 0; bi < NL; ++bi)
-                    for (Index bj = 0; bj < NC; ++bj)
+                for (Index bi = 0; bi < (Index)NL; ++bi)
+                    for (Index bj = 0; bj < (Index)NC; ++bj)
                         dest->add(iN+bi, jN+bj, traits::v(b, bi, bj));
             }
         }
@@ -1291,8 +1291,8 @@ public:
                 Index iN = it->l * NL;
                 Index jN = it->c * NC;
                 const Block& b = it->value;
-                for (Index bi = 0; bi < NL; ++bi)
-                    for (Index bj = 0; bj < NC; ++bj)
+                for (Index bi = 0; bi < (Index)NL; ++bi)
+                    for (Index bj = 0; bj < (Index)NC; ++bj)
                         dest->add(iN+bi, jN+bj, traits::v(b, bi, bj));
             }
         }
