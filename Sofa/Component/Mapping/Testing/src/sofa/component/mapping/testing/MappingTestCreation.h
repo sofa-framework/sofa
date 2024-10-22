@@ -335,7 +335,6 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         const std::size_t sizeOut = outDofs->getSize();
 
         VecDeriv_t<In> forceIn(sizeIn);
-        VecDeriv_t<In> forceIn2(sizeIn);
 
         // get position data
         VecCoord_t<Out> positionOut = outDofs->readPositions().ref();
@@ -452,11 +451,10 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
 
         // update parent force based on the same child forces
-        forceIn2.fill( Deriv_t<In>() );
-        sofa::testing::copyToData( inDofs->writeForces(), forceIn2 );  // reset parent forces before accumulating child forces
+        inDofs->writeForces()->fill(Deriv_t<In>());
         sofa::testing::copyToData( outDofs->writeForces(), preTreatment(forceOut) );
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        sofa::testing::copyFromData( forceIn2, inDofs->readForces() );
+        const VecDeriv_t<In>& forceIn2 = inDofs->readForces().ref();
 
         VecDeriv_t<In> fp12(sizeIn);
         for (unsigned i = 0; i < sizeIn; i++)
