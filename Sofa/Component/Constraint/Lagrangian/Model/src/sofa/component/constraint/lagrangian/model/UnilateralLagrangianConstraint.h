@@ -82,7 +82,7 @@ protected:
         long contactId;
         PersistentID localId;
         SReal mu;		///< angle for friction
-
+        SReal drag;    ///< viscous friction coefficient
         Coord P, Q;
 
         mutable Real dfree;
@@ -129,10 +129,10 @@ public:
 
     void clear(int reserve = 0);
 
-    virtual void addContact(SReal mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0, PersistentID localid=0);
+    virtual void addContact(SReal mu, SReal drag, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0, PersistentID localid=0);
 
-    void addContact(SReal mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0);
-    void addContact(SReal mu, Deriv norm, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0);
+    void addContact(SReal mu, SReal drag, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0);
+    void addContact(SReal mu, SReal drag, Deriv norm, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0);
 
     void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
             , const DataVecCoord &x1, const DataVecCoord &x2) override;

@@ -72,6 +72,7 @@ protected:
     sofa::core::objectmodel::RenamedData<double> tol;
 
     Data<double> d_mu; ///< friction coefficient (0 for frictionless contacts)
+    Data<double> d_drag; ///< viscosity coefficient (0 for frictionless contacts)
     Data<double> d_tol; ///< tolerance for the constraints resolution (0 for default tolerance)
     std::vector< sofa::core::collision::DetectionOutput* > contacts;
     std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
