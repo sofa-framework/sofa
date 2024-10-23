@@ -84,7 +84,7 @@ public:
         if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
-            map->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+            map->apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::position, core::ConstVecCoordId::position());
             map->applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
         }
     }

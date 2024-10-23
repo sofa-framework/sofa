@@ -650,7 +650,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const linearalg
 
     helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::VecDerivId::dx());
     VecDeriv& dx = dxData.wref();
-    helper::WriteAccessor<Data<VecCoord> > xData = *this->mstate->write(core::VecCoordId::position());
+    helper::WriteAccessor<Data<VecCoord> > xData = *this->mstate->write(core::vec_id::write_access::position);
     VecCoord& x = xData.wref();
     helper::WriteAccessor<Data<VecDeriv> > vData = *this->mstate->write(core::VecDerivId::velocity());
     VecDeriv& v = vData.wref();

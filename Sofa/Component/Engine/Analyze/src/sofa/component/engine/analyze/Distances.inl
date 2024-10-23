@@ -111,7 +111,7 @@ void Distances< DataTypes >::init()
         unsigned int realSize = 0;
         const unsigned int step = d_initTargetStep.getValue();
         target->resize( size);
-        helper::WriteAccessor< Data< VecCoord > > xto = *target->write(core::VecCoordId::position());
+        helper::WriteAccessor< Data< VecCoord > > xto = *target->write(core::vec_id::write_access::position);
         helper::WriteAccessor< Data< VecCoord > > xto0 = *target->write(core::VecCoordId::restPosition());
         const Coord& offSet = d_offset.getValue();
         const type::Vec3& voxelSize = hexaContainer->d_voxelSize.getValue();

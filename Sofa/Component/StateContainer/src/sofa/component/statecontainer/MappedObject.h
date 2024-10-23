@@ -88,7 +88,7 @@ public:
 
     Data< VecCoord >* write(core::VecCoordId v) override
     {
-        if(v == core::VecCoordId::position())
+        if(v == core::vec_id::write_access::position)
             return &d_X;
 
         return nullptr;

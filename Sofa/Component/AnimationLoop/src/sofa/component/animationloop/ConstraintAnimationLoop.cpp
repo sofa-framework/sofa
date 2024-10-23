@@ -472,7 +472,7 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, s
     mop.propagateDx(core::VecDerivId::dx(), true);
 
     // "mapped" x = xfree + dx
-    MechanicalVOpVisitor(params, core::VecCoordId::position(), core::ConstVecCoordId::freePosition(), core::ConstVecDerivId::dx(), 1.0 ).setOnlyMapped(true).execute(node);
+    MechanicalVOpVisitor(params, core::vec_id::write_access::position, core::ConstVecCoordId::freePosition(), core::ConstVecDerivId::dx(), 1.0 ).setOnlyMapped(true).execute(node);
 
     if(!d_schemeCorrection.getValue())
     {
@@ -622,8 +622,8 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 
     //////////////// BEFORE APPLYING CONSTRAINT  : propagate position through mapping
     core::MechanicalParams mparams(*params);
-    MechanicalProjectPositionVisitor(&mparams, 0, core::VecCoordId::position()).execute(node);
-    MechanicalPropagateOnlyPositionVisitor(&mparams, 0, core::VecCoordId::position()).execute(node);
+    MechanicalProjectPositionVisitor(&mparams, 0, core::vec_id::write_access::position).execute(node);
+    MechanicalPropagateOnlyPositionVisitor(&mparams, 0, core::vec_id::write_access::position).execute(node);
 
 
     /// CONSTRAINT SPACE & COMPLIANCE COMPUTATION

@@ -190,7 +190,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     rotation2       .setGroup("Transformation");
     scale           .setGroup("Transformation");
 
-    setVecCoord(core::VecCoordId::position(), &x);
+    setVecCoord(core::vec_id::write_access::position, &x);
     setVecCoord(core::VecCoordId::freePosition(), &xfree);
     setVecCoord(core::VecCoordId::restPosition(), &x0);
     setVecCoord(core::VecCoordId::resetPosition(), &reset_position);
@@ -448,7 +448,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
                         if (vecCoord.size() != 0)
                         {
-                            coordVecs.push_back(k);
+                            coordVecs.emplace_back(k);
                         }
                     }
                 }
@@ -461,7 +461,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
                         if (vecDeriv.size() != 0)
                         {
-                            derivVecs.push_back(k);
+                            derivVecs.emplace_back(k);
                         }
                     }
                 }
@@ -673,7 +673,7 @@ void MechanicalObject<DataTypes>::reserve(const Size size)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyTranslation (const SReal dx, const SReal dy, const SReal dz)
 {
-    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(core::VecCoordId::position());
+    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(core::vec_id::write_access::position);
 
     for (unsigned int i = 0; i < x_wA.size(); i++)
     {
@@ -693,7 +693,7 @@ void MechanicalObject<DataTypes>::applyRotation (const SReal rx, const SReal ry,
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyRotation (const type::Quat<SReal> q)
 {
-    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(core::VecCoordId::position());
+    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(core::vec_id::write_access::position);
 
     for (unsigned int i = 0; i < x_wA.size(); i++)
     {
@@ -1024,7 +1024,7 @@ void MechanicalObject<DataTypes>::init()
         }
     }
 
-    Data<VecCoord>* x_wAData = this->write(sofa::core::VecCoordId::position());
+    Data<VecCoord>* x_wAData = this->write(sofa::core::vec_id::write_access::position);
     Data<VecDeriv>* v_wAData = this->write(sofa::core::VecDerivId::velocity());
     VecCoord& x_wA = *x_wAData->beginEdit();
     VecDeriv& v_wA = *v_wAData->beginEdit();

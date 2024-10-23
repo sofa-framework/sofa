@@ -371,7 +371,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     VecDeriv& velocity = dataVelocity.wref();
 
     VecDeriv velocity0 = velocity;
-    helper::WriteAccessor<Data<VecCoord> > posData = *mstate->write(core::VecCoordId::position());
+    helper::WriteAccessor<Data<VecCoord> > posData = *mstate->write(core::vec_id::write_access::position);
     VecCoord& pos = posData.wref();
     VecCoord pos0 = pos;
 

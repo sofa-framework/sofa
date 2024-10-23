@@ -190,7 +190,7 @@ SReal Ray::l() const
 
 void Ray::setOrigin(const type::Vec3& newOrigin)
 {
-    auto xData = sofa::helper::getWriteAccessor(*model->getMechanicalState()->write(core::VecCoordId::position()));
+    auto xData = sofa::helper::getWriteAccessor(*model->getMechanicalState()->write(core::vec_id::write_access::position));
     xData.wref()[index] = newOrigin;
 
     auto xDataFree = sofa::helper::getWriteAccessor(*model->getMechanicalState()->write(core::VecCoordId::freePosition()));

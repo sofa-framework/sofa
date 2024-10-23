@@ -1204,7 +1204,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeBBox(const core::Ex
 
 	if( !onlyVisible ) return;
 
-	helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::VecCoordId::position());
+	helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::vec_id::write_access::position);
 
 	static const Real max_real = std::numeric_limits<Real>::max();
 	static const Real min_real = std::numeric_limits<Real>::lowest();

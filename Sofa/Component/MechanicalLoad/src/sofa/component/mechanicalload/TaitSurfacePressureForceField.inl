@@ -140,7 +140,7 @@ void TaitSurfacePressureForceField<DataTypes>::init()
     }
 
     updateFromTopology();
-    computeMeshVolumeAndArea(*d_currentVolume.beginEdit(), *d_currentSurfaceArea.beginEdit(), this->mstate->read(sofa::core::VecCoordId::position()));
+    computeMeshVolumeAndArea(*d_currentVolume.beginEdit(), *d_currentSurfaceArea.beginEdit(), this->mstate->read(sofa::core::vec_id::write_access::position));
     d_currentVolume.endEdit();
     d_currentSurfaceArea.endEdit();
     Real currentStiffness = 0;
@@ -148,7 +148,7 @@ void TaitSurfacePressureForceField<DataTypes>::init()
     computePressureAndStiffness(currentPressure, currentStiffness, d_currentVolume.getValue(), d_v0.getValue());
     d_currentPressure.setValue(currentPressure);
     d_currentStiffness.setValue(currentStiffness);
-    computeStatistics(this->mstate->read(sofa::core::VecCoordId::position()));
+    computeStatistics(this->mstate->read(sofa::core::vec_id::write_access::position));
 }
 
 template <class DataTypes>

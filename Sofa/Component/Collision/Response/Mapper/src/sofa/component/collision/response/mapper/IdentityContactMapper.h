@@ -76,7 +76,7 @@ public:
     {
         if (mapping!=nullptr)
         {
-            mapping->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+            mapping->apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::position, core::ConstVecCoordId::position());
             mapping->applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
         }
     }

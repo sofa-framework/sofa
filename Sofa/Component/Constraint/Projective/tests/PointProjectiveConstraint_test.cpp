@@ -138,7 +138,7 @@ struct PointProjectiveConstraint_test : public BaseSimulationTest, NumericTest<t
            xprev[i] = x[i] = CPos(i,0,0);
        }
 
-       projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
+       projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::vec_id::write_access::position) );
 
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted

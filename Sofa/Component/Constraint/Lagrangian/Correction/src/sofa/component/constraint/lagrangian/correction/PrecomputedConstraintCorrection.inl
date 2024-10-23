@@ -325,7 +325,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         /// (avoid to have a line of 0 at the top of the matrix)
         if (eulerSolver)
         {
-            eulerSolver->solve(core::execparams::defaultInstance(), dt, core::VecCoordId::position(), core::VecDerivId::velocity());
+            eulerSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::VecDerivId::velocity());
         }
 
         Deriv unitary_force;
@@ -348,7 +348,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 velocity.resize(nbNodes);
 
                 // Actualize ref to the position vector ; it seems it is changed at every eulerSolver->solve()
-                helper::WriteOnlyAccessor< Data< VecCoord > > wposData = *this->mstate->write(core::VecCoordId::position());
+                helper::WriteOnlyAccessor< Data< VecCoord > > wposData = *this->mstate->write(core::vec_id::write_access::position);
                 VecCoord& pos = wposData.wref();
 
                 for (unsigned int n = 0; n < nbNodes; n++)
@@ -360,7 +360,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 {
                     fact *= eulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
 
-                    eulerSolver->solve(core::execparams::defaultInstance(), dt, core::VecCoordId::position(), core::VecDerivId::velocity());
+                    eulerSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::VecDerivId::velocity());
 
                     if (linearSolver)
                         linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
@@ -401,7 +401,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         for (unsigned int i = 0; i < velocity.size(); i++)
             velocity[i] = prev_velocity[i];
 
-        helper::WriteOnlyAccessor< Data< VecCoord > > wposData = *this->mstate->write(core::VecCoordId::position());
+        helper::WriteOnlyAccessor< Data< VecCoord > > wposData = *this->mstate->write(core::vec_id::write_access::position);
         VecCoord& pos = wposData.wref();
 
         // Restore position
@@ -695,7 +695,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const lineara
 {
     helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::force());
     helper::WriteAccessor<Data<VecDeriv> > dxData    = *this->mstate->write(core::VecDerivId::dx());
-    helper::WriteAccessor<Data<VecCoord> > xData     = *this->mstate->write(core::VecCoordId::position());
+    helper::WriteAccessor<Data<VecCoord> > xData     = *this->mstate->write(core::vec_id::write_access::position);
     helper::WriteAccessor<Data<VecDeriv> > vData     = *this->mstate->write(core::VecDerivId::velocity());
     VecDeriv& force = forceData.wref();
     VecDeriv& dx = dxData.wref();

@@ -207,7 +207,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
 
         /// Apply the mapping
         // --- Use of the method apply
-        this->mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
+        this->mapping->apply(&mparams, core::vec_id::write_access::position, core::vec_id::write_access::position);
         this->mapping->applyJ(&mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
         // ================ test apply : check if the child positions are the expected ones
         bool succeed = true;
@@ -389,7 +389,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
             WriteIn2VecCoord pin2 = in2Dofs[p]->writePositions();
             sofa::testing::copyToData(pin2, xIn2p1[p]);
         }
-        this->mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
+        this->mapping->apply(&mparams, core::vec_id::write_access::position, core::vec_id::write_access::position);
         WriteOutVecCoord pout = this->outDofs->writePositions();
         sofa::testing::copyFromData(xc1, pout);
 

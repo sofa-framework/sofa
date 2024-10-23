@@ -79,9 +79,9 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     mop->setImplicit(false); // this solver is explicit only
-    MultiVecCoord pos(&vop, core::VecCoordId::position() );
+    MultiVecCoord pos(&vop, core::vec_id::write_access::position );
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
-    MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );
+    MultiVecCoord pos2(&vop, xResult /*core::vec_id::write_access::position*/ );
     MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
     MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
     MultiVecDeriv f  (&vop, core::VecDerivId::force() );

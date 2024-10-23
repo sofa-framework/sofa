@@ -177,7 +177,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
         sofa::simulation::node::initRoot(root.get());
 
         /// apply the mapping
-        mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
+        mapping->apply(&mparams, core::vec_id::write_access::position, core::vec_id::write_access::position);
         mapping->applyJ(&mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity());
 
         /// test apply: check if the child positions are the expected ones
@@ -334,7 +334,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
             sofa::testing::copyToData( pin, xp1[p] );
 //            cout<<"new parent positions xp1["<< p << "] = " << xp1[p] << endl;
         }
-        mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
+        mapping->apply ( &mparams, core::vec_id::write_access::position, core::vec_id::write_access::position );
         ReadOutVecCoord pout = outDofs->readPositions();
         sofa::testing::copyFromData( xc1, pout );
 //        cout<<"new child positions xc1 = " << xc1 << endl;

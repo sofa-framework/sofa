@@ -2576,7 +2576,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::Suture2Points(TriangleID ind_ta
 
     auto* state = this->getDOF();
 
-    sofa::helper::WriteAccessor< Data<VecCoord> > x_wA = *state->write(core::VecCoordId::position());
+    sofa::helper::WriteAccessor< Data<VecCoord> > x_wA = *state->write(core::vec_id::write_access::position);
     sofa::helper::WriteAccessor< Data<VecDeriv> > v_wA = *state->write(core::VecDerivId::velocity());
 
     DataTypes::set(x_wA[ind1], x_created[0], x_created[1], x_created[2]);

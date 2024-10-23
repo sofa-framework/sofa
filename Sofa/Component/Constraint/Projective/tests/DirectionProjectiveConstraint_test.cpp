@@ -137,7 +137,7 @@ struct DirectionProjectiveConstraint_test : public BaseSimulationTest, NumericTe
            xprev[i] = x[i] = CPos(i,0,0);
        }
 
-       projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
+       projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::vec_id::write_access::position) );
 
        type::vector<CPos> m_origin;
 

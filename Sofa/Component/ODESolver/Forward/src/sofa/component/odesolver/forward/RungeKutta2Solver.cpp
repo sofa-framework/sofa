@@ -46,9 +46,9 @@ void RungeKutta2Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     mop->setImplicit(false); // this solver is explicit only
     // Get the Ids of the state vectors
-    MultiVecCoord pos(&vop, core::VecCoordId::position() );
+    MultiVecCoord pos(&vop, core::vec_id::write_access::position );
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
-    MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );
+    MultiVecCoord pos2(&vop, xResult /*core::vec_id::write_access::position*/ );
     MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
 
     // Allocate auxiliary vectors

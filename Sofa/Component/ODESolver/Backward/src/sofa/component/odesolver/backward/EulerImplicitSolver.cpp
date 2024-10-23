@@ -83,7 +83,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 #endif
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
-    MultiVecCoord pos(&vop, core::VecCoordId::position() );
+    MultiVecCoord pos(&vop, core::vec_id::write_access::position );
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
     MultiVecDeriv f(&vop, core::VecDerivId::force() );
     MultiVecDeriv b(&vop, true, core::VecIdProperties{"RHS", GetClass()->className});

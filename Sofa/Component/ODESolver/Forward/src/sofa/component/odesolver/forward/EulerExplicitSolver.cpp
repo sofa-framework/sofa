@@ -140,7 +140,7 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
     MultiVecDeriv newVel(vop, vResult);                    // position to be computed
 
     // Initialize the set of multi-vectors used to compute the new velocity and position
-    MultiVecCoord pos(vop, core::VecCoordId::position() ); //current position
+    MultiVecCoord pos(vop, core::vec_id::write_access::position ); //current position
     MultiVecDeriv vel(vop, core::VecDerivId::velocity() ); //current velocity
 
 #ifdef SOFA_NO_VMULTIOP // unoptimized version

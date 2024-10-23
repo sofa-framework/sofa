@@ -163,7 +163,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     simulation::common::VectorOperations vop(params, node);
     simulation::common::MechanicalOperations mop(params, getContext());
 
-    MultiVecCoord pos(&vop, core::VecCoordId::position() );
+    MultiVecCoord pos(&vop, core::vec_id::write_access::position );
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
     MultiVecCoord freePos(&vop, core::VecCoordId::freePosition() );
     MultiVecDeriv freeVel(&vop, core::VecDerivId::freeVelocity() );

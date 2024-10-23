@@ -325,7 +325,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ve
 
             const InDataVecCoord* xfromData = m_toModel->read(core::ConstVecCoordId::position());
             const InVecCoord xfrom = xfromData->getValue();
-            OutDataVecCoord* xtoData = m_toModel->write(core::VecCoordId::position());
+            OutDataVecCoord* xtoData = m_toModel->write(core::vec_id::write_access::position);
             OutVecCoord &xto = *xtoData->beginEdit();
             apply(xto, xfrom, (m_fromRootModel==nullptr ? nullptr : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
             this->f_printLog.setValue(log);
@@ -495,7 +495,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
             {
                 core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
                 if(this->f_applyRestPosition.getValue() )
-                    core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+                    core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::position, core::ConstVecCoordId::position());
                 break;
             }
             default:

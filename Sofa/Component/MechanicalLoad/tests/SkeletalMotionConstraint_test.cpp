@@ -128,7 +128,7 @@ struct SkeletalMotionProjectiveConstraint_test : public BaseSimulationTest, Nume
 
     bool test_projectPosition()
     {
-        projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecCoordId::position()));
+        projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::vec_id::write_access::position));
         typename MechanicalObject::ReadVecCoord x = dofs->readPositions();
         Coord target0(CPos(0.5,0.5,0.5), CRot(0, 0.19509, 0, 0.980785));
         Coord target1(CPos(0.5,1.5,0.5), CRot(0.69352, 0.13795, -0.13795, 0.69352));
