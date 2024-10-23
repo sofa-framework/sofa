@@ -87,10 +87,10 @@ public:
 
     typedef TVecId<V_COORD, vaccess> MyVecId;
 
-    template<State state>
+    template<State v_state>
     static constexpr MyVecId state()
     {
-        return MyVecId(static_cast<std::underlying_type_t<State>>(state));
+        return MyVecId(static_cast<std::underlying_type_t<State>>(v_state));
     }
 
     static constexpr MyVecId position()      { return state<State::POSITION>();}
@@ -160,10 +160,10 @@ public:
         DYNAMIC_INDEX
     };
 
-    template<State state>
+    template<State v_state>
     static constexpr MyVecId state()
     {
-        return MyVecId(static_cast<std::underlying_type_t<State>>(state));
+        return MyVecId(static_cast<std::underlying_type_t<State>>(v_state));
     }
 
     static constexpr MyVecId velocity()       { return state<State::VELOCITY>(); }
@@ -244,10 +244,10 @@ public:
 
     typedef TVecId<V_MATDERIV, vaccess> MyVecId;
 
-    template<State state>
+    template<State v_state>
     static constexpr MyVecId state()
     {
-        return MyVecId(static_cast<std::underlying_type_t<State>>(state));
+        return MyVecId(static_cast<std::underlying_type_t<State>>(v_state));
     }
 
     static constexpr MyVecId constraintJacobian() { return state<State::CONSTRAINT_JACOBIAN>();} // jacobian matrix of constraints
