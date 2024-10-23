@@ -130,7 +130,7 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
         m_counter++;
     }
     // the referenced parent data has not been created yet but a path has been given
-    else if (!path.empty()) 
+    else if (!path.empty())
     {
         parentData.setPath(path);
     }
