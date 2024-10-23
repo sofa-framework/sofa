@@ -453,7 +453,7 @@ public:
 
     [[nodiscard]] constexpr bool isNull() const
     {
-        return this->index == State::NULL_STATE;
+        return this->index == static_cast<unsigned int>(State::NULL_STATE);
     }
 
     [[nodiscard]] std::string getName() const
