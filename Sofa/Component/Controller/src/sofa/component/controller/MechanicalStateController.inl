@@ -81,7 +81,7 @@ void MechanicalStateController<DataTypes>::applyController()
         {
             {
                 helper::WriteAccessor<Data<VecCoord> > x = *this->mState->write(core::vec_id::write_access::position);
-                helper::WriteAccessor<Data<VecCoord> > xfree = *this->mState->write(core::VecCoordId::freePosition());
+                helper::WriteAccessor<Data<VecCoord> > xfree = *this->mState->write(core::vec_id::write_access::freePosition);
                 xfree[0].getCenter() = position;
                 x[0].getCenter() = position;
 
@@ -102,8 +102,8 @@ void MechanicalStateController<DataTypes>::applyController()
         if (mState)
         {
             helper::WriteAccessor<Data<VecCoord> > x = *this->mState->write(core::vec_id::write_access::position);
-            mState->vRealloc( sofa::core::mechanicalparams::defaultInstance(), core::VecCoordId::freePosition() ); // freePosition is not allocated by default
-            helper::WriteAccessor<Data<VecCoord> > xfree = *this->mState->write(core::VecCoordId::freePosition());
+            mState->vRealloc( sofa::core::mechanicalparams::defaultInstance(), core::vec_id::write_access::freePosition ); // freePosition is not allocated by default
+            helper::WriteAccessor<Data<VecCoord> > xfree = *this->mState->write(core::vec_id::write_access::freePosition);
 
             unsigned int i = d_index.getValue();
 

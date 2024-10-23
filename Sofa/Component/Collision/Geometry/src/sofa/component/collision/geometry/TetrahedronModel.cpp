@@ -207,7 +207,7 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
     updateFromTopology();
 
     Vec3 minElem, maxElem;
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     for (std::size_t i=0; i<size; i++)
     {

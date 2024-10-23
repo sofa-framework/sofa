@@ -196,7 +196,7 @@ void UncoupledConstraintCorrection<DataTypes>::init()
         msg_warning() << "Neither the \'defaultCompliance\' nor the \'compliance\' data is set, please set one to define your compliance matrix";
     }
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     if (d_compliance.getValue().size() == 1 && d_defaultCompliance.isSet() && d_defaultCompliance.getValue() == d_compliance.getValue()[0])
     {
@@ -289,7 +289,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
     if(!this->isComponentStateValid())
         return;
 
-    helper::WriteAccessor<Data<MatrixDeriv> > constraintsData = *this->mstate->write(core::MatrixDerivId::constraintJacobian());
+    helper::WriteAccessor<Data<MatrixDeriv> > constraintsData = *this->mstate->write(core::vec_id::write_access::constraintJacobian);
     MatrixDeriv& constraints = constraintsData.wref();
 
     MatrixDeriv constraintCopy;
@@ -622,13 +622,13 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const linearalg
     if(!this->isComponentStateValid())
         return;
 
-    helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::externalForce());
+    helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::vec_id::write_access::externalForce);
     VecDeriv& force = forceData.wref();
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
     const VecReal& comp = d_compliance.getValue();
     const Real comp0 = d_defaultCompliance.getValue();
 
-    force.resize((this->mstate->read(core::ConstVecCoordId::position())->getValue()).size());
+    force.resize((this->mstate->read(core::vec_id::read_access::position)->getValue()).size());
 
     MatrixDerivRowConstIterator rowItEnd = constraints.end();
 
@@ -648,14 +648,14 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const linearalg
     }
 
 
-    helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::VecDerivId::dx());
+    helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::vec_id::write_access::dx);
     VecDeriv& dx = dxData.wref();
     helper::WriteAccessor<Data<VecCoord> > xData = *this->mstate->write(core::vec_id::write_access::position);
     VecCoord& x = xData.wref();
-    helper::WriteAccessor<Data<VecDeriv> > vData = *this->mstate->write(core::VecDerivId::velocity());
+    helper::WriteAccessor<Data<VecDeriv> > vData = *this->mstate->write(core::vec_id::write_access::velocity);
     VecDeriv& v = vData.wref();
-    const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
-    const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
+    const VecDeriv& v_free = this->mstate->read(core::vec_id::read_access::freeVelocity)->getValue();
+    const VecCoord& x_free = this->mstate->read(core::vec_id::read_access::freePosition)->getValue();
 
     const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
 
@@ -683,7 +683,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const linearalg
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::resetContactForce()
 {
-    helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::externalForce());
+    helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::vec_id::write_access::externalForce);
     VecDeriv& force = forceData.wref();
 
     for (unsigned i = 0; i < force.size(); ++i)
@@ -697,7 +697,7 @@ void UncoupledConstraintCorrection<DataTypes>::resetContactForce()
 template<class DataTypes>
 bool UncoupledConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
 {
-    const MatrixDeriv &constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    const MatrixDeriv &constraints = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
 
     return (constraints.readLine(index) != constraints.end());
 }
@@ -706,7 +706,7 @@ bool UncoupledConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SReal * f, std::list<unsigned int>& /*renumbering*/)
 {
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
 
     constraint_disp.clear();
     constraint_disp.resize(this->mstate->getSize());
@@ -753,7 +753,7 @@ void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(SReal *
     if(!this->isComponentStateValid())
         return;
 
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
 
     for (int id = begin; id <= end; id++)
     {
@@ -783,7 +783,7 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(SReal * df, i
     /// if update is true, it computes the displacements due to this delta of force.
     /// As the contact are uncoupled, a displacement is obtained only on dof involved with the constraints
 
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
     const VecReal& comp = d_compliance.getValue();
     const Real comp0 = d_defaultCompliance.getValue();
 
@@ -820,7 +820,7 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(SReal * df, i
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end)
 {
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
     const VecReal& comp = d_compliance.getValue();
     const Real comp0 = d_defaultCompliance.getValue();
 

@@ -71,7 +71,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
     typename DataTypes::Real lambdastar, mustar;
     typename DataTypes::Coord point[4],shapeVector[4];
 
-    const auto& restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const auto& restPosition=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     edgeRestInfoVector& edgeData = *(d_edgeInfo.beginEdit());
     const auto& tetraArray = m_topology->getTetrahedra();
@@ -153,7 +153,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronDestruction(con
     typename DataTypes::Real lambdastar, mustar;
     typename DataTypes::Coord point[4],shapeVector[4];
 
-    const typename DataTypes::VecCoord restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const typename DataTypes::VecCoord restPosition=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     edgeRestInfoVector& edgeData = *(d_edgeInfo.beginEdit());
 
@@ -287,7 +287,7 @@ TetrahedralTensorMassForceField<DataTypes>::init()
     if (_initialPoints.size() == 0)
     {
         // get restPosition
-        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        const VecCoord& p = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
         _initialPoints=p;
     }
 
@@ -346,7 +346,7 @@ SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core
 {
     SCOPED_TIMER("getPotentialEnergy");
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     SReal energy=0;
 
@@ -507,7 +507,7 @@ void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::Visual
     constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
     std::vector<sofa::type::Vec3> vertices;
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     const int nbTriangles=m_topology->getNbTriangles();
 
     for(int i=0;i<nbTriangles; ++i)

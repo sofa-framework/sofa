@@ -142,7 +142,7 @@ struct DirectionProjectiveConstraint_test : public BaseSimulationTest, NumericTe
        type::vector<CPos> m_origin;
 
        // particle original position
-       const VecCoord& xOrigin = projection->getMState()->read(core::ConstVecCoordId::position())->getValue();
+       const VecCoord& xOrigin = projection->getMState()->read(core::vec_id::read_access::position)->getValue();
         for( typename Indices::const_iterator it = indices.begin() ; it != indices.end() ; ++it )
         {
              m_origin.push_back( DataTypes::getCPos(xOrigin[*it]) );
@@ -188,7 +188,7 @@ struct DirectionProjectiveConstraint_test : public BaseSimulationTest, NumericTe
            vprev[i] = v[i] = CPos(i,0,0);
        }
 
-       projection->projectVelocity(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()) );
+       projection->projectVelocity(core::mechanicalparams::defaultInstance(), *dofs->write(core::vec_id::write_access::velocity) );
 
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted

@@ -626,7 +626,7 @@ void UniformMass<DataTypes>::draw(const VisualParams* vparams)
     if (!d_showCenterOfGravity.getValue())
         return;
 
-    ReadAccessor<VecCoord> x = mstate->read(ConstVecCoordId::position())->getValue();
+    ReadAccessor<VecCoord> x = mstate->read(core::vec_id::read_access::position)->getValue();
     const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     Coord gravityCenter;

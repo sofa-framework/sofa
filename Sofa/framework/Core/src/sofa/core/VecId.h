@@ -444,11 +444,11 @@ public:
     }
 
     using TStandardVec<vtype, vaccess>::state;
-    using TStandardVec<vtype, vaccess>::State;
+    using State = typename TStandardVec<vtype, vaccess>::State;
 
     static constexpr TVecId null()
     {
-        return state<State::NULL_STATE>();
+        return TStandardVec<vtype, vaccess>::template state<State::NULL_STATE>();
     }
 
     [[nodiscard]] constexpr bool isNull() const

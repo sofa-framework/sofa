@@ -153,7 +153,7 @@ struct SkeletalMotionProjectiveConstraint_test : public BaseSimulationTest, Nume
 
     bool test_projectVelocity()
     {
-        projection->projectVelocity(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()));
+        projection->projectVelocity(core::mechanicalparams::defaultInstance(), *dofs->write(core::vec_id::write_access::velocity));
         typename MechanicalObject::ReadVecDeriv x = dofs->readVelocities();
         bool succeed = true;
         Deriv target(CPos(1,1,1), typename Deriv::Rot(0,0.785397,0));

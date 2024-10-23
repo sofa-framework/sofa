@@ -307,7 +307,7 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
         if(d_schemeCorrection.getValue())
         {
             sofa::core::ConstraintParams cparams(*params);
-            sofa::core::MultiVecDerivId f =  core::VecDerivId::externalForce();
+            sofa::core::MultiVecDerivId f =  core::vec_id::write_access::externalForce;
 
             for (auto cc : constraintCorrections)
             {
@@ -319,7 +319,7 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
 
         {
             sofa::core::MechanicalParams mparams(*params);
-            sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
+            sofa::core::MultiVecCoordId xfree = sofa::core::vec_id::write_access::freePosition;
             mparams.x() = xfree;
             MechanicalProjectPositionVisitor(&mparams, 0, xfree ).execute(context);
             MechanicalPropagateOnlyPositionVisitor(&mparams, 0, xfree ).execute(context);
@@ -331,7 +331,7 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
     ////////propagate acceleration ? //////
 
     //this is done to set dx to zero in subgraph
-    core::MultiVecDerivId dx_id = core::VecDerivId::dx();
+    core::MultiVecDerivId dx_id = core::vec_id::write_access::dx;
     MechanicalVOpVisitor(params, dx_id, core::ConstVecId::null(), core::ConstVecId::null(), 1.0 ).setMapped(true).execute(context);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -393,19 +393,19 @@ void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* par
 void ConstraintAnimationLoop::writeAndAccumulateAndCountConstraintDirections(const core::ExecParams* params, simulation::Node *context, unsigned int &numConstraints)
 {
     core::ConstraintParams cparams = core::ConstraintParams(*params);
-    cparams.setX(core::ConstVecCoordId::freePosition());
-    cparams.setV(core::ConstVecDerivId::freeVelocity());
+    cparams.setX(core::vec_id::read_access::freePosition);
+    cparams.setV(core::vec_id::read_access::freeVelocity);
 
     // calling resetConstraint on LMConstraints and MechanicalStates
     MechanicalResetConstraintVisitor(&cparams).execute(context);
 
     // calling applyConstraint on each constraint
-    MechanicalSetConstraint(&cparams, core::MatrixDerivId::constraintJacobian(), numConstraints).execute(context);
+    MechanicalSetConstraint(&cparams, core::vec_id::write_access::constraintJacobian, numConstraints).execute(context);
 
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 
     // calling accumulateConstraint on the mappings
-    MechanicalAccumulateConstraint2(&cparams, core::MatrixDerivId::constraintJacobian()).execute(context);
+    MechanicalAccumulateConstraint2(&cparams, core::vec_id::write_access::constraintJacobian).execute(context);
 
     getCP()->clear(numConstraints,this->d_tol.getValue());
 }
@@ -413,8 +413,8 @@ void ConstraintAnimationLoop::writeAndAccumulateAndCountConstraintDirections(con
 void ConstraintAnimationLoop::getIndividualConstraintViolations(const core::ExecParams* params, simulation::Node *context)
 {
     core::ConstraintParams cparams = core::ConstraintParams(*params);
-    cparams.setX(core::ConstVecCoordId::freePosition());
-    cparams.setV(core::ConstVecDerivId::freeVelocity());
+    cparams.setX(core::vec_id::read_access::freePosition);
+    cparams.setV(core::vec_id::read_access::freeVelocity);
 
     constraint::lagrangian::solver::MechanicalGetConstraintViolationVisitor(&cparams, getCP()->getDfree()).execute(context);
 }
@@ -423,8 +423,8 @@ void ConstraintAnimationLoop::getIndividualConstraintSolvingProcess(const core::
 {
     /// calling getConstraintResolution: each constraint provides a method that is used to solve it during GS iterations
     core::ConstraintParams cparams = core::ConstraintParams(*params);
-    cparams.setX(core::ConstVecCoordId::freePosition());
-    cparams.setV(core::ConstVecDerivId::freeVelocity());
+    cparams.setX(core::vec_id::read_access::freePosition);
+    cparams.setV(core::vec_id::read_access::freeVelocity);
 
     MechanicalGetConstraintResolutionVisitor(&cparams, getCP()->getConstraintResolutions(), 0).execute(context);
 }
@@ -467,12 +467,12 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, s
 
     simulation::common::MechanicalOperations mop(params, node);
 
-    mop.propagateV(core::VecDerivId::velocity());
+    mop.propagateV(core::vec_id::write_access::velocity);
 
-    mop.propagateDx(core::VecDerivId::dx(), true);
+    mop.propagateDx(core::vec_id::write_access::dx, true);
 
     // "mapped" x = xfree + dx
-    MechanicalVOpVisitor(params, core::vec_id::write_access::position, core::ConstVecCoordId::freePosition(), core::ConstVecDerivId::dx(), 1.0 ).setOnlyMapped(true).execute(node);
+    MechanicalVOpVisitor(params, core::vec_id::write_access::position, core::vec_id::read_access::freePosition, core::vec_id::read_access::dx, 1.0 ).setOnlyMapped(true).execute(node);
 
     if(!d_schemeCorrection.getValue())
     {
@@ -564,8 +564,8 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 
     // This solver will work in freePosition and freeVelocity vectors.
     // We need to initialize them if it's not already done.
-    MechanicalVInitVisitor<core::V_COORD>(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(node);
-    MechanicalVInitVisitor<core::V_DERIV>(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity()).execute(node);
+    MechanicalVInitVisitor<core::V_COORD>(params, core::vec_id::write_access::freePosition, core::vec_id::read_access::position, true).execute(node);
+    MechanicalVInitVisitor<core::V_DERIV>(params, core::vec_id::write_access::freeVelocity, core::vec_id::read_access::velocity).execute(node);
 
     if (d_doCollisionsFirst.getValue())
     {

@@ -79,61 +79,61 @@ MechanicalOperations::MechanicalOperations(const sofa::core::ExecParams* params,
 
 void MechanicalOperations::setX(core::MultiVecCoordId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecCoordId::position());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::position);
     mparams.setX(v);
 }
 
 void MechanicalOperations::setX(core::ConstMultiVecCoordId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecCoordId::position());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::position);
     mparams.setX(v);
 }
 
 void MechanicalOperations::setV(core::MultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::velocity());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::velocity);
     mparams.setV(v);
 }
 
 void MechanicalOperations::setV(core::ConstMultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::velocity());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::velocity);
     mparams.setV(v);
 }
 
 void MechanicalOperations::setF(core::MultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::force());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::force);
     mparams.setF(v);
 }
 
 void MechanicalOperations::setF(core::ConstMultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::force());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::force);
     mparams.setF(v);
 }
 
 void MechanicalOperations::setDx(core::MultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::dx());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::dx);
     mparams.setDx(v);
 }
 
 void MechanicalOperations::setDx(core::ConstMultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::dx());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::dx);
     mparams.setDx(v);
 }
 
 void MechanicalOperations::setDf(core::MultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::dforce());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::dforce);
     mparams.setDf(v);
 }
 
 void MechanicalOperations::setDf(core::ConstMultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::dforce());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::dforce);
     mparams.setDf(v);
 }
 
@@ -348,7 +348,7 @@ void MechanicalOperations::computeContactDf(core::MultiVecDerivId df)
 
 void MechanicalOperations::computeAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
-    MultiVecDerivId f( VecDerivId::force() );
+    MultiVecDerivId f( vec_id::write_access::force );
     setF(f);
     setDx(a);
     setX(x);
@@ -375,7 +375,7 @@ void MechanicalOperations::computeForce(SReal t, core::MultiVecDerivId f, core::
 
 void MechanicalOperations::computeContactAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
-    MultiVecDerivId f( VecDerivId::force() );
+    MultiVecDerivId f( vec_id::write_access::force );
     setF(f);
     setDx(a);
     setX(x);

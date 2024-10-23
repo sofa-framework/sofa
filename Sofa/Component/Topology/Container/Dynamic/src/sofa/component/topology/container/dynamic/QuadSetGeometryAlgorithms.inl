@@ -32,7 +32,7 @@ template< class DataTypes>
 void QuadSetGeometryAlgorithms< DataTypes >::computeQuadAABB(const QuadID i, Coord& minCoord, Coord& maxCoord) const
 {
     const Quad &t = this->m_topology->getQuad(i);
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     for(unsigned int i=0; i<3; ++i)
     {
@@ -45,7 +45,7 @@ template<class DataTypes>
 typename DataTypes::Coord QuadSetGeometryAlgorithms<DataTypes>::computeQuadCenter(const QuadID i) const
 {
     const Quad &t = this->m_topology->getQuad(i);
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     return (p[t[0]] + p[t[1]] + p[t[2]] + p[t[3]]) * (Real) 0.25;
 }
@@ -54,7 +54,7 @@ template< class DataTypes>
 void QuadSetGeometryAlgorithms< DataTypes >::getQuadVertexCoordinates(const QuadID i, Coord pnt[4]) const
 {
     const Quad &t = this->m_topology->getQuad(i);
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     for(unsigned int i=0; i<4; ++i)
     {
@@ -66,7 +66,7 @@ template< class DataTypes>
 void QuadSetGeometryAlgorithms< DataTypes >::getRestQuadVertexCoordinates(const QuadID i, Coord pnt[4]) const
 {
     const Quad &t = this->m_topology->getQuad(i);
-    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::vec_id::read_access::restPosition)->getValue());
 
     for(unsigned int i=0; i<4; ++i)
     {
@@ -78,7 +78,7 @@ template< class DataTypes>
 typename DataTypes::Real QuadSetGeometryAlgorithms< DataTypes >::computeQuadArea( const QuadID i) const
 {
     const Quad &t = this->m_topology->getQuad(i);
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
     Real area = (Real)((areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])
             + areaProduct(p[t[3]]-p[t[2]],p[t[0]]-p[t[2]])) * (Real) 0.5);
     return area;
@@ -88,7 +88,7 @@ template< class DataTypes>
 typename DataTypes::Real QuadSetGeometryAlgorithms< DataTypes >::computeRestQuadArea( const QuadID i) const
 {
     const Quad &t = this->m_topology->getQuad(i);
-    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::vec_id::read_access::restPosition)->getValue());
     Real area = (Real)((areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])
             + areaProduct(p[t[3]]-p[t[2]],p[t[0]]-p[t[2]])) * (Real) 0.5);
     return area;
@@ -99,7 +99,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::computeQuadArea( BasicArrayInterface<
 {
     //const sofa::type::vector<Quad> &ta=this->m_topology->getQuads();
     const size_t nb_quads = this->m_topology->getNbQuads();
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     for(sofa::Index i=0; i<nb_quads; ++i)
     {
@@ -117,7 +117,7 @@ sofa::type::Vec<3,double> QuadSetGeometryAlgorithms< DataTypes >::computeQuadNor
     // HYP :  The quad indexed by ind_q is planar
 
     const Quad &q = this->m_topology->getQuad(ind_q);
-    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     const typename DataTypes::Coord& c0=vect_c[q[0]];
     const typename DataTypes::Coord& c1=vect_c[q[1]];
@@ -149,7 +149,7 @@ bool QuadSetGeometryAlgorithms< DataTypes >::isQuadInPlane(const QuadID ind_q,
 
     // HYP : ind_p==q[0] or ind_q==t[1] or ind_q==t[2] or ind_q==q[3]
 
-    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     PointID ind_1;
     PointID ind_2;
@@ -203,7 +203,7 @@ bool QuadSetGeometryAlgorithms< DataTypes >::isPointInQuad(const QuadID ind_q, c
 {
     const double ZERO = 1e-6;
     const Quad &q = this->m_topology->getQuad(ind_q);
-    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     sofa::type::Vec<3,Real> ptest = p;
     sofa::type::Vec<3,Real> p0(vect_c[q[0]][0], vect_c[q[0]][1], vect_c[q[0]][2]);
@@ -315,7 +315,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     // Draw Quads indices
     if (showQuadIndices.getValue() && this->m_topology->getNbQuads() != 0)
     {
-        const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+        const VecCoord& coords =(this->object->read(core::vec_id::read_access::position)->getValue());
         sofa::type::RGBAColor color = _drawColor.getValue();
         color[0] -= 0.2f;
         color[1] -= 0.2f;
@@ -355,7 +355,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         const sofa::type::vector<Quad>& quadArray = this->m_topology->getQuads();
 
         // Draw Quad surfaces
-        const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+        const VecCoord& coords =(this->object->read(core::vec_id::read_access::position)->getValue());
         { // drawing quads
             std::vector<type::Vec3> pos;
             pos.reserve(quadArray.size()*4u);

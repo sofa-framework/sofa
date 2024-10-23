@@ -402,7 +402,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(i
     materialMatrix *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
 
     // divide by 36 times volumes of the element
-    const VecCoord X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     Coord A = (X0)[b] - (X0)[a];
     Coord B = (X0)[c] - (X0)[a];
@@ -627,7 +627,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displ
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Index&c, Index&d)
 {
-    const VecCoord X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(d_tetrahedronInfo.beginEdit());
 
@@ -643,7 +643,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
 {
 
     const core::topology::BaseMeshTopology::Tetrahedron t=this->l_topology->getTetrahedron(elementIndex);
-    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     const auto& [a, b, c, d] = t.array();
 
@@ -867,7 +867,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initLarge(int i, Index&a, 
     // first vector on first edge
     // second vector in the plane of the two first edges
     // third vector orthogonal to first and second
-    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     Transformation R_0_1;
     computeRotationLarge( R_0_1, (X0), a, b, c);
@@ -1069,7 +1069,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessLarge( Vecto
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::initPolar(int i, Index& a, Index&b, Index&c, Index&d)
 {
-    const VecCoord X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(d_tetrahedronInfo.beginEdit());
 
@@ -1338,7 +1338,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);

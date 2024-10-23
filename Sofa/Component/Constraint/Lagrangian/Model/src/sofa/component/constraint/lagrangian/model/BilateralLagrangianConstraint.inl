@@ -298,8 +298,8 @@ void BilateralLagrangianConstraint<DataTypes>::addContact(Deriv norm, Coord P, C
                                                            long id, PersistentID localid)
 {
    addContact(norm, P, Q, contactDistance, m1, m2,
-               this->getMState2()->read(ConstVecCoordId::freePosition())->getValue()[m2],
-               this->getMState1()->read(ConstVecCoordId::freePosition())->getValue()[m1],
+               this->getMState2()->read(core::vec_id::read_access::freePosition)->getValue()[m2],
+               this->getMState1()->read(core::vec_id::read_access::freePosition)->getValue()[m1],
                id, localid);
 }
 
@@ -308,11 +308,11 @@ void BilateralLagrangianConstraint<DataTypes>::addContact(Deriv norm, Real conta
                                                            int m1, int m2, long id, PersistentID localid)
 {
     addContact(norm,
-               this->getMState2()->read(ConstVecCoordId::position())->getValue()[m2],
-               this->getMState1()->read(ConstVecCoordId::position())->getValue()[m1],
+               this->getMState2()->read(core::vec_id::read_access::position)->getValue()[m2],
+               this->getMState1()->read(core::vec_id::read_access::position)->getValue()[m1],
                contactDistance, m1, m2,
-               this->getMState2()->read(ConstVecCoordId::freePosition())->getValue()[m2],
-               this->getMState1()->read(ConstVecCoordId::freePosition())->getValue()[m1],
+               this->getMState2()->read(core::vec_id::read_access::freePosition)->getValue()[m2],
+               this->getMState1()->read(core::vec_id::read_access::freePosition)->getValue()[m1],
                id, localid);
 }
 
@@ -393,8 +393,8 @@ void BilateralLagrangianConstraint<DataTypes>::draw(const core::visual::VisualPa
     std::vector< sofa::type::Vec3 > vertices;
 
     const unsigned minp = std::min(d_m1.getValue().size(), d_m2.getValue().size());
-    auto positionsM1 = sofa::helper::getReadAccessor(*this->mstate1->read(ConstVecCoordId::position()));
-    auto positionsM2 = sofa::helper::getReadAccessor(*this->mstate2->read(ConstVecCoordId::position()));
+    auto positionsM1 = sofa::helper::getReadAccessor(*this->mstate1->read(core::vec_id::read_access::position));
+    auto positionsM2 = sofa::helper::getReadAccessor(*this->mstate2->read(core::vec_id::read_access::position));
     const auto indicesM1 = sofa::helper::getReadAccessor(d_m1);
     const auto indicesM2 = sofa::helper::getReadAccessor(d_m2);
 

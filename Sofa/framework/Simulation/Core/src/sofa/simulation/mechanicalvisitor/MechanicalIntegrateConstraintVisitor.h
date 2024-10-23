@@ -42,9 +42,9 @@ public:
         const core::ConstraintParams* cparams,
         double pf, double vf,
         sofa::core::ConstMultiVecDerivId correction,
-        sofa::core::MultiVecDerivId dx = sofa::core::MultiVecDerivId(sofa::core::VecDerivId::dx()),
-        sofa::core::MultiVecCoordId x  = sofa::core::MultiVecCoordId(sofa::core::VecCoordId::position()),
-        sofa::core::MultiVecDerivId v  = sofa::core::MultiVecDerivId(sofa::core::VecDerivId::velocity()));
+        sofa::core::MultiVecDerivId dx = sofa::core::MultiVecDerivId(sofa::core::vec_id::write_access::dx),
+        sofa::core::MultiVecCoordId x  = sofa::core::MultiVecCoordId(sofa::core::vec_id::write_access::position),
+        sofa::core::MultiVecDerivId v  = sofa::core::MultiVecDerivId(sofa::core::vec_id::write_access::velocity));
 
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms) override;
 

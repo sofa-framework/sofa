@@ -191,17 +191,17 @@ MechanicalObject<DataTypes>::MechanicalObject()
     scale           .setGroup("Transformation");
 
     setVecCoord(core::vec_id::write_access::position, &x);
-    setVecCoord(core::VecCoordId::freePosition(), &xfree);
-    setVecCoord(core::VecCoordId::restPosition(), &x0);
-    setVecCoord(core::VecCoordId::resetPosition(), &reset_position);
-    setVecDeriv(core::VecDerivId::velocity(), &v);
-    setVecDeriv(core::VecDerivId::force(), &f);
-    setVecDeriv(core::VecDerivId::externalForce(), &externalForces);
-    setVecDeriv(core::VecDerivId::dx(), &dx);
-    setVecDeriv(core::VecDerivId::freeVelocity(), &vfree);
-    setVecDeriv(core::VecDerivId::resetVelocity(), &reset_velocity);
-    setVecMatrixDeriv(core::MatrixDerivId::constraintJacobian(), &c);
-    setVecMatrixDeriv(core::MatrixDerivId::mappingJacobian(), &m);
+    setVecCoord(core::vec_id::write_access::freePosition, &xfree);
+    setVecCoord(core::vec_id::write_access::restPosition, &x0);
+    setVecCoord(core::vec_id::write_access::resetPosition, &reset_position);
+    setVecDeriv(core::vec_id::write_access::velocity, &v);
+    setVecDeriv(core::vec_id::write_access::force, &f);
+    setVecDeriv(core::vec_id::write_access::externalForce, &externalForces);
+    setVecDeriv(core::vec_id::write_access::dx, &dx);
+    setVecDeriv(core::vec_id::write_access::freeVelocity, &vfree);
+    setVecDeriv(core::vec_id::write_access::resetVelocity, &reset_velocity);
+    setVecMatrixDeriv(core::vec_id::write_access::constraintJacobian, &c);
+    setVecMatrixDeriv(core::vec_id::write_access::mappingJacobian, &m);
 
     // These vectors are set as modified as they are mandatory in the MechanicalObject.
     x               .forceSet();
@@ -217,7 +217,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     //    freeVelocity.setDisplayed( false );
 
     // do not forget to delete these in the destructor
-    //    write(VecDerivId::dforce())->forceSet();
+    //    write(vec_id::write_access::dforce)->forceSet();
 
     // What is exactly the need for allocating null vectors?
     // if sofa crashes because of a wrong access to the null vector
@@ -248,8 +248,8 @@ MechanicalObject<DataTypes>::~MechanicalObject()
         if( vectorsDeriv[i] != nullptr )  { delete vectorsDeriv[i]; vectorsDeriv[i]=nullptr; }
     if( vectorsDeriv[core::VecDerivId::null().getIndex()] != nullptr )
     { delete vectorsDeriv[core::VecDerivId::null().getIndex()]; vectorsDeriv[core::VecDerivId::null().getIndex()] = nullptr; }
-    if( core::VecDerivId::dforce().getIndex()<vectorsDeriv.size() && vectorsDeriv[core::VecDerivId::dforce().getIndex()] != nullptr )
-    { delete vectorsDeriv[core::VecDerivId::dforce().getIndex()]; vectorsDeriv[core::VecDerivId::dforce().getIndex()] = nullptr; }
+    if( core::vec_id::write_access::dforce.getIndex()<vectorsDeriv.size() && vectorsDeriv[core::vec_id::write_access::dforce.getIndex()] != nullptr )
+    { delete vectorsDeriv[core::vec_id::write_access::dforce.getIndex()]; vectorsDeriv[core::vec_id::write_access::dforce.getIndex()] = nullptr; }
 
     for(unsigned i=core::MatrixDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsMatrixDeriv.size(); i++)
         if( vectorsMatrixDeriv[i] != nullptr )  { delete vectorsMatrixDeriv[i]; vectorsMatrixDeriv[i]=nullptr; }
@@ -277,12 +277,12 @@ void MechanicalObject<DataTypes>::exportGnuplot(SReal time)
 {
     if( m_gnuplotFileX!=nullptr )
     {
-        (*m_gnuplotFileX) << time <<"\t"<< read(core::ConstVecCoordId::position())->getValue() << std::endl;
+        (*m_gnuplotFileX) << time <<"\t"<< read(core::vec_id::read_access::position)->getValue() << std::endl;
     }
 
     if( m_gnuplotFileV!=nullptr )
     {
-        (*m_gnuplotFileV) << time <<"\t"<< read(core::ConstVecDerivId::velocity())->getValue() << std::endl;
+        (*m_gnuplotFileV) << time <<"\t"<< read(core::vec_id::read_access::velocity)->getValue() << std::endl;
     }
 }
 
@@ -1025,12 +1025,12 @@ void MechanicalObject<DataTypes>::init()
     }
 
     Data<VecCoord>* x_wAData = this->write(sofa::core::vec_id::write_access::position);
-    Data<VecDeriv>* v_wAData = this->write(sofa::core::VecDerivId::velocity());
+    Data<VecDeriv>* v_wAData = this->write(sofa::core::vec_id::write_access::velocity);
     VecCoord& x_wA = *x_wAData->beginEdit();
     VecDeriv& v_wA = *v_wAData->beginEdit();
 
     //case if X0 has been set but not X
-    if (read(core::ConstVecCoordId::restPosition())->getValue().size() > x_wA.size())
+    if (read(core::vec_id::read_access::restPosition)->getValue().size() > x_wA.size())
     {
         vOp(core::execparams::defaultInstance(), core::VecId::position(), core::VecId::restPosition());
     }
@@ -1093,7 +1093,7 @@ void MechanicalObject<DataTypes>::init()
     reinit();
 
     // storing X0 must be done after reinit() that possibly applies transformations
-    if( read(core::ConstVecCoordId::restPosition())->getValue().size()!=x_wA.size() )
+    if( read(core::vec_id::read_access::restPosition)->getValue().size()!=x_wA.size() )
     {
         // storing X0 from X
         if( restScale.getValue()!=1 )
@@ -1137,7 +1137,7 @@ void MechanicalObject<DataTypes>::storeResetState()
     vOp(core::execparams::defaultInstance(), core::VecId::resetPosition(), core::VecId::position());
 
     // we only store a resetVelocity if the velocity is not zero
-    helper::ReadAccessor< Data<VecDeriv> > v = *this->read(core::VecDerivId::velocity());
+    helper::ReadAccessor< Data<VecDeriv> > v = *this->read(core::vec_id::write_access::velocity);
     bool zero = true;
     for (unsigned int i=0; i<v.size(); ++i)
     {
@@ -1309,7 +1309,7 @@ void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params
 {
     SOFA_UNUSED(params);
 
-    helper::ReadAccessor< Data<VecDeriv> > extForces_rA( *this->read(core::ConstVecDerivId::externalForce()) );
+    helper::ReadAccessor< Data<VecDeriv> > extForces_rA( *this->read(core::vec_id::read_access::externalForce) );
 
     if (!extForces_rA.empty())
     {
@@ -2305,7 +2305,7 @@ void MechanicalObject<DataTypes>::resetConstraint(const core::ConstraintParams* 
     sofa::helper::getWriteOnlyAccessor(c_data)->clear();
 
     //reset the mapping jacobian matrix
-    Data<MatrixDeriv>& m_data = *this->write(core::MatrixDerivId::mappingJacobian());
+    Data<MatrixDeriv>& m_data = *this->write(core::vec_id::write_access::mappingJacobian);
     sofa::helper::getWriteOnlyAccessor(m_data)->clear();
 }
 
@@ -2488,7 +2488,7 @@ template <class DataTypes>
 inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualParams* vparams)
 {
     float scale = showVectorsScale.getValue();
-    sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());
+    sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::vec_id::read_access::velocity);
     type::vector<type::Vec3> points;
     points.resize(2);
     for(Size i=0; i<v_rA.size(); ++i )
@@ -2584,7 +2584,7 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
         // TODO: this verification is awful and should be done by template specialization
     {
         // seems to be valid DOFs
-        const VecCoord& x =this->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& x =this->read(core::vec_id::read_access::position)->getValue();
 
         type::Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
         type::Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
@@ -2620,7 +2620,7 @@ bool MechanicalObject<DataTypes>::addBBox(SReal* minBBox, SReal* maxBBox)
 
     static const unsigned spatial_dimensions = std::min( (unsigned)DataTypes::spatial_dimensions, 3u );
 
-    const VecCoord& x = read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = read(core::vec_id::read_access::position)->getValue();
     for(Size i=0; i<x.size(); i++ )
     {
         type::Vec<3,Real> p;

@@ -139,7 +139,7 @@ void HexahedronFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void HexahedronFEMForceField<DataTypes>::reinit()
 {
-    const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& p = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     d_initialPoints.setValue(p);
 
     _materialsStiffnesses.resize(this->getIndexedElements()->size() );
@@ -1227,7 +1227,7 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     vparams->drawTool()->setLightingEnabled(false);
 

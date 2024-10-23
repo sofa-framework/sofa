@@ -231,7 +231,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         computeVelocityOutFromVelocityIn(mparams, velocityOut, velocityIn);
 
         // apply geometric stiffness
-        inDofs->vRealloc( &mparams, core::VecDerivId::dx() ); // dx is not allocated by default
+        inDofs->vRealloc( &mparams, core::vec_id::write_access::dx ); // dx is not allocated by default
         inDofs->writeDx().wref() = velocityIn;
 
         const VecDeriv_t<In> dfp_withoutUpdateK = applyDJT(mparams, false);
@@ -261,11 +261,11 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
             // then compare results
 
 //            OutMatrixDeriv outMatrices(  ); // how to build that, what size?
-//            /*WriteInMatrixDeriv min = */inDofs->write( MatrixDerivId::constraintJacobian() );
-//            WriteOutMatrixDeriv mout = outDofs->write( MatrixDerivId::constraintJacobian() );
+//            /*WriteInMatrixDeriv min = */inDofs->write( vec_id::write_access::constraintJacobian );
+//            WriteOutMatrixDeriv mout = outDofs->write( vec_id::write_access::constraintJacobian );
 //            copyToData(mout,outMatrices);
 
-//            mapping->applyJt(  ConstraintParams*, MatrixDerivId::constraintJacobian(), MatrixDerivId::constraintJacobian() );
+//            mapping->applyJt(  ConstraintParams*, vec_id::write_access::constraintJacobian, vec_id::write_access::constraintJacobian );
 
 
         }

@@ -48,9 +48,9 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     mop->setImplicit(false); // this solver is explicit only
     // Get the Ids of the state vectors
     MultiVecCoord pos(&vop, core::vec_id::write_access::position );
-    MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
+    MultiVecDeriv vel(&vop, core::vec_id::write_access::velocity );
     MultiVecCoord pos2(&vop, xResult /*core::vec_id::write_access::position*/ );
-    MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
+    MultiVecDeriv vel2(&vop, vResult /*core::vec_id::write_access::velocity*/ );
 
     // Allocate auxiliary vectors
     MultiVecDeriv k1a(&vop);

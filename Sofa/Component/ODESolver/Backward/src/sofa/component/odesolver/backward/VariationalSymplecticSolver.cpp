@@ -84,7 +84,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     MultiVecCoord pos(&vop, core::vec_id::write_access::position );
-    MultiVecDeriv f(&vop, core::VecDerivId::force() );
+    MultiVecDeriv f(&vop, core::vec_id::write_access::force );
     MultiVecCoord oldpos(&vop);
 
     MultiVecCoord x_1(&vop, xResult); // vector of final  position
@@ -93,7 +93,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
     MultiVecDeriv vel_1(&vop, vResult); // vector of final  velocity
     MultiVecDeriv p(&vop); // vector of momentum
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
+    MultiVecDeriv dx(&vop, core::vec_id::write_access::dx); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
     const SReal& h = dt;
     const SReal rM = d_rayleighMass.getValue();
@@ -130,7 +130,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 	if (d_explicit.getValue()) {
 		mop->setImplicit(false); // this solver is explicit only
 
-        MultiVecDeriv acc(&vop, core::VecDerivId::dx()); acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true); // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
+        MultiVecDeriv acc(&vop, core::vec_id::write_access::dx); acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true); // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
 
 		{
 		    SCOPED_TIMER("ComputeForce");
@@ -144,7 +144,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 
 		    mop.accFromF(acc, f); // acc= 1/m (f(q(k)+p(k)/h))
 		    if (rM>0) {
-		        MultiVecDeriv oldVel(&vop, core::VecDerivId::velocity() );
+		        MultiVecDeriv oldVel(&vop, core::vec_id::write_access::velocity );
 		        // add rayleigh Mass damping if necessary
 		        acc.peq(oldVel,-rM); // equivalent to adding damping force -rM* M*v(k)
 		    }

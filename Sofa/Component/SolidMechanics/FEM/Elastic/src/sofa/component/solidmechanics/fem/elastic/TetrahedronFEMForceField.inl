@@ -1441,7 +1441,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     }
 
     setMethod(d_method.getValue() );
-    const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& p = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     d_initialPoints.setValue(p);
     strainDisplacements.resize( _indexedElements->size() );
     materialsStiffnesses.resize(_indexedElements->size() );
@@ -1860,7 +1860,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     vparams->drawTool()->disableLighting();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     const VecReal& youngModulus = this->d_youngModulus.getValue();
 
     const bool heterogeneous = [this, drawVonMisesStress]()
@@ -1925,7 +1925,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     ////////////// DRAW ROTATIONS //////////////
     if (vparams->displayFlags().getShowNormals())
     {
-        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
         std::vector< type::Vec3 > points[3];
         for(unsigned ii = 0; ii<  x.size() ; ii++)
         {
@@ -2250,7 +2250,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     typename core::behavior::MechanicalState<DataTypes>* mechanicalObject;
     this->getContext()->get(mechanicalObject);
-    const VecCoord& X = mechanicalObject->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& X = mechanicalObject->read(core::vec_id::read_access::position)->getValue();
 
     helper::ReadAccessor<Data<VecCoord> > X0 =  d_initialPoints;
 
@@ -2397,7 +2397,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             vME[el] = 0.0;
     }
 
-    const VecCoord& dofs = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& dofs = this->mstate->read(core::vec_id::read_access::position)->getValue();
     helper::WriteAccessor<Data<type::vector<Real> > > vMN =  d_vonMisesPerNode;
 
     /// compute the values of vonMises stress in nodes

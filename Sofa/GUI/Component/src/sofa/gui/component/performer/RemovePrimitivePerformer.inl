@@ -569,7 +569,7 @@ typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<Da
     Coord center = picked.point;
 
     // - STEP 2: Compute baryCoord of elements in list:
-    const VecCoord& X = mstateCollision->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& X = mstateCollision->read(core::vec_id::read_access::position)->getValue();
 
     VecCoord baryCoord;
     baryCoord.resize (elementsToTest.size());
@@ -649,7 +649,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
     if (mstateCollision == nullptr) return;
 
 
-    const VecCoord& X = mstateCollision->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& X = mstateCollision->read(core::vec_id::read_access::position)->getValue();
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();

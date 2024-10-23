@@ -217,7 +217,7 @@ const typename PolynomialRestShapeSpringsForceField<DataTypes>::DataVecCoord* Po
     {
         if (this->mstate)
         {
-            return this->mstate->read(core::VecCoordId::restPosition());
+            return this->mstate->read(core::vec_id::write_access::restPosition);
         }
     }
     return nullptr;

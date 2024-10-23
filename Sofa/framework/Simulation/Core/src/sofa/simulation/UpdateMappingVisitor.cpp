@@ -32,8 +32,8 @@ namespace sofa::simulation
 void UpdateMappingVisitor::processMapping(simulation::Node* n, core::BaseMapping* obj)
 {
     SOFA_UNUSED(n);
-    obj->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-    obj->applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+    obj->apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::position, core::vec_id::read_access::position);
+    obj->applyJ(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::velocity, core::vec_id::read_access::velocity);
 }
 
 void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* n, core::BaseMapping* obj)

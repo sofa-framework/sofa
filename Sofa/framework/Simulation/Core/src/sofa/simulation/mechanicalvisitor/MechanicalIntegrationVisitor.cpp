@@ -49,21 +49,21 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
     core::ConstraintParams cparams;
     {
         unsigned int constraintId=0;
-        MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, core::MatrixDerivId::constraintJacobian(), constraintId );
+        MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, core::vec_id::write_access::constraintJacobian, constraintId );
         buildConstraintMatrix.execute(node);
     }
 
     {
-        MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, core::MatrixDerivId::constraintJacobian());
+        MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, core::vec_id::write_access::constraintJacobian);
         accumulateMatrixDeriv.execute(node);
     }
 
     obj->solve(params, dt);
 
-    MechanicalProjectPositionAndVelocityVisitor(&mparams, nextTime,core::VecCoordId::position(),core::VecDerivId::velocity()
+    MechanicalProjectPositionAndVelocityVisitor(&mparams, nextTime,core::vec_id::write_access::position,core::vec_id::write_access::velocity
     ).execute( node );
 
-    MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, nextTime,core::VecCoordId::position(),core::VecDerivId::velocity()).execute( node );
+    MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, nextTime,core::vec_id::write_access::position,core::vec_id::write_access::velocity).execute( node );
 
     MechanicalEndIntegrationVisitor endVisitor( this->params, dt );
     node->execute(&endVisitor);
@@ -73,7 +73,7 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
 
 Visitor::Result MechanicalIntegrationVisitor::fwdInteractionForceField(simulation::Node* /*node*/, core::behavior::BaseInteractionForceField* obj)
 {
-    const core::MultiVecDerivId   ffId      = core::VecDerivId::externalForce();
+    const core::MultiVecDerivId   ffId      = core::vec_id::write_access::externalForce;
     core::MechanicalParams m_mparams(*this->params);
     m_mparams.setDt(this->dt);
 
