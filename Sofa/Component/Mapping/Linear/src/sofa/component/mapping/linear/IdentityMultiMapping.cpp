@@ -33,7 +33,7 @@ namespace sofa::component::mapping::linear
 
 void registerIdentityMultiMapping(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Concatenate several States together.")
+    factory->registerObjects(core::ObjectRegistrationData("Concatenate several mechanical states together.")
         .add< IdentityMultiMapping< Vec3Types, Vec3Types > >()
         .add< IdentityMultiMapping< Rigid3Types, Rigid3Types > >());
 }

@@ -33,7 +33,7 @@ using defaulttype::Rigid3Types;
 
 void registerDistanceMultiMapping(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Maps point positions from serveral mstates to distances (in distance unit).")
+    factory->registerObjects(core::ObjectRegistrationData("Mapping point positions from several mechanical states to distances (in distance unit).")
         .add< DistanceMultiMapping< Vec3Types, Vec1Types > >()
         .add< DistanceMultiMapping< Rigid3Types, Vec1Types > >());
 }

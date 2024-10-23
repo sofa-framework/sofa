@@ -31,7 +31,7 @@ using namespace defaulttype;
 
 void registerSkinningMapping(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Skin a model from a set of rigid dofs.")
+    factory->registerObjects(core::ObjectRegistrationData("Skin a model from a set of rigid DOFs.")
         .add< SkinningMapping< Rigid3Types, Vec3Types > >());
 }
 

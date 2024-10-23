@@ -33,7 +33,7 @@ using namespace sofa::defaulttype;
 
 void registerIdentityMapping(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Special case of mapping where the child points are the same as the parent points")
+    factory->registerObjects(core::ObjectRegistrationData("Special case of mapping where the child DOFs are the same as the parent ones")
         .add< IdentityMapping< Vec3Types, Vec3Types > >()
         .add< IdentityMapping< Vec2Types, Vec2Types > >()
         .add< IdentityMapping< Vec1Types, Vec1Types > >()

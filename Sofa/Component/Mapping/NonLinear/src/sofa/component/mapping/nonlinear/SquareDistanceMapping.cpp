@@ -31,7 +31,7 @@ using namespace defaulttype;
 
 void registerSquareDistanceMapping(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Maps point positions to square distances.")
+    factory->registerObjects(core::ObjectRegistrationData("Mapping point positions to square distances.")
         .add< SquareDistanceMapping< Vec3Types, Vec1Types > >()
         .add< SquareDistanceMapping< Rigid3Types, Vec1Types > >());
 }

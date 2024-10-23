@@ -31,7 +31,7 @@ using namespace defaulttype;
 
 void registerDistanceFromTargetMapping(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Maps point positions to distances from target points.")
+    factory->registerObjects(core::ObjectRegistrationData("Mapping point positions to distances from target points.")
         .add< DistanceFromTargetMapping< Vec3Types, Vec1Types > >()
         .add< DistanceFromTargetMapping< Vec1Types, Vec1Types > >()
         .add< DistanceFromTargetMapping< Rigid3Types, Vec1Types > >());

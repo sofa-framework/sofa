@@ -34,7 +34,7 @@ using namespace sofa::defaulttype;
         ;
 void registerSubsetMapping(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Compute a subset of input points.")
+    factory->registerObjects(core::ObjectRegistrationData("Compute a subset of input DOFs.")
         .add< SubsetMapping< Vec3Types, Vec3Types > >()
         .add< SubsetMapping< Vec1Types, Vec1Types > >()
         .add< SubsetMapping< Rigid3Types, Rigid3Types > >());
