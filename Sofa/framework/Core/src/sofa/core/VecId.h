@@ -106,15 +106,15 @@ public:
         std::string result;
         switch(v.getIndex())
         {
-        case State::NULL_STATE: result+= "null";
+        case static_cast<uint8_t>(State::NULL_STATE): result+= "null";
             break;
-        case State::POSITION: result+= "position";
+        case static_cast<uint8_t>(State::POSITION): result+= "position";
             break;
-        case State::REST_POSITION: result+= "restPosition";
+        case static_cast<uint8_t>(State::REST_POSITION): result+= "restPosition";
             break;
-        case State::FREE_POSITION: result+= "freePosition";
+        case static_cast<uint8_t>(State::FREE_POSITION): result+= "freePosition";
             break;
-        case State::RESET_POSITION: result+= "resetPosition";
+        case static_cast<uint8_t>(State::RESET_POSITION): result+= "resetPosition";
             break;
         default:
             std::ostringstream out;
@@ -130,11 +130,11 @@ public:
     {
         switch(v.getIndex())
         {
-            case State::NULL_STATE: return {};
-            case State::POSITION: return "States";
-            case State::REST_POSITION: return "Rest States";
-            case State::FREE_POSITION: return "Free Motion";
-            case State::RESET_POSITION: return "States";
+            case static_cast<uint8_t>(State::NULL_STATE): return {};
+            case static_cast<uint8_t>(State::POSITION): return "States";
+            case static_cast<uint8_t>(State::REST_POSITION): return "Rest States";
+            case static_cast<uint8_t>(State::FREE_POSITION): return "Free Motion";
+            case static_cast<uint8_t>(State::RESET_POSITION): return "States";
             default: return {};
         }
     }
@@ -183,23 +183,23 @@ public:
         std::string result;
         switch(v.getIndex())
         {
-        case State::NULL_STATE: result+= "null";
+        case static_cast<uint8_t>(State::NULL_STATE): result+= "null";
             break;
-        case State::VELOCITY: result+= "velocity";
+        case static_cast<uint8_t>(State::VELOCITY): result+= "velocity";
             break;
-        case State::RESET_VELOCITY: result+= "resetVelocity";
+        case static_cast<uint8_t>(State::RESET_VELOCITY): result+= "resetVelocity";
             break;
-        case State::FREE_VELOCITY: result+= "freeVelocity";
+        case static_cast<uint8_t>(State::FREE_VELOCITY): result+= "freeVelocity";
             break;
-        case State::NORMAL: result+= "normal";
+        case static_cast<uint8_t>(State::NORMAL): result+= "normal";
             break;
-        case State::FORCE: result+= "force";
+        case static_cast<uint8_t>(State::FORCE): result+= "force";
             break;
-        case State::EXTERNAL_FORCE: result+= "externalForce";
+        case static_cast<uint8_t>(State::EXTERNAL_FORCE): result+= "externalForce";
             break;
-        case State::DX: result+= "dx";
+        case static_cast<uint8_t>(State::DX): result+= "dx";
             break;
-        case State::DFORCE: result+= "dforce";
+        case static_cast<uint8_t>(State::DFORCE): result+= "dforce";
             break;
         default:
             std::ostringstream out;
@@ -215,15 +215,17 @@ public:
     {
         switch(v.getIndex())
         {
-            case State::NULL_STATE: return {};
-            case State::VELOCITY: return "States";
-            case State::RESET_VELOCITY: return "States";
-            case State::FREE_VELOCITY: return "Free Motion";
-            case State::NORMAL: return "States";
-            case State::FORCE: return "Force";
-            case State::EXTERNAL_FORCE: return "Force";
-            case State::DX: return "States";
-            case State::DFORCE: return "Force";
+            case static_cast<uint8_t>(State::NULL_STATE): return {};
+            case static_cast<uint8_t>(State::VELOCITY):
+            case static_cast<uint8_t>(State::DX):
+            case static_cast<uint8_t>(State::NORMAL):
+            case static_cast<uint8_t>(State::RESET_VELOCITY): return "States";
+
+            case static_cast<uint8_t>(State::FREE_VELOCITY): return "Free Motion";
+
+            case static_cast<uint8_t>(State::FORCE):
+            case static_cast<uint8_t>(State::DFORCE):
+            case static_cast<uint8_t>(State::EXTERNAL_FORCE): return "Force";
             default: return {};
         }
     }
@@ -261,11 +263,11 @@ public:
         std::string result;
         switch(v.getIndex())
         {
-        case State::NULL_STATE: result+= "null";
+        case static_cast<uint8_t>(State::NULL_STATE): result+= "null";
             break;
-        case State::CONSTRAINT_JACOBIAN: result+= "holonomic";
+        case static_cast<uint8_t>(State::CONSTRAINT_JACOBIAN): result+= "holonomic";
             break;
-        case State::MAPPING_JACOBIAN: result+= "nonHolonomic";
+        case static_cast<uint8_t>(State::MAPPING_JACOBIAN): result+= "nonHolonomic";
             break;
         default:
             std::ostringstream out;
@@ -281,9 +283,9 @@ public:
     {
         switch(v.getIndex())
         {
-            case State::NULL_STATE: return {}; //null
-            case State::CONSTRAINT_JACOBIAN: return "Jacobian";
-            case State::MAPPING_JACOBIAN: return "Jacobian";
+            case static_cast<uint8_t>(State::NULL_STATE): return {}; //null
+            case static_cast<uint8_t>(State::CONSTRAINT_JACOBIAN):
+            case static_cast<uint8_t>(State::MAPPING_JACOBIAN): return "Jacobian";
             default: return {};
         }
     }
