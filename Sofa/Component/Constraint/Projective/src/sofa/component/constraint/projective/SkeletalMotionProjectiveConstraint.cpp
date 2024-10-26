@@ -27,10 +27,11 @@
 namespace sofa::component::constraint::projective
 {
 
-//declaration of the class, for the factory
-int SkeletalMotionProjectiveConstraintClass = core::RegisterObject("animate a skeleton")
-        .add< SkeletalMotionProjectiveConstraint<defaulttype::Rigid3Types> >()
-        ;
+void registerSkeletalMotionProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Animate a skeleton.")
+        .add< SkeletalMotionProjectiveConstraint<defaulttype::Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API SkeletalMotionProjectiveConstraint<defaulttype::Rigid3Types>;
 

@@ -155,13 +155,14 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
     }
 }
 
-
-int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computing constraint forces within a simulated body using the compliance method.")
+void registerUncoupledConstraintCorrection(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Component computing constraint forces within a simulated body using the compliance method.")
         .add< UncoupledConstraintCorrection< Vec1Types > >()
         .add< UncoupledConstraintCorrection< Vec2Types > >()
         .add< UncoupledConstraintCorrection< Vec3Types > >()
-        .add< UncoupledConstraintCorrection< Rigid3Types > >()
-    ;
+        .add< UncoupledConstraintCorrection< Rigid3Types > >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API UncoupledConstraintCorrection< Vec1Types >;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API UncoupledConstraintCorrection< Vec2Types >;
