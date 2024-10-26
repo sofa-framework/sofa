@@ -33,7 +33,7 @@ OscillatorProjectiveConstraint<TDataTypes>::OscillatorProjectiveConstraint(core:
     : core::behavior::ProjectiveConstraintSet<TDataTypes>(mstate)
     , d_constraints(initData(&d_constraints, "oscillators", "Define a sequence of oscillating particules: \n[index, Mean(x,y,z), amplitude(x,y,z), pulsation, phase]"))
 {
-    constraints.setParent(&d_constraints);
+    constraints.setOriginalData(&d_constraints);
 }
 
 template <class TDataTypes>

@@ -25,9 +25,6 @@
 #include <sofa/gui/common/init.h>
 #include <sofa/gui/batch/init.h>
 #include <sofa/gui/qt/init.h>
-#if SOFA_GUI_HAVE_SOFA_GUI_HEADLESSRECORDER
-#include <sofa/gui/headlessrecorder/init.h>
-#endif
 
 namespace sofa::gui
 {
@@ -41,9 +38,7 @@ void init()
         sofa::gui::common::init();
         sofa::gui::batch::init();
         sofa::gui::qt::init();
-#if SOFA_GUI_HAVE_SOFA_GUI_HEADLESSRECORDER
-        sofa::gui::headlessrecorder::init();
-#endif
+        
         first = false;
     }
 }

@@ -107,14 +107,16 @@ void BaseAddResourceRepository::cleanup()
     m_repository->removePath(m_currentAddedPath);
 }
 
+void registerAddDataRepository(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Add a path to DataRepository.")
+        .add< AddDataRepository >());
+}
 
-static int AddDataRepositoryClass = core::RegisterObject("Add a path to DataRepository")
-    .add< AddDataRepository >()
-    .addAlias("AddResourceRepository") // Backward compatibility
-    ;
-
-static int AddPluginRepositoryClass = core::RegisterObject("Add a path to PluginRepository")
-    .add< AddPluginRepository >();
-
+void registerAddPluginRepository(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Add a path to PluginRepository.")
+        .add< AddPluginRepository >());
+}
 
 } // namespace sofa::component::sceneutility

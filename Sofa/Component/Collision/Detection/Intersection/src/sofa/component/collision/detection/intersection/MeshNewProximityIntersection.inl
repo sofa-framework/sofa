@@ -334,7 +334,11 @@ bool MeshNewProximityIntersection::testIntersection(collision::geometry::TSphere
 {
     OutputVector contacts;
     const double alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
-    const int n = intersection->doIntersectionPointPoint(alarmDist * alarmDist, e1.center(), e2.p(), &contacts, -1);
+
+    // By design, MeshNewProximityIntersection is supposed to work only with NewProximityIntersection
+    const auto* currentNewProxIntersection = static_cast<const NewProximityIntersection*>(currentIntersection);
+
+    const int n = currentNewProxIntersection->doIntersectionPointPoint(alarmDist * alarmDist, e1.center(), e2.p(), &contacts, -1);
     return n > 0;
 }
 
@@ -342,7 +346,11 @@ template<class T>
 int MeshNewProximityIntersection::computeIntersection(collision::geometry::TSphere<T>& e1, collision::geometry::Point& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
     const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
-    const int n = intersection->doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
+
+    // By design, MeshNewProximityIntersection is supposed to work only with NewProximityIntersection
+    const auto* currentNewProxIntersection = static_cast<const NewProximityIntersection*>(currentIntersection);
+
+    const int n = currentNewProxIntersection->doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
     if (n>0)
     {
         const SReal contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r();
@@ -360,9 +368,8 @@ bool MeshNewProximityIntersection::testIntersection(collision::geometry::Line& e
 {
     SOFA_UNUSED(e1);
     SOFA_UNUSED(e2);
-    SOFA_UNUSED(currentIntersection);
 
-    msg_warning(intersection) << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere).";
+    msg_warning(currentIntersection) << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere).";
     return true;
 }
 
@@ -390,7 +397,7 @@ bool MeshNewProximityIntersection::testIntersection(collision::geometry::Triangl
     SOFA_UNUSED(e2);
     SOFA_UNUSED(currentIntersection);
 
-    msg_warning(intersection) << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere).";
+    msg_warning(currentIntersection) << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere).";
     return true;
 }
 
@@ -494,7 +501,7 @@ int MeshNewProximityIntersection::computeIntersection(collision::geometry::Trian
     }
     else
     {
-        msg_warning(intersection) <<"Null distance between contact detected";
+        msg_warning(currentIntersection) <<"Null distance between contact detected";
         detection->normal= type::Vec3(1,0,0);
     }
 
@@ -503,42 +510,6 @@ int MeshNewProximityIntersection::computeIntersection(collision::geometry::Trian
     detection->point[1]= e2.getContactPointByNormal(detection->normal);
 
     return 1;
-}
-
-template <class T>
-bool MeshNewProximityIntersection::testIntersection(collision::geometry::TSphere<T>& e1, collision::geometry::Point& e2)
-{
-    return testIntersection(e1, e2, intersection);
-}
-
-template<class T>
-int MeshNewProximityIntersection::computeIntersection(collision::geometry::TSphere<T>& e1, collision::geometry::Point& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
-}
-
-template <class T>
-bool MeshNewProximityIntersection::testIntersection(collision::geometry::Line& e1, collision::geometry::TSphere<T>& e2)
-{
-    return testIntersection(e1, e2, intersection);
-}
-
-template<class T>
-int MeshNewProximityIntersection::computeIntersection(collision::geometry::Line& e1, collision::geometry::TSphere<T>& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
-}
-
-template <class T>
-bool MeshNewProximityIntersection::testIntersection(collision::geometry::Triangle& e1, collision::geometry::TSphere<T>& e2)
-{
-    return testIntersection(e1, e2, intersection);
-}
-
-template<class T>
-int MeshNewProximityIntersection::computeIntersection(collision::geometry::Triangle& e1, collision::geometry::TSphere<T>& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
 }
 
 } // namespace sofa::component::collision::detection::intersection

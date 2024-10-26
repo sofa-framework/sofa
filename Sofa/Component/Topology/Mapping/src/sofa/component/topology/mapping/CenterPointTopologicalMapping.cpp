@@ -31,14 +31,15 @@
 
 namespace sofa::component::topology::mapping
 {
-using namespace sofa::defaulttype;
+
 using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
-// Register in the Factory
-int CenterPointTopologicalMappingClass = core::RegisterObject ( "" )
-        .add< CenterPointTopologicalMapping >()
-        ;
+void registerCenterPointTopologicalMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topological mapping where each primitive in the input topology will be mapped to a point in the output topology.")
+        .add< CenterPointTopologicalMapping >());
+}
 
 // Implementation
 CenterPointTopologicalMapping::CenterPointTopologicalMapping ()
@@ -65,7 +66,7 @@ void CenterPointTopologicalMapping::init()
 
 void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
 {
-    if(this->d_componentState.getValue() == core::objectmodel::ComponentState::Valid)
+    if(this->isComponentStateValid())
     {
         std::list<const TopologyChange *>::const_iterator changeIt = fromModel->beginChange();
         const std::list<const TopologyChange *>::const_iterator itEnd = fromModel->endChange();

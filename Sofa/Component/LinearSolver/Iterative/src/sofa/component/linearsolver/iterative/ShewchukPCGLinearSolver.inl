@@ -40,7 +40,7 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
     , d_tolerance(initData(&d_tolerance, 1e-5, "tolerance", "Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)") )
     , d_use_precond(initData(&d_use_precond, true, "use_precond", "Use a preconditioner") )
     , l_preconditioner(initLink("preconditioner", "Link towards the linear solver used to precondition the conjugate gradient"))
-    , d_update_step(initData(&d_update_step, (unsigned)1, "update_step", "Number of steps before the next refresh of precondtioners") )
+    , d_update_step(initData(&d_update_step, (unsigned)1, "update_step", "Number of steps before the next refresh of preconditioners") )
     , d_build_precond(initData(&d_build_precond, true, "build_precond", "Build the preconditioners, if false build the preconditioner only at the initial step") )
     , d_graph(initData(&d_graph, "graph", "Graph of residuals at each iteration") )
     , next_refresh_step(0)
@@ -50,12 +50,12 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
     first = true;
     this->f_listening.setValue(true);
 
-    f_maxIter.setParent(&d_maxIter);
-    f_tolerance.setParent(&d_tolerance);
-    f_use_precond.setParent(&d_use_precond);
-    f_update_step.setParent(&d_update_step);
-    f_build_precond.setParent(&d_build_precond);
-    f_graph.setParent(&d_graph);
+    f_maxIter.setOriginalData(&d_maxIter);
+    f_tolerance.setOriginalData(&d_tolerance);
+    f_use_precond.setOriginalData(&d_use_precond);
+    f_update_step.setOriginalData(&d_update_step);
+    f_build_precond.setOriginalData(&d_build_precond);
+    f_graph.setOriginalData(&d_graph);
 
 }
 

@@ -130,7 +130,7 @@ public:
  protected :
 
     core::topology::BaseMeshTopology* m_topology;
-    VecCoord m_initialPoints;	/// the intial positions of the points
+    VecCoord m_initialPoints;	/// the initial positions of the points
     bool m_updateMatrix;
 
 public:

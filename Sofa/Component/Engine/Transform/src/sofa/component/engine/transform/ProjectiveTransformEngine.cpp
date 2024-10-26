@@ -26,12 +26,13 @@
 namespace sofa::component::engine::transform
 {
 
-int ProjectiveTransformEngineClass = core::RegisterObject("Project the position of 3d points onto a plane according to a projection matrix")
-        .add< ProjectiveTransformEngine<defaulttype::Vec3Types> >(true) // default template
-        ;
+void registerProjectiveTransformEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Project the position of 3d points onto a plane according to a projection matrix.")
+        .add< ProjectiveTransformEngine<defaulttype::Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
-
 
 } // namespace sofa::component::engine::transform
 

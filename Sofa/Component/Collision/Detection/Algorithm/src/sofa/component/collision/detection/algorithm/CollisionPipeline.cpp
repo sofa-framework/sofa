@@ -48,16 +48,17 @@ using namespace core::objectmodel;
 using namespace core::collision;
 using namespace sofa::defaulttype;
 
-int CollisionPipelineClass = core::RegisterObject("The default collision detection and modeling pipeline")
-        .add< CollisionPipeline >()
-        .addAlias("DefaultPipeline")
-        ;
+void registerCollisionPipeline(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("The default collision detection and modeling pipeline.")
+        .add< CollisionPipeline >());
+}
 
 const int CollisionPipeline::defaultDepthValue = 6;
 
 CollisionPipeline::CollisionPipeline()
     : d_doPrintInfoMessage(initData(&d_doPrintInfoMessage, false, "verbose",
-                                    "Display extra informations at each computation step. (default=false)"))
+                                    "Display extra information at each computation step. (default=false)"))
     , d_doDebugDraw(initData(&d_doDebugDraw, false, "draw",
                              "Draw the detected collisions. (default=false)"))
 

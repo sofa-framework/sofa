@@ -29,12 +29,11 @@ namespace sofa::component::topology::container::grid
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-
-
-int SphereGridTopologyClass = core::RegisterObject("Sphere grid in 3D")
-        .addAlias("SphereGrid")
-        .add< SphereGridTopology >()
-        ;
+void registerSphereGridTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Sphere grid in 3D.")
+        .add< SphereGridTopology >());
+}
 
 SphereGridTopology::SphereGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz)
@@ -92,7 +91,7 @@ sofa::type::Vec3 SphereGridTopology::getPointInGrid(int i, int j, int k) const
     const int nx = getNx();
     const int ny = getNy();
     const int nz = getNz();
-    // coordonate on a square
+    // coordinate on a square
     type::Vec3 p(i*2*r/(nx-1) - r, j*2*r/(ny-1) - r, k*2*r/(nz-1) - r);
     // scale it to be on a circle
     if (p.norm() > 0.0000001){

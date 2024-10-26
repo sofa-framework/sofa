@@ -24,6 +24,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/RenamedData.h>
 #include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -45,27 +46,49 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef VecCoord SeqPositions;
-    typedef typename core::topology::BaseMeshTopology::Edge Edge;
     typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
-    typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
-    typedef typename core::topology::BaseMeshTopology::Quad Quad;
     typedef typename core::topology::BaseMeshTopology::SeqQuads SeqQuads;
+    typedef typename core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+    typedef typename core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
     typedef typename core::topology::BaseMeshTopology::PointID PointID;
     typedef typename core::topology::BaseMeshTopology::SetIndices SetIndices;
 
     /// inputs
-    Data< SeqPositions > inputPosition;
-    Data< SeqEdges > inputEdges; ///< input edges
-    Data< SeqTriangles > inputTriangles; ///< input triangles
-    Data< SeqQuads > inputQuads; ///< input quads
-    Data< SetIndices > indices; ///< Index lists of the selected vertices
+    Data< SeqPositions > d_inputPosition;
+    Data< SeqEdges > d_inputEdges; ///< input edges
+    Data< SeqTriangles > d_inputTriangles; ///< input triangles
+    Data< SeqQuads > d_inputQuads; ///< input quads
+    Data< SeqTetrahedra > d_inputTetrahedra; ///< input tetrahedra
+    Data< SeqHexahedra > d_inputHexahedra; ///< input hexahedra
+    Data< SetIndices > d_indices; ///< Index lists of the selected vertices
 
     /// outputs
-    Data< SeqPositions > position;
-    Data< SeqEdges > edges; ///< edges of mesh subset
-    Data< SeqTriangles > triangles; ///< Triangles of mesh subset
-    Data< SeqQuads > quads; ///< Quads of mesh subset
+    Data< SeqPositions > d_position;
+    Data< SeqEdges > d_edges; ///< edges of mesh subset
+    Data< SeqTriangles > d_triangles; ///< Triangles of mesh subset
+    Data< SeqQuads > d_quads; ///< Quads of mesh subset
+    Data< SeqTetrahedra > d_tetrahedra; ///< Tetrahedra of mesh subset
+    Data< SeqHexahedra > d_hexahedra; ///< Hexahedra of mesh subset
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    core::objectmodel::RenamedData<SeqPositions> inputPosition;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    core::objectmodel::RenamedData<SeqEdges> inputEdges;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    core::objectmodel::RenamedData<SeqTriangles> inputTriangles;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    core::objectmodel::RenamedData<SeqQuads> inputQuads;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    core::objectmodel::RenamedData<SetIndices> indices;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    core::objectmodel::RenamedData<SeqPositions> position;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    core::objectmodel::RenamedData<SeqEdges> edges;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    core::objectmodel::RenamedData<SeqTriangles> triangles;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    core::objectmodel::RenamedData<SeqQuads> quads;
 
 protected:
     MeshSubsetEngine();

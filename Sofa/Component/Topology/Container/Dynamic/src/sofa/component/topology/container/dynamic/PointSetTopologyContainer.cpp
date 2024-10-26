@@ -49,11 +49,11 @@ struct GeneratePointID
 
 }
 
-using namespace sofa::defaulttype;
-
-int PointSetTopologyContainerClass = core::RegisterObject("Point set topology container")
-        .add< PointSetTopologyContainer >()
-        ;
+void registerPointSetTopologyContainer(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology container dedicated to a point topology.")
+        .add< PointSetTopologyContainer >());
+}
 
 PointSetTopologyContainer::PointSetTopologyContainer(Size npoints)
     : d_initPoints (initData(&d_initPoints, "position", "Initial position of points",true,true))
@@ -61,7 +61,7 @@ PointSetTopologyContainer::PointSetTopologyContainer(Size npoints)
     , d_nbPoints (initData(&d_nbPoints, npoints, "nbPoints", "Number of points"))
 {
     addAlias(&d_initPoints,"points");
-    nbPoints.setParent(&d_nbPoints);
+    nbPoints.setOriginalData(&d_nbPoints);
 }
 
 void PointSetTopologyContainer::setNbPoints(Size n)

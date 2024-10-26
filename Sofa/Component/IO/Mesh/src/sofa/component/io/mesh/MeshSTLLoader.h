@@ -23,6 +23,8 @@
 #include <sofa/component/io/mesh/config.h>
 #include <sofa/core/loader/MeshLoader.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::io::mesh
 {
 
@@ -49,10 +51,10 @@ private:
 public:
     //Add Data here
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data <bool> _forceBinary;
+    sofa::core::objectmodel::RenamedData <bool> _forceBinary;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data <unsigned int> _headerSize;
+    sofa::core::objectmodel::RenamedData <unsigned int> _headerSize;
 
 
 

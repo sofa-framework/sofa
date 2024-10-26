@@ -124,7 +124,7 @@ BaseROI<DataTypes>::BaseROI()
     addOutput(&d_triangleOutIndices);
     addOutput(&d_tetrahedronOutIndices);
 
-    d_X0.setParent(&d_positions);
+    d_X0.setOriginalData(&d_positions);
 }
 
 template <class DataTypes>
@@ -173,7 +173,7 @@ void BaseROI<DataTypes>::init()
                 {
                     msg_error(this) <<  "Unable to find a MechanicalObject for this component. "
                                         "To remove this error message you can either:\n"
-                                        "   - to specifiy the DOF where to apply the BaseROI with the 'position' attribute.\n"
+                                        "   - to specify the DOF where to apply the BaseROI with the 'position' attribute.\n"
                                         "   - to add MechanicalObject or MeshLoader component before the " << this->getClassName() << " in the scene graph.\n";
                     d_componentState.setValue(ComponentState::Invalid) ;
                     return ;

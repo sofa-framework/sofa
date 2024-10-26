@@ -29,18 +29,19 @@ namespace sofa::component::topology::container::dynamic
 {
 
 using namespace sofa::defaulttype;
-int PointSetGeometryAlgorithmsClass = core::RegisterObject("Point set geometry algorithms")
+
+void registerPointSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Geometry algorithms dedicated to a point topology.")
         .add< PointSetGeometryAlgorithms<Vec3Types> >(true) // default template
         .add< PointSetGeometryAlgorithms<Vec2Types> >()
-        .add< PointSetGeometryAlgorithms<Vec1Types> >()
-
-        ;
+        .add< PointSetGeometryAlgorithms<Vec1Types> >());
+}
 
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API PointSetGeometryAlgorithms<Vec3Types>;
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API PointSetGeometryAlgorithms<Vec2Types>;
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API PointSetGeometryAlgorithms<Vec1Types>;
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API PointSetGeometryAlgorithms<Rigid3Types>;
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API PointSetGeometryAlgorithms<Rigid2Types>;
-
 
 } //namespace sofa::component::topology::container::dynamic

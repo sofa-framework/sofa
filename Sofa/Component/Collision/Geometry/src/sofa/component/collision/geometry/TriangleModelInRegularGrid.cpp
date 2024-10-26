@@ -38,9 +38,11 @@ using namespace sofa::type;
 using namespace sofa::core::topology;
 using namespace sofa::defaulttype;
 
-int TriangleModelInRegularGridClass = core::RegisterObject ( "collision model using a triangular mesh in a regular grid, as described in BaseMeshTopology" )
-        .add< TriangleModelInRegularGrid >()
-        ;
+void registerTriangleModelInRegularGrid(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Collision model using a triangular mesh in a regular grid, as described in BaseMeshTopology.")
+        .add< TriangleModelInRegularGrid >());
+}
 
 TriangleModelInRegularGrid::TriangleModelInRegularGrid() : TriangleCollisionModel<sofa::defaulttype::Vec3Types>()
 {

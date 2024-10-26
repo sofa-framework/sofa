@@ -31,15 +31,16 @@ namespace sofa::component::mechanicalload
 
 using namespace sofa::defaulttype;
 
-int DiagonalVelocityDampingForceFieldClass = core::RegisterObject("Diagonal velocity damping")
-.add< DiagonalVelocityDampingForceField<Vec3Types> >()
-.add< DiagonalVelocityDampingForceField<Vec2Types> >()
-.add< DiagonalVelocityDampingForceField<Vec1Types> >()
-.add< DiagonalVelocityDampingForceField<Vec6Types> >()
-.add< DiagonalVelocityDampingForceField<Rigid3Types> >()
-.add< DiagonalVelocityDampingForceField<Rigid2Types> >()
-
-;
+void registerDiagonalVelocityDampingForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Diagonal velocity damping.")
+        .add< DiagonalVelocityDampingForceField<Vec3Types> >()
+        .add< DiagonalVelocityDampingForceField<Vec2Types> >()
+        .add< DiagonalVelocityDampingForceField<Vec1Types> >()
+        .add< DiagonalVelocityDampingForceField<Vec6Types> >()
+        .add< DiagonalVelocityDampingForceField<Rigid3Types> >()
+        .add< DiagonalVelocityDampingForceField<Rigid2Types> >());
+}
 
 template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<Vec3Types>;
 template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<Vec2Types>;

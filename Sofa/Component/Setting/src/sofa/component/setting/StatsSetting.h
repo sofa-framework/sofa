@@ -26,6 +26,8 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/type/Vec.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::setting
 {
 
@@ -47,13 +49,13 @@ protected:
 public:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
-    Data<bool> dumpState;
+    sofa::core::objectmodel::RenamedData<bool> dumpState;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
-    Data<bool> logTime;
+    sofa::core::objectmodel::RenamedData<bool> logTime;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
-    Data<bool> exportState;
+    sofa::core::objectmodel::RenamedData<bool> exportState;
 
 
     Data<bool> d_dumpState; ///< Dump state vectors at each time step of the simulation

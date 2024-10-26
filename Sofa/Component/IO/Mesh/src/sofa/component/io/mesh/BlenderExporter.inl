@@ -41,11 +41,11 @@ BlenderExporter<T>::BlenderExporter()
 {
     Inherit::f_listening.setValue(true);
 
-    path.setParent(&d_path);
-    baseName.setParent(&d_baseName);
-    simulationType.setParent(&d_simulationType);
-    simulationStep.setParent(&d_simulationStep);
-    nbPtsByHair.setParent(&d_nbPtsByHair);
+    path.setOriginalData(&d_path);
+    baseName.setOriginalData(&d_baseName);
+    simulationType.setOriginalData(&d_simulationType);
+    simulationStep.setOriginalData(&d_simulationStep);
+    nbPtsByHair.setOriginalData(&d_nbPtsByHair);
 
 }
 

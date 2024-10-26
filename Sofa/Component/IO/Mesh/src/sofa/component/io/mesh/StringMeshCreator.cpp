@@ -31,11 +31,11 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 using type::vector;
 
-int StringMeshCreatorClass = core::RegisterObject("Procedural creation of a one-dimensional mesh.")
-        .add< StringMeshCreator >()
-        ;
-
-
+void registerStringMeshCreator(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Procedural creation of a one-dimensional mesh.")
+        .add< StringMeshCreator >());
+}
 
 StringMeshCreator::StringMeshCreator(): MeshLoader()
   , d_resolution(initData(&d_resolution, (unsigned)2, "resolution", "Number of vertices"))
@@ -51,7 +51,7 @@ StringMeshCreator::StringMeshCreator(): MeshLoader()
 
     }, {&d_positions, &d_edges});
 
-    resolution.setParent(&d_resolution);
+    resolution.setOriginalData(&d_resolution);
 }
 
 void StringMeshCreator::doClearBuffers()

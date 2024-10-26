@@ -43,8 +43,10 @@ void Gravity::apply()
     getContext()->setGravity( f_gravity.getValue() );
 }
 
-int GravityClass = core::RegisterObject("Gravity in world coordinates")
-        .add< Gravity >()
-        ;
+void registerGravity(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Gravity in world coordinates.")
+        .add< Gravity >());
+}
 
 } // namespace sofa::component::mechanicalload

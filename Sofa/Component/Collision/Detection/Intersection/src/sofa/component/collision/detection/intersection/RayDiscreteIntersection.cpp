@@ -41,8 +41,7 @@ IntersectorCreator<DiscreteIntersection, RayDiscreteIntersection> RayDiscreteInt
 // since MinProximityIntersection inherits from DiscreteIntersection, should not this line be implicit? (but it is not the case...)
 IntersectorCreator<MinProximityIntersection, RayDiscreteIntersection> RayMinProximityIntersectors("Ray");
 
-RayDiscreteIntersection::RayDiscreteIntersection(DiscreteIntersection* object, bool addSelf)
-    : intersection(object)
+RayDiscreteIntersection::RayDiscreteIntersection(DiscreteIntersection* intersection, bool addSelf)
 {
     if (addSelf)
     {
@@ -96,16 +95,6 @@ int RayDiscreteIntersection::computeIntersection(Ray& e1, Triangle& e2, OutputVe
     detection->elem.second = e2;
     detection->id = e1.getIndex();
     return 1;
-}
-
-bool RayDiscreteIntersection::testIntersection(Ray& r, Triangle& t)
-{
-    return testIntersection(r, t, intersection);
-}
-
-int RayDiscreteIntersection::computeIntersection(Ray& e1, Triangle& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
 }
 
 } //namespace sofa::component::collision::detection::intersection

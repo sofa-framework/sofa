@@ -28,9 +28,11 @@
 namespace sofa::component::visual
 {
 
-int VisualGridClass = core::RegisterObject("Display a simple grid")
-        .add< VisualGrid>()
-        ;
+void registerVisualGrid(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Display a simple grid.")
+        .add< VisualGrid >());
+}
 
 using namespace sofa::defaulttype;
 

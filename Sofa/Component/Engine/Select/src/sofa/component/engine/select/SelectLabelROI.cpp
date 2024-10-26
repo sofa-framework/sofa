@@ -28,12 +28,14 @@
 namespace sofa::component::engine::select
 {
 
-int SelectLabelROIClass = core::RegisterObject("Select a subset of labeled points or cells stored in (vector<svector<label>>) given certain labels")
+void registerSelectLabelROI(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Select a subset of labeled points or cells stored in (vector<svector<label>>) given certain labels.")
         .add< SelectLabelROI<unsigned int> >(true)
         .add< SelectLabelROI<unsigned char> >()
         .add< SelectLabelROI<unsigned short> >()
-        .add< SelectLabelROI<int> >()
-        ;
+        .add< SelectLabelROI<int> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API SelectLabelROI<unsigned int>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API SelectLabelROI<unsigned char>;

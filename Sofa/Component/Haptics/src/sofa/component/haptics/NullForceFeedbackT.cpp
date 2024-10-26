@@ -25,8 +25,11 @@
 namespace sofa::component::haptics
 {
 
-int nullForceFeedbackTClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
+void registerNullForceFeedbackT(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Null force feedback for haptic feedback device.")
         .add< NullForceFeedbackT<sofa::defaulttype::Vec1Types> >()
-        .add< NullForceFeedbackT<sofa::defaulttype::Rigid3Types> >();
+        .add< NullForceFeedbackT<sofa::defaulttype::Rigid3Types> >());
+}
 
 } // namespace sofa::component::haptics

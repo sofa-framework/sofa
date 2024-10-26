@@ -32,11 +32,12 @@
 #include <sofa/type/vector.h>
 #include <sofa/type/trait/Rebind.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::mapping::linear
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template<class InDataTypes, class OutDataTypes>
 class SubsetMappingInternalData
 {
@@ -81,30 +82,30 @@ public:
     typedef type::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
 
-    /// Correspondance array
+    /// Correspondence array
     using IndexArray = sofa::type::rebind_to<InVecCoord, Index>;
     typedef sofa::core::topology::PointSubsetData< IndexArray > SetIndex;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<IndexArray> f_indices;
+    sofa::core::objectmodel::RenamedData<IndexArray> f_indices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<Index> f_first;
+    sofa::core::objectmodel::RenamedData<Index> f_first;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<int> f_last;
+    sofa::core::objectmodel::RenamedData<Index> f_last;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<Index>  f_radius;
+    sofa::core::objectmodel::RenamedData<Real>  f_radius;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<bool> f_handleTopologyChange;
+    sofa::core::objectmodel::RenamedData<bool> f_handleTopologyChange;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<bool> f_ignoreNotFound;
+    sofa::core::objectmodel::RenamedData<bool> f_ignoreNotFound;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<bool> f_resizeToModel;
+    sofa::core::objectmodel::RenamedData<bool> f_resizeToModel;
 
 
     SetIndex d_indices;

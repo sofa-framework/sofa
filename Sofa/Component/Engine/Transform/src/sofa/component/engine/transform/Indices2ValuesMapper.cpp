@@ -31,13 +31,12 @@ namespace sofa::component::engine::transform
 using namespace sofa;
 using namespace sofa::defaulttype;
 
-int Indices2ValuesMapperClass = core::RegisterObject("?")
-        .add< Indices2ValuesMapper<Vec3Types> >(true)
- 
-        ;
+void registerIndices2ValuesMapper(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Input multiple values to output values mapper. Includes indices rules, such as replacement, resize.")
+        .add< Indices2ValuesMapper<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API Indices2ValuesMapper<Vec3Types>;
- 
-
 
 } //namespace sofa::component::engine::transform

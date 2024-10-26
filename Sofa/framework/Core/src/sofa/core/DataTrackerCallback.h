@@ -53,7 +53,7 @@ public:
 
 
     /// utility function to ensure all inputs are up-to-date
-    /// can be useful for particulary complex DDGNode
+    /// can be useful for particularly complex DDGNode
     /// with a lot input/output imbricated access
     void updateAllInputsIfDirty();
 
@@ -81,7 +81,7 @@ protected:
 /// and can be used everywhere.
 ///
 /// Note that it contains a DataTracker (m_dataTracker)
-/// to be able to check precisly which input changed if needed.
+/// to be able to check precisely which input changed if needed.
 ///
 ///
 ///

@@ -29,13 +29,14 @@ namespace sofa::component::mechanicalload
 
 using namespace sofa::defaulttype;
 
-
-int SphereForceFieldClass = core::RegisterObject("Repulsion applied by a sphere toward the exterior")
+void registerSphereForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Outward repulsion applied by a sphere geometry")
         .add< SphereForceField<Vec3Types> >()
         .add< SphereForceField<Vec2Types> >()
-        .add< SphereForceField<Vec1Types> >()
+        .add< SphereForceField<Vec1Types> >());
+}
 
-        ;
 template class SOFA_COMPONENT_MECHANICALLOAD_API SphereForceField<Vec3Types>;
 template class SOFA_COMPONENT_MECHANICALLOAD_API SphereForceField<Vec2Types>;
 template class SOFA_COMPONENT_MECHANICALLOAD_API SphereForceField<Vec1Types>;

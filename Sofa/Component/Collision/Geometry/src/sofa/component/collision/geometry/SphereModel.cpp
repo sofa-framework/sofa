@@ -44,13 +44,14 @@ Vec3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const Ve
     return center();
 }
 
-int SphereModelClass = core::RegisterObject("Collision model which represents a set of Spheres")
+void registerSphereCollisionModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Collision model which represents a set of Spheres.")
         .add<SphereCollisionModel<Vec3Types> >()
-        .add<SphereCollisionModel<Rigid3Types> >()
-        ;
+        .add<SphereCollisionModel<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TSphere<defaulttype::Vec3Types>;
-//template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TSphere<defaulttype::Rigid3Types>; // Can't compile due to type mismatches in pFree() method.
 template class SOFA_COMPONENT_COLLISION_GEOMETRY_API SphereCollisionModel<defaulttype::Vec3Types>;
 template class SOFA_COMPONENT_COLLISION_GEOMETRY_API SphereCollisionModel<defaulttype::Rigid3Types>;
 

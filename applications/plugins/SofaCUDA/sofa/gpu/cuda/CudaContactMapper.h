@@ -24,13 +24,12 @@
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
 #include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
 #include <sofa/component/collision/response/mapper/SubsetContactMapper.inl>
-#include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
 #include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
 #include <SofaCUDA/component/collision/geometry/CudaPointModel.h>
-#include <sofa/gpu/cuda/CudaCollisionDetection.h>
+#include <sofa/gpu/cuda/GPUDetectionOutputVector.h>
 #include <SofaCUDA/component/mapping/nonlinear/CudaRigidMapping.h>
 #include <SofaCUDA/component/mapping/linear/CudaSubsetMapping.h>
-
+#include <sofa/gpu/cuda/CudaTypes.h>
 
 
 namespace sofa::gpu::cuda
@@ -38,7 +37,6 @@ namespace sofa::gpu::cuda
 
 extern "C"
 {
-    void RigidContactMapperCuda3f_setPoints2(unsigned int size, unsigned int nbTests, unsigned int maxPoints, const void* tests, const void* contacts, void* map);
     void SubsetContactMapperCuda3f_setPoints1(unsigned int size, unsigned int nbTests, unsigned int maxPoints, unsigned int nbPointsPerElem, const void* tests, const void* contacts, void* map);
 }
 
@@ -51,76 +49,6 @@ namespace sofa::component::collision
 using namespace sofa::defaulttype;
 using namespace sofa::gpu::cuda;
 using sofa::core::collision::GPUDetectionOutputVector;
-
-
-/// Mapper for CudaRigidDistanceGridCollisionModel
-template <class DataTypes>
-class response::mapper::ContactMapper<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,DataTypes> : public response::mapper::RigidContactMapper<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,DataTypes>
-{
-public:
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef RigidContactMapper<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,DataTypes> Inherit;
-    typedef typename Inherit::MMechanicalState MMechanicalState;
-    typedef typename Inherit::MCollisionModel MCollisionModel;
-
-    int addPoint(const Coord& P, int index, Real& r)
-    {
-        int i = this->Inherit::addPoint(P, index, r);
-        if (!this->mapping)
-        {
-            MCollisionModel* model = this->model;
-            MMechanicalState* outmodel = this->outmodel.get();
-            Data<VecCoord>* d_x = outmodel->write(core::VecCoordId::position());
-            VecDeriv& vx = *d_x->beginEdit();
-            Data<VecDeriv>* d_v = outmodel->write(core::VecDerivId::velocity());
-            VecCoord& vv = *d_v->beginEdit();
-
-            typename DataTypes::Coord& x = vx[i];
-            typename DataTypes::Deriv& v = vv[i];
-            if (model->isTransformed(index))
-            {
-                x = model->getTranslation(index) + model->getRotation(index) * P;
-            }
-            else
-            {
-                x = P;
-            }
-            v = typename DataTypes::Deriv();
-
-            d_x->endEdit();
-            d_v->endEdit();
-        }
-        return i;
-    }
-
-    void setPoints2(GPUDetectionOutputVector* outputs)
-    {
-        int n = outputs->size();
-        int nt = outputs->nbTests();
-        int maxp = 0;
-        for (int i=0; i<nt; i++)
-            if (outputs->rtest(i).curSize > maxp) maxp = outputs->rtest(i).curSize;
-        if (this->outmodel)
-            this->outmodel->resize(n);
-        if (this->mapping)
-        {
-            this->mapping->d_points.beginEdit()->fastResize(n);
-            this->mapping->m_rotatedPoints.fastResize(n);
-            gpu::cuda::RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->d_points.beginEdit()->deviceWrite());
-        }
-        else
-        {
-            Data<VecCoord>* d_x = this->outmodel->write(core::VecCoordId::position());
-            VecCoord& vx = *d_x->beginEdit();
-            gpu::cuda::RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), vx.deviceWrite());
-            d_x->endEdit();
-        }
-    }
-};
-
 
 /// Mapper for CudaPointDistanceGridCollisionModel
 template <class DataTypes>
@@ -185,5 +113,10 @@ public:
         this->mapping->d_indices.endEdit();
     }
 };
+
+#if !defined(SOFACUDA_CUDACONTACTMAPPER_CPP)
+extern template class SOFA_GPU_CUDA_API response::mapper::ContactMapper<sofa::gpu::cuda::CudaPointCollisionModel, sofa::gpu::cuda::CudaVec3fTypes>;
+extern template class SOFA_GPU_CUDA_API response::mapper::ContactMapper<sofa::gpu::cuda::CudaSphereCollisionModel, sofa::gpu::cuda::CudaVec3fTypes>;
+#endif
 
 } // namespace sofa::component::collision

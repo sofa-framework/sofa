@@ -32,6 +32,7 @@
 #include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceField.h>
 #include <sofa/core/topology/TopologyData.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -73,21 +74,22 @@ public:
 
     //Data<Real> f_poisson2;
     //Data<Real> d_young2; ///< Young modulus along transverse direction
+    typedef typename TriangularAnisotropicFEMForceField::Deriv TriangleFiberDirection;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<type::vector<Real>> f_young2;
+    sofa::core::objectmodel::RenamedData<type::vector<Real>> f_young2;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<Real> f_theta;
+    sofa::core::objectmodel::RenamedData<Real> f_theta;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<VecCoord> f_fiberCenter;
+    sofa::core::objectmodel::RenamedData<VecCoord> f_fiberCenter;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> showFiber;
+    sofa::core::objectmodel::RenamedData<bool> showFiber;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::Index> localFiberDirection;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector< TriangleFiberDirection > > localFiberDirection;
 
 
     Data<type::vector<Real> > f_poisson2;
@@ -95,7 +97,6 @@ public:
     Data<Real> d_theta; ///< Fiber angle in global reference frame (in degrees)
     Data<VecCoord> d_fiberCenter; ///< Concentric fiber center in global reference frame
     Data<bool> d_showFiber; ///< Flag activating rendering of fiber directions within each triangle
-    typedef typename TriangularAnisotropicFEMForceField::Deriv TriangleFiberDirection;
     core::topology::TriangleData < sofa::type::vector< TriangleFiberDirection > > d_localFiberDirection; ///< Computed fibers direction within each triangle
 
     /// Link to be set to the topology container in the component graph.
@@ -110,11 +111,6 @@ public:
         const sofa::type::vector< unsigned int >&,
         const sofa::type::vector< SReal >&);
 
-    /// Inherited member
-    /// Bring inherited member in the current lookup context.
-    /// otherwise any access to the Inherit1::member would require "this->".
-    /// @see https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
-    using Inherit1::m_topology;
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_CPP)

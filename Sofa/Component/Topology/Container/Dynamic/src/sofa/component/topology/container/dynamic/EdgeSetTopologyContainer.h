@@ -24,6 +24,8 @@
 
 #include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::topology::container::dynamic
 {
 
@@ -97,7 +99,7 @@ public:
 
     /// Dynamic Topology API
     /// @{
-    /// Method called by component Init method. Will create all the topology neighboorhood buffers.
+    /// Method called by component Init method. Will create all the topology neighborhood buffers.
     void initTopology();
 
     /** \brief Checks if the topology is coherent
@@ -123,7 +125,7 @@ public:
     Size getNumberOfElements() const override;
 
 
-    /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
+    /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRARY)
      *
      * @param components the array containing the optimal vertex permutation according to the Reverse CuthillMckee algorithm
      * @return The number of components connected together.
@@ -226,7 +228,7 @@ protected:
 public:
     /** The array that stores the set of edges in the edge set */
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
-    Data <bool> m_checkConnexity;
+    sofa::core::objectmodel::RenamedData <bool> m_checkConnexity;
 
     Data< sofa::type::vector<Edge> > d_edge; ///< List of edge indices
 

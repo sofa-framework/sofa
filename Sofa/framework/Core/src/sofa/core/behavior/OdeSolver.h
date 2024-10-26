@@ -32,7 +32,7 @@ namespace sofa::core::behavior
  *  This class currently control both the integration scheme (explicit,
  *  implicit, static, etc), and the linear system resolution algorithm
  *  (conjugate gradient, matrix direct inversion, etc). Those two aspect will
- *  propably be separated in a future version.
+ *  probably be separated in a future version.
  *
  *  While all computations required to do the integration step are handled by
  *  this object, they should not be implemented directly in it, but instead
@@ -73,7 +73,7 @@ public:
 
     /// Compute the residual of the newton iteration
     ///
-    /// pos_t and vel_t are the position and velocities at the begining of the time step
+    /// pos_t and vel_t are the position and velocities at the beginning of the time step
     /// the result is accumulated in Vecid::force()
     virtual void computeResidual(const core::ExecParams* /*params*/, SReal /*dt*/, sofa::core::MultiVecCoordId /*pos_t*/, sofa::core::MultiVecDerivId /*vel_t*/) { msg_error() << "ComputeResidual is not implemented in " << this->getName(); }
 

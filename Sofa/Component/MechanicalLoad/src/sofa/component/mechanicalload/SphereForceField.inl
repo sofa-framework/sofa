@@ -57,17 +57,17 @@ SphereForceField<DataTypes>::SphereForceField()
     , d_stiffness(initData(&d_stiffness, (Real)500, "stiffness", "force stiffness"))
     , d_damping(initData(&d_damping, (Real)5, "damping", "force damping"))
     , d_color(initData(&d_color, sofa::type::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f), "color", "sphere color. (default=[0,0,1,1])"))
-    , d_localRange(initData(&d_localRange, type::Vec<2,int>(-1, -1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , d_localRange(initData(&d_localRange, type::Vec<2,int>(-1, -1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitioning)" ) )
     , d_bilateral(initData(&d_bilateral, false, "bilateral", "if true the sphere force field is applied on both sides"))
 {
-    contacts.setParent(&d_contacts);
-    sphereCenter.setParent(&d_sphereCenter);
-    sphereRadius.setParent(&d_sphereRadius);
-    stiffness.setParent(&d_stiffness);
-    damping.setParent(&d_damping);
-    color.setParent(&d_color);
-    localRange.setParent(&d_localRange);
-    bilateral.setParent(&d_bilateral);
+    contacts.setOriginalData(&d_contacts);
+    sphereCenter.setOriginalData(&d_sphereCenter);
+    sphereRadius.setOriginalData(&d_sphereRadius);
+    stiffness.setOriginalData(&d_stiffness);
+    damping.setOriginalData(&d_damping);
+    color.setOriginalData(&d_color);
+    localRange.setOriginalData(&d_localRange);
+    bilateral.setOriginalData(&d_bilateral);
 
 }
 

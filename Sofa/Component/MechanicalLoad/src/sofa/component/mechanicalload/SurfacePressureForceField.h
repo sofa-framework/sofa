@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::core::topology
 {
@@ -70,43 +71,43 @@ public:
     enum State { INCREASE, DECREASE };
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Real> m_pressure;
+    sofa::core::objectmodel::RenamedData<Real> m_pressure;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Coord> m_min;
+    sofa::core::objectmodel::RenamedData<Coord> m_min;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Coord> m_max;
+    sofa::core::objectmodel::RenamedData<Coord> m_max;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<VecIndex> m_triangleIndices;
+    sofa::core::objectmodel::RenamedData<VecIndex> m_triangleIndices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<VecIndex> m_quadIndices;
+    sofa::core::objectmodel::RenamedData<VecIndex> m_quadIndices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<bool> m_pulseMode;
+    sofa::core::objectmodel::RenamedData<bool> m_pulseMode;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Real> m_pressureLowerBound;
+    sofa::core::objectmodel::RenamedData<Real> m_pressureLowerBound;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Real> m_pressureSpeed;
+    sofa::core::objectmodel::RenamedData<Real> m_pressureSpeed;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<bool> m_volumeConservationMode;
+    sofa::core::objectmodel::RenamedData<bool> m_volumeConservationMode;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<bool> m_useTangentStiffness;
+    sofa::core::objectmodel::RenamedData<bool> m_useTangentStiffness;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Real> m_defaultVolume;
+    sofa::core::objectmodel::RenamedData<Real> m_defaultVolume;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Deriv> m_mainDirection;
+    sofa::core::objectmodel::RenamedData<Deriv> m_mainDirection;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    Data<Real> m_drawForceScale;
+    sofa::core::objectmodel::RenamedData<Real> m_drawForceScale;
 
     Data<Real> d_pressure; ///< Pressure force per unit area
     Data<Coord> d_min; ///< Lower bound of the selection box

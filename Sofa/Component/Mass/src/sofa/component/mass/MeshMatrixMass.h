@@ -105,7 +105,7 @@ public:
     Data< Real >         d_showAxisSize;  ///< factor length of the axis displayed (only used for rigids)
     /// if mass lumping should be performed (only compute mass on vertices)
     Data< bool >         d_lumping;
-    /// if specific mass information should be outputed
+    /// if specific mass information should be outputted
     Data< bool >         d_printMass; ///< Boolean to print the mass
     Data< std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of the controlled potential
 
@@ -154,7 +154,7 @@ public:
         return d_vertexMass.getValue().size();
     }
 
-    /// Print key mass informations (totalMass, vertexMass and massDensity)
+    /// Print key mass information (totalMass, vertexMass and massDensity)
     void printMass();
 
     /// Compute the mass from input values
@@ -219,7 +219,7 @@ public:
 
 
     /// Add Mass contribution to global Matrix assembling
-    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset) override;
     void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}
     void buildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}

@@ -45,10 +45,10 @@ LineProjectiveConstraint<DataTypes>::LineProjectiveConstraint()
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
 
-    f_indices.setParent(&d_indices);
-    f_drawSize.setParent(&d_drawSize);
-    f_origin.setParent(&d_origin);
-    f_direction.setParent(&d_direction);
+    f_indices.setOriginalData(&d_indices);
+    f_drawSize.setOriginalData(&d_drawSize);
+    f_origin.setOriginalData(&d_origin);
+    f_direction.setOriginalData(&d_direction);
 }
 
 

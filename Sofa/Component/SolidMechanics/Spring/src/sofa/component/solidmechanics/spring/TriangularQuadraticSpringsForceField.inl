@@ -121,13 +121,13 @@ template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::Tria
     , d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
     , m_topology(nullptr)
 {
-    _initialPoints.setParent(&d_initialPoints);
-    f_poissonRatio.setParent(&d_poissonRatio);
-    f_youngModulus.setParent(&d_youngModulus);
-    f_dampingRatio.setParent(&d_dampingRatio);
-    f_useAngularSprings.setParent(&d_useAngularSprings);
-    triangleInfo.setParent(&d_triangleInfo);
-    edgeInfo.setParent(&d_edgeInfo);
+    _initialPoints.setOriginalData(&d_initialPoints);
+    f_poissonRatio.setOriginalData(&d_poissonRatio);
+    f_youngModulus.setOriginalData(&d_youngModulus);
+    f_dampingRatio.setOriginalData(&d_dampingRatio);
+    f_useAngularSprings.setOriginalData(&d_useAngularSprings);
+    triangleInfo.setOriginalData(&d_triangleInfo);
+    edgeInfo.setOriginalData(&d_edgeInfo);
 
 
 }

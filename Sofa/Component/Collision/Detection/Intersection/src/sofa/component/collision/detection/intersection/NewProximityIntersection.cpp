@@ -38,15 +38,17 @@ using namespace sofa::core::collision;
 using namespace sofa::component::collision::geometry;
 using namespace helper;
 
-int NewProximityIntersectionClass = core::RegisterObject("Optimized Proximity Intersection based on Triangle-Triangle tests, ignoring Edge-Edge cases")
-        .add< NewProximityIntersection >()
-        ;
+void registerNewProximityIntersection(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Optimized Proximity Intersection based on Triangle-Triangle tests, ignoring Edge-Edge cases")
+        .add< NewProximityIntersection >());
+}
 
 NewProximityIntersection::NewProximityIntersection()
     : BaseProximityIntersection()
     , d_useLineLine(initData(&d_useLineLine, false, "useLineLine", "Line-line collision detection enabled"))
 {
-    useLineLine.setParent(&d_useLineLine);
+    useLineLine.setOriginalData(&d_useLineLine);
 }
 
 void NewProximityIntersection::init()
@@ -79,16 +81,5 @@ int NewProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, Outp
 
     return BaseProximityIntersection::computeIntersection(cube1, cube2, contacts, currentIntersection);
 }
-
-bool NewProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
-{
-    return testIntersection(cube1, cube2, this );
-}
-
-int NewProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
-{
-    return computeIntersection(cube1, cube2, contacts, this);
-}
-
 
 } // namespace sofa::component::collision::detection::intersection

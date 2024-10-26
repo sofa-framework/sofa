@@ -28,6 +28,8 @@
 #include <sofa/type/Mat.h>
 #include <sofa/core/topology/TopologyData.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::solidmechanics::spring
 {
 
@@ -96,7 +98,7 @@ public:
         }
     };
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    Data<sofa::Index> edgeInfo;
+    sofa::core::objectmodel::RenamedData<type::vector<EdgeInformation>> edgeInfo;
 
     sofa::core::topology::EdgeData<type::vector<EdgeInformation> > d_edgeInfo; ///< Internal edge data
 
@@ -163,7 +165,7 @@ public:
     sofa::core::topology::EdgeData<type::vector<EdgeInformation> >& getEdgeInfo() { return d_edgeInfo; }
 
 protected:
-    /// poential energy accumulate in method @sa addForce
+    /// potential energy accumulate in method @sa addForce
     SReal m_potentialEnergy;
 
     /// Pointer to the linked topology used to create this spring forcefield

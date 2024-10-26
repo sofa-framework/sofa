@@ -30,13 +30,12 @@ namespace sofa::component::engine::transform
 
 using namespace sofa::defaulttype;
 
-int Vertex2FrameClass = core::RegisterObject("")
-        .add< Vertex2Frame<Rigid3Types> >()
- 
-        ;
+void registerVertex2Frame(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Return a rigid position from the vertices, texCoords, normals and facets of any mesh.")
+        .add< Vertex2Frame<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API Vertex2Frame<Rigid3Types>;
- 
-
 
 } //namespace sofa::component::engine::transform

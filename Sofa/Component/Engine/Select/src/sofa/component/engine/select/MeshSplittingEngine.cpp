@@ -26,12 +26,12 @@
 namespace sofa::component::engine::select
 {
 
-int MeshSplittingEngineClass = core::RegisterObject("This class breaks a mesh in multiple parts, based on selected vertices or cells.")
-        .add< MeshSplittingEngine<defaulttype::Vec3Types> >(true) // default template
-        ;
+void registerMeshSplittingEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Engine breaking a mesh in multiple parts, based on selected vertices or cells.")
+        .add< MeshSplittingEngine<defaulttype::Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API MeshSplittingEngine<defaulttype::Vec3Types>;
- 
-
 
 } //namespace sofa::component::engine::select

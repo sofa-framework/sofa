@@ -26,7 +26,7 @@
 
     <Node name="RigMec" gravity="0 0 0" >
         <MechanicalObject template="Rigid3d" name="rigidDOF"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
-        <UniformMass name="uniformMass63" />
+        <UniformMass name="uniformMass63" totalMass="1.0"/>
 
         <Node name="TRIANGLE" >
             <MeshTopology name="meshTopology35"  edges="2 0  1 2  0 1 "  triangles="0 1 2 "  drawEdges="1"  drawTriangles="1" />

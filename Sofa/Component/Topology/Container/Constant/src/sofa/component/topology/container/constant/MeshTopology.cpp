@@ -478,11 +478,11 @@ void MeshTopology::QuadUpdate::doUpdate()
 using namespace sofa::defaulttype;
 using core::topology::BaseMeshTopology;
 
-
-int MeshTopologyClass = core::RegisterObject("Generic mesh topology")
-        .addAlias("Mesh")
-        .add< MeshTopology >()
-        ;
+void registerMeshTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Generic constant topology loaded from a mesh file.")
+        .add< MeshTopology >());
+}
 
 MeshTopology::MeshTopology()
     : d_seqPoints(initData(&d_seqPoints, "position", "List of point positions"))
@@ -508,18 +508,18 @@ MeshTopology::MeshTopology()
     addAlias(&d_seqHexahedra, "hexas");
     addAlias(&d_seqUVs, "texcoords");
 
-    seqPoints.setParent(&d_seqPoints);
-    seqEdges.setParent(&d_seqEdges);
-    seqTriangles.setParent(&d_seqTriangles);
-    seqQuads.setParent(&d_seqQuads);
-    seqTetrahedra.setParent(&d_seqTetrahedra);
-    seqHexahedra.setParent(&d_seqHexahedra);
-    seqUVs.setParent(&d_seqUVs);
-    _drawEdges.setParent(&d_drawEdges);
-    _drawTriangles.setParent(&d_drawTriangles);
-    _drawQuads.setParent(&d_drawQuads);
-    _drawTetra.setParent(&d_drawTetra);
-    _drawHexa.setParent(&d_drawHexa);
+    seqPoints.setOriginalData(&d_seqPoints);
+    seqEdges.setOriginalData(&d_seqEdges);
+    seqTriangles.setOriginalData(&d_seqTriangles);
+    seqQuads.setOriginalData(&d_seqQuads);
+    seqTetrahedra.setOriginalData(&d_seqTetrahedra);
+    seqHexahedra.setOriginalData(&d_seqHexahedra);
+    seqUVs.setOriginalData(&d_seqUVs);
+    _drawEdges.setOriginalData(&d_drawEdges);
+    _drawTriangles.setOriginalData(&d_drawTriangles);
+    _drawQuads.setOriginalData(&d_drawQuads);
+    _drawTetra.setOriginalData(&d_drawTetra);
+    _drawHexa.setOriginalData(&d_drawHexa);
 }
 
 void MeshTopology::init()
@@ -2362,7 +2362,7 @@ bool MeshTopology::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-        msg_error() << "CheckConnexity: elements are missings. There is more than one connexe component.";
+        msg_error() << "CheckConnexity: elements are missing. There is more than one connexe component.";
         return false;
     }
 

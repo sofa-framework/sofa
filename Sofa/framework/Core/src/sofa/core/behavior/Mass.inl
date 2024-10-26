@@ -80,18 +80,10 @@ void Mass<DataTypes>::accFromF(const MechanicalParams* /*mparams*/, DataVecDeriv
 
 
 template<class DataTypes>
-void Mass<DataTypes>::addDForce(const MechanicalParams*
-                                #ifndef NDEBUG
-                                mparams
-                                #endif
-                                ,
+void Mass<DataTypes>::addDForce(const MechanicalParams* mparams,
                                 DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/)
 {
-#ifndef NDEBUG
-    // @TODO Remove
-    // Hack to disable warning message
-    sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-#endif
+    SOFA_UNUSED(mparams);
 }
 
 template<class DataTypes>

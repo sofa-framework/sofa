@@ -49,10 +49,10 @@ TorsionForceField<DataTypes>::TorsionForceField() :
         return sofa::core::objectmodel::ComponentState::Valid;
     }, {&d_indices});
 
-    m_indices.setParent(&d_indices);
-    m_torque.setParent(&d_torque);
-    m_axis.setParent(&d_axis);
-    m_origin.setParent(&d_origin);
+    m_indices.setOriginalData(&d_indices);
+    m_torque.setOriginalData(&d_torque);
+    m_axis.setOriginalData(&d_axis);
+    m_origin.setOriginalData(&d_origin);
 
 }
 

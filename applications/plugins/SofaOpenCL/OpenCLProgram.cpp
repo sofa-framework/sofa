@@ -153,8 +153,7 @@ void OpenCLProgram::createProgram(std::string * s)
 void OpenCLProgram::createProgram(std::string *source,std::map<std::string,std::string> *types)
 {
     std::string s;
-    std::map<std::string,std::string>::iterator it;
-
+    
     s = createTypes(types);
     s += *source;
     createProgram(&s);

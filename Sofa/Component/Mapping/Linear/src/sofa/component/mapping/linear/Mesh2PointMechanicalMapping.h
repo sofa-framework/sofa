@@ -76,10 +76,9 @@ public:
 
     void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
 
-protected:
-    Mesh2PointTopologicalMapping* topoMap;
-    core::topology::BaseMeshTopology* inputTopo;
-    core::topology::BaseMeshTopology* outputTopo;
+    SingleLink<Mesh2PointMechanicalMapping, Mesh2PointTopologicalMapping, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topologicalMapping;
+    SingleLink<Mesh2PointMechanicalMapping, core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_inputTopology;
+    SingleLink<Mesh2PointMechanicalMapping, core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_outputTopology;
 };
 
 

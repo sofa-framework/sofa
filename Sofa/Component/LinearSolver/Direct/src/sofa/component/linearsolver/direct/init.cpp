@@ -22,13 +22,33 @@
 #include <sofa/component/linearsolver/direct/EigenSolverFactory.h>
 #include <sofa/component/linearsolver/direct/init.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+
+namespace sofa::component::linearsystem
+{
+    extern void registerMatrixLinearSystemBTDMatrix(sofa::core::ObjectFactory* factory);
+    extern void registerTypedMatrixLinearSystemBTDMatrix(sofa::core::ObjectFactory* factory);
+}
+
 namespace sofa::component::linearsolver::direct
 {
-    
+   
+extern void registerAsyncSparseLDLSolver(sofa::core::ObjectFactory* factory);
+extern void registerBTDLinearSolver(sofa::core::ObjectFactory* factory);
+extern void registerCholeskySolver(sofa::core::ObjectFactory* factory);
+extern void registerEigenSimplicialLDLT(sofa::core::ObjectFactory* factory);
+extern void registerEigenSimplicialLLT(sofa::core::ObjectFactory* factory);
+extern void registerEigenSparseLU(sofa::core::ObjectFactory* factory);
+extern void registerEigenSparseQR(sofa::core::ObjectFactory* factory);
+extern void registerPrecomputedLinearSolver(sofa::core::ObjectFactory* factory);
+extern void registerSparseLDLSolver(sofa::core::ObjectFactory* factory);
+extern void registerSVDLinearSolver(sofa::core::ObjectFactory* factory);
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -63,11 +83,30 @@ void registerOrderingMethods()
     registerOrderingMethods<MainQRFactory, Scalar>();
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerAsyncSparseLDLSolver(factory);
+    registerBTDLinearSolver(factory);
+    registerCholeskySolver(factory);
+    registerEigenSimplicialLDLT(factory);
+    registerEigenSimplicialLLT(factory);
+    registerEigenSparseLU(factory);
+    registerEigenSparseQR(factory);
+    linearsystem::registerMatrixLinearSystemBTDMatrix(factory);
+    registerPrecomputedLinearSolver(factory);
+    registerSparseLDLSolver(factory);
+    registerSVDLinearSolver(factory);
+    linearsystem::registerTypedMatrixLinearSystemBTDMatrix(factory);
+}
+
 void init()
 {
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         registerOrderingMethods<float>();
         registerOrderingMethods<double>();
 

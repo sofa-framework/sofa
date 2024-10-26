@@ -40,13 +40,13 @@ SubsetMapping<TIn, TOut>::SubsetMapping()
     , matrixJ()
     , updateJ(false)
 {
-    f_indices.setParent(&d_indices);
-    f_first.setParent(&d_first);
-    f_last.setParent(&d_last);
-    f_radius.setParent(&d_radius);
-    f_handleTopologyChange.setParent(&d_handleTopologyChange);
-    f_ignoreNotFound.setParent(&d_ignoreNotFound);
-    f_resizeToModel.setParent(&d_resizeToModel);
+    f_indices.setOriginalData(&d_indices);
+    f_first.setOriginalData(&d_first);
+    f_last.setOriginalData(&d_last);
+    f_radius.setOriginalData(&d_radius);
+    f_handleTopologyChange.setOriginalData(&d_handleTopologyChange);
+    f_ignoreNotFound.setOriginalData(&d_ignoreNotFound);
+    f_resizeToModel.setOriginalData(&d_resizeToModel);
 
 }
 
@@ -98,7 +98,7 @@ void SubsetMapping<TIn, TOut>::init()
     else if (d_indices.getValue().empty())
     {
 
-        // We have to construct the correspondance index
+        // We have to construct the correspondence index
         const InVecCoord& in   =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
         const OutVecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
         IndexArray& indices = *d_indices.beginEdit();

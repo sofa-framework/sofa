@@ -86,7 +86,7 @@ public:
     /// The view can be visually de-synchronized with the simulation graph. This happens
     /// when the view is "frozen" for performance reason. In that case, use isDirty to
     /// get current view state or the dirtynessChanged() signal.
-    /// To resynchronize the view call the update methid.
+    /// To resynchronize the view call the update method.
     void update();
     void setRoot(sofa::simulation::Node*);
 

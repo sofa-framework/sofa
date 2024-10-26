@@ -30,7 +30,10 @@ using sofa::core::objectmodel::ComponentState ;
 
 using std::string;
 
-namespace sofa::component::sceneutility::makedataaliascomponent
+namespace sofa::component::sceneutility
+{
+
+namespace makedataaliascomponent
 {
 
 MakeDataAliasComponent::MakeDataAliasComponent()
@@ -107,9 +110,12 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
 
     d_componentState.setValue(ComponentState::Valid);
 }
+} // namespace makedataaliascomponent
 
-int MakeDataAliasComponentClass = RegisterObject("This object create an alias to a data field. ")
-        .add< MakeDataAliasComponent >()
-        ;
+void registerMakeDataAliasComponent(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("This object creates an alias to a data field.")
+        .add< MakeDataAliasComponent >());
+}
 
-} // namespace sofa::component::sceneutility::makedataaliascomponent
+} // namespace sofa::component::sceneutility

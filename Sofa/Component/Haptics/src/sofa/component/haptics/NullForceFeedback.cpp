@@ -41,7 +41,10 @@ void NullForceFeedback::computeWrench(const sofa::type::Transform<SReal> &/*worl
     W_tool_world.clear();
 }
 
-int nullForceFeedbackClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
-        .add< NullForceFeedback >();
+void registerNullForceFeedback(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Null force feedback for haptic feedback device.")
+        .add< NullForceFeedback >());
+}
 
 } // namespace sofa::component::haptics

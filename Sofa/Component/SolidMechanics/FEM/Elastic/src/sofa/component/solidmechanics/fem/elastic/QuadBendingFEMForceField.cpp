@@ -34,9 +34,11 @@ namespace sofa::component::solidmechanics::fem::elastic
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int QuadBendingFEMForceFieldClass = core::RegisterObject("Bending Quad finite elements")
-      .add< QuadBendingFEMForceField<Vec3Types> >();
+void registerQuadBendingFEMForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Bending Quad finite elements")
+        .add< QuadBendingFEMForceField<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API QuadBendingFEMForceField<Vec3Types>;
 

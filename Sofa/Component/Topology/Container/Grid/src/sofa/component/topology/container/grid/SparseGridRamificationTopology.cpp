@@ -27,16 +27,17 @@
 namespace sofa::component::topology::container::grid
 {
 
-int SparseGridRamificationTopologyClass = core::RegisterObject("Sparse grid in 3D (modified)")
-        .addAlias("SparseGridRamification")
-        .add< SparseGridRamificationTopology >()
-        ;
+void registerSparseGridRamificationTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Sparse grid in 3D (modified).")
+        .add< SparseGridRamificationTopology >());
+}
 
 SparseGridRamificationTopology::SparseGridRamificationTopology(bool isVirtual)
     : SparseGridTopology(isVirtual)
     , d_finestConnectivity(initData(&d_finestConnectivity, true, "finestConnectivity", "Test for connectivity at the finest level? (more precise but slower by testing all intersections between the model mesh and the faces between boundary cubes)"))
 {
-    _finestConnectivity.setParent(&d_finestConnectivity);
+    _finestConnectivity.setOriginalData(&d_finestConnectivity);
 }
 
 SparseGridRamificationTopology::~SparseGridRamificationTopology()

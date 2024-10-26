@@ -4,6 +4,7 @@
 
 <RequiredPlugin name="Sofa.Component.StateContainer"/>
 <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/>
+<DefaultAnimationLoop/>
 
 <!--Mechanical Object-->
 <MechanicalObject name="DOFs" showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0003" position="0 0 0 1 0 0 0.5 0.86602540378443864676 0 0.5 0.288675134594812882254 1" />

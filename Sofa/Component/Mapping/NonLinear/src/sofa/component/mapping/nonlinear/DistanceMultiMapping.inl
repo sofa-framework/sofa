@@ -34,15 +34,15 @@ namespace sofa::component::mapping::nonlinear
 template <class TIn, class TOut>
 DistanceMultiMapping<TIn, TOut>::DistanceMultiMapping()
     : Inherit()
-    , d_computeDistance(initData(&d_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
+    , d_computeDistance(initData(&d_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial length of each of them"))
     , d_restLengths(initData(&d_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
     , d_color(initData(&d_color, sofa::type::RGBAColor::yellow(), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     , d_indexPairs(initData(&d_indexPairs, "indexPairs", "list of couples (parent index + index in the parent)"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
-    f_computeDistance.setParent(&d_computeDistance);
-    f_restLengths.setParent(&d_restLengths);
+    f_computeDistance.setOriginalData(&d_computeDistance);
+    f_restLengths.setOriginalData(&d_restLengths);
 
 }
 

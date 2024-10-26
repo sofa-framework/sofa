@@ -172,6 +172,11 @@ option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit 
 if(DEFINED SOFA_ENABLE_LEGACY_HEADERS)
     message(WARNING "SOFA_ENABLE_LEGACY_HEADERS cmake option has been deleted in v24.12 and is now meaningless.")
 endif()
+### Warn the user that HeadlessRecorder option has been renamed (due to its move into applications/plguins)
+if(DEFINED PLUGIN_SOFA_GUI_HEADLESSRECORDER AND PLUGIN_SOFA_GUI_HEADLESSRECORDER)
+    message(WARNING "HeadlessRecorder has been moved to applications/plugins in v24.12, thus its cmake option is named PLUGIN_HEADLESSRECORDER now.")
+endif()
+
 
 # Sofa.Config sets the environment (options, compiler flags, global variables)
 sofa_add_subdirectory(library Sofa/framework/Config Sofa.Config ON)
@@ -435,7 +440,7 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
         set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "${EXTRA_INSTALL_COMMAND}")
         set(CPACK_NSIS_MENU_LINKS
             "https://www.sofa-framework.org/documentation/" "SOFA User Documentation"
-            "https://www.sofa-framework.org/api/" "SOFA Developper API"
+            "https://www.sofa-framework.org/api/" "SOFA Developer API"
             "https://github.com/sofa-framework/sofa/discussions" "SOFA Support")
     endif()
     #######################

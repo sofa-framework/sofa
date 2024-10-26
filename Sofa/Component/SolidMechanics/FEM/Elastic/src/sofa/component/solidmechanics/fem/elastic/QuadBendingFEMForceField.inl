@@ -77,13 +77,13 @@ QuadBendingFEMForceField<DataTypes>::QuadBendingFEMForceField()
   , l_topology(initLink("topology", "link to the topology container"))
 
 {
-    quadInfo.setParent(&d_quadInfo);
-    vertexInfo.setParent(&d_vertexInfo);
-    edgeInfo.setParent(&d_edgeInfo);
-    f_method.setParent(&d_method);
-    f_poisson.setParent(&d_poisson);
-    f_young.setParent(&d_young);
-    f_thickness.setParent(&d_thickness);
+    quadInfo.setOriginalData(&d_quadInfo);
+    vertexInfo.setOriginalData(&d_vertexInfo);
+    edgeInfo.setOriginalData(&d_edgeInfo);
+    f_method.setOriginalData(&d_method);
+    f_poisson.setOriginalData(&d_poisson);
+    f_young.setOriginalData(&d_young);
+    f_thickness.setOriginalData(&d_thickness);
 
 }
                 
@@ -321,7 +321,7 @@ void QuadBendingFEMForceField<DataTypes>::computeBendingStrainDisplacement(Strai
 }
   
 // ------------------------------------------------------------------------------------------------------------
-// --- Compute the strain-displacement matrix (Shear componenent) where (a, b, c, d) are the coordinates of the 4 nodes of a rectangular
+// --- Compute the strain-displacement matrix (Shear component) where (a, b, c, d) are the coordinates of the 4 nodes of a rectangular
 // ------------------------------------------------------------------------------------------------------------
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::computeShearStrainDisplacement(StrainDisplacement &Js, /*Index elementIndex*/ Real l, Real h/*Coord a, Coord b, Coord c, Coord d*/  )

@@ -28,14 +28,16 @@
 namespace sofa::component::engine::transform
 {
 
-int MapIndicesClass = core::RegisterObject("Apply a permutation to a set of indices")
+void registerMapIndices(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Apply a permutation to a set of indices.")
         .add< MapIndices<int> >()
         .add< MapIndices<unsigned int> >()
         .add< MapIndices< type::fixed_array<unsigned int, 2> > >()
         .add< MapIndices< type::fixed_array<unsigned int, 3> > >()
         .add< MapIndices< type::fixed_array<unsigned int, 4> > >()
-        .add< MapIndices< type::fixed_array<unsigned int, 8> > >()
-        ;
+        .add< MapIndices< type::fixed_array<unsigned int, 8> > >());
+}
 
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MapIndices<int>;
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MapIndices<unsigned int>;

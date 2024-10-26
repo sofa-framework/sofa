@@ -47,10 +47,10 @@ PointProjectiveConstraint<DataTypes>::PointProjectiveConstraint()
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
 
-    f_indices.setParent(&d_indices);
-    f_point.setParent(&d_point);
-    f_fixAll.setParent(&d_fixAll);
-    f_drawSize.setParent(&d_drawSize);
+    f_indices.setOriginalData(&d_indices);
+    f_point.setOriginalData(&d_point);
+    f_fixAll.setOriginalData(&d_fixAll);
+    f_drawSize.setOriginalData(&d_drawSize);
 }
 
 

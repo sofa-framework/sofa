@@ -174,9 +174,9 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
     }, {}
     );
 
-    compliance.setParent(&d_compliance);
-    defaultCompliance.setParent(&d_defaultCompliance);
-    f_verbose.setParent(&d_verbose);
+    compliance.setOriginalData(&d_compliance);
+    defaultCompliance.setOriginalData(&d_defaultCompliance);
+    f_verbose.setOriginalData(&d_verbose);
 
 }
 

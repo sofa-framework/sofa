@@ -36,7 +36,7 @@ namespace sofa::component::engine::select
 {
 
 /**
- * Given two mechanical states, find correspondance between degrees of freedom, based on the minimal distance.
+ * Given two mechanical states, find correspondence between degrees of freedom, based on the minimal distance.
  *
  * Project all the points from the second mechanical state on the first one. This done by finding the point in the
  * first mechanical state closest to each point in the second mechanical state. If the distance is less than a provided
@@ -74,6 +74,7 @@ public:
     Data< sofa::type::vector<sofa::topology::Edge> > d_edges; ///< List of edge indices
     Data< type::vector<unsigned> > d_indexPairs; ///< list of couples (parent index + index in the parent)
     Data< type::vector<Real> > d_distances; ///< List of distances between pairs of points
+    Data<bool> d_drawPairs;
     ///@}
 
     explicit NearestPointROI(core::behavior::MechanicalState<DataTypes> * = nullptr, core::behavior::MechanicalState<DataTypes> *mm2 = nullptr);
@@ -82,6 +83,7 @@ public:
     void init() override;
     void reinit() override;
     void doUpdate() override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
     void computeNearestPointMaps(const VecCoord& x1, const VecCoord& x2);

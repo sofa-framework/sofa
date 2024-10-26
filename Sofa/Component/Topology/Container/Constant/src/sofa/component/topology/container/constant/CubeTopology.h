@@ -24,6 +24,8 @@
 
 #include <sofa/component/topology/container/constant/MeshTopology.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::topology::container::constant
 {
 
@@ -95,25 +97,25 @@ public:
 
 protected:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<int> nx;
+    sofa::core::objectmodel::RenamedData<int> nx;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<int> ny;
+    sofa::core::objectmodel::RenamedData<int> ny;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<int> nz;
+    sofa::core::objectmodel::RenamedData<int> nz;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<bool> internalPoints;
+    sofa::core::objectmodel::RenamedData<bool> internalPoints;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<bool> splitNormals;
+    sofa::core::objectmodel::RenamedData<bool> splitNormals;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<Vec3> min;
+    sofa::core::objectmodel::RenamedData<Vec3> min;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    Data<Vec3> max;
+    sofa::core::objectmodel::RenamedData<Vec3> max;
 
 
     Data<int> d_nx; ///< x grid resolution

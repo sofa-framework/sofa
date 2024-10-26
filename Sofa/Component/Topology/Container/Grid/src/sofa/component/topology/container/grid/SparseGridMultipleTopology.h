@@ -26,12 +26,14 @@
 
 #include <string>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::topology::container::grid
 {
 
 /**
 Build a SparseGridTopology for several given Triangular meshes.
-A stiffness coefficient has to be assigned for each mesh. The last found stiffness coefficient is used for an element shared by several meshes => The mesh ordering is important, and so, more specific stiffness informations must appear in last.
+A stiffness coefficient has to be assigned for each mesh. The last found stiffness coefficient is used for an element shared by several meshes => The mesh ordering is important, and so, more specific stiffness information must appear in last.
 */
 class SOFA_COMPONENT_TOPOLOGY_CONTAINER_GRID_API SparseGridMultipleTopology : public SparseGridRamificationTopology
 {
@@ -80,19 +82,19 @@ public:
 protected :
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    Data<type::vector<std::string>> _fileTopologies;
+    sofa::core::objectmodel::RenamedData<type::vector<std::string>> _fileTopologies;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    Data<type::vector<float>> _dataStiffnessCoefs;
+    sofa::core::objectmodel::RenamedData<type::vector<float>> _dataStiffnessCoefs;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    Data<type::vector<float>> _dataMassCoefs;
+    sofa::core::objectmodel::RenamedData<type::vector<float>> _dataMassCoefs;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    Data<bool> _computeRamifications;
+    sofa::core::objectmodel::RenamedData<bool> _computeRamifications;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    Data<bool> _erasePreviousCoef;
+    sofa::core::objectmodel::RenamedData<bool> _erasePreviousCoef;
 
 
     Data< type::vector< std::string > > d_fileTopologies; ///< All topology filenames

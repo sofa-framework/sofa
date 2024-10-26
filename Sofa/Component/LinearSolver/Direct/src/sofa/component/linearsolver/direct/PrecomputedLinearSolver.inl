@@ -51,8 +51,8 @@ PrecomputedLinearSolver<TMatrix,TVector>::PrecomputedLinearSolver()
 {
     first = true;
 
-    jmjt_twostep.setParent(&d_jmjt_twostep);
-    use_file.setParent(&d_use_file);
+    jmjt_twostep.setOriginalData(&d_jmjt_twostep);
+    use_file.setOriginalData(&d_use_file);
 
 }
 

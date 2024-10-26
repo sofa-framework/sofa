@@ -79,7 +79,7 @@ FreeMotionAnimationLoop::FreeMotionAnimationLoop() :
     d_parallelCollisionDetectionAndFreeMotion.setGroup("Multithreading");
     d_parallelODESolving.setGroup("Multithreading");
 
-    m_solveVelocityConstraintFirst.setParent(&d_solveVelocityConstraintFirst);
+    m_solveVelocityConstraintFirst.setOriginalData(&d_solveVelocityConstraintFirst);
 }
 
 FreeMotionAnimationLoop::~FreeMotionAnimationLoop()
@@ -270,17 +270,25 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
             l_constraintSolver->solveConstraint(&cparams, pos, vel);
         }
 
-        MultiVecDeriv cdx(&vop, l_constraintSolver->getDx());
-        mop.projectResponse(cdx);
-        mop.propagateDx(cdx, true);
+        {
+            SCOPED_TIMER("ProjectAndPropagateDx");
+
+            MultiVecDeriv cdx(&vop, l_constraintSolver->getDx());
+            mop.projectResponse(cdx);
+            mop.propagateDx(cdx, true);
+        }
     }
 
     MechanicalEndIntegrationVisitor endVisitor(params, dt);
     node->execute(&endVisitor);
 
-    mop.projectPositionAndVelocity(pos, vel);
-    mop.propagateXAndV(pos, vel);
-    
+    {
+        SCOPED_TIMER("ProjectAndPropagateXAndV");
+
+        mop.projectPositionAndVelocity(pos, vel);
+        mop.propagateXAndV(pos, vel);
+    }
+
     node->setTime ( startTime + dt );
     node->execute<UpdateSimulationContextVisitor>(params);  // propagate time
 

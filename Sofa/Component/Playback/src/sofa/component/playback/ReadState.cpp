@@ -29,8 +29,11 @@ namespace sofa::component::playback
 
 using namespace defaulttype;
 
-int ReadStateClass = core::RegisterObject("Read State vectors from file at each timestep")
-        .add< ReadState >();
+void registerReadState(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Read State vectors from file at each timestep.")
+        .add< ReadState >());
+}
 
 ReadStateCreator::ReadStateCreator(const core::ExecParams* params)
     : Visitor(params)

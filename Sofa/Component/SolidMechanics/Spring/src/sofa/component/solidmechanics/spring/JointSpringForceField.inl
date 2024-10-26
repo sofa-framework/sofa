@@ -56,8 +56,8 @@ JointSpringForceField<DataTypes>::JointSpringForceField(MechanicalState* object1
 {
     f_outfilename.setParent(&d_outfilename);
     f_infilename.setParent(&d_infilename);
-    f_period.setParent(&d_period);
-    f_reinit.setParent(&d_reinit);
+    f_period.setOriginalData(&d_period);
+    f_reinit.setOriginalData(&d_reinit);
 }
 
 template<class DataTypes>

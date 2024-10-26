@@ -29,6 +29,7 @@
 #include <vector>
 #include <sofa/component/mapping/linear/LinearMapping.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::mapping::linear
 {
@@ -88,13 +89,13 @@ public:
     void applyJT ( const core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn ) override;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<unsigned int> m_nbPointsOnEachCircle;
+    sofa::core::objectmodel::RenamedData<unsigned int> m_nbPointsOnEachCircle;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<double> m_radius;
+    sofa::core::objectmodel::RenamedData<double> m_radius;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<int> m_peak;
+    sofa::core::objectmodel::RenamedData<int> m_peak;
 
     Data<unsigned int> d_nbPointsOnEachCircle; ///< Discretization of created circles
     Data<double> d_radius; ///< Radius of created circles

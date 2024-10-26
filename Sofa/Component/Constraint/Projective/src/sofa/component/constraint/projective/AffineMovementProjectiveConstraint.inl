@@ -52,14 +52,14 @@ AffineMovementProjectiveConstraint<DataTypes>::AffineMovementProjectiveConstrain
     if(!d_endConstraintTime.isSet())
         d_endConstraintTime = 20;
 
-    m_meshIndices.setParent(&d_meshIndices);
-    m_indices.setParent(&d_indices);
-    m_beginConstraintTime.setParent(&d_beginConstraintTime);
-    m_endConstraintTime.setParent(&d_endConstraintTime);
-    m_rotation.setParent(&d_rotation);
-    m_quaternion.setParent(&d_quaternion);
-    m_translation.setParent(&d_translation);
-    m_drawConstrainedPoints.setParent(&d_drawConstrainedPoints);
+    m_meshIndices.setOriginalData(&d_meshIndices);
+    m_indices.setOriginalData(&d_indices);
+    m_beginConstraintTime.setOriginalData(&d_beginConstraintTime);
+    m_endConstraintTime.setOriginalData(&d_endConstraintTime);
+    m_rotation.setOriginalData(&d_rotation);
+    m_quaternion.setOriginalData(&d_quaternion);
+    m_translation.setOriginalData(&d_translation);
+    m_drawConstrainedPoints.setOriginalData(&d_drawConstrainedPoints);
 }
 
 

@@ -45,9 +45,9 @@ PartialLinearMovementProjectiveConstraint<DataTypes>::PartialLinearMovementProje
     , d_showMovement( initData(&d_showMovement, (bool)false, "showMovement", "Visualization of the movement to be applied to constrained dofs."))
     , d_linearMovementBetweenNodesInIndices( initData(&d_linearMovementBetweenNodesInIndices, (bool)false, "linearMovementBetweenNodesInIndices", "Take into account the linear movement between the constrained points"))
     , d_mainIndice( initData(&d_mainIndice, "mainIndice", "The main indice node in the list of constrained nodes, it defines how to apply the linear movement between this constrained nodes "))
-    , d_minDepIndice( initData(&d_minDepIndice, "minDepIndice", "The indice node in the list of constrained nodes, which is imposed the minimum displacment "))
-    , d_maxDepIndice( initData(&d_maxDepIndice, "maxDepIndice", "The indice node in the list of constrained nodes, which is imposed the maximum displacment "))
-    , d_imposedDisplacmentOnMacroNodes(  initData(&d_imposedDisplacmentOnMacroNodes,"imposedDisplacmentOnMacroNodes","The imposed displacment on macro nodes") )
+    , d_minDepIndice( initData(&d_minDepIndice, "minDepIndice", "The indice node in the list of constrained nodes, which is imposed the minimum displacement "))
+    , d_maxDepIndice( initData(&d_maxDepIndice, "maxDepIndice", "The indice node in the list of constrained nodes, which is imposed the maximum displacement "))
+    , d_imposedDisplacmentOnMacroNodes(  initData(&d_imposedDisplacmentOnMacroNodes,"imposedDisplacmentOnMacroNodes","The imposed displacement on macro nodes") )
     , d_X0 ( initData ( &d_X0, Real(0.0),"X0","Size of specimen in X-direction" ) )
     , d_Y0 ( initData ( &d_Y0, Real(0.0),"Y0","Size of specimen in Y-direction" ) )
     , d_Z0 ( initData ( &d_Z0, Real(0.0),"Z0","Size of specimen in Z-direction" ) )
@@ -69,19 +69,19 @@ PartialLinearMovementProjectiveConstraint<DataTypes>::PartialLinearMovementProje
         movedDirection[i] = true;
     d_movedDirections.setValue(movedDirection);
 
-    m_indices.setParent(&d_indices);
-    m_keyTimes.setParent(&d_keyTimes);
-    m_keyMovements.setParent(&d_keyMovements);
-    showMovement.setParent(&d_showMovement);
-    linearMovementBetweenNodesInIndices.setParent(&d_linearMovementBetweenNodesInIndices);
-    mainIndice.setParent(&d_mainIndice);
-    minDepIndice.setParent(&d_minDepIndice);
-    maxDepIndice.setParent(&d_maxDepIndice);
-    m_imposedDisplacmentOnMacroNodes.setParent(&d_imposedDisplacmentOnMacroNodes);
-    X0.setParent(&d_X0);
-    Y0.setParent(&d_Y0);
-    Z0.setParent(&d_Z0);
-    movedDirections.setParent(&d_movedDirections);
+    m_indices.setOriginalData(&d_indices);
+    m_keyTimes.setOriginalData(&d_keyTimes);
+    m_keyMovements.setOriginalData(&d_keyMovements);
+    showMovement.setOriginalData(&d_showMovement);
+    linearMovementBetweenNodesInIndices.setOriginalData(&d_linearMovementBetweenNodesInIndices);
+    mainIndice.setOriginalData(&d_mainIndice);
+    minDepIndice.setOriginalData(&d_minDepIndice);
+    maxDepIndice.setOriginalData(&d_maxDepIndice);
+    m_imposedDisplacmentOnMacroNodes.setOriginalData(&d_imposedDisplacmentOnMacroNodes);
+    X0.setOriginalData(&d_X0);
+    Y0.setOriginalData(&d_Y0);
+    Z0.setOriginalData(&d_Z0);
+    movedDirections.setOriginalData(&d_movedDirections);
 
 }
 

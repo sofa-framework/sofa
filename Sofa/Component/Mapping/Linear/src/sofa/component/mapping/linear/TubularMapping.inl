@@ -34,9 +34,9 @@ TubularMapping<TIn, TOut>::TubularMapping ( )
     , d_radius(initData(&d_radius, "radius", "Radius of created circles"))
     , d_peak (initData(&d_peak, 0, "peak", "=0 no peak, =1 peak on the first segment =2 peak on the two first segment, =-1 peak on the last segment"))
 {
-    m_nbPointsOnEachCircle.setParent(&d_nbPointsOnEachCircle);
-    m_radius.setParent(&d_radius);
-    m_peak.setParent(&d_peak);
+    m_nbPointsOnEachCircle.setOriginalData(&d_nbPointsOnEachCircle);
+    m_radius.setOriginalData(&d_radius);
+    m_peak.setOriginalData(&d_peak);
 
 }
 template <class TIn, class TOut>

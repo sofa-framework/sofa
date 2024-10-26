@@ -26,13 +26,12 @@
 
 namespace sofa::component::topology::container::dynamic
 {
-using namespace std;
-using namespace sofa::defaulttype;
 
-
-int TriangleSetTopologyContainerClass = core::RegisterObject("Triangle set topology container")
-        .add< TriangleSetTopologyContainer >()
-        ;
+void registerTriangleSetTopologyContainer(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology container dedicated to a triangular topology.")
+        .add< TriangleSetTopologyContainer >());
+}
 
 TriangleSetTopologyContainer::TriangleSetTopologyContainer()
     : EdgeSetTopologyContainer()
@@ -79,7 +78,7 @@ void TriangleSetTopologyContainer::init()
 
 void TriangleSetTopologyContainer::initTopology()
 {
-    // Force creation of Edge Neighboordhood buffers.
+    // Force creation of Edge Neighborhood buffers.
     EdgeSetTopologyContainer::initTopology();
 
     // Create triangle cross element buffers.
@@ -760,7 +759,7 @@ bool TriangleSetTopologyContainer::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-        msg_warning() << "CheckConnexity: Triangles are missings. There is more than one connexe component.";
+        msg_warning() << "CheckConnexity: Triangles are missing. There is more than one connexe component.";
         return false;
     }
     return true;

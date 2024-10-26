@@ -29,9 +29,11 @@ namespace sofa::component::playback
 
 using namespace defaulttype;
 
-
-int WriteStateClass = core::RegisterObject("Write State vectors to file at each timestep")
-        .add< WriteState >();
+void registerWriteState(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Write State vectors to file at each timestep.")
+        .add< WriteState >());
+}
 
 WriteStateCreator::WriteStateCreator(const core::ExecParams* params)
     :simulation::Visitor(params)

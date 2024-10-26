@@ -28,6 +28,8 @@
 
 #include <cmath>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::linearsolver::iterative
 {
 
@@ -43,29 +45,29 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
-    Data<unsigned> f_maxIter;
+    sofa::core::objectmodel::RenamedData<unsigned> f_maxIter;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
-    Data<double> f_tolerance;
+    sofa::core::objectmodel::RenamedData<double> f_tolerance;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
-    Data<bool> f_use_precond;
+    sofa::core::objectmodel::RenamedData<bool> f_use_precond;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
-    Data<unsigned> f_update_step;
+    sofa::core::objectmodel::RenamedData<unsigned> f_update_step;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
-    Data<bool> f_build_precond;
+    sofa::core::objectmodel::RenamedData<bool> f_build_precond;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_ITERATIVE()
-    Data<std::map < std::string, sofa::type::vector<double> > >  f_graph;
+    sofa::core::objectmodel::RenamedData<std::map < std::string, sofa::type::vector<double> > >  f_graph;
 
 
     Data<unsigned> d_maxIter; ///< Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop
     Data<double> d_tolerance; ///< Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)
     Data<bool> d_use_precond; ///< Use a preconditioner
     SingleLink<ShewchukPCGLinearSolver, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_preconditioner; ///< Link towards the linear solver used to precondition the conjugate gradient
-    Data<unsigned> d_update_step; ///< Number of steps before the next refresh of precondtioners
+    Data<unsigned> d_update_step; ///< Number of steps before the next refresh of preconditioners
     Data<bool> d_build_precond; ///< Build the preconditioners, if false build the preconditioner only at the initial step
     Data<std::map < std::string, sofa::type::vector<double> > > d_graph; ///< Graph of residuals at each iteration
 

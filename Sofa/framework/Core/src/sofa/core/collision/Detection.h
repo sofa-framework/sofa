@@ -61,9 +61,9 @@ protected:
     {
         storedIntersectionMethod[instance] = intersectionMethod;
         intersectionMethod = storedIntersectionMethod[inst];
-        // callback overriden by BroadPhaseDetection
+        // callback overridden by BroadPhaseDetection
         changeInstanceBP(inst);
-        // callback overriden by NarrowPhaseDetection
+        // callback overridden by NarrowPhaseDetection
         changeInstanceNP(inst);
     }
 };

@@ -21,13 +21,24 @@
 ******************************************************************************/
 #include <sofa/component/playback/init.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+
 namespace sofa::component::playback
 {
-    
+
+extern void registerCompareState(sofa::core::ObjectFactory* factory);
+extern void registerCompareTopology(sofa::core::ObjectFactory* factory);
+extern void registerInputEventReader(sofa::core::ObjectFactory* factory);
+extern void registerReadState(sofa::core::ObjectFactory* factory);
+extern void registerReadTopology(sofa::core::ObjectFactory* factory);
+extern void registerWriteState(sofa::core::ObjectFactory* factory);
+extern void registerWriteTopology(sofa::core::ObjectFactory* factory);
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -45,11 +56,25 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerCompareState(factory);
+    registerCompareTopology(factory);
+    registerInputEventReader(factory);
+    registerReadState(factory);
+    registerReadTopology(factory);
+    registerWriteState(factory);
+    registerWriteTopology(factory);
+}
+
 void init()
 {
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         first = false;
     }
 }

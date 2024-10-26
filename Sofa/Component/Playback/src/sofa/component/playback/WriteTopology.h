@@ -38,12 +38,14 @@
 
 #include <fstream>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::playback
 {
 
-/** Write Topology containers informations into a file at a given set of time instants
- * A period can be etablished at the last time instant.
- * The informations to write can be choosen. by default there will be only commun containers.
+/** Write Topology containers information into a file at a given set of time instants
+ * A period can be established at the last time instant.
+ * The information to write can be chosen. by default there will be only commun containers.
  * An option is available to write shells containers.
  *
  * This part is not handle yet:
@@ -59,19 +61,19 @@ public:
     sofa::core::objectmodel::DataFileName f_filename;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    Data < bool > f_writeContainers;
+    sofa::core::objectmodel::RenamedData < bool > f_writeContainers;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    Data < bool > f_writeShellContainers;
+    sofa::core::objectmodel::RenamedData < bool > f_writeShellContainers;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    Data < double > f_interval;
+    sofa::core::objectmodel::RenamedData < double > f_interval;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    Data < type::vector<double> > f_time;
+    sofa::core::objectmodel::RenamedData < type::vector<double> > f_time;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    Data < double > f_period;
+    sofa::core::objectmodel::RenamedData < double > f_period;
 
 
     sofa::core::objectmodel::DataFileName d_filename;

@@ -29,15 +29,12 @@ namespace sofa::component::mapping::linear
 {
 
 using namespace sofa::defaulttype;
-using namespace core;
-using namespace core::behavior;
 
-// Register in the Factory
-int TubularMappingClass = core::RegisterObject("Create a Tube around rigid points")
-        .add< TubularMapping< Rigid3Types, Vec3Types > > ()
-
-
-        ;
+void registerTubularMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Create a Tube around rigid points.")
+        .add< TubularMapping< Rigid3Types, Vec3Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_LINEAR_API TubularMapping< Rigid3Types, Vec3Types >;
 

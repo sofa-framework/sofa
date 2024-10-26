@@ -33,10 +33,12 @@
 #include <sofa/core/topology/TopologySubsetIndices.h>
 #include <set>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::constraint::projective
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template <class DataTypes>
 class PointProjectiveConstraintInternalData
 {
@@ -77,16 +79,16 @@ protected:
 public:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<sofa::type::vector<int>> f_indices;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<Index>> f_indices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<Coord> f_point;
+    sofa::core::objectmodel::RenamedData<Coord> f_point;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<bool> f_fixAll;
+    sofa::core::objectmodel::RenamedData<bool> f_fixAll;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<SReal> f_drawSize;
+    sofa::core::objectmodel::RenamedData<SReal> f_drawSize;
 
 
     SetIndex d_indices;    ///< the indices of the points to project to the target

@@ -30,6 +30,8 @@
 
 #include <fstream>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::_vtkexporter_
 {
 
@@ -58,43 +60,43 @@ public:
     sofa::core::objectmodel::DataFileName vtkFilename;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data< bool > fileFormat;
+    sofa::core::objectmodel::RenamedData< bool > fileFormat;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data<defaulttype::Vec3Types::VecCoord> position;
+    sofa::core::objectmodel::RenamedData<defaulttype::Vec3Types::VecCoord> position;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data< bool > writeEdges;
+    sofa::core::objectmodel::RenamedData< bool > writeEdges;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data< bool > writeTriangles;
+    sofa::core::objectmodel::RenamedData< bool > writeTriangles;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data< bool > writeQuads;
+    sofa::core::objectmodel::RenamedData< bool > writeQuads;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data< bool > writeTetras;
+    sofa::core::objectmodel::RenamedData< bool > writeTetras;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data< bool > writeHexas;
+    sofa::core::objectmodel::RenamedData< bool > writeHexas;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data<type::vector<std::string> > dPointsDataFields;
+    sofa::core::objectmodel::RenamedData<type::vector<std::string> > dPointsDataFields;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data<type::vector<std::string> > dCellsDataFields;
+    sofa::core::objectmodel::RenamedData<type::vector<std::string> > dCellsDataFields;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data< unsigned int > exportEveryNbSteps;
+    sofa::core::objectmodel::RenamedData< unsigned int > exportEveryNbSteps;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data< bool > exportAtBegin;
+    sofa::core::objectmodel::RenamedData< bool > exportAtBegin;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data< bool > exportAtEnd;
+    sofa::core::objectmodel::RenamedData< bool > exportAtEnd;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    Data< bool > overwrite;
+    sofa::core::objectmodel::RenamedData< bool > overwrite;
 
 
 

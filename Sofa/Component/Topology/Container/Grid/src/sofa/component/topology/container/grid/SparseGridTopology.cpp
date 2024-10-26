@@ -42,11 +42,11 @@ using namespace sofa::helper;
 namespace sofa::component::topology::container::grid
 {
 
-int SparseGridTopologyClass = core::RegisterObject("Sparse grid in 3D")
-        .addAlias("SparseGrid")
-        .add< SparseGridTopology >()
-        ;
-
+void registerSparseGridTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Sparse grid in 3D.")
+        .add< SparseGridTopology >());
+}
 
 const float SparseGridTopology::WEIGHT27[8][27] =
 {
@@ -83,7 +83,7 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     , d_min(initData(&d_min, type::Vec3(0_sreal, 0_sreal, 0_sreal), "min", "Min"))
     , d_max(initData(&d_max, type::Vec3(0_sreal, 0_sreal, 0_sreal), "max", "Max"))
     , d_cellWidth(initData(&d_cellWidth, (SReal)0.0, "cellWidth", "if > 0 : dimension of each cell in the created grid"))
-    , d_nbVirtualFinerLevels(initData(&d_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)"))
+    , d_nbVirtualFinerLevels(initData(&d_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (useful to compute better mechanical properties for example)"))
     , d_dataResolution(initData(&d_dataResolution, type::Vec3i(0, 0, 0), "dataResolution", "Dimension of the voxel File"))
     , d_voxelSize(initData(&d_voxelSize, type::Vec3(1_sreal, 1_sreal, 1_sreal), "voxelSize", "Dimension of one voxel"))
     , d_marchingCubeStep(initData(&d_marchingCubeStep, (unsigned int) 1, "marchingCubeStep", "Step of the Marching Cube algorithm"))
@@ -98,18 +98,18 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
 
     _regularGrid = sofa::core::objectmodel::New<RegularGridTopology>();
 
-    _fillWeighted.setParent(&d_fillWeighted);
-    n.setParent(&d_n);
-    _min.setParent(&d_min);
-    _max.setParent(&d_max);
-    _cellWidth.setParent(&d_cellWidth);
-    _nbVirtualFinerLevels.setParent(&d_nbVirtualFinerLevels);
-    dataResolution.setParent(&d_dataResolution);
-    voxelSize.setParent(&d_voxelSize);
-    marchingCubeStep.setParent(&d_marchingCubeStep);
-    convolutionSize.setParent(&d_convolutionSize);
-    facets.setParent(&d_facets);
-    dataVoxels.setParent(&d_dataVoxels);
+    _fillWeighted.setOriginalData(&d_fillWeighted);
+    n.setOriginalData(&d_n);
+    _min.setOriginalData(&d_min);
+    _max.setOriginalData(&d_max);
+    _cellWidth.setOriginalData(&d_cellWidth);
+    _nbVirtualFinerLevels.setOriginalData(&d_nbVirtualFinerLevels);
+    dataResolution.setOriginalData(&d_dataResolution);
+    voxelSize.setOriginalData(&d_voxelSize);
+    marchingCubeStep.setOriginalData(&d_marchingCubeStep);
+    convolutionSize.setOriginalData(&d_convolutionSize);
+    facets.setOriginalData(&d_facets);
+    dataVoxels.setOriginalData(&d_dataVoxels);
 }
 
 SparseGridTopology::SparseGridTopology(type::Vec3i numVertices, type::BoundingBox box, bool _isVirtual)

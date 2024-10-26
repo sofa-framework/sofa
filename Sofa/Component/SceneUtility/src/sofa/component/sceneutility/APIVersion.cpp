@@ -26,13 +26,15 @@ using sofa::core::objectmodel::BaseNode ;
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory ;
-using sofa::core::RegisterObject ;
 
 #include <sofa/component/sceneutility/APIVersion.h>
 #include <sofa/version.h>
 #include <numeric>
 
-namespace sofa::component::sceneutility::_apiversion_
+namespace sofa::component::sceneutility
+{
+
+namespace _apiversion_
 {
 
 APIVersion::APIVersion() :
@@ -76,7 +78,12 @@ const std::string& APIVersion::getApiLevel()
     return d_level.getValue() ;
 }
 
-int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")
-        .add< APIVersion >();
+} // namespace _apiversion_
+
+void registerAPIVersion(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Specify the APIVersion of the component used in a scene.")
+        .add< APIVersion >());
+}
 
 } // namespace sofa::component::sceneutility

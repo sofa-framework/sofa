@@ -29,12 +29,11 @@ namespace sofa::component::topology::container::grid
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-
-
-int CylinderGridTopologyClass = core::RegisterObject("Cylinder grid in 3D")
-        .addAlias("CylinderGrid")
-        .add< CylinderGridTopology >()
-        ;
+void registerCylinderGridTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Cylinder grid in 3D.")
+        .add< CylinderGridTopology >());
+}
 
 CylinderGridTopology::CylinderGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz)
@@ -90,7 +89,7 @@ sofa::type::Vec3 CylinderGridTopology::getPointInGrid(int i, int j, int k) const
     const int nx = getNx();
     const int ny = getNy();
     const int nz = getNz();
-    // coordonate on a square
+    // coordinate on a square
     Vec3 p(i*2*r/(nx-1) - r, j*2*r/(ny-1) - r, 0_sreal);
     // scale it to be on a circle
     if (p.norm() > 0.0000001)

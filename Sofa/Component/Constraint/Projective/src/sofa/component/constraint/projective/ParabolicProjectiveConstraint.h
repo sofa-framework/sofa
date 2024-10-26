@@ -27,6 +27,7 @@
 #include <sofa/type/vector.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::constraint::projective
 {
@@ -59,22 +60,22 @@ public:
 protected:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data< sofa::type::vector<sofa::Index> > m_indices;
+    sofa::core::objectmodel::RenamedData< sofa::type::vector<sofa::Index> > m_indices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<Vec3R> m_P1;
+    sofa::core::objectmodel::RenamedData<Vec3R> m_P1;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<Vec3R> m_P2;
+    sofa::core::objectmodel::RenamedData<Vec3R> m_P2;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<Vec3R> m_P3;
+    sofa::core::objectmodel::RenamedData<Vec3R> m_P3;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<Real> m_tBegin;
+    sofa::core::objectmodel::RenamedData<Real> m_tBegin;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    Data<Real> m_tEnd;
+    sofa::core::objectmodel::RenamedData<Real> m_tEnd;
 
     ///indices of the DOFs constraints
     SetIndex d_indices;
