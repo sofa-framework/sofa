@@ -81,7 +81,7 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , d_computeVonMisesStress(initData(&d_computeVonMisesStress, false, "computeVonMisesStress", "compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain. Set listening=1"))
     , d_vonMisesPerElement(initData(&d_vonMisesPerElement, "vonMisesPerElement", "von Mises Stress per element"))
     , d_vonMisesPerNode(initData(&d_vonMisesPerNode, "vonMisesPerNode", "von Mises Stress per node"))
-    , m_VonMisesColorMap(nullptr)
+    , m_vonMisesColorMap(nullptr)
 {
     this->addAlias(&d_assembling, "assembling");
 
@@ -103,8 +103,8 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
 template <class DataTypes>
 TetrahedralCorotationalFEMForceField<DataTypes>::~TetrahedralCorotationalFEMForceField()
 {
-    if (m_VonMisesColorMap != nullptr)
-        delete m_VonMisesColorMap;
+    if (m_vonMisesColorMap != nullptr)
+        delete m_vonMisesColorMap;
 }
 
 template <class DataTypes>
@@ -124,9 +124,9 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 
     reinit(); // compute per-element stiffness matrices and other precomputed values
 
-    if (m_VonMisesColorMap == nullptr)
+    if (m_vonMisesColorMap == nullptr)
     {
-        m_VonMisesColorMap = new helper::ColorMap(256, std::string("Blue to Red"));
+        m_vonMisesColorMap = new helper::ColorMap(256, std::string("Blue to Red"));
     }
 }
 
@@ -1230,13 +1230,13 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
     this->getContext()->get(mechanicalObject);
     const VecCoord& X = mechanicalObject->read(core::ConstVecCoordId::position())->getValue();
 
-    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetras = m_topology->getTetrahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetras = this->l_topology->getTetrahedra();
     const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
 
     helper::WriteAccessor<Data<type::vector<Real> > > vME = d_vonMisesPerElement;
     vME.resize(tetras.size());
 
-    for (Size i = 0; i < m_topology->getNbTetrahedra(); ++i)
+    for (Size i = 0; i < this->l_topology->getNbTetrahedra(); ++i)
     {
         type::Vec<6, Real> vStrain;
         type::Mat<3, 3, Real> gradU;
@@ -1319,7 +1319,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
 
     /// compute the values of vonMises stress in nodes
     for (Index dof = 0; dof < X.size(); dof++) {
-        core::topology::BaseMeshTopology::TetrahedraAroundVertex tetrasAroundDOF = m_topology->getTetrahedraAroundVertex(dof);
+        core::topology::BaseMeshTopology::TetrahedraAroundVertex tetrasAroundDOF = this->l_topology->getTetrahedraAroundVertex(dof);
 
         vMN[dof] = 0.0;
         for (size_t at = 0; at < tetrasAroundDOF.size(); at++)
@@ -1350,7 +1350,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
         helper::ReadAccessor<Data<type::vector<Real> > > vM = d_vonMisesPerElement;
         helper::ReadAccessor<Data<type::vector<Real> > > vMN = d_vonMisesPerNode;
         
-        if (m_VonMisesColorMap == nullptr)
+        if (m_vonMisesColorMap == nullptr)
             return;
         
         for (size_t i = 0; i < vM.size(); i++)
@@ -1373,7 +1373,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
         {
             std::vector<sofa::type::RGBAColor> nodeColors(x.size());
             std::vector<type::Vec3> pts(x.size());
-            helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVMN, maxVMN);
+            helper::ColorMap::evaluator<Real> evalColor = m_vonMisesColorMap->getEvaluator(minVMN, maxVMN);
             for (size_t nd = 0; nd < x.size(); nd++) {
                 pts[nd] = x[nd];
                 nodeColors[nd] = evalColor(vMN[nd]);
@@ -1384,8 +1384,14 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
     
     if (d_drawing.getValue())
     {
+        const sofa::Size nbrTetra = this->l_topology->getNbTetrahedra();
         std::vector< type::Vec3 > points[4];
-        for(Size i = 0 ; i<this->l_topology->getNbTetrahedra(); ++i)
+        points[0].reserve(nbrTetra * 3);
+        points[1].reserve(nbrTetra * 3);
+        points[2].reserve(nbrTetra * 3);
+        points[3].reserve(nbrTetra * 3);
+
+        for(Size i = 0 ; i< nbrTetra; ++i)
         {
             const core::topology::BaseMeshTopology::Tetrahedron t=this->l_topology->getTetrahedron(i);
 
