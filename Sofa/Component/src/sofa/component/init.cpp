@@ -84,6 +84,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     factory->registerObjectsFromPlugin("Sofa.Component.LinearSolver");
     factory->registerObjectsFromPlugin("Sofa.Component.LinearSystem");
     factory->registerObjectsFromPlugin("Sofa.Component.Mapping");
+    factory->registerObjectsFromPlugin("Sofa.Component.Mass");
     factory->registerObjectsFromPlugin("Sofa.Component.MechanicalLoad");
     factory->registerObjectsFromPlugin("Sofa.Component.ODESolver");
     factory->registerObjectsFromPlugin("Sofa.Component.Playback");
