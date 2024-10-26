@@ -225,9 +225,9 @@ void BarycentricMapperMeshTopology<CudaVec3f1Types,CudaVec3f1Types>::resize( cor
 
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-// Spread the instanciations over multiple files for more efficient and lightweight compilation
+// Spread the instantiations over multiple files for more efficient and lightweight compilation
 
-// instanciations involving only CudaVec3f1Types with CudaVec3f1Types
+// instantiations involving only CudaVec3f1Types with CudaVec3f1Types
 
 template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3f1Types, CudaVec3f1Types>;
 

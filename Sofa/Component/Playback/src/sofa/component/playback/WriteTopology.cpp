@@ -31,7 +31,7 @@ using namespace defaulttype;
 
 void registerWriteTopology(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Write topology containers informations to file at each timestep.")
+    factory->registerObjects(core::ObjectRegistrationData("Write topology containers information to file at each timestep.")
         .add< WriteTopology >());
 }
 

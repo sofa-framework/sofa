@@ -73,7 +73,7 @@ public:
 
     /// optional range of local DOF indices. Any computation involving only
     /// indices outside of this range are discarded (useful for parallelization
-    /// using mesh partitionning)
+    /// using mesh partitioning)
     Data< type::Vec<2,int> > d_localRange;
     DataSetIndex     d_indices; ///< optional local DOF indices. Any computation involving only indices outside of this list are discarded
     Data<bool> d_preserveTotalMass; ///< Prevent totalMass from decreasing when removing particles.
@@ -99,7 +99,7 @@ protected:
 
     ~UniformMass();
 
-    /// @internal fonction called in the constructor that can be specialized
+    /// @internal function called in the constructor that can be specialized
     void constructor_message() ;
 
 public:

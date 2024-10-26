@@ -31,7 +31,7 @@
 namespace sofa::component::mechanicalload
 {
 
-/// This class can be overridden if needed for additionnal storage within
+/// This class can be overridden if needed for additional storage within
 /// template specializations.
 template<class DataTypes>
 class PlaneForceFieldInternalData
@@ -77,7 +77,7 @@ public:
     Data<bool> d_bilateral;
 
     /// optional range of local DOF indices. Any computation involving indices outside of this
-    /// range are discarded (useful for parallelization using mesh partitionning)
+    /// range are discarded (useful for parallelization using mesh partitioning)
     Data< type::Vec<2,int> > d_localRange;
 
     Data<bool>                   d_drawIsEnabled; ///< enable/disable drawing of plane. (default=false)

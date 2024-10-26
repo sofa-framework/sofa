@@ -99,7 +99,7 @@ void LightManager::doInitVisual(const core::visual::VisualParams* vparams)
         m_shadowShaders[i]->initVisual(vparams);
 
     ///TODO: keep trace of all active textures at the same time, with a static factory
-    ///or something like that to avoid conflics with color texture declared in the scene file.
+    ///or something like that to avoid conflicts with color texture declared in the scene file.
     type::vector<OglTexture::SPtr> sceneTextures;
     this->getContext()->get<OglTexture, type::vector<OglTexture::SPtr> >(&sceneTextures, BaseContext::SearchRoot);
 
@@ -477,7 +477,7 @@ void LightManager::restoreDefaultLight(VisualParams* vp)
 //TODO(dmarchal): Hard-coding keyboard behavior in a component is a bad idea as for several reasons:
 // the scene can be executed without a keyboard ...there is no reason the component should have a "knowledge" of keyboard
 // what will happens if multiple lighmanager are in the same scene ...
-// what will hapen if other component use the same key...
+// what will happen if other component use the same key...
 // The correct implementation consist in separatng the event code into a different class & component in
 // the SofaInteracton module.
 void LightManager::handleEvent(sofa::core::objectmodel::Event* event)

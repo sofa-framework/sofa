@@ -284,7 +284,7 @@ protected:
     /// y axis pointer
     QValueAxis* m_axisY;
 
-    /// vector of series to be ploted
+    /// vector of series to be plotted
     std::map<QString, CurveData*> m_curves;
 
     data_type currentData;

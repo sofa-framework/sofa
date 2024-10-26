@@ -37,7 +37,7 @@ void registerTriangleSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
         .add< TriangleSetGeometryAlgorithms<Vec2Types> >());
 }
 
-// methods specilizations declaration
+// methods specializations declaration
 template<> SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API
 int TriangleSetGeometryAlgorithms<defaulttype::Vec2Types>::SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
     sofa::type::vector< sofa::geometry::ElementType>& topoPath_list,

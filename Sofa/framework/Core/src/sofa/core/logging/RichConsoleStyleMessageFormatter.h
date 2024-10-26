@@ -39,7 +39,7 @@ class Message;
 ///  The class implement a message formatter dedicated to console pretty printing on a console
 ///  Among other thing it feature formatting using a markdown like syntax:
 ///     - color rendering, 'italics' or *italics*
-///     - alignement and wrapping for long message that are then much easier to read.
+///     - alignment and wrapping for long message that are then much easier to read.
 ///     - automatic reading of the console number of column for prettier display.
 ///
 ///

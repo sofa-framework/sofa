@@ -70,7 +70,7 @@ std::istream& operator>> ( std::istream& in, std::deque<T>& d )
 
 
 /// Input stream
-/// Specialization for reading deques of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
+/// Specialization for reading dequeues of int and unsigned int using "A-B" notation for all integers between A and B, optionally specifying a step using "A-B-step" notation.
 template<>
 inline std::istream& operator>>( std::istream& in, std::deque<int>& d )
 {
@@ -129,7 +129,7 @@ inline std::istream& operator>>( std::istream& in, std::deque<int>& d )
 }
 
 /// Output stream
-/// Specialization for writing deques of unsigned char
+/// Specialization for writing dequeues of unsigned char
 template<>
 inline std::ostream& operator<<(std::ostream& os, const std::deque<unsigned char>& d)
 {
@@ -142,8 +142,8 @@ inline std::ostream& operator<<(std::ostream& os, const std::deque<unsigned char
     return os;
 }
 
-/// Inpu stream
-/// Specialization for writing deques of unsigned char
+/// Input stream
+/// Specialization for writing dequeues of unsigned char
 template<>
 inline std::istream& operator>>(std::istream& in, std::deque<unsigned char>& d)
 {
@@ -158,7 +158,7 @@ inline std::istream& operator>>(std::istream& in, std::deque<unsigned char>& d)
 }
 
 /// Input stream
-/// Specialization for reading deques of int and unsigned int using "A-B" notation for all integers between A and B
+/// Specialization for reading dequeues of int and unsigned int using "A-B" notation for all integers between A and B
 template<>
 inline std::istream& operator>>( std::istream& in, std::deque<unsigned int>& d )
 {

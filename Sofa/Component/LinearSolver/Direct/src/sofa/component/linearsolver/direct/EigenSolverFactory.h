@@ -66,7 +66,7 @@ struct SOFA_COMPONENT_LINEARSOLVER_DIRECT_API BaseEigenSolverProxy
 
 
 /**
- * This class is the bridge between an Eigen solver class and the abstact
+ * This class is the bridge between an Eigen solver class and the abstract
  * class BaseEigenSolverProxy.
  *
  * Using this class, all Eigen solvers can inherit from the same base class,

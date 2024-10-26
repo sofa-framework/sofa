@@ -250,10 +250,10 @@ void DirectSAPNarrowPhase::narrowCollisionDetectionFromSortedEndPoints()
     SCOPED_TIMER_VARNAME(scopeTimer, "Direct SAP intersection");
     int nbInvestigatedPairs{ 0 };
 
-    std::list<int> activeBoxes;//active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
+    std::list<int> activeBoxes;//active boxes are the one that we encountered only their min (end point), so if there are two boxes b0 and b1,
     //if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
     //                                                                                                      b1_min---------------------b1_max
-    //once we encouter b0_max, b0 will not intersect with nothing (trivial), so we delete it from active_boxes.
+    //once we encounter b0_max, b0 will not intersect with nothing (trivial), so we delete it from active_boxes.
     //so the rule is : -every time we encounter a box min end point, we check if it is overlapping with other active_boxes and add the owner (a box) of this end point to
     //                  the active boxes.
     //                 -every time we encounter a max end point of a box, we are sure that we encountered min end point of a box because _end_points is sorted,

@@ -33,7 +33,7 @@ void BaseProjectiveConstraintSet::applyConstraint(sofa::core::behavior::ZeroDiri
     if (hasEmittedWarning.insert(this).second)
     {
         dmsg_warning() << "applyConstraint(ZeroDirichletCondition*) not implemented: for compatibility reason, the "
-            "deprecated API (applyConstraint(MultiMatrixAccessor*)) will be used (without guarantee). This compatibility will disapear in the "
+            "deprecated API (applyConstraint(MultiMatrixAccessor*)) will be used (without guarantee). This compatibility will disappear in the "
             "future, and will cause issues in simulations. Please update the code of " <<
             this->getClassName() << " to ensure right behavior: the function applyConstraint(MultiMatrixAccessor*) "
             "has been replaced by applyConstraint(ZeroDirichletCondition*)";

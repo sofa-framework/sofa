@@ -43,9 +43,9 @@
 namespace sofa::component::playback
 {
 
-/** Write Topology containers informations into a file at a given set of time instants
- * A period can be etablished at the last time instant.
- * The informations to write can be choosen. by default there will be only commun containers.
+/** Write Topology containers information into a file at a given set of time instants
+ * A period can be established at the last time instant.
+ * The information to write can be chosen. by default there will be only commun containers.
  * An option is available to write shells containers.
  *
  * This part is not handle yet:

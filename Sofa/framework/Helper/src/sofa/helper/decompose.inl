@@ -401,7 +401,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
         n = edge.norm2();
         if( n < zeroTolerance() )
         {
-            // colapsed to a point
+            // collapsed to a point
             r[0][0] = 1; r[1][0] = 0;
             r[0][1] = 0; r[1][1] = 1;
 
@@ -409,7 +409,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
         }
         else
         {
-            // edgex collapsed but edgey not colapsed
+            // edgex collapsed but edgey not collapsed
             edge /= helper::rsqrt(n);
             r[0][0] = edge[1]; r[1][0] = -edge[0];
             r[0][1] = edge[0]; r[1][1] =  edge[1];
@@ -419,7 +419,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
     }
     else
     {
-        // edgex not colapsed
+        // edgex not collapsed
         edge /= helper::rsqrt(n);
         r[0][0] =  edge[0]; r[1][0] = edge[1];
         r[0][1] = -edge[1]; r[1][1] = edge[0];
@@ -1019,7 +1019,7 @@ bool Decompose<Real>::polarDecomposition_stable_Gradient_dQOverdM( const type::M
         }
 
 
-    // transposed and reformated in 9x9 matrice
+    // transposed and reformatted in 9x9 matrice
     for( int i=0 ; i<3 ; ++i )
         for( int j=0 ; j<3 ; ++j )
             for( int k=0 ; k<3 ; ++k )
@@ -1052,7 +1052,7 @@ bool Decompose<Real>::polarDecompositionGradient_dQOverdM( const type::Mat<3,2,R
             dQdMij[i][j] = U * omega * V;
         }
 
-    // transposed and reformated in plain matrice
+    // transposed and reformatted in plain matrice
     for( int k=0 ; k<3 ; ++k )
         for( int l=0 ; l<2 ; ++l )
             for( int j=0 ; j<2 ; ++j )
@@ -2130,7 +2130,7 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,3,Real> &U, cons
 //        dV[i][j] += omegaV[i*3+j][k*3+l] * dM[k][l];
 //    }
 
-    // transposed and reformated in 9x9 matrices
+    // transposed and reformatted in 9x9 matrices
     for( int i=0 ; i<3 ; ++i )
         for( int j=0 ; j<3 ; ++j )
             for( int k=0 ; k<3 ; ++k )
@@ -2205,7 +2205,7 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,2,Real> &U, cons
             dVdMij[i][j] = omegaV * V;
         }
 
-    // transposed and reformated in plain matrices
+    // transposed and reformatted in plain matrices
     for( int k=0 ; k<3 ; ++k )
         for( int l=0 ; l<2 ; ++l )
             for( int j=0 ; j<2 ; ++j )

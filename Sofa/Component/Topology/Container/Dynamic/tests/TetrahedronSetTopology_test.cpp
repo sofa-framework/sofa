@@ -188,7 +188,7 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
     EXPECT_EQ(elemATriangle[1], 1);
 
 
-    // check TrianglesInTetrahedron buffer acces
+    // check TrianglesInTetrahedron buffer access
     const sofa::type::vector< TetrahedronSetTopologyContainer::TrianglesInTetrahedron > & triangleInTetrahedra = topoCon->getTrianglesInTetrahedronArray();
     EXPECT_EQ(triangleInTetrahedra.size(), nbrTetrahedron);
 
@@ -285,7 +285,7 @@ bool TetrahedronSetTopology_test::testEdgeBuffers()
     EXPECT_EQ(elemAEdge[3], 3);
 
 
-    // check EdgesInTetrahedron buffer acces
+    // check EdgesInTetrahedron buffer access
     const sofa::type::vector< TetrahedronSetTopologyContainer::EdgesInTetrahedron > & edgeInTetrahedra = topoCon->getEdgesInTetrahedronArray();
     EXPECT_EQ(edgeInTetrahedra.size(), nbrTetrahedron);
 

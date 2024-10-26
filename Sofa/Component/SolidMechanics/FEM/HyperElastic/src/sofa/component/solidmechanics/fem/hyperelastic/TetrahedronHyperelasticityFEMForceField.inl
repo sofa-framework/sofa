@@ -601,7 +601,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
     VecCoord &pos = *d_pos.beginEdit();
     pos =  this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    // perturbate original state:
+    // perturb original state:
     srand( 0 );
     for (unsigned int idx=0; idx<pos.size(); idx++) {
             for (unsigned int d=0; d<3; d++) pos[idx][d] += (Real)0.01 * ((Real)rand()/(Real)(RAND_MAX - 0.5));

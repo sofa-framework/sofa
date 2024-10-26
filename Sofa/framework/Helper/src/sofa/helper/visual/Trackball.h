@@ -66,7 +66,7 @@
  * the mouse, scaled so they are from (-1.0 ... 1.0).
  *
  * The resulting rotation is returned as a quaternion rotation in the
- * first paramater.
+ * first parameter.
  */
 
 #pragma once

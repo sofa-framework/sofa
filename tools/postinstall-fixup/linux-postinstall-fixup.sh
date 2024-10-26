@@ -91,7 +91,7 @@ get-lib-deps-assoc() {
     ldd $libs | # get all deps from libs in build_dir/[bin,lib] and install_dir/[bin,lib]
         grep " => [^ \.].* " | # remove unneeded results
         grep -v "$base_dir" | # remove deps already satisfied locally
-        cut -c2- | # remove tabulation at beggining of each line
+        cut -c2- | # remove tabulation at beginning of each line
         sed -e 's/ (.*//g' | # keep only "libname => libpath"
         sort | uniq > "$output"
 

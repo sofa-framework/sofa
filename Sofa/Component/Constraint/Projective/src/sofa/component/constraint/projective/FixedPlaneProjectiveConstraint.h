@@ -39,7 +39,7 @@ using sofa::core::topology::BaseMeshTopology;
 using sofa::core::behavior::MultiMatrixAccessor;
 using sofa::core::behavior::ProjectiveConstraintSet;
 
-/// This class can be overriden if needed for additionnal storage within template specilizations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template <class DataTypes>
 class FixedPlaneProjectiveConstraintInternalData
 {
