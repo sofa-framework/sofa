@@ -85,7 +85,7 @@ typedef ::testing::Types<
 
 
 
-// ========= Tests to run for each instanciated type
+// ========= Tests to run for each instantiated type
 TYPED_TEST_SUITE(TriangleFEMForceField_stepTest, TestTypes);
 
 TYPED_TEST(TriangleFEMForceField_stepTest, test )

@@ -27,8 +27,8 @@ template<sofa::Size N, typename real>
 void testName(const std::string& expectedName)
 {
     using Deriv = sofa::defaulttype::RigidDeriv<N, real>;
-    using Bloc = sofa::linearalgebra::matrix_bloc_traits<Deriv, sofa::Index >;
-    EXPECT_EQ(std::string(Bloc::Name()), expectedName);
+    using Block = sofa::linearalgebra::matrix_bloc_traits<Deriv, sofa::Index >;
+    EXPECT_EQ(std::string(Block::Name()), expectedName);
 }
 
 TEST(RigidDerivTest, Name)

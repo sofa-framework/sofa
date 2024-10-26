@@ -69,7 +69,7 @@ void CompareTopology::processCompareTopology()
 
     if (!topo)
     {
-        msg_error() << "CompareTopology can't acces to the Topology.";
+        msg_error() << "CompareTopology can't access to the Topology.";
         return;
     }
 

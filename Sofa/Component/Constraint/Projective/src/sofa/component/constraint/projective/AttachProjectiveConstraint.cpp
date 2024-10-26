@@ -28,15 +28,16 @@ namespace sofa::component::constraint::projective
 
 using namespace sofa::type;
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
-int AttachProjectiveConstraintClass = core::RegisterObject("Attach given pair of particles, projecting the positions of the second particles to the first ones")
+void registerAttachProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Attach given pair of particles, projecting the positions of the second particles to the first ones.")
         .add< AttachProjectiveConstraint<Vec3Types> >()
         .add< AttachProjectiveConstraint<Vec2Types> >()
         .add< AttachProjectiveConstraint<Vec1Types> >()
         .add< AttachProjectiveConstraint<Rigid3Types> >()
-        .add< AttachProjectiveConstraint<Rigid2Types> >()
-        ;
+        .add< AttachProjectiveConstraint<Rigid2Types> >());
+}
 
 template <> SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API
 void AttachProjectiveConstraint<Rigid3Types>::calcRestRotations()
@@ -66,7 +67,5 @@ template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AttachProjectiveConstrai
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AttachProjectiveConstraint<Vec1Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AttachProjectiveConstraint<Rigid3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AttachProjectiveConstraint<Rigid2Types>;
-
-
 
 } // namespace sofa::component::constraint::projective

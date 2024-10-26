@@ -280,7 +280,7 @@ bool Quat::isIdentity() const
   return w>=1.0f;
 }
 
-// Assignement from typed data
+// Assignment from typed data
 
 namespace Type
 {

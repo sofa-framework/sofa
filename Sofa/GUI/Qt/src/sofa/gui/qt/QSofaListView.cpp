@@ -62,7 +62,7 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
     this->setObjectName(name);
     this->setWindowFlags(f);
     //List of objects
-    //Read the object.txt that contains the information about the objects which can be added to the scenes whithin a given BoundingBox and scale range
+    //Read the object.txt that contains the information about the objects which can be added to the scenes within a given BoundingBox and scale range
     std::string object ( "config/object.txt" );
 
     if( sofa::helper::system::DataRepository.findFile ( object ) )
@@ -153,7 +153,7 @@ void QSofaListView::modifyUnlock(void* Id)
     map_modifyObjectWindow.erase( Id );
 }
 
-/// Traverse the item tree and retrive the item that are expanded. The path of the node
+/// Traverse the item tree and retrieve the item that are expanded. The path of the node
 /// that are expanded are stored in the pathes std::vector::std::string>.
 void QSofaListView::getExpandedNodes(QTreeWidgetItem* item, std::vector<std::string>& pathes)
 {

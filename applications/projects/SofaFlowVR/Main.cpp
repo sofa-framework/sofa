@@ -385,7 +385,7 @@ public:
     Data<double> maxVDist;
 
     // Velocity is estimated by searching the nearest primitive from each new point
-    // To do it we need to create an additionnal PointCollisionModel<sofa::defaulttype::Vec3Types> collision model, as well as a Detection and Intersection class
+    // To do it we need to create an additional PointCollisionModel<sofa::defaulttype::Vec3Types> collision model, as well as a Detection and Intersection class
     sofa::simulation::tree::GNode * newPointsNode;
     typedef sofa::simulation::tree::GNode::Sequence<sofa::core::CollisionModel>::iterator CMIterator;
     sofa::component::container::MechanicalObject<Vec3Types> * newPoints;

@@ -63,7 +63,7 @@ public:
 
     enum Result { RESULT_CONTINUE, RESULT_PRUNE };
 
-    /// Callback method called when decending to a new node. Recursion will stop if this method returns RESULT_PRUNE
+    /// Callback method called when descending to a new node. Recursion will stop if this method returns RESULT_PRUNE
     virtual Result processNodeTopDown(simulation::Node* /*node*/) { return RESULT_CONTINUE; }
 
     /// Callback method called after child node have been processed and before going back to the parent node.
@@ -129,7 +129,7 @@ protected:
 
 public:
 
-    //method to compare the tags of the objet with the ones of the visitor
+    //method to compare the tags of the object with the ones of the visitor
     // return true if the object has all the tags of the visitor
     // or if no tag is set to the visitor
     bool testTags(sofa::core::objectmodel::BaseObject* obj);
@@ -158,7 +158,7 @@ public:
     /// Specify whether this visitor can be parallelized.
     virtual bool isThreadSafe() const { return false; }
 
-    /// Callback method called when decending to a new node. Recursion will stop if this method returns RESULT_PRUNE
+    /// Callback method called when descending to a new node. Recursion will stop if this method returns RESULT_PRUNE
     /// This version is offered a LocalStorage to store temporary data
     SOFA_ATTRIBUTE_DISABLED_LOCALSTORAGE()
     virtual Result processNodeTopDown(simulation::Node* node, LocalStorage*)  = delete;
@@ -216,7 +216,7 @@ public:
     static int GetRangeStateVector() {return rangeStateVector;}
 protected:
 
-    static std::ostream *outputVisitor;  //Ouput stream to dump the info
+    static std::ostream *outputVisitor;  //Output stream to dump the info
     static bool printActivated;          //bool to know if the stream is opened or not
     static bool outputStateVector;       //bool to know if we trace the evolution of the state vectors
     static unsigned int firstIndexStateVector; //numero of the first index of the particules to trace

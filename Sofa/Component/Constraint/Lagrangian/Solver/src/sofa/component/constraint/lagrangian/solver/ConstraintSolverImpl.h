@@ -77,7 +77,7 @@ public:
     virtual ConstraintProblem* getConstraintProblem() = 0;
 
     /// Do not use the following LCPs until the next call to this function.
-    /// This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread.
+    /// This is used to prevent concurrent access to the LCP when using a LCPForceFeedback through an haptic thread.
     virtual void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) = 0;
 
     void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;

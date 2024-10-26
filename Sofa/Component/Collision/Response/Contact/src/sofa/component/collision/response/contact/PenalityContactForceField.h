@@ -127,7 +127,7 @@ public:
 
     const type::vector< Contact >& getContact() const { return contacts.getValue();}
 
-    // -- tool grabing utility
+    // -- tool grabbing utility
     void grabPoint( const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
             const type::vector< sofa::Index > &index,
             type::vector< std::pair< core::objectmodel::BaseObject*, type::Vec3f> > &result,

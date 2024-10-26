@@ -321,7 +321,7 @@ void QuadBendingFEMForceField<DataTypes>::computeBendingStrainDisplacement(Strai
 }
   
 // ------------------------------------------------------------------------------------------------------------
-// --- Compute the strain-displacement matrix (Shear componenent) where (a, b, c, d) are the coordinates of the 4 nodes of a rectangular
+// --- Compute the strain-displacement matrix (Shear component) where (a, b, c, d) are the coordinates of the 4 nodes of a rectangular
 // ------------------------------------------------------------------------------------------------------------
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::computeShearStrainDisplacement(StrainDisplacement &Js, /*Index elementIndex*/ Real l, Real h/*Coord a, Coord b, Coord c, Coord d*/  )

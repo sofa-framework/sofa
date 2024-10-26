@@ -147,7 +147,7 @@ public:
             const size_t oldpitch_host = pitch_host;
             pitch_host = d_x * sizeof(T);// new pitch_host larger than oldpitch_host : guarantee that data on the host are continuous
 
-            mycudaMallocPitch(&devicePointer, &pitch_device, d_x*sizeof(T), allocSizeY);// new pitch_device biger than oldpitch_device
+            mycudaMallocPitch(&devicePointer, &pitch_device, d_x*sizeof(T), allocSizeY);// new pitch_device bigger than oldpitch_device
             MemoryManager::hostAlloc( (void **) &hostPointer, pitch_host*allocSizeY);
 
             if (sizeX!=0 && sizeY!=0) {

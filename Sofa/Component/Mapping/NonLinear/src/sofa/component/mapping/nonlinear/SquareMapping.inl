@@ -37,6 +37,7 @@ template <class TIn, class TOut>
 void SquareMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
     DataVecCoord_t<Out>& dOut, const DataVecCoord_t<In>& dIn)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteOnlyAccessor< DataVecCoord_t<Out> >  out = dOut;
     const helper::ReadAccessor<DataVecCoord_t<In>> in = dIn;
 
@@ -64,6 +65,7 @@ void SquareMapping<TIn, TOut>::matrixFreeApplyDJT(
     const Data<VecDeriv_t<In>>& parentDisplacement,
     const Data<VecDeriv_t<Out>>& childForce)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor parentForceAccessor(parentForce);
     helper::ReadAccessor parentDisplacementAccessor(parentDisplacement);
     helper::ReadAccessor childForceAccessor(childForce);

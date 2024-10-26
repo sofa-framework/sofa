@@ -264,7 +264,10 @@ void GenericConstraintCorrection::applyPredictiveConstraintForce(const Constrain
 
 void GenericConstraintCorrection::resetContactForce(){}
 
-int GenericConstraintCorrectionClass = RegisterObject("")
-    .add< GenericConstraintCorrection >();
+void registerGenericConstraintCorrection(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Generic Constraint Correction.")
+        .add< GenericConstraintCorrection >());
+}
 
 } //namespace sofa::component::constraint::lagrangian::correction
