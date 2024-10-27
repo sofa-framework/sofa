@@ -75,7 +75,7 @@ public:
     void setPerformerFreeze() override;
 
 protected:
-    /// Incision will be perfomed between firstIncisionBody (first point clicked) and firstBody (last point clicked in memory)
+    /// Incision will be performed between firstIncisionBody (first point clicked) and firstBody (last point clicked in memory)
     void PerformCompleteIncision( );
 
     TopologicalChangeManager topologyChangeManager;

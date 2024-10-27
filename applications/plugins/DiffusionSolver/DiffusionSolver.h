@@ -8,7 +8,7 @@
 /** Solving diffusion on 3D regular grids (stored as CImg)
  * @param size (in) the size of the regular domain in the 3 directions.
  * @param img (in-out) the image to diffuse. It contains the Dirichlet boundary values and contains warm-start values (must be set to 0 for no warm-start).
- * @param mask (in) represents the type of each voxel. A negative value represents the exterior of the domain, a positive value for the interior and 0 for Dirichlet boundary conditions. The boundary exterior/interior implicitely represents a Neumann boundary condition imposing null gradients along normals.
+ * @param mask (in) represents the type of each voxel. A negative value represents the exterior of the domain, a positive value for the interior and 0 for Dirichlet boundary conditions. The boundary exterior/interior implicitly represents a Neumann boundary condition imposing null gradients along normals.
  *
  * @warning the material map must be normalized between [0,1]
  * @warning at least a one pixel outside border

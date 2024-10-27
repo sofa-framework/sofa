@@ -37,7 +37,7 @@
 namespace sofa::component::mapping::linear
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template<class InDataTypes, class OutDataTypes>
 class SubsetMappingInternalData
 {
@@ -82,7 +82,7 @@ public:
     typedef type::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
 
-    /// Correspondance array
+    /// Correspondence array
     using IndexArray = sofa::type::rebind_to<InVecCoord, Index>;
     typedef sofa::core::topology::PointSubsetData< IndexArray > SetIndex;
 

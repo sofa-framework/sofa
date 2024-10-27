@@ -3,7 +3,7 @@ Using LCP contact detection and resolution:
  + Added a driver for the Omni phantom device 
  + Added a mechanical state controller that gathers data from the phantom and updates the position of a representation of the device in the simulation 
  + Added a computation (LCPForceFeedback) of the haptic forces 
- + Added VectorSpringForceField && JointSpringForceField to link the mouvements of the Omni phantom and the instrument
+ + Added VectorSpringForceField && JointSpringForceField to link the movements of the Omni phantom and the instrument
 -->
 <Node name="root" dt="0.005">
     <RequiredPlugin name="SofaOpenglVisual"/>

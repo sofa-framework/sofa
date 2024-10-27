@@ -127,16 +127,16 @@ public :
 
     /// the key times surrounding the current simulation time (for interpolation)
     Real prevT, nextT;
-    ///the motions corresponding to the surrouding key times
+    ///the motions corresponding to the surrounding key times
     Deriv prevM, nextM;
     ///initial constrained DOFs position
     VecCoord x0;
 
     core::objectmodel::Data<bool> d_linearMovementBetweenNodesInIndices; ///< Take into account the linear movement between the constrained points
     core::objectmodel::Data<unsigned> d_mainIndice; ///< The main indice node in the list of constrained nodes, it defines how to apply the linear movement between this constrained nodes
-    core::objectmodel::Data<unsigned> d_minDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the minimum displacment
-    core::objectmodel::Data<unsigned> d_maxDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the maximum displacment
-    core::objectmodel::Data<type::vector<Real> > d_imposedDisplacmentOnMacroNodes; ///< The imposed displacment on macro nodes
+    core::objectmodel::Data<unsigned> d_minDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the minimum displacement
+    core::objectmodel::Data<unsigned> d_maxDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the maximum displacement
+    core::objectmodel::Data<type::vector<Real> > d_imposedDisplacmentOnMacroNodes; ///< The imposed displacement on macro nodes
     ///< and u1 u2 u3 u4 u5 u6 u7 u8 for 3d case
     Data<Real> d_X0; ///< Size of specimen in X-direction
     Data<Real> d_Y0; ///< Size of specimen in Y-direction

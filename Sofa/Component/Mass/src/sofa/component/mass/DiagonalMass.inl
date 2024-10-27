@@ -896,7 +896,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::massInitialization()
     //Mass initialization process
     if(d_vertexMass.isSet() || d_massDensity.isSet() || d_totalMass.isSet() )
     {
-        //totalMass data is prioritary on vertexMass and massDensity
+        //totalMass data has priority on vertexMass and massDensity
         if (d_totalMass.isSet())
         {
             if(d_vertexMass.isSet() || d_massDensity.isSet())

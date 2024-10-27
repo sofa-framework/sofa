@@ -79,9 +79,9 @@ public:
     Data<bool> d_shadowsEnabled; ///< [Shadowing] Enable Shadow from this light
     Data<bool> d_softShadows; ///< [Shadowing] Turn on Soft Shadow from this light
     Data<float> d_shadowFactor; ///< [Shadowing] Shadow Factor (decrease/increase darkness)
-    Data<float> d_VSMLightBleeding; ///< [Shadowing] (VSM only) Light bleeding paramter
+    Data<float> d_VSMLightBleeding; ///< [Shadowing] (VSM only) Light bleeding parameter
     Data<float> d_VSMMinVariance; ///< [Shadowing] (VSM only) Minimum variance parameter
-    Data<unsigned short> d_textureUnit; ///< [Shadowing] Texture unit for the genereated shadow texture
+    Data<unsigned short> d_textureUnit; ///< [Shadowing] Texture unit for the generated shadow texture
 
 protected:
     Light();

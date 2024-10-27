@@ -45,7 +45,7 @@ namespace sofa::helper
  *
  * Todo this first version of polynomial is a linear presentation.
  * This presentation is efficient for arithmetic operator like +,-,\*,/ and derivative.
- * But is not optimized for the evaluating (comparing to the recurent presentation).
+ * But is not optimized for the evaluating (comparing to the recurrent presentation).
  */
 template<typename Real, unsigned int N>
 class Monomial_LD
@@ -103,7 +103,7 @@ public :
     ///Evaluating partial derivative hight order by idvar-th variable in ideriv-th order
 //	Real operator()(const RNpoint & x,unsigned int idvar,unsigned int ideriv) const;//Todo
 
-    ///Derivative operator alowing to write p1=p2.d(x);
+    ///Derivative operator allowing to write p1=p2.d(x);
     Monomial_LD<Real,N> d(const unsigned int & ideriv) const;
 
     void writeToStream(std::ostream & ff) const;
@@ -184,7 +184,7 @@ public :
     ///Evaluating partial derivative hight order by idvar-th variable in ideriv-th order
 //	Real operator()(const RNpoint & x,unsigned int idvar,unsigned int ideriv) const;//Todo
 
-    ///Derivative operator alowing to write p1=p2.d(x);
+    ///Derivative operator allowing to write p1=p2.d(x);
     Polynomial_LD<Real,N>  d(const unsigned int & ideriv) const;
 
     void setnbOfMonomial(int m_nbofmonomial);

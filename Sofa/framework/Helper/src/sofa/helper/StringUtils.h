@@ -89,7 +89,7 @@ std::string join(const Container& elems, const S& delim)
 ///@brief returns a copy of the string given in argument.
 SOFA_HELPER_API char* getAStringCopy(const char *c);
 
-///@brief replace all occurence of "search" by the "replace" string.
+///@brief replace all occurrence of "search" by the "replace" string.
 SOFA_HELPER_API void replaceAll(std::string& str,
                                 const std::string& search,
                                 const std::string& replace);

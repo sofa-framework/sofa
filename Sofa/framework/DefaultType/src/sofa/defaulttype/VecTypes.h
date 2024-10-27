@@ -63,7 +63,7 @@ public:
 
 protected:
 
-    /// @internal size dependant specializations
+    /// @internal size dependent specializations
     /// @{
 
     template<Size N, class T>

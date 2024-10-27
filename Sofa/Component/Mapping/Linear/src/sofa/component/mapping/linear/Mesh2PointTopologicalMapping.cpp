@@ -40,10 +40,11 @@ using namespace sofa::component::topology::container::dynamic;
 using namespace sofa::core::topology;
 using type::vector;
 
-// Register in the Factory
-int Mesh2PointTopologicalMappingClass = core::RegisterObject ( "This class maps any mesh primitive (point, edge, triangle...) into a point using a relative position from the primitive" )
-        .add< Mesh2PointTopologicalMapping >()
-        ;
+void registerMesh2PointTopologicalMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("This class maps any mesh primitive (point, edge, triangle...) into a point using a relative position from the primitive.")
+        .add< Mesh2PointTopologicalMapping >());
+}
 
 // Implementation
 Mesh2PointTopologicalMapping::Mesh2PointTopologicalMapping ()

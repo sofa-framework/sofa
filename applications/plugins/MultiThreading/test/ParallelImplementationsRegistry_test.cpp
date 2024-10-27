@@ -34,7 +34,8 @@ TEST(ParallelImplementationsRegistry, existInObjectFactory)
     // sequential versions will be added to the ObjectFactory
     sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
     sofa::simpleapi::importPlugin("Sofa.Component.Collision.Detection.Algorithm");
-    sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");    
+    sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
+    sofa::simpleapi::importPlugin("Sofa.Component.Mapping.Linear");
 
     const auto implementations = ParallelImplementationsRegistry::getImplementations();
 

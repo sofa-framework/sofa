@@ -108,7 +108,7 @@ template<class TDestType, class TDestPtr, class TValueType, bool multiLink>
 class LinkTraitsContainer;
 
 
-/// Class to hold 0-or-1 pointer. The interface is similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
+/// Class to hold 0-or-1 pointer. The interface is similar to std::vector (size/[]/begin/end), plus an automatic conversion to one pointer.
 template < class T, class TDestPtr, class TPtr = T* >
 class SinglePtr
 {

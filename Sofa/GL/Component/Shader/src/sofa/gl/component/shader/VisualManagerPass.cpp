@@ -167,7 +167,7 @@ void VisualManagerPass::postDrawScene(VisualParams* /*vp*/)
 }
 
 
-//keyboard event management. Not sure what I'm gonna do with that for the moment, but I'm quite sure it should be usefull in the future
+//keyboard event management. Not sure what I'm gonna do with that for the moment, but I'm quite sure it should be useful in the future
 void VisualManagerPass::handleEvent(sofa::core::objectmodel::Event* /*event*/)
 {
 }

@@ -28,7 +28,7 @@ namespace sofa::component::linearsystem
 
 /**
  * Helper class used in matrix assembly, containing some factory methods that
- * must be overriden to define the type of local matrices.
+ * must be overridden to define the type of local matrices.
  */
 template <core::matrixaccumulator::Contribution c>
 struct CreateMatrixDispatcher

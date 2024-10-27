@@ -35,7 +35,7 @@ namespace sofa::component::solidmechanics::fem::elastic
 template<class DataTypes>
 class TriangularFEMForceFieldOptim;
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template<class DataTypes>
 class TriangularFEMForceFieldOptimInternalData
 {
@@ -234,7 +234,7 @@ public:
 
 public:
 
-    /// Forcefield intern paramaters
+    /// Forcefield intern parameters
     Data<Real> d_damping; ///< Ratio damping/stiffness
     Data<Real> d_restScale; ///< Scale factor applied to rest positions (to simulate pre-stretched materials)
 

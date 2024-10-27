@@ -140,7 +140,7 @@ struct TopologyElemID
 SOFA_CORE_API std::ostream& operator << (std::ostream& out, const TopologyElemID& d);
 SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyElemID& d);
 
-/// Topology change informations related to the ancestor topology element of a point
+/// Topology change information related to the ancestor topology element of a point
 struct PointAncestorElem
 {
     typedef type::Vec3 LocalCoords;
@@ -161,7 +161,7 @@ struct PointAncestorElem
 SOFA_CORE_API std::ostream& operator << (std::ostream& out, const PointAncestorElem& d);
 SOFA_CORE_API std::istream& operator >> (std::istream& in, PointAncestorElem& d);
 
-/// Topology change informations related to the ancestor topology element of an edge
+/// Topology change information related to the ancestor topology element of an edge
 template<int NV>
 struct ElemAncestorElem
 {
