@@ -1322,7 +1322,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 
         (ops[0].first.getId(m).type == sofa::core::V_COORD) ? m->write(core::VecCoordId(ops[0].first.getId(m)))->endEdit() : m->write(core::VecDerivId(ops[0].first.getId(m)))->endEdit();
     }
-    // optimize the solve for MCNAB sovler
+    // optimize the solve for MCNAB solver
     // 1) x += v*dt
     // 2) prevReac=reac
     // 3) prevDiff=diff

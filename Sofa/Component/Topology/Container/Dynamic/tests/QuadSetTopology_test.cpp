@@ -174,7 +174,7 @@ bool QuadSetTopology_test::testEdgeBuffers()
     EXPECT_EQ(elemAEdge[1], 1);
 
 
-    // check EdgesInQuad buffer acces
+    // check EdgesInQuad buffer access
     const sofa::type::vector< QuadSetTopologyContainer::EdgesInQuad > & edgeInQuads = topoCon->getEdgesInQuadArray();
     EXPECT_EQ(edgeInQuads.size(), nbrQuad);
 

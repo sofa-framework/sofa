@@ -38,7 +38,7 @@
 namespace sofa::component::statecontainer
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template <class DataTypes>
 class MechanicalObject;
 

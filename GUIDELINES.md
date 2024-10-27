@@ -5,7 +5,7 @@
 ### Base rules
 The base rules are in Google C++ Style Guide: https://google.github.io/styleguide/cppguide.html   
 All rules below **replace** the corresponding base rules.  
-For any subject not mentionned below, please refer to the base.
+For any subject not mentioned below, please refer to the base.
 
 ### Commit message
 A correct commit message must therefore be structured as:  

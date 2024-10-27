@@ -165,7 +165,7 @@ public:
     sofa::core::topology::EdgeData<type::vector<EdgeInformation> >& getEdgeInfo() { return d_edgeInfo; }
 
 protected:
-    /// poential energy accumulate in method @sa addForce
+    /// potential energy accumulate in method @sa addForce
     SReal m_potentialEnergy;
 
     /// Pointer to the linked topology used to create this spring forcefield

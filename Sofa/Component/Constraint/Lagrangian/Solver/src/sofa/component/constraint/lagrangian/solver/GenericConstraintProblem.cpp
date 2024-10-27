@@ -560,7 +560,7 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
     sofa::type::vector<SReal> tabErrors(dimension);
 
     {
-        // peform one iteration of ProjectedGaussSeidel
+        // perform one iteration of ProjectedGaussSeidel
         bool constraintsAreVerified = true;
         std::copy_n(force, dimension, std::begin(m_lam));
 

@@ -271,7 +271,7 @@ public:
     /** \brief Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.
      *
      * @return List of object intersect (type enum @see geometry::ElementType)
-     * @return List of indices of these objetcs
+     * @return List of indices of these objects
      * @return List of barycentric coordinate defining the position of the intersection in each object
      * (i.e 0 coord for a point, 1 for and edge and 3 for a triangle).
      */

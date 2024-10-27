@@ -33,7 +33,7 @@ namespace sofa::component::solidmechanics::spring
 template<class DataTypes>
 QuadBendingSprings<DataTypes>::QuadBendingSprings()
     : SpringForceField<DataTypes>()
-    , d_localRange( initData(&d_localRange, type::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , d_localRange( initData(&d_localRange, type::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitioning)" ) )
     , l_topology(initLink("topology", "link to the topology container"))
 {
     localRange.setOriginalData(&d_localRange);

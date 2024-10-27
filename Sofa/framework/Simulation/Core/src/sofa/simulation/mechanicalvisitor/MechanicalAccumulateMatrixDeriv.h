@@ -28,7 +28,7 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
-/// Accumulate Jacobian matrices through the mappings up to the independant DOFs
+/// Accumulate Jacobian matrices through the mappings up to the independent DOFs
 class SOFA_SIMULATION_CORE_API MechanicalAccumulateMatrixDeriv : public BaseMechanicalVisitor
 {
 public:

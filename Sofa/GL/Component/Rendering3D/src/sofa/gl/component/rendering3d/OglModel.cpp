@@ -53,7 +53,7 @@ OglModel::OglModel()
     , pointSize(initData(&pointSize, 1.0f, "pointSize", "Point size (set if != 1, only for points rendering)"))
     , lineSmooth(initData(&lineSmooth, false, "lineSmooth", "Enable smooth line rendering"))
     , pointSmooth(initData(&pointSmooth, false, "pointSmooth", "Enable smooth point rendering"))
-    , primitiveType( initData(&primitiveType, "primitiveType", "Select types of primitives to send (necessary for some shader types such as geometry or tesselation)"))
+    , primitiveType( initData(&primitiveType, "primitiveType", "Select types of primitives to send (necessary for some shader types such as geometry or tessellation)"))
     , blendEquation( initData(&blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
     , sourceFactor( initData(&sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
     , destFactor( initData(&destFactor, "dfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed") )
@@ -1051,7 +1051,7 @@ GLenum OglModel::getGLenum(const char* c ) const
     {
         return GL_ONE_MINUS_SRC_ALPHA;
     }
-    // .... add ohter OGL symbolic constants
+    // .... add other OGL symbolic constants
     // glBlendEquation Value
     else if  ( strcmp( c, "GL_FUNC_ADD") == 0)
     {

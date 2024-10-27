@@ -102,7 +102,7 @@ macro(sofa_add_generic directory name type)
         string(REPLACE "." "_" option ${option})
         string(TOLOWER ${type} type_lower)
 
-        # optional parameter to activate/desactivate the option
+        # optional parameter to activate/deactivate the option
         #  e.g.  sofa_add_application( path/MYAPP MYAPP APPLICATION ON)
         set(active OFF)
         if(${ARG_DEFAULT_VALUE})
@@ -254,7 +254,7 @@ function(sofa_add_generic_external directory name type)
         file(APPEND "${fetched_dir}/logs.txt" "${build_logs}")
 
         if(generate_exitcode EQUAL 0 AND build_exitcode EQUAL 0 AND EXISTS "${directory}/.git")
-            message("  Sucess.")
+            message("  Success.")
             # Add .gitignore for Sofa
             file(WRITE "${directory}/.gitignore" "*")
             # Recover ExternalProjectConfig.cmake.in from build dir (erased by pull)

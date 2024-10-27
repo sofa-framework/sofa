@@ -30,7 +30,7 @@ namespace sofa::component::engine::transform
 template <class DataTypes>
 DifferenceEngine<DataTypes>::DifferenceEngine()
     : d_input ( initData (&d_input, "input", "input vector") )
-    , d_substractor ( initData (&d_substractor, "substractor", "vector to substract to input") )
+    , d_substractor ( initData (&d_substractor, "substractor", "vector to subtract to input") )
     , d_output( initData (&d_output, "output", "output vector = input-substractor") )
 {
     addInput(&d_input);
@@ -60,7 +60,7 @@ void DifferenceEngine<DataType>::doUpdate()
 
     if(in.size() != sub.size())
     {
-        msg_warning() << "Input vector and vector to substract should have same size. Abort.";
+        msg_warning() << "Input vector and vector to subtract should have same size. Abort.";
         return;
     }
 

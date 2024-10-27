@@ -38,7 +38,7 @@ namespace sofa::component::mapping::nonlinear
 
 template <class TIn, class TOut>
 DistanceMapping<TIn, TOut>::DistanceMapping()
-    : d_computeDistance(initData(&d_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
+    : d_computeDistance(initData(&d_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial length of each of them"))
     , d_restLengths(initData(&d_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
     , d_color(initData(&d_color, sofa::type::RGBAColor::yellow(), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))

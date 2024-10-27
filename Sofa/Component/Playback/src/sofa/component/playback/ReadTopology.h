@@ -39,7 +39,7 @@
 namespace sofa::component::playback
 {
 
-/** Read Topology containers informations from file at each timestep
+/** Read Topology containers information from file at each timestep
 */
 class SOFA_COMPONENT_PLAYBACK_API ReadTopology: public core::objectmodel::BaseObject
 {

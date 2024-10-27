@@ -163,7 +163,7 @@ public:
 };
 
 ///
-/// tests that all the BaseClass returned from GetClass function are refering to the same
+/// tests that all the BaseClass returned from GetClass function are referring to the same
 /// BaseClass instance.
 ///
 TEST_F(BaseClass_test, checkClassEquivalence  )

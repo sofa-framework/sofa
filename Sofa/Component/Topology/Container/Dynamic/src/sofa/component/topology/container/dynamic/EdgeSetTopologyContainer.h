@@ -99,7 +99,7 @@ public:
 
     /// Dynamic Topology API
     /// @{
-    /// Method called by component Init method. Will create all the topology neighboorhood buffers.
+    /// Method called by component Init method. Will create all the topology neighborhood buffers.
     void initTopology();
 
     /** \brief Checks if the topology is coherent
@@ -125,7 +125,7 @@ public:
     Size getNumberOfElements() const override;
 
 
-    /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
+    /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRARY)
      *
      * @param components the array containing the optimal vertex permutation according to the Reverse CuthillMckee algorithm
      * @return The number of components connected together.

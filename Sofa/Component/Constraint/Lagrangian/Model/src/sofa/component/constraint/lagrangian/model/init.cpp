@@ -21,13 +21,23 @@
 ******************************************************************************/
 #include <sofa/component/constraint/lagrangian/model/init.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+
 namespace sofa::component::constraint::lagrangian::model
 {
+
+extern void registerBilateralLagrangianConstraint(sofa::core::ObjectFactory* factory);
+extern void registerFixedLagrangianConstraint(sofa::core::ObjectFactory* factory);
+extern void registerSlidingLagrangianConstraint(sofa::core::ObjectFactory* factory);
+extern void registerStopperLagrangianConstraint(sofa::core::ObjectFactory* factory);
+extern void registerUniformLagrangianConstraint(sofa::core::ObjectFactory* factory);
+extern void registerUnilateralLagrangianConstraint(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -45,11 +55,24 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerBilateralLagrangianConstraint(factory);
+    registerFixedLagrangianConstraint(factory);
+    registerSlidingLagrangianConstraint(factory);
+    registerStopperLagrangianConstraint(factory);
+    registerUniformLagrangianConstraint(factory);
+    registerUnilateralLagrangianConstraint(factory);
+}
+
 void init()
 {
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         first = false;
     }
 }

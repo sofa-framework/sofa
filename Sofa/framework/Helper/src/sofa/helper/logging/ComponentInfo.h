@@ -37,7 +37,7 @@
 namespace sofa::helper::logging
 {
 
-/// The base class to keep track of informations associated with a message.
+/// The base class to keep track of information associated with a message.
 /// A component info object have a sender method to return the name string identifying the
 /// sender of a message.
 ///

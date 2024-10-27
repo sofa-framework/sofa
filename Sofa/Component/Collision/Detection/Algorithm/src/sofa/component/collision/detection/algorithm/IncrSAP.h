@@ -178,7 +178,7 @@ private:
     void updateEndPoints();
 
     /**
-     * Sets the end points ID, i.e. each end point in the list after this mehod have its position (ID) updated.
+     * Sets the end points ID, i.e. each end point in the list after this method have its position (ID) updated.
      */
     void setEndPointsID();
 
@@ -263,7 +263,7 @@ public:
 
     void addCollisionModel (core::CollisionModel *cm) override;
 
-    // Unuseful methods because all is done in addCollisionModel
+    // Useless methods because all is done in addCollisionModel
     void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ) override {}
     void addCollisionPairs (const type::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&) override {}
 
