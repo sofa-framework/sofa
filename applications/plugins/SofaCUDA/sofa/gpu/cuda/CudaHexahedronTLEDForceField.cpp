@@ -726,9 +726,9 @@ void CudaHexahedronTLEDForceField::ComputeHGParams(const Element& e, const VecCo
     {
         for (int j = 0; j < 4; j++)
         {
-            for (int k = 0; k < 8; k++)
+            for (int kk = 0; kk < 8; kk++)
             {
-                gamma[i][j] += A[i][k]*Gamma[k][j];
+                gamma[i][j] += A[i][kk]*Gamma[kk][j];
             }
         }
     }
@@ -748,9 +748,9 @@ void CudaHexahedronTLEDForceField::ComputeHGParams(const Element& e, const VecCo
     {
         for (int j = 0; j < 8; j++)
         {
-            for (int k = 0; k < 4; k++)
+            for (int kk = 0; kk < 4; kk++)
             {
-                HG[i][j] += gamma[i][k]*gamma[j][k];
+                HG[i][j] += gamma[i][kk]*gamma[j][kk];
             }
         }
     }
