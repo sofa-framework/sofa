@@ -197,7 +197,7 @@ class DeprecatedAndRemoved {};
         "It is still usable but has been DEPRECATED since " deprecateDate ". " \
         "You have until " removeDate " to fix your code. " toFixMsg)]]
 
-// The following macro is empty because it is supposed to be used in conjonction
+// The following macro is empty because it is supposed to be used in conjunction
 // when an attribute of type DeprecatedAndRemoved. It should not contain a [[deprecated]]
 // attribute, because if it does, the "deprecated" warning is showed in every constructor's
 // for every disabled attribute.

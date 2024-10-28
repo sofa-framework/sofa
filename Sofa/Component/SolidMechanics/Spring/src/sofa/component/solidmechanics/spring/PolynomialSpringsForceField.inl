@@ -161,7 +161,7 @@ void PolynomialSpringsForceField<DataTypes>::recomputeIndices()
 
     if (m_firstObjectIndices.size() > m_secondObjectIndices.size())
     {
-        msg_error() << "Error : the dimention of the source and the targeted points are different ";
+        msg_error() << "Error : the dimension of the source and the targeted points are different ";
         m_firstObjectIndices.clear();
         m_secondObjectIndices.clear();
     }

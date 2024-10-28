@@ -53,14 +53,14 @@ DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping
 template <class TIn, class TInRoot, class TOut>
 int DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::addPoint(const OutCoord& /*c*/)
 {
-    msg_info() << "addPoint should be supressed" ;
+    msg_info() << "addPoint should be suppressed" ;
     return 0;
 }
 
 template <class TIn, class TInRoot, class TOut>
 int DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::addPoint(const OutCoord& /*c*/, int /*indexFrom*/)
 {
-    msg_info() << "addPoint should be supressed" ;
+    msg_info() << "addPoint should be suppressed" ;
     return 0;
 }
 

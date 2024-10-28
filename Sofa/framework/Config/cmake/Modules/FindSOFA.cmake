@@ -2,7 +2,7 @@
 # In order to use this cmake module, you have to call the find_package(SOFA) command in your CMakeLists.txt
 #
 # This module defines for use :
-# SOFA_LIBRARIES wich contain all LIBRARIES variables in absolute path of Sofa
+# SOFA_LIBRARIES which contain all LIBRARIES variables in absolute path of Sofa
 # SOFA_FOUND, if false, Sofa not found
 # SOFA_INCLUDE_DIRS, where to find all the headers
 #
@@ -14,7 +14,7 @@
 # #include <sofa/defaulttype/Quat.h>
 #
 # To maintain this script, you just have to :
-#  * update if necessary the header file and path to search it to find the framwork/moules/application dirs
+#  * update if necessary the header file and path to search it to find the framework/moules/application dirs
 #  * update if necessary the include dirs for extlibs
 #  * update if necessary name and cmake name of libraries in the corresponding section
 #  * update if necessary the paths to search the libs to the find_lib macro
@@ -189,7 +189,7 @@ set(SOFA_INCLUDE_DIRS
 ## 50 new groups are contained in 5 different categories:
 ## BASE, COMMON, GENERAL and MISC.
 ##
-## 1- collect all library name to search in the SOFA_LIBS_NAME list splitted into 5 parts
+## 1- collect all library name to search in the SOFA_LIBS_NAME list split into 5 parts
 ##    * the SOFA LIBS BASE LIST
 ##    * the SOFA COMMON LIST
 ##    * THE SOFA GENERAL LIST
@@ -415,7 +415,7 @@ foreach(index RANGE 0 ${count} 1)
     math(EXPR indexValue "${index}*2")
     list(GET SOFA_LIBS_NAME ${indexValue} REAL_SOFA_LIB_NAME)
 
-    ## Get the variableName of the coresponding searched library
+    ## Get the variableName of the corresponding searched library
     math(EXPR indexName "${index}*2+1")
     list(GET SOFA_LIBS_NAME ${indexName} CMAKE_SOFA_LIB_NAME)
 

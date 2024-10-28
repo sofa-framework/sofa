@@ -64,7 +64,7 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     , d_showVonMisesStressPerNodeColorMap(initData(&d_showVonMisesStressPerNodeColorMap,false,"showVonMisesStressPerNodeColorMap","draw elements showing vonMises stress interpolated in nodes"))
     , d_showVonMisesStressPerElement(initData(&d_showVonMisesStressPerElement, false, "showVonMisesStressPerElement", "draw triangles showing vonMises stress interpolated in elements"))
     , d_showElementGapScale(initData(&d_showElementGapScale, (Real)0.333, "showElementGapScale", "draw gap between elements (when showWireFrame is disabled) [0,1]: 0: no gap, 1: no element"))
-    , d_updateStiffness(initData(&d_updateStiffness, false, "updateStiffness", "udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
+    , d_updateStiffness(initData(&d_updateStiffness, false, "updateStiffness", "update structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
 {
     data.initPtrData(this);
     this->addAlias(&d_assembling, "assembling");
@@ -696,7 +696,7 @@ inline SReal TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const core:
                 Displacement F;
 
                 // ComputeForce without the case of  plasticity simulation when  d_plasticMaxThreshold.getValue() > 0
-                // This case actually modifies  the member plasticStrain and getPotentialEnergy is a const fonction.
+                // This case actually modifies  the member plasticStrain and getPotentialEnergy is a const function.
                 MaterialStiffness K = materialsStiffnesses[i];
                 StrainDisplacement J = strainDisplacements[i];
 
@@ -1303,7 +1303,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         this->f_listening.setValue(true);
     }
 
-    // ParallelDataThrd is used to build the matrix asynchronusly (when listening = true)
+    // ParallelDataThrd is used to build the matrix asynchronously (when listening = true)
     // This feature is activated when callin handleEvent with ParallelizeBuildEvent
     // At init parallelDataSimu == parallelDataThrd (and it's the case since handleEvent is called)
 
@@ -1363,7 +1363,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
             }
         }
 
-        // Tesselation of each cube into 6 tetrahedra
+        // Tessellation of each cube into 6 tetrahedra
         tetrahedra->reserve(size_t(nbcubes)*6);
         for (sofa::Size i=0; i<nbcubes; i++)
         {

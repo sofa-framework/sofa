@@ -37,7 +37,7 @@ namespace sofa::helper
 ///////////////////////////////////////////////////////////////////////////////////
 /**
  * \brief OptionsGroup is a kind of data for a radio button. It has a list of text
- * representing a list of choices, and a interger number indicating the choice
+ * representing a list of choices, and a integer number indicating the choice
  * selected.
  *
  */
@@ -93,13 +93,13 @@ public :
 
     ///Setting the activated item by a input-stream.
     ///the istream is converted to string.
-    ///If the reading string is in options list, its value is setted activated,
+    ///If the reading string is in options list, its value is set activated,
     ///else push a warning.
     void readFromStream(std::istream& stream);
 
     /// @}
 
-    /// @name getting informations operators
+    /// @name getting information operators
     /// @{
     [[nodiscard]] unsigned int       getSelectedId()                      const;
     [[nodiscard]] const std::string& getSelectedItem()                    const;

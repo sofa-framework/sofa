@@ -599,9 +599,9 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     { "OBBModel", Moved("v22.06", "SofaMiscCollision", "CollisionOBBCapsule") },
     { "RigidCapsuleCollisionModel", Moved("v22.06", "SofaMiscCollision", "CollisionOBBCapsule") },
     { "CapsuleCollisionModel", Moved("v22.06", "SofaMiscCollision", "CollisionOBBCapsule") },
-    { "TriangleModelInRegularGrid", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collsion.Geometry") },
-    { "TetrahedronCollisionModel", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collsion.Geometry") },
-    { "RuleBasedContactManager", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collsion.Response.Contact") },
+    { "TriangleModelInRegularGrid", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collision.Geometry") },
+    { "TetrahedronCollisionModel", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collision.Geometry") },
+    { "RuleBasedContactManager", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collision.Response.Contact") },
 
     // SofaHaptics was deprecated in #3039
     { "ForceFeedback", Moved("v22.06", "SofaHaptics", "Sofa.Component.Haptics") },
@@ -811,6 +811,7 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"TriangleOctree", Dealiased("v24.12","TriangleOctreeModel")},
     {"DefaultContactManager", Dealiased("v24.12","CollisionResponse")},
     {"RuleBasedCollisionResponse", Dealiased("v24.12","RuleBasedContactManager")},
+    {"SurfaceIdentityMapping", Dealiased("v24.12","SubsetMapping")},
 };
 
 } // namespace sofa::helper::lifecycle

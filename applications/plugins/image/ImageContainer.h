@@ -299,7 +299,7 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
    *
    *  <b>template</b>
    *
-   *  <b>filename</> - the name of the image file to be loaded. Currently supported filtypes:
+   *  <b>filename</> - the name of the image file to be loaded. Currently supported filetypes:
    *
    */
 template<class _ImageTypes>

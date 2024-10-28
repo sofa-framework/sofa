@@ -33,7 +33,7 @@ namespace sofa::linearalgebra
  * The output is not really a matrix per se, but a data structure representing the opposite representation.
  * It also provides a permutation array, that allows to retrieve the initial value of a matrix entry in the input matrix.
  *
- * As mentionned, the output is not a matrix, but a dedicated iterator allows to loop over non-zero entries, in a similar
+ * As mentioned, the output is not a matrix, but a dedicated iterator allows to loop over non-zero entries, in a similar
  * fashion than in Eigen.
  *
  * If only values of the input matrix change, but not its pattern, the output matrix will not change. And the iterator

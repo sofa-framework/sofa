@@ -65,11 +65,11 @@ struct QuaternionIntegrationTest : NumericTest< typename Rigid3Types::Real > {
 };
 
 
-// Define the list of types to instanciate. We do not necessarily need to test all combinations.
+// Define the list of types to instantiate. We do not necessarily need to test all combinations.
 using ::testing::Types;
-typedef Types<defaulttype::Rigid3Types> DataTypes; // the types to instanciate.
+typedef Types<defaulttype::Rigid3Types> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(QuaternionIntegrationTest, DataTypes);
 
 // first test case

@@ -31,7 +31,7 @@ namespace sofa::component::engine::transform
 
 void registerQuatToRigidEngine(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Transform a vector of Rigids into two independant vectors for positions (Vec3) and orientations (Quat).")
+    factory->registerObjects(core::ObjectRegistrationData("Transform a vector of Rigids into two independent vectors for positions (Vec3) and orientations (Quat).")
         .add< QuatToRigidEngine<sofa::defaulttype::Vec3Types> >());
 }
 

@@ -274,7 +274,7 @@ struct Edge
             // [ (pA - pC) + alpha(pB - pA) - beta(pD - pC) ].dot(pD - pC) = 0
             const auto CA = pA - pC;
 
-            // Writting d[CA/AB] == (pA - pC).dot(pB - pA) and subtituting beta we obtain:
+            // Writing d[CA/AB] == (pA - pC).dot(pB - pA) and substituting beta we obtain:
             // beta = (d[CA/CD] + alpha * d[AB/CD]) / d[CD/CD]
             // alpha = ( d[CA/CD]*d[CD/AB] - d[CA/AB]*d[CD/CD] ) / ( d[AB/AB]*d[CD/CD] - d[AB/CD]*d[AB/CD])
             const T dCACD = sofa::type::dot(CA, CD);

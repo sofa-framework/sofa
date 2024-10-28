@@ -861,7 +861,7 @@ bool BaseCameraXMLImportSingleParameter(tinyxml2::XMLElement* root, core::object
             }
             else
             {
-                msg_error(c) << "Unknown error occured for " << data.getName() << " field.";
+                msg_error(c) << "Unknown error occurred for " << data.getName() << " field.";
                 return false;
             }
         }

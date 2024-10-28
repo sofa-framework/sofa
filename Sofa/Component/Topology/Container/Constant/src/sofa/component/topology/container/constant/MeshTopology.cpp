@@ -2362,7 +2362,7 @@ bool MeshTopology::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-        msg_error() << "CheckConnexity: elements are missings. There is more than one connexe component.";
+        msg_error() << "CheckConnexity: elements are missing. There is more than one connexe component.";
         return false;
     }
 

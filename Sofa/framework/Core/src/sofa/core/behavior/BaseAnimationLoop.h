@@ -34,7 +34,7 @@ namespace sofa::core::behavior
  *  This class can optionally replace the default computation scheme of computing
  *  collisions then doing an integration step.
  *
- *  Note that it is in a preliminary stage, hence its fonctionnalities and API will
+ *  Note that it is in a preliminary stage, hence its functionalities and API will
  *  certainly change soon.
  *
  */

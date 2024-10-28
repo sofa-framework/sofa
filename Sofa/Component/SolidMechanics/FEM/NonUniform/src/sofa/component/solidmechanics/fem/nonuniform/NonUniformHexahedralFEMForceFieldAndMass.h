@@ -173,7 +173,7 @@ private:
 
 protected:
 
-    // ---------------  Modified method: compute and re-use MBK
+    // ---------------  Modified method: compute and reuse MBK
     typedef component::solidmechanics::fem::elastic::HexahedralFEMForceFieldAndMass<DataTypes> Inherited;
     typedef typename Inherited::HexahedronInformation HexahedronInformation;
     typedef typename Inherited::Mat33 Mat33;

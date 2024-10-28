@@ -3,7 +3,7 @@
 # This script removes in all the scenes the deprecated structure <Object type="MyComponent"
 
 # WARNING: this script may modify your scene
-# make sure you saved/commited all local changes before apply this script
+# make sure you saved/committed all local changes before apply this script
 
 DIR0=$PWD
 cd "${0%/*}"

@@ -145,7 +145,7 @@ protected:
         addCollisionDetection<BulletRigidCapsuleModel,BulletTriangleModel>();
         addCollisionDetection<BulletRigidCapsuleModel,BulletSphereModel>();
 
-        //if you want to take account of one of any intersection below, uncoment it,
+        //if you want to take account of one of any intersection below, uncomment it,
         //I wrote it because order is important for the collision response
         addCollisionDetection<BulletCylinderModel,BulletCylinderModel>();
         addCollisionDetection<BulletCapsuleModel,BulletCylinderModel>();

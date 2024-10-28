@@ -199,7 +199,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     unsigned int lastLocId = iter_last->second;
                     Glob2LocMap[oldGlobTriId] = lastLocId;
 
-                    if (lastLocId < Loc2GlobVec.size()) // could be maped to an already removed element in loc2Glob
+                    if (lastLocId < Loc2GlobVec.size()) // could be mapped to an already removed element in loc2Glob
                         Loc2GlobVec[lastLocId] = oldGlobTriId;
                 }
                 else
@@ -307,7 +307,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             {
                 BaseMeshTopology::TriangleID lastGlobId = Loc2GlobVec.back();
 
-                // udpate loc2glob array
+                // update loc2glob array
                 Loc2GlobVec[triLocId] = lastGlobId;
                 Loc2GlobVec.pop_back();
 

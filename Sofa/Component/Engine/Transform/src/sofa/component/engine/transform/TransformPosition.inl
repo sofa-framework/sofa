@@ -164,7 +164,7 @@ void TransformPosition<DataTypes>::reinit()
 
 /**************************************************
  * .tfm spec:
- * 12 values in the lines begining by "Parameters"
+ * 12 values in the lines beginning by "Parameters"
  **************************************************/
 template <class DataTypes>
 void TransformPosition<DataTypes>::getTransfoFromTfm()

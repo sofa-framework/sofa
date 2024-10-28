@@ -100,7 +100,7 @@ void BaseViewer::configure(sofa::component::setting::ViewerSetting* viewerConf)
         setCameraMode(VisualParams::PERSPECTIVE_TYPE);
 }
 
-//Fonctions needed to take a screenshot
+//Functions needed to take a screenshot
 const std::string BaseViewer::screenshotName()
 {
     return "";

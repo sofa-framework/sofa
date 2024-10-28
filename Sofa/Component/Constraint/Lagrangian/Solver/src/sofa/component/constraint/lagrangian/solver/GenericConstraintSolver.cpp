@@ -66,7 +66,7 @@ GenericConstraintSolver::GenericConstraintSolver()
     , d_tolerance(initData(&d_tolerance, 0.001_sreal, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , d_sor(initData(&d_sor, 1.0_sreal, "sor", "Successive Over Relaxation parameter (0-2)"))
     , d_scaleTolerance(initData(&d_scaleTolerance, true, "scaleTolerance", "Scale the error tolerance with the number of constraints"))
-    , d_allVerified(initData(&d_allVerified, false, "allVerified", "All contraints must be verified (each constraint's error < tolerance)"))
+    , d_allVerified(initData(&d_allVerified, false, "allVerified", "All constraints must be verified (each constraint's error < tolerance)"))
     , d_newtonIterations(initData(&d_newtonIterations, 100, "newtonIterations", "Maximum iteration number of Newton (for the NonsmoothNonlinearConjugateGradient solver only)"))
     , d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
     , d_computeGraphs(initData(&d_computeGraphs, false, "computeGraphs", "Compute graphs of errors and forces during resolution"))
@@ -617,8 +617,10 @@ sofa::core::MultiVecDerivId GenericConstraintSolver::getDx() const
     return m_dxId;
 }
 
-
-int GenericConstraintSolverClass = core::RegisterObject("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
-        .add< GenericConstraintSolver >();
+void registerGenericConstraintSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
+        .add< GenericConstraintSolver >());
+}
 
 } //namespace sofa::component::constraint::lagrangian::solver

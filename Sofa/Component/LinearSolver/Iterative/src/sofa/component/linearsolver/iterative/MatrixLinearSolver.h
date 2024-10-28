@@ -274,7 +274,7 @@ public:
         v->execute( this->getContext() );
     }
 
-    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
+    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name parameters
     /// instead of the default one generated automatically by the SOFA_CLASS() macro.
     static std::string GetCustomTemplateName()
     {
@@ -462,8 +462,8 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManage
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_CPP)
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< GraphScatteredMatrix, GraphScatteredVector, NoThreadManager >;
-/// Extern template declarations don't prevent implicit instanciation in the case
-/// of explicitely specialized classes.  (See section 14.3.7 of the C++ standard
+/// Extern template declarations don't prevent implicit instantiation in the case
+/// of explicitly specialized classes.  (See section 14.3.7 of the C++ standard
 /// [temp.expl.spec]). We have to declare non-specialized member functions by
 /// hand to prevent MSVC from complaining that it doesn't find their definition.
 extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::MatrixLinearSolver();

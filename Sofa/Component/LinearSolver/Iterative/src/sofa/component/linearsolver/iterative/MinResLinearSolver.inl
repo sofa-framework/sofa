@@ -164,7 +164,7 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             alpha = v.dot( y );	// alphak
             y.peq( *r2, -alpha/beta ); // y += -a/b * r2
 
-            std::swap( r1, r2 ); // save a copy by swaping pointers
+            std::swap( r1, r2 ); // save a copy by swapping pointers
 
             oldb = beta; //oldb = betak
             beta = y.dot( y );
