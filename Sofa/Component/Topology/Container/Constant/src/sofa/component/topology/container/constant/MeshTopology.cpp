@@ -552,11 +552,11 @@ void MeshTopology::init()
 
 void MeshTopology::computeCrossElementBuffers()
 {
-    const auto hexahedra = sofa::helper::getReadAccessor(seqHexahedra);
-    const auto tetrahedra = sofa::helper::getReadAccessor(seqTetrahedra);
-    const auto quads = sofa::helper::getReadAccessor(seqQuads);
-    const auto triangles = sofa::helper::getReadAccessor(seqTriangles);
-    const auto edges = sofa::helper::getReadAccessor(seqEdges);
+    const auto hexahedra = sofa::helper::getReadAccessor(d_seqHexahedra);
+    const auto tetrahedra = sofa::helper::getReadAccessor(d_seqTetrahedra);
+    const auto quads = sofa::helper::getReadAccessor(d_seqQuads);
+    const auto triangles = sofa::helper::getReadAccessor(d_seqTriangles);
+    const auto edges = sofa::helper::getReadAccessor(d_seqEdges);
 
     // compute the number of points, if the topology is charged from the scene or if it was loaded from a MeshLoader without any points data.
     if (nbPoints==0)
