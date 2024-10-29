@@ -78,6 +78,10 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , d_drawColor2(initData(&d_drawColor2, sofa::type::RGBAColor(0.0f, 0.5f, 1.0f, 1.0f), "drawColor2", " draw color for faces 2"))
     , d_drawColor3(initData(&d_drawColor3, sofa::type::RGBAColor(0.0f, 1.0f, 1.0f, 1.0f), "drawColor3", " draw color for faces 3"))
     , d_drawColor4(initData(&d_drawColor4, sofa::type::RGBAColor(0.5f, 1.0f, 1.0f, 1.0f), "drawColor4", " draw color for faces 4"))
+    , d_computeVonMisesStress(initData(&d_computeVonMisesStress, false, "computeVonMisesStress", "compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain. Set listening=1"))
+    , d_vonMisesPerElement(initData(&d_vonMisesPerElement, "vonMisesPerElement", "von Mises Stress per element"))
+    , d_vonMisesPerNode(initData(&d_vonMisesPerNode, "vonMisesPerNode", "von Mises Stress per node"))
+    , m_vonMisesColorMap(nullptr)
 {
     this->addAlias(&d_assembling, "assembling");
 
@@ -93,6 +97,14 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     drawColor4.setOriginalData(&d_drawColor4);
 
 
+}
+
+
+template <class DataTypes>
+TetrahedralCorotationalFEMForceField<DataTypes>::~TetrahedralCorotationalFEMForceField()
+{
+    if (m_vonMisesColorMap != nullptr)
+        delete m_vonMisesColorMap;
 }
 
 template <class DataTypes>
@@ -111,6 +123,11 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::init()
     }
 
     reinit(); // compute per-element stiffness matrices and other precomputed values
+
+    if (m_vonMisesColorMap == nullptr)
+    {
+        m_vonMisesColorMap = new helper::ColorMap(256, std::string("Blue to Red"));
+    }
 }
 
 
@@ -189,6 +206,9 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addForce(const core::Mecha
     }
     }
     d_f.endEdit();
+
+    if (d_computeVonMisesStress.getValue())
+        computeVonMisesStress();
 }
 
 template<class DataTypes>
@@ -868,7 +888,19 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initLarge(int i, Index&a, 
 
     computeStrainDisplacement( tetrahedronInf[i].strainDisplacementTransposedMatrix,tetrahedronInf[i].rotatedInitialElements[0], tetrahedronInf[i].rotatedInitialElements[1],tetrahedronInf[i].rotatedInitialElements[2],tetrahedronInf[i].rotatedInitialElements[3] );
 
-    d_tetrahedronInfo.endEdit();
+
+    type::Mat<4, 4, Real> matVert;
+    const core::topology::BaseMeshTopology::Tetrahedron tetra = { a, b, c, d };
+    for (Index k = 0; k < 4; k++) {
+        Index ix = tetra[k];
+        matVert[k][0] = 1.0;
+        for (Index l = 1; l < 4; l++)
+            matVert[k][l] = X0[ix][l - 1];
+    }
+
+    [[maybe_unused]] const bool canInvert = type::invertMatrix(tetrahedronInf[i].elemShapeFun, matVert);
+
+    tetrahedronInfo.endEdit();
 }
 
 template<class DataTypes>
@@ -1192,11 +1224,117 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeBBox(const core::Ex
 
 
 template<class DataTypes>
+void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
+{
+    typename core::behavior::MechanicalState<DataTypes>* mechanicalObject;
+    this->getContext()->get(mechanicalObject);
+    const VecCoord& X = mechanicalObject->read(core::ConstVecCoordId::position())->getValue();
+
+    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetras = this->l_topology->getTetrahedra();
+    const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
+
+    helper::WriteAccessor<Data<type::vector<Real> > > vME = d_vonMisesPerElement;
+    vME.resize(tetras.size());
+
+    for (Size i = 0; i < this->l_topology->getNbTetrahedra(); ++i)
+    {
+        type::Vec<6, Real> vStrain;
+        type::Mat<3, 3, Real> gradU;
+        Transformation R_0_2;
+        Displacement D;
+
+        const auto& tetra = tetras[i];
+        const TetrahedronInformation& tetraInfo = tetrahedronInf[i];
+
+        computeRotationLarge(R_0_2, X, tetra[0], tetra[1], tetra[2]);
+
+        // positions of the deformed and displaced Tetrahedron in its frame
+        type::fixed_array<Coord, 4> deforme;
+        for (int j = 0; j < 4; ++j)
+            deforme[j] = R_0_2 * X[tetra[j]];
+
+        deforme[1][0] -= deforme[0][0];
+        deforme[2][0] -= deforme[0][0];
+        deforme[2][1] -= deforme[0][1];
+        deforme[3] -= deforme[0];
+        
+        // displacement
+        D[0] = 0;
+        D[1] = 0;
+        D[2] = 0;
+        D[3] = tetraInfo.rotatedInitialElements[1][0] - deforme[1][0];
+        D[4] = 0;
+        D[5] = 0;
+        D[6] = tetraInfo.rotatedInitialElements[2][0] - deforme[2][0];
+        D[7] = tetraInfo.rotatedInitialElements[2][1] - deforme[2][1];
+        D[8] = 0;
+        D[9] = tetraInfo.rotatedInitialElements[3][0] - deforme[3][0];
+        D[10] = tetraInfo.rotatedInitialElements[3][1] - deforme[3][1];
+        D[11] = tetraInfo.rotatedInitialElements[3][2] - deforme[3][2];
+
+        const type::Mat<4, 4, Real>& shf = tetraInfo.elemShapeFun;
+
+        /// compute gradU
+        for (Index k = 0; k < 3; k++) {
+            for (Index l = 0; l < 3; l++) {
+                gradU[k][l] = 0.0;
+                for (Index m = 0; m < 4; m++)
+                    gradU[k][l] += shf[l + 1][m] * D[3 * m + k];
+            }
+        }
+
+        type::Mat<3, 3, Real> strain = Real(0.5) * (gradU + gradU.transposed());
+
+        for (Index j = 0; j < 3; j++)
+            vStrain[j] = strain[j][j];
+        vStrain[3] = strain[1][2];
+        vStrain[4] = strain[0][2];
+        vStrain[5] = strain[0][1];
+
+        Real lambda = tetraInfo.materialMatrix[0][1];
+        Real mu = tetraInfo.materialMatrix[3][3];
+
+        /// stress
+        type::VecNoInit<6, Real> s; // VoigtTensor
+
+        Real traceStrain = 0.0;
+        for (Index k = 0; k < 3; k++) {
+            traceStrain += vStrain[k];
+            s[k] = vStrain[k] * 2 * mu;
+        }
+
+        for (Index k = 3; k < 6; k++)
+            s[k] = vStrain[k] * 2 * mu;
+
+        for (Index k = 0; k < 3; k++)
+            s[k] += lambda * traceStrain;
+
+        vME[i] = helper::rsqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2] - s[0] * s[1] - s[1] * s[2] - s[2] * s[0] + 3 * s[3] * s[3] + 3 * s[4] * s[4] + 3 * s[5] * s[5]);
+        if (vME[i] < 1e-10)
+            vME[i] = 0.0;
+    }
+
+    helper::WriteAccessor<Data<type::vector<Real> > > vMN = d_vonMisesPerNode;
+    vMN.resize(X.size());
+
+    /// compute the values of vonMises stress in nodes
+    for (Index dof = 0; dof < X.size(); dof++) {
+        core::topology::BaseMeshTopology::TetrahedraAroundVertex tetrasAroundDOF = this->l_topology->getTetrahedraAroundVertex(dof);
+
+        vMN[dof] = 0.0;
+        for (size_t at = 0; at < tetrasAroundDOF.size(); at++)
+            vMN[dof] += vME[tetrasAroundDOF[at]];
+        if (!tetrasAroundDOF.empty())
+            vMN[dof] /= Real(tetrasAroundDOF.size());
+    }
+}
+
+
+template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
-    if (!d_drawing.getValue()) return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
@@ -1205,46 +1343,90 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);
 
-
-    std::vector< type::Vec3 > points[4];
-    for(Size i = 0 ; i<this->l_topology->getNbTetrahedra(); ++i)
+    if (d_computeVonMisesStress.getValue())
     {
-        const core::topology::BaseMeshTopology::Tetrahedron t=this->l_topology->getTetrahedron(i);
-
-        const auto& [a, b, c, d] = t.array();
-        Coord center = (x[a]+x[b]+x[c]+x[d])*0.125;
-        Coord pa = (x[a]+center)*(Real)0.666667;
-        Coord pb = (x[b]+center)*(Real)0.666667;
-        Coord pc = (x[c]+center)*(Real)0.666667;
-        Coord pd = (x[d]+center)*(Real)0.666667;
-
-        points[0].push_back(pa);
-        points[0].push_back(pb);
-        points[0].push_back(pc);
-
-        points[1].push_back(pb);
-        points[1].push_back(pc);
-        points[1].push_back(pd);
-
-        points[2].push_back(pc);
-        points[2].push_back(pd);
-        points[2].push_back(pa);
-
-        points[3].push_back(pd);
-        points[3].push_back(pa);
-        points[3].push_back(pb);
+        Real minVM = (Real)1e20, maxVM = (Real)-1e20;
+        Real minVMN = (Real)1e20, maxVMN = (Real)-1e20;
+        helper::ReadAccessor<Data<type::vector<Real> > > vM = d_vonMisesPerElement;
+        helper::ReadAccessor<Data<type::vector<Real> > > vMN = d_vonMisesPerNode;
+        
+        if (m_vonMisesColorMap == nullptr)
+            return;
+        
+        for (size_t i = 0; i < vM.size(); i++)
+        {
+            minVM = (vM[i] < minVM) ? vM[i] : minVM;
+            maxVM = (vM[i] > maxVM) ? vM[i] : maxVM;
+        }
+        if (maxVM < prevMaxStress)
+        {
+            maxVM = prevMaxStress;
+        }
+        for (size_t i = 0; i < vMN.size(); i++)
+        {
+            minVMN = (vMN[i] < minVMN) ? vMN[i] : minVMN;
+            maxVMN = (vMN[i] > maxVMN) ? vMN[i] : maxVMN;
+        }
+        
+        // Draw nodes (if node option enabled)
+        if (vMN.size() == x.size())
+        {
+            std::vector<sofa::type::RGBAColor> nodeColors(x.size());
+            std::vector<type::Vec3> pts(x.size());
+            helper::ColorMap::evaluator<Real> evalColor = m_vonMisesColorMap->getEvaluator(minVMN, maxVMN);
+            for (size_t nd = 0; nd < x.size(); nd++) {
+                pts[nd] = x[nd];
+                nodeColors[nd] = evalColor(vMN[nd]);
+            }
+            vparams->drawTool()->drawPoints(pts, 10, nodeColors);
+        }
     }
+    
+    if (d_drawing.getValue())
+    {
+        const sofa::Size nbrTetra = this->l_topology->getNbTetrahedra();
+        std::vector< type::Vec3 > points[4];
+        points[0].reserve(nbrTetra * 3);
+        points[1].reserve(nbrTetra * 3);
+        points[2].reserve(nbrTetra * 3);
+        points[3].reserve(nbrTetra * 3);
 
-    vparams->drawTool()->drawTriangles(points[0], d_drawColor1.getValue());
-    vparams->drawTool()->drawTriangles(points[1], d_drawColor2.getValue());
-    vparams->drawTool()->drawTriangles(points[2], d_drawColor3.getValue());
-    vparams->drawTool()->drawTriangles(points[3], d_drawColor4.getValue());
+        for(Size i = 0 ; i< nbrTetra; ++i)
+        {
+            const core::topology::BaseMeshTopology::Tetrahedron t=this->l_topology->getTetrahedron(i);
 
+            const auto& [a, b, c, d] = t.array();
+            Coord center = (x[a] + x[b] + x[c] + x[d]) * 0.125;
+            Coord pa = (x[a] + center) * (Real)0.666667;
+            Coord pb = (x[b] + center) * (Real)0.666667;
+            Coord pc = (x[c] + center) * (Real)0.666667;
+            Coord pd = (x[d] + center) * (Real)0.666667;
+
+            points[0].push_back(pa);
+            points[0].push_back(pb);
+            points[0].push_back(pc);
+
+            points[1].push_back(pb);
+            points[1].push_back(pc);
+            points[1].push_back(pd);
+
+            points[2].push_back(pc);
+            points[2].push_back(pd);
+            points[2].push_back(pa);
+
+            points[3].push_back(pd);
+            points[3].push_back(pa);
+            points[3].push_back(pb);
+        }
+
+        vparams->drawTool()->drawTriangles(points[0], d_drawColor1.getValue());
+        vparams->drawTool()->drawTriangles(points[1], d_drawColor2.getValue());
+        vparams->drawTool()->drawTriangles(points[2], d_drawColor3.getValue());
+        vparams->drawTool()->drawTriangles(points[3], d_drawColor4.getValue());
+    }
+    
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,false);
-
-
-
 }
 
 
