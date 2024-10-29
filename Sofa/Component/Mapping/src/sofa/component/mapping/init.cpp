@@ -54,7 +54,6 @@ const char* getModuleVersion()
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjectsFromPlugin("Sofa.Component.Mapping.Linear");
-    factory->registerObjectsFromPlugin("Sofa.Component.Mapping.MappedMatrix");
     factory->registerObjectsFromPlugin("Sofa.Component.Mapping.NonLinear");
 }
 
