@@ -74,5 +74,30 @@ static PointID getUniqueId(PointID ancestor0, PointID ancestor1)
     return uniqID;
 }
 
+static PointID getUniqueId(PointID ancestor0, PointID ancestor1, PointID ancestor2)
+{
+    PointID uniqID;
+    if (ancestor0 > ancestor1) 
+    {
+        if (ancestor2 > ancestor0)
+            uniqID = 1e12 * ancestor2 + 1e6 * ancestor0 + ancestor1;
+        else if (ancestor2 < ancestor1)
+            uniqID = 1e12 * ancestor0 + 1e6 * ancestor1 + ancestor2;
+        else
+            uniqID = 1e12 * ancestor0 + 1e6 * ancestor2 + ancestor1;
+    }
+    else // ancestor1 > ancestor0
+    {
+        if (ancestor2 > ancestor1)
+            uniqID = 1e12 * ancestor2 + 1e6 * ancestor1 + ancestor0;
+        else if (ancestor2 < ancestor0)
+            uniqID = 1e12 * ancestor1 + 1e6 * ancestor0 + ancestor2;
+        else
+            uniqID = 1e12 * ancestor1 + 1e6 * ancestor2 + ancestor0;
+    }
+
+    return uniqID;
+}
+
 
 } //namespace sofa::component::topology::container::dynamic
