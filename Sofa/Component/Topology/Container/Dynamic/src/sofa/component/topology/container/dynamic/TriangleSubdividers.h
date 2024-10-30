@@ -80,8 +80,17 @@ public:
         return false;
     }
 
+    /// Method to add a new @sa PointToAdd into this Triangle Subdivider
     void addPoint(PointToAdd* pTA);
+
+    /// Return the index of the triangle, in the TopologyContainer, to split
+    const TriangleID getTriangleIdToSplit() { return m_triangleId; }
+
+    /// Getter to the list of new @sa TriangleToAdd* created by this Triangle subdivider
     const type::vector<TriangleToAdd*>& getTrianglesToAdd() { return m_trianglesToAdd; }
+    
+    /// Getter to the list of new @sa PointToAdd* created by this Triangle subdivider
+    const type::vector<PointToAdd*>& getPointsToAdd() { return m_points; }
 
 protected:
     PointID localVertexId(PointID vertexIndex);
