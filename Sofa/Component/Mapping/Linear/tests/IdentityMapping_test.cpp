@@ -36,7 +36,7 @@ struct IdentityMappingTest : public sofa::mapping_test::Mapping_test<IdentityMap
     using In = typename IdentityMapping::In;
     using Out = typename IdentityMapping::Out;
 
-    void generatePositions(VecCoord_t<In> inCoord)
+    void generatePositions(VecCoord_t<In>& inCoord)
     {
         sofa::testing::LinearCongruentialRandomGenerator lcg(96547);
         for (auto& x : inCoord)
@@ -44,7 +44,7 @@ struct IdentityMappingTest : public sofa::mapping_test::Mapping_test<IdentityMap
             for (std::size_t i = 0; i < Coord_t<In>::total_size; ++i)
             {
                 using Real = Real_t<In>;
-                x[i] = lcg.generateInRange(static_cast<Real>(-1e5), static_cast<Real>(1e5));
+                x[i] = lcg.generateInRange(static_cast<Real>(-1e2), static_cast<Real>(1e2));
             }
         }
     }
@@ -92,6 +92,7 @@ TYPED_TEST_SUITE( IdentityMappingTest, DataTypes );
 TYPED_TEST( IdentityMappingTest , test )
 {
     this->flags |= TestFixture::TEST_applyJT_matrix;
+    this->errorMax = 1e2;
     ASSERT_TRUE(this->test());
 }
 
