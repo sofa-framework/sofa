@@ -236,24 +236,19 @@ std::map<std::string, std::string> Utils::readBasicIniFile(const std::string& pa
 // no standard/portable way
 const std::string& Utils::getUserHomeDirectory()
 {
-
     auto computeUserHomeDirectory = []()
     {
-// Windows: ${HOME}
-#ifdef WIN32
-        std::wstring wresult;
-        wchar_t* path = nullptr;
-        const auto hr = SHGetKnownFolderPath(FOLDERID_Home, 0, nullptr, &path);
-        if (SUCCEEDED(hr))
+#ifdef WIN32 // Windows: ${HOME}
+        const char* homeDir;
+
+        // if USERPROFILE is defined
+        if ((homeDir = std::getenv("USERPROFILE")) == nullptr)
         {
-            wresult = std::wstring(path);
-        }
-        if (path)
-        {
-            CoTaskMemFree(path);
+            // else system calls are used
+            homeDir = getpwuid(getuid())->pw_dir;
         }
 
-        return Utils::narrowString(wresult);
+        return std::string(homeDir);
 
 #elif defined(__APPLE__) // macOS : ${HOME}/Library/Application Support
        // https://stackoverflow.com/questions/5123361/finding-library-application-support-from-c
@@ -319,8 +314,7 @@ const std::string& Utils::getUserLocalDirectory()
 
     auto computeUserLocalDirectory = []()
     {
-// Windows: "LocalAppData" directory i.e ${HOME}\AppData\Local
-#ifdef WIN32
+#ifdef WIN32 // Windows: "LocalAppData" directory i.e ${HOME}\AppData\Local
         std::wstring wresult;
         wchar_t* path = nullptr;
         const auto hr = SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &path);
@@ -334,7 +328,6 @@ const std::string& Utils::getUserLocalDirectory()
         }
 
         return Utils::narrowString(wresult);
-
 #elif defined(__APPLE__) // macOS : ${HOME}/Library/Application Support
         return getUserHomeDirectory();
 #else // Linux: either ${XDG_CONFIG_HOME} if defined, or ${HOME}/.config (should be equivalent)
