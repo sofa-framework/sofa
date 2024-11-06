@@ -60,7 +60,8 @@ struct DistanceMultiMappingTest : public MultiMapping_test<_DistanceMultiMapping
         VecCoord_t<Out> outcoords(1);
         if (computeDistance)
         {
-            Out::set( outcoords[0], std::sqrt(14.), 0.,0.);
+            const auto expectedDistance = (In::getCPos(incoords[1][0]) - In::getCPos(incoords[0][0])).norm();
+            Out::set( outcoords[0], expectedDistance, 0.,0.);
         }
         else
         {
