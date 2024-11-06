@@ -189,31 +189,43 @@ public:
     template<class T>
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        const std::string attributeName {"mstate"};
-        std::string mstateLink = arg->getAttribute(attributeName,"");
         if (context)
         {
-            if (mstateLink.empty())
+            if (arg)
             {
-                if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+                static const std::string attributeName {"mstate"};
+                const std::string mstateLink = arg->getAttribute(attributeName,"");
+                if (mstateLink.empty())
                 {
-                    arg->logError("Since the attribute '" + attributeName + "' has not been specified, a mechanical state "
-                        "with the datatype '" + DataTypes::Name() + "' has been searched in the current context, but not found.");
-                    return false;
+                    if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+                    {
+                        arg->logError("Since the attribute '" + attributeName + "' has not been specified, a mechanical state "
+                            "with the datatype '" + DataTypes::Name() + "' has been searched in the current context, but not found.");
+                        return false;
+                    }
+                }
+                else
+                {
+                    MechanicalState<DataTypes>* mstate = nullptr;
+                    context->findLinkDest(mstate, mstateLink, nullptr);
+                    if (!mstate)
+                    {
+                        arg->logError("Data attribute '" + attributeName + "' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
+                        return false;
+                    }
                 }
             }
             else
             {
-                MechanicalState<DataTypes>* mstate = nullptr;
-                context->findLinkDest(mstate, mstateLink, nullptr);
-                if (!mstate)
+                if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
                 {
-                    arg->logError("Data attribute '" + attributeName + "' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
                     return false;
                 }
             }
+
+            return BaseObject::canCreate(obj, context, arg);
         }
-        return BaseObject::canCreate(obj, context, arg);
+        return false;
     }
 
     template<class T>
