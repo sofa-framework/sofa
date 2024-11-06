@@ -812,6 +812,11 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"DefaultContactManager", Dealiased("v24.12","CollisionResponse")},
     {"RuleBasedCollisionResponse", Dealiased("v24.12","RuleBasedContactManager")},
     {"SurfaceIdentityMapping", Dealiased("v24.12","SubsetMapping")},
+    {"AddFrameButtonSetting", Dealiased("v24.12","AddFrameButton")},
+    {"StartNavigationButtonSetting", Dealiased("v24.12","AddRecordedCameraButton")},
+    {"AddRecordedCameraButtonSetting", Dealiased("v24.12","StartNavigationButton")},
+    {"AttachBodyButtonSetting", Dealiased("v24.12","AttachBodyButton")},
+    {"FixPickedParticleButtonSetting", Dealiased("v24.12","FixPickedParticleButton")},
 };
 
 } // namespace sofa::helper::lifecycle

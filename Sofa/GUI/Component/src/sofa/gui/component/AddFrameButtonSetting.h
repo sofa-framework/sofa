@@ -34,7 +34,7 @@ class SOFA_GUI_COMPONENT_API AddFrameButtonSetting: public sofa::component::sett
 public:
     SOFA_CLASS(AddFrameButtonSetting, sofa::component::setting::MouseButtonSetting);
 protected:
-    AddFrameButtonSetting();
+    AddFrameButtonSetting() = default;
 public:
     std::string getOperationType() override {return "AddFrame";}
 };

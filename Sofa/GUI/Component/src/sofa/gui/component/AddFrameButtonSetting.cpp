@@ -27,13 +27,10 @@
 namespace sofa::gui::component
 {
 
-int AddFrameButtonSettingClass = core::RegisterObject("Add a frame to a skinned model")
-        .add< AddFrameButtonSetting >()
-        .addAlias("AddFrameButton")
-        ;
-
-AddFrameButtonSetting::AddFrameButtonSetting()
+void registerAddFrameButtonSetting(sofa::core::ObjectFactory* factory)
 {
+    factory->registerObjects(core::ObjectRegistrationData("Add a frame to a skinned model.")
+        .add< AddFrameButtonSetting >());
 }
 
 } // namespace sofa::gui::component

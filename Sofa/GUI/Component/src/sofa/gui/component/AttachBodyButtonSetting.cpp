@@ -27,10 +27,12 @@
 namespace sofa::gui::component
 {
 
-int AttachBodyButtonSettingClass = core::RegisterObject("Attach Body Button configuration")
-        .add< AttachBodyButtonSetting >()
-        .addAlias("AttachBodyButton")
-        ;
+
+void registerAttachBodyButtonSetting(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Attach Body Button configuration.")
+        .add< AttachBodyButtonSetting >());
+}
 
 AttachBodyButtonSetting::AttachBodyButtonSetting():
     d_stiffness(initData(&d_stiffness, 1000.0_sreal, "stiffness", "Stiffness of the spring to attach a particule"))
