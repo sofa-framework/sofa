@@ -35,9 +35,11 @@ namespace sofa::core::objectmodel {
 namespace sofa::simulation
 {
 
-int DefaultVisualManagerLoopClass = core::RegisterObject("The simplest Visual Loop Manager, created by default when user do not put on scene")
-        .add< DefaultVisualManagerLoop >()
-        ;
+void registerDefaultVisualManagerLoop(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("The simplest Visual Loop Manager, created by default when user does not put one in the scene.")
+        .add< DefaultVisualManagerLoop >());
+}
 
 DefaultVisualManagerLoop::DefaultVisualManagerLoop() :
     l_node(initLink("targetNode","Link to the scene's node where the rendering will take place"))
