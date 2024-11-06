@@ -26,9 +26,11 @@
 namespace sofa::gl::component::rendering3d
 {
 
-int OglSceneFrameClass = core::RegisterObject("Display a frame at the corner of the scene view")
-        .add< OglSceneFrame >()
-        ;
+void registerOglSceneFrame(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Display a frame at the corner of the scene view.")
+        .add< OglSceneFrame >());
+}
 
 using namespace sofa::defaulttype;
 

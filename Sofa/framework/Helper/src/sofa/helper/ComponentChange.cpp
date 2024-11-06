@@ -817,6 +817,8 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"AddRecordedCameraButtonSetting", Dealiased("v24.12","StartNavigationButton")},
     {"AttachBodyButtonSetting", Dealiased("v24.12","AttachBodyButton")},
     {"FixPickedParticleButtonSetting", Dealiased("v24.12","FixPickedParticleButton")},
+    {"OglColorMap", Dealiased("v24.12","ColorMap")},
+    {"PointSplatModel", Dealiased("v24.12","PointSplat")},
 };
 
 } // namespace sofa::helper::lifecycle

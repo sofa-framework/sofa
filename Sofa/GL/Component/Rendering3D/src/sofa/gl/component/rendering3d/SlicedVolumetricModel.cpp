@@ -44,9 +44,11 @@
 namespace sofa::gl::component::rendering3d
 {
 
-int SlicedVolumetricModelClass = core::RegisterObject("A simple visualization for a cloud of points.")
-        .add< SlicedVolumetricModel >()
-        ;
+void registerSlicedVolumetricModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Sliced visualization for a volumetric model defined with hexahedra.")
+        .add< SlicedVolumetricModel >());
+}
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;

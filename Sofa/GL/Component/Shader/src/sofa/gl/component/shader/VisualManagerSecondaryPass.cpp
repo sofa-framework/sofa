@@ -30,10 +30,11 @@ using namespace sofa::gl;
 using namespace simulation;
 using namespace core::visual;
 
-//Register LightManager in the Object Factory
-int VisualManagerSecondaryPassClass = core::RegisterObject("VisualManagerSecondaryPass")
-        .add< VisualManagerSecondaryPass >()
-        ;
+void registerVisualManagerSecondaryPass(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Chain different rendering pass, for compositing.")
+        .add< VisualManagerSecondaryPass >());
+}
 
 VisualManagerSecondaryPass::VisualManagerSecondaryPass()
     : input_tags(initData( &input_tags, "input_tags", "list of input passes used as source textures"))
