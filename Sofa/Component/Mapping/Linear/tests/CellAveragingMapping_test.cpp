@@ -28,6 +28,65 @@
 namespace sofa
 {
 
+
+constexpr SReal small_step = 1e-6;
+
+/****
+ *
+ *
+ *  3 ___________ 2
+ *    |  1    / |
+ *    |    /    |
+ *    | /    0  |
+ *  0 ----------- 1
+ */
+TEST(CellAveragingMapping, firstDerivativeTwoConnectedTriangles)
+{
+    static constexpr sofa::type::fixed_array<SReal, 2> triangleValues{12.3218, -8.94317};
+
+    static constexpr auto computeCellAverage =
+        [](const sofa::type::fixed_array<SReal, 2>& values,
+            sofa::Index vertexId)
+    {
+        if (vertexId == 0 || vertexId == 2)
+        {
+            return (values[0] + values[1]) / 2;
+        }
+        if (vertexId == 1)
+        {
+            return values[0];
+        }
+        return values[1];
+    };
+
+    const sofa::type::Mat<4, 2, SReal> derivative {
+        {1_sreal / 2, 1_sreal / 2},
+        {1_sreal, 0},
+        {1_sreal / 2, 1_sreal / 2},
+        {0, 1_sreal}
+    };
+
+    for (unsigned int v = 0; v < 4; ++v)
+    {
+        for (unsigned int t = 0; t < triangleValues.size(); ++t)
+        {
+            auto perturbation = triangleValues;
+            perturbation[t] += small_step;
+
+            const auto averagePlus = computeCellAverage(perturbation, v);
+
+            perturbation = triangleValues;
+            perturbation[t] -= small_step;
+
+            const auto averageMinus = computeCellAverage(perturbation, v);
+
+            const SReal centralDifference = (averagePlus - averageMinus) / (2 * small_step);
+
+            EXPECT_NEAR(centralDifference, derivative[v][t], 1e-9) << "v = " << v << ", t = " << t;
+        }
+    }
+}
+
 using component::mapping::linear::CellAveragingMapping;
 
 template <typename CellAveragingMapping>
@@ -107,7 +166,6 @@ TYPED_TEST( CellAveragingMappingTest , oneTriangle )
 TYPED_TEST( CellAveragingMappingTest , twoConnectedTriangles )
 {
     this->flags |= TestFixture::TEST_applyJT_matrix;
-    this->errorMax = 1000;
     ASSERT_TRUE(this->twoConnectedTriangles());
 }
 }
