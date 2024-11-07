@@ -561,7 +561,7 @@ protected:
         if (diff > errorThreshold)
         {
             ADD_FAILURE() <<
-                "applyJT is not consistent with applyJT, difference should be "
+                "getJs is not consistent with applyJT, difference should be "
                 "less than " << errorThreshold << " (" << diff << ")" << std::endl
                 << "computedForceIn = " << computedForceIn << std::endl
                 << "expectedForceIn = " << expectedForceIn << std::endl;
@@ -584,7 +584,7 @@ protected:
         if (diff > errorThreshold)
         {
             ADD_FAILURE() <<
-                "getJs() is not consistent with applyJ, difference should be "
+                "getJs is not consistent with applyJ, difference should be "
                 "less than " << errorThreshold << " (" << diff << ")" << std::endl
                 << "velocityIn = " << velocityIn << std::endl
                 << "computedVelocityOut = " << computedVelocityOut << std::endl
