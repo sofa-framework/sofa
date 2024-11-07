@@ -335,24 +335,8 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
         if( isTestExecuted(TEST_applyDJT) )
         {
-            //we test the function applyDJT in two different contexts because
-            //the implementation usually depends on the context
-            if (this->vectorMaxDiff(dfp_withoutUpdateK,fp12) > errorThreshold * errorFactorDJ)
-            {
-                succeed = false;
-                ADD_FAILURE() << "applyDJT (no call to updateK) test failed" << std::endl
-                    << "dfp    = " << dfp_withoutUpdateK << std::endl
-                    << "fp2-fp = " << fp12 << std::endl
-                    << "error threshold = " << errorThreshold * errorFactorDJ << std::endl;
-            }
-            if (this->vectorMaxDiff(dfp_withUpdateK, fp12) > errorThreshold * errorFactorDJ)
-            {
-                succeed = false;
-                ADD_FAILURE() << "applyDJT (after call to updateK) test failed" << std::endl
-                    << "dfp    = " << dfp_withUpdateK << std::endl
-                    << "fp2-fp = " << fp12 << std::endl
-                    << "error threshold = " << errorThreshold * errorFactorDJ << std::endl;
-            }
+            succeed &= checkApplyDJT(dfp_withoutUpdateK, fp12, errorThreshold, false);
+            succeed &= checkApplyDJT(dfp_withUpdateK, fp12, errorThreshold, true);
         }
 
         if( isTestExecuted(TEST_getK))
@@ -595,6 +579,20 @@ protected:
         }
         mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         return inDofs->readForces().ref();
+    }
+
+    [[nodiscard]] bool checkApplyDJT(const VecDeriv_t<In>& dfp, const VecDeriv_t<In>& fp12, Real_t<In> errorThreshold, bool updateK)
+    {
+        if (this->vectorMaxDiff(dfp, fp12) > errorThreshold * errorFactorDJ)
+        {
+            const std::string updateKString = updateK ? "after call to updateK" : "no call to updateK";
+            ADD_FAILURE() << "applyDJT (" << updateKString << ") test failed" << std::endl
+                << "dfp    = " << dfp << std::endl
+                << "fp2-fp = " << fp12 << std::endl
+                << "error threshold = " << errorThreshold * errorFactorDJ << std::endl;
+            return false;
+        }
+        return true;
     }
 
     VecCoord_t<In> computePerturbedPositions(const std::size_t sizeIn, const VecDeriv_t<In> velocityIn)
