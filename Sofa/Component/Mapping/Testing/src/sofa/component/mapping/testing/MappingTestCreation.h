@@ -316,38 +316,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
         if( isTestExecuted(TEST_getK))
         {
-            VecDeriv_t<In> Kv(sizeIn);
-
-            const linearalgebra::BaseMatrix* bk = mapping->getK();
-
-            // K can be null or empty for linear mappings
-            // still performing the test with a null Kv vector to check if the mapping is really linear
-
-            if( bk != nullptr )
-            {
-                typedef linearalgebra::EigenSparseMatrix<In,In> EigenSparseKMatrix;
-                const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
-                if( K == nullptr )
-                {
-                    succeed = false;
-                    ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
-                    // TODO perform a slow conversion with a big warning rather than a failure?
-                }
-
-                if( K->compressedMatrix.nonZeros() )
-                {
-                    K->mult(Kv,velocityIn);
-                }
-            }
-
-            // check that K.vp = dfp
-            if (this->vectorMaxDiff(Kv, forceChange) > errorThreshold * errorFactorDJ)
-            {
-                succeed = false;
-                ADD_FAILURE() << "K test failed, difference should be less than " << errorThreshold*errorFactorDJ  << std::endl
-                              << "Kv    = " << Kv << std::endl
-                              << "dfp = " << forceChange << std::endl;
-            }
+            succeed &= testGetK(sizeIn, velocityIn, forceChange, errorThreshold);
         }
 
         if( isTestExecuted(TEST_buildGeometricStiffnessMatrix) )
@@ -686,6 +655,47 @@ protected:
                 " should be less than  " << errorThreshold << std::endl
                 << "position change = " << dxOut << std::endl
                 << "expectedVelocityOut = " << expectedVelocityOut << std::endl;
+            return false;
+        }
+
+        return true;
+    }
+
+    bool testGetK(const std::size_t& sizeIn,
+        const VecDeriv_t<In>& velocityIn,
+        const VecDeriv_t<In>& forceChange,
+        Real_t<In> errorThreshold)
+    {
+        VecDeriv_t<In> Kv(sizeIn);
+
+        const linearalgebra::BaseMatrix* bk = mapping->getK();
+
+        // K can be null or empty for linear mappings
+        // still performing the test with a null Kv vector to check if the mapping is really linear
+
+        if( bk != nullptr )
+        {
+            typedef linearalgebra::EigenSparseMatrix<In,In> EigenSparseKMatrix;
+            const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
+            if( K == nullptr )
+            {
+                ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
+                // TODO perform a slow conversion with a big warning rather than a failure?
+                return false;
+            }
+
+            if( K->compressedMatrix.nonZeros() )
+            {
+                K->mult(Kv,velocityIn);
+            }
+        }
+
+        // check that K.vp = dfp
+        if (this->vectorMaxDiff(Kv, forceChange) > errorThreshold * errorFactorDJ)
+        {
+            ADD_FAILURE() << "K test failed, difference should be less than " << errorThreshold*errorFactorDJ  << std::endl
+                          << "Kv    = " << Kv << std::endl
+                          << "dfp = " << forceChange << std::endl;
             return false;
         }
 
