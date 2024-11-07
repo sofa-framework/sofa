@@ -171,24 +171,6 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         
     }
 
-    VecDeriv_t<In> computeForceChange(core::MechanicalParams mparams, const std::size_t sizeIn, VecDeriv_t<Out> forceOut, VecDeriv_t<In> forceIn)
-    {
-        VecDeriv_t<In> forceChange;
-        forceChange.reserve(sizeIn);
-
-        // apply has been called, therefore parent force must be updated
-        // based on the same child forces
-        VecDeriv_t<In> forceIn2;
-        computeForceInFromForceOut(mparams, forceIn2, preTreatment(forceOut));
-
-        for (unsigned i = 0; i < sizeIn; ++i)
-        {
-            forceChange.push_back(forceIn2[i] - forceIn[i]);
-        }
-
-        return forceChange;
-    }
-
     /**
      * Test the mapping using the given values and small changes.
      * Return true in case of success, if all errors are below maxError*epsilon.
@@ -615,6 +597,24 @@ protected:
         }
 
         return true;
+    }
+
+    VecDeriv_t<In> computeForceChange(core::MechanicalParams mparams, const std::size_t sizeIn, VecDeriv_t<Out> forceOut, VecDeriv_t<In> forceIn)
+    {
+        VecDeriv_t<In> forceChange;
+        forceChange.reserve(sizeIn);
+
+        // apply has been called, therefore parent force must be updated
+        // based on the same child forces
+        VecDeriv_t<In> forceIn2;
+        computeForceInFromForceOut(mparams, forceIn2, preTreatment(forceOut));
+
+        for (unsigned i = 0; i < sizeIn; ++i)
+        {
+            forceChange.push_back(forceIn2[i] - forceIn[i]);
+        }
+
+        return forceChange;
     }
 
     bool testGetK(const std::size_t& sizeIn,
