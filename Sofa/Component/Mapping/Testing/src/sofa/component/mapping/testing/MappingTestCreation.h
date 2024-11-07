@@ -179,10 +179,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         // apply has been called, therefore parent force must be updated
         // based on the same child forces
         VecDeriv_t<In> forceIn2;
-        computeForceInFromForceOut(mparams, forceIn2, forceOut, [this](const VecDeriv_t<Out>& f)
-        {
-            return preTreatment(f);
-        });
+        computeForceInFromForceOut(mparams, forceIn2, preTreatment(forceOut));
 
         for (unsigned i = 0; i < sizeIn; ++i)
         {
@@ -238,10 +235,8 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         // set random child forces and propagate them to the parent
         VecDeriv_t<Out> forceOut = generateRandomVecDeriv<Out>(sizeOut, 0.1, 1.);
 
-        static constexpr auto identity = [](const VecDeriv_t<Out>& f){ return f;};
-
         VecDeriv_t<In> forceIn;
-        computeForceInFromForceOut(mparams, forceIn, forceOut, identity);
+        computeForceInFromForceOut(mparams, forceIn, forceOut);
 
         // set small parent velocities and use them to update the child
         const VecDeriv_t<In> velocityIn = generateRandomVecDeriv<In>(sizeIn,
@@ -295,10 +290,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
         // compute parent forces from pre-treated child forces (in most cases, the pre-treatment does nothing)
         // the pre-treatment can be useful to be able to compute 2 comparable results of applyJT with a small displacement to test applyDJT
-        computeForceInFromForceOut(mparams, forceIn, forceOut, [this](const VecDeriv_t<Out>& f)
-        {
-            return preTreatment(f);
-        });
+        computeForceInFromForceOut(mparams, forceIn, preTreatment(forceOut));
 
         ///////////////////////////////
 
@@ -462,12 +454,11 @@ protected:
         return randomForce;
     }
 
-    template<class UnaryOp>
-    void computeForceInFromForceOut(core::MechanicalParams mparams, VecDeriv_t<In>& forceIn, const VecDeriv_t<Out>& forceOut, UnaryOp unaryOp)
+    void computeForceInFromForceOut(core::MechanicalParams mparams, VecDeriv_t<In>& forceIn, const VecDeriv_t<Out>& forceOut)
     {
         inDofs->writeForces()->fill(Deriv_t<In>());  // reset parent forces before accumulating child forces
 
-        outDofs->writeForces().wref() = unaryOp(forceOut);
+        outDofs->writeForces().wref() = forceOut;
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         forceIn = inDofs->readForces().ref();
     }
