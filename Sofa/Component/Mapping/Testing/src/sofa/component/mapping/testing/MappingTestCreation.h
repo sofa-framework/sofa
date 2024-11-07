@@ -273,7 +273,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         }
 
         // compute parent forces from pre-treated child forces (in most cases, the pre-treatment does nothing)
-        // the pre-treatement can be useful to be able to compute 2 comparable results of applyJT with a small displacement to test applyDJT
+        // the pre-treatment can be useful to be able to compute 2 comparable results of applyJT with a small displacement to test applyDJT
         computeForceInFromForceOut(mparams, forceIn, forceOut, [this](const VecDeriv_t<Out>& f)
         {
             return preTreatment(f);
@@ -286,22 +286,23 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         succeed &= testApplyJonPosition(mparams, positionOut, velocityOut, errorThreshold);
 
         // update parent force based on the same child forces
-        inDofs->writeForces()->fill(Deriv_t<In>());
-        outDofs->writeForces().wref() = preTreatment(forceOut);
-        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        const VecDeriv_t<In>& forceIn2 = inDofs->readForces().ref();
+        VecDeriv_t<In> forceIn2;
+        computeForceInFromForceOut(mparams, forceIn2, forceOut, [this](const VecDeriv_t<Out>& f)
+        {
+            return preTreatment(f);
+        });
 
-        VecDeriv_t<In> fp12(sizeIn);
+        VecDeriv_t<In> forceChange(sizeIn);
         for (unsigned i = 0; i < sizeIn; i++)
         {
-            fp12[i] = forceIn2[i] - forceIn[i]; // fp2 - fp
+            forceChange[i] = forceIn2[i] - forceIn[i]; // fp2 - fp
         }
 
 
         if( isTestExecuted(TEST_applyDJT) )
         {
-            succeed &= checkApplyDJT(dfp_withoutUpdateK, fp12, errorThreshold, false);
-            succeed &= checkApplyDJT(dfp_withUpdateK, fp12, errorThreshold, true);
+            succeed &= checkApplyDJT(dfp_withoutUpdateK, forceChange, errorThreshold, false);
+            succeed &= checkApplyDJT(dfp_withUpdateK, forceChange, errorThreshold, true);
         }
 
         if( isTestExecuted(TEST_getK))
@@ -331,12 +332,12 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
             }
 
             // check that K.vp = dfp
-            if (this->vectorMaxDiff(Kv, fp12) > errorThreshold * errorFactorDJ)
+            if (this->vectorMaxDiff(Kv, forceChange) > errorThreshold * errorFactorDJ)
             {
                 succeed = false;
                 ADD_FAILURE() << "K test failed, difference should be less than " << errorThreshold*errorFactorDJ  << std::endl
                               << "Kv    = " << Kv << std::endl
-                              << "dfp = " << fp12 << std::endl;
+                              << "dfp = " << forceChange << std::endl;
             }
         }
 
@@ -371,12 +372,12 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
             }
 
             // check that K.vp = dfp
-            if (this->vectorMaxDiff(Kv,fp12) > errorThreshold*errorFactorDJ )
+            if (this->vectorMaxDiff(Kv,forceChange) > errorThreshold*errorFactorDJ )
             {
                 succeed = false;
                 ADD_FAILURE() << "buildGeometricStiffnessMatrix test failed, difference should be less than " << errorThreshold*errorFactorDJ  << std::endl
                               << "Kv    = " << Kv << std::endl
-                              << "dfp = " << fp12 << std::endl;
+                              << "dfp = " << forceChange << std::endl;
             }
         }
 
