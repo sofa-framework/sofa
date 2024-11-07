@@ -217,8 +217,10 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         // set random child forces and propagate them to the parent
         VecDeriv_t<Out> forceOut = generateRandomVecDeriv<Out>(sizeOut, 0.1, 1.);
 
+        static constexpr auto identity = [](const VecDeriv_t<Out>& f){ return f;};
+
         VecDeriv_t<In> forceIn;
-        computeForceInFromForceOut(mparams, forceIn, forceOut);
+        computeForceInFromForceOut(mparams, forceIn, forceOut, identity);
 
         // set small parent velocities and use them to update the child
         const VecDeriv_t<In> velocityIn = generateRandomVecDeriv<In>(sizeIn,
@@ -272,11 +274,10 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
         // compute parent forces from pre-treated child forces (in most cases, the pre-treatment does nothing)
         // the pre-treatement can be useful to be able to compute 2 comparable results of applyJT with a small displacement to test applyDJT
-        forceIn.fill( Deriv_t<In>() );
-        inDofs->writeForces().wref() = forceIn;
-        outDofs->writeForces().wref() = preTreatment(forceOut);
-        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        forceIn = inDofs->readForces().ref();
+        computeForceInFromForceOut(mparams, forceIn, forceOut, [this](const VecDeriv_t<Out>& f)
+        {
+            return preTreatment(f);
+        });
 
 
 
@@ -539,11 +540,12 @@ protected:
         return randomForce;
     }
 
-    void computeForceInFromForceOut(core::MechanicalParams mparams, VecDeriv_t<In>& forceIn, const VecDeriv_t<Out>& forceOut)
+    template<class UnaryOp>
+    void computeForceInFromForceOut(core::MechanicalParams mparams, VecDeriv_t<In>& forceIn, const VecDeriv_t<Out>& forceOut, UnaryOp unaryOp)
     {
         inDofs->writeForces()->fill(Deriv_t<In>());  // reset parent forces before accumulating child forces
 
-        outDofs->writeForces().wref() = forceOut;
+        outDofs->writeForces().wref() = unaryOp(forceOut);
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         forceIn = inDofs->readForces().ref();
     }
