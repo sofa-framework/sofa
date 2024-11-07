@@ -321,42 +321,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
         if( isTestExecuted(TEST_buildGeometricStiffnessMatrix) )
         {
-            core::GeometricStiffnessMatrix testGeometricStiffness;
-
-            struct GeometricStiffnessAccumulator : core::MappingMatrixAccumulator
-            {
-                void add(sofa::SignedIndex row, sofa::SignedIndex col, float value) override
-                {
-                    assembledMatrix.add(row, col, value);
-                }
-                void add(sofa::SignedIndex row, sofa::SignedIndex col, double value) override
-                {
-                    assembledMatrix.add(row, col, value);
-                }
-
-                linearalgebra::EigenSparseMatrix<In,In> assembledMatrix;
-            } accumulator;
-
-            testGeometricStiffness.setMatrixAccumulator(&accumulator, mapping->getFromModel(), mapping->getFromModel());
-
-            accumulator.assembledMatrix.resize(mapping->getFromModel()->getSize() * In::deriv_total_size, mapping->getFromModel()->getSize() * In::deriv_total_size);
-            mapping->buildGeometricStiffnessMatrix(&testGeometricStiffness);
-            accumulator.assembledMatrix.compress();
-
-            VecDeriv_t<In> Kv(sizeIn);
-            if( accumulator.assembledMatrix.compressedMatrix.nonZeros() )
-            {
-                accumulator.assembledMatrix.mult(Kv,velocityIn);
-            }
-
-            // check that K.vp = dfp
-            if (this->vectorMaxDiff(Kv,forceChange) > errorThreshold*errorFactorDJ )
-            {
-                succeed = false;
-                ADD_FAILURE() << "buildGeometricStiffnessMatrix test failed, difference should be less than " << errorThreshold*errorFactorDJ  << std::endl
-                              << "Kv    = " << Kv << std::endl
-                              << "dfp = " << forceChange << std::endl;
-            }
+            succeed &= testBuildGeometricStiffnessMatrix(sizeIn, velocityIn, forceChange, errorThreshold);
         }
 
         if(!succeed)
@@ -694,6 +659,53 @@ protected:
         if (this->vectorMaxDiff(Kv, forceChange) > errorThreshold * errorFactorDJ)
         {
             ADD_FAILURE() << "K test failed, difference should be less than " << errorThreshold*errorFactorDJ  << std::endl
+                          << "Kv    = " << Kv << std::endl
+                          << "dfp = " << forceChange << std::endl;
+            return false;
+        }
+
+        return true;
+    }
+
+    bool testBuildGeometricStiffnessMatrix(
+        std::size_t sizeIn,
+        const VecDeriv_t<In>& velocityIn,
+        const VecDeriv_t<In>& forceChange,
+        Real_t<In> errorThreshold
+        )
+    {
+        core::GeometricStiffnessMatrix testGeometricStiffness;
+
+        struct GeometricStiffnessAccumulator : core::MappingMatrixAccumulator
+        {
+            void add(sofa::SignedIndex row, sofa::SignedIndex col, float value) override
+            {
+                assembledMatrix.add(row, col, value);
+            }
+            void add(sofa::SignedIndex row, sofa::SignedIndex col, double value) override
+            {
+                assembledMatrix.add(row, col, value);
+            }
+
+            linearalgebra::EigenSparseMatrix<In,In> assembledMatrix;
+        } accumulator;
+
+        testGeometricStiffness.setMatrixAccumulator(&accumulator, mapping->getFromModel(), mapping->getFromModel());
+
+        accumulator.assembledMatrix.resize(mapping->getFromModel()->getSize() * In::deriv_total_size, mapping->getFromModel()->getSize() * In::deriv_total_size);
+        mapping->buildGeometricStiffnessMatrix(&testGeometricStiffness);
+        accumulator.assembledMatrix.compress();
+
+        VecDeriv_t<In> Kv(sizeIn);
+        if( accumulator.assembledMatrix.compressedMatrix.nonZeros() )
+        {
+            accumulator.assembledMatrix.mult(Kv,velocityIn);
+        }
+
+        // check that K.vp = dfp
+        if (this->vectorMaxDiff(Kv,forceChange) > errorThreshold*errorFactorDJ )
+        {
+            ADD_FAILURE() << "buildGeometricStiffnessMatrix test failed, difference should be less than " << errorThreshold*errorFactorDJ  << std::endl
                           << "Kv    = " << Kv << std::endl
                           << "dfp = " << forceChange << std::endl;
             return false;
