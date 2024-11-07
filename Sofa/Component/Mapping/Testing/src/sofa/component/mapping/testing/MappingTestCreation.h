@@ -197,7 +197,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
         const auto errorThreshold = this->epsilon() * errorMax;
 
-        typedef linearalgebra::EigenSparseMatrix<In,Out> EigenSparseMatrix;
+        using EigenSparseMatrix = linearalgebra::EigenSparseMatrix<In, Out>;
 
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
@@ -208,7 +208,6 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
             parentInit, childInit, parentNew, expectedChildNew, errorThreshold,
             mparams);
 
-        /// test applyJ and everything related to Jacobians
         const std::size_t sizeIn = inDofs->getSize();
         const std::size_t sizeOut = outDofs->getSize();
 
@@ -218,7 +217,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         // set random child forces and propagate them to the parent
         VecDeriv_t<Out> forceOut = generateRandomVecDeriv<Out>(sizeOut, 0.1, 1.);
 
-        VecDeriv_t<In> forceIn(sizeIn);
+        VecDeriv_t<In> forceIn;
         computeForceInFromForceOut(mparams, forceIn, forceOut);
 
         // set small parent velocities and use them to update the child
@@ -242,21 +241,16 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         if( isTestExecuted(TEST_getJs) )
         {
             EigenSparseMatrix* J = this->getMatrix<EigenSparseMatrix>(mapping->getJs());
-            VecDeriv_t<Out> Jv(sizeOut);
-            J->mult(Jv, velocityIn);
 
-            // Verification that J*dx is equivalent to calling applyJT
-            VecDeriv_t<In> jfc( (long)sizeIn,Deriv_t<In>());
-            J->addMultTranspose(jfc,forceOut);
-            if (this->vectorMaxDiff(jfc, forceIn) > errorThreshold)
-            {
-                succeed = false;
-                ADD_FAILURE() << "applyJT test failed, difference should be less than " << errorThreshold << " (" << this->vectorMaxDiff(jfc,forceIn) << ")" << std::endl
-                              << "jfc = " << jfc << std::endl<<" fp = " << forceIn << std::endl;
-            }
+            // forceIn has been computed using applyJT
+            // The following tests that forceIn is also the result of applying
+            // the jacobian matrix
+            succeed &= checkJacobianMatrix(J, forceOut, forceIn, errorThreshold);
 
             // ================ test getJs()
             // check that J.vp = vc
+            VecDeriv_t<Out> Jv(sizeOut);
+            J->mult(Jv, velocityIn);
             if (this->vectorMaxDiff(Jv, velocityOut) > errorThreshold)
             {
                 succeed = false;
@@ -616,9 +610,16 @@ protected:
         {
             ADD_FAILURE()<< "Matrix list is nullptr (API for assembly is not implemented)";
         }
+
+        if( matrices->empty() )
+        {
+            ADD_FAILURE()<< "Matrix list is empty";
+            return nullptr;
+        }
+
         if( matrices->size() != 1 )
         {
-            ADD_FAILURE()<< "Matrix list should have size == 1 in simple mappings";
+            ADD_FAILURE()<< "Matrix list should have size == 1 in simple mappings (current size = " << matrices->size() << ")";
         }
         EigenSparseMatrixType* ei = dynamic_cast<EigenSparseMatrixType*>((*matrices)[0] );
         if( ei == nullptr )
@@ -629,6 +630,29 @@ protected:
         return ei;
     }
 
+    bool checkJacobianMatrix(
+        EigenSparseMatrix* jacobianMatrix,
+        const VecDeriv_t<Out>& forceOut,
+        const VecDeriv_t<In>& expectedForceIn,
+        Real_t<In> errorThreshold)
+    {
+        VecDeriv_t<In> computedForceIn(expectedForceIn.size(), Deriv_t<In>());
+
+        //computedForceIn += J^T * forceOut
+        jacobianMatrix->addMultTranspose(computedForceIn, forceOut);
+
+        const auto diff = this->vectorMaxDiff(computedForceIn, expectedForceIn);
+        if (diff > errorThreshold)
+        {
+            ADD_FAILURE() <<
+                "applyJT test failed, difference should be less than " <<
+                errorThreshold << " (" << diff << ")" << std::endl
+                << "computedForceIn = " << computedForceIn << std::endl
+                << "expectedForceIn = " << expectedForceIn << std::endl;
+            return false;
+        }
+        return true;
+    }
 
 
 };
