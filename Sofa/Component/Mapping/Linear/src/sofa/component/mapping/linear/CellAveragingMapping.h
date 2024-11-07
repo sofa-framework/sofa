@@ -23,6 +23,8 @@
 #include <sofa/component/mapping/linear/config.h>
 #include <sofa/component/mapping/linear/LinearMapping.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
+
 
 namespace sofa::component::mapping::linear
 {
@@ -47,10 +49,21 @@ public:
         DataVecDeriv_t<Out>& out,
         const DataVecDeriv_t<In>& in) override;
     void applyJT(const core::MechanicalParams* mparams,
-        DataVecDeriv_t<Out>& out,
-        const DataVecDeriv_t<In>& in) override;
+        DataVecDeriv_t<In>& out,
+        const DataVecDeriv_t<Out>& in) override;
+    void applyJT( const core::ConstraintParams* mparams,
+        DataMatrixDeriv_t<In>& out, const DataMatrixDeriv_t<Out>& in) override;
+
+    const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
     SingleLink<CellAveragingMapping, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
+protected:
+
+    type::vector< linearalgebra::BaseMatrix* > m_Js;
+    linearalgebra::EigenSparseMatrix<TIn, TOut> m_J;
+
+    void buildJMatrix();
 };
 
 
