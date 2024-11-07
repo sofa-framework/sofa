@@ -244,21 +244,13 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
             // forceIn has been computed using applyJT
             // The following tests that forceIn is also the result of applying
-            // the jacobian matrix
-            succeed &= checkJacobianMatrix(J, forceOut, forceIn, errorThreshold);
+            // the transposed jacobian matrix
+            succeed &= checkJacobianMatrixTranspose(J, forceOut, forceIn, errorThreshold);
 
-            // ================ test getJs()
-            // check that J.vp = vc
-            VecDeriv_t<Out> Jv(sizeOut);
-            J->mult(Jv, velocityIn);
-            if (this->vectorMaxDiff(Jv, velocityOut) > errorThreshold)
-            {
-                succeed = false;
-                std::cout<<"vp = " << velocityIn << std::endl;
-                std::cout<<"Jvp = " << Jv << std::endl;
-                std::cout<<"vc  = " << velocityOut << std::endl;
-                ADD_FAILURE() << "getJs() test failed"<<std::endl<<"vp = " << velocityIn << std::endl<<"Jvp = " << Jv << std::endl <<"vc  = " << velocityOut << std::endl;
-            }
+            // velocityOut has been computed using applyJ
+            // The following tests that velocityOut is also the result of applying
+            // the jacobian matrix
+            succeed &= checkJacobianMatrix(J, velocityIn, velocityOut, errorThreshold);
         }
 
         if( isTestExecuted(TEST_applyJT_matrix) )
@@ -630,7 +622,7 @@ protected:
         return ei;
     }
 
-    bool checkJacobianMatrix(
+    bool checkJacobianMatrixTranspose(
         EigenSparseMatrix* jacobianMatrix,
         const VecDeriv_t<Out>& forceOut,
         const VecDeriv_t<In>& expectedForceIn,
@@ -645,12 +637,37 @@ protected:
         if (diff > errorThreshold)
         {
             ADD_FAILURE() <<
-                "applyJT test failed, difference should be less than " <<
-                errorThreshold << " (" << diff << ")" << std::endl
+                "applyJT is not consistent with applyJT, difference should be "
+                "less than " << errorThreshold << " (" << diff << ")" << std::endl
                 << "computedForceIn = " << computedForceIn << std::endl
                 << "expectedForceIn = " << expectedForceIn << std::endl;
             return false;
         }
+        return true;
+    }
+
+    bool checkJacobianMatrix(
+        EigenSparseMatrix* jacobianMatrix,
+        const VecDeriv_t<In>& velocityIn,
+        const VecDeriv_t<Out>& expectedVelocityOut,
+        Real_t<In> errorThreshold)
+    {
+        VecDeriv_t<Out> computedVelocityOut(expectedVelocityOut.size());
+
+        jacobianMatrix->mult(computedVelocityOut, velocityIn);
+
+        const auto diff = this->vectorMaxDiff(computedVelocityOut, expectedVelocityOut);
+        if (diff > errorThreshold)
+        {
+            ADD_FAILURE() <<
+                "getJs() is not consistent with applyJ, difference should be "
+                "less than " << errorThreshold << " (" << diff << ")" << std::endl
+                << "velocityIn = " << velocityIn << std::endl
+                << "computedVelocityOut = " << computedVelocityOut << std::endl
+                << "expectedVelocityOut = " << expectedVelocityOut << std::endl;
+            return false;
+        }
+
         return true;
     }
 
