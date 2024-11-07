@@ -171,6 +171,27 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         
     }
 
+    VecDeriv_t<In> computeForceChange(core::MechanicalParams mparams, const std::size_t sizeIn, VecDeriv_t<Out> forceOut, VecDeriv_t<In> forceIn)
+    {
+        VecDeriv_t<In> forceChange;
+        forceChange.reserve(sizeIn);
+
+        // apply has been called, therefore parent force must be updated
+        // based on the same child forces
+        VecDeriv_t<In> forceIn2;
+        computeForceInFromForceOut(mparams, forceIn2, forceOut, [this](const VecDeriv_t<Out>& f)
+        {
+            return preTreatment(f);
+        });
+
+        for (unsigned i = 0; i < sizeIn; ++i)
+        {
+            forceChange.push_back(forceIn2[i] - forceIn[i]);
+        }
+
+        return forceChange;
+    }
+
     /**
      * Test the mapping using the given values and small changes.
      * Return true in case of success, if all errors are below maxError*epsilon.
@@ -285,19 +306,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         inDofs->writePositions().wref() = perturbedPositionIn;
         succeed &= testApplyJonPosition(mparams, positionOut, velocityOut, errorThreshold);
 
-        // update parent force based on the same child forces
-        VecDeriv_t<In> forceIn2;
-        computeForceInFromForceOut(mparams, forceIn2, forceOut, [this](const VecDeriv_t<Out>& f)
-        {
-            return preTreatment(f);
-        });
-
-        VecDeriv_t<In> forceChange(sizeIn);
-        for (unsigned i = 0; i < sizeIn; i++)
-        {
-            forceChange[i] = forceIn2[i] - forceIn[i]; // fp2 - fp
-        }
-
+        const VecDeriv_t<In> forceChange = computeForceChange(mparams, sizeIn, forceOut, forceIn);
 
         if( isTestExecuted(TEST_applyDJT) )
         {
