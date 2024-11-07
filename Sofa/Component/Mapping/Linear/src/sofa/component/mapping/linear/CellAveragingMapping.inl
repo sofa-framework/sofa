@@ -133,12 +133,16 @@ void CellAveragingMapping<TIn, TOut>::applyJ(
             for (std::size_t v_i = 0; v_i < nbPoints; ++v_i)
             {
                 const auto& trianglesAround_i = l_topology->getTrianglesAroundVertex(v_i);
-                const auto nbTrianglesAround = trianglesAround_i.size();
-                pointValues[v_i] += std::accumulate(trianglesAround_i.begin(), trianglesAround_i.end(), Deriv_t<In>{},
+                auto p = std::accumulate(trianglesAround_i.begin(), trianglesAround_i.end(), Deriv_t<In>{},
                     [&cellValues](const Deriv_t<In>& a, const sofa::Index triangleId)
                     {
                         return a + cellValues[triangleId];
                     });
+                if (const auto nbTrianglesAround = trianglesAround_i.size())
+                {
+                    p /= nbTrianglesAround;
+                }
+                pointValues[v_i] += p;
             }
         }
     }
@@ -161,10 +165,16 @@ void CellAveragingMapping<TIn, TOut>::applyJT(
         const auto nbTriangles = triangles.size();
         cellValues.resize(nbTriangles);
 
+        const auto contrib = [this, &pointValues](sofa::Index vertexId)
+        {
+            const auto nbTrianglesAround = l_topology->getTrianglesAroundVertex(vertexId).size();
+            return pointValues[vertexId] / nbTrianglesAround;
+        };
+
         for (std::size_t t_i = 0; t_i < nbTriangles; ++t_i)
         {
             const auto& [t0, t1, t2] = triangles[t_i].array();
-            cellValues[t_i] += pointValues[t0] + pointValues[t1] + pointValues[t2];
+            cellValues[t_i] += contrib(t0) + contrib(t1) + contrib(t2);
         }
     }
 }
@@ -203,9 +213,14 @@ void CellAveragingMapping<TIn, TOut>::buildJMatrix()
             m_J.compressedMatrix.startVec( v_i );
 
             const auto& trianglesAround_i = l_topology->getTrianglesAroundVertex(v_i);
-            for (const auto& t : trianglesAround_i)
+            if (!trianglesAround_i.empty())
             {
-                m_J.compressedMatrix.insertBack( v_i, t ) = 1;
+                const auto nbTrianglesAround = trianglesAround_i.size();
+
+                for (const auto& t : trianglesAround_i)
+                {
+                    m_J.compressedMatrix.insertBack( v_i, t ) = static_cast<Real_t<In>>(1) / nbTrianglesAround;
+                }
             }
         }
     }
