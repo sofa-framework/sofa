@@ -279,33 +279,11 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
             return preTreatment(f);
         });
 
-
-
         ///////////////////////////////
-
 
         // propagate small displacement
         inDofs->writePositions().wref() = perturbedPositionIn;
-
-        mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
-        const VecCoord_t<Out>& positionOut1 = outDofs->readPositions();
-
-        // ================ test applyJ: compute the difference between propagated displacements and velocities
-        VecDeriv_t<Out> dxc(sizeOut);
-        for (unsigned i = 0; i < sizeOut; i++)
-        {
-            dxc[i] = difference(positionOut1[i], positionOut[i]);
-        }
-
-        if (this->vectorMaxAbs(difference(dxc, velocityOut)) > errorThreshold)
-        {
-            succeed = false;
-            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) "<< this->vectorMaxAbs(difference(dxc,velocityOut))<<" should be less than  " << errorThreshold << std::endl
-                          << "position change = " << dxc << std::endl
-                          << "velocity        = " << velocityOut << std::endl;
-        }
-
-
+        succeed &= testApplyJonPosition(mparams, positionOut, velocityOut, errorThreshold);
 
         // update parent force based on the same child forces
         inDofs->writeForces()->fill(Deriv_t<In>());
@@ -673,6 +651,36 @@ protected:
         return true;
     }
 
+    bool testApplyJonPosition(
+        core::MechanicalParams mparams,
+        const VecCoord_t<Out>& positionOut,
+        const VecDeriv_t<Out>& expectedVelocityOut,
+        Real_t<In> errorThreshold
+        )
+    {
+        mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
+        const VecCoord_t<Out>& positionOut1 = outDofs->readPositions();
+
+        const auto sizeOut = positionOut.size();
+        VecDeriv_t<Out> dxOut(sizeOut);
+        for (unsigned i = 0; i < sizeOut; i++)
+        {
+            dxOut[i] = difference(positionOut1[i], positionOut[i]);
+        }
+
+        const auto diff = this->vectorMaxAbs(difference(dxOut, expectedVelocityOut));
+        if (diff > errorThreshold)
+        {
+            ADD_FAILURE() << "applyJ test failed: the difference between child "
+                "position change and child velocity (dt=1) " << diff <<
+                " should be less than  " << errorThreshold << std::endl
+                << "position change = " << dxOut << std::endl
+                << "expectedVelocityOut = " << expectedVelocityOut << std::endl;
+            return false;
+        }
+
+        return true;
+    }
 
 };
 
