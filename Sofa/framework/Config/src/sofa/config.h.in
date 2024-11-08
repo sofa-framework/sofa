@@ -69,12 +69,6 @@ constexpr SReal operator"" _sreal(unsigned long long int integer)
 #  endif
 #endif
 
-// snprintf() has been provided since MSVC++ 14 (Visual Studio 2015).  For other
-// versions, it is simply #defined to _snprintf().
-#if (defined(_MSC_VER) && _MSC_VER < 1900)
-#  define snprintf _snprintf
-#endif
-
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
@@ -223,8 +217,8 @@ class DeprecatedAndRemoved {};
 
 /**********************************************/
 
-#define SOFA_DECL_CLASS(name) // extern "C" { int sofa_concat(class_,name) = 0; }
-#define SOFA_LINK_CLASS(name) // extern "C" { extern int sofa_concat(class_,name); int sofa_concat(link_,name) = sofa_concat(class_,name); }
+#define SOFA_DECL_CLASS(name) SOFA_PRAGMA_WARNING("The macro SOFA_DECL_CLASS is no longer used")
+#define SOFA_LINK_CLASS(name) SOFA_PRAGMA_WARNING("The macro SOFA_LINK_CLASS is no longer used")
 
 // Prevent compiler warnings about 'unused variables'.
 // This should be used when a parameter name is needed (e.g. for
@@ -237,12 +231,6 @@ class DeprecatedAndRemoved {};
 #else
     #define SOFA_CLASS_METHOD ( std::string(this->getClassName()) + "::" + __func__ + " " )
 #endif
-
-
-// The SOFA_EXTERN_TEMPLATE macro was used to control the use of extern templates in Sofa.
-// It has been cleaned out in 41e0ab98bbb6e22b053b24e7bbdd31c8636336c9 "[ALL] Remove SOFA_EXTERN_TEMPLATE".
-// Macro definition is kept to avoid breaking all external plugins.
-#define SOFA_EXTERN_TEMPLATE SOFA_PRAGMA_ERROR("The usage of SOFA_EXTERN_TEMPLATE is now disabled. See commit 41e0ab9 for more information")
 
 namespace sofa
 {
