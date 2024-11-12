@@ -27,6 +27,7 @@
 //#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/fixed_array.h>
 #include <sofa/core/topology/Topology.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraint.h>
 #include "WDoubleLineEdit.h"
 #include <climits>
 
@@ -931,6 +932,45 @@ public:
 template<sofa::Size L, sofa::Size C, class T>
 class data_widget_container < sofa::type::Mat<L, C, T> > : public fixed_grid_data_widget_container < sofa::type::Mat<L, C, T> >
 {};
+
+////////////////////////////////////////////////////////////////
+/// sofa::linearalgebra::CompressedRowSparseMatrixConstraint support
+////////////////////////////////////////////////////////////////
+
+template<typename TBlock>
+class data_widget_trait <sofa::linearalgebra::CompressedRowSparseMatrixConstraint<TBlock>>
+{
+public:
+    typedef sofa::linearalgebra::CompressedRowSparseMatrixConstraint<TBlock> data_type;
+    typedef QLineEdit Widget;
+    static Widget* create(QWidget* parent, const data_type& /*d*/)
+    {
+        Widget* w = new Widget(parent);
+        w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        return w;
+    }
+    static void readFromData(Widget* w, const data_type& d)
+    {
+        std::ostringstream oss;
+        d.prettyPrint(oss);
+        w->setText(QString(oss.str().c_str()));
+    }
+    static void writeToData(Widget* /* w */, const data_type& /* d */)
+    {
+        // not supported by this type
+        // TODO: CompressedRowSparseMatrixConstraint needs a parser for its pretty output
+    }
+    static void setReadOnly(Widget* w, bool readOnly)
+    {
+        w->setEnabled(!readOnly);
+        w->setReadOnly(readOnly);
+    }
+    static void connectChanged(Widget* w, DataWidget* datawidget)
+    {
+        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setWidgetDirty()) );
+    }
+    
+};
 
 ////////////////////////////////////////////////////////////////
 /// OptionsGroup support

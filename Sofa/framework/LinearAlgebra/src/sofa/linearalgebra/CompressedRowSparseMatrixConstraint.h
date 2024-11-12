@@ -685,7 +685,7 @@ public:
     }
     
     /// write into output stream (default is standard output)
-    void prettyPrint(std::ostream& out = std::cout)
+    void prettyPrint(std::ostream& out = std::cout) const
     {
         for (RowConstIterator rowIt = this->begin(); rowIt !=  this->end(); ++rowIt)
         {
