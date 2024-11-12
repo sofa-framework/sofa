@@ -33,13 +33,13 @@
 namespace sofa::component::topology::container::dynamic
 {
 
-using namespace std;
 using namespace sofa::type;
-using namespace sofa::defaulttype;
 
-int MultilevelHexahedronSetTopologyContainerClass = core::RegisterObject("Hexahedron set topology container")
-        .add< MultilevelHexahedronSetTopologyContainer >()
-        ;
+void registerMultilevelHexahedronSetTopologyContainer(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Multilevel Hexahedron set topology container.")
+        .add< MultilevelHexahedronSetTopologyContainer >());
+}
 
 MultilevelHexahedronSetTopologyContainer::MultilevelHexahedronSetTopologyContainer()
     : HexahedronSetTopologyContainer(),

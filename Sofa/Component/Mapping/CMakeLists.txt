@@ -4,8 +4,11 @@ project(Sofa.Component.Mapping LANGUAGES CXX)
 set(SOFACOMPONENTMAPPING_SOURCE_DIR "src/sofa/component/mapping")
 
 sofa_add_subdirectory_modules(SOFACOMPONENTMAPPING_TARGETS
-    DIRECTORIES Linear NonLinear MappedMatrix
+    DIRECTORIES Linear NonLinear
 )
+
+#deprecated module. It is no longer a dependency of Sofa.Component.Mapping, therefore it is specified here to continue to compile it.
+sofa_add_subdirectory(module MappedMatrix Sofa.Component.Mapping.MappedMatrix ON)
 
 set(HEADER_FILES
     ${SOFACOMPONENTMAPPING_SOURCE_DIR}/config.h.in

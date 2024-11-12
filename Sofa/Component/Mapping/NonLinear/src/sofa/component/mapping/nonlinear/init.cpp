@@ -21,13 +21,25 @@
 ******************************************************************************/
 #include <sofa/component/mapping/nonlinear/init.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+
 namespace sofa::component::mapping::nonlinear
 {
+
+extern void registerAreaMapping(sofa::core::ObjectFactory* factory);
+extern void registerDistanceFromTargetMapping(sofa::core::ObjectFactory* factory);
+extern void registerDistanceMapping(sofa::core::ObjectFactory* factory);
+extern void registerDistanceMultiMapping(sofa::core::ObjectFactory* factory);
+extern void registerRigidMapping(sofa::core::ObjectFactory* factory);
+extern void registerSquareDistanceMapping(sofa::core::ObjectFactory* factory);
+extern void registerSquareMapping(sofa::core::ObjectFactory* factory);
+extern void registerVolumeMapping(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -45,11 +57,26 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerAreaMapping(factory);
+    registerDistanceFromTargetMapping(factory);
+    registerDistanceMapping(factory);
+    registerDistanceMultiMapping(factory);
+    registerRigidMapping(factory);
+    registerSquareDistanceMapping(factory);
+    registerSquareMapping(factory);
+    registerVolumeMapping(factory);
+}
+
 void init()
 {
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         first = false;
     }
 }

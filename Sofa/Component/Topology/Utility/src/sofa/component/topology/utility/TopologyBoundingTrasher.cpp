@@ -28,11 +28,13 @@
 namespace sofa::component::topology::utility
 {
 
-using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-int TopologyBoundingTrasherClass = core::RegisterObject("A class to remove all elements going outside from the given Bounding Box.")
-        .add< TopologyBoundingTrasher<Vec3Types>  >(true);
+void registerTopologyBoundingTrasher(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Component removing all elements going outside from the given bounding box.")
+        .add< TopologyBoundingTrasher<Vec3Types>  >());
+}
 
 template class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologyBoundingTrasher<Vec3Types>;
 

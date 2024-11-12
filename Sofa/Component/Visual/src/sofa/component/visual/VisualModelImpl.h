@@ -359,7 +359,7 @@ public:
     {
         if (!d_vertPosIdx.getValue().empty())
         {
-            // Splitted vertices for multiple texture or normal coordinates per vertex.
+            // Split vertices for multiple texture or normal coordinates per vertex.
             return d_vertices2.getValue();
         }
 

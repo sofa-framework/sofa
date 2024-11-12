@@ -26,16 +26,14 @@
 namespace sofa::component::engine::generate
 {
 
-int MergeSetsClass = core::RegisterObject("Merge two sets of indices using specified boolean operation")
+void registerMergeSets(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Merge two sets of indices using specified boolean operation.")
         .add< MergeSets<int> >(true)
-        .add< MergeSets<unsigned int> >()
-//.add< MergeSets<long long> >()
-//.add< MergeSets<unsigned long long> >()
-        ;
+        .add< MergeSets<unsigned int> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeSets<int>;
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeSets<unsigned int>;
-//template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeSets<long long>;
-//template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeSets<unsigned long long>;
 
 } //namespace sofa::component::engine::generate

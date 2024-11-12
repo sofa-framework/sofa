@@ -28,9 +28,11 @@
 namespace sofa::component::linearsolver::iterative
 {
 
-int ShewchukPCGLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
-    .add< ShewchukPCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> >(true)
-    .addAlias("PCGLinearSolver");
+void registerShewchukPCGLinearSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Linear system solver using the Shewchuk conjugate gradient iterative algorithm.")
+        .add< ShewchukPCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector> >());
+}
 
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ShewchukPCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector>;
 

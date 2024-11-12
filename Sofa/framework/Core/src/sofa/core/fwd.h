@@ -37,7 +37,6 @@ class BehaviorModel;
 class CollisionModel;
 class CollisionElementIterator;
 class DataEngine;
-class DevBaseMonitor;
 
 class ExecParams;
 class ConstraintParams;
@@ -190,7 +189,7 @@ namespace sofa::core
 /// These functions are called "opaque" as they work with only forward declaration of the involved
 /// types in comparison to class methods the requires the full class declaration to be used.
 ///
-/// It is highly recommanded to use as much as possible opaque function in header files as this
+/// It is highly recommended to use as much as possible opaque function in header files as this
 /// allow to reduce the dependency tree.
 ///
 /// Opaque function may be slower at runtime (by one function call) but this is true only if LTO isn't

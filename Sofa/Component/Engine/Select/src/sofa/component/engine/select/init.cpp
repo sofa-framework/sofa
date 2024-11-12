@@ -21,13 +21,37 @@
 ******************************************************************************/
 #include <sofa/component/engine/select/init.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+
 namespace sofa::component::engine::select
 {
-    
+ 
+extern void registerBoxROI(sofa::core::ObjectFactory* factory);
+extern void registerComplementaryROI(sofa::core::ObjectFactory* factory);
+extern void registerIndicesFromValues(sofa::core::ObjectFactory* factory);
+extern void registerMergeROIs(sofa::core::ObjectFactory* factory);
+extern void registerMeshBoundaryROI(sofa::core::ObjectFactory* factory);
+extern void registerMeshROI(sofa::core::ObjectFactory* factory);
+extern void registerMeshSampler(sofa::core::ObjectFactory* factory);
+extern void registerMeshSplittingEngine(sofa::core::ObjectFactory* factory);
+extern void registerMeshSubsetEngine(sofa::core::ObjectFactory* factory);
+extern void registerNearestPointROI(sofa::core::ObjectFactory* factory);
+extern void registerPairBoxROI(sofa::core::ObjectFactory* factory);
+extern void registerPlaneROI(sofa::core::ObjectFactory* factory);
+extern void registerPointsFromIndices(sofa::core::ObjectFactory* factory);
+extern void registerProximityROI(sofa::core::ObjectFactory* factory);
+extern void registerSelectConnectedLabelsROI(sofa::core::ObjectFactory* factory);
+extern void registerSelectLabelROI(sofa::core::ObjectFactory* factory);
+extern void registerSphereROI(sofa::core::ObjectFactory* factory);
+extern void registerSubsetTopology(sofa::core::ObjectFactory* factory);
+extern void registerValuesFromIndices(sofa::core::ObjectFactory* factory);
+extern void registerValuesFromPositions(sofa::core::ObjectFactory* factory);
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -45,11 +69,38 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerBoxROI(factory);
+    registerComplementaryROI(factory);
+    registerIndicesFromValues(factory);
+    registerMergeROIs(factory);
+    registerMeshBoundaryROI(factory);
+    registerMeshROI(factory);
+    registerMeshSampler(factory);
+    registerMeshSplittingEngine(factory);
+    registerMeshSubsetEngine(factory);
+    registerNearestPointROI(factory);
+    registerPairBoxROI(factory);
+    registerPlaneROI(factory);
+    registerPointsFromIndices(factory);
+    registerProximityROI(factory);
+    registerSelectConnectedLabelsROI(factory);
+    registerSelectLabelROI(factory);
+    registerSphereROI(factory);
+    registerSubsetTopology(factory);
+    registerValuesFromIndices(factory);
+    registerValuesFromPositions(factory);
+}
+
 void init()
 {
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         first = false;
     }
 }

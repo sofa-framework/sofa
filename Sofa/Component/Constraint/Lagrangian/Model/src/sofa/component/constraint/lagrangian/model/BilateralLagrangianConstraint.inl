@@ -404,7 +404,7 @@ void BilateralLagrangianConstraint<DataTypes>::draw(const core::visual::VisualPa
 }
 
 //TODO(dmarchal): implementing keyboard interaction behavior directly in a component is not a valid
-//design for a component. Interaction should be defered to an independent Component implemented in the SofaInteraction
+//design for a component. Interaction should be deferred to an independent Component implemented in the SofaInteraction
 //a second possibility is to implement this behavir using script.
 template<class DataTypes>
 void BilateralLagrangianConstraint<DataTypes>::handleEvent(Event *event)

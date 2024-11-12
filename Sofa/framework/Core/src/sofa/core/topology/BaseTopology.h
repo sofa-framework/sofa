@@ -39,7 +39,7 @@ class GeometryAlgorithms;
 /// Provides low-level topology methods (e.g. AddPoint, RemoveEdge, etc).
 class TopologyModifier;
 
-/// Contains the actual topology data and give acces to it.
+/// Contains the actual topology data and give access to it.
 class TopologyContainer;
 
 /// Translates topology events (TopologyChange objects) from a topology so that they apply on another one.
@@ -140,7 +140,7 @@ protected:
     */
     void addStateChange(const TopologyChange *topologyChange);
 
-    /// Contains the actual topology data and give acces to it (nature of these data heavily depends on the kind of topology).
+    /// Contains the actual topology data and give access to it (nature of these data heavily depends on the kind of topology).
     TopologyContainer *m_topologyContainer;
 };
 
@@ -265,10 +265,10 @@ public:
     */
     virtual bool unlinkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType);
 
-    /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
+    /// Array of topology modifications that have already occurred (addition) or will occur next (deletion).
     Data <std::list<const TopologyChange *> >m_changeList;
 
-    /// Array of state modifications that have already occured (addition) or will occur next (deletion).
+    /// Array of state modifications that have already occurred (addition) or will occur next (deletion).
     Data <std::list<const TopologyChange *> >m_stateChangeList;
 
     /// List of topology engines which will interact on all topological Data.

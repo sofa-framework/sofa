@@ -67,13 +67,13 @@ public:
 
     /// by default rest position are NOT propagated to mapped dofs.
     /// In some cases, rest pos is needed for mapped dofs (generally when this dof is used to compute mechanics).
-    /// In that case, Data applyRestPosition must be setted to true for all the mappings until the desired dof.
+    /// In that case, Data applyRestPosition must be set to true for all the mappings until the desired dof.
     Data<bool> f_applyRestPosition;
 protected:
     /// Constructor, taking input and output models as parameters.
     ///
     /// Note that if you do not specify these models here, you must call
-    /// setModels with non-nullptr value before the intialization (i.e. before
+    /// setModels with non-nullptr value before the initialization (i.e. before
     /// init() is called).
     Mapping(State< In >* from=nullptr, State< Out >* to=nullptr);
     /// Destructor

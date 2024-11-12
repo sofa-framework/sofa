@@ -25,8 +25,8 @@ function clean_default_plugins()
           ShapeMatchingPlugin       \
           SofaAssimp                \
           SofaCarving               \
-          SofaCUDA                  \
           SofaDistanceGrid          \
+          SofaDistanceGrid.CUDA     \
           SofaEulerianFluid         \
           SofaImplicitField         \
           SofaMatrix                \
@@ -36,6 +36,7 @@ function clean_default_plugins()
           SofaValidation            \
           STLIB                     \
           VolumetricRendering       \
+          CUDA                      \
       ; do
       disabled_plugins=$disabled_plugins'\|'$plugin
   done

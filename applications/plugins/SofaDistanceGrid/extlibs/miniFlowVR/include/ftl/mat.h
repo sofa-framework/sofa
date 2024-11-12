@@ -130,7 +130,7 @@ class Mat : public fixed_array<Vec<C,real>,L>
     return c;
   }
 
-  /// Write acess to line i.
+  /// Write access to line i.
   Line& operator[](int i)
   {
     return this->elems[i];
@@ -142,7 +142,7 @@ class Mat : public fixed_array<Vec<C,real>,L>
     return this->elems[i];
   }
 
-  /// Write acess to line i.
+  /// Write access to line i.
   Line& operator()(int i)
   {
     return this->elems[i];
@@ -203,7 +203,7 @@ class Mat : public fixed_array<Vec<C,real>,L>
   const Line& x() const { static_assert(L >= 1, ""); return this->elems[0]; }
   /// Special access to second line (read-only).
   const Line& y() const { static_assert(L >= 2, ""); return this->elems[1]; }
-  /// Special access to thrid line (read-only).
+  /// Special access to third line (read-only).
   const Line& z() const { static_assert(L >= 3, ""); return this->elems[2]; }
   /// Special access to fourth line (read-only).
   const Line& w() const { static_assert(L >= 4, ""); return this->elems[3]; }
@@ -557,7 +557,7 @@ Mat4x4f matrixTransform(const Vec3f& pos, const Vec3f& scale);
 Mat4x4f matrixTransform(const Vec3f& pos, float scale);
 Mat4x4f matrixTransform(const Vec3f& pos);
 
-// Assignement from typed data
+// Assignment from typed data
 
 namespace Type
 {

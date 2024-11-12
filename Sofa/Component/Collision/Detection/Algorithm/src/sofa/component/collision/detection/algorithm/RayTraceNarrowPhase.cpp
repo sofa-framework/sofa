@@ -34,9 +34,11 @@ using namespace sofa::component::collision::geometry;
 using sofa::core::collision::TDetectionOutputVector;
 using sofa::helper::TriangleOctree;
 
-
-int RayTraceNarrowPhaseClass = core::RegisterObject("Collision detection using TriangleOctreeModel").add < RayTraceNarrowPhase > ();
-
+void registerRayTraceNarrowPhase(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Narrow phase of the collision detection using TriangleOctreeModel")
+        .add < RayTraceNarrowPhase >());
+}
 
 void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisionModel * cm2)
 {
@@ -50,7 +52,7 @@ void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisi
         return;
 
 
-    /*construct the octree of both models, when it still doesn't exisits */
+    /*construct the octree of both models, when it still doesn't exists */
     if (!tm1->octreeRoot)
     {
 

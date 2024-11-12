@@ -70,7 +70,7 @@ public:
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
-    /// Correspondance array
+    /// Correspondence array
     typedef core::topology::BaseMeshTopology::SetIndex IndexArray;
 
     void init() override;

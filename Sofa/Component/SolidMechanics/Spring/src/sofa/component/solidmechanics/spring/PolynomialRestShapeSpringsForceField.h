@@ -65,7 +65,7 @@ public:
 
 
     Data< type::vector<sofa::Index> > d_points; ///< points controlled by the rest shape springs
-    Data< type::vector<sofa::Index> > d_external_points; ///< points from the external Mechancial State that define the rest shape springs
+    Data< type::vector<sofa::Index> > d_external_points; ///< points from the external Mechanical State that define the rest shape springs
 
     /// polynomial data
     /// Describe set of polynomial coefficients combines in one array.

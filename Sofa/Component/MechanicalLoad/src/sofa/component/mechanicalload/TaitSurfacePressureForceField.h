@@ -141,7 +141,7 @@ public:
     Data< Real > d_currentPressure; ///< OUT: Current pressure, as computed from the last surface position
     Data< Real > d_currentStiffness; ///< OUT: dP/dV at current volume and pressure
 
-    Data< SeqTriangles > d_pressureTriangles; ///< OUT: list of triangles where a pressure is applied (mesh triangles + tesselated quads)
+    Data< SeqTriangles > d_pressureTriangles; ///< OUT: list of triangles where a pressure is applied (mesh triangles + tessellated quads)
 
     Data< Real > d_initialSurfaceArea; ///< OUT: Initial surface area, as computed from the surface rest position
     Data< Real > d_currentSurfaceArea; ///< OUT: Current surface area, as computed from the last surface position

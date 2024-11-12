@@ -26,12 +26,12 @@
 namespace sofa::component::engine::generate
 {
 
-int MeshClosingEngineClass = core::RegisterObject("Merge several meshes")
-        .add< MeshClosingEngine<defaulttype::Vec3Types> >(true) // default template
-        ;
+void registerMeshClosingEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Close a given mesh.")
+        .add< MeshClosingEngine<defaulttype::Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MeshClosingEngine<defaulttype::Vec3Types>;
- 
-
 
 } //namespace sofa::component::engine::generate

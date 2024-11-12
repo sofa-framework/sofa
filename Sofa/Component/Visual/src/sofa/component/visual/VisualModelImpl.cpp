@@ -303,7 +303,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 
     if (!objLoader.getGroups().empty())
     {
-        // Get informations about the multiple materials
+        // Get information about the multiple materials
         helper::WriteAccessor< Data< type::vector<Material> > > materials = this->d_materials;
         helper::WriteAccessor< Data< type::vector<FaceGroup> > > groups = this->d_groups;
         materials.resize(objLoader.getMaterials().size());

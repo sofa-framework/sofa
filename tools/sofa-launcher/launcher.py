@@ -187,7 +187,7 @@ def startSofa(parameters, filesandtemplates, launcher):
         tasks = []
         
         if not isinstance(parameters, list):
-                raise TypeError("the first parameter must be an list like structure of dictionnaries")
+                raise TypeError("the first parameter must be an list like structure of dictionaries")
 
         if not isinstance(parameters, list):
                 raise TypeError("parameters must be a list like structure of tuple")

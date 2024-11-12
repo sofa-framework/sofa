@@ -60,7 +60,7 @@ std::istream& operator>> ( std::istream& i, std::set<K>& s )
 }
 
 /// Input stream
-/// Specialization for reading sets of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
+/// Specialization for reading sets of int and unsigned int using "A-B" notation for all integers between A and B, optionally specifying a step using "A-B-step" notation.
 template<> SOFA_HELPER_API std::istream& operator>> ( std::istream& in, std::set<int>& _set );
 
 /// Input stream

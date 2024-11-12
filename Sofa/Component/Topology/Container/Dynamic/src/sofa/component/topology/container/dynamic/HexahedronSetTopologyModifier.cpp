@@ -30,11 +30,13 @@
 
 namespace sofa::component::topology::container::dynamic
 {
-int HexahedronSetTopologyModifierClass = core::RegisterObject("Hexahedron set topology modifier")
-        .add< HexahedronSetTopologyModifier >();
 
-using namespace std;
-using namespace sofa::defaulttype;
+void registerHexahedronSetTopologyModifier(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology modifier dedicated to an hexahedral topology.")
+        .add< HexahedronSetTopologyModifier >());
+}
+
 using namespace sofa::core::topology;
 
 void HexahedronSetTopologyModifier::init()
@@ -207,7 +209,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
             addEdgesWarning(sofa::Size(v.size()), v, edgeIndexList);
         }
 
-        // udpate m_edgesInHexahedron
+        // update m_edgesInHexahedron
         m_container->m_edgesInHexahedron[hexahedronIndex][edgeIdx]= edgeIndex;
 
         // update m_tetrahedraAroundEdge
@@ -341,7 +343,7 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::type::ve
             }
         }
 
-        // now updates the shell information of the edge formely at the end of the array
+        // now updates the shell information of the edge formerly at the end of the array
         if( indices[i] < lastHexahedron )
         {
             if(m_container->hasHexahedraAroundVertex())
@@ -376,19 +378,19 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::type::ve
         {
             // removes the quadsInHexahedrons from the quadsInHexahedronArray
             m_container->m_quadsInHexahedron[ indices[i] ] = m_container->m_quadsInHexahedron[ lastHexahedron ]; // overwriting with last valid value.
-            m_container->m_quadsInHexahedron.resize( lastHexahedron ); // resizing to erase multiple occurence of the hexa.
+            m_container->m_quadsInHexahedron.resize( lastHexahedron ); // resizing to erase multiple occurrence of the hexa.
         }
 
         if(m_container->hasEdgesInHexahedron())
         {
             // removes the edgesInHexahedrons from the edgesInHexahedronArray
             m_container->m_edgesInHexahedron[ indices[i] ] = m_container->m_edgesInHexahedron[ lastHexahedron ]; // overwriting with last valid value.
-            m_container->m_edgesInHexahedron.resize( lastHexahedron ); // resizing to erase multiple occurence of the hexa.
+            m_container->m_edgesInHexahedron.resize( lastHexahedron ); // resizing to erase multiple occurrence of the hexa.
         }
 
         // removes the hexahedron from the hexahedronArray
         m_hexahedron[ indices[i] ] = m_hexahedron[ lastHexahedron ]; // overwriting with last valid value.
-        m_hexahedron.resize( lastHexahedron ); // resizing to erase multiple occurence of the hexa.
+        m_hexahedron.resize( lastHexahedron ); // resizing to erase multiple occurrence of the hexa.
     }
 
     if( (!quadToBeRemoved.empty()) || (!edgeToBeRemoved.empty()))

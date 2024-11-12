@@ -317,12 +317,12 @@ void BilateralLagrangianConstraint<defaulttype::Rigid3Types>::addContact(Deriv n
                                                                         id, localid) ;
 }
 
-
-
-int BilateralLagrangianConstraintClass = core::RegisterObject("BilateralLagrangianConstraint defining an holonomic equality constraint (attachment)")
+void registerBilateralLagrangianConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("BilateralLagrangianConstraint defining an holonomic equality constraint (attachment).")
         .add< BilateralLagrangianConstraint<Vec3Types> >()
-        .add< BilateralLagrangianConstraint<Rigid3Types> >()
-        ;
+        .add< BilateralLagrangianConstraint<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralLagrangianConstraint<Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralLagrangianConstraint<Rigid3Types>;

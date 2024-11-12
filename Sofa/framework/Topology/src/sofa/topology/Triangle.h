@@ -39,7 +39,7 @@ namespace sofa::topology
     * @tparam   Coordinates type representing the coordinates in space (in 3D)
     * @tparam   VectorCoordinates type for the container of coordinates
     * @param	trianglePositions positions of all the points of the triangles set
-    * @param	allTriangles informations about the triangle in the topology (a vector of 3 indices, i.e a triangle)
+    * @param	allTriangles information about the triangle in the topology (a vector of 3 indices, i.e a triangle)
     * @param	shellTriangles triangles around the given point (vector of triangles indices)
     * @param	pointID index of the point (from shellTriangles) from which the algo will try to compute the direction
     * @param	direction direction in which the algo will find a triangle from the pointID

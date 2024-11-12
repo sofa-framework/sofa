@@ -440,7 +440,7 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
         set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "${EXTRA_INSTALL_COMMAND}")
         set(CPACK_NSIS_MENU_LINKS
             "https://www.sofa-framework.org/documentation/" "SOFA User Documentation"
-            "https://www.sofa-framework.org/api/" "SOFA Developper API"
+            "https://www.sofa-framework.org/api/" "SOFA Developer API"
             "https://github.com/sofa-framework/sofa/discussions" "SOFA Support")
     endif()
     #######################

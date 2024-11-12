@@ -57,9 +57,11 @@ void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)
     this->setPos(d_min.getValue()[0], d_max.getValue()[0], d_min.getValue()[1], d_max.getValue()[1], d_min.getValue()[2], d_max.getValue()[2]);
 }
 
-int CubeTopologyClass = core::RegisterObject("Surface of a cube in 3D")
-        .add< CubeTopology >()
-        ;
+void registerCubeTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Surface topology of a cube in 3D (points, edges and quads).")
+        .add< CubeTopology >());
+}
 
 CubeTopology::CubeTopology(int _nx, int _ny, int _nz)
     : d_nx(initData(&d_nx, _nx, "nx", "x grid resolution"))

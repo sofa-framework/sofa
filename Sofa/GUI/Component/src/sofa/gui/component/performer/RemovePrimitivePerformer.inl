@@ -193,7 +193,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
                 sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
                 if (topoMap)
                 {
-                    // Mapping found: 1- looking for volume, 2- looking for surface element on border, 3- looking for correspondant ID element in surfacique mesh
+                    // Mapping found: 1- looking for volume, 2- looking for surface element on border, 3- looking for correspondent ID element in surfacique mesh
                     const sofa::core::topology::BaseMeshTopology::TrianglesInTetrahedron& tetraTri = topo_curr->getTrianglesInTetrahedron(selectedElem[0]);
 
                     int volTmp = -1;

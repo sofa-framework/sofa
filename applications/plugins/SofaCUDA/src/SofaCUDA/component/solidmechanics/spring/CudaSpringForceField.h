@@ -89,7 +89,7 @@ namespace sofa::component::solidmechanics::spring
             int vertex0; ///< index of the first vertex connected to a spring
             int nbVertex; ///< number of vertices to process to compute all springs
             int nbSpringPerVertex; ///< max number of springs connected to a vertex
-            gpu::cuda::CudaVector<GPUSpring> springs; ///< springs attached to each points (layout per bloc of NBLOC vertices, with first spring of each vertex, then second spring, etc)
+            gpu::cuda::CudaVector<GPUSpring> springs; ///< springs attached to each points (layout per block of NBLOC vertices, with first spring of each vertex, then second spring, etc)
             gpu::cuda::CudaVector<Real> dfdx;
             GPUSpringSet() : vertex0(0), nbVertex(0), nbSpringPerVertex(0) {}
             void init(int v0, int nbv, int nbsperv)
@@ -102,13 +102,13 @@ namespace sofa::component::solidmechanics::spring
             }
             void set(int vertex, int spring, int index, float initpos, float ks, float kd)
             {
-                const int bloc = vertex / BSIZE;
+                const int block = vertex / BSIZE;
                 const int b_x = vertex % BSIZE;
-                springs[2 * bloc * BSIZE * nbSpringPerVertex // start of the bloc
+                springs[2 * block * BSIZE * nbSpringPerVertex // start of the block
                     + 2 * spring * BSIZE                 // offset to the spring
                     + b_x                          // offset to the vertex
                 ].set(index, initpos, ks, kd);
-                (*(GPUSpring2*)&(springs[2 * bloc * BSIZE * nbSpringPerVertex // start of the bloc
+                (*(GPUSpring2*)&(springs[2 * block * BSIZE * nbSpringPerVertex // start of the block
                     + 2 * spring * BSIZE                 // offset to the spring
                     + b_x + BSIZE                    // offset to the vertex
                 ])).set(index, initpos, ks, kd);

@@ -94,7 +94,7 @@ bool AssimpLoader::doLoad()
     
     // And have it read the given file with some example postprocessing
     // Usually - if speed is not the most important aspect for you - you'll 
-    // propably to request more postprocessing than we do in this example.
+    // probably to request more postprocessing than we do in this example.
     m_assimpScene = (aiScene*)aiImportFile(filename, pp_Loadsteps);
        /* aiProcess_CalcTangentSpace |
         aiProcess_Triangulate |

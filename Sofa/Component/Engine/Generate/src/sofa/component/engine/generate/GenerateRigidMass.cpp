@@ -29,12 +29,12 @@ namespace sofa::component::engine::generate
 
 using namespace sofa::defaulttype;
 
-int GenerateRigidMassClass = core::RegisterObject("An engine computing the RigidMass of a mesh : mass, volume and inertia matrix.")
-        .add< GenerateRigidMass<Rigid3Types, Rigid3Mass> >()
-
-        ;
+void registerGenerateRigidMass(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Engine computing the RigidMass of a mesh: mass, volume and inertia matrix.")
+        .add< GenerateRigidMass<Rigid3Types, Rigid3Mass> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API GenerateRigidMass<Rigid3Types, Rigid3Mass>;
-
 
 } //namespace sofa::component::engine::generate

@@ -25,12 +25,16 @@
 
 namespace sofa::component::linearsystem
 {
-    using sofa::component::linearsolver::GraphScatteredMatrix;
-    using sofa::component::linearsolver::GraphScatteredVector;
 
-    template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixFreeSystem<linearsolver::GraphScatteredMatrix, GraphScatteredVector>;
+using sofa::component::linearsolver::GraphScatteredMatrix;
+using sofa::component::linearsolver::GraphScatteredVector;
 
-    int MatrixFreeSystemClass = core::RegisterObject("Matrix-free linear system")
-        .add< MatrixFreeSystem<GraphScatteredMatrix, GraphScatteredVector> >();
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixFreeSystem<linearsolver::GraphScatteredMatrix, GraphScatteredVector>;
+
+void registerMatrixFreeSystemGraphScattered(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Matrix-free (unbuilt) linear system.")
+        .add< MatrixFreeSystem<GraphScatteredMatrix, GraphScatteredVector> >());
+}
 
 } //namespace sofa::component::linearsystem

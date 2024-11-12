@@ -26,9 +26,11 @@
 namespace sofa::component::collision::geometry
 {
 
-int PointCollisionModelClass = core::RegisterObject("Collision model which represents a set of points")
-        .add< PointCollisionModel<defaulttype::Vec3Types> >()
-        ;
+void registerPointCollisionModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Collision model which represents a set of points.")
+        .add< PointCollisionModel<defaulttype::Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_COLLISION_GEOMETRY_API PointCollisionModel<defaulttype::Vec3Types>;
 

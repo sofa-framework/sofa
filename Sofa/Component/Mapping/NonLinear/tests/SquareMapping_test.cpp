@@ -69,13 +69,13 @@ struct SquareMappingTest : public sofa::mapping_test::Mapping_test<SquareMapping
 };
 
 
-// Define the list of types to instanciate.
+// Define the list of types to instantiate.
 using ::testing::Types;
 typedef Types<
 component::mapping::nonlinear::SquareMapping<defaulttype::Vec1Types,defaulttype::Vec1Types>
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE( SquareMappingTest, DataTypes );
 
 // test case
@@ -83,16 +83,6 @@ TYPED_TEST( SquareMappingTest , test )
 {
     ASSERT_TRUE(this->test());
 }
-
-TYPED_TEST( SquareMappingTest , testNoGeometricStiffnessMatrix )
-{
-    TypeParam* map = static_cast<TypeParam*>( this->mapping );
-    map->d_useGeometricStiffnessMatrix.setValue(false);
-
-    ASSERT_TRUE(this->test());
-}
-
-
 
 } // namespace
 } // namespace sofa

@@ -31,7 +31,7 @@
         <MeshTopology name="mesh" src="@meshLoader0" />
         <MechanicalObject template="Vec3" name="dofs" />
         <MeshSpringForceField template="Vec3" name="Springs" stiffness="4500" />
-        <UniformMass template="Vec3" name="mass" />
+        <UniformMass template="Vec3" name="mass" totalMass="1.0"/>
         <FixedProjectiveConstraint template="Vec3" name="FixedProjectiveConstraint" indices="3 39 64" />
         <Node name="Visu" gravity="0 -9.81 0">
             <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />

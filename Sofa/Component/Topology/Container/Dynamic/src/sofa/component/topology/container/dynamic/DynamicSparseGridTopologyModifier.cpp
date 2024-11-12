@@ -30,9 +30,11 @@
 namespace sofa::component::topology::container::dynamic
 {
 
-int DynamicSparseGridTopologyModifierClass = core::RegisterObject ( "Hexahedron set topology modifier" )
-        .add< DynamicSparseGridTopologyModifier >();
-
+void registerDynamicSparseGridTopologyModifier(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Dynamic sparse grid geometry modifier.")
+        .add< DynamicSparseGridTopologyModifier >());
+}
 
 void DynamicSparseGridTopologyModifier::init()
 {
@@ -51,7 +53,7 @@ void DynamicSparseGridTopologyModifier::init()
 
 
 //TODO// find a solution for this case !!!! Modifier can not access to the DOF and can not compute the indices of the added hexahedra.
-// We have to find a way to automaticaly compute the indices of the added hexahedra to update the map 'm_m_DynContainer->idInRegularGrid2Hexa'
+// We have to find a way to automatically compute the indices of the added hexahedra to update the map 'm_m_DynContainer->idInRegularGrid2Hexa'
 void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::type::vector< Hexahedron > &hexahedra )
 {
     HexahedronSetTopologyModifier::addHexahedraProcess ( hexahedra );

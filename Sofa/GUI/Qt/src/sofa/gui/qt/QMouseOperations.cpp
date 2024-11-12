@@ -196,7 +196,7 @@ QInciseOperation::QInciseOperation()
     advancedOptions = new QGroupBox(tr("Advanced settings"),this);
     QVBoxLayout *vbox3 = new QVBoxLayout(advancedOptions);
 
-    // first slider for border snaping
+    // first slider for border snapping
     QHBoxLayout *slider1=new QHBoxLayout();
     QLabel *label1=new QLabel(QString("Distance to snap from border (in %)"), this);
     snapingBorderSlider=new QSlider(Qt::Horizontal, this);
@@ -211,7 +211,7 @@ QInciseOperation::QInciseOperation()
     slider1->addWidget (snapingBorderValue);
     vbox3->addLayout (slider1);
 
-    // second slider for along path snaping
+    // second slider for along path snapping
     QHBoxLayout *slider2=new QHBoxLayout();
     QLabel *label2=new QLabel(QString("Distance to snap along path (in %)"), this);
     snapingSlider=new QSlider(Qt::Horizontal, this);

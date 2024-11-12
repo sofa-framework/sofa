@@ -229,13 +229,13 @@ struct DirectionProjectiveConstraint_test : public BaseSimulationTest, NumericTe
  };
 
 
-// Define the list of DataTypes to instanciate
+// Define the list of DataTypes to instantiate
 using ::testing::Types;
 typedef Types<
     Vec3Types
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(DirectionProjectiveConstraint_test, DataTypes);
 
 // first test case
