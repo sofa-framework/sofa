@@ -25,12 +25,33 @@ namespace sofa::type
 {
 
 /**
+ *  A template class to create strong, type-safe aliases for existing types,
+ *  with optional extensible functionalities.
+ *
+ * The StrongType class is designed to add type safety by creating wrapper types
+ * around primitive types or existing classes. By defining unique, named types
+ * for different uses of the same underlying type, StrongType helps prevent
+ * mistakes caused by passing incorrect parameters of the same type.
+ *
+ * For example, instead of passing two `int` parameters to a function (e.g., for
+ * "width" and "height"), StrongType allows you to define distinct types for
+ * width and height:
+ *
+ * @code
+ * using Width = StrongType<int, struct WidthTag>;
+ * using Height = StrongType<int, struct HeightTag>;
+ *
+ * void resize(Width width, Height height);
+ *
+ * resize(Width{5}, Height{10});  // Correct
+ * resize(Height{10}, Width{5});  // Compilation error
+ * @endcode
  *
  * Strongly inspired by https://github.com/joboccara/NamedType
  *
- * @tparam TUnderlyingType
- * @tparam UniqueIdentifyingTag
- * @tparam Functionalities
+ * @tparam TUnderlyingType The type to be wrapped by StrongType
+ * @tparam UniqueIdentifyingTag A unique tag type to create a distinct StrongType from other wrappers around the same `TUnderlyingType`.
+ * @tparam Functionalities A set of optional functionalities to extend StrongType
  */
 template<class TUnderlyingType, class UniqueIdentifyingTag, template <typename> class... Functionalities>
 struct StrongType : Functionalities<StrongType<TUnderlyingType, UniqueIdentifyingTag, Functionalities...>>...
