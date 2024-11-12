@@ -2172,4 +2172,23 @@ R"(4 0 2 1 0 0.360985 0 12 0.926981 0 0 2 1 9 0.451858 0 0 3 1 6 0.777417 0 0 4 
     EXPECT_EQ(ss.str(), expectedOutput);
 }
 
+TEST(CompressedRowSparseMatrixConstraint, prettyPrint)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrixConstraint<sofa::type::Vec3> A;
+
+    generateMatrix(A, 5, 15, 0.1, 7);
+
+    static const std::string expectedOutput =
+R"(Constraint ID : 0  dof ID : 1  value : 0 0.360985 0  dof ID : 12  value : 0.926981 0 0
+Constraint ID : 2  dof ID : 9  value : 0.451858 0 0
+Constraint ID : 3  dof ID : 6  value : 0.777417 0 0
+Constraint ID : 4  dof ID : 5  value : 0 0 0.474108  dof ID : 7  value : 0 0.983937 0  dof ID : 9  value : 0.238781 0 0
+)";
+    
+    std::ostringstream oss;
+    A.prettyPrint(oss);
+
+    EXPECT_EQ(oss.str(), expectedOutput);
+}
+
 } // namespace sofa

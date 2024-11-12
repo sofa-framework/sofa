@@ -683,6 +683,35 @@ public:
 
         return in;
     }
+    
+    /// write into output stream (default is standard output)
+    void prettyPrint(std::ostream& out = std::cout)
+    {
+        for (RowConstIterator rowIt = this->begin(); rowIt !=  this->end(); ++rowIt)
+        {
+            out << "Constraint ID : ";
+            out << rowIt.index();
+            const auto colToString = [](const ColConstIterator& colIt)
+            {
+                std::stringstream ss;
+                ss << "dof ID : " << colIt.index() << "  value : " << colIt.val();
+                return ss.str();
+            };
+
+            ColConstIterator colIt = rowIt.begin();
+            const ColConstIterator colItEnd = rowIt.end();
+            if (colIt != colItEnd)
+            {
+                out << "  " << colToString(colIt++);
+                while(colIt != colItEnd)
+                {
+                    out << "  " << colToString(colIt++);
+                }
+            }
+
+            out << "\n";
+        }
+    }
 
     static const char* Name()
     {
