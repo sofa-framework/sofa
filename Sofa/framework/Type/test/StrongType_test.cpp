@@ -51,10 +51,33 @@ TEST(StrongType, postIncrementable)
 
 TEST(StrongType, floatAddable)
 {
-    using myfloat = sofa::type::StrongType<float, struct _floataddable, sofa::type::functionality::Arithmetic>;
+    using myfloat = sofa::type::StrongType<float, struct _floataddable, sofa::type::functionality::Addable>;
     static constexpr myfloat a ( 2 );
     static constexpr myfloat b ( 3 );
     EXPECT_EQ((a + b).get(), 5);
+}
+
+TEST(StrongType, floatBinarySubtractable)
+{
+    using myfloat = sofa::type::StrongType<float, struct _floatBinarySubstractable, sofa::type::functionality::BinarySubtractable>;
+    static constexpr myfloat a ( 2 );
+    static constexpr myfloat b ( 3 );
+    EXPECT_EQ((a - b).get(), -1);
+}
+
+TEST(StrongType, floatUnarySubtractable)
+{
+    using myfloat = sofa::type::StrongType<float, struct _floatUnarySubstractable, sofa::type::functionality::UnarySubtractable>;
+    static constexpr myfloat a ( 2 );
+    EXPECT_EQ((-a).get(), -2);
+}
+
+TEST(StrongType, floatMultiplicable)
+{
+    using myfloat = sofa::type::StrongType<float, struct _floatMultiplicable, sofa::type::functionality::Multiplicable>;
+    static constexpr myfloat a ( 2 );
+    static constexpr myfloat b ( 3 );
+    EXPECT_EQ((a * b).get(), 6);
 }
 
 }
