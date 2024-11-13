@@ -130,5 +130,15 @@ TEST(SimpleApi_test_solo, testIsSetWithDataLink)
     });
     auto* objdata4 = obj4->findData("printLog");
     ASSERT_TRUE(objdata4->isSet());
+    
+    // test link with a wrong path (or non existent parent)
+    const auto obj6 = createObject(root, "DefaultAnimationLoop", {
+        {"name", "loop6"},
+        {"printLog", "@/loop7.printLog"}
+    });
+
+    auto* objdata6 = obj6->findData("printLog");
+    ASSERT_TRUE(objdata6->isSet());
+    ASSERT_EQ(objdata6->getParent(), nullptr);
 
 }
