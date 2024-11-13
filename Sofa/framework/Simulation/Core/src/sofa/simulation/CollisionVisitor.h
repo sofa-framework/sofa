@@ -103,7 +103,7 @@ public:
 class SOFA_SIMULATION_CORE_API CollisionResponseVisitor : public BaseCollisionVisitor
 {
 public:
-    CollisionResponseVisitor(const core::ExecParams* params) :BaseCollisionVisitor(params) {}
+    CollisionResponseVisitor(const core::ExecParams* params) : BaseCollisionVisitor(params) {}
     void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj) override;
     const char* getClassName() const override { return "CollisionResponseVisitor"; }
 };
