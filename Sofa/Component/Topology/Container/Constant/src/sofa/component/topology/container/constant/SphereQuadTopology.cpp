@@ -29,10 +29,11 @@ namespace sofa::component::topology::container::constant
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-int SphereQuadTopologyClass = core::RegisterObject("Sphere topology constructed with deformed quads")
-        .addAlias("SphereQuad")
-        .add< SphereQuadTopology >()
-        ;
+void registerSphereQuadTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Sphere topology constructed with deformed quads.")
+        .add< SphereQuadTopology >());
+}
 
 SphereQuadTopology::SphereQuadTopology(int nx, int ny, int nz)
     : CubeTopology(nx, ny, nz),

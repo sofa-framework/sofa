@@ -33,7 +33,7 @@ namespace sofa::gui::component::performer
 {
 
 /** Class to configure primitive removal. Several parameters:
-  * - topologicalOperation: if 0, other parameters arn't use.
+  * - topologicalOperation: if 0, other parameters aren't use.
   *   0 = "remove on element"
   *   1 = "remove a zone of elements"
   * - volumicMesh:

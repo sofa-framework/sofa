@@ -424,7 +424,7 @@ void GenGraphForm::taskError(QProcess::ProcessError error)
     };
     const auto it = errorMap.find(error);
     const auto errorString = it == errorMap.end() ? "unknown" : it->second;
-    msg_error("GenGraphForm") << "An error occured: " << errorString;
+    msg_error("GenGraphForm") << "An error occurred: " << errorString;
 
     if (error == QProcess::ProcessError::FailedToStart)
     {

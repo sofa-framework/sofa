@@ -48,7 +48,7 @@
         <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
         
         <DiagonalMass massDensity="0.2" />
-        <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="1000" poissonRatio="0.3" method="large" />
+        <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="1000" poissonRatio="0.3" method="large" computeVonMisesStress="1"/>
         
         <BoxROI template="Vec3" name="box_roi" box="-6 -6 -1 30 6 0.1" drawBoxes="1" />
         <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />
@@ -67,7 +67,7 @@
         <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
         
         <DiagonalMass massDensity="0.2" />
-        <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="1000" poissonRatio="0.3" method="polar" />
+        <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="1000" poissonRatio="0.3" method="polar" computeVonMisesStress="1"/>
         
         <BoxROI template="Vec3" name="box_roi" box="-6 -6 -1 30 6 0.1" drawBoxes="1" />
         <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />

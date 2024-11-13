@@ -27,12 +27,15 @@
 
 namespace sofa::component::linearsolver::direct
 {
-    template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSparseLU< SReal >;
-    template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSparseLU< sofa::type::Mat<3,3,SReal> >;
 
-    int EigenSparseLUCRSClass = sofa::core::RegisterObject("Direct Linear Solver using a Sparse LU factorization.")
-    .add< EigenSparseLU< SReal > >()
-    .add< EigenSparseLU< sofa::type::Mat<3,3,SReal> > >()
-    ;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSparseLU< SReal >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSparseLU< sofa::type::Mat<3,3,SReal> >;
+
+void registerEigenSparseLU(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Direct linear solver using a Sparse LU factorization.")
+        .add< EigenSparseLU< SReal > >()
+        .add< EigenSparseLU< sofa::type::Mat<3, 3, SReal> > >());
+}
 
 }

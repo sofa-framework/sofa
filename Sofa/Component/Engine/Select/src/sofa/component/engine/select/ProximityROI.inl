@@ -42,7 +42,7 @@ ProximityROI<DataTypes>::ProximityROI()
     , f_pointsInROI( initData(&f_pointsInROI,"pointsInROI","Points contained in the ROI") )
     , f_distanceInROI( initData(&f_distanceInROI,"distance","distance between the points contained in the ROI and the closest center.") )
     , f_indicesOut( initData(&f_indicesOut,"indicesOut","Indices of the points not contained in the ROI") )
-    , p_drawSphere( initData(&p_drawSphere,false,"drawSphere","Draw shpere(s)") )
+    , p_drawSphere( initData(&p_drawSphere,false,"drawSphere","Draw sphere(s)") )
     , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
     , _drawSize( initData(&_drawSize,1.0,"drawSize","rendering size for box and topological elements") )
 {

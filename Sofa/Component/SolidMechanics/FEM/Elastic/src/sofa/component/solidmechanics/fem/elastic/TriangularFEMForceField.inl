@@ -48,7 +48,7 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , d_method(initData(&d_method, std::string("large"), "method", "large: large displacements, small: small displacements"))
     , d_rotatedInitialElements(initData(&d_rotatedInitialElements, "rotatedInitialElements", "Flag activating rendering of stress directions within each triangle"))
     , d_initialTransformation(initData(&d_initialTransformation, "initialTransformation", "Flag activating rendering of stress directions within each triangle"))
-    , d_hosfordExponant(initData(&d_hosfordExponant, (Real)1.0, "hosfordExponant", "Exponant in the Hosford yield criteria"))
+    , d_hosfordExponant(initData(&d_hosfordExponant, (Real)1.0, "hosfordExponant", "Exponent in the Hosford yield criteria"))
     , d_criteriaValue(initData(&d_criteriaValue, (Real)1e15, "criteriaValue", "Fracturable threshold used to draw fracturable triangles"))
     , d_showStressValue(initData(&d_showStressValue, true, "showStressValue", "Flag activating rendering of stress values as a color in each triangle"))
     , d_showStressVector(initData(&d_showStressVector, false, "showStressVector", "Flag activating rendering of stress directions within each triangle"))
@@ -791,7 +791,7 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3, Real>& stres
         // then compute displacement in this frame
         m_triangleUtils.computeDisplacementLarge(D, R_0_2, triangleInf[elementIndex].rotatedInitialElements, p[a], p[b], p[c]);
 
-        // and compute postions of a, b, c in the co-rotational frame
+        // and compute positions of a, b, c in the co-rotational frame
         Coord A = Coord(0, 0, 0); SOFA_UNUSED(A);
         Coord B = R_0_2 * (p[b] - p[a]);
         Coord C = R_0_2 * (p[c] - p[a]);

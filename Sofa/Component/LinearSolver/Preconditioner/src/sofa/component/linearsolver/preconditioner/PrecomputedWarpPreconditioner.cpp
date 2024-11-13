@@ -25,9 +25,11 @@
 namespace sofa::component::linearsolver::preconditioner
 {
 
-int PrecomputedWarpPreconditionerClass = core::RegisterObject("Linear system solver based on a precomputed inverse matrix, wrapped by a per-node rotation matrix")
-    .add< PrecomputedWarpPreconditioner< defaulttype::Vec3Types > >()
-    ;
+void registerPrecomputedWarpPreconditioner(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Linear system solver based on a precomputed inverse matrix, wrapped by a per-node rotation matrix.")
+        .add< PrecomputedWarpPreconditioner< defaulttype::Vec3Types > >());
+}
 
 template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API PrecomputedWarpPreconditioner< defaulttype::Vec3Types >;
 

@@ -52,7 +52,7 @@
  *      - a (possibly empty) backtrace
  *      - the source file and line from where the messaging was emitted.
  *
- * for any usefull purpose, a messaging needs to be send to
+ * for any useful purpose, a messaging needs to be send to
  * a MessageHandler either using an object or using the singleton/static
  * part of the API.
  *

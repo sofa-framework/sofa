@@ -580,7 +580,7 @@ struct Matrix
    * transformations (translations and rotations).  If the matrix is not rigid,
    * this operation will not represent an inverse.
    *
-   * Note that all matricies that are directly returned by the API are rigid.
+   * Note that all matrices that are directly returned by the API are rigid.
    *
    * @returns The rigid inverse of the matrix.
    */

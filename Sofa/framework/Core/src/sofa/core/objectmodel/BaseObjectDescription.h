@@ -34,7 +34,7 @@ class Base;
 /**
  *  \brief Base Interface for classes containing the description of an object, used to construct it.
  *
- *  This class defines what informations are used as input (read from a file for instance) to create an object.
+ *  This class defines what information are used as input (read from a file for instance) to create an object.
  *  This default implementation simply stores an attributes map and does not support any hierarchy.
  *
  */

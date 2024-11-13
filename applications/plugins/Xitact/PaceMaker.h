@@ -105,7 +105,7 @@ protected:
 
 } // namespace controller
 
-} // namepace component
+} // namespace component
 
 } // namespace sofa
 

@@ -28,9 +28,11 @@
 namespace sofa::component::constraint::lagrangian::model
 {
 
-int UniformLagrangianConstraintClass = sofa::core::RegisterObject("A constraint equation applied on all dofs.")
-.add< UniformLagrangianConstraint<sofa::defaulttype::Vec1Types> >()
-;
+void registerUniformLagrangianConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A constraint equation applied on all dofs.")
+        .add< UniformLagrangianConstraint<sofa::defaulttype::Vec1Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UniformLagrangianConstraint<sofa::defaulttype::Vec1Types>;
 

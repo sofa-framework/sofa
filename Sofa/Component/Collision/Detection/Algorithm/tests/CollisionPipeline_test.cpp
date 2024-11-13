@@ -269,7 +269,7 @@ TEST_F(TestCollisionPipeline, checkCollisionPipelineWithMonkeyValueForDepth_Open
             // Check the returned value.
             if(this->checkCollisionPipelineWithMonkeyValueForDepth(depthValue) != depthValue)
             {
-                ADD_FAILURE() << "User provided depth parameter value '" << depthValue << "' has been un-expectedly overriden." ;
+                ADD_FAILURE() << "User provided depth parameter value '" << depthValue << "' has been un-expectedly overridden." ;
             }
         }
         else

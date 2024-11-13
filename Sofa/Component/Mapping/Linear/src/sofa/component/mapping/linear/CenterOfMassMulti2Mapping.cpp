@@ -30,13 +30,12 @@ namespace sofa::component::mapping::linear
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int CenterOfMassMulti2MappingClass = core::RegisterObject("Set the point to the center of mass of the DOFs it is attached to")
-        .add< CenterOfMassMulti2Mapping< Vec3Types, Rigid3Types, Vec3Types > >()
-
-        ;
+void registerCenterOfMassMulti2Mapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Set the point to the center of mass of the DOFs it is attached to.")
+        .add< CenterOfMassMulti2Mapping< Vec3Types, Rigid3Types, Vec3Types > >());
+}
 
 template class SOFA_COMPONENT_MAPPING_LINEAR_API CenterOfMassMulti2Mapping< Vec3Types, Rigid3Types, Vec3Types >;
-
 
 } // namespace sofa::component::mapping::linear

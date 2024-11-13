@@ -97,7 +97,7 @@ struct BlockType
         {
             return blockDataIt->second + "_" + blockPrecisionIt->second;
         }
-        return "Unknown bloc type: cannot convert bloc type to string";
+        return "Unknown block type: cannot convert block type to string";
     }
 
 };

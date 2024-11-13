@@ -101,7 +101,7 @@ public:
 
 
     //Parameter
-    Data<bool> p_drawSphere; ///< Draw shpere(s)
+    Data<bool> p_drawSphere; ///< Draw sphere(s)
     Data<bool> p_drawPoints; ///< Draw Points
     Data<double> _drawSize; ///< rendering size for box and topological elements
 };

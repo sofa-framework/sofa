@@ -29,14 +29,13 @@ namespace sofa::component::constraint::lagrangian::model
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
-int StopperLagrangianConstraintClass = core::RegisterObject("TODO-StopperLagrangianConstraint")
-        .add< StopperLagrangianConstraint<Vec1Types> >()
-
-        ;
+void registerStopperLagrangianConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Lagrangian-based constraint forcing a 1D DoF to be  inside a given range.")
+        .add< StopperLagrangianConstraint<Vec1Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API StopperLagrangianConstraint<Vec1Types>;
-
 
 } //namespace sofa::component::constraint::lagrangian::model

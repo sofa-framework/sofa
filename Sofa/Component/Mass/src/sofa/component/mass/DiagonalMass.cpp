@@ -156,9 +156,9 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::initRigidImpl()
         
     if(!l_topology)
     {
-        msg_error(this) << "Unable to retreive a valid MeshTopology component in the current context. \n"
+        msg_error(this) << "Unable to retrieve a valid MeshTopology component in the current context. \n"
                              "The component cannot be initialized and thus is de-activated. \n "
-                             "To supress this warning you can add a Topology component in the parent node of'<"<< this->getName() <<">'.\n" ;
+                             "To suppress this warning you can add a Topology component in the parent node of'<"<< this->getName() <<">'.\n" ;
         this->d_componentState.setValue(ComponentState::Invalid) ;
     }
     else
@@ -332,8 +332,9 @@ type::Vec6 DiagonalMass<Rigid3Types>::getMomentum ( const MechanicalParams* mpar
     return getMomentumRigid3Impl<Rigid3Types>(mparams, vx, vv) ;
 }
 
-// Register in the Factory
-int DiagonalMassClass = core::RegisterObject("Define a specific mass for each particle")
+void registerDiagonalMass(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compute a lumped (diagonalized) mass matrix resulting from the space integration of a density over a domain.")
         .add< DiagonalMass<Vec3Types> >()
         .add< DiagonalMass<Vec2Types, Vec3Types> >()
         .add< DiagonalMass<Vec1Types> >()
@@ -341,9 +342,8 @@ int DiagonalMassClass = core::RegisterObject("Define a specific mass for each pa
         .add< DiagonalMass<Vec1Types, Vec3Types> >()
         .add< DiagonalMass<Rigid3Types> >()
         .add< DiagonalMass<Rigid2Types> >()
-        .add< DiagonalMass<Rigid2Types, Rigid3Types> >()
-
-        ;
+        .add< DiagonalMass<Rigid2Types, Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec3Types>;
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec2Types>;

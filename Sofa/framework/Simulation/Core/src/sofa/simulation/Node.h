@@ -71,7 +71,7 @@ public:
     }
 };
 
-/// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
+/// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic conversion to one pointer.
 /// UPDATE: it is now an alias for the Link pointer container
 template < class T, bool duplicate = true >
 class NodeSingle : public SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)>
@@ -175,7 +175,7 @@ public:
 
     /// @name Visitor handling
     /// @param precomputedOrder is not used by default but could allow optimization on certain Node specializations
-    /// @warning when calling with precomputedOrder=true, the fonction "precomputeTraversalOrder" must be called before executing the visitor and the user must ensure by himself that the simulation graph has done been modified since the last call to "precomputeTraversalOrder"
+    /// @warning when calling with precomputedOrder=true, the function "precomputeTraversalOrder" must be called before executing the visitor and the user must ensure by himself that the simulation graph has done been modified since the last call to "precomputeTraversalOrder"
     /// @{
 
     /// Execute a recursive action starting from this node.
@@ -494,7 +494,7 @@ public:
     /// Update the simulation context values(gravity, time...), based on parent and local ContextObjects
     virtual void updateSimulationContext();
 
-    /// Called during initialization to corectly propagate the visual context to the children
+    /// Called during initialization to correctly propagate the visual context to the children
     virtual void initVisualContext() {}
 
     /// Propagate an event
@@ -565,7 +565,7 @@ public:
     virtual void addListener(MutationListener* obj);
     virtual void removeListener(MutationListener* obj);
 
-    /// @name virtual functions to add/remove some special components direclty in the right Sequence
+    /// @name virtual functions to add/remove some special components directly in the right Sequence
     /// @{
 
 #define NODE_DECLARE_SEQUENCE_ACCESSOR( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \

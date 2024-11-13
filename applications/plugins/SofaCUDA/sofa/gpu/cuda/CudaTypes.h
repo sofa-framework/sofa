@@ -86,7 +86,7 @@ public:
     static void setDPos(Deriv& d, const DPos& v) { d = v; }
 
 
-    /// @internal size dependant specializations
+    /// @internal size dependent specializations
     /// @{
 
     /// default implementation for size >= 3

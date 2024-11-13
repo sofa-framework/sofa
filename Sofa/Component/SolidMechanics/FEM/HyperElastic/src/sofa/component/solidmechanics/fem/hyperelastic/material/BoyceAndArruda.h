@@ -33,7 +33,7 @@ namespace sofa::component::solidmechanics::fem::hyperelastic::material
 {
 
 
-/** a Class that describe a generic hyperelastic material : exemple of Boyce and Arruda
+/** a Class that describe a generic hyperelastic material : example of Boyce and Arruda
 The material is described based on continuum mechanics and the description is independent
 to any discretization method like the finite element method. 
 A material is generically described by a strain energy function and its first and second derivatives.

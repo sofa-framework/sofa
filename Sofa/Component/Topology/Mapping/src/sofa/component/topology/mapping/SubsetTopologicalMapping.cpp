@@ -47,16 +47,14 @@
 namespace sofa::component::topology::mapping
 {
 
-using namespace sofa::defaulttype;
-
 using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
-// Register in the Factory
-int SubsetTopologicalMappingClass = core::RegisterObject("This class is a specific implementation of TopologicalMapping where the destination topology is a subset of the source topology. The implementation currently assumes that both topologies have been initialized correctly.")
-        .add< SubsetTopologicalMapping >()
-
-        ;
+void registerSubsetTopologicalMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("TopologicalMapping where the destination topology is a subset of the source topology. The implementation currently assumes that both topologies have been initialized correctly.")
+        .add< SubsetTopologicalMapping >());
+}
 
 SubsetTopologicalMapping::SubsetTopologicalMapping()
     : d_samePoints(initData(&d_samePoints, false, "samePoints", "True if the same set of points is used in both topologies"))

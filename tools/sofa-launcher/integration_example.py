@@ -73,7 +73,7 @@ results=startSofa([ {"GRAVITYXML": "0 0 0", "GRAVITYPY": [1,2,3], "nbIterations"
                     filesandtemplates, launcher=SSHLauncher(hosts, "YOULOGIN", 
                     runSofaAbsPath="THEPATHTOSOFA/runSofa"))
                     
-# Start sofa returns a dictionnary 
+# Start sofa returns a dictionary 
 for res in results:
        print("Results: ")
        print("    directory: "+res["directory"])

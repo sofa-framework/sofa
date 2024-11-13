@@ -30,10 +30,11 @@
 namespace sofa::component::collision::response::contact
 {
 
-int CollisionResponseClass = core::RegisterObject("Default class to create reactions to the collisions")
-        .add< CollisionResponse >()
-        .addAlias("DefaultContactManager")
-        ;
+void registerCollisionResponse(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Default class to create reactions to the collisions.")
+        .add< CollisionResponse >());
+}
 
 CollisionResponse::CollisionResponse()
     : d_response(initData(&d_response, "response", "contact response class"))
@@ -171,7 +172,7 @@ void CollisionResponse::createNewContacts(const core::collision::ContactManager:
 
                 if (contact == nullptr)
                 {
-                    //contact couln't be created: write an error and collision detection output is no longer considered
+                    //contact couldn't be created: write an error and collision detection output is no longer considered
                     contactCreationError(errorStream, model1, model2, responseUsed);
                     contactMap.erase(contactIt);
                 }

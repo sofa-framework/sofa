@@ -22,7 +22,7 @@
 
 /** Sparse matrix test suite.
  *
- * The same suite is instanciated using different parameters: entry types
+ * The same suite is instantiated using different parameters: entry types
  * (float/Real) and BlockMN size in CompressedRowSparse.
 */
 
@@ -300,7 +300,7 @@ struct TestSparseMatrices : public NumericTest<typename T::Real>
             mb.beginBlockRow(i);
             if( i%2==0 ) // leave some rows empty
             {
-                for( int j=bc-1; j>=0; j--) // set the blocs in reverse order, for fun.
+                for( int j=bc-1; j>=0; j--) // set the blocks in reverse order, for fun.
                 {
                     // create a block and give it some value
                     BlockMN b;
@@ -327,7 +327,7 @@ struct TestSparseMatrices : public NumericTest<typename T::Real>
             mb.beginBlockRow(i);
             if( i%2==0 ) // leave some rows empty
             {
-                for( unsigned j=0 ; j<bc; ++j ) // set the blocs in column order
+                for( unsigned j=0 ; j<bc; ++j ) // set the blocks in column order
                 {
                     // create a block and give it some value
                     BlockMN b;
@@ -356,7 +356,7 @@ struct TestSparseMatrices : public NumericTest<typename T::Real>
         {
             if( i%2==0 ) // leave some rows empty
             {
-                for( int j=bc-1; j>=0; j--) // set the blocs in reverse order, for fun.
+                for( int j=bc-1; j>=0; j--) // set the blocks in reverse order, for fun.
                 {
                     // create a block and give it some value
                     BlockMN b;

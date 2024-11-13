@@ -21,13 +21,36 @@
 ******************************************************************************/
 #include <sofa/component/solidmechanics//spring/init.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+
 namespace sofa::component::solidmechanics::spring
 {
-    
+
+extern void registerAngularSpringForceField(sofa::core::ObjectFactory* factory);
+extern void registerFastTriangularBendingSprings(sofa::core::ObjectFactory* factory);
+extern void registerFrameSpringForceField(sofa::core::ObjectFactory* factory);
+extern void registerGearSpringForceField(sofa::core::ObjectFactory* factory);
+extern void registerNonUniformHexahedronFEMForceFieldAndMass(sofa::core::ObjectFactory* factory);
+extern void registerMeshSpringForceField(sofa::core::ObjectFactory* factory);
+extern void registerPolynomialRestShapeSpringsForceField(sofa::core::ObjectFactory* factory);
+extern void registerPolynomialSpringsForceField(sofa::core::ObjectFactory* factory);
+extern void registerQuadBendingSprings(sofa::core::ObjectFactory* factory);
+extern void registerQuadularBendingSprings(sofa::core::ObjectFactory* factory);
+extern void registerRegularGridSpringForceField(sofa::core::ObjectFactory* factory);
+extern void registerRepulsiveSpringForceField(sofa::core::ObjectFactory* factory);
+extern void registerRestShapeSpringsForceField(sofa::core::ObjectFactory* factory);
+extern void registerSpringForceField(sofa::core::ObjectFactory* factory);
+extern void registerTriangleBendingSprings(sofa::core::ObjectFactory* factory);
+extern void registerTriangularBendingSprings(sofa::core::ObjectFactory* factory);
+extern void registerTriangularBiquadraticSpringsForceField(sofa::core::ObjectFactory* factory);
+extern void registerTriangularQuadraticSpringsForceField(sofa::core::ObjectFactory* factory);
+extern void registerVectorSpringForceField(sofa::core::ObjectFactory* factory);
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -45,11 +68,37 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerAngularSpringForceField(factory);
+    registerFastTriangularBendingSprings(factory);
+    registerFrameSpringForceField(factory);
+    registerGearSpringForceField(factory);
+    registerNonUniformHexahedronFEMForceFieldAndMass(factory);
+    registerMeshSpringForceField(factory);
+    registerPolynomialRestShapeSpringsForceField(factory);
+    registerPolynomialSpringsForceField(factory);
+    registerQuadBendingSprings(factory);
+    registerQuadularBendingSprings(factory);
+    registerRegularGridSpringForceField(factory);
+    registerRepulsiveSpringForceField(factory);
+    registerRestShapeSpringsForceField(factory);
+    registerSpringForceField(factory);
+    registerTriangleBendingSprings(factory);
+    registerTriangularBendingSprings(factory);
+    registerTriangularBiquadraticSpringsForceField(factory);
+    registerTriangularQuadraticSpringsForceField(factory);
+    registerVectorSpringForceField(factory);
+}
+
 void init()
 {
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         first = false;
     }
 }

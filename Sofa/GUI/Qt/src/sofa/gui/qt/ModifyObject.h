@@ -61,7 +61,7 @@ typedef struct ModifyObjectFlags
 
     bool HIDE_FLAG; //if we allow to hide Datas
     bool READONLY_FLAG; //if we allow  ReadOnly Datas
-    bool EMPTY_FLAG;//if we allow empty datas
+    bool EMPTY_FLAG;//if we allow empty data
     bool RESIZABLE_FLAG;
     bool REINIT_FLAG;
     bool LINKPATH_MODIFIABLE_FLAG; //if we allow to modify the links of the Data

@@ -27,12 +27,15 @@
 
 namespace sofa::component::linearsolver::direct
 {
-    template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSimplicialLLT< SReal >;
-    template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSimplicialLLT< sofa::type::Mat<3,3,SReal> >;
 
-    int EigenSimplicialLLTCRSClass = sofa::core::RegisterObject("Direct Linear Solver using a Sparse LL^T factorization.")
-    .add< EigenSimplicialLLT< SReal > >()
-    .add< EigenSimplicialLLT< sofa::type::Mat<3,3,SReal> > >()
-    ;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSimplicialLLT< SReal >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSimplicialLLT< sofa::type::Mat<3,3,SReal> >;
+
+void registerEigenSimplicialLLT(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Direct linear solver using a Sparse LL^T factorization.")
+        .add< EigenSimplicialLLT< SReal > >()
+        .add< EigenSimplicialLLT< sofa::type::Mat<3, 3, SReal> > >());
+}
 
 }
