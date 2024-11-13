@@ -20,38 +20,31 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
-#include <vector>
-#include <sofa/type/fixed_array.h>
-#include <sofa/type/vector.h>
-#include <sofa/helper/set.h>
-#include <sofa/type/RGBAColor.h>
-#include <typeinfo>
-#include <sofa/defaulttype/AbstractTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
+#include <sofa/helper/SelectableItem.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Bool.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Quat.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_SelectableItem.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Text.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_BoundingBox.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_RGBAColor.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Topology.h>
 
 namespace sofa::defaulttype
 {
 
-/// We make an alias to wrap around the old name to the new one.
-template<class T>
-using VirtualTypeInfo = DataTypeInfoDynamicWrapper<DataTypeInfo<T>>;
+template<class TDataType>
+struct SelectableItemDataTypeInfo : defaulttype::DefaultDataTypeInfo<TDataType>
+{
+    enum { ValidInfo       = 1 /**< 1 if this type has valid infos*/ };
+    static const std::string name()
+    {
+        return "SelectableItem";
+    }
+    static const std::string GetTypeName()
+    {
+        return "SelectableItem";
+    }
+};
 
-} /// namespace sofa::defaulttype
+
+template<class T>
+struct DataTypeInfo<T, std::enable_if_t<std::is_base_of_v<helper::BaseSelectableItem, T>>> :
+    SelectableItemDataTypeInfo<T>
+{
+};
+
+}

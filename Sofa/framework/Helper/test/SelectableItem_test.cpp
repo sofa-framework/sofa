@@ -168,7 +168,7 @@ TEST(SelectableItem, data)
 
 TEST(SelectableItem, DataTypeInfo_BaseSelectableItems)
 {
-    EXPECT_EQ(sofa::defaulttype::DataTypeInfo<sofa::helper::BaseSelectableItem>::GetTypeName(), "BaseSelectableItem");
+    EXPECT_EQ(sofa::defaulttype::DataTypeInfo<sofa::helper::BaseSelectableItem>::GetTypeName(), "SelectableItem");
 }
 
 TEST(SelectableItem, DataTypeInfoValidInfo_SelectableItem)
