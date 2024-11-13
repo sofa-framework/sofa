@@ -239,17 +239,8 @@ const std::string& Utils::getUserHomeDirectory()
     auto computeUserHomeDirectory = []()
     {
 #ifdef WIN32 // Windows: ${HOME}
-        const char* homeDir;
-
-        // if USERPROFILE is defined
-        if ((homeDir = std::getenv("USERPROFILE")) == nullptr)
-        {
-            // else system calls are used
-            homeDir = getpwuid(getuid())->pw_dir;
-        }
-
+        const char* homeDir = std::getenv("USERPROFILE"));
         return std::string(homeDir);
-
 #elif defined(__APPLE__) // macOS : ${HOME}/Library/Application Support
        // https://stackoverflow.com/questions/5123361/finding-library-application-support-from-c
 
@@ -311,7 +302,6 @@ const std::string& Utils::getSofaDataDirectory()
 // no standard/portable way
 const std::string& Utils::getUserLocalDirectory()
 {
-
     auto computeUserLocalDirectory = []()
     {
 #ifdef WIN32 // Windows: "LocalAppData" directory i.e ${HOME}\AppData\Local
