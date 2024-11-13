@@ -85,7 +85,7 @@ class SOFA_SIMULATION_CORE_API CollisionResetVisitor : public BaseCollisionVisit
 {
 
 public:
-    CollisionResetVisitor(const core::ExecParams* params) :BaseCollisionVisitor(params) {}
+    CollisionResetVisitor(const core::ExecParams* params) : BaseCollisionVisitor(params) {}
     void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj) override;
     const char* getClassName() const override { return "CollisionResetVisitor"; }
 };
