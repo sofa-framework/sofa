@@ -163,7 +163,7 @@ TEST(SelectableItem, wrong_key)
 TEST(SelectableItem, data)
 {
     const sofa::Data<TestSelectableItem> data;
-    EXPECT_EQ(data.getValueTypeString(), "TestSelectableItem");
+    EXPECT_EQ(data.getValueTypeString(), "SelectableItem");
 }
 
 TEST(SelectableItem, DataTypeInfo_BaseSelectableItems)
@@ -171,9 +171,19 @@ TEST(SelectableItem, DataTypeInfo_BaseSelectableItems)
     EXPECT_EQ(sofa::defaulttype::DataTypeInfo<sofa::helper::BaseSelectableItem>::GetTypeName(), "BaseSelectableItem");
 }
 
+TEST(SelectableItem, DataTypeInfoValidInfo_SelectableItem)
+{
+    EXPECT_TRUE(sofa::defaulttype::DataTypeInfo<TestSelectableItem>::ValidInfo);
+}
+
 TEST(SelectableItem, DataTypeInfo_SelectableItem)
 {
-    EXPECT_EQ(sofa::defaulttype::DataTypeInfo<TestSelectableItem>::GetTypeName(), "TestSelectableItem");
+    EXPECT_EQ(sofa::defaulttype::DataTypeInfo<TestSelectableItem>::GetTypeName(), "SelectableItem");
+}
+
+TEST(SelectableItem, BaseData_typeName)
+{
+    EXPECT_EQ(sofa::core::objectmodel::BaseData::typeName<TestSelectableItem>(), "SelectableItem");
 }
 
 TEST(SelectableItem, dynamic_cast_base)
