@@ -94,7 +94,7 @@ public:
 class SOFA_SIMULATION_CORE_API CollisionDetectionVisitor : public BaseCollisionVisitor
 {
 public:
-    CollisionDetectionVisitor(const core::ExecParams* params) :BaseCollisionVisitor(params) {}
+    CollisionDetectionVisitor(const core::ExecParams* params) : BaseCollisionVisitor(params) {}
     void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj) override;
     const char* getClassName() const override { return "CollisionDetectionVisitor"; }
 };
