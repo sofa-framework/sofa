@@ -56,8 +56,8 @@ DataDisplay::DataDisplay()
     , state(nullptr)
     , m_topology(nullptr)
     , l_topology(initLink("topology", "link to the topology container"))
-    , oldMin(0)
-    , oldMax(0)
+    , oldMin(std::numeric_limits<Real>::max())
+    , oldMax(std::numeric_limits<Real>::lowest())
 {
     this->addAlias(&f_triangleData,"cellData"); // backward compatibility
     d_currentMin.setReadOnly(true);
@@ -141,9 +141,8 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
     }
 
     // Range for points
-    Real min ;
-    Real max ;
-    min = max = 0;
+    Real min = std::numeric_limits<Real>::max();
+    Real max = std::numeric_limits<Real>::lowest();
     if (bDrawPointData) {
         VecPointData::const_iterator i = ptData.begin();
         min = *i;
