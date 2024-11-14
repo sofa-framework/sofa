@@ -33,6 +33,52 @@
 
     <!-- # Header of the simulation -->
     <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" parallelODESolving="true" parallelCollisionDetectionAndFreeMotion="true"/>
+    <GenericConstraintSolver maxIterations="50" multithreading='true' tolerance="1.0e-3"/>
+
+    <!-- # Definition of the collision pipeline -->
+    <CollisionPipeline name="CollisionPipeline" />
+    <ParallelBruteForceBroadPhase name="CollisionBroadPhase"/>
+    <ParallelBVHNarrowPhase name="CollisionNarrowPhase"/>
+    <CollisionResponse name="CollisionResponse" response="FrictionContactConstraint" responseParams="mu=0.2"/>
+    <NewProximityIntersection name="Intersection" alarmDistance="10" contactDistance="5" />
+
+    <!--  # Object = SOFA Logo -->
+    <Node name="SOFALogo">
+        <EulerImplicitSolver name="EulerImplicitScheme" />
+        <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
+        <EigenSimplicialLDLT name="LDLTLinearSolver" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true" linearSystem="@A"/>
+
+        <MeshVTKLoader name="LogoLoader" filename="mesh/SOFA_volume.vtk" translation="-120 20 0" rotation="180 0 90"/>
+        <TetrahedronSetTopologyContainer name="Container" src="@LogoLoader" />
+        <TetrahedronSetTopologyModifier name="Modifier"/>
+        <MechanicalObject name="LogoDOF" template="Vec3d" />
+        <TetrahedronFEMForceField name="LinearElasticityFEM"  youngModulus="5" poissonRatio="0.3" method="large" />
+        <MeshMatrixMass name="Mass" totalMass="0.1" />
+
+        <Node name="Collision">
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SOFA_collision_no_face.obj"  translation="-120 20 0" rotation="180 0 90"/>
+            <MeshTopology name="CollisionTopo" src="@SurfaceLoader"/>
+            <MechanicalObject name="CollisionDOF" src="@CollisionTopo" />
+            <LineCollisionModel selfCollision="1" topology="@CollisionTopo" group="2 3 5"/>
+            <BarycentricMapping name="MappingCollision" input="@../LogoDOF"  output="@CollisionDOF"/>
+        </Node>
+
+        <Node name="BorderCollision">
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SOFA_collision_center.obj" translation="-120 20 0" rotation="180 0 90"/>
+            <MeshTopology name="CollisionTopo" src="@SurfaceLoader"/>
+            <MechanicalObject name="CollisionDOF" src="@CollisionTopo"/>
+            <LineCollisionModel selfCollision="1" topology="@CollisionTopo" group="3 4"/>
+            <BarycentricMapping name="MappingCollision" input="@../LogoDOF"  output="@CollisionDOF"/>
+        </Node>
+
+        <Node name="Visu">
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SOFA_surface.obj" translation="-120 20 0" rotation="180 0 90"/>
+            <OglModel name="VisualModel" color="0.7 .35 0 1" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
+            <BarycentricMapping name="MappingVisu" isMechanical="false" input="@../LogoDOF" output="@VisualModel" />
+        </Node>
+        <LinearSolverConstraintCorrection name="ConstraintCorrection" linearSolver="@LDLTLinearSolver"/>
+
+    </Node>
 
     <Node name="Box">
         <EulerImplicitSolver name="EulerImplicitScheme" />
