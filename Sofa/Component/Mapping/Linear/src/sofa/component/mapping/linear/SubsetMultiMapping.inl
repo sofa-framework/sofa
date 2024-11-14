@@ -43,25 +43,29 @@ void SubsetMultiMapping<TIn, TOut>::init()
     static constexpr auto Nout = TOut::deriv_total_size;
 
 
-    for( unsigned i=0; i<baseMatrices.size(); i++ )
+    for (unsigned i = 0; i < baseMatrices.size(); i++)
+    {
         delete baseMatrices[i];
+    }
 
     typedef linearalgebra::EigenSparseMatrix<TIn,TOut> Jacobian;
     baseMatrices.resize( this->getFrom().size() );
     type::vector<Jacobian*> jacobians( this->getFrom().size() );
-    for(unsigned i=0; i<baseMatrices.size(); i++ )
+    for (unsigned i = 0; i < baseMatrices.size(); i++)
     {
         baseMatrices[i] = jacobians[i] = new linearalgebra::EigenSparseMatrix<TIn,TOut>;
         jacobians[i]->resize(Nout*indexPairSize,Nin*this->fromModels[i]->getSize() ); // each jacobian has the same number of rows
     }
 
+    const auto& indexPairsValue = d_indexPairs.getValue();
+
     // fill the Jacobians
-    for(unsigned i=0; i<indexPairSize; i++)
+    for (unsigned i = 0; i < indexPairSize; i++)
     {
-        unsigned parent = d_indexPairs.getValue()[i * 2];
+        unsigned parent = indexPairsValue[i * 2];
         Jacobian* jacobian = jacobians[parent];
-        unsigned bcol = d_indexPairs.getValue()[i * 2 + 1];  // parent particle
-        for(unsigned k=0; k<Nout; k++ )
+        unsigned bcol = indexPairsValue[i * 2 + 1];  // parent particle
+        for (unsigned k = 0; k < Nout; k++)
         {
             unsigned row = i*Nout + k;
 
@@ -70,22 +74,24 @@ void SubsetMultiMapping<TIn, TOut>::init()
         }
     }
     // finalize the Jacobians
-    for(unsigned i=0; i<baseMatrices.size(); i++ )
-        baseMatrices[i]->compress();
+    for (linearalgebra::BaseMatrix* baseMat : baseMatrices)
+    {
+        baseMat->compress();
+    }
 }
 
 template <class TIn, class TOut>
 SubsetMultiMapping<TIn, TOut>::SubsetMultiMapping()
-    : Inherit()
-    , d_indexPairs(initData(&d_indexPairs, type::vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
+    : d_indexPairs(initData(&d_indexPairs, type::vector<unsigned>(), "indexPairs",
+        "list of couples (parent index + index in the parent)"))
 {
-        indexPairs.setOriginalData(&d_indexPairs);
+    indexPairs.setOriginalData(&d_indexPairs);
 }
 
 template <class TIn, class TOut>
 SubsetMultiMapping<TIn, TOut>::~SubsetMultiMapping()
 {
-    for(unsigned i=0; i<baseMatrices.size(); i++ )
+    for (unsigned i = 0; i < baseMatrices.size(); i++)
     {
         delete baseMatrices[i];
     }
@@ -109,9 +115,9 @@ void SubsetMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int i
             break;
         }
     }
-    if(i==this->fromModels.size())
+    if (i == this->fromModels.size())
     {
-        msg_error() << "SubsetMultiMapping<TIn, TOut>::addPoint, parent " << from->getName() << " not found !";
+        msg_error() << "addPoint, parent " << from->getName() << " not found !";
         assert(0);
     }
 
@@ -140,8 +146,8 @@ void apply_impl(
         const unsigned stateId = indexPairs[i * 2];
         const unsigned coordId = indexPairs[i * 2 + 1];
 
-        const auto* inPosPtr = dataVecIn[stateId];
-        const auto& inPos = inPosPtr->getValue();
+        const DataVecIn* inPosPtr = dataVecIn[stateId];
+        const typename DataVecIn::value_type& inPos = inPosPtr->getValue();
 
         core::eq( out[i], inPos[coordId] );
     }
@@ -217,12 +223,16 @@ void SubsetMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparam
     const DataVecDeriv_t<Out>* cderData = dataVecInForce[0];
     const VecDeriv_t<Out>& cder = cderData->getValue();
 
-    for(unsigned i=0; i<cder.size(); i++)
+    const auto& indexPairsValue = d_indexPairs.getValue();
+
+    for (unsigned i = 0; i < cder.size(); i++)
     {
-        DataVecDeriv_t<In>* inDerivPtr = dataVecOutForce[d_indexPairs.getValue()[i * 2]];
-        VecDeriv_t<In>& inDeriv = *(*inDerivPtr).beginEdit();
-        core::peq(inDeriv[d_indexPairs.getValue()[i * 2 + 1]], cder[i] );
-        (*inDerivPtr).endEdit();
+        const unsigned stateId = indexPairsValue[i * 2];
+        const unsigned coordId = indexPairsValue[i * 2 + 1];
+
+        DataVecDeriv_t<In>* inDerivPtr = dataVecOutForce[stateId];
+        auto inDeriv = sofa::helper::getWriteAccessor(*inDerivPtr);
+        core::peq(inDeriv[coordId], cder[i] );
     }
 }
 
