@@ -86,7 +86,6 @@ extern template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< defa
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
-
 #endif
 
 } // namespace sofa::component::mapping::linear

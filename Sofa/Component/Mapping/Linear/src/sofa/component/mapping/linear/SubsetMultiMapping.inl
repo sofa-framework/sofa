@@ -100,12 +100,15 @@ const type::vector<sofa::linearalgebra::BaseMatrix*>* SubsetMultiMapping<TIn, TO
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int index)
 {
-
     // find the index of the parent state
     unsigned i;
-    for(i=0; i<this->fromModels.size(); i++)
-        if(this->fromModels.get(i)==from )
+    for (i = 0; i < this->fromModels.size(); i++)
+    {
+        if (this->fromModels.get(i) == from)
+        {
             break;
+        }
+    }
     if(i==this->fromModels.size())
     {
         msg_error() << "SubsetMultiMapping<TIn, TOut>::addPoint, parent " << from->getName() << " not found !";
@@ -119,47 +122,43 @@ template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::addPoint( int from, int index)
 {
     assert((size_t)from < this->fromModels.size());
-    type::vector<unsigned>& indexPairsVector = *d_indexPairs.beginEdit();
+    auto indexPairsVector = sofa::helper::getWriteAccessor(d_indexPairs);
     indexPairsVector.push_back(from);
     indexPairsVector.push_back(index);
-    d_indexPairs.endEdit();
 }
 
+template <class DataVecOut, class DataVecIn>
+void apply_impl(
+    const type::vector<DataVecOut*>& dataVecOut,
+    const type::vector<const DataVecIn*>& dataVecIn,
+    const type::vector<unsigned>& indexPairs)
+{
+    auto out = sofa::helper::getWriteOnlyAccessor(*dataVecOut[0]);
+
+    for (unsigned i = 0; i < out.size(); i++)
+    {
+        const unsigned stateId = indexPairs[i * 2];
+        const unsigned coordId = indexPairs[i * 2 + 1];
+
+        const auto* inPosPtr = dataVecIn[stateId];
+        const auto& inPos = inPosPtr->getValue();
+
+        core::eq( out[i], inPos[coordId] );
+    }
+}
 
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams, const type::vector<DataVecCoord_t<Out>*>& dataVecOutPos, const type::vector<const DataVecCoord_t<In>*>& dataVecInPos)
 {
     SOFA_UNUSED(mparams);
-
-    VecCoord_t<Out>& out = *(dataVecOutPos[0]->beginEdit());
-
-    for(unsigned i=0; i<out.size(); i++)
-    {
-        const DataVecCoord_t<In>* inPosPtr = dataVecInPos[d_indexPairs.getValue()[i * 2]];
-        const VecCoord_t<In>& inPos = (*inPosPtr).getValue();
-
-        core::eq( out[i], inPos[d_indexPairs.getValue()[i * 2 + 1]] );
-    }
-
-    dataVecOutPos[0]->endEdit();
-
+    apply_impl( dataVecOutPos, dataVecInPos, d_indexPairs.getValue());
 }
 
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams, const type::vector<DataVecDeriv_t<Out>*>& dataVecOutVel, const type::vector<const DataVecDeriv_t<In>*>& dataVecInVel)
 {
     SOFA_UNUSED(mparams);
-
-    VecDeriv_t<Out>& out = *(dataVecOutVel[0]->beginEdit());
-
-    for(unsigned i=0; i<out.size(); i++)
-    {
-        const DataVecDeriv_t<In>* inDerivPtr = dataVecInVel[d_indexPairs.getValue()[i * 2]];
-        const VecDeriv_t<In>& inDeriv = (*inDerivPtr).getValue();
-        core::eq( out[i], inDeriv[d_indexPairs.getValue()[i * 2 + 1]] );
-    }
-
-    dataVecOutVel[0]->endEdit();
+    apply_impl( dataVecOutVel, dataVecInVel, d_indexPairs.getValue());
 }
 
 template <class TIn, class TOut>
@@ -206,9 +205,6 @@ void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cpa
             }
             ++colIt;
         }
-
-
-
     }
 }
 
