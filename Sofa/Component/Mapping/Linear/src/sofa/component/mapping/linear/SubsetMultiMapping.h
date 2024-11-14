@@ -34,10 +34,6 @@
 namespace sofa::component::mapping::linear
 {
 
-/**
- * @class SubsetMapping
- * @brief Compute a subset of input points
- */
 template <class TIn, class TOut>
 class SubsetMultiMapping : public LinearMultiMapping<TIn, TOut>
 {
@@ -47,28 +43,6 @@ public:
     typedef LinearMultiMapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
-
-    typedef typename Out::VecCoord OutVecCoord;
-    typedef typename Out::VecDeriv OutVecDeriv;
-    typedef typename Out::Coord OutCoord;
-    typedef typename Out::Deriv OutDeriv;
-    typedef typename Out::MatrixDeriv OutMatrixDeriv;
-    typedef typename In::VecCoord InVecCoord;
-    typedef typename In::VecDeriv InVecDeriv;
-    typedef typename In::Coord InCoord;
-    typedef typename In::Deriv InDeriv;
-    typedef typename In::MatrixDeriv InMatrixDeriv;
-    typedef typename InCoord::value_type Real;
-    typedef typename type::vector<const InVecCoord*> vecConstInVecCoord;
-    typedef typename type::vector<OutVecCoord*> vecOutVecCoord;
-
-    typedef Data<InVecCoord> InDataVecCoord;
-    typedef Data<InVecDeriv> InDataVecDeriv;
-    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
-
-    typedef Data<OutVecCoord> OutDataVecCoord;
-    typedef Data<OutVecDeriv> OutDataVecDeriv;
-    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
     /// Correspondence array
     typedef core::topology::BaseMeshTopology::SetIndex IndexArray;
@@ -81,12 +55,12 @@ public:
     void addPoint(int fromModel, int index);
 
     // usual Mapping API
-    void apply(const core::MechanicalParams* mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos, const type::vector<const InDataVecCoord*>& dataVecInPos) override;
-    void applyJ(const core::MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel) override;
-    void applyJT(const core::MechanicalParams* mparams, const type::vector<InDataVecDeriv*>& dataVecOutForce, const type::vector<const OutDataVecDeriv*>& dataVecInForce) override;
+    void apply(const core::MechanicalParams* mparams, const type::vector<DataVecCoord_t<Out>*>& dataVecOutPos, const type::vector<const DataVecCoord_t<In>*>& dataVecInPos) override;
+    void applyJ(const core::MechanicalParams* mparams, const type::vector<DataVecDeriv_t<Out>*>& dataVecOutVel, const type::vector<const DataVecDeriv_t<In>*>& dataVecInVel) override;
+    void applyJT(const core::MechanicalParams* mparams, const type::vector<DataVecDeriv_t<In>*>& dataVecOutForce, const type::vector<const DataVecDeriv_t<Out>*>& dataVecInForce) override;
     void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
 
-    void applyJT( const core::ConstraintParams* cparams, const type::vector< InDataMatrixDeriv* >& dataMatOutConst, const type::vector< const OutDataMatrixDeriv* >& dataMatInConst ) override;
+    void applyJT( const core::ConstraintParams* cparams, const type::vector< DataMatrixDeriv_t<In>* >& dataMatOutConst, const type::vector< const DataMatrixDeriv_t<Out>* >& dataMatInConst ) override;
 
     /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().
     virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
@@ -99,7 +73,7 @@ public:
 protected :
 
     SubsetMultiMapping();
-    virtual ~SubsetMultiMapping();
+    virtual ~SubsetMultiMapping() override;
 
     type::vector<linearalgebra::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
