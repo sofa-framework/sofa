@@ -358,7 +358,6 @@ void LinearVelocityProjectiveConstraint<DataTypes>::applyConstraint(const core::
                 r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
             }
         }
-
     }
 }
 
@@ -375,7 +374,6 @@ void LinearVelocityProjectiveConstraint<DataTypes>::projectMatrix( sofa::lineara
             M->clearRowCol( offset + (*it) * blockSize + c);
         }
     }
-
 }
 
 template <class DataTypes>
@@ -393,7 +391,6 @@ void LinearVelocityProjectiveConstraint<DataTypes>::applyConstraint(
             matrix->discardRowCol(N * index + c, N * index + c);
         }
     }
-
 }
 
 //display the path the constrained dofs will go through
