@@ -21,10 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/visual/CylinderVisualModel.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::visual
@@ -36,20 +33,14 @@ void registerCylinderVisualModel(sofa::core::ObjectFactory* factory)
         .add< CylinderVisualModel >());
 }
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::topology;
-
 CylinderVisualModel::CylinderVisualModel()
     : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder.")),
       color(initData(&color, sofa::type::RGBAColor::white(), "color", "Color of the cylinders."))
     , d_edges(initData(&d_edges,"edges","List of edge indices"))
-      // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
 {
 }
 
-CylinderVisualModel::~CylinderVisualModel()
-{
-}
+CylinderVisualModel::~CylinderVisualModel() = default;
 
 void CylinderVisualModel::init()
 {
