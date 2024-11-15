@@ -73,7 +73,6 @@ private:
     Data<SeqEdges> d_edges; ///< List of edge indices
 
 
-    float r,g,b,a;
     // sofa::core::topology::PointData<sofa::type::vector<unsigned char> >		pointData;
 
     typedef Vec3State::Coord Coord;
