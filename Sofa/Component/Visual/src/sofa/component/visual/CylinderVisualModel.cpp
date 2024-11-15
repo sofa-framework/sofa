@@ -78,17 +78,6 @@ void CylinderVisualModel::doDrawVisual(const core::visual::VisualParams* vparams
     }
 }
 
-
-void CylinderVisualModel::setColor(float r, float g, float b, float a)
-{
-    color.setValue(type::RGBAColor(r,g,b,a));
-}
-
-void CylinderVisualModel::setColor(std::string color)
-{
-    this->color.setValue(type::RGBAColor::fromString(color));
-}
-
 void CylinderVisualModel::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, Index& vindex, Index& /*nindex*/, Index& /*tindex*/, int& /*count*/)
 {
     const VecCoord& x = this->read( core::vec_id::read_access::position )->getValue();
