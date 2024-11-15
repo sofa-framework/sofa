@@ -912,24 +912,29 @@ void Node::visitLocalNode(const sofa::core::objectmodel::DirectionalVisitor& vis
         {
             if (obj)
             {
-                (visitor)(obj);
+                visitor(obj);
             }
         }
     };
 
     visitContainer(solver);
-    visitContainer(constraintSolver);
-    visitContainer(mapping);
+
+    if (mechanicalMapping)
+    {
+        visitor(mechanicalMapping.get());
+    }
 
     if (mechanicalState)
     {
-        (visitor)(mechanicalState.get());
-    }
-    if (mass)
-    {
-        (visitor)(mass.get());
+        visitor(mechanicalState.get());
     }
 
+    if (mass)
+    {
+        visitor(mass.get());
+    }
+
+    visitContainer(constraintSolver);
     visitContainer(forceField);
     visitContainer(interactionForceField);
     visitContainer(projectiveConstraintSet);
@@ -954,7 +959,33 @@ void Node::accept(const sofa::core::objectmodel::TopDownVisitor& visitor)
 void Node::accept(const sofa::core::objectmodel::BottomUpVisitor& visitor)
 {
     visitChildren(*this, visitor);
-    visitLocalNode(visitor);
+
+    const auto visitContainer = [&visitor](auto& container)
+    {
+        for (auto& obj : container)
+        {
+            if (obj)
+            {
+                visitor(obj);
+            }
+        }
+    };
+
+    visitContainer(projectiveConstraintSet);
+    visitContainer(constraintSet);
+    visitContainer(constraintSolver);
+
+    if (mechanicalState)
+    {
+        visitor(mechanicalState.get());
+    }
+
+    if (mechanicalMapping)
+    {
+        visitor(mechanicalMapping.get());
+    }
+
+    visitContainer(solver);
 }
 
 void Node::accept(const sofa::core::objectmodel::TopDownVisitor& topDownVisitor,
