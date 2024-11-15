@@ -41,7 +41,7 @@ using namespace sofa::core::topology;
 
 CylinderVisualModel::CylinderVisualModel()
     : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder.")),
-      color(initData(&color, sofa::type::RGBAColor(1.0,1.0,1.0,1.0), "color", "Color of the cylinders."))
+      color(initData(&color, sofa::type::RGBAColor::white(), "color", "Color of the cylinders."))
     , d_edges(initData(&d_edges,"edges","List of edge indices"))
       // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
 {
@@ -65,7 +65,7 @@ void CylinderVisualModel::doDrawVisual(const core::visual::VisualParams* vparams
     vparams->drawTool()->setLightingEnabled(true);
     const float _radius = radius.getValue();
 
-    const sofa::type::RGBAColor col( r, g, b, a );
+    const sofa::type::RGBAColor& col = color.getValue();
 
     const SeqEdges& edges = d_edges.getValue();
 
@@ -81,10 +81,7 @@ void CylinderVisualModel::doDrawVisual(const core::visual::VisualParams* vparams
 
 void CylinderVisualModel::setColor(float r, float g, float b, float a)
 {
-    this->r = r;
-    this->g = g;
-    this->b = b;
-    this->a = a;
+    color.setValue(type::RGBAColor(r,g,b,a));
 }
 
 static int hexval(char c)
