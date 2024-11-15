@@ -218,6 +218,10 @@ public:
     /// Possible optimization with traversal precomputation, not mandatory and does nothing by default
     virtual void precomputeTraversalOrder( const sofa::core::ExecParams* ) {}
 
+    void accept(const sofa::core::objectmodel::TopDownVisitor& visitor) override;
+    void accept(const sofa::core::objectmodel::BottomUpVisitor& visitor) override;
+    void accept(const sofa::core::objectmodel::TopDownVisitor& topDownVisitor, const sofa::core::objectmodel::BottomUpVisitor& bottomUpVisitor) override;
+
     /// @}
 
     template<class A, bool B=false>
@@ -553,6 +557,8 @@ private:
 
     virtual void notifyEndAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
     virtual void notifyEndRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
+
+    void visitLocalNode(const sofa::core::objectmodel::DirectionalVisitor& visitor);
 
 
 protected:

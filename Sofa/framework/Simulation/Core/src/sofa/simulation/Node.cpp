@@ -904,6 +904,66 @@ void Node::executeVisitor(Visitor* action, bool precomputedOrder)
     }
 }
 
+void Node::visitLocalNode(const sofa::core::objectmodel::DirectionalVisitor& visitor)
+{
+    const auto visitContainer = [&visitor](auto& container)
+    {
+        for (auto& obj : container)
+        {
+            if (obj)
+            {
+                (visitor)(obj);
+            }
+        }
+    };
+
+    visitContainer(solver);
+    visitContainer(constraintSolver);
+    visitContainer(mapping);
+
+    if (mechanicalState)
+    {
+        (visitor)(mechanicalState.get());
+    }
+    if (mass)
+    {
+        (visitor)(mass.get());
+    }
+
+    visitContainer(forceField);
+    visitContainer(interactionForceField);
+    visitContainer(projectiveConstraintSet);
+    visitContainer(constraintSet);
+}
+
+template<class Visitor>
+void visitChildren(Node& self, const Visitor& visitor)
+{
+    for (const auto& c : self.child)
+    {
+        c->accept(visitor);
+    }
+}
+
+void Node::accept(const sofa::core::objectmodel::TopDownVisitor& visitor)
+{
+    visitLocalNode(visitor);
+    visitChildren(*this, visitor);
+}
+
+void Node::accept(const sofa::core::objectmodel::BottomUpVisitor& visitor)
+{
+    visitChildren(*this, visitor);
+    visitLocalNode(visitor);
+}
+
+void Node::accept(const sofa::core::objectmodel::TopDownVisitor& topDownVisitor,
+    const sofa::core::objectmodel::BottomUpVisitor& bottomUpVisitor)
+{
+    accept(topDownVisitor);
+    accept(bottomUpVisitor);
+}
+
 /// Propagate an event
 void Node::propagateEvent(const core::ExecParams* params, core::objectmodel::Event* event)
 {
