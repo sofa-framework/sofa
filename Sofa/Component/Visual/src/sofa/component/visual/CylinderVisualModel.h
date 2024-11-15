@@ -24,20 +24,7 @@
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualState.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/topology/TopologyData.h>
-#include <sofa/core/topology/Topology.h>
 #include <sofa/type/RGBAColor.h>
-
-namespace sofa::core::topology
-{
-    class BaseMeshTopology;
-} // namespace sofa::core::topology
-
-namespace sofa::core::behavior
-{
-    class BaseMechanicalState;
-} // namespace sofa::core::behavior
 
 namespace sofa::component::visual
 {
@@ -62,18 +49,10 @@ public:
 
 private:
     Data<float>		radius; ///< Radius of the cylinder.
-    // Data<float>		alpha;
     Data<sofa::type::RGBAColor>	color; ///< Color of the cylinders.
 
     typedef sofa::type::vector<core::topology::Edge>  SeqEdges;
     Data<SeqEdges> d_edges; ///< List of edge indices
-
-
-    // sofa::core::topology::PointData<sofa::type::vector<unsigned char> >		pointData;
-
-    typedef Vec3State::Coord Coord;
-    typedef Vec3State::VecCoord VecCoord;
-    typedef Vec3State::Real Real;
 
 public:
     bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
