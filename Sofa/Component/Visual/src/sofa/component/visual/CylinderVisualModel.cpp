@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gl/component/rendering3d/OglCylinderModel.h>
-#include <sofa/gl/component/rendering3d/config.h>
+#include <sofa/component/visual/CylinderVisualModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -28,19 +27,19 @@
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::gl::component::rendering3d
+namespace sofa::component::visual
 {
 
-void registerOglCylinderModel(sofa::core::ObjectFactory* factory)
+void registerCylinderVisualModel(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("OpenGL-based visualization for a cylinders over edges.")
-        .add< OglCylinderModel >());
+    factory->registerObjects(core::ObjectRegistrationData("A simple visualization for set of cylinder.")
+        .add< CylinderVisualModel >());
 }
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 
-OglCylinderModel::OglCylinderModel()
+CylinderVisualModel::CylinderVisualModel()
     : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder.")),
       color(initData(&color, sofa::type::RGBAColor(1.0,1.0,1.0,1.0), "color", "Color of the cylinders."))
     , d_edges(initData(&d_edges,"edges","List of edge indices"))
@@ -48,18 +47,18 @@ OglCylinderModel::OglCylinderModel()
 {
 }
 
-OglCylinderModel::~OglCylinderModel()
+CylinderVisualModel::~CylinderVisualModel()
 {
 }
 
-void OglCylinderModel::init()
+void CylinderVisualModel::init()
 {
     VisualModel::init();
 
     reinit();
 }
 
-void OglCylinderModel::doDrawVisual(const core::visual::VisualParams* vparams)
+void CylinderVisualModel::doDrawVisual(const core::visual::VisualParams* vparams)
 {
     const VecCoord& pos = this->read( core::vec_id::read_access::position )->getValue();
 
@@ -80,7 +79,7 @@ void OglCylinderModel::doDrawVisual(const core::visual::VisualParams* vparams)
 }
 
 
-void OglCylinderModel::setColor(float r, float g, float b, float a)
+void CylinderVisualModel::setColor(float r, float g, float b, float a)
 {
     this->r = r;
     this->g = g;
@@ -96,7 +95,7 @@ static int hexval(char c)
     else return 0;
 }
 
-void OglCylinderModel::setColor(std::string color)
+void CylinderVisualModel::setColor(std::string color)
 {
     if (color.empty()) return;
     float r = 1.0f;
@@ -140,7 +139,7 @@ void OglCylinderModel::setColor(std::string color)
     setColor(r,g,b,a);
 }
 
-void OglCylinderModel::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, Index& vindex, Index& /*nindex*/, Index& /*tindex*/, int& /*count*/)
+void CylinderVisualModel::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, Index& vindex, Index& /*nindex*/, Index& /*tindex*/, int& /*count*/)
 {
     const VecCoord& x = this->read( core::vec_id::read_access::position )->getValue();
     const SeqEdges& edges = d_edges.getValue();
@@ -160,4 +159,4 @@ void OglCylinderModel::exportOBJ(std::string name, std::ostream* out, std::ostre
     vindex += nbv;
 }
 
-} // namespace sofa::gl::component::rendering3d
+} // namespace sofa::component::visual
