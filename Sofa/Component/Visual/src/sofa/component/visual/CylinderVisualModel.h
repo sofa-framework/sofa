@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/gl/component/rendering3d/config.h>
+#include <sofa/component/visual/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualState.h>
@@ -39,20 +39,20 @@ namespace sofa::core::behavior
     class BaseMechanicalState;
 } // namespace sofa::core::behavior
 
-namespace sofa::gl::component::rendering3d
+namespace sofa::component::visual
 {
 
-// I have no idea what is Ogl in this component ?...
-class SOFA_GL_COMPONENT_RENDERING3D_API OglCylinderModel : public core::visual::VisualModel, public sofa::core::visual::VisualState<defaulttype::Vec3Types>
+class SOFA_COMPONENT_VISUAL_API CylinderVisualModel :
+    public core::visual::VisualModel, public sofa::core::visual::VisualState<defaulttype::Vec3Types>
 {
 public:
     using Vec3State = sofa::core::visual::VisualState<defaulttype::Vec3Types>;
-    SOFA_CLASS2(OglCylinderModel,core::visual::VisualModel, Vec3State);
+    SOFA_CLASS2(CylinderVisualModel,core::visual::VisualModel, Vec3State);
 
     using Index = sofa::Index;
 protected:
-    OglCylinderModel();
-    ~OglCylinderModel() override;
+    CylinderVisualModel();
+    ~CylinderVisualModel() override;
 public:
     void init() override;
 
@@ -85,4 +85,4 @@ public:
     bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 };
 
-} // namespace sofa::gl::component::rendering3d
+} // namespace sofa::component::visual

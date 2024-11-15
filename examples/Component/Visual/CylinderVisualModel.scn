@@ -4,6 +4,6 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglCylinderModel] -->
     <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showVisual" />
-    <OglCylinderModel  position="0 0 0   10 0 0 "  edges="0 1" />
+    <CylinderVisualModel  position="0 0 0   10 0 0 "  edges="0 1" />
     
 </Node>
