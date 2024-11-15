@@ -57,6 +57,8 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <numeric>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/BaseMass.h>
 
 using namespace sofa::core;
 
@@ -244,19 +246,44 @@ void MechanicalOperations::accFromF(core::MultiVecDerivId a, core::ConstMultiVec
     setDx(a);
     setF(f);
 
-    executeVisitor( MechanicalAccFromFVisitor(&mparams, a) );
+    ctx->accept(
+        objectmodel::topDownVisitor
+        | [this, &a](core::behavior::BaseMass* mass){mass->accFromF(&mparams, a);});
 }
 
 /// Compute the current force (given the latest propagated position and velocity)
 void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear, bool accumulate)
 {
     setF(result);
+
     if (clear)
     {
-        executeVisitor( MechanicalResetForceVisitor(&mparams, result, false) );
-        //finish();
+        ctx->accept(objectmodel::topDownVisitor
+            | [this, &result](core::behavior::BaseMechanicalState* state)
+            {
+                state->resetForce(&mparams, result.getId(state));
+            });
     }
-    executeVisitor( MechanicalComputeForceVisitor(&mparams, result, accumulate) );
+
+    ctx->accept(objectmodel::topDownVisitor
+        | [this, &result](core::behavior::BaseMechanicalState* state)
+        {
+            state->accumulateForce(&mparams, result.getId(state));
+        }
+        | [this, &result](core::behavior::BaseForceField* force)
+        {
+            force->addForce(&mparams, result);
+        },
+
+        objectmodel::bottomUpVisitor
+        | [this, &result, accumulate](core::BaseMapping* mapping)
+        {
+            if (accumulate)
+            {
+                mapping->applyJT(&mparams, result, result);
+            }
+        }
+        );
 }
 
 
@@ -266,10 +293,31 @@ void MechanicalOperations::computeDf(core::MultiVecDerivId df, bool clear, bool 
     setDf(df);
     if (clear)
     {
-        executeVisitor( MechanicalResetForceVisitor(&mparams, df, false) );
-        //	finish();
+        ctx->accept(objectmodel::topDownVisitor
+            | [this, &df](core::behavior::BaseMechanicalState* state)
+            {
+                state->resetForce(&mparams, df.getId(state));
+            });
     }
-    executeVisitor( MechanicalComputeDfVisitor( &mparams, df,  accumulate) );
+
+    ctx->accept(objectmodel::topDownVisitor
+        | [this, &df](core::behavior::BaseForceField* force)
+        {
+            force->addDForce(&mparams, df);
+        },
+
+        objectmodel::bottomUpVisitor
+        | [this, &df, accumulate](core::BaseMapping* mapping)
+        {
+            if (accumulate)
+            {
+                mapping->applyJT(&mparams, df, df);
+                if( mparams.kFactor() != 0_sreal )
+                {
+                    mapping->applyDJT(&mparams, df, df);
+                }
+            }
+        });
 }
 
 /// Compute the current force delta (given the latest propagated velocity)
@@ -299,7 +347,25 @@ void MechanicalOperations::addMBKdx(core::MultiVecDerivId df, SReal m, SReal b, 
     mparams.setBFactor(b);
     mparams.setKFactor(k);
     mparams.setMFactor(m);
-    executeVisitor( MechanicalAddMBKdxVisitor(&mparams, df, accumulate) );
+
+    ctx->accept(objectmodel::topDownVisitor
+        | [this, &df](core::behavior::BaseForceField* force)
+        {
+            force->addMBKdx(&mparams, df);
+        },
+
+        objectmodel::bottomUpVisitor
+        | [this, &df, accumulate](core::BaseMapping* mapping)
+        {
+            if (accumulate)
+            {
+                mapping->applyJT(&mparams, df, df);
+                if( mparams.kFactor() != 0_sreal )
+                {
+                    mapping->applyDJT(&mparams, df, df);
+                }
+            }
+        });
 }
 
 /// accumulate $ df += (m M + b B + k K) velocity $
@@ -317,7 +383,24 @@ void MechanicalOperations::addMBKv(core::MultiVecDerivId df, SReal m, SReal b, S
     mparams.setKFactor(k);
     mparams.setMFactor(m);
     /* useV = true */
-    executeVisitor( MechanicalAddMBKdxVisitor(&mparams, df, accumulate) );
+    ctx->accept(objectmodel::topDownVisitor
+        | [this, &df](core::behavior::BaseForceField* force)
+        {
+            force->addMBKdx(&mparams, df);
+        },
+
+        objectmodel::bottomUpVisitor
+        | [this, &df, accumulate](core::BaseMapping* mapping)
+        {
+            if (accumulate)
+            {
+                mapping->applyJT(&mparams, df, df);
+                if( mparams.kFactor() != 0_sreal )
+                {
+                    mapping->applyDJT(&mparams, df, df);
+                }
+            }
+        });
     mparams.setDx(dx);
 }
 
