@@ -85,7 +85,9 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     computeForce(&mop, f);
 
     sofa::Size nbNonDiagonalMasses = 0;
-    MechanicalGetNonDiagonalMassesCountVisitor(&mop.mparams, &nbNonDiagonalMasses).execute(this->getContext());
+    this->getContext()->accept(
+        sofa::core::objectmodel::topDownVisitor
+        | [&nbNonDiagonalMasses](sofa::core::behavior::BaseMass* mass){nbNonDiagonalMasses++;});
 
     // Mass matrix is diagonal, solution can thus be found by computing acc = f/m
     if(nbNonDiagonalMasses == 0.)
