@@ -482,7 +482,7 @@ public:
     /// Use l<0 for the infinite norm.
     ValueType lNorm( int l ) const
     {
-        if( l==2 ) return norm(); // euclidian norm
+        if( l==2 ) return norm(); // euclidean norm
         else if( l<0 ) // infinite norm
         {
             ValueType n=0;

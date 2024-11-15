@@ -31,10 +31,12 @@ namespace sofa::component::engine::transform
 using namespace type;
 using namespace defaulttype;
 
-int DisplacementTransformEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement transforms.")
-    .add< DisplacementTransformEngine<Rigid3Types,Mat4x4> >()
-    .add< DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord> >()
-;
+void registerDisplacementTransformEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Converts a vector of Rigid to a vector of displacement transforms.")
+        .add< DisplacementTransformEngine<Rigid3Types, Mat4x4> >()
+        .add< DisplacementTransformEngine<Rigid3Types, Rigid3Types::Coord> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DisplacementTransformEngine<Rigid3Types,Mat4x4>;
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord>;
@@ -65,11 +67,11 @@ void DisplacementTransformEngine<Rigid3Types,Mat4x4>::mult( Mat4x4& out, const M
     out = out * inv;
 }
 
-/////////////////////////////////////////
-
-int DisplacementMatrixEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement matrices.")
-    .add< DisplacementMatrixEngine<Rigid3Types> >()
-;
+void registerDisplacementMatrixEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Converts a vector of Rigid to a vector of displacement matrices.")
+        .add< DisplacementMatrixEngine<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DisplacementMatrixEngine<Rigid3Types>;
 

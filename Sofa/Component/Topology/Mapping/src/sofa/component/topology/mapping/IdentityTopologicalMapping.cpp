@@ -48,16 +48,14 @@
 namespace sofa::component::topology::mapping
 {
 
-using namespace sofa::defaulttype;
-
 using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
-// Register in the Factory
-int IdentityTopologicalMappingClass = core::RegisterObject("This class is a specific implementation of TopologicalMapping where the destination topology should be kept identical to the source topology. The implementation currently assumes that both topology have been initialized identically.")
-        .add< IdentityTopologicalMapping >()
-
-        ;
+void registerIdentityTopologicalMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("TopologicalMapping where the destination topology should be kept identical to the source topology. The implementation currently assumes that both topology have been initialized identically.")
+        .add< IdentityTopologicalMapping >());
+}
 
 IdentityTopologicalMapping::IdentityTopologicalMapping()
 {

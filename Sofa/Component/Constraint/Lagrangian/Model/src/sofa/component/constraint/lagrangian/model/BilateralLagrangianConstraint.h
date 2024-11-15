@@ -189,6 +189,9 @@ private:
     Index indexOfElemConstraint(const SubsetIndices& cIndices, Index Id);
 };
 
+template<> SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API
+void BilateralLagrangianConstraint<Rigid3Types>::bwdInit();
+
 
 #if !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALLAGRANGIANCONSTRAINT_CPP)
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralLagrangianConstraint< Vec3Types >;

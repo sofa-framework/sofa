@@ -50,11 +50,11 @@ namespace sofa::component::topology::utility
 using namespace sofa::type;
 using namespace defaulttype;
 
-
-
-int TopologicalChangeProcessorClass = core::RegisterObject("Read topological Changes and process them.")
-        .add< TopologicalChangeProcessor >();
-
+void registerTopologicalChangeProcessor(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Read topological changes and process them.")
+        .add< TopologicalChangeProcessor >());
+}
 
 TopologicalChangeProcessor::TopologicalChangeProcessor()
     : d_filename(initData(&d_filename, "filename", "input file name for topological changes."))

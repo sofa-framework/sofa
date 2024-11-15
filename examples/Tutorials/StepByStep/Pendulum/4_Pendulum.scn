@@ -17,7 +17,7 @@
     <EulerExplicitSolver name="Explicit Euler Solver" />
     <Node name="FirstObject" gravity="0 -9.81 0">
         <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 0 0 1 0 0" showObject="1" showObjectScale="10"/>
-        <UniformMass template="Vec3" name="Mass" />
+        <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>
         <FixedProjectiveConstraint template="Vec3" name="Fix Particles" indices="0" />
         <SpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1&#x0A;" />
     </Node>

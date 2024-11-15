@@ -19,22 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_INIT_SOFADISTANCEGRID_H
-#define SOFA_INIT_SOFADISTANCEGRID_H
+#pragma once
 #include <SofaDistanceGrid/config.h>
 
-namespace sofa
+namespace sofadistancegrid
 {
-
-namespace component
-{
-
 
 void SOFA_SOFADISTANCEGRID_API initSofaDistanceGrid();
 
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofadistancegrid
 

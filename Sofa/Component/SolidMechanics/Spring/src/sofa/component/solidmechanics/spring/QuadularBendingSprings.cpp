@@ -30,14 +30,12 @@ namespace sofa::component::solidmechanics::spring
 
 using namespace sofa::defaulttype;
 
-
-// Register in the Factory
-int QuadularBendingSpringsClass = core::RegisterObject("Springs added to a quad mesh to prevent bending")
-        .add< QuadularBendingSprings<Vec3Types> >()
-
-        ;
+void registerQuadularBendingSprings(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Springs added to a quad mesh to prevent bending.")
+        .add< QuadularBendingSprings<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API QuadularBendingSprings<Vec3Types>;
-
 
 } // namespace sofa::component::solidmechanics::spring

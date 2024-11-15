@@ -19,35 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#ifndef SOFA_CORE_DEVBASEMONITOR_H
-#define SOFA_CORE_DEVBASEMONITOR_H
+#include <sofa/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
-
-
-namespace sofa::core
-{
-
-/**
- *  \brief A basic interface to define a Monitor capable to compute metrics.
- *
- *
- *
- */
-class DevBaseMonitor : public virtual objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS(DevBaseMonitor, objectmodel::BaseObject);
-    SOFA_BASE_CAST_IMPLEMENTATION(DevBaseMonitor)
-
-    /// Destructor
-    ~DevBaseMonitor() override {}
-    /// Compute metrics
-    virtual void eval() = 0;
-};
-
-} // namespace sofa::core
-
-
-#endif //SOFA_CORE_DEVBASEMONITOR_H
+//header moved in the plugin SofaValidation
+SOFA_HEADER_DEPRECATED("v24.12", "v25.12", "SofaValidation/DevBaseMonitor.h")

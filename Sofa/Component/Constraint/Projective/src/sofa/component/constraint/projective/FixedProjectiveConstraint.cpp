@@ -31,15 +31,16 @@ namespace sofa::component::constraint::projective
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-
-int FixedProjectiveConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
+void registerFixedProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Attach given particles to their initial positions.")
         .add< FixedProjectiveConstraint<Vec3Types> >()
         .add< FixedProjectiveConstraint<Vec2Types> >()
         .add< FixedProjectiveConstraint<Vec1Types> >()
         .add< FixedProjectiveConstraint<Vec6Types> >()
         .add< FixedProjectiveConstraint<Rigid3Types> >()
-        .add< FixedProjectiveConstraint<Rigid2Types> >()
-        ;
+        .add< FixedProjectiveConstraint<Rigid2Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedProjectiveConstraint<Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedProjectiveConstraint<Vec2Types>;

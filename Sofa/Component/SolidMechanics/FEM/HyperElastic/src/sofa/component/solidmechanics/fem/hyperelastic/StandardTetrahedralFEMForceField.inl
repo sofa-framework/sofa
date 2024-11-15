@@ -291,7 +291,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
 
     if (mparams->implicit()) {
         // if implicit solver recompute the stiffness matrix stored at each edge
-        // starts by reseting each matrix to 0
+        // starts by resetting each matrix to 0
         for(l=0; l<nbEdges; l++ )edgeInf[l].DfDx.clear();
     }
     Matrix3 deformationGradient;
@@ -627,7 +627,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
     VecCoord &pos = *d_pos.beginEdit();
     pos =  this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    // perturbate original state:
+    // perturb original state:
     srand( 0 );
     for (unsigned int idx=0; idx<pos.size(); idx++) {
         for (unsigned int d=0; d<3; d++) pos[idx][d] += (Real)0.01 * ((Real)rand()/(Real)(RAND_MAX - 0.5));

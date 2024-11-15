@@ -30,10 +30,10 @@ namespace sofa::core::objectmodel
 /// there is a one to one owner relationship.
 const BaseData& AbstractDataLink::getOwner() const { return _doGetOwner_(); }
 
-/// Change the targetted DataField
+/// Change the targeted DataField
 void AbstractDataLink::setTarget(BaseData* target){ _doSetTarget_(target); }
 
-/// Get the targetted DataField
+/// Get the targeted DataField
 BaseData* AbstractDataLink::getTarget() const
 {
     return _doGetTarget_();

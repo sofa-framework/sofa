@@ -71,14 +71,14 @@ struct DistanceMappingTest : public sofa::mapping_test::Mapping_test<DistanceMap
 };
 
 
-// Define the list of types to instanciate.
+// Define the list of types to instantiate.
 using ::testing::Types;
 typedef Types<
 component::mapping::nonlinear::DistanceMapping<defaulttype::Vec3Types,defaulttype::Vec1Types>,
 component::mapping::nonlinear::DistanceMapping<defaulttype::Rigid3Types,defaulttype::Vec1Types>
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE( DistanceMappingTest, DataTypes );
 
 // test case

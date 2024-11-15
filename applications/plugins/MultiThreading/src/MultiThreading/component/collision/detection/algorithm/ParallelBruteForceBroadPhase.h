@@ -90,7 +90,7 @@ public:
 
 private:
 
-    /// Begining of a range of pairs of collision models to tests in this task
+    /// Beginning of a range of pairs of collision models to tests in this task
     PairIterator m_first;
     /// End of a range of pairs of collision models to tests in this task
     PairIterator m_last;

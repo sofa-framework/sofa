@@ -30,13 +30,12 @@ namespace sofa::component::engine::generate
 
 using namespace sofa::defaulttype;
 
-int ExtrudeSurfaceClass = core::RegisterObject("This class truns on spiral any topological model")
-        .add< ExtrudeSurface<Vec3Types> >()
- 
-        ;
+void registerExtrudeSurface(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Engine creating a mesh from the extrusion of the surface of a given mesh.")
+        .add< ExtrudeSurface<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API ExtrudeSurface<Vec3Types>;
- 
-
 
 } //namespace sofa::component::engine::generate

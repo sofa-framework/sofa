@@ -28,14 +28,12 @@ namespace sofa::component::constraint::lagrangian::model
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
-//TODO(dmarchal) What does this TODO mean ?
-int UnilateralLagrangianConstraintClass = core::RegisterObject("TODO-UnilateralLagrangianConstraint")
-        .add< UnilateralLagrangianConstraint<Vec3Types> >()
-
-        ;
-
+void registerUnilateralLagrangianConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Lagrangian-based inequality constraint")
+        .add< UnilateralLagrangianConstraint<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UnilateralLagrangianConstraint<Vec3Types>;
 

@@ -9,7 +9,7 @@
 #include <stack>
 
 //WARNING : if you want to take account of intersections involving BulletCylinderModel,
-//uncoment code in BulletCollisionDetection.h beggining at line 173
+//uncomment code in BulletCollisionDetection.h beginning at line 173
 
 namespace sofa
 {
@@ -75,7 +75,7 @@ protected:
 typedef TBulletCylinderModel<defaulttype::RigidTypes> BulletCylinderModel;
 
 #if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCylinderModel<defaulttype::Rigid3Types>;//je pense que les cylindres sont définis sur des rigides dans bullet
+extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCylinderModel<defaulttype::Rigid3Types>;//je pense que les cylinders sont définis sur des rigides dans bullet
 
 #endif
 

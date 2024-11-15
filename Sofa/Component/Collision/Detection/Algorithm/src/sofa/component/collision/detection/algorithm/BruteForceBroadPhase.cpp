@@ -28,9 +28,11 @@
 namespace sofa::component::collision::detection::algorithm
 {
 
-int BruteForceBroadPhaseClass = core::RegisterObject("Broad phase collision detection using extensive pair-wise tests")
-        .add< BruteForceBroadPhase >()
-;
+void registerBruteForceBroadPhase(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Broad phase collision detection using extensive pair-wise tests.")
+        .add< BruteForceBroadPhase >());
+}
 
 BruteForceBroadPhase::BruteForceBroadPhase()
         : d_box(initData(&d_box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))

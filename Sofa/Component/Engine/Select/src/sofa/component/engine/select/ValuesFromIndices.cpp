@@ -28,7 +28,9 @@
 namespace sofa::component::engine::select
 {
 
-int ValuesFromIndicesClass = core::RegisterObject("Find the values given a list of indices")
+void registerValuesFromIndices(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Find the values given a list of indices.")
         .add< ValuesFromIndices<std::string> >()
         .add< ValuesFromIndices<int> >()
         .add< ValuesFromIndices<unsigned int> >()
@@ -44,9 +46,8 @@ int ValuesFromIndicesClass = core::RegisterObject("Find the values given a list 
         .add< ValuesFromIndices<defaulttype::Rigid2Types::Coord> >()
         .add< ValuesFromIndices<defaulttype::Rigid2Types::Deriv> >()
         .add< ValuesFromIndices<defaulttype::Rigid3Types::Coord> >()
-        .add< ValuesFromIndices<defaulttype::Rigid3Types::Deriv> >()
- 
-        ;
+        .add< ValuesFromIndices<defaulttype::Rigid3Types::Deriv> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<std::string>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<int>;
@@ -64,6 +65,5 @@ template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<defaulttype::R
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<defaulttype::Rigid2Types::Deriv>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<defaulttype::Rigid3Types::Coord>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<defaulttype::Rigid3Types::Deriv>;
- 
 
 } //namespace sofa::component::engine::select

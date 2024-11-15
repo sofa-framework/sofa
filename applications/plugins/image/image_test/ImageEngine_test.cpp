@@ -40,7 +40,7 @@ namespace sofa {
 /**  Test suite for engine data image.
  * Create a simple scene with an engine which computes an output image from an input image at each time step.
  * Visualize the output image of the engine with ImageViewer.
- * The input image of ImageViewer is then linked to the ouput image of the engine.
+ * The input image of ImageViewer is then linked to the output image of the engine.
  * Copy on Write option is true.
  * Note: the function draw of ImageViewer is actually not called in this test (it works with the gui).
   */
@@ -58,7 +58,7 @@ struct ImageEngine_test : public sofa::testing::BaseTest
     }
 
     // Test link
-    /// To suceed this test need imagemagick to be installed.
+    /// To succeed this test need imagemagick to be installed.
     void testDataLink()
     {
         typedef defaulttype::Image<unsigned char> Image;
@@ -342,10 +342,10 @@ typedef ::testing::Types<
 ,TestDataEngine< component::engine::TestImageEngine<defaulttype::ImageUC> >
 ,TestDataEngine< component::engine::TransferFunction<defaulttype::ImageUC,defaulttype::ImageUC> >
 ,TestDataEngine< component::engine::VoronoiToMeshEngine<defaulttype::ImageUC> >
-> TestTypes; // the types to instanciate.
+> TestTypes; // the types to instantiate.
 
 
-//// ========= Tests to run for each instanciated type
+//// ========= Tests to run for each instantiated type
 TYPED_TEST_SUITE( ImageDataEngine_test, TestTypes );
 
 //// test number of call to DataEngine::update

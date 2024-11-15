@@ -45,10 +45,11 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::collision::geometry;
 using core::topology::BaseMeshTopology;
 
-
-int LocalMinDistanceClass = core::RegisterObject("A set of methods to compute (for constraint methods) if two primitives are close enough to consider they collide")
-        .add< LocalMinDistance >()
-        ;
+void registerLocalMinDistance(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A set of methods to compute (for constraint methods) if two primitives are close enough to consider they collide")
+        .add< LocalMinDistance >());
+}
 
 LocalMinDistance::LocalMinDistance()
     : BaseProximityIntersection()

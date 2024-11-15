@@ -201,7 +201,7 @@ public:
 
 
     /** Finalize the creation of the current block row with
-     * blocks given in colum order.
+     * blocks given in column order.
       @sa beginBlockRow(unsigned row)
       @sa createBlock( unsigned column,  const Block& b ) in column order
       */
@@ -496,7 +496,7 @@ private:
 namespace sofa
 {
 
-    /// Converts a BaseMatrix to a eigen sparse matrix encapsulted in a OwnershipSPtr.
+    /// Converts a BaseMatrix to a eigen sparse matrix encapsulated in a OwnershipSPtr.
     /// It the conversion needs to create a temporary matrix, it will be automatically deleted
     /// by the OwnershipSPtr (with ownership).
     /// It the conversion did not create a temporary data, and points to an existing matrix,

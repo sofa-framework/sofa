@@ -4,6 +4,7 @@ project(Sofa.Component.Mapping.Linear_test)
 
 set(SOURCE_FILES
     BarycentricMapping_test.cpp
+    IdentityMapping_test.cpp
     SubsetMultiMapping_test.cpp
 )
 

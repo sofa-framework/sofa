@@ -68,7 +68,7 @@ public :
     Data<type::vector<Real> > d_keyTimes;
     /// the motions corresponding to the key frames
     Data<VecDeriv > d_keyVelocities;
-    /// the coordinates on which to applay velocities
+    /// the coordinates on which to apply velocities
     SetIndex d_coordinates;
 
     /// If set to true then the last velocity will still be applied after all the key events
@@ -76,7 +76,7 @@ public :
 
     /// the key times surrounding the current simulation time (for interpolation)
     Real prevT, nextT;
-    ///the velocities corresponding to the surrouding key times
+    ///the velocities corresponding to the surrounding key times
     Deriv prevV, nextV;
     ///position at the initial step for constrained DOFs position
     VecCoord x0;

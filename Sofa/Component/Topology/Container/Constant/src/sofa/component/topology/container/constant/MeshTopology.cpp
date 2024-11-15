@@ -478,11 +478,11 @@ void MeshTopology::QuadUpdate::doUpdate()
 using namespace sofa::defaulttype;
 using core::topology::BaseMeshTopology;
 
-
-int MeshTopologyClass = core::RegisterObject("Generic mesh topology")
-        .addAlias("Mesh")
-        .add< MeshTopology >()
-        ;
+void registerMeshTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Generic constant topology loaded from a mesh file.")
+        .add< MeshTopology >());
+}
 
 MeshTopology::MeshTopology()
     : d_seqPoints(initData(&d_seqPoints, "position", "List of point positions"))
@@ -2362,7 +2362,7 @@ bool MeshTopology::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-        msg_error() << "CheckConnexity: elements are missings. There is more than one connexe component.";
+        msg_error() << "CheckConnexity: elements are missing. There is more than one connexe component.";
         return false;
     }
 

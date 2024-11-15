@@ -391,7 +391,7 @@ void GenerateCylinder<DataTypes>::doUpdate()
                             out.push_back(pos);
                             bezierTetrahedronWeight.push_back((Real)(1+2*ctheta)/3.0f);
                         } else {
-                            // this is the affine case. The triangular control points are simply built from a tesselation of the triangles
+                            // this is the affine case. The triangular control points are simply built from a tessellation of the triangles
                             for (j=1;j<(degreeTetrahedron-1);++j) {
                                 for (k=1;k<(degreeTetrahedron-j);++k) {
                                     pos= out[tr[0]]*k/degreeTetrahedron+(Real)(degreeTetrahedron-j-k)*out[tr[1]]/degreeTetrahedron+

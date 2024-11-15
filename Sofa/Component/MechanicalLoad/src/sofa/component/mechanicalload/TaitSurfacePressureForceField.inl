@@ -49,7 +49,7 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     d_currentVolume(initData(&d_currentVolume, (Real)0.0, "currentVolume", "OUT: Current volume, as computed from the last surface position")),
     d_currentPressure(initData(&d_currentPressure, (Real)0.0, "currentPressure", "OUT: Current pressure, as computed from the last surface position")),
     d_currentStiffness(initData(&d_currentStiffness, (Real)0.0, "currentStiffness", "OUT: dP/dV at current volume and pressure")),
-    d_pressureTriangles(initData(&d_pressureTriangles, "pressureTriangles", "OUT: list of triangles where a pressure is applied (mesh triangles + tesselated quads)")),
+    d_pressureTriangles(initData(&d_pressureTriangles, "pressureTriangles", "OUT: list of triangles where a pressure is applied (mesh triangles + tessellated quads)")),
     d_initialSurfaceArea(initData(&d_initialSurfaceArea, (Real)0.0, "initialSurfaceArea", "OUT: Initial surface area, as computed from the surface rest position")),
     d_currentSurfaceArea(initData(&d_currentSurfaceArea, (Real)0.0, "currentSurfaceArea", "OUT: Current surface area, as computed from the last surface position")),
     d_drawForceScale(initData(&d_drawForceScale, (Real)0.001, "drawForceScale", "DEBUG: scale used to render force vectors")),

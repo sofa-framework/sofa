@@ -101,6 +101,7 @@ public:
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
 
         simulation = simulation::getSimulation();
         root = simulation::getSimulation()->createNewGraph("root");
@@ -155,7 +156,7 @@ public:
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "    <MechanicalObject />                                                                       "
-                "    <RegularGrid nx='2' ny='2' nz='2' xmin='0' xmax='2' ymin='0' ymax='2' zmin='0' zmax='2' /> "
+                "    <RegularGridTopology nx='2' ny='2' nz='2' xmin='0' xmax='2' ymin='0' ymax='2' zmin='0' zmax='2' /> "
                 "    <HexahedronSetGeometryAlgorithms />                                                        "
                 "   <DiagonalMass name='m_mass'/>                            "
                 "</Node>                                                     " ;
@@ -188,7 +189,7 @@ public:
                 "<?xml version='1.0'?>                                                                          "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                    "
                 "    <MechanicalObject />                                                                       "
-                "    <RegularGrid nx='2' ny='2' nz='2' xmin='0' xmax='2' ymin='0' ymax='2' zmin='0' zmax='2' /> "
+                "    <RegularGridTopology nx='2' ny='2' nz='2' xmin='0' xmax='2' ymin='0' ymax='2' zmin='0' zmax='2' /> "
                 "    <HexahedronSetGeometryAlgorithms />                                                        "
                 "    <DiagonalMass name='m_mass' massDensity='1.0' />                                           "
                 "</Node>                                                                                        " ;
@@ -219,7 +220,7 @@ public:
                 "<?xml version='1.0'?>                                                                          "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                    "
                 "    <MechanicalObject />                                                                       "
-                "    <RegularGrid nx='2' ny='2' nz='2' xmin='0' xmax='2' ymin='0' ymax='2' zmin='0' zmax='2' /> "
+                "    <RegularGridTopology nx='2' ny='2' nz='2' xmin='0' xmax='2' ymin='0' ymax='2' zmin='0' zmax='2' /> "
                 "    <HexahedronSetGeometryAlgorithms/>                                                         "
                 "    <DiagonalMass name='m_mass' totalMass='10'/>                                               "
                 "</Node>                                                                                        " ;
@@ -249,7 +250,7 @@ public:
                 "<?xml version='1.0'?>                                                                          "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                    "
                 "    <MechanicalObject />                                                                       "
-                "    <RegularGrid nx='2' ny='2' nz='2' xmin='0' xmax='2' ymin='0' ymax='2' zmin='0' zmax='2' /> "
+                "    <RegularGridTopology nx='2' ny='2' nz='2' xmin='0' xmax='2' ymin='0' ymax='2' zmin='0' zmax='2' /> "
                 "    <HexahedronSetGeometryAlgorithms />                                                        "
                 "    <DiagonalMass name='m_mass' massDensity='1.0' totalMass='10'/>                             "
                 "</Node>                                                                                        " ;

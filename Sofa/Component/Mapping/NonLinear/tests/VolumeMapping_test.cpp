@@ -74,7 +74,6 @@ TEST(VolumeMapping, firstDerivative)
 
     const sofa::type::Mat<4,3,SReal> dV = computeDerivativeVolume(vertices);
 
-    static constexpr SReal h = 1e-6;
     for (unsigned int vId = 0; vId < 4; ++vId)
     {
         for (unsigned int axis = 0; axis < 3; ++axis)

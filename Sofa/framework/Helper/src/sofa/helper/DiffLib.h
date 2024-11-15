@@ -30,7 +30,7 @@ namespace sofa::helper
 
 /// Search for the the closest match to the string passed in the "needle" argument within the vector of "haystack" arguments.
 std::vector<std::tuple<std::string, SReal>> SOFA_HELPER_API getClosestMatch(const std::string& needle, const std::vector<std::string>& haystack,
-                                                                            const Size numEntries=5, const SReal thresold=0.5_sreal);
+                                                                            const Size numEntries=5, const SReal threshold=0.5_sreal);
 
 }
 

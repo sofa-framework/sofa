@@ -104,9 +104,9 @@ void extractElements(
 template <class DataTypes>
 void MeshSubsetEngine<DataTypes>::doUpdate()
 {
-    helper::ReadAccessor<Data< SeqPositions > > pos(this->inputPosition);
-    const helper::ReadAccessor<Data< SetIndices > >  ind(this->indices);
-    helper::WriteOnlyAccessor<Data< SeqPositions > > opos(this->position);
+    helper::ReadAccessor<Data< SeqPositions > > pos(this->d_inputPosition);
+    const helper::ReadAccessor<Data< SetIndices > >  ind(this->d_indices);
+    helper::WriteOnlyAccessor<Data< SeqPositions > > opos(this->d_position);
 
     opos.resize(ind.size());
     std::map<PointID, PointID> FtoS;

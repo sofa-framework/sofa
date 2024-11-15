@@ -45,3 +45,12 @@ namespace sofa::component::constraint::lagrangian::correction
         "v24.06", "v24.12", \
         "Data renamed according to the guidelines")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION
+#define SOFA_ATTRIBUTE_DEPRECATED__FORCES_IN_LINEARSOLVERCONSTRAINTCORRECTION()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__FORCES_IN_LINEARSOLVERCONSTRAINTCORRECTION() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v24.12", "v25.06", \
+        "Class member 'LinearSolverConstraintCorrection::F' is not used.")
+#endif

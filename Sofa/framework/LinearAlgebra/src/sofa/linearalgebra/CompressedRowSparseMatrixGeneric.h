@@ -105,6 +105,9 @@ public:
     typedef typename traits::BlockTranspose BlockTranspose;
     typedef typename traits::Real Real;
 
+    template<class TBlock2>
+    using rebind_to = CompressedRowSparseMatrixGeneric< TBlock2, Policy >;
+
     typedef Matrix Expr;
     enum { category = MATRIX_SPARSE };
     enum { operand = 1 };

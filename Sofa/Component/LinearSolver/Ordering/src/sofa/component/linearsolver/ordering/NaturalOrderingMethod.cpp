@@ -42,7 +42,10 @@ void NaturalOrderingMethod::computePermutation(
     }
 }
 
-int NaturalOrderingMethodClass = core::RegisterObject("Natural order (no permutation). Corresponding to an identity matrix.")
-    .add<NaturalOrderingMethod>();
+void registerNaturalOrderingMethod(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Natural order (no permutation). Corresponding to an identity matrix.")
+        .add<NaturalOrderingMethod>());
+}
 
 }

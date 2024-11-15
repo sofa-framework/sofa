@@ -135,7 +135,7 @@ public:
     MechanicalParams& setSupportOnlySymmetricMatrix(bool b) { m_supportOnlySymmetricMatrix = b; return *this; }
 
 #ifndef NDEBUG
-    /// Checks wether or nor kFactor is used in ForceFields. Temporary here for compatiblity reasons
+    /// Checks wether or nor kFactor is used in ForceFields. Temporary here for compatibility reasons
     void setKFactorUsed(bool b) const { m_kFactorUsed = b; }
     bool getKFactorUsed() const { return m_kFactorUsed; }
 protected:

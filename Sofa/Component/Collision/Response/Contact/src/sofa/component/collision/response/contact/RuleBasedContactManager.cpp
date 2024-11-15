@@ -27,10 +27,11 @@
 namespace sofa::component::collision::response::contact
 {
 
-int RuleBasedContactManagerClass = core::RegisterObject("Create different response to the collisions based on a set of rules")
-        .add< RuleBasedContactManager >()
-        .addAlias("RuleBasedCollisionResponse")
-        ;
+void registerRuleBasedContactManager(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Create different response to the collisions based on a set of rules.")
+        .add< RuleBasedContactManager >());
+}
 
 RuleBasedContactManager::RuleBasedContactManager()
     : d_variables(initData(&d_variables, "variables", "Define a list of variables to be used inside the rules"))

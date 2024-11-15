@@ -30,10 +30,11 @@ namespace sofa::component::engine::analyze
 
 using namespace sofa::defaulttype;
 
-int DistancesClass = core::RegisterObject("Compute distances based on a grid.")
-        .add< Distances<Vec3Types> >()
- 
-        ;
+void registerDistances(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compute distances based on a grid.")
+        .add< Distances<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_ANALYZE_API Distances<Vec3Types>;
  

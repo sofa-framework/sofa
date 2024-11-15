@@ -36,6 +36,7 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/stable_vector.h
     ${SOFATYPESRC_ROOT}/trait/Rebind.h
     ${SOFATYPESRC_ROOT}/trait/is_container.h
+    ${SOFATYPESRC_ROOT}/trait/is_specialization_of.h
     ${SOFATYPESRC_ROOT}/trait/is_vector.h
     ${SOFATYPESRC_ROOT}/vector.h
     ${SOFATYPESRC_ROOT}/vector_Integral.h

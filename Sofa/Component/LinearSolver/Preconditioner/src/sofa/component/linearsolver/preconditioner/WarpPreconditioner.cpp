@@ -31,10 +31,12 @@ namespace sofa::component::linearsolver::preconditioner
 
 using namespace sofa::linearalgebra;
 
-int WarpPreconditionerClass = core::RegisterObject("Linear system solver wrapping another (precomputed) linear solver by a per-node rotation matrix")
-    .add< WarpPreconditioner< RotationMatrix<SReal>, FullVector<SReal>, NoThreadManager > >()
-;
-template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API WarpPreconditioner< RotationMatrix<SReal>, FullVector<SReal>, NoThreadManager >;
+void registerWarpPreconditioner(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Linear system solver wrapping another (precomputed) linear solver by a per-node rotation matrix.")
+        .add< WarpPreconditioner< RotationMatrix<SReal>, FullVector<SReal>, NoThreadManager > >());
+}
 
+template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API WarpPreconditioner< RotationMatrix<SReal>, FullVector<SReal>, NoThreadManager >;
 
 } // namespace sofa::component::linearsolver::preconditioner

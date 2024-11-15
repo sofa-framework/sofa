@@ -29,16 +29,15 @@ namespace sofa::component::constraint::projective
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
-
-int DirectionProjectiveConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
+void registerDirectionProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Attach given particles to their initial positions.")
         .add< DirectionProjectiveConstraint<Vec3Types> >()
-        .add< DirectionProjectiveConstraint<Vec2Types> >()
-        ;
+        .add< DirectionProjectiveConstraint<Vec2Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API DirectionProjectiveConstraint<Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API DirectionProjectiveConstraint<Vec2Types>;
-
 
 } // namespace sofa::component::constraint::projective

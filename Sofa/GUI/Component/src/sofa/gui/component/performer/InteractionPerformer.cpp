@@ -27,6 +27,6 @@
 
 namespace sofa::helper
 {
-//explicit instanciation of our factory class.
+//explicit instantiation of our factory class.
 template class SOFA_GUI_COMPONENT_API Factory<std::string, sofa::gui::component::performer::InteractionPerformer, sofa::gui::component::performer::BaseMouseInteractor*>;
 } //namespace sofa::helper

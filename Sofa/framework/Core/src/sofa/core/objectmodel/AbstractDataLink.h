@@ -30,7 +30,7 @@ namespace sofa::core::objectmodel
 class BaseData;
 
 /// @brief AbstractDataLink is the base class for every link between two data fields
-/// The targetted BaseData is called the "target",
+/// The targeted BaseData is called the "target",
 /// The base object owning the current "child" object is the "owner"
 /// it is possible to store a path in a DataLink, in that case, at each DataLink access
 /// the path is resolved to search for a corresponding Data until one is found.
@@ -44,10 +44,10 @@ public:
     /// A DataLink object has one and only one BaseData as owner.
     const BaseData& getOwner() const ;
 
-    /// Change the targetted DataField and set the path to the empty string
+    /// Change the targeted DataField and set the path to the empty string
     void setTarget(BaseData* target);
 
-    /// Get the targetted DataField
+    /// Get the targeted DataField
     BaseData* getTarget() const;
 
     /// Returns true if there is a target
@@ -67,10 +67,10 @@ public:
     /// If there is no owner set, returns false
     /// If there is no compatible Data at pointed path, returns false
     /// Otherwise, returns true.
-    /// After a successfull call, the path is set to empty string.
+    /// After a successful call, the path is set to empty string.
     bool resolvePathAndSetTarget();
 
-    /// Get the targetted DataField
+    /// Get the targeted DataField
     /// If there is no path set, returns nullptr
     /// If there is no owner set, returns nullptr
     /// If there is no compatible Data at pointed path, returns nullptr
@@ -79,7 +79,7 @@ public:
 
 protected:
     ///////////////////////////////////////////////////////////////////////////
-    /// The three folowing methods must be implemented by any child class.
+    /// The three following methods must be implemented by any child class.
     /// This design delegates to child class the work of actually storing
     /// the real Data.
     /// Real implementation for the setTarget() method

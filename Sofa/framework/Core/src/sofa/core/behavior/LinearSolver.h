@@ -115,7 +115,7 @@ public:
         return false;
     }
 
-    /// Apply the contactforce dx = Minv * J^t * f and store the resut in dx VecId
+    /// Apply the contactforce dx = Minv * J^t * f and store the result in dx VecId
     virtual void applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/,sofa::core::MultiVecDerivId /*dx*/, const linearalgebra::BaseVector* /*f*/) {
         msg_error() << "applyConstraintForce has not been implemented.";
     }
@@ -129,6 +129,12 @@ public:
 
 
     /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
+    ///
+    /// This method can compute the Schur complement of the constrained system:
+    /// W = H A^{-1} H^T, where:
+    /// - A is the mechanical matrix
+    /// - H is the constraints matrix
+    /// - W is the compliance matrix projected in the constraints space
     ///
     /// @param result the variable where the result will be added
     /// @param J the matrix J to use

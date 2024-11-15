@@ -123,7 +123,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
 
     //vector<NewOmniDriver*> autreOmniDriver = static_cast<vector<NewOmniDriver*>>(userData);
     //NewOmniData* data = static_cast<NewOmniData*>(userData);
-    //FIXME : Apparenlty, this callback is run before the mechanical state initialisation. I've found no way to know whether the mechcanical state is initialized or not, so i wait ...
+    //FIXME : Apparently, this callback is run before the mechanical state initialisation. I've found no way to know whether the mechcanical state is initialized or not, so i wait ...
 
     RigidTypes::VecCoord positionDevs;
     RigidTypes::VecDeriv forceDevs;

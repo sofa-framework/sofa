@@ -29,14 +29,14 @@ namespace sofa::component::engine::transform
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-int DifferenceEngineClass = core::RegisterObject("Computing the difference between two vector of dofs")
+void registerDifferenceEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Computing the difference between two vector of dofs.")
         .add< DifferenceEngine<Vec1> >()
-        .add< DifferenceEngine<Vec3> >(true) // default template
-
-        ;
+        .add< DifferenceEngine<Vec3> >(true));
+}
 
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DifferenceEngine<Vec1>;
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DifferenceEngine<Vec3>;
-
 
 } //namespace sofa::component::engine::transform

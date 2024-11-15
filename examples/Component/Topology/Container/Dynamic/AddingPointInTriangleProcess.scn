@@ -13,6 +13,6 @@
     <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo"  drawTriangles="1" />
     <MechanicalObject position="@mesh.position" showIndices="true" showIndicesScale="0.0002" />
     <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
-    <UniformMass />
+    <UniformMass totalMass="1.0"/>
     <TopologicalChangeProcessor listening="1" filename="AddingPointInTriangleProcess.txt" />
 </Node>

@@ -21,14 +21,27 @@
 ******************************************************************************/
 #include <sofa/component/collision/geometry/init.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+
 namespace sofa::component::collision::geometry
 {
     
+extern void registerCubeCollisionModel(sofa::core::ObjectFactory* factory);
+extern void registerCylinderCollisionModel(sofa::core::ObjectFactory* factory);
+extern void registerLineCollisionModel(sofa::core::ObjectFactory* factory);
+extern void registerPointCollisionModel(sofa::core::ObjectFactory* factory);
+extern void registerRayCollisionModel(sofa::core::ObjectFactory* factory);
+extern void registerSphereCollisionModel(sofa::core::ObjectFactory* factory);
+extern void registerTetrahedronCollisionModel(sofa::core::ObjectFactory* factory);
+extern void registerTriangleCollisionModel(sofa::core::ObjectFactory* factory);
+extern void registerTriangleModelInRegularGrid(sofa::core::ObjectFactory* factory);
+extern void registerTriangleOctreeModel(sofa::core::ObjectFactory* factory);
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleComponentList();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -46,11 +59,28 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerCubeCollisionModel(factory);
+    registerCylinderCollisionModel(factory);
+    registerLineCollisionModel(factory);
+    registerPointCollisionModel(factory);
+    registerRayCollisionModel(factory);
+    registerSphereCollisionModel(factory);
+    registerTetrahedronCollisionModel(factory);
+    registerTriangleCollisionModel(factory);
+    registerTriangleModelInRegularGrid(factory);
+    registerTriangleOctreeModel(factory);
+}
+
 void init()
 {
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         first = false;
     }
 }

@@ -29,10 +29,11 @@ namespace sofa::component::engine::analyze
 
 using namespace sofa::defaulttype;
 
-int ClusteringEngineClass = core::RegisterObject("Group points into overlapping clusters according to a user defined number of clusters and radius")
-        .add< ClusteringEngine<Vec3Types> >()
- 
-        ;
+void registerClusteringEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Group points into overlapping clusters according to a user defined number of clusters and radius.")
+        .add< ClusteringEngine<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_ANALYZE_API ClusteringEngine<Vec3Types>;
  

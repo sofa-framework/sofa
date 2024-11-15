@@ -27,7 +27,7 @@ namespace sofa::type
 {
 
 //======================================================================
-/// Same as type::vector, + delimitors on serialization
+/// Same as type::vector, + delimiters on serialization
 //======================================================================
 template<class T>
 class SVector: public type::vector<T, type::CPUMemoryManager<T> >

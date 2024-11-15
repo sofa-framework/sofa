@@ -41,14 +41,14 @@
 namespace sofa::component::topology::mapping
 {
 
-using namespace sofa::defaulttype;
-
 using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
-// Register in the Factory
-int Triangle2EdgeTopologicalMappingClass = core::RegisterObject("Special case of mapping where TriangleSetTopology is converted to EdgeSetTopology")
-        .add< Triangle2EdgeTopologicalMapping >();
+void registerTriangle2EdgeTopologicalMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topological mapping where TriangleSetTopology is converted to EdgeSetTopology")
+        .add< Triangle2EdgeTopologicalMapping >());
+}
 
 Triangle2EdgeTopologicalMapping::Triangle2EdgeTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()
