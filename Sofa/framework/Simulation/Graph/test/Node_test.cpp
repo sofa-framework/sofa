@@ -28,6 +28,9 @@ using namespace sofa::simpleapi ;
 #include "Node_test.h"
 #include <unordered_set>
 
+#include <sofa/component/mass/UniformMass.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+
 namespace sofa
 {
 
@@ -176,6 +179,97 @@ TEST(Node_test, getObjectsStdUnorderedSet)
     EXPECT_NE(objects.find(A.get()), objects.end());
     EXPECT_NE(objects.find(B.get()), objects.end());
 }
+
+TEST(NodeVisitor_test, EmptyNodeEmptyVisitor)
+{
+    const Node::SPtr root = sofa::simpleapi::createNode("A");
+    root->accept(sofa::core::objectmodel::topDownVisitor);
+}
+
+TEST(NodeVisitor_test, EmptyNodeCounterVisitor)
+{
+    const Node::SPtr root = sofa::simpleapi::createNode("A");
+
+    std::size_t counter {};
+
+    auto visitor = sofa::core::objectmodel::topDownVisitor
+        | [&counter](core::BaseMapping*){ counter++; };
+    root->accept(visitor);
+
+    EXPECT_EQ(0, counter);
+}
+
+TEST(NodeVisitor_test, OneMassCounterVisitor)
+{
+    const Node::SPtr root = sofa::simpleapi::createNode("A");
+    const auto mass = core::objectmodel::New<component::mass::UniformMass<defaulttype::Vec3Types>>();
+    root->addObject(mass);
+
+    ASSERT_TRUE(root->mass.get() != nullptr);
+
+    std::size_t counter {};
+    root->accept(sofa::core::objectmodel::topDownVisitor
+        | [&counter](core::behavior::BaseMass*){ counter++; });
+
+    EXPECT_EQ(1, counter);
+}
+
+TEST(NodeVisitor_test, OneMassInChildCounterVisitor)
+{
+    const Node::SPtr root = sofa::simpleapi::createNode("root");
+    const Node::SPtr child = sofa::simpleapi::createChild(root, "child");
+    const auto mass = core::objectmodel::New<component::mass::UniformMass<defaulttype::Vec3Types>>();
+    child->addObject(mass);
+
+    ASSERT_TRUE(child->mass.get() != nullptr);
+
+    std::size_t counter {};
+    root->accept(sofa::core::objectmodel::topDownVisitor
+        | [&counter](core::behavior::BaseMass*){ counter++; });
+
+    EXPECT_EQ(1, counter);
+}
+
+TEST(NodeVisitor_test, OneMassOneStateInChildCounterVisitor)
+{
+    const Node::SPtr root = sofa::simpleapi::createNode("root");
+    const Node::SPtr child = sofa::simpleapi::createChild(root, "child");
+    const auto mass = core::objectmodel::New<component::mass::UniformMass<defaulttype::Vec3Types>>();
+    const auto state = core::objectmodel::New<component::statecontainer::MechanicalObject<defaulttype::Vec3Types>>();
+    child->addObject(mass);
+    child->addObject(state);
+
+    ASSERT_TRUE(child->mass.get() != nullptr);
+
+    std::size_t counterMass {}, counterState {}, counter {};
+    root->accept(sofa::core::objectmodel::topDownVisitor
+        | [&counter, &counterMass](core::behavior::BaseMass*){ counter++; counterMass++; }
+        | [&counter, &counterState](core::behavior::BaseMechanicalState*){ counter++; counterState++; });
+
+    EXPECT_EQ(2, counter);
+    EXPECT_EQ(1, counterState);
+    EXPECT_EQ(1, counterMass);
+}
+
+TEST(NodeVisitor_test, OneMassInChildCounterBothDirectionsVisitor)
+{
+    const Node::SPtr root = sofa::simpleapi::createNode("root");
+    const Node::SPtr child = sofa::simpleapi::createChild(root, "child");
+    const auto mass = core::objectmodel::New<component::mass::UniformMass<defaulttype::Vec3Types>>();
+    child->addObject(mass);
+
+    ASSERT_TRUE(child->mass.get() != nullptr);
+
+    std::size_t counter {};
+    root->accept(
+        sofa::core::objectmodel::topDownVisitor
+        | [&counter](core::behavior::BaseMass*){ counter++; },
+        sofa::core::objectmodel::bottomUpVisitor
+        | [&counter](core::behavior::BaseMass*){ counter -= 2; });
+
+    EXPECT_EQ(-1, counter);
+}
+
 
 }// namespace sofa
 

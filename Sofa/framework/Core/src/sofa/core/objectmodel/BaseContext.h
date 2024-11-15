@@ -26,6 +26,7 @@
 #include <sofa/core/objectmodel/ClassInfo.h>
 #include <sofa/core/objectmodel/TypeOfInsertion.h>
 #include <sofa/core/ComponentNameHelper.h>
+#include <sofa/core/objectmodel/VisitorDirection.h>
 
 namespace sofa::simulation
 {
@@ -386,6 +387,10 @@ public:
 
     /// Propagate an event
     virtual void propagateEvent( const core::ExecParams* params, Event* );
+
+    virtual void accept(const TopDownVisitor& visitor) {}
+    virtual void accept(const BottomUpVisitor& visitor) {}
+    virtual void accept(const TopDownVisitor& topDownVisitor, const BottomUpVisitor& bottomUpVisitor) {}
 
     /// @}
 
