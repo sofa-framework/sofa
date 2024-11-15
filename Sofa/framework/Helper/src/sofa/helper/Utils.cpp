@@ -239,7 +239,7 @@ const std::string& Utils::getUserHomeDirectory()
     auto computeUserHomeDirectory = []()
     {
 #ifdef WIN32 // Windows: ${HOME}
-        const char* homeDir = std::getenv("USERPROFILE"));
+        const char* homeDir = std::getenv("USERPROFILE");
         return std::string(homeDir);
 #elif defined(__APPLE__) // macOS : ${HOME}/Library/Application Support
        // https://stackoverflow.com/questions/5123361/finding-library-application-support-from-c
