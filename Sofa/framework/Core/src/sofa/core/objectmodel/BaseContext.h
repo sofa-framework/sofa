@@ -388,9 +388,9 @@ public:
     /// Propagate an event
     virtual void propagateEvent( const core::ExecParams* params, Event* );
 
-    virtual void accept(const TopDownVisitor& visitor) {}
-    virtual void accept(const BottomUpVisitor& visitor) {}
-    virtual void accept(const TopDownVisitor& topDownVisitor, const BottomUpVisitor& bottomUpVisitor) {}
+    virtual void accept(const TopDownVisitor&) {}
+    virtual void accept(const BottomUpVisitor&) {}
+    virtual void accept(const TopDownVisitor&, const BottomUpVisitor&) {}
 
     /// @}
 
