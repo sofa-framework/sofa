@@ -35,11 +35,20 @@ struct DirectionalVisitor
     virtual void operator()(sofa::core::behavior::BaseMechanicalState*) const {}
     virtual void operator()(sofa::core::behavior::BaseMass*) const {}
     virtual void operator()(sofa::core::behavior::BaseForceField*) const {}
-    virtual void operator()(sofa::core::behavior::BaseInteractionForceField*) const {}
+    virtual void operator()(sofa::core::behavior::BaseInteractionForceField* force) const
+    {
+        this->operator()((behavior::BaseForceField*)force);
+    }
     virtual void operator()(sofa::core::behavior::BaseProjectiveConstraintSet*) const {}
     virtual void operator()(sofa::core::behavior::BaseConstraintSet*) const {}
-    virtual void operator()(sofa::core::behavior::BaseInteractionProjectiveConstraintSet*) const {}
-    virtual void operator()(sofa::core::behavior::BaseInteractionConstraint*) const {}
+    virtual void operator()(sofa::core::behavior::BaseInteractionProjectiveConstraintSet* constraint) const
+    {
+        this->operator()((behavior::BaseProjectiveConstraintSet*)constraint);
+    }
+    virtual void operator()(sofa::core::behavior::BaseInteractionConstraint* constraint) const
+    {
+        this->operator()((behavior::BaseConstraintSet*)constraint);
+    }
 };
 
 struct SOFA_CORE_API TopDownVisitor : DirectionalVisitor
