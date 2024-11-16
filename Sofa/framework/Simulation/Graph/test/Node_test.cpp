@@ -255,17 +255,17 @@ TEST(NodeVisitor_test, OneMassInChildCounterBothDirectionsVisitor)
 {
     const Node::SPtr root = sofa::simpleapi::createNode("root");
     const Node::SPtr child = sofa::simpleapi::createChild(root, "child");
-    const auto mass = core::objectmodel::New<component::mass::UniformMass<defaulttype::Vec3Types>>();
-    child->addObject(mass);
+    const auto state = core::objectmodel::New<component::statecontainer::MechanicalObject<defaulttype::Vec3Types>>();
+    child->addObject(state);
 
-    ASSERT_TRUE(child->mass.get() != nullptr);
+    ASSERT_TRUE(child->mechanicalState.get() != nullptr);
 
     std::size_t counter {};
     root->accept(
         sofa::core::objectmodel::topDownVisitor
-        | [&counter](core::behavior::BaseMass*){ counter++; },
+        | [&counter](core::behavior::BaseMechanicalState*){ counter++; },
         sofa::core::objectmodel::bottomUpVisitor
-        | [&counter](core::behavior::BaseMass*){ counter -= 2; });
+        | [&counter](core::behavior::BaseMechanicalState*){ counter -= 2; });
 
     EXPECT_EQ(-1, counter);
 }

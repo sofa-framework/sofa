@@ -61,8 +61,8 @@ struct SpecializedVisitor : public virtual VisitorDirection
 {
     Func m_specializedFunction;
 
-    SpecializedVisitor(const VisitorDirection& visitor, const Func& massFunction)
-        : VisitorDirection(visitor), m_specializedFunction(massFunction) {}
+    SpecializedVisitor(const VisitorDirection& visitor, const Func& specializedFunction)
+        : VisitorDirection(visitor), m_specializedFunction(specializedFunction) {}
 
     void operator()(VisitedObject* object) const override
     {
