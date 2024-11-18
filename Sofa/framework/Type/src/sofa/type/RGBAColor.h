@@ -91,6 +91,17 @@ public:
     constexpr static const RGBAColor& gray();
     constexpr static const RGBAColor& darkgray();
     constexpr static const RGBAColor& lightgray();
+    constexpr static const RGBAColor& orange();
+    constexpr static const RGBAColor& purple();
+    constexpr static const RGBAColor& pink();
+    constexpr static const RGBAColor& brown();
+    constexpr static const RGBAColor& lime();
+    constexpr static const RGBAColor& teal();
+    constexpr static const RGBAColor& navy();
+    constexpr static const RGBAColor& olive();
+    constexpr static const RGBAColor& maroon();
+    constexpr static const RGBAColor& silver();
+    constexpr static const RGBAColor& gold();
 
     /// @brief enlight a color by a given factor.
     static RGBAColor lighten(const RGBAColor& in, const SReal factor);
@@ -226,17 +237,28 @@ constexpr RGBAColor operator/(const RGBAColor& l, const float div)
 }
 
 
-constexpr RGBAColor g_white     {1.0f,1.0f,1.0f,1.0f};
-constexpr RGBAColor g_black     {0.0f,0.0f,0.0f,1.0f};
-constexpr RGBAColor g_red       {1.0f,0.0f,0.0f,1.0f};
-constexpr RGBAColor g_green     {0.0f,1.0f,0.0f,1.0f};
-constexpr RGBAColor g_blue      {0.0f,0.0f,1.0f,1.0f};
-constexpr RGBAColor g_cyan      {0.0f,1.0f,1.0f,1.0f};
-constexpr RGBAColor g_magenta   {1.0f,0.0f,1.0f,1.0f};
-constexpr RGBAColor g_yellow    {1.0f,1.0f,0.0f,1.0f};
-constexpr RGBAColor g_gray      {0.5f,0.5f,0.5f,1.0f};
-constexpr RGBAColor g_darkgray  {0.25f,0.25f,0.25f,1.0f};
-constexpr RGBAColor g_lightgray {0.75f,0.75f,0.75f,1.0f};
+constexpr RGBAColor g_white     {1.0f, 1.0f, 1.0f, 1.0f};
+constexpr RGBAColor g_black     {0.0f, 0.0f, 0.0f, 1.0f};
+constexpr RGBAColor g_red       {1.0f, 0.0f, 0.0f, 1.0f};
+constexpr RGBAColor g_green     {0.0f, 1.0f, 0.0f, 1.0f};
+constexpr RGBAColor g_blue      {0.0f, 0.0f, 1.0f, 1.0f};
+constexpr RGBAColor g_cyan      {0.0f, 1.0f, 1.0f, 1.0f};
+constexpr RGBAColor g_magenta   {1.0f, 0.0f, 1.0f, 1.0f};
+constexpr RGBAColor g_yellow    {1.0f, 1.0f, 0.0f, 1.0f};
+constexpr RGBAColor g_gray      {0.5f, 0.5f, 0.5f, 1.0f};
+constexpr RGBAColor g_darkgray  {0.25f, 0.25f,0.25f, 1.0f};
+constexpr RGBAColor g_lightgray {0.75f, 0.75f,0.75f, 1.0f};
+constexpr RGBAColor g_orange    { 1.0f, 0.5f, 0.0f, 1.0f };
+constexpr RGBAColor g_purple    { 0.5f, 0.0f, 0.5f, 1.0f };
+constexpr RGBAColor g_pink      { 1.0f, 0.0f, 0.5f, 1.0f };
+constexpr RGBAColor g_brown     { 0.6f, 0.3f, 0.0f, 1.0f };
+constexpr RGBAColor g_lime      { 0.5f, 1.0f, 0.0f, 1.0f };
+constexpr RGBAColor g_teal      { 0.0f, 0.5f, 0.5f, 1.0f };
+constexpr RGBAColor g_navy      { 0.0f, 0.0f, 0.5f, 1.0f };
+constexpr RGBAColor g_olive     { 0.5f, 0.5f, 0.0f, 1.0f };
+constexpr RGBAColor g_maroon    { 0.5f, 0.0f, 0.0f, 1.0f };
+constexpr RGBAColor g_silver    { 0.75f, 0.75f, 0.75f, 1.0f };
+constexpr RGBAColor g_gold      { 1.0f, 0.84f, 0.0f, 1.0f };
 
 constexpr const RGBAColor& RGBAColor::white()    { return g_white;     }
 constexpr const RGBAColor& RGBAColor::black()    { return g_black;     }
@@ -249,5 +271,17 @@ constexpr const RGBAColor& RGBAColor::yellow()   { return g_yellow;    }
 constexpr const RGBAColor& RGBAColor::gray()     { return g_gray;      }
 constexpr const RGBAColor& RGBAColor::darkgray() { return g_darkgray;  }
 constexpr const RGBAColor& RGBAColor::lightgray(){ return g_lightgray; }
+constexpr const RGBAColor& RGBAColor::orange()   { return g_orange; }
+constexpr const RGBAColor& RGBAColor::purple()   { return g_purple; }
+constexpr const RGBAColor& RGBAColor::pink()     { return g_pink  ; }
+constexpr const RGBAColor& RGBAColor::brown()    { return g_brown ; }
+constexpr const RGBAColor& RGBAColor::lime()     { return g_lime  ; }
+constexpr const RGBAColor& RGBAColor::teal()     { return g_teal  ; }
+constexpr const RGBAColor& RGBAColor::navy()     { return g_navy  ; }
+constexpr const RGBAColor& RGBAColor::olive()    { return g_olive ; }
+constexpr const RGBAColor& RGBAColor::maroon()   { return g_maroon; }
+constexpr const RGBAColor& RGBAColor::silver()   { return g_silver; }
+constexpr const RGBAColor& RGBAColor::gold()     { return g_gold  ; }
+
 
 } // namespace sofa::type
