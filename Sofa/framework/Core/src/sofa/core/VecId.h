@@ -70,20 +70,22 @@ class TVecId;
 template <VecType vtype, VecAccess vaccess>
 class TStandardVec;
 
+enum class CoordState : uint8_t
+{
+    NULL_STATE,
+    POSITION,
+    REST_POSITION,
+    FREE_POSITION,
+    RESET_POSITION,
+    DYNAMIC_INDEX
+};
+
 template <VecAccess vaccess>
 class TStandardVec<V_COORD, vaccess>
 {
 public:
 
-    enum class State : uint8_t
-    {
-        NULL_STATE,
-        POSITION,
-        REST_POSITION,
-        FREE_POSITION,
-        RESET_POSITION,
-        DYNAMIC_INDEX
-    };
+    using State = CoordState;
 
     typedef TVecId<V_COORD, vaccess> MyVecId;
 
@@ -93,9 +95,13 @@ public:
         return MyVecId(static_cast<std::underlying_type_t<State>>(v_state));
     }
 
+    SOFA_ATTRIBUTE_DEPRECATED__POSITION()
     static constexpr MyVecId position()      { return state<State::POSITION>();}
+    SOFA_ATTRIBUTE_DEPRECATED__REST_POSITION()
     static constexpr MyVecId restPosition()  { return state<State::REST_POSITION>();}
+    SOFA_ATTRIBUTE_DEPRECATED__FREE_POSITION()
     static constexpr MyVecId freePosition()  { return state<State::FREE_POSITION>();}
+    SOFA_ATTRIBUTE_DEPRECATED__RESET_POSITION()
     static constexpr MyVecId resetPosition() { return state<State::RESET_POSITION>();}
 
     ///< This is the first index used for dynamically allocated vectors
@@ -140,25 +146,27 @@ public:
     }
 };
 
+enum class DerivState : uint8_t
+{
+    NULL_STATE,
+    VELOCITY,
+    RESET_VELOCITY,
+    FREE_VELOCITY,
+    NORMAL,
+    FORCE,
+    EXTERNAL_FORCE,
+    DX,
+    DFORCE,
+    DYNAMIC_INDEX
+};
+
 template <VecAccess vaccess>
 class TStandardVec<V_DERIV, vaccess>
 {
 public:
     typedef TVecId<V_DERIV, vaccess> MyVecId;
 
-    enum class State : uint8_t
-    {
-        NULL_STATE,
-        VELOCITY,
-        RESET_VELOCITY,
-        FREE_VELOCITY,
-        NORMAL,
-        FORCE,
-        EXTERNAL_FORCE,
-        DX,
-        DFORCE,
-        DYNAMIC_INDEX
-    };
+    using State = DerivState;
 
     template<State v_state>
     static constexpr MyVecId state()
@@ -166,13 +174,21 @@ public:
         return MyVecId(static_cast<std::underlying_type_t<State>>(v_state));
     }
 
+    SOFA_ATTRIBUTE_DEPRECATED__VELOCITY()
     static constexpr MyVecId velocity()       { return state<State::VELOCITY>(); }
+    SOFA_ATTRIBUTE_DEPRECATED__RESET_VELOCITY()
     static constexpr MyVecId resetVelocity()  { return state<State::RESET_VELOCITY>(); }
+    SOFA_ATTRIBUTE_DEPRECATED__FREE_VELOCITY()
     static constexpr MyVecId freeVelocity()   { return state<State::FREE_VELOCITY>(); }
+    SOFA_ATTRIBUTE_DEPRECATED__NORMAL()
     static constexpr MyVecId normal()         { return state<State::NORMAL>(); }
+    SOFA_ATTRIBUTE_DEPRECATED__FORCE()
     static constexpr MyVecId force()          { return state<State::FORCE>(); }
+    SOFA_ATTRIBUTE_DEPRECATED__EXTERNAL_FORCE()
     static constexpr MyVecId externalForce()  { return state<State::EXTERNAL_FORCE>(); }
+    SOFA_ATTRIBUTE_DEPRECATED__DX()
     static constexpr MyVecId dx()             { return state<State::DX>(); }
+    SOFA_ATTRIBUTE_DEPRECATED__DFORCE()
     static constexpr MyVecId dforce()         { return state<State::DFORCE>(); }
 
     ///< This is the first index used for dynamically allocated vectors
@@ -231,18 +247,20 @@ public:
     }
 };
 
+enum class MatrixDerivState : uint8_t
+{
+    NULL_STATE,
+    CONSTRAINT_JACOBIAN,
+    MAPPING_JACOBIAN,
+    DYNAMIC_INDEX
+};
+
 template <VecAccess vaccess>
 class TStandardVec<V_MATDERIV, vaccess>
 {
 public:
 
-    enum class State : uint8_t
-    {
-        NULL_STATE,
-        CONSTRAINT_JACOBIAN,
-        MAPPING_JACOBIAN,
-        DYNAMIC_INDEX
-    };
+    using State = MatrixDerivState;
 
     typedef TVecId<V_MATDERIV, vaccess> MyVecId;
 
@@ -252,7 +270,9 @@ public:
         return MyVecId(static_cast<std::underlying_type_t<State>>(v_state));
     }
 
+    SOFA_ATTRIBUTE_DEPRECATED__CONSTRAINT_JACOBIAN()
     static constexpr MyVecId constraintJacobian() { return state<State::CONSTRAINT_JACOBIAN>();} // jacobian matrix of constraints
+    SOFA_ATTRIBUTE_DEPRECATED__MAPPING_JACOBIAN()
     static constexpr MyVecId mappingJacobian() { return state<State::MAPPING_JACOBIAN>();}         // accumulated matrix of the mappings
 
     ///< This is the first index used for dynamically allocated vectors
@@ -448,6 +468,12 @@ public:
     using TStandardVec<vtype, vaccess>::state;
     using State = typename TStandardVec<vtype, vaccess>::State;
 
+    template<State v_state>
+    static constexpr TVecId state()
+    {
+        return TVecId(static_cast<std::underlying_type_t<State>>(v_state));
+    }
+
     static constexpr TVecId null()
     {
         return TStandardVec<vtype, vaccess>::template state<State::NULL_STATE>();
@@ -552,42 +578,42 @@ namespace vec_id
 {
 namespace read_access
 {
-static constexpr inline auto position = ConstVecCoordId::position();
-static constexpr inline auto restPosition = ConstVecCoordId::restPosition();
-static constexpr inline auto freePosition = ConstVecCoordId::freePosition();
-static constexpr inline auto resetPosition = ConstVecCoordId::resetPosition();
+static constexpr inline auto position = ConstVecCoordId::state<CoordState::POSITION>();
+static constexpr inline auto restPosition = ConstVecCoordId::state<CoordState::REST_POSITION>();
+static constexpr inline auto freePosition = ConstVecCoordId::state<CoordState::FREE_POSITION>();
+static constexpr inline auto resetPosition = ConstVecCoordId::state<CoordState::RESET_POSITION>();
 
-static constexpr inline auto velocity = ConstVecDerivId::velocity();
-static constexpr inline auto resetVelocity = ConstVecDerivId::resetVelocity();
-static constexpr inline auto freeVelocity = ConstVecDerivId::freeVelocity();
-static constexpr inline auto normal = ConstVecDerivId::normal();
-static constexpr inline auto force = ConstVecDerivId::force();
-static constexpr inline auto externalForce = ConstVecDerivId::externalForce();
-static constexpr inline auto dx = ConstVecDerivId::dx();
-static constexpr inline auto dforce = ConstVecDerivId::dforce();
+static constexpr inline auto velocity = ConstVecDerivId::state<DerivState::VELOCITY>();
+static constexpr inline auto resetVelocity = ConstVecDerivId::state<DerivState::RESET_VELOCITY>();
+static constexpr inline auto freeVelocity = ConstVecDerivId::state<DerivState::FREE_VELOCITY>();
+static constexpr inline auto normal = ConstVecDerivId::state<DerivState::NORMAL>();
+static constexpr inline auto force = ConstVecDerivId::state<DerivState::FORCE>();
+static constexpr inline auto externalForce = ConstVecDerivId::state<DerivState::EXTERNAL_FORCE>();
+static constexpr inline auto dx = ConstVecDerivId::state<DerivState::DX>();
+static constexpr inline auto dforce = ConstVecDerivId::state<DerivState::DFORCE>();
 
-static constexpr inline auto constraintJacobian = ConstMatrixDerivId::constraintJacobian();
-static constexpr inline auto mappingJacobian = ConstMatrixDerivId::mappingJacobian();
+static constexpr inline auto constraintJacobian = ConstMatrixDerivId::state<MatrixDerivState::CONSTRAINT_JACOBIAN>();
+static constexpr inline auto mappingJacobian = ConstMatrixDerivId::state<MatrixDerivState::MAPPING_JACOBIAN>();
 }
 
 namespace write_access
 {
-static constexpr inline auto position = VecCoordId::position();
-static constexpr inline auto restPosition = VecCoordId::restPosition();
-static constexpr inline auto freePosition = VecCoordId::freePosition();
-static constexpr inline auto resetPosition = VecCoordId::resetPosition();
+static constexpr inline auto position = VecCoordId::state<CoordState::POSITION>();
+static constexpr inline auto restPosition = VecCoordId::state<CoordState::REST_POSITION>();
+static constexpr inline auto freePosition = VecCoordId::state<CoordState::FREE_POSITION>();
+static constexpr inline auto resetPosition = VecCoordId::state<CoordState::RESET_POSITION>();
 
-static constexpr inline auto velocity = VecDerivId::velocity();
-static constexpr inline auto resetVelocity = VecDerivId::resetVelocity();
-static constexpr inline auto freeVelocity = VecDerivId::freeVelocity();
-static constexpr inline auto normal = VecDerivId::normal();
-static constexpr inline auto force = VecDerivId::force();
-static constexpr inline auto externalForce = VecDerivId::externalForce();
-static constexpr inline auto dx = VecDerivId::dx();
-static constexpr inline auto dforce = VecDerivId::dforce();
+static constexpr inline auto velocity = VecDerivId::state<DerivState::VELOCITY>();
+static constexpr inline auto resetVelocity = VecDerivId::state<DerivState::RESET_VELOCITY>();
+static constexpr inline auto freeVelocity = VecDerivId::state<DerivState::FREE_VELOCITY>();
+static constexpr inline auto normal = VecDerivId::state<DerivState::NORMAL>();
+static constexpr inline auto force = VecDerivId::state<DerivState::FORCE>();
+static constexpr inline auto externalForce = VecDerivId::state<DerivState::EXTERNAL_FORCE>();
+static constexpr inline auto dx = VecDerivId::state<DerivState::DX>();
+static constexpr inline auto dforce = VecDerivId::state<DerivState::DFORCE>();
 
-static constexpr inline auto constraintJacobian = MatrixDerivId::constraintJacobian();
-static constexpr inline auto mappingJacobian = MatrixDerivId::mappingJacobian();
+static constexpr inline auto constraintJacobian = MatrixDerivId::state<MatrixDerivState::CONSTRAINT_JACOBIAN>();
+static constexpr inline auto mappingJacobian = MatrixDerivId::state<MatrixDerivState::MAPPING_JACOBIAN>();
 }
 }
 
