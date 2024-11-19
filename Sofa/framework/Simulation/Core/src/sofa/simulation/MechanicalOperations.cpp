@@ -59,6 +59,8 @@
 #include <numeric>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+#include <sofa/simulation/MechanicalVisitorCreator.h>
 
 using namespace sofa::core;
 
@@ -159,8 +161,15 @@ void MechanicalOperations::propagateDxAndResetDf(core::MultiVecDerivId dx, core:
 void MechanicalOperations::propagateX(core::MultiVecCoordId x)
 {
     setX(x);
-    const MechanicalPropagateOnlyPositionVisitor visitor(&mparams, 0.0, x);
-    executeVisitor( visitor );
+    const auto v = sofa::simulation::makeMechanicalVisitor(&mparams,
+        TopDownMechanicalMappingCallable(
+            [this, &x](simulation::Node* /*node*/, core::BaseMapping* map) -> Visitor::Result
+            {
+                map->apply(&mparams, x, x);
+                return Visitor::RESULT_CONTINUE;
+            })
+    );
+    executeVisitor( v );
 }
 
 /// Propagate the given velocity through all mappings
@@ -201,10 +210,20 @@ void MechanicalOperations::computeEnergy(SReal &kineticEnergy, SReal &potentialE
 {
     kineticEnergy = 0;
     potentialEnergy = 0;
-    MechanicalComputeEnergyVisitor energyVisitor(&mparams);
-    executeVisitor(&energyVisitor);
-    kineticEnergy = energyVisitor.getKineticEnergy();
-    potentialEnergy = energyVisitor.getPotentialEnergy();
+
+    const auto v = makeMechanicalVisitor(&mparams,
+        TopDownMassCallable([&kineticEnergy](simulation::Node*, const sofa::core::behavior::BaseMass* mass)
+        {
+            kineticEnergy += mass->getKineticEnergy();
+            return Visitor::RESULT_CONTINUE;
+        }),
+        TopDownForceFieldCallable([&potentialEnergy](simulation::Node*, const sofa::core::behavior::BaseForceField* force)
+        {
+            potentialEnergy += force->getPotentialEnergy();
+            return Visitor::RESULT_CONTINUE;
+        })
+    );
+    executeVisitor( v );
 }
 /// Apply projective constraints to the given velocity vector
 void MechanicalOperations::projectVelocity(core::MultiVecDerivId v, SReal time)
@@ -328,10 +347,41 @@ void MechanicalOperations::computeDfV(core::MultiVecDerivId df, bool clear, bool
     setDf(df);
     if (clear)
     {
-        executeVisitor( MechanicalResetForceVisitor(&mparams, df, false) );
-        //finish();
+        const auto reset = [this, &df](simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+        {
+            mm->resetForce(&mparams, df.getId(mm));
+            return Visitor::RESULT_CONTINUE;
+        };
+
+        executeVisitor(makeMechanicalVisitor(&mparams,
+            TopDownMechanicalStateCallable(reset),
+            TopDownMappedMechanicalStateCallable(reset)
+        ));
     }
-    executeVisitor( MechanicalComputeDfVisitor(&mparams, df, accumulate) );
+
+    const auto addDForce = TopDownForceFieldCallable([this, &df](simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
+    {
+        ff->addDForce(&mparams, df);
+        return Visitor::RESULT_CONTINUE;
+    });
+
+    if (accumulate)
+    {
+        executeVisitor(makeMechanicalVisitor(&mparams, addDForce,
+            BottomUpMechanicalMappingCallable([this, &df](simulation::Node* /*node*/, core::BaseMapping* map)
+            {
+                map->applyJT(&mparams, df, df);  // apply material stiffness: variation of force below the mapping
+                if( mparams.kFactor() )
+                {
+                    map->applyDJT(&mparams, df, df); // apply geometric stiffness: variation due to a change of mapping, with a constant force below the mapping
+                }
+            })));
+    }
+    else
+    {
+        executeVisitor(makeMechanicalVisitor(&mparams, addDForce));
+    }
+
     mparams.setDx(dx);
 }
 
@@ -411,7 +461,16 @@ void MechanicalOperations::addSeparateGravity(SReal dt, core::MultiVecDerivId re
 {
     mparams.setDt(dt);
     setV(result);
-    executeVisitor( MechanicalAddSeparateGravityVisitor(&mparams, result) );
+    executeVisitor( makeMechanicalVisitor(&mparams,
+        TopDownMassCallable([this, &result](simulation::Node* /*node*/, core::behavior::BaseMass* mass)
+        {
+            if( mass->m_separateGravity.getValue() )
+            {
+                mass->addGravityToV(&mparams, result);
+            }
+            return Visitor::RESULT_CONTINUE;
+        })
+    ) );
 }
 
 void MechanicalOperations::computeContactForce(core::MultiVecDerivId result)
@@ -436,8 +495,30 @@ void MechanicalOperations::computeAcc(SReal t, core::MultiVecDerivId a, core::Mu
     setDx(a);
     setX(x);
     setV(v);
-    executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
-    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v) );
+
+    executeVisitor( makeMechanicalVisitor(&mparams,
+        TopDownMechanicalMappingCallable([](simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+        {
+            return Visitor::RESULT_PRUNE;
+        }),
+        TopDownProjectiveConstraintSetCallable([this, &x, &v](simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
+        {
+            c->projectPosition(&mparams, x);
+            c->projectVelocity(&mparams, v);
+            return Visitor::RESULT_CONTINUE;
+        })
+    ) );
+
+    executeVisitor( makeMechanicalVisitor(&mparams,
+        TopDownMechanicalMappingCallable([this, &x, &v](simulation::Node* /*node*/, core::BaseMapping* map)
+        {
+            map->apply(&mparams, x, x);
+            map->applyJ(&mparams, v, v);
+
+            return Visitor::RESULT_CONTINUE;
+        })
+    ) );
+
     computeForce(f);
 
     accFromF(a,f);
