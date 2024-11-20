@@ -78,8 +78,8 @@ class HasDataTypeInfo
     typedef char YesType[1];
     typedef char NoType[2];
 
-    template<typename C, typename Enable> static YesType& test( decltype (&sofa::defaulttype::DataTypeInfo<C, Enable>::name) );
-    template<typename C, typename Enable> static NoType& test(...);
+    template<typename C> static YesType& test( decltype (&sofa::defaulttype::DataTypeInfo<C, void>::name) );
+    template<typename C> static NoType& test(...);
 
 public:
     enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
