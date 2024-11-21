@@ -263,6 +263,21 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${ST
 # DiffLib (header only)
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${difflib_INCLUDE_DIR}>")
 
+set(is_release "$<CONFIG:RELEASE>")
+set(is_debug "$<CONFIG:DEBUG>")
+set(is_relwithdebinfo "$<CONFIG:RELWITHDEBINFO>")
+# set the type of build as preprocessor value
+target_compile_definitions(${PROJECT_NAME} PRIVATE "$<${is_release}:SOFA_BUILD_CONFIGURATION=Release>")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "$<${is_debug}:SOFA_BUILD_CONFIGURATION=Debug>")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "$<${is_relwithdebinfo}:SOFA_BUILD_CONFIGURATION=RelWithDebInfo>")
+## if the type of build is something else (not supported), then SOFA_BUILD_CONFIGURATION wont be defined
+# it is also useful to know if we are using a multi-config generator
+if(CMAKE_CONFIGURATION_TYPES)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE "SOFA_BUILD_MULTI_CONFIGURATION=1")
+else()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE "SOFA_BUILD_MULTI_CONFIGURATION=0")
+endif()
+
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
 sofa_create_package_with_targets(
