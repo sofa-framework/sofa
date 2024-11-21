@@ -109,8 +109,6 @@ void MeshSpringForceField<DataTypes>::init()
 
     SpringForceField<DataTypes>::clear();
 
-
-
     if(!(mstate1) || !(mstate2))
         mstate2 = mstate1 = dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes> *>(this->getContext()->getMechanicalState());
 
