@@ -37,8 +37,8 @@ static constexpr OglSceneFrame::Style defaultStyle("Cylinders");
 
 OglSceneFrame::OglSceneFrame()
     : d_drawFrame(initData(&d_drawFrame, true,  "draw", "Display the frame or not"))
-    , d_style(initData(&d_style, defaultStyle, "style", "Style of the frame"))
-    , d_alignment(initData(&d_alignment, defaultAlignment, "alignment", "Alignment of the frame in the view"))
+    , d_style(initData(&d_style, defaultStyle, "style", ("Style of the frame\n" + Style::dataDescription()).c_str()))
+    , d_alignment(initData(&d_alignment, defaultAlignment, "alignment", ("Alignment of the frame in the view\n" + Alignment::dataDescription()).c_str()))
     , d_viewportSize(initData(&d_viewportSize, 150, "viewportSize", "Size of the viewport where the frame is rendered"))
 {}
 
