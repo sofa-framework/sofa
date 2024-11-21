@@ -964,30 +964,25 @@ protected:
     bool buttonMode;
 };
 
-class SelectableItemWidget : public TDataWidget<helper::BaseSelectableItem>
+class SelectableItemWidget final : public TDataWidget<helper::BaseSelectableItem>
 {
     Q_OBJECT
 public :
 
-    ///The class constructor takes a TData<RadioTrick> since it creates
-    ///a widget for a that particular data type.
     SelectableItemWidget(QWidget* parent, const char* name,
             core::BaseData* m_data, const helper::BaseSelectableItem* item);
 
-    ///In this method we  create the widgets and perform the signal / slots connections.
-    virtual bool createWidgets();
-    virtual void setDataReadOnly(bool readOnly);
+    bool createWidgets() override;
+    void setDataReadOnly(bool readOnly) override;
 
 protected:
-    ///Implements how update the widgets knowing the data value.
-    virtual void readFromData();
+    void readFromData() override;
 
-    ///Implements how to update the data, knowing the widget value.
-    virtual void writeToData();
+    void writeToData() override;
 
     QButtonGroup *m_buttonList { nullptr };
     QComboBox    *m_comboList { nullptr };
-    bool m_buttonMode;
+    bool m_buttonMode { false };
 
     const helper::BaseSelectableItem* m_selectableItem { nullptr };
 };

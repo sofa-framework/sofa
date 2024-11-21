@@ -299,7 +299,7 @@ bool SelectableItemWidget::createWidgets()
     return true;
 }
 
-void SelectableItemWidget::setDataReadOnly(bool readOnly)
+void SelectableItemWidget::setDataReadOnly(const bool readOnly)
 {
     if (m_buttonMode)
     {
@@ -331,11 +331,11 @@ void SelectableItemWidget::writeToData()
 {
     if (m_buttonMode)
     {
-        const_cast<helper::BaseSelectableItem*>(m_selectableItem)->setSelectedId((unsigned int)m_buttonList->checkedId ());
+        const_cast<helper::BaseSelectableItem*>(m_selectableItem)->setSelectedId(static_cast<std::size_t>(m_buttonList->checkedId()));
     }
     else
     {
-        const_cast<helper::BaseSelectableItem*>(m_selectableItem)->setSelectedId((unsigned int)m_comboList->currentIndex());
+        const_cast<helper::BaseSelectableItem*>(m_selectableItem)->setSelectedId(static_cast<std::size_t>(m_comboList->currentIndex()));
     }
 }
 
