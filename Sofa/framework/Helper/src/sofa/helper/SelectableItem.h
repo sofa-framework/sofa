@@ -304,7 +304,7 @@ private:
 
     void setSelectedId(std::size_t id) final
     {
-        m_selected_id = 0;
+        m_selected_id = id;
     }
 };
 
