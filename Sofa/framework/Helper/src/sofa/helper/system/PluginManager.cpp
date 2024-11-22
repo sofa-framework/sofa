@@ -538,13 +538,16 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
                 
             for (const auto & path : paths)
             {
-                for (auto const& dirEntry : std::filesystem::directory_iterator{path})
+                if ( fs::exists(path) )
                 {
-                    const std::string filename = dirEntry.path().filename().string();
-                    const std::string downcaseFilename = helper::downcaseString(filename);
-                    if (downcaseFilename == downcaseLibName)
+                    for (auto const& dirEntry : std::filesystem::directory_iterator{path})
                     {
-                        return FileSystem::cleanPath(dirEntry.path().string());
+                        const std::string filename = dirEntry.path().filename().string();
+                        const std::string downcaseFilename = helper::downcaseString(filename);
+                        if (downcaseFilename == downcaseLibName)
+                        {
+                            return FileSystem::cleanPath(dirEntry.path().string());
+                        }
                     }
                 }
             }
