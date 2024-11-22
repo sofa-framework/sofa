@@ -266,12 +266,14 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${di
 set(is_release "$<CONFIG:RELEASE>")
 set(is_debug "$<CONFIG:DEBUG>")
 set(is_relwithdebinfo "$<CONFIG:RELWITHDEBINFO>")
+set(is_minsizerel "$<CONFIG:MINSIZEREL>")
 # set the type of build as preprocessor value
 target_compile_definitions(${PROJECT_NAME} PRIVATE "$<${is_release}:SOFA_BUILD_CONFIGURATION=Release>")
 target_compile_definitions(${PROJECT_NAME} PRIVATE "$<${is_debug}:SOFA_BUILD_CONFIGURATION=Debug>")
 target_compile_definitions(${PROJECT_NAME} PRIVATE "$<${is_relwithdebinfo}:SOFA_BUILD_CONFIGURATION=RelWithDebInfo>")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "$<${is_minsizerel}:SOFA_BUILD_CONFIGURATION=MinSizeRel>")
 ## if the type of build is something else (not supported), then SOFA_BUILD_CONFIGURATION wont be defined
-# it is also useful to know if we are using a multi-config generator
+# it could be also useful to know if we are using a multi-config generator
 if(CMAKE_CONFIGURATION_TYPES)
     target_compile_definitions(${PROJECT_NAME} PRIVATE "SOFA_BUILD_MULTI_CONFIGURATION=1")
 else()
