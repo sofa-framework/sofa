@@ -28,7 +28,7 @@
 #include <sofa/helper/map.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-
+ 
 #include <cmath>
 
 namespace sofa::component::linearsolver::iterative
