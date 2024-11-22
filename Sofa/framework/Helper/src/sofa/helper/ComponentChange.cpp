@@ -759,7 +759,8 @@ const std::map< std::string, Renamed, std::less<> > renamedComponents = {
     {"UniformConstraint", Renamed("v24.06","v25.06","UniformLagrangianConstraint")},
     {"UnilateralInteractionConstraint", Renamed("v24.06","v25.06","UnilateralLagrangianConstraint")},
     {"StiffSpringForceField", Renamed("v24.06","v25.06","SpringForceField")},
-    {"ParallelStiffSpringForceField", Renamed("v24.06","v25.06","ParallelSpringForceField")}
+    {"ParallelStiffSpringForceField", Renamed("v24.06","v25.06","ParallelSpringForceField")},
+    {"ShewchukPCGLinearSolver", Renamed("v24.12","v25.12","PCGLinearSolver")}
 
 };
 
@@ -799,7 +800,6 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"ConjugateGradient", Dealiased("v24.12","CGLinearSolver")},
     {"MINRESSolver", Dealiased("v24.12","MinResLinearSolver")},
     {"MinResSolver", Dealiased("v24.12","MinResLinearSolver")},
-    {"PCGLinearSolver", Dealiased("v24.12","ShewchukPCGLinearSolver")},
     {"JacobiLinearSolver", Dealiased("v24.12","JacobiPreconditioner")},
     {"JacobiSolver", Dealiased("v24.12","JacobiPreconditioner")},
     {"SSORLinearSolver", Dealiased("v24.12","SSORPreconditioner")},
