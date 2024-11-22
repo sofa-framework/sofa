@@ -631,6 +631,24 @@ void MechanicalOperations::printWithElapsedTime( core::ConstMultiVecId /*v*/, un
 {
 }
 
+void MechanicalOperations::addMBKdx(core::MultiVecDerivId df, SReal m, SReal b,
+    SReal k, bool clear, bool accumulate)
+{
+    addMBKdx(df, core::MatricesFactors::M(m), core::MatricesFactors::B(b), core::MatricesFactors::K(k), clear, accumulate);
+}
+
+void MechanicalOperations::addMBKv(core::MultiVecDerivId df, SReal m, SReal b,
+    SReal k, bool clear, bool accumulate)
+{
+    addMBKv(df, core::MatricesFactors::M(m), core::MatricesFactors::B(b), core::MatricesFactors::K(k), clear, accumulate);
+}
+
+void MechanicalOperations::setSystemMBKMatrix(SReal mFact, SReal bFact,
+    SReal kFact, core::behavior::LinearSolver* linearSolver)
+{
+    setSystemMBKMatrix(core::MatricesFactors::M(mFact), core::MatricesFactors::B(bFact), core::MatricesFactors::K(kFact), linearSolver);
+}
+
 void MechanicalOperations::showMissingLinearSolverError() const
 {
     if (!hasShownMissingLinearSolverMap[ctx])

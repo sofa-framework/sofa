@@ -151,6 +151,14 @@ public:
 
     /// @}
 
+
+    SOFA_ATTRIBUTE_DEPRECATED_MECHANICALOPERATIONS_ADDMBKDX()
+    void addMBKdx(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear = true, bool accumulate = true);
+    SOFA_ATTRIBUTE_DEPRECATED_MECHANICALOPERATIONS_ADDMBKV()
+    void addMBKv(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear = true, bool accumulate = true);
+    SOFA_ATTRIBUTE_DEPRECATED_MECHANICALOPERATIONS_SETSYSTEMMBKMATRIX()
+    void setSystemMBKMatrix(SReal mFact, SReal bFact, SReal kFact, core::behavior::LinearSolver* linearSolver);
+
 protected:
     VisitorExecuteFunc executeVisitor;
 
