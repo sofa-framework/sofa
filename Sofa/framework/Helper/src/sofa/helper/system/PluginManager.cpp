@@ -525,7 +525,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
         
         for (const auto & dir : searchPaths)
         {
-            const std::array<std::string, 4> paths =
+            const std::array paths =
             {
                 dir, // Non-Multi-Config build, install
                 FileSystem::append(dir, SOFA_BUILD_CONFIGURATION_STR) // Multi-Config build
