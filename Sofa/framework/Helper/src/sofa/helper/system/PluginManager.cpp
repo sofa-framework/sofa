@@ -56,6 +56,7 @@ enum class SofaBuildConfiguration
     Release,
     RelWithDebInfo,
     Debug,
+    MinSizeRel,
     NonStandard
 };
 
@@ -72,6 +73,10 @@ constexpr SofaBuildConfiguration getSofaBuildConfiguration()
     if constexpr (SOFA_BUILD_CONFIGURATION_STR == "Debug")
     {
         return SofaBuildConfiguration::Debug;
+    }
+    if constexpr (SOFA_BUILD_CONFIGURATION_STR == "MinSizeRel")
+    {
+        return SofaBuildConfiguration::MinSizeRel;
     }
 
     return SofaBuildConfiguration::NonStandard;
