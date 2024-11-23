@@ -116,7 +116,7 @@ inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,compon
 template<>
 inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x,Vector& p,double alpha);
 
-#if !defined(SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PCGLinearSolver_CPP)
+#if !defined(SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PCGLINEARSOLVER_CPP)
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector>;
 #endif // !defined(SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PCGLinearSolver_CPP)
 
