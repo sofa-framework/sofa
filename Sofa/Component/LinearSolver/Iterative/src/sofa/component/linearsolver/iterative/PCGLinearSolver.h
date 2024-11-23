@@ -118,6 +118,6 @@ inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,compon
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PCGLINEARSOLVER_CPP)
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector>;
-#endif // !defined(SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PCGLinearSolver_CPP)
+#endif // !defined(SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PCGLINEARSOLVER_CPP)
 
 } // namespace sofa::component::linearsolver::iterative
