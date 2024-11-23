@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PCGLinearSolver_CPP
+#define SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PCGLINEARSOLVER_CPP
 #include <sofa/component/linearsolver/iterative/PCGLinearSolver.inl>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
 #include <sofa/core/ObjectFactory.h>
