@@ -72,7 +72,7 @@ stdenv.mkDerivation {
   '';
 
   meta = {
-    description = "Real-time multi-physics simulation with an emphasis on medical simulation";
+    description = "SOFA is an open-source framework for interactive physics simulation, with emphasis on biomechanical and robotic simulations";
     homepage = "https://github.com/sofa-framework/sofa";
     license = lib.licenses.lgpl21Only;
     maintainers = with lib.maintainers; [ nim65s ];

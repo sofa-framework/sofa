@@ -1,5 +1,5 @@
 {
-  description = "Real-time multi-physics simulation with an emphasis on medical simulation.";
+  description = "SOFA is an open-source framework for interactive physics simulation, with emphasis on biomechanical and robotic simulations";
 
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
