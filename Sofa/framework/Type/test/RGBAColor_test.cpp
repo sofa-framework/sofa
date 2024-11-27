@@ -65,6 +65,19 @@ void Color_Test::checkCreateFromString()
     EXPECT_EQ( RGBAColor::fromString("magenta"), RGBAColor(1.0,0.0,1.0,1.0) ) ;
     EXPECT_EQ( RGBAColor::fromString("yellow"), RGBAColor(1.0,1.0,0.0,1.0) ) ;
     EXPECT_EQ( RGBAColor::fromString("gray"), RGBAColor(0.5,0.5,0.5,1.0) ) ;
+    EXPECT_EQ( RGBAColor::fromString("darkgray"), RGBAColor(0.25f, 0.25f,0.25f, 1.0f ) );
+    EXPECT_EQ( RGBAColor::fromString("lightgray"), RGBAColor(0.75f, 0.75f,0.75f, 1.0f ) );
+    EXPECT_EQ( RGBAColor::fromString("orange"), RGBAColor(1.0f, 0.5f, 0.0f, 1.0f ));
+    EXPECT_EQ( RGBAColor::fromString("purple"), RGBAColor(0.5f, 0.0f, 0.5f, 1.0f ));
+    EXPECT_EQ( RGBAColor::fromString("pink"), RGBAColor(1.0f, 0.0f, 0.5f, 1.0f ));
+    EXPECT_EQ( RGBAColor::fromString("brown"), RGBAColor(0.6f, 0.3f, 0.0f, 1.0f ));
+    EXPECT_EQ( RGBAColor::fromString("lime"), RGBAColor(0.5f, 1.0f, 0.0f, 1.0f ));
+    EXPECT_EQ( RGBAColor::fromString("teal"), RGBAColor(0.0f, 0.5f, 0.5f, 1.0f ));
+    EXPECT_EQ( RGBAColor::fromString("navy"), RGBAColor(0.0f, 0.0f, 0.5f, 1.0f ));
+    EXPECT_EQ( RGBAColor::fromString("olive"), RGBAColor(0.5f, 0.5f, 0.0f, 1.0f ));
+    EXPECT_EQ( RGBAColor::fromString("maroon"), RGBAColor(0.5f, 0.0f, 0.0f, 1.0f ));
+    EXPECT_EQ( RGBAColor::fromString("silver"), RGBAColor(0.75f, 0.75f, 0.75f, 1.0f ));
+    EXPECT_EQ( RGBAColor::fromString("gold"), RGBAColor(1.0f, 0.84f, 0.0f, 1.0f ));
 
     RGBAColor color;
     EXPECT_TRUE( RGBAColor::read("white", color) ) ;

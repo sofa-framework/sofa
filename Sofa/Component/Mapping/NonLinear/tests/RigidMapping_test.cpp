@@ -90,7 +90,7 @@ struct RigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidMapping>
         if constexpr ( InDataTypes::spatial_dimensions != 3 )
         {
             // RigidMapping::getK is not yet implemented for 2D rigids
-            this->flags &= ~Inherit::TEST_getK;
+            this->setTestExecution(Inherit::TEST_getK, false);
         }
     }
 

@@ -44,8 +44,8 @@ BilateralLagrangianConstraint<DataTypes>::BilateralLagrangianConstraint(Mechanic
     , d_m1(initData(&d_m1, "first_point","index of the constraint on the first model (object1)"))
     , d_m2(initData(&d_m2, "second_point","index of the constraint on the second model (object2)"))
     , d_restVector(initData(&d_restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
-    , d_numericalTolerance(initData(&d_numericalTolerance, 0.0001, "numericalTolerance",
-                                    "a real value specifying the tolerance during the constraint solving. (optional, default=0.0001)") )
+    , d_numericalTolerance(initData(&d_numericalTolerance, 1e-4_sreal, "numericalTolerance",
+                                    "a real value specifying the tolerance during the constraint solving.") )
     , d_activate( initData(&d_activate, true, "activate", "control constraint activation (true by default)"))
     , d_keepOrientDiff(initData(&d_keepOrientDiff, false, "keepOrientationDifference", "keep the initial difference in orientation (only for rigids)"))
     , l_topology1(initLink("topology1", "link to the first topology container"))
@@ -80,6 +80,11 @@ void BilateralLagrangianConstraint<DataTypes>::unspecializedInit()
     /// Using assert means that the previous lines have check that there is two valid mechanical state.
     assert(this->mstate1);
     assert(this->mstate2);
+
+    if (!this->mstate1 || !this->mstate2)
+    {
+        this->d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
+    }
 
     prevForces.clear();
 }
@@ -120,8 +125,10 @@ void BilateralLagrangianConstraint<DataTypes>::reinit()
 
 
 template<class DataTypes>
-void BilateralLagrangianConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams*, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
-                                                                      , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
+void BilateralLagrangianConstraint<DataTypes>::buildConstraintMatrix(
+    const ConstraintParams*, DataMatrixDeriv& c1_d, DataMatrixDeriv& c2_d,
+    unsigned int& constraintId,
+    const DataVecCoord&/*x1*/, const DataVecCoord&/*x2*/)
 {
     if (!d_activate.getValue())
         return;
@@ -133,12 +140,12 @@ void BilateralLagrangianConstraint<DataTypes>::buildConstraintMatrix(const Const
     const SubsetIndices& m1Indices = d_m1.getValue();
     const SubsetIndices& m2Indices = d_m2.getValue();
 
-    MatrixDeriv &c1 = *c1_d.beginEdit();
-    MatrixDeriv &c2 = *c2_d.beginEdit();
+    auto c1 = sofa::helper::getWriteAccessor(c1_d);
+    auto c2 = sofa::helper::getWriteAccessor(c2_d);
 
     cid.resize(minp);
 
-    for (unsigned pid=0; pid<minp; pid++)
+    for (unsigned pid = 0; pid < minp; ++pid)
     {
         int tm1 = m1Indices[pid];
         int tm2 = m2Indices[pid];
@@ -148,35 +155,32 @@ void BilateralLagrangianConstraint<DataTypes>::buildConstraintMatrix(const Const
         cid[pid] = constraintId;
         constraintId += 3;
 
-        MatrixDerivRowIterator c1_it = c1.writeLine(cid[pid]);
+        MatrixDerivRowIterator c1_it = c1->writeLine(cid[pid]);
         c1_it.addCol(tm1, -cx);
 
-        MatrixDerivRowIterator c2_it = c2.writeLine(cid[pid]);
+        MatrixDerivRowIterator c2_it = c2->writeLine(cid[pid]);
         c2_it.addCol(tm2, cx);
 
-        c1_it = c1.writeLine(cid[pid] + 1);
+        c1_it = c1->writeLine(cid[pid] + 1);
         c1_it.setCol(tm1, -cy);
 
-        c2_it = c2.writeLine(cid[pid] + 1);
+        c2_it = c2->writeLine(cid[pid] + 1);
         c2_it.setCol(tm2, cy);
 
-        c1_it = c1.writeLine(cid[pid] + 2);
+        c1_it = c1->writeLine(cid[pid] + 2);
         c1_it.setCol(tm1, -cz);
 
-        c2_it = c2.writeLine(cid[pid] + 2);
+        c2_it = c2->writeLine(cid[pid] + 2);
         c2_it.setCol(tm2, cz);
     }
-
-    c1_d.endEdit();
-    c2_d.endEdit();
 }
 
 
 template<class DataTypes>
 void BilateralLagrangianConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams,
-                                                                       BaseVector *v,
-                                                                       const DataVecCoord &d_x1, const DataVecCoord &d_x2
-                                                                       , const DataVecDeriv & d_v1, const DataVecDeriv & d_v2)
+    BaseVector* v,
+    const DataVecCoord& d_x1, const DataVecCoord& d_x2,
+    const DataVecDeriv& d_v1, const DataVecDeriv& d_v2)
 {
     if (!d_activate.getValue()) return;
 
@@ -196,18 +200,20 @@ void BilateralLagrangianConstraint<DataTypes>::getConstraintViolation(const Cons
     const VecCoord &x1 = d_x1.getValue();
     const VecCoord &x2 = d_x2.getValue();
 
-    dfree.resize(minp);
+    m_violation.resize(minp);
 
-    for (unsigned pid=0; pid<minp; pid++)
+    for (unsigned pid = 0; pid < minp; pid++)
     {
-        dfree[pid] = x2[m2Indices[pid]] - x1[m1Indices[pid]];
+        m_violation[pid] = x2[m2Indices[pid]] - x1[m1Indices[pid]];
 
         if (pid < restVector.size())
-            dfree[pid] -= restVector[pid];
+        {
+            m_violation[pid] -= restVector[pid];
+        }
 
-        v->set(cid[pid]  , dfree[pid][0]);
-        v->set(cid[pid]+1, dfree[pid][1]);
-        v->set(cid[pid]+2, dfree[pid][2]);
+        v->set(cid[pid]  , m_violation[pid][0]);
+        v->set(cid[pid]+1, m_violation[pid][1]);
+        v->set(cid[pid]+2, m_violation[pid][2]);
     }
 }
 
@@ -235,7 +241,7 @@ void BilateralLagrangianConstraint<DataTypes>::getVelocityViolation(BaseVector *
     auto pos2 = this->getMState2()->readPositions();
 
     const SReal dt = this->getContext()->getDt();
-    const SReal invDt = SReal(1.0) / dt;
+    const SReal invDt = 1_sreal / dt;
 
     for (unsigned pid=0; pid<minp; ++pid)
     {

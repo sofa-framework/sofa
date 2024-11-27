@@ -98,7 +98,8 @@ DisplayFlagWidget::DisplayFlagWidget(QWidget* parent, const char* name,  Qt::Win
     itemShowFlag[NORMALS]   = new QTreeWidgetItem(itemShowOptions, itemShowFlag[WIREFRAME]);
     this->setTreeWidgetCheckable(itemShowFlag[NORMALS], "Normals");
     this->addTopLevelItem(itemShowAll);
-    itemShowAll->addChild(itemShowVisual); itemShowAll->setExpanded(true);
+    itemShowAll->setExpanded(true);
+    itemShowAll->addChild(itemShowVisual);
     itemShowVisual->addChild(itemShowFlag[VISUALMODELS]);
     itemShowAll->addChild(itemShowBehavior);
     itemShowBehavior->addChild(itemShowFlag[BEHAVIORMODELS]);
@@ -112,7 +113,8 @@ DisplayFlagWidget::DisplayFlagWidget(QWidget* parent, const char* name,  Qt::Win
     itemShowMapping->addChild(itemShowFlag[MAPPINGS]);
     itemShowMapping->addChild(itemShowFlag[MECHANICALMAPPINGS]);
 
-    this->addTopLevelItem(itemShowOptions); itemShowOptions->setExpanded(true);
+    this->addTopLevelItem(itemShowOptions);
+    itemShowOptions->setExpanded(true);
     itemShowOptions->addChild(itemShowFlag[RENDERING]);
     itemShowOptions->addChild(itemShowFlag[WIREFRAME]);
     itemShowOptions->addChild(itemShowFlag[NORMALS]);

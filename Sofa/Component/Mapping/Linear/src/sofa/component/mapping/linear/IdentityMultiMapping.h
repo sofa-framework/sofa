@@ -30,7 +30,7 @@
 namespace sofa::component::mapping::linear
 {
 
-/// concatanate several entire mechanical states together
+/// Concatenate several mechanical states together
 template <class TIn, class TOut>
 class IdentityMultiMapping : public LinearMultiMapping<TIn, TOut>
 {

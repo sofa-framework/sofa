@@ -128,9 +128,14 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
         addInput(parent);
         BaseData::setDirtyValue();
         m_counter++;
-        m_isSet = true;
-    }else if (!path.empty())
+    }
+    // the referenced parent data has not been created yet but a path has been given
+    else if (!path.empty())
+    {
         parentData.setPath(path);
+    }
+
+    m_isSet = true;
 
     return true;
 }

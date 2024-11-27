@@ -111,7 +111,7 @@ void * DynamicLibrary::getSymbolAddress(Handle handle,
 # endif
     if(symbolAddress == nullptr)
         fetchLastError();
-#if not defined (WIN32)
+#if !defined (WIN32)
     else // checking that the symbol really comes from the provided library
     {
 
