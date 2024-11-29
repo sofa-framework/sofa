@@ -146,7 +146,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
           errorFactorDJ(1),
           flags(TEST_ASSEMBLY_API|TEST_GEOMETRIC_STIFFNESS)
     {
-        assert(simulation);
+        assert(simulation::getSimulation());
 
         /// Load the scene
         root = simpleapi::createRootNode(simulation::getSimulation(), "root");
