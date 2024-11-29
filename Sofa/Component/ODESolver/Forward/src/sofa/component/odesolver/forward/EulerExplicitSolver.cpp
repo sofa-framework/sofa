@@ -24,6 +24,7 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
@@ -85,10 +86,18 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     computeForce(&mop, f);
 
     sofa::Size nbNonDiagonalMasses = 0;
-    MechanicalGetNonDiagonalMassesCountVisitor(&mop.mparams, &nbNonDiagonalMasses).execute(this->getContext());
+    this->getContext()->accept(
+        sofa::core::objectmodel::topDownVisitor
+        | [&nbNonDiagonalMasses](sofa::core::behavior::BaseMass* mass)
+        {
+            if (mass && !mass->isDiagonal())
+            {
+                nbNonDiagonalMasses++;
+            }
+        });
 
     // Mass matrix is diagonal, solution can thus be found by computing acc = f/m
-    if(nbNonDiagonalMasses == 0.)
+    if(nbNonDiagonalMasses == 0)
     {
         // acc = M^-1 * f
         computeAcceleration(&mop, acc, f);
