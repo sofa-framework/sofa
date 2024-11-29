@@ -47,6 +47,10 @@ CapsuleCollisionModel<DataTypes>::CapsuleCollisionModel(core::behavior::Mechanic
     enum_type = CAPSULE_TYPE;
 }
 
+template <class TDataTypes>
+CapsuleCollisionModel<TDataTypes>::~CapsuleCollisionModel()
+{}
+
 template<class DataTypes>
 void CapsuleCollisionModel<DataTypes>::resize(sofa::Size size)
 {
