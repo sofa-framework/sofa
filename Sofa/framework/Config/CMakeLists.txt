@@ -85,6 +85,7 @@ set(HEADER_FILES
     ${SOFACONFIGSRC_ROOT}/config.h.in
     ${SOFACONFIGSRC_ROOT}/version.h.in
     ${SOFACONFIGSRC_ROOT}/url.h.in
+    ${SOFACONFIGSRC_ROOT}/Modules.h
 )
 set(SOURCE_FILES
     ${SOFACONFIGSRC_ROOT}/initSofaConfig.cpp # necessary to build a library
