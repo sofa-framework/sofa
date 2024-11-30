@@ -79,8 +79,8 @@ struct UniformMassTest :  public BaseTest
 
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
 
         todo = true ;
         m_simu = sofa::simulation::getSimulation();
