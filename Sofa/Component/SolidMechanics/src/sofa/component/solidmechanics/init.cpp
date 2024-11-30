@@ -55,9 +55,9 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin("Sofa.Component.SolidMechanics.FEM");
-    factory->registerObjectsFromPlugin("Sofa.Component.SolidMechanics.Spring");
-    factory->registerObjectsFromPlugin("Sofa.Component.SolidMechanics.TensorMass");
+    factory->registerObjectsFromPlugin(Sofa.Component.SolidMechanics.FEM);
+    factory->registerObjectsFromPlugin(Sofa.Component.SolidMechanics.Spring);
+    factory->registerObjectsFromPlugin(Sofa.Component.SolidMechanics.TensorMass);
 }
 
 void init()

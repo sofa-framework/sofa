@@ -55,7 +55,7 @@ class OglLabelTest : public BaseTest
 public:
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.GL.Component.Rendering2D");
+        sofa::simpleapi::importPlugin(Sofa.GL.Component.Rendering2D);
     }
 
     void checkExcludingAttributes()

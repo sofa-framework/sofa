@@ -55,9 +55,9 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin("Sofa.Component.Topology.Container");
-    factory->registerObjectsFromPlugin("Sofa.Component.Topology.Mapping");
-    factory->registerObjectsFromPlugin("Sofa.Component.Topology.Utility");
+    factory->registerObjectsFromPlugin(Sofa.Component.Topology.Container);
+    factory->registerObjectsFromPlugin(Sofa.Component.Topology.Mapping);
+    factory->registerObjectsFromPlugin(Sofa.Component.Topology.Utility);
 }
 
 void init()

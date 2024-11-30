@@ -72,9 +72,9 @@ struct BoxROITest :  public sofa::testing::BaseTest
 
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.Engine.Select");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        sofa::simpleapi::importPlugin(Sofa.Component.Engine.Select);
 
         m_simu = sofa::simulation::getSimulation();
         ASSERT_NE(m_simu, nullptr);

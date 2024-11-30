@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/VecId.h>
 #include <gtest/gtest.h>
+#include <sofa/Modules.h>
 
 TEST(VecId, name)
 {
@@ -61,5 +62,8 @@ TEST(VecId, name)
 
     auto dforce = sofa::core::VecDerivId::dforce();
     EXPECT_EQ(dforce.getName(), "dforce(V_DERIV)");
+
+    const std::string s = Sofa.Component.Collision;
+    EXPECT_EQ(s, std::string("Sofa.Component.Collision"));
 
 }
