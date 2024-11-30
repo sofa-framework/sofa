@@ -37,8 +37,8 @@ public:
         const double dt = 0.01;
         const auto simulation = sofa::simpleapi::createSimulation();
         const Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
-        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","Sofa.Component.Playback" } });
-        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","Sofa.Component.StateContainer" } });
+        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name",Sofa.Component.Playback } });
+        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name",Sofa.Component.StateContainer } });
 
         /// no need of gravity, the file .data is just read
         root->setGravity(Vec3(0.0,0.0,0.0));
@@ -68,8 +68,8 @@ public:
     {
         const auto simulation = sofa::simpleapi::createSimulation();
         const Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
-        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","Sofa.Component.Playback" } });
-        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","Sofa.Component.StateContainer" } });
+        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name",Sofa.Component.Playback } });
+        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name",Sofa.Component.StateContainer } });
 
         auto meca = sofa::simpleapi::createObject(root, "MechanicalObject",
                                                   {{"size", "1"}});
