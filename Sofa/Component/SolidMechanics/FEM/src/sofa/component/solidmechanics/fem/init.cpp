@@ -55,9 +55,9 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
-    factory->registerObjectsFromPlugin("Sofa.Component.SolidMechanics.FEM.HyperElastic");
-    factory->registerObjectsFromPlugin("Sofa.Component.SolidMechanics.FEM.NonUniform");
+    factory->registerObjectsFromPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
+    factory->registerObjectsFromPlugin(Sofa.Component.SolidMechanics.FEM.HyperElastic);
+    factory->registerObjectsFromPlugin(Sofa.Component.SolidMechanics.FEM.NonUniform);
 }
 
 void init()

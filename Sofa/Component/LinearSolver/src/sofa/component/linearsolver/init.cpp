@@ -56,10 +56,10 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin("Sofa.Component.LinearSolver.Direct");
-    factory->registerObjectsFromPlugin("Sofa.Component.LinearSolver.Iterative");
-    factory->registerObjectsFromPlugin("Sofa.Component.LinearSolver.Ordering");
-    factory->registerObjectsFromPlugin("Sofa.Component.LinearSolver.Preconditioner");
+    factory->registerObjectsFromPlugin(Sofa.Component.LinearSolver.Direct);
+    factory->registerObjectsFromPlugin(Sofa.Component.LinearSolver.Iterative);
+    factory->registerObjectsFromPlugin(Sofa.Component.LinearSolver.Ordering);
+    factory->registerObjectsFromPlugin(Sofa.Component.LinearSolver.Preconditioner);
 }
 
 void init()

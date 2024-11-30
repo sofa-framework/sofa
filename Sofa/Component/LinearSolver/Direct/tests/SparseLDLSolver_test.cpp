@@ -58,9 +58,9 @@ TEST(SparseLDLSolver, EmptyMState)
     const sofa::simulation::Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("root");
 
     const auto plugins = sofa::testing::makeScopedPlugin({
-        "Sofa.Component.LinearSolver.Direct",
-        "Sofa.Component.ODESolver.Backward",
-        "Sofa.Component.StateContainer"});
+        Sofa.Component.LinearSolver.Direct,
+        Sofa.Component.ODESolver.Backward,
+        Sofa.Component.StateContainer});
 
     sofa::simpleapi::createObject(root, "DefaultAnimationLoop");
     sofa::simpleapi::createObject(root, "EulerImplicitSolver");
@@ -87,12 +87,12 @@ TEST(SparseLDLSolver, TopologyChangeEmptyMState)
     const sofa::simulation::Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("root");
 
     const auto plugins = sofa::testing::makeScopedPlugin({
-        "Sofa.Component.LinearSolver.Direct",
-        "Sofa.Component.Mass",
-        "Sofa.Component.ODESolver.Backward",
-        "Sofa.Component.StateContainer",
-        "Sofa.Component.Topology.Container.Dynamic",
-        "Sofa.Component.Topology.Utility"});
+        Sofa.Component.LinearSolver.Direct,
+        Sofa.Component.Mass,
+        Sofa.Component.ODESolver.Backward,
+        Sofa.Component.StateContainer,
+        Sofa.Component.Topology.Container.Dynamic,
+        Sofa.Component.Topology.Utility});
 
     sofa::simpleapi::createObject(root, "DefaultAnimationLoop");
     sofa::simpleapi::createObject(root, "EulerImplicitSolver");

@@ -55,9 +55,9 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin("Sofa.Component.Constraint.Lagrangian.Correction");
-    factory->registerObjectsFromPlugin("Sofa.Component.Constraint.Lagrangian.Model");
-    factory->registerObjectsFromPlugin("Sofa.Component.Constraint.Lagrangian.Solver");
+    factory->registerObjectsFromPlugin(Sofa.Component.Constraint.Lagrangian.Correction);
+    factory->registerObjectsFromPlugin(Sofa.Component.Constraint.Lagrangian.Model);
+    factory->registerObjectsFromPlugin(Sofa.Component.Constraint.Lagrangian.Solver);
 }
 
 void init()

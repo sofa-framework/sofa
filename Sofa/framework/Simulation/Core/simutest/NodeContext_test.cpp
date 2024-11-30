@@ -41,8 +41,8 @@ public:
 
     NodeContext_test()
     {
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.SceneUtility");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.SceneUtility);
     }
 
     void testGetNodeObjects()
