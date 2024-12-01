@@ -30,11 +30,11 @@
  */
 #define START_MODULE(name)\
     private:\
-    template<class Parent>\
+    template<class Parent ## name>\
     struct Module ## name\
     {\
     private:\
-        static inline std::string moduleName = Parent::moduleName + "." + #name;\
+        static inline std::string moduleName = Parent ## name::moduleName + "." + #name;\
         using MyClass = Module ## name;\
     public:\
         Module ## name() = default;\
