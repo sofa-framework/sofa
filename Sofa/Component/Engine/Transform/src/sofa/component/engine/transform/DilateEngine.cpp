@@ -28,9 +28,11 @@ namespace sofa::component::engine::transform
 
 using namespace defaulttype;
 
-int DilateEngineClass = core::RegisterObject("Dilates a given mesh by moving vertices along their normal.")
-        .add< DilateEngine<Vec3Types>>(true) // default template
-                                      ;
+void registerDilateEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Dilates a given mesh by moving vertices along their normal.")
+        .add< DilateEngine<Vec3Types>>());
+}
 
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DilateEngine<Vec3Types>;
 

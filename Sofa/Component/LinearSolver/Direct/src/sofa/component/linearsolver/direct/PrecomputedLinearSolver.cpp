@@ -28,9 +28,11 @@ namespace sofa::component::linearsolver::direct
 
 using namespace sofa::linearalgebra;
 
-int PrecomputedLinearSolverClass = core::RegisterObject("Linear system solver based on a precomputed inverse matrix")
-        .add< PrecomputedLinearSolver< CompressedRowSparseMatrix<SReal> , FullVector<SReal> > >()
-        ;
+void registerPrecomputedLinearSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Linear system solver based on a precomputed inverse matrix")
+        .add< PrecomputedLinearSolver< CompressedRowSparseMatrix<SReal>, FullVector<SReal> > >());
+}
 
 template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API PrecomputedLinearSolver< CompressedRowSparseMatrix<SReal> , FullVector<SReal> >;
 

@@ -32,6 +32,8 @@
 #include <sofa/type/Mat.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::mapping::linear
 {
 
@@ -76,22 +78,22 @@ public:
 
 protected:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<std::string> f_initPos;
+    sofa::core::objectmodel::RenamedData<OutVecCoord> f_initPos;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data< type::vector<unsigned int> > nbRef;
+    sofa::core::objectmodel::RenamedData< type::vector<unsigned int>  > nbRef;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<std::string> f_index;
+    sofa::core::objectmodel::RenamedData<type::vector<sofa::type::SVector<unsigned int> > > f_index;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<double> weight;
+    sofa::core::objectmodel::RenamedData<type::vector<sofa::type::SVector<InReal> > > weight;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<unsigned int> showFromIndex;
+    sofa::core::objectmodel::RenamedData<unsigned int> showFromIndex;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    Data<bool> showWeights;
+    sofa::core::objectmodel::RenamedData<bool> showWeights;
 
 
     Data<OutVecCoord> d_initPos; ///< initial child coordinates in the world reference frame.

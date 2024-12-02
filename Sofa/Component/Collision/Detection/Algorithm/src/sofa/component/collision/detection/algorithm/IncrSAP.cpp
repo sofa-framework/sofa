@@ -132,7 +132,7 @@ IncrSAP::IncrSAP()
     :d_box(initData(&d_box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored")),
       _nothing_added(true)
 {
-    box.setParent ( &d_box);
+    box.setOriginalData ( &d_box);
 }
 
 
@@ -371,10 +371,10 @@ void IncrSAP::boxPrune(){
 
     SCOPED_TIMER("Box Prune SAP intersection");
 
-    std::deque<int> active_boxes; // active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
+    std::deque<int> active_boxes; // active boxes are the one that we encountered only their min (end point), so if there are two boxes b0 and b1,
                                   // if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
                                   //                                                                                                      b1_min---------------------b1_max
-                                  // once we encouter b0_max, b0 will not intersect with nothing (trivial), so we delete it from active_boxes.
+                                  // once we encounter b0_max, b0 will not intersect with nothing (trivial), so we delete it from active_boxes.
                                   // so the rule is : - every time we encounter a box min end point, we check if it is overlapping with other active_boxes and add the owner (a box) of this end point to
                                   //                  the active boxes.
                                   //                  - every time we encounter a max end point of a box, we are sure that we encountered min end point of a box because _end_points is sorted,
@@ -783,14 +783,10 @@ bool ISAPBox::overlaps(const ISAPBox & other,double alarmDist) const{
     return true;
 }
 
-
-using namespace sofa::defaulttype;
-using namespace collision;
-
-int IncrSAPClassSofaVector = core::RegisterObject("Collision detection using incremental sweep and prune")
-        .addAlias( "IncrementalSAP" )
-        .addAlias( "IncrementalSweepAndPrune" )
-        .add< IncrSAP >( true )
-        ;
+void registerIncrSAP(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Collision detection using incremental sweep and prune.")
+        .add< IncrSAP >());
+}
 
 } // namespace sofa::component::collision::detection::algorithm

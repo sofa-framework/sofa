@@ -22,17 +22,17 @@
 #pragma once
 #include <sofa/component/solidmechanics/spring/config.h>
 
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <set>
 
 namespace sofa::component::solidmechanics::spring
 {
 
 template<class DataTypes>
-class MeshSpringForceField : public virtual StiffSpringForceField<DataTypes>
+class MeshSpringForceField : public virtual SpringForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(MeshSpringForceField, DataTypes), SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(MeshSpringForceField, DataTypes), SOFA_TEMPLATE(SpringForceField, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -62,7 +62,7 @@ protected:
     Data< Real >  d_drawMaxElongationRange; ///< Max range of elongation (red eongation - blue neutral - green compression)
     Data< Real >  d_drawSpringSize; ///< Size of drawed lines
 
-    /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
+    /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitioning)
     Data< type::Vec<2, sofa::Index> > d_localRange;
 
     /// Link to be set to the topology container in the component graph.

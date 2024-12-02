@@ -34,7 +34,7 @@ using ::testing::Types;
 #include <sofa/core/objectmodel/ComponentState.h>
 using sofa::core::objectmodel::ComponentState;
 
-#include <sofa/component/engine/select/BoxROI.h>
+#include <sofa/component/engine/select/BoxROI.inl>
 using sofa::component::engine::select::BoxROI;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -140,7 +140,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
 
         boxroi->reinit();
 
-        EXPECT_EQ(boxroi->getComponentState(), ComponentState::Invalid ) << "Reinit shouln't crash or change the state because there is still no MechanicalObject. ";
+        EXPECT_EQ(boxroi->getComponentState(), ComponentState::Invalid ) << "Reinit shouldn't crash or change the state because there is still no MechanicalObject. ";
 
     }
 

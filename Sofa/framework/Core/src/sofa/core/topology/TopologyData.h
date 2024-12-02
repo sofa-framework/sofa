@@ -110,8 +110,8 @@ public:
     virtual void removeOnMovedPosition(const sofa::type::vector<Index>& indices);
 
     /** Method to add a callback when a element is deleted from this container. It will be called by @sa remove method for example.
-    * This is only to specify a specific behevior/computation when removing an element from this container. Otherwise normal deletion is applyed.
-    * Parameters are @param Index of the element which is detroyed and @value_type value hold by this container.
+    * This is only to specify a specific behevior/computation when removing an element from this container. Otherwise normal deletion is applied.
+    * Parameters are @param Index of the element which is destroyed and @value_type value hold by this container.
     */
     void setDestructionCallback(std::function<void(Index, value_type&)> func) { p_onDestructionCallback = func; }
     

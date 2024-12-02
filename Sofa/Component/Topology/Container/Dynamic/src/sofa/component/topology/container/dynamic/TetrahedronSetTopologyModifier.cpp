@@ -33,11 +33,13 @@
 
 namespace sofa::component::topology::container::dynamic
 {
-int TetrahedronSetTopologyModifierClass = core::RegisterObject("Tetrahedron set topology modifier")
-        .add< TetrahedronSetTopologyModifier >();
 
-using namespace std;
-using namespace sofa::defaulttype;
+void registerTetrahedronSetTopologyModifier(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology modifier dedicated to a tetrahedral topology.")
+        .add< TetrahedronSetTopologyModifier >());
+}
+
 using namespace sofa::core::topology;
 
 //const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
@@ -152,7 +154,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
 
         if(triangleIndex == sofa::InvalidID)
         {
-            // first create the traingle
+            // first create the triangle
             sofa::type::vector< Triangle > v;
             v.push_back(e1);
             addTrianglesProcess((const sofa::type::vector< Triangle > &) v);
@@ -227,7 +229,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
             addEdgesWarning(sofa::Size(v.size()), v, edgeIndexList);
         }
 
-        // udpate m_edgesInTetrahedron
+        // update m_edgesInTetrahedron
         m_container->m_edgesInTetrahedron[tetrahedronIndex][j]= edgeIndex;
 
         // update m_tetrahedraAroundEdge
@@ -361,7 +363,7 @@ void TetrahedronSetTopologyModifier::removeTetrahedraProcess( const sofa::type::
             }
         }
 
-        // now updates the shell information of the edge formely at the end of the array
+        // now updates the shell information of the edge formerly at the end of the array
         if ( indices[i] < lastTetrahedron )
         {
             if (m_container->hasTetrahedraAroundVertex())
@@ -396,19 +398,19 @@ void TetrahedronSetTopologyModifier::removeTetrahedraProcess( const sofa::type::
         {
             // removes the trianglesInTetrahedrons from the trianglesInTetrahedronArray
             m_container->m_trianglesInTetrahedron[ indices[i] ] = m_container->m_trianglesInTetrahedron[ lastTetrahedron ]; // overwriting with last valid value.
-            m_container->m_trianglesInTetrahedron.resize( lastTetrahedron ); // resizing to erase multiple occurence of the tetrahedron.
+            m_container->m_trianglesInTetrahedron.resize( lastTetrahedron ); // resizing to erase multiple occurrence of the tetrahedron.
         }
 
         if (m_container->hasEdgesInTetrahedron())
         {
             // removes the edgesInTetrahedrons from the edgesInTetrahedronArray
             m_container->m_edgesInTetrahedron[ indices[i] ] = m_container->m_edgesInTetrahedron[ lastTetrahedron ]; // overwriting with last valid value.
-            m_container->m_edgesInTetrahedron.resize( lastTetrahedron ); // resizing to erase multiple occurence of the tetrahedron.
+            m_container->m_edgesInTetrahedron.resize( lastTetrahedron ); // resizing to erase multiple occurrence of the tetrahedron.
         }
 
         // removes the tetrahedron from the tetrahedronArray
         m_tetrahedron[ indices[i] ] = m_tetrahedron[ lastTetrahedron ]; // overwriting with last valid value.
-        m_tetrahedron.resize( lastTetrahedron ); // resizing to erase multiple occurence of the tetrahedron.
+        m_tetrahedron.resize( lastTetrahedron ); // resizing to erase multiple occurrence of the tetrahedron.
     }
 
     if ( (!triangleToBeRemoved.empty()) || (!edgeToBeRemoved.empty()))

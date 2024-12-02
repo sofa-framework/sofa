@@ -49,7 +49,7 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     d_currentVolume(initData(&d_currentVolume, (Real)0.0, "currentVolume", "OUT: Current volume, as computed from the last surface position")),
     d_currentPressure(initData(&d_currentPressure, (Real)0.0, "currentPressure", "OUT: Current pressure, as computed from the last surface position")),
     d_currentStiffness(initData(&d_currentStiffness, (Real)0.0, "currentStiffness", "OUT: dP/dV at current volume and pressure")),
-    d_pressureTriangles(initData(&d_pressureTriangles, "pressureTriangles", "OUT: list of triangles where a pressure is applied (mesh triangles + tesselated quads)")),
+    d_pressureTriangles(initData(&d_pressureTriangles, "pressureTriangles", "OUT: list of triangles where a pressure is applied (mesh triangles + tessellated quads)")),
     d_initialSurfaceArea(initData(&d_initialSurfaceArea, (Real)0.0, "initialSurfaceArea", "OUT: Initial surface area, as computed from the surface rest position")),
     d_currentSurfaceArea(initData(&d_currentSurfaceArea, (Real)0.0, "currentSurfaceArea", "OUT: Current surface area, as computed from the last surface position")),
     d_drawForceScale(initData(&d_drawForceScale, (Real)0.001, "drawForceScale", "DEBUG: scale used to render force vectors")),
@@ -90,24 +90,24 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     d_surfaceAreaAfterTC.setReadOnly(true);
     this->f_listening.setValue(true);
 
-    m_p0.setParent(&d_p0);
-    m_B.setParent(&d_B);
-    m_gamma.setParent(&d_gamma);
-    m_injectedVolume.setParent(&d_injectedVolume);
-    m_maxInjectionRate.setParent(&d_maxInjectionRate);
-    m_initialVolume.setParent(&d_initialVolume);
-    m_currentInjectedVolume.setParent(&d_currentInjectedVolume);
-    m_v0.setParent(&d_v0);
-    m_currentVolume.setParent(&d_currentVolume);
-    m_currentPressure.setParent(&d_currentPressure);
-    m_currentStiffness.setParent(&d_currentStiffness);
-    m_pressureTriangles.setParent(&d_pressureTriangles);
-    m_initialSurfaceArea.setParent(&d_initialSurfaceArea);
-    m_currentSurfaceArea.setParent(&d_currentSurfaceArea);
-    m_drawForceScale.setParent(&d_drawForceScale);
-    m_drawForceColor.setParent(&d_drawForceColor);
-    m_volumeAfterTC.setParent(&d_volumeAfterTC);
-    m_surfaceAreaAfterTC.setParent(&d_surfaceAreaAfterTC);
+    m_p0.setOriginalData(&d_p0);
+    m_B.setOriginalData(&d_B);
+    m_gamma.setOriginalData(&d_gamma);
+    m_injectedVolume.setOriginalData(&d_injectedVolume);
+    m_maxInjectionRate.setOriginalData(&d_maxInjectionRate);
+    m_initialVolume.setOriginalData(&d_initialVolume);
+    m_currentInjectedVolume.setOriginalData(&d_currentInjectedVolume);
+    m_v0.setOriginalData(&d_v0);
+    m_currentVolume.setOriginalData(&d_currentVolume);
+    m_currentPressure.setOriginalData(&d_currentPressure);
+    m_currentStiffness.setOriginalData(&d_currentStiffness);
+    m_pressureTriangles.setOriginalData(&d_pressureTriangles);
+    m_initialSurfaceArea.setOriginalData(&d_initialSurfaceArea);
+    m_currentSurfaceArea.setOriginalData(&d_currentSurfaceArea);
+    m_drawForceScale.setOriginalData(&d_drawForceScale);
+    m_drawForceColor.setOriginalData(&d_drawForceColor);
+    m_volumeAfterTC.setOriginalData(&d_volumeAfterTC);
+    m_surfaceAreaAfterTC.setOriginalData(&d_surfaceAreaAfterTC);
 
 
 }

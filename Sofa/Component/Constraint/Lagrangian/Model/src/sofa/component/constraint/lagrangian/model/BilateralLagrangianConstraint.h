@@ -35,6 +35,8 @@
 
 #include <sofa/component/constraint/lagrangian/model/BilateralConstraintResolution.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::constraint::lagrangian::model
 {
 
@@ -43,7 +45,6 @@ namespace sofa::component::constraint::lagrangian::model
 using sofa::core::behavior::BaseConstraint ;
 using sofa::core::behavior::ConstraintResolution ;
 using sofa::core::behavior::PairInteractionConstraint ;
-using sofa::core::objectmodel::Data ;
 using sofa::core::ConstraintParams ;
 using sofa::core::ConstVecCoordId;
 
@@ -91,28 +92,29 @@ public:
     using DataSubsetIndices = sofa::core::topology::TopologySubsetIndices;
 
 protected:
-    std::vector<Deriv> dfree;
+    sofa::type::vector<Deriv> m_violation;
     Quat<SReal> q;
 
     std::vector<unsigned int> cid;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    Data<unsigned int> m1;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    Data<unsigned int> m2;
+    sofa::core::objectmodel::RenamedData<type::vector<Index> > m1;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    Data<Vec3Types::VecCoord> restVector;
+    sofa::core::objectmodel::RenamedData<type::vector<Index> > m2;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    Data<bool> keepOrientDiff;
+    sofa::core::objectmodel::RenamedData<VecDeriv> restVector;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
+    sofa::core::objectmodel::RenamedData<bool> keepOrientDiff;
 
     DataSubsetIndices d_m1; ///< index of the constraint on the first model
     DataSubsetIndices d_m2; ///< index of the constraint on the second model
     Data<VecDeriv> d_restVector; ///< Relative position to maintain between attached points (optional)
     VecCoord initialDifference;
 
-    Data<double> d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
+    Data<SReal> d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
     Data<bool> d_activate; ///< control constraint activation (true by default)
     Data<bool> d_keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
 
@@ -126,7 +128,8 @@ protected:
     BilateralLagrangianConstraint(MechanicalState* object) ;
     BilateralLagrangianConstraint();
 
-    virtual ~BilateralLagrangianConstraint(){}
+    ~BilateralLagrangianConstraint() override = default;
+
 public:
     void init() override;
 
@@ -135,22 +138,22 @@ public:
     void reinit() override;
 
     void buildConstraintMatrix(const ConstraintParams* cParams,
-                                       DataMatrixDeriv &c1, DataMatrixDeriv &c2,
-                                       unsigned int &cIndex,
-                                       const DataVecCoord &x1, const DataVecCoord &x2) override;
+                               DataMatrixDeriv& c1, DataMatrixDeriv& c2,
+                               unsigned int& cIndex,
+                               const DataVecCoord& x1, const DataVecCoord& x2) override;
 
     void getConstraintViolation(const ConstraintParams* cParams,
-                                        BaseVector *v,
-                                        const DataVecCoord &x1, const DataVecCoord &x2,
-                                        const DataVecDeriv &v1, const DataVecDeriv &v2) override;
+                                BaseVector* v,
+                                const DataVecCoord& x1, const DataVecCoord& x2,
+                                const DataVecDeriv& v1, const DataVecDeriv& v2) override;
 
     void getVelocityViolation(BaseVector *v,
                               const DataVecCoord &x1, const DataVecCoord &x2,
                               const DataVecDeriv &v1, const DataVecDeriv &v2);
 
     void getConstraintResolution(const ConstraintParams* cParams,
-                                         std::vector<ConstraintResolution*>& resTab,
-                                         unsigned int& offset) override;
+                                 std::vector<ConstraintResolution*>& resTab,
+                                 unsigned int& offset) override;
 
     void handleEvent(sofa::core::objectmodel::Event *event) override;
 
@@ -186,6 +189,9 @@ private:
     /// Method to get the index position of a @param point Id inside @sa m1 or @sa m2) depending of the value passed in @param cIndices. Return InvalidID if not found.
     Index indexOfElemConstraint(const SubsetIndices& cIndices, Index Id);
 };
+
+template<> SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API
+void BilateralLagrangianConstraint<Rigid3Types>::bwdInit();
 
 
 #if !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALLAGRANGIANCONSTRAINT_CPP)

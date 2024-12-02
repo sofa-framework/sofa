@@ -310,6 +310,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+    vparams->drawTool()->disableLighting();
 
     // Draw Quads indices
     if (showQuadIndices.getValue() && this->m_topology->getNbQuads() != 0)

@@ -184,7 +184,7 @@ public:
 
         typename _TetrahedronFEMForceField::SPtr tetraFEM = m_root->getTreeObject<_TetrahedronFEMForceField>();
         ASSERT_TRUE(tetraFEM.get() != nullptr);
-        ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_poissonRatio.getValue(), static_cast<Real>(0.4));
+        ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_poissonRatio.getValue()[0], static_cast<Real>(0.4));
         ASSERT_FLOATINGPOINT_EQ(tetraFEM->d_youngModulus.getValue()[0], static_cast<Real>(10000));
         ASSERT_EQ(tetraFEM->d_method.getValue(), "large");
     }
@@ -265,7 +265,15 @@ public:
         createSingleTetrahedronFEMScene(-100, -0.3, "toto");
     }
 
-    virtual void computeMatricesCheckInit(Transformation& initRot, Transformation& curRot, MaterialStiffness& stiffnessMat, StrainDisplacement& strainD, TetraCoord& initPosition, sofa::Size elementId) {}
+    virtual void computeMatricesCheckInit(Transformation& initRot, Transformation& curRot, MaterialStiffness& stiffnessMat, StrainDisplacement& strainD, TetraCoord& initPosition, sofa::Size elementId)
+    {
+        SOFA_UNUSED(initRot);
+        SOFA_UNUSED(curRot);
+        SOFA_UNUSED(stiffnessMat);
+        SOFA_UNUSED(strainD);
+        SOFA_UNUSED(initPosition);
+        SOFA_UNUSED(elementId);
+    }
 
     void setupCheckInit(Transformation& exp_initRot, TetraCoord& exp_initPos, Transformation& exp_curRot, MaterialStiffness& exp_stiffnessMat, StrainDisplacement& exp_strainD)
     {

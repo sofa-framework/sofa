@@ -22,140 +22,77 @@
 #pragma once
 #include <sofa/component/engine/select/config.h>
 
-
-
 #include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/loader/MeshLoader.h>
+#include <sofa/component/engine/select/BaseROI.h>
+
+#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::engine::select
 {
-
 
 /**
  * This class find all the points/edges/triangles/tetrahedra located inside a given sphere.
  */
 template <class DataTypes>
-class SphereROI : public core::DataEngine
+class SphereROI : public BaseROI<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(SphereROI,DataTypes),core::DataEngine);
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::Real Real;
-    typedef type::Vec<3,Real> Vec3;
-    typedef type::Vec<6,Real> Vec6;
-    typedef type::vector<sofa::core::topology::BaseMeshTopology::EdgeID> SetEdge;
-    typedef type::vector<sofa::core::topology::BaseMeshTopology::TriangleID> SetTriangle;
-    typedef type::vector<sofa::core::topology::BaseMeshTopology::QuadID> SetQuad;
-    typedef sofa::core::topology::BaseMeshTopology::SetIndex SetIndex;
-
-    typedef typename DataTypes::CPos CPos;
-
-    typedef unsigned int PointID;
-    typedef core::topology::BaseMeshTopology::Edge Edge;
-    typedef core::topology::BaseMeshTopology::Triangle Triangle;
-    typedef core::topology::BaseMeshTopology::Tetra Tetra;
-    typedef core::topology::BaseMeshTopology::Quad Quad;
+    SOFA_CLASS(SOFA_TEMPLATE(SphereROI, DataTypes), SOFA_TEMPLATE(BaseROI, DataTypes));
+    using Inherit = BaseROI<DataTypes>;
+    using Real = Real_t<DataTypes>;
+    using typename Inherit::CPos;
+    using typename Inherit::PointID;
+    using typename Inherit::Edge;
+    using typename Inherit::Triangle;
 
 protected:
-
     SphereROI();
+    ~SphereROI() override = default;
 
-    ~SphereROI() override {}
 public:
-    void init() override;
-
-    void reinit() override;
-
-    void doUpdate() override;
-
-    void draw(const core::visual::VisualParams* vparams) override;
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (!arg->getAttribute("template"))
-        {
-            // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-            {
-                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                              "' found in the context node.");
-                return false; // this template is not the same as the existing MechanicalState
-            }
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
+    bool roiDoUpdate() override;
+    void roiDraw(const core::visual::VisualParams* vparams) override;
+    void roiComputeBBox(const core::ExecParams* params, type::BoundingBox& bbox) override;
 
 protected:
-	bool isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
-    bool isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
-    bool isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
-    bool isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
-    bool isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
-    bool isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
+    bool testEdgeAngle(const Edge& e) const;
+    bool testTriangleAngle(const Triangle& t) const;
+
+    bool isPointInSphere(const CPos& c, const Real& r, const CPos& p) const;
+
+    bool isPointInROI(const CPos& p) const override;
+    bool isEdgeInROI(const Edge& e) const override;
+    bool isEdgeInStrictROI(const Edge& e) const override;
+    bool isTriangleInROI(const Triangle& t) const override;
+    bool isTriangleInStrictROI(const Triangle& t) const override;
 
 public:
     //Input
-    Data< type::vector<Vec3> > centers; ///< Center(s) of the sphere(s)
-    Data< type::vector<Real> > radii; ///< Radius(i) of the sphere(s)
+    Data< type::vector<CPos> > d_centers; ///< Center(s) of the sphere(s)
+    Data< type::vector<Real> > d_radii; ///< Radius(i) of the sphere(s)
+    
+    Data< type::Vec3 > d_direction; ///< Edge direction(if edgeAngle > 0)
+    Data< type::Vec3 > d_normal; ///< Normal direction of the triangles (if triAngle > 0)
+    Data< Real > d_edgeAngle; ///< Max angle between the direction of the selected edges and the specified direction
+    Data< Real > d_triAngle; ///< Max angle between the normal of the selected triangle and the specified normal direction
 
-    Data< Vec3 > direction; ///< Edge direction(if edgeAngle > 0)
-    Data< Vec3 > normal; ///< Normal direction of the triangles (if triAngle > 0)
-    Data< Real > edgeAngle; ///< Max angle between the direction of the selected edges and the specified direction
-    Data< Real > triAngle; ///< Max angle between the normal of the selected triangle and the specified normal direction
-
-    Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
-    Data<type::vector<Edge> > f_edges; ///< Edge Topology
-    Data<type::vector<Triangle> > f_triangles; ///< Triangle Topology
-    Data<type::vector<Quad> > f_quads; ///< Quads Topology
-    Data<type::vector<Tetra> > f_tetrahedra; ///< Tetrahedron Topology
-    Data<bool> f_computeEdges; ///< If true, will compute edge list and index list inside the ROI.
-    Data<bool> f_computeTriangles; ///< If true, will compute triangle list and index list inside the ROI.
-    Data<bool> f_computeQuads; ///< If true, will compute quad list and index list inside the ROI.
-    Data<bool> f_computeTetrahedra; ///< If true, will compute tetrahedra list and index list inside the ROI.
-
-    //Output
-    Data<SetIndex> f_indices; ///< Indices of the points contained in the ROI
-    Data<SetIndex> f_edgeIndices; ///< Indices of the edges contained in the ROI
-    Data<SetIndex> f_triangleIndices; ///< Indices of the triangles contained in the ROI
-    Data<SetIndex> f_quadIndices; ///< Indices of the quads contained in the ROI
-    Data<SetIndex> f_tetrahedronIndices; ///< Indices of the tetrahedra contained in the ROI
-
-
-    Data<VecCoord > f_pointsInROI; ///< Points contained in the ROI
-    Data<type::vector<Edge> > f_edgesInROI; ///< Edges contained in the ROI
-    Data<type::vector<Triangle> > f_trianglesInROI; ///< Triangles contained in the ROI
-    Data<type::vector<Quad> > f_quadsInROI; ///< Quads contained in the ROI
-    Data<type::vector<Tetra> > f_tetrahedraInROI; ///< Tetrahedra contained in the ROI
-    Data<SetIndex> f_indicesOut; ///< Indices of the points not contained in the ROI
-
-    //Parameter
-    Data<bool> p_drawSphere; ///< Draw shpere(s)
-    Data<bool> p_drawPoints; ///< Draw Points
-    Data<bool> p_drawEdges; ///< Draw Edges
-    Data<bool> p_drawTriangles; ///< Draw Triangles
-    Data<bool> p_drawQuads; ///< Draw Quads
-    Data<bool> p_drawTetrahedra; ///< Draw Tetrahedra
-    Data<float> _drawSize; ///< rendering size for box and topological elements
-
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    sofa::core::objectmodel::RenamedData< type::vector<CPos> > centers;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    sofa::core::objectmodel::RenamedData< type::vector<Real> > radii;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    sofa::core::objectmodel::RenamedData< type::Vec3 > direction;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    sofa::core::objectmodel::RenamedData< type::Vec3 > normal;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    sofa::core::objectmodel::RenamedData< Real > edgeAngle;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
+    sofa::core::objectmodel::RenamedData< Real > triAngle;
 };
-
-template<> bool SphereROI<defaulttype::Rigid3Types>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
-template<> bool SphereROI<defaulttype::Rigid3Types>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
-template<> bool SphereROI<defaulttype::Rigid3Types>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
-template<> bool SphereROI<defaulttype::Rigid3Types>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
-template<> bool SphereROI<defaulttype::Rigid3Types>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
-template<> bool SphereROI<defaulttype::Rigid3Types>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
-template<> void SphereROI<defaulttype::Rigid3Types>::doUpdate();
-
 
 #if !defined(SOFA_COMPONENT_ENGINE_SPHEREROI_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API SphereROI<defaulttype::Vec3Types>;

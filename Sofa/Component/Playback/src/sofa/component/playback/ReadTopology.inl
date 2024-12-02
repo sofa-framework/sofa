@@ -48,9 +48,9 @@ ReadTopology::ReadTopology()
 {
     this->f_listening.setValue(true);
     f_filename.setParent(&d_filename);
-    f_interval.setParent(&d_interval);
-    f_shift.setParent(&d_shift);
-    f_loop.setParent(&d_loop);
+    f_interval.setOriginalData(&d_interval);
+    f_shift.setOriginalData(&d_shift);
+    f_loop.setOriginalData(&d_loop);
 }
 
 ReadTopology::~ReadTopology()

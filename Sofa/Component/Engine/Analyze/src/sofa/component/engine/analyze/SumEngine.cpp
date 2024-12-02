@@ -27,13 +27,13 @@ namespace sofa::component::engine::analyze
 {
 
 using namespace sofa::type;
-using namespace sofa::defaulttype;
 
-int SumEngineClass = core::RegisterObject("Computing the Sum between two vector of dofs")
+void registerSumEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Computing the sum between two vector of dofs.")
         .add< SumEngine<Vec1> >()
-        .add< SumEngine<Vec3> >(true) // default template
-
-        ;
+        .add< SumEngine<Vec3> >(true));
+}
 
 template class SOFA_COMPONENT_ENGINE_ANALYZE_API SumEngine<Vec1>;
 template class SOFA_COMPONENT_ENGINE_ANALYZE_API SumEngine<Vec3>;

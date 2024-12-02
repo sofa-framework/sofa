@@ -45,7 +45,9 @@ using core::objectmodel::New;
 template<typename DataTypes>
 void createUniformMass(simulation::Node::SPtr node, component::statecontainer::MechanicalObject<DataTypes>& /*dofs*/)
 {
-    node->addObject(New<component::mass::UniformMass<DataTypes> >());
+    typename component::mass::UniformMass<DataTypes>::SPtr uniformMass = New<component::mass::UniformMass<DataTypes> >();
+    uniformMass->d_totalMass.setValue(1.0);
+    node->addObject(uniformMass);
 }
 
 template <typename _DataTypes>
@@ -235,7 +237,7 @@ struct FixedProjectiveConstraint_test : public BaseTest
 
 };
 
-// Define the list of DataTypes to instanciate
+// Define the list of DataTypes to instantiate
 using ::testing::Types;
 typedef Types<
     defaulttype::Vec1Types,
@@ -244,9 +246,9 @@ typedef Types<
     defaulttype::Vec6Types,
     defaulttype::Rigid2Types,
     defaulttype::Rigid3Types
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(FixedProjectiveConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( FixedProjectiveConstraint_test , testValueImplicitWithCG )

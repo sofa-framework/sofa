@@ -55,7 +55,7 @@ look for potential CompareStateFile formatted likewise
 with
 - %0 the current scene name
 - %1 the current comparestate counter value
-- %2 the name of the mstate which will undergo comparizons.
+- %2 the name of the mstate which will undergo comparisons.
 */
 std::string lookForValidCompareStateFile( const std::string& sceneName,
         const std::string& mstateName,
@@ -98,10 +98,11 @@ std::string lookForValidCompareStateFile( const std::string& sceneName,
 
 }
 
-
-
-int CompareStateClass = core::RegisterObject("Compare State vectors from a reference frame to the associated Mechanical State")
-        .add< CompareState >();
+void registerCompareState(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compare State vectors from a reference frame to the associated Mechanical State.")
+        .add< CompareState >());
+}
 
 CompareState::CompareState(): ReadState()
 {

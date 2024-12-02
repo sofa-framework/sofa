@@ -37,9 +37,11 @@ using namespace sofa::helper;
 using std::string;
 using std::stringstream;
 
-int MeshGmshLoaderClass = core::RegisterObject("Specific mesh loader for Gmsh file format.")
-        .add< MeshGmshLoader >()
-        ;
+void registerMeshGmshLoader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Specific mesh loader for Gmsh file format.")
+        .add< MeshGmshLoader >());
+}
 
 bool MeshGmshLoader::doLoad()
 {

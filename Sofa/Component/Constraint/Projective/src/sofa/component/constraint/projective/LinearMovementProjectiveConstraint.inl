@@ -36,7 +36,7 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 LinearMovementProjectiveConstraint<DataTypes>::LinearMovementProjectiveConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , data(std::unique_ptr<LinearMovementProjectiveConstraintInternalData<DataTypes>>())
+    , data(std::make_unique<LinearMovementProjectiveConstraintInternalData<DataTypes>>())
     , d_indices(initData(&d_indices, "indices", "Indices of the constrained points") )
     , d_keyTimes(initData(&d_keyTimes, "keyTimes", "key times for the movements") )
     , d_keyMovements(initData(&d_keyMovements, "movements", "movements corresponding to the key times") )
@@ -55,10 +55,10 @@ LinearMovementProjectiveConstraint<DataTypes>::LinearMovementProjectiveConstrain
     d_keyMovements.beginEdit()->push_back(Deriv() );
     d_keyMovements.endEdit();
 
-    m_indices.setParent(&d_indices);
-    m_keyTimes.setParent(&d_keyTimes);
-    m_keyMovements.setParent(&d_keyMovements);
-    showMovement.setParent(&d_showMovement);
+    m_indices.setOriginalData(&d_indices);
+    m_keyTimes.setOriginalData(&d_keyTimes);
+    m_keyMovements.setOriginalData(&d_keyMovements);
+    showMovement.setOriginalData(&d_showMovement);
 }
 
 

@@ -47,17 +47,6 @@ OglSceneFrame::OglSceneFrame()
     d_alignment.setValue(alignmentOptions);
 }
 
-void OglSceneFrame::init()
-{
-    Inherit1::init();
-    updateVisual();
-}
-
-void OglSceneFrame::reinit()
-{
-    updateVisual();
-}
-
 void OglSceneFrame::drawArrows(const core::visual::VisualParams* vparams)
 {
     for (unsigned int i = 0; i < 3; ++i)
@@ -113,7 +102,7 @@ void OglSceneFrame::drawCubeCones(const core::visual::VisualParams* vparams)
     }
 }
 
-void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
+void OglSceneFrame::doDrawVisual(const core::visual::VisualParams* vparams)
 {
     if (!d_drawFrame.getValue()) return;
 

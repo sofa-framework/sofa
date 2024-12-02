@@ -47,7 +47,7 @@ public:
     virtual bool startPartial(const BodyPicked& picked) override;
     /*
     initialise MouseForceField according to template.
-    StiffSpringForceField for Vec3
+    SpringForceField for Vec3
     JointSpringForceField for Rigid3
     */
 

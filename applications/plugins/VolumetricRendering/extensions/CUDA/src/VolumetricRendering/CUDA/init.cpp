@@ -21,7 +21,10 @@
 ******************************************************************************/
 #include <VolumetricRendering/CUDA/init.h>
 #include <VolumetricRendering/initVolumetricRendering.h>
+#include <SofaCUDA/init.h>
 #include <sofa/core/ObjectFactory.h>
+
+
 namespace volumetricrendering::cuda
 {
 
@@ -53,6 +56,7 @@ void init()
     if (first)
     {
         volumetricrendering::init();
+        sofa::gpu::cuda::init();
         first = false;
     }
 }

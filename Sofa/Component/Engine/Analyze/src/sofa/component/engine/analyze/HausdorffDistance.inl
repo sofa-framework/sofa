@@ -46,12 +46,12 @@ HausdorffDistance<DataTypes>::HausdorffDistance()
 
     f_listening.setValue(true);
 
-    f_points_1.setParent(&d_points_1);
-    f_points_2.setParent(&d_points_2);
-    d12.setParent(&d_d12);
-    d21.setParent(&d_d21);
-    max.setParent(&d_max);
-    f_update.setParent(&d_update);
+    f_points_1.setOriginalData(&d_points_1);
+    f_points_2.setOriginalData(&d_points_2);
+    d12.setOriginalData(&d_d12);
+    d21.setOriginalData(&d_d21);
+    max.setOriginalData(&d_max);
+    f_update.setOriginalData(&d_update);
 
 
 }

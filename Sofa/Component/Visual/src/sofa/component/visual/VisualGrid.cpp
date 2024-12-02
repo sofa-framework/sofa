@@ -28,9 +28,11 @@
 namespace sofa::component::visual
 {
 
-int VisualGridClass = core::RegisterObject("Display a simple grid")
-        .add< VisualGrid>()
-        ;
+void registerVisualGrid(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Display a simple grid.")
+        .add< VisualGrid >());
+}
 
 using namespace sofa::defaulttype;
 
@@ -46,7 +48,7 @@ VisualGrid::VisualGrid()
     addUpdateCallback("buildGrid", {&d_plane, &d_size, &d_nbSubdiv}, [this](const core::DataTracker& t)
     {
         SOFA_UNUSED(t);
-        updateVisual();
+        updateGrid();
         return sofa::core::objectmodel::ComponentState::Valid;
     }, {});
 }
@@ -54,17 +56,22 @@ VisualGrid::VisualGrid()
 void VisualGrid::init()
 {
     Inherit1::init();
-    updateVisual();
+    updateGrid();
 
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 void VisualGrid::reinit()
 {
-    updateVisual();
+    updateGrid();
 }
 
-void VisualGrid::updateVisual()
+void VisualGrid::doUpdateVisual(const core::visual::VisualParams*)
+{
+    updateGrid();
+}
+
+void VisualGrid::updateGrid()
 {
     const auto planeValue = d_plane.getValue();
 

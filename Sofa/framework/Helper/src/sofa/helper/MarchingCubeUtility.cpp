@@ -766,7 +766,7 @@ namespace sofa::helper
     // A priori, il n'y a pas de données sur les bords (tout du moins sur le premier voxel)
     void MarchingCubeUtility::findSeeds ( vector<type::Vec3i>& seeds, const float isoValue, unsigned char *_data )
     {
-        msg_info() << "findSeeds(). Begining." ;
+        msg_info() << "findSeeds(). Beginning." ;
 
         std::set<unsigned int> parsedVoxels;
         const size_t datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];

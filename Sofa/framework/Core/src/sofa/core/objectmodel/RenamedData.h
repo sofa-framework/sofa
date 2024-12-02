@@ -41,6 +41,11 @@ public:
         return sofa::helper::WriteAccessor<Data<T>>(m_originalData);
     }
 
+    operator sofa::helper::WriteOnlyAccessor<Data<T>>() const
+    {
+        return sofa::helper::WriteOnlyAccessor<Data<T>>(m_originalData);
+    }
+
 
     //Public methods from BaseData
     bool read(const std::string& value) { return m_originalData->read(value); }

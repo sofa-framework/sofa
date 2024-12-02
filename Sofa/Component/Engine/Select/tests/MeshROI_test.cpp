@@ -32,7 +32,7 @@ using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::simulation::graph::DAGSimulation;
 
-#include <sofa/component/engine/select/MeshROI.h>
+#include <sofa/component/engine/select/MeshROI.inl>
 using sofa::component::engine::select::MeshROI ;
 
 #include <sofa/core/visual/VisualParams.h>
@@ -73,7 +73,7 @@ struct MeshROI_test : public BaseSimulationTest,
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
         "   <Node name='node'>                                          "
         "       <MeshOBJLoader name='loader' filename='mesh/cube.obj'/>    "
-        "       <Mesh name='topology' src='@loader'/>                      "
+        "       <MeshTopology name='topology' src='@loader'/>                      "
         "       <MeshROI template='Vec3d' name='MeshROI'/>                 "
         "   </Node>                                                        "
         "</Node>                                                           " ;
@@ -136,7 +136,7 @@ struct MeshROI_test : public BaseSimulationTest,
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
         "   <Node name='node'>                                          "
         "       <MeshOBJLoader name='loader' filename='mesh/dragon.obj'/>  "
-        "       <Mesh name='topology' src='@loader'/>                      "
+        "       <MeshTopology name='topology' src='@loader'/>                      "
         "       <MeshROI template='Vec3d' name='MeshROI'/>                 "
         "   </Node>                                                        "
         "</Node>                                                           " ;
@@ -157,7 +157,7 @@ struct MeshROI_test : public BaseSimulationTest,
         <Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >
            <Node name='node'>
                <MeshOBJLoader name='loader' filename='mesh/cube.obj'/>
-               <Mesh name='topology' src='@loader'/>
+               <MeshTopology name='topology' src='@loader'/>
                <MeshROI template='Vec3d' name='MeshROI' position='0. 0. 0. 2. 0. 0.' />
            </Node>
         </Node>

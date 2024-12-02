@@ -5,7 +5,7 @@
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
     <RequiredPlugin name="Sofa.Component.SceneUtility"/> <!-- Needed to use components [InfoComponent] -->
-    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [StiffSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [SpringForceField] -->
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
 
     <DefaultAnimationLoop/>
@@ -22,5 +22,5 @@
         <UniformMass template="Vec3d" name="uniformMass1"  totalMass="10" />
     </Node>
 
-    <StiffSpringForceField template="Vec3d" name="jointSpring" object1="@fixedPointNode" object2="@MassNode" spring="0 0 100 0 1" drawMode="1"/>
+    <SpringForceField template="Vec3d" name="jointSpring" object1="@fixedPointNode" object2="@MassNode" spring="0 0 100 0 1" drawMode="1"/>
 </Node>

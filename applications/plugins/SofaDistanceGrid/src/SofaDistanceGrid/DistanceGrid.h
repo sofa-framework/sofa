@@ -37,7 +37,7 @@ namespace sofa::helper::io
 ////// DistanceGrid declaration
 namespace sofa
 {
-//todo(dmarchal) I see no reason why this is into component as DistanceGrid obvisouly isn't one
+//todo(dmarchal) I see no reason why this is into component as DistanceGrid obviously isn't one
 // can someone suggest a refactoring to have things in the right location.
 namespace component
 {

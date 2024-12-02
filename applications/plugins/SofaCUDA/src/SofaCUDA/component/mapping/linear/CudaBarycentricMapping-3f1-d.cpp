@@ -32,9 +32,9 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::gpu::cuda;
 
-// Spread the instanciations over multiple files for more efficient and lightweight compilation
+// Spread the instantiations over multiple files for more efficient and lightweight compilation
 
-// instanciations involving both CudaVec3f1Types and Vec3dTypes
+// instantiations involving both CudaVec3f1Types and Vec3dTypes
 
 
 

@@ -25,6 +25,19 @@
 namespace sofa::core::behavior
 {
 
+BaseConstraintSet::BaseConstraintSet()
+    : group(initData(&group, 0, "group", "ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle."))
+    , d_constraintIndex(initData(&d_constraintIndex, 0u, "constraintIndex", "Constraint index (first index in the right hand term resolution vector)"))
+{
+    m_constraintIndex.setOriginalData(&d_constraintIndex);
+}
+
+
+BaseConstraintSet::~BaseConstraintSet()
+{
+
+}
+
 bool BaseConstraintSet::insertInNode( objectmodel::BaseNode* node )
 {
     node->addConstraintSet(this);

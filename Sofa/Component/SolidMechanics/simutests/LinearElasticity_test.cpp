@@ -157,7 +157,7 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
     typename component::mechanicalload::TrianglePressureForceField<DataTypes>::SPtr tpff=
             modeling::addNew<typename component::mechanicalload::TrianglePressureForceField<DataTypes> >(root);
     tractionStruct.forceField=tpff;
-    sofa::modeling::setDataLink(&boxRoi2->d_triangleIndices,&tpff->triangleList);
+    sofa::modeling::setDataLink(&boxRoi2->d_triangleIndices,&tpff->d_triangleList);
     // LineProjectiveConstraint
     typename component::constraint::projective::LineProjectiveConstraint<DataTypes>::SPtr ptlc=
             modeling::addNew<typename component::constraint::projective::LineProjectiveConstraint<DataTypes> >(root);
@@ -289,13 +289,13 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
 
 };
 
-// Define the list of DataTypes to instanciate
+// Define the list of DataTypes to instantiate
 using ::testing::Types;
 typedef Types<
     Vec3Types
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(LinearElasticity_test, DataTypes);
 
 // first test topology

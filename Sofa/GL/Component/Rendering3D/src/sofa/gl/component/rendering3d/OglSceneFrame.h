@@ -44,9 +44,7 @@ public:
 
     OglSceneFrame();
 
-    void init() override;
-    void reinit() override;
-    void draw(const core::visual::VisualParams*) override;
+    void doDrawVisual(const core::visual::VisualParams*) override;
 
 private:
     static void drawArrows(const core::visual::VisualParams* vparams);

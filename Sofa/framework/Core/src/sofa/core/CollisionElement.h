@@ -297,7 +297,7 @@ inline bool TCollisionElementIterator<CollisionModel>::isActive(core::CollisionM
  *  collision element. It is only there to create a reference to it, not to
  *  actual contain its data. Classes derived from TCollisionElementIterator
  *  does not store any data, but just provide methods allowing to access the
- *  additionnal data stored inside the derived CollisionModel. For instance,
+ *  additional data stored inside the derived CollisionModel. For instance,
  *  the Cube class adds the minVect() / maxVect() methods to retrieve the
  *  corners of the cube, however this data is not stored inside Cube, instead
  *  it is stored inside the CubeData class within CubeModel.

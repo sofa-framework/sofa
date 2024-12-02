@@ -37,7 +37,7 @@
 namespace sofa::component::mapping::nonlinear
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template<class InDataTypes, class OutDataTypes>
 class RigidMappingInternalData
 {
@@ -60,6 +60,8 @@ public:
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
+    typedef Data<OutVecCoord> OutDataVecCoord;
+    typedef Data<OutVecDeriv> OutDataVecDeriv;
 
     typedef typename In::Real InReal;
     typedef typename In::Coord InCoord;
@@ -67,6 +69,8 @@ public:
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename In::MatrixDeriv InMatrixDeriv;
+    typedef Data<InVecCoord> InDataVecCoord;
+    typedef Data<InVecDeriv> InDataVecDeriv;
 
     enum
     {

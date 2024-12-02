@@ -74,7 +74,11 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
 
     void SetUp() override 
     {
+        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver");
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.MechanicalLoad");
+        sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
+        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
     }
 
     void TearDown() override {}
@@ -93,7 +97,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
                  "   <CGLinearSolver iterations=\"25\" tolerance=\"1e-5\" threshold=\"1e-5\"/>   \n"
                  "   <EulerImplicitSolver/>                                                      \n"
                  "   <MechanicalObject name='mstate' size='2' template='"<<  DataTypes::Name() << "'/> \n"
-                 "   <UniformMass/>                                                                    \n"
+                 "   <UniformMass totalMass='1.0'/>                                                                    \n"
                  "   <ConstantForceField name='myForceField' indices='0' totalForce='"<< defaultValueForces << "'/>        \n"
                  "</Node>                                                                                                                                                               \n" ;
 
@@ -224,7 +228,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
     }
 };
 
-// Define the list of DataTypes to instanciate
+// Define the list of DataTypes to instantiate
 using ::testing::Types;
 typedef Types<
 TypeTuple<Rigid2Types, Rigid2Mass>
@@ -237,7 +241,7 @@ TypeTuple<Rigid2Types, Rigid2Mass>
 
 > DataTypes;
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(ConstantForceField_test, DataTypes);// first test case
 TYPED_TEST( ConstantForceField_test , testBasicAttributes )
 {

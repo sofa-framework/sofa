@@ -29,10 +29,11 @@ namespace sofa::component::solidmechanics::spring
 
 using namespace sofa::defaulttype;
 
-
-int AngularSpringForceFieldClass = core::RegisterObject("Angular springs applied to rotational degrees of freedom of a rigid body or frame")
-        .add< AngularSpringForceField<Rigid3Types> >()
-        ;
+void registerAngularSpringForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Angular springs applied to rotational degrees of freedom of a rigid body or frame.")
+        .add< AngularSpringForceField<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API AngularSpringForceField<Rigid3Types>;
 

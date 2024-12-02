@@ -115,7 +115,7 @@ struct BaseObjectDescription_test: public BaseTest
         EXPECT_EQ( objectDescription.getAttributeAsFloat("aFirstNonFloatAttribute", -1234.0), -1234.0) ;
         EXPECT_EQ( objectDescription.getAttributeAsFloat("aSecondNonFloatAttribute", -1234.0), -1234.0) ;
         EXPECT_EQ( objectDescription.getErrors().size(), (size_t)3) << "If this fails this means that one of the three previous "
-                                                               "conversion succeded while it shouldn't";
+                                                               "conversion succeeded while it shouldn't";
 
         EXPECT_EQ( objectDescription.getAttributeAsFloat("aFloatAttribute", -1234.0), 1.0) ;
         EXPECT_EQ( objectDescription.getErrors().size(), (size_t)3) ;
@@ -147,7 +147,7 @@ struct BaseObjectDescription_test: public BaseTest
         EXPECT_EQ( objectDescription.getAttributeAsInt("aFirstNonIntAttribute", -1234.0), -1234.0) ;
         EXPECT_EQ( objectDescription.getAttributeAsInt("aSecondNonIntAttribute", -1234.0), -1234.0) ;
         EXPECT_EQ( objectDescription.getErrors().size(), (size_t)2) << "If this fails this means that one of the three previous "
-                                                               "conversion succeded while it shouldn't";
+                                                               "conversion succeeded while it shouldn't";
     }
 };
 

@@ -22,6 +22,7 @@ set(SOFADISTANCEGRID_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFADISTANCEGRID_SRC}/config.h.in
+    ${SOFADISTANCEGRID_SRC}/initSofaDistanceGrid.h
     ${SOFADISTANCEGRID_SRC}/DistanceGrid.h
     ${SOFADISTANCEGRID_SRC}/components/collision/FFDDistanceGridDiscreteIntersection.h
     ${SOFADISTANCEGRID_SRC}/components/collision/FFDDistanceGridDiscreteIntersection.inl
@@ -86,3 +87,5 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     RELOCATABLE "plugins"
     )
+
+sofa_add_subdirectory(plugin extensions/CUDA SofaDistanceGrid.CUDA)

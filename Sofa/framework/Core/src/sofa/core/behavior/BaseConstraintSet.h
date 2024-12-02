@@ -27,6 +27,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/MultiVecId.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::core::behavior
 {
 
@@ -37,14 +39,8 @@ public:
     SOFA_BASE_CAST_IMPLEMENTATION(BaseConstraintSet)
 
 protected:
-    BaseConstraintSet()
-        : group(initData(&group, 0, "group", "ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle."))
-        , d_constraintIndex(initData(&d_constraintIndex, 0u, "constraintIndex", "Constraint index (first index in the right hand term resolution vector)"))
-    {
-        m_constraintIndex.setParent(&d_constraintIndex);
-    }
-
-    ~BaseConstraintSet() override { }
+    BaseConstraintSet();
+    ~BaseConstraintSet() override;
 
 private:
     BaseConstraintSet(const BaseConstraintSet& n) = delete;
@@ -98,13 +94,13 @@ public:
     Data< sofa::Index > d_constraintIndex; ///< Constraint index (first index in the right hand term resolution vector)
 
     SOFA_ATTRIBUTE_DEPRECATED__CORE_RENAME_DATA_IN_CORE()
-    Data< unsigned int > m_constraintIndex;
+    sofa::core::objectmodel::RenamedData< unsigned int > m_constraintIndex;
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
-    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use d_constraintIndex instead")
-    DeprecatedAndRemoved m_cId;
+    SOFA_ATTRIBUTE_DEPRECATED__REMOVED_CID()
+    DeprecatedAndRemoved m_cId{};
 
 };
 

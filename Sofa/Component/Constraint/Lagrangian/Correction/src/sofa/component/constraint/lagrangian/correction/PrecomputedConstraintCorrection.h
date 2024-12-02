@@ -30,6 +30,8 @@
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::constraint::lagrangian::correction
 {
 
@@ -59,22 +61,22 @@ public:
     typedef sofa::type::MatNoInit<3, 3, Real> Transformation;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    Data<bool> m_rotations;
+    sofa::core::objectmodel::RenamedData<bool> m_rotations;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    Data<bool> m_restRotations;
+    sofa::core::objectmodel::RenamedData<bool> m_restRotations;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    Data<bool> recompute;
+    sofa::core::objectmodel::RenamedData<bool> recompute;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    Data<SReal> debugViewFrameScale;
+    sofa::core::objectmodel::RenamedData<SReal> debugViewFrameScale;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    Data<std::string> f_fileCompliance;
+    sofa::core::objectmodel::RenamedData<std::string> f_fileCompliance;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    Data<std::string> fileDir;
+    sofa::core::objectmodel::RenamedData<std::string> fileDir;
 
     Data<bool> d_rotations;
     Data<bool> d_restRotations;

@@ -411,11 +411,10 @@ void RegularGridTopology::createTexCoords()
     }
 }
 
-
-int RegularGridTopologyClass = core::RegisterObject("Regular grid in 3D")
-        .addAlias("RegularGrid")
-        .add< RegularGridTopology >()
-        ;
-
+void registerRegularGridTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Regular grid in 3D.")
+        .add< RegularGridTopology >());
+}
 
 } //namespace sofa::component::topology::container::grid

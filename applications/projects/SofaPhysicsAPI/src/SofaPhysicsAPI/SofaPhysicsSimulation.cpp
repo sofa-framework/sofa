@@ -1143,18 +1143,6 @@ void SofaPhysicsSimulation::calcProjection()
                 vparams->zNear(), vparams->zFar());
     }
 
-    double xForeground, yForeground, xBackground, yBackground;
-
-    xForeground = -zForeground * xNear / vparams->zNear();
-    yForeground = -zForeground * yNear / vparams->zNear();
-    xBackground = -zBackground * xNear / vparams->zNear();
-    yBackground = -zBackground * yNear / vparams->zNear();
-
-    xForeground *= xFactor;
-    yForeground *= yFactor;
-    xBackground *= xFactor;
-    yBackground *= yFactor;
-
     glGetDoublev(GL_PROJECTION_MATRIX,lastProjectionMatrix);
 
     glMatrixMode(GL_MODELVIEW);

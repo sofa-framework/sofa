@@ -108,14 +108,14 @@ struct SquareDistanceMappingTest : public sofa::mapping_test::Mapping_test<Squar
 };
 
 
-// Define the list of types to instanciate.
+// Define the list of types to instantiate.
 using ::testing::Types;
 typedef Types<
 component::mapping::nonlinear::SquareDistanceMapping<defaulttype::Vec3Types,defaulttype::Vec1Types>
 , component::mapping::nonlinear::SquareDistanceMapping<defaulttype::Rigid3Types,defaulttype::Vec1Types>
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE( SquareDistanceMappingTest, DataTypes );
 
 // test case

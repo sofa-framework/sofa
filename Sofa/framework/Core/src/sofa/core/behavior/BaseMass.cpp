@@ -55,7 +55,7 @@ void BaseMass::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matr
     if (hasEmittedWarning.insert(this).second)
     {
         dmsg_warning() << "buildMassMatrix not implemented: for compatibility reason, the "
-            "deprecated API (addMToMatrix) will be used. This compatibility will disapear in the "
+            "deprecated API (addMToMatrix) will be used. This compatibility will disappear in the "
             "future, and will cause issues in simulations. Please update the code of " <<
             this->getClassName() << " to ensure right behavior: the function addMToMatrix "
             "has been replaced by buildMassMatrix";

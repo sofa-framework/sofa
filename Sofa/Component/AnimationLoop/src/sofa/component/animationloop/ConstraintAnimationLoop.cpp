@@ -220,7 +220,7 @@ ConstraintAnimationLoop::ConstraintAnimationLoop() :
     , d_doCollisionsFirst(initData(&d_doCollisionsFirst, false, "doCollisionsFirst","Compute the collisions first (to support penality-based contacts)"))
     , d_doubleBuffer( initData(&d_doubleBuffer, false, "doubleBuffer","Double the buffer dedicated to the constraint problem to make it accessible to another thread"))
     , d_scaleTolerance( initData(&d_scaleTolerance, true, "scaleTolerance","Scale the error tolerance with the number of constraints"))
-    , d_allVerified( initData(&d_allVerified, false, "allVerified","All contraints must be verified (each constraint's error < tolerance)"))
+    , d_allVerified( initData(&d_allVerified, false, "allVerified","All constraints must be verified (each constraint's error < tolerance)"))
     , d_sor( initData(&d_sor, 1.0_sreal, "sor","Successive Over Relaxation parameter (0-2)"))
     , d_schemeCorrection( initData(&d_schemeCorrection, false, "schemeCorrection","Apply new scheme where compliance is progressively corrected"))
     , d_realTimeCompensation( initData(&d_realTimeCompensation, false, "realTimeCompensation","If the total computational time T < dt, sleep(dt-T)"))
@@ -958,9 +958,10 @@ ConstraintProblem* ConstraintAnimationLoop::getCP()
         return &CP1;
 }
 
-
-int ConstraintAnimationLoopClass = core::RegisterObject ( "Constraint animation loop manager" )
-        .add< ConstraintAnimationLoop >()
-        .addAlias("MasterConstraintSolver");
+void registerConstraintAnimationLoop(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Constraint animation loop manager")
+        .add< ConstraintAnimationLoop >());
+}
 
 } //namespace sofa::component::animationloop

@@ -47,7 +47,6 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     {"Monitor", Pluginized("v20.06", "SofaValidation")},
 
     // SofaGraphComponent was pluginized in #1531
-    { "Gravity", Pluginized("v20.12", "SofaGraphComponent") },
     { "PauseAnimationOnEvent", Pluginized("v20.12", "SofaGraphComponent") },
 
     // SofaUserInteraction was pluginized in #1588
@@ -221,7 +220,7 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     { "InteractiveCamera", Moved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
     { "VisualModelImpl", Moved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
     { "VisualStyle", Moved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
-    { "BackgroundSetting", Moved("v22.06", "SofaBaseVisual", "Sofa.Component.UserInterface.ConfigurationSetting") },
+    { "BackgroundSetting", Moved("v22.06", "SofaBaseVisual", "Sofa.Component.Setting") },
 
     // SofaGeneralVisual was deprecated in #2679
     { "RecordedCamera", Moved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },
@@ -600,9 +599,9 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     { "OBBModel", Moved("v22.06", "SofaMiscCollision", "CollisionOBBCapsule") },
     { "RigidCapsuleCollisionModel", Moved("v22.06", "SofaMiscCollision", "CollisionOBBCapsule") },
     { "CapsuleCollisionModel", Moved("v22.06", "SofaMiscCollision", "CollisionOBBCapsule") },
-    { "TriangleModelInRegularGrid", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collsion.Geometry") },
-    { "TetrahedronCollisionModel", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collsion.Geometry") },
-    { "RuleBasedContactManager", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collsion.Response.Contact") },
+    { "TriangleModelInRegularGrid", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collision.Geometry") },
+    { "TetrahedronCollisionModel", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collision.Geometry") },
+    { "RuleBasedContactManager", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collision.Response.Contact") },
 
     // SofaHaptics was deprecated in #3039
     { "ForceFeedback", Moved("v22.06", "SofaHaptics", "Sofa.Component.Haptics") },
@@ -620,8 +619,10 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
 
     // Moved to CSparseSolvers
     { "SparseCholeskySolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") },
-    { "SparseLUSolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") }
-
+    { "SparseLUSolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") },
+    
+    // Moved to Sofa.Component.MechanicalLoad
+    { "Gravity", Moved("v24.12", "SofaGraphComponent", "Sofa.Component.Mechanicalload") }
 };
 
 const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
@@ -756,8 +757,61 @@ const std::map< std::string, Renamed, std::less<> > renamedComponents = {
     {"SlidingConstraint", Renamed("v24.06","v25.06","SlidingLagrangianConstraint")},
     {"StopperConstraint", Renamed("v24.06","v25.06","StopperLagrangianConstraint")},
     {"UniformConstraint", Renamed("v24.06","v25.06","UniformLagrangianConstraint")},
-    {"UnilateralInteractionConstraint", Renamed("v24.06","v25.06","UnilateralLagrangianConstraint")}
+    {"UnilateralInteractionConstraint", Renamed("v24.06","v25.06","UnilateralLagrangianConstraint")},
+    {"StiffSpringForceField", Renamed("v24.06","v25.06","SpringForceField")},
+    {"ParallelStiffSpringForceField", Renamed("v24.06","v25.06","ParallelSpringForceField")},
+    {"ShewchukPCGLinearSolver", Renamed("v24.12","v25.12","PCGLinearSolver")}
 
+};
+
+
+const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
+    {"MasterConstraintSolver", Dealiased("v24.12","ConstraintAnimationLoop")},
+    {"FreeMotionMasterSolver", Dealiased("v24.12","FreeMotionAnimationLoop")},
+    {"MultiStepMasterSolver", Dealiased("v24.12","MultiStepAnimationLoop")},
+    {"MultiTagMasterSolver", Dealiased("v24.12","MultiTagAnimationLoop")},
+    {"Background", Dealiased("v24.12","BackgroundSetting")},
+    {"SofaDefaultPath", Dealiased("v24.12","SofaDefaultPathSetting")},
+    {"Stats", Dealiased("v24.12","StatsSetting")},
+    {"Viewer", Dealiased("v24.12","ViewerSetting")},
+    {"MeshObjLoader", Dealiased("v24.12","MeshOBJLoader")},
+    {"ObjExporter", Dealiased("v24.12","VisualModelOBJExporter")},
+    {"OBJExporter", Dealiased("v24.12","VisualModelOBJExporter")},
+    {"CentralDifference", Dealiased("v24.12","CentralDifferenceSolver")},
+    {"DampVelocity", Dealiased("v24.12","DampVelocitySolver")},
+    {"RungeKutta2", Dealiased("v24.12","RungeKutta2Solver")},
+    {"RungeKutta4", Dealiased("v24.12","RungeKutta4Solver")},
+    {"EulerImplicit", Dealiased("v24.12","EulerImplicitSolver")},
+    {"ImplicitEulerSolver", Dealiased("v24.12","EulerImplicitSolver")},
+    {"ImplicitEuler", Dealiased("v24.12","EulerImplicitSolver")},
+    {"VariationalSolver", Dealiased("v24.12","VariationalSymplecticSolver")},
+    {"Mesh", Dealiased("v24.12","MeshTopology")},
+    {"SphereQuad", Dealiased("v24.12","SphereQuadTopology")},
+    {"CylinderGrid", Dealiased("v24.12","CylinderGridTopology")},
+    {"Grid", Dealiased("v24.12","GridTopology")},
+    {"RegularGrid", Dealiased("v24.12","RegularGridTopology")},
+    {"SparseGridMultiple", Dealiased("v24.12","SparseGridMultipleTopology")},
+    {"SparseGridRamification", Dealiased("v24.12","SparseGridRamificationTopology")},
+    {"SparseGrid", Dealiased("v24.12","SparseGridTopology")},
+    {"SphereGrid", Dealiased("v24.12","SphereGridTopology")},
+    {"SVDLinear", Dealiased("v24.12","SVDLinearSolver")},
+    {"SVD", Dealiased("v24.12","SVDLinearSolver")},
+    {"CGSolver", Dealiased("v24.12","CGLinearSolver")},
+    {"ConjugateGradient", Dealiased("v24.12","CGLinearSolver")},
+    {"MINRESSolver", Dealiased("v24.12","MinResLinearSolver")},
+    {"MinResSolver", Dealiased("v24.12","MinResLinearSolver")},
+    {"JacobiLinearSolver", Dealiased("v24.12","JacobiPreconditioner")},
+    {"JacobiSolver", Dealiased("v24.12","JacobiPreconditioner")},
+    {"SSORLinearSolver", Dealiased("v24.12","SSORPreconditioner")},
+    {"SSORSolver", Dealiased("v24.12","SSORPreconditioner")},
+    {"RigidEngine", Dealiased("v24.12","RigidToQuatEngine")},
+    {"DefaultPipeline", Dealiased("v24.12","CollisionPipeline")},
+    {"IncrementalSAP", Dealiased("v24.12","IncrSAP")},
+    {"IncrementalSweepAndPrune", Dealiased("v24.12","IncrSAP")},
+    {"TriangleOctree", Dealiased("v24.12","TriangleOctreeModel")},
+    {"DefaultContactManager", Dealiased("v24.12","CollisionResponse")},
+    {"RuleBasedCollisionResponse", Dealiased("v24.12","RuleBasedContactManager")},
+    {"SurfaceIdentityMapping", Dealiased("v24.12","SubsetMapping")},
 };
 
 } // namespace sofa::helper::lifecycle

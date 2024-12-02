@@ -183,7 +183,10 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     a.eq(aResult);
 }
 
-int NewmarkImplicitSolverClass = core::RegisterObject("Implicit time integrator using Newmark scheme")
-        .add< NewmarkImplicitSolver >();
+void registerNewmarkImplicitSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Implicit time integrator using Newmark scheme.")
+        .add< NewmarkImplicitSolver >());
+}
 
 } // namespace sofa::component::odesolver::backward

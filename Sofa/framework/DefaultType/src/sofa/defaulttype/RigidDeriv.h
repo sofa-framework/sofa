@@ -613,7 +613,15 @@ namespace sofa::linearalgebra
             subBlock = b[col];
         }
 
-        static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real,IndexType>::getElementType(); }
-        static const char* Name() { return defaulttype::DataTypeName<defaulttype::RigidDeriv<N, T>>::name(); }
+        static sofa::linearalgebra::BaseMatrix::ElementType getElementType()
+        {
+            return matrix_bloc_traits<Real, IndexType>::getElementType();
+        }
+
+        static const char* Name()
+        {
+            static std::string name = defaulttype::DataTypeName<defaulttype::RigidDeriv<N, T> >::name();
+            return name.c_str();
+        }
     };
 }

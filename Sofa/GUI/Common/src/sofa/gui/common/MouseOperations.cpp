@@ -69,9 +69,39 @@ void Operation::start()
 
 InteractionPerformer *Operation::createPerformer()
 {
+    // Obtain the type of performer to create
     const std::string type = defaultPerformerType();
-    if (type.empty()) return nullptr;
-    return InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject(type, pickHandle->getInteraction()->mouseInteractor.get());
+    if (type.empty())
+    {
+        msg_error("MouseOperation") << "Failed to create InteractionPerformer: Default performer type is empty.";
+        return nullptr;
+    }
+
+    // Retrieve the interaction associated with the pickHandle
+    const auto interaction = pickHandle->getInteraction();
+    if (!interaction)
+    {
+        msg_error("MouseOperation") << "Failed to create InteractionPerformer: ComponentMouseInteraction object from input PickHandler is null.";
+        return nullptr;
+    }
+
+    // Retrieve the mouseInteractor from the interaction
+    const auto mouseInteractor = interaction->mouseInteractor.get();
+    if (!mouseInteractor)
+    {
+        msg_error("MouseOperation") << "Failed to create InteractionPerformer: MouseInteractor inside input PickHandler  is null.";
+        return nullptr;
+    }
+
+    // Create the InteractionPerformer using the factory
+    InteractionPerformer *performer = InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject(type, mouseInteractor);
+    if (!performer)
+    {
+        msg_error("MouseOperation") << "Failed to create InteractionPerformer: Performer creation failed for type \"" << type << "\".";
+        return nullptr;
+    }
+
+    return performer;
 }
 
 void Operation::configurePerformer(InteractionPerformer* p)
@@ -182,7 +212,6 @@ void TopologyOperation::endOperation()
 void InciseOperation::start()
 {
     const int currentMethod = getIncisionMethod();
-
     if (!startPerformer)
     {
         startPerformer=InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor.get());

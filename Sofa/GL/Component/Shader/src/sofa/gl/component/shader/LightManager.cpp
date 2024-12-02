@@ -93,13 +93,13 @@ void LightManager::bwdInit()
     }
 }
 
-void LightManager::initVisual()
+void LightManager::doInitVisual(const core::visual::VisualParams* vparams)
 {
     for(unsigned int i=0 ; i<m_shadowShaders.size() ; ++i)
-        m_shadowShaders[i]->initVisual();
+        m_shadowShaders[i]->initVisual(vparams);
 
     ///TODO: keep trace of all active textures at the same time, with a static factory
-    ///or something like that to avoid conflics with color texture declared in the scene file.
+    ///or something like that to avoid conflicts with color texture declared in the scene file.
     type::vector<OglTexture::SPtr> sceneTextures;
     this->getContext()->get<OglTexture, type::vector<OglTexture::SPtr> >(&sceneTextures, BaseContext::SearchRoot);
 
@@ -115,7 +115,7 @@ void LightManager::initVisual()
 
     for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
     {
-        (*itl)->initVisual();
+        (*itl)->initVisual(vparams);
         const unsigned short shadowTextureUnit = (*itl)->getShadowTextureUnit();
 
         /// if given unit is available and correct
@@ -206,7 +206,7 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
     for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
     {
         glEnable(GL_LIGHT0+id);
-        (*itl)->drawLight();
+        (*itl)->drawLight(vp);
         ++id;
     }
 
@@ -477,7 +477,7 @@ void LightManager::restoreDefaultLight(VisualParams* vp)
 //TODO(dmarchal): Hard-coding keyboard behavior in a component is a bad idea as for several reasons:
 // the scene can be executed without a keyboard ...there is no reason the component should have a "knowledge" of keyboard
 // what will happens if multiple lighmanager are in the same scene ...
-// what will hapen if other component use the same key...
+// what will happen if other component use the same key...
 // The correct implementation consist in separatng the event code into a different class & component in
 // the SofaInteracton module.
 void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
@@ -499,13 +499,13 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
                     for (unsigned int i=0 ; i < m_shadowShaders.size() ; ++i)
                     {
                         m_shadowShaders[i]->setCurrentIndex(d_shadowsEnabled.getValue() ? 1 : 0);
-                        m_shadowShaders[i]->updateVisual();
+                        m_shadowShaders[i]->updateVisual(sofa::core::visual::visualparams::defaultInstance());
                     }
                     for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
                     {
-                        (*itl)->updateVisual();
+                        (*itl)->updateVisual(sofa::core::visual::visualparams::defaultInstance());
                     }
-                    this->updateVisual();
+                    this->updateVisual(sofa::core::visual::visualparams::defaultInstance());
                 }
 
                 msg_info() << "Shadows : "<<(d_shadowsEnabled.getValue()?"ENABLED":"DISABLED");

@@ -73,10 +73,13 @@ public:
 
     /// optional range of local DOF indices. Any computation involving only
     /// indices outside of this range are discarded (useful for parallelization
-    /// using mesh partitionning)
+    /// using mesh partitioning)
     Data< type::Vec<2,int> > d_localRange;
     DataSetIndex     d_indices; ///< optional local DOF indices. Any computation involving only indices outside of this list are discarded
     Data<bool> d_preserveTotalMass; ///< Prevent totalMass from decreasing when removing particles.
+
+    bool m_isTotalMassUsed; ///< Boolean specifying whether the data totalMass has been initially given (else vertexMass vector is being used)
+
 
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
@@ -87,6 +90,7 @@ public:
     using core::objectmodel::BaseObject::getContext;
     ////////////////////////////////////////////////////////////////////////////
 
+
     /// Link to be set to the topology container in the component graph.
     SingleLink <UniformMass<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
@@ -95,7 +99,7 @@ protected:
 
     ~UniformMass();
 
-    /// @internal fonction called in the constructor that can be specialized
+    /// @internal function called in the constructor that can be specialized
     void constructor_message() ;
 
 public:
@@ -115,10 +119,8 @@ public:
 
     void loadRigidMass(const std::string& filename);
 
-    void reinit() override;
     void init() override;
     void initDefaultImpl() ;
-    void doUpdateInternal() override;
 
     /// @name Check and standard initialization functions from mass information
     /// @{
@@ -126,9 +128,12 @@ public:
     virtual void initFromVertexMass();
 
     virtual bool checkTotalMass();
-    virtual void checkTotalMassInit();
     virtual void initFromTotalMass();
     /// @}
+
+    /// Functions updating data
+    sofa::core::objectmodel::ComponentState updateFromTotalMass();
+    sofa::core::objectmodel::ComponentState updateFromVertexMass();
 
     void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
     void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
@@ -142,7 +147,7 @@ public:
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
-    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override; /// Add Mass contribution to global Matrix assembling
+    void addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset) override; /// Add Mass contribution to global Matrix assembling
     void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}
     void buildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}

@@ -29,9 +29,11 @@
 namespace sofa::component::visual
 {
 
-int LineAxisClass = core::RegisterObject("Display scene axis")
-        .add< LineAxis >()
-        ;
+void registerLineAxis(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Display scene axis")
+        .add< LineAxis >());
+}
 
 using namespace sofa::defaulttype;
 
@@ -45,15 +47,20 @@ LineAxis::LineAxis()
 void LineAxis::init()
 {
     Inherit1::init();
-    updateVisual();
+    updateLine();
 }
 
 void LineAxis::reinit()
 {
-    updateVisual();
+    updateLine();
 }
 
-void LineAxis::updateVisual()
+void LineAxis::doUpdateVisual(const core::visual::VisualParams*)
+{
+    updateLine();
+}
+
+void LineAxis::updateLine()
 {
     const std::string a = d_axis.getValue();
 

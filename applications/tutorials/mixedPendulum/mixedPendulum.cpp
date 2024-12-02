@@ -26,7 +26,7 @@
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/mass/UniformMass.h>
 #include <sofa/component/constraint/projective/FixedConstraint.h>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/component/mapping/nonlinear/RigidMapping.h>
 #include <sofa/component/odesolver/forward/EulerSolver.h>
 #include <sofa/component/visual/VisualStyle.h>
@@ -104,8 +104,8 @@ int main(int argc, char** argv)
 
 
     // force field
-    using StiffSpringForceField3 = sofa::component::solidmechanics::spring::StiffSpringForceField<sofa::defaulttype::Vec3Types>;
-    auto spring = sofa::core::objectmodel::New<StiffSpringForceField3>();
+    using SpringForceField3 = sofa::component::solidmechanics::spring::SpringForceField<sofa::defaulttype::Vec3Types>;
+    auto spring = sofa::core::objectmodel::New<SpringForceField3>();
     deformableBody->addObject(spring);
     spring->setName("F1");
     spring->addSpring( 1,0, 100., 1, splength );
@@ -168,7 +168,7 @@ int main(int argc, char** argv)
 
 
     // ---------------- Interaction force between the deformable and the rigid body
-    StiffSpringForceField3::SPtr iff = sofa::core::objectmodel::New<StiffSpringForceField3>( DOF.get(), rigidParticleDOF.get() );
+    SpringForceField3::SPtr iff = sofa::core::objectmodel::New<SpringForceField3>( DOF.get(), rigidParticleDOF.get() );
     iff->setPathObject1("@"+deformableBody->getName()+"/"+DOF->getName());
     iff->setPathObject2("@"+rigidParticles->getName()+"/"+rigidParticleDOF->getName());
     groot->addObject(iff);

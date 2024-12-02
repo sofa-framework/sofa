@@ -43,10 +43,10 @@ FixedTranslationProjectiveConstraint<DataTypes>::FixedTranslationProjectiveConst
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
 
-    f_indices.setParent(&d_indices);
-    f_fixAll.setParent(&d_fixAll);
-    _drawSize.setParent(&d_drawSize);
-    f_coordinates.setParent(&d_coordinates);
+    f_indices.setOriginalData(&d_indices);
+    f_fixAll.setOriginalData(&d_fixAll);
+    _drawSize.setOriginalData(&d_drawSize);
+    f_coordinates.setOriginalData(&d_coordinates);
 }
 
 

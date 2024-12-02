@@ -31,7 +31,7 @@ namespace sofa::core::objectmodel
 /**
  *  \brief Base class for simulation components.
  *
- *  An object defines a part of the functionnality in the simulation
+ *  An object defines a part of the functionality in the simulation
  *  (stores state data, specify topology, compute forces, etc).
  *  Each simulation object is related to a context, which gives access to all available external data.
  *  It is able to process events, if listening enabled (default is false).
@@ -66,8 +66,22 @@ public:
     static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
+        if (obj)
+        {
+            if (context)
+            {
+                context->addObject(obj);
+            }
+            if (arg)
+            {
+                obj->parse(arg);
+            }
+        }
+        else
+        {
+            msg_info(T::GetClass()->className) << "Cannot create an instance";
+        }
+
         return obj;
     }
 
@@ -93,7 +107,7 @@ public:
     virtual void reset();
 
     /// Called just before deleting this object
-    /// Any object in the tree bellow this object that are to be removed will be removed only after this call,
+    /// Any object in the tree below this object that are to be removed will be removed only after this call,
     /// so any references this object holds should still be valid.
     virtual void cleanup();
 

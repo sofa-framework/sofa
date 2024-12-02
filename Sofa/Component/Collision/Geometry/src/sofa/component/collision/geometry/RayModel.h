@@ -26,6 +26,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <set>
 
+#include <sofa/core/objectmodel/RenamedData.h>
+
 namespace sofa::component::collision::response::contact
 {
     class BaseRayContact;
@@ -94,7 +96,7 @@ protected:
     sofa::type::vector<type::Vec3> direction;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    Data<SReal> defaultLength;
+    sofa::core::objectmodel::RenamedData<SReal> defaultLength;
 
 
 

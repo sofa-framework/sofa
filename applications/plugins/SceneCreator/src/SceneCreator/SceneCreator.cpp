@@ -378,7 +378,7 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
                                const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
     //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
-    // or dmsg_ for developpers.
+    // or dmsg_ for developers.
     if (parent == nullptr){
         msg_warning("SceneCreator") << "Parent node is nullptr. Returning Null Pointer." ;
         return nullptr;
@@ -449,7 +449,7 @@ simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::str
                                    const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
     //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
-    // or dmsg_ for developpers.
+    // or dmsg_ for developers.
     if (parent == nullptr){
         msg_warning("SceneCreator") << "Warning: parent node is nullptr. Returning Null Pointer." ;
         return nullptr;
@@ -513,7 +513,7 @@ simulation::Node::SPtr addSphere(simulation::Node::SPtr parent, const std::strin
                                  const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
     //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
-    // or dmsg_ for developpers.
+    // or dmsg_ for developers.
     if (parent == nullptr){
         msg_warning("SceneCreator") << "Warning: parent node is nullptr. Returning Null Pointer." ;
         return nullptr;
@@ -573,7 +573,7 @@ simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string
                                 const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
     //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
-    // or dmsg_ for developpers.
+    // or dmsg_ for developers.
     if (parent == nullptr){
         msg_warning("SceneCreator") << " Parent node is nullptr. Returning Null Pointer." ;
         return nullptr;
@@ -669,7 +669,7 @@ Node::SPtr massSpringString(Node::SPtr parent,
                                 {"name",oss.str()+"_mass"},
                                 {"vertexMass", str(totalMass/numParticles)}});
 
-    simpleapi::createObject(node, "StiffSpringForceField", {
+    simpleapi::createObject(node, "SpringForceField", {
                                 {"name", oss.str()+"_spring"},
                                 {"spring", springs.str()}
                             });

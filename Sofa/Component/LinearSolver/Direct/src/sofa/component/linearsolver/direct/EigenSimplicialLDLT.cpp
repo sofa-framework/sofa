@@ -30,9 +30,11 @@ namespace sofa::component::linearsolver::direct
 template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSimplicialLDLT< SReal >;
 template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSimplicialLDLT< sofa::type::Mat<3,3,SReal> >;
 
-int EigenSimplicialLDLTCRSClass = sofa::core::RegisterObject("Direct Linear Solver using a Sparse LDL^T factorization.")
-.add< EigenSimplicialLDLT< SReal > >()
-.add< EigenSimplicialLDLT< sofa::type::Mat<3,3,SReal> > >()
-;
+void registerEigenSimplicialLDLT(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Direct linear solver using a Sparse LDL^T factorization.")
+        .add< EigenSimplicialLDLT< SReal > >()
+        .add< EigenSimplicialLDLT< sofa::type::Mat<3, 3, SReal> > >());
+}
 
 }

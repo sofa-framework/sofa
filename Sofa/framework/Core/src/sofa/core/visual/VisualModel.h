@@ -57,7 +57,29 @@ public:
      *  will have to override doDrawVisual;
      */
     virtual void drawVisual(const VisualParams* /*vparams*/) final;
+    
+    /**
+     *  \brief Initialize the textures, or other graphical resources.
+     *
+     *  Called once before the first frame is drawn, and if the graphical
+     *  context has been recreated.
+     */
+    void initVisual(const VisualParams* /*vparams*/);
 
+    // Deprecate the usage of initVisual()
+    // But the final keyword will break the compilation if one does override initVisual anyway.
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use initVisual(const VisualParams*) instead")
+    virtual void initVisual() final;
+
+    /**
+     *  \brief used to update the model if necessary.
+     *
+     */
+    void updateVisual(const VisualParams* /*vparams*/);
+    // Deprecate the usage of updateVisual()
+    // But the final keyword will break the compilation if one does override updateVisual() anyway.
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use updateVisual(const VisualParams*) instead")
+    virtual void updateVisual() final;
 
 protected:
     VisualModel();
@@ -65,18 +87,12 @@ protected:
 
 private:
     virtual void doDrawVisual(const VisualParams* /*vparams*/) {}
+    virtual void doInitVisual(const VisualParams* /*vparams*/) {}
+    virtual void doUpdateVisual(const VisualParams* /*vparams*/) {}
 
 public:
     /**
-     *  \brief Initialize the textures, or other graphical resources.
-     *
-     *  Called once before the first frame is drawn, and if the graphical
-     *  context has been recreated.
-     */
-    virtual void initVisual() {  }
-
-    /**
-     *  \brief clear some graphical resources (generaly called before the deleteVisitor).
+     *  \brief clear some graphical resources (generally called before the deleteVisitor).
      *  \note: for more general usage you can use the cleanup visitor
      */
     virtual void clearVisual() { }
@@ -111,10 +127,6 @@ public:
         doDrawVisual(vparams);
     }
 
-    /**
-     *  \brief used to update the model if necessary.
-     */
-    virtual void updateVisual() {  }
     /**
     *  \brief used to update the model if necessary.
     */

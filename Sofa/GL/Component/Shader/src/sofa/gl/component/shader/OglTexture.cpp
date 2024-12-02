@@ -198,7 +198,7 @@ void OglTexture::init()
     OglShaderElement::init();
 }
 
-void OglTexture::initVisual()
+void OglTexture::doInitVisual(const core::visual::VisualParams*)
 {
     if (img == nullptr)
     {
@@ -265,7 +265,11 @@ void OglTexture::bwdDraw(core::visual::VisualParams*)
 
 void OglTexture::bind()
 {
-    if (!texture) initVisual();
+    if (!texture) 
+    {
+        initVisual(sofa::core::visual::visualparams::defaultInstance());
+    }
+    
     texture->bind();
     glEnable(texture->getTarget());
 }

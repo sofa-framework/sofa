@@ -112,7 +112,7 @@ bool applyPredicateIfCoordOrDeriv(sofa::core::VecType vtype_a, sofa::core::VecTy
     {
         if (vtype_b == sofa::core::V_COORD)
         {
-            // predicate cannot be applied because vtype_a and vtype_b are imcompatible:
+            // predicate cannot be applied because vtype_a and vtype_b are incompatible:
             // it is not permitted to perform operations such as [DERIV] += [COORD]
             return false;
         }
@@ -1277,7 +1277,7 @@ SReal MechanicalObject<DataTypes>::compareVec(core::ConstVecId v, std::istream &
         error += fabs(value_ref-value_cur);
         count ++;
     }
-    if( count == 0 ) return 0; //both vector are empy, so we return 0;
+    if( count == 0 ) return 0; //both vector are empty, so we return 0;
 
     return error/count;
 }
@@ -1452,7 +1452,7 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
     {
         const Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
 
-#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+#if !defined(NDEBUG)
         if(d!=NULL)
         {
             const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
@@ -1461,7 +1461,7 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
                 msg_error() << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
             }
         }
-#endif // defined(SOFA_DEBUG) || !defined(NDEBUG)
+#endif // !defined(NDEBUG)
 
         return d;
     }

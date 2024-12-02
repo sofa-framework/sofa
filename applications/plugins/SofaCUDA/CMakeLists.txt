@@ -19,6 +19,7 @@ set(HEADER_FILES
     ### Common
     sofa/gpu/cuda/CudaBaseVector.h
     sofa/gpu/cuda/CudaCommon.h
+    sofa/gpu/cuda/CudaContactMapper.h
     sofa/gpu/cuda/CudaMath.h
     sofa/gpu/cuda/CudaMath.inl
     sofa/gpu/cuda/CudaMathRigid.h
@@ -105,6 +106,7 @@ set(SOURCE_FILES
     ### Common
     init.cpp
     sofa/gpu/cuda/CudaBaseVector.cpp
+    sofa/gpu/cuda/CudaContactMapper.cpp
     sofa/gpu/cuda/mycuda.cpp
 
     ### Mechanical
@@ -182,6 +184,7 @@ set(CUDA_SOURCES
     ### Common
     sofa/gpu/cuda/mycuda.cu
     sofa/gpu/cuda/CudaBaseVector.cu
+    sofa/gpu/cuda/CudaContactMapper.cu
     sofa/gpu/cuda/CudaScan.cu
     sofa/gpu/cuda/CudaSort.cu
 
@@ -227,7 +230,7 @@ set(CUDA_SOURCES
 sofa_find_package(Sofa.GL QUIET)
 if(NOT Sofa.GL_FOUND)
     message(WARNING "Sofa.GL is not active.")
-    message("OpenGL-related code wont be enabled (Sharing OpenGL buffers with CUDA)")
+    message("OpenGL-related code won't be enabled (Sharing OpenGL buffers with CUDA)")
 else()
     list(APPEND HEADER_FILES
         sofa/gpu/cuda/CudaVisualModel.h
@@ -238,72 +241,6 @@ else()
     )
     list(APPEND CUDA_SOURCES
         sofa/gpu/cuda/CudaVisualModel.cu
-    )
-endif()
-
-#Compatibility
-if(SOFA_ENABLE_LEGACY_HEADERS)
-    list(APPEND HEADER_FILES
-        sofa/gpu/cuda/CudaBarycentricMapping.h
-        sofa/gpu/cuda/CudaBarycentricMapping.inl
-        sofa/gpu/cuda/CudaBarycentricMappingRigid.h
-        sofa/gpu/cuda/CudaRigidMapping.h
-        sofa/gpu/cuda/CudaRigidMapping.inl
-        sofa/gpu/cuda/CudaIdentityMapping.h
-        sofa/gpu/cuda/CudaIdentityMapping.inl
-        sofa/gpu/cuda/CudaSubsetMapping.h
-        sofa/gpu/cuda/CudaSubsetMapping.inl
-
-        sofa/gpu/cuda/CudaDiagonalMass.h
-        sofa/gpu/cuda/CudaDiagonalMass.inl
-
-        sofa/gpu/cuda/CudaMeshMatrixMass.h
-        sofa/gpu/cuda/CudaMeshMatrixMass.inl
-
-        sofa/gpu/cuda/CudaUniformMass.h
-        sofa/gpu/cuda/CudaUniformMass.inl
-
-        sofa/gpu/cuda/CudaHexahedronFEMForceField.h
-        sofa/gpu/cuda/CudaHexahedronFEMForceField.inl
-        sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h
-        sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.inl
-        sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.h
-        sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl
-        sofa/gpu/cuda/CudaTetrahedronFEMForceField.h
-        sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl
-        sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h
-        sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl
-
-        sofa/gpu/cuda/CudaFixedConstraint.h
-        sofa/gpu/cuda/CudaFixedConstraint.inl
-        sofa/gpu/cuda/CudaLinearMovementConstraint.h
-        sofa/gpu/cuda/CudaLinearMovementConstraint.inl
-
-        sofa/gpu/cuda/CudaLineModel.h
-        sofa/gpu/cuda/CudaPointModel.h
-        sofa/gpu/cuda/CudaSphereModel.h
-        sofa/gpu/cuda/CudaTriangleModel.h
-
-        sofa/gpu/cuda/CudaPenalityContactForceField.h
-        sofa/gpu/cuda/CudaPenalityContactForceField.inl
-
-        sofa/gpu/cuda/CudaSpringForceField.h
-        sofa/gpu/cuda/CudaSpringForceField.inl
-
-        sofa/gpu/cuda/CudaSphereForceField.h
-        sofa/gpu/cuda/CudaSphereForceField.inl
-
-        sofa/gpu/cuda/CudaPlaneForceField.h
-        sofa/gpu/cuda/CudaPlaneForceField.inl
-
-        sofa/gpu/cuda/CudaLinearForceField.h
-        sofa/gpu/cuda/CudaLinearForceField.inl
-
-        sofa/gpu/cuda/CudaEllipsoidForceField.h
-        sofa/gpu/cuda/CudaEllipsoidForceField.inl
-
-        sofa/gpu/cuda/CudaMechanicalObject.h
-        sofa/gpu/cuda/CudaMechanicalObject.inl
     )
 endif()
 
@@ -333,33 +270,6 @@ sofa_find_package(Sofa.GUI.Qt QUIET)
 if(Sofa.GUI.Qt_FOUND)
     list(APPEND HEADER_FILES sofa/gpu/gui/CudaDataWidget.h)
     list(APPEND SOURCE_FILES sofa/gpu/gui/CudaDataWidget.cpp)
-endif()
-
-
-find_package(SofaDistanceGrid QUIET)
-if(SofaDistanceGrid_FOUND)
-    sofa_find_package(MiniFlowVR QUIET)
-    if(MiniFlowVR_FOUND)
-        message(STATUS "SofaCUDA: MiniFlowVR enabled.")
-    else()
-        message(STATUS "SofaCUDA: MiniFlowVR was not enabled, therefore some feature of CudaDistanceGridCollisionModel will not be compiled.")
-    endif()
-
-    list(APPEND HEADER_FILES
-        sofa/gpu/cuda/CudaDistanceGridCollisionModel.h
-        sofa/gpu/cuda/CudaContactMapper.h
-        sofa/gpu/cuda/CudaCollisionDetection.h)
-
-    list(APPEND SOURCE_FILES
-        sofa/gpu/cuda/CudaDistanceGridCollisionModel.cpp
-        sofa/gpu/cuda/CudaCollisionDistanceGrid.cpp
-        sofa/gpu/cuda/CudaCollisionDetection.cpp)
-
-    list(APPEND CUDA_SOURCES
-        sofa/gpu/cuda/CudaContactMapper.cu
-        sofa/gpu/cuda/CudaCollisionDetection.cu)
-else()
-    message(STATUS "SofaCUDA: SofaDistanceGrid was not enabled, therefore CudaDistanceGridCollisionModel will not be compiled.")
 endif()
 
 find_package(SofaSphFluid QUIET)
@@ -491,14 +401,6 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GL)
 endif()
-
-if(SofaDistanceGrid_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaDistanceGrid)
-    if(MiniFlowVR_FOUND)
-        target_link_libraries(${PROJECT_NAME} miniFlowVR)
-    endif()
-endif()
-
 
 if(Sofa.GUI_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GUI)

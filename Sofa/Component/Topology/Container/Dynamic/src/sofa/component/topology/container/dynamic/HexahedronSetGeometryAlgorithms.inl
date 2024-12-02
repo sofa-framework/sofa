@@ -788,6 +788,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
     QuadSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+    vparams->drawTool()->disableLighting();
 
     // Draw Hexa indices
     if (d_showHexaIndices.getValue() && this->m_topology->getNbHexahedra() != 0)

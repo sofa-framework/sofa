@@ -79,10 +79,10 @@ protected:
 #endif
     mutable Size      clearSize;  ///< when initializing missing device data, up to where entries should be set to zero ?
     T* hostPointer;    ///< Pointer to the data on the CPU side
-    mutable int   deviceIsValid;  ///< True if the data on the GPU is currently valid (up to the given deviceVectorSize of each device, i.e. additionnal space may need to be allocated and/or initialized)
+    mutable int   deviceIsValid;  ///< True if the data on the GPU is currently valid (up to the given deviceVectorSize of each device, i.e. additional space may need to be allocated and/or initialized)
     mutable bool  hostIsValid;    ///< True if the data on the CPU is currently valid
     mutable bool  bufferIsRegistered;  ///< True if the buffer is registered with CUDA
-    buffer_id_type  bufferObject;   ///< Optionnal associated buffer ID
+    buffer_id_type  bufferObject;   ///< Optional associated buffer ID
 
     inline static int cptid = 0;
 
@@ -94,6 +94,10 @@ protected:
 public:
 
     vector_device()
+        : vector_device(0)
+    {}
+
+    explicit vector_device(const Size n)
         : vectorSize(0), allocSize(0), hostPointer(nullptr), deviceIsValid(ALL_DEVICE_VALID), hostIsValid(true), bufferIsRegistered(false)
         , bufferObject(0)
     {
@@ -110,44 +114,26 @@ public:
         deviceReserveSize = 0;
 #endif
         clearSize = 0;
-    }
-    vector_device(Size n)
-        : vectorSize(0), allocSize(0), hostPointer(nullptr), deviceIsValid(ALL_DEVICE_VALID), hostIsValid(true), bufferIsRegistered(false)
-        , bufferObject(0)
-    {
-        DEBUG_OUT_V(id = cptid);
-        DEBUG_OUT_V(cptid++);
-        DEBUG_OUT_V(spaceDebug = 0);
-        for (int d = 0; d < MemoryManager::numDevices(); d++)
+
+        if (n > 0)
         {
-            devicePointer[d] = MemoryManager::null();
-            deviceAllocSize[d] = 0;
-            deviceVectorSize[d] = 0;
+            resize(n);
         }
-#ifdef SOFA_VECTOR_DEVICE_CUSTOM_SIZE
-        deviceReserveSize = 0;
-#endif
-        clearSize = 0;
-        resize(n);
     }
+
     vector_device(const vector_device<T, MemoryManager, DataTypeInfoManager>& v)
-        : vectorSize(0), allocSize(0), hostPointer(nullptr), deviceIsValid(ALL_DEVICE_VALID), hostIsValid(true), bufferIsRegistered(false)
-        , bufferObject(0)
+        : vector_device()
     {
-        DEBUG_OUT_V(id = cptid);
-        DEBUG_OUT_V(cptid++);
-        DEBUG_OUT_V(spaceDebug = 0);
-        for (int d = 0; d < MemoryManager::numDevices(); d++)
-        {
-            devicePointer[d] = MemoryManager::null();
-            deviceAllocSize[d] = 0;
-            deviceVectorSize[d] = 0;
-        }
-        clearSize = 0;
-#ifdef SOFA_VECTOR_DEVICE_CUSTOM_SIZE
-        deviceReserveSize = 0;
-#endif
         * this = v;
+    }
+
+    vector_device(const std::initializer_list<T>& t) : vector_device()
+    {
+        if (!std::empty(t))
+        {
+            fastResize(t.size());
+            std::copy(t.begin(), t.end(), hostPointer);
+        }
     }
 
     bool isHostValid() const

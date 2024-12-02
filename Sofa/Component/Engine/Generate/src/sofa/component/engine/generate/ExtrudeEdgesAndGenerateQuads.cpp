@@ -29,13 +29,12 @@ namespace sofa::component::engine::generate
 
 using namespace sofa::defaulttype;
 
-int ExtrudeEdgesAndGenerateQuadsClass = core::RegisterObject("This engine extrudes an edge-based curve into a quad surface patch")
-        .add< ExtrudeEdgesAndGenerateQuads<Vec3Types> >(true) // default template
- 
-        ;
+void registerExtrudeEdgesAndGenerateQuads(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Engine extruding an edge-based curve into a quad surface patch.")
+        .add< ExtrudeEdgesAndGenerateQuads<Vec3Types> >(true));
+}
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API ExtrudeEdgesAndGenerateQuads<Vec3Types>;
  
-
-
 } //namespace sofa::component::engine::generate

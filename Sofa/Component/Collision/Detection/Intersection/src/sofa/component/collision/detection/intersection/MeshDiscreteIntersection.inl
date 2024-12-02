@@ -123,7 +123,7 @@ int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T
     }
 
     //However, if the plane has intersected the sphere, then it is
-    //neccesary to check if the proyected point "projPoint" is inside
+    //necessary to check if the proyected point "projPoint" is inside
     //the triangle.
 #define SAMESIDE(ap1,ap2,ap3,ap4) (((cross((ap4-ap3),(ap1-ap3))) * (cross((ap4-ap3),(ap2-ap3)))) >= 0)
     if ( (SAMESIDE(projPoint,p0,p1,p2) && SAMESIDE(projPoint,p1,p0,p2) && SAMESIDE(projPoint,p2,p0,p1)))
@@ -142,18 +142,6 @@ int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T
 #undef SAMESIDE
 
     return 0; // No intersection: passed all tests for intersections !
-}
-
-template<class T>
-bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle)
-{
-    return testIntersection(sph, triangle, this);
-}
-
-template<class T>
-int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle, OutputVector* contacts)
-{
-    return computeIntersection(sph, triangle, contacts, this);
 }
 
 } // namespace sofa::component::collision::detection::intersection

@@ -117,7 +117,7 @@ void ArticulatedHierarchyBVHController::applyController(void)
                 if (!articulatedObjects.empty())
                 {
                     // Reference potential initial articulations value for interaction springs
-                    // and Current articulation value at the coresponding artculation
+                    // and Current articulation value at the corresponding artculation
 
                     std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1Types>* >::iterator articulatedObjIt = articulatedObjects.begin();
                     //std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjItEnd = articulatedObjects.end();
@@ -165,8 +165,6 @@ void ArticulatedHierarchyBVHController::applyController(void)
         }
     }
 }
-
-SOFA_DECL_CLASS(ArticulatedHierarchyBVHController)
 
 // Register in the Factory
 int ArticulatedHierarchyBVHControllerClass = core::RegisterObject("Implements a handler that controls the values of the articulations of an articulated hierarchy container using a .bvh file.")

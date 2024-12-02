@@ -2715,7 +2715,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
 
     Real is_snapping_b = is_snap_b0 || is_snap_b1 || is_snap_b2;
 
-    if (is_validated) // intersection successfull
+    if (is_validated) // intersection successful
     {
         /// force the creation of TrianglesAroundEdgeArray
         m_container->getTrianglesAroundEdgeArray();
@@ -3203,7 +3203,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID ind_A, Coor
 
     sofa::type::vector< sofa::type::vector<Real> > points2Snap;
 
-    //	Real epsilon = 0.25; // to change to an input for snaping
+    //	Real epsilon = 0.25; // to change to an input for snapping
 
     if (epsilonSnapPath != 0.0)
         SnapAlongPath(intersected_topoElements, intersected_indices, intersected_barycoefs, points2Snap, epsilonSnapPath);
@@ -3252,7 +3252,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID ind_A, Coor
             p_ancestors.resize(p_ancestors.size() - 1);
             p_baryCoefs.resize(p_baryCoefs.size() - 1);
 
-            // For snaping:
+            // For snapping:
             if ((epsilonSnapPath != 0.0) || (!points2Snap.empty()))
                 for (size_t j = 0; j < points2Snap.size(); j++)
                     if (points2Snap[j][0] == intersected_indices[i])
@@ -3277,7 +3277,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID ind_A, Coor
                             }
 
                             if (cptSnap != 3)
-                                msg_error() << "Error: In snaping border, missing elements to compute barycoefs!";
+                                msg_error() << "Error: In snapping border, missing elements to compute barycoefs!";
 
                             break;
                         }
@@ -3630,7 +3630,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID ind_A, Coor
                 new_triangles_id.push_back(next_triangle++);
 
 
-                // create two triangles linking p with the splitted edge
+                // create two triangles linking p with the split edge
                 new_triangles.emplace_back(p2, theTriangleSecond[(edgeInTriangle + 1) % 3], p1);
                 new_triangles_id.push_back(next_triangle++);
                 new_triangles.emplace_back(p2, p1, theTriangleSecond[(edgeInTriangle + 2) % 3]);
@@ -3707,7 +3707,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID ind_A, Coor
                 new_triangles_id.push_back(next_triangle++);
 
 
-                // create two triangles linking p with the splitted edge
+                // create two triangles linking p with the split edge
                 new_triangles.push_back(Triangle(p1, theTriangleFirst[(edgeInTriangle + 1) % 3], p2));
                 new_triangles_id.push_back(next_triangle++);
                 new_triangles.push_back(Triangle(p1, p2, theTriangleFirst[(edgeInTriangle + 2) % 3]));
@@ -4066,7 +4066,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
         {
             PointID Vertex2Snap;
 
-            if (intersected_barycoefs[i][0] < epsilon)  // This point has to be snaped
+            if (intersected_barycoefs[i][0] < epsilon)  // This point has to be snapped
             {
                 Vertex2Snap = m_container->getEdge(intersected_indices[i])[0];
                 it = map_point2snap.find(Vertex2Snap);
@@ -4097,7 +4097,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
 
             for (unsigned int j = 0; j < 3; j++)
             {
-                if (barycoord[j] > (1.0 - epsilon))  // This point has to be snaped
+                if (barycoord[j] > (1.0 - epsilon))  // This point has to be snapped
                 {
                     Vertex2Snap = m_container->getTriangleArray()[intersected_indices[i]][j];
                     it = map_point2snap.find(Vertex2Snap);
@@ -4119,7 +4119,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
         }
     }
 
-    //// STEP 2 - Test if snaping is needed
+    //// STEP 2 - Test if snapping is needed
     if (map_point2snap.empty())
     {
         return;
@@ -4128,7 +4128,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
     const typename DataTypes::VecCoord& coords = (this->getDOF()->read(core::ConstVecCoordId::position())->getValue());
 
 
-    //// STEP 3 - Second loop necessary to find object on the neighborhood of a snaped point
+    //// STEP 3 - Second loop necessary to find object on the neighborhood of a snapped point
     for (size_t i = 0; i < intersected_indices.size(); i++)
     {
         switch (intersected_topoElements[i])
@@ -4200,7 +4200,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
         }
     }
 
-    //Pre-treatment to avoid snaping near a border:
+    //Pre-treatment to avoid snapping near a border:
     sofa::type::vector<PointID> field2remove;
     for (it = map_point2snap.begin(); it != map_point2snap.end(); ++it)
     {
@@ -4221,7 +4221,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
     }
 
 
-    //// STEP 4 - Compute new coordinates of point to be snaped, and inform path that point has to be snaped
+    //// STEP 4 - Compute new coordinates of point to be snapped, and inform path that point has to be snapped
     field2remove.clear();
     points2Snap.resize(map_point2snap.size());
     unsigned int cpt = 0;
@@ -4243,7 +4243,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
         }
         cpt++;
 
-        // Change enum of the first object to snap to POINT, change id and label it as snaped
+        // Change enum of the first object to snap to POINT, change id and label it as snapped
         intersected_topoElements[((*it).second)[0]] = sofa::geometry::ElementType::POINT;
         intersected_indices[((*it).second)[0]] = (*it).first;
         intersected_barycoefs[((*it).second)[0]][0] = -1.0;
@@ -4254,7 +4254,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
     }
 
     //// STEP 5 - Modify incision path
-    //TODO: verify that one object can't be snaped and considered at staying at the same time
+    //TODO: verify that one object can't be snapped and considered at staying at the same time
     sort(field2remove.begin(), field2remove.end());
 
     for (size_t i = 1; i <= field2remove.size(); i++) //Delete in reverse order
@@ -4727,6 +4727,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+    vparams->drawTool()->disableLighting();
 
     // Draw Triangles indices
     if (showTriangleIndices.getValue() && this->m_topology->getNbTriangles() != 0)

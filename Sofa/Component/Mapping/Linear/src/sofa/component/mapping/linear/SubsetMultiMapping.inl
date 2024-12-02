@@ -79,7 +79,7 @@ SubsetMultiMapping<TIn, TOut>::SubsetMultiMapping()
     : Inherit()
     , d_indexPairs(initData(&d_indexPairs, type::vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
 {
-        indexPairs.setParent(&d_indexPairs);
+        indexPairs.setOriginalData(&d_indexPairs);
 }
 
 template <class TIn, class TOut>

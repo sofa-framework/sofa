@@ -79,7 +79,7 @@ void SuturePointPerformer<DataTypes>::start()
 
         if (!SpringObject)
         {
-            msg_error(this->m_interactor) << "Can't find StiffSpringForceField.";
+            msg_error(this->m_interactor) << "Can't find SpringForceField.";
             return;
         }
         else if (!triangleContainer)

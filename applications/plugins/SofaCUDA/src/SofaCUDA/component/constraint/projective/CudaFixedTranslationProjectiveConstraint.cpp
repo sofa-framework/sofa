@@ -43,7 +43,7 @@ template <>
 void component::constraint::projective::FixedTranslationProjectiveConstraint<gpu::cuda::CudaVec6fTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #if SOFACUDA_HAVE_SOFA_GL == 1
-    const SetIndexArray & indices = f_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
@@ -51,7 +51,7 @@ void component::constraint::projective::FixedTranslationProjectiveConstraint<gpu
     glPointSize(10);
     glColor4f(1, 0.5, 0.5, 1);
     glBegin(GL_POINTS);
-    if (f_fixAll.getValue() == true)
+    if (d_fixAll.getValue() == true)
     {
         for (unsigned i = 0; i < x.size(); i++)
         {

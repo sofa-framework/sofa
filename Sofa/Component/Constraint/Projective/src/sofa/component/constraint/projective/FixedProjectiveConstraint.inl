@@ -42,7 +42,7 @@ FixedProjectiveConstraint<DataTypes>::FixedProjectiveConstraint()
     , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)") )
     , d_projectVelocity( initData(&d_projectVelocity,false,"activate_projectVelocity","if true, projects not only a constant but a zero velocity") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , data(std::unique_ptr<FixedProjectiveConstraintInternalData<DataTypes>>())
+    , data(std::make_unique<FixedProjectiveConstraintInternalData<DataTypes>>())
 {
     // default to indice 0
     d_indices.beginEdit()->push_back(0);
@@ -230,7 +230,7 @@ void FixedProjectiveConstraint<DataTypes>::projectJacobianMatrix(const core::Mec
 
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
 // Each fixed point received a null velocity vector.
-// When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
+// When a new fixed point is added while its velocity vector is already null, projectVelocity is not useful.
 // But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null or 
 // to set the projectVelocity option to True. If not, the fixed point is going to drift.
 template <class DataTypes>
@@ -242,7 +242,7 @@ void FixedProjectiveConstraint<DataTypes>::projectVelocity(const core::Mechanica
 
     helper::WriteAccessor<DataVecDeriv> res (vData );
 
-    if ( d_fixAll.getValue() )    // fix everyting
+    if ( d_fixAll.getValue() )    // fix everything
     {
         for(Size i=0; i<res.size(); i++)
             res[i] = Deriv();

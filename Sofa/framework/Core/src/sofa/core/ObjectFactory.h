@@ -130,7 +130,7 @@ public:
     std::string shortName(std::string classname);
 
     /// Fill the given vector with all the registered classes
-    void getAllEntries(std::vector<ClassEntry::SPtr>& result);
+    void getAllEntries(std::vector<ClassEntry::SPtr>& result, bool filterUnloadedPlugins = true);
 
     /// Fill the given vector with the registered classes from a given target
     void getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result, std::string target);
@@ -296,7 +296,7 @@ public:
  *  \brief Helper class used to register a class in the ObjectFactory.
  *
  *  This class accumulate information about a given class, as well as creators
- *  for each supported template instanciation, to register a new entry in
+ *  for each supported template instantiation, to register a new entry in
  *  the ObjectFactory.
  *
  *  It should be used as a temporary object, finalized when used to initialize
@@ -341,7 +341,7 @@ public:
     ObjectRegistrationData& addCreator(std::string classname, std::string templatename,
                                ObjectFactory::Creator::SPtr creator);
 
-    /// Add a template instanciation of this class.
+    /// Add a template instantiation of this class.
     ///
     /// \param defaultTemplate    set to true if this should be the default instance when no template name is given.
     template<class RealObject>
@@ -367,7 +367,7 @@ public:
         }
 
         auto objectCreator = std::make_shared<ObjectCreator<RealObject> >();
-        if (objectCreator->getTarget() == "")
+        if (strcmp(objectCreator->getTarget(), "") == 0)
         {
             dmsg_warning("ObjectFactory") << "Module name cannot be found when registering "
                 << RealObject::GetClass()->className << "<" << RealObject::GetClass()->templateName << "> into the object factory";

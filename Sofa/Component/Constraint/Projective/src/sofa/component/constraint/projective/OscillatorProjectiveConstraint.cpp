@@ -29,12 +29,13 @@ namespace sofa::component::constraint::projective
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
-int OscillatorProjectiveConstraintClass = core::RegisterObject("Apply a sinusoidal trajectory to given points")
+void registerOscillatorProjectiveConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Apply a sinusoidal trajectory to given points.")
         .add< OscillatorProjectiveConstraint<Vec3Types> >()
-        .add< OscillatorProjectiveConstraint<Rigid3Types> >()
-    ;
+        .add< OscillatorProjectiveConstraint<Rigid3Types> >());
+}
 
 template class OscillatorProjectiveConstraint<Rigid3Types>;
 template class OscillatorProjectiveConstraint<Vec3Types>;

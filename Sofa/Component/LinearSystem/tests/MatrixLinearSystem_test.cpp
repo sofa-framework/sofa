@@ -31,7 +31,7 @@
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/simulation/graph/DAGNode.h>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/core/behavior/ForceField.h>
 
 #include <sofa/core/behavior/MultiVec.h>
@@ -123,7 +123,7 @@ TEST(LinearSystem, MatrixSystem_springForceField)
     writeAccessor[1] = sofa::type::Vec3{0, 0, 1};
 
     //Create a spring connecting two particles of the Mechanical Object
-    auto spring = sofa::core::objectmodel::New<sofa::component::solidmechanics::spring::StiffSpringForceField<sofa::defaulttype::Vec3Types> >();
+    auto spring = sofa::core::objectmodel::New<sofa::component::solidmechanics::spring::SpringForceField<sofa::defaulttype::Vec3Types> >();
     spring->setName(root->getNameHelper().resolveName(spring->getClassName(), sofa::core::ComponentNameHelper::Convention::xml));
     root->addObject(spring);
     const SReal springStiffness = 1_sreal;

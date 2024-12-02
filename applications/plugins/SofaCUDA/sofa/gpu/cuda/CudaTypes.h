@@ -60,19 +60,7 @@ struct DataTypeInfoManager
 };
 
 template<class T>
-class CudaVector : public type::vector_device<T,CudaMemoryManager<T>, DataTypeInfoManager<T> >
-{
-public :
-    using Inherit = type::vector_device<T, CudaMemoryManager<T>, DataTypeInfoManager<T> >;
-    typedef size_t Size;
-
-    CudaVector() : Inherit() {}
-
-    CudaVector(Size n) : Inherit(n) {}
-
-    CudaVector(const Inherit& v) : Inherit(v) {}
-
-};
+using CudaVector = type::vector_device<T,CudaMemoryManager<T>, DataTypeInfoManager<T> >;
 
 template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
 class CudaVectorTypes
@@ -98,7 +86,7 @@ public:
     static void setDPos(Deriv& d, const DPos& v) { d = v; }
 
 
-    /// @internal size dependant specializations
+    /// @internal size dependent specializations
     /// @{
 
     /// default implementation for size >= 3

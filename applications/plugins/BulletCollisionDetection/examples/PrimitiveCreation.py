@@ -158,7 +158,7 @@ def createCapsuleChain(parentNode,name,length,x,y,z):
 	springs += str(length - 2)+' '+str(length -1)+' 10 1 '+str(capsule_chain_height)
 
 	node.createObject('MechanicalObject',template='Vec3d',name='falling_particles',position=particles,velocity=velocities)
-	node.createObject('StiffSpringForceField',template='Vec3d',name='springforcefield',stiffness='100',damping='1',spring=springs)
+	node.createObject('SpringForceField',template='Vec3d',name='springforcefield',stiffness='100',damping='1',spring=springs)
 	mass = node.createObject('UniformMass',name='mass')
 	node.createObject('MeshTopology', name='meshTopology34',edges=topo_edges,drawEdges='1')
 	node.createObject('CapsuleCollisionModel',template='Vec3d',name='capsule_model',defaultRadius=str(radius))

@@ -25,13 +25,8 @@
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/visual/VisualLoop.h>
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/simulation/Node.h>
 
-namespace sofa::core::objectmodel
-{
-// Forward declaration for extern template declaration. This design permit to
-// not #include<sofa::simulation::Node>
-extern template class SingleLink< sofa::simulation::DefaultVisualManagerLoop, simulation::Node, BaseLink::FLAG_STOREPATH>;
-}
 
 namespace sofa::simulation
 {
@@ -54,10 +49,10 @@ public:
     void init() override;
 
     /// Initialize the textures
-    void initStep(sofa::core::ExecParams* params) override;
+    void initStep(sofa::core::visual::VisualParams* vparams) override;
 
     /// Update the Visual Models: triggers the Mappings
-    void updateStep(sofa::core::ExecParams* params) override;
+    void updateStep(sofa::core::visual::VisualParams* vparams) override;
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
     void updateContextStep(sofa::core::visual::VisualParams* vparams) override;

@@ -29,6 +29,9 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <sofa/helper/map.h>
+#include <sofa/helper/ColorMap.h>
+
+#include <sofa/core/objectmodel/RenamedData.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,
@@ -102,6 +105,7 @@ public:
         StrainDisplacementTransposed strainDisplacementTransposedMatrix;
         /// large displacement method
         type::fixed_array<Coord,4> rotatedInitialElements;
+        type::Mat<4, 4, Real> elemShapeFun;
         Transformation rotation;
         /// polar method
         Transformation initialTransformation;
@@ -124,7 +128,7 @@ public:
     };
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::type::vector<TetrahedronInformation> > tetrahedronInfo;
+    sofa::core::objectmodel::RenamedData<sofa::type::vector<TetrahedronInformation> > tetrahedronInfo;
 
     /// container that stotes all requires information for each tetrahedron
     core::topology::TetrahedronData<sofa::type::vector<TetrahedronInformation> > d_tetrahedronInfo;
@@ -147,37 +151,37 @@ public:
     int method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<std::string> f_method;
+    sofa::core::objectmodel::RenamedData<std::string> f_method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<Real> _poissonRatio;
+    sofa::core::objectmodel::RenamedData<Real> _poissonRatio;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     SOFA_ATTRIBUTE_DISABLED("", "v24.12", "Use d_youngModulus instead") DeprecatedAndRemoved _youngModulus;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<VecReal> _localStiffnessFactor;
+    sofa::core::objectmodel::RenamedData<VecReal> _localStiffnessFactor;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> _updateStiffnessMatrix;
+    sofa::core::objectmodel::RenamedData<bool> _updateStiffnessMatrix;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> _assembling;
+    sofa::core::objectmodel::RenamedData<bool> _assembling;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<bool> f_drawing;
+    sofa::core::objectmodel::RenamedData<bool> f_drawing;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::type::RGBAColor> drawColor1;
+    sofa::core::objectmodel::RenamedData<sofa::type::RGBAColor> drawColor1;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::type::RGBAColor> drawColor2;
+    sofa::core::objectmodel::RenamedData<sofa::type::RGBAColor> drawColor2;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::type::RGBAColor> drawColor3;
+    sofa::core::objectmodel::RenamedData<sofa::type::RGBAColor> drawColor3;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    Data<sofa::type::RGBAColor> drawColor4;
+    sofa::core::objectmodel::RenamedData<sofa::type::RGBAColor> drawColor4;
 
     Data<std::string> d_method; ///< "small", "large" (by QR) or "polar" displacements
     Data<VecReal> d_localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
@@ -190,14 +194,22 @@ public:
     Data<sofa::type::RGBAColor> d_drawColor3; ///<  draw color for faces 3
     Data<sofa::type::RGBAColor> d_drawColor4; ///<  draw color for faces 4
     Data<std::map < std::string, sofa::type::vector<double> > > _volumeGraph;
+    
+    Data<bool> d_computeVonMisesStress;
+    Data<type::vector<Real> > d_vonMisesPerElement; ///< von Mises Stress per element
+    Data<type::vector<Real> > d_vonMisesPerNode; ///< von Mises Stress per node
+    
+    sofa::helper::ColorMap* m_vonMisesColorMap;
+    Real prevMaxStress = -1.0;
 
     using Inherit1::l_topology;
+
 
 protected:
     TetrahedralCorotationalFEMForceField();
 
-    /// Pointer to the topology container. Will be set by link @sa l_topology
-    sofa::core::topology::BaseMeshTopology* m_topology;
+    ~TetrahedralCorotationalFEMForceField() override;
+
 public:
 
     void setMethod(int val) { method = val; }
@@ -235,6 +247,7 @@ public:
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
+    void computeVonMisesStress();
 
 protected:
     /** Method to create @sa TetrahedronInformation when a new tetrahedron is created.

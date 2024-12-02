@@ -98,6 +98,10 @@ void MeshXspLoader::doClearBuffers()
     /// Nothing to do if no output is added to the "filename" dataTrackerEngine.
 }
 
-int MeshXspLoaderClass = core::RegisterObject("Specific mesh loader for Xsp file format.")
-        .add< MeshXspLoader >();
+void registerMeshXspLoader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Specific mesh loader for Xsp file format.")
+        .add< MeshXspLoader >());
+}
+
 } //namespace sofa::component::io::mesh

@@ -30,7 +30,7 @@
 namespace sofa::component::mapping::linear
 {
 
-/// concatanate several entire mechanical states together
+/// Concatenate several mechanical states together
 template <class TIn, class TOut>
 class IdentityMultiMapping : public LinearMultiMapping<TIn, TOut>
 {
@@ -70,7 +70,7 @@ public:
     void apply(const core::MechanicalParams* mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos, const type::vector<const InDataVecCoord*>& dataVecInPos) override;
     void applyJ(const core::MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel) override;
     void applyJT(const core::MechanicalParams* mparams, const type::vector<InDataVecDeriv*>& dataVecOutForce, const type::vector<const OutDataVecDeriv*>& dataVecInForce) override;
-    void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
+    void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*enforce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
     void applyJT( const core::ConstraintParams* cparams, const type::vector< InDataMatrixDeriv* >& dataMatOutConst, const type::vector< const OutDataMatrixDeriv* >& dataMatInConst ) override;
 
     virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;

@@ -210,7 +210,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
         case 0: // 0-(default) articulation are treated one by one, the axis of the second articulation is updated by the potential rotation of the first articulation
             //			   potential problems could arise when rotation exceed 90? (known problem of euler angles)
         {
-            // the position of the child is reset to its rest position (based on the postion of the articulation center)
+            // the position of the child is reset to its rest position (based on the position of the articulation center)
             out[child].getOrientation() = out[parent].getOrientation();
             out[child].getCenter() = out[parent].getCenter() + (*ac)->initTranslateChild(out[parent].getOrientation());
 
@@ -275,7 +275,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
 
 
             // step 1: compute the new position of the articulation center and the articulation pos
-            //         rq: the articulation center folows the translations
+            //         rq: the articulation center follows the translations
             (*ac)->globalPosition.setValue(out[parent].getCenter() + out[parent].getOrientation().rotate((*ac)->posOnParent.getValue()) + (*ac)->DisplacementArticulationCenter);
             type::vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
 

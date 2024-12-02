@@ -65,12 +65,12 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa
 {
     this->addAlias(&d_fileCompliance, "filePrefix");
 
-    m_rotations.setParent(&d_rotations);
-    m_restRotations.setParent(&d_restRotations);
-    recompute.setParent(&d_recompute);
-    debugViewFrameScale.setParent(&d_debugViewFrameScale);
-    f_fileCompliance.setParent(&d_fileCompliance);
-    fileDir.setParent(&d_fileDir);
+    m_rotations.setOriginalData(&d_rotations);
+    m_restRotations.setOriginalData(&d_restRotations);
+    recompute.setOriginalData(&d_recompute);
+    debugViewFrameScale.setOriginalData(&d_debugViewFrameScale);
+    f_fileCompliance.setOriginalData(&d_fileCompliance);
+    fileDir.setOriginalData(&d_fileDir);
 }
 
 template<class DataTypes>
@@ -261,7 +261,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         // Buffer Allocation
         invM->data = new Real[nbRows * nbCols];
 
-        // for the intial computation, the gravity has to be put at 0
+        // for the initial computation, the gravity has to be put at 0
         const sofa::type::Vec3& gravity = this->getContext()->getGravity();
 
         static constexpr sofa::type::Vec3 gravity_zero(0_sreal, 0_sreal, 0_sreal);
@@ -397,7 +397,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             cgLinearSolver->d_smallDenominatorThreshold.setValue(buf_threshold);
         }
 
-        // Retore velocity
+        // Restore velocity
         for (unsigned int i = 0; i < velocity.size(); i++)
             velocity[i] = prev_velocity[i];
 

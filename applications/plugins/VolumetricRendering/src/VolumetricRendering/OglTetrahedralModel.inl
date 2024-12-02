@@ -57,7 +57,7 @@ void OglTetrahedralModel<DataTypes>::init()
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     m_topology = context->getMeshTopology();
 
-    //instanciate the mapping tables
+    //instantiate the mapping tables
     //Useful for the PT algorithm only
     sofa::type::vector<sofa::gl::component::shader::OglFloatVector4Variable::SPtr > listVec4Variables;
     this->getContext()->core::objectmodel::BaseContext::template get<sofa::gl::component::shader::OglFloatVector4Variable, sofa::type::vector<sofa::gl::component::shader::OglFloatVector4Variable::SPtr> >
@@ -80,7 +80,7 @@ void OglTetrahedralModel<DataTypes>::init()
 
     if (!m_mappingTableValues)
     {
-        msg_info() << "No MappingTable found, instanciating one";
+        msg_info() << "No MappingTable found, instantiating one";
         m_mappingTableValues = sofa::core::objectmodel::New<sofa::gl::component::shader::OglFloatVector4Variable>();
         m_mappingTableValues->setName("MappingTable");
         m_mappingTableValues->setID("MappingTable");
@@ -103,7 +103,7 @@ void OglTetrahedralModel<DataTypes>::init()
     }
     if (!m_runSelectTableValues)
     {
-        msg_info() << "No RunSelectTable found, instanciating one";
+        msg_info() << "No RunSelectTable found, instantiating one";
 
         m_runSelectTableValues = sofa::core::objectmodel::New<sofa::gl::component::shader::OglFloatVector4Variable>();
         m_runSelectTableValues->setName("RunSelectTable");
@@ -136,12 +136,11 @@ void OglTetrahedralModel<DataTypes>::init()
     useTopology = true;
     modified = true;
     VisualModel::init();
-    updateVisual();
 
 }
 
 template<class DataTypes>
-void OglTetrahedralModel<DataTypes>::initVisual()
+void OglTetrahedralModel<DataTypes>::doInitVisual(const sofa::core::visual::VisualParams* vparams)
 {
     const type::vector<Coord> tmpvertices = m_positions.getValue();
     type::vector<type::Vec3f> vertices;
@@ -151,8 +150,8 @@ void OglTetrahedralModel<DataTypes>::initVisual()
         vertices.push_back(type::Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
     }
 
-    m_mappingTableValues->initVisual();
-    m_runSelectTableValues->initVisual();
+    m_mappingTableValues->initVisual(vparams);
+    m_runSelectTableValues->initVisual(vparams);
 
     glGenBuffersARB(1, &m_vbo);
     unsigned positionsBufferSize;
@@ -173,10 +172,9 @@ void OglTetrahedralModel<DataTypes>::initVisual()
 }
 
 template<class DataTypes>
-void OglTetrahedralModel<DataTypes>::updateVisual()
+void OglTetrahedralModel<DataTypes>::doUpdateVisual(const core::visual::VisualParams* vparams)
 {
     // Workaround if updateVisual() is called without an opengl context
-    const auto* vparams = core::visual::VisualParams::defaultInstance();
     if (!vparams->isSupported(core::visual::API_OpenGL))
     {
         return;

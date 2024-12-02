@@ -28,21 +28,23 @@
 
 namespace sofa::component::topology::container::dynamic
 {
+
 using namespace sofa::defaulttype;
-int EdgeSetGeometryAlgorithmsClass = core::RegisterObject("Edge set geometry algorithms")
+
+void registerEdgeSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Geometry algorithms dedicated to an edge topology.")
         .add< EdgeSetGeometryAlgorithms<Vec3Types> >(true) // default template
         .add< EdgeSetGeometryAlgorithms<Vec2Types> >()
         .add< EdgeSetGeometryAlgorithms<Vec1Types> >()
         .add< EdgeSetGeometryAlgorithms<Rigid3Types> >()
-        .add< EdgeSetGeometryAlgorithms<Rigid2Types> >()
-
-        ;
+        .add< EdgeSetGeometryAlgorithms<Rigid2Types> >());
+}
 
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API EdgeSetGeometryAlgorithms<Vec3Types>;
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API EdgeSetGeometryAlgorithms<Vec2Types>;
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API EdgeSetGeometryAlgorithms<Vec1Types>;
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API EdgeSetGeometryAlgorithms<Rigid3Types>;
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API EdgeSetGeometryAlgorithms<Rigid2Types>;
-
 
 } //namespace sofa::component::topology::container::dynamic

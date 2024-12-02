@@ -29,9 +29,11 @@ namespace sofa::component::playback
 
 using namespace defaulttype;
 
-
-int WriteStateClass = core::RegisterObject("Write State vectors to file at each timestep")
-        .add< WriteState >();
+void registerWriteState(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Write State vectors to file at each timestep.")
+        .add< WriteState >());
+}
 
 WriteStateCreator::WriteStateCreator(const core::ExecParams* params)
     :simulation::Visitor(params)
@@ -109,7 +111,10 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
         if (!m_times.empty())
             ws->d_time.setValue(m_times);
 
-        ws->d_period.setValue(m_period);
+        if (m_period > 0.0) 
+        {
+            ws->d_period.setValue(m_period);
+        }
 
         ws->init();
         ws->f_listening.setValue(true);  //Activated at init

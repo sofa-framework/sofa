@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include "CudaTetrahedralVisualModel.inl"
 
+#include <VolumetricRendering/CUDA/config.h>
 #include <sofa/core/ObjectFactory.h>
 
 

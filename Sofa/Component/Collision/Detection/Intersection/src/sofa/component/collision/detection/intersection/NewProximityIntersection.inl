@@ -84,17 +84,4 @@ int NewProximityIntersection::computeIntersection(SphereType1& sph1, SphereType2
     return n;
 }
 
-template<typename SphereType1, typename SphereType2>
-bool NewProximityIntersection::testIntersection(SphereType1& sph1, SphereType2& sph2)
-{
-    return testIntersection(sph1, sph2, this);
-}
-
-template<typename SphereType1, typename SphereType2>
-int NewProximityIntersection::computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts)
-{
-    return computeIntersection(sph1, sph2, contacts, this);
-}
-
-
 } // namespace sofa::component::collision::detection::intersection

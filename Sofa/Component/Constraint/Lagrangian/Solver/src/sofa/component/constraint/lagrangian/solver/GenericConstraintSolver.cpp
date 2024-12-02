@@ -66,7 +66,7 @@ GenericConstraintSolver::GenericConstraintSolver()
     , d_tolerance(initData(&d_tolerance, 0.001_sreal, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , d_sor(initData(&d_sor, 1.0_sreal, "sor", "Successive Over Relaxation parameter (0-2)"))
     , d_scaleTolerance(initData(&d_scaleTolerance, true, "scaleTolerance", "Scale the error tolerance with the number of constraints"))
-    , d_allVerified(initData(&d_allVerified, false, "allVerified", "All contraints must be verified (each constraint's error < tolerance)"))
+    , d_allVerified(initData(&d_allVerified, false, "allVerified", "All constraints must be verified (each constraint's error < tolerance)"))
     , d_newtonIterations(initData(&d_newtonIterations, 100, "newtonIterations", "Maximum iteration number of Newton (for the NonsmoothNonlinearConjugateGradient solver only)"))
     , d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
     , d_computeGraphs(initData(&d_computeGraphs, false, "computeGraphs", "Compute graphs of errors and forces during resolution"))
@@ -116,21 +116,21 @@ GenericConstraintSolver::GenericConstraintSolver()
     d_maxIt.setRequired(true);
     d_tolerance.setRequired(true);
 
-    maxIt.setParent(&d_maxIt);
-    tolerance.setParent(&d_tolerance);
-    sor.setParent(&d_sor);
-    scaleTolerance.setParent(&d_scaleTolerance);
-    allVerified.setParent(&d_allVerified);
-    computeGraphs.setParent(&d_computeGraphs);
-    graphErrors.setParent(&d_graphErrors);
-    graphConstraints.setParent(&d_graphConstraints);
-    graphForces.setParent(&d_graphForces);
-    graphViolations.setParent(&d_graphViolations);
-    currentNumConstraints.setParent(&d_currentNumConstraints);
-    currentNumConstraintGroups.setParent(&d_currentNumConstraintGroups);
-    currentIterations.setParent(&d_currentIterations);
-    currentError.setParent(&d_currentError);
-    reverseAccumulateOrder.setParent(&d_reverseAccumulateOrder);
+    maxIt.setOriginalData(&d_maxIt);
+    tolerance.setOriginalData(&d_tolerance);
+    sor.setOriginalData(&d_sor);
+    scaleTolerance.setOriginalData(&d_scaleTolerance);
+    allVerified.setOriginalData(&d_allVerified);
+    computeGraphs.setOriginalData(&d_computeGraphs);
+    graphErrors.setOriginalData(&d_graphErrors);
+    graphConstraints.setOriginalData(&d_graphConstraints);
+    graphForces.setOriginalData(&d_graphForces);
+    graphViolations.setOriginalData(&d_graphViolations);
+    currentNumConstraints.setOriginalData(&d_currentNumConstraints);
+    currentNumConstraintGroups.setOriginalData(&d_currentNumConstraintGroups);
+    currentIterations.setOriginalData(&d_currentIterations);
+    currentError.setOriginalData(&d_currentError);
+    reverseAccumulateOrder.setOriginalData(&d_reverseAccumulateOrder);
 }
 
 GenericConstraintSolver::~GenericConstraintSolver()
@@ -531,8 +531,6 @@ void GenericConstraintSolver::applyMotionCorrection(
 
 void GenericConstraintSolver::computeAndApplyMotionCorrection(const core::ConstraintParams* cParams, MultiVecId res1, MultiVecId res2) const
 {
-    SCOPED_TIMER("Compute And Apply Motion Correction");
-
     static constexpr auto supportedCorrections = {
         sofa::core::ConstraintOrder::POS_AND_VEL,
         sofa::core::ConstraintOrder::POS,
@@ -544,11 +542,11 @@ void GenericConstraintSolver::computeAndApplyMotionCorrection(const core::Constr
         for (const auto& constraintCorrection : filteredConstraintCorrections())
         {
             {
-                SCOPED_TIMER("ComputeCorrection");
+                SCOPED_TIMER("doComputeCorrection");
                 constraintCorrection->computeMotionCorrectionFromLambda(cParams, this->getDx(), &current_cp->f);
             }
 
-            SCOPED_TIMER("ApplyCorrection");
+            SCOPED_TIMER("doApplyCorrection");
             applyMotionCorrection(cParams, res1, res2, constraintCorrection);
         }
     }
@@ -619,8 +617,10 @@ sofa::core::MultiVecDerivId GenericConstraintSolver::getDx() const
     return m_dxId;
 }
 
-
-int GenericConstraintSolverClass = core::RegisterObject("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
-        .add< GenericConstraintSolver >();
+void registerGenericConstraintSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
+        .add< GenericConstraintSolver >());
+}
 
 } //namespace sofa::component::constraint::lagrangian::solver

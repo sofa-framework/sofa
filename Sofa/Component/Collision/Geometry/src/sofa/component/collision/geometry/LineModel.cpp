@@ -26,9 +26,11 @@
 namespace sofa::component::collision::geometry
 {
 
-int LineCollisionModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
-        .add< LineCollisionModel<sofa::defaulttype::Vec3Types> >()
-        ;
+void registerLineCollisionModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Collision model using a linear mesh, as described in MeshTopology.")
+        .add< LineCollisionModel<sofa::defaulttype::Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TLine<sofa::defaulttype::Vec3Types>;
 template class SOFA_COMPONENT_COLLISION_GEOMETRY_API LineCollisionModel<defaulttype::Vec3Types>;

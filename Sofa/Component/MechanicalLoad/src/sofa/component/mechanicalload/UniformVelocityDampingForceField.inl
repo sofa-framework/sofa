@@ -36,7 +36,7 @@ UniformVelocityDampingForceField<DataTypes>::UniformVelocityDampingForceField()
     , d_implicit(initData(&d_implicit, false, "implicit", "should it generate damping matrix df/dv? (explicit otherwise, i.e. only generating a force)"))
 {
     core::objectmodel::Base::addAlias(&d_dampingCoefficient, "damping" );
-    dampingCoefficient.setParent(&d_dampingCoefficient);
+    dampingCoefficient.setOriginalData(&d_dampingCoefficient);
 }
 
 template<class DataTypes>

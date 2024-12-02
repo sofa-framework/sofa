@@ -101,10 +101,12 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     }
 }
 
-int VisualModelImplClass = core::RegisterObject("Generic visual model. If a viewer is active it will replace the VisualModel alias, otherwise nothing will be displayed.")
+void registerVisualModelImpl(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Generic visual model. If a viewer is active it will replace the VisualModel alias, otherwise nothing will be displayed.")
         .add< VisualModelImpl >()
-        .addAlias("VisualModel")
-        ;
+        .addAlias("VisualModel"));
+}
 
 VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filename, std::string loader, std::string textureName)
     : useTopology(false)
@@ -173,35 +175,35 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     }, { &d_componentState });
 
 
-    m_initRestPositions.setParent(&d_initRestPositions);
-    m_useNormals.setParent(&d_useNormals);
-    m_updateNormals.setParent(&d_updateNormals);
-    m_computeTangents.setParent(&d_computeTangents);
-    m_updateTangents.setParent(&d_updateTangents);
-    m_handleDynamicTopology.setParent(&d_handleDynamicTopology);
-    m_fixMergedUVSeams.setParent(&d_fixMergedUVSeams);
-    m_keepLines.setParent(&d_keepLines);
-    m_vertices2.setParent(&d_vertices2);
-    m_vtexcoords.setParent(&d_vtexcoords);
-    m_vtangents.setParent(&d_vtangents);
-    m_vbitangents.setParent(&d_vbitangents);
-    m_edges.setParent(&d_edges);
-    m_triangles.setParent(&d_triangles);
-    m_quads.setParent(&d_quads);
-    m_vertPosIdx.setParent(&d_vertPosIdx);
-    m_vertNormIdx.setParent(&d_vertNormIdx);
+    m_initRestPositions.setOriginalData(&d_initRestPositions);
+    m_useNormals.setOriginalData(&d_useNormals);
+    m_updateNormals.setOriginalData(&d_updateNormals);
+    m_computeTangents.setOriginalData(&d_computeTangents);
+    m_updateTangents.setOriginalData(&d_updateTangents);
+    m_handleDynamicTopology.setOriginalData(&d_handleDynamicTopology);
+    m_fixMergedUVSeams.setOriginalData(&d_fixMergedUVSeams);
+    m_keepLines.setOriginalData(&d_keepLines);
+    m_vertices2.setOriginalData(&d_vertices2);
+    m_vtexcoords.setOriginalData(&d_vtexcoords);
+    m_vtangents.setOriginalData(&d_vtangents);
+    m_vbitangents.setOriginalData(&d_vbitangents);
+    m_edges.setOriginalData(&d_edges);
+    m_triangles.setOriginalData(&d_triangles);
+    m_quads.setOriginalData(&d_quads);
+    m_vertPosIdx.setOriginalData(&d_vertPosIdx);
+    m_vertNormIdx.setOriginalData(&d_vertNormIdx);
     fileMesh.setParent(&d_fileMesh);
     texturename.setParent(&d_texturename);
-    m_translation.setParent(&d_translation);
-    m_rotation.setParent(&d_rotation);
-    m_scale.setParent(&d_scale);
-    m_scaleTex.setParent(&d_scaleTex);
-    m_translationTex.setParent(&d_translationTex);
-    material.setParent(&d_material);
-    putOnlyTexCoords.setParent(&d_putOnlyTexCoords);
-    srgbTexturing.setParent(&d_srgbTexturing);
-    materials.setParent(&d_materials);
-    groups.setParent(&d_groups);
+    m_translation.setOriginalData(&d_translation);
+    m_rotation.setOriginalData(&d_rotation);
+    m_scale.setOriginalData(&d_scale);
+    m_scaleTex.setOriginalData(&d_scaleTex);
+    m_translationTex.setOriginalData(&d_translationTex);
+    material.setOriginalData(&d_material);
+    putOnlyTexCoords.setOriginalData(&d_putOnlyTexCoords);
+    srgbTexturing.setOriginalData(&d_srgbTexturing);
+    materials.setOriginalData(&d_materials);
+    groups.setOriginalData(&d_groups);
 }
 
 VisualModelImpl::~VisualModelImpl()
@@ -256,7 +258,7 @@ void VisualModelImpl::doDrawVisual(const core::visual::VisualParams* vparams)
             loadTexture(d_texturename.getFullPath());
             m_textureChanged = false;
         }
-        initVisual();
+        initVisual(vparams);
         updateBuffers();
         d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
     }
@@ -301,7 +303,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 
     if (!objLoader.getGroups().empty())
     {
-        // Get informations about the multiple materials
+        // Get information about the multiple materials
         helper::WriteAccessor< Data< type::vector<Material> > > materials = this->d_materials;
         helper::WriteAccessor< Data< type::vector<FaceGroup> > > groups = this->d_groups;
         materials.resize(objLoader.getMaterials().size());
@@ -661,8 +663,7 @@ void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SRe
         m_restPositions.endEdit();
     }
 
-
-    updateVisual();
+    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal rz)
@@ -695,7 +696,7 @@ void VisualModelImpl::applyRotation(const Quat<SReal> q)
         m_restPositions.endEdit();
     }
 
-    updateVisual();
+    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
@@ -726,7 +727,7 @@ void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
         m_restPositions.endEdit();
     }
 
-    updateVisual();
+    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 void VisualModelImpl::applyUVTranslation(const Real dU, const Real dV)
@@ -740,6 +741,8 @@ void VisualModelImpl::applyUVTranslation(const Real dU, const Real dV)
         vtexcoords[i][1] += dVf;
     }
     d_vtexcoords.endEdit();
+
+    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 void VisualModelImpl::applyUVScale(const Real scaleU, const Real scaleV)
@@ -753,6 +756,8 @@ void VisualModelImpl::applyUVScale(const Real scaleU, const Real scaleV)
         vtexcoords[i][1] *= scaleVf;
     }
     d_vtexcoords.endEdit();
+
+    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 
@@ -814,8 +819,6 @@ void VisualModelImpl::init()
     d_translation.setValue(Vec3Real());
     d_rotation.setValue(Vec3Real());
     d_scale.setValue(Vec3Real(1, 1, 1));
-
-    updateVisual();
 }
 
 
@@ -1310,8 +1313,10 @@ void VisualModelImpl::setColor(std::string color)
 }
 
 
-void VisualModelImpl::updateVisual()
+void VisualModelImpl::doUpdateVisual(const core::visual::VisualParams* vparams)
 {
+    SOFA_UNUSED(vparams);
+
     if (modified && !getVertices().empty())
     {
         if (useTopology)
@@ -1496,11 +1501,6 @@ void VisualModelImpl::computeMesh()
         quads[i][3] = visual_index_type(inputQuads[i][3]);
     }
     d_quads.endEdit();
-}
-
-
-void VisualModelImpl::initVisual()
-{
 }
 
 void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, sofa::Index& vindex, sofa::Index& nindex, sofa::Index& tindex, int& count)

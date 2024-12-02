@@ -233,9 +233,9 @@ template <class DataTypes> TriangularTensorMassForceField<DataTypes>::Triangular
     , mu(0)
     , m_topology(nullptr)
 {
-    edgeInfo.setParent(&d_edgeInfo);
-    f_poissonRatio.setParent(&d_poissonRatio);
-    f_youngModulus.setParent(&d_youngModulus);
+    edgeInfo.setOriginalData(&d_edgeInfo);
+    f_poissonRatio.setOriginalData(&d_poissonRatio);
+    f_youngModulus.setOriginalData(&d_youngModulus);
 }
 
 template <class DataTypes> TriangularTensorMassForceField<DataTypes>::~TriangularTensorMassForceField()

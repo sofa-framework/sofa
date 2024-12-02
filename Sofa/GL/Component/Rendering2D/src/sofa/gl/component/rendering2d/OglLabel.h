@@ -47,14 +47,14 @@ public:
     Data<unsigned int>           d_y; ///< The y position of the text on the screen
     Data<unsigned int>           d_fontsize; ///< The size of the font used to display the text on the screen
     Data<sofa::type::RGBAColor> d_color; ///< The color of the text to display. (default='gray')
-    Data<bool>                   d_selectContrastingColor ; ///< Overide the color value but one that contrast with the background color
+    Data<bool>                   d_selectContrastingColor ; ///< Override the color value but one that contrast with the background color
     Data<unsigned int>           d_updateLabelEveryNbSteps; ///< Update the display of the label every nb of time steps
     core::objectmodel::lifecycle::RemovedData d_visible {this, "v23.06", "23.12", "visible", "Use the 'enable' data field instead of 'visible'"};
 
 
     void init() override;
     void reinit() override;
-    void updateVisual() override;
+    void doUpdateVisual(const core::visual::VisualParams*) override;
     void doDrawVisual(const core::visual::VisualParams* vparams) override;
 
     void handleEvent(core::objectmodel::Event *) override;

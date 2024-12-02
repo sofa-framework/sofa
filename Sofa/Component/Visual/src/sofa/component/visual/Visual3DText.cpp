@@ -29,11 +29,11 @@
 namespace sofa::component::visual
 {
 
-int Visual3DTextClass = core::RegisterObject("Display 3D camera-oriented text")
-        .add< Visual3DText >()
-        ;
-
-
+void registerVisual3DText(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Display 3D camera-oriented text.")
+        .add< Visual3DText >());
+}
 
 Visual3DText::Visual3DText()
     : d_text(initData(&d_text, "text", "Test to display"))
@@ -50,8 +50,6 @@ void Visual3DText::init()
     VisualModel::init();
 
     reinit();
-
-    updateVisual();
 }
 
 void Visual3DText::reinit()

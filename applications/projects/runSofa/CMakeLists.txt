@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.22)
 project(runSofa)
 
+# Detect if component is compiled outside SOFA
+if ("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
+    find_package(Sofa.Config REQUIRED)
+    sofa_find_package(Sofa.Simulation.Graph REQUIRED)
+    sofa_find_package(ZLIB)
+endif()
+
 ###################################
 # Generate plugin_list.conf.default
 include(cmake/GeneratePluginConfig.cmake)
@@ -11,11 +18,22 @@ else()
     # plugins are located in lib/
     set(_pluginLocation "lib")
 endif()
+
 set(_configPluginFileName plugin_list.conf)
 set(_defaultConfigPluginFileName "${_configPluginFileName}.default")
 set(_defaultConfigPluginFilePath "${CMAKE_BINARY_DIR}/${_pluginLocation}/${_defaultConfigPluginFileName}")
-sofa_generate_plugin_config(${_defaultConfigPluginFilePath})
-message("Write Plugin list at ${_defaultConfigPluginFilePath}")
+
+# Generate plugin_list.conf files from existing targets
+# This step is skipped if the app is compiled outside SOFA, as no targets are defined
+if (NOT "${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}") # in-tree build
+    sofa_generate_plugin_config(${_defaultConfigPluginFilePath})
+    message("Write Plugin list at ${_defaultConfigPluginFilePath}")
+else() # ouf-of-tree build
+    file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${_pluginLocation}")
+    file(TOUCH ${_defaultConfigPluginFilePath})
+    message("Created empty Plugin list at ${_defaultConfigPluginFilePath} (no targets defined)")
+endif()
+
 configure_file(${_defaultConfigPluginFilePath} ${PROJECT_BINARY_DIR}/${_defaultConfigPluginFileName} COPYONLY)
 install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ COMPONENT applications)
 ###################################

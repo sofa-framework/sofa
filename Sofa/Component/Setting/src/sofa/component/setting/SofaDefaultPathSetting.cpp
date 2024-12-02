@@ -27,14 +27,15 @@
 namespace sofa::component::setting
 {
 
-int SofaDefaultPathSettingClass = core::RegisterObject("Default Paths for Sofa Application")
-        .add< SofaDefaultPathSetting >()
-        .addAlias("SofaDefaultPath")
-        ;
+void registerSofaDefaultPathSetting(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Default Paths for Sofa Application.")
+        .add< SofaDefaultPathSetting >());
+}
 
 SofaDefaultPathSetting::SofaDefaultPathSetting():
         d_gnuplotPath(initData(&d_gnuplotPath, "gnuplotPath", "Path where will be saved the gnuplot files"))
 {
-    gnuplotPath.setParent(&d_gnuplotPath);
+    gnuplotPath.setOriginalData(&d_gnuplotPath);
 }
 } // namespace sofa::component::setting

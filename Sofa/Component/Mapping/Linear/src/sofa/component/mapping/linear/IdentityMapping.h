@@ -50,6 +50,8 @@ public:
     typedef typename In::Coord			InCoord;
     typedef typename In::Deriv			InDeriv;
     typedef typename In::MatrixDeriv	InMatrixDeriv;
+    typedef Data<InVecCoord> InDataVecCoord;
+    typedef Data<InVecDeriv> InDataVecDeriv;
 
     typedef typename Out::VecCoord		VecCoord;
     typedef typename Out::VecDeriv		VecDeriv;
@@ -61,6 +63,8 @@ public:
     typedef typename OutDataTypes::Real     OutReal;
     typedef typename OutDataTypes::VecCoord OutVecCoord;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
+    typedef Data<OutVecCoord> OutDataVecCoord;
+    typedef Data<OutVecDeriv> OutDataVecDeriv;
 
     enum
     {
@@ -92,7 +96,7 @@ protected:
 public:
     /// Return true if the destination model has the same topology as the source model.
     ///
-    /// This is the case for mapping keeping a one-to-one correspondance between
+    /// This is the case for mapping keeping a one-to-one correspondence between
     /// input and output DOFs (mostly identity or data-conversion mappings).
     bool sameTopology() const override { return true; }
 

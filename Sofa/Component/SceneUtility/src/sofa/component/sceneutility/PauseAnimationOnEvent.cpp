@@ -57,10 +57,10 @@ void PauseAnimationOnEvent::handleEvent(sofa::core::objectmodel::Event* event)
     }
 }
 
-int PauseAnimationOnEventClass = core::RegisterObject("PauseAnimationOnEvent")
-        .add< PauseAnimationOnEvent >();
-
-
-
+void registerPauseAnimationOnEvent(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("This component pauses the simulation when receiving a PauseEvent.")
+        .add< PauseAnimationOnEvent >());
+}
 
 } // namespace sofa::component::sceneutility

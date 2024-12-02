@@ -8,6 +8,7 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
 endif()
 
 sofa_add_subdirectory(plugin CollisionOBBCapsule CollisionOBBCapsule)
+sofa_add_subdirectory(plugin HeadlessRecorder HeadlessRecorder)
 
 sofa_add_subdirectory(directory SofaHighOrder SofaHighOrder EXTERNAL GIT_REF master)
 
@@ -15,8 +16,6 @@ sofa_add_subdirectory(plugin CImgPlugin CImgPlugin) # ON by default and first as
 sofa_add_subdirectory(plugin ArticulatedSystemPlugin ArticulatedSystemPlugin ON)
 sofa_add_subdirectory(plugin SofaEulerianFluid SofaEulerianFluid)
 sofa_add_subdirectory(plugin SofaSphFluid SofaSphFluid EXTERNAL GIT_REF master)
-sofa_add_subdirectory(plugin SofaDistanceGrid SofaDistanceGrid) # Depends on SofaMiscCollision
-sofa_add_subdirectory(plugin SofaImplicitField SofaImplicitField)
 sofa_add_subdirectory(plugin MultiThreading MultiThreading ON)
 sofa_add_subdirectory(plugin DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
 sofa_add_subdirectory(plugin image image) # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
@@ -46,12 +45,15 @@ sofa_add_subdirectory(plugin SofaMatrix SofaMatrix ON) # Depends on image, CImgP
 sofa_add_subdirectory(plugin BeamAdapter BeamAdapter EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin STLIB STLIB EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin SoftRobots SoftRobots EXTERNAL GIT_REF master)
+sofa_add_subdirectory(plugin Cosserat Cosserat EXTERNAL GIT_REF master) # Cosserat has an optional dependency on SoftRobots
 sofa_add_subdirectory(plugin CollisionAlgorithm CollisionAlgorithm EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin ConstraintGeometry ConstraintGeometry EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin ShapeMatchingPlugin ShapeMatchingPlugin EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin CSparseSolvers CSparseSolvers EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin ModelOrderReduction ModelOrderReduction EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin Sofa.Metis Sofa.Metis EXTERNAL GIT_REF master)
+sofa_add_subdirectory(plugin SofaValidation SofaValidation EXTERNAL GIT_REF master)
+
 
 
 sofa_add_subdirectory(plugin PSL PSL EXTERNAL GIT_REF master)
@@ -69,3 +71,6 @@ if(Sofa.GL_FOUND)
 else()
     message("Sofa.GL not found; disabling SofaSimpleGUI and VolumetricRendering plugins")
 endif()
+
+sofa_add_subdirectory(plugin SofaDistanceGrid SofaDistanceGrid) # Also defines SofaDistanceGrid.CUDA
+sofa_add_subdirectory(plugin SofaImplicitField SofaImplicitField) # Depends on SofaDistanceGrid

@@ -54,7 +54,7 @@ namespace sofa::component::solidmechanics::fem::elastic
 template<class DataTypes>
 class TetrahedronFEMForceField;
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template<class DataTypes>
 class TetrahedronFEMForceFieldInternalData
 {
@@ -157,7 +157,6 @@ protected:
 
     SReal m_potentialEnergy;
 
-    core::topology::BaseMeshTopology* m_topology;
     const VecElement *_indexedElements;
     bool needUpdateTopology;
 
@@ -199,7 +198,7 @@ public:
     core::objectmodel::RenamedData<std::string> f_method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::RenamedData<Real> _poissonRatio;
+    DeprecatedAndRemoved _poissonRatio;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
     core::objectmodel::RenamedData<VecReal> _youngModulus;
@@ -305,7 +304,7 @@ public:
 
     Data<Real> d_showElementGapScale; ///< draw gap between elements (when showWireFrame is disabled) [0,1]: 0: no gap, 1: no element
 
-    Data<bool>  d_updateStiffness; ///< udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)
+    Data<bool>  d_updateStiffness; ///< update structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)
 
     using Inherit1::l_topology;
 

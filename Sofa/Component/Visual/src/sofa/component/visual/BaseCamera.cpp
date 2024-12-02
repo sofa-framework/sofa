@@ -84,23 +84,23 @@ BaseCamera::BaseCamera()
     d_modelViewMatrix.endEdit();
     d_projectionMatrix.endEdit();
 
-    p_position.setParent(&d_position);
-    p_orientation.setParent(&d_orientation);
-    p_lookAt.setParent(&d_lookAt);
-    p_distance.setParent(&d_distance);
-    p_fieldOfView.setParent(&d_fieldOfView);
-    p_zNear.setParent(&d_zNear);
-    p_zFar.setParent(&d_zFar);
-    p_computeZClip.setParent(&d_computeZClip);
-    p_minBBox.setParent(&d_minBBox);
-    p_maxBBox.setParent(&d_maxBBox);
-    p_widthViewport.setParent(&d_widthViewport);
-    p_heightViewport.setParent(&d_heightViewport);
-    p_type.setParent(&d_type);
-    p_activated.setParent(&d_activated);
-    p_fixedLookAtPoint.setParent(&d_fixedLookAtPoint);
-    p_modelViewMatrix.setParent(&d_modelViewMatrix);
-    p_projectionMatrix.setParent(&d_projectionMatrix);
+    p_position.setOriginalData(&d_position);
+    p_orientation.setOriginalData(&d_orientation);
+    p_lookAt.setOriginalData(&d_lookAt);
+    p_distance.setOriginalData(&d_distance);
+    p_fieldOfView.setOriginalData(&d_fieldOfView);
+    p_zNear.setOriginalData(&d_zNear);
+    p_zFar.setOriginalData(&d_zFar);
+    p_computeZClip.setOriginalData(&d_computeZClip);
+    p_minBBox.setOriginalData(&d_minBBox);
+    p_maxBBox.setOriginalData(&d_maxBBox);
+    p_widthViewport.setOriginalData(&d_widthViewport);
+    p_heightViewport.setOriginalData(&d_heightViewport);
+    p_type.setOriginalData(&d_type);
+    p_activated.setOriginalData(&d_activated);
+    p_fixedLookAtPoint.setOriginalData(&d_fixedLookAtPoint);
+    p_modelViewMatrix.setOriginalData(&d_modelViewMatrix);
+    p_projectionMatrix.setOriginalData(&d_projectionMatrix);
 
 }
 
@@ -824,14 +824,13 @@ bool BaseCamera::exportParametersInFile(const std::string& viewFilename)
 
     BaseCameraXMLExportSingleParameter(root, d_position, "Vector of 3 reals (x, y, z)");
     BaseCameraXMLExportSingleParameter(root, d_orientation, "Quaternion (x, y, z, w)");
-    BaseCameraXMLExportSingleParameter(root, d_lookAt, "Vector of 3 reals (x, y, z)");
     BaseCameraXMLExportSingleParameter(root, d_fieldOfView, "Real");
     BaseCameraXMLExportSingleParameter(root, d_distance, "Real");
     BaseCameraXMLExportSingleParameter(root, d_zNear, "Real");
     BaseCameraXMLExportSingleParameter(root, d_zFar, "Real");
     BaseCameraXMLExportSingleParameter(root, d_type, "Int (0 -> Perspective, 1 -> Orthographic)");
 
-    return doc.SaveFile( viewFilename.c_str() );
+    return (doc.SaveFile(viewFilename.c_str()) == tinyxml2::XML_SUCCESS);
 }
 
 bool BaseCameraXMLImportSingleParameter(tinyxml2::XMLElement* root, core::objectmodel::BaseData& data, BaseCamera* c)
@@ -862,7 +861,7 @@ bool BaseCameraXMLImportSingleParameter(tinyxml2::XMLElement* root, core::object
             }
             else
             {
-                msg_error(c) << "Unknown error occured for " << data.getName() << " field.";
+                msg_error(c) << "Unknown error occurred for " << data.getName() << " field.";
                 return false;
             }
         }
@@ -896,7 +895,6 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
     {
         BaseCameraXMLImportSingleParameter(root, d_position, this);
         BaseCameraXMLImportSingleParameter(root, d_orientation, this);
-        BaseCameraXMLImportSingleParameter(root, d_lookAt, this);
         BaseCameraXMLImportSingleParameter(root, d_fieldOfView, this);
         BaseCameraXMLImportSingleParameter(root, d_distance, this);
         BaseCameraXMLImportSingleParameter(root, d_zNear, this);

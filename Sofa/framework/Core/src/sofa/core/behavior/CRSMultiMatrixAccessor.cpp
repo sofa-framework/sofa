@@ -59,7 +59,7 @@ linearalgebra::BaseMatrix* CRSMultiMatrixAccessor::createMatrix(const sofa::core
                                                               const sofa::core::behavior::BaseMechanicalState* mstate2,
                                                               bool doPrintInfo)
 {
-    // The auxiliar interaction matrix is added if and only if at least one of two state is not real state
+    // The auxiliary interaction matrix is added if and only if at least one of two state is not real state
     //assert(! (realStateOffsets.find(mstate1) != realStateOffsets.end() && realStateOffsets.find(mstate2) != realStateOffsets.end()) );
 
     int nbDOFs1  = mstate1->getSize();
@@ -72,7 +72,7 @@ linearalgebra::BaseMatrix* CRSMultiMatrixAccessor::createMatrix(const sofa::core
     {
         msg_info_when(doPrintInfo, "CRSMultiMatrixAccessor") << "			++ Creating matrix Mapped Mechanical State  : " << mstate1->getName()
             << " associated to K[" << mstate1->getMatrixSize() << "x" << mstate1->getMatrixSize() << "] in the format _"
-            << nbDOFs1 << "x" << nbDOFs1 << "_ of blocs _["
+            << nbDOFs1 << "x" << nbDOFs1 << "_ of blocks _["
             << dofSize1 << "x" << dofSize1 << "]_";
         return createBlocSparseMatrix(dofSize1,dofSize1,sizeof(SReal) /*elementsize*/,nbDOFs1,nbDOFs1,doPrintInfo);
 
@@ -82,7 +82,7 @@ linearalgebra::BaseMatrix* CRSMultiMatrixAccessor::createMatrix(const sofa::core
         msg_info_when(doPrintInfo, "CRSMultiMatrixAccessor") << "			++ Creating matrix Interaction: "
             << mstate1->getName() << " -- " << mstate2->getName()
             << " associated to K[" << mstate1->getMatrixSize() << "x" << mstate2->getMatrixSize() << "] in the format _"
-            << nbDOFs1 << "x" << nbDOFs2 << "_ of blocs _["
+            << nbDOFs1 << "x" << nbDOFs2 << "_ of blocks _["
             << dofSize1 << "x" << dofSize2 << "]_";
         return createBlocSparseMatrix(dofSize1,dofSize2,sizeof(SReal) /*elementsize*/,nbDOFs1,nbDOFs2,doPrintInfo);
     }
@@ -90,13 +90,13 @@ linearalgebra::BaseMatrix* CRSMultiMatrixAccessor::createMatrix(const sofa::core
 
 void CRSMultiMatrixAccessor::computeGlobalMatrix()
 {
-    msg_info_when(m_doPrintInfo, "CRSMultiMatrixAccessor") << "==========================     VERIFICATION BLOC MATRIX FORMATS    ========================";
+    msg_info_when(m_doPrintInfo, "CRSMultiMatrixAccessor") << "==========================     VERIFICATION BLOCK MATRIX FORMATS    ========================";
 
     for (std::map< const BaseMechanicalState*, MatrixRef >::iterator it = diagonalStiffnessBloc.begin(), itend = diagonalStiffnessBloc.end(); it != itend; ++it)
     {
         msg_info_when(m_doPrintInfo, "CRSMultiMatrixAccessor") << " Mechanical State  : " << it->first->getName()
             << " associated to K[" << it->second.matrix->rowSize() << "x" << it->second.matrix->colSize() << "] in the format _"
-            << it->second.matrix->bRowSize() << "x" << it->second.matrix->bColSize() << "_ of blocs _["
+            << it->second.matrix->bRowSize() << "x" << it->second.matrix->bColSize() << "_ of blocks _["
             << it->second.matrix->getBlockRows() << "x" << it->second.matrix->getBlockCols() << "]_";
     }
 
@@ -108,7 +108,7 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
         msg_info_when(m_doPrintInfo, "CRSMultiMatrixAccessor") << " Interaction: "
             << itBegin->first.first->getName() << " -- " << itBegin->first.second->getName()
             << " associated to K[" << itBegin->second.matrix->rowSize() << "x" << itBegin->second.matrix->colSize() << "] in the format _"
-            << itBegin->second.matrix->bRowSize() << "x" << itBegin->second.matrix->bColSize() << "_ of blocs _["
+            << itBegin->second.matrix->bRowSize() << "x" << itBegin->second.matrix->bColSize() << "_ of blocks _["
             << itBegin->second.matrix->getBlockRows() << "x" << itBegin->second.matrix->getBlockCols() << "]_";
 
         ++itBegin;
@@ -124,17 +124,17 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
 
         msg_info_when(m_doPrintInfo, "CRSMultiMatrixAccessor") << "  " << id << "-th Mapping : " << m_mapping->getName() << " associated to matrix J["
             << matrixJ->rowSize() << "x" << matrixJ->colSize() << "] in the format _"
-            << matrixJ->bRowSize() << "x" << matrixJ->bColSize() << "_ of blocs _["
+            << matrixJ->bRowSize() << "x" << matrixJ->bColSize() << "_ of blocks _["
             << matrixJ->getBlockRows() << "x" << matrixJ->getBlockCols() << "]_";
 
         msg_info_when(m_doPrintInfo, "CRSMultiMatrixAccessor") << "			inState  : " << instate->getName()
             << " associated to K11[" << instate->getMatrixSize() << "x" << instate->getMatrixSize() << "] in the format _"
-            << instate->getSize() << "x" << instate->getSize() << "_ of blocs _["
+            << instate->getSize() << "x" << instate->getSize() << "_ of blocks _["
             << instate->getDerivDimension() << "x" << instate->getDerivDimension() << "]_";
 
         msg_info_when(m_doPrintInfo, "CRSMultiMatrixAccessor") << "			outState  : "<< outstate->getName()
                 <<" associated to K11["<< outstate->getMatrixSize() <<"x"<< outstate->getMatrixSize() << "] in the format _"
-                << outstate->getSize() << "x"<< outstate->getSize() <<"_ of blocs _["
+                << outstate->getSize() << "x"<< outstate->getSize() <<"_ of blocks _["
                 << outstate->getDerivDimension() << "x"<< outstate->getDerivDimension() <<"]_";
     }
     msg_info_when(m_doPrintInfo, "CRSMultiMatrixAccessor") << "=======================     CONTRIBUTION CONTRIBUTION CONTRIBUTION     ======================";
@@ -239,14 +239,14 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
                 //          I_12 += Jt * I_32
                 //===========================
                 const unsigned int offR_I_12  = I_12.offRow;                       //      row offset of I12 matrix
-                const unsigned int offC_I_12  = I_12.offCol;                       //    colum offset of I12 matrix
+                const unsigned int offC_I_12  = I_12.offCol;                       //    column offset of I12 matrix
                 const unsigned int nbR_I_12   = I_12.matrix->rowSize() - offR_I_12;//number of rows   of I12 matrix
-                const unsigned int nbC_I_12   = I_12.matrix->colSize() - offC_I_12;//number of colums of I12 matrix
+                const unsigned int nbC_I_12   = I_12.matrix->colSize() - offC_I_12;//number of columns of I12 matrix
 
                 const unsigned int offR_I_32  = I_32.offRow;                     //      row offset of I32 matrix
-                const unsigned int offC_I_32  = I_32.offCol;                     //    colum offset of I32 matrix
+                const unsigned int offC_I_32  = I_32.offCol;                     //    column offset of I32 matrix
                 const unsigned int nbR_I_32 = I_32.matrix->rowSize() - offR_I_32;//number of rows   of I32 matrix
-                const unsigned int nbC_I_32 = I_32.matrix->colSize() - offC_I_32;//number of colums of I32 matrix
+                const unsigned int nbC_I_32 = I_32.matrix->colSize() - offC_I_32;//number of columns of I32 matrix
 
                 msg_info_when(m_doPrintInfo, "CRSMultiMatrixAccessor") << "	[Propa.Interac.Stiff] propagating interaction "
                     << outstate->getName() << "--" << interactionList[i].second->getName()

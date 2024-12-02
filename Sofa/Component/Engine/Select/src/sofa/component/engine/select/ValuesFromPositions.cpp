@@ -29,15 +29,14 @@ namespace sofa::component::engine::select
 
 using namespace sofa::defaulttype;
 
-int ValuesFromPositionsClass = core::RegisterObject("Assign values to primitives (vertex/edge/triangle/tetrahedron) based on a linear interpolation of values along a direction")
+void registerValuesFromPositions(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Assign values to primitives (vertex/edge/triangle/tetrahedron) based on a linear interpolation of values along a direction.")
         .add< ValuesFromPositions<Vec3Types> >()
-        .add< ValuesFromPositions<Rigid3Types> >()
- 
-        ;
+        .add< ValuesFromPositions<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromPositions<Vec3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromPositions<Rigid3Types>;
- 
-
 
 } //namespace sofa::component::engine::select

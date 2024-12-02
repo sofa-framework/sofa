@@ -81,25 +81,25 @@ LCPConstraintSolver::LCPConstraintSolver()
     d_tol.setRequired(true);
     d_maxIt.setRequired(true);
 
-    displayDebug.setParent(&d_displayDebug);
-    initial_guess.setParent(&d_initial_guess);
-    build_lcp.setParent(&d_build_lcp);
-    tol.setParent(&d_tol);
-    maxIt.setParent(&d_maxIt);
-    mu.setParent(&d_mu);
-    minW.setParent(&d_minW);
-    maxF.setParent(&d_maxF);
-    multi_grid.setParent(&d_multi_grid);
-    multi_grid_levels.setParent(&d_multi_grid_levels);
-    merge_method.setParent(&d_merge_method);
-    merge_spatial_step.setParent(&d_merge_spatial_step);
-    merge_local_levels.setParent(&d_merge_local_levels);
-    constraintGroups.setParent(&d_constraintGroups);
-    f_graph.setParent(&d_graph);
-    showLevels.setParent(&d_showLevels);
-    showCellWidth.setParent(&d_showCellWidth);
-    showTranslation.setParent(&d_showTranslation);
-    showLevelTranslation.setParent(&d_showLevelTranslation);
+    displayDebug.setOriginalData(&d_displayDebug);
+    initial_guess.setOriginalData(&d_initial_guess);
+    build_lcp.setOriginalData(&d_build_lcp);
+    tol.setOriginalData(&d_tol);
+    maxIt.setOriginalData(&d_maxIt);
+    mu.setOriginalData(&d_mu);
+    minW.setOriginalData(&d_minW);
+    maxF.setOriginalData(&d_maxF);
+    multi_grid.setOriginalData(&d_multi_grid);
+    multi_grid_levels.setOriginalData(&d_multi_grid_levels);
+    merge_method.setOriginalData(&d_merge_method);
+    merge_spatial_step.setOriginalData(&d_merge_spatial_step);
+    merge_local_levels.setOriginalData(&d_merge_local_levels);
+    constraintGroups.setOriginalData(&d_constraintGroups);
+    f_graph.setOriginalData(&d_graph);
+    showLevels.setOriginalData(&d_showLevels);
+    showCellWidth.setOriginalData(&d_showCellWidth);
+    showTranslation.setOriginalData(&d_showTranslation);
+    showLevelTranslation.setOriginalData(&d_showLevelTranslation);
 }
 
 LCPConstraintSolver::~LCPConstraintSolver()
@@ -948,7 +948,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::v
 
             ///////// verifier si Delta force vaut 0 => pas la peine d'ajouter la force
 
-            // set Delta force on object 1 for evaluating the followings displacement
+            // set Delta force on object 1 for evaluating the following displacement
 
             if(update)
             {
@@ -1331,7 +1331,10 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
 
 }
 
-int LCPConstraintSolverClass = core::RegisterObject("A Constraint Solver using the Linear Complementarity Problem formulation to solve BaseConstraint based components")
-        .add< LCPConstraintSolver >();
+void registerLCPConstraintSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A Constraint Solver using the Linear Complementarity Problem formulation to solve BaseConstraint based components.")
+        .add< LCPConstraintSolver >());
+}
 
 } //namespace sofa::component::constraint::lagrangian::solver

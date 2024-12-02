@@ -50,7 +50,7 @@ namespace sofa::core::objectmodel
 /**
  *  \brief Base class for everything
  *
- *  This class contains all functionnality shared by every objects in SOFA.
+ *  This class contains all functionality shared by every objects in SOFA.
  *  Most importantly it defines how to retrieve information about an object (name, type, data fields).
  *  All classes deriving from Base should use the SOFA_CLASS macro within their declaration (see BaseClass.h).
  *
@@ -391,7 +391,7 @@ public:
 
     Data<bool> f_printLog; ///< if true, emits extra messages at runtime.
 
-    Data< sofa::core::objectmodel::TagSet > f_tags; ///< list of the subsets the objet belongs to
+    Data< sofa::core::objectmodel::TagSet > f_tags; ///< list of the subsets the object belongs to
 
     Data< sofa::type::BoundingBox > f_bbox; ///< this object bounding box
 
@@ -421,7 +421,6 @@ public:
     SOFA_BASE_CAST_DEFINITION( core,        BehaviorModel                          )
     SOFA_BASE_CAST_DEFINITION( core,        CollisionModel                         )
     SOFA_BASE_CAST_DEFINITION( core,        DataEngine                             )
-    SOFA_BASE_CAST_DEFINITION( core,        DevBaseMonitor                         )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseContext                            )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseObject                             )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseNode                               )

@@ -1021,7 +1021,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideTetrahedronsWithPlane
     //Number of to be added points
     const sofa::Size nbTobeAddedPoints = sofa::Size(intersectedEdgeID.size()*2);
 
-    //barycentric coodinates of to be added points
+    //barycentric coordinates of to be added points
     sofa::type::vector< sofa::type::vector<PointID> > ancestors;
     for(sofa::Index i=0; i<intersectedEdgeID.size(); i++)
     {
@@ -1124,7 +1124,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideTetrahedronsWithPlane
     //Number of to be added points
     const sofa::Size nbTobeAddedPoints = sofa::Size(intersectedEdgeID.size()*2);
 
-    //barycentric coodinates of to be added points
+    //barycentric coordinates of to be added points
     sofa::type::vector< sofa::type::vector<PointID> > ancestors;
     sofa::type::vector< sofa::type::vector<SReal> > coefs;
     for( size_t i=0; i<intersectedPoints.size(); i++)
@@ -2132,7 +2132,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronsWithP
     //Number of to be added points
     const sofa::Size nbTobeAddedPoints = sofa::Size(intersectedEdgeID.size()*2);
 
-    //barycentric coodinates of to be added points
+    //barycentric coordinates of to be added points
     sofa::type::vector< sofa::type::vector<PointID> > ancestors;
     for( size_t i=0; i<intersectedEdgeID.size(); i++)
     {
@@ -2235,7 +2235,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronsWithP
     //Number of to be added points
     const sofa::Size nbTobeAddedPoints = sofa::Size(intersectedEdgeID.size()*2);
 
-    //barycentric coodinates of to be added points
+    //barycentric coordinates of to be added points
     sofa::type::vector< sofa::type::vector<PointID> > ancestors;
     sofa::type::vector< sofa::type::vector<SReal> > coefs;
     for(sofa::Index i=0; i<intersectedPoints.size(); i++)
@@ -3210,6 +3210,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
     TriangleSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+    vparams->drawTool()->disableLighting();
 
     const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
     //Draw tetra indices

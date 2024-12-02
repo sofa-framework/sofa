@@ -63,21 +63,21 @@ Distances< DataTypes >::Distances ( sofa::component::topology::container::dynami
 
     this->f_printLog.setValue(true);
 
-    showMapIndex.setParent(&d_showMapIndex);
-    showDistanceMap.setParent(&d_showDistanceMap);
-    showGoalDistanceMap.setParent(&d_showGoalDistanceMap);
-    showTextScaleFactor.setParent(&d_showTextScaleFactor);
-    showGradientMap.setParent(&d_showGradientMap);
-    showGradientsScaleFactor.setParent(&d_showGradientsScaleFactor);
-    offset.setParent(&d_offset);
-    distanceType.setParent(&d_distanceType);
-    initTarget.setParent(&d_initTarget);
-    initTargetStep.setParent(&d_initTargetStep);
-    zonesFramePair.setParent(&d_zonesFramePair);
-    harmonicMaxValue.setParent(&d_harmonicMaxValue);
-    fileDistance.setParent(&d_fileDistance);
-    targetPath.setParent(&d_targetPath);
-    hexaContainerPath.setParent(&d_hexaContainerPath);
+    showMapIndex.setOriginalData(&d_showMapIndex);
+    showDistanceMap.setOriginalData(&d_showDistanceMap);
+    showGoalDistanceMap.setOriginalData(&d_showGoalDistanceMap);
+    showTextScaleFactor.setOriginalData(&d_showTextScaleFactor);
+    showGradientMap.setOriginalData(&d_showGradientMap);
+    showGradientsScaleFactor.setOriginalData(&d_showGradientsScaleFactor);
+    offset.setOriginalData(&d_offset);
+    distanceType.setOriginalData(&d_distanceType);
+    initTarget.setOriginalData(&d_initTarget);
+    initTargetStep.setOriginalData(&d_initTargetStep);
+    zonesFramePair.setOriginalData(&d_zonesFramePair);
+    harmonicMaxValue.setOriginalData(&d_harmonicMaxValue);
+    fileDistance.setOriginalData(&d_fileDistance);
+    targetPath.setOriginalData(&d_targetPath);
+    hexaContainerPath.setOriginalData(&d_hexaContainerPath);
 
 }
 

@@ -22,4 +22,4 @@
 #pragma once
 #include <sofa/config.h>
 
-SOFA_DISABLED_HEADER("v23.06", "v23.12", "sofa/component/collision/response/contact/CollisionResponse.h")
+SOFA_HEADER_DISABLED("v23.06", "v23.12", "sofa/component/collision/response/contact/CollisionResponse.h")

@@ -43,12 +43,12 @@ template<class DataTypes>
 FrameSpringForceField<DataTypes>::FrameSpringForceField ( MechanicalState* object1, MechanicalState* object2 )
     : Inherit ( object1, object2 )
     , d_springs (initData (&d_springs, "spring", "pairs of indices, stiffness, damping, rest length" ) )
-    , d_showLawfulTorsion (initData (&d_showLawfulTorsion, false, "show lawful Torsion", "dislpay the lawful part of the joint rotation" ) )
-    , d_showExtraTorsion (initData (&d_showExtraTorsion, false, "show illicit Torsion", "dislpay the illicit part of the joint rotation" ) )
+    , d_showLawfulTorsion (initData (&d_showLawfulTorsion, false, "showLawfulTorsion", "display the lawful part of the joint rotation" ) )
+    , d_showExtraTorsion (initData (&d_showExtraTorsion, false, "showExtraTorsion", "display the illicit part of the joint rotation" ) )
 {
-    springs.setParent(&d_springs);
-    showLawfulTorsion.setParent(&d_showLawfulTorsion);
-    showExtraTorsion.setParent(&d_showExtraTorsion);
+    springs.setOriginalData(&d_springs);
+    showLawfulTorsion.setOriginalData(&d_showLawfulTorsion);
+    showExtraTorsion.setOriginalData(&d_showExtraTorsion);
 
 }
 

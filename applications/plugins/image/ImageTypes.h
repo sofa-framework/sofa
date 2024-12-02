@@ -133,7 +133,14 @@ public:
 
     friend std::ostream& operator << ( std::ostream& out, const Histogram& h )
     {
-        out<<h.getClamp();
+        if constexpr (std::is_same_v<T, unsigned char>)
+        {
+            out << sofa::type::Vec<2, int>(h.getClamp());
+        }
+        else
+        {
+            out<<h.getClamp();
+        }
         return out;
     }
 

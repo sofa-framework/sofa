@@ -125,18 +125,18 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
     : Inherit(_object1, _object2)
     , m_potentialEnergy( 0.0 ), useTopology( false )
     , d_springArray(initData(&d_springArray, "springs", "springs data"))
-    , d_filename(initData(&d_filename, std::string(""), "filename", "File name from which the spring informations are loaded") )
+    , d_filename(initData(&d_filename, std::string(""), "filename", "File name from which the spring information are loaded") )
     , d_stiffness(initData(&d_stiffness, SReal(1.0), "stiffness", "Default edge stiffness used in absence of file information") )
     , d_viscosity(initData(&d_viscosity, SReal(1.0), "viscosity", "Default edge viscosity used in absence of file information") )
-    , d_useTopology(initData(&d_useTopology, false, "useTopology", "Activate/Desactivate topology mode of the component (springs on each edge)"))
+    , d_useTopology(initData(&d_useTopology, false, "useTopology", "Activate/Deactivate topology mode of the component (springs on each edge)"))
     , l_topology(initLink("topology", "link to the topology container"))    
     , m_topology(nullptr)
 {
-    springArray.setParent(&d_springArray);
+    springArray.setOriginalData(&d_springArray);
     m_filename.setParent(&d_filename);
-    m_stiffness.setParent(&d_stiffness);
-    m_viscosity.setParent(&d_viscosity);
-    m_useTopology.setParent(&d_useTopology);
+    m_stiffness.setOriginalData(&d_stiffness);
+    m_viscosity.setOriginalData(&d_viscosity);
+    m_useTopology.setOriginalData(&d_useTopology);
 
 }
 

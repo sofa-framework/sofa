@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/RGBAColor.h>
@@ -46,7 +46,7 @@ MeshSpringForceField<DataTypes>::MeshSpringForceField()
     , d_drawMinElongationRange(initData(&d_drawMinElongationRange, Real(8.), "drawMinElongationRange","Min range of elongation (red eongation - blue neutral - green compression)"))
     , d_drawMaxElongationRange(initData(&d_drawMaxElongationRange, Real(15.), "drawMaxElongationRange","Max range of elongation (red eongation - blue neutral - green compression)"))
     , d_drawSpringSize(initData(&d_drawSpringSize, Real(8.), "drawSpringSize","Size of drawed lines"))
-    , d_localRange( initData(&d_localRange, type::Vec<2, sofa::Index>(sofa::InvalidID, sofa::InvalidID), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , d_localRange( initData(&d_localRange, type::Vec<2, sofa::Index>(sofa::InvalidID, sofa::InvalidID), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitioning)" ) )
     , l_topology(initLink("topology", "link to the topology container"))
 {
 	this->d_ks.setDisplayed(false);
@@ -102,7 +102,7 @@ void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<sofa::Index, 
 template<class DataTypes>
 void MeshSpringForceField<DataTypes>::init()
 {
-    StiffSpringForceField<DataTypes>::clear();
+    SpringForceField<DataTypes>::clear();
     if(!(mstate1) || !(mstate2))
         mstate2 = mstate1 = dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes> *>(this->getContext()->getMechanicalState());
 
@@ -206,7 +206,7 @@ void MeshSpringForceField<DataTypes>::init()
         }
     }
 
-    StiffSpringForceField<DataTypes>::init();
+    SpringForceField<DataTypes>::init();
 }
 
 

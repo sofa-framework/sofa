@@ -38,7 +38,7 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MeshMinProximityInters
     typedef MinProximityIntersection::OutputVector OutputVector;
 
 public:
-    MeshMinProximityIntersection(MinProximityIntersection* object, bool addSelf=true);
+    MeshMinProximityIntersection(MinProximityIntersection* intersection, bool addSelf=true);
     
     bool testIntersection(collision::geometry::Point&, collision::geometry::Point&, const core::collision::Intersection* currentIntersection);
     template<class T> bool testIntersection(collision::geometry::TSphere<T>&, collision::geometry::Point&, const core::collision::Intersection* currentIntersection);
@@ -57,47 +57,42 @@ public:
     template<class T> int computeIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&, OutputVector*, const core::collision::Intersection* currentIntersection);
 
 
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Point&, collision::geometry::Point&);
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Point&, collision::geometry::Point&) = delete;
     template<class T>
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::TSphere<T>&, collision::geometry::Point&);
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Line&, collision::geometry::Point&);
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::TSphere<T>&, collision::geometry::Point&) = delete;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Point&) = delete;
     template<class T>
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Line&, collision::geometry::TSphere<T>&);
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Line&, collision::geometry::Line&);
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Point&);
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Line&, collision::geometry::TSphere<T>&) = delete;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Line&) = delete;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Point&) = delete;
     template<class T>
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&);
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&) = delete;
 
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*);
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*) = delete;
     template<class T> 
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::TSphere<T>&, collision::geometry::Point&, OutputVector*);
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::TSphere<T>&, collision::geometry::Point&, OutputVector*) = delete;
 
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Line&, collision::geometry::Point&, OutputVector*);
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Point&, OutputVector*) = delete;
     template<class T> 
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Line&, collision::geometry::TSphere<T>&, OutputVector*);
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Line&, collision::geometry::Line&, OutputVector*);
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Point&, OutputVector*);
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Line&, collision::geometry::TSphere<T>&, OutputVector*) = delete;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Line&, OutputVector*) = delete;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Point&, OutputVector*) = delete;
     template<class T> 
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&, OutputVector*);
-
-protected:
-
-    SOFA_ATTRIBUTE_DEPRECATED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    MinProximityIntersection* intersection;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&, OutputVector*) = delete;
 };
 
 
@@ -282,7 +277,7 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Line&
     }
     else
     {
-        msg_warning(intersection) << "Null distance between contact detected";
+        msg_warning(currentIntersection) << "Null distance between contact detected";
         detection->normal= type::Vec3(1,0,0);
     }
     detection->point[0]=Q;
@@ -343,46 +338,6 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::TSphe
     detection->point[0]=e1.getContactPointByNormal( -detection->normal );
     detection->point[1]=Q;
     return 1;
-}
-
-template <class T>
-bool MeshMinProximityIntersection::testIntersection(collision::geometry::Triangle& e2, collision::geometry::TSphere<T>& e1)
-{
-    return testIntersection(e2, e1, intersection);
-}
-
-template <class T>
-int MeshMinProximityIntersection::computeIntersection(collision::geometry::Triangle& e2, collision::geometry::TSphere<T>& e1, OutputVector* contacts)
-{
-    return computeIntersection(e2, e1, contacts, intersection);
-}
-
-template <class T>
-bool MeshMinProximityIntersection::testIntersection(collision::geometry::Line& e2, collision::geometry::TSphere<T>& e1)
-{
-    static_assert(std::is_same_v<collision::geometry::Line::Coord, typename collision::geometry::TSphere<T>::Coord>, "Data mismatch");
-    
-    return testIntersection(e2, e1, intersection);
-}
-
-template <class T>
-int MeshMinProximityIntersection::computeIntersection(collision::geometry::Line& e2, collision::geometry::TSphere<T>& e1, OutputVector* contacts)
-{
-    static_assert(std::is_same_v<collision::geometry::Line::Coord, typename collision::geometry::TSphere<T>::Coord>, "Data mismatch");
-    
-    return computeIntersection(e2, e1, contacts, intersection);
-}
-
-template <class T>
-bool MeshMinProximityIntersection::testIntersection(collision::geometry::TSphere<T>& e1, collision::geometry::Point& e2)
-{
-    return testIntersection(e1, e2, intersection);
-}
-
-template <class T>
-int MeshMinProximityIntersection::computeIntersection(collision::geometry::TSphere<T>& e1, collision::geometry::Point& e2, OutputVector* contacts)
-{
-    return computeIntersection(e1, e2, contacts, intersection);
 }
 
 } // namespace sofa::component::collision::detection::intersection

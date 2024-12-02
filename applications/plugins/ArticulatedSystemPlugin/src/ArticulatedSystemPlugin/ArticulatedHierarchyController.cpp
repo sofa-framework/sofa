@@ -188,7 +188,7 @@ void ArticulatedHierarchyController::dumpActiveArticulations(void) const
 
 void ArticulatedHierarchyController::dumpArticulationsAndBindingKeys(void) const
 {
-    msg_info() << "ARTICULATIONS_KEYBOARD_CONTROLER : Controled Articulations & Binding Keys" ;
+    msg_info() << "ARTICULATIONS_KEYBOARD_CONTROLER : Controlled Articulations & Binding Keys" ;
 
     auto articulationsIndicesIt = articulationsIndices.getValue().cbegin();
     const auto articulationsIndicesItEnd = articulationsIndices.getValue().cend();
@@ -373,7 +373,7 @@ void ArticulatedHierarchyController::applyController(void)
                             if (!articulatedObjects.empty())
                             {
                                 // Reference potential initial articulations value for interaction springs
-                                // and Current articulation value at the coresponding artculation
+                                // and Current articulation value at the corresponding artculation
 
                                 std::vector< MechanicalState<sofa::defaulttype::Vec1Types>* >::iterator articulatedObjIt = articulatedObjects.begin();
 //								std::vector< MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjItEnd = articulatedObjects.end();
@@ -406,8 +406,6 @@ void ArticulatedHierarchyController::applyController(void)
         }
     }
 }
-
-SOFA_DECL_CLASS(ArticulatedHierarchyController)
 
 // Register in the Factory
 int ArticulatedHierarchyControllerClass = core::RegisterObject("Implements an user interaction handler that controls the values of the articulations of an articulated hierarchy container.")

@@ -36,18 +36,20 @@
 namespace sofa::component::topology::container::dynamic
 {
 
-using namespace std;
 using namespace sofa::defaulttype;
-int EdgeSetTopologyContainerClass = core::RegisterObject("Edge set topology container")
-        .add< EdgeSetTopologyContainer >()
-        ;
+
+void registerEdgeSetTopologyContainer(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology container for an edge topology.")
+        .add< EdgeSetTopologyContainer >());
+}
 
 EdgeSetTopologyContainer::EdgeSetTopologyContainer()
     : PointSetTopologyContainer( )
     , d_edge(initData(&d_edge, "edges", "List of edge indices"))
     , d_checkConnexity(initData(&d_checkConnexity, false, "checkConnexity", "It true, will check the connexity of the mesh."))
 {
-    m_checkConnexity.setParent(&d_checkConnexity);
+    m_checkConnexity.setOriginalData(&d_checkConnexity);
 }
 
 
@@ -194,7 +196,7 @@ const EdgeSetTopologyContainer::Edge EdgeSetTopologyContainer::getEdge (EdgeID i
 }
 
 
-// Return the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
+// Return the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRARY)
 int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::type::vector<EdgeID>& components)
 {
     using namespace boost;
@@ -272,7 +274,7 @@ bool EdgeSetTopologyContainer::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-		msg_warning() << "CheckConnexity: Edges are missings. There is more than one connexe component.";
+		msg_warning() << "CheckConnexity: Edges are missing. There is more than one connexe component.";
         return false;
     }
 
@@ -394,7 +396,7 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
     {
         const EdgesAroundVertex& edgeAV = this->getEdgesAroundVertex(the_edge[i]);
         if (edgeAV.empty()) {
-            msg_error() << "No edge found aroud of vertex id: " << the_edge[i] << ". Should at least found edge id: " << elem;
+            msg_error() << "No edge found around vertex id: " << the_edge[i] << ". Should at least found edge id: " << elem;
             continue;
         }
 

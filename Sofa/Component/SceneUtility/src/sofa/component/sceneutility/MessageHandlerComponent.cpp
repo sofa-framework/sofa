@@ -25,7 +25,6 @@
 ******************************************************************************/
 #include <sofa/component/sceneutility/config.h>
 #include <sofa/core/ObjectFactory.h>
-using sofa::core::RegisterObject ;
 
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::ConsoleMessageHandler ;
@@ -89,7 +88,7 @@ void MessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* 
     }else{
         msg_info(this) << " the following handler '" << stype << "' is not a supported. "
                           "The default sofa style will be used. "
-                          "To supress this message you need to specify a valid attribute "
+                          "To suppress this message you need to specify a valid attribute "
                           "among [clang, log, silent, sofa]." ;
         return ;
     }
@@ -99,12 +98,12 @@ void MessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* 
     m_isValid = true ;
 }
 
-int MessageHandlerComponentClass = RegisterObject("This object controls the way Sofa print's "
-                                                  "info/warning/error/fatal messages. ")
-        .add< MessageHandlerComponent >()
-        ;
-
-
+void registerMessageHandlerComponent(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("This object controls the way Sofa print's "
+                                                          "info/warning/error/fatal messages. ")
+        .add< MessageHandlerComponent >());
+}
 
 ////////////////////////// FileMessageHandlerComponent ////////////////////////////////////
 FileMessageHandlerComponent::FileMessageHandlerComponent() :
@@ -155,8 +154,10 @@ void FileMessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescripti
     m_isValid = true ;
 }
 
-int FileMessageHandlerComponentClass = RegisterObject("This component dump all the messages into"
-                                                      "a file.")
-        .add< FileMessageHandlerComponent >()
-        ;
+void registerFileMessageHandlerComponent(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("This component dumps all the messages into a file.")
+        .add< FileMessageHandlerComponent >());
+}
+
 } // namespace sofa::component::sceneutility
