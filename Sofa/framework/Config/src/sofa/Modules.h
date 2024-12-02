@@ -34,7 +34,7 @@
     struct Module ## name\
     {\
     private:\
-        static inline std::string moduleName = Parent ## name::moduleName + "." + #name;\
+        inline static const std::string moduleName = Parent ## name::moduleName + "." + #name;\
         using MyClass = Module ## name;\
     public:\
         Module ## name() = default;\
@@ -53,7 +53,7 @@
 inline struct ModuleSofa
 {
 private:
-    static inline std::string moduleName = "Sofa";
+    inline static const std::string moduleName = "Sofa";
     using MyClass = ModuleSofa;
 public:
     ModuleSofa() = default;
