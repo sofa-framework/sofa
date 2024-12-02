@@ -104,7 +104,7 @@ void MeshSpringForceField<DataTypes>::init()
 {
     if(this->d_springsIndices[0].getValue().size() || this->d_springsIndices[1].getValue().size())
     {
-        msg_warning(this) << "Setting springs of MeshSpringForcefield through datas indices1 and indices2 is disabled since v24.12. The inputed indices will be overriden by the mesh.";
+        msg_warning(this) << "Setting springs of MeshSpringForcefield through datas \'indices1\' and \'indices2\' has been disabled since v24.12. The input indices will be overridden by the mesh.";
     }
 
     SpringForceField<DataTypes>::clear();
