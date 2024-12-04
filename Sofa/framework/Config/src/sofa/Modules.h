@@ -112,6 +112,7 @@ public:
 
         START_MODULE(Mapping)
             MODULE(Linear)
+            MODULE(MappedMatrix)
             MODULE(NonLinear)
         END_MODULE(Mapping)
 
