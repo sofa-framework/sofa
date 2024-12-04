@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,50 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/linearsolver/iterative/GraphScatteredTypes.h>
+#pragma once
+#include <sofa/type/StrongType.h>
+#include <sofa/config.h>
 
-#include <sofa/simulation/MechanicalOperations.h>
-
-
-namespace sofa::component::linearsolver
+namespace sofa::core
 {
 
-using sofa::core::behavior::LinearSolver;
-using sofa::core::objectmodel::BaseContext;
-
-void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector& x)
+/**
+ * Contains a strong type for each of the 3 main matrices
+ */
+struct MatricesFactors
 {
-    // matrix-vector product through visitors
-    parent->propagateDxAndResetDf(x,res);
-    parent->addMBKdx(res,
-        core::MatricesFactors::M(parent->mparams.mFactor()),
-        core::MatricesFactors::B(parent->mparams.bFactor()),
-        core::MatricesFactors::K(parent->mparams.kFactor()), false); // df = (m M + b B + k K) dx
+    // A strong type for the mass matrix factor
+    using M = sofa::type::StrongType<SReal, struct MFactorTag, sofa::type::functionality::Arithmetic>;
 
-    // filter the product to take the constraints into account
-    //
-    parent->projectResponse(res);     // q is projected to the constrained space
-}
+    // A strong type for the damping matrix factor
+    using B = sofa::type::StrongType<SReal, struct BFactorTag, sofa::type::functionality::Arithmetic>;
 
-sofa::Size GraphScatteredMatrix::rowSize()
-{
-    sofa::Size nbRow=0, nbCol=0;
-    this->parent->getMatrixDimension(&nbRow, &nbCol);
-    return nbRow;
+    // A strong type for the stiffness matrix factor
+    using K = sofa::type::StrongType<SReal, struct KFactorTag, sofa::type::functionality::Arithmetic>;
+};
 
 }
-
-sofa::Size GraphScatteredMatrix::colSize()
-{
-    sofa::Size nbRow=0, nbCol=0;
-    this->parent->getMatrixDimension(&nbRow, &nbCol);
-    return nbCol;
-}
-
-
-void GraphScatteredVector::operator=(const MultExpr<GraphScatteredMatrix,GraphScatteredVector>& expr)
-{
-    expr.a.apply(*this,expr.b);
-}
-
-} // namespace sofa::component::linearsolver

@@ -8,6 +8,7 @@ set(SOURCE_FILES
     Material_test.cpp
     Quater_test.cpp
     RGBAColor_test.cpp
+    StrongType_test.cpp
     SVector_test.cpp
     VecTypes_test.cpp
     fixed_array_test.cpp

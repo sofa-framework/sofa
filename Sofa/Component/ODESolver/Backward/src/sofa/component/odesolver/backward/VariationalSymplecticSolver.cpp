@@ -215,7 +215,9 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 
 			// corresponds to do b+=-K*res, where res=res(i-1)=q(k,i-1)-q(k,0)
 			mop.propagateDx(res);
-			mop.addMBKdx(b,0,0,-1.0);
+			mop.addMBKdx(b,core::MatricesFactors::M(0),
+			    core::MatricesFactors::B(0),
+			    core::MatricesFactors::K(-1.0));
 
 
 			mop.projectResponse(b);
@@ -224,9 +226,9 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 			// add left term : matrix=-K+4/h^(2)M, but with dampings rK and rM
 		    {
 			    SCOPED_TIMER("MBKBuild");
-                const SReal mFact = 4.0 / (h * h) + 4 * rM / h;
-			    const SReal kFact = -1.0 - 4 * rK / h;
-                mop.setSystemMBKMatrix(mFact, 0, kFact, l_linearSolver.get());
+                const core::MatricesFactors::M mFact ( 4.0 / (h * h) + 4 * rM / h );
+			    const core::MatricesFactors::K kFact ( -1.0 - 4 * rK / h );
+                mop.setSystemMBKMatrix(mFact, core::MatricesFactors::B(0), kFact, l_linearSolver.get());
 		    }
 
             {
@@ -312,7 +314,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
             MultiVecDeriv b(&vop);
             b.clear();
             // Mass matrix
-            mop.setSystemMBKMatrix(1, 0, 0, l_linearSolver.get());
+            mop.setSystemMBKMatrix(core::MatricesFactors::M(1), core::MatricesFactors::B(0), core::MatricesFactors::K(0), l_linearSolver.get());
 
             // resolution of matrix*b=newp
             l_linearSolver->setSystemLHVector(b);
