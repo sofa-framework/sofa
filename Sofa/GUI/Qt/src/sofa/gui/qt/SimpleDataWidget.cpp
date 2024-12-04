@@ -130,6 +130,15 @@ Creator<DataWidgetFactory, SimpleDataWidget< Mat<6,6,double> > > DWClass_Mat66d(
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::objectmodel::TagSet > > DWClass_TagSet("default",true);
 
 
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<1,float>> > > DWClass_CRSCVec1f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<2,float>> > > DWClass_CRSCVec2f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<3,float>> > > DWClass_CRSCVec3f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<6,float>> > > DWClass_CRSCVec6f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<1,double>> > > DWClass_CRSCVec1d("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<2,double>> > > DWClass_CRSCVec2d("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<3,double>> > > DWClass_CRSCVec3d("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<6,double>> > > DWClass_CRSCVec6d("default",true);
+
 ////////////////////////////////////////////////////////////////
 /// OptionsGroup support
 ////////////////////////////////////////////////////////////////
