@@ -6,6 +6,7 @@ on:
 jobs:
   nix:
     runs-on: "${{ matrix.os }}-latest"
+    if: ${{ github.repository_owner == 'sofa-framework' }}
     strategy:
       matrix:
         os: [ubuntu, macos]
