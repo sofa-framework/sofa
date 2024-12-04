@@ -946,7 +946,7 @@ public :
     ///a widget for a that particular data type.
     RadioDataWidget(QWidget* parent, const char* name,
             core::objectmodel::Data<sofa::helper::OptionsGroup >* m_data)
-        : TDataWidget<sofa::helper::OptionsGroup >(parent,name,m_data) {};
+        : TDataWidget<sofa::helper::OptionsGroup >(parent,name,m_data) {}
 
     ///In this method we  create the widgets and perform the signal / slots connections.
     virtual bool createWidgets();
@@ -962,6 +962,29 @@ protected:
     QButtonGroup *buttonList;
     QComboBox    *comboList;
     bool buttonMode;
+};
+
+class SelectableItemWidget final : public TDataWidget<helper::BaseSelectableItem>
+{
+    Q_OBJECT
+public :
+
+    SelectableItemWidget(QWidget* parent, const char* name,
+            core::BaseData* m_data, const helper::BaseSelectableItem* item);
+
+    bool createWidgets() override;
+    void setDataReadOnly(bool readOnly) override;
+
+protected:
+    void readFromData() override;
+
+    void writeToData() override;
+
+    QButtonGroup *m_buttonList { nullptr };
+    QComboBox    *m_comboList { nullptr };
+    bool m_buttonMode { false };
+
+    const helper::BaseSelectableItem* m_selectableItem { nullptr };
 };
 
 

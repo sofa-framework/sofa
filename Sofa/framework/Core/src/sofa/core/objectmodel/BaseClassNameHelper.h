@@ -27,7 +27,7 @@
 
 namespace sofa::defaulttype
 {
-    template<class T> struct DataTypeInfo;
+    template<class T, typename Enable> struct DataTypeInfo;
 }
 
 namespace sofa::core::objectmodel
@@ -78,7 +78,7 @@ class HasDataTypeInfo
     typedef char YesType[1];
     typedef char NoType[2];
 
-    template<typename C> static YesType& test( decltype (&sofa::defaulttype::DataTypeInfo<C>::name) );
+    template<typename C> static YesType& test( decltype (&sofa::defaulttype::DataTypeInfo<C, void>::name) );
     template<typename C> static NoType& test(...);
 
 public:
@@ -264,7 +264,7 @@ std::string GetSofaTypeTemplateName(const std::string prefix)
     if constexpr (HasName<T>::value )
             return prefix + T::Name();
     else if constexpr (HasDataTypeInfo<T>::value )
-            return prefix + sofa::defaulttype::DataTypeInfo<T>::name();
+            return prefix + sofa::defaulttype::DataTypeInfo<T, void>::name();
     else
         return prefix + sofa::helper::NameDecoder::decodeTypeName(typeid(T));
 }
