@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,21 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_SHEWCHUKPCGLINEARSOLVER_CPP
-#include <sofa/component/linearsolver/iterative/ShewchukPCGLinearSolver.inl>
-#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/component/linearsystem/MatrixFreeSystem.h>
+#pragma once
+#include <sofa/type/StrongType.h>
+#include <sofa/config.h>
 
-namespace sofa::component::linearsolver::iterative
+namespace sofa::core
 {
 
-void registerShewchukPCGLinearSolver(sofa::core::ObjectFactory* factory)
+/**
+ * Contains a strong type for each of the 3 main matrices
+ */
+struct MatricesFactors
 {
-    factory->registerObjects(core::ObjectRegistrationData("Linear system solver using the Shewchuk conjugate gradient iterative algorithm.")
-        .add< ShewchukPCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector> >());
+    // A strong type for the mass matrix factor
+    using M = sofa::type::StrongType<SReal, struct MFactorTag, sofa::type::functionality::Arithmetic>;
+
+    // A strong type for the damping matrix factor
+    using B = sofa::type::StrongType<SReal, struct BFactorTag, sofa::type::functionality::Arithmetic>;
+
+    // A strong type for the stiffness matrix factor
+    using K = sofa::type::StrongType<SReal, struct KFactorTag, sofa::type::functionality::Arithmetic>;
+};
+
 }
-
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ShewchukPCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector>;
-
-} // namespace sofa::component::linearsolver::iterative

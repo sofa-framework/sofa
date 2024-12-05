@@ -19,39 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PCGLINEARSOLVER_CPP
+#include <sofa/component/linearsolver/iterative/PCGLinearSolver.inl>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/linearsystem/MatrixFreeSystem.h>
 
-#include <vector>
-#include <sofa/type/fixed_array.h>
-#include <sofa/type/vector.h>
-#include <sofa/helper/set.h>
-#include <sofa/type/RGBAColor.h>
-#include <typeinfo>
-#include <sofa/defaulttype/AbstractTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Bool.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Quat.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_SelectableItem.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Text.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_BoundingBox.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_RGBAColor.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Topology.h>
-
-namespace sofa::defaulttype
+namespace sofa::component::linearsolver::iterative
 {
 
-/// We make an alias to wrap around the old name to the new one.
-template<class T>
-using VirtualTypeInfo = DataTypeInfoDynamicWrapper<DataTypeInfo<T>>;
+void registerPCGLinearSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Linear system solver using the Shewchuk conjugate gradient iterative algorithm.")
+        .add< PCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector> >());
+}
 
-} /// namespace sofa::defaulttype
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector>;
+
+} // namespace sofa::component::linearsolver::iterative

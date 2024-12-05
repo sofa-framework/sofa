@@ -620,7 +620,74 @@ public:
     /// write to an output stream
     inline friend std::ostream& operator << ( std::ostream& out, const CompressedRowSparseMatrixConstraint<TBlock, Policy>& sc)
     {
-        for (RowConstIterator rowIt = sc.begin(); rowIt !=  sc.end(); ++rowIt)
+        std::ostringstream ossrow;
+        std::size_t nbLines = 0;
+        for (RowConstIterator rowIt = sc.begin(); rowIt != sc.end(); ++rowIt)
+        {
+            ossrow << rowIt.index() << " ";
+
+            std::ostringstream ossline;
+            std::size_t n = 0;
+            for (ColConstIterator colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
+            {
+                ossline << colIt.index() << " " << colIt.val() << " ";
+                n++;
+            }
+            ossrow << n << " " << ossline.str();
+            nbLines++ ;
+        }
+
+        out << nbLines << " " << ossrow.str();
+
+        return out;
+    }
+
+    /// read from an input stream
+    inline friend std::istream& operator >> ( std::istream& in, CompressedRowSparseMatrixConstraint<TBlock, Policy>& sc)
+    {
+        sc.clear();
+
+        unsigned int nbLines;
+        unsigned int c_id;
+        unsigned int c_number;
+        unsigned int c_dofIndex;
+        TBlock c_value;
+
+        if (in.rdstate() & std::istream::eofbit)
+        {
+            return in;
+        }
+
+        in >> nbLines;
+
+        unsigned int currentNbLines = 0;
+        while (currentNbLines < nbLines && !(in.rdstate() & std::istream::eofbit))
+        {
+            in >> c_id;
+            in >> c_number;
+         
+            auto c_it = sc.writeLine(c_id);
+
+            for (unsigned int i = 0; i < c_number; i++)
+            {
+                in >> c_dofIndex;
+                in >> c_value;
+                c_it.addCol(c_dofIndex, c_value);
+            }
+            currentNbLines++;
+        }
+
+        assert(nbLines == currentNbLines);
+
+        sc.compress();
+
+        return in;
+    }
+    
+    /// write into output stream (default is standard output)
+    void prettyPrint(std::ostream& out = std::cout) const
+    {
+        for (RowConstIterator rowIt = this->begin(); rowIt !=  this->end(); ++rowIt)
         {
             out << "Constraint ID : ";
             out << rowIt.index();
@@ -644,37 +711,6 @@ public:
 
             out << "\n";
         }
-
-        return out;
-    }
-
-    /// read from an input stream
-    inline friend std::istream& operator >> ( std::istream& in, CompressedRowSparseMatrixConstraint<TBlock, Policy>& sc)
-    {
-        sc.clear();
-
-        unsigned int c_id;
-        unsigned int c_number;
-        unsigned int c_dofIndex;
-        TBlock c_value;
-
-        while (!(in.rdstate() & std::istream::eofbit))
-        {
-            in >> c_id;
-            in >> c_number;
-
-            auto c_it = sc.writeLine(c_id);
-
-            for (unsigned int i = 0; i < c_number; i++)
-            {
-                in >> c_dofIndex;
-                in >> c_value;
-                c_it.addCol(c_dofIndex, c_value);
-            }
-        }
-
-        sc.compress();
-        return in;
     }
 
     static const char* Name()

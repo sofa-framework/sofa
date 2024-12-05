@@ -130,6 +130,15 @@ Creator<DataWidgetFactory, SimpleDataWidget< Mat<6,6,double> > > DWClass_Mat66d(
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::objectmodel::TagSet > > DWClass_TagSet("default",true);
 
 
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<1,float>> > > DWClass_CRSCVec1f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<2,float>> > > DWClass_CRSCVec2f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<3,float>> > > DWClass_CRSCVec3f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<6,float>> > > DWClass_CRSCVec6f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<1,double>> > > DWClass_CRSCVec1d("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<2,double>> > > DWClass_CRSCVec2d("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<3,double>> > > DWClass_CRSCVec3d("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec<6,double>> > > DWClass_CRSCVec6d("default",true);
+
 ////////////////////////////////////////////////////////////////
 /// OptionsGroup support
 ////////////////////////////////////////////////////////////////
@@ -222,6 +231,122 @@ void RadioDataWidget::writeToData()
     this->getData()->setValue(m_radiotrick);
 }
 
+Creator<DataWidgetFactory, SelectableItemWidget> DWClass_SelectableItem("default",true);
+
+SelectableItemWidget::SelectableItemWidget(QWidget* parent, const char* name,
+    core::BaseData* m_data, const helper::BaseSelectableItem* item)
+: TDataWidget(parent, name, m_data, item)
+, m_selectableItem(item)
+{}
+
+bool SelectableItemWidget::createWidgets()
+{
+    if (Tdata && Tdata->getValueTypeString() != "SelectableItem" ||
+        baseData && baseData->getValueTypeString() != "SelectableItem")
+    {
+        return false;
+    }
+
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    static constexpr unsigned int LIMIT_NUM_BUTTON = 4;
+
+    assert(m_selectableItem);
+    const std::size_t nbItems = m_selectableItem->getNumberOfItems();
+    m_buttonMode = nbItems < LIMIT_NUM_BUTTON;
+    const auto* items = m_selectableItem->getItemsData();
+
+    const auto getItem = [](const sofa::helper::Item* item)
+    {
+        std::stringstream ss;
+        ss << item->key;
+        if (!item->description.empty())
+        {
+            ss << " (" << item->description << ")";
+        }
+        return ss.str();
+    };
+
+    if (m_buttonMode)
+    {
+        m_buttonList = new QButtonGroup(this);
+
+        for (std::size_t i = 0; i < nbItems; i++)
+        {
+            const helper::Item* item_i = items + i;
+
+            QRadioButton * m_radiobutton = new QRadioButton(QString(getItem(item_i).c_str()), this);
+            if (i == m_selectableItem->getSelectedId())
+            {
+                m_radiobutton->setChecked(true);
+            }
+            layout->addWidget(m_radiobutton);
+            m_buttonList->addButton(m_radiobutton, i);
+        }
+        connect(m_buttonList, SIGNAL(buttonClicked(int)), this, SLOT(setWidgetDirty())) ;
+    }
+    else
+    {
+        m_comboList=new QComboBox(this);
+        m_comboList->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        QStringList list;
+        for (std::size_t i = 0; i < nbItems; i++)
+        {
+            const helper::Item* item_i = items + i;
+            list << getItem(item_i).c_str();
+        }
+
+        m_comboList->insertItems(0, list);
+
+        m_comboList->setCurrentIndex(m_selectableItem->getSelectedId());
+
+        connect(m_comboList, SIGNAL(activated(int)), this, SLOT(setWidgetDirty()));
+        layout->addWidget(m_comboList);
+
+    }
+
+    return true;
+}
+
+void SelectableItemWidget::setDataReadOnly(const bool readOnly)
+{
+    if (m_buttonMode)
+    {
+        const QList<QAbstractButton *> buttons = m_buttonList->buttons();
+        for (auto& button : buttons)
+        {
+            button->setEnabled(!readOnly);
+        }
+    }
+    else
+    {
+        m_comboList->setEnabled(!readOnly);
+    }
+}
+
+void SelectableItemWidget::readFromData()
+{
+    if (m_buttonMode)
+    {
+        m_buttonList->button(m_selectableItem->getSelectedId())->setChecked(true);
+    }
+    else
+    {
+        m_comboList->setCurrentIndex(m_selectableItem->getSelectedId());
+    }
+}
+
+void SelectableItemWidget::writeToData()
+{
+    if (m_buttonMode)
+    {
+        const_cast<helper::BaseSelectableItem*>(m_selectableItem)->setSelectedId(static_cast<std::size_t>(m_buttonList->checkedId()));
+    }
+    else
+    {
+        const_cast<helper::BaseSelectableItem*>(m_selectableItem)->setSelectedId(static_cast<std::size_t>(m_comboList->currentIndex()));
+    }
+}
 
 
 } //namespace sofa::gui::qt
