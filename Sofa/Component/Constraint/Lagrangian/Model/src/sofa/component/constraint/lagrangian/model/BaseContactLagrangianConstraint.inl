@@ -34,15 +34,15 @@ BaseContactLagrangianConstraint<DataTypes, ContactParams>::BaseContactLagrangian
     : Inherit(object1, object2)
     , yetIntegrated(false)
     , customTolerance(0.0)
-    , contactsStatus(nullptr)
+//    , contactsStatus(nullptr)
 {
 }
 
 template<class DataTypes, class ContactParams>
 BaseContactLagrangianConstraint<DataTypes, ContactParams>::~BaseContactLagrangianConstraint()
 {
-    if(contactsStatus)
-        delete[] contactsStatus;
+//    if(contactsStatus)
+//        delete[] contactsStatus;
 }
 
 template<class DataTypes, class ContactParams>
@@ -107,24 +107,25 @@ void BaseContactLagrangianConstraint<DataTypes, ContactParams>::buildConstraintM
     {
         helper::WriteAccessor<DataMatrixDeriv> c1 = c1_d;
 
+
         for (unsigned int i = 0; i < contacts.size(); i++)
         {
             Contact& c = contacts[i];
 
             c.id = contactId++;
 
-            MatrixDerivRowIterator c1_it = c1.writeLine(c.id);
+            MatrixDerivRowIterator c1_it = c1->writeLine(c.id);
 
             c1_it.addCol(c.m1, -c.norm);
             c1_it.addCol(c.m2, c.norm);
 
             if (c.parameters.hasTangentialComponent())
             {
-                c1_it = c1.writeLine(c.id + 1);
+                c1_it = c1->writeLine(c.id + 1);
                 c1_it.setCol(c.m1, -c.t);
                 c1_it.setCol(c.m2, c.t);
 
-                c1_it = c1.writeLine(c.id + 2);
+                c1_it = c1->writeLine(c.id + 2);
                 c1_it.setCol(c.m1, -c.s);
                 c1_it.setCol(c.m2, c.s);
 
@@ -144,24 +145,24 @@ void BaseContactLagrangianConstraint<DataTypes, ContactParams>::buildConstraintM
 
             c.id = contactId++;
 
-            MatrixDerivRowIterator c1_it = c1.writeLine(c.id);
+            MatrixDerivRowIterator c1_it = c1->writeLine(c.id);
             c1_it.addCol(c.m1, -c.norm);
 
-            MatrixDerivRowIterator c2_it = c2.writeLine(c.id);
+            MatrixDerivRowIterator c2_it = c2->writeLine(c.id);
             c2_it.addCol(c.m2, c.norm);
 
             if (c.parameters.hasTangentialComponent())
             {
-                c1_it = c1.writeLine(c.id + 1);
+                c1_it = c1->writeLine(c.id + 1);
                 c1_it.setCol(c.m1, -c.t);
 
-                c1_it = c1.writeLine(c.id + 2);
+                c1_it = c1->writeLine(c.id + 2);
                 c1_it.setCol(c.m1, -c.s);
 
-                c2_it = c2.writeLine(c.id + 1);
+                c2_it = c2->writeLine(c.id + 1);
                 c2_it.setCol(c.m2, c.t);
 
-                c2_it = c2.writeLine(c.id + 2);
+                c2_it = c2->writeLine(c.id + 2);
                 c2_it.setCol(c.m2, c.s);
 
                 contactId += 2;
