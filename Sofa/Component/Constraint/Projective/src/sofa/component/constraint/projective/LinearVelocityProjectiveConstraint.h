@@ -75,13 +75,13 @@ public :
     Data<bool> d_continueAfterEnd;
 
     /// the key times surrounding the current simulation time (for interpolation)
-    Real prevT, nextT;
+    Real m_prevT, m_nextT;
     ///the velocities corresponding to the surrounding key times
-    Deriv prevV, nextV;
+    Deriv m_prevV, m_nextV;
     ///position at the initial step for constrained DOFs position
-    VecCoord x0;
+    VecCoord m_x0;
     ///position at the previous step for constrained DOFs position
-    VecCoord xP;
+    VecCoord m_xP;
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<LinearVelocityProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -123,14 +123,11 @@ public:
 
 private:
 
-    /// to keep the time corresponding to the key times
-    Real currentTime;
-
     /// to know if we found the key times
-    bool finished;
+    bool m_finished;
 
     /// find previous and next time keys
-    void findKeyTimes();
+    bool findKeyTimes();
 };
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYPROJECTIVECONSTRAINT_CPP)
