@@ -65,6 +65,16 @@ protected:
 public:
     virtual void getConstraintResolution(const core::ConstraintParams *,std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) override;
 
+    virtual type::vector<std::string> getUnilateralInteractionIdentifiers() override final
+    {
+        type::vector<std::string> ids = getAugmentedLagrangianIdentifiers();
+        ids.push_back("Augmented");
+        return ids;
+    }
+
+    virtual type::vector<std::string> getAugmentedLagrangianIdentifiers() {return {};}
+
+
 };
 
 
