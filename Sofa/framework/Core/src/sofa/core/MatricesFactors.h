@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,38 +20,25 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/type/StrongType.h>
+#include <sofa/config.h>
 
-#include <vector>
-#include <sofa/type/fixed_array.h>
-#include <sofa/type/vector.h>
-#include <sofa/helper/set.h>
-#include <sofa/type/RGBAColor.h>
-#include <typeinfo>
-#include <sofa/defaulttype/AbstractTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Bool.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Quat.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_SelectableItem.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Text.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_BoundingBox.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_RGBAColor.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Topology.h>
-
-namespace sofa::defaulttype
+namespace sofa::core
 {
 
-/// We make an alias to wrap around the old name to the new one.
-template<class T>
-using VirtualTypeInfo = DataTypeInfoDynamicWrapper<DataTypeInfo<T>>;
+/**
+ * Contains a strong type for each of the 3 main matrices
+ */
+struct MatricesFactors
+{
+    // A strong type for the mass matrix factor
+    using M = sofa::type::StrongType<SReal, struct MFactorTag, sofa::type::functionality::Arithmetic>;
 
-} /// namespace sofa::defaulttype
+    // A strong type for the damping matrix factor
+    using B = sofa::type::StrongType<SReal, struct BFactorTag, sofa::type::functionality::Arithmetic>;
+
+    // A strong type for the stiffness matrix factor
+    using K = sofa::type::StrongType<SReal, struct KFactorTag, sofa::type::functionality::Arithmetic>;
+};
+
+}

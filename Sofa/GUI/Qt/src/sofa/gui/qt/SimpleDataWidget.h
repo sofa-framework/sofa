@@ -27,6 +27,7 @@
 //#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/fixed_array.h>
 #include <sofa/core/topology/Topology.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraint.h>
 #include "WDoubleLineEdit.h"
 #include <climits>
 
@@ -933,6 +934,45 @@ class data_widget_container < sofa::type::Mat<L, C, T> > : public fixed_grid_dat
 {};
 
 ////////////////////////////////////////////////////////////////
+/// sofa::linearalgebra::CompressedRowSparseMatrixConstraint support
+////////////////////////////////////////////////////////////////
+
+template<typename TBlock>
+class data_widget_trait <sofa::linearalgebra::CompressedRowSparseMatrixConstraint<TBlock>>
+{
+public:
+    typedef sofa::linearalgebra::CompressedRowSparseMatrixConstraint<TBlock> data_type;
+    typedef QLineEdit Widget;
+    static Widget* create(QWidget* parent, const data_type& /*d*/)
+    {
+        Widget* w = new Widget(parent);
+        w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        return w;
+    }
+    static void readFromData(Widget* w, const data_type& d)
+    {
+        std::ostringstream oss;
+        d.prettyPrint(oss);
+        w->setText(QString(oss.str().c_str()));
+    }
+    static void writeToData(Widget* /* w */, const data_type& /* d */)
+    {
+        // not supported by this type
+        // TODO: CompressedRowSparseMatrixConstraint needs a parser for its pretty output
+    }
+    static void setReadOnly(Widget* w, bool readOnly)
+    {
+        w->setEnabled(!readOnly);
+        w->setReadOnly(readOnly);
+    }
+    static void connectChanged(Widget* w, DataWidget* datawidget)
+    {
+        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setWidgetDirty()) );
+    }
+    
+};
+
+////////////////////////////////////////////////////////////////
 /// OptionsGroup support
 ////////////////////////////////////////////////////////////////
 
@@ -946,7 +986,7 @@ public :
     ///a widget for a that particular data type.
     RadioDataWidget(QWidget* parent, const char* name,
             core::objectmodel::Data<sofa::helper::OptionsGroup >* m_data)
-        : TDataWidget<sofa::helper::OptionsGroup >(parent,name,m_data) {};
+        : TDataWidget<sofa::helper::OptionsGroup >(parent,name,m_data) {}
 
     ///In this method we  create the widgets and perform the signal / slots connections.
     virtual bool createWidgets();
@@ -962,6 +1002,29 @@ protected:
     QButtonGroup *buttonList;
     QComboBox    *comboList;
     bool buttonMode;
+};
+
+class SelectableItemWidget final : public TDataWidget<helper::BaseSelectableItem>
+{
+    Q_OBJECT
+public :
+
+    SelectableItemWidget(QWidget* parent, const char* name,
+            core::BaseData* m_data, const helper::BaseSelectableItem* item);
+
+    bool createWidgets() override;
+    void setDataReadOnly(bool readOnly) override;
+
+protected:
+    void readFromData() override;
+
+    void writeToData() override;
+
+    QButtonGroup *m_buttonList { nullptr };
+    QComboBox    *m_comboList { nullptr };
+    bool m_buttonMode { false };
+
+    const helper::BaseSelectableItem* m_selectableItem { nullptr };
 };
 
 

@@ -19,61 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <gtest/gtest.h>
+#define SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PCGLINEARSOLVER_CPP
+#include <sofa/component/linearsolver/iterative/PCGLinearSolver.inl>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/linearsystem/MatrixFreeSystem.h>
 
-#include <sofa/helper/accessor.h>
-#include <sofa/type/vector.h>
-#include <sofa/type/fixed_array.h>
-#include <sofa/type/Vec.h>
-#include <sofa/type/Mat.h>
-
-namespace sofa
+namespace sofa::component::linearsolver::iterative
 {
 
-TEST(ReadAccessor, PrimitiveTypes)
+void registerPCGLinearSolver(sofa::core::ObjectFactory* factory)
 {
-    const float float_value { 12.f };
-    const sofa::helper::ReadAccessor float_accessor(float_value);
-    EXPECT_FLOAT_EQ(float_accessor.ref(), 12.f);
-
-    const std::size_t size_t_value { 8 };
-    const sofa::helper::ReadAccessor size_t_accessor(size_t_value);
-    EXPECT_EQ(size_t_accessor.ref(), 8);
+    factory->registerObjects(core::ObjectRegistrationData("Linear system solver using the Shewchuk conjugate gradient iterative algorithm.")
+        .add< PCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector> >());
 }
 
-TEST(ReadAccessor, VectorTypes)
-{
-    const sofa::type::vector<float> vector { 0.f, 1.f, 2.f, 3.f, 4.f};
-    const sofa::helper::ReadAccessor accessor(vector);
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector>;
 
-    EXPECT_EQ(accessor.size(), vector.size());
-    EXPECT_EQ(accessor.empty(), vector.empty());
-    EXPECT_EQ(accessor.begin(), vector.begin());
-    EXPECT_EQ(accessor.end(), vector.end());    
-}
-
-template <typename FixedArrayType>
-class ReadAccessorFixedArray_test : public ::testing::Test
-{
-public:
-    ReadAccessorFixedArray_test() = default;
-    
-    const FixedArrayType m_array{};
-};
-
-using FixedArrayTypes = ::testing::Types <
-    sofa::type::fixed_array<double, 5>, sofa::type::Vec < 2, float >, sofa::type::Mat<3, 3>>;
-
-TYPED_TEST_SUITE(ReadAccessorFixedArray_test, FixedArrayTypes);
-
-TYPED_TEST(ReadAccessorFixedArray_test, tests )
-{
-    sofa::helper::ReadAccessor accessor(this->m_array);
-    
-    EXPECT_EQ(TypeParam::static_size, accessor.size());
-    EXPECT_EQ(this->m_array.size(), accessor.size());
-    EXPECT_EQ(accessor.begin(), this->m_array.begin());
-    EXPECT_EQ(accessor.end(), this->m_array.end());
-}
-
-}
+} // namespace sofa::component::linearsolver::iterative
