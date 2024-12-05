@@ -35,7 +35,7 @@
 namespace sofa::component::constraint::lagrangian::model
 {
 
-struct UnilateralLagrangianContactParameters : public BaseContactParams
+struct UnilateralLagrangianContactParameters final : public BaseContactParams
 {
     UnilateralLagrangianContactParameters() : mu(0.0) {};
     UnilateralLagrangianContactParameters(SReal _mu) : mu(_mu) {};

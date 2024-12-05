@@ -35,7 +35,7 @@
 namespace sofa::component::constraint::lagrangian::model
 {
 
-struct AugmentedLagrangianContactParameters : public BaseContactParams
+struct AugmentedLagrangianContactParameters final : public BaseContactParams
 {
     AugmentedLagrangianContactParameters() : mu(0.0), epsilon(0.0) {};
     AugmentedLagrangianContactParameters(SReal _mu, SReal _epsilon) : mu(_mu), epsilon(_epsilon) {};
