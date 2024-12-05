@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node name="root" gravity="0 -100 0" dt="0.01"  >
+<Node name="root" gravity="0 -100 0" dt="0.02"  >
     <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [AffineMovementProjectiveConstraint] -->
     <RequiredPlugin name="MultiThreading"/> <!-- Needed to use components [ParallelBVHNarrowPhase,ParallelBruteForceBroadPhase] -->
     <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
@@ -39,7 +39,7 @@
     <CollisionPipeline name="CollisionPipeline" />
     <ParallelBruteForceBroadPhase name="CollisionBroadPhase"/>
     <ParallelBVHNarrowPhase name="CollisionNarrowPhase"/>
-    <CollisionResponse name="CollisionResponse" response="FrictionContactConstraint" responseParams="mu=0.2"/>
+    <CollisionResponse name="CollisionResponse" response="FrictionContactConstraint" responseParams="mu=0.0"/>
     <NewProximityIntersection name="Intersection" alarmDistance="10" contactDistance="5" />
 
     <!--  # Object = SOFA Logo -->
@@ -84,7 +84,7 @@
         <EulerImplicitSolver name="EulerImplicitScheme" />
         <EigenSparseLU name="LUSolver" template="CompressedRowSparseMatrixd" />
         <MechanicalObject name="mstate" template="Rigid3" position="0 0 0 0 0 0 1" />
-        <LinearVelocityProjectiveConstraint indices="0" keyTimes="0 2" velocities="0 0 0 0 0 0 0 0 0 0 0 0.3 " continueAfterEnd="true" />
+        <LinearVelocityProjectiveConstraint indices="0" keyTimes="0 5 15 25" velocities="0 0 0 0 0 0 0 0 0 0 0 0.5 0 0 0 0 0 -0.5 0 0 0 0 0 0.5" continueAfterEnd="true" />
         <UniformMass name="Mass" totalMass="0.1" />
 
         <Node name="Collision">
