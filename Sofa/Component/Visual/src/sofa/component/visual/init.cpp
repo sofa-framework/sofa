@@ -27,6 +27,7 @@ namespace sofa::component::visual
 {
 
 extern void registerCamera(sofa::core::ObjectFactory* factory);
+extern void registerCylinderVisualModel(sofa::core::ObjectFactory* factory);
 extern void registerInteractiveCamera(sofa::core::ObjectFactory* factory);
 extern void registerLineAxis(sofa::core::ObjectFactory* factory);
 extern void registerRecordedCamera(sofa::core::ObjectFactory* factory);
@@ -63,6 +64,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
 {
     registerCamera(factory);
     registerInteractiveCamera(factory);
+    registerCylinderVisualModel(factory);
     registerLineAxis(factory);
     registerRecordedCamera(factory);
     registerTrailRenderer(factory);
