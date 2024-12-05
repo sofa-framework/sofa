@@ -105,7 +105,7 @@ void BaseContactLagrangianConstraint<DataTypes, ContactParams>::buildConstraintM
 
     if (this->mstate1 == this->mstate2)
     {
-        MatrixDeriv& c1 = *c1_d.beginEdit();
+        helper::WriteAccessor<DataMatrixDeriv> c1 = c1_d;
 
         for (unsigned int i = 0; i < contacts.size(); i++)
         {
@@ -132,12 +132,11 @@ void BaseContactLagrangianConstraint<DataTypes, ContactParams>::buildConstraintM
             }
         }
 
-        c1_d.endEdit();
     }
     else
     {
-        MatrixDeriv& c1 = *c1_d.beginEdit();
-        MatrixDeriv& c2 = *c2_d.beginEdit();
+        helper::WriteAccessor<DataMatrixDeriv> c1 = c1_d;
+        helper::WriteAccessor<DataMatrixDeriv> c2 = c2_d;
 
         for (unsigned int i = 0; i < contacts.size(); i++)
         {
@@ -169,8 +168,6 @@ void BaseContactLagrangianConstraint<DataTypes, ContactParams>::buildConstraintM
             }
         }
 
-        c1_d.endEdit();
-        c2_d.endEdit();
     }
 }
 
