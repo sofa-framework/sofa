@@ -56,8 +56,10 @@ set(HEADER_FILES
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/integer_id.h
     ${SRC_ROOT}/accessor/ReadAccessor.h
+    ${SRC_ROOT}/accessor/ReadAccessorFixedArray.h
     ${SRC_ROOT}/accessor/ReadAccessorVector.h
     ${SRC_ROOT}/accessor/WriteAccessor.h
+    ${SRC_ROOT}/accessor/WriteAccessorFixedArray.h
     ${SRC_ROOT}/accessor/WriteAccessorVector.h
     ${SRC_ROOT}/accessor/WriteOnlyAccessor.h
     ${SRC_ROOT}/io/BaseFileAccess.h

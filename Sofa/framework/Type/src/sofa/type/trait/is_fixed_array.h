@@ -19,61 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <gtest/gtest.h>
+#pragma once
+#include <type_traits>
 
-#include <sofa/helper/accessor.h>
-#include <sofa/type/vector.h>
-#include <sofa/type/fixed_array.h>
-#include <sofa/type/Vec.h>
-#include <sofa/type/Mat.h>
-
-namespace sofa
+namespace sofa::type::trait
 {
 
-TEST(ReadAccessor, PrimitiveTypes)
+/// Detect if a type T has iterator/const iterator function, operator[](size_t) and defines a static size
+template<typename T>
+struct is_fixed_array
 {
-    const float float_value { 12.f };
-    const sofa::helper::ReadAccessor float_accessor(float_value);
-    EXPECT_FLOAT_EQ(float_accessor.ref(), 12.f);
+    typedef typename std::remove_const<T>::type test_type;
 
-    const std::size_t size_t_value { 8 };
-    const sofa::helper::ReadAccessor size_t_accessor(size_t_value);
-    EXPECT_EQ(size_t_accessor.ref(), 8);
-}
+    template<typename A>
+    static constexpr bool test(
+        A * pt,
+        A const * cpt = nullptr,
+        decltype(pt->begin()) * = nullptr,
+        decltype(pt->end()) * = nullptr,
+        decltype(cpt->begin()) * = nullptr,
+        decltype(cpt->end()) * = nullptr,
+        typename std::decay<decltype((*pt)[0])>::type * = nullptr,   ///< Is there an operator[] ?
+        decltype(A::static_size) * = nullptr, ///< fixed array containers define static_size
+        typename A::iterator * = nullptr,
+        typename A::const_iterator * = nullptr,
+        typename A::value_type * = nullptr)
+    {
 
-TEST(ReadAccessor, VectorTypes)
-{
-    const sofa::type::vector<float> vector { 0.f, 1.f, 2.f, 3.f, 4.f};
-    const sofa::helper::ReadAccessor accessor(vector);
+        typedef typename A::iterator iterator;
+        typedef typename A::const_iterator const_iterator;
+        return  std::is_same<decltype(pt->begin()),iterator>::value
+                && std::is_same<decltype(pt->end()),iterator>::value
+                && std::is_same<decltype(cpt->begin()),const_iterator>::value
+                && std::is_same<decltype(cpt->end()),const_iterator>::value;
+    }
 
-    EXPECT_EQ(accessor.size(), vector.size());
-    EXPECT_EQ(accessor.empty(), vector.empty());
-    EXPECT_EQ(accessor.begin(), vector.begin());
-    EXPECT_EQ(accessor.end(), vector.end());    
-}
+    template<typename A>
+    static constexpr bool test(...) {
+        return false;
+    }
 
-template <typename FixedArrayType>
-class ReadAccessorFixedArray_test : public ::testing::Test
-{
-public:
-    ReadAccessorFixedArray_test() = default;
-    
-    const FixedArrayType m_array{};
+    static const bool value = test<test_type>(nullptr);
 };
-
-using FixedArrayTypes = ::testing::Types <
-    sofa::type::fixed_array<double, 5>, sofa::type::Vec < 2, float >, sofa::type::Mat<3, 3>>;
-
-TYPED_TEST_SUITE(ReadAccessorFixedArray_test, FixedArrayTypes);
-
-TYPED_TEST(ReadAccessorFixedArray_test, tests )
-{
-    sofa::helper::ReadAccessor accessor(this->m_array);
-    
-    EXPECT_EQ(TypeParam::static_size, accessor.size());
-    EXPECT_EQ(this->m_array.size(), accessor.size());
-    EXPECT_EQ(accessor.begin(), this->m_array.begin());
-    EXPECT_EQ(accessor.end(), this->m_array.end());
-}
 
 }
