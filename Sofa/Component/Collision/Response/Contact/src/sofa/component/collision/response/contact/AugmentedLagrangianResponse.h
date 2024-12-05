@@ -26,7 +26,7 @@
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/AugmentedLagrangianConstraint.h>
 #include <sofa/component/collision/response/contact/BaseUnilateralContactResponse.h>
 #include <sofa/component/collision/response/contact/ContactIdentifier.h>
 
@@ -35,10 +35,10 @@
 namespace sofa::component::collision::response::contact
 {
 template <class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
-class FrictionContact : public BaseUnilateralContactResponse<TCollisionModel1,  TCollisionModel2,constraint::lagrangian::model::UnilateralLagrangianContactParameters, ResponseDataTypes>
+class AugmentedLagrangianResponse : public BaseUnilateralContactResponse<TCollisionModel1,  TCollisionModel2,constraint::lagrangian::model::AugmentedLagrangianContactParameters, ResponseDataTypes>
 {
-   public:
-    SOFA_CLASS(SOFA_TEMPLATE3(FrictionContact, TCollisionModel1, TCollisionModel2, ResponseDataTypes), SOFA_TEMPLATE4(BaseUnilateralContactResponse, TCollisionModel1, TCollisionModel2,constraint::lagrangian::model::UnilateralLagrangianContactParameters, ResponseDataTypes));
+public:
+    SOFA_CLASS(SOFA_TEMPLATE3(AugmentedLagrangianResponse, TCollisionModel1, TCollisionModel2, ResponseDataTypes), SOFA_TEMPLATE4(BaseUnilateralContactResponse, TCollisionModel1, TCollisionModel2,constraint::lagrangian::model::AugmentedLagrangianContactParameters, ResponseDataTypes));
 
     typedef typename Inherit1::DataTypes1 DataTypes1;
     typedef typename Inherit1::DataTypes2 DataTypes2;
@@ -50,13 +50,14 @@ class FrictionContact : public BaseUnilateralContactResponse<TCollisionModel1,  
     typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
 
     Data<double> d_mu; ///< friction parameter
+    Data<double> d_epsilon; ///< Penalty parameter
 
-    FrictionContact();
-    FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
+    AugmentedLagrangianResponse();
+    AugmentedLagrangianResponse(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
 
-    virtual ~FrictionContact() = default;
+    virtual ~AugmentedLagrangianResponse() = default;
 
-    virtual constraint::lagrangian::model::UnilateralLagrangianContactParameters getParameterFromDatas() const override;
+    virtual constraint::lagrangian::model::AugmentedLagrangianContactParameters getParameterFromDatas() const override;
     virtual void setupConstraint(MechanicalState1 *,MechanicalState2 *) override;
 
 };

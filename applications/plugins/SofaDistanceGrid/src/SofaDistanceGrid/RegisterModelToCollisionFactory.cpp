@@ -35,6 +35,7 @@ using sofa::core::collision::Contact ;
 
 #include <sofa/component/collision/response/contact/FrictionContact.inl>
 #include <sofa/component/collision/response/contact/BarycentricStickContact.inl>
+#include <sofa/component/collision/response/contact/BaseUnilateralContactResponse.inl>
 
 #include "components/collision/DistanceGridCollisionModel.h"
 #include "components/collision/FFDDistanceGridDiscreteIntersection.h"
