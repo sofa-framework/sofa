@@ -73,6 +73,19 @@ void VisualStyle::bwdDraw(VisualParams* vparams)
     vparams->displayFlags() = backupFlags;
 }
 
+
+bool VisualStyle::insertInNode( sofa::core::objectmodel::BaseNode* node )
+{
+    node->addVisualStyle(this);
+    return true;
+}
+
+bool VisualStyle::removeInNode( sofa::core::objectmodel::BaseNode* node )
+{
+    node->removeVisualStyle(this);
+    return true;
+}
+
 helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulation::Node::SPtr node )
 {
     const VisualStyle::SPtr visualStyle = New<sofa::component::visual::VisualStyle>();
