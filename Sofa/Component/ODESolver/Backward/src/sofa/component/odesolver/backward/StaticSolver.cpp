@@ -92,8 +92,8 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
 
     // Initialize the set of multi-vectors used by this solver
     MultiVecCoord x(&vop, xResult );
-    MultiVecDeriv force( &vop, sofa::core::VecDerivId::force() );
-    MultiVecDeriv dx( &vop, sofa::core::VecDerivId::dx() );
+    MultiVecDeriv force( &vop, sofa::core::vec_id::write_access::force );
+    MultiVecDeriv dx( &vop, sofa::core::vec_id::write_access::dx );
     dx.realloc( &vop , true, true);
     U.realloc( &vop );
     U.clear();

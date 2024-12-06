@@ -88,7 +88,7 @@ void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<sofa::Index, 
         if (sset.count(std::make_pair(m2,m1))>0) return;
         sset.insert(std::make_pair(m2,m1));
     }
-    const Real l = ((mstate2->read(core::ConstVecCoordId::restPosition())->getValue())[m2] - (mstate1->read(core::ConstVecCoordId::restPosition())->getValue())[m1]).norm();
+    const Real l = ((mstate2->read(core::vec_id::read_access::restPosition)->getValue())[m2] - (mstate1->read(core::vec_id::read_access::restPosition)->getValue())[m1]).norm();
     if (l > std::numeric_limits<Real>::epsilon())
     {
         sofa::helper::getWriteAccessor(d_springs)->emplace_back(m1, m2, stiffness / l, damping / l, l, d_noCompression.getValue());
@@ -229,8 +229,8 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         typedef typename Inherit1::Spring  Spring;
         const sofa::type::vector<Spring> &ss = d_springs.getValue();
         
-        const VecCoord& p1 = mstate1->read(core::ConstVecCoordId::position())->getValue();
-        const VecCoord& p2 = mstate2->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& p1 = mstate1->read(core::vec_id::read_access::position)->getValue();
+        const VecCoord& p2 = mstate2->read(core::vec_id::read_access::position)->getValue();
         
         Real minElongation = std::numeric_limits<Real>::max();
         Real maxElongation = 0.;

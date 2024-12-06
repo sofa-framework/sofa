@@ -616,7 +616,7 @@ void SparseGridTopology::updateMesh()
         if (mecha_temp != nullptr && mecha_temp->getSize() < 2) //a triangle mesh has minimum 3elements
         {
             list_mesh.push_back(collisionTopology);
-            list_X.push_back(mecha_temp->write(core::VecCoordId::position()));
+            list_X.push_back(mecha_temp->write(core::vec_id::write_access::position));
         }
     }
 

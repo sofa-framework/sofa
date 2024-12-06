@@ -328,8 +328,8 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
         msg_error() << "PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation";
         return;
     }
-    sofa::core::VecDerivId lhId = core::VecDerivId::velocity();
-    sofa::core::VecDerivId rhId = core::VecDerivId::force();
+    sofa::core::VecDerivId lhId = core::vec_id::write_access::velocity;
+    sofa::core::VecDerivId rhId = core::vec_id::write_access::force;
 
 
     mstate->vAvail(core::execparams::defaultInstance(), lhId);
@@ -347,7 +347,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
         linearSolver->setSystemMBKMatrix(&mparams);
     }
 
-    helper::WriteAccessor<Data<VecDeriv> > dataForce = *mstate->write(core::VecDerivId::externalForce());
+    helper::WriteAccessor<Data<VecDeriv> > dataForce = *mstate->write(core::vec_id::write_access::externalForce);
     VecDeriv& force = dataForce.wref();
 
     force.clear();
@@ -367,11 +367,11 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    helper::WriteAccessor<Data<VecDeriv> > dataVelocity = *mstate->write(core::VecDerivId::velocity());
+    helper::WriteAccessor<Data<VecDeriv> > dataVelocity = *mstate->write(core::vec_id::write_access::velocity);
     VecDeriv& velocity = dataVelocity.wref();
 
     VecDeriv velocity0 = velocity;
-    helper::WriteAccessor<Data<VecCoord> > posData = *mstate->write(core::VecCoordId::position());
+    helper::WriteAccessor<Data<VecCoord> > posData = *mstate->write(core::vec_id::write_access::position);
     VecCoord& pos = posData.wref();
     VecCoord pos0 = pos;
 
@@ -669,7 +669,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = mstate->read(core::vec_id::read_access::position)->getValue();
     const Real& scale = this->d_draw_rotations_scale.getValue();
 
     for (unsigned int i=0; i< nb_dofs; i++)

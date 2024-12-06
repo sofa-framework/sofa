@@ -64,7 +64,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::init()
         return;
     }
 
-    vars.pos6D = this->mstate2->read(core::VecCoordId::position())->getValue()[object2_dof_index.getValue()];
+    vars.pos6D = this->mstate2->read(core::vec_id::write_access::position)->getValue()[object2_dof_index.getValue()];
     if(object2_invert.getValue())
         vars.pos6D = DataTypes2::inverse(vars.pos6D);
     initCalcF();
@@ -74,7 +74,7 @@ template<class DataTypes1, class DataTypes2>
 void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::reinit()
 {
     Inherit1::reinit();
-    vars.pos6D = this->mstate2->read(core::VecCoordId::position())->getValue()[object2_dof_index.getValue()];
+    vars.pos6D = this->mstate2->read(core::vec_id::write_access::position)->getValue()[object2_dof_index.getValue()];
     if(object2_invert.getValue())
         vars.pos6D = DataTypes2::inverse(vars.pos6D);
     initCalcF();

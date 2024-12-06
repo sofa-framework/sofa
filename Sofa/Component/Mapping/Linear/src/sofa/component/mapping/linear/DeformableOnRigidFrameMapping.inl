@@ -118,7 +118,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::setRepartition(sofa::typ
 template<class DataTypes>
 const typename DataTypes::VecCoord& M_getX0(core::behavior::MechanicalState<DataTypes>* model)
 {
-    return model->read(core::ConstVecCoordId::restPosition())->getValue();
+    return model->read(core::vec_id::read_access::restPosition)->getValue();
 }
 
 template<class DataTypes>
@@ -323,11 +323,11 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ve
 
             msg_warning()<<" applyJT was called before any apply ("<<in.size() << "!="<<rotatedPoints.size()<<")";
 
-            const InDataVecCoord* xfromData = m_toModel->read(core::ConstVecCoordId::position());
+            const InDataVecCoord* xfromData = m_toModel->read(core::vec_id::read_access::position);
             const InVecCoord xfrom = xfromData->getValue();
-            OutDataVecCoord* xtoData = m_toModel->write(core::VecCoordId::position());
+            OutDataVecCoord* xtoData = m_toModel->write(core::vec_id::write_access::position);
             OutVecCoord &xto = *xtoData->beginEdit();
-            apply(xto, xfrom, (m_fromRootModel==nullptr ? nullptr : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
+            apply(xto, xfrom, (m_fromRootModel==nullptr ? nullptr : &m_fromRootModel->read(core::vec_id::read_access::position)->getValue()));
             this->f_printLog.setValue(log);
             xtoData->endEdit();
         }
@@ -493,9 +493,9 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
         {
             case core::topology::TRIANGLESADDED:       ///< To notify the end for the current sequence of topological change events
             {
-                core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
+                core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::restPosition, core::vec_id::read_access::restPosition);
                 if(this->f_applyRestPosition.getValue() )
-                    core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+                    core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::position, core::vec_id::read_access::position);
                 break;
             }
             default:
@@ -520,7 +520,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual:
     std::vector< sofa::type::Vec3 > points;
     sofa::type::Vec3 point;
 
-    const typename Out::VecCoord& x = m_toModel->read(core::ConstVecCoordId::position())->getValue();
+    const typename Out::VecCoord& x = m_toModel->read(core::vec_id::read_access::position)->getValue();
     for (unsigned int i=0; i<x.size(); i++)
     {
         point = Out::getCPos(x[i]);

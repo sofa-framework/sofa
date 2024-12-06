@@ -231,7 +231,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         computeVelocityOutFromVelocityIn(mparams, velocityOut, velocityIn);
 
         // apply geometric stiffness
-        inDofs->vRealloc( &mparams, core::VecDerivId::dx() ); // dx is not allocated by default
+        inDofs->vRealloc( &mparams, core::vec_id::write_access::dx ); // dx is not allocated by default
         inDofs->writeDx().wref() = velocityIn;
 
         const VecDeriv_t<In> dfp_withoutUpdateK = applyDJT(mparams, false);
@@ -261,11 +261,11 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
             // then compare results
 
 //            OutMatrixDeriv outMatrices(  ); // how to build that, what size?
-//            /*WriteInMatrixDeriv min = */inDofs->write( MatrixDerivId::constraintJacobian() );
-//            WriteOutMatrixDeriv mout = outDofs->write( MatrixDerivId::constraintJacobian() );
+//            /*WriteInMatrixDeriv min = */inDofs->write( vec_id::write_access::constraintJacobian );
+//            WriteOutMatrixDeriv mout = outDofs->write( vec_id::write_access::constraintJacobian );
 //            copyToData(mout,outMatrices);
 
-//            mapping->applyJt(  ConstraintParams*, MatrixDerivId::constraintJacobian(), MatrixDerivId::constraintJacobian() );
+//            mapping->applyJt(  ConstraintParams*, vec_id::write_access::constraintJacobian, vec_id::write_access::constraintJacobian );
 
 
         }
@@ -400,8 +400,8 @@ protected:
 
         /// Updated to parentNew
         positionAccessorIn.wref() = parentNew;
-        mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
-        mapping->applyJ(&mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity());
+        mapping->apply(&mparams, core::vec_id::write_access::position, core::vec_id::write_access::position);
+        mapping->applyJ(&mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity);
 
         bool succeed = true;
 
@@ -441,14 +441,14 @@ protected:
         inDofs->writeForces()->fill(Deriv_t<In>());  // reset parent forces before accumulating child forces
 
         outDofs->writeForces().wref() = forceOut;
-        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        mapping->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::write_access::force );
         forceIn = inDofs->readForces().ref();
     }
 
     void computeVelocityOutFromVelocityIn(core::MechanicalParams mparams, VecDeriv_t<Out>& velocityOut, const VecDeriv_t<In>& velocityIn)
     {
         inDofs->writeVelocities().wref() = velocityIn;
-        mapping->applyJ( &mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
+        mapping->applyJ( &mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity );
         velocityOut = outDofs->readVelocities().ref();
     }
 
@@ -458,9 +458,9 @@ protected:
 
         if (updateK)
         {
-            mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
+            mapping->updateK( &mparams, core::vec_id::read_access::force ); // updating stiffness matrix for the current state and force
         }
-        mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        mapping->applyDJT( &mparams, core::vec_id::write_access::force, core::vec_id::write_access::force );
         return inDofs->readForces().ref();
     }
 
@@ -575,7 +575,7 @@ protected:
         Real_t<In> errorThreshold
         )
     {
-        mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
+        mapping->apply ( &mparams, core::vec_id::write_access::position, core::vec_id::write_access::position );
         const VecCoord_t<Out>& positionOut1 = outDofs->readPositions();
 
         const auto sizeOut = positionOut.size();

@@ -350,7 +350,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
 
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     // since drawTool requires a std::vector<Vec3> we have to convert x in an ugly way
     std::vector<type::Vec3> pos;
     pos.resize(x.size());

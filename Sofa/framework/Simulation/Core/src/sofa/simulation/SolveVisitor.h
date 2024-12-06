@@ -41,8 +41,8 @@ public:
 
     SolveVisitor(const sofa::core::ExecParams* params,
                  SReal _dt,
-                 sofa::core::MultiVecCoordId X = sofa::core::VecCoordId::position(),
-                 sofa::core::MultiVecDerivId V = sofa::core::VecDerivId::velocity(),
+                 sofa::core::MultiVecCoordId X = sofa::core::vec_id::write_access::position,
+                 sofa::core::MultiVecDerivId V = sofa::core::vec_id::write_access::velocity,
                  bool _parallelSolve = false,
                  bool computeForceIsolatedInteractionForceFields = false);
 

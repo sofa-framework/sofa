@@ -104,7 +104,7 @@ void NearestPointROI<DataTypes>::doUpdate()
 {
     if (this->mstate1 && this->mstate2)
     {
-        const auto vecCoordId = d_useRestPosition.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        const auto vecCoordId = d_useRestPosition.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const VecCoord& x1 = this->mstate1->read(vecCoordId)->getValue();
         const VecCoord& x2 = this->mstate2->read(vecCoordId)->getValue();
 
@@ -204,7 +204,7 @@ void NearestPointROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const auto vecCoordId = d_useRestPosition.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+    const auto vecCoordId = d_useRestPosition.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
     const VecCoord& x1 = this->mstate1->read(vecCoordId)->getValue();
     const VecCoord& x2 = this->mstate2->read(vecCoordId)->getValue();
     std::vector<sofa::type::Vec3> vertices;

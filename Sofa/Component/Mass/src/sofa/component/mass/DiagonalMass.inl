@@ -82,7 +82,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyEdgeCreation(const sofa::ty
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::EDGE)
     {
-        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::vec_id::read_access::restPosition)->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -119,7 +119,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyEdgeDestruction(const sofa:
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::EDGE)
     {
-        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::vec_id::read_access::restPosition)->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -161,7 +161,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyTriangleCreation(const sofa
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::TRIANGLE)
     {
-        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::vec_id::read_access::restPosition)->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -202,7 +202,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyTriangleDestruction(const s
 
     if (this->getMassTopologyType() == sofa::geometry::ElementType::TRIANGLE)
     {
-        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::vec_id::read_access::restPosition)->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -247,7 +247,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyQuadCreation(const sofa::ty
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::QUAD)
     {
-        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::vec_id::read_access::restPosition)->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -290,7 +290,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyQuadDestruction(const sofa:
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::QUAD)
     {
-        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::vec_id::read_access::restPosition)->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -337,7 +337,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyTetrahedronCreation(const s
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::TETRAHEDRON)
     {
-        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::vec_id::read_access::restPosition)->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -380,7 +380,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyTetrahedronDestruction(cons
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::TETRAHEDRON)
     {
-        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::vec_id::read_access::restPosition)->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -427,7 +427,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyHexahedronCreation(const so
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::HEXAHEDRON)
     {
-        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::vec_id::read_access::restPosition)->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -471,7 +471,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyHexahedronDestruction(const
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::HEXAHEDRON)
     {
-        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::vec_id::read_access::restPosition)->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -995,7 +995,7 @@ typename DiagonalMass<DataTypes, GeometricalTypes>::Real DiagonalMass<DataTypes,
         return total_mass;
     }
     
-    core::ConstVecCoordId posid = d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+    core::ConstVecCoordId posid = d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
     const auto& positions = l_geometryState->read(posid)->getValue();
 
     Real mass = Real(0);
@@ -1436,7 +1436,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::draw(const core::visual::VisualP
     if (masses.empty())
         return;
 
-    const auto& x = l_geometryState->read(core::ConstVecCoordId::position())->getValue();
+    const auto& x = l_geometryState->read(core::vec_id::read_access::position)->getValue();
     type::Vec3 gravityCenter;
     Real totalMass=0.0;
 

@@ -372,7 +372,7 @@ void FixedProjectiveConstraint<DataTypes>::computeBBoxForIndices(const type::vec
 
     const auto drawSize = static_cast<Real>(d_drawSize.getValue());
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     for (const auto index : indices)
     {
@@ -426,7 +426,7 @@ void FixedProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     const SetIndexArray & indices = d_indices.getValue();
 
     if( d_drawSize.getValue() == 0) // old classical drawing by points

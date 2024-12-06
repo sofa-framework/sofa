@@ -380,8 +380,8 @@ void ArticulatedHierarchyController::applyController(void)
 
                                 //	while (articulatedObjIt != articulatedObjItEnd)
                                 {
-                                    helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::VecCoordId::position());
-                                    helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::VecCoordId::freePosition());
+                                    helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::vec_id::write_access::position);
+                                    helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::vec_id::write_access::freePosition);
                                     x[(*it)->articulationIndex.getValue()].x() += signFactor * distributedAngleDelta;
                                     xfree[(*it)->articulationIndex.getValue()].x() += signFactor * distributedAngleDelta;
                                     ++articulatedObjIt;

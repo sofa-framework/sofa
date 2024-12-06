@@ -114,7 +114,7 @@ void ShapeMatching<DataTypes>::doUpdate()
     if (!this->mstate)
         return;
 
-    const auto* restPositionsData = this->mstate->read(core::ConstVecCoordId::restPosition());
+    const auto* restPositionsData = this->mstate->read(core::vec_id::read_access::restPosition);
     if (!restPositionsData)
     {
         msg_error() << "Rest position cannot be found in mechanical object '" << this->mstate->getPathName() << "'";
