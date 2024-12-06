@@ -177,11 +177,37 @@ public:
     template <class RealObject>
     static RealObject* create( RealObject*, CreatorArgument& arg)
     {
+        RealObject* obj = nullptr;
+
         typename RealObject::MyTData* realData = dynamic_cast< typename RealObject::MyTData* >(arg.data);
-        if (!realData) return nullptr;
+        if (!realData)
+        {
+            if constexpr (std::is_constructible_v<RealObject, QWidget*, const char*, core::objectmodel::BaseData*, const T*>)
+            {
+                if (arg.data)
+                {
+                    const void* rawPtr = arg.data->getValueVoidPtr();
+
+                    //note that this cast is not type-safe. You need to check
+                    //later in createWidget that the baseData is the expected
+                    //type. You can use getValueTypeString for example
+                    if (const T* castedPtr = static_cast<const T*>(rawPtr))
+                    {
+                        obj = new RealObject(arg.parent, arg.name.c_str(), arg.data, castedPtr);
+                    }
+                }
+            }
+        }
         else
         {
-            RealObject* obj = new RealObject(arg.parent,arg.name.c_str(), realData);
+            if constexpr (std::is_constructible_v<RealObject, QWidget*, const char*, MyTData*>)
+            {
+                obj = new RealObject(arg.parent, arg.name.c_str(), realData);
+            }
+        }
+
+        if (obj)
+        {
             if( !obj->createWidgets() )
             {
                 delete obj;
@@ -191,13 +217,20 @@ public:
             {
                 obj->setDataReadOnly(arg.readOnly);
             }
-            return obj;
         }
+        return obj;
+    }
 
+    TDataWidget(QWidget* parent,const char* name, core::objectmodel::BaseData* d, const T* object):
+        DataWidget(parent, name, d),
+        Tdata(nullptr)
+    {
+        SOFA_UNUSED(object);
     }
 
     TDataWidget(QWidget* parent,const char* name, MyTData* d):
         DataWidget(parent,name,d),Tdata(d) {}
+
     /// Accessor function. Gives you the actual data instead
     /// of a BaseData pointer of it like in getBaseData().
     sofa::core::objectmodel::Data<T>* getData() {return Tdata;}
@@ -209,7 +242,7 @@ public:
         Tdata = d;
     }
 protected:
-    MyTData* Tdata;
+    MyTData* Tdata { nullptr };
 };
 
 

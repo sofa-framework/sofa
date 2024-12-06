@@ -328,7 +328,10 @@ void EulerExplicitSolver::assembleSystemMatrix(sofa::simulation::common::Mechani
     //       is called on every BaseProjectiveConstraintSet objects. An example of such constraint set is the
     //       FixedProjectiveConstraint. In this case, it will set to 0 every column (_, i) and row (i, _) of the assembled
     //       matrix for the ith degree of freedom.
-    mop->setSystemMBKMatrix(1, 0, 0, l_linearSolver.get());
+    mop->setSystemMBKMatrix(
+        core::MatricesFactors::M(1),
+        core::MatricesFactors::B(0),
+        core::MatricesFactors::K(0), l_linearSolver.get());
 }
 
 void EulerExplicitSolver::solveSystem(core::MultiVecDerivId solution, core::MultiVecDerivId rhs) const
