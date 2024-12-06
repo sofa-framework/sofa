@@ -110,7 +110,7 @@ typename SubsetContactMapper<TCollisionModel, DataTypes>::Index SubsetContactMap
     }
     else
     {
-        helper::WriteAccessor<Data<VecCoord> > d_x = *outmodel->write(core::VecCoordId::position());
+        helper::WriteAccessor<Data<VecCoord> > d_x = *outmodel->write(core::vec_id::write_access::position);
         VecCoord& x = d_x.wref();
         x[i] = P;
     }
@@ -128,8 +128,8 @@ void SubsetContactMapper<TCollisionModel,DataTypes>::update()
             needInit = false;
         }
         core::BaseMapping* map = mapping.get();
-        map->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-        map->applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+        map->apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::position, core::vec_id::read_access::position);
+        map->applyJ(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::velocity, core::vec_id::read_access::velocity);
     }
 }
 
@@ -145,7 +145,7 @@ void SubsetContactMapper<TCollisionModel,DataTypes>::updateXfree()
         }
 
         core::BaseMapping* map = mapping.get();
-        map->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
+        map->apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::freePosition, core::vec_id::read_access::freePosition);
     }
 }
 

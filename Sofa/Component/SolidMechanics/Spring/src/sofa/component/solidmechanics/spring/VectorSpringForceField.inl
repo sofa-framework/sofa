@@ -36,7 +36,7 @@ void VectorSpringForceField<DataTypes>::createEdgeInformation(Index, Spring &t,
         const sofa::type::vector<Index> & ancestors,
         const sofa::type::vector<SReal> & coefs)
 {
-    const typename DataTypes::VecCoord& x0 = this->getObject1()->read(core::ConstVecCoordId::restPosition())->getValue();
+    const typename DataTypes::VecCoord& x0 = this->getObject1()->read(core::vec_id::read_access::restPosition)->getValue();
     t.restVector = x0[e[1]] - x0[e[0]];
     if (ancestors.size()>0)
     {
@@ -232,7 +232,7 @@ void VectorSpringForceField<DataTypes>::createDefaultSprings()
     type::vector<Spring>& springArrayData = *(d_springArray.beginEdit());
 
     springArrayData.resize(m_topology->getNbEdges());
-    const VecCoord& x0 = this->mstate1->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = this->mstate1->read(core::vec_id::read_access::restPosition)->getValue();
     unsigned int i;
     for (i=0; i<m_topology->getNbEdges(); ++i)
     {
@@ -368,9 +368,9 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
 
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields()))
         return;
-    //const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    //const VecCoord& p = this->mstate->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& x1 =this->mstate1->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& x2 =this->mstate2->read(core::vec_id::read_access::position)->getValue();
 
 
     std::vector< Vec3 > points;

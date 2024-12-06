@@ -61,8 +61,8 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
-    MultiVecCoord pos(&vop, core::VecCoordId::position() );
-    MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
+    MultiVecCoord pos(&vop, core::vec_id::write_access::position );
+    MultiVecDeriv vel(&vop, core::vec_id::write_access::velocity );
     MultiVecDeriv b(&vop);
     MultiVecDeriv aResult(&vop);
     MultiVecCoord newPos(&vop, xResult );
@@ -70,7 +70,7 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
+    MultiVecDeriv dx(&vop, core::vec_id::write_access::dx); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
 
     const SReal h = dt;

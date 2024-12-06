@@ -87,7 +87,7 @@ public:
     /// accumulate $ df += (m M + b B + k K) velocity $
     void addMBKv(core::MultiVecDerivId df, core::MatricesFactors::M m, core::MatricesFactors::B b, core::MatricesFactors::K k, bool clear = true, bool accumulate = true);
     /// Add dt*Gravity to the velocity
-    void addSeparateGravity(SReal dt, core::MultiVecDerivId result = core::VecDerivId::velocity() );
+    void addSeparateGravity(SReal dt, core::MultiVecDerivId result = core::vec_id::write_access::velocity );
 
     void computeContactForce(core::MultiVecDerivId result);
     void computeContactDf(core::MultiVecDerivId df);

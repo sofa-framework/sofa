@@ -165,7 +165,7 @@ void  DirectionProjectiveConstraint<DataTypes>::reinit()
     }
     jacobian.compress();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     const Indices &indices = d_indices.getValue();
     for (const auto id : indices)
     {
@@ -245,7 +245,7 @@ void DirectionProjectiveConstraint<DataTypes>::draw(const core::visual::VisualPa
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 

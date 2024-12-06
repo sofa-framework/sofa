@@ -216,7 +216,7 @@ void CompareState::draw(const core::visual::VisualParams* vparams)
         str >> cmd;
         mmodel->readVec(refX, str);
 
-        const core::objectmodel::BaseData* dataX = mmodel->baseRead(core::VecCoordId::position());
+        const core::objectmodel::BaseData* dataX = mmodel->baseRead(core::vec_id::write_access::position);
         const core::objectmodel::BaseData* dataRefX = mmodel->baseRead(refX);
         if (dataX && dataRefX)
         {

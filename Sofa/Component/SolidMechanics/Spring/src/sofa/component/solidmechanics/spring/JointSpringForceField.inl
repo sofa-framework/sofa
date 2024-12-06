@@ -103,9 +103,9 @@ template <class DataTypes>
 void JointSpringForceField<DataTypes>::bwdInit()
 {
 
-    const VecCoord& x1= this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x1= this->mstate1->read(core::vec_id::read_access::position)->getValue();
 
-    const VecCoord& x2= this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x2= this->mstate2->read(core::vec_id::read_access::position)->getValue();
     type::vector<Spring> &springsVector=*(d_springs.beginEdit());
     for (sofa::Index i=0; i<d_springs.getValue().size(); ++i)
     {
@@ -372,8 +372,8 @@ template<class DataTypes>
 void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
-    const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p1 = this->mstate1->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& p2 = this->mstate2->read(core::vec_id::read_access::position)->getValue();
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     vparams->drawTool()->setLightingEnabled(true);
@@ -470,8 +470,8 @@ void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  para
     Real maxBBox[3] = { min_real,min_real,min_real };
     Real minBBox[3] = { max_real,max_real,max_real };
 
-    const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p1 = this->mstate1->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& p2 = this->mstate2->read(core::vec_id::read_access::position)->getValue();
 
     const type::vector<Spring>& springs = d_springs.getValue();
 
@@ -515,8 +515,8 @@ void JointSpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2,
 {
     Spring s(m1,m2,softKst,hardKst,softKsr,hardKsr, blocKsr, axmin, axmax, aymin, aymax, azmin, azmax, kd);
 
-    const VecCoord& x1= this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x2= this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x1= this->mstate1->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& x2= this->mstate2->read(core::vec_id::read_access::position)->getValue();
 
     s.initTrans = x2[m2].getCenter() - x1[m1].getCenter();
     s.initRot = x2[m2].getOrientation()*x1[m1].getOrientation().inverse();

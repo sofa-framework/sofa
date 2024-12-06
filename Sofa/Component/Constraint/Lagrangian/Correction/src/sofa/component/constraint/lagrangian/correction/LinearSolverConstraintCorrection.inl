@@ -329,7 +329,7 @@ template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const linearalgebra::BaseVector *f)
 {
     core::VecDerivId forceID(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
-    core::VecDerivId dxID = core::VecDerivId::dx();
+    core::VecDerivId dxID = core::vec_id::write_access::dx;
 
     const unsigned int numDOFs = mstate->getSize();
 
@@ -349,7 +349,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const linear
     for (unsigned int i=0; i< numDOFs; i++)
         force[i] = Deriv();
 
-    const MatrixDeriv& c = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    const MatrixDeriv& c = mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 
@@ -379,10 +379,10 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const linear
     // use the OdeSolver to get the position integration factor
     const SReal velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
 
-    Data<VecCoord>& xData     = *mstate->write(core::VecCoordId::position());
-    Data<VecDeriv>& vData     = *mstate->write(core::VecDerivId::velocity());
-    const Data<VecCoord> & xfreeData = *mstate->read(core::ConstVecCoordId::freePosition());
-    const Data<VecDeriv> & vfreeData = *mstate->read(core::ConstVecDerivId::freeVelocity());
+    Data<VecCoord>& xData     = *mstate->write(core::vec_id::write_access::position);
+    Data<VecDeriv>& vData     = *mstate->write(core::vec_id::write_access::velocity);
+    const Data<VecCoord> & xfreeData = *mstate->read(core::vec_id::read_access::freePosition);
+    const Data<VecDeriv> & vfreeData = *mstate->read(core::vec_id::read_access::freeVelocity);
     VecCoord& x = *xData.beginEdit();
     VecDeriv& v = *vData.beginEdit();
     const VecCoord& x_free = xfreeData.getValue();
@@ -414,7 +414,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const linear
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::resetContactForce()
 {
-    Data<VecDeriv>& forceData = *mstate->write(core::VecDerivId::force());
+    Data<VecDeriv>& forceData = *mstate->write(core::vec_id::write_access::force);
     VecDeriv& force = *forceData.beginEdit();
     for( unsigned i=0; i<force.size(); ++i )
         force[i] = Deriv();
@@ -425,7 +425,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetContactForce()
 template<class DataTypes>
 bool LinearSolverConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
 {
-    const MatrixDeriv& c = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    const MatrixDeriv& c = mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
 
     return c.readLine(index) != c.end();
 }
@@ -442,7 +442,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SRea
 {
     verify_constraints();
 
-    const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    const MatrixDeriv& constraints = mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
 
     constraint_force.clear();
     constraint_force.resize(mstate->getSize());
@@ -535,7 +535,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SRea
 
     /////////////// SET INFO FOR LINEAR SOLVER /////////////
     core::VecDerivId forceID(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
-    core::VecDerivId dxID = core::VecDerivId::dx();
+    core::VecDerivId dxID = core::vec_id::write_access::dx;
 
     l_linearSolver->setSystemRHVector(forceID);
     l_linearSolver->setSystemLHVector(dxID);
@@ -583,7 +583,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SRea
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(SReal*d, int begin, int end)
 {
-    const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    const MatrixDeriv& constraints = mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
 
     last_disp = begin;
 
@@ -652,7 +652,7 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(SReal* df,
     _new_force = true;
 
     constexpr const auto derivDim = Deriv::total_size;
-    const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    const MatrixDeriv& constraints = mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
 
     // TODO => optimisation !!!
     for (int i = begin; i <= end; i++)
@@ -699,7 +699,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
     const unsigned int numDOFReals = numDOFs * N;
 
     // Compute J
-    const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    const MatrixDeriv& constraints = mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
     const sofa::SignedIndex totalNumConstraints = W->rowSize();
 
     m_constraintJacobian.resize(totalNumConstraints, numDOFReals);
