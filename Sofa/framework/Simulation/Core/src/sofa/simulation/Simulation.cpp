@@ -230,8 +230,12 @@ void animate(Node* root, SReal dt)
 void updateVisual(Node* root)
 {
     SCOPED_TIMER("Simulation::updateVisual");
-    
+
+
     sofa::core::visual::VisualParams* vparams = sofa::core::visual::visualparams::defaultInstance();
+
+    VisualStyleVisitor act(vparams);
+    root->execute(act);
 
     if (sofa::core::visual::VisualLoop* vloop = root->getVisualLoop())
     {

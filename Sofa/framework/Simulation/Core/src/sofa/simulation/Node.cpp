@@ -94,6 +94,7 @@ Node::Node(const std::string& name)
     , configurationSetting(initLink("configurationSetting", "The ConfigurationSetting(s) attached to this node"))
     , shaders(initLink("shaders", "The shaders attached to this node"))
     , visualModel(initLink("visualModel", "The VisualModel(s) attached to this node"))
+    , visualStyle(initLink("visualStyle", "The VisualStyle(s) attached to this node"))
     , visualManager(initLink("visualManager", "The VisualManager(s) attached to this node"))
     , collisionModel(initLink("collisionModel", "The CollisionModel(s) attached to this node"))
     , unsorted(initLink("unsorted", "The remaining objects attached to this node"))
@@ -930,6 +931,7 @@ void Node::printComponents()
     using core::objectmodel::ContextObject;
     using core::collision::Pipeline;
     using core::BaseState;
+    using core::visual::BaseVisualStyle;
 
     std::stringstream sstream;
 
@@ -986,6 +988,9 @@ void Node::printComponents()
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "VisualModel: ";
     for (NodeSequence<VisualModel>::iterator i = visualModel.begin(), iend = visualModel.end(); i != iend; ++i)
+        sstream << (*i)->getName() << " ";
+    sstream << "\n" << "BaseVisualStyle: ";
+    for (NodeSingle<BaseVisualStyle>::iterator i = visualStyle.begin(), iend = visualStyle.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "CollisionModel: ";
     for (NodeSequence<CollisionModel>::iterator i = collisionModel.begin(), iend = collisionModel.end(); i != iend; ++i)
@@ -1045,6 +1050,7 @@ NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ContextObject, ContextOb
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::visual::Shader, Shader, shaders )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualModel, VisualModel, visualModel )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::visual::BaseVisualStyle, VisualStyle, visualStyle )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualManager, VisualManager, visualManager )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::CollisionModel, CollisionModel, collisionModel )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )
@@ -1071,6 +1077,7 @@ template class NodeSequence<sofa::core::objectmodel::BaseObject>;
 
 template class NodeSingle<sofa::core::behavior::BaseAnimationLoop>;
 template class NodeSingle<sofa::core::visual::VisualLoop>;
+template class NodeSingle<sofa::core::visual::BaseVisualStyle>;
 template class NodeSingle<sofa::core::topology::Topology>;
 template class NodeSingle<sofa::core::topology::BaseMeshTopology>;
 template class NodeSingle<sofa::core::BaseState>;

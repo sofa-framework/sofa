@@ -46,14 +46,28 @@ Visitor::Result VisualVisitor::processNodeTopDown(simulation::Node* node)
 }
 
 
+
+Visitor::Result VisualStyleVisitor::processNodeTopDown(simulation::Node* node)
+{
+    for_each(this, node, node->visualStyle, &VisualStyleVisitor::processVisualStyle);
+    return RESULT_CONTINUE;
+}
+
+
+void VisualStyleVisitor::processVisualStyle(simulation::Node* /*node*/, sofa::core::visual::BaseVisualStyle* o)
+{
+    o-> fwdDraw(vparams);
+}
+
+
 Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
 {
-
     // NB: hasShader is only used when there are visual models and getShader does a graph search when there is no shader,
     // which will most probably be the case when there are no visual models, so we skip the search unless we have visual models.
     hasShader = !node->visualModel.empty() && (node->getShader()!=nullptr);
 
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::fwdVisualModel);
+
     this->VisualVisitor::processNodeTopDown(node);
 
     return RESULT_CONTINUE;
@@ -149,9 +163,20 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual:
 
 Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)
 {
-    for_each(this, node, node->visualModel,              &VisualUpdateVisitor::processVisualModel);
+//    for_each(this, node, node->visualModel,     &VisualUpdateVisitor::fwdVisualModel);
+    for_each(this, node, node->visualModel,     &VisualUpdateVisitor::processVisualModel);
 
     return RESULT_CONTINUE;
+}
+
+
+void VisualUpdateVisitor::fwdVisualModel(simulation::Node* /*node*/, core::visual::VisualModel* vm)
+{
+    msg_info_when(DO_DEBUG_DRAW, vm) << " entering VisualVisitor::fwdVisualModel()" ;
+
+    vm->fwdDraw(vparams);
+
+    msg_info_when(DO_DEBUG_DRAW, vm) << " leaving VisualVisitor::fwdVisualModel()" ;
 }
 
 void VisualUpdateVisitor::processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
