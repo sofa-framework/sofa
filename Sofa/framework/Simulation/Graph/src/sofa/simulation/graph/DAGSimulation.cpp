@@ -57,12 +57,4 @@ Node::SPtr DAGSimulation::createNewNode(const std::string& name)
     return sofa::core::objectmodel::New<DAGNode>(name);
 }
 
-
-
-// Register in the Factory
-//int DAGSimulationClass = core::RegisterObject ( "Main simulation algorithm, based on tree graph" )
-//.add< DAGSimulation >()
-//;
-
-
 } // namespace sofa::simulation::graph
