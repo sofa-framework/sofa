@@ -70,8 +70,8 @@ public:
     void SetUp() override
     {
         m_simulation = sofa::simulation::getSimulation();
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Grid);
     }
 
     void TearDown() override

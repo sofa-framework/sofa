@@ -57,11 +57,11 @@ struct EulerImplicit_with_damping_forcefield : public BaseSimulationTest, Numeri
 
         //*******
         // load appropriate modules
-        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
-        sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
-        sofa::simpleapi::importPlugin("Sofa.Component.MechanicalLoad");
+        sofa::simpleapi::importPlugin(Sofa.Component.ODESolver.Backward);
+        sofa::simpleapi::importPlugin(Sofa.Component.LinearSolver.Iterative);
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
+        sofa::simpleapi::importPlugin(Sofa.Component.MechanicalLoad);
 
         // avoid warnings
         simpleapi::createObject(root, "DefaultAnimationLoop", {});

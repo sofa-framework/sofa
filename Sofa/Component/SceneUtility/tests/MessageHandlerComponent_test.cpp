@@ -45,7 +45,7 @@ using sofa::helper::logging::MessageDispatcher ;
 
 bool perTestInit()
 {
-    sofa::simpleapi::importPlugin("Sofa.Component.SceneUtility");
+    sofa::simpleapi::importPlugin(Sofa.Component.SceneUtility);
 
     /// THE TESTS HERE ARE NOT INHERITING FROM SOFA TEST SO WE NEED TO MANUALLY INSTALL THE HANDLER
     /// DO NO REMOVE
