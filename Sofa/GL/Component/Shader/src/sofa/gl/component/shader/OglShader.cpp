@@ -29,10 +29,11 @@
 namespace sofa::gl::component::shader
 {
 
-//Register OglShader in the Object Factory
-int OglShaderClass = core::RegisterObject("OglShader")
-        .add< OglShader >()
-        ;
+void registerOglShader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Set custom shader for the current visual context.")
+        .add< OglShader >());
+}
 
 OglShader::OglShader():
     turnOn(initData(&turnOn, (bool) true, "turnOn", "Turn On the shader?")),

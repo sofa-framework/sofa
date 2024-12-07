@@ -27,10 +27,11 @@
 namespace sofa::gl::component::shader
 {
 
-//Register PostProcessManager in the Object Factory
-int PostProcessManagerClass = core::RegisterObject("PostProcessManager")
-        .add< PostProcessManager >()
-        ;
+void registerPostProcessManager(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Add a post process pass to the actual rendering.")
+        .add< PostProcessManager >());
+}
 
 using namespace core::visual;
 

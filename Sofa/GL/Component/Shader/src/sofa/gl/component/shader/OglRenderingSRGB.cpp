@@ -28,10 +28,11 @@ namespace sofa::gl::component::shader
 
 using namespace simulation;
 
-//Register RenderingSRGB in the Object Factory
-int OglRenderingSRGBClass = core::RegisterObject("OglRenderingSRGB")
-        .add< OglRenderingSRGB >()
-        ;
+void registerOglRenderingSRGB(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Set the current visual context framebuffer with SRGB.")
+        .add< OglRenderingSRGB >());
+}
 
 void OglRenderingSRGB::fwdDraw(core::visual::VisualParams* /*vp*/)
 {

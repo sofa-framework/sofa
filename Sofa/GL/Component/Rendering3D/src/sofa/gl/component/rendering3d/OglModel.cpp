@@ -38,9 +38,11 @@ using sofa::type::RGBAColor;
 using sofa::type::Material;
 using namespace sofa::type;
 
-int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
-    .add< OglModel >();
-
+void registerOglModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Generic visual model for OpenGL display.")
+        .add< OglModel >());
+}
 
 OglModel::OglModel()
     : blendTransparency(initData(&blendTransparency, true, "blendTranslucency", "Blend transparent parts"))

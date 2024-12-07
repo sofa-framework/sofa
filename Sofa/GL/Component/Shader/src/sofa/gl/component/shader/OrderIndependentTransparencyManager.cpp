@@ -34,10 +34,11 @@ using namespace sofa::gl;
 using namespace simulation;
 using namespace core::visual;
 
-//Register OrderIndependentTransparencyManager in the Object Factory
-int OrderIndependentTransparencyManagerClass = core::RegisterObject("OrderIndependentTransparencyManager")
-        .add< OrderIndependentTransparencyManager >()
-        ;
+void registerOrderIndependentTransparencyManager(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Order Independent Transparency Manager (to be used with OglOITShader).")
+        .add< OrderIndependentTransparencyManager >());
+}
 
 class VisualOITDrawVisitor : public VisualDrawVisitor
 {
