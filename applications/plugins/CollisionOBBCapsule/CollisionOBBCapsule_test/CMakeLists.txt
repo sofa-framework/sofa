@@ -7,6 +7,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
+    CapsuleModel_test.cpp
     OBB_test.cpp
 )
 
