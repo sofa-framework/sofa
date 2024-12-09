@@ -54,8 +54,8 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin("Sofa.Component.Collision.Detection.Algorithm");
-    factory->registerObjectsFromPlugin("Sofa.Component.Collision.Detection.Intersection");
+    factory->registerObjectsFromPlugin(Sofa.Component.Collision.Detection.Algorithm);
+    factory->registerObjectsFromPlugin(Sofa.Component.Collision.Detection.Intersection);
 }
 
 void init()

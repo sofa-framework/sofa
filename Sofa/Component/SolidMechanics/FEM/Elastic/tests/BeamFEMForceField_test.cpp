@@ -68,7 +68,7 @@ public:
 
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.Component");
+        sofa::simpleapi::importPlugin(Sofa.Component);
         m_simulation = sofa::simulation::getSimulation();
     }
 
