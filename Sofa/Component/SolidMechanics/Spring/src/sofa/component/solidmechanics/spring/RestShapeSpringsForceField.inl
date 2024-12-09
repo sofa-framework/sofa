@@ -167,8 +167,6 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
         }
     }
 
-    lastUpdatedStep = -1.0;
-
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
