@@ -34,6 +34,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/MechanicalOperations.h
     ${SRC_ROOT}/MechanicalVPrintVisitor.h
     ${SRC_ROOT}/MechanicalVisitor.h
+    ${SRC_ROOT}/MechanicalVisitorCreator.h
     ${SRC_ROOT}/MutationListener.h
     ${SRC_ROOT}/Node.h
     ${SRC_ROOT}/Node.inl
