@@ -190,7 +190,7 @@ typename CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Rea
 
 template <class MyReal>
 const typename CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord & CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::center(sofa::Index i)const{
-    return DataTypes::getCPos((_mstate->read(core::ConstVecCoordId::position())->getValue())[i]);
+    return DataTypes::getCPos((_mstate->read(core::vec_id::read_access::position)->getValue())[i]);
 }
 
 template <class MyReal>
@@ -237,7 +237,7 @@ typename TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Real TCapsule<so
 
 template<class MyReal>
 const typename CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord & CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::velocity(sofa::Index index) const {
-    return DataTypes::getDPos(((_mstate->read(core::ConstVecDerivId::velocity())->getValue()))[index]);
+    return DataTypes::getDPos(((_mstate->read(core::vec_id::read_access::velocity)->getValue()))[index]);
 }
 
 
@@ -246,7 +246,7 @@ const typename TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord & TC
 
 template<class MyReal>
 const sofa::type::Quat<SReal> CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::orientation(sofa::Index index)const{
-    return _mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
+    return _mstate->read(core::vec_id::read_access::position)->getValue()[index].getOrientation();
 }
 
 template<class MyReal>

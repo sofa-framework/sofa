@@ -461,7 +461,7 @@ void LinearMovementProjectiveConstraint<DataTypes>::draw(const core::visual::Vis
     }
     else
     {
-        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
         sofa::type::vector<type::Vec3> points;
         type::Vec3 point;

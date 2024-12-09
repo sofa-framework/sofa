@@ -105,7 +105,7 @@ struct EulerImplicit_with_damping_forcefield : public BaseSimulationTest, Numeri
 
         // access the MechanicalObect (access position of the dampedParticule)
         typename MechanicalObject<sofa::defaulttype::Vec3dTypes>::SPtr dofs = dampedParticule->get<MechanicalObject<sofa::defaulttype::Vec3dTypes>>(root->SearchDown);
-        sofa::defaulttype::Vec3dTypes::Coord position = dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[0];
+        sofa::defaulttype::Vec3dTypes::Coord position = dofs.get()->read(sofa::core::vec_id::read_access::position)->getValue()[0];
 
         // save it as Vec3d for comparison with expected result
         Vec3d finalPosition(position[0], position[1], position[2]);

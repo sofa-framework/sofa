@@ -380,8 +380,8 @@ void ArticulatedHierarchyController::applyController(void)
 
                                 //	while (articulatedObjIt != articulatedObjItEnd)
                                 {
-                                    helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::VecCoordId::position());
-                                    helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::VecCoordId::freePosition());
+                                    helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::vec_id::write_access::position);
+                                    helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::vec_id::write_access::freePosition);
                                     x[(*it)->articulationIndex.getValue()].x() += signFactor * distributedAngleDelta;
                                     xfree[(*it)->articulationIndex.getValue()].x() += signFactor * distributedAngleDelta;
                                     ++articulatedObjIt;
@@ -406,8 +406,6 @@ void ArticulatedHierarchyController::applyController(void)
         }
     }
 }
-
-SOFA_DECL_CLASS(ArticulatedHierarchyController)
 
 // Register in the Factory
 int ArticulatedHierarchyControllerClass = core::RegisterObject("Implements an user interaction handler that controls the values of the articulations of an articulated hierarchy container.")

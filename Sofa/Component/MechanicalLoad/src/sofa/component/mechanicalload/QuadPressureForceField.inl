@@ -134,7 +134,7 @@ void QuadPressureForceField<DataTypes>::initQuadInformation()
     const sofa::type::vector<Index>& my_map = d_quadPressureMap.getMap2Elements();
     auto my_subset = sofa::helper::getWriteOnlyAccessor(d_quadPressureMap);
 
-    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
@@ -166,7 +166,7 @@ void QuadPressureForceField<DataTypes>::updateQuadInformation()
 template <class DataTypes>
 void QuadPressureForceField<DataTypes>::selectQuadsAlongPlane()
 {
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     std::vector<bool> vArray;
 
     vArray.resize(x.size());
@@ -251,7 +251,7 @@ void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     vparams->drawTool()->disableLighting();
     std::vector<sofa::type::Vec3> vertices;

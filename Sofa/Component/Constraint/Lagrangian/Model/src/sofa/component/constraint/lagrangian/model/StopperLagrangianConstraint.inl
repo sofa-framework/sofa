@@ -46,7 +46,7 @@ void StopperLagrangianConstraint<DataTypes>::init()
     this->mstate = dynamic_cast<MechanicalState*>(this->getContext()->getMechanicalState());
     assert(this->mstate);
 
-    helper::WriteAccessor<Data<VecCoord> > xData = *this->mstate->write(core::VecCoordId::position());
+    helper::WriteAccessor<Data<VecCoord> > xData = *this->mstate->write(core::vec_id::write_access::position);
     VecCoord& x = xData.wref();
     if (x[d_index.getValue()].x() < d_min.getValue())
         x[d_index.getValue()].x() = (Real) d_min.getValue();

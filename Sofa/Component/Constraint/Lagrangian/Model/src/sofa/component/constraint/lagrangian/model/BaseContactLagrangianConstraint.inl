@@ -57,8 +57,8 @@ template<class DataTypes, class ContactParams>
 void BaseContactLagrangianConstraint<DataTypes, ContactParams>::addContact(const ContactParams& parameters, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id, PersistentID localid)
 {
     addContact(parameters, norm, P, Q, contactDistance, m1, m2,
-            this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
-            this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
+            this->getMState2()->read(core::vec_id::read_access::freePosition)->getValue()[m2],
+            this->getMState1()->read(core::vec_id::read_access::freePosition)->getValue()[m1],
             id, localid);
 }
 
@@ -66,11 +66,11 @@ template<class DataTypes, class ContactParams>
 void BaseContactLagrangianConstraint<DataTypes, ContactParams>::addContact(const ContactParams& parameters, Deriv norm, Real contactDistance, int m1, int m2, long id, PersistentID localid)
 {
     addContact(parameters, norm,
-            this->getMState2()->read(core::ConstVecCoordId::position())->getValue()[m2],
-            this->getMState1()->read(core::ConstVecCoordId::position())->getValue()[m1],
+            this->getMState2()->read(core::vec_id::read_access::position)->getValue()[m2],
+            this->getMState1()->read(core::vec_id::read_access::position)->getValue()[m1],
             contactDistance, m1, m2,
-            this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
-            this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
+            this->getMState2()->read(core::vec_id::read_access::freePosition)->getValue()[m2],
+            this->getMState1()->read(core::vec_id::read_access::freePosition)->getValue()[m1],
             id, localid);
 }
 
@@ -176,8 +176,8 @@ void BaseContactLagrangianConstraint<DataTypes, ContactParams>::buildConstraintM
 template<class DataTypes, class ContactParams>
 void BaseContactLagrangianConstraint<DataTypes, ContactParams>::getPositionViolation(linearalgebra::BaseVector *v)
 {
-    const VecCoord &PfreeVec = this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue();
-    const VecCoord &QfreeVec = this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue();
+    const VecCoord &PfreeVec = this->getMState2()->read(core::vec_id::read_access::freePosition)->getValue();
+    const VecCoord &QfreeVec = this->getMState1()->read(core::vec_id::read_access::freePosition)->getValue();
 
     Real dfree = (Real)0.0;
     Real dfree_t = (Real)0.0;
@@ -262,8 +262,8 @@ void BaseContactLagrangianConstraint<DataTypes, ContactParams>::getVelocityViola
     const SReal dt = this->getContext()->getDt();
     const SReal invDt = SReal(1.0) / dt;
 
-    const VecDeriv &PvfreeVec = this->getMState2()->read(core::ConstVecDerivId::freeVelocity())->getValue();
-    const VecDeriv &QvfreeVec = this->getMState1()->read(core::ConstVecDerivId::freeVelocity())->getValue();
+    const VecDeriv &PvfreeVec = this->getMState2()->read(core::vec_id::read_access::freeVelocity)->getValue();
+    const VecDeriv &QvfreeVec = this->getMState1()->read(core::vec_id::read_access::freeVelocity)->getValue();
 
     const unsigned int cSize = contacts.size();
 

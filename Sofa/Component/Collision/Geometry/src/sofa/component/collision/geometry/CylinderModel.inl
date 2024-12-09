@@ -213,7 +213,7 @@ typename CylinderCollisionModel<DataTypes>::Real CylinderCollisionModel< DataTyp
 
 template<class DataTypes>
 const typename CylinderCollisionModel<DataTypes>::Coord & CylinderCollisionModel< DataTypes >::center(sofa::Index i)const{
-    return DataTypes::getCPos((m_mstate->read(core::ConstVecCoordId::position())->getValue())[i]);
+    return DataTypes::getCPos((m_mstate->read(core::vec_id::read_access::position)->getValue())[i]);
 }
 
 template<class DataTypes>
@@ -255,7 +255,7 @@ typename TCylinder<DataTypes>::Real TCylinder<DataTypes >::radius() const
 
 template<class DataTypes>
 const typename CylinderCollisionModel<DataTypes>::Coord & CylinderCollisionModel<DataTypes >::velocity(sofa::Index index) const {
-    return DataTypes::getDPos(((m_mstate->read(core::ConstVecDerivId::velocity())->getValue()))[index]);
+    return DataTypes::getDPos(((m_mstate->read(core::vec_id::read_access::velocity)->getValue()))[index]);
 }
 
 
@@ -264,7 +264,7 @@ const typename TCylinder<DataTypes>::Coord & TCylinder<DataTypes >::v() const {r
 
 template<class DataTypes>
 const sofa::type::Quat<SReal> CylinderCollisionModel<DataTypes >::orientation(sofa::Index index)const{
-    return m_mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
+    return m_mstate->read(core::vec_id::read_access::position)->getValue()[index].getOrientation();
 }
 
 template<class DataTypes>

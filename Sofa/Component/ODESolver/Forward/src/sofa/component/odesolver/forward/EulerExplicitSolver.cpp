@@ -76,8 +76,8 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     mop->setImplicit(false);
 
     // Initialize the set of multi-vectors computed by this solver
-    MultiVecDeriv acc   (&vop, core::VecDerivId::dx());     // acceleration to be computed
-    MultiVecDeriv f     (&vop, core::VecDerivId::force() ); // force to be computed
+    MultiVecDeriv acc   (&vop, core::vec_id::write_access::dx);     // acceleration to be computed
+    MultiVecDeriv f     (&vop, core::vec_id::write_access::force ); // force to be computed
 
     acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
@@ -140,8 +140,8 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
     MultiVecDeriv newVel(vop, vResult);                    // position to be computed
 
     // Initialize the set of multi-vectors used to compute the new velocity and position
-    MultiVecCoord pos(vop, core::VecCoordId::position() ); //current position
-    MultiVecDeriv vel(vop, core::VecDerivId::velocity() ); //current velocity
+    MultiVecCoord pos(vop, core::vec_id::write_access::position ); //current position
+    MultiVecDeriv vel(vop, core::vec_id::write_access::velocity ); //current velocity
 
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     if (d_symplectic.getValue())
@@ -328,7 +328,10 @@ void EulerExplicitSolver::assembleSystemMatrix(sofa::simulation::common::Mechani
     //       is called on every BaseProjectiveConstraintSet objects. An example of such constraint set is the
     //       FixedProjectiveConstraint. In this case, it will set to 0 every column (_, i) and row (i, _) of the assembled
     //       matrix for the ith degree of freedom.
-    mop->setSystemMBKMatrix(1, 0, 0, l_linearSolver.get());
+    mop->setSystemMBKMatrix(
+        core::MatricesFactors::M(1),
+        core::MatricesFactors::B(0),
+        core::MatricesFactors::K(0), l_linearSolver.get());
 }
 
 void EulerExplicitSolver::solveSystem(core::MultiVecDerivId solution, core::MultiVecDerivId rhs) const

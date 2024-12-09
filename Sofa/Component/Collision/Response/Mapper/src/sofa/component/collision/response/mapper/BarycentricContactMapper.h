@@ -84,8 +84,8 @@ public:
         if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
-            map->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-            map->applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+            map->apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::position, core::vec_id::read_access::position);
+            map->applyJ(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::velocity, core::vec_id::read_access::velocity);
         }
     }
 
@@ -94,8 +94,8 @@ public:
         if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
-            map->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
-            map->applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::freeVelocity(), core::ConstVecDerivId::freeVelocity());
+            map->apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::freePosition, core::vec_id::read_access::freePosition);
+            map->applyJ(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::freeVelocity, core::vec_id::read_access::freeVelocity);
         }
     }
 
@@ -104,7 +104,7 @@ public:
         if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
-            map->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
+            map->apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::restPosition, core::vec_id::read_access::restPosition);
         }
     }
 };
@@ -119,7 +119,7 @@ public:
 
     sofa::Index addPoint(const Coord& P, sofa::Index index, Real&)
     {
-        return this->mapper->createPointInLine(P, this->model->getElemEdgeIndex(index), &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
+        return this->mapper->createPointInLine(P, this->model->getElemEdgeIndex(index), &this->model->getMechanicalState()->read(core::vec_id::read_access::position)->getValue());
     }
     sofa::Index addPointB(const Coord& /*P*/, sofa::Index index, Real& /*r*/, const type::Vec3& baryP)
     {
@@ -141,13 +141,13 @@ public:
     {
         auto nbt = this->model->getCollisionTopology()->getNbTriangles();
         if (index < nbt)
-            return this->mapper->createPointInTriangle(P, index, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
+            return this->mapper->createPointInTriangle(P, index, &this->model->getMechanicalState()->read(core::vec_id::read_access::position)->getValue());
         else
         {
             sofa::Index qindex = (index - nbt)/2;
             auto nbq = this->model->getCollisionTopology()->getNbQuads();
             if (qindex < nbq)
-                return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
+                return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::vec_id::read_access::position)->getValue());
             else
             {
                 msg_error("ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>") << "Invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<msgendl
@@ -168,7 +168,7 @@ public:
             sofa::Index qindex = (index - nbt)/2;
             auto nbq = this->model->getCollisionTopology()->getNbQuads();
             if (qindex < nbq)
-                return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
+                return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::vec_id::read_access::position)->getValue());
             else
             {
                 msg_error("ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>") << "Invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<msgendl

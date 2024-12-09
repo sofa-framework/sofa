@@ -32,7 +32,7 @@ public:
     SReal t;
     sofa::core::MultiVecCoordId pos;
     MechanicalProjectPositionVisitor(const sofa::core::MechanicalParams* mparams , SReal time=0,
-                                     sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position())
+                                     sofa::core::MultiVecCoordId x = sofa::core::vec_id::write_access::position)
             : MechanicalVisitor(mparams) , t(time), pos(x)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO

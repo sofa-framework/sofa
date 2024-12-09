@@ -345,7 +345,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     if (size == 0.0f)
         size = (float)d_drawSize.getValue();
 
-    helper::ReadAccessor<VecCoord> p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    helper::ReadAccessor<VecCoord> p1 = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     type::Vec3 normal{type::NOINIT}, v1{ type::NOINIT }, v2{ type::NOINIT };
     get3DFrameFromDPosNormal<DataTypes>(d_planeNormal.getValue(), v1, v2, normal);

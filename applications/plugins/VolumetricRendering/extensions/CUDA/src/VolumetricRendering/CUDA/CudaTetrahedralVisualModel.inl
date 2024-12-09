@@ -92,7 +92,7 @@ void OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::dra
 #ifdef GL_LINES_ADJACENCY_EXT
     //TODO: Const ? Read-Only ?
     //VecCoord& x = *nodes->getX();
-    Data<VecCoord>* d_x = nodes->write(core::VecCoordId::position());
+    Data<VecCoord>* d_x = nodes->write(core::vec_id::write_access::position);
     VecCoord& x = *d_x->beginEdit();
 
     bool vbo = useVBO.getValue();
@@ -139,7 +139,7 @@ bool OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::add
 {
     const core::topology::BaseMeshTopology::SeqTetrahedra& vec = topo->getTetrahedra();
     core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
-    const VecCoord& x = nodes->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = nodes->read(core::vec_id::read_access::position)->getValue();
     Coord v;
 
     for(it = vec.begin() ; it != vec.end() ; ++it)

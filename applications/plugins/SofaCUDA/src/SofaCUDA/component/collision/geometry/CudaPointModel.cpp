@@ -67,7 +67,7 @@ void CudaPointCollisionModel::draw(const core::visual::VisualParams* , Index ind
     const int gsize = groupSize.getValue();
     CudaPoint t(this,index);
     glBegin(GL_POINTS);
-    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = mstate->read(core::vec_id::read_access::position)->getValue();
     const auto i0 = index*gsize;
     const Size n = (index==size-1) ? x.size()-i0 : Size(gsize);
     for (Size p=0; p<n; p++)
@@ -126,7 +126,7 @@ void CudaPointCollisionModel::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
-        const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& x = mstate->read(core::vec_id::read_access::position)->getValue();
         for (Size i=0; i<size; i++)
         {
             const int i0 = i*gsize;

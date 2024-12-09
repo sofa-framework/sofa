@@ -106,7 +106,6 @@ void PipelineImpl::computeCollisionReset()
     if (contactManager!=nullptr && contactManager->getIntersectionMethod()!=intersectionMethod)
         contactManager->setIntersectionMethod(intersectionMethod);
 
-    SCOPED_TIMER("CollisionReset");
     doCollisionReset();
 }
 
@@ -114,7 +113,6 @@ void PipelineImpl::computeCollisionDetection()
 {
     simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == nullptr) return;
-    SCOPED_TIMER("CollisionDetection");
     std::vector<CollisionModel*> collisionModels;
     root->getTreeObjects<CollisionModel>(&collisionModels);
     doCollisionDetection(collisionModels);
@@ -125,7 +123,6 @@ void PipelineImpl::computeCollisionResponse()
     const simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == nullptr) return;
 
-    SCOPED_TIMER("CollisionResponse");
     doCollisionResponse();
 }
 

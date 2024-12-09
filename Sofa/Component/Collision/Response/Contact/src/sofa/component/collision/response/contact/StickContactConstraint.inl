@@ -173,8 +173,8 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
     mapper2.updateXfree();
 
     msg_info() << contacts.size() << " StickContactConstraint created";
-    msg_info() << "mstate1 size = " << m_constraint->getMState1()->getSize() << " x = " << m_constraint->getMState1()->getSize() << " xfree = " << m_constraint->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue().size();
-    msg_info() << "mstate2 size = " << m_constraint->getMState2()->getSize() << " x = " << m_constraint->getMState2()->getSize() << " xfree = " << m_constraint->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue().size();
+    msg_info() << "mstate1 size = " << m_constraint->getMState1()->getSize() << " x = " << m_constraint->getMState1()->getSize() << " xfree = " << m_constraint->getMState1()->read(core::vec_id::read_access::freePosition)->getValue().size();
+    msg_info() << "mstate2 size = " << m_constraint->getMState2()->getSize() << " x = " << m_constraint->getMState2()->getSize() << " xfree = " << m_constraint->getMState2()->read(core::vec_id::read_access::freePosition)->getValue().size();
 
 }
 
