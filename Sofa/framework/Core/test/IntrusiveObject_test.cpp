@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,37 +19,55 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/core/config.h>
-#include <atomic>
+#include <sofa/core/IntrusiveObject.h>
+#include <gtest/gtest.h>
+#include <sofa/core/sptr.h>
 
-namespace sofa::core
+
+class DummyIntrusiveObject : public sofa::core::IntrusiveObject
 {
+public:
+    DummyIntrusiveObject() = default;
+    explicit DummyIntrusiveObject(const std::function<void()>& _destructorCallback)
+        : destructorCallback(_destructorCallback) {}
 
-/**
- * The `IntrusiveObject` class implements an internal reference counting mechanism
- * to manage its lifetime. It is intended to work with intrusive smart pointers like
- * `boost::intrusive_ptr`.
- */
-class SOFA_CORE_API IntrusiveObject
-{
-    std::atomic<int> ref_counter { 0 };
-
-    void addRef();
-    void release();
-
-    friend inline void intrusive_ptr_add_ref(IntrusiveObject* p)
+    ~DummyIntrusiveObject() override
     {
-        p->addRef();
+        destructorCallback();
     }
 
-    friend inline void intrusive_ptr_release(IntrusiveObject* p)
-    {
-        p->release();
-    }
-
-protected:
-    virtual ~IntrusiveObject() = default;
+private:
+    std::function<void()> destructorCallback;
 };
 
+
+
+TEST(IntrusiveObject, IsDestructorCalled)
+{
+    std::size_t nbTimesDestructorCalled = 0;
+    {
+        sofa::core::sptr<DummyIntrusiveObject> dummy(new DummyIntrusiveObject([&nbTimesDestructorCalled]()
+        {
+            nbTimesDestructorCalled++;
+        }));
+    }
+    EXPECT_EQ(1, nbTimesDestructorCalled);
+}
+
+
+TEST(IntrusiveObject, Copy)
+{
+    std::size_t nbTimesDestructorCalled = 0;
+    {
+        sofa::core::sptr<DummyIntrusiveObject> dummy0;
+        {
+            sofa::core::sptr<DummyIntrusiveObject> dummy(new DummyIntrusiveObject([&nbTimesDestructorCalled]()
+            {
+                nbTimesDestructorCalled++;
+            }));
+
+            dummy0 = dummy;
+        }
+    }
+    EXPECT_EQ(1, nbTimesDestructorCalled);
 }
