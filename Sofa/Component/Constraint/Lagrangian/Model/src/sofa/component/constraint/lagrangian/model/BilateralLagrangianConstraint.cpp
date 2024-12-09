@@ -58,8 +58,8 @@ public:
 
         const unsigned minp = std::min(m1Indices.size(),m2Indices.size());
 
-        const DataVecCoord_t<T> &d_x1 = *self.mstate1->read(core::ConstVecCoordId::position());
-        const DataVecCoord_t<T> &d_x2 = *self.mstate2->read(core::ConstVecCoordId::position());
+        const DataVecCoord_t<T> &d_x1 = *self.mstate1->read(core::vec_id::read_access::position);
+        const DataVecCoord_t<T> &d_x2 = *self.mstate2->read(core::vec_id::read_access::position);
 
         const VecCoord_t<T> &x1 = d_x1.getValue();
         const VecCoord_t<T> &x2 = d_x2.getValue();

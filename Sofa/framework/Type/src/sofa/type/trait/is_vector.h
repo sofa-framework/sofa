@@ -25,7 +25,7 @@
 namespace sofa::type::trait
 {
 
-/// Detect if a type T has iterator/const iterator function and operator[](size_t)
+/// Detect if a type T has iterator/const iterator function, operator[](size_t) and is dynamically resizable (resize function)
 template<typename T>
 struct is_vector
 {
@@ -40,6 +40,7 @@ struct is_vector
         decltype(cpt->begin()) * = nullptr,
         decltype(cpt->end()) * = nullptr,
         typename std::decay<decltype((*pt)[0])>::type * = nullptr,   ///< Is there an operator[] ?
+        decltype(pt->resize(1)) * = nullptr,
         typename A::iterator * = nullptr,
         typename A::const_iterator * = nullptr,
         typename A::value_type * = nullptr) {

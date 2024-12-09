@@ -179,7 +179,7 @@ struct SpringForceField_test : public ForceField_test<_SpringForceField>
         sofa::simulation::node::initRoot(this->node.get());
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
-        MechanicalComputeForceVisitor computeForce( &mparams, core::VecDerivId::force() );
+        MechanicalComputeForceVisitor computeForce( &mparams, core::vec_id::write_access::force );
         this->node->execute(computeForce);
 
         // check force

@@ -65,7 +65,7 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::drawRigid3dImpl(const VisualPar
 {
     const MassVector &masses= d_vertexMass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
 
     if(masses.size() != x.size()) return;
 
@@ -113,7 +113,7 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::drawRigid2dImpl(const VisualPar
 {
     const MassVector &masses= d_vertexMass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
     for (unsigned int i=0; i<x.size(); i++)
     {
         if (masses[i].mass == 0) continue;

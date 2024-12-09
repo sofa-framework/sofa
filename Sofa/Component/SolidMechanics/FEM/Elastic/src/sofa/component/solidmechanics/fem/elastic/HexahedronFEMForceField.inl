@@ -139,7 +139,7 @@ void HexahedronFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void HexahedronFEMForceField<DataTypes>::reinit()
 {
-    const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& p = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     d_initialPoints.setValue(p);
 
     _materialsStiffnesses.resize(this->getIndexedElements()->size() );
@@ -1197,7 +1197,7 @@ void HexahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams* par
 
     if( !onlyVisible ) return;
 
-    helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::VecCoordId::position());
+    helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::vec_id::write_access::position);
 
     static const Real max_real = std::numeric_limits<Real>::max();
     static const Real min_real = std::numeric_limits<Real>::lowest();
@@ -1227,7 +1227,7 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     vparams->drawTool()->setLightingEnabled(false);
 

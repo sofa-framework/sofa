@@ -140,7 +140,7 @@ void TaitSurfacePressureForceField<DataTypes>::init()
     }
 
     updateFromTopology();
-    computeMeshVolumeAndArea(*d_currentVolume.beginEdit(), *d_currentSurfaceArea.beginEdit(), this->mstate->read(sofa::core::VecCoordId::position()));
+    computeMeshVolumeAndArea(*d_currentVolume.beginEdit(), *d_currentSurfaceArea.beginEdit(), this->mstate->read(sofa::core::vec_id::write_access::position));
     d_currentVolume.endEdit();
     d_currentSurfaceArea.endEdit();
     Real currentStiffness = 0;
@@ -148,7 +148,7 @@ void TaitSurfacePressureForceField<DataTypes>::init()
     computePressureAndStiffness(currentPressure, currentStiffness, d_currentVolume.getValue(), d_v0.getValue());
     d_currentPressure.setValue(currentPressure);
     d_currentStiffness.setValue(currentStiffness);
-    computeStatistics(this->mstate->read(sofa::core::VecCoordId::position()));
+    computeStatistics(this->mstate->read(sofa::core::vec_id::write_access::position));
 }
 
 template <class DataTypes>
@@ -203,7 +203,7 @@ void TaitSurfacePressureForceField<DataTypes>::updateFromTopology()
         lastTopologyRevision = m_topology->getRevision();
         computePressureTriangles();
 
-        computeMeshVolumeAndArea(*d_volumeAfterTC.beginEdit(), *d_surfaceAreaAfterTC.beginEdit(), this->mstate->read(core::ConstVecCoordId::restPosition()));
+        computeMeshVolumeAndArea(*d_volumeAfterTC.beginEdit(), *d_surfaceAreaAfterTC.beginEdit(), this->mstate->read(core::vec_id::read_access::restPosition));
         d_volumeAfterTC.endEdit();
         d_surfaceAreaAfterTC.endEdit();
 		if (lastTopologyRevision == 0)
@@ -243,7 +243,7 @@ void TaitSurfacePressureForceField<DataTypes>::addForce(const core::MechanicalPa
     helper::WriteAccessor<DataVecDeriv> f = d_f;
     helper::ReadAccessor<DataVecCoord> x = d_x;
     //helper::ReadAccessor<DataVecDeriv> v = d_v;
-    //helper::ReadAccessor<DataVecCoord> x0 = this->mstate->read(core::ConstVecCoordId::restPosition());
+    //helper::ReadAccessor<DataVecCoord> x0 = this->mstate->read(core::vec_id::read_access::restPosition);
     const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = d_pressureTriangles;
 
     computeMeshVolumeAndArea(*d_currentVolume.beginEdit(), *d_currentSurfaceArea.beginEdit(), x);
@@ -303,7 +303,7 @@ void TaitSurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalP
     helper::WriteAccessor<DataVecDeriv> df = d_df;
     helper::ReadAccessor<DataVecDeriv> dx = d_dx;
     helper::ReadAccessor<DataVecCoord> x = mparams->readX(this->mstate.get());
-    //helper::ReadAccessor<DataVecCoord> x0 = this->mstate->read(core::ConstVecCoordId::restPosition());
+    //helper::ReadAccessor<DataVecCoord> x0 = this->mstate->read(core::vec_id::read_access::restPosition);
     const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = d_pressureTriangles;
     helper::ReadAccessor<VecDeriv> gradV = this->gradV;
 
@@ -529,7 +529,7 @@ void TaitSurfacePressureForceField<DataTypes>::draw(const core::visual::VisualPa
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
 
-    helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::ConstVecCoordId::position());
+    helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::vec_id::read_access::position);
 
     const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = d_pressureTriangles;
 

@@ -58,8 +58,8 @@ template<class DataTypes>
 void UnilateralLagrangianConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id, PersistentID localid)
 {
     addContact(mu, norm, P, Q, contactDistance, m1, m2,
-            this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
-            this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
+            this->getMState2()->read(core::vec_id::read_access::freePosition)->getValue()[m2],
+            this->getMState1()->read(core::vec_id::read_access::freePosition)->getValue()[m1],
             id, localid);
 }
 
@@ -67,11 +67,11 @@ template<class DataTypes>
 void UnilateralLagrangianConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Real contactDistance, int m1, int m2, long id, PersistentID localid)
 {
     addContact(mu, norm,
-            this->getMState2()->read(core::ConstVecCoordId::position())->getValue()[m2],
-            this->getMState1()->read(core::ConstVecCoordId::position())->getValue()[m1],
+            this->getMState2()->read(core::vec_id::read_access::position)->getValue()[m2],
+            this->getMState1()->read(core::vec_id::read_access::position)->getValue()[m1],
             contactDistance, m1, m2,
-            this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
-            this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
+            this->getMState2()->read(core::vec_id::read_access::freePosition)->getValue()[m2],
+            this->getMState1()->read(core::vec_id::read_access::freePosition)->getValue()[m1],
             id, localid);
 }
 
@@ -179,8 +179,8 @@ void UnilateralLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core
 template<class DataTypes>
 void UnilateralLagrangianConstraint<DataTypes>::getPositionViolation(linearalgebra::BaseVector *v)
 {
-    const VecCoord &PfreeVec = this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue();
-    const VecCoord &QfreeVec = this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue();
+    const VecCoord &PfreeVec = this->getMState2()->read(core::vec_id::read_access::freePosition)->getValue();
+    const VecCoord &QfreeVec = this->getMState1()->read(core::vec_id::read_access::freePosition)->getValue();
 
     Real dfree = (Real)0.0;
     Real dfree_t = (Real)0.0;
@@ -265,8 +265,8 @@ void UnilateralLagrangianConstraint<DataTypes>::getVelocityViolation(linearalgeb
     const SReal dt = this->getContext()->getDt();
     const SReal invDt = SReal(1.0) / dt;
 
-    const VecDeriv &PvfreeVec = this->getMState2()->read(core::ConstVecDerivId::freeVelocity())->getValue();
-    const VecDeriv &QvfreeVec = this->getMState1()->read(core::ConstVecDerivId::freeVelocity())->getValue();
+    const VecDeriv &PvfreeVec = this->getMState2()->read(core::vec_id::read_access::freeVelocity)->getValue();
+    const VecDeriv &QvfreeVec = this->getMState1()->read(core::vec_id::read_access::freeVelocity)->getValue();
 
     const unsigned int cSize = contacts.size();
 

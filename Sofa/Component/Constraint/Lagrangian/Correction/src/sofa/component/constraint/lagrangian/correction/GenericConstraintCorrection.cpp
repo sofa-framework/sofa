@@ -235,7 +235,7 @@ void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
 
 
     computeMotionCorrectionFromLambda(&cparams, cparams.dx(), f);
-    applyMotionCorrection(&cparams, VecCoordId::position(), VecDerivId::velocity(), cparams.dx(), cparams.lambda());
+    applyMotionCorrection(&cparams, core::vec_id::write_access::position, core::vec_id::write_access::velocity, cparams.dx(), cparams.lambda());
 }
 
 void GenericConstraintCorrection::computeResidual(const ExecParams* params, linearalgebra::BaseVector *lambda)

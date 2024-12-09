@@ -42,6 +42,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/RandomGenerator.h
     ${SRC_ROOT}/SimpleTimer.h
     ${SRC_ROOT}/ScopedAdvancedTimer.h
+    ${SRC_ROOT}/SelectableItem.h
     ${SRC_ROOT}/SortedPermutation.h
     ${SRC_ROOT}/StringUtils.h
     ${SRC_ROOT}/TagFactory.h
@@ -55,8 +56,10 @@ set(HEADER_FILES
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/integer_id.h
     ${SRC_ROOT}/accessor/ReadAccessor.h
+    ${SRC_ROOT}/accessor/ReadAccessorFixedArray.h
     ${SRC_ROOT}/accessor/ReadAccessorVector.h
     ${SRC_ROOT}/accessor/WriteAccessor.h
+    ${SRC_ROOT}/accessor/WriteAccessorFixedArray.h
     ${SRC_ROOT}/accessor/WriteAccessorVector.h
     ${SRC_ROOT}/accessor/WriteOnlyAccessor.h
     ${SRC_ROOT}/io/BaseFileAccess.h

@@ -190,7 +190,7 @@ void DefaultAnimationLoop::propagateIntegrateBeginEvent(const core::ExecParams* 
 void DefaultAnimationLoop::accumulateMatrixDeriv(const core::ConstraintParams cparams) const
 {
     SCOPED_TIMER("accumulateMatrixDeriv");
-    mechanicalvisitor::MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, core::MatrixDerivId::constraintJacobian());
+    mechanicalvisitor::MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, core::vec_id::write_access::constraintJacobian);
     accumulateMatrixDeriv.execute(m_node);
 }
 
@@ -226,7 +226,7 @@ void DefaultAnimationLoop::projectPositionAndVelocity(const SReal nextTime, cons
 {
     SCOPED_TIMER("projectPositionAndVelocity");
     mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor(&mparams, nextTime,
-                                                                   sofa::core::VecCoordId::position(), sofa::core::VecDerivId::velocity()
+                                                                   sofa::core::vec_id::write_access::position, sofa::core::vec_id::write_access::velocity
     ).execute( m_node );
 }
 
@@ -234,8 +234,8 @@ void DefaultAnimationLoop::propagateOnlyPositionAndVelocity(const SReal nextTime
 {
     SCOPED_TIMER("propagateOnlyPositionAndVelocity");
     mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, nextTime,
-                                                                         core::VecCoordId::position(),
-                                                                         core::VecDerivId::velocity()).execute( m_node );
+                                                                         core::vec_id::write_access::position,
+                                                                         core::vec_id::write_access::velocity).execute( m_node );
 }
 
 void DefaultAnimationLoop::propagateCollisionBeginEvent(const core::ExecParams* params) const

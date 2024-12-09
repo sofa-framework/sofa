@@ -92,8 +92,8 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
 
     // Initialize the set of multi-vectors used by this solver
     MultiVecCoord x(&vop, xResult );
-    MultiVecDeriv force( &vop, sofa::core::VecDerivId::force() );
-    MultiVecDeriv dx( &vop, sofa::core::VecDerivId::dx() );
+    MultiVecDeriv force( &vop, sofa::core::vec_id::write_access::force );
+    MultiVecDeriv dx( &vop, sofa::core::vec_id::write_access::dx );
     dx.realloc( &vop , true, true);
     U.realloc( &vop );
     U.clear();
@@ -212,7 +212,10 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
             //       is called on every BaseProjectiveConstraintSet objects. An example of such constraint set is the
             //       FixedProjectiveConstraint. In this case, it will set to 0 every column (_, i) and row (i, _) of the assembled
             //       matrix for the ith degree of freedom.
-            mop.setSystemMBKMatrix(0, 0, -1, l_linearSolver.get());
+            mop.setSystemMBKMatrix(
+                core::MatricesFactors::M(0),
+                core::MatricesFactors::B(0),
+                core::MatricesFactors::K(-1), l_linearSolver.get());
         }
 
         // Part II. Solve the unknown increment.

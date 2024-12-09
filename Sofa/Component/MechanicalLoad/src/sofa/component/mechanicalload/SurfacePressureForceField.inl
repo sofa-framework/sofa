@@ -554,7 +554,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
     }
 
 
-    helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::ConstVecCoordId::position());
+    helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::vec_id::read_access::position);
     if (d_drawForceScale.getValue() && m_f.size() == x.size())
     {
         std::vector<type::Vec3> points;

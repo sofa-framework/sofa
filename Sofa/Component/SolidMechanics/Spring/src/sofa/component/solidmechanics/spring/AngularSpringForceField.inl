@@ -213,7 +213,7 @@ void AngularSpringForceField<DataTypes>::draw(const core::visual::VisualParams* 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->setLightingEnabled(false);
 
-    sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
+    sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::vec_id::write_access::position);
     sofa::type::vector< type::Vec3 > vertices;
 
     for (sofa::Index i=0; i < d_indices.getValue().size(); i++)

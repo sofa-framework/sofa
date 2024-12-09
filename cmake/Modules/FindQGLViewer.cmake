@@ -14,14 +14,14 @@ if(NOT TARGET QGLViewer)
 
   if(NOT QGLViewer_INCLUDE_DIR)
     find_path(QGLViewer_INCLUDE_DIR
-      NAMES qglviewer.h
-      PATH_SUFFIXES include/QGLViewer
+      NAMES QGLViewer/qglviewer.h
+      PATH_SUFFIXES include Headers
     )
   endif()
 
   if(NOT QGLViewer_LIBRARY)
   find_library(QGLViewer_LIBRARY
-    NAMES QGLViewer QGLViewer2 QGLViewer-qt5
+    NAMES QGLViewer QGLViewer2 QGLViewer-qt5 QGLViewer-qt6
     PATH_SUFFIXES lib
   )
   endif()

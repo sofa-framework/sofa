@@ -297,7 +297,7 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     {
         VecDeriv& df = df1;
         const VecDeriv& dx = dx1;
-        const VecCoord& x = m->mstate1->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& x = m->mstate1->read(core::vec_id::read_access::position)->getValue();
         df.resize(x.size());
         int d = data.springs1.vertex0;
         if (data.springs1.nbSpringPerVertex > 0)
@@ -314,8 +314,8 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     }
     else
     {
-        const VecCoord& x1 = m->mstate1->read(core::ConstVecCoordId::position())->getValue();
-        const VecCoord& x2 = m->mstate2->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& x1 = m->mstate1->read(core::vec_id::read_access::position)->getValue();
+        const VecCoord& x2 = m->mstate2->read(core::vec_id::read_access::position)->getValue();
         df1.resize(x1.size());
         df2.resize(x2.size());
         int d1 = data.springs1.vertex0;

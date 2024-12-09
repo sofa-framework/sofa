@@ -53,7 +53,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
 
     typename DataTypes::Real volume,val;
     typename DataTypes::Coord point[4]; //shapeVector[4];
-    const typename DataTypes::VecCoord restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const typename DataTypes::VecCoord restPosition=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     ///describe the indices of the 4 tetrahedron vertices
     const Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
@@ -215,7 +215,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::init()
     if (_initialPoints.size() == 0)
     {
         // get restPosition
-        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        const VecCoord& p = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
         _initialPoints=p;
     }
 
@@ -677,7 +677,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
