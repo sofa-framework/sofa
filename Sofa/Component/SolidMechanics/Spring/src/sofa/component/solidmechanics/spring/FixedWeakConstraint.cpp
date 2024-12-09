@@ -19,36 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGSFORCEFIELD_CPP
+#define SOFA_COMPONENT_FORCEFIELD_FixedWeakConstraint_CPP
 
 #include <sofa/component/solidmechanics/spring/FixedWeakConstraint.inl>
 
 #include <sofa/helper/visual/DrawTool.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/component/solidmechanics/spring/BaseRestShapeSpringsForceField.inl>
 
 
 namespace sofa::component::solidmechanics::spring
 {
 
-using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-int FixedWeakConstraintClass = core::RegisterObject("Weak constraints fixing dofs at their rest shape using springs")
-        .add< FixedWeakConstraint<Vec6Types> >()
-        .add< FixedWeakConstraint<Vec3Types> >()
-        .add< FixedWeakConstraint<Vec2Types> >()
-        .add< FixedWeakConstraint<Vec1Types> >()
-        .add< FixedWeakConstraint<Rigid3Types> >()
+void registerFixedWeakConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Elastic springs generating forces on degrees of freedom between their current and rest shape position.")
+                                 .add< FixedWeakConstraint<Vec3Types> >()
+                                 .add< FixedWeakConstraint<Vec1Types> >()
+                                 .add< FixedWeakConstraint<Rigid3Types> >());
+}
 
-        ;
-
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API FixedWeakConstraint<Vec6Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API FixedWeakConstraint<Vec3Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API FixedWeakConstraint<Vec2Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API FixedWeakConstraint<Vec1Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API FixedWeakConstraint<Rigid3Types>;
-
 
 } // namespace sofa::component::solidmechanics::spring

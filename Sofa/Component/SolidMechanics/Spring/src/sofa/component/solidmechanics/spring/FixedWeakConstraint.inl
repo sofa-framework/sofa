@@ -36,93 +36,325 @@
 namespace sofa::component::solidmechanics::spring
 {
 
+using helper::WriteAccessor;
+using helper::ReadAccessor;
+using core::behavior::BaseMechanicalState;
+using core::behavior::MultiMatrixAccessor;
+using core::behavior::ForceField;
+using linearalgebra::BaseMatrix;
+using core::VecCoordId;
+using core::MechanicalParams;
+using type::Vec3;
+using type::Vec4f;
+using type::vector;
+using core::visual::VisualParams;
+
 template<class DataTypes>
 FixedWeakConstraint<DataTypes>::FixedWeakConstraint()
-    : d_fixAll(initData(&d_fixAll, false,"fixAll", "stiffness value between the actual position and the rest shape position"))
-{}
+    : d_points(initData(&d_points, "points", "points controlled by the rest shape springs"))
+    , d_fixAll(initData(&d_fixAll, false, "fixAll", "Force to fix all points"))
+    , d_stiffness(initData(&d_stiffness, "stiffness", "stiffness values between the actual position and the rest shape position"))
+    , d_angularStiffness(initData(&d_angularStiffness, "angularStiffness", "angularStiffness assigned when controlling the rotation of the points"))
+    , d_drawSpring(initData(&d_drawSpring,false,"drawSpring","draw Spring"))
+    , d_springColor(initData(&d_springColor, sofa::type::RGBAColor::green(), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
+    , l_topology(initLink("topology", "Link to be set to the topology container in the component graph"))
+{
+    this->addUpdateCallback("updateIndices", {&d_points}, [this](const core::DataTracker& t)
+                            {
+                                SOFA_UNUSED(t);
+                                this->recomputeIndices();
+                                return sofa::core::objectmodel::ComponentState::Valid;
+                            }, {});
+}
 
 template<class DataTypes>
-void FixedWeakConstraint<DataTypes>::init()
+void FixedWeakConstraint<DataTypes>::bwdInit()
 {
-    Inherit::init();
-    if (this->l_topology.empty())
+    ForceField<DataTypes>::init();
+
+    if (d_stiffness.getValue().empty())
+    {
+        msg_info() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 ";
+        d_stiffness.setValue({static_cast<Real>(100)});
+    }
+
+    if (l_restMState.get() == nullptr)
+    {
+        useRestMState = false;
+        msg_info() << "no external rest shape used";
+
+        if(!l_restMState.empty())
+        {
+            msg_warning() << "external_rest_shape in node " << this->getContext()->getName() << " not found";
+        }
+    }
+    else
+    {
+        msg_info() << "external rest shape used";
+        useRestMState = true;
+    }
+
+    if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        this->l_topology.set(this->getContext()->getMeshTopologyLink());
-        if(! this->l_topology.get())
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    if (sofa::core::topology::BaseMeshTopology* _topology = this->l_topology.get())
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
-        msg_info() << "Topology path used: '" << this->l_topology.getLinkedPath() << "'";
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
         // Initialize topological changes support
-        this->d_indices.createTopologyHandler(_topology);
+        d_points.createTopologyHandler(_topology);
+    }
+    else
+    {
+        msg_info() << "Cannot find the topology: topological changes will not be supported";
     }
 
+    recomputeIndices();
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+        return;
+
+    const BaseMechanicalState* state = this->getContext()->getMechanicalState();
+    if(!state)
+    {
+        msg_warning() << "MechanicalState of the current context returns null pointer";
+    }
+    else
+    {
+        assert(state);
+        matS.resize(state->getMatrixSize(),state->getMatrixSize());
+    }
+
+    /// Compile time condition to check if we are working with a Rigid3Types or a type that does not
+    /// need the Angular Stiffness parameters.
+    //if constexpr (isRigid())
+    if constexpr (sofa::type::isRigidType<DataTypes>())
+    {
+        sofa::helper::ReadAccessor<Data<VecReal>> s = d_stiffness;
+        sofa::helper::WriteOnlyAccessor<Data<VecReal>> as = d_angularStiffness;
+
+        if (as.size() < s.size())
+        {
+            msg_info() << "'stiffness' is larger than 'angularStiffness', add the default value (100.0) to the missing entries.";
+
+            for(size_t i = as.size();i<s.size();i++)
+            {
+                as.push_back(100.0);
+            }
+        }else if (as.size() > s.size())
+        {
+            msg_info() << "'stiffness' is smaller than 'angularStiffness', clamp the extra values in angularStiffness.";
+            as.resize(s.size());
+        }
+    }
 
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+}
+
+
+template<class DataTypes>
+void FixedWeakConstraint<DataTypes>::reinit()
+{
+    if (!checkOutOfBoundsIndices())
+    {
+        m_indices.clear();
+    }
+    else
+    {
+        msg_info() << "Indices successfully checked";
+    }
+
+    if (d_stiffness.getValue().empty())
+    {
+        msg_info() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 " ;
+
+        VecReal stiffs;
+        stiffs.push_back(100.0);
+        d_stiffness.setValue(stiffs);
+    }
+    else
+    {
+        const VecReal &k = d_stiffness.getValue();
+        if ( k.size() != m_indices.size() )
+        {
+            msg_warning() << "Size of stiffness vector is not correct (" << k.size() << "), should be either 1 or " << m_indices.size() << msgendl
+                          << "First value of stiffness will be used";
+        }
+    }
+
+}
+
+template<class DataTypes>
+void FixedWeakConstraint<DataTypes>::recomputeIndices()
+{
+    m_indices.clear();
+    m_ext_indices.clear();
+
+    for (const sofa::Index i : d_points.getValue())
+    {
+        m_indices.push_back(i);
+    }
+
+    for (const sofa::Index i : d_external_points.getValue())
+    {
+        m_ext_indices.push_back(i);
+    }
+
+    if (m_indices.empty())
+    {
+        // no point are defined, default case: points = all points
+        msg_info() << "No point are defined. Change to default case: points = all points";
+        for (sofa::Index i = 0; i < this->mstate->getSize(); i++)
+        {
+            m_indices.push_back(i);
+        }
+    }
+
+    if (m_ext_indices.empty())
+    {
+        if (useRestMState)
+        {
+            if (const DataVecCoord* extPosition = getExtPosition())
+            {
+                const auto& extPositionValue = extPosition->getValue();
+                for (sofa::Index i = 0; i < extPositionValue.size(); i++)
+                {
+                    m_ext_indices.push_back(i);
+                }
+            }
+            else
+            {
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            }
+        }
+        else
+        {
+            for (const sofa::Index i : m_indices)
+            {
+                m_ext_indices.push_back(i);
+            }
+        }
+    }
+
+    if (!checkOutOfBoundsIndices())
+    {
+        msg_error() << "The dimension of the source and the targeted points are different ";
+        m_indices.clear();
+    }
+    else
+    {
+        msg_info() << "Indices successfully checked";
+    }
 }
 
 template<class DataTypes>
 bool FixedWeakConstraint<DataTypes>::checkOutOfBoundsIndices()
 {
-    for(auto idx : this->d_indices.getValue())
+    if (!checkOutOfBoundsIndices(getIndices(), this->mstate->getSize()))
     {
-        if(idx >= this->mstate->getSize())
-            return true;
+        msg_error() << "Out of Bounds d_indices detected. ForceField is not activated.";
+        return false;
     }
-    return false;
+    return true;
 }
 
 template<class DataTypes>
-SReal FixedWeakConstraint<DataTypes>::getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const 
+bool FixedWeakConstraint<DataTypes>::checkOutOfBoundsIndices(const VecIndex &indices, const sofa::Size dimension)
 {
-    SOFA_UNUSED(mparams);
-    SOFA_UNUSED(x);
-
-    msg_warning() << "Method getPotentialEnergy not implemented yet.";
-    return 0.0;
+    for (sofa::Index i = 0; i < indices.size(); i++)
+    {
+        if (indices[i] >= dimension)
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 template<class DataTypes>
-void FixedWeakConstraint<DataTypes>::addForce(const core::MechanicalParams*  mparams , DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv&  v )
+const typename FixedWeakConstraint<DataTypes>::DataVecCoord* FixedWeakConstraint<DataTypes>::getExtPosition() const
+{
+    if (this->mstate)
+    {
+        return this->mstate->read(core::vec_id::write_access::restPosition);
+    }
+    return nullptr;
+}
+
+template<class DataTypes>
+const FixedWeakConstraint<DataTypes>::VecIndex& FixedWeakConstraint<DataTypes>::getIndices() const
+{
+
+    return d_points.getValue();
+}
+
+template<class DataTypes>
+const FixedWeakConstraint<DataTypes>::VecIndex& FixedWeakConstraint<DataTypes>::getExtIndices() const
+{
+    return d_points.getValue();
+}
+
+template<class DataTypes>
+const type::fixed_array<bool, FixedWeakConstraint<DataTypes>::coord_total_size>& FixedWeakConstraint<DataTypes>::getActiveDirections() const
+{
+    return s_defaultActiveDirections;
+}
+
+template<class DataTypes>
+void FixedWeakConstraint<DataTypes>::addForce(const MechanicalParams*  mparams , DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv&  v )
 {
     SOFA_UNUSED(mparams);
     SOFA_UNUSED(v);
 
-    helper::WriteAccessor< DataVecDeriv > f1 = f;
-    helper::ReadAccessor< DataVecCoord > p1 = x;
+    WriteAccessor< DataVecDeriv > f1 = f;
+    ReadAccessor< DataVecCoord > p1 = x;
 
-    const DataVecCoord * restPosition = this->mstate->read(sofa::core::VecId::resetPosition());
-    if (!restPosition)
+    const DataVecCoord* extPosition = getExtPosition();
+    const auto & indices = getIndices();
+    const auto & extIndices = getExtIndices();
+    if (!extPosition)
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    helper::ReadAccessor< DataVecCoord > p0 = *restPosition;
+    ReadAccessor< DataVecCoord > p0 = *extPosition;
 
-    const auto& stiffness = this->d_stiffness.getValue();
-    const auto& angularStiffness = this->d_angularStiffness.getValue();
+    const VecReal& k = d_stiffness.getValue();
+    const VecReal& k_a = d_angularStiffness.getValue();
+
 
     f1.resize(p1.size());
 
-
-    for (sofa::Index i = 0; i < this->d_indices.getValue().size(); i++)
+    for (sofa::Index i = 0; i < indices.size(); i++)
     {
-        const sofa::Index index = this->d_indices.getValue()[i];
+        const sofa::Index index = indices[i];
+        sofa::Index ext_index = extIndices[i];
+
+        const auto stiffness = k[static_cast<std::size_t>(i < k.size()) * i];
+
+        const auto & activeDirections = getActiveDirections();
 
         // rigid case
         if constexpr (sofa::type::isRigidType<DataTypes>())
         {
-            // translation
-            CPos dx = p1[index].getCenter() - p0[index].getCenter();
-            getVCenter(f1[index]) -= dx * stiffness[i];
+
+            CPos dx = p1[index].getCenter() - p0[ext_index].getCenter();
+            // We filter the difference dx by setting to 0 the entries corresponding
+            // to 0 values in d_activeDirections
+            for (sofa::Size entryId = 0; entryId < spatial_dimensions; ++entryId)
+            {
+                if (!activeDirections[entryId])
+                    dx[entryId] = 0;
+            }
+            getVCenter(f1[index]) -= dx * stiffness;
+
+
 
             // rotation
-            type::Quat<Real> dq = p1[index].getOrientation() * p0[index].getOrientation().inverse();
+            type::Quat<Real> dq = p1[index].getOrientation() * p0[ext_index].getOrientation().inverse();
             dq.normalize();
 
             type::Vec<3, Real> dir{type::NOINIT};
@@ -136,37 +368,90 @@ void FixedWeakConstraint<DataTypes>::addForce(const core::MechanicalParams*  mpa
             if (dq[3] < 1.0)
                 dq.quatToAxis(dir, angle);
 
-            getVOrientation(f1[index]) -= dir * angle * angularStiffness[i];
+            // We change the direction of the axis of rotation based on
+            // the 0 values in d_activeDirections. This is equivalent
+            // to senting to 0 the rotation axis components along x, y
+            // and/or z, depending on the rotations we want to take into
+            // account.
+            for (sofa::Size entryId = spatial_dimensions; entryId < coord_total_size; ++entryId)
+            {
+                if (!activeDirections[entryId])
+                    dir[entryId-spatial_dimensions] = 0;
+            }
+
+            const auto angularStiffness = k_a[static_cast<std::size_t>(i < k_a.size()) * i];
+            getVOrientation(f1[index]) -= dir * angle * angularStiffness;
         }
         else // non-rigid implementation
         {
-            Deriv dx = p1[index] - p0[index];
-            f1[index] -= dx * stiffness[i];
+            Deriv dx = p1[index] - p0[ext_index];
+            // We filter the difference dx by setting to 0 the entries corresponding
+            // to 0 values in d_activeDirections
+            for (sofa::Size entryId = 0; entryId < spatial_dimensions; ++entryId)
+            {
+                if (!activeDirections[entryId])
+                    dx[entryId] = 0;
+            }
+            f1[index] -= dx * stiffness;
         }
     }
 }
 
 template<class DataTypes>
-void FixedWeakConstraint<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
+void FixedWeakConstraint<DataTypes>::addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
-    helper::WriteAccessor< DataVecDeriv > df1 = df;
-    helper::ReadAccessor< DataVecDeriv > dx1 = dx;
+    WriteAccessor< DataVecDeriv > df1 = df;
+    ReadAccessor< DataVecDeriv > dx1 = dx;
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-    const auto& stiffness = this->d_stiffness.getValue();
-    const auto& angularStiffness = this->d_angularStiffness.getValue();
+    const VecReal& k = d_stiffness.getValue();
+    const VecReal& k_a = d_angularStiffness.getValue();
+    const auto & activeDirections = getActiveDirections();
 
-    for (unsigned int i = 0; i < this->d_indices.getValue().size(); i++)
+    const auto & indices = getIndices();
+
+    for (unsigned int i = 0; i < indices.size(); i++)
     {
-        const sofa::Index curIndex = this->d_indices.getValue()[i];
+        const sofa::Index curIndex = indices[i];
+        const auto stiffness = k[static_cast<std::size_t>(i < k.size()) * i];
 
         if constexpr (sofa::type::isRigidType<DataTypes>())
         {
-            getVCenter(df1[curIndex]) -= getVCenter(dx1[curIndex]) * stiffness[i] * kFactor;
-            getVOrientation(df1[curIndex]) -= getVOrientation(dx1[curIndex]) * angularStiffness[i] * kFactor;
+            const auto angularStiffness = k_a[static_cast<std::size_t>(i < k_a.size()) * i];
+
+            // We filter the difference in translation by setting to 0 the entries corresponding
+            // to 0 values in d_activeDirections
+            auto currentSpringDx = getVCenter(dx1[curIndex]);
+            for (sofa::Size entryId = 0; entryId < spatial_dimensions; ++entryId)
+            {
+                if (!activeDirections[entryId])
+                    currentSpringDx[entryId] = 0;
+            }
+            getVCenter(df1[curIndex]) -= currentSpringDx * stiffness * kFactor;
+
+            auto currentSpringRotationalDx = getVOrientation(dx1[curIndex]);
+            // We change the direction of the axis of rotation based on
+            // the 0 values in d_activeDirections. This is equivalent
+            // to senting to 0 the rotation axis components along x, y
+            // and/or z, depending on the rotations we want to take into
+            // account.
+            for (sofa::Size entryId = spatial_dimensions; entryId < coord_total_size; ++entryId)
+            {
+                if (!activeDirections[entryId])
+                    currentSpringRotationalDx[entryId-spatial_dimensions] = 0;
+            }
+            getVOrientation(df1[curIndex]) -= currentSpringRotationalDx * angularStiffness * kFactor;
         }
         else
         {
-            df1[this->d_indices.getValue()[i]] -= dx1[this->d_indices.getValue()[i]] * stiffness[i] * kFactor;
+            // We filter the difference in translation by setting to 0 the entries corresponding
+            // to 0 values in d_activeDirections
+            auto currentSpringDx = dx1[indices[i]];
+            for (sofa::Size entryId = 0; entryId < spatial_dimensions; ++entryId)
+            {
+                if (!activeDirections[entryId])
+                    currentSpringDx[entryId] = 0;
+            }
+            df1[indices[i]] -= currentSpringDx * stiffness * kFactor;
         }
     }
 
@@ -174,82 +459,93 @@ void FixedWeakConstraint<DataTypes>::addDForce(const core::MechanicalParams* mpa
 }
 
 template<class DataTypes>
-void FixedWeakConstraint<DataTypes>::draw(const  core::visual::VisualParams *vparams)
+void FixedWeakConstraint<DataTypes>::draw(const VisualParams *vparams)
 {
-    if (!vparams->displayFlags().getShowForceFields() || !this->d_drawSpring.getValue())
-        return;
+    if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
+        return;  /// \todo put this in the parent class
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->setLightingEnabled(false);
 
-    const DataVecCoord * restPosition = this->mstate->read(sofa::core::VecId::resetPosition());
-    if (!restPosition)
+    const DataVecCoord* extPosition = getExtPosition();
+    if (!extPosition)
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
+    ReadAccessor< DataVecCoord > p0 = *extPosition;
+    ReadAccessor< DataVecCoord > p  = this->mstate->read(sofa::core::vec_id::write_access::position);
 
-    helper::ReadAccessor< DataVecCoord > p0 = *restPosition;
-    helper::ReadAccessor< DataVecCoord > p  = this->mstate->read(core::VecCoordId::position());
+    const auto & indices = getIndices();
+    const auto & extIndices = getExtIndices();
 
-    const VecIndex& indices = this->d_indices.getValue();
-
-    std::vector<type::Vec3> vertices;
+    std::vector<Vec3> vertices;
 
     for (sofa::Index i=0; i<indices.size(); i++)
     {
         const sofa::Index index = indices[i];
+        const sofa::Index ext_index = extIndices[i];
 
-        type::Vec3 v0(0.0, 0.0, 0.0);
-        type::Vec3 v1(0.0, 0.0, 0.0);
+        Vec3 v0(0.0, 0.0, 0.0);
+        Vec3 v1(0.0, 0.0, 0.0);
         for(sofa::Index j=0 ; j< std::min(DataTypes::spatial_dimensions, static_cast<sofa::Size>(3)) ; j++)
         {
             v0[j] = (DataTypes::getCPos(p[index]))[j];
-            v1[j] = (DataTypes::getCPos(p0[index]))[j];
+            v1[j] = (DataTypes::getCPos(p0[ext_index]))[j];
         }
 
         vertices.push_back(v0);
         vertices.push_back(v1);
     }
 
-    vparams->drawTool()->drawLines(vertices,5, this->d_springColor.getValue());
+    //todo(dmarchal) because of https://github.com/sofa-framework/sofa/issues/64
+    vparams->drawTool()->drawLines(vertices,5, d_springColor.getValue());
+
 }
 
 template<class DataTypes>
-void FixedWeakConstraint<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const core::behavior::MultiMatrixAccessor* matrix )
+void FixedWeakConstraint<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix )
 {
-    const core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
-    linearalgebra::BaseMatrix* mat = mref.matrix;
+    const MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    BaseMatrix* mat = mref.matrix;
     const unsigned int offset = mref.offset;
     Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
-    const auto& k = this->d_stiffness.getValue();
-    const auto& k_a = this->d_angularStiffness.getValue();
+    const VecReal& k = d_stiffness.getValue();
+    const VecReal& k_a = d_angularStiffness.getValue();
+    const auto & activeDirections = getActiveDirections();
+    const auto & indices = getIndices();
 
     constexpr sofa::Size space_size = Deriv::spatial_dimensions; // == total_size if DataTypes = VecTypes
     constexpr sofa::Size total_size = Deriv::total_size;
 
     sofa::Index curIndex = 0;
 
-    for (sofa::Index index = 0; index < this->d_indices.getValue().size(); index++)
+    for (sofa::Index index = 0; index < indices.size(); index++)
     {
-        curIndex = this->d_indices.getValue()[index];
+        curIndex = indices[index];
 
         // translation
-        const auto vt = -kFact * k[index];
+        const auto vt = -kFact * k[(index < k.size()) * index];
         for (sofa::Size i = 0; i < space_size; i++)
         {
-            mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vt);
+            // Contribution to the stiffness matrix are only taken into
+            // account for 1 values in d_activeDirections
+            if (activeDirections[i])
+                mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vt);
         }
 
         // rotation (if applicable)
         if constexpr (sofa::type::isRigidType<DataTypes>())
         {
-            const auto vr = -kFact * k_a[index];
+            const auto vr = -kFact * k_a[(index < k_a.size()) * index];
             for (sofa::Size i = space_size; i < total_size; i++)
             {
-                mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vr);
+                // Contribution to the stiffness matrix are only taken into
+                // account for 1 values in d_activeDirections
+                if (activeDirections[i])
+                    mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vr);
             }
         }
     }
@@ -258,33 +554,38 @@ void FixedWeakConstraint<DataTypes>::addKToMatrix(const core::MechanicalParams* 
 template<class DataTypes>
 void FixedWeakConstraint<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
-    const auto& vt = this->d_stiffness.getValue();
-    const auto& vr = this->d_angularStiffness.getValue();
+    const VecReal& k = d_stiffness.getValue();
+    const VecReal& k_a = d_angularStiffness.getValue();
+    const auto & activeDirections = getActiveDirections();
+    const auto & indices = getIndices();
 
     constexpr sofa::Size space_size = Deriv::spatial_dimensions; // == total_size if DataTypes = VecTypes
     constexpr sofa::Size total_size = Deriv::total_size;
 
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
-                       .withRespectToPositionsIn(this->mstate);
+                    .withRespectToPositionsIn(this->mstate);
 
-
-    const VecIndex& indices = this->d_indices.getValue();
-    for (sofa::Index i=0; i<indices.size(); i++)
+    for (const auto index : indices)
     {
-        const sofa::Index index = indices[i];
-
         // translation
+        const auto vt = -k[(index < k.size()) * index];
         for(sofa::Index i = 0; i < space_size; i++)
         {
-            dfdx(total_size * index + i, total_size * index + i) += -vt[i];
+            dfdx(total_size * index + i, total_size * index + i) += vt;
         }
 
         // rotation (if applicable)
         if constexpr (sofa::type::isRigidType<DataTypes>())
         {
+            const auto vr = -k_a[(index < k_a.size()) * index];
             for (sofa::Size i = space_size; i < total_size; ++i)
             {
-                dfdx(total_size * index + i, total_size * index + i) += -vr[i];
+                // Contribution to the stiffness matrix are only taken into
+                // account for 1 values in d_activeDirections
+                if (activeDirections[i])
+                {
+                    dfdx(total_size * index + i, total_size * index + i) += vr;
+                }
             }
         }
     }
