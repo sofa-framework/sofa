@@ -123,6 +123,8 @@ protected:
     void assembleSystemMatrix(sofa::simulation::common::MechanicalOperations* mop) const;
 
     void solveSystem(core::MultiVecDerivId solution, core::MultiVecDerivId rhs) const;
+
+    bool isMassMatrixDiagonal(const sofa::simulation::common::MechanicalOperations& mop);
 };
 
 } // namespace sofa::component::odesolver::forward
