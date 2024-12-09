@@ -34,15 +34,15 @@ BaseContactLagrangianConstraint<DataTypes, ContactParams>::BaseContactLagrangian
     : Inherit(object1, object2)
     , yetIntegrated(false)
     , customTolerance(0.0)
-//    , contactsStatus(nullptr)
+    , contactsStatus(nullptr)
 {
 }
 
 template<class DataTypes, class ContactParams>
 BaseContactLagrangianConstraint<DataTypes, ContactParams>::~BaseContactLagrangianConstraint()
 {
-//    if(contactsStatus)
-//        delete[] contactsStatus;
+    if(contactsStatus)
+        delete[] contactsStatus;
 }
 
 template<class DataTypes, class ContactParams>
