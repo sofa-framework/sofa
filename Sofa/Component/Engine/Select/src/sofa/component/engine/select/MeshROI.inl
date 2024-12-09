@@ -501,7 +501,9 @@ void MeshROI<DataTypes>::roiComputeBBox(const core::ExecParams* params, type::Bo
 
     for (const auto& p : roiPositions)
     {
-        bbox.include(DataTypes::getCPos(p));
+        Real x, y, z;
+        DataTypes::get(x, y, z, p);
+        bbox.include({x, y, z});
     }
 }
 
