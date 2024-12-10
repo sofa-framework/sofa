@@ -49,9 +49,10 @@ using type::Vec4f;
 using type::vector;
 using core::visual::VisualParams;
 
+
 template<class DataTypes>
 FixedWeakConstraint<DataTypes>::FixedWeakConstraint()
-    : d_points(initData(&d_points, "points", "points controlled by the rest shape springs"))
+    : d_indices(initData(&d_indices, "indices", "points controlled by the rest shape springs"))
     , d_fixAll(initData(&d_fixAll, false, "fixAll", "Force to fix all points"))
     , d_stiffness(initData(&d_stiffness, "stiffness", "stiffness values between the actual position and the rest shape position"))
     , d_angularStiffness(initData(&d_angularStiffness, "angularStiffness", "angularStiffness assigned when controlling the rotation of the points"))
@@ -59,39 +60,29 @@ FixedWeakConstraint<DataTypes>::FixedWeakConstraint()
     , d_springColor(initData(&d_springColor, sofa::type::RGBAColor::green(), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
     , l_topology(initLink("topology", "Link to be set to the topology container in the component graph"))
 {
-    this->addUpdateCallback("updateIndices", {&d_points}, [this](const core::DataTracker& t)
+    this->addUpdateCallback("updateIndices", {&d_indices}, [this](const core::DataTracker& t)
                             {
                                 SOFA_UNUSED(t);
-                                this->recomputeIndices();
-                                return sofa::core::objectmodel::ComponentState::Valid;
+                                if (!checkOutOfBoundsIndices())
+                                {
+                                    msg_error(this) << "Some input indices are out of bound";
+                                    return sofa::core::objectmodel::ComponentState::Invalid;
+                                }
+                                else
+                                {
+                                    return sofa::core::objectmodel::ComponentState::Valid;
+                                }
                             }, {});
 }
 
-template<class DataTypes>
-void FixedWeakConstraint<DataTypes>::bwdInit()
-{
-    ForceField<DataTypes>::init();
 
+template<class DataTypes>
+const bool  FixedWeakConstraint<DataTypes>::checkState()
+{
     if (d_stiffness.getValue().empty())
     {
         msg_info() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 ";
         d_stiffness.setValue({static_cast<Real>(100)});
-    }
-
-    if (l_restMState.get() == nullptr)
-    {
-        useRestMState = false;
-        msg_info() << "no external rest shape used";
-
-        if(!l_restMState.empty())
-        {
-            msg_warning() << "external_rest_shape in node " << this->getContext()->getName() << " not found";
-        }
-    }
-    else
-    {
-        msg_info() << "external rest shape used";
-        useRestMState = true;
     }
 
     if (l_topology.empty())
@@ -105,27 +96,14 @@ void FixedWeakConstraint<DataTypes>::bwdInit()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
         // Initialize topological changes support
-        d_points.createTopologyHandler(_topology);
+        d_indices.createTopologyHandler(_topology);
     }
     else
     {
         msg_info() << "Cannot find the topology: topological changes will not be supported";
     }
 
-    recomputeIndices();
-    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
-        return;
 
-    const BaseMechanicalState* state = this->getContext()->getMechanicalState();
-    if(!state)
-    {
-        msg_warning() << "MechanicalState of the current context returns null pointer";
-    }
-    else
-    {
-        assert(state);
-        matS.resize(state->getMatrixSize(),state->getMatrixSize());
-    }
 
     /// Compile time condition to check if we are working with a Rigid3Types or a type that does not
     /// need the Angular Stiffness parameters.
@@ -150,111 +128,57 @@ void FixedWeakConstraint<DataTypes>::bwdInit()
         }
     }
 
-    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    if (!checkOutOfBoundsIndices())
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+template<class DataTypes>
+void FixedWeakConstraint<DataTypes>::bwdInit()
+{
+    ForceField<DataTypes>::init();
+
+    if (checkState())
+    {
+        this->d_componentState.setValue(core::objectmodel::ComponentState::Valid);
+    }
+    else
+    {
+        this->d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
+
+    }
 }
 
 
 template<class DataTypes>
 void FixedWeakConstraint<DataTypes>::reinit()
 {
-    if (!checkOutOfBoundsIndices())
+    ForceField<DataTypes>::reinit();
+
+    if (checkState())
     {
-        m_indices.clear();
+        this->d_componentState.setValue(core::objectmodel::ComponentState::Valid);
     }
     else
     {
-        msg_info() << "Indices successfully checked";
-    }
+        this->d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
 
-    if (d_stiffness.getValue().empty())
-    {
-        msg_info() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 " ;
-
-        VecReal stiffs;
-        stiffs.push_back(100.0);
-        d_stiffness.setValue(stiffs);
-    }
-    else
-    {
-        const VecReal &k = d_stiffness.getValue();
-        if ( k.size() != m_indices.size() )
-        {
-            msg_warning() << "Size of stiffness vector is not correct (" << k.size() << "), should be either 1 or " << m_indices.size() << msgendl
-                          << "First value of stiffness will be used";
-        }
     }
 
 }
 
-template<class DataTypes>
-void FixedWeakConstraint<DataTypes>::recomputeIndices()
-{
-    m_indices.clear();
-    m_ext_indices.clear();
 
-    for (const sofa::Index i : d_points.getValue())
-    {
-        m_indices.push_back(i);
-    }
-
-    for (const sofa::Index i : d_external_points.getValue())
-    {
-        m_ext_indices.push_back(i);
-    }
-
-    if (m_indices.empty())
-    {
-        // no point are defined, default case: points = all points
-        msg_info() << "No point are defined. Change to default case: points = all points";
-        for (sofa::Index i = 0; i < this->mstate->getSize(); i++)
-        {
-            m_indices.push_back(i);
-        }
-    }
-
-    if (m_ext_indices.empty())
-    {
-        if (useRestMState)
-        {
-            if (const DataVecCoord* extPosition = getExtPosition())
-            {
-                const auto& extPositionValue = extPosition->getValue();
-                for (sofa::Index i = 0; i < extPositionValue.size(); i++)
-                {
-                    m_ext_indices.push_back(i);
-                }
-            }
-            else
-            {
-                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-            }
-        }
-        else
-        {
-            for (const sofa::Index i : m_indices)
-            {
-                m_ext_indices.push_back(i);
-            }
-        }
-    }
-
-    if (!checkOutOfBoundsIndices())
-    {
-        msg_error() << "The dimension of the source and the targeted points are different ";
-        m_indices.clear();
-    }
-    else
-    {
-        msg_info() << "Indices successfully checked";
-    }
-}
 
 template<class DataTypes>
 bool FixedWeakConstraint<DataTypes>::checkOutOfBoundsIndices()
 {
     if (!checkOutOfBoundsIndices(getIndices(), this->mstate->getSize()))
     {
-        msg_error() << "Out of Bounds d_indices detected. ForceField is not activated.";
         return false;
     }
     return true;
@@ -284,22 +208,22 @@ const typename FixedWeakConstraint<DataTypes>::DataVecCoord* FixedWeakConstraint
 }
 
 template<class DataTypes>
-const FixedWeakConstraint<DataTypes>::VecIndex& FixedWeakConstraint<DataTypes>::getIndices() const
+const typename FixedWeakConstraint<DataTypes>::VecIndex& FixedWeakConstraint<DataTypes>::getIndices() const
 {
 
-    return d_points.getValue();
+    return d_indices.getValue();
 }
 
 template<class DataTypes>
-const FixedWeakConstraint<DataTypes>::VecIndex& FixedWeakConstraint<DataTypes>::getExtIndices() const
+const typename FixedWeakConstraint<DataTypes>::VecIndex& FixedWeakConstraint<DataTypes>::getExtIndices() const
 {
-    return d_points.getValue();
+    return d_indices.getValue();
 }
 
 template<class DataTypes>
 const type::fixed_array<bool, FixedWeakConstraint<DataTypes>::coord_total_size>& FixedWeakConstraint<DataTypes>::getActiveDirections() const
 {
-    return s_defaultActiveDirections;
+    return FixedWeakConstraint<DataTypes>::s_defaultActiveDirections;
 }
 
 template<class DataTypes>
@@ -328,10 +252,19 @@ void FixedWeakConstraint<DataTypes>::addForce(const MechanicalParams*  mparams ,
 
     f1.resize(p1.size());
 
-    for (sofa::Index i = 0; i < indices.size(); i++)
+    const bool fixedAll = d_fixAll.getValue();
+    const unsigned maxIt = fixedAll ? this->mstate->getSize() : indices.size();
+
+    for (sofa::Index i = 0; i < maxIt; i++)
     {
-        const sofa::Index index = indices[i];
-        sofa::Index ext_index = extIndices[i];
+        sofa::Index ext_index = i;
+        sofa::Index index = i;
+
+        if (!fixedAll)
+        {
+            index = indices[i];
+            ext_index = extIndices[i];
+        }
 
         const auto stiffness = k[static_cast<std::size_t>(i < k.size()) * i];
 
@@ -409,9 +342,18 @@ void FixedWeakConstraint<DataTypes>::addDForce(const MechanicalParams* mparams, 
 
     const auto & indices = getIndices();
 
-    for (unsigned int i = 0; i < indices.size(); i++)
+    const bool fixedAll = d_fixAll.getValue();
+    const unsigned maxIt = fixedAll ? this->mstate->getSize() : indices.size();
+
+    for (sofa::Index i = 0; i < maxIt; i++)
     {
-        const sofa::Index curIndex = indices[i];
+        sofa::Index curIndex = i;
+
+        if (!fixedAll)
+        {
+            curIndex = indices[i];
+        }
+
         const auto stiffness = k[static_cast<std::size_t>(i < k.size()) * i];
 
         if constexpr (sofa::type::isRigidType<DataTypes>())
@@ -445,64 +387,19 @@ void FixedWeakConstraint<DataTypes>::addDForce(const MechanicalParams* mparams, 
         {
             // We filter the difference in translation by setting to 0 the entries corresponding
             // to 0 values in d_activeDirections
-            auto currentSpringDx = dx1[indices[i]];
+            auto currentSpringDx = dx1[curIndex];
             for (sofa::Size entryId = 0; entryId < spatial_dimensions; ++entryId)
             {
                 if (!activeDirections[entryId])
                     currentSpringDx[entryId] = 0;
             }
-            df1[indices[i]] -= currentSpringDx * stiffness * kFactor;
+            df1[curIndex] -= currentSpringDx * stiffness * kFactor;
         }
     }
 
 
 }
 
-template<class DataTypes>
-void FixedWeakConstraint<DataTypes>::draw(const VisualParams *vparams)
-{
-    if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
-        return;  /// \todo put this in the parent class
-
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-    vparams->drawTool()->setLightingEnabled(false);
-
-    const DataVecCoord* extPosition = getExtPosition();
-    if (!extPosition)
-    {
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
-
-    ReadAccessor< DataVecCoord > p0 = *extPosition;
-    ReadAccessor< DataVecCoord > p  = this->mstate->read(sofa::core::vec_id::write_access::position);
-
-    const auto & indices = getIndices();
-    const auto & extIndices = getExtIndices();
-
-    std::vector<Vec3> vertices;
-
-    for (sofa::Index i=0; i<indices.size(); i++)
-    {
-        const sofa::Index index = indices[i];
-        const sofa::Index ext_index = extIndices[i];
-
-        Vec3 v0(0.0, 0.0, 0.0);
-        Vec3 v1(0.0, 0.0, 0.0);
-        for(sofa::Index j=0 ; j< std::min(DataTypes::spatial_dimensions, static_cast<sofa::Size>(3)) ; j++)
-        {
-            v0[j] = (DataTypes::getCPos(p[index]))[j];
-            v1[j] = (DataTypes::getCPos(p0[ext_index]))[j];
-        }
-
-        vertices.push_back(v0);
-        vertices.push_back(v1);
-    }
-
-    //todo(dmarchal) because of https://github.com/sofa-framework/sofa/issues/64
-    vparams->drawTool()->drawLines(vertices,5, d_springColor.getValue());
-
-}
 
 template<class DataTypes>
 void FixedWeakConstraint<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix )
@@ -520,11 +417,17 @@ void FixedWeakConstraint<DataTypes>::addKToMatrix(const MechanicalParams* mparam
     constexpr sofa::Size space_size = Deriv::spatial_dimensions; // == total_size if DataTypes = VecTypes
     constexpr sofa::Size total_size = Deriv::total_size;
 
-    sofa::Index curIndex = 0;
+    const bool fixedAll = d_fixAll.getValue();
+    const unsigned maxIt = fixedAll ? this->mstate->getSize() : indices.size();
 
-    for (sofa::Index index = 0; index < indices.size(); index++)
+    for (sofa::Index index = 0; index < maxIt; index++)
     {
-        curIndex = indices[index];
+        sofa::Index curIndex = index;
+
+        if (!fixedAll)
+        {
+            curIndex = indices[index];
+        }
 
         // translation
         const auto vt = -kFact * k[(index < k.size()) * index];
@@ -564,9 +467,17 @@ void FixedWeakConstraint<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffn
 
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
                     .withRespectToPositionsIn(this->mstate);
+    const bool fixedAll = d_fixAll.getValue();
+    const unsigned maxIt = fixedAll ? this->mstate->getSize() : indices.size();
 
-    for (const auto index : indices)
+    for (sofa::Index i = 0; i < maxIt; i++)
     {
+        sofa::Index index = i;
+
+        if (!fixedAll)
+        {
+            index = indices[i];
+        }
         // translation
         const auto vt = -k[(index < k.size()) * index];
         for(sofa::Index i = 0; i < space_size; i++)
@@ -596,5 +507,59 @@ void FixedWeakConstraint<DataTypes>::buildDampingMatrix(
     core::behavior::DampingMatrix* matrix)
 {
     SOFA_UNUSED(matrix);
+}
+
+template<class DataTypes>
+void FixedWeakConstraint<DataTypes>::draw(const VisualParams *vparams)
+{
+    if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
+        return;  /// \todo put this in the parent class
+
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+    vparams->drawTool()->setLightingEnabled(false);
+
+    const DataVecCoord* extPosition = getExtPosition();
+    if (!extPosition)
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    ReadAccessor< DataVecCoord > p0 = *extPosition;
+    ReadAccessor< DataVecCoord > p  = this->mstate->read(sofa::core::vec_id::write_access::position);
+    std::vector<Vec3> vertices;
+
+
+    const auto & indices = getIndices();
+    const auto & extIndices = getExtIndices();
+    const bool fixedAll = d_fixAll.getValue();
+    const unsigned maxIt = fixedAll ? this->mstate->getSize() : indices.size();
+
+    for (sofa::Index i = 0; i < maxIt; i++)
+    {
+        sofa::Index ext_index = i;
+        sofa::Index index = i;
+
+        if (!fixedAll)
+        {
+            index = indices[i];
+            ext_index = extIndices[i];
+        }
+
+        Vec3 v0(0.0, 0.0, 0.0);
+        Vec3 v1(0.0, 0.0, 0.0);
+        for(sofa::Index j=0 ; j< std::min(DataTypes::spatial_dimensions, static_cast<sofa::Size>(3)) ; j++)
+        {
+            v0[j] = (DataTypes::getCPos(p[index]))[j];
+            v1[j] = (DataTypes::getCPos(p0[ext_index]))[j];
+        }
+
+        vertices.push_back(v0);
+        vertices.push_back(v1);
+    }
+
+    //todo(dmarchal) because of https://github.com/sofa-framework/sofa/issues/64
+    vparams->drawTool()->drawLines(vertices,5, d_springColor.getValue());
+
 }
 } // namespace sofa::component::solidmechanics::spring

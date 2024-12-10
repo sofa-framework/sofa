@@ -70,7 +70,7 @@ class FixedWeakConstraint : public core::behavior::ForceField<DataTypes>
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    DataSubsetIndex d_points; ///< points controlled by the rest shape springs
+    DataSubsetIndex d_indices; ///< points controlled by the rest shape springs
     Data<bool> d_fixAll; ///< points controlled by the rest shape springs
     Data< VecReal > d_stiffness; ///< stiffness values between the actual position and the rest shape position
     Data< VecReal > d_angularStiffness; ///< angularStiffness assigned when controlling the rotation of the points
@@ -80,8 +80,8 @@ class FixedWeakConstraint : public core::behavior::ForceField<DataTypes>
 
    protected:
     FixedWeakConstraint();
-
     static constexpr type::fixed_array<bool, coord_total_size> s_defaultActiveDirections = sofa::type::makeHomogeneousArray<bool, coord_total_size>(true);
+
 
    public:
     /// BaseObject initialization method.
@@ -112,17 +112,16 @@ class FixedWeakConstraint : public core::behavior::ForceField<DataTypes>
     void draw(const core::visual::VisualParams* vparams) override;
 
 
+   protected :
+
     virtual const DataVecCoord* getExtPosition() const;
     virtual const VecIndex& getIndices() const;
     virtual const VecIndex& getExtIndices() const;
     virtual const type::fixed_array<bool, coord_total_size>& getActiveDirections() const;
+    virtual const bool checkState();
 
-   protected :
-
-    void recomputeIndices();
-    virtual bool checkOutOfBoundsIndices();
     bool checkOutOfBoundsIndices(const VecIndex &indices, const sofa::Size dimension);
-
+    virtual bool checkOutOfBoundsIndices();
 
 };
 

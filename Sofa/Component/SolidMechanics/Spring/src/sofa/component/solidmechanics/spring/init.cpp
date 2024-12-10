@@ -28,6 +28,7 @@ namespace sofa::component::solidmechanics::spring
 
 extern void registerAngularSpringForceField(sofa::core::ObjectFactory* factory);
 extern void registerFastTriangularBendingSprings(sofa::core::ObjectFactory* factory);
+extern void registerFixedWeakConstraint(sofa::core::ObjectFactory* factory);
 extern void registerFrameSpringForceField(sofa::core::ObjectFactory* factory);
 extern void registerGearSpringForceField(sofa::core::ObjectFactory* factory);
 extern void registerNonUniformHexahedronFEMForceFieldAndMass(sofa::core::ObjectFactory* factory);
@@ -72,6 +73,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
 {
     registerAngularSpringForceField(factory);
     registerFastTriangularBendingSprings(factory);
+    registerFixedWeakConstraint(factory);
     registerFrameSpringForceField(factory);
     registerGearSpringForceField(factory);
     registerNonUniformHexahedronFEMForceFieldAndMass(factory);
