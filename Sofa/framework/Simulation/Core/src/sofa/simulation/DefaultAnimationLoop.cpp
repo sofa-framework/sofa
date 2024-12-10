@@ -58,7 +58,7 @@ namespace sofa::simulation
 
 void registerDefaultAnimationLoop(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Simulation loop to use in scene without constraints nor contact.")
+    factory->registerObjects(core::ObjectRegistrationData("Simulation loop, created by default when the user does not define one in the scene. This loop first computes the collision detection and then solves the physics.")
         .add<DefaultAnimationLoop>()
         .addDocumentationURL(std::string(sofa::SOFA_DOCUMENTATION_URL) + std::string("components/animationloops/defaultanimationloop/"))
         .addDescription(R"(

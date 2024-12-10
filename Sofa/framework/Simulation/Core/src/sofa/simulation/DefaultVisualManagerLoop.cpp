@@ -37,7 +37,7 @@ namespace sofa::simulation
 
 void registerDefaultVisualManagerLoop(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("The simplest Visual Loop Manager, created by default when user does not put one in the scene.")
+    factory->registerObjects(core::ObjectRegistrationData("Manager of the visual loop, created by default when the user does not define one in the scene.")
         .add< DefaultVisualManagerLoop >());
 }
 
