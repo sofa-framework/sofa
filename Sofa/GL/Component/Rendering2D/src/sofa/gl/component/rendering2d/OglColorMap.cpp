@@ -33,10 +33,11 @@
 namespace sofa::gl::component::rendering2d
 {
 
-int OglColorMapClass = core::RegisterObject("Provides color palette and support for conversion of numbers to colors.")
-        .add< OglColorMap >()
-        .addAlias("ColorMap")
-        ;
+void registerOglColorMap(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Provides color palette and support for conversion of numbers to colors.")
+        .add< OglColorMap >());
+}
 
 OglColorMap::OglColorMap()
 : d_paletteSize(initData(&d_paletteSize, (unsigned int)256, "paletteSize", "How many colors to use"))
