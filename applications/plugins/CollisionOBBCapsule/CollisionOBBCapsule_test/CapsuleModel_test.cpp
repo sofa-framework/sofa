@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,28 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_CPP
-#include <sofa/gl/component/engine/TextureInterpolation.inl>
+#include <gtest/gtest.h>
+#include <CollisionOBBCapsule/geometry/CapsuleModel.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::gl::component::engine
+TEST(CapsuleModel, creationFromFactory)
 {
+    const auto entry = sofa::core::ObjectFactory::getInstance()->getEntry("CapsuleCollisionModel");
+    const auto creatorRigid = entry.creatorMap.at("Rigid3d");
 
-using namespace sofa::defaulttype;
-
-void registerTextureInterpolation(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Create texture coordinate for a given field.")
-        .add< TextureInterpolation <Vec1Types> >()
-        .add< TextureInterpolation <Vec2Types> >()
-        .add< TextureInterpolation <Vec3Types> >());
+    sofa::core::objectmodel::BaseObjectDescription desc;
+    const auto object = creatorRigid->createInstance(nullptr, &desc);
 }
-
-template class SOFA_GL_COMPONENT_ENGINE_API TextureInterpolation <Vec1Types>;
-template class SOFA_GL_COMPONENT_ENGINE_API TextureInterpolation <Vec2Types>;
-template class SOFA_GL_COMPONENT_ENGINE_API TextureInterpolation <Vec3Types>;
- 
-
-
-} //namespace sofa::gl::component::engine

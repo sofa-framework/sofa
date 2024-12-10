@@ -27,15 +27,16 @@
 namespace sofa::gui::component
 {
 
-int AddRecordedCameraButtonSettingClass = core::RegisterObject("Save Camera's View Point Button configuration")
-        .add< AddRecordedCameraButtonSetting >()
-        .addAlias("AddRecordedCameraButton")
-        ;
+void registerAddRecordedCameraButtonSetting(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Save Camera's View Point Button configuration.")
+        .add< AddRecordedCameraButtonSetting >());
+}
 
-
-int StartNavigationButtonSettingClass = core::RegisterObject("Start Navigation Button configuration")
-        .add< StartNavigationButtonSetting >()
-        .addAlias("StartNavigationButton")
-        ;
+void registerStartNavigationButtonSetting(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Start Navigation Button configuration.")
+        .add< StartNavigationButtonSetting >());
+}
 
 } // namespace sofa::gui::component

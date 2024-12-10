@@ -21,22 +21,30 @@
 ******************************************************************************/
 #include <sofa/gl/component/rendering3d/init.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+
 namespace sofa::gl::component::rendering3d
 {
-    
+
+extern void registerClipPlane(sofa::core::ObjectFactory* factory);
+extern void registerDataDisplay(sofa::core::ObjectFactory* factory);
+extern void registerMergeVisualModels(sofa::core::ObjectFactory* factory);
+extern void registerOglCylinderModel(sofa::core::ObjectFactory* factory);
+extern void registerOglModel(sofa::core::ObjectFactory* factory);
+extern void registerOglSceneFrame(sofa::core::ObjectFactory* factory);
+extern void registerPointSplatModel(sofa::core::ObjectFactory* factory);
+extern void registerSlicedVolumetricModel(sofa::core::ObjectFactory* factory);
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    init();
 }
 
 const char* getModuleName()
@@ -49,9 +57,28 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerClipPlane(factory);
+    registerDataDisplay(factory);
+    registerMergeVisualModels(factory);
+    registerOglCylinderModel(factory);
+    registerOglModel(factory);
+    registerOglSceneFrame(factory);
+    registerPointSplatModel(factory);
+    registerSlicedVolumetricModel(factory);
+}
+
 void init()
 {
-    initExternalModule();
+    static bool first = true;
+    if (first)
+    {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
+        first = false;
+    }
 }
 
 } // namespace sofa::gl::component::rendering3d

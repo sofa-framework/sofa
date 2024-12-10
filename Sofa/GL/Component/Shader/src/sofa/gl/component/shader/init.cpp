@@ -21,22 +21,41 @@
 ******************************************************************************/
 #include <sofa/gl/component/shader//init.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+
 namespace sofa::gl::component::shader
 {
-    
+
+extern void registerCompositingVisualLoop(sofa::core::ObjectFactory* factory);
+extern void registerDirectionalLight(sofa::core::ObjectFactory* factory);
+extern void registerPositionalLight(sofa::core::ObjectFactory* factory);
+extern void registerSpotlLight(sofa::core::ObjectFactory* factory);
+extern void registerLightManager(sofa::core::ObjectFactory* factory);
+extern void registerOglAttribute(sofa::core::ObjectFactory* factory);
+extern void registerOglOITShader(sofa::core::ObjectFactory* factory);
+extern void registerOglRenderingSRGB(sofa::core::ObjectFactory* factory);
+extern void registerOglShader(sofa::core::ObjectFactory* factory);
+extern void registerOglShaderDefineMacro(sofa::core::ObjectFactory* factory);
+extern void registerOglShaderVisualModel(sofa::core::ObjectFactory* factory);
+extern void registerOglShadowShader(sofa::core::ObjectFactory* factory);
+extern void registerOglTexture(sofa::core::ObjectFactory* factory);
+extern void registerOglTexturePointer(sofa::core::ObjectFactory* factory);
+extern void registerOglVariable(sofa::core::ObjectFactory* factory);
+extern void registerOrderIndependentTransparencyManager(sofa::core::ObjectFactory* factory);
+extern void registerPostProcessManager(sofa::core::ObjectFactory* factory);
+extern void registerVisualManagerPass(sofa::core::ObjectFactory* factory);
+extern void registerVisualManagerSecondaryPass(sofa::core::ObjectFactory* factory);
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    init();
 }
 
 const char* getModuleName()
@@ -49,9 +68,39 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerCompositingVisualLoop(factory);
+    registerDirectionalLight(factory);
+    registerPositionalLight(factory);
+    registerSpotlLight(factory);
+    registerLightManager(factory);
+    registerOglAttribute(factory);
+    registerOglOITShader(factory);
+    registerOglRenderingSRGB(factory);
+    registerOglShader(factory);
+    registerOglShaderDefineMacro(factory);
+    registerOglShaderVisualModel(factory);
+    registerOglShadowShader(factory);
+    registerOglTexture(factory);
+    registerOglTexturePointer(factory);
+    registerOglVariable(factory);
+    registerOrderIndependentTransparencyManager(factory);
+    registerPostProcessManager(factory);
+    registerVisualManagerPass(factory);
+    registerVisualManagerSecondaryPass(factory);
+}
+
 void init()
 {
-    initExternalModule();
+    static bool first = true;
+    if (first)
+    {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
+        first = false;
+    }
 }
 
 } // namespace sofa::gl::component::shader

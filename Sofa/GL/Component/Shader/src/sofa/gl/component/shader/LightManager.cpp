@@ -34,7 +34,6 @@ using sofa::core::visual::VisualParams ;
 using sofa::gl::component::shader::OglTexture ;
 
 using sofa::core::objectmodel::BaseContext ;
-using sofa::core::RegisterObject ;
 
 using sofa::type::Mat ;
 
@@ -43,12 +42,12 @@ using sofa::type::RGBAColor ;
 namespace sofa::gl::component::shader
 {
 
-//Register LightManager in the Object Factory
-int LightManagerClass = RegisterObject
-        ("Manage a set of lights that can cast hard and soft shadows.Soft Shadows is done using Variance Shadow Mapping "
-         "(http://developer.download.nvidia.com/SDK/10.5/direct3d/Source/VarianceShadowMapping/Doc/VarianceShadowMapping.pdf)")
-        .add< LightManager >()
-        ;
+void registerLightManager(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Manage a set of lights that can cast hard and soft shadows.Soft Shadows is done using Variance Shadow Mapping "
+        "(http://developer.download.nvidia.com/SDK/10.5/direct3d/Source/VarianceShadowMapping/Doc/VarianceShadowMapping.pdf)")
+        .add< LightManager >());
+}
 
 LightManager::LightManager()
     : d_shadowsEnabled(initData(&d_shadowsEnabled, (bool) false, "shadows", "Enable Shadow in the scene. (default=0)"))

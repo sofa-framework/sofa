@@ -29,9 +29,11 @@
 namespace sofa::gl::component::shader
 {
 
-int CompositingVisualLoopClass = core::RegisterObject("Visual loop enabling multipass rendering. Needs multiple fbo data and a compositing shader")
-        .add< CompositingVisualLoop >()
-        ;
+void registerCompositingVisualLoop(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Visual loop enabling multipass rendering. Needs multiple fbo data and a compositing shader.")
+        .add< CompositingVisualLoop >());
+}
 
 CompositingVisualLoop::CompositingVisualLoop()
     : simulation::DefaultVisualManagerLoop(),
