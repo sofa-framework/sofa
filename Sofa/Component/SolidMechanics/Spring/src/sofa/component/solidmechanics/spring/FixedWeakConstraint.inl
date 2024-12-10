@@ -81,26 +81,26 @@ const bool  FixedWeakConstraint<DataTypes>::checkState()
 {
     if (d_stiffness.getValue().empty())
     {
-        msg_info() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 ";
+        msg_info(this) << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 ";
         d_stiffness.setValue({static_cast<Real>(100)});
     }
 
     if (l_topology.empty())
     {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_info(this) << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
     if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
-        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+        msg_info(this) << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
         // Initialize topological changes support
         d_indices.createTopologyHandler(_topology);
     }
     else
     {
-        msg_info() << "Cannot find the topology: topological changes will not be supported";
+        msg_info(this) << "Cannot find the topology: topological changes will not be supported";
     }
 
 
@@ -115,7 +115,7 @@ const bool  FixedWeakConstraint<DataTypes>::checkState()
 
         if (as.size() < s.size())
         {
-            msg_info() << "'stiffness' is larger than 'angularStiffness', add the default value (100.0) to the missing entries.";
+            msg_info(this) << "'stiffness' is larger than 'angularStiffness', add the default value (100.0) to the missing entries.";
 
             for(size_t i = as.size();i<s.size();i++)
             {
@@ -123,7 +123,7 @@ const bool  FixedWeakConstraint<DataTypes>::checkState()
             }
         }else if (as.size() > s.size())
         {
-            msg_info() << "'stiffness' is smaller than 'angularStiffness', clamp the extra values in angularStiffness.";
+            msg_info(this) << "'stiffness' is smaller than 'angularStiffness', clamp the extra values in angularStiffness.";
             as.resize(s.size());
         }
     }
@@ -229,6 +229,9 @@ const type::fixed_array<bool, FixedWeakConstraint<DataTypes>::coord_total_size>&
 template<class DataTypes>
 void FixedWeakConstraint<DataTypes>::addForce(const MechanicalParams*  mparams , DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv&  v )
 {
+    if (this->d_componentState.getValue() != core::objectmodel::ComponentState::Valid)
+        return;
+
     SOFA_UNUSED(mparams);
     SOFA_UNUSED(v);
 
@@ -333,6 +336,9 @@ void FixedWeakConstraint<DataTypes>::addForce(const MechanicalParams*  mparams ,
 template<class DataTypes>
 void FixedWeakConstraint<DataTypes>::addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
+    if (this->d_componentState.getValue() != core::objectmodel::ComponentState::Valid)
+        return;
+
     WriteAccessor< DataVecDeriv > df1 = df;
     ReadAccessor< DataVecDeriv > dx1 = dx;
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
@@ -400,10 +406,22 @@ void FixedWeakConstraint<DataTypes>::addDForce(const MechanicalParams* mparams, 
 
 }
 
+template<class DataTypes>
+SReal FixedWeakConstraint<DataTypes>::getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const
+{
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(x);
+
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
+    return 0.0;
+}
 
 template<class DataTypes>
 void FixedWeakConstraint<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix )
 {
+    if (this->d_componentState.getValue() != core::objectmodel::ComponentState::Valid)
+        return;
+
     const MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     BaseMatrix* mat = mref.matrix;
     const unsigned int offset = mref.offset;
@@ -457,6 +475,9 @@ void FixedWeakConstraint<DataTypes>::addKToMatrix(const MechanicalParams* mparam
 template<class DataTypes>
 void FixedWeakConstraint<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
+    if (this->d_componentState.getValue() != core::objectmodel::ComponentState::Valid)
+        return;
+
     const VecReal& k = d_stiffness.getValue();
     const VecReal& k_a = d_angularStiffness.getValue();
     const auto & activeDirections = getActiveDirections();
@@ -512,6 +533,9 @@ void FixedWeakConstraint<DataTypes>::buildDampingMatrix(
 template<class DataTypes>
 void FixedWeakConstraint<DataTypes>::draw(const VisualParams *vparams)
 {
+    if (this->d_componentState.getValue() != core::objectmodel::ComponentState::Valid)
+        return;
+
     if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
         return;  /// \todo put this in the parent class
 

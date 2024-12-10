@@ -29,6 +29,7 @@
 #include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/type/vector.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
+#include <sofa/core/objectmodel/RenamedData.h>
 
 
 namespace sofa::core::behavior
@@ -71,38 +72,27 @@ class FixedWeakConstraint : public core::behavior::ForceField<DataTypes>
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     DataSubsetIndex d_indices; ///< points controlled by the rest shape springs
+    core::objectmodel::lifecycle::RemovedData d_points{this,"v24.12","v25.06","points","This data has been replaced by \'indices\'. Please update your scene."};
+
     Data<bool> d_fixAll; ///< points controlled by the rest shape springs
     Data< VecReal > d_stiffness; ///< stiffness values between the actual position and the rest shape position
     Data< VecReal > d_angularStiffness; ///< angularStiffness assigned when controlling the rotation of the points
     Data< bool > d_drawSpring; ///< draw Spring
     Data< sofa::type::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
 
-
-   protected:
-    FixedWeakConstraint();
-    static constexpr type::fixed_array<bool, coord_total_size> s_defaultActiveDirections = sofa::type::makeHomogeneousArray<bool, coord_total_size>(true);
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<FixedWeakConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 
-   public:
     /// BaseObject initialization method.
     void bwdInit() override ;
     void reinit() override ;
 
     /// Add the forces.
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<FixedWeakConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
-
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override
-    {
-        SOFA_UNUSED(mparams);
-        SOFA_UNUSED(x);
-
-        msg_warning() << "Method getPotentialEnergy not implemented yet.";
-        return 0.0;
-    }
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
 
     /// Brings ForceField contribution to the global system stiffness matrix.
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
@@ -113,6 +103,8 @@ class FixedWeakConstraint : public core::behavior::ForceField<DataTypes>
 
 
    protected :
+    FixedWeakConstraint();
+    static constexpr type::fixed_array<bool, coord_total_size> s_defaultActiveDirections = sofa::type::makeHomogeneousArray<bool, coord_total_size>(true);
 
     virtual const DataVecCoord* getExtPosition() const;
     virtual const VecIndex& getIndices() const;
@@ -120,9 +112,9 @@ class FixedWeakConstraint : public core::behavior::ForceField<DataTypes>
     virtual const type::fixed_array<bool, coord_total_size>& getActiveDirections() const;
     virtual const bool checkState();
 
-    bool checkOutOfBoundsIndices(const VecIndex &indices, const sofa::Size dimension);
     virtual bool checkOutOfBoundsIndices();
 
+    bool checkOutOfBoundsIndices(const VecIndex &indices, const sofa::Size dimension);
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_FixedWeakConstraint_CPP)
