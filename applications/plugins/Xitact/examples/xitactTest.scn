@@ -17,7 +17,7 @@
     <CGLinearSolver iterations="40" name="linear solver" tolerance="1.0e-9" threshold="1.0e-15" printLog="0"/>
     <!-- Modify this position in the scene -->
     <MechanicalObject name="bati" template="Rigid3d" position="0 0 0 0 0 0 1"/>
-    <RestShapeSpringsForceField points="0" stiffness="100000" angularStiffness="1000000"/> <!--external_rest_shape="@toto"/>-->
+    <RestShapeSpringsForceField indices="0" stiffness="100000" angularStiffness="1000000"/> <!--external_rest_shape="@toto"/>-->
     <UncoupledConstraintCorrection compliance="0.00001  0.000001 0 0 0.000001 0 0.000001"/>
 
     <Node name="VisuOfXitactBase">
@@ -34,7 +34,7 @@
       <IHPDriver toolIndex="0" permanent="true" RefreshFrequency="500" forceScale="0.1"/>
       <MechanicalObject name="Articulations" template="Vec1d" position="0 0 0 0 0 0" rest_position="0 0 0 0 0 0"/>
       <!--	<UniformMass vertexMass="10.0 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
-      <RestShapeSpringsForceField points="0 1 2 3 4 5" stiffness="1000 1000 1000 10000 1000 1000 " />
+      <RestShapeSpringsForceField indices="0 1 2 3 4 5" stiffness="1000 1000 1000 10000 1000 1000 " />
       <UncoupledConstraintCorrection compliance="0.01 0.01 0.01 0.0001 0.001 0.001 " />
       <VMechanismsForceFeedback activate="true"/>
       <!--<LCPForceFeedback /> -->
