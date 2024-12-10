@@ -43,55 +43,13 @@ using sofa::helper::system::FileSystem;
 #ifdef SOFA_BUILD_CONFIGURATION
 constexpr std::string_view SOFA_BUILD_CONFIGURATION_STR = sofa_tostring(SOFA_BUILD_CONFIGURATION);
 #else
-constexpr string_view SOFA_BUILD_CONFIGURATION_STR = "NONE";
-#endif
-#ifdef SOFA_BUILD_MULTI_CONFIGURATION
-constexpr std::string_view SOFA_BUILD_MULTI_CONFIGURATION_STR = sofa_tostring(SOFA_BUILD_MULTI_CONFIGURATION);
-#else
-constexpr string_view SOFA_BUILD_MULTI_CONFIGURATION_STR = "0";
+constexpr std::string_view SOFA_BUILD_CONFIGURATION_STR = "NONE";
 #endif
 
-enum class SofaBuildConfiguration
+constexpr std::string_view GetSofaBuildConfigurationString()
 {
-    Release,
-    RelWithDebInfo,
-    Debug,
-    MinSizeRel,
-    NonStandard
-};
-
-constexpr SofaBuildConfiguration getSofaBuildConfiguration()
-{
-    if constexpr (SOFA_BUILD_CONFIGURATION_STR == "Release")
-    {
-        return SofaBuildConfiguration::Release;
-    }
-    if constexpr (SOFA_BUILD_CONFIGURATION_STR == "RelWithDebInfo")
-    {
-        return SofaBuildConfiguration::RelWithDebInfo;
-    }
-    if constexpr (SOFA_BUILD_CONFIGURATION_STR == "Debug")
-    {
-        return SofaBuildConfiguration::Debug;
-    }
-    if constexpr (SOFA_BUILD_CONFIGURATION_STR == "MinSizeRel")
-    {
-        return SofaBuildConfiguration::MinSizeRel;
-    }
-
-    return SofaBuildConfiguration::NonStandard;
+    return SOFA_BUILD_CONFIGURATION_STR;
 }
-
-constexpr bool getSofaMultiConfiguration()
-{
-    if constexpr (SOFA_BUILD_MULTI_CONFIGURATION_STR == "1")
-    {
-        return true;
-    }
-
-    return false;
-}
-
 
 namespace sofa::helper::system
 {
@@ -533,7 +491,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
             const std::array paths =
             {
                 dir, // Non-Multi-Config build, install
-                FileSystem::append(dir, SOFA_BUILD_CONFIGURATION_STR) // Multi-Config build
+                FileSystem::append(dir, GetSofaBuildConfigurationString()) // Multi-Config build
             };
                 
             for (const auto & path : paths)
