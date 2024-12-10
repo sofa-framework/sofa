@@ -775,7 +775,7 @@ bool ObjectFactory::registerObjectsFromPlugin(const std::string& pluginName)
     // do not register if it was already done before
     if(m_registeredPluginSet.count(pluginName) > 0)
     {
-        // msg_warning("ObjectFactory") << pluginName << " has already registered its components.";
+        msg_warning("ObjectFactory") << pluginName << " has already registered its components.";
         return false;
     }
 
@@ -837,8 +837,7 @@ RegisterObject& RegisterObject::addCreator(std::string classname, std::string te
 
 RegisterObject::operator int() const
 {
-    //std::cout << "Implicit object registration is deprecrated since v24.06. Check #4429 for more information." << std::endl;
-    // msg_warning("RegisterObject") << "Implicit object registration is deprecrated since v24.06. Check #4429 for more information.";
+    msg_warning("RegisterObject") << "Implicit object registration is deprecrated since v24.12. Check #4429 for more information.";
     return commitTo(ObjectFactory::getInstance());
 }
 
