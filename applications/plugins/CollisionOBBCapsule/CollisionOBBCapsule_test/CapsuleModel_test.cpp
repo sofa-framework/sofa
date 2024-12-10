@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,24 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_CAPSULECOLLISIONMODEL_CPP
-#include <CollisionOBBCapsule/geometry/CapsuleModel.inl>
+#include <gtest/gtest.h>
+#include <CollisionOBBCapsule/geometry/CapsuleModel.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace collisionobbcapsule::geometry
+TEST(CapsuleModel, creationFromFactory)
 {
+    const auto entry = sofa::core::ObjectFactory::getInstance()->getEntry("CapsuleCollisionModel");
+    const auto creatorRigid = entry.creatorMap.at("Rigid3d");
 
-using namespace sofa::defaulttype;
-
-int CapsuleCollisionModelClass = core::RegisterObject("Collision model which represents a set of Capsules")
-    .add< CapsuleCollisionModel<sofa::defaulttype::Vec3Types> >()
-    .add< CapsuleCollisionModel<sofa::defaulttype::Rigid3Types> >()
-        ;
-
-template class COLLISIONOBBCAPSULE_API TCapsule<defaulttype::Vec3Types>;
-template class COLLISIONOBBCAPSULE_API CapsuleCollisionModel<defaulttype::Vec3Types>;
-
-template class COLLISIONOBBCAPSULE_API TCapsule<defaulttype::Rigid3Types>;
-template class COLLISIONOBBCAPSULE_API CapsuleCollisionModel<defaulttype::Rigid3Types>;
-
-} // namespace collisionobbcapsule::geometry
+    sofa::core::objectmodel::BaseObjectDescription desc;
+    const auto object = creatorRigid->createInstance(nullptr, &desc);
+}
