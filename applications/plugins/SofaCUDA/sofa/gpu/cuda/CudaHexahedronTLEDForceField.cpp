@@ -224,7 +224,7 @@ void CudaHexahedronTLEDForceField::reinit()
      */
     msg_info() << "CudaHexahedronTLEDForceField: precomputations...";
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     nelems.clear();
 
     // Shape function natural derivatives DhDr
@@ -465,7 +465,7 @@ void CudaHexahedronTLEDForceField::addForce (const sofa::core::MechanicalParams*
     const VecCoord& x  =   dataX.getValue()  ;
 
     // Gets initial positions (allow to compute displacements by doing the difference between initial and current positions)
-    const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     f.resize(x.size());
     CudaHexahedronTLEDForceField3f_addForce(

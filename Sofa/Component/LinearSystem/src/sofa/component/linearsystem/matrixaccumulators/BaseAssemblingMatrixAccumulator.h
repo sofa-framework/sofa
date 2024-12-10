@@ -34,7 +34,6 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(BaseAssemblingMatrixAccumulator, c), sofa::core::get_base_object_strong_type<c>);
     using ComponentType = typename Inherit1::ComponentType;
 
-    using Inherit1::initData;
     using Inherit1::add;
 
     virtual void setMatrixSize(const sofa::type::Vec2u&);

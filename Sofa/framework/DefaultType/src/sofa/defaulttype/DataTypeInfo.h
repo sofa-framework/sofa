@@ -35,6 +35,7 @@
 #include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Quat.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_SelectableItem.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Text.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>

@@ -48,7 +48,9 @@
         </Node>
 
         <Node name="Visu">
-            <OglModel name="Visual" color="green" />
+            <VisualStyle displayFlags="hideWireframe"/>
+            <DataDisplay name="Visual" triangleData="@../constraintSpace/areaDoFs.position"/>
+            <OglColorMap colorScheme="HSV" showLegend="true" legendTitle="Triangle area" min="@Visual.currentMin" max="@Visual.currentMax"/>
             <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -73,7 +75,7 @@
         </Node>
 
         <Node name="Visu">
-            <OglModel name="Visual" color="red" />
+            <OglModel name="Visual" color="darkgray" />
             <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>

@@ -57,6 +57,13 @@ void DistanceMapping<TIn, TOut>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
+    if (!l_topology)
+    {
+        msg_error() << "No topology found";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
     if (l_topology->getNbEdges() < 1)

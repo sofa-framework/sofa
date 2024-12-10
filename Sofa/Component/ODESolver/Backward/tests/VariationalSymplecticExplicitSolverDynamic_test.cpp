@@ -125,7 +125,7 @@ struct VariationalSymplecticExplicitSolverDynamic_test : public component::odeso
         do
         {              
             // Record the mass position
-            Coord p0=dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[0];
+            Coord p0=dofs.get()->read(sofa::core::vec_id::read_access::position)->getValue()[0];
 
             double absoluteError = fabs(p0[1]-positionsArray[i]);
 

@@ -114,7 +114,7 @@ void LCPConstraintProblem::solveTimed(SReal tolerance, int maxIt, SReal timeout)
 bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     last_cp = current_cp;
-    MechanicalVOpVisitor(core::execparams::defaultInstance(), (core::VecId)core::VecDerivId::dx()).setMapped(true).execute( getContext()); //dX=0
+    MechanicalVOpVisitor(core::execparams::defaultInstance(), (core::VecId)core::vec_id::write_access::dx).setMapped(true).execute( getContext()); //dX=0
 
     msg_info() <<" propagate DXn performed - collision called" ;
 
@@ -142,8 +142,8 @@ void LCPConstraintSolver::buildSystem()
 {
     core::ConstraintParams cparams;
 
-    cparams.setX(core::ConstVecCoordId::freePosition());
-    cparams.setV(core::ConstVecDerivId::freeVelocity());
+    cparams.setX(core::vec_id::read_access::freePosition);
+    cparams.setV(core::vec_id::read_access::freeVelocity);
 
     _numConstraints = buildConstraintMatrix(&cparams);
     sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);

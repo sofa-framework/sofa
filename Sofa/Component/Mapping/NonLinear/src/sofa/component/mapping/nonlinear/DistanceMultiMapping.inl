@@ -85,12 +85,19 @@ void DistanceMultiMapping<TIn, TOut>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
+    if (!l_topology)
+    {
+        msg_error() << "No topology found";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
     if (l_topology->getNbEdges() < 1)
     {
         msg_error() << "No Topology component containing edges found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -103,14 +110,20 @@ void DistanceMultiMapping<TIn, TOut>::init()
     // compute the rest lengths if they are not known
     if(d_restLengths.getValue().size() != links.size() )
     {
-        helper::WriteAccessor< Data<type::vector<Real> > > restLengths(d_restLengths);
-        restLengths.resize( links.size() );
-        if(!(d_computeDistance.getValue()))
+        helper::WriteAccessor restLengths(d_restLengths);
+        restLengths->clear();
+        restLengths->reserve( links.size() );
+        if(!d_computeDistance.getValue())
         {
-            for(unsigned i=0; i<links.size(); i++ )
+            for (const auto& edge : links)
             {
-                const type::Vec2i& pair0 = pairs[ links[i][0] ];
-                const type::Vec2i& pair1 = pairs[ links[i][1] ];
+                const auto& [e0, e1] = edge.array();
+
+                assert(e0 < pairs.size());
+                assert(e1 < pairs.size());
+
+                const type::Vec2i& pair0 = pairs[ e0 ];
+                const type::Vec2i& pair1 = pairs[ e1 ];
 
                 auto posPair0 = this->getFromModels()[pair0[0]]->readPositions();
                 auto posPair1 = this->getFromModels()[pair1[0]]->readPositions();
@@ -118,7 +131,7 @@ void DistanceMultiMapping<TIn, TOut>::init()
                 const InCoord& pos0 = posPair0[pair0[1]];
                 const InCoord& pos1 = posPair1[pair1[1]];
 
-                restLengths[i] = (pos0 - pos1).norm();
+                restLengths->emplace_back((pos0 - pos1).norm());
             }
         }
         else

@@ -19,21 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_SHEWCHUKPCGLINEARSOLVER_CPP
-#include <sofa/component/linearsolver/iterative/ShewchukPCGLinearSolver.inl>
-#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/component/linearsystem/MatrixFreeSystem.h>
+#pragma once
+#include <type_traits>
 
-namespace sofa::component::linearsolver::iterative
+namespace sofa::type::trait
 {
 
-void registerShewchukPCGLinearSolver(sofa::core::ObjectFactory* factory)
+/// Detect if a type T has iterator/const iterator function, operator[](size_t) and defines a static size
+template<typename T>
+struct is_fixed_array
 {
-    factory->registerObjects(core::ObjectRegistrationData("Linear system solver using the Shewchuk conjugate gradient iterative algorithm.")
-        .add< ShewchukPCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector> >());
+    typedef typename std::remove_const<T>::type test_type;
+
+    template<typename A>
+    static constexpr bool test(
+        A * pt,
+        A const * cpt = nullptr,
+        decltype(pt->begin()) * = nullptr,
+        decltype(pt->end()) * = nullptr,
+        decltype(cpt->begin()) * = nullptr,
+        decltype(cpt->end()) * = nullptr,
+        typename std::decay<decltype((*pt)[0])>::type * = nullptr,   ///< Is there an operator[] ?
+        decltype(A::static_size) * = nullptr, ///< fixed array containers define static_size
+        typename A::iterator * = nullptr,
+        typename A::const_iterator * = nullptr,
+        typename A::value_type * = nullptr)
+    {
+
+        typedef typename A::iterator iterator;
+        typedef typename A::const_iterator const_iterator;
+        return  std::is_same<decltype(pt->begin()),iterator>::value
+                && std::is_same<decltype(pt->end()),iterator>::value
+                && std::is_same<decltype(cpt->begin()),const_iterator>::value
+                && std::is_same<decltype(cpt->end()),const_iterator>::value;
+    }
+
+    template<typename A>
+    static constexpr bool test(...) {
+        return false;
+    }
+
+    static const bool value = test<test_type>(nullptr);
+};
+
 }
-
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ShewchukPCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector>;
-
-} // namespace sofa::component::linearsolver::iterative

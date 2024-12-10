@@ -8,7 +8,7 @@
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [IndexValueMapper] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
-    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [ShewchukPCGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [PCGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping IdentityMapping] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [ConstantForceField] -->
@@ -39,7 +39,7 @@
 
     <Node name="FEM">
         <EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.1" _velocityDamping="0.5"/>
-        <ShewchukPCGLinearSolver preconditioner="@precond" update_step="15"/>
+        <PCGLinearSolver preconditioner="@precond" update_step="15"/>
         <SparseLDLSolver name="precond" template="CompressedRowSparseMatrixMat3x3"/>
 
         <TetrahedronSetTopologyContainer name="Container" position="@../Topology/HexaTop.position" tetrahedra="@../Topology/Container.tetrahedra"/>

@@ -31,6 +31,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/Mapping.h
     ${SRC_ROOT}/Mapping.inl
     ${SRC_ROOT}/MappingHelper.h
+    ${SRC_ROOT}/MatricesFactors.h
     ${SRC_ROOT}/MatrixAccumulator.h
     ${SRC_ROOT}/MechanicalParams.h
     ${SRC_ROOT}/MechanicalStatesMatrixAccumulators.h

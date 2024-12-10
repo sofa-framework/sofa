@@ -641,7 +641,7 @@ void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SRe
 {
     const Coord d((Real)dx,(Real)dy,(Real)dz);
 
-    Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
+    Data< VecCoord >* d_x = this->write(core::vec_id::write_access::position);
     VecCoord &x = *d_x->beginEdit();
 
     for (std::size_t i = 0; i < x.size(); i++)
@@ -674,7 +674,7 @@ void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal 
 
 void VisualModelImpl::applyRotation(const Quat<SReal> q)
 {
-    Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
+    Data< VecCoord >* d_x = this->write(core::vec_id::write_access::position);
     VecCoord &x = *d_x->beginEdit();
 
     for (std::size_t i = 0; i < x.size(); i++)
@@ -701,7 +701,7 @@ void VisualModelImpl::applyRotation(const Quat<SReal> q)
 
 void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
 {
-    Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
+    Data< VecCoord >* d_x = this->write(core::vec_id::write_access::position);
     VecCoord &x = *d_x->beginEdit();
 
     for (std::size_t i = 0; i < x.size(); i++)

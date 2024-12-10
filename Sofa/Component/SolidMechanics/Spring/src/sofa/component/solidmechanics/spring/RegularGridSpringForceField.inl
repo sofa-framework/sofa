@@ -445,8 +445,8 @@ void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualPara
     // Draw any custom springs
     this->SpringForceField<DataTypes>::draw(vparams);
     // Compute topological springs
-    const VecCoord& p1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p1 =this->mstate1->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& p2 =this->mstate2->read(core::vec_id::read_access::position)->getValue();
 
     std::vector< Vec3 > points;
     Vec3 point1,point2;
