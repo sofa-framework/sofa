@@ -37,7 +37,7 @@ using sofa::gl::component::rendering2d::OglColorMap;
 
 void registerDataDisplay(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Rendering of meshes colored by data.")
+    factory->registerObjects(core::ObjectRegistrationData("Color rendering of data associated with a mesh.")
         .add< DataDisplay >());
 }
 

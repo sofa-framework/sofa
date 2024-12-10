@@ -38,7 +38,7 @@ using namespace sofa::defaulttype;
 
 void registerOglViewport(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Set an additional viewport into the main viewport.")
+    factory->registerObjects(core::ObjectRegistrationData("Set an additional viewport into the main one.")
         .add< OglViewport >());
 }
 

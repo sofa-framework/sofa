@@ -43,7 +43,7 @@ namespace sofa::gl::component::rendering3d
 
 void registerPointSplatModel(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("A simple visualization for a cloud of points.")
+    factory->registerObjects(core::ObjectRegistrationData("Visualization for a cloud of points using splatting.")
         .add< PointSplatModel >());
 }
 

@@ -33,7 +33,7 @@ namespace sofa::gl::component::rendering3d
 
 void registerOglCylinderModel(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("A simple visualization for set of cylinder.")
+    factory->registerObjects(core::ObjectRegistrationData("OpenGL-based visualization for a cylinders over edges.")
         .add< OglCylinderModel >());
 }
 

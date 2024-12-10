@@ -29,7 +29,7 @@ namespace sofa::gui::component
 
 void registerAddFrameButtonSetting(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Add a frame to a skinned model.")
+    factory->registerObjects(core::ObjectRegistrationData("Button setting adding a frame to a skinned model.")
         .add< AddFrameButtonSetting >());
 }
 
