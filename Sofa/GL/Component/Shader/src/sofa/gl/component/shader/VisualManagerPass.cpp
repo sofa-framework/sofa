@@ -31,10 +31,11 @@ using namespace sofa::gl;
 using namespace simulation;
 using namespace core::visual;
 
-//Register LightManager in the Object Factory
-int VisualManagerPassClass = core::RegisterObject("VisualManagerPass")
-        .add< VisualManagerPass >()
-        ;
+void registerVisualManagerPass(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Render pass element: render the relevant tagged objects in a FBO.")
+        .add< VisualManagerPass >());
+}
 
 VisualManagerPass::VisualManagerPass()
     : factor(initData(&factor, 1.0f, "factor","set the resolution factor for the output pass. default value:1.0")),

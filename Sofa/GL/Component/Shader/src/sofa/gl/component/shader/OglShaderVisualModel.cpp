@@ -34,9 +34,11 @@ namespace sofa::gl::component::shader
 using namespace sofa::core::topology;
 using namespace sofa::core::behavior;
 
-int OglShaderVisualModelClass = core::RegisterObject("Visual model for OpenGL display using Glew extensions")
-        .add< OglShaderVisualModel >()
-        ;
+void registerOglShaderVisualModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Visual model for OpenGL display using a custom shader.")
+        .add< OglShaderVisualModel >());
+}
 
 OglShaderVisualModel::OglShaderVisualModel()
     : shader(nullptr)
