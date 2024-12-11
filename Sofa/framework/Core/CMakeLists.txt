@@ -170,6 +170,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/TagSet.h
     ${SRC_ROOT}/objectmodel/vectorData.h
     ${SRC_ROOT}/objectmodel/vectorLinks.h
+    ${SRC_ROOT}/objectmodel/VisitorDirection.h
     ${SRC_ROOT}/topology/BaseMeshTopology.h
     ${SRC_ROOT}/topology/BaseTopology.h
     ${SRC_ROOT}/topology/BaseTopologyData.h
