@@ -25,9 +25,9 @@
 namespace sofa::testing
 {
 
-ScopedPlugin::ScopedPlugin(const std::string& pluginName, const bool unloadAllPlugins,
+ScopedPlugin::ScopedPlugin(const std::string& pluginName,
                            helper::system::PluginManager* pluginManager)
-: m_pluginManager(pluginManager), m_unloadAllPlugins(unloadAllPlugins)
+: m_pluginManager(pluginManager)
 {
     addPlugin(pluginName);
 }
@@ -36,22 +36,12 @@ ScopedPlugin::~ScopedPlugin()
 {
     if (m_pluginManager)
     {
-        if (m_unloadAllPlugins)
+        for (const auto& pluginName : m_loadedPlugins)
         {
-            for(const auto& [loadedPath, loadedPlugin] : m_pluginManager->getPluginMap())
+            const auto [path, isLoaded] = m_pluginManager->isPluginLoaded(pluginName);
+            if (isLoaded)
             {
-                m_pluginManager->unloadPlugin(loadedPath);
-            }
-        }
-        else
-        {
-            for (const auto& pluginName : m_loadedPlugins)
-            {
-                const auto [path, isLoaded] = m_pluginManager->isPluginLoaded(pluginName);
-                if (isLoaded)
-                {
-                    m_pluginManager->unloadPlugin(path);
-                }
+                m_pluginManager->unloadPlugin(path);
             }
         }
     }
