@@ -29,18 +29,36 @@ namespace sofa::testing
 struct SOFA_TESTING_API ScopedPlugin
 {
     ScopedPlugin() = delete;
-    explicit ScopedPlugin(
-        const std::string& pluginName, bool unloadAllPlugins = true,
-        helper::system::PluginManager* pluginManager = &helper::system::PluginManager::getInstance());
-    ~ScopedPlugin();
+    ScopedPlugin(const ScopedPlugin&) = delete;
+    void operator=(const ScopedPlugin&) = delete;
 
-    helper::system::PluginManager::PluginLoadStatus getStatus() const;
+    explicit ScopedPlugin(
+        const std::string& pluginName,
+        bool unloadAllPlugins = true,
+        helper::system::PluginManager* pluginManager = &helper::system::PluginManager::getInstance());
+
+    template<class InputIt>
+    ScopedPlugin(
+        InputIt first, InputIt last,
+        bool unloadAllPlugins = true,
+        helper::system::PluginManager* pluginManager = &helper::system::PluginManager::getInstance())
+    : m_pluginManager(pluginManager), m_unloadAllPlugins(unloadAllPlugins)
+    {
+        while (first != last)
+        {
+            addPlugin(*first++);
+        }
+    }
+
+    ~ScopedPlugin();
 
 private:
     helper::system::PluginManager* m_pluginManager { nullptr };
-    std::string m_pluginName;
-    helper::system::PluginManager::PluginLoadStatus m_status;
     bool m_unloadAllPlugins { true };
+
+    std::set<std::string> m_loadedPlugins;
+
+    void addPlugin(const std::string& pluginName);
 };
 
 
