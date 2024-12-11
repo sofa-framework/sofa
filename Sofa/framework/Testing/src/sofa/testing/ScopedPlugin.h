@@ -34,15 +34,13 @@ struct SOFA_TESTING_API ScopedPlugin
 
     explicit ScopedPlugin(
         const std::string& pluginName,
-        bool unloadAllPlugins = true,
         helper::system::PluginManager* pluginManager = &helper::system::PluginManager::getInstance());
 
     template<class InputIt>
     ScopedPlugin(
         InputIt first, InputIt last,
-        bool unloadAllPlugins = true,
         helper::system::PluginManager* pluginManager = &helper::system::PluginManager::getInstance())
-    : m_pluginManager(pluginManager), m_unloadAllPlugins(unloadAllPlugins)
+    : m_pluginManager(pluginManager)
     {
         while (first != last)
         {
@@ -54,12 +52,17 @@ struct SOFA_TESTING_API ScopedPlugin
 
 private:
     helper::system::PluginManager* m_pluginManager { nullptr };
-    bool m_unloadAllPlugins { true };
 
     std::set<std::string> m_loadedPlugins;
 
     void addPlugin(const std::string& pluginName);
 };
+
+
+inline std::unique_ptr<ScopedPlugin> makeScopedPlugin(const std::initializer_list<std::string>& pluginNames)
+{
+    return std::make_unique<ScopedPlugin>(pluginNames.begin(), pluginNames.end());
+}
 
 
 }
