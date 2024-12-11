@@ -234,9 +234,6 @@ void updateVisual(Node* root)
 
     sofa::core::visual::VisualParams* vparams = sofa::core::visual::visualparams::defaultInstance();
 
-    VisualStyleVisitor act(vparams);
-    root->execute(act);
-
     if (sofa::core::visual::VisualLoop* vloop = root->getVisualLoop())
     {
         vloop->updateStep(vparams);

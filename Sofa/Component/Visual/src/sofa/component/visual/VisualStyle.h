@@ -61,7 +61,7 @@ namespace sofa::component::visual
 class SOFA_COMPONENT_VISUAL_API VisualStyle : public sofa::core::visual::BaseVisualStyle
 {
 public:
-    SOFA_CLASS(VisualStyle,sofa::core::visual::VisualModel);
+    SOFA_CLASS(VisualStyle,sofa::core::visual::BaseVisualStyle);
 
     typedef sofa::core::visual::VisualParams VisualParams;
     typedef sofa::core::visual::DisplayFlags DisplayFlags;
