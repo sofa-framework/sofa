@@ -41,3 +41,12 @@
         "v23.12", "v24.06", \
         "RGBAColor does not inherit anymore from sofa::type::fixed_array. Use respective functions accordingly.")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_TYPE
+#define SOFA_ATTRIBUTE_DISABLED__BOUNDINGBOX_TYPO()
+#else
+#define SOFA_ATTRIBUTE_DISABLED__BOUNDINGBOX_TYPO() \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v24.12", "v25.06", \
+        "Use isNegligible instead.")
+#endif
