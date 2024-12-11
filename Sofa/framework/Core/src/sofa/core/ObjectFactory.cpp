@@ -837,7 +837,8 @@ RegisterObject& RegisterObject::addCreator(std::string classname, std::string te
 
 RegisterObject::operator int() const
 {
-    msg_warning("RegisterObject") << "Implicit object registration is deprecated since v24.12. Check #4429 for more information.";
+    msg_warning("RegisterObject") << m_objectRegistrationdata.entry.className
+                                  << ": Implicit object registration is deprecated since v24.12. Check #4429 for more information.";
     return commitTo(ObjectFactory::getInstance());
 }
 
