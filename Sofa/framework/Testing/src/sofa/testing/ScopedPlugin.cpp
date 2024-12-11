@@ -27,16 +27,9 @@ namespace sofa::testing
 
 ScopedPlugin::ScopedPlugin(const std::string& pluginName, const bool unloadAllPlugins,
                            helper::system::PluginManager* pluginManager)
-: m_pluginManager(pluginManager), m_pluginName(pluginName), m_unloadAllPlugins(unloadAllPlugins)
+: m_pluginManager(pluginManager), m_unloadAllPlugins(unloadAllPlugins)
 {
-    if (m_pluginManager)
-    {
-        m_status = pluginManager->loadPlugin(pluginName);
-        if(m_status == helper::system::PluginManager::PluginLoadStatus::SUCCESS)
-        {
-            sofa::core::ObjectFactory::getInstance()->registerObjectsFromPlugin(pluginName);
-        }
-    }
+    addPlugin(pluginName);
 }
 
 ScopedPlugin::~ScopedPlugin()
@@ -52,9 +45,9 @@ ScopedPlugin::~ScopedPlugin()
         }
         else
         {
-            if (m_status == helper::system::PluginManager::PluginLoadStatus::SUCCESS)
+            for (const auto& pluginName : m_loadedPlugins)
             {
-                const auto [path, isLoaded] = m_pluginManager->isPluginLoaded(m_pluginName);
+                const auto [path, isLoaded] = m_pluginManager->isPluginLoaded(pluginName);
                 if (isLoaded)
                 {
                     m_pluginManager->unloadPlugin(path);
@@ -64,8 +57,14 @@ ScopedPlugin::~ScopedPlugin()
     }
 }
 
-helper::system::PluginManager::PluginLoadStatus ScopedPlugin::getStatus() const
+void ScopedPlugin::addPlugin(const std::string& pluginName)
 {
-    return m_status;
+    const auto status = m_pluginManager->loadPlugin(pluginName);
+    if(status == helper::system::PluginManager::PluginLoadStatus::SUCCESS)
+    {
+        m_loadedPlugins.insert(pluginName);
+        sofa::core::ObjectFactory::getInstance()->registerObjectsFromPlugin(pluginName);
+    }
 }
+
 }
