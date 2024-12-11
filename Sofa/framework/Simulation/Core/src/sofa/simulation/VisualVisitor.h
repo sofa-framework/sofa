@@ -39,6 +39,8 @@ public:
     {}
 
     virtual void processVisualModel(simulation::Node* node, core::visual::VisualModel* vm) = 0;
+    virtual void fwdProcessVisualStyle(simulation::Node* node, core::visual::BaseVisualStyle* vm);
+    virtual void bwdProcessVisualStyle(simulation::Node* node, core::visual::BaseVisualStyle* vm);
     virtual void processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* /*o*/) {}
 
     Result processNodeTopDown(simulation::Node* node) override;
@@ -55,28 +57,6 @@ protected:
     core::visual::VisualParams* vparams;
 };
 
-class SOFA_SIMULATION_CORE_API VisualStyleVisitor : public Visitor
-{
-public:
- VisualStyleVisitor(core::visual::VisualParams* params)
-        : Visitor(sofa::core::visual::visualparams::castToExecParams(params))
-        ,vparams(params)
-    {}
-
-    Result processNodeTopDown(simulation::Node* node) override;
-    void processVisualStyle(simulation::Node* /*node*/, sofa::core::visual::BaseVisualStyle* o);
-
-    /// Return a category name for this action.
-    /// Only used for debugging / profiling purposes
-    const char* getCategoryName() const override { return "visual"; }
-    const char* getClassName() const override { return "VisualStyleVisitor"; }
-
-    /// visual visitor must be executed as a tree, such as forward and backward orders are coherent
-    bool treeTraversal(TreeTraversalRepetition& repeat) override { repeat=NO_REPETITION; return true; }
-
-protected:
-    core::visual::VisualParams* vparams;
-};
 
 class SOFA_SIMULATION_CORE_API VisualDrawVisitor : public VisualVisitor
 {
@@ -103,10 +83,10 @@ public:
     VisualUpdateVisitor(core::visual::VisualParams* params)
         : VisualVisitor(params)
     {}
-    virtual void fwdVisualModel(simulation::Node* node, core::visual::VisualModel* vm);
 
     virtual void processVisualModel(simulation::Node*, core::visual::VisualModel* vm) override;
     Result processNodeTopDown(simulation::Node* node) override;
+    void processNodeBottomUp(simulation::Node* node) override;
 
     const char* getClassName() const override { return "VisualUpdateVisitor"; }
 
