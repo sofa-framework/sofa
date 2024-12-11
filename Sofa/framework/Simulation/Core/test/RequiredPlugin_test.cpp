@@ -85,7 +85,7 @@ struct RequiredPlugin_test : public BaseSimulationTest
     
     void testLoadPluginB()
     {
-        EXPECT_MSG_EMIT(Warning); // // TestPluginB does not register any component
+        EXPECT_MSG_EMIT(Warning); // TestPluginB does not register any component
 
         std::stringstream scene;
         scene << "<?xml version='1.0'?>"
@@ -101,7 +101,7 @@ struct RequiredPlugin_test : public BaseSimulationTest
 
     void testLoadPluginC()
     {
-        EXPECT_MSG_NOEMIT(Warning); // // TestPluginC registers its component explicitly
+        EXPECT_MSG_NOEMIT(Warning); // TestPluginC registers its component explicitly
 
         std::stringstream scene;
         scene << "<?xml version='1.0'?>"
@@ -118,8 +118,8 @@ struct RequiredPlugin_test : public BaseSimulationTest
 
 TEST_F(RequiredPlugin_test, testNotExistingPlugin ) { testNotExistingPlugin(); }
 TEST_F(RequiredPlugin_test, testNoParameter ) { testNoParameter(); }
-TEST_F(RequiredPlugin_test, DISABLED_testLoadPluginA) { testLoadPluginA(); } // disabled because testLoadPluginA() should throw a warning (but this warning is commented for the moment)
-TEST_F(RequiredPlugin_test, DISABLED_testLoadPluginB) { testLoadPluginB(); }// disabled because testLoadPluginB() should throw a warning (but this warning is commented for the moment)
+TEST_F(RequiredPlugin_test, testLoadPluginA) { testLoadPluginA(); }
+TEST_F(RequiredPlugin_test, testLoadPluginB) { testLoadPluginB(); }
 TEST_F(RequiredPlugin_test, testLoadPluginC) { testLoadPluginC(); }
 
 }
