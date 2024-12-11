@@ -21,7 +21,7 @@ trivially, it requires a linear solver, here SparseLDLSolver.
 
     <Node name="DeformableObject">
 
-        <EulerExplicitSolver name="odeExplicitSolver"/>
+        <EulerExplicitSolver name="odeExplicitSolver" symplectic="true"/>
         <SparseLDLSolver />
 
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
