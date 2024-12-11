@@ -56,10 +56,10 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin("Sofa.Component.Engine.Analyze");
-    factory->registerObjectsFromPlugin("Sofa.Component.Engine.Generate");
-    factory->registerObjectsFromPlugin("Sofa.Component.Engine.Select");
-    factory->registerObjectsFromPlugin("Sofa.Component.Engine.Transform");
+    factory->registerObjectsFromPlugin(Sofa.Component.Engine.Analyze);
+    factory->registerObjectsFromPlugin(Sofa.Component.Engine.Generate);
+    factory->registerObjectsFromPlugin(Sofa.Component.Engine.Select);
+    factory->registerObjectsFromPlugin(Sofa.Component.Engine.Transform);
 }
 
 void init()
