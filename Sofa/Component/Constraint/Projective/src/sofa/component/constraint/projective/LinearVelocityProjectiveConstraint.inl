@@ -153,7 +153,7 @@ void LinearVelocityProjectiveConstraint<TDataTypes>::projectResponse(const core:
         m_finished = findKeyTimes();
     }
 
-    if ((!m_finished || d_continueAfterEnd.getValue()) && (m_nextT != m_prevT))
+    if (isConstraintActive())
     {
         helper::WriteAccessor<DataVecDeriv> res = resData;
         VecDeriv& dx = res.wref();
@@ -177,7 +177,7 @@ void LinearVelocityProjectiveConstraint<TDataTypes>::projectVelocity(const core:
         m_finished = findKeyTimes();
     }
 
-    if ((! m_finished || d_continueAfterEnd.getValue()) && (m_nextT != m_prevT))
+    if (isConstraintActive())
     {
         helper::WriteAccessor<DataVecDeriv> dx = vData;
         Real cT = (Real) this->getContext()->getTime();
@@ -241,7 +241,7 @@ void LinearVelocityProjectiveConstraint<TDataTypes>::projectPosition(const core:
         m_finished = findKeyTimes();
     }
 
-    if((!m_finished || d_continueAfterEnd.getValue()) && (m_nextT != m_prevT))
+    if(isConstraintActive())
     {
         const Real cT = (Real) this->getContext()->getTime();
         const Real dTsimu = (Real) this->getContext()->getDt();
@@ -278,6 +278,12 @@ void LinearVelocityProjectiveConstraint<TDataTypes>::projectPosition(const core:
             }
         }
     }
+}
+
+template <class DataTypes>
+bool LinearVelocityProjectiveConstraint<DataTypes>::isConstraintActive() const
+{
+    return (!m_finished || d_continueAfterEnd.getValue()) && (m_nextT != m_prevT);
 }
 
 template <class DataTypes>
@@ -333,7 +339,7 @@ void LinearVelocityProjectiveConstraint<DataTypes>::applyConstraint(const core::
 {
     SOFA_UNUSED(mparams);
 
-    if((!m_finished || d_continueAfterEnd.getValue()) && (m_nextT != m_prevT))
+    if(isConstraintActive())
     {
         const int o = matrix->getGlobalOffset(this->mstate.get());
         if (o >= 0)
@@ -357,7 +363,7 @@ template <class DataTypes>
 void LinearVelocityProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
-    if((!m_finished || d_continueAfterEnd.getValue()) && (m_nextT != m_prevT))
+    if(isConstraintActive())
     {
         if (const core::behavior::MultiMatrixAccessor::MatrixRef r =
                 matrix->getMatrix(this->mstate.get()))
@@ -387,7 +393,7 @@ void LinearVelocityProjectiveConstraint<DataTypes>::projectMatrix( sofa::lineara
 {
     static const unsigned blockSize = DataTypes::deriv_total_size;
 
-    if((!m_finished || d_continueAfterEnd.getValue()) && (m_nextT != m_prevT))
+    if(isConstraintActive())
     {
         const SetIndexArray & indices = this->d_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -405,7 +411,7 @@ void LinearVelocityProjectiveConstraint<DataTypes>::applyConstraint(
     sofa::core::behavior::ZeroDirichletCondition* matrix)
 {
     static constexpr unsigned int N = Deriv::size();
-    if((!m_finished || d_continueAfterEnd.getValue()) && (m_nextT != m_prevT))
+    if(isConstraintActive())
     {
         const SetIndexArray& indices = this->d_indices.getValue();
 

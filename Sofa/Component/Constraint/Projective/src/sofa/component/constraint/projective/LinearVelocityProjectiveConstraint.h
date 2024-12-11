@@ -122,6 +122,8 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
 private:
+    /// Check if the constraint is still active regarding the current time and the continueAfterEnd data
+    bool isConstraintActive() const;
 
     /// to know if we found the key times
     bool m_finished;
