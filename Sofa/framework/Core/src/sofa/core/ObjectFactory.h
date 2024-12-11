@@ -377,6 +377,8 @@ public:
 
     /// This is the final operation that will actually commit the additions to the ObjectFactory.
     bool commitTo(sofa::core::ObjectFactory* objectFactory) const;
+    
+    friend class RegisterObject;
 };
 
 
