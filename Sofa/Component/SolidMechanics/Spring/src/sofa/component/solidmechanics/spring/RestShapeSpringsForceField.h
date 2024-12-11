@@ -78,7 +78,6 @@ public:
     core::objectmodel::DataCallback c_fixAllCallback;
 
     SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_restMState;
-    SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     /// BaseObject initialization method.
     void bwdInit() override ;

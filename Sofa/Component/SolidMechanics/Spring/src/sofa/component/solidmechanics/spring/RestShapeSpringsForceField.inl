@@ -56,7 +56,6 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
         "activeDirections", std::string("Directions in which the spring is active (default=[" + sofa::helper::join(FixedWeakConstraint<DataTypes>::s_defaultActiveDirections, ',') + "])").c_str()))
     , d_externalIndices(initData(&d_externalIndices, "externalIndices","Indices from the external Mechanical State that define the rest shape springs"))
     , l_restMState(initLink("external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
-    , l_topology(initLink("topology", "Link to be set to the topology container in the component graph"))
 {
     c_fixAllCallback.addInput(&this->d_fixAll);
     c_fixAllCallback.addCallback([this]()
