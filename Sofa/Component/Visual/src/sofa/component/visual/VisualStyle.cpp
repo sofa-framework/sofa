@@ -62,13 +62,13 @@ VisualStyle::VisualStyle()
     displayFlags.setOriginalData(&d_displayFlags);
 }
 
-void VisualStyle::fwdDraw(VisualParams* vparams)
+void VisualStyle::updateVisualFlags(VisualParams* vparams)
 {
     backupFlags = vparams->displayFlags();
     vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, d_displayFlags.getValue());
 }
 
-void VisualStyle::bwdDraw(VisualParams* vparams)
+void VisualStyle::applyBackupFlags(VisualParams* vparams)
 {
     vparams->displayFlags() = backupFlags;
 }
