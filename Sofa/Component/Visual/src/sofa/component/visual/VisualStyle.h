@@ -68,8 +68,8 @@ public:
 protected:
     VisualStyle();
 public:
-    void fwdDraw(VisualParams* ) override;
-    void bwdDraw(VisualParams* ) override;
+    void updateVisualFlags(VisualParams* ) override;
+    void applyBackupFlags(VisualParams* ) override;
 
     bool insertInNode( sofa::core::objectmodel::BaseNode* node );
     bool removeInNode( sofa::core::objectmodel::BaseNode* node );

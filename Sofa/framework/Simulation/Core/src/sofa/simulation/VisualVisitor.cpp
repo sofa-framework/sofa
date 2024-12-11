@@ -48,13 +48,13 @@ Visitor::Result VisualVisitor::processNodeTopDown(simulation::Node* node)
 
 void VisualVisitor::fwdProcessVisualStyle(simulation::Node* node, core::visual::BaseVisualStyle* vm)
 {
-    vm-> fwdDraw(vparams);
+    vm-> updateVisualFlags(vparams);
 }
 
 
 void VisualVisitor::bwdProcessVisualStyle(simulation::Node* node, core::visual::BaseVisualStyle* vm)
 {
-    vm-> bwdDraw(vparams);
+    vm-> applyBackupFlags(vparams);
 }
 
 

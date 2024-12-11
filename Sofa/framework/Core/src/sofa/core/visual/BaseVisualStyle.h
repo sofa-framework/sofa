@@ -46,8 +46,8 @@ protected:
     ~BaseVisualStyle() override { }
 
 public:
-    virtual void fwdDraw(VisualParams* ) { };
-    virtual void bwdDraw(VisualParams* ) { };
+    virtual void updateVisualFlags(VisualParams* ) { };
+    virtual void applyBackupFlags(VisualParams* ) { };
 
 };
 
