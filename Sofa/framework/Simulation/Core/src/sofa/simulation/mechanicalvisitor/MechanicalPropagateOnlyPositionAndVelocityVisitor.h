@@ -45,7 +45,7 @@ public:
     sofa::core::MultiVecDerivId v;
 
     MechanicalPropagateOnlyPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams, SReal time=0,
-                                                      sofa::core::MultiVecCoordId x = sofa::core::VecId::position(), sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity());
+                                                      sofa::core::MultiVecCoordId x = sofa::core::vec_id::write_access::position, sofa::core::MultiVecDerivId v = sofa::core::vec_id::write_access::velocity);
 
     Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;

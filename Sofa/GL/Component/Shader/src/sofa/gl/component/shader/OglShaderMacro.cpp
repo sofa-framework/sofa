@@ -25,9 +25,11 @@
 namespace sofa::gl::component::shader
 {
 
-//Register OglIntVariable in the Object Factory
-int OglShaderDefineMacroClass = core::RegisterObject("OglShaderDefineMacro")
-        .add< OglShaderDefineMacro >();
+void registerOglShaderDefineMacro(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Add a custom preprocessor instruction to the shader in the current visual context.")
+        .add< OglShaderDefineMacro >());
+}
 
 OglShaderMacro::OglShaderMacro()
 {

@@ -29,10 +29,11 @@
 namespace sofa::gl::component::shader
 {
 
-//Register OglShader in the Object Factory
-int OglShadowShaderClass = core::RegisterObject("This component sets the shader system responsible of the shadowing.")
-        .add< OglShadowShader >()
-        ;
+void registerOglShadowShader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("This component sets the shader system responsible of the shadowing.")
+        .add< OglShadowShader >());
+}
 
 const std::string OglShadowShader::PATH_TO_SHADOW_VERTEX_SHADERS = "shaders/hardShadows/shadowMapping.vert";
 const std::string OglShadowShader::PATH_TO_SHADOW_FRAGMENT_SHADERS = "shaders/hardShadows/shadowMapping.frag";

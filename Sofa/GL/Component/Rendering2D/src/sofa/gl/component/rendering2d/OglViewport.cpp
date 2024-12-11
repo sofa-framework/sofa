@@ -36,11 +36,11 @@ namespace sofa::gl::component::rendering2d
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-//Register OglViewport in the Object Factory
-int OglViewportClass = core::RegisterObject("OglViewport")
-        .add< OglViewport >()
-        ;
-
+void registerOglViewport(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Set an additional viewport into the main one.")
+        .add< OglViewport >());
+}
 
 OglViewport::OglViewport()
     :p_screenPosition(initData(&p_screenPosition, "screenPosition", "Viewport position"))

@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -87,9 +87,9 @@ struct BaseSelectableItem
     [[nodiscard]] virtual std::size_t getNumberOfItems() const { return 0; }
     [[nodiscard]] virtual const Item* getItemsData() const { return nullptr; }
     [[nodiscard]] virtual std::size_t getSelectedId() const { return 0; }
-    virtual void setSelectedId(std::size_t id) {}
-    virtual void print(std::ostream& out) const {}
-    virtual void readFromStream(std::istream& stream) {}
+    virtual void setSelectedId(std::size_t /* id */) {}
+    virtual void print(std::ostream& /* out */) const {}
+    virtual void readFromStream(std::istream& /* stream */) {}
 };
 
 inline std::ostream& operator<<(std::ostream& out, const BaseSelectableItem& selectableItem)

@@ -33,8 +33,11 @@ using sofa::helper::system::PluginManager;
 namespace sofa::simulation
 {
 
-int RequiredPluginClass = core::RegisterObject("Load the required plugins")
-        .add< RequiredPlugin >();
+void registerRequiredPlugin(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Load the SOFA modules and/or plugins required to run a simulation.")
+        .add< RequiredPlugin >());
+}
 
 RequiredPlugin::RequiredPlugin()
     : d_pluginName( initData(&d_pluginName, "pluginName", "plugin name (or several names if you need to load different plugins or a plugin with several alternate names)"))

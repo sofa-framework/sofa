@@ -30,23 +30,26 @@
 namespace sofa::gl::component::shader
 {
 
-//Register DirectionalLight in the Object Factory
-int DirectionalLightClass = core::RegisterObject("A directional light illuminating the scene with parallel rays of light (can cast shadows).")
-        .add< DirectionalLight >()
-        ;
+void registerDirectionalLight(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A directional light illuminating the scene with parallel rays of light (can cast shadows).")
+        .add< DirectionalLight >());
+}
 
-//Register PositionalLight in the Object Factory
-int PositionalLightClass = core::RegisterObject("A positional light illuminating the scene."
-                                                "The light has a location from which the ray are starting in all direction  (cannot cast shadows for now)")
-        .add< PositionalLight >()
-        ;
+void registerPositionalLight(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A positional light illuminating the scene."
+        "The light has a location from which the ray are starting in all direction  (cannot cast shadows for now)")
+        .add< PositionalLight >());
+}
 
-//Register SpotLight in the Object Factory
-int SpotLightClass = core::RegisterObject("A spot light illuminating the scene."
-                                          "The light has a location and a illumination cone restricting the directions"
-                                          "taken by the rays of light  (can cast shadows).")
-        .add< SpotLight >()
-        ;
+void registerSpotlLight(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A spot light illuminating the scene."
+        "The light has a location and a illumination cone restricting the directions"
+        "taken by the rays of light  (can cast shadows).")
+        .add< SpotLight >());
+}
 
 using sofa::type::Vec3;
 

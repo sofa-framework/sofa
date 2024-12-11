@@ -143,7 +143,7 @@
     #define SOFA_ATTRIBUTE_DEPRECATED__FREE_POSITION() SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::freePosition  or sofa::core::vec_id::write_access::freePosition instead")
     #define SOFA_ATTRIBUTE_DEPRECATED__RESET_POSITION() SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::resetPosition  or sofa::core::vec_id::write_access::resetPosition instead")
 
-    #define SOFA_ATTRIBUTE_DEPRECATED__VELOCITY() SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::velocity  or sofa::core::vec_id::write_access::position velocity")
+    #define SOFA_ATTRIBUTE_DEPRECATED__VELOCITY() SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::velocity  or sofa::core::vec_id::write_access::velocity instead")
     #define SOFA_ATTRIBUTE_DEPRECATED__RESET_VELOCITY() SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::resetVelocity  or sofa::core::vec_id::write_access::resetVelocity instead")
     #define SOFA_ATTRIBUTE_DEPRECATED__FREE_VELOCITY() SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::freeVelocity  or sofa::core::vec_id::write_access::freeVelocity instead")
     #define SOFA_ATTRIBUTE_DEPRECATED__NORMAL() SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::normal  or sofa::core::vec_id::write_access::normal instead")

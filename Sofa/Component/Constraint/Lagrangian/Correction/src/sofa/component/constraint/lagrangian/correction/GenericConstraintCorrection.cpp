@@ -44,7 +44,6 @@ using sofa::core::MultiVecDerivId;
 using sofa::core::MultiVecCoordId;
 using sofa::core::ExecParams;
 using sofa::linearalgebra::BaseVector;
-using sofa::core::RegisterObject;
 using sofa::core::ConstMultiVecDerivId;
 using sofa::core::VecDerivId;
 using sofa::core::VecCoordId;
