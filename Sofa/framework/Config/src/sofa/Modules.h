@@ -32,7 +32,7 @@
     struct Module ## name\
     {\
     private:\
-        inline static const char* moduleName = fullModuleName;\
+        static constexpr const char* moduleName = fullModuleName;\
     public:\
         Module ## name() = default;\
         Module ## name(const Module ## name&) = delete;\
@@ -51,7 +51,7 @@
 inline struct ModuleSofa
 {
 private:
-    inline static const char* moduleName = "Sofa";
+    static constexpr const char* moduleName = "Sofa";
 public:
     ModuleSofa() = default;
     ModuleSofa(const ModuleSofa&) = delete;
