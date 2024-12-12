@@ -20,7 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/odesolver/integration/BDF1.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::odesolver::integration
 {
+
+void registerBDF1(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Velocity-based Backward Euler integration method.")
+        .add< BDF1 >());
+}
+
 }

@@ -26,6 +26,8 @@
 namespace sofa::component::odesolver::integration
 {
 
+extern void registerBDF1(core::ObjectFactory* factory);
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
@@ -50,6 +52,7 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
+    registerBDF1(factory);
 }
 
 void init()
