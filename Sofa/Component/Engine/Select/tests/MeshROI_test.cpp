@@ -61,7 +61,7 @@ struct MeshROI_test : public BaseSimulationTest,
     Node::SPtr m_root;
     ThisClass* m_thisObject;
 
-    void onSetUp() override
+    void doSetUp() override
     {
         simpleapi::importPlugin(Sofa.Component.Engine.Select);
         simpleapi::importPlugin(Sofa.Component.Topology.Container.Constant);
@@ -86,7 +86,7 @@ struct MeshROI_test : public BaseSimulationTest,
         ASSERT_NE(m_thisObject, nullptr) ;
     }
 
-    void onTearDown() override
+    void doTearDown() override
     {
         sofa::simulation::node::unload(m_root) ;
     }

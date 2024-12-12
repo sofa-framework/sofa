@@ -71,7 +71,7 @@ namespace sofa {
         double final_expected_value=0.0;
 
         /// Create the context for the scene
-        void onSetUp() override
+        void doSetUp() override
         {
             // Init simulation
             root = simulation::getSimulation()->createNewGraph("root");
@@ -220,7 +220,7 @@ namespace sofa {
 
 
         /// Unload the scene
-        void onTearDown() override
+        void doTearDown() override
         {
             if (root!=nullptr)
                 sofa::simulation::node::unload(root);

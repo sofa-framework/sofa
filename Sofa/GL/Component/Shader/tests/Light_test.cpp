@@ -48,7 +48,7 @@ int messageInited = initMessage();
 class TestLight : public BaseTest {
 public:
 
-    void onSetUp() override
+    void doSetUp() override
  {
          sofa::simpleapi::importPlugin(Sofa.GL.Component.Shader);
          sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);

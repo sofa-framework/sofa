@@ -77,7 +77,7 @@ struct UniformMassTest :  public BaseTest
     typename MechanicalObject<DataTypes>::SPtr m_mecaobject;
     bool todo  {true} ;
 
-    void onSetUp() override
+    void doSetUp() override
     {
         sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
         sofa::simpleapi::importPlugin(Sofa.Component.Mass);
@@ -87,7 +87,7 @@ struct UniformMassTest :  public BaseTest
         m_root = m_simu->createNewGraph("root");
     }
 
-    void onTearDown() override
+    void doTearDown() override
     {
         if (m_root != nullptr){
             sofa::simulation::node::unload(m_root);

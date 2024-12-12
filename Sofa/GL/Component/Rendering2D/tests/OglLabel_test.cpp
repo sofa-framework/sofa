@@ -53,7 +53,7 @@ using sofa::type::RGBAColor ;
 class OglLabelTest : public BaseTest
 {
 public:
-    void onSetUp() override
+    void doSetUp() override
     {
         sofa::simpleapi::importPlugin(Sofa.GL.Component.Rendering2D);
     }

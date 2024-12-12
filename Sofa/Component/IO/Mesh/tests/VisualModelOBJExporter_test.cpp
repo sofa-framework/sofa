@@ -62,11 +62,11 @@ public:
     /// remove the file created...
     std::vector<std::string> dataPath ;
 
-    void onSetUp() override
+    void doSetUp() override
     {
     }
 
-    void onTearDown() override
+    void doTearDown() override
     {
         for (const auto& pathToRemove : dataPath)
         {

@@ -44,7 +44,7 @@ protected:
 
     }
 
-    void onSetUp() override
+    void doSetUp() override
     {
         const std::string& pluginDir = PluginRepository.getFirstPath();
 
@@ -58,7 +58,7 @@ protected:
         testPluginList << m_testPluginName << std::endl;
         testPluginList.close();
     }
-    void onTearDown() override
+    void doTearDown() override
     {
 
     }

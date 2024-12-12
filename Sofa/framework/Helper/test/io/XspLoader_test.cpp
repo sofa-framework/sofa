@@ -85,11 +85,11 @@ protected:
         }
     };
 
-    void onSetUp() override
+    void doSetUp() override
     {
         sofa::helper::system::DataRepository.addFirstPath(SOFA_TESTING_RESOURCES_DIR);
     }
-    void onTearDown() override
+    void doTearDown() override
     {
         sofa::helper::system::DataRepository.removePath(SOFA_TESTING_RESOURCES_DIR);
     }

@@ -48,7 +48,13 @@ public:
     BaseTest() ;
     ~BaseTest() override;
 
+    virtual void doSetUp() {}
+    virtual void doTearDown() {}
+
+    SOFA_ATTRIBUTE_DEPRECATED__TESTING_ONSETUP()
     virtual void onSetUp() {}
+
+    SOFA_ATTRIBUTE_DEPRECATED__TESTING_ONTEARDOWN()
     virtual void onTearDown() {}
 
     /// Seed value
