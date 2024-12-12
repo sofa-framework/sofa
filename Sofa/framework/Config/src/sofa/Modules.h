@@ -21,150 +21,145 @@
 ******************************************************************************/
 #pragma once
 
-#include <string>
-
 /**
  * The macro allows a simpler definition and maintenance of the module data
  * structure
  * @param name Module name
  */
-#define START_MODULE(name)\
+#define START_MODULE(name, fullModuleName)\
     private:\
-    template<class Parent ## name>\
     struct Module ## name\
     {\
     private:\
-        inline static const std::string moduleName = Parent ## name::moduleName + "." + #name;\
-        using MyClass = Module ## name;\
+        inline static const char* moduleName = fullModuleName;\
     public:\
         Module ## name() = default;\
         Module ## name(const Module ## name&) = delete;\
         Module ## name& operator=(const Module ## name&) = delete;\
-        operator std::string() const { return moduleName; }
+        operator const char*() const { return moduleName; }
 
 #define END_MODULE(name)\
     };\
     public:\
-    Module ## name<MyClass> name;
+    Module ## name name;
 
-#define MODULE(name) \
-    START_MODULE(name) END_MODULE(name)
+#define MODULE(name, fullModuleName) \
+    START_MODULE(name, fullModuleName) END_MODULE(name)
 
 inline struct ModuleSofa
 {
 private:
-    inline static const std::string moduleName = "Sofa";
-    using MyClass = ModuleSofa;
+    inline static const char* moduleName = "Sofa";
 public:
     ModuleSofa() = default;
     ModuleSofa(const ModuleSofa&) = delete;
     ModuleSofa& operator=(const ModuleSofa&) = delete;
-    operator std::string() const { return moduleName; }
+    operator const char*() const { return moduleName; }
 
-    START_MODULE(Component)
-        MODULE(AnimationLoop)
-        START_MODULE(Collision)
-            START_MODULE(Detection)
-                MODULE(Algorithm)
-                MODULE(Intersection)
+    START_MODULE(Component, "Sofa.Component")
+        MODULE(AnimationLoop, "Sofa.Component.AnimationLoop")
+        START_MODULE(Collision, "Sofa.Component.Collision")
+            START_MODULE(Detection, "Sofa.Component.Collision.Detection")
+                MODULE(Algorithm, "Sofa.Component.Collision.Detection.Algorithm")
+                MODULE(Intersection, "Sofa.Component.Collision.Detection.Intersection")
             END_MODULE(Detection)
-            MODULE(Geometry)
-            START_MODULE(Response)
-                MODULE(Contact)
-                MODULE(Mapper)
+            MODULE(Geometry, "Sofa.Component.Collision.Geometry")
+            START_MODULE(Response, "Sofa.Component.Collision")
+                MODULE(Contact, "Sofa.Component.Collision.Contact")
+                MODULE(Mapper, "Sofa.Component.Collision.Mapper")
             END_MODULE(Response)
         END_MODULE(Collision)
 
-        START_MODULE(Constraint)
-            START_MODULE(Lagrangian)
-                MODULE(Correction)
-                MODULE(Model)
-                MODULE(Solver)
+        START_MODULE(Constraint, "Sofa.Component.Constraint")
+            START_MODULE(Lagrangian, "Sofa.Component.Constraint.Lagrangian")
+                MODULE(Correction, "Sofa.Component.Constraint.Lagrangian.Correction")
+                MODULE(Model, "Sofa.Component.Constraint.Lagrangian.Model")
+                MODULE(Solver, "Sofa.Component.Constraint.Lagrangian.Solver")
             END_MODULE(Lagrangian)
 
-            MODULE(Projective)
+            MODULE(Projective, "Sofa.Component.Constraint.Projective")
         END_MODULE(Constraint)
 
-        MODULE(Controller)
-        MODULE(Diffusion)
+        MODULE(Controller, "Sofa.Component.Controller")
+        MODULE(Diffusion, "Sofa.Component.Diffusion")
 
-        START_MODULE(Engine)
-            MODULE(Analyze)
-            MODULE(Generate)
-            MODULE(Select)
-            MODULE(Transform)
+        START_MODULE(Engine, "Sofa.Component.Engine")
+            MODULE(Analyze, "Sofa.Component.Engine.Analyze")
+            MODULE(Generate, "Sofa.Component.Engine.Generate")
+            MODULE(Select, "Sofa.Component.Engine.Select")
+            MODULE(Transform, "Sofa.Component.Engine.Transform")
         END_MODULE(Engine)
 
-        MODULE(Haptics)
+        MODULE(Haptics, "Sofa.Component.Haptics")
 
-        START_MODULE(IO)
-            MODULE(Mesh)
+        START_MODULE(IO, "Sofa.Component.IO")
+            MODULE(Mesh, "Sofa.Component.IO.Mesh")
         END_MODULE(IO)
 
-        START_MODULE(LinearSolver)
-            MODULE(Direct)
-            MODULE(Iterative)
-            MODULE(Ordering)
-            MODULE(Preconditioner)
+        START_MODULE(LinearSolver, "Sofa.Component.LinearSolver")
+            MODULE(Direct, "Sofa.Component.LinearSolver.Direct")
+            MODULE(Iterative, "Sofa.Component.LinearSolver.Iterative")
+            MODULE(Ordering, "Sofa.Component.LinearSolver.Ordering")
+            MODULE(Preconditioner, "Sofa.Component.LinearSolver.Preconditioner")
         END_MODULE(LinearSolver)
 
-        MODULE(LinearSystem)
+        MODULE(LinearSystem, "Sofa.Component.LinearSystem")
 
-        START_MODULE(Mapping)
-            MODULE(Linear)
-            MODULE(MappedMatrix)
-            MODULE(NonLinear)
+        START_MODULE(Mapping, "Sofa.Component.Mapping")
+            MODULE(Linear, "Sofa.Component.Mapping.Linear")
+            MODULE(MappedMatrix, "Sofa.Component.Mapping.MappedMatrix")
+            MODULE(NonLinear, "Sofa.Component.Mapping.NonLinear")
         END_MODULE(Mapping)
 
-        MODULE(Mass)
-        MODULE(MechanicalLoad)
+        MODULE(Mass, "Sofa.Component.Mass")
+        MODULE(MechanicalLoad, "Sofa.Component.MechanicalLoad")
 
-        START_MODULE(ODESolver)
-            MODULE(Backward)
-            MODULE(Forward)
+        START_MODULE(ODESolver, "Sofa.Component.ODESolver")
+            MODULE(Backward, "Sofa.Component.ODESolver.Backward")
+            MODULE(Forward, "Sofa.Component.ODESolver.Forward")
         END_MODULE(ODESolver)
 
-        MODULE(Playback)
-        MODULE(SceneUtility)
-        MODULE(Setting)
+        MODULE(Playback, "Sofa.Component.Playback")
+        MODULE(SceneUtility, "Sofa.Component.SceneUtility")
+        MODULE(Setting, "Sofa.Component.Setting")
 
-        START_MODULE(SolidMechanics)
-            START_MODULE(FEM)
-                MODULE(Elastic)
-                MODULE(HyperElastic)
-                MODULE(NonUniform)
+        START_MODULE(SolidMechanics, "Sofa.Component.SolidMechanics")
+            START_MODULE(FEM, "Sofa.Component.SolidMechanics.FEM")
+                MODULE(Elastic, "Sofa.Component.SolidMechanics.FEM.Elastic")
+                MODULE(HyperElastic, "Sofa.Component.SolidMechanics.FEM.HyperElastic")
+                MODULE(NonUniform, "Sofa.Component.SolidMechanics.FEM.NonUniform")
             END_MODULE(FEM)
 
-            MODULE(Spring)
-            MODULE(TensorMass)
+            MODULE(Spring, "Sofa.Component.Spring")
+            MODULE(TensorMass, "Sofa.Component.TensorMass")
         END_MODULE(SolidMechanics)
 
-        MODULE(StateContainer)
+        MODULE(StateContainer, "Sofa.Component.StateContainer")
 
-        START_MODULE(Topology)
-            START_MODULE(Container)
-                MODULE(Constant)
-                MODULE(Dynamic)
-                MODULE(Grid)
+        START_MODULE(Topology, "Sofa.Component.Topology")
+            START_MODULE(Container, "Sofa.Component.Topology.Container")
+                MODULE(Constant, "Sofa.Component.Topology.Container.Constant")
+                MODULE(Dynamic, "Sofa.Component.Topology.Container.Dynamic")
+                MODULE(Grid, "Sofa.Component.Topology.Container.Grid")
             END_MODULE(Container)
-            MODULE(Mapping)
-            MODULE(Utility)
+            MODULE(Mapping, "Sofa.Component.Topology.Mapping")
+            MODULE(Utility, "Sofa.Component.Topology.Utility")
         END_MODULE(Topology)
 
-        MODULE(Visual)
+        MODULE(Visual, "Sofa.Component.Visual")
     END_MODULE(Component)
 
-    START_MODULE(GL)
-        START_MODULE(Component)
-            MODULE(Engine)
-            MODULE(Rendering2D)
-            MODULE(Rendering3D)
-            MODULE(Shader)
+    START_MODULE(GL, "Sofa.GL")
+        START_MODULE(Component, "Sofa.GL.Component")
+            MODULE(Engine, "Sofa.GL.Component.Engine")
+            MODULE(Rendering2D, "Sofa.GL.Component.Rendering2D")
+            MODULE(Rendering3D, "Sofa.GL.Component.Rendering3D")
+            MODULE(Shader, "Sofa.GL.Component.Shader")
         END_MODULE(Component)
     END_MODULE(GL)
 
-    START_MODULE(GUI)
-        MODULE(Component)
+    START_MODULE(GUI, "Sofa.GUI")
+        MODULE(Component, "Sofa.GUI.Component")
     END_MODULE(GUI)
 
 }
