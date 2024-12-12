@@ -76,17 +76,13 @@ void NewtonRaphsonSolver::solve(
     core::behavior::MultiVecCoord newPosition(&vop, xResult );
     core::behavior::MultiVecDeriv newVelocity(&vop, vResult );
 
-    /// inform the constraint parameters about the position and velocity id
+    // inform the constraint parameters about the position and velocity id
     mop.cparams.setX(xResult);
     mop.cparams.setV(vResult);
 
-    {
-        SCOPED_TIMER("ComputeForce");
+    l_integrationMethod->computeRightHandSide(params, force);
 
-        // compute the net forces at the beginning of the time step
-        mop.computeForce(force);                                                               //f = Kx + Bv
-        msg_info() << "initial force = " << force;
-    }
+
 }
 
 void registerNewtonRaphsonSolver(sofa::core::ObjectFactory* factory)

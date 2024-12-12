@@ -16,10 +16,10 @@ set(SOURCE_FILES
     ${SOFACOMPONENTODESOLVERINTEGRATION_SOURCE_DIR}/BDF1.cpp
 )
 
-sofa_find_package(Sofa.Core REQUIRED)
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

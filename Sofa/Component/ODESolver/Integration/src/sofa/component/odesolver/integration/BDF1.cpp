@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <sofa/component/odesolver/integration/BDF1.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/simulation/MechanicalOperations.h>
 
 namespace sofa::component::odesolver::integration
 {
@@ -39,4 +41,23 @@ core::behavior::BaseIntegrationMethod::Factors BDF1::getMatricesFactors(SReal dt
         core::MatricesFactors::K{1}
     };
 }
+
+void BDF1::computeRightHandSide(
+    const core::ExecParams* params, core::MultiVecDerivId forceId)
+{
+    sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
+    mop->setImplicit(true);
+
+    {
+        SCOPED_TIMER("ComputeForce");
+        static constexpr bool clearForcesBeforeComputingThem = true;
+        static constexpr bool applyBottomUpMappings = true;
+
+        // compute the net forces at the beginning of the time step
+        mop.computeForce(forceId,
+            clearForcesBeforeComputingThem, applyBottomUpMappings);
+        msg_info() << "initial force = " << forceId;
+    }
+}
+
 }
