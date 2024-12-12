@@ -36,7 +36,6 @@ public:
     using Vec3State = sofa::core::visual::VisualState<defaulttype::Vec3Types>;
     SOFA_CLASS2(CylinderVisualModel,core::visual::VisualModel, Vec3State);
 
-    using Index = sofa::Index;
 protected:
     CylinderVisualModel();
     ~CylinderVisualModel() override;
