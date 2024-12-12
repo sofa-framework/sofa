@@ -72,7 +72,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
     typedef MechanicalObject<DataTypes>   TheMechanicalObject;
     using Real = typename DataTypes::Coord::value_type;
 
-    void SetUp() override 
+    void onSetUp() override
     {
         sofa::simpleapi::importPlugin(Sofa.Component.ODESolver);
         sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
@@ -81,7 +81,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
         sofa::simpleapi::importPlugin(Sofa.Component.Mass);
     }
 
-    void TearDown() override {}
+    void onTearDown() override {}
 
     void testSimpleBehavior()
     {

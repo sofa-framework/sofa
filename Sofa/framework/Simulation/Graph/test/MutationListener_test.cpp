@@ -411,14 +411,14 @@ struct MutationListener_test : public BaseTest
                   listener.log);
     }
 
-    void SetUp() override
+    void onSetUp() override
     {
         sofa::simulation::Simulation* simu = sofa::simulation::getSimulation();
 
         root = simu->createNewGraph("root");
         root->addListener(&listener);
     }
-    void TearDown() override
+    void onTearDown() override
     {
     }
 };

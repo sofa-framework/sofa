@@ -66,13 +66,13 @@ protected:
     
 public:
 
-    void SetUp() override
+    void onSetUp() override
     {
         sofa::simpleapi::importPlugin(Sofa.Component);
         m_simulation = sofa::simulation::getSimulation();
     }
 
-    void TearDown() override
+    void onTearDown() override
     {
         if (m_root != nullptr)
             sofa::simulation::node::unload(m_root);

@@ -53,7 +53,7 @@ namespace sofa {
 
 struct TestLightManager : public BaseTest 
 {
-    void SetUp() override
+    void onSetUp() override
     {
         sofa::simpleapi::importPlugin(Sofa.GL.Component.Shader);
         sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);

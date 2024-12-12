@@ -58,7 +58,7 @@ using sofa::simulation::Node;
 class SceneCreator_test : public BaseSimulationTest
 {
 public:
-    void SetUp() override
+    void onSetUp() override
     {
         sofa::simpleapi::importPlugin(Sofa.Component);
         sofa::simpleapi::importPlugin(Sofa.GL.Component.Rendering3D);

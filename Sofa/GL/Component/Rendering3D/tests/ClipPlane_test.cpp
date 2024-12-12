@@ -60,7 +60,7 @@ int messageInited = initMessage();
 
 class TestClipPlane : public BaseTest {
 public:
-    void SetUp() override
+    void onSetUp() override
     {
         sofa::simpleapi::importPlugin(Sofa.GL.Component.Rendering3D);
         sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
