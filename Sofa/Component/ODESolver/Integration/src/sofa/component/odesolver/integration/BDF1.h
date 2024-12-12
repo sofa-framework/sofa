@@ -35,6 +35,8 @@ class SOFA_COMPONENT_ODESOLVER_INTEGRATION_API BDF1 : public sofa::core::behavio
 {
 public:
     SOFA_CLASS(BDF1, sofa::core::behavior::BaseIntegrationMethod);
+
+    Factors getMatricesFactors(SReal dt) const override;
 };
 
 }
