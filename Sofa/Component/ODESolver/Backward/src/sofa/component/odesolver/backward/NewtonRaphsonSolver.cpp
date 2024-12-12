@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/odesolver/backward/NewtonRaphsonSolver.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
@@ -88,5 +89,10 @@ void NewtonRaphsonSolver::solve(
     }
 }
 
+void registerNewtonRaphsonSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Newton-Raphson algorithm.")
+        .add< NewtonRaphsonSolver >());
+}
 
 }
