@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <string>
 
 /**
  * The macro allows a simpler definition and maintenance of the module data
@@ -36,7 +37,8 @@
         Module ## name() = default;\
         Module ## name(const Module ## name&) = delete;\
         Module ## name& operator=(const Module ## name&) = delete;\
-        operator const char*() const { return moduleName; }
+        operator const char*() const { return moduleName; }\
+        operator std::string() const { return moduleName; }
 
 #define END_MODULE(name)\
     };\
