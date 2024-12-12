@@ -56,10 +56,10 @@ namespace sofa
 {
     struct TestTriangle : public BaseTest
     {
-        void SetUp() override
+        void onSetUp() override
         {
         }
-        void TearDown() override
+        void onTearDown() override
         {
 
         }

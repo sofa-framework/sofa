@@ -69,7 +69,7 @@ struct DirectionProjectiveConstraint_test : public BaseSimulationTest, NumericTe
     typename MechanicalObject::SPtr dofs;
 
      /// Create the context for the tests.
-    void SetUp() override
+    void onSetUp() override
     {
         //Init
         simulation = sofa::simulation::getSimulation();
@@ -219,7 +219,7 @@ struct DirectionProjectiveConstraint_test : public BaseSimulationTest, NumericTe
        return succeed;
     }
 
-    void TearDown() override
+    void onTearDown() override
     {
         if (root!=nullptr)
             sofa::simulation::node::unload(root);

@@ -70,7 +70,7 @@ struct AffineMovementProjectiveConstraint_test : public BaseSimulationTest, Nume
     sofa::helper::RandomGenerator randomGenerator;
 
      // Create the context for the scene
-     void SetUp() override
+     void onSetUp() override
      {
          // Init simulation
          simulation = sofa::simulation::getSimulation();

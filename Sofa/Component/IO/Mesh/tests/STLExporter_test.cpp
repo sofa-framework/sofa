@@ -65,13 +65,13 @@ public:
     /// remove the file created...
     std::vector<std::string> dataPath ;
 
-    void SetUp() override
+    void onSetUp() override
     {
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
         sofa::simpleapi::importPlugin("Sofa.Component.Visual");
     }
 
-    void TearDown() override
+    void onTearDown() override
     {
         for (const auto& pathToRemove : dataPath)
         {

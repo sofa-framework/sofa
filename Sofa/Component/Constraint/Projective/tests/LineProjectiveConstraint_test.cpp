@@ -68,7 +68,7 @@ struct LineProjectiveConstraint_test : public BaseSimulationTest, NumericTest<ty
     typename MechanicalObject::SPtr dofs;
 
     /// Create the context for the tests.
-    void SetUp() override
+    void onSetUp() override
     {
         simulation = sofa::simulation::getSimulation();
         ASSERT_NE(simulation, nullptr);
@@ -204,7 +204,7 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
        return succeed;
     }
 
-    void TearDown() override
+    void onTearDown() override
     {
         if (root!=nullptr)
             sofa::simulation::node::unload(root);
