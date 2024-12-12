@@ -21,14 +21,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/odesolver/backward/config.h>
+#include <sofa/core/config.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa::component::odesolver::backward
+namespace sofa::core::behavior
 {
 
-class SOFA_COMPONENT_ODESOLVER_BACKWARD_API BaseIntegrationMethod : public core::objectmodel::BaseObject
+class SOFA_CORE_API BaseIntegrationMethod : public sofa::core::objectmodel::BaseObject
 {
-
+public:
+    SOFA_CLASS(BaseIntegrationMethod, sofa::core::objectmodel::BaseObject);
 };
 
 }
