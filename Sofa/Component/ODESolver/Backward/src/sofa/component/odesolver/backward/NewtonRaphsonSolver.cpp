@@ -39,7 +39,7 @@ void NewtonRaphsonSolver::init()
 
     if (!l_integrationMethod.get())
     {
-        l_integrationMethod.set(getContext()->get<BaseIntegrationMethod>(getContext()->getTags(), core::objectmodel::BaseContext::SearchDown));
+        l_integrationMethod.set(getContext()->get<core::behavior::BaseIntegrationMethod>(getContext()->getTags(), core::objectmodel::BaseContext::SearchDown));
 
         if (!l_integrationMethod)
         {
