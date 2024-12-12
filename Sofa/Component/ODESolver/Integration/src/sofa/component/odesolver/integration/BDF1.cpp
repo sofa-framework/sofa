@@ -31,4 +31,12 @@ void registerBDF1(sofa::core::ObjectFactory* factory)
         .add< BDF1 >());
 }
 
+core::behavior::BaseIntegrationMethod::Factors BDF1::getMatricesFactors(SReal dt) const
+{
+    return {
+        core::MatricesFactors::M{1},
+        core::MatricesFactors::B{1},
+        core::MatricesFactors::K{1}
+    };
+}
 }
