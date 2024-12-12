@@ -23,6 +23,7 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/MatricesFactors.h>
+#include <sofa/core/MultiVecId.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa::core::behavior
@@ -40,6 +41,7 @@ public:
     using Factors = std::tuple<MatricesFactors::M, MatricesFactors::B, MatricesFactors::K>;
 
     virtual Factors getMatricesFactors(SReal dt) const = 0;
+    virtual void computeRightHandSide(const core::ExecParams* params, MultiVecDerivId forceId) = 0;
 };
 
 }
