@@ -53,19 +53,21 @@ void CylinderVisualModel::doDrawVisual(const core::visual::VisualParams* vparams
 {
     const VecCoord& pos = this->read( core::vec_id::read_access::position )->getValue();
 
-    vparams->drawTool()->setLightingEnabled(true);
-    const float _radius = radius.getValue();
+    auto* drawTool = vparams->drawTool();
 
+    drawTool->setLightingEnabled(true);
+
+    const float _radius = radius.getValue();
     const sofa::type::RGBAColor& col = color.getValue();
 
     const SeqEdges& edges = d_edges.getValue();
 
-    for(auto edge : edges)
+    for(const auto& edge : edges)
     {
         const Coord& p1 = pos[edge[0]];
         const Coord& p2 = pos[edge[1]];
 
-        vparams->drawTool()->drawCylinder(p1,p2,_radius,col);
+        drawTool->drawCylinder(p1, p2, _radius, col);
     }
 }
 
