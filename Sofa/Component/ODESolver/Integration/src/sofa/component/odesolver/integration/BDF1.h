@@ -37,6 +37,7 @@ public:
     SOFA_CLASS(BDF1, sofa::core::behavior::BaseIntegrationMethod);
 
     Factors getMatricesFactors(SReal dt) const override;
+    void computeRightHandSide(const core::ExecParams* params, core::MultiVecDerivId forceId) override;
 };
 
 }
