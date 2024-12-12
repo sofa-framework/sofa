@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,30 +19,4 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/odesolver/backward/config.h>
-
-#include <sofa/core/behavior/LinearSolverAccessor.h>
-#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/BaseIntegrationMethod.h>
-
-namespace sofa::component::odesolver::backward
-{
-
-class SOFA_COMPONENT_ODESOLVER_BACKWARD_API NewtonRaphsonSolver
-    : public sofa::core::behavior::OdeSolver
-    , public sofa::core::behavior::LinearSolverAccessor
-{
-public:
-    SOFA_CLASS2(NewtonRaphsonSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
-
-    void init() override;
-    void solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
-
-    SingleLink<NewtonRaphsonSolver, core::behavior::BaseIntegrationMethod, BaseLink::FLAG_STRONGLINK> l_integrationMethod;
-
-protected:
-    NewtonRaphsonSolver();
-};
-
-}
