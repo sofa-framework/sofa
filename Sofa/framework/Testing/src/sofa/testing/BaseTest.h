@@ -48,8 +48,8 @@ public:
     BaseTest() ;
     ~BaseTest() override;
 
-    virtual void doSetUp() {}
-    virtual void doTearDown() {}
+    virtual void doSetUp() { onSetUp(); }
+    virtual void doTearDown() { onTearDown(); }
 
     SOFA_ATTRIBUTE_DEPRECATED__TESTING_ONSETUP()
     virtual void onSetUp() {}
