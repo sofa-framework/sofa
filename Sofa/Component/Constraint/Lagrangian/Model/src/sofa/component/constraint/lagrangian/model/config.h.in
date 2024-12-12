@@ -45,3 +45,13 @@ namespace sofa::component::constraint::lagrangian::model
         "v24.06", "v24.12", \
         "Data renamed according to the guidelines")
 #endif
+
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL
+#define SOFA_ATTRIBUTE_DEPRECATED__BILATERALREMOVEUNUSEDTOLERANCE()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__BILATERALREMOVEUNUSEDTOLERANCE() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v25.06", "v25.12", \
+        "Data \'d_numericalTolerance\' has been removed since it was actually not taken into account")
+#endif
