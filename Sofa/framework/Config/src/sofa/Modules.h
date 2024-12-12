@@ -37,7 +37,6 @@
         Module ## name() = default;\
         Module ## name(const Module ## name&) = delete;\
         Module ## name& operator=(const Module ## name&) = delete;\
-        operator const char*() const { return moduleName; }\
         operator std::string() const { return moduleName; }
 
 #define END_MODULE(name)\
@@ -56,7 +55,7 @@ public:
     ModuleSofa() = default;
     ModuleSofa(const ModuleSofa&) = delete;
     ModuleSofa& operator=(const ModuleSofa&) = delete;
-    operator const char*() const { return moduleName; }
+    operator std::string() const { return moduleName; }
 
     START_MODULE(Component, "Sofa.Component")
         MODULE(AnimationLoop, "Sofa.Component.AnimationLoop")
@@ -66,9 +65,9 @@ public:
                 MODULE(Intersection, "Sofa.Component.Collision.Detection.Intersection")
             END_MODULE(Detection)
             MODULE(Geometry, "Sofa.Component.Collision.Geometry")
-            START_MODULE(Response, "Sofa.Component.Collision")
-                MODULE(Contact, "Sofa.Component.Collision.Contact")
-                MODULE(Mapper, "Sofa.Component.Collision.Mapper")
+            START_MODULE(Response, "Sofa.Component.Collision.Response")
+                MODULE(Contact, "Sofa.Component.Collision.Response.Contact")
+                MODULE(Mapper, "Sofa.Component.Collision.Response.Mapper")
             END_MODULE(Response)
         END_MODULE(Collision)
 
@@ -132,8 +131,8 @@ public:
                 MODULE(NonUniform, "Sofa.Component.SolidMechanics.FEM.NonUniform")
             END_MODULE(FEM)
 
-            MODULE(Spring, "Sofa.Component.Spring")
-            MODULE(TensorMass, "Sofa.Component.TensorMass")
+            MODULE(Spring, "Sofa.Component.SolidMechanics.Spring")
+            MODULE(TensorMass, "Sofa.Component.SolidMechanics.TensorMass")
         END_MODULE(SolidMechanics)
 
         MODULE(StateContainer, "Sofa.Component.StateContainer")
