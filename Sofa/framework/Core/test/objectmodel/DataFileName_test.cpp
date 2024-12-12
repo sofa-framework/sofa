@@ -43,7 +43,7 @@ class DataFileName_test: public BaseTest
 {
     DataFileName d_filename;
 public:
-    void onSetUp() override
+    void doSetUp() override
     {
         DataRepository.addFirstPath( SOFA_TESTING_RESOURCES_DIR );
     }

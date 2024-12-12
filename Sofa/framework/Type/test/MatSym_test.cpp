@@ -43,7 +43,7 @@ public:
     using Real = typename ParameterPack::Real;
     static constexpr auto Size = ParameterPack::Size;
 
-    void onSetUp() override
+    void doSetUp() override
     {
         sofa::testing::LinearCongruentialRandomGenerator lcg(96547);
 

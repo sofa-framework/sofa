@@ -76,7 +76,7 @@ int ComponentDeprecatedClassId = sofa::core::RegisterObject("")
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct SceneChecker_test : public BaseSimulationTest
 {
-    void onSetUp() override
+    void doSetUp() override
     {
     }
 

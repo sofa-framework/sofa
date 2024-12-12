@@ -40,7 +40,7 @@ using namespace sofa::testing;
 
 struct SparseGridTopology_test : public BaseTest
 {
-    void onSetUp() override
+    void doSetUp() override
     {
         DataRepository.addFirstPath(SOFA_TESTING_RESOURCES_DIR);
     }

@@ -29,11 +29,11 @@ using sofa::testing::BaseTest ;
 
 struct BaseObjectDescription_test: public BaseTest
 {
-    void onSetUp() override
+    void doSetUp() override
     {
     }
 
-    void onTearDown() override
+    void doTearDown() override
     {
     }
 

@@ -215,7 +215,7 @@ struct DataTrackerEngine_test: public BaseTest
 
     static unsigned updateCounter;
     core::DataTrackerCallback dataTracker;
-    void onSetUp() override
+    void doSetUp() override
     {
         updateCounter = 0;
     }

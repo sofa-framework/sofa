@@ -42,11 +42,11 @@ protected:
 
     }
 
-    void onSetUp() override
+    void doSetUp() override
     {
         sofa::helper::system::DataRepository.addFirstPath(CIMGPLUGIN_RESOURCES_DIR);
     }
-    void onTearDown() override
+    void doTearDown() override
     {
         sofa::helper::system::DataRepository.removePath(CIMGPLUGIN_RESOURCES_DIR);
     }
