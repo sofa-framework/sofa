@@ -29,7 +29,7 @@ namespace sofa::component::visual
 
 void registerCylinderVisualModel(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("A simple visualization for set of cylinder.")
+    factory->registerObjects(core::ObjectRegistrationData("Visualize a set of cylinders.")
         .add< CylinderVisualModel >());
 }
 
