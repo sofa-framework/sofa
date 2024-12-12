@@ -19,19 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/init.h>
-
-#include <sofa/component/odesolver/backward/init.h>
-#include <sofa/component/odesolver/forward/init.h>
 #include <sofa/component/odesolver/integration/init.h>
-
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/Modules.h>
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::integration
 {
-    
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
@@ -56,9 +50,6 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin(Sofa.Component.ODESolver.Backward);
-    factory->registerObjectsFromPlugin(Sofa.Component.ODESolver.Forward);
-    factory->registerObjectsFromPlugin(Sofa.Component.ODESolver.Integration);
 }
 
 void init()
@@ -66,11 +57,6 @@ void init()
     static bool first = true;
     if (first)
     {
-        // force dependencies at compile-time
-        sofa::component::odesolver::backward::init();
-        sofa::component::odesolver::forward::init();
-        sofa::component::odesolver::integration::init();
-
         // make sure that this plugin is registered into the PluginManager
         sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
 
@@ -78,4 +64,4 @@ void init()
     }
 }
 
-} // namespace sofa::component::odesolver
+}
