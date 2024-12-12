@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/core/config.h>
+#include <sofa/core/MatricesFactors.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa::core::behavior
@@ -31,6 +32,14 @@ class SOFA_CORE_API BaseIntegrationMethod : public sofa::core::objectmodel::Base
 {
 public:
     SOFA_CLASS(BaseIntegrationMethod, sofa::core::objectmodel::BaseObject);
+
+    using MassFactor = MatricesFactors::M;
+    using DampingFactor = MatricesFactors::B;
+    using StiffnessFactor = MatricesFactors::K;
+
+    using Factors = std::tuple<MatricesFactors::M, MatricesFactors::B, MatricesFactors::K>;
+
+    virtual Factors getMatricesFactors(SReal dt) const = 0;
 };
 
 }
