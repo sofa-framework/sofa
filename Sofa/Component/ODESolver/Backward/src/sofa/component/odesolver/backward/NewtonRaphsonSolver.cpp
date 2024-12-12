@@ -20,6 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/odesolver/backward/NewtonRaphsonSolver.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/VectorOperations.h>
+
 
 namespace sofa::component::odesolver::backward
 {
@@ -28,11 +32,60 @@ NewtonRaphsonSolver::NewtonRaphsonSolver()
     : l_integrationMethod(initLink("integrationMethod", "The integration method to use in a Newton iteration"))
 {}
 
+void NewtonRaphsonSolver::init()
+{
+    OdeSolver::init();
+    LinearSolverAccessor::init();
+
+    if (!l_integrationMethod.get())
+    {
+        l_integrationMethod.set(getContext()->get<BaseIntegrationMethod>(getContext()->getTags(), core::objectmodel::BaseContext::SearchDown));
+
+        if (!l_integrationMethod)
+        {
+            msg_error() << "An integration method is required by this component but has not been found.";
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
+        }
+    }
+
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+}
+
 void NewtonRaphsonSolver::solve(
     const core::ExecParams* params, SReal dt,
     sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
+    if (!isComponentStateValid())
+    {
+        return;
+    }
 
+    // Create the vector and mechanical operations tools. These are used to execute special operations (multiplication,
+    // additions, etc.) on multi-vectors (a vector that is stored in different buffers inside the mechanical objects)
+    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
+    sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
+    mop->setImplicit(true);
+
+    core::behavior::MultiVecCoord position(&vop, core::vec_id::write_access::position );
+    core::behavior::MultiVecDeriv velocity(&vop, core::vec_id::write_access::velocity );
+    core::behavior::MultiVecDeriv force(&vop, core::vec_id::write_access::force );
+    core::behavior::MultiVecDeriv b(&vop, true, core::VecIdProperties{"RHS", GetClass()->className});
+
+    core::behavior::MultiVecCoord newPosition(&vop, xResult );
+    core::behavior::MultiVecDeriv newVelocity(&vop, vResult );
+
+    /// inform the constraint parameters about the position and velocity id
+    mop.cparams.setX(xResult);
+    mop.cparams.setV(vResult);
+
+    {
+        SCOPED_TIMER("ComputeForce");
+
+        // compute the net forces at the beginning of the time step
+        mop.computeForce(force);                                                               //f = Kx + Bv
+        msg_info() << "initial force = " << force;
+    }
 }
 
 

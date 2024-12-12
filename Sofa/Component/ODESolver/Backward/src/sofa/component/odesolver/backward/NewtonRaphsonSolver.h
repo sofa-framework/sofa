@@ -36,6 +36,7 @@ class SOFA_COMPONENT_ODESOLVER_BACKWARD_API NewtonRaphsonSolver
 public:
     SOFA_CLASS2(NewtonRaphsonSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
 
+    void init() override;
     void solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     SingleLink<NewtonRaphsonSolver, BaseIntegrationMethod, BaseLink::FLAG_STRONGLINK> l_integrationMethod;
