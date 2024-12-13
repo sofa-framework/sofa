@@ -39,9 +39,9 @@ public:
     void initializeVectors(core::MultiVecCoordId x, core::MultiVecDerivId v) override;
     Factors getMatricesFactors(SReal dt) const override;
     void computeRightHandSide(const core::ExecParams* params,
-        core::MultiVecDerivId forceId,
-        core::MultiVecDerivId rightHandSide,
-        SReal dt) override;
+                              core::behavior::RHSInput input,
+                              core::MultiVecDerivId rightHandSide,
+                              SReal dt) override;
 
 private:
 
