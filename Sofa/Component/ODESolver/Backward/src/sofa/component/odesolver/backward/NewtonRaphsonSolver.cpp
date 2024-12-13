@@ -122,17 +122,21 @@ void NewtonRaphsonSolver::solve(
         msg_info() << "The residual squared norm is " << squaredResidualNorm << ". ";
     }
 
-    if (squaredResidualNorm <= d_absoluteResidualToleranceThreshold.getValue())
+    const auto squaredAbsoluteResidualToleranceThreshold = std::pow(d_absoluteResidualToleranceThreshold.getValue(), 2);
+
+    if (squaredResidualNorm <= squaredAbsoluteResidualToleranceThreshold)
     {
         msg_info() << "The ODE has already reached an equilibrium state. "
             << "The residual squared norm is " << squaredResidualNorm << ". "
-            << "The threshold for convergence is " << d_absoluteResidualToleranceThreshold.getValue();
+            << "The threshold for convergence is " << squaredAbsoluteResidualToleranceThreshold;
     }
     else
     {
         const auto maxNbIterations = d_maxNbIterations.getValue();
         for (unsigned int i = 0; i < maxNbIterations; ++i)
         {
+            const auto [mFact, bFact, kFact] = l_integrationMethod->getMatricesFactors(dt);
+            mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 
         }
     }
