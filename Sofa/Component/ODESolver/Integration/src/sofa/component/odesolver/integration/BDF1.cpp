@@ -52,7 +52,7 @@ core::behavior::BaseIntegrationMethod::Factors BDF1::getMatricesFactors(SReal dt
 
 void BDF1::computeRightHandSide(
     const core::ExecParams* params,
-    core::MultiVecDerivId forceId,
+    core::behavior::RHSInput input,
     core::MultiVecDerivId rightHandSide,
     SReal dt)
 {
@@ -66,13 +66,13 @@ void BDF1::computeRightHandSide(
         static constexpr bool applyBottomUpMappings = true;
 
         // compute the net forces at the beginning of the time step
-        mop.computeForce(forceId,
+        mop.computeForce(input.force,
             clearForcesBeforeComputingThem, applyBottomUpMappings);
-        msg_info() << "initial force = " << forceId;
+        msg_info() << "initial force = " << input.force;
     }
 
     // b = dt * f
-    vop.v_eq(rightHandSide, forceId, dt);
+    vop.v_eq(rightHandSide, input.force, dt);
 
     // b += (M + dt^2 K) * v
     mop.mparams.setV(m_v);
@@ -80,6 +80,9 @@ void BDF1::computeRightHandSide(
         core::MatricesFactors::M(1),
         core::MatricesFactors::B(0),
         core::MatricesFactors::K(dt * dt));
+
+    // b += -M * v_i
+    mop.addMdx(rightHandSide, input.intermediateVelocity, -1);
 
 }
 
