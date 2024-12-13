@@ -84,6 +84,9 @@ void BDF1::computeRightHandSide(
     // b += -M * v_i
     mop.addMdx(rightHandSide, input.intermediateVelocity, -1);
 
+    // Apply projective constraints
+    mop.projectResponse(rightHandSide);
+
 }
 
 }
