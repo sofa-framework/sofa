@@ -34,6 +34,8 @@
 
 namespace sofa::component::collision::response::contact
 {
+//Work inspired by: Zimmerman BK, Ateshian GA. "A Surface-to-Surface Finite Element Algorithm for Large Deformation Frictional Contact in febio." 
+//                  J Biomech Eng. 2018 Aug 1;140(8):0810131–08101315. doi: 10.1115/1.4040497. PMID: 30003262; PMCID: PMC6056201.
 template <class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
 class AugmentedLagrangianResponse : public BaseUnilateralContactResponse<TCollisionModel1,  TCollisionModel2,constraint::lagrangian::model::AugmentedLagrangianContactParameters, ResponseDataTypes>
 {
