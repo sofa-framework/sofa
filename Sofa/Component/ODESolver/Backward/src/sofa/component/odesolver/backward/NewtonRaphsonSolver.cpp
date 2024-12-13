@@ -67,6 +67,7 @@ void NewtonRaphsonSolver::solve(
     {
         return;
     }
+    msg_info() << "****************************************";
 
     // Create the vector and mechanical operations tools. These are used to execute special operations (multiplication,
     // additions, etc.) on multi-vectors (a vector that is stored in different buffers inside the mechanical objects)
@@ -89,10 +90,11 @@ void NewtonRaphsonSolver::solve(
     core::behavior::MultiVecCoord position_i(&vop);
     core::behavior::MultiVecDeriv velocity_i(&vop);
 
+    //initial guess: solution is states from the previous time step
     position_i.eq(position);
     velocity_i.eq(velocity);
 
-    //the position and velocity computed at the end of this algorithm
+    //the position and velocity that will be computed at the end of this algorithm
     core::behavior::MultiVecCoord newPosition(&vop, xResult );
     core::behavior::MultiVecDeriv newVelocity(&vop, vResult );
 
@@ -116,6 +118,7 @@ void NewtonRaphsonSolver::solve(
 
         core::behavior::RHSInput input;
         input.force = force;
+        input.intermediateVelocity = velocity_i;
 
         l_integrationMethod->computeRightHandSide(params, input, b, dt);
         msg_info() << "b = " << b;
@@ -147,6 +150,8 @@ void NewtonRaphsonSolver::solve(
                 SCOPED_TIMER("setSystemMBKMatrix");
                 const auto [mFact, bFact, kFact] = l_integrationMethod->getMatricesFactors(dt);
                 mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
+
+                msg_info() << "matrix = " << *l_linearSolver->getSystemBaseMatrix();
             }
 
             //solve the system
@@ -165,6 +170,9 @@ void NewtonRaphsonSolver::solve(
                 newPosition, newVelocity,
                 m_linearSystemSolution);
 
+            msg_info() << "v_i = " << velocity_i;
+            msg_info() << "x_i = " << position_i;
+
             msg_info() << "v = " << newVelocity;
             msg_info() << "x = " << newPosition;
 
@@ -176,6 +184,9 @@ void NewtonRaphsonSolver::solve(
 
         }
     }
+
+    msg_info() << "final v = " << newVelocity;
+    msg_info() << "final x = " << newPosition;
 }
 
 void registerNewtonRaphsonSolver(sofa::core::ObjectFactory* factory)
