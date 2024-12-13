@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/AugmentedLagrangianConstraint.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/Vec.h>
@@ -30,13 +30,13 @@ namespace sofa::component::constraint::lagrangian::model
 {
 
 template<class DataTypes>
-UnilateralLagrangianConstraint<DataTypes>::UnilateralLagrangianConstraint(MechanicalState* object1, MechanicalState* object2)
+AugmentedLagrangianConstraint<DataTypes>::AugmentedLagrangianConstraint(MechanicalState* object1, MechanicalState* object2)
     : Inherit(object1, object2)
 {
 }
 
 template<class DataTypes>
-void UnilateralLagrangianConstraint<DataTypes>::getConstraintResolution(const core::ConstraintParams *, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
+void AugmentedLagrangianConstraint<DataTypes>::getConstraintResolution(const core::ConstraintParams *, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     if(this->contactsStatus)
     {
@@ -55,15 +55,15 @@ void UnilateralLagrangianConstraint<DataTypes>::getConstraintResolution(const co
         Contact& c = this->contacts[i];
         if(c.parameters.hasTangentialComponent())
         {
-            UnilateralConstraintResolutionWithFriction* ucrwf = new UnilateralConstraintResolutionWithFriction(c.parameters.mu, nullptr, &this->contactsStatus[i]);
+            AugmentedLagrangianResolutionWithFriction* ucrwf = new AugmentedLagrangianResolutionWithFriction(c.parameters.mu,c.parameters.epsilon, nullptr, &(this->contactsStatus[i]));
             ucrwf->setTolerance(this->customTolerance);
             resTab[offset] = ucrwf;
 
-            // TODO : cette méthode de stockage des forces peu mal fonctionner avec 2 threads quand on utilise l'haptique
+            // NOTE: this method of storing forces may not work well with 2 threads when using haptics
             offset += 3;
         }
         else
-            resTab[offset++] = new UnilateralConstraintResolution();
+            resTab[offset++] = new AugmentedLagrangianResolution(c.parameters.epsilon);
     }
 }
 
