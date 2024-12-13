@@ -59,7 +59,7 @@ void AugmentedLagrangianConstraint<DataTypes>::getConstraintResolution(const cor
             ucrwf->setTolerance(this->customTolerance);
             resTab[offset] = ucrwf;
 
-            // TODO : cette méthode de stockage des forces peu mal fonctionner avec 2 threads quand on utilise l'haptique
+            // NOTE: this method of storing forces may not work well with 2 threads when using haptics
             offset += 3;
         }
         else

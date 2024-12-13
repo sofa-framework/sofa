@@ -49,8 +49,8 @@ public:
     typedef core::behavior::MechanicalState<DataTypes1> MechanicalState1;
     typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
 
-    Data<double> d_mu; ///< friction parameter
-    Data<double> d_epsilon; ///< Penalty parameter
+    Data<SReal> d_mu; ///< friction parameter
+    Data<SReal> d_epsilon; ///< Penalty parameter
 
     AugmentedLagrangianResponse();
     AugmentedLagrangianResponse(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
