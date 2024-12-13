@@ -41,6 +41,7 @@ public:
 
     SingleLink<NewtonRaphsonSolver, core::behavior::BaseIntegrationMethod, BaseLink::FLAG_STRONGLINK> l_integrationMethod;
 
+    Data<unsigned int> d_maxNbIterations;
     Data<SReal> d_absoluteResidualToleranceThreshold;
 
 protected:

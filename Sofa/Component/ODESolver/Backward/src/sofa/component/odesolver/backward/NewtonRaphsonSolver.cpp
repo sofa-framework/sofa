@@ -31,6 +31,8 @@ namespace sofa::component::odesolver::backward
 
 NewtonRaphsonSolver::NewtonRaphsonSolver()
     : l_integrationMethod(initLink("integrationMethod", "The integration method to use in a Newton iteration"))
+    , d_maxNbIterations(initData(&d_maxNbIterations, 1u, "maxNbIterations",
+        "Maximum number of iterations if it has not converged."))
     , d_absoluteResidualToleranceThreshold(initData(&d_absoluteResidualToleranceThreshold, 1e-15_sreal,
         "absoluteResidualToleranceThreshold",
         "The newton iterations will stop when the norm of the residual at "
@@ -109,12 +111,15 @@ void NewtonRaphsonSolver::solve(
         input.force = force;
 
         l_integrationMethod->computeRightHandSide(params, input, b, dt);
+        msg_info() << "b = " << b;
     }
 
     SReal squaredResidualNorm{};
     {
         SCOPED_TIMER("ComputeError");
         squaredResidualNorm = b.dot(b);
+
+        msg_info() << "The residual squared norm is " << squaredResidualNorm << ". ";
     }
 
     if (squaredResidualNorm <= d_absoluteResidualToleranceThreshold.getValue())
@@ -123,7 +128,14 @@ void NewtonRaphsonSolver::solve(
             << "The residual squared norm is " << squaredResidualNorm << ". "
             << "The threshold for convergence is " << d_absoluteResidualToleranceThreshold.getValue();
     }
+    else
+    {
+        const auto maxNbIterations = d_maxNbIterations.getValue();
+        for (unsigned int i = 0; i < maxNbIterations; ++i)
+        {
 
+        }
+    }
 }
 
 void registerNewtonRaphsonSolver(sofa::core::ObjectFactory* factory)
