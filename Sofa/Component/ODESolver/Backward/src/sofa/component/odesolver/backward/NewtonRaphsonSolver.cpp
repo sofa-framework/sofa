@@ -59,6 +59,19 @@ void NewtonRaphsonSolver::init()
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
+void NewtonRaphsonSolver::computeForce(const core::ExecParams* params, SReal dt,
+                                       core::MultiVecDerivId force,
+                                       core::MultiVecDerivId b,
+                                       core::MultiVecDerivId velocity_i)
+{
+    core::behavior::RHSInput input;
+    input.force = force;
+    input.intermediateVelocity = velocity_i;
+
+    l_integrationMethod->computeRightHandSide(params, input, b, dt);
+    msg_info() << "b = " << b;
+}
+
 void NewtonRaphsonSolver::solve(
     const core::ExecParams* params, SReal dt,
     sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
@@ -115,13 +128,7 @@ void NewtonRaphsonSolver::solve(
 
     {
         SCOPED_TIMER("ComputeRHS");
-
-        core::behavior::RHSInput input;
-        input.force = force;
-        input.intermediateVelocity = velocity_i;
-
-        l_integrationMethod->computeRightHandSide(params, input, b, dt);
-        msg_info() << "b = " << b;
+        computeForce(params, dt, force, b, velocity_i);
     }
 
     SReal squaredResidualNorm{};
@@ -179,9 +186,27 @@ void NewtonRaphsonSolver::solve(
             mop.projectPositionAndVelocity(newPosition, newVelocity);
             mop.propagateXAndV(newPosition, newVelocity);
 
-            vop.v_eq(position_i, newPosition);
-            vop.v_eq(velocity_i, newVelocity);
+            if (maxNbIterations > 1)
+            {
+                vop.v_eq(position_i, newPosition);
+                vop.v_eq(velocity_i, newVelocity);
 
+                computeForce(params, dt, force, b, velocity_i);
+                squaredResidualNorm = b.dot(b);
+
+                if (squaredResidualNorm <= squaredAbsoluteResidualToleranceThreshold)
+                {
+                    msg_info() << "[CONVERGED] residual squared norm (" <<
+                        squaredResidualNorm << ") is smaller than the threshold ("
+                        << squaredAbsoluteResidualToleranceThreshold << ") after "
+                        << i << " iterations. ";
+                    break;
+                }
+                else
+                {
+                    msg_info() << "The residual squared norm is " << squaredResidualNorm << ". ";
+                }
+            }
         }
     }
 

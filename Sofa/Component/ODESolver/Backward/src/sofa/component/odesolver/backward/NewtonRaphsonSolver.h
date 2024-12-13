@@ -48,6 +48,11 @@ protected:
     NewtonRaphsonSolver();
 
     core::behavior::MultiVecDeriv m_linearSystemSolution;
+
+    void computeForce(const core::ExecParams* params, SReal dt,
+                      core::MultiVecDerivId force,
+                      core::MultiVecDerivId b,
+                      core::MultiVecDerivId velocity_i);
 };
 
 }
