@@ -96,7 +96,14 @@ void NewtonRaphsonSolver::solve(
     mop.cparams.setX(xResult);
     mop.cparams.setV(vResult);
 
-    l_integrationMethod->computeRightHandSide(params, force, b, dt);
+    l_integrationMethod->initializeVectors(position, velocity);
+
+    {
+        core::behavior::RHSInput input;
+        input.force = force;
+
+        l_integrationMethod->computeRightHandSide(params, input, b, dt);
+    }
 
 
 }

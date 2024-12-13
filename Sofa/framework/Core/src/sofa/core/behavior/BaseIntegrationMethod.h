@@ -29,6 +29,15 @@
 namespace sofa::core::behavior
 {
 
+/**
+ * The vectors required to be able to compute the right-hand side
+ */
+struct SOFA_CORE_API RHSInput
+{
+    MultiVecDerivId force;
+    MultiVecDerivId intermediateVelocity;
+};
+
 class SOFA_CORE_API BaseIntegrationMethod : public sofa::core::objectmodel::BaseObject
 {
 public:
@@ -44,7 +53,7 @@ public:
 
     virtual Factors getMatricesFactors(SReal dt) const = 0;
     virtual void computeRightHandSide(const core::ExecParams* params,
-        MultiVecDerivId forceId,
+        RHSInput input,
         MultiVecDerivId rightHandSide,
         SReal dt) = 0;
 };
