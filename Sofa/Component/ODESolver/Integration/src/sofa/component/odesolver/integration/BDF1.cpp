@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/odesolver/integration/BDF1.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/MultiVec.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
@@ -68,7 +69,7 @@ void BDF1::computeRightHandSide(
         // compute the net forces at the beginning of the time step
         mop.computeForce(input.force,
             clearForcesBeforeComputingThem, applyBottomUpMappings);
-        msg_info() << "initial force = " << input.force;
+        msg_info() << "initial force = " << core::behavior::MultiVecDeriv(&vop, input.force);
     }
 
     // b = dt * f
