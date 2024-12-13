@@ -66,10 +66,23 @@ void BDF1::computeRightHandSide(
         static constexpr bool clearForcesBeforeComputingThem = true;
         static constexpr bool applyBottomUpMappings = true;
 
-        // compute the net forces at the beginning of the time step
+        mop.mparams.setX(input.intermediatePosition);
+        mop.mparams.setV(input.intermediateVelocity);
         mop.computeForce(input.force,
             clearForcesBeforeComputingThem, applyBottomUpMappings);
         msg_info() << "initial force = " << core::behavior::MultiVecDeriv(&vop, input.force);
+    }
+
+    //this is just to debug
+    {
+        vop.v_clear(rightHandSide);
+        mop.addMdx(rightHandSide, input.intermediateVelocity, core::MatricesFactors::M(1).get());
+        mop.addMdx(rightHandSide, m_v, core::MatricesFactors::M(-1).get());
+        vop.v_eq(rightHandSide, input.force, -dt);
+        vop.v_dot(rightHandSide, rightHandSide);
+        SReal residual = vop.finish();
+        msg_info() << "residual norm = " << residual;
+        msg_info() << "residual = " << core::behavior::MultiVecDeriv(&vop, rightHandSide);
     }
 
     // b = dt * f

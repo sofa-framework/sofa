@@ -59,17 +59,18 @@ void NewtonRaphsonSolver::init()
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
-void NewtonRaphsonSolver::computeForce(const core::ExecParams* params, SReal dt,
+void NewtonRaphsonSolver::computeRightHandSide(const core::ExecParams* params, SReal dt,
                                        core::MultiVecDerivId force,
                                        core::MultiVecDerivId b,
-                                       core::MultiVecDerivId velocity_i)
+                                       core::MultiVecDerivId velocity_i,
+                                       core::MultiVecCoordId position_i)
 {
     core::behavior::RHSInput input;
     input.force = force;
     input.intermediateVelocity = velocity_i;
+    input.intermediatePosition = position_i;
 
     l_integrationMethod->computeRightHandSide(params, input, b, dt);
-    msg_info() << "b = " << b;
 }
 
 void NewtonRaphsonSolver::solve(
@@ -128,7 +129,8 @@ void NewtonRaphsonSolver::solve(
 
     {
         SCOPED_TIMER("ComputeRHS");
-        computeForce(params, dt, force, b, velocity_i);
+        computeRightHandSide(params, dt, force, b, velocity_i, position_i);
+        msg_info() << "b = " << b;
     }
 
     SReal squaredResidualNorm{};
@@ -180,8 +182,8 @@ void NewtonRaphsonSolver::solve(
             msg_info() << "v_i = " << velocity_i;
             msg_info() << "x_i = " << position_i;
 
-            msg_info() << "v = " << newVelocity;
-            msg_info() << "x = " << newPosition;
+            msg_info() << std::scientific << "v = " << newVelocity;
+            msg_info() << std::scientific << "x = " << newPosition;
 
             mop.projectPositionAndVelocity(newPosition, newVelocity);
             mop.propagateXAndV(newPosition, newVelocity);
@@ -191,7 +193,8 @@ void NewtonRaphsonSolver::solve(
                 vop.v_eq(position_i, newPosition);
                 vop.v_eq(velocity_i, newVelocity);
 
-                computeForce(params, dt, force, b, velocity_i);
+                computeRightHandSide(params, dt, force, b, velocity_i, position_i);
+                msg_info() << "b = " << b;
                 squaredResidualNorm = b.dot(b);
 
                 if (squaredResidualNorm <= squaredAbsoluteResidualToleranceThreshold)
@@ -208,6 +211,11 @@ void NewtonRaphsonSolver::solve(
                 }
             }
         }
+    }
+
+    if (squaredResidualNorm > squaredAbsoluteResidualToleranceThreshold)
+    {
+        msg_info() << "Failed to converge";
     }
 
     msg_info() << "final v = " << newVelocity;

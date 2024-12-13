@@ -36,6 +36,7 @@ struct SOFA_CORE_API RHSInput
 {
     MultiVecDerivId force;
     MultiVecDerivId intermediateVelocity;
+    MultiVecCoordId intermediatePosition;
 };
 
 class SOFA_CORE_API BaseIntegrationMethod : public sofa::core::objectmodel::BaseObject
