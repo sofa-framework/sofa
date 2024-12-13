@@ -52,10 +52,18 @@ public:
     virtual void initializeVectors(MultiVecCoordId x, MultiVecDerivId v) {}
 
     virtual Factors getMatricesFactors(SReal dt) const = 0;
+
     virtual void computeRightHandSide(const core::ExecParams* params,
         RHSInput input,
         MultiVecDerivId rightHandSide,
         SReal dt) = 0;
+
+    virtual void updateStates(const core::ExecParams* params, SReal dt,
+        MultiVecCoordId x,
+        MultiVecDerivId v,
+        MultiVecCoordId newX,
+        MultiVecDerivId newV,
+        MultiVecDerivId linearSystemSolution) = 0;
 };
 
 }
