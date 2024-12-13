@@ -98,6 +98,10 @@ void NewtonRaphsonSolver::solve(
     core::behavior::MultiVecDeriv dx(&vop, sofa::core::vec_id::write_access::dx);
     dx.realloc(&vop, false, true);
 
+    m_linearSystemSolution.realloc(&vop, false, true,
+        core::VecIdProperties{"solution", GetClass()->className});
+
+
     // inform the constraint parameters about the position and velocity id
     mop.cparams.setX(xResult);
     mop.cparams.setV(vResult);
@@ -137,6 +141,14 @@ void NewtonRaphsonSolver::solve(
         {
             const auto [mFact, bFact, kFact] = l_integrationMethod->getMatricesFactors(dt);
             mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
+
+            {
+                SCOPED_TIMER("MBKSolve");
+
+                l_linearSolver->setSystemLHVector(m_linearSystemSolution);
+                l_linearSolver->setSystemRHVector(b);
+                l_linearSolver->solveSystem();
+            }
 
         }
     }
