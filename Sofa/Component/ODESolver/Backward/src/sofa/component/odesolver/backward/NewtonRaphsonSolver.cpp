@@ -80,7 +80,7 @@ void NewtonRaphsonSolver::solve(
     mop.cparams.setX(xResult);
     mop.cparams.setV(vResult);
 
-    l_integrationMethod->computeRightHandSide(params, force);
+    l_integrationMethod->computeRightHandSide(params, force, b, dt);
 
 
 }
