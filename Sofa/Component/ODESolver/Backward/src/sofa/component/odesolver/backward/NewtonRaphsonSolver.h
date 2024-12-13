@@ -46,6 +46,8 @@ public:
 
 protected:
     NewtonRaphsonSolver();
+
+    core::behavior::MultiVecDeriv m_linearSystemSolution;
 };
 
 }
