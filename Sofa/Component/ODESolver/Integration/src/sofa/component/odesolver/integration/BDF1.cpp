@@ -37,8 +37,8 @@ core::behavior::BaseIntegrationMethod::Factors BDF1::getMatricesFactors(SReal dt
 {
     return {
         core::MatricesFactors::M{1},
-        core::MatricesFactors::B{1},
-        core::MatricesFactors::K{1}
+        core::MatricesFactors::B{-dt},
+        core::MatricesFactors::K{-dt*dt}
     };
 }
 
