@@ -23,6 +23,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/VectorOperations.h>
+
 
 namespace sofa::component::odesolver::integration
 {
@@ -31,6 +33,12 @@ void registerBDF1(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Velocity-based Backward Euler integration method.")
         .add< BDF1 >());
+}
+
+void BDF1::initializeVectors(core::MultiVecCoordId x, core::MultiVecDerivId v)
+{
+    m_x = x;
+    m_v = v;
 }
 
 core::behavior::BaseIntegrationMethod::Factors BDF1::getMatricesFactors(SReal dt) const
@@ -43,8 +51,12 @@ core::behavior::BaseIntegrationMethod::Factors BDF1::getMatricesFactors(SReal dt
 }
 
 void BDF1::computeRightHandSide(
-    const core::ExecParams* params, core::MultiVecDerivId forceId)
+    const core::ExecParams* params,
+    core::MultiVecDerivId forceId,
+    core::MultiVecDerivId rightHandSide,
+    SReal dt)
 {
+    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     mop->setImplicit(true);
 
@@ -58,6 +70,17 @@ void BDF1::computeRightHandSide(
             clearForcesBeforeComputingThem, applyBottomUpMappings);
         msg_info() << "initial force = " << forceId;
     }
+
+    // b = dt * f
+    vop.v_eq(rightHandSide, forceId, dt);
+
+    // b += (M + dt^2 K) * v
+    mop.mparams.setV(m_v);
+    mop.addMBKv(rightHandSide,
+        core::MatricesFactors::M(1),
+        core::MatricesFactors::B(0),
+        core::MatricesFactors::K(dt * dt));
+
 }
 
 }
