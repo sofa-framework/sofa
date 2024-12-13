@@ -86,8 +86,11 @@ void NewtonRaphsonSolver::solve(
     core::behavior::MultiVecDeriv b(&vop, true, core::VecIdProperties{"RHS", GetClass()->className});
 
     //the intermediate position and velocity required by the algorithm
-    core::behavior::MultiVecCoord position_i(&vop, xResult );
-    core::behavior::MultiVecDeriv velocity_i(&vop, vResult );
+    core::behavior::MultiVecCoord position_i(&vop);
+    core::behavior::MultiVecDeriv velocity_i(&vop);
+
+    position_i.eq(position);
+    velocity_i.eq(velocity);
 
     //the position and velocity computed at the end of this algorithm
     core::behavior::MultiVecCoord newPosition(&vop, xResult );
@@ -149,6 +152,17 @@ void NewtonRaphsonSolver::solve(
                 l_linearSolver->setSystemRHVector(b);
                 l_linearSolver->solveSystem();
             }
+
+            l_integrationMethod->updateStates(params, dt,
+                position_i, velocity_i,
+                newPosition, newVelocity,
+                m_linearSystemSolution);
+
+            mop.projectPositionAndVelocity(newPosition, newVelocity);
+            mop.propagateXAndV(newPosition, newVelocity);
+
+            vop.v_eq(position_i, newPosition);
+            vop.v_eq(velocity_i, newVelocity);
 
         }
     }

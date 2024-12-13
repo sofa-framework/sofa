@@ -43,6 +43,13 @@ public:
                               core::MultiVecDerivId rightHandSide,
                               SReal dt) override;
 
+    void updateStates(const core::ExecParams* params, SReal dt,
+        core::MultiVecCoordId x,
+        core::MultiVecDerivId v,
+        core::MultiVecCoordId newX,
+        core::MultiVecDerivId newV,
+        core::MultiVecDerivId linearSystemSolution) override;
+
 private:
 
     core::MultiVecCoordId m_x = sofa::core::vec_id::write_access::position;

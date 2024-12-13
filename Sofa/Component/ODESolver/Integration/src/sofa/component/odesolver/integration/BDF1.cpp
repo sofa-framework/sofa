@@ -90,4 +90,20 @@ void BDF1::computeRightHandSide(
 
 }
 
+void BDF1::updateStates(const core::ExecParams* params, SReal dt,
+    core::MultiVecCoordId x, core::MultiVecDerivId v,
+    core::MultiVecCoordId newX, core::MultiVecDerivId newV,
+    core::MultiVecDerivId linearSystemSolution)
+{
+    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
+
+    // v_(i+1) = v_i + x
+    vop.v_eq(newV, v);
+    vop.v_peq(newV, linearSystemSolution);
+
+    // x_(i+1) = dt * v_(i+1) + x_i
+    vop.v_eq(newX, x);
+    vop.v_peq(newX, newV, dt);
+}
+
 }
