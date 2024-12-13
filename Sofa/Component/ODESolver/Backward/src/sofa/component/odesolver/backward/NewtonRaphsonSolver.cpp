@@ -142,9 +142,14 @@ void NewtonRaphsonSolver::solve(
         const auto maxNbIterations = d_maxNbIterations.getValue();
         for (unsigned int i = 0; i < maxNbIterations; ++i)
         {
-            const auto [mFact, bFact, kFact] = l_integrationMethod->getMatricesFactors(dt);
-            mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
+            //assemble the system matrix
+            {
+                SCOPED_TIMER("setSystemMBKMatrix");
+                const auto [mFact, bFact, kFact] = l_integrationMethod->getMatricesFactors(dt);
+                mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
+            }
 
+            //solve the system
             {
                 SCOPED_TIMER("MBKSolve");
 
@@ -153,10 +158,15 @@ void NewtonRaphsonSolver::solve(
                 l_linearSolver->solveSystem();
             }
 
+            msg_info() << "solution = " << m_linearSystemSolution;
+
             l_integrationMethod->updateStates(params, dt,
                 position_i, velocity_i,
                 newPosition, newVelocity,
                 m_linearSystemSolution);
+
+            msg_info() << "v = " << newVelocity;
+            msg_info() << "x = " << newPosition;
 
             mop.projectPositionAndVelocity(newPosition, newVelocity);
             mop.propagateXAndV(newPosition, newVelocity);
