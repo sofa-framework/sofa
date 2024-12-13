@@ -31,6 +31,10 @@ namespace sofa::component::odesolver::backward
 
 NewtonRaphsonSolver::NewtonRaphsonSolver()
     : l_integrationMethod(initLink("integrationMethod", "The integration method to use in a Newton iteration"))
+    , d_absoluteResidualToleranceThreshold(initData(&d_absoluteResidualToleranceThreshold, 1e-15_sreal,
+        "absoluteResidualToleranceThreshold",
+        "The newton iterations will stop when the norm of the residual at "
+        "iteration k is lower than this threshold."))
 {}
 
 void NewtonRaphsonSolver::init()
@@ -107,12 +111,18 @@ void NewtonRaphsonSolver::solve(
         l_integrationMethod->computeRightHandSide(params, input, b, dt);
     }
 
-    SReal error{};
+    SReal squaredResidualNorm{};
     {
         SCOPED_TIMER("ComputeError");
-        error = b.dot(b);
+        squaredResidualNorm = b.dot(b);
     }
 
+    if (squaredResidualNorm <= d_absoluteResidualToleranceThreshold.getValue())
+    {
+        msg_info() << "The ODE has already reached an equilibrium state. "
+            << "The residual squared norm is " << squaredResidualNorm << ". "
+            << "The threshold for convergence is " << d_absoluteResidualToleranceThreshold.getValue();
+    }
 
 }
 
