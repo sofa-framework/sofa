@@ -1,0 +1,34 @@
+<Node name="root" gravity="0 0 -9.81" dt="0.0001">
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [EigenSimplicialLDLT] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [NewtonRaphsonSolver] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Integration"/> <!-- Needed to use components [BDF1] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [SpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglCylinderModel] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetTopologyContainer] -->
+
+
+    <VisualStyle displayFlags="showWireframe showVisual showBehaviorModels showForceFields" />
+    <DefaultAnimationLoop/>
+    <VisualGrid size="2"/>
+    <LineAxis size="2"/>
+
+    <Node name="DeformableObject">
+
+        <BDF1 printLog="true"/>
+        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="true"/>
+        <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
+
+        <MechanicalObject name="dofs" position="0 0 0  1 1 0"/>
+        <EdgeSetTopologyContainer name="topologyContainer" edges="0 1"/>
+        <MeshMatrixMass totalMass="15" topology="@topologyContainer"/>
+        <SpringForceField spring="0 1 1000 0 1"/>
+
+        <FixedProjectiveConstraint indices="0" />
+
+        <OglCylinderModel position="@dofs.position"  edges="0 1" />
+    </Node>
+</Node>
