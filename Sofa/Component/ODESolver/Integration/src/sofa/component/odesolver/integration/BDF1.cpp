@@ -83,7 +83,7 @@ void BDF1::computeRightHandSide(
         core::MatricesFactors::K(dt * dt));
 
     // b += -M * v_i
-    mop.addMdx(rightHandSide, input.intermediateVelocity, -1);
+    mop.addMdx(rightHandSide, input.intermediateVelocity, core::MatricesFactors::M(-1).get());
 
     // Apply projective constraints
     mop.projectResponse(rightHandSide);
