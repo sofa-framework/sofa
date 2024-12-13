@@ -40,8 +40,13 @@ public:
 
     using Factors = std::tuple<MatricesFactors::M, MatricesFactors::B, MatricesFactors::K>;
 
+    virtual void initializeVectors(MultiVecCoordId x, MultiVecDerivId v) {}
+
     virtual Factors getMatricesFactors(SReal dt) const = 0;
-    virtual void computeRightHandSide(const core::ExecParams* params, MultiVecDerivId forceId) = 0;
+    virtual void computeRightHandSide(const core::ExecParams* params,
+        MultiVecDerivId forceId,
+        MultiVecDerivId rightHandSide,
+        SReal dt) = 0;
 };
 
 }

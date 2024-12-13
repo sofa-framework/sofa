@@ -36,8 +36,17 @@ class SOFA_COMPONENT_ODESOLVER_INTEGRATION_API BDF1 : public sofa::core::behavio
 public:
     SOFA_CLASS(BDF1, sofa::core::behavior::BaseIntegrationMethod);
 
+    void initializeVectors(core::MultiVecCoordId x, core::MultiVecDerivId v) override;
     Factors getMatricesFactors(SReal dt) const override;
-    void computeRightHandSide(const core::ExecParams* params, core::MultiVecDerivId forceId) override;
+    void computeRightHandSide(const core::ExecParams* params,
+        core::MultiVecDerivId forceId,
+        core::MultiVecDerivId rightHandSide,
+        SReal dt) override;
+
+private:
+
+    core::MultiVecCoordId m_x = sofa::core::vec_id::write_access::position;
+    core::MultiVecDerivId m_v = sofa::core::vec_id::write_access::velocity;
 };
 
 }
