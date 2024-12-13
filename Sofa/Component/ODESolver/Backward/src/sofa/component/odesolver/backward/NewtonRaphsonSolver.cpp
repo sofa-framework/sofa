@@ -99,10 +99,18 @@ void NewtonRaphsonSolver::solve(
     l_integrationMethod->initializeVectors(position, velocity);
 
     {
+        SCOPED_TIMER("ComputeRHS");
+
         core::behavior::RHSInput input;
         input.force = force;
 
         l_integrationMethod->computeRightHandSide(params, input, b, dt);
+    }
+
+    SReal error{};
+    {
+        SCOPED_TIMER("ComputeError");
+        error = b.dot(b);
     }
 
 
