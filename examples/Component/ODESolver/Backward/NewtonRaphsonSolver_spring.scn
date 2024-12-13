@@ -16,19 +16,34 @@
     <VisualGrid size="2"/>
     <LineAxis size="2"/>
 
-    <Node name="DeformableObject">
+    <Node name="Newton">
 
-        <BDF1 printLog="true"/>
-        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="true"/>
+        <BDF1 printLog="false"/>
+        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="true" maxNbIterations="10"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
 
         <MechanicalObject name="dofs" position="0 0 0  1 1 0"/>
-        <EdgeSetTopologyContainer name="topologyContainer" edges="0 1"/>
-        <MeshMatrixMass totalMass="15" topology="@topologyContainer"/>
+        <EdgeSetTopologyContainer name="topologyContainer" edges="0 1" position="@dofs.position"/>
+        <UniformMass totalMass="15" topology="@topologyContainer"/>
         <SpringForceField spring="0 1 1000 0 1"/>
 
         <FixedProjectiveConstraint indices="0" />
 
-        <OglCylinderModel position="@dofs.position"  edges="0 1" />
+        <OglCylinderModel position="@dofs.position"  edges="0 1" radius="0.1"/>
+    </Node>
+
+    <Node name="ForceLinearization">
+
+        <EulerImplicitSolver printLog="false"/>
+        <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
+
+        <MechanicalObject name="dofs" position="0 0 0  1 1 0"/>
+        <EdgeSetTopologyContainer name="topologyContainer" edges="0 1" position="@dofs.position"/>
+        <UniformMass totalMass="15" topology="@topologyContainer"/>
+        <SpringForceField spring="0 1 1000 0 1"/>
+
+        <FixedProjectiveConstraint indices="0" />
+
+        <OglCylinderModel position="@dofs.position"  edges="0 1" radius="0.1"/>
     </Node>
 </Node>
