@@ -68,13 +68,29 @@ void NewtonRaphsonSolver::solve(
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     mop->setImplicit(true);
 
+    //current position computed at the end of the previous time step
     core::behavior::MultiVecCoord position(&vop, core::vec_id::write_access::position );
+
+    //current position computed at the end of the previous time step
     core::behavior::MultiVecDeriv velocity(&vop, core::vec_id::write_access::velocity );
+
+    //force vector that will be computed in this solve. The content of the
+    //previous time step will be erased.
     core::behavior::MultiVecDeriv force(&vop, core::vec_id::write_access::force );
     core::behavior::MultiVecDeriv b(&vop, true, core::VecIdProperties{"RHS", GetClass()->className});
 
+    //the intermediate position and velocity required by the algorithm
+    core::behavior::MultiVecCoord position_i(&vop, xResult );
+    core::behavior::MultiVecDeriv velocity_i(&vop, vResult );
+
+    //the position and velocity computed at the end of this algorithm
     core::behavior::MultiVecCoord newPosition(&vop, xResult );
     core::behavior::MultiVecDeriv newVelocity(&vop, vResult );
+
+    //dx vector is required by some operations of the algorithm, even if it is
+    //not explicit
+    core::behavior::MultiVecDeriv dx(&vop, sofa::core::vec_id::write_access::dx);
+    dx.realloc(&vop, false, true);
 
     // inform the constraint parameters about the position and velocity id
     mop.cparams.setX(xResult);
