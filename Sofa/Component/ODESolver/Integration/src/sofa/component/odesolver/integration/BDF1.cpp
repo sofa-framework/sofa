@@ -36,7 +36,7 @@ void registerBDF1(sofa::core::ObjectFactory* factory)
         .add< BDF1 >());
 }
 
-void BDF1::initializeVectors(const core::ExecParams* params, core::MultiVecCoordId x, core::MultiVecDerivId v)
+void BDF1::initializeVectors(const core::ExecParams* params, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v)
 {
     m_vop = std::make_unique<simulation::common::VectorOperations>(params, this->getContext());
 
