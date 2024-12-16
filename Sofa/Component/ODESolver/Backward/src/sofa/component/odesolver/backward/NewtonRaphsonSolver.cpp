@@ -63,7 +63,7 @@ void NewtonRaphsonSolver::computeRightHandSide(const core::ExecParams* params, S
                                        core::MultiVecDerivId force,
                                        core::MultiVecDerivId b,
                                        core::MultiVecDerivId velocity_i,
-                                       core::MultiVecCoordId position_i)
+                                       core::MultiVecCoordId position_i) const
 {
     core::behavior::RHSInput input;
     input.force = force;
@@ -82,17 +82,13 @@ void NewtonRaphsonSolver::solve(
         return;
     }
 
+    const bool printLog = f_printLog.getValue();
+
     // Create the vector and mechanical operations tools. These are used to execute special operations (multiplication,
     // additions, etc.) on multi-vectors (a vector that is stored in different buffers inside the mechanical objects)
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     mop->setImplicit(true);
-
-    //current position computed at the end of the previous time step
-    core::behavior::MultiVecCoord position(&vop, core::vec_id::write_access::position );
-
-    //current position computed at the end of the previous time step
-    core::behavior::MultiVecDeriv velocity(&vop, core::vec_id::write_access::velocity );
 
     //force vector that will be computed in this solve. The content of the
     //previous time step will be erased.
@@ -103,9 +99,9 @@ void NewtonRaphsonSolver::solve(
     core::behavior::MultiVecCoord position_i(&vop);
     core::behavior::MultiVecDeriv velocity_i(&vop);
 
-    //initial guess: solution is states from the previous time step
-    position_i.eq(position);
-    velocity_i.eq(velocity);
+    //initial guess: the new states are initialized with states from the previous time step
+    position_i.eq(xResult);
+    velocity_i.eq(vResult);
 
     //the position and velocity that will be computed at the end of this algorithm
     core::behavior::MultiVecCoord newPosition(&vop, xResult );
@@ -119,12 +115,13 @@ void NewtonRaphsonSolver::solve(
     m_linearSystemSolution.realloc(&vop, false, true,
         core::VecIdProperties{"solution", GetClass()->className});
 
-
     // inform the constraint parameters about the position and velocity id
     mop.cparams.setX(xResult);
     mop.cparams.setV(vResult);
 
-    l_integrationMethod->initializeVectors(params, position, velocity);
+    l_integrationMethod->initializeVectors(params,
+        core::vec_id::read_access::position,
+        core::vec_id::read_access::velocity);
 
     {
         SCOPED_TIMER("ComputeRHS");
@@ -149,13 +146,14 @@ void NewtonRaphsonSolver::solve(
     }
     else
     {
+        SCOPED_TIMER("NewtonsIterations");
+
         const auto maxNbIterations = d_maxNbIterations.getValue();
         const auto [mFact, bFact, kFact] = l_integrationMethod->getMatricesFactors(dt);
+        bool hasConverged = false;
 
         for (unsigned int i = 0; i < maxNbIterations; ++i)
         {
-            dmsg_info() << "=== Iteration " << i << "===";
-
             //assemble the system matrix
             {
                 SCOPED_TIMER("setSystemMBKMatrix");
@@ -179,37 +177,33 @@ void NewtonRaphsonSolver::solve(
             mop.projectPositionAndVelocity(newPosition, newVelocity);
             mop.propagateXAndV(newPosition, newVelocity);
 
-            if (maxNbIterations > 1)
+            vop.v_eq(position_i, newPosition);
+            vop.v_eq(velocity_i, newVelocity);
+
+            computeRightHandSide(params, dt, force, b, velocity_i, position_i);
+            squaredResidualNorm = b.dot(b);
+
+            if (squaredResidualNorm <= squaredAbsoluteResidualToleranceThreshold)
             {
-                vop.v_eq(position_i, newPosition);
-                vop.v_eq(velocity_i, newVelocity);
-
-                computeRightHandSide(params, dt, force, b, velocity_i, position_i);
-                squaredResidualNorm = b.dot(b);
-
-                if (squaredResidualNorm <= squaredAbsoluteResidualToleranceThreshold)
-                {
-                    msg_info() << "[CONVERGED] residual squared norm (" <<
+                msg_info() << "[CONVERGED] residual squared norm (" <<
                         squaredResidualNorm << ") is smaller than the threshold ("
                         << squaredAbsoluteResidualToleranceThreshold << ") after "
                         << (i+1) << " iterations. ";
-                    break;
-                }
-
-                msg_info() << "The residual squared norm is " << squaredResidualNorm << ". ";
+                hasConverged = true;
+                break;
             }
         }
-    }
 
-    if (squaredResidualNorm > squaredAbsoluteResidualToleranceThreshold)
-    {
-        msg_warning() << "Failed to converge with residual squared norm = " << squaredResidualNorm << ". ";
+        if (!hasConverged)
+        {
+            msg_warning() << "Failed to converge with residual squared norm = " << squaredResidualNorm << ". ";
+        }
     }
 }
 
 void registerNewtonRaphsonSolver(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Newton-Raphson algorithm.")
+    factory->registerObjects(core::ObjectRegistrationData("Generic Newton-Raphson algorithm.")
         .add< NewtonRaphsonSolver >());
 }
 
