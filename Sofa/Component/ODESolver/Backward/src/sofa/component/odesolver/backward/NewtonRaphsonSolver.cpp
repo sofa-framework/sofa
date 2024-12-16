@@ -31,12 +31,15 @@ namespace sofa::component::odesolver::backward
 
 NewtonRaphsonSolver::NewtonRaphsonSolver()
     : l_integrationMethod(initLink("integrationMethod", "The integration method to use in a Newton iteration"))
-    , d_maxNbIterations(initData(&d_maxNbIterations, 1u, "maxNbIterations",
-        "Maximum number of iterations if it has not converged."))
+    , d_maxNbIterationsNewton(initData(&d_maxNbIterationsNewton, 1u, "maxNbIterationsNewton",
+        "Maximum number of iterations of the Newton's method if it has not converged."))
     , d_absoluteResidualToleranceThreshold(initData(&d_absoluteResidualToleranceThreshold, 1e-9_sreal,
         "absoluteResidualToleranceThreshold",
         "The newton iterations will stop when the norm of the residual at "
         "iteration k is lower than this threshold."))
+    , d_maxNbIterationsLineSearch(initData(&d_maxNbIterationsLineSearch, 5u, "maxNbIterationsLineSearch",
+        "Maximum number of iterations of the line search method if it has not converged."))
+    , d_lineSearchCoefficient(initData(&d_lineSearchCoefficient, 0.5_sreal, "lineSearchCoefficient", "Line search coefficient"))
 {}
 
 void NewtonRaphsonSolver::init()
@@ -95,7 +98,7 @@ void NewtonRaphsonSolver::solve(
     core::behavior::MultiVecDeriv force(&vop, core::vec_id::write_access::force );
     core::behavior::MultiVecDeriv b(&vop, true, core::VecIdProperties{"RHS", GetClass()->className});
 
-    //the intermediate position and velocity required by the algorithm
+    //the intermediate position and velocity required by the Newton's algorithm
     core::behavior::MultiVecCoord position_i(&vop);
     core::behavior::MultiVecDeriv velocity_i(&vop);
 
@@ -148,12 +151,14 @@ void NewtonRaphsonSolver::solve(
     {
         SCOPED_TIMER("NewtonsIterations");
 
-        const auto maxNbIterations = d_maxNbIterations.getValue();
+        const auto maxNbIterationsNewton = d_maxNbIterationsNewton.getValue();
+        const auto maxNbIterationsLineSearch = d_maxNbIterationsLineSearch.getValue();
         const auto [mFact, bFact, kFact] = l_integrationMethod->getMatricesFactors(dt);
         bool hasConverged = false;
+        const auto lineSearchCoefficient = d_lineSearchCoefficient.getValue();
 
-        unsigned int iterationCount = 0;
-        for (; iterationCount < maxNbIterations; ++iterationCount)
+        unsigned int newtonIterationCount = 0;
+        for (; newtonIterationCount < maxNbIterationsNewton; ++newtonIterationCount)
         {
             //assemble the system matrix
             {
@@ -170,26 +175,70 @@ void NewtonRaphsonSolver::solve(
                 l_linearSolver->solveSystem();
             }
 
-            l_integrationMethod->updateStates(params, dt,
-                position_i, velocity_i,
-                newPosition, newVelocity,
-                m_linearSystemSolution);
+            bool lineSearchSuccess = false;
+            SReal squaredResidualNormLineSearch {};
+            SReal totalLineSearchCoefficient { 1_sreal };
+            SReal minTotalLineSearchCoefficient { 1_sreal };
+            SReal minSquaredResidualNormLineSearch { std::numeric_limits<SReal>::max() };
 
-            mop.projectPositionAndVelocity(newPosition, newVelocity);
-            mop.propagateXAndV(newPosition, newVelocity);
+            const auto lineSearch = [&](bool applyCoefficient)
+            {
+                if (applyCoefficient)
+                {
+                    // solution *= lineSearchCoefficient
+                    vop.v_teq(m_linearSystemSolution, lineSearchCoefficient);
+                    totalLineSearchCoefficient *= lineSearchCoefficient;
+                }
+
+                l_integrationMethod->updateStates(params, dt,
+                    position_i, velocity_i,
+                    newPosition, newVelocity,
+                    m_linearSystemSolution);
+
+                mop.projectPositionAndVelocity(newPosition, newVelocity);
+                mop.propagateXAndV(newPosition, newVelocity);
+
+                computeRightHandSide(params, dt, force, b, newVelocity, newPosition);
+
+                squaredResidualNormLineSearch = b.dot(b);
+                if (squaredResidualNormLineSearch < minSquaredResidualNormLineSearch)
+                {
+                    minSquaredResidualNormLineSearch = squaredResidualNormLineSearch;
+                    minTotalLineSearchCoefficient = totalLineSearchCoefficient;
+                }
+                return squaredResidualNormLineSearch < squaredResidualNorm;
+            };
+
+            for (unsigned int lineSearchIterationCount = 0; lineSearchIterationCount < maxNbIterationsLineSearch; ++lineSearchIterationCount)
+            {
+                if (lineSearch(lineSearchIterationCount > 0))
+                {
+                    lineSearchSuccess = true;
+                    break;
+                }
+            }
+
+            if (!lineSearchSuccess)
+            {
+                msg_warning() << "Line search failed at Newton iteration "
+                    << newtonIterationCount << ". Using the coefficient "
+                    << minTotalLineSearchCoefficient << " resulting to the minimal residual norm (" << minSquaredResidualNormLineSearch << ").";
+
+                vop.v_teq(m_linearSystemSolution, minTotalLineSearchCoefficient / totalLineSearchCoefficient);
+                lineSearch(false);
+            }
+
+            squaredResidualNorm = squaredResidualNormLineSearch;
 
             vop.v_eq(position_i, newPosition);
             vop.v_eq(velocity_i, newVelocity);
-
-            computeRightHandSide(params, dt, force, b, velocity_i, position_i);
-            squaredResidualNorm = b.dot(b);
 
             if (squaredResidualNorm <= squaredAbsoluteResidualToleranceThreshold)
             {
                 msg_info() << "[CONVERGED] residual squared norm (" <<
                         squaredResidualNorm << ") is smaller than the threshold ("
                         << squaredAbsoluteResidualToleranceThreshold << ") after "
-                        << (iterationCount+1) << " iterations. ";
+                        << (newtonIterationCount+1) << " iterations. ";
                 hasConverged = true;
                 break;
             }
@@ -197,7 +246,7 @@ void NewtonRaphsonSolver::solve(
 
         if (!hasConverged)
         {
-            msg_warning() << "Newton's method failed to converge after " << iterationCount
+            msg_warning() << "Newton's method failed to converge after " << newtonIterationCount
                 << " iterations with residual squared norm = " << squaredResidualNorm << ". ";
         }
     }

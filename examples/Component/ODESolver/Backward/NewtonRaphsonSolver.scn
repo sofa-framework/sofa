@@ -19,8 +19,10 @@
 
     <Node name="DeformableObject">
 
-        <BDF1 printLog="true"/>
-        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="true" maxNbIterations="10" absoluteResidualToleranceThreshold="1e-5"/>
+        <BDF1 printLog="false"/>
+        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="true"
+                             maxNbIterationsNewton="1000" absoluteResidualToleranceThreshold="1e-5"
+                             maxNbIterationsLineSearch="1" lineSearchCoefficient="0.5"/>
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrix" name="A" checkIndices="false"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrix"/>
 
