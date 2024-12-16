@@ -152,7 +152,8 @@ void NewtonRaphsonSolver::solve(
         const auto [mFact, bFact, kFact] = l_integrationMethod->getMatricesFactors(dt);
         bool hasConverged = false;
 
-        for (unsigned int i = 0; i < maxNbIterations; ++i)
+        unsigned int iterationCount = 0;
+        for (; iterationCount < maxNbIterations; ++iterationCount)
         {
             //assemble the system matrix
             {
@@ -188,7 +189,7 @@ void NewtonRaphsonSolver::solve(
                 msg_info() << "[CONVERGED] residual squared norm (" <<
                         squaredResidualNorm << ") is smaller than the threshold ("
                         << squaredAbsoluteResidualToleranceThreshold << ") after "
-                        << (i+1) << " iterations. ";
+                        << (iterationCount+1) << " iterations. ";
                 hasConverged = true;
                 break;
             }
@@ -196,7 +197,8 @@ void NewtonRaphsonSolver::solve(
 
         if (!hasConverged)
         {
-            msg_warning() << "Failed to converge with residual squared norm = " << squaredResidualNorm << ". ";
+            msg_warning() << "Newton's method failed to converge after " << iterationCount
+                << " iterations with residual squared norm = " << squaredResidualNorm << ". ";
         }
     }
 }
