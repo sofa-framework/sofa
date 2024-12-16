@@ -125,7 +125,7 @@ void NewtonRaphsonSolver::solve(
     mop.cparams.setX(xResult);
     mop.cparams.setV(vResult);
 
-    l_integrationMethod->initializeVectors(position, velocity);
+    l_integrationMethod->initializeVectors(params, position, velocity);
 
     {
         SCOPED_TIMER("ComputeRHS");
@@ -154,6 +154,8 @@ void NewtonRaphsonSolver::solve(
         const auto maxNbIterations = d_maxNbIterations.getValue();
         for (unsigned int i = 0; i < maxNbIterations; ++i)
         {
+            dmsg_info() << "=== Iteration " << i << "===";
+
             //assemble the system matrix
             {
                 SCOPED_TIMER("setSystemMBKMatrix");
@@ -205,10 +207,8 @@ void NewtonRaphsonSolver::solve(
                         << i << " iterations. ";
                     break;
                 }
-                else
-                {
-                    msg_info() << "The residual squared norm is " << squaredResidualNorm << ". ";
-                }
+
+                msg_info() << "The residual squared norm is " << squaredResidualNorm << ". ";
             }
         }
     }
