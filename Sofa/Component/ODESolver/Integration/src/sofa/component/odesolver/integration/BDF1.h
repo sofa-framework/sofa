@@ -22,6 +22,8 @@
 #pragma once
 #include <sofa/component/odesolver/integration/config.h>
 #include <sofa/core/behavior/BaseIntegrationMethod.h>
+#include <sofa/core/behavior/MultiVec.h>
+#include <sofa/simulation/VectorOperations.h>
 
 
 namespace sofa::component::odesolver::integration
@@ -36,7 +38,7 @@ class SOFA_COMPONENT_ODESOLVER_INTEGRATION_API BDF1 : public sofa::core::behavio
 public:
     SOFA_CLASS(BDF1, sofa::core::behavior::BaseIntegrationMethod);
 
-    void initializeVectors(core::MultiVecCoordId x, core::MultiVecDerivId v) override;
+    void initializeVectors(const core::ExecParams* params, core::MultiVecCoordId x, core::MultiVecDerivId v) override;
     Factors getMatricesFactors(SReal dt) const override;
     void computeRightHandSide(const core::ExecParams* params,
                               core::behavior::RHSInput input,
@@ -52,8 +54,12 @@ public:
 
 private:
 
-    core::MultiVecCoordId m_x = sofa::core::vec_id::write_access::position;
-    core::MultiVecDerivId m_v = sofa::core::vec_id::write_access::velocity;
+    //copy of the states of the previous time step
+    core::behavior::MultiVecCoord m_oldPosition;
+    core::behavior::MultiVecDeriv m_oldVelocity;
+
+    std::unique_ptr<sofa::simulation::common::VectorOperations> m_vop;
+
 };
 
 }

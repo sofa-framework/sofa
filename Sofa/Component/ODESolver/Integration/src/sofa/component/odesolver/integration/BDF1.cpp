@@ -36,10 +36,15 @@ void registerBDF1(sofa::core::ObjectFactory* factory)
         .add< BDF1 >());
 }
 
-void BDF1::initializeVectors(core::MultiVecCoordId x, core::MultiVecDerivId v)
+void BDF1::initializeVectors(const core::ExecParams* params, core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
-    m_x = x;
-    m_v = v;
+    m_vop = std::make_unique<simulation::common::VectorOperations>(params, this->getContext());
+
+    m_oldPosition.realloc(m_vop.get(), false, true, core::VecIdProperties{"oldPosition", GetClass()->className});
+    m_oldVelocity.realloc(m_vop.get(), false, true, core::VecIdProperties{"oldVelocity", GetClass()->className});
+
+    m_vop->v_eq(m_oldPosition, x);
+    m_vop->v_eq(m_oldVelocity, v);
 }
 
 core::behavior::BaseIntegrationMethod::Factors BDF1::getMatricesFactors(SReal dt) const
@@ -57,7 +62,6 @@ void BDF1::computeRightHandSide(
     core::MultiVecDerivId rightHandSide,
     SReal dt)
 {
-    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     mop->setImplicit(true);
 
@@ -70,33 +74,53 @@ void BDF1::computeRightHandSide(
         mop.mparams.setV(input.intermediateVelocity);
         mop.computeForce(input.force,
             clearForcesBeforeComputingThem, applyBottomUpMappings);
-        msg_info() << "initial force = " << core::behavior::MultiVecDeriv(&vop, input.force);
+        msg_info() << "initial force = " << core::behavior::MultiVecDeriv(m_vop.get(), input.force);
     }
 
     //this is just to debug
     {
-        vop.v_clear(rightHandSide);
+        m_vop->v_clear(rightHandSide);
         mop.addMdx(rightHandSide, input.intermediateVelocity, core::MatricesFactors::M(1).get());
-        mop.addMdx(rightHandSide, m_v, core::MatricesFactors::M(-1).get());
-        vop.v_eq(rightHandSide, input.force, -dt);
-        vop.v_dot(rightHandSide, rightHandSide);
-        SReal residual = vop.finish();
-        msg_info() << "residual norm = " << residual;
-        msg_info() << "residual = " << core::behavior::MultiVecDeriv(&vop, rightHandSide);
+        mop.addMdx(rightHandSide, m_oldVelocity, core::MatricesFactors::M(-1).get());
+        m_vop->v_eq(rightHandSide, input.force, -dt);
+        m_vop->v_dot(rightHandSide, rightHandSide);
+        SReal residual = m_vop->finish();
+        msg_info() << "[DEBUG] residual norm = " << residual;
+        msg_info() << "[DEBUG] residual = " << core::behavior::MultiVecDeriv(m_vop.get(), rightHandSide);
     }
 
     // b = dt * f
-    vop.v_eq(rightHandSide, input.force, dt);
+    m_vop->v_eq(rightHandSide, input.force, dt);
+    msg_info() << "[DEBUG] force * dt = " << std::scientific << core::behavior::MultiVecDeriv(m_vop.get(), rightHandSide);
 
-    // b += (M + dt^2 K) * v
-    mop.mparams.setV(m_v);
-    mop.addMBKv(rightHandSide,
-        core::MatricesFactors::M(1),
-        core::MatricesFactors::B(0),
-        core::MatricesFactors::K(dt * dt));
+    // b += M * (v_n - v_i)
+    {
+        core::behavior::MultiVecDeriv tmp(m_vop.get());
+        tmp.peq(m_oldVelocity);
+        msg_info() << "[DEBUG] tmp(m_v) = " << tmp;
+        m_vop->v_peq(tmp, input.intermediateVelocity, -1); //(v_n - v_i)
+        msg_info() << "[DEBUG] tmp(v_n - v_i) = " << tmp;
+        mop.addMdx(rightHandSide, tmp, core::MatricesFactors::M(-1).get());
+        msg_info() << "[DEBUG] M * (v_n - v_i) = " << std::scientific << tmp;
+    }
 
-    // b += -M * v_i
-    mop.addMdx(rightHandSide, input.intermediateVelocity, core::MatricesFactors::M(-1).get());
+    // b += (dt^2 K) * v
+    {
+        const auto backupV = mop.mparams.v();
+        {
+            core::behavior::MultiVecDeriv tmp(m_vop.get());
+            msg_info() << "[DEBUG] m_oldVelocity = " << m_oldVelocity;
+
+            mop.mparams.setV(m_oldVelocity);
+            mop.addMBKv(tmp,
+                core::MatricesFactors::M(0),
+                core::MatricesFactors::B(0),
+                core::MatricesFactors::K(dt * dt));
+            msg_info() << "[DEBUG] (dt^2 K) * v = " << tmp;
+            m_vop->v_peq(rightHandSide, tmp);
+        }
+        mop.mparams.setV(backupV);
+    }
 
     // Apply projective constraints
     mop.projectResponse(rightHandSide);
@@ -111,12 +135,12 @@ void BDF1::updateStates(const core::ExecParams* params, SReal dt,
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
 
     // v_(i+1) = v_i + x
-    vop.v_eq(newV, v);
-    vop.v_peq(newV, linearSystemSolution);
+    m_vop->v_eq(newV, v);
+    m_vop->v_peq(newV, linearSystemSolution);
 
     // x_(i+1) = dt * v_(i+1) + x_i
-    vop.v_eq(newX, x);
-    vop.v_peq(newX, newV, dt);
+    m_vop->v_eq(newX, x);
+    m_vop->v_peq(newX, newV, dt);
 }
 
 }

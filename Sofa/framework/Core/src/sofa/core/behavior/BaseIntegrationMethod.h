@@ -50,7 +50,7 @@ public:
 
     using Factors = std::tuple<MatricesFactors::M, MatricesFactors::B, MatricesFactors::K>;
 
-    virtual void initializeVectors(MultiVecCoordId x, MultiVecDerivId v) {}
+    virtual void initializeVectors(const core::ExecParams* params, MultiVecCoordId x, MultiVecDerivId v) {}
 
     virtual Factors getMatricesFactors(SReal dt) const = 0;
 
