@@ -33,7 +33,7 @@ NewtonRaphsonSolver::NewtonRaphsonSolver()
     : l_integrationMethod(initLink("integrationMethod", "The integration method to use in a Newton iteration"))
     , d_maxNbIterations(initData(&d_maxNbIterations, 1u, "maxNbIterations",
         "Maximum number of iterations if it has not converged."))
-    , d_absoluteResidualToleranceThreshold(initData(&d_absoluteResidualToleranceThreshold, 1e-15_sreal,
+    , d_absoluteResidualToleranceThreshold(initData(&d_absoluteResidualToleranceThreshold, 1e-9_sreal,
         "absoluteResidualToleranceThreshold",
         "The newton iterations will stop when the norm of the residual at "
         "iteration k is lower than this threshold."))
@@ -216,7 +216,7 @@ void NewtonRaphsonSolver::solve(
 
     if (squaredResidualNorm > squaredAbsoluteResidualToleranceThreshold)
     {
-        msg_info() << "Failed to converge";
+        msg_warning() << "Failed to converge with residual squared norm = " << squaredResidualNorm << ". ";
     }
 
     msg_info() << "final v = " << newVelocity;
