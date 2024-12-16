@@ -1,4 +1,4 @@
-<Node name="root" gravity="0 0 -9.81" dt="0.0001">
+<Node name="root" gravity="-1 0 0" dt="0.0001">
     <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [EigenSimplicialLDLT] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
@@ -18,32 +18,18 @@
 
     <Node name="Newton">
 
-        <BDF1 printLog="false"/>
-        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="false" maxNbIterations="2" absoluteResidualToleranceThreshold="1e-4"/>
-        <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
+        <BDF1 printLog="true"/>
+        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="true" maxNbIterations="2"/>
+        <EigenSparseLU template="CompressedRowSparseMatrix"/>
 
-        <MechanicalObject name="dofs" position="0 0 0  1 1 0"/>
+        <MechanicalObject name="dofs" template="Vec1" position="0 1" showObject="true"/>
         <EdgeSetTopologyContainer name="topologyContainer" edges="0 1" position="@dofs.position"/>
-        <UniformMass totalMass="15" topology="@topologyContainer"/>
-        <SpringForceField spring="0 1 1000 0 1"/>
+        <UniformMass totalMass="2" topology="@topologyContainer"/>
+        <SpringForceField spring="0 1 1000 0 0.5"/>
 
         <FixedProjectiveConstraint indices="0" />
 
         <OglCylinderModel position="@dofs.position"  edges="0 1" radius="0.1"/>
     </Node>
 
-    <Node name="ForceLinearization">
-
-        <EulerImplicitSolver printLog="false"/>
-        <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
-
-        <MechanicalObject name="dofs" position="0 0 0  1 1 0"/>
-        <EdgeSetTopologyContainer name="topologyContainer" edges="0 1" position="@dofs.position"/>
-        <UniformMass totalMass="15" topology="@topologyContainer"/>
-        <SpringForceField spring="0 1 1000 0 1"/>
-
-        <FixedProjectiveConstraint indices="0" />
-
-        <OglCylinderModel position="@dofs.position"  edges="0 1" radius="0.1"/>
-    </Node>
 </Node>
