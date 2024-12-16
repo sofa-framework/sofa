@@ -53,7 +53,7 @@ protected:
                       core::MultiVecDerivId force,
                       core::MultiVecDerivId b,
                       core::MultiVecDerivId velocity_i,
-                      core::MultiVecCoordId position_i);
+                      core::MultiVecCoordId position_i) const;
 };
 
 }
