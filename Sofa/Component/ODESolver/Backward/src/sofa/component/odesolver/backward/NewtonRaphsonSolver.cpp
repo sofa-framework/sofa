@@ -81,7 +81,6 @@ void NewtonRaphsonSolver::solve(
     {
         return;
     }
-    msg_info() << "****************************************";
 
     // Create the vector and mechanical operations tools. These are used to execute special operations (multiplication,
     // additions, etc.) on multi-vectors (a vector that is stored in different buffers inside the mechanical objects)
@@ -130,7 +129,6 @@ void NewtonRaphsonSolver::solve(
     {
         SCOPED_TIMER("ComputeRHS");
         computeRightHandSide(params, dt, force, b, velocity_i, position_i);
-        msg_info() << "b = " << b;
     }
 
     SReal squaredResidualNorm{};
@@ -138,7 +136,7 @@ void NewtonRaphsonSolver::solve(
         SCOPED_TIMER("ComputeError");
         squaredResidualNorm = b.dot(b);
 
-        msg_info() << "The residual squared norm is " << squaredResidualNorm << ". ";
+        msg_info() << "The initial residual squared norm is " << squaredResidualNorm << ". ";
     }
 
     const auto squaredAbsoluteResidualToleranceThreshold = std::pow(d_absoluteResidualToleranceThreshold.getValue(), 2);
@@ -162,8 +160,6 @@ void NewtonRaphsonSolver::solve(
             {
                 SCOPED_TIMER("setSystemMBKMatrix");
                 mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
-
-                msg_info() << "matrix = " << *l_linearSolver->getSystemBaseMatrix();
             }
 
             //solve the system
@@ -175,18 +171,10 @@ void NewtonRaphsonSolver::solve(
                 l_linearSolver->solveSystem();
             }
 
-            msg_info() << "solution = " << m_linearSystemSolution;
-
             l_integrationMethod->updateStates(params, dt,
                 position_i, velocity_i,
                 newPosition, newVelocity,
                 m_linearSystemSolution);
-
-            msg_info() << std::scientific << "v_i = " << velocity_i;
-            msg_info() << std::scientific << "x_i = " << position_i;
-
-            msg_info() << std::scientific << "v = " << newVelocity;
-            msg_info() << std::scientific << "x = " << newPosition;
 
             mop.projectPositionAndVelocity(newPosition, newVelocity);
             mop.propagateXAndV(newPosition, newVelocity);
@@ -197,7 +185,6 @@ void NewtonRaphsonSolver::solve(
                 vop.v_eq(velocity_i, newVelocity);
 
                 computeRightHandSide(params, dt, force, b, velocity_i, position_i);
-                msg_info() << "b = " << b;
                 squaredResidualNorm = b.dot(b);
 
                 if (squaredResidualNorm <= squaredAbsoluteResidualToleranceThreshold)
@@ -218,9 +205,6 @@ void NewtonRaphsonSolver::solve(
     {
         msg_warning() << "Failed to converge with residual squared norm = " << squaredResidualNorm << ". ";
     }
-
-    msg_info() << "final v = " << newVelocity;
-    msg_info() << "final x = " << newPosition;
 }
 
 void registerNewtonRaphsonSolver(sofa::core::ObjectFactory* factory)
