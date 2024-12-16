@@ -29,10 +29,6 @@
 namespace sofa::core::visual
 {
 
-/**
- * Write the graph, starting from a root Node, into a std::ostream.
- * The format is the DOT language from Graphviz (https://graphviz.org/)
- */
 class SOFA_CORE_API BaseVisualStyle : public sofa::core::objectmodel::BaseObject
 {
 public:
