@@ -152,6 +152,8 @@ void NewtonRaphsonSolver::solve(
     else
     {
         const auto maxNbIterations = d_maxNbIterations.getValue();
+        const auto [mFact, bFact, kFact] = l_integrationMethod->getMatricesFactors(dt);
+
         for (unsigned int i = 0; i < maxNbIterations; ++i)
         {
             dmsg_info() << "=== Iteration " << i << "===";
@@ -159,7 +161,6 @@ void NewtonRaphsonSolver::solve(
             //assemble the system matrix
             {
                 SCOPED_TIMER("setSystemMBKMatrix");
-                const auto [mFact, bFact, kFact] = l_integrationMethod->getMatricesFactors(dt);
                 mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 
                 msg_info() << "matrix = " << *l_linearSolver->getSystemBaseMatrix();
@@ -181,8 +182,8 @@ void NewtonRaphsonSolver::solve(
                 newPosition, newVelocity,
                 m_linearSystemSolution);
 
-            msg_info() << "v_i = " << velocity_i;
-            msg_info() << "x_i = " << position_i;
+            msg_info() << std::scientific << "v_i = " << velocity_i;
+            msg_info() << std::scientific << "x_i = " << position_i;
 
             msg_info() << std::scientific << "v = " << newVelocity;
             msg_info() << std::scientific << "x = " << newPosition;
@@ -204,7 +205,7 @@ void NewtonRaphsonSolver::solve(
                     msg_info() << "[CONVERGED] residual squared norm (" <<
                         squaredResidualNorm << ") is smaller than the threshold ("
                         << squaredAbsoluteResidualToleranceThreshold << ") after "
-                        << i << " iterations. ";
+                        << (i+1) << " iterations. ";
                     break;
                 }
 

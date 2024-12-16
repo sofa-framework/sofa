@@ -100,7 +100,7 @@ void BDF1::computeRightHandSide(
         msg_info() << "[DEBUG] tmp(m_v) = " << tmp;
         m_vop->v_peq(tmp, input.intermediateVelocity, -1); //(v_n - v_i)
         msg_info() << "[DEBUG] tmp(v_n - v_i) = " << tmp;
-        mop.addMdx(rightHandSide, tmp, core::MatricesFactors::M(-1).get());
+        mop.addMdx(rightHandSide, tmp, core::MatricesFactors::M(1).get());
         msg_info() << "[DEBUG] M * (v_n - v_i) = " << std::scientific << tmp;
     }
 
@@ -132,8 +132,6 @@ void BDF1::updateStates(const core::ExecParams* params, SReal dt,
     core::MultiVecCoordId newX, core::MultiVecDerivId newV,
     core::MultiVecDerivId linearSystemSolution)
 {
-    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-
     // v_(i+1) = v_i + x
     m_vop->v_eq(newV, v);
     m_vop->v_peq(newV, linearSystemSolution);
