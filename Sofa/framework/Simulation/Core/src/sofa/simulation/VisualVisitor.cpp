@@ -46,14 +46,32 @@ Visitor::Result VisualVisitor::processNodeTopDown(simulation::Node* node)
 }
 
 
+void VisualVisitor::fwdProcessVisualStyle(simulation::Node* node, core::visual::BaseVisualStyle* vm)
+{
+    vm-> updateVisualFlags(vparams);
+}
+
+
+void VisualVisitor::bwdProcessVisualStyle(simulation::Node* node, core::visual::BaseVisualStyle* vm)
+{
+    vm-> applyBackupFlags(vparams);
+}
+
+
 Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
 {
-
     // NB: hasShader is only used when there are visual models and getShader does a graph search when there is no shader,
     // which will most probably be the case when there are no visual models, so we skip the search unless we have visual models.
     hasShader = !node->visualModel.empty() && (node->getShader()!=nullptr);
 
+    if(node->visualStyle.get())
+    {
+        fwdProcessVisualStyle(node,node->visualStyle.get());
+    }
+
+
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::fwdVisualModel);
+
     this->VisualVisitor::processNodeTopDown(node);
 
     return RESULT_CONTINUE;
@@ -64,6 +82,12 @@ void VisualDrawVisitor::processNodeBottomUp(simulation::Node* node)
     // don't draw if specified not to do so in the user interface
     if (!vparams->displayFlags().getShowVisualModels())
         return;
+
+    if(node->visualStyle.get())
+    {
+        bwdProcessVisualStyle(node,node->visualStyle.get());
+    }
+
 
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::bwdVisualModel);
 }
@@ -149,10 +173,26 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual:
 
 Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)
 {
-    for_each(this, node, node->visualModel,              &VisualUpdateVisitor::processVisualModel);
+    //Necessary check for first draw
+    if(node->visualStyle.get())
+    {
+        fwdProcessVisualStyle(node,node->visualStyle.get());
+    }
+
+    for_each(this, node, node->visualModel,     &VisualUpdateVisitor::processVisualModel);
 
     return RESULT_CONTINUE;
 }
+
+void VisualUpdateVisitor::processNodeBottomUp(simulation::Node* node)
+{
+    //Necessary check for first draw
+    if(node->visualStyle.get())
+    {
+        bwdProcessVisualStyle(node,node->visualStyle.get());
+    }
+}
+
 
 void VisualUpdateVisitor::processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
 {

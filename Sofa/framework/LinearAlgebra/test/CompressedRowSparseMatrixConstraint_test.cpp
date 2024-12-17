@@ -281,6 +281,51 @@ TYPED_TEST(SparseMatrixTest, CheckThatTheSizeOfASparseMatrixIsOneAfterTryingToWr
     EXPECT_EQ(1u, matrix.size());
 }
 
+
+//////////////////////////////////////////////////
+TYPED_TEST(SparseMatrixTest, CheckOutInSerialization)
+{
+    typedef TypeParam Matrix;
+    Matrix outMatrix;
+    auto lineIndices = TestHelpers::Populate(outMatrix, 3u, 3u);
+    EXPECT_EQ(3u, outMatrix.size());
+
+    std::ostringstream oss;
+    oss << outMatrix;
+
+    Matrix inMatrix;
+    std::istringstream iss(oss.str());
+    iss >> inMatrix;
+
+    EXPECT_TRUE(!lineIndices.empty());
+
+    for (const auto& lineIndex : lineIndices)
+    {
+        auto inRowIt = inMatrix.readLine(lineIndex);
+        auto outRowIt = outMatrix.readLine(lineIndex);
+
+        EXPECT_TRUE(inRowIt == outRowIt);
+
+        if (inRowIt != inMatrix.end() && outRowIt != outMatrix.end())
+        {
+            auto inColItEnd = inRowIt.end();
+            auto outColItEnd = outRowIt.end();
+
+            auto inColIt = inRowIt.begin();
+            auto outColIt = outRowIt.begin();
+
+            for (; 
+                inColIt != inColItEnd && outColIt != outColItEnd;
+                ++inColIt, ++outColIt)
+            {
+                EXPECT_TRUE(inColIt.index() == outColIt.index());
+                EXPECT_TRUE(inColIt.val() == outColIt.val());
+            }
+        }
+    }
+
+}
+
 //////////////////////////////////////////////////
 TYPED_TEST(SparseMatrixTest, CheckThatAMatrixIsConsideredEmptyAfterIsHasBeenCleared)
 {
@@ -2122,13 +2167,28 @@ TEST(CompressedRowSparseMatrixConstraint, ostream)
     ss << A;
 
     static const std::string expectedOutput =
+R"(4 0 2 1 0 0.360985 0 12 0.926981 0 0 2 1 9 0.451858 0 0 3 1 6 0.777417 0 0 4 3 5 0 0 0.474108 7 0 0.983937 0 9 0.238781 0 0 )";
+
+    EXPECT_EQ(ss.str(), expectedOutput);
+}
+
+TEST(CompressedRowSparseMatrixConstraint, prettyPrint)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrixConstraint<sofa::type::Vec3> A;
+
+    generateMatrix(A, 5, 15, 0.1, 7);
+
+    static const std::string expectedOutput =
 R"(Constraint ID : 0  dof ID : 1  value : 0 0.360985 0  dof ID : 12  value : 0.926981 0 0
 Constraint ID : 2  dof ID : 9  value : 0.451858 0 0
 Constraint ID : 3  dof ID : 6  value : 0.777417 0 0
 Constraint ID : 4  dof ID : 5  value : 0 0 0.474108  dof ID : 7  value : 0 0.983937 0  dof ID : 9  value : 0.238781 0 0
 )";
+    
+    std::ostringstream oss;
+    A.prettyPrint(oss);
 
-    EXPECT_EQ(ss.str(), expectedOutput);
+    EXPECT_EQ(oss.str(), expectedOutput);
 }
 
 } // namespace sofa

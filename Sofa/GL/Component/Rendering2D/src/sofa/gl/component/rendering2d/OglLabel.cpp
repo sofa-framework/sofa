@@ -169,9 +169,10 @@ void OglLabel::setColor(float r, float g, float b, float a)
     d_color.endEdit();
 }
 
-
-int OglLabelClass = core::RegisterObject("Display 2D text in the viewport.")
-        .add< OglLabel >()
-        ;
+void registerOglLabel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Display 2D text in the viewport.")
+        .add< OglLabel >());
+}
 
 } // namespace sofa::gl::component::rendering2d

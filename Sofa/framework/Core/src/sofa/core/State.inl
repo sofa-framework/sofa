@@ -42,7 +42,7 @@ template <class TDataTypes>
 State<TDataTypes>::State()
     : accumulatedForces(*this)
 {
-    State::addToTotalForces(core::ConstVecDerivId::force());
+    State::addToTotalForces(core::vec_id::read_access::force);
 }
 
 template<class DataTypes>
@@ -74,7 +74,7 @@ const objectmodel::BaseData* State<DataTypes>::baseRead(ConstVecId v) const
 template<class DataTypes>
 auto State<DataTypes>::computeBBox() const -> sofa::type::TBoundingBox<Real>
 {
-    const VecCoord& x = read(ConstVecCoordId::position())->getValue();
+    const VecCoord& x = read(vec_id::read_access::position)->getValue();
     const size_t xSize = x.size();
 
     if (xSize <= 0)

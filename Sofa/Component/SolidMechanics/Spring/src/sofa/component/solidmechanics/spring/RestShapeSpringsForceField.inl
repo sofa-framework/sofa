@@ -316,14 +316,14 @@ const typename RestShapeSpringsForceField<DataTypes>::DataVecCoord* RestShapeSpr
     {
         if (l_restMState)
         {
-            return l_restMState->read(VecCoordId::position());
+            return l_restMState->read(core::vec_id::write_access::position);
         }
     }
     else
     {
         if (this->mstate)
         {
-            return this->mstate->read(VecCoordId::restPosition());
+            return this->mstate->read(core::vec_id::write_access::restPosition);
         }
     }
     return nullptr;
@@ -513,7 +513,7 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     }
 
     ReadAccessor< DataVecCoord > p0 = *extPosition;
-    ReadAccessor< DataVecCoord > p  = this->mstate->read(VecCoordId::position());
+    ReadAccessor< DataVecCoord > p  = this->mstate->read(sofa::core::vec_id::write_access::position);
 
     const VecIndex& indices = m_indices;
     const VecIndex& ext_indices = (useRestMState ? m_ext_indices : m_indices);

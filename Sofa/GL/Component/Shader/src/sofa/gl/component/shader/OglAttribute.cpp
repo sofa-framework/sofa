@@ -27,20 +27,22 @@ namespace sofa::gl::component::shader
 
 using namespace sofa::defaulttype;
 
+void registerOglAttribute(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("OglFloatAttribute").add< OglFloatAttribute >());
+    factory->registerObjects(core::ObjectRegistrationData("OglFloat2Attribute").add< OglFloat2Attribute >());
+    factory->registerObjects(core::ObjectRegistrationData("OglFloat3Attribute").add< OglFloat3Attribute >());
+    factory->registerObjects(core::ObjectRegistrationData("OglFloat4Attribute").add< OglFloat4Attribute >());
 
-int OglFloatAttributeClass = core::RegisterObject ( "OglFloatAttribute" ).add< OglFloatAttribute >();
-int OglFloat2AttributeClass = core::RegisterObject ( "OglFloat2Attribute" ).add< OglFloat2Attribute >();
-int OglFloat3AttributeClass = core::RegisterObject ( "OglFloat3Attribute" ).add< OglFloat3Attribute >();
-int OglFloat4AttributeClass = core::RegisterObject ( "OglFloat4Attribute" ).add< OglFloat4Attribute >();
+    factory->registerObjects(core::ObjectRegistrationData("OglIntAttribute").add< OglIntAttribute >());
+    factory->registerObjects(core::ObjectRegistrationData("OglInt2Attribute").add< OglInt2Attribute >());
+    factory->registerObjects(core::ObjectRegistrationData("OglInt3Attribute").add< OglInt3Attribute >());
+    factory->registerObjects(core::ObjectRegistrationData("OglInt4Attribute").add< OglInt4Attribute >());
 
-int OglIntAttributeClass = core::RegisterObject ( "OglIntAttribute" ).add< OglIntAttribute >();
-int OglInt2AttributeClass = core::RegisterObject ( "OglInt2Attribute" ).add< OglInt2Attribute >();
-int OglInt3AttributeClass = core::RegisterObject ( "OglInt3Attribute" ).add< OglInt3Attribute >();
-int OglInt4AttributeClass = core::RegisterObject ( "OglInt4Attribute" ).add< OglInt4Attribute >();
-
-int OglUIntAttributeClass = core::RegisterObject ( "OglUIntAttribute" ).add< OglUIntAttribute >();
-int OglUInt2AttributeClass = core::RegisterObject ( "OglUInt2Attribute" ).add< OglUInt2Attribute >();
-int OglUInt3AttributeClass = core::RegisterObject ( "OglUInt3Attribute" ).add< OglUInt3Attribute >();
-int OglUInt4AttributeClass = core::RegisterObject ( "OglUInt4Attribute" ).add< OglUInt4Attribute >();
+    factory->registerObjects(core::ObjectRegistrationData("OglUIntAttribute").add< OglUIntAttribute >());
+    factory->registerObjects(core::ObjectRegistrationData("OglUInt2Attribute").add< OglUInt2Attribute >());
+    factory->registerObjects(core::ObjectRegistrationData("OglUInt3Attribute").add< OglUInt3Attribute >());
+    factory->registerObjects(core::ObjectRegistrationData("OglUInt4Attribute").add< OglUInt4Attribute >());
+}
 
 } // namespace sofa::gl::component::shader

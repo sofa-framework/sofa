@@ -221,10 +221,10 @@ void Multi2Mapping<In1, In2, Out>::init()
         }
     }
 
-    apply(mechanicalparams::defaultInstance() , VecCoordId::position(), ConstVecCoordId::position());
-    applyJ(mechanicalparams::defaultInstance() , VecDerivId::velocity(), ConstVecDerivId::velocity());
+    apply(mechanicalparams::defaultInstance() , vec_id::write_access::position, vec_id::read_access::position);
+    applyJ(mechanicalparams::defaultInstance() , vec_id::write_access::velocity, vec_id::read_access::velocity);
     if (f_applyRestPosition.getValue())
-        apply(mechanicalparams::defaultInstance(), VecCoordId::restPosition(), ConstVecCoordId::restPosition());
+        apply(mechanicalparams::defaultInstance(), vec_id::write_access::restPosition, vec_id::read_access::restPosition);
 }
 
 template < class In1, class In2, class Out >

@@ -71,14 +71,17 @@ public :
     /// the coordinates on which to apply velocities
     SetIndex d_coordinates;
 
+    /// If set to true then the last velocity will still be applied after all the key events
+    Data<bool> d_continueAfterEnd;
+
     /// the key times surrounding the current simulation time (for interpolation)
-    Real prevT, nextT;
+    Real m_prevT, m_nextT;
     ///the velocities corresponding to the surrounding key times
-    Deriv prevV, nextV;
+    Deriv m_prevV, m_nextV;
     ///position at the initial step for constrained DOFs position
-    VecCoord x0;
+    VecCoord m_x0;
     ///position at the previous step for constrained DOFs position
-    VecCoord xP;
+    VecCoord m_xP;
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<LinearVelocityProjectiveConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -109,18 +112,24 @@ public:
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
+    void applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+
+    void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
+
+    void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
+
     void draw(const core::visual::VisualParams* vparams) override;
 
 private:
-
-    /// to keep the time corresponding to the key times
-    Real currentTime;
+    /// Check if the constraint is still active regarding the current time and the continueAfterEnd data
+    bool isConstraintActive() const;
 
     /// to know if we found the key times
-    bool finished;
+    bool m_finished;
 
     /// find previous and next time keys
-    void findKeyTimes();
+    bool findKeyTimes();
 };
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYPROJECTIVECONSTRAINT_CPP)

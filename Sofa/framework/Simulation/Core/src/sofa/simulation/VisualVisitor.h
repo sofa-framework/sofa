@@ -24,6 +24,7 @@
 
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/visual/BaseVisualStyle.h>
 
 
 namespace sofa::simulation
@@ -38,6 +39,8 @@ public:
     {}
 
     virtual void processVisualModel(simulation::Node* node, core::visual::VisualModel* vm) = 0;
+    virtual void fwdProcessVisualStyle(simulation::Node* node, core::visual::BaseVisualStyle* vm);
+    virtual void bwdProcessVisualStyle(simulation::Node* node, core::visual::BaseVisualStyle* vm);
     virtual void processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* /*o*/) {}
 
     Result processNodeTopDown(simulation::Node* node) override;
@@ -54,14 +57,14 @@ protected:
     core::visual::VisualParams* vparams;
 };
 
+
 class SOFA_SIMULATION_CORE_API VisualDrawVisitor : public VisualVisitor
 {
 public:
     bool hasShader;
     VisualDrawVisitor(core::visual::VisualParams* params)
-        : VisualVisitor(params)
-    {
-    }
+    : VisualVisitor(params)
+    {};
     Result processNodeTopDown(simulation::Node* node) override;
     void processNodeBottomUp(simulation::Node* node) override;
     virtual void fwdVisualModel(simulation::Node* node, core::visual::VisualModel* vm);
@@ -83,11 +86,10 @@ public:
 
     virtual void processVisualModel(simulation::Node*, core::visual::VisualModel* vm) override;
     Result processNodeTopDown(simulation::Node* node) override;
+    void processNodeBottomUp(simulation::Node* node) override;
 
     const char* getClassName() const override { return "VisualUpdateVisitor"; }
 
-protected:
-    core::visual::VisualParams* m_vparams;
 };
 
 class SOFA_SIMULATION_CORE_API VisualInitVisitor : public VisualVisitor

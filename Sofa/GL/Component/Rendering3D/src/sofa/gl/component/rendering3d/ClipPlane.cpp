@@ -28,10 +28,11 @@ using sofa::core::objectmodel::ComponentState ;
 namespace sofa::gl::component::rendering3d
 {
 
-int ClipPlaneClass = core::RegisterObject("OpenGL Clipping Plane")
-        .add< ClipPlane >()
-        ;
-
+void registerClipPlane(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Define arbitrary clipping plane into OpenGL.")
+        .add< ClipPlane >());
+}
 
 ClipPlane::ClipPlane()
     : position(initData(&position, sofa::type::Vec3(0,0,0), "position", "Point crossed by the clipping plane"))

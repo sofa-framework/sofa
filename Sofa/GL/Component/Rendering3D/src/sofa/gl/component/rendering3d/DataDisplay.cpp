@@ -35,9 +35,11 @@ using namespace sofa::type;
 using namespace sofa::defaulttype;
 using sofa::gl::component::rendering2d::OglColorMap;
 
-int DataDisplayClass = core::RegisterObject("Rendering of meshes colored by data")
-        .add< DataDisplay >()
-        ;
+void registerDataDisplay(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Color rendering of data associated with a mesh.")
+        .add< DataDisplay >());
+}
 
 DataDisplay::DataDisplay()
     : f_maximalRange(initData(&f_maximalRange, true, "maximalRange", "Keep the maximal range through all timesteps"))
@@ -93,7 +95,7 @@ void DataDisplay::doUpdateVisual(const core::visual::VisualParams*)
 
 void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    const VecCoord& x = this->read(sofa::core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->read(sofa::core::vec_id::read_access::position)->getValue();
     const VecPointData &ptData = f_pointData.getValue();
     const VecCellData &triData = f_triangleData.getValue();
     const VecCellData &quadData = f_quadData.getValue();
@@ -445,7 +447,7 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
 void DataDisplay::computeNormals()
 {
     if( !m_topology ) return;
-    const VecCoord& x = this->read(sofa::core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->read(sofa::core::vec_id::read_access::position)->getValue();
 
     m_normals.resize(x.size(),Vec3f(0,0,0));
 

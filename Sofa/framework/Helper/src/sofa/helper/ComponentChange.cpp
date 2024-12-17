@@ -622,7 +622,9 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     { "SparseLUSolver", Moved("v23.12", "Sofa.Component.LinearSolver.Direct", "CSparseSolvers") },
     
     // Moved to Sofa.Component.MechanicalLoad
-    { "Gravity", Moved("v24.12", "SofaGraphComponent", "Sofa.Component.Mechanicalload") }
+    { "Gravity", Moved("v24.12", "SofaGraphComponent", "Sofa.Component.Mechanicalload") },
+
+    { "OglCylinderModel", Moved("v24.12", "Sofa.GL.Component.Rendering3D", "Sofa.Component.Visual")}
 };
 
 const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
@@ -760,8 +762,8 @@ const std::map< std::string, Renamed, std::less<> > renamedComponents = {
     {"UnilateralInteractionConstraint", Renamed("v24.06","v25.06","UnilateralLagrangianConstraint")},
     {"StiffSpringForceField", Renamed("v24.06","v25.06","SpringForceField")},
     {"ParallelStiffSpringForceField", Renamed("v24.06","v25.06","ParallelSpringForceField")},
-    {"ShewchukPCGLinearSolver", Renamed("v24.12","v25.12","PCGLinearSolver")}
-
+    {"ShewchukPCGLinearSolver", Renamed("v24.12","v25.12","PCGLinearSolver")},
+    {"OglCylinderModel", Renamed("v24.12", "v25.06", "CylinderVisualModel")}
 };
 
 
@@ -812,6 +814,13 @@ const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"DefaultContactManager", Dealiased("v24.12","CollisionResponse")},
     {"RuleBasedCollisionResponse", Dealiased("v24.12","RuleBasedContactManager")},
     {"SurfaceIdentityMapping", Dealiased("v24.12","SubsetMapping")},
+    {"AddFrameButtonSetting", Dealiased("v24.12","AddFrameButton")},
+    {"StartNavigationButtonSetting", Dealiased("v24.12","AddRecordedCameraButton")},
+    {"AddRecordedCameraButtonSetting", Dealiased("v24.12","StartNavigationButton")},
+    {"AttachBodyButtonSetting", Dealiased("v24.12","AttachBodyButton")},
+    {"FixPickedParticleButtonSetting", Dealiased("v24.12","FixPickedParticleButton")},
+    {"OglColorMap", Dealiased("v24.12","ColorMap")},
+    {"PointSplatModel", Dealiased("v24.12","PointSplat")},
 };
 
 } // namespace sofa::helper::lifecycle

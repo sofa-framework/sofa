@@ -88,7 +88,7 @@ public:
 
     Data< VecCoord >* write(core::VecCoordId v) override
     {
-        if(v == core::VecCoordId::position())
+        if(v == core::vec_id::write_access::position)
             return &d_X;
 
         return nullptr;
@@ -96,7 +96,7 @@ public:
 
     const Data< VecCoord >* read(core::ConstVecCoordId v) const override
     {
-        if(v == core::ConstVecCoordId::position())
+        if(v == core::vec_id::read_access::position)
             return &d_X;
         else
             return nullptr;
@@ -104,7 +104,7 @@ public:
 
     Data< VecDeriv >* write(core::VecDerivId v) override
     {
-        if(v == core::VecDerivId::velocity())
+        if(v == core::vec_id::write_access::velocity)
             return &d_V;
         else
             return nullptr;
@@ -112,7 +112,7 @@ public:
 
     const Data< VecDeriv >* read(core::ConstVecDerivId v) const override
     {
-        if(v == core::ConstVecDerivId::velocity())
+        if(v == core::vec_id::read_access::velocity)
             return &d_V;
         else
             return nullptr;

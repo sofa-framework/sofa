@@ -168,28 +168,28 @@ inline TPoint<DataTypes>::TPoint(const core::CollisionElementIterator& i)
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TPoint<DataTypes>::p() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->index]; }
+inline const typename DataTypes::Coord& TPoint<DataTypes>::p() const { return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->index]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TPoint<DataTypes>::pFree() const
 {
     if (hasFreePosition())
-        return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->index];
+        return this->model->mstate->read(core::vec_id::read_access::freePosition)->getValue()[this->index];
     else
         return p();
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]; }
+inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return this->model->mstate->read(core::vec_id::read_access::velocity)->getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(sofa::Index index) const { return mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]; }
+inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(sofa::Index index) const { return mstate->read(core::vec_id::read_access::velocity)->getValue()[index]; }
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigned)this->index<this->model->normals.size()) ? this->model->normals[this->index] : Deriv(); }
 
 template<class DataTypes>
-inline bool TPoint<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
+inline bool TPoint<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::vec_id::read_access::freePosition)->isSet(); }
 
 #if !defined(SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_CPP)
 extern template class SOFA_COMPONENT_COLLISION_GEOMETRY_API PointCollisionModel<defaulttype::Vec3Types>;

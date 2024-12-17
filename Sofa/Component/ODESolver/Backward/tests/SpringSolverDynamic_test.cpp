@@ -92,7 +92,7 @@ struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
         do
         {
             // Record the mass position
-            Coord p0=dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[0];
+            Coord p0=dofs.get()->read(sofa::core::vec_id::read_access::position)->getValue()[0];
 
             // Absolute error
             double absoluteError = fabs(p0[1]-(cos(w*time)));
