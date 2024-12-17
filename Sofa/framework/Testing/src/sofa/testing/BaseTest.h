@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <deque>
 #include <sofa/testing/config.h>
 
 #include <gtest/gtest.h>
@@ -58,7 +59,7 @@ private:
     void SetUp() override ;
     void TearDown() override ;
 
-    std::unique_ptr<sofa::testing::ScopedPlugin> m_loadedPlugins;
+    std::deque<sofa::testing::ScopedPlugin> m_loadedPlugins;
 };
 
 } // namespace sofa::testing
