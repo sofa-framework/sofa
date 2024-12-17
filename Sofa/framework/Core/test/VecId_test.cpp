@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/VecId.h>
 #include <gtest/gtest.h>
+#include <sofa/Modules.h>
 
 class DerivedBaseVecId : public sofa::core::BaseVecId
 {
@@ -97,5 +98,8 @@ TEST(VecId, name)
     EXPECT_EQ(dforce.getName(), "dforce(V_DERIV)");
     EXPECT_EQ(sofa::core::vec_id::read_access::dforce.getName(), "dforce(V_DERIV)");
     EXPECT_EQ(sofa::core::vec_id::write_access::dforce.getName(), "dforce(V_DERIV)");
+
+    const std::string s = Sofa.Component.Collision;
+    EXPECT_EQ(s, std::string("Sofa.Component.Collision"));
 
 }

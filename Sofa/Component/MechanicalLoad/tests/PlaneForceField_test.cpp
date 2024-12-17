@@ -118,8 +118,8 @@ struct PlaneForceField_test : public BaseSimulationTest
     */
     void SetUp() override 
     {
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.MechanicalLoad");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.MechanicalLoad);
     }
 
     void TearDown() override {}

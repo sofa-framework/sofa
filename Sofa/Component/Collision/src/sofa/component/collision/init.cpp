@@ -55,9 +55,9 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin("Sofa.Component.Collision.Geometry");
-    factory->registerObjectsFromPlugin("Sofa.Component.Collision.Detection");
-    factory->registerObjectsFromPlugin("Sofa.Component.Collision.Response");
+    factory->registerObjectsFromPlugin(Sofa.Component.Collision.Geometry);
+    factory->registerObjectsFromPlugin(Sofa.Component.Collision.Detection);
+    factory->registerObjectsFromPlugin(Sofa.Component.Collision.Response);
 }
 
 void init()
