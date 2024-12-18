@@ -35,6 +35,11 @@ cudaDeviceProp mycudaDeviceProp;
 
 
 #if defined(__cplusplus)
+
+#define STRINGIFY(x) #x
+#define _STR(x) STRINGIFY(x)
+SOFA_PRAGMA_MESSAGE("__cplusplus value: " _STR(__cplusplus))
+
 namespace sofa
 {
 namespace gpu
@@ -210,6 +215,11 @@ __global__ void print_cuda_standard()
 int mycudaInit(int device)
 {
     if (cudaInitCalled) return 1;
+
+#if defined(__cplusplus)
+    mycudaPrintf("C++ standard = %ld", __cplusplus);
+#endif
+
     cudaInitCalled = true;
     const cudaError_t getDeviceCountError = cudaGetDeviceCount(&deviceCount);
     if (getDeviceCountError != cudaSuccess)
