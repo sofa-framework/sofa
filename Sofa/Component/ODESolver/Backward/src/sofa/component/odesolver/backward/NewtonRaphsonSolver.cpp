@@ -220,7 +220,7 @@ void NewtonRaphsonSolver::solve(
 
             if (!lineSearchSuccess)
             {
-                msg_warning() << "Line search failed at Newton iteration "
+                msg_warning_when(maxNbIterationsLineSearch > 0) << "Line search failed at Newton iteration "
                     << newtonIterationCount << ". Using the coefficient "
                     << minTotalLineSearchCoefficient << " resulting to the minimal residual norm (" << minSquaredResidualNormLineSearch << ").";
 
