@@ -122,12 +122,22 @@ TEST_F(PluginManager_test, loadTestPluginAByPath)
     /// Check that existing plugins are correctly handled and returns no
     /// error/warning message.
     {
-        EXPECT_MSG_NOEMIT(Warning, Error);
-
+        EXPECT_MSG_NOEMIT(Error, Warning);
+        
         std::cout << "PluginManager_test.loadTestPluginAByPath: "
-                  << "pm.getPluginMap().size() = " << pm.getPluginMap().size()
-                  << std::endl;
+        << "pm.getPluginMap().size() = " << pm.getPluginMap().size()
+        << std::endl;
+    }
+    {
+        EXPECT_MSG_NOEMIT(Error);
+        // Plugin A still uses the deprecated registration mechanism
+        // and is expected to throw a warning when loaded
+        EXPECT_MSG_EMIT(Warning);
+        
         ASSERT_EQ(pm.loadPluginByPath(pluginPath), PluginManager::PluginLoadStatus::SUCCESS);
+    }
+    {
+        EXPECT_MSG_NOEMIT(Error, Warning);
         ASSERT_GT(pm.findPlugin(pluginAName).size(), 0u);
     }
 

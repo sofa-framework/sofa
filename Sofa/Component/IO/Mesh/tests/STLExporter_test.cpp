@@ -69,6 +69,7 @@ public:
     {
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
         sofa::simpleapi::importPlugin("Sofa.Component.Visual");
+        sofa::simpleapi::importPlugin("Sofa.Component.IO.Mesh");
     }
 
     void TearDown() override
@@ -98,7 +99,6 @@ public:
                 "<?xml version='1.0'?> \n"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
                 "   <DefaultAnimationLoop/>                                        \n"
-                "   <RequiredPlugin name='Sofa.Component.IO.Mesh' />               \n"
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
                 "   <MeshOBJLoader name='loader' filename='mesh/liver-smooth.obj'/> \n"
                 "   <VisualModel src='@loader'/>                                      \n"
