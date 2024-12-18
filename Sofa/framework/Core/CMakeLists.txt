@@ -187,6 +187,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/TopologySubsetData.cpp
     ${SRC_ROOT}/topology/TopologySubsetIndices.h
     ${SRC_ROOT}/trait/DataTypes.h
+    ${SRC_ROOT}/visual/BaseVisualStyle.h
     ${SRC_ROOT}/visual/Data[DisplayFlags].h
     ${SRC_ROOT}/visual/DisplayFlags.h
     ${SRC_ROOT}/visual/FlagTreeItem.h

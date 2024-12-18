@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,13 +20,32 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/config.h>
+#include <sofa/core/fwd.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <string>
+#include <iostream>
 
-SOFA_HEADER_DEPRECATED("v24.12", "v25.06", "sofa/component/visual/CylinderVisualModel.h")
 
-#include <sofa/component/visual/CylinderVisualModel.h>
-
-namespace sofa::gl::component::rendering3d
+namespace sofa::core::visual
 {
-using OglCylinderModel = sofa::component::visual::CylinderVisualModel;
-}
+
+class SOFA_CORE_API BaseVisualStyle : public sofa::core::objectmodel::BaseObject
+{
+public:
+    SOFA_CLASS(BaseVisualStyle,sofa::core::objectmodel::BaseObject);
+
+    typedef sofa::core::visual::VisualParams VisualParams;
+    typedef sofa::core::visual::DisplayFlags DisplayFlags;
+
+protected:
+    BaseVisualStyle() { }
+    ~BaseVisualStyle() override { }
+
+public:
+    virtual void updateVisualFlags(VisualParams* ) { };
+    virtual void applyBackupFlags(VisualParams* ) { };
+
+};
+
+} // namespace sofa::simulation::graph
+

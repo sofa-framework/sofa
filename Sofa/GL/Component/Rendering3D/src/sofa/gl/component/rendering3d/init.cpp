@@ -29,7 +29,6 @@ namespace sofa::gl::component::rendering3d
 extern void registerClipPlane(sofa::core::ObjectFactory* factory);
 extern void registerDataDisplay(sofa::core::ObjectFactory* factory);
 extern void registerMergeVisualModels(sofa::core::ObjectFactory* factory);
-extern void registerOglCylinderModel(sofa::core::ObjectFactory* factory);
 extern void registerOglModel(sofa::core::ObjectFactory* factory);
 extern void registerOglSceneFrame(sofa::core::ObjectFactory* factory);
 extern void registerPointSplatModel(sofa::core::ObjectFactory* factory);
@@ -62,7 +61,6 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerClipPlane(factory);
     registerDataDisplay(factory);
     registerMergeVisualModels(factory);
-    registerOglCylinderModel(factory);
     registerOglModel(factory);
     registerOglSceneFrame(factory);
     registerPointSplatModel(factory);

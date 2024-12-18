@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,13 +20,42 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/config.h>
+#include <sofa/component/visual/config.h>
 
-SOFA_HEADER_DEPRECATED("v24.12", "v25.06", "sofa/component/visual/CylinderVisualModel.h")
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/visual/VisualState.h>
+#include <sofa/type/RGBAColor.h>
 
-#include <sofa/component/visual/CylinderVisualModel.h>
-
-namespace sofa::gl::component::rendering3d
+namespace sofa::component::visual
 {
-using OglCylinderModel = sofa::component::visual::CylinderVisualModel;
-}
+
+class SOFA_COMPONENT_VISUAL_API CylinderVisualModel :
+    public core::visual::VisualModel, public sofa::core::visual::VisualState<defaulttype::Vec3Types>
+{
+public:
+    using Vec3State = sofa::core::visual::VisualState<defaulttype::Vec3Types>;
+    SOFA_CLASS2(CylinderVisualModel,core::visual::VisualModel, Vec3State);
+
+protected:
+    CylinderVisualModel();
+    ~CylinderVisualModel() override;
+public:
+    void init() override;
+
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
+
+    void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, Index& /*vindex*/, Index& /*nindex*/, Index& /*tindex*/, int& /*count*/) override;
+
+private:
+    Data<float>		radius; ///< Radius of the cylinder.
+    Data<sofa::type::RGBAColor>	color; ///< Color of the cylinders.
+
+    typedef sofa::type::vector<core::topology::Edge>  SeqEdges;
+    Data<SeqEdges> d_edges; ///< List of edge indices
+
+public:
+    bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+};
+
+} // namespace sofa::component::visual
