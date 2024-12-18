@@ -52,6 +52,13 @@ public:
         core::MultiVecDerivId newV,
         core::MultiVecDerivId linearSystemSolution) override;
 
+    Data<SReal> d_rayleighStiffness;
+    Data<SReal> d_rayleighMass;
+
+protected:
+    BDF1();
+
+
 private:
 
     //copy of the states of the previous time step
