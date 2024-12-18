@@ -36,6 +36,12 @@ void registerBDF1(sofa::core::ObjectFactory* factory)
         .add< BDF1 >());
 }
 
+
+BDF1::BDF1()
+    : d_rayleighStiffness(initData(&d_rayleighStiffness, 0_sreal, "rayleighStiffness", "Rayleigh damping coefficient related to stiffness, > 0") )
+    , d_rayleighMass(initData(&d_rayleighMass, 0_sreal, "rayleighMass", "Rayleigh damping coefficient related to mass, > 0"))
+{}
+
 void BDF1::initializeVectors(const core::ExecParams* params, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v)
 {
     m_vop = std::make_unique<simulation::common::VectorOperations>(params, this->getContext());
@@ -50,9 +56,9 @@ void BDF1::initializeVectors(const core::ExecParams* params, core::ConstMultiVec
 core::behavior::BaseIntegrationMethod::Factors BDF1::getMatricesFactors(SReal dt) const
 {
     return {
-        core::MatricesFactors::M{1},
+        core::MatricesFactors::M{1 + d_rayleighMass.getValue() * dt},
         core::MatricesFactors::B{-dt},
-        core::MatricesFactors::K{-dt*dt}
+        core::MatricesFactors::K{-dt * (d_rayleighStiffness.getValue() + dt)}
     };
 }
 
@@ -64,6 +70,9 @@ void BDF1::computeRightHandSide(
 {
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     mop->setImplicit(true);
+
+    const auto alpha = d_rayleighMass.getValue();
+    const auto beta = d_rayleighStiffness.getValue();
 
     {
         SCOPED_TIMER("ComputeForce");
@@ -82,9 +91,23 @@ void BDF1::computeRightHandSide(
     // b += M * (v_n - v_i)
     {
         core::behavior::MultiVecDeriv tmp(m_vop.get());
-        tmp.peq(m_oldVelocity);
+        tmp.eq(m_oldVelocity);
         m_vop->v_peq(tmp, input.intermediateVelocity, -1); //(v_n - v_i)
+
         mop.addMdx(rightHandSide, tmp, core::MatricesFactors::M(1).get());
+    }
+
+    // b += dt (-alpha M + beta K) v_i
+    {
+        const auto backupV = mop.mparams.v();
+        {
+            mop.mparams.setV(input.intermediateVelocity);
+            mop.addMBKv(rightHandSide,
+                core::MatricesFactors::M(-alpha * dt),
+                core::MatricesFactors::B(0),
+                core::MatricesFactors::K(beta * dt));
+        }
+        mop.mparams.setV(backupV);
     }
 
     // b += (dt^2 K) * v
