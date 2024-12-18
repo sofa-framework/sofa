@@ -31,11 +31,11 @@ namespace sofa::component::constraint::lagrangian::model
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-int AugmentedLagrangianConstraintClass = core::RegisterObject("AugmentedLagrangianConstraint")
-        .add< AugmentedLagrangianConstraint<Vec3Types> >()
-
-        ;
-
+void registerAugmentedLagrangianConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("AugmentedLagrangianConstraint")
+        .add< AugmentedLagrangianConstraint<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BaseContactLagrangianConstraint<Vec3Types,AugmentedLagrangianContactParameters>;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API AugmentedLagrangianConstraint<Vec3Types>;

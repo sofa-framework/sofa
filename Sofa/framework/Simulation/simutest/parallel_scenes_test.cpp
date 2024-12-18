@@ -29,9 +29,6 @@ using sofa::simulation::Node ;
 #include <sofa/component/sceneutility/InfoComponent.h>
 using sofa::component::sceneutility::InfoComponent;
 
-#include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
-
 #include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
@@ -47,10 +44,36 @@ public:
     {
     }
     
+    void SetUp() override
+    {
+        EXPECT_MSG_NOEMIT(Error, Warning);
+        
+        sofa::simpleapi::importPlugin("Sofa.Component.AnimationLoop");
+        sofa::simpleapi::importPlugin("Sofa.Component.Collision.Detection.Algorithm");
+        sofa::simpleapi::importPlugin("Sofa.Component.Collision.Detection.Intersection");
+        sofa::simpleapi::importPlugin("Sofa.Component.Collision.Geometry");
+        sofa::simpleapi::importPlugin("Sofa.Component.Collision.Response.Contact");
+        sofa::simpleapi::importPlugin("Sofa.Component.Constraint.Lagrangian.Correction");
+        sofa::simpleapi::importPlugin("Sofa.Component.Constraint.Lagrangian.Solver");
+        sofa::simpleapi::importPlugin("Sofa.Component.Constraint.Projective");
+        sofa::simpleapi::importPlugin("Sofa.Component.IO.Mesh");
+        sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
+        sofa::simpleapi::importPlugin("Sofa.Component.Mapping.Linear");
+        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
+        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Constant");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
+        sofa::simpleapi::importPlugin("Sofa.Component.Visual");
+        sofa::simpleapi::importPlugin("Sofa.GL.Component.Rendering3D");
+        sofa::simpleapi::importPlugin("Sofa.Component.LinearSystem");
+    }
+    
     void executeInParallel(const char* sceneStr, const std::size_t nbScenes, const std::size_t nbSteps)
     {
-        EXPECT_MSG_NOEMIT(Error);
-        EXPECT_MSG_NOEMIT(Warning);
+        EXPECT_MSG_NOEMIT(Error, Warning);
         
         std::vector<sofa::simulation::NodeSPtr> groots;
         groots.resize(nbScenes);
@@ -104,21 +127,6 @@ public:
         const std::string sceneStr = R"(
         <?xml version="1.0" ?>
         <Node name="lroot" gravity="0 -9.81 0" dt="0.02">
-            <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
-            <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [DiscreteIntersection] -->
-            <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
-            <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-            <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
-            <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader MeshOBJLoader SphereLoader] -->
-            <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
-            <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
-            <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
-            <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
-            <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedralCorotationalFEMForceField] -->
-            <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
-            <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer] -->
-            <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-
             <CollisionPipeline name="CollisionPipeline" verbose="0" />
             <DefaultAnimationLoop/>
             <BruteForceBroadPhase/>
@@ -160,29 +168,6 @@ public:
         const std::string sceneStr = R"(
         <?xml version="1.0" ?>
         <Node name="root" gravity="0 -1000 0" dt="0.04">
-            <Node name="RequiredPlugins">
-                <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
-                <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
-                <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
-                <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
-                <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
-                <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->
-                <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [LCPConstraintSolver] -->
-                <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
-                <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
-                <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
-                <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-                <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
-                <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
-                <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
-                <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
-                <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridRamificationTopology] -->
-                <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [InteractiveCamera VisualStyle] -->
-                <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-                <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [LightManager SpotLight] -->
-                <RequiredPlugin name="Sofa.Component.LinearSystem"/> <!-- Needed to use components [MatrixLinearSystem] -->
-            </Node>
-            
             <FreeMotionAnimationLoop parallelCollisionDetectionAndFreeMotion="false" />
             <VisualStyle displayFlags="showVisual  " /> <!--showBehaviorModels showCollisionModels-->
             <LCPConstraintSolver tolerance="1e-3" maxIt="1000" initial_guess="false" build_lcp="false"  printLog="0" mu="0.2"/>
