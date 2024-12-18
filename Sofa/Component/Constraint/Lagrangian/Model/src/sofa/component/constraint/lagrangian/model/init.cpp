@@ -26,6 +26,7 @@
 namespace sofa::component::constraint::lagrangian::model
 {
 
+extern void registerAugmentedLagrangianConstraint(sofa::core::ObjectFactory* factory);
 extern void registerBilateralLagrangianConstraint(sofa::core::ObjectFactory* factory);
 extern void registerFixedLagrangianConstraint(sofa::core::ObjectFactory* factory);
 extern void registerSlidingLagrangianConstraint(sofa::core::ObjectFactory* factory);
@@ -57,6 +58,7 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
+    registerAugmentedLagrangianConstraint(factory);
     registerBilateralLagrangianConstraint(factory);
     registerFixedLagrangianConstraint(factory);
     registerSlidingLagrangianConstraint(factory);
