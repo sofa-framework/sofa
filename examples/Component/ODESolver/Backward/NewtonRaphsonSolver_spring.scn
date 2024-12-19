@@ -18,8 +18,8 @@
 
     <Node name="Newton">
 
-        <BDF1 printLog="false"/>
-        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="false" maxNbIterations="2" absoluteResidualToleranceThreshold="1e-4"/>
+        <BDF1 printLog="false" rayleighStiffness="0.01" rayleighMass="0.01"/>
+        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="false" maxNbIterationsNewton="1" absoluteResidualToleranceThreshold="1e-4"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
 
         <MechanicalObject name="dofs" position="0 0 0  1 1 0"/>
@@ -34,7 +34,7 @@
 
     <Node name="ForceLinearization">
 
-        <EulerImplicitSolver printLog="false"/>
+        <EulerImplicitSolver printLog="false" rayleighStiffness="0.01" rayleighMass="0.01"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
 
         <MechanicalObject name="dofs" position="0 0 0  1 1 0"/>
