@@ -42,6 +42,7 @@ public:
     Factors getMatricesFactors(SReal dt) const override;
     void computeRightHandSide(const core::ExecParams* params,
                               core::behavior::RHSInput input,
+                              core::MultiVecDerivId force,
                               core::MultiVecDerivId rightHandSide,
                               SReal dt) override;
 

@@ -65,6 +65,7 @@ core::behavior::BaseIntegrationMethod::Factors BDF1::getMatricesFactors(SReal dt
 void BDF1::computeRightHandSide(
     const core::ExecParams* params,
     core::behavior::RHSInput input,
+    core::MultiVecDerivId force,
     core::MultiVecDerivId rightHandSide,
     SReal dt)
 {
@@ -81,12 +82,12 @@ void BDF1::computeRightHandSide(
 
         mop.mparams.setX(input.intermediatePosition);
         mop.mparams.setV(input.intermediateVelocity);
-        mop.computeForce(input.force,
+        mop.computeForce(force,
             clearForcesBeforeComputingThem, applyBottomUpMappings);
     }
 
     // b = dt * f
-    m_vop->v_eq(rightHandSide, input.force, dt);
+    m_vop->v_eq(rightHandSide, force, dt);
 
     // b += M * (v_n - v_i)
     {

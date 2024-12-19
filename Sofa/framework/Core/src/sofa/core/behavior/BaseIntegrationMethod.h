@@ -34,7 +34,6 @@ namespace sofa::core::behavior
  */
 struct SOFA_CORE_API RHSInput
 {
-    MultiVecDerivId force;
     MultiVecDerivId intermediateVelocity;
     MultiVecCoordId intermediatePosition;
 };
@@ -44,10 +43,6 @@ class SOFA_CORE_API BaseIntegrationMethod : public sofa::core::objectmodel::Base
 public:
     SOFA_CLASS(BaseIntegrationMethod, sofa::core::objectmodel::BaseObject);
 
-    using MassFactor = MatricesFactors::M;
-    using DampingFactor = MatricesFactors::B;
-    using StiffnessFactor = MatricesFactors::K;
-
     using Factors = std::tuple<MatricesFactors::M, MatricesFactors::B, MatricesFactors::K>;
 
     virtual void initializeVectors(const core::ExecParams* params, ConstMultiVecCoordId x, ConstMultiVecDerivId v) {}
@@ -56,6 +51,7 @@ public:
 
     virtual void computeRightHandSide(const core::ExecParams* params,
         RHSInput input,
+        MultiVecDerivId force,
         MultiVecDerivId rightHandSide,
         SReal dt) = 0;
 
