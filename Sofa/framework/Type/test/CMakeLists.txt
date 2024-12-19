@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.22)
 project(Sofa.Type_test)
 
 set(SOURCE_FILES
+    BoundingBox_test.cpp
     MatSym_test.cpp
     MatTypes_test.cpp
     Material_test.cpp
