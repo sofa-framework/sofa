@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,47 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <deque>
-#include <sofa/testing/config.h>
-
-#include <gtest/gtest.h>
-#include <sofa/testing/TestMessageHandler.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/testing/ScopedPlugin.h>
 
 namespace sofa::testing
 {
-/// acceptable ratio between finite difference delta and error threshold
-const SReal g_minDeltaErrorRatio = .1;
 
-/** @brief Base class for Sofa test fixtures.
-  */
-class SOFA_TESTING_API BaseTest : public ::testing::Test
+ScopedPlugin::ScopedPlugin(const std::string& pluginName,
+                           helper::system::PluginManager* pluginManager)
+: m_pluginManager(pluginManager)
 {
-public:
-    /// To prevent that you simply need to add the line
-    /// EXPECT_MSG_EMIT(Error); Where you want to allow a message.
-    sofa::testing::MessageAsTestFailure m_fatal ;
-    sofa::testing::MessageAsTestFailure m_error ;
+    addPlugin(pluginName);
+}
 
-    /// Initialize Sofa and the random number generator
-    BaseTest() ;
-    ~BaseTest() override;
+ScopedPlugin::~ScopedPlugin()
+{
+    if (m_pluginManager)
+    {
+        for (const auto& pluginName : m_loadedPlugins)
+        {
+            const auto [path, isLoaded] = m_pluginManager->isPluginLoaded(pluginName);
+            if (isLoaded)
+            {
+                m_pluginManager->unloadPlugin(path);
+            }
+        }
+    }
+}
 
-    virtual void onSetUp() {}
-    virtual void onTearDown() {}
+void ScopedPlugin::addPlugin(const std::string& pluginName)
+{
+    const auto status = m_pluginManager->loadPlugin(pluginName);
+    if(status == helper::system::PluginManager::PluginLoadStatus::SUCCESS)
+    {
+        m_loadedPlugins.insert(pluginName);
+        sofa::core::ObjectFactory::getInstance()->registerObjectsFromPlugin(pluginName);
+    }
+}
 
-    /// Seed value
-    static int seed;
-
-    void loadPlugins(const std::initializer_list<std::string>& pluginNames);
-
-private:
-    void SetUp() override ;
-    void TearDown() override ;
-
-    std::deque<sofa::testing::ScopedPlugin> m_loadedPlugins;
-};
-
-} // namespace sofa::testing
+}
