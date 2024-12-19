@@ -74,7 +74,7 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
     unsigned char flags; ///< testing options. (all by default). To be used with precaution.
     /// }
 
-    void SetUp() override
+    void doSetUp() override
     {    
     }
 

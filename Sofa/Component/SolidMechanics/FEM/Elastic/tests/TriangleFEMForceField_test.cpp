@@ -79,12 +79,12 @@ protected:
 
 public:
 
-    void SetUp() override
+    void doSetUp() override
     {
         m_simulation = sofa::simulation::getSimulation();
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         if (m_root != nullptr)
             sofa::simulation::node::unload(m_root);

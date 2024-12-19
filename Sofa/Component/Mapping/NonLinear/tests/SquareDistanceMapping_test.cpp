@@ -150,7 +150,7 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
     simulation::Node::SPtr oneMapping;
     simulation::Node::SPtr twoMappings;
 
-    void onSetUp() override
+    void doSetUp() override
     {
         root = simulation::getSimulation()->createNewNode("root");
 

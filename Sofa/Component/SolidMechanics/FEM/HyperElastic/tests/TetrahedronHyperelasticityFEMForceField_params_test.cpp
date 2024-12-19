@@ -74,7 +74,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
     unsigned char flags; ///< testing options. (all by default). To be used with precaution.
     /// }
 
-    void SetUp() override
+    void doSetUp() override
     {
 
     }

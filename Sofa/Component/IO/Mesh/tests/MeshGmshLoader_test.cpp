@@ -51,7 +51,7 @@ namespace meshgmshloader_test
         /**
             * Constructor call for each test
             */
-        void SetUp() override {}
+        void doSetUp() override {}
 
         /**
             * Helper function to check mesh loading.

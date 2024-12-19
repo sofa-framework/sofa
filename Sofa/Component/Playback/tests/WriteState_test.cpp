@@ -71,7 +71,7 @@ namespace sofa {
         double final_expected_value=0.0;
 
         /// Create the context for the scene
-        void SetUp() override
+        void doSetUp() override
         {
             // Init simulation
             root = simulation::getSimulation()->createNewGraph("root");
@@ -220,7 +220,7 @@ namespace sofa {
 
 
         /// Unload the scene
-        void TearDown() override
+        void doTearDown() override
         {
             if (root!=nullptr)
                 sofa::simulation::node::unload(root);
@@ -237,26 +237,22 @@ namespace sofa {
     // Test 1 : write position of a particle falling under gravity (required to use SymplecticSolver
     TYPED_TEST( WriteState_test , test_write_position)
     {
-        this->SetUp();
         this->createScene(true);
         this->initScene();
         this->runScene();
 
         ASSERT_TRUE( this->simulation_result_test(true) );
         ASSERT_TRUE( this->test_export(true) );
-        this->TearDown();
     }
 
     // Test 2 : write velocity of a particle falling under gravity
     TYPED_TEST( WriteState_test , test_write_velocity)
     {
-        this->SetUp();
         this->createScene(false);
         this->initScene();
         this->runScene();
 
         ASSERT_TRUE( this->simulation_result_test(false) );
         ASSERT_TRUE( this->test_export(false) );
-        this->TearDown();
     }
 }
