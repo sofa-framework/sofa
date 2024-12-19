@@ -396,7 +396,7 @@ target_link_libraries(${PROJECT_NAME}
     Sofa.Component.MechanicalLoad
 )
 
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17 cuda_std_17)
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GL)
