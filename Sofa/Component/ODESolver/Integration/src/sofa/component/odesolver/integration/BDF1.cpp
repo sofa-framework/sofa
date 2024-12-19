@@ -86,6 +86,19 @@ void BDF1::computeRightHandSide(
             clearForcesBeforeComputingThem, applyBottomUpMappings);
     }
 
+    // b += dt (-alpha M + beta K) v_i
+    {
+        const auto backupV = mop.mparams.v();
+        {
+            mop.mparams.setV(input.intermediateVelocity);
+            mop.addMBKv(force,
+                core::MatricesFactors::M(-alpha * dt),
+                core::MatricesFactors::B(0),
+                core::MatricesFactors::K(beta * dt));
+        }
+        mop.mparams.setV(backupV);
+    }
+
     // b = dt * f
     m_vop->v_eq(rightHandSide, force, dt);
 
@@ -96,19 +109,6 @@ void BDF1::computeRightHandSide(
         m_vop->v_peq(tmp, input.intermediateVelocity, -1); //(v_n - v_i)
 
         mop.addMdx(rightHandSide, tmp, core::MatricesFactors::M(1).get());
-    }
-
-    // b += dt (-alpha M + beta K) v_i
-    {
-        const auto backupV = mop.mparams.v();
-        {
-            mop.mparams.setV(input.intermediateVelocity);
-            mop.addMBKv(rightHandSide,
-                core::MatricesFactors::M(-alpha * dt),
-                core::MatricesFactors::B(0),
-                core::MatricesFactors::K(beta * dt));
-        }
-        mop.mparams.setV(backupV);
     }
 
     // b += (dt^2 K) * v
