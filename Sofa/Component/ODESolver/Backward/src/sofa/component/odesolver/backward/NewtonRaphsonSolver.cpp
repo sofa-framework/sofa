@@ -69,11 +69,10 @@ void NewtonRaphsonSolver::computeRightHandSide(const core::ExecParams* params, S
                                        core::MultiVecCoordId position_i) const
 {
     core::behavior::RHSInput input;
-    input.force = force;
     input.intermediateVelocity = velocity_i;
     input.intermediatePosition = position_i;
 
-    l_integrationMethod->computeRightHandSide(params, input, b, dt);
+    l_integrationMethod->computeRightHandSide(params, input, force, b, dt);
 }
 
 void NewtonRaphsonSolver::solve(
