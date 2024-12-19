@@ -25,6 +25,8 @@
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/BaseIntegrationMethod.h>
+#include <sofa/simulation/MechanicalOperations.h>
+
 
 namespace sofa::component::odesolver::backward
 {
@@ -56,6 +58,11 @@ protected:
                       core::MultiVecDerivId b,
                       core::MultiVecDerivId velocity_i,
                       core::MultiVecCoordId position_i) const;
+
+
+    SReal computeResidual(const core::ExecParams* params, sofa::simulation::common::MechanicalOperations& mop, SReal dt,
+        core::MultiVecDerivId force,
+        core::MultiVecDerivId oldVelocity, core::MultiVecDerivId newVelocity);
 };
 
 }

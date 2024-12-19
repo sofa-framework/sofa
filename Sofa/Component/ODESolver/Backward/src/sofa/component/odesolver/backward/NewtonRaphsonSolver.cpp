@@ -75,6 +75,27 @@ void NewtonRaphsonSolver::computeRightHandSide(const core::ExecParams* params, S
     l_integrationMethod->computeRightHandSide(params, input, force, b, dt);
 }
 
+SReal NewtonRaphsonSolver::computeResidual(const core::ExecParams* params, sofa::simulation::common::MechanicalOperations& mop,
+    SReal dt, core::MultiVecDerivId force,
+    core::MultiVecDerivId oldVelocity,
+    core::MultiVecDerivId newVelocity)
+{
+    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
+
+    core::behavior::MultiVecDeriv residual(&vop, true, core::VecIdProperties{"residual", GetClass()->className});
+
+    core::behavior::MultiVecDeriv tmp(&vop);
+
+    vop.v_eq(tmp, newVelocity);
+    vop.v_peq(tmp, oldVelocity, -1);
+    mop.addMdx(residual, tmp);
+
+    vop.v_peq(residual, force, -dt);
+
+    vop.v_dot(residual, residual);
+    return vop.finish();
+}
+
 void NewtonRaphsonSolver::solve(
     const core::ExecParams* params, SReal dt,
     sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
@@ -96,6 +117,9 @@ void NewtonRaphsonSolver::solve(
     //previous time step will be erased.
     core::behavior::MultiVecDeriv force(&vop, core::vec_id::write_access::force );
     core::behavior::MultiVecDeriv b(&vop, true, core::VecIdProperties{"RHS", GetClass()->className});
+
+    core::behavior::MultiVecDeriv velocityPrevious(&vop);
+    velocityPrevious.eq(vResult);
 
     //the intermediate position and velocity required by the Newton's algorithm
     core::behavior::MultiVecCoord position_i(&vop);
@@ -133,7 +157,7 @@ void NewtonRaphsonSolver::solve(
     SReal squaredResidualNorm{};
     {
         SCOPED_TIMER("ComputeError");
-        squaredResidualNorm = b.dot(b);
+        squaredResidualNorm = this->computeResidual(params, mop, dt, force, velocityPrevious, velocity_i);
 
         msg_info() << "The initial residual squared norm is " << squaredResidualNorm << ". ";
     }
@@ -199,7 +223,7 @@ void NewtonRaphsonSolver::solve(
 
                 computeRightHandSide(params, dt, force, b, newVelocity, newPosition);
 
-                squaredResidualNormLineSearch = b.dot(b);
+                squaredResidualNormLineSearch = this->computeResidual(params, mop, dt, force, velocityPrevious, newVelocity);
                 if (squaredResidualNormLineSearch < minSquaredResidualNormLineSearch)
                 {
                     minSquaredResidualNormLineSearch = squaredResidualNormLineSearch;
