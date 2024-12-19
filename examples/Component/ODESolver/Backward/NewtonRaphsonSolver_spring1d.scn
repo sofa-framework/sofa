@@ -19,8 +19,8 @@
     <Node name="Newton">
 
         <BDF1 printLog="true"/>
-        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="true" maxNbIterations="2"/>
-        <EigenSparseLU template="CompressedRowSparseMatrix"/>
+        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="true" maxNbIterationsNewton="4" maxNbIterationsLineSearch="2" absoluteResidualToleranceThreshold="1e-6"/>
+        <EigenSimplicialLDLT template="CompressedRowSparseMatrix"/>
 
         <MechanicalObject name="dofs" template="Vec1" position="0 1" showObject="true"/>
         <EdgeSetTopologyContainer name="topologyContainer" edges="0 1" position="@dofs.position"/>
