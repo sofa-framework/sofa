@@ -59,7 +59,7 @@
 		<MechanicalObject name="instrumentState" template="Rigid3d" />
 		<UniformMass name="mass" totalMass="0.01" />
 		
-		<RestShapeSpringsForceField stiffness='1000000' angularStiffness='1000000' external_rest_shape='@../Omni/DOFs' points='0' external_points='0' />
+		<RestShapeSpringsForceField stiffness='1000000' angularStiffness='1000000' external_rest_shape='@../Omni/DOFs' indices='0' externalIndices='0' />
         <LCPForceFeedback activate="true" forceCoef="0.00005"/> <!-- ADDED : Compute a force-feedback for the device -->
         <LinearSolverConstraintCorrection/>
         
