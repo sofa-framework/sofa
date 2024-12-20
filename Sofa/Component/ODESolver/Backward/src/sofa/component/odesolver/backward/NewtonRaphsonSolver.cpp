@@ -55,6 +55,11 @@ NewtonRaphsonSolver::NewtonRaphsonSolver()
         "Newton iterations will stop when the norm of the residual at iteration "
         "k is lower than this threshold. This criterion indicates the current "
         "iteration found an estimate close to the root."))
+    , d_relativeEstimateDifferenceThreshold(initData(&d_relativeEstimateDifferenceThreshold, 0_sreal,
+        "relativeEstimateDifferenceThreshold",
+        "Threshold for the relative change in root estimate criterion. The "
+        "Newton iterations will stop when the difference between two successive "
+        "estimates divided by the previous estimate is smaller than this threshold"))
     , d_absoluteEstimateDifferenceThreshold(initData(&d_absoluteEstimateDifferenceThreshold, 0_sreal,
         "absoluteEstimateDifferenceThreshold",
         "Threshold for the absolute change in root estimate criterion. The "
@@ -200,10 +205,12 @@ void NewtonRaphsonSolver::solve(
 
         const auto relativeSuccessiveStoppingThreshold = d_relativeSuccessiveStoppingThreshold.getValue();
         const auto relativeInitialStoppingThreshold = d_relativeInitialStoppingThreshold.getValue();
+        const auto relativeEstimateDifferenceThreshold = d_relativeEstimateDifferenceThreshold.getValue();
         const auto absoluteEstimateDifferenceThreshold = d_absoluteEstimateDifferenceThreshold.getValue();
 
         const auto squaredRelativeSuccessiveStoppingThreshold = std::pow(relativeSuccessiveStoppingThreshold, 2);
         const auto squaredRelativeInitialStoppingThreshold = std::pow(relativeInitialStoppingThreshold, 2);
+        const auto squaredRelativeEstimateDifferenceThreshold = std::pow(relativeEstimateDifferenceThreshold, 2);
         const auto squaredAbsoluteEstimateDifferenceThreshold = std::pow(absoluteEstimateDifferenceThreshold, 2);
 
         const auto maxNbIterationsNewton = d_maxNbIterationsNewton.getValue();
@@ -343,7 +350,7 @@ void NewtonRaphsonSolver::solve(
                 break;
             }
 
-            if (absoluteEstimateDifferenceThreshold > 0)
+            if (absoluteEstimateDifferenceThreshold > 0 || squaredRelativeEstimateDifferenceThreshold > 0)
             {
                 core::behavior::MultiVecDeriv tmp(&vop);
 
@@ -355,14 +362,40 @@ void NewtonRaphsonSolver::solve(
 
                 if (printLog)
                 {
-                    iterationResults << "\n* Successive estimate difference = " << squaredAbsoluteDifference << '\n';
+                    iterationResults << "\n* Successive estimate difference = " << std::sqrt(squaredAbsoluteDifference);
+                }
+
+                if (squaredRelativeEstimateDifferenceThreshold > 0)
+                {
+                    vop.v_dot(velocity_i, velocity_i);
+                    const auto squaredPreviousVelocity = vop.finish();
+
+                    if (squaredPreviousVelocity != 0)
+                    {
+                        if (printLog)
+                        {
+                            iterationResults << "\n* Relative estimate difference = " << std::sqrt(squaredAbsoluteDifference / squaredPreviousVelocity);
+                        }
+
+                        if (squaredAbsoluteDifference < squaredPreviousVelocity * squaredRelativeEstimateDifferenceThreshold)
+                        {
+                            msg_info() << iterationResults.str();
+                            msg_info() << "[CONVERGED] relative successive estimate difference (" <<
+                                    std::sqrt(squaredAbsoluteDifference / squaredPreviousVelocity)
+                                    << ") is smaller than the threshold ("
+                                    << squaredRelativeEstimateDifferenceThreshold << ") after "
+                                    << (newtonIterationCount+1) << " Newton iterations.";
+                            hasConverged = true;
+                            break;
+                        }
+                    }
                 }
 
                 if (squaredAbsoluteDifference < squaredAbsoluteEstimateDifferenceThreshold)
                 {
                     msg_info() << iterationResults.str();
                     msg_info() << "[CONVERGED] absolute successive estimate difference (" <<
-                            squaredAbsoluteDifference << ") is smaller than the threshold ("
+                            std::sqrt(squaredAbsoluteDifference) << ") is smaller than the threshold ("
                             << squaredAbsoluteEstimateDifferenceThreshold << ") after "
                             << (newtonIterationCount+1) << " Newton iterations.";
                     hasConverged = true;
