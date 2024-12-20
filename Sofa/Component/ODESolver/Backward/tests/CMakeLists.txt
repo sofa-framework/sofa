@@ -7,6 +7,7 @@ set(SOURCE_FILES
     EulerImplicitSolverStatic_test.cpp
     EulerImplicitSolver_withDamping_test.cpp
     NewmarkImplicitSolverDynamic_test.cpp
+    NewtonRaphsonSolver_test.cpp
     StaticSolver_test.cpp
     SpringSolverDynamic_test.cpp
     VariationalSymplecticExplicitSolverDynamic_test.cpp
