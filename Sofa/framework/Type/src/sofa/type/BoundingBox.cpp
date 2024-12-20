@@ -36,54 +36,21 @@ BoundingBox::bbox_t make_neutralBBox()
     return std::make_pair(minBBox,maxBBox);
 }
 
-BoundingBox::BoundingBox()
-    :bbox(make_neutralBBox())
-{
-}
-
-BoundingBox::BoundingBox(const bbox_t& bbox)
-    :bbox(bbox)
-{
-}
-
-BoundingBox::BoundingBox(const sofa::type::Vec3& minBBox, const sofa::type::Vec3& maxBBox)
-    :bbox(std::make_pair(minBBox,maxBBox))
-{
-}
-
-BoundingBox::BoundingBox(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax )
-    :bbox(std::make_pair(sofa::type::Vec3((SReal)xmin, (SReal)ymin, (SReal)zmin),sofa::type::Vec3( (SReal)xmax, (SReal)ymax, (SReal)zmax)))
-{
-}
-
-
-BoundingBox::BoundingBox(const Vec6f& v )
-    :bbox(std::make_pair(sofa::type::Vec3(v[0],v[2],v[4]),sofa::type::Vec3(v[1],v[3],v[5])))
-{
-}
-
-BoundingBox::BoundingBox(const Vec6d& v )
-    :bbox(std::make_pair(sofa::type::Vec3((SReal)v[0],(SReal)v[2],(SReal)v[4]),sofa::type::Vec3((SReal)v[1],(SReal)v[3],(SReal)v[5])))
-{
-}
-
-
-/*static*/
-BoundingBox BoundingBox::neutral_bbox()
-{
-    return BoundingBox(make_neutralBBox());
-}
-
 void BoundingBox::invalidate()
 {
     this->bbox = make_neutralBBox();
 }
 
-bool BoundingBox::isNegligeable() const
+bool BoundingBox::isNegligible() const
 {
     return minBBox().x() >= maxBBox().x() &&
            minBBox().y() >= maxBBox().y() &&
            minBBox().z() >= maxBBox().z();
+}
+
+bool BoundingBox::isNegligeable() const
+{
+    return isNegligible();
 }
 
 bool BoundingBox::isValid() const
@@ -110,6 +77,11 @@ bool BoundingBox::isNull() const
 BoundingBox::operator bbox_t() const
 {
     return bbox;
+}
+
+bool BoundingBox::operator==(const BoundingBox& other) const
+{
+    return this->bbox == other.bbox;
 }
 
 SReal* BoundingBox::minBBoxPtr()
