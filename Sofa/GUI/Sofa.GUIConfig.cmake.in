@@ -6,7 +6,6 @@
 find_package(Sofa.GUI.Component QUIET REQUIRED)
 find_package(Sofa.GUI.Common QUIET REQUIRED)
 find_package(Sofa.GUI.Batch QUIET REQUIRED)
-find_package(Sofa.GUI.Qt QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
