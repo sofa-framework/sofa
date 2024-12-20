@@ -53,6 +53,7 @@ sofa_add_subdirectory(plugin CSparseSolvers CSparseSolvers EXTERNAL GIT_REF mast
 sofa_add_subdirectory(plugin ModelOrderReduction ModelOrderReduction EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin Sofa.Metis Sofa.Metis EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin SofaValidation SofaValidation EXTERNAL GIT_REF master)
+sofa_add_subdirectory(plugin Sofa.Qt Sofa.Qt EXTERNAL GIT_REF master)
 
 
 
