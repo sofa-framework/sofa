@@ -204,7 +204,7 @@ void NewtonRaphsonSolver::solve(
         const auto [mFact, bFact, kFact] = l_integrationMethod->getMatricesFactors(dt);
         bool hasConverged = false;
         const auto lineSearchCoefficient = d_lineSearchCoefficient.getValue();
-        auto firstSquaredResidualNorm = squaredResidualNorm;
+        const auto firstSquaredResidualNorm = squaredResidualNorm;
 
         unsigned int newtonIterationCount = 0;
         for (; newtonIterationCount < maxNbIterationsNewton; ++newtonIterationCount)
@@ -271,7 +271,7 @@ void NewtonRaphsonSolver::solve(
             {
                 msg_warning_when(maxNbIterationsLineSearch > 0) << "Line search failed at Newton iteration "
                     << newtonIterationCount << ". Using the coefficient "
-                    << minTotalLineSearchCoefficient << " resulting to the minimal residual norm (" << minSquaredResidualNormLineSearch << ").";
+                    << minTotalLineSearchCoefficient << " resulting to the minimal residual norm (" << minSquaredResidualNormLineSearch << "). Stopping the iterative process.";
 
                 vop.v_teq(m_linearSystemSolution, minTotalLineSearchCoefficient / totalLineSearchCoefficient);
                 lineSearch(false);
@@ -280,55 +280,48 @@ void NewtonRaphsonSolver::solve(
             const auto previousSquaredResidualNorm = squaredResidualNorm;
             squaredResidualNorm = squaredResidualNormLineSearch;
 
-            vop.v_eq(position_i, newPosition);
-            vop.v_eq(velocity_i, newVelocity);
-
             std::stringstream iterationResults;
 
             if (printLog)
             {
                 iterationResults << "Iteration results:\n";
-                iterationResults << "Current iteration = " << newtonIterationCount << '\n';
-                iterationResults << "Absolute squared residual = " << squaredResidualNorm << '\n';
+                iterationResults << "* Current iteration = " << newtonIterationCount << '\n';
+                iterationResults << "* Residual = " << std::sqrt(squaredResidualNorm) << " (threshold = " << absoluteStoppingThreshold << ")\n";
+                iterationResults << "* Successive relative ratio = " << std::sqrt(squaredResidualNorm / previousSquaredResidualNorm) << " (threshold = " << relativeSuccessiveStoppingThreshold << ", previous residual = " << std::sqrt(previousSquaredResidualNorm) << ")\n";
+                iterationResults << "* Initial relative ratio = " << std::sqrt(squaredResidualNorm / firstSquaredResidualNorm) << " (threshold = " << relativeInitialStoppingThreshold << ", initial residual = " << std::sqrt(firstSquaredResidualNorm) << ")";
             }
 
-            // relative convergence
-            if (newtonIterationCount == 0)
+            if (!lineSearchSuccess)
             {
-                firstSquaredResidualNorm = squaredResidualNorm;
-                msg_info() << "firstSquaredResidualNorm = " << firstSquaredResidualNorm;
+                msg_info() << iterationResults.str();
+                break;
             }
-            else
-            {
-                if (printLog)
-                {
-                    iterationResults << "Successive relative ratio = " << std::sqrt(squaredResidualNorm / previousSquaredResidualNorm) << '\n';
-                    iterationResults << "Initial relative ratio = " << std::sqrt(squaredResidualNorm / firstSquaredResidualNorm);
-                }
 
-                // relative successive convergence
-                if (relativeSuccessiveStoppingThreshold > 0 &&
-                    squaredResidualNorm < squaredRelativeSuccessiveStoppingThreshold * previousSquaredResidualNorm)
-                {
-                    msg_info() << iterationResults.str();
-                    msg_info() << "[CONVERGED] residual successive ratio is smaller than "
+            vop.v_eq(position_i, newPosition);
+            vop.v_eq(velocity_i, newVelocity);
+
+            // relative successive convergence
+            if (relativeSuccessiveStoppingThreshold > 0 &&
+                squaredResidualNorm < squaredRelativeSuccessiveStoppingThreshold * previousSquaredResidualNorm)
+            {
+                msg_info() << iterationResults.str();
+                msg_info() << "[CONVERGED] residual successive ratio is smaller than "
                             "the threshold (" << relativeInitialStoppingThreshold
                             << ") after " << (newtonIterationCount+1) << " Newton iterations.";
-                    hasConverged = true;
-                    break;
-                }
+                hasConverged = true;
+                break;
+            }
 
-                // relative initial convergence
-                if (relativeInitialStoppingThreshold > 0 &&
-                   squaredResidualNorm < squaredRelativeInitialStoppingThreshold * firstSquaredResidualNorm)
-                {
-                    msg_info() << iterationResults.str();
-                    msg_info() << "[CONVERGED] residual initial ratio is smaller than "
+            // relative initial convergence
+            if (relativeInitialStoppingThreshold > 0 &&
+                squaredResidualNorm < squaredRelativeInitialStoppingThreshold * firstSquaredResidualNorm)
+            {
+                msg_info() << iterationResults.str();
+                msg_info() << "[CONVERGED] residual initial ratio is smaller than "
                         "the threshold (" << relativeInitialStoppingThreshold
                         << ") after " << (newtonIterationCount+1) << " Newton iterations.";
-                    hasConverged = true;
-                    break;
-                }
+                hasConverged = true;
+                break;
             }
 
             // absolute convergence
