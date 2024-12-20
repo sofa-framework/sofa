@@ -47,6 +47,7 @@ public:
     Data<SReal> d_relativeSuccessiveStoppingThreshold;
     Data<SReal> d_relativeInitialStoppingThreshold;
     Data<SReal> d_absoluteResidualStoppingThreshold;
+    Data<SReal> d_absoluteEstimateDifferenceThreshold;
     Data<unsigned int> d_maxNbIterationsLineSearch;
     Data<SReal> d_lineSearchCoefficient;
 
