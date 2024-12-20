@@ -39,6 +39,7 @@ public:
     SOFA_CLASS2(NewtonRaphsonSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
 
     void init() override;
+    void reset() override;
     void solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     SingleLink<NewtonRaphsonSolver, core::behavior::BaseIntegrationMethod, BaseLink::FLAG_STRONGLINK> l_integrationMethod;
@@ -51,6 +52,20 @@ public:
     Data<SReal> d_absoluteEstimateDifferenceThreshold;
     Data<unsigned int> d_maxNbIterationsLineSearch;
     Data<SReal> d_lineSearchCoefficient;
+
+    MAKE_SELECTABLE_ITEMS(NewtonStatus,
+        sofa::helper::Item{"Undefined", "The solver has not been called yet"},
+        sofa::helper::Item{"Running", "The solver is still running and/or did not finish"},
+        sofa::helper::Item{"ConvergedEquilibrium", "Converged: the iterations did not start because the system is already at equilibrium"},
+        sofa::helper::Item{"DivergedLineSearch", "Diverged: line search failed"},
+        sofa::helper::Item{"DivergedMaxIterations", "Diverged: Reached the maximum number of iterations"},
+        sofa::helper::Item{"ConvergedResidualSuccessiveRatio", "Converged: Residual successive ratio is smaller than the threshold"},
+        sofa::helper::Item{"ConvergedResidualInitialRatio", "Converged: Residual initial ratio is smaller than the threshold"},
+        sofa::helper::Item{"ConvergedAbsoluteResidual", "Converged: Absolute residual is smaller than the threshold"},
+        sofa::helper::Item{"ConvergedRelativeEstimateDifference", "Converged: Relative estimate difference is smaller than the threshold"},
+        sofa::helper::Item{"ConvergedAbsoluteEstimateDifference", "Converged: Absolute estimate difference is smaller than the threshold"});
+
+    Data<NewtonStatus> d_status;
 
 protected:
     NewtonRaphsonSolver();
