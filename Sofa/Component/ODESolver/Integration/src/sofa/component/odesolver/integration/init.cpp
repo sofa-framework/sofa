@@ -19,18 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/backward/init.h>
+#include <sofa/component/odesolver/integration/init.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
 
-namespace sofa::component::odesolver::backward
+namespace sofa::component::odesolver::integration
 {
 
-extern void registerEulerImplicitSolver(sofa::core::ObjectFactory* factory);
-extern void registerNewmarkImplicitSolver(sofa::core::ObjectFactory* factory);
-extern void registerStaticSolver(sofa::core::ObjectFactory* factory);
-extern void registerVariationalSymplecticSolver(sofa::core::ObjectFactory* factory);
-extern void registerNewtonRaphsonSolver(sofa::core::ObjectFactory* factory);
+extern void registerBDF1(core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -56,11 +52,7 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    registerEulerImplicitSolver(factory);
-    registerNewmarkImplicitSolver(factory);
-    registerStaticSolver(factory);
-    registerVariationalSymplecticSolver(factory);
-    registerNewtonRaphsonSolver(factory);
+    registerBDF1(factory);
 }
 
 void init()
@@ -75,4 +67,4 @@ void init()
     }
 }
 
-} // namespace sofa::component::odesolver::backward
+}
