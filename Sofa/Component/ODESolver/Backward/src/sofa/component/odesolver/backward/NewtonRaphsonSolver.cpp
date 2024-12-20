@@ -54,7 +54,12 @@ NewtonRaphsonSolver::NewtonRaphsonSolver()
         "Threshold for the absolute function value stopping criterion. The "
         "Newton iterations will stop when the norm of the residual at iteration "
         "k is lower than this threshold. This criterion indicates the current "
-        "iteration found a value close to the root."))
+        "iteration found an estimate close to the root."))
+    , d_absoluteEstimateDifferenceThreshold(initData(&d_absoluteEstimateDifferenceThreshold, 0_sreal,
+        "absoluteEstimateDifferenceThreshold",
+        "Threshold for the absolute change in root estimate criterion. The "
+        "Newton iterations will stop when the difference between two successive "
+        "estimates is smaller than this threshold."))
     , d_maxNbIterationsLineSearch(initData(&d_maxNbIterationsLineSearch, 5u, "maxNbIterationsLineSearch",
         "Maximum number of iterations of the line search method if it has not converged."))
     , d_lineSearchCoefficient(initData(&d_lineSearchCoefficient, 0.5_sreal, "lineSearchCoefficient", "Line search coefficient"))
@@ -195,9 +200,11 @@ void NewtonRaphsonSolver::solve(
 
         const auto relativeSuccessiveStoppingThreshold = d_relativeSuccessiveStoppingThreshold.getValue();
         const auto relativeInitialStoppingThreshold = d_relativeInitialStoppingThreshold.getValue();
+        const auto absoluteEstimateDifferenceThreshold = d_absoluteEstimateDifferenceThreshold.getValue();
 
         const auto squaredRelativeSuccessiveStoppingThreshold = std::pow(relativeSuccessiveStoppingThreshold, 2);
         const auto squaredRelativeInitialStoppingThreshold = std::pow(relativeInitialStoppingThreshold, 2);
+        const auto squaredAbsoluteEstimateDifferenceThreshold = std::pow(absoluteEstimateDifferenceThreshold, 2);
 
         const auto maxNbIterationsNewton = d_maxNbIterationsNewton.getValue();
         const auto maxNbIterationsLineSearch = d_maxNbIterationsLineSearch.getValue();
@@ -284,11 +291,11 @@ void NewtonRaphsonSolver::solve(
 
             if (printLog)
             {
-                iterationResults << "Iteration results:\n";
-                iterationResults << "* Current iteration = " << newtonIterationCount << '\n';
-                iterationResults << "* Residual = " << std::sqrt(squaredResidualNorm) << " (threshold = " << absoluteStoppingThreshold << ")\n";
-                iterationResults << "* Successive relative ratio = " << std::sqrt(squaredResidualNorm / previousSquaredResidualNorm) << " (threshold = " << relativeSuccessiveStoppingThreshold << ", previous residual = " << std::sqrt(previousSquaredResidualNorm) << ")\n";
-                iterationResults << "* Initial relative ratio = " << std::sqrt(squaredResidualNorm / firstSquaredResidualNorm) << " (threshold = " << relativeInitialStoppingThreshold << ", initial residual = " << std::sqrt(firstSquaredResidualNorm) << ")";
+                iterationResults << "Iteration results:";
+                iterationResults << "\n* Current iteration = " << newtonIterationCount;
+                iterationResults << "\n* Residual = " << std::sqrt(squaredResidualNorm) << " (threshold = " << absoluteStoppingThreshold << ")";
+                iterationResults << "\n* Successive relative ratio = " << std::sqrt(squaredResidualNorm / previousSquaredResidualNorm) << " (threshold = " << relativeSuccessiveStoppingThreshold << ", previous residual = " << std::sqrt(previousSquaredResidualNorm) << ")";
+                iterationResults << "\n* Initial relative ratio = " << std::sqrt(squaredResidualNorm / firstSquaredResidualNorm) << " (threshold = " << relativeInitialStoppingThreshold << ", initial residual = " << std::sqrt(firstSquaredResidualNorm) << ")";
             }
 
             if (!lineSearchSuccess)
@@ -297,8 +304,7 @@ void NewtonRaphsonSolver::solve(
                 break;
             }
 
-            vop.v_eq(position_i, newPosition);
-            vop.v_eq(velocity_i, newVelocity);
+
 
             // relative successive convergence
             if (relativeSuccessiveStoppingThreshold > 0 &&
@@ -336,6 +342,36 @@ void NewtonRaphsonSolver::solve(
                 hasConverged = true;
                 break;
             }
+
+            if (absoluteEstimateDifferenceThreshold > 0)
+            {
+                core::behavior::MultiVecDeriv tmp(&vop);
+
+                vop.v_eq(tmp, newVelocity);
+                vop.v_peq(tmp, velocity_i, -1);
+
+                vop.v_dot(tmp, tmp);
+                const auto squaredAbsoluteDifference = vop.finish();
+
+                if (printLog)
+                {
+                    iterationResults << "\n* Successive estimate difference = " << squaredAbsoluteDifference << '\n';
+                }
+
+                if (squaredAbsoluteDifference < squaredAbsoluteEstimateDifferenceThreshold)
+                {
+                    msg_info() << iterationResults.str();
+                    msg_info() << "[CONVERGED] absolute successive estimate difference (" <<
+                            squaredAbsoluteDifference << ") is smaller than the threshold ("
+                            << squaredAbsoluteEstimateDifferenceThreshold << ") after "
+                            << (newtonIterationCount+1) << " Newton iterations.";
+                    hasConverged = true;
+                    break;
+                }
+            }
+
+            vop.v_eq(position_i, newPosition);
+            vop.v_eq(velocity_i, newVelocity);
 
             msg_info() << iterationResults.str();
         }
