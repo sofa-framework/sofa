@@ -33,15 +33,18 @@ NewtonRaphsonSolver::NewtonRaphsonSolver()
     : l_integrationMethod(initLink("integrationMethod", "The integration method to use in a Newton iteration"))
     , d_maxNbIterationsNewton(initData(&d_maxNbIterationsNewton, 1u, "maxNbIterationsNewton",
         "Maximum number of iterations of the Newton's method if it has not converged."))
-    , d_relativeResidualToleranceThreshold(initData(&d_relativeResidualToleranceThreshold, 1e-5_sreal,
+    , d_relativeInitialStoppingThreshold(initData(&d_relativeInitialStoppingThreshold, 1e-5_sreal,
         "relativeResidualToleranceThreshold",
         "The Newton iterations will stop when the ratio between the norm of the "
         "residual at iteration k over the norm of the residual at iteration 0 is"
-        " lower than this threshold."))
-    , d_absoluteResidualToleranceThreshold(initData(&d_absoluteResidualToleranceThreshold, 1e-5_sreal,
+        " lower than this threshold. This criterion tracks the overall progress "
+        "made since the beginning of the iteration process."))
+    , d_absoluteResidualStoppingThreshold(initData(&d_absoluteResidualStoppingThreshold, 1e-5_sreal,
         "absoluteResidualToleranceThreshold",
-        "The Newton iterations will stop when the norm of the residual at "
-        "iteration k is lower than this threshold."))
+        "Parameter for the absolute function value criterion. The Newton "
+        "iterations will stop when the norm of the residual at iteration k is "
+        "lower than this threshold. This criterion indicates the current "
+        "iteration found a value close to the root."))
     , d_maxNbIterationsLineSearch(initData(&d_maxNbIterationsLineSearch, 5u, "maxNbIterationsLineSearch",
         "Maximum number of iterations of the line search method if it has not converged."))
     , d_lineSearchCoefficient(initData(&d_lineSearchCoefficient, 0.5_sreal, "lineSearchCoefficient", "Line search coefficient"))
@@ -165,17 +168,17 @@ void NewtonRaphsonSolver::solve(
         msg_info() << "The initial residual squared norm is " << squaredResidualNorm << ". ";
     }
 
-    const auto absoluteResidualToleranceThreshold = d_absoluteResidualToleranceThreshold.getValue();
-    const auto relativeResidualToleranceThreshold = d_relativeResidualToleranceThreshold.getValue();
+    const auto absoluteStoppingThreshold = d_absoluteResidualStoppingThreshold.getValue();
+    const auto relativeInitialStoppingThreshold = d_relativeInitialStoppingThreshold.getValue();
 
-    const auto squaredAbsoluteResidualToleranceThreshold = std::pow(absoluteResidualToleranceThreshold, 2);
-    const auto squaredRelativeResidualToleranceThreshold = std::pow(relativeResidualToleranceThreshold, 2);
+    const auto squaredAbsoluteStoppingThreshold = std::pow(absoluteStoppingThreshold, 2);
+    const auto squaredRelativeInitialStoppingThreshold = std::pow(relativeInitialStoppingThreshold, 2);
 
-    if (absoluteResidualToleranceThreshold > 0 && squaredResidualNorm <= squaredAbsoluteResidualToleranceThreshold)
+    if (absoluteStoppingThreshold > 0 && squaredResidualNorm <= squaredAbsoluteStoppingThreshold)
     {
         msg_info() << "The ODE has already reached an equilibrium state. "
             << "The residual squared norm is " << squaredResidualNorm << ". "
-            << "The threshold for convergence is " << squaredAbsoluteResidualToleranceThreshold;
+            << "The threshold for convergence is " << squaredAbsoluteStoppingThreshold;
     }
     else
     {
@@ -276,11 +279,11 @@ void NewtonRaphsonSolver::solve(
             else
             {
                 msg_info() << "ratio = " << squaredResidualNorm / firstSquaredResidualNorm;
-                if (relativeResidualToleranceThreshold > 0 &&
-                   squaredResidualNorm < squaredRelativeResidualToleranceThreshold * firstSquaredResidualNorm)
+                if (relativeInitialStoppingThreshold > 0 &&
+                   squaredResidualNorm < squaredRelativeInitialStoppingThreshold * firstSquaredResidualNorm)
                 {
                     msg_info() << "[CONVERGED] residual ratio is smaller than "
-                        "the threshold (" << relativeResidualToleranceThreshold
+                        "the threshold (" << relativeInitialStoppingThreshold
                         << ") after " << (newtonIterationCount+1) << " Newton iterations.";
                     hasConverged = true;
                     break;
@@ -288,12 +291,12 @@ void NewtonRaphsonSolver::solve(
             }
 
             // absolute convergence
-            if (absoluteResidualToleranceThreshold > 0 &&
-                squaredResidualNorm <= squaredAbsoluteResidualToleranceThreshold)
+            if (absoluteStoppingThreshold > 0 &&
+                squaredResidualNorm <= squaredAbsoluteStoppingThreshold)
             {
                 msg_info() << "[CONVERGED] residual squared norm (" <<
                         squaredResidualNorm << ") is smaller than the threshold ("
-                        << squaredAbsoluteResidualToleranceThreshold << ") after "
+                        << squaredAbsoluteStoppingThreshold << ") after "
                         << (newtonIterationCount+1) << " Newton iterations.";
                 hasConverged = true;
                 break;
