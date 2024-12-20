@@ -51,7 +51,7 @@ struct ImageEngine_test : public sofa::testing::BaseTest
     simulation::Node::SPtr root;
 
     // Unload scene
-    void TearDown()
+    void doTearDown()
     {
         if (root!=NULL)
             sofa::simulation::node::unload(root);

@@ -40,7 +40,7 @@ struct DataLink_test: public BaseTest
     Data<Vec3f> dataVec3f;
     Data<Vec3d> dataVec3d;
 
-    void SetUp() override
+    void doSetUp() override
     {
         /// Setup the data and create a link between the two data
         data1.setName("data1");
@@ -50,7 +50,7 @@ struct DataLink_test: public BaseTest
         data2.setName("dataVec3d");
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         data1.unset();
         data2.unset();

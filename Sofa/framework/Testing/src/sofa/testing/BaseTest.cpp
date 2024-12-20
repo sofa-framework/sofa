@@ -95,12 +95,12 @@ BaseTest::~BaseTest() {}
 
 void BaseTest::SetUp()
 {
-    onSetUp();
+    doSetUp();
 }
 
 void BaseTest::TearDown()
 {
-    onTearDown();
+    doTearDown();
 }
 
 

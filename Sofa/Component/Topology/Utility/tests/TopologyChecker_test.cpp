@@ -56,7 +56,7 @@ struct TopologyChecker_test: public BaseSimulationTest
     Node::SPtr m_topoNode = nullptr;
 
     /// Method use at start to load the scene file    
-    void SetUp() override
+    void doSetUp() override
     {
         // Load the scene from the xml file
         const std::string filePath = std::string(SOFA_COMPONENT_TOPOLOGY_UTILITY_TEST_SCENES_DIR) + "/" + m_fileName;
@@ -81,7 +81,7 @@ struct TopologyChecker_test: public BaseSimulationTest
     virtual bool testInvalidContainer() = 0;
 
     /// Unload the scene
-    void TearDown() override
+    void doTearDown() override
     {
         if (m_instance.root !=nullptr)
             sofa::simulation::node::unload(m_instance.root);
