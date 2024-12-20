@@ -44,8 +44,6 @@ BilateralLagrangianConstraint<DataTypes>::BilateralLagrangianConstraint(Mechanic
     , d_m1(initData(&d_m1, "first_point","index of the constraint on the first model (object1)"))
     , d_m2(initData(&d_m2, "second_point","index of the constraint on the second model (object2)"))
     , d_restVector(initData(&d_restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
-    , d_numericalTolerance(initData(&d_numericalTolerance, 1e-4_sreal, "numericalTolerance",
-                                    "a real value specifying the tolerance during the constraint solving.") )
     , d_activate( initData(&d_activate, true, "activate", "control constraint activation (true by default)"))
     , d_keepOrientDiff(initData(&d_keepOrientDiff, false, "keepOrientationDifference", "keep the initial difference in orientation (only for rigids)"))
     , l_topology1(initLink("topology1", "link to the first topology container"))

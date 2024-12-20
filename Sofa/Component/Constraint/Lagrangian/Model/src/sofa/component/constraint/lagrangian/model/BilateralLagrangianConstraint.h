@@ -114,7 +114,8 @@ protected:
     Data<VecDeriv> d_restVector; ///< Relative position to maintain between attached points (optional)
     VecCoord initialDifference;
 
-    Data<SReal> d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
+    SOFA_ATTRIBUTE_DEPRECATED__BILATERALREMOVEUNUSEDTOLERANCE() DeprecatedAndRemoved d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
+
     Data<bool> d_activate; ///< control constraint activation (true by default)
     Data<bool> d_keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
 
