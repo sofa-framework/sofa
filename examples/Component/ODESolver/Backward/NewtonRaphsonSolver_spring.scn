@@ -19,7 +19,7 @@
     <Node name="Newton">
 
         <BDF1 printLog="false" rayleighStiffness="0.01" rayleighMass="0.01"/>
-        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="false" maxNbIterationsNewton="1" absoluteResidualToleranceThreshold="1e-4"/>
+        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="false" maxNbIterationsNewton="1" absoluteResidualStoppingThreshold="1e-4"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
 
         <MechanicalObject name="dofs" position="0 0 0  1 1 0"/>
