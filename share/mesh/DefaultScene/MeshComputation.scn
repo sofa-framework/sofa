@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<Node name="root" dt="0.025" gravity="0 0 0" >
+    <RequiredPlugin pluginName="CGALPlugin"/>
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshExporter,MeshVTKLoader] -->  
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->  
+    <RequiredPlugin name="Sofa.Component.SceneUtility"/> <!-- Needed to use components [InfoComponent] -->  
+    <RequiredPlugin name="Sofa.Component.Setting"/> <!-- Needed to use components [BackgroundSetting] -->  
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->  
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->  
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->  
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetTopologyContainer,TetrahedronSetTopologyModifier,TriangleSetTopologyContainer,TriangleSetTopologyModifier] -->  
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Tetra2TriangleTopologicalMapping] -->  
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->  
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+
+    <VisualStyle displayFlags="showVisualModels showForceFields" />
+    <BackgroundSetting color="0.8 0.8 0.8 1" />
+
+    <MeshOBJLoader name="hull" filename="../Slicer/LogoMesh/test.obj" /> <!--outputPoints outputTriangles-->
+
+    <MeshTopology src="@hull"/>
+
+    <!-- <Node name="Loaded" >
+        <TriangleSetTopologyContainer name="Container"  points="@../hull.position" triangles="@../hull.triangles"/>
+
+        <MechanicalObject name="mstate" />
+
+        <Node >
+            <OglModel color="1 0 0.2 1" name="visualModel" position="@../mstate.position" triangles="@../Container.triangles" />
+            <IdentityMapping />
+        </Node>
+
+    </Node> -->
+
+    <MeshGenerationFromPolyhedron name="generator"
+            inputPoints="@hull.position" inputTriangles="@hull.triangles" inputQuads="@hull.quads"
+            cellSize="20" facetAngle="10"
+            facetSize="10" cellRatio="2"
+            facetApproximation="1" ordering="1"
+            perturb="false" odt="false" lloyd="true" lloyd_max_it="5"/> 
+
+     <Node name="Generated" >
+        <TetrahedronSetTopologyContainer name="Container"  points="@../generator.outputPoints" tetras="@../generator.outputTetras"/>
+
+        <MechanicalObject name="mstate" />
+        <MeshExporter name='exporterA' format='vtk' printLog='true' filename='Slicer_volume' exportAtEnd='true' />
+        <TetrahedronFEMForceField name="forceField" youngModulus="9e3" poissonRatio="0.45" method="svd" />
+
+        <Node name="Surface">
+            <VisualStyle displayFlags="hideCollisionModels" />
+
+            <TriangleSetTopologyContainer name="Container"  />
+            <TriangleSetTopologyModifier name="Modifier"/>
+            <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="true"/>
+            <MechanicalObject name="dofs" rest_position="@../mstate.rest_position" />
+            <Node >
+                <OglModel color="1 0 0.2 0.6" name="visualModel" position="@../dofs.position" triangles="@../Container.triangles" />
+                <IdentityMapping />
+            </Node>
+            <IdentityMapping name="SurfaceMapping"/>
+        </Node>
+
+    </Node>
+
+
+</Node>
