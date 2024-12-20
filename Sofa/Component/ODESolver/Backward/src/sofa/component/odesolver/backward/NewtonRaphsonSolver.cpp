@@ -33,9 +33,14 @@ NewtonRaphsonSolver::NewtonRaphsonSolver()
     : l_integrationMethod(initLink("integrationMethod", "The integration method to use in a Newton iteration"))
     , d_maxNbIterationsNewton(initData(&d_maxNbIterationsNewton, 1u, "maxNbIterationsNewton",
         "Maximum number of iterations of the Newton's method if it has not converged."))
-    , d_absoluteResidualToleranceThreshold(initData(&d_absoluteResidualToleranceThreshold, 1e-9_sreal,
+    , d_relativeResidualToleranceThreshold(initData(&d_relativeResidualToleranceThreshold, 1e-5_sreal,
+        "relativeResidualToleranceThreshold",
+        "The Newton iterations will stop when the ratio between the norm of the "
+        "residual at iteration k over the norm of the residual at iteration 0 is"
+        " lower than this threshold."))
+    , d_absoluteResidualToleranceThreshold(initData(&d_absoluteResidualToleranceThreshold, 1e-5_sreal,
         "absoluteResidualToleranceThreshold",
-        "The newton iterations will stop when the norm of the residual at "
+        "The Newton iterations will stop when the norm of the residual at "
         "iteration k is lower than this threshold."))
     , d_maxNbIterationsLineSearch(initData(&d_maxNbIterationsLineSearch, 5u, "maxNbIterationsLineSearch",
         "Maximum number of iterations of the line search method if it has not converged."))
@@ -105,8 +110,6 @@ void NewtonRaphsonSolver::solve(
         return;
     }
 
-    const bool printLog = f_printLog.getValue();
-
     // Create the vector and mechanical operations tools. These are used to execute special operations (multiplication,
     // additions, etc.) on multi-vectors (a vector that is stored in different buffers inside the mechanical objects)
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
@@ -162,9 +165,13 @@ void NewtonRaphsonSolver::solve(
         msg_info() << "The initial residual squared norm is " << squaredResidualNorm << ". ";
     }
 
-    const auto squaredAbsoluteResidualToleranceThreshold = std::pow(d_absoluteResidualToleranceThreshold.getValue(), 2);
+    const auto absoluteResidualToleranceThreshold = d_absoluteResidualToleranceThreshold.getValue();
+    const auto relativeResidualToleranceThreshold = d_relativeResidualToleranceThreshold.getValue();
 
-    if (squaredResidualNorm <= squaredAbsoluteResidualToleranceThreshold)
+    const auto squaredAbsoluteResidualToleranceThreshold = std::pow(absoluteResidualToleranceThreshold, 2);
+    const auto squaredRelativeResidualToleranceThreshold = std::pow(relativeResidualToleranceThreshold, 2);
+
+    if (absoluteResidualToleranceThreshold > 0 && squaredResidualNorm <= squaredAbsoluteResidualToleranceThreshold)
     {
         msg_info() << "The ODE has already reached an equilibrium state. "
             << "The residual squared norm is " << squaredResidualNorm << ". "
@@ -179,6 +186,7 @@ void NewtonRaphsonSolver::solve(
         const auto [mFact, bFact, kFact] = l_integrationMethod->getMatricesFactors(dt);
         bool hasConverged = false;
         const auto lineSearchCoefficient = d_lineSearchCoefficient.getValue();
+        auto firstSquaredResidualNorm = squaredResidualNorm;
 
         unsigned int newtonIterationCount = 0;
         for (; newtonIterationCount < maxNbIterationsNewton; ++newtonIterationCount)
@@ -229,6 +237,7 @@ void NewtonRaphsonSolver::solve(
                     minSquaredResidualNormLineSearch = squaredResidualNormLineSearch;
                     minTotalLineSearchCoefficient = totalLineSearchCoefficient;
                 }
+                msg_info() << "residual = " << squaredResidualNormLineSearch << ", step = " << totalLineSearchCoefficient << ", iteration = " << newtonIterationCount << ", previous residual = " << squaredResidualNorm;
                 return squaredResidualNormLineSearch < squaredResidualNorm;
             };
 
@@ -253,15 +262,39 @@ void NewtonRaphsonSolver::solve(
 
             squaredResidualNorm = squaredResidualNormLineSearch;
 
+
+
             vop.v_eq(position_i, newPosition);
             vop.v_eq(velocity_i, newVelocity);
 
-            if (squaredResidualNorm <= squaredAbsoluteResidualToleranceThreshold)
+            //relative convergence
+            if (newtonIterationCount == 0)
+            {
+                firstSquaredResidualNorm = squaredResidualNorm;
+                msg_info() << "firstSquaredResidualNorm = " << firstSquaredResidualNorm;
+            }
+            else
+            {
+                msg_info() << "ratio = " << squaredResidualNorm / firstSquaredResidualNorm;
+                if (relativeResidualToleranceThreshold > 0 &&
+                   squaredResidualNorm < squaredRelativeResidualToleranceThreshold * firstSquaredResidualNorm)
+                {
+                    msg_info() << "[CONVERGED] residual ratio is smaller than "
+                        "the threshold (" << relativeResidualToleranceThreshold
+                        << ") after " << (newtonIterationCount+1) << " Newton iterations.";
+                    hasConverged = true;
+                    break;
+                }
+            }
+
+            // absolute convergence
+            if (absoluteResidualToleranceThreshold > 0 &&
+                squaredResidualNorm <= squaredAbsoluteResidualToleranceThreshold)
             {
                 msg_info() << "[CONVERGED] residual squared norm (" <<
                         squaredResidualNorm << ") is smaller than the threshold ("
                         << squaredAbsoluteResidualToleranceThreshold << ") after "
-                        << (newtonIterationCount+1) << " iterations. ";
+                        << (newtonIterationCount+1) << " Newton iterations.";
                 hasConverged = true;
                 break;
             }
