@@ -65,6 +65,7 @@ set(HEADER_FILES
     ${SOFATESTINGSRC_ROOT}/BaseTest.h
     ${SOFATESTINGSRC_ROOT}/LinearCongruentialRandomGenerator.h
     ${SOFATESTINGSRC_ROOT}/NumericTest.h
+    ${SOFATESTINGSRC_ROOT}/ScopedPlugin.h
     ${SOFATESTINGSRC_ROOT}/TestMessageHandler.h
     ${SOFATESTINGSRC_ROOT}/BaseSimulationTest.h
 )
@@ -74,6 +75,7 @@ set(SOURCE_FILES
     ${SOFATESTINGSRC_ROOT}/BaseTest.cpp
     ${SOFATESTINGSRC_ROOT}/LinearCongruentialRandomGenerator.cpp
     ${SOFATESTINGSRC_ROOT}/NumericTest.cpp
+    ${SOFATESTINGSRC_ROOT}/ScopedPlugin.cpp
     ${SOFATESTINGSRC_ROOT}/TestMessageHandler.cpp
     ${SOFATESTINGSRC_ROOT}/BaseSimulationTest.cpp
 )

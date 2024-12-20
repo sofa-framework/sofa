@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,46 +20,49 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
-#include <deque>
 #include <sofa/testing/config.h>
-
-#include <gtest/gtest.h>
-#include <sofa/testing/TestMessageHandler.h>
-#include <sofa/testing/ScopedPlugin.h>
+#include <sofa/helper/system/PluginManager.h>
 
 namespace sofa::testing
 {
-/// acceptable ratio between finite difference delta and error threshold
-const SReal g_minDeltaErrorRatio = .1;
 
-/** @brief Base class for Sofa test fixtures.
-  */
-class SOFA_TESTING_API BaseTest : public ::testing::Test
+struct SOFA_TESTING_API ScopedPlugin
 {
-public:
-    /// To prevent that you simply need to add the line
-    /// EXPECT_MSG_EMIT(Error); Where you want to allow a message.
-    sofa::testing::MessageAsTestFailure m_fatal ;
-    sofa::testing::MessageAsTestFailure m_error ;
+    ScopedPlugin() = delete;
+    ScopedPlugin(const ScopedPlugin&) = delete;
+    void operator=(const ScopedPlugin&) = delete;
 
-    /// Initialize Sofa and the random number generator
-    BaseTest() ;
-    ~BaseTest() override;
+    explicit ScopedPlugin(
+        const std::string& pluginName,
+        helper::system::PluginManager* pluginManager = &helper::system::PluginManager::getInstance());
 
-    virtual void onSetUp() {}
-    virtual void onTearDown() {}
+    template<class InputIt>
+    ScopedPlugin(
+        InputIt first, InputIt last,
+        helper::system::PluginManager* pluginManager = &helper::system::PluginManager::getInstance())
+    : m_pluginManager(pluginManager)
+    {
+        while (first != last)
+        {
+            addPlugin(*first++);
+        }
+    }
 
-    /// Seed value
-    static int seed;
-
-    void loadPlugins(const std::initializer_list<std::string>& pluginNames);
+    ~ScopedPlugin();
 
 private:
-    void SetUp() override ;
-    void TearDown() override ;
+    helper::system::PluginManager* m_pluginManager { nullptr };
 
-    std::deque<sofa::testing::ScopedPlugin> m_loadedPlugins;
+    std::set<std::string> m_loadedPlugins;
+
+    void addPlugin(const std::string& pluginName);
 };
 
-} // namespace sofa::testing
+
+inline std::unique_ptr<ScopedPlugin> makeScopedPlugin(const std::initializer_list<std::string>& pluginNames)
+{
+    return std::make_unique<ScopedPlugin>(pluginNames.begin(), pluginNames.end());
+}
+
+
+}

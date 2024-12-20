@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 3.22)
 project(Sofa.Testing_test)
 
 set(SOURCE_FILES
-	TestMessageHandler_test.cpp
+    ScopedPlugin_test.cpp
+    TestMessageHandler_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
