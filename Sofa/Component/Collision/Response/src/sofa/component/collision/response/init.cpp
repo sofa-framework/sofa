@@ -26,6 +26,7 @@
 
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/Modules.h>
 
 namespace sofa::component::collision::response
 {
@@ -54,8 +55,8 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin("Sofa.Component.Collision.Response.Mapper");
-    factory->registerObjectsFromPlugin("Sofa.Component.Collision.Response.Contact");
+    factory->registerObjectsFromPlugin(Sofa.Component.Collision.Response.Mapper);
+    factory->registerObjectsFromPlugin(Sofa.Component.Collision.Response.Contact);
 }
 
 void init()

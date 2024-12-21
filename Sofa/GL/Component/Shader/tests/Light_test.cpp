@@ -50,8 +50,8 @@ public:
 
     void SetUp() override
  {
-         sofa::simpleapi::importPlugin("Sofa.GL.Component.Shader");
-         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+         sofa::simpleapi::importPlugin(Sofa.GL.Component.Shader);
+         sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
     }
 
     void checkSpotLightValidAttributes();

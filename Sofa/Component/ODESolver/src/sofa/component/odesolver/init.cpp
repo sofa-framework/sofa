@@ -26,6 +26,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/Modules.h>
 
 namespace sofa::component::odesolver
 {
@@ -54,8 +55,8 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin("Sofa.Component.ODESolver.Backward");
-    factory->registerObjectsFromPlugin("Sofa.Component.ODESolver.Forward");
+    factory->registerObjectsFromPlugin(Sofa.Component.ODESolver.Backward);
+    factory->registerObjectsFromPlugin(Sofa.Component.ODESolver.Forward);
 }
 
 void init()

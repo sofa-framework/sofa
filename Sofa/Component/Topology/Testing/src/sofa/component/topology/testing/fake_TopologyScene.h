@@ -25,6 +25,7 @@
 #include <sofa/core/topology/Topology.h>
 #include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/Modules.h>
 
 class fake_TopologyScene
 {
@@ -52,11 +53,11 @@ public:
         m_simu = createSimulation("DAG");
         m_root = createRootNode(m_simu, "root");
 
-        sofa::simpleapi::importPlugin("Sofa.Component.IO.Mesh");
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Constant");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+        sofa::simpleapi::importPlugin(Sofa.Component.IO.Mesh);
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Constant);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
 
         createObject(m_root, "DefaultAnimationLoop");
 
@@ -110,7 +111,7 @@ public:
             createObject(m_root, "MeshMatrixMass");
 
             if (m_topoType == sofa::geometry::ElementType::EDGE) {
-                sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
+                sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.Spring);
                 createObject(m_root, "VectorSpringForceField", { {"useTopology", "true"} });
             }
                 

@@ -25,6 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/ObjectFactoryJson.h>
 #include <sofa/simpleapi/SimpleApi.h>
+#include <sofa/Modules.h>
 
 
 namespace sofa
@@ -70,7 +71,7 @@ TEST(ObjectFactoryJson, oneTemplatedObject)
 
 TEST(ObjectFactoryJson, mainInstance)
 {
-    EXPECT_TRUE(sofa::simpleapi::importPlugin("Sofa.Component"));
+    EXPECT_TRUE(sofa::simpleapi::importPlugin(Sofa.Component));
     const auto dump = core::ObjectFactoryJson::dump(core::ObjectFactory::getInstance());
     EXPECT_NE(dump.find("MechanicalObject"), std::string::npos);
 }

@@ -27,6 +27,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/Modules.h>
 
 namespace sofa::component::solidmechanics::fem
 {
@@ -55,9 +56,9 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
-    factory->registerObjectsFromPlugin("Sofa.Component.SolidMechanics.FEM.HyperElastic");
-    factory->registerObjectsFromPlugin("Sofa.Component.SolidMechanics.FEM.NonUniform");
+    factory->registerObjectsFromPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
+    factory->registerObjectsFromPlugin(Sofa.Component.SolidMechanics.FEM.HyperElastic);
+    factory->registerObjectsFromPlugin(Sofa.Component.SolidMechanics.FEM.NonUniform);
 }
 
 void init()
