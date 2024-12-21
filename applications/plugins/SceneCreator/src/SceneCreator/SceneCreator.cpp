@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include "SceneCreator.h"
 #include <SceneCreator/config.h>
+#include <sofa/Modules.h>
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/graph/DAGSimulation.h>

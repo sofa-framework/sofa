@@ -26,6 +26,7 @@
 
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/Modules.h>
 
 namespace sofa::component::collision::response
 {

@@ -45,6 +45,7 @@
 #include <sofa/component/visual/init.h>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/Modules.h>
 
 namespace sofa::component
 {

@@ -23,6 +23,7 @@
 
 #include <deque>
 #include <sofa/testing/config.h>
+#include <sofa/Modules.h>
 
 #include <gtest/gtest.h>
 #include <sofa/testing/TestMessageHandler.h>
