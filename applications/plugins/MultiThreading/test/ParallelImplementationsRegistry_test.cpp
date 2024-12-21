@@ -23,6 +23,7 @@
 #include <MultiThreading/initMultiThreading.h>
 #include <MultiThreading/ParallelImplementationsRegistry.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/Modules.h>
 
 #include <sofa/simpleapi/SimpleApi.h>
 

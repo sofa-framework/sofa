@@ -25,6 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/ObjectFactoryJson.h>
 #include <sofa/simpleapi/SimpleApi.h>
+#include <sofa/Modules.h>
 
 
 namespace sofa

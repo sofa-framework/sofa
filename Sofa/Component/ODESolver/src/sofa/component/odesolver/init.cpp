@@ -26,6 +26,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/Modules.h>
 
 namespace sofa::component::odesolver
 {

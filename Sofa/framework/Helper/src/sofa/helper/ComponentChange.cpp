@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/ComponentChange.h>
-
+#include <sofa/Modules.h>
 
 namespace sofa::helper::lifecycle
 {

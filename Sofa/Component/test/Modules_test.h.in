@@ -20,5 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/config.h>
+#include <sofa/Modules.h>
 
 #cmakedefine ALL_SOFA_MODULES @ALL_SOFA_MODULES@
