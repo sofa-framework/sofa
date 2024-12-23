@@ -32,9 +32,10 @@
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/simulation/Node.h>
-
+#include <bitset>
 
 using sofa::component::sceneutility::InfoComponent ;
+using namespace sofa::simulation;
 
 #include "resources/icons/iconmultinode.xpm"
 #include "resources/icons/iconnode.xpm"
@@ -53,14 +54,7 @@ using namespace sofa::core::objectmodel;
 namespace sofa::gui::qt
 {
 
-
-
 //***********************************************************************************************************
-
-static const int iconWidth=8;
-static const int iconHeight=16;
-static const int iconMargin=6;
-
 static int hexval(char c)
 {
     if (c>='0' && c<='9') return c-'0';
@@ -69,60 +63,96 @@ static int hexval(char c)
     else return 0;
 }
 
-const std::string getClass(core::objectmodel::Base* obj){
-    if (obj->toBaseNode())
+void addOverlayToImage(QImage* image, const QImage* overlay, int width, int height)
+{
+    for (int x=0;x<width;x++)
     {
-        return "Node";
+        for(int y=0;y<height;y++)
+        {
+            if( qAlpha(overlay->pixel(x,y)) == 255 )
+                image->setPixel(x, y,  overlay->pixel(x,y) );
+        }
     }
-    if (obj->toBaseObject())
-    {
-        if (obj->toContextObject())
-            return "Context";
-        if (obj->toBehaviorModel())
-            return "BehaviorModel";
-        if (obj->toCollisionModel())
-            return "CollisionModel";
-        if (obj->toBaseMechanicalState())
-            return "MechanicalModel";
-        if (obj->toBaseProjectiveConstraintSet())
-            return "ProjectiveConstraintSet";
-        if (obj->toBaseConstraintSet())
-            return "BaseConstraintSet";
-        if (obj->toBaseInteractionForceField() &&
-                obj->toBaseInteractionForceField()->getMechModel1()!=obj->toBaseInteractionForceField()->getMechModel2())
-            return "InteractionForceField";
-        if (obj->toBaseForceField())
-            return "ForceField";
-        if (obj->toBaseAnimationLoop()
-                || obj->toOdeSolver())
-            return "Solver";
-        if (obj->toPipeline()
-                || obj->toIntersection()
-                || obj->toDetection()
-                || obj->toContactManager()
-                || obj->toCollisionGroupManager())
-            return "Collision";
-        if (obj->toBaseMapping())
-            return "Mapping";
-        if (obj->toBaseMass())
-            return "Mass";
-        if (obj->toTopology ()
-                || obj->toBaseTopologyObject() )
-            return "Topology";
-        if (obj->toBaseLoader())
-            return "Loader";
-        if (obj->toConfigurationSetting())
-            return "Configuration";
-        if (obj->toVisualModel())
-            return "Visual";
-    }
-    return "Other";
 }
 
-
-
-QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning, bool haveErrors)
+/// get the appropriate pixmap for a given state. If the pixmap does not exists, then
+/// the appropriate one is generated and stored in a cache for further re-use.
+QPixmap* getPixmapForFlags(unsigned int flags, std::map<unsigned int, QPixmap*>& pixmaps)
 {
+    // is there is not pixmap for such state, then generates one
+    if (pixmaps.find(flags) == pixmaps.end())
+    {
+        if(flags&(1<<Colors::NODE))
+        {
+            const char** icon = nullptr;
+            icon = reinterpret_cast<const char**>(iconnode_xpm);
+
+            // Create a new image from pixmap
+            const QImage timg(icon);
+            QImage image {timg.convertToFormat(QImage::Format_ARGB32)};
+            pixmaps[flags] = new QPixmap(QPixmap::fromImage(image));
+        }else if(flags & (1 << Colors::OBJECT))
+        {
+            const int iconWidth=16;
+            const int iconHeight=16;
+            const int iconMargin=5;
+
+            QImage img { iconWidth,iconHeight,QImage::Format_ARGB32 };
+            img.fill(qRgba(0,0,0,0));
+
+            // draw vertical black lines
+            for (int y=iconMargin ; y < iconHeight-1 ; y++)
+            {
+                img.setPixel(0,y,qRgba(0,0,0,255));
+                img.setPixel(iconWidth-iconMargin,y,qRgba(0,0,0,255));
+            }
+
+            // draw vertical black horizontal lines
+            for (int x=0 ; x < iconWidth-iconMargin ; x++)
+            {
+                img.setPixel(x,iconMargin,qRgba(0,0,0,255));
+                img.setPixel(x,iconHeight-1,qRgba(0,0,0,255));
+            }
+
+            // select the largest "type" for color.
+            int nc = 0;
+            for (int i=0; i<Colors::ALLCOLORS; i++)
+            {
+                if (flags & (1<<i))
+                {
+                    nc=i;
+                }
+            }
+
+            const char* color = Colors::COLOR[nc];
+            const int r = (hexval(color[1])*16+hexval(color[2]));
+            const int g = (hexval(color[3])*16+hexval(color[4]));
+            const int b = (hexval(color[5])*16+hexval(color[6]));
+            const int a = 255;
+
+            // draw colored square
+            for (int x=1 ; x < iconWidth-iconMargin ; x++)
+            {
+                for(int y=iconMargin+1 ; y < iconHeight-1; y++)
+                {
+                    img.setPixel(x,y, qRgba(r,g,b,a));
+                }
+            }
+            pixmaps[flags] = new QPixmap(QPixmap::fromImage(img));
+        }else
+        {
+            throw std::runtime_error("Missing type in flags " + std::to_string(flags));
+        }
+    }
+    return pixmaps[flags];
+}
+
+QPixmap* getPixmapForFlagsAndState(unsigned int typeFlags,
+                                   bool isSleeping, bool haveInfo, bool haveWarning, bool haveErrors)
+{
+    static QPixmap pixSleeping(reinterpret_cast<const char**>(iconsleep_xpm));
+    static QImage imgSleeping = pixSleeping.toImage();
+
     static QPixmap pixInfo(reinterpret_cast<const char**>(iconinfo_xpm));
     static QImage imgInfo8 = pixInfo.scaledToWidth(16).toImage();
 
@@ -132,186 +162,119 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
     static QPixmap pixWarning(reinterpret_cast<const char**>(iconwarning_xpm));
     static QImage imgWarning8 = pixWarning.scaledToWidth(16).toImage();
 
+    static std::map<unsigned int, QPixmap*> pixmaps;
 
-    using namespace sofa::simulation::Colors;
-    unsigned int flags = 0;
-
-    if (obj->toBaseNode())
-    {
-        
-        const char** icon = reinterpret_cast<const char**>(iconsleep_xpm);
-        if( !obj->toBaseNode()->getContext()->isSleeping() ){
-            icon = reinterpret_cast<const char**>(iconnode_xpm) ;
-            flags = 1 ;
-        }
-
-        if(haveInfo)
-            flags |= 1 << (2) ;
-
-        if(haveWarning)
-            flags |= 1 << (3) ;
-
-        if(haveErrors)
-            flags |= 1 << (4) ;
-
-
-        static std::map<unsigned int, QPixmap*> pixmaps;
-        if (!pixmaps.count(flags))
-        {
-            /// Create a new image from pixmap
-            const QImage timg(icon) ;
-            QImage* img = new QImage(timg.convertToFormat(QImage::Format_ARGB32)) ;
-
-            const QImage* overlaysymbol=nullptr;
-            if( haveInfo )
-                overlaysymbol = &imgInfo8 ;
-            if( haveWarning )
-                overlaysymbol = &imgWarning8 ;
-            if( haveErrors )
-                overlaysymbol = &imgError8 ;
-
-            if(overlaysymbol){
-                for (int x=0;x<16;x++)
-                {
-                    for(int y=0;y<16;y++)
-                    {
-                        if( qAlpha(overlaysymbol->pixel(x,y)) == 255 ){
-                            img->setPixel(x, y,  overlaysymbol->pixel(x,y) );
-                        }
-                    }
-                }
-            }
-            pixmaps[flags] = new QPixmap(QPixmap::fromImage(*img));
-        }
-
-        return pixmaps[flags] ;
-    }
-    else if (obj->toBaseObject())
-    {
-        if (obj->toContextObject())
-            flags |= 1 << CONTEXT;
-        if (obj->toBehaviorModel())
-            flags |= 1 << BMODEL;
-        if (obj->toCollisionModel())
-            flags |= 1 << CMODEL;
-        if (obj->toBaseMechanicalState())
-            flags |= 1 << MMODEL;
-        if (obj->toBaseProjectiveConstraintSet())
-            flags |= 1 << PROJECTIVECONSTRAINTSET;
-        if (obj->toBaseConstraintSet())
-            flags |= 1 << CONSTRAINTSET;
-        if (obj->toBaseInteractionForceField() &&
-                obj->toBaseInteractionForceField()->getMechModel1()!=obj->toBaseInteractionForceField()->getMechModel2())
-            flags |= 1 << IFFIELD;
-        else if (obj->toBaseForceField())
-            flags |= 1 << FFIELD;
-        if (obj->toBaseAnimationLoop()
-                || obj->toOdeSolver())
-            flags |= 1 << SOLVER;
-        if (obj->toPipeline()
-                || obj->toIntersection()
-                || obj->toDetection()
-                || obj->toContactManager()
-                || obj->toCollisionGroupManager())
-            flags |= 1 << COLLISION;
-        if (obj->toBaseMapping())
-            flags |= 1 << ((obj->toBaseMapping())->isMechanical()?MMAPPING:MAPPING);
-        if (obj->toBaseMass())
-            flags |= 1 << MASS;
-        if (obj->toTopology ()
-                || obj->toBaseTopologyObject() )
-            flags |= 1 << TOPOLOGY;
-        if (obj->toBaseLoader())
-            flags |= 1 << LOADER;
-        if (obj->toConfigurationSetting())
-            flags |= 1 << CONFIGURATIONSETTING;
-        if (obj->toVisualModel() && !flags)
-            flags |= 1 << VMODEL;
-        if (!flags)
-            flags |= 1 << OBJECT;
-    }
-    else return nullptr;
+    unsigned int flags=typeFlags;
+    if(isSleeping)
+        flags |= 1 << (Colors::ALLCOLORS+1);
 
     if(haveInfo)
-        flags |= 1 << (ALLCOLORS+1) ;
+        flags |= 1 << (Colors::ALLCOLORS+2);
 
     if(haveWarning)
-        flags |= 1 << (ALLCOLORS+1) ;
+        flags |= 1 << (Colors::ALLCOLORS+3);
 
     if(haveErrors)
-        flags |= 1 << (ALLCOLORS+1) ;
+        flags |= 1 << (Colors::ALLCOLORS+4);
 
-    static std::map<unsigned int, QPixmap*> pixmaps;
-    if (!pixmaps.count(flags))
-    {
-        int nc = 0;
-        for (int i=0; i<ALLCOLORS; i++)
-            if (flags & (1<<i))
-                ++nc;
-        const int nx = 2+iconWidth*nc+iconMargin;
-        //QImage * img = new QImage(nx,iconHeight,32);
-        QImage * img = new QImage(nx,iconHeight,QImage::Format_ARGB32);
+    // is there is a pixmap for such type+state, if so then returns it
+    if (pixmaps.find(flags) != pixmaps.end())
+        return pixmaps[flags];
 
-        //img->setAlphaBuffer(true);
-        img->fill(qRgba(0,0,0,0));
-        // Workaround for qt 3.x where fill() does not set the alpha channel
-        for (int y=0 ; y < iconHeight ; y++)
-            for (int x=0 ; x < nx ; x++)
-                img->setPixel(x,y,qRgba(0,0,0,0));
+    // if there is no such pixmap creates a new one by combining the object type with its status as overlay.
 
-        // left Line
-        for (int y=iconMargin ; y < iconHeight ; y++)
-            img->setPixel(0,y,qRgba(0,0,0,255));
+    // get the background pixmap
+    auto timg = getPixmapForFlags(typeFlags, pixmaps)->toImage() ;
+    QImage image {timg.convertToFormat(QImage::Format_ARGB32)};
 
-        nc = 0;
-        for (int i=0; i<ALLCOLORS; i++)
-            if (flags & (1<<i))
-            {
-                const int x0 = 1+iconWidth*nc;
-                const int x1 = x0+iconWidth-1;
-                const char* color = COLOR[i];
-                const int r = (hexval(color[1])*16+hexval(color[2]));
-                const int g = (hexval(color[3])*16+hexval(color[4]));
-                const int b = (hexval(color[5])*16+hexval(color[6]));
-                const int a = 255;
-                for (int x=x0; x <=x1 ; x++)
-                {
-                    img->setPixel(x,iconMargin-1,qRgba(0,0,0,255));
-                    img->setPixel(x,iconHeight-1,qRgba(0,0,0,255));
-                    for (int y=iconMargin ; y < iconHeight-1 ; y++)
-                        img->setPixel(x,y,qRgba(r,g,b,a));
-                }
-                ++nc;
-            }
+    // generates one our of the base flags with the state overlay
+    if(isSleeping)
+        addOverlayToImage(&image, &imgSleeping, imgSleeping.width(), imgSleeping.height());
 
-        // right line Line
-        for (int y=iconMargin ; y < iconHeight ; y++)
-            img->setPixel(2+iconWidth*nc-1,y,qRgba(0,0,0,255));
+    const QImage* overlay=nullptr;
+    if( haveInfo )
+        overlay = &imgInfo8;
+    if( haveWarning )
+        overlay = &imgWarning8;
+    if( haveErrors )
+        overlay = &imgError8;
 
-        const QImage* overlaysymbol=nullptr;
-        if( haveInfo )
-            overlaysymbol = &imgInfo8 ;
-        if( haveWarning )
-            overlaysymbol = &imgWarning8 ;
-        if( haveErrors )
-            overlaysymbol = &imgError8 ;
+    if(overlay)
+        addOverlayToImage(&image, overlay, 16, 16);
 
-        if(overlaysymbol){
-            for (int x=0;x<16;x++)
-            {
-                for(int y=0;y<16;y++)
-                {
-                    if( qAlpha(overlaysymbol->pixel(x,y)) == 255 )
-                        img->setPixel(x, y,  overlaysymbol->pixel(x,y) );
-                }
-            }
-        }
-
-        pixmaps[flags] = new QPixmap(QPixmap::fromImage(*img));
-
-        delete img;
-    }
+    pixmaps[flags] = new QPixmap(QPixmap::fromImage(image));
     return pixmaps[flags];
+}
+
+
+QPixmap* getBaseNodePixmap(core::objectmodel::BaseNode* node, bool haveInfo, bool haveWarning, bool haveErrors)
+{
+    unsigned int flags = 1 << Colors::NODE;
+    return getPixmapForFlagsAndState(flags,
+                                     node->getContext()->isSleeping(),
+                                     haveInfo, haveWarning, haveErrors);
+}
+
+QPixmap* getBaseObjectPixmap(core::objectmodel::BaseObject* obj, bool haveInfo, bool haveWarning, bool haveErrors)
+{
+    unsigned int flags = 0;
+
+    flags |= 1 << Colors::OBJECT;
+    if (obj->toContextObject())
+        flags |= 1 << Colors::CONTEXT;
+    if (obj->toBehaviorModel())
+        flags |= 1 << Colors::BMODEL;
+    if (obj->toCollisionModel())
+        flags |= 1 << Colors::CMODEL;
+    if (obj->toBaseMechanicalState())
+        flags |= 1 << Colors::MMODEL;
+    if (obj->toBaseProjectiveConstraintSet())
+        flags |= 1 << Colors::PROJECTIVECONSTRAINTSET;
+    if (obj->toBaseConstraintSet())
+        flags |= 1 << Colors::CONSTRAINTSET;
+    if (obj->toBaseInteractionForceField() &&
+        obj->toBaseInteractionForceField()->getMechModel1()!=obj->toBaseInteractionForceField()->getMechModel2())
+        flags |= 1 << Colors::IFFIELD;
+    else if (obj->toBaseForceField())
+        flags |= 1 << Colors::FFIELD;
+    if (obj->toBaseAnimationLoop()
+        || obj->toOdeSolver())
+        flags |= 1 << Colors::SOLVER;
+    if (obj->toPipeline()
+        || obj->toIntersection()
+        || obj->toDetection()
+        || obj->toContactManager()
+        || obj->toCollisionGroupManager())
+        flags |= 1 << Colors::COLLISION;
+    if (obj->toBaseMapping() && obj->toBaseMapping()->isMechanical())
+        flags |= (1 << Colors::MMAPPING);
+    if (obj->toBaseMapping())
+        flags |= (1 << Colors::MAPPING);
+    if (obj->toBaseMass())
+        flags |= 1 << Colors::MASS;
+    if (obj->toTopology ()
+        || obj->toBaseTopologyObject() )
+        flags |= 1 << Colors::TOPOLOGY;
+    if (obj->toBaseLoader())
+        flags |= 1 << Colors::LOADER;
+    if (obj->toConfigurationSetting())
+        flags |= 1 << Colors::CONFIGURATIONSETTING;
+    if (obj->toVisualModel())
+        flags |= 1 << Colors::VMODEL;
+
+    return getPixmapForFlagsAndState(flags, false, haveInfo, haveWarning, haveErrors);
+}
+
+
+QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning, bool haveErrors)
+{
+    if (obj->toBaseNode())
+        return getBaseNodePixmap(obj->toBaseNode(), haveInfo,haveWarning, haveErrors);
+
+    if (obj->toBaseObject())
+        return getBaseObjectPixmap(obj->toBaseObject(), haveInfo,haveWarning, haveErrors);
+
+    return nullptr;
 }
 
 void setMessageIconFrom(QTreeWidgetItem* item, Base* object)
@@ -404,7 +367,7 @@ void GraphListenerQListView::onBeginAddChild(Node* parent, Node* child)
 
             // Node with multiple parents
             if (parent &&
-                    parent != findObject(item->parent()) )
+                parent != findObject(item->parent()) )
             {
                 // check that the multinode have not been added yet
                 // i.e. verify that all every item equivalent to current 'item' (in nodeWithMultipleParents) do not have the same 'parent'
