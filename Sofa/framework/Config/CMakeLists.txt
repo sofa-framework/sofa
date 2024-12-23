@@ -5,6 +5,38 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/lib/cmake")
 
+if(MSVC)
+    set(CMAKE_CXX_FLAGS_RELEASE "/MD /O2 /Ob2" CACHE STRING
+     "Flags used by the C++ compiler during maintainer builds."
+      FORCE)
+    set(CMAKE_C_FLAGS_RELEASE "/MD /O2 /Ob2" CACHE STRING
+      "Flags used by the C compiler during maintainer builds."
+      FORCE)
+    set(CMAKE_EXE_LINKER_FLAGS_RELEASE
+      "/INCREMENTAL:NO" CACHE STRING
+      "Flags used for linking binaries during maintainer builds."
+      FORCE)
+    set(CMAKE_SHARED_LINKER_FLAGS_RELEASE
+      "/INCREMENTAL:NO" CACHE STRING
+      "Flags used by the shared libraries linker during maintainer builds."
+      FORCE)
+else()
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3" CACHE STRING
+     "Flags used by the C++ compiler during maintainer builds."
+      FORCE)
+    set(CMAKE_C_FLAGS_RELEASE "-O3" CACHE STRING
+      "Flags used by the C compiler during maintainer builds."
+      FORCE)
+    set(CMAKE_EXE_LINKER_FLAGS_RELEASE
+      "" CACHE STRING
+      "Flags used for linking binaries during maintainer builds."
+      FORCE)
+    set(CMAKE_SHARED_LINKER_FLAGS_RELEASE
+      "" CACHE STRING
+      "Flags used by the shared libraries linker during maintainer builds."
+      FORCE)
+endif()
+
 include(SofaMacros)
 
 # Clear internal target list (set by the macro sofa_add_generic() )
@@ -260,11 +292,6 @@ if(SOFA_ENABLE_BUILTIN_TIMER)
     set(SOFA_ENABLE_SCOPED_ADVANCED_TIMER 1)
 endif()
 
-if(CMAKE_SYSTEM_NAME STREQUAL Linux AND NOT CMAKE_BUILD_TYPE MATCHES "Debug")
-    target_compile_definitions(${PROJECT_NAME} PUBLIC "NDEBUG")
-    # On Windows and MacOS, NDEBUG and _DEBUG are automatically
-    # set in the default c/cxx flags of the right configurations
-endif()
 if(MSVC)
     # Increase Number of Sections in .Obj file
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "/bigobj")
