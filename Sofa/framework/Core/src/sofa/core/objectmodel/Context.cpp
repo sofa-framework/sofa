@@ -124,7 +124,7 @@ void Context::setAnimate(const bool val)
 }
 
 //======================
-void Context::copyContext(const Context& c)
+void Context::copyContext(Context& c)
 {
     // BUGFIX 12/01/06 (Jeremie A.): Can't use operator= on the class as it will copy other data in the BaseContext class (such as name)...
     // *this = c;
@@ -134,15 +134,19 @@ void Context::copyContext(const Context& c)
 }
 
 
-void Context::copySimulationContext(const Context& c)
+void Context::copySimulationContext(Context& c)
 {
-    worldGravity_.setValue(c.getGravity());  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+    // If not set, link the gravity to the one from the parent context
+    if (!worldGravity_.isSet())
+    {
+        worldGravity_.setParent(&c.worldGravity_);
+    }
+
+    // Copy the time step, time and animate from context
     setDt(c.getDt());
     setTime(c.getTime());
     setAnimate(c.getAnimate());
-
-
-
 }
+
 } // namespace sofa::core::objectmodel
 
