@@ -24,7 +24,6 @@
 #include <sofa/gui/component/init.h>
 #include <sofa/gui/common/init.h>
 #include <sofa/gui/batch/init.h>
-#include <sofa/gui/qt/init.h>
 
 namespace sofa::gui
 {
@@ -37,8 +36,7 @@ void init()
         sofa::gui::component::init();
         sofa::gui::common::init();
         sofa::gui::batch::init();
-        sofa::gui::qt::init();
-        
+
         first = false;
     }
 }
