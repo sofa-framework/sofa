@@ -246,8 +246,16 @@ protected:
     template<id_type... Is>
     static constexpr id_type findId_impl(const std::string_view key, std::index_sequence<Is...>)
     {
+        constexpr id_type indices[] = { Is... };
         id_type result = static_cast<id_type>(-1);
-        ((Derived::s_items[Is].key == key ? (result = Is, true) : false) || ...);
+        for (id_type i : indices)
+        {
+            if (Derived::s_items[i].key == key)
+            {
+                result = i;
+                break;
+            }
+        }
         return result;
     }
 
