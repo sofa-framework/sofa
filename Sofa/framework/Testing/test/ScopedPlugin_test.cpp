@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,47 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <deque>
-#include <sofa/testing/config.h>
-
-#include <gtest/gtest.h>
-#include <sofa/testing/TestMessageHandler.h>
 #include <sofa/testing/ScopedPlugin.h>
+#include <gtest/gtest.h>
 
-namespace sofa::testing
+TEST(ScopedPlugin, test)
 {
-/// acceptable ratio between finite difference delta and error threshold
-const SReal g_minDeltaErrorRatio = .1;
+    static std::string pluginName = "Sofa.Component.AnimationLoop";
+    auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
 
-/** @brief Base class for Sofa test fixtures.
-  */
-class SOFA_TESTING_API BaseTest : public ::testing::Test
-{
-public:
-    /// To prevent that you simply need to add the line
-    /// EXPECT_MSG_EMIT(Error); Where you want to allow a message.
-    sofa::testing::MessageAsTestFailure m_fatal ;
-    sofa::testing::MessageAsTestFailure m_error ;
+    //make sure that pluginName is not already loaded
+    {
+        const auto [path, isLoaded] = pluginManager.isPluginLoaded(pluginName);
+        if (isLoaded)
+        {
+            pluginManager.unloadPlugin(path);
+        }
+    }
 
-    /// Initialize Sofa and the random number generator
-    BaseTest() ;
-    ~BaseTest() override;
+    {
+        const auto [path, isLoaded] = pluginManager.isPluginLoaded(pluginName);
+        EXPECT_FALSE(isLoaded);
+    }
 
-    virtual void onSetUp() {}
-    virtual void onTearDown() {}
+    {
+        const sofa::testing::ScopedPlugin plugin(pluginName);
 
-    /// Seed value
-    static int seed;
+        {
+            const auto [path, isLoaded] = pluginManager.isPluginLoaded(pluginName);
+            EXPECT_TRUE(isLoaded);
+        }
 
-    void loadPlugins(const std::initializer_list<std::string>& pluginNames);
+        //end of scope: plugin should be unloaded
+    }
 
-private:
-    void SetUp() override ;
-    void TearDown() override ;
-
-    std::deque<sofa::testing::ScopedPlugin> m_loadedPlugins;
-};
-
-} // namespace sofa::testing
+    {
+        const auto [path, isLoaded] = pluginManager.isPluginLoaded(pluginName);
+        EXPECT_FALSE(isLoaded);
+    }
+}
