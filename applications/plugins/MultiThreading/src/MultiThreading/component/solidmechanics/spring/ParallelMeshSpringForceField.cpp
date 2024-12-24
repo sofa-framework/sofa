@@ -25,10 +25,13 @@
 namespace multithreading::component::solidmechanics::spring
 {
 
-int ParallelMeshSpringForceFieldClass = sofa::core::RegisterObject("Parallel stiff springs acting along the edges of a mesh")
-    .add< ParallelMeshSpringForceField<sofa::defaulttype::Vec3Types> >()
-    .add< ParallelMeshSpringForceField<sofa::defaulttype::Vec2Types> >()
-    .add< ParallelMeshSpringForceField<sofa::defaulttype::Vec1Types> >();
+void registerParallelMeshSpringForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel stiff springs acting along the edges of a mesh.")
+                             .add< ParallelMeshSpringForceField<sofa::defaulttype::Vec3Types> >()
+                             .add< ParallelMeshSpringForceField<sofa::defaulttype::Vec2Types> >()
+                             .add< ParallelMeshSpringForceField<sofa::defaulttype::Vec1Types> >());
+}
 
 template class SOFA_MULTITHREADING_PLUGIN_API ParallelMeshSpringForceField<sofa::defaulttype::Vec3Types>;
 template class SOFA_MULTITHREADING_PLUGIN_API ParallelMeshSpringForceField<sofa::defaulttype::Vec2Types>;
