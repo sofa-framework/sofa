@@ -36,12 +36,13 @@ namespace multithreading::component::collision::detection::algorithm
 const bool isParallelBVHNarrowPhaseImplementationRegistered =
     multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("BVHNarrowPhase", "ParallelBVHNarrowPhase");
 
+void registerParallelBVHNarrowPhase(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Narrow phase collision detection based on boundary volume hierarchy.")
+                             .add< ParallelBVHNarrowPhase >());
+}
 
 using sofa::helper::ScopedAdvancedTimer;
-
-int ParallelBVHNarrowPhaseClass = sofa::core::RegisterObject("Narrow phase collision detection based on boundary volume hierarchy")
-        .add< ParallelBVHNarrowPhase >()
-;
 
 ParallelBVHNarrowPhase::ParallelBVHNarrowPhase()
 {}

@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef MULTITHREADING_CONFIG_H
-#define MULTITHREADING_CONFIG_H
+#pragma once
 
 #include <sofa/config.h>
 
@@ -31,7 +30,11 @@
 #  define SOFA_MULTITHREADING_PLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif
+namespace multithreading
+{
+    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+} // namespace multithreading
 
 #ifdef SOFA_BUILD_MULTITHREADING
 #define SOFA_ATTRIBUTE_DISABLED__TASKSCHEDULERUSER_DATANAME(msg)
