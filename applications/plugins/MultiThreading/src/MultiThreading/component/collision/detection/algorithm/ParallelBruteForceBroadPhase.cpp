@@ -34,11 +34,13 @@ namespace multithreading::component::collision::detection::algorithm
 const bool isParallelParallelBruteForceBroadPhaseImplementationRegistered =
     multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("BruteForceBroadPhase", "ParallelBruteForceBroadPhase");
 
-using sofa::helper::ScopedAdvancedTimer;
+void registerParallelBruteForceBroadPhase(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Collision detection using extensive pair-wise tests performed in parallel.")
+                             .add< ParallelBruteForceBroadPhase >());
+}
 
-int ParallelBruteForceBroadPhaseClass = sofa::core::RegisterObject("Collision detection using extensive pair-wise tests performed in parallel")
-        .add< ParallelBruteForceBroadPhase >()
-;
+using sofa::helper::ScopedAdvancedTimer;
 
 ParallelBruteForceBroadPhase::ParallelBruteForceBroadPhase()
     : BruteForceBroadPhase()

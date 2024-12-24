@@ -32,11 +32,11 @@ namespace multithreading::component::mapping::linear
 const bool isBeamLinearMapping_mtImplementationRegistered =
     multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("BeamLinearMapping", "BeamLinearMapping_mt");
 
-//using namespace defaulttype;
-// Register in the Factory
-int BeamLinearMapping_mtClass = sofa::core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
-        .add< BeamLinearMapping_mt< Rigid3Types, Vec3Types > >()
-        ;
+void registerBeamLinearMapping_mt(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs.")
+                             .add< BeamLinearMapping_mt< Rigid3Types, Vec3Types > >());
+}
 
 template class BeamLinearMapping_mt< Rigid3Types, Vec3Types >;
 
