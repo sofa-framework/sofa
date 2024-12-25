@@ -41,7 +41,7 @@ namespace multithreading::component::animationloop
 
 void registerAnimationLoopParallelScheduler(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel animation loop, using intel tbb library.")
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel animation loop, using the Intel tbb library.")
                                                           .add< AnimationLoopParallelScheduler >());
 }
 

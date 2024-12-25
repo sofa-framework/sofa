@@ -36,7 +36,7 @@ const bool isParallelTetrahedronFEMForceFieldImplementationRegistered =
 
 void registerParallelTetrahedronFEMForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel tetrahedral finite elements.")
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel implementation of a linear elastic material using tetrahedral finite elements..")
                              .add < ParallelTetrahedronFEMForceField < Vec3Types > > ());
 }
 

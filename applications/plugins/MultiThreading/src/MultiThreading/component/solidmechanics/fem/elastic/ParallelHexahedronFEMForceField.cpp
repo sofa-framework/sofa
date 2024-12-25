@@ -36,7 +36,7 @@ const bool isParallelHexahedronFEMForceFieldImplementationRegistered =
 
 void registerParallelHexahedronFEMForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel hexahedral finite elements.")
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel implementation of a linear elastic material using hexahedral finite elements.")
                              .add < ParallelHexahedronFEMForceField < Vec3Types > > ());
 }
 

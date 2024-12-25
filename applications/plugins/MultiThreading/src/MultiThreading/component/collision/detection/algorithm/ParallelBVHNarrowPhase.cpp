@@ -38,7 +38,7 @@ const bool isParallelBVHNarrowPhaseImplementationRegistered =
 
 void registerParallelBVHNarrowPhase(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Narrow phase collision detection based on boundary volume hierarchy.")
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel version of the narrow phase collision detection based on boundary volume hierarchy.")
                              .add< ParallelBVHNarrowPhase >());
 }
 

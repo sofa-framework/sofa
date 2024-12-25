@@ -36,7 +36,7 @@ const bool isParallelParallelBruteForceBroadPhaseImplementationRegistered =
 
 void registerParallelBruteForceBroadPhase(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Collision detection using extensive pair-wise tests performed in parallel.")
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel version of the collision detection using extensive pair-wise tests performed concurrently.")
                              .add< ParallelBruteForceBroadPhase >());
 }
 

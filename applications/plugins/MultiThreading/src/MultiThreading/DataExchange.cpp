@@ -35,7 +35,7 @@ SOFA_EVENT_CPP(DataExchangeEvent)
 
 void registerDataExchange(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("DataExchange")
+    factory->registerObjects(core::ObjectRegistrationData("Component for data memory sharing in the context of multi-threading applications")
                              .add< DataExchange< sofa::type::vector<sofa::type::Vec3d> > >(true)
                              .add< DataExchange< sofa::type::vector<sofa::type::Vec2d> > >()
                              .add< DataExchange< sofa::type::vector<double> > >()
