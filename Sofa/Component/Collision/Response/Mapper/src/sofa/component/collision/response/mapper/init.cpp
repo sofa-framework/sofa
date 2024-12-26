@@ -48,7 +48,7 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
-void registerObjects(sofa::core::ObjectFactory* factory)
+void registerObjects(sofa::core::ObjectFactory* /*factory*/)
 {
     // this library does not register any component in the Factory
 }
