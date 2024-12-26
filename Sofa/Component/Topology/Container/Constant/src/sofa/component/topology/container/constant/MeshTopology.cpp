@@ -545,9 +545,6 @@ void MeshTopology::init()
         m_upperElementType = sofa::geometry::ElementType::EDGE;
     else
         m_upperElementType = sofa::geometry::ElementType::POINT;
-
-
-    computeCrossElementBuffers();
 }
 
 void MeshTopology::computeCrossElementBuffers()
