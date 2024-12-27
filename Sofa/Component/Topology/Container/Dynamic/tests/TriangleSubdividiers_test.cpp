@@ -193,9 +193,86 @@ bool TriangleSubdividers_test::testSubdivider_1Edge()
     return true;
 }
 
+
+/// Will test the creation of 2 points in middle of the first 2 edges of the triangle. The ouptut should be 3 triangles each time.
 bool TriangleSubdividers_test::testSubdivider_2Edge()
 {
     int nbrP = createTopology();
+    sofa::type::fixed_array< bool, 3> directOriented = { true, false, true };
+
+    // Test barycenter point for each specific triangle
+    for (unsigned int i = 0; i < m_triToTest.size(); i++)
+    {
+        const triangleData& triToTest = m_triToTest[i];
+
+        // Create specific subdivider for 1 Node inside an edge of the triangle
+        TriangleSubdivider_2Edge* subdivider0 = new TriangleSubdivider_2Edge(triToTest.triId, triToTest.tri);
+
+        // Define the points to be added in middle of the first 2 edges of a triangle
+        sofa::type::vector<PointID> ancestors0 = { triToTest.tri[0], triToTest.tri[1] };
+        sofa::type::vector<PointID> ancestors1 = { triToTest.tri[1], triToTest.tri[2] };
+        sofa::type::vector<SReal> coefs = { 0.5_sreal, 0.5_sreal };
+
+        sofa::type::Vec3 pG0 = triToTest.triCoords[0] * coefs[0] + triToTest.triCoords[1] * coefs[1];
+        sofa::type::Vec3 pG1 = triToTest.triCoords[1] * coefs[0] + triToTest.triCoords[2] * coefs[1];
+
+        // Add new points to the triangle and compute the subdivision
+        PointToAdd* newPoint_0 = new PointToAdd(getUniqueId(ancestors0[0], ancestors0[1]), nbrP, ancestors0, coefs);
+        PointToAdd* newPoint_1 = new PointToAdd(getUniqueId(ancestors1[1], ancestors1[2]), nbrP+1, ancestors1, coefs);
+        subdivider0->addPoint(newPoint_0);
+        subdivider0->addPoint(newPoint_1);
+        subdivider0->subdivide(triToTest.triCoords);
+
+        // Check the structure and position of the 3 triangles created by the subdivision
+        auto trisToAdd = subdivider0->getTrianglesToAdd();
+        EXPECT_EQ(trisToAdd.size(), 3);
+
+        // Store in a single structure the 3 indices with the 2 new points, same for positions
+        sofa::type::fixed_array<sofa::Index, 5> vIndices = { triToTest.tri[0], triToTest.tri[1], triToTest.tri[2], nbrP, nbrP + 1 };
+        sofa::type::fixed_array<sofa::type::Vec3, 5> vCoords = { triToTest.triCoords[0], triToTest.triCoords[1], triToTest.triCoords[2], pG0, pG1 };
+
+        // Create map of indices to be used for test, to be combined with vIndices and vCoords
+        sofa::type::fixed_array<Triangle, 3> triTruths;
+        if (directOriented[i])
+        {
+            triTruths[0] = { 1, 4, 3 };
+            triTruths[1] = { 4, 2, 0 };
+            triTruths[2] = { 0, 3, 4 };
+        }
+        else
+        {
+            triTruths[0] = { 1, 4, 3 };
+            triTruths[1] = { 4, 2, 3 };
+            triTruths[2] = { 2, 0, 3 };
+        }
+        
+
+        for (int triId = 0; triId < 3; triId++)
+        {
+            Triangle triTruth = { vIndices[triTruths[triId][0]], vIndices[triTruths[triId][1]], vIndices[triTruths[triId][2]] };
+
+            for (int vid = 0; vid < 3; vid++)
+            {
+                EXPECT_EQ(trisToAdd[triId]->m_triangle[vid], triTruth[vid]);
+
+                sofa::type::Vec3 vert = vCoords[triTruths[triId][vid]];
+                EXPECT_FLOAT_EQ(trisToAdd[triId]->m_triCoords[vid][0], vert[0]);
+                EXPECT_FLOAT_EQ(trisToAdd[triId]->m_triCoords[vid][1], vert[1]);
+                EXPECT_FLOAT_EQ(trisToAdd[triId]->m_triCoords[vid][2], vert[2]);
+            }
+            
+            EXPECT_EQ(trisToAdd[triId]->m_ancestors[0], triToTest.triId);
+           
+            if ( (directOriented[i] && triId == 1) || (!directOriented[i] && triId == 2))
+            {
+                EXPECT_FLOAT_EQ(trisToAdd[triId]->m_coefs[0], 0.5_sreal);
+            }
+            else
+            {
+                EXPECT_FLOAT_EQ(trisToAdd[triId]->m_coefs[0], 0.25_sreal);
+            }
+        }
+    }
 
     return true;
 }
