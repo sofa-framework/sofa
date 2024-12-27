@@ -44,7 +44,7 @@ public:
         sofa::type::fixed_array<sofa::type::Vec3, 3> triCoords;
     };
 
-    void createTopology();
+    int createTopology();
 
     bool testSubdivider_1Node();
     bool testSubdivider_1Edge();
@@ -56,15 +56,19 @@ public:
 
 };
 
-
-void TriangleSubdividers_test::createTopology()
+/***
+* Will create 3 triangles as the current topology with one square triangle, one equilateral triangle and one triangle nearly flat
+*/
+int TriangleSubdividers_test::createTopology()
 {
+    int nbrP = 0;
     triangleData squareTri;
     squareTri.triId = 0;
     squareTri.tri = { 0, 1, 2 };
     squareTri.triCoords[0] = { 0.0, 0.0, 0.0 };
     squareTri.triCoords[1] = { 1.0, 1.0, 0.0 };
     squareTri.triCoords[2] = { 0.0, 0.0, sqrt(2) };
+    nbrP += 3;
 
     triangleData equiTri;
     equiTri.triId = 1;
@@ -72,6 +76,7 @@ void TriangleSubdividers_test::createTopology()
     equiTri.triCoords[0] = { 0.0, 0.0, 0.0 };
     equiTri.triCoords[1] = { sqrt(2) / 2._sreal, sqrt(2) / 2._sreal, 0.0 };
     equiTri.triCoords[2] = { sqrt(2) / 4._sreal, sqrt(2) / 4._sreal, sqrt(0.75_sreal)};
+    nbrP += 2;
 
     triangleData flatTri;
     flatTri.triId = 2;
@@ -79,43 +84,52 @@ void TriangleSubdividers_test::createTopology()
     flatTri.triCoords[0] = { 0.0, 0.0, 0.0 };
     flatTri.triCoords[1] = { 10.0, 10.0, 0.0 };
     flatTri.triCoords[2] = { 0.0, 0.0, 1.0 };
+    nbrP += 2;
 
     m_triToTest.emplace_back(squareTri);
     m_triToTest.emplace_back(equiTri);
     m_triToTest.emplace_back(flatTri);
+
+    return nbrP;
 }
 
+/// Will test the creation of 1 point in middle of each triangle. The ouptut should be 3 triangles each time.
 bool TriangleSubdividers_test::testSubdivider_1Node()
 {
-    createTopology();
+    int nbrP = createTopology();
 
-    // Test barycenter point
+    // Test barycenter point for each specific triangle
     for (unsigned int i = 0; i < m_triToTest.size(); i++)
     {
+        // Create specific subdivider for 1 Node inside a triangle
         TriangleSubdivider_1Node* subdivider0 = new TriangleSubdivider_1Node(m_triToTest[i].triId, m_triToTest[i].tri);
         sofa::type::vector<PointID> ancestors = { m_triToTest[i].tri[0], m_triToTest[i].tri[1], m_triToTest[i].tri[2] };
 
+        // Define the point to be added as the barycenter of the triangle
         SReal tier = 1._sreal / 3._sreal;
         sofa::type::vector<SReal> coefs = { tier, tier, tier };
+        sofa::type::Vec3 pG = m_triToTest[i].triCoords[0] * coefs[0] + m_triToTest[i].triCoords[1] * coefs[1] + m_triToTest[i].triCoords[2] * coefs[2];
 
-        PointToAdd* newPoint_0 = new PointToAdd(getUniqueId(m_triToTest[i].tri[0], m_triToTest[i].tri[1]), 7, ancestors, coefs);
+        // Add new point to the triangle and compute the subdivision
+        PointToAdd* newPoint_0 = new PointToAdd(getUniqueId(m_triToTest[i].tri[0], m_triToTest[i].tri[1]), nbrP, ancestors, coefs);
         subdivider0->addPoint(newPoint_0);
         subdivider0->subdivide(m_triToTest[i].triCoords);
 
+        // Check the structure and position of the 3 triangles created by the subdivision
         auto trisToAdd = subdivider0->getTrianglesToAdd();
         EXPECT_EQ(trisToAdd.size(), 3);
         
         for (int j = 0; j < 3; j++)
         {
+            // each triangle is composed of old edge + new barycenter point (id == 7 here)
             EXPECT_EQ(trisToAdd[j]->m_triangle[0], m_triToTest[i].tri[j]);
             EXPECT_EQ(trisToAdd[j]->m_triangle[1], m_triToTest[i].tri[(j + 1) % 3]);
-            EXPECT_EQ(trisToAdd[j]->m_triangle[2], 7);
+            EXPECT_EQ(trisToAdd[j]->m_triangle[2], nbrP);
 
-            EXPECT_EQ(trisToAdd[j]->m_ancestors[0], m_triToTest[i].triId);
+            EXPECT_EQ(trisToAdd[j]->m_ancestors[0], m_triToTest[i].triId); // check ancestors and barycoefs
             EXPECT_FLOAT_EQ(trisToAdd[j]->m_coefs[0], tier);
 
-            sofa::type::Vec3 pG = m_triToTest[i].triCoords[0] * coefs[0] + m_triToTest[i].triCoords[1] * coefs[1] + m_triToTest[i].triCoords[2] * coefs[2];
-                
+            // check position of the new point created
             EXPECT_FLOAT_EQ(trisToAdd[j]->m_triCoords[2][0], pG[0]);
             EXPECT_FLOAT_EQ(trisToAdd[j]->m_triCoords[2][1], pG[1]);
             EXPECT_FLOAT_EQ(trisToAdd[j]->m_triCoords[2][2], pG[2]);
@@ -127,27 +141,76 @@ bool TriangleSubdividers_test::testSubdivider_1Node()
 }
 
 
+/// Will test the creation of 1 point in middle of the first edge of the triangle. The ouptut should be 2 triangles each time.
 bool TriangleSubdividers_test::testSubdivider_1Edge()
 {
-    // TODO
+    int nbrP = createTopology();
+
+    // Test barycenter point for each specific triangle
+    for (const triangleData& triToTest : m_triToTest)
+    {
+        // Create specific subdivider for 1 Node inside an edge of the triangle
+        TriangleSubdivider_1Edge* subdivider0 = new TriangleSubdivider_1Edge(triToTest.triId, triToTest.tri);
+        
+        // Define the point to be added in middle of the first edge of a triangle
+        sofa::type::vector<PointID> ancestors = { triToTest.tri[0], triToTest.tri[1]};
+        sofa::type::vector<SReal> coefs = { 0.5_sreal, 0.5_sreal };
+        
+        sofa::type::Vec3 pG = triToTest.triCoords[0] * coefs[0] + triToTest.triCoords[1] * coefs[1];
+
+        // Add new point to the triangle and compute the subdivision
+        PointToAdd* newPoint_0 = new PointToAdd(getUniqueId(triToTest.tri[0], triToTest.tri[1]), nbrP, ancestors, coefs);
+        subdivider0->addPoint(newPoint_0);
+        subdivider0->subdivide(triToTest.triCoords);
+
+        // Check the structure and position of the 3 triangles created by the subdivision
+        auto trisToAdd = subdivider0->getTrianglesToAdd();
+        EXPECT_EQ(trisToAdd.size(), 2);
+
+        // tri 1
+        EXPECT_EQ(trisToAdd[0]->m_triangle[0], triToTest.tri[0]);
+        EXPECT_EQ(trisToAdd[0]->m_triangle[1], nbrP);
+        EXPECT_EQ(trisToAdd[0]->m_triangle[2], triToTest.tri[2]);
+
+        EXPECT_EQ(trisToAdd[0]->m_ancestors[0], triToTest.triId);
+        EXPECT_FLOAT_EQ(trisToAdd[0]->m_coefs[0], 0.5_sreal);
+        EXPECT_FLOAT_EQ(trisToAdd[0]->m_triCoords[1][0], pG[0]);
+        EXPECT_FLOAT_EQ(trisToAdd[0]->m_triCoords[1][1], pG[1]);
+        EXPECT_FLOAT_EQ(trisToAdd[0]->m_triCoords[1][2], pG[2]);
+
+        // tri 2
+        EXPECT_EQ(trisToAdd[1]->m_triangle[0], nbrP);
+        EXPECT_EQ(trisToAdd[1]->m_triangle[1], triToTest.tri[1]);
+        EXPECT_EQ(trisToAdd[1]->m_triangle[2], triToTest.tri[2]);
+
+        EXPECT_EQ(trisToAdd[1]->m_ancestors[0], triToTest.triId);
+        EXPECT_FLOAT_EQ(trisToAdd[1]->m_coefs[0], 0.5_sreal);
+        EXPECT_FLOAT_EQ(trisToAdd[1]->m_triCoords[0][0], pG[0]);
+        EXPECT_FLOAT_EQ(trisToAdd[1]->m_triCoords[0][1], pG[1]);
+        EXPECT_FLOAT_EQ(trisToAdd[1]->m_triCoords[0][2], pG[2]);
+    }
+
     return true;
 }
 
 bool TriangleSubdividers_test::testSubdivider_2Edge()
 {
-    // TODO
+    int nbrP = createTopology();
+
     return true;
 }
 
 bool TriangleSubdividers_test::testSubdivider_3Edge()
 {
-    // TODO
+    int nbrP = createTopology();
+
     return true;
 }
 
 bool TriangleSubdividers_test::testSubdivider_2Node()
 {
-    // TODO
+    int nbrP = createTopology();
+
     return true;
 }
 
