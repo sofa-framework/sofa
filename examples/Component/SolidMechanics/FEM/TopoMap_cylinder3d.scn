@@ -39,7 +39,8 @@
         <FixedProjectiveConstraint indices="0" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />
         <Node name="T">
-            <TriangleSetTopologyContainer name="Container"/>
+            <TriangleSetTopologyContainer name="Container" />
+            <TriangleSetTopologyModifier />
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <BoxROI name="boxSelection" box="0 0 0 1 1 1.1" drawTriangles="true" listening="true"/>
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
