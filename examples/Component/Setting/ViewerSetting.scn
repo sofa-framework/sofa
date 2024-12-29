@@ -25,31 +25,30 @@
     <ViewerSetting resolution="800 600"/>
 
     <VisualStyle displayFlags="showVisual  " /> <!--showBehaviorModels showCollisionModels-->
-	<LCPConstraintSolver tolerance="1e-3" maxIt="1000" initial_guess="false" build_lcp="false"  printLog="0" mu="0.2"/>
+    <LCPConstraintSolver tolerance="1e-3" maxIt="1000" initial_guess="false" build_lcp="false"  printLog="0" mu="0.2"/>
     <FreeMotionAnimationLoop />
     <CollisionPipeline depth="15" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-	<MinProximityIntersection name="Proximity" alarmDistance="1.5" contactDistance="1" />
+    <MinProximityIntersection name="Proximity" alarmDistance="1.5" contactDistance="1" />
 
     <LightManager />
     <SpotLight name="light1" color="1 1 1" position="0 80 25" direction="0 -1 -0.8" cutoff="30" exponent="1" />
-	<SpotLight name="light2" color="1 1 1" position="0 40 100" direction="0 0 -1" cutoff="30" exponent="1" />
+    <SpotLight name="light2" color="1 1 1" position="0 40 100" direction="0 0 -1" cutoff="30" exponent="1" />
 
     <CollisionResponse name="Response" response="FrictionContactConstraint" />
     <Node name="Snake" >
-
-		<SparseGridRamificationTopology n="4 12 3" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
+        <SparseGridRamificationTopology n="4 12 3" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
 
         <EulerImplicitSolver name="cg_odesolver" rayleighMass="1" rayleighStiffness="0.03" />
         <CGLinearSolver name="linear solver" iterations="20" tolerance="1e-12" threshold="1e-18" />
-		<MechanicalObject name="dofs"  scale="1" dy="2"/>
+        <MechanicalObject name="dofs"  scale="1" dy="2"/>
         <UniformMass totalMass="1.0" />
         <HexahedronFEMForceField name="FEM" youngModulus="30000.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
 
-		<UncoupledConstraintCorrection />
+        <UncoupledConstraintCorrection defaultCompliance="0.001"/>
 
-		<Node name="Collis">
+        <Node name="Collis">
             <MeshOBJLoader name="loader" filename="mesh/meca_snake_900tri.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
