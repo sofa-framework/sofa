@@ -29,7 +29,7 @@
     <CollisionPipeline name="CollisionPipeline" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <NewProximityIntersection name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
+    <NewProximityIntersection name="Proximity" alarmDistance="0.2" contactDistance="0.09" />
     <CollisionResponse name="Response" response="FrictionContactConstraint" />
     <LCPConstraintSolver maxIt="1000" tolerance="0.001"  build_lcp="false"/>
 
