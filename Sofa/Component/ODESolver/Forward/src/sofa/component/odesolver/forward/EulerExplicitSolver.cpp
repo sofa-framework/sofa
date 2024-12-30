@@ -24,9 +24,11 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/simulation/MechanicalVisitorCreator.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
@@ -84,11 +86,8 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     addSeparateGravity(&mop, dt, vResult);
     computeForce(&mop, f);
 
-    sofa::Size nbNonDiagonalMasses = 0;
-    MechanicalGetNonDiagonalMassesCountVisitor(&mop.mparams, &nbNonDiagonalMasses).execute(this->getContext());
-
     // Mass matrix is diagonal, solution can thus be found by computing acc = f/m
-    if(nbNonDiagonalMasses == 0.)
+    if(isMassMatrixDiagonal(mop) == 0)
     {
         // acc = M^-1 * f
         computeAcceleration(&mop, acc, f);
@@ -340,6 +339,23 @@ void EulerExplicitSolver::solveSystem(core::MultiVecDerivId solution, core::Mult
     l_linearSolver->setSystemLHVector(solution);
     l_linearSolver->setSystemRHVector(rhs);
     l_linearSolver->solveSystem();
+}
+
+bool EulerExplicitSolver::isMassMatrixDiagonal(
+    const sofa::simulation::common::MechanicalOperations& mop)
+{
+    sofa::Size nbNonDiagonalMasses = 0;
+    auto visitor = simulation::makeMechanicalVisitor(&mop.mparams, simulation::TopDownMassCallable(
+        [&nbNonDiagonalMasses](simulation::Node*, const sofa::core::behavior::BaseMass* mass)
+        {
+            if (mass && !mass->isDiagonal())
+            {
+                nbNonDiagonalMasses++;
+            }
+            return simulation::Visitor::RESULT_CONTINUE;
+        }));
+    visitor.execute(this->getContext());
+    return nbNonDiagonalMasses > 0;
 }
 
 } // namespace sofa::component::odesolver::forward
