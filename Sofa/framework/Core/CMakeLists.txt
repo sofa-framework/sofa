@@ -28,6 +28,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/ExecParams.h
     ${SRC_ROOT}/fwd.h
     ${SRC_ROOT}/init.h
+    ${SRC_ROOT}/IntrusiveObject.h
     ${SRC_ROOT}/Mapping.h
     ${SRC_ROOT}/Mapping.inl
     ${SRC_ROOT}/MappingHelper.h
@@ -217,6 +218,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/DataTrackerCallback.cpp
     ${SRC_ROOT}/DataTrackerFunctor.cpp
     ${SRC_ROOT}/ExecParams.cpp
+    ${SRC_ROOT}/IntrusiveObject.cpp
     ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/init.cpp
     ${SRC_ROOT}/Mapping.cpp
