@@ -54,6 +54,8 @@ public:
 
     std::vector <triangleData> m_triToTest;
 
+    bool checkTriangleToAdd(TriangleToAdd* refTri, TriangleToAdd* testTri);
+
 };
 
 /***
@@ -93,6 +95,29 @@ int TriangleSubdividers_test::createTopology()
     return nbrP;
 }
 
+bool TriangleSubdividers_test::checkTriangleToAdd(TriangleToAdd* refTri, TriangleToAdd* testTri)
+{
+    // Check triangle indices
+    EXPECT_EQ(refTri->m_uniqueID, testTri->m_uniqueID);
+    EXPECT_EQ(refTri->m_triangle[0], testTri->m_triangle[0]);
+    EXPECT_EQ(refTri->m_triangle[1], testTri->m_triangle[1]);
+    EXPECT_EQ(refTri->m_triangle[2], testTri->m_triangle[2]);
+
+    // check ancestors
+    EXPECT_EQ(refTri->m_ancestors[0], testTri->m_ancestors[0]); // check ancestors and barycoefs
+    EXPECT_FLOAT_EQ(refTri->m_coefs[0], testTri->m_coefs[0]);
+
+    // check tri coordinates
+    for (int vid = 0; vid < 3; vid++)
+    {
+        EXPECT_FLOAT_EQ(refTri->m_triCoords[vid][0], testTri->m_triCoords[vid][0]);
+        EXPECT_FLOAT_EQ(refTri->m_triCoords[vid][1], testTri->m_triCoords[vid][1]);
+        EXPECT_FLOAT_EQ(refTri->m_triCoords[vid][2], testTri->m_triCoords[vid][2]);
+    }
+
+    return true;
+}
+
 /// Will test the creation of 1 point in middle of each triangle. The ouptut should be 3 triangles each time.
 bool TriangleSubdividers_test::testSubdivider_1Node()
 {
@@ -118,25 +143,23 @@ bool TriangleSubdividers_test::testSubdivider_1Node()
         // Check the structure and position of the 3 triangles created by the subdivision
         auto trisToAdd = subdivider0->getTrianglesToAdd();
         EXPECT_EQ(trisToAdd.size(), 3);
-        
-        for (int j = 0; j < 3; j++)
-        {
-            // each triangle is composed of old edge + new barycenter point (id == 7 here)
-            EXPECT_EQ(trisToAdd[j]->m_triangle[0], m_triToTest[i].tri[j]);
-            EXPECT_EQ(trisToAdd[j]->m_triangle[1], m_triToTest[i].tri[(j + 1) % 3]);
-            EXPECT_EQ(trisToAdd[j]->m_triangle[2], nbrP);
 
-            EXPECT_EQ(trisToAdd[j]->m_ancestors[0], m_triToTest[i].triId); // check ancestors and barycoefs
-            EXPECT_FLOAT_EQ(trisToAdd[j]->m_coefs[0], tier);
+        TriangleToAdd* triRef0 = new TriangleToAdd(1000000 * m_triToTest[i].triId, Triangle(m_triToTest[i].tri[0], m_triToTest[i].tri[1], nbrP), { m_triToTest[i].triId }, { tier });
+        triRef0->m_triCoords = { m_triToTest[i].triCoords[0] , m_triToTest[i].triCoords[1] ,pG };
+        checkTriangleToAdd(triRef0, trisToAdd[0]);
+        delete triRef0;
 
-            // check position of the new point created
-            EXPECT_FLOAT_EQ(trisToAdd[j]->m_triCoords[2][0], pG[0]);
-            EXPECT_FLOAT_EQ(trisToAdd[j]->m_triCoords[2][1], pG[1]);
-            EXPECT_FLOAT_EQ(trisToAdd[j]->m_triCoords[2][2], pG[2]);
-        }
+        TriangleToAdd* triRef1 = new TriangleToAdd(1000000 * m_triToTest[i].triId + 1, Triangle(m_triToTest[i].tri[1], m_triToTest[i].tri[2], nbrP), { m_triToTest[i].triId }, { tier });
+        triRef1->m_triCoords = { m_triToTest[i].triCoords[1] , m_triToTest[i].triCoords[2] , pG };
+        checkTriangleToAdd(triRef1, trisToAdd[1]);
+        delete triRef1;
+
+        TriangleToAdd* triRef2 = new TriangleToAdd(1000000 * m_triToTest[i].triId + 2, Triangle(m_triToTest[i].tri[2], m_triToTest[i].tri[0], nbrP), { m_triToTest[i].triId }, { tier });
+        triRef2->m_triCoords = { m_triToTest[i].triCoords[2] , m_triToTest[i].triCoords[0] , pG };
+        checkTriangleToAdd(triRef2, trisToAdd[2]);
+        delete triRef2;
     }
- 
-
+        
     return true;
 }
 
@@ -167,27 +190,15 @@ bool TriangleSubdividers_test::testSubdivider_1Edge()
         auto trisToAdd = subdivider0->getTrianglesToAdd();
         EXPECT_EQ(trisToAdd.size(), 2);
 
-        // tri 1
-        EXPECT_EQ(trisToAdd[0]->m_triangle[0], triToTest.tri[0]);
-        EXPECT_EQ(trisToAdd[0]->m_triangle[1], nbrP);
-        EXPECT_EQ(trisToAdd[0]->m_triangle[2], triToTest.tri[2]);
+        TriangleToAdd* triRef0 = new TriangleToAdd(1000000 * triToTest.triId, Triangle(triToTest.tri[0], nbrP, triToTest.tri[2]), { triToTest.triId }, { 0.5_sreal });
+        triRef0->m_triCoords = { triToTest.triCoords[0] , pG, triToTest.triCoords[2] };
+        checkTriangleToAdd(triRef0, trisToAdd[0]);
+        delete triRef0;
 
-        EXPECT_EQ(trisToAdd[0]->m_ancestors[0], triToTest.triId);
-        EXPECT_FLOAT_EQ(trisToAdd[0]->m_coefs[0], 0.5_sreal);
-        EXPECT_FLOAT_EQ(trisToAdd[0]->m_triCoords[1][0], pG[0]);
-        EXPECT_FLOAT_EQ(trisToAdd[0]->m_triCoords[1][1], pG[1]);
-        EXPECT_FLOAT_EQ(trisToAdd[0]->m_triCoords[1][2], pG[2]);
-
-        // tri 2
-        EXPECT_EQ(trisToAdd[1]->m_triangle[0], nbrP);
-        EXPECT_EQ(trisToAdd[1]->m_triangle[1], triToTest.tri[1]);
-        EXPECT_EQ(trisToAdd[1]->m_triangle[2], triToTest.tri[2]);
-
-        EXPECT_EQ(trisToAdd[1]->m_ancestors[0], triToTest.triId);
-        EXPECT_FLOAT_EQ(trisToAdd[1]->m_coefs[0], 0.5_sreal);
-        EXPECT_FLOAT_EQ(trisToAdd[1]->m_triCoords[0][0], pG[0]);
-        EXPECT_FLOAT_EQ(trisToAdd[1]->m_triCoords[0][1], pG[1]);
-        EXPECT_FLOAT_EQ(trisToAdd[1]->m_triCoords[0][2], pG[2]);
+        TriangleToAdd* triRef1 = new TriangleToAdd(1000000 * triToTest.triId + 1, Triangle(nbrP, triToTest.tri[1], triToTest.tri[2]), { triToTest.triId }, { 0.5_sreal });
+        triRef1->m_triCoords = { pG, triToTest.triCoords[1] , triToTest.triCoords[2] };
+        checkTriangleToAdd(triRef1, trisToAdd[1]);
+        delete triRef1;
     }
 
     return true;
@@ -227,51 +238,40 @@ bool TriangleSubdividers_test::testSubdivider_2Edge()
         auto trisToAdd = subdivider0->getTrianglesToAdd();
         EXPECT_EQ(trisToAdd.size(), 3);
 
-        // Store in a single structure the 3 indices with the 2 new points, same for positions
-        sofa::type::fixed_array<sofa::Index, 5> vIndices = { triToTest.tri[0], triToTest.tri[1], triToTest.tri[2], nbrP, nbrP + 1 };
-        sofa::type::fixed_array<sofa::type::Vec3, 5> vCoords = { triToTest.triCoords[0], triToTest.triCoords[1], triToTest.triCoords[2], pG0, pG1 };
-
-        // Create map of indices to be used for test, to be combined with vIndices and vCoords
-        sofa::type::fixed_array<Triangle, 3> triTruths;
+        TriangleToAdd* triRef0;
+        TriangleToAdd* triRef1;
+        TriangleToAdd* triRef2;
         if (directOriented[i])
         {
-            triTruths[0] = { 1, 4, 3 };
-            triTruths[1] = { 4, 2, 0 };
-            triTruths[2] = { 0, 3, 4 };
+            triRef0 = new TriangleToAdd(1000000 * triToTest.triId, Triangle(triToTest.tri[1], nbrP + 1, nbrP), { triToTest.triId }, { 0.25_sreal });
+            triRef0->m_triCoords = { triToTest.triCoords[1], pG1, pG0 };
+
+            triRef1 = new TriangleToAdd(1000000 * triToTest.triId + 1, Triangle(nbrP + 1, triToTest.tri[2], triToTest.tri[0]), { triToTest.triId }, { 0.5_sreal });
+            triRef1->m_triCoords = { pG1, triToTest.triCoords[2], triToTest.triCoords[0] };
+
+            triRef2 = new TriangleToAdd(1000000 * triToTest.triId + 2, Triangle(triToTest.tri[0], nbrP, nbrP + 1), { triToTest.triId }, { 0.25_sreal });
+            triRef2->m_triCoords = { triToTest.triCoords[0], pG0, pG1 };
         }
         else
         {
-            triTruths[0] = { 1, 4, 3 };
-            triTruths[1] = { 4, 2, 3 };
-            triTruths[2] = { 2, 0, 3 };
+            triRef0 = new TriangleToAdd(1000000 * triToTest.triId, Triangle(triToTest.tri[1], nbrP + 1, nbrP), { triToTest.triId }, { 0.25_sreal });
+            triRef0->m_triCoords = { triToTest.triCoords[1] , pG1 ,pG0 };
+
+            triRef1 = new TriangleToAdd(1000000 * triToTest.triId + 1, Triangle(nbrP + 1, triToTest.tri[2], nbrP), { triToTest.triId }, { 0.25_sreal });
+            triRef1->m_triCoords = { pG1, triToTest.triCoords[2] , pG0 };
+
+            triRef2 = new TriangleToAdd(1000000 * triToTest.triId + 2, Triangle(triToTest.tri[2], triToTest.tri[0], nbrP), { triToTest.triId }, { 0.5_sreal });
+            triRef2->m_triCoords = { triToTest.triCoords[2], triToTest.triCoords[0], pG0 };
         }
         
+        checkTriangleToAdd(triRef0, trisToAdd[0]);
+        delete triRef0;
+        
+        checkTriangleToAdd(triRef1, trisToAdd[1]);
+        delete triRef1;
 
-        for (int triId = 0; triId < 3; triId++)
-        {
-            Triangle triTruth = { vIndices[triTruths[triId][0]], vIndices[triTruths[triId][1]], vIndices[triTruths[triId][2]] };
-
-            for (int vid = 0; vid < 3; vid++)
-            {
-                EXPECT_EQ(trisToAdd[triId]->m_triangle[vid], triTruth[vid]);
-
-                sofa::type::Vec3 vert = vCoords[triTruths[triId][vid]];
-                EXPECT_FLOAT_EQ(trisToAdd[triId]->m_triCoords[vid][0], vert[0]);
-                EXPECT_FLOAT_EQ(trisToAdd[triId]->m_triCoords[vid][1], vert[1]);
-                EXPECT_FLOAT_EQ(trisToAdd[triId]->m_triCoords[vid][2], vert[2]);
-            }
-            
-            EXPECT_EQ(trisToAdd[triId]->m_ancestors[0], triToTest.triId);
-           
-            if ( (directOriented[i] && triId == 1) || (!directOriented[i] && triId == 2))
-            {
-                EXPECT_FLOAT_EQ(trisToAdd[triId]->m_coefs[0], 0.5_sreal);
-            }
-            else
-            {
-                EXPECT_FLOAT_EQ(trisToAdd[triId]->m_coefs[0], 0.25_sreal);
-            }
-        }
+        checkTriangleToAdd(triRef2, trisToAdd[2]);
+        delete triRef2;
     }
 
     return true;
