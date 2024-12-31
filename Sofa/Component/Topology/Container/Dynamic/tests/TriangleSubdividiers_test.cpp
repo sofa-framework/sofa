@@ -121,7 +121,7 @@ bool TriangleSubdividers_test::checkTriangleToAdd(TriangleToAdd* refTri, Triangl
 /// Will test the creation of 1 point in middle of each triangle. The ouptut should be 3 triangles each time.
 bool TriangleSubdividers_test::testSubdivider_1Node()
 {
-    int nbrP = createTopology();
+    const int nbrP = createTopology();
 
     // Test barycenter point for each specific triangle
     for (unsigned int i = 0; i < m_triToTest.size(); i++)
@@ -167,7 +167,7 @@ bool TriangleSubdividers_test::testSubdivider_1Node()
 /// Will test the creation of 1 point in middle of the first edge of the triangle. The ouptut should be 2 triangles each time.
 bool TriangleSubdividers_test::testSubdivider_1Edge()
 {
-    int nbrP = createTopology();
+    const int nbrP = createTopology();
 
     // Test barycenter point for each specific triangle
     for (const triangleData& triToTest : m_triToTest)
@@ -208,7 +208,7 @@ bool TriangleSubdividers_test::testSubdivider_1Edge()
 /// Will test the creation of 2 points in middle of the first 2 edges of the triangle. The ouptut should be 3 triangles each time.
 bool TriangleSubdividers_test::testSubdivider_2Edge()
 {
-    int nbrP = createTopology();
+    const int nbrP = createTopology();
     sofa::type::fixed_array< bool, 3> directOriented = { true, false, true };
 
     // Test barycenter point for each specific triangle
@@ -279,14 +279,113 @@ bool TriangleSubdividers_test::testSubdivider_2Edge()
 
 bool TriangleSubdividers_test::testSubdivider_3Edge()
 {
-    int nbrP = createTopology();
+    const int nbrP = createTopology();
+
+    // Test barycenter point for each specific triangle
+    for (const triangleData& triToTest : m_triToTest)
+    {
+        // Create specific subdivider for 1 Node inside each edge of the triangle
+        TriangleSubdivider_3Edge* subdivider0 = new TriangleSubdivider_3Edge(triToTest.triId, triToTest.tri);
+        sofa::type::fixed_array<sofa::type::Vec3, 3> pGs;
+        for (unsigned int i = 0; i < 3; i++)
+        {
+            sofa::type::vector<SReal> coefs;
+            sofa::type::vector<PointID> ancestors;
+
+            ancestors.push_back(triToTest.tri[i]);
+            coefs.push_back(0.5_sreal);
+            ancestors.push_back(triToTest.tri[(i + 1) % 3]);
+            coefs.push_back(0.5_sreal);
+
+            PointID uniqID = getUniqueId(ancestors[0], ancestors[1]);
+            PointToAdd* PTA = new PointToAdd(uniqID, nbrP + i, ancestors, coefs);
+            subdivider0->addPoint(PTA);
+            pGs[i] = triToTest.triCoords[i] * coefs[0] + triToTest.triCoords[(i + 1) % 3] * coefs[1];
+        }
+
+        subdivider0->subdivide(triToTest.triCoords);
+
+        // Check the structure and position of the 4 triangles created by the subdivision
+        auto trisToAdd = subdivider0->getTrianglesToAdd();
+        EXPECT_EQ(trisToAdd.size(), 4);
+
+        TriangleToAdd* triRef0 = new TriangleToAdd(1000000 * triToTest.triId, Triangle(nbrP + 2, nbrP + 1, triToTest.tri[2]), { triToTest.triId }, { 0.25_sreal });
+        triRef0->m_triCoords = { pGs[2], pGs[1], triToTest.triCoords[2] };
+        checkTriangleToAdd(triRef0, trisToAdd[0]);
+        delete triRef0;
+
+        TriangleToAdd* triRef1 = new TriangleToAdd(1000000 * triToTest.triId + 1, Triangle(nbrP, nbrP + 2, triToTest.tri[0]), { triToTest.triId }, { 0.25_sreal });
+        triRef1->m_triCoords = { pGs[0], pGs[2], triToTest.triCoords[0] };
+        checkTriangleToAdd(triRef1, trisToAdd[1]);
+        delete triRef1;
+
+        TriangleToAdd* triRef2 = new TriangleToAdd(1000000 * triToTest.triId + 2, Triangle(nbrP + 1, nbrP, triToTest.tri[1]), { triToTest.triId }, { 0.25_sreal });
+        triRef2->m_triCoords = { pGs[1], pGs[0], triToTest.triCoords[1] };
+        checkTriangleToAdd(triRef2, trisToAdd[2]);
+        delete triRef2;
+
+        TriangleToAdd* triRef3 = new TriangleToAdd(1000000 * triToTest.triId + 3, Triangle(nbrP + 1, nbrP + 2, nbrP), { triToTest.triId }, { 0.25_sreal });
+        triRef3->m_triCoords = { pGs[1], pGs[2], pGs[0] };
+        checkTriangleToAdd(triRef3, trisToAdd[3]);
+        delete triRef3;
+    }
 
     return true;
 }
 
 bool TriangleSubdividers_test::testSubdivider_2Node()
 {
-    int nbrP = createTopology();
+    const int nbrP = createTopology();
+
+    // Test barycenter point for each specific triangle
+    for (const triangleData& triToTest : m_triToTest)
+    {
+        // Create specific subdivider for 1 Node inside niddle of triang and 1 node on first edge
+        TriangleSubdivider_2Node* subdivider0 = new TriangleSubdivider_2Node(triToTest.triId, triToTest.tri);
+        
+        // Define the points to be added in middle of the triangle
+        sofa::type::vector<PointID> ancestors0 = { triToTest.tri[0], triToTest.tri[1], triToTest.tri[2] };
+        SReal tier = 1._sreal / 3._sreal;
+        sofa::type::vector<SReal> coefs0 = { tier, tier, tier };
+
+        // Define the points to be added in middle of the 1st edge of the triangle
+        sofa::type::vector<PointID> ancestors1 = { triToTest.tri[0], triToTest.tri[1] };
+        sofa::type::vector<SReal> coefs1 = { 0.5_sreal, 0.5_sreal };
+
+        sofa::type::Vec3 pG0 = triToTest.triCoords[0] * coefs0[0] + triToTest.triCoords[1] * coefs0[1] + triToTest.triCoords[2] * coefs0[2];
+        sofa::type::Vec3 pG1 = triToTest.triCoords[0] * coefs1[0] + triToTest.triCoords[1] * coefs1[1];
+
+        // Add new points to the triangle and compute the subdivision
+        PointToAdd* newPoint_0 = new PointToAdd(getUniqueId(ancestors0[0], ancestors0[1], ancestors0[2]), nbrP, ancestors0, coefs0);
+        PointToAdd* newPoint_1 = new PointToAdd(getUniqueId(ancestors1[0], ancestors1[1]), nbrP + 1, ancestors1, coefs1);
+        subdivider0->addPoint(newPoint_0);
+        subdivider0->addPoint(newPoint_1);
+        subdivider0->subdivide(triToTest.triCoords);
+
+        // Check the structure and position of the 4 triangles created by the subdivision
+        auto trisToAdd = subdivider0->getTrianglesToAdd();
+        EXPECT_EQ(trisToAdd.size(), 4);
+
+        TriangleToAdd* triRef0 = new TriangleToAdd(1000000 * triToTest.triId, Triangle(triToTest.tri[2], triToTest.tri[0], nbrP), { triToTest.triId }, { tier });
+        triRef0->m_triCoords = { triToTest.triCoords[2], triToTest.triCoords[0], pG0 };
+        checkTriangleToAdd(triRef0, trisToAdd[0]);
+        delete triRef0;
+
+        TriangleToAdd* triRef1 = new TriangleToAdd(1000000 * triToTest.triId + 1, Triangle(triToTest.tri[1], triToTest.tri[2], nbrP), { triToTest.triId }, { tier });
+        triRef1->m_triCoords = { triToTest.triCoords[1], triToTest.triCoords[2], pG0};
+        checkTriangleToAdd(triRef1, trisToAdd[1]);
+        delete triRef1;
+
+        TriangleToAdd* triRef2 = new TriangleToAdd(1000000 * triToTest.triId + 2, Triangle(triToTest.tri[0], nbrP + 1, nbrP), { triToTest.triId }, { tier/2 });
+        triRef2->m_triCoords = { triToTest.triCoords[0], pG1, pG0 };
+        checkTriangleToAdd(triRef2, trisToAdd[2]);
+        delete triRef2;
+
+        TriangleToAdd* triRef3 = new TriangleToAdd(1000000 * triToTest.triId + 3, Triangle(nbrP + 1, triToTest.tri[1], nbrP), { triToTest.triId }, { tier/2 });
+        triRef3->m_triCoords = { pG1, triToTest.triCoords[1], pG0 };
+        checkTriangleToAdd(triRef3, trisToAdd[3]);
+        delete triRef3;
+    }
 
     return true;
 }
