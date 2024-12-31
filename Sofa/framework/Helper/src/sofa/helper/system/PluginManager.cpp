@@ -51,6 +51,37 @@ constexpr std::string_view GetSofaBuildConfigurationString()
     return SOFA_BUILD_CONFIGURATION_STR;
 }
 
+enum class SofaBuildConfiguration
+{
+    Release,
+    RelWithDebInfo,
+    Debug,
+    MinSizeRel,
+    NonStandard
+};
+
+constexpr SofaBuildConfiguration GetSofaBuildConfiguration()
+{
+    if constexpr (GetSofaBuildConfigurationString() == "Release")
+    {
+        return SofaBuildConfiguration::Release;
+    }
+    if constexpr (GetSofaBuildConfigurationString() == "RelWithDebInfo")
+    {
+        return SofaBuildConfiguration::RelWithDebInfo;
+    }
+    if constexpr (GetSofaBuildConfigurationString() == "Debug")
+    {
+        return SofaBuildConfiguration::Debug;
+    }
+    if constexpr (GetSofaBuildConfigurationString() == "MinSizeRel")
+    {
+        return SofaBuildConfiguration::MinSizeRel;
+    }
+
+    return SofaBuildConfiguration::NonStandard;
+}
+
 namespace sofa::helper::system
 {
 
@@ -157,11 +188,14 @@ void PluginManager::writeToIniFile(const std::string& path)
 /// (depends on platform, version, debug/release build)
 std::string PluginManager::getDefaultSuffix()
 {
-#ifdef SOFA_LIBSUFFIX
-    return sofa_tostring(SOFA_LIBSUFFIX);
-#else
-    return std::string();
-#endif
+    if constexpr(GetSofaBuildConfiguration() == SofaBuildConfiguration::Debug)
+    {
+        return "_d";
+    }
+    else
+    {
+        return "";
+    }
 }
 
 PluginManager::PluginLoadStatus PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream* errlog)
