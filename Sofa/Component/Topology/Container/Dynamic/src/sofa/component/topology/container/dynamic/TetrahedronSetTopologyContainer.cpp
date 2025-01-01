@@ -79,12 +79,12 @@ void TetrahedronSetTopologyContainer::init()
     }
 
     if (!m_tetrahedron.empty())
-        initTopology();
+        computeCrossElementBuffers();
 }
 
-void TetrahedronSetTopologyContainer::initTopology()
+void TetrahedronSetTopologyContainer::computeCrossElementBuffers()
 {
-    TriangleSetTopologyContainer::initTopology();
+    TriangleSetTopologyContainer::computeCrossElementBuffers();
 
     // Create tetrahedron cross element buffers.
     createTrianglesInTetrahedronArray();
