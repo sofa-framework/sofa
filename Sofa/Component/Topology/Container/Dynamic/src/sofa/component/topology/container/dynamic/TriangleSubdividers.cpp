@@ -47,7 +47,7 @@ bool TriangleSubdivider::subdivide(const sofa::type::fixed_array<sofa::type::Vec
     sofa::Size nbrPT = 0;
     sofa::Size nbrPE = 0;
 
-    for (const PointToAdd* ptA : m_points)
+    for (auto ptA : m_points)
     {
         if (ptA->m_ancestors.size() == 2)
             nbrPE++;
@@ -88,10 +88,10 @@ bool TriangleSubdivider::subdivide(const sofa::type::fixed_array<sofa::type::Vec
 }
 
 
-void TriangleSubdivider::addPoint(PointToAdd* pTA)
+void TriangleSubdivider::addPoint(std::shared_ptr<PointToAdd> pTA)
 {
     bool found = false;
-    for (PointToAdd* ptAIt : m_points)
+    for (auto ptAIt : m_points)
     {
         if (ptAIt->m_uniqueID == pTA->m_uniqueID)
         {
@@ -138,7 +138,7 @@ bool TriangleSubdivider::subdivide_1Node(const sofa::type::fixed_array<sofa::typ
         return false;
     }
 
-    const PointToAdd* PTA = m_points[0];
+    const PointToAdd* PTA = m_points[0].get();
 
     // compute point coordinates using barycoefs
     sofa::type::Vec3 pG = computePointCoordinates(PTA, triCoords);
@@ -172,7 +172,7 @@ bool TriangleSubdivider::subdivide_1Edge(const sofa::type::fixed_array<sofa::typ
         return false;
     }
 
-    const PointToAdd* PTA = m_points[0];
+    const PointToAdd* PTA = m_points[0].get();
     EdgeID localEdgeId = InvalidID;
     for (unsigned int i = 0; i < 3; i++)
     {
@@ -221,8 +221,8 @@ bool TriangleSubdivider::subdivide_2Edge(const sofa::type::fixed_array<sofa::typ
         return false;
     }
 
-    const PointToAdd* PTA0 = m_points[0];
-    const PointToAdd* PTA1 = m_points[1];
+    const PointToAdd* PTA0 = m_points[0].get();
+    const PointToAdd* PTA1 = m_points[1].get();
 
     // get commun point
     const Edge theEdge0 = Edge(PTA0->m_ancestors[0], PTA0->m_ancestors[1]);
@@ -422,8 +422,8 @@ bool TriangleSubdivider::subdivide_2Node(const sofa::type::fixed_array<sofa::typ
     PointID ptInTriId = InvalidID;
     sofa::type::Vec3 ptInTri, ptOnEdge;
 
-    const PointToAdd* PTA0 = m_points[0];
-    const PointToAdd* PTA1 = m_points[1];
+    const PointToAdd* PTA0 = m_points[0].get();
+    const PointToAdd* PTA1 = m_points[1].get();
 
     for (unsigned int i = 0; i < 3; i++)
     {
