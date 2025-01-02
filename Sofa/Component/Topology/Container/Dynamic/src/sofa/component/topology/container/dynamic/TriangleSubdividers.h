@@ -75,7 +75,7 @@ public:
     virtual bool subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords);
 
     /// Method to add a new @sa PointToAdd into this Triangle Subdivider
-    void addPoint(PointToAdd* pTA);
+    void addPoint(std::shared_ptr<PointToAdd> pTA);
 
     /// Return the index of the triangle, in the TopologyContainer, to split
     const TriangleID getTriangleIdToSplit() { return m_triangleId; }
@@ -84,7 +84,7 @@ public:
     const type::vector<TriangleToAdd*>& getTrianglesToAdd() { return m_trianglesToAdd; }
     
     /// Getter to the list of new @sa PointToAdd* created by this Triangle subdivider
-    const type::vector<PointToAdd*>& getPointsToAdd() { return m_points; }
+    const type::vector< std::shared_ptr<PointToAdd> >& getPointsToAdd() { return m_points; }
 
 protected:
     PointID localVertexId(PointID vertexIndex);
@@ -120,7 +120,7 @@ protected:
     TriangleID m_triangleId; ///< Index of this triangle in the Topology Container
     sofa::core::topology::BaseMeshTopology::Triangle m_triangle; ///< Triangle fixed array of the 3 vertex indices
 
-    type::vector<PointToAdd*> m_points; ///< Vector of new point to be added while subdividing this Triangle
+    type::vector<std::shared_ptr<PointToAdd> > m_points; ///< Vector of new point to be added while subdividing this Triangle
     type::vector<TriangleToAdd*> m_trianglesToAdd; ///< Vector of triangle to be added while subdividing this Triangle
 };
 
