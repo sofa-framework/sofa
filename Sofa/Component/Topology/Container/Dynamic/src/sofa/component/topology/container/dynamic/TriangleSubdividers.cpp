@@ -26,7 +26,13 @@ namespace sofa::component::topology::container::dynamic
 
 
 TriangleSubdivider::~TriangleSubdivider()
-{}
+{
+    for (unsigned int i = 0; i < m_trianglesToAdd.size(); ++i)
+    {
+        delete m_trianglesToAdd[i];
+    }
+    m_trianglesToAdd.clear();
+}
 
 
 TriangleSubdivider::TriangleSubdivider(TriangleID triangleId, const sofa::core::topology::BaseMeshTopology::Triangle& triangle)
@@ -84,7 +90,18 @@ bool TriangleSubdivider::subdivide(const sofa::type::fixed_array<sofa::type::Vec
 
 void TriangleSubdivider::addPoint(PointToAdd* pTA)
 {
-    m_points.push_back(pTA);
+    bool found = false;
+    for (PointToAdd* ptAIt : m_points)
+    {
+        if (ptAIt->m_uniqueID == pTA->m_uniqueID)
+        {
+            found = true;
+            break;
+        }
+    }
+
+    if (!found)
+        m_points.push_back(pTA);
 }
 
 

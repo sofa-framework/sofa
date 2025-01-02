@@ -51,8 +51,6 @@ public:
         , m_coefs(coefs)
     {}
 
-    virtual ~TriangleToAdd() {}
-
     TriangleID m_uniqueID; ///< unique new id of the future triangle
     Triangle m_triangle; ///< Triangle topological structure
     type::vector<TriangleID> m_ancestors; ///< Triangle indices ancestors of this new Triangle
