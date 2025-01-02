@@ -127,7 +127,7 @@ bool TriangleSubdividers_test::testSubdivider_1Node()
     for (unsigned int i = 0; i < m_triToTest.size(); i++)
     {
         // Create specific subdivider for 1 Node inside a triangle
-        TriangleSubdivider_1Node* subdivider0 = new TriangleSubdivider_1Node(m_triToTest[i].triId, m_triToTest[i].tri);
+        TriangleSubdivider* subdivider0 = new TriangleSubdivider(m_triToTest[i].triId, m_triToTest[i].tri);
         sofa::type::vector<PointID> ancestors = { m_triToTest[i].tri[0], m_triToTest[i].tri[1], m_triToTest[i].tri[2] };
 
         // Define the point to be added as the barycenter of the triangle
@@ -173,7 +173,7 @@ bool TriangleSubdividers_test::testSubdivider_1Edge()
     for (const triangleData& triToTest : m_triToTest)
     {
         // Create specific subdivider for 1 Node inside an edge of the triangle
-        TriangleSubdivider_1Edge* subdivider0 = new TriangleSubdivider_1Edge(triToTest.triId, triToTest.tri);
+        TriangleSubdivider* subdivider0 = new TriangleSubdivider(triToTest.triId, triToTest.tri);
         
         // Define the point to be added in middle of the first edge of a triangle
         sofa::type::vector<PointID> ancestors = { triToTest.tri[0], triToTest.tri[1]};
@@ -217,7 +217,7 @@ bool TriangleSubdividers_test::testSubdivider_2Edge()
         const triangleData& triToTest = m_triToTest[i];
 
         // Create specific subdivider for 1 Node inside an edge of the triangle
-        TriangleSubdivider_2Edge* subdivider0 = new TriangleSubdivider_2Edge(triToTest.triId, triToTest.tri);
+        TriangleSubdivider* subdivider0 = new TriangleSubdivider(triToTest.triId, triToTest.tri);
 
         // Define the points to be added in middle of the first 2 edges of a triangle
         sofa::type::vector<PointID> ancestors0 = { triToTest.tri[0], triToTest.tri[1] };
@@ -285,7 +285,7 @@ bool TriangleSubdividers_test::testSubdivider_3Edge()
     for (const triangleData& triToTest : m_triToTest)
     {
         // Create specific subdivider for 1 Node inside each edge of the triangle
-        TriangleSubdivider_3Edge* subdivider0 = new TriangleSubdivider_3Edge(triToTest.triId, triToTest.tri);
+        TriangleSubdivider* subdivider0 = new TriangleSubdivider(triToTest.triId, triToTest.tri);
         sofa::type::fixed_array<sofa::type::Vec3, 3> pGs;
         for (unsigned int i = 0; i < 3; i++)
         {
@@ -341,7 +341,7 @@ bool TriangleSubdividers_test::testSubdivider_2Node()
     for (const triangleData& triToTest : m_triToTest)
     {
         // Create specific subdivider for 1 Node inside niddle of triang and 1 node on first edge
-        TriangleSubdivider_2Node* subdivider0 = new TriangleSubdivider_2Node(triToTest.triId, triToTest.tri);
+        TriangleSubdivider* subdivider0 = new TriangleSubdivider(triToTest.triId, triToTest.tri);
         
         // Define the points to be added in middle of the triangle
         sofa::type::vector<PointID> ancestors0 = { triToTest.tri[0], triToTest.tri[1], triToTest.tri[2] };

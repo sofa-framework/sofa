@@ -74,11 +74,7 @@ public:
     explicit TriangleSubdivider(TriangleID triangleId, const Triangle& triangle);
     ~TriangleSubdivider();
 
-    virtual bool subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords)
-    {
-        SOFA_UNUSED(triCoords);
-        return false;
-    }
+    virtual bool subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords);
 
     /// Method to add a new @sa PointToAdd into this Triangle Subdivider
     void addPoint(PointToAdd* pTA);
@@ -97,6 +93,31 @@ protected:
 
     sofa::type::Vec3 computePointCoordinates(const PointToAdd* PTA, const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords);
 
+    /** Triangle subdivision configuration where 1 Node is added in inside of the Triangle.
+    * In this case 3 new Triangles and 1 Point will be created. Called internally by @sa subdivide
+    */
+    bool subdivide_1Node(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords);
+
+    /** Triangle subdivision configuration where 1 Node is added on one edge of the Triangle.
+    * In this case 2 new Triangles and 1 Point will be created.. Called internally by @sa subdivide
+    */
+    bool subdivide_1Edge(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords);
+
+    /** Triangle subdivision configuration where 2 Nodes are added on 2 different edges of the Triangle.
+    * In this case 3 new Triangles and 2 Points will be created. Called internally by @sa subdivide
+    */
+    bool subdivide_2Edge(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords);
+
+    /** Triangle subdivision configuration where 3 Nodes are added on 3 different edges of the Triangle.
+    * In this case 4 new Triangles and 3 Points will be created. Called internally by @sa subdivide
+    */
+    bool subdivide_3Edge(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords);
+
+    /** Triangle subdivision configuration where 2 Nodes are added, 1 on edge and 1 inside of the Triangle.
+    * In this case 4 new Triangles and 2 Points will be created. Called internally by @sa subdivide
+    */
+    bool subdivide_2Node(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords);
+
 protected:
     TriangleID m_triangleId; ///< Index of this triangle in the Topology Container
     sofa::core::topology::BaseMeshTopology::Triangle m_triangle; ///< Triangle fixed array of the 3 vertex indices
@@ -104,82 +125,6 @@ protected:
     type::vector<PointToAdd*> m_points; ///< Vector of new point to be added while subdividing this Triangle
     type::vector<TriangleToAdd*> m_trianglesToAdd; ///< Vector of triangle to be added while subdividing this Triangle
 };
-
-
-/**
-* Specialisation of TriangleSubdivider to compute configuration where 1 Node is added in inside of the Triangle
-* In this case 3 new Triangles and 1 Point will be created.
-*/
-class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSubdivider_1Node : public TriangleSubdivider
-{
-public:
-    TriangleSubdivider_1Node(TriangleID triangleId, const Triangle& triangle) 
-        : TriangleSubdivider(triangleId, triangle)
-    {}
-
-    bool subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords) override;
-};
-
-
-/**
-* Specialisation of TriangleSubdivider to compute configuration where 1 Node is added on one edge of the Triangle
-* In this case 2 new Triangles and 1 Point will be created.
-*/
-class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSubdivider_1Edge : public TriangleSubdivider
-{
-public:
-    TriangleSubdivider_1Edge(TriangleID triangleId, const Triangle& triangle)
-        : TriangleSubdivider(triangleId, triangle)
-    {}
-
-    bool subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords) override;
-};
-
-
-/**
-* Specialisation of TriangleSubdivider to compute configuration where 2 Nodes are added on 2 different edges of the Triangle
-* In this case 3 new Triangles and 2 Points will be created.
-*/
-class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSubdivider_2Edge : public TriangleSubdivider
-{
-public:
-    TriangleSubdivider_2Edge(TriangleID triangleId, const Triangle& triangle)
-        : TriangleSubdivider(triangleId, triangle)
-    {}
-
-    bool subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords) override;
-};
-
-
-/**
-* Specialisation of TriangleSubdivider to compute configuration where 3 Nodes are added on 3 different edges of the Triangle
-* In this case 4 new Triangles and 3 Points will be created.
-*/
-class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSubdivider_3Edge : public TriangleSubdivider
-{
-public:
-    TriangleSubdivider_3Edge(TriangleID triangleId, const Triangle& triangle)
-        : TriangleSubdivider(triangleId, triangle)
-    {}
-
-    bool subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords) override;
-};
-
-
-/**
-* Specialisation of TriangleSubdivider to compute configuration where 2 Nodes are added, 1 on edge and 1 inside of the Triangle
-* In this case 4 new Triangles and 2 Points will be created.
-*/
-class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API TriangleSubdivider_2Node : public TriangleSubdivider
-{
-public:
-    TriangleSubdivider_2Node(TriangleID triangleId, const Triangle& triangle)
-        : TriangleSubdivider(triangleId, triangle)
-    {}
-
-    bool subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords) override;
-};
-
 
 
 } //namespace sofa::component::topology::container::dynamic
