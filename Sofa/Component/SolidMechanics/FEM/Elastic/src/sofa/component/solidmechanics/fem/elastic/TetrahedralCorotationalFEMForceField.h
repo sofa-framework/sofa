@@ -29,6 +29,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <sofa/helper/map.h>
+#include <sofa/helper/ColorMap.h>
 
 #include <sofa/core/objectmodel/RenamedData.h>
 
@@ -104,6 +105,7 @@ public:
         StrainDisplacementTransposed strainDisplacementTransposedMatrix;
         /// large displacement method
         type::fixed_array<Coord,4> rotatedInitialElements;
+        type::Mat<4, 4, Real> elemShapeFun;
         Transformation rotation;
         /// polar method
         Transformation initialTransformation;
@@ -192,11 +194,21 @@ public:
     Data<sofa::type::RGBAColor> d_drawColor3; ///<  draw color for faces 3
     Data<sofa::type::RGBAColor> d_drawColor4; ///<  draw color for faces 4
     Data<std::map < std::string, sofa::type::vector<double> > > _volumeGraph;
+    
+    Data<bool> d_computeVonMisesStress;
+    Data<type::vector<Real> > d_vonMisesPerElement; ///< von Mises Stress per element
+    Data<type::vector<Real> > d_vonMisesPerNode; ///< von Mises Stress per node
+    
+    sofa::helper::ColorMap* m_vonMisesColorMap;
+    Real prevMaxStress = -1.0;
 
     using Inherit1::l_topology;
 
+
 protected:
     TetrahedralCorotationalFEMForceField();
+
+    ~TetrahedralCorotationalFEMForceField() override;
 
 public:
 
@@ -235,6 +247,7 @@ public:
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
+    void computeVonMisesStress();
 
 protected:
     /** Method to create @sa TetrahedronInformation when a new tetrahedron is created.

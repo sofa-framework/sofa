@@ -32,7 +32,7 @@ public:
     sofa::core::MultiMatrixDerivId cId;
     SReal t;
     MechanicalProjectJacobianMatrixVisitor(const sofa::core::MechanicalParams* mparams,
-                                           sofa::core::MultiMatrixDerivId c = sofa::core::MatrixDerivId::constraintJacobian(), SReal time = 0.0)
+                                           sofa::core::MultiMatrixDerivId c = sofa::core::vec_id::write_access::constraintJacobian, SReal time = 0.0)
             : MechanicalVisitor(mparams), cId(c), t(time)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO

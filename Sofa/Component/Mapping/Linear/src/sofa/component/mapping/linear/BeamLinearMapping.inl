@@ -66,7 +66,7 @@ void BeamLinearMapping<TIn, TOut>::init()
     const bool local = localCoord.getValue();
     if (this->points.empty() && this->toModel!=nullptr)
     {
-        const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+        const typename In::VecCoord& xfrom = this->fromModel->read(core::vec_id::read_access::position)->getValue();
         beamLength.resize(xfrom.size());
 
         for (unsigned int i=0; i<xfrom.size()-1; i++)
@@ -77,7 +77,7 @@ void BeamLinearMapping<TIn, TOut>::init()
         if (xfrom.size()>=2)
             beamLength[xfrom.size()-1] = beamLength[xfrom.size()-2];
 
-        const VecCoord& x = this->toModel->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& x = this->toModel->read(core::vec_id::read_access::position)->getValue();
         msg_info() << "BeamLinearMapping: init "<<x.size()<<" points.";
         points.resize(x.size());
 
@@ -207,7 +207,7 @@ void BeamLinearMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cpar
     typename In::MatrixDeriv* out = _out.beginEdit();
     const typename Out::MatrixDeriv& in = _in.getValue();
 
-    const typename In::VecCoord& x = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+    const typename In::VecCoord& x = this->fromModel->read(core::vec_id::read_access::position)->getValue();
 
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
@@ -265,7 +265,7 @@ void BeamLinearMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparam
     std::vector< sofa::type::Vec3 > points;
     sofa::type::Vec3 point;
 
-    const typename Out::VecCoord& x = this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const typename Out::VecCoord& x = this->toModel->read(core::vec_id::read_access::position)->getValue();
     for (unsigned int i=0; i<x.size(); i++)
     {
         point = OutDataTypes::getCPos(x[i]);

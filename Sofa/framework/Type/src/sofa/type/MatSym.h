@@ -137,7 +137,7 @@ public:
     {
         for (sofa::Size j = 0; j < D; j++)
         {
-            for (int i = 0; i <= j; i++)
+            for (sofa::Size i = 0; i <= j; i++)
             {
                 W(i, j) = (M(i, j) + M(j, i)) / 2;
             }

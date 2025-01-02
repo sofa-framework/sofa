@@ -383,7 +383,7 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 
         const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-        const VecCoord& currentPositions = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& currentPositions = this->mstate->read(core::vec_id::read_access::position)->getValue();
         const ReadAccessor< Data< VVI > > clust = this->d_cluster;
         const unsigned int nbp = currentPositions.size();
 

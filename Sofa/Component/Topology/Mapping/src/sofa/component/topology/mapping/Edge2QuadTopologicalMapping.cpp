@@ -181,10 +181,10 @@ void Edge2QuadTopologicalMapping::init()
                     const unsigned int p0=i;
 
                     Mat3x3 rotation;
-                    (from_mstate->read(core::ConstVecCoordId::position())->getValue())[p0].writeRotationMatrix(rotation);
+                    (from_mstate->read(core::vec_id::read_access::position)->getValue())[p0].writeRotationMatrix(rotation);
 
                     Vec3 t;
-                    t=(from_mstate->read(core::ConstVecCoordId::position())->getValue())[p0].getCenter();
+                    t=(from_mstate->read(core::vec_id::read_access::position)->getValue())[p0].getCenter();
 
                     Vec3 Y;
                     Vec3 Z;
@@ -192,7 +192,7 @@ void Edge2QuadTopologicalMapping::init()
                     Y = rotation * Y0;
                     Z = rotation * Z0;
 
-                    helper::WriteAccessor< Data< Vec3Types::VecCoord > > to_x = *to_mstate->write(core::VecCoordId::position());
+                    helper::WriteAccessor< Data< Vec3Types::VecCoord > > to_x = *to_mstate->write(core::vec_id::write_access::position);
 
                     for(unsigned int j=0; j<N; ++j)
                     {

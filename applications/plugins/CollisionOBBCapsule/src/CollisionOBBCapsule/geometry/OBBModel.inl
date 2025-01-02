@@ -250,7 +250,7 @@ inline typename TOBB<DataTypes>::Coord TOBB<DataTypes>::localCoordinates(const C
 
 template <class DataTypes>
 inline const typename OBBCollisionModel<DataTypes>::Coord & OBBCollisionModel<DataTypes>::lvelocity(sofa::Index index)const{
-    return (_mstate->read(core::ConstVecDerivId::velocity())->getValue())[index].getLinear();
+    return (_mstate->read(core::vec_id::read_access::velocity)->getValue())[index].getLinear();
 }
 
 template <class DataTypes>
@@ -362,12 +362,12 @@ inline void OBBCollisionModel<DataTypes>::vertices(sofa::Index index,std::vector
 
 template<class DataTypes>
 inline const typename OBBCollisionModel<DataTypes>::Coord & OBBCollisionModel<DataTypes>::center(sofa::Index index)const{
-    return _mstate->read(core::ConstVecCoordId::position())->getValue()[index].getCenter();
+    return _mstate->read(core::vec_id::read_access::position)->getValue()[index].getCenter();
 }
 
 template<class DataTypes>
 inline const typename OBBCollisionModel<DataTypes>::Quaternion & OBBCollisionModel<DataTypes>::orientation(sofa::Index index)const{
-    return _mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
+    return _mstate->read(core::vec_id::read_access::position)->getValue()[index].getOrientation();
 }
 
 template<class DataTypes>

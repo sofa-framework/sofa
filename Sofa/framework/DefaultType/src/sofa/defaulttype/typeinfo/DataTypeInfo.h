@@ -67,7 +67,7 @@ namespace sofa::defaulttype
     \see AbstractTypeInfo provides similar mechanisms to manipulate Data objects
     generically in non-template code.
 */
-template<class TDataType>
+template<class TDataType, typename Enable = void>
 struct DataTypeInfo;
 
 template<class TDataType>
@@ -140,7 +140,7 @@ struct DefaultDataTypeInfo
     static const std::string GetTypeName() { return sofa::helper::NameDecoder::decodeTypeName(typeid(DataType)); }
 };
 
-template<class TDataType>
+template<class TDataType, typename Enable>
 struct DataTypeInfo : public DefaultDataTypeInfo<TDataType>
 {
 };

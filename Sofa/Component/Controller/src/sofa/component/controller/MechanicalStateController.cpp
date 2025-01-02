@@ -40,7 +40,7 @@ void MechanicalStateController<Vec1Types>::applyController()
 
     if(mState)
     {
-        helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
+        helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::vec_id::write_access::restPosition);
         if(buttonDevice)
         {
             if (x0[0].x() < -0.1) //angle de fermeture max
@@ -75,7 +75,7 @@ void MechanicalStateController<Vec1Types>::applyController()
     {*/
     if (mState)
     {
-        helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
+        helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::vec_id::write_access::restPosition);
         if (mouseMode==BtMiddle)
         {
             x0[0].x() =  -0.4;

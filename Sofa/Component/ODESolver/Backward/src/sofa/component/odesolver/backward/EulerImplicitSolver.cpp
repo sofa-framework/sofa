@@ -83,9 +83,9 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 #endif
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
-    MultiVecCoord pos(&vop, core::VecCoordId::position() );
-    MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
-    MultiVecDeriv f(&vop, core::VecDerivId::force() );
+    MultiVecCoord pos(&vop, core::vec_id::write_access::position );
+    MultiVecDeriv vel(&vop, core::vec_id::write_access::velocity );
+    MultiVecDeriv f(&vop, core::vec_id::write_access::force );
     MultiVecDeriv b(&vop, true, core::VecIdProperties{"RHS", GetClass()->className});
     MultiVecCoord newPos(&vop, xResult );
     MultiVecDeriv newVel(&vop, vResult );
@@ -95,7 +95,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     mop.cparams.setV(vResult);
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx());
+    MultiVecDeriv dx(&vop, core::vec_id::write_access::dx);
     dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
     x.realloc(&vop, !d_threadSafeVisitor.getValue(), true, core::VecIdProperties{"solution", GetClass()->className});
@@ -145,8 +145,9 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
             msg_info() << "EulerImplicitSolver, f = " << f;
 
             // add the change of force due to stiffness + Rayleigh damping
-            mop.addMBKv(b, -d_rayleighMass.getValue(), 0,
-                        h + d_rayleighStiffness.getValue()); // b =  f + ( rm M + (h+rs) K ) v
+            mop.addMBKv(b, core::MatricesFactors::M(-d_rayleighMass.getValue()),
+                        core::MatricesFactors::B(0),
+                        core::MatricesFactors::K(h + d_rayleighStiffness.getValue())); // b =  f + ( rm M + (h+rs) K ) v
 
             // integration over a time step
             b.teq(h *
@@ -162,19 +163,10 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
     {
         SCOPED_TIMER("setSystemMBKMatrix");
-        SReal mFact, kFact, bFact;
-        if (firstOrder)
-        {
-            mFact = 1;
-            bFact = 0;
-            kFact = -h * tr;
-        }
-        else
-        {
-            mFact = 1 + tr * h * d_rayleighMass.getValue();
-            bFact = -tr * h;
-            kFact = -tr * h * (h + d_rayleighStiffness.getValue());
-        }
+        const core::MatricesFactors::M mFact (firstOrder ? 1 : 1 + tr * h * d_rayleighMass.getValue());
+        const core::MatricesFactors::B bFact (firstOrder ? 0 : -tr * h);
+        const core::MatricesFactors::K kFact (firstOrder ? -h * tr : -tr * h * (h + d_rayleighStiffness.getValue()));
+
         mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 
 #ifdef SOFA_DUMP_VISITOR_INFO

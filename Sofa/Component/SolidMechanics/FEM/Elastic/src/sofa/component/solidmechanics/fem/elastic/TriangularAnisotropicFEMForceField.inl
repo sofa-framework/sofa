@@ -141,7 +141,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::getFiberDir(int element, Der
     if ((unsigned)element < lfd.size())
     {
         const Deriv& ref = lfd[element];
-        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
         core::topology::BaseMeshTopology::Triangle t = this->l_topology->getTriangle(element);
         dir = (x[t[1]]-x[t[0]])*ref[0] + (x[t[2]]-x[t[0]])*ref[1];
     }
@@ -155,7 +155,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::getFiberDir(int element, Der
 template <class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index& v1, Index& v2, Index& v3)
 {
-    const  VecCoord& initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
+    const  VecCoord& initialPoints = (this->mstate->read(core::vec_id::read_access::restPosition)->getValue());
 
     Real Q11, Q12, Q22, Q66;
     Coord fiberDirGlobal;  // orientation of the fiber in the global frame of reference
@@ -314,7 +314,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
         constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::black();
         std::vector<sofa::type::Vec3> vertices;
 
-        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
         const int nbTriangles=this->l_topology->getNbTriangles();
 
         for(int i=0; i<nbTriangles; ++i)

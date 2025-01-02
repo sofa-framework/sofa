@@ -248,13 +248,13 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
                     sofa::simulation::node::reset(tractionStruct.root.get());
                     
                     // record the initial point of a given vertex
-                    Coord p0=tractionStruct.dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[vIndex];
+                    Coord p0=tractionStruct.dofs.get()->read(sofa::core::vec_id::read_access::position)->getValue()[vIndex];
 
                     //  do one step of the static solver
                     sofa::simulation::node::animate(tractionStruct.root.get(), 0.5_sreal);
 
                     // Get the simulated final position of that vertex
-                    Coord p1=tractionStruct.dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[vIndex];
+                    Coord p1=tractionStruct.dofs.get()->read(sofa::core::vec_id::read_access::position)->getValue()[vIndex];
                     // test the young modulus
                     Real longitudinalDeformation=(p1[2]-p0[2])/p0[2];
                     if (fabs(longitudinalDeformation-pressure/youngModulus)>1e-4) {

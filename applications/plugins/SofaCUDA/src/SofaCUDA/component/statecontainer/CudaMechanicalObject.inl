@@ -1437,7 +1437,7 @@ double MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
 template<class TCoord, class TDeriv, class TReal>
 void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::resetForce(Main* m)
 {
-    Data<VecDeriv>* d_f = m->write(core::VecDerivId::force());
+    Data<VecDeriv>* d_f = m->write(core::vec_id::write_access::force);
     VecDeriv& f = *d_f->beginEdit();
     if (f.size() > 0)
         Kernels::vClear(f.size(), f.deviceWrite());
@@ -2127,7 +2127,7 @@ double MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vDot(
 template<int N, class real>
 void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::resetForce(Main* m)
 {
-    Data<VecDeriv>* d_f = m->write(core::VecDerivId::force());
+    Data<VecDeriv>* d_f = m->write(core::vec_id::write_access::force);
     VecDeriv& f = *d_f->beginEdit();
 
     if (f.size() == 0) return;
@@ -2359,7 +2359,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFrom
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaMechanicalObject_ImplMethods(T) \
 template<> void MechanicalObject< T >::accumulateForce(const core::ExecParams* params, core::VecDerivId fid) \
-{ if( fid==core::VecDerivId::force() ) data.accumulateForce(this); else core::behavior::BaseMechanicalState::accumulateForce(params,fid);} \
+{ if( fid==core::vec_id::write_access::force ) data.accumulateForce(this); else core::behavior::BaseMechanicalState::accumulateForce(params,fid);} \
 template<> void MechanicalObject< T >::vOp(const core::ExecParams* /* params */, core::VecId v, core::ConstVecId a, core::ConstVecId b, SReal f) \
 { data.vOp(this, v, a, b, f); }		\
 template<> void MechanicalObject< T >::vMultiOp(const core::ExecParams* params, const VMultiOp& ops) \
@@ -2367,7 +2367,7 @@ template<> void MechanicalObject< T >::vMultiOp(const core::ExecParams* params, 
 template<> SReal MechanicalObject< T >::vDot(const core::ExecParams* /* params */, core::ConstVecId a, core::ConstVecId b) \
 { return data.vDot(this, a, b); }				    \
 template<> void MechanicalObject< T >::resetForce(const core::ExecParams* params, core::VecDerivId fid) \
-{ if( fid==core::VecDerivId::force() ) data.resetForce(this); else core::behavior::BaseMechanicalState::resetForce(params,fid); } \
+{ if( fid==core::vec_id::write_access::force ) data.resetForce(this); else core::behavior::BaseMechanicalState::resetForce(params,fid); } \
 template<> void MechanicalObject< T >::copyToBaseVector(linearalgebra::BaseVector * dest, core::ConstVecId src, unsigned int &offset) \
 { if (CudaBaseVectorType<Real> * vec = dynamic_cast<CudaBaseVectorType<Real> *>(dest)) data.copyToCudaBaseVector(this, vec,src,offset); \
 else data.copyToBaseVector(this, dest,src,offset); } \

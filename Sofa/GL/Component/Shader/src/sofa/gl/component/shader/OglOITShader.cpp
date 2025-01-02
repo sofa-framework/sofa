@@ -29,10 +29,11 @@
 namespace sofa::gl::component::shader
 {
 
-//Register OglShader in the Object Factory
-int OglOITShaderClass = core::RegisterObject("OglOITShader")
-        .add< OglOITShader >()
-        ;
+void registerOglOITShader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Shader implementating Order Independent Transparency.")
+        .add< OglOITShader >());
+}
 
 const std::string OglOITShader::PATH_TO_OIT_ACCUMULATION_VERTEX_SHADERS = "shaders/orderIndependentTransparency/accumulation.vert";
 const std::string OglOITShader::PATH_TO_OIT_ACCUMULATION_FRAGMENT_SHADERS = "shaders/orderIndependentTransparency/accumulation.frag";

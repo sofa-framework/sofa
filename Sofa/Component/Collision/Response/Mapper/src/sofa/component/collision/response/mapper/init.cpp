@@ -51,6 +51,7 @@ const char* getModuleVersion()
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
     // this library does not register any component in the Factory
+    SOFA_UNUSED(factory);
 }
 
 void init()

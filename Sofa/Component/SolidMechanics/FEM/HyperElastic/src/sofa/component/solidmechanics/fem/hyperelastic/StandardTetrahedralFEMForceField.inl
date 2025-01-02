@@ -169,7 +169,7 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
 
     if (_initialPoints.size() == 0)
     {
-        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        const VecCoord& p = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
         _initialPoints=p;
     }
 
@@ -209,7 +209,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::createTetrahedronRestInformati
     unsigned int j;
     typename DataTypes::Real volume;
     typename DataTypes::Coord point[4];
-    const typename DataTypes::VecCoord restPosition = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const typename DataTypes::VecCoord restPosition = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     ///describe the indices of the 4 tetrahedron vertices
     const core::topology::BaseMeshTopology::Tetrahedron& t = tetrahedronArray[tetrahedronIndex];
@@ -607,7 +607,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::draw(const core::visual::Visua
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);
@@ -625,7 +625,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 {
     DataVecCoord d_pos;
     VecCoord &pos = *d_pos.beginEdit();
-    pos =  this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    pos =  this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     // perturb original state:
     srand( 0 );
@@ -748,7 +748,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 template<class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::saveMesh( const char *filename )
 {
-    VecCoord pos( this->mstate->read(core::ConstVecCoordId::position())->getValue() );
+    VecCoord pos( this->mstate->read(core::vec_id::read_access::position)->getValue() );
     const core::topology::BaseMeshTopology::SeqTriangles triangles = m_topology->getTriangles();
     FILE *file = fopen( filename, "wb" );
     if (!file) return;

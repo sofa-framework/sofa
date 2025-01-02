@@ -208,7 +208,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
 
         // Compute the theoretical final positions
         VecCoord finalPos;
-        patchStruct.affineConstraint->getFinalPositions( finalPos,*patchStruct.dofs->write(core::VecCoordId::position()) );
+        patchStruct.affineConstraint->getFinalPositions( finalPos,*patchStruct.dofs->write(core::vec_id::write_access::position) );
 
 
         // Initialize

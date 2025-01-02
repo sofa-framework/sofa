@@ -111,6 +111,7 @@ public:
     typedef T MyType;                                               \
     typedef ::sofa::core::objectmodel::TClass< T, Parent > MyClass; \
     typedef Parent Inherit1; \
+    using Parent::initData; \
     SOFA_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 1 base class
@@ -118,6 +119,7 @@ public:
     typedef T MyType;                                               \
     typedef ::sofa::core::objectmodel::TClass< T, Parent > MyClass; \
     typedef Parent Inherit1; \
+    using Parent::initData; \
     SOFA_ABSTRACT_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 2 base classes
@@ -126,6 +128,7 @@ public:
     typedef ::sofa::core::objectmodel::TClass< T, ::sofa::core::objectmodel::Parents<Parent1, Parent2> > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
+    using ::sofa::core::objectmodel::Base::initData; \
     SOFA_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 2 base classes
@@ -134,6 +137,7 @@ public:
     typedef ::sofa::core::objectmodel::TClass< T, ::sofa::core::objectmodel::Parents<Parent1, Parent2> > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
+    using ::sofa::core::objectmodel::Base::initData; \
     SOFA_ABSTRACT_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 3 base classes
@@ -143,6 +147,7 @@ public:
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     typedef Parent3 Inherit3; \
+    using ::sofa::core::objectmodel::Base::initData; \
     SOFA_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 3 base classes
@@ -152,6 +157,7 @@ public:
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     typedef Parent3 Inherit3; \
+    using ::sofa::core::objectmodel::Base::initData; \
     SOFA_ABSTRACT_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 4 base classes
@@ -162,6 +168,7 @@ public:
     typedef Parent2 Inherit2; \
     typedef Parent3 Inherit3; \
     typedef Parent4 Inherit4; \
+    using ::sofa::core::objectmodel::Base::initData; \
     SOFA_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 4 base classes
@@ -172,6 +179,7 @@ public:
     typedef Parent2 Inherit2; \
     typedef Parent3 Inherit3; \
     typedef Parent4 Inherit4; \
+    using ::sofa::core::objectmodel::Base::initData; \
     SOFA_ABSTRACT_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 5 base classes
@@ -183,6 +191,7 @@ public:
     typedef Parent3 Inherit3; \
     typedef Parent4 Inherit4; \
     typedef Parent5 Inherit5; \
+    using ::sofa::core::objectmodel::Base::initData; \
     SOFA_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 5 base classes
@@ -194,6 +203,7 @@ public:
     typedef Parent3 Inherit3; \
     typedef Parent4 Inherit4; \
     typedef Parent5 Inherit5; \
+    using ::sofa::core::objectmodel::Base::initData; \
     SOFA_ABSTRACT_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 5 base classes
@@ -206,6 +216,7 @@ public:
     typedef Parent4 Inherit4; \
     typedef Parent5 Inherit5; \
     typedef Parent6 Inherit6; \
+    using ::sofa::core::objectmodel::Base::initData; \
     SOFA_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 5 base classes
@@ -218,6 +229,7 @@ public:
     typedef Parent4 Inherit4; \
     typedef Parent5 Inherit5; \
     typedef Parent6 Inherit6; \
+    using ::sofa::core::objectmodel::Base::initData; \
     SOFA_ABSTRACT_CLASS_DECL
 
 // Do not use this macro directly, use SOFA_ABSTRACT_CLASS instead
@@ -230,7 +242,6 @@ public:
     virtual const ::sofa::core::objectmodel::BaseClass* getClass() const override \
 { return GetClass(); }                                              \
     static const char* HeaderFileLocation() { return __FILE__; }        \
-    using ::sofa::core::objectmodel::Base::initData;                    \
     ::sofa::core::objectmodel::BaseLink::InitLink<MyType>               \
     initLink(const char* name, const char* help)                        \
 {                                                                   \

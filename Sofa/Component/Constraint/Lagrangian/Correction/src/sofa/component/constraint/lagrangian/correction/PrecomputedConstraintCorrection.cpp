@@ -32,9 +32,9 @@ namespace sofa::component::constraint::lagrangian::correction
 template<>
 SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void PrecomputedConstraintCorrection< defaulttype::Rigid3Types >::rotateConstraints(bool back)
 {
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::constraintJacobian());
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& x0 = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
+    helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::vec_id::write_access::constraintJacobian);
     MatrixDeriv& c = cData.wref();
 
     // On fait tourner les normales (en les ramenant dans le "pseudo" repere initial)
@@ -84,10 +84,10 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void PrecomputedConstraintCo
 template<>
 SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::rotateResponse()
 {
-    helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::VecDerivId::dx());
+    helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::vec_id::write_access::dx);
     VecDeriv& dx = dxData.wref();
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& x0 = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     for(unsigned int j = 0; j < dx.size(); j++)
     {
         // on passe les deplacements du repere local (au repos) au repere global

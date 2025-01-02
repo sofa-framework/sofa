@@ -77,7 +77,7 @@ void PositionBasedDynamicsProjectiveConstraint<DataTypes>::reset()
 	std::fill(vel.begin(),vel.end(),Deriv());
 
 	helper::WriteAccessor<DataVecCoord> old_pos (d_old_position );
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 	old_pos.resize(x.size());
 	std::copy(x.begin(),x.end(),old_pos.begin());
 }

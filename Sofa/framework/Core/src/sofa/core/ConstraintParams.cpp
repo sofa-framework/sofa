@@ -31,11 +31,11 @@ namespace sofa::core
 
 ConstraintParams::ConstraintParams(const sofa::core::ExecParams& p)
     : sofa::core::ExecParams(p)
-    , m_x(ConstVecCoordId::position())
-    , m_v(ConstVecDerivId::velocity())
-    , m_j(MatrixDerivId::constraintJacobian())
-    , m_dx(VecDerivId::dx())
-    , m_lambda(VecDerivId::externalForce())
+    , m_x(vec_id::read_access::position)
+    , m_v(vec_id::read_access::velocity)
+    , m_j(vec_id::write_access::constraintJacobian)
+    , m_dx(vec_id::write_access::dx)
+    , m_lambda(vec_id::write_access::externalForce)
     , m_constOrder (ConstraintOrder::POS_AND_VEL)
     , m_smoothFactor (1)
 {

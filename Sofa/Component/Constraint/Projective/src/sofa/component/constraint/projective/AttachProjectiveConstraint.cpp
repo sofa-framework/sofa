@@ -43,7 +43,7 @@ template <> SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API
 void AttachProjectiveConstraint<Rigid3Types>::calcRestRotations()
 {
     const SetIndexArray & indices2 = f_indices2.getValue();
-    const VecCoord& x0 = this->mstate2->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = this->mstate2->read(core::vec_id::read_access::restPosition)->getValue();
     restRotations.resize(indices2.size());
     for (unsigned int i=0; i<indices2.size(); ++i)
     {

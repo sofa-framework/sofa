@@ -224,12 +224,12 @@ void DefaultTaskScheduler::WaitForWorkersToBeReady()
 
 void DefaultTaskScheduler::setMainTaskStatus(const Task::Status* mainTaskStatus)
 {
-    m_mainTaskStatus.store(mainTaskStatus, std::memory_order::memory_order_relaxed);
+    m_mainTaskStatus.store(mainTaskStatus, std::memory_order_relaxed);
 }
 
 bool DefaultTaskScheduler::testMainTaskStatus(const Task::Status* status)
 {
-    return m_mainTaskStatus.load(std::memory_order::memory_order_relaxed) == status;
+    return m_mainTaskStatus.load(std::memory_order_relaxed) == status;
 }
 
 } // namespace sofa::simulation

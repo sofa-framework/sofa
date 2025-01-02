@@ -183,7 +183,7 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     // get restPosition
     if (m_initialPoints.empty())
     {
-        m_initialPoints = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        m_initialPoints = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     }
 
     /// initialize the data structure associated with each tetrahedron
@@ -243,7 +243,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::createTetrahedronRestIn
 
     typename DataTypes::Real volume;
     typename DataTypes::Coord point[4];
-    const VecCoord& restPosition = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& restPosition = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     ///describe the indices of the 4 tetrahedron vertices
     const Tetrahedron& t = tetrahedronArray[tetrahedronIndex];
@@ -599,7 +599,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
 {
     DataVecCoord d_pos;
     VecCoord &pos = *d_pos.beginEdit();
-    pos =  this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    pos =  this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     // perturb original state:
     srand( 0 );
@@ -752,7 +752,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
           vparams->drawTool()->setPolygonMode(0,true);

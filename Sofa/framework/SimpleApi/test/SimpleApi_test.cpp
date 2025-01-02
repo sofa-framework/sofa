@@ -90,3 +90,55 @@ TEST_F(SimpleApi_test, createParamString )
 {
     ASSERT_TRUE( testParamString() );
 }
+
+TEST(SimpleApi_test_solo, testIsSetWithDataLink)
+{
+    const Simulation::SPtr simu = createSimulation("DAG");
+    const Node::SPtr root = createRootNode(simu, "root");
+
+    // test not set
+    const auto obj1 = createObject(root, "DefaultAnimationLoop", {
+        {"name", "loop1"}
+    });
+    auto* objdata1 = obj1->findData("printLog");
+    ASSERT_FALSE(objdata1->isSet());
+
+    // test set
+    const auto obj2 = createObject(root, "DefaultAnimationLoop", {
+        {"name", "loop2"}, 
+        {"printLog", "false"}
+    });
+    auto* objdata2 = obj2->findData("printLog");
+    ASSERT_TRUE(objdata2->isSet());
+
+    // test set through a link of a already created object
+    const auto obj3 = createObject(root, "DefaultAnimationLoop", {
+        {"name", "loop3"},
+        {"printLog", "@/loop2.printLog"}
+    });
+    auto* objdata3 = obj3->findData("printLog");
+    ASSERT_TRUE(objdata3->isSet());
+
+    // test set through a link of a not yet created object (deferred linking)
+    const auto obj4 = createObject(root, "DefaultAnimationLoop", {
+        {"name", "loop4"},
+        {"printLog", "@/loop5.printLog"}
+    });
+    const auto obj5 = createObject(root, "DefaultAnimationLoop", {
+        {"name", "loop5"},
+        {"printLog", "true"}
+    });
+    auto* objdata4 = obj4->findData("printLog");
+    ASSERT_TRUE(objdata4->isSet());
+    
+    // test link with a wrong path (or non existent parent)
+    const auto obj6 = createObject(root, "DefaultAnimationLoop", {
+        {"name", "loop6"},
+        {"printLog", "@/loop7.printLog"}
+    });
+
+    auto* objdata6 = obj6->findData("printLog");
+    ASSERT_TRUE(objdata6->isSet());
+    ASSERT_EQ(objdata6->getParent(), nullptr);
+
+}

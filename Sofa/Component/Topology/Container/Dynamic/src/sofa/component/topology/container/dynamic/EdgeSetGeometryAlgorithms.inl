@@ -251,7 +251,7 @@ template< class DataTypes>
 typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLength( const EdgeID i) const
 {
     const Edge &e = this->m_topology->getEdge(i);
-    const VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
     const Real length = (DataTypes::getCPos(p[e[0]])-DataTypes::getCPos(p[e[1]])).norm();
     return length;
 }
@@ -263,7 +263,7 @@ template< class DataTypes>
 typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestEdgeLength( const EdgeID i) const
 {
     const Edge &e = this->m_topology->getEdge(i);
-    const VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
+    const VecCoord& p = (this->object->read(core::vec_id::read_access::restPosition)->getValue());
     const Real length = (DataTypes::getCPos(p[e[0]])-DataTypes::getCPos(p[e[1]])).norm();
     return length;
 }
@@ -272,7 +272,7 @@ template< class DataTypes>
 typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestSquareEdgeLength( const EdgeID i) const
 {
     const Edge &e = this->m_topology->getEdge(i);
-    const VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
+    const VecCoord& p = (this->object->read(core::vec_id::read_access::restPosition)->getValue());
     const Real length = (DataTypes::getCPos(p[e[0]])-DataTypes::getCPos(p[e[1]])).norm2();
     return length;
 }
@@ -282,7 +282,7 @@ template<class DataTypes>
 void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeLength( BasicArrayInterface<Real> &ai) const
 {
     const sofa::type::vector<Edge> &ea = this->m_topology->getEdges();
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     for (Index i=0; i<ea.size(); ++i)
     {
@@ -295,7 +295,7 @@ template<class DataTypes>
 void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeAABB(const EdgeID i, CPos& minCoord, CPos& maxCoord) const
 {
     const Edge &e = this->m_topology->getEdge(i);
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
     const CPos& a = DataTypes::getCPos(p[e[0]]);
     const CPos& b = DataTypes::getCPos(p[e[1]]);
     for (int c=0; c<NC; ++c)
@@ -307,7 +307,7 @@ template<class DataTypes>
 void EdgeSetGeometryAlgorithms<DataTypes>::getEdgeVertexCoordinates(const EdgeID i, Coord pnt[2]) const
 {
     const Edge &e = this->m_topology->getEdge(i);
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     pnt[0] = p[e[0]];
     pnt[1] = p[e[1]];
@@ -317,7 +317,7 @@ template<class DataTypes>
 void EdgeSetGeometryAlgorithms<DataTypes>::getRestEdgeVertexCoordinates(const EdgeID i, Coord pnt[2]) const
 {
     const Edge &e = this->m_topology->getEdge(i);
-    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::vec_id::read_access::restPosition)->getValue());
 
     pnt[0] = p[e[0]];
     pnt[1] = p[e[1]];
@@ -327,7 +327,7 @@ template<class DataTypes>
 typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeCenter(const EdgeID i) const
 {
     const Edge &e = this->m_topology->getEdge(i);
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     return (p[e[0]] + p[e[1]]) * (Real) 0.5;
 }
@@ -336,7 +336,7 @@ template<class DataTypes>
 typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeDirection(const EdgeID i) const
 {
     const Edge &e = this->m_topology->getEdge(i);
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
     return (p[e[1]] - p[e[0]]);
 }
 
@@ -344,7 +344,7 @@ template<class DataTypes>
 typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeRestEdgeDirection(const EdgeID i) const
 {
     const Edge &e = this->m_topology->getEdge(i);
-    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::vec_id::read_access::restPosition)->getValue());
     return (p[e[1]] - p[e[0]]);
 }
 
@@ -368,7 +368,7 @@ auto EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeBarycentricCoordinates(
     const sofa::type::Vec<3, Real> &p,
     PointID ind_p1, PointID ind_p2, bool useRestPosition) const -> sofa::type::vector< SReal >
 {
-    sofa::core::ConstVecCoordId::MyVecId _vecId = useRestPosition ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+    sofa::core::ConstVecCoordId::MyVecId _vecId = useRestPosition ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
 
     const typename DataTypes::VecCoord& vect_c = (this->object->read(_vecId)->getValue());
     const typename DataTypes::Coord& c0 = vect_c[ind_p1];
@@ -440,7 +440,7 @@ template<class DataTypes>
 bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgePlaneIntersection (EdgeID edgeID, sofa::type::Vec<3,Real> pointOnPlane, sofa::type::Vec<3,Real> normalOfPlane, sofa::type::Vec<3,Real>& intersection)
 {
     const Edge &e = this->m_topology->getEdge(edgeID);
-    const VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     sofa::type::Vec<3,Real> p1,p2;
     p1[0]=p[e[0]][0]; p1[1]=p[e[0]][1]; p1[2]=p[e[0]][2];
@@ -465,7 +465,7 @@ template<class DataTypes>
 bool EdgeSetGeometryAlgorithms<DataTypes>::computeRestEdgePlaneIntersection (EdgeID edgeID, sofa::type::Vec<3,Real> pointOnPlane, sofa::type::Vec<3,Real> normalOfPlane, sofa::type::Vec<3,Real>& intersection)
 {
     const Edge &e = this->m_topology->getEdge(edgeID);
-    const VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
+    const VecCoord& p = (this->object->read(core::vec_id::read_access::restPosition)->getValue());
 
     sofa::type::Vec<3,Real> p1,p2;
     p1[0]=p[e[0]][0]; p1[1]=p[e[0]][1]; p1[2]=p[e[0]][2];
@@ -509,7 +509,7 @@ template<class DataTypes>
 typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(const EdgeID edgeID, const type::Vec3& a, const type::Vec3& b, bool& intersected)
 {
     const Edge& theEdge = this->m_topology->getEdge(edgeID);
-    const VecCoord& pos = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const VecCoord& pos = (this->object->read(core::vec_id::read_access::position)->getValue());
 
     const typename DataTypes::Coord& e0 = pos[theEdge[0]];
     const typename DataTypes::Coord& e1 = pos[theEdge[1]];
@@ -537,7 +537,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     // Draw Edges indices
     if (showEdgeIndices.getValue() && this->m_topology->getNbEdges() != 0)
     {        
-        const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+        const VecCoord& coords =(this->object->read(core::vec_id::read_access::position)->getValue());
         float scale = this->getIndicesScale();
 
         //for edges:
@@ -566,7 +566,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     {
         const sofa::type::vector<Edge> &edgeArray = this->m_topology->getEdges();
 
-        const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+        const VecCoord& coords =(this->object->read(core::vec_id::read_access::position)->getValue());
 
         std::vector<type::Vec3> positions;
         positions.reserve(edgeArray.size()*2u);
@@ -588,7 +588,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 template< class DataTypes>
 void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type::vector<sofa::Index>& numEdges, type::vector<Edge>& vertexEdges, type::vector<Vec3d>& weights ) const
 {
-    const VecCoord& pos =(this->object->read(core::ConstVecCoordId::position())->getValue()); // point positions
+    const VecCoord& pos =(this->object->read(core::vec_id::read_access::position)->getValue()); // point positions
 
     sofa::type::vector<sofa::type::Vec<3, Real> > edgeVec;                  // 3D edges
 
@@ -739,7 +739,7 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID
     Real &baryCoef)
 {
     const Edge& theEdge = this->m_topology->getEdge(edgeID);
-    const VecCoord& pos = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const VecCoord& pos = (this->object->read(core::vec_id::read_access::position)->getValue());
 
     const typename DataTypes::Coord& e0 = pos[theEdge[0]];
     const typename DataTypes::Coord& e1 = pos[theEdge[1]];

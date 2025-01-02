@@ -125,7 +125,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassTriangleCreatio
 
     if (this->getMassTopologyType() == geometry::ElementType::TRIANGLE)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses (d_vertexMass );
@@ -183,7 +183,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassTriangleCreation(
 
     if (this->getMassTopologyType() == geometry::ElementType::TRIANGLE)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
@@ -233,7 +233,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassTriangleDestruc
 {
     if (this->getMassTopologyType() == geometry::ElementType::TRIANGLE)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses (d_vertexMass );
@@ -280,7 +280,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassTriangleDestructi
 {
     if (this->getMassTopologyType() == geometry::ElementType::TRIANGLE)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses (d_edgeMass );
@@ -336,7 +336,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassQuadCreation(co
 
     if (this->getMassTopologyType() == geometry::ElementType::QUAD)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
@@ -395,7 +395,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassQuadCreation(cons
 
     if (this->getMassTopologyType() == geometry::ElementType::QUAD)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
@@ -446,7 +446,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassQuadDestruction
 {
     if (this->getMassTopologyType() == geometry::ElementType::QUAD)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
@@ -494,7 +494,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassQuadDestruction(c
 {
     if (this->getMassTopologyType() == geometry::ElementType::QUAD)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
@@ -554,7 +554,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassTetrahedronCrea
 
     if (this->getMassTopologyType() == geometry::ElementType::TETRAHEDRON)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
@@ -613,7 +613,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassTetrahedronCreati
 
     if (this->getMassTopologyType() == geometry::ElementType::TETRAHEDRON)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
@@ -664,7 +664,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassTetrahedronDest
 {
     if (this->getMassTopologyType() == geometry::ElementType::TETRAHEDRON)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
@@ -712,7 +712,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassTetrahedronDestru
 {
     if (this->getMassTopologyType() == geometry::ElementType::TETRAHEDRON)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
@@ -770,7 +770,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassHexahedronCreat
 
     if (this->getMassTopologyType() == geometry::ElementType::HEXAHEDRON)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
@@ -833,7 +833,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassHexahedronCreatio
 
     if (this->getMassTopologyType() == geometry::ElementType::HEXAHEDRON)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
@@ -888,7 +888,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassHexahedronDestr
 {
     if (this->getMassTopologyType() == geometry::ElementType::HEXAHEDRON)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
@@ -940,7 +940,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassHexahedronDestruc
 {
     if (this->getMassTopologyType() == geometry::ElementType::HEXAHEDRON)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
         const auto& positions = l_geometryState->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
@@ -2348,7 +2348,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::draw(const core::visual::Visua
 
     const auto &vertexMass= d_vertexMass.getValue();
 
-    const auto& x = l_geometryState->read(core::ConstVecCoordId::position())->getValue();
+    const auto& x = l_geometryState->read(core::vec_id::read_access::position)->getValue();
     type::Vec3 gravityCenter;
     Real totalMass=0.0;
 

@@ -55,7 +55,7 @@ void registerMechanicalObject(sofa::core::ObjectFactory* factory)
 template<>
 void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const type::Quat<SReal> q)
 {
-    helper::WriteAccessor< Data<VecCoord> > x = *this->write(core::VecCoordId::position());
+    helper::WriteAccessor< Data<VecCoord> > x = *this->write(core::vec_id::write_access::position);
 
     for (RigidCoord<3, SReal>& xi : x)
     {
@@ -199,7 +199,7 @@ void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::Visual
     if (showObject.getValue())
     {
         const float scale = showObjectScale.getValue();
-        const helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::VecCoordId::position());
+        const helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::vec_id::write_access::position);
         const size_t vsize = d_size.getValue();
         for (size_t i = 0; i < vsize; ++i)
         {

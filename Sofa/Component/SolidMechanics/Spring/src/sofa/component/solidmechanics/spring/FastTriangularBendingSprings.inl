@@ -473,7 +473,7 @@ void FastTriangularBendingSprings<DataTypes>::draw(const core::visual::VisualPar
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     vparams->drawTool()->disableLighting();
 

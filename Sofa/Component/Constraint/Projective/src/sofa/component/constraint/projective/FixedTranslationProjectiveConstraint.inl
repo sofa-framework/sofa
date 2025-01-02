@@ -173,7 +173,7 @@ void FixedTranslationProjectiveConstraint<DataTypes>::draw(const core::visual::V
     const SetIndexArray & indices = d_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();

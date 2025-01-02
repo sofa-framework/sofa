@@ -208,7 +208,7 @@ void UniformMass<RigidTypes>::drawRigid2DImpl(const VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
     const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
     type::Vec3d len;
 
@@ -231,7 +231,7 @@ void UniformMass<RigidTypes>::drawRigid3DImpl(const VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
     const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
     typename RigidTypes::Vec3 gravityCenter;
     type::Vec3d len;
@@ -261,7 +261,7 @@ void UniformMass<RigidTypes>::drawRigid3DImpl(const VisualParams* vparams)
 
     if (d_showInitialCenterOfGravity.getValue())
     {
-        const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        const VecCoord& x0 = mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
         for (const unsigned int index : indices)
             vparams->drawTool()->drawFrame(x0[index].getCenter(), x0[index].getOrientation(), len*d_showAxisSize.getValue());
@@ -281,8 +281,8 @@ void UniformMass<Vec6Types>::drawVec6Impl(const core::visual::VisualParams* vpar
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& x0 = mstate->read(core::vec_id::read_access::restPosition)->getValue();
     const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     Mat3x3d R; R.identity();

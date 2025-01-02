@@ -386,7 +386,7 @@ void HexahedralFEMForceField<DataTypes>::initLarge(const int i)
     // second vector in the plane of the two first edges
     // third vector orthogonal to first and second
 
-    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     type::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
@@ -486,7 +486,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv&
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::initPolar(const int i)
 {
-    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     type::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
@@ -668,7 +668,7 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     std::vector<sofa::type::RGBAColor> colorVector;
     std::vector<sofa::type::Vec3> vertices;
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
     {

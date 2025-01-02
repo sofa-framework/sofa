@@ -339,8 +339,8 @@ void PolynomialSpringsForceField<DataTypes>::draw(const core::visual::VisualPara
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const VecCoord& p1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p1 =this->mstate1->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& p2 =this->mstate2->read(core::vec_id::read_access::position)->getValue();
 
     const VecIndex& firstObjectIndices = d_firstObjectPoints.getValue();
     const VecIndex& secondObjectIndices = d_secondObjectPoints.getValue();

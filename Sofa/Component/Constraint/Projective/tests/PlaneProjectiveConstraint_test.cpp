@@ -138,7 +138,7 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
        for (unsigned i=0; i<numNodes; i++){
            xprev[i] = x[i] = CPos(i,0,0);
        }
-       projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
+       projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::vec_id::write_access::position) );
 
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted
@@ -174,7 +174,7 @@ const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSet
        for (unsigned i=0; i<numNodes; i++){
            vprev[i] = v[i] = CPos(i,0,0);
        }
-       projection->projectVelocity(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()) );
+       projection->projectVelocity(core::mechanicalparams::defaultInstance(), *dofs->write(core::vec_id::write_access::velocity) );
 
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted

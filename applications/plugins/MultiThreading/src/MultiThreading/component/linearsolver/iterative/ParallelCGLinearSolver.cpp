@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -59,9 +59,12 @@ ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<SReal>, sofa
 template class SOFA_MULTITHREADING_PLUGIN_API
 ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<sofa::type::Mat<3,3,SReal>>, sofa::linearalgebra::FullVector<SReal> >;
 
-int ParallelCGLinearSolverClass = sofa::core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm in parallel")
-    .add< ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<SReal>, sofa::linearalgebra::FullVector<SReal> > >(true)
-    .add< ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<sofa::type::Mat<3,3,SReal>>, sofa::linearalgebra::FullVector<SReal> > >();
+void registerParallelCGLinearSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel version of the linear solver using the conjugate gradient iterative algorithm.")
+                             .add< ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<SReal>, sofa::linearalgebra::FullVector<SReal> > >(true)
+                             .add< ParallelCGLinearSolver< ParallelCompressedRowSparseMatrixMechanical<sofa::type::Mat<3,3,SReal>>, sofa::linearalgebra::FullVector<SReal> > >());
+}
 
 const bool isParallelCGLinearSolverImplementationRegistered =
     ParallelImplementationsRegistry::addEquivalentImplementations("CGLinearSolver", "ParallelCGLinearSolver");

@@ -99,12 +99,12 @@ public:
     /// @{
     virtual MultiVecDerivId getLambda() const
     {
-        return MultiVecDerivId(VecDerivId::externalForce());
+        return MultiVecDerivId(vec_id::write_access::externalForce);
     }
 
     virtual MultiVecDerivId getDx() const
     {
-        return MultiVecDerivId(VecDerivId::dx());
+        return MultiVecDerivId(vec_id::write_access::dx);
     }
     /// @}
 

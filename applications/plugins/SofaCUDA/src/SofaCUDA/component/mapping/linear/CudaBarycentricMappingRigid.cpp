@@ -68,7 +68,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
     typedef sofa::core::behavior::MechanicalState<defaulttype::Vec3Types> InMechanicalStateT;
     InMechanicalStateT* inState;
     this->m_fromTopology->getContext()->get(inState);
-    const auto& inRestPos = (inState->read(core::ConstVecCoordId::restPosition())->getValue());
+    const auto& inRestPos = (inState->read(core::vec_id::read_access::restPosition)->getValue());
 
     for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
             changeIt != itEnd; ++changeIt )

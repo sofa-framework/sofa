@@ -61,12 +61,12 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 
 
     for(unsigned i=0; i<(unsigned)this->toModel->getSize(); ++i)
-        _p0.push_back( this->toModel->read(core::ConstVecCoordId::position())->getValue()[i] );
+        _p0.push_back( this->toModel->read(core::vec_id::read_access::position)->getValue()[i] );
 
     for(unsigned i=0; i<(unsigned)this->fromModel->getSize(); ++i) // par construction de la sparse grid, pas de rotation initiale
-        _qCoarse0.push_back( this->fromModel->read(core::ConstVecCoordId::position())->getValue()[i] );
+        _qCoarse0.push_back( this->fromModel->read(core::vec_id::read_access::position)->getValue()[i] );
 
-    InCoord translation0 = this->fromModel->read(core::ConstVecCoordId::position())->getValue()[0] - _sparseGrid->getPointPos(0);
+    InCoord translation0 = this->fromModel->read(core::vec_id::read_access::position)->getValue()[0] - _sparseGrid->getPointPos(0);
 
     for(Size i=0; i<_finestSparseGrid->getNbPoints(); ++i)
         _qFine0.push_back( _finestSparseGrid->getPointPos(i)+translation0 );

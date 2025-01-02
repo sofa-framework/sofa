@@ -39,9 +39,11 @@
 namespace multithreading::component::animationloop
 {
 
-int AnimationLoopParallelSchedulerClass = sofa::core::RegisterObject("parallel animation loop, using intel tbb library")
-        .add< AnimationLoopParallelScheduler >()
-        ;
+void registerAnimationLoopParallelScheduler(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel animation loop, using the Intel tbb library.")
+                                                          .add< AnimationLoopParallelScheduler >());
+}
 
 AnimationLoopParallelScheduler::AnimationLoopParallelScheduler(sofa::simulation::Node* _gnode)
     : Inherit()

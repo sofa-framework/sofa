@@ -68,7 +68,7 @@ public:
     ///
     /// Specify and execute all computation for timestep integration, i.e.
     /// advancing the state from time t to t+dt.
-    virtual void solve (const core::ExecParams* params, SReal dt) { solve(params, dt, VecCoordId::position(), VecDerivId::velocity()); }
+    virtual void solve (const core::ExecParams* params, SReal dt) { solve(params, dt, vec_id::write_access::position, vec_id::write_access::velocity); }
 
 
     /// Compute the residual of the newton iteration

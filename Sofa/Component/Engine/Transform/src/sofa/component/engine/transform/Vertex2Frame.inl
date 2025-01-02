@@ -28,7 +28,7 @@ namespace sofa::component::engine::transform
 {
 
 template <class DataTypes>
-const typename Vertex2Frame<DataTypes>::Real Vertex2Frame<DataTypes>::EPSILON = std::numeric_limits<Vertex2Frame<DataTypes>::Real>::epsilon();
+const Real_t<DataTypes> Vertex2Frame<DataTypes>::EPSILON = std::numeric_limits<Real_t<DataTypes>>::epsilon();
 
 template <class DataTypes>
 Vertex2Frame<DataTypes>::Vertex2Frame():

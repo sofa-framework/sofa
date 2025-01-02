@@ -60,7 +60,7 @@ public:
     void doUpdate() override;
 
     Data<VecIndex> d_indices; ///< indices of the coordinates to average
-    Data<unsigned> d_vecId; ///< index of the vector (default value corresponds to core::VecCoordId::position() )
+    Data<unsigned> d_vecId; ///< index of the vector (default value corresponds to core::vec_id::write_access::position )
     Data<Coord> d_average;       ///< result
 
     void handleEvent(core::objectmodel::Event *event) override;

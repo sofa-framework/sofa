@@ -36,8 +36,8 @@ VisualParams::VisualParams()
     , m_pass(Std)
     , m_drawTool(nullptr)
     //, m_boundFrameBuffer(nullptr)
-    , m_x (ConstVecCoordId::position())
-    , m_v (ConstVecDerivId::velocity())
+    , m_x (vec_id::read_access::position)
+    , m_v (vec_id::read_access::velocity)
     , m_supportedAPIs(0)
 {
     m_displayFlags.setShowVisualModels(true); // BUGFIX: visual models are visible by default

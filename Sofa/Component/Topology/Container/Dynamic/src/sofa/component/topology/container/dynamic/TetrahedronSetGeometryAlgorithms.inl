@@ -399,7 +399,7 @@ template< class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::computeTetrahedronAABB(const TetraID i, Coord& minCoord, Coord& maxCoord) const
 {
     const Tetrahedron t = this->m_topology->getTetrahedron(i);
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     for(unsigned int i=0; i<3; ++i)
     {
@@ -412,7 +412,7 @@ template<class DataTypes>
 typename DataTypes::Coord TetrahedronSetGeometryAlgorithms<DataTypes>::computeTetrahedronCenter(const TetraID i) const
 {
     const Tetrahedron t = this->m_topology->getTetrahedron(i);
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     return (p[t[0]] + p[t[1]] + p[t[2]] + p[t[3]]) * (Real) 0.25;
 }
@@ -421,7 +421,7 @@ template<class DataTypes>
 typename DataTypes::Coord TetrahedronSetGeometryAlgorithms<DataTypes>::computeTetrahedronCircumcenter(const TetraID i) const
 {
     const Tetrahedron t = this->m_topology->getTetrahedron(i);
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     Coord center = p[t[0]];
     Coord t1 = p[t[1]] - p[t[0]];
@@ -449,7 +449,7 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const T
     const Real ZERO = 1e-15;
 
     const Tetrahedron t = this->m_topology->getTetrahedron(ind_t);
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     const sofa::type::Vec<3,Real> t0(p[t[0]][0], p[t[0]][1], p[t[0]][2]);
     const sofa::type::Vec<3,Real> t1(p[t[1]][0], p[t[1]][1], p[t[1]][2]);
@@ -475,7 +475,7 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const T
     const Real ZERO = 1e-15;
 
     const Tetrahedron t = this->m_topology->getTetrahedron(ind_t);
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     const sofa::type::Vec<3,Real> t0(p[t[0]][0], p[t[0]][1], p[t[0]][2]);
     const sofa::type::Vec<3,Real> t1(p[t[1]][0], p[t[1]][1], p[t[1]][2]);
@@ -511,7 +511,7 @@ template< class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetrahedronVertexCoordinates(const TetraID i, Coord pnt[4]) const
 {
     const Tetrahedron t = this->m_topology->getTetrahedron(i);
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     for(unsigned int i=0; i<4; ++i)
     {
@@ -523,7 +523,7 @@ template< class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::getRestTetrahedronVertexCoordinates(const TetraID i, Coord pnt[4]) const
 {
     const Tetrahedron t = this->m_topology->getTetrahedron(i);
-    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::vec_id::read_access::restPosition)->getValue());
 
     for(unsigned int i=0; i<4; ++i)
     {
@@ -535,7 +535,7 @@ template< class DataTypes>
 typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeTetrahedronVolume( const TetraID i) const
 {
     const Tetrahedron t = this->m_topology->getTetrahedron(i);
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
     Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
     if(volume<0)
         volume=-volume;
@@ -551,7 +551,7 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeR
 template< class DataTypes>
 typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeRestTetrahedronVolume( const Tetrahedron& t) const
 {
-    const typename DataTypes::VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
+    const typename DataTypes::VecCoord& p = (this->object->read(core::vec_id::read_access::restPosition)->getValue());
     Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
     if(volume<0)
         volume=-volume;
@@ -563,7 +563,7 @@ template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::computeTetrahedronVolume( BasicArrayInterface<Real> &ai) const
 {
     const sofa::type::vector<Tetrahedron> &ta = this->m_topology->getTetrahedra();
-    const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(this->object->read(core::vec_id::read_access::position)->getValue());
     for (unsigned int i=0; i<ta.size(); ++i)
     {
         const Tetrahedron &t = ta[i];
@@ -575,7 +575,7 @@ template<class DataTypes>
 typename DataTypes::Real TetrahedronSetGeometryAlgorithms<DataTypes>::computeDihedralAngle(const TetraID tetraId, const EdgeID edgeId) const
 {
     Real angle = 0.0;
-    const typename DataTypes::VecCoord& positions = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& positions = (this->object->read(core::vec_id::read_access::position)->getValue());
     const Tetrahedron& tetra = this->m_topology->getTetrahedron(tetraId);
     const EdgesInTetrahedron& edgeIds = this->m_topology->getEdgesInTetrahedron(tetraId);
     const Edge& edge = this->m_topology->getEdge(edgeIds[edgeId]);
@@ -620,7 +620,7 @@ template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID ind_ta, const TetraID ind_tb,
         sofa::type::vector<TetrahedronID> &indices) const
 {
-    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     const Tetrahedron ta=this->m_topology->getTetrahedron(ind_ta);
     const Tetrahedron tb=this->m_topology->getTetrahedron(ind_tb);
@@ -646,7 +646,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
 {
     Real d = r;
     const Tetrahedron ta=this->m_topology->getTetrahedron(ind_ta);
-    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::vec_id::read_access::position)->getValue());
     const typename DataTypes::Coord& ca=(vect_c[ta[0]]+vect_c[ta[1]]+vect_c[ta[2]]+vect_c[ta[3]])*0.25;
 
     sofa::type::Vec<3,Real> pa;
@@ -745,7 +745,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
         msg_error() << "getTetraInBall, Can't find the seed.";
     Real d = r;
 //      const Tetrahedron &ta=this->m_topology->getTetrahedron(ind_ta);
-    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& vect_c =(this->object->read(core::vec_id::read_access::position)->getValue());
 
     TetrahedronID t_test=ind_ta;
     indices.push_back(t_test);
@@ -822,7 +822,7 @@ template <typename DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(const TetraID ind_ta, const sofa::type::Vec<3,Real>& planP0, const sofa::type::Vec<3,Real>& normal, 
     sofa::type::vector< sofa::type::Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge)
 {
-    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::vec_id::read_access::position)->getValue());
     const EdgesInTetrahedron& edgesInTetra = this->m_topology->getEdgesInTetrahedron(ind_ta);
     const SeqEdges& edges = this->m_topology->getEdges();
 
@@ -876,7 +876,7 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::checkNodeSequence(const Tetr
 template <typename DataTypes>
 bool TetrahedronSetGeometryAlgorithms<DataTypes>::checkNodeSequence(const Tetrahedron& tetra) const
 {
-    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::vec_id::read_access::position)->getValue());
     sofa::type::Vec<3,Real> vec[3];
     for(int i=1; i<4; i++)
     {
@@ -894,7 +894,7 @@ bool TetrahedronSetGeometryAlgorithms<DataTypes>::checkNodeSequence(const Tetrah
 template< class DataTypes>
 bool TetrahedronSetGeometryAlgorithms< DataTypes >::isTetrahedronElongated(const TetraID tetraId, SReal factorLength) const
 {
-    const typename DataTypes::VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& coords = (this->object->read(core::vec_id::read_access::position)->getValue());
     const Tetrahedron& tetra = this->m_topology->getTetrahedron(tetraId);    
 
     typename DataTypes::VecCoord points;
@@ -3212,7 +3212,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
-    const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    const VecCoord& coords =(this->object->read(core::vec_id::read_access::position)->getValue());
     //Draw tetra indices
     if (d_showTetrahedraIndices.getValue() && this->m_topology->getNbTetrahedra() != 0)
     {

@@ -67,7 +67,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
     if (this->d_initialPoints.getValue().size() == 0)
     {
-        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& p = this->mstate->read(core::vec_id::read_access::position)->getValue();
         this->d_initialPoints.setValue(p);
     }
 

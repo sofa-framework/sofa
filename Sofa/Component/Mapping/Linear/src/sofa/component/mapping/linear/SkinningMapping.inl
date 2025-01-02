@@ -70,7 +70,7 @@ template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::init()
 {
     unsigned int numChildren = this->toModel->getSize();
-    sofa::helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
+    sofa::helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::vec_id::read_access::position));
     sofa::helper::WriteAccessor<Data<OutVecCoord> > initPos(this->d_initPos);
 
     if(this->d_initPos.getValue().size() != numChildren )
@@ -92,9 +92,9 @@ void SkinningMapping<TIn, TOut>::reinit()
 {
     unsigned int nbref = d_nbRef.getValue()[0];
 
-    sofa::helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
+    sofa::helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::vec_id::read_access::position));
     sofa::helper::ReadAccessor<Data<OutVecCoord> > xto (this->d_initPos);
-    sofa::helper::ReadAccessor<Data<InVecCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
+    sofa::helper::ReadAccessor<Data<InVecCoord> > xfrom = *this->fromModel->read(core::vec_id::read_access::restPosition);
     sofa::helper::WriteAccessor<Data<type::vector<sofa::type::SVector<InReal> > > > m_weights  (d_weight );
     const sofa::helper::ReadAccessor<Data<type::vector<sofa::type::SVector<unsigned int> > > > index ( this->d_index );
 
@@ -141,7 +141,7 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
     msg_info() << "UPDATE WEIGHTS";
 
     sofa::helper::ReadAccessor<Data<OutVecCoord> > xto (this->d_initPos);
-    sofa::helper::ReadAccessor<Data<InVecCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
+    sofa::helper::ReadAccessor<Data<InVecCoord> > xfrom = *this->fromModel->read(core::vec_id::read_access::restPosition);
     sofa::helper::WriteAccessor<Data<type::vector<sofa::type::SVector<InReal> > > > m_weights  (d_weight );
     sofa::helper::WriteAccessor<Data<type::vector<sofa::type::SVector<unsigned int> > > > index (d_index );
 
@@ -350,8 +350,8 @@ const  sofa::linearalgebra::BaseMatrix* SkinningMapping<TIn, TOut>::getJ()
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    const typename Out::VecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();
-    const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+    const typename Out::VecCoord& xto = this->toModel->read(core::vec_id::read_access::position)->getValue();
+    const typename In::VecCoord& xfrom = this->fromModel->read(core::vec_id::read_access::position)->getValue();
     unsigned int nbref = this->d_nbRef.getValue()[0];
 
     sofa::helper::ReadAccessor<Data<type::vector<sofa::type::SVector<InReal> > > > m_weights  (d_weight );

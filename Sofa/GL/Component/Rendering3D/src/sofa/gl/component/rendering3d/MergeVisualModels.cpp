@@ -25,9 +25,10 @@
 namespace sofa::gl::component::rendering3d
 {
 
-int MergeVisualModelsClass = core::RegisterObject("Merge several visual models")
-        .add< MergeVisualModels >(true);
-
-
+void registerMergeVisualModels(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Merge several visual models.")
+        .add< MergeVisualModels >());
+}
 
 } // namespace sofa::gl::component::rendering3d

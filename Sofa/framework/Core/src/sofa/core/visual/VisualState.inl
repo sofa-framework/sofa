@@ -58,9 +58,9 @@ auto VisualState<DataTypes>::write(core::VecCoordId  v) -> Data<VisualState::Vec
 {
     modified = true;
 
-    if (v == core::VecCoordId::position())
+    if (v == core::vec_id::write_access::position)
         return &m_positions;
-    if (v == core::VecCoordId::restPosition())
+    if (v == core::vec_id::write_access::restPosition)
         return &m_restPositions;
 
     return nullptr;
@@ -69,9 +69,9 @@ auto VisualState<DataTypes>::write(core::VecCoordId  v) -> Data<VisualState::Vec
 template< typename DataTypes >
 auto VisualState<DataTypes>::read(core::ConstVecCoordId  v)  const -> const Data<VisualState::VecCoord>*
 {
-    if (v == core::VecCoordId::position())
+    if (v == core::vec_id::write_access::position)
         return &m_positions;
-    if (v == core::VecCoordId::restPosition())
+    if (v == core::vec_id::write_access::restPosition)
         return &m_restPositions;
 
     return nullptr;
@@ -80,7 +80,7 @@ auto VisualState<DataTypes>::read(core::ConstVecCoordId  v)  const -> const Data
 template< typename DataTypes >
 auto VisualState<DataTypes>::write(core::VecDerivId v) -> Data<VisualState::VecDeriv>*
 {
-    if (v == core::VecDerivId::normal())
+    if (v == core::vec_id::write_access::normal)
         return &m_vnormals;
 
     return nullptr;
@@ -89,7 +89,7 @@ auto VisualState<DataTypes>::write(core::VecDerivId v) -> Data<VisualState::VecD
 template< typename DataTypes >
 auto VisualState<DataTypes>::read(core::ConstVecDerivId v) const -> const Data<VisualState::VecDeriv>*
 {
-    if (v == core::VecDerivId::normal())
+    if (v == core::vec_id::write_access::normal)
         return &m_vnormals;
 
     return nullptr;

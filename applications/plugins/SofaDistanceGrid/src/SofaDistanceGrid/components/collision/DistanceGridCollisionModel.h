@@ -567,7 +567,7 @@ public:
             MCollisionModel* model = this->model;
             MMechanicalState* outmodel = this->outmodel.get();
             {
-                helper::WriteAccessor<Data<VecCoord> > xData = *outmodel->write(core::VecCoordId::position());
+                helper::WriteAccessor<Data<VecCoord> > xData = *outmodel->write(core::vec_id::write_access::position);
                 Coord& x = xData.wref()[i];
 
                 if (model->isTransformed(index))
@@ -575,8 +575,8 @@ public:
                 else
                     x = P;
             }
-            helper::ReadAccessor<Data<VecCoord> >  xData = *outmodel->read(core::ConstVecCoordId::position());
-            helper::WriteAccessor<Data<VecDeriv> > vData = *outmodel->write(core::VecDerivId::velocity());
+            helper::ReadAccessor<Data<VecCoord> >  xData = *outmodel->read(core::vec_id::read_access::position);
+            helper::WriteAccessor<Data<VecDeriv> > vData = *outmodel->write(core::vec_id::write_access::velocity);
             const Coord& x = xData.ref()[i];
             Deriv& v       = vData.wref()[i];
             v.clear();

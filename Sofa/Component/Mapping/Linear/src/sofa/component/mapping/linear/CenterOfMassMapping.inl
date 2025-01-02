@@ -141,7 +141,7 @@ void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpar
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const typename Out::VecCoord &X = this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const typename Out::VecCoord &X = this->toModel->read(core::vec_id::read_access::position)->getValue();
 
     std::vector< sofa::type::Vec3 > points;
     sofa::type::Vec3 point1,point2;

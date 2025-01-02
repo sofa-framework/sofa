@@ -244,7 +244,7 @@ void PlaneProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 

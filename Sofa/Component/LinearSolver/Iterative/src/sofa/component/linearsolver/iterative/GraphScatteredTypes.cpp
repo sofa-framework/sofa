@@ -34,7 +34,10 @@ void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector
 {
     // matrix-vector product through visitors
     parent->propagateDxAndResetDf(x,res);
-    parent->addMBKdx(res,parent->mparams.mFactor(),parent->mparams.bFactor(),parent->mparams.kFactor(), false); // df = (m M + b B + k K) dx
+    parent->addMBKdx(res,
+        core::MatricesFactors::M(parent->mparams.mFactor()),
+        core::MatricesFactors::B(parent->mparams.bFactor()),
+        core::MatricesFactors::K(parent->mparams.kFactor()), false); // df = (m M + b B + k K) dx
 
     // filter the product to take the constraints into account
     //

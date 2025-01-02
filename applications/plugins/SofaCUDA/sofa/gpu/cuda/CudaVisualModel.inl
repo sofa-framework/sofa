@@ -255,7 +255,7 @@ template<class TDataTypes>
 void CudaVisualModel< TDataTypes >::updateNormals()
 {
     if (!topology || !state || !state->getSize()) return;
-    const VecCoord& x = state->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = state->read(core::vec_id::read_access::position)->getValue();
     fnormals.resize(nbElement);
     vnormals.resize(x.size());
     if (triangles.size() > 0)
@@ -370,7 +370,7 @@ void CudaVisualModel< TDataTypes >::internalDraw(const core::visual::VisualParam
 
     //TODO: Const ? Read-Only ?
     //VecCoord& x = *state->getX();
-    Data<VecCoord>* d_x = state->write(core::VecCoordId::position());
+    Data<VecCoord>* d_x = state->write(core::vec_id::write_access::position);
     VecCoord& x = *d_x->beginEdit();
 
     bool vbo = useVBO.getValue();
@@ -465,7 +465,7 @@ void CudaVisualModel< TDataTypes >::computeBBox(const core::ExecParams* params, 
     if (!state)
         return;
 
-    const VecCoord& x = state->write(core::VecCoordId::position())->getValue();
+    const VecCoord& x = state->write(core::vec_id::write_access::position)->getValue();
 
     SReal minBBox[3] = {std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max()};
     SReal maxBBox[3] = {-std::numeric_limits<Real>::max(),-std::numeric_limits<Real>::max(),-std::numeric_limits<Real>::max()};

@@ -41,10 +41,11 @@
 namespace sofa::gl::component::rendering3d
 {
 
-int PointSplatModelClass = core::RegisterObject("A simple visualization for a cloud of points.")
-        .add< PointSplatModel >()
-        .addAlias("PointSplat")
-        ;
+void registerPointSplatModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Visualization for a cloud of points using splatting.")
+        .add< PointSplatModel >());
+}
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;

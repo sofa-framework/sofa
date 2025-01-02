@@ -56,15 +56,18 @@
 namespace sofa::simulation
 {
 
-int DefaultAnimationLoopClass = core::RegisterObject("Simulation loop to use in scene without constraints nor contact.")
-                                .add<DefaultAnimationLoop>()
-                                .addDocumentationURL(std::string(sofa::SOFA_DOCUMENTATION_URL) + std::string("components/animationloops/defaultanimationloop/"))
-                                .addDescription(R"(
+void registerDefaultAnimationLoop(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Simulation loop, created by default when the user does not define one in the scene. This loop first computes the collision detection and then solves the physics.")
+        .add<DefaultAnimationLoop>()
+        .addDocumentationURL(std::string(sofa::SOFA_DOCUMENTATION_URL) + std::string("components/animationloops/defaultanimationloop/"))
+        .addDescription(R"(
 This loop triggers the following steps:
 - build and solve all linear systems in the scene : collision and time integration to compute the new values of the dofs
 - update the context (dt++)
 - update the mappings
-- update the bounding box (volume covering all objects of the scene))");
+- update the bounding box (volume covering all objects of the scene))"));
+}
 
 DefaultAnimationLoop::DefaultAnimationLoop(simulation::Node* _m_node)
     : Inherit()
@@ -190,7 +193,7 @@ void DefaultAnimationLoop::propagateIntegrateBeginEvent(const core::ExecParams* 
 void DefaultAnimationLoop::accumulateMatrixDeriv(const core::ConstraintParams cparams) const
 {
     SCOPED_TIMER("accumulateMatrixDeriv");
-    mechanicalvisitor::MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, core::MatrixDerivId::constraintJacobian());
+    mechanicalvisitor::MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, core::vec_id::write_access::constraintJacobian);
     accumulateMatrixDeriv.execute(m_node);
 }
 
@@ -226,7 +229,7 @@ void DefaultAnimationLoop::projectPositionAndVelocity(const SReal nextTime, cons
 {
     SCOPED_TIMER("projectPositionAndVelocity");
     mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor(&mparams, nextTime,
-                                                                   sofa::core::VecCoordId::position(), sofa::core::VecDerivId::velocity()
+                                                                   sofa::core::vec_id::write_access::position, sofa::core::vec_id::write_access::velocity
     ).execute( m_node );
 }
 
@@ -234,8 +237,8 @@ void DefaultAnimationLoop::propagateOnlyPositionAndVelocity(const SReal nextTime
 {
     SCOPED_TIMER("propagateOnlyPositionAndVelocity");
     mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, nextTime,
-                                                                         core::VecCoordId::position(),
-                                                                         core::VecDerivId::velocity()).execute( m_node );
+                                                                         core::vec_id::write_access::position,
+                                                                         core::vec_id::write_access::velocity).execute( m_node );
 }
 
 void DefaultAnimationLoop::propagateCollisionBeginEvent(const core::ExecParams* params) const

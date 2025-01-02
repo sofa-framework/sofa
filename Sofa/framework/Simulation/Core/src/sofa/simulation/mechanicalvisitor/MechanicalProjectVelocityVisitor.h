@@ -32,7 +32,7 @@ public:
     SReal t;
     sofa::core::MultiVecDerivId vel;
     MechanicalProjectVelocityVisitor(const sofa::core::MechanicalParams* mparams , SReal time=0,
-                                     sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity())
+                                     sofa::core::MultiVecDerivId v = sofa::core::vec_id::write_access::velocity)
             : MechanicalVisitor(mparams) , t(time),vel(v)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO

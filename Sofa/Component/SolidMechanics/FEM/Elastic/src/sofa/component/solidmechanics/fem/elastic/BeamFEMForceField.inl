@@ -150,7 +150,7 @@ void BeamFEMForceField<DataTypes>::reinitBeam(Index i)
     SReal stiffness, length, radius, poisson, radiusInner;
     const auto& [a, b] = (*m_indexedElements)[i].array();
 
-    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     stiffness =  this->getYoungModulusInElement(i);
 
     length = (x0[a].getCenter()-x0[b].getCenter()).norm() ;
@@ -340,7 +340,7 @@ inline type::Quat<SReal> qDiff(type::Quat<SReal> a, const type::Quat<SReal>& b)
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 {
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     type::Quat<SReal> quatA, quatB, dQ;
     Vec3 dW;
@@ -379,7 +379,7 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecCoord & x, int i, Index a, Index b )
 {
-    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     beamQuat(i)= x[a].getOrientation();
     beamQuat(i).normalize();
@@ -706,7 +706,7 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     std::vector< type::Vec3 > points[3];
 
@@ -742,7 +742,7 @@ void BeamFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, b
 
 
     const size_t npoints = this->mstate->getSize();
-    const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     for (size_t i=0; i<npoints; i++)
     {

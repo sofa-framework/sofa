@@ -218,14 +218,14 @@ void SlidingLagrangianConstraint<DataTypes>::draw(const core::visual::VisualPara
         color = sofa::type::RGBAColor::magenta();
 
     std::vector<sofa::type::Vec3> vertices;
-    vertices.push_back(DataTypes::getCPos((this->mstate1->read(core::ConstVecCoordId::position())->getValue())[d_m1.getValue()]));
+    vertices.push_back(DataTypes::getCPos((this->mstate1->read(core::vec_id::read_access::position)->getValue())[d_m1.getValue()]));
 
     vparams->drawTool()->drawPoints(vertices, 10, color);
     vertices.clear();
 
     color = sofa::type::RGBAColor::blue();
-    vertices.push_back(DataTypes::getCPos((this->mstate2->read(core::ConstVecCoordId::position())->getValue())[d_m2a.getValue()]));
-    vertices.push_back(DataTypes::getCPos((this->mstate2->read(core::ConstVecCoordId::position())->getValue())[d_m2b.getValue()]));
+    vertices.push_back(DataTypes::getCPos((this->mstate2->read(core::vec_id::read_access::position)->getValue())[d_m2a.getValue()]));
+    vertices.push_back(DataTypes::getCPos((this->mstate2->read(core::vec_id::read_access::position)->getValue())[d_m2b.getValue()]));
     vparams->drawTool()->drawLines(vertices, 1, color);
 
 

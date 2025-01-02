@@ -39,6 +39,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/typeinfo/TypeInfo_RGBAColor.h
     ${SRC_ROOT}/typeinfo/TypeInfo_Set.h
     ${SRC_ROOT}/typeinfo/TypeInfo_Scalar.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_SelectableItem.h
     ${SRC_ROOT}/typeinfo/TypeInfo_Text.h
     ${SRC_ROOT}/typeinfo/TypeInfo_Vector.h
     ${SRC_ROOT}/typeinfo/TypeInfo_Vec.h

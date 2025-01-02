@@ -55,7 +55,7 @@ void FixParticlePerformer<DataTypes>::start()
 
     mstateFixation->resize(1);
     {
-        helper::WriteAccessor<Data<VecCoord> > xData = *mstateFixation->write(core::VecCoordId::position());
+        helper::WriteAccessor<Data<VecCoord> > xData = *mstateFixation->write(core::vec_id::write_access::position);
         xData.wref()[0] = fixPoint;
     }
     nodeFixation->addObject(mstateFixation);
@@ -130,7 +130,7 @@ sofa::component::statecontainer::MechanicalObject< DataTypes >* FixParticlePerfo
     else if (b.mstate)
     {
         collisionState = dynamic_cast<MouseContainer*>(b.mstate);
-        fixPoint = (collisionState->read(core::ConstVecCoordId::position())->getValue())[idx];
+        fixPoint = (collisionState->read(core::vec_id::read_access::position)->getValue())[idx];
         points.push_back(idx);
     }
 

@@ -30,7 +30,7 @@
 
 #include <thread>
 
-namespace multithreading::component::solidmechanics::fem::elastic
+namespace multithreading::component::forcefield::solidmechanics::fem::elastic
 {
 
 /**

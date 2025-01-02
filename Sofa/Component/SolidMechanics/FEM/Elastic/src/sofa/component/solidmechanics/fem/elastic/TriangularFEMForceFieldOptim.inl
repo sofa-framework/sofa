@@ -180,13 +180,13 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(Index i, Triangl
 template< class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::createTriangleInfo(Index triangleIndex, TriangleInfo& ti, const Triangle& t, const sofa::type::vector<Index>&, const sofa::type::vector<SReal>&)
 {
-    initTriangleInfo(triangleIndex, ti, t, this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
+    initTriangleInfo(triangleIndex, ti, t, this->mstate->read(core::vec_id::read_access::restPosition)->getValue());
 }
 
 template< class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::createTriangleState(Index triangleIndex, TriangleState& ti, const Triangle& t, const sofa::type::vector<Index>&, const sofa::type::vector<SReal>&)
 {
-    initTriangleState(triangleIndex, ti, t, this->mstate->read(core::ConstVecCoordId::position())->getValue());
+    initTriangleState(triangleIndex, ti, t, this->mstate->read(core::vec_id::read_access::position)->getValue());
 }
 
 // --------------------------------------------------------------------------------------
@@ -198,8 +198,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::reinit()
     /// prepare to store info in the triangle array
     const unsigned int nbTriangles = this->l_topology->getNbTriangles();
     const VecElement& triangles = this->l_topology->getTriangles();
-    const  VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    const  VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const  VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
+    const  VecCoord& x0 = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     VecTriangleInfo& triangleInf = *(d_triangleInfo.beginEdit());
     VecTriangleState& triangleSta = *(d_triangleState.beginEdit());
     triangleInf.resize(nbTriangles);
@@ -770,7 +770,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
     using type::Vec3i;
     using type::Vec4f;
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     unsigned int nbTriangles=this->l_topology->getNbTriangles();
     const VecElement& triangles = this->l_topology->getTriangles();
     const Real& stressThresold = d_showStressThreshold.getValue();

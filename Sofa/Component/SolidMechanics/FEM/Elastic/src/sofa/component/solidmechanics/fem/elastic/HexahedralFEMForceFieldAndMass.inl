@@ -135,7 +135,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::computeLumpedMasses(  )
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 {
-    const VecCoord& initialPoints = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& initialPoints = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     const VecElement& hexahedra = this->l_topology->getHexahedra();
 
@@ -457,7 +457,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
 
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     std::vector<type::Vec3> pos;
     pos.reserve(x.size());

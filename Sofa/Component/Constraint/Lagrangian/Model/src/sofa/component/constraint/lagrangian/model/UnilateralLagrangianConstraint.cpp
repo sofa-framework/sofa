@@ -20,6 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALLAGRANGIANCONSTRAINT_CPP
+#include <sofa/component/constraint/lagrangian/model/BaseContactLagrangianConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/BaseContactLagrangianConstraint.inl>
+#include <sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.h>
 #include <sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
@@ -28,6 +31,8 @@ namespace sofa::component::constraint::lagrangian::model
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
+
 
 void registerUnilateralLagrangianConstraint(sofa::core::ObjectFactory* factory)
 {
@@ -35,6 +40,8 @@ void registerUnilateralLagrangianConstraint(sofa::core::ObjectFactory* factory)
         .add< UnilateralLagrangianConstraint<Vec3Types> >());
 }
 
+
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BaseContactLagrangianConstraint<Vec3Types,UnilateralLagrangianContactParameters>;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UnilateralLagrangianConstraint<Vec3Types>;
 
 

@@ -29,12 +29,13 @@ namespace sofa::gl::component::engine
 
 using namespace sofa::defaulttype;
 
-int TextureInterpolationClass = core::RegisterObject("Create texture coordinate for a given field")
+void registerTextureInterpolation(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Create texture coordinate for a given field.")
         .add< TextureInterpolation <Vec1Types> >()
         .add< TextureInterpolation <Vec2Types> >()
-        .add< TextureInterpolation <Vec3Types> >()
- 
-        ;
+        .add< TextureInterpolation <Vec3Types> >());
+}
 
 template class SOFA_GL_COMPONENT_ENGINE_API TextureInterpolation <Vec1Types>;
 template class SOFA_GL_COMPONENT_ENGINE_API TextureInterpolation <Vec2Types>;

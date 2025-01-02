@@ -58,7 +58,7 @@ void TriangularBendingSprings<DataTypes>::applyTriangleCreation(const sofa::type
     Real m_ks=getKs();
     Real m_kd=getKd();
 
-    const typename DataTypes::VecCoord& restPosition = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const typename DataTypes::VecCoord& restPosition = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeData = d_edgeInfo;
 
     for (unsigned int i=0; i<triangleAdded.size(); ++i)
@@ -136,7 +136,7 @@ void TriangularBendingSprings<DataTypes>::applyTriangleDestruction(const sofa::t
     Real m_ks=getKs();
     Real m_kd=getKd();
 
-    const typename DataTypes::VecCoord& restPosition = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const typename DataTypes::VecCoord& restPosition = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeData = d_edgeInfo;
 
     for (unsigned int i=0; i<triangleRemoved.size(); ++i)
@@ -573,7 +573,7 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
         vparams->drawTool()->setPolygonMode(0, true);
     }
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     std::vector<sofa::type::Vec3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
 

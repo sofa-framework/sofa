@@ -244,7 +244,7 @@ void FixedPlaneProjectiveConstraint<DataTypes>::setDirection(Coord dir)
 template <class DataTypes>
 void FixedPlaneProjectiveConstraint<DataTypes>::selectVerticesAlongPlane()
 {
-    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = mstate->read(core::vec_id::read_access::position)->getValue();
     for(unsigned int i=0; i<x.size(); ++i)
     {
         if (isPointInPlane(x[i]))
@@ -295,7 +295,7 @@ template <class DataTypes>
 void FixedPlaneProjectiveConstraint<DataTypes>::draw(const VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = mstate->read(core::vec_id::read_access::position)->getValue();
     vparams->drawTool()->disableLighting();
 
     type::vector<sofa::type::Vec3> points;

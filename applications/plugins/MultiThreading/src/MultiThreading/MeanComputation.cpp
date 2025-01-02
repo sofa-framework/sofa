@@ -29,13 +29,15 @@
 namespace sofa::component::engine
 {
 
-int MeanComputationEngineClass = core::RegisterObject("Compute the mean of the input elements")
-    .add< MeanComputation<defaulttype::Vec3Types> >(true) // default template
-    .add< MeanComputation<defaulttype::Vec1Types> >()
-    .add< MeanComputation<defaulttype::Vec2Types> >()
-    .add< MeanComputation<defaulttype::Rigid2Types> >()
-    .add< MeanComputation<defaulttype::Rigid3Types> >()
-    ;
+void registerMeanComputationEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compute the mean of the input elements.")
+                             .add< MeanComputation<defaulttype::Vec3Types> >(true) // default template
+                             .add< MeanComputation<defaulttype::Vec1Types> >()
+                             .add< MeanComputation<defaulttype::Vec2Types> >()
+                             .add< MeanComputation<defaulttype::Rigid2Types> >()
+                             .add< MeanComputation<defaulttype::Rigid3Types> >());
+}
 
 template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec3Types >;
 template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec1Types >;

@@ -95,7 +95,7 @@ void TriangleFEMForceField<DataTypes>::init()
 
     if (d_initialPoints.getValue().size() == 0)
     {
-        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        const VecCoord& p = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
         d_initialPoints.setValue(p);
     }
 
@@ -558,7 +558,7 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     std::vector<sofa::type::RGBAColor> colorVector;
     std::vector<sofa::type::Vec3> vertices;
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     typename VecElement::const_iterator it;
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it)

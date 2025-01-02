@@ -268,7 +268,7 @@ template <class TIn1, class TIn2, class TOut>
 void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::draw(const core::visual::VisualParams* vparams)
 {
     assert( this->toModels.size() == 1 );
-    const Data< OutVecCoord > *X = this->getToModels()[0]->read(sofa::core::VecCoordId::position());
+    const Data< OutVecCoord > *X = this->getToModels()[0]->read(sofa::core::vec_id::write_access::position);
 
     std::vector< sofa::type::Vec3 > points;
     sofa::type::Vec3 point1,point2;

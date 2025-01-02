@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/mapping/mappedmatrix/init.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
 
@@ -58,9 +59,10 @@ void init()
     static bool first = true;
     if (first)
     {
+        msg_deprecated("Sofa.Component.Mapping.MappedMatrix") << "This plugin is deprecated and will be removed in the future.";
+
         // make sure that this plugin is registered into the PluginManager
         sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
         first = false;
     }
 }

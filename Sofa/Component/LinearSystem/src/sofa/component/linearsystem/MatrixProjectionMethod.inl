@@ -275,7 +275,7 @@ MappingJacobians<TMatrix> MatrixProjectionMethod<TMatrix>::computeJacobiansFrom(
         return jacobians;
     }
 
-    auto mappingJacobianId = sofa::core::MatrixDerivId::mappingJacobian();
+    auto mappingJacobianId = sofa::core::vec_id::write_access::mappingJacobian;
 
     // this clears the matrix identified by mappingJacobian() among others
     simulation::mechanicalvisitor::MechanicalResetConstraintVisitor(&cparams).execute(this->getSolveContext());

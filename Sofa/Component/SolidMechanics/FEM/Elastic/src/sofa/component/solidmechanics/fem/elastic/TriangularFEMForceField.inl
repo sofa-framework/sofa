@@ -161,7 +161,7 @@ void TriangularFEMForceField<DataTypes>::initSmall(int i, Index& a, Index& b, In
         tinfo->rotatedInitialElements = d_rotatedInitialElements.getValue()[i];
     else
     {
-        const  VecCoord& initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
+        const  VecCoord& initialPoints = (this->mstate->read(core::vec_id::read_access::restPosition)->getValue());
         const Coord& pA = initialPoints[a];
         const Coord& pB = initialPoints[b];
         const Coord& pC = initialPoints[c];
@@ -211,7 +211,7 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index& a, Index& b, In
     }
     else
     {
-        const VecCoord& initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
+        const VecCoord& initialPoints = (this->mstate->read(core::vec_id::read_access::restPosition)->getValue());
         tinfo->rotation = tinfo->initialTransformation;
         if (a >= (initialPoints).size() || b >= (initialPoints).size() || c >= (initialPoints).size())
         {
@@ -757,7 +757,7 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3, Real>& stres
     StrainDisplacement J;
     type::Vec<3, Real> strain;
     Transformation R_0_2, R_2_0;
-    const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p = this->mstate->read(core::vec_id::read_access::position)->getValue();
     const Triangle& tri = this->l_topology->getTriangle(elementIndex);
     const auto& [a, b, c] = tri.array();
 
@@ -879,7 +879,7 @@ void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real& stre
 {
     const Triangle& tri = this->l_topology->getTriangle(elementIndex);
     const auto& [a, b, c] = tri.array();
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     Coord n = cross(x[b] - x[a], x[c] - x[a]);
     Coord dir_t = cross(dir, n);
     this->computeStressAlongDirection(stress_across_dir, elementIndex, dir_t, stress);
@@ -890,7 +890,7 @@ void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real& stre
 {
     const Triangle& tri = this->l_topology->getTriangle(elementIndex);
     const auto& [a, b, c] = tri.array();
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     Coord n = cross(x[b] - x[a], x[c] - x[a]);
     Coord dir_t = cross(dir, n);
     this->computeStressAlongDirection(stress_across_dir, elementIndex, dir_t);
@@ -1242,7 +1242,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     vparams->drawTool()->disableLighting();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     const type::vector<TriangleInformation>& triangleInf = d_triangleInfo.getValue();
     const auto& triangles = this->l_topology->getTriangles();
     const Size nbTriangles = triangles.size();

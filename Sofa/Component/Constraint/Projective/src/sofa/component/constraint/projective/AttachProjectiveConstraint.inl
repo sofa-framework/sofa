@@ -656,8 +656,8 @@ void AttachProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParam
 
     const SetIndexArray & indices1 = f_indices1.getValue();
     const SetIndexArray & indices2 = f_indices2.getValue();
-    const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x1 = this->mstate1->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& x2 = this->mstate2->read(core::vec_id::read_access::position)->getValue();
 
     constexpr sofa::type::RGBAColor color1(1,0.5,0.5,1);
     std::vector<sofa::type::Vec3> vertices;

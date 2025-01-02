@@ -1,0 +1,21 @@
+name: "CI - Nix"
+
+on:
+  push:
+
+jobs:
+  nix:
+    runs-on: "${{ matrix.os }}-latest"
+    if: ${{ github.repository_owner == 'sofa-framework' }}
+    strategy:
+      matrix:
+        os: [ubuntu, macos]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v27
+      # TODO: the "sofa" account on cachix does not exist yet
+      #- uses: cachix/cachix-action@v15
+        #with:
+          #name: sofa
+          #authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      - run: nix build -L

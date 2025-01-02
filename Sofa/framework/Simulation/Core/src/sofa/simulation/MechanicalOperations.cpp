@@ -79,61 +79,61 @@ MechanicalOperations::MechanicalOperations(const sofa::core::ExecParams* params,
 
 void MechanicalOperations::setX(core::MultiVecCoordId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecCoordId::position());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::position);
     mparams.setX(v);
 }
 
 void MechanicalOperations::setX(core::ConstMultiVecCoordId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecCoordId::position());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::position);
     mparams.setX(v);
 }
 
 void MechanicalOperations::setV(core::MultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::velocity());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::velocity);
     mparams.setV(v);
 }
 
 void MechanicalOperations::setV(core::ConstMultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::velocity());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::velocity);
     mparams.setV(v);
 }
 
 void MechanicalOperations::setF(core::MultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::force());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::force);
     mparams.setF(v);
 }
 
 void MechanicalOperations::setF(core::ConstMultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::force());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::force);
     mparams.setF(v);
 }
 
 void MechanicalOperations::setDx(core::MultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::dx());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::dx);
     mparams.setDx(v);
 }
 
 void MechanicalOperations::setDx(core::ConstMultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::dx());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::dx);
     mparams.setDx(v);
 }
 
 void MechanicalOperations::setDf(core::MultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::dforce());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::dforce);
     mparams.setDf(v);
 }
 
 void MechanicalOperations::setDf(core::ConstMultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::dforce());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::vec_id::write_access::dforce);
     mparams.setDf(v);
 }
 
@@ -288,7 +288,11 @@ void MechanicalOperations::computeDfV(core::MultiVecDerivId df, bool clear, bool
 }
 
 /// accumulate $ df += (m M + b B + k K) dx $ (given the latest propagated displacement)
-void MechanicalOperations::addMBKdx(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear, bool accumulate)
+void MechanicalOperations::addMBKdx(core::MultiVecDerivId df,
+                                    const MatricesFactors::M m,
+                                    const MatricesFactors::B b,
+                                    const MatricesFactors::K k,
+                                    const bool clear, const bool accumulate)
 {
     setDf(df);
     if (clear)
@@ -296,14 +300,18 @@ void MechanicalOperations::addMBKdx(core::MultiVecDerivId df, SReal m, SReal b, 
         executeVisitor( MechanicalResetForceVisitor(&mparams, df, true) );
         //finish();
     }
-    mparams.setBFactor(b);
-    mparams.setKFactor(k);
-    mparams.setMFactor(m);
+    mparams.setBFactor(b.get());
+    mparams.setKFactor(k.get());
+    mparams.setMFactor(m.get());
     executeVisitor( MechanicalAddMBKdxVisitor(&mparams, df, accumulate) );
 }
 
 /// accumulate $ df += (m M + b B + k K) velocity $
-void MechanicalOperations::addMBKv(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear, bool accumulate)
+void MechanicalOperations::addMBKv(core::MultiVecDerivId df,
+                                   const MatricesFactors::M m,
+                                   const MatricesFactors::B b,
+                                   const MatricesFactors::K k,
+                                   const bool clear, const bool accumulate)
 {
     const core::ConstMultiVecDerivId dx = mparams.dx();
     mparams.setDx(mparams.v());
@@ -313,9 +321,9 @@ void MechanicalOperations::addMBKv(core::MultiVecDerivId df, SReal m, SReal b, S
         executeVisitor( MechanicalResetForceVisitor(&mparams, df, true) );
         //finish();
     }
-    mparams.setBFactor(b);
-    mparams.setKFactor(k);
-    mparams.setMFactor(m);
+    mparams.setBFactor(b.get());
+    mparams.setKFactor(k.get());
+    mparams.setMFactor(m.get());
     /* useV = true */
     executeVisitor( MechanicalAddMBKdxVisitor(&mparams, df, accumulate) );
     mparams.setDx(dx);
@@ -348,7 +356,7 @@ void MechanicalOperations::computeContactDf(core::MultiVecDerivId df)
 
 void MechanicalOperations::computeAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
-    MultiVecDerivId f( VecDerivId::force() );
+    MultiVecDerivId f( vec_id::write_access::force );
     setF(f);
     setDx(a);
     setX(x);
@@ -375,7 +383,7 @@ void MechanicalOperations::computeForce(SReal t, core::MultiVecDerivId f, core::
 
 void MechanicalOperations::computeContactAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
-    MultiVecDerivId f( VecDerivId::force() );
+    MultiVecDerivId f( vec_id::write_access::force );
     setF(f);
     setDx(a);
     setX(x);
@@ -396,14 +404,15 @@ void MechanicalOperations::resetSystem(core::behavior::LinearSolver* linearSolve
     }
 }
 
-void MechanicalOperations::setSystemMBKMatrix(SReal mFact, SReal bFact,
-    SReal kFact, core::behavior::LinearSolver* linearSolver)
+void MechanicalOperations::setSystemMBKMatrix(
+    MatricesFactors::M m, MatricesFactors::B b, MatricesFactors::K k,
+    core::behavior::LinearSolver* linearSolver)
 {
     if (linearSolver)
     {
-        mparams.setMFactor(mFact);
-        mparams.setBFactor(bFact);
-        mparams.setKFactor(kFact);
+        mparams.setMFactor(m.get());
+        mparams.setBFactor(b.get());
+        mparams.setKFactor(k.get());
         mparams.setSupportOnlySymmetricMatrix(!linearSolver->supportNonSymmetricSystem());
         linearSolver->setSystemMBKMatrix(&mparams);
     }
@@ -518,7 +527,7 @@ void MechanicalOperations::m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal 
         showMissingLinearSolverError();
         return;
     }
-    setSystemMBKMatrix(mFact, bFact, kFact, s);
+    setSystemMBKMatrix(MatricesFactors::M(mFact), MatricesFactors::B(bFact), MatricesFactors::K(kFact), s);
 }
 
 void MechanicalOperations::m_setSystemRHVector(core::MultiVecDerivId v)
@@ -620,6 +629,24 @@ void MechanicalOperations::print( core::ConstMultiVecId /*v*/, std::ostream& /*o
 
 void MechanicalOperations::printWithElapsedTime( core::ConstMultiVecId /*v*/, unsigned /*time*/, std::ostream& /*out*/ )
 {
+}
+
+void MechanicalOperations::addMBKdx(core::MultiVecDerivId df, SReal m, SReal b,
+    SReal k, bool clear, bool accumulate)
+{
+    addMBKdx(df, core::MatricesFactors::M(m), core::MatricesFactors::B(b), core::MatricesFactors::K(k), clear, accumulate);
+}
+
+void MechanicalOperations::addMBKv(core::MultiVecDerivId df, SReal m, SReal b,
+    SReal k, bool clear, bool accumulate)
+{
+    addMBKv(df, core::MatricesFactors::M(m), core::MatricesFactors::B(b), core::MatricesFactors::K(k), clear, accumulate);
+}
+
+void MechanicalOperations::setSystemMBKMatrix(SReal mFact, SReal bFact,
+    SReal kFact, core::behavior::LinearSolver* linearSolver)
+{
+    setSystemMBKMatrix(core::MatricesFactors::M(mFact), core::MatricesFactors::B(bFact), core::MatricesFactors::K(kFact), linearSolver);
 }
 
 void MechanicalOperations::showMissingLinearSolverError() const

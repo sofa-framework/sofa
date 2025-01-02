@@ -60,8 +60,10 @@ void clearMultiVecId(sofa::core::objectmodel::BaseContext* ctx, const sofa::core
 
 }
 
+static constexpr GenericConstraintSolver::ResolutionMethod defaultResolutionMethod("ProjectedGaussSeidel");
+
 GenericConstraintSolver::GenericConstraintSolver()
-    : d_resolutionMethod( initData(&d_resolutionMethod, "resolutionMethod", "Method used to solve the constraint problem, among: \"ProjectedGaussSeidel\", \"UnbuiltGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\""))
+    : d_resolutionMethod( initData(&d_resolutionMethod, defaultResolutionMethod, "resolutionMethod", ("Method used to solve the constraint problem\n" + ResolutionMethod::dataDescription()).c_str()))
     , d_maxIt(initData(&d_maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
     , d_tolerance(initData(&d_tolerance, 0.001_sreal, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , d_sor(initData(&d_sor, 1.0_sreal, "sor", "Successive Over Relaxation parameter (0-2)"))
@@ -86,10 +88,6 @@ GenericConstraintSolver::GenericConstraintSolver()
     , current_cp(&m_cpBuffer[0])
     , last_cp(nullptr)
 {
-    sofa::helper::OptionsGroup m_newoptiongroup{"ProjectedGaussSeidel","UnbuiltGaussSeidel", "NonsmoothNonlinearConjugateGradient"};
-    m_newoptiongroup.setSelectedItem("ProjectedGaussSeidel");
-    d_resolutionMethod.setValue(m_newoptiongroup);
-
     addAlias(&d_maxIt, "maxIt");
 
     d_graphErrors.setWidget("graph");
@@ -159,7 +157,8 @@ void GenericConstraintSolver::init()
 
     if(d_newtonIterations.isSet())
     {
-        if (d_resolutionMethod.getValue().getSelectedId() != 2)
+        static constexpr ResolutionMethod NonsmoothNonlinearConjugateGradient("NonsmoothNonlinearConjugateGradient");
+        if (d_resolutionMethod.getValue() != NonsmoothNonlinearConjugateGradient)
         {
             msg_warning() << "data \"newtonIterations\" is not only taken into account when using the NonsmoothNonlinearConjugateGradient solver";
         }
@@ -225,15 +224,15 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     }
 
     // Resolution depending on the method selected
-    switch ( d_resolutionMethod.getValue().getSelectedId() )
+    switch ( d_resolutionMethod.getValue() )
     {
-        case 0: // ProjectedGaussSeidel
-        case 2: // NonsmoothNonlinearConjugateGradient
+        case ResolutionMethod("ProjectedGaussSeidel"):
+        case ResolutionMethod("NonsmoothNonlinearConjugateGradient"):
         {
             buildSystem_matrixAssembly(cParams);
             break;
         }
-        case 1: // UnbuiltGaussSeidel
+        case ResolutionMethod("UnbuiltGaussSeidel"):
         {
             buildSystem_matrixFree(numConstraints);
             break;
@@ -429,10 +428,9 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 
 
     // Resolution depending on the method selected
-    switch ( d_resolutionMethod.getValue().getSelectedId() )
+    switch ( d_resolutionMethod.getValue())
     {
-        // ProjectedGaussSeidel
-        case 0: {
+        case ResolutionMethod("ProjectedGaussSeidel"): {
             if (notMuted())
             {
                 std::stringstream tmp;
@@ -445,14 +443,12 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
             current_cp->gaussSeidel(0, this);
             break;
         }
-        // UnbuiltGaussSeidel
-        case 1: {
+        case ResolutionMethod("UnbuiltGaussSeidel"): {
             SCOPED_TIMER_VARNAME(unbuiltGaussSeidelTimer, "ConstraintsUnbuiltGaussSeidel");
             current_cp->unbuiltGaussSeidel(0, this);
             break;
         }
-        // NonsmoothNonlinearConjugateGradient
-        case 2: {
+        case ResolutionMethod("NonsmoothNonlinearConjugateGradient"): {
             current_cp->NNCG(this, d_newtonIterations.getValue());
             break;
         }

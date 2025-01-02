@@ -79,7 +79,7 @@ void HexahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDer
   Data& data = *m->data;
   m->setMethod(m->LARGE);
 
-  const VecCoord& p = m->mstate->read(sofa::core::ConstVecCoordId::restPosition())->getValue();
+  const VecCoord& p = m->mstate->read(sofa::core::vec_id::read_access::restPosition)->getValue();
   m->d_initialPoints.setValue(p);
 
   m->_materialsStiffnesses.resize( m->getIndexedElements()->size() );

@@ -35,9 +35,11 @@ using namespace sofa::type;
 using namespace sofa::defaulttype;
 using sofa::gl::component::rendering2d::OglColorMap;
 
-int DataDisplayClass = core::RegisterObject("Rendering of meshes colored by data")
-        .add< DataDisplay >()
-        ;
+void registerDataDisplay(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Color rendering of data associated with a mesh.")
+        .add< DataDisplay >());
+}
 
 DataDisplay::DataDisplay()
     : f_maximalRange(initData(&f_maximalRange, true, "maximalRange", "Keep the maximal range through all timesteps"))
@@ -56,8 +58,8 @@ DataDisplay::DataDisplay()
     , state(nullptr)
     , m_topology(nullptr)
     , l_topology(initLink("topology", "link to the topology container"))
-    , oldMin(0)
-    , oldMax(0)
+    , m_oldMin(std::numeric_limits<Real>::max())
+    , m_oldMax(std::numeric_limits<Real>::lowest())
 {
     this->addAlias(&f_triangleData,"cellData"); // backward compatibility
     d_currentMin.setReadOnly(true);
@@ -93,7 +95,7 @@ void DataDisplay::doUpdateVisual(const core::visual::VisualParams*)
 
 void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    const VecCoord& x = this->read(sofa::core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->read(sofa::core::vec_id::read_access::position)->getValue();
     const VecPointData &ptData = f_pointData.getValue();
     const VecCellData &triData = f_triangleData.getValue();
     const VecCellData &quadData = f_quadData.getValue();
@@ -141,9 +143,8 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
     }
 
     // Range for points
-    Real min ;
-    Real max ;
-    min = max = 0;
+    Real min = std::numeric_limits<Real>::max();
+    Real max = std::numeric_limits<Real>::lowest();
     if (bDrawPointData) {
         VecPointData::const_iterator i = ptData.begin();
         min = *i;
@@ -212,12 +213,12 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
     }
 
 
-    if (max > oldMax) oldMax = max;
-    if (min < oldMin) oldMin = min;
+    if (max > m_oldMax) m_oldMax = max;
+    if (min < m_oldMin) m_oldMin = min;
 
     if (f_maximalRange.getValue()) {
-        max = oldMax;
-        min = oldMin;
+        max = m_oldMax;
+        min = m_oldMin;
     }
     d_currentMin.setValue(min);
     d_currentMax.setValue(max);
@@ -446,7 +447,7 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
 void DataDisplay::computeNormals()
 {
     if( !m_topology ) return;
-    const VecCoord& x = this->read(sofa::core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->read(sofa::core::vec_id::read_access::position)->getValue();
 
     m_normals.resize(x.size(),Vec3f(0,0,0));
 

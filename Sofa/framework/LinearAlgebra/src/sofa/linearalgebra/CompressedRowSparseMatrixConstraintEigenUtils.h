@@ -68,7 +68,7 @@ struct CompressedRowSparseMatrixToEigenSparseVec
                     if (row.index() < eigenMat.rows())
                     {
                         const auto colInsertion = colIndex + i;
-                        if (colInsertion < eigenMat.cols())
+                        if (colInsertion < (std::size_t)eigenMat.cols())
                         {
                             triplets.emplace_back(row.index(), colInsertion, vec[i]);
                         }

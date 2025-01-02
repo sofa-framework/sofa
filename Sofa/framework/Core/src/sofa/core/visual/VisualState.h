@@ -33,7 +33,7 @@ template< typename DataTypes >
 class VisualState : public core::State< DataTypes >
 {
 public:
-    SOFA_CLASS(VisualState, SOFA_TEMPLATE(core::State, defaulttype::Vec3Types));
+    SOFA_CLASS(SOFA_TEMPLATE(VisualState, DataTypes), SOFA_TEMPLATE(core::State, DataTypes));
 
     using VecCoord = typename DataTypes::VecCoord;
     using VecDeriv = typename DataTypes::VecCoord;

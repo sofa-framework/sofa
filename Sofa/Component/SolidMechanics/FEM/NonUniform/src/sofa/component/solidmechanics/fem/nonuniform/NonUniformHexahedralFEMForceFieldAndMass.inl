@@ -91,7 +91,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
         return;
     }
 
-    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     type::Vec<8,Coord> nodesCoarse;
     for(int w=0; w<8; ++w)
         nodesCoarse[w] = (X0)[this->l_topology->getHexahedron(0)[w]];
@@ -428,7 +428,7 @@ template<class T>
 void NonUniformHexahedralFEMForceFieldAndMass<T>::initLarge( const int i)
 
 {
-    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     type::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
@@ -463,7 +463,7 @@ template<class T>
 void NonUniformHexahedralFEMForceFieldAndMass<T>::initPolar( const int i)
 
 {
-    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     type::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)

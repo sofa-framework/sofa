@@ -300,7 +300,7 @@ template <class DataTypes>
 void AffineMovementProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = d_indices.getValue();
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     Vec3 point;
 
     if(d_drawConstrainedPoints.getValue())

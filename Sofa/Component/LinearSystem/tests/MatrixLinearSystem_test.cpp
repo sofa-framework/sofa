@@ -136,7 +136,7 @@ TEST(LinearSystem, MatrixSystem_springForceField)
 
     // Compute the external force. This step is mandatory because most of the time force fields
     // pre-computes required elements for the matrix assembly in the addForce method
-    sofa::core::MultiVecDerivId ffId = sofa::core::VecDerivId::externalForce();
+    sofa::core::MultiVecDerivId ffId = sofa::core::vec_id::write_access::externalForce;
     ((sofa::core::behavior::BaseForceField*)spring.get())->addForce(&mparams, ffId);
 
 

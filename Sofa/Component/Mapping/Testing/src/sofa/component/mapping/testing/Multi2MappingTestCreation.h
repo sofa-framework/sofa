@@ -207,8 +207,8 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
 
         /// Apply the mapping
         // --- Use of the method apply
-        this->mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
-        this->mapping->applyJ(&mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
+        this->mapping->apply(&mparams, core::vec_id::write_access::position, core::vec_id::write_access::position);
+        this->mapping->applyJ(&mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity );
         // ================ test apply : check if the child positions are the expected ones
         bool succeed = true;
         ReadOutVecCoord xout = this->outDofs->readPositions();
@@ -256,7 +256,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
 
         WriteOutVecDeriv fout = outDofs->writeForces();
         sofa::testing::copyToData(fout, fc);
-        this->mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        this->mapping->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::write_access::force );
         for (Index i = 0; i < Np1.size(); i++) sofa::testing::copyFromData(fIn1p[i], this->in1Dofs[i]->readForces());
         for (Index i = 0; i < Np2.size(); i++) sofa::testing::copyFromData(fIn2p[i], this->in2Dofs[i]->readForces());
 
@@ -291,7 +291,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
             WriteIn2VecDeriv vIn2 = this->in2Dofs[p]->writeVelocities();
             sofa::testing::copyToData(vIn2, vIn2p[p]);
         }
-        this->mapping->applyJ(&mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
+        this->mapping->applyJ(&mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity );
         ReadOutVecDeriv vout = this->outDofs->readVelocities();
         sofa::testing::copyFromData(vc, vout);
 
@@ -314,7 +314,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
             WriteIn2VecDeriv fin2 = this->in2Dofs[p]->writeForces();
             sofa::testing::copyToData( fin2, dfIn2p[p] );
         }
-        mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        mapping->applyDJT( &mparams, core::vec_id::write_access::force, core::vec_id::write_access::force );
         for( Index p=0; p<Np1.size(); p++ ) sofa::testing::copyFromData( dfIn1p[p], in1Dofs[p]->readForces() ); // fp + df due to geometric stiffness
         for( Index p=0; p<Np2.size(); p++ ) sofa::testing::copyFromData( dfIn2p[p], in2Dofs[p]->readForces() ); // fp + df due to geometric stiffness
 
@@ -373,7 +373,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
             sofa::testing::copyToData(fin, fIn2p[p]);  // reset parent forces before accumulating child forces
         }
         sofa::testing::copyToData(fout, fc);
-        this->mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        this->mapping->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::write_access::force );
         for (Index i = 0; i < Np1.size(); i++) sofa::testing::copyFromData(fIn1p[i], this->in1Dofs[i]->readForces());
         for (Index i = 0; i < Np2.size(); i++) sofa::testing::copyFromData(fIn2p[i], this->in2Dofs[i]->readForces());
 
@@ -389,7 +389,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
             WriteIn2VecCoord pin2 = in2Dofs[p]->writePositions();
             sofa::testing::copyToData(pin2, xIn2p1[p]);
         }
-        this->mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
+        this->mapping->apply(&mparams, core::vec_id::write_access::position, core::vec_id::write_access::position);
         WriteOutVecCoord pout = this->outDofs->writePositions();
         sofa::testing::copyFromData(xc1, pout);
 
@@ -418,7 +418,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
             sofa::testing::copyToData(fin2, fIn2p2[p]);  // reset parent forces before accumulating child forces
         }
         sofa::testing::copyToData(fout, fc);
-        this->mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        this->mapping->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::write_access::force );
         vector<In1VecDeriv> fIn1p12(Np1.size());
         vector<In2VecDeriv> fIn2p12(Np2.size());
         // ================ test applyDJT() (Case 1)

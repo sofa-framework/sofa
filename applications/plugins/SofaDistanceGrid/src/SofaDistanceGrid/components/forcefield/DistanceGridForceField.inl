@@ -82,7 +82,7 @@ void DistanceGridForceField<DataTypes>::init()
             const core::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
             Real sumArea = 0;
             Real sumSArea = 0;
-            const VecCoord& p1 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+            const VecCoord& p1 = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
             pOnBorder.resize(p1.size(), false);
             for (unsigned int ti = 0; ti < triangles.size(); ++ti)
             {
@@ -114,7 +114,7 @@ void DistanceGridForceField<DataTypes>::init()
         {
             const core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = topology->getTetrahedra();
             Real sumVolume = 0;
-            const VecCoord& p1 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+            const VecCoord& p1 = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
             for (unsigned int ti = 0; ti < tetrahedra.size(); ++ti)
             {
                 const auto & t = tetrahedra[ti];
@@ -434,7 +434,7 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
     if (!grid) return;
     if (size == 0.0f) size = (float)drawSize.getValue();
 
-    const VecCoord& p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p1 = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     std::vector< type::Vec3 > pointsLineIn;
     std::vector< type::Vec3 > pointsLineOut;

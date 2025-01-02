@@ -463,7 +463,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
     const VecIndex& indices = d_indices.getValue();
     const VecDeriv& f = d_forces.getValue();
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     if( fabs(aSC)<1.0e-10 )
     {

@@ -227,7 +227,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::buildDampingMatrix(core::b
 template<class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
 {
-    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     int idx[3];
     Real d[10];
 
@@ -279,7 +279,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
 template <class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesAlongPlane()
 {
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     std::vector<bool> vArray;
 
     vArray.resize(x.size());
@@ -342,7 +342,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::V
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     vparams->drawTool()->disableLighting();
     const sofa::type::RGBAColor color = sofa::type::RGBAColor::green();

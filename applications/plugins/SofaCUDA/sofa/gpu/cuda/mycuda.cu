@@ -28,9 +28,6 @@
 #include <cuda_gl_interop.h>
 #include <iostream>
 
-
-//#define NO_CUDA
-
 cudaDeviceProp mycudaDeviceProp;
 
 
@@ -42,139 +39,6 @@ namespace gpu
 namespace cuda
 {
 #endif
-
-#ifdef NO_CUDA
-
-bool cudaCheck(cudaError_t, const char*)
-{
-    return true;
-}
-
-bool cudaInitCalled = false;
-
-int mycudaInit(int)
-{
-    cudaInitCalled = true;
-    return 0;
-}
-
-void mycudaMalloc(void **devPtr, size_t,int )
-{
-    *devPtr = NULL;
-}
-
-void mycudaMallocPitch(void **devPtr, size_t*, size_t, size_t)
-{
-    *devPtr = NULL;
-}
-
-void mycudaFree(void *, int)
-{
-}
-
-void mycudaMallocHost(void **hostPtr, size_t size)
-{
-    *hostPtr = malloc(size);
-}
-
-void mycudaFreeHost(void *hostPtr)
-{
-    free(hostPtr);
-}
-
-void mycudaMemcpyHostToDevice(void *, const void *, size_t, int)
-{
-}
-
-void mycudaMemcpyDeviceToDevice(void *, const void *, size_t,int )
-{
-}
-
-void mycudaMemcpyDeviceToHost(void *, const void *, size_t,int )
-{
-}
-
-void mycudaMemcpyHostToDevice2D(void *, size_t, const void *, size_t, size_t, size_t)
-{
-}
-
-void mycudaMemcpyDeviceToDevice2D(void *, size_t, const void *, size_t, size_t, size_t )
-{
-}
-
-void mycudaMemcpyDeviceToHost2D(void *, size_t, const void *, size_t, size_t, size_t)
-{
-}
-
-void mycudaGLRegisterBufferObject(int)
-{
-}
-
-void mycudaGLUnregisterBufferObject(int)
-{
-}
-
-void mycudaGLMapBufferObject(void** ptr, int)
-{
-    *ptr = NULL;
-}
-
-void mycudaGLUnmapBufferObject(int)
-{
-}
-
-int mycudaGetnumDevices()
-{
-    return 0;
-}
-
-int mycudaGetBufferDevice()
-{
-    return 0;
-}
-
-void mycudaMemset(void *devPtr, int val, size_t size,int )
-{
-}
-
-void cuda_void_kernel()
-{
-}
-
-#ifdef SOFA_GPU_CUBLAS
-cusparseHandle_t getCusparseCtx()
-{
-    return NULL;
-}
-
-cublasHandle_t getCublasCtx()
-{
-    return NULL;
-}
-
-cusparseMatDescr_t getCusparseMatGeneralDescr()
-{
-    return NULL;
-}
-
-cusparseMatDescr_t getCusparseMatTriangularLowerDescr()
-{
-    return NULL;
-}
-
-cusparseMatDescr_t getCusparseMatTriangularUpperDescr()
-{
-    return NULL;
-}
-
-
-void SOFA_GPU_CUDA_API mycudaMemGetInfo(size_t *  	free,size_t *  	total) {
-
-}
-
-#endif //SOFA_GPU_CUBLAS
-
-#else
 
 extern "C"
 {
@@ -512,8 +376,6 @@ void SOFA_GPU_CUDA_API mycudaMemGetInfo(size_t * free,size_t * total) {
 }
 
 #endif //SOFA_GPU_CUBLAS
-
-#endif
 
 #if defined(__cplusplus)
 } // namespace cuda

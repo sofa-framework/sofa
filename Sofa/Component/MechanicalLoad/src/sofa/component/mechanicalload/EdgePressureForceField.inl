@@ -164,7 +164,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
     if (!this->mstate.get())
         msg_error() << " No mechanical Object linked.";
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     if (x.empty())
         return;
@@ -176,7 +176,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 
     sofa::type::vector<EdgePressureInformation>& my_subset = *(d_edgePressureMap).beginEdit();
 
-    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     auto getEdgeLength = [](const sofa::topology::Edge& e, const VecCoord& pos)
     {
         const auto& n0 = DataTypes::getCPos(pos[e[0]]);
@@ -290,7 +290,7 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
     if (!this->mstate.get())
         msg_error() << " No mechanical Object linked.";
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     if (x.empty())
     {
@@ -343,7 +343,7 @@ void EdgePressureForceField<DataTypes>::buildDampingMatrix(core::behavior::Dampi
 template <class DataTypes>
 void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
 {
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     std::vector<bool> vArray;
 
     vArray.resize(x.size());
@@ -437,7 +437,7 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
 
     const SReal aSC = d_arrowSizeCoef.getValue();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     vparams->drawTool()->disableLighting();
 
     constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::yellow();

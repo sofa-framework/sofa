@@ -164,7 +164,7 @@ void TrianglePressureForceField<DataTypes>::initTriangleInformation()
     d_trianglePressureMap.setMap2Elements(_triangleList);
 
     // Fill pressure data
-    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     const Deriv& my_pressure = pressure.getValue();
 
     for (unsigned int i = 0; i < _triangleList.size(); ++i)
@@ -206,7 +206,7 @@ void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParam
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     vparams->drawTool()->disableLighting();
 

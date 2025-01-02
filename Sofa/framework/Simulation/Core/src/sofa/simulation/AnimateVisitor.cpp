@@ -74,7 +74,7 @@ void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::behavior:
 {
     helper::ScopedAdvancedTimer timer("InteractionFF", obj);
 
-    const MultiVecDerivId   ffId      = VecDerivId::externalForce();
+    const MultiVecDerivId   ffId      = vec_id::write_access::externalForce;
     MechanicalParams mparams;
     mparams.setDt(this->dt);
     obj->addForce(&mparams, ffId);
@@ -141,12 +141,12 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         core::ConstraintParams cparams;
         {
             unsigned int constraintId=0;
-            MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, core::MatrixDerivId::constraintJacobian(), constraintId );
+            MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, core::vec_id::write_access::constraintJacobian, constraintId );
             buildConstraintMatrix.execute(node);
         }
 
         {
-            MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, core::MatrixDerivId::constraintJacobian());
+            MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, core::vec_id::write_access::constraintJacobian);
             accumulateMatrixDeriv.execute(node);
         }
 
@@ -158,11 +158,11 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         }
 
         MechanicalProjectPositionAndVelocityVisitor(&m_mparams, nextTime,
-                                                    sofa::core::VecCoordId::position(), sofa::core::VecDerivId::velocity()
+                                                    sofa::core::vec_id::write_access::position, sofa::core::vec_id::write_access::velocity
                                                     ).execute( node );
         MechanicalPropagateOnlyPositionAndVelocityVisitor(&m_mparams, nextTime,
-                                                          VecCoordId::position(),
-                                                          VecDerivId::velocity()).execute( node );
+                                                          vec_id::write_access::position,
+                                                          vec_id::write_access::velocity).execute( node );
 
         MechanicalEndIntegrationVisitor endVisitor(this->params, dt);
         node->execute(&endVisitor);

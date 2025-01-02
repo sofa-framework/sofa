@@ -20,9 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/mapping/init.h>
-
 #include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/mappedmatrix/init.h>
 #include <sofa/component/mapping/nonlinear/init.h>
 
 #include <sofa/core/ObjectFactory.h>
@@ -56,7 +54,6 @@ const char* getModuleVersion()
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjectsFromPlugin("Sofa.Component.Mapping.Linear");
-    factory->registerObjectsFromPlugin("Sofa.Component.Mapping.MappedMatrix");
     factory->registerObjectsFromPlugin("Sofa.Component.Mapping.NonLinear");
 }
 
@@ -66,7 +63,6 @@ void init()
     if (first)
     {
         sofa::component::mapping::linear::init();
-        sofa::component::mapping::mappedmatrix::init();
         sofa::component::mapping::nonlinear::init();
 
         // make sure that this plugin is registered into the PluginManager

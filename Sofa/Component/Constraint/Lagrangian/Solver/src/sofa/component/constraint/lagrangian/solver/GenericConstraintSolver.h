@@ -33,6 +33,8 @@
 #include <sofa/component/constraint/lagrangian/solver/visitors/MechanicalGetConstraintResolutionVisitor.h>
 
 #include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/helper/SelectableItem.h>
+
 
 namespace sofa::component::constraint::lagrangian::solver
 {
@@ -60,7 +62,13 @@ public:
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
 
-    Data< sofa::helper::OptionsGroup > d_resolutionMethod; ///< Method used to solve the constraint problem, among: "ProjectedGaussSeidel", "UnbuiltGaussSeidel" or "for NonsmoothNonlinearConjugateGradient"
+    MAKE_SELECTABLE_ITEMS(ResolutionMethod,
+        sofa::helper::Item{"ProjectedGaussSeidel", "Projected Gauss-Seidel"},
+        sofa::helper::Item{"UnbuiltGaussSeidel", "Gauss-Seidel where the matrix is not assembled"},
+        sofa::helper::Item{"NonsmoothNonlinearConjugateGradient", "Non-smooth non-linear conjugate gradient"}
+    );
+
+    Data< ResolutionMethod > d_resolutionMethod; ///< Method used to solve the constraint problem, among: "ProjectedGaussSeidel", "UnbuiltGaussSeidel" or "for NonsmoothNonlinearConjugateGradient"
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
     sofa::core::objectmodel::RenamedData<int> maxIt;

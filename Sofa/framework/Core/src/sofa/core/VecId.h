@@ -32,7 +32,7 @@ namespace sofa::core
 {
 
 /// Types of vectors that can be stored in State
-enum VecType
+enum class VecType : uint8_t
 {
     V_ALL = 0,
     V_COORD,
@@ -40,14 +40,29 @@ enum VecType
     V_MATDERIV,
 };
 
+static constexpr inline VecType V_ALL = (VecType::V_ALL);
+static constexpr inline VecType V_COORD = (VecType::V_COORD);
+static constexpr inline VecType V_DERIV = (VecType::V_DERIV);
+static constexpr inline VecType V_MATDERIV = (VecType::V_MATDERIV);
+
 SOFA_CORE_API extern const std::unordered_map<VecType, std::string> VecTypeLabels;
 
+inline std::ostream& operator<<( std::ostream& out, const VecType& v )
+{
+    out << VecTypeLabels.at(v);
+    return out;
+}
+
 /// Types of vectors that can be stored in State
-enum VecAccess
+enum class VecAccess : uint8_t
 {
     V_READ=0,
     V_WRITE,
 };
+
+static constexpr inline VecAccess V_READ = VecAccess::V_READ;
+static constexpr inline VecAccess V_WRITE = VecAccess::V_WRITE;
+
 
 template <VecType vtype, VecAccess vaccess>
 class TVecId;
@@ -55,32 +70,57 @@ class TVecId;
 template <VecType vtype, VecAccess vaccess>
 class TStandardVec;
 
+enum class CoordState : uint8_t
+{
+    NULL_STATE,
+    POSITION,
+    REST_POSITION,
+    FREE_POSITION,
+    RESET_POSITION,
+    DYNAMIC_INDEX
+};
 
 template <VecAccess vaccess>
 class TStandardVec<V_COORD, vaccess>
 {
 public:
+
+    using State = CoordState;
+
     typedef TVecId<V_COORD, vaccess> MyVecId;
-    static MyVecId position()      { return MyVecId(1);}
-    static MyVecId restPosition()  { return MyVecId(2);}
-    static MyVecId freePosition()  { return MyVecId(3);}
-    static MyVecId resetPosition() { return MyVecId(4);}
-    enum { V_FIRST_DYNAMIC_INDEX = 5 }; ///< This is the first index used for dynamically allocated vectors
+
+    template<State v_state>
+    static constexpr MyVecId state()
+    {
+        return MyVecId(static_cast<std::underlying_type_t<State>>(v_state));
+    }
+
+    SOFA_ATTRIBUTE_DEPRECATED__POSITION()
+    static constexpr MyVecId position()      { return state<State::POSITION>();}
+    SOFA_ATTRIBUTE_DEPRECATED__REST_POSITION()
+    static constexpr MyVecId restPosition()  { return state<State::REST_POSITION>();}
+    SOFA_ATTRIBUTE_DEPRECATED__FREE_POSITION()
+    static constexpr MyVecId freePosition()  { return state<State::FREE_POSITION>();}
+    SOFA_ATTRIBUTE_DEPRECATED__RESET_POSITION()
+    static constexpr MyVecId resetPosition() { return state<State::RESET_POSITION>();}
+
+    ///< This is the first index used for dynamically allocated vectors
+    static constexpr uint8_t V_FIRST_DYNAMIC_INDEX = static_cast<uint8_t>(State::DYNAMIC_INDEX);
 
     static std::string getName(const MyVecId& v)
     {
         std::string result;
         switch(v.getIndex())
         {
-        case 0: result+= "null";
+        case static_cast<uint8_t>(State::NULL_STATE): result+= "null";
             break;
-        case 1: result+= "position";
+        case static_cast<uint8_t>(State::POSITION): result+= "position";
             break;
-        case 2: result+= "restPosition";
+        case static_cast<uint8_t>(State::REST_POSITION): result+= "restPosition";
             break;
-        case 3: result+= "freePosition";
+        case static_cast<uint8_t>(State::FREE_POSITION): result+= "freePosition";
             break;
-        case 4: result+= "resetPosition";
+        case static_cast<uint8_t>(State::RESET_POSITION): result+= "resetPosition";
             break;
         default:
             std::ostringstream out;
@@ -96,14 +136,28 @@ public:
     {
         switch(v.getIndex())
         {
-            case 0: return {}; //null
-            case 1: return "States"; //position
-            case 2: return "Rest States"; //restPosition
-            case 3: return "Free Motion"; //freePosition
-            case 4: return "States"; //
+            case static_cast<uint8_t>(State::NULL_STATE): return {};
+            case static_cast<uint8_t>(State::POSITION): return "States";
+            case static_cast<uint8_t>(State::REST_POSITION): return "Rest States";
+            case static_cast<uint8_t>(State::FREE_POSITION): return "Free Motion";
+            case static_cast<uint8_t>(State::RESET_POSITION): return "States";
             default: return {};
         }
     }
+};
+
+enum class DerivState : uint8_t
+{
+    NULL_STATE,
+    VELOCITY,
+    RESET_VELOCITY,
+    FREE_VELOCITY,
+    NORMAL,
+    FORCE,
+    EXTERNAL_FORCE,
+    DX,
+    DFORCE,
+    DYNAMIC_INDEX
 };
 
 template <VecAccess vaccess>
@@ -112,38 +166,56 @@ class TStandardVec<V_DERIV, vaccess>
 public:
     typedef TVecId<V_DERIV, vaccess> MyVecId;
 
-    static MyVecId velocity()       { return MyVecId(1); }
-    static MyVecId resetVelocity()  { return MyVecId(2); }
-    static MyVecId freeVelocity()   { return MyVecId(3); }
-    static MyVecId normal()         { return MyVecId(4); }
-    static MyVecId force()          { return MyVecId(5); }
-    static MyVecId externalForce()  { return MyVecId(6); }
-    static MyVecId dx()             { return MyVecId(7); }
-    static MyVecId dforce()         { return MyVecId(8); }
-    enum { V_FIRST_DYNAMIC_INDEX = 9 }; ///< This is the first index used for dynamically allocated vectors
+    using State = DerivState;
+
+    template<State v_state>
+    static constexpr MyVecId state()
+    {
+        return MyVecId(static_cast<std::underlying_type_t<State>>(v_state));
+    }
+
+    SOFA_ATTRIBUTE_DEPRECATED__VELOCITY()
+    static constexpr MyVecId velocity()       { return state<State::VELOCITY>(); }
+    SOFA_ATTRIBUTE_DEPRECATED__RESET_VELOCITY()
+    static constexpr MyVecId resetVelocity()  { return state<State::RESET_VELOCITY>(); }
+    SOFA_ATTRIBUTE_DEPRECATED__FREE_VELOCITY()
+    static constexpr MyVecId freeVelocity()   { return state<State::FREE_VELOCITY>(); }
+    SOFA_ATTRIBUTE_DEPRECATED__NORMAL()
+    static constexpr MyVecId normal()         { return state<State::NORMAL>(); }
+    SOFA_ATTRIBUTE_DEPRECATED__FORCE()
+    static constexpr MyVecId force()          { return state<State::FORCE>(); }
+    SOFA_ATTRIBUTE_DEPRECATED__EXTERNAL_FORCE()
+    static constexpr MyVecId externalForce()  { return state<State::EXTERNAL_FORCE>(); }
+    SOFA_ATTRIBUTE_DEPRECATED__DX()
+    static constexpr MyVecId dx()             { return state<State::DX>(); }
+    SOFA_ATTRIBUTE_DEPRECATED__DFORCE()
+    static constexpr MyVecId dforce()         { return state<State::DFORCE>(); }
+
+    ///< This is the first index used for dynamically allocated vectors
+    static constexpr uint8_t V_FIRST_DYNAMIC_INDEX = static_cast<uint8_t>(State::DYNAMIC_INDEX);
 
     static std::string getName(const MyVecId& v)
     {
         std::string result;
         switch(v.getIndex())
         {
-        case 0: result+= "null";
+        case static_cast<uint8_t>(State::NULL_STATE): result+= "null";
             break;
-        case 1: result+= "velocity";
+        case static_cast<uint8_t>(State::VELOCITY): result+= "velocity";
             break;
-        case 2: result+= "resetVelocity";
+        case static_cast<uint8_t>(State::RESET_VELOCITY): result+= "resetVelocity";
             break;
-        case 3: result+= "freeVelocity";
+        case static_cast<uint8_t>(State::FREE_VELOCITY): result+= "freeVelocity";
             break;
-        case 4: result+= "normal";
+        case static_cast<uint8_t>(State::NORMAL): result+= "normal";
             break;
-        case 5: result+= "force";
+        case static_cast<uint8_t>(State::FORCE): result+= "force";
             break;
-        case 6: result+= "externalForce";
+        case static_cast<uint8_t>(State::EXTERNAL_FORCE): result+= "externalForce";
             break;
-        case 7: result+= "dx";
+        case static_cast<uint8_t>(State::DX): result+= "dx";
             break;
-        case 8: result+= "dforce";
+        case static_cast<uint8_t>(State::DFORCE): result+= "dforce";
             break;
         default:
             std::ostringstream out;
@@ -159,41 +231,63 @@ public:
     {
         switch(v.getIndex())
         {
-            case 0: return {}; //null
-            case 1: return "States"; //velocity
-            case 2: return "States"; //resetVelocity
-            case 3: return "Free Motion"; //freeVelocity
-            case 4: return "States"; //normal
-            case 5: return "Force"; //force
-            case 6: return "Force"; //externalForce
-            case 7: return "States"; //dx
-            case 8: return "Force"; //dforce
+            case static_cast<uint8_t>(State::NULL_STATE): return {};
+            case static_cast<uint8_t>(State::VELOCITY):
+            case static_cast<uint8_t>(State::DX):
+            case static_cast<uint8_t>(State::NORMAL):
+            case static_cast<uint8_t>(State::RESET_VELOCITY): return "States";
+
+            case static_cast<uint8_t>(State::FREE_VELOCITY): return "Free Motion";
+
+            case static_cast<uint8_t>(State::FORCE):
+            case static_cast<uint8_t>(State::DFORCE):
+            case static_cast<uint8_t>(State::EXTERNAL_FORCE): return "Force";
             default: return {};
         }
     }
+};
+
+enum class MatrixDerivState : uint8_t
+{
+    NULL_STATE,
+    CONSTRAINT_JACOBIAN,
+    MAPPING_JACOBIAN,
+    DYNAMIC_INDEX
 };
 
 template <VecAccess vaccess>
 class TStandardVec<V_MATDERIV, vaccess>
 {
 public:
+
+    using State = MatrixDerivState;
+
     typedef TVecId<V_MATDERIV, vaccess> MyVecId;
 
-    static MyVecId constraintJacobian()    { return MyVecId(1);} // jacobian matrix of constraints
-    static MyVecId mappingJacobian() { return MyVecId(2);}         // accumulated matrix of the mappings
+    template<State v_state>
+    static constexpr MyVecId state()
+    {
+        return MyVecId(static_cast<std::underlying_type_t<State>>(v_state));
+    }
 
-    enum { V_FIRST_DYNAMIC_INDEX = 3 }; ///< This is the first index used for dynamically allocated vectors
+    SOFA_ATTRIBUTE_DEPRECATED__CONSTRAINT_JACOBIAN()
+    static constexpr MyVecId constraintJacobian() { return state<State::CONSTRAINT_JACOBIAN>();} // jacobian matrix of constraints
+    SOFA_ATTRIBUTE_DEPRECATED__MAPPING_JACOBIAN()
+    static constexpr MyVecId mappingJacobian() { return state<State::MAPPING_JACOBIAN>();}         // accumulated matrix of the mappings
+
+    ///< This is the first index used for dynamically allocated vectors
+    static constexpr uint8_t V_FIRST_DYNAMIC_INDEX = static_cast<uint8_t>(State::DYNAMIC_INDEX);
 
     static std::string getName(const MyVecId& v)
     {
         std::string result;
         switch(v.getIndex())
         {
-        case 0: result+= "null";
+        case static_cast<uint8_t>(State::NULL_STATE): result+= "null";
             break;
-        case 1: result+= "holonomic";
+        case static_cast<uint8_t>(State::CONSTRAINT_JACOBIAN): result+= "holonomic";
             break;
-        case 2: result+= "nonHolonomic";
+        case static_cast<uint8_t>(State::MAPPING_JACOBIAN): result+= "nonHolonomic";
             break;
         default:
             std::ostringstream out;
@@ -209,9 +303,9 @@ public:
     {
         switch(v.getIndex())
         {
-        case 0: return {}; //null
-            case 1: return "Jacobian"; //constraintJacobian
-            case 2: return "Jacobian"; //mappingJacobian
+            case static_cast<uint8_t>(State::NULL_STATE): return {}; //null
+            case static_cast<uint8_t>(State::CONSTRAINT_JACOBIAN):
+            case static_cast<uint8_t>(State::MAPPING_JACOBIAN): return "Jacobian";
             default: return {};
         }
     }
@@ -267,17 +361,26 @@ public:
 /// for performance reasons (typically when working with TMultiVecId instances, which would otherwise copy maps of TVecId).
 /// This is (a little) less efficient for non V_ALL versions, but is without comparison with the loss of performance
 /// with the typical operation of passing a stored "TMultiVecId<!V_ALL,V_WRITE>" to a method taking a "const TMultiVecId<V_ALL,V_READ>&".
-class BaseVecId
+class SOFA_CORE_API BaseVecId
 {
 public:
-    VecType getType() const { return type; }
-    unsigned int getIndex() const { return index; }
+    [[nodiscard]] constexpr VecType getType() const
+    {
+        return type;
+    }
+
+    [[nodiscard]] constexpr unsigned int getIndex() const
+    {
+        return index;
+    }
 
     VecType type;
     unsigned int index;
 
 protected:
-    BaseVecId(VecType t, unsigned int i) : type(t), index(i) {}
+    constexpr BaseVecId(VecType t, unsigned int i)
+        : type(t), index(i)
+    {}
 };
 
 /// This class is only here as fix for a VC2010 compiler otherwise padding TVecId<V_ALL,?> with 4 more bytes than TVecId<?,?>, 
@@ -298,23 +401,23 @@ template <VecType vtype, VecAccess vaccess>
 class TVecId : public BaseVecId, public TStandardVec<vtype, vaccess>, public VecIdAlignFix
 {
 public:
-    TVecId() : BaseVecId(vtype, 0) { }
-    TVecId(unsigned int i) : BaseVecId(vtype, i) { }
+    constexpr TVecId() : BaseVecId(vtype, 0) { }
+    explicit constexpr TVecId(unsigned int i) : BaseVecId(vtype, i) { }
 
     /// Copy constructor
-    TVecId(const TVecId<vtype, vaccess> & v) : BaseVecId(vtype, v.getIndex()) {}
+    constexpr TVecId(const TVecId<vtype, vaccess> & v) : BaseVecId(vtype, v.getIndex()) {}
 
     /// Copy from another VecId, possibly with another type of access, with the
     /// constraint that the access must be compatible (i.e. cannot create
     /// a write-access VecId from a read-only VecId.
     template<VecAccess vaccess2>
-    TVecId(const TVecId<vtype, vaccess2>& v) : BaseVecId(vtype, v.getIndex())
+    constexpr TVecId(const TVecId<vtype, vaccess2>& v) : BaseVecId(vtype, v.getIndex())
     {
         static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
     }
 
     template<VecAccess vaccess2>
-    explicit TVecId(const TVecId<V_ALL, vaccess2>& v) : BaseVecId(vtype, v.getIndex())
+    constexpr explicit TVecId(const TVecId<V_ALL, vaccess2>& v) : BaseVecId(vtype, v.getIndex())
     {
         static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
 #ifndef NDEBUG
@@ -324,14 +427,14 @@ public:
 
     // Copy assignment
 
-    TVecId<vtype, vaccess> & operator=(const TVecId<vtype, vaccess>& other) {
+    constexpr TVecId<vtype, vaccess> & operator=(const TVecId<vtype, vaccess>& other) {
         this->index = other.index;
         this->type = other.type;
         return *this;
     }
 
     template<VecAccess vaccess2>
-    TVecId<vtype, vaccess> & operator=(const TVecId<vtype, vaccess2>& other) {
+    constexpr TVecId<vtype, vaccess> & operator=(const TVecId<vtype, vaccess2>& other) {
         static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
         this->index = other.index;
         this->type = other.type;
@@ -339,7 +442,7 @@ public:
     }
 
     template<VecAccess vaccess2>
-    TVecId<vtype, vaccess> & operator=(const TVecId<V_ALL, vaccess2>& other) {
+    constexpr TVecId<vtype, vaccess> & operator=(const TVecId<V_ALL, vaccess2>& other) {
         static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
 #ifndef NDEBUG
         assert(other.getType() == vtype);
@@ -351,25 +454,41 @@ public:
 
 
     template<VecType vtype2, VecAccess vaccess2>
-    bool operator==(const TVecId<vtype2, vaccess2>& v) const
+    constexpr bool operator==(const TVecId<vtype2, vaccess2>& v) const
     {
         return getType() == v.getType() && getIndex() == v.getIndex();
     }
 
     template<VecType vtype2, VecAccess vaccess2>
-    bool operator!=(const TVecId<vtype2, vaccess2>& v) const
+    constexpr bool operator!=(const TVecId<vtype2, vaccess2>& v) const
     {
         return getType() != v.getType() || getIndex() != v.getIndex();
     }
 
-    static TVecId null() { return TVecId(0);}
-    bool isNull() const { return this->index == 0; }
+    using TStandardVec<vtype, vaccess>::state;
+    using State = typename TStandardVec<vtype, vaccess>::State;
 
-    std::string getName() const
+    template<State v_state>
+    static constexpr TVecId state()
+    {
+        return TVecId(static_cast<std::underlying_type_t<State>>(v_state));
+    }
+
+    static constexpr TVecId null()
+    {
+        return TStandardVec<vtype, vaccess>::template state<State::NULL_STATE>();
+    }
+
+    [[nodiscard]] constexpr bool isNull() const
+    {
+        return this->index == static_cast<unsigned int>(State::NULL_STATE);
+    }
+
+    [[nodiscard]] std::string getName() const
     {
         return TStandardVec<vtype, vaccess>::getName(*this);
     }
-    std::string getGroup() const
+    [[nodiscard]] std::string getGroup() const
     {
         return TStandardVec<vtype, vaccess>::getGroup(*this);
     }
@@ -386,20 +505,20 @@ template<VecAccess vaccess>
 class TVecId<V_ALL, vaccess> : public BaseVecId, public TStandardVec<V_ALL, vaccess>
 {
 public:
-    TVecId() : BaseVecId(V_ALL, 0) { }
-    TVecId(VecType t, unsigned int i) : BaseVecId(t, i) { }
+    constexpr TVecId() : BaseVecId(V_ALL, 0) { }
+    constexpr TVecId(VecType t, unsigned int i) : BaseVecId(t, i) { }
     /// Create a generic VecId from a specific or generic one, with the
     /// constraint that the access must be compatible (i.e. cannot create
     /// a write-access VecId from a read-only VecId.
     template<VecType vtype2, VecAccess vaccess2>
-    TVecId(const TVecId<vtype2, vaccess2>& v) : BaseVecId(v.getType(), v.getIndex())
+    constexpr TVecId(const TVecId<vtype2, vaccess2>& v) : BaseVecId(v.getType(), v.getIndex())
     {
         static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
     }
 
     // Copy assignment
     template<VecType vtype2, VecAccess vaccess2>
-    TVecId<V_ALL, vaccess> & operator=(const TVecId<vtype2, vaccess2>& other) {
+    constexpr TVecId<V_ALL, vaccess> & operator=(const TVecId<vtype2, vaccess2>& other) {
         static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
         this->index = other.index;
         this->type = other.type;
@@ -408,25 +527,25 @@ public:
 
 
     template<VecType vtype2, VecAccess vaccess2>
-    bool operator==(const TVecId<vtype2, vaccess2>& v) const
+    constexpr bool operator==(const TVecId<vtype2, vaccess2>& v) const
     {
         return getType() == v.getType() && getIndex() == v.getIndex();
     }
 
     template<VecType vtype2, VecAccess vaccess2>
-    bool operator!=(const TVecId<vtype2, vaccess2>& v) const
+    constexpr bool operator!=(const TVecId<vtype2, vaccess2>& v) const
     {
         return getType() != v.getType() || getIndex() != v.getIndex();
     }
 
-    static TVecId null() { return TVecId(V_ALL, 0);}
-    bool isNull() const { return this->index == 0; }
+    static constexpr TVecId null() { return TVecId(V_ALL, 0);}
+    [[nodiscard]] constexpr bool isNull() const { return this->index == 0; }
 
-    std::string getName() const
+    [[nodiscard]] std::string getName() const
     {
         return TStandardVec<V_ALL, vaccess>::getName(*this);
     }
-    std::string getGroup() const
+    [[nodiscard]] std::string getGroup() const
     {
         return TStandardVec<V_ALL, vaccess>::getGroup(*this);
     }
@@ -453,8 +572,50 @@ typedef TVecId<V_DERIV   , V_WRITE>      VecDerivId;
 typedef TVecId<V_MATDERIV, V_READ > ConstMatrixDerivId;
 typedef TVecId<V_MATDERIV, V_WRITE>      MatrixDerivId;
 
-static_assert(sizeof(VecId) == sizeof(VecCoordId), "");
+static_assert(sizeof(VecId) == sizeof(VecCoordId));
 
+namespace vec_id
+{
+namespace read_access
+{
+static constexpr inline auto position = ConstVecCoordId::state<CoordState::POSITION>();
+static constexpr inline auto restPosition = ConstVecCoordId::state<CoordState::REST_POSITION>();
+static constexpr inline auto freePosition = ConstVecCoordId::state<CoordState::FREE_POSITION>();
+static constexpr inline auto resetPosition = ConstVecCoordId::state<CoordState::RESET_POSITION>();
+
+static constexpr inline auto velocity = ConstVecDerivId::state<DerivState::VELOCITY>();
+static constexpr inline auto resetVelocity = ConstVecDerivId::state<DerivState::RESET_VELOCITY>();
+static constexpr inline auto freeVelocity = ConstVecDerivId::state<DerivState::FREE_VELOCITY>();
+static constexpr inline auto normal = ConstVecDerivId::state<DerivState::NORMAL>();
+static constexpr inline auto force = ConstVecDerivId::state<DerivState::FORCE>();
+static constexpr inline auto externalForce = ConstVecDerivId::state<DerivState::EXTERNAL_FORCE>();
+static constexpr inline auto dx = ConstVecDerivId::state<DerivState::DX>();
+static constexpr inline auto dforce = ConstVecDerivId::state<DerivState::DFORCE>();
+
+static constexpr inline auto constraintJacobian = ConstMatrixDerivId::state<MatrixDerivState::CONSTRAINT_JACOBIAN>();
+static constexpr inline auto mappingJacobian = ConstMatrixDerivId::state<MatrixDerivState::MAPPING_JACOBIAN>();
+}
+
+namespace write_access
+{
+static constexpr inline auto position = VecCoordId::state<CoordState::POSITION>();
+static constexpr inline auto restPosition = VecCoordId::state<CoordState::REST_POSITION>();
+static constexpr inline auto freePosition = VecCoordId::state<CoordState::FREE_POSITION>();
+static constexpr inline auto resetPosition = VecCoordId::state<CoordState::RESET_POSITION>();
+
+static constexpr inline auto velocity = VecDerivId::state<DerivState::VELOCITY>();
+static constexpr inline auto resetVelocity = VecDerivId::state<DerivState::RESET_VELOCITY>();
+static constexpr inline auto freeVelocity = VecDerivId::state<DerivState::FREE_VELOCITY>();
+static constexpr inline auto normal = VecDerivId::state<DerivState::NORMAL>();
+static constexpr inline auto force = VecDerivId::state<DerivState::FORCE>();
+static constexpr inline auto externalForce = VecDerivId::state<DerivState::EXTERNAL_FORCE>();
+static constexpr inline auto dx = VecDerivId::state<DerivState::DX>();
+static constexpr inline auto dforce = VecDerivId::state<DerivState::DFORCE>();
+
+static constexpr inline auto constraintJacobian = MatrixDerivId::state<MatrixDerivState::CONSTRAINT_JACOBIAN>();
+static constexpr inline auto mappingJacobian = MatrixDerivId::state<MatrixDerivState::MAPPING_JACOBIAN>();
+}
+}
 
 /// Maps a VecType to a DataTypes member typedef representing the state variables
 /// Example: StateType_t<DataTypes, core::V_COORD> returns the type DataTypes::Coord
@@ -468,6 +629,10 @@ template<class DataTypes> struct StateType<DataTypes, core::V_COORD>
 template<class DataTypes> struct StateType<DataTypes, core::V_DERIV>
 {
     using type = typename DataTypes::Deriv;
+};
+template<class DataTypes> struct StateType<DataTypes, core::V_MATDERIV>
+{
+    using type = typename DataTypes::MatrixDeriv;
 };
 
 /// Maps a VecType to a DataTypes member static variable representing the size of the state variables
