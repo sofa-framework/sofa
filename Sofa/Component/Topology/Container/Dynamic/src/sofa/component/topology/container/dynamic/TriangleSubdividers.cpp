@@ -36,6 +36,52 @@ TriangleSubdivider::TriangleSubdivider(TriangleID triangleId, const sofa::core::
 
 }
 
+bool TriangleSubdivider::subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords)
+{
+    sofa::Size nbrPT = 0;
+    sofa::Size nbrPE = 0;
+
+    for (const PointToAdd* ptA : m_points)
+    {
+        if (ptA->m_ancestors.size() == 2)
+            nbrPE++;
+        else
+            nbrPT++;
+    }
+
+
+    if (nbrPT == 0)
+    {
+        if (nbrPE == 1) 
+        {
+            return subdivide_1Edge(triCoords);
+        }
+        else if (nbrPE == 2) 
+        {
+            return subdivide_2Edge(triCoords);
+        }
+        else if (nbrPE == 3) 
+        {
+            return subdivide_3Edge(triCoords);
+        }
+    }
+    else if (nbrPT == 1)
+    {
+        if (nbrPE == 0) 
+        {
+            return subdivide_1Node(triCoords);
+        }
+        else if (nbrPE == 1)
+        {
+            return subdivide_2Node(triCoords);
+        }
+    }
+
+    msg_warning("TriangleSubdivider") << "subdivide with " << nbrPE << " points on Edge and " << nbrPT << " inside Triangle is not supported";
+    return false;
+}
+
+
 void TriangleSubdivider::addPoint(PointToAdd* pTA)
 {
     m_points.push_back(pTA);
@@ -67,7 +113,7 @@ sofa::type::Vec3 TriangleSubdivider::computePointCoordinates(const PointToAdd* P
 }
 
 
-bool TriangleSubdivider_1Node::subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords)
+bool TriangleSubdivider::subdivide_1Node(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords)
 {
     if (m_points.size() != 1)
     {
@@ -101,8 +147,7 @@ bool TriangleSubdivider_1Node::subdivide(const sofa::type::fixed_array<sofa::typ
     return true;
 }
 
-
-bool TriangleSubdivider_1Edge::subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords)
+bool TriangleSubdivider::subdivide_1Edge(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords)
 {
     if (m_points.size() != 1)
     {
@@ -151,8 +196,7 @@ bool TriangleSubdivider_1Edge::subdivide(const sofa::type::fixed_array<sofa::typ
     return true;
 }
 
-
-bool TriangleSubdivider_2Edge::subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords)
+bool TriangleSubdivider::subdivide_2Edge(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords)
 {
     if (m_points.size() != 2)
     {
@@ -278,8 +322,7 @@ bool TriangleSubdivider_2Edge::subdivide(const sofa::type::fixed_array<sofa::typ
     return true;
 }
 
-
-bool TriangleSubdivider_3Edge::subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords)
+bool TriangleSubdivider::subdivide_3Edge(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords)
 {
     if (m_points.size() != 3)
     {
@@ -348,8 +391,7 @@ bool TriangleSubdivider_3Edge::subdivide(const sofa::type::fixed_array<sofa::typ
     return true;
 }
 
-
-bool TriangleSubdivider_2Node::subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords)
+bool TriangleSubdivider::subdivide_2Node(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords)
 {
     if (m_points.size() != 2)
     {
@@ -428,5 +470,6 @@ bool TriangleSubdivider_2Node::subdivide(const sofa::type::fixed_array<sofa::typ
 
     return true;
 }
+
 
 } //namespace sofa::component::topology::container::dynamic
