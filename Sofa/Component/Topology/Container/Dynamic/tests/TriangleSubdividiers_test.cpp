@@ -36,6 +36,7 @@ using TriangleID = sofa::core::topology::BaseMeshTopology::TriangleID;
 class TriangleSubdividers_test : public BaseTest
 {
 public:
+    /// Internal structure to store Triangle information for the tests (Ids, 3 vertices indices and their coordinates)
     struct triangleData
     {
         TriangleID triId = sofa::InvalidID;
@@ -44,13 +45,23 @@ public:
         sofa::type::fixed_array<sofa::type::Vec3, 3> triCoords;
     };
 
+    /// Will create 3 triangles as the current topology with one square triangle, one equilateral triangle and one triangle nearly flat
     int createTopology();
 
-    bool testSubdivider_1Node();
-    bool testSubdivider_1Edge();
-    bool testSubdivider_2Edge();
-    bool testSubdivider_3Edge();
-    bool testSubdivider_2Node();
+    /// Will test the creation of 1 point in middle of each triangle. The ouptut should be 3 triangles each time.
+    bool testSubdivider_1Node_baryCenter();
+
+    /// Will test the creation of 1 point in middle of the first edge of the triangle. The ouptut should be 2 triangles each time.
+    bool testSubdivider_1Edge_baryCenter();
+
+    /// Will test the creation of 2 points in middle of the first 2 edges of the triangle. The ouptut should be 3 triangles each time.
+    bool testSubdivider_2Edge_baryCenter();
+    
+    /// Will test the creation of 3 points in middle of the 3 edges of the triangle. The ouptut should be 4 triangles each time.
+    bool testSubdivider_3Edge_baryCenter();
+    
+    /// Will test the creation of 2 points, one in middle of the first edge of the triangle and one in middle of the triangle. The ouptut should be 4 triangles each time.
+    bool testSubdivider_2Node_baryCenter();
 
     std::vector <triangleData> m_triToTest;
 
@@ -119,7 +130,7 @@ bool TriangleSubdividers_test::checkTriangleToAdd(TriangleToAdd* refTri, Triangl
 }
 
 /// Will test the creation of 1 point in middle of each triangle. The ouptut should be 3 triangles each time.
-bool TriangleSubdividers_test::testSubdivider_1Node()
+bool TriangleSubdividers_test::testSubdivider_1Node_baryCenter()
 {
     const int nbrP = createTopology();
 
@@ -127,7 +138,7 @@ bool TriangleSubdividers_test::testSubdivider_1Node()
     for (unsigned int i = 0; i < m_triToTest.size(); i++)
     {
         // Create specific subdivider for 1 Node inside a triangle
-        TriangleSubdivider* subdivider0 = new TriangleSubdivider(m_triToTest[i].triId, m_triToTest[i].tri);
+        std::unique_ptr<TriangleSubdivider> subdivider0 = std::make_unique<TriangleSubdivider>(m_triToTest[i].triId, m_triToTest[i].tri);
         sofa::type::vector<PointID> ancestors = { m_triToTest[i].tri[0], m_triToTest[i].tri[1], m_triToTest[i].tri[2] };
 
         // Define the point to be added as the barycenter of the triangle
@@ -136,7 +147,7 @@ bool TriangleSubdividers_test::testSubdivider_1Node()
         sofa::type::Vec3 pG = m_triToTest[i].triCoords[0] * coefs[0] + m_triToTest[i].triCoords[1] * coefs[1] + m_triToTest[i].triCoords[2] * coefs[2];
 
         // Add new point to the triangle and compute the subdivision
-        PointToAdd* newPoint_0 = new PointToAdd(getUniqueId(m_triToTest[i].tri[0], m_triToTest[i].tri[1]), nbrP, ancestors, coefs);
+        std::shared_ptr<PointToAdd> newPoint_0 = std::make_shared<PointToAdd>(getUniqueId(m_triToTest[i].tri[0], m_triToTest[i].tri[1]), nbrP, ancestors, coefs);
         subdivider0->addPoint(newPoint_0);
         subdivider0->subdivide(m_triToTest[i].triCoords);
 
@@ -165,7 +176,7 @@ bool TriangleSubdividers_test::testSubdivider_1Node()
 
 
 /// Will test the creation of 1 point in middle of the first edge of the triangle. The ouptut should be 2 triangles each time.
-bool TriangleSubdividers_test::testSubdivider_1Edge()
+bool TriangleSubdividers_test::testSubdivider_1Edge_baryCenter()
 {
     const int nbrP = createTopology();
 
@@ -173,7 +184,7 @@ bool TriangleSubdividers_test::testSubdivider_1Edge()
     for (const triangleData& triToTest : m_triToTest)
     {
         // Create specific subdivider for 1 Node inside an edge of the triangle
-        TriangleSubdivider* subdivider0 = new TriangleSubdivider(triToTest.triId, triToTest.tri);
+        std::unique_ptr<TriangleSubdivider> subdivider0 = std::make_unique<TriangleSubdivider>(triToTest.triId, triToTest.tri);
         
         // Define the point to be added in middle of the first edge of a triangle
         sofa::type::vector<PointID> ancestors = { triToTest.tri[0], triToTest.tri[1]};
@@ -182,7 +193,7 @@ bool TriangleSubdividers_test::testSubdivider_1Edge()
         sofa::type::Vec3 pG = triToTest.triCoords[0] * coefs[0] + triToTest.triCoords[1] * coefs[1];
 
         // Add new point to the triangle and compute the subdivision
-        PointToAdd* newPoint_0 = new PointToAdd(getUniqueId(triToTest.tri[0], triToTest.tri[1]), nbrP, ancestors, coefs);
+        std::shared_ptr<PointToAdd> newPoint_0 = std::make_shared<PointToAdd>(getUniqueId(triToTest.tri[0], triToTest.tri[1]), nbrP, ancestors, coefs);
         subdivider0->addPoint(newPoint_0);
         subdivider0->subdivide(triToTest.triCoords);
 
@@ -206,7 +217,7 @@ bool TriangleSubdividers_test::testSubdivider_1Edge()
 
 
 /// Will test the creation of 2 points in middle of the first 2 edges of the triangle. The ouptut should be 3 triangles each time.
-bool TriangleSubdividers_test::testSubdivider_2Edge()
+bool TriangleSubdividers_test::testSubdivider_2Edge_baryCenter()
 {
     const int nbrP = createTopology();
     sofa::type::fixed_array< bool, 3> directOriented = { true, false, true };
@@ -217,7 +228,7 @@ bool TriangleSubdividers_test::testSubdivider_2Edge()
         const triangleData& triToTest = m_triToTest[i];
 
         // Create specific subdivider for 1 Node inside an edge of the triangle
-        TriangleSubdivider* subdivider0 = new TriangleSubdivider(triToTest.triId, triToTest.tri);
+        std::unique_ptr<TriangleSubdivider> subdivider0 = std::make_unique<TriangleSubdivider>(triToTest.triId, triToTest.tri);
 
         // Define the points to be added in middle of the first 2 edges of a triangle
         sofa::type::vector<PointID> ancestors0 = { triToTest.tri[0], triToTest.tri[1] };
@@ -228,8 +239,8 @@ bool TriangleSubdividers_test::testSubdivider_2Edge()
         sofa::type::Vec3 pG1 = triToTest.triCoords[1] * coefs[0] + triToTest.triCoords[2] * coefs[1];
 
         // Add new points to the triangle and compute the subdivision
-        PointToAdd* newPoint_0 = new PointToAdd(getUniqueId(ancestors0[0], ancestors0[1]), nbrP, ancestors0, coefs);
-        PointToAdd* newPoint_1 = new PointToAdd(getUniqueId(ancestors1[1], ancestors1[2]), nbrP+1, ancestors1, coefs);
+        std::shared_ptr<PointToAdd> newPoint_0 = std::make_shared<PointToAdd>(getUniqueId(ancestors0[0], ancestors0[1]), nbrP, ancestors0, coefs);
+        std::shared_ptr<PointToAdd> newPoint_1 = std::make_shared<PointToAdd>(getUniqueId(ancestors1[1], ancestors1[2]), nbrP+1, ancestors1, coefs);
         subdivider0->addPoint(newPoint_0);
         subdivider0->addPoint(newPoint_1);
         subdivider0->subdivide(triToTest.triCoords);
@@ -277,7 +288,8 @@ bool TriangleSubdividers_test::testSubdivider_2Edge()
     return true;
 }
 
-bool TriangleSubdividers_test::testSubdivider_3Edge()
+
+bool TriangleSubdividers_test::testSubdivider_3Edge_baryCenter()
 {
     const int nbrP = createTopology();
 
@@ -285,7 +297,7 @@ bool TriangleSubdividers_test::testSubdivider_3Edge()
     for (const triangleData& triToTest : m_triToTest)
     {
         // Create specific subdivider for 1 Node inside each edge of the triangle
-        TriangleSubdivider* subdivider0 = new TriangleSubdivider(triToTest.triId, triToTest.tri);
+        std::unique_ptr<TriangleSubdivider> subdivider0 = std::make_unique<TriangleSubdivider>(triToTest.triId, triToTest.tri);
         sofa::type::fixed_array<sofa::type::Vec3, 3> pGs;
         for (unsigned int i = 0; i < 3; i++)
         {
@@ -298,7 +310,7 @@ bool TriangleSubdividers_test::testSubdivider_3Edge()
             coefs.push_back(0.5_sreal);
 
             PointID uniqID = getUniqueId(ancestors[0], ancestors[1]);
-            PointToAdd* PTA = new PointToAdd(uniqID, nbrP + i, ancestors, coefs);
+            std::shared_ptr<PointToAdd> PTA = std::make_shared<PointToAdd>(uniqID, nbrP + i, ancestors, coefs);
             subdivider0->addPoint(PTA);
             pGs[i] = triToTest.triCoords[i] * coefs[0] + triToTest.triCoords[(i + 1) % 3] * coefs[1];
         }
@@ -333,7 +345,7 @@ bool TriangleSubdividers_test::testSubdivider_3Edge()
     return true;
 }
 
-bool TriangleSubdividers_test::testSubdivider_2Node()
+bool TriangleSubdividers_test::testSubdivider_2Node_baryCenter()
 {
     const int nbrP = createTopology();
 
@@ -341,7 +353,7 @@ bool TriangleSubdividers_test::testSubdivider_2Node()
     for (const triangleData& triToTest : m_triToTest)
     {
         // Create specific subdivider for 1 Node inside niddle of triang and 1 node on first edge
-        TriangleSubdivider* subdivider0 = new TriangleSubdivider(triToTest.triId, triToTest.tri);
+        std::unique_ptr<TriangleSubdivider> subdivider0 = std::make_unique<TriangleSubdivider>(triToTest.triId, triToTest.tri);
         
         // Define the points to be added in middle of the triangle
         sofa::type::vector<PointID> ancestors0 = { triToTest.tri[0], triToTest.tri[1], triToTest.tri[2] };
@@ -356,8 +368,8 @@ bool TriangleSubdividers_test::testSubdivider_2Node()
         sofa::type::Vec3 pG1 = triToTest.triCoords[0] * coefs1[0] + triToTest.triCoords[1] * coefs1[1];
 
         // Add new points to the triangle and compute the subdivision
-        PointToAdd* newPoint_0 = new PointToAdd(getUniqueId(ancestors0[0], ancestors0[1], ancestors0[2]), nbrP, ancestors0, coefs0);
-        PointToAdd* newPoint_1 = new PointToAdd(getUniqueId(ancestors1[0], ancestors1[1]), nbrP + 1, ancestors1, coefs1);
+        std::shared_ptr<PointToAdd> newPoint_0 = std::make_shared<PointToAdd>(getUniqueId(ancestors0[0], ancestors0[1], ancestors0[2]), nbrP, ancestors0, coefs0);
+        std::shared_ptr<PointToAdd> newPoint_1 = std::make_shared<PointToAdd>(getUniqueId(ancestors1[0], ancestors1[1]), nbrP + 1, ancestors1, coefs1);
         subdivider0->addPoint(newPoint_0);
         subdivider0->addPoint(newPoint_1);
         subdivider0->subdivide(triToTest.triCoords);
@@ -392,27 +404,27 @@ bool TriangleSubdividers_test::testSubdivider_2Node()
 
 
 
-TEST_F(TriangleSubdividers_test, testSubdivider_1Node)
+TEST_F(TriangleSubdividers_test, testSubdivider_1Node_baryCenter)
 {
-    ASSERT_TRUE(testSubdivider_1Node());
+    ASSERT_TRUE(testSubdivider_1Node_baryCenter());
 }
 
-TEST_F(TriangleSubdividers_test, testSubdivider_1Edge)
+TEST_F(TriangleSubdividers_test, testSubdivider_1Edge_baryCenter)
 {
-    ASSERT_TRUE(testSubdivider_1Edge());
+    ASSERT_TRUE(testSubdivider_1Edge_baryCenter());
 }
 
-TEST_F(TriangleSubdividers_test, testSubdivider_2Edge)
+TEST_F(TriangleSubdividers_test, testSubdivider_2Edge_baryCenter)
 {
-    ASSERT_TRUE(testSubdivider_2Edge());
+    ASSERT_TRUE(testSubdivider_2Edge_baryCenter());
 }
 
-TEST_F(TriangleSubdividers_test, testSubdivider_3Edge)
+TEST_F(TriangleSubdividers_test, testSubdivider_3Edge_baryCenter)
 {
-    ASSERT_TRUE(testSubdivider_3Edge());
+    ASSERT_TRUE(testSubdivider_3Edge_baryCenter());
 }
 
-TEST_F(TriangleSubdividers_test, testSubdivider_2Node)
+TEST_F(TriangleSubdividers_test, testSubdivider_2Node_baryCenter)
 {
-    ASSERT_TRUE(testSubdivider_2Node());
+    ASSERT_TRUE(testSubdivider_2Node_baryCenter());
 }
