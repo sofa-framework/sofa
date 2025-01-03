@@ -1869,14 +1869,14 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
 
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList2(
-    const sofa::type::Vec<3, Real>& a,
-    const sofa::type::Vec<3, Real>& b,
+    const sofa::type::Vec<3, Real>& ptA,
+    const sofa::type::Vec<3, Real>& ptB,
     const TriangleID ind_ta, const TriangleID ind_tb,
     sofa::type::vector< TriangleID >& triangles_list,
     sofa::type::vector< EdgeID >& edges_list,
     sofa::type::vector< Real >& coords_list) const
 {   
-    sofa::type::Vec<3, Real> current_point = a;
+    sofa::type::Vec<3, Real> current_point = ptA;
     TriangleID current_triID = ind_ta;
     EdgeID current_edgeID = sofa::InvalidID;
     Real current_bary = 0;
@@ -1884,35 +1884,41 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList2(
     SOFA_UNUSED(ind_tb);
     for(;;)
     {
+        // Get the edges of a the current_triID [AB]hat are intersected by Segment [AB]
         sofa::type::vector<EdgeID> intersectedEdges;
         sofa::type::vector<Real> baryCoefs;        
-        
-        bool is_intersected = computeSegmentTriangleIntersectionInPlane(current_point, b, current_triID, intersectedEdges, baryCoefs);
+        bool is_intersected = computeSegmentTriangleIntersectionInPlane(current_point, ptB, current_triID, intersectedEdges, baryCoefs);
 
-        // no intersection or more than 2 edges intersected should not happened
-        if (!is_intersected || intersectedEdges.size() > 2)
+        if (!is_intersected)
         {
-            msg_warning() << "Error in computeSegmentTriangleIntersectionInPlane for triangle: " << current_triID << " | is_intersected is " << is_intersected << " and intersectedEdges.size() : " << intersectedEdges.size();
-            break;
+            msg_error() << "No intersection can be found in method computeIntersectedPointsList2 between input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID;
+            return false;
+        }
+
+        if (intersectedEdges.size() > 2)
+        {
+            msg_error() << "More than 2 intersections have been found in method computeIntersectedPointsList2 between input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID << ". This is not possible!";
+            return false;
         }
 
         // Add current triangle into the list of intersected triangles
         triangles_list.push_back(current_triID);
 
-        if (intersectedEdges.size() == 1) // only one edge intersected, beginning or end
+        // Only one edge intersected, beginning or end
+        if (intersectedEdges.size() == 1) 
         {
             if (current_edgeID == intersectedEdges[0]) // reach end
             {
                 break;
             }
 
-            // new edge intersected
+            // Beginning: new edge intersected
             current_edgeID = intersectedEdges[0];
             current_bary = baryCoefs[0];
         }
-        else if (intersectedEdges.size() == 2) // triangle fully traversed
+        else if (intersectedEdges.size() == 2) // triangle fully traversed, look for the new edge
         {
-            if (intersectedEdges[0] == current_edgeID) 
+            if (current_edgeID == intersectedEdges[0])
             {
                 current_edgeID = intersectedEdges[1];
                 current_bary = baryCoefs[1];
@@ -1928,6 +1934,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList2(
         edges_list.push_back(current_edgeID);
         coords_list.push_back(current_bary);
 
+        // Update start interaction point
         const Edge& edge = this->m_topology->getEdge(current_edgeID);
 
         const typename DataTypes::Coord& c0 = coords[edge[0]];
@@ -1937,7 +1944,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList2(
 
         // update pA with the intersection point on the new edge 
         sofa::type::Vec<3, Real> newIntersection = p0 * current_bary + p1 * (1.0 - current_bary) ;
-        current_point = current_point + (newIntersection - current_point) * 0.8; // add a small threshold to the current point projection
+        current_point = current_point + (newIntersection - current_point) * 0.8; // add a small threshold to make sure point is out of next triangle
 
         // search for next triangle to be intersected
         sofa::type::vector< TriangleID > triAE = this->m_topology->getTrianglesAroundEdge(current_edgeID);
@@ -1954,8 +1961,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList2(
         }
         else
         {
-            msg_warning() << "non manifold triangulation not supported yet.";
-            break;
+            msg_error() << "Non-Manifold triangulation not supported yet.";
+            return false;
         }
     }
 

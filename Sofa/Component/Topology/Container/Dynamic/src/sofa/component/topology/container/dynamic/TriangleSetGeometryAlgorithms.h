@@ -269,7 +269,7 @@ public:
             bool& is_on_boundary) const;
 
 
-    bool computeIntersectedPointsList2(const sofa::type::Vec<3, Real>& a, const sofa::type::Vec<3, Real>& b,
+    bool computeIntersectedPointsList2(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
         const TriangleID ind_ta, const TriangleID ind_tb,
         sofa::type::vector< TriangleID >& triangles_list,
         sofa::type::vector< EdgeID >& edges_list,
