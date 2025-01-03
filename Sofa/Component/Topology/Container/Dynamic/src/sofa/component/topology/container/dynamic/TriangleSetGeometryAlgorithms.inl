@@ -1868,21 +1868,20 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
 
 
 template<class DataTypes>
-bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList2(const PointID last_point,
+bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList2(
     const sofa::type::Vec<3, Real>& a,
     const sofa::type::Vec<3, Real>& b,
-    TriangleID& ind_ta, TriangleID& ind_tb,
+    const TriangleID ind_ta, const TriangleID ind_tb,
     sofa::type::vector< TriangleID >& triangles_list,
     sofa::type::vector< EdgeID >& edges_list,
-    sofa::type::vector< Real >& coords_list,
-    bool& is_on_boundary) const
+    sofa::type::vector< Real >& coords_list) const
 {   
     sofa::type::Vec<3, Real> current_point = a;
     TriangleID current_triID = ind_ta;
     EdgeID current_edgeID = sofa::InvalidID;
     Real current_bary = 0;
     const typename DataTypes::VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
-
+    SOFA_UNUSED(ind_tb);
     for(;;)
     {
         sofa::type::vector<EdgeID> intersectedEdges;
