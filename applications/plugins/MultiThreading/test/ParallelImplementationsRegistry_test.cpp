@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -36,6 +36,7 @@ TEST(ParallelImplementationsRegistry, existInObjectFactory)
     sofa::simpleapi::importPlugin("Sofa.Component.Collision.Detection.Algorithm");
     sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
     sofa::simpleapi::importPlugin("Sofa.Component.Mapping.Linear");
+    sofa::simpleapi::importPlugin("MultiThreading");
 
     const auto implementations = ParallelImplementationsRegistry::getImplementations();
 

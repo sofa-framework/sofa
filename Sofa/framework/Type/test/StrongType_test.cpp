@@ -31,6 +31,7 @@ TEST(StrongType, constructor)
 
     // myint a; //this is not possible as the default constructor is explicit
     constexpr myint a ( 2 );
+    EXPECT_EQ(a.get(), 2);
 }
 
 TEST(StrongType, preIncrementable)
