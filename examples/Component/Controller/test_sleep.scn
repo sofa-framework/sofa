@@ -19,7 +19,7 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [LightManager OglFloat3Variable OglShader SpotLight] -->
-
+    <RequiredPlugin name="SofaUserInteraction"/> <!-- Needed to use components [SleepController] -->
 	<VisualStyle displayFlags="" /> <!-- showInteractionForceFields -->
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver maxIterations="1000" tolerance="0.001"/>
