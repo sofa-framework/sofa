@@ -563,6 +563,13 @@ void  Base::parse ( BaseObjectDescription* arg )
         }
     }
 
+    // Process the printLog attribute before any other as this one impact how the subsequent
+    // messages, including the ones emitted in the "parseField" method are reported to the user.
+    // getAttributes, returns a nullptr if printLog is not used.
+    auto value = arg->getAttribute("printLog");
+    if(value)
+        parseField("printLog", value);
+
     for( auto& it : arg->getAttributeMap() )
     {
         const std::string& attrName = it.first;
