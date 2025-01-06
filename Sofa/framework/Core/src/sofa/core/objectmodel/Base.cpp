@@ -584,30 +584,28 @@ void  Base::parse ( BaseObjectDescription* arg )
 void Base::updateLinks(bool logErrors)
 {
     // update links
-    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    for(auto& link : m_vecLink)
     {
-        const bool ok = (*iLink)->updateLinks();
-        if (!ok && (*iLink)->storePath() && logErrors)
+        const bool ok = link->updateLinks();
+        if (!ok && link->storePath() && logErrors)
         {
-            msg_warning() << "Link update failed for " << (*iLink)->getName() << " = " << (*iLink)->getValueString() ;
+            msg_warning() << "Link update failed for " << link->getName() << " = " << link->getValueString() ;
         }
     }
 }
 
 void  Base::writeDatas ( std::map<std::string,std::string*>& args )
 {
-    for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
+    for(const auto& field : m_vecData)
     {
-        const BaseData* field = *iData;
         std::string name = field->getName();
         if( args[name] != nullptr )
             *args[name] = field->getValueString();
         else
             args[name] =  new string(field->getValueString());
     }
-    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    for(const auto& link : m_vecLink)
     {
-        const BaseLink* link = *iLink;
         std::string name = link->getName();
         if( args[name] != nullptr )
             *args[name] = link->getValueString();
@@ -636,9 +634,8 @@ static std::string xmlencode(const std::string& str)
 
 void  Base::writeDatas (std::ostream& out, const std::string& separator)
 {
-    for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
+    for(const auto& field : m_vecData)
     {
-        const BaseData* field = *iData;
         if (!field->getLinkPath().empty() )
         {
             out << separator << field->getName() << "=\""<< xmlencode(field->getLinkPath()) << "\" ";
@@ -653,9 +650,8 @@ void  Base::writeDatas (std::ostream& out, const std::string& separator)
             }
         }
     }
-    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    for(const auto& link : m_vecLink)
     {
-        const BaseLink* link = *iLink;
         if(link->storePath())
         {
             std::string val = link->getValueString();
