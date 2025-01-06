@@ -527,14 +527,11 @@ void  Base::parseFields ( const std::list<std::string>& str )
 
 void  Base::parseFields ( const std::map<std::string,std::string*>& args )
 {
-    std::string key,val;
-    for( std::map<string,string*>::const_iterator i=args.begin(), iend=args.end(); i!=iend; ++i )
+    for( auto& [key,value] : args )
     {
-        if( (*i).second!=nullptr )
+        if( value!=nullptr )
         {
-            key=(*i).first;
-            val=*(*i).second;
-            parseField(key, val);
+            parseField(key, *value);
         }
     }
 }
@@ -570,17 +567,15 @@ void  Base::parse ( BaseObjectDescription* arg )
     if(value)
         parseField("printLog", value);
 
-    for( auto& it : arg->getAttributeMap() )
+    for( auto& [key,value] : arg->getAttributeMap() )
     {
-        const std::string& attrName = it.first;
-
         // FIX: "type" is already used to define the type of object to instantiate, any Data with
         // the same name cannot be extracted from BaseObjectDescription
-        if (attrName == std::string("type"))
+        if (key == "type")
             continue;
-        if (!hasField(attrName)) continue;
 
-        parseField(attrName, it.second);
+        if (hasField(key))
+            parseField(key, value);
     }
     updateLinks(false);
 }
