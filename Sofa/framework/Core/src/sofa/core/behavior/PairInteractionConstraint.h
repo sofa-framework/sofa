@@ -129,7 +129,7 @@ public:
     template<class T>
     static typename T::SPtr create(T* p0, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        typename T::SPtr obj = core::behavior::BaseInteractionConstraint::create(p0, context, arg);
+        typename T::SPtr obj = core::behavior::BaseInteractionConstraint::deprecated_create(p0, context, arg);
 
         if (arg)
         {

@@ -39,7 +39,7 @@ using std::queue;
 using sofa::core::loader::VoxelLoader;
 
 template<class DataTypes>
-Distances< DataTypes >::Distances ( sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet ) :
+Distances< DataTypes >::Distances () :
     d_showMapIndex (initData (&d_showMapIndex, (unsigned int)0, "showMapIndex", "Frame DOF index on which display values." ) ),
     d_showDistanceMap (initData (&d_showDistanceMap, false, "showDistancesMap", "show the distance for each point of the target point set." ) ),
     d_showGoalDistanceMap (initData (&d_showGoalDistanceMap, false, "showGoalDistancesMap", "show the distance for each point of the target point set." ) ),
@@ -54,9 +54,9 @@ Distances< DataTypes >::Distances ( sofa::component::topology::container::dynami
     d_harmonicMaxValue (initData (&d_harmonicMaxValue, 100.0, "harmonicMaxValue", "Max value used to initialize the harmonic distance grid." ) ),
     d_fileDistance(initData(&d_fileDistance, "filename", "file containing the result of the computation of the distances")),
     d_targetPath(initData(&d_targetPath, "targetPath", "path to the goal point set topology")),
-    target ( targetPointSet ) ,
-    d_hexaContainerPath(initData(&d_hexaContainerPath, "hexaContainerPath", "path to the grid used to compute the distances")),
-    hexaContainer ( hexaTopoContainer )
+    //target ( targetPointSet ) ,
+    d_hexaContainerPath(initData(&d_hexaContainerPath, "hexaContainerPath", "path to the grid used to compute the distances"))
+    //hexaContainer ( hexaTopoContainer )
 {
     this->addAlias(&d_fileDistance, "d_fileDistance");
     d_zonesFramePair.setDisplayed(false); // GUI can not display map.

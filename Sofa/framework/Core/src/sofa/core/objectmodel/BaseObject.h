@@ -63,7 +63,7 @@ public:
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
+    static typename T::SPtr deprecated_create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
         if (obj)

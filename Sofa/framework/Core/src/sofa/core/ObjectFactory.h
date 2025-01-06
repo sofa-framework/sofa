@@ -53,6 +53,19 @@ namespace sofa::core
 
 class ObjectRegistrationData;
 
+template<class T>
+class HasCreateMethod
+{
+    typedef char YesType[1];
+    typedef char NoType[2];
+
+    template<typename C> static YesType& test( decltype (&C::HasCreateMethod) );
+    template<typename C> static NoType& test(...);
+
+public:
+    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
+};
+
 typedef std::function<void(sofa::core::objectmodel::Base*, sofa::core::objectmodel::BaseObjectDescription*)> OnCreateCallback ;
 class SOFA_CORE_API ObjectFactory
 {
@@ -263,10 +276,36 @@ public:
         RealObject* instance = nullptr;
         return RealObject::canCreate(instance, context, arg);
     }
+
     objectmodel::BaseObject::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override
     {
-        RealObject* instance = nullptr;
-        return RealObject::create(instance, context, arg);
+        typename RealObject::SPtr obj;
+        if constexpr(HasCreateMethod<RealObject>::value)
+        {
+            obj = RealObject::create(context, arg);
+            msg_deprecated() << "This object was created using the RealObject::create method";
+        }
+        else{
+            obj = sofa::core::objectmodel::New<RealObject>();
+        }
+
+        if (obj)
+        {
+            if (context)
+            {
+                context->addObject(obj);
+            }
+            if (arg)
+            {
+                obj->parse(arg);
+            }
+        }
+        else
+        {
+            msg_info(RealObject::GetClass()->className) << "Cannot create an instance";
+        }
+
+        return obj;
     }
     const std::type_info& type() override
     {

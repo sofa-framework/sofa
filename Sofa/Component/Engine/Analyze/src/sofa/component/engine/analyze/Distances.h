@@ -72,7 +72,7 @@ protected:
     DistancesInternalData<DataTypes> data;
     friend class DistancesInternalData<DataTypes>;
 
-    Distances ( sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet );
+    Distances ();
 
     ~Distances() override {}
 
@@ -200,14 +200,15 @@ public:
     template<class T>
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(
-                ( arg?dynamic_cast<sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) :nullptr ),
-                ( arg?dynamic_cast<core::behavior::MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) :nullptr ) );
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
 
         if ( context ) context->addObject ( obj );
 
         if ( arg )
         {
+            obj->hexaContainer = dynamic_cast<sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) );
+            obj->target = dynamic_cast<core::behavior::MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) );
+
             if ( arg->getAttribute ( "hexaContainerPath" ) )
             {
                 obj->d_hexaContainerPath.setValue (arg->getAttribute ("hexaContainerPath" ) );
@@ -218,6 +219,7 @@ public:
                 obj->d_targetPath.setValue (arg->getAttribute ("targetPath" ) );
                 arg->removeAttribute ( "targetPath" );
             }
+
             obj->parse ( arg );
         }
 
