@@ -40,6 +40,17 @@ using sofa::helper::system::FileSystem;
 #include <fstream>
 #include <array>
 
+#ifdef SOFA_BUILD_CONFIGURATION
+constexpr std::string_view SOFA_BUILD_CONFIGURATION_STR = sofa_tostring(SOFA_BUILD_CONFIGURATION);
+#else
+constexpr std::string_view SOFA_BUILD_CONFIGURATION_STR = "NONE";
+#endif
+
+constexpr std::string_view GetSofaBuildConfigurationString()
+{
+    return SOFA_BUILD_CONFIGURATION_STR;
+}
+
 namespace sofa::helper::system
 {
 
@@ -469,17 +480,46 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
             }
         }
     }
-
-    // Second try: case-insensitive and recursive
+    
+    // Second try: case-insensitive and non-recursive
+    if (ignoreCase)
+    {
+        const std::string downcaseLibName = helper::downcaseString(libName);
+        
+        for (const auto & dir : searchPaths)
+        {
+            const std::array paths =
+            {
+                dir, // Non-Multi-Config build, install
+                FileSystem::append(dir, GetSofaBuildConfigurationString()) // Multi-Config build
+            };
+                
+            for (const auto & path : paths)
+            {
+                if ( fs::exists(path) )
+                {
+                    for (auto const& dirEntry : std::filesystem::directory_iterator{path})
+                    {
+                        const std::string filename = dirEntry.path().filename().string();
+                        const std::string downcaseFilename = helper::downcaseString(filename);
+                        if (downcaseFilename == downcaseLibName)
+                        {
+                            return FileSystem::cleanPath(dirEntry.path().string());
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Last try: case-insensitive and recursive
     if (ignoreCase)
     {
         if(!recursive) maxRecursiveDepth = 0;
         const std::string downcaseLibName = helper::downcaseString(libName);
-
-        for (std::vector<std::string>::iterator i = searchPaths.begin(); i!=searchPaths.end(); i++)
+        
+        for (const auto & dir : searchPaths)
         {
-            const std::string& dir = *i;
-
             fs::recursive_directory_iterator iter(dir);
             fs::recursive_directory_iterator end;
 

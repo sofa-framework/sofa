@@ -90,7 +90,7 @@ public:
     static void getConstraintResolution(BilateralLagrangianConstraint<T>& self,
                                         const ConstraintParams* cParams,
                                         std::vector<ConstraintResolution*>& resTab,
-                                        unsigned int& offset, SReal tolerance)
+                                        unsigned int& offset)
     {
         SOFA_UNUSED(cParams);
         const unsigned minp = std::min(self.d_m1.getValue().size(),
@@ -100,7 +100,6 @@ public:
             resTab[offset] = new BilateralConstraintResolution3Dof();
             offset += 3;
             BilateralConstraintResolution3Dof* temp = new BilateralConstraintResolution3Dof();
-            temp->setTolerance(tolerance);	// specific (smaller) tolerance for the rotation
             resTab[offset] = temp;
             offset += 3;
         }
@@ -276,8 +275,7 @@ void BilateralLagrangianConstraint<Rigid3Types>::getConstraintResolution(
     unsigned int& offset)
 {
     RigidBilateralLagrangianConstraint::getConstraintResolution(*this,
-        cParams, resTab, offset,
-        d_numericalTolerance.getValue());
+        cParams, resTab, offset);
 }
 
 template <> SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API

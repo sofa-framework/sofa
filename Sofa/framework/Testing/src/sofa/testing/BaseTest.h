@@ -21,10 +21,12 @@
 ******************************************************************************/
 #pragma once
 
+#include <deque>
 #include <sofa/testing/config.h>
 
 #include <gtest/gtest.h>
 #include <sofa/testing/TestMessageHandler.h>
+#include <sofa/testing/ScopedPlugin.h>
 
 namespace sofa::testing
 {
@@ -51,9 +53,13 @@ public:
     /// Seed value
     static int seed;
 
+    void loadPlugins(const std::initializer_list<std::string>& pluginNames);
+
 private:
     void SetUp() override ;
     void TearDown() override ;
+
+    std::deque<sofa::testing::ScopedPlugin> m_loadedPlugins;
 };
 
 } // namespace sofa::testing

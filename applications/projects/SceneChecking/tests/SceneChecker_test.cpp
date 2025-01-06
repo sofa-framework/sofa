@@ -173,11 +173,12 @@ struct SceneChecker_test : public BaseSimulationTest
         EXPECT_MSG_NOEMIT(Warning);
 
         const std::string lvl = (shouldWarn)?"17.06":"17.12";
-
+        
+        sofa::simpleapi::importPlugin("Sofa.Component.SceneUtility");
+        
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                           \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
-              << "      <RequiredPlugin name='Sofa.Component.SceneUtility'/>      \n"
               << "      <APIVersion level='"<< lvl <<"'/>                         \n"
               << "      <ComponentDeprecated />                                   \n"
               << "</Node>                                                         \n";

@@ -21,8 +21,10 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/visual/config.h>
+#include <sofa/simulation/Node.h>
 
 #include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/visual/BaseVisualStyle.h>
 #include <sofa/core/visual/Data[DisplayFlags].h>
 #include <sofa/simulation/fwd.h>
 
@@ -56,18 +58,21 @@ namespace sofa::component::visual
 *   showNormals hideNormals
 *   showWireframe hideWireframe
 */
-class SOFA_COMPONENT_VISUAL_API VisualStyle : public sofa::core::visual::VisualModel
+class SOFA_COMPONENT_VISUAL_API VisualStyle : public sofa::core::visual::BaseVisualStyle
 {
 public:
-    SOFA_CLASS(VisualStyle,sofa::core::visual::VisualModel);
+    SOFA_CLASS(VisualStyle,sofa::core::visual::BaseVisualStyle);
 
     typedef sofa::core::visual::VisualParams VisualParams;
     typedef sofa::core::visual::DisplayFlags DisplayFlags;
 protected:
     VisualStyle();
 public:
-    void fwdDraw(VisualParams* ) override;
-    void bwdDraw(VisualParams* ) override;
+    void updateVisualFlags(VisualParams* ) override;
+    void applyBackupFlags(VisualParams* ) override;
+
+    bool insertInNode( sofa::core::objectmodel::BaseNode* node );
+    bool removeInNode( sofa::core::objectmodel::BaseNode* node );
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
     sofa::core::objectmodel::RenamedData<DisplayFlags> displayFlags;
