@@ -40,27 +40,21 @@ template < class In1, class In2, class Out >
 void Multi2Mapping<In1,In2,Out>::addInputModel1(State<In1>* from, const std::string& path)
 {
     if (from)
-        this->fromModels1.add(from,path);
-    else if (!path.empty())
-        this->fromModels1.addPath(path);
+        this->fromModels1.add(from);
 }
 
 template < class In1, class In2, class Out >
 void Multi2Mapping<In1,In2,Out>::addInputModel2(State<In2>* from, const std::string& path)
 {
     if (from)
-        this->fromModels2.add(from,path);
-    else if (!path.empty())
-        this->fromModels2.addPath(path);
+        this->fromModels2.add(from);
 }
 
 template< class In1, class In2, class Out >
 void Multi2Mapping<In1,In2,Out>::addOutputModel(State<Out>* to, const std::string& path)
 {
     if (to)
-        this->toModels.add(to,path);
-    else if (!path.empty())
-        this->toModels.addPath(path);
+        this->toModels.add(to);
     if (to && isMechanical() && !testMechanicalState(to))
         setNonMechanical();
 }

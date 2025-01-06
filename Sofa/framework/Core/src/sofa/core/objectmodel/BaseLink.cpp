@@ -25,6 +25,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/PathResolver.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/logging/Messaging.h>
 
@@ -302,6 +303,7 @@ bool BaseLink::read( const std::string& str )
             /// We found either a valid Base object or none.
             /// ptr can be nullptr, as the destination can be added later in the graph
             /// instead, we will check for failed links after init is completed
+            std::cout << "WE HAVE A MATCH for " << path << "," << ptr << std::endl;
             entries.emplace_back(ptr, path);
         }
     }
@@ -318,7 +320,7 @@ bool BaseLink::read( const std::string& str )
     clear();
     for (const auto& [base, path] : entries)
     {
-        ok = add(base, path) && ok;
+        ok = add(base) && ok;
     }
     return ok;
 }

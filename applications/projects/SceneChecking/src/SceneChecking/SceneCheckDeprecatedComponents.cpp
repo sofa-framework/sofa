@@ -55,7 +55,7 @@ void SceneCheckDeprecatedComponents::doCheckOn(Node* node)
 
     for (auto& object : node->object )
     {
-        if (const sofa::core::Base* o = object.get())
+        if (const sofa::core::objectmodel::Base* o = object.get())
         {
             if( deprecatedComponents.find( o->getClassName() ) != deprecatedComponents.end() )
             {

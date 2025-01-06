@@ -23,7 +23,6 @@
 
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/type/stable_vector.h>
-#include <sofa/core/PathResolver.h>
 #include <sofa/core/sptr.h>
 #include <sofa/core/fwd.h>
 
@@ -387,26 +386,26 @@ public:
         return true;
     }
 
-    bool add(DestPtr v, const std::string& path)
-    {
-        if (!v && path.empty())
-            return false;
-        std::size_t index = TraitsContainer::add(m_value,v);
-        TraitsValueType::setPath(m_value[index],path);
-        updateCounter();
-        added(v, index);
-        return true;
-    }
+//    bool add(DestPtr v, const std::string& path)
+//    {
+//        if (!v && path.empty())
+//            return false;
+//        std::size_t index = TraitsContainer::add(m_value,v);
+//        TraitsValueType::setPath(m_value[index],path);
+//        updateCounter();
+//        added(v, index);
+//        return true;
+//    }
 
-    bool addPath(const std::string& path)
-    {
-        if (path.empty())
-            return false;
-        DestType* ptr = nullptr;
-        if (m_owner)
-            PathResolver::FindLinkDest(m_owner, ptr, path, this);
-        return add(ptr, path);
-    }
+//    bool addPath(const std::string& path)
+//    {
+//        if (path.empty())
+//            return false;
+//        DestType* ptr = nullptr;
+//        if (m_owner)
+//            PathResolver::FindLinkDest(m_owner, ptr, path, this);
+//        return add(ptr, path);
+//    }
 
     bool remove(DestPtr v)
     {
@@ -427,18 +426,18 @@ public:
         return true;
     }
 
-    bool removePath(const std::string& path)
-    {
-        if (path.empty()) return false;
-        const std::size_t n = m_value.size();
-        for (std::size_t index=0; index<n; ++index)
-        {
-            std::string p = getPath(index);
-            if (p == path)
-                return removeAt(index);
-        }
-        return false;
-    }
+//    bool removePath(const std::string& path)
+//    {
+//        if (path.empty()) return false;
+//        const std::size_t n = m_value.size();
+//        for (std::size_t index=0; index<n; ++index)
+//        {
+//            std::string p = getPath(index);
+//            if (p == path)
+//                return removeAt(index);
+//        }
+//        return false;
+//    }
 
     const BaseClass* getDestClass() const override
     {
@@ -488,10 +487,10 @@ protected:
 
     /// Set a new link entry from a Base*
     /// returns false if neither base & path are provided or if the provided base object has the wrong type.
-    bool _doAdd_(Base* baseptr, const std::string& path) override
+    bool _doAdd_(Base* baseptr) override
     {
         /// If the pointer is null and the path empty we do nothing
-        if(!baseptr && path.empty())
+        if(!baseptr)
             return false;
 
         /// Downcast the pointer to a compatible type and
@@ -503,7 +502,7 @@ protected:
         }
 
         /// TLink:adding accepts nullptr (for a not yet resolved link).
-        return TLink::add(destptr, path);
+        return TLink::add(destptr);
     }
 
     /// Returns false on type mismatch
@@ -687,33 +686,33 @@ public:
         changed(before, v);
     }
 
-    void set(DestPtr v, const std::string& path)
-    {
-        TraitsContainer::resize(m_value, 1);
-        ValueType& value = m_value.get();
-        const DestPtr before = TraitsValueType::get(value);
-        if (v != before)
-            TraitsValueType::set(value, v);
-        TraitsValueType::setPath(value, path);
-        updateCounter();
-        if (v != before)
-            changed(before, v);
-    }
+//    void set(DestPtr v, const std::string& path)
+//    {
+//        TraitsContainer::resize(m_value, 1);
+//        ValueType& value = m_value.get();
+//        const DestPtr before = TraitsValueType::get(value);
+//        if (v != before)
+//            TraitsValueType::set(value, v);
+//        TraitsValueType::setPath(value, path);
+//        updateCounter();
+//        if (v != before)
+//            changed(before, v);
+//    }
 
-    void setPath(const std::string& path)
-    {
-        TraitsContainer::resize(m_value, 1);
-        if (path.empty())
-        {
-            set(nullptr);
-            return;
-        }
+//    void setPath(const std::string& path)
+//    {
+//        TraitsContainer::resize(m_value, 1);
+//        if (path.empty())
+//        {
+//            set(nullptr);
+//            return;
+//        }
 
-        DestType* ptr = nullptr;
-        if (m_owner)
-            PathResolver::FindLinkDest(m_owner, ptr, path, this);
-        set(ptr, path);
-    }
+//        DestType* ptr = nullptr;
+//        if (m_owner)
+//            PathResolver::FindLinkDest(m_owner, ptr, path, this);
+//        set(ptr, path);
+//    }
 
     /// Convenient operators to make a SingleLink appear as a regular pointer
     operator DestType*() const
