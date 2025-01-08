@@ -49,7 +49,7 @@ namespace sofa::type
      * \tparam _T Type that does NOT have a nested ::rebind_to member
      */
     template<template<class> class _T, class A, class _OtherType>
-    requires !requires { _T<A>::template rebind_to<_OtherType>; }
+    requires (!requires { _T<A>::template rebind_to<_OtherType>; })
     struct Rebind<_T<A>, _OtherType>
     {
         using to = _T<_OtherType>;
