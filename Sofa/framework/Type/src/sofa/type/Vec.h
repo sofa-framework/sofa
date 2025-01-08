@@ -57,7 +57,7 @@ constexpr NoInit NOINIT;
 template < sofa::Size N, typename ValueType>
 class Vec
 {
-    static_assert( N > 0, "" );
+    static_assert( N > 0, "Size of vector must be strictly positive" );
 
 public:
     using ArrayType = std::array<ValueType, N>;
