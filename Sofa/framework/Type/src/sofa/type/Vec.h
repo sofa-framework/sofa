@@ -89,39 +89,33 @@ public:
     }
 
     /// Specific constructor for 1-element vectors.
-    template<Size NN = N, typename std::enable_if<NN == 1, int>::type = 0>
-    explicit constexpr Vec(const ValueType r1) noexcept
+    explicit constexpr Vec(const ValueType r1) noexcept requires (N == 1)
     {
         this->set(r1);
     }
 
-    template<typename... ArgsT,
-        typename = std::enable_if_t< (std::is_convertible_v<ArgsT, ValueType> && ...) >,
-        typename = std::enable_if_t< (sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1) >
-    >
+    template<typename... ArgsT>
     constexpr Vec(ArgsT&&... r) noexcept
+        requires ((std::convertible_to<ArgsT, ValueType> && ...) && sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1)
         : elems{ static_cast<value_type>(std::forward< ArgsT >(r))... }
     {}
 
     /// Specific constructor for 6-elements vectors, taking two 3-elements vectors
-    template<typename R, typename T, Size NN = N, typename std::enable_if<NN == 6, int>::type = 0 >
-    Vec(const Vec<3, R>& a, const Vec<3, T>& b)
+    template<typename R, typename T >
+    Vec(const Vec<3, R>& a, const Vec<3, T>& b) requires (N == 6)
     {
         set(a[0], a[1], a[2], b[0], b[1], b[2]);
     }
 
     /// Specific set function for 1-element vectors.
-    template<Size NN = N, typename std::enable_if<NN == 1, int>::type = 0>
-    constexpr void set(const ValueType r1) noexcept
+    constexpr void set(const ValueType r1) noexcept requires (N == 1)
     {
         this->elems[0] = r1;
     }
 
-    template<typename... ArgsT,
-        typename = std::enable_if_t< (std::is_convertible_v<ArgsT, ValueType> && ...) >,
-        typename = std::enable_if_t< (sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1) >
-    >
+    template<typename... ArgsT>
     constexpr void set(const ArgsT... r) noexcept
+        requires ((std::convertible_to<ArgsT, ValueType> && ...) && sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1)
     {
         std::size_t i = 0;
         ((this->elems[i++] = r), ...);
@@ -140,8 +134,7 @@ public:
 
 
     /// Constructor from an N-1 elements vector and an additional value (added at the end).
-    template<Size NN = N, typename std::enable_if<(NN>1),int>::type = 0>
-    constexpr Vec(const Vec<N-1,ValueType>& v, ValueType r1) noexcept
+    constexpr Vec(const Vec<N-1,ValueType>& v, ValueType r1) noexcept requires (N > 1)
     {
         set( v, r1 );
     }
@@ -175,58 +168,49 @@ public:
     }
 
     /// Special access to first element.
-    template<Size NN = N, typename std::enable_if<(NN>=1),int>::type = 0>
-    constexpr ValueType& x() noexcept
+    constexpr ValueType& x() noexcept requires (N >= 1)
     {
         return this->elems[0];
     }
     /// Special access to second element.
-    template<Size NN = N, typename std::enable_if<(NN>=2),int>::type = 0>
-    constexpr ValueType& y() noexcept
+    constexpr ValueType& y() noexcept requires (N >= 2)
     {
         return this->elems[1];
     }
     /// Special access to third element.
-    template<Size NN = N, typename std::enable_if<(NN>=3),int>::type = 0>
-    constexpr ValueType& z() noexcept
+    constexpr ValueType& z() noexcept requires (N >= 3)
     {
         return this->elems[2];
     }
     /// Special access to fourth element.
-    template<Size NN = N, typename std::enable_if<(NN>=4),int>::type = 0>
-    constexpr ValueType& w() noexcept
+    constexpr ValueType& w() noexcept requires (N >= 4)
     {
         return this->elems[3];
     }
 
     /// Special const access to first element.
-    template<Size NN = N, typename std::enable_if<(NN>=1),int>::type = 0>
-    constexpr const ValueType& x() const noexcept
+    constexpr const ValueType& x() const noexcept requires (N >= 1)
     {
         return this->elems[0];
     }
     /// Special const access to second element.
-    template<Size NN = N, typename std::enable_if<(NN>=2),int>::type = 0>
-    constexpr const ValueType& y() const noexcept
+    constexpr const ValueType& y() const noexcept requires (N >= 2)
     {
         return this->elems[1];
     }
     /// Special const access to third element.
-    template<Size NN = N, typename std::enable_if<(NN>=3),int>::type = 0>
-    constexpr const ValueType& z() const noexcept
+    constexpr const ValueType& z() const noexcept requires (N >= 3)
     {
         return this->elems[2];
     }
     /// Special const access to fourth element.
-    template<Size NN = N, typename std::enable_if<(NN>=4),int>::type = 0>
-    constexpr const ValueType& w() const noexcept
+    constexpr const ValueType& w() const noexcept requires (N >= 4)
     {
         return this->elems[3];
     }
 
     /// Specific Assignment operator for 1-element vectors.
-    template<Size NN = N, typename std::enable_if<NN == 1, int>::type = 0>
-    constexpr void operator=(const ValueType r1) noexcept
+    constexpr void operator=(const ValueType r1) noexcept requires (N == 1)
     {
         set(r1);
     }
@@ -290,8 +274,8 @@ public:
         return this->elems.data();
     }
 
-    template <Size N2, std::enable_if_t<(N2 < N), bool> = true>
-    constexpr void getsub(const Size i, Vec<N2, ValueType>& m) const noexcept
+    template <Size N2>
+    constexpr void getsub(const Size i, Vec<N2, ValueType>& m) const noexcept requires (N2 < N)
     {
         for (Size j = 0; j < N2; j++)
         {
@@ -314,14 +298,14 @@ public:
     }
 
     /// Multiplication by a scalar f.
-    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
-    constexpr Vec<N,ValueType> mulscalar(const real2 f) const noexcept
+    template<class real2>
+    constexpr Vec<N,ValueType> mulscalar(const real2 f) const noexcept requires (std::convertible_to<real2, ValueType>)
     {
         return mulscalar(static_cast<ValueType>(f));
     }
 
-    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
-    constexpr Vec<N,ValueType> operator*(const real2 f) const noexcept
+    template<class real2>
+    constexpr Vec<N,ValueType> operator*(const real2 f) const noexcept requires (std::convertible_to<real2, ValueType>)
     {
         return mulscalar(static_cast<ValueType>(f));
     }
@@ -333,14 +317,14 @@ public:
             this->elems[i]*=f;
     }
 
-    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
-    constexpr void eqmulscalar(const real2 f) noexcept
+    template<class real2>
+    constexpr void eqmulscalar(const real2 f) noexcept requires (std::convertible_to<real2, ValueType>)
     {
         eqmulscalar(static_cast<ValueType>(f));
     }
 
-    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
-    constexpr void operator*=(const real2 f) noexcept
+    template<class real2>
+    constexpr void operator*=(const real2 f) noexcept requires (std::convertible_to<real2, ValueType>)
     {
         eqmulscalar(static_cast<ValueType>(f));
     }
@@ -354,14 +338,14 @@ public:
         return r;
     }
 
-    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
-    constexpr Vec<N,ValueType> divscalar(const real2 f) const noexcept
+    template<class real2>
+    constexpr Vec<N,ValueType> divscalar(const real2 f) const noexcept requires (std::convertible_to<real2, ValueType>)
     {
         return divscalar(static_cast<ValueType>(f));
     }
 
-    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
-    constexpr Vec<N, ValueType> operator/(const real2 f) const noexcept
+    template<class real2>
+    constexpr Vec<N, ValueType> operator/(const real2 f) const noexcept requires (std::convertible_to<real2, ValueType>)
     {
         return divscalar(static_cast<ValueType>(f));
     }
@@ -373,21 +357,21 @@ public:
             this->elems[i] /= f;
     }
 
-    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
-    constexpr void eqdivscalar(const real2 f) noexcept
+    template<class real2>
+    constexpr void eqdivscalar(const real2 f) noexcept requires (std::convertible_to<real2, ValueType>)
     {
         eqdivscalar(static_cast<ValueType>(f));
     }
 
-    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
-    constexpr void operator/=(const real2 f) noexcept
+    template<class real2>
+    constexpr void operator/=(const real2 f) noexcept requires (std::convertible_to<real2, ValueType>)
     {
         return eqdivscalar(static_cast<ValueType>(f));
     }
 
     /// Dot product.
-    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
-    constexpr ValueType operator*(const Vec<N,real2>& v) const noexcept
+    template<class real2>
+    constexpr ValueType operator*(const Vec<N,real2>& v) const noexcept requires (std::convertible_to<real2, ValueType>)
     {
         ValueType r = static_cast<ValueType>(this->elems[0]*v[0]);
         for (Size i=1; i<N; i++)
@@ -396,8 +380,8 @@ public:
     }
 
     /// linear product.
-    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
-    constexpr Vec<N,ValueType> linearProduct(const Vec<N,real2>& v) const noexcept
+    template<class real2>
+    constexpr Vec<N,ValueType> linearProduct(const Vec<N,real2>& v) const noexcept requires (std::convertible_to<real2, ValueType>)
     {
         Vec<N,ValueType> r(NOINIT);
         for (Size i=0; i<N; i++)
@@ -407,8 +391,8 @@ public:
 
 
     /// linear division.
-    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
-    constexpr Vec<N,ValueType> linearDivision(const Vec<N,real2>& v) const noexcept
+    template<class real2>
+    constexpr Vec<N,ValueType> linearDivision(const Vec<N,real2>& v) const noexcept requires (std::convertible_to<real2, ValueType>)
     {
         Vec<N,ValueType> r(NOINIT);
         for (Size i=0; i<N; i++)
@@ -417,8 +401,8 @@ public:
     }
 
     /// Vector addition.
-    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
-    constexpr Vec<N,ValueType> operator+(const Vec<N,real2>& v) const noexcept
+    template<class real2>
+    constexpr Vec<N,ValueType> operator+(const Vec<N,real2>& v) const noexcept requires (std::convertible_to<real2, ValueType>)
     {
         Vec<N,ValueType> r(NOINIT);
         for (Size i=0; i<N; i++)
@@ -427,16 +411,16 @@ public:
     }
 
     /// In-place vector addition.
-    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
-    constexpr void operator+=(const Vec<N,real2>& v) noexcept
+    template<class real2>
+    constexpr void operator+=(const Vec<N,real2>& v) noexcept requires (std::convertible_to<real2, ValueType>)
     {
         for (Size i=0; i<N; i++)
             this->elems[i] += static_cast<ValueType>(v[i]);
     }
 
     /// Vector subtraction.
-    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
-    constexpr Vec<N,ValueType> operator-(const Vec<N,real2>& v) const noexcept
+    template<class real2>
+    constexpr Vec<N,ValueType> operator-(const Vec<N,real2>& v) const noexcept requires (std::convertible_to<real2, ValueType>)
     {
         Vec<N,ValueType> r(NOINIT);
         for (Size i=0; i<N; i++)
@@ -445,16 +429,15 @@ public:
     }
 
     /// In-place vector subtraction.
-    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
-    constexpr void operator-=(const Vec<N,real2>& v) noexcept
+    template<class real2>
+    constexpr void operator-=(const Vec<N,real2>& v) noexcept requires (std::convertible_to<real2, ValueType>)
     {
         for (Size i=0; i<N; i++)
             this->elems[i] -= static_cast<ValueType>(v[i]);
     }
 
     /// Vector negation.
-    template <typename T = ValueType, std::enable_if_t< !std::is_unsigned_v<T>, int > = 0 >
-    constexpr Vec<N, ValueType> operator-() const noexcept
+    constexpr Vec<N, ValueType> operator-() const noexcept requires (!std::unsigned_integral<ValueType>)
     {
         Vec<N,ValueType> r(NOINIT);
         for (Size i=0; i<N; i++)
@@ -562,8 +545,8 @@ public:
         return rabs( norm2() - static_cast<ValueType>(1) ) <= threshold;
     }
 
-    template<typename R,Size NN = N, typename std::enable_if<(NN==3),int>::type = 0>
-    constexpr Vec cross( const Vec<3,R>& b ) const noexcept
+    template<typename R>
+    constexpr Vec cross( const Vec<3, R>& b ) const noexcept requires (N == 3)
     {
         return Vec(
                 (ValueType)((*this)[1]*b[2] - (*this)[2]*b[1]),

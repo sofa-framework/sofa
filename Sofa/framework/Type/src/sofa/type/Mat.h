@@ -101,8 +101,8 @@ public:
     /// or
     /// sofa::type::Mat<3, 1, int> M {1, 2, 3}
     /// Initializer-list must match matrix column size, otherwise an assert is triggered.
-    template<sofa::Size TL = L, sofa::Size TC = C, typename = std::enable_if_t<(TL == 1 && TC != 1) || (TC == 1 && TL != 1)> >
     constexpr Mat(std::initializer_list<Real>&& scalars) noexcept
+    requires ((L == 1 && C != 1) || (C == 1 && L != 1))
     {
         if constexpr (L == 1 && C != 1)
         {
@@ -145,12 +145,10 @@ public:
         }
     }
 
-    template<typename... ArgsT,
-        typename = std::enable_if_t< (std::is_convertible_v<ArgsT, Line> && ...) >,
-        typename = std::enable_if_t< (sizeof...(ArgsT) == L && sizeof...(ArgsT) > 1) >
-    >
+    template<typename... ArgsT>
     constexpr Mat(ArgsT&&... r) noexcept
-        : elems{ std::forward<ArgsT>(r)... }
+        requires ((std::convertible_to<ArgsT, Line> && ...) && sizeof...(ArgsT) == L && sizeof...(ArgsT) > 1)
+        : elems{std::forward<ArgsT>(r)...}
     {}
 
     /// Constructor from an element
@@ -358,40 +356,29 @@ public:
     }
 
     /// Special access to first line.
-    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 1> >
-    constexpr Line& x()  noexcept { return this->elems[0]; }
+    constexpr Line& x()  noexcept requires (L >= 1) { return this->elems[0]; }
     /// Special access to second line.
-    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 2> >
-    constexpr Line& y()  noexcept { return this->elems[1]; }
+    constexpr Line& y()  noexcept requires (L >= 2) { return this->elems[1]; }
     /// Special access to third line.
-    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 3> >
-    constexpr Line& z()  noexcept { return this->elems[2]; }
+    constexpr Line& z()  noexcept requires (L >= 3) { return this->elems[2]; }
     /// Special access to fourth line.
-    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 4> >
-    constexpr Line& w()  noexcept { return this->elems[3]; }
+    constexpr Line& w()  noexcept requires (L >= 4) { return this->elems[3]; }
 
     /// Special access to first line (read-only).
-    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 1> >
-    constexpr const Line& x() const noexcept { return this->elems[0]; }
+    constexpr const Line& x() const noexcept requires (L >= 1) { return this->elems[0]; }
     /// Special access to second line (read-only).
-    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 2> >
-    constexpr const Line& y() const noexcept { return this->elems[1]; }
+    constexpr const Line& y() const noexcept requires (L >= 2) { return this->elems[1]; }
     /// Special access to third line (read-only).
-    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 3> >
-    constexpr const Line& z() const noexcept { return this->elems[2]; }
+    constexpr const Line& z() const noexcept requires (L >= 3) { return this->elems[2]; }
     /// Special access to fourth line (read-only).
-    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 4> >
-    constexpr const Line& w() const noexcept { return this->elems[3]; }
+    constexpr const Line& w() const noexcept requires (L >= 3) { return this->elems[3]; }
 
-    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == 1 && NbColumn == 1>>
-    constexpr real toReal() const { return this->elems[0][0]; }
+    constexpr real toReal() const requires (L == 1 && C == 1) { return this->elems[0][0]; }
 
-    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == 1 && NbColumn == 1>>
-    constexpr operator real() const { return toReal(); }
+    constexpr operator real() const requires (L == 1 && C == 1) { return toReal(); }
 
     /// Set matrix to identity.
-    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
-    constexpr void identity() noexcept
+    constexpr void identity() noexcept requires (L == C)
     {
         clear();
         for (Size i=0; i<L; i++)
@@ -399,8 +386,7 @@ public:
     }
 
     /// Returns the identity matrix
-    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
-    static const Mat<L,L,real>& Identity() noexcept
+    static const Mat<L,L,real>& Identity() noexcept requires (L == C)
     {
         static Mat<L,L,real> s_identity = []()
         {
@@ -455,8 +441,7 @@ public:
     }
 
     /// Transpose the square matrix.
-    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
-    constexpr void transpose() noexcept
+    constexpr void transpose() noexcept requires (L == C)
     {
         for (Size i=0; i<L; i++)
         {
@@ -699,8 +684,7 @@ public:
 
 
     /// invert this
-    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
-    [[nodiscard]] constexpr Mat<L,C,real> inverted() const
+    [[nodiscard]] constexpr Mat<L,C,real> inverted() const requires (L == C)
     {
         static_assert(L == C, "Cannot invert a non-square matrix");
         Mat<L,C,real> m = *this;
@@ -713,8 +697,7 @@ public:
     }
 
     /// Invert square matrix m
-    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
-    [[nodiscard]] constexpr bool invert(const Mat<L,C,real>& m)
+    [[nodiscard]] constexpr bool invert(const Mat<L,C,real>& m) requires (L == C)
     {
         if (&m == this)
         {
@@ -725,8 +708,7 @@ public:
         return invertMatrix(*this, m);
     }
 
-    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
-    static Mat<L,C,real> transformTranslation(const Vec<C-1,real>& t) noexcept
+    static Mat<L,C,real> transformTranslation(const Vec<C-1,real>& t) noexcept requires (L == C)
     {
         Mat<L,C,real> m;
         m.identity();
@@ -735,8 +717,7 @@ public:
         return m;
     }
 
-    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
-    static Mat<L,C,real> transformScale(real s) noexcept
+    static Mat<L,C,real> transformScale(real s) noexcept requires (L == C)
     {
         Mat<L,C,real> m;
         m.identity();
@@ -745,8 +726,7 @@ public:
         return m;
     }
 
-    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
-    static Mat<L,C,real> transformScale(const Vec<C-1,real>& s) noexcept
+    static Mat<L,C,real> transformScale(const Vec<C-1,real>& s) noexcept requires (L == C)
     {
         Mat<L,C,real> m;
         m.identity();
@@ -801,8 +781,7 @@ public:
     }
 
     /// Invert transformation matrix m
-    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
-    constexpr bool transformInvert(const Mat<L,C,real>& m)
+    constexpr bool transformInvert(const Mat<L,C,real>& m) requires (L == C)
     {
         return transformInvertMatrix(*this, m);
     }
@@ -810,8 +789,7 @@ public:
     /// for square matrices
     /// @warning in-place simple symmetrization
     /// this = ( this + this.transposed() ) / 2.0
-    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
-    constexpr void symmetrize() noexcept
+    constexpr void symmetrize() noexcept requires (L == C)
     {
         for(Size l=0; l<L; l++)
             for(Size c=l+1; c<C; c++)
