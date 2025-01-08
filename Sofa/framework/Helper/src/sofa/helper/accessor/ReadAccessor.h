@@ -84,7 +84,7 @@ public:
 
 template<class VectorLikeType>
 class ReadAccessor<VectorLikeType,
-                   std::enable_if_t<sofa::type::trait::is_vector<VectorLikeType>::value> >
+                   std::enable_if_t<sofa::type::trait::is_vector<VectorLikeType>> >
     : public ReadAccessorVector< VectorLikeType >
 {
 public:

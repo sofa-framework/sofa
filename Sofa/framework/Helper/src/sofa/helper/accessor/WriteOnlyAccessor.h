@@ -41,7 +41,7 @@ public:
 
 template<class VectorLikeType>
 class WriteOnlyAccessor<VectorLikeType,
-                        std::enable_if_t<sofa::type::trait::is_vector<VectorLikeType>::value> >
+                        std::enable_if_t<sofa::type::trait::is_vector<VectorLikeType>> >
     : public WriteAccessorVector< VectorLikeType >
 {
 public:
