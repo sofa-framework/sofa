@@ -492,6 +492,7 @@ MeshTopology::MeshTopology()
     , d_seqTetrahedra(initData(&d_seqTetrahedra, "tetrahedra", "List of tetrahedron indices"))
     , d_seqHexahedra(initData(&d_seqHexahedra, "hexahedra", "List of hexahedron indices"))
     , d_seqUVs(initData(&d_seqUVs, "uv", "List of uv coordinates"))
+    , d_computeAllBuffers(initData(&d_computeAllBuffers, false, "computeAllBuffers", "Option to compute all crossed topology buffers at init. False by default"))
     , nbPoints(0)
     , validTetrahedra(false), validHexahedra(false)
     , revision(0)
@@ -545,6 +546,12 @@ void MeshTopology::init()
         m_upperElementType = sofa::geometry::ElementType::EDGE;
     else
         m_upperElementType = sofa::geometry::ElementType::POINT;
+
+    // If true, will compute all crossed element buffers such as triangleAroundEdges, EdgesIntriangle, etc.
+    if (d_computeAllBuffers.getValue())
+    {
+        computeCrossElementBuffers();
+    }
 
     // compute the number of points, if the topology is charged from the scene or if it was loaded from a MeshLoader without any points data.
     if (nbPoints==0)
