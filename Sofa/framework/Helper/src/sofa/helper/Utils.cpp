@@ -326,7 +326,7 @@ const std::string& Utils::getUserLocalDirectory()
         // if env.var XDG_CONFIG_HOME is defined
         if ((configDir = std::getenv("XDG_CONFIG_HOME")) == nullptr)
         {
-            return getUserHomeDirectory() + std::string("/.config");
+            return FileSystem::append(getUserHomeDirectory(), ".config");
         }
         else
         {
