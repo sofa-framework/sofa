@@ -27,6 +27,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/type/fixed_array.h>
 #include <map>
+#include <ranges>
 
 
 namespace sofa::helper
@@ -240,23 +241,15 @@ protected:
 
     static constexpr id_type findId(const std::string_view key)
     {
-        return findId_impl(key, std::make_index_sequence<numberOfItems()>{});
-    }
-
-    template<id_type... Is>
-    static constexpr id_type findId_impl(const std::string_view key, std::index_sequence<Is...>)
-    {
-        constexpr id_type indices[] = { Is... };
-        id_type result = static_cast<id_type>(-1);
-        for (id_type i : indices)
+        //use std::ranges::enumerate in C++23
+        for (id_type i = 0; i < numberOfItems(); ++i)
         {
-            if (Derived::s_items[i].key == key)
+            if (key == Derived::s_items[i].key)
             {
-                result = i;
-                break;
+                return i;
             }
         }
-        return result;
+        return static_cast<id_type>(-1);
     }
 
     template <typename, typename = std::void_t<>>
