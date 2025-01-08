@@ -33,6 +33,7 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/random.h>
 #include <cmath>
+#include <sofa/type/isRigidType.h>
 
 
 namespace sofa::defaulttype
@@ -251,6 +252,9 @@ template<> constexpr const char* Rigid3fTypes::Name() { return "Rigid3f"; }
 typedef StdRigidTypes<3,SReal> Rigid3Types;  ///< un-defined precision type
 typedef StdRigidTypes<3,SReal> RigidTypes;   ///< alias (beurk)
 
+static_assert(type::isRigidType<Rigid3dTypes>);
+static_assert(type::isRigidType<Rigid3fTypes>);
+
 //=============================================================================
 // 2D Rigids
 //=============================================================================
@@ -412,6 +416,9 @@ public:
 
 template<> constexpr const char* Rigid2dTypes::Name() { return "Rigid2d"; }
 template<> constexpr const char* Rigid2fTypes::Name() { return "Rigid2f"; }
+
+static_assert(type::isRigidType<Rigid2dTypes>);
+static_assert(type::isRigidType<Rigid2fTypes>);
 
 /// \endcond
 

@@ -1,31 +1,41 @@
-//
-// Created by hugo on 28/11/23.
-//
-
-#ifndef SOFA_ISRIGIDTYPE_H
-#define SOFA_ISRIGIDTYPE_H
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#pragma once
 
 namespace sofa::type
 {
-    // Boiler-plate code to test if a type implements a method
-    // explanation https://stackoverflow.com/a/30848101
 
-    template <typename...>
-    using void_t = void;
+/**
+ * A type T satisfies the isRigidType concept if:
+ * - T has a nested type named Coord.
+ * - An object of type T::Coord has a member function getOrientation that can be
+ * invoked without arguments.
+ *
+ * It allows to identify types such as StdRigidTypes and CudaRigidTypes at compile-time.
+ */
+template<class T>
+concept isRigidType = requires
+{
+    std::declval<typename T::Coord>().getOrientation();
+};
 
-    // Primary template handles all types not supporting the operation.
-    template <typename, template <typename> class, typename = void_t<>>
-    struct detect : std::false_type {};
-
-    // Specialization recognizes/validates only types supporting the archetype.
-    template <typename T, template <typename> class Op>
-    struct detect<T, Op, void_t<Op<T>>> : std::true_type {};
-
-    // Actual test if DataType::Coord implements getOrientation() (hence is a RigidType)
-    template <typename T>
-    using isRigid_t = decltype(std::declval<typename T::Coord>().getOrientation());
-
-    template <typename T>
-    using isRigidType = detect<T, isRigid_t>;
 }
-#endif //SOFA_ISRIGIDTYPE_H
