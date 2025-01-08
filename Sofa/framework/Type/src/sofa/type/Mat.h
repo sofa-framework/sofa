@@ -371,7 +371,7 @@ public:
     /// Special access to third line (read-only).
     constexpr const Line& z() const noexcept requires (L >= 3) { return this->elems[2]; }
     /// Special access to fourth line (read-only).
-    constexpr const Line& w() const noexcept requires (L >= 3) { return this->elems[3]; }
+    constexpr const Line& w() const noexcept requires (L >= 4) { return this->elems[3]; }
 
     constexpr real toReal() const requires (L == 1 && C == 1) { return this->elems[0][0]; }
 
