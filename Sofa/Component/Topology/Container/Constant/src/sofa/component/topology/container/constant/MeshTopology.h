@@ -351,6 +351,7 @@ public:
     Data<SeqTetrahedra>      d_seqTetrahedra; ///< List of tetrahedron indices
     Data<SeqHexahedra>	   d_seqHexahedra; ///< List of hexahedron indices
     Data<SeqUV>	d_seqUVs; ///< List of uv coordinates
+    Data<bool> d_computeAllBuffers ///< Option to call method computeCrossElementBuffers. False by default
 
 protected:
     Size  nbPoints;
