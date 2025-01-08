@@ -83,9 +83,8 @@ public:
     constexpr fixed_array() {}
 
     /// Specific constructor for 1-element vectors.
-    template<size_type NN = N>
     explicit constexpr fixed_array(value_type r1) noexcept
-    requires (NN == 1)
+    requires (N == 1)
     {
         elems[0] = r1;
     }
