@@ -122,7 +122,7 @@ public:
             return false;
         }
 
-        return BaseInteractionConstraint::canCreate(obj, context, arg);
+        return true;
     }
 
     /// Construction method called by ObjectFactory.

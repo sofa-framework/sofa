@@ -114,7 +114,7 @@ public:
             return false;
         }
 
-        return BaseObject::canCreate(obj, context, arg);
+        return true;
     }
 
     virtual type::vector<std::string> getBaseConstraintIdentifiers() override final

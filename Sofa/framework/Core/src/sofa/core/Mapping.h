@@ -229,7 +229,7 @@ public:
             return false;
         }
 
-        return BaseMapping::canCreate(obj, context, arg);
+        return true;
     }
 
     /// Construction method called by ObjectFactory.

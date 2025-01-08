@@ -54,6 +54,20 @@ namespace sofa::core
 class ObjectRegistrationData;
 
 template<class T>
+class HasCanCreateMethod
+{
+    typedef char YesType[1];
+    typedef char NoType[2];
+
+    template<typename C> static YesType& test( decltype (&C::template canCreate<C>) );
+    template<typename C> static NoType& test(...);
+
+public:
+    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
+};
+
+
+template<class T>
 class HasCreateMethod
 {
     typedef char YesType[1];
@@ -276,8 +290,12 @@ class ObjectCreator : public ObjectFactory::Creator
 public:
     bool canCreate(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override
     {
-        RealObject* instance = nullptr;
-        return RealObject::canCreate(instance, context, arg);
+        if constexpr( HasCanCreateMethod<RealObject>::value )
+        {
+            RealObject* instance = nullptr;
+            return RealObject::canCreate(instance, context, arg);
+        }
+        return true;
     }
 
     objectmodel::BaseObject::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override

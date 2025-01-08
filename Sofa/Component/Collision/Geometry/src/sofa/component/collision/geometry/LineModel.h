@@ -161,7 +161,7 @@ public:
                           "' found in the context node.");
             return false;
         }
-        return BaseObject::canCreate(obj, context, arg);
+        return true;
     }
 
     sofa::core::topology::BaseMeshTopology* getCollisionTopology() override

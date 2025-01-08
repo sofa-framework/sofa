@@ -82,7 +82,7 @@ public:
             }
         }
 
-        return BaseObject::canCreate(obj, context, arg);
+        return true;
     }
 
 public:

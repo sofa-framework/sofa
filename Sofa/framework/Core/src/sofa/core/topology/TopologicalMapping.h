@@ -152,7 +152,7 @@ public:
             return false;
         }
 
-        return BaseObject::canCreate(obj, context, arg);
+        return true;
     }
 
     /// Construction method called by ObjectFactory.

@@ -191,7 +191,7 @@ public:
             arg->logError("Data attribute 'targetPath' does not point to a mechanical state of data type '" + std::string(DataTypes::Name()) +"'.");
             error = true;
         }
-        return !error && core::DataEngine::canCreate(obj, context, arg);
+        return !error;
     }
     /// Construction method called by ObjectFactory.
     ///

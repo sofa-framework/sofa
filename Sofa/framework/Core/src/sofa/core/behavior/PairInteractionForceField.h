@@ -179,7 +179,7 @@ public:
             return false;
         }
 
-        return BaseInteractionForceField::canCreate(obj, context, arg);
+        return true;
     }
 
     /// Construction method called by ObjectFactory.

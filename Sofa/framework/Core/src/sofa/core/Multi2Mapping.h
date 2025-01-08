@@ -227,7 +227,7 @@ public:
             error = true;
         }
 
-        return !error && BaseMapping::canCreate(obj, context, arg);
+        return !error;
     }
     /// Construction method called by ObjectFactory.
     ///
