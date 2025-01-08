@@ -27,7 +27,6 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/type/fixed_array.h>
 #include <map>
-#include <ranges>
 
 
 namespace sofa::helper
