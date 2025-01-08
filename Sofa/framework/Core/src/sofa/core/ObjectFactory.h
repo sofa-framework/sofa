@@ -59,7 +59,7 @@ class HasCreateMethod
     typedef char YesType[1];
     typedef char NoType[2];
 
-    template<typename C> static YesType& test( decltype (&C::HasCreateMethod) );
+    template<typename C> static YesType& test( decltype (&C::template create<C>) );
     template<typename C> static NoType& test(...);
 
 public:
@@ -224,6 +224,9 @@ public:
     bool registerObjectsFromPlugin(const std::string& pluginName);
     bool registerObjects(ObjectRegistrationData& ro);
 
+    static void postObjectCreation(sptr<objectmodel::BaseObject> object,
+                                   objectmodel::BaseContext* context,
+                                   objectmodel::BaseObjectDescription* arg);
 };
 
 template<class BaseClass>
@@ -279,32 +282,40 @@ public:
 
     objectmodel::BaseObject::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override
     {
+        // This method is creating an instance of the specific Sofa object of template type "RealObject"
         typename RealObject::SPtr obj;
+
+        // TODO(dmarchal: 08/01/2024) Deprecation layer for removal of canCreate/create
+        // The problem with create/canCreate is that it delegate to a sofa component to "check"
+        // and define its own "custom" creation process and condition for creatability. The consequence
+        // of the existing designs are the followin:
+        // - divergence in behavior between component including some "creative" usages like constructing
+        //   complete sub-graph in the create function (like a Prefab)
+        // - the use of static template overload to "mimic" a kind of static override hard to understand.
+        // - strong duplication of creation code because of cut&past and unclear role of each method.
+        // - use of static method impose the code to be visible in the .h/.inl which contribute to the bloating
+        // of the dependency graph.
+        // So.. it was thus decided to remove it by:
+        //    - moving the instanciation code in the factory part and not in the component itself,
+        //    - enforcing the "common" behavior directly in the factory implemented on abstract type instead of
+        //      concrete type.
+        // a constexpr pattern is used to implement a compatibility layer to keep old behavior.
+
+        // This constexpr condition is there to branch between old code that is not yet updated
+        // to the new one in which.
         if constexpr(HasCreateMethod<RealObject>::value)
         {
-            obj = RealObject::create(context, arg);
-            msg_deprecated() << "This object was created using the RealObject::create method";
-        }
-        else{
+            // Create an instance of the object the "old way" & emit a deprecation message
+            RealObject* tmp;
+            obj = RealObject::create(tmp, context, arg);
+            msg_deprecated(obj.get()) << "This object was created using the RealObject::create method";
+        } else{
             obj = sofa::core::objectmodel::New<RealObject>();
-        }
 
-        if (obj)
-        {
-            if (context)
-            {
-                context->addObject(obj);
-            }
-            if (arg)
-            {
-                obj->parse(arg);
-            }
+            ObjectFactory::postObjectCreation(obj, context, arg);
         }
-        else
-        {
-            msg_info(RealObject::GetClass()->className) << "Cannot create an instance";
-        }
-
+        // on case the creation is not possible... this is reported in the caller of
+        // create instance.
         return obj;
     }
     const std::type_info& type() override

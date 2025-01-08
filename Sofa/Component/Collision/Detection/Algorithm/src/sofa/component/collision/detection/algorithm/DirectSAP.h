@@ -41,6 +41,8 @@ public:
     template<class T>
     static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
+        // TODO(dmarchal, 08/01/2025): Update the create function to the new factory creation process.
+        // this one is funny as it behave like a Prefab, thus creating and adding other component in the graph.
         if (context)
         {
             if (const BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>())

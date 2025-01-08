@@ -56,6 +56,8 @@ public :
     template<class T>
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
+        // TODO(dmarchal, 08/01/2025): Update the create function to the new factory creation process.
+        // not sure how to handle this one...
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
         if (context)
         {

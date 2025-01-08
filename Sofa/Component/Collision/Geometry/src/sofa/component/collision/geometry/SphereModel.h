@@ -144,6 +144,8 @@ public:
     {
         typename T::SPtr obj;
 
+        // TODO(dmarchal, 08/01/2025): Update the create function to the new factory creation process.
+        // duplicated code, path and context searching for states (probably to move into init)
         if( context)
         {
             auto* _mstate = dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState());

@@ -139,6 +139,20 @@ void findTemplatedCreator(
     }
 }
 
+void ObjectFactory::postObjectCreation(sptr<objectmodel::BaseObject> obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+{
+    if (context)
+    {
+        context->addObject(obj);
+    }
+
+    if (arg)
+    {
+        obj->parse(arg);
+    }
+}
+
+
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     objectmodel::BaseObject::SPtr object = nullptr;

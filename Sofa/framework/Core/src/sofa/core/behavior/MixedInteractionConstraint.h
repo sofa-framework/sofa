@@ -119,7 +119,9 @@ public:
     template<class T>
     static typename T::SPtr create(T* p0, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        typename T::SPtr obj = core::behavior::BaseInteractionConstraint::create(p0, context, arg);
+        // TODO(dmarchal, 08/01/2025): Update the create function to the new factory creation process.
+        // not sure how to handle the call to the parent class
+        typename T::SPtr obj = core::behavior::BaseInteractionConstraint::deprecated_create(p0, context, arg);
 
         if (arg)
         {

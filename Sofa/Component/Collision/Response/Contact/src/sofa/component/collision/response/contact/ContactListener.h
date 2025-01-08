@@ -110,6 +110,9 @@ public:
     template<class T>
     static typename T::SPtr create(T* , core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
+        // TODO(dmarchal, 08/01/2025): Update the create function to the new factory creation process.
+        // it seems there is some creative attribute hacking in this one. See if the behavior can be reimplemented
+        // using a mix of parse/init
         core::CollisionModel* collModel1 = nullptr;
         core::CollisionModel* collModel2 = nullptr;
 
