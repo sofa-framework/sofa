@@ -527,7 +527,7 @@ void  Base::parseFields ( const std::list<std::string>& str )
 
 void  Base::parseFields ( const std::map<std::string,std::string*>& args )
 {
-    for( auto& [key,value] : args )
+    for( const auto& [key,value] : args )
     {
         if( value!=nullptr )
         {
