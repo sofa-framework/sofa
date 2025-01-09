@@ -81,9 +81,9 @@ struct FixedProjectiveConstraint_test : public BaseTest
         const simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity( type::Vec3(0,0,0) );
 
-        simpleapi::createObject(root , "RequiredPlugin", {{"name", "Sofa.Component.LinearSolver.Direct"}}) ;
-        simpleapi::createObject(root , "RequiredPlugin", {{"name", "Sofa.Component.ODESolver.Forward"}}) ;
-        simpleapi::createObject(root , "RequiredPlugin", {{"name", "Sofa.Component.ODESolver.Backward"}}) ;
+        simpleapi::createObject(root , "RequiredPlugin", {{"name", Sofa.Component.LinearSolver.Direct}}) ;
+        simpleapi::createObject(root , "RequiredPlugin", {{"name", Sofa.Component.ODESolver.Forward}}) ;
+        simpleapi::createObject(root , "RequiredPlugin", {{"name", Sofa.Component.ODESolver.Backward}}) ;
 
         simulation::Node::SPtr node = createEulerSolverNode(root,"test", integrationScheme);
 

@@ -63,9 +63,9 @@ struct MeshROI_test : public BaseSimulationTest,
 
     void SetUp() override
     {
-        simpleapi::importPlugin("Sofa.Component.Engine.Select");
-        simpleapi::importPlugin("Sofa.Component.Topology.Container.Constant");
-        simpleapi::importPlugin("Sofa.Component.IO.Mesh");
+        simpleapi::importPlugin(Sofa.Component.Engine.Select);
+        simpleapi::importPlugin(Sofa.Component.Topology.Container.Constant);
+        simpleapi::importPlugin(Sofa.Component.IO.Mesh);
 
         // SetUp3
         const string scene2 =

@@ -72,7 +72,7 @@ bool inited = doInit();
 
 void perTestInit()
 {
-    sofa::simpleapi::importPlugin("Sofa.Component.SceneUtility");
+    sofa::simpleapi::importPlugin(Sofa.Component.SceneUtility);
 
     theSimulation = sofa::simulation::getSimulation();
 

@@ -26,6 +26,7 @@
 
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/Modules.h>
 
 namespace sofa::component::collision::detection
 {
@@ -54,8 +55,8 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin("Sofa.Component.Collision.Detection.Algorithm");
-    factory->registerObjectsFromPlugin("Sofa.Component.Collision.Detection.Intersection");
+    factory->registerObjectsFromPlugin(Sofa.Component.Collision.Detection.Algorithm);
+    factory->registerObjectsFromPlugin(Sofa.Component.Collision.Detection.Intersection);
 }
 
 void init()
