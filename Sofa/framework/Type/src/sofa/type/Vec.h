@@ -89,7 +89,8 @@ public:
     }
 
     /// Specific constructor for 1-element vectors.
-    explicit constexpr Vec(const ValueType r1) noexcept requires (N == 1)
+    template<Size NN = N, typename std::enable_if<NN == 1, int>::type = 0>
+    explicit constexpr Vec(const ValueType r1) noexcept
     {
         static_assert(N == 1, "Size of vector must be == 1");
         this->set(r1);
