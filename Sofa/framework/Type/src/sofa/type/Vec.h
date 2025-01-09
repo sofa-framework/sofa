@@ -91,6 +91,7 @@ public:
     /// Specific constructor for 1-element vectors.
     explicit constexpr Vec(const ValueType r1) noexcept requires (N == 1)
     {
+        static_assert(N == 1, "Size of vector must be == 1");
         this->set(r1);
     }
 
