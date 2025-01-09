@@ -1,13 +1,14 @@
 #!bash
 
 usage() {
-    echo "Usage: windows-postinstall-fixup.sh <script-dir> <build-dir> <install-dir>"
+    echo "Usage: windows-postinstall-fixup.sh <script-dir> <sources-dir> <build-dir> <install-dir>"
 }
 
 if [ "$#" -ge 2 ]; then
     SCRIPT_DIR="$(cd $1 && pwd)"
-    BUILD_DIR="$(cd $2 && pwd)"
-    INSTALL_DIR="$(cd $3 && pwd)"
+    SRC_DIR="$(cd $2 && pwd)"
+    BUILD_DIR="$(cd $3 && pwd)"
+    INSTALL_DIR="$(cd $4 && pwd)"
 else
     usage; exit 1
 fi
@@ -38,3 +39,6 @@ done
 cd "$INSTALL_DIR" && find -name "*.dll" -path "*/collections/*" | while read lib; do
     cp "$lib" "$INSTALL_DIR_BIN"
 done
+
+# Generate stubfiles
+generate_stubfiles 1 || true

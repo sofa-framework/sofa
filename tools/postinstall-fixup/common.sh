@@ -66,3 +66,43 @@ function move_metis()
   echo " - moving $(find ~+ -type f -name "metis.h" | head -n 1) into $INSTALL_DIR/include/"
   mv $(find ~+ -type f -name "metis.h" | head -n 1) $INSTALL_DIR/include/ || true
 }
+
+function generate_stubfiles()
+{
+    if [ "$#" -eq 0 ]; then
+        VM_IS_WINDOWS=0
+    else
+        VM_IS_WINDOWS=$1
+    fi
+
+    echo "Generate stubfiles..."
+    if [ -e "$VM_PYTHON3_EXECUTABLE" ]; then
+        export SOFA_ROOT="$INSTALL_DIR"
+
+        if $VM_IS_WINDOWS; then
+
+            pythonroot="$(dirname $VM_PYTHON3_EXECUTABLE)"
+            pythonroot="$(cd "$pythonroot" && pwd)"
+            export PATH="$pythonroot:$pythonroot/DLLs:$pythonroot/Lib:$PATH"
+            PYTHON_SCRIPT=$(cd "$SRC_DIR/applications/plugins/SofaPython3/scripts" && pwd -W )\generate_stubs.py
+            PYTHON_SITE_PACKAGE_DIR=$(cd "$INSTALL_DIR/plugins/SofaPython3/lib/python3/site-packages" && pwd -W )
+            export PYTHONPATH="$PYTHON_SITE_PACKAGE_DIR:$PYTHONPATH"
+
+        else
+
+            PYTHON_SCRIPT=$(cd "$SRC_DIR/applications/plugins/SofaPython3/scripts" && pwd )/generate_stubs.py
+            PYTHON_SITE_PACKAGE_DIR=$(cd "$INSTALL_DIR/plugins/SofaPython3/lib/python3/site-packages" && pwd )
+            export PYTHONPATH="$PYTHON_SITE_PACKAGE_DIR:$PYTHONPATH"
+
+        fi
+
+        python_exe="$VM_PYTHON3_EXECUTABLE"
+        if [ -n "$python_exe" ]; then
+            echo "Launching the stub generation with '$python_exe ${PYTHON_SCRIPT} -d $PYTHON_SITE_PACKAGE_DIR -m Sofa --use_pybind11'"
+            $python_exe "${PYTHON_SCRIPT}" -d "$PYTHON_SITE_PACKAGE_DIR" -m Sofa --use_pybind11
+        fi
+    else
+        echo "VM_PYTHON3_EXECUTABLE doe not point to an existing file. To generate stubfiles you should point this env var to the Python3.XX executable."
+    fi
+    echo "Generate stubfiles: done."
+}

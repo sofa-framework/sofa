@@ -2,15 +2,16 @@
 # set -o errexit # Exit on error
 
 usage() {
-    echo "Usage: macos-postinstall-fixup.sh <script-dir> <install-dir> [qt-lib-dir] [qt-data-dir] [macdeployqt]"
+    echo "Usage: macos-postinstall-fixup.sh <script-dir> <sources-dir> <install-dir> [qt-lib-dir] [qt-data-dir] [macdeployqt]"
 }
 
 if [ "$#" -ge 1 ]; then
     SCRIPT_DIR="$(cd $1 && pwd)"
-    INSTALL_DIR="$(cd $2 && pwd)"
-    QT_LIB_DIR="$3"
-    QT_DATA_DIR="$4"
-    MACDEPLOYQT_EXE="$5"
+    SCRIPT_DIR="$(cd $2 && pwd)"
+    INSTALL_DIR="$(cd $3 && pwd)"
+    QT_LIB_DIR="$4"
+    QT_DATA_DIR="$5"
+    MACDEPLOYQT_EXE="$6"
 else
     usage; exit 1
 fi
@@ -210,5 +211,9 @@ if [ -d "$BUNDLE_DIR" ]; then
     done
     cat install_name_tool.errors.log | grep -v 'file already has LC_RPATH for' >&2
 fi
+
+
+# Generate stubfiles
+generate_stubfiles || true
 
 echo "Done."

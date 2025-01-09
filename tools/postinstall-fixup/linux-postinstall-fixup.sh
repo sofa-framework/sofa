@@ -1,15 +1,16 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: linux-postinstall-fixup.sh <script-dir> <build-dir> <install-dir> [qt-lib-dir] [qt-data-dir]"
+    echo "Usage: linux-postinstall-fixup.sh <script-dir> <sources-dir> <build-dir> <install-dir> [qt-lib-dir] [qt-data-dir]"
 }
 
 if [ "$#" -ge 2 ]; then
     SCRIPT_DIR="$(cd $1 && pwd)"
-    BUILD_DIR="$(cd $2 && pwd)"
-    INSTALL_DIR="$(cd $3 && pwd)"
-    QT_LIB_DIR="$4"
-    QT_DATA_DIR="$5"
+    SRC_DIR="$(cd $2 && pwd)"
+    BUILD_DIR="$(cd $3 && pwd)"
+    INSTALL_DIR="$(cd $4 && pwd)"
+    QT_LIB_DIR="$5"
+    QT_DATA_DIR="$6"
 else
     usage; exit 1
 fi
@@ -224,4 +225,8 @@ echo "  Fixing RPATH: done."
 
 echo "Fixing up libs: done."
 rm -f postinstall_deps_*
+
+# Generate stubfiles
+generate_stubfiles || true
+
 exit 0
