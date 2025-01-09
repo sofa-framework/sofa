@@ -29,11 +29,11 @@ namespace sofa::type::trait
 template<typename T>
 concept is_vector = requires(std::remove_cv_t<T> t, const std::remove_cv_t<T> ct)
 {
-    t.begin() -> T::iterator;
-    t.end() -> T::iterator;
+    {t.begin()} -> std::convertible_to<typename T::iterator>;
+    {t.end()} -> std::convertible_to<typename T::iterator>;
 
-    ct.begin() -> T::const_iterator;
-    ct.end() -> T::const_iterator;
+    {ct.begin()} -> std::convertible_to<typename T::const_iterator>;
+    {ct.end()} -> std::convertible_to<typename T::const_iterator>;
 
     t[0];
     t.resize(1);
