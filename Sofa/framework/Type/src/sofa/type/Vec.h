@@ -613,6 +613,30 @@ public:
         return elems[i];
     }
 
+    template< std::size_t I >
+    [[nodiscard]] constexpr reference get() & noexcept requires( I < N )
+    {
+        return elems[I];
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr const_reference get() const& noexcept requires( I < N )
+    {
+        return elems[I];
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr ValueType&& get() && noexcept requires( I < N )
+    {
+        return std::move(elems[I]);
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr const ValueType&& get() const&& noexcept requires( I < N )
+    {
+        return std::move(elems[I]);
+    }
+
     // direct access to data
     constexpr const ValueType* data() const noexcept
     {
@@ -780,6 +804,15 @@ struct less< sofa::type::Vec<N,T> >
         }
         return false;
     }
+};
+
+template<sofa::Size N, class T>
+struct tuple_size<::sofa::type::Vec<N,T> > : integral_constant<size_t, N> {};
+
+template<std::size_t I, sofa::Size N, class T >
+struct tuple_element<I, ::sofa::type::Vec<N,T> >
+{
+    using type = T;
 };
 
 } // namespace std
