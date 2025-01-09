@@ -72,8 +72,8 @@ public:
     const_reference operator* () const { return  *vref; }
 };
 
-template<class FixedArrayLikeType>
-class ReadAccessor<FixedArrayLikeType, std::enable_if_t<sofa::type::trait::is_fixed_array<FixedArrayLikeType>::value>>
+template<sofa::type::trait::is_fixed_array FixedArrayLikeType>
+class ReadAccessor<FixedArrayLikeType>
     : public ReadAccessorFixedArray< FixedArrayLikeType >
 {
 public:
