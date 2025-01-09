@@ -23,6 +23,13 @@
 
 namespace sofa::type
 {
+    template<class T, class OtherType>
+    concept CanTypeRebind = requires
+    {
+        typename T::template rebind_to<OtherType>;
+    };
+
+
     /**
      * Depending on the type _T, has a public member typedef to. Otherwise, there is no member typedef (this is the
      * case of this implementation).
@@ -37,7 +44,7 @@ namespace sofa::type
      * \tparam _T Type that does have a nested ::rebind_to member
      */
     template<class _T, class _OtherType>
-    requires requires { _T::template rebind_to<_OtherType>; }
+    requires CanTypeRebind<_T, _OtherType>
     struct Rebind<_T, _OtherType>
     {
         using to = typename _T::template rebind_to<_OtherType>;
@@ -49,7 +56,7 @@ namespace sofa::type
      * \tparam _T Type that does NOT have a nested ::rebind_to member
      */
     template<template<class> class _T, class A, class _OtherType>
-    requires (!requires { _T<A>::template rebind_to<_OtherType>; })
+    requires !CanTypeRebind<_T<A>, _OtherType>
     struct Rebind<_T<A>, _OtherType>
     {
         using to = _T<_OtherType>;
