@@ -236,7 +236,6 @@ public:
 
     static constexpr sofa::Size static_size = NumberOfComponents;
     static constexpr sofa::Size size() { return static_size; }
-    using value_type = float;
     using size_type = sofa::Size;
 
 private:
