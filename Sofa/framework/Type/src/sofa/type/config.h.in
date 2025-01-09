@@ -50,3 +50,12 @@
         "v24.12", "v25.06", \
         "Use isNegligible instead.")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_TYPE
+#define SOFA_ATTRIBUTE_DEPRECATED__IS_CONTAINER()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__IS_CONTAINER() \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v25.06", "v25.12", \
+        "Use std::ranges::ranges concept instead.")
+#endif
