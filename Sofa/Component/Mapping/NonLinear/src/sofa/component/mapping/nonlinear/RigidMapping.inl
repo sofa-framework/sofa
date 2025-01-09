@@ -775,7 +775,7 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowMappings() || !this->toModel )
         return;
 
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+    [[maybe_unused]] const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     std::vector<type::Vec3> points;
     type::Vec3 point;
