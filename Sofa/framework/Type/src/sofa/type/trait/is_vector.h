@@ -35,7 +35,7 @@ concept is_vector = requires(std::remove_cv_t<T> t, const std::remove_cv_t<T> ct
     {ct.begin()} -> std::convertible_to<typename T::const_iterator>;
     {ct.end()} -> std::convertible_to<typename T::const_iterator>;
 
-    t[0];
+    { t[0] } -> std::convertible_to<typename T::value_type>;
     t.resize(1);
 };
 
