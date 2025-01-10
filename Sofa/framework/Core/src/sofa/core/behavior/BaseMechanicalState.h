@@ -188,21 +188,21 @@ public:
     /// Called at the end of each integration step.
     virtual void endIntegration(const ExecParams* params, SReal /*dt*/)
     {
-        vOp(params, VecId::externalForce(), ConstVecId::null(), ConstVecId::null(), 1.0); // externalForce = 0
+        vOp(params, sofa::core::vec_id::write_access::externalForce, ConstVecId::null(), ConstVecId::null(), 1.0); // externalForce = 0
     }
 
     /// Set F = 0
-    virtual void resetForce( const ExecParams* params, VecDerivId f = VecDerivId::force())
+    virtual void resetForce( const ExecParams* params, VecDerivId f = vec_id::write_access::force)
     { vOp( params, f, ConstVecId::null(), ConstVecId::null(), 1.0 ); }
 
     /// Set Acc =0
-    virtual void resetAcc( const ExecParams* params, VecDerivId a = VecDerivId::dx() )
+    virtual void resetAcc( const ExecParams* params, VecDerivId a = vec_id::write_access::dx )
     { vOp( params, a, ConstVecId::null(), ConstVecId::null(), 1.0 ); }
 
     /// Add stored external forces to F
-    virtual void accumulateForce( const ExecParams* params, VecDerivId f = VecDerivId::force() )
+    virtual void accumulateForce( const ExecParams* params, VecDerivId f = vec_id::write_access::force )
     {
-        vOp( params, f, f, ConstVecId::externalForce(), 1.0 ); // f += externalForce
+        vOp( params, f, f, sofa::core::vec_id::read_access::externalForce, 1.0 ); // f += externalForce
     }
 
     /// @}

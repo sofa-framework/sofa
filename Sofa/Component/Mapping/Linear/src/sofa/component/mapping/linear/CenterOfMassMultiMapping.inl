@@ -181,7 +181,7 @@ template <class TIn, class TOut>
 void CenterOfMassMultiMapping< TIn, TOut >::draw(const core::visual::VisualParams* vparams)
 {
     assert( this->toModels.size() == 1 );
-    const sofa::core::objectmodel::Data< OutVecCoord > *X = this->getToModels()[0]->read(sofa::core::VecCoordId::position());
+    const sofa::core::objectmodel::Data< OutVecCoord > *X = this->getToModels()[0]->read(sofa::core::vec_id::write_access::position);
 
     std::vector< sofa::type::Vec3 > points;
     sofa::type::Vec3 point1,point2;

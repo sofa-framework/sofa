@@ -77,10 +77,10 @@ void EdgeSetTopologyContainer::init()
 
     // only init if edges are present at init.
     if (!m_edge.empty())
-        initTopology();
+        computeCrossElementBuffers();
 }
 
-void EdgeSetTopologyContainer::initTopology()
+void EdgeSetTopologyContainer::computeCrossElementBuffers()
 {
     // force computation of neighborhood elements
     createEdgesAroundVertexArray();

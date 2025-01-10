@@ -61,8 +61,8 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
-    MultiVecCoord pos(&vop, core::VecCoordId::position() );
-    MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
+    MultiVecCoord pos(&vop, core::vec_id::write_access::position );
+    MultiVecDeriv vel(&vop, core::vec_id::write_access::velocity );
     MultiVecDeriv b(&vop);
     MultiVecDeriv aResult(&vop);
     MultiVecCoord newPos(&vop, xResult );
@@ -70,7 +70,7 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
+    MultiVecDeriv dx(&vop, core::vec_id::write_access::dx); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
 
     const SReal h = dt;
@@ -113,11 +113,15 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
         mop.propagateDx(a);
 
         // b += (-h (1-\gamma)(r_M M + r_K K) - h^2/2 (1-2\beta) K ) a
-        mop.addMBKdx(b, -h*(1-gamma)*rM, h*(1-gamma), h*(1-gamma)*rK + h*h*(1-2*beta)/2.0,true,true);
+        mop.addMBKdx(b,
+            core::MatricesFactors::M(-h*(1-gamma)*rM),
+            core::MatricesFactors::B(h*(1-gamma)),
+            core::MatricesFactors::K(h*(1-gamma)*rK + h*h*(1-2*beta)/2.0),
+            true,true);
     }
 
     // b += -h K v
-    mop.addMBKv(b, -rM, 1,rK+h);
+    mop.addMBKv(b, core::MatricesFactors::M(-rM), core::MatricesFactors::B(1), core::MatricesFactors::K(rK+h));
 
     msg_info() << "b = " << b;
     mop.projectResponse(b);          // b is projected to the constrained space
@@ -126,9 +130,9 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
     // 3. Solve system of equations on a_{t+h}
 
-    const SReal mFact = 1 + h * gamma * rM;
-    const SReal bFact = (-h) * gamma;
-    const SReal kFact = -h * h * beta - h * rK * gamma;
+    const core::MatricesFactors::M mFact ( 1 + h * gamma * rM);
+    const core::MatricesFactors::B bFact ( (-h) * gamma);
+    const core::MatricesFactors::K kFact ( -h * h * beta - h * rK * gamma);
 
     mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
     l_linearSolver->setSystemLHVector(aResult);

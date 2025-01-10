@@ -197,7 +197,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                         typedef MechanicalState<In> InMechanicalStateT;
                         InMechanicalStateT* inState;
                         this->m_fromTopology->getContext()->get(inState);
-                        const auto& inRestPos = (inState->read(core::ConstVecCoordId::restPosition())->getValue());
+                        const auto& inRestPos = (inState->read(core::vec_id::read_access::restPosition)->getValue());
                         if( this->m_toTopology)
                         {
                             typedef MechanicalState<Out> MechanicalStateT;
@@ -209,7 +209,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                             }
                             else
                             {
-                                const typename MechanicalStateT::VecCoord& outXto0 = (mState->read(core::ConstVecCoordId::restPosition())->getValue());
+                                const typename MechanicalStateT::VecCoord& outXto0 = (mState->read(core::vec_id::read_access::restPosition)->getValue());
                                 const decltype(inRestPos[0])& outRestPos = Out::getCPos(outXto0[j]); //decltype stuff is to force the same type of coordinates between in and out
                                 index = sofa::topology::getClosestHexahedronIndex(inRestPos, m_fromTopology->getHexahedra(), outRestPos, coefs, distance);
                             }
@@ -256,7 +256,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
             typedef MechanicalState<In> InMechanicalStateT;
             InMechanicalStateT* inState;
             this->m_fromTopology->getContext()->get(inState);
-            const auto& inRestPos = (inState->read(core::ConstVecCoordId::restPosition())->getValue());
+            const auto& inRestPos = (inState->read(core::vec_id::read_access::restPosition)->getValue());
 
             const auto nbHexahedra = this->m_fromTopology->getNbHexahedra();
 

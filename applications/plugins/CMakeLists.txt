@@ -25,7 +25,6 @@ sofa_add_subdirectory(directory SofaPython3 SofaPython3 EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin CGALPlugin CGALPlugin EXTERNAL GIT_REF master)     # Depends on image
 sofa_add_subdirectory(plugin Registration Registration EXTERNAL GIT_REF master) # Depends on image, SofaPython, SofaGui and SofaDistanceGrid
 sofa_add_subdirectory(plugin BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant and LMConstraint
-sofa_add_subdirectory(plugin InvertibleFVM InvertibleFVM EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin MeshSTEPLoader MeshSTEPLoader EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin PluginExample PluginExample EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin ManifoldTopologies ManifoldTopologies EXTERNAL GIT_REF master)
@@ -35,7 +34,6 @@ sofa_add_subdirectory(plugin Xitact Xitact)
 sofa_add_subdirectory(plugin Haption Haption)
 sofa_add_subdirectory(plugin PersistentContact PersistentContact)
 sofa_add_subdirectory(plugin Sensable Sensable)
-sofa_add_subdirectory(plugin SensableEmulation SensableEmulation)
 sofa_add_subdirectory(plugin SofaHAPI SofaHAPI)
 sofa_add_subdirectory(plugin SofaCarving SofaCarving)
 sofa_add_subdirectory(plugin LeapMotion LeapMotion)
@@ -66,10 +64,9 @@ sofa_add_subdirectory(plugin SofaCUDA SofaCUDA)
 
 sofa_find_package(Sofa.GL QUIET)
 if(Sofa.GL_FOUND)
-    sofa_add_subdirectory(plugin SofaSimpleGUI SofaSimpleGUI) # SofaSimpleGUI plugin can't work without OPENGL
     sofa_add_subdirectory(plugin VolumetricRendering VolumetricRendering) # VolumetricRendering plugin can't work without OPENGL
 else()
-    message("Sofa.GL not found; disabling SofaSimpleGUI and VolumetricRendering plugins")
+    message("Sofa.GL not found; disabling VolumetricRendering plugin")
 endif()
 
 sofa_add_subdirectory(plugin SofaDistanceGrid SofaDistanceGrid) # Also defines SofaDistanceGrid.CUDA

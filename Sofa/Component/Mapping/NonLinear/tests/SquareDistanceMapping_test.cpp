@@ -154,7 +154,7 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
     {
         root = simulation::getSimulation()->createNewNode("root");
 
-        simpleapi::createObject(root, "RequiredPlugin", {{"pluginName", "Sofa.Component"}});
+        simpleapi::createObject(root, "RequiredPlugin", {{"pluginName", Sofa.Component}});
         simpleapi::createObject(root, "DefaultAnimationLoop");
         simpleapi::createObject(root, "StringMeshCreator", {{"name", "loader"}, {"resolution", "3"}});
 
@@ -212,10 +212,10 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
         //position
         {
             sofa::type::vector<SReal> mstatex0(mstate0->getMatrixSize());
-            mstate0->copyToBuffer(mstatex0.data(), core::ConstVecCoordId::position(), mstate0->getMatrixSize());
+            mstate0->copyToBuffer(mstatex0.data(), core::vec_id::read_access::position, mstate0->getMatrixSize());
 
             sofa::type::vector<SReal> mstatex1(mstate1->getMatrixSize());
-            mstate1->copyToBuffer(mstatex1.data(), core::ConstVecCoordId::position(), mstate1->getMatrixSize());
+            mstate1->copyToBuffer(mstatex1.data(), core::vec_id::read_access::position, mstate1->getMatrixSize());
 
             EXPECT_LT(this->vectorMaxDiff(mstatex0, mstatex1), epsilon) << "Time step " << timeStepCount
                 << "\n" << mstatex0 << "\n" << mstatex1;
@@ -224,10 +224,10 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
         //velocity
         {
             sofa::type::vector<SReal> mstatev0(mstate0->getMatrixSize());
-            mstate0->copyToBuffer(mstatev0.data(), core::ConstVecDerivId::velocity(), mstate0->getMatrixSize());
+            mstate0->copyToBuffer(mstatev0.data(), core::vec_id::read_access::velocity, mstate0->getMatrixSize());
 
             sofa::type::vector<SReal> mstatev1(mstate1->getMatrixSize());
-            mstate1->copyToBuffer(mstatev1.data(), core::ConstVecDerivId::velocity(), mstate1->getMatrixSize());
+            mstate1->copyToBuffer(mstatev1.data(), core::vec_id::read_access::velocity, mstate1->getMatrixSize());
 
             EXPECT_LT(this->vectorMaxDiff(mstatev0, mstatev1), epsilon) << "Time step " << timeStepCount
                 << "\n" << mstatev0 << "\n" << mstatev1;
@@ -236,10 +236,10 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
         //force
         {
             sofa::type::vector<SReal> mstatef0(mstate0->getMatrixSize());
-            mstate0->copyToBuffer(mstatef0.data(), core::ConstVecDerivId::force(), mstate0->getMatrixSize());
+            mstate0->copyToBuffer(mstatef0.data(), core::vec_id::read_access::force, mstate0->getMatrixSize());
 
             sofa::type::vector<SReal> mstatef1(mstate1->getMatrixSize());
-            mstate1->copyToBuffer(mstatef1.data(), core::ConstVecDerivId::force(), mstate1->getMatrixSize());
+            mstate1->copyToBuffer(mstatef1.data(), core::vec_id::read_access::force, mstate1->getMatrixSize());
 
             EXPECT_LT(this->vectorMaxDiff(mstatef0, mstatef1), epsilon) << "Time step " << timeStepCount
                 << "\n" << mstatef0 << "\n" << mstatef1;

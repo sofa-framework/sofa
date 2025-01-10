@@ -26,26 +26,23 @@
 namespace sofa::gl::component::rendering3d
 {
 
-int OglSceneFrameClass = core::RegisterObject("Display a frame at the corner of the scene view")
-        .add< OglSceneFrame >()
-        ;
+void registerOglSceneFrame(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Display a frame at the corner of the scene view.")
+        .add< OglSceneFrame >());
+}
 
 using namespace sofa::defaulttype;
 
+static constexpr OglSceneFrame::Alignment defaultAlignment("BottomRight");
+static constexpr OglSceneFrame::Style defaultStyle("Cylinders");
+
 OglSceneFrame::OglSceneFrame()
     : d_drawFrame(initData(&d_drawFrame, true,  "draw", "Display the frame or not"))
-    , d_style(initData(&d_style, "style", "Style of the frame"))
-    , d_alignment(initData(&d_alignment, "alignment", "Alignment of the frame in the view"))
+    , d_style(initData(&d_style, defaultStyle, "style", ("Style of the frame\n" + Style::dataDescription()).c_str()))
+    , d_alignment(initData(&d_alignment, defaultAlignment, "alignment", ("Alignment of the frame in the view\n" + Alignment::dataDescription()).c_str()))
     , d_viewportSize(initData(&d_viewportSize, 150, "viewportSize", "Size of the viewport where the frame is rendered"))
-{
-    sofa::helper::OptionsGroup styleOptions{"Arrows", "Cylinders", "CubeCones"};
-    styleOptions.setSelectedItem(1);
-    d_style.setValue(styleOptions);
-
-    sofa::helper::OptionsGroup alignmentOptions{"BottomLeft", "BottomRight", "TopRight", "TopLeft"};
-    alignmentOptions.setSelectedItem(1);
-    d_alignment.setValue(alignmentOptions);
-}
+{}
 
 void OglSceneFrame::drawArrows(const core::visual::VisualParams* vparams)
 {
@@ -112,22 +109,22 @@ void OglSceneFrame::doDrawVisual(const core::visual::VisualParams* vparams)
 
     const auto viewportSize = d_viewportSize.getValue();
 
-    switch(d_alignment.getValue().getSelectedId())
+    switch(d_alignment.getValue())
     {
-        case 0: //BottomLeft
+        case Alignment("BottomLeft"):
         default:
             glViewport(0,0,viewportSize,viewportSize);
             glScissor(0,0,viewportSize,viewportSize);
             break;
-        case 1: //BottomRight
+        case Alignment("BottomRight"):
             glViewport(viewport[2]-viewportSize,0,viewportSize,viewportSize);
             glScissor(viewport[2]-viewportSize,0,viewportSize,viewportSize);
             break;
-        case 2: //TopRight
+        case Alignment("TopRight"):
             glViewport(viewport[2]-viewportSize,viewport[3]-viewportSize,viewportSize,viewportSize);
             glScissor(viewport[2]-viewportSize,viewport[3]-viewportSize,viewportSize,viewportSize);
             break;
-        case 3: //TopLeft
+        case Alignment("TopLeft"):
             glViewport(0,viewport[3]-viewportSize,viewportSize,viewportSize);
             glScissor(0,viewport[3]-viewportSize,viewportSize,viewportSize);
             break;
@@ -157,18 +154,18 @@ void OglSceneFrame::doDrawVisual(const core::visual::VisualParams* vparams)
 
     vparams->drawTool()->disableLighting();
 
-    switch (d_style.getValue().getSelectedId())
+    switch (d_style.getValue())
     {
-    case 0:
+    case Style("Arrows"):
     default:
         drawArrows(vparams);
         break;
 
-    case 1:
+    case Style("Cylinders"):
         drawCylinders(vparams);
         break;
 
-    case 2:
+    case Style("CubeCones"):
         drawCubeCones(vparams);
         break;
     }

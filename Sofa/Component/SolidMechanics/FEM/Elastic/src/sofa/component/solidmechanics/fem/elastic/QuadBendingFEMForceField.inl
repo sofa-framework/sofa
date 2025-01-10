@@ -149,7 +149,7 @@ void QuadBendingFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Ind
   Coord IntlengthElement;
   Coord IntheightElement;
 
-  const  VecCoord& initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
+  const  VecCoord& initialPoints = (this->mstate->read(core::vec_id::read_access::restPosition)->getValue());
   qinfo->IntlengthElement = (initialPoints)[b] - (initialPoints)[a];
   qinfo->IntheightElement = (initialPoints)[d] - (initialPoints)[a];
   qinfo->Intcentroid = ((initialPoints)[a] + (initialPoints)[c]) / 2;
@@ -441,7 +441,7 @@ template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K, Index elementIndex)
 {  
   type::vector<QuadInformation>& quadInf = *(d_quadInfo.beginEdit());
-  const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+  const VecCoord& p = this->mstate->read(core::vec_id::read_access::position)->getValue();
   //QuadInformation *qinfo = &quadInf[elementIndex];
 
   Index idx0 = m_topology->getQuad(elementIndex)[0];

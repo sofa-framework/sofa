@@ -99,7 +99,7 @@ typename DataTypes::Coord PointSetGeometryAlgorithms<DataTypes>::getPointSetCent
 {
     typename DataTypes::Coord center;
     // get current positions
-    const typename DataTypes::VecCoord& p =(object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(object->read(core::vec_id::read_access::position)->getValue());
 
     const int numVertices = this->m_topology->getNbPoints();
     for(int i=0; i<numVertices; ++i)
@@ -116,7 +116,7 @@ void  PointSetGeometryAlgorithms<DataTypes>::getEnclosingSphere(typename DataTyp
         typename DataTypes::Real &radius) const
 {
     // get current positions
-    const typename DataTypes::VecCoord& p =(object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(object->read(core::vec_id::read_access::position)->getValue());
 
     const unsigned int numVertices = this->m_topology->getNbPoints();
     for(unsigned int i=0; i<numVertices; ++i)
@@ -154,7 +154,7 @@ template<class DataTypes>
 void PointSetGeometryAlgorithms<DataTypes>::getAABB(CPos& minCoord, CPos& maxCoord) const
 {
     // get current positions
-    const VecCoord& p =(object->read(core::ConstVecCoordId::position())->getValue());
+    const VecCoord& p =(object->read(core::vec_id::read_access::position)->getValue());
 
     minCoord = DataTypes::getCPos(p[0]);
     maxCoord = minCoord;
@@ -172,7 +172,7 @@ template<class DataTypes>
 const typename DataTypes::Coord& PointSetGeometryAlgorithms<DataTypes>::getPointPosition(const PointID pointId) const
 {
     // get current positions
-    const typename DataTypes::VecCoord& p =(object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(object->read(core::vec_id::read_access::position)->getValue());
 
     return p[pointId];
 }
@@ -181,7 +181,7 @@ template<class DataTypes>
 const typename DataTypes::Coord& PointSetGeometryAlgorithms<DataTypes>::getPointRestPosition(const PointID pointId) const
 {
     // get rest positions
-    const typename DataTypes::VecCoord& p = (object->read(core::ConstVecCoordId::restPosition())->getValue());
+    const typename DataTypes::VecCoord& p = (object->read(core::vec_id::read_access::restPosition)->getValue());
 
     return p[pointId];
 }
@@ -191,7 +191,7 @@ typename PointSetGeometryAlgorithms<DataTypes>::Angle
 PointSetGeometryAlgorithms<DataTypes>::computeAngle(PointID ind_p0, PointID ind_p1, PointID ind_p2) const
 {
     const double ZERO = 1e-10;
-    const typename DataTypes::VecCoord& p =(object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& p =(object->read(core::vec_id::read_access::position)->getValue());
     Coord p0 = p[ind_p0];
     Coord p1 = p[ind_p1];
     Coord p2 = p[ind_p2];
@@ -276,7 +276,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
 
     if (d_showPointIndices.getValue())
     {
-        const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+        const VecCoord& coords =(this->object->read(core::vec_id::read_access::position)->getValue());
         constexpr auto color4 = sofa::type::RGBAColor::white();
         const float scale = getIndicesScale();
 

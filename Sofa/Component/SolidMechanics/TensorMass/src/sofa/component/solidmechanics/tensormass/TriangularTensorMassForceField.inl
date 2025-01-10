@@ -66,7 +66,7 @@ void TriangularTensorMassForceField<DataTypes>::applyTriangleCreation(const sofa
     typename DataTypes::Coord point[3],dpk,dpl;
     helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeData = d_edgeInfo;
 
-    const typename DataTypes::VecCoord& restPosition= this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const typename DataTypes::VecCoord& restPosition= this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     for (i=0; i<triangleAdded.size(); ++i)
     {
@@ -150,7 +150,7 @@ void TriangularTensorMassForceField<DataTypes>::applyTriangleDestruction(const s
     typename DataTypes::Coord point[3],dpk,dpl;
 
     helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeData = d_edgeInfo;
-    const typename DataTypes::VecCoord& restPosition= this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const typename DataTypes::VecCoord& restPosition= this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     for (i=0; i<triangleRemoved.size(); ++i)
     {
@@ -279,7 +279,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     if (_initialPoints.size() == 0)
     {
         // get restPosition
-        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        const VecCoord& p = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
         _initialPoints=p;
     }
 
@@ -414,7 +414,7 @@ void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualP
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     const size_t nbTriangles=m_topology->getNbTriangles();
 
     std::vector<sofa::type::Vec3> vertices;

@@ -194,28 +194,28 @@ inline TSphere<DataTypes>::TSphere(const core::CollisionElementIterator& i)
 }
 
 template<class DataTypes>
-inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::center() const { return DataTypes::getCPos(this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->index]); }
+inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::center() const { return DataTypes::getCPos(this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->index]); }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord & TSphere<DataTypes>::rigidCenter() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->index];}
+inline const typename DataTypes::Coord & TSphere<DataTypes>::rigidCenter() const { return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->index];}
 
 template<class DataTypes>
-inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::p() const { return DataTypes::getCPos(this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->index]);}
+inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::p() const { return DataTypes::getCPos(this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->index]);}
 
 template<class DataTypes>
-inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->mstate->read(core::ConstVecCoordId::freePosition())).getValue()[this->index]; }
+inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->mstate->read(core::vec_id::read_access::freePosition)).getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename SphereCollisionModel<DataTypes>::Coord& SphereCollisionModel<DataTypes>::velocity(sofa::Index index) const { return DataTypes::getDPos(mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]);}
+inline const typename SphereCollisionModel<DataTypes>::Coord& SphereCollisionModel<DataTypes>::velocity(sofa::Index index) const { return DataTypes::getDPos(mstate->read(core::vec_id::read_access::velocity)->getValue()[index]);}
 
 template<class DataTypes>
-inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::v() const { return DataTypes::getDPos(this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]); }
+inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::v() const { return DataTypes::getDPos(this->model->mstate->read(core::vec_id::read_access::velocity)->getValue()[this->index]); }
 
 template<class DataTypes>
 inline typename DataTypes::Real TSphere<DataTypes>::r() const { return (Real) this->model->getRadius((unsigned)this->index); }
 
 template<class DataTypes>
-inline bool TSphere<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
+inline bool TSphere<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::vec_id::read_access::freePosition)->isSet(); }
 
 using Sphere = TSphere<sofa::defaulttype::Vec3Types>;
 using RigidSphere = TSphere<sofa::defaulttype::Rigid3Types>;

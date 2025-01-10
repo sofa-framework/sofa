@@ -21,7 +21,9 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/helper/accessor/ReadAccessorFixedArray.h>
 #include <sofa/helper/accessor/ReadAccessorVector.h>
+#include <sofa/type/trait/is_fixed_array.h>
 
 namespace sofa::helper
 {
@@ -68,6 +70,16 @@ public:
     operator  const_reference () const { return  *vref; }
     const_pointer   operator->() const { return vref; }
     const_reference operator* () const { return  *vref; }
+};
+
+template<class FixedArrayLikeType>
+class ReadAccessor<FixedArrayLikeType, std::enable_if_t<sofa::type::trait::is_fixed_array<FixedArrayLikeType>::value>>
+    : public ReadAccessorFixedArray< FixedArrayLikeType >
+{
+public:
+    typedef ReadAccessorFixedArray< FixedArrayLikeType > Inherit;
+    typedef typename Inherit::container_type container_type;
+    ReadAccessor(const container_type& c) : Inherit(c) {}
 };
 
 template<class VectorLikeType>

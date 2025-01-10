@@ -43,7 +43,7 @@ namespace sofa::component::mapping::nonlinear
  * @author Matthieu Nesme
  */
 template <class TIn, class TOut>
-class DistanceMultiMapping : public core::MultiMapping<TIn, TOut>, public NonLinearMappingData<true>
+class DistanceMultiMapping : public core::MultiMapping<TIn, TOut>, public StabilizedNonLinearMappingData
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(DistanceMultiMapping,TIn,TOut), SOFA_TEMPLATE2(core::MultiMapping,TIn,TOut));

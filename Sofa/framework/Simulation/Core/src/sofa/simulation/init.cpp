@@ -26,12 +26,21 @@
 
 #include <sofa/simulation/MainTaskSchedulerRegistry.h>
 
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::simulation::core
+namespace sofa::simulation
+{
+
+extern void registerRequiredPlugin(sofa::core::ObjectFactory* factory);
+extern void registerDefaultVisualManagerLoop(sofa::core::ObjectFactory* factory);
+extern void registerDefaultAnimationLoop(sofa::core::ObjectFactory* factory);
+
+namespace core
 {
 
 static bool s_initialized = false;
 static bool s_cleanedUp = false;
+
 
 SOFA_SIMULATION_CORE_API void init()
 {
@@ -39,6 +48,11 @@ SOFA_SIMULATION_CORE_API void init()
     {
         sofa::core::init();
         s_initialized = true;
+
+        auto* factory = sofa::core::ObjectFactory::getInstance();
+        registerRequiredPlugin(factory);
+        registerDefaultVisualManagerLoop(factory);
+        registerDefaultAnimationLoop(factory);
     }
 }
 
@@ -73,7 +87,9 @@ static const struct CleanupCheck
     }
 } check;
 
-} // namespace sofa::simulation::core
+} // namespace core
+
+} // namespace sofa::simulation
 
 
 

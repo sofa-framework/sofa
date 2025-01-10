@@ -31,6 +31,7 @@ Component/Constraint/Lagrangian/BilateralLagrangianConstraint_UGS.scn 100 1e-4 0
 Component/Constraint/Lagrangian/FrictionContact_LCP_with_friction.scn 500 1e-4 0 1
 Component/Constraint/Lagrangian/FrictionContact_LCP_without_friction.scn 500 1e-4 0 1
 Component/Constraint/Projective/FixedProjectiveConstraint.scn 100 1e-4 0 1
+Component/Constraint/Projective/LinearVelocityProjectiveConstraint.scn 100 1e-4 0 1
 Component/LinearSolver/Direct/FEMBAR_EigenSimplicialLDLT.scn 100 1e-8 0 1
 Component/LinearSolver/Direct/FEMBAR_EigenSimplicialLLT.scn 100 1e-8 0 1
 Component/LinearSolver/Direct/FEMBAR_EigenSparseLU.scn 100 1e-8 0 1

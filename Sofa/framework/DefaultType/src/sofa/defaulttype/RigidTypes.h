@@ -153,12 +153,13 @@ public:
     static Deriv coordDifference(const Coord& c1, const Coord& c2)
     {
         type::Vec3 vCenter = c1.getCenter() - c2.getCenter();
-        type::Quat<SReal> quat, quat1(c1.getOrientation()), quat2(c2.getOrientation());
+        const type::Quat<real> quat2(c2.getOrientation());
+        const type::Quat<real> quat1(c1.getOrientation());
         // Transformation between c2 and c1 frames
-        quat = quat1 * quat2.inverse();
+        type::Quat<real> quat = quat1 * quat2.inverse();
         quat.normalize();
         type::Vec3 axis(type::NOINIT);
-        type::Quat<SReal>::value_type angle{};
+        real angle{};
         quat.quatToAxis(axis, angle);
         axis *= angle;
         return Deriv(vCenter, axis);
@@ -352,6 +353,15 @@ public:
         set( result, Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)),
                      Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)));
         return result;
+    }
+
+    static Deriv coordDifference(const Coord& c1, const Coord& c2)
+    {
+        const type::Vec2 vCenter = c1.getCenter() - c2.getCenter();
+        real angle = c1.getOrientation() - c2.getOrientation(); // Difference in orientation (angle between frames)
+        angle = std::fmod(angle + M_PI, 2 * M_PI) - M_PI; // Normalize angle to [-π, π]
+
+        return Deriv(vCenter, angle);
     }
 
     static Coord interpolate(const type::vector< Coord > & ancestors, const type::vector< Real > & coefs)

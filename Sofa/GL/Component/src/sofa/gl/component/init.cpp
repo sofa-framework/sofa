@@ -21,9 +21,13 @@
 ******************************************************************************/
 #include <sofa/gl/component/init.h>
 
+#include <sofa/gl/component/engine/init.h>
 #include <sofa/gl/component/rendering2d/init.h>
 #include <sofa/gl/component/rendering3d/init.h>
 #include <sofa/gl/component/shader/init.h>
+
+#include <sofa/helper/system/PluginManager.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::gl::component
 {
@@ -32,19 +36,12 @@ extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        sofa::gl::component::rendering2d::init();
-        sofa::gl::component::rendering3d::init();
-        sofa::gl::component::shader::init();
-        
-        first = false;
-    }
+    init();
 }
 
 const char* getModuleName()
@@ -57,9 +54,30 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjectsFromPlugin("Sofa.GL.Component.Engine");
+    factory->registerObjectsFromPlugin("Sofa.GL.Component.Rendering2D");
+    factory->registerObjectsFromPlugin("Sofa.GL.Component.Rendering3D");
+    factory->registerObjectsFromPlugin("Sofa.GL.Component.Shader");
+}
+
 void init()
 {
-    initExternalModule();
+    static bool first = true;
+    if (first)
+    {
+        // force dependencies at compile-time
+        sofa::gl::component::engine::init();
+        sofa::gl::component::rendering2d::init();
+        sofa::gl::component::rendering3d::init();
+        sofa::gl::component::shader::init();
+
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
+        first = false;
+    }
 }
 
 } // namespace sofa::gl::component

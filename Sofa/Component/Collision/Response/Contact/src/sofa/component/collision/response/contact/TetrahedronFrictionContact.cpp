@@ -24,6 +24,7 @@
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
 #include <sofa/component/collision/response/mapper/TetrahedronBarycentricContactMapper.h>
 #include <sofa/component/collision/geometry/TetrahedronModel.h>
+#include <sofa/component/collision/response/contact/BaseUnilateralContactResponse.inl>
 
 using namespace sofa::core::collision;
 
@@ -43,6 +44,12 @@ Creator<Contact::Factory, FrictionContact<TetrahedronCollisionModel, PointCollis
 Creator<Contact::Factory, FrictionContact<TetrahedronCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronLinePenalityFrictionContactClass("FrictionContactConstraint",true);
 Creator<Contact::Factory, FrictionContact<TetrahedronCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronTrianglePenalityFrictionContactClass("FrictionContactConstraint",true);
 Creator<Contact::Factory, FrictionContact<TetrahedronCollisionModel, TetrahedronCollisionModel> > TetrahedronTetrahedronPenalityFrictionContactClass("FrictionContactConstraint",true);
+
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API response::contact::BaseUnilateralContactResponse<TetrahedronCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API response::contact::BaseUnilateralContactResponse<TetrahedronCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API response::contact::BaseUnilateralContactResponse<TetrahedronCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API response::contact::BaseUnilateralContactResponse<TetrahedronCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API response::contact::BaseUnilateralContactResponse<TetrahedronCollisionModel, TetrahedronCollisionModel,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
 
 template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API response::contact::FrictionContact<TetrahedronCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
 template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API response::contact::FrictionContact<TetrahedronCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>>;

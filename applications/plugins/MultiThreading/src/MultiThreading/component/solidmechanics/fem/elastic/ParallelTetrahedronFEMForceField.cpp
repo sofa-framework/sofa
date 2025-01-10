@@ -26,7 +26,7 @@
 
 #include <MultiThreading/ParallelImplementationsRegistry.h>
 
-namespace multithreading::component::solidmechanics::fem::elastic
+namespace multithreading::component::forcefield::solidmechanics::fem::elastic
 {
 
 using namespace sofa::defaulttype;
@@ -34,9 +34,11 @@ using namespace sofa::defaulttype;
 const bool isParallelTetrahedronFEMForceFieldImplementationRegistered =
     multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("TetrahedronFEMForceField", "ParallelTetrahedronFEMForceField");
 
-// Register in the Factory
-int ParallelTetrahedronFEMForceFieldClass = sofa::core::RegisterObject("Parallel tetrahedral finite elements")
-                                           .add < ParallelTetrahedronFEMForceField < Vec3Types > > ();
+void registerParallelTetrahedronFEMForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel implementation of a linear elastic material using tetrahedral finite elements..")
+                             .add < ParallelTetrahedronFEMForceField < Vec3Types > > ());
+}
 
 template class SOFA_MULTITHREADING_PLUGIN_API ParallelTetrahedronFEMForceField<Vec3Types>;
 
