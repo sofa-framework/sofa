@@ -714,5 +714,5 @@ TEST(QuaterTest, StructuredBindings)
     EXPECT_NEAR(0., a, errorThreshold);
     EXPECT_NEAR(0., b, errorThreshold);
     EXPECT_NEAR(0., c, errorThreshold);
-    EXPECT_NEAR(0., d, errorThreshold);
+    EXPECT_NEAR(1., d, errorThreshold);
 }

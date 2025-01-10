@@ -116,7 +116,7 @@ public:
 
     static Quat identity()
     {
-        return Quat(0,0,0,1);
+        return Quat(0, 0, 0, 1);
     }
 
     void set(Real x, Real y, Real z, Real w)
@@ -147,7 +147,7 @@ public:
 
     void clear()
     {
-        set(0.0,0.0,0.0,1);
+        set(0, 0, 0, 1);
     }
 
     /// Convert the reference frame orientation into an orientation quaternion
