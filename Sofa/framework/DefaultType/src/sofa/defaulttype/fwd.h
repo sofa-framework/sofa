@@ -57,15 +57,6 @@ typedef RigidMass<3,float> Rigid3fMass;
 typedef StdRigidTypes<3,SReal> Rigid3Types;  ///< un-defined precision type
 typedef RigidMass<3,SReal>     Rigid3Mass;   ///< un-defined precision type
 
-typedef StdRigidTypes<2,double> Rigid2dTypes;
-typedef RigidMass<2,double> Rigid2dMass;
-
-typedef StdRigidTypes<2,float> Rigid2fTypes;
-typedef RigidMass<2,float> Rigid2fMass;
-
-typedef StdRigidTypes<2,SReal> Rigid2Types;
-typedef RigidMass<2,SReal> Rigid2Mass;
-
 template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
 class StdVectorTypes;
 

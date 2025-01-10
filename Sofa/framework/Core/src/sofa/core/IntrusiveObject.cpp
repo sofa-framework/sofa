@@ -19,16 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SENSABLEEMULATION_CONFIG_H
-#define SENSABLEEMULATION_CONFIG_H
+#include <sofa/core/IntrusiveObject.h>
 
-#include <sofa/config.h>
+namespace sofa::core
+{
+void IntrusiveObject::addRef()
+{
+    ++ref_counter;
+}
 
-#ifdef SOFA_BUILD_SENSABLEEMULATIONPLUGIN
-#  define SOFA_TARGET SensableEmulation
-#  define SOFA_SENSABLEEMUPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SENSABLEEMUPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#endif
+void IntrusiveObject::release()
+{
+    if (ref_counter.fetch_sub(1) == 1)
+    {
+        delete this;
+    }
+}
+}

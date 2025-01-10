@@ -19,16 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFASIMPLEGUI_CONFIG_H
-#define SOFASIMPLEGUI_CONFIG_H
+#include <Modules_test.h>
+#include <gtest/gtest.h>
 
-#include <sofa/config.h>
-
-#ifdef SOFA_BUILD_SOFASIMPLEGUI
-#  define SOFA_TARGET SofaSimpleGUI
-#  define SOFA_SOFASIMPLEGUI_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFASIMPLEGUI_API  SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#endif
+ALL_SOFA_MODULES

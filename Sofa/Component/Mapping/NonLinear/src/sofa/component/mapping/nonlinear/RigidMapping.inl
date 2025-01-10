@@ -772,8 +772,11 @@ void RigidMapping<TIn, TOut>::setJMatrixBlock(unsigned outIdx, unsigned inIdx)
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowMappings() || this->toModel==nullptr )
+    if (!vparams->displayFlags().getShowMappings() || !this->toModel )
         return;
+
+    [[maybe_unused]] const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
     std::vector<type::Vec3> points;
     type::Vec3 point;
 

@@ -430,8 +430,7 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vpar
                 color[j] = (float)fabs (tetrahedronVectors[i][j]);
 
             colors.push_back(color);
-            colors.push_back(color);
-            
+
             vertices.push_back(point1);
             vertices.push_back(point2);
         }

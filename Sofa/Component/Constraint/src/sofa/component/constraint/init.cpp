@@ -26,6 +26,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/Modules.h>
 
 namespace sofa::component::constraint
 {
@@ -54,8 +55,8 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin("Sofa.Component.Constraint.Lagrangian");
-    factory->registerObjectsFromPlugin("Sofa.Component.Constraint.Projective");
+    factory->registerObjectsFromPlugin(Sofa.Component.Constraint.Lagrangian);
+    factory->registerObjectsFromPlugin(Sofa.Component.Constraint.Projective);
 }
 
 void init()

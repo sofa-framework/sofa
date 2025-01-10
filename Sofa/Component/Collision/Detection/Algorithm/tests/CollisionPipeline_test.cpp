@@ -76,8 +76,8 @@ public:
 
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer"); 
-        sofa::simpleapi::importPlugin("Sofa.Component.Collision");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Collision);
     }
 
     void TearDown() override

@@ -55,8 +55,8 @@ struct TestLightManager : public BaseTest
 {
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.GL.Component.Shader");
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin(Sofa.GL.Component.Shader);
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
     }
 };
 
@@ -94,7 +94,7 @@ void checkAttributes()
 
 TEST_F(TestLightManager, checkAttributes)
 {
-    sofa::simpleapi::importPlugin("Sofa.GL.Component.Shader");
+    sofa::simpleapi::importPlugin(Sofa.GL.Component.Shader);
     checkAttributes();
 }
 

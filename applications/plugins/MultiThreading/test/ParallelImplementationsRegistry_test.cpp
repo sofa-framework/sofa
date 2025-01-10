@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -23,6 +23,7 @@
 #include <MultiThreading/initMultiThreading.h>
 #include <MultiThreading/ParallelImplementationsRegistry.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/Modules.h>
 
 #include <sofa/simpleapi/SimpleApi.h>
 
@@ -32,10 +33,11 @@ namespace multithreading
 TEST(ParallelImplementationsRegistry, existInObjectFactory)
 {
     // sequential versions will be added to the ObjectFactory
-    sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
-    sofa::simpleapi::importPlugin("Sofa.Component.Collision.Detection.Algorithm");
-    sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
-    sofa::simpleapi::importPlugin("Sofa.Component.Mapping.Linear");
+    sofa::simpleapi::importPlugin(Sofa.Component.LinearSolver.Iterative);
+    sofa::simpleapi::importPlugin(Sofa.Component.Collision.Detection.Algorithm);
+    sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
+    sofa::simpleapi::importPlugin(Sofa.Component.Mapping.Linear);
+    sofa::simpleapi::importPlugin("MultiThreading");
 
     const auto implementations = ParallelImplementationsRegistry::getImplementations();
 

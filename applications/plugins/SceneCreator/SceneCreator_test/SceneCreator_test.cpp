@@ -60,8 +60,8 @@ class SceneCreator_test : public BaseSimulationTest
 public:
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.Component");
-        sofa::simpleapi::importPlugin("Sofa.GL.Component.Rendering3D");
+        sofa::simpleapi::importPlugin(Sofa.Component);
+        sofa::simpleapi::importPlugin(Sofa.GL.Component.Rendering3D);
     }
 
     bool createCubeFailed();
