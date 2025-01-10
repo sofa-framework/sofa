@@ -1024,8 +1024,25 @@ void Node::setSleeping(bool val)
     }
 }
 
+template<class LinkType, class Component>
+void checkAlreadyContains(Node& self, LinkType& link, Component* obj)
+{
+    if constexpr (!LinkType::IsMultiLink)
+    {
+        if (link != obj && link != nullptr)
+        {
+            static const auto componentClassName = Component::GetClass()->className;
+            msg_error(&self) << "Trying to add a " << componentClassName << " ('" << obj->getName() << "' " << obj << ")"
+                << " into the Node '" << self.getPathName()
+                << "', whereas it already contains one ('" << link->getName() << "' " << link.get() << ")."
+                << " Only one " << componentClassName << " is permitted in a Node. The previous "
+                << componentClassName << " is replaced and the behavior is undefined.";
+        }
+    }
+}
+
 #define NODE_DEFINE_SEQUENCE_ACCESSOR( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
-    void Node::add##FUNCTIONNAME( CLASSNAME* obj ) { SEQUENCENAME.add(obj); } \
+    void Node::add##FUNCTIONNAME( CLASSNAME* obj ) { checkAlreadyContains(*this, SEQUENCENAME, obj); SEQUENCENAME.add(obj); } \
     void Node::remove##FUNCTIONNAME( CLASSNAME* obj ) { SEQUENCENAME.remove(obj); }
 
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
