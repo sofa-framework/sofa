@@ -1134,7 +1134,7 @@ void MechanicalObject<DataTypes>::storeResetState()
     if( !isIndependent() ) return;
 
     // Save initial state for reset button
-    vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::restPosition, sofa::core::vec_id::read_access::position);
+    vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::resetPosition, sofa::core::vec_id::read_access::position);
 
     // we only store a resetVelocity if the velocity is not zero
     helper::ReadAccessor< Data<VecDeriv> > v = *this->read(core::vec_id::read_access::velocity);
