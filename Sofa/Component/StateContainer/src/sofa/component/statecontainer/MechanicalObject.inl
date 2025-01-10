@@ -1032,7 +1032,7 @@ void MechanicalObject<DataTypes>::init()
     //case if X0 has been set but not X
     if (read(core::vec_id::read_access::restPosition)->getValue().size() > x_wA.size())
     {
-        vOp(core::execparams::defaultInstance(), core::VecId::position(), core::VecId::restPosition());
+        vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::position, sofa::core::vec_id::read_access::restPosition);
     }
 
     // the given position and velocity vectors are empty
@@ -1097,9 +1097,9 @@ void MechanicalObject<DataTypes>::init()
     {
         // storing X0 from X
         if( restScale.getValue()!=1 )
-            vOp(core::execparams::defaultInstance(), core::VecId::restPosition(), core::ConstVecId::null(), core::VecId::position(), restScale.getValue());
+            vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::restPosition, core::ConstVecId::null(), sofa::core::vec_id::write_access::position, restScale.getValue());
         else
-            vOp(core::execparams::defaultInstance(), core::VecId::restPosition(), core::VecId::position());
+            vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::restPosition, sofa::core::vec_id::write_access::position);
     }
 
 
@@ -1134,10 +1134,10 @@ void MechanicalObject<DataTypes>::storeResetState()
     if( !isIndependent() ) return;
 
     // Save initial state for reset button
-    vOp(core::execparams::defaultInstance(), core::VecId::resetPosition(), core::VecId::position());
+    vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::restPosition, sofa::core::vec_id::read_access::position);
 
     // we only store a resetVelocity if the velocity is not zero
-    helper::ReadAccessor< Data<VecDeriv> > v = *this->read(core::vec_id::write_access::velocity);
+    helper::ReadAccessor< Data<VecDeriv> > v = *this->read(core::vec_id::read_access::velocity);
     bool zero = true;
     for (unsigned int i=0; i<v.size(); ++i)
     {
@@ -1147,7 +1147,7 @@ void MechanicalObject<DataTypes>::storeResetState()
         if (!zero) break;
     }
     if (!zero)
-        vOp(core::execparams::defaultInstance(), core::VecId::resetVelocity(), core::VecId::velocity());
+        vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::resetVelocity, sofa::core::vec_id::read_access::velocity);
 }
 
 
@@ -1155,24 +1155,24 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::reset()
 {
     // resetting force for every dofs, even mapped ones
-    vOp(core::execparams::defaultInstance(), core::VecId::force());
+    vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::force);
 
     if (!reset_position.isSet()) // mapped states are deduced from independent ones
         return;
 
-    vOp(core::execparams::defaultInstance(), core::VecId::position(), core::VecId::resetPosition());
+    vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::position, sofa::core::vec_id::read_access::resetPosition);
 
     if (!reset_velocity.isSet())
     {
-        vOp(core::execparams::defaultInstance(), core::VecId::velocity());
+        vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::velocity);
     }
     else
     {
-        vOp(core::execparams::defaultInstance(), core::VecId::velocity(), core::VecId::resetVelocity());
+        vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::velocity, sofa::core::vec_id::write_access::resetVelocity);
     }
 
-    if( xfree.isSet() ) vOp(core::execparams::defaultInstance(), core::VecId::freePosition(), core::VecId::position());
-    if( vfree.isSet() ) vOp(core::execparams::defaultInstance(), core::VecId::freeVelocity(), core::VecId::velocity());
+    if( xfree.isSet() ) vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::freePosition, sofa::core::vec_id::read_access::position);
+    if( vfree.isSet() ) vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::freeVelocity, sofa::core::vec_id::read_access::velocity);
 }
 
 
@@ -1285,9 +1285,9 @@ SReal MechanicalObject<DataTypes>::compareVec(core::ConstVecId v, std::istream &
 template <class DataTypes>
 void MechanicalObject<DataTypes>::writeState(std::ostream& out)
 {
-    writeVec(core::VecId::position(),out);
+    writeVec(sofa::core::vec_id::read_access::position,out);
     out << " ";
-    writeVec(core::VecId::velocity(),out);
+    writeVec(sofa::core::vec_id::read_access::velocity,out);
 }
 
 template <class DataTypes>
@@ -2445,11 +2445,11 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
     const VecDeriv *data = 0;
 
     // Maybe we should extend this to restvelocity
-    if (id == core::ConstVecId::velocity())
+    if (id == sofa::core::vec_id::read_access::velocity)
     {
         data = &v.getValue();
     }
-    else if (id == core::ConstVecId::dx())
+    else if (id == sofa::core::vec_id::read_access::dx)
     {
         data = &dx.getValue();
     }
