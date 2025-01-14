@@ -399,7 +399,7 @@ const std::unordered_set<std::string>& PluginManager::unloadedPlugins() const
 
 bool PluginManager::isPluginUnloaded(const std::string& pluginName) const
 {
-    return m_unloadedPlugins.find(pluginName) != m_unloadedPlugins.end();
+    return m_unloadedPlugins.contains(pluginName);
 }
 
 Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /*suffix*/, bool /*ignoreCase*/)
@@ -410,7 +410,7 @@ Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /
         return getPluginByName(plugin);
     }
 
-    if (!pluginPath.empty() && m_pluginMap.find(pluginPath) != m_pluginMap.end())
+    if (!pluginPath.empty() && m_pluginMap.contains(pluginPath))
     {
         return &m_pluginMap[pluginPath];
     }
@@ -649,7 +649,7 @@ std::pair<std::string, bool> PluginManager::isPluginLoaded(const std::string& pl
 
     /// Check that the path (either provided by user or through the call to findPlugin()
     /// leads to a loaded plugin.
-    const bool isPluginPathInMap = m_pluginMap.find(pluginPath) != m_pluginMap.end();
+    const bool isPluginPathInMap = m_pluginMap.contains(pluginPath);
     return {pluginPath, isPluginPathInMap};
 }
 

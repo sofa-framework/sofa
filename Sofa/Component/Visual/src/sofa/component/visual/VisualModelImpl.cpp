@@ -435,7 +435,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             {
                 vertices2[j] = verticesImport[i];
                 vertPosIdx[j] = i;
-                if (normMap.count(n))
+                if (normMap.contains(n))
                     vertNormIdx[j] = normMap[n];
                 else
                 {

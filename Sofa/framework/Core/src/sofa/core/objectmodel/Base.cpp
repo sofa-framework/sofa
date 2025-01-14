@@ -112,7 +112,7 @@ void Base::addUpdateCallback(const std::string& name,
 
 void Base::addOutputsToCallback(const std::string& name, std::initializer_list<BaseData*> outputs)
 {
-    if (m_internalEngine.find(name) != m_internalEngine.end())
+    if (m_internalEngine.contains(name))
         m_internalEngine[name].addOutputs(outputs);
 }
 
@@ -263,7 +263,7 @@ const std::string Base::getLoggedMessagesAsString(const sofa::helper::logging::M
 {
     std::stringstream tmpstr ;
     for(Message& m : m_messageslog){
-        if( t.find(m.type()) !=  t.end() )
+        if( t.contains(m.type()))
         {
             tmpstr << m.type() << ":" <<  m.messageAsString() << std::endl;
         }
@@ -275,7 +275,7 @@ size_t Base::countLoggedMessages(const sofa::helper::logging::Message::TypeSet t
 {
     size_t tmp=0;
     for(Message& m : m_messageslog){
-        if( t.find(m.type()) !=  t.end() )
+        if( t.contains(m.type()))
         {
             tmp++;
         }
@@ -396,8 +396,8 @@ Base* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& 
 
 bool Base::hasField( const std::string& attribute) const
 {
-    return m_aliasData.find(attribute) != m_aliasData.end()
-                                          || m_aliasLink.find(attribute) != m_aliasLink.end();
+    return m_aliasData.contains(attribute)
+           || m_aliasLink.contains(attribute);
 }
 
 /// Assign one field value (Data or Link)
