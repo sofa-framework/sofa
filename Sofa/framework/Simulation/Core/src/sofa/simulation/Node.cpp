@@ -114,7 +114,6 @@ Node::Node(const std::string& name)
 {
     _context = this;
     setName(name);
-    f_printLog.setValue(DEBUG_LINK);
 }
 
 
@@ -402,16 +401,10 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
             return nullptr;
     }
 
-    if(DEBUG_LINK)
-        dmsg_info() << "LINK: Looking for " << destType->className << "<" << destType->templateName << "> " << pathStr << " from Node " << getName() ;
-
     std::size_t ppos = 0;
     const std::size_t psize = pathStr.size();
     if (ppos == psize || (ppos == psize-2 && pathStr[ppos] == '[' && pathStr[ppos+1] == ']')) // self-reference
     {
-        if(DEBUG_LINK)
-            dmsg_info() << "  self-reference link." ;
-
         if (!link || !link->getOwnerBase()) return destType->dynamicCast(this);
         return destType->dynamicCast(link->getOwnerBase());
     }
@@ -426,9 +419,6 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
             return nullptr;
         }
         int index = atoi(pathStr.c_str()+ppos+1);
-
-        if(DEBUG_LINK)
-           dmsg_info() << "  index-based path to " << index ;
 
         ObjectReverseIterator it = object.rbegin();
         const ObjectReverseIterator itend = object.rend();
@@ -447,15 +437,10 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
         if (it == itend)
             return nullptr;
 
-        if(DEBUG_LINK)
-            dmsg_info() << "  found " << it->get()->getTypeName() << " " << it->get()->getName() << "." ;
-
         return destType->dynamicCast(it->get());
     }
     else if (ppos < psize && pathStr[ppos] == '/') // absolute path
     {
-        if(DEBUG_LINK)
-            dmsg_info() << "  absolute path" ;
         BaseNode* basenode = this->getRoot();
         if (!basenode) return nullptr;
         node = down_cast<Node>(basenode);
@@ -468,9 +453,6 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
             || pathStr.substr(ppos) == ".")
         {
             // this must be this node
-            if(DEBUG_LINK)
-                dmsg_info() << "  to current node" ;
-
             ppos += 2;
             based = true;
         }
@@ -481,24 +463,18 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
             if (master)
             {
                 master = master->getMaster();
-                if(DEBUG_LINK)
-                    dmsg_info() << "  to master object " << master->getName() ;
             }
             else
             {
                 core::objectmodel::BaseNode* firstParent = node->getFirstParent();
                 if (!firstParent) return nullptr;
                 node = static_cast<Node*>(firstParent); // TODO: explore other parents
-                if(DEBUG_LINK)
-                    dmsg_info() << "  to parent node " << node->getName() ;
             }
             based = true;
         }
         else if (pathStr[ppos] == '/')
         {
             // extra /
-            if(DEBUG_LINK)
-                dmsg_info() << "  extra '/'" ;
             ppos += 1;
         }
         else
@@ -509,8 +485,6 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
             ppos = p2pos+1;
             if (master)
             {
-                if(DEBUG_LINK)
-                    dmsg_info() << "  to slave object " << name ;
                 master = master->getSlave(name);
                 if (!master) return nullptr;
             }
@@ -523,15 +497,11 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
                     if (child)
                     {
                         node = child;
-                        if(DEBUG_LINK)
-                            dmsg_info() << "  to child node " << name ;
                         break;
                     }
                     else if (obj)
                     {
                         master = obj;
-                        if(DEBUG_LINK)
-                            dmsg_info()  << "  to object " << name ;
                         break;
                     }
                     if (based) return nullptr;
@@ -539,8 +509,6 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
                     core::objectmodel::BaseNode* firstParent = node->getFirstParent();
                     if (!firstParent) return nullptr;
                     node = static_cast<Node*>(firstParent); // TODO: explore other parents
-                    if(DEBUG_LINK)
-                        dmsg_info()  << "  looking in ancestor node " << node->getName() ;
                 }
             }
             based = true;
@@ -548,50 +516,10 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
     }
     if (master)
     {
-        if(DEBUG_LINK)
-            dmsg_info()  << "  found " << master->getTypeName() << " " << master->getName() << "." ;
         return destType->dynamicCast(master);
     }
-    else
-    {
-        Base* r = destType->dynamicCast(node);
-        if (r)
-        {
-            if(DEBUG_LINK)
-                dmsg_info()  << "  found node " << node->getName() << "." ;
-            return r;
-        }
-        for (ObjectIterator it = node->object.begin(), itend = node->object.end(); it != itend; ++it)
-        {
-            BaseObject* obj = it->get();
-            Base *o = destType->dynamicCast(obj);
-            if (!o) continue;
-            if(DEBUG_LINK)
-                dmsg_info()  << "  found " << obj->getTypeName() << " " << obj->getName() << "." ;
-            if (!r) r = o;
-            else return nullptr; // several objects are possible, this is an ambiguous path
-        }
-        if (r) return r;
-        // no object found, we look in parent nodes if the searched class is one of the known standard single components (state, topology, ...)
-        if (destType->hasParent(sofa::core::BaseState::GetClass()))
-            return destType->dynamicCast(node->getState());
-        else if (destType->hasParent(core::topology::BaseMeshTopology::GetClass()))
-            return destType->dynamicCast(node->getMeshTopologyLink());
-        else if (destType->hasParent(core::topology::Topology::GetClass()))
-            return destType->dynamicCast(node->getTopology());
-        else if (destType->hasParent(core::visual::Shader::GetClass()))
-            return destType->dynamicCast(node->getShader());
-        else if (destType->hasParent(core::behavior::BaseAnimationLoop::GetClass()))
-            return destType->dynamicCast(node->getAnimationLoop());
-        else if (destType->hasParent(core::behavior::OdeSolver::GetClass()))
-            return destType->dynamicCast(node->getOdeSolver());
-        else if (destType->hasParent(core::collision::Pipeline::GetClass()))
-            return destType->dynamicCast(node->getCollisionPipeline());
-        else if (destType->hasParent(core::visual::VisualLoop::GetClass()))
-            return destType->dynamicCast(node->getVisualLoop());
 
-        return nullptr;
-    }
+    return destType->dynamicCast(node);
 }
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
