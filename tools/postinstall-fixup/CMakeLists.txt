@@ -28,7 +28,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     install(CODE "execute_process(COMMAND /bin/bash
         \"${CMAKE_CURRENT_LIST_DIR}/linux-postinstall-fixup.sh\"
         \"${CMAKE_CURRENT_LIST_DIR}\"
-        \"${CMAKE_SOURCE_DIR}\"
         \"${CMAKE_BINARY_DIR}\"
         \"\$ENV{DESTDIR\}\${CMAKE_INSTALL_PREFIX\}\"
         \"${QT_LIB_DIR}\"
@@ -41,7 +40,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
         install(CODE "execute_process(COMMAND /bin/bash
             \"${CMAKE_CURRENT_LIST_DIR}/macos-postinstall-fixup.sh\"
             \"${CMAKE_CURRENT_LIST_DIR}\"
-            \"${CMAKE_SOURCE_DIR}\"
             \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/../..\"
             \"${QT_LIB_DIR}\"
             \"${QT_DATA_DIR}\"
@@ -52,7 +50,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
         install(CODE "execute_process(COMMAND /bin/bash
             \"${CMAKE_CURRENT_LIST_DIR}/macos-postinstall-fixup.sh\"
             \"${CMAKE_CURRENT_LIST_DIR}\"
-            \"${CMAKE_SOURCE_DIR}\"
             \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}\"
             \"${QT_LIB_DIR}\"
             \"${QT_DATA_DIR}\"
@@ -68,7 +65,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     install(CODE "execute_process(COMMAND bash
         \"${CMAKE_CURRENT_LIST_DIR}/windows-postinstall-fixup.sh\"
         \"${CMAKE_CURRENT_LIST_DIR}\"
-        \"${CMAKE_SOURCE_DIR}\"
         \"${CMAKE_BINARY_DIR}\"
         \"\$ENV{DESTDIR\}\${CMAKE_INSTALL_PREFIX\}\"
         )"

@@ -6,11 +6,10 @@ usage() {
 
 if [ "$#" -ge 2 ]; then
     SCRIPT_DIR="$(cd $1 && pwd)"
-    SRC_DIR="$(cd $2 && pwd)"
-    BUILD_DIR="$(cd $3 && pwd)"
-    INSTALL_DIR="$(cd $4 && pwd)"
-    QT_LIB_DIR="$5"
-    QT_DATA_DIR="$6"
+    BUILD_DIR="$(cd $2 && pwd)"
+    INSTALL_DIR="$(cd $3 && pwd)"
+    QT_LIB_DIR="$4"
+    QT_DATA_DIR="$5"
 else
     usage; exit 1
 fi
