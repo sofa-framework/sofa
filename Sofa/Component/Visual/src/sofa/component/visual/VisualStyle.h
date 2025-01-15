@@ -71,8 +71,8 @@ public:
     void updateVisualFlags(VisualParams* ) override;
     void applyBackupFlags(VisualParams* ) override;
 
-    bool insertInNode( sofa::core::objectmodel::BaseNode* node );
-    bool removeInNode( sofa::core::objectmodel::BaseNode* node );
+    bool insertInNode(sofa::core::objectmodel::BaseNode* node) override;
+    bool removeInNode(sofa::core::objectmodel::BaseNode* node) override;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
     sofa::core::objectmodel::lifecycle::RenamedData<DisplayFlags> displayFlags;
