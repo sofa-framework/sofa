@@ -2,7 +2,7 @@
 # set -o errexit # Exit on error
 
 usage() {
-    echo "Usage: macos-postinstall-fixup.sh <script-dir> <sources-dir> <install-dir> [qt-lib-dir] [qt-data-dir] [macdeployqt]"
+    echo "Usage: macos-postinstall-fixup.sh <script-dir> <install-dir> [qt-lib-dir] [qt-data-dir] [macdeployqt]"
 }
 
 if [ "$#" -ge 1 ]; then

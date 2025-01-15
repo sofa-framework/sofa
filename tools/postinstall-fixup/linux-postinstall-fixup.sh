@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: linux-postinstall-fixup.sh <script-dir> <sources-dir> <build-dir> <install-dir> [qt-lib-dir] [qt-data-dir]"
+    echo "Usage: linux-postinstall-fixup.sh <script-dir> <build-dir> <install-dir> [qt-lib-dir] [qt-data-dir]"
 }
 
 if [ "$#" -ge 2 ]; then
