@@ -240,27 +240,20 @@ protected:
 
     static constexpr id_type findId(const std::string_view key)
     {
-        return findId_impl(key, std::make_index_sequence<numberOfItems()>{});
+        //use std::ranges::enumerate in C++23
+        for (id_type i = 0; i < numberOfItems(); ++i)
+        {
+            if (key == Derived::s_items[i].key)
+            {
+                return i;
+            }
+        }
+        return static_cast<id_type>(-1);
     }
-
-    template<id_type... Is>
-    static constexpr id_type findId_impl(const std::string_view key, std::index_sequence<Is...>)
-    {
-        id_type result = static_cast<id_type>(-1);
-        ((Derived::s_items[Is].key == key ? (result = Is, true) : false) || ...);
-        return result;
-    }
-
-    template <typename, typename = std::void_t<>>
-    struct has_deprecation_map : std::false_type {};
-
-    // Specialization when T has a static member s_foo
-    template <typename T>
-    struct has_deprecation_map<T, std::void_t<decltype(T::s_deprecationMap)>> : std::true_type {};
 
     void keyError(const std::string_view key)
     {
-        if constexpr (has_deprecation_map<Derived>::value)
+        if constexpr (requires {Derived::s_deprecationMap;})
         {
             static_assert(std::is_same_v<std::remove_cv_t<decltype(Derived::s_deprecationMap)>, std::map<std::string_view, DeprecatedItem>>);
             const auto it = Derived::s_deprecationMap.find(key);
