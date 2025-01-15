@@ -17,7 +17,9 @@ get_filename_component(QT_DATA_DIR "${plugins_dir}" DIRECTORY)
 message("QT_LIB_DIR = ${QT_LIB_DIR}")
 message("QT_DATA_DIR = ${QT_DATA_DIR}")
 
+
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+
     install(CODE "file(WRITE
         \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/qt.conf\"
         \"[Paths]\\n  Prefix = ..\\n  Plugins = bin\\n  LibraryExecutables = bin\"

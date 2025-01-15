@@ -7,7 +7,7 @@ usage() {
 
 if [ "$#" -ge 1 ]; then
     SCRIPT_DIR="$(cd $1 && pwd)"
-    SCRIPT_DIR="$(cd $2 && pwd)"
+    SRC_DIR="$(cd $2 && pwd)"
     INSTALL_DIR="$(cd $3 && pwd)"
     QT_LIB_DIR="$4"
     QT_DATA_DIR="$5"
@@ -23,6 +23,7 @@ fi
 
 echo "SCRIPT_DIR = $SCRIPT_DIR"
 echo "INSTALL_DIR = $INSTALL_DIR"
+echo "SRC_DIR = $SRC_DIR"
 echo "BUNDLE_DIR = $BUNDLE_DIR"
 echo "QT_LIB_DIR = $QT_LIB_DIR"
 echo "QT_DATA_DIR = $QT_DATA_DIR"
@@ -55,6 +56,7 @@ elif [ -d "$QT_DATA_DIR" ]; then
 fi
 
 move_metis "$INSTALL_DIR"
+
 
 echo "Fixing up libs manually ..."
 
@@ -155,6 +157,11 @@ check-all-deps() {
                 libbasename="$(basename $lib)"
                 echo "install_name_tool -change $dep @rpath/$rpathlib $libbasename"
                 install_name_tool -change $dep @rpath/$rpathlib $lib
+
+                if [  -n "$libpython" ]; then
+                    echo "install_name_tool -add_rpath \"/usr/local/Frameworks/\" $libbasename"
+                    install_name_tool -add_rpath "/usr/local/Frameworks/" $lib
+                fi
             fi
         done
     done
@@ -211,9 +218,5 @@ if [ -d "$BUNDLE_DIR" ]; then
     done
     cat install_name_tool.errors.log | grep -v 'file already has LC_RPATH for' >&2
 fi
-
-
-# Generate stubfiles
-generate_stubfiles || true
 
 echo "Done."

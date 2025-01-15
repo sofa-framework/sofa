@@ -21,6 +21,7 @@ if [[ "$INSTALL_DIR" == *"/NSIS/"* ]] && [[ -e "$INSTALL_DIR/../applications/bin
 fi
 
 echo "SCRIPT_DIR = $SCRIPT_DIR"
+echo "SRC_DIR = $SRC_DIR"
 echo "BUILD_DIR = $BUILD_DIR"
 echo "INSTALL_DIR = $INSTALL_DIR"
 echo "INSTALL_DIR_BIN = $INSTALL_DIR_BIN"
@@ -39,6 +40,3 @@ done
 cd "$INSTALL_DIR" && find -name "*.dll" -path "*/collections/*" | while read lib; do
     cp "$lib" "$INSTALL_DIR_BIN"
 done
-
-# Generate stubfiles
-generate_stubfiles 1 || true
