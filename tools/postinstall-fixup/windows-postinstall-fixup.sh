@@ -1,14 +1,13 @@
 #!bash
 
 usage() {
-    echo "Usage: windows-postinstall-fixup.sh <script-dir> <sources-dir> <build-dir> <install-dir>"
+    echo "Usage: windows-postinstall-fixup.sh <script-dir> <build-dir> <install-dir>"
 }
 
 if [ "$#" -ge 2 ]; then
     SCRIPT_DIR="$(cd $1 && pwd)"
-    SRC_DIR="$(cd $2 && pwd)"
-    BUILD_DIR="$(cd $3 && pwd)"
-    INSTALL_DIR="$(cd $4 && pwd)"
+    BUILD_DIR="$(cd $2 && pwd)"
+    INSTALL_DIR="$(cd $3 && pwd)"
 else
     usage; exit 1
 fi
@@ -21,7 +20,6 @@ if [[ "$INSTALL_DIR" == *"/NSIS/"* ]] && [[ -e "$INSTALL_DIR/../applications/bin
 fi
 
 echo "SCRIPT_DIR = $SCRIPT_DIR"
-echo "SRC_DIR = $SRC_DIR"
 echo "BUILD_DIR = $BUILD_DIR"
 echo "INSTALL_DIR = $INSTALL_DIR"
 echo "INSTALL_DIR_BIN = $INSTALL_DIR_BIN"

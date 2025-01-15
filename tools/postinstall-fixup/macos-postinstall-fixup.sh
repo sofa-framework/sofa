@@ -7,11 +7,10 @@ usage() {
 
 if [ "$#" -ge 1 ]; then
     SCRIPT_DIR="$(cd $1 && pwd)"
-    SRC_DIR="$(cd $2 && pwd)"
-    INSTALL_DIR="$(cd $3 && pwd)"
-    QT_LIB_DIR="$4"
-    QT_DATA_DIR="$5"
-    MACDEPLOYQT_EXE="$6"
+    INSTALL_DIR="$(cd $2 && pwd)"
+    QT_LIB_DIR="$3"
+    QT_DATA_DIR="$4"
+    MACDEPLOYQT_EXE="$5"
 else
     usage; exit 1
 fi
@@ -23,7 +22,6 @@ fi
 
 echo "SCRIPT_DIR = $SCRIPT_DIR"
 echo "INSTALL_DIR = $INSTALL_DIR"
-echo "SRC_DIR = $SRC_DIR"
 echo "BUNDLE_DIR = $BUNDLE_DIR"
 echo "QT_LIB_DIR = $QT_LIB_DIR"
 echo "QT_DATA_DIR = $QT_DATA_DIR"
