@@ -29,6 +29,8 @@
 
 #include <sofa/helper/logging/Messaging.h>
 
+#include <ranges>
+
 namespace sofa::gl
 {
 
@@ -140,10 +142,10 @@ void GLSLShader::SetShaderFileName(GLint target, const std::string& filename)
 
 void GLSLShader::forceReloadShaderFromFile(const std::string& filename)
 {
-    for(auto& fn : m_hShaderContents){
-        if(fn.second.filename == filename)
+    for(auto& shaderContent : m_hShaderContents | std::views::values){
+        if(shaderContent.filename == filename)
         {
-            fn.second.text = "" ;
+            shaderContent.text = "" ;
         }
     }
 }

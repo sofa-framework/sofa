@@ -24,6 +24,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <ranges>
+
 namespace sofa::component::collision::response::contact
 {
 
@@ -45,9 +47,9 @@ RuleBasedContactManager::RuleBasedContactManager()
 
 RuleBasedContactManager::~RuleBasedContactManager()
 {
-    for(const auto& d : variablesData)
+    for(const auto& d : variablesData | std::views::values)
     {
-        delete d.second;
+        delete d;
     }
 }
 

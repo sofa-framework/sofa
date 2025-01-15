@@ -27,6 +27,8 @@ using sofa::helper::system::FileSystem;
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/logging/Messaging.h>
 
+#include <ranges>
+
 #if __has_include(<filesystem>)
   #include <filesystem>
   namespace fs = std::filesystem;
@@ -83,7 +85,7 @@ PluginManager::~PluginManager()
 
 void PluginManager::cleanup()
 {
-    for (const auto& [key, callback] : m_onPluginCleanupCallbacks)
+    for (const auto& callback : m_onPluginCleanupCallbacks | std::views::values)
     {
         if(callback)
         {
@@ -129,7 +131,7 @@ void PluginManager::readFromIniFile(const std::string& path, type::vector<std::s
 void PluginManager::writeToIniFile(const std::string& path)
 {
     std::ofstream outstream(path.c_str());
-    for( const auto& [pluginPath, _] : m_pluginMap)
+    for(const auto& pluginPath : m_pluginMap | std::views::keys)
     {
         if (const auto* plugin = getPlugin(pluginPath))
         {
@@ -236,7 +238,7 @@ PluginManager::PluginLoadStatus PluginManager::loadPluginByPath(const std::strin
 
     msg_info("PluginManager") << "Loaded plugin: " << pluginPath;
 
-    for (const auto& [key, callback] : m_onPluginLoadedCallbacks)
+    for (const auto& callback : m_onPluginLoadedCallbacks | std::views::values)
     {
         if(callback)
         {
@@ -385,12 +387,12 @@ Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /
         // check if a plugin with a same name but a different path is loaded
         // problematic case per se but at least we can warn the user
         const auto& pluginName = GetPluginNameFromPath(pluginPath);
-        for (auto& k : m_pluginMap)
+        for (auto& loadedPlugin : m_pluginMap | std::views::values)
         {
-            if (pluginName == k.second.getModuleName())
+            if (pluginName == loadedPlugin.getModuleName())
             {
                 msg_warning("PluginManager") << "Plugin " << pluginName << " is already loaded from a different path, check you configuration.";
-                return &k.second;
+                return &loadedPlugin;
             }
         }
 

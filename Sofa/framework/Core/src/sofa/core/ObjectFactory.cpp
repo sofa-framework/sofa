@@ -28,6 +28,8 @@
 #include <sofa/helper/DiffLib.h>
 #include <sofa/helper/system/PluginManager.h>
 
+#include <ranges>
+
 namespace sofa::core
 {
 
@@ -275,9 +277,9 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             {
                 std::vector<std::string> possibleNames;
                 possibleNames.reserve(registry.size());
-                for(auto& k : registry)
+                for(const auto& objectName : registry | std::views::keys)
                 {
-                    possibleNames.emplace_back(k.first);
+                    possibleNames.emplace_back(objectName);
                 }
 
                 arg->logError("But the following object(s) exist:");
@@ -346,18 +348,17 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     /// The object has been created, but not with the template given by the user
     if (!usertemplatename.empty() && object->getTemplateName() != userresolved)
     {
-        std::vector<std::string> templateList;
-        if (entry)
-            for (const auto& cr : entry->creatorMap)
-                templateList.push_back(cr.first);
-        std::stringstream ss;
+        std::string ss;
         bool isUserTemplateNameInTemplateList = false;
-        for(unsigned int i = 0; i < templateList.size(); ++i)
+        if (entry)
         {
-            ss << templateList[i];
-            isUserTemplateNameInTemplateList |= (templateList[i] == usertemplatename || templateList[i] == userresolved);
-            if (i != templateList.size() - 1)
-                ss << ", ";
+            auto templateList = entry->creatorMap | std::views::keys;
+            isUserTemplateNameInTemplateList = std::ranges::find_if(templateList, [&](const auto& templateName)
+            {
+                return templateName == usertemplatename || templateName == userresolved;
+            }) != templateList.end();
+                
+            ss = sofa::helper::join(templateList.begin(), templateList.end(), ",");
         }
         if (isUserTemplateNameInTemplateList)
         {
@@ -369,7 +370,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         else
         {
             msg_error(object.get()) << "Requested template '" << usertemplatename << "' "
-                                      << "cannot be found in the list of available templates [" << ss.str() << "]. "
+                                      << "cannot be found in the list of available templates [" << ss << "]. "
                                       << "Falling back to the first compatible template: '"
                                       << object->getTemplateName() << "'.";
         }
@@ -387,28 +388,25 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         m_callbackOnCreate(object.get(), arg);
 
     ///////////////////////// All this code is just there to implement the MakeDataAlias component.
-    std::vector<std::string> todelete;
-    for(auto& kv : entry->m_dataAlias)
-    {
-        if(object->findData(kv.first)==nullptr)
+    auto aliasesToDeleteView = entry->m_dataAlias
+        | std::views::keys
+        | std::views::filter([&object](const auto& dataName)
         {
-            msg_warning(object.get()) << "The object '"<< (object->getClassName()) <<"' does not have an alias named '"<< kv.first <<"'.  "
-                                      << "To remove this error message you need to use a valid data name for the 'dataname field'. ";
-
-            todelete.push_back(kv.first);
-        }
-    }
-
-    for(auto& todeletename : todelete)
+            return !object->findData(dataName);
+        });
+    sofa::type::vector aliasesToDelete(std::ranges::begin(aliasesToDeleteView), std::ranges::end(aliasesToDeleteView));
+    for (const auto& alias : aliasesToDelete)
     {
-        entry->m_dataAlias.erase( entry->m_dataAlias.find(todeletename) ) ;
+        msg_warning(object.get()) << "The object '"<< (object->getClassName()) <<"' does not have an alias named '"<< alias <<"'.  "
+                          << "To remove this error message you need to use a valid data name for the 'dataname field'. ";
+        entry->m_dataAlias.erase( entry->m_dataAlias.find(alias) ) ;
     }
 
-    for(auto& kv : entry->m_dataAlias)
+    for(auto& [dataName, dataAliases] : entry->m_dataAlias)
     {
         objectmodel::BaseObjectDescription newdesc;
-        for(std::string& alias : kv.second){
-            object->addAlias(object->findData(kv.first), alias.c_str()) ;
+        for(std::string& alias : dataAliases){
+            object->addAlias(object->findData(dataName), alias.c_str()) ;
 
             /// The Alias is used in the argument
             const std::string val(arg->getAttribute(alias));
