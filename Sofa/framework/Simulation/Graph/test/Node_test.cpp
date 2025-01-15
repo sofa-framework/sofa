@@ -219,7 +219,7 @@ TEST(Node_test, twoMechanicalStatesInTheSameNode)
     const auto plugins = testing::makeScopedPlugin({Sofa.Component.StateContainer});
     sofa::simpleapi::createObject(root, "MechanicalObject", {{"template", "Vec3"}, {"name", "A"}});
 
-    EXPECT_MSG_EMIT(Error);
+    EXPECT_MSG_EMIT(Warning);
     sofa::simpleapi::createObject(root, "MechanicalObject", {{"template", "Vec3"}, {"name", "B"}});
 
     //the last added state is the one in Node

@@ -1032,7 +1032,7 @@ void checkAlreadyContains(Node& self, LinkType& link, Component* obj)
         if (link != obj && link != nullptr)
         {
             static const auto componentClassName = Component::GetClass()->className;
-            msg_error(&self) << "Trying to add a " << componentClassName << " ('"
+            msg_warning(&self) << "Trying to add a " << componentClassName << " ('"
                 << obj->getName() << "' [" << obj->getClassName() << "] " << obj << ")"
                 << " into the Node '" << self.getPathName()
                 << "', whereas it already contains one ('" << link->getName() << "' [" << link->getClassName() << "] " << link.get() << ")."
