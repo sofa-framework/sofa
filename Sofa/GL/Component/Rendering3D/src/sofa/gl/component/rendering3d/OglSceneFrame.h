@@ -58,6 +58,7 @@ public:
 
     Data<Alignment> d_alignment; ///< Alignment of the frame in the view
     Data<int> d_viewportSize; ///< Size of the viewport where the frame is rendered
+    Data<bool> d_solidBackground;
 
     OglSceneFrame();
 
