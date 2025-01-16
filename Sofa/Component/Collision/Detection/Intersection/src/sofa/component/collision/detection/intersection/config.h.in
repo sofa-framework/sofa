@@ -48,6 +48,6 @@ namespace sofa::component::collision::detection::intersection
 #define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
 #else
 #define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION() \
-    SOFA_ATTRIBUTE_DEPRECATED("v24.06", "v24.12", \
+    SOFA_ATTRIBUTE_DISABLED("v24.06", "v24.12", \
     "Data renamed according to the guidelines")
 #endif
