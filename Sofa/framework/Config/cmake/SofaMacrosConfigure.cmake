@@ -294,13 +294,7 @@ macro(sofa_add_subdirectory type directory name)
     endif()
 
     set(default_value OFF)
-    if(ARG_EXTERNAL)
-        set(input_value ${ARGV6})
-    else()
-        set(input_value ${ARGV3})
-    endif ()
-
-    if(${input_value})
+    if(${ARGV3})
         set(default_value ON)
     endif()
 

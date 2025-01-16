@@ -452,7 +452,7 @@ int main(int argc, char** argv)
             mrulist.close();
         }
         else
-            fileName = "Demos/SofaDefaultScene.scn";
+            fileName = "Demos/caduceus.scn";
 
         fileName = DataRepository.getFile(fileName);
     }
