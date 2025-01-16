@@ -19,62 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimpleGUI/config.h>
+#include <Modules_test.h>
+#include <gtest/gtest.h>
 
-
-namespace sofa::component
-{
-
-	//Here are just several convenient functions to help user to know what contains the plugin
-
-	extern "C" {
-                SOFA_SOFASIMPLEGUI_API void initExternalModule();
-                SOFA_SOFASIMPLEGUI_API const char* getModuleName();
-                SOFA_SOFASIMPLEGUI_API const char* getModuleVersion();
-                SOFA_SOFASIMPLEGUI_API const char* getModuleLicense();
-                SOFA_SOFASIMPLEGUI_API const char* getModuleDescription();
-                SOFA_SOFASIMPLEGUI_API const char* getModuleComponentList();
-	}
-	
-	void initExternalModule()
-	{
-		static bool first = true;
-		if (first)
-		{
-			first = false;
-		}
-	}
-
-	const char* getModuleName()
-	{
-	  return "SimpleGUI";
-	}
-
-	const char* getModuleVersion()
-	{
-		return "0.2";
-	}
-
-	const char* getModuleLicense()
-	{
-		return "LGPL";
-	}
-
-
-	const char* getModuleDescription()
-	{
-		return "TODO: replace this with the description of your plugin";
-	}
-
-	const char* getModuleComponentList()
-	{
-	  /// string containing the names of the classes provided by the plugin
-	  return "";
-	  //return "MyMappingPendulumInPlane, MyBehaviorModel, MyProjectiveConstraintSet";
-	}
-
-
-
-} 
-
-
+ALL_SOFA_MODULES

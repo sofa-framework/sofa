@@ -33,25 +33,25 @@ namespace sofa::core
 
 SOFA_EVENT_CPP(DataExchangeEvent)
 
-// Register in the Factory
-int DataExchangeClass = core::RegisterObject("DataExchange")
-.add< DataExchange< sofa::type::vector<sofa::type::Vec3d> > >(true)
-.add< DataExchange< sofa::type::vector<sofa::type::Vec2d> > >()
-.add< DataExchange< sofa::type::vector<double> > >()
-.add< DataExchange< sofa::type::Vec3d > >()
-.add< DataExchange< double > >()
+void registerDataExchange(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Component for data memory sharing in the context of multi-threading applications")
+                             .add< DataExchange< sofa::type::vector<sofa::type::Vec3d> > >(true)
+                             .add< DataExchange< sofa::type::vector<sofa::type::Vec2d> > >()
+                             .add< DataExchange< sofa::type::vector<double> > >()
+                             .add< DataExchange< sofa::type::Vec3d > >()
+                             .add< DataExchange< double > >()
 
-.add< DataExchange< sofa::type::vector<sofa::type::Vec3f> > >()
-.add< DataExchange< sofa::type::vector<sofa::type::Vec2f> > >()
-.add< DataExchange< sofa::type::vector<float> > >()
-.add< DataExchange< sofa::type::Vec3f > >()
-.add< DataExchange< float > >()
+                             .add< DataExchange< sofa::type::vector<sofa::type::Vec3f> > >()
+                             .add< DataExchange< sofa::type::vector<sofa::type::Vec2f> > >()
+                             .add< DataExchange< sofa::type::vector<float> > >()
+                             .add< DataExchange< sofa::type::Vec3f > >()
+                             .add< DataExchange< float > >()
 
-.add< DataExchange< sofa::type::vector<int> > >()
-.add< DataExchange< sofa::type::vector<unsigned int> > >()
-.add< DataExchange< bool > >()
-;
-
+                             .add< DataExchange< sofa::type::vector<int> > >()
+                             .add< DataExchange< sofa::type::vector<unsigned int> > >()
+                             .add< DataExchange< bool > >());
+}
 
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::vector<sofa::type::Vec3d> >;
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::vector<sofa::type::Vec2d> >;

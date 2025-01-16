@@ -19,61 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SensableEmulation/config.h>
+#pragma once
+#include <sofa/core/config.h>
+#include <atomic>
 
-namespace sofa
+namespace sofa::core
 {
 
-namespace component
+/**
+ * The `IntrusiveObject` class implements an internal reference counting mechanism
+ * to manage its lifetime. It is intended to work with intrusive smart pointers like
+ * `boost::intrusive_ptr`.
+ */
+class SOFA_CORE_API IntrusiveObject
 {
+    std::atomic<int> ref_counter { 0 };
 
-//Here are just several convenient functions to help user to know what contains the plugin
+    void addRef();
+    void release();
 
-extern "C" {
-    SOFA_SENSABLEEMUPLUGIN_API void initExternalModule();
-    SOFA_SENSABLEEMUPLUGIN_API const char* getModuleName();
-    SOFA_SENSABLEEMUPLUGIN_API const char* getModuleVersion();
-    SOFA_SENSABLEEMUPLUGIN_API const char* getModuleLicense();
-    SOFA_SENSABLEEMUPLUGIN_API const char* getModuleDescription();
-    SOFA_SENSABLEEMUPLUGIN_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
+    friend inline void intrusive_ptr_add_ref(IntrusiveObject* p)
     {
-        first = false;
+        p->addRef();
     }
+
+    friend inline void intrusive_ptr_release(IntrusiveObject* p)
+    {
+        p->release();
+    }
+
+protected:
+    virtual ~IntrusiveObject() = default;
+};
+
 }
-
-const char* getModuleName()
-{
-    return "SensableEmulation";
-}
-
-const char* getModuleVersion()
-{
-    return "beta 1.0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "Force feedback with sensable devices into SOFA Framework";
-}
-
-const char* getModuleComponentList()
-{
-    return "OmniDriverEmu";
-}
-
-} // namespace component
-
-} // namespace sofa
-
-

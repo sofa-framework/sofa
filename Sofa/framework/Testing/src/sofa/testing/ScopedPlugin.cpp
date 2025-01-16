@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,22 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/testing/ScopedPlugin.h>
 
-namespace multithreading::component::solidmechanics::spring
+namespace sofa::testing
 {
 
-void registerParallelMeshSpringForceField(sofa::core::ObjectFactory* factory)
+ScopedPlugin::ScopedPlugin(const std::string& pluginName,
+                           helper::system::PluginManager* pluginManager)
+: m_pluginManager(pluginManager)
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel stiff springs acting along the edges of a mesh.")
-                             .add< ParallelMeshSpringForceField<sofa::defaulttype::Vec3Types> >()
-                             .add< ParallelMeshSpringForceField<sofa::defaulttype::Vec2Types> >()
-                             .add< ParallelMeshSpringForceField<sofa::defaulttype::Vec1Types> >());
+    addPlugin(pluginName);
 }
 
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelMeshSpringForceField<sofa::defaulttype::Vec3Types>;
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelMeshSpringForceField<sofa::defaulttype::Vec2Types>;
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelMeshSpringForceField<sofa::defaulttype::Vec1Types>;
+ScopedPlugin::~ScopedPlugin()
+{
+    if (m_pluginManager)
+    {
+        for (const auto& pluginName : m_loadedPlugins)
+        {
+            const auto [path, isLoaded] = m_pluginManager->isPluginLoaded(pluginName);
+            if (isLoaded)
+            {
+                m_pluginManager->unloadPlugin(path);
+            }
+        }
+    }
+}
+
+void ScopedPlugin::addPlugin(const std::string& pluginName)
+{
+    const auto status = m_pluginManager->loadPlugin(pluginName);
+    if(status == helper::system::PluginManager::PluginLoadStatus::SUCCESS)
+    {
+        m_loadedPlugins.insert(pluginName);
+        sofa::core::ObjectFactory::getInstance()->registerObjectsFromPlugin(pluginName);
+    }
+}
 
 }

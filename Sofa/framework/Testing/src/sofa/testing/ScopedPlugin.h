@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,16 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SENSABLEEMULATION_CONFIG_H
-#define SENSABLEEMULATION_CONFIG_H
+#pragma once
+#include <sofa/testing/config.h>
+#include <sofa/helper/system/PluginManager.h>
 
-#include <sofa/config.h>
+namespace sofa::testing
+{
 
-#ifdef SOFA_BUILD_SENSABLEEMULATIONPLUGIN
-#  define SOFA_TARGET SensableEmulation
-#  define SOFA_SENSABLEEMUPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SENSABLEEMUPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+struct SOFA_TESTING_API ScopedPlugin
+{
+    ScopedPlugin() = delete;
+    ScopedPlugin(const ScopedPlugin&) = delete;
+    void operator=(const ScopedPlugin&) = delete;
 
-#endif
+    explicit ScopedPlugin(
+        const std::string& pluginName,
+        helper::system::PluginManager* pluginManager = &helper::system::PluginManager::getInstance());
+
+    template<class InputIt>
+    ScopedPlugin(
+        InputIt first, InputIt last,
+        helper::system::PluginManager* pluginManager = &helper::system::PluginManager::getInstance())
+    : m_pluginManager(pluginManager)
+    {
+        while (first != last)
+        {
+            addPlugin(*first++);
+        }
+    }
+
+    ~ScopedPlugin();
+
+private:
+    helper::system::PluginManager* m_pluginManager { nullptr };
+
+    std::set<std::string> m_loadedPlugins;
+
+    void addPlugin(const std::string& pluginName);
+};
+
+
+inline std::unique_ptr<ScopedPlugin> makeScopedPlugin(const std::initializer_list<std::string>& pluginNames)
+{
+    return std::make_unique<ScopedPlugin>(pluginNames.begin(), pluginNames.end());
+}
+
+
+}

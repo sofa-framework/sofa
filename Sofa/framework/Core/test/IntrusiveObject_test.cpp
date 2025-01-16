@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,22 +19,55 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.inl>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/IntrusiveObject.h>
+#include <gtest/gtest.h>
+#include <sofa/core/sptr.h>
 
-namespace multithreading::component::solidmechanics::spring
-{
 
-void registerParallelMeshSpringForceField(sofa::core::ObjectFactory* factory)
+class DummyIntrusiveObject : public sofa::core::IntrusiveObject
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel stiff springs acting along the edges of a mesh.")
-                             .add< ParallelMeshSpringForceField<sofa::defaulttype::Vec3Types> >()
-                             .add< ParallelMeshSpringForceField<sofa::defaulttype::Vec2Types> >()
-                             .add< ParallelMeshSpringForceField<sofa::defaulttype::Vec1Types> >());
+public:
+    DummyIntrusiveObject() = default;
+    explicit DummyIntrusiveObject(const std::function<void()>& _destructorCallback)
+        : destructorCallback(_destructorCallback) {}
+
+    ~DummyIntrusiveObject() override
+    {
+        destructorCallback();
+    }
+
+private:
+    std::function<void()> destructorCallback;
+};
+
+
+
+TEST(IntrusiveObject, IsDestructorCalled)
+{
+    std::size_t nbTimesDestructorCalled = 0;
+    {
+        sofa::core::sptr<DummyIntrusiveObject> dummy(new DummyIntrusiveObject([&nbTimesDestructorCalled]()
+        {
+            nbTimesDestructorCalled++;
+        }));
+    }
+    EXPECT_EQ(1, nbTimesDestructorCalled);
 }
 
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelMeshSpringForceField<sofa::defaulttype::Vec3Types>;
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelMeshSpringForceField<sofa::defaulttype::Vec2Types>;
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelMeshSpringForceField<sofa::defaulttype::Vec1Types>;
 
+TEST(IntrusiveObject, Copy)
+{
+    std::size_t nbTimesDestructorCalled = 0;
+    {
+        sofa::core::sptr<DummyIntrusiveObject> dummy0;
+        {
+            sofa::core::sptr<DummyIntrusiveObject> dummy(new DummyIntrusiveObject([&nbTimesDestructorCalled]()
+            {
+                nbTimesDestructorCalled++;
+            }));
+
+            dummy0 = dummy;
+        }
+    }
+    EXPECT_EQ(1, nbTimesDestructorCalled);
 }

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,16 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFASIMPLEGUI_CONFIG_H
-#define SOFASIMPLEGUI_CONFIG_H
+#include <sofa/testing/ScopedPlugin.h>
+#include <gtest/gtest.h>
 
-#include <sofa/config.h>
+TEST(ScopedPlugin, test)
+{
+    static std::string pluginName = "Sofa.Component.AnimationLoop";
+    auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
 
-#ifdef SOFA_BUILD_SOFASIMPLEGUI
-#  define SOFA_TARGET SofaSimpleGUI
-#  define SOFA_SOFASIMPLEGUI_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFASIMPLEGUI_API  SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+    //make sure that pluginName is not already loaded
+    {
+        const auto [path, isLoaded] = pluginManager.isPluginLoaded(pluginName);
+        if (isLoaded)
+        {
+            pluginManager.unloadPlugin(path);
+        }
+    }
 
-#endif
+    {
+        const auto [path, isLoaded] = pluginManager.isPluginLoaded(pluginName);
+        EXPECT_FALSE(isLoaded);
+    }
+
+    {
+        const sofa::testing::ScopedPlugin plugin(pluginName);
+
+        {
+            const auto [path, isLoaded] = pluginManager.isPluginLoaded(pluginName);
+            EXPECT_TRUE(isLoaded);
+        }
+
+        //end of scope: plugin should be unloaded
+    }
+
+    {
+        const auto [path, isLoaded] = pluginManager.isPluginLoaded(pluginName);
+        EXPECT_FALSE(isLoaded);
+    }
+}

@@ -19,22 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.inl>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/IntrusiveObject.h>
 
-namespace multithreading::component::solidmechanics::spring
+namespace sofa::core
 {
-
-void registerParallelMeshSpringForceField(sofa::core::ObjectFactory* factory)
+void IntrusiveObject::addRef()
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel stiff springs acting along the edges of a mesh.")
-                             .add< ParallelMeshSpringForceField<sofa::defaulttype::Vec3Types> >()
-                             .add< ParallelMeshSpringForceField<sofa::defaulttype::Vec2Types> >()
-                             .add< ParallelMeshSpringForceField<sofa::defaulttype::Vec1Types> >());
+    ++ref_counter;
 }
 
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelMeshSpringForceField<sofa::defaulttype::Vec3Types>;
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelMeshSpringForceField<sofa::defaulttype::Vec2Types>;
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelMeshSpringForceField<sofa::defaulttype::Vec1Types>;
-
+void IntrusiveObject::release()
+{
+    if (ref_counter.fetch_sub(1) == 1)
+    {
+        delete this;
+    }
+}
 }

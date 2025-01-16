@@ -74,11 +74,11 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
 
     void SetUp() override 
     {
-        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver");
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.MechanicalLoad");
-        sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
-        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+        sofa::simpleapi::importPlugin(Sofa.Component.ODESolver);
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.MechanicalLoad);
+        sofa::simpleapi::importPlugin(Sofa.Component.LinearSolver.Iterative);
+        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
     }
 
     void TearDown() override {}

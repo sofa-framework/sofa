@@ -59,7 +59,7 @@ OglModel::OglModel()
     , blendEquation( initData(&blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
     , sourceFactor( initData(&sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
     , destFactor( initData(&destFactor, "dfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed") )
-    , tex(nullptr)
+    , m_tex(nullptr)
     , vbo(0), iboEdges(0), iboTriangles(0), iboQuads(0)
     , VBOGenDone(false), initDone(false), useEdges(false), useTriangles(false), useQuads(false), canUsePatches(false)
     , oldVerticesSize(0), oldNormalsSize(0), oldTexCoordsSize(0), oldTangentsSize(0), oldBitangentsSize(0), oldEdgesSize(0), oldTrianglesSize(0), oldQuadsSize(0)
@@ -88,11 +88,16 @@ void OglModel::parse(core::objectmodel::BaseObjectDescription* arg)
 
 void OglModel::deleteTextures()
 {
-    if (tex!=nullptr) delete tex;
+    if (m_tex != nullptr) 
+    {
+        delete m_tex;
+        m_tex = nullptr;
+    }
 
     for (unsigned int i = 0 ; i < textures.size() ; i++)
     {
         delete textures[i];
+        textures[i] = nullptr;
     }
 }
 
@@ -162,7 +167,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     if (transparent ^ isTransparent) return;
 
 
-    if (!tex && m.useTexture && m.activated)
+    if (!m_tex && m.useTexture && m.activated)
     {
         //get the texture id corresponding to the current material
         size_t indexInTextureArray = size_t(materialTextureIdMap[g.materialId]);
@@ -288,7 +293,7 @@ void OglModel::drawGroup(int ig, bool transparent)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    if (!tex && m.useTexture && m.activated)
+    if (!m_tex && m.useTexture && m.activated)
     {
         int indexInTextureArray = materialTextureIdMap[g.materialId];
         if (indexInTextureArray < int(textures.size()) && textures[size_t(indexInTextureArray)])
@@ -379,12 +384,12 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
 
-    if ((tex || d_putOnlyTexCoords.getValue()) )
+    if ((m_tex || d_putOnlyTexCoords.getValue()) )
     {
-        if(tex)
+        if(m_tex)
         {
             glEnable(GL_TEXTURE_2D);
-            tex->bind();
+            m_tex->bind();
         }
 
         const size_t textureArrayByteSize = vtexcoords.size()*sizeof(vtexcoords[0]);
@@ -522,11 +527,11 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         glDepthMask(GL_TRUE);
     }
 
-    if ( (tex || d_putOnlyTexCoords.getValue()) )
+    if ( (m_tex || d_putOnlyTexCoords.getValue()) )
     {
-        if (tex)
+        if (m_tex)
         {
-            tex->unbind();
+            m_tex->unbind();
             glDisable(GL_TEXTURE_2D);
         }
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -582,7 +587,7 @@ bool OglModel::hasTransparent()
 
 bool OglModel::hasTexture()
 {
-    return !textures.empty() || tex;
+    return !textures.empty() || m_tex;
 }
 
 bool OglModel::loadTexture(const std::string& filename)
@@ -590,7 +595,7 @@ bool OglModel::loadTexture(const std::string& filename)
     helper::io::Image *img = helper::io::Image::Create(filename);
     if (!img)
         return false;
-    tex = new sofa::gl::Texture(img, true, true, false, d_srgbTexturing.getValue());
+    m_tex = new sofa::gl::Texture(img, true, true, false, d_srgbTexturing.getValue());
     return true;
 }
 
@@ -696,9 +701,9 @@ void OglModel::doInitVisual(const core::visual::VisualParams*)
 
 void OglModel::initTextures()
 {
-    if (tex)
+    if (m_tex)
     {
-        tex->init();
+        m_tex->init();
     }
     else
     {
@@ -755,7 +760,7 @@ void OglModel::initVertexBuffer()
     positionsBufferSize = (vertices.size()*sizeof(Vec3f));
     normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
 
-    if (tex || d_putOnlyTexCoords.getValue() || !textures.empty())
+    if (m_tex || d_putOnlyTexCoords.getValue() || !textures.empty())
     {
         textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
 
@@ -847,7 +852,7 @@ void OglModel::updateVertexBuffer()
     positionsBufferSize = (vertices.size()*sizeof(Vec3f));
     normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
 
-    if (tex || d_putOnlyTexCoords.getValue() || !textures.empty())
+    if (m_tex || d_putOnlyTexCoords.getValue() || !textures.empty())
     {
         textureCoordsBufferSize = (vtexcoords.size() * sizeof(vtexcoords[0]));
 
@@ -873,7 +878,7 @@ void OglModel::updateVertexBuffer()
         normalBuffer);
 
     ////Texture coords
-    if (tex || d_putOnlyTexCoords.getValue() || !textures.empty())
+    if (m_tex || d_putOnlyTexCoords.getValue() || !textures.empty())
     {
         glBufferSubData(GL_ARRAY_BUFFER,
             positionsBufferSize + normalsBufferSize,
