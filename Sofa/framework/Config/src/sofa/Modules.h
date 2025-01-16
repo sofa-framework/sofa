@@ -118,6 +118,7 @@ public:
         START_MODULE(ODESolver, "Sofa.Component.ODESolver")
             MODULE(Backward, "Sofa.Component.ODESolver.Backward")
             MODULE(Forward, "Sofa.Component.ODESolver.Forward")
+        MODULE(Integration, "Sofa.Component.ODESolver.Integration")
         END_MODULE(ODESolver)
 
         MODULE(Playback, "Sofa.Component.Playback")
