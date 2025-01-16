@@ -38,7 +38,7 @@
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
         <EigenSimplicialLDLT name="LDLTLinearSolver" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true"  linearSystem="@A"/>
 
-        <MeshVTKLoader name="LogoLoader" filename="mesh/DefaultScene/Logo.vtk"  />
+        <MeshVTKLoader name="LogoLoader" filename="mesh/SofaScene/Logo.vtk"  />
         <TetrahedronSetTopologyContainer name="Container" src="@LogoLoader" />
         <TetrahedronSetTopologyModifier name="Modifier"/>
         <MechanicalObject name="LogoDOF" template="Vec3d" />
@@ -47,14 +47,14 @@
         <MeshMatrixMass name="Mass" totalMass="0.1" />
 
         <Node name="Collision">
-            <SphereLoader name="SphereLoader" filename="mesh/DefaultScene/LogoColli.sph" />
+            <SphereLoader name="SphereLoader" filename="mesh/SofaScene/LogoColli.sph" />
             <MechanicalObject name="CollisionDOF" position="@SphereLoader.position" />
             <SphereCollisionModel name="CollisionModel" listRadius="@SphereLoader.listRadius"/>
             <BarycentricMapping name="MappingCollision" input="@../LogoDOF" output="@CollisionDOF"/>
         </Node>
 
         <Node name="Visu">
-            <MeshOBJLoader name="SurfaceLoader" filename="mesh/DefaultScene/LogoVisu.obj"/>
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/LogoVisu.obj"/>
             <OglModel name="VisualModel" color="0.7 .35 0 0.8" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
             <BarycentricMapping name="MappingVisu" isMechanical="false" input="@../LogoDOF" output="@VisualModel" />
         </Node>
@@ -97,7 +97,7 @@
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
         <EigenSimplicialLDLT name="LDLLinearSolver" template="CompressedRowSparseMatrixd" parallelInverseProduct="true" linearSystem="@A"/>
 
-        <MeshVTKLoader name="SLoader" filename="mesh/DefaultScene/S.vtk"  />
+        <MeshVTKLoader name="SLoader" filename="mesh/SofaScene/S.vtk"  />
         <TetrahedronSetTopologyContainer name="Container" src="@SLoader" />
         <TetrahedronSetTopologyModifier name="Modifier"/>
         <MechanicalObject name="SDOF" template="Vec3d" />
@@ -115,7 +115,7 @@
         </Node>
 
         <Node name="Visu">
-            <MeshOBJLoader name="SurfaceLoader" filename="mesh/DefaultScene/SVisu.obj"/>
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/SVisu.obj"/>
             <OglModel name="VisualModel" color="0.7 0.7 0.7 0.8" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
             <BarycentricMapping name="MappingVisu" input="@../SDOF" output="@VisualModel" isMechanical="false" />
         </Node>
@@ -136,7 +136,7 @@
 
     <!-- Object = O letter as a 3D deformable object (FEM grid) -->
     <Node name="O" >
-        <MeshOBJLoader name="OLoader" filename="mesh/DefaultScene/O.obj"/>
+        <MeshOBJLoader name="OLoader" filename="mesh/SofaScene/O.obj"/>
 
         <SparseGridRamificationTopology name="SparseGrid" n="4 2 4" position="@OLoader.position" nbVirtualFinerLevels="2" finestConnectivity="0"/>
         <HexahedronSetTopologyContainer name="HexaTopology" src="@SparseGrid"/>
@@ -172,7 +172,7 @@
         <UniformMass name="Mass" totalMass="0.1" />
 
         <Node name="Collision">
-            <MeshOBJLoader name="SkeletonLoader" filename="mesh/DefaultScene/FSkel.obj"/>
+            <MeshOBJLoader name="SkeletonLoader" filename="mesh/SofaScene/FSkel.obj"/>
             <TriangleSetTopologyContainer name="Container" src="@SkeletonLoader"/>
             <TriangleSetTopologyModifier name="Modifier"/>
 
@@ -182,7 +182,7 @@
         </Node>
 
         <Node name="Visu">
-            <MeshOBJLoader name="SurfaceLoader" filename="mesh/DefaultScene/FVisu.obj"/>
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/FVisu.obj"/>
             <OglModel name="VisualModel" color="0.7 0.7 0.7 0.8" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
             <RigidMapping name="SurfaceMapping" input="@../FDOF" output="@VisualModel" globalToLocalCoords="true"/>
         </Node>
@@ -197,7 +197,7 @@
         <EigenSimplicialLDLT name="LDLLinearSolver" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true"  linearSystem="@A"/>
 
 
-        <MeshVTKLoader name="ALoader" filename="mesh/DefaultScene/A.vtk"  />
+        <MeshVTKLoader name="ALoader" filename="mesh/SofaScene/A.vtk"  />
         <TetrahedronSetTopologyContainer name="Container" src="@ALoader" />
         <TetrahedronSetTopologyModifier name="Modifier"/>
         <!-- <TetrahedronSetGeometryAlgorithms name="Modifier"/> -->
@@ -206,14 +206,14 @@
         <MeshMatrixMass name="Mass" totalMass="0.1" />
 
         <Node name="Collision">
-            <MeshOBJLoader name="CoarseCollisionSurface" filename="mesh/DefaultScene/ACoarse.obj"  />
+            <MeshOBJLoader name="CoarseCollisionSurface" filename="mesh/SofaScene/ACoarse.obj"  />
             <MechanicalObject name="CollisionDOF" position="@CoarseCollisionSurface.position"/>
             <PointCollisionModel name="Surface" proximity="0.3" />
             <BarycentricMapping name="SurfaceMapping"/>
         </Node>
 
         <Node name="Visu">
-            <MeshOBJLoader name="SurfaceLoader" filename="mesh/DefaultScene/AVisu.obj"/>
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/AVisu.obj"/>
             <OglModel name="VisualModel" color="0.7 0.7 0.7 0.8" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
             <BarycentricMapping name="SurfaceMapping" input="@../ADOF" output="@VisualModel" isMechanical="false" />
         </Node>
