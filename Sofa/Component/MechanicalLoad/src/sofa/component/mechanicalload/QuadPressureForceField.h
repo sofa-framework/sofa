@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/TopologySubsetData.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::mechanicalload
 {
@@ -55,22 +55,22 @@ public:
     using Index = sofa::Index;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Deriv> pressure;
+    sofa::core::objectmodel::lifecycle::RenamedData<Deriv> pressure;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<sofa::type::vector<Index>> quadList;
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<Index>> quadList;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Deriv> normal;
+    sofa::core::objectmodel::lifecycle::RenamedData<Deriv> normal;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> dmin;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> dmin;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> dmax;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> dmax;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<bool> p_showForces;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_showForces;
 
 
     Data<Deriv> d_pressure; ///< Pressure force per unit area
@@ -119,7 +119,7 @@ protected:
         }
     };
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<sofa::type::vector<QuadPressureInformation> > quadPressureMap;
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<QuadPressureInformation> > quadPressureMap;
 
     sofa::core::topology::QuadSubsetData<sofa::type::vector<QuadPressureInformation> > d_quadPressureMap; ///< Map between quad indices and their pressure
 

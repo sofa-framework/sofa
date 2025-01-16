@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::engine::analyze
 {
@@ -62,22 +62,22 @@ public:
     void doUpdate() override;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<VecCoord> f_points_1;
+    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> f_points_1;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<VecCoord> f_points_2;
+    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> f_points_2;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<Real> d12;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> d12;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<Real> d21;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> d21;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<Real> max;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> max;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<bool> f_update;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_update;
 
     //Input
     Data<VecCoord> d_points_1; ///< Points belonging to the first point cloud
