@@ -83,8 +83,8 @@ public:
     }
 };
 
-template<class FixedArrayLikeType>
-class WriteAccessor<FixedArrayLikeType, std::enable_if_t<sofa::type::trait::is_fixed_array<FixedArrayLikeType>::value>>
+template<type::trait::is_fixed_array FixedArrayLikeType>
+class WriteAccessor<FixedArrayLikeType>
     : public WriteAccessorFixedArray< FixedArrayLikeType >
 {
 public:
