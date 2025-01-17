@@ -28,7 +28,6 @@
 
 #include <sofa/type/vector.h>
 #include <sofa/helper/config.h>
-#include <sofa/type/trait/is_container.h>
 
 namespace sofa::helper
 {
@@ -58,7 +57,7 @@ public :
     explicit OptionsGroup(int nbofRadioButton,...);
 
     ///generic constructor taking other string container like list<string>, set<string>, vector<string>
-    template <class T, typename = std::enable_if_t<type::trait::is_container<T>::value> >
+    template <std::ranges::range T>
     explicit OptionsGroup(const T& list);
 
     template <class T> OptionsGroup(const std::initializer_list<T>& list);
@@ -114,7 +113,7 @@ protected:
     type::vector<std::string> textItems    ;
     unsigned int                selectedItem ;
 
-    template <class T> void buildFromContainer(const T& list);
+    template <std::ranges::range T> void buildFromContainer(const T& list);
 
 public:
 
@@ -137,7 +136,7 @@ inline std::istream & operator >>(std::istream& in, OptionsGroup& m_trick)
     return in;
 }
 
-template <class T, typename>
+template <std::ranges::range T>
 OptionsGroup::OptionsGroup(const T& list)
 {
     buildFromContainer(list);
@@ -159,7 +158,7 @@ void OptionsGroup::setNames(const std::initializer_list<T>& list)
     selectedItem=0;
 }
 
-template <class T>
+template <std::ranges::range T>
 void OptionsGroup::buildFromContainer(const T& list)
 {
     textItems.reserve(list.size());
