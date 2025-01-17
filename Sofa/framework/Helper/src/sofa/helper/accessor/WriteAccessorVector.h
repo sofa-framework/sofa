@@ -27,7 +27,7 @@ namespace sofa::helper
 {
 
 /// WriteAccessor implementation class for vector types
-template<class T>
+template<sofa::type::trait::is_vector T>
 class WriteAccessorVector
 {
 public:
