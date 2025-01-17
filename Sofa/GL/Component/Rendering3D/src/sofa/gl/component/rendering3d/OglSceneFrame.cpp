@@ -42,7 +42,6 @@ OglSceneFrame::OglSceneFrame()
     , d_style(initData(&d_style, defaultStyle, "style", ("Style of the frame\n" + Style::dataDescription()).c_str()))
     , d_alignment(initData(&d_alignment, defaultAlignment, "alignment", ("Alignment of the frame in the view\n" + Alignment::dataDescription()).c_str()))
     , d_viewportSize(initData(&d_viewportSize, 150, "viewportSize", "Size of the viewport where the frame is rendered"))
-    , d_solidBackground(initData(&d_solidBackground, false, "solidBackground", "If true, an opaque bkacground will be rendered; otherwise the frame is rendered on top on the normal viewport."))
 {}
 
 void OglSceneFrame::drawArrows(const core::visual::VisualParams* vparams)
@@ -132,16 +131,8 @@ void OglSceneFrame::doDrawVisual(const core::visual::VisualParams* vparams)
     }
         
     glEnable(GL_SCISSOR_TEST);
-    if(d_solidBackground.getValue())
-    {
-        // reset color and depth for the mini viewport (setting a background and making render on front)
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    }
-    else
-    {
-        // only reset depth to appear on front
-        glClear(GL_DEPTH_BUFFER_BIT );
-    }
+    // only reset depth to appear on front
+    glClear(GL_DEPTH_BUFFER_BIT );
     
     glMatrixMode(GL_PROJECTION);
     vparams->drawTool()->pushMatrix();
