@@ -147,7 +147,7 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     /// Compile time condition to check if we are working with a Rigid3Types or a type that does not
     /// need the Angular Stiffness parameters.
     //if constexpr (isRigid())
-    if constexpr (sofa::type::isRigidType<DataTypes>())
+    if constexpr (sofa::type::isRigidType<DataTypes>)
     {
         sofa::helper::ReadAccessor<Data<VecReal>> s = d_stiffness;
         sofa::helper::WriteOnlyAccessor<Data<VecReal>> as = d_angularStiffness;
@@ -369,7 +369,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
         const auto activeDirections = d_activeDirections.getValue();
 
         // rigid case
-        if constexpr (sofa::type::isRigidType<DataTypes>())
+        if constexpr (sofa::type::isRigidType<DataTypes>)
         {
             // translation
             if (i >= m_pivots.size())
@@ -452,7 +452,7 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mp
         const sofa::Index curIndex = m_indices[i];
         const auto stiffness = k[static_cast<std::size_t>(i < k.size()) * i];
 
-        if constexpr (sofa::type::isRigidType<DataTypes>())
+        if constexpr (sofa::type::isRigidType<DataTypes>)
         {
             const auto angularStiffness = k_a[static_cast<std::size_t>(i < k_a.size()) * i];
 
@@ -574,7 +574,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
         }
 
         // rotation (if applicable)
-        if constexpr (sofa::type::isRigidType<DataTypes>())
+        if constexpr (sofa::type::isRigidType<DataTypes>)
         {
             const auto vr = -kFact * k_a[(index < k_a.size()) * index];
             for (sofa::Size i = space_size; i < total_size; i++)
@@ -611,7 +611,7 @@ void RestShapeSpringsForceField<DataTypes>::buildStiffnessMatrix(core::behavior:
         }
 
         // rotation (if applicable)
-        if constexpr (sofa::type::isRigidType<DataTypes>())
+        if constexpr (sofa::type::isRigidType<DataTypes>)
         {
             const auto vr = -k_a[(index < k_a.size()) * index];
             for (sofa::Size i = space_size; i < total_size; ++i)

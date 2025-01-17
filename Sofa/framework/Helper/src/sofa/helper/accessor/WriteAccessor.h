@@ -93,9 +93,8 @@ public:
     WriteAccessor(container_type& c) : Inherit(c) {}
 };
 
-template<class VectorLikeType>
-class WriteAccessor<VectorLikeType,
-                    std::enable_if_t<type::trait::is_vector<VectorLikeType>::value>>
+template<sofa::type::trait::is_vector VectorLikeType>
+class WriteAccessor<VectorLikeType>
     : public WriteAccessorVector< VectorLikeType >
 {
 public:
