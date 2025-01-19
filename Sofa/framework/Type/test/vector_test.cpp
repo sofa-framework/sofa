@@ -49,7 +49,7 @@ public:
     void checkVector(const std::vector<std::string>& params) ;
     void checkVectorAccessFailure() const;
 
-    void checkRebind();
+    void checkRebind() const;
 };
 
 template<class T>
@@ -103,14 +103,18 @@ void vector_test<T>::checkVectorAccessFailure() const
 }
 
 template <class T>
-void vector_test<T>::checkRebind()
+void vector_test<T>::checkRebind() const
 {
-    constexpr bool hasRebind = sofa::type::HasRebindTypedef<vector<T>, int>::value;
+    constexpr bool hasRebind = sofa::type::CanTypeRebind<vector<T>, int>;
+    static_assert(hasRebind);
     EXPECT_TRUE(hasRebind);
-    using rebinded = typename sofa::type::Rebind<vector<T>, int >::to;
-    using vec_int = vector<int>;
-    constexpr bool isRebindOK = std::is_same_v<rebinded, vec_int >;
-    EXPECT_TRUE(isRebindOK);
+    if constexpr (hasRebind)
+    {
+        using rebinded = typename sofa::type::Rebind<vector<T>, int >::to;
+        using vec_int = vector<int>;
+        constexpr bool isRebindOK = std::is_same_v<rebinded, vec_int >;
+        EXPECT_TRUE(isRebindOK);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
