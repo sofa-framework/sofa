@@ -156,6 +156,7 @@ bool TriangleSubdivider::subdivide_1Node(const sofa::type::fixed_array<sofa::typ
         SReal areaNewTri = geometry::Triangle::area(triCoords[i], triCoords[(i + 1) % 3], pG);
         coefs.push_back(areaNewTri / areaFull);
 
+        /// Use of the unique - but ordered - index starting from 1000000
         auto TTA = new TriangleToAdd(1000000 * m_triangleId + i, newTri, ancestors, coefs);
         TTA->m_triCoords = { triCoords[i] , triCoords[(i + 1) % 3] , pG };
         m_trianglesToAdd.push_back(TTA);
@@ -202,6 +203,7 @@ bool TriangleSubdivider::subdivide_1Edge(const sofa::type::fixed_array<sofa::typ
     coefsTri0.push_back(areaTri0 / areaFull);
     coefsTri1.push_back(1 - coefsTri0[0]);
 
+    /// Use of the unique - but ordered - index starting from 1000000
     auto TTA0 = new TriangleToAdd(1000000 * m_triangleId, newTri0, ancestors, coefsTri0);
     auto TTA1 = new TriangleToAdd(1000000 * m_triangleId + 1, newTri1, ancestors, coefsTri1);
     TTA0->m_triCoords = { triCoords[(localEdgeId + 1) % 3] , pG , triCoords[localEdgeId] };
@@ -331,6 +333,7 @@ bool TriangleSubdivider::subdivide_2Edge(const sofa::type::fixed_array<sofa::typ
     {
         type::vector<SReal> coefs;
         coefs.push_back(newAreas[i] / areaFull);
+        /// Use of the unique - but ordered - index starting from 1000000
         auto TTA = new TriangleToAdd(1000000 * m_triangleId + i, newTris[i], ancestors, coefs);
         TTA->m_triCoords = allTriCoords[i];
         m_trianglesToAdd.push_back(TTA);
@@ -399,6 +402,7 @@ bool TriangleSubdivider::subdivide_3Edge(const sofa::type::fixed_array<sofa::typ
     {
         type::vector<SReal> coefs;
         coefs.push_back(newAreas[i] / areaFull);
+        /// Use of the unique - but ordered - index starting from 1000000
         auto TTA = new TriangleToAdd(1000000 * m_triangleId + i, newTris[i], ancestors, coefs);
         TTA->m_triCoords = allTriCoords[i];
 
@@ -479,6 +483,7 @@ bool TriangleSubdivider::subdivide_2Node(const sofa::type::fixed_array<sofa::typ
     {
         type::vector<SReal> coefs;
         coefs.push_back(newAreas[i] / areaFull);
+        /// Use of the unique - but ordered - index starting from 1000000
         auto TTA = new TriangleToAdd(1000000 * m_triangleId + i, newTris[i], ancestors, coefs);
         TTA->m_triCoords = allTriCoords[i];
 
