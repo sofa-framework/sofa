@@ -19,47 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/type/trait/Rebind.h>
+#include <sofa/type/vector.h>
 
-#include <sofa/type/trait/is_vector.h>
-#include <iosfwd>
+static_assert(sofa::type::CanTypeRebind<sofa::type::vector<float>, int>);
+static_assert(sofa::type::CanTypeRebind<sofa::type::vector<int>, int>);
 
-namespace sofa::helper
+static_assert(
+    std::is_same_v<
+        sofa::type::rebind_to<sofa::type::vector<float>, int>,
+        sofa::type::vector<int>
+    >);
+static_assert(
+    std::is_same_v<
+        sofa::type::rebind_to<sofa::type::vector<int>, int>,
+        sofa::type::vector<int>
+    >);
+
+template<class T>
+struct DummyNoRebind{};
+
+static_assert(!sofa::type::CanTypeRebind<DummyNoRebind<float>, int>);
+
+static_assert(
+    std::is_same_v<
+        sofa::type::rebind_to<DummyNoRebind<float>, int>,
+        DummyNoRebind<int>
+    >);
+
+template<class T>
+struct DummyWithConstraintRebind
 {
-////////////////////////// ReadAccessor for wrapping around vector like object //////////////////////
-/// ReadAccessor implementation class for vector types
-template<sofa::type::trait::is_vector T>
-class ReadAccessorVector
-{
-public:
-    typedef T container_type;
-    typedef const T const_container_type;
-    typedef typename container_type::Size Size;
-    typedef typename container_type::value_type value_type;
-    typedef typename container_type::reference reference;
-    typedef typename container_type::const_reference const_reference;
-    typedef typename container_type::iterator iterator;
-    typedef typename container_type::const_iterator const_iterator;
-
-protected:
-    const container_type* vref;
-
-public:
-    ReadAccessorVector(const container_type& container) : vref(&container) {}
-
-    bool empty() const { return vref->empty(); }
-    Size size() const { return vref->size(); }
-    const_reference operator[](Size i) const { return (*vref)[i]; }
-
-    const_iterator begin() const { return vref->begin(); }
-    const_iterator end() const { return vref->end(); }
-
-    ///////// Access the container for reading ////////////////
-    operator const_container_type& () const { return  *vref; }
-    const_container_type* operator->() const { return vref; }
-    const_container_type& operator* () const { return  *vref; }
-    const_container_type& ref() const { return *vref; }          ///< this duplicate operator* (remove ?)
-    ///////////////////////////////////////////////////////////
+    template<class U>
+    requires std::is_integral_v<U>
+    using rebind_to = U;
 };
 
-}
+static_assert(sofa::type::CanTypeRebind<DummyWithConstraintRebind<float>, int>);
+static_assert(!sofa::type::CanTypeRebind<DummyWithConstraintRebind<float>, std::string>);

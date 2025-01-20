@@ -28,7 +28,7 @@ namespace sofa::helper
 {
 ////////////////////////// ReadAccessor for wrapping around fixed array like object //////////////////////
 /// ReadAccessor implementation class for fixed array types
-template<class T>
+template<type::trait::is_fixed_array T>
 class ReadAccessorFixedArray
 {
 public:
