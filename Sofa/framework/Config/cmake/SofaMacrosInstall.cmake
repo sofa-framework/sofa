@@ -31,7 +31,7 @@ include(CMakeParseLibraryList)
 macro(sofa_create_package_with_targets)
     set(oneValueArgs PACKAGE_NAME PACKAGE_VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR RELOCATABLE)
     set(multiValueArgs TARGETS)
-    set(optionalArgs AUTO_SET_TARGET_PROPERTIES)
+    set(optionalArgs AUTO_SET_TARGET_PROPERTIES NO_AUTO_RESOURCES_INSTALL)
     cmake_parse_arguments("ARG" "${optionalArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
     # Required arguments
     foreach(arg ARG_PACKAGE_NAME ARG_PACKAGE_VERSION ARG_TARGETS)
@@ -226,7 +226,7 @@ endmacro()
 macro(sofa_add_targets_to_package)
     set(oneValueArgs PACKAGE_NAME PACKAGE_VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR RELOCATABLE OPTIMIZE_BUILD_DIR)
     set(multiValueArgs TARGETS)
-    set(optionalArgs AUTO_SET_TARGET_PROPERTIES)
+    set(optionalArgs AUTO_SET_TARGET_PROPERTIES NO_AUTO_RESOURCES_INSTALL)
     cmake_parse_arguments("ARG" "${optionalArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
     # Required arguments
     foreach(arg ARG_PACKAGE_NAME ARG_TARGETS)
@@ -600,7 +600,7 @@ endmacro()
 macro(sofa_install_targets_in_package)
     set(oneValueArgs PACKAGE_NAME PACKAGE_VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR RELOCATABLE OPTIMIZE_BUILD_DIR)
     set(multiValueArgs TARGETS)
-    set(optionalArgs AUTO_SET_TARGET_PROPERTIES)
+    set(optionalArgs AUTO_SET_TARGET_PROPERTIES NO_AUTO_RESOURCES_INSTALL)
     cmake_parse_arguments("ARG" "${optionalArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
     # Required arguments
     foreach(arg ARG_PACKAGE_NAME ARG_TARGETS ARG_INCLUDE_INSTALL_DIR)
@@ -700,16 +700,18 @@ macro(sofa_install_targets_in_package)
         endforeach()
     endforeach()
 
-    # Install examples and scenes
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/examples")
-        install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/examples/"
-                DESTINATION "${example_install_dir}"
-                COMPONENT resources)
-    endif()
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/scenes")
-        install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scenes/"
-                DESTINATION "${example_install_dir}"
-                COMPONENT resources)
+    if(NOT ARG_NO_AUTO_RESOURCES_INSTALL)
+        # Install examples and scenes
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/examples")
+            install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/examples/"
+                    DESTINATION "${example_install_dir}"
+                    COMPONENT resources)
+        endif()
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/scenes")
+            install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scenes/"
+                    DESTINATION "${example_install_dir}"
+                    COMPONENT resources)
+        endif()
     endif()
 
     # Install info files (README, license, etc.)
