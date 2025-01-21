@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMatrix/BaseMatrixImageViewerWidget.h>
+#include <SofaMatrix/Qt/BaseMatrixImageViewerWidget.h>
 
 namespace sofa::gui::qt
 {
