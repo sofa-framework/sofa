@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::collision::geometry
 {
@@ -165,10 +165,10 @@ public:
     }
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::RenamedData< VecReal > radius;
+    sofa::core::objectmodel::lifecycle::RenamedData< VecReal > radius;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::RenamedData<SReal> defaultRadius;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> defaultRadius;
 
     Data< VecReal > d_radius; ///< Radius of each sphere
     Data< SReal > d_defaultRadius; ///< Default radius

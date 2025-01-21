@@ -25,7 +25,7 @@
 
 #include <sofa/component/topology/container/grid/SparseGridTopology.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::topology::container::grid
 {
@@ -78,7 +78,7 @@ public:
     enum {UP,DOWN,RIGHT,LEFT,BEFORE,BEHIND,NUM_CONNECTED_NODES};
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<bool> _finestConnectivity;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> _finestConnectivity;
     
 
     // Does the connectivity test have to be done at the finest level? (more precise but slow)

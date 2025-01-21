@@ -6,7 +6,7 @@
 
 namespace sofa
 {
-namespace core::objectmodel
+namespace core::objectmodel::lifecycle
 {
 
 

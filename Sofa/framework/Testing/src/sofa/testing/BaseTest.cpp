@@ -93,6 +93,12 @@ BaseTest::BaseTest() :
 
 BaseTest::~BaseTest() {}
 
+void BaseTest::loadPlugins(
+    const std::initializer_list<std::string>& pluginNames)
+{
+    m_loadedPlugins.emplace_back(pluginNames.begin(), pluginNames.end());
+}
+
 void BaseTest::SetUp()
 {
     onSetUp();
@@ -100,6 +106,7 @@ void BaseTest::SetUp()
 
 void BaseTest::TearDown()
 {
+    m_loadedPlugins.clear();
     onTearDown();
 }
 

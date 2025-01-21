@@ -35,7 +35,7 @@
 
 #include <sofa/component/constraint/lagrangian/model/BilateralConstraintResolution.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::constraint::lagrangian::model
 {
@@ -98,23 +98,24 @@ protected:
     std::vector<unsigned int> cid;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::RenamedData<type::vector<Index> > m1;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<Index> > m1;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::RenamedData<type::vector<Index> > m2;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<Index> > m2;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::RenamedData<VecDeriv> restVector;
+    sofa::core::objectmodel::lifecycle::RenamedData<VecDeriv> restVector;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::RenamedData<bool> keepOrientDiff;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> keepOrientDiff;
 
     DataSubsetIndices d_m1; ///< index of the constraint on the first model
     DataSubsetIndices d_m2; ///< index of the constraint on the second model
     Data<VecDeriv> d_restVector; ///< Relative position to maintain between attached points (optional)
     VecCoord initialDifference;
 
-    Data<SReal> d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
+    SOFA_ATTRIBUTE_DEPRECATED__BILATERALREMOVEUNUSEDTOLERANCE() DeprecatedAndRemoved d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
+
     Data<bool> d_activate; ///< control constraint activation (true by default)
     Data<bool> d_keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
 

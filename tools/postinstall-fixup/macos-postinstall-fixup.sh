@@ -70,6 +70,7 @@ check-all-deps() {
         echo "  Checking (pass $pass) $lib"
 
         libqt=""
+        libpython=""
         libboost=""
         libicu=""
         libglew=""
@@ -83,6 +84,7 @@ check-all-deps() {
 
         is_fixup_needed="false"
         if echo "$dependencies" | grep --quiet "/Qt"       ||
+           echo "$dependencies" | grep --quiet "/Python" ||
            echo "$dependencies" | grep --quiet "/libboost" ||
            echo "$dependencies" | grep --quiet "/libicu"   ||
            echo "$dependencies" | grep --quiet "/libGLEW"  ||
@@ -101,6 +103,8 @@ check-all-deps() {
         (echo "$dependencies") | while read dep; do
             if libqt="$(echo $dep | egrep -o "/Qt[A-Za-z]*$" | cut -c2-)" && [ -n "$libqt" ]; then
                 libname="$libqt"
+            elif libpython="$(echo $dep | egrep -o "/Python.framework.*"  | cut -c2-)" && [ -n "$libpython" ]; then
+                libname="$libpython"
             elif libboost="$(echo $dep | egrep -o "/libboost_[^\/]*?\.dylib" | cut -c2-)" && [ -n "$libboost" ]; then
                 libname="$libboost"
             elif libicu="$(echo $dep | egrep -o "/libicu[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libicu" ]; then
@@ -135,13 +139,15 @@ check-all-deps() {
                     originlib="$dep"
                     destlib="$INSTALL_DIR/lib/$libname"
                 fi
-                if [ -e $originlib ] && [ ! -e $destlib ]; then
+                if [ -e $originlib ] && [ ! -e $destlib ] && [ -z "$libpython" ]; then
                     echo "    cp -Rf $dep $INSTALL_DIR/lib"
                     cp -Rf $originlib $INSTALL_DIR/lib
                 fi
             elif [[ "$mode" == "fixup" ]]; then
                 if [ -n "$libqt" ]; then
                     rpathlib="$libqt.framework/$libqt"
+                elif [  -n "$libpython" ]; then
+                    rpathlib="$libpython"
                 else
                     rpathlib="$libname"
                 fi

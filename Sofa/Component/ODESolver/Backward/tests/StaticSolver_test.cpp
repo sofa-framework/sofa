@@ -55,7 +55,7 @@ public:
 
         root = getSimulation()->createNewNode("root");
 
-        createObject(root, "RequiredPlugin", {{"pluginName", "Sofa.Component"}});
+        createObject(root, "RequiredPlugin", {{"pluginName", Sofa.Component}});
         createObject(root, "DefaultAnimationLoop");
         createObject(root, "RegularGridTopology", {{"name", "grid"}, {"min", "-7.5 -7.5 0"}, {"max", "7.5 7.5 80"}, {"n", "3 3 9"}});
         const auto s = createObject(root, "StaticSolver", {{"newton_iterations", "10"}});

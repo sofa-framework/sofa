@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,30 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/testing/ScopedPlugin.h>
+#include <gtest/gtest.h>
 
-#include <string>
-#include <sofa/core/config.h>
-#include <sofa/core/objectmodel/DeprecatedData.h>
-
-namespace sofa::core::objectmodel::lifecycle
+TEST(ScopedPlugin, test)
 {
+    static std::string pluginName = "Sofa.Component.AnimationLoop";
+    auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
 
-/// Placeholder for a Data<T> to indicate a Data is now removed
-///
-/// This will also register the data name into a dedicated structure of Base object
-/// so a warning will be issued if users continue accessing it;
-///
-/// Use case:
-///    RemovedData d_sofaIsGreatM(this, "v23.06", "v23.12", "sofaIsGreat", "")
-class SOFA_CORE_API RemovedData : public DeprecatedData
-{
-public:
-    RemovedData(Base* b, const std::string& deprecationVersion, const std::string& removalVersion, const std::string& name, const std::string& helptext) :
-        DeprecatedData(b,deprecationVersion, removalVersion, name,helptext)
+    //make sure that pluginName is not already loaded
     {
-        m_isRemoved = true;
+        const auto [path, isLoaded] = pluginManager.isPluginLoaded(pluginName);
+        if (isLoaded)
+        {
+            pluginManager.unloadPlugin(path);
+        }
     }
-};
 
-} // namespace sofa::core::objectmodel
+    {
+        const auto [path, isLoaded] = pluginManager.isPluginLoaded(pluginName);
+        EXPECT_FALSE(isLoaded);
+    }
+
+    {
+        const sofa::testing::ScopedPlugin plugin(pluginName);
+
+        {
+            const auto [path, isLoaded] = pluginManager.isPluginLoaded(pluginName);
+            EXPECT_TRUE(isLoaded);
+        }
+
+        //end of scope: plugin should be unloaded
+    }
+
+    {
+        const auto [path, isLoaded] = pluginManager.isPluginLoaded(pluginName);
+        EXPECT_FALSE(isLoaded);
+    }
+}

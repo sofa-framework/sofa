@@ -23,7 +23,7 @@
 
 #include <sofa/core/fwd.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/objectmodel/RemovedData.h>
+#include <sofa/core/objectmodel/lifecycle/RemovedData.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
@@ -33,11 +33,11 @@
 #include <sofa/core/sptr.h>
 
 #include <deque>
-#include <atomic>
 
 #include <sofa/core/objectmodel/ComponentState.h>
 #include <sofa/core/DataTracker.h>
 #include <sofa/core/DataTrackerCallback.h>
+#include <sofa/core/IntrusiveObject.h>
 #include <sofa/type/fwd.h>
 
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
@@ -55,7 +55,7 @@ namespace sofa::core::objectmodel
  *  All classes deriving from Base should use the SOFA_CLASS macro within their declaration (see BaseClass.h).
  *
  */
-class SOFA_CORE_API Base
+class SOFA_CORE_API Base : public IntrusiveObject
 {
 public:
     typedef Base* Ptr;
@@ -85,20 +85,6 @@ private:
     /// Copy constructor is not allowed
     Base(const Base& b);
     Base& operator=(const Base& b);
-
-    std::atomic<int> ref_counter;
-    void addRef();
-    void release();
-
-    friend inline void intrusive_ptr_add_ref(Base* p)
-    {
-        p->addRef();
-    }
-
-    friend inline void intrusive_ptr_release(Base* p)
-    {
-        p->release();
-    }
 
 protected:
     std::map<std::string, sofa::core::DataTrackerCallback> m_internalEngine;
