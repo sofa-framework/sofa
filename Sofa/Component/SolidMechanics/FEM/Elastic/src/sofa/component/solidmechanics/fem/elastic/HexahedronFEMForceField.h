@@ -32,7 +32,7 @@
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/OptionsGroup.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -117,27 +117,27 @@ public:
     int method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<std::string> f_method;
+    sofa::core::objectmodel::lifecycle::RenamedData<std::string> f_method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<Real> f_poissonRatio;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_poissonRatio;
 
     SOFA_ATTRIBUTE_DISABLED("", "v24.12", "Use d_youngModulus instead") DeprecatedAndRemoved f_youngModulus;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<bool> f_updateStiffnessMatrix;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_updateStiffnessMatrix;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData< sofa::helper::OptionsGroup >  _gatherPt;
+    sofa::core::objectmodel::lifecycle::RenamedData< sofa::helper::OptionsGroup >  _gatherPt;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData< sofa::helper::OptionsGroup >  _gatherBsize;
+    sofa::core::objectmodel::lifecycle::RenamedData< sofa::helper::OptionsGroup >  _gatherBsize;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<bool> f_drawing;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_drawing;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<Real> f_drawPercentageOffset;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_drawPercentageOffset;
 
 
 
@@ -194,7 +194,7 @@ protected:
     typedef type::vector<ElementStiffness> VecElementStiffness;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<VecElementStiffness> _elementStiffnesses;
+    sofa::core::objectmodel::lifecycle::RenamedData<VecElementStiffness> _elementStiffnesses;
 
     Data<VecElementStiffness> d_elementStiffnesses; ///< Stiffness matrices per element (K_i)
 
@@ -207,7 +207,7 @@ protected:
     topology::container::grid::SparseGridTopology* _sparseGrid;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<VecCoord> _initialPoints;
+    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> _initialPoints;
 
     Data< VecCoord > d_initialPoints; ///< Initial Position
 

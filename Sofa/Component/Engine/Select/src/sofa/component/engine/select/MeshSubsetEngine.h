@@ -24,7 +24,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 #include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -72,23 +72,23 @@ public:
     Data< SeqHexahedra > d_hexahedra; ///< Hexahedra of mesh subset
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqPositions> inputPosition;
+    core::objectmodel::lifecycle::RenamedData<SeqPositions> inputPosition;
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqEdges> inputEdges;
+    core::objectmodel::lifecycle::RenamedData<SeqEdges> inputEdges;
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqTriangles> inputTriangles;
+    core::objectmodel::lifecycle::RenamedData<SeqTriangles> inputTriangles;
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqQuads> inputQuads;
+    core::objectmodel::lifecycle::RenamedData<SeqQuads> inputQuads;
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SetIndices> indices;
+    core::objectmodel::lifecycle::RenamedData<SetIndices> indices;
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqPositions> position;
+    core::objectmodel::lifecycle::RenamedData<SeqPositions> position;
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqEdges> edges;
+    core::objectmodel::lifecycle::RenamedData<SeqEdges> edges;
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqTriangles> triangles;
+    core::objectmodel::lifecycle::RenamedData<SeqTriangles> triangles;
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqQuads> quads;
+    core::objectmodel::lifecycle::RenamedData<SeqQuads> quads;
 
 protected:
     MeshSubsetEngine();

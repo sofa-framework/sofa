@@ -28,7 +28,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 // corotational triangle from
 // @InProceedings{NPF05,
@@ -92,7 +92,7 @@ protected:
     const VecElement* _indexedElements;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<VecCoord> _initialPoints;
+    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> _initialPoints;
 
     Data< VecCoord > d_initialPoints; ///< Initial Position
 
@@ -120,19 +120,19 @@ public:
 
     int method;
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<std::string> f_method;
+    sofa::core::objectmodel::lifecycle::RenamedData<std::string> f_method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<Real> f_poisson;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_poisson;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<Real> f_young;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_young;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<Real> f_thickness;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_thickness;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<bool> f_planeStrain;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_planeStrain;
 
     Data<std::string> d_method; ///< large: large displacements, small: small displacements
     Data<Real> d_thickness; ///< Thickness of the elements

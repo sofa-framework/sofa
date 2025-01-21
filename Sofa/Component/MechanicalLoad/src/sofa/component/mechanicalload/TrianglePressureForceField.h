@@ -27,7 +27,7 @@
 #include <sofa/core/topology/TopologySubsetData.h>
 #include <sofa/type/MatSym.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::mechanicalload
 {
@@ -52,19 +52,19 @@ public:
     using Index = sofa::Index;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Deriv> pressure;
+    sofa::core::objectmodel::lifecycle::RenamedData<Deriv> pressure;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<MatSym3> cauchyStress;
+    sofa::core::objectmodel::lifecycle::RenamedData<MatSym3> cauchyStress;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<sofa::type::vector<Index> > triangleList;
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<Index> > triangleList;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<bool> p_showForces;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_showForces;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<bool> p_useConstantForce;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_useConstantForce;
 
 
     Data<Deriv> d_pressure; ///< Pressure force per unit area

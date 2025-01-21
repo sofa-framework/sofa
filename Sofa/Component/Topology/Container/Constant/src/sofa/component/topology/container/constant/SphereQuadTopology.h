@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/topology/container/constant/CubeTopology.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::topology::container::constant
 {
@@ -42,10 +42,10 @@ public:
 protected:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData< Vec3 > center;
+    sofa::core::objectmodel::lifecycle::RenamedData< Vec3 > center;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData< SReal > radius;
+    sofa::core::objectmodel::lifecycle::RenamedData< SReal > radius;
 
 
     Data< Vec3 > d_center; ///< Center of the sphere

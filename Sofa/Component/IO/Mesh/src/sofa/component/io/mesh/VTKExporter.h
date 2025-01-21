@@ -30,7 +30,7 @@
 
 #include <fstream>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::_vtkexporter_
 {
@@ -60,43 +60,43 @@ public:
     sofa::core::objectmodel::DataFileName vtkFilename;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData< bool > fileFormat;
+    sofa::core::objectmodel::lifecycle::RenamedData< bool > fileFormat;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData<defaulttype::Vec3Types::VecCoord> position;
+    sofa::core::objectmodel::lifecycle::RenamedData<defaulttype::Vec3Types::VecCoord> position;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData< bool > writeEdges;
+    sofa::core::objectmodel::lifecycle::RenamedData< bool > writeEdges;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData< bool > writeTriangles;
+    sofa::core::objectmodel::lifecycle::RenamedData< bool > writeTriangles;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData< bool > writeQuads;
+    sofa::core::objectmodel::lifecycle::RenamedData< bool > writeQuads;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData< bool > writeTetras;
+    sofa::core::objectmodel::lifecycle::RenamedData< bool > writeTetras;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData< bool > writeHexas;
+    sofa::core::objectmodel::lifecycle::RenamedData< bool > writeHexas;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData<type::vector<std::string> > dPointsDataFields;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<std::string> > dPointsDataFields;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData<type::vector<std::string> > dCellsDataFields;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<std::string> > dCellsDataFields;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData< unsigned int > exportEveryNbSteps;
+    sofa::core::objectmodel::lifecycle::RenamedData< unsigned int > exportEveryNbSteps;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData< bool > exportAtBegin;
+    sofa::core::objectmodel::lifecycle::RenamedData< bool > exportAtBegin;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData< bool > exportAtEnd;
+    sofa::core::objectmodel::lifecycle::RenamedData< bool > exportAtEnd;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData< bool > overwrite;
+    sofa::core::objectmodel::lifecycle::RenamedData< bool > overwrite;
 
 
 

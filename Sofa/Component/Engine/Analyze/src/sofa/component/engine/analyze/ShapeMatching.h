@@ -34,7 +34,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/SVector.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::engine::analyze
 {
@@ -72,28 +72,28 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<unsigned int> iterations;
+    sofa::core::objectmodel::lifecycle::RenamedData<unsigned int> iterations;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<Real> affineRatio;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> affineRatio;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<Real> fixedweight;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> fixedweight;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<VecCoord> fixedPosition0;
+    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> fixedPosition0;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<VecCoord> fixedPosition;
+    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> fixedPosition;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<VecCoord> position;
+    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> position;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData< VVI >  cluster;
+    sofa::core::objectmodel::lifecycle::RenamedData< VVI >  cluster;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<VecCoord> targetPosition;
+    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> targetPosition;
 
 
     Data<unsigned int> d_iterations; ///< Number of iterations.

@@ -32,7 +32,7 @@
 #include <poll.h>
 #endif
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::playback
 {
@@ -78,19 +78,19 @@ private:
     sofa::core::objectmodel::DataFileName filename;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::RenamedData<bool> inverseSense;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> inverseSense;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::RenamedData<bool> p_printEvent;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_printEvent;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::RenamedData<char> p_key1;
+    sofa::core::objectmodel::lifecycle::RenamedData<char> p_key1;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::RenamedData<char> p_key2;
+    sofa::core::objectmodel::lifecycle::RenamedData<char> p_key2;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::RenamedData<bool> p_writeEvents;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_writeEvents;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
     sofa::core::objectmodel::DataFileName p_outputFilename;
