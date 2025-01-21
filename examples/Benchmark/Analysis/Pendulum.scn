@@ -24,7 +24,7 @@
         <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 0 0 1 0 0" showObject="1" showObjectScale="10"/>
         <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>
         <FixedProjectiveConstraint template="Vec3" name="Fix Particle" indices="0" />
-        <SpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1&#x0A;" />
+        <SpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1" />
         <OglLabel label="EulerImplicit" x="300" y="300"/>
     </Node>
 
@@ -34,7 +34,7 @@
         <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 2 0 1 2 0" showObject="1" showObjectScale="10"/>
         <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>
         <FixedProjectiveConstraint template="Vec3" name="Fix Particle" indices="0" />
-        <SpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1&#x0A;" />
+        <SpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1" />
         <OglLabel label="TrapezoidalRule" x="400" y="100"/>
     </Node>
 </Node>
