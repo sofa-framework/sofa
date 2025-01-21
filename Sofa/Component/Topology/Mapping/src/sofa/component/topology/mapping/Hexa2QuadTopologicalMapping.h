@@ -29,7 +29,7 @@
 
 #include <sofa/core/BaseMapping.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::topology::mapping
 {
@@ -78,7 +78,7 @@ public:
 protected:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<bool> flipNormals;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> flipNormals;
 
 
     Data<bool> d_flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)

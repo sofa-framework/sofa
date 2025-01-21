@@ -23,7 +23,7 @@
 
 #include <string>
 #include <sofa/core/config.h>
-#include <sofa/core/objectmodel/DeprecatedData.h>
+#include <sofa/core/objectmodel/lifecycle/DeprecatedData.h>
 
 namespace sofa::core::objectmodel::lifecycle
 {

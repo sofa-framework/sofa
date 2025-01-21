@@ -34,7 +34,7 @@
 #include <type_traits>
 #include <set>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::constraint::projective
 {
@@ -82,28 +82,28 @@ protected:
 public :
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<sofa::type::vector<sofa::Index> > m_meshIndices;
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<sofa::Index> > m_meshIndices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<sofa::type::vector<sofa::Index> > m_indices;
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<sofa::Index> > m_indices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<SReal> m_beginConstraintTime;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> m_beginConstraintTime;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<SReal> m_endConstraintTime;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> m_endConstraintTime;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<RotationMatrix> m_rotation;
+    sofa::core::objectmodel::lifecycle::RenamedData<RotationMatrix> m_rotation;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<Quat>  m_quaternion;
+    sofa::core::objectmodel::lifecycle::RenamedData<Quat>  m_quaternion;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<Vec3> m_translation;
+    sofa::core::objectmodel::lifecycle::RenamedData<Vec3> m_translation;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<bool> m_drawConstrainedPoints;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_drawConstrainedPoints;
 
 
     /// indices of the DOFs of the mesh
