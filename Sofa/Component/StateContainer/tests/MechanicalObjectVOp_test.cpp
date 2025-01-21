@@ -632,7 +632,7 @@ TYPED_TEST(MechanicalObjectVOpTest, equalOtherMultiplyByScalarPositionMix)
 
 TYPED_TEST(MechanicalObjectVOpTest, equalOtherMultiplyByScalarVelocityMix)
 {
-    this->equalOtherMultiplyByScalarPositionMix();
+    this->equalOtherMultiplyByScalarVelocityMix();
 }
 
 TYPED_TEST(MechanicalObjectVOpTest, equalOtherPosition)
