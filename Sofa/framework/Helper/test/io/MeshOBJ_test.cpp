@@ -32,11 +32,11 @@ namespace sofa {
 class MeshOBJ_test : public BaseTest
 {
 protected:
-    void SetUp() override
+    void doSetUp() override
     {
         sofa::helper::system::DataRepository.addFirstPath(SOFA_TESTING_RESOURCES_DIR);
     }
-    void TearDown() override
+    void doTearDown() override
     {
         sofa::helper::system::DataRepository.removePath(SOFA_TESTING_RESOURCES_DIR);
     }

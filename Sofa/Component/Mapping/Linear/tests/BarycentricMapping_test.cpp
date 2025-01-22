@@ -74,7 +74,7 @@ struct BarycentricMapperTriangleSetTopologyTest :  public BaseTest, public Baryc
     typename Out::VecCoord m_out;
     TriangleSetTopologyContainer::SPtr m_topology;
 
-    void SetUp() override
+    void doSetUp() override
     {
         m_in.push_back(Vec3(0.5, 1.5, 0.0));
         m_in.push_back(Vec3(1.5, 0.0, 2.5));

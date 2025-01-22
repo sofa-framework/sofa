@@ -1,0 +1,242 @@
+<?xml version="1.0"?>
+
+<Node name="root" dt="0.01" gravity="0 0 9.81" >
+    <!-- Loading the dynamic libraries required for this scene -->
+    <RequiredPlugin name="PluginManager"
+        pluginName="Sofa.Component.IO.Mesh Sofa.Component.LinearSolver.Direct Sofa.Component.LinearSolver.Iterative
+        Sofa.Component.Mapping.Linear Sofa.Component.Mass Sofa.Component.ODESolver.Backward Sofa.Component.Setting
+        Sofa.Component.SolidMechanics.FEM.Elastic Sofa.Component.StateContainer Sofa.Component.Topology.Container.Dynamic
+        Sofa.Component.Visual Sofa.GL.Component.Rendering3D Sofa.Component.AnimationLoop Sofa.Component.Collision.Detection.Algorithm
+        Sofa.Component.Collision.Detection.Intersection Sofa.Component.Collision.Geometry Sofa.Component.Collision.Response.Contact
+        Sofa.Component.Constraint.Lagrangian.Solver Sofa.Component.Constraint.Lagrangian.Correction Sofa.Component.LinearSystem
+        Sofa.Component.MechanicalLoad MultiThreading Sofa.Component.SolidMechanics.Spring Sofa.Component.Constraint.Lagrangian.Model
+        Sofa.Component.Mapping.NonLinear Sofa.Component.Topology.Container.Constant Sofa.Component.Topology.Mapping BeamAdapter Sofa.GUI.Component
+        Sofa.Component.Topology.Container.Grid Sofa.Component.Engine.Select" />
+
+    <!-- Rendering settings -->
+    <VisualStyle name="RenderingOptions" displayFlags="showVisualModels" />
+    <BackgroundSetting color="0.8 0.8 0.8 1" />
+
+    <!-- Define Mouse left click as a Bilateral Lagrangian constraint -->
+    <ConstraintAttachButtonSetting /> <!-- The presence of this component sets the mouse interaction to Lagrangian-based constraints at the GUI launch -->
+
+    <!-- Header of the simulation -->
+    <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" parallelODESolving="true" parallelCollisionDetectionAndFreeMotion="true"/>
+    <GenericConstraintSolver maxIterations="20" multithreading='true' tolerance="1.0e-4"/>
+
+    <!-- Definition of the collision pipeline -->
+    <CollisionPipeline name="CollisionPipeline" />
+    <ParallelBruteForceBroadPhase name="CollisionBroadPhase"/>
+    <ParallelBVHNarrowPhase name="CollisionNarrowPhase"/>
+    <CollisionResponse name="CollisionResponse" response="FrictionContactConstraint" responseParams="mu=0.5" />
+    <NewProximityIntersection name="Intersection" alarmDistance="0.3" contactDistance="0.02" />
+
+
+    <!-- Object = SOFA Logo -->
+    <Node name="Logo" >
+        <EulerImplicitSolver name="EulerImplicitScheme" />
+        <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
+        <EigenSimplicialLDLT name="LDLTLinearSolver" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true"  linearSystem="@A"/>
+
+        <MeshVTKLoader name="LogoLoader" filename="mesh/SofaScene/Logo.vtk"  />
+        <TetrahedronSetTopologyContainer name="Container" src="@LogoLoader" />
+        <TetrahedronSetTopologyModifier name="Modifier"/>
+        <MechanicalObject name="LogoDOF" template="Vec3d" />
+        <TetrahedronFEMForceField name="LinearElasticityFEM"  youngModulus="200" poissonRatio="0.4" method="large" />
+        <ConstantForceField name="ConstantForceUpwards" totalForce="0 0 -5.0" />
+        <MeshMatrixMass name="Mass" totalMass="0.1" />
+
+        <Node name="Collision">
+            <SphereLoader name="SphereLoader" filename="mesh/SofaScene/LogoColli.sph" />
+            <MechanicalObject name="CollisionDOF" position="@SphereLoader.position" />
+            <SphereCollisionModel name="CollisionModel" listRadius="@SphereLoader.listRadius"/>
+            <BarycentricMapping name="MappingCollision" input="@../LogoDOF" output="@CollisionDOF"/>
+        </Node>
+
+        <Node name="Visu">
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/LogoVisu.obj"/>
+            <OglModel name="VisualModel" color="0.7 .35 0 0.8" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
+            <BarycentricMapping name="MappingVisu" isMechanical="false" input="@../LogoDOF" output="@VisualModel" />
+        </Node>
+
+        <Node name="AttachmentPoint">
+            <MechanicalObject name="Points" template="Vec3" position="12 0 -9"  />
+            <BarycentricMapping name="MappingAttachmentPoint" input="@../LogoDOF" output="@Points" />
+        </Node>
+
+        <LinearSolverConstraintCorrection name="ConstraintCorrection" linearSolver="@LDLTLinearSolver"/>
+    </Node>
+
+
+    <!-- Object = beam connecting the SOFA logo and the S letter -->
+    <Node name="BeamModel">
+        <EulerImplicitSolver name="EulerImplicitScheme"  printLog="false" />
+        <EigenSparseLU name="LULinearSolver" template="CompressedRowSparseMatrixd" />
+
+        <MechanicalObject template="Rigid3d" name="BeamDOF" position="12 0 -9  0.707 0 0.707 0 
+                                                                   12 0 -8  0.707 0 0.707 0 
+                                                                   12 0 -7  0.707 0 0.707 0 
+                                                                   12 0 -6  0.707 0 0.707 0 
+                                                                   12 0 -5.5  0.707 0 0.707 0" />
+        <MeshTopology name="LineTopology" position="@BeamDOF.position" lines="0 1 1 2 2 3 3 4 " drawEdges="1"/>
+        <BeamInterpolation name="BeamInterpolation" radius="0.1" defaultYoungModulus="10000 10000 10000" defaultPoissonRatio="0.4"/>
+        <AdaptiveBeamForceFieldAndMass name="BeamForceFieldAndMass"  computeMass="1" massDensity="1"/>
+
+        <Node name="BeamExtremities">
+            <MechanicalObject name="Points" template="Vec3" position="12 0 -9 12 0 -5.5 " />
+            <RigidMapping name="MappingBeamExtremities" globalToLocalCoords="true" rigidIndexPerPoint="0 4" />
+        </Node>
+
+        <LinearSolverConstraintCorrection name="ConstraintCorrection" linearSolver="@LULinearSolver"/>
+    </Node>
+
+
+    <!-- Object = S letter as a 3D deformable object -->
+    <Node name="S" >
+        <EulerImplicitSolver name="EulerImplicitScheme" rayleighMass="0.1" rayleighStiffness="0.1" />
+        <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
+        <EigenSimplicialLDLT name="LDLLinearSolver" template="CompressedRowSparseMatrixd" parallelInverseProduct="true" linearSystem="@A"/>
+
+        <MeshVTKLoader name="SLoader" filename="mesh/SofaScene/S.vtk"  />
+        <TetrahedronSetTopologyContainer name="Container" src="@SLoader" />
+        <TetrahedronSetTopologyModifier name="Modifier"/>
+        <MechanicalObject name="SDOF" template="Vec3d" />
+        <TetrahedronFEMForceField name="LinearElasticityFEM" youngModulus="200" poissonRatio="0.45" method="large" />
+        <MeshMatrixMass name="Mass" totalMass="0.15" />
+
+        <Node name="Collision">
+            <TriangleSetTopologyContainer name="Container" />
+            <TriangleSetTopologyModifier name="Modifier"/>
+            <Tetra2TriangleTopologicalMapping name="MappingExtractingSurface" input="@../Container" output="@Container" />
+
+            <MechanicalObject name="CollisionDOF" rest_position="@../SDOF.rest_position"  />
+            <TriangleCollisionModel name="CollisionModel" proximity="0.02" />
+            <IdentityMapping name="MappingCollision" input="@../SDOF" output="@CollisionDOF"/>
+        </Node>
+
+        <Node name="Visu">
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/SVisu.obj"/>
+            <OglModel name="VisualModel" color="0.7 0.7 0.7 0.8" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
+            <BarycentricMapping name="MappingVisu" input="@../SDOF" output="@VisualModel" isMechanical="false" />
+        </Node>
+
+        <Node name="AttachmentPoint">
+            <MechanicalObject name="Points" template="Vec3" position="12 0 -5.5"  />
+            <BarycentricMapping name="MappingAttachmentPoint" input="@../SDOF" output="@Points" />
+        </Node>
+
+        <LinearSolverConstraintCorrection name="ConstraintCorrection" linearSolver="@LDLLinearSolver"/>
+    </Node>
+
+
+    <!-- Connect the two beam extremities with the SOFA logo and the S letter -->
+    <BilateralLagrangianConstraint template="Vec3" object1="@Logo/AttachmentPoint/Points" object2="@BeamModel/BeamExtremities/Points" first_point="0" second_point="0" />
+    <BilateralLagrangianConstraint template="Vec3" object1="@S/AttachmentPoint/Points" object2="@BeamModel/BeamExtremities/Points" first_point="0" second_point="1" />
+
+
+    <!-- Object = O letter as a 3D deformable object (FEM grid) -->
+    <Node name="O" >
+        <MeshOBJLoader name="OLoader" filename="mesh/SofaScene/O.obj"/>
+
+        <SparseGridRamificationTopology name="SparseGrid" n="4 2 4" position="@OLoader.position" nbVirtualFinerLevels="2" finestConnectivity="0"/>
+        <HexahedronSetTopologyContainer name="HexaTopology" src="@SparseGrid"/>
+
+        <EulerImplicitSolver name="EulerImplicitScheme" />
+        <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
+        <EigenSimplicialLDLT name="precond" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true"  linearSystem="@A"/>
+        
+        <MechanicalObject name="ODOF" position="@HexaTopology.position"  />
+        <UniformMass name="Mass" totalMass="0.1" />
+        <HexahedronFEMForceField name="LinearElasticityFEM" youngModulus="20" poissonRatio="0.49" method="large" updateStiffnessMatrix="false" printLog="0" />
+        <UncoupledConstraintCorrection name="UncoupledConstraintCorrection" defaultCompliance="38240" useOdeSolverIntegrationFactors="0"/>
+
+        <Node name="Collision">
+            <MeshTopology name="CollisionTopology" src="@../OLoader"/>
+            <MechanicalObject name="CollisionDOF" src="@CollisionTopology" />
+            <LineCollisionModel name="LineCollisionModel" selfCollision="0" topology="@CollisionTopology" />
+            <BarycentricMapping name="MappingCollision" input="@../ODOF" output="@CollisionDOF" />
+        </Node>
+
+        <Node name="Visu" >
+            <OglModel  name="VisualModel" src="@../OLoader" color="white" />
+            <BarycentricMapping name="MappingVisu" input="@../ODOF" output="@VisualModel" />
+        </Node>
+    </Node>
+
+
+    <!-- Object = F letter as a rigid frame -->
+    <Node name="F" >
+        <EulerImplicitSolver name="EulerImplicitScheme" />
+        <EigenSimplicialLDLT name="LDLLinearSolver" template="CompressedRowSparseMatrixd"  />
+        <MechanicalObject name="FDOF" template="Rigid3d" position="23.15 0 -2.7 0 0 0 1"/>
+        <UniformMass name="Mass" totalMass="0.1" />
+
+        <Node name="Collision">
+            <MeshOBJLoader name="SkeletonLoader" filename="mesh/SofaScene/FSkel.obj"/>
+            <TriangleSetTopologyContainer name="Container" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles"/>
+            <TriangleSetTopologyModifier name="Modifier"/>
+
+            <MechanicalObject name="CollisionDOF" src="@SkeletonLoader" template="Vec3d"  />
+            <LineCollisionModel name="CenterLineCollisionModel" proximity="0.5" />
+            <RigidMapping name="MappingCollision" input="@../FDOF" output="@CollisionDOF" globalToLocalCoords="true"/>
+        </Node>
+
+        <Node name="Visu">
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/FVisu.obj"/>
+            <OglModel name="VisualModel" color="0.7 0.7 0.7 0.8" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
+            <RigidMapping name="SurfaceMapping" input="@../FDOF" output="@VisualModel" globalToLocalCoords="true"/>
+        </Node>
+        <LinearSolverConstraintCorrection linearSolver="@LDLLinearSolver" />
+    </Node>
+
+
+    <!-- Object = A letter as a 3D deformable object -->
+    <Node name="A" >
+        <EulerImplicitSolver name="EulerImplicitScheme" />
+        <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
+        <EigenSimplicialLDLT name="LDLLinearSolver" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true"  linearSystem="@A"/>
+
+
+        <MeshVTKLoader name="ALoader" filename="mesh/SofaScene/A.vtk"  />
+        <TetrahedronSetTopologyContainer name="Container" src="@ALoader" />
+        <TetrahedronSetTopologyModifier name="Modifier"/>
+        <!-- <TetrahedronSetGeometryAlgorithms name="Modifier"/> -->
+        <MechanicalObject name="ADOF" template="Vec3d" />
+        <TetrahedronFEMForceField name="LinearElasticityFEM"  youngModulus="30" poissonRatio="0.4" method="large" />
+        <MeshMatrixMass name="Mass" totalMass="0.1" />
+
+        <Node name="Collision">
+            <MeshOBJLoader name="CoarseCollisionSurface" filename="mesh/SofaScene/ACoarse.obj"  />
+            <MechanicalObject name="CollisionDOF" position="@CoarseCollisionSurface.position"/>
+            <PointCollisionModel name="Surface" proximity="0.3" />
+            <BarycentricMapping name="SurfaceMapping"/>
+        </Node>
+
+        <Node name="Visu">
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/AVisu.obj"/>
+            <OglModel name="VisualModel" color="0.7 0.7 0.7 0.8" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
+            <BarycentricMapping name="SurfaceMapping" input="@../ADOF" output="@VisualModel" isMechanical="false" />
+        </Node>
+
+        <LinearSolverConstraintCorrection linearSolver="@LDLLinearSolver"/>
+    </Node>
+
+
+    <!-- Floor object used to detect collision with all letters -->
+    <Node name="Floor" tags="NoBBox" >
+        <TriangleSetTopologyContainer name="FloorTopology" position="-20 -15 1  50 -15 1  50 15 1  -20 15 1" triangles="0 2 1  0 3 2" />
+        <MechanicalObject name="FloorDOF" template="Vec3d"/>
+        <TriangleCollisionModel name="FloorCM" proximity="0.02" moving="0" simulated="0"  color="0.3 0.3 0.3 0.1"/>
+        <OglModel name="VisualModel" src="@FloorTopology"/>
+    </Node>
+
+
+     <!-- Ceil object used to detect collision with the SOFA logo -->
+     <Node name="Ceil" tags="NoBBox" >
+        <TriangleSetTopologyContainer name="CeilTopology" position="-20 -15 -20   50 -15 -20    50 15 -20    -20 15 -20" triangles="0 1 2  3 0 2" />
+        <MechanicalObject name="CeilDOF" template="Vec3d"/>
+        <TriangleCollisionModel name="CeilCM" proximity="0.02" moving="0" simulated="0" color="0.3 0.3 0.3 0.1"/>
+        <OglModel name="VisualModel" src="@CeilTopology"/>
+    </Node>
+</Node >
+
