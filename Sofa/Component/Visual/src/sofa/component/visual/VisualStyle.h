@@ -28,7 +28,7 @@
 #include <sofa/core/visual/Data[DisplayFlags].h>
 #include <sofa/simulation/fwd.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::visual
 {
@@ -71,11 +71,11 @@ public:
     void updateVisualFlags(VisualParams* ) override;
     void applyBackupFlags(VisualParams* ) override;
 
-    bool insertInNode( sofa::core::objectmodel::BaseNode* node );
-    bool removeInNode( sofa::core::objectmodel::BaseNode* node );
+    bool insertInNode(sofa::core::objectmodel::BaseNode* node) override;
+    bool removeInNode(sofa::core::objectmodel::BaseNode* node) override;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<DisplayFlags> displayFlags;
+    sofa::core::objectmodel::lifecycle::RenamedData<DisplayFlags> displayFlags;
 
     Data<DisplayFlags> d_displayFlags; ///< Display Flags
 

@@ -27,7 +27,7 @@
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/ParallelForEach.h>
 
-namespace multithreading::component::solidmechanics::fem::elastic
+namespace multithreading::component::forcefield::solidmechanics::fem::elastic
 {
 
 template<class DataTypes>

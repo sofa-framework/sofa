@@ -27,6 +27,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/Modules.h>
 
 namespace sofa::component::topology::container
 {
@@ -55,9 +56,9 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin("Sofa.Component.Topology.Container.Constant");
-    factory->registerObjectsFromPlugin("Sofa.Component.Topology.Container.Dynamic");
-    factory->registerObjectsFromPlugin("Sofa.Component.Topology.Container.Grid");
+    factory->registerObjectsFromPlugin(Sofa.Component.Topology.Container.Constant);
+    factory->registerObjectsFromPlugin(Sofa.Component.Topology.Container.Dynamic);
+    factory->registerObjectsFromPlugin(Sofa.Component.Topology.Container.Grid);
 }
 
 void init()

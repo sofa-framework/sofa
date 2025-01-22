@@ -25,7 +25,7 @@ using sofa::core::objectmodel::BaseObject ;
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
-#include <sofa/core/objectmodel/RemovedData.h>
+#include <sofa/core/objectmodel/lifecycle/RemovedData.h>
 using sofa::core::objectmodel::lifecycle::DeprecatedData;
 using sofa::core::objectmodel::lifecycle::RemovedData;
 

@@ -19,23 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <string>
-#include <sofa/core/config.h>
-#include <sofa/core/fwd.h>
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/DeprecatedData.h>
+#include <Modules_test.h>
+#include <gtest/gtest.h>
 
-namespace sofa::core::objectmodel::lifecycle
-{
-
-DeprecatedData::DeprecatedData(Base* b, const std::string& deprecationVersion, const std::string& removalVersion, const std::string& name, const std::string& helptext)
-{
-    m_deprecationVersion = deprecationVersion;
-    m_removalVersion = removalVersion;
-    m_name = name;
-    m_helptext = helptext;
-    m_isRemoved = false;
-    b->addDeprecatedAttribute(this);
-}
-
-} // namespace sofa
+ALL_SOFA_MODULES

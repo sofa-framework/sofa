@@ -413,7 +413,7 @@ public:
     GetObjectsCallBackT(Container* d) : dest(d) {}
     void operator()(void* ptr) override
     {
-        if constexpr (sofa::type::trait::is_vector<Container>::value)
+        if constexpr (sofa::type::trait::is_vector<Container>)
         {
             dest->push_back(reinterpret_cast<T*>(ptr));
         }

@@ -39,9 +39,8 @@ public:
     explicit WriteOnlyAccessor(container_type& container) : WriteAccessor<T, Enable>(container) {}
 };
 
-template<class VectorLikeType>
-class WriteOnlyAccessor<VectorLikeType,
-                        std::enable_if_t<sofa::type::trait::is_vector<VectorLikeType>::value> >
+template<sofa::type::trait::is_vector VectorLikeType>
+class WriteOnlyAccessor<VectorLikeType>
     : public WriteAccessorVector< VectorLikeType >
 {
 public:

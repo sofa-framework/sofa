@@ -58,10 +58,10 @@ sofa::simulation::Node::SPtr RestSpringsForceField_test::createScene(const std::
 {
     const auto theSimulation = createSimulation();
     auto theRoot = createRootNode(theSimulation, "root");
-    sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
-    sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
-    sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-    sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+    sofa::simpleapi::importPlugin(Sofa.Component.ODESolver.Backward);
+    sofa::simpleapi::importPlugin(Sofa.Component.LinearSolver.Iterative);
+    sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+    sofa::simpleapi::importPlugin(Sofa.Component.Mass);
     
     createObject(theRoot, "DefaultAnimationLoop");
     createObject(theRoot, "EulerImplicitSolver");

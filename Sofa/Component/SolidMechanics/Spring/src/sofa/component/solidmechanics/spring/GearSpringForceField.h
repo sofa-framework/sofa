@@ -31,7 +31,7 @@
 #include <vector>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::solidmechanics::spring
 {
@@ -289,19 +289,19 @@ public:
     }
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::RenamedData<sofa::type::vector<Spring> > springs;
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<Spring> > springs;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
     sofa::core::objectmodel::DataFileName f_filename;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::RenamedData<Real> f_period;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_period;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::RenamedData<bool> f_reinit;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_reinit;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::RenamedData<Real> showFactorSize;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> showFactorSize;
 
     /// the list of the springs
     Data<sofa::type::vector<Spring> > d_springs;

@@ -35,7 +35,7 @@
 #include <type_traits>
 #include <set>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::constraint::projective
 {
@@ -77,40 +77,40 @@ protected:
 
 public :
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<sofa::type::vector<sofa::Index> >  m_indices;
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<sofa::Index> >  m_indices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<type::vector<Real> >m_keyTimes;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<Real> >m_keyTimes;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<VecDeriv > m_keyMovements;
+    sofa::core::objectmodel::lifecycle::RenamedData<VecDeriv > m_keyMovements;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData< bool > showMovement;
+    sofa::core::objectmodel::lifecycle::RenamedData< bool > showMovement;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<bool> linearMovementBetweenNodesInIndices;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> linearMovementBetweenNodesInIndices;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<unsigned> mainIndice;
+    sofa::core::objectmodel::lifecycle::RenamedData<unsigned> mainIndice;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<unsigned> minDepIndice;
+    sofa::core::objectmodel::lifecycle::RenamedData<unsigned> minDepIndice;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<unsigned> maxDepIndice;
+    sofa::core::objectmodel::lifecycle::RenamedData<unsigned> maxDepIndice;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<type::vector<Real> > m_imposedDisplacmentOnMacroNodes;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<Real> > m_imposedDisplacmentOnMacroNodes;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<Real> X0;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> X0;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<Real> Y0;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> Y0;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<Real> Z0;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> Z0;
 
 
     /// indices of the DOFs the constraint is applied to
@@ -146,7 +146,7 @@ public :
     typedef sofa::type::fixed_array<bool,NumDimensions> VecBool;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<VecBool> movedDirections;
+    sofa::core::objectmodel::lifecycle::RenamedData<VecBool> movedDirections;
 
     core::objectmodel::Data<VecBool> d_movedDirections; ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free
 

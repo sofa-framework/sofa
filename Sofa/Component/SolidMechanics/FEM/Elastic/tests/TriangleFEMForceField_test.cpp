@@ -79,12 +79,12 @@ protected:
 
 public:
 
-    void SetUp() override
+    void doSetUp() override
     {
         m_simulation = sofa::simulation::getSimulation();
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         if (m_root != nullptr)
             sofa::simulation::node::unload(m_root);
@@ -97,10 +97,10 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
 
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
-        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
+        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
 
         createObject(m_root, "MechanicalObject", {{"template",dataTypeName}, {"position", "0 0 0  1 0 0  0 1 0  1 1 1"} });
         createObject(m_root, "TriangleSetTopologyContainer", { {"triangles","0 1 2  1 3 2"} });
@@ -138,7 +138,7 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
 
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Grid);
 
         createObject(m_root, "RegularGridTopology", { {"name", "grid"}, 
             {"n", str(type::Vec3(nbrGrid, nbrGrid, 1))}, {"min", "0 0 0"}, {"max", "10 10 0"} });
@@ -175,12 +175,12 @@ public:
     {
         const Node::SPtr FEMNode = sofa::simpleapi::createChild(m_root, nodeName);
 
-        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
-        sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
-        sofa::simpleapi::importPlugin("Sofa.Component.Constraint.Projective");
+        sofa::simpleapi::importPlugin(Sofa.Component.ODESolver.Backward);
+        sofa::simpleapi::importPlugin(Sofa.Component.LinearSolver.Iterative);
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
+        sofa::simpleapi::importPlugin(Sofa.Component.Constraint.Projective);
 
         createObject(FEMNode, "EulerImplicitSolver");
         createObject(FEMNode, "CGLinearSolver", {{ "iterations", "20" }, { "tolerance", "1e-5" }, {"threshold", "1e-6"}});
@@ -259,8 +259,8 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
 
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
 
         createObject(m_root, "MechanicalObject", { {"template",dataTypeName}, {"position", "0 0 0  1 0 0  0 1 0"} });
         if (FEMType == 0) // TriangleModel
@@ -291,9 +291,9 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
 
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
 
         createObject(m_root, "MechanicalObject", { {"template",dataTypeName} });
         createObject(m_root, "TriangleSetTopologyContainer");
@@ -326,9 +326,9 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
 
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
 
         createObject(m_root, "MechanicalObject", { {"template",dataTypeName}, {"position", "0 0 0  1 0 0  0 1 0"} });
         createObject(m_root, "TriangleSetTopologyContainer", { {"triangles","0 1 2"} });

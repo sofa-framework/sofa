@@ -74,13 +74,13 @@ public:
     void checkCollisionPipelineWithMissingContactManager();
     int checkCollisionPipelineWithMonkeyValueForDepth(int value);
 
-    void SetUp() override
+    void doSetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer"); 
-        sofa::simpleapi::importPlugin("Sofa.Component.Collision");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Collision);
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         if (root)
             sofa::simulation::node::unload(root);

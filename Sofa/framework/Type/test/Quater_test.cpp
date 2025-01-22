@@ -707,4 +707,12 @@ TEST(QuaterTest, QuaterdFromUnitVectors)
     EXPECT_NEAR(0.5894552112230939, quat1[3], errorThreshold);
 }
 
-
+TEST(QuaterTest, StructuredBindings)
+{
+    Quat<double> quat1;
+    const auto& [a,b,c,d] = quat1;
+    EXPECT_NEAR(0., a, errorThreshold);
+    EXPECT_NEAR(0., b, errorThreshold);
+    EXPECT_NEAR(0., c, errorThreshold);
+    EXPECT_NEAR(1., d, errorThreshold);
+}

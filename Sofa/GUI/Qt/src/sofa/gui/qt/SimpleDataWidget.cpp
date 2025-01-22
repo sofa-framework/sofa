@@ -241,8 +241,8 @@ SelectableItemWidget::SelectableItemWidget(QWidget* parent, const char* name,
 
 bool SelectableItemWidget::createWidgets()
 {
-    if (Tdata && Tdata->getValueTypeString() != "SelectableItem" ||
-        baseData && baseData->getValueTypeString() != "SelectableItem")
+    if ((Tdata && Tdata->getValueTypeString() != "SelectableItem") ||
+        (baseData && baseData->getValueTypeString() != "SelectableItem"))
     {
         return false;
     }
