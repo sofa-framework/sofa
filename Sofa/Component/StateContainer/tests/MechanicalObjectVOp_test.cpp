@@ -227,7 +227,7 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::ConstVecId::null(), core::vec_id::read_access::position, 2._sreal);
         }
         checkVecSpatialValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(2);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
     }
 
     void equalOtherPosition() const
