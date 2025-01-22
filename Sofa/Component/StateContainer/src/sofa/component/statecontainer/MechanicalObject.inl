@@ -2397,7 +2397,7 @@ std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObje
             for( ; chunk != chunkEnd ; chunk++)
             {
                 const unsigned int column = chunk.index();
-                if( blocks.find( column ) == blocks.end() )
+                if(!blocks.contains( column ))
                 {
                     // nope: let's create it
                     matrix_t* mat = new matrix_t(linearalgebra::BaseMatrix::Index(indices.size()), linearalgebra::BaseMatrix::Index(dimensionDeriv));

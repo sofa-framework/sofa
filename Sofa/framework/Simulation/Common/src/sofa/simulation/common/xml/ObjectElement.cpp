@@ -60,7 +60,7 @@ bool ObjectElement::initNode()
 
     for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
     {
-        if (replaceAttribute.find(it->first) != replaceAttribute.end())
+        if (replaceAttribute.contains(it->first))
         {
             setAttribute(it->first,replaceAttribute[it->first]);
         }
