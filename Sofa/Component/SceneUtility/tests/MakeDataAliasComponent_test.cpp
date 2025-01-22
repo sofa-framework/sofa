@@ -72,8 +72,8 @@ bool inited = doInit();
 
 void perTestInit()
 {
-    sofa::simpleapi::importPlugin("Sofa.Component.SceneUtility");
-    sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+    sofa::simpleapi::importPlugin(Sofa.Component.SceneUtility);
+    sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
 
     if(defaultHandler==nullptr)
         defaultHandler=new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance()) ;

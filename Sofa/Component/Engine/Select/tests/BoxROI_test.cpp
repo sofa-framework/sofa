@@ -73,9 +73,9 @@ struct BoxROITest :  public sofa::testing::BaseTest
     void onSetUp() override
     {
         this->loadPlugins({
-            "Sofa.Component.StateContainer",
-            "Sofa.Component.Topology.Container.Dynamic",
-            "Sofa.Component.Engine.Select"});
+            Sofa.Component.StateContainer,
+            Sofa.Component.Topology.Container.Dynamic,
+            Sofa.Component.Engine.Select});
 
         m_simu = sofa::simulation::getSimulation();
         ASSERT_NE(m_simu, nullptr);

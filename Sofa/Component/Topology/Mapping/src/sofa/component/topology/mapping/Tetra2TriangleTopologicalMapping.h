@@ -29,7 +29,7 @@
 
 #include <sofa/core/BaseMapping.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::topology::container::dynamic
 {
@@ -84,13 +84,13 @@ public:
 
 protected:
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<bool> flipNormals;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> flipNormals;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<bool> noNewTriangles;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> noNewTriangles;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<bool> noInitialTriangles;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> noInitialTriangles;
 
 
     Data<bool> d_flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)

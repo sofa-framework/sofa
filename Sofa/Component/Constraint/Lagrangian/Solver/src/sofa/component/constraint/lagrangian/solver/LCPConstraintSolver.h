@@ -35,7 +35,7 @@
 #include <sofa/helper/map.h>
 #include <sofa/helper/LCPcalc.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
@@ -75,61 +75,61 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData<bool> displayDebug;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> displayDebug;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData<bool> initial_guess;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> initial_guess;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData<bool> build_lcp;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> build_lcp;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData<SReal> tol;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> tol;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData< int> maxIt;
+    sofa::core::objectmodel::lifecycle::RenamedData< int> maxIt;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData<SReal> mu;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> mu;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData<SReal> minW;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> minW;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData<SReal> maxF;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> maxF;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData<bool> multi_grid;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> multi_grid;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData< int> multi_grid_levels;
+    sofa::core::objectmodel::lifecycle::RenamedData< int> multi_grid_levels;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData< int> merge_method;
+    sofa::core::objectmodel::lifecycle::RenamedData< int> merge_method;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData< int> merge_spatial_step;
+    sofa::core::objectmodel::lifecycle::RenamedData< int> merge_spatial_step;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData< int> merge_local_levels;
+    sofa::core::objectmodel::lifecycle::RenamedData< int> merge_local_levels;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData < std::set<int> >  constraintGroups;
+    sofa::core::objectmodel::lifecycle::RenamedData < std::set<int> >  constraintGroups;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData<std::map < std::string, sofa::type::vector<SReal> > > f_graph;
+    sofa::core::objectmodel::lifecycle::RenamedData<std::map < std::string, sofa::type::vector<SReal> > > f_graph;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData< int> showLevels;
+    sofa::core::objectmodel::lifecycle::RenamedData< int> showLevels;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData<SReal> showCellWidth;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> showCellWidth;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData<type::Vec3> showTranslation;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3> showTranslation;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::RenamedData<type::Vec3>  showLevelTranslation;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3>  showLevelTranslation;
 
 
     Data<bool> d_displayDebug; ///< Display debug information.

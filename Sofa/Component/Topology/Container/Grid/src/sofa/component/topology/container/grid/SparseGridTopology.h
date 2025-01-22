@@ -32,7 +32,7 @@
 #include <stack>
 #include <string>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::core::loader
 {
@@ -192,13 +192,13 @@ public:
         return d_dataVoxels.getValue()[index] == 1;
     }
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<bool> _fillWeighted;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> _fillWeighted;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<bool> bOnlyInsideCells;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> bOnlyInsideCells;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData< type::vector< unsigned char > >     dataVoxels;
+    sofa::core::objectmodel::lifecycle::RenamedData< type::vector< unsigned char > >     dataVoxels;
 
 
     Data< type::vector< unsigned char > >     d_dataVoxels;
@@ -212,19 +212,19 @@ protected:
 
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData< sofa::type::Vec< 3, int > >  n;
+    sofa::core::objectmodel::lifecycle::RenamedData< sofa::type::Vec< 3, int > >  n;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<type::Vec3> _min;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3> _min;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<type::Vec3> _max;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3> _max;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<SReal> _cellWidth;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> _cellWidth;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<int> _nbVirtualFinerLevels;
+    sofa::core::objectmodel::lifecycle::RenamedData<int> _nbVirtualFinerLevels;
 
 
     bool isVirtual;
@@ -238,19 +238,19 @@ protected:
 public:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<type::Vec3i> dataResolution;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3i> dataResolution;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<type::Vec3> voxelSize;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3> voxelSize;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<unsigned int> marchingCubeStep;
+    sofa::core::objectmodel::lifecycle::RenamedData<unsigned int> marchingCubeStep;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<unsigned int> convolutionSize;
+    sofa::core::objectmodel::lifecycle::RenamedData<unsigned int> convolutionSize;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData< type::vector< type::vector<Index> > > facets;
+    sofa::core::objectmodel::lifecycle::RenamedData< type::vector< type::vector<Index> > > facets;
 
     Data< type::Vec3i >			d_dataResolution; ///< Dimension of the voxel File
     Data< type::Vec3 >         d_voxelSize; ///< Dimension of one voxel

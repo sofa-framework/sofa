@@ -20,29 +20,36 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
-#include <string>
 #include <sofa/core/config.h>
-#include <sofa/core/objectmodel/DeprecatedData.h>
+#include <atomic>
 
-namespace sofa::core::objectmodel::lifecycle
+namespace sofa::core
 {
 
-/// Placeholder for a Data<T> to indicate a Data is now removed
-///
-/// This will also register the data name into a dedicated structure of Base object
-/// so a warning will be issued if users continue accessing it;
-///
-/// Use case:
-///    RemovedData d_sofaIsGreatM(this, "v23.06", "v23.12", "sofaIsGreat", "")
-class SOFA_CORE_API RemovedData : public DeprecatedData
+/**
+ * The `IntrusiveObject` class implements an internal reference counting mechanism
+ * to manage its lifetime. It is intended to work with intrusive smart pointers like
+ * `boost::intrusive_ptr`.
+ */
+class SOFA_CORE_API IntrusiveObject
 {
-public:
-    RemovedData(Base* b, const std::string& deprecationVersion, const std::string& removalVersion, const std::string& name, const std::string& helptext) :
-        DeprecatedData(b,deprecationVersion, removalVersion, name,helptext)
+    std::atomic<int> ref_counter { 0 };
+
+    void addRef();
+    void release();
+
+    friend inline void intrusive_ptr_add_ref(IntrusiveObject* p)
     {
-        m_isRemoved = true;
+        p->addRef();
     }
+
+    friend inline void intrusive_ptr_release(IntrusiveObject* p)
+    {
+        p->release();
+    }
+
+protected:
+    virtual ~IntrusiveObject() = default;
 };
 
-} // namespace sofa::core::objectmodel
+}

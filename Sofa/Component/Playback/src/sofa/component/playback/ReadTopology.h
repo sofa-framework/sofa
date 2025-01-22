@@ -34,7 +34,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <fstream>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::playback
 {
@@ -50,13 +50,13 @@ public:
     sofa::core::objectmodel::DataFileName f_filename;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::RenamedData < double > f_interval;
+    sofa::core::objectmodel::lifecycle::RenamedData < double > f_interval;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::RenamedData < double > f_shift;
+    sofa::core::objectmodel::lifecycle::RenamedData < double > f_shift;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::RenamedData < bool > f_loop;
+    sofa::core::objectmodel::lifecycle::RenamedData < bool > f_loop;
 
     sofa::core::objectmodel::DataFileName d_filename;
     Data < double > d_interval; ///< time duration between inputs

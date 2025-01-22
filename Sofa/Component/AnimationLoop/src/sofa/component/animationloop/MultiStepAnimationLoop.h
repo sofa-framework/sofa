@@ -25,7 +25,7 @@
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/simulation/CollisionAnimationLoop.h>
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::animationloop
 {
@@ -43,10 +43,10 @@ public:
     void step (const sofa::core::ExecParams* params, SReal dt) override;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ANIMATIONLOOP()
-    sofa::core::objectmodel::RenamedData<int> collisionSteps;
+    sofa::core::objectmodel::lifecycle::RenamedData<int> collisionSteps;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ANIMATIONLOOP()
-    sofa::core::objectmodel::RenamedData<int> integrationSteps;
+    sofa::core::objectmodel::lifecycle::RenamedData<int> integrationSteps;
 
     Data<int> d_collisionSteps; ///< number of collision steps between each frame rendering
     Data<int> d_integrationSteps; ///< number of integration steps between each collision detection
