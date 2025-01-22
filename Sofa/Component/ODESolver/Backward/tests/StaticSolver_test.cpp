@@ -51,7 +51,7 @@ static constexpr SReal l = youngModulus * poissonRatio / ((1.0 + poissonRatio) *
 class StaticSolverTest : public sofa::testing::BaseTest
 {
 public:
-    void onSetUp() override {
+    void doSetUp() override {
 
         root = getSimulation()->createNewNode("root");
 
@@ -83,7 +83,7 @@ public:
         solver = dynamic_cast<StaticSolver *> (s.get());
     }
 
-    void onTearDown() override {
+    void doTearDown() override {
         sofa::simulation::node::unload(root);
     }
 

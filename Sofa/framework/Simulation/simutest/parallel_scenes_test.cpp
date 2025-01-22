@@ -44,31 +44,31 @@ public:
     {
     }
     
-    void SetUp() override
+    void doSetUp() override
     {
         EXPECT_MSG_NOEMIT(Error, Warning);
         
-        sofa::simpleapi::importPlugin("Sofa.Component.AnimationLoop");
-        sofa::simpleapi::importPlugin("Sofa.Component.Collision.Detection.Algorithm");
-        sofa::simpleapi::importPlugin("Sofa.Component.Collision.Detection.Intersection");
-        sofa::simpleapi::importPlugin("Sofa.Component.Collision.Geometry");
-        sofa::simpleapi::importPlugin("Sofa.Component.Collision.Response.Contact");
-        sofa::simpleapi::importPlugin("Sofa.Component.Constraint.Lagrangian.Correction");
-        sofa::simpleapi::importPlugin("Sofa.Component.Constraint.Lagrangian.Solver");
-        sofa::simpleapi::importPlugin("Sofa.Component.Constraint.Projective");
-        sofa::simpleapi::importPlugin("Sofa.Component.IO.Mesh");
-        sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
-        sofa::simpleapi::importPlugin("Sofa.Component.Mapping.Linear");
-        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
-        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
-        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Constant");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
-        sofa::simpleapi::importPlugin("Sofa.Component.Visual");
-        sofa::simpleapi::importPlugin("Sofa.GL.Component.Rendering3D");
-        sofa::simpleapi::importPlugin("Sofa.Component.LinearSystem");
+        sofa::simpleapi::importPlugin(Sofa.Component.AnimationLoop);
+        sofa::simpleapi::importPlugin(Sofa.Component.Collision.Detection.Algorithm);
+        sofa::simpleapi::importPlugin(Sofa.Component.Collision.Detection.Intersection);
+        sofa::simpleapi::importPlugin(Sofa.Component.Collision.Geometry);
+        sofa::simpleapi::importPlugin(Sofa.Component.Collision.Response.Contact);
+        sofa::simpleapi::importPlugin(Sofa.Component.Constraint.Lagrangian.Correction);
+        sofa::simpleapi::importPlugin(Sofa.Component.Constraint.Lagrangian.Solver);
+        sofa::simpleapi::importPlugin(Sofa.Component.Constraint.Projective);
+        sofa::simpleapi::importPlugin(Sofa.Component.IO.Mesh);
+        sofa::simpleapi::importPlugin(Sofa.Component.LinearSolver.Iterative);
+        sofa::simpleapi::importPlugin(Sofa.Component.Mapping.Linear);
+        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
+        sofa::simpleapi::importPlugin(Sofa.Component.ODESolver.Backward);
+        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Constant);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Grid);
+        sofa::simpleapi::importPlugin(Sofa.Component.Visual);
+        sofa::simpleapi::importPlugin(Sofa.GL.Component.Rendering3D);
+        sofa::simpleapi::importPlugin(Sofa.Component.LinearSystem);
     }
     
     void executeInParallel(const char* sceneStr, const std::size_t nbScenes, const std::size_t nbSteps)
