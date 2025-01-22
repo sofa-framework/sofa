@@ -81,7 +81,7 @@ struct DataEngine_test: public BaseTest
 {
     TestEngine engine;
 
-    void SetUp() override
+    void doSetUp() override
     {
         engine.init();
     }

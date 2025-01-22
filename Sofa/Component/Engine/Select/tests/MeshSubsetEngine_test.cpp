@@ -31,9 +31,9 @@ struct MeshSubsetEngine_test : public testing::BaseSimulationTest
     sofa::simulation::Node::SPtr m_root;
     typename component::engine::select::MeshSubsetEngine<_DataTypes>::SPtr m_engine;
 
-    void SetUp() override
+    void doSetUp() override
     {
-        simpleapi::importPlugin("Sofa.Component.Engine.Select");
+        simpleapi::importPlugin(Sofa.Component.Engine.Select);
 
         m_root = simulation::getSimulation()->createNewNode("root");
         ASSERT_NE(nullptr, m_root);
@@ -44,7 +44,7 @@ struct MeshSubsetEngine_test : public testing::BaseSimulationTest
         m_root->addObject(m_engine);
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         sofa::simulation::node::unload(m_root) ;
     }

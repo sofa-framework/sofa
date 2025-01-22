@@ -64,7 +64,7 @@ struct TriangleNumericalIntegration_test : public NumericTest<typename _DataType
     typename sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<DataTypes>::SPtr geo;
 
     // Create the context for the scene
-    void SetUp() override
+    void doSetUp() override
     {
         // Init simulation
         simulation = sofa::simulation::getSimulation();
@@ -135,7 +135,7 @@ struct TriangleNumericalIntegration_test : public NumericTest<typename _DataType
     }
 
 
-    void TearDown() override
+    void doTearDown() override
     {
         if (root != nullptr)
             sofa::simulation::node::unload(root);

@@ -51,11 +51,11 @@ static constexpr SReal l = youngModulus * poissonRatio / ((1.0 + poissonRatio) *
 class StaticSolverTest : public sofa::testing::BaseTest
 {
 public:
-    void onSetUp() override {
+    void doSetUp() override {
 
         root = getSimulation()->createNewNode("root");
 
-        createObject(root, "RequiredPlugin", {{"pluginName", "Sofa.Component"}});
+        createObject(root, "RequiredPlugin", {{"pluginName", Sofa.Component}});
         createObject(root, "DefaultAnimationLoop");
         createObject(root, "RegularGridTopology", {{"name", "grid"}, {"min", "-7.5 -7.5 0"}, {"max", "7.5 7.5 80"}, {"n", "3 3 9"}});
         const auto s = createObject(root, "StaticSolver", {{"newton_iterations", "10"}});
@@ -83,7 +83,7 @@ public:
         solver = dynamic_cast<StaticSolver *> (s.get());
     }
 
-    void onTearDown() override {
+    void doTearDown() override {
         sofa::simulation::node::unload(root);
     }
 

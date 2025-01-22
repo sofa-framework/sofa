@@ -116,13 +116,13 @@ struct PlaneForceField_test : public BaseSimulationTest
      * by the plane force field.
      * In the special case where : stiffness = 500, damping = 5 and maxForce = 0 (default values)
     */
-    void SetUp() override 
+    void doSetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.MechanicalLoad");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.MechanicalLoad);
     }
 
-    void TearDown() override {}
+    void doTearDown() override {}
 
     void setupDefaultScene()
     {

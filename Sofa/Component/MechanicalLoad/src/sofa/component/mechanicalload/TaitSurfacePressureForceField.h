@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::mechanicalload
 {
@@ -74,58 +74,58 @@ protected:
 public:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_p0;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_p0;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_B;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_B;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_gamma;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_gamma;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_injectedVolume;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_injectedVolume;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_maxInjectionRate;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_maxInjectionRate;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_initialVolume;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_initialVolume;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_currentInjectedVolume;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_currentInjectedVolume;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_v0;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_v0;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_currentVolume;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_currentVolume;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_currentPressure;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_currentPressure;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_currentStiffness;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_currentStiffness;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<SeqTriangles> m_pressureTriangles;
+    sofa::core::objectmodel::lifecycle::RenamedData<SeqTriangles> m_pressureTriangles;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_initialSurfaceArea;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_initialSurfaceArea;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_currentSurfaceArea;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_currentSurfaceArea;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_drawForceScale;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_drawForceScale;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<sofa::type::RGBAColor> m_drawForceColor;
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::RGBAColor> m_drawForceColor;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_volumeAfterTC;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_volumeAfterTC;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_surfaceAreaAfterTC;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_surfaceAreaAfterTC;
 
 
     Data< Real > d_p0; ///< IN: Rest pressure when V = V0

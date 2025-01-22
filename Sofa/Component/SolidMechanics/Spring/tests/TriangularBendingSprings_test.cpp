@@ -67,14 +67,14 @@ protected:
     
 public:
 
-    void SetUp() override
+    void doSetUp() override
     {
         m_simulation = sofa::simulation::getSimulation();
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Grid);
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         if (m_root != nullptr)
             sofa::simulation::node::unload(m_root);

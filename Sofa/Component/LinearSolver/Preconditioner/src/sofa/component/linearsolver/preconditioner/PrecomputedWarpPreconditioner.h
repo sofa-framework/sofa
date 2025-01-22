@@ -32,7 +32,7 @@
 #include <cmath>
 #include <fstream>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::linearsolver::preconditioner
 {
@@ -113,19 +113,19 @@ public:
     sofa::core::objectmodel::lifecycle::RemovedData f_verbose{this, "v23.12", "v24.06", "verbose", "This Data is no longer used"};
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
-    sofa::core::objectmodel::RenamedData<bool> jmjt_twostep;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> jmjt_twostep;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
-    sofa::core::objectmodel::RenamedData<bool> use_file;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> use_file;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
-    sofa::core::objectmodel::RenamedData<bool> share_matrix;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> share_matrix;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
-    sofa::core::objectmodel::RenamedData<bool> use_rotations;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> use_rotations;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
-    sofa::core::objectmodel::RenamedData<double> draw_rotations_scale;
+    sofa::core::objectmodel::lifecycle::RenamedData<double> draw_rotations_scale;
 
 
     Data<bool> d_use_file; ///< Dump system matrix in a file

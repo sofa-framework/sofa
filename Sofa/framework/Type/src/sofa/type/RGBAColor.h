@@ -33,6 +33,8 @@
 #include <cassert>
 
 #include <sofa/type/fixed_array_algorithms.h>
+#include <sofa/type/StrongType.h>
+
 
 namespace sofa::type
 {
@@ -45,8 +47,9 @@ namespace sofa::type
 class SOFA_TYPE_API RGBAColor
 {
 public:
+    using value_type = float;
     static constexpr sofa::Size NumberOfComponents = 4;
-    using ComponentArray = std::array<float, NumberOfComponents>;
+    using ComponentArray = std::array<value_type, NumberOfComponents>;
 
     constexpr RGBAColor()
         : m_components{ 1.f, 1.f, 1.f, 1.f } {}
@@ -132,6 +135,30 @@ public:
         return m_components[i];
     }
 
+    template< std::size_t I >
+    [[nodiscard]] constexpr float& get() & noexcept requires (I < 4)
+    {
+        return m_components[I];
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr const float& get() const& noexcept requires (I < 4)
+    {
+        return m_components[I];
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr float&& get() && noexcept requires (I < 4)
+    {
+        return std::move(m_components[I]);
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr const float&& get() const&& noexcept requires (I < 4)
+    {
+        return std::move(m_components[I]);
+    }
+
     void set(float r, float g, float b, float a) ;
 
     bool operator==(const RGBAColor& b) const
@@ -209,7 +236,6 @@ public:
 
     static constexpr sofa::Size static_size = NumberOfComponents;
     static constexpr sofa::Size size() { return static_size; }
-    using value_type = float;
     using size_type = sofa::Size;
 
 private:
@@ -285,3 +311,18 @@ constexpr const RGBAColor& RGBAColor::gold()     { return g_gold  ; }
 
 
 } // namespace sofa::type
+
+
+namespace std
+{
+
+template<>
+struct tuple_size<::sofa::type::RGBAColor > : integral_constant<size_t, ::sofa::type::RGBAColor::NumberOfComponents> {};
+
+template<std::size_t I>
+struct tuple_element<I, ::sofa::type::RGBAColor >
+{
+    using type = ::sofa::type::RGBAColor::value_type;
+};
+
+}

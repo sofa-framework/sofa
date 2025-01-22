@@ -25,7 +25,7 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::visual
 {
@@ -53,10 +53,10 @@ public:
     void drawTransparent(const sofa::core::visual::VisualParams* vparams) override;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<Coord> transform;
+    sofa::core::objectmodel::lifecycle::RenamedData<Coord> transform;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<bool> recursive;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> recursive;
 
     Data<Coord> d_transform; ///< Transformation to apply
     Data<bool> d_recursive; ///< True to apply transform to all nodes below
