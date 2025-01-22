@@ -29,6 +29,13 @@ template<class DataTypes>
 struct MechanicalObjectVOpTest : public testing::BaseTest
 {
     using MO = component::statecontainer::MechanicalObject<DataTypes>;
+
+    static constexpr Real_t<DataTypes> positionCoefficient = 19;
+    static constexpr Real_t<DataTypes> restPositionCoefficient = 20;
+    static constexpr Real_t<DataTypes> freePositionCoefficient = 5;
+    static constexpr Real_t<DataTypes> velocityCoefficient = 12;
+    static constexpr Real_t<DataTypes> forceCoefficient = 63;
+    static constexpr Real_t<DataTypes> freeVelocityCoefficient = 78;
     
     void onSetUp() override
     {
@@ -41,23 +48,23 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
         
         m_mechanicalObject->resize(10);
 
-        setVecValues<core::vec_id::write_access::position>(1);
-        checkVecValues<core::vec_id::read_access::position>(1);
+        setVecValues<core::vec_id::write_access::position>(positionCoefficient);
+        checkVecValues<core::vec_id::read_access::position>(positionCoefficient);
 
-        setVecValues<core::vec_id::write_access::restPosition>(2);
-        checkVecValues<core::vec_id::read_access::restPosition>(2);
+        setVecValues<core::vec_id::write_access::restPosition>(restPositionCoefficient);
+        checkVecValues<core::vec_id::read_access::restPosition>(restPositionCoefficient);
 
-        setVecValues<core::vec_id::write_access::freePosition>(5);
-        checkVecValues<core::vec_id::read_access::freePosition>(5);
+        setVecValues<core::vec_id::write_access::freePosition>(freePositionCoefficient);
+        checkVecValues<core::vec_id::read_access::freePosition>(freePositionCoefficient);
 
-        setVecValues<core::vec_id::write_access::velocity>(1);
-        checkVecValues<core::vec_id::read_access::velocity>(1);
+        setVecValues<core::vec_id::write_access::velocity>(velocityCoefficient);
+        checkVecValues<core::vec_id::read_access::velocity>(velocityCoefficient);
 
-        setVecValues<core::vec_id::write_access::force>(3);
-        checkVecValues<core::vec_id::read_access::force>(3);
+        setVecValues<core::vec_id::write_access::force>(forceCoefficient);
+        checkVecValues<core::vec_id::read_access::force>(forceCoefficient);
         
-        setVecValues<core::vec_id::write_access::freeVelocity>(8);
-        checkVecValues<core::vec_id::read_access::freeVelocity>(8);
+        setVecValues<core::vec_id::write_access::freeVelocity>(freeVelocityCoefficient);
+        checkVecValues<core::vec_id::read_access::freeVelocity>(freeVelocityCoefficient);
     }
 
     template<core::TVecId vtype>
@@ -116,8 +123,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             m_mechanicalObject->vOp(nullptr, core::VecId::null());
         }
 
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
         
         return true;
     }
@@ -140,7 +147,7 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             }
         }
 
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void resetVelocity() const
@@ -161,7 +168,7 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             }
         }
 
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
     }
 
     void multiplyByScalarPosition() const
@@ -171,8 +178,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v *= f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::ConstVecId::null(), core::vec_id::read_access::position, 2._sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(2);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient * 2_sreal);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void multiplyByScalarVelocity() const
@@ -182,8 +189,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v *= f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::ConstVecId::null(), core::vec_id::read_access::velocity, 2._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(2);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient * 2_sreal);
     }
 
     void equalOtherMultiplyByScalarPosition() const
@@ -193,8 +200,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = b*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::ConstVecId::null(), core::vec_id::read_access::restPosition, 2._sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(4);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(restPositionCoefficient * 2);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalOtherMultiplyByScalarVelocity() const
@@ -204,8 +211,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = b*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::ConstVecId::null(), core::vec_id::read_access::force, 2._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(6);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(forceCoefficient * 2);
     }
 
     void equalOtherMultiplyByScalarPositionMix() const
@@ -215,8 +222,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = b*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::ConstVecId::null(), core::vec_id::read_access::velocity, 2._sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalOtherMultiplyByScalarVelocityMix() const
@@ -226,8 +233,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = b*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::ConstVecId::null(), core::vec_id::read_access::position, 2._sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalOtherPosition() const
@@ -237,8 +244,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::restPosition, core::ConstVecId::null(), 1._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(2);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecValues<sofa::core::vec_id::read_access::position>(restPositionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalOtherPositionMix() const
@@ -248,8 +255,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::velocity, core::ConstVecId::null(), 1._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalOtherVelocity() const
@@ -259,8 +266,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::force, core::ConstVecId::null(), 1._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(3);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(forceCoefficient);
     }
 
     void equalOtherVelocityMix() const
@@ -270,8 +277,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::restPosition, core::ConstVecId::null(), 1._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void plusEqualOtherPosition() const
@@ -281,8 +288,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v += b
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::position, core::vec_id::read_access::restPosition, 1._sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(3);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient + restPositionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void plusEqualOtherPositionMix() const
@@ -292,8 +299,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v += b
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::position, core::vec_id::read_access::freeVelocity, 1._sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(8+1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient + freeVelocityCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
     
     void plusEqualOtherVelocity() const
@@ -303,8 +310,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v += b
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::velocity, core::vec_id::read_access::force, 1._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(4);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient + forceCoefficient);
     }
 
     void plusEqualOtherVelocityMix() const
@@ -314,8 +321,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v += b
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::velocity, core::vec_id::read_access::position, 1._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
     
     void plusEqualOtherMultipliedByScalarPosition() const
@@ -325,8 +332,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v += b*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::position, core::vec_id::read_access::restPosition, 2._sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(5);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient + restPositionCoefficient * 2);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void plusEqualOtherMultipliedByScalarPositionMix() const
@@ -336,8 +343,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v += b*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::position, core::vec_id::read_access::freeVelocity, 2._sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(8*2+1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient + freeVelocityCoefficient * 2);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
     
     void plusEqualOtherMultipliedByScalarVelocity() const
@@ -347,8 +354,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v += b*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::velocity, core::vec_id::read_access::force, 2._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(7);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient + forceCoefficient * 2);
     }
 
     void plusEqualOtherMultipliedByScalarVelocityMix() const
@@ -358,8 +365,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v += b*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::velocity, core::vec_id::read_access::freePosition, 2._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void plusEqualOtherPosition_2() const
@@ -369,8 +376,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v += a
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::restPosition, core::vec_id::read_access::position, 1._sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(3);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient + restPositionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void plusEqualOtherPositionMix_2() const
@@ -380,8 +387,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v += a
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::freeVelocity, core::vec_id::read_access::position, 1._sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
     
     void plusEqualOtherVelocity_2() const
@@ -391,8 +398,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v += a
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::force, core::vec_id::read_access::velocity, 1._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(4);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient + forceCoefficient);
     }
 
     void plusEqualOtherVelocityMix_2() const
@@ -402,8 +409,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v += a
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::freePosition, core::vec_id::read_access::velocity, 1._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void multipliedByScalarThenAddOtherPosition() const
@@ -413,8 +420,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+v*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::restPosition, core::vec_id::read_access::position, 3_sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(5);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(restPositionCoefficient + positionCoefficient * 3);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void multipliedByScalarThenAddOtherPositionMix() const
@@ -424,8 +431,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+v*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::freeVelocity, core::vec_id::read_access::position, 3_sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void multipliedByScalarThenAddOtherVelocity() const
@@ -435,8 +442,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+v*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::force, core::vec_id::read_access::velocity, 7._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(10);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient * 7 + forceCoefficient);
     }
 
     void multipliedByScalarThenAddOtherVelocityMix() const
@@ -446,8 +453,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+v*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::freePosition, core::vec_id::read_access::velocity, 7._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalSumPosition() const
@@ -457,8 +464,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+b
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::restPosition, core::vec_id::read_access::freePosition, 1_sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(7);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(restPositionCoefficient + freePositionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalSumPositionMix1() const
@@ -468,8 +475,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+b
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::restPosition, core::vec_id::read_access::freeVelocity, 1_sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(2+8);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(restPositionCoefficient+freeVelocityCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalSumPositionMix2() const
@@ -479,8 +486,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+b
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::freeVelocity, core::vec_id::read_access::freePosition, 1_sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalSumVelocity() const
@@ -490,8 +497,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+b
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::force, core::vec_id::read_access::freeVelocity, 1._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(11);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(forceCoefficient + freeVelocityCoefficient);
     }
 
     void equalSumVelocityMix1() const
@@ -501,8 +508,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+b
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::position, core::vec_id::read_access::freeVelocity, 1._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalSumVelocityMix2() const
@@ -512,8 +519,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+b
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::force, core::vec_id::read_access::position, 1._sreal);
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalSumWithScalarPosition() const
@@ -523,8 +530,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+b*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::restPosition, core::vec_id::read_access::freePosition, 12_sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(5*12 + 2);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(restPositionCoefficient + freePositionCoefficient * 12);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalSumWithScalarPositionMix1() const
@@ -534,8 +541,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+b*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::velocity, core::vec_id::read_access::freePosition, 12_sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalSumWithScalarPositionMix2() const
@@ -545,8 +552,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+b*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::restPosition, core::vec_id::read_access::freeVelocity, 12_sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(8*12+2);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(restPositionCoefficient + freeVelocityCoefficient * 12);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalSumWithScalarVelocity() const
@@ -556,8 +563,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+b*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::force, core::vec_id::read_access::freeVelocity, 12_sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(8*12 + 3);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(forceCoefficient + freeVelocityCoefficient * 12);
     }
 
     void equalSumWithScalarVelocityMix1() const
@@ -567,8 +574,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+b*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::position, core::vec_id::read_access::freeVelocity, 12_sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalSumWithScalarVelocityMix2() const
@@ -578,8 +585,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             //v = a+b*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::force, core::vec_id::read_access::position, 12_sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(1);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(1);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     typename MO::SPtr m_mechanicalObject;
@@ -603,6 +610,11 @@ TYPED_TEST(MechanicalObjectVOpTest, v_null)
 TYPED_TEST(MechanicalObjectVOpTest, resetPosition)
 {
     this->resetPosition();
+}
+
+TYPED_TEST(MechanicalObjectVOpTest, resetVelocity)
+{
+    this->resetVelocity();
 }
 
 TYPED_TEST(MechanicalObjectVOpTest, multiplyByScalarPosition)
