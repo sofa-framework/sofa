@@ -111,6 +111,31 @@ void Mapping<In,Out>::init()
         apply(mechanicalparams::defaultInstance(), vec_id::write_access::restPosition, vec_id::read_access::restPosition);
 }
 
+template <class TIn, class TOut>
+void Mapping<TIn, TOut>::parse(objectmodel::BaseObjectDescription* arg)
+{
+    BaseMapping::parse(arg);
+
+    const auto setLink = [arg, this]<typename LinkType>(LinkType& link, const char* attributeName, const std::string& defaultPath)
+    {
+        if (!arg->getAttribute(attributeName))
+        {
+            typename LinkType::DestType* state = nullptr;
+            this->getContext()->findLinkDest(state, defaultPath, nullptr);
+
+            if (state)
+            {
+                const std::string linkPath = "@" + state->getPathName();
+                msg_warning() << "The attribute '" << attributeName << "' of this component has not been defined. It is automatically set to '" << linkPath << "'. It is recommended to define it to avoid any error.";
+                link.setPath( linkPath );
+            }
+        }
+    };
+
+    setLink(this->fromModel, "input", "@../");
+    setLink(this->toModel, "output", "@./");
+}
+
 template <class In, class Out>
 sofa::linearalgebra::BaseMatrix* Mapping<In,Out>::createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix m_createMappedMatrix)
 {
