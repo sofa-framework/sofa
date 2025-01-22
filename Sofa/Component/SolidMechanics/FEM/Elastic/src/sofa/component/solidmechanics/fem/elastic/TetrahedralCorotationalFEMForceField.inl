@@ -1228,7 +1228,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
 {
     typename core::behavior::MechanicalState<DataTypes>* mechanicalObject;
     this->getContext()->get(mechanicalObject);
-    const VecCoord& X = mechanicalObject->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& X = mechanicalObject->read(core::vec_id::read_access::position)->getValue();
 
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetras = this->l_topology->getTetrahedra();
     const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
