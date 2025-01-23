@@ -1,3 +1,0 @@
-<Node name="root">
-    <RequiredPlugin name="SofaCUDA"/>
-</Node>
