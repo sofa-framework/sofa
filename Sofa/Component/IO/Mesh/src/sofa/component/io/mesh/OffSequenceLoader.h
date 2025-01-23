@@ -50,12 +50,6 @@ public:
     void clear();
 
 private:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData<int> nbFiles;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData<double> stepDuration;
-
-
     /// the number of files in the sequences
     Data<int> d_nbFiles;
     /// duration each file must be loaded

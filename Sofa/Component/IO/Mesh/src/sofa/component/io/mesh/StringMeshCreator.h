@@ -38,10 +38,8 @@ namespace sofa::component::io::mesh
 class SOFA_COMPONENT_IO_MESH_API StringMeshCreator : public sofa::core::loader::MeshLoader
 {
 public:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData< unsigned > resolution;
-
     SOFA_CLASS(StringMeshCreator,sofa::core::loader::MeshLoader);
+
     virtual std::string type() { return "This object is procedurally created"; }
     bool canLoad() override { return true; }
     bool doLoad() override; ///< create the string

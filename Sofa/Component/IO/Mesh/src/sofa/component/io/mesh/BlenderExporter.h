@@ -72,22 +72,6 @@ public:
 
     SOFA_CLASS(SOFA_TEMPLATE(BlenderExporter,T),core::objectmodel::BaseObject);
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData<std::string> path;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData<std::string> baseName;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData<int> simulationType;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData<int> simulationStep;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData<int> nbPtsByHair;
-
-
     Data < std::string > d_path; ///< output path
     Data < std::string > d_baseName; ///< Base name for the output files
     Data < int > d_simulationType; ///< simulation type (0: soft body, 1: particles, 2:cloth, 3:hair)
