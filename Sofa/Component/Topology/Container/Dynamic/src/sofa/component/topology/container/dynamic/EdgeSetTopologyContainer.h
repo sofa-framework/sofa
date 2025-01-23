@@ -227,14 +227,8 @@ protected:
 
 public:
     /** The array that stores the set of edges in the edge set */
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
-    sofa::core::objectmodel::RenamedData <bool> m_checkConnexity;
-
     Data< sofa::type::vector<Edge> > d_edge; ///< List of edge indices
-
     Data <bool> d_checkConnexity; ///< It true, will check the connexity of the mesh.
-
-
 };
 
 } //namespace sofa::component::topology::container::dynamic

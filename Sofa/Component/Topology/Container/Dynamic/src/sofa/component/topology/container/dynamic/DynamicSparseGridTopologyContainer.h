@@ -45,25 +45,6 @@ public:
     typedef EdgesInHexahedron EdgesInHexahedron;
     typedef QuadsInHexahedron QuadsInHexahedron;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
-    sofa::core::objectmodel::RenamedData<sofa::type::Vec3i> resolution;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
-    sofa::core::objectmodel::RenamedData< sofa::type::vector<unsigned char> > valuesIndexedInRegularGrid;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
-    sofa::core::objectmodel::RenamedData< sofa::type::vector<unsigned char> > valuesIndexedInTopology; ///< values indexed in the topology
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
-    sofa::core::objectmodel::RenamedData< sofa::type::vector<BaseMeshTopology::HexaID> > idxInRegularGrid;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
-    sofa::core::objectmodel::RenamedData< std::map< unsigned int, BaseMeshTopology::HexaID> >  idInRegularGrid2IndexInTopo;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
-    sofa::core::objectmodel::RenamedData< type::Vec3 > voxelSize;
-
-
     Data<sofa::type::Vec3i> d_resolution; ///< voxel grid resolution
 
     Data< sofa::type::vector<unsigned char> > d_valuesIndexedInRegularGrid; ///< values indexed in the Regular Grid
