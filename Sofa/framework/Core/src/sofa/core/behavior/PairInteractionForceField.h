@@ -58,9 +58,10 @@ protected:
 public:
 
     /// Set the Object1 path
-    void setPathObject1(const std::string & path) { this->mstate1.setPath(path); }
+    //void setPathObject1(const std::string & path) { this->mstate1.setPath(path); }
     /// Set the Object2 path
-    void setPathObject2(const std::string & path) { this->mstate2.setPath(path); }
+    //void setPathObject2(const std::string & path) { this->mstate2.setPath(path); }
+
     /// Retrieve the Object1 path
     std::string getPathObject1() const { return this->mstate1.getPath(); }
     /// Retrieve the Object2 path

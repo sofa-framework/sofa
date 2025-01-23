@@ -234,7 +234,7 @@ void RadioDataWidget::writeToData()
 Creator<DataWidgetFactory, SelectableItemWidget> DWClass_SelectableItem("default",true);
 
 SelectableItemWidget::SelectableItemWidget(QWidget* parent, const char* name,
-    core::BaseData* m_data, const helper::BaseSelectableItem* item)
+    core::objectmodel::BaseData* m_data, const helper::BaseSelectableItem* item)
 : TDataWidget(parent, name, m_data, item)
 , m_selectableItem(item)
 {}

@@ -1010,7 +1010,7 @@ class SelectableItemWidget final : public TDataWidget<helper::BaseSelectableItem
 public :
 
     SelectableItemWidget(QWidget* parent, const char* name,
-            core::BaseData* m_data, const helper::BaseSelectableItem* item);
+            core::objectmodel::BaseData* m_data, const helper::BaseSelectableItem* item);
 
     bool createWidgets() override;
     void setDataReadOnly(bool readOnly) override;

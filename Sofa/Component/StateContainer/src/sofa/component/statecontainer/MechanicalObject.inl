@@ -1661,7 +1661,7 @@ void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core:
 
 template <class DataTypes>
 template <core::VecType vtype, core::VecAccess vaccess>
-void MechanicalObject<DataTypes>::setVecIdProperties(core::TVecId<vtype, vaccess> v, const core::VecIdProperties& properties, core::BaseData* vec_d)
+void MechanicalObject<DataTypes>::setVecIdProperties(core::TVecId<vtype, vaccess> v, const core::VecIdProperties& properties, core::objectmodel::BaseData* vec_d)
 {
     if (!properties.label.empty())
     {

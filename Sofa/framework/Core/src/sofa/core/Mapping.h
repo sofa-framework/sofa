@@ -87,8 +87,8 @@ public:
     bool setTo( BaseState* to ) override;
 
     /// Set the path to the objects mapped in the scene graph
-    void setPathInputObject(const std::string &o) {fromModel.setPath(o);}
-    void setPathOutputObject(const std::string &o) {toModel.setPath(o);}
+    //void setPathInputObject(const std::string &o) {fromModel.setPath(o);}
+    //void setPathOutputObject(const std::string &o) {toModel.setPath(o);}
 
     /// Return the pointer to the input model.
     State< In >* getFromModel();
@@ -257,8 +257,14 @@ public:
             else
                 outPath = "@./";
 
-            obj->fromModel.setPath( inPath );
-            obj->toModel.setPath( outPath );
+            //assert(false && "FIXME");
+            //obj->fromModel.setPath( inPath );
+            //obj->toModel.setPath( outPath );
+
+            // Do we h
+            // obj->fromModel.read( inPath );
+            // obj->toModel.read( outPath );
+
 
             obj->parse(arg);
         }

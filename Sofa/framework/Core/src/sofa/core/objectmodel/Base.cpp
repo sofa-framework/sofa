@@ -483,7 +483,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
             msg_warning()<<"Could not read value for link "<< attribute <<": " << value;
             ok = false;
         }
-        msg_info() << "Link " << linkVec[l]->getName() << " = " << linkVec[l]->getValueString();
+        msg_info() << "Link " << linkVec[l]->getName() << " = " << linkVec[l]->getValueString() << " but => " << value;
         unsigned int s = unsigned(linkVec[l]->getSize());
         for (unsigned int i=0; i<s; ++i)
         {
@@ -550,19 +550,23 @@ void  Base::parse ( BaseObjectDescription* arg )
         }
     }
 
-    for( auto& it : arg->getAttributeMap() )
-    {
-        const std::string& attrName = it.first;
+    // process the "printLog" attribute before any other field because it controls if the
+    // info messages for the other fields parsing are reported or not.
+    auto value = arg->getAttribute("printLog");
+    if(value)
+        parseField("printLog", value);
 
+    for( auto& [key,value] : arg->getAttributeMap() )
+    {
         // FIX: "type" is already used to define the type of object to instantiate, any Data with
         // the same name cannot be extracted from BaseObjectDescription
-        if (attrName == std::string("type"))
+        if (key == std::string("type"))
             continue;
-        if (!hasField(attrName)) continue;
 
-        parseField(attrName, it.second);
+        if (hasField(key))
+            parseField(key, value);
     }
-    updateLinks(false);
+    //updateLinks(false);
 }
 
 /// Update pointers in case the pointed-to objects have appeared

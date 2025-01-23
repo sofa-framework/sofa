@@ -23,6 +23,7 @@
 #include <sofa/component/statecontainer/config.h>
 
 #include <sofa/core/fwd.h>
+#include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
@@ -451,7 +452,7 @@ protected :
     MechanicalObjectInternalData<DataTypes> data;
 
     template <core::VecType vtype, core::VecAccess vaccess>
-    static void setVecIdProperties(core::TVecId<vtype, vaccess> v, const core::VecIdProperties& properties, core::BaseData* vec_d);
+    static void setVecIdProperties(core::TVecId<vtype, vaccess> v, const core::VecIdProperties& properties, core::objectmodel::BaseData* vec_d);
 
     friend class MechanicalObjectInternalData<DataTypes>;
 

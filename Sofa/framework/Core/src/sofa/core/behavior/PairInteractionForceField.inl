@@ -34,10 +34,10 @@ template<class DataTypes>
 PairInteractionForceField<DataTypes>::PairInteractionForceField(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
     : Inherit1(), Inherit2(mm1, mm2)
 {
-    if (!mm1)
-        this->mstate1.setPath("@./"); // default to state of the current node
-    if (!mm2)
-        this->mstate2.setPath("@./"); // default to state of the current node
+//    if (!mm1)
+//        this->mstate1.setPath("@./"); // default to state of the current node
+//    if (!mm2)
+//        this->mstate2.setPath("@./"); // default to state of the current node
 }
 
 template<class DataTypes>

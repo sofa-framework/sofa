@@ -130,7 +130,8 @@ TEST_F(SingleLink_test, checkClearSetPath  )
 {
     m_link.clear();
     ASSERT_EQ( m_link.size(), 0 )  << "The size of a link container should be zero after clear().";
-    m_link.setPath("@/ThisIsAPath");
+    //m_link.setPath("@/ThisIsAPath");
+    FAIL() << "DEPRECATE SET PATH";
     ASSERT_EQ( m_link.size(), 1 ) << "The size of a link container should be one after setPath().";
     ASSERT_EQ( m_link.getLinkedPath(), "@/ThisIsAPath" ) << "The path should not be empty as it was set previously.";
 }

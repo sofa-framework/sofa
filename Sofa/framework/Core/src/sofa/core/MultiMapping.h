@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/core/BaseMapping.h>
+#include <sofa/core/PathResolver.h>
 #include <sofa/core/config.h>
 #include <sofa/helper/fwd.h>
 #include <sofa/core/State.h>

@@ -32,10 +32,10 @@ PairInteractionProjectiveConstraintSet<DataTypes>::PairInteractionProjectiveCons
     : Inherit1(), Inherit2(mm1, mm2)
     , endTime( initData(&endTime,(SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
 {
-    if (!mm1)
-        this->mstate1.setPath("@./"); // default to state of the current node
-    if (!mm2)
-        this->mstate2.setPath("@./"); // default to state of the current node
+    //if (!mm1)
+    //    this->mstate1.setPath("@./"); // default to state of the current node
+    //if (!mm2)
+    //    this->mstate2.setPath("@./"); // default to state of the current node
 }
 
 template<class DataTypes>

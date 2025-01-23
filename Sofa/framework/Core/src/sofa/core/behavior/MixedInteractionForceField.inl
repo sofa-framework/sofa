@@ -31,10 +31,10 @@ template<class DataTypes1, class DataTypes2>
 MixedInteractionForceField<DataTypes1, DataTypes2>::MixedInteractionForceField(MechanicalState<DataTypes1> *mm1, MechanicalState<DataTypes2> *mm2)
     : Inherit1(), Inherit2(mm1, mm2)
 {
-    if (!mm1)
-        this->mstate1.setPath("@./"); // default to state of the current node
-    if (!mm2)
-        this->mstate2.setPath("@./"); // default to state of the current node
+//    if (!mm1)
+//        this->mstate1.setPath("@./"); // default to state of the current node
+//    if (!mm2)
+//        this->mstate2.setPath("@./"); // default to state of the current node
 }
 
 template<class DataTypes1, class DataTypes2>

@@ -62,8 +62,8 @@ public:
     virtual void setTopologies(In* from, Out* to);
 
     /// Set the path to the objects mapped in the scene graph
-    void setPathInputObject(const std::string &o) {fromModel.setPath(o);}
-    void setPathOutputObject(const std::string &o) {toModel.setPath(o);}
+    //void setPathInputObject(const std::string &o) {fromModel.setPath(o);}
+    //void setPathOutputObject(const std::string &o) {toModel.setPath(o);}
 
     /// Accessor to the INPUT topology of the TopologicalMapping :
     In* getFrom() {return fromModel.get();}
@@ -179,9 +179,6 @@ public:
                 outPath = arg->getAttribute("output");
             else
                 outPath = "@./";
-
-            obj->fromModel.setPath( inPath );
-            obj->toModel.setPath( outPath );
 
             obj->parse(arg);
         }
