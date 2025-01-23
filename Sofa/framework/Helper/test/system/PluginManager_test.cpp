@@ -64,7 +64,7 @@ struct PluginManager_test: public BaseTest
     // This list of paths will be deleted when cleaning-up the test
     sofa::type::vector<std::string> createdFilesToDelete;
 
-    void SetUp() override
+    void doSetUp() override
     {
         // Set pluginDir by searching pluginFileName in the PluginRepository
         for ( std::string path : sofa::helper::system::PluginRepository.getPaths() )
@@ -83,7 +83,7 @@ struct PluginManager_test: public BaseTest
                   << std::endl;
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         for (const auto& file : createdFilesToDelete)
         {
@@ -122,12 +122,22 @@ TEST_F(PluginManager_test, loadTestPluginAByPath)
     /// Check that existing plugins are correctly handled and returns no
     /// error/warning message.
     {
-        EXPECT_MSG_NOEMIT(Warning, Error);
-
+        EXPECT_MSG_NOEMIT(Error, Warning);
+        
         std::cout << "PluginManager_test.loadTestPluginAByPath: "
-                  << "pm.getPluginMap().size() = " << pm.getPluginMap().size()
-                  << std::endl;
+        << "pm.getPluginMap().size() = " << pm.getPluginMap().size()
+        << std::endl;
+    }
+    {
+        EXPECT_MSG_NOEMIT(Error);
+        // Plugin A still uses the deprecated registration mechanism
+        // and is expected to throw a warning when loaded
+        EXPECT_MSG_EMIT(Warning);
+        
         ASSERT_EQ(pm.loadPluginByPath(pluginPath), PluginManager::PluginLoadStatus::SUCCESS);
+    }
+    {
+        EXPECT_MSG_NOEMIT(Error, Warning);
         ASSERT_GT(pm.findPlugin(pluginAName).size(), 0u);
     }
 

@@ -26,7 +26,7 @@
 #include <fstream>
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::odesolver::backward
 {
@@ -46,34 +46,34 @@ public:
     SOFA_CLASS2(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_newtonError;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> f_newtonError;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<unsigned int> f_newtonSteps;
+    sofa::core::objectmodel::lifecycle::RenamedData<unsigned int> f_newtonSteps;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_rayleighStiffness;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> f_rayleighStiffness;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_rayleighMass;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> f_rayleighMass;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<bool> f_saveEnergyInFile;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_saveEnergyInFile;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<bool> f_explicit;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_explicit;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<std::string> f_fileName;
+    sofa::core::objectmodel::lifecycle::RenamedData<std::string> f_fileName;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<bool> f_computeHamiltonian;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_computeHamiltonian;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_hamiltonianEnergy;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> f_hamiltonianEnergy;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<bool> f_useIncrementalPotentialEnergy;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_useIncrementalPotentialEnergy;
 
     Data<SReal>       d_newtonError; ///< Error tolerance for Newton iterations
     Data<unsigned int> d_newtonSteps; ///< Maximum number of Newton steps

@@ -127,6 +127,7 @@ extern template class NodeSequence<sofa::core::objectmodel::BaseObject>;
 
 extern template class NodeSingle<sofa::core::behavior::BaseAnimationLoop>;
 extern template class NodeSingle<sofa::core::visual::VisualLoop>;
+extern template class NodeSingle<sofa::core::visual::BaseVisualStyle>;
 extern template class NodeSingle<sofa::core::topology::Topology>;
 extern template class NodeSingle<sofa::core::topology::BaseMeshTopology>;
 extern template class NodeSingle<sofa::core::BaseState>;
@@ -255,6 +256,7 @@ public:
 
     NodeSingle<sofa::core::behavior::BaseAnimationLoop> animationManager;
     NodeSingle<sofa::core::visual::VisualLoop> visualLoop;
+    NodeSingle<sofa::core::visual::BaseVisualStyle> visualStyle;
     NodeSingle<sofa::core::topology::Topology> topology;
     NodeSingle<sofa::core::topology::BaseMeshTopology> meshTopology;
     NodeSingle<sofa::core::BaseState> state;
@@ -599,6 +601,7 @@ public:
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::Shader, Shader, shaders )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualModel, VisualModel, visualModel )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::BaseVisualStyle, VisualStyle, visualStyle )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualManager, VisualManager, visualManager )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::CollisionModel, CollisionModel, collisionModel )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )

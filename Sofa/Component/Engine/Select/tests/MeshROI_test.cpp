@@ -61,11 +61,11 @@ struct MeshROI_test : public BaseSimulationTest,
     Node::SPtr m_root;
     ThisClass* m_thisObject;
 
-    void SetUp() override
+    void doSetUp() override
     {
-        simpleapi::importPlugin("Sofa.Component.Engine.Select");
-        simpleapi::importPlugin("Sofa.Component.Topology.Container.Constant");
-        simpleapi::importPlugin("Sofa.Component.IO.Mesh");
+        simpleapi::importPlugin(Sofa.Component.Engine.Select);
+        simpleapi::importPlugin(Sofa.Component.Topology.Container.Constant);
+        simpleapi::importPlugin(Sofa.Component.IO.Mesh);
 
         // SetUp3
         const string scene2 =
@@ -86,7 +86,7 @@ struct MeshROI_test : public BaseSimulationTest,
         ASSERT_NE(m_thisObject, nullptr) ;
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         sofa::simulation::node::unload(m_root) ;
     }

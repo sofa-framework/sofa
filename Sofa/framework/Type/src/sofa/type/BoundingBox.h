@@ -35,41 +35,68 @@ class SOFA_TYPE_API BoundingBox
 
 public:
     typedef std::pair< sofa::type::Vec3, sofa::type::Vec3 > bbox_t;
+    using Real = sofa::type::Vec3::value_type;
 
-    BoundingBox();
+    constexpr BoundingBox()
+        : BoundingBox(neutral_bbox().bbox)
+    {}
+
     /// Define using the endpoints of the main diagonal
-    BoundingBox(const sofa::type::Vec3& minBBox, const sofa::type::Vec3& maxBBox);
-    BoundingBox(const bbox_t& bbox);
-    /// Define using xmin, xmax, ymin, ymax, zmin, zmax in this order
-    BoundingBox(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax );
-    /// Define using xmin, xmax, ymin, ymax, zmin, zmax in this order
-    BoundingBox(const Vec6f& bbox);
-    /// Define using xmin, xmax, ymin, ymax, zmin, zmax in this order
-    BoundingBox(const Vec6d& bbox);
+    constexpr BoundingBox(const sofa::type::Vec3& minBBox, const sofa::type::Vec3& maxBBox)
+        : bbox({minBBox, maxBBox}) {}
 
-    static BoundingBox neutral_bbox();
+    constexpr explicit BoundingBox(const bbox_t& bbox)
+        : bbox(bbox)
+    {}
+
+    /// Define using xMin, xMax, yMin, yMax, zMin, zMax in this order
+    constexpr BoundingBox(
+        const Real xMin, const Real xMax,
+        const Real yMin, const Real yMax,
+        const Real zMin, const Real zMax )
+        : BoundingBox({xMin, yMin, zMin}, {xMax, yMax, zMax})
+    {}
+
+    template<typename Scalar>
+    constexpr explicit BoundingBox(const Vec<6, Scalar>& bbox)
+        : BoundingBox(bbox[0], bbox[1], bbox[2], bbox[3], bbox[4], bbox[5])
+    {}
+
+    static constexpr BoundingBox neutral_bbox()
+    {
+        constexpr Real max_real = std::numeric_limits<Real>::max();
+        constexpr Real min_real = std::numeric_limits<Real>::lowest();
+        return BoundingBox{
+            {max_real, max_real, max_real},
+            {min_real, min_real, min_real}
+        };
+    }
 
     operator bbox_t() const;
 
+    [[nodiscard]] bool operator==(const BoundingBox& other) const;
+
     void invalidate();
-    bool isValid() const;
-    bool isFlat()  const;
-    bool isNegligeable() const; // !valid || flat
-    bool isNull()  const;
+    [[nodiscard]] bool isValid() const;
+    [[nodiscard]] bool isFlat()  const;
+    [[nodiscard]] bool isNegligible() const; // !valid || flat
+    SOFA_ATTRIBUTE_DISABLED__BOUNDINGBOX_TYPO()
+    [[nodiscard]] bool isNegligeable() const;
+    [[nodiscard]] bool isNull()  const;
 
     SReal* minBBoxPtr();
     SReal* maxBBoxPtr();
-    const SReal* minBBoxPtr() const;
-    const SReal* maxBBoxPtr() const;
-    const sofa::type::Vec3&  minBBox() const;
-    const sofa::type::Vec3&  maxBBox() const;
+    [[nodiscard]] const SReal* minBBoxPtr() const;
+    [[nodiscard]] const SReal* maxBBoxPtr() const;
+    [[nodiscard]] const sofa::type::Vec3&  minBBox() const;
+    [[nodiscard]] const sofa::type::Vec3&  maxBBox() const;
     sofa::type::Vec3& minBBox();
     sofa::type::Vec3& maxBBox();
 
-    bool contains( const sofa::type::Vec3& point) const;
-    bool contains( const BoundingBox& other) const;
+    [[nodiscard]] bool contains( const sofa::type::Vec3& point) const;
+    [[nodiscard]] bool contains( const BoundingBox& other) const;
 
-    bool intersect( const BoundingBox& other) const;
+    [[nodiscard]] bool intersect( const BoundingBox& other) const;
     void intersection( const BoundingBox& other);
 
     void include( const sofa::type::Vec3& point);
@@ -77,10 +104,10 @@ public:
 
     void inflate( SReal amount );
 
-    BoundingBox getIntersection( const BoundingBox& other ) const;
-    BoundingBox getInclude( const sofa::type::Vec3& point ) const;
-    BoundingBox getInclude( const BoundingBox& other ) const;
-    BoundingBox getInflate( SReal amount ) const;
+    [[nodiscard]] BoundingBox getIntersection( const BoundingBox& other ) const;
+    [[nodiscard]] BoundingBox getInclude( const sofa::type::Vec3& point ) const;
+    [[nodiscard]] BoundingBox getInclude( const BoundingBox& other ) const;
+    [[nodiscard]] BoundingBox getInflate( SReal amount ) const;
 
     friend std::ostream& operator << ( std::ostream& out, const BoundingBox& bbox)
     {

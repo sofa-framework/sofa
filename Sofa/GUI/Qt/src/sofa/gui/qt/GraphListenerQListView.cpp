@@ -154,7 +154,6 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
         if(haveErrors)
             flags |= 1 << (4) ;
 
-
         static std::map<unsigned int, QPixmap*> pixmaps;
         if (!pixmaps.count(flags))
         {
@@ -236,10 +235,10 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
         flags |= 1 << (ALLCOLORS+1) ;
 
     if(haveWarning)
-        flags |= 1 << (ALLCOLORS+1) ;
+        flags |= 1 << (ALLCOLORS+2) ;
 
     if(haveErrors)
-        flags |= 1 << (ALLCOLORS+1) ;
+        flags |= 1 << (ALLCOLORS+3) ;
 
     static std::map<unsigned int, QPixmap*> pixmaps;
     if (!pixmaps.count(flags))
@@ -249,10 +248,8 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
             if (flags & (1<<i))
                 ++nc;
         const int nx = 2+iconWidth*nc+iconMargin;
-        //QImage * img = new QImage(nx,iconHeight,32);
         QImage * img = new QImage(nx,iconHeight,QImage::Format_ARGB32);
 
-        //img->setAlphaBuffer(true);
         img->fill(qRgba(0,0,0,0));
         // Workaround for qt 3.x where fill() does not set the alpha channel
         for (int y=0 ; y < iconHeight ; y++)

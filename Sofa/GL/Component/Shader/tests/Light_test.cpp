@@ -48,10 +48,10 @@ int messageInited = initMessage();
 class TestLight : public BaseTest {
 public:
 
-    void SetUp() override
+    void doSetUp() override
  {
-         sofa::simpleapi::importPlugin("Sofa.GL.Component.Shader");
-         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+         sofa::simpleapi::importPlugin(Sofa.GL.Component.Shader);
+         sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
     }
 
     void checkSpotLightValidAttributes();

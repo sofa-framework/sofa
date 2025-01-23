@@ -150,11 +150,11 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
     simulation::Node::SPtr oneMapping;
     simulation::Node::SPtr twoMappings;
 
-    void onSetUp() override
+    void doSetUp() override
     {
         root = simulation::getSimulation()->createNewNode("root");
 
-        simpleapi::createObject(root, "RequiredPlugin", {{"pluginName", "Sofa.Component"}});
+        simpleapi::createObject(root, "RequiredPlugin", {{"pluginName", Sofa.Component}});
         simpleapi::createObject(root, "DefaultAnimationLoop");
         simpleapi::createObject(root, "StringMeshCreator", {{"name", "loader"}, {"resolution", "3"}});
 

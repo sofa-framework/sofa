@@ -99,18 +99,18 @@ public:
     typename MechanicalObject<DataTypes>::SPtr mstate;
     typename MeshMatrixMass<DataTypes>::SPtr mass;
 
-    void SetUp() override
+    void doSetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Grid);
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
 
         simulation = simulation::getSimulation();
         root = simulation::getSimulation()->createNewGraph("root");
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         if (root!=nullptr)
             sofa::simulation::node::unload(root);

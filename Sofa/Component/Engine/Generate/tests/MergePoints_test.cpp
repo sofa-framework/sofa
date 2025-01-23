@@ -49,7 +49,7 @@ struct MergePoints_test : public BaseSimulationTest,
     Simulation* m_simu;
     typename ThisClass::SPtr m_thisObject;
 
-    void SetUp() override
+    void doSetUp() override
     {
         m_simu = sofa::simulation::getSimulation();
         ASSERT_NE(m_simu, nullptr);

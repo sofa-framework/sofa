@@ -40,7 +40,7 @@
 #define TYPE_VORONOI 3
 #define TYPE_HARMONIC_STIFFNESS 4
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::engine::analyze
 {
@@ -79,40 +79,40 @@ protected:
 public:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<unsigned int> showMapIndex;
+    sofa::core::objectmodel::lifecycle::RenamedData<unsigned int> showMapIndex;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<bool> showDistanceMap;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> showDistanceMap;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<bool> showGoalDistanceMap;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> showGoalDistanceMap;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<double> showTextScaleFactor;
+    sofa::core::objectmodel::lifecycle::RenamedData<double> showTextScaleFactor;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<bool> showGradientMap;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> showGradientMap;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<double> showGradientsScaleFactor;
+    sofa::core::objectmodel::lifecycle::RenamedData<double> showGradientsScaleFactor;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<Coord> offset;
+    sofa::core::objectmodel::lifecycle::RenamedData<Coord> offset;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<sofa::helper::OptionsGroup> distanceType;
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::helper::OptionsGroup> distanceType;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<bool> initTarget;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> initTarget;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<int> initTargetStep;
+    sofa::core::objectmodel::lifecycle::RenamedData<int> initTargetStep;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<std::map<unsigned int, unsigned int> > zonesFramePair;
+    sofa::core::objectmodel::lifecycle::RenamedData<std::map<unsigned int, unsigned int> > zonesFramePair;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<double> harmonicMaxValue;
+    sofa::core::objectmodel::lifecycle::RenamedData<double> harmonicMaxValue;
 
 
     Data<unsigned int> d_showMapIndex; ///< Frame DOF index on which display values.
@@ -227,13 +227,13 @@ public:
 private:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<std::string> fileDistance;
+    sofa::core::objectmodel::lifecycle::RenamedData<std::string> fileDistance;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<std::string> targetPath;
+    sofa::core::objectmodel::lifecycle::RenamedData<std::string> targetPath;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<std::string> hexaContainerPath;
+    sofa::core::objectmodel::lifecycle::RenamedData<std::string> hexaContainerPath;
 
 
     Data<std::string> d_fileDistance; ///< file containing the result of the computation of the distances

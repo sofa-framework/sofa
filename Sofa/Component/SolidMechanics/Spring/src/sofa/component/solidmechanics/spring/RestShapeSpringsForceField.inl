@@ -159,6 +159,7 @@ const typename RestShapeSpringsForceField<DataTypes>::VecIndex& RestShapeSprings
     else
     {
         return this->d_indices.getValue();
+
     }
 }
 

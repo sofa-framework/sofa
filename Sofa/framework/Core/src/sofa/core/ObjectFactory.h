@@ -377,12 +377,14 @@ public:
 
     /// This is the final operation that will actually commit the additions to the ObjectFactory.
     bool commitTo(sofa::core::ObjectFactory* objectFactory) const;
+    
+    friend class RegisterObject;
 };
 
 
 // Legacy structure, to keep compatibility with olden code
 // using the singleton to get the instance of ObjectFactory
-class /* SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT() */ SOFA_CORE_API RegisterObject
+class SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT() SOFA_CORE_API RegisterObject
 {
 private:
     ObjectRegistrationData m_objectRegistrationdata;

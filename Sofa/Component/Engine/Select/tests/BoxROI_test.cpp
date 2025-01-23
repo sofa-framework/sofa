@@ -70,11 +70,12 @@ struct BoxROITest :  public sofa::testing::BaseTest
     Node::SPtr m_node;
     typename TheBoxROI::SPtr m_boxroi;
 
-    void SetUp() override
+    void doSetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.Engine.Select");
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.Topology.Container.Dynamic,
+            Sofa.Component.Engine.Select});
 
         m_simu = sofa::simulation::getSimulation();
         ASSERT_NE(m_simu, nullptr);
@@ -86,7 +87,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
         m_node->addObject(m_boxroi);
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         if (m_root != nullptr){
             sofa::simulation::node::unload(m_root);

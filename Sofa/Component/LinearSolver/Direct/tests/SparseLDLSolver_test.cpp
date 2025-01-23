@@ -57,9 +57,10 @@ TEST(SparseLDLSolver, EmptyMState)
 
     const sofa::simulation::Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("root");
 
-    sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Direct");
-    sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
-    sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+    const auto plugins = sofa::testing::makeScopedPlugin({
+        Sofa.Component.LinearSolver.Direct,
+        Sofa.Component.ODESolver.Backward,
+        Sofa.Component.StateContainer});
 
     sofa::simpleapi::createObject(root, "DefaultAnimationLoop");
     sofa::simpleapi::createObject(root, "EulerImplicitSolver");
@@ -83,14 +84,15 @@ TEST(SparseLDLSolver, TopologyChangeEmptyMState)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-  const sofa::simulation::Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("root");
+    const sofa::simulation::Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("root");
 
-    sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Direct");
-    sofa::simpleapi::importPlugin("Sofa.Component.Mass");
-    sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
-    sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-    sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-    sofa::simpleapi::importPlugin("Sofa.Component.Topology.Utility");
+    const auto plugins = sofa::testing::makeScopedPlugin({
+        Sofa.Component.LinearSolver.Direct,
+        Sofa.Component.Mass,
+        Sofa.Component.ODESolver.Backward,
+        Sofa.Component.StateContainer,
+        Sofa.Component.Topology.Container.Dynamic,
+        Sofa.Component.Topology.Utility});
 
     sofa::simpleapi::createObject(root, "DefaultAnimationLoop");
     sofa::simpleapi::createObject(root, "EulerImplicitSolver");

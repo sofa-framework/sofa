@@ -19,7 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/component/constraint/lagrangian/model/BaseContactLagrangianConstraint.inl>
+#include <sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.inl>
+#include <sofa/component/collision/response/contact/BaseUnilateralContactResponse.inl>
 #include <sofa/component/collision/response/contact/FrictionContact.inl>
+
 
 #include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
@@ -31,6 +35,7 @@ using namespace defaulttype;
 using namespace sofa::helper;
 using namespace sofa::component::collision::geometry;
 using simulation::Node;
+
 
 Creator<sofa::core::collision::Contact::Factory, FrictionContact<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointPointFrictionContactClass("FrictionContactConstraint",true);
 Creator<sofa::core::collision::Contact::Factory, FrictionContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > LineSphereFrictionContactClass("FrictionContactConstraint",true);
@@ -47,6 +52,23 @@ Creator<sofa::core::collision::Contact::Factory, FrictionContact<SphereCollision
 Creator<sofa::core::collision::Contact::Factory, FrictionContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel> > LineRigidSphereFrictionContactClass("FrictionContactConstraint",true);
 Creator<sofa::core::collision::Contact::Factory, FrictionContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel> > TriangleRigidSphereFrictionContactClass("FrictionContactConstraint",true);
 Creator<sofa::core::collision::Contact::Factory, FrictionContact<RigidSphereModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > RigidSpherePointFrictionContactClass("FrictionContactConstraint",true);
+
+
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<RigidSphereModel, RigidSphereModel,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<SphereCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<LineCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseUnilateralContactResponse<RigidSphereModel, PointCollisionModel<sofa::defaulttype::Vec3Types>,constraint::lagrangian::model::UnilateralLagrangianContactParameters>;
 
 template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API FrictionContact<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
 template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API FrictionContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;

@@ -61,7 +61,7 @@ struct PlaneROI_test : public BaseSimulationTest,
     Node::SPtr m_node1, m_node2;
     typename ThisClass::SPtr m_thisObject;
 
-    void SetUp() override
+    void doSetUp() override
     {
         // SetUp1
         m_simu = sofa::simulation::getSimulation();

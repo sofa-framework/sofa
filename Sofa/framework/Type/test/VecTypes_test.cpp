@@ -23,4 +23,11 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <gtest/gtest.h>
 
-
+TEST(VecTest, StructuredBindings)
+{
+    constexpr sofa::type::Vec3 vec { 1.0, 2.0, 3.0 };
+    const auto& [a, b, c] = vec;
+    EXPECT_EQ(a, 1.);
+    EXPECT_EQ(b, 2.);
+    EXPECT_EQ(c, 3.);
+}

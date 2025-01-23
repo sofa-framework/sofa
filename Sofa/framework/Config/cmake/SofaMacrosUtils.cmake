@@ -42,6 +42,12 @@ endmacro()
 
 function(sofa_get_all_targets var)
     set(targets)
-    __get_all_targets_recursive(targets ${CMAKE_CURRENT_SOURCE_DIR})
+
+    set(source_dir ${ARGV1}) #optional argument to define the source directory
+    if(NOT DEFINED source_dir)
+        set(source_dir "${CMAKE_CURRENT_SOURCE_DIR}") # Set a default value
+    endif()
+
+    __get_all_targets_recursive(targets ${source_dir})
     set(${var} ${targets} PARENT_SCOPE)
 endfunction()

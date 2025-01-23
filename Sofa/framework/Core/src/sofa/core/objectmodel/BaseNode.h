@@ -23,6 +23,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/TypeOfInsertion.h>
+#include <sofa/core/visual/BaseVisualStyle.h>
 
 namespace sofa::core::objectmodel
 {
@@ -172,6 +173,7 @@ public:
      BASENODE_ADD_SPECIAL_COMPONENT( core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
      BASENODE_ADD_SPECIAL_COMPONENT( core::visual::Shader, Shader, shaders )
      BASENODE_ADD_SPECIAL_COMPONENT( core::visual::VisualModel, VisualModel, visualModel )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::visual::BaseVisualStyle, VisualStyle, visualStyle )
      BASENODE_ADD_SPECIAL_COMPONENT( core::visual::VisualManager, VisualManager, visualManager )
      BASENODE_ADD_SPECIAL_COMPONENT( core::CollisionModel, CollisionModel, collisionModel )
      BASENODE_ADD_SPECIAL_COMPONENT( core::collision::Pipeline, CollisionPipeline, collisionPipeline )
