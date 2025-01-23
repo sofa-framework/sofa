@@ -46,21 +46,12 @@ protected:
      *  - @ref d_exportState is set to false.
      */
     StatsSetting();
+
 public:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
-    sofa::core::objectmodel::RenamedData<bool> dumpState;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
-    sofa::core::objectmodel::RenamedData<bool> logTime;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
-    sofa::core::objectmodel::RenamedData<bool> exportState;
-
-
     Data<bool> d_dumpState; ///< Dump state vectors at each time step of the simulation
     Data<bool> d_logTime; ///< Output in the console an average of the time spent during different stages of the simulation
     Data<bool> d_exportState; ///< Create GNUPLOT files with the positions, velocities and forces of all the simulated objects of the scene
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     Data<bool> traceVisitors; ///< Trace the time spent by each visitor, and allows to profile precisely one step of a simulation
 #endif

@@ -40,9 +40,6 @@ protected:
 public:
     virtual std::string getOperationType()=0;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
-    sofa::core::objectmodel::RenamedData<sofa::helper::OptionsGroup> button;
-
     core::objectmodel::Data<sofa::helper::OptionsGroup> d_button; ///< Mouse button used
 
 };
