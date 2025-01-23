@@ -104,12 +104,12 @@ class FixedWeakConstraint : public core::behavior::ForceField<DataTypes>
 
    protected :
     FixedWeakConstraint();
-    static constexpr type::fixed_array<bool, coord_total_size> s_defaultActiveDirections = sofa::type::makeHomogeneousArray<bool, coord_total_size>(true);
+    static constexpr type::fixed_array<bool, FixedWeakConstraint<DataTypes>::coord_total_size> s_defaultActiveDirections = sofa::type::makeHomogeneousArray<bool, FixedWeakConstraint<DataTypes>::coord_total_size>(true);
 
     virtual const DataVecCoord* getExtPosition() const;
     virtual const VecIndex& getIndices() const;
     virtual const VecIndex& getExtIndices() const;
-    virtual const type::fixed_array<bool, coord_total_size>& getActiveDirections() const;
+    virtual const type::fixed_array<bool, FixedWeakConstraint<DataTypes>::coord_total_size>& getActiveDirections() const;
     virtual const bool checkState();
 
     virtual bool checkOutOfBoundsIndices();
