@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMatrix/config.h>
+#include <SofaMatrix/Qt/config.h>
 
 #include <QGraphicsView>
 #include <sofa/gui/qt/SimpleDataWidget.h>
 
-#include <SofaMatrix/BaseMatrixImageProxy.h>
+#include <SofaMatrix/Qt/BaseMatrixImageProxy.h>
 
 namespace sofa::gui::qt
 {

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMatrix/config.h>
+#include <SofaMatrix/Qt/config.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
 
 namespace sofa::type
