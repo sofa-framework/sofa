@@ -20,6 +20,7 @@ Demos/collisionMultiple.scn 100 1e-4 1 1
 Demos/liver.scn 100 1e-4 1 1
 Demos/simpleBoundaryConditions.scn 100 1e-4 1 1
 Demos/fallingBeamLagrangianCollision.scn 46 1e-7 1 1
+Demos/SofaScene.scn 120 1e-5 1 1
 
 
 ### Component scenes ###
@@ -82,3 +83,4 @@ Benchmark/Performance/MatrixAssembly/MatrixAssembly_assembledCG_blocs.scn 300 1e
 Benchmark/Performance/MatrixAssembly/MatrixAssembly_direct.scn 300 1e-4 0 1
 Benchmark/Performance/MatrixAssembly/MatrixAssembly_direct_blocs.scn 300 1e-4 0 1
 Benchmark/Performance/MatrixAssembly/MatrixAssembly_matrixfreeCG.scn 300 1e-4 0 1
+Benchmark/Analysis/Pendulum.scn 300 1e-4 0 1

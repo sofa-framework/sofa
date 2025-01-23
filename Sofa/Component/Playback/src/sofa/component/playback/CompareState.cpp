@@ -150,7 +150,7 @@ void CompareState::processCompareState()
         if (cmd.compare("X=") == 0)
         {
             last_X = *it;
-            currentError = mmodel->compareVec(core::VecId::position(), str);
+            currentError = mmodel->compareVec(sofa::core::vec_id::read_access::position, str);
 
 
             totalError_X +=currentError;
@@ -162,7 +162,7 @@ void CompareState::processCompareState()
         else if (cmd.compare("V=") == 0)
         {
             last_V = *it;
-            currentError = mmodel->compareVec(core::VecId::velocity(), str);
+            currentError = mmodel->compareVec(sofa::core::vec_id::read_access::velocity, str);
             totalError_V +=currentError;
 
             const double dsize = (double)this->mmodel->getSize();

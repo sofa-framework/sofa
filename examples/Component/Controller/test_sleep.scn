@@ -63,9 +63,9 @@
             <MeshOBJLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleCollisionModel contactStiffness="10.0" />
-            <LineCollisionModel contactStiffness="10.0" />
-            <PointCollisionModel contactStiffness="10.0" />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <RigidMapping />
         </Node>
     </Node>
@@ -89,9 +89,9 @@
             <MeshOBJLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleCollisionModel contactStiffness="10.0" />
-            <LineCollisionModel contactStiffness="10.0" />
-            <PointCollisionModel contactStiffness="10.0" />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <RigidMapping />
         </Node>
     </Node>

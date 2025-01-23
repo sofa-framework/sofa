@@ -56,7 +56,7 @@ void QuadBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b, std::set<
         if ((int)a > d_localRange.getValue()[1] && (int)b > d_localRange.getValue()[1]) return;
     }
     const IndexPair ab(a<b?a:b, a<b?b:a);
-    if (springSet.find(ab) != springSet.end()) return;
+    if (springSet.contains(ab)) return;
     springSet.insert(ab);
     const VecCoord& x =this->mstate1->read(core::vec_id::read_access::position)->getValue();
     Real s = (Real)this->d_ks.getValue()[0];
@@ -73,7 +73,7 @@ void QuadBendingSprings<DataTypes>::registerEdge( IndexPair ab, IndexPair cd, st
         ab = std::make_pair(ab.second,ab.first);
         cd = std::make_pair(cd.second,cd.first);
     }
-    if (edgeMap.find(ab) == edgeMap.end())
+    if (!edgeMap.contains(ab))
     {
         edgeMap[ab] = cd;
     }

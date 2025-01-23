@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMatrix/ComplianceMatrixImage.h>
+#include <SofaMatrix/Qt/ComplianceMatrixImage.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 

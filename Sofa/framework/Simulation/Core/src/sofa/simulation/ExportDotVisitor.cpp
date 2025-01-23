@@ -211,7 +211,7 @@ std::string ExportDotVisitor::getParentName(core::objectmodel::BaseObject* obj)
 std::string ExportDotVisitor::getName(core::objectmodel::Base* o, std::string prefix)
 {
     if (!o) return "";
-    if (names.count(o)>0)
+    if (names.contains(o))
         return names[o];
     const std::string oname = o->getName();
     std::string name = prefix;

@@ -12,7 +12,7 @@
     <VisualGrid/>
     <OglSceneFrame/>
 
-    <DefaultAnimationLoop/>
+    <DefaultAnimationLoop computeBoundingBox="false"/>
     <VisualStyle displayFlags="showBehavior" />
     <EulerExplicitSolver name="Explicit Euler Solver" />
     <Node name="FirstObject" gravity="0 -9.81 0">

@@ -80,12 +80,12 @@ void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<sofa::Index, 
 
     if (m1<m2)
     {
-        if (sset.count(std::make_pair(m1,m2))>0) return;
+        if (sset.contains(std::make_pair(m1,m2))) return;
         sset.insert(std::make_pair(m1,m2));
     }
     else
     {
-        if (sset.count(std::make_pair(m2,m1))>0) return;
+        if (sset.contains(std::make_pair(m2,m1))) return;
         sset.insert(std::make_pair(m2,m1));
     }
     const Real l = ((mstate2->read(core::vec_id::read_access::restPosition)->getValue())[m2] - (mstate1->read(core::vec_id::read_access::restPosition)->getValue())[m1]).norm();
