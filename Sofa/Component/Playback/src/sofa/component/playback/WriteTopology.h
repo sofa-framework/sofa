@@ -57,25 +57,6 @@ class SOFA_COMPONENT_PLAYBACK_API WriteTopology: public core::objectmodel::BaseO
 public:
     SOFA_CLASS(WriteTopology,core::objectmodel::BaseObject);
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::DataFileName f_filename;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::RenamedData < bool > f_writeContainers;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::RenamedData < bool > f_writeShellContainers;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::RenamedData < double > f_interval;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::RenamedData < type::vector<double> > f_time;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::RenamedData < double > f_period;
-
-
     sofa::core::objectmodel::DataFileName d_filename;
     Data < bool > d_writeContainers; ///< flag enabling output of common topology containers.
     Data < bool > d_writeShellContainers; ///< flag enabling output of specific shell topology containers.
