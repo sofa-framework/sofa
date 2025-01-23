@@ -617,11 +617,6 @@ TYPED_TEST(MechanicalObjectVOpTest, resetVelocity)
     this->resetVelocity();
 }
 
-TYPED_TEST(MechanicalObjectVOpTest, resetVelocity)
-{
-    this->resetVelocity();
-}
-
 TYPED_TEST(MechanicalObjectVOpTest, multiplyByScalarPosition)
 {
     this->multiplyByScalarPosition();
