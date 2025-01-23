@@ -30,7 +30,7 @@
 #include <sofa/component/collision/response/contact/BaseUnilateralContactResponse.h>
 #include <sofa/component/collision/response/contact/ContactIdentifier.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::collision::response::contact
 {

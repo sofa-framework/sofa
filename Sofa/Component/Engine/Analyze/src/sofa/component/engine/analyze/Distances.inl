@@ -309,7 +309,7 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
         const core::topology::BaseMeshTopology::HexaID& hexaID = hexaCoord.first;
         const double& distance = hexaCoord.second;
 
-        if ( hexasParsed.find ( hexaID ) != hexasParsed.end() ) continue;
+        if ( hexasParsed.contains ( hexaID )) continue;
         hexasParsed.insert ( hexaID ); // This hexa has been parsed
 
         // Continue if the distance max is reached

@@ -19,23 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
 #include <string>
 #include <sofa/core/config.h>
-#include <sofa/core/fwd.h>
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/DeprecatedData.h>
+#include <sofa/core/objectmodel/lifecycle/DeprecatedData.h>
 
 namespace sofa::core::objectmodel::lifecycle
 {
 
-DeprecatedData::DeprecatedData(Base* b, const std::string& deprecationVersion, const std::string& removalVersion, const std::string& name, const std::string& helptext)
+/// Placeholder for a Data<T> to indicate a Data is now removed
+///
+/// This will also register the data name into a dedicated structure of Base object
+/// so a warning will be issued if users continue accessing it;
+///
+/// Use case:
+///    RemovedData d_sofaIsGreatM(this, "v23.06", "v23.12", "sofaIsGreat", "")
+class SOFA_CORE_API RemovedData : public DeprecatedData
 {
-    m_deprecationVersion = deprecationVersion;
-    m_removalVersion = removalVersion;
-    m_name = name;
-    m_helptext = helptext;
-    m_isRemoved = false;
-    b->addDeprecatedAttribute(this);
-}
+public:
+    RemovedData(Base* b, const std::string& deprecationVersion, const std::string& removalVersion, const std::string& name, const std::string& helptext) :
+        DeprecatedData(b,deprecationVersion, removalVersion, name,helptext)
+    {
+        m_isRemoved = true;
+    }
+};
 
-} // namespace sofa
+} // namespace sofa::core::objectmodel

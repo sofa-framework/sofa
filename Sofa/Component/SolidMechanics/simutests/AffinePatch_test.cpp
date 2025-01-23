@@ -80,7 +80,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
     Coord testedTranslation;
 
     /// Create the context for the scene
-    void SetUp() override
+    void doSetUp() override
     {
         // Init simulation
         simulation = sofa::simulation::getSimulation();

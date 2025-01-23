@@ -27,7 +27,7 @@ namespace sofa::helper
 {
 
 /// WriteAccessor implementation class for fixed array types
-template<class T>
+template<type::trait::is_fixed_array T>
 class WriteAccessorFixedArray
 {
 public:

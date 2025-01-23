@@ -6,7 +6,6 @@ sofa_find_package(Sofa.Core REQUIRED)
 sofa_find_package(Sofa.Component.Constraint.Lagrangian.Solver REQUIRED)
 sofa_find_package(Sofa.Component.LinearSolver.Direct REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)
-sofa_find_package(Sofa.GUI.Qt QUIET)
 
 find_package(metis 5.1.0 EXACT QUIET)
 if(NOT metis_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
@@ -54,37 +53,6 @@ set(MOC_FILES
 set(MOC_HEADER_FILES
 )
 
-if (NOT Sofa.GUI.Qt_FOUND)
-    message(NOTICE "[SofaMatrix] Module Sofa.GUI.Qt not found: some components (GlobalSystemMatrixImage) will not be compiled")
-else()
-    list(APPEND HEADER_FILES
-        ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixImage.h
-        ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.h
-        ${SOFAMATRIX_SRC_DIR}/BaseMatrixImageProxy.h
-    )
-    list(APPEND SOURCE_FILES
-        ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixImage.cpp
-        ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.cpp
-        ${SOFAMATRIX_SRC_DIR}/BaseMatrixImageViewerWidget.cpp
-    )
-    list(APPEND MOC_HEADER_FILES
-        ${SOFAMATRIX_SRC_DIR}/BaseMatrixImageViewerWidget.h
-    )
-    list(APPEND SOFA_MODULES
-        Sofa.GUI.Qt
-    )
-
-    find_package(Qt6 COMPONENTS Core CoreTools QUIET)
-    if (NOT Qt6Core_FOUND)
-        find_package(Qt5 COMPONENTS Core QUIET)
-    endif()
-    if(Qt5Core_FOUND)
-        qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
-    elseif (Qt6Core_FOUND)
-        qt6_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
-    endif()
-endif()
-
 # Create the plugin library.
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${MOC_HEADER_FILES} ${MOC_FILES})
 
@@ -100,6 +68,9 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     RELOCATABLE "plugins"
     )
+
+sofa_add_subdirectory(plugin extensions/Qt SofaMatrix.Qt)
+
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled

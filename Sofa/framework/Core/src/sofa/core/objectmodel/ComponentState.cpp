@@ -51,7 +51,7 @@ std::istream& operator>>(std::istream& i, ComponentState& s)
                                                           {"Invalid", ComponentState::Invalid}};
     std::string tmp;
     i >> tmp;
-    if(str2s.find(tmp) == str2s.end())
+    if(!str2s.contains(tmp))
     {
         i.setstate(std::ios::failbit);
         return i;

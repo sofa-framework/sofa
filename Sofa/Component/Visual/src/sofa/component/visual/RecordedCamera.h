@@ -26,7 +26,7 @@
 #include <sofa/helper/visual/Trackball.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::visual
 {
@@ -81,58 +81,58 @@ private:
 public:
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<double> p_zoomSpeed;
+    sofa::core::objectmodel::lifecycle::RenamedData<double> p_zoomSpeed;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<double> p_panSpeed;
+    sofa::core::objectmodel::lifecycle::RenamedData<double> p_panSpeed;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<int> p_pivot;
+    sofa::core::objectmodel::lifecycle::RenamedData<int> p_pivot;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<SReal> m_startTime;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> m_startTime;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<SReal> m_endTime;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> m_endTime;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<bool> m_rotationMode;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_rotationMode;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<bool> m_translationMode;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_translationMode;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<bool> m_navigationMode;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_navigationMode;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<SReal> m_rotationSpeed;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> m_rotationSpeed;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<type::Vec3> m_rotationCenter;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3> m_rotationCenter;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<type::Vec3> m_rotationStartPoint;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3> m_rotationStartPoint;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<type::Vec3> m_rotationLookAt;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3> m_rotationLookAt;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<type::Vec3> m_rotationAxis;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3> m_rotationAxis;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<type::Vec3> m_cameraUp;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3> m_cameraUp;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<bool> p_drawRotation;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_drawRotation;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<bool> p_drawTranslation;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_drawTranslation;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<type::vector<type::Vec3>> m_translationPositions;
+    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<type::Vec3>> m_translationPositions;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData <sofa::type::vector<Quat> > m_translationOrientations;
+    sofa::core::objectmodel::lifecycle::RenamedData <sofa::type::vector<Quat> > m_translationOrientations;
 
     Data<SReal> d_startTime; ///< Time when the camera moves will start
     Data<SReal> d_endTime; ///< Time when the camera moves will end (or loop)

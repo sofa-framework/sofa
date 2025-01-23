@@ -19,30 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/type/trait/Rebind.h>
+#include <sofa/type/vector.h>
 
-#include <string>
-#include <sofa/core/config.h>
-#include <sofa/core/objectmodel/DeprecatedData.h>
+static_assert(sofa::type::CanTypeRebind<sofa::type::vector<float>, int>);
+static_assert(sofa::type::CanTypeRebind<sofa::type::vector<int>, int>);
 
-namespace sofa::core::objectmodel::lifecycle
+static_assert(
+    std::is_same_v<
+        sofa::type::rebind_to<sofa::type::vector<float>, int>,
+        sofa::type::vector<int>
+    >);
+static_assert(
+    std::is_same_v<
+        sofa::type::rebind_to<sofa::type::vector<int>, int>,
+        sofa::type::vector<int>
+    >);
+
+template<class T>
+struct DummyNoRebind{};
+
+static_assert(!sofa::type::CanTypeRebind<DummyNoRebind<float>, int>);
+
+static_assert(
+    std::is_same_v<
+        sofa::type::rebind_to<DummyNoRebind<float>, int>,
+        DummyNoRebind<int>
+    >);
+
+template<class T>
+struct DummyWithConstraintRebind
 {
-
-/// Placeholder for a Data<T> to indicate a Data is now removed
-///
-/// This will also register the data name into a dedicated structure of Base object
-/// so a warning will be issued if users continue accessing it;
-///
-/// Use case:
-///    RemovedData d_sofaIsGreatM(this, "v23.06", "v23.12", "sofaIsGreat", "")
-class SOFA_CORE_API RemovedData : public DeprecatedData
-{
-public:
-    RemovedData(Base* b, const std::string& deprecationVersion, const std::string& removalVersion, const std::string& name, const std::string& helptext) :
-        DeprecatedData(b,deprecationVersion, removalVersion, name,helptext)
-    {
-        m_isRemoved = true;
-    }
+    template<class U>
+    requires std::is_integral_v<U>
+    using rebind_to = U;
 };
 
-} // namespace sofa::core::objectmodel
+static_assert(sofa::type::CanTypeRebind<DummyWithConstraintRebind<float>, int>);
+static_assert(!sofa::type::CanTypeRebind<DummyWithConstraintRebind<float>, std::string>);

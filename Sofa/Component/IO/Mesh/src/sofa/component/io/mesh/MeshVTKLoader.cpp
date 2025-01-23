@@ -433,7 +433,7 @@ bool MeshVTKLoader::setInputsMesh()
                     sofa::Index v1 = std::max( inFP[i + edgesInQuadraticTriangle[j][0]],
                             inFP[i + edgesInQuadraticTriangle[j][1]]);
                     Edge e(v0, v1);
-                    if (edgeSet.find(e) == edgeSet.end())
+                    if (!edgeSet.contains(e))
                     {
                         edgeSet.insert(e);
                         addEdge(my_edges.wref(), v0, v1);
@@ -457,7 +457,7 @@ bool MeshVTKLoader::setInputsMesh()
                     sofa::Index v1 = std::max( inFP[i + edgesInQuadraticTetrahedron[j][0]],
                             inFP[i + edgesInQuadraticTetrahedron[j][1]]);
                     Edge e(v0, v1);
-                    if (edgeSet.find(e) == edgeSet.end())
+                    if (!edgeSet.contains(e))
                     {
                         edgeSet.insert(e);
                         addEdge(my_edges.wref(), v0, v1);

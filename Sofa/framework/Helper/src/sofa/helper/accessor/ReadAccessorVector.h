@@ -28,7 +28,7 @@ namespace sofa::helper
 {
 ////////////////////////// ReadAccessor for wrapping around vector like object //////////////////////
 /// ReadAccessor implementation class for vector types
-template<class T>
+template<sofa::type::trait::is_vector T>
 class ReadAccessorVector
 {
 public:

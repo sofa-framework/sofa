@@ -114,7 +114,8 @@ static std::string appName { "runSofa" };
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    sofa::helper::system::FileRepository runSofaDataRepository(
+
+  sofa::helper::system::FileRepository runSofaDataRepository(
             "RUNSOFA_DATA_PATH",
             {
                     Utils::getSofaPathTo("share/sofa/gui/runSofa")
@@ -123,6 +124,7 @@ int main(int argc, char** argv)
                     { Utils::getSofaPathTo("etc/runSofa.ini").c_str(), {"RESOURCES_DIR"} }
             }
     );
+
 
     sofa::helper::BackTrace::autodump();
 

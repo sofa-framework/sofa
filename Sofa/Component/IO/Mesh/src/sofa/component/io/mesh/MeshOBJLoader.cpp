@@ -497,7 +497,7 @@ bool MeshOBJLoader::readOBJ (std::ifstream &file, const char* filename)
                 if (vsplit)
                 {
                     vertPosIdx[j] = i;
-                    if (normMap.count(n))
+                    if (normMap.contains(n))
                         vertNormIdx[j] = normMap[n];
                     else
                     {

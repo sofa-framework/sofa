@@ -30,7 +30,7 @@
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/component/collision/response/contact/ContactIdentifier.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::collision::response::contact
 {
@@ -66,10 +66,10 @@ protected:
     core::objectmodel::BaseContext* parent;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
-    sofa::core::objectmodel::RenamedData<double> mu;
+    sofa::core::objectmodel::lifecycle::RenamedData<double> mu;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
-    sofa::core::objectmodel::RenamedData<double> tol;
+    sofa::core::objectmodel::lifecycle::RenamedData<double> tol;
 
     Data<double> d_tol; ///< tolerance for the constraints resolution (0 for default tolerance)
     std::vector< sofa::core::collision::DetectionOutput* > contacts;

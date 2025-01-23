@@ -227,7 +227,7 @@ void MeshTetraStuffing::doUpdate()
                 std::set< int > tris;
                 for (unsigned int i=0; i<results.size(); ++i)
                 {
-                    if (tris.find(results[i].tid) != tris.end())
+                    if (tris.contains(results[i].tid))
                     {
                         if (i < results.size()-1)
                             results[i] = results[results.size()-1];

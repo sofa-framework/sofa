@@ -74,7 +74,7 @@ struct RigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidMapping>
     typedef typename OutMechanicalObject::ReadVecCoord ReadOutVecCoord;
     typedef typename OutMechanicalObject::ReadVecDeriv ReadOutVecDeriv;
 
-    void SetUp() override
+    void doSetUp() override
     {
     }
 

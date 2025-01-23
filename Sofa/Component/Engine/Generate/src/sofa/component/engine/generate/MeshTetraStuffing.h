@@ -32,7 +32,7 @@
 
 #include <sofa/helper/map.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::engine::generate
 {
@@ -72,40 +72,40 @@ public:
 
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData< type::fixed_array<Point,2> > vbbox;
+    sofa::core::objectmodel::lifecycle::RenamedData< type::fixed_array<Point,2> > vbbox;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData<SeqPoints> inputPoints;
+    sofa::core::objectmodel::lifecycle::RenamedData<SeqPoints> inputPoints;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData<SeqTriangles> inputTriangles;
+    sofa::core::objectmodel::lifecycle::RenamedData<SeqTriangles> inputTriangles;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData<SeqQuads> inputQuads;
+    sofa::core::objectmodel::lifecycle::RenamedData<SeqQuads> inputQuads;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData<SeqPoints> outputPoints;
+    sofa::core::objectmodel::lifecycle::RenamedData<SeqPoints> outputPoints;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData<SeqTetrahedra> outputTetrahedra;
+    sofa::core::objectmodel::lifecycle::RenamedData<SeqTetrahedra> outputTetrahedra;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData< Real > alphaLong;
+    sofa::core::objectmodel::lifecycle::RenamedData< Real > alphaLong;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData<Real> alphaShort;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> alphaShort;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData<bool> bSnapPoints;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> bSnapPoints;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData< bool > bSplitTetrahedra;
+    sofa::core::objectmodel::lifecycle::RenamedData< bool > bSplitTetrahedra;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData< bool > bDraw;
+    sofa::core::objectmodel::lifecycle::RenamedData< bool > bDraw;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData< Real > size;
+    sofa::core::objectmodel::lifecycle::RenamedData< Real > size;
 
 
 

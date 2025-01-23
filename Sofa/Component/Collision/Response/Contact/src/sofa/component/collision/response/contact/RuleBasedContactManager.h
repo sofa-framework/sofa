@@ -23,7 +23,7 @@
 #include <sofa/component/collision/response/contact/config.h>
 
 #include <sofa/component/collision/response/contact/CollisionResponse.h>
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::collision::response::contact
 {
@@ -86,7 +86,7 @@ public:
             }
             else
             {
-                if ( model1->getGroups().count(group1)==0 )
+                if (!model1->getGroups().contains(group1) )
                     return false;
             }
             if (!name2.empty())
@@ -96,7 +96,7 @@ public:
             }
             else
             {
-                if ( model2->getGroups().count(group2)==0 )
+                if (!model2->getGroups().contains(group2) )
                     return false;
             }
             return true;
@@ -104,7 +104,7 @@ public:
     };
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
-    sofa::core::objectmodel::RenamedData< type::vector<Rule> > rules;
+    sofa::core::objectmodel::lifecycle::RenamedData< type::vector<Rule> > rules;
 
 
 

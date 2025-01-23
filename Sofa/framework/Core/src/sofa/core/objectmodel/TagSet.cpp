@@ -32,7 +32,7 @@ TagSet::TagSet(const Tag& t)
 
 bool TagSet::includes(const Tag& t) const
 {
-    return m_set.count(t) > 0;
+    return m_set.contains(t);
 }
 
 bool TagSet::includes(const TagSet& t) const
