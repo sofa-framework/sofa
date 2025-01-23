@@ -163,7 +163,7 @@ const typename RestShapeSpringsForceField<DataTypes>::VecIndex& RestShapeSprings
 }
 
 template<class DataTypes>
-const type::fixed_array<bool, RestShapeSpringsForceField<DataTypes>::coord_total_size>& RestShapeSpringsForceField<DataTypes>::getActiveDirections() const
+const type::fixed_array<bool, DataTypes::Coord::total_size>& RestShapeSpringsForceField<DataTypes>::getActiveDirections() const
 {
     return d_activeDirections.getValue();
 }
