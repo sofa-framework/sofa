@@ -56,14 +56,9 @@ InputEventReader::InputEventReader()
     , oldPedalState(NO_PEDAL)
 {
     filename.setParent(&d_filename);
-    inverseSense.setOriginalData(&d_inverseSense);
-    p_key1.setOriginalData(&d_key1);
-    p_key2.setOriginalData(&d_key2);
-    p_writeEvents.setOriginalData(&d_writeEvents);
     p_outputFilename.setParent(&d_outputFilename);
-
-
 }
+
 void InputEventReader::init()
 {
 #ifdef __linux__
