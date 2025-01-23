@@ -70,45 +70,6 @@ public:
 
     void doUpdate() override;
 
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData< type::fixed_array<Point,2> > vbbox;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData<SeqPoints> inputPoints;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData<SeqTriangles> inputTriangles;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData<SeqQuads> inputQuads;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData<SeqPoints> outputPoints;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData<SeqTetrahedra> outputTetrahedra;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData< Real > alphaLong;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData<Real> alphaShort;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData<bool> bSnapPoints;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData< bool > bSplitTetrahedra;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData< bool > bDraw;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_GENERATE()
-    sofa::core::objectmodel::RenamedData< Real > size;
-
-
-
     Data< type::fixed_array<Point,2> > d_vbbox; ///< BBox to restrict the volume to
     Data< Real > d_size; ///< Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension
     Data<SeqPoints> d_inputPoints; ///< Input surface mesh points
