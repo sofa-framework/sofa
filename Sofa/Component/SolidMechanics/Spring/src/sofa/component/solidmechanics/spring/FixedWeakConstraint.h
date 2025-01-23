@@ -29,7 +29,7 @@
 #include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/type/vector.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 
 namespace sofa::core::behavior

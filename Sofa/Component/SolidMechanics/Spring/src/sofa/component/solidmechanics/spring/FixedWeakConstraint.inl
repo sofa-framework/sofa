@@ -108,7 +108,7 @@ const bool  FixedWeakConstraint<DataTypes>::checkState()
     /// Compile time condition to check if we are working with a Rigid3Types or a type that does not
     /// need the Angular Stiffness parameters.
     //if constexpr (isRigid())
-    if constexpr (sofa::type::isRigidType<DataTypes>())
+    if constexpr (sofa::type::isRigidType<DataTypes>)
     {
         sofa::helper::ReadAccessor<Data<VecReal>> s = d_stiffness;
         sofa::helper::WriteOnlyAccessor<Data<VecReal>> as = d_angularStiffness;
@@ -274,7 +274,7 @@ void FixedWeakConstraint<DataTypes>::addForce(const MechanicalParams*  mparams ,
         const auto & activeDirections = getActiveDirections();
 
         // rigid case
-        if constexpr (sofa::type::isRigidType<DataTypes>())
+        if constexpr (sofa::type::isRigidType<DataTypes>)
         {
 
             CPos dx = p1[index].getCenter() - p0[ext_index].getCenter();
@@ -362,7 +362,7 @@ void FixedWeakConstraint<DataTypes>::addDForce(const MechanicalParams* mparams, 
 
         const auto stiffness = k[static_cast<std::size_t>(i < k.size()) * i];
 
-        if constexpr (sofa::type::isRigidType<DataTypes>())
+        if constexpr (sofa::type::isRigidType<DataTypes>)
         {
             const auto angularStiffness = k_a[static_cast<std::size_t>(i < k_a.size()) * i];
 
@@ -458,7 +458,7 @@ void FixedWeakConstraint<DataTypes>::addKToMatrix(const MechanicalParams* mparam
         }
 
         // rotation (if applicable)
-        if constexpr (sofa::type::isRigidType<DataTypes>())
+        if constexpr (sofa::type::isRigidType<DataTypes>)
         {
             const auto vr = -kFact * k_a[(index < k_a.size()) * index];
             for (sofa::Size i = space_size; i < total_size; i++)
@@ -507,7 +507,7 @@ void FixedWeakConstraint<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffn
         }
 
         // rotation (if applicable)
-        if constexpr (sofa::type::isRigidType<DataTypes>())
+        if constexpr (sofa::type::isRigidType<DataTypes>)
         {
             const auto vr = -k_a[(index < k_a.size()) * index];
             for (sofa::Size i = space_size; i < total_size; ++i)
