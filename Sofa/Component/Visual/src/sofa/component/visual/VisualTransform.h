@@ -52,12 +52,6 @@ public:
     void doDrawVisual(const sofa::core::visual::VisualParams* vparams) override;
     void drawTransparent(const sofa::core::visual::VisualParams* vparams) override;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<Coord> transform;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<bool> recursive;
-
     Data<Coord> d_transform; ///< Transformation to apply
     Data<bool> d_recursive; ///< True to apply transform to all nodes below
 

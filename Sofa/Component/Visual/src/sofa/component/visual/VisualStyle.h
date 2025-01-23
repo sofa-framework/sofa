@@ -74,9 +74,6 @@ public:
     bool insertInNode( sofa::core::objectmodel::BaseNode* node );
     bool removeInNode( sofa::core::objectmodel::BaseNode* node );
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::RenamedData<DisplayFlags> displayFlags;
-
     Data<DisplayFlags> d_displayFlags; ///< Display Flags
 
 protected:
