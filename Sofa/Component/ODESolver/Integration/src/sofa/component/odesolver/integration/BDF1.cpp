@@ -86,43 +86,39 @@ void BDF1::computeRightHandSide(
             clearForcesBeforeComputingThem, applyBottomUpMappings);
     }
 
-    // b += dt (-alpha M + beta K) v_i
+    // b += M * (v_n - (1 + dt * alpha) v_i)
     {
-        const auto backupV = mop.mparams.v();
-        {
-            mop.mparams.setV(input.intermediateVelocity);
-            mop.addMBKv(force,
-                core::MatricesFactors::M(-alpha * dt),
-                core::MatricesFactors::B(0),
-                core::MatricesFactors::K(beta * dt));
-        }
-        mop.mparams.setV(backupV);
+        core::behavior::MultiVecDeriv tmp(m_vop.get());
+        tmp.eq(m_oldVelocity); // v_n
+
+        //(v_n - (1 + dt * alpha) v_i)
+        m_vop->v_peq(tmp, input.intermediateVelocity, -(1 + dt * alpha));
+
+        mop.addMdx(rightHandSide, tmp, core::MatricesFactors::M(1).get());
     }
 
     // b = dt * f
     m_vop->v_eq(rightHandSide, force, dt);
 
-    // b += M * (v_n - v_i)
-    {
-        core::behavior::MultiVecDeriv tmp(m_vop.get());
-        tmp.eq(m_oldVelocity);
-        m_vop->v_peq(tmp, input.intermediateVelocity, -1); //(v_n - v_i)
-
-        mop.addMdx(rightHandSide, tmp, core::MatricesFactors::M(1).get());
-    }
-
-    // b += (dt^2 K) * v
+    // b += dt * K * ((beta + dt) * v^i + x_n - x^i)
     {
         const auto backupV = mop.mparams.v();
         {
-            mop.mparams.setV(m_oldVelocity);
+            core::behavior::MultiVecDeriv tmp(m_vop.get());
+            
+            tmp.eq(input.intermediateVelocity, (beta + dt)); // (beta + dt) * v^i
+            tmp.peq(m_oldPosition); // (beta + dt) * v^i + x_n
+            tmp.peq(input.intermediatePosition, -1); // (beta + dt) * v^i + x_n - x^i
+            
+            mop.mparams.setV(tmp);
             mop.addMBKv(rightHandSide,
                 core::MatricesFactors::M(0),
                 core::MatricesFactors::B(0),
-                core::MatricesFactors::K(dt * dt));
+                core::MatricesFactors::K(dt));
         }
         mop.mparams.setV(backupV);
     }
+
 
     // Apply projective constraints
     mop.projectResponse(rightHandSide);
