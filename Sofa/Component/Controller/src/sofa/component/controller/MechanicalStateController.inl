@@ -51,11 +51,6 @@ MechanicalStateController<DataTypes>::MechanicalStateController()
 {
     d_mainDirection.beginEdit()->normalize();
     d_mainDirection.endEdit();
-
-    index.setOriginalData(&d_index);
-    onlyTranslation.setOriginalData(&d_onlyTranslation);
-    buttonDeviceState.setOriginalData(&d_buttonDeviceState);
-    mainDirection.setOriginalData(&d_mainDirection);
 }
 
 template <class DataTypes>

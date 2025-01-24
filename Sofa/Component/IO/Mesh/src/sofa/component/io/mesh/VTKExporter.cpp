@@ -47,8 +47,6 @@ VTKExporter::VTKExporter()
     , d_exportAtEnd(initData(&d_exportAtEnd, false, "exportAtEnd", "export file when the simulation is finished"))
     , d_overwrite(initData(&d_overwrite, false, "overwrite", "overwrite the file, otherwise create a new file at each export, with suffix in the filename"))
 {
-
-    vtkFilename.setParent(&d_vtkFilename);
 }
 
 VTKExporter::~VTKExporter()

@@ -82,13 +82,6 @@ public:
     typedef typename TMatrix::Real Real;
     typedef typename PrecomputedLinearSolverInternalData<TMatrix,TVector>::TBaseMatrix TBaseMatrix;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
-    sofa::core::objectmodel::RenamedData<bool> jmjt_twostep;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
-    sofa::core::objectmodel::RenamedData<bool> use_file;
-
-
     Data<bool> d_jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
     Data<bool> d_use_file; ///< Dump system matrix in a file
     Data<double> init_Tolerance;

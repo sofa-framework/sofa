@@ -82,39 +82,6 @@ protected:
 
     sofa::core::topology::BaseMeshTopology* _completeTopology{nullptr};
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<sofa::type::vector< EdgePressureInformation> > edgePressureMap;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Deriv> pressure;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<type::vector<Index> >edgeIndices;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<type::vector<sofa::core::topology::Edge> > edges;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Deriv> normal;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> dmin;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> dmax;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<SReal> arrowSizeCoef;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData< type::vector<Real> >  p_intensity;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Coord> p_binormal;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<bool> p_showForces;
-
     Data<Deriv> d_pressure; ///< Pressure force per unit area
     Data<type::vector<Index> > d_edgeIndices; ///< Indices of edges separated with commas where a pressure is applied
     Data<type::vector<sofa::core::topology::Edge> > d_edges; ///< List of edges where a pressure is applied

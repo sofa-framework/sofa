@@ -60,24 +60,6 @@ public:
     typedef typename Coord::value_type Real;
     typedef sofa::type::MatNoInit<3, 3, Real> Transformation;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    sofa::core::objectmodel::RenamedData<bool> m_rotations;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    sofa::core::objectmodel::RenamedData<bool> m_restRotations;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    sofa::core::objectmodel::RenamedData<bool> recompute;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    sofa::core::objectmodel::RenamedData<SReal> debugViewFrameScale;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    sofa::core::objectmodel::RenamedData<std::string> f_fileCompliance;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    sofa::core::objectmodel::RenamedData<std::string> fileDir;
-
     Data<bool> d_rotations;
     Data<bool> d_restRotations;
 

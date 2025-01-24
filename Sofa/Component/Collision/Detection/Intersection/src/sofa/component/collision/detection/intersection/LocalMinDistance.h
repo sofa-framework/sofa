@@ -63,19 +63,6 @@ public:
 
     typedef core::collision::IntersectorFactory<LocalMinDistance> IntersectorFactory;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    sofa::core::objectmodel::RenamedData<bool> filterIntersection;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    sofa::core::objectmodel::RenamedData<double> angleCone;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    sofa::core::objectmodel::RenamedData<double> coneFactor;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    sofa::core::objectmodel::RenamedData<bool> useLMDFilters;
-
-
     Data<bool> d_filterIntersection; ///< Activate LMD filter
     Data<double> d_angleCone; ///< Filtering cone extension angle
     Data<double> d_coneFactor; ///< Factor for filtering cone angle computation

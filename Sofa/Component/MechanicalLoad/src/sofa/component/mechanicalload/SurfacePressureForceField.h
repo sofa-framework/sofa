@@ -70,45 +70,6 @@ public:
 
     enum State { INCREASE, DECREASE };
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_pressure;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Coord> m_min;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Coord> m_max;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<VecIndex> m_triangleIndices;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<VecIndex> m_quadIndices;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<bool> m_pulseMode;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_pressureLowerBound;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_pressureSpeed;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<bool> m_volumeConservationMode;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<bool> m_useTangentStiffness;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_defaultVolume;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Deriv> m_mainDirection;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> m_drawForceScale;
-
     Data<Real> d_pressure; ///< Pressure force per unit area
     Data<Coord> d_min; ///< Lower bound of the selection box
     Data<Coord> d_max; ///< Upper bound of the selection box

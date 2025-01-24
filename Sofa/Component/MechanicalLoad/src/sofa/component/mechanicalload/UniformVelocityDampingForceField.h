@@ -48,9 +48,6 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData< Real > dampingCoefficient;
-
     /// air drag coefficient.
     Data< Real > d_dampingCoefficient;
     Data<bool> d_implicit; ///< should it generate damping matrix df/dv? (explicit otherwise, i.e. only generating a force)

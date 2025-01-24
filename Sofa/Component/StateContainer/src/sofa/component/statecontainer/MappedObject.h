@@ -64,12 +64,6 @@ protected:
 public:
     void init() override;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_STATECONTAINER()
-    sofa::core::objectmodel::RenamedData<VecCoord> f_X;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_STATECONTAINER()
-    sofa::core::objectmodel::RenamedData<VecDeriv> f_V;
-
     Data<VecCoord> d_X; ///< position vector
     Data<VecDeriv> d_V; ///< velocity vector
 

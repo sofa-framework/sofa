@@ -61,24 +61,6 @@ public:
 
     void doUpdate() override;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<VecCoord> f_points_1;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<VecCoord> f_points_2;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<Real> d12;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<Real> d21;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<Real> max;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<bool> f_update;
-
     //Input
     Data<VecCoord> d_points_1; ///< Points belonging to the first point cloud
     Data<VecCoord> d_points_2; ///< Points belonging to the second point cloud

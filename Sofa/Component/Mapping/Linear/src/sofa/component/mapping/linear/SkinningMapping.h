@@ -77,25 +77,6 @@ public:
     typedef linearalgebra::EigenSparseMatrix<In, Out> SparseJMatrixEigen;
 
 protected:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::RenamedData<OutVecCoord> f_initPos;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::RenamedData< type::vector<unsigned int>  > nbRef;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::RenamedData<type::vector<sofa::type::SVector<unsigned int> > > f_index;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::RenamedData<type::vector<sofa::type::SVector<InReal> > > weight;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::RenamedData<unsigned int> showFromIndex;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::RenamedData<bool> showWeights;
-
-
     Data<OutVecCoord> d_initPos; ///< initial child coordinates in the world reference frame.
 
     // data for linear blending

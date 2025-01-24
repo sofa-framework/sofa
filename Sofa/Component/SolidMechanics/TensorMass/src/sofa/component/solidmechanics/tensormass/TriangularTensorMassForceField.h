@@ -90,8 +90,6 @@ protected:
             return in;
         }
     };
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
-    sofa::core::objectmodel::RenamedData <sofa::type::vector<EdgeRestInformation>> edgeInfo;
 
     sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > d_edgeInfo; ///< Internal edge data
 
@@ -122,12 +120,6 @@ protected:
     VecCoord  _initialPoints;///< the initial positions of the points
 
     bool updateMatrix;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
-    sofa::core::objectmodel::RenamedData<Real> f_poissonRatio;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
-    sofa::core::objectmodel::RenamedData<Real> f_youngModulus;
 
     Data<Real> d_poissonRatio; ///< Poisson ratio in Hooke's law
     Data<Real> d_youngModulus; ///< Young's modulus in Hooke's law

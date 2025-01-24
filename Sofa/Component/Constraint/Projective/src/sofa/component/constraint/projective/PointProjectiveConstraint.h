@@ -77,20 +77,6 @@ protected:
     virtual ~PointProjectiveConstraint();
 
 public:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<sofa::type::vector<Index>> f_indices;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<Coord> f_point;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<bool> f_fixAll;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<SReal> f_drawSize;
-
-
     SetIndex d_indices;    ///< the indices of the points to project to the target
     Data<Coord> d_point; ///< Target of the projection
     Data<bool> d_fixAll; ///< filter all the DOF to implement a fixed object

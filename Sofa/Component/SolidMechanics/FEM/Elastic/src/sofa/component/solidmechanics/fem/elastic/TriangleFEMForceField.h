@@ -91,9 +91,6 @@ protected:
 
     const VecElement* _indexedElements;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<VecCoord> _initialPoints;
-
     Data< VecCoord > d_initialPoints; ///< Initial Position
 
     TriangleFEMForceField();
@@ -119,20 +116,6 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
     int method;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<std::string> f_method;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<Real> f_poisson;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<Real> f_young;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<Real> f_thickness;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<bool> f_planeStrain;
 
     Data<std::string> d_method; ///< large: large displacements, small: small displacements
     Data<Real> d_thickness; ///< Thickness of the elements

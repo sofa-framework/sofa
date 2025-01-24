@@ -152,16 +152,6 @@ FastTetrahedralCorotationalForceField<DataTypes>::FastTetrahedralCorotationalFor
     , d_drawColor4(initData(&d_drawColor4, sofa::type::RGBAColor(0.5f, 1.0f, 1.0f, 1.0f), "drawColor4", " draw color for faces 4"))
     , updateMatrix(true)
 {
-    pointInfo.setOriginalData(&d_pointInfo);
-    edgeInfo.setOriginalData(&d_edgeInfo);
-    tetrahedronInfo.setOriginalData(&d_tetrahedronInfo);
-    f_method.setOriginalData(&d_method);
-    f_drawing.setOriginalData(&d_drawing);
-    drawColor1.setOriginalData(&d_drawColor1);
-    drawColor2.setOriginalData(&d_drawColor2);
-    drawColor3.setOriginalData(&d_drawColor3);
-    drawColor4.setOriginalData(&d_drawColor4);
-
 }
 
 template <class DataTypes> 

@@ -63,34 +63,6 @@ public:
     typedef typename type::Quat<Real> QuatR;
 
 public:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData< sofa::type::vector<sofa::Index> > m_indices;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<Real> m_tBegin;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<Real> m_tEnd;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<Vec3R>  m_x0;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<Vec3R>  m_dx0;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<Vec3R> m_x1;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<Vec3R>  m_dx1;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<Vec2R> m_sx0;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<Vec2R> m_sx1;
-
     ///indices of the DOFs constraints
     SetIndex d_indices;
 

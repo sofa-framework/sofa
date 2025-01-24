@@ -94,23 +94,6 @@ protected:
 
 
 public:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::RenamedData<sofa::type::vector<Spring> > springArray;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::DataFileName m_filename;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::RenamedData<SReal> m_stiffness;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::RenamedData<SReal> m_viscosity;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::RenamedData<bool> m_useTopology;
-
-
     /// where the springs information are stored
     sofa::core::topology::EdgeData<sofa::type::vector<Spring> > d_springArray;
 

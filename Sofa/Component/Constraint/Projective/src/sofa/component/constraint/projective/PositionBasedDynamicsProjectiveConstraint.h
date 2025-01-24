@@ -74,21 +74,8 @@ protected:
     friend class PositionBasedDynamicsProjectiveConstraintInternalData<DataTypes>;
 
 public:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<Real> stiffness;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData< VecCoord > position;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData< VecDeriv > velocity;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData< VecCoord > old_position;
-
     Data< Real > d_stiffness; ///< Blending between current pos and target pos.
     Data< VecCoord > d_position; ///< Target positions.
-
     Data < VecDeriv > d_velocity; ///< Velocities.
     Data < VecCoord > d_old_position; ///< Old positions.
 

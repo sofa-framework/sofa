@@ -83,16 +83,6 @@ public:
     bool checkTopologies() override;
 
 protected:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<bool> flipNormals;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<bool> noNewTriangles;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<bool> noInitialTriangles;
-
-
     Data<bool> d_flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)
     Data<bool> d_noNewTriangles; ///< If true no new triangles are being created
     Data<bool> d_noInitialTriangles; ///< If true the list of initial triangles is initially empty. Only additional triangles will be added in the list

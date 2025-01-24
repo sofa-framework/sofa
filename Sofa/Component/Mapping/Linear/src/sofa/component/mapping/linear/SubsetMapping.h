@@ -86,28 +86,6 @@ public:
     using IndexArray = sofa::type::rebind_to<InVecCoord, Index>;
     typedef sofa::core::topology::PointSubsetData< IndexArray > SetIndex;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::RenamedData<IndexArray> f_indices;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::RenamedData<Index> f_first;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::RenamedData<Index> f_last;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::RenamedData<Real>  f_radius;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::RenamedData<bool> f_handleTopologyChange;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::RenamedData<bool> f_ignoreNotFound;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::RenamedData<bool> f_resizeToModel;
-
-
     SetIndex d_indices;
 
     Data < Index > d_first; ///< first index (use if indices are sequential)

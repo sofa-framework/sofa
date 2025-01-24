@@ -62,23 +62,6 @@ Distances< DataTypes >::Distances ( sofa::component::topology::container::dynami
     d_zonesFramePair.setDisplayed(false); // GUI can not display map.
 
     this->f_printLog.setValue(true);
-
-    showMapIndex.setOriginalData(&d_showMapIndex);
-    showDistanceMap.setOriginalData(&d_showDistanceMap);
-    showGoalDistanceMap.setOriginalData(&d_showGoalDistanceMap);
-    showTextScaleFactor.setOriginalData(&d_showTextScaleFactor);
-    showGradientMap.setOriginalData(&d_showGradientMap);
-    showGradientsScaleFactor.setOriginalData(&d_showGradientsScaleFactor);
-    offset.setOriginalData(&d_offset);
-    distanceType.setOriginalData(&d_distanceType);
-    initTarget.setOriginalData(&d_initTarget);
-    initTargetStep.setOriginalData(&d_initTargetStep);
-    zonesFramePair.setOriginalData(&d_zonesFramePair);
-    harmonicMaxValue.setOriginalData(&d_harmonicMaxValue);
-    fileDistance.setOriginalData(&d_fileDistance);
-    targetPath.setOriginalData(&d_targetPath);
-    hexaContainerPath.setOriginalData(&d_hexaContainerPath);
-
 }
 
 

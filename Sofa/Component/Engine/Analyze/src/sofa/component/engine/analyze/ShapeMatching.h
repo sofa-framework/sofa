@@ -71,31 +71,6 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<unsigned int> iterations;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<Real> affineRatio;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<Real> fixedweight;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<VecCoord> fixedPosition0;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<VecCoord> fixedPosition;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<VecCoord> position;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData< VVI >  cluster;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::RenamedData<VecCoord> targetPosition;
-
-
     Data<unsigned int> d_iterations; ///< Number of iterations.
     Data< Real > d_affineRatio; ///< Blending between affine and rigid.
     Data< Real > d_fixedweight; ///< weight of fixed particles.

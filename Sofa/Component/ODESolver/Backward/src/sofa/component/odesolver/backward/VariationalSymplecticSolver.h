@@ -45,36 +45,6 @@ class SOFA_COMPONENT_ODESOLVER_BACKWARD_API VariationalSymplecticSolver
 public:
     SOFA_CLASS2(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_newtonError;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<unsigned int> f_newtonSteps;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_rayleighStiffness;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_rayleighMass;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<bool> f_saveEnergyInFile;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<bool> f_explicit;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<std::string> f_fileName;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<bool> f_computeHamiltonian;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_hamiltonianEnergy;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<bool> f_useIncrementalPotentialEnergy;
-
     Data<SReal>       d_newtonError; ///< Error tolerance for Newton iterations
     Data<unsigned int> d_newtonSteps; ///< Maximum number of Newton steps
     Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0

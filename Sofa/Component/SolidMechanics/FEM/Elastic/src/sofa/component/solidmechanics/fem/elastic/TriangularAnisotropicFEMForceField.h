@@ -76,22 +76,6 @@ public:
     //Data<Real> d_young2; ///< Young modulus along transverse direction
     typedef typename TriangularAnisotropicFEMForceField::Deriv TriangleFiberDirection;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<type::vector<Real>> f_young2;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<Real> f_theta;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<VecCoord> f_fiberCenter;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<bool> showFiber;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<sofa::type::vector< TriangleFiberDirection > > localFiberDirection;
-
-
     Data<type::vector<Real> > f_poisson2;
     Data<type::vector<Real> > d_young2; ///< Young modulus along transverse direction
     Data<Real> d_theta; ///< Fiber angle in global reference frame (in degrees)

@@ -155,15 +155,6 @@ public:
 
 
 protected:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::RenamedData<sofa::type::vector<Spring> > springs;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::RenamedData<bool> showLawfulTorsion;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::RenamedData<bool> showExtraTorsion;
-
     SReal m_potentialEnergy;
     /// the list of the springs
     Data<sofa::type::vector<Spring> > d_springs;

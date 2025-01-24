@@ -72,10 +72,6 @@ protected:
     void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
 
 public:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
-    sofa::core::objectmodel::RenamedData<bool> f_keepAlive;
-
     Data<bool> d_keepAlive; ///< set to true to keep this contact alive even after collisions are no longer detected
 
     void cleanup() override;

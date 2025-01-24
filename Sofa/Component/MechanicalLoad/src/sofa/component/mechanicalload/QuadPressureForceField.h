@@ -54,31 +54,9 @@ public:
 
     using Index = sofa::Index;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Deriv> pressure;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<sofa::type::vector<Index>> quadList;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Deriv> normal;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> dmin;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Real> dmax;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<bool> p_showForces;
-
-
     Data<Deriv> d_pressure; ///< Pressure force per unit area
-
     Data<sofa::type::vector<Index> > d_quadList; ///< Indices of quads separated with commas where a pressure is applied
-
-    /// the normal used to define the edge subjected to the pressure force.
-    Data<Deriv> d_normal;
+    Data<Deriv> d_normal; ///< the normal used to define the edge subjected to the pressure force.
 
     Data<Real> d_dmin; ///< Minimum distance from the origin along the normal direction
     Data<Real> d_dmax; ///< Maximum distance from the origin along the normal direction
@@ -118,12 +96,10 @@ protected:
             return in;
         }
     };
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<sofa::type::vector<QuadPressureInformation> > quadPressureMap;
 
     sofa::core::topology::QuadSubsetData<sofa::type::vector<QuadPressureInformation> > d_quadPressureMap; ///< Map between quad indices and their pressure
 
-    /// Pointer to the current topology                                                                        /// Pointer to the current topology
+    /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;
 
     QuadPressureForceField();

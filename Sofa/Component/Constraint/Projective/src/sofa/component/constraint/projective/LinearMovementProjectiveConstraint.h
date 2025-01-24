@@ -76,19 +76,6 @@ protected:
     friend class LinearMovementProjectiveConstraintInternalData<DataTypes>;
 
 public :
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData< sofa::type::vector< sofa::Index> > m_indices;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<type::vector<Real> >  m_keyTimes;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<VecDeriv > m_keyMovements;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData<bool> showMovement;
-
     /// indices of the DOFs the constraint is applied to
     SetIndex d_indices;
     /// the key frames when the motion is defined by the user

@@ -308,42 +308,6 @@ public:
 public:
     typedef type::vector<type::Vec3> SeqPoints;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData< SeqPoints > seqPoints;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<SeqEdges> seqEdges;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<SeqTriangles> seqTriangles;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<SeqQuads> seqQuads;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<SeqTetrahedra> seqTetrahedra;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<SeqHexahedra> seqHexahedra;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<SeqUV> seqUVs;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<bool> _drawEdges;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<bool> _drawTriangles;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<bool> _drawQuads;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<bool> _drawTetra;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<bool> _drawHexa;
-
     Data< SeqPoints > d_seqPoints; ///< List of point positions
     Data<SeqEdges> d_seqEdges; ///< List of edge indices
     Data<SeqTriangles> d_seqTriangles; ///< List of triangle indices

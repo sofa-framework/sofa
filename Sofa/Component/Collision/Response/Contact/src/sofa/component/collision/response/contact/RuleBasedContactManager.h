@@ -103,13 +103,6 @@ public:
         }
     };
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
-    sofa::core::objectmodel::RenamedData< type::vector<Rule> > rules;
-
-
-
-
-
     Data< std::string > d_variables; ///< Define a list of variables to be used inside the rules
     Data< type::vector<Rule> > d_rules;
 

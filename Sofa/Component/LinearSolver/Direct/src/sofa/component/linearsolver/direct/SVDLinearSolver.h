@@ -50,16 +50,6 @@ public:
     typedef typename TVector::Real Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
-    sofa::core::objectmodel::RenamedData<bool> f_verbose;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
-    sofa::core::objectmodel::RenamedData<Real> f_minSingularValue;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
-    sofa::core::objectmodel::RenamedData<Real> f_conditionNumber;
-
-
     Data<bool> d_verbose; ///< Dump system state at each iteration
     Data<Real> d_minSingularValue; ///< Thershold under which a singular value is set to 0, for the stabilization of ill-conditioned system.
 protected:

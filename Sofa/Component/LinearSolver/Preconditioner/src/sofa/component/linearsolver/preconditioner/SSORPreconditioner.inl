@@ -37,8 +37,6 @@ template<class TMatrix, class TVector, class TThreadManager>
 SSORPreconditioner<TMatrix,TVector,TThreadManager>::SSORPreconditioner()
     : d_omega(initData(&d_omega, 1.0, "omega", "Omega coefficient") )
 {
-    f_omega.setOriginalData(&d_omega);
-
 }
 
 // solve (D+U) * D^-1 * ( D + U)

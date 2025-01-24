@@ -80,31 +80,11 @@ public:
 
 
 protected :
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<type::vector<std::string>> _fileTopologies;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<type::vector<float>> _dataStiffnessCoefs;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<type::vector<float>> _dataMassCoefs;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<bool> _computeRamifications;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::RenamedData<bool> _erasePreviousCoef;
-
-
     Data< type::vector< std::string > > d_fileTopologies; ///< All topology filenames
     Data< type::vector< float > > d_dataStiffnessCoefs; ///< A stiffness coefficient for each topology filename
     Data< type::vector< float > > d_dataMassCoefs; ///< A mass coefficient for each topology filename
     Data<bool> d_computeRamifications; ///< Are ramifications wanted?
     Data<bool> d_erasePreviousCoef; ///< Does a new stiffness/mass coefficient replace the previous or blend half/half with it?
-
-
-
 
     void buildFromTriangleMesh(helper::io::Mesh*, unsigned fileIdx);
     type::vector< RegularGridTopology::SPtr > _regularGrids;

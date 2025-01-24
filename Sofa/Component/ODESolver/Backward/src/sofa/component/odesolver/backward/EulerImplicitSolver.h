@@ -103,24 +103,6 @@ class SOFA_COMPONENT_ODESOLVER_BACKWARD_API EulerImplicitSolver :
 public:
     SOFA_CLASS2(EulerImplicitSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_rayleighStiffness;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_rayleighMass;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_velocityDamping;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<bool> f_firstOrder;
-
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<bool> f_solveConstraint;
-
-
-
     Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
     Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
     Data<SReal> d_velocityDamping; ///< Velocity decay coefficient (no decay if null)

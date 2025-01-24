@@ -47,7 +47,6 @@ ReadTopology::ReadTopology()
     , loopTime(0.0)
 {
     this->f_listening.setValue(true);
-    f_filename.setParent(&d_filename);
 }
 
 ReadTopology::~ReadTopology()

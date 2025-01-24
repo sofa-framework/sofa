@@ -97,18 +97,6 @@ protected:
 
     std::vector<unsigned int> cid;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::RenamedData<type::vector<Index> > m1;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::RenamedData<type::vector<Index> > m2;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::RenamedData<VecDeriv> restVector;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::RenamedData<bool> keepOrientDiff;
-
     DataSubsetIndices d_m1; ///< index of the constraint on the first model
     DataSubsetIndices d_m2; ///< index of the constraint on the second model
     Data<VecDeriv> d_restVector; ///< Relative position to maintain between attached points (optional)

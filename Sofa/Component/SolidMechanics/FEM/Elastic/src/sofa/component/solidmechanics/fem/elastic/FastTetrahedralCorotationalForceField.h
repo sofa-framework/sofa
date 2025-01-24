@@ -116,40 +116,6 @@ public:
     using VecTetrahedronRestInformation = type::rebind_to<VecCoord, TetrahedronRestInformation>;
     using VecMat3x3 = type::rebind_to<VecCoord, Mat3x3>;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<VecMat3x3 > pointInfo;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<VecMat3x3 >  edgeInfo;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<VecTetrahedronRestInformation >  tetrahedronInfo;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<std::string> f_method;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<Real> f_poissonRatio;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    SOFA_ATTRIBUTE_DISABLED("", "v24.12", "Use d_youngModulus instead") DeprecatedAndRemoved f_youngModulus;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<bool> f_drawing;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<sofa::type::RGBAColor> drawColor1;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<sofa::type::RGBAColor> drawColor2;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<sofa::type::RGBAColor> drawColor3;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<sofa::type::RGBAColor> drawColor4;
-
-
     core::topology::PointData<VecMat3x3 > d_pointInfo; ///< Internal point data
     core::topology::EdgeData<VecMat3x3 > d_edgeInfo; ///< Internal edge data
     core::topology::TetrahedronData<VecTetrahedronRestInformation > d_tetrahedronInfo; ///< Internal tetrahedron data

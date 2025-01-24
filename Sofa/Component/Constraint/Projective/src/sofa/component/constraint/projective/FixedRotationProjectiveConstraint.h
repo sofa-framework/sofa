@@ -67,15 +67,6 @@ public:
 
 
 protected :
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData< bool > FixedXRotation;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData< bool > FixedYRotation;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData< bool > FixedZRotation;
-
     Data< bool > d_fixedXRotation; ///< Prevent Rotation around X axis
     Data< bool > d_fixedYRotation; ///< Prevent Rotation around Y axis
     Data< bool > d_fixedZRotation; ///< Prevent Rotation around Z axis

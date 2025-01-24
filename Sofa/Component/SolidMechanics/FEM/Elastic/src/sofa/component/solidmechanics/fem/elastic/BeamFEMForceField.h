@@ -131,10 +131,6 @@ public:
         }
     };
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::RenamedData<type::vector<BeamInfo>>  m_beamsData;
-
-
     EdgeData<type::vector<BeamInfo> > d_beamsData; ///< Internal element data
 
 protected:

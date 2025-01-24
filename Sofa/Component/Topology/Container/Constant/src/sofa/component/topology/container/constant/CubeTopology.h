@@ -96,28 +96,6 @@ public:
     void setSplitNormals(bool b) {d_splitNormals.setValue(b);}
 
 protected:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<int> nx;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<int> ny;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<int> nz;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<bool> internalPoints;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<bool> splitNormals;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<Vec3> min;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData<Vec3> max;
-
-
     Data<int> d_nx; ///< x grid resolution
     Data<int> d_ny; ///< y grid resolution
     Data<int> d_nz; ///< z grid resolution

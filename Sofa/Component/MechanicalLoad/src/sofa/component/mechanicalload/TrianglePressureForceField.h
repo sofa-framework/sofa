@@ -51,22 +51,6 @@ public:
 
     using Index = sofa::Index;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<Deriv> pressure;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<MatSym3> cauchyStress;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<sofa::type::vector<Index> > triangleList;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<bool> p_showForces;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::RenamedData<bool> p_useConstantForce;
-
-
     Data<Deriv> d_pressure; ///< Pressure force per unit area
   	Data<MatSym3> d_cauchyStress; ///< Cauchy Stress applied on the normal of each triangle
 

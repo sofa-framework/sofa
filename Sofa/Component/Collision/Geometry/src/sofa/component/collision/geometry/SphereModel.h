@@ -164,12 +164,6 @@ public:
         return obj;
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::RenamedData< VecReal > radius;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::RenamedData<SReal> defaultRadius;
-
     Data< VecReal > d_radius; ///< Radius of each sphere
     Data< SReal > d_defaultRadius; ///< Default radius
     Data< bool > d_showImpostors; ///< Draw spheres as impostors instead of "real" spheres

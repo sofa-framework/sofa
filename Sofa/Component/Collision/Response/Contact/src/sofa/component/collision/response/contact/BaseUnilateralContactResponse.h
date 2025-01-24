@@ -65,12 +65,6 @@ protected:
     typename constraint::lagrangian::model::BaseContactLagrangianConstraint<sofa::defaulttype::Vec3Types,ConstraintParameters>::SPtr m_constraint;
     core::objectmodel::BaseContext* parent;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
-    sofa::core::objectmodel::RenamedData<double> mu;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
-    sofa::core::objectmodel::RenamedData<double> tol;
-
     Data<double> d_tol; ///< tolerance for the constraints resolution (0 for default tolerance)
     std::vector< sofa::core::collision::DetectionOutput* > contacts;
     std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;

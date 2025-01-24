@@ -76,11 +76,8 @@ public:
     void updateTopologicalMappingTopDown() override;
 
     Index getFromIndex(Index ind) override;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<bool> swapping;
 
     sofa::core::objectmodel::Data<bool> d_swapping; ///< Boolean enabling to swapp hexa-edges  in order to avoid bias effect
-
 };
 
 } //namespace sofa::component::topology::mapping

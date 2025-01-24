@@ -55,8 +55,6 @@ InputEventReader::InputEventReader()
     , currentPedalState(NO_PEDAL)
     , oldPedalState(NO_PEDAL)
 {
-    filename.setParent(&d_filename);
-    p_outputFilename.setParent(&d_outputFilename);
 }
 
 void InputEventReader::init()
