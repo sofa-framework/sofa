@@ -228,7 +228,7 @@ public:
             return false;
         }
 
-        return BaseMapping::canCreate(obj, context, arg);
+        return true;
     }
 
     /// Construction method called by ObjectFactory.
@@ -238,6 +238,8 @@ public:
     template<class T>
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
+        // TODO(dmarchal, 08/01/2025): Update the create function to the new factory creation process.
+        // trivial remplacement (remarkably inconstitant behavior with the one implemented in Mapping::create)
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
 
         if (context)

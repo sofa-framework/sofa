@@ -122,14 +122,16 @@ public:
             return false;
         }
 
-        return BaseInteractionConstraint::canCreate(obj, context, arg);
+        return true;
     }
 
     /// Construction method called by ObjectFactory.
     template<class T>
     static typename T::SPtr create(T* p0, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        typename T::SPtr obj = core::behavior::BaseInteractionConstraint::create(p0, context, arg);
+        // TODO(dmarchal, 08/01/2025): Update the create function to the new factory creation process.
+        // use parse/init instead of creative use of attribute hacking.
+        typename T::SPtr obj = core::behavior::BaseInteractionConstraint::deprecated_create(p0, context, arg);
 
         if (arg)
         {

@@ -91,7 +91,7 @@ public:
             arg->logError("No mechanical state found in the context node.");
             return false;
         }
-        return BaseObject::canCreate(obj, context, arg);
+        return true;
     }
 
 

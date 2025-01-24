@@ -191,7 +191,7 @@ public:
             arg->logError("Data attribute 'targetPath' does not point to a mechanical state of data type '" + std::string(DataTypes::Name()) +"'.");
             error = true;
         }
-        return !error && core::DataEngine::canCreate(obj, context, arg);
+        return !error;
     }
     /// Construction method called by ObjectFactory.
     ///
@@ -200,6 +200,9 @@ public:
     template<class T>
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
+        // TODO(dmarchal, 08/01/2025): Update the create function to the new factory creation process.
+        // probably remove the constructor with arguments and replace that with SinglLink to delegate at
+        // init/parse the initiatilization.
         typename T::SPtr obj = sofa::core::objectmodel::New<T>(
                 ( arg?dynamic_cast<sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) :nullptr ),
                 ( arg?dynamic_cast<core::behavior::MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) :nullptr ) );

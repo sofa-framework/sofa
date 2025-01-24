@@ -180,7 +180,7 @@ public:
             return false;
         }
 
-        return BaseObject::canCreate(obj, context, arg);
+        return true;
     }
 
     void draw(const core::visual::VisualParams* vparams) override;

@@ -54,16 +54,9 @@ public:
     ///   Basic control
     /// @{
 
-    /// Pre-construction check method called by ObjectFactory.
-    template<class T>
-    static bool canCreate(T* /*obj*/, BaseContext* /*context*/, BaseObjectDescription* /*arg*/)
-    {
-        return true;
-    }
-
     /// Construction method called by ObjectFactory.
     template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
+    static typename T::SPtr deprecated_create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
         if (obj)
