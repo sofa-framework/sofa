@@ -56,12 +56,8 @@ private:
 
     /// method will create a MeshGmsh which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
     bool loadGmsh(const char *filename);
-    
 
     bool loadVtk(const char *filename);
-
-    SOFA_MESHTOPOLOGYLOADER_LOADMESHFUNCTION_DISABLED()
-    bool loadMesh(std::ifstream &file) = delete;
 
     // will take all data from loaded into @see m_mesh and add it to the current topology using methods api.
     bool addMeshtoTopology();

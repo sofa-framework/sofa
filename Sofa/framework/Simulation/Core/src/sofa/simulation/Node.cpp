@@ -1006,15 +1006,6 @@ void Node::printComponents()
     msg_info() << sstream.str();
 }
 
-Node::SPtr Node::create( const std::string& name )
-{
-    if (Simulation* simulation = getSimulation())
-    {
-        return simulation->createNewNode(name);
-    }
-    return nullptr;
-}
-
 void Node::setSleeping(bool val)
 {
     if (val != d_isSleeping.getValue())

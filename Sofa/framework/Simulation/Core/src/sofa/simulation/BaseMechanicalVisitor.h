@@ -46,26 +46,11 @@ class SOFA_SIMULATION_CORE_API BaseMechanicalVisitor : public Visitor
 protected:
     simulation::Node* root; ///< root node from which the visitor was executed
 
-    SOFA_ATTRIBUTE_DISABLED_NODEDATA()
-    SReal* rootData { nullptr }; ///< data for root node
-
     virtual Result processNodeTopDown(simulation::Node* node, VisitorContext* ctx);
     virtual void processNodeBottomUp(simulation::Node* node, VisitorContext* ctx);
 
 public:
     BaseMechanicalVisitor(const sofa::core::ExecParams* params);
-
-    SOFA_ATTRIBUTE_DISABLED_NODEDATA()
-    virtual bool readNodeData() const = delete;
-
-    SOFA_ATTRIBUTE_DISABLED_NODEDATA()
-    virtual bool writeNodeData() const = delete;
-
-    SOFA_ATTRIBUTE_DISABLED_NODEDATA()
-    virtual void setNodeData(simulation::Node* /*node*/, SReal* /*nodeData*/, const SReal* /*parentData*/) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED_NODEDATA()
-    virtual void addNodeData(simulation::Node* /*node*/, SReal* /*parentData*/, const SReal* /*nodeData*/) = delete;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
