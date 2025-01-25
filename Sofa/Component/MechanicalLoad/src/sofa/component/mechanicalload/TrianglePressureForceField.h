@@ -62,9 +62,9 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<TrianglePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    core::objectmodel::lifecycle::DeprecatedData normal{ this, "v24.06", "v24.12", "normal", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
-    core::objectmodel::lifecycle::DeprecatedData dmin{ this, "v24.06", "v24.12", "dmin", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
-    core::objectmodel::lifecycle::DeprecatedData dmax{ this, "v24.06", "v24.12", "dmax", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
+    core::objectmodel::lifecycle::RemovedData normal{ this, "v24.06", "v24.12", "normal", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
+    core::objectmodel::lifecycle::RemovedData dmin{ this, "v24.06", "v24.12", "dmin", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
+    core::objectmodel::lifecycle::RemovedData dmax{ this, "v24.06", "v24.12", "dmax", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
 
 protected:
 
