@@ -34,8 +34,6 @@
 
 #include <sofa/component/engine/select/BaseROI.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::engine::select
 {
 

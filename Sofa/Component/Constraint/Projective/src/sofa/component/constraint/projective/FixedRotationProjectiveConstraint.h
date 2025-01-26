@@ -25,7 +25,6 @@
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/type/Quat.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::constraint::projective
 {

@@ -38,8 +38,6 @@
 
 #include <fstream>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::playback
 {
 

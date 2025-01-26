@@ -40,8 +40,6 @@
 #define TYPE_VORONOI 3
 #define TYPE_HARMONIC_STIFFNESS 4
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::engine::analyze
 {
 

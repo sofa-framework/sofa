@@ -26,8 +26,6 @@
 #include <fstream>
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::odesolver::backward
 {
 

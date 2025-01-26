@@ -28,9 +28,6 @@
 #include <sofa/type/RGBAColor.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
-
 namespace sofa::core::behavior
 {
 

@@ -70,7 +70,7 @@ namespace sofa {
 
 struct TestSphere : public BaseSimulationTest
 {
-    void SetUp() override
+    void doSetUp() override
     {
         sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
         sofa::simpleapi::importPlugin(Sofa.Component.Collision.Geometry);
@@ -79,7 +79,7 @@ struct TestSphere : public BaseSimulationTest
         m_proxIntersection->setAlarmDistance(1.0);
         m_proxIntersection->setContactDistance(1.0);
     }
-    void TearDown() override
+    void doTearDown() override
     {
     }
 

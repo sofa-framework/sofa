@@ -26,8 +26,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <set>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::collision::response::contact
 {
     class BaseRayContact;

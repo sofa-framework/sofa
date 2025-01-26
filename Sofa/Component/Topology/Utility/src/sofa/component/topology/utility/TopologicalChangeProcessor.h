@@ -29,9 +29,6 @@
 
 #include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
-
 #if SOFAMISCTOPOLOGY_HAVE_ZLIB
 #include <zlib.h>
 #endif // SOFAMISCTOPOLOGY_HAVE_ZLIB

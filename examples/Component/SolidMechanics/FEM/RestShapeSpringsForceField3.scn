@@ -23,7 +23,7 @@
                                     external_rest_shape="@../Object1/object1MO"
                                     points="0" external_points="0"
                                     drawSpring="true" springColor="1 1 1 1"
-                                    activeDirections="1 0 1 1 0 1"/>
+                                    activeDirections="1 0 1 1 0 1 1"/>
         <UniformMass totalMass="0.01" />
     </Node>
 </Node>

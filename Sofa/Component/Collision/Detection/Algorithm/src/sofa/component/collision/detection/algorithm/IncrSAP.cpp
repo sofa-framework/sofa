@@ -183,7 +183,7 @@ void IncrSAP::reinit()
 
 inline bool IncrSAP::added(core::CollisionModel *cm) const
 {
-    return collisionModels.count(cm->getLast()) >= 1;
+    return collisionModels.contains(cm->getLast());
 }
 
 

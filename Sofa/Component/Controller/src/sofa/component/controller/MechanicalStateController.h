@@ -27,8 +27,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::controller
 {
 

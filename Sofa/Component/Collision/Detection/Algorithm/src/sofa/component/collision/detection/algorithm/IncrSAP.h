@@ -42,9 +42,6 @@
 #include <map>
 #include <deque>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
-
 namespace sofa::component::collision::detection::algorithm
 {
 

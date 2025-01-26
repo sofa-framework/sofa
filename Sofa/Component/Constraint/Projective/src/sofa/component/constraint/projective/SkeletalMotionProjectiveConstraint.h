@@ -27,8 +27,6 @@
 #include <sofa/type/SVector.h>
 #include <type_traits>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::constraint::projective
 {
 

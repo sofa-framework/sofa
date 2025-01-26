@@ -339,7 +339,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                         size_t v1 = std::max(nodes[edgesInQuadraticTriangle[j][0]],
                             nodes[edgesInQuadraticTriangle[j][1]]);
                         Edge e(v0, v1);
-                        if (edgeSet.find(e) == edgeSet.end()) {
+                        if (!edgeSet.contains(e)) {
                             edgeSet.insert(e);
                             addEdge(my_edges.wref(), v0, v1);
                             hoep[0] = nodes[j + 3];
@@ -362,7 +362,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                         size_t v1 = std::max(nodes[edgesInQuadraticTetrahedron[j][0]],
                             nodes[edgesInQuadraticTetrahedron[j][1]]);
                         Edge e(v0, v1);
-                        if (edgeSet.find(e) == edgeSet.end()) {
+                        if (!edgeSet.contains(e)) {
                             edgeSet.insert(e);
                             addEdge(my_edges.wref(), v0, v1);
                             hoep[0] = nodes[j + 4];
@@ -543,7 +543,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                             size_t v1 = std::max(nodes[edgesInQuadraticTriangle[j][0]],
                                 nodes[edgesInQuadraticTriangle[j][1]]);
                             Edge e(v0, v1);
-                            if (edgeSet.find(e) == edgeSet.end())
+                            if (!edgeSet.contains(e))
                             {
                                 edgeSet.insert(e);
                                 addEdge(my_edges.wref(), v0, v1);
@@ -568,7 +568,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                             size_t v1 = std::max(nodes[edgesInQuadraticTetrahedron[j][0]],
                                 nodes[edgesInQuadraticTetrahedron[j][1]]);
                             Edge e(v0, v1);
-                            if (edgeSet.find(e) == edgeSet.end())
+                            if (!edgeSet.contains(e))
                             {
                                 edgeSet.insert(e);
                                 addEdge(my_edges.wref(), v0, v1);

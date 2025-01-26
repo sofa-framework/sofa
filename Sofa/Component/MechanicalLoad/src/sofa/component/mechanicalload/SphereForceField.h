@@ -29,8 +29,6 @@
 
 #include <sofa/type/RGBAColor.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::mechanicalload
 {
 

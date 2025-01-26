@@ -32,8 +32,6 @@
 #include <sofa/type/vector.h>
 #include <sofa/type/trait/Rebind.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::mapping::linear
 {
 

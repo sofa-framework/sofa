@@ -53,7 +53,7 @@ struct SmoothMeshEngine_test : public BaseSimulationTest,
 	Node::SPtr m_node;
 	typename ThisClass::SPtr m_thisObject;
 
-	void SetUp() override
+	void doSetUp() override
 	{
 		m_simu = sofa::simulation::getSimulation();
 		ASSERT_NE(m_simu, nullptr);

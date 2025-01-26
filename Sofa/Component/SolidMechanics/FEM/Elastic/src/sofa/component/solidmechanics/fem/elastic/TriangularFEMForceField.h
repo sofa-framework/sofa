@@ -33,8 +33,6 @@
 #include <map>
 #endif
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::helper
 {
     class ColorMap;

@@ -25,8 +25,6 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::mechanicalload
 {
 

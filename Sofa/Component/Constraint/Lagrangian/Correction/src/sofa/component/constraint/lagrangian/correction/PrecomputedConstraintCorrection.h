@@ -30,8 +30,6 @@
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::constraint::lagrangian::correction
 {
 

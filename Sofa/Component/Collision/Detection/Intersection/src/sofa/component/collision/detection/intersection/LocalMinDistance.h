@@ -31,8 +31,6 @@
 #include <sofa/component/collision/geometry/CubeModel.h>
 #include <sofa/component/collision/geometry/RayModel.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::collision::detection::intersection
 {
 

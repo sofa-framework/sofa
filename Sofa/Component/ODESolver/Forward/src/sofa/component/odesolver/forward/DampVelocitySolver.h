@@ -25,8 +25,6 @@
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::odesolver::forward
 {
 

@@ -35,8 +35,6 @@
 #include <type_traits>
 #include <set>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::constraint::projective
 {
 

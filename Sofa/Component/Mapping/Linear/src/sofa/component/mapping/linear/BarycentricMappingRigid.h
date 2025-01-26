@@ -37,8 +37,6 @@
 #include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::mapping::linear
 {
 

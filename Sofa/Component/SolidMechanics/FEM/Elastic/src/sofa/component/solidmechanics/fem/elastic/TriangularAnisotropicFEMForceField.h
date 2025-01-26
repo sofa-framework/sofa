@@ -32,8 +32,6 @@
 #include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceField.h>
 #include <sofa/core/topology/TopologyData.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::solidmechanics::fem::elastic
 {
 

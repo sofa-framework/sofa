@@ -27,8 +27,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::collision::geometry
 {
 

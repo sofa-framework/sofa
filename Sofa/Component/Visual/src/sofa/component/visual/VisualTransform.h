@@ -25,8 +25,6 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::visual
 {
 

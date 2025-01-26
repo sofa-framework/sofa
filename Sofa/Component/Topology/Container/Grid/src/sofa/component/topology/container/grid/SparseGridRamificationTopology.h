@@ -25,8 +25,6 @@
 
 #include <sofa/component/topology/container/grid/SparseGridTopology.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::topology::container::grid
 {
 

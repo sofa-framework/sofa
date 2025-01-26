@@ -128,7 +128,7 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
         else
         {
             // Case: soft body
-            if constexpr (!sofa::type::isRigidType<DataTypes>())
+            if constexpr (!sofa::type::isRigidType<DataTypes>)
             {
                 const VecReal &comp = d_compliance.getValue();
                 if (std::any_of(comp.begin(), comp.end(), [](const Real c) { return c == 0; }))

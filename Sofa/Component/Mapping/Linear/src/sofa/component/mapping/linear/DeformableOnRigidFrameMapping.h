@@ -26,8 +26,6 @@
 
 #include <sofa/core/Multi2Mapping.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::mapping::linear
 {
 

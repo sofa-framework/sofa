@@ -35,8 +35,6 @@
 
 #include <sofa/component/constraint/lagrangian/model/BilateralConstraintResolution.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::constraint::lagrangian::model
 {
 

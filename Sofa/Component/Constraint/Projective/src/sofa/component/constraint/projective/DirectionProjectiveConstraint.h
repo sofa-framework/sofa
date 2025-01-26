@@ -29,14 +29,11 @@
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/linearalgebra/BaseVector.h>
 #include <sofa/defaulttype/VecTypes.h>
-//#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/vector.h>
 #include <sofa/type/Mat.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <set>
-
-#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::constraint::projective
 {

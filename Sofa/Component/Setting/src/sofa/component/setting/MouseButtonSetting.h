@@ -26,8 +26,6 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/helper/OptionsGroup.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::setting
 {
 

@@ -27,7 +27,6 @@
 #include <sofa/type/vector.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::constraint::projective
 {

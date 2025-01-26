@@ -24,7 +24,6 @@
 #include <sofa/component/collision/detection/algorithm/config.h>
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/component/collision/geometry/CubeModel.h>
-#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::collision::detection::algorithm
 {

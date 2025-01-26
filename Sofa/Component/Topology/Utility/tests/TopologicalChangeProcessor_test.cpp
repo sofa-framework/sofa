@@ -46,7 +46,7 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
     std::string m_fileName = "";
 
     /// Method use at start to load the scene file    
-    void SetUp() override
+    void doSetUp() override
     {
         // Load the scene from the xml file
         const std::string filePath = std::string(SOFA_COMPONENT_TOPOLOGY_UTILITY_TEST_SCENES_DIR) + "/" + m_fileName;
@@ -68,7 +68,7 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
     virtual bool testTopologyChanges() = 0;
 
     /// Unload the scene
-    void TearDown() override
+    void doTearDown() override
     {
         if (m_instance.root !=nullptr)
             sofa::simulation::node::unload(m_instance.root);

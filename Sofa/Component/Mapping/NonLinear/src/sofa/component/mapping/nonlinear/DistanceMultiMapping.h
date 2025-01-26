@@ -27,8 +27,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::mapping::nonlinear
 {
 

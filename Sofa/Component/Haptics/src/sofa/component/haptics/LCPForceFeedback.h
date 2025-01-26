@@ -29,8 +29,6 @@
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::haptics
 {
 

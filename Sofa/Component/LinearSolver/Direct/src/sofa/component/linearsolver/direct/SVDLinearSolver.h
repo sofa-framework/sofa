@@ -25,8 +25,6 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::linearsolver::direct
 {
 

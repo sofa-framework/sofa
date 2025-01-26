@@ -26,8 +26,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/type/vector.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::constraint::projective
 {
 

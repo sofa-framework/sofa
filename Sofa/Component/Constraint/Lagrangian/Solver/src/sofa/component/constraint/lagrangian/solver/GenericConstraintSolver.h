@@ -31,8 +31,6 @@
 #include <sofa/simulation/CpuTask.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/component/constraint/lagrangian/solver/visitors/MechanicalGetConstraintResolutionVisitor.h>
-
-#include <sofa/core/objectmodel/RenamedData.h>
 #include <sofa/helper/SelectableItem.h>
 
 

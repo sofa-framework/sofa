@@ -32,8 +32,6 @@
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <fstream>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::linearsolver::direct
 {
 

@@ -30,8 +30,6 @@
 #include <sofa/core/fwd.h>
 #include <sofa/helper/OptionsGroup.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::visual
 {
 

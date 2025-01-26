@@ -22,8 +22,6 @@
 #pragma once
 #include <sofa/component/topology/container/constant/CubeTopology.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::topology::container::constant
 {
 

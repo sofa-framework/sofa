@@ -27,8 +27,6 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/map_ptr_stable_compare.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::collision::response::contact
 {
 

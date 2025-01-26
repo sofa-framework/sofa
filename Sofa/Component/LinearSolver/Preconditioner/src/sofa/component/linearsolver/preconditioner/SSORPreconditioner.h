@@ -30,8 +30,6 @@
 
 #include <cmath>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::linearsolver::preconditioner
 {
 

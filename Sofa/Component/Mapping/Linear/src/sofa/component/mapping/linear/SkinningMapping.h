@@ -32,8 +32,6 @@
 #include <sofa/type/Mat.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::mapping::linear
 {
 

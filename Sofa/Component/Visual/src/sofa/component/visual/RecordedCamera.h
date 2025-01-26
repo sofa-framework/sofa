@@ -26,8 +26,6 @@
 #include <sofa/helper/visual/Trackball.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::visual
 {
 

@@ -32,8 +32,6 @@
 #include <poll.h>
 #endif
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::playback
 {
 

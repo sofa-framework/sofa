@@ -32,8 +32,6 @@
 
 #include <string>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::visual
 {
 /**

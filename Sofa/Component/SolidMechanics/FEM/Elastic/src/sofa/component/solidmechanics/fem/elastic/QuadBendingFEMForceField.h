@@ -36,8 +36,6 @@
 #include <map>
 #include <sofa/helper/map.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::solidmechanics::fem::elastic
 {
 

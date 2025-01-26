@@ -34,8 +34,6 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/SVector.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::engine::analyze
 {
 

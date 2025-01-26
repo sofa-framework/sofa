@@ -33,8 +33,6 @@
 #include <sofa/type/vector.h>
 #include <set>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::constraint::projective
 {
 

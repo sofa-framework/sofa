@@ -27,8 +27,6 @@
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/component/solidmechanics/spring/VectorSpringForceField.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::collision::response::contact
 {
 

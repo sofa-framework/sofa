@@ -24,8 +24,6 @@
 
 #include <sofa/core/behavior/BaseController.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::core::objectmodel
 {
     class Event;

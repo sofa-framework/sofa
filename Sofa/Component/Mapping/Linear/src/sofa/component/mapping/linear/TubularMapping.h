@@ -29,8 +29,6 @@
 #include <vector>
 #include <sofa/component/mapping/linear/LinearMapping.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::mapping::linear
 {
 

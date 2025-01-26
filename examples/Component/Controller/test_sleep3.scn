@@ -101,7 +101,7 @@
         <TriangleCollisionModel name="FloorTriangle" simulated="0" moving="0" />
         <LineCollisionModel name="FloorLine_line" simulated="0" moving="0" />
         <PointCollisionModel name="FloorLine_point" simulated="0" moving="0" />
-        <MeshOBJLoader name="meshLoader_3" filename="mesh/floor3.obj" scaleTex="0.2 0.2" scale="1.75" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_3" filename="mesh/floor3.obj" scale="1.75" handleSeams="1" />
         <OglModel name="FloorV" src="@meshLoader_3" texturename="textures/brushed_metal.bmp" dy="-10" />
     </Node>
 </Node>

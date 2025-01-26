@@ -24,8 +24,6 @@
 
 #include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::topology::container::dynamic
 {
 

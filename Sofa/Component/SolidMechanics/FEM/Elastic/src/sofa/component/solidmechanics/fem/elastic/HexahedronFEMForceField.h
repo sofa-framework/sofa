@@ -32,8 +32,6 @@
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/OptionsGroup.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::solidmechanics::fem::elastic
 {
 

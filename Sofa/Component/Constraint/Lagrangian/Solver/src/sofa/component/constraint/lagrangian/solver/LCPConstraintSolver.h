@@ -35,8 +35,6 @@
 #include <sofa/helper/map.h>
 #include <sofa/helper/LCPcalc.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::constraint::lagrangian::solver
 {
 

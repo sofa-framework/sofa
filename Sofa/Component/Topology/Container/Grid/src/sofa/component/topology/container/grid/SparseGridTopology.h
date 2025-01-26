@@ -32,8 +32,6 @@
 #include <stack>
 #include <string>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::core::loader
 {
     class VoxelLoader;

@@ -26,8 +26,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseTopology.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::topology::container::dynamic
 {
 class PointSetTopologyModifier;

@@ -31,8 +31,6 @@
 #include <sofa/helper/map.h>
 #include <sofa/helper/ColorMap.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 // corotational tetrahedron from
 // @InProceedings{NPF05,
 //   author       = "Nesme, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",

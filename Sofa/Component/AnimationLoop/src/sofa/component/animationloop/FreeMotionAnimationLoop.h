@@ -24,7 +24,6 @@
 
 #include <sofa/simulation/CollisionAnimationLoop.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::core::behavior
 {

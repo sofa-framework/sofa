@@ -25,7 +25,6 @@
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/simulation/CollisionAnimationLoop.h>
-#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::animationloop
 {

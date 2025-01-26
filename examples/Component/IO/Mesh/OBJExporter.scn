@@ -11,10 +11,12 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
+    <DefaultAnimationLoop />
+
     <Node name="M1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <SparseLDLSolver printLog="false"/>
-        <CGLinearSolver iterations="1000" threshold="1.0e-9" />
+        <CGLinearSolver tolerance="1e-5" iterations="1000" threshold="1.0e-9" />
         <MechanicalObject template="Vec3d" />
         <UniformMass totalMass="100" />
         <RegularGridTopology nx="4" ny="4" nz="40" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />

@@ -119,47 +119,45 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         // compute the net forces at the beginning of the time step
         mop.computeForce(f);                                                               //f = Kx + Bv
 
-        msg_info() << "EulerImplicitSolver, initial f = " << f;
+        msg_info() << "initial f = " << f;
     }
 
     {
         SCOPED_TIMER("ComputeRHTerm");
-
         if (firstOrder)
         {
-            b.eq(f);
+            b.eq(f);  // b = f
         }
         else
         {
             // new more powerful visitors
 
             // force in the current configuration
-            b.eq(f, 1.0 / tr);                                                                    // b = f
+            b.eq(f);  // b = f
 
-            msg_info() << "EulerImplicitSolver, f = " << f;
+            msg_info() << "f = " << f;
 
             // add the change of force due to stiffness + Rayleigh damping
             mop.addMBKv(b, core::MatricesFactors::M(-d_rayleighMass.getValue()),
                         core::MatricesFactors::B(0),
-                        core::MatricesFactors::K(h + d_rayleighStiffness.getValue())); // b =  f + ( rm M + (h+rs) K ) v
+                        core::MatricesFactors::K(h * tr + d_rayleighStiffness.getValue())); // b =  f + ( rm M + (h+rs) K ) v
 
             // integration over a time step
-            b.teq(h *
-                  tr);                                                                       // b = h(f + ( rm M + (h+rs) K ) v )
+            b.teq(h);                                             // b = h(f + ( rm M + (h+rs) K ) v )
         }
 
-        msg_info() << "EulerImplicitSolver, b = " << b;
+        msg_info() << "b = " << b;
 
-        mop.projectResponse(b);          // b is projected to the constrained space
+        mop.projectResponse(b);                                   // b is projected to the constrained space
 
-        msg_info() << "EulerImplicitSolver, projected b = " << b;
+        msg_info() << "projected b = " << b;
     }
 
     {
         SCOPED_TIMER("setSystemMBKMatrix");
         const core::MatricesFactors::M mFact (firstOrder ? 1 : 1 + tr * h * d_rayleighMass.getValue());
         const core::MatricesFactors::B bFact (firstOrder ? 0 : -tr * h);
-        const core::MatricesFactors::K kFact (firstOrder ? -h * tr : -tr * h * (h + d_rayleighStiffness.getValue()));
+        const core::MatricesFactors::K kFact (firstOrder ? -h * tr : -tr * h * (tr * h + d_rayleighStiffness.getValue()));
 
         mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 
@@ -220,7 +218,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         sofa::helper::AdvancedTimer::stepBegin(prevStep);
 #define SOFATIMER_NEXTSTEP(s) { sofa::helper::AdvancedTimer::stepNext(prevStep,s); prevStep=s; }
 
-        // vel = vel + x
+        // v(t+dt) = Δv + v(t)
         newVel.eq(vel, x);
 
         if (solveConstraint)
@@ -230,7 +228,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         }
         SOFATIMER_NEXTSTEP("UpdateX");
 
-        // pos = pos + h vel
+        // x(t+dt) = x(t) + dt * v(t+dt)
         newPos.eq(pos, newVel, h);
 
         if (solveConstraint)
@@ -295,10 +293,10 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         mop.projectVelocity(newVel);
         mop.propagateX(newPos);
         mop.propagateV(newVel);
-        msg_info() << "EulerImplicitSolver, final x = " << newPos;
-        msg_info() << "EulerImplicitSolver, final v = " << newVel;
+        msg_info() << "final x = " << newPos;
+        msg_info() << "final v = " << newVel;
         mop.computeForce(f);
-        msg_info() << "EulerImplicitSolver, final f = " << f;
+        msg_info() << "final f = " << f;
     }
 }
 

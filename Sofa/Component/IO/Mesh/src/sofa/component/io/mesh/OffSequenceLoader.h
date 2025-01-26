@@ -24,8 +24,6 @@
 
 #include <sofa/component/io/mesh/MeshOffLoader.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::io::mesh
 {
 

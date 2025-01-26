@@ -28,8 +28,6 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 // corotational triangle from
 // @InProceedings{NPF05,
 //   author       = "Nesme, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",

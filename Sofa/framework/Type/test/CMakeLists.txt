@@ -8,6 +8,7 @@ set(SOURCE_FILES
     MatTypes_test.cpp
     Material_test.cpp
     Quater_test.cpp
+    Rebind_test.cpp
     RGBAColor_test.cpp
     StrongType_test.cpp
     SVector_test.cpp

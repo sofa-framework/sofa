@@ -28,8 +28,6 @@
 #include <sofa/core/visual/Data[DisplayFlags].h>
 #include <sofa/simulation/fwd.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::visual
 {
 /** \brief VisualStyle component controls the DisplayFlags state

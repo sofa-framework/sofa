@@ -27,8 +27,6 @@
 #include <sofa/core/topology/TopologySubsetData.h>
 #include <fstream>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::mechanicalload
 {
 

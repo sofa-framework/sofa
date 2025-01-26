@@ -25,8 +25,6 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/behavior/PairInteractionForceField.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::solidmechanics::spring
 {
 

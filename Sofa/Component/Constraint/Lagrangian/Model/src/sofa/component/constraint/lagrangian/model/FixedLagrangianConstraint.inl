@@ -70,8 +70,8 @@ void FixedLagrangianConstraint<DataTypes>::getConstraintViolation(const core::Co
     SOFA_UNUSED(cParams);
     SOFA_UNUSED(x);
     SOFA_UNUSED(v);
-    const DataVecCoord * freePos = this->getMState()->read(sofa::core::VecId::freePosition());
-    const DataVecCoord * restPos = this->getMState()->read(sofa::core::VecId::restPosition());
+    const DataVecCoord * freePos = this->getMState()->read(sofa::core::vec_id::read_access::freePosition);
+    const DataVecCoord * restPos = this->getMState()->read(sofa::core::vec_id::read_access::restPosition);
 
     for(unsigned i=0; i<m_cid.size(); ++i)
     {

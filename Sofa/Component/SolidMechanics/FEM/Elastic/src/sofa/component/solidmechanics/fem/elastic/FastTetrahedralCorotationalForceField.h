@@ -31,8 +31,6 @@
 #include <sofa/type/Mat.h>
 #include <sofa/type/trait/Rebind.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::solidmechanics::fem::elastic
 {
 

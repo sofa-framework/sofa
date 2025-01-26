@@ -112,7 +112,7 @@ void Base::addUpdateCallback(const std::string& name,
 
 void Base::addOutputsToCallback(const std::string& name, std::initializer_list<BaseData*> outputs)
 {
-    if (m_internalEngine.find(name) != m_internalEngine.end())
+    if (m_internalEngine.contains(name))
         m_internalEngine[name].addOutputs(outputs);
 }
 
@@ -263,7 +263,7 @@ const std::string Base::getLoggedMessagesAsString(const sofa::helper::logging::M
 {
     std::stringstream tmpstr ;
     for(Message& m : m_messageslog){
-        if( t.find(m.type()) !=  t.end() )
+        if( t.contains(m.type()))
         {
             tmpstr << m.type() << ":" <<  m.messageAsString() << std::endl;
         }
@@ -275,7 +275,7 @@ size_t Base::countLoggedMessages(const sofa::helper::logging::Message::TypeSet t
 {
     size_t tmp=0;
     for(Message& m : m_messageslog){
-        if( t.find(m.type()) !=  t.end() )
+        if( t.contains(m.type()))
         {
             tmp++;
         }
@@ -396,8 +396,8 @@ Base* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& 
 
 bool Base::hasField( const std::string& attribute) const
 {
-    return m_aliasData.find(attribute) != m_aliasData.end()
-                                          || m_aliasLink.find(attribute) != m_aliasLink.end();
+    return m_aliasData.contains(attribute)
+           || m_aliasLink.contains(attribute);
 }
 
 /// Assign one field value (Data or Link)
@@ -514,14 +514,11 @@ void  Base::parseFields ( const std::list<std::string>& str )
 
 void  Base::parseFields ( const std::map<std::string,std::string*>& args )
 {
-    std::string key,val;
-    for( std::map<string,string*>::const_iterator i=args.begin(), iend=args.end(); i!=iend; ++i )
+    for( const auto& [key,value] : args )
     {
-        if( (*i).second!=nullptr )
+        if( value!=nullptr )
         {
-            key=(*i).first;
-            val=*(*i).second;
-            parseField(key, val);
+            parseField(key, *value);
         }
     }
 }
@@ -550,17 +547,22 @@ void  Base::parse ( BaseObjectDescription* arg )
         }
     }
 
-    for( auto& it : arg->getAttributeMap() )
-    {
-        const std::string& attrName = it.first;
+    // Process the printLog attribute before any other as this one impact how the subsequent
+    // messages, including the ones emitted in the "parseField" method are reported to the user.
+    // getAttributes, returns a nullptr if printLog is not used.
+    auto value = arg->getAttribute("printLog");
+    if(value)
+        parseField("printLog", value);
 
+    for( auto& [key,value] : arg->getAttributeMap() )
+    {
         // FIX: "type" is already used to define the type of object to instantiate, any Data with
         // the same name cannot be extracted from BaseObjectDescription
-        if (attrName == std::string("type"))
+        if (key == "type")
             continue;
-        if (!hasField(attrName)) continue;
 
-        parseField(attrName, it.second);
+        if (hasField(key))
+            parseField(key, value);
     }
     updateLinks(false);
 }
@@ -569,12 +571,12 @@ void  Base::parse ( BaseObjectDescription* arg )
 void Base::updateLinks(bool logErrors)
 {
     // update links
-    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    for(auto& link : m_vecLink)
     {
-        const bool ok = (*iLink)->updateLinks();
-        if (!ok && (*iLink)->storePath() && logErrors)
+        const bool ok = link->updateLinks();
+        if (!ok && link->storePath() && logErrors)
         {
-            msg_warning() << "Link update failed for " << (*iLink)->getName() << " = " << (*iLink)->getValueString() ;
+            msg_warning() << "Link update failed for " << link->getName() << " = " << link->getValueString() ;
         }
     }
 }
@@ -599,9 +601,8 @@ static std::string xmlencode(const std::string& str)
 
 void  Base::writeDatas (std::ostream& out, const std::string& separator)
 {
-    for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
+    for(const auto& field : m_vecData)
     {
-        const BaseData* field = *iData;
         if (!field->getLinkPath().empty() )
         {
             out << separator << field->getName() << "=\""<< xmlencode(field->getLinkPath()) << "\" ";
@@ -616,9 +617,8 @@ void  Base::writeDatas (std::ostream& out, const std::string& separator)
             }
         }
     }
-    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    for(const auto& link : m_vecLink)
     {
-        const BaseLink* link = *iLink;
         if(link->storePath())
         {
             std::string val = link->getValueString();

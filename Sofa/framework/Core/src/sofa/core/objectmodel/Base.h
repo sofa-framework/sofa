@@ -23,7 +23,7 @@
 
 #include <sofa/core/fwd.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/objectmodel/RemovedData.h>
+#include <sofa/core/objectmodel/lifecycle/RemovedData.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>

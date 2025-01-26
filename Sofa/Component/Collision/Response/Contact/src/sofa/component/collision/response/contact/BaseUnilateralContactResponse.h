@@ -30,8 +30,6 @@
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/component/collision/response/contact/ContactIdentifier.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::collision::response::contact
 {
 template <class TCollisionModel1, class TCollisionModel2, class ConstraintParameters, class ResponseDataTypes = sofa::defaulttype::Vec3Types >

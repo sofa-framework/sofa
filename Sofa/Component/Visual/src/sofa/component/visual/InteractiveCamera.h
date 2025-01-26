@@ -25,8 +25,6 @@
 #include <sofa/component/visual/BaseCamera.h>
 #include <sofa/helper/visual/Trackball.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::core::objectmodel
 {
     class MouseEvent;
