@@ -60,8 +60,6 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
     , m_updateStiffnessMatrix(true)
 {
     d_radius.setRequired(true);
-    m_beamsData.setOriginalData(&d_beamsData);
-    d_radiusInner.setRequired(true);
 
     this->setPoissonRatio(poissonRatio);
     this->setYoungModulus(youngModulus);
