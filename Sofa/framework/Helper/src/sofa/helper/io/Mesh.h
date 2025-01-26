@@ -41,8 +41,6 @@ public:
 
     std::string loaderType;
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-
     typedef sofa::type::PrimitiveGroup PrimitiveGroup;
     typedef sofa::type::Material Material;
     typedef sofa::Index PointID;

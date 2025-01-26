@@ -53,8 +53,6 @@ public:
     typedef sofa::type::Vec<2, float> TexCoord;
     typedef type::vector<TexCoord> VecTexCoord;
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
-
     //Indices must be unsigned int for drawing
     using visual_index_type = unsigned int;
 

@@ -42,9 +42,6 @@ public:
 
     typedef _T T;
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Inherited, Inherit1);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
-
     //Input
     Data<unsigned int> d_nbLabels; ///< number of label lists
     typedef type::vector<type::SVector<T> > VecVLabels;

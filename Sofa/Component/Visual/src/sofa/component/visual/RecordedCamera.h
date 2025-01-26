@@ -36,8 +36,6 @@ class SOFA_COMPONENT_VISUAL_API RecordedCamera : public BaseCamera
 public:
     SOFA_CLASS(RecordedCamera, BaseCamera);
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3, sofa::type::Vec3);
-
     typedef BaseCamera::Quat Quat;
 protected:
     RecordedCamera();

@@ -69,17 +69,18 @@ public:
     // Deprecate the usage of initVisual()
     // But the final keyword will break the compilation if one does override initVisual anyway.
     SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use initVisual(const VisualParams*) instead")
-    virtual void initVisual() final;
+    virtual void initVisual() final = delete;
 
     /**
      *  \brief used to update the model if necessary.
      *
      */
     void updateVisual(const VisualParams* /*vparams*/);
+
     // Deprecate the usage of updateVisual()
     // But the final keyword will break the compilation if one does override updateVisual() anyway.
     SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use updateVisual(const VisualParams*) instead")
-    virtual void updateVisual() final;
+    virtual void updateVisual() final = delete;
 
 protected:
     VisualModel();

@@ -38,10 +38,6 @@ namespace sofa::gl
 class SOFA_GL_API Axis
 {
 public:
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec4f, sofa::type::Vec4f);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3d, sofa::type::Vec3d);
-
     typedef sofa::type::Quat<SReal> Quaternion;
     Axis(SReal len=1.0_sreal);
     Axis(const type::Vec3& len);

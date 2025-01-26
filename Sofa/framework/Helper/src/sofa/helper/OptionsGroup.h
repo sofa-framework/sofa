@@ -52,11 +52,6 @@ public :
     /// Default constructor
     OptionsGroup();
 
-    ///Constructor by given the number of argument following by the variable arguments
-    ///Example OptionsGroup m_options(4,"button0","button1","button2","button3");
-    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "This constructor is error-prone. Use another constructor.")
-    explicit OptionsGroup(int nbofRadioButton,...);
-
     ///generic constructor taking other string container like list<string>, set<string>, vector<string>
     template <class T, typename = std::enable_if_t<type::trait::is_container<T>::value> >
     explicit OptionsGroup(const T& list);
@@ -78,10 +73,6 @@ public :
     void setItemName( unsigned int id_item, const std::string& name );
 
     ///Reinitializing options by a pre-constructed optionsgroup objected
-    ///Example m_options.setNames(4,"button0","button1","button2","button3");
-    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "This method is error-prone. Use another setNames method.")
-    void setNames(int nbofRadioButton,...);
-
     template <class T>
     void setNames(const std::initializer_list<T>& list);
 
