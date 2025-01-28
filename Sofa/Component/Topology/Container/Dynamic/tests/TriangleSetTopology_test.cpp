@@ -358,7 +358,7 @@ bool TriangleSetTopology_test::testRemovingTriangles()
     EXPECT_EQ(triangles.size(), nbrTriangle);
 
     // 1. Check first the swap + pop_back method
-    const Triangle lastTri = triangles.back();
+    const TriangleSetTopologyContainer::Triangle lastTri = triangles.back();
     sofa::type::vector< TriangleSetTopologyContainer::TriangleID > triIds = { 0 };
 
     // Remove first edge from the buffer
