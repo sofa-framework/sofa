@@ -1925,14 +1925,96 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
 
 template <typename DataTypes>
 type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPathNew(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
-        const TriangleID ind_ta, const TriangleID ind_tb, Real epsilonSnapPath, Real epsilonSnapBorder) const
+        const TriangleID ind_ta, const TriangleID ind_tb, Real snapThreshold, Real snapThresholdBorder) const
 {
+    // Get points coordinates
+    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::vec_id::read_access::position)->getValue());
+
+    // 1. Get access to buffers and format Cut Path data
+    const auto& triangles = m_container->getTriangles();
+    const auto& edges = m_container->getEdges();
+    const auto& triAEdges = m_container->getTrianglesAroundEdgeArray();
+    const auto& edgesInTri = m_container->getEdgesInTriangleArray();
+    auto nbrPoints = PointID(m_container->getNbPoints());
+    type::fixed_array< TriangleID, 2> triIds = { ind_ta , ind_tb };
+    type::fixed_array< Triangle, 2> theTris = { triangles[triIds[0]], triangles[triIds[1]] };
+    type::fixed_array < Vec3, 2> _coefsTris;
+    _coefsTris[0] = computeBarycentricCoordinates(ind_ta, ptA);
+    _coefsTris[1] = computeBarycentricCoordinates(ind_tb, ptB);
+    type::fixed_array < sofa::geometry::ElementType, 2> _elemBorders;
+
+    std::cout << "_coefsTris: " << _coefsTris << std::endl;
+
+    // 2. Check if snapping is needed at first and last points. Snapping on point is more important than snapping on edge
+    type::fixed_array < Vec3, 2> pathPts = { ptA , ptB };
+    type::fixed_array< PointID, 2> snapV = { InvalidID , InvalidID };
+    type::fixed_array< PointID, 2> snapE = { InvalidID , InvalidID };
+
+    // check possible snap based on barycentric coordinates
+    for (unsigned int i = 0; i < 2; ++i)
+    {
+        for (unsigned int j = 0; j < 3; ++j)
+        {
+            if (_coefsTris[i][j] > snapThresholdBorder) // snap to point at start
+            {
+                snapV[i] = j;
+            }
+
+            if (_coefsTris[i][j] < (1_sreal - snapThresholdBorder)) // otherwise snap to edge at start
+            {
+                snapE[i] = j;// edgesInTri[triIds[0]][(i + 3) % 3];
+            }
+        }
+    }
+
+    // Apply snapping and compute new start/end points
+    for (unsigned int i = 0; i < 2; ++i)
+    {
+        if (snapV[i] != InvalidID)
+        {
+            // snap Vertex is prioritary
+            PointID snapId = snapV[i];
+            PointID vId = theTris[i][snapId];
+            std::cout << "Snap needed here: " << vId << std::endl;
+
+            pathPts[i] = vect_c[vId];
+            _elemBorders[i] = sofa::geometry::ElementType::POINT;
+        }
+        else if (snapE[i] != InvalidID) // snap edge
+        {
+            PointID snapId = snapE[i];
+            EdgeID edgeId = edgesInTri[triIds[i]][(snapId + 3) % 3];
+            const Edge& edge = edges[edgeId];
+
+            type::Vec2 newCoefs;
+            if (edge[0] == theTris[i][(snapId + 1) % 3])
+            {
+                newCoefs[0] = _coefsTris[i][(snapId + 1) % 3];
+                newCoefs[1] = _coefsTris[i][(snapId + 2) % 3];
+            }
+            else
+            {
+                newCoefs[0] = _coefsTris[i][(snapId + 2) % 3];
+                newCoefs[1] = _coefsTris[i][(snapId + 1) % 3];
+            }
+            SReal sum = newCoefs[0] + newCoefs[1];
+            newCoefs[0] = newCoefs[0] / sum;
+            newCoefs[1] = newCoefs[1] / sum;
+            
+            pathPts[i] = vect_c[edge[0]] * newCoefs[0] + vect_c[edge[1]] * newCoefs[1];
+
+            _elemBorders[i] = sofa::geometry::ElementType::EDGE;
+        }
+        else
+        {
+            _elemBorders[i] = sofa::geometry::ElementType::TRIANGLE;
+        }
+    }
+
+    // 3. compute incision path through triangles and edges
     sofa::type::vector< TriangleID > triangles_list;
     sofa::type::vector< EdgeID > edges_list;
     sofa::type::vector< Real > coords_list;
-
-
-    // Update ptA and ptB here due to snaping border!
 
     computeIncisionPath(ptA, ptB, ind_ta, ind_tb, triangles_list, edges_list, coords_list);
 
@@ -1942,22 +2024,30 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
     std::cout << "edges_list: " << edges_list << std::endl;
     std::cout << "coords_list: " << coords_list << std::endl;
 
+    // 4. post processing the list of intersected edges if snapping is requested
+    std::set <PointID> psnap;
+    for (unsigned int i = 0; i < edges_list.size(); ++i)
+    {
+        const Edge& edge = edges[edges_list[i]];
+        if (coords_list[i] > snapThreshold)
+            psnap.insert(edge[0]);
+        else if (1.0 - coords_list[i] > snapThreshold)
+            psnap.insert(edge[1]);
+    }
+
+    for (unsigned int i = 0; i < edges_list.size(); ++i)
+    {
+        const Edge& edge = edges[edges_list[i]];
+        if (psnap.find(edge[0]) != psnap.end())
+            coords_list[i] = 1.0;
+        else if (psnap.find(edge[1]) != psnap.end())
+            coords_list[i] = 0.0;
+    }
+
     type::vector< std::shared_ptr<PointToAdd> > _pointsToAdd;
     std::map < PointID, PointID> cloneMap;
-    auto nbrPoints = PointID(m_container->getNbPoints());
+    
     // process snapping here
-
-    const auto& triangles = m_container->getTriangles();
-    const auto& edges = m_container->getEdges();
-    type::fixed_array< TriangleID, 2> triIds = { ind_ta , ind_tb };
-    type::fixed_array< Triangle, 2> theTris = { triangles[triIds[0]], triangles[triIds[1]] };
-    type::fixed_array < Vec3, 2> _coefsTris;
-    
-    _coefsTris[0] = computeBarycentricCoordinates(ind_ta, ptA);
-    _coefsTris[1] = computeBarycentricCoordinates(ind_tb, ptB);
-
-    std::cout << "_coefsTris: " << _coefsTris << std::endl;
-    
     for (unsigned int i = 0; i < 2; ++i)
     {
         type::vector<SReal> _coefs = { _coefsTris[i][0], _coefsTris[i][1], _coefsTris[i][2] };
@@ -1980,7 +2070,7 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
         type::vector<PointID> _ancestors = { edge[0], edge[1] };
 
         PointID uniqID = getUniqueId(edge[0], edge[1]);
-        std::shared_ptr<PointToAdd> PTA = std::make_shared<PointToAdd>(uniqID, nbrPoints, _ancestors, _coefs, epsilonSnapPath);
+        std::shared_ptr<PointToAdd> PTA = std::make_shared<PointToAdd>(uniqID, nbrPoints, _ancestors, _coefs, snapThreshold);
         PTA->m_ownerId = edges_list[i];
         bool snapped = PTA->updatePointIDForDuplication();
         PTA->printValue();
