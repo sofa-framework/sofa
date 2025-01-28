@@ -123,6 +123,8 @@ public:
     */
     sofa::type::vector< SReal > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3,Real> &p) const;
 
+    sofa::type::Vec<3, Real> computeBarycentricCoordinates(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p) const;
+
     /** \brief Computes barycentric coefficients of point p in initial triangle (a,b,c) indexed by ind_t
     *
     */

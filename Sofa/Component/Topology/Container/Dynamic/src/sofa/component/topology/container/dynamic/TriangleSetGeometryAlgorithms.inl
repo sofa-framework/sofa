@@ -485,6 +485,20 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleBarycoefs(
     return compute3PointsBarycoefs(p, t[0], t[1], t[2],false);
 }
 
+template<class DataTypes>
+auto TriangleSetGeometryAlgorithms< DataTypes >::computeBarycentricCoordinates(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p)  const -> sofa::type::Vec<3, Real>
+{
+    const Triangle& t = this->m_topology->getTriangle(ind_t);
+    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::vec_id::read_access::position)->getValue());
+
+    sofa::type::Vec<3, Real> p0; DataTypes::get(p0[0], p0[1], p0[2], vect_c[t[0]]);
+    sofa::type::Vec<3, Real> p1; DataTypes::get(p1[0], p1[1], p1[2], vect_c[t[1]]);
+    sofa::type::Vec<3, Real> p2; DataTypes::get(p2[0], p2[1], p2[2], vect_c[t[2]]);
+
+    return sofa::geometry::Triangle::getBarycentricCoordinates(p, p0, p1, p2);
+}
+
+
 // barycentric coefficients of point p in initial triangle (a,b,c) indexed by ind_t
 template<class DataTypes>
 auto TriangleSetGeometryAlgorithms< DataTypes >::computeRestTriangleBarycoefs(
