@@ -32,12 +32,23 @@ using namespace sofa::testing;
 class TriangleSetTopology_test : public BaseTest
 {
 public:
+    /// Test on TriangleSetTopologyContainer creation without Data. All container should be empty.
     bool testEmptyContainer();
+
+    /// Test on TriangleSetTopologyContainer creation with a triangular mesh as input. Check Triangle container size and content against know values.
     bool testTriangleBuffers();
+
+    /// Test on TriangleSetTopologyContainer creation with a triangular mesh as input. Check Edge container size and content against know values.
     bool testEdgeBuffers();
+
+    /// Test on TriangleSetTopologyContainer creation with a triangular mesh as input. Check Vertex container size and content against know values.
     bool testVertexBuffers();
+
+    /// Test on TriangleSetTopologyContainer creation with a triangular mesh as input. Call member method CheckTopology which check all buffers concistency.
     bool checkTopology();
 
+private:
+    // Ground truth values for mesh 'square1.obj'
     int nbrTriangle = 26;
     int nbrEdge = 45;
     int nbrVertex = 20;
