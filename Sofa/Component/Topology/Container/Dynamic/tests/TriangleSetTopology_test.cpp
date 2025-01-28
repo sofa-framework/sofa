@@ -49,13 +49,13 @@ public:
     bool checkTopology();
 
 
-    /// Test on @sa EdgeSetTopologyModifier::removeVertices method and check edge buffers.
+    /// Test on @sa TriangleSetTopologyModifier::removeVertices method and check triangle buffers.
     bool testRemovingVertices();
 
-    /// Test on @sa EdgeSetTopologyModifier::removeTriangles method with isolated vertices and check triangle buffers.
+    /// Test on @sa TriangleSetTopologyModifier::removeTriangles method with isolated vertices and check triangle buffers.
     bool testRemovingTriangles();
 
-    /// Test on @sa EdgeSetTopologyModifier::addTriangles method and check triangle buffers.
+    /// Test on @sa TriangleSetTopologyModifier::addTriangles method and check triangle buffers.
     bool testAddingTriangles();
 
 private:
