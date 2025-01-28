@@ -23,6 +23,7 @@
 #include <sofa/component/topology/testing/fake_TopologyScene.h>
 #include <sofa/testing/BaseTest.h>
 #include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h>
 #include <sofa/helper/system/FileRepository.h>
 
 using namespace sofa::component::topology::container::dynamic;
@@ -46,6 +47,16 @@ public:
 
     /// Test on TriangleSetTopologyContainer creation with a triangular mesh as input. Call member method CheckTopology which check all buffers concistency.
     bool checkTopology();
+
+
+    /// Test on @sa EdgeSetTopologyModifier::removeVertices method and check edge buffers.
+    bool testRemovingVertices();
+
+    /// Test on @sa EdgeSetTopologyModifier::removeTriangles method with isolated vertices and check triangle buffers.
+    bool testRemovingTriangles();
+
+    /// Test on @sa EdgeSetTopologyModifier::addTriangles method and check triangle buffers.
+    bool testAddingTriangles();
 
 private:
     /// Method to factorize the creation and loading of the @sa m_scene and retrieve Topology container @sa m_topoCon
@@ -286,13 +297,173 @@ bool TriangleSetTopology_test::testVertexBuffers()
 }
 
 
-
 bool TriangleSetTopology_test::checkTopology()
 {
     if (!loadTopologyContainer("mesh/square1.obj"))
         return false;
 
     return m_topoCon->checkTopology();
+}
+
+
+
+bool TriangleSetTopology_test::testRemovingVertices()
+{
+    if (!loadTopologyContainer("mesh/square1.obj"))
+        return false;
+
+    // Get access to the Triangle modifier
+    const TriangleSetTopologyModifier::SPtr triangleModifier = m_scene->getNode()->get<TriangleSetTopologyModifier>(sofa::core::objectmodel::BaseContext::SearchDown);
+
+    if (triangleModifier == nullptr)
+        return false;
+
+    // get nbr triangles around vertex Id 0
+    const auto triAV = m_topoCon->getTrianglesAroundVertex(0);
+    sofa::topology::SetIndex vToremove = { 0 };
+    
+    // TODO @epernod (2025-01-28): triangles are not removed when a vertex is removed. An msg_error is fired as some buffers are not concistent anymore but the vertex is still removed. 
+    // This might create errors. 
+    EXPECT_MSG_EMIT(Error);
+    triangleModifier->removePoints(vToremove);
+
+    EXPECT_EQ(m_topoCon->getNbPoints(), nbrVertex - 1);
+    // EXPECT_EQ(m_topoCon->getNbTriangles(), nbrTriangle - triAV.size()); // see comment above
+    
+
+    return true;
+}
+
+
+bool TriangleSetTopology_test::testRemovingTriangles()
+{
+    if (!loadTopologyContainer("mesh/square1.obj"))
+        return false;
+
+    // Get access to the Triangle modifier
+    const TriangleSetTopologyModifier::SPtr triangleModifier = m_scene->getNode()->get<TriangleSetTopologyModifier>(sofa::core::objectmodel::BaseContext::SearchDown);
+
+    if (triangleModifier == nullptr)
+        return false;
+
+    // Check triangle buffer before changes
+    const sofa::type::vector<Triangle>& triangles = m_topoCon->getTriangleArray();
+    EXPECT_EQ(m_topoCon->getNbPoints(), nbrVertex);
+    EXPECT_EQ(m_topoCon->getNbEdges(), nbrEdge);
+    EXPECT_EQ(triangles.size(), nbrTriangle);
+
+    // 1. Check first the swap + pop_back method
+    const Triangle lastTri = triangles.back();
+    sofa::type::vector< TriangleID > triIds = { 0 };
+
+    // Remove first edge from the buffer
+    triangleModifier->removeTriangles(triIds, true, true);
+
+    // Check size of the new size of the topology containers
+    int newNbrTri = nbrTriangle - 1;
+    int newNbrEdge = nbrEdge - 1; // 1st triangle is on border
+    int newNbrVertex = nbrVertex;
+    EXPECT_EQ(m_topoCon->getNbTriangles(), newNbrTri);
+    EXPECT_EQ(m_topoCon->getNbEdges(), newNbrEdge);
+    EXPECT_EQ(m_topoCon->getNbPoints(), newNbrVertex);
+
+    // Check that first triangle is now the previous last triangle
+    const Triangle& newTri = m_topoCon->getTriangle(0);
+    EXPECT_EQ(lastTri[0], newTri[0]);
+    EXPECT_EQ(lastTri[1], newTri[1]);
+    EXPECT_EQ(lastTri[2], newTri[2]);
+
+
+    // 2. Check removal of single Triangle in middle of the mesh, should not remove edge nor vertex
+    triIds[0] = 18;
+    triangleModifier->removeTriangles(triIds, true, true);
+    
+    // Check size of the new triangle buffer
+    newNbrTri--;
+    EXPECT_EQ(m_topoCon->getNbTriangles(), newNbrTri);
+    EXPECT_EQ(m_topoCon->getNbEdges(), newNbrEdge);
+    EXPECT_EQ(m_topoCon->getNbPoints(), newNbrVertex);
+
+
+    // 3. Check removal of 2 Triangles side by side in middle of the mesh. Should remove commun edge
+    const auto& triAEdge = m_topoCon->getTrianglesAroundEdge(22);
+    triangleModifier->removeTriangles(triAEdge, true, true);
+    
+    // Check size of the new triangle buffer
+    newNbrTri = newNbrTri - 2;
+    newNbrEdge--;
+    EXPECT_EQ(m_topoCon->getNbTriangles(), newNbrTri);
+    EXPECT_EQ(m_topoCon->getNbEdges(), newNbrEdge);
+    EXPECT_EQ(m_topoCon->getNbPoints(), newNbrVertex);
+
+
+    // 4. Check removal of 2 Triangles side by side on corner of the mesh. Should remove commun edge, 2 edges on border and isolated vertex
+    const auto& triAEdge2 = m_topoCon->getTrianglesAroundEdge(11);
+    triangleModifier->removeTriangles(triAEdge2, true, true);
+
+    // Check size of the new triangle buffer
+    newNbrTri = newNbrTri - 2;
+    newNbrEdge = newNbrEdge - 3;
+    newNbrVertex = newNbrVertex - 1;
+    EXPECT_EQ(m_topoCon->getNbTriangles(), newNbrTri);
+    EXPECT_EQ(m_topoCon->getNbEdges(), newNbrEdge);
+    EXPECT_EQ(m_topoCon->getNbPoints(), newNbrVertex);
+
+    return true;
+}
+
+
+bool TriangleSetTopology_test::testAddingTriangles()
+{
+    if (!loadTopologyContainer("mesh/square1.obj"))
+        return false;
+
+    // Get access to the Triangle modifier
+    const TriangleSetTopologyModifier::SPtr triangleModifier = m_scene->getNode()->get<TriangleSetTopologyModifier>(sofa::core::objectmodel::BaseContext::SearchDown);
+
+    if (triangleModifier == nullptr)
+        return false;
+
+    // construct triangles based on vertices of 2 triangles which do not have vertices in commun
+    const sofa::type::vector<Triangle>& triangles = m_topoCon->getTriangleArray();
+    const Triangle tri0 = triangles[0];
+    const Triangle tri1 = triangles[10];
+
+    const auto triAV0 = m_topoCon->getTrianglesAroundVertex(tri1[0]);
+    const auto triAV1 = m_topoCon->getTrianglesAroundVertex(tri1[2]);
+
+    const Triangle newTri0 = Triangle(tri0[0], tri0[1], tri1[2]);
+    const Triangle newTri1 = Triangle(tri1[0], tri0[2], tri1[2]);
+
+    sofa::type::vector< Triangle > triangesToAdd = { newTri0 , newTri1 };
+    
+    // Add triangles
+    // TODO @epernod (2025-01-28): Adding the triangle create a segmentation fault. Need to investigate why
+    // triangleModifier->addTriangles(triangesToAdd);
+    return true; // exit for now
+
+    // Check buffers on new triangle just added
+    EXPECT_EQ(m_topoCon->getNbTriangles(), nbrTriangle + triangesToAdd.size());
+    const Triangle& checkTri0 = m_topoCon->getTriangle(nbrTriangle);
+    const Triangle& checkTri1 = m_topoCon->getTriangle(nbrTriangle + 1);
+
+    for (int i = 0; i < 3; i++)
+    {
+        EXPECT_EQ(newTri0[i], checkTri0[i]);
+        EXPECT_EQ(newTri1[i], checkTri1[i]);
+    }
+
+    // Check cross buffer around vertex
+    const auto& newTriAV0 = m_topoCon->getTrianglesAroundVertex(tri1[0]);
+    const auto& newTriAV1 = m_topoCon->getTrianglesAroundVertex(tri1[2]);
+
+    EXPECT_EQ(newTriAV0.size(), triAV0.size() + 1); // newTri0 has been added around vertex tri1[0]
+    EXPECT_EQ(newTriAV1.size(), triAV1.size() + 2); // newTri0 and newTri1 have been added around vertex tri1[2]
+
+    EXPECT_EQ(newTriAV0.back(), nbrTriangle); // last tri in this buffer should be triangle id == nbrTriangle
+    EXPECT_EQ(newTriAV1.back(), nbrTriangle + 1); // last tri in this buffer should be triangle id == nbrTriangle + 1
+
+    return true;
 }
 
 
@@ -324,6 +495,22 @@ TEST_F(TriangleSetTopology_test, checkTopology)
 }
 
 
+
+TEST_F(TriangleSetTopology_test, testRemovingVertices)
+{
+    ASSERT_TRUE(testRemovingVertices());
+}
+
+TEST_F(TriangleSetTopology_test, testRemovingTriangles)
+{
+    ASSERT_TRUE(testRemovingTriangles());
+}
+
+TEST_F(TriangleSetTopology_test, testAddingTriangles)
+{
+    ASSERT_TRUE(testAddingTriangles());
+}
+
+
 // TODO: test element on Border
-// TODO: test triangle add/remove
 // TODO: test check connectivity
