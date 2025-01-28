@@ -437,8 +437,8 @@ bool TriangleSetTopology_test::testAddingTriangles()
     const auto triAV0 = m_topoCon->getTrianglesAroundVertex(tri1[0]);
     const auto triAV1 = m_topoCon->getTrianglesAroundVertex(tri1[2]);
 
-    const TriangleSetTopologyContainer::Triangle newTri0 = Triangle(tri0[0], tri0[1], tri1[2]);
-    const TriangleSetTopologyContainer::Triangle newTri1 = Triangle(tri1[0], tri0[2], tri1[2]);
+    const TriangleSetTopologyContainer::Triangle newTri0 = TriangleSetTopologyContainer::Triangle(tri0[0], tri0[1], tri1[2]);
+    const TriangleSetTopologyContainer::Triangle newTri1 = TriangleSetTopologyContainer::Triangle(tri1[0], tri0[2], tri1[2]);
 
     sofa::type::vector< TriangleSetTopologyContainer::Triangle > triangesToAdd = { newTri0 , newTri1 };
     
