@@ -39,7 +39,9 @@ using PointID = core::topology::BaseMeshTopology::PointID;
 class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API PointToAdd
 {
 public:
-    PointToAdd(PointID uniqueID, PointID idPoint, const sofa::type::vector<PointID>& ancestors, const sofa::type::vector<SReal>& coefs)
+    PointToAdd(PointID uniqueID, PointID idPoint, 
+        const sofa::type::vector<PointID>& ancestors, 
+        const sofa::type::vector<SReal>& coefs, SReal snapValue = 1_sreal)
         : m_uniqueID(uniqueID)
         , m_idPoint(idPoint)
         , m_ancestors(ancestors)
@@ -56,6 +58,8 @@ public:
 
     sofa::geometry::ElementType m_ancestorType = sofa::geometry::ElementType::UNKNOWN;
     
+    core::topology::BaseMeshTopology::ElemID m_ownerId = sofa::InvalidID;
+
     /// List of ancestors (existing point ID of the mesh)
     sofa::type::vector<PointID> m_ancestors;
     /// List of corresponding coefficients 

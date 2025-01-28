@@ -1923,6 +1923,92 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
 }
 
 
+template <typename DataTypes>
+type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPathNew(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
+        const TriangleID ind_ta, const TriangleID ind_tb, Real epsilonSnapPath, Real epsilonSnapBorder) const
+{
+    sofa::type::vector< TriangleID > triangles_list;
+    sofa::type::vector< EdgeID > edges_list;
+    sofa::type::vector< Real > coords_list;
+
+
+    // Update ptA and ptB here due to snaping border!
+
+    computeIncisionPath(ptA, ptB, ind_ta, ind_tb, triangles_list, edges_list, coords_list);
+
+    std::cout << "ptA: " << ptA << std::endl;
+    std::cout << "ptB: " << ptB << std::endl;    
+    std::cout << "triangles_list: " << triangles_list << std::endl;
+    std::cout << "edges_list: " << edges_list << std::endl;
+    std::cout << "coords_list: " << coords_list << std::endl;
+
+    type::vector< std::shared_ptr<PointToAdd> > _pointsToAdd;
+    std::map < PointID, PointID> cloneMap;
+    auto nbrPoints = PointID(m_container->getNbPoints());
+    // process snapping here
+
+    const auto& triangles = m_container->getTriangles();
+    const auto& edges = m_container->getEdges();
+    type::fixed_array< TriangleID, 2> triIds = { ind_ta , ind_tb };
+    type::fixed_array< Triangle, 2> theTris = { triangles[triIds[0]], triangles[triIds[1]] };
+    type::fixed_array < Vec3, 2> _coefsTris;
+    
+    _coefsTris[0] = computeBarycentricCoordinates(ind_ta, ptA);
+    _coefsTris[1] = computeBarycentricCoordinates(ind_tb, ptB);
+
+    std::cout << "_coefsTris: " << _coefsTris << std::endl;
+    
+    for (unsigned int i = 0; i < 2; ++i)
+    {
+        type::vector<SReal> _coefs = { _coefsTris[i][0], _coefsTris[i][1], _coefsTris[i][2] };
+        type::vector<PointID> _ancestors = { theTris[i][0] , theTris[i][1], theTris[i][2] };
+        PointID uniqID = getUniqueId(theTris[i][0], theTris[i][1], theTris[i][2]);
+
+        std::shared_ptr<PointToAdd> PTA = std::make_shared<PointToAdd>(uniqID, nbrPoints, _ancestors, _coefs);
+        PTA->printValue();
+        PTA->m_ancestorType = sofa::geometry::ElementType::TRIANGLE;
+        PTA->m_ownerId = triIds[i];
+        _pointsToAdd.push_back(PTA);
+        nbrPoints++;
+    }
+
+    // create PointToAdd from edges
+    for (unsigned int i = 0; i < edges_list.size(); ++i)
+    {
+        const Edge& edge = edges[edges_list[i]];
+        type::vector<SReal> _coefs = { coords_list[i], 1.0 - coords_list[i] };
+        type::vector<PointID> _ancestors = { edge[0], edge[1] };
+
+        PointID uniqID = getUniqueId(edge[0], edge[1]);
+        std::shared_ptr<PointToAdd> PTA = std::make_shared<PointToAdd>(uniqID, nbrPoints, _ancestors, _coefs, epsilonSnapPath);
+        PTA->m_ownerId = edges_list[i];
+        bool snapped = PTA->updatePointIDForDuplication();
+        PTA->printValue();
+        if (snapped)
+        {
+            auto itM = cloneMap.find(PTA->m_idPoint);
+            if (itM == cloneMap.end())
+            {
+                cloneMap[PTA->m_idPoint] = PTA->m_idClone;
+                _pointsToAdd.push_back(PTA);
+                nbrPoints++;
+            }
+            else {
+                PTA = _pointsToAdd.back();
+            }
+        }
+        else
+        {
+            _pointsToAdd.push_back(PTA);
+            nbrPoints = nbrPoints + 2;
+        }
+    }
+    
+
+    return _pointsToAdd;
+}
+
+
 
 // Computes the list of points (edge,coord) intersected by the segment from point a to point b
 // and the triangular mesh
