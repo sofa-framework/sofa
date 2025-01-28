@@ -1923,9 +1923,9 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
 }
 
 
-template <typename DataTypes>
+template<class DataTypes>
 type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPathNew(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
-        const TriangleID ind_ta, const TriangleID ind_tb, Real snapThreshold, Real snapThresholdBorder) const
+    const TriangleID ind_ta, const TriangleID ind_tb, Real snapThreshold, Real snapThresholdBorder) const
 {
     // Get points coordinates
     const typename DataTypes::VecCoord& vect_c = (this->object->read(core::vec_id::read_access::position)->getValue());
@@ -2000,7 +2000,7 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
             SReal sum = newCoefs[0] + newCoefs[1];
             newCoefs[0] = newCoefs[0] / sum;
             newCoefs[1] = newCoefs[1] / sum;
-            
+
             pathPts[i] = vect_c[edge[0]] * newCoefs[0] + vect_c[edge[1]] * newCoefs[1];
 
             _elemBorders[i] = sofa::geometry::ElementType::EDGE;
@@ -2019,7 +2019,7 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
     computeIncisionPath(ptA, ptB, ind_ta, ind_tb, triangles_list, edges_list, coords_list);
 
     std::cout << "ptA: " << ptA << std::endl;
-    std::cout << "ptB: " << ptB << std::endl;    
+    std::cout << "ptB: " << ptB << std::endl;
     std::cout << "triangles_list: " << triangles_list << std::endl;
     std::cout << "edges_list: " << edges_list << std::endl;
     std::cout << "coords_list: " << coords_list << std::endl;
@@ -2046,7 +2046,7 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
 
     type::vector< std::shared_ptr<PointToAdd> > _pointsToAdd;
     std::map < PointID, PointID> cloneMap;
-    
+
     // process snapping here
     for (unsigned int i = 0; i < 2; ++i)
     {
@@ -2093,7 +2093,7 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
             nbrPoints = nbrPoints + 2;
         }
     }
-    
+
 
     return _pointsToAdd;
 }
