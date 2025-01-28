@@ -352,14 +352,14 @@ bool TriangleSetTopology_test::testRemovingTriangles()
         return false;
 
     // Check triangle buffer before changes
-    const sofa::type::vector<Triangle>& triangles = m_topoCon->getTriangleArray();
+    const sofa::type::vector<TriangleSetTopologyContainer::Triangle>& triangles = m_topoCon->getTriangleArray();
     EXPECT_EQ(m_topoCon->getNbPoints(), nbrVertex);
     EXPECT_EQ(m_topoCon->getNbEdges(), nbrEdge);
     EXPECT_EQ(triangles.size(), nbrTriangle);
 
     // 1. Check first the swap + pop_back method
     const Triangle lastTri = triangles.back();
-    sofa::type::vector< TriangleID > triIds = { 0 };
+    sofa::type::vector< TriangleSetTopologyContainer::TriangleID > triIds = { 0 };
 
     // Remove first edge from the buffer
     triangleModifier->removeTriangles(triIds, true, true);
@@ -373,7 +373,7 @@ bool TriangleSetTopology_test::testRemovingTriangles()
     EXPECT_EQ(m_topoCon->getNbPoints(), newNbrVertex);
 
     // Check that first triangle is now the previous last triangle
-    const Triangle& newTri = m_topoCon->getTriangle(0);
+    const TriangleSetTopologyContainer::Triangle& newTri = m_topoCon->getTriangle(0);
     EXPECT_EQ(lastTri[0], newTri[0]);
     EXPECT_EQ(lastTri[1], newTri[1]);
     EXPECT_EQ(lastTri[2], newTri[2]);
@@ -430,17 +430,17 @@ bool TriangleSetTopology_test::testAddingTriangles()
         return false;
 
     // construct triangles based on vertices of 2 triangles which do not have vertices in commun
-    const sofa::type::vector<Triangle>& triangles = m_topoCon->getTriangleArray();
-    const Triangle tri0 = triangles[0];
-    const Triangle tri1 = triangles[10];
+    const sofa::type::vector<TriangleSetTopologyContainer::Triangle>& triangles = m_topoCon->getTriangleArray();
+    const TriangleSetTopologyContainer::Triangle tri0 = triangles[0];
+    const TriangleSetTopologyContainer::Triangle tri1 = triangles[10];
 
     const auto triAV0 = m_topoCon->getTrianglesAroundVertex(tri1[0]);
     const auto triAV1 = m_topoCon->getTrianglesAroundVertex(tri1[2]);
 
-    const Triangle newTri0 = Triangle(tri0[0], tri0[1], tri1[2]);
-    const Triangle newTri1 = Triangle(tri1[0], tri0[2], tri1[2]);
+    const TriangleSetTopologyContainer::Triangle newTri0 = Triangle(tri0[0], tri0[1], tri1[2]);
+    const TriangleSetTopologyContainer::Triangle newTri1 = Triangle(tri1[0], tri0[2], tri1[2]);
 
-    sofa::type::vector< Triangle > triangesToAdd = { newTri0 , newTri1 };
+    sofa::type::vector< TriangleSetTopologyContainer::Triangle > triangesToAdd = { newTri0 , newTri1 };
     
     // Add triangles
     // TODO @epernod (2025-01-28): Adding the triangle create a segmentation fault. Need to investigate why
@@ -449,8 +449,8 @@ bool TriangleSetTopology_test::testAddingTriangles()
 
     // Check buffers on new triangle just added
     EXPECT_EQ(m_topoCon->getNbTriangles(), nbrTriangle + triangesToAdd.size());
-    const Triangle& checkTri0 = m_topoCon->getTriangle(nbrTriangle);
-    const Triangle& checkTri1 = m_topoCon->getTriangle(nbrTriangle + 1);
+    const TriangleSetTopologyContainer::Triangle& checkTri0 = m_topoCon->getTriangle(nbrTriangle);
+    const TriangleSetTopologyContainer::Triangle& checkTri1 = m_topoCon->getTriangle(nbrTriangle + 1);
 
     for (int i = 0; i < 3; i++)
     {
