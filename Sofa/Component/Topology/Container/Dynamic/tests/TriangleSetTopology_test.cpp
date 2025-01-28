@@ -24,6 +24,7 @@
 #include <sofa/testing/BaseTest.h>
 #include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
 #include <sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h>
 #include <sofa/helper/system/FileRepository.h>
 
 using namespace sofa::component::topology::container::dynamic;
@@ -57,6 +58,10 @@ public:
 
     /// Test on @sa TriangleSetTopologyModifier::addTriangles method and check triangle buffers.
     bool testAddingTriangles();
+
+
+    /// Test on @sa TriangleSetGeometryAlgorithms::computeSegmentTriangleIntersectionInPlane method.
+    bool testTriangleSegmentIntersectionInPlane(const sofa::type::Vec3& bufferZ);
 
 private:
     /// Method to factorize the creation and loading of the @sa m_scene and retrieve Topology container @sa m_topoCon
@@ -468,6 +473,136 @@ bool TriangleSetTopology_test::testAddingTriangles()
 
 
 
+bool TriangleSetTopology_test::testTriangleSegmentIntersectionInPlane(const sofa::type::Vec3& bufferZ)
+{
+    if (!loadTopologyContainer("mesh/square1.obj"))
+        return false;
+
+    // Get access to the Triangle modifier
+    const TriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3Types>::SPtr triangleGeo = m_scene->getNode()->get<TriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3Types> >();
+    using Real = sofa::defaulttype::Vec3Types::Real;
+
+    if (triangleGeo == nullptr)
+        return false;
+
+    const TriangleID tId = 0;
+    const Triangle tri0 = m_topoCon->getTriangle(tId);
+    const auto edgeIds = m_topoCon->getEdgesInTriangle(tId); // as a reminder localEdgeId 0 is the opposite edge of triangle vertex[0]
+
+    const auto& p0 = triangleGeo->getPointPosition(tri0[0]);
+    const auto& p1 = triangleGeo->getPointPosition(tri0[1]);
+    const auto& p2 = triangleGeo->getPointPosition(tri0[2]);
+
+    // store some coef with correct cast for computations and checks
+    Real coef1 = Real(0.5);
+    Real coef2 = Real(1.0 / 3.0);
+
+    // Case 1: Normal case, full intersection of the segment through the triangle
+    sofa::type::Vec3 ptA = p0 * coef1 + p1 * 2 * coef2;
+    sofa::type::Vec3 ptB = p0 * coef1 + p2 * coef1;
+    // add small buffer to be outside the triangle
+    ptA = ptA + (ptA - ptB) + bufferZ;
+    ptB = ptB + (ptB - ptA) - bufferZ;
+
+    sofa::type::vector<EdgeID> intersectedEdges;
+    sofa::type::vector<Real> baryCoefs;
+    triangleGeo->computeSegmentTriangleIntersectionInPlane(ptA, ptB, tId, intersectedEdges, baryCoefs);
+    
+    // check results
+    EXPECT_EQ(intersectedEdges.size(), 2);
+    EXPECT_EQ(baryCoefs.size(), 2);
+
+    EXPECT_EQ(intersectedEdges[0], edgeIds[1]);
+    EXPECT_EQ(intersectedEdges[1], edgeIds[2]);
+
+    EXPECT_NEAR(baryCoefs[0], coef1, 1e-8);
+    EXPECT_NEAR(baryCoefs[1], coef2, 1e-8);
+
+
+    // Case 2: Intersection of only 1 segment. 1st point is inside the triangle
+    ptA = p0 * coef2 + p1 * coef2 + p2 * coef2;
+    ptB = p0 * coef1 + p2 * coef1; // [p0, p2] is edge local id = 1
+    ptA = ptA + bufferZ;
+    ptB = ptB + (ptB - ptA) - bufferZ;
+
+    intersectedEdges.clear();
+    baryCoefs.clear();
+    triangleGeo->computeSegmentTriangleIntersectionInPlane(ptA, ptB, tId, intersectedEdges, baryCoefs);
+
+    // check results
+    EXPECT_EQ(intersectedEdges.size(), 1);
+    EXPECT_EQ(baryCoefs.size(), 1);
+
+    EXPECT_EQ(intersectedEdges[0], edgeIds[1]);
+    EXPECT_NEAR(baryCoefs[0], coef1, 1e-8);
+
+
+    // Case 3: 1 vertex of the triangle is the intersection. 2 edges are intersected with coef 0 or 1 depending on edge numbering order
+    ptA = p2 + sofa::type::Vec3(-1.0, 0.0, 0.0) + bufferZ;
+    ptB = p2 + sofa::type::Vec3(1.0, 0.0, 0.0) - bufferZ;
+    intersectedEdges.clear();
+    baryCoefs.clear();
+    triangleGeo->computeSegmentTriangleIntersectionInPlane(ptA, ptB, tId, intersectedEdges, baryCoefs);
+
+    // check results
+    EXPECT_EQ(intersectedEdges.size(), 2);
+    EXPECT_EQ(baryCoefs.size(), 2);
+
+    EXPECT_EQ(intersectedEdges[0], edgeIds[0]);
+    EXPECT_EQ(intersectedEdges[1], edgeIds[1]);
+
+    EXPECT_NEAR(baryCoefs[0], 0.0, 1e-8);
+    EXPECT_NEAR(baryCoefs[1], 1.0, 1e-8);
+
+
+    // Case 4: intersection is going through 1 vertex of the triangle and 1 opposite edge. The 3 edges are intersected
+    ptA = p0;
+    ptB = p1 * coef1 + p2 * coef1;
+    ptA = ptA + (ptA - ptB) + bufferZ;
+    ptB = ptB + (ptB - ptA) - bufferZ;
+
+    intersectedEdges.clear();
+    baryCoefs.clear();
+    triangleGeo->computeSegmentTriangleIntersectionInPlane(ptA, ptB, tId, intersectedEdges, baryCoefs);
+
+    // check results
+    EXPECT_EQ(intersectedEdges.size(), 3);
+    EXPECT_EQ(baryCoefs.size(), 3);
+
+    EXPECT_EQ(intersectedEdges[0], edgeIds[0]);
+    EXPECT_EQ(intersectedEdges[1], edgeIds[1]);
+    EXPECT_EQ(intersectedEdges[2], edgeIds[2]);
+
+    EXPECT_NEAR(baryCoefs[0], coef1, 1e-8);
+    EXPECT_NEAR(baryCoefs[1], 0.0, 1e-8);
+    EXPECT_NEAR(baryCoefs[2], 1.0, 1e-8);
+
+
+    // Case 5: Segment is colinear to edge local id 2 of the triangle. In this case results should be the 2 others edges intersected with coef 0 or 1. the Edge colinear is not considered
+    ptA = p0;
+    ptB = p1;
+    ptA = ptA + (ptA - ptB) + bufferZ;
+    ptB = ptB + (ptB - ptA) - bufferZ;
+
+    intersectedEdges.clear();
+    baryCoefs.clear();
+    triangleGeo->computeSegmentTriangleIntersectionInPlane(ptA, ptB, tId, intersectedEdges, baryCoefs);
+
+    // check results
+    EXPECT_EQ(intersectedEdges.size(), 2);
+    EXPECT_EQ(baryCoefs.size(), 2);
+
+    EXPECT_EQ(intersectedEdges[0], edgeIds[0]);
+    EXPECT_EQ(intersectedEdges[1], edgeIds[1]);
+
+    EXPECT_NEAR(baryCoefs[0], 1.0, 1e-8);
+    EXPECT_NEAR(baryCoefs[1], 0.0, 1e-8);
+
+    return true;
+}
+
+
+
 TEST_F(TriangleSetTopology_test, testEmptyContainer)
 {
     ASSERT_TRUE(testEmptyContainer());
@@ -509,6 +644,19 @@ TEST_F(TriangleSetTopology_test, testRemovingTriangles)
 TEST_F(TriangleSetTopology_test, testAddingTriangles)
 {
     ASSERT_TRUE(testAddingTriangles());
+}
+
+
+TEST_F(TriangleSetTopology_test, testTriangleSegmentIntersectionInPlane)
+{
+    sofa::type::Vec3 inPlane = sofa::type::Vec3(0.0, 0.0, 0.0);
+    ASSERT_TRUE(testTriangleSegmentIntersectionInPlane(inPlane));
+}
+
+TEST_F(TriangleSetTopology_test, testTriangleSegmentIntersectionOutPlane)
+{
+    sofa::type::Vec3 outPlane = sofa::type::Vec3(0.0, 0.0, 1.0);
+    ASSERT_TRUE(testTriangleSegmentIntersectionInPlane(outPlane));
 }
 
 
