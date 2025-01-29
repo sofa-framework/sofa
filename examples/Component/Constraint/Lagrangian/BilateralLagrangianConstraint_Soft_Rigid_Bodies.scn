@@ -27,6 +27,7 @@
         <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->  
     </Node>
 
+
     <FreeMotionAnimationLoop computeBoundingBox="0"/>
     <GenericConstraintSolver maxIterations="1000" tolerance="1e-3"/>
     
@@ -37,6 +38,7 @@
     <CollisionResponse name="CollisionReponse" response="FrictionContactConstraint" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     
+
     <Node name="DeformableGrid" >
         <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" p0="-10 -10 -10" />
         <HexahedronSetTopologyContainer name="Container" src="@grid"/>
@@ -69,9 +71,9 @@
                 <TriangleSetGeometryAlgorithms name="GeomAlgo" />
                 <Tetra2TriangleTopologicalMapping name="ExtractSurfaceMapping" input="@../Container" output="@Container" />
 
-                <Node name="Visu" >
+                <Node name="VisualModel" >
                     <OglModel name="VisualModel" material="Default Diffuse 1 1 0 0 0.5 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" position="@../../DeformableDoFs.position" triangles="@Container.triangles"/>
-                    <IdentityMapping template="Vec3d,Vec3d" name="VisualMapping" input="@../../DeformableDoFs" output="@Visual" />
+                    <IdentityMapping template="Vec3d,Vec3d" name="VisualMapping" input="@../../DeformableDoFs" output="@VisualModel" />
                 </Node>
             </Node>
         </Node>
@@ -80,8 +82,8 @@
 
     <!-- Rigid body -->
     <Node name="RigidBody" >
-        <EulerImplicitSolver name="cg_odesolver" />
-        <CGLinearSolver template="GraphScattered" name="linearSolver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+        <EulerImplicitSolver name="EulerImplicit" />
+        <CGLinearSolver template="GraphScattered" name="CG-LinearSolver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MechanicalObject template="Rigid3d" name="rigidDofs" position="0 -15 0 0 0 0 1" showObject="1" showObjectScale="5"/>
         <UniformMass name="NodalMass" totalMass="1" />
         <LinearMovementProjectiveConstraint template="Rigid3" name="MotionConstraint" keyTimes="0 1 2 10 15" movements="0 0 0   0 0 0
