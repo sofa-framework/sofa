@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 -9.81 0" dt="0.01">
+    
+    <Node name="plugins" >
+        <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+        <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+        <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
+        <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+        <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+        <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+        <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+        <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+        <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
+        <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping Tetra2TriangleTopologicalMapping] -->
+        <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+        <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+        <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->  
+        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [LinearSolverConstraintCorrection] -->  
+        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->  
+        <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->  
+        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [BilateralLagrangianConstraint] -->  
+        <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->  
+    </Node>
+
+    <FreeMotionAnimationLoop computeBoundingBox="0"/>
+    <GenericConstraintSolver maxIterations="1000" tolerance="1e-3"/>
+    
+    <VisualStyle displayFlags="showBehaviorModels showVisual showForceFields" />
+    <CollisionPipeline name="CollisionLoop" verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <CollisionResponse name="CollisionReponse" response="FrictionContactConstraint" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    
+    <Node name="DeformableGrid" >
+        <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" p0="-10 -10 -10" />
+        <HexahedronSetTopologyContainer name="Container" src="@grid"/>
+        <MechanicalObject template="Vec3d" name="gridDofs"/>
+
+        <Node name="DeformableCube" bbox="-10 -10 -10 10 10 10" >
+            <EulerImplicitSolver name="cg_odesolver" />
+            <SparseLDLSolver name="linear solver" template="CompressedRowSparseMatrixMat3x3d" />
+            <TetrahedronSetTopologyContainer name="Container" />
+            <TetrahedronSetTopologyModifier name="Modifier" />
+            <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+            <MechanicalObject template="Vec3d" name="DeformableDoFs" position="@../gridDofs.position"/>
+            <Hexa2TetraTopologicalMapping name="ExtratTetraMapping" input="@../Container" output="@Container" />
+
+            <UniformMass template="Vec3d" name="NodalMass" vertexMass="0.25" />
+            <TetrahedronFEMForceField template="Vec3d" name="LinearElasticity" method="large" poissonRatio="0.4" youngModulus="500" />
+            <BoxROI template="Vec3d" name="box_roi" box="-11 -11 -11 11 -9 11" indices="0" drawSize="0" />
+
+            <LinearSolverConstraintCorrection />
+
+            <!-- Interface (of soft body) between both bodies -->
+            <Node name="MappedInterface" >
+                <MechanicalObject template="Vec3d" name="MappedDoFs" position="@../box_roi.pointsInROI" showObject="1" showObjectScale="0"/>
+                <BarycentricMapping input="@../DeformableDoFs" output="@MappedDoFs" />
+            </Node>
+
+            <Node name="Visualization" >
+                <TriangleSetTopologyContainer name="Container" />
+                <TriangleSetTopologyModifier name="Modifier" />
+                <TriangleSetGeometryAlgorithms name="GeomAlgo" />
+                <Tetra2TriangleTopologicalMapping name="ExtractSurfaceMapping" input="@../Container" output="@Container" />
+
+                <Node name="Visu" >
+                    <OglModel name="VisualModel" material="Default Diffuse 1 1 0 0 0.5 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" position="@../../DeformableDoFs.position" triangles="@Container.triangles"/>
+                    <IdentityMapping template="Vec3d,Vec3d" name="VisualMapping" input="@../../DeformableDoFs" output="@Visual" />
+                </Node>
+            </Node>
+        </Node>
+    </Node>
+
+
+    <!-- Rigid body -->
+    <Node name="RigidBody" >
+        <EulerImplicitSolver name="cg_odesolver" />
+        <CGLinearSolver template="GraphScattered" name="linearSolver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+        <MechanicalObject template="Rigid3d" name="rigidDofs" position="0 -15 0 0 0 0 1" showObject="1" showObjectScale="5"/>
+        <UniformMass name="NodalMass" totalMass="1" />
+        <LinearMovementProjectiveConstraint template="Rigid3" name="MotionConstraint" keyTimes="0 1 2 10 15" movements="0 0 0   0 0 0
+                                              0 -5 0   0 0 0
+                                              0 0 -1  0 0 0
+                                              0 0 -1  0 0 6.3
+                                              0 0 -1   0 0 0" />
+
+        <!-- Interface (of rigid body) between both bodies -->
+        <Node name="MappedRigidInterface" >
+            <MechanicalObject template="Vec3d" name="MappedDoFs" position="@DeformableGrid/DeformableCube/box_roi.pointsInROI"  showObject="1" showObjectScale="10" />
+            <RigidMapping input="@../rigidDofs" output="@MappedDoFs" globalToLocalCoords="1"/>
+        </Node>
+    </Node>
+
+
+
+    <BilateralLagrangianConstraint template="Vec3d" name="Attachment" object1="@DeformableGrid/DeformableCube/MappedInterface" object2="@RigidBody/MappedRigidInterface" first_point="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35" second_point="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35" />
+
+</Node>
