@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <ranges>
 #include <sstream>
 using std::ostringstream ;
 #include <fstream>
@@ -414,7 +415,7 @@ int main(int argc, char** argv)
 
     sofa::core::ObjectFactory* objectFactory = sofa::core::ObjectFactory::getInstance();
     // calling explicitly registerObjects from loadedPlugins
-    for (const auto& [pluginPath, plugin] : pluginManager.getPluginMap())
+    for (const auto& plugin : pluginManager.getPluginMap() | std::views::values)
     {
         const auto& pluginName = plugin.getModuleName();
         objectFactory->registerObjectsFromPlugin(pluginName);
