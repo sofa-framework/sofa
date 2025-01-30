@@ -8,9 +8,15 @@ usage() {
 if [ "$#" -ge 1 ]; then
     SCRIPT_DIR="$(cd $1 && pwd)"
     INSTALL_DIR="$(cd $2 && pwd)"
-    QT_LIB_DIR="$3"
-    QT_DATA_DIR="$4"
-    MACDEPLOYQT_EXE="$5"
+
+    if [ "$#" -ge 3 ]; then
+      QT_LIB_DIR="$3"
+      QT_DATA_DIR="$4"
+      MACDEPLOYQT_EXE="$5"
+      SHIP_QT=1
+    else
+      SHIP_QT=0
+    fi
 else
     usage; exit 1
 fi
@@ -39,18 +45,20 @@ if [ -e "$INSTALL_DIR/runSofa" ]; then
     mv -f $INSTALL_DIR/runSofa* $INSTALL_DIR/bin/
 fi
 
-if [ -d "$BUNDLE_DIR" ] && [ -e "$MACDEPLOYQT_EXE" ]; then
-    echo "Fixing up libs with MacDeployQt ..."
-    $MACDEPLOYQT_EXE $BUNDLE_DIR -always-overwrite
+if [ "$SHIP_QT" = "1" ]; then
+  if [ -d "$BUNDLE_DIR" ] && [ -e "$MACDEPLOYQT_EXE" ]; then
+      echo "Fixing up libs with MacDeployQt ..."
+      $MACDEPLOYQT_EXE $BUNDLE_DIR -always-overwrite
 
-    cp -R $BUNDLE_DIR/Contents/PlugIns/* $BUNDLE_DIR/Contents/MacOS/bin && rm -rf $BUNDLE_DIR/Contents/PlugIns
+      cp -R $BUNDLE_DIR/Contents/PlugIns/* $BUNDLE_DIR/Contents/MacOS/bin && rm -rf $BUNDLE_DIR/Contents/PlugIns
 
-    printf "[Paths] \n    Plugins = MacOS/bin \n" > $BUNDLE_DIR/Contents/Resources/qt.conf
-elif [ -d "$QT_DATA_DIR" ]; then
-    cp -Rf $QT_DATA_DIR/plugins/iconengines $INSTALL_DIR/bin
-    cp -Rf $QT_DATA_DIR/plugins/imageformats $INSTALL_DIR/bin
-    cp -Rf $QT_DATA_DIR/plugins/platforms $INSTALL_DIR/bin
-    cp -Rf $QT_DATA_DIR/plugins/styles $INSTALL_DIR/bin
+      printf "[Paths] \n    Plugins = MacOS/bin \n" > $BUNDLE_DIR/Contents/Resources/qt.conf
+  elif [ -d "$QT_DATA_DIR" ]; then
+      cp -Rf $QT_DATA_DIR/plugins/iconengines $INSTALL_DIR/bin
+      cp -Rf $QT_DATA_DIR/plugins/imageformats $INSTALL_DIR/bin
+      cp -Rf $QT_DATA_DIR/plugins/platforms $INSTALL_DIR/bin
+      cp -Rf $QT_DATA_DIR/plugins/styles $INSTALL_DIR/bin
+  fi
 fi
 
 move_metis "$INSTALL_DIR"

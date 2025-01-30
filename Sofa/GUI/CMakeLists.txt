@@ -20,7 +20,7 @@ else()
     list(APPEND SOFAGUI_MISSINGTARGETS ${PROJECT_NAME}.Common)
 endif()
 
-set(SOFAGUI_DIRS Batch Qt)
+set(SOFAGUI_DIRS Batch)
 foreach(dir ${SOFAGUI_DIRS})
     sofa_add_subdirectory(plugin ${dir} ${PROJECT_NAME}.${dir} ON)
     if(TARGET ${PROJECT_NAME}.${dir})
