@@ -73,7 +73,7 @@ namespace sofa::simulation
 using core::objectmodel::BaseNode;
 using core::objectmodel::BaseObject;
 
-Node::Node(const std::string& name)
+Node::Node()
     : core::objectmodel::BaseNode()
     , sofa::core::objectmodel::Context()
     , child(initLink("child", "Child nodes"))
@@ -113,14 +113,20 @@ Node::Node(const std::string& name)
     , initialized(false)
 {
     _context = this;
-    setName(name);
     f_printLog.setValue(DEBUG_LINK);
 }
 
-
-Node::~Node()
+Node::Node(std::string nodeName) : Node()
 {
+    if (nodeName.empty())
+    {
+        nodeName = "node";
+        msg_warning(GetClass()->className) << "Node name cannot be empty. An arbitrary name '" << nodeName << "' has been provided";
+    }
+    setName(nodeName);
 }
+
+Node::~Node() = default;
 
 void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
 {

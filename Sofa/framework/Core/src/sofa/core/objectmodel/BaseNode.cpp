@@ -94,7 +94,9 @@ std::string BaseNode::internalGetPathName() const {
         // no smarter choice without breaking the "Node" heritage
         str = parents[0]->internalGetPathName();
         str += '/';
-        str += getName();
+        const auto& myName = getName();
+        assert(!myName.empty());
+        str += myName;
     }
     return str;
 }
