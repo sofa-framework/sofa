@@ -227,12 +227,6 @@ activation = { env = { SOFA_PLUGIN_COLLISIONOBBCAPSULE = "ON" } }
 [feature.plugin-volumetricrendering]
 activation = { env = { SOFA_PLUGIN_VOLUMETRICRENDERING = "ON" } }
 
-[feature.cuda]
-platforms = ["linux-64", "win-64"]
-activation = { env = { SOFA_PLUGIN_CUDA_ARGS = "-DPLUGIN_SOFACUDA=ON -DSOFACUDA_DOUBLE=ON" } }
-system-requirements = { cuda = "12.1" }
-dependencies = { cudatoolkit = "*"}
-
 # TODO: add run-regression-tests feature
 
 # TODO: add build-release-package feature
@@ -289,38 +283,4 @@ full-scope = { features = [
   "plugin-sphfluid",
   "plugin-collisionobbcapsule",
   "plugin-volumetricrendering"
-  ], solve-group = "minimal-scope" }
-
-  full-scope-cuda = { features = [
-  "dev-tools",
-  "plugin-sofamatrix",
-  "app-sofaphysics-api",
-  "tutorials",
-  "gl",
-  "qt-gui",
-  "dump-visitor-info",
-  "plugin-sofa-python3",
-  "plugin-cimg",
-  "plugin-beamadapter",
-  "plugin-stlib",
-  "plugin-softrobots",
-  "plugin-shapematching",
-  "plugin-csparsesolvers",
-  "plugin-modelorderreduction",
-  "plugin-metis",
-  "plugin-diffusionsolver",
-  "plugin-geomagic",
-  "plugin-image",
-  "plugin-manifoldtopologies",
-  "plugin-multithreading",
-  "plugin-example",
-  "plugin-registration",
-  "plugin-carving",
-  "plugin-distancegrid",
-  "plugin-eulerianfuild",
-  "plugin-implicitfield",
-  "plugin-sphfluid",
-  "plugin-collisionobbcapsule",
-  "plugin-volumetricrendering",
-  "cuda"
   ], solve-group = "minimal-scope" }
