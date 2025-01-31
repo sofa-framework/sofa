@@ -11,11 +11,15 @@ license-file = "LICENSE-LGPL.md"
 # TODO: add ccache support
 [build-dependencies]
 cmake = ">=3.22"
-cxx-compiler = ">=1.7.0"
 ninja = ">=1.11"
 pkg-config = "*"
 git = ">=2.47.0"
 
+[target.unix.build-dependencies]
+cxx-compiler = ">=1.7.0"
+
+[target.win-64.build-dependencies]
+vs2022_win-64 = ">=19.42.0"
 
 [dependencies]
 libboost-headers = ">=1.76.0"
