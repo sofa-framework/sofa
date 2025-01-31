@@ -91,9 +91,9 @@ configure = { cmd = [
   "$SOFA_PLUGIN_CUDA_ARGS",
   "$SOFA_PLUGIN_PYTHON3_ARGS"
 ] }
-build = { cmd = "cmake --build build --target all --parallel 8", depends_on = ["configure"] }
+build = { cmd = "cmake --build build --target all --parallel 8", depends-on = ["configure"] }
 clean = { cmd = "rm -rf build" }
-test = { cmd = "ctest --test-dir build --output-on-failure", depends_on = [
+test = { cmd = "ctest --test-dir build --output-on-failure", depends-on = [
   "build",
 ] }
 
