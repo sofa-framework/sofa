@@ -127,8 +127,6 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
 
     // SofaBaseUtils was deprecated in #2605
     { "AddResourceRepository", Moved("v22.06", "SofaBaseUtils", Sofa.Component.SceneUtility) },
-    { "MakeAliasComponent", Moved("v22.06", "SofaBaseUtils", Sofa.Component.SceneUtility) },
-    { "MakeDataAliasComponent", Moved("v22.06", "SofaBaseUtils", Sofa.Component.SceneUtility) },
     { "MessageHandlerComponent", Moved("v22.06", "SofaBaseUtils", Sofa.Component.SceneUtility) },
     { "FileMessageHandlerComponent", Moved("v22.06", "SofaBaseUtils", Sofa.Component.SceneUtility) },
     { "InfoComponent", Moved("v22.06", "SofaBaseUtils", Sofa.Component.SceneUtility) },
