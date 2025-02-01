@@ -152,7 +152,8 @@ public:
 
     typedef sofa::core::visual::DisplayFlags DisplayFlags;
 protected:
-    Node(const std::string& name="");
+    Node();
+    explicit Node(std::string nodeName);
 
     virtual ~Node() override;
 public:
