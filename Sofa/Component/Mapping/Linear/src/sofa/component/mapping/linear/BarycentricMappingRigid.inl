@@ -37,8 +37,6 @@ BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::BarycentricMapperTetrahedr
       matrixJ(nullptr),
       updateJ(true)
 {
-    mapOrient.setOriginalData(&d_mapOrient);
-    map.setOriginalData(&d_map);
 }
 
 template <class In, class Out>

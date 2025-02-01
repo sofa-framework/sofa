@@ -40,7 +40,6 @@ namespace sofa::component::controller
 Controller::Controller()
     : d_handleEventTriggersUpdate(initData(&d_handleEventTriggersUpdate, false, "handleEventTriggersUpdate", "Event handling frequency controls the controller update frequency" ) )
 {
-    handleEventTriggersUpdate.setOriginalData(&d_handleEventTriggersUpdate);
 }
 
 Controller::~Controller()

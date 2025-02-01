@@ -80,8 +80,6 @@ public:
     typedef type::vector<double> ParamTypes;
 	typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-
     // -------- Datas ----------------------------
 	Data< InImageTypes > inputImage;
     Data< TransformType > inputTransform;

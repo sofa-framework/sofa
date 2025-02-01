@@ -41,13 +41,6 @@ HexahedralFEMForceFieldAndMass<DataTypes>::HexahedralFEMForceFieldAndMass()
     , d_particleMasses(initData(&d_particleMasses, "particleMasses", "Mass per particle", false))
     , d_lumpedMasses(initData(&d_lumpedMasses, "lumpedMasses", "Lumped masses", false))
 {
-    _density.setOriginalData(&d_density);
-    _useLumpedMass.setOriginalData(&d_useLumpedMass);
-    _elementMasses.setOriginalData(&d_elementMasses);
-    _elementTotalMass.setOriginalData(&d_elementTotalMass);
-    _particleMasses.setOriginalData(&d_particleMasses);
-    _lumpedMasses.setOriginalData(&d_lumpedMasses);
-
 }
 
 

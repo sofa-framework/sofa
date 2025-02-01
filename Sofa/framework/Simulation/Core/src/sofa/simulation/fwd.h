@@ -36,10 +36,6 @@ namespace sofa::simulation
     class Simulation;
     typedef sofa::core::sptr<Simulation> SimulationSPtr;
 
-    /// Set the (unique) simulation which controls the scene
-    SOFA_ATTRIBUTE_DISABLED_SETSIMULATIONRAWPOINTER()
-    void setSimulation(Simulation* s) = delete;
-
     /** Get the (unique) simulation which controls the scene.
         Automatically creates one if no Simulation has been set.
      */

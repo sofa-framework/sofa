@@ -58,8 +58,6 @@ VisualStyle::VisualStyle()
     : d_displayFlags(initData(&d_displayFlags, "displayFlags", "Display Flags"))
 {
     d_displayFlags.setWidget("widget_displayFlags");
-
-    displayFlags.setOriginalData(&d_displayFlags);
 }
 
 void VisualStyle::updateVisualFlags(VisualParams* vparams)

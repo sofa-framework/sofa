@@ -52,8 +52,6 @@ WarpPreconditioner<TMatrix,TVector,ThreadManager >::WarpPreconditioner()
 
     first = true;
     indexwork = 0;
-
-    f_useRotationFinder.setParent(&d_useRotationFinder);
 }
 
 template<class TMatrix, class TVector,class ThreadManager>

@@ -23,10 +23,4 @@
 
 #include <sofa/component/constraint/projective/PositionBasedDynamicsProjectiveConstraint.h>
 
-SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "sofa/component/constraint/projective/PositionBasedDynamicsProjectiveConstraint.h")
-
-namespace sofa::component::constraint::projective
-{
-template <class T>
-using PositionBasedDynamicsConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "PositionBasedDynamicsConstraint has been renamed to PositionBasedDynamicsProjectiveConstraint") = PositionBasedDynamicsProjectiveConstraint<T>;
-}
+SOFA_HEADER_DISABLED("v24.06", "v25.06", "sofa/component/constraint/projective/PositionBasedDynamicsProjectiveConstraint.h")

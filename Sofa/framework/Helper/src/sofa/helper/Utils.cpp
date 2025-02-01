@@ -59,30 +59,6 @@ using sofa::helper::system::FileSystem;
 namespace sofa::helper
 {
 
-std::wstring Utils::widenString(const std::string& s)
-{
-    return sofa::helper::widenString(s);
-}
-
-
-std::string Utils::narrowString(const std::wstring& ws)
-{
-    return sofa::helper::narrowString(ws);
-}
-
-
-std::string Utils::downcaseString(const std::string& s)
-{
-    return sofa::helper::downcaseString(s);
-}
-
-
-std::string Utils::upcaseString(const std::string& s)
-{
-    return sofa::helper::upcaseString(s);
-}
-
-
 #if defined WIN32
 std::string Utils::GetLastError() {
     LPVOID lpErrMsgBuf;

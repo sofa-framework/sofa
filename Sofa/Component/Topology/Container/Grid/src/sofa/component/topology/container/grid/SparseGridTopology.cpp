@@ -97,19 +97,6 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     _usingMC = false;
 
     _regularGrid = sofa::core::objectmodel::New<RegularGridTopology>();
-
-    _fillWeighted.setOriginalData(&d_fillWeighted);
-    n.setOriginalData(&d_n);
-    _min.setOriginalData(&d_min);
-    _max.setOriginalData(&d_max);
-    _cellWidth.setOriginalData(&d_cellWidth);
-    _nbVirtualFinerLevels.setOriginalData(&d_nbVirtualFinerLevels);
-    dataResolution.setOriginalData(&d_dataResolution);
-    voxelSize.setOriginalData(&d_voxelSize);
-    marchingCubeStep.setOriginalData(&d_marchingCubeStep);
-    convolutionSize.setOriginalData(&d_convolutionSize);
-    facets.setOriginalData(&d_facets);
-    dataVoxels.setOriginalData(&d_dataVoxels);
 }
 
 SparseGridTopology::SparseGridTopology(type::Vec3i numVertices, type::BoundingBox box, bool _isVirtual)

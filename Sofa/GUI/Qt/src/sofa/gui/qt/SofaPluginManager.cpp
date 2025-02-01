@@ -260,19 +260,11 @@ void SofaPluginManager::updateComponentList()
         return;
     }
 
+    const char* pluginNameStr = plugin->getModuleName();
     std::string componentListStr{};
-    const char* tempComponentList = plugin->getModuleComponentList();
 
-    // the plugin does not implement getModuleComponentList(), or returns nothing.
-    if (tempComponentList == nullptr)
-    {
-        const char* pluginNameStr = plugin->getModuleName();
-        componentListStr = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(pluginNameStr);
-    }
-    else
-    {
-        componentListStr = tempComponentList;
-    }
+    // Get component list from ObjectFactory
+    componentListStr = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(pluginNameStr);
 
     QString cpts(componentListStr.data());
     cpts.replace(", ","\n");

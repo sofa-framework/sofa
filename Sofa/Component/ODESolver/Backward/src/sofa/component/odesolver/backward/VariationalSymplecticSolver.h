@@ -26,8 +26,6 @@
 #include <fstream>
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::odesolver::backward
 {
 
@@ -45,36 +43,6 @@ class SOFA_COMPONENT_ODESOLVER_BACKWARD_API VariationalSymplecticSolver
 public:
     SOFA_CLASS2(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::lifecycle::RenamedData<SReal> f_newtonError;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::lifecycle::RenamedData<unsigned int> f_newtonSteps;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::lifecycle::RenamedData<SReal> f_rayleighStiffness;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::lifecycle::RenamedData<SReal> f_rayleighMass;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_saveEnergyInFile;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_explicit;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::string> f_fileName;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_computeHamiltonian;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::lifecycle::RenamedData<SReal> f_hamiltonianEnergy;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_useIncrementalPotentialEnergy;
-
     Data<SReal>       d_newtonError; ///< Error tolerance for Newton iterations
     Data<unsigned int> d_newtonSteps; ///< Maximum number of Newton steps
     Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
@@ -86,9 +54,6 @@ public:
     Data<SReal> d_hamiltonianEnergy; ///< hamiltonian energy
     Data<bool> d_useIncrementalPotentialEnergy; ///< use real potential energy, if false use approximate potential energy
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
-
-    SOFA_ATTRIBUTE_DISABLED__ODESOLVER_BACKWARD_VERBOSEDATA()
-    sofa::core::objectmodel::lifecycle::RemovedData f_verbose{this, "v23.12", "v24.06", "verbose", "This Data is no longer used"};
 
     VariationalSymplecticSolver();
 

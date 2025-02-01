@@ -38,8 +38,6 @@ class SOFA_COMPONENT_VISUAL_API VisualGrid : public core::visual::VisualModel
 public:
     SOFA_CLASS(VisualGrid, VisualModel);
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-
     enum PLANE
     {
         PLANE_X = 0,

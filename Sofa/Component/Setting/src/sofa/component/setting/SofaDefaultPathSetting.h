@@ -26,8 +26,6 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::setting
 {
 
@@ -39,9 +37,6 @@ public:
 protected:
     SofaDefaultPathSetting();   ///<Default constructor.
 public:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::string> gnuplotPath;
-
     sofa::core::objectmodel::Data<std::string> d_gnuplotPath; ///< Path where will be saved the gnuplot files
 };
 

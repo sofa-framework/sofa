@@ -22,10 +22,4 @@
 #pragma once
 #include <MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.h>
 
-SOFA_DEPRECATED_HEADER("v24.06", "v25.06", "MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.h")
-
-namespace multithreading::component::solidmechanics::spring
-{
-template<class T>
-using ParallelStiffSpringForceField SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "ParallelStiffSpringForceField has been merged with to SpringForceField") = ParallelSpringForceField<T>;
-}
+SOFA_HEADER_DISABLED("v24.06", "v25.06", "MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.h")

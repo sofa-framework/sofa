@@ -39,12 +39,6 @@ ParabolicProjectiveConstraint<DataTypes>::ParabolicProjectiveConstraint(core::be
     , d_tEnd(initData(&d_tEnd, "EndTime", "End Time of the motion") )
     , l_topology(initLink("topology", "link to the topology container"))
 {
-    m_indices.setOriginalData(&d_indices);
-    m_P1.setOriginalData(&d_P1);
-    m_P2.setOriginalData(&d_P2);
-    m_P3.setOriginalData(&d_P3);
-    m_tBegin.setOriginalData(&d_tBegin);
-    m_tEnd.setOriginalData(&d_tEnd);
 }
 
 template <class DataTypes>
