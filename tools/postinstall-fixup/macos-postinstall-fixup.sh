@@ -55,6 +55,7 @@ fi
 
 move_metis "$INSTALL_DIR"
 
+
 echo "Fixing up libs manually ..."
 
 check-all-deps() {
@@ -154,6 +155,12 @@ check-all-deps() {
                 libbasename="$(basename $lib)"
                 echo "install_name_tool -change $dep @rpath/$rpathlib $libbasename"
                 install_name_tool -change $dep @rpath/$rpathlib $lib
+
+                if [  -n "$libpython" ]; then
+                    echo "install_name_tool -add_rpath \"/usr/local/Frameworks/\" $libbasename"
+                    install_name_tool -add_rpath "/usr/local/Frameworks/" $lib
+                    install_name_tool -add_rpath "/opt/homebrew/Frameworks/" $lib
+                fi
             fi
         done
     done
