@@ -731,6 +731,31 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
         checkVecValues<sofa::core::vec_id::read_access::velocity>(isRigid ? velocityCoefficient : forceCoefficient + positionCoefficient * 12);
     }
 
+    void equalCoordDifference() const
+    {
+        // v = a-b
+        m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::restPosition, core::vec_id::read_access::position, -1_sreal);
+
+        unsigned int index {};
+        auto vv = sofa::helper::getReadAccessor(*m_mechanicalObject->read(core::vec_id::read_access::velocity));
+        auto va = sofa::helper::getReadAccessor(*m_mechanicalObject->read(core::vec_id::read_access::restPosition));
+        auto vb = sofa::helper::getReadAccessor(*m_mechanicalObject->read(core::vec_id::read_access::position));
+
+        ASSERT_EQ(vv.size(), 10);
+        for (std::size_t i = 0; i < vv.size(); ++i)
+        {
+            const auto& v = vv[i];
+            const auto diff = DataTypes::coordDifference(va[i], vb[i]);
+            for (std::size_t j = 0; j < v.size(); ++j)
+            {
+                EXPECT_FLOATINGPOINT_EQ(v[j], diff[j])
+            }
+            ++index;
+        }
+
+        checkVecValues<core::vec_id::read_access::position>(positionCoefficient);
+    }
+
     typename MO::SPtr m_mechanicalObject;
 };
 
@@ -947,6 +972,11 @@ TYPED_TEST(MechanicalObjectVOpTest, equalSumWithScalarVelocityMix1)
 TYPED_TEST(MechanicalObjectVOpTest, equalSumWithScalarVelocityMix2)
 {
     this->equalSumWithScalarVelocityMix2();
+}
+
+TYPED_TEST(MechanicalObjectVOpTest, equalCoordDifference)
+{
+    this->equalCoordDifference();
 }
 
 }
