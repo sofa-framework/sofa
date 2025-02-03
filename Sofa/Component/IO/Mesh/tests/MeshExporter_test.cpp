@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <iomanip>
+
 #include <vector>
 using std::vector;
 
