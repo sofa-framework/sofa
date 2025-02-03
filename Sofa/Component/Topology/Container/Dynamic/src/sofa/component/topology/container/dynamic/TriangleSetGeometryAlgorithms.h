@@ -270,7 +270,7 @@ public:
 
 
     bool computeIncisionPath(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
-        const TriangleID ind_ta, const TriangleID ind_tb,
+        const TriangleID ind_ta, const EdgeID ind_e,
         sofa::type::vector< TriangleID >& triangles_list,
         sofa::type::vector< EdgeID >& edges_list,
         sofa::type::vector< Real >& coords_list, Real epsilonSnapPath = 0.0, Real epsilonSnapBorder = 0.0) const;

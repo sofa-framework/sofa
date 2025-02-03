@@ -1871,14 +1871,16 @@ template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
     const sofa::type::Vec<3, Real>& ptA,
     const sofa::type::Vec<3, Real>& ptB,
-    const TriangleID ind_ta, const TriangleID ind_tb,
+    const TriangleID ind_ta, const EdgeID ind_e,
     sofa::type::vector< TriangleID >& triangles_list,
     sofa::type::vector< EdgeID >& edges_list,
     sofa::type::vector< Real >& coords_list, Real epsilonSnapPath, Real epsilonSnapBorder) const
 {   
     sofa::type::Vec<3, Real> current_point = ptA;
     TriangleID current_triID = ind_ta;
-    EdgeID current_edgeID = sofa::InvalidID;
+    
+    auto& firstSpringPointId = mstateId == 0 ? spring.m1 : spring.m2;
+    EdgeID current_edgeID = (ind_e != sofa::InvalidID) ? ind_e : sofa::InvalidID;       
     Real current_bary = 0;
     const typename DataTypes::VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
     SOFA_UNUSED(ind_tb);
@@ -1897,6 +1899,9 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
 
         // Add current triangle into the list of intersected triangles
         triangles_list.push_back(current_triID);
+
+
+
 
         // Only one edge intersected, beginning or end
         if (intersectedEdges.size() == 1) 
@@ -1924,7 +1929,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
             }
             else
             {
-                msg_error() << "Previous edge id: " << current_edgeID << " can't be found in the intersectionbetween input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID;
+                msg_error() << "Previous edge id: " << current_edgeID << " can't be found in the intersection between input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID;
                 return false;
             }
         }
