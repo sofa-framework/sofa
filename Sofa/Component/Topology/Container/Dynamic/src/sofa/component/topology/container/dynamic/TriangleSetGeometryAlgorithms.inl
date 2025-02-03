@@ -1891,13 +1891,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
 
         if (!is_intersected)
         {
-            msg_error() << "No intersection can be found in method computeIntersectedPointsList2 between input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID;
-            return false;
-        }
-
-        if (intersectedEdges.size() > 2)
-        {
-            msg_error() << "More than 2 intersections have been found in method computeIntersectedPointsList2 between input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID << ". This is not possible!";
+            msg_error() << "No intersection can be found in method computeIncisionPath between input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID;
             return false;
         }
 
@@ -1923,11 +1917,52 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
                 current_edgeID = intersectedEdges[1];
                 current_bary = baryCoefs[1];
             }
-            else 
+            else if (current_edgeID == intersectedEdges[1])
             {
                 current_edgeID = intersectedEdges[0];
                 current_bary = baryCoefs[0];
             }
+            else
+            {
+                msg_error() << "Previous edge id: " << current_edgeID << " can't be found in the intersectionbetween input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID;
+                return false;
+            }
+        }
+        else if (intersectedEdges.size() == 3) // triangle fully traversed and going in/out through a vertex
+        {
+            // double check that one edge is the previous one and the 2 others have a baryCoef equal to 0 or 1
+            int localId = sofa::InvalidID;
+            int nbrV = 0;
+            for (int j = 0; j < 3; j++)
+            {
+                if (current_edgeID == intersectedEdges[j]) {
+                    localId = j;
+                }
+
+                if (baryCoefs[j] == 0 || baryCoefs[j] == 1)
+                    nbrV++;
+            }
+
+            if (localId == sofa::InvalidID)
+            {
+                msg_error() << "Previous edge id: " << current_edgeID << " can't be found in the intersectionbetween input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID;
+                return false;
+            }
+
+            if (nbrV != 2)
+            {
+                msg_error() << "3 intersections have been found in method computeIncisionPath between input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID << ". But the intersection is not going through a vertex. This is not possible!";
+                return false;
+            }
+
+            // in case of going through a vertex, arbitrary take the next edge in the list
+            current_edgeID = intersectedEdges[(localId + 1) % 3];
+            current_bary = baryCoefs[(localId + 1) % 3];
+        }
+        else
+        {
+            msg_error() << "More than 3 intersections have been found in method computeIncisionPath between input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID << ". This is not possible!";
+            return false;
         }
 
         // Add current edge and barycoef to the intersected lists
@@ -1961,7 +1996,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
         }
         else
         {
-            msg_error() << "Non-Manifold triangulation not supported yet.";
+            msg_error() << "More than 2 triangles found around edge: "<< current_edgeID << ". Non - Manifold triangulation is not supported by computeIncisionPath method";
             return false;
         }
     }
