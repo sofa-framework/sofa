@@ -485,8 +485,8 @@ bool TriangleSetTopology_test::testTriangleSegmentIntersectionInPlane(const sofa
     if (triangleGeo == nullptr)
         return false;
 
-    const TriangleID tId = 0;
-    const Triangle tri0 = m_topoCon->getTriangle(tId);
+    const TriangleSetTopologyContainer::TriangleID tId = 0;
+    const TriangleSetTopologyContainer::Triangle tri0 = m_topoCon->getTriangle(tId);
     const auto edgeIds = m_topoCon->getEdgesInTriangle(tId); // as a reminder localEdgeId 0 is the opposite edge of triangle vertex[0]
 
     const auto& p0 = triangleGeo->getPointPosition(tri0[0]);
@@ -504,7 +504,7 @@ bool TriangleSetTopology_test::testTriangleSegmentIntersectionInPlane(const sofa
     ptA = ptA + (ptA - ptB) + bufferZ;
     ptB = ptB + (ptB - ptA) - bufferZ;
 
-    sofa::type::vector<EdgeID> intersectedEdges;
+    sofa::type::vector<TriangleSetTopologyContainer::EdgeID> intersectedEdges;
     sofa::type::vector<Real> baryCoefs;
     triangleGeo->computeSegmentTriangleIntersectionInPlane(ptA, ptB, tId, intersectedEdges, baryCoefs);
     
