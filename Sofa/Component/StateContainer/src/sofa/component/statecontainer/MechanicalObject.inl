@@ -2096,24 +2096,39 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
                     APPLY_PREDICATE_THREEPARAMS(vOp_vab, v, a, b)
                     msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v = a+b (" << v << ',' << a << ',' << b << ',' << f << ")";
                 }
-                else if (f == -1._sreal &&
-                    (v.type == core::V_DERIV && a.type == core::V_COORD && b.type == core::V_COORD))
-                {
-                    // v = a-b
-                    auto vv = this->getWriteOnlyAccessor<core::V_DERIV>(v);
-                    auto va = this->getReadAccessor<core::V_COORD>(a);
-                    auto vb = this->getReadAccessor<core::V_COORD>(b);
-                    vv.resize(vb.size());
-                    for (unsigned int i = 0; i < vv.size(); ++i)
-                    {
-                        vv[i] = DataTypes::coordDifference(va[i], vb[i]);
-                    }
-                }
                 else
                 {
-                    // v = a+b*f
-                    APPLY_PREDICATE_THREEPARAMS(vOp_vabf, v, a, b)
-                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v = a+b*f (" << v << ',' << a << ',' << b << ',' << f << ")";
+                    const auto generalCase = [&]()
+                    {
+                        // v = a+b*f
+                        APPLY_PREDICATE_THREEPARAMS(vOp_vabf, v, a, b)
+                        msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v = a+b*f (" << v << ',' << a << ',' << b << ',' << f << ")";
+                    };
+                    
+                    if constexpr (requires (Coord ca, Coord cb) {DataTypes::coordDifference(ca, cb);})
+                    {
+                        if (f == -1._sreal &&
+                           (v.type == core::V_DERIV && a.type == core::V_COORD && b.type == core::V_COORD))
+                        {
+                            // v = a-b
+                            auto vv = this->getWriteOnlyAccessor<core::V_DERIV>(v);
+                            auto va = this->getReadAccessor<core::V_COORD>(a);
+                            auto vb = this->getReadAccessor<core::V_COORD>(b);
+                            vv.resize(vb.size());
+                            for (unsigned int i = 0; i < vv.size(); ++i)
+                            {
+                                vv[i] = DataTypes::coordDifference(va[i], vb[i]);
+                            }
+                        }
+                        else
+                        {
+                            generalCase();
+                        }
+                    }
+                    else
+                    {
+                        generalCase();
+                    }
                 }
             }
         }
