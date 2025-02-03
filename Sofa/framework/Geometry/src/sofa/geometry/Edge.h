@@ -297,6 +297,8 @@ struct Edge
 
             const Node pX = pA + alpha * AB;
             const Node pY = pC + beta * CD;
+            std::cout << "alpha: " << alpha << " beta: " << beta << std::endl;
+            std::cout << "pX: " << pX << " pY: " << pY << std::endl;
 
             if (alpha < 0 || beta < 0 // if alpha or beta < 0 means on the exact same line but no overlap.
                 || alpha > 1 || beta > 1 // if alpha > 1 means intersection but after outside from [AB]
