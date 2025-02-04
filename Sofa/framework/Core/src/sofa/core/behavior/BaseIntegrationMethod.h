@@ -45,6 +45,8 @@ public:
 
     using Factors = std::tuple<MatricesFactors::M, MatricesFactors::B, MatricesFactors::K>;
 
+    virtual std::size_t stepSize() const = 0;
+    
     virtual void initializeVectors(const core::ExecParams* params, ConstMultiVecCoordId x, ConstMultiVecDerivId v) {}
 
     virtual Factors getMatricesFactors(SReal dt) const = 0;

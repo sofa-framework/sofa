@@ -125,15 +125,21 @@ struct NewtonRaphsonTest : public testing::BaseSimulationTest
         }
     }
 
-    void spring()
+    void spring(const SReal k, const SReal L_0, const SReal dt)
     {
         sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
-        sofa::simpleapi::createObject(m_scene.root, "RestShapeSpringsForceField", {{"points", "0"}});
+
+        sofa::simpleapi::createObject(m_scene.root, "RestShapeSpringsForceField", {{"points", "0"}, {"spring", "0 1 " + std::to_string(k) + " 0 " + std::to_string(L_0) }});
 
         m_scene.initScene();
         EXPECT_EQ(m_solver->d_status.getValue(), component::odesolver::backward::NewtonRaphsonSolver::NewtonStatus("Undefined"));
 
-        m_scene.simulate(0.01_sreal);
+        NewtonRaphsonParameters params;
+        params.maxNbIterationsNewton = 1;
+        params.apply(m_solver);
+        
+        m_scene.simulate(dt);
+
     }
 
 };
@@ -205,7 +211,7 @@ TEST_F(NewtonRaphsonTest, gravity_absoluteEstimateDifferenceStopping)
 
 TEST_F(NewtonRaphsonTest, spring)
 {
-    this->spring();
+    this->spring(1000, 1, 0.1);
 }
 
 

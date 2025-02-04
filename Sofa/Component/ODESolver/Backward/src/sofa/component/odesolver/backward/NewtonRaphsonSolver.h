@@ -21,15 +21,84 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/odesolver/backward/config.h>
-
+#include <sofa/core/behavior/BaseIntegrationMethod.h>
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/BaseIntegrationMethod.h>
 #include <sofa/simulation/MechanicalOperations.h>
-
+#include <sofa/simulation/VectorOperations.h>
 
 namespace sofa::component::odesolver::backward
 {
+
+template<class Derived>
+struct StateVersionAccess
+{
+    int id {};
+    constexpr explicit StateVersionAccess(int i) : id(i) {}
+    constexpr StateVersionAccess() = default;
+
+    constexpr Derived operator+(const int v) const
+    {
+        return Derived(id + v);
+    }
+
+    constexpr Derived operator-(const int v) const
+    {
+        return Derived(id - v);
+    }
+};
+
+struct TimeStepStateVersionAccess : StateVersionAccess<TimeStepStateVersionAccess>
+{
+    using StateVersionAccess::StateVersionAccess;
+};
+
+struct NewtonIterationStateVersionAccess : StateVersionAccess<NewtonIterationStateVersionAccess>
+{
+    using StateVersionAccess::StateVersionAccess;
+};
+
+template <core::VecType vtype>
+struct StateList
+{
+    using MultiVec = core::behavior::TMultiVec<vtype>;
+
+    // list of states needed by the numerical integration of ODE
+    std::deque<MultiVec> timeStepStates;
+
+    // used by the Newton-Raphson algorithm to store an intermediate vector
+    std::deque<MultiVec> newtonIterationStates;
+
+    MultiVec& operator[](const TimeStepStateVersionAccess& id) 
+    {
+        assert(id.id <= 0);
+        // n is the last element of the states and correspond to the state from the previous time step
+        // For example, for a 2-step method, the state list will look like: [n-1, n]
+        const auto n = timeStepStates.size() - 1;
+        return timeStepStates[n + id.id];
+    }
+
+    MultiVec& operator[](const NewtonIterationStateVersionAccess& id)
+    {
+        assert(id.id >= 0);
+        // i is the first element of the states and correspond to the state from the previous iteration
+        const auto i = 0;
+        return newtonIterationStates[i + id.id];
+    }
+
+    void setOps(core::behavior::BaseVectorOperations* op)
+    {
+        for (auto& state : timeStepStates)
+        {
+            state.realloc(op);
+        }
+
+        for (auto& state : newtonIterationStates)
+        {
+            state.realloc(op);
+        }
+    }
+};
 
 class SOFA_COMPONENT_ODESOLVER_BACKWARD_API NewtonRaphsonSolver
     : public sofa::core::behavior::OdeSolver
@@ -37,6 +106,8 @@ class SOFA_COMPONENT_ODESOLVER_BACKWARD_API NewtonRaphsonSolver
 {
 public:
     SOFA_CLASS2(NewtonRaphsonSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
+
+    ~NewtonRaphsonSolver() override;
 
     void init() override;
     void reset() override;
@@ -65,6 +136,7 @@ public:
         sofa::helper::Item{"ConvergedRelativeEstimateDifference", "Converged: Relative estimate difference is smaller than the threshold"},
         sofa::helper::Item{"ConvergedAbsoluteEstimateDifference", "Converged: Absolute estimate difference is smaller than the threshold"});
 
+    Data<bool> d_updateStateWhenDiverged;
     Data<NewtonStatus> d_status;
 
 protected:
@@ -79,9 +151,19 @@ protected:
                       core::MultiVecCoordId position_i) const;
 
 
-    SReal computeResidual(const core::ExecParams* params, sofa::simulation::common::MechanicalOperations& mop, SReal dt,
-        core::MultiVecDerivId force,
-        core::MultiVecDerivId oldVelocity, core::MultiVecDerivId newVelocity);
+    SReal computeResidual(const core::ExecParams* params,
+                          sofa::simulation::common::MechanicalOperations& mop, SReal dt,
+                          core::MultiVecDerivId force, core::MultiVecDerivId oldVelocity,
+                          core::MultiVecDerivId newVelocity);
+    
+    void resizeStateList(std::size_t nbStates, sofa::simulation::common::VectorOperations& vop);
+    void start();
+
+    StateList<core::V_COORD> m_coordStates;
+    StateList<core::V_DERIV> m_derivStates;
+    
+    
+
 };
 
 }
