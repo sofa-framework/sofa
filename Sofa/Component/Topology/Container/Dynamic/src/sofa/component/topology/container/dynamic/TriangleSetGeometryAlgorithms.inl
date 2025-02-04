@@ -1871,7 +1871,7 @@ template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
     const sofa::type::Vec<3, Real>& ptA,
     const sofa::type::Vec<3, Real>& ptB,
-    const TriangleID ind_ta, const TriangleID ind_tb, const EdgeID ind_e,
+    const TriangleID ind_ta, const TriangleID ind_tb,
     sofa::type::vector< TriangleID >& triangles_list,
     sofa::type::vector< EdgeID >& edges_list,
     sofa::type::vector< Real >& coords_list, Real epsilonSnapPath, Real epsilonSnapBorder) const
@@ -1879,7 +1879,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
     TriangleID current_triID = ind_ta;  
     EdgeID current_edgeID = sofa::InvalidID;       
     Real current_bary = 0;
-    const typename DataTypes::VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
     
     for(;;)
     {
@@ -1887,7 +1886,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
         sofa::type::vector<EdgeID> intersectedEdges;
         sofa::type::vector<Real> baryCoefs;        
         bool is_intersected = computeSegmentTriangleIntersectionInPlane(ptA, ptB, current_triID, intersectedEdges, baryCoefs);
-        std::cout << "## current_triID: " << current_triID << " | intersectedEdges: "<< intersectedEdges << std::endl;
+
         if (!is_intersected)
         {
             msg_error() << "No intersection can be found in method computeIncisionPath between input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID;
@@ -1906,23 +1905,42 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
             current_edgeID = intersectedEdges[0];
             current_bary = baryCoefs[0];
         }
-        else if (current_edgeID == sofa::InvalidID && ind_e != sofa::InvalidID) // special case if cut start directly on an edge or a vertex, add it and init the loop with this edge
+        else if (current_edgeID == sofa::InvalidID) // special case if cut start directly on an edge or a vertex, add it and init the loop with this edge
         {
-            for (int j = 0; j < intersectedEdges.size(); ++j)
+            // To find the good direction at start, check intersection with middle of the triangle and ptB
+            sofa::type::vector<EdgeID> tmp_intersectedEdges;
+            sofa::type::vector<Real> tmp_baryCoefs;
+
+            const typename DataTypes::Coord cG = computeTriangleCenter(ind_ta);
+            const sofa::type::Vec<3, Real> pG{ cG[0], cG[1], cG[2] };
+
+            computeSegmentTriangleIntersectionInPlane(pG, ptB, current_triID, tmp_intersectedEdges, tmp_baryCoefs);
+            if (tmp_intersectedEdges.size() != 1) // only one edge should be intersected to find the next edge in cut direction
             {
-                if (ind_e == intersectedEdges[j])
-                {
-                    edges_list.push_back(intersectedEdges[j]);
-                    coords_list.push_back(baryCoefs[j]);
-                    current_edgeID = intersectedEdges[j];
+                msg_error() << "Impossible to determine cut direction at start due to snapping. Between input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID;
+                return false;
+            }
+
+            int nbrInter = intersectedEdges.size();
+            // find next edge in correct initial intersection
+            int curLocalId = sofa::InvalidID;
+            for (int j = 0; j < nbrInter; j++)
+            {
+                if (tmp_intersectedEdges[0] == intersectedEdges[j]) {
+                    curLocalId = j;
                     break;
                 }
             }
+            int nextLocalId = (curLocalId + 1) % nbrInter;
+
+            edges_list.push_back(intersectedEdges[nextLocalId]);
+            coords_list.push_back(baryCoefs[nextLocalId]);
+            current_edgeID = intersectedEdges[nextLocalId];
         }
 
         
-        if (intersectedEdges.size() == 2) // triangle fully traversed, look for the new edge
-        {        
+        if (intersectedEdges.size() == 2) // triangle fully traversed, look for the next edge
+        {
             if (current_edgeID == intersectedEdges[0])
             {
                 current_edgeID = intersectedEdges[1];
@@ -1942,22 +1960,22 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
         else if (intersectedEdges.size() == 3) // triangle fully traversed and going in/out through a vertex
         {
             // double check that one edge is the previous one and the 2 others have a baryCoef equal to 0 or 1
-            int localId = sofa::InvalidID;
+            int curLocalId = sofa::InvalidID;
+            int localNoSnapId = sofa::InvalidID;
             int nbrV = 0;
             for (int j = 0; j < 3; j++)
             {
                 if (current_edgeID == intersectedEdges[j]) {
-                    localId = j;
+                    curLocalId = j;
                 }
 
                 if (baryCoefs[j] == 0 || baryCoefs[j] == 1)
                     nbrV++;
+                else
+                    localNoSnapId = j;
             }
 
-            // TODO if part of point snap, go opposite
-            // if opposite to point to snap, can take either one or the other
-
-            if (localId == sofa::InvalidID)
+            if (curLocalId == sofa::InvalidID)
             {
                 msg_error() << "Previous edge id: " << current_edgeID << " can't be found in the intersectionbetween input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID;
                 return false;
@@ -1969,9 +1987,17 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
                 return false;
             }
 
-            // in case of going through a vertex, arbitrary take the next edge in the list
-            current_edgeID = intersectedEdges[(localId + 1) % 3];
-            current_bary = baryCoefs[(localId + 1) % 3];
+            if (curLocalId == localNoSnapId) // means current edge is not cut at a vertex. we go out at the opposite vertex.
+            {
+                // in case of going through a vertex, arbitrary take the next edge in the list
+                current_edgeID = intersectedEdges[(curLocalId + 1) % 3];
+                current_bary = baryCoefs[(curLocalId + 1) % 3];
+            }
+            else // we are going inside this triangle from a vertex. We need to go out on the opposite edge
+            {
+                current_edgeID = intersectedEdges[localNoSnapId];
+                current_bary = baryCoefs[localNoSnapId];
+            }
         }
         else if (intersectedEdges.size() > 3)
         {
