@@ -38,6 +38,8 @@ class SOFA_COMPONENT_ODESOLVER_INTEGRATION_API BDF1 : public sofa::core::behavio
 public:
     SOFA_CLASS(BDF1, sofa::core::behavior::BaseIntegrationMethod);
 
+    std::size_t stepSize() const override { return 1; }
+
     void initializeVectors(const core::ExecParams* params, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v) override;
     Factors getMatricesFactors(SReal dt) const override;
     void computeRightHandSide(const core::ExecParams* params,
