@@ -1871,7 +1871,7 @@ template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
     const sofa::type::Vec<3, Real>& ptA,
     const sofa::type::Vec<3, Real>& ptB,
-    const TriangleID ind_ta, const EdgeID ind_e,
+    const TriangleID ind_ta, const TriangleID ind_tb, const EdgeID ind_e,
     sofa::type::vector< TriangleID >& triangles_list,
     sofa::type::vector< EdgeID >& edges_list,
     sofa::type::vector< Real >& coords_list, Real epsilonSnapPath, Real epsilonSnapBorder) const
@@ -1887,15 +1887,15 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
         sofa::type::vector<EdgeID> intersectedEdges;
         sofa::type::vector<Real> baryCoefs;        
         bool is_intersected = computeSegmentTriangleIntersectionInPlane(ptA, ptB, current_triID, intersectedEdges, baryCoefs);
-
+        std::cout << "## current_triID: " << current_triID << " | intersectedEdges: "<< intersectedEdges << std::endl;
         if (!is_intersected)
         {
             msg_error() << "No intersection can be found in method computeIncisionPath between input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID;
             return false;
         }
 
-        // Only one edge intersected, beginning or end
-        if (intersectedEdges.size() == 1) 
+        // Handle start and end points       
+        if (intersectedEdges.size() == 1) // Only one edge intersected, beginning or end
         {
             if (current_edgeID == intersectedEdges[0]) // reach end
             {
@@ -1906,27 +1906,22 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
             current_edgeID = intersectedEdges[0];
             current_bary = baryCoefs[0];
         }
-        else if (intersectedEdges.size() == 2 && current_edgeID == sofa::InvalidID) // special case if cut start directly on an edge and triangle is fully traversed
+        else if (current_edgeID == sofa::InvalidID && ind_e != sofa::InvalidID) // special case if cut start directly on an edge or a vertex, add it and init the loop with this edge
         {
-            if (current_edgeID == sofa::InvalidID)
+            for (int j = 0; j < intersectedEdges.size(); ++j)
             {
-                if (ind_e == intersectedEdges[0]) //chck with given start edge
+                if (ind_e == intersectedEdges[j])
                 {
-                    edges_list.push_back(intersectedEdges[0]);
-                    coords_list.push_back(baryCoefs[0]);
-                    current_edgeID = intersectedEdges[1];
-                    current_bary = baryCoefs[1];
-                }
-                else if (ind_e == intersectedEdges[1])
-                {
-                    edges_list.push_back(intersectedEdges[1]);
-                    coords_list.push_back(baryCoefs[1]);
-                    current_edgeID = intersectedEdges[0];
-                    current_bary = baryCoefs[0];
+                    edges_list.push_back(intersectedEdges[j]);
+                    coords_list.push_back(baryCoefs[j]);
+                    current_edgeID = intersectedEdges[j];
+                    break;
                 }
             }
         }
-        else if (intersectedEdges.size() == 2) // triangle fully traversed, look for the new edge
+
+        
+        if (intersectedEdges.size() == 2) // triangle fully traversed, look for the new edge
         {        
             if (current_edgeID == intersectedEdges[0])
             {
@@ -1959,6 +1954,9 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
                     nbrV++;
             }
 
+            // TODO if part of point snap, go opposite
+            // if opposite to point to snap, can take either one or the other
+
             if (localId == sofa::InvalidID)
             {
                 msg_error() << "Previous edge id: " << current_edgeID << " can't be found in the intersectionbetween input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID;
@@ -1975,7 +1973,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
             current_edgeID = intersectedEdges[(localId + 1) % 3];
             current_bary = baryCoefs[(localId + 1) % 3];
         }
-        else
+        else if (intersectedEdges.size() > 3)
         {
             msg_error() << "More than 3 intersections have been found in method computeIncisionPath between input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID << ". This is not possible!";
             return false;
@@ -1987,6 +1985,9 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
         // Add current edge and barycoef to the intersected lists
         edges_list.push_back(current_edgeID);
         coords_list.push_back(current_bary);
+
+        if (current_triID == ind_tb) // reach end
+            break;
 
         // search for next triangle to be intersected
         sofa::type::vector< TriangleID > triAE = this->m_topology->getTrianglesAroundEdge(current_edgeID);
