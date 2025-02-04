@@ -113,21 +113,6 @@ public:
     /// This is the method that should be implemented by the component
     virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv1 &c1, DataMatrixDeriv2 &c2, unsigned int &cIndex
             , const DataVecCoord1 &x1, const DataVecCoord2 &x2) = 0;
-
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T* p0, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        typename T::SPtr obj = core::behavior::BaseInteractionConstraint::create(p0, context, arg);
-
-        if (arg)
-        {
-            obj->parse(arg);
-        }
-
-        return obj;
-    }
 };
 
 #if !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP)

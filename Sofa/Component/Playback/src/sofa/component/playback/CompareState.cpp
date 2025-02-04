@@ -263,7 +263,7 @@ void CompareState::draw(const core::visual::VisualParams* vparams)
 CompareStateCreator::CompareStateCreator(const core::ExecParams* params)
     : Visitor(params)
     , sceneName("")
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -277,7 +277,7 @@ CompareStateCreator::CompareStateCreator(const core::ExecParams* params)
 CompareStateCreator::CompareStateCreator(const std::string &n, const core::ExecParams* params, bool i, int c)
     : Visitor(params)
     , sceneName(n)
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")

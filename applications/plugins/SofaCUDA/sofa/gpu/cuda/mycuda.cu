@@ -32,6 +32,11 @@ cudaDeviceProp mycudaDeviceProp;
 
 
 #if defined(__cplusplus)
+
+#define STRINGIFY(x) #x
+#define _STR(x) STRINGIFY(x)
+SOFA_PRAGMA_MESSAGE("__cplusplus value: " _STR(__cplusplus))
+
 namespace sofa
 {
 namespace gpu
@@ -57,9 +62,28 @@ bool cudaCheck(cudaError_t err, const char* src="?")
 bool cudaInitCalled = false;
 int deviceCount = 0;
 
+#ifdef SOFA_WITH_DEVTOOLS
+__global__ void print_cuda_standard()
+{
+    /**
+    * 199711L = C++98
+    * 201103L = C++11
+    * 201402L = C++14
+    * 201703L = C++17
+    * 202002L = C++20
+    */
+    printf("CUDA Standard: %ld\n", __cplusplus);
+}
+#endif
+
 int mycudaInit(int device)
 {
     if (cudaInitCalled) return 1;
+
+#if defined(__cplusplus)
+    mycudaPrintf("C++ standard = %ld", __cplusplus);
+#endif
+
     cudaInitCalled = true;
     const cudaError_t getDeviceCountError = cudaGetDeviceCount(&deviceCount);
     if (getDeviceCountError != cudaSuccess)
@@ -121,6 +145,12 @@ int mycudaInit(int device)
 #if defined(SOFA_GPU_CUBLAS) && !defined(SOFA_GPU_CUBLAS_V2)
     cublasInit();
 #endif
+
+#ifdef SOFA_WITH_DEVTOOLS
+    print_cuda_standard<<<1, 1>>>();
+    cudaCheck(cudaDeviceSynchronize());
+#endif
+
     return 1;
 }
 
