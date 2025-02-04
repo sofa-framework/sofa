@@ -82,13 +82,13 @@ struct NewtonRaphsonTest : public testing::BaseSimulationTest
     void noForce()
     {
         m_scene.initScene();
-        EXPECT_EQ(m_solver->d_status.getValue(), component::odesolver::backward::NewtonRaphsonSolver::NewtonStatus("Undefined"));
+        EXPECT_EQ(m_solver->d_status.getValue(), component::odesolver::backward::NewtonStatus("Undefined"));
 
         m_scene.simulate(0.01_sreal);
-        EXPECT_EQ(m_solver->d_status.getValue(), component::odesolver::backward::NewtonRaphsonSolver::NewtonStatus("ConvergedEquilibrium"));
+        EXPECT_EQ(m_solver->d_status.getValue(), component::odesolver::backward::NewtonStatus("ConvergedEquilibrium"));
     }
 
-    void gravity(const NewtonRaphsonParameters& params, const component::odesolver::backward::NewtonRaphsonSolver::NewtonStatus& expectedStatus)
+    void gravity(const NewtonRaphsonParameters& params, const component::odesolver::backward::NewtonStatus& expectedStatus)
     {
         static constexpr SReal gravity = -1;
         m_scene.root->setGravity({gravity, 0, 0});
@@ -98,7 +98,7 @@ struct NewtonRaphsonTest : public testing::BaseSimulationTest
         params.apply(m_solver);
 
         m_scene.initScene();
-        EXPECT_EQ(m_solver->d_status.getValue(), component::odesolver::backward::NewtonRaphsonSolver::NewtonStatus("Undefined"));
+        EXPECT_EQ(m_solver->d_status.getValue(), component::odesolver::backward::NewtonStatus("Undefined"));
 
         auto previousVelocity = m_state->read(sofa::core::vec_id::read_access::velocity)->getValue();
         auto previousPosition = m_state->read(sofa::core::vec_id::read_access::position)->getValue();
@@ -132,13 +132,15 @@ struct NewtonRaphsonTest : public testing::BaseSimulationTest
         sofa::simpleapi::createObject(m_scene.root, "RestShapeSpringsForceField", {{"points", "0"}, {"spring", "0 1 " + std::to_string(k) + " 0 " + std::to_string(L_0) }});
 
         m_scene.initScene();
-        EXPECT_EQ(m_solver->d_status.getValue(), component::odesolver::backward::NewtonRaphsonSolver::NewtonStatus("Undefined"));
+        EXPECT_EQ(m_solver->d_status.getValue(), component::odesolver::backward::NewtonStatus("Undefined"));
 
         NewtonRaphsonParameters params;
         params.maxNbIterationsNewton = 1;
         params.apply(m_solver);
         
         m_scene.simulate(dt);
+
+        EXPECT_EQ(m_solver->d_status.getValue(), component::odesolver::backward::NewtonStatus("DivergedMaxIterations"));
 
     }
 
@@ -154,7 +156,7 @@ TEST_F(NewtonRaphsonTest, gravity_noStopping)
     // no stopping criteria is defined so it cannot converge
     this->gravity(
         NewtonRaphsonParameters{},
-        component::odesolver::backward::NewtonRaphsonSolver::NewtonStatus("DivergedMaxIterations"));
+        component::odesolver::backward::NewtonStatus("DivergedMaxIterations"));
 }
 
 TEST_F(NewtonRaphsonTest, gravity_relativeSuccessiveStopping)
@@ -164,7 +166,7 @@ TEST_F(NewtonRaphsonTest, gravity_relativeSuccessiveStopping)
 
     this->gravity(
         params,
-        component::odesolver::backward::NewtonRaphsonSolver::NewtonStatus("ConvergedResidualSuccessiveRatio"));
+        component::odesolver::backward::NewtonStatus("ConvergedResidualSuccessiveRatio"));
 }
 
 TEST_F(NewtonRaphsonTest, gravity_relativeInitialStopping)
@@ -174,7 +176,7 @@ TEST_F(NewtonRaphsonTest, gravity_relativeInitialStopping)
 
     this->gravity(
         params,
-        component::odesolver::backward::NewtonRaphsonSolver::NewtonStatus("ConvergedResidualInitialRatio"));
+        component::odesolver::backward::NewtonStatus("ConvergedResidualInitialRatio"));
 }
 
 TEST_F(NewtonRaphsonTest, gravity_absoluteResidualStopping)
@@ -184,7 +186,7 @@ TEST_F(NewtonRaphsonTest, gravity_absoluteResidualStopping)
 
     this->gravity(
         params,
-        component::odesolver::backward::NewtonRaphsonSolver::NewtonStatus("ConvergedAbsoluteResidual"));
+        component::odesolver::backward::NewtonStatus("ConvergedAbsoluteResidual"));
 }
 
 TEST_F(NewtonRaphsonTest, gravity_relativeEstimateDifferenceStopping)
@@ -195,7 +197,7 @@ TEST_F(NewtonRaphsonTest, gravity_relativeEstimateDifferenceStopping)
     // considered as diverged because this threshold requires more than one iteration
     this->gravity(
         params,
-        component::odesolver::backward::NewtonRaphsonSolver::NewtonStatus("DivergedMaxIterations"));
+        component::odesolver::backward::NewtonStatus("DivergedMaxIterations"));
 }
 
 TEST_F(NewtonRaphsonTest, gravity_absoluteEstimateDifferenceStopping)
@@ -206,7 +208,7 @@ TEST_F(NewtonRaphsonTest, gravity_absoluteEstimateDifferenceStopping)
     // considered as diverged because this threshold requires more than one iteration
     this->gravity(
         params,
-        component::odesolver::backward::NewtonRaphsonSolver::NewtonStatus("DivergedMaxIterations"));
+        component::odesolver::backward::NewtonStatus("DivergedMaxIterations"));
 }
 
 TEST_F(NewtonRaphsonTest, spring)

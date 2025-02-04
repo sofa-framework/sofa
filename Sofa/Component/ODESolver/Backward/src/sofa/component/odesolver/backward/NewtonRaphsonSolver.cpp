@@ -25,11 +25,16 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 
+#include <sofa/component/odesolver/backward/convergence/AbsoluteConvergenceMeasure.h>
+#include <sofa/component/odesolver/backward/convergence/AbsoluteEstimateDifferenceMeasure.h>
+#include <sofa/component/odesolver/backward/convergence/RelativeEstimateDifferenceMeasure.h>
+#include <sofa/component/odesolver/backward/convergence/RelativeInitialConvergenceMeasure.h>
+#include <sofa/component/odesolver/backward/convergence/RelativeSuccessiveConvergenceMeasure.h>
 
 namespace sofa::component::odesolver::backward
 {
 
-static constexpr NewtonRaphsonSolver::NewtonStatus defaultStatus("Undefined");
+static constexpr NewtonStatus defaultStatus("Undefined");
 
 NewtonRaphsonSolver::NewtonRaphsonSolver()
     : l_integrationMethod(initLink("integrationMethod", "The integration method to use in a Newton iteration"))
@@ -187,6 +192,39 @@ void NewtonRaphsonSolver::start()
     static constexpr auto running = NewtonStatus("Running");
     d_status.setValue(running);
 }
+bool NewtonRaphsonSolver::measureConvergence(
+    const NewtonRaphsonConvergenceMeasure& measure,
+    sofa::simulation::common::VectorOperations& vop,
+    sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult,
+    std::stringstream& os)
+{
+    if (measure.isMeasured())
+    {
+        if (measure.hasConverged())
+        {
+            d_status.setValue(measure.status());
+
+            msg_info() << os.str();
+            msg_info() << "[CONVERGED] " << measure.writeWhenConverged();
+
+            //algorithm has converged, states can be updated
+            const NewtonIterationStateVersionAccess i;
+            vop.v_eq(xResult, m_coordStates[i+1]);
+            vop.v_eq(vResult, m_derivStates[i+1]);
+
+            return true;
+        }
+        else if (notMuted())
+        {
+            os << "\n* " << measure.measureName() << ": NO";
+        }
+    }
+    else if (notMuted())
+    {
+        os << "\n* " << measure.measureName() << ": NOT TESTED";
+    }
+    return false;
+}
 
 void NewtonRaphsonSolver::solve(
     const core::ExecParams* params, SReal dt,
@@ -295,22 +333,20 @@ void NewtonRaphsonSolver::solve(
         msg_info() << "Initial residual: " << squaredResidualNorm;
 
         const auto relativeSuccessiveStoppingThreshold = d_relativeSuccessiveStoppingThreshold.getValue();
-        const auto relativeInitialStoppingThreshold = d_relativeInitialStoppingThreshold.getValue();
-        const auto relativeEstimateDifferenceThreshold = d_relativeEstimateDifferenceThreshold.getValue();
-        const auto absoluteEstimateDifferenceThreshold = d_absoluteEstimateDifferenceThreshold.getValue();
 
-        const auto squaredRelativeSuccessiveStoppingThreshold = std::pow(relativeSuccessiveStoppingThreshold, 2);
-        const auto squaredRelativeInitialStoppingThreshold = std::pow(relativeInitialStoppingThreshold, 2);
-        const auto squaredRelativeEstimateDifferenceThreshold = std::pow(relativeEstimateDifferenceThreshold, 2);
-        const auto squaredAbsoluteEstimateDifferenceThreshold = std::pow(absoluteEstimateDifferenceThreshold, 2);
-
+        RelativeSuccessiveConvergenceMeasure relativeSuccessiveConvergenceMeasure(d_relativeSuccessiveStoppingThreshold.getValue());
+        RelativeInitialConvergenceMeasure relativeInitialConvergenceMeasure(d_relativeInitialStoppingThreshold.getValue());
+        relativeInitialConvergenceMeasure.firstSquaredResidualNorm = squaredResidualNorm;
+        AbsoluteConvergenceMeasure absoluteConvergenceMeasure(absoluteStoppingThreshold);
+        AbsoluteEstimateDifferenceMeasure absoluteEstimateDifferenceMeasure(d_absoluteEstimateDifferenceThreshold.getValue());
+        RelativeEstimateDifferenceMeasure relativeEstimateDifferenceMeasure(d_relativeEstimateDifferenceThreshold.getValue());
+        
         const auto maxNbIterationsNewton = d_maxNbIterationsNewton.getValue();
         const auto maxNbIterationsLineSearch = d_maxNbIterationsLineSearch.getValue();
         const auto [mFact, bFact, kFact] = l_integrationMethod->getMatricesFactors(dt);
         bool hasConverged = false;
         bool hasLineSearchFailed = false;
         const auto lineSearchCoefficient = d_lineSearchCoefficient.getValue();
-        const auto firstSquaredResidualNorm = squaredResidualNorm;
 
         unsigned int newtonIterationCount = 0;
         for (; newtonIterationCount < maxNbIterationsNewton; ++newtonIterationCount)
@@ -412,7 +448,6 @@ void NewtonRaphsonSolver::solve(
                 iterationResults << "\n* Current iteration = " << newtonIterationCount;
                 iterationResults << "\n* Residual = " << std::sqrt(squaredResidualNorm) << " (threshold = " << absoluteStoppingThreshold << ")";
                 iterationResults << "\n* Successive relative ratio = " << std::sqrt(squaredResidualNorm / previousSquaredResidualNorm) << " (threshold = " << relativeSuccessiveStoppingThreshold << ", previous residual = " << std::sqrt(previousSquaredResidualNorm) << ")";
-                iterationResults << "\n* Initial relative ratio = " << std::sqrt(squaredResidualNorm / firstSquaredResidualNorm) << " (threshold = " << relativeInitialStoppingThreshold << ", initial residual = " << std::sqrt(firstSquaredResidualNorm) << ")";
             }
 
             if (!lineSearchSuccess)
@@ -425,112 +460,40 @@ void NewtonRaphsonSolver::solve(
                 break;
             }
 
-            // relative successive convergence
-            if (relativeSuccessiveStoppingThreshold > 0)
+            relativeSuccessiveConvergenceMeasure.squaredResidualNorm = squaredResidualNorm;
+            relativeSuccessiveConvergenceMeasure.previousSquaredResidualNorm = previousSquaredResidualNorm;
+            relativeSuccessiveConvergenceMeasure.newtonIterationCount = newtonIterationCount;
+            if (measureConvergence(relativeSuccessiveConvergenceMeasure, vop, xResult, vResult, iterationResults))
             {
-                if (squaredResidualNorm < squaredRelativeSuccessiveStoppingThreshold * previousSquaredResidualNorm)
-                {
-                    msg_info() << iterationResults.str();
-                    msg_info() << "[CONVERGED] residual successive ratio is smaller than "
-                                "the threshold (" << relativeInitialStoppingThreshold
-                                << ") after " << (newtonIterationCount+1) << " Newton iterations.";
-                    hasConverged = true;
-
-                    static constexpr auto convergedResidualSuccessiveRatio = NewtonStatus("ConvergedResidualSuccessiveRatio");
-                    d_status.setValue(convergedResidualSuccessiveRatio);
-
-                    vop.v_eq(xResult, x[i+1]);
-                    vop.v_eq(vResult, v[i+1]);
-
-                    break;
-                }
-                if (printLog)
-                {
-                    iterationResults << "\n* Relative successive convergence: NO";
-                }
-            }
-            else
-            {
-                if (printLog)
-                {
-                    iterationResults << "\n* Relative successive convergence: NOT TESTED";
-                }
+                hasConverged = true;
+                break;
             }
 
-            // relative initial convergence
-            if (relativeInitialStoppingThreshold > 0)
+            relativeInitialConvergenceMeasure.squaredResidualNorm = squaredResidualNorm;
+            if (measureConvergence(relativeInitialConvergenceMeasure, vop, xResult, vResult, iterationResults))
             {
-                if (squaredResidualNorm < squaredRelativeInitialStoppingThreshold * firstSquaredResidualNorm)
-                {
-                    msg_info() << iterationResults.str();
-                    msg_info() << "[CONVERGED] residual initial ratio is smaller than "
-                            "the threshold (" << relativeInitialStoppingThreshold
-                            << ") after " << (newtonIterationCount+1) << " Newton iterations.";
-                    hasConverged = true;
-
-                    static constexpr auto convergedResidualInitialRatio = NewtonStatus("ConvergedResidualInitialRatio");
-                    d_status.setValue(convergedResidualInitialRatio);
-
-                    vop.v_eq(xResult, x[i+1]);
-                    vop.v_eq(vResult, v[i+1]);
-
-                    break;
-                }
-                if (printLog)
-                {
-                    iterationResults << "\n* Relative initial convergence: NO";
-                }
-            }
-            else
-            {
-                if (printLog)
-                {
-                    iterationResults << "\n* Relative initial convergence: NOT TESTED";
-                }
+                hasConverged = true;
+                break;
             }
 
-            // absolute convergence
-            if (absoluteStoppingThreshold > 0)
+            absoluteConvergenceMeasure.squaredResidualNorm = squaredResidualNorm;
+            if (measureConvergence(absoluteConvergenceMeasure, vop, xResult, vResult, iterationResults))
             {
-                if (squaredResidualNorm <= squaredAbsoluteStoppingThreshold)
-                {
-                    msg_info() << iterationResults.str();
-                    msg_info() << "[CONVERGED] residual squared norm (" << squaredResidualNorm
-                               << ") is smaller than the threshold ("
-                               << squaredAbsoluteStoppingThreshold << ") after "
-                               << (newtonIterationCount + 1) << " Newton iterations.";
-                    hasConverged = true;
-
-                    static constexpr auto convergedAbsoluteResidual =
-                        NewtonStatus("ConvergedAbsoluteResidual");
-                    d_status.setValue(convergedAbsoluteResidual);
-
-                    vop.v_eq(xResult, x[i+1]);
-                    vop.v_eq(vResult, v[i+1]);
-
-                    break;
-                }
-                if (printLog)
-                {
-                    iterationResults << "\n* Absolute convergence: NO. Residual squared norm (" << squaredResidualNorm << ") > threshold (" << squaredAbsoluteStoppingThreshold << ")";
-                }
-            }
-            else
-            {
-                if (printLog)
-                {
-                    iterationResults << "\n* Absolute convergence: NOT TESTED";
-                }
+                hasConverged = true;
+                break;
             }
 
-            if (absoluteEstimateDifferenceThreshold > 0 || squaredRelativeEstimateDifferenceThreshold > 0)
+            if (absoluteEstimateDifferenceMeasure.isMeasured()
+                || relativeEstimateDifferenceMeasure.isMeasured())
             {
-                core::behavior::MultiVecDeriv tmp(&vop);
+                {
+                    core::behavior::MultiVecDeriv tmp(&vop);
 
-                vop.v_eq(tmp, v[i+1]);
-                vop.v_peq(tmp, v[i], -1);
+                    vop.v_eq(tmp, v[i+1]);
+                    vop.v_peq(tmp, v[i], -1);
 
-                vop.v_dot(tmp, tmp);
+                    vop.v_dot(tmp, tmp);
+                }
                 const auto squaredAbsoluteDifference = vop.finish();
 
                 if (printLog)
@@ -538,58 +501,23 @@ void NewtonRaphsonSolver::solve(
                     iterationResults << "\n* Successive estimate difference = " << std::sqrt(squaredAbsoluteDifference);
                 }
 
-                if (squaredRelativeEstimateDifferenceThreshold > 0)
+                if (relativeEstimateDifferenceMeasure.isMeasured())
                 {
                     vop.v_dot(v[i], v[i]);
-                    const auto squaredPreviousVelocity = vop.finish();
-
-                    if (squaredPreviousVelocity != 0)
+                    relativeEstimateDifferenceMeasure.squaredAbsoluteDifference = squaredAbsoluteDifference;
+                    relativeEstimateDifferenceMeasure.squaredPreviousVelocity = vop.finish();
+                    
+                    if (measureConvergence(relativeEstimateDifferenceMeasure, vop, xResult, vResult, iterationResults))
                     {
-                        if (printLog)
-                        {
-                            iterationResults << "\n* Relative estimate difference = " << std::sqrt(squaredAbsoluteDifference / squaredPreviousVelocity);
-                        }
-
-                        if (squaredAbsoluteDifference < squaredPreviousVelocity * squaredRelativeEstimateDifferenceThreshold)
-                        {
-                            msg_info() << iterationResults.str();
-                            msg_info() << "[CONVERGED] relative successive estimate difference (" <<
-                                    std::sqrt(squaredAbsoluteDifference / squaredPreviousVelocity)
-                                    << ") is smaller than the threshold ("
-                                    << squaredRelativeEstimateDifferenceThreshold << ") after "
-                                    << (newtonIterationCount+1) << " Newton iterations.";
-                            hasConverged = true;
-
-                            static constexpr auto convergedRelativeEstimateDifference = NewtonStatus("ConvergedRelativeEstimateDifference");
-                            d_status.setValue(convergedRelativeEstimateDifference);
-                            
-                            vop.v_eq(xResult, x[i+1]);
-                            vop.v_eq(vResult, v[i+1]);
-
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    if (printLog)
-                    {
-                        iterationResults << "\n* Relative successive estimate difference convergence: NOT TESTED";
+                        hasConverged = true;
+                        break;
                     }
                 }
 
-                if (squaredAbsoluteDifference < squaredAbsoluteEstimateDifferenceThreshold)
+                absoluteEstimateDifferenceMeasure.squaredAbsoluteDifference = squaredAbsoluteDifference;
+                if (measureConvergence(absoluteEstimateDifferenceMeasure, vop, xResult, vResult, iterationResults))
                 {
-                    msg_info() << iterationResults.str();
-                    msg_info() << "[CONVERGED] absolute successive estimate difference (" <<
-                            std::sqrt(squaredAbsoluteDifference) << ") is smaller than the threshold ("
-                            << squaredAbsoluteEstimateDifferenceThreshold << ") after "
-                            << (newtonIterationCount+1) << " Newton iterations.";
                     hasConverged = true;
-
-                    static constexpr auto convergedAbsoluteEstimateDifference = NewtonStatus("ConvergedAbsoluteEstimateDifference");
-                    d_status.setValue(convergedAbsoluteEstimateDifference);
-
                     break;
                 }
             }
