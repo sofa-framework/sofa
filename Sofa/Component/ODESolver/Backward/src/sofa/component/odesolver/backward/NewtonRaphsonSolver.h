@@ -20,12 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/odesolver/backward/NewtonStatus.h>
 #include <sofa/component/odesolver/backward/config.h>
 #include <sofa/core/behavior/BaseIntegrationMethod.h>
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
+
+#include "convergence/NewtonRaphsonConvergenceMeasure.h"
 
 namespace sofa::component::odesolver::backward
 {
@@ -123,19 +126,6 @@ public:
     Data<SReal> d_absoluteEstimateDifferenceThreshold;
     Data<unsigned int> d_maxNbIterationsLineSearch;
     Data<SReal> d_lineSearchCoefficient;
-
-    MAKE_SELECTABLE_ITEMS(NewtonStatus,
-        sofa::helper::Item{"Undefined", "The solver has not been called yet"},
-        sofa::helper::Item{"Running", "The solver is still running and/or did not finish"},
-        sofa::helper::Item{"ConvergedEquilibrium", "Converged: the iterations did not start because the system is already at equilibrium"},
-        sofa::helper::Item{"DivergedLineSearch", "Diverged: line search failed"},
-        sofa::helper::Item{"DivergedMaxIterations", "Diverged: Reached the maximum number of iterations"},
-        sofa::helper::Item{"ConvergedResidualSuccessiveRatio", "Converged: Residual successive ratio is smaller than the threshold"},
-        sofa::helper::Item{"ConvergedResidualInitialRatio", "Converged: Residual initial ratio is smaller than the threshold"},
-        sofa::helper::Item{"ConvergedAbsoluteResidual", "Converged: Absolute residual is smaller than the threshold"},
-        sofa::helper::Item{"ConvergedRelativeEstimateDifference", "Converged: Relative estimate difference is smaller than the threshold"},
-        sofa::helper::Item{"ConvergedAbsoluteEstimateDifference", "Converged: Absolute estimate difference is smaller than the threshold"});
-
     Data<bool> d_updateStateWhenDiverged;
     Data<NewtonStatus> d_status;
 
@@ -162,7 +152,11 @@ protected:
     StateList<core::V_COORD> m_coordStates;
     StateList<core::V_DERIV> m_derivStates;
     
-    
+    bool measureConvergence(
+        const NewtonRaphsonConvergenceMeasure& measure,
+        sofa::simulation::common::VectorOperations& vop,
+        sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult,
+        std::stringstream& os);
 
 };
 

@@ -11,6 +11,14 @@ set(HEADER_FILES
     ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/VariationalSymplecticSolver.h
     ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/NewmarkImplicitSolver.h
     ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/NewtonRaphsonSolver.h
+    ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/NewtonStatus.h
+    
+    ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/convergence/AbsoluteConvergenceMeasure.h
+    ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/convergence/AbsoluteEstimateDifferenceMeasure.h
+    ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/convergence/NewtonRaphsonConvergenceMeasure.h
+    ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/convergence/RelativeEstimateDifferenceMeasure.h
+    ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/convergence/RelativeInitialConvergenceMeasure.h
+    ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/convergence/RelativeSuccessiveConvergenceMeasure.h
 )
 
 set(SOURCE_FILES
