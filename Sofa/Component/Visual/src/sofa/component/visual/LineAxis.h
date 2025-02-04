@@ -35,6 +35,7 @@ public:
     Data<std::string> d_axis; ///< Axis to draw
     Data<float> d_size; ///< Size of the squared grid
     Data<float> d_thickness; ///< Thickness of the lines in the grid
+    Data<bool> d_vanishing; ///< In case of infinite lines, should the lines vanish.
     core::objectmodel::lifecycle::RemovedData d_draw {this, "v23.06", "23.12", "draw", "Use the 'enable' data field instead of 'draw'"};
 
     LineAxis();
