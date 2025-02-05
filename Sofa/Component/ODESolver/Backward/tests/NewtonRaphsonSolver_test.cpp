@@ -129,13 +129,13 @@ struct NewtonRaphsonTest : public testing::BaseSimulationTest
     {
         sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
 
-        sofa::simpleapi::createObject(m_scene.root, "RestShapeSpringsForceField", {{"points", "0"}, {"spring", "0 1 " + std::to_string(k) + " 0 " + std::to_string(L_0) }});
+        sofa::simpleapi::createObject(m_scene.root, "RestShapeSpringsForceField", {{"points", "0"}, {"stiffness", std::to_string(k)}});
 
         m_scene.initScene();
         EXPECT_EQ(m_solver->d_status.getValue(), component::odesolver::backward::NewtonStatus("Undefined"));
 
         NewtonRaphsonParameters params;
-        params.maxNbIterationsNewton = 1;
+        params.maxNbIterationsNewton = 2;
         params.apply(m_solver);
         
         m_scene.simulate(dt);
