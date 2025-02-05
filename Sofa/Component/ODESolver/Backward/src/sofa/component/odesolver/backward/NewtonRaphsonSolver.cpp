@@ -453,7 +453,6 @@ void NewtonRaphsonSolver::solve(
 
             const auto previousSquaredResidualNorm = squaredResidualNorm;
             squaredResidualNorm = squaredResidualNormLineSearch;
-            residualList.push_back(squaredResidualNorm);
 
             std::stringstream iterationResults;
 
@@ -474,6 +473,8 @@ void NewtonRaphsonSolver::solve(
 
                 break;
             }
+
+            residualList.push_back(squaredResidualNorm);
 
             relativeSuccessiveConvergenceMeasure.squaredResidualNorm = squaredResidualNorm;
             relativeSuccessiveConvergenceMeasure.previousSquaredResidualNorm = previousSquaredResidualNorm;
