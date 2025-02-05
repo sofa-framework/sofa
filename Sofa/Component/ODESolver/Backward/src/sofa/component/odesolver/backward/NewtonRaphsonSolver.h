@@ -29,6 +29,7 @@
 #include <sofa/simulation/VectorOperations.h>
 
 #include "convergence/NewtonRaphsonConvergenceMeasure.h"
+#include <sofa/helper/map.h>
 
 namespace sofa::component::odesolver::backward
 {
@@ -128,6 +129,7 @@ public:
     Data<SReal> d_lineSearchCoefficient;
     Data<bool> d_updateStateWhenDiverged;
     Data<NewtonStatus> d_status;
+    Data<std::map < std::string, sofa::type::vector<SReal> > > d_residualGraph;
 
 protected:
     NewtonRaphsonSolver();
