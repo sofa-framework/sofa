@@ -78,8 +78,15 @@ NewtonRaphsonSolver::NewtonRaphsonSolver()
     , d_lineSearchCoefficient(initData(&d_lineSearchCoefficient, 0.5_sreal, "lineSearchCoefficient", "Line search coefficient"))
     , d_updateStateWhenDiverged(initData(&d_updateStateWhenDiverged, true, "updateStateWhenDiverged", "Update the states within the last iteration even if the iterative process is considered diverged."))
     , d_status(initData(&d_status, defaultStatus, "status", ("status\n" + NewtonStatus::dataDescription()).c_str()))
+    , d_residualGraph(initData(&d_residualGraph, "residualGraph", "Graph of the residual over the iterations"))
 {
     d_status.setReadOnly(true);
+
+    static std::string groupAnalysis { "Analysis" };
+    d_status.setGroup(groupAnalysis);
+    d_residualGraph.setGroup(groupAnalysis);
+
+    d_residualGraph.setWidget("graph");
 }
 
 NewtonRaphsonSolver::~NewtonRaphsonSolver()
@@ -120,6 +127,9 @@ void NewtonRaphsonSolver::init()
 void NewtonRaphsonSolver::reset()
 {
     d_status.setValue(defaultStatus);
+
+    auto graph = sofa::helper::getWriteAccessor(d_residualGraph);
+    graph->clear();
 }
 
 void NewtonRaphsonSolver::computeRightHandSide(const core::ExecParams* params, SReal dt,
@@ -240,6 +250,8 @@ void NewtonRaphsonSolver::solve(
     start();
 
     const bool printLog = f_printLog.getValue();
+    auto graphAccessor = sofa::helper::getWriteAccessor(d_residualGraph);
+    auto& graph = graphAccessor.wref();
 
     // Create the vector and mechanical operations tools. These are used to execute special
     // operations (multiplication,
@@ -308,11 +320,15 @@ void NewtonRaphsonSolver::solve(
         computeRightHandSide(params, dt, force, rhs, v[i], x[i]);
     }
 
+    auto& residualList = graph["residual"];
+    residualList.clear();
+
     SReal squaredResidualNorm{};
     {
         SCOPED_TIMER("ComputeError");
         squaredResidualNorm = this->computeResidual(
             params, mop, dt, force, v[n], v[i]);
+        residualList.push_back(squaredResidualNorm);
     }
 
     const auto absoluteStoppingThreshold = d_absoluteResidualStoppingThreshold.getValue();
@@ -437,6 +453,7 @@ void NewtonRaphsonSolver::solve(
 
             const auto previousSquaredResidualNorm = squaredResidualNorm;
             squaredResidualNorm = squaredResidualNormLineSearch;
+            residualList.push_back(squaredResidualNorm);
 
             std::stringstream iterationResults;
 
