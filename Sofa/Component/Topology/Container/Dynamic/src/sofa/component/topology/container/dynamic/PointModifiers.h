@@ -39,31 +39,125 @@ using PointID = core::topology::BaseMeshTopology::PointID;
 class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API PointToAdd
 {
 public:
-    PointToAdd(PointID uniqueID, PointID idPoint, 
-        const sofa::type::vector<PointID>& ancestors, 
+    PointToAdd(PointID uniqueID, PointID idPoint,
+        const sofa::type::vector<PointID>& ancestors,
         const sofa::type::vector<SReal>& coefs, SReal snapValue = 1_sreal)
         : m_uniqueID(uniqueID)
         , m_idPoint(idPoint)
-        , m_ancestors(ancestors)
-        , m_coefs(coefs)
-    {}
-    
+        , m_snapValue(snapValue)
+    {
+        if (ancestors.size() != coefs.size())
+        {
+            msg_error("PointToAdd") << "Not the same size of ancestors: " << ancestors.size() << " vs coefs: " << coefs.size() << " given for PointToAdd id: " << uniqueID;
+            m_ancestorType = sofa::geometry::ElementType::UNKNOWN;
+            return;
+        }
+
+        m_idLocalSnap = sofa::InvalidID;
+        for (sofa::Size id = 0; id < ancestors.size(); ++id)
+        {
+            if (coefs[id] > snapValue) // point need to be snapped with existing ancestor
+            {
+                m_idLocalSnap = id;
+                break;
+            }
+        }
+
+        if (m_idLocalSnap == sofa::InvalidID) // no snapping needed
+        {
+            m_ancestors = ancestors;
+            m_coefs = coefs;
+            if (ancestors.size() == 2)
+            {
+                m_ancestorType = sofa::geometry::ElementType::EDGE;
+            }
+            else
+            {
+                m_ancestorType = sofa::geometry::ElementType::TRIANGLE;
+            }
+        }
+        else
+        {
+            m_ancestors = ancestors;
+            m_coefs.resize(ancestors.size());
+            for (sofa::Size id = 0; id < ancestors.size(); ++id)
+            {
+                if (id == m_idLocalSnap)
+                {
+                    m_coefs[id] = 1_sreal;
+                }
+                else
+                {
+                    m_coefs[id] = 0_sreal;
+                }
+            }
+            m_ancestorType = sofa::geometry::ElementType::POINT;
+        }
+
+    }
+
+
+    // bool return true if point is snap
+    bool updatePointIDForDuplication()
+    {
+        //if (m_idLocalSnap != sofa::InvalidID)
+        //{
+        //    m_idClone = m_idPoint;
+        //    m_idPoint = m_ancestors[m_idLocalSnap];
+        //    return true;
+        //}
+        //else
+        //{
+        //    m_idClone = m_idPoint + 1;
+        //    return false;
+        //}
+
+        if (m_ancestorType == sofa::geometry::ElementType::POINT)
+        {
+            m_idClone = m_idPoint + 1;
+            return false;
+        }
+        else if (m_ancestorType == sofa::geometry::ElementType::EDGE)
+        {
+            m_idClone = m_idPoint + 1;
+            return false;
+        }
+        else if (m_ancestorType == sofa::geometry::ElementType::TRIANGLE)
+        {
+            // point in middle of a triangle. It should not be duplicated
+            return false;
+        }
+        else
+            return false;
+    }
+
+
+    void printValue()
+    {
+        std::cout << "PTA: " << m_uniqueID << " | idPoint: " << m_idPoint << " | idClone: " << m_idClone << " | m_ancestorType: " << int(m_ancestorType) << std::endl;
+        std::cout << "PTA: " << m_uniqueID << " | ancestors: " << m_ancestors << " | coefs: " << m_coefs << std::endl;
+    }
+
+
     /// Unique ID of this point structure. Will be a code combining ancestors ids
     PointID m_uniqueID;
-    
+
     /// Future pointID of this pointToAdd
     PointID m_idPoint = sofa::InvalidID;
     /// Future pointID of this pointToAdd if this point is duplicated due to a cut
     PointID m_idClone = sofa::InvalidID;
 
     sofa::geometry::ElementType m_ancestorType = sofa::geometry::ElementType::UNKNOWN;
-    
+
     core::topology::BaseMeshTopology::ElemID m_ownerId = sofa::InvalidID;
 
     /// List of ancestors (existing point ID of the mesh)
     sofa::type::vector<PointID> m_ancestors;
     /// List of corresponding coefficients 
     sofa::type::vector<SReal> m_coefs;
+
+    PointID m_idLocalSnap = sofa::InvalidID;
+    SReal m_snapValue;
 };
 
 

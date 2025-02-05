@@ -2246,21 +2246,41 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
         type::vector<PointID> _ancestors = { edge[0], edge[1] };
 
         PointID uniqID = getUniqueId(edge[0], edge[1]);
-        std::shared_ptr<PointToAdd> PTA = std::make_shared<PointToAdd>(uniqID, nbrPoints, _ancestors, _coefs, snapThreshold);
-        PTA->m_ownerId = edges_list[i];
-        bool snapped = PTA->updatePointIDForDuplication();
-        PTA->printValue();
-        if (snapped)
+        std::shared_ptr<PointToAdd> PTA = std::make_shared<PointToAdd>(uniqID, nbrPoints, _ancestors, _coefs);
+        
+        if (coords_list[i] > 1.0 - EQUALITY_THRESHOLD) // snap on this point
         {
-            auto itM = cloneMap.find(PTA->m_idPoint);
-            if (itM == cloneMap.end())
+            PTA->m_ancestorType = sofa::geometry::ElementType::POINT;
+            PTA->m_ownerId = edge[0];
+        }
+        else if (coords_list[i] < EQUALITY_THRESHOLD) // snap on the other point
+        {
+            PTA->m_ancestorType = sofa::geometry::ElementType::POINT;
+            PTA->m_ownerId = edge[1];
+        }
+        else 
+        {
+            PTA->m_ancestorType = sofa::geometry::ElementType::EDGE;
+            PTA->m_ownerId = edges_list[i];
+        }
+        
+        // Adding new PTA to the vector
+        if (PTA->m_ancestorType == sofa::geometry::ElementType::POINT) // check to add it only once
+        {
+            bool found = false;
+            for (const auto& ptAdded : _pointsToAdd)
             {
-                cloneMap[PTA->m_idPoint] = PTA->m_idClone;
+                if (ptAdded->m_idPoint == PTA->m_idPoint) // already registered
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
                 _pointsToAdd.push_back(PTA);
                 nbrPoints++;
-            }
-            else {
-                PTA = _pointsToAdd.back();
             }
         }
         else
@@ -2268,8 +2288,7 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
             _pointsToAdd.push_back(PTA);
             nbrPoints = nbrPoints + 2;
         }
-    }
-
+    }    
 
     return _pointsToAdd;
 }
