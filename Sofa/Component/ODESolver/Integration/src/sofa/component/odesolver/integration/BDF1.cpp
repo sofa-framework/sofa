@@ -75,16 +75,22 @@ void BDF1::computeRightHandSide(
     const auto alpha = d_rayleighMass.getValue();
     const auto beta = d_rayleighStiffness.getValue();
 
+    const auto& x = input.intermediatePosition;
+    const auto& v = input.intermediateVelocity;
+
     {
         SCOPED_TIMER("ComputeForce");
         static constexpr bool clearForcesBeforeComputingThem = true;
         static constexpr bool applyBottomUpMappings = true;
 
-        mop.mparams.setX(input.intermediatePosition);
-        mop.mparams.setV(input.intermediateVelocity);
+        mop.mparams.setX(x);
+        mop.mparams.setV(v);
         mop.computeForce(force,
             clearForcesBeforeComputingThem, applyBottomUpMappings);
     }
+
+    // b = dt * f
+    m_vop->v_eq(rightHandSide, force, dt);
 
     // b += M * (v_n - (1 + dt * alpha) v_i)
     {
@@ -92,13 +98,10 @@ void BDF1::computeRightHandSide(
         tmp.eq(m_oldVelocity); // v_n
 
         //(v_n - (1 + dt * alpha) v_i)
-        m_vop->v_peq(tmp, input.intermediateVelocity, -(1 + dt * alpha));
+        m_vop->v_peq(tmp, v, -(1 + dt * alpha));
 
         mop.addMdx(rightHandSide, tmp, core::MatricesFactors::M(1).get());
     }
-
-    // b = dt * f
-    m_vop->v_eq(rightHandSide, force, dt);
 
     // b += dt * K * ((beta + dt) * v^i + x_n - x^i)
     {
@@ -106,9 +109,9 @@ void BDF1::computeRightHandSide(
         {
             core::behavior::MultiVecDeriv tmp(m_vop.get());
             
-            tmp.eq(input.intermediateVelocity, (beta + dt)); // (beta + dt) * v^i
+            tmp.eq(v, (beta + dt)); // (beta + dt) * v^i
             tmp.peq(m_oldPosition); // (beta + dt) * v^i + x_n
-            tmp.peq(input.intermediatePosition, -1); // (beta + dt) * v^i + x_n - x^i
+            tmp.peq(x, -1); // (beta + dt) * v^i + x_n - x^i
             
             mop.mparams.setV(tmp);
             mop.addMBKv(rightHandSide,
@@ -134,7 +137,7 @@ void BDF1::updateStates(const core::ExecParams* params, SReal dt,
     m_vop->v_eq(newV, v);
     m_vop->v_peq(newV, linearSystemSolution);
 
-    // x_(i+1) = dt * v_(i+1) + x_i
+    // x_(i+1) = dt * v_(i+1) + x_n
     m_vop->v_eq(newX, x);
     m_vop->v_peq(newX, newV, dt);
 }

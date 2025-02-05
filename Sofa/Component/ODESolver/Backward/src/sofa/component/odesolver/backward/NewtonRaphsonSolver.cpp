@@ -20,16 +20,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/odesolver/backward/NewtonRaphsonSolver.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/simulation/VectorOperations.h>
-
 #include <sofa/component/odesolver/backward/convergence/AbsoluteConvergenceMeasure.h>
 #include <sofa/component/odesolver/backward/convergence/AbsoluteEstimateDifferenceMeasure.h>
 #include <sofa/component/odesolver/backward/convergence/RelativeEstimateDifferenceMeasure.h>
 #include <sofa/component/odesolver/backward/convergence/RelativeInitialConvergenceMeasure.h>
 #include <sofa/component/odesolver/backward/convergence/RelativeSuccessiveConvergenceMeasure.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/VectorOperations.h>
+
+#include <iomanip>
 
 namespace sofa::component::odesolver::backward
 {
@@ -131,7 +132,8 @@ void NewtonRaphsonSolver::computeRightHandSide(const core::ExecParams* params, S
     input.intermediateVelocity = velocity_i;
     input.intermediatePosition = position_i;
 
-    l_integrationMethod->computeRightHandSide(params, input, force, b, dt);
+    l_integrationMethod->computeRightHandSide(
+        params, input, force, b, dt);
 }
 
 SReal NewtonRaphsonSolver::computeResidual(const core::ExecParams* params,
@@ -298,15 +300,13 @@ void NewtonRaphsonSolver::solve(
     mop.cparams.setV(vResult);
 
     l_integrationMethod->initializeVectors(params,
-        core::vec_id::read_access::position,
-        core::vec_id::read_access::velocity);
+        x[n],
+        v[n]);
 
     {
         SCOPED_TIMER("ComputeRHS");
         computeRightHandSide(params, dt, force, rhs, v[i], x[i]);
     }
-
-    // msg_info() << "f = " << force;
 
     SReal squaredResidualNorm{};
     {
@@ -382,11 +382,9 @@ void NewtonRaphsonSolver::solve(
                     vop.v_teq(m_linearSystemSolution, lineSearchCoefficient);
                     totalLineSearchCoefficient *= lineSearchCoefficient;
                 }
-                // msg_info() << "Current solution: " << m_linearSystemSolution;
-                msg_info() << "Line search coefficient: " << totalLineSearchCoefficient;
-
+                
                 l_integrationMethod->updateStates(params, dt,
-                    x[i], v[i],
+                    x[n], v[i],
                     x[i+1], v[i+1],
                     m_linearSystemSolution);
 
