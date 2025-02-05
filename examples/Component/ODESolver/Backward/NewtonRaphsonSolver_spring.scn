@@ -18,7 +18,7 @@
 
     <Node name="Newton">
 
-        <BDF1 printLog="false" rayleighStiffness="0.01" rayleighMass="0.01"/>
+        <BDF1 printLog="false" rayleighStiffness="0.0" rayleighMass="0.0"/>
         <NewtonRaphsonSolver name="odeImplicitSolver" printLog="false" maxNbIterationsNewton="10" 
                              absoluteResidualStoppingThreshold="1e-8" relativeSuccessiveStoppingThreshold="1e-6"
                              relativeEstimateDifferenceThreshold="1e-10"

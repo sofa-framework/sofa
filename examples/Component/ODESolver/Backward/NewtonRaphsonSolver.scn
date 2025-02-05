@@ -19,8 +19,8 @@
 
     <Node name="DeformableObject">
 
-        <BDF1 printLog="true" rayleighStiffness="0.01" rayleighMass="0.01"/>
-        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="true"
+        <BDF1 printLog="false" rayleighStiffness="0.0" rayleighMass="0.0"/>
+        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="false"
                              maxNbIterationsNewton="1000000" absoluteResidualStoppingThreshold="1e-5"
                              maxNbIterationsLineSearch="5" lineSearchCoefficient="0.5"
                              absoluteEstimateDifferenceThreshold="1e-5"
