@@ -48,7 +48,7 @@ public:
     {
         std::stringstream ss;
         ss << "residual successive ratio is smaller than "
-            "the threshold (" << newtonIterationCount
+            "the threshold (" << param
             << ") after " << (newtonIterationCount+1) << " Newton iterations.";
         return ss.str();
     }
