@@ -88,7 +88,7 @@ bool testGetUserHomeDirectory()
 
     const std::string path = Utils::getUserHomeDirectory();
 #if defined(WIN32)
-    result = (path == "D:\a");
+    result = (path == "J:/jenkins2");
 #elif defined (__APPLE__)
     result = (path.find("Library") != std::string::npos);
     result = result && (path.find("Application Support") != std::string::npos);
@@ -96,6 +96,7 @@ bool testGetUserHomeDirectory()
     result = (path == "/home/runner");
 #endif
 
+    std::cout<<"Utils::getUserHomeDirectory(): "<<path<<std::endl;
     return result;
 }
 
