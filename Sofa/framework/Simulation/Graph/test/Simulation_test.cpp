@@ -223,10 +223,9 @@ protected:
         root = simulation::getSimulation()->createNewGraph("root");
         root->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
 
-        typename UniformMass3::SPtr uniformMass = core::objectmodel::New<UniformMass3>();
+        typename UniformMass3::SPtr uniformMass = core::objectmodel::New<InstrumentedObject<UniformMass3>>();
         uniformMass->d_totalMass.setValue(1.0);
         root->addObject(uniformMass);
-        root->addObject(core::objectmodel::New<InstrumentedObject<UniformMass3> >());
 
         const simulation::Node::SPtr child  = simulation::getSimulation()->createNewNode("child");
         root->addChild(child);

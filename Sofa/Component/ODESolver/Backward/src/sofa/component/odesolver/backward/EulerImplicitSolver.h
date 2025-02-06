@@ -25,7 +25,7 @@
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::odesolver::backward
 {
@@ -104,20 +104,20 @@ public:
     SOFA_CLASS2(EulerImplicitSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_rayleighStiffness;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> f_rayleighStiffness;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_rayleighMass;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> f_rayleighMass;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_velocityDamping;
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> f_velocityDamping;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<bool> f_firstOrder;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_firstOrder;
 
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<bool> f_solveConstraint;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_solveConstraint;
 
 
 

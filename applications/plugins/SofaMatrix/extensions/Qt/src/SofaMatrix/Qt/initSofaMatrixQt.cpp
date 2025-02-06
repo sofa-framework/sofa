@@ -19,37 +19,57 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaMatrix/config.h>
+#include <SofaMatrix/Qt/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <SofaMatrix/BaseMatrixImageProxy.h>
-#include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
+#include <SofaMatrix/MatrixImageExporter.h>
 
-namespace sofa::component::constraintset
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
+
+extern "C" {
+    SOFA_SOFAMATRIX_API void initExternalModule();
+    SOFA_SOFAMATRIX_API const char* getModuleName();
+    SOFA_SOFAMATRIX_API const char* getModuleVersion();
+    SOFA_SOFAMATRIX_API const char* getModuleLicense();
+    SOFA_SOFAMATRIX_API const char* getModuleDescription();
+    SOFA_SOFAMATRIX_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
 
-/**
- * Component to convert a BaseMatrix from the constraint solver into an image that can be visualized in the GUI.
- * Use ComplianceMatrixExporter in order to save an image on the disk.
- *
- * Note that the compliance matrix is dense. It means all the entries will proably be non-zero
- */
-class SOFA_SOFAMATRIX_API ComplianceMatrixImage : public core::objectmodel::BaseObject
+        sofa::component::initializeMatrixExporterComponents();
+    }
+}
+
+const char* getModuleName()
 {
-public:
-    SOFA_CLASS(ComplianceMatrixImage, core::objectmodel::BaseObject);
+    return sofa_tostring(SOFA_TARGET);
+}
 
-protected:
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAMATRIX_VERSION);
+}
 
-    ComplianceMatrixImage();
-    ~ComplianceMatrixImage() override;
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-    void init() override;
-    void handleEvent(core::objectmodel::Event *event) override;
+const char* getModuleDescription()
+{
+    return "Sofa plugin gathering components related to linear system matrices.";
+}
 
-    Data< type::BaseMatrixImageProxy > d_bitmap; ///< Visualization of the representation of the matrix as a binary image. White pixels are zeros, black pixels are non-zeros.
-    SingleLink<ComplianceMatrixImage, sofa::component::constraint::lagrangian::solver::ConstraintSolverImpl, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
-};
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
 
-} //namespace sofa::component::constraintset

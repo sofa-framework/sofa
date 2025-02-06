@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMatrix/GlobalSystemMatrixImage.h>
+#include <SofaMatrix/Qt/GlobalSystemMatrixImage.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/simulation/AnimateEndEvent.h>

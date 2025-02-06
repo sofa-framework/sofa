@@ -26,7 +26,7 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/topology/TopologyData.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::constraint::lagrangian::correction
 {
@@ -113,13 +113,13 @@ public:
 
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    sofa::core::objectmodel::RenamedData< VecReal >  compliance;
+    sofa::core::objectmodel::lifecycle::RenamedData< VecReal >  compliance;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    sofa::core::objectmodel::RenamedData<Real> defaultCompliance;
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> defaultCompliance;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    sofa::core::objectmodel::RenamedData<bool> f_verbose;
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_verbose;
 
     core::topology::PointData< VecReal > d_compliance; ///< Compliance value on each dof. If Rigid compliance (7 values): 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix
 

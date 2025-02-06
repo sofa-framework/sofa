@@ -150,7 +150,7 @@ void CompareState::processCompareState()
         if (cmd.compare("X=") == 0)
         {
             last_X = *it;
-            currentError = mmodel->compareVec(core::VecId::position(), str);
+            currentError = mmodel->compareVec(sofa::core::vec_id::read_access::position, str);
 
 
             totalError_X +=currentError;
@@ -162,7 +162,7 @@ void CompareState::processCompareState()
         else if (cmd.compare("V=") == 0)
         {
             last_V = *it;
-            currentError = mmodel->compareVec(core::VecId::velocity(), str);
+            currentError = mmodel->compareVec(sofa::core::vec_id::read_access::velocity, str);
             totalError_V +=currentError;
 
             const double dsize = (double)this->mmodel->getSize();
@@ -263,7 +263,7 @@ void CompareState::draw(const core::visual::VisualParams* vparams)
 CompareStateCreator::CompareStateCreator(const core::ExecParams* params)
     : Visitor(params)
     , sceneName("")
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -277,7 +277,7 @@ CompareStateCreator::CompareStateCreator(const core::ExecParams* params)
 CompareStateCreator::CompareStateCreator(const std::string &n, const core::ExecParams* params, bool i, int c)
     : Visitor(params)
     , sceneName(n)
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")

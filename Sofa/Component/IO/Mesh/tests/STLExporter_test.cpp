@@ -65,14 +65,14 @@ public:
     /// remove the file created...
     std::vector<std::string> dataPath ;
 
-    void SetUp() override
+    void doSetUp() override
     {
         sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
         sofa::simpleapi::importPlugin(Sofa.Component.Visual);
         sofa::simpleapi::importPlugin(Sofa.Component.IO.Mesh);
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         for (const auto& pathToRemove : dataPath)
         {
@@ -90,25 +90,22 @@ public:
         }
     }
 
-    void checkBasicBehavior(const std::string& filename, std::vector<std::string> pathes){
+    void checkBasicBehavior(const std::string& filename, std::vector<std::string> pathes)
+    {
         dataPath = pathes ;
 
         EXPECT_MSG_NOEMIT(Error, Warning) ;
-        std::stringstream scene1;
-        scene1 <<
-                "<?xml version='1.0'?> \n"
-                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
-                "   <DefaultAnimationLoop/>                                        \n"
-                "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
-                "   <MeshOBJLoader name='loader' filename='mesh/liver-smooth.obj'/> \n"
-                "   <VisualModel src='@loader'/>                                      \n"
-                "   <STLExporter name='exporter1' printLog='false' filename='"<< filename << "' exportAtBegin='true' /> \n"
-                "</Node>                                                           \n" ;
 
-        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
+        const Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root", {{"gravity", "0 0 0"}});
+        sofa::simpleapi::createObject(root, "DefaultAnimationLoop");
+        sofa::simpleapi::createObject(root, "MechanicalObject", {{"position", "0 1 2 3 4 5 6 7 8 9"}});
+        sofa::simpleapi::createObject(root, "MeshOBJLoader", {{"name", "loader"}, {"filename", "mesh/liver-smooth.obj"}});
+        const Node::SPtr visualNode = sofa::simpleapi::createChild(root, "Visual");
+        sofa::simpleapi::createObject(visualNode, "VisualModel", {{"src", "@../loader"}});
+        sofa::simpleapi::createObject(visualNode, "STLExporter", {{"name", "exporter1"}, {"filename", filename}, {"exportAtBegin", "true"}});
 
-        ASSERT_NE(root.get(), nullptr) << scene1.str() ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        sofa::simulation::node::initRoot(root.get());
 
         // SimulationInitDoneEvent is used to trigger exportAtBegin
         SimulationInitDoneEvent endInit;
@@ -119,32 +116,27 @@ public:
 
         for(auto& pathToCheck : pathes)
         {
-            EXPECT_TRUE( FileSystem::exists(pathToCheck) ) << "Problem with '" << pathToCheck  << "'"<< std::endl
-                                                           << "================= scene dump ==========================="
-                                                           << scene1.str() ;
+            EXPECT_TRUE( FileSystem::exists(pathToCheck) );
         }
     }
 
 
-    void checkSimulationWriteEachNbStep(const std::string& filename, std::vector<std::string> pathes, unsigned int numstep){
+    void checkSimulationWriteEachNbStep(const std::string& filename, std::vector<std::string> pathes, unsigned int numstep)
+    {
         dataPath = pathes ;
 
         EXPECT_MSG_NOEMIT(Error, Warning) ;
-        std::stringstream scene1;
-        scene1 <<
-                "<?xml version='1.0'?> \n"
-                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
-                "   <DefaultAnimationLoop/>                                        \n"
-                "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
-                "   <MeshOBJLoader name='loader' filename='mesh/liver-smooth.obj'/> \n"
-                "   <VisualModel src='@loader'/>                                      \n"
-                "   <STLExporter name='exporterA' printLog='false' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
-                "</Node>                                                           \n" ;
 
-        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
+        const Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root", {{"gravity", "0 0 0"}});
+        sofa::simpleapi::createObject(root, "DefaultAnimationLoop");
+        sofa::simpleapi::createObject(root, "MechanicalObject", {{"position", "0 1 2 3 4 5 6 7 8 9"}});
+        sofa::simpleapi::createObject(root, "MeshOBJLoader", {{"name", "loader"}, {"filename", "mesh/liver-smooth.obj"}});
+        const Node::SPtr visualNode = sofa::simpleapi::createChild(root, "Visual");
+        sofa::simpleapi::createObject(visualNode, "VisualModel", {{"src", "@../loader"}});
+        sofa::simpleapi::createObject(visualNode, "STLExporter", {{"name", "exporterA"}, {"filename", filename}, {"exportEveryNumberOfSteps", "5"}});
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        sofa::simulation::node::initRoot(root.get());
 
         for(unsigned int i=0;i<numstep;i++)
         {

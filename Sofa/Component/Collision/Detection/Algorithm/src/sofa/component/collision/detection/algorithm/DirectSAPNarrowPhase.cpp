@@ -235,7 +235,7 @@ void DirectSAPNarrowPhase::cacheData()
         data.doesBoxSelfCollide = lastCollisionModel->getSelfCollision();
         data.isBoxSimulated = lastCollisionModel->isSimulated();
         data.collisionElementIterator = box.cube.getExternalChildren().first;
-        data.isInBroadPhase = (m_broadPhaseCollisionModels.find(firstCollisionModel) != m_broadPhaseCollisionModels.end() );
+        data.isInBroadPhase = m_broadPhaseCollisionModels.contains(firstCollisionModel);
     }
 }
 

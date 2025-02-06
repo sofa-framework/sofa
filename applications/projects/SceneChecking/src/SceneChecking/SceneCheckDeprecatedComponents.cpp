@@ -57,7 +57,7 @@ void SceneCheckDeprecatedComponents::doCheckOn(Node* node)
     {
         if (const sofa::core::Base* o = object.get())
         {
-            if( deprecatedComponents.find( o->getClassName() ) != deprecatedComponents.end() )
+            if( deprecatedComponents.contains( o->getClassName() ))
             {
                 msg_deprecated(o) << this->getName() << ": "
                     << deprecatedComponents.at(o->getClassName()).getMessage();

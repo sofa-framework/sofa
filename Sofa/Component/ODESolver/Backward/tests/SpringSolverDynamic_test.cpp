@@ -60,7 +60,7 @@ struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
 
 
     /// Create the context for the scene
-    void SetUp() override
+    void doSetUp() override
     {
         // Init simulation
         simulation = sofa::simulation::getSimulation();

@@ -44,7 +44,7 @@ struct AddResourceRepository_test : public BaseSimulationTest
     sofa::simulation::Node::SPtr m_root;
     std::string m_testRepoDir;
 
-    void SetUp() override
+    void doSetUp() override
     {
         sofa::simpleapi::importPlugin(Sofa.Component.SceneUtility);
 

@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/type/Quat.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::constraint::projective
 {
@@ -68,13 +68,13 @@ public:
 
 protected :
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData< bool > FixedXRotation;
+    sofa::core::objectmodel::lifecycle::RenamedData< bool > FixedXRotation;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData< bool > FixedYRotation;
+    sofa::core::objectmodel::lifecycle::RenamedData< bool > FixedYRotation;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::RenamedData< bool > FixedZRotation;
+    sofa::core::objectmodel::lifecycle::RenamedData< bool > FixedZRotation;
 
     Data< bool > d_fixedXRotation; ///< Prevent Rotation around X axis
     Data< bool > d_fixedYRotation; ///< Prevent Rotation around Y axis

@@ -97,7 +97,7 @@ bool ConstraintAttachBodyPerformer<DataTypes>::startPartial(const BodyPicked& pi
     this->m_interactionObject = sofa::core::objectmodel::New<BilateralLagrangianConstraint<DataTypes> >(m_mstate1, m_mstate2);
     auto* bconstraint = dynamic_cast< BilateralLagrangianConstraint< DataTypes >* >(this->m_interactionObject.get());
 
-    if constexpr (sofa::type::isRigidType<DataTypes>())
+    if constexpr (sofa::type::isRigidType<DataTypes>)
     {
         // BilateralLagrangianConstraint::d_keepOrientDiff is protected
         auto* keepOrientDiffBaseData = bconstraint->findData("keepOrientationDifference");

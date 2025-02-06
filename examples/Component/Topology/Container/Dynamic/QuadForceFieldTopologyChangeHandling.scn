@@ -38,7 +38,8 @@
         <FixedProjectiveConstraint name="FixedProjectiveConstraint" indices="0 19" />
         
         <Node name="Surf">
-            <include href="Objects/TriangleSetTopology.xml" />
+            <TriangleSetTopologyContainer name="Container" />
+            <TriangleSetTopologyModifier />
             <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
         </Node>
@@ -63,7 +64,8 @@
         <FixedProjectiveConstraint name="FixedProjectiveConstraint" indices="0 19" />
 
         <Node name="Surf">
-            <include href="Objects/TriangleSetTopology.xml" />
+            <TriangleSetTopologyContainer name="Container" />
+            <TriangleSetTopologyModifier />
             <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
             

@@ -118,7 +118,7 @@ int main(int argc, char** argv)
     // Add resources dir to GuiDataRepository
     const std::string runSofaIniFilePath = Utils::getSofaPathTo("/etc/runSofa.ini");
     std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(runSofaIniFilePath);
-    if (iniFileValues.find("RESOURCES_DIR") != iniFileValues.end())
+    if (iniFileValues.contains("RESOURCES_DIR"))
     {
         std::string dir = iniFileValues["RESOURCES_DIR"];
         dir = SetDirectory::GetRelativeFromProcess(dir.c_str());

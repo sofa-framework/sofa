@@ -279,7 +279,7 @@ MultilevelHexahedronSetTopologyContainer::getHexaChildren(const Index hexaId,
 
     for(Size i=0; i<_fineComponents.getValue().size(); ++i)
     {
-        if(compSet.find(_fineComponents.getValue()[i]) != compSet.end())
+        if(compSet.contains(_fineComponents.getValue()[i]))
             children.push_back(i);
     }
 
@@ -498,7 +498,7 @@ void MultilevelHexahedronSetTopologyContainer::Component::removeVoxels(const std
 
 bool MultilevelHexahedronSetTopologyContainer::Component::hasVoxel(const Vec3i& voxel) const
 {
-    return (this->_voxels.find(voxel) != this->_voxels.end());
+    return this->_voxels.contains(voxel);
 }
 
 bool MultilevelHexahedronSetTopologyContainer::Component::isEmpty() const

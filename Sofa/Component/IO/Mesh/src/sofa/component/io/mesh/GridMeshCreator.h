@@ -24,7 +24,7 @@
 
 #include <sofa/core/loader/MeshLoader.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::io::mesh
 {
@@ -44,10 +44,10 @@ public:
     bool canLoad() override { return true; }
     bool doLoad() override; ///< create the grid
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData< type::Vec2i > resolution;
+    sofa::core::objectmodel::lifecycle::RenamedData< type::Vec2i > resolution;
 
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::RenamedData< int > trianglePattern;
+    sofa::core::objectmodel::lifecycle::RenamedData< int > trianglePattern;
 
 
 
