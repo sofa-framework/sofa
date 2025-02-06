@@ -54,7 +54,7 @@ class FrictionContact : public BaseUnilateralContactResponse<TCollisionModel1,  
     FrictionContact();
     FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
 
-    virtual ~FrictionContact() = default;
+    ~FrictionContact() override = default;
 
     virtual constraint::lagrangian::model::UnilateralLagrangianContactParameters getParameterFromDatas() const override;
     virtual void setupConstraint(MechanicalState1 *,MechanicalState2 *) override;
