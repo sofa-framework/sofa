@@ -2132,7 +2132,7 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
     type::fixed_array < Vec3, 2> _coefsTris;
     _coefsTris[0] = computeBarycentricCoordinates(ind_ta, ptA);
     _coefsTris[1] = computeBarycentricCoordinates(ind_tb, ptB);
-    
+    const sofa::type::Vec3 cutPath = ptB - ptA;
 
     // 2. Check if snapping is needed at first and last points. Snapping on point is more important than snapping on edge   
     type::fixed_array< PointID, 2> snapVertexStatus = { InvalidID , InvalidID };
@@ -2157,24 +2157,42 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
 
     // Apply snapping and compute new start/end points
     type::fixed_array < sofa::geometry::ElementType, 2> _elemBorders;
+    type::fixed_array < bool, 2> _borderSplit;
     for (unsigned int i = 0; i < 2; ++i)
     {
         if (snapVertexStatus[i] != InvalidID)
         {
             // snap Vertex is prioritary
             const PointID localVId = snapVertexStatus[i];
-            const PointID vId = theTris[i][localVId];
-            std::cout << "Snap Vertex needed here: " << vId << std::endl;
+            const PointID vId = theTris[i][localVId];           
 
             pathPts[i] = vect_c[vId];
             _elemBorders[i] = sofa::geometry::ElementType::POINT;
+
+            // check if point need to be subdivided at start: yes if on border of mesh, otherwise false.
+            int nextTriId = -1;
+            if (i == 0) // cut path start
+            {
+                nextTriId = this->getTriangleInDirection(vId, -cutPath);
+            }
+            else // cut path end
+            {
+                nextTriId = this->getTriangleInDirection(vId, cutPath);
+            }
+
+            if (nextTriId != -1) // means there is a triangle on the other side of the point. Point should not be splitted
+                _borderSplit[i] = false;
+            else // on the border or in middle of a T junction, need to split
+                _borderSplit[i] = true;
+
+            std::cout << "Snap Vertex needed here: " << vId << " with split: " << _borderSplit[i] << std::endl;
         }
         else if (snapEdgeStatus[i] != InvalidID) // snap edge
         {
             PointID localVId = snapEdgeStatus[i];
             const EdgeID edgeId = edgesInTri[triIds[i]][(localVId + 3) % 3];
             const Edge& edge = edges[edgeId];
-            std::cout << "Snap Edge needed here: " << edgeId << std::endl;
+            
             type::Vec2 newCoefs;
             if (edge[0] == theTris[i][(localVId + 1) % 3])
             {
@@ -2193,10 +2211,23 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
             pathPts[i] = vect_c[edge[0]] * newCoefs[0] + vect_c[edge[1]] * newCoefs[1];
 
             _elemBorders[i] = sofa::geometry::ElementType::EDGE;
+
+            // check if point need to be subdivided at start: yes if on border of mesh, otherwise false.
+            if (triAEdges[edgeId].size() == 1) // only one edge. means on border
+            {
+                _borderSplit[i] = true;
+            }
+            else 
+            {
+                _borderSplit[i] = false;
+            }
+
+            std::cout << "Snap Edge needed here: " << edgeId << " with split: " << _borderSplit[i] << std::endl;
         }
         else
         {
             _elemBorders[i] = sofa::geometry::ElementType::TRIANGLE;
+            _borderSplit[i] = false;
         }
     }
 
@@ -2250,7 +2281,7 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
         PTA->m_ancestorType = sofa::geometry::ElementType::TRIANGLE;
         PTA->m_ownerId = triIds[i];
         _pointsToAdd.push_back(PTA);
-        nbrPoints++;
+        nbrPoints = nbrPoints + PTA->getNbrNewPoint();
     }
 
     // create PointToAdd from edges
@@ -2278,7 +2309,13 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
             PTA->m_ownerId = edges_list[i];
         }
 
-        PTA->updatePointIDForDuplication();
+        // check if split on border is needed
+        if (i == 0 && _elemBorders[0] != sofa::geometry::ElementType::TRIANGLE && _borderSplit[0] == false)
+            PTA->updatePointIDForDuplication(false);
+        else if (i == edges_list.size()-1 && _elemBorders[1] != sofa::geometry::ElementType::TRIANGLE && _borderSplit[1] == false)
+            PTA->updatePointIDForDuplication(false);
+        else
+            PTA->updatePointIDForDuplication(true);
         
         // Adding new PTA to the vector
         if (PTA->m_ancestorType == sofa::geometry::ElementType::POINT) // check to add it only once
@@ -2297,13 +2334,13 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
             if (!found)
             {
                 _pointsToAdd.push_back(PTA);
-                nbrPoints++;
+                nbrPoints = nbrPoints + PTA->getNbrNewPoint();
             }
         }
         else
         {
             _pointsToAdd.push_back(PTA);
-            nbrPoints = nbrPoints + 2;
+            nbrPoints = nbrPoints + PTA->getNbrNewPoint();
         }
     }    
 

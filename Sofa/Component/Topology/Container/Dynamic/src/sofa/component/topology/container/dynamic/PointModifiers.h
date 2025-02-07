@@ -98,7 +98,7 @@ public:
 
 
     // bool return true if point is snap
-    bool updatePointIDForDuplication()
+    void updatePointIDForDuplication(bool split = true) 
     {
         //if (m_idLocalSnap != sofa::InvalidID)
         //{
@@ -115,20 +115,29 @@ public:
         if (m_ancestorType == sofa::geometry::ElementType::POINT)
         {
             m_idClone = m_idPoint + 1;
-            return false;
         }
         else if (m_ancestorType == sofa::geometry::ElementType::EDGE)
         {
             m_idClone = m_idPoint + 1;
-            return false;
         }
         else if (m_ancestorType == sofa::geometry::ElementType::TRIANGLE)
         {
             // point in middle of a triangle. It should not be duplicated
-            return false;
         }
-        else
-            return false;
+
+        if (split == false)
+            m_idClone = sofa::InvalidID;
+    }
+
+    PointID getNbrNewPoint()
+    {
+        PointID nbr = 2;
+        if (m_isSnapped)
+            nbr--;
+        if (m_idClone == sofa::InvalidID)
+            nbr--;
+
+        return nbr;
     }
 
 
