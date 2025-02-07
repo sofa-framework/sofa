@@ -2262,7 +2262,6 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
 
         PointID uniqID = getUniqueId(edge[0], edge[1]);
         std::shared_ptr<PointToAdd> PTA = std::make_shared<PointToAdd>(uniqID, nbrPoints, _ancestors, _coefs);
-        
         if (coords_list[i] > 1.0 - EQUALITY_THRESHOLD) // snap on this point
         {
             PTA->m_ancestorType = sofa::geometry::ElementType::POINT;
@@ -2278,14 +2277,17 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
             PTA->m_ancestorType = sofa::geometry::ElementType::EDGE;
             PTA->m_ownerId = edges_list[i];
         }
+
+        PTA->updatePointIDForDuplication();
         
         // Adding new PTA to the vector
         if (PTA->m_ancestorType == sofa::geometry::ElementType::POINT) // check to add it only once
         {
+            std::cout << "ADD PTA as point for id: " << PTA->m_idPoint << " | owner: " << PTA->m_ownerId << " | clone " << PTA->m_idClone << std::endl;
             bool found = false;
             for (const auto& ptAdded : _pointsToAdd)
             {
-                if (ptAdded->m_idPoint == PTA->m_idPoint) // already registered
+                if (ptAdded->m_ownerId == PTA->m_ownerId) // already registered
                 {
                     found = true;
                     break;
