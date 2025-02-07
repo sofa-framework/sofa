@@ -1876,6 +1876,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
     sofa::type::vector< EdgeID >& edges_list,
     sofa::type::vector< Real >& coords_list, Real epsilonSnapPath, Real epsilonSnapBorder) const
 {   
+    const typename DataTypes::VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    sofa::type::Vec<3, Real> current_point = ptA;
     TriangleID current_triID = ind_ta;  
     EdgeID current_edgeID = sofa::InvalidID;       
     Real current_bary = 0;
@@ -1885,7 +1887,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
         // Get the edges of a the current_triID [AB] that are intersected by Segment [AB]
         sofa::type::vector<EdgeID> intersectedEdges;
         sofa::type::vector<Real> baryCoefs;        
-        bool is_intersected = computeSegmentTriangleIntersectionInPlane(ptA, ptB, current_triID, intersectedEdges, baryCoefs);
+        bool is_intersected = computeSegmentTriangleIntersectionInPlane(current_point, ptB, current_triID, intersectedEdges, baryCoefs);
 
         if (!is_intersected)
         {
@@ -2014,6 +2016,19 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
 
         if (current_triID == ind_tb) // reach end
             break;
+
+        // Update start interaction point
+        const Edge& edge = this->m_topology->getEdge(current_edgeID);
+
+        const typename DataTypes::Coord& c0 = coords[edge[0]];
+        const typename DataTypes::Coord& c1 = coords[edge[1]];
+        sofa::type::Vec<3, Real> p0 = { c0[0], c0[1], c0[2] };
+        sofa::type::Vec<3, Real> p1 = { c1[0], c1[1], c1[2] };
+
+        // update pA with the intersection point on the new edge 
+        sofa::type::Vec<3, Real> newIntersection = p0 * current_bary + p1 * (1.0 - current_bary);
+        current_point = current_point + (newIntersection - current_point) * 0.8; // add a small threshold to make sure point is out of next triangle
+
 
         // search for next triangle to be intersected
         sofa::type::vector< TriangleID > triAE = this->m_topology->getTrianglesAroundEdge(current_edgeID);
