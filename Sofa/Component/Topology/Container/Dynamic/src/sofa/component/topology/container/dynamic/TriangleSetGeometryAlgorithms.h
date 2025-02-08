@@ -281,15 +281,19 @@ public:
             bool& is_on_boundary) const;
 
 
-    bool computeIncisionPath(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
+    bool computeSegmentTriangulationIntersections(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
         const TriangleID ind_ta, const TriangleID ind_tb,
         sofa::type::vector< TriangleID >& triangles_list,
         sofa::type::vector< EdgeID >& edges_list,
-        sofa::type::vector< Real >& coords_list, Real epsilonSnapPath = 1.0, Real epsilonSnapBorder = 1.0) const;
+        sofa::type::vector< Real >& coords_list) const;
 
 
-    type::vector< std::shared_ptr<PointToAdd> > computeIncisionPathNew(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
-        const TriangleID ind_ta, const TriangleID ind_tb, Real snapThreshold = 0.0, Real snapThresholdBorder = 0.0) const;
+    type::vector< std::shared_ptr<PointToAdd> > computeIncisionPath(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
+        const TriangleID ind_ta, const TriangleID ind_tb, Real snapThreshold = 1.0, Real snapThresholdBorder = 1.0) const;
+
+
+    void InciseAlongPath(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
+        const TriangleID ind_ta, const TriangleID ind_tb, const type::vector< std::shared_ptr<PointToAdd> >& _pointsToAdd);
 
     /** \brief Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.
      *
