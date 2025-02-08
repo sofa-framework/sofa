@@ -276,14 +276,6 @@ public:
         sofa::type::vector< Real >& coords_list, Real epsilonSnapPath = 1.0, Real epsilonSnapBorder = 1.0) const;
 
 
-    void InciseAlongPath(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
-        const TriangleID ind_ta, const TriangleID ind_tb,
-        const sofa::type::vector< TriangleID >& triangles_list,
-        const sofa::type::vector< EdgeID >& edges_list,
-        const sofa::type::vector< Real >& coords_list, Real epsilonSnapPath = 0.0, Real epsilonSnapBorder = 0.0) const;
-
-
-
     /** \brief Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.
      *
      * @return List of object intersect (type enum @see geometry::ElementType)
