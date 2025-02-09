@@ -1930,7 +1930,10 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangulationInte
     sofa::type::vector< TriangleID >& triangles_list,
     sofa::type::vector< EdgeID >& edges_list,
     sofa::type::vector< Real >& coords_list) const
-{   
+{
+    if (ind_ta == ind_tb)
+        return false;
+
     const typename DataTypes::VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
     sofa::type::Vec<3, Real> current_point = ptA;
     TriangleID current_triID = ind_ta;  
@@ -2043,9 +2046,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangulationInte
                 msg_error() << "3 intersections have been found in method computeIncisionPath between input segment A: " << ptA << " - B: " << ptB << " and triangle: " << current_triID << ". But the intersection is not going through a vertex. This is not possible!";
                 return false;
             }
-
-            // TODO if part of point snap, go opposite
-// if opposite to point to snap, can take either one or the other
 
             if (curLocalId == localNoSnapId) // means current edge is not cut at a vertex. we go out at the opposite vertex.
             {
@@ -2185,7 +2185,7 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
             else // on the border or in middle of a T junction, need to split
                 _borderSplit[i] = true;
 
-            std::cout << "Snap Vertex needed here: " << vId << " with split: " << _borderSplit[i] << std::endl;
+            //std::cout << "Snap Vertex needed here: " << vId << " with split: " << _borderSplit[i] << std::endl;
         }
         else if (snapEdgeStatus[i] != InvalidID) // snap edge
         {
@@ -2222,7 +2222,7 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
                 _borderSplit[i] = false;
             }
 
-            std::cout << "Snap Edge needed here: " << edgeId << " with split: " << _borderSplit[i] << std::endl;
+            //std::cout << "Snap Edge needed here: " << edgeId << " with split: " << _borderSplit[i] << std::endl;
         }
         else
         {
@@ -2235,14 +2235,16 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
     sofa::type::vector< TriangleID > triangles_list;
     sofa::type::vector< EdgeID > edges_list;
     sofa::type::vector< Real > coords_list;
+    type::vector< std::shared_ptr<PointToAdd> > _pointsToAdd;
 
-    computeSegmentTriangulationIntersections(pathPts[0], pathPts[1], ind_ta, ind_tb, triangles_list, edges_list, coords_list);
-
-    std::cout << "ptA: " << ptA << " -> " << pathPts[0] << std::endl;
-    std::cout << "ptB: " << ptB << " -> " << pathPts[1] << std::endl;
-    std::cout << "triangles_list: " << triangles_list << std::endl;
-    std::cout << "edges_list: " << edges_list << std::endl;
-    std::cout << "coords_list: " << coords_list << std::endl;
+    bool validPath = computeSegmentTriangulationIntersections(pathPts[0], pathPts[1], ind_ta, ind_tb, triangles_list, edges_list, coords_list);
+    if (!validPath)
+        return _pointsToAdd;
+    //std::cout << "ptA: " << ptA << " -> " << pathPts[0] << std::endl;
+    //std::cout << "ptB: " << ptB << " -> " << pathPts[1] << std::endl;
+    //std::cout << "triangles_list: " << triangles_list << std::endl;
+    //std::cout << "edges_list: " << edges_list << std::endl;
+    //std::cout << "coords_list: " << coords_list << std::endl;
 
     // 4. post processing the list of intersected edges if snapping is requested
     std::set <PointID> psnap;
@@ -2264,9 +2266,7 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
             coords_list[i] = 0.0;
     }
 
-    type::vector< std::shared_ptr<PointToAdd> > _pointsToAdd;
-    std::map < PointID, PointID> cloneMap;
-
+     
     // process snapping here
     for (unsigned int i = 0; i < 2; ++i)
     {
@@ -2320,7 +2320,7 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
         // Adding new PTA to the vector
         if (PTA->m_ancestorType == sofa::geometry::ElementType::POINT) // check to add it only once
         {
-            std::cout << "ADD PTA as point for id: " << PTA->m_idPoint << " | owner: " << PTA->m_ownerId << " | clone " << PTA->m_idClone << std::endl;
+            //std::cout << "ADD PTA as point for id: " << PTA->m_idPoint << " | owner: " << PTA->m_ownerId << " | clone " << PTA->m_idClone << std::endl;
             bool found = false;
             for (const auto& ptAdded : _pointsToAdd)
             {
