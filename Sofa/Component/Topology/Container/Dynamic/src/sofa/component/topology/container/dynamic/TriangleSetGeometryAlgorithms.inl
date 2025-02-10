@@ -2267,19 +2267,16 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
     }
 
      
-    // process snapping here
-    for (unsigned int i = 0; i < 2; ++i)
+    // check first point here:
+    if (_elemBorders[0] == sofa::geometry::ElementType::TRIANGLE)
     {
-        if (_elemBorders[i] != sofa::geometry::ElementType::TRIANGLE)
-            continue;
-
-        type::vector<SReal> _coefs = { _coefsTris[i][0], _coefsTris[i][1], _coefsTris[i][2] };
-        type::vector<PointID> _ancestors = { theTris[i][0] , theTris[i][1], theTris[i][2] };
-        PointID uniqID = getUniqueId(theTris[i][0], theTris[i][1], theTris[i][2]);
+        type::vector<SReal> _coefs = { _coefsTris[0][0], _coefsTris[0][1], _coefsTris[0][2] };
+        type::vector<PointID> _ancestors = { theTris[0][0] , theTris[0][1], theTris[0][2] };
+        PointID uniqID = getUniqueId(theTris[0][0], theTris[0][1], theTris[0][2]);
 
         std::shared_ptr<PointToAdd> PTA = std::make_shared<PointToAdd>(uniqID, nbrPoints, _ancestors, _coefs);
         PTA->m_ancestorType = sofa::geometry::ElementType::TRIANGLE;
-        PTA->m_ownerId = triIds[i];
+        PTA->m_ownerId = triIds[0];
         _pointsToAdd.push_back(PTA);
         nbrPoints = nbrPoints + PTA->getNbrNewPoint();
     }
@@ -2324,7 +2321,7 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
             bool found = false;
             for (const auto& ptAdded : _pointsToAdd)
             {
-                if (ptAdded->m_ownerId == PTA->m_ownerId) // already registered
+                if (ptAdded->m_ancestorType == sofa::geometry::ElementType::POINT && ptAdded->m_ownerId == PTA->m_ownerId) // already registered
                 {
                     found = true;
                     break;
@@ -2342,7 +2339,20 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
             _pointsToAdd.push_back(PTA);
             nbrPoints = nbrPoints + PTA->getNbrNewPoint();
         }
-    }    
+    }
+
+    // check last point here:
+    if (_elemBorders[1] == sofa::geometry::ElementType::TRIANGLE)
+    {
+        type::vector<SReal> _coefs = { _coefsTris[1][0], _coefsTris[1][1], _coefsTris[1][2] };
+        type::vector<PointID> _ancestors = { theTris[1][0] , theTris[1][1], theTris[1][2] };
+        PointID uniqID = getUniqueId(theTris[1][0], theTris[1][1], theTris[1][2]);
+
+        std::shared_ptr<PointToAdd> PTA = std::make_shared<PointToAdd>(uniqID, nbrPoints, _ancestors, _coefs);
+        PTA->m_ancestorType = sofa::geometry::ElementType::TRIANGLE;
+        PTA->m_ownerId = triIds[1];
+        _pointsToAdd.push_back(PTA);
+    }
 
     return _pointsToAdd;
 }
