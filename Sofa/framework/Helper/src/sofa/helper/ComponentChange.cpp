@@ -628,6 +628,12 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
 const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
 
     /***********************/
+    // REMOVED SINCE v25.06
+
+    { "MakeAliasComponent", Removed("v24.12", "v25.06")},
+    { "MakeDataAliasComponent", Removed("v24.12", "v25.06")},
+
+    /***********************/
     // REMOVED SINCE v23.06
 
     { "OglGrid", Removed("v22.12", "v23.06")},
