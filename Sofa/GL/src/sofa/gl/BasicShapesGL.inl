@@ -176,7 +176,7 @@ void BasicShapesGL_Sphere<VertexType>::afterDraw(const GLBuffers &/* buffer */)
 template<class VertexType>
 void BasicShapesGL_Sphere<VertexType>::checkBuffers(const SphereDescription& desc)
 {
-    if (m_mapBuffers.find(desc) == m_mapBuffers.end())
+    if (!m_mapBuffers.contains(desc))
     {
         GLBuffers glbuffer;
         generateBuffer(desc, glbuffer);

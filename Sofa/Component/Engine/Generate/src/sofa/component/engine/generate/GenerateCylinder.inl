@@ -357,11 +357,11 @@ void GenerateCylinder<DataTypes>::doUpdate()
                     // check if a triangle with an opposite orientation already exists
                     Triangle tr = Triangle(v[0], v[2], v[1]);
 
-                    if (triangleMap.find(tr) == triangleMap.end())
+                    if (!triangleMap.contains(tr))
                     {
                         // triangle not in triangleMap so create a new one
                         tr = Triangle(v[0], v[1], v[2]);
-                        if (triangleMap.find(tr) == triangleMap.end())
+                        if (!triangleMap.contains(tr))
                         {
                             triangleMap[tr] = triangleRank++;
                         }

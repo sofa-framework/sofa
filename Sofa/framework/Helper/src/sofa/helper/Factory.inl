@@ -105,7 +105,7 @@ void Factory<TKey, TObject, TArgument, TPtr>::uniqueKeys(OutIterator out)
 template <typename TKey, class TObject, typename TArgument, typename TPtr>
 bool Factory<TKey, TObject, TArgument, TPtr>::hasKey(Key key)
 {
-    return (this->registry.find(key) != this->registry.end());
+    return this->registry.contains(key);
 }
 
 template <typename TKey, class TObject, typename TArgument, typename TPtr>

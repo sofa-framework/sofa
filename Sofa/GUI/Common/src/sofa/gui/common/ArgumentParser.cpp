@@ -146,7 +146,7 @@ void ArgumentParser::showArgs()
 std::vector<std::string> ArgumentParser::getInputFileList()
 {
     auto result = getMap();
-    if (result.count("input-file"))
+    if (result.contains("input-file"))
     {
         std::vector<std::string> tmp;
         cxxopts::values::parse_value(result["input-file"], tmp);

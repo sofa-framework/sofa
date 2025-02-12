@@ -189,7 +189,7 @@ public:
     template<class Scalar>
     bool hasObject(const std::string& orderingMethodName )
     {
-        return m_registeredTypes.find(join<Scalar>(orderingMethodName)) != m_registeredTypes.end();
+        return m_registeredTypes.contains(join<Scalar>(orderingMethodName));
     }
 
     [[nodiscard]]

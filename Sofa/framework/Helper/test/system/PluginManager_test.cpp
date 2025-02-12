@@ -64,7 +64,7 @@ struct PluginManager_test: public BaseTest
     // This list of paths will be deleted when cleaning-up the test
     sofa::type::vector<std::string> createdFilesToDelete;
 
-    void SetUp() override
+    void doSetUp() override
     {
         // Set pluginDir by searching pluginFileName in the PluginRepository
         for ( std::string path : sofa::helper::system::PluginRepository.getPaths() )
@@ -83,7 +83,7 @@ struct PluginManager_test: public BaseTest
                   << std::endl;
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         for (const auto& file : createdFilesToDelete)
         {

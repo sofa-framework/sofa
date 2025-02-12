@@ -44,7 +44,7 @@ TemplateAliasesMap& getTemplateAliasesMap()
 bool TemplateAliases::addAlias(const std::string& name, const std::string& result, const bool doWarnUser)
 {
     TemplateAliasesMap& templateAliases = getTemplateAliasesMap();
-    if (templateAliases.find(name) != templateAliases.end())
+    if (templateAliases.contains(name))
     {
         msg_warning("ObjectFactory") << "cannot create template alias " << name <<
             " as it already exists";

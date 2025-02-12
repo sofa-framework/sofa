@@ -599,7 +599,7 @@ namespace sofa::helper
             cubeCoord = cubesToGenerate.top(); // Get the last cube on the stack.
             cubesToGenerate.pop();             // Remove it from the stack.
 
-            if ( generatedCubes.find ( cubeCoord ) != generatedCubes.end() ) continue;
+            if ( generatedCubes.contains ( cubeCoord )) continue;
 
             GridCell cell;
             initCell ( cell, cubeCoord, data, gridStep, dataGridStep );
@@ -800,7 +800,7 @@ namespace sofa::helper
                     if ( data[index] >= isoValue)
                     {
                         type::Vec3i currentCube ( i, j , k );
-                        if ( parsedVoxels.find ( index ) == parsedVoxels.end() )
+                        if (!parsedVoxels.contains ( index ))
                         {
                             seeds.push_back ( currentCube - type::Vec3 ( 1_sreal, 0_sreal, 0_sreal ) );
                             // propager sur les autres voxels et les incrire ds parsedVoxels.
@@ -890,7 +890,7 @@ namespace sofa::helper
 
             const int index = coord[0] + coord[1]*dataResolution[0] + coord[2]*dataResolution[0]*dataResolution[1];
 
-            if ( connectedVoxels.find ( index ) != connectedVoxels.end() ) continue;
+            if ( connectedVoxels.contains ( index )) continue;
 
             if ( data[index] < isoValue ) continue;
 

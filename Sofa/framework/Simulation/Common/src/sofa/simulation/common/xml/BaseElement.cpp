@@ -84,7 +84,7 @@ void BaseElement::setSrcLine(const int l)
 
 bool BaseElement::presenceAttribute(const std::string& s)
 {
-    return (attributes.find(s) != attributes.end());
+    return attributes.contains(s);
 }
 /// Remove an attribute. Fails if this attribute is "name" or "type"
 bool BaseElement::removeAttribute(const std::string& attr)

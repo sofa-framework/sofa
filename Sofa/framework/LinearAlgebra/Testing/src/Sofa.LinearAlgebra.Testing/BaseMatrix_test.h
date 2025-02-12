@@ -47,7 +47,7 @@ public:
     static constexpr sofa::Index NbRows = T::NbRows;
     static constexpr sofa::Index NbCols = T::NbCols;
 
-    void onSetUp() override
+    void doSetUp() override
     {
         m_testedMatrix = std::make_unique<Matrix>();
         m_testedMatrix->resize(NbRows, NbCols);
@@ -55,7 +55,7 @@ public:
         m_modelMatrix.clear();
     }
 
-    void onTearDown() override
+    void doTearDown() override
     {
         m_testedMatrix.reset();
     }

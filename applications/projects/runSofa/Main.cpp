@@ -78,9 +78,8 @@ using  sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/gui/common/GuiDataRepository.h>
-using sofa::gui::common::GuiDataRepository ;
 
 using sofa::helper::system::DataRepository;
 using sofa::helper::system::PluginRepository;
@@ -115,18 +114,17 @@ static std::string appName { "runSofa" };
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    // Add resources dir to GuiDataRepository
-    const std::string runSofaIniFilePath = Utils::getSofaPathTo("/etc/runSofa.ini");
-    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(runSofaIniFilePath);
-    if (iniFileValues.find("RESOURCES_DIR") != iniFileValues.end())
-    {
-        std::string dir = iniFileValues["RESOURCES_DIR"];
-        dir = SetDirectory::GetRelativeFromProcess(dir.c_str());
-        if(FileSystem::isDirectory(dir))
-        {
-            sofa::gui::common::GuiDataRepository.addFirstPath(dir);
-        }
-    }
+
+  sofa::helper::system::FileRepository runSofaDataRepository(
+            "RUNSOFA_DATA_PATH",
+            {
+                    Utils::getSofaPathTo("share/sofa/gui/runSofa")
+            },
+            {
+                    { Utils::getSofaPathTo("etc/runSofa.ini").c_str(), {"RESOURCES_DIR"} }
+            }
+    );
+
 
     sofa::helper::BackTrace::autodump();
 
@@ -371,7 +369,7 @@ int main(int argc, char** argv)
     // Output FileRepositories
     msg_info(appName) << "PluginRepository paths = " << PluginRepository.getPathsJoined();
     msg_info(appName) << "DataRepository paths = " << DataRepository.getPathsJoined();
-    msg_info(appName) << "GuiDataRepository paths = " << GuiDataRepository.getPathsJoined();
+    msg_info(appName) << "runSofaDataRepository paths = " << runSofaDataRepository.getPathsJoined();
 
     // Initialise paths
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);

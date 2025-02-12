@@ -54,14 +54,14 @@ void SceneCheckDuplicatedName::doCheckOn(sofa::simulation::Node* node)
     std::map<std::string, int> duplicated;
     for (auto& object : node->object )
     {
-        if( duplicated.find(object->getName()) == duplicated.end() )
+        if(!duplicated.contains(object->getName()))
             duplicated[object->getName()] = 0;
         duplicated[object->getName()]++;
     }
 
     for (auto& child : node->child )
     {
-        if( duplicated.find(child->getName()) == duplicated.end() )
+        if(!duplicated.contains(child->getName()))
             duplicated[child->getName()] = 0;
         duplicated[child->getName()]++;
     }

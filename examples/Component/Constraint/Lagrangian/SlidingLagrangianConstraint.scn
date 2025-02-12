@@ -43,9 +43,9 @@
         <Node name="ColliCube">
             <MeshTopology filename="mesh/cube.obj" />
             <MechanicalObject scale="1.0" />
-            <TriangleCollisionModel contactStiffness="0.1" />
-            <LineCollisionModel contactStiffness="0.1" />
-            <PointCollisionModel contactStiffness="0.1" />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <RigidMapping />
         </Node>
         <Node name="Constraints">
@@ -71,9 +71,9 @@
         <Node name="ColliCube">
             <MeshTopology filename="mesh/cube.obj" />
             <MechanicalObject scale="1.0" />
-            <TriangleCollisionModel contactStiffness="0.1" />
-            <LineCollisionModel contactStiffness="0.1" />
-            <PointCollisionModel contactStiffness="0.1" />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
             <RigidMapping />
         </Node>
         <Node name="Constraints">

@@ -45,7 +45,7 @@
 			<UniformMass totalMass="50.0" />
             <HexahedronFEMForceField name="FEM" youngModulus="4000.0" poissonRatio="0.30" method="large" updateStiffnessMatrix="false" printLog="0" 
             drawing="1"/>            
-            <UncoupledConstraintCorrection />
+            <UncoupledConstraintCorrection defaultCompliance="0.05"/>
             
             <Node name="Visu">	
 				<QuadSetTopologyContainer  name="Container" 

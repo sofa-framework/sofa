@@ -47,7 +47,7 @@ struct Engine_test : public BaseTest
     TestEngine::SPtr engine3;
 
     /// Create the engines
-    void SetUp() override
+    void doSetUp() override
     {
        // Engine 1
        engine1 = sofa::core::objectmodel::New<TestEngine>();

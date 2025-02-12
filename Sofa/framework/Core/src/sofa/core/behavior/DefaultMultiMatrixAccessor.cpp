@@ -346,7 +346,7 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
 
 
         //for toModel -----------------------------------------------------------
-        if(mappedMatrices.find(outstate) == mappedMatrices.end())
+        if(!mappedMatrices.contains(outstate))
         {
             if(m_doPrintInfo)
             {
@@ -354,7 +354,7 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
             }
         }
 
-        if(diagonalStiffnessBloc.find(outstate) != diagonalStiffnessBloc.end())
+        if(diagonalStiffnessBloc.contains(outstate))
         {
             //=================================
             //           K11 += Jt * K22 * J

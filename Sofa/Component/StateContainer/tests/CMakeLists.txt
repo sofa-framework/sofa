@@ -4,6 +4,7 @@ project(Sofa.Component.StateContainer_test)
 
 set(SOURCE_FILES
     MechanicalObject_test.cpp
+    MechanicalObjectVOp_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

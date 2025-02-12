@@ -1299,6 +1299,62 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
     }
 }
 
+
+template<class DataTypes>
+bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersectionInPlane(
+    const sofa::type::Vec<3, Real>& ptA,
+    const sofa::type::Vec<3, Real>& ptB,
+    const TriangleID triId,
+    sofa::type::vector<EdgeID>& intersectedEdges,
+    sofa::type::vector<Real>& baryCoefs) const
+{
+    // Get coordinates of each vertex of the triangle
+    const typename DataTypes::VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const Triangle& tri = this->m_topology->getTriangle(triId);
+
+    const typename DataTypes::Coord& c0 = coords[tri[0]];
+    const typename DataTypes::Coord& c1 = coords[tri[1]];
+    const typename DataTypes::Coord& c2 = coords[tri[2]];
+    type::fixed_array<Vec3, 3> triP = { Vec3(c0[0], c0[1], c0[2]), Vec3(c1[0], c1[1], c1[2]), Vec3(c2[0], c2[1], c2[2]) };
+
+    // Project A and B into triangle plan
+    Vec3 v_normal = (triP[2] - triP[0]).cross(triP[1] - triP[0]);
+    v_normal.normalize();
+    const Vec3 pa_proj = ptA - v_normal * dot(ptA - triP[0], v_normal);
+    const Vec3 pb_proj = ptB - v_normal * dot(ptB - triP[0], v_normal);
+
+    // check intersection between AB and each edge of the triangle
+    const sofa::type::fixed_array<EdgeID, 3>& edgesInTri = this->m_topology->getEdgesInTriangle(triId);
+    for (const EdgeID& edgeId : edgesInTri)
+    {
+        const Edge& edge = this->m_topology->getEdge(edgeId);
+        Edge localIds;
+        for (int i = 0; i < 2; i++)
+        {
+            for (int j = 0; j < 3; j++) 
+            {
+                if (edge[i] == tri[j])
+                {
+                    localIds[i] = j;
+                    break;
+                }
+            }
+        }
+
+        type::Vec2 baryCoords(type::NOINIT);
+        bool res = geometry::Edge::intersectionWithEdge(triP[localIds[0]], triP[localIds[1]], pa_proj, pb_proj, baryCoords);
+
+        if (res)
+        {
+            intersectedEdges.push_back(edgeId);
+            baryCoefs.push_back(baryCoords[0]);
+        }
+    }
+
+    return !intersectedEdges.empty();
+}
+
+
 // Computes the intersection of the segment from point a to point b and the triangle indexed by t
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersection(bool is_entered,
@@ -4135,7 +4191,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
         {
         case geometry::ElementType::POINT:
         {
-            if (map_point2snap.find(intersected_indices[i]) != map_point2snap.end())
+            if (map_point2snap.contains(intersected_indices[i]))
             {
                 map_point2snap[intersected_indices[i]].push_back((PointID)i);
 
@@ -4152,7 +4208,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
             for (EdgeID indEdge = 0; indEdge < 2; indEdge++)
             {
                 PointID thePoint = theEdge[indEdge];
-                if (map_point2snap.find(thePoint) != map_point2snap.end())
+                if (map_point2snap.contains(thePoint))
                 {
                     PointFind = true;
                     map_point2snap[thePoint].push_back((PointID)i);
@@ -4179,7 +4235,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
             {
                 PointID thePoint = theTriangle[indTri];
 
-                if ((map_point2snap.find(thePoint) != map_point2snap.end()) && (intersected_barycoefs[i][indTri] > (1 - epsilon)))
+                if ((map_point2snap.contains(thePoint)) && (intersected_barycoefs[i][indTri] > (1 - epsilon)))
                 {
                     PointFind = true;
                     map_point2snap[thePoint].push_back((PointID)i);

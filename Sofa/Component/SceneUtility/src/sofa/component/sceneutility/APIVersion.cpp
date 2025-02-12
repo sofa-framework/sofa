@@ -64,7 +64,7 @@ void APIVersion::checkInputData()
 
     const auto & API_version = d_level.getValue();
     static const std::set<std::string> allowedAPIVersions { "17.06", "17.12", "18.06", "18.12", "19.06", "19.12", "20.06", "20.12", SOFA_VERSION_STR } ;
-    if( allowedAPIVersions.find(API_version) == std::cend(allowedAPIVersions) )
+    if(!allowedAPIVersions.contains(API_version))
     {
         const auto allowedVersionStr = std::accumulate(std::next(allowedAPIVersions.begin()), allowedAPIVersions.end(), *(allowedAPIVersions.begin()), [](const std::string & s, const std::string & v) {
             return s + ", " + v;

@@ -120,7 +120,7 @@ void ExtrudeSurface<DataTypes>::doUpdate()
         //a table is also used to map old vertex indices with the new set of indices
         for (unsigned int i=0 ; i<3 ; i++)
         {
-            if (pointMatching.find(triangle[i]) == pointMatching.end())
+            if (!pointMatching.contains(triangle[i]))
             {
                 extrusionVertices->push_back(surfaceVertices[triangle[i]]);
                 extrusionVertices->push_back(surfaceVertices[triangle[i]] + normals[triangle[i]].first*heightFactor.getValue());
@@ -152,9 +152,9 @@ void ExtrudeSurface<DataTypes>::doUpdate()
 
         for (unsigned int i=0 ; i<3 ; i++)
         {
-            if ( edgesOnBorder.find(e[i])  == edgesOnBorder.end())
+            if (!edgesOnBorder.contains(e[i]))
             {
-                if ( edgesOnBorder.find(ei[i])  == edgesOnBorder.end())
+                if (!edgesOnBorder.contains(ei[i]))
                     edgesOnBorder[e[i]] = true;
                 else
                     edgesOnBorder[ei[i]] = false;

@@ -162,7 +162,7 @@ void VoxelGridLoader::reinit()
                 {
                     // add only points that were used above
                     const unsigned int pidx = i + j * numPointsX + k * numPointsX * numPointsY;
-                    if ( keepPoint.find ( pidx ) != keepPoint.end() )
+                    if ( keepPoint.contains ( pidx ))
                     {
                         renumberingMap[pidx] = pointIdx;
                         auto& pnt = seqPoints[pointIdx];

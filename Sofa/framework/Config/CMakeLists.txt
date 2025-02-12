@@ -240,7 +240,7 @@ endif()
 ## Tracy
 option(SOFA_TRACY "Compile SOFA with the Tracy profiler client" OFF)
 if (SOFA_TRACY)
-    set(SOFA_TRACY_VERSION v0.9.1)
+    set(SOFA_TRACY_VERSION v0.11.1)
     include(FetchContent)
     option(TRACY_STATIC "Whether to build Tracy as a static library" OFF)
     FetchContent_Declare (

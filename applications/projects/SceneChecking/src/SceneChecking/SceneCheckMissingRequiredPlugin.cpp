@@ -62,7 +62,7 @@ void SceneCheckMissingRequiredPlugin::doCheckOn(sofa::simulation::Node* node)
                 const std::string pluginName = it->second->getTarget();
                 const std::string path = PluginManager::getInstance().findPlugin(pluginName);
                 if( PluginManager::getInstance().pluginIsLoaded(path)
-                        && m_loadedPlugins.find(pluginName) == m_loadedPlugins.end() )
+                        && !m_loadedPlugins.contains(pluginName))
                 {
                     m_requiredPlugins[pluginName].push_back(object->getClassName());
                 }

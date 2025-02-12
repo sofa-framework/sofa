@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 0 -9.81" dt="0.01">
+
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [EulerExplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [SpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualGrid VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglSceneFrame] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->  
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->  
+    <RequiredPlugin name="Sofa.GL.Component.Rendering2D"/> <!-- Needed to use components [OglLabel] -->  
+
+    <VisualGrid/>
+    <OglSceneFrame/>
+    <DefaultAnimationLoop/>
+
+    <VisualStyle displayFlags="showBehavior" />
+
+    <Node name="ClassicEulerImplicit" gravity="0 -9.81 0">
+    	<EulerImplicitSolver name="EulerImplicit-NoTrapez" trapezoidalScheme="0"/>
+    	<SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
+        <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 0 0 1 0 0" showObject="1" showObjectScale="10"/>
+        <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>
+        <FixedProjectiveConstraint template="Vec3" name="Fix Particle" indices="0" />
+        <SpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1" />
+        <OglLabel label="EulerImplicit" x="300" y="300"/>
+    </Node>
+
+    <Node name="TrapezoidalRule" gravity="0 -9.81 0">
+    	<EulerImplicitSolver name="EulerImplicit-WithTrapez" trapezoidalScheme="1"/>
+    	<SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
+        <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 2 0 1 2 0" showObject="1" showObjectScale="10"/>
+        <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>
+        <FixedProjectiveConstraint template="Vec3" name="Fix Particle" indices="0" />
+        <SpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1" />
+        <OglLabel label="TrapezoidalRule" x="400" y="100"/>
+    </Node>
+</Node>

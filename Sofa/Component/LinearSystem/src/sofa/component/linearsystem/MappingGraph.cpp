@@ -169,7 +169,7 @@ bool MappingGraph::hasAnyMappingInput(core::behavior::BaseMechanicalState* mstat
     }
 
     //only main (non mapped) mechanical states are in this map
-    return m_positionInGlobalMatrix.find(mstate) == m_positionInGlobalMatrix.end();
+    return !m_positionInGlobalMatrix.contains(mstate);
 }
 
 bool MappingGraph::hasAnyMappingInput(core::behavior::BaseForceField* forceField) const

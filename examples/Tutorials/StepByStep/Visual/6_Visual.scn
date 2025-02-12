@@ -6,7 +6,7 @@
 
     <DefaultAnimationLoop/>
 	<Node name="oglModels">
-    <OglShader fragFilename="shaders/generalRenderingShader.frag" vertFilename="shaders/generalRenderingShader.vert" />
+    <OglShader fileFragmentShaders="['shaders/generalRenderingShader.frag']" fileVertexShaders="['shaders/generalRenderingShader.vert']"/>
     <OglShaderDefineMacro id="PERLIN_NOISE_COLOR" />
     <OglShaderDefineMacro name="PERLIN_NOISE_BUMP" />
     <OglShaderDefineMacro name="PHONG" />

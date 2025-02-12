@@ -56,7 +56,7 @@ TaskScheduler* TaskSchedulerRegistry::getTaskScheduler(const std::string& taskSc
 
 bool TaskSchedulerRegistry::hasScheduler(const std::string& taskSchedulerName) const
 {
-    return m_schedulers.find(taskSchedulerName) != m_schedulers.end();
+    return m_schedulers.contains(taskSchedulerName);
 }
 
 const std::optional<std::pair<std::string, TaskScheduler*>>& TaskSchedulerRegistry::getLastInserted() const

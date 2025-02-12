@@ -94,7 +94,7 @@ void SceneCheckAPIChange::doCheckOn(sofa::simulation::Node* node)
     {
         Base* o = object.get();
 
-        if(m_selectedApiLevel != m_currentApiLevel && m_changesets.find(m_selectedApiLevel) != m_changesets.end())
+        if(m_selectedApiLevel != m_currentApiLevel && m_changesets.contains(m_selectedApiLevel))
         {
             for(auto& hook : m_changesets[m_selectedApiLevel])
             {

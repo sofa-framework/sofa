@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest ;
 
@@ -33,6 +35,9 @@ namespace sofa
 
 TEST( Node_test, getPathName)
 {
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+
     /* create trivial DAG :
      *
      * A
@@ -90,6 +95,9 @@ TEST(Node_test, addObjectAtFront)
 
 TEST(Node_test, addObjectPreventingSharedContext)
 {
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+
     const sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
 
     const BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
@@ -175,6 +183,53 @@ TEST(Node_test, getObjectsStdUnorderedSet)
 
     EXPECT_NE(objects.find(A.get()), objects.end());
     EXPECT_NE(objects.find(B.get()), objects.end());
+}
+
+class CounterVisitor : public simulation::MechanicalVisitor
+{
+public:
+    using MechanicalVisitor::MechanicalVisitor;
+
+    Result fwdMechanicalState(simulation::Node* node, sofa::core::behavior::BaseMechanicalState* state) override
+    {
+        SOFA_UNUSED(node);
+        SOFA_UNUSED(state);
+        m_counter++;
+        return Result::RESULT_CONTINUE;
+    }
+
+    Result fwdMappedMechanicalState(simulation::Node* node, sofa::core::behavior::BaseMechanicalState* state) override
+    {
+        SOFA_UNUSED(node);
+        SOFA_UNUSED(state);
+        ++m_counter;
+        return Result::RESULT_CONTINUE;
+    }
+
+    std::size_t m_counter = 0;
+};
+
+TEST(Node_test, twoMechanicalStatesInTheSameNode)
+{
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+
+    const sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
+
+    const auto plugins = testing::makeScopedPlugin({Sofa.Component.StateContainer});
+    sofa::simpleapi::createObject(root, "MechanicalObject", {{"template", "Vec3"}, {"name", "A"}});
+
+    EXPECT_MSG_EMIT(Warning);
+    sofa::simpleapi::createObject(root, "MechanicalObject", {{"template", "Vec3"}, {"name", "B"}});
+
+    //the last added state is the one in Node
+    EXPECT_EQ(root->mechanicalState->getName(), "B");
+
+    CounterVisitor visitor(core::MechanicalParams::defaultInstance());
+    root->executeVisitor(&visitor);
+
+    //only one of the two added states is visited
+    EXPECT_EQ(visitor.m_counter, 1);
 }
 
 }// namespace sofa

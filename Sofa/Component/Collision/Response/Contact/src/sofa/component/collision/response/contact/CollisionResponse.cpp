@@ -64,7 +64,7 @@ sofa::helper::OptionsGroup CollisionResponse::initializeResponseOptions(sofa::co
     }
 
     sofa::helper::OptionsGroup responseOptions(listResponse);
-    if (listResponse.find("PenalityContactForceField") != listResponse.end())
+    if (listResponse.contains("PenalityContactForceField"))
         responseOptions.setSelectedItem("PenalityContactForceField");
 
     return responseOptions;
@@ -210,7 +210,7 @@ CollisionResponse::removeInactiveContacts(const core::collision::ContactManager:
         core::collision::Contact::SPtr contact = contactIt->second;
         dmsg_error_when(contact == nullptr) << "Checking if inactive on invalid contact";
 
-        if (outputsMap.find(contactIt->first) == outputsMap.end())
+        if (!outputsMap.contains(contactIt->first))
         {
             //contact is not found among the result of the collision detection during this time step
             //the contact comes from a previous time step

@@ -67,7 +67,7 @@ struct SkeletalMotionProjectiveConstraint_test : public BaseSimulationTest, Nume
     typename MechanicalObject::SPtr dofs;
 
     /// Create the context for the tests.
-    void SetUp() override
+    void doSetUp() override
     {
         simulation = sofa::simulation::getSimulation();
 
@@ -167,7 +167,7 @@ struct SkeletalMotionProjectiveConstraint_test : public BaseSimulationTest, Nume
         return succeed;
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         if (root!=nullptr)
             sofa::simulation::node::unload(root);

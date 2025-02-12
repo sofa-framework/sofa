@@ -61,7 +61,7 @@ void GridMeshCreator::doClearBuffers()
 
 void GridMeshCreator::insertUniqueEdge( unsigned a, unsigned b )
 {
-    if( uniqueEdges.find(Edge(b,a))==uniqueEdges.end() ) // symmetric not found
+    if(!uniqueEdges.contains(Edge(b,a)) ) // symmetric not found
         uniqueEdges.insert(Edge(a,b));                   // redundant elements are automatically pruned
 }
 

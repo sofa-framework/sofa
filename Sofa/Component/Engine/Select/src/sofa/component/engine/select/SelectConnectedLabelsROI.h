@@ -135,7 +135,7 @@ protected:
                     for(unsigned int l2=0; l2<nb && !connected;l2++)
                         if(l1!=l2)
                             for(size_t i2=0; i2<(*labels[l2])[i].size() && !connected;i2++)
-                                if(connectS.find(TPair((*labels[l1])[i][i1],(*labels[l2])[i][i2]))!=connectS.end())
+                                if(connectS.contains(TPair((*labels[l1])[i][i1],(*labels[l2])[i][i2])))
                                     connected=true;
             if(connected)
                 indices.push_back((sofa::Index)i);

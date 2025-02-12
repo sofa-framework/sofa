@@ -196,7 +196,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
 
 
     // Create the context for the scene
-    void SetUp() override
+    void doSetUp() override
     {
         // Init simulation
         simulation = sofa::simulation::getSimulation();
@@ -281,7 +281,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
         }
         return true;
     }
-    void TearDown() override
+    void doTearDown() override
     {
         if (tractionStruct.root!=nullptr)
             sofa::simulation::node::unload(tractionStruct.root);

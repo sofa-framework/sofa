@@ -69,7 +69,7 @@ struct PointProjectiveConstraint_test : public BaseSimulationTest, NumericTest<t
     typename MechanicalObject::SPtr dofs;
 
     /// Create the context for the tests.
-    void SetUp() override
+    void doSetUp() override
     {
         simulation = sofa::simulation::getSimulation();
         ASSERT_NE(simulation, nullptr);
@@ -207,7 +207,7 @@ struct PointProjectiveConstraint_test : public BaseSimulationTest, NumericTest<t
        return succeed;
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         if (root!=nullptr)
             sofa::simulation::node::unload(root);

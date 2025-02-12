@@ -61,9 +61,10 @@ public:
     void doCarvingWithPenetration();
 
     /// Unload the scene
-    void TearDown() override
+    void doTearDown() override
     {
-        if (m_simu != nullptr && m_root != nullptr) {
+        if (m_root != nullptr)
+        {
             sofa::simulation::node::unload(m_root);
         }
     }

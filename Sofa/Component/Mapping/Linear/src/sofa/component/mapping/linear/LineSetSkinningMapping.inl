@@ -162,7 +162,7 @@ void LineSetSkinningMapping<TIn, TOut>::init()
 
         while (linesInfluencedByVertice[verticeIndex].size() < numberInfluencedLines.getValue() && lineInfluencedIndex < lines.size())
         {
-            if (neighborhood[max].count(lines[lineInfluencedIndex].lineIndex) != 0)
+            if (neighborhood[max].contains(lines[lineInfluencedIndex].lineIndex))
             {
                 sumWeights += lines[lineInfluencedIndex].weight;
                 linesInfluencedByVertice[verticeIndex].push_back(lines[lineInfluencedIndex]);

@@ -248,7 +248,7 @@ void ReadState::processReadState()
         str >> cmd;
         if (cmd == "X=")
         {
-            mmodel->readVec(core::VecId::position(), str);
+            mmodel->readVec(sofa::core::vec_id::write_access::position, str);
             mmodel->applyScale(scale,scale,scale);
             mmodel->applyRotation(rotation[0],rotation[1],rotation[2]);
             mmodel->applyTranslation(translation[0],translation[1],translation[2]);
@@ -257,7 +257,7 @@ void ReadState::processReadState()
         }
         else if (cmd == "V=")
         {
-            mmodel->readVec(core::VecId::velocity(), str);
+            mmodel->readVec(sofa::core::vec_id::write_access::velocity, str);
             updated = true;
         }
     }

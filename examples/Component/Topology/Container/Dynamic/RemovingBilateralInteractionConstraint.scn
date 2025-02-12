@@ -51,7 +51,7 @@
             <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
             
             <TopologicalChangeProcessor listening="1" filename="RemovingConstraint.txt" />
-            <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
+            <UncoupledConstraintCorrection defaultCompliance="0.001" useOdeSolverIntegrationFactors="0"/>
         </Node>
         <Node name="M2">
             <MechanicalObject name="mo" position="@../gridM2/GM2.position"/>
@@ -64,7 +64,7 @@
             <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
             
             <TopologicalChangeProcessor listening="1" filename="RemovingConstraint.txt" />
-            <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
+            <UncoupledConstraintCorrection defaultCompliance="0.001"useOdeSolverIntegrationFactors="0"/>
         </Node>
 
         <BilateralLagrangianConstraint template="Vec3" object1="@M1" object2="@M2"

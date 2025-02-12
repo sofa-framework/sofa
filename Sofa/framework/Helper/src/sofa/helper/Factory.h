@@ -72,7 +72,7 @@ protected:
 public:
     bool registerCreator(Key key, Creator* creator, bool multi=false)
     {
-        if(!multi && this->registry.find(key) != this->registry.end())
+        if(!multi && this->registry.contains(key))
             return false; // key used
         logFactoryRegister(gettypename(typeid(Object)), gettypename(creator->type()), key, multi);
         this->registry.insert(std::pair<Key, Creator*>(key, creator));

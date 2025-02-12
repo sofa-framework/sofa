@@ -55,7 +55,7 @@ struct ComplementaryROI_test : public BaseSimulationTest,
     typename ThisClass::SPtr m_thisObject;
 
 
-    void SetUp() override
+    void doSetUp() override
     {
         m_simu = sofa::simulation::getSimulation();
         ASSERT_NE(m_simu, nullptr);

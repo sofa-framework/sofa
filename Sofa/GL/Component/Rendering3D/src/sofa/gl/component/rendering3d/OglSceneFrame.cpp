@@ -129,12 +129,11 @@ void OglSceneFrame::doDrawVisual(const core::visual::VisualParams* vparams)
             glScissor(0,viewport[3]-viewportSize,viewportSize,viewportSize);
             break;
     }
-
-
+        
     glEnable(GL_SCISSOR_TEST);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glClearColor (1.0f, 1.0f, 1.0f, 0.0f);
-
+    // only reset depth to appear on front
+    glClear(GL_DEPTH_BUFFER_BIT );
+    
     glMatrixMode(GL_PROJECTION);
     vparams->drawTool()->pushMatrix();
     glLoadIdentity();
