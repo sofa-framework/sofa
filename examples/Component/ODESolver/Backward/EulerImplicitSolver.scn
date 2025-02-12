@@ -13,7 +13,7 @@
 
     <Node name="DeformableObject">
 
-        <EulerImplicitSolver name="odeImplicitSolver" />
+        <EulerImplicitSolver name="odeImplicitSolver" computeResidual="true"/>
         <CGLinearSolver iterations="1000" tolerance="1e-9" threshold="1e-9"/>
 
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
