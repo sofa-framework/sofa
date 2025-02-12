@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -125,7 +125,7 @@ public:
         MatrixSym Firstmatrix;
         MatrixSym::Mat2Sym(inverse_C * (inputTensor * inverse_C), Firstmatrix);
 
-        outputTensor = 0.5 * (lambda + mu) * (Firstmatrix * (-2 * J * (J - alpha))
+        outputTensor = 0.5_sreal * (lambda + mu) * (Firstmatrix * (-2 * J * (J - alpha))
             + inverse_C * (J * (2 * J - alpha) * trHC));
     }
 
