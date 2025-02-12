@@ -86,10 +86,11 @@
         <CGLinearSolver template="GraphScattered" name="CG-LinearSolver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MechanicalObject template="Rigid3d" name="rigidDofs" position="0 -15 0 0 0 0 1" showObject="1" showObjectScale="5"/>
         <UniformMass name="NodalMass" totalMass="1" />
-        <LinearMovementProjectiveConstraint template="Rigid3" name="MotionConstraint" keyTimes="0 1 2 10 15" movements="0 0 0   0 0 0
+        <LinearMovementProjectiveConstraint template="Rigid3" name="MotionConstraint" keyTimes="0 1 2 10 15 9999" movements="0 0 0   0 0 0
                                               0 -5 0   0 0 0
                                               0 0 -1  0 0 0
                                               0 0 -1  0 0 6.3
+                                              0 0 -1   0 0 0
                                               0 0 -1   0 0 0" />
         <UncoupledConstraintCorrection />
         
