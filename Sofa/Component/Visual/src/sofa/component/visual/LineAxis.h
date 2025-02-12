@@ -33,8 +33,10 @@ public:
     SOFA_CLASS(LineAxis, VisualModel);
 
     Data<std::string> d_axis; ///< Axis to draw
-    Data<float> d_size; ///< Size of the squared grid
-    Data<float> d_thickness; ///< Thickness of the lines in the grid
+    Data<float> d_size; ///< Size of the lines
+    Data<bool> d_infinite; ///< If true, ignore the "size" and draw infinite lines
+    Data<float> d_thickness; ///< Thickness of the lines
+    Data<bool> d_vanishing; ///< In case of infinite lines, should the lines gradually vanish.
     core::objectmodel::lifecycle::RemovedData d_draw {this, "v23.06", "23.12", "draw", "Use the 'enable' data field instead of 'draw'"};
 
     LineAxis();
