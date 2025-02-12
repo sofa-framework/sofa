@@ -42,8 +42,8 @@ AugmentedLagrangianResponse<TCollisionModel1,TCollisionModel2,ResponseDataTypes>
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
 AugmentedLagrangianResponse<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::AugmentedLagrangianResponse(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : BaseUnilateralContactResponse<TCollisionModel1, TCollisionModel2, constraint::lagrangian::model::AugmentedLagrangianContactParameters, ResponseDataTypes>(model1,model2,intersectionMethod)
-    , d_mu (initData(&d_mu, 0.0, "mu", "Friction coefficient (0 for frictionless contacts)"))
-    , d_epsilon (initData(&d_epsilon, 0.0, "epsilon", "Penalty parameter. It can be think of as a proportional controller, the Lagrange multiplier is augmented by the violation multiplied by this factor at each solving iteration."))
+    , d_mu (initData(&d_mu, 0.0_sreal, "mu", "Friction coefficient (0 for frictionless contacts)"))
+    , d_epsilon (initData(&d_epsilon, 0.0_sreal, "epsilon", "Penalty parameter. It can be thought of as a proportional controller, the Lagrange multiplier is augmented by the violation multiplied by this factor at each solving iteration."))
 {
 
 }
