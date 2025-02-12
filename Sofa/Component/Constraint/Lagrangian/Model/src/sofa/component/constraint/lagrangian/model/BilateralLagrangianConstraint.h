@@ -49,7 +49,7 @@ using sofa::core::ConstraintParams ;
 using sofa::core::ConstVecCoordId;
 
 using sofa::linearalgebra::BaseVector ;
-using sofa::type::Vec3d;
+using sofa::type::Vec3;
 using sofa::type::Quat ;
 
 using sofa::defaulttype::Rigid3Types ;
@@ -123,7 +123,7 @@ protected:
     SingleLink<BilateralLagrangianConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology1; ///< Link to be set to the first topology container in order to support topological changes
     SingleLink<BilateralLagrangianConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology2; ///< Link to be set to the second topology container in order to support topological changes
 
-    std::vector<Vec3d> prevForces;
+    std::vector<Vec3> prevForces;
 
     BilateralLagrangianConstraint(MechanicalState* object1, MechanicalState* object2) ;
     BilateralLagrangianConstraint(MechanicalState* object) ;
