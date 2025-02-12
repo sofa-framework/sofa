@@ -184,7 +184,6 @@ void VisualGrid::doDrawVisual(const core::visual::VisualParams* vparams)
 {
     vparams->drawTool()->disableLighting();
     vparams->drawTool()->drawLines(m_drawnPoints, d_thickness.getValue(), d_color.getValue());
-
 }
 
 } // namespace sofa::component::visual

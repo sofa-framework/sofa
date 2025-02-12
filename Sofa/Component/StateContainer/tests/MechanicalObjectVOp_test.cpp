@@ -30,6 +30,8 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
 {
     using MO = component::statecontainer::MechanicalObject<DataTypes>;
 
+    static constexpr bool isRigid = type::isRigidType<DataTypes>;
+
     static constexpr Real_t<DataTypes> positionCoefficient = 19;
     static constexpr Real_t<DataTypes> restPositionCoefficient = 20;
     static constexpr Real_t<DataTypes> freePositionCoefficient = 5;
@@ -217,24 +219,44 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
 
     void equalOtherMultiplyByScalarPositionMix() const
     {
+        //v = b*f
+        const auto vop = [this]()
+        {
+            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::ConstVecId::null(), core::vec_id::read_access::velocity, 2._sreal);
+        };
+        if constexpr (isRigid)
         {
             EXPECT_MSG_EMIT(Error);
-            //v = b*f
-            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::ConstVecId::null(), core::vec_id::read_access::velocity, 2._sreal);
+            vop();
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            vop();
+        }
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(isRigid ? positionCoefficient : velocityCoefficient * 2_sreal);
         checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
     void equalOtherMultiplyByScalarVelocityMix() const
     {
+        //v = b*f
+        const auto vop = [this]()
+        {
+            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::ConstVecId::null(), core::vec_id::read_access::position, 2._sreal);
+        };
+        if constexpr (isRigid)
         {
             EXPECT_MSG_EMIT(Error);
-            //v = b*f
-            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::ConstVecId::null(), core::vec_id::read_access::position, 2._sreal);
+            vop();
+        }
+        else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            vop();
         }
         checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(isRigid ? velocityCoefficient : positionCoefficient * 2_sreal);
     }
 
     void equalOtherPosition() const
@@ -250,12 +272,22 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
 
     void equalOtherPositionMix() const
     {
+        //v = a
+        const auto vop = [this]()
+        {
+            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::velocity, core::ConstVecId::null(), 1._sreal);
+        };
+        if constexpr (isRigid)
         {
             EXPECT_MSG_EMIT(Error);
-            //v = a
-            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::velocity, core::ConstVecId::null(), 1._sreal);
+            vop();
         }
-        checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            vop();
+        }
+        checkVecValues<sofa::core::vec_id::read_access::position>(isRigid ? positionCoefficient : velocityCoefficient);
         checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
@@ -272,13 +304,23 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
 
     void equalOtherVelocityMix() const
     {
+        //v = a
+        const auto vop = [this]()
+        {
+            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::restPosition, core::ConstVecId::null(), 1._sreal);
+        };
+        if constexpr (isRigid)
         {
             EXPECT_MSG_EMIT(Error);
-            //v = a
-            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::restPosition, core::ConstVecId::null(), 1._sreal);
+            vop();
+        }
+        else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            vop();
         }
         checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(isRigid ? velocityCoefficient : restPositionCoefficient);
     }
 
     void plusEqualOtherPosition() const
@@ -316,13 +358,23 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
 
     void plusEqualOtherVelocityMix() const
     {
+        //v += b
+        const auto vop = [this]()
+        {
+            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::velocity, core::vec_id::read_access::position, 1._sreal);
+        };
+        if constexpr (isRigid)
         {
             EXPECT_MSG_EMIT(Error);
-            //v += b
-            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::velocity, core::vec_id::read_access::position, 1._sreal);
+            vop();
+        }
+        else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            vop();
         }
         checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(isRigid ? velocityCoefficient : velocityCoefficient + positionCoefficient);
     }
     
     void plusEqualOtherMultipliedByScalarPosition() const
@@ -360,13 +412,23 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
 
     void plusEqualOtherMultipliedByScalarVelocityMix() const
     {
+        //v += b*f
+        const auto vop = [this]()
+        {
+            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::velocity, core::vec_id::read_access::freePosition, 2._sreal);
+        };
+        if constexpr (isRigid)
         {
             EXPECT_MSG_EMIT(Error);
-            //v += b*f
-            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::velocity, core::vec_id::read_access::freePosition, 2._sreal);
+            vop();
+        }
+        else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            vop();
         }
         checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(isRigid ? velocityCoefficient : velocityCoefficient + freePositionCoefficient * 2);
     }
 
     void plusEqualOtherPosition_2() const
@@ -383,11 +445,11 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
     void plusEqualOtherPositionMix_2() const
     {
         {
-            EXPECT_MSG_EMIT(Error);
+            EXPECT_MSG_NOEMIT(Error);
             //v += a
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::freeVelocity, core::vec_id::read_access::position, 1._sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient + freeVelocityCoefficient);
         checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
     
@@ -404,13 +466,23 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
 
     void plusEqualOtherVelocityMix_2() const
     {
+        //v += a
+        const auto vop = [this]()
+        {
+            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::freePosition, core::vec_id::read_access::velocity, 1._sreal);
+        };
+        if constexpr (isRigid)
         {
             EXPECT_MSG_EMIT(Error);
-            //v += a
-            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::freePosition, core::vec_id::read_access::velocity, 1._sreal);
+            vop();
+        }
+        else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            vop();
         }
         checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(isRigid ? velocityCoefficient : velocityCoefficient + freePositionCoefficient);
     }
 
     void multipliedByScalarThenAddOtherPosition() const
@@ -427,11 +499,11 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
     void multipliedByScalarThenAddOtherPositionMix() const
     {
         {
-            EXPECT_MSG_EMIT(Error);
+            EXPECT_MSG_NOEMIT(Error);
             //v = a+v*f
             m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::freeVelocity, core::vec_id::read_access::position, 3_sreal);
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(freeVelocityCoefficient + positionCoefficient * 3);
         checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
@@ -448,13 +520,23 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
 
     void multipliedByScalarThenAddOtherVelocityMix() const
     {
+        //v = a+v*f
+        const auto vop = [this]()
+        {
+            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::freePosition, core::vec_id::read_access::velocity, 7._sreal);
+        };
+        if constexpr (isRigid)
         {
             EXPECT_MSG_EMIT(Error);
-            //v = a+v*f
-            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::freePosition, core::vec_id::read_access::velocity, 7._sreal);
+            vop();
+        }
+        else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            vop();
         }
         checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(isRigid ? velocityCoefficient : freePositionCoefficient + velocityCoefficient * 7);
     }
 
     void equalSumPosition() const
@@ -481,12 +563,22 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
 
     void equalSumPositionMix2() const
     {
+        //v = a+b
+        const auto vop = [this]()
+        {
+            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::freeVelocity, core::vec_id::read_access::freePosition, 1_sreal);
+        };
+        if constexpr (isRigid)
         {
             EXPECT_MSG_EMIT(Error);
-            //v = a+b
-            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::freeVelocity, core::vec_id::read_access::freePosition, 1_sreal);
+            vop();
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            vop();
+        }
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(isRigid ? positionCoefficient : freeVelocityCoefficient + freePositionCoefficient);
         checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
@@ -503,24 +595,44 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
 
     void equalSumVelocityMix1() const
     {
+        //v = a+b
+        const auto vop = [this]()
+        {
+            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::position, core::vec_id::read_access::freeVelocity, 1._sreal);
+        };
+        if constexpr (isRigid)
         {
             EXPECT_MSG_EMIT(Error);
-            //v = a+b
-            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::position, core::vec_id::read_access::freeVelocity, 1._sreal);
+            vop();
+        }
+        else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            vop();
         }
         checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(isRigid ? velocityCoefficient : positionCoefficient + freeVelocityCoefficient);
     }
 
     void equalSumVelocityMix2() const
     {
+        //v = a+b
+        const auto vop = [this]()
+        {
+            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::force, core::vec_id::read_access::position, 1._sreal);
+        };
+        if constexpr (isRigid)
         {
             EXPECT_MSG_EMIT(Error);
-            //v = a+b
-            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::force, core::vec_id::read_access::position, 1._sreal);
+            vop();
+        }
+        else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            vop();
         }
         checkVecValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(isRigid ? velocityCoefficient : forceCoefficient + positionCoefficient);
     }
 
     void equalSumWithScalarPosition() const
@@ -536,12 +648,22 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
 
     void equalSumWithScalarPositionMix1() const
     {
+        //v = a+b*f
+        const auto vop = [this]()
+        {
+            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::velocity, core::vec_id::read_access::freePosition, 12_sreal);
+        };
+        if constexpr (isRigid)
         {
             EXPECT_MSG_EMIT(Error);
-            //v = a+b*f
-            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::position, core::vec_id::read_access::velocity, core::vec_id::read_access::freePosition, 12_sreal);
+            vop();
         }
-        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
+        else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            vop();
+        }
+        checkVecSpatialValues<sofa::core::vec_id::read_access::position>(isRigid ? positionCoefficient : velocityCoefficient + freePositionCoefficient * 12);
         checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
     }
 
@@ -569,24 +691,69 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
 
     void equalSumWithScalarVelocityMix1() const
     {
+        //v = a+b*f
+        const auto vop = [this]()
+        {
+            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::position, core::vec_id::read_access::freeVelocity, 12_sreal);
+        };
+        if constexpr (isRigid)
         {
             EXPECT_MSG_EMIT(Error);
-            //v = a+b*f
-            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::position, core::vec_id::read_access::freeVelocity, 12_sreal);
+            vop();
+        }
+        else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            vop();
         }
         checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(isRigid ? velocityCoefficient : positionCoefficient + freeVelocityCoefficient * 12);
     }
 
     void equalSumWithScalarVelocityMix2() const
     {
+        //v = a+b*f
+        const auto vop = [this]()
+        {
+            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::force, core::vec_id::read_access::position, 12_sreal);
+        };
+        if constexpr (isRigid)
         {
             EXPECT_MSG_EMIT(Error);
-            //v = a+b*f
-            m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::force, core::vec_id::read_access::position, 12_sreal);
+            vop();
+        }
+        else
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            vop();
         }
         checkVecSpatialValues<sofa::core::vec_id::read_access::position>(positionCoefficient);
-        checkVecValues<sofa::core::vec_id::read_access::velocity>(velocityCoefficient);
+        checkVecValues<sofa::core::vec_id::read_access::velocity>(isRigid ? velocityCoefficient : forceCoefficient + positionCoefficient * 12);
+    }
+
+    void equalCoordDifference() const
+    {
+        // v = a-b
+        m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::restPosition, core::vec_id::read_access::position, -1_sreal);
+
+        unsigned int index {};
+        auto vv = sofa::helper::getReadAccessor(*m_mechanicalObject->read(core::vec_id::read_access::velocity));
+        auto va = sofa::helper::getReadAccessor(*m_mechanicalObject->read(core::vec_id::read_access::restPosition));
+        auto vb = sofa::helper::getReadAccessor(*m_mechanicalObject->read(core::vec_id::read_access::position));
+
+        ASSERT_EQ(vv.size(), 10);
+        for (std::size_t i = 0; i < vv.size(); ++i)
+        {
+            const auto& v = vv[i];
+            const auto diff = DataTypes::coordDifference(va[i], vb[i]);
+            for (std::size_t j = 0; j < v.size(); ++j)
+            {
+                EXPECT_FLOATINGPOINT_EQ(v[j], diff[j])
+            }
+            ++index;
+        }
+
+        checkVecValues<core::vec_id::read_access::position>(positionCoefficient);
     }
 
     typename MO::SPtr m_mechanicalObject;
@@ -805,6 +972,11 @@ TYPED_TEST(MechanicalObjectVOpTest, equalSumWithScalarVelocityMix1)
 TYPED_TEST(MechanicalObjectVOpTest, equalSumWithScalarVelocityMix2)
 {
     this->equalSumWithScalarVelocityMix2();
+}
+
+TYPED_TEST(MechanicalObjectVOpTest, equalCoordDifference)
+{
+    this->equalCoordDifference();
 }
 
 }

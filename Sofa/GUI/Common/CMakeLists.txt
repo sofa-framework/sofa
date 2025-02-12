@@ -35,7 +35,6 @@ set(HEADER_FILES
     ${SOFAGUICOMMON_ROOT}/BaseViewer.h
     ${SOFAGUICOMMON_ROOT}/ColourPickingVisitor.h
     ${SOFAGUICOMMON_ROOT}/FilesRecentlyOpenedManager.h
-    ${SOFAGUICOMMON_ROOT}/GuiDataRepository.h
     ${SOFAGUICOMMON_ROOT}/GUIManager.h
     ${SOFAGUICOMMON_ROOT}/MouseOperations.h
     ${SOFAGUICOMMON_ROOT}/OperationFactory.h
@@ -50,7 +49,6 @@ set(SOURCE_FILES
     ${SOFAGUICOMMON_ROOT}/BaseViewer.cpp
     ${SOFAGUICOMMON_ROOT}/ColourPickingVisitor.cpp
     ${SOFAGUICOMMON_ROOT}/FilesRecentlyOpenedManager.cpp
-    ${SOFAGUICOMMON_ROOT}/GuiDataRepository.cpp
     ${SOFAGUICOMMON_ROOT}/GUIManager.cpp
     ${SOFAGUICOMMON_ROOT}/MouseOperations.cpp
     ${SOFAGUICOMMON_ROOT}/PickHandler.cpp
