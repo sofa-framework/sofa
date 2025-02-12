@@ -91,7 +91,8 @@
                                               0 0 -1  0 0 0
                                               0 0 -1  0 0 6.3
                                               0 0 -1   0 0 0" />
-
+        <UncoupledConstraintCorrection />
+        
         <!-- Interface (of rigid body) between both bodies -->
         <Node name="MappedRigidInterface" >
             <MechanicalObject template="Vec3d" name="MappedDoFs" position="@DeformableGrid/DeformableCube/box_roi.pointsInROI"  showObject="1" showObjectScale="10" />
