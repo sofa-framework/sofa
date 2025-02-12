@@ -49,7 +49,7 @@
 	            <PointCollisionModel />
 	            <BeamLinearMapping isMechanical="true" />
 	        </Node>
-	        <RestShapeSpringsForceField stiffness="1200"  angularStiffness="500" drawSpring="1" external_points="0" external_rest_shape="@../TranslPoint/DOF" mstate="@DOFs" points="0" template="Rigid3" />
+	        <RestShapeSpringsForceField stiffness="1200"  angularStiffness="500" drawSpring="1" externalIndices="0" external_rest_shape="@../TranslPoint/DOF" mstate="@DOFs" indices="0" template="Rigid3" />
 	    </Node>
 
         <ArticulatedHierarchyContainer />
