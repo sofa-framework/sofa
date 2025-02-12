@@ -148,20 +148,6 @@ activation = { env = { SOFA_BUILD_RELEASE_PACKAGE = "ON" } }
 activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOFA_FETCH_SOFAPYTHON3=ON -DPython_EXECUTABLE=$CONDA_PREFIX/bin/python" , pybind11_DIR = "$CONDA_PREFIX/share/cmake" } }
 dependencies = { numpy = ">=1.22.0", python = ">=3.9.0", pybind11 = ">=2.3.0" }
 
-[feature.py39.dependencies]
-python = "3.9.*"
-
-[feature.py310.dependencies]
-python = "3.10.*"
-
-[feature.py311.dependencies]
-python = "3.11.*"
-
-[feature.py312.dependencies]
-python = "3.12.*"
-
-[feature.py313.dependencies]
-python = "3.13.*"
 
 # TODO : DPLUGIN_MANUALMAPPING -> deprecated ?
 # TODO : PLUGIN_THMPGSPATIALHASHING -> deprecated ?
