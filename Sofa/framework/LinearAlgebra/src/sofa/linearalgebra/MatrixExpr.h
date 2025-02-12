@@ -502,8 +502,6 @@ public:
     }
 };
 
-template<class M1, class M2>
-using MatrixSubstraction SOFA_ATTRIBUTE_DEPRECATED__MATRIXSUBTRACTION() = MatrixSubtraction<M1, M2>;
 
 template<class M1, class M2>
 class MatrixProduct

@@ -45,7 +45,6 @@ public:
     typedef typename DataTypes::Real Real;
     typedef type::Vec<3,Real> Vec3;
     typedef type::Mat<3,3,Real> Mat3x3;
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
     typedef typename sofa::type::vector<sofa::Index>  VecIndices;
 
 protected:
@@ -76,10 +75,6 @@ public:
     Data< sofa::type::vector<sofa::type::vector< Real > > > d_interpolationValues; ///< Values of a linear interpolation
 
     SingleLink<MeshBarycentricMapperEngine<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology; ///< Name and path of Input mesh Topology
-
-    core::objectmodel::lifecycle::RemovedData d_imputMeshName {this, "v20.12", "v22.12", "InputMeshName",
-                                                   "Input data 'InputMeshName' changed for 'topology', please update your scene"
-                                                   "(see PR#1487)" };
 
 private:
     sofa::type::vector<sofa::type::vector< sofa::Index > >* linearInterpolIndices;

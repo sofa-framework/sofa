@@ -98,16 +98,8 @@ public:
         typedef const char* (*FuncPtr) ();
         FuncPtr func;
 
-        SOFA_ATTRIBUTE_DEPRECATED__PLUGIN_GETCOMPONENTLIST()
-        const char* operator() () const
-        {
-            if (func)
-            {
-                msg_warning("Plugin::GetModuleComponentList") << "This entrypoint is being deprecated, and should not be implemented anymore.";
-                return func();
-            }
-            else return nullptr;
-        }
+        SOFA_ATTRIBUTE_DISABLED__PLUGIN_GETCOMPONENTLIST()
+        const char* operator() () const = delete;
         GetModuleComponentList():func(nullptr) {}
     } GetModuleComponentList;
 

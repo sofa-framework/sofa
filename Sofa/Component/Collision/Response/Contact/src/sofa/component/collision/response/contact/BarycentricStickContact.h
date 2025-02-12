@@ -27,8 +27,6 @@
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/component/solidmechanics/spring/VectorSpringForceField.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::collision::response::contact
 {
 
@@ -72,10 +70,6 @@ protected:
     void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
 
 public:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_keepAlive;
-
     Data<bool> d_keepAlive; ///< set to true to keep this contact alive even after collisions are no longer detected
 
     void cleanup() override;

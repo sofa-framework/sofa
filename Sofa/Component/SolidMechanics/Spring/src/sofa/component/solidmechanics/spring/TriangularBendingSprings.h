@@ -28,8 +28,6 @@
 #include <sofa/type/Mat.h>
 #include <sofa/core/topology/TopologyData.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::solidmechanics::spring
 {
 
@@ -97,8 +95,6 @@ public:
             return in;
         }
     };
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<EdgeInformation>> edgeInfo;
 
     sofa::core::topology::EdgeData<type::vector<EdgeInformation> > d_edgeInfo; ///< Internal edge data
 

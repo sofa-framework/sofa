@@ -48,7 +48,6 @@ public:
     void doUpdate() override;
 
 protected:
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
     typedef type::fixed_array <unsigned int,3> MTriangle;
     typedef type::fixed_array <unsigned int,4> MQuad;
     typedef type::vector<unsigned int> MPolygon;

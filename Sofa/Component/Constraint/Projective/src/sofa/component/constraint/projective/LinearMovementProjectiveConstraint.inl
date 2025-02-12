@@ -54,11 +54,6 @@ LinearMovementProjectiveConstraint<DataTypes>::LinearMovementProjectiveConstrain
     d_keyTimes.endEdit();
     d_keyMovements.beginEdit()->push_back(Deriv() );
     d_keyMovements.endEdit();
-
-    m_indices.setOriginalData(&d_indices);
-    m_keyTimes.setOriginalData(&d_keyTimes);
-    m_keyMovements.setOriginalData(&d_keyMovements);
-    showMovement.setOriginalData(&d_showMovement);
 }
 
 

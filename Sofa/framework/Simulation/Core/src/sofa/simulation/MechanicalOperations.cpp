@@ -508,73 +508,6 @@ void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintOrder 
     }
 }
 
-void MechanicalOperations::m_resetSystem()
-{
-    LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
-    if (!s)
-    {
-        showMissingLinearSolverError();
-        return;
-    }
-    resetSystem(s);
-}
-
-void MechanicalOperations::m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal kFact)
-{
-    LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
-    if (!s)
-    {
-        showMissingLinearSolverError();
-        return;
-    }
-    setSystemMBKMatrix(MatricesFactors::M(mFact), MatricesFactors::B(bFact), MatricesFactors::K(kFact), s);
-}
-
-void MechanicalOperations::m_setSystemRHVector(core::MultiVecDerivId v)
-{
-    LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
-    if (!s)
-    {
-
-        return;
-    }
-    setSystemRHVector(v, s);
-}
-
-void MechanicalOperations::m_setSystemLHVector(core::MultiVecDerivId v)
-{
-    LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
-    if (!s)
-    {
-        showMissingLinearSolverError();
-        return;
-    }
-    setSystemLHVector(v, s);
-}
-
-void MechanicalOperations::m_solveSystem()
-{
-    LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
-    if (!s)
-    {
-        showMissingLinearSolverError();
-        return;
-    }
-    solveSystem(s);
-}
-
-void MechanicalOperations::m_print( std::ostream& out )
-{
-    LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
-    if (!s)
-    {
-        showMissingLinearSolverError();
-        return;
-    }
-    print(out, s);
-}
-
-
 // BaseMatrix & BaseVector Computations
 void MechanicalOperations::getMatrixDimension(sofa::Size*  const nbRow, sofa::Size* const nbCol, sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
@@ -626,27 +559,8 @@ void MechanicalOperations::print( core::ConstMultiVecId /*v*/, std::ostream& /*o
 {
 }
 
-
 void MechanicalOperations::printWithElapsedTime( core::ConstMultiVecId /*v*/, unsigned /*time*/, std::ostream& /*out*/ )
 {
-}
-
-void MechanicalOperations::addMBKdx(core::MultiVecDerivId df, SReal m, SReal b,
-    SReal k, bool clear, bool accumulate)
-{
-    addMBKdx(df, core::MatricesFactors::M(m), core::MatricesFactors::B(b), core::MatricesFactors::K(k), clear, accumulate);
-}
-
-void MechanicalOperations::addMBKv(core::MultiVecDerivId df, SReal m, SReal b,
-    SReal k, bool clear, bool accumulate)
-{
-    addMBKv(df, core::MatricesFactors::M(m), core::MatricesFactors::B(b), core::MatricesFactors::K(k), clear, accumulate);
-}
-
-void MechanicalOperations::setSystemMBKMatrix(SReal mFact, SReal bFact,
-    SReal kFact, core::behavior::LinearSolver* linearSolver)
-{
-    setSystemMBKMatrix(core::MatricesFactors::M(mFact), core::MatricesFactors::B(bFact), core::MatricesFactors::K(kFact), linearSolver);
 }
 
 void MechanicalOperations::showMissingLinearSolverError() const

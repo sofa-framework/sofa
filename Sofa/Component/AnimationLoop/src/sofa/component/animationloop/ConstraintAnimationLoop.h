@@ -52,18 +52,6 @@ namespace sofa::component::constraint::lagrangian::solver
 namespace sofa::component::animationloop
 {
 
-using MechanicalGetConstraintResolutionVisitor
-SOFA_ATTRIBUTE_DEPRECATED__DUPLICATED_CONSTRAINT_RESOLUTION_VISITOR("Use sofa::component::constraint::lagrangian::solver::MechanicalGetConstraintResolutionVisitor instead.")
-= sofa::component::constraint::lagrangian::solver::MechanicalGetConstraintResolutionVisitor;
-
-using MechanicalSetConstraint
-SOFA_ATTRIBUTE_DEPRECATED__DUPLICATED_CONSTRAINT_RESOLUTION_VISITOR("Use sofa::simulation::mechanicalvisitor::MechanicalBuildConstraintMatrix instead.")
-= sofa::simulation::mechanicalvisitor::MechanicalBuildConstraintMatrix;
-
-using MechanicalAccumulateConstraint2
-SOFA_ATTRIBUTE_DEPRECATED__DUPLICATED_CONSTRAINT_RESOLUTION_VISITOR("Use sofa::simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv instead.")
-= sofa::simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv;
-
 class SOFA_COMPONENT_ANIMATIONLOOP_API ConstraintProblem
 {
 protected:

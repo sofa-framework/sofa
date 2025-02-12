@@ -23,10 +23,4 @@
 
 #include <sofa/component/constraint/projective/PartialFixedProjectiveConstraint.h>
 
-SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "sofa/component/constraint/projective/PartialFixedProjectiveConstraint.h")
-
-namespace sofa::component::constraint::projective
-{
-template <class T>
-using PartialFixedConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "PartialFixedConstraint has been renamed to PartialFixedProjectiveConstraint") = PartialFixedProjectiveConstraint<T>;
-}
+SOFA_HEADER_DISABLED("v24.06", "v25.06", "sofa/component/constraint/projective/PartialFixedProjectiveConstraint.h")

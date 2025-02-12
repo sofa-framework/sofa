@@ -95,14 +95,14 @@ public:
         return MyVecId(static_cast<std::underlying_type_t<State>>(v_state));
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__POSITION()
-    static constexpr MyVecId position()      { return state<State::POSITION>();}
-    SOFA_ATTRIBUTE_DEPRECATED__REST_POSITION()
-    static constexpr MyVecId restPosition()  { return state<State::REST_POSITION>();}
-    SOFA_ATTRIBUTE_DEPRECATED__FREE_POSITION()
-    static constexpr MyVecId freePosition()  { return state<State::FREE_POSITION>();}
-    SOFA_ATTRIBUTE_DEPRECATED__RESET_POSITION()
-    static constexpr MyVecId resetPosition() { return state<State::RESET_POSITION>();}
+    SOFA_ATTRIBUTE_DISABLED__POSITION()
+    static constexpr MyVecId position() = delete;
+    SOFA_ATTRIBUTE_DISABLED__REST_POSITION()
+    static constexpr MyVecId restPosition() = delete;
+    SOFA_ATTRIBUTE_DISABLED__FREE_POSITION()
+    static constexpr MyVecId freePosition() = delete;
+    SOFA_ATTRIBUTE_DISABLED__RESET_POSITION()
+    static constexpr MyVecId resetPosition() = delete;
 
     ///< This is the first index used for dynamically allocated vectors
     static constexpr uint8_t V_FIRST_DYNAMIC_INDEX = static_cast<uint8_t>(State::DYNAMIC_INDEX);
@@ -174,22 +174,22 @@ public:
         return MyVecId(static_cast<std::underlying_type_t<State>>(v_state));
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__VELOCITY()
-    static constexpr MyVecId velocity()       { return state<State::VELOCITY>(); }
-    SOFA_ATTRIBUTE_DEPRECATED__RESET_VELOCITY()
-    static constexpr MyVecId resetVelocity()  { return state<State::RESET_VELOCITY>(); }
-    SOFA_ATTRIBUTE_DEPRECATED__FREE_VELOCITY()
-    static constexpr MyVecId freeVelocity()   { return state<State::FREE_VELOCITY>(); }
-    SOFA_ATTRIBUTE_DEPRECATED__NORMAL()
-    static constexpr MyVecId normal()         { return state<State::NORMAL>(); }
-    SOFA_ATTRIBUTE_DEPRECATED__FORCE()
-    static constexpr MyVecId force()          { return state<State::FORCE>(); }
-    SOFA_ATTRIBUTE_DEPRECATED__EXTERNAL_FORCE()
-    static constexpr MyVecId externalForce()  { return state<State::EXTERNAL_FORCE>(); }
-    SOFA_ATTRIBUTE_DEPRECATED__DX()
-    static constexpr MyVecId dx()             { return state<State::DX>(); }
-    SOFA_ATTRIBUTE_DEPRECATED__DFORCE()
-    static constexpr MyVecId dforce()         { return state<State::DFORCE>(); }
+    SOFA_ATTRIBUTE_DISABLED__VELOCITY()
+    static constexpr MyVecId velocity() = delete;
+    SOFA_ATTRIBUTE_DISABLED__RESET_VELOCITY()
+    static constexpr MyVecId resetVelocity() = delete;
+    SOFA_ATTRIBUTE_DISABLED__FREE_VELOCITY()
+    static constexpr MyVecId freeVelocity() = delete;
+    SOFA_ATTRIBUTE_DISABLED__NORMAL()
+    static constexpr MyVecId normal() = delete;
+    SOFA_ATTRIBUTE_DISABLED__FORCE()
+    static constexpr MyVecId force() = delete;
+    SOFA_ATTRIBUTE_DISABLED__EXTERNAL_FORCE()
+    static constexpr MyVecId externalForce() = delete;
+    SOFA_ATTRIBUTE_DISABLED__DX()
+    static constexpr MyVecId dx() = delete;
+    SOFA_ATTRIBUTE_DISABLED__DFORCE()
+    static constexpr MyVecId dforce() = delete;
 
     ///< This is the first index used for dynamically allocated vectors
     static constexpr uint8_t V_FIRST_DYNAMIC_INDEX = static_cast<uint8_t>(State::DYNAMIC_INDEX);
@@ -270,10 +270,10 @@ public:
         return MyVecId(static_cast<std::underlying_type_t<State>>(v_state));
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__CONSTRAINT_JACOBIAN()
-    static constexpr MyVecId constraintJacobian() { return state<State::CONSTRAINT_JACOBIAN>();} // jacobian matrix of constraints
-    SOFA_ATTRIBUTE_DEPRECATED__MAPPING_JACOBIAN()
-    static constexpr MyVecId mappingJacobian() { return state<State::MAPPING_JACOBIAN>();}         // accumulated matrix of the mappings
+    SOFA_ATTRIBUTE_DISABLED__CONSTRAINT_JACOBIAN()
+    static constexpr MyVecId constraintJacobian() = delete;
+    SOFA_ATTRIBUTE_DISABLED__MAPPING_JACOBIAN()
+    static constexpr MyVecId mappingJacobian() = delete;
 
     ///< This is the first index used for dynamically allocated vectors
     static constexpr uint8_t V_FIRST_DYNAMIC_INDEX = static_cast<uint8_t>(State::DYNAMIC_INDEX);

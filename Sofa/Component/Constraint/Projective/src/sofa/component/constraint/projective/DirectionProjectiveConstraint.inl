@@ -44,10 +44,6 @@ DirectionProjectiveConstraint<DataTypes>::DirectionProjectiveConstraint()
 {
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
-
-    f_indices.setOriginalData(&d_indices);
-    f_drawSize.setOriginalData(&d_drawSize);
-    f_direction.setOriginalData(&d_direction);
 }
 
 

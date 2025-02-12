@@ -23,4 +23,4 @@
 #include <sofa/config.h>
 
 #include <sofa/component/odesolver/forward/EulerExplicitSolver.h>
-SOFA_HEADER_DEPRECATED("v24.12", "v25.06", "sofa/component/odesolver/forward/EulerExplicitSolver.h")
+SOFA_HEADER_DISABLED("v24.12", "v25.06", "sofa/component/odesolver/forward/EulerExplicitSolver.h")

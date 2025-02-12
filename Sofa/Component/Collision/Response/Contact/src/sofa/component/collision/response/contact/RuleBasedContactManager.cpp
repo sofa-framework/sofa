@@ -40,7 +40,6 @@ RuleBasedContactManager::RuleBasedContactManager()
             "The last string define the response algorithm to use for contacts matched by this rule.\n"
             "Rules are applied in the order they are specified. If none match a given contact, the default response is used.\n"))
 {
-    rules.setOriginalData(&d_rules);
 }
 
 RuleBasedContactManager::~RuleBasedContactManager()

@@ -31,8 +31,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::collision::response::contact
 {
 
@@ -71,11 +69,8 @@ protected:
     StickContactConstraint(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
 
     ~StickContactConstraint() override;
+
 public:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_keepAlive;
-
-
     Data<bool> d_keepAlive; ///< set to true to keep this contact alive even after collisions are no longer detected
 
     /// Return true if this contact should be kept alive, even if objects are no longer in collision
@@ -83,7 +78,6 @@ public:
 
     /// Control the keepAlive flag of the contact.
     void setKeepAlive(bool val) override { d_keepAlive.setValue(val); }
-
 
     void cleanup() override;
 

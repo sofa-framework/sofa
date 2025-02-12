@@ -32,9 +32,6 @@ BaseProximityIntersection::BaseProximityIntersection()
 {
     d_alarmDistance.setRequired(true);
     d_contactDistance.setRequired(true);
-
-    alarmDistance.setOriginalData(&d_alarmDistance);
-    contactDistance.setOriginalData(&d_contactDistance);
 }
 
 

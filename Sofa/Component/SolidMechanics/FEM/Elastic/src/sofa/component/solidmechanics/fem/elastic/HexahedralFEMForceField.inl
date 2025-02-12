@@ -65,16 +65,11 @@ HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
     _coef[5][0]=  1;		_coef[5][1]= -1;		_coef[5][2]=  1;
     _coef[6][0]=  1;		_coef[6][1]=  1;		_coef[6][2]=  1;
     _coef[7][0]= -1;		_coef[7][1]=  1;		_coef[7][2]=  1;
-
-    f_method.setOriginalData(&d_method);
-    hexahedronInfo.setOriginalData(&d_hexahedronInfo);
-
 }
 
 template <class DataTypes>
 HexahedralFEMForceField<DataTypes>::~HexahedralFEMForceField()
 {
-
 }
 
 

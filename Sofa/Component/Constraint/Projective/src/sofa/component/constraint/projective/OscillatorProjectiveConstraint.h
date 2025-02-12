@@ -26,8 +26,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/type/vector.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::constraint::projective
 {
 
@@ -82,11 +80,7 @@ protected:
         }
     };
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::vector< Oscillator > >  constraints;
-
     Data< type::vector< Oscillator > > d_constraints; ///< Define a sequence of oscillating particules:  [index, Mean(x,y,z), amplitude(x,y,z), pulsation, phase]
-
 
 public:
     explicit OscillatorProjectiveConstraint(core::behavior::MechanicalState<TDataTypes>* mstate=nullptr);

@@ -31,8 +31,6 @@
 #include <sofa/type/Mat.h>
 #include <sofa/type/trait/Rebind.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
@@ -115,40 +113,6 @@ public:
     /// Topology Data
     using VecTetrahedronRestInformation = type::rebind_to<VecCoord, TetrahedronRestInformation>;
     using VecMat3x3 = type::rebind_to<VecCoord, Mat3x3>;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<VecMat3x3 > pointInfo;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<VecMat3x3 >  edgeInfo;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<VecTetrahedronRestInformation >  tetrahedronInfo;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::string> f_method;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_poissonRatio;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    SOFA_ATTRIBUTE_DISABLED("", "v24.12", "Use d_youngModulus instead") DeprecatedAndRemoved f_youngModulus;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_drawing;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::RGBAColor> drawColor1;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::RGBAColor> drawColor2;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::RGBAColor> drawColor3;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::RGBAColor> drawColor4;
-
 
     core::topology::PointData<VecMat3x3 > d_pointInfo; ///< Internal point data
     core::topology::EdgeData<VecMat3x3 > d_edgeInfo; ///< Internal edge data

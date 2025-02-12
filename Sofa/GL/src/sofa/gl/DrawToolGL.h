@@ -33,11 +33,6 @@ class SOFA_GL_API DrawToolGL : public helper::visual::DrawTool
 {
 
 public:
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(RGBAColor, sofa::type::RGBAColor);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3f, sofa::type::Vec3f);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3i, sofa::type::Vec3i);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec2i, sofa::type::Vec2i);
     typedef sofa::type::Quat<SReal> Quaternion;
 
     DrawToolGL();
