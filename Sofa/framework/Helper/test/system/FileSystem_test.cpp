@@ -22,6 +22,7 @@
 #include <sofa/testing/config.h>
 
 #include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/Utils.h>
 #include <gtest/gtest.h>
 #include <sofa/helper/logging/MessageDispatcher.h>
 #include <exception>
@@ -358,4 +359,16 @@ TEST(FileSystemTest, append)
     EXPECT_EQ(FileSystem::append("a/b/c/d/", "e", "/f", "g"), "a/b/c/d/e/f/g");
     EXPECT_EQ(FileSystem::append("a/b/c/d/", "e", "/f", "/g"), "a/b/c/d/e/f/g");
     EXPECT_EQ(FileSystem::append("a/b/c/d/", "/e", "/f", "/g"), "a/b/c/d/e/f/g");
+}
+
+TEST(FileSystemTest, findOrCreateAValidPath)
+{
+    const auto dir = FileSystem::append(sofa::helper::Utils::getSofaPathPrefix(), "test_folder", "another_layer");
+    EXPECT_FALSE(FileSystem::isDirectory(dir));
+
+    const auto file = FileSystem::append(dir, "file.txt");
+    FileSystem::findOrCreateAValidPath(file);
+    EXPECT_TRUE(FileSystem::isDirectory(dir));
+
+    EXPECT_FALSE(FileSystem::removeDirectory(dir));
 }
