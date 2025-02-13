@@ -182,6 +182,14 @@
         "PLUGIN_CGALPLUGIN": {
           "type": "BOOL",
           "value": "ON"
+        },
+        "SOFA_FETCH_SOFA.METIS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_SOFA_METIS": {
+          "type": "BOOL",
+          "value": "ON"
         }
       }
     },
