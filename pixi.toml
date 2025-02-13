@@ -1,7 +1,7 @@
 [project]
 authors = ["Olivier Roussel <olivier.roussel@inria.fr>"]
 channels = ["conda-forge"]
-description = "Real-time multi-physics simulation with an emphasis on medical simulation"
+description = "Open-source framework for interactive mechanical simulation, with emphasis on biomechanics and robotics"
 name = "sofa"
 platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
 version = "25.06.99"
@@ -35,7 +35,6 @@ scripts = ["development/scripts/pixi/activation.sh"]
 [target.win-64.activation]
 scripts = ["development/scripts/pixi/activation.bat"]
 
-# TODO : SOFA_ENABLE_LEGACY_HEADERS deprecated ?
 # TODO : APPLICATION_GETDEPRECATEDCOMPONENTS ?
 # TODO : SOFA_BUILD_APP_BUNDLE ?
 # TODO : SOFA_WITH_DEPRECATED_COMPONENTS ?
@@ -148,9 +147,7 @@ activation = { env = { SOFA_BUILD_RELEASE_PACKAGE = "ON" } }
 activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOFA_FETCH_SOFAPYTHON3=ON -DPython_EXECUTABLE=$CONDA_PREFIX/bin/python" , pybind11_DIR = "$CONDA_PREFIX/share/cmake" } }
 dependencies = { numpy = ">=1.22.0", python = ">=3.9.0", pybind11 = ">=2.3.0" }
 
-
 # TODO : DPLUGIN_MANUALMAPPING -> deprecated ?
-# TODO : PLUGIN_THMPGSPATIALHASHING -> deprecated ?
 
 [feature.plugin-cimg]
 activation = { env = { SOFA_PLUGIN_CIMG = "ON" } }
@@ -235,13 +232,10 @@ standard-scope = { features = [
   "plugin-sofa-python3"
   ], solve-group = "minimal-scope" }
 
-# TODO : SOFAGUI_HEADLESS_RECORDER ?
-# TODO : SOFAGUIQT_ENABLE_NODEGRAPH ?
-# TODO : PLUGIN_BULLETCOLLISIONDETECTION ?
-# TODO : PLUGIN_CGALPLUGIN ?
-# TODO : Assimp ?
-# TODO : DPLUGIN_SOFAGLFW ?
-# TODO : DPLUGIN_SOFAIMGUI ?
+# TODO : PLUGIN_CGALPLUGIN
+# TODO : Assimp
+# TODO : DPLUGIN_SOFAGLFW
+# TODO : DPLUGIN_SOFAIMGUI
 
 full-scope = { features = [
   "dev-tools",
