@@ -190,6 +190,10 @@
         "PLUGIN_SOFA_METIS": {
           "type": "BOOL",
           "value": "ON"
+        },
+        "PLUGIN_VOLUMETRICRENDERING": {
+          "type": "BOOL",
+          "value": "ON"
         }
       }
     },
@@ -243,6 +247,14 @@
         "PLUGIN_SOFACARVING": {
           "type": "BOOL",
           "value": "ON"
+        },
+        "SOFA_FETCH_MODELORDERREDUCTION": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_MODELORDERREDUCTION": {
+          "type": "BOOL",
+          "value": "ON"
         }
       }
     },
@@ -261,6 +273,18 @@
           "value": "ON"
         },
         "SOFA_WITH_DEV_TOOLS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "SOFA_FETCH_REGRESSION": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "APPLICATION_REGRESSION_TEST": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "APPLICATION_GETDEPRECATEDCOMPONENTS": {
           "type": "BOOL",
           "value": "ON"
         }
