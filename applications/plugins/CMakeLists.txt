@@ -13,7 +13,7 @@ sofa_add_subdirectory(plugin HeadlessRecorder HeadlessRecorder)
 sofa_add_subdirectory(directory SofaHighOrder SofaHighOrder EXTERNAL GIT_REF master)
 
 sofa_add_subdirectory(plugin CImgPlugin CImgPlugin) # ON by default and first as it is used by other plugins.
-sofa_add_subdirectory(plugin ArticulatedSystemPlugin ArticulatedSystemPlugin ON)
+sofa_add_subdirectory(plugin ArticulatedSystemPlugin ArticulatedSystemPlugin OFF)
 sofa_add_subdirectory(plugin SofaEulerianFluid SofaEulerianFluid)
 sofa_add_subdirectory(plugin SofaSphFluid SofaSphFluid EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin MultiThreading MultiThreading ON)
@@ -39,7 +39,7 @@ sofa_add_subdirectory(plugin SofaCarving SofaCarving)
 sofa_add_subdirectory(plugin LeapMotion LeapMotion)
 sofa_add_subdirectory(plugin Geomagic Geomagic)
 sofa_add_subdirectory(plugin SofaAssimp SofaAssimp) # ColladaSceneLoader Depends on Flexible and image
-sofa_add_subdirectory(plugin SofaMatrix SofaMatrix ON) # Depends on image, CImgPlugin
+sofa_add_subdirectory(plugin SofaMatrix SofaMatrix OFF) # Depends on image, CImgPlugin
 sofa_add_subdirectory(plugin BeamAdapter BeamAdapter EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin STLIB STLIB EXTERNAL GIT_REF master)
 sofa_add_subdirectory(plugin SoftRobots SoftRobots EXTERNAL GIT_REF master)

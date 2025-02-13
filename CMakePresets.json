@@ -24,49 +24,9 @@
           "type": "BOOL",
           "value": "ON"
         },
-        "APPLICATION_GETDEPRECATEDCOMPONENTS": {
-          "type": "BOOL",
-          "value": "ON"
-        },
         "PLUGIN_MULTITHREADING": {
           "type": "BOOL",
           "value": "ON"
-        },
-        "SOFA_WITH_OPENGL": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFAMATRIX": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_ARTICULATEDSYSTEMPLUGIN": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "SOFA_FETCH_SOFAGLFW": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFAGLFW": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFAIMGUI": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "SOFA_BUILD_TESTS": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "SOFA_DUMP_VISITOR_INFO": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "SOFA_WITH_DEVTOOLS": {
-          "type": "BOOL",
-          "value": "OFF"
         }
       }
     },
