@@ -2,254 +2,37 @@
   "version": 3,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 21,
+    "minor": 22,
     "patch": 0
   },
   "configurePresets": [
     {
-      "name": "default_base",
-      "displayName": "Default Config",
-      "description": "Build with default plugins/modules",
-      "hidden": true,
+      "name": "minimal",
+      "displayName": "Minimal config",
+      "description": "SOFA as a library, no OpenGL support, no GUI except for batch and no Python support",
+      "hidden": false,
       "cacheVariables": {
-        "SOFA_BUILD_TESTS": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "SOFA_ENABLE_LEGACY_HEADERS": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "SOFA_BUILD_TUTORIALS": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "SOFA_BUILD_ADD_SCENES": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "SOFA_BUILD_ADD_SHADERS": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_COLLISIONOBBCAPSULE": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFAHIGHORDER": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_CIMGPLUGIN": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_ARTICULATEDSYSTEMPLUGIN": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_SOFAEULERIANFLUID": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFASPHFLUID": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFADISTANCEGRID": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFAIMPLICITFIELD": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_MULTITHREADING": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_DIFFUSIONSOLVER": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFAPYTHON": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_IMAGE": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFANEWMAT": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_COMPLIANT": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFAPYTHON3": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_CGALPLUGIN": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_FLEXIBLE": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_REGISTRATION": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_BULLETCOLLISIONDETECTION": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_PREASSEMBLEDMASS": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_INVERTIBLEFVM": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_MESHSTEPLOADER": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_PLUGINEXAMPLE": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_MANIFOLDTOPOLOGIES": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_OPTITRACKNATNET": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SIXENSEHYDRA": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFAOPENCL": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_XITACT": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_HAPTION": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_MANUALMAPPING": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_PERSISTENTCONTACT": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SENSABLE": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SENSABLEEMULATION": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFAHAPI": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_THMPGSPATIALHASHING": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFACARVING": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_RIGIDSCALE": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_LEAPMOTION": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_GEOMAGIC": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFAASSIMP": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFAMATRIX": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_OPENCTMPLUGIN": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_BEAMADAPTER": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_PSL": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFAPARDISOSOLVER": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFACUDA": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_SOFASIMPLEGUI": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "PLUGIN_VOLUMETRICRENDERING": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "APPLICATION_SCENECHECKING": {
-          "type": "BOOL",
-          "value": "ON"
+        "SOFA_FLOATING_POINT_TYPE": {
+          "type": "STRING",
+          "value": "double"
         },
         "APPLICATION_RUNSOFA": {
           "type": "BOOL",
           "value": "ON"
         },
-        "APPLICATION_REGRESSION": {
+        "APPLICATION_SCENECHECKING": {
           "type": "BOOL",
-          "value": "OFF"
+          "value": "ON"
         },
-        "LIBRARY_SOFA_GUI_HEADLESSRECORDER": {
+        "APPLICATION_GETDEPRECATEDCOMPONENTS": {
           "type": "BOOL",
-          "value": "OFF"
-        }
-      }
-    },
-    {
-      "name": "minimal_base",
-      "displayName": "Minimal Config",
-      "description": "Build with as few plugins/modules as possible",
-      "hidden": true,
-      "inherits": "default_base",
-      "cacheVariables": {
-        "PLUGIN_CIMGPLUGIN": {
+          "value": "ON"
+        },
+        "PLUGIN_MULTITHREADING": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "SOFA_WITH_OPENGL": {
           "type": "BOOL",
           "value": "OFF"
         },
@@ -261,84 +44,43 @@
           "type": "BOOL",
           "value": "OFF"
         },
-        "APPLICATION_SCENECHECKING": {
+        "SOFA_FETCH_SOFAGLFW": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "PLUGIN_SOFAGLFW": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "PLUGIN_SOFAIMGUI": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "SOFA_BUILD_TESTS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "SOFA_DUMP_VISITOR_INFO": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "SOFA_WITH_DEVTOOLS": {
           "type": "BOOL",
           "value": "OFF"
         }
       }
     },
     {
-      "name": "full_base",
-      "displayName": "Full Config",
-      "description": "Build with as much plugins/modules as possible",
+      "name": "defaultGUI",
+      "displayName": "Default GUI configuration",
+      "description": "Hidden preset to be used to add default GUI to other preset",
       "hidden": true,
-      "inherits": "default_base",
       "cacheVariables": {
-        "SOFA_BUILD_TUTORIALS": {
+        "SOFA_WITH_OPENGL": {
           "type": "BOOL",
           "value": "ON"
         },
-        "PLUGIN_BEAMADAPTER": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_DIFFUSIONSOLVER": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_GEOMAGIC": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_IMAGE": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_INVERTIBLEFVM": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_MANIFOLDTOPOLOGIES": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_MANUALMAPPING": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_MULTITHREADING": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_OPTITRACKNATNET": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_PLUGINEXAMPLE": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_REGISTRATION": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_SENSABLEEMULATION": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_SOFACARVING": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_SOFACUDA": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_SOFADISTANCEGRID": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_SOFAEULERIANFLUID": {
+        "SOFA_FETCH_SOFAGLFW": {
           "type": "BOOL",
           "value": "ON"
         },
@@ -346,19 +88,179 @@
           "type": "BOOL",
           "value": "ON"
         },
-        "APPLICATION_RUNSOFAGLFW": {
+        "PLUGIN_SOFAIMGUI": {
+          "type": "BOOL",
+          "value": "ON"
+        }
+      }
+    },
+    {
+      "name": "allGUI",
+      "displayName": "All GUI configurations",
+      "description": "Hidden preset to be used to add all GUI to other preset",
+      "hidden": true,
+      "inherits": ["defaultGUI"],
+      "cacheVariables": {
+        "PLUGIN_SOFA_QT": {
           "type": "BOOL",
           "value": "ON"
         },
-        "PLUGIN_SOFAIMGUI": {
+        "SOFA_FETCH_SOFA.QT": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "SOFA_QT_ENABLE_QDOCBROWSER": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "SOFA_QT_ENABLE_NODEGRAPH": {
+          "type": "BOOL",
+          "value": "OFF"
+        }
+      }
+    },
+    {
+      "name": "standard",
+      "displayName": "Standard Config",
+      "description": "Adds OpenGL support, an actual GUI and Python3 support",
+      "hidden": false,
+      "inherits": ["minimal","defaultGUI"],
+      "cacheVariables": {
+        "APPLICATION_SOFAPHYSICSAPI": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "SOFA_BUILD_TUTORIALS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_SOFAPYTHON3": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "SOFA_FETCH_SOFAPYTHON3": {
+          "type": "BOOL",
+          "value": "ON"
+        }
+      }
+    },
+    {
+      "name": "supported-plugins",
+      "displayName": "Supported Plugins Configuration",
+      "description": "Adds all the officially supported plugins",
+      "hidden": false,
+      "inherits": ["standard","allGUI"],
+      "cacheVariables": {
+        "SOFA_FETCH_STLIB": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_STLIB": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "SOFA_FETCH_SOFTROBOTS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_SOFTROBOTS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "SOFA_FETCH_BEAMADAPTER": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_BEAMADAPTER": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_SOFAMATRIX": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_ARTICULATEDSYSTEMPLUGIN": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "SOFA_FETCH_CSPARSESOLVERS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_CSPARSESOLVERS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_GEOMAGIC": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "SOFA_FETCH_PLUGINEXAMPLE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_PLUGINEXAMPLE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "SOFA_FETCH_REGISTRATION": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_REGISTRATION": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_SOFACUDA": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "SOFA_FETCH_CGALPLUGIN": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_CGALPLUGIN": {
+          "type": "BOOL",
+          "value": "ON"
+        }
+      }
+    },
+    {
+      "name": "full",
+      "displayName": "Full Config",
+      "description": "Adds all plugins known to be functional",
+      "hidden": false,
+      "inherits": ["supported-plugins","allGUI"],
+      "cacheVariables": {
+        "PLUGIN_DIFFUSIONSOLVER": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_IMAGE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "SOFA_FETCH_MANIFOLDTOPOLOGIES": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_MANIFOLDTOPOLOGIES": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_SENSABLEEMULATION": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_SOFADISTANCEGRID": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_SOFAEULERIANFLUID": {
           "type": "BOOL",
           "value": "ON"
         },
         "PLUGIN_SOFAIMPLICITFIELD": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_SOFASIMPLEGUI": {
           "type": "BOOL",
           "value": "ON"
         },
@@ -370,11 +272,59 @@
           "type": "BOOL",
           "value": "ON"
         },
-        "APPLICATION_REGRESSION": {
+        "PLUGIN_SOFACARVING": {
           "type": "BOOL",
           "value": "ON"
         }
       }
+    },
+    {
+      "name": "developer",
+      "displayName": "Developer Settings",
+      "description": "Hidden preset to be used to add developer settings to other preset",
+      "hidden": true,
+      "cacheVariables": {
+        "SOFA_BUILD_TESTS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "SOFA_DUMP_VISITOR_INFO": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "SOFA_WITH_DEV_TOOLS": {
+          "type": "BOOL",
+          "value": "ON"
+        }
+      }
+    },
+    {
+      "name": "minimal-dev",
+      "displayName": "Minimal Developer Settings",
+      "description": "Minimal with developer settings",
+      "hidden": false,
+      "inherits": ["minimal","developer"]
+    },
+    {
+      "name": "standard-dev",
+      "displayName": "Standard Developer Settings",
+      "description": "Standard with developer settings",
+      "hidden": false,
+      "inherits": ["standard","developer"]
+    },
+    {
+      "name": "supported-plugins-dev",
+      "displayName": "Supported Plugins Developer Settings",
+      "description": "Supported plugins with developer settings",
+      "hidden": false,
+      "inherits": ["supported-plugins","developer"]
+    },
+    {
+      "name": "full-dev",
+      "displayName": "Full Developer Settings",
+      "description": "Full with developer settings",
+      "hidden": false,
+      "inherits": ["full","developer"]
     }
   ]
 }
