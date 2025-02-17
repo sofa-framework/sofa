@@ -33,7 +33,7 @@
     {
       "name": "defaultGUI",
       "displayName": "Default GUI configuration",
-      "description": "Hidden preset to be used to add default GUI to other preset",
+      "description": "Hidden preset to be used to add default GUI and OpenGL support to other preset",
       "hidden": true,
       "cacheVariables": {
         "SOFA_WITH_OPENGL": {
