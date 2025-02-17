@@ -240,6 +240,10 @@
           "type": "BOOL",
           "value": "ON"
         },
+        "SOFA_FETCH_SOFASPHFLUID": {
+          "type": "BOOL",
+          "value": "ON"
+        },
         "PLUGIN_SOFASPHFLUID": {
           "type": "BOOL",
           "value": "ON"
@@ -276,7 +280,7 @@
           "type": "BOOL",
           "value": "ON"
         },
-        "SOFA_WITH_DEV_TOOLS": {
+        "SOFA_WITH_DEVTOOLS": {
           "type": "BOOL",
           "value": "ON"
         },
