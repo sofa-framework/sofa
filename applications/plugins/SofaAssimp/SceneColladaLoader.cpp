@@ -33,7 +33,7 @@
 #include <sofa/component/mapping/linear/SkinningMapping.h>
 #include <sofa/component/mapping/linear/BarycentricMapping.h>
 #include <sofa/component/mapping/linear/IdentityMapping.h>
-#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 #include <sofa/component/constraint/projective/SkeletalMotionProjectiveConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -291,7 +291,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             currentBoneMechanicalObject->resize(currentAiMesh->mNumBones);
 
                             {
-                                Data<Rigid3Types::VecCoord>* d_x = currentBoneMechanicalObject->write(core::VecCoordId::position());
+                                Data<Rigid3Types::VecCoord>* d_x = currentBoneMechanicalObject->write(core::vec_id::write_access::position);
                                 Rigid3Types::VecCoord &x = *d_x->beginEdit();
                                 for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
                                 {
