@@ -208,6 +208,10 @@
           "type": "BOOL",
           "value": "ON"
         },
+        "PLUGIN_CIMGPLUGIN": {
+          "type": "BOOL",
+          "value": "ON"
+        },
         "PLUGIN_IMAGE": {
           "type": "BOOL",
           "value": "ON"
