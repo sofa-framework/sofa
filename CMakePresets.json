@@ -82,7 +82,7 @@
     {
       "name": "standard",
       "displayName": "Standard Config",
-      "description": "Adds OpenGL support, an actual GUI and Python3 support",
+      "description": "Adds the default GUI, the SofaPhysics API, the tutorials and the Python3 support",
       "hidden": false,
       "inherits": ["minimal","defaultGUI"],
       "cacheVariables": {
@@ -107,7 +107,7 @@
     {
       "name": "supported-plugins",
       "displayName": "Supported Plugins Configuration",
-      "description": "Adds all the officially supported plugins",
+      "description": "Adds all officially supported plugins by the SOFA Consortium",
       "hidden": false,
       "inherits": ["standard","allGUI"],
       "cacheVariables": {
@@ -200,7 +200,7 @@
     {
       "name": "full",
       "displayName": "Full Config",
-      "description": "Adds all plugins known to be functional",
+      "description": "Adds all plugins known to be functional (Release configuration)",
       "hidden": false,
       "inherits": ["supported-plugins","allGUI"],
       "cacheVariables": {
