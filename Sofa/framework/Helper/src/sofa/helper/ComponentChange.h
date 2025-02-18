@@ -83,7 +83,7 @@ public:
 
 struct SOFA_HELPER_API RemovedIn
 {
-    explicit RemovedIn(std::string removedVersion) : m_removalVersion(std::move(removedVersion)) {}
+    explicit RemovedIn(std::string removalVersion) : m_removalVersion(std::move(removalVersion)) {}
 
 private:
     struct SOFA_HELPER_API AfterDeprecationIn : public ComponentChange
