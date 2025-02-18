@@ -656,13 +656,13 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     /***********************/
     // REMOVED SINCE v20.12
 
-    { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
-    { "HexahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
-    { "TetrahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
-    { "QuadSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
-    { "TriangleSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
-    { "EdgeSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
-    { "PointSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "DynamicSparseGridTopologyAlgorithms", RemovedIn("v20.12").withoutAnyDeprecation() },
+    { "HexahedronSetTopologyAlgorithms", RemovedIn("v20.12").withoutAnyDeprecation() },
+    { "TetrahedronSetTopologyAlgorithms", RemovedIn("v20.12").withoutAnyDeprecation() },
+    { "QuadSetTopologyAlgorithms", RemovedIn("v20.12").withoutAnyDeprecation() },
+    { "TriangleSetTopologyAlgorithms", RemovedIn("v20.12").withoutAnyDeprecation() },
+    { "EdgeSetTopologyAlgorithms", RemovedIn("v20.12").withoutAnyDeprecation() },
+    { "PointSetTopologyAlgorithms", RemovedIn("v20.12").withoutAnyDeprecation() },
 
     /***********************/
     // REMOVED SINCE v20.06
