@@ -81,22 +81,6 @@ public:
     }
 };
 
-class SOFA_HELPER_API Removed : public ComponentChange
-{
-public:
-    explicit Removed(const std::string&  sinceVersion, const std::string& atVersion)
-    {
-        std::stringstream output;
-        output << "This component has been REMOVED since SOFA " << atVersion << " "
-                  "(deprecated since " << sinceVersion << "). "
-                  "\nPlease consider updating your scene. "
-                  "If this component is crucial to you please report in a GitHub issue "
-                  "in order to reconsider this component for future re-integration.";
-        m_message = output.str();
-        m_changeVersion = atVersion;
-    }
-};
-
 struct SOFA_HELPER_API RemovedIn
 {
     explicit RemovedIn(std::string removedVersion) : m_removalVersion(std::move(removedVersion)) {}
