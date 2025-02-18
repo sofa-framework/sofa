@@ -377,16 +377,14 @@ std::string FileSystem::removeExtraBackSlashes(const std::string& path)
 }
 
 
-std::string FileSystem::findOrCreateAValidPath(std::string path)
+std::string FileSystem::findOrCreateAValidPath(const std::string path)
 {
     if( FileSystem::exists(path) )
-        return path;
+        return path ;
 
-    const std::string parentPath = FileSystem::getParentDirectory(path);
-    findOrCreateAValidPath(parentPath);
-
-    if(!FileSystem::exists(parentPath) )
-        FileSystem::createDirectory(parentPath);
+    const std::string parentPath = FileSystem::getParentDirectory(path) ;
+    const std::string currentFile = FileSystem::stripDirectory(path) ;
+    FileSystem::createDirectory(append(findOrCreateAValidPath( parentPath ), currentFile)) ;
     return path ;
 }
 
