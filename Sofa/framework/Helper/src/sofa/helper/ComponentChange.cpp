@@ -654,14 +654,6 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "TriangleLocalMinDistanceFilter", RemovedIn("v21.12").afterDeprecationIn("v21.12") },
 
     /***********************/
-    // REMOVED SINCE v21.06
-
-    {"LengthContainer", Removed("v21.06", "v21.06")},
-    {"PoissonContainer", Removed("v21.06", "v21.06")},
-    {"RadiusContainer", Removed("v21.06", "v21.06")},
-    {"StiffnessContainer", Removed("v21.06", "v21.06")},
-
-    /***********************/
     // REMOVED SINCE v20.12
 
     { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
