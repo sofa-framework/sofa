@@ -131,14 +131,33 @@ const ComponentLibrary *CategoryLibrary::getComponent( const std::string &catego
 
 std::vector<std::string> CategoryLibrary::getCategories()
 {
-    return std::vector<std::string> {"ContextObject", "VisualModel", "BehaviorModel",
-                                         "CollisionModel", "MechanicalState", "ForceField",
-                                         "InteractionForceField", "ProjectiveConstraintSet",
-                                         "ConstraintSet", "Mapping", "Engine", "TopologicalMapping",
-                                         "Mass", "OdeSolver", "ConstraintSolver", "ConstraintSolver",
-                                         "LinearSolver", "LinearSystem", "AnimationLoop", "Topology", "TopologyObject",
-                                         "Controller", "Loader", "CollisionAlgorithm",
-                                         "ConfigurationSetting", "_Miscellaneous"};
+    return std::vector<std::string>{
+        "ContextObject",
+        "VisualModel",
+        "BehaviorModel",
+        "CollisionModel",
+        "MechanicalState",
+        "ForceField",
+        "InteractionForceField",
+        "ProjectiveConstraintSet",
+        "ConstraintSet",
+        "Mapping",
+        "Engine",
+        "TopologicalMapping",
+        "Mass",
+        "OdeSolver",
+        "ConstraintSolver",
+        "ConstraintSolver",
+        "LinearSolver",
+        "LinearSystem",
+        "AnimationLoop",
+        "Topology",
+        "TopologyObject",
+        "Controller",
+        "Loader",
+        "CollisionAlgorithm",
+        "ConfigurationSetting",
+        "_Miscellaneous"};
 }
 
 void CategoryLibrary::getCategories(const objectmodel::BaseClass* mclass,
