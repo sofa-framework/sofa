@@ -7,24 +7,33 @@
   },
   "configurePresets": [
     {
-      "name": "minimal",
-      "displayName": "Minimal config",
-      "description": "SOFA as a library, no OpenGL support, no GUI except for batch and no Python support",
-      "hidden": false,
+      "name": "core",
+      "displayName": "Core config",
+      "description": "Hidden preset for SOFA library only (no OpenGL support, no GUI, no Python support, no executables)",
+      "hidden": true,
       "cacheVariables": {
         "SOFA_FLOATING_POINT_TYPE": {
           "type": "STRING",
           "value": "double"
         },
+        "PLUGIN_MULTITHREADING": {
+          "type": "BOOL",
+          "value": "ON"
+        }
+      }
+    },
+    {
+      "name": "minimal",
+      "displayName": "Minimal config",
+      "description": "SOFA as a library, no OpenGL support, no GUI except for batch and no Python support",
+      "hidden": false,
+      "inherits": ["core"],
+      "cacheVariables": {
         "APPLICATION_RUNSOFA": {
           "type": "BOOL",
           "value": "ON"
         },
         "APPLICATION_SCENECHECKING": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_MULTITHREADING": {
           "type": "BOOL",
           "value": "ON"
         }
