@@ -10,7 +10,7 @@
       "name": "core",
       "displayName": "Core config",
       "description": "Hidden preset for SOFA library only (no OpenGL support, no GUI, no Python support, no executables)",
-      "hidden": true,
+      "hidden": false,
       "cacheVariables": {
         "SOFA_FLOATING_POINT_TYPE": {
           "type": "STRING",
@@ -19,6 +19,14 @@
         "PLUGIN_MULTITHREADING": {
           "type": "BOOL",
           "value": "ON"
+        },
+        "APPLICATION_RUNSOFA": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "APPLICATION_SCENECHECKING": {
+          "type": "BOOL",
+          "value": "OFF"
         }
       }
     },
@@ -27,8 +35,15 @@
       "displayName": "Minimal config",
       "description": "SOFA as a library, no OpenGL support, no GUI except for batch and no Python support",
       "hidden": false,
-      "inherits": ["core"],
       "cacheVariables": {
+        "SOFA_FLOATING_POINT_TYPE": {
+          "type": "STRING",
+          "value": "double"
+        },
+        "PLUGIN_MULTITHREADING": {
+          "type": "BOOL",
+          "value": "ON"
+        },
         "APPLICATION_RUNSOFA": {
           "type": "BOOL",
           "value": "ON"
