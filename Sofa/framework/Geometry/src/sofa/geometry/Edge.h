@@ -302,7 +302,7 @@ struct Edge
 
             if (abs(beta) < EQUALITY_THRESHOLD)
                 beta = 0;
-            else if (beta > (1 - EQUALITY_THRESHOLD) && beta < (1 + EQUALITY_THRESHOLD))
+            else if (abs(1-beta) < EQUALITY_THRESHOLD)
                 beta = 1;
 
             const Node pX = pA + alpha * AB;
