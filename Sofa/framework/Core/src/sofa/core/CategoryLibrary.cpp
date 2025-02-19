@@ -143,6 +143,7 @@ std::vector<std::string> CategoryLibrary::getCategories()
         "ContextObject",
         "Controller",
         "Engine",
+        "Exporter",
         "ForceField",
         "InteractionForceField",
         "LinearSolver",
@@ -188,6 +189,8 @@ void CategoryLibrary::getCategories(const objectmodel::BaseClass* mclass,
         v.push_back("Mapping");
     if (mclass->hasParent(DataEngine::GetClass()))
         v.push_back("Engine");
+    if (mclass->hasParent("BaseSimulationExporter"))
+        v.push_back("Exporter");
     if (mclass->hasParent(topology::TopologicalMapping::GetClass()))
         v.push_back("TopologicalMapping");
     if (mclass->hasParent(behavior::BaseMass::GetClass()))
