@@ -297,7 +297,7 @@ struct Edge
 
             if (abs(alpha) < EQUALITY_THRESHOLD)
                 alpha = 0;
-            else if (alpha > (1 - EQUALITY_THRESHOLD) && alpha < (1+ EQUALITY_THRESHOLD))
+            else if (abs(1-alpha) < EQUALITY_THRESHOLD)
                 alpha = 1;
 
             if (abs(beta) < EQUALITY_THRESHOLD)
