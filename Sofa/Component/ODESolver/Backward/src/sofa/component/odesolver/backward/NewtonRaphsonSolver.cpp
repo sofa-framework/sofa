@@ -152,30 +152,9 @@ SReal NewtonRaphsonSolver::computeResidual(const core::ExecParams* params,
                                            core::MultiVecDerivId oldVelocity,
                                            core::MultiVecDerivId newVelocity)
 {
-    sofa::simulation::common::VectorOperations vop(params, this->getContext());
-
-    core::behavior::MultiVecDeriv residual(
-        &vop, true, core::VecIdProperties{"residual", GetClass()->className});
-
-    // r = M (v - v_n)
-    {
-        core::behavior::MultiVecDeriv tmp(&vop);
-
-        vop.v_eq(tmp, newVelocity);
-        vop.v_peq(tmp, oldVelocity, -1);
-        mop.addMdx(residual, tmp);
-    }
-
-    // r = M (v - v_n) - dt * F
-    vop.v_peq(residual, force, -dt);
-
-    // Apply projective constraints
-    mop.projectResponse(residual);
-
-    vop.v_dot(residual, residual);
-    // msg_info() << residual;
-    return vop.finish();
+    return l_integrationMethod->computeResidual(params, dt, force, oldVelocity, newVelocity);
 }
+
 void NewtonRaphsonSolver::resizeStateList(const std::size_t nbStates,
                                           sofa::simulation::common::VectorOperations& vop)
 {
@@ -318,6 +297,7 @@ void NewtonRaphsonSolver::solve(
     {
         SCOPED_TIMER("ComputeRHS");
         computeRightHandSide(params, dt, force, rhs, v[i], x[i]);
+        // msg_info() << "force 1 = " << force;
     }
 
     auto& residualList = graph["residual"];
@@ -403,11 +383,15 @@ void NewtonRaphsonSolver::solve(
                     x[n], v[i],
                     x[i+1], v[i+1],
                     m_linearSystemSolution);
+                // msg_info() << "solution = " << m_linearSystemSolution;
+                // msg_info() << "x[n] = " << x[n];
+                // msg_info() << "x[i+1] = " << x[i+1];
 
                 mop.projectPositionAndVelocity(x[i+1], v[i+1]);
                 mop.propagateXAndV(x[i+1], v[i+1]);
 
                 computeRightHandSide(params, dt, force, rhs, v[i+1], x[i+1]);
+                // msg_info() << "force = " << force;
 
                 squaredResidualNormLineSearch = this->computeResidual(params, mop, dt, force, v[n], v[i+1]);
                 msg_info() << "Squared residual norm: " << squaredResidualNormLineSearch;
@@ -547,7 +531,7 @@ void NewtonRaphsonSolver::solve(
         if (!hasConverged)
         {
             msg_warning() << "Newton's method failed to converge after " << newtonIterationCount
-                << " iterations with residual squared norm = " << squaredResidualNorm << ". ";
+                << " iteration(s) with residual squared norm = " << squaredResidualNorm << ". ";
 
             if (!hasLineSearchFailed)
             {

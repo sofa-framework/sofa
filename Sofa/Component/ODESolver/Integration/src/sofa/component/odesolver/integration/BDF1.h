@@ -54,6 +54,11 @@ public:
         core::MultiVecCoordId newX,
         core::MultiVecDerivId newV,
         core::MultiVecDerivId linearSystemSolution) override;
+    SReal computeResidual(const core::ExecParams* params,
+        SReal dt,
+        core::MultiVecDerivId force,
+        core::MultiVecDerivId oldVelocity,
+        core::MultiVecDerivId newVelocity) override;
 
     Data<SReal> d_rayleighStiffness;
     Data<SReal> d_rayleighMass;
