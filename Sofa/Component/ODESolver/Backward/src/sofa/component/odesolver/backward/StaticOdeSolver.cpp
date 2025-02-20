@@ -19,64 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/backward/init.h>
+#include <sofa/component/odesolver/backward/StaticOdeSolver.h>
+
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
 
 namespace sofa::component::odesolver::backward
 {
 
-extern void registerEulerImplicitSolver(sofa::core::ObjectFactory* factory);
-extern void registerNewmarkImplicitSolver(sofa::core::ObjectFactory* factory);
-extern void registerStaticSolver(sofa::core::ObjectFactory* factory);
-extern void registerVariationalSymplecticSolver(sofa::core::ObjectFactory* factory);
-extern void registerNewtonRaphsonSolver(sofa::core::ObjectFactory* factory);
-extern void registerBDF1OdeSolver(sofa::core::ObjectFactory* factory);
-extern void registerStaticOdeSolver(sofa::core::ObjectFactory* factory);
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
-}
-
-void initExternalModule()
+void registerStaticOdeSolver(sofa::core::ObjectFactory* factory)
 {
-    init();
+    factory->registerObjects(
+        core::ObjectRegistrationData("Static ODE Solver")
+            .add<StaticOdeSolver>());
 }
 
-const char* getModuleName()
+void StaticOdeSolver::solve(const core::ExecParams* params, SReal dt, core::MultiVecCoordId xResult,
+                            core::MultiVecDerivId vResult)
 {
-    return MODULE_NAME;
 }
 
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-    registerEulerImplicitSolver(factory);
-    registerNewmarkImplicitSolver(factory);
-    registerStaticSolver(factory);
-    registerVariationalSymplecticSolver(factory);
-    registerNewtonRaphsonSolver(factory);
-    registerBDF1OdeSolver(factory);
-    registerStaticOdeSolver(factory);
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
-        first = false;
-    }
-}
-
-} // namespace sofa::component::odesolver::backward
+}  // namespace sofa::component::odesolver::backward
