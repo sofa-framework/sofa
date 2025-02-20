@@ -21,41 +21,26 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
+#include <SceneChecking/config.h>
+#include <sofa/simulation/SceneCheck.h>
 
-#cmakedefine01 SOFA_HELPER_HAVE_BOOST
-#cmakedefine01 SOFA_HELPER_HAVE_BOOST_THREAD
-#cmakedefine01 SOFA_HELPER_HAVE_BOOST_FILESYSTEM
+namespace sofa::scenechecking
+{
 
-// DEPRECATED since v21.06
-// will be removed at v21.12
-#define SOFAHELPER_HAVE_BOOST = @SOFA_HELPER_HAVE_BOOST@;
-#define SOFAHELPER_HAVE_BOOST_THREAD = @SOFA_HELPER_HAVE_BOOST_THREAD@;
-#define SOFAHELPER_HAVE_BOOST_FILESYSTEM = @SOFA_HELPER_HAVE_BOOST_FILESYSTEM@;
+class SOFA_SCENECHECKING_API SceneCheckEmptyNodeName : public sofa::simulation::SceneCheck
+{
+public:
+    ~SceneCheckEmptyNodeName() override;
+    typedef std::shared_ptr<SceneCheckEmptyNodeName> SPtr;
+    static SPtr newSPtr() { return std::make_shared<SceneCheckEmptyNodeName>(); }
+    const std::string getName() override;
+    const std::string getDesc() override;
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
+    void doPrintSummary() override;
 
-#ifdef SOFA_BUILD_SOFA_HELPER
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_HELPER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_HELPER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+private:
+    unsigned int m_nbNodesWithEmptyName = 0;
+};
 
-#define SOFA_ATTRIBUTE_DISABLED__PLUGIN_GETCOMPONENTLIST() \
-    SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06",  \
-    "Using entrypoint GetComponentList() from a plugin has been deprecated. Use the helper function listClassesFromTarget() from ObjectFactory instead.")
-
-#ifdef SOFA_BUILD_SOFA_HELPER
-#define SOFA_HELPER_UTILS_IN_STRINGUTILS_DISABLED()
-#else
-#define SOFA_HELPER_UTILS_IN_STRINGUTILS_DISABLED() \
-    SOFA_ATTRIBUTE_DISABLED( \
-    "v24.12", "v25.06", "This function is now in StringUtils.h")
-#endif // SOFA_BUILD_SOFA_HELPER
-
-#ifdef SOFA_BUILD_SOFA_HELPER
-#define SOFA_HELPER_FILESYSTEM_FINDORCREATEAVALIDPATH_DEPRECATED()
-#else
-#define SOFA_HELPER_FILESYSTEM_FINDORCREATEAVALIDPATH_DEPRECATED() \
-SOFA_ATTRIBUTE_DEPRECATED( \
-"v25.06", "v25.12", "It is not clear that this function works on folders or files. Use ensureFolderExists or ensureFolderForFileExists instead.")
-#endif // SOFA_BUILD_SOFA_HELPER
+}

@@ -25,6 +25,11 @@
 
 #include <sofa/core/behavior/OdeSolver.h>
 
+namespace sofa::simulation::common
+{
+class VectorOperations;
+}
+
 namespace sofa::component::odesolver::backward
 {
 
@@ -109,6 +114,9 @@ public:
     Data<bool> d_solveConstraint; ///< Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
 
+    Data<bool> d_computeResidual;
+    Data<SReal> d_residual;
+    
 protected:
     EulerImplicitSolver();
 public:
@@ -162,6 +170,15 @@ protected:
     /// the solution vector is stored for warm-start
     core::behavior::MultiVecDeriv x;
 
+    /// Right-hand side vector
+    core::behavior::MultiVecDeriv b;
+
+    /// Residual vector (optionally computed)
+    core::behavior::MultiVecDeriv m_residual;
+
+    void reallocSolutionVector(sofa::simulation::common::VectorOperations* vop);
+    void reallocRightHandSideVector(sofa::simulation::common::VectorOperations* vop);
+    void reallocResidualVector(sofa::simulation::common::VectorOperations* vop);
 };
 
 } // namespace sofa::component::odesolver::backward

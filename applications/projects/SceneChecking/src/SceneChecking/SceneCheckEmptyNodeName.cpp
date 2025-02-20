@@ -19,43 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <SceneChecking/SceneCheckEmptyNodeName.h>
 
-#include <sofa/config.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/SceneCheckMainRegistry.h>
 
-#cmakedefine01 SOFA_HELPER_HAVE_BOOST
-#cmakedefine01 SOFA_HELPER_HAVE_BOOST_THREAD
-#cmakedefine01 SOFA_HELPER_HAVE_BOOST_FILESYSTEM
+namespace sofa::scenechecking
+{
 
-// DEPRECATED since v21.06
-// will be removed at v21.12
-#define SOFAHELPER_HAVE_BOOST = @SOFA_HELPER_HAVE_BOOST@;
-#define SOFAHELPER_HAVE_BOOST_THREAD = @SOFA_HELPER_HAVE_BOOST_THREAD@;
-#define SOFAHELPER_HAVE_BOOST_FILESYSTEM = @SOFA_HELPER_HAVE_BOOST_FILESYSTEM@;
+const bool SceneCheckEmptyNodeNameRegistered = sofa::simulation::SceneCheckMainRegistry::addToRegistry(SceneCheckEmptyNodeName::newSPtr());
 
-#ifdef SOFA_BUILD_SOFA_HELPER
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_HELPER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_HELPER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+SceneCheckEmptyNodeName::~SceneCheckEmptyNodeName() {}
+const std::string SceneCheckEmptyNodeName::getName() { return "SceneCheckEmptyNodeName"; }
+const std::string SceneCheckEmptyNodeName::getDesc() { return "Check if a Node has an empty name."; }
 
-#define SOFA_ATTRIBUTE_DISABLED__PLUGIN_GETCOMPONENTLIST() \
-    SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06",  \
-    "Using entrypoint GetComponentList() from a plugin has been deprecated. Use the helper function listClassesFromTarget() from ObjectFactory instead.")
+void SceneCheckEmptyNodeName::doInit(sofa::simulation::Node* node)
+{
+    m_nbNodesWithEmptyName = 0;
+}
 
-#ifdef SOFA_BUILD_SOFA_HELPER
-#define SOFA_HELPER_UTILS_IN_STRINGUTILS_DISABLED()
-#else
-#define SOFA_HELPER_UTILS_IN_STRINGUTILS_DISABLED() \
-    SOFA_ATTRIBUTE_DISABLED( \
-    "v24.12", "v25.06", "This function is now in StringUtils.h")
-#endif // SOFA_BUILD_SOFA_HELPER
+void SceneCheckEmptyNodeName::doCheckOn(sofa::simulation::Node* node)
+{
+    const auto& nodeName = node->getName();
 
-#ifdef SOFA_BUILD_SOFA_HELPER
-#define SOFA_HELPER_FILESYSTEM_FINDORCREATEAVALIDPATH_DEPRECATED()
-#else
-#define SOFA_HELPER_FILESYSTEM_FINDORCREATEAVALIDPATH_DEPRECATED() \
-SOFA_ATTRIBUTE_DEPRECATED( \
-"v25.06", "v25.12", "It is not clear that this function works on folders or files. Use ensureFolderExists or ensureFolderForFileExists instead.")
-#endif // SOFA_BUILD_SOFA_HELPER
+    if (nodeName.empty())
+    {
+        ++m_nbNodesWithEmptyName;
+    }
+}
+
+void SceneCheckEmptyNodeName::doPrintSummary()
+{
+    msg_warning_when(m_nbNodesWithEmptyName > 0, getName()) << "Nodes with empty name are found in"
+        " the scene. This can lead to undefined behaviors. It is recommended to give a name to all Nodes.";
+}
+
+}  // namespace sofa::scenechecking

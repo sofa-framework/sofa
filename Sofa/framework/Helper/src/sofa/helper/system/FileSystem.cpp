@@ -388,7 +388,28 @@ std::string FileSystem::findOrCreateAValidPath(const std::string path)
     return path ;
 }
 
+void FileSystem::ensureFolderExists(const std::string& pathToFolder)
+{
+    if (!FileSystem::exists(pathToFolder))
+    {
+        const std::string parentPath = FileSystem::getParentDirectory(pathToFolder);
+        FileSystem::ensureFolderExists(parentPath);
 
+        if (FileSystem::exists(parentPath))
+        {
+            FileSystem::createDirectory(pathToFolder);
+        }
+    }
+}
+
+void FileSystem::ensureFolderForFileExists(const std::string& pathToFile)
+{
+    if (!FileSystem::exists(pathToFile))
+    {
+        const std::string parentPath = FileSystem::getParentDirectory(pathToFile);
+        FileSystem::ensureFolderExists(parentPath);
+    }
+}
 
 std::string FileSystem::cleanPath(const std::string& path, separator s)
 {
