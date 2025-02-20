@@ -19,54 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/integration/init.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
+#pragma once
+#include <sofa/component/odesolver/integration/config.h>
+#include <sofa/core/behavior/BaseIntegrationMethod.h>
+
+#include "sofa/core/behavior/MultiVec.h"
+#include "sofa/simulation/VectorOperations.h"
 
 namespace sofa::component::odesolver::integration
 {
-
-extern void registerBDF1(core::ObjectFactory* factory);
-extern void registerStatic(core::ObjectFactory* factory);
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
-}
-
-void initExternalModule()
+class SOFA_COMPONENT_ODESOLVER_INTEGRATION_API Static : public sofa::core::behavior::BaseIntegrationMethod
 {
-    init();
-}
+public:
+    SOFA_CLASS(Static, sofa::core::behavior::BaseIntegrationMethod);
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+    std::size_t stepSize() const override;
+    void initializeVectors(const core::ExecParams* params, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v) override;
+    Factors getMatricesFactors(SReal dt) const override;
+    void computeRightHandSide(const core::ExecParams* params, core::behavior::RHSInput input,
+                              core::MultiVecDerivId force, core::MultiVecDerivId rightHandSide,
+                              SReal dt) override;
+    void updateStates(const core::ExecParams* params, SReal dt, core::MultiVecCoordId x,
+                      core::MultiVecDerivId v, core::MultiVecCoordId newX,
+                      core::MultiVecDerivId newV,
+                      core::MultiVecDerivId linearSystemSolution) override;
+    SReal computeResidual(const core::ExecParams* params,
+        SReal dt,
+        core::MultiVecDerivId force,
+        core::MultiVecDerivId oldVelocity,
+        core::MultiVecDerivId newVelocity) override;
 
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-    registerBDF1(factory);
-    registerStatic(factory);
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
-        first = false;
-    }
-}
-
+private:
+    core::MultiVecCoordId x_i; //x[i]
+};
 }

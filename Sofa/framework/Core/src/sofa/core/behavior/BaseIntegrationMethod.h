@@ -63,6 +63,12 @@ public:
         MultiVecCoordId newX,
         MultiVecDerivId newV,
         MultiVecDerivId linearSystemSolution) = 0;
+
+    virtual SReal computeResidual(const core::ExecParams* params,
+        SReal dt,
+        core::MultiVecDerivId force,
+        core::MultiVecDerivId oldVelocity,
+        core::MultiVecDerivId newVelocity) = 0;
 };
 
 }

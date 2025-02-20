@@ -128,10 +128,9 @@ void BDF1::computeRightHandSide(
 
 }
 
-void BDF1::updateStates(const core::ExecParams* params, SReal dt,
-    core::MultiVecCoordId x, core::MultiVecDerivId v,
-    core::MultiVecCoordId newX, core::MultiVecDerivId newV,
-    core::MultiVecDerivId linearSystemSolution)
+void BDF1::updateStates(const core::ExecParams* params, SReal dt, core::MultiVecCoordId x,
+                        core::MultiVecDerivId v, core::MultiVecCoordId newX,
+                        core::MultiVecDerivId newV, core::MultiVecDerivId linearSystemSolution)
 {
     // v_(i+1) = v_i + x
     m_vop->v_eq(newV, v);
@@ -141,5 +140,33 @@ void BDF1::updateStates(const core::ExecParams* params, SReal dt,
     m_vop->v_eq(newX, x);
     m_vop->v_peq(newX, newV, dt);
 }
+SReal BDF1::computeResidual(const core::ExecParams* params, SReal dt, core::MultiVecDerivId force,
+                            core::MultiVecDerivId oldVelocity, core::MultiVecDerivId newVelocity)
+{
+    sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
+    simulation::common::VectorOperations vop(params, this->getContext());
 
+    core::behavior::MultiVecDeriv residual(
+        &vop, true, core::VecIdProperties{"residual", GetClass()->className});
+
+    // r = M (v - v_n)
+    {
+        core::behavior::MultiVecDeriv tmp(&vop);
+
+        vop.v_eq(tmp, newVelocity);
+        vop.v_peq(tmp, oldVelocity, -1);
+        mop.addMdx(residual, tmp);
+    }
+
+    // r = -dt * F
+    vop.v_peq(residual, force, -dt);
+
+    // Apply projective constraints
+    mop.projectResponse(residual);
+
+    vop.v_dot(residual, residual);
+    // msg_info() << residual;
+    return vop.finish();
 }
+
+}  // namespace sofa::component::odesolver::integration
