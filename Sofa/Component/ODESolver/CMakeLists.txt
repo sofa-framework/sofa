@@ -4,7 +4,7 @@ project(Sofa.Component.ODESolver LANGUAGES CXX)
 set(SOFACOMPONENTODESOLVER_SOURCE_DIR "src/sofa/component/odesolver")
 
 sofa_add_subdirectory_modules(SOFACOMPONENTODESOLVER_TARGETS
-    DIRECTORIES Forward Backward Integration
+    DIRECTORIES Forward Backward
 )
 
 set(HEADER_FILES

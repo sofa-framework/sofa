@@ -23,7 +23,6 @@
 
 #include <sofa/component/odesolver/backward/init.h>
 #include <sofa/component/odesolver/forward/init.h>
-#include <sofa/component/odesolver/integration/init.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -58,7 +57,6 @@ void registerObjects(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjectsFromPlugin(Sofa.Component.ODESolver.Backward);
     factory->registerObjectsFromPlugin(Sofa.Component.ODESolver.Forward);
-    factory->registerObjectsFromPlugin(Sofa.Component.ODESolver.Integration);
 }
 
 void init()
@@ -69,7 +67,6 @@ void init()
         // force dependencies at compile-time
         sofa::component::odesolver::backward::init();
         sofa::component::odesolver::forward::init();
-        sofa::component::odesolver::integration::init();
 
         // make sure that this plugin is registered into the PluginManager
         sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
