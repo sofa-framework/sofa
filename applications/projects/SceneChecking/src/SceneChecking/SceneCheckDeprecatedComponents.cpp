@@ -59,7 +59,7 @@ void SceneCheckDeprecatedComponents::doCheckOn(Node* node)
         {
             if( deprecatedComponents.contains( o->getClassName() ))
             {
-                msg_deprecated(o) << this->getName() << ": "
+                msg_error(o) << this->getName() << ": "
                     << deprecatedComponents.at(o->getClassName()).getMessage();
             }
         }
