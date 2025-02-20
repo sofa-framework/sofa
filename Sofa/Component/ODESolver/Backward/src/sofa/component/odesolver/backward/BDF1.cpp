@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/integration/BDF1.h>
+#include <sofa/component/odesolver/backward/BDF1.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/odesolver/integration/config.h>
+#include <sofa/component/odesolver/backward/config.h>
 #include <sofa/core/behavior/BaseIntegrationMethod.h>
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/simulation/VectorOperations.h>
@@ -33,7 +33,7 @@ namespace sofa::component::odesolver::integration
  * Velocity-based Backward Euler integration method
  * 1-step Backward Differentiation Formula
  */
-class SOFA_COMPONENT_ODESOLVER_INTEGRATION_API BDF1 : public sofa::core::behavior::BaseIntegrationMethod
+class SOFA_COMPONENT_ODESOLVER_BACKWARD_API BDF1 : public sofa::core::behavior::BaseIntegrationMethod
 {
 public:
     SOFA_CLASS(BDF1, sofa::core::behavior::BaseIntegrationMethod);
