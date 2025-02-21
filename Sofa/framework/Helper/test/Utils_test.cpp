@@ -81,6 +81,36 @@ TEST(UtilsTest, getSofaUserLocalDirectory)
     EXPECT_TRUE(path.find("SOFA") != std::string::npos);
 }
 
+// This test is expected to fail outside the CI environment
+bool testGetUserHomeDirectory()
+{
+    bool result = false;
+
+    const std::string path = Utils::getUserHomeDirectory();
+#if defined(WIN32)
+    result = (path == "J:/jenkins2");
+#elif defined (__APPLE__)
+    result = (path.find("Library") != std::string::npos);
+    result = result && (path.find("Application Support") != std::string::npos);
+#else // Linux
+    result = (path == "/home/runner");
+#endif
+
+    std::cout<<"Utils::getUserHomeDirectory(): "<<path<<std::endl;
+    return result;
+}
+
+TEST(UtilsTest, getUserHomeDirectory)
+{
+    EXPECT_TRUE(testGetUserHomeDirectory());
+}
+
+TEST(UtilsTest, getSofaDataDirectory)
+{
+    const std::string path = Utils::getSofaDataDirectory();
+    EXPECT_TRUE(path.find("SOFAData") != std::string::npos);
+}
+
 TEST(UtilsTest, readBasicIniFile_nonexistentFile)
 {
     // this test will raise an error on purpose
