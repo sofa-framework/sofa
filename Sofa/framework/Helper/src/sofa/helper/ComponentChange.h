@@ -81,20 +81,53 @@ public:
     }
 };
 
-class SOFA_HELPER_API Removed : public ComponentChange
+struct SOFA_HELPER_API RemovedIn
 {
-public:
-    explicit Removed(const std::string&  sinceVersion, const std::string& atVersion)
+    explicit RemovedIn(std::string removalVersion) : m_removalVersion(std::move(removalVersion)) {}
+
+private:
+    struct SOFA_HELPER_API AfterDeprecationIn : public ComponentChange
     {
-        std::stringstream output;
-        output << "This component has been REMOVED since SOFA " << atVersion << " "
-                  "(deprecated since " << sinceVersion << "). "
-                  "\nPlease consider updating your scene. "
-                  "If this component is crucial to you please report in a GitHub issue "
-                  "in order to reconsider this component for future re-integration.";
-        m_message = output.str();
-        m_changeVersion = atVersion;
+        AfterDeprecationIn(const std::string& removalVersion, const std::string& deprecationVersion)
+        {
+            std::stringstream output;
+            output << "This component has been REMOVED since SOFA " << removalVersion << " "
+                      "(deprecated since " << deprecationVersion << "). "
+                      "\nPlease consider updating your scene. "
+                      "If this component is crucial to you please report in a GitHub issue "
+                      "in order to reconsider this component for future re-integration.";
+            m_message = output.str();
+            m_changeVersion = removalVersion;
+        }
+    };
+
+    struct SOFA_HELPER_API WithoutAnyDeprecation : public ComponentChange
+    {
+        explicit WithoutAnyDeprecation(const std::string& removalVersion)
+        {
+            std::stringstream output;
+            output << "This component has been REMOVED since SOFA " << removalVersion <<
+                      "\nPlease consider updating your scene. "
+                      "If this component is crucial to you please report in a GitHub issue "
+                      "in order to reconsider this component for future re-integration.";
+            m_message = output.str();
+            m_changeVersion = removalVersion;
+        }
+    };
+
+public:
+    [[nodiscard]] AfterDeprecationIn afterDeprecationIn(const std::string& deprecationVersion) const
+    {
+        return { m_removalVersion, deprecationVersion };
     }
+
+    [[nodiscard]] WithoutAnyDeprecation withoutAnyDeprecation() const
+    {
+        return WithoutAnyDeprecation{ m_removalVersion };
+    }
+
+private:
+    std::string m_removalVersion;
 };
 
 class SOFA_HELPER_API Moved : public ComponentChange
