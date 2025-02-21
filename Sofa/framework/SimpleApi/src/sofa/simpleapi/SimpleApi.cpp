@@ -137,9 +137,9 @@ Node::SPtr createChild(Node::SPtr node, const std::string& name, const std::map<
 
 Node::SPtr createChild(Node::SPtr node, BaseObjectDescription& desc)
 {
-    Node::SPtr tmp = node->createChild(desc.getName());
-    tmp->parse(&desc);
-    return tmp;
+    Node::SPtr createdNode = node->createChild(desc.getName());
+    createdNode->parse(&desc);
+    return createdNode;
 }
 
 Node::SPtr createNode(const std::string& name)
