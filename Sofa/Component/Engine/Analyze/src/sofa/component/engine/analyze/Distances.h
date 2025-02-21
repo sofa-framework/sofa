@@ -40,8 +40,6 @@
 #define TYPE_VORONOI 3
 #define TYPE_HARMONIC_STIFFNESS 4
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::engine::analyze
 {
 
@@ -77,44 +75,6 @@ protected:
     ~Distances() override {}
 
 public:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::lifecycle::RenamedData<unsigned int> showMapIndex;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> showDistanceMap;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> showGoalDistanceMap;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::lifecycle::RenamedData<double> showTextScaleFactor;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> showGradientMap;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::lifecycle::RenamedData<double> showGradientsScaleFactor;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::lifecycle::RenamedData<Coord> offset;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::helper::OptionsGroup> distanceType;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> initTarget;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::lifecycle::RenamedData<int> initTargetStep;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::map<unsigned int, unsigned int> > zonesFramePair;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::lifecycle::RenamedData<double> harmonicMaxValue;
-
-
     Data<unsigned int> d_showMapIndex; ///< Frame DOF index on which display values.
     Data<bool> d_showDistanceMap; ///< show the distance for each point of the target point set.
     Data<bool> d_showGoalDistanceMap; ///< show the distance for each point of the target point set.
@@ -225,17 +185,6 @@ public:
     }
 
 private:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::string> fileDistance;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::string> targetPath;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::string> hexaContainerPath;
-
-
     Data<std::string> d_fileDistance; ///< file containing the result of the computation of the distances
     Data<std::string> d_targetPath; ///< path to the goal point set topology
     core::behavior::MechanicalState<DataTypes>* target;

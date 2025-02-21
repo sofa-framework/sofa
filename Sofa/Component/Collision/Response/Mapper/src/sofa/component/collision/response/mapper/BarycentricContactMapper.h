@@ -53,9 +53,6 @@ public:
     typename MMapping::SPtr mapping;
     typename MMapper::SPtr mapper;
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Size, sofa::Size);
-
     BarycentricContactMapper()
         : model(nullptr), mapping(nullptr), mapper(nullptr)
     {

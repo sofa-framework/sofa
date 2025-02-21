@@ -37,7 +37,6 @@ class SOFA_COMPONENT_TOPOLOGY_CONTAINER_GRID_API SphereGridTopology : public Gri
 public:
     SOFA_CLASS(SphereGridTopology,GridTopology);
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
 protected:
     /// Default constructor
     SphereGridTopology();

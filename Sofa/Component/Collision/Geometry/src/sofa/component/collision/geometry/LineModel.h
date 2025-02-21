@@ -27,9 +27,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
-
 namespace sofa::component::collision::geometry
 {
 
@@ -144,10 +141,6 @@ public:
 
     int getLineFlags(sofa::Index i);
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> bothSide;
-
-
     Data<bool> d_bothSide; ///< activate collision on both side of the line model (when surface normals are defined on these lines)
 
     /// Pre-construction check method called by ObjectFactory.
@@ -170,10 +163,6 @@ public:
     }
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_displayFreePosition;
-
 
     Data<bool> d_displayFreePosition; ///< Display Collision Model Points free position(in green)
 

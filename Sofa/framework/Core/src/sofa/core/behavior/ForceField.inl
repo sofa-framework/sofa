@@ -77,14 +77,6 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addClambda(const MechanicalParams* /*mparams*/, DataVecDeriv& /*df*/, const DataVecDeriv& /*lambda*/, SReal /*cFactor*/ )
-{
-    msg_error()<<"function 'addClambda' is not implemented";
-}
-
-
-
-template<class DataTypes>
 SReal ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)

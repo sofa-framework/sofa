@@ -400,12 +400,12 @@ void ConstraintAnimationLoop::writeAndAccumulateAndCountConstraintDirections(con
     MechanicalResetConstraintVisitor(&cparams).execute(context);
 
     // calling applyConstraint on each constraint
-    MechanicalSetConstraint(&cparams, core::vec_id::write_access::constraintJacobian, numConstraints).execute(context);
+    sofa::simulation::mechanicalvisitor::MechanicalBuildConstraintMatrix(&cparams, core::vec_id::write_access::constraintJacobian, numConstraints).execute(context);
 
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 
     // calling accumulateConstraint on the mappings
-    MechanicalAccumulateConstraint2(&cparams, core::vec_id::write_access::constraintJacobian).execute(context);
+    sofa::simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv(&cparams, core::vec_id::write_access::constraintJacobian).execute(context);
 
     getCP()->clear(numConstraints,this->d_tol.getValue());
 }
@@ -426,7 +426,7 @@ void ConstraintAnimationLoop::getIndividualConstraintSolvingProcess(const core::
     cparams.setX(core::vec_id::read_access::freePosition);
     cparams.setV(core::vec_id::read_access::freeVelocity);
 
-    MechanicalGetConstraintResolutionVisitor(&cparams, getCP()->getConstraintResolutions(), 0).execute(context);
+    sofa::component::constraint::lagrangian::solver::MechanicalGetConstraintResolutionVisitor(&cparams, getCP()->getConstraintResolutions(), 0).execute(context);
 }
 
 void ConstraintAnimationLoop::computeComplianceInConstraintSpace()

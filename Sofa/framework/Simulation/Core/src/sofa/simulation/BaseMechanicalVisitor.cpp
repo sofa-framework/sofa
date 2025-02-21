@@ -23,7 +23,6 @@
 
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/LocalStorage.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/BaseInteractionConstraint.h>
@@ -48,7 +47,7 @@ const std::string BaseMechanicalVisitor::fwdVisitorType = "fwd";
 const std::string BaseMechanicalVisitor::bwdVisitorType = "bwd";
 
 BaseMechanicalVisitor::BaseMechanicalVisitor(const sofa::core::ExecParams *params)
-        : Visitor(params), root(nullptr), rootData(nullptr)
+        : Visitor(params), root(nullptr)
 {
     // mechanical visitors shouldn't be able to access a sleeping node, only visual visitor should
     canAccessSleepingNode = false;
@@ -171,7 +170,6 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
     VisitorContext ctx;
     ctx.root = root;
     ctx.node = node;
-    ctx.nodeData = rootData;
     return processNodeTopDown(node, &ctx);
 }
 
@@ -181,7 +179,6 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node)
     VisitorContext ctx;
     ctx.root = root;
     ctx.node = node;
-    ctx.nodeData = rootData;
     processNodeBottomUp(node, &ctx);
 }
 

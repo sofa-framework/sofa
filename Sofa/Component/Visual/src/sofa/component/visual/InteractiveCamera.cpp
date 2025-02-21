@@ -42,9 +42,6 @@ InteractiveCamera::InteractiveCamera()
     , currentMode(InteractiveCamera::NONE_MODE)
     , isMoving(false)
     {
-        p_zoomSpeed.setOriginalData(&d_zoomSpeed);
-        p_panSpeed.setOriginalData(&d_panSpeed);
-        p_pivot.setOriginalData(&d_pivot);
     }
 
 InteractiveCamera::~InteractiveCamera()

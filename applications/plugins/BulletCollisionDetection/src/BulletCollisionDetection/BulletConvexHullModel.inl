@@ -100,7 +100,7 @@ void TBulletConvexHullModel<DataTypes>::initBullet(){
 
         _mstate->resize(1);
 
-        Data<typename sofa::component::statecontainer::MechanicalObject<DataTypes>::VecCoord>* dpositions = _mstate->write( sofa::core::VecId::position() );
+        Data<typename sofa::component::statecontainer::MechanicalObject<DataTypes>::VecCoord>* dpositions = _mstate->write( sofa::core::vec_id::write_access::position );
         typename sofa::component::statecontainer::MechanicalObject<DataTypes>::VecCoord & positions = *dpositions->beginEdit();
 
         typename DataTypes::Coord one_position(_bary,Quaternion(0,0,0,1));

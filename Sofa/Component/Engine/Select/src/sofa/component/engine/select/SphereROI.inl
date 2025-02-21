@@ -44,13 +44,6 @@ SphereROI<DataTypes>::SphereROI()
     this->addAlias(&this->d_indices,"pointIndices");
     this->addAlias(&this->d_positions,"rest_position");
     this->addAlias(&this->d_drawROI, "drawSphere");
-
-    centers.setOriginalData(&d_centers);
-    radii.setOriginalData(&d_radii);
-    direction.setOriginalData(&d_direction);
-    normal.setOriginalData(&d_normal);
-    edgeAngle.setOriginalData(&d_edgeAngle);
-    triAngle.setOriginalData(&d_triAngle);
 }
 
 template <class DataTypes>
@@ -176,7 +169,7 @@ bool SphereROI<DataTypes>::roiDoUpdate()
 		if (rad.size() == 1)
 		{
 			Real r = rad[0];
-			helper::WriteOnlyAccessor< Data<type::vector<Real> > > radWriter = radii;
+			helper::WriteOnlyAccessor< Data<type::vector<Real> > > radWriter = d_radii;
 			for (unsigned int i = 0; i < cen.size() - 1; i++) 
                 radWriter.push_back(r);
 		}

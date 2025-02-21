@@ -132,7 +132,6 @@ IncrSAP::IncrSAP()
     :d_box(initData(&d_box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored")),
       _nothing_added(true)
 {
-    box.setOriginalData ( &d_box);
 }
 
 

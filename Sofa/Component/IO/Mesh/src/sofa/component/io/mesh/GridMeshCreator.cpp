@@ -48,9 +48,6 @@ GridMeshCreator::GridMeshCreator(): MeshLoader()
     d_filename.setDirtyValue();
 
     d_filename.setReadOnly(true);
-
-    resolution.setOriginalData(&d_resolution);
-    trianglePattern.setOriginalData(&d_trianglePattern);
 }
 
 void GridMeshCreator::doClearBuffers()

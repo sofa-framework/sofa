@@ -43,8 +43,6 @@ class SOFA_GL_API Cylinder
 public:
     typedef sofa::type::Quat<SReal> Quaternion;
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-
     Cylinder(SReal len=1.0_sreal);
     Cylinder(const Vec3& len);
     Cylinder(const Vec3& center, const Quaternion &orient, const Vec3& length);

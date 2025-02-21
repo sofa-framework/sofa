@@ -114,8 +114,8 @@ public:
     //To be removed once addClambda is disabled
     using BaseForceField::addClambda;
 
-    SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT()
-    virtual void addClambda(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& lambda, SReal cFactor );
+    SOFA_ATTRIBUTE_DISABLED__COMPLIANT()
+    virtual void addClambda(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& lambda, SReal cFactor ) = delete;
 
     /// Get the potential energy associated to this ForceField.
     ///

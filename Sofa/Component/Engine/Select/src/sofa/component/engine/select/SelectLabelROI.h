@@ -43,8 +43,6 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(SelectLabelROI,_T), DataEngine);
 
     typedef _T T;
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Inherited, Inherit1);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
 
     //Input
     Data<type::vector<type::SVector<T> > > d_labels; ///< lists of labels associated to each point/cell

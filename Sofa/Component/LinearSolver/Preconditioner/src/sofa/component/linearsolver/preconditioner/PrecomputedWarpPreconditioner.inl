@@ -62,13 +62,6 @@ PrecomputedWarpPreconditioner<TDataTypes>::PrecomputedWarpPreconditioner()
     first = true;
     _rotate = false;
     usePrecond = true;
-
-    jmjt_twostep.setOriginalData(&d_jmjt_twostep);
-    use_file.setOriginalData(&d_use_file);
-    share_matrix.setOriginalData(&d_share_matrix);
-    use_rotations.setOriginalData(&d_use_rotations);
-    draw_rotations_scale.setOriginalData(&d_draw_rotations_scale);
-
 }
 
 template <class TDataTypes>

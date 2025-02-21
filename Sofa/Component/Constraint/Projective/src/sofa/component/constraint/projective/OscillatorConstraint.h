@@ -23,10 +23,4 @@
 
 #include <sofa/component/constraint/projective/OscillatorProjectiveConstraint.h>
 
-SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "sofa/component/constraint/projective/OscillatorProjectiveConstraint.h")
-
-namespace sofa::component::constraint::projective
-{
-template <class T>
-using OscillatorConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "OscillatorConstraint has been renamed to OscillatorProjectiveConstraint") = OscillatorProjectiveConstraint<T>;
-}
+SOFA_HEADER_DISABLED("v24.06", "v25.06", "sofa/component/constraint/projective/OscillatorProjectiveConstraint.h")

@@ -25,10 +25,10 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/mass/UniformMass.h>
-#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 #include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/component/mapping/nonlinear/RigidMapping.h>
-#include <sofa/component/odesolver/forward/EulerSolver.h>
+#include <sofa/component/odesolver/forward/EulerExplicitSolver.h>
 #include <sofa/component/visual/VisualStyle.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 // gui
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
     DOF->resize(2);
     DOF->setName("Dof1");
 
-    auto x = sofa::helper::getWriteAccessor(*DOF->write(VecId::position()));
+    auto x = sofa::helper::getWriteAccessor(*DOF->write(sofa::core::vec_id::write_access::position));
     x[0] = { 0,0,0 };
     x[1] = { endPos,0,0 };
 
@@ -96,7 +96,7 @@ int main(int argc, char** argv)
     mass->setName("M1");
 
     // Fixed point
-    using FixedConstraint3 = sofa::component::constraint::projective::FixedConstraint<sofa::defaulttype::Vec3Types>;
+    using FixedConstraint3 = sofa::component::constraint::projective::FixedProjectiveConstraint<sofa::defaulttype::Vec3Types>;
     auto constraints = sofa::core::objectmodel::New<FixedConstraint3>();
     deformableBody->addObject(constraints);
     constraints->setName("C");
@@ -120,7 +120,7 @@ int main(int argc, char** argv)
     rigidBody->addObject(rigidDOF);
     rigidDOF->resize(1);
     rigidDOF->setName("Dof2");
-    auto rigid_x = sofa::helper::getWriteAccessor(*rigidDOF->write(VecId::position()));
+    auto rigid_x = sofa::helper::getWriteAccessor(*rigidDOF->write(sofa::core::vec_id::write_access::position));
     rigid_x[0] = { {endPos - attach + splength,0,0}, sofa::type::Quatd::identity() };
 
     // mass
@@ -149,7 +149,7 @@ int main(int argc, char** argv)
     rigidParticles->addObject(rigidParticleDOF);
     rigidParticleDOF->resize(1);
     rigidParticleDOF->setName("Dof3");
-    auto rp_x = sofa::helper::getWriteAccessor(*rigidParticleDOF->write(VecId::position()));
+    auto rp_x = sofa::helper::getWriteAccessor(*rigidParticleDOF->write(sofa::core::vec_id::write_access::position));
     rp_x[0] = { attach,0,0 };
 
     // mapping from the rigid body DOF to the skin DOF, to rigidly attach the skin to the body

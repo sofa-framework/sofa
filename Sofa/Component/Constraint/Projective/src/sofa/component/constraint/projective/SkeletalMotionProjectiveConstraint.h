@@ -27,8 +27,6 @@
 #include <sofa/type/SVector.h>
 #include <type_traits>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::constraint::projective
 {
 
@@ -104,38 +102,20 @@ protected:
     void interpolatePosition(Real cT, typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);
 
 protected:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::SVector<SkeletonJoint<TDataTypes> > > skeletonJoints;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::SVector<SkeletonBone> > skeletonBones;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<float> animationSpeed;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> active;
-
-
     // every nodes needed in the animation chain
     Data<type::SVector<SkeletonJoint<TDataTypes> > >	d_skeletonJoints; ///< skeleton joints
     // mesh skeleton bones which need to be updated according to the animated nodes, we use them to fill the mechanical object
     Data<type::SVector<SkeletonBone> >				d_skeletonBones; ///< skeleton bones
-
 	// control how fast the animation is played since animation time is not simulation time
 	Data<float>											d_animationSpeed; ///< animation speed
-
     /// is the projective constraint activated?
     Data<bool>                                          d_active;
 
 private:
     /// the key times surrounding the current simulation time (for interpolation)
     Real												prevT, nextT;
-
     /// the global position of the bones at time t+dt used for the velocities computation
     VecCoord nextPositions;
-
     /// to know if we found the key times
     bool												finished;
 
