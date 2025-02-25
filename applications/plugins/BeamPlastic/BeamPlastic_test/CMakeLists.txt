@@ -14,7 +14,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Testing SofaBaseMechanics BeamPlastic SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaCommon) 
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Testing Sofa.Component.StateContainer BeamPlastic) 
 
 add_definitions("-DPLASTICBEAM_TEST_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\"")
 

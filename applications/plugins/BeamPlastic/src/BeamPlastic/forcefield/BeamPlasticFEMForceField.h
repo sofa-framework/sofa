@@ -645,7 +645,7 @@ protected:
 };
 
 #if !defined(BEAMPLASTIC_BEAMPLASTICFEMFORCEFIELD_CPP)
-extern template class BEAMPLASTIC_API BeamPlasticFEMForceField<defaulttype::Rigid3Types>;
+extern template class BEAMPLASTIC_API BeamPlasticFEMForceField<sofa::defaulttype::Rigid3Types>;
 #endif
 
 } // namespace beamplastic::forcefield

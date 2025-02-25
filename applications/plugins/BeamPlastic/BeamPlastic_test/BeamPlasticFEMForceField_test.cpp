@@ -22,17 +22,17 @@
 #include <string>
 using std::string;
 
-#include "../forceField/BeamPlasticFEMForceField.h"
+#include <BeamPlastic/forcefield/BeamPlasticFEMForceField.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 
 #include <sofa/simulation/SceneLoaderFactory.h>
 using sofa::simulation::SceneLoaderFactory;
 using sofa::simulation::SceneLoader;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML;
 
 #include <sofa/helper/system/PluginManager.h>
@@ -40,12 +40,14 @@ using sofa::helper::system::PluginManager;
 
 #include <sofa/testing/BaseSimulationTest.h>
 
+#include <sofa/simpleapi/SimpleApi.h>
+
 namespace sofa
 {
 
 using sofa::simulation::Simulation;
 using sofa::simulation::Node;
-using sofa::component::container::MechanicalObject;
+using sofa::component::statecontainer::MechanicalObject;
 
 using sofa::defaulttype::Rigid3dTypes;
 
@@ -59,7 +61,7 @@ public:
 
     void check_BeamPlasticfEMForceField_init()
     {
-        importPlugin("BeamPlastic");
+        sofa::simpleapi::importPlugin("BeamPlastic");
 
         string scene =
             "<Node name='root' dt='1e-2' gravity='0.0 0.0 0.0'>                                                 "
