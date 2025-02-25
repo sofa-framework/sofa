@@ -20,33 +20,22 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+
 #include <BeamPlastic/config.h>
+
 #include <BeamPlastic/constitutiveLaw/PlasticConstitutiveLaw.h>
 #include <BeamPlastic/quadrature/gaussian.h>
 
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 #include <Eigen/Geometry>
 #include <string>
 
 
-namespace sofa::plugin::beamplastic::component::forcefield
+namespace beamplastic::forcefield
 {
-
-namespace _beamplasticfemforcefield_
-{
-
-using sofa::component::topology::TopologyDataHandler;
-using core::topology::BaseMeshTopology;
-using sofa::component::topology::EdgeData;
-using sofa::plugin::beamplastic::component::constitutivelaw::PlasticConstitutiveLaw;
-using type::Vec;
-using type::Mat;
-using type::Vector3;
-using type::Quat;
-
 
 /** \class BeamPlasticFEMForceField
  *  \brief Compute Finite Element forces based on 6D plastic beam elements.
@@ -60,12 +49,10 @@ using type::Quat;
  *  deformation, which typically occurs in metals.
  */
 template<class DataTypes>
-class SOFA_BeamPlastic_API BeamPlasticFEMForceField : public core::behavior::ForceField<DataTypes>
+class BEAMPLASTIC_API BeamPlasticFEMForceField : public sofa::core::behavior::ForceField<DataTypes>
 {
-
 public:
-
-    SOFA_CLASS(SOFA_TEMPLATE(BeamPlasticFEMForceField,DataTypes), SOFA_TEMPLATE(core::behavior::ForceField,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(BeamPlasticFEMForceField,DataTypes), SOFA_TEMPLATE(sofa::core::behavior::ForceField,DataTypes));
 
     typedef typename DataTypes::Real        Real        ;
     typedef typename DataTypes::Coord       Coord       ;
@@ -73,33 +60,42 @@ public:
     typedef typename DataTypes::VecCoord    VecCoord    ;
     typedef typename DataTypes::VecDeriv    VecDeriv    ;
     typedef typename DataTypes::VecReal     VecReal     ;
+    
+    template <typename T>
+    using Data = sofa::Data<T>;
+    
     typedef Data<VecCoord>                  DataVecCoord;
     typedef Data<VecDeriv>                  DataVecDeriv;
     typedef VecCoord Vector;
 
     typedef unsigned int Index;
-    typedef core::topology::BaseMeshTopology::Edge Element;
-    typedef type::vector<core::topology::BaseMeshTopology::Edge> VecElement;
+    typedef sofa::core::topology::BaseMeshTopology::Edge Element;
+    typedef sofa::type::vector<sofa::core::topology::BaseMeshTopology::Edge> VecElement;
     typedef sofa::type::RGBAColor RGBAColor;
+    
+    template <std::size_t size, typename T>
+    using Vec = sofa::type::Vec<size, T>;
+    template <sofa::Size L, sofa::Size C, class T>
+    using Mat = sofa::type::Mat<L, C, T>;
 
     typedef Vec<3, Real> Vec3;
     typedef Vec<9, Real> Vec9;
     typedef Vec<12, Real> Vec12;
 
-    typedef Mat<3, 12, Real> Matrix3x12; // Matrix form of the beam element shape functions
-    typedef Mat<6, 6, Real> Matrix6x6; ///< Fourth-order order tensor, in Voigt notation.
-    typedef Mat<6, 12, Real> Matrix6x12; // Homogeneous to the derivative of the shape function matrix, in Voigt notation
-    typedef Mat<9, 9, Real> Matrix9x9;  ///< Fourth-order tensor in vector notation
-    typedef Mat<9, 12, Real> Matrix9x12; // Homogeneous to the derivative of the shape function matrix, in vector notation
-    typedef Mat<12, 1, Real> Matrix12x1; ///< Nodal displacement, forces
-    typedef Mat<12, 3, Real> Matrix12x3;
-    typedef Mat<12, 6, Real> Matrix12x6;
-    typedef Mat<12, 12, Real> Matrix12x12; ///< Tangent stiffness matrix
+    typedef sofa::type::Mat<3, 12, Real> Matrix3x12; // Matrix form of the beam element shape functions
+    typedef sofa::type::Mat<6, 6, Real> Matrix6x6; ///< Fourth-order order tensor, in Voigt notation.
+    typedef sofa::type::Mat<6, 12, Real> Matrix6x12; // Homogeneous to the derivative of the shape function matrix, in Voigt notation
+    typedef sofa::type::Mat<9, 9, Real> Matrix9x9;  ///< Fourth-order tensor in vector notation
+    typedef sofa::type::Mat<9, 12, Real> Matrix9x12; // Homogeneous to the derivative of the shape function matrix, in vector notation
+    typedef sofa::type::Mat<12, 1, Real> Matrix12x1; ///< Nodal displacement, forces
+    typedef sofa::type::Mat<12, 3, Real> Matrix12x3;
+    typedef sofa::type::Mat<12, 6, Real> Matrix12x6;
+    typedef sofa::type::Mat<12, 12, Real> Matrix12x12; ///< Tangent stiffness matrix
 
-    typedef Mat<6, 1, Real> VoigtTensor2; ///< Symmetrical tensor of order 2, written with Voigt notation
-    typedef Mat<9, 1, Real> VectTensor2; ///< Symmetrical tensor of order 2, written with vector notation
-    typedef Mat<6, 6, Real> VoigtTensor4; ///< Symmetrical tensor of order 4, written with Voigt notation
-    typedef Mat<9, 9, Real> VectTensor4; ///< Symmetrical tensor of order 4, written with vector notation
+    typedef sofa::type::Mat<6, 1, Real> VoigtTensor2; ///< Symmetrical tensor of order 2, written with Voigt notation
+    typedef sofa::type::Mat<9, 1, Real> VectTensor2; ///< Symmetrical tensor of order 2, written with vector notation
+    typedef sofa::type::Mat<6, 6, Real> VoigtTensor4; ///< Symmetrical tensor of order 4, written with Voigt notation
+    typedef sofa::type::Mat<9, 9, Real> VectTensor4; ///< Symmetrical tensor of order 4, written with vector notation
 
     /** \enum class MechanicalState
      *  \brief Types of mechanical state associated with the (Gauss) integration
@@ -286,7 +282,7 @@ protected:
         double _A; ///< Cross-sectional area
         Matrix12x12 _k_loc; ///< Precomputed stiffness matrix, used only for elastic deformation if d_usePrecomputedStiffness = true
 
-        type::Quat<SReal> quat;
+        sofa::type::Quat<SReal> quat;
 
         /// Initialisation of BeamInfo members from constructor parameters
         void init(double E, double yS, double L, double nu, double zSection, double ySection, bool isTimoshenko);
@@ -330,7 +326,7 @@ protected:
         }
     };
 
-    EdgeData<  type::vector<BeamInfo> > m_beamsData;
+    sofa::core::topology::EdgeData<sofa::type::vector<BeamInfo> > m_beamsData;
 
     virtual void reset() override;
 
@@ -381,10 +377,10 @@ protected:
     typedef Vec<27, VoigtTensor2> gaussPointStresses;
     /// Stress tensors fo each Gauss point in every beam element, computed at the previous time step.
     /// These stresses are required for the iterative radial return algorithm if plasticity is detected.
-    type::vector<gaussPointStresses> m_prevStresses;
+    sofa::type::vector<gaussPointStresses> m_prevStresses;
     /// Stress tensors corresponding to the elastic prediction step of the radial return algorithm.
     /// These are stored for the update of the tangent stiffness matrix
-    type::vector<gaussPointStresses> m_elasticPredictors;
+    sofa::type::vector<gaussPointStresses> m_elasticPredictors;
 
     /// Position at the last time step, to handle increments for the plasticity resolution
     VecCoord m_lastPos;
@@ -410,7 +406,7 @@ protected:
      * computePlasticModulusFromStress, but the computeConstPlasticModulus
      * method can be used instead.
      */
-    std::unique_ptr<PlasticConstitutiveLaw<DataTypes>> m_ConstitutiveLaw;
+    std::unique_ptr<constitutivelaw::PlasticConstitutiveLaw<DataTypes>> m_ConstitutiveLaw;
     Data<std::string> d_modelName; ///< name of the model, for specialisation
 
     double computePlasticModulusFromStress(const VoigtTensor2& stressState);
@@ -456,19 +452,19 @@ protected:
      * for the plasticity computation (shape function matrix, yield stress,
      * back stress, mechanical state, ...)
      */
-    type::vector<beamGaussPoints> m_gaussPoints;
+    sofa::type::vector<beamGaussPoints> m_gaussPoints;
     /**
      * Vector containing a set of 3 intervals (Interval3) for each beam element,
      * corresponding to the 3D integration intervals used in the Gaussian
      * quadrature method.
      */
-    type::vector<Interval3> m_integrationIntervals;
+    sofa::type::vector<Interval3> m_integrationIntervals;
 
     /// Initialises the integration intervals of a beam element, for the Gaussian quadrature method.
-    void initialiseInterval(int beam, type::vector<Interval3>& integrationIntervals);
+    void initialiseInterval(int beam, sofa::type::vector<Interval3>& integrationIntervals);
 
     /// Initialises the Gauss points of a beam element, based on its geometrical info.
-    void initialiseGaussPoints(int beam, type::vector<beamGaussPoints>& gaussPoints, const Interval3& integrationInterval);
+    void initialiseGaussPoints(int beam, sofa::type::vector<beamGaussPoints>& gaussPoints, const Interval3& integrationInterval);
 
     /**
      * Computes the matrix form of the beam shape functions, used to interpolate
@@ -597,7 +593,7 @@ protected:
     Data<std::string> d_sectionShape;
 
     /// Link to be set to the topology container in the component graph.
-    SingleLink<BeamPlasticFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    sofa::SingleLink<BeamPlasticFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_topology;
 
     double m_lastUpdatedStep;
 
@@ -605,14 +601,14 @@ protected:
     // at the computation of the threshold in the init() method.
     Real m_stressComparisonThreshold;
 
-    Quat<SReal>& beamQuat(int i);
+    sofa::type::Quat<SReal>& beamQuat(int i);
 
-    BaseMeshTopology* m_topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
     BeamPlasticFEMForceField();
     BeamPlasticFEMForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection, Real ySection, bool useVD,
                         bool isPlasticMuller, bool isTimoshenko, bool isPlasticKrabbenhoft, bool isPerfectlyPlastic,
-                        type::vector<Quat<SReal>> localOrientations);
+                        sofa::type::vector<sofa::type::Quat<SReal>> localOrientations);
     ~BeamPlasticFEMForceField() override;
 
 public:
@@ -626,14 +622,14 @@ public:
     void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
     // TO DO : necessary ?
-    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
+    SReal getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        msg_error() << "Get potentialEnergy not implemented";
         return 0.0;
     }
 
-    void draw(const core::visual::VisualParams* vparams) override;
-    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+    void draw(const sofa::core::visual::VisualParams* vparams) override;
+    void computeBBox(const sofa::core::ExecParams* params, bool onlyVisible) override;
 
     void setBeam(unsigned int i, double E, double yS, double L, double nu, double zSection, double ySection);
     void initBeams(size_t size);
@@ -648,10 +644,8 @@ protected:
 
 };
 
-#if !defined(SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_CPP)
-extern template class SOFA_BeamPlastic_API BeamPlasticFEMForceField<defaulttype::Rigid3Types>;
+#if !defined(BEAMPLASTIC_BEAMPLASTICFEMFORCEFIELD_CPP)
+extern template class BEAMPLASTIC_API BeamPlasticFEMForceField<defaulttype::Rigid3Types>;
 #endif
 
-} // namespace _beamplasticfemforcefield_
-
-} // namespace sofa::plugin::beamplastic::component::forcefield
+} // namespace beamplastic::forcefield

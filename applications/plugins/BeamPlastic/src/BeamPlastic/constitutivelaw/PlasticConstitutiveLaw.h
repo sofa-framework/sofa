@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, v17.06                  *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,13 +21,29 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
+#include <BeamPlastic/config.h>
+#include <Eigen/Core>
 
-//#define BEAMPLASTIC_VERSION @PROJECT_VERSION@
+namespace beamplastic::constitutivelaw
+{
 
-#ifdef SOFA_BUILD_BEAMPLASTIC
-#   define SOFA_TARGET BeamPlastic
-#   define SOFA_BeamPlastic_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#   define SOFA_BeamPlastic_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+template<class DataTypes>
+class PlasticConstitutiveLaw
+{
+public:
+
+    typedef typename DataTypes::Coord Coord;
+    typedef typename Coord::value_type Real;
+    typedef Eigen::Matrix<double, 6, 1> VoigtTensor;
+
+    virtual ~PlasticConstitutiveLaw() {}
+
+    /* Returns the slope of effective stress VS effective plastic strains, from the stress value */
+    virtual Real getTangentModulusFromStress(const double effStress) = 0;
+
+    /* Returns the slope of effective stress VS effective plastic strains, from the strain value*/
+    virtual Real getTangentModulusFromStrain(const double effPlasticStrain) = 0;
+
+};
+
+} // namespace beamplastic::constitutivelaw

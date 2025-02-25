@@ -20,18 +20,19 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/TopologyData.inl>
+#include <BeamPlastic/forcefield/BeamPlasticFEMForceField.h>
+
+#include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
 
-#include "BeamPlasticFEMForceField.h"
 #include <BeamPlastic/constitutiveLaw/RambergOsgood.h>
 
-
-namespace sofa::plugin::beamplastic::component::forcefield::_beamplasticfemforcefield_
+namespace beamplastic::forcefield
 {
 
+using namespace sofa;
 using core::objectmodel::BaseContext;
-using sofa::plugin::beamplastic::component::constitutivelaw::RambergOsgood;
+using beamplastic::constitutivelaw::RambergOsgood;
 
 template<class DataTypes>
 BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField()
@@ -60,7 +61,7 @@ template<class DataTypes>
 BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection,
                                                     Real ySection, bool useVD, bool isPlasticMuller, bool isTimoshenko,
                                                     bool isPlasticKrabbenhoft, bool isPerfectlyPlastic,
-                                                    type::vector<Quat<SReal>> localOrientations)
+                                                    type::vector<type::Quat<SReal>> localOrientations)
     : m_beamsData(initData(&m_beamsData, "beamsData", "Internal element data"))
     , d_usePrecomputedStiffness(initData(&d_usePrecomputedStiffness, true, "usePrecomputedStiffness",
                                          "indicates if a precomputed elastic stiffness matrix is used, instead of being computed by reduced integration"))
@@ -817,7 +818,7 @@ void BeamPlasticFEMForceField<DataTypes>::addKToMatrix(const sofa::core::Mechani
 
             const MechanicalState beamMechanicalState = m_beamsData.getValue()[i]._beamMechanicalState;
 
-            Quat<SReal>& q = beamQuat(i); //x[a].getOrientation();
+            auto& q = beamQuat(i); //x[a].getOrientation();
             q.normalize();
             Mat<3, 3, Real> R,Rt;
             q.toMatrix(R);
@@ -921,7 +922,7 @@ void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< Vec3 >
     pa = x[a].getCenter();
     pb = x[b].getCenter();
 
-    const Quat<SReal>& q = beamQuat(i);
+    const auto& q = beamQuat(i);
 
     //***** Gauss points *****//
 
@@ -1621,7 +1622,7 @@ void BeamPlasticFEMForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
     //Computes displacement increment, from last system solution
     Vec12 local_depl;
     Vec3 u;
-    Quat<SReal>& q = beamQuat(i); //x[a].getOrientation();
+    auto& q = beamQuat(i); //x[a].getOrientation();
     q.normalize();
 
     u = q.inverseRotate(getVCenter(dx[a]));
@@ -1885,7 +1886,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeLocalDisplacement(const VecCoor
     localDisp[6] = u[0]; localDisp[7] = u[1]; localDisp[8] = u[2];
 
     // rotations //
-    Quat<SReal> dQ0, dQ;
+    type::Quat<SReal> dQ0, dQ;
 
     // dQ = QA.i * QB ou dQ = QB * QA.i() ??
     dQ0 = qDiff(x0[b].getOrientation(), x0[a].getOrientation()); // x0[a].getOrientation().inverse() * x0[b].getOrientation();
@@ -1895,7 +1896,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeLocalDisplacement(const VecCoor
     dQ0.normalize();
     dQ.normalize();
 
-    Quat<SReal> tmpQ = qDiff(dQ, dQ0);
+    auto tmpQ = qDiff(dQ, dQ0);
     tmpQ.normalize();
 
     u = tmpQ.quatToRotationVector(); //dQ.quatToRotationVector() - dQ0.quatToRotationVector();  // Use of quatToRotationVector instead of toEulerVector:
@@ -2700,7 +2701,7 @@ void BeamPlasticFEMForceField<DataTypes>::integrateBeam(beamGaussPoints& gaussPo
 /*****************************************************************************/
 
 template<class DataTypes>
-Quat<SReal>& BeamPlasticFEMForceField<DataTypes>::beamQuat(int i)
+type::Quat<SReal>& BeamPlasticFEMForceField<DataTypes>::beamQuat(int i)
 {
     type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     return bd[i].quat;
@@ -2906,4 +2907,4 @@ auto BeamPlasticFEMForceField<DataTypes>::Interval3::getb3() const -> Real
     return m_b3;
 }
 
-} // namespace sofa::plugin::beamplastic::component::forcefield::_beamplasticfemforcefield_
+} // namespace beamplastic::forcefield

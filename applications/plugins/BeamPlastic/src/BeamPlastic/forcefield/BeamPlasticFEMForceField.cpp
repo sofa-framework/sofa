@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,31 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define BEAMPLASTIC_BEAMPLASTICFEMFORCEFIELD_CPP
+#include <BeamPlastic/forcefield/BeamPlasticFEMForceField.inl>
 
-#include <BeamPlastic/config.h>
-#include <Eigen/Core>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::plugin::beamplastic::component::constitutivelaw
+
+namespace beamplastic::forcefield
 {
 
-template<class DataTypes>
-class PlasticConstitutiveLaw
-{
-public:
+using namespace sofa::defaulttype;
 
-    typedef typename DataTypes::Coord Coord;
-    typedef typename Coord::value_type Real;
-    typedef Eigen::Matrix<double, 6, 1> VoigtTensor;
+// Register in the Factory
+int BeamPlasticFEMForceFieldClass = core::RegisterObject("Stent adaptated beam finite elements")
+        .add< BeamPlasticFEMForceField<Rigid3Types> >()
+        ;
 
-    virtual ~PlasticConstitutiveLaw() {}
+template class BEAMPLASTIC_API BeamPlasticFEMForceField<Rigid3Types>;
 
-    /* Returns the slope of effective stress VS effective plastic strains, from the stress value */
-    virtual Real getTangentModulusFromStress(const double effStress) = 0;
-
-    /* Returns the slope of effective stress VS effective plastic strains, from the strain value*/
-    virtual Real getTangentModulusFromStrain(const double effPlasticStrain) = 0;
-
-};
-
-} // namespace sofa::plugin::beamplastic::component::constitutivelaw
+} // namespace beamplastic::forcefield
