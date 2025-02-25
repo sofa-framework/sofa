@@ -78,8 +78,11 @@ void DistanceToPlaneMapping<TIn>::init()
 
         for (Size j = 0; j < inDerivSize; j++ )
         {
-            if (sofa::type::isRigidType<TIn> && i>2)
-                break;
+            if constexpr (sofa::type::isRigidType<TIn>)
+            {
+                if (i>=Deriv_t<TIn>::Pos::size())
+                    break;
+            }
             J.compressedMatrix.insertBack( i, col ) = planeNormal[i];
         }
         J.compressedMatrix.finalize();
