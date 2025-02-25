@@ -102,14 +102,20 @@ void DistanceToPlaneMapping<TIn>::apply(const core::MechanicalParams *mparams, D
     const auto readIn = helper::getReadAccessor(in);
 
     const auto planeNormal = d_planeNormal.getValue();
-    const auto planePoint = d_planePoint.getValue();
+
+    double planeDistanceToOrigin;
+    if constexpr (!type::isRigidType<TIn>)
+        planeDistanceToOrigin = dot(d_planePoint.getValue(),planeNormal);
+    else
+        planeDistanceToOrigin  = dot(d_planePoint.getValue().getCenter(),planeNormal.getVCenter());
+
 
     for ( unsigned i = 0; i<readIn.size(); i++ )
     {
         if constexpr (!type::isRigidType<TIn>)
-            writeOut[i] = type::dot(readIn[i] - planePoint,planeNormal);
+            writeOut[i] = type::dot(readIn[i],planeNormal) - planeDistanceToOrigin;
         else
-            writeOut[i] = type::dot(readIn[i].getCenter() - planePoint.getCenter(),planeNormal.getVCenter());
+            writeOut[i] = type::dot(readIn[i].getCenter(),planeNormal.getVCenter()) - planeDistanceToOrigin;
     }
 }
 
