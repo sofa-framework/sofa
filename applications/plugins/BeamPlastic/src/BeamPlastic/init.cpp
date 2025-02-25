@@ -1,10 +1,17 @@
 #include <BeamPlastic/init.h>
 
 #include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
+#include <sofa/helper/system/PluginManager.h>
 
 namespace beamplastic
 {
+
+namespace forcefield
+{
+
+extern void registerBeamPlasticFEMForceField(sofa::core::ObjectFactory* factory);
+
+}
 
 extern "C" {
     BEAMPLASTIC_API void initExternalModule();
@@ -12,6 +19,7 @@ extern "C" {
     BEAMPLASTIC_API const char* getModuleVersion();
     BEAMPLASTIC_API const char* getModuleLicense();
     BEAMPLASTIC_API const char* getModuleDescription();
+    BEAMPLASTIC_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -46,7 +54,11 @@ const char* getModuleLicense()
 const char* getModuleDescription()
 {
     return "This plugin provides all necessary tools for stent expansion simulation";
-    //TODO: complete description
+}
+
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    forcefield::registerBeamPlasticFEMForceField(factory);
 }
 
 } // namespace beamplastic

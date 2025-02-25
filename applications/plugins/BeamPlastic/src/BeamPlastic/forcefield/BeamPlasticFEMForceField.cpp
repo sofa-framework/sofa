@@ -31,10 +31,11 @@ namespace beamplastic::forcefield
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int BeamPlasticFEMForceFieldClass = core::RegisterObject("Stent adaptated beam finite elements")
-        .add< BeamPlasticFEMForceField<Rigid3Types> >()
-        ;
+void registerBeamPlasticFEMForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Stent adaptated beam finite elements")
+         .add< BeamPlasticFEMForceField<Rigid3Types> >());
+}
 
 template class BEAMPLASTIC_API BeamPlasticFEMForceField<Rigid3Types>;
 
