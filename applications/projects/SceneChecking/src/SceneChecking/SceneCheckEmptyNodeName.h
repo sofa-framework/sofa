@@ -19,60 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gui/qt/init.h>
+#pragma once
 
-#include <sofa/gui/common/GUIManager.h>
-#include <sofa/gui/qt/RealGUI.h>
-#include <sofa/gui/qt/QtMessageRedirection.h>
+#include <SceneChecking/config.h>
+#include <sofa/simulation/SceneCheck.h>
 
-namespace sofa::gui::qt
+namespace sofa::scenechecking
 {
 
-    extern "C" {
-        SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-        SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-        SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    }
+class SOFA_SCENECHECKING_API SceneCheckEmptyNodeName : public sofa::simulation::SceneCheck
+{
+public:
+    ~SceneCheckEmptyNodeName() override;
+    typedef std::shared_ptr<SceneCheckEmptyNodeName> SPtr;
+    static SPtr newSPtr() { return std::make_shared<SceneCheckEmptyNodeName>(); }
+    const std::string getName() override;
+    const std::string getDesc() override;
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
+    void doPrintSummary() override;
 
-    void initExternalModule()
-    {
-        init();
-    }
+private:
+    unsigned int m_nbNodesWithEmptyName = 0;
+};
 
-    const char* getModuleName()
-    {
-        return MODULE_NAME;
-    }
-
-    const char* getModuleVersion()
-    {
-        return MODULE_VERSION;
-    }
-
-    void init()
-    {
-        static bool first = true;
-        if (first)
-        {
-#if SOFA_GUI_QT_ENABLE_QGLVIEWER
-            sofa::gui::common::GUIManager::RegisterGUI("qglviewer", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 3);
-#endif
-
-#if SOFA_GUI_QT_ENABLE_QTVIEWER
-            sofa::gui::common::GUIManager::RegisterGUI("qt", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 2);
-#endif
-
-            // if ObjectStateListener is triggered (either by changing the message number, or by
-            // changing the component name) in a thread different than the main thread (=UI thread),
-            // a Qt event is launched through the queued connection system. For that, the event
-            // parameters must be known to Qt's meta-object system. This is what qRegisterMetaType
-            // does in the following instruction.
-            qRegisterMetaType<QVector<int> >("QVector<int>");
-
-            qInstallMessageHandler(redirectQtMessages);
-
-            first = false;
-        }
-    }
-
-} // namespace sofa::gui::qt
+}

@@ -19,10 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/gui/qt/config.h>
+#include <SceneChecking/SceneCheckEmptyNodeName.h>
 
-namespace sofa::gui::qt
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/SceneCheckMainRegistry.h>
+
+namespace sofa::scenechecking
 {
-    void SOFA_GUI_QT_API init();
-} // namespace sofa::gui::qt
+
+const bool SceneCheckEmptyNodeNameRegistered = sofa::simulation::SceneCheckMainRegistry::addToRegistry(SceneCheckEmptyNodeName::newSPtr());
+
+SceneCheckEmptyNodeName::~SceneCheckEmptyNodeName() {}
+const std::string SceneCheckEmptyNodeName::getName() { return "SceneCheckEmptyNodeName"; }
+const std::string SceneCheckEmptyNodeName::getDesc() { return "Check if a Node has an empty name."; }
+
+void SceneCheckEmptyNodeName::doInit(sofa::simulation::Node* node)
+{
+    m_nbNodesWithEmptyName = 0;
+}
+
+void SceneCheckEmptyNodeName::doCheckOn(sofa::simulation::Node* node)
+{
+    const auto& nodeName = node->getName();
+
+    if (nodeName.empty())
+    {
+        ++m_nbNodesWithEmptyName;
+    }
+}
+
+void SceneCheckEmptyNodeName::doPrintSummary()
+{
+    msg_warning_when(m_nbNodesWithEmptyName > 0, getName()) << "Nodes with empty name are found in"
+        " the scene. This can lead to undefined behaviors. It is recommended to give a name to all Nodes.";
+}
+
+}  // namespace sofa::scenechecking
