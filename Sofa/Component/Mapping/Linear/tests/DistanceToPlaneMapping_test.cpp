@@ -104,10 +104,6 @@ public:
         {
             returnVec[i] = randomValuesForPoint[i];
         }
-        if constexpr (sofa::type::isRigidType<DataType>)
-        {
-            returnVec.getOrientation() = sofa::type::Quatd(0.707,0,0.707,0);
-        }
         return returnVec;
 
     }
@@ -268,9 +264,10 @@ using sofa::defaulttype::Vec2Types;
 using sofa::defaulttype::Vec3Types;
 using sofa::defaulttype::Vec6Types;
 using sofa::defaulttype::Rigid3Types;
+using sofa::defaulttype::Rigid2Types;
 
 
-using DataTypes = testing::Types<Vec2Types, Vec3Types, Vec6Types, Rigid3Types>;
+using DataTypes = testing::Types<Vec2Types, Vec3Types, Vec6Types, Rigid3Types, Rigid2Types >;
 TYPED_TEST_SUITE(PlaneMappingTest, DataTypes);
 
 TYPED_TEST(PlaneMappingTest, init)
