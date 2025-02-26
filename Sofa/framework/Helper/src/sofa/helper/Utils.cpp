@@ -229,7 +229,7 @@ const std::string& Utils::getUserLocalDirectory()
             CoTaskMemFree(path);
         }
 
-        return Utils::narrowString(wresult);
+        return sofa::helper::narrowString(wresult);
 
 #elif defined(__APPLE__) // macOS : ${HOME}/Library/Application Support
         // https://stackoverflow.com/questions/5123361/finding-library-application-support-from-c
