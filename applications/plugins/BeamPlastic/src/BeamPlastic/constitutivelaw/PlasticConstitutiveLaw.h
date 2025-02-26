@@ -22,7 +22,8 @@
 #pragma once
 
 #include <BeamPlastic/config.h>
-#include <Eigen/Core>
+
+#include <sofa/type/Mat.h>
 
 namespace beamplastic::constitutivelaw
 {
@@ -34,7 +35,7 @@ public:
 
     typedef typename DataTypes::Coord Coord;
     typedef typename Coord::value_type Real;
-    typedef Eigen::Matrix<double, 6, 1> VoigtTensor;
+    typedef sofa::type::Mat<6, 1, double> VoigtTensor;
 
     virtual ~PlasticConstitutiveLaw() {}
 

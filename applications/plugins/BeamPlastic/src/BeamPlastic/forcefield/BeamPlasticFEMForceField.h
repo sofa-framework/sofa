@@ -23,7 +23,7 @@
 
 #include <BeamPlastic/config.h>
 
-#include <BeamPlastic/constitutiveLaw/PlasticConstitutiveLaw.h>
+#include <BeamPlastic/constitutivelaw/PlasticConstitutiveLaw.h>
 #include <BeamPlastic/quadrature/gaussian.h>
 
 #include <sofa/core/behavior/ForceField.h>
@@ -261,7 +261,7 @@ protected:
         //---------- Visualisation ----------//
 
         /// Number of interpolation segments to visualise the centreline of the beam element
-        int _nbCentrelineSeg = 10;
+        sofa::Size _nbCentrelineSeg = 10;
 
         /// Precomputation of the shape functions matrices for each centreline point coordinates.
         Vec<9, Matrix3x12> _drawN; //TO DO: allow parameterisation of the number of segments
@@ -394,8 +394,6 @@ protected:
      * behaviour, Hugues(et al) 1984.
      */
     Data<bool> d_isPerfectlyPlastic;
-
-    BeamPlasticFEMForceField<DataTypes>* ff;
 
     //---------- Plastic modulus ----------//
     /**
@@ -602,8 +600,6 @@ protected:
     Real m_stressComparisonThreshold;
 
     sofa::type::Quat<SReal>& beamQuat(int i);
-
-    sofa::core::topology::BaseMeshTopology* m_topology;
 
     BeamPlasticFEMForceField();
     BeamPlasticFEMForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection, Real ySection, bool useVD,

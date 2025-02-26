@@ -25,7 +25,7 @@
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <BeamPlastic/constitutiveLaw/RambergOsgood.h>
+#include <BeamPlastic/constitutivelaw/RambergOsgood.h>
 
 namespace beamplastic::forcefield
 {
@@ -78,6 +78,8 @@ BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField(Real poissonRatio,
     , d_useSymmetricAssembly(initData(&d_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
     , d_isTimoshenko(initData(&d_isTimoshenko, isTimoshenko, "isTimoshenko", "implements a Timoshenko beam model"))
     , d_sectionShape(initData(&d_sectionShape, "rectangular", "sectionShape", "Geometry of the section shape (rectangular or circular)"))
+    , l_topology(initLink("topology", "link to the topology container"))
+
 {
     d_poissonRatio.setRequired(true);
     d_youngModulus.setReadOnly(true);
@@ -96,7 +98,7 @@ BeamPlasticFEMForceField<DataTypes>::~BeamPlasticFEMForceField()
 template <class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::bwdInit()
 {
-    core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
+    [[maybe_unused]] core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
     m_lastUpdatedStep=-1.0;
 }
@@ -108,26 +110,25 @@ void BeamPlasticFEMForceField<DataTypes>::init()
 
     if (l_topology.empty())
     {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    m_topology = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-    if (m_topology == nullptr)
+    if (l_topology.get() == nullptr)
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". Object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    if (m_topology->getNbEdges() == 0)
+    if (l_topology->getNbEdges() == 0)
     {
         msg_error() << "Topology is empty.";
         return;
     }
-    m_indexedElements = &m_topology->getEdges();
+    m_indexedElements = &l_topology->getEdges();
 
     // Retrieving the 1D plastic constitutive law model
     std::string constitutiveModel = d_modelName.getValue();
@@ -157,7 +158,7 @@ void BeamPlasticFEMForceField<DataTypes>::init()
         msg_error() << "constitutive law model name " << constitutiveModel << " is not valid (should be RambergOsgood)";
     }
 
-    m_beamsData.createTopologyHandler(m_topology);
+    m_beamsData.createTopologyHandler(l_topology.get());
 
     reinit();
 }
@@ -165,13 +166,13 @@ void BeamPlasticFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::reinit()
 {
-    const size_t n = m_indexedElements->size();
+    const auto n = m_indexedElements->size();
 
     //Initialises the lastPos field with the rest position
-    m_lastPos = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    m_lastPos = this->mstate->read(sofa::core::vec_id::read_access::restPosition)->getValue();
 
     m_prevStresses.resize(n);
-    for (int i = 0; i < n; i++)
+    for (std::size_t i = 0; i < n; i++)
         for (int j = 0; j < 27; j++)
             m_prevStresses[i][j] = VoigtTensor2();
 
@@ -180,7 +181,7 @@ void BeamPlasticFEMForceField<DataTypes>::reinit()
         // No need to store elastic predictors at each iteration if the consistent
         // tangent operator is not used.
         m_elasticPredictors.resize(n);
-        for (int i = 0; i < n; i++)
+        for (std::size_t i = 0; i < n; i++)
             for (int j = 0; j < 27; j++)
                 m_elasticPredictors[i][j] = VoigtTensor2();
     }
@@ -206,7 +207,7 @@ void BeamPlasticFEMForceField<DataTypes>::reinitBeam(unsigned int i)
     Index a = (*m_indexedElements)[i][0];
     Index b = (*m_indexedElements)[i][1];
 
-    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = this->mstate->read(sofa::core::vec_id::read_access::restPosition)->getValue();
 
     stiffness =  d_youngModulus.getValue();
 
@@ -291,120 +292,129 @@ void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, do
     typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
 
-    int i = 0; //Gauss Point iterator
+    sofa::Index gaussPointIndex = 0; //Gauss Point iterator
 
     //Euler-Bernoulli beam theory
     LambdaType initBeMatrixEulerB = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
+        SOFA_UNUSED(w1);
+        SOFA_UNUSED(w2);
+        SOFA_UNUSED(w3);
+        auto& BeMatrix = _BeMatrices[gaussPointIndex];
         // Step 1: total strain computation
         double xi = u1 / _L;
         double eta = u2 / _L;
         double zeta = u3 / _L;
 
-        _BeMatrices[i](0, 0) = -1 / _L;
-        _BeMatrices[i](1, 0) = _BeMatrices[i](2, 0) = _BeMatrices[i](3, 0) = _BeMatrices[i](4, 0) = _BeMatrices[i](5, 0) = 0.0;
+        BeMatrix(0, 0) = -1 / _L;
+        BeMatrix(1, 0) = BeMatrix(2, 0) = BeMatrix(3, 0) = BeMatrix(4, 0) = BeMatrix(5, 0) = 0.0;
 
-        _BeMatrices[i](0, 1) = (6 * eta*(1 - 2 * xi)) / _L;
-        _BeMatrices[i](1, 1) = _BeMatrices[i](2, 1) = _BeMatrices[i](3, 1) = _BeMatrices[i](4, 1) = _BeMatrices[i](5, 1) = 0.0;
+        BeMatrix(0, 1) = (6 * eta*(1 - 2 * xi)) / _L;
+        BeMatrix(1, 1) = BeMatrix(2, 1) = BeMatrix(3, 1) = BeMatrix(4, 1) = BeMatrix(5, 1) = 0.0;
 
-        _BeMatrices[i](0, 2) = (6 * zeta*(1 - 2 * xi)) / _L;
-        _BeMatrices[i](1, 2) = _BeMatrices[i](2, 2) = _BeMatrices[i](3, 2) = _BeMatrices[i](4, 2) = _BeMatrices[i](5, 2) = 0.0;
+        BeMatrix(0, 2) = (6 * zeta*(1 - 2 * xi)) / _L;
+        BeMatrix(1, 2) = BeMatrix(2, 2) = BeMatrix(3, 2) = BeMatrix(4, 2) = BeMatrix(5, 2) = 0.0;
 
-        _BeMatrices[i](0, 3) = _BeMatrices[i](1, 3) = _BeMatrices[i](2, 3) = 0.0;
-        _BeMatrices[i](3, 3) = 0;
-        _BeMatrices[i](4, 3) = -eta / 2;
-        _BeMatrices[i](5, 3) = zeta / 2;
+        BeMatrix(0, 3) = BeMatrix(1, 3) = BeMatrix(2, 3) = 0.0;
+        BeMatrix(3, 3) = 0;
+        BeMatrix(4, 3) = -eta / 2;
+        BeMatrix(5, 3) = zeta / 2;
 
-        _BeMatrices[i](0, 4) = zeta * (6 * xi - 4);
-        _BeMatrices[i](1, 4) = _BeMatrices[i](2, 4) = _BeMatrices[i](3, 4) = _BeMatrices[i](4, 4) = _BeMatrices[i](5, 4) = 0.0;
+        BeMatrix(0, 4) = zeta * (6 * xi - 4);
+        BeMatrix(1, 4) = BeMatrix(2, 4) = BeMatrix(3, 4) = BeMatrix(4, 4) = BeMatrix(5, 4) = 0.0;
 
-        _BeMatrices[i](0, 5) = eta * (4 - 6 * xi);
-        _BeMatrices[i](1, 5) = _BeMatrices[i](2, 5) = _BeMatrices[i](3, 5) = _BeMatrices[i](4, 5) = _BeMatrices[i](5, 5) = 0.0;
+        BeMatrix(0, 5) = eta * (4 - 6 * xi);
+        BeMatrix(1, 5) = BeMatrix(2, 5) = BeMatrix(3, 5) = BeMatrix(4, 5) = BeMatrix(5, 5) = 0.0;
 
-//        _BeMatrices[i].block<6, 1>(0, 6) = -_BeMatrices[i].block<6, 1>(0, 0);
+//        BeMatrix.block<6, 1>(0, 6) = -BeMatrix.block<6, 1>(0, 0);
 
-//        _BeMatrices[i].block<6, 1>(0, 7) = -_BeMatrices[i].block<6, 1>(0, 1);
+//        BeMatrix.block<6, 1>(0, 7) = -BeMatrix.block<6, 1>(0, 1);
 
-//        _BeMatrices[i].block<6, 1>(0, 8) = -_BeMatrices[i].block<6, 1>(0, 2);
+//        BeMatrix.block<6, 1>(0, 8) = -BeMatrix.block<6, 1>(0, 2);
 
         Mat<6, 1, Real> subMat;
-        _BeMatrices[i].getsub(0, 0, subMat);
-        _BeMatrices[i].setsub(0, 6, -subMat);
-        _BeMatrices[i].getsub(0, 1, subMat);
-        _BeMatrices[i].setsub(0, 7, -subMat);
-        _BeMatrices[i].getsub(0, 2, subMat);
-        _BeMatrices[i].setsub(0, 8, -subMat);
+        BeMatrix.getsub(0, 0, subMat);
+        BeMatrix.setsub(0, 6, -subMat);
+        BeMatrix.getsub(0, 1, subMat);
+        BeMatrix.setsub(0, 7, -subMat);
+        BeMatrix.getsub(0, 2, subMat);
+        BeMatrix.setsub(0, 8, -subMat);
 
-        _BeMatrices[i](0, 9) = _BeMatrices[i](1, 9) = _BeMatrices[i](2, 9) = 0.0;
-        _BeMatrices[i](3, 9) = 0;
-        _BeMatrices[i](4, 9) = eta / 2;
-        _BeMatrices[i](5, 9) = -zeta / 2;
+        BeMatrix(0, 9) = BeMatrix(1, 9) = BeMatrix(2, 9) = 0.0;
+        BeMatrix(3, 9) = 0;
+        BeMatrix(4, 9) = eta / 2;
+        BeMatrix(5, 9) = -zeta / 2;
 
-        _BeMatrices[i](0, 10) = zeta * (6 * xi - 2);
-        _BeMatrices[i](1, 10) = _BeMatrices[i](2, 10) = _BeMatrices[i](3, 10) = _BeMatrices[i](4, 10) = _BeMatrices[i](5, 10) = 0.0;
+        BeMatrix(0, 10) = zeta * (6 * xi - 2);
+        BeMatrix(1, 10) = BeMatrix(2, 10) = BeMatrix(3, 10) = BeMatrix(4, 10) = BeMatrix(5, 10) = 0.0;
 
-        _BeMatrices[i](0, 11) = eta * (2 - 6 * xi);
-        _BeMatrices[i](1, 11) = _BeMatrices[i](2, 11) = _BeMatrices[i](3, 11) = _BeMatrices[i](4, 11) = _BeMatrices[i](5, 11) = 0.0;
+        BeMatrix(0, 11) = eta * (2 - 6 * xi);
+        BeMatrix(1, 11) = BeMatrix(2, 11) = BeMatrix(3, 11) = BeMatrix(4, 11) = BeMatrix(5, 11) = 0.0;
 
-        i++;
+        gaussPointIndex++;
     };
 
     //Timoshenko beam theory
     LambdaType initBeMatrixTimo = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
+        SOFA_UNUSED(w1);
+        SOFA_UNUSED(w2);
+        SOFA_UNUSED(w3);
+        auto& BeMatrix = _BeMatrices[gaussPointIndex];
+        
         // Step 1: total strain computation
         double xi = u1 / _L;
         double eta = u2 / _L;
         double zeta = u3 / _L;
 
         //row 0
-        _BeMatrices[i](0, 0) = -1 / _L;
-        _BeMatrices[i](0, 1) = (phiZInv * 6 * eta * (1 - 2 * xi)) / _L;
-        _BeMatrices[i](0, 2) = (phiYInv * 6 * zeta * (1 - 2 * xi)) / _L;
-        _BeMatrices[i](0, 3) = 0;
-        _BeMatrices[i](0, 4) = phiYInv * zeta * (6 * xi - 4 - phiY);
-        _BeMatrices[i](0, 5) = phiZInv * eta * (4 - 6 * xi + phiZ);
-        _BeMatrices[i](0, 6) = 1 / _L;
-        _BeMatrices[i](0, 7) = (phiZInv * 6 * eta * (2 * xi - 1)) / _L;
-        _BeMatrices[i](0, 8) = (phiYInv * 6 * zeta * (2 * xi - 1)) / _L;
-        _BeMatrices[i](0, 9) = 0;
-        _BeMatrices[i](0, 10) = phiYInv * zeta * (6 * xi - 2 + phiY);
-        _BeMatrices[i](0, 11) = phiZInv * eta * (2 - 6 * xi - phiZ);
+        BeMatrix(0, 0) = -1 / _L;
+        BeMatrix(0, 1) = (phiZInv * 6 * eta * (1 - 2 * xi)) / _L;
+        BeMatrix(0, 2) = (phiYInv * 6 * zeta * (1 - 2 * xi)) / _L;
+        BeMatrix(0, 3) = 0;
+        BeMatrix(0, 4) = phiYInv * zeta * (6 * xi - 4 - phiY);
+        BeMatrix(0, 5) = phiZInv * eta * (4 - 6 * xi + phiZ);
+        BeMatrix(0, 6) = 1 / _L;
+        BeMatrix(0, 7) = (phiZInv * 6 * eta * (2 * xi - 1)) / _L;
+        BeMatrix(0, 8) = (phiYInv * 6 * zeta * (2 * xi - 1)) / _L;
+        BeMatrix(0, 9) = 0;
+        BeMatrix(0, 10) = phiYInv * zeta * (6 * xi - 2 + phiY);
+        BeMatrix(0, 11) = phiZInv * eta * (2 - 6 * xi - phiZ);
 
         //rows 1, 2, 3
-        _BeMatrices[i](1, 0) = _BeMatrices[i](1, 1) = _BeMatrices[i](1, 2) = _BeMatrices[i](1, 3) = 0.0;
-        _BeMatrices[i](1, 4) = _BeMatrices[i](1, 5) = _BeMatrices[i](1, 6) = _BeMatrices[i](1, 7) = 0.0;
-        _BeMatrices[i](1, 8) = _BeMatrices[i](1, 9) = _BeMatrices[i](1, 10) = _BeMatrices[i](1, 11) = 0.0;
+        BeMatrix(1, 0) = BeMatrix(1, 1) = BeMatrix(1, 2) = BeMatrix(1, 3) = 0.0;
+        BeMatrix(1, 4) = BeMatrix(1, 5) = BeMatrix(1, 6) = BeMatrix(1, 7) = 0.0;
+        BeMatrix(1, 8) = BeMatrix(1, 9) = BeMatrix(1, 10) = BeMatrix(1, 11) = 0.0;
 
-        _BeMatrices[i](2, 0) = _BeMatrices[i](2, 1) = _BeMatrices[i](2, 2) = _BeMatrices[i](2, 3) = 0.0;
-        _BeMatrices[i](2, 4) = _BeMatrices[i](2, 5) = _BeMatrices[i](2, 6) = _BeMatrices[i](2, 7) = 0.0;
-        _BeMatrices[i](2, 8) = _BeMatrices[i](2, 9) = _BeMatrices[i](2, 10) = _BeMatrices[i](2, 11) = 0.0;
+        BeMatrix(2, 0) = BeMatrix(2, 1) = BeMatrix(2, 2) = BeMatrix(2, 3) = 0.0;
+        BeMatrix(2, 4) = BeMatrix(2, 5) = BeMatrix(2, 6) = BeMatrix(2, 7) = 0.0;
+        BeMatrix(2, 8) = BeMatrix(2, 9) = BeMatrix(2, 10) = BeMatrix(2, 11) = 0.0;
 
-        _BeMatrices[i](3, 0) = _BeMatrices[i](3, 1) = _BeMatrices[i](3, 2) = _BeMatrices[i](3, 3) = 0.0;
-        _BeMatrices[i](3, 4) = _BeMatrices[i](3, 5) = _BeMatrices[i](3, 6) = _BeMatrices[i](3, 7) = 0.0;
-        _BeMatrices[i](3, 8) = _BeMatrices[i](3, 9) = _BeMatrices[i](3, 10) = _BeMatrices[i](3, 11) = 0.0;
+        BeMatrix(3, 0) = BeMatrix(3, 1) = BeMatrix(3, 2) = BeMatrix(3, 3) = 0.0;
+        BeMatrix(3, 4) = BeMatrix(3, 5) = BeMatrix(3, 6) = BeMatrix(3, 7) = 0.0;
+        BeMatrix(3, 8) = BeMatrix(3, 9) = BeMatrix(3, 10) = BeMatrix(3, 11) = 0.0;
 
         //row 4
-        _BeMatrices[i](4, 2) = -(phiYInv * phiY) / (2 * _L);
-        _BeMatrices[i](4, 3) = -eta / 2;
-        _BeMatrices[i](4, 4) = (phiYInv * phiY) / 4;
-        _BeMatrices[i](4, 8) = (phiYInv * phiY) / (2 * _L);
-        _BeMatrices[i](4, 9) = eta / 2;
-        _BeMatrices[i](4, 10) = (phiYInv * phiY) / 4;
-        _BeMatrices[i](4, 0) = _BeMatrices[i](4, 1) = _BeMatrices[i](4, 5) = 0.0;
-        _BeMatrices[i](4, 6) = _BeMatrices[i](4, 7) = _BeMatrices[i](4, 11) = 0.0;
+        BeMatrix(4, 2) = -(phiYInv * phiY) / (2 * _L);
+        BeMatrix(4, 3) = -eta / 2;
+        BeMatrix(4, 4) = (phiYInv * phiY) / 4;
+        BeMatrix(4, 8) = (phiYInv * phiY) / (2 * _L);
+        BeMatrix(4, 9) = eta / 2;
+        BeMatrix(4, 10) = (phiYInv * phiY) / 4;
+        BeMatrix(4, 0) = BeMatrix(4, 1) = BeMatrix(4, 5) = 0.0;
+        BeMatrix(4, 6) = BeMatrix(4, 7) = BeMatrix(4, 11) = 0.0;
 
         //row5
-        _BeMatrices[i](5, 1) = -(phiZInv * phiZ) / (2 * _L);
-        _BeMatrices[i](5, 3) = zeta / 2;
-        _BeMatrices[i](5, 5) = -(phiZInv * phiZ) / 4;
-        _BeMatrices[i](5, 7) = (phiZInv * phiZ) / (2 * _L);
-        _BeMatrices[i](5, 9) = -zeta / 2;
-        _BeMatrices[i](5, 11) = -(phiZInv * phiZ) / 4;
-        _BeMatrices[i](5, 0) = _BeMatrices[i](5, 2) = _BeMatrices[i](5, 4) = 0.0;
-        _BeMatrices[i](5, 6) = _BeMatrices[i](5, 8) = _BeMatrices[i](5, 10) = 0.0;
+        BeMatrix(5, 1) = -(phiZInv * phiZ) / (2 * _L);
+        BeMatrix(5, 3) = zeta / 2;
+        BeMatrix(5, 5) = -(phiZInv * phiZ) / 4;
+        BeMatrix(5, 7) = (phiZInv * phiZ) / (2 * _L);
+        BeMatrix(5, 9) = -zeta / 2;
+        BeMatrix(5, 11) = -(phiZInv * phiZ) / 4;
+        BeMatrix(5, 0) = BeMatrix(5, 2) = BeMatrix(5, 4) = 0.0;
+        BeMatrix(5, 6) = BeMatrix(5, 8) = BeMatrix(5, 10) = 0.0;
 
-        i++;
+        gaussPointIndex++;
     };
 
     if (isTimoshenko)
@@ -413,11 +423,16 @@ void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, do
         ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(_integrationInterval, initBeMatrixEulerB);
 
 
-    int gaussPointIt = 0; //Gauss Point iterator
+    sofa::Index gaussPointIt = 0; //Gauss Point iterator
 
     // Euler-Bernoulli beam model
     LambdaType initialiseEBShapeFunctions = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
+        SOFA_UNUSED(w1);
+        SOFA_UNUSED(w2);
+        SOFA_UNUSED(w3);
+        auto& N = _N[gaussPointIt];
+        
         // Step 1: total strain computation
         double xi = u1 / _L;
         double eta = u2 / _L;
@@ -426,44 +441,44 @@ void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, do
         double xi2 = xi*xi;
         double xi3 = xi*xi*xi;
 
-        _N[gaussPointIt](0, 0) = 1 - xi;
-        _N[gaussPointIt](0, 1) = 6 * (xi - xi2)*eta;
-        _N[gaussPointIt](0, 2) = 6 * (xi - xi2)*zeta;
-        _N[gaussPointIt](0, 3) = 0;
-        _N[gaussPointIt](0, 4) = (1 - 4 * xi + 3 * xi2)*_L*zeta;
-        _N[gaussPointIt](0, 5) = (-1 + 4 * xi - 3 * xi2)*_L*eta;
-        _N[gaussPointIt](0, 6) = xi;
-        _N[gaussPointIt](0, 7) = 6 * (-xi + xi2)*eta;
-        _N[gaussPointIt](0, 8) = 6 * (-xi + xi2)*zeta;
-        _N[gaussPointIt](0, 9) = 0;
-        _N[gaussPointIt](0, 10) = (-2 * xi + 3 * xi2)*_L*zeta;
-        _N[gaussPointIt](0, 11) = (2 * xi - 3 * xi2)*_L*eta;
+        N(0, 0) = 1 - xi;
+        N(0, 1) = 6 * (xi - xi2)*eta;
+        N(0, 2) = 6 * (xi - xi2)*zeta;
+        N(0, 3) = 0;
+        N(0, 4) = (1 - 4 * xi + 3 * xi2)*_L*zeta;
+        N(0, 5) = (-1 + 4 * xi - 3 * xi2)*_L*eta;
+        N(0, 6) = xi;
+        N(0, 7) = 6 * (-xi + xi2)*eta;
+        N(0, 8) = 6 * (-xi + xi2)*zeta;
+        N(0, 9) = 0;
+        N(0, 10) = (-2 * xi + 3 * xi2)*_L*zeta;
+        N(0, 11) = (2 * xi - 3 * xi2)*_L*eta;
 
-        _N[gaussPointIt](1, 0) = 0;
-        _N[gaussPointIt](1, 1) = 1 - 3 * xi2 + 2 * xi3;
-        _N[gaussPointIt](1, 2) = 0;
-        _N[gaussPointIt](1, 3) = (xi - 1)*_L*zeta;
-        _N[gaussPointIt](1, 4) = 0;
-        _N[gaussPointIt](1, 5) = (xi - 2 * xi2 + xi3)*_L;
-        _N[gaussPointIt](1, 6) = 0;
-        _N[gaussPointIt](1, 7) = 3 * xi2 - 2 * xi3;
-        _N[gaussPointIt](1, 8) = 0;
-        _N[gaussPointIt](1, 9) = -_L*xi*zeta;
-        _N[gaussPointIt](1, 10) = 0;
-        _N[gaussPointIt](1, 11) = (-xi2 + xi3)*_L;
+        N(1, 0) = 0;
+        N(1, 1) = 1 - 3 * xi2 + 2 * xi3;
+        N(1, 2) = 0;
+        N(1, 3) = (xi - 1)*_L*zeta;
+        N(1, 4) = 0;
+        N(1, 5) = (xi - 2 * xi2 + xi3)*_L;
+        N(1, 6) = 0;
+        N(1, 7) = 3 * xi2 - 2 * xi3;
+        N(1, 8) = 0;
+        N(1, 9) = -_L*xi*zeta;
+        N(1, 10) = 0;
+        N(1, 11) = (-xi2 + xi3)*_L;
 
-        _N[gaussPointIt](2, 0) = 0;
-        _N[gaussPointIt](2, 1) = 0;
-        _N[gaussPointIt](2, 2) = 1 - 3 * xi2 + 2 * xi3;
-        _N[gaussPointIt](2, 3) = (1 - xi)*_L*eta;
-        _N[gaussPointIt](2, 4) = (-xi + 2 * xi2 - xi3)*_L;
-        _N[gaussPointIt](2, 5) = 0;
-        _N[gaussPointIt](2, 6) = 0;
-        _N[gaussPointIt](2, 7) = 0;
-        _N[gaussPointIt](2, 8) = 3 * xi2 - 2 * xi3;
-        _N[gaussPointIt](2, 9) = _L*xi*eta;
-        _N[gaussPointIt](2, 10) = (xi2 - xi3)*_L;
-        _N[gaussPointIt](2, 11) = 0;
+        N(2, 0) = 0;
+        N(2, 1) = 0;
+        N(2, 2) = 1 - 3 * xi2 + 2 * xi3;
+        N(2, 3) = (1 - xi)*_L*eta;
+        N(2, 4) = (-xi + 2 * xi2 - xi3)*_L;
+        N(2, 5) = 0;
+        N(2, 6) = 0;
+        N(2, 7) = 0;
+        N(2, 8) = 3 * xi2 - 2 * xi3;
+        N(2, 9) = _L*xi*eta;
+        N(2, 10) = (xi2 - xi3)*_L;
+        N(2, 11) = 0;
 
         gaussPointIt++;
     };
@@ -471,6 +486,11 @@ void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, do
     // Timoshenko beam model
     LambdaType initialiseTShapeFunctions = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
+        SOFA_UNUSED(w1);
+        SOFA_UNUSED(w2);
+        SOFA_UNUSED(w3);
+        auto& N = _N[gaussPointIt];
+        
         double xi = u1 / _L;
         double eta = u2 / _L;
         double zeta = u3 / _L;
@@ -478,44 +498,44 @@ void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, do
         double xi2 = xi*xi;
         double xi3 = xi*xi*xi;
 
-        _N[gaussPointIt](0, 0) = 1 - xi;
-        _N[gaussPointIt](0, 1) = 6 * phiZInv * (xi - xi2)*eta;
-        _N[gaussPointIt](0, 2) = 6 * phiYInv * (xi - xi2)*zeta;
-        _N[gaussPointIt](0, 3) = 0;
-        _N[gaussPointIt](0, 4) = _L * phiYInv * (1 - 4 * xi + 3 * xi2 + phiY*(1 - xi))*zeta;
-        _N[gaussPointIt](0, 5) = -_L * phiZInv * (1 - 4 * xi + 3 * xi2 + phiZ*(1 - xi))*eta;
-        _N[gaussPointIt](0, 6) = xi;
-        _N[gaussPointIt](0, 7) = 6 * phiZInv * (-xi + xi2)*eta;
-        _N[gaussPointIt](0, 8) = 6 * phiYInv * (-xi + xi2)*zeta;
-        _N[gaussPointIt](0, 9) = 0;
-        _N[gaussPointIt](0, 10) = _L * phiYInv * (-2 * xi + 3 * xi2 + phiY*xi)*zeta;
-        _N[gaussPointIt](0, 11) = -_L * phiZInv * (-2 * xi + 3 * xi2 + phiZ*xi)*eta;
+        N(0, 0) = 1 - xi;
+        N(0, 1) = 6 * phiZInv * (xi - xi2)*eta;
+        N(0, 2) = 6 * phiYInv * (xi - xi2)*zeta;
+        N(0, 3) = 0;
+        N(0, 4) = _L * phiYInv * (1 - 4 * xi + 3 * xi2 + phiY*(1 - xi))*zeta;
+        N(0, 5) = -_L * phiZInv * (1 - 4 * xi + 3 * xi2 + phiZ*(1 - xi))*eta;
+        N(0, 6) = xi;
+        N(0, 7) = 6 * phiZInv * (-xi + xi2)*eta;
+        N(0, 8) = 6 * phiYInv * (-xi + xi2)*zeta;
+        N(0, 9) = 0;
+        N(0, 10) = _L * phiYInv * (-2 * xi + 3 * xi2 + phiY*xi)*zeta;
+        N(0, 11) = -_L * phiZInv * (-2 * xi + 3 * xi2 + phiZ*xi)*eta;
 
-        _N[gaussPointIt](1, 0) = 0;
-        _N[gaussPointIt](1, 1) = phiZInv * (1 - 3 * xi2 + 2 * xi3 + phiZ*(1 - xi));
-        _N[gaussPointIt](1, 2) = 0;
-        _N[gaussPointIt](1, 3) = (xi - 1)*_L*zeta;
-        _N[gaussPointIt](1, 4) = 0;
-        _N[gaussPointIt](1, 5) = _L * phiZInv * (xi - 2 * xi2 + xi3 + (phiZ / 2)*(xi - xi2));
-        _N[gaussPointIt](1, 6) = 0;
-        _N[gaussPointIt](1, 7) = phiZInv * (3 * xi2 - 2 * xi3 + phiZ*xi);
-        _N[gaussPointIt](1, 8) = 0;
-        _N[gaussPointIt](1, 9) = -_L * xi  *zeta;
-        _N[gaussPointIt](1, 10) = 0;
-        _N[gaussPointIt](1, 11) = _L * phiZInv *(-xi2 + xi3 - (phiZ / 2)*(xi - xi2));
+        N(1, 0) = 0;
+        N(1, 1) = phiZInv * (1 - 3 * xi2 + 2 * xi3 + phiZ*(1 - xi));
+        N(1, 2) = 0;
+        N(1, 3) = (xi - 1)*_L*zeta;
+        N(1, 4) = 0;
+        N(1, 5) = _L * phiZInv * (xi - 2 * xi2 + xi3 + (phiZ / 2)*(xi - xi2));
+        N(1, 6) = 0;
+        N(1, 7) = phiZInv * (3 * xi2 - 2 * xi3 + phiZ*xi);
+        N(1, 8) = 0;
+        N(1, 9) = -_L * xi  *zeta;
+        N(1, 10) = 0;
+        N(1, 11) = _L * phiZInv *(-xi2 + xi3 - (phiZ / 2)*(xi - xi2));
 
-        _N[gaussPointIt](2, 0) = 0;
-        _N[gaussPointIt](2, 1) = 0;
-        _N[gaussPointIt](2, 2) = phiYInv * (1 - 3 * xi2 + 2 * xi3 + phiY*(1 - xi));
-        _N[gaussPointIt](2, 3) = (1 - xi) * _L * eta;
-        _N[gaussPointIt](2, 4) = -_L * phiYInv * (xi - 2 * xi2 + xi3 + (phiY / 2)*(xi - xi2));
-        _N[gaussPointIt](2, 5) = 0;
-        _N[gaussPointIt](2, 6) = 0;
-        _N[gaussPointIt](2, 7) = 0;
-        _N[gaussPointIt](2, 8) = phiYInv * (3 * xi2 - 2 * xi3 + phiY*xi);
-        _N[gaussPointIt](2, 9) = _L * xi * eta;
-        _N[gaussPointIt](2, 10) = -_L * phiYInv * (-xi2 + xi3 - (phiY / 2)*(xi - xi2));
-        _N[gaussPointIt](2, 11) = 0;
+        N(2, 0) = 0;
+        N(2, 1) = 0;
+        N(2, 2) = phiYInv * (1 - 3 * xi2 + 2 * xi3 + phiY*(1 - xi));
+        N(2, 3) = (1 - xi) * _L * eta;
+        N(2, 4) = -_L * phiYInv * (xi - 2 * xi2 + xi3 + (phiY / 2)*(xi - xi2));
+        N(2, 5) = 0;
+        N(2, 6) = 0;
+        N(2, 7) = 0;
+        N(2, 8) = phiYInv * (3 * xi2 - 2 * xi3 + phiY*xi);
+        N(2, 9) = _L * xi * eta;
+        N(2, 10) = -_L * phiYInv * (-xi2 + xi3 - (phiY / 2)*(xi - xi2));
+        N(2, 11) = 0;
 
         gaussPointIt++;
     };
@@ -529,8 +549,9 @@ void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, do
 
     if (!isTimoshenko)
     {
-        for (int i = 1; i < _nbCentrelineSeg; i++)
+        for (sofa::Index i = 1; i < _nbCentrelineSeg; i++)
         {
+            auto& drawN = _drawN[i-1];
             double xi = i*(_L / _nbCentrelineSeg) / _L;
             double xi2 = xi*xi;
             double xi3 = xi*xi*xi;
@@ -539,50 +560,51 @@ void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, do
             //double eta = 0;
             //double zeta = 0;
 
-            _drawN[i - 1](0, 0) = 1 - xi;
-            _drawN[i - 1](0, 1) = 0;
-            _drawN[i - 1](0, 2) = 0;
-            _drawN[i - 1](0, 3) = 0;
-            _drawN[i - 1](0, 4) = 0;
-            _drawN[i - 1](0, 5) = 0;
-            _drawN[i - 1](0, 6) = xi;
-            _drawN[i - 1](0, 7) = 0;
-            _drawN[i - 1](0, 8) = 0;
-            _drawN[i - 1](0, 9) = 0;
-            _drawN[i - 1](0, 10) = 0;
-            _drawN[i - 1](0, 11) = 0;
+            drawN(0, 0) = 1 - xi;
+            drawN(0, 1) = 0;
+            drawN(0, 2) = 0;
+            drawN(0, 3) = 0;
+            drawN(0, 4) = 0;
+            drawN(0, 5) = 0;
+            drawN(0, 6) = xi;
+            drawN(0, 7) = 0;
+            drawN(0, 8) = 0;
+            drawN(0, 9) = 0;
+            drawN(0, 10) = 0;
+            drawN(0, 11) = 0;
 
-            _drawN[i - 1](1, 0) = 0;
-            _drawN[i - 1](1, 1) = 1 - 3 * xi2 + 2 * xi3;
-            _drawN[i - 1](1, 2) = 0;
-            _drawN[i - 1](1, 3) = 0;
-            _drawN[i - 1](1, 4) = 0;
-            _drawN[i - 1](1, 5) = (xi - 2 * xi2 + xi3)*_L;
-            _drawN[i - 1](1, 6) = 0;
-            _drawN[i - 1](1, 7) = 3 * xi2 - 2 * xi3;
-            _drawN[i - 1](1, 8) = 0;
-            _drawN[i - 1](1, 9) = 0;
-            _drawN[i - 1](1, 10) = 0;
-            _drawN[i - 1](1, 11) = (-xi2 + xi3)*_L;
+            drawN(1, 0) = 0;
+            drawN(1, 1) = 1 - 3 * xi2 + 2 * xi3;
+            drawN(1, 2) = 0;
+            drawN(1, 3) = 0;
+            drawN(1, 4) = 0;
+            drawN(1, 5) = (xi - 2 * xi2 + xi3)*_L;
+            drawN(1, 6) = 0;
+            drawN(1, 7) = 3 * xi2 - 2 * xi3;
+            drawN(1, 8) = 0;
+            drawN(1, 9) = 0;
+            drawN(1, 10) = 0;
+            drawN(1, 11) = (-xi2 + xi3)*_L;
 
-            _drawN[i - 1](2, 0) = 0;
-            _drawN[i - 1](2, 1) = 0;
-            _drawN[i - 1](2, 2) = 1 - 3 * xi2 + 2 * xi3;
-            _drawN[i - 1](2, 3) = 0;
-            _drawN[i - 1](2, 4) = (-xi + 2 * xi2 - xi3)*_L;
-            _drawN[i - 1](2, 5) = 0;
-            _drawN[i - 1](2, 6) = 0;
-            _drawN[i - 1](2, 7) = 0;
-            _drawN[i - 1](2, 8) = 3 * xi2 - 2 * xi3;
-            _drawN[i - 1](2, 9) = 0;
-            _drawN[i - 1](2, 10) = (xi2 - xi3)*_L;
-            _drawN[i - 1](2, 11) = 0;
+            drawN(2, 0) = 0;
+            drawN(2, 1) = 0;
+            drawN(2, 2) = 1 - 3 * xi2 + 2 * xi3;
+            drawN(2, 3) = 0;
+            drawN(2, 4) = (-xi + 2 * xi2 - xi3)*_L;
+            drawN(2, 5) = 0;
+            drawN(2, 6) = 0;
+            drawN(2, 7) = 0;
+            drawN(2, 8) = 3 * xi2 - 2 * xi3;
+            drawN(2, 9) = 0;
+            drawN(2, 10) = (xi2 - xi3)*_L;
+            drawN(2, 11) = 0;
         }
     }
     else
     {
-        for (int i = 1; i < _nbCentrelineSeg; i++)
+        for (sofa::Index i = 1; i < _nbCentrelineSeg; i++)
         {
+            auto& drawN = _drawN[i-1];
             double xi = i*(_L / _nbCentrelineSeg) / _L;
             double xi2 = xi*xi;
             double xi3 = xi*xi*xi;
@@ -590,44 +612,44 @@ void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, do
             //NB :
             //double eta = 0;
             //double zeta = 0;
-            _drawN[i - 1](0, 0) = 1 - xi;
-            _drawN[i - 1](0, 1) = 0;
-            _drawN[i - 1](0, 2) = 0;
-            _drawN[i - 1](0, 3) = 0;
-            _drawN[i - 1](0, 4) = 0;
-            _drawN[i - 1](0, 5) = 0;
-            _drawN[i - 1](0, 6) = xi;
-            _drawN[i - 1](0, 7) = 0;
-            _drawN[i - 1](0, 8) = 0;
-            _drawN[i - 1](0, 9) = 0;
-            _drawN[i - 1](0, 10) = 0;
-            _drawN[i - 1](0, 11) = 0;
+            drawN(0, 0) = 1 - xi;
+            drawN(0, 1) = 0;
+            drawN(0, 2) = 0;
+            drawN(0, 3) = 0;
+            drawN(0, 4) = 0;
+            drawN(0, 5) = 0;
+            drawN(0, 6) = xi;
+            drawN(0, 7) = 0;
+            drawN(0, 8) = 0;
+            drawN(0, 9) = 0;
+            drawN(0, 10) = 0;
+            drawN(0, 11) = 0;
 
-            _drawN[i - 1](1, 0) = 0;
-            _drawN[i - 1](1, 1) = phiZInv * (1 - 3 * xi2 + 2 * xi3 + phiZ*(1 - xi));
-            _drawN[i - 1](1, 2) = 0;
-            _drawN[i - 1](1, 3) = 0;
-            _drawN[i - 1](1, 4) = 0;
-            _drawN[i - 1](1, 5) = _L * phiZInv * (xi - 2 * xi2 + xi3 + (phiZ / 2)*(xi - xi2));
-            _drawN[i - 1](1, 6) = 0;
-            _drawN[i - 1](1, 7) = phiZInv * (3 * xi2 - 2 * xi3 + phiZ*xi);
-            _drawN[i - 1](1, 8) = 0;
-            _drawN[i - 1](1, 9) = 0;
-            _drawN[i - 1](1, 10) = 0;
-            _drawN[i - 1](1, 11) = _L * phiZInv *(-xi2 + xi3 - (phiZ / 2)*(xi - xi2));
+            drawN(1, 0) = 0;
+            drawN(1, 1) = phiZInv * (1 - 3 * xi2 + 2 * xi3 + phiZ*(1 - xi));
+            drawN(1, 2) = 0;
+            drawN(1, 3) = 0;
+            drawN(1, 4) = 0;
+            drawN(1, 5) = _L * phiZInv * (xi - 2 * xi2 + xi3 + (phiZ / 2)*(xi - xi2));
+            drawN(1, 6) = 0;
+            drawN(1, 7) = phiZInv * (3 * xi2 - 2 * xi3 + phiZ*xi);
+            drawN(1, 8) = 0;
+            drawN(1, 9) = 0;
+            drawN(1, 10) = 0;
+            drawN(1, 11) = _L * phiZInv *(-xi2 + xi3 - (phiZ / 2)*(xi - xi2));
 
-            _drawN[i - 1](2, 0) = 0;
-            _drawN[i - 1](2, 1) = 0;
-            _drawN[i - 1](2, 2) = phiYInv * (1 - 3 * xi2 + 2 * xi3 + phiY*(1 - xi));
-            _drawN[i - 1](2, 3) = 0;
-            _drawN[i - 1](2, 4) = -_L * phiYInv * (xi - 2 * xi2 + xi3 + (phiY / 2)*(xi - xi2));
-            _drawN[i - 1](2, 5) = 0;
-            _drawN[i - 1](2, 6) = 0;
-            _drawN[i - 1](2, 7) = 0;
-            _drawN[i - 1](2, 8) = phiYInv * (3 * xi2 - 2 * xi3 + phiY*xi);
-            _drawN[i - 1](2, 9) = 0;
-            _drawN[i - 1](2, 10) = -_L * phiYInv * (-xi2 + xi3 - (phiY / 2)*(xi - xi2));
-            _drawN[i - 1](2, 11) = 0;
+            drawN(2, 0) = 0;
+            drawN(2, 1) = 0;
+            drawN(2, 2) = phiYInv * (1 - 3 * xi2 + 2 * xi3 + phiY*(1 - xi));
+            drawN(2, 3) = 0;
+            drawN(2, 4) = -_L * phiYInv * (xi - 2 * xi2 + xi3 + (phiY / 2)*(xi - xi2));
+            drawN(2, 5) = 0;
+            drawN(2, 6) = 0;
+            drawN(2, 7) = 0;
+            drawN(2, 8) = phiYInv * (3 * xi2 - 2 * xi3 + phiY*xi);
+            drawN(2, 9) = 0;
+            drawN(2, 10) = -_L * phiYInv * (-xi2 + xi3 - (phiY / 2)*(xi - xi2));
+            drawN(2, 11) = 0;
         }
     }
 
@@ -892,7 +914,7 @@ void BeamPlasticFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(sofa::core::vec_id::read_access::position)->getValue();
 
     std::vector<Vec3> centrelinePoints;
     std::vector<Vec3> gaussPoints;
@@ -928,7 +950,7 @@ void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< Vec3 >
 
     //Compute current displacement
 
-    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = this->mstate->read(sofa::core::vec_id::read_access::restPosition)->getValue();
 
     beamQuat(i) = x[a].getOrientation();
     beamQuat(i).normalize();
@@ -976,11 +998,14 @@ void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< Vec3 >
 
     LambdaType computeGaussCoordinates = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
+        SOFA_UNUSED(w1);
+        SOFA_UNUSED(w2);
+        SOFA_UNUSED(w3);
         //Shape function
         N = m_beamsData.getValue()[i]._N[gaussPointIt];
-        Mat<3, 1, Real> u = N*disp;
+        Mat<3, 1, Real> ucol = N*disp;
 
-        type::Vec3d beamVec = {u[0][0]+u1, u[1][0]+u2, u[2][0]+u3};
+        type::Vec3d beamVec = {ucol[0][0]+u1, ucol[1][0]+u2, ucol[2][0]+u3};
         type::Vec3d gp = pa + q.rotate(beamVec);
         gaussPoints.push_back(gp);
 
@@ -1022,6 +1047,8 @@ void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< Vec3 >
 template<class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+    
     if (!onlyVisible) return;
 
 
@@ -1032,7 +1059,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeBBox(const core::ExecParams* pa
 
 
     const size_t npoints = this->mstate->getSize();
-    const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p = this->mstate->read(sofa::core::vec_id::read_access::position)->getValue();
 
     for (size_t i = 0; i<npoints; i++)
     {
@@ -1060,10 +1087,6 @@ void BeamPlasticFEMForceField<DataTypes>::computeBBox(const core::ExecParams* pa
 template<class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
 {
-    Real _L = m_beamsData.getValue()[i]._L;
-    Real _yDim = m_beamsData.getValue()[i]._yDim;
-    Real _zDim = m_beamsData.getValue()[i]._zDim;
-
     const double E = m_beamsData.getValue()[i]._E;
     const double nu = m_beamsData.getValue()[i]._nu;
 
@@ -1086,6 +1109,9 @@ void BeamPlasticFEMForceField<DataTypes>::computeVDStiffness(int i, Index, Index
 
     LambdaType computeStressMatrix = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
+        SOFA_UNUSED(u1);
+        SOFA_UNUSED(u2);
+        SOFA_UNUSED(u3);
         Be = m_beamsData.getValue()[i]._BeMatrices[gaussPointIterator];
 
         stiffness += (w1*w2*w3)*beTCBeMult(Be.transposed(), C, nu, E);
@@ -1108,7 +1134,9 @@ void BeamPlasticFEMForceField<DataTypes>::computeVDStiffness(int i, Index, Index
 template<class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::computeMaterialBehaviour(int i, Index a, Index b)
 {
-
+    SOFA_UNUSED(a);
+    SOFA_UNUSED(b);
+    
     Real E = m_beamsData.getValue()[i]._E; // Young's modulus
     Real nu = m_beamsData.getValue()[i]._nu; // Poisson ratio
 
@@ -1677,6 +1705,10 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
                                                             Index a,
                                                             Index b)
 {
+    
+    SOFA_UNUSED(a);
+    SOFA_UNUSED(b);
+    
     type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     Matrix12x12& Kt_loc = bd[i]._Kt_loc;
     const Matrix6x6& C = bd[i]._materialBehaviour;
@@ -1693,10 +1725,6 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
     VoigtTensor4 Cep = VoigtTensor4(); //plastic behaviour tensor
     VoigtTensor2 gradient;
 
-    //Auxiliary matrices
-    VoigtTensor2 Cgrad;
-    Mat<1, 6, Real> gradTC;
-
     //Result matrix
     Matrix12x12 tangentStiffness = Matrix12x12();
 
@@ -1706,6 +1734,9 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
     // Stress matrix, to be integrated
     LambdaType computeTangentStiffness = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
+        SOFA_UNUSED(u1);
+        SOFA_UNUSED(u2);
+        SOFA_UNUSED(u3);
         currentStressPoint = m_prevStresses[i][gaussPointIt];
 
         // Plastic modulus
@@ -1866,7 +1897,7 @@ template< class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::computeLocalDisplacement(const VecCoord& x, Vec12 &localDisp,
                                                               int i, Index a, Index b)
 {
-    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = this->mstate->read(sofa::core::vec_id::read_access::restPosition)->getValue();
 
     beamQuat(i) = x[a].getOrientation();
     beamQuat(i).normalize();
@@ -2158,7 +2189,6 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithPerfectPlasticity(Matr
     typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
 
-    const Matrix6x6& C = m_beamsData.getValue()[index]._materialBehaviour;
     Matrix6x12 Be;
 
     VoigtTensor2 initialStressPoint = VoigtTensor2();
@@ -2175,6 +2205,9 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithPerfectPlasticity(Matr
     // This function is to be called if the last stress point corresponded to elastic deformation
     LambdaType computeStress = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
+        SOFA_UNUSED(u1);
+        SOFA_UNUSED(u2);
+        SOFA_UNUSED(u3);
         Be = m_beamsData.getValue()[index]._BeMatrices[gaussPointIt];
         MechanicalState &mechanicalState = pointMechanicalState[gaussPointIt];
 
@@ -2322,7 +2355,6 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithHardening(Matrix12x1 &
     typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
 
-    const Matrix6x6& C = m_beamsData.getValue()[index]._materialBehaviour;
     Matrix6x12 Be;
 
     VoigtTensor2 initialStressPoint = VoigtTensor2();
@@ -2339,6 +2371,9 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithHardening(Matrix12x1 &
     // This function is to be called if the last stress point corresponded to elastic deformation
     LambdaType computeStress = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
+        SOFA_UNUSED(u1);
+        SOFA_UNUSED(u2);
+        SOFA_UNUSED(u3);
         Be = m_beamsData.getValue()[index]._BeMatrices[gaussPointIt];
         MechanicalState &mechanicalState = pointMechanicalState[gaussPointIt];
 
@@ -2428,12 +2463,12 @@ void BeamPlasticFEMForceField<DataTypes>::computeHardeningStressIncrement(int in
         if (pointMechanicalState == MechanicalState::POSTPLASTIC || pointMechanicalState == MechanicalState::ELASTIC)
             pointMechanicalState = MechanicalState::PLASTIC;
 
-        VoigtTensor2 shiftedTrialStress = trialStress - backStress;
-        VoigtTensor2 xiTrial = deviatoricStress(shiftedTrialStress);
+        const VoigtTensor2 shiftedTrialStress = trialStress - backStress;
+        const VoigtTensor2 xiTrial = deviatoricStress(shiftedTrialStress);
 
         // Normal at the end of the time step
-        double xiTrialNorm = voigtTensorNorm(xiTrial);
-        VoigtTensor2 finalN = xiTrial / xiTrialNorm;
+        const double xiTrialNorm = voigtTensorNorm(xiTrial);
+        const VoigtTensor2 finalN = xiTrial / xiTrialNorm;
 
         const double beta = 0.5; // Indicates the proportion of Kinematic vs isotropic hardening. beta=0 <=> kinematic, beta=1 <=> isotropic
 
@@ -2441,10 +2476,10 @@ void BeamPlasticFEMForceField<DataTypes>::computeHardeningStressIncrement(int in
         const double nu = m_beamsData.getValue()[index]._nu;
         const double mu = E / (2 * (1 + nu)); // Lame coefficient
 
-        double H = computeConstPlasticModulus();
+        const double H = computeConstPlasticModulus();
 
         // Computation of the plastic multiplier
-        double plasticMultiplier = (xiTrialNorm - helper::rsqrt(2.0 / 3.0)*yieldStress) / ( mu*helper::rsqrt(6.0) * (1 + H / (3 * mu)));
+        const double plasticMultiplier = (xiTrialNorm - helper::rsqrt(2.0 / 3.0)*yieldStress) / ( mu*helper::rsqrt(6.0) * (1 + H / (3 * mu)));
 
         // Updating plastic variables
         newStressPoint = trialStress - helper::rsqrt(6.0)*mu*plasticMultiplier*finalN;
