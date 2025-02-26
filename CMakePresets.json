@@ -218,6 +218,14 @@
         "PLUGIN_VOLUMETRICRENDERING": {
           "type": "BOOL",
           "value": "ON"
+        },
+        "SOFA_FETCH_MODELORDERREDUCTION": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_MODELORDERREDUCTION": {
+          "type": "BOOL",
+          "value": "ON"
         }
       }
     },
@@ -277,14 +285,6 @@
           "value": "ON"
         },
         "PLUGIN_SOFACARVING": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "SOFA_FETCH_MODELORDERREDUCTION": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_MODELORDERREDUCTION": {
           "type": "BOOL",
           "value": "ON"
         }
