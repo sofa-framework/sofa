@@ -61,6 +61,8 @@ public:
 
     void check_BeamPlasticfEMForceField_init()
     {
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Constant");
         sofa::simpleapi::importPlugin("BeamPlastic");
 
         string scene =
