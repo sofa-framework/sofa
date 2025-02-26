@@ -602,9 +602,7 @@ protected:
     sofa::type::Quat<SReal>& beamQuat(int i);
 
     BeamPlasticFEMForceField();
-    BeamPlasticFEMForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection, Real ySection, bool useVD,
-                        bool isPlasticMuller, bool isTimoshenko, bool isPlasticKrabbenhoft, bool isPerfectlyPlastic,
-                        sofa::type::vector<sofa::type::Quat<SReal>> localOrientations);
+    BeamPlasticFEMForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection, Real ySection, bool isTimoshenko, bool isPerfectlyPlastic);
     ~BeamPlasticFEMForceField() override;
 
 public:

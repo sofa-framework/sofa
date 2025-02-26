@@ -59,15 +59,13 @@ BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField()
 
 template<class DataTypes>
 BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection,
-                                                    Real ySection, bool useVD, bool isPlasticMuller, bool isTimoshenko,
-                                                    bool isPlasticKrabbenhoft, bool isPerfectlyPlastic,
-                                                    type::vector<type::Quat<SReal>> localOrientations)
+                                                    Real ySection, bool isTimoshenko, bool isPerfectlyPlastic)
     : m_beamsData(initData(&m_beamsData, "beamsData", "Internal element data"))
     , d_usePrecomputedStiffness(initData(&d_usePrecomputedStiffness, true, "usePrecomputedStiffness",
                                          "indicates if a precomputed elastic stiffness matrix is used, instead of being computed by reduced integration"))
     , d_useConsistentTangentOperator(initData(&d_useConsistentTangentOperator, false, "useConsistentTangentOperator",
                                               "indicates wether to use a consistent tangent operator in the computation of the plastic stiffness matrix"))
-    , d_isPerfectlyPlastic(initData(&d_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
+    , d_isPerfectlyPlastic(initData(&d_isPerfectlyPlastic, isPerfectlyPlastic, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
     , d_modelName(initData(&d_modelName, std::string("RambergOsgood"), "modelName", "the name of the 1D contitutive law model to be used in plastic deformation"))
     , m_indexedElements(nullptr)
     , d_poissonRatio(initData(&d_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
