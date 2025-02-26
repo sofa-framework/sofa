@@ -12,7 +12,7 @@ sofa_add_subdirectory(plugin HeadlessRecorder HeadlessRecorder)
 
 sofa_add_subdirectory(directory SofaHighOrder SofaHighOrder EXTERNAL GIT_REF master)
 
-sofa_add_subdirectory(plugin CImgPlugin CImgPlugin) # ON by default and first as it is used by other plugins.
+sofa_add_subdirectory(plugin CImgPlugin CImgPlugin) # Define first as it is used by other plugins.
 sofa_add_subdirectory(plugin ArticulatedSystemPlugin ArticulatedSystemPlugin)
 sofa_add_subdirectory(plugin SofaEulerianFluid SofaEulerianFluid)
 sofa_add_subdirectory(plugin SofaSphFluid SofaSphFluid EXTERNAL GIT_REF master)

@@ -7,9 +7,9 @@
   },
   "configurePresets": [
     {
-      "name": "core",
-      "displayName": "Core config",
-      "description": "Hidden preset for SOFA library only (no OpenGL support, no GUI, no Python support, no executables)",
+      "name": "conda-core",
+      "displayName": "Conda Core config",
+      "description": "Preset for Conda package of the SOFA library (no OpenGL support, no GUI, no Python support, no executable)",
       "hidden": false,
       "cacheVariables": {
         "SOFA_FLOATING_POINT_TYPE": {
