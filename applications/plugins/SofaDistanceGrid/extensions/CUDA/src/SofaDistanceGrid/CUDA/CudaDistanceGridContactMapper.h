@@ -93,7 +93,7 @@ public:
         }
         else
         {
-            Data<VecCoord>* d_x = this->outmodel->write(core::VecCoordId::position());
+            Data<VecCoord>* d_x = this->outmodel->write(sofa::core::vec_id::write_access::position);
             VecCoord& vx = *d_x->beginEdit();
             gpu::cuda::RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), vx.deviceWrite());
             d_x->endEdit();
