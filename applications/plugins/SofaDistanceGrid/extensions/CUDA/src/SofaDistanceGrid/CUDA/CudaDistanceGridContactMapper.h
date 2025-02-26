@@ -53,9 +53,9 @@ public:
         {
             MCollisionModel* model = this->model;
             MMechanicalState* outmodel = this->outmodel.get();
-            Data<VecCoord>* d_x = outmodel->write(core::VecCoordId::position());
+            Data<VecCoord>* d_x = outmodel->write(sofa::core::vec_id::write_access::position);
             VecDeriv& vx = *d_x->beginEdit();
-            Data<VecDeriv>* d_v = outmodel->write(core::VecDerivId::velocity());
+            Data<VecDeriv>* d_v = outmodel->write(sofa::core::vec_id::write_access::velocity);
             VecCoord& vv = *d_v->beginEdit();
 
             typename DataTypes::Coord& x = vx[i];
