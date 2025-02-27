@@ -207,8 +207,13 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
     SReal regularization = d_regularizationTerm.getValue();
     if (regularization > std::numeric_limits<SReal>::epsilon())
     {
-        for (linearalgebra::BaseMatrix::Index i=0; i<W->colSize(); ++i)
-            W->add(i,i,regularization);
+        for (auto rowIt = m_constraintJacobian.begin(); rowIt != m_constraintJacobian.end(); ++rowIt)
+        {
+            if (rowIt->second.size() != 0)
+            {
+                W->add(rowIt->first,rowIt->first,regularization);
+            }
+        }
     }
 }
 

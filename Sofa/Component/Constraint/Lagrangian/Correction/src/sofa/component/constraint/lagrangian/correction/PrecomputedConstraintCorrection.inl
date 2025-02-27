@@ -525,6 +525,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     }
 
     unsigned int curConstraint = 0;
+    SReal regularization = d_regularizationTerm.getValue();
 
     for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
@@ -549,6 +550,9 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 
                 if (indexCurRowConst != indexCurColConst)
                     W->add(indexCurColConst, indexCurRowConst, w);
+                else
+                    W->add(indexCurColConst, indexCurRowConst,regularization);
+
 
                 curColConst++;
             }
@@ -556,12 +560,6 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
         curConstraint++;
     }
 
-    SReal regularization = d_regularizationTerm.getValue();
-    if (regularization > std::numeric_limits<SReal>::epsilon())
-    {
-        for (linearalgebra::BaseMatrix::Index i=0; i<W->colSize(); ++i)
-            W->add(i,i,regularization);
-    }
 }
 
 template<class DataTypes>
