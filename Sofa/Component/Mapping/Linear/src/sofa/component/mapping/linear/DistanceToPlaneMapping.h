@@ -57,8 +57,8 @@ public:
     void handleTopologyChange() override;
 
 
-    Data<Deriv_t<TIn>> d_planeNormal;
-    Data<Coord_t<TIn>> d_planePoint;
+    Data<type::Vec<Deriv_t<TIn>::spatial_dimensions,typename Deriv_t<TIn>::value_type>> d_planeNormal;
+    Data<type::Vec<Coord_t<TIn>::spatial_dimensions,typename Coord_t<TIn>::value_type>> d_planePoint;
 
 protected:
 

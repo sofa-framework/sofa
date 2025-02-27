@@ -49,6 +49,9 @@ using sofa::defaulttype::Vec1Types;
 template <class DataType>
 class PlaneMappingTest : public testing::Test
 {
+
+    typedef sofa::type::Vec<sofa::Deriv_t<DataType>::spatial_dimensions,typename sofa::Deriv_t<DataType>::value_type> PlaneNormalType;
+    typedef sofa::type::Vec<sofa::Coord_t<DataType>::spatial_dimensions,typename sofa::Coord_t<DataType>::value_type> PlanePointType;
 public:
     sofa::simulation::Simulation* createSimpleScene(typename sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>::SPtr mapping)
     {
@@ -80,27 +83,23 @@ public:
         return simu;
     }
 
-    sofa::Deriv_t<DataType> getPseudoRandomNormal()
+    PlaneNormalType getPseudoRandomNormal()
     {
         constexpr std::array<double,6> randomValuesForNormal = {1, 5.1, -6, 0, 9.5, 4};
-        sofa::Deriv_t<DataType> returnVec;
-        for (unsigned i = 0; i< sofa::Deriv_t<DataType>::size(); ++i)
+        PlaneNormalType returnVec;
+        for (unsigned i = 0; i< sofa::Deriv_t<DataType>::spatial_dimensions; ++i)
         {
             returnVec[i] = randomValuesForNormal[i];
-        }
-        if constexpr (sofa::type::isRigidType<DataType>)
-        {
-            returnVec.getVOrientation() = typename sofa::Deriv_t<DataType>::Rot()*0;
         }
         return returnVec;
     }
 
 
-    sofa::Coord_t<DataType> getPseudoRandomPoint()
+    PlanePointType getPseudoRandomPoint()
     {
         constexpr std::array<double,7> randomValuesForPoint = {-2.5, 1.4, 3, 0, 0.7, 12, 7.07};
-        sofa::Coord_t<DataType> returnVec;
-        for (unsigned i = 0; i< sofa::Coord_t<DataType>::size(); ++i)
+        PlanePointType returnVec;
+        for (unsigned i = 0; i< sofa::Coord_t<DataType>::spatial_dimensions; ++i)
         {
             returnVec[i] = randomValuesForPoint[i];
         }
@@ -108,7 +107,7 @@ public:
 
     }
 
-    void testInit(sofa::Deriv_t<DataType> planeNormal)
+    void testInit(PlaneNormalType planeNormal)
     {
         typename sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>::SPtr mapping = New<sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>>();
         mapping->d_planeNormal.setValue(planeNormal);
@@ -118,12 +117,18 @@ public:
         EXPECT_EQ(mapping->getTo()[0]->getSize(),mapping->getFrom()[0]->getSize());
     }
 
-    void testApply(sofa::Deriv_t<DataType> planeNormal, sofa::Coord_t<DataType> planePoint)
+    void testApply(PlaneNormalType planeNormal, PlanePointType planePoint)
     {
         typename sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>::SPtr mapping = New<sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>>();
 
         planeNormal = planeNormal/planeNormal.norm();
-        sofa::Deriv_t<DataType> planeTangent1 = planeNormal;
+        sofa::Deriv_t<DataType> fullNormal;
+        DataType::setDPos(fullNormal, planeNormal);
+
+        sofa::Coord_t<DataType> fullPlanePoint;
+        DataType::setCPos(fullPlanePoint, planePoint);
+
+        sofa::Deriv_t<DataType> planeTangent1 = fullNormal;
         planeTangent1[0] = planeNormal[1];
         planeTangent1[1] = -planeNormal[0];
         for (unsigned i = 2; i< sofa::Deriv_t<DataType>::size(); ++i)
@@ -137,10 +142,10 @@ public:
 
         std::vector<double> dists{0.2,-0.5,-2.1,0.5};
 
-        inPos.setValue({planePoint + planeNormal * dists[0],
-                           planePoint + planeNormal * dists[1] + planeTangent1 * 10,
-                           planePoint + planeNormal * dists[2] ,
-                           planePoint + planeNormal * dists[3] + planeTangent1 * 2 });
+        inPos.setValue({fullPlanePoint + fullNormal * dists[0],
+                           fullPlanePoint + fullNormal * dists[1] + planeTangent1 * 10,
+                           fullPlanePoint + fullNormal * dists[2] ,
+                           fullPlanePoint + fullNormal * dists[3] + planeTangent1 * 2 });
         sofa::DataVecCoord_t<Vec1Types> outVec; outVec.beginEdit()->resize(4);
 
         mapping->d_planeNormal.setValue(planeNormal);
@@ -154,15 +159,17 @@ public:
         }
     }
 
-    void testApplyJ(sofa::Deriv_t<DataType> planeNormal)
+    void testApplyJ(PlaneNormalType planeNormal)
     {
         typename sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>::SPtr mapping = New<sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>>();
 
         planeNormal = planeNormal/planeNormal.norm();
-        sofa::Deriv_t<DataType> planeTangent1;
+        sofa::Deriv_t<DataType> fullNormal;
+        DataType::setDPos(fullNormal, planeNormal);
+        sofa::Deriv_t<DataType> planeTangent1 = fullNormal;
         planeTangent1[0] = planeNormal[1];
         planeTangent1[1] = -planeNormal[0];
-        for (unsigned i = 2; i< sofa::Deriv_t<DataType>::size(); ++i)
+        for (unsigned i = 2; i< PlaneNormalType::size(); ++i)
         {
             planeTangent1[i] = 0;
         }
@@ -173,10 +180,10 @@ public:
 
         std::vector<double> dists{0.2,-0.5,-2.1,0.5};
 
-        inPos.setValue({ planeNormal * dists[0],
-                            planeNormal * dists[1] + planeTangent1 * 10,
-                            planeNormal * dists[2],
-                            planeNormal * dists[3] + planeTangent1 * 2});
+        inPos.setValue({ fullNormal * dists[0],
+                            fullNormal * dists[1] + planeTangent1 * 10,
+                            fullNormal * dists[2],
+                            fullNormal * dists[3] + planeTangent1 * 2});
         sofa::DataVecCoord_t<Vec1Types> outVec; outVec.beginEdit()->resize(4);
 
         mapping->d_planeNormal.setValue(planeNormal);
@@ -189,7 +196,7 @@ public:
         }
     }
 
-    void testApplyJT_Force(sofa::Deriv_t<DataType> planeNormal)
+    void testApplyJT_Force(PlaneNormalType planeNormal)
     {
         typename sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>::SPtr mapping = New<sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>>();
 
@@ -208,14 +215,14 @@ public:
 
         for (unsigned i = 0; i<outVec.getValue().size(); ++i)
         {
-            for (unsigned j=0; j< sofa::Deriv_t<DataType>::size(); ++j)
+            for (unsigned j=0; j< PlaneNormalType::size(); ++j)
             {
                 EXPECT_LE(fabs(outVec.getValue()[i][j] - planeNormal[j] * inPos.getValue()[i][0]),EPSILON);
             }
         }
     }
 
-    void testApplyJT_Constraint(sofa::Deriv_t<DataType> planeNormal)
+    void testApplyJT_Constraint(PlaneNormalType planeNormal)
     {
         typename sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>::SPtr mapping = New<sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>>();
 
@@ -251,7 +258,12 @@ public:
             EXPECT_FALSE(colIt == colItEnd);
 
             EXPECT_EQ(colIt.index(),dofsIds[rowIt.index()]);
-            EXPECT_EQ(colIt.val(),planeNormal*( 1 - 2*(rowIt.index()%1)));
+            EXPECT_EQ(DataType::getDPos(colIt.val()),planeNormal*( 1 - 2*(rowIt.index()%1)));
+
+            if constexpr (sofa::type::isRigidType<DataType>)
+            {
+                EXPECT_EQ(DataType::getDRot(colIt.val()),typename sofa::Deriv_t<DataType>::Rot() *0 );
+            }
 
             ++colIt;
             EXPECT_TRUE(colIt == colItEnd);

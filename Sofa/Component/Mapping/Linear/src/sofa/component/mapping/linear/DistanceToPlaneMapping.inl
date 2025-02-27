@@ -44,14 +44,6 @@ void DistanceToPlaneMapping<TIn>::init()
 {
     Inherit::init();
 
-    if constexpr (sofa::type::isRigidType<TIn>)
-    {
-        if (d_planeNormal.getValue().getVOrientation() != typename sofa::Deriv_t<TIn>::Rot()*0)
-        {
-            msg_info(this) <<"You've untered a plane normal with a non null rotation. Only position is treated by this component, the rotation part will thus be considered as zero.";
-        }
-    }
-
     //Normalize plane normal
     const double normalNorm = d_planeNormal.getValue().norm();
     if (normalNorm<std::numeric_limits<double>::epsilon())
@@ -62,28 +54,23 @@ void DistanceToPlaneMapping<TIn>::init()
     }
     d_planeNormal.setValue(d_planeNormal.getValue()/normalNorm);
 
-    constexpr Size inCoordSize = typename Coord_t<TIn>::Size();
-    constexpr Size inDerivSize = typename Deriv_t<TIn>::Size();
+    constexpr Size inDerivSize = Deriv_t<TIn>::size();
+    constexpr Size inSpatialDimension = Deriv_t<TIn>::spatial_dimensions;
     Size inSize = this->getFromModel()->getSize();
     this->getToModel()->resize( inSize );
 
     const auto planeNormal = d_planeNormal.getValue();
 
-    J.compressedMatrix.resize( inSize, inSize*inCoordSize );
+    J.compressedMatrix.resize( inSize, inSize*inDerivSize );
 
     for (Size i = 0; i < inSize; i++)
     {
-        const size_t col = i * inCoordSize;
+        const size_t col = i * inDerivSize;
         J.compressedMatrix.startVec(i);
 
-        for (Size j = 0; j < inDerivSize; j++ )
+        for (Size j = 0; j < inSpatialDimension; j++ )
         {
-            if constexpr (sofa::type::isRigidType<TIn>)
-            {
-                if (i>=Deriv_t<TIn>::Pos::size())
-                    break;
-            }
-            J.compressedMatrix.insertBack( i, col ) = planeNormal[i];
+            J.compressedMatrix.insertBack( i, col + j ) = planeNormal[j];
         }
         J.compressedMatrix.finalize();
 
@@ -103,19 +90,12 @@ void DistanceToPlaneMapping<TIn>::apply(const core::MechanicalParams *mparams, D
 
     const auto planeNormal = d_planeNormal.getValue();
 
-    double planeDistanceToOrigin;
-    if constexpr (!type::isRigidType<TIn>)
-        planeDistanceToOrigin = dot(d_planePoint.getValue(),planeNormal);
-    else
-        planeDistanceToOrigin  = dot(d_planePoint.getValue().getCenter(),planeNormal.getVCenter());
+    double planeDistanceToOrigin = dot(d_planePoint.getValue(),planeNormal);
 
 
     for ( unsigned i = 0; i<readIn.size(); i++ )
     {
-        if constexpr (!type::isRigidType<TIn>)
-            writeOut[i] = type::dot(readIn[i],planeNormal) - planeDistanceToOrigin;
-        else
-            writeOut[i] = type::dot(readIn[i].getCenter(),planeNormal.getVCenter()) - planeDistanceToOrigin;
+        writeOut[i] = type::dot(TIn::getCPos(readIn[i]),planeNormal) - planeDistanceToOrigin;
     }
 }
 
@@ -131,10 +111,7 @@ void DistanceToPlaneMapping<TIn>::applyJ(const core::MechanicalParams *mparams, 
 
     for ( unsigned i = 0; i<readIn.size(); i++ )
     {
-        if constexpr (!type::isRigidType<TIn>)
-            writeOut[i] = type::dot(readIn[i],planeNormal);
-        else
-            writeOut[i] = type::dot(readIn[i].getVCenter(),planeNormal.getVCenter());
+        writeOut[i] = type::dot(TIn::getDPos(readIn[i]),planeNormal);
     }
 }
 
@@ -151,11 +128,7 @@ void DistanceToPlaneMapping<TIn>::applyJT(const core::MechanicalParams *mparams,
 
     for ( unsigned i = 0; i<readIn.size(); i++ )
     {
-        if constexpr (!type::isRigidType<TIn>)
-            writeOut[i] += planeNormal * readIn[i][0] ;
-        else
-            writeOut[i] += sofa::Deriv_t<TIn>(planeNormal.getVCenter() * readIn[i][0],typename sofa::Deriv_t<TIn>::Rot()) ;
-
+        TIn::setDPos(writeOut[i], TIn::getDPos(writeOut[i]) + planeNormal * readIn[i][0]) ;
     }
 }
 
@@ -183,7 +156,7 @@ void DistanceToPlaneMapping<TIn>::applyJT(const core::ConstraintParams *cparams,
                 if constexpr (!type::isRigidType<TIn>)
                     o.addCol(colIt.index(), planeNormal*colIt.val()[0]);
                 else
-                    o.addCol(colIt.index(), sofa::Deriv_t<TIn>(planeNormal.getVCenter() * colIt.val()[0],typename sofa::Deriv_t<TIn>::Rot()) );
+                    o.addCol(colIt.index(), sofa::Deriv_t<TIn>(planeNormal * colIt.val()[0],typename sofa::Deriv_t<TIn>::Rot() * 0) );
 
                 ++colIt;
             }
