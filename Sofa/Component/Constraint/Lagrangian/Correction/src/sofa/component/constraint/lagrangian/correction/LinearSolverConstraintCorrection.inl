@@ -47,6 +47,7 @@ template<class DataTypes>
 LinearSolverConstraintCorrection<DataTypes>::LinearSolverConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
 : Inherit(mm)
 , wire_optimization(initData(&wire_optimization, false, "wire_optimization", "constraints are reordered along a wire-like topology (from tip to base)"))
+, d_regularizationTerm(initData(&d_regularizationTerm, 0.0_sreal, "regularizationTerm", "add regularization*Id to W when solving for constraints"))
 , l_linearSolver(initLink("linearSolver", "Link towards the linear solver used to compute the compliance matrix, requiring the inverse of the linear system matrix"))
 , l_ODESolver(initLink("ODESolver", "Link towards the ODE solver used to recover the integration factors"))
 {
@@ -202,6 +203,10 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
     l_linearSolver->setSystemLHVector(sofa::core::MultiVecDerivId::null());
     l_linearSolver->addJMInvJt(W, &m_constraintJacobian, factor);
+
+    Real regularization = d_regularizationTerm.getValue();
+    for (linearalgebra::BaseMatrix::Index i=0; i<W->colSize(); ++i)
+        W->add(i,i,regularization);
 }
 
 
