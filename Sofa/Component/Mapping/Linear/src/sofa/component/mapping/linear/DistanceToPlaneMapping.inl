@@ -153,10 +153,9 @@ void DistanceToPlaneMapping<TIn>::applyJT(const core::ConstraintParams *cparams,
             auto o = writeMatrixOut->writeLine(rowIt.index());
             while (colIt != colItEnd)
             {
-                if constexpr (!type::isRigidType<TIn>)
-                    o.addCol(colIt.index(), planeNormal*colIt.val()[0]);
-                else
-                    o.addCol(colIt.index(), sofa::Deriv_t<TIn>(planeNormal * colIt.val()[0],typename sofa::Deriv_t<TIn>::Rot() * 0) );
+                Deriv_t<TIn> normal;
+                TIn::setDPos(normal,planeNormal*colIt.val()[0]);
+                o.addCol(colIt.index(), normal);
 
                 ++colIt;
             }
