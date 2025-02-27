@@ -24,18 +24,20 @@
 #include <sofa/component/odesolver/backward/config.h>
 #include <sofa/core/behavior/OdeSolver.h>
 
+#include "BaseLinearMultiStepMethod.h"
+
 namespace sofa::component::odesolver::backward
 {
 
-class SOFA_COMPONENT_ODESOLVER_BACKWARD_API BDF1OdeSolver :
-public sofa::core::behavior::OdeSolver
+struct SOFA_COMPONENT_ODESOLVER_BACKWARD_API BDF1Parameters
 {
-public:
-    void solve(
-        const core::ExecParams* params,
-        SReal dt,
-        core::MultiVecCoordId xResult,
-        core::MultiVecDerivId vResult) override;
+    static constexpr std::size_t Order = 1;
+    static constexpr sofa::type::fixed_array<SReal, Order> a_coef {1};
+    static constexpr sofa::type::fixed_array<SReal, Order> b_coef {1};
 };
+
+class SOFA_COMPONENT_ODESOLVER_BACKWARD_API BDF1OdeSolver :
+public BaseLinearMultiStepMethod<BDF1Parameters>
+{};
 
 }

@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -21,103 +21,21 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/odesolver/backward/NewtonStatus.h>
+#include <sofa/component/odesolver/backward/NonLinearFunction.h>
 #include <sofa/component/odesolver/backward/config.h>
-#include <sofa/core/behavior/BaseIntegrationMethod.h>
-#include <sofa/core/behavior/LinearSolverAccessor.h>
-#include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/simulation/VectorOperations.h>
-
-#include "convergence/NewtonRaphsonConvergenceMeasure.h"
+#include <sofa/component/odesolver/backward/convergence/NewtonRaphsonConvergenceMeasure.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/map.h>
+
+#include "convergence/RelativeSuccessiveConvergenceMeasure.h"
 
 namespace sofa::component::odesolver::backward
 {
 
-template<class Derived>
-struct StateVersionAccess
-{
-    int id {};
-    constexpr explicit StateVersionAccess(int i) : id(i) {}
-    constexpr StateVersionAccess() = default;
-
-    constexpr Derived operator+(const int v) const
-    {
-        return Derived(id + v);
-    }
-
-    constexpr Derived operator-(const int v) const
-    {
-        return Derived(id - v);
-    }
-};
-
-struct TimeStepStateVersionAccess : StateVersionAccess<TimeStepStateVersionAccess>
-{
-    using StateVersionAccess::StateVersionAccess;
-};
-
-struct NewtonIterationStateVersionAccess : StateVersionAccess<NewtonIterationStateVersionAccess>
-{
-    using StateVersionAccess::StateVersionAccess;
-};
-
-template <core::VecType vtype>
-struct StateList
-{
-    using MultiVec = core::behavior::TMultiVec<vtype>;
-
-    // list of states needed by the numerical integration of ODE
-    std::deque<MultiVec> timeStepStates;
-
-    // used by the Newton-Raphson algorithm to store an intermediate vector
-    std::deque<MultiVec> newtonIterationStates;
-
-    MultiVec& operator[](const TimeStepStateVersionAccess& id) 
-    {
-        assert(id.id <= 0);
-        // n is the last element of the states and correspond to the state from the previous time step
-        // For example, for a 2-step method, the state list will look like: [n-1, n]
-        const auto n = timeStepStates.size() - 1;
-        return timeStepStates[n + id.id];
-    }
-
-    MultiVec& operator[](const NewtonIterationStateVersionAccess& id)
-    {
-        assert(id.id >= 0);
-        // i is the first element of the states and correspond to the state from the previous iteration
-        const auto i = 0;
-        return newtonIterationStates[i + id.id];
-    }
-
-    void setOps(core::behavior::BaseVectorOperations* op)
-    {
-        for (auto& state : timeStepStates)
-        {
-            state.realloc(op);
-        }
-
-        for (auto& state : newtonIterationStates)
-        {
-            state.realloc(op);
-        }
-    }
-};
-
-class SOFA_COMPONENT_ODESOLVER_BACKWARD_API NewtonRaphsonSolver
-    : public sofa::core::behavior::OdeSolver
-    , public sofa::core::behavior::LinearSolverAccessor
+class SOFA_COMPONENT_ODESOLVER_BACKWARD_API NewtonRaphsonSolver : public core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS2(NewtonRaphsonSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
-
-    ~NewtonRaphsonSolver() override;
-
-    void init() override;
-    void reset() override;
-    void solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
-
-    SingleLink<NewtonRaphsonSolver, core::behavior::BaseIntegrationMethod, BaseLink::FLAG_STRONGLINK> l_integrationMethod;
+    SOFA_CLASS(NewtonRaphsonSolver, core::objectmodel::BaseObject);
 
     Data<unsigned int> d_maxNbIterationsNewton;
     Data<SReal> d_relativeSuccessiveStoppingThreshold;
@@ -131,35 +49,23 @@ public:
     Data<NewtonStatus> d_status;
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_residualGraph;
 
+    void init() override;
+    void reset() override;
+    void initialConvergence(SReal squaredResidualNorm, SReal squaredAbsoluteStoppingThreshold);
+    bool measureConvergence(
+        const NewtonRaphsonConvergenceMeasure& measure,
+        std::stringstream& os);
+
+    /**
+     *
+     * @param function The nonlinear function to solve
+     */
+    void solve(newton_raphson::BaseNonLinearFunction& function);
+
 protected:
     NewtonRaphsonSolver();
 
-    core::behavior::MultiVecDeriv m_linearSystemSolution;
-
-    void computeRightHandSide(const core::ExecParams* params, SReal dt,
-                      core::MultiVecDerivId force,
-                      core::MultiVecDerivId b,
-                      core::MultiVecDerivId velocity_i,
-                      core::MultiVecCoordId position_i) const;
-
-
-    SReal computeResidual(const core::ExecParams* params,
-                          sofa::simulation::common::MechanicalOperations& mop, SReal dt,
-                          core::MultiVecDerivId force, core::MultiVecDerivId oldVelocity,
-                          core::MultiVecDerivId newVelocity);
-    
-    void resizeStateList(std::size_t nbStates, sofa::simulation::common::VectorOperations& vop);
     void start();
-
-    StateList<core::V_COORD> m_coordStates;
-    StateList<core::V_DERIV> m_derivStates;
-    
-    bool measureConvergence(
-        const NewtonRaphsonConvergenceMeasure& measure,
-        sofa::simulation::common::VectorOperations& vop,
-        sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult,
-        std::stringstream& os);
-
 };
 
 }

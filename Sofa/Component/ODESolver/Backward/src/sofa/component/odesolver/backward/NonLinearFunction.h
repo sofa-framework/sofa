@@ -19,18 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/backward/BDF1OdeSolver.h>
+#pragma once
+#include <sofa/component/odesolver/backward/config.h>
 
-#include <sofa/core/ObjectFactory.h>
+#include <memory>
+#include <stdexcept>
 
-namespace sofa::component::odesolver::backward
+namespace sofa::component::odesolver::backward::newton_raphson
 {
 
-void registerBDF1OdeSolver(sofa::core::ObjectFactory* factory)
+class SOFA_COMPONENT_ODESOLVER_BACKWARD_API BaseNonLinearFunction
 {
-    factory->registerObjects(
-        core::ObjectRegistrationData("Velocity-based Backward Euler integration method.")
-            .add<BDF1OdeSolver>());
+public:
+    virtual ~BaseNonLinearFunction() = default;
+
+    /**
+     *
+     */
+    virtual void evaluateCurrentGuess() = 0;
+
+    virtual SReal squaredNormLastEvaluation() = 0;
+
+    virtual void computeGradientFromCurrentGuess() = 0;
+
+    virtual void updateGuessFromLinearSolution() = 0;
+
+    virtual void solveLinearEquation() = 0;
+};
+
 }
-
-}  // namespace sofa::component::odesolver::backward
