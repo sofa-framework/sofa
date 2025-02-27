@@ -1,33 +1,176 @@
 ﻿/******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
-*******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *                 SOFA, Simulation Open-Framework Architecture                *
+ *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+ *******************************************************************************
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include <sofa/component/odesolver/backward/NewtonRaphsonSolver.h>
+#include <sofa/component/odesolver/backward/NewtonRaphsonSolverBackup.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/testing/BaseSimulationTest.h>
 #include <sofa/testing/NumericTest.h>
 
-
 namespace sofa
 {
+
+struct NewtonRaphsonSquareRootTest : public testing::NumericTest<SReal>
+{
+    void onSetUp() override
+    {
+        root = simulation::getSimulation()->createNewNode("root");
+
+        solver = core::objectmodel::New <component::odesolver::backward::NewtonRaphsonSolver>();
+        root->addObject(solver);
+
+        solver->d_relativeInitialStoppingThreshold.setValue(-1);
+        solver->d_absoluteResidualStoppingThreshold.setValue(-1);
+        solver->d_relativeSuccessiveStoppingThreshold.setValue(-1);
+        solver->f_printLog.setValue(false);
+
+        simulation::node::initRoot(root.get());
+    }
+
+    sofa::type::vector<SReal> computeSquareRoot(const SReal x, const SReal initialGuess) const
+    {
+        struct SquareRootFunction : public component::odesolver::backward::newton_raphson::BaseNonLinearFunction
+        {
+            void evaluateCurrentGuess() override
+            {
+                const SReal x2 = m_guesses.back() * m_guesses.back();
+                m_currentEvaluation = x2 - m_positiveNumber;
+            }
+
+            SReal squaredNormLastEvaluation() override
+            {
+                return m_currentEvaluation * m_currentEvaluation;
+            }
+
+            void computeGradientFromCurrentGuess() override
+            {
+                m_gradient = 2 * m_guesses.back();
+            }
+
+            void updateGuessFromLinearSolution() override
+            {
+                m_guesses.push_back(m_guesses.back() + m_linearSolverSolution);
+            }
+
+            void solveLinearEquation() override
+            {
+                m_linearSolverSolution = -m_currentEvaluation / m_gradient;
+            }
+
+            sofa::type::vector<SReal> m_guesses;
+            SReal m_currentEvaluation = 0;
+            SReal m_gradient = 0;
+            SReal m_linearSolverSolution = 0;
+            SReal m_positiveNumber;
+
+        } squareRootFunction;
+
+        squareRootFunction.m_positiveNumber = x;
+        squareRootFunction.m_guesses.push_back(initialGuess);
+
+        solver->solve(squareRootFunction);
+
+        return squareRootFunction.m_guesses;
+    }
+
+    simulation::Node::SPtr root ;
+    component::odesolver::backward::NewtonRaphsonSolver::SPtr solver;
+};
+
+TEST_F(NewtonRaphsonSquareRootTest, squareRoot612_1)
+{
+    solver->d_maxNbIterationsNewton.setValue(9);
+
+    const auto sqrt = this->computeSquareRoot(612, 1);
+
+    static const sofa::type::vector<SReal> sequenceGuesses {
+        1,
+        306.5,
+        154.2483686786,
+        79.1079978644,
+        43.4221286822,
+        28.7581624288,
+        25.0195385369,
+        24.7402106712,
+        24.7386338040,
+        24.7386337537
+    };
+
+    ASSERT_EQ(sequenceGuesses.size(), sqrt.size());
+
+    for (unsigned int i = 0; i < sequenceGuesses.size(); ++i)
+    {
+        EXPECT_NEAR(sequenceGuesses[i], sqrt[i], 1e-10);
+    }
+}
+
+TEST_F(NewtonRaphsonSquareRootTest, squareRoot612_10)
+{
+    solver->d_maxNbIterationsNewton.setValue(5);
+
+    const auto sqrt = this->computeSquareRoot(612, 10);
+
+    static const sofa::type::vector<SReal> sequenceGuesses {
+        10,
+        35.6,
+        26.3955056180,
+        24.7906354925,
+        24.7386882941,
+        24.7386337538
+    };
+
+    ASSERT_EQ(sequenceGuesses.size(), sqrt.size());
+
+    for (unsigned int i = 0; i < sequenceGuesses.size(); ++i)
+    {
+        EXPECT_NEAR(sequenceGuesses[i], sqrt[i], 1e-10);
+    }
+}
+
+TEST_F(NewtonRaphsonSquareRootTest, squareRoot612_minus20)
+{
+    solver->d_maxNbIterationsNewton.setValue(4);
+
+    const auto sqrt = this->computeSquareRoot(612, -20);
+
+    static const sofa::type::vector<SReal> sequenceGuesses {
+        -20,
+        -25.3,
+        -24.7448616601,
+        -24.7386345374,
+        -24.7386337537
+    };
+
+    ASSERT_EQ(sequenceGuesses.size(), sqrt.size());
+
+    for (unsigned int i = 0; i < sequenceGuesses.size(); ++i)
+    {
+        EXPECT_NEAR(sequenceGuesses[i], sqrt[i], 1e-10);
+    }
+}
+
+
+
+
 
 struct NewtonRaphsonParameters
 {
@@ -39,7 +182,7 @@ struct NewtonRaphsonParameters
     unsigned int maxNbIterationsLineSearch = 1;
     unsigned int maxNbIterationsNewton = 1;
 
-    void apply(component::odesolver::backward::NewtonRaphsonSolver* solver) const
+    void apply(component::odesolver::backward::NewtonRaphsonSolverBackup* solver) const
     {
         solver->d_relativeSuccessiveStoppingThreshold.setValue(relativeSuccessiveStoppingThreshold);
         solver->d_relativeInitialStoppingThreshold.setValue(relativeInitialStoppingThreshold);
@@ -55,7 +198,7 @@ struct NewtonRaphsonTest : public testing::BaseSimulationTest
 {
     SceneInstance m_scene{};
 
-    component::odesolver::backward::NewtonRaphsonSolver* m_solver { nullptr };
+    component::odesolver::backward::NewtonRaphsonSolverBackup* m_solver { nullptr };
     component::statecontainer::MechanicalObject<defaulttype::Vec1Types>* m_state { nullptr };
 
     void onSetUp() override
@@ -69,7 +212,7 @@ struct NewtonRaphsonTest : public testing::BaseSimulationTest
         sofa::simpleapi::createObject(m_scene.root, "DefaultAnimationLoop");
         sofa::simpleapi::createObject(m_scene.root, "BDF1");
         auto solverObject = sofa::simpleapi::createObject(m_scene.root, "NewtonRaphsonSolver", {{"printLog", "true"}});
-        m_solver = dynamic_cast<component::odesolver::backward::NewtonRaphsonSolver*>(solverObject.get());
+        m_solver = dynamic_cast<component::odesolver::backward::NewtonRaphsonSolverBackup*>(solverObject.get());
         sofa::simpleapi::createObject(m_scene.root, "EigenSimplicialLDLT", {{"template", "CompressedRowSparseMatrix"}});
         auto stateObject = sofa::simpleapi::createObject(m_scene.root, "MechanicalObject", {{"template", "Vec1"}, {"position", "1"}, {"rest_position", "0"}});
         m_state = dynamic_cast<component::statecontainer::MechanicalObject<defaulttype::Vec1Types>*>(stateObject.get());

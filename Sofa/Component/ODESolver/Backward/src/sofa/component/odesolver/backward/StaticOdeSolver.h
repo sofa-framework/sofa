@@ -21,21 +21,31 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/component/odesolver/backward/NewtonRaphsonSolver.h>
 #include <sofa/component/odesolver/backward/config.h>
 #include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/LinearSolverAccessor.h>
 
 namespace sofa::component::odesolver::backward
 {
 
 class SOFA_COMPONENT_ODESOLVER_BACKWARD_API StaticOdeSolver :
-public sofa::core::behavior::OdeSolver
+    public core::behavior::OdeSolver,
+    public core::behavior::LinearSolverAccessor
 {
 public:
+    SOFA_CLASS2(StaticOdeSolver, core::behavior::OdeSolver, core::behavior::LinearSolverAccessor);
+    StaticOdeSolver();
+
     void solve(
         const core::ExecParams* params,
         SReal dt,
         core::MultiVecCoordId xResult,
         core::MultiVecDerivId vResult) override;
+
+    void init() override;
+
+    SingleLink<StaticOdeSolver, NewtonRaphsonSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_newtonSolver;
 };
 
 }
