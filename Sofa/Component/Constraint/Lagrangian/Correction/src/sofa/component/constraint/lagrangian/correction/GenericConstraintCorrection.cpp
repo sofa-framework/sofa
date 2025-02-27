@@ -170,8 +170,11 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
     l_linearSolver.get()->buildComplianceMatrix(cparams, W, factor);
 
     SReal regularization = d_regularizationTerm.getValue();
-    for (BaseMatrix::Index i=0; i<W->colSize(); ++i)
-        W->add(i,i,regularization);
+    if (regularization > std::numeric_limits<SReal>::epsilon())
+    {
+        for (BaseMatrix::Index i=0; i<W->colSize(); ++i)
+            W->add(i,i,regularization);
+    }
 
 }
 

@@ -556,9 +556,12 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
         curConstraint++;
     }
 
-    Real regularization = d_regularizationTerm.getValue();
-    for (linearalgebra::BaseMatrix::Index i=0; i<W->colSize(); ++i)
-        W->add(i,i,regularization);
+    SReal regularization = d_regularizationTerm.getValue();
+    if (regularization > std::numeric_limits<SReal>::epsilon())
+    {
+        for (linearalgebra::BaseMatrix::Index i=0; i<W->colSize(); ++i)
+            W->add(i,i,regularization);
+    }
 }
 
 template<class DataTypes>
