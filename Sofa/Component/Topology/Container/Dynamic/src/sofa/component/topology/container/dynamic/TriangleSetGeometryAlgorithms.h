@@ -269,11 +269,22 @@ public:
             bool& is_on_boundary) const;
 
 
-    bool computeIncisionPath(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
+    /** \brief This method computes all the intersection between the segment [@param ptA, @param ptB], respectively inside triangle indices @param ind_ta and @param ind_tb, and the current triangulation.
+    * All intersected triangles will stored inside @param triangles_lis, same for edges inside @param edges_list and the list fo barycentric coordinates related to the intersected edges.
+    *
+    * @param ptA : first input point of the segment
+    * @param ptB : last input point of the segment
+    * @param ind_ta : triangle index where ptA is located
+    * @param ind_tb : triangle index where ptB is located
+    * @param triangles_list : vector used as input/output to store triangle indices intersected by [ptA, ptB]
+    * @param edges_list : vector used as input/output to store edge indices intersected by [ptA, ptB]
+    * @param coords_list : vector used as input/output to store barycentric coordinates of each intersection between each edge from @param edges_list and [ptA, ptB] 
+    */
+    bool computeSegmentTriangulationIntersections(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
         const TriangleID ind_ta, const TriangleID ind_tb,
         sofa::type::vector< TriangleID >& triangles_list,
         sofa::type::vector< EdgeID >& edges_list,
-        sofa::type::vector< Real >& coords_list, Real epsilonSnapPath = 1.0, Real epsilonSnapBorder = 1.0) const;
+        sofa::type::vector< Real >& coords_list) const;
 
 
     /** \brief Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.
