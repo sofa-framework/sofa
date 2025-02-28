@@ -1868,25 +1868,28 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
 
 
 template<class DataTypes>
-bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
+bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangulationIntersections(
     const sofa::type::Vec<3, Real>& ptA,
     const sofa::type::Vec<3, Real>& ptB,
     const TriangleID ind_ta, const TriangleID ind_tb,
     sofa::type::vector< TriangleID >& triangles_list,
     sofa::type::vector< EdgeID >& edges_list,
-    sofa::type::vector< Real >& coords_list, Real epsilonSnapPath, Real epsilonSnapBorder) const
+    sofa::type::vector< Real >& coords_list) const
 {
+    if (ind_ta == ind_tb)
+        return false;
+
     const typename DataTypes::VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
     sofa::type::Vec<3, Real> current_point = ptA;
-    TriangleID current_triID = ind_ta;
-    EdgeID current_edgeID = sofa::InvalidID;
+    TriangleID current_triID = ind_ta;  
+    EdgeID current_edgeID = sofa::InvalidID;       
     Real current_bary = 0;
-
-    for (;;)
+    
+    for(;;)
     {
         // Get the edges of a the current_triID [AB] that are intersected by Segment [AB]
         sofa::type::vector<EdgeID> intersectedEdges;
-        sofa::type::vector<Real> baryCoefs;
+        sofa::type::vector<Real> baryCoefs;        
         bool is_intersected = computeSegmentTriangleIntersectionInPlane(current_point, ptB, current_triID, intersectedEdges, baryCoefs);
 
         if (!is_intersected)
@@ -1900,6 +1903,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
         {
             if (current_edgeID == intersectedEdges[0]) // reach end
             {
+                triangles_list.push_back(current_triID);
                 break;
             }
 
@@ -1940,7 +1944,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
             current_edgeID = intersectedEdges[nextLocalId];
         }
 
-
+        
         if (intersectedEdges.size() == 2) // triangle fully traversed, look for the next edge
         {
             if (current_edgeID == intersectedEdges[0])
@@ -2045,7 +2049,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIncisionPath(
         }
         else
         {
-            msg_error() << "More than 2 triangles found around edge: " << current_edgeID << ". Non - Manifold triangulation is not supported by computeIncisionPath method";
+            msg_error() << "More than 2 triangles found around edge: "<< current_edgeID << ". Non - Manifold triangulation is not supported by computeIncisionPath method";
             return false;
         }
     }
