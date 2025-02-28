@@ -486,10 +486,11 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleBarycoefs(
 }
 
 template<class DataTypes>
-auto TriangleSetGeometryAlgorithms< DataTypes >::computeBarycentricCoordinates(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p)  const -> sofa::type::Vec<3, Real>
+auto TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleBarycentricCoordinates(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p, bool useRestPosition)  const -> sofa::type::Vec<3, Real>
 {
+    sofa::core::ConstVecCoordId::MyVecId _vecId = useRestPosition ? core::vec_id::read_access::restPosition : core::vec_id::read_access::position;
     const Triangle& t = this->m_topology->getTriangle(ind_t);
-    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::vec_id::read_access::position)->getValue());
+    const typename DataTypes::VecCoord& vect_c = (this->object->read(_vecId)->getValue());
 
     sofa::type::Vec<3, Real> p0; DataTypes::get(p0[0], p0[1], p0[2], vect_c[t[0]]);
     sofa::type::Vec<3, Real> p1; DataTypes::get(p1[0], p1[1], p1[2], vect_c[t[1]]);
