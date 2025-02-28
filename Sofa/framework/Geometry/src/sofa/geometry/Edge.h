@@ -294,8 +294,6 @@ struct Edge
 
             T alpha = alphaNom / alphaDenom;
             T beta = (dCACD + alpha * dABCD) / dCDCD;
-            std::cout << "alpha before: " << alpha << std::endl;
-            std::cout << "beta before: " << alpha << std::endl;
 
             if (fabs(alpha) < EQUALITY_THRESHOLD)
                 alpha = 0;
@@ -306,10 +304,6 @@ struct Edge
                 beta = 0;
             else if (fabs(1-beta) < EQUALITY_THRESHOLD)
                 beta = 1;
-
-            std::cout << "alpha after: " << alpha << std::endl;
-            std::cout << "beta after: " << alpha << std::endl;
-            std::cout << "EQUALITY_THRESHOLD: " << EQUALITY_THRESHOLD << std::endl;
 
             const Node pX = pA + alpha * AB;
             const Node pY = pC + beta * CD;
