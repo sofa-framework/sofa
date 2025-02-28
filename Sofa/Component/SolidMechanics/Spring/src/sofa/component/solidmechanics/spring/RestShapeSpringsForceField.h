@@ -89,7 +89,7 @@ protected :
 
     virtual const DataVecCoord* getExtPosition() const override;
     virtual const VecIndex& getExtIndices() const override;
-    virtual const type::fixed_array<bool, coord_total_size>& getActiveDirections() const override;
+    virtual const type::fixed_array<bool, DataTypes::Coord::total_size>& getActiveDirections() const override;
 
     virtual bool checkOutOfBoundsIndices();
 
