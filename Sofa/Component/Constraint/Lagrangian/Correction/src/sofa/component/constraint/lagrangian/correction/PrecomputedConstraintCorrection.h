@@ -82,7 +82,7 @@ public:
     Data<bool> d_restRotations;
 
     Data<bool> d_recompute; ///< if true, always recompute the compliance
-    Data<Real> d_regularizationTerm; ///< add regularization*Id to W when solving for constraints
+    Data<SReal> d_regularizationTerm; ///< add regularization*Id to W when solving for constraints
     Data<SReal> d_debugViewFrameScale; ///< Scale on computed node's frame
     sofa::core::objectmodel::DataFileName d_fileCompliance; ///< Precomputed compliance matrix data file
     Data<std::string> d_fileDir; ///< If not empty, the compliance will be saved in this repertory
