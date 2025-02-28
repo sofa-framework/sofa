@@ -245,6 +245,18 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     return true;
 }
 
+void GenericConstraintSolver::addRegularization(linearalgebra::BaseMatrix& W)
+{
+    const SReal regularization =  d_regularizationTerm.getValue();
+    if (regularization>std::numeric_limits<SReal>::epsilon())
+    {
+        for (int i=0; i<W.rowSize(); ++i)
+        {
+            W.add(i,i,regularization);
+        }
+    }
+}
+
 void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints)
 {
     for (const auto& cc : l_constraintCorrections)
@@ -302,15 +314,9 @@ void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints
     if(current_cp->constraints_sequence.size() == nbObjects)
         current_cp->change_sequence=true;
 
-    const SReal regularization =  d_regularizationTerm.getValue();
-    if (regularization>std::numeric_limits<SReal>::epsilon())
-    {
-        for (Index i=0; i<current_cp->W.rowSize(); ++i)
-        {
-            current_cp->W.add(i,i,regularization);
-            current_cp->Wdiag.add(i,i,regularization);
-        }
-    }
+    addRegularization(current_cp->W);
+    addRegularization(current_cp->Wdiag);
+
 }
 
 GenericConstraintSolver::ComplianceWrapper::ComplianceMatrixType& GenericConstraintSolver::
@@ -379,14 +385,7 @@ void GenericConstraintSolver::buildSystem_matrixAssembly(const core::ConstraintP
             compliance.assembleMatrix();
         });
 
-    const SReal regularization =  d_regularizationTerm.getValue();
-    if (regularization>std::numeric_limits<SReal>::epsilon())
-    {
-        for (Index i=0; i<current_cp->W.rowSize(); ++i)
-        {
-            current_cp->W.add(i,i,regularization);
-        }
-    }
+    addRegularization(current_cp->W);
     dmsg_info() << " computeCompliance_done "  ;
 }
 
