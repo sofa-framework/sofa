@@ -19,39 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/visual/config.h>
+#include <SceneChecking/SceneCheckEmptyNodeName.h>
 
-#include <sofa/core/visual/VisualModel.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/SceneCheckMainRegistry.h>
 
-namespace sofa::component::visual
+namespace sofa::scenechecking
 {
 
-class SOFA_COMPONENT_VISUAL_API LineAxis : public core::visual::VisualModel
+const bool SceneCheckEmptyNodeNameRegistered = sofa::simulation::SceneCheckMainRegistry::addToRegistry(SceneCheckEmptyNodeName::newSPtr());
+
+SceneCheckEmptyNodeName::~SceneCheckEmptyNodeName() {}
+const std::string SceneCheckEmptyNodeName::getName() { return "SceneCheckEmptyNodeName"; }
+const std::string SceneCheckEmptyNodeName::getDesc() { return "Check if a Node has an empty name."; }
+
+void SceneCheckEmptyNodeName::doInit(sofa::simulation::Node* node)
 {
-public:
-    SOFA_CLASS(LineAxis, VisualModel);
+    m_nbNodesWithEmptyName = 0;
+}
 
-    Data<std::string> d_axis; ///< Axis to draw
-    Data<float> d_size; ///< Size of the lines
-    Data<bool> d_infinite; ///< If true, ignore the "size" and draw infinite lines
-    Data<float> d_thickness; ///< Thickness of the lines
-    Data<bool> d_vanishing; ///< In case of infinite lines, should the lines gradually vanish.
-    core::objectmodel::lifecycle::RemovedData d_draw {this, "v23.06", "23.12", "draw", "Use the 'enable' data field instead of 'draw'"};
+void SceneCheckEmptyNodeName::doCheckOn(sofa::simulation::Node* node)
+{
+    const auto& nodeName = node->getName();
 
-    LineAxis();
+    if (nodeName.empty())
+    {
+        ++m_nbNodesWithEmptyName;
+    }
+}
 
-    void init() override;
-    void reinit() override;
-    void doDrawVisual(const core::visual::VisualParams*) override;
-    void doUpdateVisual(const core::visual::VisualParams*) override;
-    void updateLine();
+void SceneCheckEmptyNodeName::doPrintSummary()
+{
+    msg_warning_when(m_nbNodesWithEmptyName > 0, getName()) << "Nodes with empty name are found in"
+        " the scene. This can lead to undefined behaviors. It is recommended to give a name to all Nodes.";
+}
 
-protected:
-    bool m_drawX;
-    bool m_drawY;
-    bool m_drawZ;
-
-};
-
-} // namespace sofa::component::visual
+}  // namespace sofa::scenechecking

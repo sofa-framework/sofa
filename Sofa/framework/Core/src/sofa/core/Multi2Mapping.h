@@ -229,23 +229,6 @@ public:
 
         return !error && BaseMapping::canCreate(obj, context, arg);
     }
-    /// Construction method called by ObjectFactory.
-    ///
-    /// This implementation read the input and output attributes to
-    /// find the input and output models of this mapping.
-    template<class T>
-    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-
-        if (context)
-            context->addObject(obj);
-
-        if (arg)
-            obj->parse(arg);
-
-        return obj;
-    }
 
 protected:
     void getVecIn1Coord     (const MultiVecCoordId id,         type::vector<      DataVecCoord_t<In1>*> &v) const

@@ -20,38 +20,27 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/visual/config.h>
 
-#include <sofa/core/visual/VisualModel.h>
+#include <SceneChecking/config.h>
+#include <sofa/simulation/SceneCheck.h>
 
-namespace sofa::component::visual
+namespace sofa::scenechecking
 {
 
-class SOFA_COMPONENT_VISUAL_API LineAxis : public core::visual::VisualModel
+class SOFA_SCENECHECKING_API SceneCheckEmptyNodeName : public sofa::simulation::SceneCheck
 {
 public:
-    SOFA_CLASS(LineAxis, VisualModel);
+    ~SceneCheckEmptyNodeName() override;
+    typedef std::shared_ptr<SceneCheckEmptyNodeName> SPtr;
+    static SPtr newSPtr() { return std::make_shared<SceneCheckEmptyNodeName>(); }
+    const std::string getName() override;
+    const std::string getDesc() override;
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
+    void doPrintSummary() override;
 
-    Data<std::string> d_axis; ///< Axis to draw
-    Data<float> d_size; ///< Size of the lines
-    Data<bool> d_infinite; ///< If true, ignore the "size" and draw infinite lines
-    Data<float> d_thickness; ///< Thickness of the lines
-    Data<bool> d_vanishing; ///< In case of infinite lines, should the lines gradually vanish.
-    core::objectmodel::lifecycle::RemovedData d_draw {this, "v23.06", "23.12", "draw", "Use the 'enable' data field instead of 'draw'"};
-
-    LineAxis();
-
-    void init() override;
-    void reinit() override;
-    void doDrawVisual(const core::visual::VisualParams*) override;
-    void doUpdateVisual(const core::visual::VisualParams*) override;
-    void updateLine();
-
-protected:
-    bool m_drawX;
-    bool m_drawY;
-    bool m_drawZ;
-
+private:
+    unsigned int m_nbNodesWithEmptyName = 0;
 };
 
-} // namespace sofa::component::visual
+}
