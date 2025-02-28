@@ -67,6 +67,7 @@ GenericConstraintSolver::GenericConstraintSolver()
     , d_maxIt(initData(&d_maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
     , d_tolerance(initData(&d_tolerance, 0.001_sreal, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , d_sor(initData(&d_sor, 1.0_sreal, "sor", "Successive Over Relaxation parameter (0-2)"))
+    , d_regularizationTerm(initData(&d_regularizationTerm, 0.0_sreal, "regularizationTerm", "add regularization*Id to W when solving for constraints"))
     , d_scaleTolerance(initData(&d_scaleTolerance, true, "scaleTolerance", "Scale the error tolerance with the number of constraints"))
     , d_allVerified(initData(&d_allVerified, false, "allVerified", "All constraints must be verified (each constraint's error < tolerance)"))
     , d_newtonIterations(initData(&d_newtonIterations, 100, "newtonIterations", "Maximum iteration number of Newton (for the NonsmoothNonlinearConjugateGradient solver only)"))
@@ -300,6 +301,16 @@ void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints
     current_cp->change_sequence = false;
     if(current_cp->constraints_sequence.size() == nbObjects)
         current_cp->change_sequence=true;
+
+    const SReal regularization =  d_regularizationTerm.getValue();
+    if (regularization>std::numeric_limits<SReal>::epsilon())
+    {
+        for (Index i=0; i<current_cp->W.rowSize(); ++i)
+        {
+            current_cp->W.add(i,i,regularization);
+            current_cp->Wdiag.add(i,i,regularization);
+        }
+    }
 }
 
 GenericConstraintSolver::ComplianceWrapper::ComplianceMatrixType& GenericConstraintSolver::
@@ -368,6 +379,14 @@ void GenericConstraintSolver::buildSystem_matrixAssembly(const core::ConstraintP
             compliance.assembleMatrix();
         });
 
+    const SReal regularization =  d_regularizationTerm.getValue();
+    if (regularization>std::numeric_limits<SReal>::epsilon())
+    {
+        for (Index i=0; i<current_cp->W.rowSize(); ++i)
+        {
+            current_cp->W.add(i,i,regularization);
+        }
+    }
     dmsg_info() << " computeCompliance_done "  ;
 }
 

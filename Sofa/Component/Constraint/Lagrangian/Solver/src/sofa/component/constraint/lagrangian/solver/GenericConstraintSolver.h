@@ -118,6 +118,7 @@ public:
     Data<int> d_maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
     Data<SReal> d_tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
     Data<SReal> d_sor; ///< Successive Over Relaxation parameter (0-2)
+    Data<SReal> d_regularizationTerm; ///< Successive Over Relaxation parameter (0-2)
     Data<bool> d_scaleTolerance; ///< Scale the error tolerance with the number of constraints
     Data<bool> d_allVerified; ///< All constraints must be verified (each constraint's error < tolerance)
     Data<int> d_newtonIterations; ///< Maximum iteration number of Newton (for the NonsmoothNonlinearConjugateGradient solver only)
