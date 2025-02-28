@@ -328,7 +328,7 @@ TEST(GeometryEdge_test, intersectionWithEdge2f)
     // intersection in the middle
     auto res = sofa::geometry::Edge::intersectionWithEdge(e01, e02, e11, e12, baryCoords);
     inter = e01 * baryCoords[0] + e02 * baryCoords[1];
-    //EXPECT_TRUE(res);
+    EXPECT_TRUE(res);
     EXPECT_FLOAT_EQ(inter[0], 1.0f);
     EXPECT_FLOAT_EQ(inter[1], 1.0f);
 
