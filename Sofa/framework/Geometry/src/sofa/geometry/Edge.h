@@ -297,14 +297,14 @@ struct Edge
             std::cout << "alpha before: " << alpha << std::endl;
             std::cout << "beta before: " << alpha << std::endl;
 
-            if (abs(alpha) < EQUALITY_THRESHOLD)
+            if (fabs(alpha) < EQUALITY_THRESHOLD)
                 alpha = 0;
-            else if (abs(1-alpha) < EQUALITY_THRESHOLD)
+            else if (fabs(1-alpha) < EQUALITY_THRESHOLD)
                 alpha = 1;
 
-            if (abs(beta) < EQUALITY_THRESHOLD)
+            if (fabs(beta) < EQUALITY_THRESHOLD)
                 beta = 0;
-            else if (abs(1-beta) < EQUALITY_THRESHOLD)
+            else if (fabs(1-beta) < EQUALITY_THRESHOLD)
                 beta = 1;
 
             std::cout << "alpha after: " << alpha << std::endl;
