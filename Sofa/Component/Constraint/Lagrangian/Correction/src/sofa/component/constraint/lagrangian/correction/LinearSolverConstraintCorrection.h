@@ -66,6 +66,7 @@ protected:
 public:
     void init() override;
 
+    void addRegularization(linearalgebra::BaseMatrix* W);
 
     void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, linearalgebra::BaseMatrix* W) override;
 
@@ -80,6 +81,7 @@ public:
     void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv>& v, Data< VecDeriv>& dv, const Data< VecDeriv >& f) override;
 
     void rebuildSystem(SReal massFactor, SReal forceFactor) override;
+
 
     /// @name Deprecated API
     /// @{

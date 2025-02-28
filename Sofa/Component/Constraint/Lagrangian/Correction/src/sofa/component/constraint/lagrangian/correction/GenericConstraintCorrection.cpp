@@ -167,11 +167,7 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
 
     factor *= complianceFactor;
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    l_linearSolver.get()->buildComplianceMatrix(cparams, W, factor);
-
-    SReal regularization = d_regularizationTerm.getValue();
-    for (BaseMatrix::Index i=0; i<W->colSize(); ++i)
-        W->add(i,i,regularization);
+    l_linearSolver.get()->buildComplianceMatrix(cparams, W, factor, d_regularizationTerm.getValue());
 
 }
 

@@ -525,7 +525,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     }
 
     unsigned int curConstraint = 0;
-    SReal regularization = d_regularizationTerm.getValue();
+    const SReal regularization = d_regularizationTerm.getValue();
 
     for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
@@ -1377,6 +1377,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(line
 
 #else
 
+    const SReal regularizationTerm = d_regularizationTerm.getValue();
     for (int id1 = begin; id1<=end; id1++)
     {
         int c1 = id_to_localIndex[id1];
@@ -1388,6 +1389,8 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(line
             W->add(id1, id2, w);
             if (id1 != id2)
                 W->add(id2, id1, w);
+            else
+                W->add(id2, id1, regularizationTerm);
         }
     }
 

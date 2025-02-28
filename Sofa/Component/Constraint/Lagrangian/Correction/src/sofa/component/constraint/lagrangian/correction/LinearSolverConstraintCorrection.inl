@@ -170,6 +170,23 @@ void LinearSolverConstraintCorrection<TDataTypes>::convertConstraintMatrix(const
 }
 
 template<class DataTypes>
+void LinearSolverConstraintCorrection<DataTypes>::addRegularization(linearalgebra::BaseMatrix* W)
+{
+    SReal regularization = d_regularizationTerm.getValue();
+    if (regularization > std::numeric_limits<SReal>::epsilon())
+    {
+        for (auto rowIt = m_constraintJacobian.begin(); rowIt != m_constraintJacobian.end(); ++rowIt)
+        {
+            if (rowIt->second.size() != 0)
+            {
+                W->add(rowIt->first,rowIt->first,regularization);
+            }
+        }
+    }
+
+}
+
+template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::linearalgebra::BaseMatrix* W)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
@@ -204,17 +221,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
     l_linearSolver->setSystemLHVector(sofa::core::MultiVecDerivId::null());
     l_linearSolver->addJMInvJt(W, &m_constraintJacobian, factor);
 
-    SReal regularization = d_regularizationTerm.getValue();
-    if (regularization > std::numeric_limits<SReal>::epsilon())
-    {
-        for (auto rowIt = m_constraintJacobian.begin(); rowIt != m_constraintJacobian.end(); ++rowIt)
-        {
-            if (rowIt->second.size() != 0)
-            {
-                W->add(rowIt->first,rowIt->first,regularization);
-            }
-        }
-    }
+    addRegularization(W);
 }
 
 
@@ -781,6 +788,9 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
     {
         Vec_I_list_dof[i] = list_dof;
     }
+
+    addRegularization(W);
+
 }
 
 } //namespace sofa::component::constraint::lagrangian::correction
