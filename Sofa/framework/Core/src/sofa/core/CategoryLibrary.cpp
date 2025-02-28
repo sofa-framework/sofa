@@ -20,35 +20,35 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/core/CategoryLibrary.h>
-
-#include <sofa/core/objectmodel/ContextObject.h>
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/BehaviorModel.h>
-#include <sofa/core/CollisionModel.h>
 #include <sofa/core/BaseMapping.h>
+#include <sofa/core/BehaviorModel.h>
+#include <sofa/core/CategoryLibrary.h>
+#include <sofa/core/CollisionModel.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/collision/CollisionAlgorithm.h>
-#include <sofa/core/collision/Pipeline.h>
-#include <sofa/core/collision/Intersection.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
+#include <sofa/core/behavior/BaseController.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
-#include <sofa/core/behavior/BaseConstraintSet.h>
-#include <sofa/core/behavior/BaseConstraintCorrection.h>
-#include <sofa/core/behavior/BaseController.h>
 #include <sofa/core/behavior/BaseMass.h>
-#include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/BaseMatrixLinearSystem.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/topology/BaseTopologyObject.h>
-#include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/TopologicalMapping.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/collision/CollisionAlgorithm.h>
+#include <sofa/core/collision/Intersection.h>
+#include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/loader/BaseLoader.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/core/objectmodel/ContextObject.h>
+#include <sofa/core/topology/BaseTopologyObject.h>
+#include <sofa/core/topology/TopologicalMapping.h>
+#include <sofa/core/topology/Topology.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/behavior/BaseOrderingMethod.h>
 
 namespace sofa::core
 {
@@ -131,14 +131,36 @@ const ComponentLibrary *CategoryLibrary::getComponent( const std::string &catego
 
 std::vector<std::string> CategoryLibrary::getCategories()
 {
-    return std::vector<std::string> {"ContextObject", "VisualModel", "BehaviorModel",
-                                         "CollisionModel", "MechanicalState", "ForceField",
-                                         "InteractionForceField", "ProjectiveConstraintSet",
-                                         "ConstraintSet", "Mapping", "Engine", "TopologicalMapping",
-                                         "Mass", "OdeSolver", "ConstraintSolver", "ConstraintSolver",
-                                         "LinearSolver", "LinearSystem", "AnimationLoop", "Topology", "TopologyObject",
-                                         "Controller", "Loader", "CollisionAlgorithm",
-                                         "ConfigurationSetting", "_Miscellaneous"};
+    return std::vector<std::string>{
+        "AnimationLoop",
+        "BehaviorModel",
+        "CollisionAlgorithm",
+        "CollisionModel",
+        "ConfigurationSetting",
+        "ConstraintSet",
+        "ConstraintSolver",
+        "ConstraintSolver",
+        "ContextObject",
+        "Controller",
+        "Engine",
+        "Exporter",
+        "ForceField",
+        "InteractionForceField",
+        "LinearSolver",
+        "LinearSystem",
+        "Loader",
+        "Mapping",
+        "Mass",
+        "MechanicalState",
+        "OdeSolver",
+        "OrderingMethod",
+        "ProjectiveConstraintSet",
+        "TopologicalMapping",
+        "Topology",
+        "TopologyObject",
+        "VisualModel",
+        "_Miscellaneous"
+    };
 }
 
 void CategoryLibrary::getCategories(const objectmodel::BaseClass* mclass,
@@ -167,6 +189,8 @@ void CategoryLibrary::getCategories(const objectmodel::BaseClass* mclass,
         v.push_back("Mapping");
     if (mclass->hasParent(DataEngine::GetClass()))
         v.push_back("Engine");
+    if (mclass->hasParent("BaseSimulationExporter"))
+        v.push_back("Exporter");
     if (mclass->hasParent(topology::TopologicalMapping::GetClass()))
         v.push_back("TopologicalMapping");
     if (mclass->hasParent(behavior::BaseMass::GetClass()))
@@ -179,6 +203,8 @@ void CategoryLibrary::getCategories(const objectmodel::BaseClass* mclass,
         v.push_back("ConstraintSolver");
     if (mclass->hasParent(behavior::BaseMatrixLinearSystem::GetClass()))
         v.push_back("LinearSystem");
+    if (mclass->hasParent(behavior::BaseOrderingMethod::GetClass()))
+        v.push_back("OrderingMethod");
     if (mclass->hasParent(behavior::LinearSolver::GetClass()))
         v.push_back("LinearSolver");
     if (mclass->hasParent(behavior::BaseAnimationLoop::GetClass()))
