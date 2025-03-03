@@ -2130,8 +2130,8 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
     type::fixed_array< TriangleID, 2> triIds = { ind_ta , ind_tb };
     type::fixed_array< Triangle, 2> theTris = { triangles[triIds[0]], triangles[triIds[1]] };
     type::fixed_array < Vec3, 2> _coefsTris;
-    _coefsTris[0] = computeBarycentricCoordinates(ind_ta, ptA);
-    _coefsTris[1] = computeBarycentricCoordinates(ind_tb, ptB);
+    _coefsTris[0] = computeTriangleBarycentricCoordinates(ind_ta, ptA);
+    _coefsTris[1] = computeTriangleBarycentricCoordinates(ind_tb, ptB);
     const sofa::type::Vec3 cutPath = ptB - ptA;
 
     // 2. Check if snapping is needed at first and last points. Snapping on point is more important than snapping on edge   
