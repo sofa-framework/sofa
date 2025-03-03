@@ -161,6 +161,7 @@ public:
 };
 
 
+
 /// static method to compute and consistently generate a unique ID based on the IDs of its ancestors. The ID is determined by combining both ancestor IDs in ascending order, separated by a unit of 1e6. 
 static PointID getUniqueId(PointID ancestor0, PointID ancestor1)
 {
