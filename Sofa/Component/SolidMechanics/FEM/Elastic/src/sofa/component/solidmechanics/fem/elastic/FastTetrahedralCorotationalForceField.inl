@@ -254,7 +254,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation
     const sofa::Size nbTetrahedra=this->l_topology->getNbTetrahedra();
 
     helper::WriteOnlyAccessor< Data< VecTetrahedronRestInformation > > tetrahedronInf = d_tetrahedronInfo;
-
     for(Index i=0; i<nbTetrahedra; i++ )
     {
         TetrahedronRestInformation& tetinfo = tetrahedronInf[i];
