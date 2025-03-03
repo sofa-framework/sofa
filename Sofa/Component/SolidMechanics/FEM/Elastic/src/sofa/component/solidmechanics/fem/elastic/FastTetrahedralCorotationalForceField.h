@@ -48,18 +48,6 @@ public:
     void reinit(Main* m) { SOFA_UNUSED(m); }
 };
 
-template<class DataTypes>
-class FastTetrahedralCorotationalForceField;
-
-/// This class can be overridden if needed for additionnal storage within template specializations.
-template<class DataTypes>
-class FastTetrahedralCorotationalForceFieldData
-{
-public:
-    typedef FastTetrahedralCorotationalForceField<DataTypes> Main;
-    void reinit(Main* m) { SOFA_UNUSED(m); }
-};
-
 
 template<class DataTypes>
 class FastTetrahedralCorotationalForceField : public BaseLinearElasticityFEMForceField<DataTypes>
