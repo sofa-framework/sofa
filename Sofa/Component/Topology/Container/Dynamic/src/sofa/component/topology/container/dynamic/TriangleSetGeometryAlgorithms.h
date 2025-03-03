@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/topology/container/dynamic/config.h>
-
 #include <sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TriangleSubdividers.h>
 #include <sofa/type/Vec.h>
 
 namespace sofa::component::topology::container::dynamic
@@ -289,6 +289,10 @@ public:
         sofa::type::vector< TriangleID >& triangles_list,
         sofa::type::vector< EdgeID >& edges_list,
         sofa::type::vector< Real >& coords_list) const;
+
+
+    type::vector< std::shared_ptr<PointToAdd> > computeIncisionPath(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
+        const TriangleID ind_ta, const TriangleID ind_tb, Real snapThreshold = 1.0, Real snapThresholdBorder = 1.0) const;
 
 
     /** \brief Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.
