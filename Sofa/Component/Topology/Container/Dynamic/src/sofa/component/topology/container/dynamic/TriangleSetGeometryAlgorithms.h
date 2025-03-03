@@ -292,9 +292,6 @@ public:
         const TriangleID ind_ta, const TriangleID ind_tb, Real snapThreshold = 1.0, Real snapThresholdBorder = 1.0) const;
 
 
-    void InciseAlongPath(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
-        const TriangleID ind_ta, const TriangleID ind_tb, const type::vector< std::shared_ptr<PointToAdd> >& _pointsToAdd);
-
     /** \brief Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.
      *
      * @return List of object intersect (type enum @see geometry::ElementType)
