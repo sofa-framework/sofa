@@ -5,12 +5,12 @@
 	
 	<Node name="Trocar">
 		<MechanicalObject name="MO" template="Rigid3d" position="5 0 -7 0 0 0 1"/>
-		<RestShapeSpringsForceField indices="0" stiffness="1e4" angularStiffness="1e9"/>
+		<FixedWeakConstraint indices="0" stiffness="1e4" angularStiffness="1e9"/>
 		<UncoupledConstraintCorrection compliance="1e-4  1e-9 0 0 1e-9 0 1e-9"/>	
 
 		<Node name="Articulations Description">
 			<MechanicalObject name="Articulations" template="Vec1d" position="0 0 0 0 0.3 0.3" rest_position="0 0 0 0 0 0"/>
-			<RestShapeSpringsForceField indices="0 1 2 3 4 5" stiffness="1e7 1e7 1e6 1e3 1e7 1e7"/>
+			<FixedWeakConstraint indices="0 1 2 3 4 5" stiffness="1e7 1e7 1e6 1e3 1e7 1e7"/>
 			<UncoupledConstraintCorrection compliance="1e-7 1e-7 1e-6 1e-3 1e-7 1e-7"/>
 			
 			<GrasperController doubleGrasper="true"/>

@@ -19,7 +19,7 @@
 		<UniformMass template="Rigid3d" name="uniformMass2"  totalMass="0.1" />
 		<LinearSolverConstraintCorrection template="Rigid3d" name="linearSolverConstraintCorrection4" />
 		<LCPForceFeedback template="Rigid3d" name="lCPForceFeedback5"  listening="1"  activate="1"  forceCoef="0.1" />
-		<RestShapeSpringsForceField template="Rigid3d" name="restShapeSpringsForceField4"  stiffness="200"  angularStiffness="200" />
+		<FixedWeakConstraint template="Rigid3d" name="restShapeSpringsForceField4"  stiffness="200"  angularStiffness="200" fixAll="true"/>
 		<Node 	name="visual" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<MeshOBJLoader name="meshLoader_2" filename="mesh/dental_instrument.obj"  translation="-1.2 -1.6 3.55"  rotation="180 0 150"  scale3d="1 1 1" handleSeams="1" />
 			<OglModel name="InstrumentVisualModel" src="@meshLoader_2"  material="Default Diffuse 1 0 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />

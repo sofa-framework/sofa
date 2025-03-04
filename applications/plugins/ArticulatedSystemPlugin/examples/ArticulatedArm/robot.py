@@ -88,7 +88,7 @@ class Robot:
         articulations.addObject('MechanicalObject', name='dofs', template='Vec1', rest_position=robot.getData('angles').getLinkPath(), position=initAngles)
         articulations.addObject('ArticulatedHierarchyContainer')
         articulations.addObject('UniformMass', totalMass=1)
-        articulations.addObject('RestShapeSpringsForceField', stiffness=1e10, indices=list(range(6)))
+        articulations.addObject('FixedWeakConstraint', stiffness=1e10, indices=list(range(6)))
 
         # Rigid
         rigid = articulations.addChild('Rigid')

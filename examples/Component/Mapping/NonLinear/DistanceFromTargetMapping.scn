@@ -24,11 +24,11 @@
     <Node name="attach">
         <MechanicalObject template="Vec1"/>
         <DistanceFromTargetMapping indices="0" targetPositions="0 0 0"/>
-        <RestShapeSpringsForceField/>
+        <FixedWeakConstraint fixAll="true"/>
     </Node>
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1"  name="extensionsDOF" />
         <DistanceMapping  name="distanceMapping" topology="@../topology"/>
-        <RestShapeSpringsForceField/>
+        <FixedWeakConstraint fixAll="true"/>
     </Node>
 </Node>
