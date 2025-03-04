@@ -38,8 +38,6 @@ class SOFA_COMPONENT_VISUAL_API VisualGrid : public core::visual::VisualModel
 public:
     SOFA_CLASS(VisualGrid, VisualModel);
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-
     MAKE_SELECTABLE_ITEMS(PlaneType,
         sofa::helper::Item{"x", "The grid is oriented in the plane defined by the equation x=0"},
         sofa::helper::Item{"y", "The grid is oriented in the plane defined by the equation y=0"},
@@ -54,8 +52,6 @@ public:
 
     Data<sofa::type::RGBAColor> d_color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
     Data<float> d_thickness; ///< Thickness of the lines in the grid
-    core::objectmodel::lifecycle::RemovedData d_draw {this, "v23.06", "23.12", "draw", "Use the 'enable' data field instead of 'draw'"};
-
 
     VisualGrid();
     ~VisualGrid() override = default;
