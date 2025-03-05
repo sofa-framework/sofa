@@ -50,7 +50,7 @@ namespace sofa {
 
 
 /** @brief Helper for writing ForceField tests.
- * The constructor creates a root node and adds it a State and a ForceField (of the paremeter type of this template class).
+ * The constructor creates a root node and adds it a State and a ForceField (of the parameter type of this template class).
  * Pointers to node, state and force are available.
  * Deriving the ForceField test from this class makes it easy to write: just call function run_test with positions, velocities and the corresponding expected forces.
  * This function automatically checks not only the forces (function addForce), but also the stiffness (methods addDForce and addKToMatrix), using finite differences.
@@ -81,7 +81,7 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
     /// @name Precision and control parameters
     /// {
     SReal errorMax;       ///< tolerance in precision test. The actual value is this one times the epsilon of the Real numbers (typically float or double)
-    SReal errorFactorPotentialEnergy;  ///< The test for potential energy is successfull if the (infinite norm of the) difference is less than  errorFactorPotentialEnergy * errorMax *epsilon (default = 1)
+    SReal errorFactorPotentialEnergy;  ///< The test for potential energy is successful if the (infinite norm of the) difference is less than  errorFactorPotentialEnergy * errorMax *epsilon (default = 1)
     /**
      * @brief Minimum/Maximum amplitudes of the random perturbation used to check the stiffness using finite differences
      * @warning Should be more than errorMax/stiffness. This is not checked automatically.
@@ -111,8 +111,8 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         , flags( TEST_ALL )
     {
         using modeling::addNew;
-        simulation::Simulation* simu;
-        sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simu = sofa::simulation::getSimulation();
+        assert(simu);
 
         ///  node 1
         node = simu->createNewGraph("root");
@@ -132,12 +132,12 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         , flags( TEST_ALL )
     {
         using modeling::addNew;
-        simulation::Simulation* simu;
-        sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simu = sofa::simulation::getSimulation();
+        assert(simu);
 
         /// Load the scene
         node = simu->createNewGraph("root");
-        node = sofa::simulation::getSimulation()->load(filename.c_str());
+        node = sofa::simulation::node::load(filename.c_str());
 
         ///  Get mechanical object
         dof = node->get<DOF>(node->SearchDown);
@@ -164,8 +164,8 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         if( deltaRange.second / errorMax <= sofa::testing::g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
-        ASSERT_TRUE(x.size()==v.size());
-        ASSERT_TRUE(x.size()==ef.size());
+        ASSERT_EQ(x.size(), v.size());
+        ASSERT_EQ(x.size(), ef.size());
         std::size_t n = x.size();
 
         // copy the position and velocities to the scene graph
@@ -178,13 +178,13 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         // init scene and compute force
         if (initScene)
         {
-            sofa::simulation::getSimulation()->init(this->node.get());
+            sofa::simulation::node::initRoot(this->node.get());
         }
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
-        MechanicalResetForceVisitor resetForce(&mparams, core::VecDerivId::force());
+        MechanicalResetForceVisitor resetForce(&mparams, core::vec_id::write_access::force);
         node->execute(resetForce);
-        MechanicalComputeForceVisitor computeForce( &mparams, core::VecDerivId::force() );
+        MechanicalComputeForceVisitor computeForce( &mparams, core::vec_id::write_access::force );
         this->node->execute(computeForce);
 
         // check force
@@ -195,7 +195,7 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
             std::cout << "            expected f = " << ef << std::endl;
             std::cout << "            actual f = " <<  f.ref() << std::endl;
         }
-        ASSERT_TRUE( this->vectorMaxDiff(f,ef)< errorMax*this->epsilon() );
+        ASSERT_LT( this->vectorMaxDiff(f,ef), errorMax*this->epsilon() );
 
         if( !checkStiffness ) return;
 
@@ -253,17 +253,17 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
 
         // check computeDf: compare its result to actual change
         node->execute(resetForce);
-        dof->vRealloc( &mparams, core::VecDerivId::dx()); // dx is not allocated by default
+        dof->vRealloc( &mparams, core::vec_id::write_access::dx); // dx is not allocated by default
         typename DOF::WriteVecDeriv wdx = dof->writeDx();
         sofa::testing::copyToData ( wdx, dX );
-        MechanicalComputeDfVisitor computeDf( &mparams, core::VecDerivId::force() );
+        MechanicalComputeDfVisitor computeDf( &mparams, core::vec_id::write_access::force );
         node->execute(computeDf);
         VecDeriv dF;
         sofa::testing::copyFromData( dF, dof->readForces() );
 
-        if( this->vectorMaxDiff(changeOfForce,dF)> errorMax*this->epsilon() ){
-            ADD_FAILURE()<<"dF differs from change of force" << std::endl << "Failed seed number = " << this->seed << std::endl;
-        }
+        EXPECT_LE(this->vectorMaxDiff(changeOfForce, dF), errorMax * this->epsilon()) <<
+            "dF differs from change of force\n"
+            "Failed seed number = " << this->seed;
 
         // check stiffness matrix: compare its product with dx to actual force change
         typedef sofa::linearalgebra::EigenBaseSparseMatrix<SReal> Sqmat;
@@ -288,9 +288,9 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
 
         modeling::Vector df;
         sofa::testing::data_traits<DataTypes>::VecDeriv_to_Vector( df, changeOfForce );
-        if( this->vectorMaxDiff(Kdx,df)> errorMax*this->epsilon() )
-            ADD_FAILURE()<<"Kdx differs from change of force"<< std::endl << "Failed seed number = " << this->seed << std::endl;
-
+        EXPECT_LE( this->vectorMaxDiff(Kdx, df), errorMax * this->epsilon() ) <<
+            "Kdx differs from change of force"
+            "\nFailed seed number = " << this->seed;
     }
 
 

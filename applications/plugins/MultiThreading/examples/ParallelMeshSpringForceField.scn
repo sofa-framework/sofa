@@ -2,7 +2,7 @@
 
     <Node name="plugins">
         <RequiredPlugin name="MultiThreading"/> <!-- Needed to use components [ParallelMeshSpringForceField] -->
-        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
         <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
         <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
         <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
@@ -34,7 +34,7 @@
         <UniformMass totalMass="150"/>
 
         <BoxROI box="-1.5 -1.5 0 1.5 1.5 0.0001" name="box"/>
-        <FixedConstraint indices="@box.indices" />
+        <FixedProjectiveConstraint indices="@box.indices" />
         <ParallelMeshSpringForceField stiffness="3E2" drawSpringSize="1"/>
 
         <Node name="visual">

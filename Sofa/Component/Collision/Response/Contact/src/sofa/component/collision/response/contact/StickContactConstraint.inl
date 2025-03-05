@@ -44,11 +44,12 @@ StickContactConstraint<TCollisionModel1,TCollisionModel2>::StickContactConstrain
     , intersectionMethod(intersectionMethod)
     , m_constraint(nullptr)
     , parent(nullptr)
-    , f_keepAlive(initData(&f_keepAlive, true, "keepAlive", "set to true to keep this contact alive even after collisions are no longer detected"))
+    , d_keepAlive(initData(&d_keepAlive, true, "keepAlive", "set to true to keep this contact alive even after collisions are no longer detected"))
 {
     mapper1.setCollisionModel(model1);
     mapper2.setCollisionModel(model2);
     this->f_printLog.setValue(true);
+    f_keepAlive.setOriginalData(&d_keepAlive);
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
@@ -105,7 +106,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::setDetectionOutp
         bool found = false;
         for (int i=0; i<cpt && !found; i++)
         {
-            sofa::core::collision::DetectionOutput* p = &outputs[i];
+            const sofa::core::collision::DetectionOutput* p = &outputs[i];
             if ((detectionOutput->point[0]-p->point[0]).norm2()+(detectionOutput->point[1]-p->point[1]).norm2() < minDist2)
                 found = true;
         }
@@ -128,7 +129,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
         msg_info() << "Creating StickContactConstraint bilateral constraints";
         MechanicalState1* mstate1 = mapper1.createMapping(mapper::GenerateStringID::generate().c_str());
         MechanicalState2* mstate2 = mapper2.createMapping(mapper::GenerateStringID::generate().c_str());
-        m_constraint = sofa::core::objectmodel::New<constraint::lagrangian::model::BilateralInteractionConstraint<defaulttype::Vec3Types> >(mstate1, mstate2);
+        m_constraint = sofa::core::objectmodel::New<constraint::lagrangian::model::BilateralLagrangianConstraint<defaulttype::Vec3Types> >(mstate1, mstate2);
         m_constraint->setName( getName() );
     }
 
@@ -158,7 +159,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
         index1 = mapper1.addPointB(o->point[0], index1, r1);
         // Create mapping for second point
         index2 = mapper2.addPointB(o->point[1], index2, r2);
-        double distance = d0 + r1 + r2;
+        const double distance = d0 + r1 + r2;
 
         mappedContacts[i].first.first = index1;
         mappedContacts[i].first.second = index2;
@@ -172,8 +173,8 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
     mapper2.updateXfree();
 
     msg_info() << contacts.size() << " StickContactConstraint created";
-    msg_info() << "mstate1 size = " << m_constraint->getMState1()->getSize() << " x = " << m_constraint->getMState1()->getSize() << " xfree = " << m_constraint->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue().size();
-    msg_info() << "mstate2 size = " << m_constraint->getMState2()->getSize() << " x = " << m_constraint->getMState2()->getSize() << " xfree = " << m_constraint->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue().size();
+    msg_info() << "mstate1 size = " << m_constraint->getMState1()->getSize() << " x = " << m_constraint->getMState1()->getSize() << " xfree = " << m_constraint->getMState1()->read(core::vec_id::read_access::freePosition)->getValue().size();
+    msg_info() << "mstate2 size = " << m_constraint->getMState2()->getSize() << " x = " << m_constraint->getMState2()->getSize() << " xfree = " << m_constraint->getMState2()->read(core::vec_id::read_access::freePosition)->getValue().size();
 
 }
 
@@ -187,10 +188,10 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
         int i = 0;
         for (auto it = contacts.begin(); it!=contacts.end(); it++, i++)
         {
-            sofa::core::collision::DetectionOutput* o = *it;
-            int index1 = mappedContacts[i].first.first;
-            int index2 = mappedContacts[i].first.second;
-            double distance = mappedContacts[i].second;
+            const sofa::core::collision::DetectionOutput* o = *it;
+            const int index1 = mappedContacts[i].first.first;
+            const int index2 = mappedContacts[i].first.second;
+            const double distance = mappedContacts[i].second;
 
             // Polynome de Cantor de NxN sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
             //long index = cantorPolynomia(o->id /*cantorPolynomia(index1, index2)*/,id);

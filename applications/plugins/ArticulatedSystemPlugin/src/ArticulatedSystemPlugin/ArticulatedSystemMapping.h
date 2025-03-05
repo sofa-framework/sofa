@@ -98,6 +98,9 @@ public:
         const type::vector<const InDataVecCoord*>& dataVecInPos ,
         const type::vector<const InRootDataVecCoord*>& dataVecInRootPos) override
     {
+        if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+            return;
+
         if(dataVecOutPos.empty() || dataVecInPos.empty())
             return;
 
@@ -122,6 +125,9 @@ public:
         const type::vector<const InDataVecDeriv*>& dataVecInVel,
         const type::vector<const InRootDataVecDeriv*>& dataVecInRootVel) override
     {
+        if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+            return;
+
         if(dataVecOutVel.empty() || dataVecInVel.empty())
             return;
 
@@ -146,6 +152,9 @@ public:
         const type::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
         const type::vector<const OutDataVecDeriv*>& dataVecInForce) override
     {
+        if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+            return;
+
         if(dataVecOutForce.empty() || dataVecInForce.empty())
             return;
 
@@ -179,6 +188,9 @@ public:
         const type::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
         const type::vector<const OutDataMatrixDeriv*>& dataMatInConst) override
     {
+        if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+            return;
+
         if(dataMatOutConst.empty() || dataMatInConst.empty())
             return;
 
@@ -217,7 +229,7 @@ private:
     SingleLink<ArticulatedSystemMapping<TIn, TInRoot, TOut>,
                 sofa::component::container::ArticulatedHierarchyContainer,
                 BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK>            l_container;
-    Data<unsigned int> d_indexFromRoot; ///< Corresponding index if the base of the articulated system is attached to input2. Default is last index.
+    Data<sofa::Index> d_indexFromRoot; ///< Corresponding index if the base of the articulated system is attached to input2. Default is last index.
 
     sofa::type::Vec<1,sofa::type::Quat<SReal>> Buf_Rotation;
     std::vector< sofa::type::Vec<3,OutReal> > ArticulationAxis;
@@ -225,9 +237,13 @@ private:
     InVecCoord CoordinateBuf;
     InVecDeriv dxVec1Buf;
     OutVecDeriv dxRigidBuf;
+
+    using core::Multi2Mapping<TIn, TInRoot, TOut>::d_componentState;
+
+    void checkIndexFromRoot();
 };
 
-#if  !defined(SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_CPP)
 
 extern template class SOFA_ARTICULATEDSYSTEMPLUGIN_API ArticulatedSystemMapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
 

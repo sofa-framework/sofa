@@ -33,13 +33,8 @@
 /// This allow MeshTrian to interact with the messaging system.
 MSG_REGISTER_CLASS(sofa::helper::io::SphereLoader, "SphereLoader")
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 static void skipToEOL(FILE* f)
@@ -114,9 +109,9 @@ bool SphereLoader::Load(const std::string& filename, SphereLoaderDataHook& data)
     return true;
 }
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
 
-} // namespace sofa
+
+
 

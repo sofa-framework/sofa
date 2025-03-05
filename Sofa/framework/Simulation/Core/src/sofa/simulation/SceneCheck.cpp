@@ -25,7 +25,33 @@ namespace sofa::simulation
 {
 
 SceneCheck::~SceneCheck() = default;
-void SceneCheck::doPrintSummary() {}
-void SceneCheck::doInit(sofa::simulation::Node* node) { SOFA_UNUSED(node); }
+
+void SceneCheck::init(sofa::simulation::Node* node, simulation::SceneLoader* sceneLoader)
+{
+    SOFA_UNUSED(sceneLoader);
+    doInit(node);
+}
+
+void SceneCheck::checkOn(sofa::simulation::Node* node, simulation::SceneLoader* sceneLoader)
+{
+    SOFA_UNUSED(sceneLoader);
+    doCheckOn(node);
+}
+
+void SceneCheck::printSummary(simulation::SceneLoader* sceneLoader)
+{
+    SOFA_UNUSED(sceneLoader);
+    doPrintSummary();
+}
+
+void SceneCheck::doInit(sofa::simulation::Node* node)
+{
+    SOFA_UNUSED(node);
+}
+
+void SceneCheck::doPrintSummary()
+{}
+
+
 
 }

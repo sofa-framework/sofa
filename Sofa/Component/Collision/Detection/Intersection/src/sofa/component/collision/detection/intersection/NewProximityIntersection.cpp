@@ -38,14 +38,17 @@ using namespace sofa::core::collision;
 using namespace sofa::component::collision::geometry;
 using namespace helper;
 
-int NewProximityIntersectionClass = core::RegisterObject("Optimized Proximity Intersection based on Triangle-Triangle tests, ignoring Edge-Edge cases")
-        .add< NewProximityIntersection >()
-        ;
+void registerNewProximityIntersection(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Optimized Proximity Intersection based on Triangle-Triangle tests, ignoring Edge-Edge cases")
+        .add< NewProximityIntersection >());
+}
 
 NewProximityIntersection::NewProximityIntersection()
     : BaseProximityIntersection()
-    , useLineLine(initData(&useLineLine, false, "useLineLine", "Line-line collision detection enabled"))
+    , d_useLineLine(initData(&d_useLineLine, false, "useLineLine", "Line-line collision detection enabled"))
 {
+    useLineLine.setOriginalData(&d_useLineLine);
 }
 
 void NewProximityIntersection::init()
@@ -65,15 +68,18 @@ void NewProximityIntersection::init()
 	BaseProximityIntersection::init();
 }
 
-bool NewProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
+bool NewProximityIntersection::testIntersection(Cube& cube1, Cube& cube2, const core::collision::Intersection* currentIntersection)
 {
-    return BaseProximityIntersection::testIntersection(cube1, cube2);
+    SOFA_UNUSED(currentIntersection);
+
+    return BaseProximityIntersection::testIntersection(cube1, cube2, currentIntersection);
 }
 
-int NewProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
+int NewProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    return BaseProximityIntersection::computeIntersection(cube1, cube2, contacts);
-}
+    SOFA_UNUSED(currentIntersection);
 
+    return BaseProximityIntersection::computeIntersection(cube1, cube2, contacts, currentIntersection);
+}
 
 } // namespace sofa::component::collision::detection::intersection

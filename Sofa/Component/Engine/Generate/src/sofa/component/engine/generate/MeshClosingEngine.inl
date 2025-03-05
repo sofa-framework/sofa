@@ -29,8 +29,8 @@ template <class DataTypes>
 void MeshClosingEngine<DataTypes>::doUpdate()
 {
     helper::ReadAccessor<Data< SeqPositions > > pos(this->inputPosition);
-    helper::ReadAccessor<Data< SeqTriangles > > tri(this->inputTriangles);
-    helper::ReadAccessor<Data< SeqQuads > > qd(this->inputQuads);
+    const helper::ReadAccessor<Data< SeqTriangles > > tri(this->inputTriangles);
+    const helper::ReadAccessor<Data< SeqQuads > > qd(this->inputQuads);
 
     helper::WriteOnlyAccessor<Data< SeqPositions > > opos(this->position);
     helper::WriteOnlyAccessor<Data< SeqTriangles > >  otri(this->triangles);

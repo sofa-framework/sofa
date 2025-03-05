@@ -37,10 +37,10 @@ public:
 template<class Node>
 void Node_test_objectDestruction_singleObject()
 {
-    sofa::core::objectmodel::BaseNode::SPtr node = sofa::core::objectmodel::New<Node>();
+    const sofa::core::objectmodel::BaseNode::SPtr node = sofa::core::objectmodel::New<Node>();
     bool objectDestroyed = false;
     {
-        Dummy::SPtr dummy = sofa::core::objectmodel::New<Dummy>(&objectDestroyed);
+        const Dummy::SPtr dummy = sofa::core::objectmodel::New<Dummy>(&objectDestroyed);
         node->addObject(dummy);
         node->removeObject(dummy);
     }
@@ -50,7 +50,7 @@ void Node_test_objectDestruction_singleObject()
 template<class Node>
 void Node_test_objectDestruction_multipleObjects()
 {
-    sofa::core::objectmodel::BaseNode::SPtr node = sofa::core::objectmodel::New<Node>();
+    const sofa::core::objectmodel::BaseNode::SPtr node = sofa::core::objectmodel::New<Node>();
     bool objectDestroyed[4] = {false};
     {
         Dummy::SPtr dummy[4];
@@ -73,12 +73,12 @@ void Node_test_objectDestruction_multipleObjects()
 template<class Node>
 void Node_test_objectDestruction_childNode_singleObject()
 {
-    sofa::core::objectmodel::BaseNode::SPtr node = sofa::core::objectmodel::New<Node>();
+    const sofa::core::objectmodel::BaseNode::SPtr node = sofa::core::objectmodel::New<Node>();
     bool objectDestroyed = false;
     {
-        sofa::core::objectmodel::BaseNode::SPtr childNode = sofa::core::objectmodel::New<Node>();
+        const sofa::core::objectmodel::BaseNode::SPtr childNode = sofa::core::objectmodel::New<Node>();
         node->addChild(childNode);
-        Dummy::SPtr dummy = sofa::core::objectmodel::New<Dummy>(&objectDestroyed);
+        const Dummy::SPtr dummy = sofa::core::objectmodel::New<Dummy>(&objectDestroyed);
         childNode->addObject(dummy);
         node->removeChild(childNode);
     }
@@ -89,32 +89,32 @@ template<class Node>
 void Node_test_objectDestruction_childNode_complexChild()
 {
     bool objectDestroyed[10] = {false};
-    sofa::core::objectmodel::BaseNode::SPtr node = sofa::core::objectmodel::New<Node>();
+    const sofa::core::objectmodel::BaseNode::SPtr node = sofa::core::objectmodel::New<Node>();
     {
-        sofa::core::objectmodel::BaseNode::SPtr childNode1 = sofa::core::objectmodel::New<Node>();
+        const sofa::core::objectmodel::BaseNode::SPtr childNode1 = sofa::core::objectmodel::New<Node>();
         node->addChild(childNode1);
-        sofa::core::objectmodel::BaseNode::SPtr childNode2 = sofa::core::objectmodel::New<Node>();
+        const sofa::core::objectmodel::BaseNode::SPtr childNode2 = sofa::core::objectmodel::New<Node>();
         childNode1->addChild(childNode2);
-        sofa::core::objectmodel::BaseNode::SPtr childNode3 = sofa::core::objectmodel::New<Node>();
+        const sofa::core::objectmodel::BaseNode::SPtr childNode3 = sofa::core::objectmodel::New<Node>();
         childNode2->addChild(childNode3);
-        sofa::core::objectmodel::BaseNode::SPtr childNode4 = sofa::core::objectmodel::New<Node>();
+        const sofa::core::objectmodel::BaseNode::SPtr childNode4 = sofa::core::objectmodel::New<Node>();
         childNode1->addChild(childNode4);
 
-        Dummy::SPtr dummy1 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[0]);
+        const Dummy::SPtr dummy1 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[0]);
         childNode1->addObject(dummy1);
-        Dummy::SPtr dummy2 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[1]);
+        const Dummy::SPtr dummy2 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[1]);
         childNode1->addObject(dummy2);
-        Dummy::SPtr dummy3 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[2]);
+        const Dummy::SPtr dummy3 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[2]);
         childNode2->addObject(dummy3);
-        Dummy::SPtr dummy4 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[3]);
+        const Dummy::SPtr dummy4 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[3]);
         childNode2->addObject(dummy4);
-        Dummy::SPtr dummy5 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[4]);
+        const Dummy::SPtr dummy5 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[4]);
         childNode3->addObject(dummy5);
-        Dummy::SPtr dummy6 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[5]);
+        const Dummy::SPtr dummy6 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[5]);
         childNode3->addObject(dummy6);
-        Dummy::SPtr dummy7 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[6]);
+        const Dummy::SPtr dummy7 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[6]);
         childNode4->addObject(dummy7);
-        Dummy::SPtr dummy8 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[7]);
+        const Dummy::SPtr dummy8 = sofa::core::objectmodel::New<Dummy>(&objectDestroyed[7]);
         childNode4->addObject(dummy8);
 
         node->removeChild(childNode1);

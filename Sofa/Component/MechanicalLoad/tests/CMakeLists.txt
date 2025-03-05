@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 
 project(Sofa.Component.MechanicalLoad_test)
 
@@ -7,6 +7,7 @@ set(SOURCE_FILES
     PlaneForceField_test.cpp
     QuadPressureForceField_test.cpp
     SkeletalMotionConstraint_test.cpp
+    SurfacePressureForceField_test.cpp
     TrianglePressureForceField_test.cpp
 )
 

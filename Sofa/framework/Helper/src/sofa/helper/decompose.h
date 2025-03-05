@@ -26,10 +26,7 @@
 #include <sofa/type/Mat.h>
 
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 template<class Real>
@@ -122,7 +119,7 @@ public:
      */
     static Real polarDecomposition( const type::Mat<3,3,Real>& M, type::Mat<3,3,Real>& Q );
 
-    /** Polar decomposition of a 2x2 matix M = QS
+    /** Polar decomposition of a 2x2 matrix M = QS
      *  Analytic formulation given in
      *  "Matrix Animation and Polar Decomposition"
      *  Ken Shoemake, Computer Graphics Laboratory, University of Pennsylvania
@@ -218,7 +215,7 @@ public:
       */
     static void SVD( const type::Mat<3,3,Real> &F, type::Mat<3,3,Real> &U, type::Vec<3,Real> &S, type::Mat<3,3,Real> &V );
 
-    /** SVD based on the Eigensystem decomposition of FtF with robustness against invertion and degenerate configurations
+    /** SVD based on the Eigensystem decomposition of FtF with robustness against inversion and degenerate configurations
       * \returns true iff the stabilization processed an inverted rotation or a degenerate case
       * U & V are rotations
       * Warning eigenvalues are not guaranteed to be positive, eigenvalues are not sorted
@@ -232,7 +229,7 @@ public:
       */
     static void SVD( const type::Mat<3,2,Real> &F, type::Mat<3,2,Real> &U, type::Vec<2,Real> &S, type::Mat<2,2,Real> &V );
 
-    /** SVD based on the Eigensystem decomposition of FtF with robustness against invertion and degenerate configurations
+    /** SVD based on the Eigensystem decomposition of FtF with robustness against inversion and degenerate configurations
       * \returns true in a degenerate case
       * U & V are rotations
       * Warning eigenvalues are not guaranteed to be positive, eigenvalues are not sorted
@@ -370,7 +367,7 @@ private:
 
     /** @internal useful for iterative eigenDecomposition
       * QL algorithm with implicit shifting, applies to tridiagonal matrices
-      * Derived from numerical recipies
+      * Derived from numerical recipes
       */
     template <sofa::Size iSize>
     static void QLAlgorithm( type::Vec<iSize,Real> &diag, type::Vec<iSize,Real> &subDiag, type::Mat<iSize,iSize,Real> &V );
@@ -389,13 +386,12 @@ SOFA_HELPER_API inline double Decompose<double>::zeroTolerance()
     return 1e-8;
 }
 
-#if  !defined(SOFA_BUILD_HELPER)
+#if !defined(SOFA_BUILD_HELPER)
 extern template class SOFA_HELPER_API Decompose<double>;
 extern template class SOFA_HELPER_API Decompose<float>;
 #endif
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
 
 #endif // SOFA_HELPER_DECOMPOSE_H

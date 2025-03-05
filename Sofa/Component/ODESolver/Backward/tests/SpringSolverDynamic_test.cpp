@@ -60,39 +60,39 @@ struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
 
 
     /// Create the context for the scene
-    void SetUp() override
+    void doSetUp() override
     {
         // Init simulation
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
         root = simulation::getSimulation()->createNewGraph("root");
     }
 
     void loadScene(std::string sceneName)
     {
         // Load the scene from the xml file
-        std::string fileName = std::string(SOFACOMPONENTODESOLVERBACKWARD_TEST_SCENES_DIR) + "/" + sceneName;
-        root = sofa::simulation::getSimulation()->load(fileName.c_str());
+        const std::string fileName = std::string(SOFACOMPONENTODESOLVERBACKWARD_TEST_SCENES_DIR) + "/" + sceneName;
+        root = sofa::simulation::node::load(fileName.c_str());
     }
 
     /// After simulation compare the positions of points to the theoretical positions.
     bool compareSimulatedToTheoreticalPositions(double tolerance)
     {
         // Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
         double time = root->getTime();
-        double stiffnessSpring = 100;
-        double mass = 10;
-        double w = sqrt(stiffnessSpring/mass);
+        const double stiffnessSpring = 100;
+        const double mass = 10;
+        const double w = sqrt(stiffnessSpring/mass);
 
         // Get mechanical object
-        simulation::Node::SPtr massNode = root->getChild("MassNode");
+        const simulation::Node::SPtr massNode = root->getChild("MassNode");
         typename MechanicalObject::SPtr dofs = massNode->get<MechanicalObject>(root->SearchDown);
 
         // Animate
         do
         {
             // Record the mass position
-            Coord p0=dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[0];
+            Coord p0=dofs.get()->read(sofa::core::vec_id::read_access::position)->getValue()[0];
 
             // Absolute error
             double absoluteError = fabs(p0[1]-(cos(w*time)));
@@ -108,7 +108,7 @@ struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
             }
 
             //Animate
-            sofa::simulation::getSimulation()->animate(root.get(),0.001);
+            sofa::simulation::node::animate(root.get(), 0.001_sreal);
             time = root->getTime();
         }
         while (time < 2);
@@ -117,13 +117,13 @@ struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
 
 };
 
-// Define the list of DataTypes to instanciate
+// Define the list of DataTypes to instantiate
 using ::testing::Types;
 typedef Types<
     defaulttype::Vec3Types
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(SpringSolverDynamic_test, DataTypes);
 
 // Test case EulerImplicit Solver

@@ -31,10 +31,8 @@
 #include <sofa/type/trait/Rebind.h>
 #include <limits>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 typedef const char* (*integer_id_name)();
@@ -237,11 +235,6 @@ public:
     template<class T2>
     using rebind_to = vector_id< T2, TIndex, CheckIndices, type::rebind_to<MemoryManager, T2> >;
 
-    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
-    {
-        typedef DeprecatedAndRemoved other;
-    };
-
 
     /// Basic constructor
     vector_id() : Inherit() {}
@@ -256,14 +249,8 @@ public:
     /// Constructor
     vector_id(const std::vector<T>& x): Inherit(x) {}
 
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    vector_id(InputIterator first, InputIterator last): Inherit(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
     vector_id(const_iterator first, const_iterator last): Inherit(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
 
     /// Read/write random access, with explicit Index
     reference at(Index n)
@@ -446,8 +433,7 @@ public:
     WriteAccessor(container_type& c) : Inherit(c) {}
 };
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
 
 #endif

@@ -145,11 +145,10 @@ public:
 	/// return a pointer to the container of cubature points
 	NumericalIntegrationDescriptor<Real,3> &getHexahedronNumericalIntegrationDescriptor();
 
-    /** \brief Write the current mesh into a msh file
-    */
-    void writeMSHfile(const char *filename) const;
-
     void draw(const core::visual::VisualParams* vparams) override;
+
+    SOFA_ATTRIBUTE_DISABLED("v23.12", "v23.12", "Method writeMSHfile has been disabled. To export the topology as .gmsh file, use the sofa::component::io::mesh::MeshExporter.")
+    void writeMSHfile(const char *filename) const {msg_deprecated() << "Method writeMSHfile has been disabled. To export the topology as " << filename << " file, use the sofa::component::io::mesh::MeshExporter."; }
 
 protected:
     Data<bool> d_showHexaIndices; ///< Debug : view Hexa indices
@@ -162,7 +161,7 @@ protected:
 	bool mustComputeBBox() const override;
 };
 
-#if  !defined(SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP)
+#if !defined(SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP)
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API HexahedronSetGeometryAlgorithms<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API HexahedronSetGeometryAlgorithms<defaulttype::Vec2Types>;
 #endif

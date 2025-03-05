@@ -31,11 +31,11 @@ template <class DataTypes>
 ExtrudeSurface<DataTypes>::ExtrudeSurface()
     : initialized(false)
     , isVisible( initData (&isVisible, bool (true), "isVisible", "is Visible ?") )
-    , heightFactor( initData (&heightFactor, Real (1.0), "heightFactor", "Factor for the height of the extrusion (based on normal) ?") )
-    , f_triangles(initData(&f_triangles, "triangles", "List of triangle indices"))
+    , heightFactor( initData (&heightFactor, Real (1.0), "heightFactor", "Factor for the height of the extrusion (based on normal)") )
+    , f_triangles(initData(&f_triangles, "triangles", "Triangle topology (list of BaseMeshTopology::Triangle)"))
     , f_extrusionVertices( initData (&f_extrusionVertices, "extrusionVertices", "Position coordinates of the extrusion") )
     , f_surfaceVertices( initData (&f_surfaceVertices, "surfaceVertices", "Position coordinates of the surface") )
-    , f_extrusionTriangles( initData (&f_extrusionTriangles, "extrusionTriangles", "Triangles indices of the extrusion") )
+    , f_extrusionTriangles( initData (&f_extrusionTriangles, "extrusionTriangles", "Subset triangle topology used for the extrusion") )
     , f_surfaceTriangles( initData (&f_surfaceTriangles, "surfaceTriangles", "Indices of the triangles of the surface to extrude") )
 {
     addInput(&f_surfaceTriangles);
@@ -120,7 +120,7 @@ void ExtrudeSurface<DataTypes>::doUpdate()
         //a table is also used to map old vertex indices with the new set of indices
         for (unsigned int i=0 ; i<3 ; i++)
         {
-            if (pointMatching.find(triangle[i]) == pointMatching.end())
+            if (!pointMatching.contains(triangle[i]))
             {
                 extrusionVertices->push_back(surfaceVertices[triangle[i]]);
                 extrusionVertices->push_back(surfaceVertices[triangle[i]] + normals[triangle[i]].first*heightFactor.getValue());
@@ -152,9 +152,9 @@ void ExtrudeSurface<DataTypes>::doUpdate()
 
         for (unsigned int i=0 ; i<3 ; i++)
         {
-            if ( edgesOnBorder.find(e[i])  == edgesOnBorder.end())
+            if (!edgesOnBorder.contains(e[i]))
             {
-                if ( edgesOnBorder.find(ei[i])  == edgesOnBorder.end())
+                if (!edgesOnBorder.contains(ei[i]))
                     edgesOnBorder[e[i]] = true;
                 else
                     edgesOnBorder[ei[i]] = false;

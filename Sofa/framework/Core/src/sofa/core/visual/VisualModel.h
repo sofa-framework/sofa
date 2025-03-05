@@ -23,7 +23,6 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/type/Quat.h>
-#include <sofa/defaulttype/TopologyTypes.h>
 
 namespace sofa::core::visual
 {
@@ -48,20 +47,52 @@ class SOFA_CORE_API VisualModel : public virtual objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(VisualModel, objectmodel::BaseObject);
     SOFA_BASE_CAST_IMPLEMENTATION(VisualModel)
-protected:
-    /// Destructor
-    ~VisualModel() override { }
-public:
+
+    Data<bool> d_enable; ///< Display the object or not
+
+    /**
+     *  \brief Display the VisualModel object.
+     *
+     *  TODO(dmarchal, 2023-06-09): Deprecate VI and use NVI design pattern: In one year, remove the virtual keyword so that everyone
+     *  will have to override doDrawVisual;
+     */
+    virtual void drawVisual(const VisualParams* /*vparams*/) final;
+    
     /**
      *  \brief Initialize the textures, or other graphical resources.
      *
      *  Called once before the first frame is drawn, and if the graphical
      *  context has been recreated.
      */
-    virtual void initVisual() {  }
+    void initVisual(const VisualParams* /*vparams*/);
+
+    // Deprecate the usage of initVisual()
+    // But the final keyword will break the compilation if one does override initVisual anyway.
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use initVisual(const VisualParams*) instead")
+    virtual void initVisual() final;
 
     /**
-     *  \brief clear some graphical resources (generaly called before the deleteVisitor).
+     *  \brief used to update the model if necessary.
+     *
+     */
+    void updateVisual(const VisualParams* /*vparams*/);
+    // Deprecate the usage of updateVisual()
+    // But the final keyword will break the compilation if one does override updateVisual() anyway.
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use updateVisual(const VisualParams*) instead")
+    virtual void updateVisual() final;
+
+protected:
+    VisualModel();
+    ~VisualModel() override { }
+
+private:
+    virtual void doDrawVisual(const VisualParams* /*vparams*/) {}
+    virtual void doInitVisual(const VisualParams* /*vparams*/) {}
+    virtual void doUpdateVisual(const VisualParams* /*vparams*/) {}
+
+public:
+    /**
+     *  \brief clear some graphical resources (generally called before the deleteVisitor).
      *  \note: for more general usage you can use the cleanup visitor
      */
     virtual void clearVisual() { }
@@ -75,12 +106,6 @@ public:
      *  \brief Called after objects in the current branch are displayed
      */
     virtual void bwdDraw(VisualParams* /*vparams*/) {}
-
-    /**
-     *  \brief Display the VisualModel object.
-     */
-    virtual void drawVisual(const VisualParams* /*vparams*/) {}
-    //virtual void drawVisual() = 0;
 
     /**
      *  \brief Display transparent surfaces.
@@ -99,13 +124,9 @@ public:
      */
     virtual void drawShadow(const VisualParams* vparams)
     {
-        drawVisual(vparams);
+        doDrawVisual(vparams);
     }
 
-    /**
-     *  \brief used to update the model if necessary.
-     */
-    virtual void updateVisual() {  }
     /**
     *  \brief used to update the model if necessary.
     */

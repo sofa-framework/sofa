@@ -73,16 +73,19 @@ public:
     // -- Mass interface
      void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
 
-    void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset) override;
 
     bool isDiagonal() const override { return d_lumpedMass.getValue(); }
 
     using HexahedronFEMForceFieldT::addKToMatrix;
     using core::behavior::Mass<DataTypes>::addKToMatrix;
-    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override
     {
-        HexahedronFEMForceFieldT::addKToMatrix(mparams, matrix);
+        HexahedronFEMForceFieldT::addKToMatrix(matrix, kFact, offset);
     }
+
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix*) override;
+    void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
 
      void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
 
@@ -128,7 +131,7 @@ public:
 
 protected :
 
-    Data<VecElementMass> d_elementMasses; ///< mass matrices per element
+    Data<VecElementMass> d_elementMasses; ///< Mass matrices per element (M_i)
     Data<Real> d_density; ///< density == volumetric mass in english (kg.m-3)
     Data<bool> d_lumpedMass; ///< Does it use lumped masses?
 
@@ -138,7 +141,7 @@ protected :
 
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELDANDMASS_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELDANDMASS_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API HexahedronFEMForceFieldAndMass< defaulttype::Vec3Types >;
 
 #endif

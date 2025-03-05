@@ -65,7 +65,7 @@ public:
 
 protected:
 
-    PairStateAccessor(MechanicalState<DataTypes1> *mm1, MechanicalState<DataTypes2> *mm2);
+    explicit PairStateAccessor(MechanicalState<DataTypes1> *mm1 = nullptr, MechanicalState<DataTypes2> *mm2 = nullptr);
 
     ~PairStateAccessor() override = default;
 

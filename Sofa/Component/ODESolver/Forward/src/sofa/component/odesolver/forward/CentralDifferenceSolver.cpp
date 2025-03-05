@@ -33,9 +33,10 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 CentralDifferenceSolver::CentralDifferenceSolver()
-    : f_rayleighMass( initData(&f_rayleighMass,(SReal)0.0,"rayleighMass","Rayleigh damping coefficient related to mass"))
+    : d_rayleighMass(initData(&d_rayleighMass, (SReal)0.0, "rayleighMass", "Rayleigh damping coefficient related to mass"))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
+    f_rayleighMass.setOriginalData(&d_rayleighMass);
 }
 
 /**
@@ -78,14 +79,14 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     mop->setImplicit(false); // this solver is explicit only
-    MultiVecCoord pos(&vop, core::VecCoordId::position() );
-    MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
-    MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );
-    MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
-    MultiVecDeriv f  (&vop, core::VecDerivId::force() );
+    MultiVecCoord pos(&vop, core::vec_id::write_access::position );
+    MultiVecDeriv vel(&vop, core::vec_id::write_access::velocity );
+    MultiVecCoord pos2(&vop, xResult /*core::vec_id::write_access::position*/ );
+    MultiVecDeriv vel2(&vop, vResult /*core::vec_id::write_access::velocity*/ );
+    MultiVecDeriv dx(&vop, core::vec_id::write_access::dx); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
+    MultiVecDeriv f  (&vop, core::vec_id::write_access::force );
 
-    const SReal r = f_rayleighMass.getValue();
+    const SReal r = d_rayleighMass.getValue();
 
     mop.addSeparateGravity(dt);                // v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
@@ -97,15 +98,15 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
     mop.accFromF(dx, f);                       // dx = M^{-1} ( P_n - K u_n )
     mop.projectResponse(dx);                    // dx is projected to the constrained space
 
-    mop.solveConstraint(dx, core::ConstraintParams::ACC);
+    mop.solveConstraint(dx, core::ConstraintOrder::ACC);
     // apply the solution
     if (r==0)
     {
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
         vel2.eq( vel, dx, dt );                  // vel = vel + dt M^{-1} ( P_n - K u_n )
-        mop.solveConstraint(vel2, core::ConstraintParams::VEL);
+        mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
         pos2.eq( pos, vel2, dt );                    // pos = pos + h vel
-        mop.solveConstraint(pos2, core::ConstraintParams::POS);
+        mop.solveConstraint(pos2,core::ConstraintOrder::POS);
 
 #else // single-operation optimization
 
@@ -123,8 +124,8 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
 
         vop.v_multiop(ops);
 
-        mop.solveConstraint(vel2,core::ConstraintParams::VEL);
-        mop.solveConstraint(pos2,core::ConstraintParams::POS);
+        mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
+        mop.solveConstraint(pos2,core::ConstraintOrder::POS);
 #endif
     }
     else
@@ -149,15 +150,17 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
 
         vop.v_multiop(ops);
 
-        mop.solveConstraint(vel2,core::ConstraintParams::VEL);
-        mop.solveConstraint(pos2,core::ConstraintParams::POS);
+        mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
+        mop.solveConstraint(pos2,core::ConstraintOrder::POS);
 #endif
     }
 
 }
 
-int CentralDifferenceSolverClass = core::RegisterObject("Explicit time integrator using central difference (also known as Verlet of Leap-frog)")
-        .add< CentralDifferenceSolver >()
-        .addAlias("CentralDifference");
+void registerCentralDifferenceSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Explicit time integrator using central difference (also known as Verlet of Leap-frog).")
+        .add< CentralDifferenceSolver >());
+}
 
 } // namespace sofa::component::odesolver::forward

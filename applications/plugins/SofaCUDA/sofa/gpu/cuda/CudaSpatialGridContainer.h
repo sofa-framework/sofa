@@ -38,13 +38,8 @@
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/type/Vec.h>
 
-namespace sofa
-{
 
-namespace component
-{
-
-namespace container
+namespace sofa::component::container
 {
 
 using namespace sofa::defaulttype;
@@ -127,10 +122,7 @@ protected:
 
 };
 
-} // namespace container
+} // namespace sofa::component::container
 
-} // namespace component
-
-} // namespace sofa
 
 #endif

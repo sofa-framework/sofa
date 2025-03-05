@@ -58,10 +58,6 @@ public:
     {
         return true;
     }
-    bool writeNodeData() const override
-    {
-        return true;
-    }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors() override

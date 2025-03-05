@@ -3,8 +3,8 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [DiscreteIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -19,7 +19,7 @@
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager response="PenalityContactForceField" name="collision response" />
+    <CollisionResponse response="PenalityContactForceField" name="collision response" />
     <DiscreteIntersection />
     <DefaultAnimationLoop/>
     
@@ -29,7 +29,7 @@
         <MechanicalObject />
         <UniformMass vertexMass="0.1" />
         <RegularGridTopology nx="3" ny="3" nz="1" xmin="10" xmax="19" ymin="0" ymax="9" zmin="4" zmax="5" />
-        <FixedConstraint indices="0 8" />
+        <FixedProjectiveConstraint indices="0 8" />
         <TriangleFEMForceField name="FEM1" youngModulus="5000" poissonRatio="0.3" method="large" />
         <TriangleBendingSprings name="FEM-Bend" stiffness="100" damping="0.1" />
         <TriangleCollisionModel />
@@ -44,7 +44,7 @@
         <MechanicalObject />
         <UniformMass vertexMass="0.1" />
         <RegularGridTopology nx="4" ny="4" nz="1" xmin="20" xmax="29" ymin="0" ymax="9" zmin="8" zmax="9" />
-        <FixedConstraint indices="0 15" />
+        <FixedProjectiveConstraint indices="0 15" />
         <TriangleFEMForceField name="FEM2" youngModulus="5000" poissonRatio="0.3" method="large" />
         <TriangleBendingSprings name="FEM-Bend" stiffness="100" damping="0.1" />
         <TriangleCollisionModel />
@@ -59,7 +59,7 @@
         <MechanicalObject />
         <UniformMass vertexMass="0.1" />
         <RegularGridTopology nx="10" ny="10" nz="1" xmin="30" xmax="39" ymin="0" ymax="9" zmin="12" zmax="13" />
-        <FixedConstraint indices="0 9 99" />
+        <FixedProjectiveConstraint indices="0 9 99" />
         <TriangleFEMForceField name="FEM3" youngModulus="5000" poissonRatio="0.3" method="large" />
         <TriangleBendingSprings name="FEM-Bend" stiffness="100" damping="0.1" />
         <TriangleCollisionModel />

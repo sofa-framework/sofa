@@ -24,10 +24,7 @@
 
 #include <sofa/helper/system/thread/CTime.h>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 /**
@@ -99,7 +96,7 @@ public:
             for (int i=0; i<T_NSTEPS; ++i) timers_total[i] = 0;
             for (int i=0; i<T_NSTEPS; ++i) timers_current[i] = 0;
         }
-        ctime_t t = CTime::getTime();
+        const ctime_t t = CTime::getTime();
         timer_start = t;
         timers_start = t;
         timer_nstep = 0;
@@ -114,7 +111,7 @@ public:
             timers_name[i] = timer_lastname;
             timer_lastname = name;
         }
-        ctime_t t = CTime::getTime();
+        const ctime_t t = CTime::getTime();
         timers_current[i] = t - timers_start;
         timers_start = t;
         timers_total[i] += timers_current[i];
@@ -125,7 +122,7 @@ public:
     {
         step();
         ++timer_niter;
-        ctime_t t = CTime::getTime();
+        const ctime_t t = CTime::getTime();
         timer_current = t - timer_start;
         timer_total += timer_current;
         timer_start = t;
@@ -152,8 +149,6 @@ public:
 };
 
 typedef TSimpleTimer<> SimpleTimer;
-
-}
 
 }
 

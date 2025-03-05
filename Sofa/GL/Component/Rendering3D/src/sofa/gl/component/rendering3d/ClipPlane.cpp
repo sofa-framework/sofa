@@ -28,10 +28,11 @@ using sofa::core::objectmodel::ComponentState ;
 namespace sofa::gl::component::rendering3d
 {
 
-int ClipPlaneClass = core::RegisterObject("OpenGL Clipping Plane")
-        .add< ClipPlane >()
-        ;
-
+void registerClipPlane(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Define arbitrary clipping plane into OpenGL.")
+        .add< ClipPlane >());
+}
 
 ClipPlane::ClipPlane()
     : position(initData(&position, sofa::type::Vec3(0,0,0), "position", "Point crossed by the clipping plane"))
@@ -75,9 +76,9 @@ void ClipPlane::fwdDraw(core::visual::VisualParams*)
     if (active.getValue())
     {
         glGetClipPlane(GL_CLIP_PLANE0+id.getValue(), saveEq);
-        sofa::type::Vec3 p = position.getValue();
+        const sofa::type::Vec3 p = position.getValue();
         sofa::type::Vec3 n = normal.getValue();
-        GLdouble c[4] = { (GLdouble) -n[0], (GLdouble)-n[1], (GLdouble)-n[2], (GLdouble)(p*n) };
+        const GLdouble c[4] = { (GLdouble) -n[0], (GLdouble)-n[1], (GLdouble)-n[2], (GLdouble)(p*n) };
         glClipPlane(GL_CLIP_PLANE0+id.getValue(), c);
         if (!wasActive)
             glEnable(GL_CLIP_PLANE0+id.getValue());

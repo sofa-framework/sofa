@@ -20,13 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/collision/NarrowPhaseDetection.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::core::collision
 {
 
 NarrowPhaseDetection::~NarrowPhaseDetection()
 {
-    for (auto& it : m_outputsMap)
+    for (const auto& it : m_outputsMap)
     {
         DetectionOutputVector* do_vec = it.second;
 
@@ -40,7 +41,7 @@ NarrowPhaseDetection::~NarrowPhaseDetection()
 
 void NarrowPhaseDetection::beginNarrowPhase()
 {
-    for (DetectionOutputMap::iterator it = m_outputsMap.begin(); it != m_outputsMap.end(); it++)
+    for (DetectionOutputMap::iterator it = m_outputsMap.begin(); it != m_outputsMap.end(); ++it)
     {
         DetectionOutputVector *do_vec = (it->second);
 
@@ -49,9 +50,31 @@ void NarrowPhaseDetection::beginNarrowPhase()
     }
 }
 
+void NarrowPhaseDetection::draw(const core::visual::VisualParams* vparams)
+{
+    if(! vparams->displayFlags().getShowDetectionOutputs()) return;
+
+    [[maybe_unused]] auto state = vparams->drawTool()->makeStateLifeCycle();
+    vparams->drawTool()->disableLighting();
+
+    std::vector<type::Vec3> points;
+
+    for (auto mapIt = m_outputsMap.begin(); mapIt!=m_outputsMap.end() ; ++mapIt)
+    {
+        for (unsigned idx = 0; idx != (*mapIt).second->size(); ++idx)
+        {
+            points.push_back((*mapIt).second->getFirstPosition(idx));
+            points.push_back((*mapIt).second->getSecondPosition(idx));
+        }
+    }
+    vparams->drawTool()->drawLines(points,5, type::g_red);
+    vparams->drawTool()->drawPoints(points, 10, type::g_blue);
+
+}
+
 void NarrowPhaseDetection::addCollisionPairs(const sofa::type::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
 {
-    for (sofa::type::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
+    for (sofa::type::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); ++it)
         addCollisionPair(*it);
 
     // m_outputsMap should just be filled in addCollisionPair function

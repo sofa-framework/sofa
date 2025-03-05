@@ -28,12 +28,11 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
-using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::simulation::graph::DAGSimulation;
 
-#include <sofa/component/engine/select/MeshROI.h>
+#include <sofa/component/engine/select/MeshROI.inl>
 using sofa::component::engine::select::MeshROI ;
 
 #include <sofa/core/visual/VisualParams.h>
@@ -45,7 +44,7 @@ using sofa::simulation::SceneLoaderXML ;
 using std::vector;
 using std::string;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 
 namespace sofa
@@ -62,19 +61,19 @@ struct MeshROI_test : public BaseSimulationTest,
     Node::SPtr m_root;
     ThisClass* m_thisObject;
 
-    void SetUp() override
+    void doSetUp() override
     {
-        simpleapi::importPlugin("Sofa.Component.Engine.Select");
-        simpleapi::importPlugin("Sofa.Component.Topology.Container.Constant");
-        simpleapi::importPlugin("Sofa.Component.IO.Mesh");
+        simpleapi::importPlugin(Sofa.Component.Engine.Select);
+        simpleapi::importPlugin(Sofa.Component.Topology.Container.Constant);
+        simpleapi::importPlugin(Sofa.Component.IO.Mesh);
 
         // SetUp3
-        string scene2 =
+        const string scene2 =
         "<?xml version='1.0'?>"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
         "   <Node name='node'>                                          "
         "       <MeshOBJLoader name='loader' filename='mesh/cube.obj'/>    "
-        "       <Mesh name='topology' src='@loader'/>                      "
+        "       <MeshTopology name='topology' src='@loader'/>                      "
         "       <MeshROI template='Vec3d' name='MeshROI'/>                 "
         "   </Node>                                                        "
         "</Node>                                                           " ;
@@ -87,9 +86,9 @@ struct MeshROI_test : public BaseSimulationTest,
         ASSERT_NE(m_thisObject, nullptr) ;
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
-        simulation::getSimulation()->unload(m_root) ;
+        sofa::simulation::node::unload(m_root) ;
     }
 
     /// It is important to freeze what are the available Data field
@@ -132,17 +131,17 @@ struct MeshROI_test : public BaseSimulationTest,
     /// Test bounding box computation against meshlab result
     void computeBoundingBoxTest()
     {
-        string scene1 =
+        const string scene1 =
         "<?xml version='1.0'?>"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
         "   <Node name='node'>                                          "
         "       <MeshOBJLoader name='loader' filename='mesh/dragon.obj'/>  "
-        "       <Mesh name='topology' src='@loader'/>                      "
+        "       <MeshTopology name='topology' src='@loader'/>                      "
         "       <MeshROI template='Vec3d' name='MeshROI'/>                 "
         "   </Node>                                                        "
         "</Node>                                                           " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.c_str());
         ASSERT_NE(root, nullptr) ;
 
         root->getChild("node")->getObject("MeshROI")->init();
@@ -158,7 +157,7 @@ struct MeshROI_test : public BaseSimulationTest,
         <Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >
            <Node name='node'>
                <MeshOBJLoader name='loader' filename='mesh/cube.obj'/>
-               <Mesh name='topology' src='@loader'/>
+               <MeshTopology name='topology' src='@loader'/>
                <MeshROI template='Vec3d' name='MeshROI' position='0. 0. 0. 2. 0. 0.' />
            </Node>
         </Node>

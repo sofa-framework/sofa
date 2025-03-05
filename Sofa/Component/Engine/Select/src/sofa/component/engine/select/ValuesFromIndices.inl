@@ -64,7 +64,7 @@ template <class T>
 void ValuesFromIndices<T>::doUpdate()
 {
     helper::ReadAccessor<Data<VecValue> > in = f_in;
-    helper::ReadAccessor<Data<VecIndex> > indices = f_indices;
+    const helper::ReadAccessor<Data<VecIndex> > indices = f_indices;
 
     helper::WriteOnlyAccessor<Data<VecValue> > out = f_out;
 

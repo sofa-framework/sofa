@@ -82,7 +82,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
         //Process all the component of the current category, and add them to the group
         for (itComponent=rangeCategory.first; itComponent != rangeCategory.second; ++itComponent)
         {
-            ClassEntry::SPtr entry = itComponent->second;
+            const ClassEntry::SPtr entry = itComponent->second;
             const std::string &componentName=entry->className;
 
             //Add the component to the category

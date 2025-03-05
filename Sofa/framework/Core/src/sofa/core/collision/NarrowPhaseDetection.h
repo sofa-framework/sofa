@@ -54,6 +54,9 @@ protected:
     ~NarrowPhaseDetection() override;
 
 public:
+
+    void draw(const core::visual::VisualParams* vparams) override;
+
     /// Clear all the potentially colliding pairs detected in the previous simulation step
     virtual void beginNarrowPhase();
 
@@ -86,8 +89,7 @@ protected:
     DetectionOutputMap m_outputsMap;
 
     size_t m_primitiveTestCount; // used only for statistics purpose
-
-
+    
 };
 
 } // namespace sofa::core::collision

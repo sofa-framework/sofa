@@ -74,8 +74,8 @@ void QuatToRigidEngine<DataTypes>::doUpdate()
 
     unsigned int sizeRigids = positions.size();
 
-    int nbPositions = positions.size();
-    int nbOrientations = orientations.size();
+    const int nbPositions = positions.size();
+    const int nbOrientations = orientations.size();
     if (!nbOrientations)
     {
         msg_warning() << "No orientations";

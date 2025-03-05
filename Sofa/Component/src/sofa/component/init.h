@@ -24,6 +24,11 @@
 
 #include <sofa/component/config.h>
 
+namespace sofa::core
+{
+    class ObjectFactory;
+}
+
 namespace sofa::component
 {
 	SOFA_COMPONENT_API void init();

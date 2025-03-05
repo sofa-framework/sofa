@@ -40,7 +40,7 @@ Visitor::Result MechanicalComputeDfVisitor::fwdMappedMechanicalState(simulation:
 
 Visitor::Result MechanicalComputeDfVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
-    if( !ff->isCompliance.getValue() ) ff->addDForce(this->mparams, res);
+    ff->addDForce(this->mparams, res);
     return RESULT_CONTINUE;
 }
 

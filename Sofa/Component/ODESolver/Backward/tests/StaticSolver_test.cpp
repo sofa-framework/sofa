@@ -23,7 +23,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/component/odesolver/backward/StaticSolver.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <vector>
 #include <algorithm>
@@ -51,45 +51,46 @@ static constexpr SReal l = youngModulus * poissonRatio / ((1.0 + poissonRatio) *
 class StaticSolverTest : public sofa::testing::BaseTest
 {
 public:
-    void onSetUp() override {
-
-        if (! getSimulation()) {
-            setSimulation(new DAGSimulation()) ;
-        }
+    void doSetUp() override {
 
         root = getSimulation()->createNewNode("root");
 
-        createObject(root, "RequiredPlugin", {{"pluginName", "Sofa.Component"}});
+        createObject(root, "RequiredPlugin", {{"pluginName", Sofa.Component}});
+        createObject(root, "DefaultAnimationLoop");
         createObject(root, "RegularGridTopology", {{"name", "grid"}, {"min", "-7.5 -7.5 0"}, {"max", "7.5 7.5 80"}, {"n", "3 3 9"}});
-        auto s = createObject(root, "StaticSolver", {{"newton_iterations", "10"}});
-        createObject(root, "SparseLDLSolver");
+        const auto s = createObject(root, "StaticSolver", {{"newton_iterations", "10"}});
+        createObject(root, "SparseLDLSolver", {{"template", "CompressedRowSparseMatrixd"}});
         createObject(root, "MechanicalObject", {{"name", "mo"}, {"src", "@grid"}});
         createObject(root, "TetrahedronSetTopologyContainer", {{"name", "mechanical_topology"}});
         createObject(root, "TetrahedronSetTopologyModifier");
         createObject(root, "Hexa2TetraTopologicalMapping", {{"input", "@grid"}, {"output", "@mechanical_topology"}});
         createObject(root, "TetrahedronHyperelasticityFEMForceField", {
+            {"name", "FEM"},
             {"materialName", "StVenantKirchhoff"},
             {"ParameterSet", std::to_string(mu) + " " + std::to_string(l)},
             {"topology", "@mechanical_topology"}
         });
+        ASSERT_NE(root->getObject("FEM"), nullptr);
+        ASSERT_NE(root->getObject("FEM")->findData("materialName"), nullptr);
+        ASSERT_EQ(root->getObject("FEM")->findData("materialName")->getValueString(), "StVenantKirchhoff");
 
-        createObject(root, "BoxROI", {{"name", "top_roi"}, {"box", "-7.5 -7.5 -0.9 7.5 7.5 0.1"}});
-        createObject(root, "FixedConstraint", {{"indices", "@top_roi.indices"}});
+        createObject(root, "BoxROI", {{"name", "top_roi"}, {"box", "-7.5 -7.5 -0.9 7.5 7.5 0.1"}, {"triangles", "@mechanical_topology.triangles"}});
+        createObject(root, "FixedProjectiveConstraint", {{"indices", "@top_roi.indices"}});
 
-        createObject(root, "BoxROI", {{"name", "base_roi"}, {"box", "-7.5 -7.5 79.9 7.5 7.5 80.1"}});
+        createObject(root, "BoxROI", {{"name", "base_roi"}, {"box", "-7.5 -7.5 79.9 7.5 7.5 80.1"}, {"triangles", "@mechanical_topology.triangles"}});
         createObject(root, "SurfacePressureForceField", {{"pressure", "100"}, {"mainDirection", "0 -1 0"}, {"triangleIndices", "@base_roi.trianglesInROI"}});
 
         solver = dynamic_cast<StaticSolver *> (s.get());
     }
 
-    void onTearDown() override {
-        getSimulation()->unload(root);
+    void doTearDown() override {
+        sofa::simulation::node::unload(root);
     }
 
-    auto execute() -> std::pair<std::vector<double>, std::vector<double>> {
+    auto execute() -> std::pair<std::vector<SReal>, std::vector<SReal>> {
         using namespace std;
-        getSimulation()->init(root.get());
-        getSimulation()->animate(root.get(), 1);
+        sofa::simulation::node::initRoot(root.get());
+        sofa::simulation::node::animate(root.get(), 1_sreal);
         auto residuals = solver->squared_residual_norms();
         auto corrections = solver->squared_increment_norms();
         transform(begin(residuals), end(residuals), begin(residuals), [](SReal r) {return sqrt(r);});
@@ -106,28 +107,28 @@ TEST_F(StaticSolverTest, Residuals) {
     using namespace sofa::core::objectmodel;
     // These are the expected force residual if we do not activate any convergence threshold
     // and force the solve to do 10 Newton iterations
-    std::vector<double> expected_force_residual_norms = {
-        1.237102e+03,
-        6.931312e+00,
-        2.634097e-01,
-        2.829366e-02,
-        2.928456e-03,
-        3.017181e-04,
-        3.108847e-05,
-        3.203062e-06,
-        3.300435e-07,
-        3.398669e-08
+    const std::vector<double> expected_force_residual_norms = {
+        2535.2291278587031,
+        196.33640050006048,
+        35.551907341224727,
+        2.4346076657342617,
+        0.25822327664821382,
+        0.028069066914505583,
+        0.0041872264223336737,
+        0.00058185560326781769,
+        8.5402692438165759e-05,
+        1.2283305451908398e-05
     };
 
     // Disable all convergence criteria
     dynamic_cast< Data<unsigned> * > ( this->solver->findData("newton_iterations") )->setValue(10);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("absolute_correction_tolerance_threshold") )->setValue(-1);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("relative_correction_tolerance_threshold") )->setValue(-1);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("absolute_residual_tolerance_threshold")   )->setValue(-1);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("relative_residual_tolerance_threshold")   )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("absolute_correction_tolerance_threshold") )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("relative_correction_tolerance_threshold") )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("absolute_residual_tolerance_threshold")   )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("relative_residual_tolerance_threshold")   )->setValue(-1);
     dynamic_cast< Data<bool> *     > ( this->solver->findData("should_diverge_when_residual_is_growing") )->setValue(false);
     ;
-    std::vector<double> actual_force_residual_norms = this->execute().first;
+    const std::vector<SReal> actual_force_residual_norms = this->execute().first;
 
     EXPECT_EQ(actual_force_residual_norms.size(), expected_force_residual_norms.size())
     << "The static ODE solver is supposed to execute 10 Newton steps since the convergence criteria were deactivated.";
@@ -142,68 +143,61 @@ TEST_F(StaticSolverTest, RelativeResiduals) {
     using namespace sofa::core::objectmodel;
     // Disable all convergence criteria BUT the relative residual
     dynamic_cast< Data<unsigned> * > ( this->solver->findData("newton_iterations") )->setValue(10);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("absolute_correction_tolerance_threshold") )->setValue(-1);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("relative_correction_tolerance_threshold") )->setValue(-1);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("absolute_residual_tolerance_threshold")   )->setValue(-1);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("relative_residual_tolerance_threshold")   )->setValue(1e-5);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("absolute_correction_tolerance_threshold") )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("relative_correction_tolerance_threshold") )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("absolute_residual_tolerance_threshold")   )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("relative_residual_tolerance_threshold")   )->setValue(1e-5);
     dynamic_cast< Data<bool> *     > ( this->solver->findData("should_diverge_when_residual_is_growing") )->setValue(false);
 
-    // The list of relative residuals are
-    //       1             2             3             4             5             6             7             8             9             10
-    // 1.000000e+00, 5.602864e-03, 2.129249e-04, 2.287093e-05, 2.367191e-06, 2.438911e-07, 2.513007e-08, 2.589194e-09,  2.668053e-10, 2.748057e-11
-    // Setting a relative criterion of 1e-5 should therefore converge after the 5th Newton iteration.
-
-    std::vector<double> actual_force_residual_norms = this->execute().first;
-    EXPECT_EQ(actual_force_residual_norms.size(), 5)
-    << "The static ODE solver is supposed to converge after 5 Newton steps when using a relative residual threshold of 1e-5.";
+    const sofa::type::vector<SReal> actual_force_residual_norms = this->execute().first;
+    EXPECT_EQ(actual_force_residual_norms.size(), 7)
+    << "The static ODE solver is supposed to converge after 7 Newton steps when using a relative residual threshold of 1e-5.\n"
+    << actual_force_residual_norms;
 }
 
 TEST_F(StaticSolverTest, AbsoluteResiduals) {
     using namespace sofa::core::objectmodel;
     // Disable all convergence criteria BUT the absolute residual
     dynamic_cast< Data<unsigned> * > ( this->solver->findData("newton_iterations") )->setValue(10);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("absolute_correction_tolerance_threshold") )->setValue(-1);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("relative_correction_tolerance_threshold") )->setValue(-1);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("absolute_residual_tolerance_threshold")   )->setValue(1e-5);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("relative_residual_tolerance_threshold")   )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("absolute_correction_tolerance_threshold") )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("relative_correction_tolerance_threshold") )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("absolute_residual_tolerance_threshold")   )->setValue(1e-5);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("relative_residual_tolerance_threshold")   )->setValue(-1);
     dynamic_cast< Data<bool> *     > ( this->solver->findData("should_diverge_when_residual_is_growing") )->setValue(false);
 
-    // The list of relative residuals are
-    //       1             2             3             4             5             6             7             8             9             10
-    // 1.237102e+03, 6.931312e+00, 2.634097e-01, 2.829366e-02, 2.928456e-03, 3.017181e-04, 3.108845e-05, 3.203097e-06, 3.300652e-07, 3.399625e-08
-    // Setting an absolute criterion of 1e-5 should therefore converge after the 8th Newton iteration.
-
-    std::vector<double> actual_force_residual_norms = this->execute().first;
-    EXPECT_EQ(actual_force_residual_norms.size(), 8)
-    << "The static ODE solver is supposed to converge after 8 Newton steps when using an absolute residual threshold of 1e-5.";
+    const sofa::type::vector<SReal> actual_force_residual_norms = this->execute().first;
+    EXPECT_EQ(actual_force_residual_norms.size(), 10)
+    << "The static ODE solver is supposed to converge after 10 Newton steps when using an absolute residual threshold of 1e-5.\n"
+    << actual_force_residual_norms;
 }
 
 TEST_F(StaticSolverTest, Increments) {
     using namespace sofa::core::objectmodel;
     // These are the expected correction increment norms if we do not activate any convergence threshold
     // and force the solve to do 10 Newton iterations
-    std::vector<double> expected_increment_norms = {
-            1.781729e+01,
-            5.043276e-01,
-            1.201313e-02,
-            1.237255e-03,
-            1.250073e-04,
-            1.289042e-05,
-            1.329191e-06,
-            1.369818e-07,
-            1.411500e-08,
-            1.454314e-09,
+
+    const std::vector<double> expected_increment_norms = {
+        22.297538536402058,
+        4.3606022998860619,
+        0.99483878944198267,
+        0.051485395498607853,
+        0.004446587487513475,
+        0.00046108630684311004,
+        6.8123139478945454e-05,
+        9.3980023748021393e-06,
+        1.3822152675332613e-06,
+        1.9854698499894074e-07
     };
 
     // Disable all convergence criteria
     dynamic_cast< Data<unsigned> * > ( this->solver->findData("newton_iterations") )->setValue(10);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("absolute_correction_tolerance_threshold") )->setValue(-1);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("relative_correction_tolerance_threshold") )->setValue(-1);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("absolute_residual_tolerance_threshold")   )->setValue(-1);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("relative_residual_tolerance_threshold")   )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("absolute_correction_tolerance_threshold") )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("relative_correction_tolerance_threshold") )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("absolute_residual_tolerance_threshold")   )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("relative_residual_tolerance_threshold")   )->setValue(-1);
     dynamic_cast< Data<bool> *     > ( this->solver->findData("should_diverge_when_residual_is_growing") )->setValue(false);
     ;
-    std::vector<double> actual_increment_norms = this->execute().second;
+    const std::vector<SReal> actual_increment_norms = this->execute().second;
 
     EXPECT_EQ(actual_increment_norms.size(), expected_increment_norms.size())
     << "The static ODE solver is supposed to execute 10 Newton steps since the convergence criteria were deactivated.";
@@ -218,38 +212,30 @@ TEST_F(StaticSolverTest, RelativeIncrements) {
     using namespace sofa::core::objectmodel;
     // Disable all convergence criteria BUT the relative increment corrections
     dynamic_cast< Data<unsigned> * > ( this->solver->findData("newton_iterations") )->setValue(10);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("absolute_correction_tolerance_threshold") )->setValue(-1);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("relative_correction_tolerance_threshold") )->setValue(1e-5);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("absolute_residual_tolerance_threshold")   )->setValue(-1);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("relative_residual_tolerance_threshold")   )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("absolute_correction_tolerance_threshold") )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("relative_correction_tolerance_threshold") )->setValue(1e-5);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("absolute_residual_tolerance_threshold")   )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("relative_residual_tolerance_threshold")   )->setValue(-1);
     dynamic_cast< Data<bool> *     > ( this->solver->findData("should_diverge_when_residual_is_growing") )->setValue(false);
 
-    // The list of relative corrections are
-    //       1             2             3             4             5             6             7             8             9             10
-    // 1.000000e+00, 2.819276e-02, 6.711671e-04, 6.912001e-05, 6.983561e-06, 7.201258e-07, 7.425552e-08, 7.652517e-09,  7.885371e-10, 8.124548e-11
-    // Setting a relative criterion of 1e-5 should therefore converge after the 5th Newton iteration.
-
-    std::vector<double> actual_increment_norms = this->execute().second;
-    EXPECT_EQ(actual_increment_norms.size(), 5)
-    << "The static ODE solver is supposed to converge after 5 Newton steps when using a relative correction threshold of 1e-5.";
+    const sofa::type::vector<SReal> actual_increment_norms = this->execute().second;
+    EXPECT_EQ(actual_increment_norms.size(), 7)
+    << "The static ODE solver is supposed to converge after 7 Newton steps when using a relative correction threshold of 1e-5.\n"
+    << actual_increment_norms;
 }
 
 TEST_F(StaticSolverTest, AbsoluteIncrements) {
     using namespace sofa::core::objectmodel;
     // Disable all convergence criteria BUT the absolute increment corrections
     dynamic_cast< Data<unsigned> * > ( this->solver->findData("newton_iterations") )->setValue(10);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("absolute_correction_tolerance_threshold") )->setValue(1e-5);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("relative_correction_tolerance_threshold") )->setValue(-1);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("absolute_residual_tolerance_threshold")   )->setValue(-1);
-    dynamic_cast< Data<double> *   > ( this->solver->findData("relative_residual_tolerance_threshold")   )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("absolute_correction_tolerance_threshold") )->setValue(1e-5);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("relative_correction_tolerance_threshold") )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("absolute_residual_tolerance_threshold")   )->setValue(-1);
+    dynamic_cast< Data<SReal> *   > ( this->solver->findData("relative_residual_tolerance_threshold")   )->setValue(-1);
     dynamic_cast< Data<bool> *     > ( this->solver->findData("should_diverge_when_residual_is_growing") )->setValue(false);
 
-    // The list of absolute corrections are
-    //       1             2             3             4             5             6             7             8             9             10
-    // 1.781729e+01, 5.043276e-01, 1.201313e-02, 1.237255e-03, 1.250073e-04, 1.289042e-05, 1.329191e-06, 1.369819e-07, 1.411500e-08, 1.454313e-09
-    // Setting an absolute criterion of 1e-5 should therefore converge after the 7th Newton iteration.
-
-    std::vector<double> actual_increment_norms = this->execute().second;
-    EXPECT_EQ(actual_increment_norms.size(), 7)
-    << "The static ODE solver is supposed to converge after 7 Newton steps when using a relative correction threshold of 1e-5.";
+    const sofa::type::vector<SReal> actual_increment_norms = this->execute().second;
+    EXPECT_EQ(actual_increment_norms.size(), 8)
+    << "The static ODE solver is supposed to converge after 8 Newton steps when using a relative correction threshold of 1e-5.\n"
+    << actual_increment_norms;
 }

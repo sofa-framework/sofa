@@ -48,7 +48,7 @@ SReal DiagonalMass<RigidTypes, GeometricalTypes>::getPotentialEnergyRigidImpl( c
     const VecCoord& _x = x.getValue();
 
     // gravity
-    Vec3d g ( this->getContext()->getGravity() );
+    const Vec3& g = this->getContext()->getGravity();
     Deriv theGravity;
     RigidTypes::set( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<_x.size(); i++)
@@ -65,7 +65,7 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::drawRigid3dImpl(const VisualPar
 {
     const MassVector &masses= d_vertexMass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
 
     if(masses.size() != x.size()) return;
 
@@ -85,9 +85,9 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::drawRigid3dImpl(const VisualPar
         // So to get lx,ly,lz back we need to do
         //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
         // Note that RigidMass inertiaMatrix is already divided by M
-        double m00 = masses[i].inertiaMatrix[0][0];
-        double m11 = masses[i].inertiaMatrix[1][1];
-        double m22 = masses[i].inertiaMatrix[2][2];
+        const double m00 = masses[i].inertiaMatrix[0][0];
+        const double m11 = masses[i].inertiaMatrix[1][1];
+        const double m22 = masses[i].inertiaMatrix[2][2];
         len[0] = sqrt(m11+m22-m00);
         len[1] = sqrt(m00+m22-m11);
         len[2] = sqrt(m00+m11-m22);
@@ -113,7 +113,7 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::drawRigid2dImpl(const VisualPar
 {
     const MassVector &masses= d_vertexMass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
     for (unsigned int i=0; i<x.size(); i++)
     {
         if (masses[i].mass == 0) continue;
@@ -156,9 +156,9 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::initRigidImpl()
         
     if(!l_topology)
     {
-        msg_error(this) << "Unable to retreive a valid MeshTopology component in the current context. \n"
+        msg_error(this) << "Unable to retrieve a valid MeshTopology component in the current context. \n"
                              "The component cannot be initialized and thus is de-activated. \n "
-                             "To supress this warning you can add a Topology component in the parent node of'<"<< this->getName() <<">'.\n" ;
+                             "To suppress this warning you can add a Topology component in the parent node of'<"<< this->getName() <<">'.\n" ;
         this->d_componentState.setValue(ComponentState::Invalid) ;
     }
     else
@@ -332,8 +332,9 @@ type::Vec6 DiagonalMass<Rigid3Types>::getMomentum ( const MechanicalParams* mpar
     return getMomentumRigid3Impl<Rigid3Types>(mparams, vx, vv) ;
 }
 
-// Register in the Factory
-int DiagonalMassClass = core::RegisterObject("Define a specific mass for each particle")
+void registerDiagonalMass(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compute a lumped (diagonalized) mass matrix resulting from the space integration of a density over a domain.")
         .add< DiagonalMass<Vec3Types> >()
         .add< DiagonalMass<Vec2Types, Vec3Types> >()
         .add< DiagonalMass<Vec1Types> >()
@@ -341,9 +342,8 @@ int DiagonalMassClass = core::RegisterObject("Define a specific mass for each pa
         .add< DiagonalMass<Vec1Types, Vec3Types> >()
         .add< DiagonalMass<Rigid3Types> >()
         .add< DiagonalMass<Rigid2Types> >()
-        .add< DiagonalMass<Rigid2Types, Rigid3Types> >()
-
-        ;
+        .add< DiagonalMass<Rigid2Types, Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec3Types>;
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec2Types>;

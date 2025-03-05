@@ -3,7 +3,7 @@
 
 #include <QVBoxLayout>
 #include <QGraphicsScene>
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 #include <sofa/defaulttype/VecTypes.h>
 //#include "labelimagetoolbox.h"
 

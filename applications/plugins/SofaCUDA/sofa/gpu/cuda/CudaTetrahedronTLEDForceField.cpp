@@ -29,13 +29,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/topology/container/grid/RegularGridTopology.h>
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int CudaTetrahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU TLED tetrahedron forcefield using CUDA")
@@ -196,7 +191,7 @@ void CudaTetrahedronTLEDForceField::reinit()
             }
         }
 
-        // Tesselation of each cube into 6 tetrahedra
+        // Tessellation of each cube into 6 tetrahedra
         inputElems.reserve(nbcubes*6);
         for (int i=0; i<nbcubes; i++)
         {
@@ -270,15 +265,15 @@ void CudaTetrahedronTLEDForceField::reinit()
         nbVertex = nelems.rbegin()->first + 1;
     }
 
-    std::cout << "CudaTetrahedronTLEDForceField: " << nbElems << " elements, " << nbVertex << " nodes, max " << nbElementPerVertex << " elements per node" << std::endl;
+    msg_info() << "CudaTetrahedronTLEDForceField: " << nbElems << " elements, " << nbVertex << " nodes, max " << nbElementPerVertex << " elements per node";
 
 
     /**
      * Precomputations
      */
-    std::cout << "CudaTetrahedronTLEDForceField: precomputations..." << std::endl;
+    msg_info() << "CudaTetrahedronTLEDForceField: precomputations...";
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     nelems.clear();
 
     // Shape function natural derivatives DhDr
@@ -476,7 +471,7 @@ void CudaTetrahedronTLEDForceField::addForce (const sofa::core::MechanicalParams
     const VecCoord& x  =   dataX.getValue()  ;
 
     // Gets initial positions (allow to compute displacements by doing the difference between initial and current positions)
-    const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     f.resize(x.size());
     CudaTetrahedronTLEDForceField3f_addForce(m_device_nodesPerElement,
@@ -516,7 +511,6 @@ void CudaTetrahedronTLEDForceField::addDForce (const sofa::core::MechanicalParam
 
 }
 
-
 // --------------------------------------------------------------------------------------
 // Computes element volumes for tetrahedral elements
 // --------------------------------------------------------------------------------------
@@ -555,7 +549,7 @@ void CudaTetrahedronTLEDForceField::ComputeDhDxTetra(const Element& e, const Vec
     }
 
     // Jacobian determinant
-    float detJ = J[0][0]*(J[1][1]*J[2][2] - J[1][2]*J[2][1]) +
+    const float detJ = J[0][0]*(J[1][1]*J[2][2] - J[1][2]*J[2][1]) +
             J[1][0]*(J[0][2]*J[2][1] - J[0][1]*J[2][2]) +
             J[2][0]*(J[0][1]*J[1][2] - J[0][2]*J[1][1]);
 
@@ -595,8 +589,8 @@ void CudaTetrahedronTLEDForceField::updateLameCoefficients(void)
     Mu = youngModulus.getValue()/(2*(1 + poissonRatio.getValue()));
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
 
-} // namespace sofa
+
+

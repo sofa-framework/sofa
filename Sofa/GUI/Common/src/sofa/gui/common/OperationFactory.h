@@ -72,7 +72,7 @@ public:
     static Operation* Instanciate(const std::string &name)
     {
         const RegisterStorage &reg = getInstance()->registry;
-        RegisterStorage::const_iterator it = reg.find(name);
+        const RegisterStorage::const_iterator it = reg.find(name);
         if (it != reg.end())
         {
             const OperationCreator *creator=it->second;

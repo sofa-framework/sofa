@@ -26,14 +26,52 @@
 #include <sofa/testing/NumericTest.h>
 
 #include <sofa/helper/RandomGenerator.h>
+#include <sofa/testing/LinearCongruentialRandomGenerator.h>
 
-template<typename TBlock, typename TVecBlock, typename TVecIndex>
-void generateMatrix(sofa::linearalgebra::CompressedRowSparseMatrix<TBlock, TVecBlock, TVecIndex>& matrix,
+
+TEST(matrix_bloc_traits, subBlock)
+{
+    sofa::type::Mat<6, 6, SReal> mat6x6;
+
+    sofa::testing::LinearCongruentialRandomGenerator lcg(46515387);
+    for (sofa::Size i = 0; i < mat6x6.nbLines; i++)
+    {
+        for (sofa::Size j = 0; j < mat6x6.nbCols; j++)
+        {
+            mat6x6(i, j) = lcg.generateInRange(0., 1.);
+        }
+    }
+
+    for (const auto& [r, c] : sofa::type::vector<std::pair<sofa::Index, sofa::Index>>{{0, 0}, {0, 3}, {3, 0}, {3, 3}, {1, 2}})
+    {
+        sofa::type::Mat<3, 3, SReal> mat3x3;
+        sofa::linearalgebra::matrix_bloc_traits<sofa::type::Mat<6, 6, SReal>, sofa::Index>::subBlock(mat6x6, r, c, mat3x3);
+
+        for (sofa::Size i = 0; i < mat3x3.nbLines; i++)
+        {
+            for (sofa::Size j = 0; j < mat3x3.nbCols; j++)
+            {
+                EXPECT_EQ(mat6x6(i + r, j + c), mat3x3(i, j));
+            }
+        }
+    }
+
+    for (const auto& [r, c] : sofa::type::vector<std::pair<sofa::Index, sofa::Index>>{{0, 0}, {0, 3}, {3, 0}, {3, 3}, {1, 2}})
+    {
+        SReal real;
+        sofa::linearalgebra::matrix_bloc_traits<sofa::type::Mat<6, 6, SReal>, sofa::Index>::subBlock(mat6x6, r, c, real);
+        EXPECT_EQ(real, mat6x6(r, c));
+    }
+
+}
+
+template<typename TBlock>
+void generateMatrix(sofa::linearalgebra::CompressedRowSparseMatrix<TBlock>& matrix,
     sofa::SignedIndex nbRows, sofa::SignedIndex nbCols,
-    typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlock, TVecBlock, TVecIndex>::Real sparsity,
+    typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlock>::Real sparsity,
     long seed)
 {
-    using Real = typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlock, TVecBlock, TVecIndex>::Real;
+    using Real = typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlock>::Real;
     const auto nbNonZero = static_cast<sofa::SignedIndex>(sparsity * static_cast<Real>(nbRows*nbCols));
 
     sofa::helper::RandomGenerator randomGenerator;
@@ -50,6 +88,7 @@ void generateMatrix(sofa::linearalgebra::CompressedRowSparseMatrix<TBlock, TVecB
     }
     matrix.compress();
 }
+
 
 /**
  * Two matrices A and B are generated randomly as CompressedRowSparseMatrix.
@@ -183,4 +222,135 @@ TEST(CompressedRowSparseMatrix, transposeProduct)
             EXPECT_NEAR(std::get<2>(triplets_CRS[i]), std::get<2>(triplets_EigenMap[i]), 1e-10);
         }
     }
+}
+
+TEST(CompressedRowSparseMatrix, fullRowsNoEntries)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrix<SReal> A;
+    A.resize(1321, 3556);
+    EXPECT_TRUE(A.getRowIndex().empty());
+    EXPECT_NO_THROW(A.fullRows());
+    EXPECT_EQ(A.getRowIndex().size(), 1321);
+
+    //make sure that we can iterate, but the content is empty
+
+    std::vector<std::tuple<int, int, SReal> > triplets_CRS;
+    for (unsigned int it_rows_k=0; it_rows_k < A.rowIndex.size() ; it_rows_k ++)
+    {
+        const auto row = A.rowIndex[it_rows_k];
+        decltype(A)::Range rowRange( A.rowBegin[it_rows_k], A.rowBegin[it_rows_k+1] );
+        for(auto xj = rowRange.begin() ; xj < rowRange.end() ; ++xj )
+        {
+            const auto col = A.colsIndex[xj];
+            const auto k = A.colsValue[xj];
+            triplets_CRS.emplace_back(row, col, k);
+        }
+    }
+    EXPECT_TRUE(triplets_CRS.empty());
+}
+
+TEST(CompressedRowSparseMatrix, fullRowsWithEntries)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrix<SReal> A;
+    generateMatrix(A, 1321, 3556, 0.0003, 12);
+    EXPECT_FALSE(A.getRowIndex().empty());
+    EXPECT_NO_THROW(A.fullRows());
+    EXPECT_EQ(A.getRowIndex().size(), 1321);
+}
+
+
+TEST(CompressedRowSparseMatrix, copyNonZeros)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrix<SReal> A;
+    generateMatrix(A, 1321, 3556, 0.0003, 12);
+
+    const auto numberNonZeroValues1 = A.colsValue.size();
+
+    A.add(23, 569, 0);
+    A.add(874, 326, 0);
+    A.add(769, 1789, 0);
+    A.compress();
+
+    const auto numberNonZeroValues2 = A.colsValue.size();
+    EXPECT_GT(numberNonZeroValues2, numberNonZeroValues1);
+
+    sofa::linearalgebra::CompressedRowSparseMatrix<SReal> B;
+
+    B.copyNonZeros(A);
+    const auto numberNonZeroValues3 = B.colsValue.size();
+
+    EXPECT_EQ(B.rowBSize(), A.rowBSize());
+    EXPECT_EQ(B.colBSize(), A.colBSize());
+
+    EXPECT_EQ(B.rowSize(), A.rowSize());
+    EXPECT_EQ(B.colSize(), A.colSize());
+
+    EXPECT_EQ(numberNonZeroValues1, numberNonZeroValues3);
+}
+
+TEST(CompressedRowSparseMatrix, copyNonZerosFrom3x3Blocks)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<3, 3, SReal>> A;
+    generateMatrix(A, 1321, 3556, 0.0003, 12);
+
+    const auto numberNonZeroValues1 = A.colsValue.size();
+
+    A.add(23, 569, 0);
+    A.add(874, 326, 0);
+    A.add(769, 1789, 0);
+    A.compress();
+
+    const auto numberNonZeroValues2 = A.colsValue.size();
+    EXPECT_GT(numberNonZeroValues2, numberNonZeroValues1);
+
+    sofa::linearalgebra::CompressedRowSparseMatrix<SReal> B;
+
+    B.copyNonZeros(A);
+
+    for (sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<3, 3, SReal>>::Index r = 0; r < A.rowSize(); ++r)
+    {
+        for (sofa::linearalgebra::CompressedRowSparseMatrix<SReal>::Index c = 0; c < A.colSize(); ++c)
+        {
+            EXPECT_NEAR(A(r, c), B(r, c), 1e-12_sreal) << "r = " << r << ", c = " << c;
+        }
+    }
+}
+
+TEST(CompressedRowSparseMatrix, copyNonZerosFrom1x3Blocks)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Vec<3, SReal>> A;
+    generateMatrix(A, 1321, 3556, 0.0003, 12);
+
+    const auto numberNonZeroValues1 = A.colsValue.size();
+
+    A.add(23, 569, 0);
+    A.add(874, 326, 0);
+    A.add(769, 1789, 0);
+    A.compress();
+
+    const auto numberNonZeroValues2 = A.colsValue.size();
+    EXPECT_GT(numberNonZeroValues2, numberNonZeroValues1);
+
+    sofa::linearalgebra::CompressedRowSparseMatrix<SReal> B;
+
+    B.copyNonZeros(A);
+
+    for (sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Vec<3, SReal>>::Index r = 0; r < A.rowSize(); ++r)
+    {
+        for (sofa::linearalgebra::CompressedRowSparseMatrix<SReal>::Index c = 0; c < A.colSize(); ++c)
+        {
+            EXPECT_NEAR(A(r, c), B(r, c), 1e-12_sreal) << "r = " << r << ", c = " << c;
+        }
+    }
+}
+
+TEST(CompressedRowSparseMatrix, emptyMatrixGetRowRange)
+{
+    EXPECT_EQ(sofa::linearalgebra::CompressedRowSparseMatrixMechanical<SReal>::s_invalidIndex, std::numeric_limits<sofa::SignedIndex>::lowest());
+
+    const sofa::linearalgebra::CompressedRowSparseMatrixMechanical<SReal> A;
+
+    const auto range = A.getRowRange(0);
+    EXPECT_EQ(range.first, sofa::linearalgebra::CompressedRowSparseMatrixMechanical<SReal>::s_invalidIndex);
+    EXPECT_EQ(range.second, sofa::linearalgebra::CompressedRowSparseMatrixMechanical<SReal>::s_invalidIndex);
 }

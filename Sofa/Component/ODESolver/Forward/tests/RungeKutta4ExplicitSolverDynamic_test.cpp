@@ -106,9 +106,9 @@ struct RungeKutta4ExplicitSolverDynamic_test : public component::odesolver::test
         velocitiesArray.push_back(v0);
 
         // Constants
-        double stepBy2 = h/2.0;
-        double stepBy3 = h/3.0;
-        double stepBy6 = h/6.0;
+        const double stepBy2 = h/2.0;
+        const double stepBy3 = h/3.0;
+        const double stepBy6 = h/6.0;
         double pos,vel,newX,k1v,k2v,k3v,k4v,k1a,k2a,k3a,k4a,pos2,vel2,acc2;
 
         for(int i=1;i< size+1; i++)
@@ -162,14 +162,14 @@ struct RungeKutta4ExplicitSolverDynamic_test : public component::odesolver::test
         double time = m_si.root->getTime();
 
         // Get mechanical object
-        simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
+        const simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
         typename MechanicalObject::SPtr dofs = massNode->get<MechanicalObject>(m_si.root->SearchDown);
 
         // Animate
         do
         {              
             // Record the mass position
-            Coord p0=dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[0];
+            Coord p0=dofs.get()->read(sofa::core::vec_id::read_access::position)->getValue()[0];
 
             double absoluteError = fabs(p0[1]-positionsArray[i]);
 
@@ -195,13 +195,13 @@ struct RungeKutta4ExplicitSolverDynamic_test : public component::odesolver::test
 
 };
 
-// Define the list of DataTypes to instanciate
+// Define the list of DataTypes to instantiate
 using ::testing::Types;
 typedef Types<
     Vec3Types
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(RungeKutta4ExplicitSolverDynamic_test, DataTypes);
 
 // Test case: h=0.1 k=100 m =10 rm=0.1 rk=0.1

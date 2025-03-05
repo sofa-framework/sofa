@@ -32,7 +32,8 @@ namespace cliplane_test
 {
 
 int initMessage(){
-    sofa::simpleapi::importPlugin("SofaOpenglVisual");
+    sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+    sofa::simpleapi::importPlugin("Sofa.GL.Component.Rendering3D");
 
     /// Install the backtrace so that we have more information in case of test segfault.
     BackTrace::autodump() ;
@@ -45,9 +46,7 @@ class TestClipPlane : public BaseTest {
 public:
     void SetUp() override
     {
-        sofa::component::initSofaBaseMechanics(); // needed to instanciate MechanicalObject
-
-        sofa::simulation::setSimulation(new DAGSimulation());
+        assert(sofa::simulation::getSimulation());
     }
 
     void checkClipPlaneValidAttributes();

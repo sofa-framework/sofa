@@ -24,13 +24,14 @@
 #include <sofa/component/solidmechanics/spring/config.h>
 
 #include <sofa/component/solidmechanics/spring/SpringForceField.h>
-#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
 #include <sofa/core/topology/TopologyData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::solidmechanics::spring
 {
@@ -94,17 +95,33 @@ protected:
 
 public:
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<Spring> > springArray;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::DataFileName m_filename;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> m_stiffness;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> m_viscosity;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_useTopology;
+
+
     /// where the springs information are stored
-    sofa::core::topology::EdgeData<sofa::type::vector<Spring> > springArray;
+    sofa::core::topology::EdgeData<sofa::type::vector<Spring> > d_springArray;
 
     /// the filename where to load the spring information
-    sofa::core::objectmodel::DataFileName m_filename;
+    sofa::core::objectmodel::DataFileName d_filename;
     /// By default, assume that all edges have the same stiffness
-    Data<SReal> m_stiffness;
+    Data<SReal> d_stiffness;
     /// By default, assume that all edges have the same viscosity
-    Data<SReal> m_viscosity;
+    Data<SReal> d_viscosity;
 
-    Data<bool> m_useTopology; ///< Activate/Desactivate topology mode of the component (springs on each edge)
+    Data<bool> d_useTopology; ///< Activate/Deactivate topology mode of the component (springs on each edge)
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<VectorSpringForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -119,7 +136,7 @@ protected:
     virtual ~VectorSpringForceField() override;
 
     /** Method to initialize @sa Spring when a new edge is created.
-    * Will be set as creation callback in the EdgeData @sa springArray
+    * Will be set as creation callback in the EdgeData @sa d_springArray
     */
     void createEdgeInformation(Index, Spring& t,
         const core::topology::BaseMeshTopology::Edge& e,
@@ -141,19 +158,21 @@ public:
 
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
 
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+
     SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override { return m_potentialEnergy; }
 
     Real getStiffness() const
     {
-        return Real(m_stiffness.getValue());
+        return Real(d_stiffness.getValue());
     }
     const Real getViscosity() const
     {
-        return Real(m_viscosity.getValue());
+        return Real(d_viscosity.getValue());
     }
     const core::topology::EdgeData<sofa::type::vector<Spring> >& getSpringArray() const
     {
-        return springArray;
+        return d_springArray;
     }
 
     void draw(const core::visual::VisualParams* vparams) override;
@@ -162,10 +181,10 @@ public:
 
     void clear(int reserve=0)
     {
-        type::vector<Spring>& springArrayData = *(springArray.beginEdit());
+        type::vector<Spring>& springArrayData = *(d_springArray.beginEdit());
         springArrayData.clear();
         if (reserve) springArrayData.reserve(reserve);
-        springArray.endEdit();
+        d_springArray.endEdit();
         if(!useTopology) edgeArray.clear();
     }
 
@@ -177,7 +196,7 @@ public:
 
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_VECTORSPRINGFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_VECTORSPRINGFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API VectorSpringForceField<defaulttype::Vec3Types>;
 
 #endif

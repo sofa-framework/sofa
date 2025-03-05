@@ -173,7 +173,7 @@ private:
 
 protected:
 
-    // ---------------  Modified method: compute and re-use MBK
+    // ---------------  Modified method: compute and reuse MBK
     typedef component::solidmechanics::fem::elastic::HexahedralFEMForceFieldAndMass<DataTypes> Inherited;
     typedef typename Inherited::HexahedronInformation HexahedronInformation;
     typedef typename Inherited::Mat33 Mat33;
@@ -181,7 +181,7 @@ protected:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data<bool> useMBK; ///< if true, compute and use MBK matrix
+    Data<bool> useMBK; ///< compute MBK and use it in addMBKdx, instead of using addDForce and addMDx.
 
     /** Matrix-vector product for implicit methods with iterative solvers.
         If the MBK matrix is ill-conditionned, recompute it, and correct it to avoid too small singular values.
@@ -195,7 +195,7 @@ protected:
     virtual void computeCorrection( ElementMass& ) {} ///< Limit the conditioning number of each mbkMatrix as defined by maxConditioning (in derived classes).
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRALFEMFORCEFIELDANDMASS_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRALFEMFORCEFIELDANDMASS_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_NONUNIFORM_API NonUniformHexahedralFEMForceFieldAndMass<defaulttype::Vec3Types>;
 
 #endif

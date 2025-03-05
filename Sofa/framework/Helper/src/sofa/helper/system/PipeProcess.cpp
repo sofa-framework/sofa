@@ -56,13 +56,7 @@ typedef int socket_t;
 
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace system
+namespace sofa::helper::system
 {
 
 PipeProcess::PipeProcess()
@@ -362,7 +356,5 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
     }
 }
 
-}
-}
 }
 

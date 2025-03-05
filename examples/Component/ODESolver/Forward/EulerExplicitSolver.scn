@@ -7,7 +7,7 @@ trivially, it requires a linear solver, here SparseLDLSolver.
 -->
 
 <Node name="root" gravity="0 -9.81 0" dt="0.00001">
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
@@ -37,7 +37,7 @@ trivially, it requires a linear solver, here SparseLDLSolver.
         <MeshMatrixMass totalMass="15"/>
 
         <BoxROI box="-1.5 -1.5 0 1.5 1.5 0.0001" name="box"/>
-        <FixedConstraint indices="@box.indices" />
+        <FixedProjectiveConstraint indices="@box.indices" />
         <MeshSpringForceField stiffness="3E2"/>
 
         <Node name="visual">

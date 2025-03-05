@@ -55,11 +55,11 @@ public:
 
     Data<bool> d_showLegend; ///< Activate rendering of color scale legend on the side
     Data<type::Vec2f> d_legendOffset; ///< Draw the legend on screen with an x,y offset
-    Data<std::string> d_legendTitle; ///< Add a title to the legend
-    Data<unsigned int> d_legendSize; ///< Font size of the legend (if any)
-    Data<float> d_min; ///< min value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the min
-    Data<float> d_max; ///< max value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the max
-    Data<float> d_legendRangeScale; ///< to convert unit
+    Data<std::string> d_legendTitle; ///< Font size of the legend (if any)
+    Data<unsigned int> d_legendSize; ///< Add a title to the legend
+    Data<float> d_min; ///< min value for drawing the legend without the need to actually use the range with getEvaluator method which sets the min
+    Data<float> d_max; ///< max value for drawing the legend without the need to actually use the range with getEvaluator method which sets the max
+    Data<float> d_legendRangeScale; ///< to change the unit of the min/max value of the legend
 
     sofa::helper::ColorMap m_colorMap;
     GLuint texture;
@@ -70,7 +70,7 @@ public:
     //void initVisual() { initTextures(); }
     //void clearVisual() { }
     //void initTextures() {}
-    void drawVisual(const core::visual::VisualParams* vparams) override;
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
     //void drawTransparent(const VisualParams* /*vparams*/)
     //void updateVisual();
 

@@ -1,4 +1,4 @@
-<!-- BilateralInteractionConstraint example -->
+<!-- BilateralInteractionLagrangianConstraint example -->
 <Node name="root" dt="0.001" gravity="0 -981 0">
     <VisualStyle displayFlags="showForceFields" />
     <FreeMotionAnimationLoop />
@@ -7,7 +7,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
-    <DefaultContactManager  name="Response" response="FrictionContactConstraint" />
+    <CollisionResponse  name="Response" response="FrictionContactConstraint" />
     <DefaultCollisionGroupManager  name="Group" />
     <Node name="CUBE_0">
         <MechanicalObject dy="2.5" />
@@ -33,5 +33,5 @@
             <RigidMapping />
         </Node>
     </Node>
-    <BilateralInteractionConstraint template="Vec3d" object1="@CUBE_0/Constraints/points" object2="@CUBE_1/Constraints/points" first_point="0" second_point="0" />
+    <BilateralLagrangianConstraint template="Vec3d" object1="@CUBE_0/Constraints/points" object2="@CUBE_1/Constraints/points" first_point="0" second_point="0" />
 </Node>

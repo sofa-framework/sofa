@@ -45,7 +45,9 @@ class SOFA_SIMULATION_CORE_API BaseMechanicalVisitor : public Visitor
 
 protected:
     simulation::Node* root; ///< root node from which the visitor was executed
-    SReal* rootData; ///< data for root node
+
+    SOFA_ATTRIBUTE_DISABLED_NODEDATA()
+    SReal* rootData { nullptr }; ///< data for root node
 
     virtual Result processNodeTopDown(simulation::Node* node, VisitorContext* ctx);
     virtual void processNodeBottomUp(simulation::Node* node, VisitorContext* ctx);
@@ -53,14 +55,17 @@ protected:
 public:
     BaseMechanicalVisitor(const sofa::core::ExecParams* params);
 
-    /// Return true if this visitor need to read the node-specific data if given
-    virtual bool readNodeData() const;
+    SOFA_ATTRIBUTE_DISABLED_NODEDATA()
+    virtual bool readNodeData() const = delete;
 
-    /// Return true if this visitor need to write to the node-specific data if given
-    virtual bool writeNodeData() const;
+    SOFA_ATTRIBUTE_DISABLED_NODEDATA()
+    virtual bool writeNodeData() const = delete;
 
-    virtual void setNodeData(simulation::Node* /*node*/, SReal* nodeData, const SReal* parentData);
-    virtual void addNodeData(simulation::Node* /*node*/, SReal* parentData, const SReal* nodeData);
+    SOFA_ATTRIBUTE_DISABLED_NODEDATA()
+    virtual void setNodeData(simulation::Node* /*node*/, SReal* /*nodeData*/, const SReal* /*parentData*/) = delete;
+
+    SOFA_ATTRIBUTE_DISABLED_NODEDATA()
+    virtual void addNodeData(simulation::Node* /*node*/, SReal* /*parentData*/, const SReal* /*nodeData*/) = delete;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -79,7 +84,8 @@ public:
 
     /// Parallel version of processNodeTopDown.
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
-    Result processNodeTopDown(simulation::Node* node, LocalStorage* stack) override;
+    SOFA_ATTRIBUTE_DISABLED_LOCALSTORAGE()
+    virtual Result processNodeTopDown(simulation::Node * node, LocalStorage * stack) override = delete;
 
     /// Process the OdeSolver
     virtual Result fwdOdeSolver(simulation::Node* /*node*/, sofa::core::behavior::OdeSolver* /*solver*/);
@@ -169,7 +175,8 @@ public:
 
     /// Parallel version of processNodeBottomUp.
     /// This method calls the bwd* methods during the backward traversal. You typically do not overload it.
-    void processNodeBottomUp(simulation::Node* /*node*/, LocalStorage* stack) override;
+    SOFA_ATTRIBUTE_DISABLED_LOCALSTORAGE()
+    virtual void processNodeBottomUp(simulation::Node* node, LocalStorage * stack) override = delete;
 
     /// Process the BaseMechanicalState when it is not mapped from parent level
     virtual void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* /*mm*/);

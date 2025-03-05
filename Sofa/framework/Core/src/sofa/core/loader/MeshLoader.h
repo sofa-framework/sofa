@@ -161,7 +161,7 @@ public:
     // polygons in 3D ?
 
     //Misc
-    Data< type::vector<sofa::type::Vec3 > > d_normals; ///< Normals per vertex
+    Data< type::vector<sofa::type::Vec3 > > d_normals; ///< Normals of the mesh loaded
 
     // Groups
     Data< type::vector< PrimitiveGroup > > d_edgesGroups; ///< Groups of Edges

@@ -26,3 +26,4 @@ ignore "benchmarks/QuadSpringsSphere_gpu.scn"
 
 ignore "benchmarks/CudaTetrahedronTLEDForceField_beam10x10x40_gpu.scn"
 ignore "benchmarks/CudaTetrahedronTLEDForceField_beam16x16x76_gpu.scn"
+ignore "benchmarks/CudaHexahedronTLEDForceField_beam10x10x40_gpu.scn"

@@ -32,13 +32,12 @@ using sofa::testing::BaseSimulationTest;
 using sofa::core::objectmodel::BaseObject ;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
@@ -47,9 +46,18 @@ using sofa::core::execparams::defaultInstance;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
-#include <filesystem>
-namespace {
-std::string tempdir = std::filesystem::temp_directory_path().string() ;
+#include <sofa/helper/system/FileRepository.h>
+using sofa::helper::system::FileRepository;
+
+#include <sofa/simulation/events/SimulationInitDoneEvent.h>
+using sofa::simulation::SimulationInitDoneEvent;
+
+#include <sofa/simulation/PropagateEventVisitor.h>
+using sofa::simulation::PropagateEventVisitor;
+
+
+namespace{
+const std::string tempdir = FileRepository().getTempPath() ;
 
 
 class STLExporter_test : public BaseSimulationTest {
@@ -57,77 +65,82 @@ public:
     /// remove the file created...
     std::vector<std::string> dataPath ;
 
-    void SetUp() override
+    void doSetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Visual");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Visual);
+        sofa::simpleapi::importPlugin(Sofa.Component.IO.Mesh);
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
-        return ;
-        for(auto& pathToRemove : dataPath)
+        for (const auto& pathToRemove : dataPath)
         {
-            if(FileSystem::exists(pathToRemove))
-               FileSystem::removeAll(pathToRemove) ;
-       }
+            if (FileSystem::exists(pathToRemove))
+            {
+                if (FileSystem::isDirectory(pathToRemove))
+                {
+                    FileSystem::removeAll(pathToRemove);
+                }
+                else
+                {
+                    FileSystem::removeFile(pathToRemove);
+                }
+            }
+        }
     }
 
-    void checkBasicBehavior(const std::string& filename, std::vector<std::string> pathes){
+    void checkBasicBehavior(const std::string& filename, std::vector<std::string> pathes)
+    {
         dataPath = pathes ;
 
         EXPECT_MSG_NOEMIT(Error, Warning) ;
-        std::stringstream scene1;
-        scene1 <<
-                "<?xml version='1.0'?> \n"
-                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
-                "   <DefaultAnimationLoop/>                                        \n"
-                "   <RequiredPlugin name='Sofa.Component.IO.Mesh' />               \n"
-                "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
-                "   <MeshOBJLoader name='loader' filename='mesh/liver-smooth.obj'/> \n"
-                "   <VisualModel src='@loader'/>                                      \n"
-                "   <STLExporter name='exporter1' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
-                "</Node>                                                           \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
+        const Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root", {{"gravity", "0 0 0"}});
+        sofa::simpleapi::createObject(root, "DefaultAnimationLoop");
+        sofa::simpleapi::createObject(root, "MechanicalObject", {{"position", "0 1 2 3 4 5 6 7 8 9"}});
+        sofa::simpleapi::createObject(root, "MeshOBJLoader", {{"name", "loader"}, {"filename", "mesh/liver-smooth.obj"}});
+        const Node::SPtr visualNode = sofa::simpleapi::createChild(root, "Visual");
+        sofa::simpleapi::createObject(visualNode, "VisualModel", {{"src", "@../loader"}});
+        sofa::simpleapi::createObject(visualNode, "STLExporter", {{"name", "exporter1"}, {"filename", filename}, {"exportAtBegin", "true"}});
 
-        ASSERT_NE(root.get(), nullptr) << scene1.str() ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        sofa::simulation::node::initRoot(root.get());
 
-        sofa::simulation::getSimulation()->animate(root.get(), 0.5);
+        // SimulationInitDoneEvent is used to trigger exportAtBegin
+        SimulationInitDoneEvent endInit;
+        PropagateEventVisitor pe{sofa::core::execparams::defaultInstance(), &endInit};
+        root->execute(pe);
+
+        sofa::simulation::node::animate(root.get(), 0.5);
 
         for(auto& pathToCheck : pathes)
         {
-            EXPECT_TRUE( FileSystem::exists(pathToCheck) ) << "Problem with '" << pathToCheck  << "'"<< std::endl
-                                                           << "================= scene dump ==========================="
-                                                           << scene1.str() ;
+            EXPECT_TRUE( FileSystem::exists(pathToCheck) );
         }
     }
 
 
-    void checkSimulationWriteEachNbStep(const std::string& filename, std::vector<std::string> pathes, unsigned int numstep){
+    void checkSimulationWriteEachNbStep(const std::string& filename, std::vector<std::string> pathes, unsigned int numstep)
+    {
         dataPath = pathes ;
 
         EXPECT_MSG_NOEMIT(Error, Warning) ;
-        std::stringstream scene1;
-        scene1 <<
-                "<?xml version='1.0'?> \n"
-                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
-                "   <DefaultAnimationLoop/>                                        \n"
-                "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
-                "   <MeshOBJLoader name='loader' filename='mesh/liver-smooth.obj'/> \n"
-                "   <VisualModel src='@loader'/>                                      \n"
-                "   <STLExporter name='exporterA' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
-                "</Node>                                                           \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
+        const Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root", {{"gravity", "0 0 0"}});
+        sofa::simpleapi::createObject(root, "DefaultAnimationLoop");
+        sofa::simpleapi::createObject(root, "MechanicalObject", {{"position", "0 1 2 3 4 5 6 7 8 9"}});
+        sofa::simpleapi::createObject(root, "MeshOBJLoader", {{"name", "loader"}, {"filename", "mesh/liver-smooth.obj"}});
+        const Node::SPtr visualNode = sofa::simpleapi::createChild(root, "Visual");
+        sofa::simpleapi::createObject(visualNode, "VisualModel", {{"src", "@../loader"}});
+        sofa::simpleapi::createObject(visualNode, "STLExporter", {{"name", "exporterA"}, {"filename", filename}, {"exportEveryNumberOfSteps", "5"}});
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        sofa::simulation::node::initRoot(root.get());
 
         for(unsigned int i=0;i<numstep;i++)
         {
-            sofa::simulation::getSimulation()->animate(root.get(), 0.5);
+            sofa::simulation::node::animate(root.get(), 0.5);
         }
 
         for(auto& pathToCheck : pathes)

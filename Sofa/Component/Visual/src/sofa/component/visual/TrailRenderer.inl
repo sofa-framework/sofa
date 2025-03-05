@@ -79,16 +79,9 @@ void TrailRenderer<DataTypes>::storeParticlePositions()
 }
 
 template <class DataTypes>
-void TrailRenderer<DataTypes>::drawVisual(const core::visual::VisualParams* vparams)
+void TrailRenderer<DataTypes>::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowVisualModels())
-    {
-        return;
-    }
-
     helper::visual::DrawTool*& drawTool = vparams->drawTool();
-
-    const auto stateLifeCycle = drawTool->makeStateLifeCycle();
 
     const sofa::type::RGBAColor& color = d_color.getValue();
     const float thickness = d_thickness.getValue();

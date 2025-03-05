@@ -28,7 +28,6 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
-using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::simulation::graph::DAGSimulation;
@@ -53,9 +52,11 @@ struct DilateEngine_test : public BaseSimulationTest,
     Node::SPtr m_node;
     typename ThisClass::SPtr m_thisObject;
 
-    void SetUp() override
+    void doSetUp() override
     {
-        setSimulation(m_simu = new DAGSimulation());
+        m_simu = sofa::simulation::getSimulation();
+        ASSERT_NE(m_simu, nullptr);
+
         m_node = m_simu->createNewGraph("root");
         m_thisObject = New<ThisClass >() ;
         m_node->addObject(m_thisObject) ;
@@ -76,7 +77,6 @@ struct DilateEngine_test : public BaseSimulationTest,
         EXPECT_TRUE( m_thisObject->findData("minThickness") != nullptr ) ;
 
         EXPECT_NO_THROW( m_thisObject->init() ) ;
-        EXPECT_NO_THROW( m_thisObject->bwdInit() ) ;
         EXPECT_NO_THROW( m_thisObject->reinit() ) ;
         EXPECT_NO_THROW( m_thisObject->reset() ) ;
         EXPECT_NO_THROW(this->update()) ;

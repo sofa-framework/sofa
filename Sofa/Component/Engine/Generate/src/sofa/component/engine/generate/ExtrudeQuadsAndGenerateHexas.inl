@@ -87,7 +87,7 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::doUpdate()
     extrudedHexas->clear();
 
     std::map<int, std::pair<Vec3, unsigned int> > normals;
-    int nSlices = f_numberOfSlices.getValue();
+    const int nSlices = f_numberOfSlices.getValue();
 
     //first loop to compute normals per point
     for (unsigned int q=0; q<surfaceQuads.size(); q++)

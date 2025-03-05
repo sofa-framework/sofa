@@ -34,13 +34,17 @@ namespace sofa::component::collision::geometry
 
 template<class DataTypes>
 PointCollisionModel<DataTypes>::PointCollisionModel()
-    : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
+    : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
     , mstate(nullptr)
-    , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
-    , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
+    , d_computeNormals(initData(&d_computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
+    , d_displayFreePosition(initData(&d_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
 {
     enum_type = POINT_TYPE;
+
+    bothSide.setOriginalData(&d_bothSide);
+    computeNormals.setOriginalData(&d_computeNormals);
+    m_displayFreePosition.setOriginalData(&d_displayFreePosition);
 }
 
 template<class DataTypes>
@@ -69,7 +73,7 @@ void PointCollisionModel<DataTypes>::init()
 
     const int npoints = mstate->getSize();
     resize(npoints);
-    if (computeNormals.getValue()) updateNormals();
+    if (d_computeNormals.getValue()) updateNormals();
 }
 
 
@@ -94,8 +98,7 @@ bool PointCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, Co
 
         for (sofa::Index i1=0; i1<verticesAroundVertex1.size(); i1++)
         {
-
-            sofa::Index v1 = verticesAroundVertex1[i1];
+            const sofa::Index v1 = verticesAroundVertex1[i1];
 
             for (sofa::Index i2=0; i2<verticesAroundVertex2.size(); i2++)
             {
@@ -126,12 +129,12 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (updated) cubeModel->resize(0);
     if (!isMoving() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
-    if (computeNormals.getValue()) updateNormals();
+    if (d_computeNormals.getValue()) updateNormals();
 
     cubeModel->resize(size);
     if (!empty())
     {
-        //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
+        //VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
         const SReal distance = this->proximity.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
@@ -156,15 +159,15 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int
     }
     if (!isMoving() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
-    if (computeNormals.getValue()) updateNormals();
+    if (d_computeNormals.getValue()) updateNormals();
 
     type::Vec3 minElem, maxElem;
 
     cubeModel->resize(size);
     if (!empty())
     {
-        //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-        //VecDeriv& v = mstate->read(core::ConstVecDerivId::velocity())->getValue();
+        //VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
+        //VecDeriv& v = mstate->read(core::vec_id::read_access::velocity)->getValue();
         const SReal distance = (SReal)this->proximity.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
@@ -190,7 +193,7 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int
 template<class DataTypes>
 void PointCollisionModel<DataTypes>::updateNormals()
 {
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     auto n = x.size();
     normals.resize(n);
     for (sofa::Index i=0; i<n; ++i)
@@ -281,7 +284,7 @@ void PointCollisionModel<DataTypes>::updateNormals()
     }
     for (sofa::Index i=0; i<n; ++i)
     {
-        SReal l = normals[i].norm();
+        const SReal l = normals[i].norm();
         if (l > 1.0e-3)
             normals[i] *= 1/l;
         else
@@ -359,11 +362,11 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
             }
         }
 
-        auto c = getColor4f();
+        const auto c = getColor4f();
         vparams->drawTool()->drawPoints(pointsP, 3, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
         vparams->drawTool()->drawLines(pointsL, 1, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
 
-        if (m_displayFreePosition.getValue())
+        if (d_displayFreePosition.getValue())
         {
             std::vector< type::Vec3 > pointsPFree;
 

@@ -35,9 +35,11 @@ using namespace sofa::type;
 using namespace sofa::defaulttype;
 using sofa::gl::component::rendering2d::OglColorMap;
 
-int DataDisplayClass = core::RegisterObject("Rendering of meshes colored by data")
-        .add< DataDisplay >()
-        ;
+void registerDataDisplay(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Color rendering of data associated with a mesh.")
+        .add< DataDisplay >());
+}
 
 DataDisplay::DataDisplay()
     : f_maximalRange(initData(&f_maximalRange, true, "maximalRange", "Keep the maximal range through all timesteps"))
@@ -46,7 +48,7 @@ DataDisplay::DataDisplay()
     , f_quadData(initData(&f_quadData, "quadData", "Data associated with quads"))
     , f_pointTriangleData(initData(&f_pointTriangleData, "pointTriangleData", "Data associated with nodes per triangle"))
     , f_pointQuadData(initData(&f_pointQuadData, "pointQuadData", "Data associated with nodes per quad"))
-    , f_colorNaN(initData(&f_colorNaN, sofa::type::RGBAColor(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values.(default=[0.0,0.0,0.0,1.0])"))
+    , f_colorNaN(initData(&f_colorNaN, sofa::type::RGBAColor(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values (default=[0.0,0.0,0.0,1.0])"))
     , d_userRange(initData(&d_userRange, type::Vec2f(1,-1), "userRange", "Clamp to this values (if max>min)"))
     , d_currentMin(initData(&d_currentMin, Real(0.0), "currentMin", "Current min range"))
     , d_currentMax(initData(&d_currentMax, Real(0.0), "currentMax", "Current max range"))
@@ -56,8 +58,8 @@ DataDisplay::DataDisplay()
     , state(nullptr)
     , m_topology(nullptr)
     , l_topology(initLink("topology", "link to the topology container"))
-    , oldMin(0)
-    , oldMax(0)
+    , m_oldMin(std::numeric_limits<Real>::max())
+    , m_oldMax(std::numeric_limits<Real>::lowest())
 {
     this->addAlias(&f_triangleData,"cellData"); // backward compatibility
     d_currentMin.setReadOnly(true);
@@ -86,19 +88,14 @@ void DataDisplay::init()
 }
 
 
-void DataDisplay::updateVisual()
+void DataDisplay::doUpdateVisual(const core::visual::VisualParams*)
 {
     computeNormals();
 }
 
-void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
+void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowVisualModels()) return;
-
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    const VecCoord& x = this->read(sofa::core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->read(sofa::core::vec_id::read_access::position)->getValue();
     const VecPointData &ptData = f_pointData.getValue();
     const VecCellData &triData = f_triangleData.getValue();
     const VecCellData &quadData = f_quadData.getValue();
@@ -146,9 +143,8 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     }
 
     // Range for points
-    Real min ;
-    Real max ;
-    min = max = 0;
+    Real min = std::numeric_limits<Real>::max();
+    Real max = std::numeric_limits<Real>::lowest();
     if (bDrawPointData) {
         VecPointData::const_iterator i = ptData.begin();
         min = *i;
@@ -217,12 +213,12 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     }
 
 
-    if (max > oldMax) oldMax = max;
-    if (min < oldMin) oldMin = min;
+    if (max > m_oldMax) m_oldMax = max;
+    if (min < m_oldMin) m_oldMin = min;
 
     if (f_maximalRange.getValue()) {
-        max = oldMax;
-        min = oldMin;
+        max = m_oldMax;
+        min = m_oldMin;
     }
     d_currentMin.setValue(min);
     d_currentMax.setValue(max);
@@ -257,7 +253,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             {
                 RGBAColor color = std::isnan(triData[i])
                     ? f_colorNaN.getValue()
-                    : RGBAColor::fromVec4(eval(triData[i]));
+                    : eval(triData[i]);
                 color[3] = transparency;
                 const Triangle& t = m_topology->getTriangle(i);
                 vparams->drawTool()->drawTriangle(
@@ -277,15 +273,15 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             {
                 RGBAColor color0 = std::isnan(pointTriData[i*3])
                     ? f_colorNaN.getValue()
-                    : RGBAColor::fromVec4(eval(pointTriData[i*3]));
+                    : eval(pointTriData[i*3]);
                 color0[3] = transparency;
                 RGBAColor color1 = std::isnan(pointTriData[i*3+1])
                         ? f_colorNaN.getValue()
-                        : RGBAColor::fromVec4(eval(pointTriData[i*3+1]));
+                        : eval(pointTriData[i*3+1]);
                 color1[3] = transparency;
                 RGBAColor color2 = std::isnan(pointTriData[i*3+2])
                     ? f_colorNaN.getValue()
-                    : RGBAColor::fromVec4(eval(pointTriData[i*3+2]));
+                    : eval(pointTriData[i*3+2]);
                 color2[3] = transparency;
                 const Triangle& t = m_topology->getTriangle(i);
 
@@ -313,7 +309,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             {
                 RGBAColor color = std::isnan(quadData[i])
                     ? f_colorNaN.getValue()
-                    : RGBAColor::fromVec4(eval(quadData[i]));
+                    : eval(quadData[i]);
                 color[3] = transparency;
                 const Quad& t = m_topology->getQuad(i);
                 vparams->drawTool()->drawQuad(
@@ -331,18 +327,18 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             {
                 RGBAColor color0 = std::isnan(pointQuadData[i*4])
                     ? f_colorNaN.getValue()
-                    : RGBAColor::fromVec4(eval(pointQuadData[i*4]));
+                    : eval(pointQuadData[i*4]);
                 RGBAColor color1 = std::isnan(pointQuadData[i*4+1])
                         ? f_colorNaN.getValue()
-                        : RGBAColor::fromVec4(eval(pointQuadData[i*4+1]));
+                        : eval(pointQuadData[i*4+1]);
                 color1[3] = transparency;
                 RGBAColor color2 = std::isnan(pointQuadData[i*4+2])
                     ? f_colorNaN.getValue()
-                    : RGBAColor::fromVec4(eval(pointQuadData[i*4+2]));
+                    : eval(pointQuadData[i*4+2]);
                 color2[3] = transparency;
                 RGBAColor color3 = std::isnan(pointQuadData[i*4+3])
                     ? f_colorNaN.getValue()
-                    : RGBAColor::fromVec4(eval(pointQuadData[i*4+3]));
+                    : eval(pointQuadData[i*4+3]);
                 color1[3] = transparency;
                 const Quad& q = m_topology->getQuad(i);
 
@@ -375,7 +371,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         {
             RGBAColor color = std::isnan(ptData[i])
                 ? f_colorNaN.getValue()
-                : RGBAColor::fromVec4(eval(ptData[i]));
+                : eval(ptData[i]);
             color[3] = transparency;
             vparams->drawTool()->drawPoint(x[i], color);
         }
@@ -393,7 +389,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             for (int j=0; j<3; j++) {
                 color[j] = std::isnan(ptData[t[j]])
                         ? f_colorNaN.getValue()
-                        : RGBAColor::fromVec4(eval(ptData[t[j]]));
+                        : eval(ptData[t[j]]);
                 color[j][3] = transparency;
             }
             glNormal3fv(m_normals[t[0]].ptr());
@@ -421,7 +417,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             {
                 color[j] = std::isnan(ptData[q[j]])
                 ? f_colorNaN.getValue()
-                : RGBAColor::fromVec4(eval(ptData[q[j]]));
+                : eval(ptData[q[j]]);
                 color[j][3] = transparency;
             }
 
@@ -446,15 +442,12 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     }
 
     glPopAttrib();
-
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void DataDisplay::computeNormals()
 {
     if( !m_topology ) return;
-    const VecCoord& x = this->read(sofa::core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->read(sofa::core::vec_id::read_access::position)->getValue();
 
     m_normals.resize(x.size(),Vec3f(0,0,0));
 
@@ -465,7 +458,7 @@ void DataDisplay::computeNormals()
         const Coord& v1 = x[t[0]];
         const Coord& v2 = x[t[1]];
         const Coord& v3 = x[t[2]];
-        Coord n = cross(v2-v1, v3-v1);
+        const Coord n = cross(v2-v1, v3-v1);
 
         m_normals[t[0]] += n;
         m_normals[t[1]] += n;
@@ -480,10 +473,10 @@ void DataDisplay::computeNormals()
         const Coord & v2 = x[q[1]];
         const Coord & v3 = x[q[2]];
         const Coord & v4 = x[q[3]];
-        Coord n1 = cross(v2-v1, v4-v1);
-        Coord n2 = cross(v3-v2, v1-v2);
-        Coord n3 = cross(v4-v3, v2-v3);
-        Coord n4 = cross(v1-v4, v3-v4);
+        const Coord n1 = cross(v2-v1, v4-v1);
+        const Coord n2 = cross(v3-v2, v1-v2);
+        const Coord n3 = cross(v4-v3, v2-v3);
+        const Coord n4 = cross(v1-v4, v3-v4);
 
         m_normals[q[0]] += n1;
         m_normals[q[1]] += n2;

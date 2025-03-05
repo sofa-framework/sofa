@@ -21,10 +21,8 @@
 ******************************************************************************/
 #include <sofa/simulation/PositionEvent.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 SOFA_EVENT_CPP( PositionEvent )
@@ -39,6 +37,6 @@ PositionEvent::~PositionEvent()
 {
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+

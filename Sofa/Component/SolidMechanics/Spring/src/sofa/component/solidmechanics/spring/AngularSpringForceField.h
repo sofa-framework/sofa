@@ -28,6 +28,8 @@
 #include <sofa/type/RGBAColor.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 
 namespace sofa::core::behavior
 {
@@ -64,11 +66,26 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data< type::vector< sofa::Index > > indices; ///< index of nodes controlled by the angular springs
-    Data< VecReal > angularStiffness; ///< angular stiffness for the controlled nodes
-    Data<VecReal> angularLimit; ///< angular limit (max; min) values where the force applies
-    Data< bool > drawSpring; ///< draw Spring
-    Data< type::RGBAColor > springColor; ///< spring color
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData< type::vector< sofa::Index > > indices;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<VecReal> angularStiffness;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<VecReal> angularLimit;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> drawSpring;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<type::RGBAColor> springColor;
+
+    Data< type::vector< sofa::Index > > d_indices; ///< index of nodes controlled by the angular springs
+    Data< VecReal > d_angularStiffness; ///< angular stiffness for the controlled nodes
+    Data<VecReal> d_angularLimit; ///< angular limit (max; min) values where the force applies
+    Data< bool > d_drawSpring; ///< draw Spring
+    Data< type::RGBAColor > d_springColor; ///< spring color
 
     linearalgebra::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
@@ -90,6 +107,8 @@ public:
 
     /// Brings ForceField contribution to the global system stiffness matrix.
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
     void draw(const core::visual::VisualParams* vparams) override;
 
 protected :
@@ -98,7 +117,7 @@ protected :
     VecReal k;
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_AngularSpringForceField_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_AngularSpringForceField_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API AngularSpringForceField<sofa::defaulttype::Rigid3Types>;
 #endif
 

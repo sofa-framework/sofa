@@ -44,6 +44,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef type::Vec<3,Real> Vec3;
+    typedef type::Mat<3,3,Real> Mat3x3;
     SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
     typedef typename sofa::type::vector<sofa::Index>  VecIndices;
 
@@ -66,9 +67,9 @@ public:
 
 
     Data<VecCoord> d_inputPositions; ///< Initial positions of the master points
-    Data<VecCoord> d_mappedPointPositions; ///< Initial positions of the mapped points
+    Data<VecCoord> d_mappedPointPositions; ///< Initial positions of the points to be mapped
     Data<VecCoord> d_barycentricPositions; ///< Output : Barycentric positions of the mapped points
-    Data< VecIndices> d_tableElements; ///< Output : Table that provides the element index to which each input point belongs
+    Data< VecIndices> d_tableElements; ///< Output : Table that provides the index of the element to which each input point belongs
     Data<bool> d_bComputeLinearInterpolation; ///< if true, computes a linear interpolation (debug)
 
     Data< sofa::type::vector<sofa::type::vector< sofa::Index > > > d_interpolationIndices; ///< Indices of a linear interpolation
@@ -76,15 +77,9 @@ public:
 
     SingleLink<MeshBarycentricMapperEngine<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology; ///< Name and path of Input mesh Topology
 
-    //Temporary function to warn the user when old attribute names are used
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
-    {
-        if (arg->getAttribute("InputMeshName"))
-        {
-            msg_warning() << "input data 'InputMeshName' changed for 'topology', please update your scene (see PR#1487)";
-        }
-        core::DataEngine::parse(arg);
-    }
+    core::objectmodel::lifecycle::RemovedData d_imputMeshName {this, "v20.12", "v22.12", "InputMeshName",
+                                                   "Input data 'InputMeshName' changed for 'topology', please update your scene"
+                                                   "(see PR#1487)" };
 
 private:
     sofa::type::vector<sofa::type::vector< sofa::Index > >* linearInterpolIndices;
@@ -93,7 +88,7 @@ private:
 
 
 
-#if  !defined(SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MeshBarycentricMapperEngine<defaulttype::Vec3Types>;
 
 #endif

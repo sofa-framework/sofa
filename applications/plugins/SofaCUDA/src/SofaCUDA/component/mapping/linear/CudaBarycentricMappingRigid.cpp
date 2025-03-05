@@ -62,13 +62,13 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
     if ( this->m_fromTopology->beginChange() == this->m_fromTopology->endChange() )
         return;
 
-    std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->m_fromTopology->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->m_fromTopology->endChange();
+    const std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->m_fromTopology->beginChange();
+    const std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->m_fromTopology->endChange();
 
     typedef sofa::core::behavior::MechanicalState<defaulttype::Vec3Types> InMechanicalStateT;
     InMechanicalStateT* inState;
     this->m_fromTopology->getContext()->get(inState);
-    const auto& inRestPos = (inState->read(core::ConstVecCoordId::restPosition())->getValue());
+    const auto& inRestPos = (inState->read(core::vec_id::read_access::restPosition)->getValue());
 
     for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
             changeIt != itEnd; ++changeIt )
@@ -97,7 +97,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
                         // find nearest cell and barycentric coords
                         SReal distance = 1e10;
 
-                        Index index = sofa::topology::getClosestHexahedronIndex(inRestPos, m_fromTopology->getHexahedra(), pos, coefs, distance);
+                        const Index index = sofa::topology::getClosestHexahedronIndex(inRestPos, m_fromTopology->getHexahedra(), pos, coefs, distance);
 
                         if ( index != -1 )
                         {
@@ -139,7 +139,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
             for ( std::size_t i=0; i<hexahedra.size(); ++i )
             {
                 // remove all references to the removed cubes from the mapping data
-                unsigned int cubeId = hexahedra[i];
+                const unsigned int cubeId = hexahedra[i];
                 for ( unsigned int j=0; j<d_map.getValue().size(); ++j )
                 {
                     if ( d_map.getValue()[j].in_index == cubeId ) // invalidate mapping
@@ -169,7 +169,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
             unsigned int lastCubeId = nbHexahedra-1;
             for ( unsigned int i=0; i<hexahedra.size(); ++i, --lastCubeId )
             {
-                unsigned int cubeId = hexahedra[i];
+                const unsigned int cubeId = hexahedra[i];
                 for ( unsigned int j=0; j<d_map.getValue().size(); ++j )
                 {
                     if ( d_map.getValue()[j].in_index == lastCubeId )

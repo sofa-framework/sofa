@@ -2,7 +2,8 @@
 
     <include href="../FEMBAR-common.xml"/>
 
-    <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3" ordering="Natural"/>
+    <NaturalOrderingMethod/>
+    <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3" printLog="true"/>
     <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
 
 </Node>

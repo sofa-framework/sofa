@@ -21,7 +21,9 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/helper/accessor/WriteAccessorFixedArray.h>
 #include <sofa/helper/accessor/WriteAccessorVector.h>
+#include <sofa/type/trait/is_fixed_array.h>
 
 namespace sofa::helper
 {
@@ -81,9 +83,18 @@ public:
     }
 };
 
-template<class VectorLikeType>
-class WriteAccessor<VectorLikeType,
-                    std::enable_if_t<sofa::type::trait::is_vector<VectorLikeType>::value>>
+template<type::trait::is_fixed_array FixedArrayLikeType>
+class WriteAccessor<FixedArrayLikeType>
+    : public WriteAccessorFixedArray< FixedArrayLikeType >
+{
+public:
+    typedef WriteAccessorFixedArray< FixedArrayLikeType > Inherit;
+    typedef typename Inherit::container_type container_type;
+    WriteAccessor(container_type& c) : Inherit(c) {}
+};
+
+template<sofa::type::trait::is_vector VectorLikeType>
+class WriteAccessor<VectorLikeType>
     : public WriteAccessorVector< VectorLikeType >
 {
 public:

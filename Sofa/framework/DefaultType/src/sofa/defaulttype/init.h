@@ -24,10 +24,8 @@
 
 #include <sofa/defaulttype/config.h>
 
-namespace sofa
-{
 
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 /// @brief Initialize the SofaDefaultType library, as well as it dependency:
@@ -46,8 +44,7 @@ SOFA_DEFAULTTYPE_API void cleanup();
 /// up.
 SOFA_DEFAULTTYPE_API bool isCleanedUp();
 
-} // namespace defaulttype
+} // namespace sofa::defaulttype
 
-} // namespace sofa
 
 #endif

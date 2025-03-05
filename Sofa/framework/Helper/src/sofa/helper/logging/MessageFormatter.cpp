@@ -28,13 +28,8 @@
 #include <sofa/helper/logging/Message.h>
 #include <sofa/helper/logging/MessageFormatter.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 std::string MessageFormatter::getPrefixText(unsigned int type) const {
@@ -56,8 +51,8 @@ std::ostream & MessageFormatter::setColor(std::ostream &os, unsigned int type) c
     switch (type) {
         case Message::Advice     : return os << console::Foreground::Bright::Green;
         case Message::Info       : return os << console::Foreground::Bright::Green;
-        case Message::Deprecated : return os << console::Foreground::Bright::Yellow;
-        case Message::Warning    : return os << console::Foreground::Bright::Cyan;
+        case Message::Warning    : return os << console::Foreground::Bright::Yellow;
+        case Message::Deprecated : return os << console::Foreground::Normal::Yellow;
         case Message::Error      : return os << console::Foreground::Bright::Red;
         case Message::Fatal      : return os << console::Foreground::Bright::Magenta;
 
@@ -67,8 +62,8 @@ std::ostream & MessageFormatter::setColor(std::ostream &os, unsigned int type) c
     }
 }
 
-} // namespace logging
+} // namespace sofa::helper::logging
 
-} // namespace helper
 
-} // namespace sofa
+
+

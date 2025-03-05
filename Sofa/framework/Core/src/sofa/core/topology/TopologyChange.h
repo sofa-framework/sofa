@@ -126,34 +126,34 @@ class SOFA_CORE_API HexahedraRenumbering;
 /// Topology identification of a primitive element
 struct TopologyElemID
 {
-    TopologyElemID() : type(TopologyElementType::POINT), index((Topology::ElemID)-1) {}
+    TopologyElemID() : type(geometry::ElementType::POINT), index((Topology::ElemID)-1) {}
 
-    TopologyElemID(TopologyElementType _type, Topology::ElemID _index)
+    TopologyElemID(geometry::ElementType _type, Topology::ElemID _index)
         : type(_type)
         , index(_index)
     {}
 
-    TopologyElementType type;
+    geometry::ElementType type;
     Topology::ElemID index;
 };
 
 SOFA_CORE_API std::ostream& operator << (std::ostream& out, const TopologyElemID& d);
 SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyElemID& d);
 
-/// Topology change informations related to the ancestor topology element of a point
+/// Topology change information related to the ancestor topology element of a point
 struct PointAncestorElem
 {
     typedef type::Vec3 LocalCoords;
 
-    PointAncestorElem() : type(TopologyElementType::POINT), index(sofa::InvalidID) {}
+    PointAncestorElem() : type(geometry::ElementType::POINT), index(sofa::InvalidID) {}
 
-    PointAncestorElem(TopologyElementType _type, Topology::ElemID _index, const LocalCoords& _localCoords)
+    PointAncestorElem(geometry::ElementType _type, Topology::ElemID _index, const LocalCoords& _localCoords)
         : type(_type)
         , index(_index)
         , localCoords(_localCoords)
     {}
     
-    TopologyElementType type;
+    geometry::ElementType type;
     Topology::ElemID index;
     LocalCoords localCoords;
 };
@@ -161,7 +161,7 @@ struct PointAncestorElem
 SOFA_CORE_API std::ostream& operator << (std::ostream& out, const PointAncestorElem& d);
 SOFA_CORE_API std::istream& operator >> (std::istream& in, PointAncestorElem& d);
 
-/// Topology change informations related to the ancestor topology element of an edge
+/// Topology change information related to the ancestor topology element of an edge
 template<int NV>
 struct ElemAncestorElem
 {

@@ -29,7 +29,7 @@
 
 #include "imagetoolboxbasicactionwidget.h"
 #include "imagetoolboxlabelactionwidget.h"
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 #include <typeinfo>
 
 #include <QDockWidget>
@@ -52,7 +52,7 @@ class SOFA_IMAGE_GUI_API imagetoolbox_data_widget_container: public QObject
     Q_OBJECT;
 
 public slots:
-    virtual void handleSliderPolicies()=0; // needed for synchronization of slider visiblity
+    virtual void handleSliderPolicies()=0; // needed for synchronization of slider visibility
     //virtual void draw()=0;
 
 signals:

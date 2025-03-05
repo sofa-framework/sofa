@@ -220,7 +220,7 @@ public:
 SOFA_LINEARALGEBRA_API std::ostream& operator <<(std::ostream& out, const FullVector<float>& v);
 SOFA_LINEARALGEBRA_API std::ostream& operator <<(std::ostream& out, const FullVector<double>& v);
 
-#if !defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
+#if !defined(SOFA_LINEARALGEBRA_FULLVECTOR_DEFINITION)
 extern template class SOFA_LINEARALGEBRA_API FullVector<float>;
 extern template class SOFA_LINEARALGEBRA_API FullVector<double>;
 #endif

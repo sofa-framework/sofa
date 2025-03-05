@@ -28,7 +28,7 @@ namespace sofa
 
 TEST(OffSequenceLoader_test, emptyFilename)
 {
-    auto object = core::objectmodel::New<sofa::component::io::mesh::OffSequenceLoader>();
+    const auto object = core::objectmodel::New<sofa::component::io::mesh::OffSequenceLoader>();
     EXPECT_NE(object, nullptr);
 
     EXPECT_NO_THROW(object->init());
@@ -36,7 +36,7 @@ TEST(OffSequenceLoader_test, emptyFilename)
 
 TEST(OffSequenceLoader_test, noNumberInFilename)
 {
-    auto object = core::objectmodel::New<sofa::component::io::mesh::OffSequenceLoader>();
+    const auto object = core::objectmodel::New<sofa::component::io::mesh::OffSequenceLoader>();
     EXPECT_NE(object, nullptr);
     object->d_filename.setValue("jfdsofhfisaf");
 

@@ -22,6 +22,8 @@
 #include <sofa/component/collision/detection/algorithm/config.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/collision/detection/algorithm/IncrSAP.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 
 namespace sofa::component::collision::detection::algorithm
 {
@@ -127,28 +129,28 @@ inline const core::CollisionElementIterator ISAPBox::finalElement()const{
 
 
 IncrSAP::IncrSAP()
-    : bDraw(initData(&bDraw, false, "draw", "enable/disable display of results"))
-    , box(initData(&box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored")),
+    :d_box(initData(&d_box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored")),
       _nothing_added(true)
 {
+    box.setOriginalData ( &d_box);
 }
 
 
 IncrSAP::~IncrSAP()
 {
-    for(int i = 0 ; i < 3 ; ++i)
-        for(EndPointList::iterator it = _end_points[i].begin() ; it != _end_points[i].end() ; ++it)
+    for(auto& _end_point : _end_points)
+        for(EndPointList::iterator it = _end_point.begin() ; it != _end_point.end() ; ++it)
             delete (*it);
 }
 
 
 
 void IncrSAP::purge(){
-    for(int i = 0 ; i < 3 ; ++i){
-        for(EndPointList::iterator it = _end_points[i].begin() ; it != _end_points[i].end() ; ++it)
+    for(auto& _end_point : _end_points){
+        for(EndPointList::iterator it = _end_point.begin() ; it != _end_point.end() ; ++it)
             delete (*it);
 
-        _end_points[i].clear();
+        _end_point.clear();
     }
 
     _boxes.clear();
@@ -165,7 +167,7 @@ void IncrSAP::init()
 void IncrSAP::reinit()
 {
 
-    if (box.getValue()[0][0] >= box.getValue()[1][0])
+    if (d_box.getValue()[0][0] >= d_box.getValue()[1][0])
     {
         boxModel.reset();
     }
@@ -173,7 +175,7 @@ void IncrSAP::reinit()
     {
         if (!boxModel) boxModel = sofa::core::objectmodel::New<CubeCollisionModel>();
         boxModel->resize(1);
-        boxModel->setParentOf(0, box.getValue()[0], box.getValue()[1]);
+        boxModel->setParentOf(0, d_box.getValue()[0], d_box.getValue()[1]);
     }
 
     purge();
@@ -182,7 +184,7 @@ void IncrSAP::reinit()
 
 inline bool IncrSAP::added(core::CollisionModel *cm) const
 {
-    return collisionModels.count(cm->getLast()) >= 1;
+    return collisionModels.contains(cm->getLast());
 }
 
 
@@ -201,14 +203,14 @@ inline void IncrSAP::addCollisionModel(core::CollisionModel *cm)
         CubeCollisionModel * cube_model = dynamic_cast<CubeCollisionModel *>(cm->getLast()->getPrevious());
         assert(cube_model->getPrevious() == cm->getFirst());
 
-        int old_size = _boxes.size();
-        int cube_model_size = cube_model->getSize();
+        const int old_size = _boxes.size();
+        const int cube_model_size = cube_model->getSize();
         _boxes.resize(cube_model_size + old_size);
 
         EndPointID * endPts[6];
         for(Size i = 0 ; i < cube_model->getSize() ; ++i){
-            for(int j = 0 ; j < 6 ; ++j)
-                endPts[j] = new EndPointID;
+            for(auto& endPt : endPts)
+                endPt = new EndPointID;
 
             ISAPBox & new_box = _boxes[old_size + i];
             new_box.cube = Cube(cube_model,i);
@@ -267,9 +269,9 @@ void IncrSAP::updateEndPoints(){
 
 
 void IncrSAP::setEndPointsID(){
-    for(int dim = 0 ; dim < 3 ; ++dim){
+    for(auto& _end_point : _end_points){
         int ID = 0;
-        for(EndPointList::iterator it = _end_points[dim].begin() ; it != _end_points[dim].end() ; ++it){
+        for(EndPointList::iterator it = _end_point.begin() ; it != _end_point.end() ; ++it){
             (**it).ID = ID;
             ++ID;
         }
@@ -279,9 +281,9 @@ void IncrSAP::setEndPointsID(){
 
 void IncrSAP::reinitDetection(){
     _colliding_elems.clear();
-    CompPEndPoint comp;
-    for(int j = 0 ; j < 3 ; ++j){
-        std::sort(_end_points[j].begin(),_end_points[j].end(),comp);
+    const CompPEndPoint comp;
+    for(auto& _end_point : _end_points){
+        std::sort(_end_point.begin(),_end_point.end(),comp);
     }
     setEndPointsID();
 }
@@ -291,8 +293,8 @@ void IncrSAP::reinitDetection(){
 void IncrSAP::showEndPoints()const{
     for(int j = 0 ; j < 3 ; ++j){
         msg_info() <<"dimension "<<j<<"===========" ;
-        for(EndPointList::const_iterator it = _end_points[j].begin() ; it != _end_points[j].end() ; ++it){
-            const EndPointID & end_pt = (**it);
+        for(const auto it : _end_points[j]){
+            const EndPointID & end_pt = (*it);
             end_pt.show();
         }
     }
@@ -300,8 +302,7 @@ void IncrSAP::showEndPoints()const{
 
 
 void IncrSAP::showBoxes()const{
-    for(size_t i = 0 ; i < _boxes.size() ; ++i){
-        const ISAPBox & box = _boxes[i];
+    for(const auto & box : _boxes){
         std::stringstream tmp;
 
         tmp <<"collision model "<<box.cube.getCollisionModel()->getLast()<<" index "<<box.cube.getExternalChildren().first.getIndex()<<msgendl ;
@@ -328,8 +329,8 @@ void IncrSAP::addIfCollide(int boxID1,int boxID2){
     assert(boxID1 < (int)(_boxes.size()));
     assert(boxID2 < (int)(_boxes.size()));
 
-    ISAPBox & box0 = _boxes[boxID1];
-    ISAPBox & box1 = _boxes[boxID2];
+    const ISAPBox & box0 = _boxes[boxID1];
+    const ISAPBox & box1 = _boxes[boxID2];
     core::CollisionModel *finalcm1 = box0.cube.getCollisionModel()->getLast(); // get the finnest CollisionModel which is not a CubeModel
     core::CollisionModel *finalcm2 = box1.cube.getCollisionModel()->getLast();
 
@@ -349,8 +350,8 @@ void IncrSAP::addIfCollide(int boxID1,int boxID2,int axis1,int axis2){
     assert(boxID1 < (int)(_boxes.size()));
     assert(boxID2 < (int)(_boxes.size()));
 
-    ISAPBox & box0 = _boxes[boxID1];
-    ISAPBox & box1 = _boxes[boxID2];
+    const ISAPBox & box0 = _boxes[boxID1];
+    const ISAPBox & box1 = _boxes[boxID2];
     core::CollisionModel *finalcm1 = box0.cube.getCollisionModel()->getLast(); // get the finnest CollisionModel which is not a CubeModel
     core::CollisionModel *finalcm2 = box1.cube.getCollisionModel()->getLast();
 
@@ -365,15 +366,15 @@ void IncrSAP::addIfCollide(int boxID1,int boxID2,int axis1,int axis2){
 
 void IncrSAP::boxPrune(){
     _cur_axis = greatestVarianceAxis();
-    int axis1 = (1  << _cur_axis) & 3;
-    int axis2 = (1  << axis1) & 3;
+    const int axis1 = (1  << _cur_axis) & 3;
+    const int axis2 = (1  << axis1) & 3;
 
-    sofa::helper::AdvancedTimer::stepBegin("Box Prune SAP intersection");
+    SCOPED_TIMER("Box Prune SAP intersection");
 
-    std::deque<int> active_boxes; // active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
+    std::deque<int> active_boxes; // active boxes are the one that we encountered only their min (end point), so if there are two boxes b0 and b1,
                                   // if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
                                   //                                                                                                      b1_min---------------------b1_max
-                                  // once we encouter b0_max, b0 will not intersect with nothing (trivial), so we delete it from active_boxes.
+                                  // once we encounter b0_max, b0 will not intersect with nothing (trivial), so we delete it from active_boxes.
                                   // so the rule is : - every time we encounter a box min end point, we check if it is overlapping with other active_boxes and add the owner (a box) of this end point to
                                   //                  the active boxes.
                                   //                  - every time we encounter a max end point of a box, we are sure that we encountered min end point of a box because _end_points is sorted,
@@ -386,15 +387,13 @@ void IncrSAP::boxPrune(){
         else{ // we encounter a min possible intersection between it and active_boxes
             int new_box = (**it).boxID();
 
-            for(unsigned int i = 0 ; i < active_boxes.size() ; ++i){
+            for(const int active_box : active_boxes){
 
-                addIfCollide(new_box,active_boxes[i],axis1,axis2);
+                addIfCollide(new_box,active_box,axis1,axis2);
             }
             active_boxes.push_back(new_box);
         }
     }
-
-    sofa::helper::AdvancedTimer::stepEnd("Box Prune SAP intersection");
 }
 
 
@@ -437,7 +436,7 @@ void IncrSAP::beginNarrowPhase(){
 
 
 bool IncrSAP::assertion_order(EndPointList::iterator it,EndPointList::iterator begin,EndPointList::iterator end){
-    CompPEndPoint comp;
+    const CompPEndPoint comp;
     EndPointList::iterator next_it = it;++next_it;
     if(next_it != end && comp(*next_it,*it))
         return false;
@@ -454,7 +453,7 @@ bool IncrSAP::assertion_order(EndPointList::iterator it,EndPointList::iterator b
 
 
 bool IncrSAP::assertion_list_order(EndPointList::iterator begin_it,const EndPointList::iterator & end_it){
-    CompPEndPoint inferior;
+    const CompPEndPoint inferior;
     EndPointList::iterator next_it = begin_it;
     ++next_it;
     for(;next_it != end_it ; ++next_it,++begin_it){
@@ -468,7 +467,7 @@ bool IncrSAP::assertion_list_order(EndPointList::iterator begin_it,const EndPoin
 
 
 bool IncrSAP::assertion_superior(EndPointList::iterator begin_it,const EndPointList::iterator & end_it,EndPoint* point){
-    CompPEndPoint inferior;
+    const CompPEndPoint inferior;
     for(;begin_it != end_it ;++begin_it){
         if(inferior(point,*begin_it)){
             inferior(point,*begin_it);
@@ -482,7 +481,7 @@ bool IncrSAP::assertion_superior(EndPointList::iterator begin_it,const EndPointL
 
 
 bool IncrSAP::assertion_inferior(EndPointList::iterator begin_it,const EndPointList::iterator & end_it,EndPoint* point){
-    CompPEndPoint inferior;
+    const CompPEndPoint inferior;
     for(;begin_it != end_it ;++begin_it){
         if(inferior(*begin_it,point))
             return false;
@@ -494,17 +493,17 @@ bool IncrSAP::assertion_inferior(EndPointList::iterator begin_it,const EndPointL
 
 
 bool IncrSAP::assertion_end_points_sorted() const{
-    CompPEndPoint inferior;
+    const CompPEndPoint inferior;
     int n = 0;
-    for(int dim = 0 ; dim < 3 ; ++dim){
+    for(const auto& _end_point : _end_points){
         [[maybe_unused]] int ID = 0;
         EndPointList::const_iterator next_it2;
-        for(EndPointList::const_iterator it2 = _end_points[dim].begin() ; it2 != _end_points[dim].end() ; ++it2){
+        for(EndPointList::const_iterator it2 = _end_point.begin() ; it2 != _end_point.end() ; ++it2){
             assert((**it2).ID == ID);
 
             next_it2 = it2;
             ++next_it2;
-            if(next_it2 != _end_points[dim].end()){
+            if(next_it2 != _end_point.end()){
                 assert((**next_it2).ID == ID + 1);
 
                 if(!inferior(*it2,*next_it2)){
@@ -524,7 +523,7 @@ bool IncrSAP::assertion_end_points_sorted() const{
 }
 
 void IncrSAP::moveMinForward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & next_it){
-    CompPEndPoint inferior;
+    const CompPEndPoint inferior;
     do{
         if((**next_it).max())
             removeCollision(cur_end_point->boxID(),(**next_it).boxID());
@@ -543,7 +542,7 @@ void IncrSAP::moveMinForward(int dim,EndPointID * cur_end_point,EndPointList::it
 
 
 void IncrSAP::moveMaxForward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & next_it){
-    CompPEndPoint inferior;
+    const CompPEndPoint inferior;
     do{
         if((**next_it).min())
             addIfCollide(cur_end_point->boxID(),(**next_it).boxID());
@@ -561,7 +560,7 @@ void IncrSAP::moveMaxForward(int dim,EndPointID * cur_end_point,EndPointList::it
 
 
 void IncrSAP::moveMinBackward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & prev_it){
-    CompPEndPoint inferior;
+    const CompPEndPoint inferior;
     do{
         if((**prev_it).max())
             addIfCollide(cur_end_point->boxID(),(**prev_it).boxID());
@@ -583,7 +582,7 @@ void IncrSAP::moveMinBackward(int dim,EndPointID * cur_end_point,EndPointList::i
 
 
 void IncrSAP::moveMaxBackward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & prev_it){
-    CompPEndPoint inferior;
+    const CompPEndPoint inferior;
     do{
         if((**prev_it).min())
             removeCollision(cur_end_point->boxID(),(**prev_it).boxID());
@@ -607,7 +606,7 @@ void IncrSAP::moveMaxBackward(int dim,EndPointID * cur_end_point,EndPointList::i
 
 void IncrSAP::updateMovingBoxes(){
     assert(assertion_end_points_sorted());
-    CompPEndPoint inferior;
+    const CompPEndPoint inferior;
 
     if(_boxes.size() < 2)
         return;
@@ -620,8 +619,7 @@ void IncrSAP::updateMovingBoxes(){
     EndPointID updated_min;
     EndPointID updated_max;
 
-    for(unsigned int i = 0 ; i < _boxes.size() ; ++i){
-        ISAPBox & cur_box = _boxes[i];
+    for(auto& cur_box : _boxes){
         for(int dim = 0 ; dim < 3 ; ++dim){
             min_updated = false;
             max_updated = false;
@@ -785,14 +783,10 @@ bool ISAPBox::overlaps(const ISAPBox & other,double alarmDist) const{
     return true;
 }
 
-
-using namespace sofa::defaulttype;
-using namespace collision;
-
-int IncrSAPClassSofaVector = core::RegisterObject("Collision detection using incremental sweep and prune")
-        .addAlias( "IncrementalSAP" )
-        .addAlias( "IncrementalSweepAndPrune" )
-        .add< IncrSAP >( true )
-        ;
+void registerIncrSAP(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Collision detection using incremental sweep and prune.")
+        .add< IncrSAP >());
+}
 
 } // namespace sofa::component::collision::detection::algorithm

@@ -30,7 +30,7 @@ using sofa::type::Vec3d;
 using sofa::type::Vec3f;
 
 /**  Test suite for data link.
-Create two datas and a link between them.
+Create two data and a link between them.
 Set the value of data1 and check if the boolean is dirty of data2 is true and that the value of data2 is right.
   */
 struct DataLink_test: public BaseTest
@@ -40,10 +40,9 @@ struct DataLink_test: public BaseTest
     Data<Vec3f> dataVec3f;
     Data<Vec3d> dataVec3d;
 
-    /// This method is defined in gtest framework to setting the test up.
-    void SetUp() override
+    void doSetUp() override
     {
-        /// Setup the data and create a link between the two datas
+        /// Setup the data and create a link between the two data
         data1.setName("data1");
         data2.setName("data2");
 
@@ -51,14 +50,14 @@ struct DataLink_test: public BaseTest
         data2.setName("dataVec3d");
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         data1.unset();
         data2.unset();
     }
 };
 
-/// This test check that the setting/unsetting mechanisme when the value is changed is working
+/// This test check that the setting/unsetting mechanism when the value is changed is working
 /// Currently in Sofa the parenting link is not broken if the value is written.
 TEST_F(DataLink_test, UnsetByValue)
 {
@@ -79,7 +78,19 @@ TEST_F(DataLink_test, SetParentOfDifferentType)
     ASSERT_FLOAT_EQ(dataVec3f.getValue().z(), 3.0f);
 }
 
-/// This test check that the setting/unsetting mechanisme is working
+TEST_F(DataLink_test, SetParentOfDifferentType2)
+{
+    Data<sofa::type::vector<sofa::type::Vec1d>> dataVecVec1d;
+    Data<sofa::type::vector<SReal>> dataVecSReal;
+
+    ASSERT_TRUE(dataVecSReal.setParent(&dataVecVec1d));
+    ASSERT_TRUE(dataVecVec1d.getParent() == nullptr);
+    dataVecVec1d.setValue({sofa::type::Vec1d(1.0), sofa::type::Vec1d(2.0)});
+    ASSERT_DOUBLE_EQ(dataVecSReal.getValue()[0], 1.);
+    ASSERT_DOUBLE_EQ(dataVecSReal.getValue()[1], 2.);
+}
+
+/// This test check that the setting/unsetting mechanism is working
 TEST_F(DataLink_test, Set)
 {
     ASSERT_EQ(data1.getParent(),nullptr);
@@ -89,7 +100,7 @@ TEST_F(DataLink_test, Set)
     ASSERT_EQ(data2.getParent(), &data1);
 }
 
-/// This test check that the setting/unsetting mechanisme is working
+/// This test check that the setting/unsetting mechanism is working
 TEST_F(DataLink_test, Unset)
 {
     ASSERT_EQ(data1.getParent(),nullptr);

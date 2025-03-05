@@ -57,6 +57,7 @@
 #include <iostream>
 #include <type_traits>
 #include <algorithm>
+#include <utility>
 
 
 namespace sofa::type
@@ -82,18 +83,16 @@ public:
     constexpr fixed_array() {}
 
     /// Specific constructor for 1-element vectors.
-    template<size_type NN = N, typename std::enable_if<NN == 1, int>::type = 0>
     explicit constexpr fixed_array(value_type r1) noexcept
+    requires (N == 1)
     {
         elems[0] = r1;
     }
 
-    template<typename... ArgsT,
-        typename = std::enable_if_t< (std::is_convertible_v<ArgsT, value_type> && ...) >,
-        typename = std::enable_if_t< (sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1) >
-    >
+    template<typename... ArgsT>
     constexpr fixed_array(ArgsT&&... r) noexcept
-        : elems{static_cast<value_type>(std::forward< ArgsT >(r))...}
+        requires ((std::convertible_to<ArgsT, value_type> && ...) && sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1)
+        : elems{static_cast<value_type>(std::forward<ArgsT>(r))...}
     {}
 
     // iterator support
@@ -138,6 +137,35 @@ public:
 #endif
         return elems[i];
     }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr T& get() & noexcept
+    {
+        static_assert(I < N, "array index out of bounds");
+        return elems[I];
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr const T& get() const& noexcept
+    {
+        static_assert(I < N, "array index out of bounds");
+        return elems[I];
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr T&& get() && noexcept
+    {
+        static_assert(I < N, "array index out of bounds");
+        return std::move(elems[I]);
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr const T&& get() const&& noexcept
+    {
+        static_assert(I < N, "array index out of bounds");
+        return std::move(elems[I]);
+    }
+
 
     // at() with range check
     constexpr reference at(size_type i)
@@ -258,6 +286,24 @@ constexpr auto make_array(Ts&&... ts) -> fixed_array<std::common_type_t<Ts...>, 
     return { std::forward<Ts>(ts)... };
 }
 
+/// Builds a fixed_array in which all elements have the same value
+template<typename T, sofa::Size N>
+constexpr sofa::type::fixed_array<T, N> makeHomogeneousArray(const T& value)
+{
+    sofa::type::fixed_array<T, N> container{};
+    container.assign(value);
+    return container;
+}
+
+/// Builds a fixed_array in which all elements have the same value
+template<typename FixedArray>
+constexpr FixedArray makeHomogeneousArray(const typename FixedArray::value_type& value)
+{
+    FixedArray container{};
+    container.assign(value);
+    return container;
+}
+
 /// Checks if v1 is lexicographically less than v2. Similar to std::lexicographical_compare
 template<typename T, sofa::Size N>
 constexpr bool
@@ -301,3 +347,15 @@ extern template class SOFA_TYPE_API fixed_array<double, 7>;
 #endif //FIXED_ARRAY_CPP
 
 } // namespace sofa::type
+
+namespace std
+{
+template<typename T, sofa::Size N>
+struct tuple_size<::sofa::type::fixed_array<T, N> > : integral_constant<size_t, N> {};
+
+template<std::size_t I, typename T, sofa::Size N>
+struct tuple_element<I, ::sofa::type::fixed_array<T, N> >
+{
+    using type = T;
+};
+}

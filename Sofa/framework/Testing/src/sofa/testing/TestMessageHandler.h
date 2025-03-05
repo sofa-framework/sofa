@@ -81,7 +81,7 @@ public:
     virtual ~MessageAsTestFailure() ;
 
 private:
-    GtestMessageFrame* m_frame ;
+    std::unique_ptr<GtestMessageFrame> m_frame;
 };
 
 /// Rise a gtest failure during the object destruction when the expected message have not
@@ -131,7 +131,7 @@ public:
 /// Using the raw objects is very verbose as it lead to code like this:
 ///    ExpectMessage error(Message::Error, __FILE__, __LINE__) ;
 ///
-/// which obfuscate the readability of the source code and force developper to import
+/// which obfuscate the readability of the source code and force developer to import
 /// ExpectMessage and Message into the current namespace.
 ///
 /// For that reason we are provide a set of macro that can be used in the following way:

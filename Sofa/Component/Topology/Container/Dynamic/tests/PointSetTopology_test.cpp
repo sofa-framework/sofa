@@ -31,14 +31,14 @@ namespace
 
 TEST( PointSetTopology_test, checkPointSetTopologyIsEmptyConstructed )
 {
-    PointSetTopologyContainer::SPtr pointContainer = sofa::core::objectmodel::New< PointSetTopologyContainer >();
+    const PointSetTopologyContainer::SPtr pointContainer = sofa::core::objectmodel::New< PointSetTopologyContainer >();
     EXPECT_EQ( 0, pointContainer->getNbPoints() );
 }
 
 
 TEST( PointSetTopology_test, checkPointSetTopologyInitialization )
 {
-    PointSetTopologyContainer::SPtr pointContainer = sofa::core::objectmodel::New< PointSetTopologyContainer >();
+    const PointSetTopologyContainer::SPtr pointContainer = sofa::core::objectmodel::New< PointSetTopologyContainer >();
     sofa::defaulttype::Vec3Types::VecCoord initPos;
     initPos.resize( 50 );
     pointContainer->d_initPoints.setValue( initPos );
@@ -50,7 +50,7 @@ TEST( PointSetTopology_test, checkPointSetTopologyInitialization )
 
 TEST( PointSetTopology_test, checkAddPoint )
 {
-    PointSetTopologyContainer::SPtr pointContainer = sofa::core::objectmodel::New< PointSetTopologyContainer >();
+    const PointSetTopologyContainer::SPtr pointContainer = sofa::core::objectmodel::New< PointSetTopologyContainer >();
     pointContainer->addPoint();
 
     EXPECT_EQ( 1, pointContainer->getNbPoints() );
@@ -58,7 +58,7 @@ TEST( PointSetTopology_test, checkAddPoint )
 
 TEST( PointSetTopology_test, checkAddPoints )
 {
-    PointSetTopologyContainer::SPtr pointContainer = sofa::core::objectmodel::New< PointSetTopologyContainer >();
+    const PointSetTopologyContainer::SPtr pointContainer = sofa::core::objectmodel::New< PointSetTopologyContainer >();
     pointContainer->addPoints(10);
 
     EXPECT_EQ( 10, pointContainer->getNbPoints() );
@@ -70,7 +70,7 @@ TEST( PointSetTopology_test, checkAddPoints )
 
 TEST( PointSetTopology_test, checkRemovePoint )
 {
-    PointSetTopologyContainer::SPtr pointContainer = sofa::core::objectmodel::New< PointSetTopologyContainer >();
+    const PointSetTopologyContainer::SPtr pointContainer = sofa::core::objectmodel::New< PointSetTopologyContainer >();
     pointContainer->addPoint();
     pointContainer->removePoint();
    
@@ -79,7 +79,7 @@ TEST( PointSetTopology_test, checkRemovePoint )
 
 TEST( PointSetTopology_test, checkRemovePoints )
 {
-    PointSetTopologyContainer::SPtr pointContainer = sofa::core::objectmodel::New< PointSetTopologyContainer >();
+    const PointSetTopologyContainer::SPtr pointContainer = sofa::core::objectmodel::New< PointSetTopologyContainer >();
     pointContainer->addPoints(10);
     pointContainer->removePoints(3);
     

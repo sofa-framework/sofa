@@ -38,7 +38,7 @@ namespace sofa::component::collision::detection::algorithm
 
 /**
  * This class is an implementation of sweep and prune in its "direct" version, i.e. at each step
- * it sorts all the primitives along an axis (not checking the moving ones) and computes overlaping pairs without
+ * it sorts all the primitives along an axis (not checking the moving ones) and computes overlapping pairs without
  * saving it. But the memory used to save these primitives is created just once, the first time we add CollisionModels.
  */
 class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API DirectSAPNarrowPhase : public core::collision::NarrowPhaseDetection
@@ -53,7 +53,7 @@ private:
     /** \brief Returns the axis number which have the greatest variance for the primitive end points.
      *
      * This axis is used when updating and sorting end points. The greatest variance means
-     * that this axis have the most chance to eliminate a maximum of not overlaping SAPBox pairs
+     * that this axis have the most chance to eliminate a maximum of not overlapping SAPBox pairs
      * because along this axis, SAPBoxes are the sparsest.
      */
     int greatestVarianceAxis() const;
@@ -63,7 +63,9 @@ private:
       */
     void updateBoxes();
 
-    Data<bool> d_draw; ///< enable/disable display of results
+    SOFA_ATTRIBUTE_DISABLED__DRAWNARROWPHASE()
+    sofa::core::objectmodel::lifecycle::RemovedData d_draw{this, "v23.12", "v24.06", "draw", "Use display flag 'showDetectionOutputs' instead"}; ///< enable/disable display of results
+
     Data<bool> d_showOnlyInvestigatedBoxes; ///< Show only boxes which will be sent to narrow phase
     Data<int> d_nbPairs; ///< number of pairs of elements sent to narrow phase
 
@@ -120,8 +122,6 @@ protected:
     void narrowCollisionDetectionFromSortedEndPoints();
 
 public:
-    void setDraw(bool val)
-    { d_draw.setValue(val); }
 
     void reset() override;
 

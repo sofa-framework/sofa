@@ -30,7 +30,7 @@
 #include <sofa/simulation/Node.h>
 
 // Including constraint, force and mass
-#include <sofa/component/constraint/projective/AffineMovementConstraint.h>
+#include <sofa/component/constraint/projective/AffineMovementProjectiveConstraint.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
@@ -61,7 +61,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef constraint::projective::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
+    typedef constraint::projective::AffineMovementProjectiveConstraint<DataTypes> AffineMovementProjectiveConstraint;
     typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
     typedef typename component::solidmechanics::spring::MeshSpringForceField<DataTypes> MeshSpringForceField;
     typedef typename component::solidmechanics::fem::elastic::TetrahedronFEMForceField<DataTypes> TetraForceField;
@@ -80,10 +80,10 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
     Coord testedTranslation;
 
     /// Create the context for the scene
-    void SetUp()
+    void doSetUp() override
     {
         // Init simulation
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
 
         root = simulation::getSimulation()->createNewGraph("root");
 
@@ -121,7 +121,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
             quat.normalize();
             quat.toMatrix(testedRotation);
         }
-        patchStruct.affineConstraint->m_rotation.setValue(testedRotation);
+        patchStruct.affineConstraint->d_rotation.setValue(testedRotation);
 
         // Random Translation
         if(randomTranslation)
@@ -133,7 +133,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
                     testedTranslation[i]=0;
             }
         }
-        patchStruct.affineConstraint->m_translation.setValue(testedTranslation);
+        patchStruct.affineConstraint->d_translation.setValue(testedTranslation);
 
     }
 
@@ -176,7 +176,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
             quat.normalize();
             quat.toMatrix(testedRotation);
         }
-        patchStruct.affineConstraint->m_rotation.setValue(testedRotation);
+        patchStruct.affineConstraint->d_rotation.setValue(testedRotation);
 
         // Random Translation
         if(randomTranslation)
@@ -186,7 +186,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
                 testedTranslation[i] = helper::drand(2);
             }
         }
-        patchStruct.affineConstraint->m_translation.setValue(testedTranslation);
+        patchStruct.affineConstraint->d_translation.setValue(testedTranslation);
 
     }
 
@@ -204,11 +204,11 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
     bool compareSimulatedToTheoreticalPositions(double convergenceAccuracy, double diffMaxBetweenSimulatedAndTheoreticalPosition)
     {
         // Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         // Compute the theoretical final positions
         VecCoord finalPos;
-        patchStruct.affineConstraint->getFinalPositions( finalPos,*patchStruct.dofs->write(core::VecCoordId::position()) );
+        patchStruct.affineConstraint->getFinalPositions( finalPos,*patchStruct.dofs->write(core::vec_id::write_access::position) );
 
 
         // Initialize
@@ -226,7 +226,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
         do
         {
             hasConverged = true;
-            sofa::simulation::getSimulation()->animate(root.get(),0.5);
+            sofa::simulation::node::animate(root.get(), 0.5_sreal);
             typename MechanicalObject::ReadVecCoord x = patchStruct.dofs->readPositions();
 
             // Compute dx
@@ -266,13 +266,13 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
 
 };
 
-// Define the list of DataTypes to instanciate
+// Define the list of DataTypes to instantiate
 using ::testing::Types;
 typedef Types<
     Vec3Types
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(AffinePatch_sofa_test, DataTypes);
 
 // first test case

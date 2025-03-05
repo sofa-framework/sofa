@@ -38,15 +38,21 @@ using sofa::helper::getWriteOnlyAccessor;
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-static int MeshSTLLoaderClass = core::RegisterObject("Loader for the STL file format. STL can be used to represent the surface of object using with a triangulation.")
-        .add< MeshSTLLoader >();
+void registerMeshSTLLoader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Loader for the STL file format. STL can be used to represent the surface of object using with a triangulation.")
+        .add< MeshSTLLoader >());
+}
 
 //Base VTK Loader
 MeshSTLLoader::MeshSTLLoader() : MeshLoader()
-    , _headerSize(initData(&_headerSize, 80u, "headerSize","Size of the header binary file (just before the number of facet)."))
-    , _forceBinary(initData(&_forceBinary, false, "forceBinary","Force reading in binary mode. Even in first keyword of the file is solid."))
+    , d_headerSize(initData(&d_headerSize, 80u, "headerSize", "Size of the header binary file (just before the number of facet)."))
+    , d_forceBinary(initData(&d_forceBinary, false, "forceBinary", "Force reading in binary mode. Even in first keyword of the file is solid."))
     , d_mergePositionUsingMap(initData(&d_mergePositionUsingMap, true, "mergePositionUsingMap","Since positions are duplicated in a STL, they have to be merged. Using a map to do so will temporarily duplicate memory but should be more efficient. Disable it if memory is really an issue."))
 {
+    _headerSize.setOriginalData(&d_headerSize);
+    _forceBinary.setOriginalData(&d_forceBinary);
+
 }
 
 
@@ -69,7 +75,7 @@ bool MeshSTLLoader::doLoad()
     }
 
     bool ret = false;
-    if( _forceBinary.getValue() )
+    if( d_forceBinary.getValue() )
         ret = this->readBinarySTL(filename); // -- Reading binary file
     else
     {
@@ -89,9 +95,9 @@ bool MeshSTLLoader::doLoad()
 
 bool isBinarySTLValid(const char* filename, const MeshSTLLoader* _this)
 {
-    // Binary STL files have 80-bytes headers. The following 4-bytes is the number of triangular facets in the file
+    // Binary STL files have 80-bytes headers. The following 4-bytes is the number of triangular d_facets in the file
     // Each facet is described with a 50-bytes field, so a valid binary STL file verifies the following condition:
-    // nFacets * 50 + 84-bytes header == filename
+    // nFacets * 50 + 84-bytes header == filesize
 
     long filesize;
     std::ifstream f(filename, std::ifstream::ate | std::ifstream::binary);
@@ -106,9 +112,11 @@ bool isBinarySTLValid(const char* filename, const MeshSTLLoader* _this)
     f.read(buffer, 80);
     uint32_t ntriangles;
     f.read(reinterpret_cast<char*>(&ntriangles), 4);
-    if (filesize != ntriangles * 50 + 84)
+    const uint32_t expectedFileSize = ntriangles * 50 + 84;
+    if (filesize != expectedFileSize)
     {
-        msg_error(_this) << filename << " isn't  binary STL file";
+        msg_error(_this) << filename << " isn't binary STL file. File size expected to be "
+            << expectedFileSize << " (with " << ntriangles << " triangles) but it is " << filesize;
         return false;
     }
     return true;
@@ -126,13 +134,13 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
     std::map< sofa::type::Vec3f, core::topology::Topology::Index > my_map;
     core::topology::Topology::Index positionCounter = 0;
-    bool useMap = d_mergePositionUsingMap.getValue();
+    const bool useMap = d_mergePositionUsingMap.getValue();
 
     std::ifstream dataFile(filename, std::ios::in | std::ifstream::binary);
 
     // Skipping header file
     char buffer[256];
-    dataFile.read(buffer, _headerSize.getValue());
+    dataFile.read(buffer, d_headerSize.getValue());
 
     uint32_t nbrFacet;
     dataFile.read(reinterpret_cast<char*>(&nbrFacet), 4);
@@ -142,7 +150,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
 #ifndef NDEBUG
     {
-    // checking that the file is large enough to contain the given nb of facets
+    // checking that the file is large enough to contain the given nb of d_facets
     // store current pos in file
     std::streampos pos = dataFile.tellg();
     // get length of file
@@ -151,7 +159,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     // restore pos in file
     dataFile.seekg(pos);
     // check for length
-    assert( length >= _headerSize.getValue() + 4 + nbrFacet * (12 /*normal*/ + 3 * 12 /*points*/ + 2 /*attribute*/ ) );
+    assert(length >= d_headerSize.getValue() + 4 + nbrFacet * (12 /*normal*/ + 3 * 12 /*points*/ + 2 /*attribute*/ ) );
     }
 #endif
 
@@ -163,7 +171,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
     unsigned int nbDegeneratedTriangles = 0;
 
-    // Parsing facets
+    // Parsing d_facets
     for (uint32_t i = 0; i<nbrFacet; ++i)
     {
         Triangle the_tri;
@@ -254,7 +262,7 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
 
     std::map< sofa::type::Vec3f, core::topology::Topology::Index > my_map;
     core::topology::Topology::Index positionCounter = 0, vertexCounter = 0;
-    bool useMap = d_mergePositionUsingMap.getValue();
+    const bool useMap = d_mergePositionUsingMap.getValue();
 
     Triangle the_tri;
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Node>
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [MeshTetraStuffing] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
@@ -20,7 +20,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DiscreteIntersection/>
-    <DefaultContactManager response="PenalityContactForceField" name="collision response"/>
+    <CollisionResponse response="PenalityContactForceField" name="collision response"/>
 -->
     <DefaultAnimationLoop/>    
     <VisualStyle displayFlags="showForceFields" />

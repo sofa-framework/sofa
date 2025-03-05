@@ -52,8 +52,8 @@ public:
     void reinit() override;
 
 protected:
-    Data<type::Matrix4> d_inT; ///< input transformation
-    Data<type::Matrix4> d_outT; ///< input transformation
+    Data<type::Matrix4> d_inT; ///< input transformation if any
+    Data<type::Matrix4> d_outT; ///< output transformation
 };
 
 /**
@@ -135,7 +135,7 @@ public:
     void init() override;
 
 protected:
-    Data<type::Vec3> d_scale; ///< scale
+    Data<type::Vec3> d_scale; ///< scaling values
 };
 
 } //namespace sofa::component::engine::transform

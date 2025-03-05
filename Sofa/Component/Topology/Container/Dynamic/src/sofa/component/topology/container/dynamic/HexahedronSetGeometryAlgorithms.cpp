@@ -27,15 +27,17 @@
 
 namespace sofa::component::topology::container::dynamic
 {
-using namespace sofa::defaulttype;
-int HexahedronSetGeometryAlgorithmsClass = core::RegisterObject("Hexahedron set geometry algorithms")
-        .add< HexahedronSetGeometryAlgorithms<Vec3Types> >(true) // default template
-        .add< HexahedronSetGeometryAlgorithms<Vec2Types> >()
 
-        ;
+using namespace sofa::defaulttype;
+
+void registerHexahedronSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Geometry algorithms dedicated to an hexahedral topology.")
+        .add< HexahedronSetGeometryAlgorithms<Vec3Types> >(true) // default template
+        .add< HexahedronSetGeometryAlgorithms<Vec2Types> >());
+}
 
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API HexahedronSetGeometryAlgorithms<Vec3Types>;
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API HexahedronSetGeometryAlgorithms<Vec2Types>;
-
 
 } //namespace sofa::component::topology::container::dynamic

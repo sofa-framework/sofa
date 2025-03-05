@@ -16,25 +16,18 @@
 /// of the mutex resulting in run-time crashes.
 /// To fix this...we are forcing the Mutex_attr function to be defined in the CImgPlugin only
 /// and export it.
-namespace cimg_library
+namespace cimg_library::cimg
 {
-namespace cimg
-{
-    extern "C" {
-        SOFA_CIMGPLUGIN_API Mutex_info& Mutex_attr() { static Mutex_info val; return val; }
-    }
-}
+    Mutex_static& Mutex_attr() { static Mutex_static val; return val; }
 }
 
-namespace sofa
-{
 
-namespace component
+namespace sofa::component
 {
 
 
 extern "C" {
-    cimg_library::cimg::Mutex_info& tmp = cimg_library::cimg::Mutex_attr() ;
+    cimg_library::cimg::Mutex_static& tmp = cimg_library::cimg::Mutex_attr() ;
 
     SOFA_CIMGPLUGIN_API void initExternalModule();
     SOFA_CIMGPLUGIN_API const char* getModuleName();
@@ -84,6 +77,5 @@ const char* getModuleComponentList()
 
 }
 
-}
 
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms

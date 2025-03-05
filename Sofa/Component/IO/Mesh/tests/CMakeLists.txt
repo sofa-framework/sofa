@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 
 project(Sofa.Component.IO.Mesh_test)
 
@@ -6,6 +6,7 @@ set(SOURCE_FILES
     MeshExporter_test.cpp
     MeshGmshLoader_test.cpp
     MeshOBJLoader_test.cpp
+    MeshSTLLoader_test.cpp
     MeshVTKLoader_test.cpp
     MeshXspLoader_test.cpp
     OffSequenceLoader_test.cpp

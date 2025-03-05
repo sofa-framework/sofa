@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/odesolver/backward/config.h>
+#include <sofa/core/behavior/LinearSolverAccessor.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/MultiVec.h>
@@ -56,10 +57,12 @@ using sofa::core::objectmodel::Data;
  *     \vec{x}_{n+1}^{i+1} &= \vec{x}_{n+1}^{i} + \Delta \vec{x}_{n+1}^{i+1}
  * \f}
  */
-class SOFA_COMPONENT_ODESOLVER_BACKWARD_API StaticSolver : public sofa::core::behavior::OdeSolver
+class SOFA_COMPONENT_ODESOLVER_BACKWARD_API StaticSolver
+    : public sofa::core::behavior::OdeSolver
+    , public sofa::core::behavior::LinearSolverAccessor
 {
 public:
-    SOFA_CLASS(StaticSolver, sofa::core::behavior::OdeSolver);
+    SOFA_CLASS2(StaticSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
     StaticSolver();
 
 public:
@@ -116,7 +119,7 @@ public:
 
     SReal getIntegrationFactor(int inputDerivative, int outputDerivative, SReal dt) const
     {
-        SReal matrix[3][3] =
+        const SReal matrix[3][3] =
             {
                 { 1, dt, 0},
                 { 0, 1, 0},
@@ -137,14 +140,12 @@ public:
 
     SReal getSolutionIntegrationFactor(int outputDerivative, SReal dt) const
     {
-        SReal vect[3] = { dt, 1, 1/dt};
+        const SReal vect[3] = { dt, 1, 1/dt};
         if (outputDerivative >= 3)
             return 0;
         else
             return vect[outputDerivative];
     }
-
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
 protected:
 

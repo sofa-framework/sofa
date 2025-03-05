@@ -22,19 +22,19 @@
 #pragma once
 #include <sofa/component/solidmechanics/spring/config.h>
 
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 
 namespace sofa::component::solidmechanics::spring
 {
 
 template<class DataTypes>
-class RepulsiveSpringForceField : public StiffSpringForceField<DataTypes>
+class RepulsiveSpringForceField : public SpringForceField<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(RepulsiveSpringForceField,DataTypes),
-            SOFA_TEMPLATE(StiffSpringForceField,DataTypes));
+            SOFA_TEMPLATE(SpringForceField,DataTypes));
 
-    typedef StiffSpringForceField<DataTypes> Inherit;
+    typedef SpringForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -62,7 +62,7 @@ public:
     SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override;
 };
 
-#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_CPP)
 extern template class RepulsiveSpringForceField<defaulttype::Vec3Types>;
 extern template class RepulsiveSpringForceField<defaulttype::Vec2Types>;
 extern template class RepulsiveSpringForceField<defaulttype::Vec1Types>;

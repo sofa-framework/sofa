@@ -25,6 +25,7 @@
 #include <gtest/gtest.h>
 #include <cstdlib>
 #include <ctime>
+#include <sofa/testing/LinearCongruentialRandomGenerator.h>
 
 using sofa::type::Quat;
 
@@ -32,44 +33,57 @@ double errorThreshold = 1e-6;
 
 TEST(QuaterTest, EulerAngles)
 {
+    sofa::testing::LinearCongruentialRandomGenerator lcg(46515387);
+
     // Try to tranform a Quater (q0) to Euler angles and then back to a Quater (q1)
     // Compare the result of a rotation defined by q0 and q1 on a vector
-    srand (time(nullptr));
     for (int i = 0; i < 100; ++i)
     {
         // Generate random Quater and avoid singular values
-        Quat<double> q0 (((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f);
-        while( fabs(q0[0]) == 0.5 && fabs(q0[1]) == 0.5 && fabs(q0[2]) == 0.5 && fabs(q0[3]) == 0.5 )
+        Quat<double> q0(
+                lcg.generateInRange(-1., 1.),
+                lcg.generateInRange(-1., 1.),
+                lcg.generateInRange(-1., 1.),
+                lcg.generateInRange(-1., 1.));
+        q0.normalize();
+
+        for(sofa::Size j = 0 ; j < Quat<double>::size() ; ++j)
         {
-            q0 = Quat<double>( ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f );
+            ASSERT_FALSE( std::isnan(q0[j]) );
         }
-        q0.Quat<double>::normalize();
 
-        for(std::size_t i = 0 ; i < q0.size() ; ++i)
+        const sofa::type::Vec3d eulerAngles = q0.toEulerVector();
+
+        // make sure the angles don't lead to a singularity
+        for (const auto& angle : eulerAngles)
         {
-            ASSERT_FALSE( std::isnan(q0[i]) );
+            ASSERT_GE(std::abs(angle - M_PI / 2), 1e-3);
+            ASSERT_GE(std::abs(angle + M_PI / 2), 1e-3);
         }
 
-        // Transform q0 into Euler angles and back to a quaternion (q1)
-        Quat<double> q1 = Quat<double>::createQuaterFromEuler(q0.toEulerVector());
+        // Transform Euler angles back to a quaternion (q1)
+        Quat<double> q1 = Quat<double>::createQuaterFromEuler(eulerAngles);
 
-        for(std::size_t i = 0 ; i < q1.size() ; ++i)
+        for(sofa::Size j = 0 ; j < Quat<double>::size() ; ++j)
         {
-            ASSERT_FALSE( std::isnan(q1[i]) );
+            ASSERT_FALSE( std::isnan(q1[j]) );
         }
 
         // Compute a random rotation with each Quater
-        sofa::type::Vec<3,double> p(((rand()%101)/100.f)+1.f, ((rand()%101)/100.f)+1.f, ((rand()%101)/100.f)+1.f);
-        sofa::type::Vec<3,double> p0 = q0.Quat<double>::rotate(p);
-        sofa::type::Vec<3,double> p1 = q1.Quat<double>::rotate(p);
+        sofa::type::Vec<3,double> p(
+            lcg.generateInRange(1., 2.),
+            lcg.generateInRange(1., 2.),
+            lcg.generateInRange(1., 2.));
+        sofa::type::Vec<3,double> p0 = q0.rotate(p);
+        sofa::type::Vec<3,double> p1 = q1.rotate(p);
         // Compare the result of the two rotations
         EXPECT_EQ(p0, p1);
 
         // Specific check for a certain value of p
-        sofa::type::Vec<3,double> p2(2,1,1);
-        p0 = q0.Quat<double>::rotate(p2);
-        p1 = q1.Quat<double>::rotate(p2);
-        EXPECT_EQ(p0,p1);
+        sofa::type::Vec<3, double> p2(2, 1, 1);
+        p0 = q0.rotate(p2);
+        p1 = q1.rotate(p2);
+        EXPECT_EQ(p0, p1);
     }
 }
 
@@ -164,9 +178,9 @@ TEST(QuaterTest, QuaterdFromFrame)
 {
     Quat<double> quat;
     //90 deg around Z from Identity
-    sofa::type::Vec3d xAxis(1.0, 0.0, 0.0);
-    sofa::type::Vec3d yAxis(0.0, 0.0, -1.0);
-    sofa::type::Vec3d zAxis(0.0, 1.0, 0.0);
+    const sofa::type::Vec3d xAxis(1.0, 0.0, 0.0);
+    const sofa::type::Vec3d yAxis(0.0, 0.0, -1.0);
+    const sofa::type::Vec3d zAxis(0.0, 1.0, 0.0);
     quat.fromFrame(xAxis, yAxis, zAxis);
 
     EXPECT_NEAR(-0.707106781186548, quat[0], errorThreshold);
@@ -215,7 +229,7 @@ TEST(QuaterTest, QuaterdRotateVec)
     Quat<double> quat;
     //30deg X, 15deg Y and 30deg Z
     quat.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
-    sofa::type::Vec3d p(3, 6, 9);
+    const sofa::type::Vec3d p(3, 6, 9);
     sofa::type::Vec3d rp = quat.rotate(p); //equiv if inverseQuat.rotate() in matlab
 
     EXPECT_NEAR(4.580932858428164, rp[0], errorThreshold);
@@ -244,7 +258,7 @@ TEST(QuaterTest, QuaterdInvRotateVec)
     Quat<double> quat;
     //30deg X, 15deg Y and 30deg Z
     quat.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
-    sofa::type::Vec3d p(3, 6, 9);
+    const sofa::type::Vec3d p(3, 6, 9);
     sofa::type::Vec3d rp = quat.inverseRotate(p);//equiv if quat.rotate() in matlab
 
     EXPECT_NEAR(3.077954984157941, rp[0], errorThreshold);
@@ -276,7 +290,7 @@ TEST(QuaterTest, QuaterdOperatorAdd)
     //60deg X, 30deg Y and 60deg Z
     quat2.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
     quatAdd = quat1 + quat2;
-    sofa::type::Vec3d p(3, 6, 9);
+    const sofa::type::Vec3d p(3, 6, 9);
     sofa::type::Vec3d rp = quatAdd.rotate(p);
     sofa::type::Vec3d rrp = quat2.rotate(quat1.rotate(p));
 
@@ -305,7 +319,7 @@ TEST(QuaterTest, QuaterdOperatorMultQuat)
 TEST(QuaterTest, QuaterdOperatorMultReal)
 {
     Quat<double> quat, quatMult;
-    double r = 2.0;
+    const double r = 2.0;
     //30deg X, 15deg Y and 30deg Z
     quat.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
 
@@ -320,7 +334,7 @@ TEST(QuaterTest, QuaterdOperatorMultReal)
 TEST(QuaterTest, QuaterdOperatorDivReal)
 {
     Quat<double> quat, quatDiv;
-    double r = 3.0;
+    const double r = 3.0;
     //60deg X, 30deg Y and 60deg Z
     quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
 
@@ -335,7 +349,7 @@ TEST(QuaterTest, QuaterdOperatorDivReal)
 TEST(QuaterTest, QuaterdOperatorMultRealSelf)
 {
     Quat<double> quat;
-    double r = 2.0;
+    const double r = 2.0;
     //30deg X, 15deg Y and 30deg Z
     quat.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
 
@@ -350,7 +364,7 @@ TEST(QuaterTest, QuaterdOperatorMultRealSelf)
 TEST(QuaterTest, QuaterdOperatorDivRealSelf)
 {
     Quat<double> quat;
-    double r = 3.0;
+    const double r = 3.0;
     //60deg X, 30deg Y and 60deg Z
     quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
 
@@ -505,8 +519,8 @@ TEST(QuaterTest, QuaterdAxisToQuat)
 {
     Quat<double> quat;
     //axang2quat([0 2 4 pi/3])
-    sofa::type::Vec3d axis(0, 2, 4);
-    double phi = 1.047197551196598; //60deg
+    const sofa::type::Vec3d axis(0, 2, 4);
+    const double phi = 1.047197551196598; //60deg
 
     quat = quat.axisToQuat(axis, phi);
 
@@ -537,9 +551,9 @@ TEST(QuaterTest, QuaterdQuatToAxis)
 TEST(QuaterTest, QuaterdCreateQuaterFromFrame)
 {
     //90 deg around Z from Identity
-    sofa::type::Vec3d xAxis(1.0, 0.0, 0.0);
-    sofa::type::Vec3d yAxis(0.0, 0.0, -1.0);
-    sofa::type::Vec3d zAxis(0.0, 1.0, 0.0);
+    const sofa::type::Vec3d xAxis(1.0, 0.0, 0.0);
+    const sofa::type::Vec3d yAxis(0.0, 0.0, -1.0);
+    const sofa::type::Vec3d zAxis(0.0, 1.0, 0.0);
     Quat<double> quat = Quat<double>::createQuaterFromFrame(xAxis, yAxis, zAxis);
 
     EXPECT_NEAR(-0.707106781186548, quat[0], errorThreshold);
@@ -565,7 +579,7 @@ TEST(QuaterTest, QuaterdCreateFromRotationVector)
 TEST(QuaterTest, QuaterdCreateQuaterFromEuler)
 {
     //90deg X, 30deg Y and 60deg Z
-    sofa::type::Vec3d euler(1.570796326794897, 0.523598775598299, 1.047197551196598);
+    const sofa::type::Vec3d euler(1.570796326794897, 0.523598775598299, 1.047197551196598);
     Quat<double> quat = Quat<double>::createQuaterFromEuler(euler);
 
     EXPECT_NEAR(0.500000000000000, quat[0], errorThreshold);
@@ -693,4 +707,12 @@ TEST(QuaterTest, QuaterdFromUnitVectors)
     EXPECT_NEAR(0.5894552112230939, quat1[3], errorThreshold);
 }
 
-
+TEST(QuaterTest, StructuredBindings)
+{
+    Quat<double> quat1;
+    const auto& [a,b,c,d] = quat1;
+    EXPECT_NEAR(0., a, errorThreshold);
+    EXPECT_NEAR(0., b, errorThreshold);
+    EXPECT_NEAR(0., c, errorThreshold);
+    EXPECT_NEAR(1., d, errorThreshold);
+}

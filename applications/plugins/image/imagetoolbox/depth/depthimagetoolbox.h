@@ -1,7 +1,7 @@
 #ifndef DEPTHIMAGETOOLBOX_H
 #define DEPTHIMAGETOOLBOX_H
 
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 
 #include <QTextStream>
 #include <QFile>

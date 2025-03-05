@@ -25,9 +25,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
-namespace sofa
-{
-namespace simulation
+namespace sofa::simulation
 {
 
 UpdateBoundingBoxVisitor::UpdateBoundingBoxVisitor(const sofa::core::ExecParams* params)
@@ -38,8 +36,6 @@ UpdateBoundingBoxVisitor::UpdateBoundingBoxVisitor(const sofa::core::ExecParams*
 
 Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
 {
-    std::string msg = "BoundingBoxVisitor - ProcessTopDown: " + node->getName();
-    sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
     using namespace sofa::core::objectmodel;
     type::vector<BaseObject*> objectList;
     type::vector<BaseObject*>::iterator object;
@@ -49,7 +45,6 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
         nodeBBox->invalidate();
     for ( object = objectList.begin(); object != objectList.end(); ++object)
     {
-        sofa::helper::ScopedAdvancedTimer("ComputeBBox: " + (*object)->getName());
         // warning the second parameter should NOT be false
         // otherwise every object will participate to the bounding box
         // when it makes no sense for some of them
@@ -66,10 +61,7 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
 }
 
 void UpdateBoundingBoxVisitor::processNodeBottomUp(simulation::Node* node)
-{   
-    std::string msg = "BoundingBoxVisitor - ProcessBottomUp: " + node->getName();
-    sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
-
+{
     sofa::type::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
     Node::ChildIterator childNode;
     for( childNode = node->child.begin(); childNode!=node->child.end(); ++childNode)
@@ -79,5 +71,4 @@ void UpdateBoundingBoxVisitor::processNodeBottomUp(simulation::Node* node)
     node->f_bbox.endEdit();
 }
 
-}
 }

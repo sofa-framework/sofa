@@ -31,11 +31,8 @@
 #include <algorithm> // for std::sort
 #include <vector>
 
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
+
+namespace sofa::gpu::cuda
 {
 #endif
 
@@ -88,7 +85,7 @@ void CudaSortCPU(TKey* keys, TData* data, unsigned int size, int /*bits*/)
 static inline void CudaSortPrepare(unsigned int size, bool withData = true)
 {
     if (!CudaSortGPUAvailable(size, withData))
-        std::cerr << "CUDA: GPU sort implementation not available (size="<<size<<")" << std::endl;
+        msg_error("SofaCUDA") << "CUDA: GPU sort implementation not available (size=" << size << ")";
 }
 
 template<class TKey, class TData>
@@ -115,9 +112,9 @@ static inline void CudaSort(CudaVector<TKey>* keys, CudaVector<TData>* data, uns
 
 
 #if defined(__cplusplus)
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
+} // namespace sofa::gpu::cuda
+
+
 #endif
 
 #endif

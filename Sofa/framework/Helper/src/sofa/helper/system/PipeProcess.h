@@ -28,13 +28,7 @@
 
 #include <sofa/helper/config.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace system
+namespace sofa::helper::system
 {
 
 class SOFA_HELPER_API PipeProcess
@@ -49,7 +43,5 @@ private:
 
 };
 
-}
-}
 }
 #endif /*PIPEPROCESS_H_*/

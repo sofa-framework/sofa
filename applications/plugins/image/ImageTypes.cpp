@@ -1,7 +1,7 @@
 #include <sofa/defaulttype/TemplatesAliases.h>
+#include <image/config.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <image/config.h>
 #include "ImageTypes.h"
 #if IMAGE_HAVE_MULTITHREADING
 #include <MultiThreading/DataExchange.inl>

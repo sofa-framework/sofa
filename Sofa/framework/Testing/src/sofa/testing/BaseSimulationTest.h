@@ -37,6 +37,7 @@ class SOFA_TESTING_API BaseSimulationTest : public virtual BaseTest
 public:
     BaseSimulationTest() ;
 
+    SOFA_ATTRIBUTE_DEPRECATED__TESTING_IMPORT_PLUGIN()
     bool importPlugin(const std::string& name) ;
 
     class SOFA_TESTING_API SceneInstance
@@ -50,7 +51,6 @@ public:
         static SceneInstance LoadFromFile(const std::string& filename) ;
 
         Node::SPtr root ;
-        Simulation* simulation {nullptr} ;
 
         void initScene() ;
         void simulate(const double timestep) ;

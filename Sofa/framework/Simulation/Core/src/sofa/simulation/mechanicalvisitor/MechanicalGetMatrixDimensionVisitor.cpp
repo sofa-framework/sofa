@@ -39,7 +39,7 @@ Visitor::Result
 MechanicalGetMatrixDimensionVisitor::fwdMechanicalState(simulation::Node *, core::behavior::BaseMechanicalState *ms)
 {
     //ms->contributeToMatrixDimension(nbRow, nbCol);
-    auto n = ms->getMatrixSize();
+    const auto n = ms->getMatrixSize();
     if (nbRow) *nbRow += n;
     if (nbCol) *nbCol += n;
     if (matrix) matrix->addMechanicalState(ms);

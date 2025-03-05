@@ -47,16 +47,33 @@ public:
 
     //Intersectors
     // Cube
-    virtual bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2);
-    virtual int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts);
+    virtual bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, const core::collision::Intersection* currentIntersection);
+    virtual int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts, const core::collision::Intersection* currentIntersection);
 
     //Sphere
-    virtual bool testIntersection(collision::geometry::Sphere& sph1, collision::geometry::Sphere& sph2);
-    virtual int computeIntersection(collision::geometry::Sphere& sph1, collision::geometry::Sphere& sph2, OutputVector* contacts);
-    virtual bool testIntersection(collision::geometry::RigidSphere& sph1, collision::geometry::RigidSphere& sph2);
-    virtual int computeIntersection(collision::geometry::RigidSphere& sph1, collision::geometry::RigidSphere& sph2, OutputVector* contacts);
-    virtual bool testIntersection(collision::geometry::Sphere& sph1, collision::geometry::RigidSphere& sph2);
-    virtual int computeIntersection(collision::geometry::Sphere& sph1, collision::geometry::RigidSphere& sph2, OutputVector* contacts);
+    virtual bool testIntersection(collision::geometry::Sphere& sph1, collision::geometry::Sphere& sph2, const core::collision::Intersection* currentIntersection);
+    virtual int computeIntersection(collision::geometry::Sphere& sph1, collision::geometry::Sphere& sph2, OutputVector* contacts, const core::collision::Intersection* currentIntersection);
+    virtual bool testIntersection(collision::geometry::RigidSphere& sph1, collision::geometry::RigidSphere& sph2, const core::collision::Intersection* currentIntersection);
+    virtual int computeIntersection(collision::geometry::RigidSphere& sph1, collision::geometry::RigidSphere& sph2, OutputVector* contacts, const core::collision::Intersection* currentIntersection);
+    virtual bool testIntersection(collision::geometry::Sphere& sph1, collision::geometry::RigidSphere& sph2, const core::collision::Intersection* currentIntersection);
+    virtual int computeIntersection(collision::geometry::Sphere& sph1, collision::geometry::RigidSphere& sph2, OutputVector* contacts, const core::collision::Intersection* currentIntersection);
+
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    virtual bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) = delete;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    virtual int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector*) = delete;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    virtual bool testIntersection(collision::geometry::Sphere& sph1, collision::geometry::Sphere& sph2) = delete;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    virtual int computeIntersection(collision::geometry::Sphere& sph1, collision::geometry::Sphere& sph2, OutputVector*) = delete;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    virtual bool testIntersection(collision::geometry::RigidSphere& sph1, collision::geometry::RigidSphere& sph2) = delete;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    virtual int computeIntersection(collision::geometry::RigidSphere& sph1, collision::geometry::RigidSphere& sph2, OutputVector*) = delete;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    virtual bool testIntersection(collision::geometry::Sphere& sph1, collision::geometry::RigidSphere& sph2) = delete;
+    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
+    virtual int computeIntersection(collision::geometry::Sphere& sph1, collision::geometry::RigidSphere& sph2, OutputVector*) = delete;
 
 protected:
 
@@ -70,17 +87,17 @@ protected:
     template<class SphereType1, class SphereType2>
     int computeIntersectionSphere(SphereType1& sph1, SphereType2& sph2, DiscreteIntersection::OutputVector* contacts, const SReal alarmDist, const SReal contactDist)
     {
-        SReal r = sph1.r() + sph2.r();
-        SReal myAlarmDist = alarmDist + r;
-        type::Vec3 dist = sph2.center() - sph1.center();
-        SReal norm2 = dist.norm2();
+        const SReal r = sph1.r() + sph2.r();
+        const SReal myAlarmDist = alarmDist + r;
+        const type::Vec3 dist = sph2.center() - sph1.center();
+        const SReal norm2 = dist.norm2();
 
         if (norm2 > myAlarmDist * myAlarmDist)
             return 0;
 
         contacts->resize(contacts->size() + 1);
         core::collision::DetectionOutput* detection = &*(contacts->end() - 1);
-        SReal distSph1Sph2 = helper::rsqrt(norm2);
+        const SReal distSph1Sph2 = helper::rsqrt(norm2);
         detection->normal = dist / distSph1Sph2;
         detection->point[0] = sph1.getContactPointByNormal(-detection->normal);
         detection->point[1] = sph2.getContactPointByNormal(detection->normal);
@@ -98,7 +115,7 @@ protected:
 
 namespace sofa::core::collision
 {
-#if  !defined(SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_CPP)
 extern template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::detection::intersection::DiscreteIntersection>;
 #endif
 } // namespace sofa::core::collision

@@ -24,11 +24,7 @@
 
 #include <sofa/component/topology/container/grid/config.h>
 
-namespace sofa
-{
-namespace helper
-{
-namespace polygon_cube_intersection
+namespace sofa::helper::polygon_cube_intersection
 {
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
@@ -183,8 +179,6 @@ SOFA_COMPONENT_TOPOLOGY_CONTAINER_GRID_API float *
 get_polygon_normal(float normal[3],
         int nverts, const float verts[/* nverts */][3]);
 
-}
-}
 }
 
 #endif

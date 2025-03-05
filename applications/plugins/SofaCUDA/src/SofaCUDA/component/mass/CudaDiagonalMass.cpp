@@ -23,7 +23,7 @@
 #define SOFA_GPU_CUDA_CUDADIAGONALMASS_CPP
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include "CudaDiagonalMass.inl"
+#include <SofaCUDA/component/mass/CudaDiagonalMass.inl>
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
@@ -36,10 +36,8 @@
 namespace sofa
 {
 
-namespace component
-{
 
-namespace mass
+namespace component::mass
 {
 
 template class SOFA_GPU_CUDA_API DiagonalMass<sofa::gpu::cuda::CudaVec3fTypes>;
@@ -48,15 +46,10 @@ template class SOFA_GPU_CUDA_API DiagonalMass<sofa::gpu::cuda::CudaVec3fTypes>;
 template class SOFA_GPU_CUDA_API DiagonalMass<sofa::gpu::cuda::CudaVec3dTypes>;
 #endif
 
-} // namespace mass
-
-} // namespace component
+} // namespace component::mass
 
 
-namespace gpu
-{
-
-namespace cuda
+namespace gpu::cuda
 {
 
 
@@ -71,9 +64,8 @@ int DiagonalMassCudaClass = core::RegisterObject("Supports GPU-side computations
         ;
 
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
 } // namespace sofa
 

@@ -65,7 +65,7 @@ public:
 
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_INDICES2VALUESMAPPER_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_INDICES2VALUESMAPPER_CPP)
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API Indices2ValuesMapper<sofa::defaulttype::Vec3Types>;
  
 #endif

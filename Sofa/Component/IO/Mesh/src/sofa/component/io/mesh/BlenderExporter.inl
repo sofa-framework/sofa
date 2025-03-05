@@ -22,6 +22,8 @@
 #include <sofa/component/io/mesh/BlenderExporter.h>
 #include <iomanip>
 #include <iostream>
+#include <sofa/helper/system/FileSystem.h>
+
 
 namespace sofa::component::_blenderexporter_
 {
@@ -30,14 +32,21 @@ using namespace std;
 
 template<class T>
 BlenderExporter<T>::BlenderExporter()
-    : path(initData(&path,"path","output path")),
-    baseName(initData(&baseName, "baseName", "Base name for the output files")),
-    simulationType(initData(&simulationType,0, "simulationType", "simulation type (0: soft body, 1: particles, 2:cloth, 3:hair)")),
-    simulationStep(initData(&simulationStep,2, "step", "save the  simulation result every step frames")),
-    nbPtsByHair(initData(&nbPtsByHair,20, "nbPtsByHair", "number of element by hair strand")),
-    frameCounter(0)
+    : d_path(initData(&d_path, "path", "output path")),
+      d_baseName(initData(&d_baseName, "baseName", "Base name for the output files")),
+      d_simulationType(initData(&d_simulationType, 0, "simulationType", "simulation type (0: soft body, 1: particles, 2:cloth, 3:hair)")),
+      d_simulationStep(initData(&d_simulationStep, 2, "step", "save the  simulation result every step frames")),
+      d_nbPtsByHair(initData(&d_nbPtsByHair, 20, "nbPtsByHair", "number of element by hair strand")),
+      frameCounter(0)
 {
     Inherit::f_listening.setValue(true);
+
+    path.setOriginalData(&d_path);
+    baseName.setOriginalData(&d_baseName);
+    simulationType.setOriginalData(&d_simulationType);
+    simulationStep.setOriginalData(&d_simulationStep);
+    nbPtsByHair.setOriginalData(&d_nbPtsByHair);
+
 }
 
 template<class T>
@@ -48,10 +57,11 @@ void BlenderExporter<T>::init()
         msg_error()<<"Initialization failed!";
     Inherit::init();
     // if hair type simulation, create an additional information frame
-    if(simulationType.getValue()==Hair)
+    if(d_simulationType.getValue() == Hair)
     {
         ostringstream iss;
-        iss<<path.getValue()<<"/"<<baseName.getValue()<<"_000000_00.bphys";
+        iss << helper::system::FileSystem::append(d_path.getValue(), d_baseName.getValue())
+            << "_000000_00.bphys";
         string fileName = iss.str();
         // create the file
         ofstream file(fileName.c_str(), ios::out|ios::binary);
@@ -81,11 +91,11 @@ void BlenderExporter<T>::handleEvent(sofa::core::objectmodel::Event* event)
 
     if (simulation::AnimateBeginEvent::checkEventType(event))
     {
-        if(!(frameCounter%simulationStep.getValue())) // save a new frame!
+        if(!(frameCounter % d_simulationStep.getValue())) // save a new frame!
         {
-            int frameNumber = frameCounter/simulationStep.getValue();
+            int frameNumber = frameCounter / d_simulationStep.getValue();
             ostringstream iss;
-            iss<<path.getValue()<<"/"<<baseName.getValue()<<"_";
+            iss << helper::system::FileSystem::append(d_path.getValue(), d_baseName.getValue()) << "_";
             iss<<std::setfill('0') << std::setw(6) << frameNumber+1<<"_00.bphys";
             string fileName = iss.str();
 
@@ -103,17 +113,17 @@ void BlenderExporter<T>::handleEvent(sofa::core::objectmodel::Event* event)
 
                 // types
                 unsigned type;
-                if(simulationType.getValue()==Hair)
+                if(d_simulationType.getValue() == Hair)
                     type = Cloth; // blender hair exception
                 else
-                    type = simulationType.getValue();
+                    type = d_simulationType.getValue();
                 file.write((char*)&type,4);
 
                 // number of data
                 auto size = mmodel->getSize();
-                if(simulationType.getValue()==Hair)
+                if(d_simulationType.getValue() == Hair)
                 {
-                    unsigned sizeHair = size+size/(nbPtsByHair.getValue());
+                    unsigned sizeHair = size+size/(d_nbPtsByHair.getValue());
                     file.write((char*)&sizeHair,4);
                 }
                 else
@@ -121,7 +131,7 @@ void BlenderExporter<T>::handleEvent(sofa::core::objectmodel::Event* event)
 
                 // dataType
                 unsigned dataType;
-                switch (simulationType.getValue())
+                switch (d_simulationType.getValue())
                 {
                 case SoftBody: dataType = 6;
                     break;
@@ -147,7 +157,7 @@ void BlenderExporter<T>::handleEvent(sofa::core::objectmodel::Event* event)
                 for(int i= (int)size-1; i>=0; i--)
                 {
                     //create an additional point for root tangent
-                    if((simulationType.getValue() == Hair && (i%nbPtsByHair.getValue()==0)))
+                    if((d_simulationType.getValue() == Hair && (i % d_nbPtsByHair.getValue() == 0)))
                     {
 
                        auto  x0 = T::getCPos(posData[i]);
@@ -174,7 +184,7 @@ void BlenderExporter<T>::handleEvent(sofa::core::objectmodel::Event* event)
                     pos[2] = (float)x[2];
 
                     Deriv v;
-                    if((mmodel->read(core::ConstVecDerivId::velocity())) && ((int) mmodel->readVelocities().size()>i))
+                    if((mmodel->read(core::vec_id::read_access::velocity)) && ((int) mmodel->readVelocities().size()>i))
                     {
                         v =mmodel->readVelocities()[i];
                         vel[0] = (float)v[0];
@@ -183,7 +193,7 @@ void BlenderExporter<T>::handleEvent(sofa::core::objectmodel::Event* event)
                     }
 
                     Coord x0;
-                    if((mmodel->read(core::ConstVecCoordId::restPosition())) && ( (int)mmodel->readRestPositions().size()>i))
+                    if((mmodel->read(core::vec_id::read_access::restPosition)) && ( (int)mmodel->readRestPositions().size()>i))
                     {
                         x0 =mmodel->readRestPositions()[i];
                         rest[0] = (float)x0[0];
@@ -193,7 +203,7 @@ void BlenderExporter<T>::handleEvent(sofa::core::objectmodel::Event* event)
 
 
 
-                    switch (simulationType.getValue())
+                    switch (d_simulationType.getValue())
                     {
                     case SoftBody:
                         file.write((char*)pos,12);

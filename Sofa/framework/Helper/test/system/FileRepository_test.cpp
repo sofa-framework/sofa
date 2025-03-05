@@ -85,3 +85,24 @@ TEST_F(FileRepository_test, findFileWithAccents )
     ASSERT_TRUE( fileRepository.findFile(filename) );
     ASSERT_TRUE( filename == std::string(SOFA_TESTING_RESOURCES_DIR) + "/dir_é_with_è_accents_à/file.txt" );
 }
+
+TEST(FileRepository_relativeToPath, emptyAbsoluteFilename)
+{
+    EXPECT_TRUE(FileRepository::relativeToPath("", "").empty());
+    EXPECT_EQ(FileRepository::relativeToPath("", "fdsfadsfasd"), "");
+    EXPECT_EQ(FileRepository::relativeToPath("", "fdsfaAdDsfaPsd"), "");
+    EXPECT_EQ(FileRepository::relativeToPath("", "fds/fads/fasd"), "");
+}
+
+TEST(FileRepository_relativeToPath, notMatchingAbsoluteFilename)
+{
+    EXPECT_EQ(FileRepository::relativeToPath("hgfdsgfdsgfd", "fdsfadsfasd"), "hgfdsgfdsgfd");
+    EXPECT_EQ(FileRepository::relativeToPath("hg/fds/gfdsgfd", "fdsfadsfasd"), "hg/fds/gfdsgfd");
+}
+
+TEST(FileRepository_relativeToPath, matching)
+{
+    EXPECT_EQ(FileRepository::relativeToPath("hg/fds/gfdsgfd", "hg/fds/"), "gfdsgfd");
+    EXPECT_EQ(FileRepository::relativeToPath("hg/fds/gfdsgfd", "hg/fds"), "gfdsgfd");
+    EXPECT_EQ(FileRepository::relativeToPath("hFg/fFQQEWds/gfQdsEWQRgfd", "hFg/fFQQEWds"), "gfQdsEWQRgfd");
+}

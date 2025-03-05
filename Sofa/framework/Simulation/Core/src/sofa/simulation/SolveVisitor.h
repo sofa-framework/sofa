@@ -41,13 +41,15 @@ public:
 
     SolveVisitor(const sofa::core::ExecParams* params,
                  SReal _dt,
-                 sofa::core::MultiVecCoordId X = sofa::core::VecCoordId::position(),
-                 sofa::core::MultiVecDerivId V = sofa::core::VecDerivId::velocity(),
-                 bool _parallelSolve = false);
+                 sofa::core::MultiVecCoordId X = sofa::core::vec_id::write_access::position,
+                 sofa::core::MultiVecDerivId V = sofa::core::vec_id::write_access::velocity,
+                 bool _parallelSolve = false,
+                 bool computeForceIsolatedInteractionForceFields = false);
 
-    SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free, bool _parallelSolve = false);
+    SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free, bool _parallelSolve = false, bool computeForceIsolatedInteractionForceFields = false);
 
     virtual void processSolver(simulation::Node* node, sofa::core::behavior::OdeSolver* b);
+    void fwdInteractionForceField(Node* node, core::behavior::BaseInteractionForceField* forceField);
     Result processNodeTopDown(simulation::Node* node) override;
     void processNodeBottomUp(simulation::Node* /*node*/) override;
 
@@ -67,6 +69,7 @@ protected:
     sofa::core::MultiVecCoordId x;
     sofa::core::MultiVecDerivId v;
     bool m_parallelSolve {false };
+    bool m_computeForceIsolatedInteractionForceFields { false };
 
     /// Container for the parallel tasks
     std::list<SolveVisitorTask> m_tasks;

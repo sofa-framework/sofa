@@ -22,8 +22,11 @@
 #pragma once
 
 #include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 
 #include <sofa/core/Multi2Mapping.h>
+
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::mapping::linear
 {
@@ -40,12 +43,13 @@ public:
 };
 
 template <class TIn, class TInRoot, class TOut>
-class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, TOut>
+class DeformableOnRigidFrameMapping : public LinearMulti2Mapping<TIn, TInRoot, TOut>
 {
  public:
-    SOFA_CLASS(SOFA_TEMPLATE3(DeformableOnRigidFrameMapping, TIn, TInRoot, TOut), SOFA_TEMPLATE3(core::Multi2Mapping, TIn, TInRoot, TOut) );
+    SOFA_CLASS(SOFA_TEMPLATE3(DeformableOnRigidFrameMapping, TIn, TInRoot, TOut),
+        SOFA_TEMPLATE3(LinearMulti2Mapping, TIn, TInRoot, TOut) );
 
-    typedef core::Multi2Mapping<TIn, TInRoot, TOut> Inherit;
+    typedef LinearMulti2Mapping<TIn, TInRoot, TOut> Inherit;
 
     typedef TIn In;
     typedef TInRoot InRoot;
@@ -90,13 +94,33 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
 
     OutVecCoord rotatedPoints;
     DeformableOnRigidFrameMappingInternalData<In, Out> data;
-    Data<unsigned int> index; ///< input DOF index
-    Data< bool > indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
-    Data<sofa::type::vector<unsigned int> >  repartition; ///< number of dest dofs per entry dof
-    Data< bool > globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
-    Data< Real > m_rootAngularForceScaleFactor; ///< Scale factor applied on the angular force accumulated on the rigid model
-    Data< Real > m_rootLinearForceScaleFactor; ///< Scale factor applied on the linear force accumulated on the rigid model
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    sofa::core::objectmodel::lifecycle::RenamedData<unsigned> index;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> indexFromEnd;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<unsigned int> >  repartition;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> globalToLocalCoords;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_rootAngularForceScaleFactor;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_rootLinearForceScaleFactor;
+
+
+    Data<unsigned int> d_index; ///< input DOF index
+    Data< bool > d_indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
+    Data<sofa::type::vector<unsigned int> >  d_repartition; ///< number of dest dofs per entry dof
+    Data< bool > d_globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
+
+    Data< Real > d_rootAngularForceScaleFactor; ///< Scale factor applied on the angular force accumulated on the rigid model
+    Data< Real > d_rootLinearForceScaleFactor; ///< Scale factor applied on the linear force accumulated on the rigid model
 
     int addPoint ( const OutCoord& c );
     int addPoint ( const OutCoord& c, int indexFrom );
@@ -107,7 +131,7 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
 
     /// Return true if the destination model has the same topology as the source model.
     ///
-    /// This is the case for mapping keeping a one-to-one correspondance between
+    /// This is the case for mapping keeping a one-to-one correspondence between
     /// input and output DOFs (mostly identity or data-conversion mappings).
     bool sameTopology() const override { return true; }
 
@@ -173,7 +197,7 @@ protected:
     InRootCoord rootX;
 };
 
-#if  !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAMEMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAMEMAPPING_CPP)
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API DeformableOnRigidFrameMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
 
 #endif

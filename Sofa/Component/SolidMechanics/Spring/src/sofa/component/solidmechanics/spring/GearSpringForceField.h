@@ -31,6 +31,8 @@
 #include <vector>
 #include <sofa/core/objectmodel/DataFileName.h>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::component::solidmechanics::spring
 {
 
@@ -213,9 +215,11 @@ public:
 
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
 
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+
     SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override { return m_potentialEnergy; }
 
-    sofa::type::vector<Spring> * getSprings() { return springs.beginEdit(); }
+    sofa::type::vector<Spring> * getSprings() { return d_springs.beginEdit(); }
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -223,16 +227,16 @@ public:
 
     void clear(int reserve=0)
     {
-        type::vector<Spring>& springs = *this->springs.beginEdit();
+        type::vector<Spring>& springs = *this->d_springs.beginEdit();
         springs.clear();
         if (reserve) springs.reserve(reserve);
-        this->springs.endEdit();
+        this->d_springs.endEdit();
     }
 
     void addSpring(const Spring& s)
     {
-        springs.beginEdit()->push_back(s);
-        springs.endEdit();
+        d_springs.beginEdit()->push_back(s);
+        d_springs.endEdit();
     }
 
 
@@ -240,8 +244,8 @@ public:
     {
         Spring s(m1,m2,p1,p2,hardKst,softKsr,hardKsr, kd, ratio);
 
-        springs.beginEdit()->push_back(s);
-        springs.endEdit();
+        d_springs.beginEdit()->push_back(s);
+        d_springs.endEdit();
     }
 
 
@@ -284,20 +288,34 @@ public:
         getVectorAngle(u,v,w);
     }
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<Spring> > springs;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::DataFileName f_filename;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_period;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_reinit;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> showFactorSize;
 
     /// the list of the springs
-    Data<sofa::type::vector<Spring> > springs;
-    sofa::core::objectmodel::DataFileName f_filename; ///< output file name
-    Data < Real > f_period; ///< period between outputs
-    Data<bool> f_reinit; ///< flag enabling reinitialization of the output file at each timestep
+    Data<sofa::type::vector<Spring> > d_springs;
+    sofa::core::objectmodel::DataFileName d_filename; ///< output file name
+    Data < Real > d_period; ///< period between outputs
+    Data<bool> d_reinit; ///< flag enabling reinitialization of the output file at each timestep
     Real lastTime;
 
     /// bool to allow the display of the extra torsion
-    Data<Real> showFactorSize;
+    Data<Real> d_showFactorSize;
 
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_GEARSPRINGFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_GEARSPRINGFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API GearSpring<defaulttype::Rigid3Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API GearSpringForceField<defaulttype::Rigid3Types>;
 

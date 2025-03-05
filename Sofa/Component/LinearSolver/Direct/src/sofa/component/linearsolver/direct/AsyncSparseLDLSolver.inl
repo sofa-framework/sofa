@@ -42,7 +42,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::setSystemMBKMatrix(
 {
     if (isAsyncFactorizationFinished() || !m_asyncResult.valid())
     {
-        sofa::helper::ScopedAdvancedTimer setSystemMBKMatrixTimer("setSystemMBKMatrix");
+        SCOPED_TIMER_VARNAME(setSystemMBKMatrixTimer, "setSystemMBKMatrix");
         Inherit1::setSystemMBKMatrix(mparams);
         m_hasUpdatedMatrix = true;
     }
@@ -51,7 +51,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::setSystemMBKMatrix(
 template <class TMatrix, class TVector, class TThreadManager>
 void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::solveSystem()
 {
-    sofa::helper::ScopedAdvancedTimer invertDataCopyTimer("AsyncSolve");
+    SCOPED_TIMER_VARNAME(invertDataCopyTimer, "AsyncSolve");
 
     if (newInvertDataReady)
     {
@@ -62,7 +62,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::solveSystem()
     {
         if (this->invertData == nullptr)
         {
-            this->getMatrixInvertData(this->linearSystem.systemMatrix);
+            this->getMatrixInvertData(this->getSystemMatrix());
             m_mainThreadInvertData = static_cast<InvertData*>(this->invertData.get());
         }
         launchAsyncFactorization();
@@ -81,10 +81,14 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::solveSystem()
         swapInvertData();
     }
 
-    this->solve(*this->linearSystem.systemMatrix, *this->linearSystem.systemLHVector, *this->linearSystem.systemRHVector);
+    this->solve(*this->getSystemMatrix(), *this->getSystemLHVector(), *this->getSystemRHVector());
+
     if (!this->linearSystem.solutionVecId.isNull())
     {
-        this->executeVisitor(simulation::mechanicalvisitor::MechanicalMultiVectorFromBaseVectorVisitor(core::execparams::defaultInstance(), this->linearSystem.solutionVecId, this->linearSystem.systemLHVector, &(this->linearSystem.matrixAccessor)) );
+        if (this->l_linearSystem)
+        {
+            this->l_linearSystem->dispatchSystemSolution(this->linearSystem.solutionVecId);
+        }
     }
 }
 
@@ -151,7 +155,7 @@ template <class TMatrix, class TVector, class TThreadManager>
 void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::asyncFactorization()
 {
     newInvertDataReady = false;
-    this->invert(*this->linearSystem.systemMatrix);
+    this->invert(*this->getSystemMatrix());
     newInvertDataReady = true;
 }
 

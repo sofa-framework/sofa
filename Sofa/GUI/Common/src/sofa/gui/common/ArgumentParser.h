@@ -103,7 +103,7 @@ public:
         auto result = this->getMap();
         try
         {
-            if (result.count(key))
+            if (result.contains(key))
             {
                 cxxopts::values::parse_value(result[key], value);
                 ret = true;
@@ -114,7 +114,7 @@ public:
             SOFA_UNUSED(e1);
             ret = false;
         }
-        catch (const cxxopts::OptionParseException& e2) // option is not present, etc
+        catch (const cxxopts::exceptions::exception& e2) // option is not present, etc
         {
             SOFA_UNUSED(e2);
             ret = false;

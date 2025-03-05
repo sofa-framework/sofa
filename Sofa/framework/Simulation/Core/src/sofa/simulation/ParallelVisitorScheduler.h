@@ -22,39 +22,8 @@
 #ifndef SOFA_SIMULATION_CORE_PARALLELACTIONSCHEDULER_H
 #define SOFA_SIMULATION_CORE_PARALLELACTIONSCHEDULER_H
 
+#include <sofa/simulation/config.h>
 
-#include <sofa/simulation/VisitorScheduler.h>
-#include <sofa/simulation/fwd.h>
-
-namespace sofa
-{
-
-namespace simulation
-{
-
-
-/// Specialized VisitorScheduler for parallel implementations.
-class SOFA_SIMULATION_CORE_API ParallelVisitorScheduler : public simulation::VisitorScheduler
-{
-public:
-    ParallelVisitorScheduler(bool propagate=false);
-
-    /// Specify whether this scheduler is multi-threaded.
-    bool isMultiThreaded() const override { return true; }
-
-    void executeVisitor(Node* node, Visitor* action) override;
-
-protected:
-    bool propagate;
-
-    void recursiveClone(Node* node);
-
-    virtual ParallelVisitorScheduler* clone() = 0;
-    virtual void executeParallelVisitor(Node* node, Visitor* action) = 0;
-};
-
-} // namespace simulation
-
-} // namespace sofa
+SOFA_HEADER_DISABLED_PARALLELVISITORSCHEDULER()
 
 #endif

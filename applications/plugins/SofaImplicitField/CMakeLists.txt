@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(SofaImplicitField VERSION 1.0)
 
 sofa_find_package(Sofa.Framework REQUIRED)

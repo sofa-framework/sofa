@@ -95,9 +95,9 @@ struct ImageCoordValuesFromPositionsSpecialization<defaulttype::Image<T>>
                 Coord Tp = inT->toImage(pos[i]);
                 if(!in->isInside(Tp[0],Tp[1],Tp[2]))  val[i] = outval;
                 else val[i] += Coord(
-                            (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],0,(T)outval[0],cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()),
-                        (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],1,(T)outval[0],cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()),
-                        (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],2,(T)outval[0],cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max())
+                        (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],0,(T)outval[0]),
+                        (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],1,(T)outval[0]),
+                        (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],2,(T)outval[0])
                         );
             }
         }
@@ -168,10 +168,10 @@ public:
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     Data< SeqPositions > position; ///< input positions
 
-    Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubic
+    Data< helper::OptionsGroup > Interpolation; ///< Interpolation method.
 
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waValues;
-    Data< SeqPositions > values;  ///< output interpolated values
+    Data< SeqPositions > values; ///< Interpolated values.
     Data< Real > outValue; ///< default value outside image
 
     Data< bool > addPosition; ///< add positions to interpolated values (to get translated positions)
@@ -186,7 +186,7 @@ public:
       , addPosition(initData(&addPosition,true,"addPosition","add positions to interpolated values (to get translated positions)"))
       , time((unsigned int)0)
     {
-        helper::OptionsGroup InterpolationOptions(3,"Nearest", "Linear", "Cubic");
+        helper::OptionsGroup InterpolationOptions{"Nearest", "Linear", "Cubic"};
         InterpolationOptions.setSelectedItem(INTERPOLATION_LINEAR);
         Interpolation.setValue(InterpolationOptions);
 

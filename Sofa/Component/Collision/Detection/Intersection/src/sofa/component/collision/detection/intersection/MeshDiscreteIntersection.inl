@@ -29,13 +29,15 @@ namespace sofa::component::collision::detection::intersection
 
 
 template<class T>
-bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle)
+bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle, const core::collision::Intersection* currentIntersection)
 {
-    double EPSILON = 0.00001;
+    SOFA_UNUSED(currentIntersection);
+
+    const double EPSILON = 0.00001;
     //Vertices of the triangle:
-    type::Vec3 p0 = triangle.p1();
-    type::Vec3 p1 = triangle.p2();
-    type::Vec3 p2 = triangle.p3();
+    const type::Vec3 p0 = triangle.p1();
+    const type::Vec3 p1 = triangle.p2();
+    const type::Vec3 p2 = triangle.p3();
 
     // Center of the sphere
     const type::Vec3 sphCenter(sph.center());
@@ -50,7 +52,7 @@ bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>&
     double distance = sphCenter*normal - normal*p0;
 
     //Projection of the center of the sphere onto the plane
-    type::Vec3 projPoint = sphCenter - normal*distance;
+    const type::Vec3 projPoint = sphCenter - normal*distance;
 
     //Distance correction in case is negative.
     if (distance < 0.0)
@@ -80,13 +82,15 @@ bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>&
 }
 
 template<class T>
-int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle, OutputVector* contacts)
+int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    double EPSILON = 0.00001;
+    SOFA_UNUSED(currentIntersection);
+
+    const double EPSILON = 0.00001;
     //Vertices of the triangle:
-    type::Vec3 p0 = triangle.p1();
-    type::Vec3 p1 = triangle.p2();
-    type::Vec3 p2 = triangle.p3();
+    const type::Vec3 p0 = triangle.p1();
+    const type::Vec3 p1 = triangle.p2();
+    const type::Vec3 p2 = triangle.p3();
 
     // Center of the sphere
     const type::Vec3 sphCenter(sph.center());
@@ -101,7 +105,7 @@ int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T
     double distance = sphCenter*normal - normal*p0;
 
     //Projection of the center of the sphere onto the plane
-    type::Vec3 projPoint = sphCenter - normal*distance;
+    const type::Vec3 projPoint = sphCenter - normal*distance;
 
     //Distance correction in case is negative.
     if (distance < 0.0)
@@ -119,7 +123,7 @@ int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T
     }
 
     //However, if the plane has intersected the sphere, then it is
-    //neccesary to check if the proyected point "projPoint" is inside
+    //necessary to check if the proyected point "projPoint" is inside
     //the triangle.
 #define SAMESIDE(ap1,ap2,ap3,ap4) (((cross((ap4-ap3),(ap1-ap3))) * (cross((ap4-ap3),(ap2-ap3)))) >= 0)
     if ( (SAMESIDE(projPoint,p0,p1,p2) && SAMESIDE(projPoint,p1,p0,p2) && SAMESIDE(projPoint,p2,p0,p1)))

@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/TetrahedronHyperelasticityFEMForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/solidmechanics/fem/hyperelastic/TetrahedronHyperelasticityFEMDrawing.h>
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/BoyceAndArruda.h>
@@ -31,6 +32,7 @@
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/STVenantKirchhoff.h>
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/Costa.h>
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/Ogden.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/StableNeoHookean.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>
@@ -43,15 +45,26 @@ using namespace sofa::defaulttype;
 using namespace core::topology;
 using namespace sofa::component::solidmechanics::fem::hyperelastic::material;
 
+template<class DataTypes>
+const helper::OptionsGroup materialOptions {
+    BoyceAndArruda<DataTypes>::Name,
+    STVenantKirchhoff<DataTypes>::Name,
+    NeoHookean<DataTypes>::Name,
+    MooneyRivlin<DataTypes>::Name,
+    VerondaWestman<DataTypes>::Name,
+    Costa<DataTypes>::Name,
+    Ogden<DataTypes>::Name,
+    StableNeoHookean<DataTypes>::Name
+};
 
 template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHyperelasticityFEMForceField()
     : m_topology(nullptr)
     , m_initialPoints(0)
     , m_updateMatrix(true)
     , d_stiffnessMatrixRegularizationWeight(initData(&d_stiffnessMatrixRegularizationWeight, (bool)false,"matrixRegularization","Regularization of the Stiffness Matrix (between true or false)"))
-    , d_materialName(initData(&d_materialName,std::string("ArrudaBoyce"),"materialName","the name of the material to be used"))
+    , d_materialName(initData(&d_materialName, materialOptions<DataTypes>, "materialName","the name of the material to be used. Possible options are: 'ArrudaBoyce', 'Costa', 'MooneyRivlin', 'NeoHookean', 'Ogden', 'StVenantKirchhoff', 'VerondaWestman', 'StableNeoHookean'"))
     , d_parameterSet(initData(&d_parameterSet,"ParameterSet","The global parameters specifying the material"))
-    , d_anisotropySet(initData(&d_anisotropySet,"AnisotropyDirections","The global directions of anisotropy of the material"))
+    , d_anisotropySet(initData(&d_anisotropySet,"AnisotropyDirections","The global directions of anisotropy of the material: vector containing anisotropic directions. The vector size is 0 if the material is isotropic, 1 if it is transversely isotropic and 2 for orthotropic materials"))
     , m_tetrahedronInfo(initData(&m_tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , m_edgeInfo(initData(&m_edgeInfo, "edgeInfo", "Internal edge data"))
     , l_topology(initLink("topology", "link to the topology container"))
@@ -65,40 +78,43 @@ template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::~
 template <class DataTypes>
 void TetrahedronHyperelasticityFEMForceField<DataTypes>::instantiateMaterial()
 {
-    const std::string& material = d_materialName.getValue();
+    const std::string& material = d_materialName.getValue().getSelectedItem();
 
-    if (material == "ArrudaBoyce")
+    if (material == BoyceAndArruda<DataTypes>::Name)
     {
         m_myMaterial = std::make_unique<BoyceAndArruda<DataTypes>>();
     }
-    else if (material == "StVenantKirchhoff")
+    else if (material == STVenantKirchhoff<DataTypes>::Name)
     {
         m_myMaterial = std::make_unique<STVenantKirchhoff<DataTypes>>();
     }
-    else if (material == "NeoHookean")
+    else if (material == NeoHookean<DataTypes>::Name)
     {
         m_myMaterial = std::make_unique<NeoHookean<DataTypes>>();
     }
-    else if (material == "MooneyRivlin")
+    else if (material == MooneyRivlin<DataTypes>::Name)
     {
         m_myMaterial = std::make_unique<MooneyRivlin<DataTypes>>();
     }
-    else if (material == "VerondaWestman")
+    else if (material == VerondaWestman<DataTypes>::Name)
     {
         m_myMaterial = std::make_unique<VerondaWestman<DataTypes>>();
     }
-    else if (material == "Costa")
+    else if (material == Costa<DataTypes>::Name)
     {
         m_myMaterial = std::make_unique<Costa<DataTypes>>();
     }
-    else if (material == "Ogden")
+    else if (material == Ogden<DataTypes>::Name)
     {
         m_myMaterial = std::make_unique<Ogden<DataTypes>>();
     }
+    else if (material == StableNeoHookean<DataTypes>::Name)
+    {
+        m_myMaterial = std::make_unique<StableNeoHookean<DataTypes>>();
+    }
     else
     {
-        msg_error() << "material name " << material <<
-            " is not valid (should be ArrudaBoyce, StVenantKirchhoff, MooneyRivlin, VerondaWestman, Costa or Ogden)";
+        msg_error() << "material name " << material << " is not valid";
     }
 
     if (m_myMaterial)
@@ -110,7 +126,6 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::instantiateMaterial()
 template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataTypes>::init()
 {
     using namespace material;
-    msg_info() << "initializing TetrahedronHyperelasticityFEMForceField";
 
     this->Inherited::init();
 
@@ -158,7 +173,7 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
 
     auto tetrahedronInf = sofa::helper::getWriteAccessor(m_tetrahedronInfo);
 
-    /// prepare to store info in the triangle array
+    /// prepare to store info in the tetrahedron array
     tetrahedronInf.resize(m_topology->getNbTetrahedra());
 
 
@@ -168,7 +183,7 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     // get restPosition
     if (m_initialPoints.empty())
     {
-        m_initialPoints = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        m_initialPoints = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     }
 
     /// initialize the data structure associated with each tetrahedron
@@ -199,7 +214,7 @@ template <class DataTypes>
 void TetrahedronHyperelasticityFEMForceField<DataTypes>::setMaterialName(
     const std::string materialName)
 {
-    d_materialName.setValue(materialName);
+    sofa::helper::getWriteAccessor(d_materialName)->setSelectedItem(materialName);
 }
 
 template <class DataTypes>
@@ -228,7 +243,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::createTetrahedronRestIn
 
     typename DataTypes::Real volume;
     typename DataTypes::Coord point[4];
-    const VecCoord& restPosition = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& restPosition = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     ///describe the indices of the 4 tetrahedron vertices
     const Tetrahedron& t = tetrahedronArray[tetrahedronIndex];
@@ -246,12 +261,10 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::createTetrahedronRestIn
     // store shape vectors at the rest configuration
     for (j = 0; j < 4; ++j)
     {
-        if (!(j % 2))
-            tinfo.m_shapeVector[j] = -cross(point[(j + 2) % 4] - point[(j + 1) % 4],
-                                            point[(j + 3) % 4] - point[(j + 1) % 4]) / volume;
-        else
-            tinfo.m_shapeVector[j] = cross(point[(j + 2) % 4] - point[(j + 1) % 4],
-                                           point[(j + 3) % 4] - point[(j + 1) % 4]) / volume;;
+        const Real sign = j % 2 ? 1 : -1;
+        tinfo.m_shapeVector[j] = sign * cross(
+            point[(j + 2) % 4] - point[(j + 1) % 4],
+            point[(j + 3) % 4] - point[(j + 1) % 4]) / volume;
     }
 
     for (j = 0; j < 6; ++j)
@@ -523,6 +536,54 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::line
     }
 }
 
+template <class DataTypes>
+void TetrahedronHyperelasticityFEMForceField<DataTypes>::buildStiffnessMatrix(
+    core::behavior::StiffnessMatrix* matrix)
+{
+    /// if the  matrix needs to be updated
+    if (m_updateMatrix)
+    {
+        this->updateTangentMatrix();
+    }
+
+    const unsigned int nbEdges=m_topology->getNbEdges();
+    const type::vector< Edge> &edgeArray=m_topology->getEdges() ;
+    type::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
+    EdgeInformation *einfo;
+    unsigned int i,j,N0, N1, l;
+    Index noeud0, noeud1;
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for(l=0; l<nbEdges; l++ )
+    {
+        einfo=&edgeInf[l];
+        noeud0=edgeArray[l][0];
+        noeud1=edgeArray[l][1];
+        N0 = 3*noeud0;
+        N1 = 3*noeud1;
+
+        for (i=0; i<3; i++)
+        {
+            for(j=0; j<3; j++)
+            {
+                dfdx(N0+i, N0+j) +=   einfo->DfDx[j][i];
+                dfdx(N0+i, N1+j) += - einfo->DfDx[j][i];
+                dfdx(N1+i, N0+j) += - einfo->DfDx[i][j];
+                dfdx(N1+i, N1+j) += + einfo->DfDx[i][j];
+            }
+        }
+    }
+    m_edgeInfo.endEdit();
+}
+
+template <class DataTypes>
+void TetrahedronHyperelasticityFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 
 template<class DataTypes>
 Mat<3,3,SReal> TetrahedronHyperelasticityFEMForceField<DataTypes>::getPhi(int tetrahedronIndex)
@@ -538,9 +599,9 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
 {
     DataVecCoord d_pos;
     VecCoord &pos = *d_pos.beginEdit();
-    pos =  this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    pos =  this->mstate->read(core::vec_id::read_access::position)->getValue();
 
-    // perturbate original state:
+    // perturb original state:
     srand( 0 );
     for (unsigned int idx=0; idx<pos.size(); idx++) {
             for (unsigned int d=0; d<3; d++) pos[idx][d] += (Real)0.01 * ((Real)rand()/(Real)(RAND_MAX - 0.5));
@@ -691,12 +752,12 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
           vparams->drawTool()->setPolygonMode(0,true);
 
-    drawHyperelasticTets(vparams, x, m_topology, d_materialName.getValue());
+    drawHyperelasticTets<DataTypes>(vparams, x, m_topology, d_materialName.getValue().getSelectedItem());
 
     if (vparams->displayFlags().getShowWireFrame())
           vparams->drawTool()->setPolygonMode(0,false);

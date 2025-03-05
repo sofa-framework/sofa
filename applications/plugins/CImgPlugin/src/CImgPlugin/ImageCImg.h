@@ -7,13 +7,8 @@
 #include <sofa/helper/io/Image.h>
 #include <CImgPlugin/CImgPlugin.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 class SOFA_CIMGPLUGIN_API ImageCImgCreators
@@ -44,10 +39,7 @@ public:
     bool save(std::string filename, int compression_level = -1);
 };
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif // SOFA_HELPER_IO_IMAGECIMG_H

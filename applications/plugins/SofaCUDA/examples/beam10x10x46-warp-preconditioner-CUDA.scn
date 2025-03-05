@@ -4,7 +4,7 @@
 	<CollisionPipeline verbose="0" />
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-	<DefaultContactManager name="Response" />
+	<CollisionResponse name="Response" />
 	<CudaProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
 
 	<Node name="Floor">
@@ -32,7 +32,6 @@
 		<MechanicalObject template="CudaVec3f" />
 
 		<CudaPrecomputedWarpPreconditioner name="preconditioner" solverName="initsolver" init_bw="false" />
-		<!--<SparseCholeskySolver name="initsolver" printLog="true" />-->
 		<SparseTAUCSSolver name="initsolver" symmetric="true" options="taucs.factor.LLT=true taucs.factor.ordering=metis" printLog="false" />
 
 		<UniformMass totalMass="400" />

@@ -40,20 +40,23 @@ namespace multithreading::component::animationloop
 {
 
 class SOFA_MULTITHREADING_PLUGIN_API AnimationLoopParallelScheduler :
-    public sofa::core::behavior::BaseAnimationLoop,
-    public TaskSchedulerUser
+        public sofa::core::behavior::BaseAnimationLoop,
+        public TaskSchedulerUser
 {
 public:
 
     typedef sofa::core::behavior::BaseAnimationLoop Inherit;
     SOFA_CLASS(AnimationLoopParallelScheduler,sofa::core::behavior::BaseAnimationLoop);
 
-    SOFA_ATTRIBUTE_DEPRECATED__TASKSCHEDULERUSER_DATANAME("Use TaskSchedulerUser::d_taskSchedulerType instead.")
-    sofa::Data<std::string> schedulerName; ///< scheduler name type
+    SOFA_ATTRIBUTE_DISABLED__TASKSCHEDULERUSER_DATANAME("Use TaskSchedulerUser::d_taskSchedulerType instead.")
+    sofa::core::objectmodel::lifecycle::RemovedData schedulerName {this, "v23.06", "v23.12",
+                                                                   "scheduler",
+                                                                   "To fix you scene you can rename 'scheduler' with 'taskSchedulerType'."};
 
-    SOFA_ATTRIBUTE_DEPRECATED__TASKSCHEDULERUSER_DATANAME("Use TaskSchedulerUser::d_nbThreads instead.")
-    sofa::Data<unsigned int> threadNumber; ///< number of thread
-
+    SOFA_ATTRIBUTE_DISABLED__TASKSCHEDULERUSER_DATANAME("Use TaskSchedulerUser::d_nbThreads instead.")
+    sofa::core::objectmodel::lifecycle::RemovedData threadNumber {this, "v23.06", "v23.12",
+                                                                  "threadNumber",
+                                                                  "To fix you scene you can rename 'threadNumber' with 'nbThreads'."};
 
 protected:
     AnimationLoopParallelScheduler(sofa::simulation::Node* gnode = NULL);
@@ -61,8 +64,6 @@ protected:
     ~AnimationLoopParallelScheduler() override;
 
 public:
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
-
     void init() override;
 
     /// Initialization method called at graph creation and modification, during bottom-up traversal.
@@ -74,17 +75,6 @@ public:
     void cleanup() override;
 
     void step(const sofa::core::ExecParams* params, SReal dt) override;
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
-    {
-        sofa::simulation::Node* gnode = dynamic_cast<sofa::simulation::Node*>(context);
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
 
 private :
 

@@ -30,10 +30,10 @@
  *                        " name [" << filename << "]".
  *
  * This should print (using the Sofa pretty formatter) something like:
- *      [INFO] (name(component)): This is an error messae from somewhere in my sofa
+ *      [INFO] (name(component)): This is an error message from somewhere in my sofa
  *                                component saying that he cannot read a file with
  *                                a name [/home/path/to/my/file.txt]
- *                        source: /home/path/to/mysourceode.cpp:354:0
+ *                        source: /home/path/to/mysourcecode.cpp:354:0
  *
  * Eg:
  *  msg_info() << "This is the same as the version with 'this' ;
@@ -52,7 +52,7 @@
  *      - a (possibly empty) backtrace
  *      - the source file and line from where the messaging was emitted.
  *
- * for any usefull purpose, a messaging needs to be send to
+ * for any useful purpose, a messaging needs to be send to
  * a MessageHandler either using an object or using the singleton/static
  * part of the API.
  *

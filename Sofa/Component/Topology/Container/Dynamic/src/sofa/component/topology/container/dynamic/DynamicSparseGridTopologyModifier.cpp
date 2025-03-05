@@ -30,9 +30,11 @@
 namespace sofa::component::topology::container::dynamic
 {
 
-int DynamicSparseGridTopologyModifierClass = core::RegisterObject ( "Hexahedron set topology modifier" )
-        .add< DynamicSparseGridTopologyModifier >();
-
+void registerDynamicSparseGridTopologyModifier(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Dynamic sparse grid geometry modifier.")
+        .add< DynamicSparseGridTopologyModifier >());
+}
 
 void DynamicSparseGridTopologyModifier::init()
 {
@@ -51,7 +53,7 @@ void DynamicSparseGridTopologyModifier::init()
 
 
 //TODO// find a solution for this case !!!! Modifier can not access to the DOF and can not compute the indices of the added hexahedra.
-// We have to find a way to automaticaly compute the indices of the added hexahedra to update the map 'm_m_DynContainer->idInRegularGrid2Hexa'
+// We have to find a way to automatically compute the indices of the added hexahedra to update the map 'm_m_DynContainer->idInRegularGrid2Hexa'
 void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::type::vector< Hexahedron > &hexahedra )
 {
     HexahedronSetTopologyModifier::addHexahedraProcess ( hexahedra );
@@ -63,11 +65,11 @@ void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::type::
 {
     assert( hexahedra.size() == indices.size());
 
-    unsigned int hexaSize = m_DynContainer->getNumberOfHexahedra(); // Get the size before adding elements
+    const unsigned int hexaSize = m_DynContainer->getNumberOfHexahedra(); // Get the size before adding elements
     HexahedronSetTopologyModifier::addHexahedraProcess ( hexahedra );
-    type::vector<core::topology::BaseMeshTopology::HexaID>& iirg = *m_DynContainer->idxInRegularGrid.beginEdit();
+    type::vector<core::topology::BaseMeshTopology::HexaID>& iirg = *m_DynContainer->d_idxInRegularGrid.beginEdit();
 
-    std::map< unsigned int, core::topology::BaseMeshTopology::HexaID> &idrg2topo=*m_DynContainer->idInRegularGrid2IndexInTopo.beginEdit();
+    std::map< unsigned int, core::topology::BaseMeshTopology::HexaID> &idrg2topo=*m_DynContainer->d_idInRegularGrid2IndexInTopo.beginEdit();
     for ( unsigned int i = 0; i < hexahedra.size(); i++ )  // For each element
     {
         iirg[hexaSize + i] = indices[i];
@@ -75,8 +77,8 @@ void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::type::
 
         //TODO// init the values too ...
     }
-    m_DynContainer->idInRegularGrid2IndexInTopo.endEdit();
-    m_DynContainer->idxInRegularGrid.endEdit();
+    m_DynContainer->d_idInRegularGrid2IndexInTopo.endEdit();
+    m_DynContainer->d_idxInRegularGrid.endEdit();
 }
 
 
@@ -91,19 +93,19 @@ void DynamicSparseGridTopologyModifier::removeHexahedraProcess( const sofa::type
 
 void DynamicSparseGridTopologyModifier::renumberAttributes( const sofa::type::vector<Index> &hexahedra )
 {
-    type::vector<core::topology::BaseMeshTopology::HexaID>& iirg = *m_DynContainer->idxInRegularGrid.beginEdit();
+    type::vector<core::topology::BaseMeshTopology::HexaID>& iirg = *m_DynContainer->d_idxInRegularGrid.beginEdit();
 
     // Update the data
     unsigned int nbElt = iirg.size();
-    std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>& regularG2Topo = *m_DynContainer->idInRegularGrid2IndexInTopo.beginEdit();
+    std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>& regularG2Topo = *m_DynContainer->d_idInRegularGrid2IndexInTopo.beginEdit();
     for ( auto it = hexahedra.begin(); it != hexahedra.end(); ++it )
     {
         nbElt--;
 
         // Update the voxels value
         unsigned int idHexaInRegularGrid = iirg[*it];
-        (*( m_DynContainer->valuesIndexedInRegularGrid.beginEdit()))[idHexaInRegularGrid] = 0;
-        m_DynContainer->valuesIndexedInRegularGrid.endEdit();
+        (*( m_DynContainer->d_valuesIndexedInRegularGrid.beginEdit()))[idHexaInRegularGrid] = 0;
+        m_DynContainer->d_valuesIndexedInRegularGrid.endEdit();
 
         // Renumbering the map.
         // We delete the reference of the delete elt.
@@ -124,8 +126,8 @@ void DynamicSparseGridTopologyModifier::renumberAttributes( const sofa::type::ve
     }
     iirg.resize( nbElt);
 
-    m_DynContainer->idInRegularGrid2IndexInTopo.endEdit();
-    m_DynContainer->idxInRegularGrid.endEdit();
+    m_DynContainer->d_idInRegularGrid2IndexInTopo.endEdit();
+    m_DynContainer->d_idxInRegularGrid.endEdit();
 
     everRenumbered = true;
 }

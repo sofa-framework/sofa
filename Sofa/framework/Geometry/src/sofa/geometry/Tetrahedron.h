@@ -23,6 +23,7 @@
 
 #include <sofa/geometry/config.h>
 
+#include <sofa/geometry/ElementType.h>
 #include <sofa/type/fixed_array_algorithms.h>
 #include <sofa/type/vector_algebra.h>
 #include <sofa/type/Vec.h>
@@ -34,6 +35,7 @@ namespace sofa::geometry
 struct Tetrahedron
 {
     static constexpr sofa::Size NumberOfNodes = 4;
+    static constexpr ElementType Element_type = ElementType::TETRAHEDRON;
 
     Tetrahedron() = delete;
 

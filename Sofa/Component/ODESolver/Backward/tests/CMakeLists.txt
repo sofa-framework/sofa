@@ -1,10 +1,11 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 
 project(Sofa.Component.ODESolver.Backward_test)
 
 set(SOURCE_FILES
     EulerImplicitSolverDynamic_test.cpp
     EulerImplicitSolverStatic_test.cpp
+    EulerImplicitSolver_withDamping_test.cpp
     NewmarkImplicitSolverDynamic_test.cpp
     StaticSolver_test.cpp
     SpringSolverDynamic_test.cpp

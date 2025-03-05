@@ -95,7 +95,7 @@ bool STBImage::load(std::string filename)
     init(width, height, 1, 1, UNORM8, format);
 
     unsigned char* data = getPixels();
-    unsigned int totalSize = width * height;
+    const unsigned int totalSize = width * height;
     std::memcpy(data, image, totalSize * comp);
     stbi_image_free(image);
 
@@ -128,7 +128,7 @@ bool STBImage::save(std::string filename, int compression_level )
     }
     if (ext == "jpg" || ext == "jpeg")
     {
-        res = stbi_write_png(filename.c_str(), getWidth(), getHeight(), getChannelCount(), getPixels(), compression_level);
+        res = stbi_write_jpg(filename.c_str(), getWidth(), getHeight(), getChannelCount(), getPixels(), compression_level);
     }
     if (ext == "bmp")
     {

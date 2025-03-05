@@ -22,13 +22,14 @@
 #pragma once
 
 #include <sofa/core/config.h>
+#include <sofa/core/behavior/fwd.h>
 #include <sofa/core/behavior/StateAccessor.h>
 #include <sofa/core/MultiVecId.h>
 
-namespace sofa::core::behavior { class MultiMatrixAccessor; }
-
-namespace sofa::core::behavior
-{
+namespace sofa::core::behavior {
+class DampingMatrix;
+class StiffnessMatrix;
+class MultiMatrixAccessor;
 
 /**
  *  \brief Component computing forces within simulated bodies.
@@ -134,7 +135,7 @@ public:
     /// \brief Get the potential energy associated to this ForceField during the
     /// last call of addForce( const MechanicalParams* mparams );
     ///
-    /// Used to extimate the total energy of the system by some
+    /// Used to estimate the total energy of the system by some
     /// post-stabilization techniques.
     virtual SReal getPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const=0;
     /// @}
@@ -166,6 +167,10 @@ public:
     virtual void addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
     ////virtual void addMBKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal mFact, SReal bFact, SReal kFact, unsigned int &offset);
 
+    virtual void buildStiffnessMatrix(StiffnessMatrix* matrix);
+
+    virtual void buildDampingMatrix(DampingMatrix* matrix);
+
     /// @}
 
 
@@ -181,10 +186,12 @@ public:
     /// @{
 
     /// Considered as compliance, else considered as stiffness (default to false)
-    Data< bool > isCompliance;
+    SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT()
+    objectmodel::lifecycle::DeprecatedData isCompliance;
 
     /// Return a pointer to the compliance matrix C
     /// \f$ C = K^{-1} \f$
+    SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT()
     virtual const sofa::linearalgebra::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return nullptr; }
 
     /// \brief Accumulate the contribution of the C compliant matrix multiplied
@@ -197,6 +204,7 @@ public:
     /// where C is the Compliant matrix (inverse of the Stiffness matrix \f$ K \f$:
     /// \f$ C = K^{-1} \f$)
     ///
+    SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT()
     virtual void addClambda(const MechanicalParams* /*mparams*/, MultiVecDerivId /*resId*/, MultiVecDerivId /*lambdaId*/, SReal /*cFactor*/ ){}
 
     /// @}

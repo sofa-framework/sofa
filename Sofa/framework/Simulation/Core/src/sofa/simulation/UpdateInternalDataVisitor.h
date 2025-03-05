@@ -26,10 +26,8 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/simulation/fwd.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 /** Triggers the updateInternal() function to update method called
@@ -53,8 +51,7 @@ public:
     const char* getClassName() const override { return "UpdateInternalDataVisitor"; }
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

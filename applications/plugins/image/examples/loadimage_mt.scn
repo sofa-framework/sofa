@@ -3,7 +3,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="image"/>
   <RequiredPlugin name="MultiThreading" pluginName="MultiThreading"/>
-  <AnimationLoopParallelScheduler name="mainLoop" threadNumber="2" />
+  <AnimationLoopParallelScheduler name="mainLoop" nbThreads="2" />
   	<Node name="imageloader">
   	<DefaultAnimationLoop name="imageloader" />
   	<ImageContainer  name="image" filename="textures/cubemap_bk.bmp" transform="-5 -10 0 0 0 0 0.1 0.1 15 0 1 1" drawBB="1"/>

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.AnimationLoop LANGUAGES CXX)
 
 set(SOFACOMPONENTANIMATIONLOOP_SOURCE_DIR "src/sofa/component/animationloop")
@@ -6,7 +6,6 @@ set(SOFACOMPONENTANIMATIONLOOP_SOURCE_DIR "src/sofa/component/animationloop")
 set(HEADER_FILES
     ${SOFACOMPONENTANIMATIONLOOP_SOURCE_DIR}/config.h.in
     ${SOFACOMPONENTANIMATIONLOOP_SOURCE_DIR}/FreeMotionAnimationLoop.h
-    ${SOFACOMPONENTANIMATIONLOOP_SOURCE_DIR}/FreeMotionTask.h
     ${SOFACOMPONENTANIMATIONLOOP_SOURCE_DIR}/ConstraintAnimationLoop.h
     ${SOFACOMPONENTANIMATIONLOOP_SOURCE_DIR}/MultiStepAnimationLoop.h
     ${SOFACOMPONENTANIMATIONLOOP_SOURCE_DIR}/MultiTagAnimationLoop.h

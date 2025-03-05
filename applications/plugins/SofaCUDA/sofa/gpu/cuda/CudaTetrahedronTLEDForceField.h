@@ -67,13 +67,8 @@ Year = {2009}                                                                   
 #include <sofa/component/topology/container/constant/MeshTopology.h>
 #include "vector_types.h"
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 using namespace sofa::defaulttype;
@@ -101,10 +96,10 @@ public:
     float Lambda, Mu;                       // Lame coefficients
 
     // TLED configuration
-    Data<Real> timestep;                    ///< time step of the simulation
-    Data<unsigned int> isViscoelastic;      ///< flag = 1 to enable viscoelasticity
-    Data<unsigned int> isAnisotropic;       ///< flag = 1 to enable transverse isotropy
-    Data<Vec3f> preferredDirection;         ///< uniform preferred direction for transverse isotropy
+    Data<Real> timestep; ///< Simulation timestep
+    Data<unsigned int> isViscoelastic; ///< Viscoelasticity flag
+    Data<unsigned int> isAnisotropic; ///< Anisotropy flag
+    Data<Vec3f> preferredDirection; ///< Transverse isotropy direction
 
     CudaTetrahedronTLEDForceField();
     virtual ~CudaTetrahedronTLEDForceField();
@@ -114,6 +109,8 @@ public:
     virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& dataF, const DataVecCoord& dataX, const DataVecDeriv& /*dataV*/ ) override;
 //    void addDForce (VecDeriv& /*df*/, const VecDeriv& /*dx*/);
     virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& datadF, const DataVecDeriv& datadX ) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix*) final {}
+    void buildDampingMatrix(core::behavior::DampingMatrix*) final {}
     SReal getPotentialEnergy(const sofa::core::MechanicalParams* , const DataVecCoord&) const override { return 0.0; }
     // Computes lambda and mu based on Young's modulus and Poisson ratio
     void updateLameCoefficients();
@@ -156,10 +153,7 @@ protected:
 
 };
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-} // namespace sofa
 
 #endif

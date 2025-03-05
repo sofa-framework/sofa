@@ -30,50 +30,6 @@
 using sofa::helper::Utils;
 using sofa::helper::system::FileSystem;
 
-TEST(UtilsTest, string_to_widestring_to_string)
-{
-    std::string ascii_chars;
-    for (char c = 32 ; c <= 126 ; c++)
-        ascii_chars.push_back(c);
-    EXPECT_EQ(ascii_chars, Utils::narrowString(Utils::widenString(ascii_chars)));
-
-    // This test will pass if the executable has been executed with a unicode-compliant locale
-    // Windows and MacOS are unicode by default
-    // But it seems some linux distrib are not (?)
-#ifdef __linux
-    if(std::locale("").name().find("UTF-8") == std::string::npos)
-    {
-        return;
-    }
-#endif
-
-    const std::string s("chaîne de test avec des caractères accentués");
-    EXPECT_EQ(s, Utils::narrowString(Utils::widenString(s)));
-}
-
-TEST(UtilsTest, widestring_to_string_to_widestring)
-{
-    const std::string s("chaîne de test avec des caractères accentués");
-    const std::wstring ws = Utils::widenString(s);
-    EXPECT_EQ(ws, Utils::widenString(Utils::narrowString(ws)));
-}
-
-TEST(UtilsTest, downcaseString)
-{
-    EXPECT_EQ("abcdef", Utils::downcaseString("abcdef"));
-    EXPECT_EQ("abcdef", Utils::downcaseString("ABCDEF"));
-    EXPECT_EQ("abcdef", Utils::downcaseString("AbCdEf"));
-    EXPECT_EQ("abcdef", Utils::downcaseString("ABCDEF"));
-}
-
-TEST(UtilsTest, upcaseString)
-{
-    EXPECT_EQ("ABCDEF", Utils::upcaseString("abcdef"));
-    EXPECT_EQ("ABCDEF", Utils::upcaseString("ABCDEF"));
-    EXPECT_EQ("ABCDEF", Utils::upcaseString("AbCdEf"));
-    EXPECT_EQ("ABCDEF", Utils::upcaseString("ABCDEF"));
-}
-
 TEST(UtilsTest, getExecutablePath)
 {
     const std::string path = Utils::getExecutablePath();
@@ -92,10 +48,43 @@ TEST(UtilsTest, getSofaPathPrefix)
     EXPECT_TRUE(FileSystem::exists(prefix + "/bin"));
 }
 
+// Following tests can fail (or not really relevant)
+// if the user has a custom/non-standard home directory
+// (moreso if the user does not have a home directory or is being disabled for security reason)
+bool testGetUserLocalDirectory()
+{
+    bool result = true;
+
+    const std::string path = Utils::getUserLocalDirectory();
+#if defined(WIN32)
+    result = result && (path.find("AppData") != std::string::npos);
+    result = result && (path.find("Local") != std::string::npos);
+#elif defined (__APPLE__)
+    result = result && (path.find("Library") != std::string::npos);
+    result = result && (path.find("Application Support") != std::string::npos);
+#else // Linux
+    result = result && (path.find(".config") != std::string::npos);
+#endif
+
+    return result;
+}
+
+TEST(UtilsTest, getUserLocalDirectory)
+{
+    EXPECT_TRUE(testGetUserLocalDirectory());
+}
+
+TEST(UtilsTest, getSofaUserLocalDirectory)
+{
+    const std::string path = Utils::getSofaUserLocalDirectory();
+    EXPECT_TRUE(testGetUserLocalDirectory());
+    EXPECT_TRUE(path.find("SOFA") != std::string::npos);
+}
+
 TEST(UtilsTest, readBasicIniFile_nonexistentFile)
 {
     // this test will raise an error on purpose
-    std::map<std::string, std::string> values = Utils::readBasicIniFile("this-file-does-not-exist");
+    const std::map<std::string, std::string> values = Utils::readBasicIniFile("this-file-does-not-exist");
     EXPECT_TRUE(values.empty());
 }
 

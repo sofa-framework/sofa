@@ -40,6 +40,8 @@
 
 #include <algorithm>
 #include <cassert>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixMechanical.h>
+
 
 namespace
 {
@@ -110,7 +112,7 @@ bool applyPredicateIfCoordOrDeriv(sofa::core::VecType vtype_a, sofa::core::VecTy
     {
         if (vtype_b == sofa::core::V_COORD)
         {
-            // predicate cannot be applied because vtype_a and vtype_b are imcompatible:
+            // predicate cannot be applied because vtype_a and vtype_b are incompatible:
             // it is not permitted to perform operations such as [DERIV] += [COORD]
             return false;
         }
@@ -188,18 +190,18 @@ MechanicalObject<DataTypes>::MechanicalObject()
     rotation2       .setGroup("Transformation");
     scale           .setGroup("Transformation");
 
-    setVecCoord(core::VecCoordId::position(), &x);
-    setVecCoord(core::VecCoordId::freePosition(), &xfree);
-    setVecCoord(core::VecCoordId::restPosition(), &x0);
-    setVecCoord(core::VecCoordId::resetPosition(), &reset_position);
-    setVecDeriv(core::VecDerivId::velocity(), &v);
-    setVecDeriv(core::VecDerivId::force(), &f);
-    setVecDeriv(core::VecDerivId::externalForce(), &externalForces);
-    setVecDeriv(core::VecDerivId::dx(), &dx);
-    setVecDeriv(core::VecDerivId::freeVelocity(), &vfree);
-    setVecDeriv(core::VecDerivId::resetVelocity(), &reset_velocity);
-    setVecMatrixDeriv(core::MatrixDerivId::constraintJacobian(), &c);
-    setVecMatrixDeriv(core::MatrixDerivId::mappingJacobian(), &m);
+    setVecCoord(core::vec_id::write_access::position, &x);
+    setVecCoord(core::vec_id::write_access::freePosition, &xfree);
+    setVecCoord(core::vec_id::write_access::restPosition, &x0);
+    setVecCoord(core::vec_id::write_access::resetPosition, &reset_position);
+    setVecDeriv(core::vec_id::write_access::velocity, &v);
+    setVecDeriv(core::vec_id::write_access::force, &f);
+    setVecDeriv(core::vec_id::write_access::externalForce, &externalForces);
+    setVecDeriv(core::vec_id::write_access::dx, &dx);
+    setVecDeriv(core::vec_id::write_access::freeVelocity, &vfree);
+    setVecDeriv(core::vec_id::write_access::resetVelocity, &reset_velocity);
+    setVecMatrixDeriv(core::vec_id::write_access::constraintJacobian, &c);
+    setVecMatrixDeriv(core::vec_id::write_access::mappingJacobian, &m);
 
     // These vectors are set as modified as they are mandatory in the MechanicalObject.
     x               .forceSet();
@@ -215,7 +217,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     //    freeVelocity.setDisplayed( false );
 
     // do not forget to delete these in the destructor
-    //    write(VecDerivId::dforce())->forceSet();
+    //    write(vec_id::write_access::dforce)->forceSet();
 
     // What is exactly the need for allocating null vectors?
     // if sofa crashes because of a wrong access to the null vector
@@ -246,8 +248,8 @@ MechanicalObject<DataTypes>::~MechanicalObject()
         if( vectorsDeriv[i] != nullptr )  { delete vectorsDeriv[i]; vectorsDeriv[i]=nullptr; }
     if( vectorsDeriv[core::VecDerivId::null().getIndex()] != nullptr )
     { delete vectorsDeriv[core::VecDerivId::null().getIndex()]; vectorsDeriv[core::VecDerivId::null().getIndex()] = nullptr; }
-    if( core::VecDerivId::dforce().getIndex()<vectorsDeriv.size() && vectorsDeriv[core::VecDerivId::dforce().getIndex()] != nullptr )
-    { delete vectorsDeriv[core::VecDerivId::dforce().getIndex()]; vectorsDeriv[core::VecDerivId::dforce().getIndex()] = nullptr; }
+    if( core::vec_id::write_access::dforce.getIndex()<vectorsDeriv.size() && vectorsDeriv[core::vec_id::write_access::dforce.getIndex()] != nullptr )
+    { delete vectorsDeriv[core::vec_id::write_access::dforce.getIndex()]; vectorsDeriv[core::vec_id::write_access::dforce.getIndex()] = nullptr; }
 
     for(unsigned i=core::MatrixDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsMatrixDeriv.size(); i++)
         if( vectorsMatrixDeriv[i] != nullptr )  { delete vectorsMatrixDeriv[i]; vectorsMatrixDeriv[i]=nullptr; }
@@ -275,12 +277,12 @@ void MechanicalObject<DataTypes>::exportGnuplot(SReal time)
 {
     if( m_gnuplotFileX!=nullptr )
     {
-        (*m_gnuplotFileX) << time <<"\t"<< read(core::ConstVecCoordId::position())->getValue() << std::endl;
+        (*m_gnuplotFileX) << time <<"\t"<< read(core::vec_id::read_access::position)->getValue() << std::endl;
     }
 
     if( m_gnuplotFileV!=nullptr )
     {
-        (*m_gnuplotFileV) << time <<"\t"<< read(core::ConstVecDerivId::velocity())->getValue() << std::endl;
+        (*m_gnuplotFileV) << time <<"\t"<< read(core::vec_id::read_access::velocity)->getValue() << std::endl;
     }
 }
 
@@ -353,14 +355,6 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
                                       (Real)arg->getAttributeAsFloat("dy2",0.0),
                                       (Real)arg->getAttributeAsFloat("dz2",0.0)));
     }
-
-    if (arg->getAttribute("isToPrint")!=nullptr)
-    {
-        msg_deprecated() << "The 'isToPrint' data field has been deprecated in SOFA v19.06 due to lack of consistency in how it should work." << msgendl
-                            "Please contact sofa-dev team in case you need similar.";
-    }
-
-
 }
 
 
@@ -379,11 +373,11 @@ void MechanicalObject<DataTypes>::handleStateChange()
     this->getContext()->get(geoAlgo, sofa::core::objectmodel::BaseContext::Local);
 
     std::list< const TopologyChange * >::const_iterator itBegin = l_topology->beginStateChange();
-    std::list< const TopologyChange * >::const_iterator itEnd = l_topology->endStateChange();
+    const std::list< const TopologyChange * >::const_iterator itEnd = l_topology->endStateChange();
 
     while( itBegin != itEnd )
     {
-        TopologyChangeType changeType = (*itBegin)->getChangeType();
+        const TopologyChangeType changeType = (*itBegin)->getChangeType();
 
         switch( changeType )
         {
@@ -392,7 +386,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
             using sofa::type::vector;
             const PointsAdded &pointsAdded = *static_cast< const PointsAdded * >( *itBegin );
 
-            Size prevSizeMechObj = getSize();
+            const Size prevSizeMechObj = getSize();
             Size nbPoints = Size(pointsAdded.getNbAddedVertices());
 
             if (Size(pointsAdded.pointIndexArray.size()) != nbPoints)
@@ -454,7 +448,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
                         if (vecCoord.size() != 0)
                         {
-                            coordVecs.push_back(k);
+                            coordVecs.emplace_back(k);
                         }
                     }
                 }
@@ -467,7 +461,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
                         if (vecDeriv.size() != 0)
                         {
-                            derivVecs.push_back(k);
+                            derivVecs.emplace_back(k);
                         }
                     }
                 }
@@ -481,7 +475,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
         {
             const auto& tab = ( static_cast< const PointsRemoved * >( *itBegin ) )->getArray();
 
-            unsigned int prevSizeMechObj   = getSize();
+            const unsigned int prevSizeMechObj   = getSize();
             unsigned int lastIndexMech = prevSizeMechObj - 1;
             for (unsigned int i = 0; i < tab.size(); ++i)
             {
@@ -679,7 +673,7 @@ void MechanicalObject<DataTypes>::reserve(const Size size)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyTranslation (const SReal dx, const SReal dy, const SReal dz)
 {
-    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(core::VecCoordId::position());
+    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(core::vec_id::write_access::position);
 
     for (unsigned int i = 0; i < x_wA.size(); i++)
     {
@@ -691,7 +685,7 @@ void MechanicalObject<DataTypes>::applyTranslation (const SReal dx, const SReal 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyRotation (const SReal rx, const SReal ry, const SReal rz)
 {
-    sofa::type::Quat<SReal> q =
+    const sofa::type::Quat<SReal> q =
             type::Quat< SReal >::createQuaterFromEuler(sofa::type::Vec3(rx, ry, rz) * M_PI / 180.0);
     applyRotation(q);
 }
@@ -699,7 +693,7 @@ void MechanicalObject<DataTypes>::applyRotation (const SReal rx, const SReal ry,
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyRotation (const type::Quat<SReal> q)
 {
-    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(core::VecCoordId::position());
+    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(core::vec_id::write_access::position);
 
     for (unsigned int i = 0; i < x_wA.size(); i++)
     {
@@ -852,6 +846,51 @@ void MechanicalObject<DataTypes>::copyFromBaseVector(sofa::core::VecId dest, con
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::copyToBaseMatrix(linearalgebra::BaseMatrix* dest, core::ConstMatrixDerivId src, unsigned& offset)
+{
+    if (dest == nullptr)
+    {
+        dmsg_error() << "Cannot copy into an invalid matrix: a valid matrix is required";
+        return;
+    }
+    if (const auto* matrixData = this->read(src))
+    {
+        const MatrixDeriv& matrix = matrixData->getValue();
+
+        if (auto* crs = dynamic_cast<linearalgebra::CompressedRowSparseMatrixMechanical<Real, sofa::linearalgebra::CRSMechanicalPolicy>*>(dest))
+        {
+            // This is more performant compared to the generic case
+            // The structure of the matrix is the same compared to the generic
+            // case, but dest sizes may be modified compared to the generic case
+            crs->copyNonZeros(matrix);
+        }
+        else //generic case
+        {
+            //no modification of the size
+            for (MatrixDerivRowConstIterator rowIt = matrix.begin(); rowIt != matrix.end(); ++rowIt)
+            {
+                const int cid = rowIt.index();
+                for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
+                {
+                    const unsigned int dof = colIt.index();
+                    const Deriv n = colIt.val();
+
+                    for (unsigned int r = 0; r < Deriv::size(); ++r)
+                    {
+                        dest->add(cid, offset + dof * Deriv::size() + r, n[r]);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        msg_error() << "Cannot copy matrix into destination: source does not exist";
+    }
+    offset += this->getMatrixSize();
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::addToBaseVector(linearalgebra::BaseVector* dest, sofa::core::ConstVecId src, unsigned int &offset)
 {
     applyPredicateIfCoordOrDeriv(src.type, [this, &dest, &offset, &src](auto vtype)
@@ -956,7 +995,7 @@ void MechanicalObject<DataTypes>::init()
 
     if (maxElement != vector_sizes.end())
     {
-        Size maxSize = (*maxElement).second;
+        const Size maxSize = (*maxElement).second;
 
         // Resize the mechanical object size to match the maximum size of argument's vectors
         if (getSize() < maxSize)
@@ -985,15 +1024,15 @@ void MechanicalObject<DataTypes>::init()
         }
     }
 
-    Data<VecCoord>* x_wAData = this->write(sofa::core::VecCoordId::position());
-    Data<VecDeriv>* v_wAData = this->write(sofa::core::VecDerivId::velocity());
+    Data<VecCoord>* x_wAData = this->write(sofa::core::vec_id::write_access::position);
+    Data<VecDeriv>* v_wAData = this->write(sofa::core::vec_id::write_access::velocity);
     VecCoord& x_wA = *x_wAData->beginEdit();
     VecDeriv& v_wA = *v_wAData->beginEdit();
 
     //case if X0 has been set but not X
-    if (read(core::ConstVecCoordId::restPosition())->getValue().size() > x_wA.size())
+    if (read(core::vec_id::read_access::restPosition)->getValue().size() > x_wA.size())
     {
-        vOp(core::execparams::defaultInstance(), core::VecId::position(), core::VecId::restPosition());
+        vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::position, sofa::core::vec_id::read_access::restPosition);
     }
 
     // the given position and velocity vectors are empty
@@ -1054,13 +1093,13 @@ void MechanicalObject<DataTypes>::init()
     reinit();
 
     // storing X0 must be done after reinit() that possibly applies transformations
-    if( read(core::ConstVecCoordId::restPosition())->getValue().size()!=x_wA.size() )
+    if( read(core::vec_id::read_access::restPosition)->getValue().size()!=x_wA.size() )
     {
         // storing X0 from X
         if( restScale.getValue()!=1 )
-            vOp(core::execparams::defaultInstance(), core::VecId::restPosition(), core::ConstVecId::null(), core::VecId::position(), restScale.getValue());
+            vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::restPosition, core::ConstVecId::null(), sofa::core::vec_id::write_access::position, restScale.getValue());
         else
-            vOp(core::execparams::defaultInstance(), core::VecId::restPosition(), core::VecId::position());
+            vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::restPosition, sofa::core::vec_id::write_access::position);
     }
 
 
@@ -1095,10 +1134,10 @@ void MechanicalObject<DataTypes>::storeResetState()
     if( !isIndependent() ) return;
 
     // Save initial state for reset button
-    vOp(core::execparams::defaultInstance(), core::VecId::resetPosition(), core::VecId::position());
+    vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::resetPosition, sofa::core::vec_id::read_access::position);
 
     // we only store a resetVelocity if the velocity is not zero
-    helper::ReadAccessor< Data<VecDeriv> > v = *this->read(core::VecDerivId::velocity());
+    helper::ReadAccessor< Data<VecDeriv> > v = *this->read(core::vec_id::read_access::velocity);
     bool zero = true;
     for (unsigned int i=0; i<v.size(); ++i)
     {
@@ -1108,7 +1147,7 @@ void MechanicalObject<DataTypes>::storeResetState()
         if (!zero) break;
     }
     if (!zero)
-        vOp(core::execparams::defaultInstance(), core::VecId::resetVelocity(), core::VecId::velocity());
+        vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::resetVelocity, sofa::core::vec_id::read_access::velocity);
 }
 
 
@@ -1116,24 +1155,24 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::reset()
 {
     // resetting force for every dofs, even mapped ones
-    vOp(core::execparams::defaultInstance(), core::VecId::force());
+    vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::force);
 
     if (!reset_position.isSet()) // mapped states are deduced from independent ones
         return;
 
-    vOp(core::execparams::defaultInstance(), core::VecId::position(), core::VecId::resetPosition());
+    vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::position, sofa::core::vec_id::read_access::resetPosition);
 
     if (!reset_velocity.isSet())
     {
-        vOp(core::execparams::defaultInstance(), core::VecId::velocity());
+        vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::velocity);
     }
     else
     {
-        vOp(core::execparams::defaultInstance(), core::VecId::velocity(), core::VecId::resetVelocity());
+        vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::velocity, sofa::core::vec_id::write_access::resetVelocity);
     }
 
-    if( xfree.isSet() ) vOp(core::execparams::defaultInstance(), core::VecId::freePosition(), core::VecId::position());
-    if( vfree.isSet() ) vOp(core::execparams::defaultInstance(), core::VecId::freeVelocity(), core::VecId::velocity());
+    if( xfree.isSet() ) vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::freePosition, sofa::core::vec_id::read_access::position);
+    if( vfree.isSet() ) vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::freeVelocity, sofa::core::vec_id::read_access::velocity);
 }
 
 
@@ -1238,7 +1277,7 @@ SReal MechanicalObject<DataTypes>::compareVec(core::ConstVecId v, std::istream &
         error += fabs(value_ref-value_cur);
         count ++;
     }
-    if( count == 0 ) return 0; //both vector are empy, so we return 0;
+    if( count == 0 ) return 0; //both vector are empty, so we return 0;
 
     return error/count;
 }
@@ -1246,9 +1285,9 @@ SReal MechanicalObject<DataTypes>::compareVec(core::ConstVecId v, std::istream &
 template <class DataTypes>
 void MechanicalObject<DataTypes>::writeState(std::ostream& out)
 {
-    writeVec(core::VecId::position(),out);
+    writeVec(sofa::core::vec_id::read_access::position,out);
     out << " ";
-    writeVec(core::VecId::velocity(),out);
+    writeVec(sofa::core::vec_id::read_access::velocity,out);
 }
 
 template <class DataTypes>
@@ -1270,7 +1309,7 @@ void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params
 {
     SOFA_UNUSED(params);
 
-    helper::ReadAccessor< Data<VecDeriv> > extForces_rA( *this->read(core::ConstVecDerivId::externalForce()) );
+    helper::ReadAccessor< Data<VecDeriv> > extForces_rA( *this->read(core::vec_id::read_access::externalForce) );
 
     if (!extForces_rA.empty())
     {
@@ -1413,7 +1452,7 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
     {
         const Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
 
-#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+#if !defined(NDEBUG)
         if(d!=NULL)
         {
             const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
@@ -1422,7 +1461,7 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
                 msg_error() << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
             }
         }
-#endif // defined(SOFA_DEBUG) || !defined(NDEBUG)
+#endif // !defined(NDEBUG)
 
         return d;
     }
@@ -1626,8 +1665,22 @@ void MechanicalObject<DataTypes>::setVecIdProperties(core::TVecId<vtype, vaccess
 {
     if (!properties.label.empty())
     {
-        vec_d->setName(properties.label + core::VecTypeLabels.at(vtype));
-        vec_d->setHelp("VecId: " + v.getName());
+        const std::string newname = properties.label;
+        const std::string oldname = properties.label + core::VecTypeLabels.at(vtype);
+        const auto base = vec_d->getOwner();
+        if(base && !base->findData(oldname))
+        {
+            base->addAlias(vec_d, oldname.c_str());
+
+            // This allows to find the data field in getData() using its new name eg: constraint_dx
+            if(base->findData(newname))
+                msg_error(base) << "Unable to expose a dynamic data field named '" << newname << "' as that name already exists. Please report this issue to https://github.com/sofa-framework/sofa/issues (for more infos see PR: https://github.com/sofa-framework/sofa/pull/3783)";
+            else
+                base->addAlias(vec_d, newname.c_str());
+
+        }
+        vec_d->setName(newname);
+        vec_d->setHelp("VecId: " + oldname);
     }
     if (!properties.group.empty())
     {
@@ -1731,6 +1784,228 @@ DataTypes>::getReadAccessor(core::ConstVecId v)
         *this->read(core::TVecId<vtype, core::V_READ>(v)));
 }
 
+#define APPLY_PREDICATE_ONEPARAMS(PRED, v)\
+    bool canApplyPredicate = false;\
+    if (v.type == core::V_COORD)\
+    {\
+        canApplyPredicate = PRED<core::V_COORD>(*this, v, f);\
+    }\
+    else if (v.type == core::V_DERIV)\
+    {\
+        canApplyPredicate = PRED<core::V_DERIV>(*this, v, f);\
+    }
+
+#define APPLY_PREDICATE_TWOPARAMS(PRED, v, b)\
+    bool canApplyPredicate = false;\
+    if (v.type == core::V_COORD)\
+    {\
+        if (b.type == core::V_COORD)\
+        {\
+            canApplyPredicate = PRED<core::V_COORD, core::V_COORD>(*this, v, b, f);\
+        }\
+        else if (b.type == core::V_DERIV)\
+        {\
+            canApplyPredicate = PRED<core::V_COORD, core::V_DERIV>(*this, v, b, f);\
+        }\
+    }\
+    else if (v.type == core::V_DERIV)\
+    {\
+        if (b.type == core::V_COORD)\
+        {\
+            canApplyPredicate = PRED<core::V_DERIV, core::V_COORD>(*this, v, b, f);\
+        }\
+        else if (b.type == core::V_DERIV)\
+        {\
+            canApplyPredicate = PRED<core::V_DERIV, core::V_DERIV>(*this, v, b, f);\
+        }\
+    }
+
+#define APPLY_PREDICATE_THREEPARAMS(PRED, v, a, b)\
+    bool canApplyPredicate = false;\
+    if (v.type == core::V_COORD)\
+    {\
+        if (a.type == core::V_COORD)\
+        {\
+            if (b.type == core::V_COORD)\
+            {\
+                canApplyPredicate = PRED<core::V_COORD, core::V_COORD, core::V_COORD>(*this, v, a, b, f);\
+            }\
+            else if (b.type == core::V_DERIV)\
+            {\
+                canApplyPredicate = PRED<core::V_COORD, core::V_COORD, core::V_DERIV>(*this, v, a, b, f);\
+            }\
+        }\
+        else if (a.type == core::V_DERIV)\
+        {\
+            if (b.type == core::V_COORD)\
+            {\
+                canApplyPredicate = PRED<core::V_COORD, core::V_DERIV, core::V_COORD>(*this, v, a, b, f);\
+            }\
+            else if (b.type == core::V_DERIV)\
+            {\
+                canApplyPredicate = PRED<core::V_COORD, core::V_DERIV, core::V_DERIV>(*this, v, a, b, f);\
+            }\
+        }\
+    }\
+    else if (v.type == core::V_DERIV)\
+    {\
+        if (a.type == core::V_COORD)\
+        {\
+            if (b.type == core::V_COORD)\
+            {\
+                canApplyPredicate = PRED<core::V_DERIV, core::V_COORD, core::V_COORD>(*this, v, a, b, f);\
+            }\
+            else if (b.type == core::V_DERIV)\
+            {\
+                canApplyPredicate = PRED<core::V_DERIV, core::V_COORD, core::V_DERIV>(*this, v, a, b, f);\
+            }\
+        }\
+        else if (a.type == core::V_DERIV)\
+        {\
+            if (b.type == core::V_COORD)\
+            {\
+                canApplyPredicate = PRED<core::V_DERIV, core::V_DERIV, core::V_COORD>(*this, v, a, b, f);\
+            }\
+            else if (b.type == core::V_DERIV)\
+            {\
+                canApplyPredicate = PRED<core::V_DERIV, core::V_DERIV, core::V_DERIV>(*this, v, a, b, f);\
+            }\
+        }\
+    }
+
+template <core::VecType vtype, class DataTypes>
+bool vOp_vf(MechanicalObject<DataTypes>& self, core::VecId v, Real_t<DataTypes> f)
+{
+    if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, Real_t<DataTypes> fc){vc[0] *= fc;})
+    {
+        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        for (unsigned int i = 0; i < vv.size(); ++i)
+        {
+            vv[i] *= f;
+        }
+        return true;
+    }
+    return false;
+}
+
+template <core::VecType vtype, core::VecType btype, class DataTypes>
+bool vOp_vbf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> f)
+{
+    if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc, Real_t<DataTypes> fc){vc[0] = bc[0] * fc;})
+    {
+        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        vv.resize(vb.size());
+        for (unsigned int i = 0; i < vv.size(); ++i)
+        {
+            vv[i] = vb[i] * f;
+        }
+        return true;
+    }
+    return false;
+}
+
+template <core::VecType vtype, core::VecType btype, class DataTypes>
+bool vOp_va(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> f)
+{
+    if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc){vc[0] = bc[0];})
+    {
+        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        vv.wref() = vb.ref();
+        return true;
+    }
+    return false;
+}
+
+template <core::VecType vtype, core::VecType btype, class DataTypes>
+bool vOp_vb(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> f)
+{
+    if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc){vc[0] += bc[0];})
+    {
+        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        vv.resize(vb.size());
+        for (unsigned int i = 0; i < vv.size(); ++i)
+        {
+            vv[i] += vb[i];
+        }
+        return true;
+    }
+    return false;
+}
+
+template <core::VecType vtype, core::VecType btype, class DataTypes>
+bool vOp_avf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> f)
+{
+    if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc){vc[0] *= f; vc[0] += bc[0];})
+    {
+        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        vv.resize(vb.size());
+        for (unsigned int i = 0; i < vv.size(); ++i)
+        {
+            vv[i] *= f;
+            vv[i] += vb[i];
+        }
+        return true;
+    }
+    return false;
+}
+
+template <core::VecType vtype, core::VecType btype, class DataTypes>
+bool vOp_v_inc_bf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> f)
+{
+    if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc, Real_t<DataTypes> fc){vc[0] += bc[0] * fc;})
+    {
+        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        vv.resize(vb.size());
+        for (unsigned int i = 0; i < vv.size(); ++i)
+        {
+            vv[i] += vb[i] * f;
+        }
+        return true;
+    }
+    return false;
+}
+
+template <core::VecType vtype, core::VecType atype, core::VecType btype, class DataTypes>
+bool vOp_vab(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId a, core::ConstVecId b, Real_t<DataTypes> f)
+{
+    if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, atype> ac, core::StateVecType_t<DataTypes, btype> bc){vc[0] = ac[0] + bc[0];})
+    {
+        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        auto va = helper::getReadAccessor(*self.read(core::TVecId<atype, core::V_READ>(a)));
+        auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        vv.resize(vb.size());
+        for (unsigned int i = 0; i < vv.size(); ++i)
+        {
+            vv[i] = va[i] + vb[i];
+        }
+        return true;
+    }
+    return false;
+}
+
+template <core::VecType vtype, core::VecType atype, core::VecType btype, class DataTypes>
+bool vOp_vabf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId a, core::ConstVecId b, Real_t<DataTypes> f)
+{
+    if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, atype> ac, core::StateVecType_t<DataTypes, btype> bc, Real_t<DataTypes> fc){vc[0] = ac[0] + bc[0] * fc;})
+    {
+        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        auto va = helper::getReadAccessor(*self.read(core::TVecId<atype, core::V_READ>(a)));
+        auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        vv.resize(vb.size());
+        for (unsigned int i = 0; i < vv.size(); ++i)
+        {
+            vv[i] = va[i] + vb[i] * f;
+        }
+        return true;
+    }
+    return false;
+}
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecId v,
                                       core::ConstVecId a,
@@ -1759,54 +2034,27 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
         }
         else
         {
-            if (b.type != v.type)
-            {
-                // ERROR
-                msg_error() << "Invalid vOp operation 2 ("<<v<<','<<a<<','<<b<<','<<f<<")";
-                return;
-            }
-
             if (v == b)
             {
                 // v *= f
-                applyPredicateIfCoordOrDeriv(v.type, [this, &v, f](auto vtype_v)
-                {
-                    auto vv = this->getWriteAccessor<vtype_v>(v);
-                    for (unsigned int i = 0; i < vv.size(); ++i)
-                        vv[i] *= static_cast<Real>(f);
-                });
+                APPLY_PREDICATE_ONEPARAMS(vOp_vf, v)
+                msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v *= f (" << v << ',' << a << ',' << b << ',' << f << ")";
             }
             else
             {
                 // v = b*f
-                applyPredicateIfCoordOrDeriv(v.type, [this, &v, &b, f](auto vtype_v)
-                {
-                    auto vv = this->getWriteAccessor<vtype_v>(v);
-                    auto vb = this->getReadAccessor<vtype_v>(b);
-                    vv.resize(vb.size());
-                    for (unsigned int i = 0; i < vv.size(); ++i)
-                        vv[i] = vb[i] * static_cast<Real>(f);
-                });
+                APPLY_PREDICATE_TWOPARAMS(vOp_vbf, v, b)
+                msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v = b*f (" << v << ',' << a << ',' << b << ',' << f << ")";
             }
         }
     }
     else
     {
-        if (a.type != v.type)
-        {
-            // ERROR
-            msg_error() << "Invalid vOp operation 3 ("<<v<<','<<a<<','<<b<<','<<f<<")";
-            return;
-        }
         if (b.isNull())
         {
             // v = a
-            applyPredicateIfCoordOrDeriv(v.type, [this, &v, &a](auto vtype_v)
-            {
-                auto vv = this->getWriteOnlyAccessor<vtype_v>(v);
-                auto va = this->getReadAccessor<vtype_v>(a);
-                vv.wref() = va.ref();
-            });
+            APPLY_PREDICATE_TWOPARAMS(vOp_va, v, a)
+            msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v = a (" << v << ',' << a << ',' << b << ',' << f << ")";
         }
         else
         {
@@ -1815,36 +2063,14 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
                 if (f == 1._sreal)
                 {
                     // v += b
-                    const bool isApplied = applyPredicateIfCoordOrDeriv(v.type, b.type,
-                    [this, &v, &b](auto vtype_v, auto vtype_b)
-                    {
-                        auto vv = this->getWriteAccessor<vtype_v>(v);
-                        auto vb = this->getReadAccessor<vtype_b>(b);
-
-                        if (vb.size() > vv.size())
-                            vv.resize(vb.size());
-
-                        for (unsigned int i = 0; i < vb.size(); ++i)
-                            vv[i] += vb[i];
-                    });
-                    msg_error_when(!isApplied) << "Invalid vOp operation 4 ("<<v<<','<<a<<','<<b<<','<<f<<")";
+                    APPLY_PREDICATE_TWOPARAMS(vOp_vb, v, b)
+                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v += b (" << v << ',' << a << ',' << b << ',' << f << ")";
                 }
                 else
                 {
                     // v += b*f
-                    const bool isApplied = applyPredicateIfCoordOrDeriv(v.type, b.type,
-                    [this, &v, &b, f](auto vtype_v, auto vtype_b)
-                    {
-                        auto vv = this->getWriteAccessor<vtype_v>(v);
-                        auto vb = this->getReadAccessor<vtype_b>(b);
-
-                        if (vb.size() > vv.size())
-                            vv.resize(vb.size());
-
-                        for (unsigned int i = 0; i < vb.size(); ++i)
-                            vv[i] += vb[i] * static_cast<Real>(f);
-                    });
-                    msg_error_when(!isApplied) << "Invalid vOp operation 5 ("<<v<<','<<a<<','<<b<<','<<f<<")";
+                    APPLY_PREDICATE_TWOPARAMS(vOp_v_inc_bf, v, b)
+                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v += b*f (" << v << ',' << a << ',' << b << ',' << f << ")";
                 }
             }
             else if (v == b)
@@ -1852,35 +2078,14 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
                 if (f == 1._sreal)
                 {
                     // v += a
-                    const bool isApplied = applyPredicateIfCoordOrDeriv(v.type, a.type,
-                    [this, &v, &a](auto vtype_v, auto vtype_a)
-                    {
-                        auto vv = this->getWriteAccessor<vtype_v>(v);
-                        auto va = this->getReadAccessor<vtype_a>(a);
-
-                        if (va.size() > vv.size())
-                            vv.resize(va.size());
-
-                        for (unsigned int i = 0; i < va.size(); ++i)
-                            vv[i] += va[i];
-                    });
-                    msg_error_when(!isApplied) << "Invalid vOp operation 6 ("<<v<<','<<a<<','<<b<<','<<f<<")";
+                    APPLY_PREDICATE_TWOPARAMS(vOp_vb, v, a)
+                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v += a (" << v << ',' << a << ',' << b << ',' << f << ")";
                 }
                 else
                 {
                     // v = a+v*f
-                    applyPredicateIfCoordOrDeriv(v.type, [this, &v, &a, f](auto vtype_v)
-                    {
-                        auto vv = this->getWriteOnlyAccessor<vtype_v>(v);
-                        auto va = this->getReadAccessor<vtype_v>(a);
-
-                        vv.resize(va.size());
-                        for (unsigned int i = 0; i < vv.size(); ++i)
-                        {
-                            vv[i] *= static_cast<Real>(f);
-                            vv[i] += va[i];
-                        }
-                    });
+                    APPLY_PREDICATE_TWOPARAMS(vOp_avf, v, a)
+                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v = a+v*f (" << v << ',' << a << ',' << b << ',' << f << ")";
                 }
             }
             else
@@ -1888,42 +2093,42 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
                 if (f == 1._sreal)
                 {
                     // v = a+b
-                    const bool isApplied = applyPredicateIfCoordOrDeriv(v.type, b.type,
-                    [this, &v, &a, &b](auto vtype_v, auto vtype_b)
-                    {
-                        auto vv = this->getWriteOnlyAccessor<vtype_v>(v);
-                        auto va = this->getReadAccessor<vtype_v>(a);
-                        auto vb = this->getReadAccessor<vtype_b>(b);
-
-                        vv.resize(va.size());
-
-                        for (unsigned int i = 0; i < vb.size(); ++i)
-                        {
-                            vv[i] = va[i];
-                            vv[i] += vb[i];
-                        }
-                    });
-                    msg_error_when(!isApplied) << "Invalid vOp operation 7 ("<<v<<','<<a<<','<<b<<','<<f<<")";
+                    APPLY_PREDICATE_THREEPARAMS(vOp_vab, v, a, b)
+                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v = a+b (" << v << ',' << a << ',' << b << ',' << f << ")";
                 }
                 else
                 {
-                    // v = a+b*f
-                    const bool isApplied = applyPredicateIfCoordOrDeriv(v.type, b.type,
-                    [this, &v, &a, &b, f](auto vtype_v, auto vtype_b)
+                    const auto generalCase = [&]()
                     {
-                        auto vv = this->getWriteOnlyAccessor<vtype_v>(v);
-                        auto va = this->getReadAccessor<vtype_v>(a);
-                        auto vb = this->getReadAccessor<vtype_b>(b);
-
-                        vv.resize(va.size());
-
-                        for (unsigned int i = 0; i < vb.size(); ++i)
+                        // v = a+b*f
+                        APPLY_PREDICATE_THREEPARAMS(vOp_vabf, v, a, b)
+                        msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v = a+b*f (" << v << ',' << a << ',' << b << ',' << f << ")";
+                    };
+                    
+                    if constexpr (requires (Coord ca, Coord cb) {DataTypes::coordDifference(ca, cb);})
+                    {
+                        if (f == -1._sreal &&
+                           (v.type == core::V_DERIV && a.type == core::V_COORD && b.type == core::V_COORD))
                         {
-                            vv[i] = va[i];
-                            vv[i] += vb[i] * static_cast<Real>(f);
+                            // v = a-b
+                            auto vv = this->getWriteOnlyAccessor<core::V_DERIV>(v);
+                            auto va = this->getReadAccessor<core::V_COORD>(a);
+                            auto vb = this->getReadAccessor<core::V_COORD>(b);
+                            vv.resize(vb.size());
+                            for (unsigned int i = 0; i < vv.size(); ++i)
+                            {
+                                vv[i] = DataTypes::coordDifference(va[i], vb[i]);
+                            }
                         }
-                    });
-                    msg_error_when(!isApplied) << "Invalid vOp operation 8 ("<<v<<','<<a<<','<<b<<','<<f<<")";
+                        else
+                        {
+                            generalCase();
+                        }
+                    }
+                    else
+                    {
+                        generalCase();
+                    }
                 }
             }
         }
@@ -2247,10 +2452,12 @@ void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params, core:
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetConstraint(const core::ConstraintParams* cParams)
 {
+    //reset the constraint jacobian matrix
     Data<MatrixDeriv>& c_data = *this->write(cParams->j().getId(this));
     sofa::helper::getWriteOnlyAccessor(c_data)->clear();
 
-    Data<MatrixDeriv>& m_data = *this->write(core::MatrixDerivId::mappingJacobian());
+    //reset the mapping jacobian matrix
+    Data<MatrixDeriv>& m_data = *this->write(core::vec_id::write_access::mappingJacobian);
     sofa::helper::getWriteOnlyAccessor(m_data)->clear();
 }
 
@@ -2287,7 +2494,7 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ConstraintPa
 template <class DataTypes>
 void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::type::vector<unsigned int>& list_n, core::MatrixDerivId &mID)
 {
-    const auto N = Deriv::size();
+    static constexpr auto N = Deriv::size();
     Data<MatrixDeriv>* cMatrix= this->write(mID);
 
     MatrixDeriv& jacobian = *cMatrix->beginEdit();
@@ -2342,7 +2549,7 @@ std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObje
             for( ; chunk != chunkEnd ; chunk++)
             {
                 const unsigned int column = chunk.index();
-                if( blocks.find( column ) == blocks.end() )
+                if(!blocks.contains( column ))
                 {
                     // nope: let's create it
                     matrix_t* mat = new matrix_t(linearalgebra::BaseMatrix::Index(indices.size()), linearalgebra::BaseMatrix::Index(dimensionDeriv));
@@ -2390,11 +2597,11 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
     const VecDeriv *data = 0;
 
     // Maybe we should extend this to restvelocity
-    if (id == core::ConstVecId::velocity())
+    if (id == sofa::core::vec_id::read_access::velocity)
     {
         data = &v.getValue();
     }
-    else if (id == core::ConstVecId::dx())
+    else if (id == sofa::core::vec_id::read_access::dx)
     {
         data = &dx.getValue();
     }
@@ -2419,7 +2626,7 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
 template <class DataTypes>
 inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualParams* vparams)
 {
-    float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
+    const float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
     std::vector<type::Vec3> positions;
     positions.reserve(d_size.getValue());
@@ -2433,7 +2640,7 @@ template <class DataTypes>
 inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualParams* vparams)
 {
     float scale = showVectorsScale.getValue();
-    sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());
+    sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::vec_id::read_access::velocity);
     type::vector<type::Vec3> points;
     points.resize(2);
     for(Size i=0; i<v_rA.size(); ++i )
@@ -2443,7 +2650,7 @@ inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualP
         type::Vec3 p1 = type::Vec3(getPX(i), getPY(i), getPZ(i));
         type::Vec3 p2 = type::Vec3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
 
-        float rad = (float)( (p1-p2).norm()/20.0 );
+        const float rad = (float)( (p1-p2).norm()/20.0 );
         switch (drawMode.getValue())
         {
         case 0:
@@ -2529,7 +2736,7 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
         // TODO: this verification is awful and should be done by template specialization
     {
         // seems to be valid DOFs
-        const VecCoord& x =this->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& x =this->read(core::vec_id::read_access::position)->getValue();
 
         type::Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
         type::Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
@@ -2544,7 +2751,7 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
 
             type::Vec<3,Real> vecPoint = (pos-origin) - direction*dist;
             SReal distToRay = vecPoint.norm2();
-            SReal maxr = radius0 + dRadius*dist;
+            const SReal maxr = radius0 + dRadius*dist;
             if (distToRay <= maxr*maxr)
             {
                 particles.insert(std::make_pair(distToRay,std::make_pair(this,i)));
@@ -2565,7 +2772,7 @@ bool MechanicalObject<DataTypes>::addBBox(SReal* minBBox, SReal* maxBBox)
 
     static const unsigned spatial_dimensions = std::min( (unsigned)DataTypes::spatial_dimensions, 3u );
 
-    const VecCoord& x = read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = read(core::vec_id::read_access::position)->getValue();
     for(Size i=0; i<x.size(); i++ )
     {
         type::Vec<3,Real> p;

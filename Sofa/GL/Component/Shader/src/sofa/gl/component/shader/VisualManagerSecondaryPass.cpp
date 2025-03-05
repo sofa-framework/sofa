@@ -30,10 +30,11 @@ using namespace sofa::gl;
 using namespace simulation;
 using namespace core::visual;
 
-//Register LightManager in the Object Factory
-int VisualManagerSecondaryPassClass = core::RegisterObject("VisualManagerSecondaryPass")
-        .add< VisualManagerSecondaryPass >()
-        ;
+void registerVisualManagerSecondaryPass(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Chain different rendering pass, for compositing.")
+        .add< VisualManagerSecondaryPass >());
+}
 
 VisualManagerSecondaryPass::VisualManagerSecondaryPass()
     : input_tags(initData( &input_tags, "input_tags", "list of input passes used as source textures"))
@@ -55,7 +56,7 @@ void VisualManagerSecondaryPass::init()
     multiPassEnabled=checkMultipass(context);
 }
 
-void VisualManagerSecondaryPass::initVisual()
+void VisualManagerSecondaryPass::doInitVisual(const core::visual::VisualParams* vparams)
 {
     if (l_shader.get())
     {
@@ -79,7 +80,7 @@ void VisualManagerSecondaryPass::initVisual()
             m_shaderPostproc->fragFilename.addPath(fragFilename.getFullPath(),true);
 
         m_shaderPostproc->init();
-        m_shaderPostproc->initVisual();
+        m_shaderPostproc->initVisual(vparams);
     }
 
     initShaderInputTexId();
@@ -98,9 +99,9 @@ void VisualManagerSecondaryPass::initShaderInputTexId()
 {
     nbFbo=0;
 
-    sofa::simulation::Node* gRoot = dynamic_cast<simulation::Node*>(this->getContext());
-    sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin();
-    sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator end = gRoot->visualManager.end();
+    const sofa::simulation::Node* gRoot = dynamic_cast<simulation::Node*>(this->getContext());
+    const sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin();
+    const sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator end = gRoot->visualManager.end();
     sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator it;
     for (it = begin; it != end; ++it)
     {
@@ -204,9 +205,9 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
 {
     nbFbo=0;
 
-    sofa::simulation::Node* gRoot = dynamic_cast<simulation::Node*>(this->getContext());
-    sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin();
-    sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator end = gRoot->visualManager.end();
+    const sofa::simulation::Node* gRoot = dynamic_cast<simulation::Node*>(this->getContext());
+    const sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin();
+    const sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator end = gRoot->visualManager.end();
     sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator it;
     for (it = begin; it != end; ++it)
     {

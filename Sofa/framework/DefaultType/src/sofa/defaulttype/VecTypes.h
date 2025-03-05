@@ -25,11 +25,13 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
 #include <sofa/helper/random.h>
-#include <sofa/defaulttype/MapMapSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraint.h>
 #include <istream>
 #include <ostream>
 #include <algorithm>
 #include <memory>
+#include <sofa/type/isRigidType.h>
+
 
 namespace sofa:: defaulttype
 {
@@ -58,12 +60,12 @@ public:
     static constexpr const DPos& getDPos(const Deriv& d) { return d; }
     static constexpr void setDPos(Deriv& d, const DPos& v) { d = v; }
 
-    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef linearalgebra::CompressedRowSparseMatrixConstraint<Deriv> MatrixDeriv;
 
 
 protected:
 
-    /// @internal size dependant specializations
+    /// @internal size dependent specializations
     /// @{
 
     template<Size N, class T>
@@ -234,6 +236,17 @@ typedef StdVectorTypes<type::Vec3, type::Vec3, type::Vec3::value_type> Vec3Types
 typedef StdVectorTypes<type::Vec2, type::Vec2, type::Vec2::value_type> Vec2Types;
 /// 1D DOFs, double precision (default)
 typedef StdVectorTypes<type::Vec1, type::Vec1, type::Vec1::value_type> Vec1Types;
+
+
+static_assert(!type::isRigidType<Vec6dTypes>);
+static_assert(!type::isRigidType<Vec3dTypes>);
+static_assert(!type::isRigidType<Vec2dTypes>);
+static_assert(!type::isRigidType<Vec1dTypes>);
+
+static_assert(!type::isRigidType<Vec6fTypes>);
+static_assert(!type::isRigidType<Vec3fTypes>);
+static_assert(!type::isRigidType<Vec2fTypes>);
+static_assert(!type::isRigidType<Vec1fTypes>);
 
 
 } // namespace sofa:: defaulttype

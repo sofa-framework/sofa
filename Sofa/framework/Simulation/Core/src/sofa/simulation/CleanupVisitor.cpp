@@ -22,10 +22,8 @@
 #include <sofa/simulation/CleanupVisitor.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -59,7 +57,7 @@ void CleanupVisitor::processNodeBottomUp(Node* /*node*/)
 {
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

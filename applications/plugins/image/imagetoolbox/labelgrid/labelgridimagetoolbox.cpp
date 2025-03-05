@@ -1,8 +1,8 @@
 #define LABELGRIDIMAGETOOLBOX_CPP
 
+#include "labelgridimagetoolbox.h"
 #include <sofa/core/ObjectFactory.h>
 
-#include "labelgridimagetoolbox.h"
 #include <image/ImageTypes.h>
 
 

@@ -28,17 +28,15 @@ using sofa::helper::system::FileSystem;
 # include <dlfcn.h>
 #endif
 #include <string>
+#include <filesystem>
+#include <sstream>
 
-namespace sofa
-{
-namespace helper
-{
-namespace system
+namespace sofa::helper::system
 {
 
 
 DynamicLibrary::Handle::Handle(const std::string& filename, void *handle)
-    : m_realHandle(handle), m_filename(new std::string(filename))
+    : m_realHandle(handle), m_filename(std::make_shared<std::string>(filename))
 {
 }
 
@@ -71,7 +69,7 @@ const std::string& DynamicLibrary::Handle::filename() const
 DynamicLibrary::Handle DynamicLibrary::load(const std::string& filename)
 {
 # if defined(WIN32)
-    std::string p = FileSystem::cleanPath(filename, FileSystem::BACKSLASH);
+    const std::string p = FileSystem::cleanPath(filename, FileSystem::BACKSLASH);
     void *handle = ::LoadLibraryA(filename.c_str());
     if (handle == nullptr)
     {
@@ -113,6 +111,48 @@ void * DynamicLibrary::getSymbolAddress(Handle handle,
 # endif
     if(symbolAddress == nullptr)
         fetchLastError();
+#if !defined (WIN32)
+    else // checking that the symbol really comes from the provided library
+    {
+
+        Dl_info dli;
+        ::dladdr(symbolAddress, &dli);
+        std::filesystem::path dlInfoPath;
+        std::filesystem::path handlePath;
+        std::ostringstream oss;
+
+        try
+        {
+            dlInfoPath = std::filesystem::canonical(dli.dli_fname);
+            handlePath = std::filesystem::canonical(handle.filename());
+        }
+        catch(std::filesystem::filesystem_error& error)
+        {
+            oss << "An exception was caught when trying to find the real path of the library with the following message : " << error.what();
+
+            // paths are broken, we cannot check if this symbol comes from this lib
+            symbolAddress = nullptr;
+            m_lastError = oss.str();
+
+            return symbolAddress;
+        }
+
+
+        // Both paths should be exactly the same
+        if(dlInfoPath.compare(handlePath) != 0)
+        {
+            oss << symbol << " was found in the library " << dlInfoPath
+                << " , but it should have been found in this library " << handlePath << "\n."
+                << "The most probable reason is that your requested library " << handlePath.filename()
+                << " does not implement the symbol " << symbol << ", but its dependency "
+                << dlInfoPath.filename()<< " does.";
+
+            // the symbol was found in an other library (dependency)
+            symbolAddress = nullptr;
+            m_lastError = oss.str();
+        }
+    }
+#endif
     return symbolAddress;
 }
 
@@ -166,9 +206,5 @@ const std::string DynamicLibrary::prefix = "lib";
 
 std::string DynamicLibrary::m_lastError = std::string("");
 
-
-}
-
-}
 
 }

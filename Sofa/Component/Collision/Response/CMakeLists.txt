@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.Collision.Response LANGUAGES CXX)
 
 set(SOFACOMPONENTCOLLISIONRESPONSE_SOURCE_DIR "src/sofa/component/collision/response")

@@ -86,8 +86,6 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
 
     using sofa::type::Vec3;
     using sofa::type::Matrix3;
-    using sofa::type::Mat3x3d;
-    using sofa::type::Vec3d;
 
     const VecCoord& in = d_inputPositions.getValue();
     const VecCoord& out = d_mappedPointPositions.getValue();
@@ -173,7 +171,7 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
             centers.resize ( triangles.size() +quads.size() );
             for ( unsigned int t = 0; t < triangles.size(); t++ )
             {
-                Mat3x3d m,mt;
+                Mat3x3 m,mt;
                 m[0] = (in)[triangles[t][1]]-(in)[triangles[t][0]];
                 m[1] = (in)[triangles[t][2]]-(in)[triangles[t][0]];
                 m[2] = cross ( m[0],m[1] );
@@ -185,7 +183,7 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
             }
             for ( unsigned int c = 0; c < quads.size(); c++ )
             {
-                Mat3x3d m,mt;
+                Mat3x3 m,mt;
                 m[0] = (in)[quads[c][1]]-(in)[quads[c][0]];
                 m[1] = (in)[quads[c][3]]-(in)[quads[c][0]];
                 m[2] = cross ( m[0],m[1] );
@@ -233,7 +231,7 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
         centers.resize ( tetrahedra.size() +cubes.size() );
         for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
         {
-            Mat3x3d m,mt;
+            Mat3x3 m,mt;
             m[0] = (in)[tetrahedra[t][1]]-(in)[tetrahedra[t][0]];
             m[1] = (in)[tetrahedra[t][2]]-(in)[tetrahedra[t][0]];
             m[2] = (in)[tetrahedra[t][3]]-(in)[tetrahedra[t][0]];
@@ -245,7 +243,7 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
         }
         for ( unsigned int c = 0; c < cubes.size(); c++ )
         {
-            Mat3x3d m,mt;
+            Mat3x3 m,mt;
             m[0] = (in)[cubes[c][1]]-(in)[cubes[c][0]];
             m[1] = (in)[cubes[c][3]]-(in)[cubes[c][0]];
             m[2] = (in)[cubes[c][4]]-(in)[cubes[c][0]];

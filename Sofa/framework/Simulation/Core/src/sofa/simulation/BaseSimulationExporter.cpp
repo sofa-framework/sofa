@@ -20,19 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/BaseSimulationExporter.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/SimulationInitDoneEvent.h>
 #include <sofa/helper/system/FileSystem.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation::_basesimulationexporter_
 {
-
-namespace _basesimulationexporter_
-{
-using sofa::simulation::AnimateBeginEvent ;
+using sofa::simulation::SimulationInitDoneEvent ;
 using sofa::simulation::AnimateEndEvent ;
 using sofa::helper::system::FileSystem ;
 
@@ -43,9 +38,9 @@ BaseSimulationExporter::BaseSimulationExporter() :
   , d_exportEveryNbSteps(initData(&d_exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps",
                                   "export file only at specified number of steps (0=disable, default=0)"))
   , d_exportAtBegin( initData(&d_exportAtBegin, false, "exportAtBegin",
-                              "export file at the initialization (default=false)"))
+                              "export file before the simulation starts, once the simulation is initialized (default=false)"))
   , d_exportAtEnd( initData(&d_exportAtEnd, false, "exportAtEnd",
-                            "export file when the simulation is finished (default=false)"))
+                            "export file when the simulation is over and cleanup is called, i.e. just before deleting the simulation (default=false)"))
   , d_isEnabled( initData(&d_isEnabled, true, "enable", "Enable or disable the component. (default=true)"))
 {
     f_listening.setValue(false) ;
@@ -56,12 +51,13 @@ BaseSimulationExporter::BaseSimulationExporter() :
 const std::string BaseSimulationExporter::getOrCreateTargetPath(const std::string& filename, bool autonumbering)
 {
     std::string path = FileSystem::cleanPath(filename) ;
-    if( FileSystem::exists(path) && FileSystem::isDirectory(path) ){
-        path += "/" + getName() ;
+    if( FileSystem::exists(path) && FileSystem::isDirectory(path) )
+    {
+        path = FileSystem::append(path, getName());
     }
 
     /// If the path does not exists on the FS...we create It
-    std::string parentPath = FileSystem::getParentDirectory(path) ;
+    const std::string parentPath = FileSystem::getParentDirectory(path) ;
     if( !FileSystem::exists(parentPath) ){
         FileSystem::findOrCreateAValidPath(parentPath) ;
     }
@@ -94,6 +90,13 @@ void BaseSimulationExporter::handleEvent(Event *event){
             }
         }
     }
+    else if (SimulationInitDoneEvent::checkEventType(event))
+    {
+        if (d_isEnabled.getValue() && d_exportAtBegin.getValue())
+        {
+            write();
+        }
+    }
 
     BaseObject::handleEvent(event) ;
 }
@@ -120,10 +123,11 @@ void BaseSimulationExporter::updateFromDataField()
         d_filename.setValue(getName());
     }
 
-    /// Activate the listening to the event in order to be able to export file at the nth-step
-    if(d_exportEveryNbSteps.getValue() != 0)
+    /// Activate the listening to the event in order to be able to export file once initialization is done or the nth-step
+    if(d_exportEveryNbSteps.getValue() != 0 || d_exportAtBegin.getValue())
         this->f_listening.setValue(true);
 }
+
 
 void BaseSimulationExporter::cleanup()
 {
@@ -132,14 +136,4 @@ void BaseSimulationExporter::cleanup()
 }
 
 
-void BaseSimulationExporter::bwdInit()
-{
-    if (d_isEnabled.getValue() && d_exportAtBegin.getValue())
-        write();
 }
-
-} /// namespace _baseexporter_
-
-} /// namespace core
-
-} /// namespace sofa

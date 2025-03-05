@@ -30,7 +30,7 @@
 namespace sofa::component::mechanicalload
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template<class DataTypes>
 class EllipsoidForceFieldInternalData
 {
@@ -53,8 +53,8 @@ public:
     typedef Data<VecCoord>                  DataVecCoord;
     typedef Data<VecDeriv>                  DataVecDeriv;
 
-    enum { N=DataTypes::spatial_dimensions };
-    typedef type::Mat<N,N,Real> Mat;
+    static constexpr auto N = DataTypes::spatial_dimensions;
+    using Mat = type::Mat<N, N, Real>;
 
 protected:
     class Contact
@@ -82,29 +82,42 @@ protected:
 
     };
 
-    Data<sofa::type::vector<Contact> > contacts; ///< Contacts
+    Data<sofa::type::vector<Contact> > d_contacts; ///< Vector of contacts
+    SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DISABLED() DeprecatedAndRemoved contacts; ///< Contacts
 
     EllipsoidForceFieldInternalData<DataTypes> data;
 
 public:
 
-    Data<Coord> center; ///< ellipsoid center
-    Data<Coord> vradius; ///< ellipsoid radius
-    Data<Real> stiffness; ///< force stiffness (positive to repulse outward, negative inward)
-    Data<Real> damping; ///< force damping
-    Data<sofa::type::RGBAColor> color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
+    Data<Coord> d_center; ///< ellipsoid center
+    SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DISABLED() DeprecatedAndRemoved center; ///< ellipsoid center
+
+    Data<Coord> d_vradius; ///< ellipsoid radius
+    SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DISABLED() DeprecatedAndRemoved vradius; ///< ellipsoid radius
+
+    Data<Real> d_stiffness; ///< force stiffness (positive to repulse outward, negative inward)
+    SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DISABLED() DeprecatedAndRemoved stiffness; ///< force stiffness (positive to repulse outward, negative inward)
+
+    Data<Real> d_damping; ///< force damping
+    SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DISABLED() DeprecatedAndRemoved damping; ///< force damping
+
+    Data<sofa::type::RGBAColor> d_color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
+    SOFA_ELLIPSOIDFORCEFIELD_RENAMEDDATA_DISABLED() DeprecatedAndRemoved color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
+
 protected:
     EllipsoidForceField();
+    ~EllipsoidForceField() override;
 
 public:
     void setStiffness(Real stiff);
     void setDamping(Real damp);
 
     void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
-    ///SOFA_DEPRECATED_ForceField <<<virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
     void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) override;
-    ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce (VecDeriv& df, const VecDeriv& dx, SReal kFactor, SReal bFactor);
+
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 
@@ -112,7 +125,7 @@ public:
 };
 
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API EllipsoidForceField<sofa::defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API EllipsoidForceField<sofa::defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API EllipsoidForceField<sofa::defaulttype::Vec1Types>;

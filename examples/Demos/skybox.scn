@@ -2,7 +2,7 @@
 
 <Node name="root" gravity="0 0 -9.81">
     <Node name="plugins">
-        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
         <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
         <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
         <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -46,9 +46,9 @@
         <UniformMass totalMass="100"/>
         
         <BoxROI name="box" box="-10 -10 10 15 10 50"/>
-        <FixedConstraint indices="@box.indices"/>
+        <FixedProjectiveConstraint indices="@box.indices"/>
         
-        <ConstantForceField force="0 0 1.1"/>
+        <ConstantForceField forces="0 0 1.1"/>
         
         <Node name="visu">
             <MeshOBJLoader name="meshLoader_1" filename="mesh/Teodule_Smoothed2.obj" translation="20 16 3" rotation="90 0 0" handleSeams="1" />

@@ -120,7 +120,7 @@ def createScene(node):
     angularNode.createObject('MechanicalObject', template="Rigid", name="dofs", position="0 0 0 0 0 0 1", velocity="0 0 0 "+str(INITIAL_VELOCITY)+" 0 0")
     angularNode.createObject('UniformMass', filename=rigidFilename)
     angularNode.createObject('UniformVelocityDampingForceField', dampingCoefficient=DAMPING_COEF)
-    #angularNode.createObject('PartialFixedConstraint', indices='0', fixedDirections="1 1 1 0 1 1")
+    #angularNode.createObject('PartialFixedProjectiveConstraint', indices='0', fixedDirections="1 1 1 0 1 1")
 
 
     # translation damping test
@@ -130,7 +130,7 @@ def createScene(node):
     translationNode.createObject('MechanicalObject', template="Rigid", name="dofs", position="0 0 0 0 0 0 1", velocity=str(INITIAL_VELOCITY)+" 0 0  0 0 0")
     translationNode.createObject('UniformMass', filename=rigidFilename)
     translationNode.createObject('UniformVelocityDampingForceField', dampingCoefficient=DAMPING_COEF)
-    #translationNode.createObject('PartialFixedConstraint', indices='0', fixedDirections="0 1 1 1 1 1")
+    #translationNode.createObject('PartialFixedProjectiveConstraint', indices='0', fixedDirections="0 1 1 1 1 1")
 
 
     return node

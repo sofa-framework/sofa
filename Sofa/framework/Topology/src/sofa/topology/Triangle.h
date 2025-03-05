@@ -39,7 +39,7 @@ namespace sofa::topology
     * @tparam   Coordinates type representing the coordinates in space (in 3D)
     * @tparam   VectorCoordinates type for the container of coordinates
     * @param	trianglePositions positions of all the points of the triangles set
-    * @param	allTriangles informations about the triangle in the topology (a vector of 3 indices, i.e a triangle)
+    * @param	allTriangles information about the triangle in the topology (a vector of 3 indices, i.e a triangle)
     * @param	shellTriangles triangles around the given point (vector of triangles indices)
     * @param	pointID index of the point (from shellTriangles) from which the algo will try to compute the direction
     * @param	direction direction in which the algo will find a triangle from the pointID
@@ -73,7 +73,7 @@ namespace sofa::topology
                 const auto v_01 = static_cast<Real>(direction * e1.cross(v_normal));
                 const auto v_02 = static_cast<Real>(direction * e2.cross(v_normal));
 
-                bool is_inside = (v_01 >= static_cast<Real>(0.0)) && (v_02 < static_cast<Real>(0.0));
+                const bool is_inside = (v_01 >= static_cast<Real>(0.0)) && (v_02 < static_cast<Real>(0.0));
                 if (is_inside) return indexInTrianglesList;
             }
             indexInTrianglesList++;

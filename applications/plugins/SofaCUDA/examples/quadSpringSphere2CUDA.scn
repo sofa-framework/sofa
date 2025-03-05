@@ -6,11 +6,11 @@
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI CudaVisualModel FixedConstraint MechanicalObject MeshSpringForceField PlaneForceField QuadBendingSprings SphereForceField UniformMass] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI CudaVisualModel FixedProjectiveConstraint MechanicalObject MeshSpringForceField PlaneForceField QuadBendingSprings SphereForceField UniformMass] -->
 <!--	<CollisionPipeline verbose="0" />
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-	<DefaultContactManager name="Response" />
+	<CollisionResponse name="Response" />
 	<CudaProximityIntersection alarmDistance="0.002" contactDistance="0.001" />-->
 	<Node name="Floor">
 		<RegularGridTopology

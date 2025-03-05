@@ -2,14 +2,21 @@
 # set -o errexit # Exit on error
 
 usage() {
-    echo "Usage: macos-postinstall-fixup.sh <install-dir> [qt-lib-dir] [qt-data-dir] [macdeployqt]"
+    echo "Usage: macos-postinstall-fixup.sh <script-dir> <install-dir> [qt-lib-dir] [qt-data-dir] [macdeployqt]"
 }
 
 if [ "$#" -ge 1 ]; then
-    INSTALL_DIR="$(cd $1 && pwd)"
-    QT_LIB_DIR="$2"
-    QT_DATA_DIR="$3"
-    MACDEPLOYQT_EXE="$4"
+    SCRIPT_DIR="$(cd $1 && pwd)"
+    INSTALL_DIR="$(cd $2 && pwd)"
+
+    if [ "$#" -ge 3 ]; then
+      QT_LIB_DIR="$3"
+      QT_DATA_DIR="$4"
+      MACDEPLOYQT_EXE="$5"
+      SHIP_QT=1
+    else
+      SHIP_QT=0
+    fi
 else
     usage; exit 1
 fi
@@ -19,48 +26,15 @@ if [[ $INSTALL_DIR == *".app" ]]; then
     INSTALL_DIR=$INSTALL_DIR/Contents/MacOS
 fi
 
+echo "SCRIPT_DIR = $SCRIPT_DIR"
 echo "INSTALL_DIR = $INSTALL_DIR"
 echo "BUNDLE_DIR = $BUNDLE_DIR"
 echo "QT_LIB_DIR = $QT_LIB_DIR"
 echo "QT_DATA_DIR = $QT_DATA_DIR"
 echo "MACDEPLOYQT_EXE = $MACDEPLOYQT_EXE"
 
-# Keep plugin_list as short as possible
-echo "" > "$INSTALL_DIR/lib/plugin_list.conf"
-disabled_plugins='plugins_ignored_by_default'
-for plugin in \
-        ArticulatedSystemPlugin   \
-        CollisionOBBCapsule       \
-        Compliant                 \
-        DiffusionSolver           \
-        ExternalBehaviorModel     \
-        Flexible                  \
-        Geomagic                  \
-        image                     \
-        InvertibleFVM             \
-        LMConstraint              \
-        ManifoldTopologies        \
-        ManualMapping             \
-        MultiThreading            \
-        OptiTrackNatNet           \
-        PluginExample             \
-        Registration              \
-        RigidScale                \
-        SensableEmulation         \
-        SofaAssimp                \
-        SofaCUDA                  \
-        SofaCarving               \
-        SofaDistanceGrid          \
-        SofaEulerianFluid         \
-        SofaImplicitField         \
-        SofaPython                \
-        SofaSimpleGUI             \
-        SofaSphFluid              \
-        THMPGSpatialHashing       \
-    ; do
-    disabled_plugins=$disabled_plugins'\|'$plugin
-done
-grep -v $disabled_plugins "$INSTALL_DIR/lib/plugin_list.conf.default" >> "$INSTALL_DIR/lib/plugin_list.conf"
+source $SCRIPT_DIR/common.sh
+clean_default_plugins "$INSTALL_DIR/lib"
 
 # Make sure the bin folder exists and contains runSofa
 if [ ! -d "$INSTALL_DIR/bin" ]; then
@@ -71,19 +45,23 @@ if [ -e "$INSTALL_DIR/runSofa" ]; then
     mv -f $INSTALL_DIR/runSofa* $INSTALL_DIR/bin/
 fi
 
-if [ -d "$BUNDLE_DIR" ] && [ -e "$MACDEPLOYQT_EXE" ]; then
-    echo "Fixing up libs with MacDeployQt ..."
-    $MACDEPLOYQT_EXE $BUNDLE_DIR -always-overwrite
+if [ "$SHIP_QT" = "1" ]; then
+  if [ -d "$BUNDLE_DIR" ] && [ -e "$MACDEPLOYQT_EXE" ]; then
+      echo "Fixing up libs with MacDeployQt ..."
+      $MACDEPLOYQT_EXE $BUNDLE_DIR -always-overwrite
 
-    cp -R $BUNDLE_DIR/Contents/PlugIns/* $BUNDLE_DIR/Contents/MacOS/bin && rm -rf $BUNDLE_DIR/Contents/PlugIns
+      cp -R $BUNDLE_DIR/Contents/PlugIns/* $BUNDLE_DIR/Contents/MacOS/bin && rm -rf $BUNDLE_DIR/Contents/PlugIns
 
-    printf "[Paths] \n    Plugins = MacOS/bin \n" > $BUNDLE_DIR/Contents/Resources/qt.conf
-elif [ -d "$QT_DATA_DIR" ]; then
-    cp -Rf $QT_DATA_DIR/plugins/iconengines $INSTALL_DIR/bin
-    cp -Rf $QT_DATA_DIR/plugins/imageformats $INSTALL_DIR/bin
-    cp -Rf $QT_DATA_DIR/plugins/platforms $INSTALL_DIR/bin
-    cp -Rf $QT_DATA_DIR/plugins/styles $INSTALL_DIR/bin
+      printf "[Paths] \n    Plugins = MacOS/bin \n" > $BUNDLE_DIR/Contents/Resources/qt.conf
+  elif [ -d "$QT_DATA_DIR" ]; then
+      cp -Rf $QT_DATA_DIR/plugins/iconengines $INSTALL_DIR/bin
+      cp -Rf $QT_DATA_DIR/plugins/imageformats $INSTALL_DIR/bin
+      cp -Rf $QT_DATA_DIR/plugins/platforms $INSTALL_DIR/bin
+      cp -Rf $QT_DATA_DIR/plugins/styles $INSTALL_DIR/bin
+  fi
 fi
+
+move_metis "$INSTALL_DIR"
 
 echo "Fixing up libs manually ..."
 
@@ -100,21 +78,30 @@ check-all-deps() {
         echo "  Checking (pass $pass) $lib"
 
         libqt=""
+        libpython=""
         libboost=""
         libicu=""
         libglew=""
         libjpeg=""
         libpng=""
+        libtinyxml2=""
         libtiff=""
+        libzstd=""
+        liblzma=""
         dependencies="$( otool -L $lib | tail -n +2 | perl -p -e 's/^[\t ]+(.*) \(.*$/\1/g' )"
 
         is_fixup_needed="false"
         if echo "$dependencies" | grep --quiet "/Qt"       ||
+           echo "$dependencies" | grep --quiet "/Python" ||
            echo "$dependencies" | grep --quiet "/libboost" ||
            echo "$dependencies" | grep --quiet "/libicu"   ||
            echo "$dependencies" | grep --quiet "/libGLEW"  ||
            echo "$dependencies" | grep --quiet "/libjpeg"  ||
-           echo "$dependencies" | grep --quiet "/libpng"   ; then
+           echo "$dependencies" | grep --quiet "/libpng"   ||
+           echo "$dependencies" | grep --quiet "/libtinyxml2"  ||
+           echo "$dependencies" | grep --quiet "/libtiff"  ||
+           echo "$dependencies" | grep --quiet "/libzstd"  ||
+           echo "$dependencies" | grep --quiet "/liblzma"  ; then
             is_fixup_needed="true"
         fi
         if [[ "$is_fixup_needed" == "false" ]]; then
@@ -124,6 +111,8 @@ check-all-deps() {
         (echo "$dependencies") | while read dep; do
             if libqt="$(echo $dep | egrep -o "/Qt[A-Za-z]*$" | cut -c2-)" && [ -n "$libqt" ]; then
                 libname="$libqt"
+            elif libpython="$(echo $dep | egrep -o "/Python.framework.*"  | cut -c2-)" && [ -n "$libpython" ]; then
+                libname="$libpython"
             elif libboost="$(echo $dep | egrep -o "/libboost_[^\/]*?\.dylib" | cut -c2-)" && [ -n "$libboost" ]; then
                 libname="$libboost"
             elif libicu="$(echo $dep | egrep -o "/libicu[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libicu" ]; then
@@ -134,11 +123,17 @@ check-all-deps() {
                 libname="$libjpeg"
             elif libpng="$(echo $dep | egrep -o "/libpng[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libpng" ]; then
                 libname="$libpng"
+            elif libtinyxml2="$(echo $dep | egrep -o "/libtinyxml2[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libtinyxml2" ]; then
+                libname="$libtinyxml2"
             elif libtiff="$(echo $dep | egrep -o "/libtiff[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libtiff" ]; then
                 libname="$libtiff"
+            elif libzstd="$(echo $dep | egrep -o "/libzstd[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libzstd" ]; then
+                libname="$libzstd"
+            elif liblzma="$(echo $dep | egrep -o "/liblzma[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$liblzma" ]; then
+                libname="$liblzma"
             else
                 if [[ "$dep" == "/usr/local/"* ]]; then
-                    echo "WARNING: no fixup rule set for: $lib"
+                    echo "WARNING: no fixup rule set for: $dep"
                 fi
                 # this dep is not a lib to fixup
                 continue
@@ -152,13 +147,15 @@ check-all-deps() {
                     originlib="$dep"
                     destlib="$INSTALL_DIR/lib/$libname"
                 fi
-                if [ -e $originlib ] && [ ! -e $destlib ]; then
+                if [ -e $originlib ] && [ ! -e $destlib ] && [ -z "$libpython" ]; then
                     echo "    cp -Rf $dep $INSTALL_DIR/lib"
                     cp -Rf $originlib $INSTALL_DIR/lib
                 fi
             elif [[ "$mode" == "fixup" ]]; then
                 if [ -n "$libqt" ]; then
                     rpathlib="$libqt.framework/$libqt"
+                elif [  -n "$libpython" ]; then
+                    rpathlib="$libpython"
                 else
                     rpathlib="$libname"
                 fi

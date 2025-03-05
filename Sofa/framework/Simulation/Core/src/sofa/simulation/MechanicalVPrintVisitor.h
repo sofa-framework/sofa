@@ -29,10 +29,7 @@
 #include <sofa/core/MultiVecId.h>
 
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -83,8 +80,7 @@ protected:
 };
 
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

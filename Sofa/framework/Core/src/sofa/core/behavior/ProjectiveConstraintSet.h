@@ -64,7 +64,7 @@ public:
 
 
 
-    Data<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
+    Data<Real> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
     virtual type::vector< core::BaseState* > getModels() override
@@ -157,7 +157,7 @@ public:
     }
 };
 
-#if  !defined(SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_CPP)
+#if !defined(SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_CPP)
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec6Types >;
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec3Types >;
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec2Types >;

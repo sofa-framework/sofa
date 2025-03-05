@@ -33,7 +33,7 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, InciseAlongPa
 
 void InciseAlongPathPerformer::start()
 {
-    startBody=this->interactor->getBodyPicked();
+    startBody=this->m_interactor->getBodyPicked();
 
     if (startBody.body == 0)
         return;
@@ -50,10 +50,10 @@ void InciseAlongPathPerformer::start()
 void InciseAlongPathPerformer::execute()
 {
 
-    if (freezePerformer) // This performer has been freezed
+    if (m_freezePerformer) // This performer has been freezed
     {
         if (currentMethod == 1)
-            startBody=this->interactor->getBodyPicked();
+            startBody=this->m_interactor->getBodyPicked();
 
         return;
     }
@@ -85,12 +85,12 @@ void InciseAlongPathPerformer::execute()
         firstBody = secondBody;
         secondBody.body = nullptr;
 
-        this->interactor->setBodyPicked(secondBody);
+        this->m_interactor->setBodyPicked(secondBody);
     }
     else
     {
 
-        BodyPicked currentBody=this->interactor->getBodyPicked();
+        BodyPicked currentBody=this->m_interactor->getBodyPicked();
         if (currentBody.body == nullptr || startBody.body == nullptr) return;
 
         if (currentBody.indexCollisionElement == startBody.indexCollisionElement) return;
@@ -109,14 +109,14 @@ void InciseAlongPathPerformer::execute()
         firstBody = currentBody;
 
         currentBody.body=nullptr;
-        this->interactor->setBodyPicked(currentBody);
+        this->m_interactor->setBodyPicked(currentBody);
     }
 
 }
 
 void InciseAlongPathPerformer::setPerformerFreeze()
 {
-    freezePerformer = true;
+    m_freezePerformer = true;
     if (fullcut)
         this->PerformCompleteIncision();
 
@@ -160,22 +160,22 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
     // Get new coordinate of first incision point:
     sofa::component::statecontainer::MechanicalObject<defaulttype::Vec3Types>* MechanicalObject=nullptr;
     startBody.body->getContext()->get(MechanicalObject, sofa::core::objectmodel::BaseContext::SearchRoot);
-    const auto& positions = MechanicalObject->read(core::ConstVecCoordId::position())->getValue();
+    const auto& positions = MechanicalObject->read(core::vec_id::read_access::position)->getValue();
     const sofa::type::Vec3& the_point = positions[initialNbPoints];
 
     // Get triangle index that will be incise
     // - Creating direction of incision
-    sofa::type::Vec3 dir = startBody.point - the_point;
+    const sofa::type::Vec3 dir = startBody.point - the_point;
     // - looking for triangle in this direction
     const auto& shell = startBody.body->getCollisionTopology()->getTrianglesAroundVertex(initialNbPoints);
-    auto triangleIDInShell = sofa::topology::getTriangleIDInDirection(positions, startBody.body->getCollisionTopology()->getTriangles(), shell, initialNbPoints, dir);
+    const auto triangleIDInShell = sofa::topology::getTriangleIDInDirection(positions, startBody.body->getCollisionTopology()->getTriangles(), shell, initialNbPoints, dir);
 
     if (triangleIDInShell == sofa::InvalidID)
     {
         msg_error("InciseAlongPathPerformer") << " initial triangle of incision has not been found." ;
         return;
     }
-    auto the_triangle = shell[triangleIDInShell];
+    const auto the_triangle = shell[triangleIDInShell];
 
     sofa::core::topology::TopologyModifier* topologyModifier;
     startBody.body->getContext()->get(topologyModifier);
@@ -207,14 +207,14 @@ InciseAlongPathPerformer::~InciseAlongPathPerformer()
     if (firstIncisionBody.body)
         firstIncisionBody.body = nullptr;
 
-    this->interactor->setBodyPicked(firstIncisionBody);
+    this->m_interactor->setBodyPicked(firstIncisionBody);
 }
 
 void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 {
     if (firstBody.body == nullptr) return;
 
-    BodyPicked currentBody=this->interactor->getBodyPicked();
+    BodyPicked currentBody=this->m_interactor->getBodyPicked();
 
     sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>* topoGeo;
     firstBody.body->getContext()->get(topoGeo);
@@ -229,14 +229,14 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
         return;
 
     // Output declarations
-    sofa::type::vector< sofa::core::topology::TopologyElementType> topoPath_list;
+    sofa::type::vector< sofa::geometry::ElementType> topoPath_list;
     sofa::type::vector<Index> indices_list;
     sofa::type::vector< sofa::type::Vec3 > coords2_list;
-    sofa::type::Vec3 pointA = firstBody.point;
-    sofa::type::Vec3 pointB = currentBody.point;
+    const sofa::type::Vec3 pointA = firstBody.point;
+    const sofa::type::Vec3 pointB = currentBody.point;
 
     sofa::type::vector< sofa::type::Vec3 > positions;
-    bool path_ok = topoGeo->computeIntersectedObjectsList(0, pointA, pointB, firstBody.indexCollisionElement, currentBody.indexCollisionElement, topoPath_list, indices_list, coords2_list);
+    const bool path_ok = topoGeo->computeIntersectedObjectsList(0, pointA, pointB, firstBody.indexCollisionElement, currentBody.indexCollisionElement, topoPath_list, indices_list, coords2_list);
 
     if (!path_ok)
         return;
@@ -248,17 +248,17 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 
     for (unsigned int i=0; i<topoPath_list.size(); ++i)
     {
-        if (topoPath_list[i] == sofa::core::topology::TopologyElementType::POINT)
+        if (topoPath_list[i] == sofa::geometry::ElementType::POINT)
         {
             positions[i] = topoGeo->getPointPosition(indices_list[i]);
         }
-        else if (topoPath_list[i] == sofa::core::topology::TopologyElementType::EDGE)
+        else if (topoPath_list[i] == sofa::geometry::ElementType::EDGE)
         {
             sofa::core::topology::BaseMeshTopology::Edge theEdge = topoCon->getEdge(indices_list[i]);
             const auto AB = topoGeo->getPointPosition(theEdge[1])- topoGeo->getPointPosition(theEdge[0]);
             positions[i] = topoGeo->getPointPosition(theEdge[0]) + AB *coords2_list[i][0];
         }
-        else if(topoPath_list[i] == sofa::core::topology::TopologyElementType::TRIANGLE)
+        else if(topoPath_list[i] == sofa::geometry::ElementType::TRIANGLE)
         {
             sofa::core::topology::BaseMeshTopology::Triangle theTriangle = topoCon->getTriangle(indices_list[i]);
 

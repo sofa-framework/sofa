@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa::core::behavior
 {
@@ -33,7 +34,7 @@ namespace sofa::core::behavior
  *  This class can optionally replace the default computation scheme of computing
  *  collisions then doing an integration step.
  *
- *  Note that it is in a preliminary stage, hence its fonctionnalities and API will
+ *  Note that it is in a preliminary stage, hence its functionalities and API will
  *  certainly change soon.
  *
  */
@@ -43,6 +44,9 @@ class SOFA_CORE_API BaseAnimationLoop : public virtual objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(BaseAnimationLoop, objectmodel::BaseObject);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseAnimationLoop)
+
+    // the node where the loop will start processing.
+    SingleLink<BaseAnimationLoop, core::objectmodel::BaseNode, BaseLink::FLAG_STOREPATH> l_node;
 
 protected:
     BaseAnimationLoop();
@@ -61,6 +65,8 @@ private:
     BaseAnimationLoop& operator=(const BaseAnimationLoop& n) = delete ;
 
 public:
+    void init() override;
+
     /// Main computation method.
     ///
     /// Specify and execute all computations for computing a timestep, such

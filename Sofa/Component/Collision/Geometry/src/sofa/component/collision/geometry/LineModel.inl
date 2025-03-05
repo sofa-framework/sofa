@@ -37,12 +37,15 @@ using core::topology::BaseMeshTopology;
 
 template<class DataTypes>
 LineCollisionModel<DataTypes>::LineCollisionModel()
-    : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
-    , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
+    : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
+    , d_displayFreePosition(initData(&d_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
     , mstate(nullptr), topology(nullptr), meshRevision(-1)
 {
     enum_type = LINE_TYPE;
+
+    bothSide.setOriginalData(&d_bothSide);
+    m_displayFreePosition.setOriginalData(&d_displayFreePosition);
 }
 
 
@@ -111,11 +114,11 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
     if (bmt)
     {
         std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin = bmt->beginChange();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd = bmt->endChange();
+        const std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd = bmt->endChange();
 
         while( itBegin != itEnd )
         {
-            core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+            const core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
 
             switch( changeType )
             {
@@ -275,7 +278,7 @@ void LineCollisionModel<DataTypes>::updateFromTopology()
     core::topology::BaseMeshTopology *bmt = l_topology.get();
     if (bmt)
     {
-        int revision = bmt->getRevision();
+        const int revision = bmt->getRevision();
         if (revision == meshRevision)
             return;
 
@@ -327,10 +330,10 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
             }
         }
 
-        auto c = getColor4f();
+        const auto c = getColor4f();
         vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
 
-        if (m_displayFreePosition.getValue())
+        if (d_displayFreePosition.getValue())
         {
             std::vector< type::Vec3 > pointsFree;
             for (sofa::Size i=0; i<size; i++)
@@ -377,8 +380,8 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, Col
     if (model2 == this)
     {
         // if point in common, return false:
-        sofa::Index p21 = elems[index2].p[0];
-        sofa::Index p22 = elems[index2].p[1];
+        const sofa::Index p21 = elems[index2].p[0];
+        const sofa::Index p22 = elems[index2].p[1];
 
         if (p11==p21 || p11==p22 || p12==p21 || p12==p22)
             return false;
@@ -390,7 +393,7 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, Col
 
         for (sofa::Size i1=0; i1<EdgesAroundVertex11.size(); i1++)
         {
-            sofa::Index e11 = EdgesAroundVertex11[i1];
+            const sofa::Index e11 = EdgesAroundVertex11[i1];
             sofa::Size i2;
             for (i2=0; i2<EdgesAroundVertex21.size(); i2++)
             {
@@ -406,7 +409,7 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, Col
 
         for (sofa::Size i1=0; i1<EdgesAroundVertex12.size(); i1++)
         {
-            sofa::Index e11 = EdgesAroundVertex12[i1];
+            const sofa::Index e11 = EdgesAroundVertex12[i1];
             sofa::Size i2;
             for (i2=0; i2<EdgesAroundVertex21.size(); i2++)
             {
@@ -471,7 +474,7 @@ void LineCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (!empty())
     {
         const SReal distance = this->proximity.getValue();
-        const auto& positions = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+        const auto& positions = this->mstate->read(core::vec_id::read_access::position)->getValue();
         for (sofa::Size i=0; i<size; i++)
         {
             type::Vec3 minElem, maxElem;
@@ -572,7 +575,7 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    const auto& positions = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const auto& positions = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     for (sofa::Size i=0; i<size; i++)
     {
@@ -600,21 +603,21 @@ template<class DataTypes>
 inline sofa::Index TLine<DataTypes>::i2() const { return this->model->elems[this->index].p[1]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p1() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->model->elems[this->index].p[0]]; }
+inline const typename DataTypes::Coord& TLine<DataTypes>::p1() const { return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->model->elems[this->index].p[0]]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p2() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->model->elems[this->index].p[1]]; }
+inline const typename DataTypes::Coord& TLine<DataTypes>::p2() const { return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->model->elems[this->index].p[1]]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TLine<DataTypes>::p(Index i) const {
-    return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->model->elems[this->index].p[i]];
+    return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->model->elems[this->index].p[i]];
 }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TLine<DataTypes>::p1Free() const
 {
     if (hasFreePosition())
-        return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->model->elems[this->index].p[0]];
+        return this->model->mstate->read(core::vec_id::read_access::freePosition)->getValue()[this->model->elems[this->index].p[0]];
     else
         return p1();
 }
@@ -623,28 +626,28 @@ template<class DataTypes>
 inline const typename DataTypes::Coord& TLine<DataTypes>::p2Free() const
 {
     if (hasFreePosition())
-        return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->model->elems[this->index].p[1]];
+        return this->model->mstate->read(core::vec_id::read_access::freePosition)->getValue()[this->model->elems[this->index].p[1]];
     else
         return p2();
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TLine<DataTypes>::v1() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->model->elems[this->index].p[0]]; }
+inline const typename DataTypes::Deriv& TLine<DataTypes>::v1() const { return this->model->mstate->read(core::vec_id::read_access::velocity)->getValue()[this->model->elems[this->index].p[0]]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TLine<DataTypes>::v2() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->model->elems[this->index].p[1]]; }
+inline const typename DataTypes::Deriv& TLine<DataTypes>::v2() const { return this->model->mstate->read(core::vec_id::read_access::velocity)->getValue()[this->model->elems[this->index].p[1]]; }
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TLine<DataTypes>::n() const {return (this->model->mpoints->getNormal(this->i1()) + this->model->mpoints->getNormal( this->i2())).normalized();}
 
 template<class DataTypes>
-inline typename LineCollisionModel<DataTypes>::Deriv LineCollisionModel<DataTypes>::velocity(sofa::Index index) const { return (mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[0]] + mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[1]])/((Real)(2.0)); }
+inline typename LineCollisionModel<DataTypes>::Deriv LineCollisionModel<DataTypes>::velocity(sofa::Index index) const { return (mstate->read(core::vec_id::read_access::velocity)->getValue()[elems[index].p[0]] + mstate->read(core::vec_id::read_access::velocity)->getValue()[elems[index].p[1]])/((Real)(2.0)); }
 
 template<class DataTypes>
 inline int TLine<DataTypes>::flags() const { return this->model->getLineFlags(this->index); }
 
 template<class DataTypes>
-inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
+inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::vec_id::read_access::freePosition)->isSet(); }
 
 
 } //namespace sofa::component::collision::geometry

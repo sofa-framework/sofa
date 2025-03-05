@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/Mapping.h>
@@ -34,12 +35,12 @@ namespace sofa::component::mapping::linear
 {
 
 template <class TIn, class TOut>
-class IdentityMapping : public core::Mapping<TIn, TOut>
+class IdentityMapping : public LinearMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(IdentityMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(IdentityMapping,TIn,TOut), SOFA_TEMPLATE2(LinearMapping,TIn,TOut));
 
-    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef LinearMapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
 
@@ -49,6 +50,8 @@ public:
     typedef typename In::Coord			InCoord;
     typedef typename In::Deriv			InDeriv;
     typedef typename In::MatrixDeriv	InMatrixDeriv;
+    typedef Data<InVecCoord> InDataVecCoord;
+    typedef Data<InVecDeriv> InDataVecDeriv;
 
     typedef typename Out::VecCoord		VecCoord;
     typedef typename Out::VecDeriv		VecDeriv;
@@ -60,6 +63,8 @@ public:
     typedef typename OutDataTypes::Real     OutReal;
     typedef typename OutDataTypes::VecCoord OutVecCoord;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
+    typedef Data<OutVecCoord> OutDataVecCoord;
+    typedef Data<OutVecDeriv> OutDataVecDeriv;
 
     enum
     {
@@ -91,7 +96,7 @@ protected:
 public:
     /// Return true if the destination model has the same topology as the source model.
     ///
-    /// This is the case for mapping keeping a one-to-one correspondance between
+    /// This is the case for mapping keeping a one-to-one correspondence between
     /// input and output DOFs (mostly identity or data-conversion mappings).
     bool sameTopology() const override { return true; }
 
@@ -124,7 +129,7 @@ public:
 
 };
 
-#if  !defined(SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_CPP)
 
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API IdentityMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API IdentityMapping< defaulttype::Vec2Types, defaulttype::Vec2Types >;
@@ -139,102 +144,3 @@ extern template class SOFA_COMPONENT_MAPPING_LINEAR_API IdentityMapping< default
 #endif
 
 } // namespace sofa::component::mapping::linear
-
-
-
-namespace sofa::helper
-{
-
-#define SOFA_ATTRIBUTE_DISABLED__HELPER_EQ() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v21.06 (PR#2137)", "v21.06 (PR#2137)", "You need to include <sofa/core/MappingHelper.h> and use sofa::core::eq(...) instead.")
-
-#define SOFA_ATTRIBUTE_DISABLED__HELPER_PEQ() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v21.06 (PR#2137)", "v21.06 (PR#2137)", "You need to include <sofa/core/MappingHelper.h> and use sofa::core::peq(...) instead.")
-
-    // Those static functions have been moved in MappingHelper.h
-    template<class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_EQ()
-    static inline void eq(T1& dest, const T2& src) = delete;
-
-    template<class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_PEQ()
-    static inline void peq(T1& dest, const T2& src) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__HELPER_EQ()
-    static inline void eq(float& dest, const double& src) = delete;
-
-    //template<>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_PEQ()
-    static inline void peq(float& dest, const double& src) = delete;
-
-    // Vec <-> Vec
-
-    template<Size N1, Size N2, class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_EQ()
-    static inline void eq(type::Vec<N1, T1>& dest, const type::Vec<N2, T2>& src) = delete;
-
-    template<Size N1, Size N2, class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_PEQ()
-    static inline void peq(type::Vec<N1, T1>& dest, const type::Vec<N2, T2>& src) = delete;
-
-    // RigidDeriv <-> RigidDeriv
-
-    template<Size N, class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_EQ()
-    static inline void eq(defaulttype::RigidDeriv<N, T1>& dest, const defaulttype::RigidDeriv<N, T2>& src) = delete;
-
-    template<Size N, class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_PEQ()
-    static inline void peq(defaulttype::RigidDeriv<N, T1>& dest, const defaulttype::RigidDeriv<N, T2>& src) = delete;
-
-    // RigidCoord <-> RigidCoord
-
-    template<Size N, class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_EQ()
-    static inline void eq(defaulttype::RigidCoord<N, T1>& dest, const defaulttype::RigidCoord<N, T2>& src) = delete;
-
-    template<Size N, class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_PEQ()
-    static inline void peq(defaulttype::RigidCoord<N, T1>& dest, const defaulttype::RigidCoord<N, T2>& src) = delete;
-
-    // RigidDeriv <-> Vec
-
-    template<Size N, class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_EQ()
-    static inline void eq(type::Vec<N, T1>& dest, const defaulttype::RigidDeriv<N, T2>& src) = delete;
-
-    template<Size N, class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_PEQ()
-    static inline void peq(type::Vec<N, T1>& dest, const defaulttype::RigidDeriv<N, T2>& src) = delete;
-
-    template<Size N, class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_EQ()
-    static inline void eq(defaulttype::RigidDeriv<N,T1>& dest, const type::Vec<N,T2>& src) = delete;
-
-    template<Size N, class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_PEQ()
-    static inline void peq(defaulttype::RigidDeriv<N,T1>& dest, const type::Vec<N,T2>& src) = delete;
-
-    // RigidCoord <-> Vec
-    template<Size N, class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_EQ()
-    static inline void eq(type::Vec<N,T1>& dest, const defaulttype::RigidCoord<N,T2>& src) = delete;
-
-    template<Size N, class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_PEQ()
-    static inline void peq(type::Vec<N,T1>& dest, const defaulttype::RigidCoord<N,T2>& src) = delete;
-
-    template<Size N, class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_EQ()
-    static inline void eq(defaulttype::RigidCoord<N,T1>& dest, const type::Vec<N,T2>& src) = delete;
-
-    template<Size N, class T1, class T2>
-    SOFA_ATTRIBUTE_DISABLED__HELPER_PEQ()
-    static inline void peq(defaulttype::RigidCoord<N, T1>& dest, const type::Vec<N, T2>& src) = delete;
-
-#undef SOFA_ATTRIBUTE_DISABLED__HELPER_EQ
-#undef SOFA_ATTRIBUTE_DISABLED__HELPER_PEQ
-
-} // namespace sofa::helper

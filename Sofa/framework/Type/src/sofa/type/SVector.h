@@ -27,7 +27,7 @@ namespace sofa::type
 {
 
 //======================================================================
-/// Same as type::vector, + delimitors on serialization
+/// Same as type::vector, + delimiters on serialization
 //======================================================================
 template<class T>
 class SVector: public type::vector<T, type::CPUMemoryManager<T> >
@@ -72,15 +72,8 @@ public:
         return *this;
     }
 
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    SVector(InputIterator first, InputIterator last): Inherit(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
     SVector(typename SVector<T>::const_iterator first, typename SVector<T>::const_iterator last): Inherit(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
-
 
     std::ostream& write ( std::ostream& os ) const
     {
@@ -114,7 +107,7 @@ public:
             in.setstate(std::ios::failbit);
             return in;
         }
-        std::streampos pos = in.tellg();
+        const std::streampos pos = in.tellg();
         in >> c;
         if( c == ']' ) // empty vector
         {

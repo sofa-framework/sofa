@@ -28,14 +28,18 @@
 #include <sofa/core/topology/TopologyHandler.h>
 
 #include <algorithm>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 
 namespace sofa::component::topology::container::dynamic
 {
-int TetrahedronSetTopologyModifierClass = core::RegisterObject("Tetrahedron set topology modifier")
-        .add< TetrahedronSetTopologyModifier >();
 
-using namespace std;
-using namespace sofa::defaulttype;
+void registerTetrahedronSetTopologyModifier(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology modifier dedicated to a tetrahedral topology.")
+        .add< TetrahedronSetTopologyModifier >());
+}
+
 using namespace sofa::core::topology;
 
 //const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
@@ -61,7 +65,7 @@ void TetrahedronSetTopologyModifier::reinit()
 
 void TetrahedronSetTopologyModifier::addTetrahedra(const sofa::type::vector<Tetrahedron> &tetrahedra)
 {
-    size_t ntetra = m_container->getNbTetrahedra();
+    const size_t ntetra = m_container->getNbTetrahedra();
 
     /// effectively add triangles in the topology container
     addTetrahedraProcess(tetrahedra);
@@ -84,7 +88,7 @@ void TetrahedronSetTopologyModifier::addTetrahedra(const sofa::type::vector<Tetr
         const sofa::type::vector<sofa::type::vector<TetrahedronID> > &ancestors,
         const sofa::type::vector<sofa::type::vector<SReal> > &baryCoefs)
 {
-    size_t ntetra = m_container->getNbTetrahedra();
+    const size_t ntetra = m_container->getNbTetrahedra();
 
     /// effectively add triangles in the topology container
     addTetrahedraProcess(tetrahedra);
@@ -150,7 +154,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
 
         if(triangleIndex == sofa::InvalidID)
         {
-            // first create the traingle
+            // first create the triangle
             sofa::type::vector< Triangle > v;
             v.push_back(e1);
             addTrianglesProcess((const sofa::type::vector< Triangle > &) v);
@@ -225,7 +229,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
             addEdgesWarning(sofa::Size(v.size()), v, edgeIndexList);
         }
 
-        // udpate m_edgesInTetrahedron
+        // update m_edgesInTetrahedron
         m_container->m_edgesInTetrahedron[tetrahedronIndex][j]= edgeIndex;
 
         // update m_tetrahedraAroundEdge
@@ -255,7 +259,7 @@ void TetrahedronSetTopologyModifier::addTetrahedraWarning(const size_t nTetrahed
 {
     m_container->setTetrahedronTopologyToDirty();
     // Warning that tetrahedra just got created
-    TetrahedraAdded *e = new TetrahedraAdded(nTetrahedra, tetrahedraList, tetrahedraIndexList);
+    const TetrahedraAdded *e = new TetrahedraAdded(nTetrahedra, tetrahedraList, tetrahedraIndexList);
     addTopologyChange(e);
 }
 
@@ -268,7 +272,7 @@ void TetrahedronSetTopologyModifier::addTetrahedraWarning(const size_t nTetrahed
 {
     m_container->setTetrahedronTopologyToDirty();
     // Warning that tetrahedra just got created
-    TetrahedraAdded *e = new TetrahedraAdded(nTetrahedra, tetrahedraList, tetrahedraIndexList, ancestors, baryCoefs);
+    const TetrahedraAdded *e = new TetrahedraAdded(nTetrahedra, tetrahedraList, tetrahedraIndexList, ancestors, baryCoefs);
     addTopologyChange(e);
 }
 
@@ -280,7 +284,7 @@ void TetrahedronSetTopologyModifier::removeTetrahedraWarning( sofa::type::vector
     std::sort( tetrahedra.begin(), tetrahedra.end(), std::greater<TetrahedronID>() );
 
     // Warning that these edges will be deleted
-    TetrahedraRemoved *e=new TetrahedraRemoved(tetrahedra);
+    const TetrahedraRemoved *e=new TetrahedraRemoved(tetrahedra);
     addTopologyChange(e);
 }
 
@@ -290,9 +294,9 @@ void TetrahedronSetTopologyModifier::removeTetrahedraProcess( const sofa::type::
     if(!m_container->hasTetrahedra())
         return;
 
-    bool removeIsolatedVertices = removeIsolatedItems && removeIsolated.getValue();
-    bool removeIsolatedEdges = removeIsolatedItems && m_container->hasEdges();
-    bool removeIsolatedTriangles = removeIsolatedItems && m_container->hasTriangles();
+    const bool removeIsolatedVertices = removeIsolatedItems && removeIsolated.getValue();
+    const bool removeIsolatedEdges = removeIsolatedItems && m_container->hasEdges();
+    const bool removeIsolatedTriangles = removeIsolatedItems && m_container->hasTriangles();
 
     if(removeIsolatedVertices)
     {
@@ -359,7 +363,7 @@ void TetrahedronSetTopologyModifier::removeTetrahedraProcess( const sofa::type::
             }
         }
 
-        // now updates the shell information of the edge formely at the end of the array
+        // now updates the shell information of the edge formerly at the end of the array
         if ( indices[i] < lastTetrahedron )
         {
             if (m_container->hasTetrahedraAroundVertex())
@@ -394,19 +398,19 @@ void TetrahedronSetTopologyModifier::removeTetrahedraProcess( const sofa::type::
         {
             // removes the trianglesInTetrahedrons from the trianglesInTetrahedronArray
             m_container->m_trianglesInTetrahedron[ indices[i] ] = m_container->m_trianglesInTetrahedron[ lastTetrahedron ]; // overwriting with last valid value.
-            m_container->m_trianglesInTetrahedron.resize( lastTetrahedron ); // resizing to erase multiple occurence of the tetrahedron.
+            m_container->m_trianglesInTetrahedron.resize( lastTetrahedron ); // resizing to erase multiple occurrence of the tetrahedron.
         }
 
         if (m_container->hasEdgesInTetrahedron())
         {
             // removes the edgesInTetrahedrons from the edgesInTetrahedronArray
             m_container->m_edgesInTetrahedron[ indices[i] ] = m_container->m_edgesInTetrahedron[ lastTetrahedron ]; // overwriting with last valid value.
-            m_container->m_edgesInTetrahedron.resize( lastTetrahedron ); // resizing to erase multiple occurence of the tetrahedron.
+            m_container->m_edgesInTetrahedron.resize( lastTetrahedron ); // resizing to erase multiple occurrence of the tetrahedron.
         }
 
         // removes the tetrahedron from the tetrahedronArray
         m_tetrahedron[ indices[i] ] = m_tetrahedron[ lastTetrahedron ]; // overwriting with last valid value.
-        m_tetrahedron.resize( lastTetrahedron ); // resizing to erase multiple occurence of the tetrahedron.
+        m_tetrahedron.resize( lastTetrahedron ); // resizing to erase multiple occurrence of the tetrahedron.
     }
 
     if ( (!triangleToBeRemoved.empty()) || (!edgeToBeRemoved.empty()))
@@ -492,7 +496,7 @@ void TetrahedronSetTopologyModifier::removePointsProcess(const sofa::type::vecto
             for (sofa::type::vector<TetrahedronID>::iterator itt=m_container->m_tetrahedraAroundVertex[lastPoint].begin();
                     itt!=m_container->m_tetrahedraAroundVertex[lastPoint].end(); ++itt)
             {
-                PointID vertexIndex = m_container->getVertexIndexInTetrahedron(m_tetrahedron[(*itt)],lastPoint);
+                const PointID vertexIndex = m_container->getVertexIndexInTetrahedron(m_tetrahedron[(*itt)],lastPoint);
                 m_tetrahedron[(*itt)][vertexIndex]=indices[i];
             }
 
@@ -525,7 +529,7 @@ void TetrahedronSetTopologyModifier::removeEdgesProcess( const sofa::type::vecto
             for (sofa::type::vector<TetrahedronID>::iterator itt=m_container->m_tetrahedraAroundEdge[lastEdge].begin();
                     itt!=m_container->m_tetrahedraAroundEdge[lastEdge].end(); ++itt)
             {
-                EdgeID edgeIndex=m_container->getEdgeIndexInTetrahedron(m_container->m_edgesInTetrahedron[(*itt)],lastEdge);
+                const EdgeID edgeIndex=m_container->getEdgeIndexInTetrahedron(m_container->m_edgesInTetrahedron[(*itt)],lastEdge);
                 m_container->m_edgesInTetrahedron[(*itt)][edgeIndex]=indices[i];
             }
 
@@ -558,7 +562,7 @@ void TetrahedronSetTopologyModifier::removeTrianglesProcess( const sofa::type::v
             for (sofa::type::vector<TetrahedronID>::iterator itt=m_container->m_tetrahedraAroundTriangle[lastTriangle].begin();
                     itt!=m_container->m_tetrahedraAroundTriangle[lastTriangle].end(); ++itt)
             {
-                TriangleID triangleIndex=m_container->getTriangleIndexInTetrahedron(m_container->m_trianglesInTetrahedron[(*itt)],lastTriangle);
+                const TriangleID triangleIndex=m_container->getTriangleIndexInTetrahedron(m_container->m_trianglesInTetrahedron[(*itt)],lastTriangle);
                 m_container->m_trianglesInTetrahedron[(*itt)][triangleIndex] = indices[i];
             }
 
@@ -613,19 +617,22 @@ void TetrahedronSetTopologyModifier::removeTetrahedra(const sofa::type::vector<T
     }
 
     /// add the topological changes in the queue
-    sofa::helper::AdvancedTimer::stepBegin("removeTetrahedraWarning");
-    removeTetrahedraWarning(tetrahedraIds_filtered);
-    sofa::helper::AdvancedTimer::stepEnd("removeTetrahedraWarning");
+    {
+        SCOPED_TIMER("removeTetrahedraWarning");
+        removeTetrahedraWarning(tetrahedraIds_filtered);
+    }
 
     // inform other objects that the triangles are going to be removed
-    sofa::helper::AdvancedTimer::stepBegin("propagateTopologicalChanges");
-    propagateTopologicalChanges();
-    sofa::helper::AdvancedTimer::stepEnd("propagateTopologicalChanges");
+    {
+        SCOPED_TIMER("propagateTopologicalChanges");
+        propagateTopologicalChanges();
+    }
 
     // now destroy the old tetrahedra.
-    sofa::helper::AdvancedTimer::stepBegin("removeTetrahedraProcess");
-    removeTetrahedraProcess(tetrahedraIds_filtered , removeIsolatedItems);
-    sofa::helper::AdvancedTimer::stepEnd("removeTetrahedraProcess");
+    {
+        SCOPED_TIMER("removeTetrahedraProcess");
+        removeTetrahedraProcess(tetrahedraIds_filtered , removeIsolatedItems);
+    }
 
     m_container->checkTopology();
 
@@ -645,7 +652,7 @@ void TetrahedronSetTopologyModifier::propagateTopologicalEngineChanges()
         return TriangleSetTopologyModifier::propagateTopologicalEngineChanges();
 
     auto& tetraTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::TETRAHEDRON);
-    for (auto topoHandler : tetraTopologyHandlerList)
+    for (const auto topoHandler : tetraTopologyHandlerList)
     {
         if (topoHandler->isDirty())
         {

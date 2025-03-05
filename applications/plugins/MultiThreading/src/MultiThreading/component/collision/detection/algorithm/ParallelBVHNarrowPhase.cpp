@@ -36,12 +36,13 @@ namespace multithreading::component::collision::detection::algorithm
 const bool isParallelBVHNarrowPhaseImplementationRegistered =
     multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("BVHNarrowPhase", "ParallelBVHNarrowPhase");
 
+void registerParallelBVHNarrowPhase(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel version of the narrow phase collision detection based on boundary volume hierarchy.")
+                             .add< ParallelBVHNarrowPhase >());
+}
 
 using sofa::helper::ScopedAdvancedTimer;
-
-int ParallelBVHNarrowPhaseClass = sofa::core::RegisterObject("Narrow phase collision detection based on boundary volume hierarchy")
-        .add< ParallelBVHNarrowPhase >()
-;
 
 ParallelBVHNarrowPhase::ParallelBVHNarrowPhase()
 {}
@@ -56,7 +57,7 @@ void ParallelBVHNarrowPhase::init()
 
 void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pair<sofa::core::CollisionModel*, sofa::core::CollisionModel*> >& v)
 {
-    ScopedAdvancedTimer addCollisionPairsTimer("addCollisionPairs");
+    SCOPED_TIMER_VARNAME(addCollisionPairsTimer, "addCollisionPairs");
 
     if (v.empty())
     {
@@ -71,7 +72,7 @@ void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pa
     m_tasks.reserve(nbPairs);
 
     {
-        ScopedAdvancedTimer createTasksTimer("TasksCreation");
+        SCOPED_TIMER_VARNAME(createTasksTimer, "TasksCreation");
         for (const auto &pair : v)
         {
             m_tasks.emplace_back(&status, this, pair);
@@ -80,7 +81,7 @@ void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pa
     }
 
     {
-        ScopedAdvancedTimer waitTimer("ParallelTasks");
+        SCOPED_TIMER_VARNAME(waitTimer, "ParallelTasks");
         m_taskScheduler->workUntilDone(&status);
     }
 
@@ -93,7 +94,7 @@ void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pa
 void ParallelBVHNarrowPhase::createOutput(
         const sofa::type::vector<std::pair<sofa::core::CollisionModel *, sofa::core::CollisionModel *>> &v)
 {
-    ScopedAdvancedTimer createTasksTimer("OutputCreation");
+    SCOPED_TIMER_VARNAME(createTasksTimer, "OutputCreation");
 
     for (const auto &pair : v)
     {
@@ -131,22 +132,10 @@ void ParallelBVHNarrowPhase::initializeTopology(sofa::core::topology::BaseMeshTo
     auto insertionIt = m_initializedTopology.insert(topology);
     if (insertionIt.second)
     {
-        // The following calls force the creation of some topology arrays before the concurrent computing.
-        // Those arrays cannot be created on the fly, in a concurrent environment,
+        // We need to make sure all topology buffers are well created.
+        // Those arrays cannot be created on the fly later, in a concurrent environment,
         // due to possible race conditions.
-        // Depending on the scene graph, it is possible that those calls are not enough.
-        if (topology->getNbPoints())
-        {
-            topology->getTrianglesAroundVertex(0);
-        }
-        if (topology->getNbTriangles())
-        {
-            topology->getEdgesInTriangle(0);
-        }
-        if (topology->getNbEdges())
-        {
-            topology->getTrianglesAroundEdge(0);
-        }
+        topology->computeCrossElementBuffers();
     }
 }
 

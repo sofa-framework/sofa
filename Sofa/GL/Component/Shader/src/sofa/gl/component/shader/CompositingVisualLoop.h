@@ -55,14 +55,12 @@ private:
     void defaultRendering(sofa::core::visual::VisualParams* vparams);
 
 protected:
-    CompositingVisualLoop(simulation::Node* gnode = nullptr);
-
+    CompositingVisualLoop();
     ~CompositingVisualLoop() override;
 
 public:
 
     void init() override;
-    void initVisual() override;
     void drawStep(sofa::core::visual::VisualParams* vparams) override;
 };
 

@@ -38,9 +38,11 @@ using namespace sofa::type;
 using namespace sofa::core::topology;
 using namespace sofa::defaulttype;
 
-int TriangleModelInRegularGridClass = core::RegisterObject ( "collision model using a triangular mesh in a regular grid, as described in BaseMeshTopology" )
-        .add< TriangleModelInRegularGrid >()
-        ;
+void registerTriangleModelInRegularGrid(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Collision model using a triangular mesh in a regular grid, as described in BaseMeshTopology.")
+        .add< TriangleModelInRegularGrid >());
+}
 
 TriangleModelInRegularGrid::TriangleModelInRegularGrid() : TriangleCollisionModel<sofa::defaulttype::Vec3Types>()
 {
@@ -74,15 +76,15 @@ void TriangleModelInRegularGrid::init()
     while ( found )
     {
         found = false;
-        for ( vector<TopologicalMapping*>::iterator it = topoVec.begin(); it != topoVec.end(); ++it )
+        for (const auto& v : topoVec)
         {
-            if ( ( *it )->getTo() == _higher_topo )
+            if ( v->getTo() == _higher_topo )
             {
                 found = true;
-                _topoMapping = *it;
+                _topoMapping = v;
                 _higher_topo = _topoMapping->getFrom();
                 if ( !_higher_topo ) break;
-                sofa::simulation::Node* node = static_cast< sofa::simulation::Node* > ( _higher_topo->getContext() );
+                const sofa::simulation::Node* node = static_cast< sofa::simulation::Node* > ( _higher_topo->getContext() );
                 _higher_mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > ( node->getMechanicalState() );
             }
         }
@@ -108,8 +110,8 @@ void TriangleModelInRegularGrid::computeBoundingTree ( int )
 
     m_needsUpdate=false;
     Vec3 minElem, maxElem;
-    const VecCoord& xHigh =_higher_mstate->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x =m_mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& xHigh =_higher_mstate->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& x =m_mstate->read(core::vec_id::read_access::position)->getValue();
 
     // no hierarchy
     if ( empty() )

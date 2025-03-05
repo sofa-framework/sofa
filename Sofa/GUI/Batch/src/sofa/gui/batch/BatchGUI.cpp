@@ -34,6 +34,8 @@
 #include <fstream>
 #include <string>
 #include <iomanip>
+#include <sofa/gui/batch/ProgressBar.h>
+
 
 namespace sofa::gui::batch
 {
@@ -67,22 +69,28 @@ int BatchGUI::mainLoop()
         }
 
         AdvancedTimer::begin("Animate");
-        sofa::simulation::getSimulation()->animate(groot.get());
+        sofa::simulation::node::animate(groot.get());
         msg_info("BatchGUI") << "Processing." << AdvancedTimer::end("Animate", groot->getTime(), groot->getDt()) << msgendl;
-        sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
-        sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
+        const sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
+        const sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
         sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
         sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
           
-        signed int i = 1; //one simulatin step is animated above  
-       
+        signed int i = 1; //one simulation step is animated above
+
+        std::unique_ptr<ProgressBar> progressBar;
+        if (!hideProgressBar)
+        {
+            progressBar = std::make_unique<ProgressBar>(nbIter);
+        }
+
         while (i <= nbIter || nbIter == -1)
         {
             if (i != nbIter)
             {
                 AdvancedTimer::begin("Animate");
 
-                sofa::simulation::getSimulation()->animate(groot.get());
+                sofa::simulation::node::animate(groot.get());
 
                 const std::string timerOutputStr = AdvancedTimer::end("Animate", groot->getTime(), groot->getDt());
                 if (canExportJson(timerOutputStr, "Animate"))
@@ -105,9 +113,13 @@ int BatchGUI::mainLoop()
                 }
             }
 
+            if (progressBar)
+            {
+                progressBar->tick();
+            }
+
             i++;
         }
-        
     }
     return 0;
 }
@@ -138,7 +150,7 @@ void BatchGUI::resetScene()
     if ( root )
     {
         root->setTime(0.);
-        simulation::getSimulation()->reset ( root );
+        sofa::simulation::node::reset(root);
 
         sofa::simulation::UpdateSimulationContextVisitor(sofa::core::execparams::defaultInstance()).execute(root);
     }
@@ -186,7 +198,11 @@ int BatchGUI::RegisterGUIParameters(ArgumentParser* argumentParser)
         "(only batch) Number of iterations of the simulation",
         BatchGUI::OnNbIterChange
     );
-    //Parses the string and passes it to setNumIterations as argument
+    argumentParser->addArgument(
+        cxxopts::value<bool>(hideProgressBar)->default_value("false"),
+        "hideProgressBar",
+        "if defined, hides the progress bar"
+    );
     return 0;
 }
 
@@ -195,7 +211,7 @@ void BatchGUI::OnNbIterChange(const ArgumentParser* argumentParser, const std::s
     SOFA_UNUSED(argumentParser);
 
     nbIterInp = strValue;
-    size_t inpLen = nbIterInp.length();
+    const size_t inpLen = nbIterInp.length();
 
     if (nbIterInp == "infinite")
     {

@@ -63,9 +63,6 @@ public:
         parent->m_resetSystem();
     }
 
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2167)", "v21.12", "Use setSystemMBKMatrix instead.")
-    void operator=(const MechanicalMatrix& m) = delete;
-
     void setSystemMBKMatrix(const MechanicalMatrix& m)
     {
         parent->m_setSystemMBKMatrix(m.getMFact(), m.getBFact(), m.getKFact());

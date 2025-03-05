@@ -25,13 +25,8 @@
 #include <sofa/helper/io/Mesh.h>
 #include <istream>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 class SOFA_HELPER_API MeshOBJ : public Mesh
@@ -52,10 +47,7 @@ protected:
 
 };
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif

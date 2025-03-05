@@ -27,8 +27,11 @@
 namespace sofa::gl::component::shader
 {
 
-// Register the OglTexturePointer class in the Factory
-int OglTexturePointerClass = core::RegisterObject("OglTexturePointer").add< OglTexturePointer >();
+void registerOglTexturePointer(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Pointer to a OglTexture, useful for sharing a texture between multiple shaders.")
+        .add< OglTexturePointer >());
+}
 
 OglTexturePointer::OglTexturePointer()
     :l_oglTexture( initLink( "oglTexture", "OglTexture" ) )
@@ -51,16 +54,6 @@ void OglTexturePointer::setActiveTexture(unsigned short unit)
 void OglTexturePointer::init()
 {
     OglShaderElement::init();
-}
-
-void OglTexturePointer::initVisual()
-{
-
-}
-
-void OglTexturePointer::reinit()
-{
-
 }
 
 void OglTexturePointer::fwdDraw(core::visual::VisualParams*)

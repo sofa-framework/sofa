@@ -28,13 +28,13 @@ namespace sofa
     {
         {
             size_t a = 0;
-            int b = 0;
+            const int b = 0;
             EXPECT_EQ(sofa::helper::narrow_cast<int>(a), b);
         }
 
         {
             const size_t a = 0;
-            int b = 0;
+            const int b = 0;
             EXPECT_EQ(sofa::helper::narrow_cast<int>(a), b);
         }
 

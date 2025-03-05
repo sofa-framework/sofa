@@ -81,10 +81,10 @@ public:
      *
      */
 protected:
-    type::vector<int> pointMappedFromPoint;
-    std::map<type::fixed_array<int,2>, int> pointMappedFromEdge;
-    std::map<type::fixed_array<int,4>, int> pointMappedFromFacet;
-    type::vector<int> pointMappedFromHexa;
+    type::vector<sofa::Index> pointMappedFromPoint;
+    std::map<type::fixed_array<sofa::Index,2>, sofa::Index> pointMappedFromEdge;
+    std::map<type::fixed_array<sofa::Index,4>, sofa::Index> pointMappedFromFacet;
+    type::vector<sofa::Index> pointMappedFromHexa;
 };
 
 } //namespace sofa::component::mapping::linear

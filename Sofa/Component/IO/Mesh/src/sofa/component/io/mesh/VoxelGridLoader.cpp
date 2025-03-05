@@ -37,24 +37,39 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 using namespace sofa::core;
 
-int VoxelGridLoaderClass = RegisterObject("Voxel loader based on RAW files").add<VoxelGridLoader>();
+void registerVoxelGridLoader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Voxel loader based on RAW files.")
+        .add< VoxelGridLoader >());
+}
 
 VoxelGridLoader::VoxelGridLoader()
     : VoxelLoader(),
-      voxelSize ( initData ( &voxelSize, Vec3 ( 1.0f,1.0f,1.0f ), "voxelSize", "Dimension of one voxel" ) ),
-      dataResolution ( initData ( &dataResolution, Vec3i ( 0,0,0 ), "resolution", "Resolution of the voxel file" ) ),
-      roi ( initData ( &roi, Vec6i ( 0,0,0, 0xFFFF, 0xFFFF, 0xFFFF ), "ROI", "Region of interest (xmin, ymin, zmin, xmax, ymax, zmax)" ) ),
-      headerSize ( initData ( &headerSize, 0, "header", "Header size in bytes" ) ),
-      segmentationHeaderSize ( initData ( &segmentationHeaderSize, 0, "segmentationHeader", "Header size in bytes" ) ),
-      idxInRegularGrid(initData(&idxInRegularGrid,"idxInRegularGrid","indices of the hexa in the grid.")),
-      backgroundValue ( initData ( &backgroundValue, "bgValue", "Background values (to be ignored)" ) ),
-      activeValue ( initData ( &activeValue, "dataValue", "Active data values" ) ),
-      generateHexa( initData ( &generateHexa, true, "generateHexa", "Interpret voxel as either hexa or points")),
+      d_voxelSize (initData (&d_voxelSize, Vec3 (1.0f, 1.0f, 1.0f ), "voxelSize", "Dimension of one voxel" ) ),
+      d_dataResolution (initData (&d_dataResolution, Vec3i (0, 0, 0 ), "resolution", "Resolution of the voxel file" ) ),
+      d_roi (initData (&d_roi, Vec6i (0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF ), "ROI", "Region of interest (xmin, ymin, zmin, xmax, ymax, zmax)" ) ),
+      d_headerSize (initData (&d_headerSize, 0, "header", "Header size in bytes" ) ),
+      d_segmentationHeaderSize (initData (&d_segmentationHeaderSize, 0, "segmentationHeader", "Header size in bytes" ) ),
+      d_idxInRegularGrid(initData(&d_idxInRegularGrid, "idxInRegularGrid", "indices of the hexa in the grid.")),
+      d_backgroundValue (initData (&d_backgroundValue, "bgValue", "Background values (to be ignored)" ) ),
+      d_activeValue (initData (&d_activeValue, "dataValue", "Active data values" ) ),
+      d_generateHexa(initData (&d_generateHexa, true, "generateHexa", "Interpret voxel as either hexa or points")),
       image(nullptr),
       segmentation(nullptr),
       bpp(8) // bits per pixel
 {
     addAlias(&d_filename,"segmentationFile");
+    voxelSize.setOriginalData(&d_voxelSize);
+    dataResolution.setOriginalData(&d_dataResolution);
+    roi.setOriginalData(&d_roi);
+    headerSize.setOriginalData(&d_headerSize);
+    segmentationHeaderSize.setOriginalData(&d_segmentationHeaderSize);
+    idxInRegularGrid.setOriginalData(&d_idxInRegularGrid);
+    backgroundValue.setOriginalData(&d_backgroundValue);
+    activeValue.setOriginalData(&d_activeValue);
+    generateHexa.setOriginalData(&d_generateHexa);
+
+
 }
 
 VoxelGridLoader::~VoxelGridLoader()
@@ -74,8 +89,8 @@ void VoxelGridLoader::init()
 {
 
 
-    const Vec3i &res = dataResolution.getValue();
-    Vec6i&	ROI = (* roi.beginEdit());
+    const Vec3i &res = d_dataResolution.getValue();
+    Vec6i&	ROI = (* d_roi.beginEdit());
     if(ROI[0] < 0)	ROI[0] = 0;
     if(ROI[1] < 0)	ROI[1] = 0;
     if(ROI[2] < 0)	ROI[2] = 0;
@@ -85,7 +100,7 @@ void VoxelGridLoader::init()
     if(ROI[0] > ROI[3]) ROI[3] = ROI[0];
     if(ROI[1] > ROI[4]) ROI[4] = ROI[1];
     if(ROI[2] > ROI[5]) ROI[5] = ROI[2];
-    roi.endEdit();
+    d_roi.endEdit();
 
     if ( image == nullptr )
     {
@@ -99,16 +114,16 @@ void VoxelGridLoader::init()
 void VoxelGridLoader::reinit()
 {
     clear();
-    const Vec6i&	ROI = roi.getValue();
+    const Vec6i&	ROI = d_roi.getValue();
 
-    auto _idxInRegularGrid = sofa::helper::getWriteOnlyAccessor(idxInRegularGrid);
+    auto _idxInRegularGrid = sofa::helper::getWriteOnlyAccessor(d_idxInRegularGrid);
     auto seqPoints = sofa::helper::getWriteOnlyAccessor(positions);
 
-    if(generateHexa.getValue())
+    if(d_generateHexa.getValue())
     {
-        const unsigned int numVoxelsX = dataResolution.getValue()[0];
-        const unsigned int numVoxelsY = dataResolution.getValue()[1];
-        //	  const unsigned int numVoxelsZ = dataResolution.getValue()[2];
+        const unsigned int numVoxelsX = d_dataResolution.getValue()[0];
+        const unsigned int numVoxelsY = d_dataResolution.getValue()[1];
+        //	  const unsigned int numVoxelsZ = d_dataResolution.getValue()[2];
 
         //    const unsigned int numVoxels = numVoxelsX * numVoxelsY * numVoxelsZ;
 
@@ -124,7 +139,7 @@ void VoxelGridLoader::reinit()
             for ( unsigned int j=(unsigned)ROI[1]; j<=(unsigned)ROI[4]; ++j )
                 for ( unsigned int i=(unsigned)ROI[0]; i<=(unsigned)ROI[3]; ++i )
                 {
-                    unsigned int idx = i + j * numVoxelsX + k * numVoxelsX * numVoxelsY;
+                    const unsigned int idx = i + j * numVoxelsX + k * numVoxelsX * numVoxelsY;
 
                     if ( isActive(idx) )
                     {
@@ -147,13 +162,13 @@ void VoxelGridLoader::reinit()
                 {
                     // add only points that were used above
                     const unsigned int pidx = i + j * numPointsX + k * numPointsX * numPointsY;
-                    if ( keepPoint.find ( pidx ) != keepPoint.end() )
+                    if ( keepPoint.contains ( pidx ))
                     {
                         renumberingMap[pidx] = pointIdx;
                         auto& pnt = seqPoints[pointIdx];
-                        pnt[0] = i*voxelSize.getValue()[0];
-                        pnt[1] = j*voxelSize.getValue()[1];
-                        pnt[2] = k*voxelSize.getValue()[2];
+                        pnt[0] = i * d_voxelSize.getValue()[0];
+                        pnt[1] = j * d_voxelSize.getValue()[1];
+                        pnt[2] = k * d_voxelSize.getValue()[2];
                         pointIdx++;
                     }
                 }
@@ -187,8 +202,8 @@ void VoxelGridLoader::reinit()
     }
     else
     {
-        const unsigned int numVoxelsX = dataResolution.getValue()[0];
-        const unsigned int numVoxelsY = dataResolution.getValue()[1];
+        const unsigned int numVoxelsX = d_dataResolution.getValue()[0];
+        const unsigned int numVoxelsY = d_dataResolution.getValue()[1];
 
         msg_info() << "inserting point...please wait... " ;
         for ( unsigned int k=(unsigned)ROI[2]; k<=(unsigned)ROI[5]; ++k )
@@ -200,9 +215,9 @@ void VoxelGridLoader::reinit()
                     if ( isActive(idx) )
                     {
                         Vec3 pnt;
-                        pnt[0] = i*voxelSize.getValue()[0];
-                        pnt[1] = j*voxelSize.getValue()[1];
-                        pnt[2] = k*voxelSize.getValue()[2];
+                        pnt[0] = i * d_voxelSize.getValue()[0];
+                        pnt[1] = j * d_voxelSize.getValue()[1];
+                        pnt[2] = k * d_voxelSize.getValue()[2];
 
                         seqPoints.push_back(pnt);
                         _idxInRegularGrid.push_back ( idx );
@@ -221,7 +236,7 @@ void VoxelGridLoader::clear()
     auto seqHexahedra = sofa::helper::getWriteOnlyAccessor(hexahedra);
     seqHexahedra.clear();
 
-    auto _idxInRegularGrid = sofa::helper::getWriteOnlyAccessor(idxInRegularGrid);
+    auto _idxInRegularGrid = sofa::helper::getWriteOnlyAccessor(d_idxInRegularGrid);
     _idxInRegularGrid.clear();
 
 }
@@ -229,7 +244,7 @@ void VoxelGridLoader::clear()
 
 bool VoxelGridLoader::canLoad(  )
 {
-    bool canLoad = d_filename.getValue().length() > 4 && ( d_filename.getValue().compare(
+    const bool canLoad = d_filename.getValue().length() > 4 && ( d_filename.getValue().compare(
             d_filename.getValue().length()-4, 4, ".raw" ) ==0 );
 
     return sofa::core::loader::VoxelLoader::canLoad() &&  canLoad;
@@ -238,7 +253,7 @@ bool VoxelGridLoader::load ()
 {
     clear();
 
-    image = loadImage(d_filename.getValue(), dataResolution.getValue(), headerSize.getValue());
+    image = loadImage(d_filename.getValue(), d_dataResolution.getValue(), d_headerSize.getValue());
 
     if(image != nullptr)
     {
@@ -252,7 +267,7 @@ helper::io::Image* VoxelGridLoader::loadImage ( const std::string& filename, con
 {
     helper::io::Image* image = nullptr;
 
-    std::string _filename ( filename );
+    const std::string _filename ( filename );
 
     if(res.norm2() > 0 && bpp > 0)
     {
@@ -296,44 +311,44 @@ helper::io::Image* VoxelGridLoader::loadImage ( const std::string& filename, con
 
 int VoxelGridLoader::getDataSize() const
 {
-    return dataResolution.getValue()[0]*dataResolution.getValue()[1]*dataResolution.getValue()[2];
+    return d_dataResolution.getValue()[0] * d_dataResolution.getValue()[1] * d_dataResolution.getValue()[2];
 }
 
 void VoxelGridLoader::setResolution ( const Vec3i res )
 {
-    ( *dataResolution.beginEdit() ) = res;
-    dataResolution.endEdit();
+    ( *d_dataResolution.beginEdit() ) = res;
+    d_dataResolution.endEdit();
 }
 
 void VoxelGridLoader::getResolution ( Vec3i& res ) const
 {
-    res = dataResolution.getValue();
+    res = d_dataResolution.getValue();
 }
 
 void VoxelGridLoader::setVoxelSize ( const type::Vec3 vSize )
 {
-    ( *voxelSize.beginEdit() ) = vSize;
-    voxelSize.endEdit();
+    ( *d_voxelSize.beginEdit() ) = vSize;
+    d_voxelSize.endEdit();
 }
 
 type::Vec3 VoxelGridLoader::getVoxelSize () const
 {
-    return voxelSize.getValue();
+    return d_voxelSize.getValue();
 }
 
 void VoxelGridLoader::addBackgroundValue ( const int value )
 {
-    type::vector<int>& vecVal = ( *backgroundValue.beginEdit() );
+    type::vector<int>& vecVal = ( *d_backgroundValue.beginEdit() );
     vecVal.push_back(value);
     std::sort(vecVal.begin(), vecVal.end());
     vecVal.erase( std::unique(vecVal.begin(), vecVal.end()), vecVal.end() ); // remove non-unique values
-    backgroundValue.endEdit();
+    d_backgroundValue.endEdit();
     reinit();
 }
 
 int VoxelGridLoader::getBackgroundValue(const unsigned int idx) const
 {
-    const type::vector<int>& vecVal = backgroundValue.getValue();
+    const type::vector<int>& vecVal = d_backgroundValue.getValue();
     if(idx < vecVal.size())
         return vecVal[idx];
     else
@@ -342,17 +357,17 @@ int VoxelGridLoader::getBackgroundValue(const unsigned int idx) const
 
 void VoxelGridLoader::addActiveDataValue(const int value)
 {
-    type::vector<int>& vecVal = ( *activeValue.beginEdit() );
+    type::vector<int>& vecVal = ( *d_activeValue.beginEdit() );
     vecVal.push_back(value);
     std::sort(vecVal.begin(), vecVal.end());
     vecVal.erase( std::unique(vecVal.begin(), vecVal.end()), vecVal.end() ); // remove non-unique values
-    activeValue.endEdit();
+    d_activeValue.endEdit();
     reinit();
 }
 
 int VoxelGridLoader::getActiveDataValue(const unsigned int idx) const
 {
-    const type::vector<int>& vecVal = activeValue.getValue();
+    const type::vector<int>& vecVal = d_activeValue.getValue();
     if(idx < vecVal.size())
         return vecVal[idx];
     else
@@ -361,7 +376,11 @@ int VoxelGridLoader::getActiveDataValue(const unsigned int idx) const
 
 unsigned char * VoxelGridLoader::getData()
 {
-    return image->getPixels();
+    if (image)
+    {
+        return image->getPixels();
+    }
+    return nullptr;
 }
 
 
@@ -377,13 +396,13 @@ unsigned char * VoxelGridLoader::getSegmentID()
 
 VoxelGridLoader::Vec6i VoxelGridLoader::getROI() const
 {
-    return roi.getValue();
+    return d_roi.getValue();
 }
 
 bool VoxelGridLoader::isActive(const unsigned int idx) const
 {
-    const type::vector<int>& activeVal = activeValue.getValue();
-    const type::vector<int>& bgVal = backgroundValue.getValue();
+    const type::vector<int>& activeVal = d_activeValue.getValue();
+    const type::vector<int>& bgVal = d_backgroundValue.getValue();
 
     if(activeVal.empty() && bgVal.empty())
         return true;
@@ -410,28 +429,27 @@ bool VoxelGridLoader::isActive(const unsigned int idx) const
     return true;
 }
 
-// fill the texture by 'image' only where there is the 'segmentation' of 'activeValue' and give the 3D texture sizes
+// fill the texture by 'image' only where there is the 'segmentation' of 'd_activeValue' and give the 3D texture sizes
 void VoxelGridLoader::createSegmentation3DTexture( unsigned char **textureData, int& width, int& height, int& depth)
 {
-    const Vec3i &resol = dataResolution.getValue();
+    const Vec3i &resol = d_dataResolution.getValue();
 
     // with, height and depth are the nearest power of 2 greater or equal to the resolution
     for(width=1; resol[0]>width; width <<= 1) ;
     for(height=1; resol[1]>height; height <<= 1) ;
     for(depth=1; resol[2]>depth; depth <<= 1) ;
 
-    int textureSize = width*height*depth;
+    const int textureSize = width*height*depth;
 
     *textureData = new unsigned char [textureSize];
     for(unsigned char *ptr = (*textureData) + textureSize; ptr != *textureData; )
         *(--ptr) = (unsigned char) 0;
 
     const unsigned char *data = getData();
-    const type::vector<unsigned int>& _idxInRegularGrid = idxInRegularGrid.getValue();
+    const type::vector<unsigned int>& _idxInRegularGrid = d_idxInRegularGrid.getValue();
     // for all "active" data voxels
-    for(unsigned i=0; i<_idxInRegularGrid.size(); ++i)
+    for(const unsigned int idxData : _idxInRegularGrid)
     {
-        const int idxData = _idxInRegularGrid[i];
         const int I = idxData % resol[0];
         const int J = (idxData/resol[0]) % resol[1];
         const int K = idxData / (resol[0] * resol[1]);
@@ -442,7 +460,7 @@ void VoxelGridLoader::createSegmentation3DTexture( unsigned char **textureData, 
 
 type::vector<unsigned int> VoxelGridLoader::getHexaIndicesInGrid() const
 {
-    return idxInRegularGrid.getValue();
+    return d_idxInRegularGrid.getValue();
 }
 
 } //namespace sofa::component::io::mesh

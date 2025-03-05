@@ -39,8 +39,8 @@ namespace sofa::component::engine::analyze
 
 /**
  * This class groups points into overlapping clusters according to a user defined number of clusters and radius
- * It takes input positions (and optionally a meshtopology if geodesic distances are prefered)
- * ouput clusters can then be fed to
+ * It takes input positions (and optionally a meshtopology if geodesic distances are preferred)
+ * output clusters can then be fed to
  *     - shape matching engine
  *     - blendSkinningMapping
  *
@@ -75,15 +75,15 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    Data<bool> d_useTopo; ///< Use avalaible topology to compute neighborhood.
+    Data<bool> d_useTopo; ///< Use available topology to compute neighborhood.
     //Data<unsigned int> maxIter;
 
     Data<Real> d_radius; ///< Neighborhood range.
     Data<Real> d_fixedRadius; ///< Neighborhood range (for non mechanical particles).
     Data<int> d_nbClusters; ///< Number of clusters (-1 means that all input points are selected).
-    Data< VecCoord > d_fixedPosition;  ///< input (non mechanical particle reference position)
-    Data< VecCoord > d_position; ///< input (reference mstate position)
-    Data< VVI > d_cluster;       ///< result
+    Data< VecCoord > d_fixedPosition; ///< Input positions of fixed (non mechanical) particles.
+    Data< VecCoord > d_position; ///< Input rest positions.
+    Data< VVI > d_cluster; ///< Computed clusters.
 
     sofa::core::objectmodel::DataFileName input_filename; ///< import precomputed clusters
     sofa::core::objectmodel::DataFileName output_filename; ///< export clusters
@@ -113,7 +113,7 @@ private:
     bool save();
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_CLUSTERINGENGINE_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_CLUSTERINGENGINE_CPP)
 extern template class SOFA_COMPONENT_ENGINE_ANALYZE_API ClusteringEngine<defaulttype::Vec3Types>;
  
 #endif

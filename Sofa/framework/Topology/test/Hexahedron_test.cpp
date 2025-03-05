@@ -77,7 +77,7 @@ namespace sofa
 
 TEST(TopologyHexahedron_test, getClosestHexahedronIndex)
 {   
-    sofa::type::fixed_array<SReal, 3> coeffs{};
+    type::Vec3 coeffs{};
     SReal distance{};
 
     const sofa::type::Vec3d pos0{0.001, 0., 0.};

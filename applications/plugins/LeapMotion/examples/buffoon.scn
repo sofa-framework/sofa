@@ -13,7 +13,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<DiscreteIntersection />
-    <DefaultContactManager name="Response" response="PenalityContactForceField" />
+    <CollisionResponse name="Response" response="PenalityContactForceField" />
 
     <LeapMotionDriver name="leapMotionDriver" scale="0.0025" rotation="90 0 0" translation="0 0. 0" displayHand="true" printLog="0"/>
 
@@ -85,7 +85,7 @@
         <RegularGridTopology nx="7" ny="7" nz="14" xmin="-0.17" xmax="0.17" ymin="-0.17" ymax="0.17" zmin=" 0.0" zmax="0.7" />
 		<UniformMass totalMass="2"/>
 		<BoxROI name="ROI" box="-0.2 -0.2 -0.01 0.2 0.2 0.11" />
-        <FixedConstraint indices="@ROI.indices" />
+        <FixedProjectiveConstraint indices="@ROI.indices" />
         <TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.4" method="large" localStiffnessFactor="0.5 0.5 0.5 0.5 0.5 0.6 0.4 0.4 0.4 1 1 0.3 0.3" />
 
 

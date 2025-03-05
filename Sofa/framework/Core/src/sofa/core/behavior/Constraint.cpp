@@ -26,6 +26,7 @@ namespace sofa::core::behavior
 {
 
 using namespace sofa::defaulttype;
+template class SOFA_CORE_API Constraint<Vec6Types>;
 template class SOFA_CORE_API Constraint<Vec3Types>;
 template class SOFA_CORE_API Constraint<Vec2Types>;
 template class SOFA_CORE_API Constraint<Vec1Types>;

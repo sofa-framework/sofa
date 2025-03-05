@@ -23,7 +23,7 @@
 #include <gtest/gtest.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/testing/TestMessageHandler.h>
 
 namespace sofa
@@ -41,9 +41,9 @@ TEST(OglModel, templateName)
 
     helper::logging::MessageDispatcher::addHandler( sofa::testing::MainGtestMessageHandler::getInstance() );
 
-    simulation::Simulation* simulation;
-    sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-    simulation::Node::SPtr root = simulation->createNewGraph("root");
+    simulation::Simulation* simulation = sofa::simulation::getSimulation();
+    const simulation::Node::SPtr root = simulation->createNewGraph("root");
+
     {
         EXPECT_MSG_NOEMIT(Error);
 

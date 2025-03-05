@@ -57,14 +57,14 @@ public:
 protected:
     HexahedronSetTopologyModifier()
         : QuadSetTopologyModifier()
-        , removeIsolated( initData(&removeIsolated,true, "removeIsolated", "remove Isolated dof") )
+        , removeIsolated( initData(&removeIsolated,true, "removeIsolated", "Remove isolated DOFs") )
     { }
 
     ~HexahedronSetTopologyModifier() override {}
 public:
     void init() override;
 
-    Data< bool > removeIsolated; ///< Controlled DOF index.
+    Data< bool > removeIsolated; ///< Remove isolated DOFs
 
     /** \brief add a set of hexahedra
     @param hexahedra an array of vertex indices describing the hexahedra to be created

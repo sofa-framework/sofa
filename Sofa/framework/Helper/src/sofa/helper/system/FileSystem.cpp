@@ -21,9 +21,18 @@
 ******************************************************************************/
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/StringUtils.h>
 #include <sofa/helper/Utils.h>
 
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 
 #include <fstream>
 #include <iostream>
@@ -53,8 +62,8 @@ namespace system
 
 std::string FileSystem::getExtension(const std::string& filename)
 {
-    std::string s = filename;
-    std::string::size_type pos = s.find_last_of('.');
+    const std::string s = filename;
+    const std::string::size_type pos = s.find_last_of('.');
     if (pos == std::string::npos)
         return ""; // no extension
     else
@@ -71,7 +80,7 @@ static HANDLE helper_FindFirstFile(std::string path, WIN32_FIND_DATA *ffd)
 
     // Prepare string for use with FindFile functions.  First, copy the
     // string to a buffer, then append '\*' to the directory name.
-    StringCchCopy(szDir, MAX_PATH, Utils::widenString(path).c_str());
+    StringCchCopy(szDir, MAX_PATH, sofa::helper::widenString(path).c_str());
     StringCchCat(szDir, MAX_PATH, TEXT("\\*"));
 
     // Find the first file in the directory.
@@ -88,7 +97,7 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
 #if defined(WIN32)
     // Find the first file in the directory.
     WIN32_FIND_DATA ffd;
-    HANDLE hFind = helper_FindFirstFile(directoryPath, &ffd);
+    const HANDLE hFind = helper_FindFirstFile(directoryPath, &ffd);
     if (hFind == INVALID_HANDLE_VALUE) {
         msg_error("FileSystem::listDirectory()") << directoryPath << ": " << Utils::GetLastError();
         return false;
@@ -96,13 +105,13 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
 
     // Iterate over files and push them in the output vector
     do {
-        std::string filename = Utils::narrowString(ffd.cFileName);
+        std::string filename = sofa::helper::narrowString(ffd.cFileName);
         if (filename != "." && filename != "..")
             outputFilenames.push_back(filename);
     } while (FindNextFile(hFind, &ffd) != 0);
 
     // Check for errors
-    bool errorOccured = ::GetLastError() != ERROR_NO_MORE_FILES;
+    const bool errorOccured = ::GetLastError() != ERROR_NO_MORE_FILES;
     if (errorOccured)
         msg_error("FileSystem::listDirectory()") << directoryPath << ": " << Utils::GetLastError();
 
@@ -130,7 +139,7 @@ bool FileSystem::createDirectory(const std::string& path)
 {
     std::string error = "FileSystem::createdirectory()";
 #ifdef WIN32
-    if (CreateDirectory(Utils::widenString(path).c_str(), nullptr) == 0)
+    if (CreateDirectory(sofa::helper::widenString(path).c_str(), nullptr) == 0)
     {
         DWORD errorCode = ::GetLastError();
         msg_error(error) << path << ": " << Utils::GetLastError();
@@ -153,7 +162,7 @@ bool FileSystem::createDirectory(const std::string& path)
 bool FileSystem::removeDirectory(const std::string& path)
 {
 #ifdef WIN32
-    if (RemoveDirectory(Utils::widenString(path).c_str()) == 0)
+    if (RemoveDirectory(sofa::helper::widenString(path).c_str()) == 0)
     {
         DWORD errorCode = ::GetLastError();
         msg_error("FileSystem::removedirectory()") << path << ": " << Utils::GetLastError();
@@ -174,11 +183,11 @@ bool FileSystem::exists(const std::string& path)
 {
 #if defined(WIN32)
     ::SetLastError(0);
-    if (PathFileExists(Utils::widenString(path).c_str()) != 0)
+    if (PathFileExists(sofa::helper::widenString(path).c_str()) != 0)
         return true;
     else
     {
-        DWORD errorCode = ::GetLastError();
+        const DWORD errorCode = ::GetLastError();
         if (errorCode != ERROR_FILE_NOT_FOUND && errorCode != ERROR_PATH_NOT_FOUND) // not No such file error
             msg_error("FileSystem::exists()") << path << ": " << Utils::GetLastError();
         return false;
@@ -202,7 +211,7 @@ bool FileSystem::exists(const std::string& path)
 bool FileSystem::isDirectory(const std::string& path)
 {
 #if defined(WIN32)
-    DWORD fileAttrib = GetFileAttributes(Utils::widenString(path).c_str());
+    const DWORD fileAttrib = GetFileAttributes(sofa::helper::widenString(path).c_str());
     if (fileAttrib == INVALID_FILE_ATTRIBUTES) {
         msg_error("FileSystem::isDirectory()") << path << ": " << Utils::GetLastError();
         return false;
@@ -250,10 +259,9 @@ int FileSystem::findFiles(const std::string& directoryPath,
         return -1;
 
     // Filter files
-    for (std::size_t i=0 ; i!=files.size() ; i++)
+    for (const auto& filename : files)
     {
-        const std::string& filename = files[i];
-        const std::string& filepath = directoryPath + "/" + files[i];
+        const std::string& filepath = append(directoryPath, filename);
 
         if ( isDirectory(filepath) && filename[0] != '.' && depth > 0 )
         {
@@ -318,13 +326,18 @@ std::string FileSystem::convertSlashesToBackSlashes(const std::string& path)
 bool FileSystem::removeAll(const std::string& path){
     try
     {
-        std::filesystem::remove_all(path);
+        fs::remove_all(path);
     }
-    catch(std::filesystem::filesystem_error const & /*e*/)
+    catch(fs::filesystem_error const & /*e*/)
     {
         return false ;
     }
     return true ;
+}
+
+bool FileSystem::removeFile(const std::string& path)
+{
+    return fs::remove(path);
 }
 
 std::string FileSystem::removeExtraSlashes(const std::string& path)
@@ -369,13 +382,34 @@ std::string FileSystem::findOrCreateAValidPath(const std::string path)
     if( FileSystem::exists(path) )
         return path ;
 
-    std::string parentPath = FileSystem::getParentDirectory(path) ;
-    std::string currentFile = FileSystem::stripDirectory(path) ;
-    FileSystem::createDirectory(findOrCreateAValidPath( parentPath )+"/"+currentFile) ;
+    const std::string parentPath = FileSystem::getParentDirectory(path) ;
+    const std::string currentFile = FileSystem::stripDirectory(path) ;
+    FileSystem::createDirectory(append(findOrCreateAValidPath( parentPath ), currentFile)) ;
     return path ;
 }
 
+void FileSystem::ensureFolderExists(const std::string& pathToFolder)
+{
+    if (!FileSystem::exists(pathToFolder))
+    {
+        const std::string parentPath = FileSystem::getParentDirectory(pathToFolder);
+        FileSystem::ensureFolderExists(parentPath);
 
+        if (FileSystem::exists(parentPath))
+        {
+            FileSystem::createDirectory(pathToFolder);
+        }
+    }
+}
+
+void FileSystem::ensureFolderForFileExists(const std::string& pathToFile)
+{
+    if (!FileSystem::exists(pathToFile))
+    {
+        const std::string parentPath = FileSystem::getParentDirectory(pathToFile);
+        FileSystem::ensureFolderExists(parentPath);
+    }
+}
 
 std::string FileSystem::cleanPath(const std::string& path, separator s)
 {
@@ -394,7 +428,7 @@ static std::string computeParentDirectory(const std::string& path)
     else if (path[path.length()-1] == '/')
         return computeParentDirectory(path.substr(0, path.length() - 1));
     else {
-        size_t last_slash = path.find_last_of('/');
+        const size_t last_slash = path.find_last_of('/');
         if (last_slash == std::string::npos)
             return ".";
         else if (last_slash == 0)
@@ -420,7 +454,7 @@ std::string FileSystem::stripDirectory(const std::string& path)
         return stripDirectory(pathWithoutDrive(path));
     else
     {
-        size_t last_slash = path.find_last_of("/");
+        const size_t last_slash = path.find_last_of("/");
         if (last_slash == std::string::npos)    // No slash
             return path;
         else if (last_slash == path.size() - 1) // Trailing slash
@@ -432,6 +466,27 @@ std::string FileSystem::stripDirectory(const std::string& path)
             return path.substr(last_slash + 1, std::string::npos);
         return "";
     }
+}
+
+std::string FileSystem::append(const std::string_view& existingPath, const std::string_view& toAppend)
+{
+    if (toAppend.empty())
+    {
+        return std::string(existingPath);
+    }
+
+    constexpr auto isADirectorySeparator = [](const char c) { return c == '/' || c == '\\'; };
+
+    if (isADirectorySeparator(toAppend.front()))
+    {
+        return append(existingPath, toAppend.substr(1));
+    }
+
+    if (isADirectorySeparator(existingPath.back()))
+    {
+        return append(existingPath.substr(0, existingPath.size() - 1), toAppend);
+    }
+    return std::string(existingPath) + "/" + std::string(toAppend);
 }
 
 

@@ -38,7 +38,7 @@
 namespace sofa::component::statecontainer
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template <class DataTypes>
 class MechanicalObject;
 
@@ -113,7 +113,7 @@ public:
     Data< bool >  showVectors; ///< Show velocity. (default=false)
     Data< float > showVectorsScale; ///< Scale for vectors display. (default=0.0001)
     Data< int > drawMode; ///< The way vectors will be drawn: - 0: Line - 1:Cylinder - 2: Arrow.  The DOFS will be drawn: - 0: point - >1: sphere. (default=0)
-    Data< type::RGBAColor > d_color;  ///< drawing color
+    Data< type::RGBAColor > d_color; ///< Color for object display. (default=[1 1 1 1])
 
     void init() override;
     void reinit() override;
@@ -150,13 +150,13 @@ public:
 
     Size getSize() const override { return d_size.getValue(); }
 
-    SReal getPX(sofa::Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)x; }
-    SReal getPY(sofa::Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)y; }
-    SReal getPZ(sofa::Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)z; }
+    SReal getPX(sofa::Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::vec_id::read_access::position)->getValue())[i]); return (SReal)x; }
+    SReal getPY(sofa::Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::vec_id::read_access::position)->getValue())[i]); return (SReal)y; }
+    SReal getPZ(sofa::Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::vec_id::read_access::position)->getValue())[i]); return (SReal)z; }
 
-    SReal getVX(sofa::Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)x; }
-    SReal getVY(sofa::Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)y; }
-    SReal getVZ(sofa::Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)z; }
+    SReal getVX(sofa::Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::vec_id::read_access::velocity)->getValue()[i]); return (SReal)x; }
+    SReal getVY(sofa::Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::vec_id::read_access::velocity)->getValue()[i]); return (SReal)y; }
+    SReal getVZ(sofa::Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::vec_id::read_access::velocity)->getValue()[i]); return (SReal)z; }
 
 
     /** \brief Overwrite values at index outputIndex by the ones at inputIndex.
@@ -219,6 +219,9 @@ public:
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
     void copyFromBaseVector(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset) override;
 
+    /// Copy data to a global BaseMatrix from the state stored in a local vector.
+    void copyToBaseMatrix(linearalgebra::BaseMatrix* dest, core::ConstMatrixDerivId src, unsigned int& offset) override;
+
     /// Add data to a global BaseVector from the state stored in a local vector
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
     void addToBaseVector(linearalgebra::BaseVector* dest, core::ConstVecId src, unsigned int &offset) override;
@@ -260,7 +263,7 @@ public:
 
     void endIntegration(const core::ExecParams* params, SReal dt) override;
 
-    void accumulateForce(const core::ExecParams* params, core::VecDerivId f = core::VecDerivId::force()) override; // see BaseMechanicalState::accumulateForce(const ExecParams*, VecId) override
+    void accumulateForce(const core::ExecParams* params, core::VecDerivId f = core::vec_id::write_access::force) override; // see BaseMechanicalState::accumulateForce(const ExecParams*, VecId) override
 
     /// Increment the index of the given VecCoordId, so that all 'allocated' vectors in this state have a lower index
     void vAvail(const core::ExecParams* params, core::VecCoordId& v) override;
@@ -312,9 +315,9 @@ public:
 
     Size vSize( const core::ExecParams* params, core::ConstVecId v ) override;
 
-    void resetForce(const core::ExecParams* params, core::VecDerivId f = core::VecDerivId::force()) override;
+    void resetForce(const core::ExecParams* params, core::VecDerivId f = core::vec_id::write_access::force) override;
 
-    void resetAcc(const core::ExecParams* params, core::VecDerivId a = core::VecDerivId::dx()) override;
+    void resetAcc(const core::ExecParams* params, core::VecDerivId a = core::vec_id::write_access::dx) override;
 
     void resetConstraint(const core::ConstraintParams* cparams) override;
 
@@ -474,7 +477,7 @@ void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::Visual
 
 
 
-#if  !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
+#if !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
 extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec1Types>;

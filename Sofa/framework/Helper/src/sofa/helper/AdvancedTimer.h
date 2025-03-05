@@ -78,7 +78,7 @@ namespace sofa::helper
   * When a noteworthy value must be accumulated:
     AdvancedTimer::valAdd("dofs",mstate->getSize());
 
-  * When reloading/reseting the simulation:
+  * When reloading/resetting the simulation:
     AdvancedTimer::clear();
 
 
@@ -365,7 +365,7 @@ public:
 
 
     /**
-     * @brief end Ovveride fo the end method in which you can use JSON or old format
+     * @brief end Override fo the end method in which you can use JSON or old format
      * @param id IdTimer, the id of the used timer
      * @param time double, current time (from the context)
      * @param time dt, current delta time or dt (from the context)
@@ -373,14 +373,6 @@ public:
      */
     static std::string end(IdTimer id, double time, double dt);
 
-    /**
-     * @brief end Deleted version with a node Pointer ; will throw an error at compile-time if called.
-     * @param id IdTimer, the id of the used timer
-     * @param node simulation::Node* 
-     * @return std::string, the output if JSON format is set
-     */
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1770)", "v21.12", "Use end(id, node->getTime(), node->getDt()) instead.")
-    static std::string end(IdTimer id, simulation::Node* node) = delete;
 
     static bool isActive();
 
@@ -510,7 +502,7 @@ public:
 
 };
 
-#if  !defined(SOFA_HELPER_ADVANCEDTIMER_CPP)
+#if !defined(SOFA_HELPER_ADVANCEDTIMER_CPP)
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Timer>;
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Step>;
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;

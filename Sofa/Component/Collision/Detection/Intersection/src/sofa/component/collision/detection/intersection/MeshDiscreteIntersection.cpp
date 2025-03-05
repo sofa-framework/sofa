@@ -34,8 +34,7 @@ using namespace sofa::component::collision::geometry;
 
 IntersectorCreator<DiscreteIntersection, MeshDiscreteIntersection> MeshDiscreteIntersectors("Mesh");
 
-MeshDiscreteIntersection::MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf)
-    : intersection(object)
+MeshDiscreteIntersection::MeshDiscreteIntersection(DiscreteIntersection* intersection, bool addSelf)
 {
     if (addSelf)
     {
@@ -43,13 +42,15 @@ MeshDiscreteIntersection::MeshDiscreteIntersection(DiscreteIntersection* object,
     }
 }
 
-bool MeshDiscreteIntersection::testIntersection(Triangle&, Line&)
+bool MeshDiscreteIntersection::testIntersection(Triangle&, Line&, const sofa::core::collision::Intersection*)
 {
     return true;
 }
 
-int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts)
+int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
+    SOFA_UNUSED(currentIntersection);
+
     static_assert(std::is_same_v<Triangle::Coord, Line::Coord>, "Data mismatch");
     static_assert(Triangle::Coord::total_size == 3, "Must be a vec type");
 

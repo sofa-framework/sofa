@@ -115,7 +115,6 @@ public:
 #endif
 protected:
 
-    sofa::simulation::Simulation* m_Simulation;
     sofa::simulation::Node::SPtr m_RootNode;
     std::string sceneFileName;
     /// Pointer to the LoggingMessageHandler
@@ -174,7 +173,7 @@ public:
     }
     sofa::simulation::Simulation* getSimulation() const
     {
-        return m_Simulation;
+        return sofa::simulation::getSimulation();
     }
     sofa::simulation::Node* getScene() const
     {

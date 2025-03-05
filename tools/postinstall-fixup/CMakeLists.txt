@@ -3,19 +3,21 @@ if(NOT SOFA_BUILD_RELEASE_PACKAGE)
     return()
 endif()
 
-find_package(Qt5 COMPONENTS Gui REQUIRED)
-get_target_property(qt5gui_loc Qt5::Gui LOCATION_RELEASE)
-get_filename_component(QT_LIB_DIR "${qt5gui_loc}" DIRECTORY)
-if(QT_LIB_DIR MATCHES "\.framework$")
-    get_filename_component(QT_LIB_DIR "${QT_LIB_DIR}" DIRECTORY)
-endif()
-get_target_property(qjpeg_loc Qt5::QJpegPlugin LOCATION_RELEASE)
-get_filename_component(imageformats_dir "${qjpeg_loc}" DIRECTORY)
-get_filename_component(plugins_dir "${imageformats_dir}" DIRECTORY)
-get_filename_component(QT_DATA_DIR "${plugins_dir}" DIRECTORY)
+if(TARGET Sofa.GUI.Qt)
+    find_package(Qt5 COMPONENTS Gui REQUIRED)
+    get_target_property(qt5gui_loc Qt5::Gui LOCATION_RELEASE)
+    get_filename_component(QT_LIB_DIR "${qt5gui_loc}" DIRECTORY)
+    if(QT_LIB_DIR MATCHES "\.framework$")
+        get_filename_component(QT_LIB_DIR "${QT_LIB_DIR}" DIRECTORY)
+    endif()
+    get_target_property(qjpeg_loc Qt5::QJpegPlugin LOCATION_RELEASE)
+    get_filename_component(imageformats_dir "${qjpeg_loc}" DIRECTORY)
+    get_filename_component(plugins_dir "${imageformats_dir}" DIRECTORY)
+    get_filename_component(QT_DATA_DIR "${plugins_dir}" DIRECTORY)
 
-message("QT_LIB_DIR = ${QT_LIB_DIR}")
-message("QT_DATA_DIR = ${QT_DATA_DIR}")
+    message("QT_LIB_DIR = ${QT_LIB_DIR}")
+    message("QT_DATA_DIR = ${QT_DATA_DIR}")
+endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     install(CODE "file(WRITE
@@ -25,6 +27,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
         COMPONENT resources)
     install(CODE "execute_process(COMMAND /bin/bash
         \"${CMAKE_CURRENT_LIST_DIR}/linux-postinstall-fixup.sh\"
+        \"${CMAKE_CURRENT_LIST_DIR}\"
         \"${CMAKE_BINARY_DIR}\"
         \"\$ENV{DESTDIR\}\${CMAKE_INSTALL_PREFIX\}\"
         \"${QT_LIB_DIR}\"
@@ -33,9 +36,12 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
         COMPONENT resources)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
     if(SOFA_BUILD_APP_BUNDLE)
-        include(macdeployqt) # set MACDEPLOYQT_EXECUTABLE
+        if(TARGET Sofa.GUI.Qt)
+            include(macdeployqt) # set MACDEPLOYQT_EXECUTABLE
+        endif()
         install(CODE "execute_process(COMMAND /bin/bash
             \"${CMAKE_CURRENT_LIST_DIR}/macos-postinstall-fixup.sh\"
+            \"${CMAKE_CURRENT_LIST_DIR}\"
             \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/../..\"
             \"${QT_LIB_DIR}\"
             \"${QT_DATA_DIR}\"
@@ -45,6 +51,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
     else()
         install(CODE "execute_process(COMMAND /bin/bash
             \"${CMAKE_CURRENT_LIST_DIR}/macos-postinstall-fixup.sh\"
+            \"${CMAKE_CURRENT_LIST_DIR}\"
             \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}\"
             \"${QT_LIB_DIR}\"
             \"${QT_DATA_DIR}\"
@@ -59,6 +66,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
         COMPONENT resources)
     install(CODE "execute_process(COMMAND bash
         \"${CMAKE_CURRENT_LIST_DIR}/windows-postinstall-fixup.sh\"
+        \"${CMAKE_CURRENT_LIST_DIR}\"
         \"${CMAKE_BINARY_DIR}\"
         \"\$ENV{DESTDIR\}\${CMAKE_INSTALL_PREFIX\}\"
         )"

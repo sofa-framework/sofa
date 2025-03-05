@@ -27,6 +27,8 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/type/vector.h>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::component::topology::container::constant
 {
 
@@ -82,9 +84,10 @@ private:
 protected:
     MeshTopology();
 public:
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
-
     void init() override;
+
+    /// Method called by component Init method. Will create all the topology buffers
+    void computeCrossElementBuffers() override;
 
     Size getNbPoints() const override;
 
@@ -288,13 +291,13 @@ public:
 
 
     // test whether p0p1 has the same orientation as triangle t
-    // opposite dirction: return -1
+    // opposite direction: return -1
     // same direction: return 1
     // otherwise: return 0
     int computeRelativeOrientationInTri(const PointID ind_p0, const PointID ind_p1, const PointID ind_t);
 
     // test whether p0p1 has the same orientation as triangle t
-    // opposite dirction: return -1
+    // opposite direction: return -1
     // same direction: return 1
     // otherwise: return 0
     int computeRelativeOrientationInQuad(const PointID ind_p0, const PointID ind_p1, const PointID ind_q);
@@ -304,13 +307,51 @@ public:
 
 public:
     typedef type::vector<type::Vec3> SeqPoints;
-    Data< SeqPoints > seqPoints; ///< List of point positions
-    Data<SeqEdges> seqEdges; ///< List of edge indices
-    Data<SeqTriangles> seqTriangles; ///< List of triangle indices
-    Data<SeqQuads>       seqQuads; ///< List of quad indices
-    Data<SeqTetrahedra>      seqTetrahedra; ///< List of tetrahedron indices
-    Data<SeqHexahedra>	   seqHexahedra; ///< List of hexahedron indices
-    Data<SeqUV>	seqUVs; ///< List of uv coordinates
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    sofa::core::objectmodel::lifecycle::RenamedData< SeqPoints > seqPoints;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    sofa::core::objectmodel::lifecycle::RenamedData<SeqEdges> seqEdges;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    sofa::core::objectmodel::lifecycle::RenamedData<SeqTriangles> seqTriangles;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    sofa::core::objectmodel::lifecycle::RenamedData<SeqQuads> seqQuads;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    sofa::core::objectmodel::lifecycle::RenamedData<SeqTetrahedra> seqTetrahedra;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    sofa::core::objectmodel::lifecycle::RenamedData<SeqHexahedra> seqHexahedra;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    sofa::core::objectmodel::lifecycle::RenamedData<SeqUV> seqUVs;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> _drawEdges;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> _drawTriangles;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> _drawQuads;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> _drawTetra;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> _drawHexa;
+
+    Data< SeqPoints > d_seqPoints; ///< List of point positions
+    Data<SeqEdges> d_seqEdges; ///< List of edge indices
+    Data<SeqTriangles> d_seqTriangles; ///< List of triangle indices
+    Data<SeqQuads>       d_seqQuads; ///< List of quad indices
+    Data<SeqTetrahedra>      d_seqTetrahedra; ///< List of tetrahedron indices
+    Data<SeqHexahedra>	   d_seqHexahedra; ///< List of hexahedron indices
+    Data<SeqUV>	d_seqUVs; ///< List of uv coordinates
+    Data<bool> d_computeAllBuffers; ///< Option to call method computeCrossElementBuffers. False by default
 
 protected:
     Size  nbPoints;
@@ -601,16 +642,16 @@ public:
     Edge getLocalEdgesInHexahedron (const HexahedronID i) const override;
 
   	/** \ brief returns the topologyType */
-    sofa::core::topology::TopologyElementType getTopologyType() const override { return m_upperElementType; }
+    sofa::geometry::ElementType getTopologyType() const override { return m_upperElementType; }
   
     int revision;
 
     // To draw the mesh, the topology position must be linked with the mechanical object position 
-    Data< bool > _drawEdges; ///< if true, draw the topology Edges
-    Data< bool > _drawTriangles; ///< if true, draw the topology Triangles
-    Data< bool > _drawQuads; ///< if true, draw the topology Quads
-    Data< bool > _drawTetra; ///< if true, draw the topology Tetrahedra
-    Data< bool > _drawHexa; ///< if true, draw the topology hexahedra
+    Data< bool > d_drawEdges; ///< if true, draw the topology Edges
+    Data< bool > d_drawTriangles; ///< if true, draw the topology Triangles
+    Data< bool > d_drawQuads; ///< if true, draw the topology Quads
+    Data< bool > d_drawTetra; ///< if true, draw the topology Tetrahedra
+    Data< bool > d_drawHexa; ///< if true, draw the topology hexahedra
 
     void invalidate();
 
@@ -618,8 +659,8 @@ public:
     virtual void updateHexahedra();
 
 protected:
-    /// Type of higher topology element contains in this container @see TopologyElementType
-    sofa::core::topology::TopologyElementType m_upperElementType;
+    /// Type of higher topology element contains in this container @see ElementType
+    sofa::geometry::ElementType m_upperElementType;
 };
 
 } //namespace sofa::component::topology::container::constant

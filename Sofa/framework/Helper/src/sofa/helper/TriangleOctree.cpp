@@ -69,12 +69,12 @@ void TriangleOctree::insert (SReal _x, SReal _y, SReal _z,
     }
     else
     {
-        SReal size2 = size / 2;
-        int dx = (_x >= (x + size2)) ? 1 : 0;
-        int dy = (_y >= (y + size2)) ? 1 : 0;
-        int dz = (_z >= (z + size2)) ? 1 : 0;
+        const SReal size2 = size / 2;
+        const int dx = (_x >= (x + size2)) ? 1 : 0;
+        const int dy = (_y >= (y + size2)) ? 1 : 0;
+        const int dz = (_z >= (z + size2)) ? 1 : 0;
 
-        int i = dx * 4 + dy * 2 + dz;
+        const int i = dx * 4 + dy * 2 + dz;
         if (!childVec[i])
         {
             is_leaf = false;
@@ -789,14 +789,17 @@ void TriangleOctree::bbAll (const type::Vec3 & bbmin, const type::Vec3 & bbmax, 
     {
         return;
     }
-    int dx0 = (bbmin[0] > c[0]) ? 1 : 0;    int dx1 = (bbmax[0] >= c[0]) ? 1 : 0;
-    int dy0 = (bbmin[1] > c[1]) ? 1 : 0;    int dy1 = (bbmax[1] >= c[1]) ? 1 : 0;
-    int dz0 = (bbmin[2] > c[2]) ? 1 : 0;    int dz1 = (bbmax[2] >= c[2]) ? 1 : 0;
+    const int dx0 = (bbmin[0] > c[0]) ? 1 : 0;
+    const int dx1 = (bbmax[0] >= c[0]) ? 1 : 0;
+    const int dy0 = (bbmin[1] > c[1]) ? 1 : 0;
+    const int dy1 = (bbmax[1] >= c[1]) ? 1 : 0;
+    const int dz0 = (bbmin[2] > c[2]) ? 1 : 0;
+    const int dz1 = (bbmax[2] >= c[2]) ? 1 : 0;
     for (int dx = dx0; dx <= dx1; ++dx)
         for (int dy = dy0; dy <= dy1; ++dy)
             for (int dz = dz0; dz <= dz1; ++dz)
             {
-                int i = dx * 4 + dy * 2 + dz;
+                const int i = dx * 4 + dy * 2 + dz;
                 if (childVec[i])
                 {
                     childVec[i]->bbAll (bbmin, bbmax, results);
@@ -843,10 +846,10 @@ int TriangleOctreeRoot::fillOctree (int tId, int /*d*/, type::Vec3 /*v*/)
     calcTriangleAABB(tId, bb, bbsize);
 
     // computes the depth of the bounding box in a octree
-    int d1 = (int)((log10( (SReal) CUBE_SIZE * 2/ bbsize ) / log10( (SReal)2) ));
+    const int d1 = (int)((log10( (SReal) CUBE_SIZE * 2/ bbsize ) / log10( (SReal)2) ));
     // computes the size of the octree box that can store the bounding box
-    int divs = (1 << (d1));
-    SReal inc = (SReal) (2 * CUBE_SIZE) / divs;
+    const int divs = (1 << (d1));
+    const SReal inc = (SReal) (2 * CUBE_SIZE) / divs;
     if (bb[0] >= -CUBE_SIZE && bb[2] >= -CUBE_SIZE && bb[4] >= -CUBE_SIZE
         && bb[1] <= CUBE_SIZE && bb[3] <= CUBE_SIZE && bb[5] <= CUBE_SIZE)
         for (SReal x1 =

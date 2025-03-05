@@ -65,7 +65,7 @@ protected:
     Data< type::vector< type::Vec3 > > m_positions; ///< input: positions of the vertices
     Data< type::vector< MTriangle > > m_triangles; ///< input: triangles of the mesh
     Data< type::vector< MQuad > > m_quads; ///< input: quads of the mesh
-    Data< type::vector< MPolygon > > m_polygons; ///< must be convex
+    Data< type::vector< MPolygon > > m_polygons; ///< input: polygons of the mesh
 
     /// output
     Data< MassType > rigidMass;
@@ -89,13 +89,13 @@ protected:
     type::fixed_array<SReal,10> afIntegral;
 
 public:
-    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
+    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name parameters
     /// instead of the default one generated automatically by the SOFA_CLASS() macro.
     static std::string GetCustomTemplateName();
 
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API GenerateRigidMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>;
 
 #endif

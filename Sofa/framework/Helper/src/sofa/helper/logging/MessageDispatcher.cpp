@@ -50,13 +50,8 @@ using sofa::helper::logging::DefaultStyleMessageFormatter;
 using std::lock_guard ;
 using std::mutex;
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 #define PUBLIC_API_ENTRY_POINT_MUTEX lock_guard<mutex> guard(getMainInstance()->getMutex()) ;
@@ -198,8 +193,5 @@ MessageDispatcher::LoggerStream::~LoggerStream()
 }
 
 
-} // logging
-} // helper
-} // sofa
-
+}
 

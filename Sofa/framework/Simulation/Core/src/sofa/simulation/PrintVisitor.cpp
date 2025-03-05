@@ -36,10 +36,8 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -98,7 +96,7 @@ void PrintVisitor::processNodeBottomUp(simulation::Node* /*node*/)
     --level;
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

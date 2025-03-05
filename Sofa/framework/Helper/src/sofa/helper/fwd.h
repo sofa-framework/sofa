@@ -23,15 +23,12 @@
 
 #include <sofa/helper/config.h>
 
-namespace sofa::helper
-{
-
-namespace advancedtimer
+namespace sofa::helper::advancedtimer
 {
 SOFA_HELPER_API void stepBegin(const char* idStr);
 SOFA_HELPER_API void stepEnd(const char* idStr);
 }
-}
+
 
 namespace sofa::helper::visual
 {

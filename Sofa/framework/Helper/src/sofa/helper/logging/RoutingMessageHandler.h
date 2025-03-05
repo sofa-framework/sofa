@@ -30,15 +30,12 @@
 #include <sofa/helper/logging/Message.h>
 #include <vector>
 
-namespace sofa
-{
-namespace helper
-{
-namespace logging
+
+namespace sofa::helper::logging
 {
 
 /// I use a per-file namespace so that I can employ the 'using' keywords without
-/// fearing it will leack names into the global namespace.
+/// fearing it will leak names into the global namespace.
 /// When closing this namespace selected objects from this per-file namespace
 /// are then imported into their parent namespace for ease of use.
 namespace routingmessagehandler
@@ -99,9 +96,7 @@ public:
 using routingmessagehandler::RoutingMessageHandler ;
 using routingmessagehandler::MainRoutingMessageHandler ;
 
-} // logging
-} // helper
-} // sofa
+}
 
 #endif // TESTMESSAGEHANDLER_H
 

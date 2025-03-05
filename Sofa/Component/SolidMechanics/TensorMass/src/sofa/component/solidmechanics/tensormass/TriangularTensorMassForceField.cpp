@@ -31,14 +31,12 @@ namespace sofa::component::solidmechanics::tensormass
 
 using namespace sofa::defaulttype;
 
-
-// Register in the Factory
-int TriangularTensorMassForceFieldClass = core::RegisterObject("Linear Elastic Membrane on a Triangular Mesh")
-        .add< TriangularTensorMassForceField<Vec3Types> >()
-
-        ;
+void registerTriangularTensorMassForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Linear Elastic Membrane on a Triangular Mesh")
+        .add< TriangularTensorMassForceField<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_TENSORMASS_API TriangularTensorMassForceField<Vec3Types>;
-
 
 } // namespace sofa::component::solidmechanics::tensormass

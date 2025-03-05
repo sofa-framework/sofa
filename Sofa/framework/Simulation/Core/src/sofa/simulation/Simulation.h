@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_CORE_SIMULATION_H
-#define SOFA_SIMULATION_CORE_SIMULATION_H
+#pragma once
 
 #include <sofa/simulation/config.h>
 #include <sofa/core/objectmodel/Base.h>
@@ -32,94 +31,156 @@ namespace sofa::simulation
     typedef sofa::core::sptr<Node> NodeSPtr;
 }
 
-namespace sofa
+namespace sofa::simulation
 {
 
-namespace simulation
+namespace node
 {
+
+/// Initialize the objects
+void SOFA_SIMULATION_CORE_API initRoot(Node* root);
+///Init a node without changing the context of the simulation.
+void SOFA_SIMULATION_CORE_API init(Node* node);
+/// Print all object in the graph in XML format
+void SOFA_SIMULATION_CORE_API exportInXML(Node* root, const char* fileName);
+/// Print all object in the graph
+void SOFA_SIMULATION_CORE_API print(Node* root);
+/// Update contexts. Required before drawing the scene if root flags are modified.
+void SOFA_SIMULATION_CORE_API updateVisualContext(Node* root);
+/// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
+void SOFA_SIMULATION_CORE_API animate(Node* root, SReal dt=0.0);
+/// Update the Visual Models: triggers the Mappings
+void SOFA_SIMULATION_CORE_API updateVisual(Node* root);
+/// Reset to initial state
+void SOFA_SIMULATION_CORE_API reset(Node* root);
+/// Initialize the textures
+void SOFA_SIMULATION_CORE_API initTextures(Node* root);
+/// Update contexts. Required before drawing the scene if root flags are modified.
+void SOFA_SIMULATION_CORE_API updateContext(Node* root);
+
+/** Compute the bounding box of the scene.
+ * If init is set to "true", then minBBox and maxBBox will be initialised to a default value
+ * @warning MechanicalObjects with showObject member set to false are ignored
+ * @sa computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox)
+ */
+void SOFA_SIMULATION_CORE_API computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true);
+
+/** Compute the bounding box of the scene.
+ * Includes all objects, may they be displayed or not.
+ * @sa computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true)
+ * @deprecated
+ */
+void SOFA_SIMULATION_CORE_API computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox);
+/// Render the scene
+void SOFA_SIMULATION_CORE_API draw(sofa::core::visual::VisualParams* vparams, Node* root);
+/// Export a scene to an OBJ 3D Scene
+void SOFA_SIMULATION_CORE_API exportOBJ(Node* root, const char* filename, bool exportMTL = true);
+/// Print all objects in the graph in the given file (format is given by the filename extension)
+void SOFA_SIMULATION_CORE_API exportGraph(Node* root, const char* filename=nullptr);
+/// Dump the current state in the given stream
+void SOFA_SIMULATION_CORE_API dumpState( Node* root, std::ofstream& out );
+/// Load a scene from a file
+NodeSPtr SOFA_SIMULATION_CORE_API load(const std::string& /* filename */, bool reload = false, const std::vector<std::string>& sceneArgs = std::vector<std::string>(0));
+/// Unload a scene from a Node.
+void SOFA_SIMULATION_CORE_API unload(NodeSPtr root);
+
+}
 
 /** Main controller of the scene.
     Defines how the scene is inited at the beginning, and updated at each time step.
     Derives from Base in order to use smart pointers and model the parameters as Datas, which makes their edition easy in the GUI.
  */
-class SOFA_SIMULATION_CORE_API Simulation: public virtual sofa::core::objectmodel::Base
+class SOFA_SIMULATION_CORE_API Simulation
 {
 public:
-    SOFA_CLASS(Simulation, sofa::core::objectmodel::Base);
 
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1730)", "v21.12", "Use sofa::core::visual::DisplayFlags instead.")
-    typedef DeprecatedAndRemoved DisplayFlags;
+    using SPtr = std::shared_ptr<Simulation>;
 
     Simulation();
-    ~Simulation() override;
-	
-private:
-	Simulation(const Simulation& n) = delete;
-	Simulation& operator=(const Simulation& n) = delete;
-	
-public:
+    virtual ~Simulation();
+
+    Simulation(const Simulation& n) = delete;
+    Simulation& operator=(const Simulation& n) = delete;
+
     /// Print all object in the graph
-    virtual void print(Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_PRINT()
+    virtual void print(Node* root) = delete;
 
     /// Initialize the objects
-    virtual void init(Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_INIT()
+    virtual void init(Node* root) = delete;
 
     ///Init a node without changing the context of the simulation.
-    virtual void initNode(Node* node);
-
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_INITNODE()
+    virtual void initNode(Node* node) = delete;
 
     /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
-    virtual void animate(Node* root, SReal dt=0.0);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_ANIMATE()
+    virtual void animate(Node* root, SReal dt=0.0) = delete;
 
     /// Update the Visual Models: triggers the Mappings
-    virtual void updateVisual(Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_UPDATEVISUAL()
+    virtual void updateVisual(Node* root) = delete;
 
     /// Reset to initial state
-    virtual void reset(Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_RESET()
+    virtual void reset(Node* root) = delete;
 
     /// Initialize the textures
-    virtual void initTextures(Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_INITTEXTURE()
+    virtual void initTextures(Node* root) = delete;
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
-    virtual void updateContext(Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_UPDATECONTEXT()
+    virtual void updateContext(Node* root) = delete;
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
-    virtual void updateVisualContext(Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_UPDATEVISUALCONTEXT()
+    virtual void updateVisualContext(Node* root) = delete;
 
     /** Compute the bounding box of the scene.
      * If init is set to "true", then minBBox and maxBBox will be initialised to a default value
      * @warning MechanicalObjects with showObject member set to false are ignored
      * @sa computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox)
      */
-    virtual void computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_COMPUTEBBOX()
+    virtual void computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true) = delete;
 
     /** Compute the bounding box of the scene.
      * Includes all objects, may they be displayed or not.
      * @sa computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true)
      * @deprecated
      */
-    virtual void computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_COMPUTETOTALBBOX()
+    virtual void computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox) = delete;
 
     /// Render the scene
-    virtual void draw(sofa::core::visual::VisualParams* vparams, Node* root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_DRAW()
+    virtual void draw(sofa::core::visual::VisualParams* vparams, Node* root) = delete;
 
     /// Export a scene to an OBJ 3D Scene
-    virtual void exportOBJ(Node* root, const char* filename, bool exportMTL = true);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_EXPORTOBJ()
+    virtual void exportOBJ(Node* root, const char* filename, bool exportMTL = true) = delete;
 
     /// Print all object in the graph in XML format
-    virtual void exportXML(Node* root, const char* fileName=nullptr);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_EXPORTXML()
+    virtual void exportXML(Node* root, const char* fileName=nullptr) = delete;
 
     /// Print all objects in the graph in the given file (format is given by the filename extension)
-    virtual void exportGraph(Node* root, const char* filename=nullptr);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_EXPORTGRAPH()
+    virtual void exportGraph(Node* root, const char* filename=nullptr) = delete;
 
     /// Dump the current state in the given stream
-    virtual void dumpState( Node* root, std::ofstream& out );
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_DUMPSTATE()
+    virtual void dumpState( Node* root, std::ofstream& out ) = delete;
 
     /// Load a scene from a file
-    virtual NodeSPtr load(const std::string& /* filename */, bool reload = false, const std::vector<std::string>& sceneArgs = std::vector<std::string>(0));
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_LOAD()
+    virtual NodeSPtr load(const std::string& /* filename */, bool reload = false, const std::vector<std::string>& sceneArgs = std::vector<std::string>(0)) = delete;
 
     /// Unload a scene from a Node.
-    virtual void unload(NodeSPtr root);
+    SOFA_ATTRIBUTE_DISABLED_SIMULATION_UNLOAD()
+    virtual void unload(NodeSPtr root) = delete;
 
     /// create a new graph(or tree) and return its root node.
     virtual NodeSPtr createNewGraph(const std::string& name)=0;//Todo replace newNode method
@@ -127,18 +188,11 @@ public:
     /// creates and returns a new node.
     virtual NodeSPtr createNewNode(const std::string& name)=0;
 
-    /// @warning this singleton has one limitation: it is easy to create several types of
-    /// simulations at the same time (e.g. DAGSimulation + TreeSimulation)
-    /// but it does not sound like a huge limitation
-    static Simulation::SPtr theSimulation;
-
     /// Can the simulation handle a directed acyclic graph?
     virtual bool isDirectedAcyclicGraph() = 0;
 
+    inline static Simulation::SPtr theSimulation { nullptr };
 };
+} // namespace sofa::simulation
 
-} // namespace simulation
-
-} // namespace sofa
-
-#endif
+MSG_REGISTER_CLASS(sofa::simulation::Simulation, "Simulation")

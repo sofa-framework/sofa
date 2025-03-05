@@ -2,8 +2,8 @@
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 -9 1">
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -21,7 +21,7 @@
     <CollisionPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager response="PenalityContactForceField" />
+    <CollisionResponse response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultAnimationLoop/>
     
@@ -45,7 +45,7 @@
         <DiagonalMass massDensity="10.0" />
         <TetrahedronFEMForceField youngModulus="4000" poissonRatio="0.45" />
         <BoxROI name="box" box="-10 19 -10 10 21 10" drawBoxes="true" />
-        <FixedConstraint  name="FixedConstraint" indices="@box.indices" activate_projectVelocity="1"/>
+        <FixedProjectiveConstraint  name="FixedProjectiveConstraint" indices="@box.indices" activate_projectVelocity="1"/>
      
         <Node name="Visu">
             <MeshOBJLoader name="meshLoader_3" filename="mesh/torus.obj" handleSeams="1" translation="0 10 0" scale3d="4 4 4" />

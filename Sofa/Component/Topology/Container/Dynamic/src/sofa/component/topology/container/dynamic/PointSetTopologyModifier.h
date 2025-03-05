@@ -44,12 +44,12 @@ public:
     friend class PointSetGeometryAlgorithms;
 
     typedef core::topology::BaseMeshTopology::PointID PointID;
-    Data<bool> d_propagateToDOF; ///< propagate changes to Mechanical object DOFs
+    Data<bool> d_propagateToDOF; ///< Propagate changes to Mechanical object DOFs
 
 protected:
     PointSetTopologyModifier()
         : TopologyModifier()
-        , d_propagateToDOF(initData(&d_propagateToDOF, true, "propagateToDOF", " propagate changes to MEchanical object DOFs if true"))
+        , d_propagateToDOF(initData(&d_propagateToDOF, true, "propagateToDOF", "Propagate changes to Mechanical object DOFs"))
     {}
 
     ~PointSetTopologyModifier() override {}
@@ -100,10 +100,6 @@ public:
     * @param removeDOF: Notify if the DOF from the mechanical container need to be updated as well.
     */
     virtual void removePoints(sofa::type::vector< PointID >& indices, const bool removeDOF = true);
-
-
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1860)", "v21.06 (PR#1860)", "This method was never used nor supported.")
-    void propagateTopologicalChangesWithoutReset() = delete;
 
 
     /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.

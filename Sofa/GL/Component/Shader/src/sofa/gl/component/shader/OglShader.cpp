@@ -29,10 +29,11 @@
 namespace sofa::gl::component::shader
 {
 
-//Register OglShader in the Object Factory
-int OglShaderClass = core::RegisterObject("OglShader")
-        .add< OglShader >()
-        ;
+void registerOglShader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Set custom shader for the current visual context.")
+        .add< OglShader >());
+}
 
 OglShader::OglShader():
     turnOn(initData(&turnOn, (bool) true, "turnOn", "Turn On the shader?")),
@@ -140,7 +141,7 @@ void OglShader::reinit()
 
 }
 
-void OglShader::initVisual()
+void OglShader::doInitVisual(const core::visual::VisualParams*)
 {
 
     if (!sofa::gl::GLSLShader::InitGLSL())
@@ -148,7 +149,7 @@ void OglShader::initVisual()
         msg_error() << "InitGLSL failed";
         return;
     }
-    unsigned int nshaders = (unsigned int)shaderVector.size();
+    const unsigned int nshaders = (unsigned int)shaderVector.size();
 #ifdef GL_GEOMETRY_SHADER_EXT
     if (!geoFilename.getValue().empty())
     {
@@ -240,11 +241,6 @@ void OglShader::parse(core::objectmodel::BaseObjectDescription* arg)
 #endif
 }
 
-void OglShader::drawVisual(const core::visual::VisualParams* )
-{
-
-}
-
 void OglShader::stop()
 {
     if(turnOn.getValue() && shaderVector[indexActiveShader.getValue()]->IsReady())
@@ -283,11 +279,6 @@ void OglShader::start()
 bool OglShader::isActive()
 {
     return !passive.getValue();
-}
-
-void OglShader::updateVisual()
-{
-
 }
 
 unsigned int OglShader::getNumberOfShaders()
@@ -488,7 +479,7 @@ void OglShader::setMatrix4x3(const unsigned int index, const char* name, int cou
 GLint OglShader::getAttribute(const unsigned int index, const char* name)
 {
     start();
-    GLint res = shaderVector[index]->GetAttributeVariable(name);
+    const GLint res = shaderVector[index]->GetAttributeVariable(name);
     stop();
 
     return res;
@@ -497,7 +488,7 @@ GLint OglShader::getAttribute(const unsigned int index, const char* name)
 GLint OglShader::getUniform(const unsigned int index, const char* name)
 {
     start();
-    GLint res = shaderVector[index]->GetVariable(name);
+    const GLint res = shaderVector[index]->GetVariable(name);
     stop();
 
     return res;
@@ -544,13 +535,13 @@ OglShaderElement::OglShaderElement()
 
 void OglShaderElement::init()
 {
-    sofa::core::objectmodel::BaseContext* mycontext = this->getContext();
+    const sofa::core::objectmodel::BaseContext* mycontext = this->getContext();
 
     if (id.getValue().empty())
         id.setValue(this->getName());
 
     /*when no multipass is active */
-    sofa::gl::component::shader::CompositingVisualLoop* isMultipass=nullptr;
+    const sofa::gl::component::shader::CompositingVisualLoop* isMultipass=nullptr;
     isMultipass= mycontext->core::objectmodel::BaseContext::get<sofa::gl::component::shader::CompositingVisualLoop>();
     if(isMultipass==nullptr)
     {
@@ -563,8 +554,8 @@ void OglShaderElement::init()
         return;
     }
 
-    sofa::core::objectmodel::TagSet::const_iterator begin = this->getTags().begin();
-    sofa::core::objectmodel::TagSet::const_iterator end = this->getTags().end();
+    const sofa::core::objectmodel::TagSet::const_iterator begin = this->getTags().begin();
+    const sofa::core::objectmodel::TagSet::const_iterator end = this->getTags().end();
     sofa::core::objectmodel::TagSet::const_iterator it;
     type::vector<OglShader*> gotShaders;
 

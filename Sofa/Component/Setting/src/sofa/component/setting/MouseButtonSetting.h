@@ -26,6 +26,8 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/helper/OptionsGroup.h>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::component::setting
 {
 
@@ -38,8 +40,10 @@ protected:
 public:
     virtual std::string getOperationType()=0;
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::helper::OptionsGroup> button;
 
-    core::objectmodel::Data<sofa::helper::OptionsGroup> button; ///< Mouse button used
+    core::objectmodel::Data<sofa::helper::OptionsGroup> d_button; ///< Mouse button used
 
 };
 

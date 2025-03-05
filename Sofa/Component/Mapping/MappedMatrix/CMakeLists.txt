@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.Mapping.MappedMatrix LANGUAGES CXX)
 
 set(SOFACOMPONENTMAPPINGMAPPEDMATRIX_SOURCE_DIR "src/sofa/component/mapping/mappedmatrix")
@@ -6,16 +6,10 @@ set(SOFACOMPONENTMAPPINGMAPPEDMATRIX_SOURCE_DIR "src/sofa/component/mapping/mapp
 set(HEADER_FILES
     ${SOFACOMPONENTMAPPINGMAPPEDMATRIX_SOURCE_DIR}/config.h.in
     ${SOFACOMPONENTMAPPINGMAPPEDMATRIX_SOURCE_DIR}/init.h
-    ${SOFACOMPONENTMAPPINGMAPPEDMATRIX_SOURCE_DIR}/MappingGeometricStiffnessForceField.h
-    ${SOFACOMPONENTMAPPINGMAPPEDMATRIX_SOURCE_DIR}/MappingGeometricStiffnessForceField.inl
-    ${SOFACOMPONENTMAPPINGMAPPEDMATRIX_SOURCE_DIR}/MechanicalMatrixMapper.h
-    ${SOFACOMPONENTMAPPINGMAPPEDMATRIX_SOURCE_DIR}/MechanicalMatrixMapper.inl
 )
 
 set(SOURCE_FILES
     ${SOFACOMPONENTMAPPINGMAPPEDMATRIX_SOURCE_DIR}/init.cpp
-    ${SOFACOMPONENTMAPPINGMAPPEDMATRIX_SOURCE_DIR}/MappingGeometricStiffnessForceField.cpp
-    ${SOFACOMPONENTMAPPINGMAPPEDMATRIX_SOURCE_DIR}/MechanicalMatrixMapper.cpp
 )
 
 sofa_find_package(Sofa.Simulation.Core REQUIRED)

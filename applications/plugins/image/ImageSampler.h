@@ -89,7 +89,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
         typedef typename ImageSamplerT::Hexa Hexa;
 
 
-        // get tranform and image at time t
+        // get transform and image at time t
         typename ImageSamplerT::raImage in(sampler->image);
         typename ImageSamplerT::raTransform inT(sampler->transform);
         const cimg_library::CImg<T>& inimg = in->getCImg(sampler->time);
@@ -161,7 +161,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
 
         clock_t timer = clock();
 
-        // get tranform and image at time t
+        // get transform and image at time t
         typename ImageSamplerT::raImage in(sampler->image);
         typename ImageSamplerT::raTransform inT(sampler->transform);
         const cimg_library::CImg<T>& inimg = in->getCImg(sampler->time);
@@ -276,7 +276,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
 
         clock_t timer = clock();
 
-        // get tranform and image at time t
+        // get transform and image at time t
         typename ImageSamplerT::raImage in(sampler->image);
         typename ImageSamplerT::raTransform inT(sampler->transform);
         const cimg_library::CImg<T>& inimg = in->getCImg(sampler->time);
@@ -535,9 +535,9 @@ public:
         transform.setReadOnly(true);
         f_listening.setValue(true);
 
-        helper::OptionsGroup methodOptions(2,"0 - Regular sampling (at voxel center(0) or corners (1)) "
-                                           ,"1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)/ParallelMarching(2)=1 | PMM max iter | PMM tolerance)"
-                                           );
+        helper::OptionsGroup methodOptions{"0 - Regular sampling (at voxel center(0) or corners (1)) "
+                                          ,"1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)/ParallelMarching(2)=1 | PMM max iter | PMM tolerance)"
+                                          };
         methodOptions.setSelectedItem(REGULAR);
         method.setValue(methodOptions);
 

@@ -28,13 +28,11 @@
 #include <type_traits>
 #include <cstdlib>
 
-namespace sofa
-{
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 
-template< class TBloc >
+template< class TBlock >
 class MapMapSparseMatrixToEigenSparse
 {
 
@@ -93,7 +91,7 @@ class MapMapSparseMatrixToEigenSparse< sofa::defaulttype::RigidDeriv<N, Real > >
 };
 
 
-template< class TBloc >
+template< class TBlock >
 class EigenSparseToMapMapSparseMatrix
 {
 
@@ -117,8 +115,8 @@ struct EigenSparseToMapMapSparseMatrixVec
 
         for (int rowIndex = 0; rowIndex < eigenMat.outerSize(); ++rowIndex)
         {
-            int offset      = *(outerIndexPtr + rowIndex);
-            int rowNonZeros = *(outerIndexPtr + rowIndex + 1) - *(outerIndexPtr + rowIndex);
+            const int offset      = *(outerIndexPtr + rowIndex);
+            const int rowNonZeros = *(outerIndexPtr + rowIndex + 1) - *(outerIndexPtr + rowIndex);
 
             if (rowNonZeros != 0)
             {
@@ -133,8 +131,8 @@ struct EigenSparseToMapMapSparseMatrixVec
                 while (i != rowNonZeros)
                 {
                     TVec val;
-                    int currentBlockIndex = blockIndex;
-                    while (currentBlockIndex == blockIndex && i != rowNonZeros)
+                    int currenTBlockkIndex = blockIndex;
+                    while (currenTBlockkIndex == blockIndex && i != rowNonZeros)
                     {
                         val[blockOffset] = *valuePtr;
                         ++i;
@@ -144,7 +142,7 @@ struct EigenSparseToMapMapSparseMatrixVec
                         blockOffset = *colPtr - (blockIndex * TVec::size());
                     }
 
-                    rowIterator.addCol(currentBlockIndex, val);
+                    rowIterator.addCol(currenTBlockkIndex, val);
                 }
             }
         }
@@ -248,8 +246,6 @@ void addMultTransposeEigen(MapMapSparseMatrix<LhsDeriv>& lhs, const Eigen::Spars
 
         ++rhsRowIt;
     }
-}
-
 }
 
 }

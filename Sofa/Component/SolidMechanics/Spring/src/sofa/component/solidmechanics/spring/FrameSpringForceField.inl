@@ -23,6 +23,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/solidmechanics/spring/FrameSpringForceField.h>
+#include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <cassert>
@@ -41,10 +42,14 @@ FrameSpringForceField<DataTypes>::FrameSpringForceField()
 template<class DataTypes>
 FrameSpringForceField<DataTypes>::FrameSpringForceField ( MechanicalState* object1, MechanicalState* object2 )
     : Inherit ( object1, object2 )
-    , springs ( initData ( &springs,"spring","pairs of indices, stiffness, damping, rest length" ) )
-    , showLawfulTorsion ( initData ( &showLawfulTorsion, false, "show lawful Torsion", "dislpay the lawful part of the joint rotation" ) )
-    , showExtraTorsion ( initData ( &showExtraTorsion, false, "show illicit Torsion", "dislpay the illicit part of the joint rotation" ) )
+    , d_springs (initData (&d_springs, "spring", "pairs of indices, stiffness, damping, rest length" ) )
+    , d_showLawfulTorsion (initData (&d_showLawfulTorsion, false, "showLawfulTorsion", "display the lawful part of the joint rotation" ) )
+    , d_showExtraTorsion (initData (&d_showExtraTorsion, false, "showExtraTorsion", "display the illicit part of the joint rotation" ) )
 {
+    springs.setOriginalData(&d_springs);
+    showLawfulTorsion.setOriginalData(&d_showLawfulTorsion);
+    showExtraTorsion.setOriginalData(&d_showExtraTorsion);
+
 }
 
 template <class DataTypes>
@@ -136,7 +141,7 @@ void FrameSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*
     f1.resize ( x1.size() );
     f2.resize ( x2.size() );
     m_potentialEnergy = 0;
-    const sofa::type::vector<Spring>& springsVec = springs.getValue();
+    const sofa::type::vector<Spring>& springsVec = d_springs.getValue();
     for ( unsigned int i=0; i<springsVec.size(); i++ )
     {
         this->addSpringForce ( m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springsVec[i] );
@@ -158,7 +163,7 @@ void FrameSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* /
     df1.resize ( dx1.size() );
     df2.resize ( dx2.size() );
 
-    const sofa::type::vector<Spring>& springsVec = springs.getValue();
+    const sofa::type::vector<Spring>& springsVec = d_springs.getValue();
     for ( unsigned int i=0; i<springsVec.size(); i++ )
     {
         this->addSpringDForce ( df1,dx1,df2,dx2, i, springsVec[i] );
@@ -168,12 +173,18 @@ void FrameSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* /
     data_df2.endEdit();
 }
 
+template <class DataTypes>
+void FrameSpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if ( ! ( ( this->mstate1 == this->mstate2 ) ?vparams->displayFlags().getShowForceFields() :vparams->displayFlags().getShowInteractionForceFields() ) ) return;
-    const VecCoord& p1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p1 =this->mstate1->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& p2 =this->mstate2->read(core::vec_id::read_access::position)->getValue();
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
@@ -181,13 +192,13 @@ void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     std::vector<sofa::type::Vec3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
 
-    bool external = ( this->mstate1!=this->mstate2 );
-    const type::vector<Spring>& springs = this->springs.getValue();
+    const bool external = ( this->mstate1!=this->mstate2 );
+    const type::vector<Spring>& springs = this->d_springs.getValue();
 
     for ( unsigned int i=0; i<springs.size(); i++ )
     {
-        double restLength = (springs[i].vec1.norm() + springs[i].vec2.norm());
-        Real d = ( p2[springs[i].m2].getCenter()-p1[springs[i].m1].getCenter()).norm();
+        const double restLength = (springs[i].vec1.norm() + springs[i].vec2.norm());
+        Real d = (p2[springs[i].m2].getCenter() - p1[springs[i].m1].getCenter()).norm();
         if ( external )
         {
             if ( d < restLength *0.9999 )
@@ -229,17 +240,17 @@ void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 template<class DataTypes>
 void FrameSpringForceField<DataTypes>::clear ( int reserve )
 {
-    type::vector<Spring>& springs = *this->springs.beginEdit();
+    type::vector<Spring>& springs = *this->d_springs.beginEdit();
     springs.clear();
     if ( reserve ) springs.reserve ( reserve );
-    this->springs.endEdit();
+    this->d_springs.endEdit();
 }
 
 template<class DataTypes>
 void FrameSpringForceField<DataTypes>::addSpring ( const Spring& s )
 {
-    springs.beginEdit()->push_back ( s );
-    springs.endEdit();
+    d_springs.beginEdit()->push_back (s );
+    d_springs.endEdit();
 }
 
 
@@ -251,8 +262,8 @@ void FrameSpringForceField<DataTypes>::addSpring ( int m1, int m2, Real softKst,
     //const MechanicalState<DataTypes> obj1 = *(getMState1());
     //const MechanicalState<DataTypes> obj2 = *(getMState2());
 
-    springs.beginEdit()->push_back ( s );
-    springs.endEdit();
+    d_springs.beginEdit()->push_back (s );
+    d_springs.endEdit();
 }
 
 } // namespace sofa::component::solidmechanics::spring

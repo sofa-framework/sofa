@@ -35,13 +35,8 @@ using sofa::type::Vec3;
 #include <string>
 #include <cmath>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 XspLoaderDataHook::~XspLoaderDataHook(){}
@@ -55,7 +50,7 @@ bool XspLoader::ReadXspContent(std::ifstream &file,
     size_t numTotalMasses=0;
     size_t numTotalSpring=0;
 
-    /// Temporarily stores the masses while loading for the initpos calculs in the
+    /// Temporarily stores the masses while loading for the initpos calculus in the
     /// 'lspg' command.
     std::vector<Vec3> masses;
     while (!file.eof())
@@ -101,7 +96,7 @@ bool XspLoader::ReadXspContent(std::ifstream &file,
                 msg_error("XspLoader") << "Error while reading 'mass' command.";
                 return false;
             }
-            bool isASurfacePoint = (location == 's');
+            const bool isASurfacePoint = (location == 's');
             bool isAFixedPoint = false;
             if (mass < 0)
             {
@@ -239,9 +234,9 @@ bool XspLoader::Load(const std::string& filename,
     return isOk;
 }
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
 
-} // namespace sofa
+
+
 

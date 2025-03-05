@@ -24,10 +24,8 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/config.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 /**
@@ -45,7 +43,7 @@ public:
     inline static const char* GetClassName() { return "SimulationStopEvent"; }
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

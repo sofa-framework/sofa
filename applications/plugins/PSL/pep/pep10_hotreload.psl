@@ -1,5 +1,0 @@
-/// I this PEP we are proposing to only reload/reinstanciated part of the scene graph based on
-/// at a template granularity
-/// When and imported filed changed...we reinstanciated the template
-/// When the template source changed...same...
-/// This would allow to edit very big scenes in a faster way.

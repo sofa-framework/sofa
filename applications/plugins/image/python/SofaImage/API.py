@@ -99,7 +99,7 @@ class Image:
             mesh.mergeROIs = self.node.createObject('MergeROIs', name="mergeROIs_"+name, nbROIs=len(roiIndices), **args)
             mesh.roiIndices=mesh.mergeROIs.getLinkPath()+".roiIndices"
             # use mergeROIs to potentially combine other rois (from meshclosing, boxRois, etc.)
-            # but here, roiIndices reformating to "[i,j,..] [k,l,..]" would work..
+            # but here, roiIndices reformatting to "[i,j,..] [k,l,..]" would work..
 
         self.meshes[name] = mesh
         self.meshSeq.append(name)

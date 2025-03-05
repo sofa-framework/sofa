@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.02" gravity="0 -10 0">
+    <Node name="plugins">
+        <RequiredPlugin name="MultiThreading"/> <!-- Needed to use components [ParallelCGLinearSolver] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+        <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+        <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+        <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+        <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
+        <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+        <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    </Node>
+
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <DefaultAnimationLoop/>
+
+    <Node>
+        <EulerImplicitSolver name="eulerimplicit_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <ParallelCGLinearSolver template="ParallelCompressedRowSparseMatrixMat3x3d" iterations="100" tolerance="1e-20" threshold="1e-20" warmStart="1" />
+        <MechanicalObject />
+        <UniformMass name="mass" totalMass="320" />
+        <RegularGridTopology name="grid" nx="8" ny="8" nz="40" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />
+        <BoxROI name="box" box="-10 -1 -0.0001  -5 4 0.0001"/>
+        <FixedProjectiveConstraint indices="@box.indices" />
+        <ParallelHexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
+    </Node>
+</Node>

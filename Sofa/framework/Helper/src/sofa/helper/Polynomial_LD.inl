@@ -28,9 +28,7 @@
 #include <iterator>
 
 
-namespace sofa
-{
-namespace helper
+namespace sofa::helper
 {
 
 /**
@@ -697,9 +695,8 @@ void Polynomial_LD<Real,N>::sort()
     }
 }
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
 
 #endif
 

@@ -44,7 +44,6 @@ public:
     static const sofa::type::vector<Implementation>& getImplementations();
 
 private:
-    static sofa::type::vector<Implementation> s_implementations;
 
     static sofa::type::vector<Implementation>::const_iterator findParallelImplementationImpl(const std::string& sequentialImplementation);
 };

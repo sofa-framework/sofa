@@ -22,10 +22,7 @@
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -54,8 +51,6 @@ void PropagateEventVisitor::processObject(simulation::Node*, core::objectmodel::
         obj->handleEvent( m_event );
 }
 
-
-}
 
 }
 

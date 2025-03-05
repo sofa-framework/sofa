@@ -62,7 +62,7 @@ public:
 
 bool MeshTopology_test::testEmptyContainer()
 {
-    MeshTopology::SPtr topoCon = sofa::core::objectmodel::New< MeshTopology >();
+    const MeshTopology::SPtr topoCon = sofa::core::objectmodel::New< MeshTopology >();
 
     EXPECT_EQ(topoCon->getNbHexahedra(), 0);
     EXPECT_EQ(topoCon->getHexahedra().size(), 0);
@@ -87,10 +87,10 @@ bool MeshTopology_test::testEmptyContainer()
 
 bool MeshTopology_test::testHexahedronTopology()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/nine_hexa.msh", sofa::core::topology::TopologyElementType::HEXAHEDRON);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/nine_hexa.msh", sofa::geometry::ElementType::HEXAHEDRON);
     HexahedronSetTopologyContainer* topoCon = dynamic_cast<HexahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    fake_TopologyScene* scene2 = new fake_TopologyScene("mesh/nine_hexa.msh", sofa::core::topology::TopologyElementType::HEXAHEDRON, true);
+    fake_TopologyScene* scene2 = new fake_TopologyScene("mesh/nine_hexa.msh", sofa::geometry::ElementType::HEXAHEDRON, true);
     MeshTopology* topo = dynamic_cast<MeshTopology*>(scene2->getNode().get()->getMeshTopology());
     topo->init();
     
@@ -201,10 +201,10 @@ bool MeshTopology_test::testHexahedronTopology()
 
 bool MeshTopology_test::testTetrahedronTopology()
 {   
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyElementType::TETRAHEDRON);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::geometry::ElementType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    fake_TopologyScene* scene2 = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyElementType::TETRAHEDRON, true);
+    fake_TopologyScene* scene2 = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::geometry::ElementType::TETRAHEDRON, true);
     MeshTopology* topo = dynamic_cast<MeshTopology*>(scene2->getNode().get()->getMeshTopology());
     topo->init();
 
@@ -315,10 +315,10 @@ bool MeshTopology_test::testTetrahedronTopology()
 
 bool MeshTopology_test::testQuadTopology()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyElementType::QUAD);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::geometry::ElementType::QUAD);
     QuadSetTopologyContainer* topoCon = dynamic_cast<QuadSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    fake_TopologyScene* scene2 = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyElementType::QUAD, true);
+    fake_TopologyScene* scene2 = new fake_TopologyScene("mesh/square1_quads.obj", sofa::geometry::ElementType::QUAD, true);
     MeshTopology* topo = dynamic_cast<MeshTopology*>(scene2->getNode().get()->getMeshTopology());
     topo->init();
 
@@ -411,10 +411,10 @@ bool MeshTopology_test::testQuadTopology()
 
 bool MeshTopology_test::testTriangleTopology()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1.obj", sofa::core::topology::TopologyElementType::TRIANGLE);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1.obj", sofa::geometry::ElementType::TRIANGLE);
     TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    fake_TopologyScene* scene2 = new fake_TopologyScene("mesh/square1.obj", sofa::core::topology::TopologyElementType::TRIANGLE, true);
+    fake_TopologyScene* scene2 = new fake_TopologyScene("mesh/square1.obj", sofa::geometry::ElementType::TRIANGLE, true);
     MeshTopology* topo = dynamic_cast<MeshTopology*>(scene2->getNode().get()->getMeshTopology());
     topo->init();
 
@@ -507,10 +507,10 @@ bool MeshTopology_test::testTriangleTopology()
 
 bool MeshTopology_test::testEdgeTopology()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyElementType::EDGE);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::geometry::ElementType::EDGE);
     EdgeSetTopologyContainer* topoCon = dynamic_cast<EdgeSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
-    fake_TopologyScene* scene2 = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyElementType::EDGE, true);
+    fake_TopologyScene* scene2 = new fake_TopologyScene("mesh/square1_edges.obj", sofa::geometry::ElementType::EDGE, true);
     MeshTopology* topo = dynamic_cast<MeshTopology*>(scene2->getNode().get()->getMeshTopology());
     topo->init();
 
@@ -525,8 +525,8 @@ bool MeshTopology_test::testEdgeTopology()
         return false;
     }
 
-    int nbrEdge = 45;
-    int elemSize = 2;
+    const int nbrEdge = 45;
+    const int elemSize = 2;
 
     // Check edge container buffers size
     EXPECT_EQ(topo->getNbEdges(), nbrEdge);

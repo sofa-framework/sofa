@@ -25,7 +25,11 @@
 namespace multithreading
 {
 
-sofa::type::vector<ParallelImplementationsRegistry::Implementation> ParallelImplementationsRegistry::s_implementations;
+sofa::type::vector<ParallelImplementationsRegistry::Implementation>& getStaticImplementations()
+{
+    static sofa::type::vector<ParallelImplementationsRegistry::Implementation> s_implementations;
+    return s_implementations;
+}
 
 bool ParallelImplementationsRegistry::addEquivalentImplementations(
     const std::string& sequentialImplementation, const std::string& parallelImplementation)
@@ -34,9 +38,9 @@ bool ParallelImplementationsRegistry::addEquivalentImplementations(
 
     const auto it = findParallelImplementationImpl(sequentialImplementation);
 
-    if (it == s_implementations.end())
+    if (it == getStaticImplementations().end())
     {
-        s_implementations.push_back(implementation);
+        getStaticImplementations().push_back(implementation);
         return true;
     }
 
@@ -62,7 +66,7 @@ std::string ParallelImplementationsRegistry::findParallelImplementation(
 {
     const auto it = findParallelImplementationImpl(sequentialImplementation);
 
-    if (it != s_implementations.end())
+    if (it != getImplementations().end())
     {
         return it->parallel;
     }
@@ -72,14 +76,14 @@ std::string ParallelImplementationsRegistry::findParallelImplementation(
 const sofa::type::vector<ParallelImplementationsRegistry::Implementation>&
 ParallelImplementationsRegistry::getImplementations()
 {
-    return s_implementations;
+    return getStaticImplementations();
 }
 
 sofa::type::vector<ParallelImplementationsRegistry::Implementation>::const_iterator
 ParallelImplementationsRegistry::findParallelImplementationImpl(
     const std::string& sequentialImplementation)
 {
-    return std::find_if(s_implementations.begin(), s_implementations.end(),
+    return std::find_if(getStaticImplementations().begin(), getStaticImplementations().end(),
         [&sequentialImplementation](const Implementation& i)
         {
             return i.sequential == sequentialImplementation;

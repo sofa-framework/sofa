@@ -40,7 +40,7 @@ namespace controller
 #define SCROLL_DIRECTION_THRESHOLD 0.5
 #define SWIPE_MIN_VELOCITY 500
 #define SWIPE_MAX_VELOCITY 6000
-#define PINCH_DISTANCE_THRESHOLD 40 // a pinch will be detected if the distance between two fingers is smaller than this thresold
+#define PINCH_DISTANCE_THRESHOLD 40 // a pinch will be detected if the distance between two fingers is smaller than this threshold
 #define PINCH_DOTPRODUCT_THRESHOLD 0.8
 int32_t fingersIdsArray[5] = {-1,-1,-1,-1,-1};
 
@@ -55,7 +55,7 @@ LeapMotionDriver::LeapMotionDriver()
     , gestureType(initData(&gestureType, int(-1) ,"gestureType","Type of the current gesture detected by the Leap Motion"))
     , gesturePosition(initData(&gesturePosition, "gesturePosition","Position of the current gesture detected by the Leap Motion"))
     , gestureDirection(initData(&gestureDirection, "gestureDirection","Direction of the current gesture detected by the Leap Motion"))
-    , scrollDirection(initData (&scrollDirection, int(0), "scrollDirection", "Enter 0 if no scrolling (1 if scoll increases the value, 2 if scroll decreases it)"))
+    , scrollDirection(initData (&scrollDirection, int(0), "scrollDirection", "Enter 0 if no scrolling (1 if scroll increases the value, 2 if scroll decreases it)"))
     , displayHand(initData (&displayHand, false, "displayHand", "display the hand detected by the Leap Motion"))
 {
     this->f_listening.setValue(true);
@@ -132,12 +132,6 @@ void LeapMotionDriver::init()
             lastGesturesFrameIds.push_back(std::make_pair(i,0));
 	}
 	lastGestureFrameId = 0;
-}
-
-
-void LeapMotionDriver::bwdInit()
-{
-    msg_info() <<"LeapMotionDriver::bwdInit()";
 }
 
 

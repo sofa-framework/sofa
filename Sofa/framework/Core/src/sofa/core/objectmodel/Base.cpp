@@ -51,10 +51,9 @@ using std::string;
 static const std::string unnamed_label=std::string("unnamed");
 
 Base::Base()
-    : ref_counter(0)
-    , name(initData(&name,unnamed_label,"name","object name"))
+    : name(initData(&name,unnamed_label,"name","object name"))
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, emits extra messages at runtime."))
-    , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
+    , f_tags(initData( &f_tags, "tags", "list of the subsets the object belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
     , d_componentState(initData(&d_componentState, ComponentState::Undefined, "componentState", "The state of the component among (Dirty, Valid, Undefined, Loading, Invalid)."))
 {
@@ -78,18 +77,6 @@ Base::~Base()
 {
 }
 
-void Base::addRef()
-{
-    ++ref_counter;
-}
-
-void Base::release()
-{
-    if (ref_counter.fetch_sub(1) == 1)
-    {
-        delete this;
-    }
-}
 
 
 void Base::addUpdateCallback(const std::string& name,
@@ -116,16 +103,16 @@ void Base::addUpdateCallback(const std::string& name,
     if(std::find(engine.getOutputs().begin(), engine.getOutputs().end(), &d_componentState) == engine.getOutputs().end())
         engine.addOutput(&d_componentState);
 
-    for (auto i : inputs)
+    for (const auto i : inputs)
         i->cleanDirty();
     engine.cleanDirty();
-    for (auto o : outputs)
+    for (const auto o : outputs)
         o->cleanDirty();
 }
 
 void Base::addOutputsToCallback(const std::string& name, std::initializer_list<BaseData*> outputs)
 {
-    if (m_internalEngine.find(name) != m_internalEngine.end())
+    if (m_internalEngine.contains(name))
         m_internalEngine[name].addOutputs(outputs);
 }
 
@@ -154,7 +141,7 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
 
     if (strlen(name) >= 4)
     {
-        std::string_view prefix = std::string_view(name).substr(0, 4);
+        const std::string_view prefix = std::string_view(name).substr(0, 4);
 
         if (prefix == draw_prefix || prefix == show_prefix)
             res.group = "Visualization";
@@ -175,10 +162,10 @@ void Base::addData(BaseData* f, const std::string& name)
     if (!name.empty())
     {
         msg_warning_when(findData(name)) << "Data field name '" << name
-            << "' already used as a Data in this class or in a parent class";
+                                         << "' already used as a Data in this class or in a parent class";
 
         msg_warning_when(findLink(name)) << "Data field name '" << name
-            << "' already used as a Link in this class or in a parent class";
+                                         << "' already used as a Link in this class or in a parent class";
     }
     m_vecData.push_back(f);
     m_aliasData.insert(std::make_pair(name, f));
@@ -199,10 +186,10 @@ void Base::addLink(BaseLink* l)
     if (!name.empty())
     {
         msg_warning_when(findData(name)) << "Link name '" << name
-            << "' already used as a Data in this class or in a parent class";
+                                         << "' already used as a Data in this class or in a parent class";
 
         msg_warning_when(findLink(name)) << "Link name '" << name
-            << "' already used as a Link in this class or in a parent class";
+                                         << "' already used as a Link in this class or in a parent class";
     }
     m_vecLink.push_back(l);
     m_aliasLink.insert(std::make_pair(name, l));
@@ -262,8 +249,8 @@ void Base::addMessage(const Message &m) const
 
 void Base::clearLoggedMessages() const
 {
-   m_messageslog.clear() ;
-   d_messageLogCount = 0;
+    m_messageslog.clear() ;
+    d_messageLogCount = 0;
 }
 
 
@@ -276,7 +263,7 @@ const std::string Base::getLoggedMessagesAsString(const sofa::helper::logging::M
 {
     std::stringstream tmpstr ;
     for(Message& m : m_messageslog){
-        if( t.find(m.type()) !=  t.end() )
+        if( t.contains(m.type()))
         {
             tmpstr << m.type() << ":" <<  m.messageAsString() << std::endl;
         }
@@ -288,7 +275,7 @@ size_t Base::countLoggedMessages(const sofa::helper::logging::Message::TypeSet t
 {
     size_t tmp=0;
     for(Message& m : m_messageslog){
-        if( t.find(m.type()) !=  t.end() )
+        if( t.contains(m.type()))
         {
             tmp++;
         }
@@ -318,7 +305,7 @@ void Base::removeTag(Tag t)
 void Base::removeData(BaseData* d)
 {
     m_vecData.erase(std::find(m_vecData.begin(), m_vecData.end(), d));
-    auto range = m_aliasData.equal_range(d->getName());
+    const auto range = m_aliasData.equal_range(d->getName());
     m_aliasData.erase(range.first, range.second);
 }
 
@@ -329,7 +316,7 @@ BaseData* Base::findData( const std::string &name ) const
     //Search in the aliases
     if(m_aliasData.size())
     {
-        auto range = m_aliasData.equal_range(name);
+        const auto range = m_aliasData.equal_range(name);
         if (range.first != range.second)
             return range.first->second;
         else
@@ -344,7 +331,7 @@ std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
 {
     std::vector<BaseData*> result;
     //Search in the aliases
-    auto range = m_aliasData.equal_range(name);
+    const auto range = m_aliasData.equal_range(name);
     for (auto itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
@@ -356,7 +343,7 @@ std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
 BaseLink* Base::findLink( const std::string &name ) const
 {
     //Search in the aliases
-    auto range = m_aliasLink.equal_range(name);
+    const auto range = m_aliasLink.equal_range(name);
     if (range.first != range.second)
         return range.first->second;
     else
@@ -368,7 +355,7 @@ std::vector< BaseLink* > Base::findLinks( const std::string &name ) const
 {
     std::vector<BaseLink*> result;
     //Search in the aliases
-    auto range = m_aliasLink.equal_range(name);
+    const auto range = m_aliasLink.equal_range(name);
     for (auto itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
@@ -409,8 +396,8 @@ Base* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& 
 
 bool Base::hasField( const std::string& attribute) const
 {
-    return m_aliasData.find(attribute) != m_aliasData.end()
-            || m_aliasLink.find(attribute) != m_aliasLink.end();
+    return m_aliasData.contains(attribute)
+           || m_aliasLink.contains(attribute);
 }
 
 /// Assign one field value (Data or Link)
@@ -473,10 +460,10 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
                 if (BaseData* parentData = dataVec[d]->getParent())
                 {
                     msg_info() << "Link from parent Data "
-                                    << value << " (" << parentData->getValueTypeInfo()->name() << ") "
-                                    << "to Data "
-                                    << attribute << " (" << dataVec[d]->getValueTypeInfo()->name() << ") "
-                                    << "OK";
+                               << value << " (" << parentData->getValueTypeInfo()->name() << ") "
+                               << "to Data "
+                               << attribute << " (" << dataVec[d]->getValueTypeInfo()->name() << ") "
+                               << "OK";
                 }
             }
             /* children Data cannot be modified changing the parent Data value */
@@ -527,32 +514,55 @@ void  Base::parseFields ( const std::list<std::string>& str )
 
 void  Base::parseFields ( const std::map<std::string,std::string*>& args )
 {
-    std::string key,val;
-    for( std::map<string,string*>::const_iterator i=args.begin(), iend=args.end(); i!=iend; ++i )
+    for( const auto& [key,value] : args )
     {
-        if( (*i).second!=nullptr )
+        if( value!=nullptr )
         {
-            key=(*i).first;
-            val=*(*i).second;
-            parseField(key, val);
+            parseField(key, *value);
         }
     }
+}
+
+void Base::addDeprecatedAttribute(lifecycle::DeprecatedData* attribute)
+{
+    m_oldAttributes.push_back(attribute);
 }
 
 /// Parse the given description to assign values to this object's fields and potentially other parameters
 void  Base::parse ( BaseObjectDescription* arg )
 {
-    for( auto& it : arg->getAttributeMap() )
+    for(auto& attribute : m_oldAttributes)
     {
-        const std::string& attrName = it.first;
+        if(arg->getAttribute(attribute->m_name))
+        {
+            if(attribute->m_isRemoved)
+            {
+                msg_error() << "Attribute '" << attribute->m_name << "' has been removed since SOFA " << attribute->m_removalVersion << ". " << attribute->m_helptext;
+            }
+            else
+            {
+                msg_deprecated() << "Attribute '" << attribute->m_name << "' has been deprecated since SOFA " << attribute->m_deprecationVersion << " and it will be removed in SOFA " << attribute->m_removalVersion << ". " << attribute->m_helptext;
+            }
 
-        // FIX: "type" is already used to define the type of object to instanciate, any Data with
+        }
+    }
+
+    // Process the printLog attribute before any other as this one impact how the subsequent
+    // messages, including the ones emitted in the "parseField" method are reported to the user.
+    // getAttributes, returns a nullptr if printLog is not used.
+    auto value = arg->getAttribute("printLog");
+    if(value)
+        parseField("printLog", value);
+
+    for( auto& [key,value] : arg->getAttributeMap() )
+    {
+        // FIX: "type" is already used to define the type of object to instantiate, any Data with
         // the same name cannot be extracted from BaseObjectDescription
-        if (attrName == std::string("type"))
+        if (key == "type")
             continue;
-        if (!hasField(attrName)) continue;
 
-        parseField(attrName, it.second);
+        if (hasField(key))
+            parseField(key, value);
     }
     updateLinks(false);
 }
@@ -561,30 +571,28 @@ void  Base::parse ( BaseObjectDescription* arg )
 void Base::updateLinks(bool logErrors)
 {
     // update links
-    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    for(auto& link : m_vecLink)
     {
-        bool ok = (*iLink)->updateLinks();
-        if (!ok && (*iLink)->storePath() && logErrors)
+        const bool ok = link->updateLinks();
+        if (!ok && link->storePath() && logErrors)
         {
-            msg_warning() << "Link update failed for " << (*iLink)->getName() << " = " << (*iLink)->getValueString() ;
+            msg_warning() << "Link update failed for " << link->getName() << " = " << link->getValueString() ;
         }
     }
 }
 
 void  Base::writeDatas ( std::map<std::string,std::string*>& args )
 {
-    for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
+    for(const auto& field : m_vecData)
     {
-        BaseData* field = *iData;
         std::string name = field->getName();
         if( args[name] != nullptr )
             *args[name] = field->getValueString();
         else
             args[name] =  new string(field->getValueString());
     }
-    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    for(const auto& link : m_vecLink)
     {
-        BaseLink* link = *iLink;
         std::string name = link->getName();
         if( args[name] != nullptr )
             *args[name] = link->getValueString();
@@ -613,9 +621,8 @@ static std::string xmlencode(const std::string& str)
 
 void  Base::writeDatas (std::ostream& out, const std::string& separator)
 {
-    for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
+    for(const auto& field : m_vecData)
     {
-        BaseData* field = *iData;
         if (!field->getLinkPath().empty() )
         {
             out << separator << field->getName() << "=\""<< xmlencode(field->getLinkPath()) << "\" ";
@@ -630,9 +637,8 @@ void  Base::writeDatas (std::ostream& out, const std::string& separator)
             }
         }
     }
-    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    for(const auto& link : m_vecLink)
     {
-        BaseLink* link = *iLink;
         if(link->storePath())
         {
             std::string val = link->getValueString();

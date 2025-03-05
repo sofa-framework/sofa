@@ -34,11 +34,13 @@ namespace multithreading::component::collision::detection::algorithm
 const bool isParallelParallelBruteForceBroadPhaseImplementationRegistered =
     multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("BruteForceBroadPhase", "ParallelBruteForceBroadPhase");
 
-using sofa::helper::ScopedAdvancedTimer;
+void registerParallelBruteForceBroadPhase(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel version of the collision detection using extensive pair-wise tests performed concurrently.")
+                             .add< ParallelBruteForceBroadPhase >());
+}
 
-int ParallelBruteForceBroadPhaseClass = sofa::core::RegisterObject("Collision detection using extensive pair-wise tests performed in parallel")
-        .add< ParallelBruteForceBroadPhase >()
-;
+using sofa::helper::ScopedAdvancedTimer;
 
 ParallelBruteForceBroadPhase::ParallelBruteForceBroadPhase()
     : BruteForceBroadPhase()
@@ -81,7 +83,7 @@ void ParallelBruteForceBroadPhase::addCollisionModel(sofa::core::CollisionModel 
 
 void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::type::vector<sofa::core::CollisionModel *>& v)
 {
-    ScopedAdvancedTimer timer("ParallelBruteForceBroadPhase::addCollisionModels");
+    SCOPED_TIMER("ParallelBruteForceBroadPhase::addCollisionModels");
 
     m_pairs.clear();
     BroadPhaseDetection::addCollisionModels(v);
@@ -94,7 +96,7 @@ void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::type::vector<s
     sofa::simulation::CpuTask::Status status;
 
     {
-        ScopedAdvancedTimer createTasksTimer("TasksCreation");
+        SCOPED_TIMER_VARNAME(createTasksTimer, "TasksCreation");
 
         const auto nbPairs = static_cast<unsigned int>(m_pairs.size());
 
@@ -123,7 +125,7 @@ void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::type::vector<s
     }
 
     {
-        ScopedAdvancedTimer waitTimer("ParallelTasks");
+        SCOPED_TIMER_VARNAME(waitTimer, "ParallelTasks");
         m_taskScheduler->workUntilDone(&status);
     }
 
@@ -183,7 +185,7 @@ sofa::simulation::Task::MemoryAlloc BruteForcePairTest::run()
         }
 
         // Here we assume a single root element is present in both models
-        if (intersector->canIntersect(cm_1->begin(), cm_2->begin()))
+        if (intersector->canIntersect(cm_1->begin(), cm_2->begin(), m_intersectionMethod))
         {
             m_intersectingPairs.emplace_back(cm_1, cm_2);
         }

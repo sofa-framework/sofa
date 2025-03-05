@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/component/solidmechanics/fem/elastic/TriangleFEMUtils.h>
-#include <sofa/core/behavior/ForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
@@ -32,6 +32,8 @@
 #ifdef PLOT_CURVE
 #include <map>
 #endif
+
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::helper
 {
@@ -54,12 +56,12 @@ namespace sofa::component::solidmechanics::fem::elastic
 * }
 */
 template<class DataTypes>
-class TriangularFEMForceField : public core::behavior::ForceField<DataTypes>
+class TriangularFEMForceField : public BaseLinearElasticityFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TriangularFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TriangularFEMForceField, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes));
 
-    typedef core::behavior::ForceField<DataTypes> Inherited;
+    typedef BaseLinearElasticityFEMForceField<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecReal VecReal;
@@ -105,7 +107,12 @@ public:
     void reinit() override;
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
+
+    void computeElementStiffnessMatrix(type::Mat<9, 9, Real>& S, type::Mat<9, 9, Real>& SR, const MaterialStiffness& K, const StrainDisplacement& J, const Transformation& Rot);
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -113,7 +120,9 @@ public:
     class TriangleInformation
     {
     public:
-        /// material stiffness matrices of each tetrahedron
+
+
+        /// material stiffness matrices of each triangle
         MaterialStiffness materialMatrix;
         ///< the strain-displacement matrices vector
         StrainDisplacement strainDisplacementMatrix;
@@ -132,10 +141,11 @@ public:
         Real maxStress;
         Coord principalStrainDirection;
         Real maxStrain;
+        Real differenceToCriteria;
 
         type::vector<Coord> lastNStressDirection;
 
-        TriangleInformation() { }
+        TriangleInformation() = default;
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const TriangleInformation& /*ti*/ )
@@ -148,8 +158,6 @@ public:
         {
             return in;
         }
-
-        Real differenceToCriteria;
     };
 
 
@@ -178,28 +186,25 @@ public:
         }
     };
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<TriangleInformation>> triangleInfo;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<VertexInformation> > vertexInfo;
+
     /// Topology Data
-    core::topology::TriangleData<sofa::type::vector<TriangleInformation> > triangleInfo;
-    core::topology::PointData<sofa::type::vector<VertexInformation> > vertexInfo; ///< Internal point data
+    core::topology::TriangleData<sofa::type::vector<TriangleInformation> > d_triangleInfo;
+    core::topology::PointData<sofa::type::vector<VertexInformation> > d_vertexInfo; ///< Internal point data
 
     /** Method to initialize @sa TriangleInformation when a new Triangle is created.
-    * Will be set as creation callback in the TriangleData @sa triangleInfo
+    * Will be set as creation callback in the TriangleData @sa d_triangleInfo
     */
     void createTriangleInformation(Index triangleIndex, TriangleInformation&,
         const core::topology::BaseMeshTopology::Triangle& t,
         const sofa::type::vector< Index >&,
         const sofa::type::vector< SReal >&);
 
-    sofa::core::topology::BaseMeshTopology* m_topology;
-
     /// Get/Set methods
-    Real getPoisson() { return (f_poisson.getValue())[0]; }
-    void setPoisson(Real val);
-    void setPoissonArray(const type::vector<Real>& values);
-
-    Real getYoung() { return (f_young.getValue())[0]; }
-    void setYoung(Real val);
-    void setYoungArray(const type::vector<Real>& values);
 
     int  getMethod() { return method; }
     void setMethod(int val);
@@ -227,7 +232,7 @@ protected :
     void computeStiffness(Stiffness &K, const StrainDisplacement& J, const MaterialStiffness &D);
     void computePrincipalStrain(Index elementIndex, TriangleInformation& triangleInfo);
     void computePrincipalStress(Index elementIndex, TriangleInformation& triangleInfo);
-    void computeStressPerVertex(); ///< Method to compute the averageStress per vertex. Call if @sa showStressValue is true
+    void computeStressPerVertex(); ///< Method to compute the averageStress per vertex. Call if @sa d_showStressValue is true
 
     /// f += Kx where K is the stiffness matrix and x a displacement
     virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x, const Real &kFactor );
@@ -247,29 +252,58 @@ protected :
 
 public:
 
-    /// Forcefield intern paramaters
+    /// Forcefield intern parameters
     int method;
-    Data<std::string> f_method; ///< large: large displacements, small: small displacements
-    Data<type::vector<Real> > f_poisson; ///< Poisson ratio in Hooke's law (vector)
-    Data<type::vector<Real> > f_young; ///< Young modulus in Hooke's law (vector)
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<std::string> f_method;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<Real>> f_poisson;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<Real>> f_young;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<type::fixed_array<Coord,3> >  > m_rotatedInitialElements;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<Transformation> > m_initialTransformation;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> hosfordExponant;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> criteriaValue;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> showStressValue;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> showStressVector;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> showFracturableTriangles;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_computePrincipalStress;
+
+    Data<std::string> d_method; ///< large: large displacements, small: small displacements
 
     /// Initial strain parameters (if FEM is initialised with predefine values)
-    Data< sofa::type::vector<type::fixed_array<Coord,3> > > m_rotatedInitialElements;
-    Data< sofa::type::vector<Transformation> > m_initialTransformation; ///< Flag activating rendering of stress directions within each triangle
+    Data< sofa::type::vector<type::fixed_array<Coord,3> > > d_rotatedInitialElements;
+    Data< sofa::type::vector<Transformation> > d_initialTransformation; ///< Flag activating rendering of stress directions within each triangle
 
     /// Fracture parameters
-    Data<Real> hosfordExponant; ///< Exponant in the Hosford yield criteria
-    Data<Real> criteriaValue; ///< Fracturable threshold used to draw fracturable triangles
+    Data<Real> d_hosfordExponant; ///< Exponent in the Hosford yield criteria
+    Data<Real> d_criteriaValue; ///< Fracturable threshold used to draw fracturable triangles
 
     /// Display parameters
-    Data<bool> showStressValue;
-    Data<bool> showStressVector; ///< Flag activating rendering of stress directions within each triangle
-    Data<bool> showFracturableTriangles; ///< Flag activating rendering of triangles to fracture
+    Data<bool> d_showStressValue;
+    Data<bool> d_showStressVector; ///< Flag activating rendering of stress directions within each triangle
+    Data<bool> d_showFracturableTriangles; ///< Flag activating rendering of triangles to fracture
 
-    Data<bool> f_computePrincipalStress; ///< Compute principal stress for each triangle
-
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<TriangularFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    Data<bool> d_computePrincipalStress; ///< Compute principal stress for each triangle
 
 #ifdef PLOT_CURVE
     //structures to save values for each element along time
@@ -278,7 +312,7 @@ public:
     sofa::type::vector<std::map<std::string, sofa::type::vector<double> > > allGraphOrientation;
 
     //the index of element we want to display the graphs
-    Data<Real>  elementID; ///< element id to follow for fracture criteria
+    Data<Real>  elementID; ///< element id to follow in the graphs
 
     //data storing the values along time for the element with index elementID
     Data<std::map < std::string, sofa::type::vector<double> > > f_graphStress; ///< Graph of max stress corresponding to the element id
@@ -287,16 +321,16 @@ public:
 #endif
 
 private:
-    bool p_computeDrawInfo; ///< bool set to true if at least one of @sa showStressValue, @sa showStressVector or @sa showFracturableTriangles is true
-    sofa::helper::ColorMap* p_drawColorMap; ///< colormap to display the gradiant of stress if @sa showStressValue is set to true
-    Real m_minStress = 0; ///< min stress computed for @sa showStressValue
-    Real m_maxStress = 0; ///< max stress computed for @sa showStressValue
+    bool p_computeDrawInfo; ///< bool set to true if at least one of @sa d_showStressValue, @sa d_showStressVector or @sa d_showFracturableTriangles is true
+    sofa::helper::ColorMap* p_drawColorMap; ///< colormap to display the gradiant of stress if @sa d_showStressValue is set to true
+    Real m_minStress = 0; ///< min stress computed for @sa d_showStressValue
+    Real m_maxStress = 0; ///< max stress computed for @sa d_showStressValue
 
     TriangleFEMUtils<DataTypes> m_triangleUtils;
 };
 
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
 
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API TriangularFEMForceField<defaulttype::Vec3Types>;
 

@@ -72,6 +72,7 @@ public:
     tristate getShowCollision() const { return m_showCollision.state(); }
     tristate getShowCollisionModels() const { return m_showCollisionModels.state(); }
     tristate getShowBoundingCollisionModels() const { return m_showBoundingCollisionModels.state(); }
+    tristate getShowDetectionOutputs() const { return m_showDetectionOutputs.state(); }
     tristate getShowMapping() const { return m_showMapping.state(); }
     tristate getShowMappings() const { return m_showVisualMappings.state(); }
     tristate getShowMechanicalMappings() const { return m_showMechanicalMappings.state(); }
@@ -90,6 +91,7 @@ public:
     DisplayFlags& setShowCollision(tristate v=true ) { m_showCollisionModels.setValue(v); return (*this); }
     DisplayFlags& setShowCollisionModels(tristate v=true) { m_showCollisionModels.setValue(v); return (*this); }
     DisplayFlags& setShowBoundingCollisionModels(tristate v=true) { m_showBoundingCollisionModels.setValue(v); return (*this); }
+    DisplayFlags& setShowDetectionOutputs(tristate v=true) { m_showDetectionOutputs.setValue(v); return (*this); }
     DisplayFlags& setShowMapping(tristate v=true) { m_showMapping.setValue(v); return (*this); }
     DisplayFlags& setShowMappings(tristate v=true) { m_showVisualMappings.setValue(v); return (*this); }
     DisplayFlags& setShowMechanicalMappings(tristate v=true) { m_showMechanicalMappings.setValue(v); return (*this); }
@@ -127,6 +129,7 @@ protected:
     FlagTreeItem m_showCollision;
     FlagTreeItem m_showCollisionModels;
     FlagTreeItem m_showBoundingCollisionModels;
+    FlagTreeItem m_showDetectionOutputs;
 
     FlagTreeItem m_showMapping;
     FlagTreeItem m_showVisualMappings;

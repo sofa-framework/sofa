@@ -29,21 +29,20 @@
 namespace sofa::gl::component::shader
 {
 
-int CompositingVisualLoopClass = core::RegisterObject("Visual loop enabling multipass rendering. Needs multiple fbo data and a compositing shader")
-        .add< CompositingVisualLoop >()
-        ;
+void registerCompositingVisualLoop(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Visual loop enabling multipass rendering. Needs multiple fbo data and a compositing shader.")
+        .add< CompositingVisualLoop >());
+}
 
-CompositingVisualLoop::CompositingVisualLoop(simulation::Node* _gnode)
-    : simulation::DefaultVisualManagerLoop(_gnode),
+CompositingVisualLoop::CompositingVisualLoop()
+    : simulation::DefaultVisualManagerLoop(),
       vertFilename(initData(&vertFilename, (std::string) "shaders/compositing.vert", "vertFilename", "Set the vertex shader filename to load")),
       fragFilename(initData(&fragFilename, (std::string) "shaders/compositing.frag", "fragFilename", "Set the fragment shader filename to load"))
 {
 }
 
 CompositingVisualLoop::~CompositingVisualLoop()
-{}
-
-void CompositingVisualLoop::initVisual()
 {}
 
 void CompositingVisualLoop::init()
@@ -71,7 +70,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
     sofa::component::visual::VisualStyle::SPtr visualStyle = nullptr;
     l_node->get(visualStyle);
     const sofa::core::visual::DisplayFlags &backupFlags = vparams->displayFlags();
-    const sofa::core::visual::DisplayFlags &currentFlags = visualStyle->displayFlags.getValue();
+    const sofa::core::visual::DisplayFlags &currentFlags = visualStyle->d_displayFlags.getValue();
     vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, currentFlags);
     renderingState = vparams->displayFlags().getShowAdvancedRendering();
 

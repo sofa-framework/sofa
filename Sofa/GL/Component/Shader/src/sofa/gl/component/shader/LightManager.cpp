@@ -34,7 +34,6 @@ using sofa::core::visual::VisualParams ;
 using sofa::gl::component::shader::OglTexture ;
 
 using sofa::core::objectmodel::BaseContext ;
-using sofa::core::RegisterObject ;
 
 using sofa::type::Mat ;
 
@@ -43,12 +42,12 @@ using sofa::type::RGBAColor ;
 namespace sofa::gl::component::shader
 {
 
-//Register LightManager in the Object Factory
-int LightManagerClass = RegisterObject
-        ("Manage a set of lights that can cast hard and soft shadows.Soft Shadows is done using Variance Shadow Mapping "
-         "(http://developer.download.nvidia.com/SDK/10.5/direct3d/Source/VarianceShadowMapping/Doc/VarianceShadowMapping.pdf)")
-        .add< LightManager >()
-        ;
+void registerLightManager(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Manage a set of lights that can cast hard and soft shadows.Soft Shadows is done using Variance Shadow Mapping "
+        "(http://developer.download.nvidia.com/SDK/10.5/direct3d/Source/VarianceShadowMapping/Doc/VarianceShadowMapping.pdf)")
+        .add< LightManager >());
+}
 
 LightManager::LightManager()
     : d_shadowsEnabled(initData(&d_shadowsEnabled, (bool) false, "shadows", "Enable Shadow in the scene. (default=0)"))
@@ -68,7 +67,7 @@ LightManager::~LightManager()
 
 void LightManager::init()
 {
-    BaseContext* context = this->getContext();
+    const BaseContext* context = this->getContext();
     context->get<OglShadowShader, type::vector<OglShadowShader::SPtr> >(&m_shadowShaders, BaseContext::SearchRoot);
 
     if (m_shadowShaders.empty() && d_shadowsEnabled.getValue())
@@ -93,13 +92,13 @@ void LightManager::bwdInit()
     }
 }
 
-void LightManager::initVisual()
+void LightManager::doInitVisual(const core::visual::VisualParams* vparams)
 {
     for(unsigned int i=0 ; i<m_shadowShaders.size() ; ++i)
-        m_shadowShaders[i]->initVisual();
+        m_shadowShaders[i]->initVisual(vparams);
 
     ///TODO: keep trace of all active textures at the same time, with a static factory
-    ///or something like that to avoid conflics with color texture declared in the scene file.
+    ///or something like that to avoid conflicts with color texture declared in the scene file.
     type::vector<OglTexture::SPtr> sceneTextures;
     this->getContext()->get<OglTexture, type::vector<OglTexture::SPtr> >(&sceneTextures, BaseContext::SearchRoot);
 
@@ -115,8 +114,8 @@ void LightManager::initVisual()
 
     for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
     {
-        (*itl)->initVisual();
-        unsigned short shadowTextureUnit = (*itl)->getShadowTextureUnit();
+        (*itl)->initVisual(vparams);
+        const unsigned short shadowTextureUnit = (*itl)->getShadowTextureUnit();
 
         /// if given unit is available and correct
         if(shadowTextureUnit < maxTextureUnits &&
@@ -206,7 +205,7 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
     for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
     {
         glEnable(GL_LIGHT0+id);
-        (*itl)->drawLight();
+        (*itl)->drawLight(vp);
         ++id;
     }
 
@@ -230,7 +229,7 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
             glEnable(GL_LIGHTING);
             for (unsigned int i=0 ; i < m_lights.size() ; ++i)
             {
-                unsigned short shadowTextureUnit = m_lights[i]->getShadowTextureUnit();
+                const unsigned short shadowTextureUnit = m_lights[i]->getShadowTextureUnit();
                 glActiveTexture(GL_TEXTURE0+shadowTextureUnit);
                 glEnable(GL_TEXTURE_2D);
 
@@ -320,7 +319,7 @@ void LightManager::bwdDraw(core::visual::VisualParams* )
 {
     for(unsigned int i=0 ; i<m_lights.size() ; ++i)
     {
-        unsigned short shadowTextureUnit = m_lights[i]->getShadowTextureUnit();
+        const unsigned short shadowTextureUnit = m_lights[i]->getShadowTextureUnit();
         glActiveTexture(GL_TEXTURE0+shadowTextureUnit);
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_TEXTURE_2D);
@@ -354,7 +353,7 @@ void LightManager::draw(const core::visual::VisualParams* )
 
     for(unsigned int i=0 ; i < m_lights.size() ; i++)
     {
-        float val = float(i * 20);
+        const float val = float(i * 20);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_lights[i]->getDepthTexture());
 
@@ -477,14 +476,14 @@ void LightManager::restoreDefaultLight(VisualParams* vp)
 //TODO(dmarchal): Hard-coding keyboard behavior in a component is a bad idea as for several reasons:
 // the scene can be executed without a keyboard ...there is no reason the component should have a "knowledge" of keyboard
 // what will happens if multiple lighmanager are in the same scene ...
-// what will hapen if other component use the same key...
+// what will happen if other component use the same key...
 // The correct implementation consist in separatng the event code into a different class & component in
 // the SofaInteracton module.
 void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
 {
     if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
     {
-        sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
+        const sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
         switch(ev->getKey())
         {
 
@@ -492,20 +491,20 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
         case 'L':
             if (!m_shadowShaders.empty())
             {
-                bool b = d_shadowsEnabled.getValue();
+                const bool b = d_shadowsEnabled.getValue();
                 d_shadowsEnabled.setValue(!b);
                 if (!m_shadowShaders.empty())
                 {
                     for (unsigned int i=0 ; i < m_shadowShaders.size() ; ++i)
                     {
                         m_shadowShaders[i]->setCurrentIndex(d_shadowsEnabled.getValue() ? 1 : 0);
-                        m_shadowShaders[i]->updateVisual();
+                        m_shadowShaders[i]->updateVisual(sofa::core::visual::visualparams::defaultInstance());
                     }
                     for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
                     {
-                        (*itl)->updateVisual();
+                        (*itl)->updateVisual(sofa::core::visual::visualparams::defaultInstance());
                     }
-                    this->updateVisual();
+                    this->updateVisual(sofa::core::visual::visualparams::defaultInstance());
                 }
 
                 msg_info() << "Shadows : "<<(d_shadowsEnabled.getValue()?"ENABLED":"DISABLED");

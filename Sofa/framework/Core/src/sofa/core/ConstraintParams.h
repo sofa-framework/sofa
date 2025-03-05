@@ -23,6 +23,7 @@
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/ConstraintOrder.h>
 
 namespace sofa::core
 {
@@ -34,48 +35,26 @@ class SOFA_CORE_API ConstraintParams : public sofa::core::ExecParams
 {
 public:
 
-    /// Description of the order of the constraint
-    enum ConstOrder
-    {
-        POS = 0,
-        VEL,
-        ACC,
-        POS_AND_VEL
-    };
+    SOFA_ATTRIBUTE_DISABLED__CONSTORDER() static constexpr auto POS = sofa::core::ConstraintOrder::POS;
+    SOFA_ATTRIBUTE_DISABLED__CONSTORDER() static constexpr auto VEL = sofa::core::ConstraintOrder::VEL;
+    SOFA_ATTRIBUTE_DISABLED__CONSTORDER() static constexpr auto ACC = sofa::core::ConstraintOrder::ACC;
+    SOFA_ATTRIBUTE_DISABLED__CONSTORDER() static constexpr auto POS_AND_VEL = sofa::core::ConstraintOrder::POS_AND_VEL;
 
     /// @name Flags and parameters getters
     /// @{
 
-    ConstOrder constOrder() const { return m_constOrder; }
+    ConstraintOrder constOrder() const { return m_constOrder; }
 
-    ConstraintParams& setOrder(ConstOrder o) { m_constOrder = o;   return *this; }
+    ConstraintParams& setOrder(ConstraintOrder o) { m_constOrder = o;   return *this; }
 
 	/// Smooth contribution factor (for smooth constraints resolution)
     double smoothFactor() const { return m_smoothFactor; }
 
     /// @}
 
-    std::string getName() const
+    [[nodiscard]] std::string_view getName() const
     {
-        std::string result;
-        switch ( m_constOrder )
-        {
-        case POS :
-            result += "POSITION";
-            break;
-        case VEL :
-            result += "VELOCITY";
-            break;
-        case ACC :
-            result += "ACCELERATION";
-            break;
-        case POS_AND_VEL :
-            result += "POSITION AND VELOCITY";
-            break;
-        default :
-            assert(false);
-        }
-        return result;
+        return constOrderToString(m_constOrder);
     }
 
     /// @name Access to vectors from a given state container (i.e. State or MechanicalState)
@@ -113,50 +92,6 @@ public:
     }
 
 
-
-
-    /// @name Access to vectors from a given SingleLink to a state container (i.e. State or MechanicalState)
-    /// @{
-
-    /// Read access to the free (unconstrained) position
-    template<class Owner, class S, unsigned int flags>
-    SOFA_ATTRIBUTE_DEPRECATED__READX_PARAMS("To fix your code use readX(state.get())")
-    const Data<typename S::VecCoord>* readX(const sofa::core::objectmodel::SingleLink<Owner,S,flags>& state) const
-    {   return m_x[state.get()].read();    }
-
-    /// Read access to the free (unconstrained) velocity vector
-    template<class Owner, class S, unsigned int flags>
-    SOFA_ATTRIBUTE_DEPRECATED__READX_PARAMS("To fix your code use readV(state.get())")
-    const Data<typename S::VecDeriv>* readV(const sofa::core::objectmodel::SingleLink<Owner,S,flags>& state) const
-    {   return m_v[state.get()].read();    }
-
-    /// Read access to the constraint jacobian matrix
-    template<class Owner, class S, unsigned int flags>
-    SOFA_ATTRIBUTE_DEPRECATED__READX_PARAMS("To fix your code use readJ(state.get())")
-    const Data<typename S::MatrixDeriv>* readJ(const sofa::core::objectmodel::SingleLink<Owner, S, flags>& state) const
-    {
-        return m_j[state.get()].read();
-    }
-
-    /// Read access to the constraint force vector
-    template<class Owner, class S, unsigned int flags>
-    SOFA_ATTRIBUTE_DEPRECATED__READX_PARAMS("To fix your code use readLambda(state.get())")
-    const Data<typename S::VecDeriv>* readLambda(sofa::core::objectmodel::SingleLink<Owner, S, flags>& state) const
-    {
-        return m_lambda[state.get(this)].read();
-    }
-
-    /// Read access to the constraint corrective motion vector
-    template<class Owner, class S, unsigned int flags>
-    SOFA_ATTRIBUTE_DEPRECATED__READX_PARAMS("To fix your code use readDx(state.get())")
-    const Data<typename S::VecDeriv>* readDx(sofa::core::objectmodel::SingleLink<Owner, S, flags>& state) const
-    {
-        return m_dx[state.get(this)].read();
-    }
-
-
-    /// @}
-
     /// @name Setup methods
     /// Called by the OdeSolver from which the mechanical computations originate.
     /// They all return a reference to this MechanicalParam instance, to ease chaining multiple setup calls.
@@ -166,19 +101,29 @@ public:
 	/// Set smooth contribution factor (for smooth constraints resolution)
     ConstraintParams& setSmoothFactor(double v) { m_smoothFactor = v; return *this; }
 
+    /// Returns ids of the position vectors
     const ConstMultiVecCoordId& x() const { return m_x; }
+    /// Returns ids of the position vectors
     ConstMultiVecCoordId& x()       { return m_x; }
 
+    /// Returns ids of the velocity vectors
     const ConstMultiVecDerivId& v() const { return m_v; }
+    /// Returns ids of the velocity vectors
     ConstMultiVecDerivId& v()       { return m_v; }
 
+    /// Returns ids of the constraint jacobian matrices
     const MultiMatrixDerivId&  j() const { return m_j; }
+    /// Returns ids of the constraint jacobian matrices
     MultiMatrixDerivId& j()              { return m_j; }
 
+    /// Returns ids of the constraint correction vectors
     const MultiVecDerivId& dx() const { return m_dx;  }
+    /// Returns ids of the constraint correction vectors
     MultiVecDerivId&  dx()            { return m_dx;  }
 
+    /// Returns ids of the constraint lambda vectors
     const MultiVecDerivId& lambda() const { return m_lambda; }
+    /// Returns ids of the constraint lambda vectors
     MultiVecDerivId&  lambda()            { return m_lambda; }
 
     /// Set the IDs where to read the free position vector
@@ -232,14 +177,14 @@ protected:
     /// Ids of the constraint jacobian matrix
     MultiMatrixDerivId m_j;
 
-    /// Ids of contraint correction vector
+    /// Ids of constraint correction vector
     MultiVecDerivId      m_dx;
 
     /// Ids of constraint lambda vector
     MultiVecDerivId      m_lambda;
 
     /// Description of the order of the constraint
-    ConstOrder m_constOrder;
+    ConstraintOrder m_constOrder;
 
 	/// Smooth contribution factor (for smooth constraints resolution)
     double m_smoothFactor;

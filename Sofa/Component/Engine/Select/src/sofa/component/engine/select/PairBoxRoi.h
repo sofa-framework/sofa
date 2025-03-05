@@ -114,7 +114,7 @@ public:
     Data<double> _drawSize; ///< Draw Size
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<defaulttype::Rigid3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<defaulttype::Vec6Types>; //Phuoc

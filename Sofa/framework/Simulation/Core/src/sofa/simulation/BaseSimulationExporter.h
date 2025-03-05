@@ -28,10 +28,8 @@
 
 #include <string>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 namespace _basesimulationexporter_
@@ -41,8 +39,8 @@ using sofa::core::objectmodel::BaseObject ;
 using sofa::core::objectmodel::DataFileName ;
 
 /**
-    Componant that export something from the scene could inherit from this class
-    as it implement an uniform handling of the differen data attributes.
+    Component that export something from the scene could inherit from this class
+    as it implement an uniform handling of the different data attributes.
 */
 class SOFA_SIMULATION_CORE_API BaseSimulationExporter : public virtual BaseObject
 {
@@ -59,32 +57,29 @@ public:
     void init() final;
 
     /// Don't override this function anymore. But you can do your reinit in the doReInit.
-    void reinit() final ;
+    void reinit() final;
 
     void cleanup() override ;
-    void bwdInit() override ;
-    void handleEvent(Event *event) override ;
+    void handleEvent(Event *event) override;
 
     virtual void doInit() {}
     virtual void doReInit() {}
-    virtual bool write() = 0 ;
+    virtual bool write() = 0;
 
 
 protected:
     BaseSimulationExporter() ;
     ~BaseSimulationExporter() override { }
 
-    const std::string getOrCreateTargetPath(const std::string& filename, bool autonumbering) ;
-    void updateFromDataField() ;
-    unsigned int       m_stepCounter {0} ;
+    const std::string getOrCreateTargetPath(const std::string& filename, bool autonumbering);
+    void updateFromDataField();
+    unsigned int m_stepCounter {0};
 };
 
-} /// namespace _baseexporter_
+}
 
-using _basesimulationexporter_::BaseSimulationExporter ;
+using _basesimulationexporter_::BaseSimulationExporter;
 
-} /// namespace simulation
-
-} /// namespace sofa
+}
 
 #endif /// SOFA_CORE_EXPORTER_BASEEXPORTER_H

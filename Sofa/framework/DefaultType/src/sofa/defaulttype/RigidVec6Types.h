@@ -25,10 +25,8 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
 
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 template<typename T>
@@ -38,8 +36,7 @@ template<typename T>
 const Vec<3, T> getVOrientation(const Vec<6, T>& v) { return Vec<3,T>(v.data()+3); }
 
 
-}// namespace defaulttype
+} // namespace sofa::defaulttype
 
-}// namespace sofa
 
 #endif

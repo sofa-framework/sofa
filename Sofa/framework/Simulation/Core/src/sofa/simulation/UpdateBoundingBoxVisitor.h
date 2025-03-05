@@ -24,9 +24,7 @@
 
 #include <sofa/simulation/Visitor.h>
 
-namespace sofa
-{
-namespace simulation
+namespace sofa::simulation
 {
 
 class SOFA_SIMULATION_CORE_API UpdateBoundingBoxVisitor : public Visitor
@@ -42,7 +40,6 @@ public:
 };
 
 
-}
 }
 
 

@@ -27,27 +27,27 @@
 namespace sofa::component::collision::response::contact
 {
 
-int RuleBasedContactManagerClass = core::RegisterObject("Create different response to the collisions based on a set of rules")
-        .add< RuleBasedContactManager >()
-        .addAlias("RuleBasedCollisionResponse")
-        ;
+void registerRuleBasedContactManager(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Create different response to the collisions based on a set of rules.")
+        .add< RuleBasedContactManager >());
+}
 
 RuleBasedContactManager::RuleBasedContactManager()
     : d_variables(initData(&d_variables, "variables", "Define a list of variables to be used inside the rules"))
-    , rules(initData(&rules, "rules", "Ordered list of rules, each with a triplet of strings.\n"
+    , d_rules(initData(&d_rules, "rules", "Ordered list of rules, each with a triplet of strings.\n"
             "The first two define either the name of the collision model, its group number, or * meaning any model.\n"
             "The last string define the response algorithm to use for contacts matched by this rule.\n"
             "Rules are applied in the order they are specified. If none match a given contact, the default response is used.\n"))
 {
+    rules.setOriginalData(&d_rules);
 }
 
 RuleBasedContactManager::~RuleBasedContactManager()
 {
-    for(std::map<std::string,Data<std::string>*>::iterator it = variablesData.begin(),
-        itend = variablesData.end(); it != itend; ++it)
+    for(const auto& d : variablesData)
     {
-        //this->removeData(it->second);
-        delete it->second;
+        delete d.second;
     }
 }
 
@@ -55,7 +55,7 @@ void RuleBasedContactManager::createVariableData ( std::string variable )
 {
     Data<std::string>* d = new Data<std::string>("", true, false);
     d->setName(variable);
-    std::size_t sep = variable.find('_');
+    const std::size_t sep = variable.find('_');
     if (sep != std::string::npos)
     {
         // store group names in static set so that pointer to string content is kept valid
@@ -77,7 +77,7 @@ std::string RuleBasedContactManager::replaceVariables(std::string response)
     std::string::size_type next = 0;
     while(next < response.size())
     {
-        std::string::size_type var = response.find('$', next);
+        const std::string::size_type var = response.find('$', next);
         if (var == std::string::npos) // no more variables
         {
             res.append(response.substr(next));
@@ -87,7 +87,7 @@ std::string RuleBasedContactManager::replaceVariables(std::string response)
         {
             if (var > next)
                 res.append(response.substr(next,var-next));
-            std::string::size_type varEnd = response.find('$', var+1);
+            const std::string::size_type varEnd = response.find('$', var+1);
             if (varEnd == std::string::npos) // parse error
             {
                 msg_error() << "Error parsing variables in rule " << response;
@@ -125,14 +125,14 @@ std::string RuleBasedContactManager::getContactResponse(core::CollisionModel* mo
     if (!response1.empty()) return response1;
     else if (!response2.empty()) return response2;
 
-    const type::vector<Rule>& r = rules.getValue();
-    for (type::vector<Rule>::const_iterator it = r.begin(), itend = r.end(); it != itend; ++it)
+    const type::vector<Rule>& rulesValue = d_rules.getValue();
+    for (const auto& rule : rulesValue)
     {
-        if (it->match(model1, model2) || it->match(model2, model1))
-            return replaceVariables(it->response); // rule it matched
+        if (rule.match(model1, model2) || rule.match(model2, model1))
+            return replaceVariables(rule.response); // rule it matched
     }
     // no rule matched
-    return replaceVariables(DefaultContactManager::getContactResponse(model1, model2));
+    return replaceVariables(CollisionResponse::getContactResponse(model1, model2));
 }
 
 void RuleBasedContactManager::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )

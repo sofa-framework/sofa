@@ -41,11 +41,7 @@
 #include <sofa/component/topology/container/grid/polygon_cube_intersection/polygon_cube_intersection.h>
 #include <sofa/component/topology/container/grid/polygon_cube_intersection/vec.h>
 
-namespace sofa
-{
-namespace helper
-{
-namespace polygon_cube_intersection
+namespace sofa::helper::polygon_cube_intersection
 {
 
 #define FOR(i,n) for ((i) = 0; (i) < (n); ++(i))
@@ -320,6 +316,4 @@ get_polygon_normal(float normal[3],
     return normal;
 }
 
-}
-}
 }

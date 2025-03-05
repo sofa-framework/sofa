@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.GUI LANGUAGES CXX)
 
 set(SOFAGUI_SOURCE_DIR "src/sofa/gui")
@@ -20,7 +20,7 @@ else()
     list(APPEND SOFAGUI_MISSINGTARGETS ${PROJECT_NAME}.Common)
 endif()
 
-set(SOFAGUI_DIRS Batch Qt)
+set(SOFAGUI_DIRS Batch)
 foreach(dir ${SOFAGUI_DIRS})
     sofa_add_subdirectory(plugin ${dir} ${PROJECT_NAME}.${dir} ON)
     if(TARGET ${PROJECT_NAME}.${dir})
@@ -29,13 +29,6 @@ foreach(dir ${SOFAGUI_DIRS})
         list(APPEND SOFAGUI_MISSINGTARGETS ${PROJECT_NAME}.${dir})
     endif()
 endforeach()
-
-# HeadlessRecorder is still an "optional" dependency of Sofa.GUI
-sofa_add_subdirectory(plugin HeadlessRecorder ${PROJECT_NAME}.HeadlessRecorder OFF)
-if(TARGET ${PROJECT_NAME}.HeadlessRecorder)
-    list(APPEND SOFAGUI_TARGETS ${PROJECT_NAME}.HeadlessRecorder)
-    set(SOFA_GUI_HAVE_SOFA_GUI_HEADLESSRECORDER 1)
-endif()
 
 option(LIBRARY_SOFA_GUI "Build the Sofa.Gui library." ON)
 

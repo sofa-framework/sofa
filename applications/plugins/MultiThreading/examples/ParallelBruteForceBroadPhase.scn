@@ -30,7 +30,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
 <!--    <BVHNarrowPhase/>-->
 
     <NewProximityIntersection name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
-    <DefaultContactManager name="Response" response="FrictionContactConstraint" />
+    <CollisionResponse name="Response" response="FrictionContactConstraint" />
     <LCPConstraintSolver maxIt="1000" tolerance="0.001"/>
     <!-- Using a rigid cube using collision triangles, lines and points  -->
 

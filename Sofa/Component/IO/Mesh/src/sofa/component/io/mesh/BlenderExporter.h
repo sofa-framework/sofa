@@ -38,6 +38,8 @@
 
 #include <fstream>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::component
 {
 namespace _blenderexporter_
@@ -70,11 +72,27 @@ public:
 
     SOFA_CLASS(SOFA_TEMPLATE(BlenderExporter,T),core::objectmodel::BaseObject);
 
-    Data < std::string > path; ///< output path
-    Data < std::string > baseName; ///< Base name for the output files
-    Data < int > simulationType; ///< simulation type (0: soft body, 1: particles, 2:cloth, 3:hair)
-    Data < int > simulationStep; ///< save the  simulation result every step frames
-    Data < int > nbPtsByHair; ///< number of element by hair strand
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    sofa::core::objectmodel::lifecycle::RenamedData<std::string> path;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    sofa::core::objectmodel::lifecycle::RenamedData<std::string> baseName;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    sofa::core::objectmodel::lifecycle::RenamedData<int> simulationType;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    sofa::core::objectmodel::lifecycle::RenamedData<int> simulationStep;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    sofa::core::objectmodel::lifecycle::RenamedData<int> nbPtsByHair;
+
+
+    Data < std::string > d_path; ///< output path
+    Data < std::string > d_baseName; ///< Base name for the output files
+    Data < int > d_simulationType; ///< simulation type (0: soft body, 1: particles, 2:cloth, 3:hair)
+    Data < int > d_simulationStep; ///< save the  simulation result every step frames
+    Data < int > d_nbPtsByHair; ///< number of element by hair strand
 
 protected:
 
@@ -115,17 +133,11 @@ protected:
 
 } // namespace _blenderexporter_
 
-namespace exporter {
+namespace io::mesh 
+{
     template<class T>
     using BlenderExporter = _blenderexporter_::BlenderExporter<T>;
-} // namespace exporter
 
-// Import the object in the "old" namespace to allow smooth update of code base.
-namespace misc {
-    template<class T>
-    using BlenderExporter
-        SOFA_ATTRIBUTE_DISABLED__SOFAEXPORTER_NAMESPACE_2106()
-        = DeprecatedAndRemoved;
-} // namespace misc
+} // namespace io::mesh 
 
 } // namespace sofa::component

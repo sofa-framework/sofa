@@ -32,7 +32,7 @@
 namespace sofa::component::mechanicalload
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template<class DataTypes1, class DataTypes2>
 class InteractionEllipsoidForceFieldInternalData
 {
@@ -146,6 +146,8 @@ public:
 
     SReal getPotentialEnergy(const sofa::core::MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2)const override;
 
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+
     void init() override;
     void reinit() override;
 
@@ -165,7 +167,7 @@ protected:
     } vars;
 };
 
-#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_INTERACTIONELLIPSOIDFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_INTERACTIONELLIPSOIDFORCEFIELD_CPP)
 extern template class InteractionEllipsoidForceField<defaulttype::Vec3Types, defaulttype::Rigid3Types>;
 
 

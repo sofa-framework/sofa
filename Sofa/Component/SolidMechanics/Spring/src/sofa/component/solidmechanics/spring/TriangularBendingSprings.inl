@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/spring/TriangularBendingSprings.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/topology/TopologyData.inl>
@@ -57,8 +58,8 @@ void TriangularBendingSprings<DataTypes>::applyTriangleCreation(const sofa::type
     Real m_ks=getKs();
     Real m_kd=getKd();
 
-    const typename DataTypes::VecCoord& restPosition = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeData = edgeInfo;
+    const typename DataTypes::VecCoord& restPosition = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
+    sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeData = d_edgeInfo;
 
     for (unsigned int i=0; i<triangleAdded.size(); ++i)
     {
@@ -69,11 +70,11 @@ void TriangularBendingSprings<DataTypes>::applyTriangleCreation(const sofa::type
 
         for(unsigned int j=0; j<3; ++j) // for each edge in triangle
         {
-            EdgeInformation &ei = edgeData[te2[j]]; // edgeInfo
+            EdgeInformation &ei = edgeData[te2[j]]; // d_edgeInfo
             if(!(ei.is_initialized))
             {
                 ei.is_initialized = true;
-                unsigned int edgeIndex = te2[j];
+                const unsigned int edgeIndex = te2[j];
                 const auto& shell = m_topology->getTrianglesAroundEdge(edgeIndex);
 
                 if (shell.size() != 2) // Only Manifold triangulation is handled
@@ -108,8 +109,8 @@ void TriangularBendingSprings<DataTypes>::applyTriangleCreation(const sofa::type
                 }
 
                 // get localIndices of the edge in triangle, same index as opposite vertex in triangle
-                int i1 = m_topology->getEdgeIndexInTriangle(te1, edgeIndex);
-                int i2 = m_topology->getEdgeIndexInTriangle(te2, edgeIndex);
+                const int i1 = m_topology->getEdgeIndexInTriangle(te1, edgeIndex);
+                const int i2 = m_topology->getEdgeIndexInTriangle(te2, edgeIndex);
 
                 // store vertex indices of the spring extremities, as well as global spring stiffness and damping
                 ei.m1 = t1[i1];
@@ -135,8 +136,8 @@ void TriangularBendingSprings<DataTypes>::applyTriangleDestruction(const sofa::t
     Real m_ks=getKs();
     Real m_kd=getKd();
 
-    const typename DataTypes::VecCoord& restPosition = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeData = edgeInfo;
+    const typename DataTypes::VecCoord& restPosition = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
+    sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeData = d_edgeInfo;
 
     for (unsigned int i=0; i<triangleRemoved.size(); ++i)
     {
@@ -145,7 +146,7 @@ void TriangularBendingSprings<DataTypes>::applyTriangleDestruction(const sofa::t
 
         for(unsigned int j=0; j<3; ++j) // for each edge of the triangle
         {
-            EdgeInformation &ei = edgeData[te[j]]; // edgeInfo
+            EdgeInformation &ei = edgeData[te[j]]; // d_edgeInfo
             if (!ei.is_initialized) // not init == no spring, nothing to do
             {
                 ei.is_activated = false;
@@ -153,7 +154,7 @@ void TriangularBendingSprings<DataTypes>::applyTriangleDestruction(const sofa::t
                 continue;
             }
 
-            unsigned int edgeIndex = te[j];
+            const unsigned int edgeIndex = te[j];
 
             const auto& shell = m_topology->getTrianglesAroundEdge(edgeIndex);
             if (shell.size()==3) // This case is possible during remeshing phase (adding/removing triangles)
@@ -186,8 +187,8 @@ void TriangularBendingSprings<DataTypes>::applyTriangleDestruction(const sofa::t
                     t2 = m_topology->getTriangle(shell[1]);
                 }
 
-                int i1 = m_topology->getEdgeIndexInTriangle(te1, edgeIndex);
-                int i2 = m_topology->getEdgeIndexInTriangle(te2, edgeIndex);
+                const int i1 = m_topology->getEdgeIndexInTriangle(te1, edgeIndex);
+                const int i2 = m_topology->getEdgeIndexInTriangle(te2, edgeIndex);
 
                 ei.m1 = t1[i1];
                 ei.m2 = t2[i2];
@@ -218,7 +219,7 @@ void TriangularBendingSprings<DataTypes>::applyPointDestruction(const sofa::type
     sofa::Index last = m_topology->getNbPoints() -1;
     unsigned int i,j;
 
-    sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeInf = edgeInfo;
+    sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeInf = d_edgeInfo;
 
     sofa::type::vector<unsigned int> lastIndexVec;
     for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
@@ -247,7 +248,7 @@ void TriangularBendingSprings<DataTypes>::applyPointDestruction(const sofa::type
         for (j=0; j<shell.size(); ++j)
         {
             Triangle tj = m_topology->getTriangle(shell[j]);
-            int vertexIndex = m_topology->getVertexIndexInTriangle(tj, lastIndexVec[i]);
+            const int vertexIndex = m_topology->getVertexIndexInTriangle(tj, lastIndexVec[i]);
 
             EdgesInTriangle tej = m_topology->getEdgesInTriangle(shell[j]);
             unsigned int ind_j = tej[vertexIndex];
@@ -270,7 +271,7 @@ void TriangularBendingSprings<DataTypes>::applyPointDestruction(const sofa::type
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::applyPointRenumbering(const sofa::type::vector<Index> &tab)
 {
-    sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeInf = edgeInfo;
+    sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeInf = d_edgeInfo;
     for (unsigned int i = 0; i < m_topology->getNbEdges(); ++i)
     {
         if(edgeInf[i].is_activated)
@@ -288,11 +289,11 @@ TriangularBendingSprings<DataTypes>::TriangularBendingSprings()
     , d_kd(initData(&d_kd, Real(1.0),"damping","uniform damping for the all springs"))
     , d_showSprings(initData(&d_showSprings, true, "showSprings", "option to draw springs"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    , d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
     , m_potentialEnergy(0.0)
     , m_topology(nullptr)
 {
-
+    edgeInfo.setOriginalData(&d_edgeInfo);
 }
 
 template<class DataTypes>
@@ -333,34 +334,34 @@ void TriangularBendingSprings<DataTypes>::init()
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    edgeInfo.createTopologyHandler(m_topology);
-    edgeInfo.linkToPointDataArray();
-    edgeInfo.linkToTriangleDataArray();
+    d_edgeInfo.createTopologyHandler(m_topology);
+    d_edgeInfo.linkToPointDataArray();
+    d_edgeInfo.linkToTriangleDataArray();
 
-    edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeInformation& ei,
-        const core::topology::BaseMeshTopology::Edge& edge,
-        const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< SReal >& coefs)
+    d_edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeInformation& ei,
+                                          const core::topology::BaseMeshTopology::Edge& edge,
+                                          const sofa::type::vector< Index >& ancestors,
+                                          const sofa::type::vector< SReal >& coefs)
     {
         applyEdgeCreation(edgeIndex, ei, edge, ancestors, coefs);
     });
 
-    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESADDED, [this](const core::topology::TopologyChange* eventTopo) {
+    d_edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESADDED, [this](const core::topology::TopologyChange* eventTopo) {
         const core::topology::TrianglesAdded* triAdd = static_cast<const core::topology::TrianglesAdded*>(eventTopo);
         applyTriangleCreation(triAdd->getIndexArray(), triAdd->getElementArray(), triAdd->ancestorsList, triAdd->coefs);
     });
 
-    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+    d_edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
         const core::topology::TrianglesRemoved* triRemove = static_cast<const core::topology::TrianglesRemoved*>(eventTopo);
         applyTriangleDestruction(triRemove->getArray());
     });
 
-    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::POINTSREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+    d_edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::POINTSREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
         const core::topology::PointsRemoved* pRemove = static_cast<const core::topology::PointsRemoved*>(eventTopo);
         applyPointDestruction(pRemove->getArray());
     });
 
-    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::POINTSRENUMBERING, [this](const core::topology::TopologyChange* eventTopo) {
+    d_edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::POINTSRENUMBERING, [this](const core::topology::TopologyChange* eventTopo) {
         const core::topology::PointsRenumbering* pRenum = static_cast<const core::topology::PointsRenumbering*>(eventTopo);
         applyPointRenumbering(pRenum->getIndexArray());
     });
@@ -374,7 +375,7 @@ void TriangularBendingSprings<DataTypes>::reinit()
 {
     using namespace core::topology;
     /// prepare to store info in the edge array
-    sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeInf = edgeInfo;
+    sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeInf = d_edgeInfo;
     edgeInf.resize(m_topology->getNbEdges());
     Index i;
     // set edge tensor to 0
@@ -440,8 +441,8 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    size_t nbEdges = m_topology->getNbEdges();
-    sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeInf = edgeInfo;
+    const size_t nbEdges = m_topology->getNbEdges();
+    sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeInf = d_edgeInfo;
 
     f.resize(x.size());
     m_potentialEnergy = 0;
@@ -501,12 +502,12 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    VecDeriv& df = *d_df.beginEdit();
+    auto df = sofa::helper::getWriteAccessor(d_df);
     const VecDeriv& dx = d_dx.getValue();
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
-    size_t nbEdges=m_topology->getNbEdges();
-    const type::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
+    const size_t nbEdges=m_topology->getNbEdges();
+    const type::vector<EdgeInformation>& edgeInf = d_edgeInfo.getValue();
     df.resize(dx.size());
 
     for(sofa::Index i=0; i<nbEdges; i++ )
@@ -523,7 +524,39 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
         df[a]+= dforce * kFactor;
         df[b]-= dforce * kFactor;
     }
-    d_df.endEdit();
+}
+
+template <class DataTypes>
+void TriangularBendingSprings<DataTypes>::buildStiffnessMatrix(
+    core::behavior::StiffnessMatrix* matrix)
+{
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    const type::vector<EdgeInformation>& edgeInf = d_edgeInfo.getValue();
+
+    for (sofa::Index i = 0; i < m_topology->getNbEdges(); i++)
+    {
+        const EdgeInformation& einfo = edgeInf[i];
+        if (einfo.is_activated) // edge not in middle of 2 triangles
+        {
+            const sofa::Index a = Deriv::total_size * einfo.m1;
+            const sofa::Index b = Deriv::total_size * einfo.m2;
+
+            const Mat& dfdxLocal = einfo.DfDx;
+
+            dfdx(a, a) += -dfdxLocal;
+            dfdx(a, b) +=  dfdxLocal;
+            dfdx(b, a) +=  dfdxLocal;
+            dfdx(b, b) += -dfdxLocal;
+        }
+    }
+}
+
+template <class DataTypes>
+void TriangularBendingSprings<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 
@@ -540,18 +573,18 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
         vparams->drawTool()->setPolygonMode(0, true);
     }
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     std::vector<sofa::type::Vec3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
 
     vparams->drawTool()->disableLighting();
-    const type::vector<EdgeInformation>& edgeInfos = edgeInfo.getValue();
+    const type::vector<EdgeInformation>& edgeInfos = d_edgeInfo.getValue();
     for(auto& edgeInfo : edgeInfos)
     {
         if(edgeInfo.is_activated)
         {
-            bool external=true;
-            Real d = (x[edgeInfo.m2]-x[edgeInfo.m1]).norm();
+            const bool external=true;
+            Real d = (x[edgeInfo.m2] - x[edgeInfo.m1]).norm();
             if (external)
             {
                 if (d<edgeInfo.restlength*0.9999)

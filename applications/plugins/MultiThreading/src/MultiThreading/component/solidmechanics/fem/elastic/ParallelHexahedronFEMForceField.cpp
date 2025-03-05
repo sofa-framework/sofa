@@ -29,14 +29,16 @@
 namespace multithreading::component::forcefield::solidmechanics::fem::elastic
 {
 
+using namespace sofa::defaulttype;
+
 const bool isParallelHexahedronFEMForceFieldImplementationRegistered =
     multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("HexahedronFEMForceField", "ParallelHexahedronFEMForceField");
 
-using namespace sofa::defaulttype;
-
-// Register in the Factory
-int ParallelHexahedronFEMForceFieldClass = sofa::core::RegisterObject("Parallel hexahedral finite elements")
-                                           .add < ParallelHexahedronFEMForceField < Vec3Types > > ();
+void registerParallelHexahedronFEMForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Parallel implementation of a linear elastic material using hexahedral finite elements.")
+                             .add < ParallelHexahedronFEMForceField < Vec3Types > > ());
+}
 
 template class SOFA_MULTITHREADING_PLUGIN_API ParallelHexahedronFEMForceField<Vec3Types>;
 

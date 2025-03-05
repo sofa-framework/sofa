@@ -163,7 +163,7 @@ public:
 };
 
 ///
-/// tests that all the BaseClass returned from GetClass function are refering to the same
+/// tests that all the BaseClass returned from GetClass function are referring to the same
 /// BaseClass instance.
 ///
 TEST_F(BaseClass_test, checkClassEquivalence  )
@@ -242,7 +242,7 @@ TEST_F(BaseClass_test, checkStaticDefaultTemplate  )
 
 TEST_F(BaseClass_test, checkStaticDefaultTemplateOverridenByCustom  )
 {
-    NotDefaultTemplate<DataOne, DataTwo, NotAType> ptr;
+    const NotDefaultTemplate<DataOne, DataTwo, NotAType> ptr;
     EXPECT_EQ(ptr.getClassName(),"NotDefaultTemplate") ;
     EXPECT_EQ(ptr.getTemplateName(),"non,oui") ;
 }

@@ -26,7 +26,7 @@
 #include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceFieldOptim.h>
 #include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
@@ -79,15 +79,15 @@ protected:
 
 public:
 
-    void SetUp() override
+    void doSetUp() override
     {
-        simulation::setSimulation(m_simulation = new simulation::graph::DAGSimulation());
+        m_simulation = sofa::simulation::getSimulation();
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         if (m_root != nullptr)
-            simulation::getSimulation()->unload(m_root);
+            sofa::simulation::node::unload(m_root);
     }
 
     void createSingleTriangleFEMScene(int FEMType, Real young, Real poisson, std::string method)
@@ -97,10 +97,10 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
 
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
-        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
+        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
 
         createObject(m_root, "MechanicalObject", {{"template",dataTypeName}, {"position", "0 0 0  1 0 0  0 1 0  1 1 1"} });
         createObject(m_root, "TriangleSetTopologyContainer", { {"triangles","0 1 2  1 3 2"} });
@@ -125,7 +125,7 @@ public:
         createObject(m_root, "DiagonalMass", {
             {"name","mass"}, {"massDensity","0.1"} });
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
     }
 
 
@@ -138,7 +138,7 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
 
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Grid);
 
         createObject(m_root, "RegularGridTopology", { {"name", "grid"}, 
             {"n", str(type::Vec3(nbrGrid, nbrGrid, 1))}, {"min", "0 0 0"}, {"max", "10 10 0"} });
@@ -168,19 +168,19 @@ public:
         ASSERT_NE(m_root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
     }
 
     void addTriangleFEMNode(int FEMType, unsigned int fixP, std::string nodeName)
     {
-        Node::SPtr FEMNode = sofa::simpleapi::createChild(m_root, nodeName);
+        const Node::SPtr FEMNode = sofa::simpleapi::createChild(m_root, nodeName);
 
-        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
-        sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
-        sofa::simpleapi::importPlugin("Sofa.Component.Constraint.Projective");
+        sofa::simpleapi::importPlugin(Sofa.Component.ODESolver.Backward);
+        sofa::simpleapi::importPlugin(Sofa.Component.LinearSolver.Iterative);
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
+        sofa::simpleapi::importPlugin(Sofa.Component.Constraint.Projective);
 
         createObject(FEMNode, "EulerImplicitSolver");
         createObject(FEMNode, "CGLinearSolver", {{ "iterations", "20" }, { "tolerance", "1e-5" }, {"threshold", "1e-6"}});
@@ -213,7 +213,7 @@ public:
 
         createObject(FEMNode, "DiagonalMass", {
             {"name","mass"}, {"massDensity","0.1"} });
-        createObject(FEMNode, "FixedConstraint", {
+        createObject(FEMNode, "FixedProjectiveConstraint", {
             {"name","fix"}, {"indices", str(type::Vec2(0, fixP))} });
     }
 
@@ -232,24 +232,24 @@ public:
         {
             typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.4));
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(100));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoissonRatioInElement(0), static_cast<Real>(0.4));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoungModulusInElement(0), static_cast<Real>(100));
             ASSERT_EQ(triFEM->getMethod(), 0);
         }
         else if (FEMType == 1)
         {
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.4));
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(100));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoissonRatioInElement(0), static_cast<Real>(0.4));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoungModulusInElement(0), static_cast<Real>(100));
             ASSERT_EQ(triFEM->getMethod(), 0);
         }
         else
         {
             typename TriangularFEMOptim::SPtr triFEM = m_root->getTreeObject<TriangularFEMOptim>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.4));
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(100));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoissonRatioInElement(0), static_cast<Real>(0.4));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoungModulusInElement(0), static_cast<Real>(100));
         }
     }
 
@@ -259,8 +259,8 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
 
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
 
         createObject(m_root, "MechanicalObject", { {"template",dataTypeName}, {"position", "0 0 0  1 0 0  0 1 0"} });
         if (FEMType == 0) // TriangleModel
@@ -282,7 +282,7 @@ public:
         EXPECT_MSG_EMIT(Error);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
     }
 
     void checkEmptyTopology(int FEMType)
@@ -291,9 +291,9 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
 
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
 
         createObject(m_root, "MechanicalObject", { {"template",dataTypeName} });
         createObject(m_root, "TriangleSetTopologyContainer");
@@ -316,7 +316,7 @@ public:
         EXPECT_MSG_EMIT(Warning);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
     }
 
 
@@ -326,9 +326,9 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
 
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
 
         createObject(m_root, "MechanicalObject", { {"template",dataTypeName}, {"position", "0 0 0  1 0 0  0 1 0"} });
         createObject(m_root, "TriangleSetTopologyContainer", { {"triangles","0 1 2"} });
@@ -351,29 +351,29 @@ public:
         EXPECT_MSG_EMIT(Warning);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
         if (FEMType == 0)
         {
             typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.3));
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(1000));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoissonRatioInElement(0), static_cast<Real>(0.45));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoungModulusInElement(0), static_cast<Real>(5000));
             ASSERT_EQ(triFEM->getMethod(), 0);
         }
         else if (FEMType == 1)
         {
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.3)); // Not the same default values
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(1000));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoissonRatioInElement(0), static_cast<Real>(0.45)); // Not the same default values
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoungModulusInElement(0), static_cast<Real>(5000));
             ASSERT_EQ(triFEM->getMethod(), 0);
         }
         else
         {
             typename TriangularFEMOptim::SPtr triFEM = m_root->getTreeObject<TriangularFEMOptim>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.3)); // Not the same default values
-            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(1000));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoissonRatioInElement(0), static_cast<Real>(0.45)); // Not the same default values
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoungModulusInElement(0), static_cast<Real>(5000));
         }
     }
 
@@ -438,7 +438,7 @@ public:
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             for (int id = 0; id < 2; id++)
             {
-                typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[id];
+                typename TriangularFEM::TriangleInformation triangleInfo = triFEM->d_triangleInfo.getValue()[id];
                 const type::fixed_array <Coord, 3>& rotatedInitPos = triangleInfo.rotatedInitialElements;
                 const Mat33& rotMat = triangleInfo.rotation;
                 const Mat33& stiffnessMat = triangleInfo.materialMatrix;
@@ -532,7 +532,7 @@ public:
 
         for (int i = 0; i < nbrStep; i++)
         {
-            m_simulation->animate(m_root.get(), 0.01);
+            sofa::simulation::node::animate(m_root.get(), 0.01_sreal);
         }
 
         if (FEMType == 0 || FEMType == 1)
@@ -583,7 +583,7 @@ public:
         {
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             
-            typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[idTri];
+            typename TriangularFEM::TriangleInformation triangleInfo = triFEM->d_triangleInfo.getValue()[idTri];
             const type::fixed_array <Coord, 3>& rotatedInitPos = triangleInfo.rotatedInitialElements;
             const Mat33& rotMat = triangleInfo.rotation;
             const Mat33& stiffnessMat = triangleInfo.materialMatrix;
@@ -647,38 +647,38 @@ public:
     void testFEMPerformance(int FEMType)
     {
         // init
-        int nbrStep = 1000;
-        int nbrGrid = 40;
+        const int nbrStep = 1000;
+        const int nbrGrid = 40;
 
         // load Triangular FEM
         createGridFEMScene(FEMType, nbrGrid);
         if (m_root.get() == nullptr)
             return;
 
-        int nbrTest = 10;
-        double diffTimeMs = 0;
+        const int nbrTest = 10;
+        //double diffTimeMs = 0;
         double timeMin = std::numeric_limits<double>::max();
         double timeMax = std::numeric_limits<double>::min();
         for (int i = 0; i < nbrTest; ++i)
         {
-            ctime_t startTime = sofa::helper::system::thread::CTime::getRefTime();
+            const ctime_t startTime = sofa::helper::system::thread::CTime::getRefTime();
             for (int i = 0; i < nbrStep; i++)
             {
-                m_simulation->animate(m_root.get(), 0.01);
+                sofa::simulation::node::animate(m_root.get(), 0.01_sreal);
             }
 
-            ctime_t diffTime = sofa::helper::system::thread::CTime::getRefTime() - startTime;
-            double diffTimed = sofa::helper::system::thread::CTime::toSecond(diffTime);
+            const ctime_t diffTime = sofa::helper::system::thread::CTime::getRefTime() - startTime;
+            const double diffTimed = sofa::helper::system::thread::CTime::toSecond(diffTime);
             
             if (timeMin > diffTimed)
                 timeMin = diffTimed;
             if (timeMax < diffTimed)
                 timeMax = diffTimed;
 
-            diffTimeMs += diffTimed;
-            m_simulation->reset(m_root.get());
+            //diffTimeMs += diffTimed;
+            sofa::simulation::node::reset(m_root.get());
         }
-        
+
         //std::cout << "timeMean: " << diffTimeMs/nbrTest << std::endl;
         //std::cout << "timeMin: " << timeMin << std::endl;
         //std::cout << "timeMax: " << timeMax << std::endl;

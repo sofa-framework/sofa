@@ -23,13 +23,12 @@
 
 #include <sofa/helper/system/console.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/system/PluginManager.h>
 
 #include <iostream>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 static bool s_initialized = false;
@@ -52,6 +51,8 @@ SOFA_HELPER_API void cleanup()
 {
     if (!s_cleanedUp)
     {
+
+        system::PluginManager::getInstance().cleanup();
         s_cleanedUp = true;
     }
 }
@@ -92,6 +93,6 @@ static const struct CleanupCheck
     }
 } check;
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
+

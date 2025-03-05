@@ -26,10 +26,7 @@
 #include <string>
 
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -68,8 +65,7 @@ public:
     const char* getClassName() const override { return "PrintVisitor"; }
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

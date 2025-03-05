@@ -39,13 +39,17 @@ public:
     static SceneCheckerListener* getInstance();
     virtual ~SceneCheckerListener() {}
 
-    virtual void rightAfterLoadingScene(sofa::simulation::NodeSPtr node) override;
+    void rightAfterLoadingScene(sofa::simulation::NodeSPtr node, simulation::SceneLoader* sceneLoader) override;
 
     // Do nothing on reload
-    virtual void rightBeforeReloadingScene() override {}
-    virtual void rightAfterReloadingScene(sofa::simulation::NodeSPtr node) override
+    void rightBeforeReloadingScene(simulation::SceneLoader* sceneLoader) override
+    {
+        SOFA_UNUSED(sceneLoader);
+    }
+    void rightAfterReloadingScene(sofa::simulation::NodeSPtr node, simulation::SceneLoader* sceneLoader) override
     {
         SOFA_UNUSED(node);
+        SOFA_UNUSED(sceneLoader);
     }
 
 private:

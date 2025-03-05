@@ -27,10 +27,8 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 using type::Mat;
@@ -116,7 +114,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,3,Real> &M, type
 
                 edgez.normalizeWithNorm( helper::rsqrt(nz) );
 
-                // check the main direction of edgez to try to take a not too close arbritary vector
+                // check the main direction of edgez to try to take a not too close arbitrary vector
                 Real abs0 = helper::rabs( edgez[0] );
                 Real abs1 = helper::rabs( edgez[1] );
                 Real abs2 = helper::rabs( edgez[2] );
@@ -159,7 +157,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,3,Real> &M, type
             {
                 //msg_info()<<"QRDecomposition_stable collapased to edgey "<<M<<std::endl;
 
-                // check the main direction of edgey to try to take a not too close arbritary vector
+                // check the main direction of edgey to try to take a not too close arbitrary vector
                 Real abs0 = helper::rabs( edgey[0] );
                 Real abs1 = helper::rabs( edgey[1] );
                 Real abs2 = helper::rabs( edgey[2] );
@@ -215,7 +213,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,3,Real> &M, type
             {
                 //msg_info()<<"QRDecomposition_stable ollapased to edgex "<<M<<std::endl;
 
-                // check the main direction of edgex to try to take a not too close arbritary vector
+                // check the main direction of edgex to try to take a not too close arbitrary vector
                 Real abs0 = helper::rabs( edgex[0] );
                 Real abs1 = helper::rabs( edgex[1] );
                 Real abs2 = helper::rabs( edgex[2] );
@@ -298,7 +296,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,2,Real> &M, type
             degenerated = true;
             edgey.normalizeWithNorm( helper::rsqrt(ny) );
 
-            // check the main direction of edgex to try to take a not too close arbritary vector
+            // check the main direction of edgex to try to take a not too close arbitrary vector
             Real abs0 = helper::rabs( edgey[0] );
             Real abs1 = helper::rabs( edgey[1] );
             Real abs2 = helper::rabs( edgey[2] );
@@ -338,7 +336,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,2,Real> &M, type
         {
             degenerated = true;
 
-            // check the main direction of edgex to try to take a not too close arbritary vector
+            // check the main direction of edgex to try to take a not too close arbitrary vector
             Real abs0 = helper::rabs( edgex[0] );
             Real abs1 = helper::rabs( edgex[1] );
             Real abs2 = helper::rabs( edgex[2] );
@@ -403,7 +401,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
         n = edge.norm2();
         if( n < zeroTolerance() )
         {
-            // colapsed to a point
+            // collapsed to a point
             r[0][0] = 1; r[1][0] = 0;
             r[0][1] = 0; r[1][1] = 1;
 
@@ -411,7 +409,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
         }
         else
         {
-            // edgex collapsed but edgey not colapsed
+            // edgex collapsed but edgey not collapsed
             edge /= helper::rsqrt(n);
             r[0][0] = edge[1]; r[1][0] = -edge[0];
             r[0][1] = edge[0]; r[1][1] =  edge[1];
@@ -421,7 +419,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
     }
     else
     {
-        // edgex not colapsed
+        // edgex not collapsed
         edge /= helper::rsqrt(n);
         r[0][0] =  edge[0]; r[1][0] = edge[1];
         r[0][1] = -edge[1]; r[1][1] = edge[0];
@@ -748,7 +746,7 @@ void Decompose<Real>::polarDecomposition( const type::Mat<2,2,Real>& M, type::Ma
 template<class Real>
 bool Decompose<Real>::polarDecomposition_stable( const type::Mat<3,3,Real> &M, type::Mat<3,3,Real> &Q, type::Mat<3,3,Real> &S )
 {
-    bool degenerated = polarDecomposition_stable( M, Q );
+    const bool degenerated = polarDecomposition_stable( M, Q );
     S = Q.multTranspose( M ); // S = Qt * M
 
     return degenerated;
@@ -759,7 +757,7 @@ bool Decompose<Real>::polarDecomposition_stable( const type::Mat<3,3,Real> &M, t
 {
     type::Mat<3,3,Real> U, V;
     type::Vec<3,Real> Sdiag;
-    bool degenerated = helper::Decompose<Real>::SVD_stable( M, U, Sdiag, V );
+    const bool degenerated = helper::Decompose<Real>::SVD_stable( M, U, Sdiag, V );
 
     Q = U.multTransposed( V ); // Q = U * Vt
 
@@ -769,7 +767,7 @@ bool Decompose<Real>::polarDecomposition_stable( const type::Mat<3,3,Real> &M, t
 template<class Real>
 bool Decompose<Real>::polarDecomposition_stable( const type::Mat<2,2,Real> &M, type::Mat<2,2,Real> &Q, type::Mat<2,2,Real> &S )
 {
-    bool degenerated = polarDecomposition_stable( M, Q );
+    const bool degenerated = polarDecomposition_stable( M, Q );
     S = Q.multTranspose( M ); // S = Qt * M
     //S = V.multDiagonal( Sdiag ).multTransposed( V ); // S = V * Sdiag * Vt
 
@@ -781,7 +779,7 @@ bool Decompose<Real>::polarDecomposition_stable( const type::Mat<2,2,Real> &M, t
 {
     type::Mat<2,2,Real> U, V;
     type::Vec<2,Real> Sdiag;
-    bool degenerated = helper::Decompose<Real>::SVD_stable( M, U, Sdiag, V );
+    const bool degenerated = helper::Decompose<Real>::SVD_stable( M, U, Sdiag, V );
 
     Q = U.multTransposed( V ); // Q = U * Vt
 
@@ -1021,7 +1019,7 @@ bool Decompose<Real>::polarDecomposition_stable_Gradient_dQOverdM( const type::M
         }
 
 
-    // transposed and reformated in 9x9 matrice
+    // transposed and reformatted in 9x9 matrice
     for( int i=0 ; i<3 ; ++i )
         for( int j=0 ; j<3 ; ++j )
             for( int k=0 ; k<3 ; ++k )
@@ -1054,7 +1052,7 @@ bool Decompose<Real>::polarDecompositionGradient_dQOverdM( const type::Mat<3,2,R
             dQdMij[i][j] = U * omega * V;
         }
 
-    // transposed and reformated in plain matrice
+    // transposed and reformatted in plain matrice
     for( int k=0 ; k<3 ; ++k )
         for( int l=0 ; l<2 ; ++l )
             for( int j=0 ; j<2 ; ++j )
@@ -1075,20 +1073,20 @@ void Decompose<Real>::ComputeRoots(const Mat<3,3,Real>& A, double root[3])
     static const Real msRoot3 = helper::rsqrt((Real)3.0);
 
     // Convert the unique matrix entries to double precision.
-    double a00 = (double)A[0][0];
-    double a01 = (double)A[0][1];
-    double a02 = (double)A[0][2];
-    double a11 = (double)A[1][1];
-    double a12 = (double)A[1][2];
-    double a22 = (double)A[2][2];
+    const double a00 = (double)A[0][0];
+    const double a01 = (double)A[0][1];
+    const double a02 = (double)A[0][2];
+    const double a11 = (double)A[1][1];
+    const double a12 = (double)A[1][2];
+    const double a22 = (double)A[2][2];
 
     // The characteristic equation is x^3 - c2*x^2 + c1*x - c0 = 0.  The
     // eigenvalues are the roots to this equation, all guaranteed to be
     // real-valued, because the matrix is symmetric.
-    double c0 = a00*a11*a22 + 2.0*a01*a02*a12 - a00*a12*a12 -
+    const double c0 = a00*a11*a22 + 2.0*a01*a02*a12 - a00*a12*a12 -
             a11*a02*a02 - a22*a01*a01;
 
-    double c1 = a00*a11 - a01*a01 + a00*a22 - a02*a02 +
+    const double c1 = a00*a11 - a01*a01 + a00*a22 - a02*a02 +
             a11*a22 - a12*a12;
 
     double c2 = a00 + a11 + a22;
@@ -1102,7 +1100,7 @@ void Decompose<Real>::ComputeRoots(const Mat<3,3,Real>& A, double root[3])
         aDiv3 = 0.0;
     }
 
-    double halfMB = 0.5*(c0 + c2Div3*(2.0*c2Div3*c2Div3 - c1));
+    const double halfMB = 0.5*(c0 + c2Div3*(2.0*c2Div3*c2Div3 - c1));
 
     double q = halfMB*halfMB + aDiv3*aDiv3*aDiv3;
     if (q > 0.0)
@@ -1117,7 +1115,7 @@ void Decompose<Real>::ComputeRoots(const Mat<3,3,Real>& A, double root[3])
     // Mathematically, ATan2(0,0) is undefined, but ANSI standards
     // require the function to return 0.
     double angle;
-    double tany = helper::rsqrt(-q);
+    const double tany = helper::rsqrt(-q);
     if( halfMB != 0 || tany != 0 )
     {
         angle = atan2( tany, halfMB );
@@ -1127,9 +1125,9 @@ void Decompose<Real>::ComputeRoots(const Mat<3,3,Real>& A, double root[3])
 
     double cs = cos(angle);
     double sn = sin(angle);
-    double root0 = c2Div3 + 2.0*magnitude*cs;
-    double root1 = c2Div3 - magnitude*(cs + msRoot3*sn);
-    double root2 = c2Div3 - magnitude*(cs - msRoot3*sn);
+    const double root0 = c2Div3 + 2.0*magnitude*cs;
+    const double root1 = c2Div3 - magnitude*(cs + msRoot3*sn);
+    const double root2 = c2Div3 - magnitude*(cs - msRoot3*sn);
 
     // Sort in increasing order.
     if (root1 >= root0)
@@ -1769,7 +1767,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,3,Real> &F, type::Mat<3,3,Re
 
         Vec<3,Real> edge0, edge1, edge2( U[0][Sorder[2]], U[1][Sorder[2]], U[2][Sorder[2]] );
 
-        // check the main direction of edge2 to try to take a not too close arbritary vector
+        // check the main direction of edge2 to try to take a not too close arbitrary vector
         Real abs0 = helper::rabs( edge2[0] );
         Real abs1 = helper::rabs( edge2[1] );
         Real abs2 = helper::rabs( edge2[2] );
@@ -1815,7 +1813,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,3,Real> &F, type::Mat<3,3,Re
         break;
     }
 
-    bool inverted = ( determinant(U) < (Real)0 );
+    const bool inverted = ( determinant(U) < (Real)0 );
 
     // un-inverting the element -> made U a rotation by negating a column
     if( inverted )
@@ -1876,7 +1874,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<2,2,Real> &F, type::Mat<2,2,Re
 
         Vec<3,Real> edge0, edge1( U[0][max], U[1][max], U[2][max] ), edge2;
 
-        // check the main direction of edge2 to try to take a not too close arbritary vector
+        // check the main direction of edge2 to try to take a not too close arbitrary vector
         Real abs0 = helper::rabs( edge1[0] );
         Real abs1 = helper::rabs( edge1[1] );
         Real abs2 = helper::rabs( edge1[2] );
@@ -1925,7 +1923,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<2,2,Real> &F, type::Mat<2,2,Re
     }
     }
 
-    bool inverted = ( determinant(U) < (Real)0 );
+    const bool inverted = ( determinant(U) < (Real)0 );
 
     // un-inverting the element -> made U a rotation by negating a column
     if( inverted )
@@ -2016,7 +2014,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,2,Real> &F, type::Mat<3,2,Re
 
         Vec<3,Real> edge0, edge1( U[0][max], U[1][max], U[2][max] ), edge2;
 
-        // check the main direction of edge2 to try to take a not too close arbritary vector
+        // check the main direction of edge2 to try to take a not too close arbitrary vector
         Real abs0 = helper::rabs( edge1[0] );
         Real abs1 = helper::rabs( edge1[1] );
         Real abs2 = helper::rabs( edge1[2] );
@@ -2132,7 +2130,7 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,3,Real> &U, cons
 //        dV[i][j] += omegaV[i*3+j][k*3+l] * dM[k][l];
 //    }
 
-    // transposed and reformated in 9x9 matrices
+    // transposed and reformatted in 9x9 matrices
     for( int i=0 ; i<3 ; ++i )
         for( int j=0 ; j<3 ; ++j )
             for( int k=0 ; k<3 ; ++k )
@@ -2207,7 +2205,7 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,2,Real> &U, cons
             dVdMij[i][j] = omegaV * V;
         }
 
-    // transposed and reformated in plain matrices
+    // transposed and reformatted in plain matrices
     for( int k=0 ; k<3 ; ++k )
         for( int l=0 ; l<2 ; ++l )
             for( int j=0 ; j<2 ; ++j )
@@ -2895,8 +2893,7 @@ void Decompose<Real>::NSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 
     }
 }
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
 
 #endif // SOFA_HELPER_DECOMPOSE_INL

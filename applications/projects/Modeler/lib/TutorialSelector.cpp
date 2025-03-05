@@ -30,7 +30,7 @@
 #include <QHeaderView>
 #include <QImage>
 
-#include <tinyxml.h>
+#include <tinyxml2.h>
 
 namespace sofa
 {
@@ -86,16 +86,20 @@ void TutorialSelector::loadTutorials(const std::string &fileTutorial)
     this->clear();
     itemToTutorial.clear();
 
-    //Open it using TinyXML
-    TiXmlDocument doc(fileTutorial.c_str());
-    doc.LoadFile();
-
-    TiXmlHandle hDoc(&doc);
-    //Getting the root of the file
-    TiXmlNode* node=hDoc.FirstChildElement().ToElement();
-    if (!node)
+    //Open it using TinyXML2
+    tinyxml2::XMLDocument doc;
+    if (doc.LoadFile(fileTutorial.c_str()) != tinyxml2::XML_SUCCESS)
     {
         msg_error("TutorialSelector") << "Unable to load file '"  << fileTutorial << "'";
+        return;
+    }
+
+    tinyxml2::XMLHandle hDoc(&doc);
+    //Getting the root of the file
+    tinyxml2::XMLNode* node=hDoc.FirstChildElement().ToElement();
+    if (!node)
+    {
+        msg_error("TutorialSelector") << "Unable to get root XML node from file '"  << fileTutorial << "'";
         return;
     }
     openNode(node, nullptr, true);
@@ -103,7 +107,7 @@ void TutorialSelector::loadTutorials(const std::string &fileTutorial)
     this->setMaximumWidth((int)(this->columnWidth(0)*1.1));
 }
 
-void TutorialSelector::openNode(TiXmlNode *node, QTreeWidgetItem *parent, bool isRoot)
+void TutorialSelector::openNode(tinyxml2::XMLNode *node, QTreeWidgetItem *parent, bool isRoot)
 {
     std::string nameOfNode=node->Value();
     // TinyXml API changed in 2.6.0, ELEMENT was replaced with TINYXML_ELEMENT
@@ -112,7 +116,7 @@ void TutorialSelector::openNode(TiXmlNode *node, QTreeWidgetItem *parent, bool i
     // -- Jeremie A. 02/07/2011
     //int typeOfNode=node->Type();
     QTreeWidgetItem* item=nullptr;
-    if (node->ToElement())   // case TiXmlNode::ELEMENT:
+    if (node->ToElement())   // case tinyxml2::XMLNode::ELEMENT:
     {
         if (!isRoot)
         {
@@ -135,16 +139,16 @@ void TutorialSelector::openNode(TiXmlNode *node, QTreeWidgetItem *parent, bool i
     else     // default:
     {
     }
-    for ( TiXmlNode* child = node->FirstChild(); child != nullptr; child = child->NextSibling())
+    for ( tinyxml2::XMLNode* child = node->FirstChild(); child != nullptr; child = child->NextSibling())
     {
         openNode(child, item);
     }
 }
 
-void TutorialSelector::openAttribute(TiXmlElement* element,  QTreeWidgetItem *item)
+void TutorialSelector::openAttribute(tinyxml2::XMLElement* element,  QTreeWidgetItem *item)
 {
     if (!element || !item) return;
-    TiXmlAttribute* attribute=element->FirstAttribute();
+    const tinyxml2::XMLAttribute* attribute=element->FirstAttribute();
     std::string typeElement=element->Value() ;
 
     std::map<std::string, std::string> attributes;

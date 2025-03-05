@@ -25,13 +25,8 @@
 #include <iostream>
 #include <cstdio>		// fopen and friends
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 ImageRAW::ImageRAW ()
@@ -64,7 +59,7 @@ bool ImageRAW::load(std::string filename)
     // read header and ignore it as we don't know how to interpret it
     for ( unsigned i=0; i<headerSize; ++i )
     {
-        int c = getc ( file );
+        const int c = getc ( file );
 
         if ( c == EOF )
         {
@@ -81,7 +76,7 @@ bool ImageRAW::load(std::string filename)
     unsigned char *data = getPixels();
     for ( unsigned int i=0; i<numVoxels; ++i )
     {
-        int c = getc ( file );
+        const int c = getc ( file );
 
         if ( c == EOF )
         {
@@ -120,9 +115,9 @@ bool ImageRAW::save(std::string filename, int)
     return isWriteOk;
 }
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
 
-} // namespace sofa
+
+
 

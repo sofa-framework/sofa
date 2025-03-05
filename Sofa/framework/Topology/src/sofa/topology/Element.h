@@ -24,7 +24,7 @@
 #include <sofa/topology/config.h>
 
 #include <sofa/type/fixed_array.h>
-#include <sofa/topology/Point.h>
+#include <sofa/geometry/ElementType.h>
 
 #include <type_traits>
 
@@ -34,6 +34,9 @@ namespace sofa::topology
 template <typename GeometryElement>
 struct Element : public sofa::type::fixed_array<sofa::Index, GeometryElement::NumberOfNodes>
 {
+    static constexpr auto NumberOfNodes = GeometryElement::NumberOfNodes;
+
+    static constexpr sofa::geometry::ElementType Element_type = GeometryElement::Element_type;
     constexpr Element() noexcept
     {
         for (auto it = this->begin() ; it != this->end() ; it++)

@@ -84,22 +84,22 @@ public:
         sofa::helper::Creator<DummyEnumFactory, DummyClassC> dummyClassCCreator(DummyEnum::C, false);
         sofa::helper::Creator<DummyEnumFactory, DummyClassD> dummyClassDCreator(DummyEnum::D, false);
 
-        auto a = DummyEnumFactory::CreateObject(DummyEnum::A, sofa::helper::NoArgument());
+        const auto a = DummyEnumFactory::CreateObject(DummyEnum::A, sofa::helper::NoArgument());
         EXPECT_TRUE(a);
         EXPECT_TRUE(dynamic_cast<DummyClassA*>(a));
         EXPECT_EQ(a->getTestValue(), "A");
 
-        auto b = DummyEnumFactory::CreateObject(DummyEnum::B, sofa::helper::NoArgument());
+        const auto b = DummyEnumFactory::CreateObject(DummyEnum::B, sofa::helper::NoArgument());
         EXPECT_TRUE(b);
         EXPECT_TRUE(dynamic_cast<DummyClassB*>(b));
         EXPECT_EQ(b->getTestValue(), "B");
 
-        auto c = DummyEnumFactory::CreateObject(DummyEnum::C, sofa::helper::NoArgument());
+        const auto c = DummyEnumFactory::CreateObject(DummyEnum::C, sofa::helper::NoArgument());
         EXPECT_TRUE(c);
         EXPECT_TRUE(dynamic_cast<DummyClassC*>(c));
         EXPECT_EQ(c->getTestValue(), "C");
 
-        auto d = DummyEnumFactory::CreateObject(DummyEnum::D, sofa::helper::NoArgument());
+        const auto d = DummyEnumFactory::CreateObject(DummyEnum::D, sofa::helper::NoArgument());
         EXPECT_TRUE(d);
         EXPECT_TRUE(dynamic_cast<DummyClassD*>(d));
         EXPECT_EQ(d->getTestValue(), "D");

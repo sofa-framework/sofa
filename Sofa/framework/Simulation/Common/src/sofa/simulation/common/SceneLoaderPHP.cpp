@@ -73,7 +73,7 @@ sofa::simulation::Node::SPtr SceneLoaderPHP::doLoad(const std::string& filename,
     //at the moment, the filename is given as an argument
     args.push_back(std::string("-f" + std::string(filename)));
     //args.push_back("-w");
-    std::string newFilename="";
+    const std::string newFilename="";
     //std::string newFilename=filename;
 
     helper::system::FileRepository fp("PATH", ".");

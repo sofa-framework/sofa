@@ -282,18 +282,16 @@ void svddcmp(Mat<m,n,Real> &a, Vec<n,Real> &w, Mat<n,m,Real> &v)
     }
 }
 
-/// return the condition number of the matrix a following the euclidian norm (using the svd decomposition to find singular values)
+/// return the condition number of the matrix a following the euclidean norm (using the svd decomposition to find singular values)
 template< int m, int n, typename Real>
 Real cond(Mat<m,n,Real> &a)
 {
-    Vec<n,Real>w;
-    Mat<n,m,Real> *v = new Mat<n,m,Real>();
+    Vec<n, Real> w;
+    Mat<n, m, Real> v;
 
-    svddcmp( a, w, *v );
+    svddcmp(a, w, v);
 
-    delete v;
-
-    return fabs(w[0]/w[n-1]);
+    return fabs(w[0] / w[n - 1]);
 }
 
 } // namespace sofa::type

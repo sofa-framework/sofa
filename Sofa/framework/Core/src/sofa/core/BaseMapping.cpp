@@ -22,6 +22,9 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/BaseState.h>
+#include <sofa/core/BaseLocalMappingMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/core/BaseMatrixAccumulatorComponent.h>
 
 namespace sofa::core
 {
@@ -33,6 +36,7 @@ BaseMapping::BaseMapping()
     , f_mapMatrices(initData(&f_mapMatrices, false, "mapMatrices", "Are matrix explicit mapped?"))
 {
     this->addAlias(&f_mapForces, "isMechanical");
+    this->addAlias(&f_mapConstraints, "isMechanical");
     this->addAlias(&f_mapMasses, "isMechanical");
 }
 
@@ -136,12 +140,17 @@ sofa::linearalgebra::BaseMatrix* BaseMapping::createMappedMatrix(const behavior:
     return nullptr;
 }
 
+void BaseMapping::buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices)
+{
+    SOFA_UNUSED(matrices);
+}
+
 bool BaseMapping::testMechanicalState(BaseState* state)
 {
     bool isMecha = false;
     if(state)
     {
-        behavior::BaseMechanicalState* toMechaModel = state->toBaseMechanicalState();
+        const behavior::BaseMechanicalState* toMechaModel = state->toBaseMechanicalState();
         isMecha = (toMechaModel) ? true : false;
     }
     return isMecha;

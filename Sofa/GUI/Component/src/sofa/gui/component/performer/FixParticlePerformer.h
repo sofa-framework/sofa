@@ -24,7 +24,7 @@
 
 #include <sofa/gui/component/performer/InteractionPerformer.h>
 
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/gui/component/performer/MouseInteractor.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/collision/geometry/TriangleModel.h>
@@ -53,7 +53,7 @@ template <class DataTypes>
 class FixParticlePerformer: public TInteractionPerformer<DataTypes>, public FixParticlePerformerConfiguration
 {
 public:
-    typedef sofa::component::solidmechanics::spring::StiffSpringForceField< DataTypes >   MouseForceField;
+    typedef sofa::component::solidmechanics::spring::SpringForceField< DataTypes >   MouseForceField;
     typedef sofa::component::statecontainer::MechanicalObject< DataTypes >         MouseContainer;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -91,7 +91,7 @@ public:
     {
         auto* triangle = static_cast<TTriangleCollisionModel*>(model.get());
 
-        sofa::component::collision::geometry::Triangle t(triangle, idx);
+        const sofa::component::collision::geometry::Triangle t(triangle, idx);
         fixPoint = (t.p1() + t.p2() + t.p3()) / 3.0;
         points.push_back(t.p1Index());
         points.push_back(t.p2Index());
@@ -100,7 +100,7 @@ public:
 
     static void getFixationPointsSphere(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, type::vector<Index>& points, Coord& fixPoint)
     {
-        auto* collisionState = model->getContext()->getMechanicalState();
+        const auto* collisionState = model->getContext()->getMechanicalState();
         fixPoint[0] = collisionState->getPX(idx);
         fixPoint[1] = collisionState->getPY(idx);
         fixPoint[2] = collisionState->getPZ(idx);
@@ -119,7 +119,7 @@ protected:
     inline static MapTypeFunction* s_mapSupportedModels = nullptr;
 };
 
-#if  !defined(SOFA_COMPONENT_COLLISION_FIXPARTICLEPERFORMER_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_FIXPARTICLEPERFORMER_CPP)
 extern template class SOFA_GUI_COMPONENT_API FixParticlePerformer<defaulttype::Vec3Types>;
 
 #endif

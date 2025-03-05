@@ -39,9 +39,6 @@ using sofa::core::objectmodel::ComponentState ;
 namespace sofa::component::_stlexporter_
 {
 
-int STLExporterClass = core::RegisterObject("Save a topology in file")
-        .add< STLExporter >();
-
 STLExporter::STLExporter()
     : d_binaryFormat( initData(&d_binaryFormat, (bool)true, "binaryformat", "if true, save in binary format, otherwise in ascii"))
     , d_position( initData(&d_position, "position", "points coordinates"))
@@ -61,7 +58,7 @@ void STLExporter::doInit()
 
 void STLExporter::doReInit()
 {
-    BaseContext* context = this->getContext();
+    const BaseContext* context = this->getContext();
 
     context->get(m_inputtopology, BaseContext::Local);
     context->get(m_inputmstate, BaseContext::Local);
@@ -124,9 +121,9 @@ bool STLExporter::writeSTL(bool autonumbering)
         return false;
     }
 
-    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
-    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
-    helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = d_position;
+    const helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
+    const helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
+    const helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = d_position;
 
     type::vector< BaseMeshTopology::Triangle > vecTri;
 
@@ -137,24 +134,24 @@ bool STLExporter::writeSTL(bool autonumbering)
     }
     if(!triangleIndices.empty())
     {
-        for(unsigned int i=0;i<triangleIndices.size();i++)
+        for(const auto& triangleIndex : triangleIndices)
         {
-            vecTri.push_back(triangleIndices[i]);
+            vecTri.push_back(triangleIndex);
         }
     }
     else if(!quadIndices.empty())
     {
         BaseMeshTopology::Triangle tri;
-        for(unsigned int i=0;i<quadIndices.size();i++)
+        for(const auto& quadIndex : quadIndices)
         {
             for(int j=0;j<3;j++)
             {
-                tri[j] = quadIndices[i][j];
+                tri[j] = quadIndex[j];
             }
             vecTri.push_back(tri);
-            tri[0] = quadIndices[i][0];
-            tri[1] = quadIndices[i][2];
-            tri[2] = quadIndices[i][3];
+            tri[0] = quadIndex[0];
+            tri[1] = quadIndex[2];
+            tri[2] = quadIndex[3];
             vecTri.push_back(tri);
         }
     }
@@ -164,7 +161,7 @@ bool STLExporter::writeSTL(bool autonumbering)
         return false;
     }
 
-    /* Get number of facets */
+    /* Get number of d_facets */
     const int nbt = vecTri.size();
 
     // Sets the floatfield format flag for the str stream to fixed
@@ -213,9 +210,9 @@ bool STLExporter::writeSTLBinary(bool autonumbering)
         return false;
     }
 
-    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
-    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
-    helper::ReadAccessor< Data< defaulttype::Vec3Types::VecCoord> > positionIndices = d_position;
+    const helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
+    const helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
+    const helper::ReadAccessor< Data< defaulttype::Vec3Types::VecCoord> > positionIndices = d_position;
 
     type::vector< BaseMeshTopology::Triangle > vecTri;
 
@@ -226,24 +223,24 @@ bool STLExporter::writeSTLBinary(bool autonumbering)
     }
     if(!triangleIndices.empty())
     {
-        for(unsigned int i=0;i<triangleIndices.size();i++)
+        for(const auto& triangleIndex : triangleIndices)
         {
-            vecTri.push_back(triangleIndices[i]);
+            vecTri.push_back(triangleIndex);
         }
     }
     else if(!quadIndices.empty())
     {
         BaseMeshTopology::Triangle tri;
-        for(unsigned int i=0;i<quadIndices.size();i++)
+        for(const auto& quadIndex : quadIndices)
         {
             for(int j=0;j<3;j++)
             {
-                tri[j] = quadIndices[i][j];
+                tri[j] = quadIndex[j];
             }
             vecTri.push_back(tri);
-            tri[0] = quadIndices[i][0];
-            tri[1] = quadIndices[i][2];
-            tri[2] = quadIndices[i][3];
+            tri[0] = quadIndex[0];
+            tri[1] = quadIndex[2];
+            tri[2] = quadIndex[3];
             vecTri.push_back(tri);
         }
     }
@@ -266,11 +263,11 @@ bool STLExporter::writeSTLBinary(bool autonumbering)
     strcpy(buffer, "Exported from Sofa");
     outfile.write(buffer,80);
 
-    /* Number of facets */
+    /* Number of d_facets */
     const unsigned int nbt = vecTri.size();
     outfile.write((char*)&nbt,4);
 
-    // Parsing facets
+    // Parsing d_facets
     for(unsigned long i=0;i<nbt;i++)
     {
         /* normal */
@@ -308,7 +305,7 @@ void STLExporter::handleEvent(Event *event)
 
     if (GUIEvent::checkEventType(event))
     {
-        GUIEvent *guiEvent = static_cast<GUIEvent *>(event);
+        const GUIEvent *guiEvent = static_cast<GUIEvent *>(event);
 
         if (guiEvent->getValueName().compare("STLExport") == 0)
         {
@@ -323,3 +320,14 @@ void STLExporter::handleEvent(Event *event)
 }
 
 } // namespace sofa::component::_stlexporter_
+
+namespace sofa::component::io::mesh
+{
+
+void registerSTLExporter(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Save a topology in file.")
+        .add< STLExporter >());
+}
+
+} // namespace sofa::component::io::mesh

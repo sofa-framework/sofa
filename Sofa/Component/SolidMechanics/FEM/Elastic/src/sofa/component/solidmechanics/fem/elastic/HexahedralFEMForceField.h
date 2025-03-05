@@ -22,13 +22,15 @@
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 
-#include <sofa/core/behavior/ForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 
 #include <sofa/type/vector.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 
 #include <sofa/core/topology/TopologyData.h>
+
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -59,10 +61,10 @@ namespace sofa::component::solidmechanics::fem::elastic
 *     0---------1-->X
 */
 template<class DataTypes>
-class HexahedralFEMForceField : virtual public core::behavior::ForceField<DataTypes>
+class HexahedralFEMForceField : virtual public BaseLinearElasticityFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(HexahedralFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(HexahedralFEMForceField, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -136,9 +138,6 @@ protected:
     HexahedralFEMForceField();
     virtual ~HexahedralFEMForceField();
 public:
-    void setPoissonRatio(Real val) { this->f_poissonRatio.setValue(val); }
-
-    void setYoungModulus(Real val) { this->f_youngModulus.setValue(val); }
 
     void setMethod(int val) { method = val; }
 
@@ -155,7 +154,10 @@ public:
         return 0.0;
     }
 
-    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -182,25 +184,35 @@ protected:
 
 public:
     int method;
-    Data<std::string> f_method; ///< the computation method of the displacements
-    Data<Real> f_poissonRatio;
-    Data<Real> f_youngModulus;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<std::string> f_method;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_poissonRatio;
+
+    SOFA_ATTRIBUTE_DISABLED("", "v24.12", "Use d_youngModulus instead") DeprecatedAndRemoved f_youngModulus;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<HexahedronInformation> > hexahedronInfo;
+
+    Data<std::string> d_method; ///< "large" or "polar" displacements
+
     /// container that stotes all requires information for each hexahedron
-    core::topology::HexahedronData<sofa::type::vector<HexahedronInformation> > hexahedronInfo;
+    core::topology::HexahedronData<sofa::type::vector<HexahedronInformation> > d_hexahedronInfo;
 
     /** Method to create @sa HexahedronInformation when a new hexahedron is created.
-    * Will be set as creation callback in the HexahedronData @sa hexahedronInfo
+    * Will be set as creation callback in the HexahedronData @sa d_hexahedronInfo
     */
     void createHexahedronInformation(Index, HexahedronInformation& t, const core::topology::BaseMeshTopology::Hexahedron&,
         const sofa::type::vector<Index>&, const sofa::type::vector<SReal>&);
 
 protected:
-    core::topology::BaseMeshTopology* _topology;
 
     type::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API HexahedralFEMForceField<defaulttype::Vec3Types>;
 
 #endif

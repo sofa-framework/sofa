@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "CudaRigidMapping.h"
+#include <SofaCUDA/component/mapping/nonlinear/CudaRigidMapping.h>
 #include <sofa/component/mapping/nonlinear/RigidMapping.inl>
 #include <sofa/helper/accessor.h>
 
@@ -51,16 +51,16 @@ void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply
     OutVecCoord& out = *dOut.beginEdit();
     const InVecCoord& in = dIn.getValue();
 
-    const VecCoord& points = this->points.getValue();
-    Coord translation;
+    const auto& points = this->d_points.getValue();
+    Vec3f translation;
     Mat rotation;
-    rotatedPoints.resize(points.size());
+    m_rotatedPoints.resize(points.size());
     out.recreate(points.size());
 
-    translation = in[index.getValue()].getCenter();
-    in[index.getValue()].writeRotationMatrix(rotation);
+    translation = in[d_index.getValue()].getCenter();
+    in[d_index.getValue()].writeRotationMatrix(rotation);
 
-    RigidMappingCuda3f_apply(points.size(), rotation, translation, out.deviceWrite(), rotatedPoints.deviceWrite(), points.deviceRead());
+    RigidMappingCuda3f_apply(points.size(), rotation, translation, out.deviceWrite(), m_rotatedPoints.deviceWrite(), points.deviceRead());
 
     dOut.endEdit();
 }
@@ -71,13 +71,13 @@ void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply
     OutVecDeriv& out = *dOut.beginEdit();
     const InVecDeriv& in = dIn.getValue();
 
-    const VecCoord& points = this->points.getValue();
-    Deriv v,omega;
+    const auto& points = this->d_points.getValue();
+    gpu::cuda::CudaVec3fTypes::Deriv v, omega;
     out.recreate(points.size());
-    v = getVCenter(in[index.getValue()]);
-    omega = getVOrientation(in[index.getValue()]);
+    v = getVCenter(in[d_index.getValue()]);
+    omega = getVOrientation(in[d_index.getValue()]);
 
-    RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), rotatedPoints.deviceRead());
+    RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), m_rotatedPoints.deviceRead());
 
     dOut.endEdit();
 }
@@ -88,20 +88,20 @@ void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply
     InVecDeriv& out = *dOut.beginEdit();
     const OutVecDeriv& in = dIn.getValue();
 
-    const VecCoord& points = this->points.getValue();
-    Deriv v,omega;
+    const auto& points = this->d_points.getValue();
+    gpu::cuda::CudaVec3fTypes::Deriv v,omega;
     int nbloc = ((points.size()+BSIZE-1)/BSIZE);
     if (nbloc > 512) nbloc = 512;
-    data.tmp.recreate(2*nbloc);
-    RigidMappingCuda3f_applyJT(points.size(), nbloc, data.tmp.deviceWrite(), rotatedPoints.deviceRead(), in.deviceRead());
-    helper::ReadAccessor<gpu::cuda::CudaVec3fTypes::VecDeriv> tmp = data.tmp;
+    m_data.tmp.recreate(2*nbloc);
+    RigidMappingCuda3f_applyJT(points.size(), nbloc, m_data.tmp.deviceWrite(), m_rotatedPoints.deviceRead(), in.deviceRead());
+    const helper::ReadAccessor<gpu::cuda::CudaVec3fTypes::VecDeriv> tmp = m_data.tmp;
     for(int i=0; i<nbloc; i++)
     {
         v += tmp[2*i];
         omega += tmp[2*i+1];
     }
-    getVCenter(out[index.getValue()]) += v;
-    getVOrientation(out[index.getValue()]) += omega;
+    getVCenter(out[d_index.getValue()]) += v;
+    getVOrientation(out[d_index.getValue()]) += omega;
 
     dOut.endEdit();
 }
@@ -113,16 +113,16 @@ void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::apply( co
     OutVecCoord& out = *dOut.beginEdit();
     const InVecCoord& in = dIn.getValue();
 
-    const VecCoord& points = this->points.getValue();
-    Coord translation;
+    const auto& points = this->d_points.getValue();
+    type::Vec3 translation;
     sofa::type::Mat<3,3, defaulttype::Rigid3Types::Real> rotation;
-    rotatedPoints.resize(points.size());
+    m_rotatedPoints.resize(points.size());
     out.recreate(points.size());
 
-    translation = in[index.getValue()].getCenter();
-    in[index.getValue()].writeRotationMatrix(rotation);
+    translation = in[d_index.getValue()].getCenter();
+    in[d_index.getValue()].writeRotationMatrix(rotation);
 
-    RigidMappingCuda3f_apply(points.size(), rotation, translation, out.deviceWrite(), rotatedPoints.deviceWrite(), points.deviceRead());
+    RigidMappingCuda3f_apply(points.size(), rotation, translation, out.deviceWrite(), m_rotatedPoints.deviceWrite(), points.deviceRead());
 
     dOut.endEdit();
 }
@@ -133,13 +133,13 @@ void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::applyJ( c
     OutVecDeriv& out = *dOut.beginEdit();
     const InVecDeriv& in = dIn.getValue();
 
-    const VecCoord& points = this->points.getValue();
-    Deriv v,omega;
+    const auto& points = this->d_points.getValue();
+    gpu::cuda::CudaVec3fTypes::Deriv v, omega;
     out.recreate(points.size());
-    v = getVCenter(in[index.getValue()]);
-    omega = getVOrientation(in[index.getValue()]);
+    v = getVCenter(in[d_index.getValue()]);
+    omega = getVOrientation(in[d_index.getValue()]);
 
-    RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), rotatedPoints.deviceRead());
+    RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), m_rotatedPoints.deviceRead());
 
     dOut.endEdit();
 }
@@ -150,20 +150,20 @@ void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::applyJT( 
     InVecDeriv& out = *dOut.beginEdit();
     const OutVecDeriv& in = dIn.getValue();
 
-    const VecCoord& points = this->points.getValue();
-    Deriv v,omega;
+    const auto& points = this->d_points.getValue();
+    gpu::cuda::CudaVec3fTypes::Deriv v, omega;
     int nbloc = ((points.size()+BSIZE-1)/BSIZE);
     if (nbloc > 512) nbloc = 512;
-    data.tmp.recreate(2*nbloc);
-    RigidMappingCuda3f_applyJT(points.size(), nbloc, data.tmp.deviceWrite(), rotatedPoints.deviceRead(), in.deviceRead());
-    helper::ReadAccessor<gpu::cuda::CudaVec3Types::VecDeriv> tmp = data.tmp;
+    m_data.tmp.recreate(2*nbloc);
+    RigidMappingCuda3f_applyJT(points.size(), nbloc, m_data.tmp.deviceWrite(), m_rotatedPoints.deviceRead(), in.deviceRead());
+    const helper::ReadAccessor<gpu::cuda::CudaVec3Types::VecDeriv> tmp = m_data.tmp;
     for(int i=0; i<nbloc; i++)
     {
         v += tmp[2*i];
         omega += tmp[2*i+1];
     }
-    getVCenter(out[index.getValue()]) += v;
-    getVOrientation(out[index.getValue()]) += omega;
+    getVCenter(out[d_index.getValue()]) += v;
+    getVOrientation(out[d_index.getValue()]) += omega;
 
     dOut.endEdit();
 }
@@ -176,16 +176,16 @@ void RigidMapping<defaulttype::Rigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply( 
     OutVecCoord& out = *dOut.beginEdit();
     const InVecCoord& in = dIn.getValue();
 
-    const VecCoord& points = this->points.getValue();
-    Coord translation;
+    const auto& points = this->d_points.getValue();
+    Vec3f translation;
     Mat rotation;
-    rotatedPoints.resize(points.size());
+    m_rotatedPoints.resize(points.size());
     out.recreate(points.size());
 
-    translation = in[index.getValue()].getCenter();
-    in[index.getValue()].writeRotationMatrix(rotation);
+    translation = in[d_index.getValue()].getCenter();
+    in[d_index.getValue()].writeRotationMatrix(rotation);
 
-    RigidMappingCuda3f_apply(points.size(), rotation, translation, out.deviceWrite(), rotatedPoints.deviceWrite(), points.deviceRead());
+    RigidMappingCuda3f_apply(points.size(), rotation, translation, out.deviceWrite(), m_rotatedPoints.deviceWrite(), points.deviceRead());
 
     dOut.endEdit();
 }
@@ -196,13 +196,13 @@ void RigidMapping<defaulttype::Rigid3fTypes, gpu::cuda::CudaVec3fTypes>::applyJ(
     OutVecDeriv& out = *dOut.beginEdit();
     const InVecDeriv& in = dIn.getValue();
 
-    const VecCoord& points = this->points.getValue();
-    Deriv v,omega;
+    const auto& points = this->d_points.getValue();
+    gpu::cuda::CudaVec3fTypes::Deriv v, omega;
     out.recreate(points.size());
-    v = getVCenter(in[index.getValue()]);
-    omega = getVOrientation(in[index.getValue()]);
+    v = getVCenter(in[d_index.getValue()]);
+    omega = getVOrientation(in[d_index.getValue()]);
 
-    RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), rotatedPoints.deviceRead());
+    RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), m_rotatedPoints.deviceRead());
 
     dOut.endEdit();
 }
@@ -213,20 +213,20 @@ void RigidMapping<defaulttype::Rigid3fTypes, gpu::cuda::CudaVec3fTypes>::applyJT
     InVecDeriv& out = *dOut.beginEdit();
     const OutVecDeriv& in = dIn.getValue();
 
-    const VecCoord& points = this->points.getValue();
-    Deriv v,omega;
+    const auto& points = this->d_points.getValue();
+    gpu::cuda::CudaVec3fTypes::Deriv v, omega;
     int nbloc = ((points.size()+BSIZE-1)/BSIZE);
     if (nbloc > 512) nbloc = 512;
-    data.tmp.recreate(2*nbloc);
-    RigidMappingCuda3f_applyJT(points.size(), nbloc, data.tmp.deviceWrite(), rotatedPoints.deviceRead(), in.deviceRead());
-    helper::ReadAccessor<gpu::cuda::CudaVec3fTypes::VecDeriv> tmp = data.tmp;
+    m_data.tmp.recreate(2*nbloc);
+    RigidMappingCuda3f_applyJT(points.size(), nbloc, m_data.tmp.deviceWrite(), m_rotatedPoints.deviceRead(), in.deviceRead());
+    const helper::ReadAccessor<gpu::cuda::CudaVec3fTypes::VecDeriv> tmp = m_data.tmp;
     for(int i=0; i<nbloc; i++)
     {
         v += tmp[2*i];
         omega += tmp[2*i+1];
     }
-    getVCenter(out[index.getValue()]) += v;
-    getVOrientation(out[index.getValue()]) += omega;
+    getVCenter(out[d_index.getValue()]) += v;
+    getVOrientation(out[d_index.getValue()]) += omega;
 
     dOut.endEdit();
 }

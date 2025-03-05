@@ -32,7 +32,7 @@ def createScene(root):
     scene.createObject('CollisionPipeline', depth='6')
     scene.createObject('BruteForceBroadPhase', name='N2')
     scene.createObject('BVHNarrowPhase')
-    scene.createObject('DefaultContactManager', responseParams='damping=0&amp;compliance=0&amp;restitution=0', response='CompliantContact')
+    scene.createObject('CollisionResponse', responseParams='damping=0&amp;compliance=0&amp;restitution=0', response='CompliantContact')
     scene.createObject('MinProximityIntersection', alarmDistance='.7', contactDistance='0.5')
     
     scene.createObject('CompliantImplicitSolver', stabilization='1', warm_start=1)
@@ -65,7 +65,7 @@ def createBox(parent):
 
     parent.createObject('MechanicalObject', template='Rigid', name='model', position='0 100.0 0 0 0 0 1')
     parent.createObject('UniformMass')
-    parent.createObject('FixedConstraint', indices='0')
+    parent.createObject('FixedProjectiveConstraint', indices='0')
     
     collisionNode = parent.createChild('collision')
     collisionNode.createObject('MeshOBJLoader', name='loader', filename=mesh_path + 'cube.obj')

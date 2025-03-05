@@ -10,6 +10,8 @@ set(CIMGPLUGIN_HAVE_ZLIB @CIMGPLUGIN_HAVE_ZLIB@)
 
 find_package(Sofa.Helper QUIET REQUIRED)
 find_package(Sofa.DefaultType QUIET REQUIRED)
+
+set(CImg_INCLUDE_DIRS "@CImg_INCLUDE_DIRS@")
 find_package(CImg QUIET REQUIRED)
 
 if(CIMGPLUGIN_HAVE_JPEG)

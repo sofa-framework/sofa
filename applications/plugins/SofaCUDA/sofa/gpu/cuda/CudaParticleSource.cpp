@@ -28,21 +28,17 @@
 namespace sofa
 {
 
-namespace core
-{
-namespace behavior
+
+namespace core::behavior
 {
 template class ProjectiveConstraintSet<gpu::cuda::CudaVec3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class ProjectiveConstraintSet<gpu::cuda::CudaVec3dTypes>;
 #endif
-} // namespace behavior
-} // namespace core
+} // namespace core::behavior
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 
@@ -54,8 +50,7 @@ int ParticleSourceCudaClass = core::RegisterObject("Supports GPU-side computatio
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
 } // namespace sofa

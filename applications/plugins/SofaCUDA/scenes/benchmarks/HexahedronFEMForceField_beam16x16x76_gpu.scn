@@ -2,7 +2,7 @@
 <Node name="root" gravity="0 -9 0" dt="0.04">
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [DiscreteIntersection] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
@@ -12,7 +12,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2QuadTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI DiagonalMass FixedConstraint HexahedronFEMForceField IdentityMapping MechanicalObject PlaneForceField] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI DiagonalMass FixedProjectiveConstraint HexahedronFEMForceField IdentityMapping MechanicalObject PlaneForceField] -->
     
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
 	
@@ -21,7 +21,7 @@
     <CollisionPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="collision response" response="PenalityContactForceField" />
+    <CollisionResponse name="collision response" response="PenalityContactForceField" />
     <DiscreteIntersection/>
     
     <Node name="HexahedronFEMForceField-GPU-Green">
@@ -37,7 +37,7 @@
         <DiagonalMass totalMass="50.0" />
         <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
         
-        <FixedConstraint indices="@ROI1.indices" />
+        <FixedProjectiveConstraint indices="@ROI1.indices" />
         <HexahedronFEMForceField name="FEM" template="CudaVec3f" youngModulus="1000" poissonRatio="0.3" method="large" />
         <PlaneForceField normal="0 1 0" d="2" stiffness="10000"  showPlane="1" />
         

@@ -63,7 +63,7 @@ void createAFilledFile(const string filename, unsigned int rep, bool resetFileMo
     ofstream file1 ;
     file1.open(filename.c_str(), ofstream::out) ;
 
-    string sample = "#include<TODOD> int main(int argc...){ ... }\n}" ;
+    const string sample = "#include<TODOD> int main(int argc...){ ... }\n}" ;
     for(unsigned int i=0;i<rep;i++){
         file1.write(sample.c_str(), sample.size()) ;
     }
@@ -77,7 +77,7 @@ void createAFilledFile(const string filename, unsigned int rep, bool resetFileMo
 
 void waitUntilFileExists(const std::string& filename, double timeout)
 {
-    ctime_t time = CTime::getTime() ;
+    const ctime_t time = CTime::getTime() ;
     while( !FileSystem::exists(filename)
            && CTime::toSecond(CTime::getTime()-time) < timeout ){
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -86,7 +86,7 @@ void waitUntilFileExists(const std::string& filename, double timeout)
 
 void waitABit()
 {
-    // on windows we use file date, which resoution is assumed (by us) to be below this value in ms
+    // on windows we use file date, which resolution is assumed (by us) to be below this value in ms
 #ifdef WIN32
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 #endif

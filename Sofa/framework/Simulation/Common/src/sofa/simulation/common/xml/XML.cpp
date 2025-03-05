@@ -29,7 +29,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/core/ObjectFactory.h>
 #include <cstring>
-#include <tinyxml.h>
+#include <tinyxml2.h>
 
 /* For loading the scene */
 
@@ -66,28 +66,21 @@ void recReplaceAttribute(BaseElement* node, const char* attr, const char* value,
 }
 
 
-BaseElement* includeNode  (TiXmlNode* root,const char *basefilename);
-BaseElement* attributeNode(TiXmlNode* root,const char *basefilename);
+BaseElement* includeNode  (tinyxml2::XMLNode* root,const char *basefilename);
+BaseElement* attributeNode(tinyxml2::XMLNode* root,const char *basefilename);
 void recursiveMergeNode(BaseElement* destNode, BaseElement* srcNode);
 
 int numDefault=0;
 
-BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot = false)
+BaseElement* createNode(tinyxml2::XMLNode* root, const char *basefilename, bool isRoot = false)
 {
-    //if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return nullptr;
-
-    // TinyXml API changed in 2.6.0, ELEMENT was replaced with TINYXML_ELEMENT
-    // As the version number is not available as a macro, the most portable was is to
-    // replace these constants with checks of the return value of ToElement()
-    // (which is already done here). -- Jeremie A. 02/07/2011
-    // if (root->Type() != TiXmlNode::ELEMENT) return nullptr;
-    TiXmlElement* element = root->ToElement();
+    tinyxml2::XMLElement* element = root->ToElement();
     if (!element)
         return nullptr;
 
     if (!element->Value() || !element->Value()[0])
     {
-        msg_error_withfile("XMLParser", basefilename, element->Row()) << "Invalid element : " << *element ;
+        msg_error_withfile("XMLParser", basefilename, element->GetLineNum()) << "Invalid element." ;
         return nullptr;
     }
 
@@ -141,7 +134,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
         {
             // we found a replacement xml
             element->SetAttribute("href",filename.c_str());
-            element->RemoveAttribute("type");
+            element->DeleteAttribute("type");
             return includeNode(root, basefilename);
         }
     }
@@ -149,7 +142,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
     BaseElement* node = BaseElement::Create(classType,name,type);
     if (node==nullptr)
     {
-        msg_info_withfile("XMLParser", basefilename, element->Row()) << "Node "<<element->Value()<<" name "<<name<<" type "<<type<<" creation failed.\n";
+        msg_info_withfile("XMLParser", basefilename, element->GetLineNum()) << "Node "<<element->Value()<<" name "<<name<<" type "<<type<<" creation failed.\n";
         return nullptr;
     }
 
@@ -157,10 +150,10 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
         node->setBaseFile( basefilename );
 
     node->setSrcFile(basefilename);
-    node->setSrcLine(element->Row()) ;
+    node->setSrcLine(element->GetLineNum()) ;
 
      // List attributes
-    for (TiXmlAttribute* attr=element->FirstAttribute(); attr ; attr = attr->Next())
+    for (const tinyxml2::XMLAttribute* attr=element->FirstAttribute(); attr ; attr = attr->Next())
     {
         if (attr->Value()==nullptr) continue;
         if (!(strcmp(attr->Name(), "name"))) continue;
@@ -168,7 +161,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
         node->setAttribute(attr->Name(), std::string(attr->Value()));
     }
 
-    for (TiXmlNode* child = root->FirstChild() ; child != nullptr; child = child->NextSibling())
+    for (tinyxml2::XMLNode* child = root->FirstChild() ; child != nullptr; child = child->NextSibling())
     {
         BaseElement* childnode = createNode(child, basefilename);
         if (childnode != nullptr)
@@ -180,7 +173,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
             {
                 if (!node->addChild(childnode))
                 {
-                    msg_info_withfile("XMLParser", basefilename, element->Row()) << "Node "<<childnode->getClass()<<" name "<<childnode->getName()<<" type "<<childnode->getType()
+                    msg_info_withfile("XMLParser", basefilename, element->GetLineNum()) << "Node "<<childnode->getClass()<<" name "<<childnode->getName()<<" type "<<childnode->getType()
                             <<" cannot be a child of node "<<node->getClass()<<" name "<<node->getName()<<" type "<<node->getType() ;
                     delete childnode;
                 }
@@ -205,9 +198,9 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
     return node;
 }
 
-BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc, bool fromMem)
+BaseElement* processXMLLoading(const char *filename, const tinyxml2::XMLDocument &doc, bool fromMem)
 {
-    const TiXmlElement* hRoot = doc.RootElement();
+    const tinyxml2::XMLElement* hRoot = doc.RootElement();
 
     if (hRoot == nullptr)
     {
@@ -220,7 +213,7 @@ BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc, b
         basefilename = filename ;
     else
         basefilename = sofa::helper::system::SetDirectory::GetRelativeFromDir(filename,sofa::helper::system::SetDirectory::GetCurrentDir().c_str());
-    BaseElement* graph = createNode((TiXmlElement*)hRoot, basefilename.c_str(), true);
+    BaseElement* graph = createNode((tinyxml2::XMLElement*)hRoot, basefilename.c_str(), true);
 
     if (graph == nullptr)
     {
@@ -233,14 +226,14 @@ BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc, b
 
 BaseElement* loadFromMemory(const char* filename, const char* data)
 {
-    TiXmlDocument doc; // the resulting document tree
+    tinyxml2::XMLDocument doc; // the resulting document tree
 
     //xmlSubstituteEntitiesDefault(1);
 
     doc.Parse(data);
     if (doc.Error())
     {
-        msg_error("XMLParser") << "Failed to open " << filename << "\n" << doc.ErrorDesc() << " at line " << doc.ErrorRow() << " row " << doc.ErrorCol();
+        msg_error("XMLParser") << "Failed to open " << filename << "\n" << doc.ErrorStr() << " at line " << doc.ErrorLineNum();
         return nullptr;
     }
     return processXMLLoading(filename, doc, true);
@@ -253,33 +246,28 @@ BaseElement* loadFromFile(const char *filename)
     // decimal separator is a dot '.').
     helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
 
-    // this initialize the library and check potential ABI mismatches
+    // this initializes the library and check potential ABI mismatches
     // between the version it was compiled for and the actual shared
     // library used.
-    TiXmlDocument* doc = new TiXmlDocument; // the resulting document tree
+    tinyxml2::XMLDocument doc; // the resulting document tree
 
     // xmlSubstituteEntitiesDefault(1);
 
-    if (!(doc->LoadFile(filename)))
+    if (doc.LoadFile(filename) != tinyxml2::XML_SUCCESS)
     {
-        msg_error("XMLParser") << "Failed to open " << filename << "\n" << doc->ErrorDesc() << " at line " << doc->ErrorRow() << " row " << doc->ErrorCol() ;
-        delete doc;
+        msg_error("XMLParser") << "Failed to open " << filename << "\n" << doc.ErrorStr() << " at line " << doc.ErrorLineNum();
         return nullptr;
     }
 
-    BaseElement* r = processXMLLoading(filename, *doc);
-    //dmsg_error("XML") << "clear doc";
-    doc->Clear();
-    //dmsg_error("XML") << "delete doc";
-    delete doc;
-    //dmsg_error("XML") << "<loadFromFile";
+    BaseElement* r = processXMLLoading(filename, doc);
+    doc.Clear();
     return r;
 }
 
 
-BaseElement* includeNode(TiXmlNode* root,const char *basefilename)
+BaseElement* includeNode(tinyxml2::XMLNode* root,const char *basefilename)
 {
-    TiXmlElement* element = root->ToElement();
+    tinyxml2::XMLElement* element = root->ToElement();
     if (!element) return nullptr;
 
     std::string filename;
@@ -294,13 +282,13 @@ BaseElement* includeNode(TiXmlNode* root,const char *basefilename)
         return nullptr;
     }
     sofa::helper::system::DataRepository.findFileFromFile(filename, basefilename);
-    TiXmlDocument doc; // the resulting document tree
-    if (!doc.LoadFile(filename.c_str()))
+    tinyxml2::XMLDocument doc; // the resulting document tree
+    if (doc.LoadFile(filename.c_str()) != tinyxml2::XML_SUCCESS)
     {
         msg_error("XMLParser") << "Failed to parse " << filename << "\n";
         return nullptr;
     }
-    TiXmlElement* newroot = doc.RootElement();
+    tinyxml2::XMLElement* newroot = doc.RootElement();
 
     if (newroot == nullptr)
     {
@@ -315,7 +303,7 @@ BaseElement* includeNode(TiXmlNode* root,const char *basefilename)
         if (result->getName() == "_Group_") result->setIncludeNodeType(INCLUDE_NODE_GROUP);
         if (result->getName() == "_Merge_") result->setIncludeNodeType(INCLUDE_NODE_MERGE);
         // Copy attributes
-        for (TiXmlAttribute* attr=element->FirstAttribute(); attr != nullptr ; attr = attr->Next())
+        for (const tinyxml2::XMLAttribute* attr=element->FirstAttribute(); attr != nullptr ; attr = attr->Next())
         {
             if (attr->Value()==nullptr) continue;
             if (!(strcmp(attr->Name(), "href"))) continue;

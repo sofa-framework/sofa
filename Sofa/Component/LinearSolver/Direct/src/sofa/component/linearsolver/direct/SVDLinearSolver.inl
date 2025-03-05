@@ -36,10 +36,14 @@ using namespace sofa::simulation;
 
 template<class TMatrix, class TVector>
 SVDLinearSolver<TMatrix,TVector>::SVDLinearSolver()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_minSingularValue( initData(&f_minSingularValue,(Real)1.0e-6,"minSingularValue","Thershold under which a singular value is set to 0, for the stabilization of ill-conditioned system.") )
-    , f_conditionNumber( initData(&f_conditionNumber,(Real)0.0,"conditionNumber","Condition number of the matrix: ratio between the largest and smallest singular values. Computed in method solve.") )
+    : d_verbose(initData(&d_verbose, false, "verbose", "Dump system state at each iteration") )
+    , d_minSingularValue(initData(&d_minSingularValue, (Real)1.0e-6, "minSingularValue", "Thershold under which a singular value is set to 0, for the stabilization of ill-conditioned system.") )
+    , d_conditionNumber(initData(&d_conditionNumber, (Real)0.0, "conditionNumber", "Condition number of the matrix: ratio between the largest and smallest singular values. Computed in method solve.") )
 {
+    f_verbose.setOriginalData(&d_verbose);
+    f_minSingularValue.setOriginalData(&d_minSingularValue);
+    f_conditionNumber.setOriginalData(&d_conditionNumber);
+
 }
 
 /// Solve Mx=b
@@ -50,9 +54,9 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     simulation::Visitor::printComment("SVD");
 #endif
 
-    sofa::helper::ScopedAdvancedTimer svdSolveTimer("Solve-SVD");
+    SCOPED_TIMER_VARNAME(svdSolveTimer, "Solve-SVD");
 
-    const bool verbose  = f_verbose.getValue();
+    const bool verbose  = d_verbose.getValue();
 
     /// Convert the matrix and the right-hand vector to Eigen objects
     using EigenVectorX = Eigen::Matrix<SReal, Eigen::Dynamic, 1>;
@@ -61,7 +65,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     EigenMatrixX m(M.rowSize(),M.colSize());
     EigenVectorX rhs(M.rowSize());
     {
-        sofa::helper::ScopedAdvancedTimer convertTimer("convertToEigen");
+        SCOPED_TIMER_VARNAME(convertTimer, "convertToEigen");
         for(unsigned i=0; i<(unsigned)M.rowSize(); i++ )
         {
             for( unsigned j=0; j<(unsigned)M.colSize(); j++ )
@@ -76,9 +80,9 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     /// Compute the SVD decomposition and the condition number
     Eigen::JacobiSVD<EigenMatrixX> svd;
     {
-        sofa::helper::ScopedAdvancedTimer svdDecompositionTimer("SVDDecomposition");
+        SCOPED_TIMER_VARNAME(svdDecompositionTimer, "SVDDecomposition");
         svd.compute(m, Eigen::ComputeThinU | Eigen::ComputeThinV);
-        f_conditionNumber.setValue( (Real)(svd.singularValues()(0) / svd.singularValues()(M.rowSize()-1)) );
+        d_conditionNumber.setValue((Real)(svd.singularValues()(0) / svd.singularValues()(M.rowSize() - 1)) );
     }
 
     if(verbose)
@@ -96,12 +100,12 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
     /// Solve the equation system and copy the solution to the SOFA vector
     {
-        sofa::helper::ScopedAdvancedTimer solveSvdTimer("solveFromSVD");
+        SCOPED_TIMER_VARNAME(solveSvdTimer, "solveFromSVD");
         EigenVectorX Ut_b = svd.matrixU().transpose() *  rhs;
         EigenVectorX S_Ut_b(M.colSize());
         for( unsigned i=0; i<(unsigned)M.colSize(); i++ )   /// product with the diagonal matrix, using the threshold for near-null values
         {
-            if( svd.singularValues()[i] > f_minSingularValue.getValue() )
+            if(svd.singularValues()[i] > d_minSingularValue.getValue() )
                 S_Ut_b[i] = Ut_b[i]/svd.singularValues()[i];
             else
                 S_Ut_b[i] = (Real)0.0 ;

@@ -36,7 +36,6 @@ using sofa::component::collision::detection::algorithm::CollisionPipeline ;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
-using sofa::simulation::Simulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
@@ -51,7 +50,7 @@ using sofa::helper::BackTrace;
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 namespace CollisionPipeline_test
 {
@@ -75,16 +74,16 @@ public:
     void checkCollisionPipelineWithMissingContactManager();
     int checkCollisionPipelineWithMonkeyValueForDepth(int value);
 
-    void SetUp() override
+    void doSetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer"); 
-        sofa::simpleapi::importPlugin("Sofa.Component.Collision");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Collision);
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         if (root)
-            Simulation::theSimulation->unload(root);
+            sofa::simulation::node::unload(root);
     }
 };
 
@@ -96,10 +95,10 @@ void TestCollisionPipeline::checkCollisionPipelineWithNoAttributes()
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-             "  <CollisionPipeline name='pipeline'/>                                           \n"
+             "  <CollisionPipeline name='pipeline'/>                                         \n"
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <BVHNarrowPhase/>                                                            \n"
-             "  <DefaultContactManager/>                                                     \n"
+             "  <CollisionResponse/>                                                         \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
@@ -120,10 +119,10 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingIntersection()
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-             "  <CollisionPipeline name='pipeline'/>                                           \n"
+             "  <CollisionPipeline name='pipeline'/>                                         \n"
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <BVHNarrowPhase/>                                                            \n"
-             "  <DefaultContactManager/>                                                     \n"
+             "  <CollisionResponse/>                                                         \n"
              "</Node>                                                                        \n" ;
 
     root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
@@ -142,9 +141,9 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingBroadPhase()
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-             "  <CollisionPipeline name='pipeline'/>                                           \n"
+             "  <CollisionPipeline name='pipeline'/>                                         \n"
              "  <BVHNarrowPhase/>                                                            \n"
-             "  <DefaultContactManager/>                                                     \n"
+             "  <CollisionResponse/>                                                         \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
@@ -163,9 +162,9 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingNarrowPhase()
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-             "  <CollisionPipeline name='pipeline'/>                                           \n"
+             "  <CollisionPipeline name='pipeline'/>                                         \n"
              "  <BruteForceBroadPhase/>                                                      \n"
-             "  <DefaultContactManager/>                                                     \n"
+             "  <CollisionResponse/>                                                         \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
@@ -204,10 +203,10 @@ int TestCollisionPipeline::checkCollisionPipelineWithMonkeyValueForDepth(int dva
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-             "  <CollisionPipeline name='pipeline' depth='"<< dvalue <<"'/>                    \n"
+             "  <CollisionPipeline name='pipeline' depth='"<< dvalue <<"'/>                  \n"
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <BVHNarrowPhase/>                                                            \n"
-             "  <DefaultContactManager/>                                                     \n"
+             "  <CollisionResponse/>                                                         \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
@@ -215,10 +214,10 @@ int TestCollisionPipeline::checkCollisionPipelineWithMonkeyValueForDepth(int dva
     //EXPECT_NE( (root.get()), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    CollisionPipeline* clp = dynamic_cast<CollisionPipeline*>(root->getObject("pipeline")) ;
+    const CollisionPipeline* clp = dynamic_cast<CollisionPipeline*>(root->getObject("pipeline")) ;
     //ASSERT_NE( (clp), nullptr) ;
 
-    int rv = clp->d_depth.getValue() ;
+    const int rv = clp->d_depth.getValue() ;
 
     return rv;
 }
@@ -270,7 +269,7 @@ TEST_F(TestCollisionPipeline, checkCollisionPipelineWithMonkeyValueForDepth_Open
             // Check the returned value.
             if(this->checkCollisionPipelineWithMonkeyValueForDepth(depthValue) != depthValue)
             {
-                ADD_FAILURE() << "User provided depth parameter value '" << depthValue << "' has been un-expectedly overriden." ;
+                ADD_FAILURE() << "User provided depth parameter value '" << depthValue << "' has been un-expectedly overridden." ;
             }
         }
         else

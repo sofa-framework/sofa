@@ -35,9 +35,8 @@
 #include <cassert>
 #include <cstdarg>
 
-namespace sofa
-{
-namespace helper
+
+namespace sofa::helper
 {
 
 
@@ -46,7 +45,7 @@ namespace helper
  *
  * Todo this first version of polynomial is a linear presentation.
  * This presentation is efficient for arithmetic operator like +,-,\*,/ and derivative.
- * But is not optimized for the evaluating (comparing to the recurent presentation).
+ * But is not optimized for the evaluating (comparing to the recurrent presentation).
  */
 template<typename Real, unsigned int N>
 class Monomial_LD
@@ -104,7 +103,7 @@ public :
     ///Evaluating partial derivative hight order by idvar-th variable in ideriv-th order
 //	Real operator()(const RNpoint & x,unsigned int idvar,unsigned int ideriv) const;//Todo
 
-    ///Derivative operator alowing to write p1=p2.d(x);
+    ///Derivative operator allowing to write p1=p2.d(x);
     Monomial_LD<Real,N> d(const unsigned int & ideriv) const;
 
     void writeToStream(std::ostream & ff) const;
@@ -185,7 +184,7 @@ public :
     ///Evaluating partial derivative hight order by idvar-th variable in ideriv-th order
 //	Real operator()(const RNpoint & x,unsigned int idvar,unsigned int ideriv) const;//Todo
 
-    ///Derivative operator alowing to write p1=p2.d(x);
+    ///Derivative operator allowing to write p1=p2.d(x);
     Polynomial_LD<Real,N>  d(const unsigned int & ideriv) const;
 
     void setnbOfMonomial(int m_nbofmonomial);
@@ -235,7 +234,7 @@ inline std::istream & operator>>(std::istream & stream, Polynomial_LD<FReal,FN> 
 
 
 
-#if  !defined(SOFA_HELPER_POLYNOMIAL_LD_CPP)
+#if !defined(SOFA_HELPER_POLYNOMIAL_LD_CPP)
 
 extern template class SOFA_HELPER_API Monomial_LD<double,1>;
 extern template class SOFA_HELPER_API Monomial_LD<double,2>;
@@ -253,10 +252,8 @@ extern template class SOFA_HELPER_API Polynomial_LD<double,5>;
 #endif
 
 
+} // namespace sofa::helper
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif
 

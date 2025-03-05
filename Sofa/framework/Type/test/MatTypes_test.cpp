@@ -114,14 +114,14 @@ TEST(MatTypesTest, mat3x3product)
 
 TEST(MatTypesTest, multTranspose)
 {
-    sofa::type::Mat<3,4, int> a
+    const sofa::type::Mat<3,4, int> a
     {
         sofa::type::Mat<3,4, int>::Line{1, 2, 3, 4},
         sofa::type::Mat<3,4, int>::Line{5, 6, 7, 8},
         sofa::type::Mat<3,4, int>::Line{9, 10, 11, 12}
     };
 
-    sofa::type::Mat<3,2, int> b
+    const sofa::type::Mat<3,2, int> b
     {
         sofa::type::Mat<3,2, int>::Line{1, 2},
         sofa::type::Mat<3,2, int>::Line{3, 4},
@@ -142,7 +142,7 @@ TEST(MatTypesTest, multTranspose)
     EXPECT_EQ(aTb[3][0], 88);
     EXPECT_EQ(aTb[3][1], 112);
 
-    sofa::type::Mat<3, 3, int> c
+    const sofa::type::Mat<3, 3, int> c
     {
         sofa::type::Mat<3, 3, int>::Line{1., 2., 3.},
         sofa::type::Mat<3, 3, int>::Line{4., 5., 6.},
@@ -169,7 +169,7 @@ void test_transformInverse(Matrix4 const& M)
 {
     Matrix4 M_inv;
     M_inv.transformInvert(M);
-    Matrix4 res = M*M_inv;
+    const Matrix4 res = M*M_inv;
     Matrix4 I;I.identity();
     if constexpr (std::is_same_v <SReal, double>)
     {
@@ -183,7 +183,7 @@ void test_transformInverse(Matrix4 const& M)
 
 TEST(MatTypesTest, transformInverse)
 {
-    test_transformInverse(Matrix4::s_identity);
+    test_transformInverse(Matrix4::Identity());
     test_transformInverse(Matrix4::transformTranslation(Vec3(1.,2.,3.)));
     test_transformInverse(Matrix4::transformScale(Vec3(1.,2.,3.)));
     test_transformInverse(Matrix4::transformRotation(Quat<SReal>::fromEuler(M_PI_4,M_PI_2,M_PI/3.)));
@@ -191,13 +191,13 @@ TEST(MatTypesTest, transformInverse)
 
 TEST(MatTypesTest, setsub_vec)
 {
-    Matrix3 M = Matrix3::s_identity;
-    Vec2 v(1.,2.);
+    Matrix3 M = Matrix3::Identity();
+    const Vec2 v(1.,2.);
     M.setsub(1,2,v);
     double exp[9]={1.,0.,0.,
                    0.,1.,1.,
                    0.,0.,2.};
-    Matrix3 M_exp(exp);
+    const Matrix3 M_exp(exp);
     EXPECT_MAT_DOUBLE_EQ(M_exp, M);
 }
 
@@ -217,8 +217,8 @@ TEST(MatTypesTest, transpose)
     Matrix4 Mnew;
     Mnew.transpose(M);
 
-    Matrix4 Mtest(Matrix4::Line(16, 5, 9, 4), Matrix4::Line(2, 11, 7, 14), Matrix4::Line(3, 10, 6, 15),
-                  Matrix4::Line(13, 8, 12, 1));
+    const Matrix4 Mtest(Matrix4::Line(16, 5, 9, 4), Matrix4::Line(2, 11, 7, 14), Matrix4::Line(3, 10, 6, 15),
+                        Matrix4::Line(13, 8, 12, 1));
 
     EXPECT_EQ(Mnew, Mtest);
     EXPECT_EQ(M.transposed(), Mtest);
@@ -238,12 +238,12 @@ TEST(MatTypesTest, transpose)
 
 TEST(MatTypesTest, nonSquareTranspose)
 {
-    Mat<3,4,double> M(Matrix4::Line(16, 2, 3, 13), Matrix4::Line(5, 11, 10, 8), Matrix4::Line(9, 7, 6, 12));
+    const Mat<3,4,double> M(Matrix4::Line(16, 2, 3, 13), Matrix4::Line(5, 11, 10, 8), Matrix4::Line(9, 7, 6, 12));
 
     Mat<4,3,double> Mnew;
     Mnew.transpose(M);
 
-    Mat<4,3,double> Mtest(Matrix3::Line(16,5,9), Matrix3::Line(2,11,7), Matrix3::Line(3,10,6), Matrix3::Line(13,8,12));
+    const Mat<4,3,double> Mtest(Matrix3::Line(16,5,9), Matrix3::Line(2,11,7), Matrix3::Line(3,10,6), Matrix3::Line(13,8,12));
 
     EXPECT_EQ(Mnew, Mtest);
     EXPECT_EQ(M.transposed(), Mtest);
@@ -345,11 +345,11 @@ TEST(MatTypesTest, invert55)
 
 TEST(MatTypesTest, tensorProduct)
 {
-    Vec<2,SReal> v1(0.,1.), v2(1.,2.);
-    Mat<2, 2, SReal> Mtest = tensorProduct(v1,v2);
+    const Vec<2,SReal> v1(0.,1.), v2(1.,2.);
+    const Mat<2, 2, SReal> Mtest = tensorProduct(v1,v2);
 
-    Mat<2, 2, SReal> M(Mat<2, 2, SReal>::Line(0.,  0.),
-                       Mat<2, 2, SReal>::Line( 1., 2.));
+    const Mat<2, 2, SReal> M(Mat<2, 2, SReal>::Line(0.,  0.),
+                             Mat<2, 2, SReal>::Line( 1., 2.));
     EXPECT_EQ(M, Mtest);
 }
 

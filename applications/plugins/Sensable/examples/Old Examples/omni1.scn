@@ -7,7 +7,7 @@
     <BVHNarrowPhase/>
 	<LocalMinDistance name="Proximity"  alarmDistance="6"  contactDistance="1.5"  angleCone="-0.001"  coneFactor="0.5" />
 	<FreeMotionAnimationLoop name="freeMotionAnimationLoop1" />
-	<DefaultContactManager name="Response"  response="FrictionContactConstraint" />
+	<CollisionResponse name="Response"  response="FrictionContactConstraint" />
 	<Node 	name="xitact"  >
 				
 		<OmniDriver name="OmniDriver1"  listening="1"    />

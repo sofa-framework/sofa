@@ -34,7 +34,11 @@ typedef core::topology::BaseMeshTopology::Triangle	Triangle;
 namespace sofa::component::collision::geometry
 {
 
-int TriangleOctreeModelClass =	core::RegisterObject ("collision model using a triangular mesh mapped to an Octree").add <	TriangleOctreeModel > ().addAlias ("TriangleOctree");
+void registerTriangleOctreeModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Collision model using a triangular mesh mapped to an Octree.")
+        .add <	TriangleOctreeModel >());
+}
 
 TriangleOctreeModel::TriangleOctreeModel ()
 {
@@ -79,16 +83,16 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
     updateFromTopology();
 
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
-    std::size_t size2=m_mstate->getSize();
+    const std::size_t size2=m_mstate->getSize();
     pNorms.resize(size2);
     for(sofa::Size i=0; i<size2; i++)
     {
         pNorms[i]=type::Vec3(0,0,0);
     }
     type::Vec3 minElem, maxElem;
-    maxElem[0]=minElem[0]=m_mstate->read(core::ConstVecCoordId::position())->getValue()[0][0];
-    maxElem[1]=minElem[1]=m_mstate->read(core::ConstVecCoordId::position())->getValue()[0][1];
-    maxElem[2]=minElem[2]=m_mstate->read(core::ConstVecCoordId::position())->getValue()[0][2];
+    maxElem[0]=minElem[0]=m_mstate->read(core::vec_id::read_access::position)->getValue()[0][0];
+    maxElem[1]=minElem[1]=m_mstate->read(core::vec_id::read_access::position)->getValue()[0][1];
+    maxElem[2]=minElem[2]=m_mstate->read(core::vec_id::read_access::position)->getValue()[0][2];
 
     cubeModel->resize(1);  // size = number of triangles
     for (std::size_t i=1; i<size; i++)
@@ -104,14 +108,14 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
         t.n() = cross(*pt[1]-*pt[0],*pt[2]-*pt[0]);
         t.n().normalize();
 
-        for (int p=0; p<3; p++)
+        for (auto& p : pt)
         {
 
 
             for(int c=0; c<3; c++)
             {
-                if ((*pt[p])[c] > maxElem[c]) maxElem[c] = (*pt[p])[c];
-                if ((*pt[p])[c] < minElem[c]) minElem[c] = (*pt[p])[c];
+                if ((*p)[c] > maxElem[c]) maxElem[c] = (*p)[c];
+                if ((*p)[c] < minElem[c]) minElem[c] = (*p)[c];
 
             }
         }

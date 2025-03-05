@@ -54,11 +54,11 @@ public:
     typedef Tetra Tetrahedron;
 
 
-    Data< bool > removeIsolated; ///< Controlled DOF index.
+    Data< bool > removeIsolated; ///< Remove isolated DOFs
 protected:
     TetrahedronSetTopologyModifier()
         : TriangleSetTopologyModifier()
-        , removeIsolated( initData(&removeIsolated,true, "removeIsolated", "remove Isolated dof") )
+        , removeIsolated( initData(&removeIsolated,true, "removeIsolated", "Remove isolated DOFs") )
     {}
 
     ~TetrahedronSetTopologyModifier() override {}

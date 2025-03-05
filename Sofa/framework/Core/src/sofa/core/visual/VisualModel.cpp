@@ -21,9 +21,74 @@
 ******************************************************************************/
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::core::visual
 {
+
+VisualModel::VisualModel():
+    d_enable(initData(&d_enable, true,  "enable", "Display the object or not"))
+{}
+
+void VisualModel::drawVisual(const VisualParams* vparams)
+{
+    // don't draw if specified not to do so in the user interface
+    if (!vparams->displayFlags().getShowVisualModels())
+        return;
+
+    // don't draw if this component is specifically configured to be disabled
+    if (!d_enable.getValue())
+        return;
+
+    // don't draw if the component is not in valid state
+    if( d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid )
+        return;
+
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
+    if (vparams->displayFlags().getShowWireFrame())
+    {
+        vparams->drawTool()->setPolygonMode(0, true);
+    }
+
+    doDrawVisual(vparams);
+}
+
+void VisualModel::updateVisual(const VisualParams* vparams)
+{
+    // don't update if specified not to do so in the user interface
+    if (!vparams->displayFlags().getShowVisualModels())
+        return;
+
+    // don't update if this component is specifically configured to be disabled
+    if (!d_enable.getValue())
+        return;
+
+    // don't update if the component is not in valid state
+    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+        return;
+
+    doUpdateVisual(vparams);
+}
+
+void VisualModel::updateVisual()
+{
+    updateVisual(sofa::core::visual::visualparams::defaultInstance());
+}
+
+void VisualModel::initVisual(const VisualParams* vparams)
+{
+    // don't init visual things if the component is not in valid state
+    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+        return;
+
+    doInitVisual(vparams);
+}
+
+void VisualModel::initVisual()
+{
+    initVisual(sofa::core::visual::visualparams::defaultInstance());
+}
 
 bool VisualModel::insertInNode( objectmodel::BaseNode* node )
 {

@@ -22,7 +22,7 @@
 
 #include <sofa/gui/component/performer/FixParticlePerformer.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
@@ -34,7 +34,7 @@ namespace sofa::gui::component::performer
 template <class DataTypes>
 void FixParticlePerformer<DataTypes>::start()
 {
-    const BodyPicked &picked=this->interactor->getBodyPicked();
+    const BodyPicked &picked=this->m_interactor->getBodyPicked();
 
     type::vector<unsigned int > points;
     typename DataTypes::Coord fixPoint;
@@ -47,7 +47,7 @@ void FixParticlePerformer<DataTypes>::start()
     }
 
     simulation::Node* nodeCollision = static_cast<simulation::Node*>(mstateCollision->getContext());
-    simulation::Node::SPtr nodeFixation = nodeCollision->createChild("FixationPoint");
+    const simulation::Node::SPtr nodeFixation = nodeCollision->createChild("FixationPoint");
     fixations.push_back( nodeFixation.get() );
 
     //Create the Container of points
@@ -55,14 +55,14 @@ void FixParticlePerformer<DataTypes>::start()
 
     mstateFixation->resize(1);
     {
-        helper::WriteAccessor<Data<VecCoord> > xData = *mstateFixation->write(core::VecCoordId::position());
+        helper::WriteAccessor<Data<VecCoord> > xData = *mstateFixation->write(core::vec_id::write_access::position);
         xData.wref()[0] = fixPoint;
     }
     nodeFixation->addObject(mstateFixation);
 
 
     //Fix all the points
-    typename sofa::component::constraint::projective::FixedConstraint<DataTypes>::SPtr fixFixation = sofa::core::objectmodel::New< sofa::component::constraint::projective::FixedConstraint<DataTypes> >();
+    typename sofa::component::constraint::projective::FixedProjectiveConstraint<DataTypes>::SPtr fixFixation = sofa::core::objectmodel::New< sofa::component::constraint::projective::FixedProjectiveConstraint<DataTypes> >();
     fixFixation->d_fixAll.setValue(true);
     nodeFixation->addObject(fixFixation);
 
@@ -130,7 +130,7 @@ sofa::component::statecontainer::MechanicalObject< DataTypes >* FixParticlePerfo
     else if (b.mstate)
     {
         collisionState = dynamic_cast<MouseContainer*>(b.mstate);
-        fixPoint = (collisionState->read(core::ConstVecCoordId::position())->getValue())[idx];
+        fixPoint = (collisionState->read(core::vec_id::read_access::position)->getValue())[idx];
         points.push_back(idx);
     }
 

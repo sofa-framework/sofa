@@ -32,6 +32,8 @@
 #include <poll.h>
 #endif
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::component::playback
 {
 
@@ -72,19 +74,39 @@ public:
     void handleEvent(core::objectmodel::Event *event) override;
 
 private:
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
+    sofa::core::objectmodel::DataFileName filename;
 
-    sofa::core::objectmodel::DataFileName filename; ///< file in which the events are read.
-    Data<bool> inverseSense; ///< inverse the sense of the mouvement
-    Data<bool> p_printEvent; ///< Print event informations
-    Data<char> p_key1; ///< Key event generated when the left pedal is pressed
-    Data<char> p_key2; ///< Key event generated when the right pedal is pressed
-    Data<bool> p_writeEvents; ///< If true, write incoming events ; if false, read events from that file (if an output filename is provided)
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> inverseSense;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_printEvent;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
+    sofa::core::objectmodel::lifecycle::RenamedData<char> p_key1;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
+    sofa::core::objectmodel::lifecycle::RenamedData<char> p_key2;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_writeEvents;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
     sofa::core::objectmodel::DataFileName p_outputFilename;
+
+    sofa::core::objectmodel::DataFileName d_filename; ///< file in which the events are read.
+    Data<bool> d_inverseSense; ///< inverse the sense of the movement
+    Data<bool> d_printEvent; ///< Print event information
+    Data<char> d_key1; ///< Key event generated when the left pedal is pressed
+    Data<char> d_key2; ///< Key event generated when the right pedal is pressed
+    Data<bool> d_writeEvents; ///< If true, write incoming events ; if false, read events from that file (if an output filename is provided)
+    sofa::core::objectmodel::DataFileName d_outputFilename;
     std::ifstream* inFile;
     std::ofstream* outFile;
 
 //	Data<double> timeout;
-    int fd; ///< desciptor to open and read the file.
+    int fd; ///< descriptor to open and read the file.
 
     int deplX, deplY; ///< mouse relative deplacements.
 

@@ -29,6 +29,8 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <cmath>
+#include <sofa/component/linearsolver/direct/EigenSimplicialLLT.h>
+#include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.inl>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
@@ -37,10 +39,6 @@
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
-#include <sofa/component/linearsolver/direct/SparseCholeskySolver.h>
-#endif
-
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
 namespace sofa::component::linearsolver::direct
@@ -48,11 +46,14 @@ namespace sofa::component::linearsolver::direct
 
 template<class TMatrix,class TVector>
 PrecomputedLinearSolver<TMatrix,TVector>::PrecomputedLinearSolver()
-    : jmjt_twostep( initData(&jmjt_twostep,true,"jmjt_twostep","Use two step algorithm to compute JMinvJt") )
-    , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , use_file( initData(&use_file,true,"use_file","Dump system matrix in a file") )
+    : d_jmjt_twostep(initData(&d_jmjt_twostep, true, "jmjt_twostep", "Use two step algorithm to compute JMinvJt") )
+    , d_use_file(initData(&d_use_file, true, "use_file", "Dump system matrix in a file") )
 {
     first = true;
+
+    jmjt_twostep.setOriginalData(&d_jmjt_twostep);
+    use_file.setOriginalData(&d_use_file);
+
 }
 
 template<class TMatrix,class TVector>
@@ -63,7 +64,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
     {
         first = false;
         Inherit::setSystemMBKMatrix(mparams);
-        loadMatrix(*this->linearSystem.systemMatrix);
+        loadMatrix(*this->getSystemMatrix());
     }
 }
 
@@ -77,7 +78,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& , TVector& z, TVe
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 {
-    systemSize = this->linearSystem.systemMatrix->rowSize();
+    systemSize = this->getSystemMatrix()->rowSize();
     internalData.Minv.resize(systemSize,systemSize);
     dt = this->getContext()->getDt();
 
@@ -88,15 +89,10 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 
     std::stringstream ss;
     ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ".comp";
-    if(! use_file.getValue() || ! internalData.readFile(ss.str().c_str(),systemSize) )
+    if(! d_use_file.getValue() || ! internalData.readFile(ss.str().c_str(), systemSize) )
     {
-#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
-        loadMatrixWithCSparse(M);
-        if (use_file.getValue()) internalData.writeFile(ss.str().c_str(),systemSize);
-#else
-        SOFA_UNUSED(M);
-        msg_error()<< "CSPARSE support is required to invert the matrix";
-#endif
+        loadMatrixWithCholeskyDecomposition(M);
+        if (d_use_file.getValue()) internalData.writeFile(ss.str().c_str(), systemSize);
     }
 
     for (unsigned int j=0; j<systemSize; j++)
@@ -108,9 +104,8 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
     }
 }
 
-#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
 template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
+void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCholeskyDecomposition(TMatrix& M)
 {
     using namespace sofa::linearalgebra;
     msg_info() << "Compute the initial invert matrix with CS_PARSE" ;
@@ -124,7 +119,8 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
     matSolv.resize(systemSize,systemSize);
     r.resize(systemSize);
     b.resize(systemSize);
-    SparseCholeskySolver<CompressedRowSparseMatrix<SReal>, FullVector<SReal> > solver;
+    EigenSimplicialLLT<SReal> solver;
+    solver.init();
 
     for (unsigned int j=0; j<systemSize; j++)
     {
@@ -157,7 +153,6 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
     msg_info() << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
 
 }
-#endif // SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
 
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::invert(TMatrix& /*M*/) {}
@@ -198,7 +193,7 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(linearalgebra::BaseMat
 
     if (first)
     {
-        core::MechanicalParams mparams = *core::mechanicalparams::defaultInstance();
+        const core::MechanicalParams mparams = *core::mechanicalparams::defaultInstance();
         //TODO get the m b k factor from euler
 
         msg_error() << "The construction of the matrix when the solver is used only as cvonstraint "
@@ -218,6 +213,18 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(linearalgebra::BaseMat
     } return false;
 
     return true;
+}
+
+template <class TMatrix, class TVector>
+void PrecomputedLinearSolver<TMatrix, TVector>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("verbose"))
+    {
+        msg_warning() << "Attribute 'verbose' has no use in this component. "
+                         "To disable this warning, remove the attribute from the scene.";
+    }
+
+    Inherit::parse(arg);
 }
 
 template<class TMatrix,class TVector> template<class JMatrix>

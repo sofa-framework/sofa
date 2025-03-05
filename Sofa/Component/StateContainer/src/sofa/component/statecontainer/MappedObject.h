@@ -26,11 +26,13 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::component::statecontainer
 {
 //using core::objectmodel::Data;
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template<class DataTypes>
 class MappedObjectInternalData
 {
@@ -62,50 +64,56 @@ protected:
 public:
     void init() override;
 
-    Data<VecCoord> f_X; ///< position vector
-    Data<VecDeriv> f_V; ///< velocity vector
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_STATECONTAINER()
+    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> f_X;
 
-    void resize(Size vsize) override { f_X.beginEdit()->resize(vsize); f_X.endEdit(); f_V.beginEdit()->resize(vsize); f_V.endEdit(); }
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_STATECONTAINER()
+    sofa::core::objectmodel::lifecycle::RenamedData<VecDeriv> f_V;
 
-    VecCoord* getX()  { return f_X.beginEdit(); }
-    VecDeriv* getV()  { return f_V.beginEdit(); }
+    Data<VecCoord> d_X; ///< position vector
+    Data<VecDeriv> d_V; ///< velocity vector
 
-    const VecCoord* getX()  const { return &f_X.getValue();  }
-    const VecDeriv* getV()  const { return &f_V.getValue();  }
+    void resize(Size vsize) override { d_X.beginEdit()->resize(vsize); d_X.endEdit(); d_V.beginEdit()->resize(vsize); d_V.endEdit(); }
+
+    VecCoord* getX()  { return d_X.beginEdit(); }
+    VecDeriv* getV()  { return d_V.beginEdit(); }
+
+    const VecCoord* getX()  const { return &d_X.getValue();  }
+    const VecDeriv* getV()  const { return &d_V.getValue();  }
 
     Size getSize() const override
     {
-        return Size(f_X.getValue().size());
+        return Size(d_X.getValue().size());
     }
 
     Data< VecCoord >* write(core::VecCoordId v) override
     {
-        if(v == core::VecCoordId::position())
-            return &f_X;
+        if(v == core::vec_id::write_access::position)
+            return &d_X;
 
         return nullptr;
     }
 
     const Data< VecCoord >* read(core::ConstVecCoordId v) const override
     {
-        if(v == core::ConstVecCoordId::position())
-            return &f_X;
+        if(v == core::vec_id::read_access::position)
+            return &d_X;
         else
             return nullptr;
     }
 
     Data< VecDeriv >* write(core::VecDerivId v) override
     {
-        if(v == core::VecDerivId::velocity())
-            return &f_V;
+        if(v == core::vec_id::write_access::velocity)
+            return &d_V;
         else
             return nullptr;
     }
 
     const Data< VecDeriv >* read(core::ConstVecDerivId v) const override
     {
-        if(v == core::ConstVecDerivId::velocity())
-            return &f_V;
+        if(v == core::vec_id::read_access::velocity)
+            return &d_V;
         else
             return nullptr;
     }
@@ -121,7 +129,7 @@ public:
     }
 };
 
-#if  !defined(SOFA_COMPONENT_CONTAINER_MAPPEDOBJECT_CPP)
+#if !defined(SOFA_COMPONENT_CONTAINER_MAPPEDOBJECT_CPP)
 extern template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<defaulttype::Vec1Types>;

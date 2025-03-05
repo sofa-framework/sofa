@@ -74,7 +74,7 @@ void MergeVectors<VecT>::reinit()
 template <class VecT>
 void MergeVectors<VecT>::doUpdate()
 {
-    unsigned int nb = f_nbInputs.getValue();
+    const unsigned int nb = f_nbInputs.getValue();
     SOFA_UNUSED(nb);
     core::objectmodel::vectorData<VecValue>::merge( f_output, vf_inputs );
 }

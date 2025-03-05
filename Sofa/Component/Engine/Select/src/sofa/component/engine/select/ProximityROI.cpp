@@ -30,14 +30,12 @@ namespace sofa::component::engine::select
 
 using namespace sofa::defaulttype;
 
-int ProximityROIClass = core::RegisterObject("Find the N closest primitives from a given position")
-        .add< ProximityROI<Vec3Types> >()
- 
-        ;
+void registerProximityROI(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Find the N closest primitives from a given position.")
+        .add< ProximityROI<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API ProximityROI<Vec3Types>;
-//template class SOFA_COMPONENT_ENGINE_SELECT_API SphereROI<Rigid3Types>;
- 
-
 
 } //namespace sofa::component::engine::select

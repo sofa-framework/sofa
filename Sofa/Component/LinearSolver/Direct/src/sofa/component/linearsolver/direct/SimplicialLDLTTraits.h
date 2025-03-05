@@ -20,21 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/linearsolver/direct/config.h>
 
-#include <Eigen/SparseCholesky>
-#include <Eigen/OrderingMethods>
-#include <Eigen/MetisSupport>
+#include <sofa/config.h>
+SOFA_HEADER_DISABLED_NOT_REPLACED("v24.06", "v24.12")
 
 namespace sofa::component::linearsolver::direct
 {
     template<class Real>
-    struct SimplicialLDLTTraits
-    {
-        using EigenSolver = Eigen::SparseMatrix<Real>;
-        using AMDOrderSolver = Eigen::SimplicialLDLT<Eigen::SparseMatrix<Real>, Eigen::Lower, Eigen::AMDOrdering<typename EigenSolver::StorageIndex> >;
-        using COLAMDOrderSolver = Eigen::SimplicialLDLT<Eigen::SparseMatrix<Real>, Eigen::Lower, Eigen::COLAMDOrdering<typename EigenSolver::StorageIndex> >;
-        using NaturalOrderSolver = Eigen::SimplicialLDLT<Eigen::SparseMatrix<Real>, Eigen::Lower, Eigen::NaturalOrdering<typename EigenSolver::StorageIndex> >;
-        using MetisOrderSolver = Eigen::SimplicialLDLT<Eigen::SparseMatrix<Real>, Eigen::Lower, Eigen::MetisOrdering<typename EigenSolver::StorageIndex> >;
-    };
+    using SimplicialLDLTTraits = DeprecatedAndRemoved;
 }

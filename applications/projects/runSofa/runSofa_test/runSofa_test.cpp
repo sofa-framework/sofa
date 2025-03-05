@@ -44,13 +44,13 @@ protected:
 
     }
 
-    void SetUp() override
+    void doSetUp() override
     {
         const std::string& pluginDir = PluginRepository.getFirstPath();
 
         m_testConfigPluginName = "test_plugin_list.conf";
         m_testConfigPluginPath = pluginDir + "/" + m_testConfigPluginName;
-        m_testPluginName = "TestPlugin";
+        m_testPluginName = "TestPluginA";
         
         //generate on the fly test list
         std::ofstream testPluginList;
@@ -58,7 +58,7 @@ protected:
         testPluginList << m_testPluginName << std::endl;
         testPluginList.close();
     }
-    void TearDown() override
+    void doTearDown() override
     {
 
     }
@@ -68,13 +68,13 @@ protected:
 TEST_F(runSofa_test, runSofa_autoload)
 {
     PluginManager& pm = PluginManager::getInstance();
-    unsigned int num = pm.getPluginMap().size() ;
+    const unsigned int num = pm.getPluginMap().size() ;
     pm.readFromIniFile(m_testConfigPluginPath);
     PluginManager::getInstance().init();
     ASSERT_GT(pm.getPluginMap().size(), num);
     const std::string pluginPath = pm.findPlugin(m_testPluginName);
     ASSERT_GT(pluginPath.size(), 0U);
-    helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
+    const helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
     ASSERT_EQ(0, std::string(p.getModuleName()).compare(m_testPluginName));
 }
 

@@ -30,13 +30,8 @@
 #include <map>
 #include <algorithm>
 
-namespace sofa
-{
 
-namespace core
-{
-
-namespace loader
+namespace sofa::core::loader
 {
 
 using namespace sofa::defaulttype;
@@ -67,9 +62,9 @@ void VoxelLoader::addHexahedron(type::vector< type::fixed_array<unsigned int,8> 
     pHexahedra->push_back(p);
 }
 
-} // namespace loader
+} // namespace sofa::core::loader
 
-} // namespace core
 
-} // namespace sofa
+
+
 

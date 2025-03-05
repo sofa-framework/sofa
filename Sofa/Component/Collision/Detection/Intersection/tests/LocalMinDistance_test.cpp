@@ -30,7 +30,6 @@ using std::string;
 using sofa::testing::BaseSimulationTest;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Node ;
 
@@ -44,7 +43,7 @@ using sofa::component::collision::detection::intersection::LocalMinDistance ;
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <gtest/gtest-spi.h> // for expected non fatal
 
@@ -55,11 +54,12 @@ namespace
 {
 
 struct TestLocalMinDistance : public BaseSimulationTest {
-    void SetUp()
+    void doSetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Collision.Detection.Intersection);
     }
-    void TearDown()
+    void doTearDown() override
     {
     }
 
@@ -77,7 +77,7 @@ void TestLocalMinDistance::checkBasicIntersectionTests()
 {
     ExpectMessage warning(Message::Warning) ;
 
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+    assert(sofa::simulation::getSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -88,7 +88,7 @@ void TestLocalMinDistance::checkBasicIntersectionTests()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -98,7 +98,7 @@ void TestLocalMinDistance::checkBasicIntersectionTests()
     LocalMinDistance* lmdt = dynamic_cast<LocalMinDistance*>(lmd);
     ASSERT_NE(lmdt, nullptr) ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 
@@ -106,7 +106,7 @@ void TestLocalMinDistance::checkMissingRequiredAttributes()
 {
     ExpectMessage warning(Message::Warning) ;
 
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+    assert(sofa::simulation::getSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -117,19 +117,19 @@ void TestLocalMinDistance::checkMissingRequiredAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
     auto* lmd = root->getTreeNode("Level 1")->getObject("lmd") ;
     ASSERT_NE(lmd, nullptr) ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 void TestLocalMinDistance::checkAttributes()
 {
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+    assert(sofa::simulation::getSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -140,7 +140,7 @@ void TestLocalMinDistance::checkAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -149,20 +149,20 @@ void TestLocalMinDistance::checkAttributes()
 
     /// List of the supported attributes the user expect to find
     /// This list needs to be updated if you add an attribute.
-    vector<string> attrnames = {
+    const vector<string> attrnames = {
         "filterIntersection", "angleCone",   "coneFactor", "useLMDFilters"
     };
 
     for(auto& attrname : attrnames)
         EXPECT_NE( lmd->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 
 void TestLocalMinDistance::checkDoubleInit()
 {
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+    assert(sofa::simulation::getSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -173,7 +173,7 @@ void TestLocalMinDistance::checkDoubleInit()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -184,13 +184,13 @@ void TestLocalMinDistance::checkDoubleInit()
 
     FAIL() << "TODO: Calling init twice does not produce any warning message";
  
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 
 void TestLocalMinDistance::checkInitReinit()
 {
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+    assert(sofa::simulation::getSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -201,7 +201,7 @@ void TestLocalMinDistance::checkInitReinit()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -210,7 +210,7 @@ void TestLocalMinDistance::checkInitReinit()
 
     lmd->reinit() ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 

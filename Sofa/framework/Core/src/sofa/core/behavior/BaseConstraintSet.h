@@ -27,6 +27,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/MultiVecId.h>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::core::behavior
 {
 
@@ -37,13 +39,8 @@ public:
     SOFA_BASE_CAST_IMPLEMENTATION(BaseConstraintSet)
 
 protected:
-    BaseConstraintSet()
-        : group(initData(&group, 0, "group", "ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle."))
-        , m_constraintIndex(initData(&m_constraintIndex, 0u, "constraintIndex", "Constraint index (first index in the right hand term resolution vector)"))
-    {
-    }
-
-    ~BaseConstraintSet() override { }
+    BaseConstraintSet();
+    ~BaseConstraintSet() override;
 
 private:
     BaseConstraintSet(const BaseConstraintSet& n) = delete;
@@ -55,8 +52,9 @@ public:
     /// Set the id of the constraint (this id is build in the getConstraintViolation function)
     ///
     /// \param cId is Id of the first constraint in the sparse matrix
-    virtual void setConstraintId(unsigned cId) {
-        m_cId = cId;
+    virtual void setConstraintId(unsigned cId)
+    {
+        d_constraintIndex.setValue(cId);
     }
 
     /// Process geometrical data.
@@ -75,8 +73,9 @@ public:
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v) {
-        getConstraintViolation(cParams,v,m_cId);
+    virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
+    {
+        getConstraintViolation(cParams, v, d_constraintIndex.getValue());
     }
 
     /// Construct the Constraint violations vector
@@ -92,11 +91,16 @@ protected:
 
     Data< int > group; ///< ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
 public:
-    Data< unsigned int > m_constraintIndex; ///< Constraint index (first index in the right hand term resolution vector)
+    Data< sofa::Index > d_constraintIndex; ///< Constraint index (first index in the right hand term resolution vector)
+
+    SOFA_ATTRIBUTE_DEPRECATED__CORE_RENAME_DATA_IN_CORE()
+    sofa::core::objectmodel::lifecycle::RenamedData< unsigned int > m_constraintIndex;
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
-    unsigned m_cId;
+
+    SOFA_ATTRIBUTE_DEPRECATED__REMOVED_CID()
+    DeprecatedAndRemoved m_cId{};
 
 };
 

@@ -44,7 +44,6 @@ using sofa::core::MultiVecDerivId;
 using sofa::core::MultiVecCoordId;
 using sofa::core::ExecParams;
 using sofa::linearalgebra::BaseVector;
-using sofa::core::RegisterObject;
 using sofa::core::ConstMultiVecDerivId;
 using sofa::core::VecDerivId;
 using sofa::core::VecCoordId;
@@ -60,7 +59,7 @@ GenericConstraintCorrection::~GenericConstraintCorrection() {}
 
 void GenericConstraintCorrection::bwdInit()
 {
-    BaseContext* context = this->getContext();
+    const BaseContext* context = this->getContext();
 
     // Find linear solver
     if (l_linearSolver.empty())
@@ -137,7 +136,7 @@ void GenericConstraintCorrection::removeConstraintSolver(ConstraintSolver *s)
 }
 
 void GenericConstraintCorrection::rebuildSystem(SReal massFactor, SReal forceFactor)
-{    
+{
     l_linearSolver.get()->rebuildSystem(massFactor, forceFactor);
 }
 
@@ -151,13 +150,13 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
 
     switch (cparams->constOrder())
     {
-        case ConstraintParams::POS_AND_VEL :
-        case ConstraintParams::POS :
+        case sofa::core::ConstraintOrder::POS_AND_VEL :
+        case sofa::core::ConstraintOrder::POS :
             factor = l_ODESolver.get()->getPositionIntegrationFactor();
             break;
 
-        case ConstraintParams::ACC :
-        case ConstraintParams::VEL :
+        case sofa::core::ConstraintOrder::ACC :
+        case sofa::core::ConstraintOrder::VEL :
             factor = l_ODESolver.get()->getVelocityIntegrationFactor();
             break;
 
@@ -183,7 +182,7 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* 
                                                         SReal positionFactor,
                                                         SReal velocityFactor)
 {
-    MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, l_linearSolver.get()->getSystemMultiMatrixAccessor());
+    MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId);
     l_linearSolver.get()->getContext()->executeVisitor(&v);
 }
 
@@ -235,7 +234,7 @@ void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
 
 
     computeMotionCorrectionFromLambda(&cparams, cparams.dx(), f);
-    applyMotionCorrection(&cparams, VecCoordId::position(), VecDerivId::velocity(), cparams.dx(), cparams.lambda());
+    applyMotionCorrection(&cparams, core::vec_id::write_access::position, core::vec_id::write_access::velocity, cparams.dx(), cparams.lambda());
 }
 
 void GenericConstraintCorrection::computeResidual(const ExecParams* params, linearalgebra::BaseVector *lambda)
@@ -249,7 +248,7 @@ void GenericConstraintCorrection::getComplianceMatrix(linearalgebra::BaseMatrix*
     if (!l_ODESolver.get())
         return;
 
-    ConstraintParams cparams(*sofa::core::execparams::defaultInstance());
+    const ConstraintParams cparams(*sofa::core::execparams::defaultInstance());
     const_cast<GenericConstraintCorrection*>(this)->addComplianceInConstraintSpace(&cparams, Minv);
 }
 
@@ -264,7 +263,10 @@ void GenericConstraintCorrection::applyPredictiveConstraintForce(const Constrain
 
 void GenericConstraintCorrection::resetContactForce(){}
 
-int GenericConstraintCorrectionClass = RegisterObject("")
-    .add< GenericConstraintCorrection >();
+void registerGenericConstraintCorrection(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Generic Constraint Correction.")
+        .add< GenericConstraintCorrection >());
+}
 
 } //namespace sofa::component::constraint::lagrangian::correction

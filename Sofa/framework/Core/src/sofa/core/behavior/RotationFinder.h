@@ -26,13 +26,7 @@
 #include <sofa/type/Mat.h>
 
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 template <class DataTypes>
@@ -50,10 +44,7 @@ public:
     virtual const type::vector< Mat3x3 >& getRotations() = 0;
 };
 
-} // namespace behavior
+} // namespace sofa::core::behavior
 
-} // namespace core
-
-} // namespace sofa
 
 #endif // SOFA_CORE_BEHAVIOR_ROTATIONFINDER_H

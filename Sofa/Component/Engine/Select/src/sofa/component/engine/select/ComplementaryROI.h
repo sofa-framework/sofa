@@ -70,19 +70,19 @@ protected:
     /// inputs
     /// @{
     Data<VecCoord> d_position; ///< input positions
-    Data<unsigned int> d_nbSet; ///< number of sets
+    Data<unsigned int> d_nbSet; ///< number of sets to complement
     core::objectmodel::vectorData< SetIndex > vd_setIndices; ///< for each set, indices of the included points
     /// @}
 
     /// outputs
     /// @{
     Data<SetIndex> d_indices; ///< ROI indices
-    Data<VecCoord> d_pointsInROI; ///< ROI positions
+    Data<VecCoord> d_pointsInROI; ///< points in the ROI
     /// @}
 
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ComplementaryROI<defaulttype::Vec3Types>;
 
 

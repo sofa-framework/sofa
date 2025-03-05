@@ -27,11 +27,9 @@
 #include <clocale>
 #include <string>
 
-namespace sofa {
 
-namespace helper {
-
-namespace system {
+namespace sofa::helper::system
+{
 
 
 class SOFA_HELPER_API Locale
@@ -52,10 +50,7 @@ public:
 };
 
 
-} // namespace system
+} // namespace sofa::helper::system
 
-} // namespace helper
-
-} // sofa
 
 #endif

@@ -57,9 +57,9 @@ public:
     {
         sofa::type::Vec3 minBBox, maxBBox;
         std::pair<Cube,Cube> subcells;
-        std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children; ///< Note that children is only meaningfull if subcells in empty
+        std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children; ///< Note that children is only meaningful if subcells in empty
 
-        // additional datas for implementing Volino's method for efficient cloth self collision 
+        // additional data for implementing Volino's method for efficient cloth self collision 
         sofa::type::Vec3 coneAxis;
         SReal coneAngle;
     };
@@ -71,8 +71,8 @@ public:
         CubeSortPredicate(int axis) : axis(axis) {}
         bool operator()(const CubeData& c1,const CubeData& c2) const
         {
-            SReal v1 = c1.minBBox[axis]+c1.maxBBox[axis];
-            SReal v2 = c2.minBBox[axis]+c2.maxBBox[axis];
+            const SReal v1 = c1.minBBox[axis]+c1.maxBBox[axis];
+            const SReal v2 = c2.minBBox[axis]+c2.maxBBox[axis];
             return v1 < v2;
         }
     };

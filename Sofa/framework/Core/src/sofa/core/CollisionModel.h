@@ -23,6 +23,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/CollisionElement.h>
+#include <sofa/helper/set.h>
 
 //todo(dmarchal 2018-06-19) I really wonder why a collision model has a dependency to a RGBAColors.
 #include <sofa/type/RGBAColor.h>
@@ -325,6 +326,8 @@ public:
     [[nodiscard]] SReal getContactStiffness(Index /*index*/) const { return contactStiffness.getValue(); }
     /// Set contact stiffness
     void setContactStiffness(SReal stiffness) { contactStiffness.setValue(stiffness); }
+    /// Get contact stiffness
+    [[nodiscard]] bool isContactStiffnessSet() const { return contactStiffness.isSet(); }
 
     /// Get contact friction (damping) coefficient
     [[nodiscard]] SReal getContactFriction(Index /*index*/) const { return contactFriction.getValue(); }

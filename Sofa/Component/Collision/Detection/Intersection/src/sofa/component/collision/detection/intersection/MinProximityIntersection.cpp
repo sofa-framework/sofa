@@ -39,18 +39,25 @@ using namespace sofa::core::collision;
 using namespace sofa::component::collision::geometry;
 using namespace helper;
 
-int MinProximityIntersectionClass = core::RegisterObject("A set of methods to compute if two primitives are close enough to consider they collide")
-        .add< MinProximityIntersection >()
-        ;
+void registerMinProximityIntersection(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A set of methods to compute if two primitives are close enough to consider they collide.")
+        .add< MinProximityIntersection >());
+}
 
 MinProximityIntersection::MinProximityIntersection()
     : BaseProximityIntersection()
-    , useSphereTriangle(initData(&useSphereTriangle, true, "useSphereTriangle","activate Sphere-Triangle intersection tests"))
-    , usePointPoint(initData(&usePointPoint, true, "usePointPoint","activate Point-Point intersection tests"))
-    , useSurfaceNormals(initData(&useSurfaceNormals, false, "useSurfaceNormals", "Compute the norms of the Detection Outputs by considering the normals of the surfaces involved."))
-    , useLinePoint(initData(&useLinePoint, true, "useLinePoint", "activate Line-Point intersection tests"))
-    , useLineLine(initData(&useLineLine, true, "useLineLine", "activate Line-Line  intersection tests"))
+    , d_useSphereTriangle(initData(&d_useSphereTriangle, true, "useSphereTriangle", "activate Sphere-Triangle intersection tests"))
+    , d_usePointPoint(initData(&d_usePointPoint, true, "usePointPoint", "activate Point-Point intersection tests"))
+    , d_useSurfaceNormals(initData(&d_useSurfaceNormals, false, "useSurfaceNormals", "Compute the norms of the Detection Outputs by considering the normals of the surfaces involved."))
+    , d_useLinePoint(initData(&d_useLinePoint, true, "useLinePoint", "activate Line-Point intersection tests"))
+    , d_useLineLine(initData(&d_useLineLine, true, "useLineLine", "activate Line-Line  intersection tests"))
 {
+    useSphereTriangle.setOriginalData(&d_useSphereTriangle);
+    usePointPoint.setOriginalData(&d_usePointPoint);
+    useLinePoint.setOriginalData(&d_useLinePoint);
+    useLineLine.setOriginalData(&d_useLineLine);
+    useSurfaceNormals.setOriginalData(&d_useSurfaceNormals);
 }
 
 void MinProximityIntersection::init()
@@ -70,19 +77,19 @@ void MinProximityIntersection::init()
 	BaseProximityIntersection::init();
 }
 
-bool MinProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
+bool MinProximityIntersection::testIntersection(Cube& cube1, Cube& cube2, const core::collision::Intersection* currentIntersection)
 {
-    return BaseProximityIntersection::testIntersection(cube1, cube2);
+    return BaseProximityIntersection::testIntersection(cube1, cube2, currentIntersection);
 }
 
-int MinProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
+int MinProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    return BaseProximityIntersection::computeIntersection(cube1, cube2, contacts);
+    return BaseProximityIntersection::computeIntersection(cube1, cube2, contacts, currentIntersection);
 }
 
 bool MinProximityIntersection::getUseSurfaceNormals() const
 {
-    return useSurfaceNormals.getValue();
+    return d_useSurfaceNormals.getValue();
 }
 
 } // namespace sofa::component::collision::detection::intersection

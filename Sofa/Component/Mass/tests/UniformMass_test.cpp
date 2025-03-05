@@ -29,7 +29,7 @@ using namespace sofa::defaulttype ;
 
 using sofa::component::mass::UniformMass ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
@@ -38,7 +38,6 @@ using sofa::simulation::graph::DAGSimulation ;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 
-using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::ExecParams ;
@@ -78,17 +77,20 @@ struct UniformMassTest :  public BaseTest
     typename MechanicalObject<DataTypes>::SPtr m_mecaobject;
     bool todo  {true} ;
 
-    void SetUp() override
+    void doSetUp() override
     {
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
+
         todo = true ;
-        setSimulation( m_simu = new DAGSimulation() );
+        m_simu = sofa::simulation::getSimulation();
         m_root = m_simu->createNewGraph("root");
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         if (m_root != nullptr){
-            m_simu->unload(m_root);
+            sofa::simulation::node::unload(m_root);
         }
     }
 
@@ -117,69 +119,64 @@ struct UniformMassTest :  public BaseTest
     }
 
     /// totalMass, mass and localRange..
-    /// case where NO mass info give, default totalMass = 1.0
+    /// case where NO mass info given, ComponentState = Invalid
     void checkNoAttributes(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
                 "   <UniformMass name='m_mass'/>                             "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        EXPECT_MSG_EMIT(Error);
+        root->init(sofa::core::execparams::defaultInstance());
 
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getTotalMass(), 1.0 ) ;
-            EXPECT_EQ( mass->getVertexMass(), 0.5 ) ;
-        }
+        EXPECT_TRUE( mass->getComponentState() == sofa::core::objectmodel::ComponentState::Invalid ) ;
     }
 
-    /// totalMass, mass and localRange..
-    /// case where NO mass info give, default totalMass = 1.0
+    /// Check inertiaMatrix
     void checkRigidAttribute()
     {
         EXPECT_MSG_NOEMIT(Error, Warning);
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject template='Rigid3' position='0 0 0 0 0 0 1'/>"
                 "   <UniformMass name='mass' vertexMass='1.0 1.0 2.0 0.0 0.0 0.0 4.0 0.0 7.0 8.0 9.0'/>"
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         root->init(sofa::core::execparams::defaultInstance()) ;
 
-        UniformMassRigid* mass = root->getTreeObject<UniformMassRigid>() ;
+        const UniformMassRigid* mass = root->getTreeObject<UniformMassRigid>() ;
         EXPECT_TRUE( mass != nullptr ) ;
 
-        std::vector<double> values={2.0,0.0,0.0,0.0,4.0,0.0,7.0,8.0,9.0};
+        const std::vector<double> values={2.0,0.0,0.0,0.0,4.0,0.0,7.0,8.0,9.0};
         for(unsigned int i=0;i<3;i++)
         {
             for(unsigned int j=0;j<3;j++)
             {
-                ASSERT_EQ(mass->d_vertexMass.getValue().inertiaMatrix[i][j],
-                          values[i*3+j]);
+                ASSERT_EQ(mass->d_vertexMass.getValue().inertiaMatrix[i][j], values[i*3+j]);
             }
         }
     }
 
     /// totalMass is well defined
-    /// vertexMass will be computed from it using the formulat :  vertexMass = totalMass / number of particules
+    /// vertexMass will be computed from it using the formula:  vertexMass = totalMass / number of dofs
     void checkVertexMassFromTotalMass(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
-                "   <UniformMass name='m_mass' totalMass='8.0'/>                             "
+                "   <UniformMass name='m_mass' totalMass='8.0'/>             "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -193,16 +190,16 @@ struct UniformMassTest :  public BaseTest
     }
 
     /// vertexMass is well defined
-    /// totalMass will be computed from it using the formulat : totalMass = vertexMass * number of particules
+    /// totalMass will be computed from it using the formula: totalMass = vertexMass * number of dofs
     void checkTotalMassFromVertexMass(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
-                "   <UniformMass name='m_mass' vertexMass='4.0' />                 "
+                "   <UniformMass name='m_mass' vertexMass='4.0' />           "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -216,62 +213,56 @@ struct UniformMassTest :  public BaseTest
     }
 
     /// totalMass is defined but negative
-    /// Ignore value and use default value of totalMass = 1.0
+    /// ComponentState = Invalid
     void checkNegativeTotalMass(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
-                "   <UniformMass name='m_mass' totalMass='-8.0' />                 "
+                "   <UniformMass name='m_mass' totalMass='-8.0' />           "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Error);
         root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getTotalMass(), 1.0 ) ;
-            EXPECT_EQ( mass->getVertexMass(), 0.5 ) ;
-        }
+        EXPECT_TRUE( mass->getComponentState() == sofa::core::objectmodel::ComponentState::Invalid ) ;
     }
 
     /// vertexMass is defined but negative
-    /// Ignore value and use default value of totalMass = 1.0
+    /// ComponentState = Invalid
     void checkNegativeVertexMass(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
-                "   <UniformMass name='m_mass' vertexMass='-4.0' />                 "
+                "   <UniformMass name='m_mass' vertexMass='-4.0' />          "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Error);
         root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getTotalMass(), 1.0 ) ;
-            EXPECT_EQ( mass->getVertexMass(), 0.5 ) ;
-        }
+        EXPECT_TRUE( mass->getComponentState() == sofa::core::objectmodel::ComponentState::Invalid ) ;
     }
 
     /// totalMass & mass are exclusive.
     /// if both totalMass and vertexMass are user-defined, by default use the totalMass
     void checkDoubleDeclarationVertexAndTotalMass(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
                 "   <UniformMass name='m_mass' vertexMass='10.0' totalMass='8.0'/>                 "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -287,86 +278,142 @@ struct UniformMassTest :  public BaseTest
 
     /// Both vertexMass and totalMass information are defined but totalMass is negative
     /// Due to double declaration, by default the totalMass is used
-    /// Due to negative value, the default value of totalMass overwrites totalMass = 1.0
+    /// ComponentState = Invalid
     void checkDoubleDeclarationNegativeTotalMass(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
                 "   <UniformMass name='m_mass' vertexMass='4.0' totalMass='-8.0'/>                 "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Error);
         root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getTotalMass(), 1.0 ) ;
-            EXPECT_EQ( mass->getVertexMass(), 0.5 ) ;
-        }
+        EXPECT_TRUE( mass->getComponentState() == sofa::core::objectmodel::ComponentState::Invalid ) ;
     }
 
     /// Both vertexMass and totalMass information are defined but vertexMass is negative
-    /// By default use the totalMass
+    /// totalMass takes over and overwrite the vertexMass
     void checkDoubleDeclarationNegativeVertexMass(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
                 "   <UniformMass name='m_mass' vertexMass='-4.0' totalMass='8.0'/>                 "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
+        EXPECT_MSG_EMIT(Warning);
         root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
 
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getVertexMass(), 4.0 ) ;
-            EXPECT_EQ( mass->getTotalMass(), 8.0 ) ;
+        if(mass!=nullptr)
+        {
+            EXPECT_EQ( mass->getVertexMass(), 4.0 );
+            EXPECT_EQ( mass->getTotalMass(), 8.0 );
         }
+
+        EXPECT_TRUE( mass->getComponentState() == sofa::core::objectmodel::ComponentState::Valid ) ;
     }
 
     /// Both vertexMass and totalMass information are negative
-    /// Ignore them and use default value of totalMass = 1.0
+    /// ComponentState = Invalid
     void checkDoubleDeclarationBothNegative(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
-                "   <UniformMass name='m_mass' totalMass='-8.0' vertexMass=-4.0/>   "
+                "   <UniformMass name='m_mass' totalMass='-8.0' vertexMass='-4.0'/>   "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+
+        EXPECT_MSG_EMIT(Error);
+        root->init(sofa::core::execparams::defaultInstance()) ;
+
+        TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+        EXPECT_TRUE( mass->getComponentState() == sofa::core::objectmodel::ComponentState::Invalid ) ;
+    }
+
+    /// Update the totalMass
+    void checkUpdateTotalMass(){
+        const string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <MechanicalObject position='0 0 0 4 5 6'/>               "
+                "   <UniformMass name='m_mass' totalMass='18.0'/>            "
+                "</Node>                                                     " ;
+
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
+        EXPECT_TRUE( mass->getComponentState() == sofa::core::objectmodel::ComponentState::Valid ) ;
 
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getVertexMass(), 0.5 ) ;
-            EXPECT_EQ( mass->getTotalMass(), 1.0 ) ;
+        mass->setTotalMass(3.0);
+        mass->updateFromTotalMass();
+
+        if(mass!=nullptr)
+        {
+            EXPECT_EQ( mass->getVertexMass(), 1.5 );
+            EXPECT_EQ( mass->getTotalMass(), 3.0 );
         }
+
+        EXPECT_TRUE( mass->getComponentState() == sofa::core::objectmodel::ComponentState::Valid ) ;
+    }
+
+    /// Update the vertexMass
+    void checkUpdateVertexMass(){
+        const string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <MechanicalObject position='0 0 0 4 5 6'/>               "
+                "   <UniformMass name='m_mass' vertexMass='1.0'/>            "
+                "</Node>                                                     " ;
+
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+
+        root->init(sofa::core::execparams::defaultInstance()) ;
+
+        TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+        EXPECT_TRUE( mass->getComponentState() == sofa::core::objectmodel::ComponentState::Valid ) ;
+
+        mass->setMass(3.0);
+        mass->updateFromVertexMass();
+
+        if(mass!=nullptr)
+        {
+            EXPECT_EQ( mass->getVertexMass(), 3.0 );
+            EXPECT_EQ( mass->getTotalMass(), 6.0 );
+        }
+
+        EXPECT_TRUE( mass->getComponentState() == sofa::core::objectmodel::ComponentState::Valid ) ;
     }
 
     /// check mass initialization for rigids
     void loadFromAFileForRigid(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject template='Rigid3' position='0 0 0 1 0 0 1 0 0 0 1 0 0 1'/>                     "
-                "   <UniformMass filename='BehaviorModels/card.rigid'/>        "
+                "   <UniformMass filename='BehaviorModels/card.rigid'/>      "
                 "</Node>                                                     " ;
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAValidFile", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAValidFile", scene.c_str());
         root->init(sofa::core::execparams::defaultInstance()) ;
 
-        UniformMassRigid* mass = root->getTreeObject<UniformMassRigid>() ;
+        const UniformMassRigid* mass = root->getTreeObject<UniformMassRigid>() ;
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
@@ -376,42 +423,41 @@ struct UniformMassTest :  public BaseTest
     }
 
     void loadFromAFileForNonRigid(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0'/>                     "
-                "   <UniformMass filename='BehaviorModels/card.rigid'/>        "
+                "   <UniformMass filename='BehaviorModels/card.rigid'/>      "
                 "</Node>                                                     " ;
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAValidFile", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAValidFile", scene.c_str());
+        EXPECT_MSG_EMIT(Error);
         root->init(sofa::core::execparams::defaultInstance()) ;
     }
 
     void loadFromAnInvalidFile(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
-                "   <MechanicalObject position='0 0 0'/>                     "
-                "   <UniformMass filename='invalid_uniformmatrix.txt'/>        "
+                "   <MechanicalObject position='0 0 0 0 0 0 1'/>                     "
+                "   <UniformMass filename='invalid_uniformmatrix.txt'/>      "
                 "</Node>                                                     " ;
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAnInValidFile", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAnInValidFile", scene.c_str());
+        EXPECT_MSG_EMIT(Error);
         root->init(sofa::core::execparams::defaultInstance()) ;
     }
 
     void loadFromAnInvalidPathname(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
-                "   <MechanicalObject position='0 0 0'/>                     "
+                "   <MechanicalObject template='Rigid3' position='0 0 0 1 0 0 1 0 0 0 1 0 0 1'/>                     "
                 "   <UniformMass filename='invalid_uniformmatrix.txt'/>        "
                 "</Node>                                                     " ;
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAnInValidFile", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("loadFromAnInValidFile", scene.c_str());
+        EXPECT_MSG_EMIT(Error);
         root->init(sofa::core::execparams::defaultInstance()) ;
     }
 
-    void reinitTest(){
-        // TODO
-        EXPECT_TRUE(todo == false) ;
-    }
 
 };
 
@@ -471,6 +517,16 @@ TYPED_TEST(UniformMassTest, checkDoubleDeclarationBothNegative)
     ASSERT_NO_THROW(this->checkDoubleDeclarationBothNegative()) ;
 }
 
+TYPED_TEST(UniformMassTest, checkUpdateTotalMass)
+{
+ASSERT_NO_THROW(this->checkUpdateTotalMass()) ;
+}
+
+TYPED_TEST(UniformMassTest, checkUpdateVertexMass)
+{
+ASSERT_NO_THROW(this->checkUpdateVertexMass()) ;
+}
+
 TYPED_TEST(UniformMassTest, loadFromAFileForNonRigid) {
     ASSERT_NO_THROW(this->loadFromAFileForNonRigid()) ;
 }
@@ -489,8 +545,4 @@ TYPED_TEST(UniformMassTest, loadFromAFileForRigid) {
 
 TYPED_TEST(UniformMassTest, checkRigidAttribute) {
     ASSERT_NO_THROW(this->checkRigidAttribute()) ;
-}
-
-TYPED_TEST(UniformMassTest, reinitTest) {
-    //ASSERT_NO_THROW(this->reinitTest()) ;
 }

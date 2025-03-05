@@ -3,7 +3,7 @@
     <Node name="Snake" >
         <HexahedronFEMForceField name="FEM" youngModulus="3000.0" />
         <BoxROI name="broi" box="-15 0 -15 15 10 15" />
-        <FixedConstraint name="fix" indices="@broi.indices" />
+        <FixedProjectiveConstraint name="fix" indices="@broi.indices" />
         <Node name="VisuBody" >
           <VisualStyle displayFlags="showWireframe" />
         </Node>

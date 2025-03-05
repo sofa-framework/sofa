@@ -23,10 +23,9 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 using namespace sofa::core;
-namespace sofa
-{
 
-namespace simulation
+
+namespace sofa::simulation
 {
 
 
@@ -41,7 +40,7 @@ Visitor::Result MechanicalVPrintVisitor::processNodeTopDown(simulation::Node* no
 {
     if( ! node->mechanicalState.empty() )
     {
-        ConstVecId id = v_.getId(node->mechanicalState);
+        const ConstVecId id = v_.getId(node->mechanicalState);
         if (!id.isNull())
         {
             out_<<"[ ";
@@ -66,7 +65,7 @@ Visitor::Result MechanicalVPrintWithElapsedTimeVisitor::processNodeTopDown(simul
 {
     if( ! node->mechanicalState.empty() )
     {
-        ConstVecId id = v_.getId(node->mechanicalState);
+        const ConstVecId id = v_.getId(node->mechanicalState);
         if (!id.isNull())
         {
             count_+=(*node->mechanicalState).printDOFWithElapsedTime(id,count_,time_,out_);
@@ -90,7 +89,7 @@ Visitor::Result DofPrintVisitor::processNodeTopDown(simulation::Node* node)
 {
     if( ! node->mechanicalState.empty() && node->mechanicalState->getName()==dofname_ )
     {
-        ConstVecId id = v_.getId(node->mechanicalState);
+        const ConstVecId id = v_.getId(node->mechanicalState);
         if (!id.isNull())
         {
             (*node->mechanicalState).printDOF(id,out_);
@@ -101,6 +100,6 @@ Visitor::Result DofPrintVisitor::processNodeTopDown(simulation::Node* node)
 }
 
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+

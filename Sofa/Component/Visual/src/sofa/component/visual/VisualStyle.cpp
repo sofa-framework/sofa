@@ -32,7 +32,9 @@ using namespace sofa::core::visual;
 using namespace sofa::core::objectmodel;
 using namespace sofa::simulation;
 
-int VisualStyleClass = core::RegisterObject("Edit the visual style.\n Allowed values for displayFlags data are a combination of the following:\n\
+void registerVisualStyle(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Edit the visual style.\n Allowed values for displayFlags data are a combination of the following:\n\
 showAll, hideAll,\n\
     showVisual, hideVisual,\n\
         showVisualModels, hideVisualModels,\n\
@@ -49,30 +51,46 @@ showAll, hideAll,\n\
     showOptions hideOptions\n\
         showRendering hideRendering\n\
         showNormals hideNormals\n\
-        showWireframe hideWireframe").add<VisualStyle>();
+        showWireframe hideWireframe").add<VisualStyle>());
+}
 
 VisualStyle::VisualStyle()
-    :displayFlags(initData(&displayFlags,"displayFlags","Display Flags"))
+    : d_displayFlags(initData(&d_displayFlags, "displayFlags", "Display Flags"))
 {
-    displayFlags.setWidget("widget_displayFlags");
+    d_displayFlags.setWidget("widget_displayFlags");
+
+    displayFlags.setOriginalData(&d_displayFlags);
 }
 
-void VisualStyle::fwdDraw(VisualParams* vparams)
+void VisualStyle::updateVisualFlags(VisualParams* vparams)
 {
     backupFlags = vparams->displayFlags();
-    vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, displayFlags.getValue());
+    vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, d_displayFlags.getValue());
 }
 
-void VisualStyle::bwdDraw(VisualParams* vparams)
+void VisualStyle::applyBackupFlags(VisualParams* vparams)
 {
     vparams->displayFlags() = backupFlags;
 }
 
+
+bool VisualStyle::insertInNode( sofa::core::objectmodel::BaseNode* node )
+{
+    node->addVisualStyle(this);
+    return true;
+}
+
+bool VisualStyle::removeInNode( sofa::core::objectmodel::BaseNode* node )
+{
+    node->removeVisualStyle(this);
+    return true;
+}
+
 helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulation::Node::SPtr node )
 {
-    VisualStyle::SPtr visualStyle = New<sofa::component::visual::VisualStyle>();
+    const VisualStyle::SPtr visualStyle = New<sofa::component::visual::VisualStyle>();
     node->addObject(visualStyle);
-    return helper::getWriteAccessor(visualStyle->displayFlags);
+    return helper::getWriteAccessor(visualStyle->d_displayFlags);
 }
 
 } // namespace sofa::component::visual

@@ -22,6 +22,8 @@
 #define SOFA_CORE_TOPOLOGY_TOPOLOGYHANDLER_DEFINITION true
 #include <sofa/core/topology/TopologyHandler.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 
 namespace sofa::core::topology
 {
@@ -57,7 +59,7 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
     {
         core::topology::TopologyChangeType changeType = (*changeIt)->getChangeType();
         std::string topoChangeType = m_prefix + ": " + m_data_name + " - " + parseTopologyChangeTypeToString(changeType);
-        sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
+        helper::ScopedAdvancedTimer timer(topoChangeType);
 
         // New version using map of callback
         std::map < core::topology::TopologyChangeType, TopologyChangeCallback>::iterator itM;
@@ -122,9 +124,8 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
 #undef SOFA_CASE_EVENT
         default:
             break;
-        }; // switch( changeType )
+        } // switch( changeType )
 
-        sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         //++changeIt;
     }
 }
@@ -135,10 +136,9 @@ void TopologyHandler::update()
     if (!this->isTopologyHandlerRegistered())
         return;
 
-    std::string msg = this->getName() + " - doUpdate: Nbr changes: " + std::to_string(m_topology->m_changeList.getValue().size());
-    sofa::helper::AdvancedTimer::stepBegin(msg.c_str());
+    const std::string msg = this->getName() + " - doUpdate: Nbr changes: " + std::to_string(m_topology->m_changeList.getValue().size());
+    helper::ScopedAdvancedTimer timer(msg);
     this->handleTopologyChange();
-    sofa::helper::AdvancedTimer::stepEnd(msg.c_str());
 }
 
 void TopologyHandler::addCallBack(core::topology::TopologyChangeType type, TopologyChangeCallback callback)

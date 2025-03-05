@@ -24,13 +24,8 @@
 
 #include <sofa/simulation/config.h>
 
-namespace sofa
-{
 
-namespace simulation
-{
-
-namespace core
+namespace sofa::simulation::core
 {
 
 /// @brief Initialize the SofaSimulationCore library, as well as its
@@ -49,10 +44,7 @@ SOFA_SIMULATION_CORE_API void cleanup();
 /// cleaned up.
 SOFA_SIMULATION_CORE_API bool isCleanedUp();
 
-} // namespace core
+} // namespace sofa::simulation::core
 
-} // namespace simulation
-
-} // namespace sofa
 
 #endif // SOFA_SIMULATION_CORE_INIT_H

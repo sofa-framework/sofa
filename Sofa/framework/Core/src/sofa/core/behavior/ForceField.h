@@ -109,12 +109,12 @@ public:
     /// @param dx Input vector used to compute \f$ df = kFactor K dx + bFactor B dx \f$
     virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) = 0;
 
-    /// Compute the product of the Compliance matrix C
-    /// with the Lagrange multipliers lambda
-    /// \f$ res += cFactor * C * lambda \f$
-    /// used by the graph-scattered (unassembled API when the ForceField is handled as a constraint)
-    void addClambda(const MechanicalParams* mparams, MultiVecDerivId resId, MultiVecDerivId lambdaId, SReal cFactor ) override;
+    //This is required to tell the compiler addClambda is legitimately overloaded,
+    //and it does not hide the one from BaseForceField.
+    //To be removed once addClambda is disabled
+    using BaseForceField::addClambda;
 
+    SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT()
     virtual void addClambda(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& lambda, SReal cFactor );
 
     /// Get the potential energy associated to this ForceField.
@@ -189,28 +189,43 @@ public:
     template<class T>
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        const std::string attributeName {"mstate"};
-        std::string mstateLink = arg->getAttribute(attributeName,"");
-        if (mstateLink.empty())
+        if (context)
         {
-            if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+            if (arg)
             {
-                arg->logError("Since the attribute '" + attributeName + "' has not been specified, a mechanical state "
-                    "with the datatype '" + DataTypes::Name() + "' has been searched in the current context, but not found.");
-                return false;
+                static const std::string attributeName {"mstate"};
+                const std::string mstateLink = arg->getAttribute(attributeName,"");
+                if (mstateLink.empty())
+                {
+                    if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+                    {
+                        arg->logError("Since the attribute '" + attributeName + "' has not been specified, a mechanical state "
+                            "with the datatype '" + DataTypes::Name() + "' has been searched in the current context, but not found.");
+                        return false;
+                    }
+                }
+                else
+                {
+                    MechanicalState<DataTypes>* mstate = nullptr;
+                    context->findLinkDest(mstate, mstateLink, nullptr);
+                    if (!mstate)
+                    {
+                        arg->logError("Data attribute '" + attributeName + "' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
+                        return false;
+                    }
+                }
             }
-        }
-        else
-        {
-            MechanicalState<DataTypes>* mstate = nullptr;
-            context->findLinkDest(mstate, mstateLink, nullptr);
-            if (!mstate)
+            else
             {
-                arg->logError("Data attribute '" + attributeName + "' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
-                return false;
+                if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+                {
+                    return false;
+                }
             }
+
+            return BaseObject::canCreate(obj, context, arg);
         }
-        return BaseObject::canCreate(obj, context, arg);
+        return false;
     }
 
     template<class T>
@@ -223,7 +238,7 @@ public:
 
 };
 
-#if  !defined(SOFA_CORE_BEHAVIOR_FORCEFIELD_CPP)
+#if !defined(SOFA_CORE_BEHAVIOR_FORCEFIELD_CPP)
 extern template class SOFA_CORE_API ForceField<defaulttype::Vec3Types>;
 extern template class SOFA_CORE_API ForceField<defaulttype::Vec2Types>;
 extern template class SOFA_CORE_API ForceField<defaulttype::Vec1Types>;

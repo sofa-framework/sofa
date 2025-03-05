@@ -55,7 +55,7 @@ public:
 
     //Input
     Data<type::vector<sofa::type::PrimitiveGroup > > f_groups; ///< Groups
-    Data<type::vector<unsigned int> > f_primitives; ///< not mandatory
+    Data<type::vector<unsigned int> > f_primitives; ///< Vector of primitives (indices)
     Data<type::vector<int > > f_elementsGroup; ///< Vector of groups (each element gives its group
     //Output
     Data<type::vector<Real> > f_youngModulus; ///< Vector of young modulus for each primitive
@@ -65,7 +65,7 @@ public:
     Data<type::vector<Real> > p_groupMod; ///< list of young modulus for each group
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API GroupFilterYoungModulus<defaulttype::Vec3Types>;
  
 #endif

@@ -27,7 +27,7 @@ using sofa::testing::NumericTest;
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
-#include <sofa/component/constraint/projective/SkeletalMotionConstraint.h>
+#include <sofa/component/constraint/projective/SkeletalMotionProjectiveConstraint.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -44,7 +44,7 @@ using namespace defaulttype;
 The test cases are defined in the #Test_Cases member group.
   */
 template <typename _DataTypes>
-struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<typename _DataTypes::Coord::value_type>
+struct SkeletalMotionProjectiveConstraint_test : public BaseSimulationTest, NumericTest<typename _DataTypes::Coord::value_type>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -55,7 +55,7 @@ struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<ty
     typedef typename DataTypes::CRot CRot;
     typedef typename Coord::value_type Real;
 
-    typedef constraint::projective::SkeletalMotionConstraint<DataTypes> SkeletalMotionConstraint;
+    typedef constraint::projective::SkeletalMotionProjectiveConstraint<DataTypes> SkeletalMotionProjectiveConstraint;
     typedef constraint::projective::SkeletonJoint<DataTypes> SkeletonJoint;
     typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
 
@@ -63,14 +63,13 @@ struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<ty
     simulation::Simulation* simulation;          ///< created by the constructor an re-used in the tests
 
     type::SVector<SkeletonJoint> joints;        ///< skeletal joint
-    typename SkeletalMotionConstraint::SPtr projection;
+    typename SkeletalMotionProjectiveConstraint::SPtr projection;
     typename MechanicalObject::SPtr dofs;
 
     /// Create the context for the tests.
-    void SetUp() override
+    void doSetUp() override
     {
-//        if( sofa::simulation::getSimulation()==nullptr )
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
 
         /// Create the scene
         root = simulation->createNewGraph("root");
@@ -78,7 +77,7 @@ struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<ty
         dofs = core::objectmodel::New<MechanicalObject>();
         root->addObject(dofs);
 
-        projection = core::objectmodel::New<SkeletalMotionConstraint>();
+        projection = core::objectmodel::New<SkeletalMotionProjectiveConstraint>();
         root->addObject(projection);
 
 
@@ -119,9 +118,9 @@ struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<ty
         projection->setSkeletalMotion(joints, bones);
 
         /// Init
-        sofa::simulation::getSimulation()->init(root.get());
-        simulation->animate(root.get(),0.25);
-        simulation->animate(root.get(),0.25);
+        sofa::simulation::node::initRoot(root.get());
+        sofa::simulation::node::animate(root.get(), 0.25_sreal);
+        sofa::simulation::node::animate(root.get(), 0.25_sreal);
 
     }
 
@@ -129,7 +128,7 @@ struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<ty
 
     bool test_projectPosition()
     {
-        projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecCoordId::position()));
+        projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::vec_id::write_access::position));
         typename MechanicalObject::ReadVecCoord x = dofs->readPositions();
         Coord target0(CPos(0.5,0.5,0.5), CRot(0, 0.19509, 0, 0.980785));
         Coord target1(CPos(0.5,1.5,0.5), CRot(0.69352, 0.13795, -0.13795, 0.69352));
@@ -154,7 +153,7 @@ struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<ty
 
     bool test_projectVelocity()
     {
-        projection->projectVelocity(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()));
+        projection->projectVelocity(core::mechanicalparams::defaultInstance(), *dofs->write(core::vec_id::write_access::velocity));
         typename MechanicalObject::ReadVecDeriv x = dofs->readVelocities();
         bool succeed = true;
         Deriv target(CPos(1,1,1), typename Deriv::Rot(0,0.785397,0));
@@ -168,26 +167,26 @@ struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<ty
         return succeed;
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         if (root!=nullptr)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::node::unload(root);
     }
 
 
  };
 
 
-// Define the list of DataTypes to instanciate
+// Define the list of DataTypes to instantiate
 using ::testing::Types;
 typedef Types<
     Rigid3Types
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
-TYPED_TEST_SUITE(SkeletalMotionConstraint_test, DataTypes);
+// Test suite for all the instantiations
+TYPED_TEST_SUITE(SkeletalMotionProjectiveConstraint_test, DataTypes);
 // first test case
-TYPED_TEST( SkeletalMotionConstraint_test , twoConstrainedBones )
+TYPED_TEST( SkeletalMotionProjectiveConstraint_test , twoConstrainedBones )
 {
     EXPECT_MSG_NOEMIT(Error) ;
     this->init_2bones();

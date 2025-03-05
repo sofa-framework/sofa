@@ -103,7 +103,7 @@ sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Ri
 
     dpositions.endEdit();
 
-    //Editting the velocity of the Sphere
+    //Editing the velocity of the Sphere
     Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *sphDOF->write( sofa::core::VecId::velocity() );
 
     MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
@@ -117,9 +117,9 @@ sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Ri
     sph->addObject(sphCollisionModel);
 
 
-    //editting the OBBModel
+    //editing the OBBModel
     sphCollisionModel->init();
-    Data<sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::VecReal> & dVecReal = sphCollisionModel->radius;
+    Data<sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::VecReal> & dVecReal = sphCollisionModel->d_radius;
     sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::VecReal & vecReal = *(dVecReal.beginEdit());
 
     vecReal[0] = radius;
@@ -549,7 +549,7 @@ bool TestCapOBB::edgeVertex(){
     return true;
 }
 
-//obb's edge 6-5 in intersection parallely with the capsule
+//obb's edge 6-5 in intersection parallelly with the capsule
 bool TestCapOBB::edgeEdge(){
     //first, we create the transformation to make the first OBB
     double angles[3];
@@ -598,7 +598,7 @@ bool TestCapOBB::edgeEdge(){
 }
 
 
-//obb's edge 6-5 in intersection parallely with the capsule
+//obb's edge 6-5 in intersection parallelly with the capsule
 bool TestCapOBB::vertexEdge(){
     //first, we create the transformation to make the first OBB
     double angles[3];
@@ -646,7 +646,7 @@ bool TestCapOBB::vertexEdge(){
 }
 
 
-//obb's edge 6-5 in intersection parallely with the capsule
+//obb's edge 6-5 in intersection parallelly with the capsule
 bool TestCapOBB::vertexVertex(){
     //first, we create the transformation to make the first OBB
     double angles[3];

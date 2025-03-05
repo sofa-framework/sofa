@@ -64,7 +64,6 @@ int main(int argc, char** argv)
     sofa::gui::common::GUIManager::Init(argv[0]);
 
     // The graph root node
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
     sofa::simulation::Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
     groot->setGravity({ 0,-10,0 });
 
@@ -108,12 +107,12 @@ int main(int argc, char** argv)
     // Display Flags
     sofa::component::visual::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visual::VisualStyle>();
     groot->addObject(style);
-    sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
+    sofa::core::visual::DisplayFlags& flags = *style->d_displayFlags.beginEdit();
     flags.setShowBehaviorModels(true);
     flags.setShowCollisionModels(true);
-    style->displayFlags.endEdit();
+    style->d_displayFlags.endEdit();
 
-    sofa::simulation::graph::getSimulation()->init(groot.get());
+    sofa::simulation::node::initRoot(groot.get());
     groot->setAnimate(false);
 
     //======================================

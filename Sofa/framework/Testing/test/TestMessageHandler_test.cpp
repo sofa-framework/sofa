@@ -4,7 +4,7 @@
 using sofa::testing::BaseTest ;
 
 
-////////////// IMPLEMENTS A TEST PREDICATE TO VALIDE THAT A THERE IS AT LEAST ONE MESSAGE
+////////////// IMPLEMENTS A TEST PREDICATE TO VALIDATE THAT A THERE IS AT LEAST ONE MESSAGE
 /// THE IS EMITTED TO VALDIATE THE BEHAVIOR OF THE FRAMEWORK.
 namespace testing {
 // Prints a TestPartResult object. (I'm doing this because the 01/03/2018 the operator from gtest
@@ -79,7 +79,9 @@ class GTEST_API_ AnyFailureChecker {
   const TestPartResult::Type type_;
   const std::string substr_;
 
-  GTEST_DISALLOW_COPY_AND_ASSIGN_(AnyFailureChecker);
+  AnyFailureChecker(const AnyFailureChecker&) = delete;
+  AnyFailureChecker& operator=(const AnyFailureChecker&) =
+      delete;
 };
 
 
@@ -136,7 +138,7 @@ public:
         EXPECT_MSG_EMIT(Error) ;
 
         msg_warning("HERE") << "This should not generate a failure"  ;
-        msg_error("HERE") << "This should not generate a test falure" ;
+        msg_error("HERE") << "This should not generate a test failure" ;
     }
 
     /// THIS TEST SHOULD FAIL.
@@ -146,7 +148,7 @@ public:
         EXPECT_MSG_EMIT(Error) ;
 
         //msg_warning("HERE") << "This should not generate a failure"  ;
-        //msg_error("HERE") << "This should not generate a test falure" ;
+        //msg_error("HERE") << "This should not generate a test failure" ;
     }
 
     void noEmitTestBehavior()
@@ -155,7 +157,7 @@ public:
         EXPECT_MSG_NOEMIT(Error) ;
 
         msg_warning("HERE") << "This should generate a failure but with line number close to " << __LINE__  ;
-        msg_error("HERE") << "This should generate a test falure with line number close to " << __LINE__ ;
+        msg_error("HERE") << "This should generate a test failure with line number close to " << __LINE__ ;
     }
 
     void noEmitIgnoredTestBehavior()
@@ -191,7 +193,7 @@ public:
             EXPECT_MSG_NOEMIT(Error) ;
 
             msg_warning("HERE") << "This should generate a failure"  ;
-            msg_error("HERE") << "This should generate a test falure" ;
+            msg_error("HERE") << "This should generate a test failure" ;
         }
 
     }

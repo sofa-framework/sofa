@@ -36,11 +36,3 @@ namespace sofa::gl::component::rendering3d
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::gl::component::rendering3d
-
-#ifdef SOFA_BUILD_SOFA_GL_COMPONENT_RENDERING3D
-#define SOFA_ATTRIBUTE_DISABLED__RENDERING3D_DATA_WITH_PREFIX
-#else
-#define SOFA_ATTRIBUTE_DISABLED__RENDERING3D_DATA_WITH_PREFIX \
-    SOFA_ATTRIBUTE_DISABLED( \
-    "v22.12 (PR#3113)", "v23.06", "Variable names have been renamed with the d_ prefix")
-#endif

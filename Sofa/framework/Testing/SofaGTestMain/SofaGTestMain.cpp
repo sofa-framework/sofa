@@ -33,7 +33,7 @@ SOFA_EXPORT_DYNAMIC_LIBRARY int main(int argc, char **argv)
     testing::InitGoogleTest(&argc, argv);
 
     sofa::simulation::graph::init();
-    int ret =  RUN_ALL_TESTS();
+    const int ret =  RUN_ALL_TESTS();
     sofa::simulation::graph::cleanup();
 
     return ret;

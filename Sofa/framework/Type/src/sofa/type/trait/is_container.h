@@ -21,12 +21,17 @@
 ******************************************************************************/
 #pragma once
 #include <type_traits>
+#include <sofa/type/config.h>
+
+SOFA_HEADER_DEPRECATED_NOT_REPLACED("v25.06", "v25.12")
+
 
 namespace sofa::type::trait
 {
 
 /// Detect if a type T has iterator/const iterator function.
 template<typename T>
+SOFA_ATTRIBUTE_DEPRECATED__IS_CONTAINER()
 struct is_container
 {
     typedef typename std::remove_const<T>::type test_type;

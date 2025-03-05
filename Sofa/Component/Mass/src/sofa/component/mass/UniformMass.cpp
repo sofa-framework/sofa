@@ -50,7 +50,7 @@ static void skipToEOL(FILE* f)
 
 Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
 {
-    Quatd q=Quatd::fromEuler(thetaX, thetaY, thetaZ) ;
+    const Quatd q=Quatd::fromEuler(thetaX, thetaY, thetaZ) ;
     Mat3x3d m;
     q.toMatrix(m);
     return m;
@@ -186,8 +186,8 @@ void UniformMass<RigidTypes>::loadFromFileRigidImpl(const string& filename)
                         }
                         else		// it's an unknown keyword
                         {
-                            msg_warning(this) << "error reading file '" << filename << "'. \n"
-                                              << "Unable to decode an unknow command '"<< cmd << "'. \n" ;
+                            msg_error(this) << "error reading file '" << filename << "'. \n"
+                                              << "Unable to decode an unknown command '"<< cmd << "'. \n" ;
                             skipToEOL(file);
                         }
                     }
@@ -208,17 +208,17 @@ void UniformMass<RigidTypes>::drawRigid2DImpl(const VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
+    const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
     type::Vec3d len;
 
     len[0] = len[1] = sqrt(d_vertexMass.getValue().inertiaMatrix);
     len[2] = 0;
 
-    for (unsigned int i=0; i<indices.size(); i++)
+    for (const unsigned int index : indices)
     {
-        Quatd orient(Vec3d(0,0,1), x[indices[i]].getOrientation());
-        Vec3d center; center = x[indices[i]].getCenter();
+        Quatd orient(Vec3d(0,0,1), x[index].getOrientation());
+        Vec3d center; center = x[index].getCenter();
 
         vparams->drawTool()->drawFrame(center, orient, len*d_showAxisSize.getValue() );
     }
@@ -231,8 +231,8 @@ void UniformMass<RigidTypes>::drawRigid3DImpl(const VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
+    const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
     typename RigidTypes::Vec3 gravityCenter;
     type::Vec3d len;
 
@@ -243,28 +243,28 @@ void UniformMass<RigidTypes>::drawRigid3DImpl(const VisualParams* vparams)
     // So to get lx,ly,lz back we need to do
     //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
     // Note that RigidMass inertiaMatrix is already divided by M
-    double m00 = d_vertexMass.getValue().inertiaMatrix[0][0];
-    double m11 = d_vertexMass.getValue().inertiaMatrix[1][1];
-    double m22 = d_vertexMass.getValue().inertiaMatrix[2][2];
+    const double m00 = d_vertexMass.getValue().inertiaMatrix[0][0];
+    const double m11 = d_vertexMass.getValue().inertiaMatrix[1][1];
+    const double m22 = d_vertexMass.getValue().inertiaMatrix[2][2];
     len[0] = sqrt(m11+m22-m00);
     len[1] = sqrt(m00+m22-m11);
     len[2] = sqrt(m00+m11-m22);
 
-    for (unsigned int i=0; i<indices.size(); i++)
+    for (const unsigned int index : indices)
     {
         if (getContext()->isSleeping())
-            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue(), sofa::type::RGBAColor::gray());
+            vparams->drawTool()->drawFrame(x[index].getCenter(), x[index].getOrientation(), len*d_showAxisSize.getValue(), sofa::type::RGBAColor::gray());
         else
-            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue() );
-        gravityCenter += (x[indices[i]].getCenter());
+            vparams->drawTool()->drawFrame(x[index].getCenter(), x[index].getOrientation(), len*d_showAxisSize.getValue() );
+        gravityCenter += (x[index].getCenter());
     }
 
     if (d_showInitialCenterOfGravity.getValue())
     {
-        const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        const VecCoord& x0 = mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
-        for (unsigned int i=0; i<indices.size(); i++)
-            vparams->drawTool()->drawFrame(x0[indices[i]].getCenter(), x0[indices[i]].getOrientation(), len*d_showAxisSize.getValue());
+        for (const unsigned int index : indices)
+            vparams->drawTool()->drawFrame(x0[index].getCenter(), x0[index].getOrientation(), len*d_showAxisSize.getValue());
     }
 
     if(d_showCenterOfGravity.getValue())
@@ -281,9 +281,9 @@ void UniformMass<Vec6Types>::drawVec6Impl(const core::visual::VisualParams* vpar
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& x0 = mstate->read(core::vec_id::read_access::restPosition)->getValue();
+    const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     Mat3x3d R; R.identity();
 
@@ -329,19 +329,19 @@ Vec6 UniformMass<RigidTypes>::getMomentumRigid3DImpl( const MechanicalParams*,
 {
     ReadAccessor<DataVecDeriv> v = d_v;
     ReadAccessor<DataVecCoord> x = d_x;
-    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     Real m = d_vertexMass.getValue().mass;
     const typename MassType::Mat3x3& I = d_vertexMass.getValue().inertiaMassMatrix;
 
     type::Vec6d momentum;
 
-    for ( unsigned int i=0 ; i<indices.size() ; i++ )
+    for (const unsigned int index : indices)
     {
-        typename RigidTypes::Vec3 linearMomentum = m*v[indices[i]].getLinear();
+        typename RigidTypes::Vec3 linearMomentum = m*v[index].getLinear();
         for( int j=0 ; j< 3 ; ++j ) momentum[j] += linearMomentum[j];
 
-        typename RigidTypes::Vec3 angularMomentum = cross( x[indices[i]].getCenter(), linearMomentum ) + ( I * v[indices[i]].getAngular() );
+        typename RigidTypes::Vec3 angularMomentum = cross( x[index].getCenter(), linearMomentum ) + ( I * v[index].getAngular() );
         for( int j=0 ; j< 3 ; ++j ) momentum[3+j] += angularMomentum[j];
     }
 
@@ -356,17 +356,17 @@ Vec6 UniformMass<Vec3Types>::getMomentumVec3DImpl ( const MechanicalParams*,
 {
     ReadAccessor<DataVecDeriv> v = d_v;
     ReadAccessor<DataVecCoord> x = d_x;
-    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     const MassType& m = d_vertexMass.getValue();
     type::Vec6d momentum;
 
-    for ( unsigned int i=0 ; i<indices.size() ; i++ )
+    for (const unsigned int index : indices)
     {
-        Deriv linearMomentum = m*v[indices[i]];
+        Deriv linearMomentum = m*v[index];
         for( int j=0 ; j<3 ; ++j ) momentum[j] += linearMomentum[j];
 
-        Deriv angularMomentum = cross( x[indices[i]], linearMomentum );
+        Deriv angularMomentum = cross( x[index], linearMomentum );
         for( int j=0 ; j<3 ; ++j ) momentum[3+j] += angularMomentum[j];
     }
 
@@ -381,11 +381,13 @@ SReal UniformMass<VecTypes>::getPotentialEnergyRigidImpl(const core::MechanicalP
     SOFA_UNUSED(mparams) ;
     SReal e = 0;
     ReadAccessor< DataVecCoord > x = p_x;
-    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     typename Coord::Pos g ( getContext()->getGravity() );
-    for (unsigned int i=0; i<indices.size(); i++)
-        e -= g*d_vertexMass.getValue().mass*x[indices[i]].getCenter();
+    for (const unsigned int index : indices)
+    {
+        e -= g * d_vertexMass.getValue().mass * x[index].getCenter();
+    }
 
     return e;
 }
@@ -397,21 +399,23 @@ void UniformMass<VecTypes>::addMDxToVectorVecImpl(linearalgebra::BaseVector *res
                                                      SReal mFact,
                                                      unsigned int& offset)
 {
-    unsigned int derivDim = (unsigned)Deriv::size();
-    double m = d_vertexMass.getValue();
+    const unsigned int derivDim = (unsigned)Deriv::size();
+    const double m = d_vertexMass.getValue();
 
-    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     const SReal* g = getContext()->getGravity().ptr();
 
-    for (unsigned int i=0; i<indices.size(); i++)
-        for (unsigned int j=0; j<derivDim; j++)
+    for (const unsigned int index : indices)
+    {
+        for (unsigned int j = 0; j < derivDim; j++)
         {
             if (dx != nullptr)
-                resVect->add(offset + indices[i] * derivDim + j, mFact * m * g[j] * (*dx)[indices[i]][0]);
+                resVect->add(offset + index * derivDim + j, mFact * m * g[j] * (*dx)[index][0]);
             else
-                resVect->add(offset + indices[i] * derivDim + j, mFact * m * g[j]);
+                resVect->add(offset + index * derivDim + j, mFact * m * g[j]);
         }
+    }
 }
 
 
@@ -499,30 +503,16 @@ Vec6 UniformMass<Rigid3Types>::getMomentum ( const MechanicalParams* params,
     return getMomentumRigid3DImpl<Rigid3Types>(params, d_x, d_v);
 }
 
-
-
-
-//////////////////////////////////////////// REGISTERING TO FACTORY /////////////////////////////////////////
-/// Registering the component
-/// see: https://www.sofa-framework.org/community/doc/programming-with-sofa/components-api/the-objectfactory/
-/// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
-/// 2-RegisterObject("description") + .add<> : Register the component
-/// 3-.add<>(true) : Set default template
-// Register in the Factory
-int UniformMassClass = core::RegisterObject("Define the same mass for all the particles")
-
+void registerUniformMass(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compute a mass equally spread over the number of nodes.")
         .add< UniformMass<Vec3Types> >()
         .add< UniformMass<Vec2Types> >()
         .add< UniformMass<Vec1Types> >()
         .add< UniformMass<Vec6Types> >()
         .add< UniformMass<Rigid3Types> >()
-        .add< UniformMass<Rigid2Types> >()
-
-        ;
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
+        .add< UniformMass<Rigid2Types> >());
+}
 
 ////////////////////////////// TEMPLATE INITIALIZATION /////////////////////////////////////////////////
 /// Force template specialization for the most common sofa type.

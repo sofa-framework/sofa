@@ -4,7 +4,7 @@
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI FixedConstraint IdentityMapping MechanicalObject PlaneForceField TriangularFEMForceFieldOptim UniformMass] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI FixedProjectiveConstraint IdentityMapping MechanicalObject PlaneForceField TriangularFEMForceFieldOptim UniformMass] -->
   <Node name="M1">
     <MeshVTKLoader name="volume" filename="mesh/raptorTetra_19409.vtu" onlyAttachedPoints="false" />
     <MeshOBJLoader name="surface" filename="mesh/raptor_8kp.obj" triangulate="1" />
@@ -20,7 +20,7 @@
 	<TriangularFEMForceFieldOptim name="FEM" youngModulus="10000" poissonRatio="0.4" />
 
 	<BoxROI name="box3" box="-2.2 -0.3 -9.2    2.2 0.110668 2.88584" drawBoxes="1" drawSize="2" />
-	<FixedConstraint indices="@box3.indices" />	  
+	<FixedProjectiveConstraint indices="@box3.indices" />
 	<PlaneForceField normal="0 1 0" d="-0.2" stiffness="100"  showPlane="1" showPlaneSize="20" />
 
 	<Node name="Surf">

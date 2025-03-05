@@ -31,10 +31,8 @@
 #endif
 
 
-namespace sofa {
-namespace helper {
-
-namespace console {
+namespace sofa::helper::console
+{
 
 void setStatus(Status status) noexcept
 {
@@ -59,6 +57,4 @@ size_t getColumnCount()
 #endif
 }
 
-}
-}
 }

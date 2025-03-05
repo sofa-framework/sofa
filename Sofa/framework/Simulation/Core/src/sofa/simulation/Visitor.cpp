@@ -42,7 +42,7 @@ void Visitor::execute(sofa::core::objectmodel::BaseContext* c, bool precomputedO
     c->executeVisitor(this, precomputedOrder);
 }
 
-//method to compare the tags of the objet with the ones of the visitor
+//method to compare the tags of the object with the ones of the visitor
 // return true if the object has all the tags of the visitor
 // or if no tag is set to the visitor
 bool Visitor::testTags(core::objectmodel::BaseObject* obj)
@@ -289,16 +289,16 @@ void Visitor::debug_write_state_before( core::objectmodel::BaseObject* obj )
     if( core::behavior::BaseMechanicalState* dof = obj->getContext()->getMechanicalState() )
     {
         tmp<<", state:\nx= ";
-        dof->writeVec(core::VecId::position(), tmp);
+        dof->writeVec(sofa::core::vec_id::read_access::position, tmp);
 
         tmp<<"\nv= ";
-        dof->writeVec(core::VecId::velocity(), tmp);
+        dof->writeVec(sofa::core::vec_id::read_access::velocity, tmp);
 
         tmp<<"\ndx= ";
-        dof->writeVec(core::VecId::dx(), tmp);
+        dof->writeVec(sofa::core::vec_id::read_access::dx, tmp);
 
         tmp<<"\nf= ";
-        dof->writeVec(core::VecId::force(), tmp);
+        dof->writeVec(sofa::core::vec_id::read_access::force, tmp);
     }
     dmsg_info("Visitor(debug)") << tmp.str() ;
 }
@@ -311,16 +311,16 @@ void Visitor::debug_write_state_after( core::objectmodel::BaseObject* obj )
     if( core::behavior::BaseMechanicalState* dof = obj->getContext()->getMechanicalState() )
     {
         tmp<<", state:\nx= ";
-        dof->writeVec(core::VecId::position(), tmp);
+        dof->writeVec(sofa::core::vec_id::read_access::position, tmp);
 
         tmp<<"\nv= ";
-        dof->writeVec(core::VecId::velocity(), tmp);
+        dof->writeVec(sofa::core::vec_id::read_access::velocity, tmp);
 
         tmp<<"\ndx= ";
-        dof->writeVec(core::VecId::dx(), tmp);
+        dof->writeVec(sofa::core::vec_id::read_access::dx, tmp);
 
         tmp<<"\nf= ";
-        dof->writeVec(core::VecId::force(), tmp);
+        dof->writeVec(sofa::core::vec_id::read_access::force, tmp);
     }
     dmsg_info("Visitor(debug)") << tmp.str() ;
 }

@@ -22,13 +22,16 @@
 #include <sofa/component/io/mesh/BlenderExporter.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::_blenderexporter_
+namespace sofa::component::io::mesh
 {
+
 using namespace defaulttype;
 
-int BlenderExportClass = core::RegisterObject("Export the simulation result as blender point cache files")
+void registerBlenderExporter(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Export the simulation result as blender point cache files.")
         .add< BlenderExporter<Vec3dTypes> >()
-        .add< BlenderExporter<Rigid3Types> >()
-        ;
+        .add< BlenderExporter<Rigid3Types> >());
+}
 
-} // sofa::component::_blenderexporter_
+} // namespace sofa::component::io::mesh

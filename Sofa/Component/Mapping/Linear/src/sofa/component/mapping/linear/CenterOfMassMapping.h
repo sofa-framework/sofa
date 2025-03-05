@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/BaseMass.h>
@@ -37,12 +38,13 @@ namespace sofa::component::mapping::linear
 	This allow to control an object by setting forces on its center of mass.
  */
 template <class TIn, class TOut>
-class CenterOfMassMapping : public core::Mapping<TIn, TOut>
+class CenterOfMassMapping : public LinearMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(CenterOfMassMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(CenterOfMassMapping,TIn,TOut),
+        SOFA_TEMPLATE2(LinearMapping,TIn,TOut));
 
-    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef LinearMapping<TIn, TOut> Inherit;
 
     // Input types
     typedef TIn In;
@@ -108,7 +110,7 @@ protected :
 };
 
 
-#if  !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_CPP)
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API CenterOfMassMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API CenterOfMassMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >;
 #endif

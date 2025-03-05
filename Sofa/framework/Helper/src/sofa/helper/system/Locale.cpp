@@ -33,7 +33,7 @@ namespace system {
 TemporaryLocale::TemporaryLocale(int category, std::string locale):
     m_category(category), m_oldValue(std::string(setlocale(category, nullptr)))
 {
-    char *value = setlocale(category, locale.c_str());
+    const char *value = setlocale(category, locale.c_str());
     if (value == nullptr)
         msg_error("TemporaryLocale") << "Failed to set " << Locale::getCategoryName(category) << " to " << locale;
 }

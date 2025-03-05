@@ -151,8 +151,8 @@ public:
 
     /// Dynamic Topology API
     /// @{
-    /// Method called by component Init method. Will create all the topology neighboorhood buffers and call @see EdgeSetTopologyContainer::initTopology()
-    void initTopology();
+    /// Method called by component Init method. Will create all the topology neighboorhood buffers and call @see EdgeSetTopologyContainer::computeCrossElementBuffers()
+    void computeCrossElementBuffers() override;
 
     /** \brief Checks if the topology is coherent
      *
@@ -255,7 +255,7 @@ public:
     void reOrientateTriangle(TriangleID id) override;
 
     /** \brief Returns the type of the topology */
-    sofa::core::topology::TopologyElementType getTopologyType() const override { return sofa::core::topology::TopologyElementType::TRIANGLE; }
+    sofa::geometry::ElementType getTopologyType() const override { return sofa::geometry::ElementType::TRIANGLE; }
     
     bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
 

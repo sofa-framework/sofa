@@ -25,7 +25,7 @@
 #include <sofa/defaulttype/RigidCoord.h>
 #include <sofa/defaulttype/RigidDeriv.h>
 #include <sofa/defaulttype/RigidMass.h>
-#include <sofa/defaulttype/MapMapSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraint.h>
 
 #include <sofa/type/Vec.h>
 #include <sofa/type/Quat.h>
@@ -33,6 +33,7 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/random.h>
 #include <cmath>
+#include <sofa/type/isRigidType.h>
 
 
 namespace sofa::defaulttype
@@ -73,7 +74,7 @@ public:
     static constexpr const DRot& getDRot(const Deriv& d) { return getVOrientation(d); }
     static constexpr void setDRot(Deriv& d, const DRot& v) { getVOrientation(d) = v; }
 
-    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef linearalgebra::CompressedRowSparseMatrixConstraint<Deriv> MatrixDeriv;
 
     typedef type::vector<Coord> VecCoord;
     typedef type::vector<Deriv> VecDeriv;
@@ -153,12 +154,13 @@ public:
     static Deriv coordDifference(const Coord& c1, const Coord& c2)
     {
         type::Vec3 vCenter = c1.getCenter() - c2.getCenter();
-        type::Quat<SReal> quat, quat1(c1.getOrientation()), quat2(c2.getOrientation());
+        const type::Quat<real> quat2(c2.getOrientation());
+        const type::Quat<real> quat1(c1.getOrientation());
         // Transformation between c2 and c1 frames
-        quat = quat1 * quat2.inverse();
+        type::Quat<real> quat = quat1 * quat2.inverse();
         quat.normalize();
         type::Vec3 axis(type::NOINIT);
-        type::Quat<SReal>::value_type angle{};
+        real angle{};
         quat.quatToAxis(axis, angle);
         axis *= angle;
         return Deriv(vCenter, axis);
@@ -250,6 +252,9 @@ template<> constexpr const char* Rigid3fTypes::Name() { return "Rigid3f"; }
 typedef StdRigidTypes<3,SReal> Rigid3Types;  ///< un-defined precision type
 typedef StdRigidTypes<3,SReal> RigidTypes;   ///< alias (beurk)
 
+static_assert(type::isRigidType<Rigid3dTypes>);
+static_assert(type::isRigidType<Rigid3fTypes>);
+
 //=============================================================================
 // 2D Rigids
 //=============================================================================
@@ -290,7 +295,7 @@ public:
     typedef type::vector<Deriv> VecDeriv;
     typedef type::vector<Real> VecReal;
 
-    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef linearalgebra::CompressedRowSparseMatrixConstraint<Deriv> MatrixDeriv;
 
     template<typename T>
     static constexpr void set(Coord& c, T x, T y, T)
@@ -354,6 +359,15 @@ public:
         return result;
     }
 
+    static Deriv coordDifference(const Coord& c1, const Coord& c2)
+    {
+        const type::Vec2 vCenter = c1.getCenter() - c2.getCenter();
+        real angle = c1.getOrientation() - c2.getOrientation(); // Difference in orientation (angle between frames)
+        angle = std::fmod(angle + M_PI, 2 * M_PI) - M_PI; // Normalize angle to [-π, π]
+
+        return Deriv(vCenter, angle);
+    }
+
     static Coord interpolate(const type::vector< Coord > & ancestors, const type::vector< Real > & coefs)
     {
         assert(ancestors.size() == coefs.size());
@@ -402,6 +416,9 @@ public:
 
 template<> constexpr const char* Rigid2dTypes::Name() { return "Rigid2d"; }
 template<> constexpr const char* Rigid2fTypes::Name() { return "Rigid2f"; }
+
+static_assert(type::isRigidType<Rigid2dTypes>);
+static_assert(type::isRigidType<Rigid2fTypes>);
 
 /// \endcond
 

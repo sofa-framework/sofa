@@ -27,9 +27,11 @@
 namespace sofa::gl::component::shader
 {
 
-// Register the OglTexture* objects in the Object Factory
-int OglTextureClass = core::RegisterObject("OglTexture").add< OglTexture >();
-int OglTexture2DClass = core::RegisterObject("OglTexture2D").add< OglTexture2D >();
+void registerOglTexture(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Load a texture to be used in a shader.").add< OglTexture >());
+    factory->registerObjects(core::ObjectRegistrationData("Load a 2d texture to be used in a shader.").add< OglTexture2D >());
+}
 
 GLint OglTexture::MAX_NUMBER_OF_TEXTURE_UNIT = 1;
 
@@ -82,10 +84,10 @@ void OglTexture::init()
             cubemapFilenameNegZ.getFullPath().empty())
         {
             // "Procedural" texture (actually inline texture data inside the scene file).
-            unsigned int height = proceduralTextureHeight.getValue();
-            unsigned int width = proceduralTextureWidth.getValue();
+            const unsigned int height = proceduralTextureHeight.getValue();
+            const unsigned int width = proceduralTextureWidth.getValue();
             type::vector<unsigned int> textureData = proceduralTextureData.getValue();
-            unsigned int nbb = proceduralTextureNbBits.getValue();
+            const unsigned int nbb = proceduralTextureNbBits.getValue();
 
             if (height > 0 && width > 0 && !textureData.empty() )
             {
@@ -107,7 +109,7 @@ void OglTexture::init()
         else
         {
             // A cubemap with faces stored in separate files.
-            std::string filename[6] =
+            const std::string filename[6] =
             {
                 cubemapFilenamePosX.getFullPath(),
                 cubemapFilenameNegX.getFullPath(),
@@ -181,9 +183,9 @@ void OglTexture::init()
             //create dummy texture
             if (img) { delete img; img=nullptr; }
             img = new helper::io::Image();
-            unsigned int dummyWidth = 128;
-            unsigned int dummyHeight = 128;
-            unsigned int dummyNbb = 8;
+            const unsigned int dummyWidth = 128;
+            const unsigned int dummyHeight = 128;
+            const unsigned int dummyNbb = 8;
 
             img->init(dummyWidth, dummyHeight, dummyNbb);
 
@@ -198,7 +200,7 @@ void OglTexture::init()
     OglShaderElement::init();
 }
 
-void OglTexture::initVisual()
+void OglTexture::doInitVisual(const core::visual::VisualParams*)
 {
     if (img == nullptr)
     {
@@ -265,7 +267,11 @@ void OglTexture::bwdDraw(core::visual::VisualParams*)
 
 void OglTexture::bind()
 {
-    if (!texture) initVisual();
+    if (!texture) 
+    {
+        initVisual(sofa::core::visual::visualparams::defaultInstance());
+    }
+    
     texture->bind();
     glEnable(texture->getTarget());
 }

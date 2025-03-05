@@ -21,10 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/config.h>
-
-#include <sofa/type/fixed_array.h>
-
 namespace sofa::type::pairwise
 {
 
@@ -50,7 +46,7 @@ T clamp(const T& in, const TT& minValue, const TT& maxValue)
 
 /// @brief pairwise add of two fixed_array
 template<class T, class TT=typename T::value_type, size_t TN=T::static_size>
-T operator+(const T& l, const T& r)
+constexpr T operator+(const T& l, const T& r)
 {
     T result {};
     for(typename T::size_type i=0; i < typename T::size_type(TN); ++i)
@@ -62,7 +58,7 @@ T operator+(const T& l, const T& r)
 
 /// @brief pairwise subtract of two fixed_array
 template<class T, class TT=typename T::value_type, size_t TN=T::static_size>
-T operator-(const T& l, const T& r)
+constexpr T operator-(const T& l, const T& r)
 {
     T result {};
     for(typename T::size_type i=0; i < typename T::size_type(TN); ++i)

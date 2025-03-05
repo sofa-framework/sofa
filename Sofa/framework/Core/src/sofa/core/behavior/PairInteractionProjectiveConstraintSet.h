@@ -56,7 +56,7 @@ protected:
 
     ~PairInteractionProjectiveConstraintSet() override;
 public:
-    Data<SReal> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
+    Data<SReal> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
     // to get rid of warnings
@@ -126,8 +126,7 @@ public:
         MechanicalState<DataTypes>* mstate2 = nullptr;
         std::string object1 = arg->getAttribute("object1","@./");
         std::string object2 = arg->getAttribute("object2","@./");
-        if (object1.empty()) object1 = "@./";
-        if (object2.empty()) object2 = "@./";
+
         context->findLinkDest(mstate1, object1, nullptr);
         context->findLinkDest(mstate2, object2, nullptr);
 
@@ -154,8 +153,8 @@ public:
 
         if (arg)
         {
-            std::string object1 = arg->getAttribute("object1","");
-            std::string object2 = arg->getAttribute("object2","");
+            const std::string object1 = arg->getAttribute("object1","");
+            const std::string object2 = arg->getAttribute("object2","");
             if (!object1.empty())
             {
                 arg->setAttribute("object1", object1);
@@ -174,7 +173,7 @@ public:
     using Inherit2::getMechModel2;
 };
 
-#if  !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_CPP)
+#if !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_CPP)
 extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Vec3Types>;
 extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Vec2Types>;
 extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Vec1Types>;

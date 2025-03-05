@@ -79,7 +79,7 @@ For newcomers in the community, we regularly identify issues easy to tackle and 
 - **Unit Tests** are required for each new component or if an issue is fixed.
 - **Examples** (at least one) must be provided showing the new feature.
 
-### Lifecycle
+### Management of pull requests
 
 Standard pull-requests are reviewed and approved by the "Reviewers" team.  
 Major pull-requests (BREAKING, major features) are reviewed by the "Reviewers" team and approved by the "STC members" team through a vote within a maximum period of 2 weeks.
@@ -108,7 +108,7 @@ For more information on forks and pull request, check out [this GitHub guide](ht
 
 ### SOFA Developer Certificate Of Origin (DCO)
 
-SOFA is using the [mechanism of the linux project](https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin) to track and secure all issues related to copyrights: the Developper Certificate of Origin (DCO). If you are contributing code or documentation to the SOFA project, and using the git signed-off-by mechanism, you are agreeing to this certificate.  This DCO essentially means that:
+SOFA is using the [mechanism of the linux project](https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin) to track and secure all issues related to copyrights: the Developer Certificate of Origin (DCO). If you are contributing code or documentation to the SOFA project, and using the git signed-off-by mechanism, you are agreeing to this certificate.  This DCO essentially means that:
 
 - you offer the changes under the same license agreement as the project, and
 - you have the right to do that,
@@ -155,3 +155,8 @@ By making a contribution to this project, I certify that:
     maintained indefinitely and may be redistributed consistent with
     this project or the open source license(s) involved.
 ```
+
+
+# Annual development cycle
+
+<center><figure><img src="https://www.sofa-framework.org/wp-content/uploads/2023/04/SOFA-contribution-process.png" alt="Annual dev cycle" style="width:75%"><figcaption align = "center"><b>A year of development within the SOFA community: dev meeting and events</b></figcaption></figure></center>

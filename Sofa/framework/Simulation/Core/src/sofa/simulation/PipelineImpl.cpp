@@ -30,6 +30,8 @@
 #include <sofa/simulation/Node.h>
 
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 
 namespace sofa
 {
@@ -83,7 +85,7 @@ void PipelineImpl::init()
                             "More details on the collision pipeline can be found at "
                             "[sofadoc::Collision](https://www.sofa-framework.org/community/doc/simulation-principles/multi-model-representation/collision/).";
         sofa::core::objectmodel::BaseObjectDescription discreteIntersectionDesc("Default Intersection","DiscreteIntersection");
-        sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::CreateObject(getContext(), &discreteIntersectionDesc);
+        const sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::CreateObject(getContext(), &discreteIntersectionDesc);
         intersectionMethod = dynamic_cast<Intersection*>(obj.get());
     }
 }
@@ -95,7 +97,7 @@ void PipelineImpl::reset()
 
 void PipelineImpl::computeCollisionReset()
 {
-    simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
+    const simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == nullptr) return;
     if (broadPhaseDetection!=nullptr && broadPhaseDetection->getIntersectionMethod()!=intersectionMethod)
         broadPhaseDetection->setIntersectionMethod(intersectionMethod);
@@ -103,9 +105,8 @@ void PipelineImpl::computeCollisionReset()
         narrowPhaseDetection->setIntersectionMethod(intersectionMethod);
     if (contactManager!=nullptr && contactManager->getIntersectionMethod()!=intersectionMethod)
         contactManager->setIntersectionMethod(intersectionMethod);
-    sofa::helper::AdvancedTimer::stepBegin("CollisionReset");
+
     doCollisionReset();
-    sofa::helper::AdvancedTimer::stepEnd("CollisionReset");
 }
 
 void PipelineImpl::computeCollisionDetection()
@@ -119,11 +120,10 @@ void PipelineImpl::computeCollisionDetection()
 
 void PipelineImpl::computeCollisionResponse()
 {
-    simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
+    const simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == nullptr) return;
-    sofa::helper::AdvancedTimer::stepBegin("CollisionResponse");
+
     doCollisionResponse();
-    sofa::helper::AdvancedTimer::stepEnd("CollisionResponse");
 }
 
 } // namespace simulation

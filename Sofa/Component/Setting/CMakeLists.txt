@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.Setting LANGUAGES CXX)
 
 set(SOFACOMPONENTUSERSETTING_SOURCE_DIR "src/sofa/component/setting")

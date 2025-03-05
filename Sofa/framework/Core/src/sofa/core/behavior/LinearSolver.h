@@ -23,7 +23,6 @@
 
 #include <sofa/core/behavior/BaseLinearSolver.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/MultiVecId.h>
 
 namespace sofa::core::behavior
@@ -57,6 +56,9 @@ public:
 
     /// Indicate if the solver update the system in parallel
     virtual bool isAsyncSolver() { return false; }
+
+    /// Returns true if the solver supports non-symmetric systems
+    virtual bool supportNonSymmetricSystem() const { return false; }
 
     /// Indicate if the solver updated the system after the last call of setSystemMBKMatrix (should return true if isParallelSolver return false)
     virtual bool hasUpdatedMatrix() { return true; }
@@ -113,7 +115,7 @@ public:
         return false;
     }
 
-    /// Apply the contactforce dx = Minv * J^t * f and store the resut in dx VecId
+    /// Apply the contactforce dx = Minv * J^t * f and store the result in dx VecId
     virtual void applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/,sofa::core::MultiVecDerivId /*dx*/, const linearalgebra::BaseVector* /*f*/) {
         msg_error() << "applyConstraintForce has not been implemented.";
     }
@@ -127,6 +129,12 @@ public:
 
 
     /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
+    ///
+    /// This method can compute the Schur complement of the constrained system:
+    /// W = H A^{-1} H^T, where:
+    /// - A is the mechanical matrix
+    /// - H is the constraints matrix
+    /// - W is the compliance matrix projected in the constraints space
     ///
     /// @param result the variable where the result will be added
     /// @param J the matrix J to use
@@ -142,9 +150,6 @@ public:
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
     virtual linearalgebra::BaseMatrix* getSystemBaseMatrix() { return nullptr; }
-
-    /// Get the MultiMatrix view of the linear system, or nullptr if this solved does not build it
-    virtual const behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const { return nullptr; }
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
     virtual linearalgebra::BaseVector* getSystemRHBaseVector() { return nullptr; }

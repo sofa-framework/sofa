@@ -30,10 +30,8 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 extern "C"
@@ -52,14 +50,10 @@ void SPHFluidForceFieldCuda3d_addForce (int kernelType, int pressureType, int vi
 #endif // SOFA_GPU_CUDA_DOUBLE
 }
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
-namespace component
-{
-
-namespace forcefield
+namespace component::forcefield
 {
 
 using namespace gpu::cuda;
@@ -271,9 +265,8 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::draw(const core::visual::Vis
 #endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
-} // namespace forcefield
+} // namespace component::forcefield
 
-} // namespace component
 
 } // namespace sofa
 

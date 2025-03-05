@@ -40,10 +40,10 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     using Real = typename Matrix::Real;
 
-    Data<unsigned> d_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
-    Data<Real> d_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
-    Data<Real> d_smallDenominatorThreshold; ///< minimum value of the denominator in the conjugate Gradient solution
-    Data<bool> d_warmStart; ///< Use previous solution as initial solution
+    Data<unsigned> d_maxIter; ///< Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop
+    Data<Real> d_tolerance; ///< Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)
+    Data<Real> d_smallDenominatorThreshold; ///< Minimum value of the denominator (pT A p)^ in the conjugate Gradient solution
+    Data<bool> d_warmStart; ///< Use previous solution as initial solution, which may improve the initial guess if your system is evolving smoothly
     Data<std::map < std::string, sofa::type::vector<Real> > > d_graph; ///< Graph of residuals at each iteration
 
 protected:
@@ -70,28 +70,6 @@ public:
 
     /// Solve iteratively the linear system Ax=b following a conjugate gradient descent
     void solve (Matrix& A, Vector& x, Vector& b) override;
-
-    //Temporary function to warn the user when old attribute names are used until v21.12
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
-    {
-        Inherit::parse(arg);
-
-        if (arg->getAttribute("verbose"))
-        {
-            msg_warning() << "input data 'verbose' changed for 'printLog', please update your scene (see PR#2098)";
-        }
-    }
-
-    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_maxIter")
-    DeprecatedAndRemoved f_maxIter;
-    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_tolerance")
-    DeprecatedAndRemoved f_tolerance;
-    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_smallDenominatorThreshold")
-    DeprecatedAndRemoved f_smallDenominatorThreshold;
-    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_warmStart")
-    DeprecatedAndRemoved f_warmStart;
-    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_graph")
-    DeprecatedAndRemoved f_graph;
 };
 
 template<>
@@ -100,7 +78,7 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
 template<>
 inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(const core::ExecParams* params, Vector& x, Vector& r, Vector& p, Vector& q, Real alpha);
 
-#if  !defined(SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_CPP)
+#if !defined(SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_CPP)
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< linearalgebra::FullMatrix<SReal>, linearalgebra::FullVector<SReal> >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< linearalgebra::SparseMatrix<SReal>, linearalgebra::FullVector<SReal> >;

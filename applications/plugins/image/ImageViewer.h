@@ -68,7 +68,7 @@ namespace misc
    *
    *  <b>plane</b> -
    *
-   *  <b>vectorvis</b> - Describes the settings for vizualizing vectors and tensors. Input string should be in the form:
+   *  <b>vectorvis</b> - Describes the settings for visualizing vectors and tensors. Input string should be in the form:
    *	"subsampleXY subsampleZ scale rgb shape tensorOrder", where:
    *	subsampleXY is an integer <i>n</i> where in the X and Y planes, a shape is drawn every <i>n</i> voxels.
    *    subsampleZ is an integer <i>n</i> where in the Z plane, a shape is drawn every <i>n</i> voxels.
@@ -139,7 +139,7 @@ public:
     /**@}*/
     
     Data <int> scroll; ///< 0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right
-    Data <bool> display; ///< Boolean to activate/desactivate the display of the image
+    Data <bool> display; ///< true if image is displayed, false otherwise
 
     typedef sofa::component::visual::VisualModelImpl VisuModelType;
 
@@ -385,7 +385,7 @@ public:
                 sofa::component::visual::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visual::RecordedCamera>();
                 if(currentCamera)
                 {
-                    currentCamera->m_translationPositions.setValue(this->points.getValue());
+                    currentCamera->d_translationPositions.setValue(this->points.getValue());
                 }
             }
         }

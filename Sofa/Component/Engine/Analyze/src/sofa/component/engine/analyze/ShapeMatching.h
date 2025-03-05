@@ -28,11 +28,13 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/SVector.h>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::engine::analyze
 {
@@ -41,7 +43,7 @@ namespace sofa::component::engine::analyze
  * This class computes target positions using shape matching deformation [Muller05][Muller11]
  */
 template <class DataTypes>
-class ShapeMatching : public core::DataEngine
+class ShapeMatching : public core::DataEngine, public core::behavior::SingleStateAccessor<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ShapeMatching,DataTypes),core::DataEngine);
@@ -69,17 +71,41 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    Data<unsigned int> iterations; ///< Number of iterations.
-    Data< Real > affineRatio; ///< Blending between affine and rigid.
-    Data< Real > fixedweight; ///< weight of fixed particles.
-    Data< VecCoord > fixedPosition0; ///< rest positions of non mechanical particles.
-    Data< VecCoord > fixedPosition; ///< current (fixed) positions of non mechanical particles.
-    Data< VecCoord > position; ///< input (current mstate position)
-    Data< VVI > cluster; ///< input2 (clusters)
-    Data< VecCoord > targetPosition;       ///< result
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
+    sofa::core::objectmodel::lifecycle::RenamedData<unsigned int> iterations;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> affineRatio;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> fixedweight;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
+    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> fixedPosition0;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
+    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> fixedPosition;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
+    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> position;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
+    sofa::core::objectmodel::lifecycle::RenamedData< VVI >  cluster;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_ANALYZE()
+    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> targetPosition;
+
+
+    Data<unsigned int> d_iterations; ///< Number of iterations.
+    Data< Real > d_affineRatio; ///< Blending between affine and rigid.
+    Data< Real > d_fixedweight; ///< weight of fixed particles.
+    Data< VecCoord > d_fixedPosition0; ///< rest positions of non mechanical particles.
+    Data< VecCoord > d_fixedPosition; ///< current (fixed) positions of non mechanical particles.
+    Data< VecCoord > d_position; ///< Input positions.
+    Data< VVI > d_cluster; ///< Input clusters.
+    Data< VecCoord > d_targetPosition; ///< Computed target positions.
 
 private:
-    sofa::core::behavior::MechanicalState<DataTypes>* mstate;
     sofa::core::topology::BaseMeshTopology* topo;
 
     //rest data
@@ -95,7 +121,7 @@ private:
 };
 
 
-#if  !defined(SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP)
 extern template class SOFA_COMPONENT_ENGINE_ANALYZE_API ShapeMatching<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_ANALYZE_API ShapeMatching<defaulttype::Rigid3Types>;
  

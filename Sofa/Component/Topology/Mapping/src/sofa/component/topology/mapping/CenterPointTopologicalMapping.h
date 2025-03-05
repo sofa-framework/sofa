@@ -39,7 +39,6 @@ namespace sofa::component::topology::mapping
  * CenterPointTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
  *
 */
-
 class SOFA_COMPONENT_TOPOLOGY_MAPPING_API CenterPointTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:

@@ -29,6 +29,7 @@
 #include <sofa/type/Mat.h>
 #include <sofa/core/topology/TopologyData.h>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::solidmechanics::spring
 {
@@ -77,9 +78,7 @@ protected:
         Real  deltaL2;  // the current unit direction
         Real stiffness;
 
-        EdgeRestInformation()
-        {
-        }
+        EdgeRestInformation() = default;
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& /*eri*/ )
@@ -109,9 +108,8 @@ protected:
         Deriv dp[3];
         Real J;
 
-        TriangleRestInformation()
-        {
-        }
+        TriangleRestInformation() = default;
+
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const TriangleRestInformation& /*tri*/ )
         {
@@ -125,23 +123,54 @@ protected:
         }
     };
 
-    sofa::core::topology::TriangleData<type::vector<TriangleRestInformation> > triangleInfo; ///< Internal triangle data
-    sofa::core::topology::EdgeData<type::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
-    
-    Data < VecCoord >  _initialPoints;										///< the intial positions of the points
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<TriangleRestInformation> > triangleInfo;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<EdgeRestInformation> > edgeInfo;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> _initialPoints;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_poissonRatio;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_youngModulus;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_dampingRatio;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_useAngularSprings;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_compressible;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_stiffnessMatrixRegularizationWeight;
+
+
+
+    sofa::core::topology::TriangleData<type::vector<TriangleRestInformation> > d_triangleInfo; ///< Internal triangle data
+    sofa::core::topology::EdgeData<type::vector<EdgeRestInformation> > d_edgeInfo; ///< Internal edge data
+
+    Data < VecCoord >  d_initialPoints; ///< Initial Position
 
     bool updateMatrix;
 
-    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
-    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
-    Data<Real> f_dampingRatio; ///< Ratio damping/stiffness
-    Data<bool> f_useAngularSprings; ///< whether angular springs should be included
 
-    Data<bool> f_compressible; ///< whether the material is compressible or not
+
+    Data<Real> d_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> d_youngModulus; ///< Young modulus in Hooke's law
+    Data<Real> d_dampingRatio; ///< Ratio damping/stiffness
+    Data<bool> d_useAngularSprings; ///< If Angular Springs should be used or not
+
+    Data<bool> d_compressible; ///< If additional energy penalizing compressibility should be used
     /**** coefficient that controls how the material can cope with very compressible cases
     must be between 0 and 1 : if 0 then the deformation may diverge for large compression
     if 1 then the material can undergo large compression even inverse elements ***/
-    Data<Real> f_stiffnessMatrixRegularizationWeight; ///< Regularization of the Stiffnes Matrix (between 0 and 1)
+    Data<Real> d_stiffnessMatrixRegularizationWeight; ///< Regularization of the Stiffnes Matrix (between 0 and 1)
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
@@ -155,6 +184,7 @@ public:
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         msg_warning() << "Method getPotentialEnergy not implemented yet.";
@@ -166,11 +196,11 @@ public:
 
     void setYoungModulus(const Real modulus)
     {
-        f_youngModulus.setValue((Real)modulus);
+        d_youngModulus.setValue((Real)modulus);
     }
     void setPoissonRatio(const Real ratio)
     {
-        f_poissonRatio.setValue((Real)ratio);
+        d_poissonRatio.setValue((Real)ratio);
     }
 
     void draw(const core::visual::VisualParams* vparams) override;
@@ -178,24 +208,24 @@ public:
     void updateLameCoefficients();
 
     /** Method to initialize @sa EdgeRestInformation when a new edge is created.
-    * Will be set as creation callback in the EdgeData @sa edgeInfo
+    * Will be set as creation callback in the EdgeData @sa d_edgeInfo
     */
     void applyEdgeCreation(Index edgeIndex,
         EdgeRestInformation& ei,
-        const core::topology::BaseMeshTopology::Edge& edge, 
+        const core::topology::BaseMeshTopology::Edge& edge,
         const sofa::type::vector< Index >& ancestors,
         const sofa::type::vector< SReal >& coefs);
 
     /** Method to initialize @sa TriangleRestInformation when a new triangle is created.
-    * Will be set as creation callback in the TriangleData @sa triangleInfo
+    * Will be set as creation callback in the TriangleData @sa d_triangleInfo
     */
     void applyTriangleCreation(Index triangleIndex, TriangleRestInformation& tinfo,
         const core::topology::BaseMeshTopology::Triangle& triangle,
         const sofa::type::vector<Index>& ancestors,
         const sofa::type::vector<SReal>& coefs);
 
-    /** Method to update @sa triangleInfo when a triangle is removed.
-    * Will be set as destruction callback in the TriangleData @sa triangleInfo
+    /** Method to update @sa d_triangleInfo when a triangle is removed.
+    * Will be set as destruction callback in the TriangleData @sa d_triangleInfo
     */
     void applyTriangleDestruction(Index triangleIndex, TriangleRestInformation& tinfo);
 
@@ -206,11 +236,11 @@ protected :
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;
 
-    sofa::core::topology::EdgeData<type::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
+    sofa::core::topology::EdgeData<type::vector<EdgeRestInformation> > &getEdgeInfo() {return d_edgeInfo;}
 };
 
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_CPP)
 
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API TriangularBiquadraticSpringsForceField<sofa::defaulttype::Vec3Types>;
 

@@ -25,13 +25,8 @@
 #include <cstdio>
 #include <sofa/helper/config.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 class SOFA_HELPER_API TriangleLoader
@@ -46,10 +41,7 @@ private:
     void loadTriangles(FILE *file);
 };
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif

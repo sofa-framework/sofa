@@ -86,7 +86,7 @@ public:
     //Allow to configure your viewer using the Sofa Component, ViewerSetting
     virtual void configure(sofa::component::setting::ViewerSetting* viewerConf);
 
-    //Fonctions needed to take a screenshot
+    //Functions needed to take a screenshot
     virtual const std::string screenshotName();
     virtual void setPrefix(const std::string& prefix, bool prependDirectory = true);
     virtual void screenshot(const std::string& filename, int compression_level =-1);
@@ -144,7 +144,7 @@ protected:
 
     sofa::type::Vec3 ambientColour;
 
-    PickHandler *pick;
+    std::unique_ptr<PickHandler> pick;
 
     //instruments handling
     int _navigationMode;

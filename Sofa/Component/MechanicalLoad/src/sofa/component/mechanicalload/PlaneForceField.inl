@@ -31,6 +31,7 @@
 #include <iostream>
 #include <sofa/type/BoundingBox.h>
 #include <limits>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 #include <sofa/simulation/Node.h>
 
 namespace
@@ -78,7 +79,7 @@ PlaneForceField<DataTypes>::PlaneForceField() :
     , d_damping(initData(&d_damping, (Real)5, "damping", "force damping. (default=5)"))
     , d_maxForce(initData(&d_maxForce, (Real)0, "maxForce", "if non-null , the max force that can be applied to the object. (default=0)"))
     , d_bilateral( initData(&d_bilateral, false, "bilateral", "if true the plane force field is applied on both sides. (default=false)"))
-    , d_localRange( initData(&d_localRange, type::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , d_localRange( initData(&d_localRange, type::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving indices outside of this range are discarded (useful for parallelization using mesh partitioning)" ) )
     , d_drawIsEnabled(initData(&d_drawIsEnabled, false, "showPlane", "enable/disable drawing of plane. (default=false)"))
     , d_drawColor(initData(&d_drawColor, sofa::type::RGBAColor(0.0f,.5f,.2f,1.0f), "planeColor", "plane color. (default=[0.0,0.5,0.2,1.0])"))
     , d_drawSize(initData(&d_drawSize, (Real)10.0f, "showPlaneSize", "plane display size if draw is enabled. (default=10)"))
@@ -89,9 +90,11 @@ PlaneForceField<DataTypes>::PlaneForceField() :
 }
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::init(){
-    if(this->d_componentState.getValue() == ComponentState::Valid){
-        msg_warning(this) << "Calling an already fully initialized component.  You should use reinit instead." ;
+void PlaneForceField<DataTypes>::init()
+{
+    if(this->isComponentStateValid())
+    {
+        msg_warning() << "Calling an already fully initialized component. You should use reinit instead." ;
     }
 
     Inherit::init() ;
@@ -119,9 +122,9 @@ void PlaneForceField<DataTypes>::init(){
 
     Vec<2,int> tmp = d_localRange.getValue() ;
     if( d_localRange.isSet() && (tmp.x() < 0 || tmp.y() < 0 || tmp.x() > tmp.y()) ){
-        msg_warning(this) << "The 'localRange="<< d_localRange.getValueString() << "' parameter is not valid as it needs two indices in numerical order.  "
+        msg_warning(this) << "The 'd_localRange="<< d_localRange.getValueString() << "' parameter is not valid as it needs two indices in numerical order.  "
                              "Continuing with the default value=[0, 0] (no local range).  "
-                             "To remove this warning message you need to set the 'localRange' to correct value." ;
+                             "To remove this warning message you need to set the 'd_localRange' to correct value." ;
 
         tmp.set(-1,-1);
         d_localRange.setValue(tmp) ;
@@ -247,6 +250,34 @@ void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpar
     }
 }
 
+template <class DataTypes>
+void PlaneForceField<DataTypes>::buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
+{
+    if (!this->isComponentStateValid())
+    {
+        return;
+    }
+
+    Deriv normal;
+    DataTypes::setDPos(normal, d_planeNormal.getValue());
+    const auto localMatrix = -this->d_stiffness.getValue() * sofa::type::dyad(normal, normal);
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (const auto& contact : m_contacts)
+    {
+        const auto locationInGlobalMatrix = contact * Deriv::total_size;
+        dfdx(locationInGlobalMatrix, locationInGlobalMatrix) += localMatrix;
+    }
+}
+
+template <class DataTypes>
+void PlaneForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& vx )
 {
@@ -314,7 +345,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     if (size == 0.0f)
         size = (float)d_drawSize.getValue();
 
-    helper::ReadAccessor<VecCoord> p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    helper::ReadAccessor<VecCoord> p1 = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     type::Vec3 normal{type::NOINIT}, v1{ type::NOINIT }, v2{ type::NOINIT };
     get3DFrameFromDPosNormal<DataTypes>(d_planeNormal.getValue(), v1, v2, normal);

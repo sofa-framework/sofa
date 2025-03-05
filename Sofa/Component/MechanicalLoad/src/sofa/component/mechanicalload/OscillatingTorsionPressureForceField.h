@@ -27,6 +27,8 @@
 #include <sofa/core/topology/TopologySubsetData.h>
 #include <fstream>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::component::mechanicalload
 {
 
@@ -81,17 +83,47 @@ protected:
     std::ofstream file;
 
 public:
-    sofa::core::topology::TriangleSubsetData<sofa::type::vector <TrianglePressureInformation> > trianglePressureMap; ///< map between triangle indices and their pressure    
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector <TrianglePressureInformation> > trianglePressureMap;
 
-    Data<Real> moment;   ///< total moment/torque applied
-    Data<sofa::type::vector<Index> > triangleList; ///< Indices of triangles separated with commas where a pressure is applied
-    Data<Deriv> axis;    ///< axis of rotation and normal used to define the edge subjected to the pressure force
-    Data<Coord> center;  ///< center of rotation
-    Data<Real> penalty;  ///< strength of penalty force
-    Data<Real> frequency; ///< frequency of change
-    Data<Real> dmin;     ///< coordinates min of the plane for the vertex selection
-    Data<Real> dmax;     ///< coordinates max of the plane for the vertex selection
-    Data<bool> p_showForces; ///< draw triangles which have a given pressure
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> moment;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<Index> > triangleList;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    sofa::core::objectmodel::lifecycle::RenamedData<Deriv> axis;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    sofa::core::objectmodel::lifecycle::RenamedData<Coord> center;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> penalty;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> frequency;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> dmin;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> dmax;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_showForces;
+
+    sofa::core::topology::TriangleSubsetData<sofa::type::vector <TrianglePressureInformation> > d_trianglePressureMap; ///< Map between triangle indices and their pressure
+
+    Data<Real> d_moment; ///< Moment force applied on the entire surface
+    Data<sofa::type::vector<Index> > d_triangleList; ///< Indices of triangles separated with commas where a pressure is applied
+    Data<Deriv> d_axis; ///< Axis of rotation and normal direction for the plane selection of triangles
+    Data<Coord> d_center; ///< Center of rotation
+    Data<Real> d_penalty; ///< Strength of the penalty force
+    Data<Real> d_frequency; ///< frequency of oscillation
+    Data<Real> d_dmin; ///< Minimum distance from the origin along the normal direction
+    Data<Real> d_dmax; ///< Maximum distance from the origin along the normal direction
+    Data<bool> d_showForces; ///< draw triangles which have a given pressure
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<OscillatingTorsionPressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -102,12 +134,15 @@ public:
 
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void setDminAndDmax(const SReal _dmin, const SReal _dmax){dmin.setValue(static_cast<Real>(_dmin));
-                                                              dmax.setValue(static_cast<Real>(_dmax));}
-    void setAxis(const Coord n) { axis.setValue(n);}
-    void setMoment(Real x) { moment.setValue( x ); }
+    void setDminAndDmax(const SReal _dmin, const SReal _dmax){d_dmin.setValue(static_cast<Real>(_dmin));
+                                                              d_dmax.setValue(static_cast<Real>(_dmax));}
+    void setAxis(const Coord n) { d_axis.setValue(n);}
+    void setMoment(Real x) { d_moment.setValue(x ); }
 
     // returns the amplitude/modifier of the set moment (dependent on frequency)
     SReal getAmplitude();
@@ -127,19 +162,19 @@ protected :
     Coord getVecFromRotAxis( const Coord &x );
     Real getAngle( const Coord &v1, const Coord &v2 );
 
-    std::vector<Real> relMomentToApply;   // estimated share of moment to apply to each point
-    std::vector<bool> pointActive;        // true if moment is applied to specific point (surface)
-    std::vector<Coord> vecFromCenter;     // vector from rotation axis for all points
-    std::vector<Real> distFromCenter;     // norm of vecFromCenter
-    std::vector<Coord> momentDir;         // direction in which to apply a moment
-    std::vector<Coord> origVecFromCenter; // vector from rotation axis for all points in original state
-    std::vector<Coord> origCenter;        // center of rotation for original points
+    sofa::type::vector<Real> relMomentToApply;   // estimated share of moment to apply to each point
+    sofa::type::vector<bool> pointActive;        // true if moment is applied to specific point (surface)
+    sofa::type::vector<Coord> vecFromCenter;     // vector from rotation axis for all points
+    sofa::type::vector<Real> distFromCenter;     // norm of vecFromCenter
+    sofa::type::vector<Coord> momentDir;         // direction in which to apply a moment
+    sofa::type::vector<Coord> origVecFromCenter; // vector from rotation axis for all points in original state
+    sofa::type::vector<Coord> origCenter;        // center of rotation for original points
     SReal rotationAngle;
 
     sofa::core::topology::BaseMeshTopology* m_topology; ///< Pointer to the current topology
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API OscillatingTorsionPressureForceField<sofa::defaulttype::Vec3Types>;
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP)
 

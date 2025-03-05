@@ -23,8 +23,9 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/core/topology/Topology.h>
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/Modules.h>
 
 class fake_TopologyScene
 {
@@ -32,7 +33,7 @@ public:
     /**
     * Default constructor, take the filepath of the mesh file to load, the type of topology and if the topology is static (MeshTopology)
     */
-    fake_TopologyScene(const std::string& filename, sofa::core::topology::TopologyElementType topoType, bool staticTopo = false)
+    fake_TopologyScene(const std::string& filename, sofa::geometry::ElementType topoType, bool staticTopo = false)
         : m_topoType(topoType)
         , m_filename(filename)
         , m_staticTopology(staticTopo)
@@ -52,16 +53,16 @@ public:
         m_simu = createSimulation("DAG");
         m_root = createRootNode(m_simu, "root");
 
-        sofa::simpleapi::importPlugin("Sofa.Component.IO.Mesh");
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Constant");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+        sofa::simpleapi::importPlugin(Sofa.Component.IO.Mesh);
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Constant);
+        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
 
         createObject(m_root, "DefaultAnimationLoop");
 
         std::string loaderType = "MeshOBJLoader";
-        if (m_topoType == TopologyElementType::TETRAHEDRON || m_topoType == TopologyElementType::HEXAHEDRON)
+        if (m_topoType == sofa::geometry::ElementType::TETRAHEDRON || m_topoType == sofa::geometry::ElementType::HEXAHEDRON)
             loaderType = "MeshGmshLoader";
 
 
@@ -84,17 +85,17 @@ public:
         else
         {
             std::string topoType = "";
-            if (m_topoType == TopologyElementType::POINT)
+            if (m_topoType == sofa::geometry::ElementType::POINT)
                 topoType = "Point";
-            else if (m_topoType == TopologyElementType::EDGE)
+            else if (m_topoType == sofa::geometry::ElementType::EDGE)
                 topoType = "Edge";
-            else if (m_topoType == TopologyElementType::TRIANGLE)
+            else if (m_topoType == sofa::geometry::ElementType::TRIANGLE)
                 topoType = "Triangle";
-            else if (m_topoType == TopologyElementType::QUAD)
+            else if (m_topoType == sofa::geometry::ElementType::QUAD)
                 topoType = "Quad";
-            else if (m_topoType == TopologyElementType::TETRAHEDRON)
+            else if (m_topoType == sofa::geometry::ElementType::TETRAHEDRON)
                 topoType = "Tetrahedron";
-            else if (m_topoType == TopologyElementType::HEXAHEDRON)
+            else if (m_topoType == sofa::geometry::ElementType::HEXAHEDRON)
                 topoType = "Hexahedron";
 
             // create topology components
@@ -109,20 +110,20 @@ public:
             // Add some mechanical components
             createObject(m_root, "MeshMatrixMass");
 
-            if (m_topoType == TopologyElementType::EDGE) {
-                sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
+            if (m_topoType == sofa::geometry::ElementType::EDGE) {
+                sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.Spring);
                 createObject(m_root, "VectorSpringForceField", { {"useTopology", "true"} });
             }
                 
                 
         }
 
-        m_simu->init(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
 
         return true;
     }
 
-    /// Method to get acces to node containing the meshLoader and the toplogy container.
+    /// Method to get access to node containing the meshLoader and the topology container.
     sofa::simulation::Node::SPtr getNode() { return m_root; }
 
 private:
@@ -132,7 +133,7 @@ private:
     sofa::simulation::Node::SPtr m_root;
 
     /// Type of topology asked
-    sofa::core::topology::TopologyElementType m_topoType;
+    sofa::geometry::ElementType m_topoType;
     /// filepath of the mesh to load
     std::string m_filename;
     /// Bool storing if static or dynamyc topology.

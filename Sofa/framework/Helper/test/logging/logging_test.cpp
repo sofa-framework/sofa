@@ -416,8 +416,8 @@ TEST(LoggingTest, checkCountingMessageHandler)
     MessageDispatcher::clearHandlers() ;
     MessageDispatcher::addHandler( &m );
 
-    std::vector<Message::Type> errortypes = {Message::Error, Message::Warning, Message::Info,
-                                             Message::Advice, Message::Deprecated, Message::Fatal} ;
+    const std::vector<Message::Type> errortypes = {Message::Error, Message::Warning, Message::Info,
+                                                   Message::Advice, Message::Deprecated, Message::Fatal} ;
 
     for(auto& type : errortypes)
     {
@@ -453,8 +453,8 @@ TEST(LoggingTest, checkRoutingMessageHandler)
     MessageDispatcher::clearHandlers() ;
     MessageDispatcher::addHandler( &m );
 
-    std::vector<Message::Type> errortypes = {Message::Error, Message::Warning, Message::Info,
-                                             Message::Advice, Message::Deprecated, Message::Fatal} ;
+    const std::vector<Message::Type> errortypes = {Message::Error, Message::Warning, Message::Info,
+                                                   Message::Advice, Message::Deprecated, Message::Fatal} ;
 
     RichConsoleStyleMessageFormatter* fmt = &RichConsoleStyleMessageFormatter::getInstance();
     ConsoleMessageHandler* consolehandler = new ConsoleMessageHandler(fmt) ;

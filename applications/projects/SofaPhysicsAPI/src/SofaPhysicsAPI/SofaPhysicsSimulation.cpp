@@ -50,7 +50,7 @@
 #include <cmath>
 #include <iostream>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <sofa/component/init.h>
 
@@ -296,9 +296,9 @@ using sofa::helper::logging::MessageDispatcher;
 using sofa::helper::logging::LoggingMessageHandler;
 
 SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
-    : useGUI(useGUI_)
+    : m_msgIsActivated(false)
+    , useGUI(useGUI_)
     , GUIFramerate(GUIFramerate_)
-    , m_msgIsActivated(false)
 {
     sofa::helper::init();
     static bool first = true;
@@ -339,8 +339,7 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
     lastH = 0;
     vparams = sofa::core::visual::VisualParams::defaultInstance();
 
-    m_Simulation = new sofa::simulation::graph::DAGSimulation();
-    sofa::simulation::setSimulation(m_Simulation);
+    assert(sofa::simulation::getSimulation());
 
     sofa::component::init(); // force dependency on Sofa.Component
 
@@ -395,14 +394,14 @@ int SofaPhysicsSimulation::load(const char* cfilename)
     std::string filename = cfilename;
     sofa::helper::BackTrace::autodump();
 
-    //bool wasAnimated = isAnimated();
     sofa::helper::system::DataRepository.findFile(filename);
-    m_RootNode = m_Simulation->load(filename.c_str());
+    m_RootNode = sofa::simulation::node::load(filename.c_str());
+    int result = API_SUCCESS;
     if (m_RootNode.get())
     {
         sceneFileName = filename;
-        m_Simulation->init(m_RootNode.get());
-        return updateOutputMeshes();
+        sofa::simulation::node::initRoot(m_RootNode.get());
+        result = updateOutputMeshes();
 
         if ( useGUI ) {
           sofa::gui::common::GUIManager::SetScene(m_RootNode.get(),cfilename);
@@ -410,7 +409,7 @@ int SofaPhysicsSimulation::load(const char* cfilename)
     }
     else
     {
-        m_RootNode = m_Simulation->createNewGraph("");
+        m_RootNode = sofa::simulation::getSimulation()->createNewGraph("");
         return API_SCENE_FAILED;
     }
     initTexturesDone = false;
@@ -418,16 +417,14 @@ int SofaPhysicsSimulation::load(const char* cfilename)
     lastH = 0;
     lastRedrawTime = sofa::helper::system::thread::CTime::getRefTime();
 
-//    if (isAnimated() != wasAnimated)
-//        animatedChanged();
-    return API_SUCCESS;
+    return result;
 }
 
 int SofaPhysicsSimulation::unload()
 {
     if (m_RootNode.get())
     {
-        m_Simulation->unload(m_RootNode);
+        sofa::simulation::node::unload(m_RootNode);
     }
     else
     {
@@ -463,7 +460,7 @@ void SofaPhysicsSimulation::createScene()
                                                                {"alarmDistance", "0.3"},
                                                                {"contactDistance", "0.2"} });
 
-    sofa::simpleapi::createObject(m_RootNode, "DefaultContactManager", {
+    sofa::simpleapi::createObject(m_RootNode, "CollisionResponse", {
                                 {"name", "Contact Manager"},
                                 {"response", "PenalityContactForceField"}
         });
@@ -473,7 +470,7 @@ void SofaPhysicsSimulation::createScene()
         m_RootNode->setGravity({ 0,-9.8,0 });
         this->createScene_impl();
 
-        m_Simulation->init(m_RootNode.get());
+        sofa::simulation::node::initRoot(m_RootNode.get());
 
         updateOutputMeshes();
     }
@@ -606,7 +603,7 @@ void SofaPhysicsSimulation::reset()
 {
     if (getScene())
     {
-        getSimulation()->reset(getScene());
+        sofa::simulation::node::reset(getScene());
         this->update();
     }
 }
@@ -634,8 +631,8 @@ void SofaPhysicsSimulation::step()
     sofa::simulation::Node* groot = getScene();
     if (!groot) return;
     beginStep();
-    getSimulation()->animate(groot);
-    getSimulation()->updateVisual(groot);
+    sofa::simulation::node::animate(groot);
+    sofa::simulation::node::updateVisual(groot);
     if ( useGUI ) {
       sofa::gui::common::BaseGUI* gui = sofa::gui::common::GUIManager::getGUI();
       gui->stepMainLoop();
@@ -781,7 +778,7 @@ std::string SofaPhysicsSimulation::getMessage(int messageId, int& msgType)
 {
     const std::vector<sofa::helper::logging::Message>& msgs = m_msgHandler->getMessages();
 
-    if (messageId >= msgs.size()) {
+    if (messageId >= (int)msgs.size()) {
         msgType = -1;
         return "Error messageId out of bounds";
     }
@@ -960,7 +957,7 @@ void SofaPhysicsSimulation::drawGL()
         if (!initTexturesDone)
         {
             std::cout << "INIT VISUAL" << std::endl;
-            getSimulation()->initTextures(groot);
+            sofa::simulation::node::initTextures(groot);
             bool setView = false;
             groot->get(currentCamera);
             if (!currentCamera)
@@ -968,8 +965,8 @@ void SofaPhysicsSimulation::drawGL()
                 currentCamera = sofa::core::objectmodel::New<sofa::component::visual::InteractiveCamera>();
                 currentCamera->setName(sofa::core::objectmodel::Base::shortName(currentCamera.get()));
                 groot->addObject(currentCamera);
-                currentCamera->p_position.forceSet();
-                currentCamera->p_orientation.forceSet();
+                currentCamera->d_position.forceSet();
+                currentCamera->d_orientation.forceSet();
                 currentCamera->bwdInit();
             }
             setView = true;
@@ -1051,7 +1048,7 @@ void SofaPhysicsSimulation::drawGL()
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixd(lastModelviewMatrix);
 
-        getSimulation()->draw(vparams,groot);
+        sofa::simulation::node::draw(vparams,groot);
 
         glDisable(GL_LIGHTING);
         glDisable(GL_DEPTH_TEST);
@@ -1080,8 +1077,6 @@ void SofaPhysicsSimulation::calcProjection()
     double xNear, yNear/*, xOrtho, yOrtho*/;
     double xFactor = 1.0, yFactor = 1.0;
     double offset;
-    double xForeground, yForeground, zForeground, xBackground, yBackground,
-           zBackground;
     sofa::type::Vec3 center;
 
     /// Camera part
@@ -1128,13 +1123,12 @@ void SofaPhysicsSimulation::calcProjection()
     xFactor *= 0.01;
     yFactor *= 0.01;
 
-    //std::cout << xNear << " " << yNear << std::endl;
-
-    zForeground = -vparams->zNear() - offset;
-    zBackground = -vparams->zFar() + offset;
-
     if (currentCamera->getCameraType() == sofa::core::visual::VisualParams::PERSPECTIVE_TYPE)
-        gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, vparams->zNear(), vparams->zFar());
+    {
+        gluPerspective(currentCamera->getFieldOfView(),
+                       (double) width / (double) height,
+                       vparams->zNear(),vparams->zFar());
+    }
     else
     {
         double ratio = vparams->zFar() / (vparams->zNear() * 20);
@@ -1143,20 +1137,10 @@ void SofaPhysicsSimulation::calcProjection()
         {
             ratio = -300 * (tcenter.norm2()) / tcenter[2];
         }
-        glOrtho((-xNear * xFactor) * ratio, (xNear * xFactor) * ratio, (-yNear
-                * yFactor) * ratio, (yNear * yFactor) * ratio,
+        glOrtho((-xNear * xFactor) * ratio, (xNear * xFactor) * ratio,
+                (-yNear * yFactor) * ratio, (yNear * yFactor) * ratio,
                 vparams->zNear(), vparams->zFar());
     }
-
-    xForeground = -zForeground * xNear / vparams->zNear();
-    yForeground = -zForeground * yNear / vparams->zNear();
-    xBackground = -zBackground * xNear / vparams->zNear();
-    yBackground = -zBackground * yNear / vparams->zNear();
-
-    xForeground *= xFactor;
-    yForeground *= yFactor;
-    xBackground *= xFactor;
-    yBackground *= yFactor;
 
     glGetDoublev(GL_PROJECTION_MATRIX,lastProjectionMatrix);
 

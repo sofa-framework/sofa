@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.GL.Component.Shader LANGUAGES CXX)
 
 set(SOFAGLCOMPONENTONSHADER_SOURCE_DIR "src/sofa/gl/component/shader")

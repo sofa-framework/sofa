@@ -21,39 +21,17 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/spring/RestShapeSpringsForceField.h>
-
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/RGBAColor.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
+#include <sofa/type/isRigidType.h>
 
 #include <string_view>
 #include <type_traits>
-
-namespace // anonymous
-{
-    // Boiler-plate code to test if a type implements a method
-    // explanation https://stackoverflow.com/a/30848101
-    
-    template <typename...>
-    using void_t = void;
-
-    // Primary template handles all types not supporting the operation.
-    template <typename, template <typename> class, typename = void_t<>>
-    struct detect : std::false_type {};
-
-    // Specialization recognizes/validates only types supporting the archetype.
-    template <typename T, template <typename> class Op>
-    struct detect<T, Op, void_t<Op<T>>> : std::true_type {};
-
-    // Actual test if DataType::Coord implements getOrientation() (hence is a RigidType)
-    template <typename T>
-    using isRigid_t = decltype(std::declval<typename T::Coord>().getOrientation());
-
-    template <typename T>
-    using isRigidType = detect<T, isRigid_t>;
-} // anonymous
 
 namespace sofa::component::solidmechanics::spring
 {
@@ -77,13 +55,21 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , d_stiffness(initData(&d_stiffness, "stiffness", "stiffness values between the actual position and the rest shape position"))
     , d_angularStiffness(initData(&d_angularStiffness, "angularStiffness", "angularStiffness assigned when controlling the rotation of the points"))
     , d_pivotPoints(initData(&d_pivotPoints, "pivot_points", "global pivot points used when translations instead of the rigid mass centers"))
-    , d_external_points(initData(&d_external_points, "external_points", "points from the external Mechancial State that define the rest shape springs"))
+    , d_external_points(initData(&d_external_points, "external_points", "points from the external Mechanical State that define the rest shape springs"))
     , d_recompute_indices(initData(&d_recompute_indices, true, "recompute_indices", "Recompute indices (should be false for BBOX)"))
     , d_drawSpring(initData(&d_drawSpring,false,"drawSpring","draw Spring"))
     , d_springColor(initData(&d_springColor, sofa::type::RGBAColor::green(), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
+    , d_activeDirections(initData(&d_activeDirections, s_defaultActiveDirections,
+        "activeDirections", std::string("Directions in which the spring is active (default=[" + sofa::helper::join(s_defaultActiveDirections, ',') + "])").c_str()))
     , l_restMState(initLink("external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
     , l_topology(initLink("topology", "Link to be set to the topology container in the component graph"))
 {
+    this->addUpdateCallback("updateIndices", {&d_points}, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        this->recomputeIndices();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
 }
 
 template<class DataTypes>
@@ -106,10 +92,7 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     if (d_stiffness.getValue().empty())
     {
         msg_info() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 ";
-
-        VecReal stiffs;
-        stiffs.push_back(100.0);
-        d_stiffness.setValue(stiffs);
+        d_stiffness.setValue({static_cast<Real>(100)});
     }
 
     if (l_restMState.get() == nullptr)
@@ -147,8 +130,10 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     }
 
     recomputeIndices();
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+        return;
 
-    BaseMechanicalState* state = this->getContext()->getMechanicalState();
+    const BaseMechanicalState* state = this->getContext()->getMechanicalState();
     if(!state)
     {
         msg_warning() << "MechanicalState of the current context returns null pointer";
@@ -162,7 +147,7 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     /// Compile time condition to check if we are working with a Rigid3Types or a type that does not
     /// need the Angular Stiffness parameters.
     //if constexpr (isRigid())
-    if constexpr (isRigidType<DataTypes>())
+    if constexpr (sofa::type::isRigidType<DataTypes>)
     {
         sofa::helper::ReadAccessor<Data<VecReal>> s = d_stiffness;
         sofa::helper::WriteOnlyAccessor<Data<VecReal>> as = d_angularStiffness;
@@ -183,6 +168,8 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     }
 
     lastUpdatedStep = -1.0;
+
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 
@@ -248,9 +235,17 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
     {
         if (useRestMState)
         {
-            for (sofa::Index i = 0; i < getExtPosition()->getValue().size(); i++)
+            if (const DataVecCoord* extPosition = getExtPosition())
             {
-                m_ext_indices.push_back(i);
+                const auto& extPositionValue = extPosition->getValue();
+                for (sofa::Index i = 0; i < extPositionValue.size(); i++)
+                {
+                    m_ext_indices.push_back(i);
+                }
+            }
+            else
+            {
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             }
         }
         else
@@ -278,13 +273,20 @@ bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices()
 {
     if (!checkOutOfBoundsIndices(m_indices, this->mstate->getSize()))
     {
-        msg_error() << "Out of Bounds m_indices detected. ForceField is not activated.";
+        msg_error() << "Out of Bounds d_indices detected. ForceField is not activated.";
         return false;
     }
-    if (!checkOutOfBoundsIndices(m_ext_indices, sofa::Size(getExtPosition()->getValue().size())))
+    if (const DataVecCoord* extPosition = getExtPosition())
     {
-        msg_error() << "Out of Bounds m_ext_indices detected. ForceField is not activated.";
-        return false;
+        if (!checkOutOfBoundsIndices(m_ext_indices, sofa::Size(extPosition->getValue().size())))
+        {
+            msg_error() << "Out of Bounds m_ext_indices detected. ForceField is not activated.";
+            return false;
+        }
+    }
+    else
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
     }
     if (m_indices.size() != m_ext_indices.size())
     {
@@ -310,7 +312,21 @@ bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices(const VecInd
 template<class DataTypes>
 const typename RestShapeSpringsForceField<DataTypes>::DataVecCoord* RestShapeSpringsForceField<DataTypes>::getExtPosition() const
 {
-    return (useRestMState ? l_restMState->read(VecCoordId::position()) : this->mstate->read(VecCoordId::restPosition()));
+    if(useRestMState)
+    {
+        if (l_restMState)
+        {
+            return l_restMState->read(core::vec_id::write_access::position);
+        }
+    }
+    else
+    {
+        if (this->mstate)
+        {
+            return this->mstate->read(core::vec_id::write_access::restPosition);
+        }
+    }
+    return nullptr;
 }
 
 template<class DataTypes>
@@ -321,7 +337,16 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
 
     WriteAccessor< DataVecDeriv > f1 = f;
     ReadAccessor< DataVecCoord > p1 = x;
-    ReadAccessor< DataVecCoord > p0 = *getExtPosition();
+
+    const DataVecCoord* extPosition = getExtPosition();
+    if (!extPosition)
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    ReadAccessor< DataVecCoord > p0 = *extPosition;
+
     const VecReal& k = d_stiffness.getValue();
     const VecReal& k_a = d_angularStiffness.getValue();
 
@@ -341,13 +366,22 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
 
         const auto stiffness = k[static_cast<std::size_t>(i < k.size()) * i];
 
+        const auto activeDirections = d_activeDirections.getValue();
+
         // rigid case
-        if constexpr (isRigidType<DataTypes>())
+        if constexpr (sofa::type::isRigidType<DataTypes>)
         {
             // translation
             if (i >= m_pivots.size())
             {
                 CPos dx = p1[index].getCenter() - p0[ext_index].getCenter();
+                // We filter the difference dx by setting to 0 the entries corresponding
+                // to 0 values in d_activeDirections
+                for (sofa::Size entryId = 0; entryId < spatial_dimensions; ++entryId)
+                {
+                    if (!activeDirections[entryId])
+                        dx[entryId] = 0;
+                }
                 getVCenter(f1[index]) -= dx * stiffness;
             }
             else
@@ -374,15 +408,30 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             if (dq[3] < 1.0)
                 dq.quatToAxis(dir, angle);
 
+            // We change the direction of the axis of rotation based on
+            // the 0 values in d_activeDirections. This is equivalent
+            // to senting to 0 the rotation axis components along x, y
+            // and/or z, depending on the rotations we want to take into
+            // account.
+            for (sofa::Size entryId = spatial_dimensions; entryId < coord_total_size; ++entryId)
+            {
+                if (!activeDirections[entryId])
+                    dir[entryId-spatial_dimensions] = 0;
+            }
+
             const auto angularStiffness = k_a[static_cast<std::size_t>(i < k_a.size()) * i];
             getVOrientation(f1[index]) -= dir * angle * angularStiffness;
         }
-        else // non-rigid implementation 
+        else // non-rigid implementation
         {
-            const sofa::Index index = m_indices[i];
-            const sofa::Index ext_index = m_ext_indices[i];
-
             Deriv dx = p1[index] - p0[ext_index];
+            // We filter the difference dx by setting to 0 the entries corresponding
+            // to 0 values in d_activeDirections
+            for (sofa::Size entryId = 0; entryId < spatial_dimensions; ++entryId)
+            {
+                if (!activeDirections[entryId])
+                    dx[entryId] = 0;
+            }
             f1[index] -= dx * stiffness;
         }
     }
@@ -396,22 +445,51 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mp
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     const VecReal& k = d_stiffness.getValue();
     const VecReal& k_a = d_angularStiffness.getValue();
+    const auto activeDirections = d_activeDirections.getValue();
 
     for (unsigned int i = 0; i < m_indices.size(); i++)
     {
         const sofa::Index curIndex = m_indices[i];
         const auto stiffness = k[static_cast<std::size_t>(i < k.size()) * i];
 
-        if constexpr (isRigidType<DataTypes>())
+        if constexpr (sofa::type::isRigidType<DataTypes>)
         {
             const auto angularStiffness = k_a[static_cast<std::size_t>(i < k_a.size()) * i];
 
-            getVCenter(df1[curIndex]) -= getVCenter(dx1[curIndex]) * stiffness * kFactor;
-            getVOrientation(df1[curIndex]) -= getVOrientation(dx1[curIndex]) * angularStiffness * kFactor;
+            // We filter the difference in translation by setting to 0 the entries corresponding
+            // to 0 values in d_activeDirections
+            auto currentSpringDx = getVCenter(dx1[curIndex]);
+            for (sofa::Size entryId = 0; entryId < spatial_dimensions; ++entryId)
+            {
+                if (!activeDirections[entryId])
+                    currentSpringDx[entryId] = 0;
+            }
+            getVCenter(df1[curIndex]) -= currentSpringDx * stiffness * kFactor;
+
+            auto currentSpringRotationalDx = getVOrientation(dx1[curIndex]);
+            // We change the direction of the axis of rotation based on
+            // the 0 values in d_activeDirections. This is equivalent
+            // to senting to 0 the rotation axis components along x, y
+            // and/or z, depending on the rotations we want to take into
+            // account.
+            for (sofa::Size entryId = spatial_dimensions; entryId < coord_total_size; ++entryId)
+            {
+                if (!activeDirections[entryId])
+                    currentSpringRotationalDx[entryId-spatial_dimensions] = 0;
+            }
+            getVOrientation(df1[curIndex]) -= currentSpringRotationalDx * angularStiffness * kFactor;
         }
         else
         {
-            df1[m_indices[i]] -= dx1[m_indices[i]] * stiffness * kFactor;
+            // We filter the difference in translation by setting to 0 the entries corresponding
+            // to 0 values in d_activeDirections
+            auto currentSpringDx = dx1[m_indices[i]];
+            for (sofa::Size entryId = 0; entryId < spatial_dimensions; ++entryId)
+            {
+                if (!activeDirections[entryId])
+                    currentSpringDx[entryId] = 0;
+            }
+            df1[m_indices[i]] -= currentSpringDx * stiffness * kFactor;
         }
     }
 
@@ -427,8 +505,15 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->setLightingEnabled(false);
 
-    ReadAccessor< DataVecCoord > p0 = *getExtPosition();
-    ReadAccessor< DataVecCoord > p  = this->mstate->read(VecCoordId::position());
+    const DataVecCoord* extPosition = getExtPosition();
+    if (!extPosition)
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    ReadAccessor< DataVecCoord > p0 = *extPosition;
+    ReadAccessor< DataVecCoord > p  = this->mstate->read(sofa::core::vec_id::write_access::position);
 
     const VecIndex& indices = m_indices;
     const VecIndex& ext_indices = (useRestMState ? m_ext_indices : m_indices);
@@ -460,13 +545,14 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix )
 {
-    MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    const MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
+    const unsigned int offset = mref.offset;
     Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     const VecReal& k = d_stiffness.getValue();
     const VecReal& k_a = d_angularStiffness.getValue();
+    const auto activeDirections = d_activeDirections.getValue();
 
     constexpr sofa::Size space_size = Deriv::spatial_dimensions; // == total_size if DataTypes = VecTypes
     constexpr sofa::Size total_size = Deriv::total_size;
@@ -481,19 +567,70 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
         const auto vt = -kFact * k[(index < k.size()) * index];
         for (sofa::Size i = 0; i < space_size; i++)
         {
-            mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vt);
+            // Contribution to the stiffness matrix are only taken into
+            // account for 1 values in d_activeDirections
+            if (activeDirections[i])
+                mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vt);
         }
 
         // rotation (if applicable)
-        if constexpr (isRigidType<DataTypes>())
+        if constexpr (sofa::type::isRigidType<DataTypes>)
         {
             const auto vr = -kFact * k_a[(index < k_a.size()) * index];
             for (sofa::Size i = space_size; i < total_size; i++)
             {
-                mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vr);
+                // Contribution to the stiffness matrix are only taken into
+                // account for 1 values in d_activeDirections
+                if (activeDirections[i])
+                    mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vr);
             }
         }
     }
 }
 
+template<class DataTypes>
+void RestShapeSpringsForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    const VecReal& k = d_stiffness.getValue();
+    const VecReal& k_a = d_angularStiffness.getValue();
+    const auto activeDirections = d_activeDirections.getValue();
+
+    constexpr sofa::Size space_size = Deriv::spatial_dimensions; // == total_size if DataTypes = VecTypes
+    constexpr sofa::Size total_size = Deriv::total_size;
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (const auto index : m_indices)
+    {
+        // translation
+        const auto vt = -k[(index < k.size()) * index];
+        for(sofa::Index i = 0; i < space_size; i++)
+        {
+            dfdx(total_size * index + i, total_size * index + i) += vt;
+        }
+
+        // rotation (if applicable)
+        if constexpr (sofa::type::isRigidType<DataTypes>)
+        {
+            const auto vr = -k_a[(index < k_a.size()) * index];
+            for (sofa::Size i = space_size; i < total_size; ++i)
+            {
+                // Contribution to the stiffness matrix are only taken into
+                // account for 1 values in d_activeDirections
+                if (activeDirections[i])
+                {
+                    dfdx(total_size * index + i, total_size * index + i) += vr;
+                }
+            }
+        }
+    }
+}
+
+template <class DataTypes>
+void RestShapeSpringsForceField<DataTypes>::buildDampingMatrix(
+    core::behavior::DampingMatrix* matrix)
+{
+    SOFA_UNUSED(matrix);
+}
 } // namespace sofa::component::solidmechanics::spring

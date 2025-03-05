@@ -76,8 +76,8 @@ public:
     {
         if (mapping!=nullptr)
         {
-            mapping->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-            mapping->applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+            mapping->apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::position, core::vec_id::read_access::position);
+            mapping->applyJ(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::velocity, core::vec_id::read_access::velocity);
         }
     }
 
@@ -85,8 +85,8 @@ public:
     {
         if (mapping!=nullptr)
         {
-            mapping->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
-            mapping->applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::freeVelocity(), core::ConstVecDerivId::freeVelocity());
+            mapping->apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::freePosition, core::vec_id::read_access::freePosition);
+            mapping->applyJ(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::freeVelocity, core::vec_id::read_access::freeVelocity);
 
         }
     }
@@ -95,7 +95,7 @@ public:
     {
         if(mapping!=nullptr)
         {
-             mapping->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
+             mapping->apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::restPosition, core::vec_id::read_access::restPosition);
         }
     }
 };
@@ -176,13 +176,13 @@ public:
 
     Index addPoint(const Coord& /*P*/, Index index, Real& r)
     {
-        collision::geometry::Sphere e(this->model, index);
+        const collision::geometry::Sphere e(this->model, index);
         r = e.r();
         return index;
     }
 };
 
-#if  !defined(SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_CPP)
 extern template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<collision::geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 #endif

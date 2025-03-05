@@ -1,7 +1,7 @@
 #ifndef DEPTHIMAGETOOLBOXACTION_H
 #define DEPTHIMAGETOOLBOXACTION_H
 
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 
 #include <QFormLayout>
 #include <QLineEdit>

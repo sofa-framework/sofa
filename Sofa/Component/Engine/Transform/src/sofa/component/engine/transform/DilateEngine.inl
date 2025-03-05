@@ -66,17 +66,6 @@ void DilateEngine<DataTypes>::init()
 
 
 template <class DataTypes>
-void DilateEngine<DataTypes>::bwdInit()
-{
-    if((d_triangles.getValue().size()==0) && (d_quads.getValue().size()==0))
-        msg_warning(this) << "No input mesh";
-
-    if(d_inputX.getValue().size()==0)
-        msg_warning(this) << "No input position";
-}
-
-
-template <class DataTypes>
 void DilateEngine<DataTypes>::reinit()
 {
     update();
@@ -86,19 +75,34 @@ template <class DataTypes>
 void DilateEngine<DataTypes>::doUpdate()
 {
     ReadAccessor<Data<VecCoord> > in = d_inputX;
-    ReadAccessor<Data<SeqTriangles> > triangles = d_triangles;
-    ReadAccessor<Data<SeqQuads> > quads = d_quads;
+    const ReadAccessor<Data<SeqTriangles> > triangles = d_triangles;
+    const ReadAccessor<Data<SeqQuads> > quads = d_quads;
     const Real distance = d_distance.getValue();
     const Real minThickness = d_minThickness.getValue();
 
     WriteOnlyAccessor<Data<VecCoord> > out = d_outputX;
+    WriteOnlyAccessor<Data<VecCoord> > normals = d_normals;
 
     const int nbp = in.size();
     const int nbt = triangles.size();
     const int nbq = quads.size();
 
-    WriteOnlyAccessor<Data<VecCoord> > normals = d_normals;
+    if(nbp == 0)
+    {
+        msg_warning() << "No input position";
+        d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    if(nbt == 0 && nbq == 0)
+    {
+        msg_warning() << "No input mesh (neither triangle or quad)";
+        d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     normals.resize(nbp);
+
     for (int i=0; i<nbp; ++i)
         normals[i].clear();
     for (int i=0; i<nbt; ++i)
@@ -139,7 +143,7 @@ void DilateEngine<DataTypes>::doUpdate()
             octree.octreeRoot->traceAll(origin, direction, results);
             for (unsigned int i=0; i<results.size(); ++i)
             {
-                int t = results[i].tid;
+                const int t = results[i].tid;
                 if ((int)alltri[t][0] == ip || (int)alltri[t][1] == ip || (int)alltri[t][2] == ip) continue;
                 Real dist = results[i].t;
                 if (dist > 0 && (dist < mindist || mindist < 0))

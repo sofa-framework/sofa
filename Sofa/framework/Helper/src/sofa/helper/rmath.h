@@ -26,10 +26,8 @@
 #include <cmath>
 #include <limits>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 #ifdef M_PI
@@ -308,9 +306,8 @@ inline T rsin(const T& a)
     return (T)sin((double)a);
 }
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
 
 #endif
 

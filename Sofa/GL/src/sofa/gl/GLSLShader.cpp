@@ -43,7 +43,8 @@ public:
     }
 
     /// Inherited from FileEventListener
-    void fileHasChanged(const std::string& filename){
+    void fileHasChanged(const std::string& filename) override
+    {
         /// We are recompiling & re-initializing all the shaders...
         /// If this become a bottleneck we can do finer grain updates to
         /// speed up the thing.
@@ -253,7 +254,7 @@ bool GLSLShader::CompileShader(GLint target, const ShaderContents& shaderContent
 {
     if (!GLSLIsSupported) return false;
 
-    std::string shaderStage = GetShaderStageName(target);
+    const std::string shaderStage = GetShaderStageName(target);
 
     std::string source;
     //to get sure that the file has been loaded
@@ -272,7 +273,7 @@ bool GLSLShader::CompileShader(GLint target, const ShaderContents& shaderContent
 
     source = CombineHeaders(header, shaderStage + std::string("Shader"), source);
 
-    GLhandleARB shader = glCreateShaderObjectARB(target);
+    const GLhandleARB shader = glCreateShaderObjectARB(target);
 
     const char* src = source.c_str();
 
@@ -315,8 +316,8 @@ void GLSLShader::InitShaders()
     // Make sure the user passed in at least a vertex and fragment shader file
     if( !GetVertexShaderFileName().length() || !GetFragmentShaderFileName().length() )
     {
-        if(m_hShaderContents.find(GL_VERTEX_SHADER_ARB) == m_hShaderContents.end()
-            || m_hShaderContents.find(GL_FRAGMENT_SHADER_ARB) == m_hShaderContents.end())
+        if(!m_hShaderContents.contains(GL_VERTEX_SHADER_ARB)
+           || !m_hShaderContents.contains(GL_FRAGMENT_SHADER_ARB))
         {
             msg_error() << "GLSLShader requires setting a VertexShader and a FragmentShader";
             return;
@@ -387,19 +388,19 @@ void GLSLShader::InitShaders()
 
 std::string GLSLShader::GetShaderFileName(GLint type) const
 {
-    std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
+    const std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
     return ((it != m_hShaderContents.end()) ? it->second.filename : std::string());
 }
 
 bool GLSLShader::IsSet(GLint type) const
 {
-    std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
+    const std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
     return it != m_hShaderContents.end();
 }
 
 std::string GLSLShader::GetShaderString(GLint type) const
 {
-    std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
+    const std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
     return ((it != m_hShaderContents.end()) ? it->second.text : std::string());
 }
 
@@ -410,7 +411,7 @@ std::string GLSLShader::GetHeader() const
 
 GLhandleARB GLSLShader::GetShaderID(GLint type) const
 {
-    std::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.find(type);
+    const std::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.find(type);
     return ((it != m_hShaders.end()) ? it->second : 0);
 }
 
@@ -483,7 +484,7 @@ void GLSLShader::Release()
 {
     for (std::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.begin(), itend = m_hShaders.end(); it != itend; ++it)
     {
-        GLhandleARB shader = it->second;
+        const GLhandleARB shader = it->second;
         if (shader && m_hProgramObject)
             glDetachObjectARB(m_hProgramObject, shader);
         if (shader)

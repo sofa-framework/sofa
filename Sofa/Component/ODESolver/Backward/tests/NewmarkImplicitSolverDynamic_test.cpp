@@ -102,10 +102,10 @@ struct NewmarkImplicitDynamic_test : public component::odesolver::testing::ODESo
         velocitiesArray.push_back(v0);
 
         // Constants
-        double denominator = (h*h*beta+h*gamma*rk)*K+m*(1+h*gamma*rm);
-        double constantAcc = h*(-rm*m*(1-gamma)-K*h*(0.5-beta)-rk*K*(1-gamma));
-        double constantVel = (-rm*m-K*(h+rk));
-        double constant2 = h*h*0.5*(1-2*beta);
+        const double denominator = (h*h*beta+h*gamma*rk)*K+m*(1+h*gamma*rm);
+        const double constantAcc = h*(-rm*m*(1-gamma)-K*h*(0.5-beta)-rk*K*(1-gamma));
+        const double constantVel = (-rm*m-K*(h+rk));
+        const double constant2 = h*h*0.5*(1-2*beta);
 
         // Compute next velocities and accelerations
         for(int i=1;i< size+1; i++)
@@ -126,14 +126,14 @@ struct NewmarkImplicitDynamic_test : public component::odesolver::testing::ODESo
         double time = m_si.root->getTime();
 
         // Get mechanical object
-        simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
+        const simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
         typename MechanicalObject::SPtr dofs = massNode->get<MechanicalObject>(m_si.root->SearchDown);
 
         // Animate
         do
         {              
             // Record the mass position
-            Coord p0=dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[0];
+            Coord p0=dofs.get()->read(sofa::core::vec_id::read_access::position)->getValue()[0];
 
             double absoluteError = fabs(p0[1]-positionsArray[i]);
 
@@ -159,13 +159,13 @@ struct NewmarkImplicitDynamic_test : public component::odesolver::testing::ODESo
 
 };
 
-// Define the list of DataTypes to instanciate
+// Define the list of DataTypes to instantiate
 using ::testing::Types;
 typedef Types<
     Vec3Types
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(NewmarkImplicitDynamic_test, DataTypes);
 
 // Test case: h=0.001

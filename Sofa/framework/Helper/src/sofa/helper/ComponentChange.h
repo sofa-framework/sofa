@@ -52,15 +52,16 @@ public:
 class SOFA_HELPER_API Deprecated : public ComponentChange
 {
 public:
-    explicit Deprecated(const std::string& sinceVersion, const std::string& untilVersion)
+    explicit Deprecated(const std::string& sinceVersion, const std::string& untilVersion, const std::string& instruction="\b")
     {
         std::stringstream output;
         output << "This component has been DEPRECATED since SOFA " << sinceVersion << " "
                   "and will be removed in SOFA " << untilVersion << ". "
-                  "Please consider updating your scene as using "
+               << instruction <<
+                  "\nPlease consider updating your scene as using "
                   "deprecated component may result in poor performance and undefined behavior. "
-                  "If this component is crucial to you please report that to sofa-dev@ so we can "
-                  "reconsider this component for future re-integration.";
+                  "If this component is crucial to you please report in a GitHub issue "
+                  "in order to reconsider this component for future re-integration.";
         m_message = output.str();
         m_changeVersion = untilVersion;
     }
@@ -80,20 +81,53 @@ public:
     }
 };
 
-class SOFA_HELPER_API Removed : public ComponentChange
+struct SOFA_HELPER_API RemovedIn
 {
-public:
-    explicit Removed(const std::string&  sinceVersion, const std::string& atVersion)
+    explicit RemovedIn(std::string removalVersion) : m_removalVersion(std::move(removalVersion)) {}
+
+private:
+    struct SOFA_HELPER_API AfterDeprecationIn : public ComponentChange
     {
-        std::stringstream output;
-        output << "This component has been REMOVED since SOFA " << atVersion << " "
-                  "(deprecated since " << sinceVersion << "). "
-                  "Please consider updating your scene. "
-                  "If this component is crucial to you please report that to sofa-dev@ so that we can "
-                  "reconsider this component for future re-integration.";
-        m_message = output.str();
-        m_changeVersion = atVersion;
+        AfterDeprecationIn(const std::string& removalVersion, const std::string& deprecationVersion)
+        {
+            std::stringstream output;
+            output << "This component has been REMOVED since SOFA " << removalVersion << " "
+                      "(deprecated since " << deprecationVersion << "). "
+                      "\nPlease consider updating your scene. "
+                      "If this component is crucial to you please report in a GitHub issue "
+                      "in order to reconsider this component for future re-integration.";
+            m_message = output.str();
+            m_changeVersion = removalVersion;
+        }
+    };
+
+    struct SOFA_HELPER_API WithoutAnyDeprecation : public ComponentChange
+    {
+        explicit WithoutAnyDeprecation(const std::string& removalVersion)
+        {
+            std::stringstream output;
+            output << "This component has been REMOVED since SOFA " << removalVersion <<
+                      "\nPlease consider updating your scene. "
+                      "If this component is crucial to you please report in a GitHub issue "
+                      "in order to reconsider this component for future re-integration.";
+            m_message = output.str();
+            m_changeVersion = removalVersion;
+        }
+    };
+
+public:
+    [[nodiscard]] AfterDeprecationIn afterDeprecationIn(const std::string& deprecationVersion) const
+    {
+        return { m_removalVersion, deprecationVersion };
     }
+
+    [[nodiscard]] WithoutAnyDeprecation withoutAnyDeprecation() const
+    {
+        return WithoutAnyDeprecation{ m_removalVersion };
+    }
+
+private:
+    std::string m_removalVersion;
 };
 
 class SOFA_HELPER_API Moved : public ComponentChange
@@ -110,7 +144,55 @@ public:
     }
 };
 
+class SOFA_HELPER_API Renamed : public ComponentChange
+{
+public:
+    Renamed(const std::string& sinceVersion, const std::string& untilVersion,  const std::string& newName)
+    {
+        std::stringstream output;
+        output << "This component has been RENAMED to " << newName  << " since SOFA " << sinceVersion
+            << ", and this alias will be removed in SOFA " << untilVersion << "."
+            << " To continue using this component after SOFA "<< untilVersion <<" you will need to update your scene ";
+        m_message = output.str();
+        m_changeVersion = untilVersion;
+        m_newName = newName;
+    }
+
+   const std::string& getNewName() const
+    {
+        return m_newName;
+    }
+
+private:
+    std::string m_newName;
+};
+
+class SOFA_HELPER_API Dealiased : public ComponentChange
+{
+public:
+    Dealiased(const std::string& sinceVersion, const std::string& originalName)
+    {
+        std::stringstream output;
+        output << "This alias for the component " << originalName
+            << " was removed in SOFA " << sinceVersion << ".";
+        m_message = output.str();
+        m_changeVersion = sinceVersion;
+        m_originalName = originalName;
+    }
+
+    const std::string& getOriginalName() const
+    {
+        return m_originalName;
+    }
+
+private:
+    std::string m_originalName;
+};
+
 extern SOFA_HELPER_API const std::map< std::string, Deprecated, std::less<> > deprecatedComponents;
+extern SOFA_HELPER_API const std::map< std::string, ComponentChange, std::less<> > movedComponents;
+extern SOFA_HELPER_API const std::map< std::string, Renamed, std::less<> > renamedComponents;
 extern SOFA_HELPER_API const std::map< std::string, ComponentChange, std::less<> > uncreatableComponents;
+extern SOFA_HELPER_API const std::map< std::string, Dealiased, std::less<> > dealiasedComponents;
 
 } // namespace sofa::helper::lifecycle

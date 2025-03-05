@@ -108,7 +108,7 @@ template<class TDestType, class TDestPtr, class TValueType, bool multiLink>
 class LinkTraitsContainer;
 
 
-/// Class to hold 0-or-1 pointer. The interface is similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
+/// Class to hold 0-or-1 pointer. The interface is similar to std::vector (size/[]/begin/end), plus an automatic conversion to one pointer.
 template < class T, class TDestPtr, class TPtr = T* >
 class SinglePtr
 {
@@ -266,7 +266,7 @@ public:
     }
     static std::size_t add(T& c, TDestPtr v)
     {
-        std::size_t index = c.size();
+        const std::size_t index = c.size();
         c.push_back(TValueType(v));
         return index;
     }
@@ -277,7 +277,7 @@ public:
     }
     static std::size_t find(const T& c, TDestPtr v)
     {
-        size_t s = c.size();
+        const size_t s = c.size();
         for (size_t i=0; i<s; ++i)
             if (c[i] == v) return i;
         return s;
@@ -298,17 +298,19 @@ class TLink : public BaseLink
 public:
     typedef TOwnerType OwnerType;
     typedef TDestType DestType;
-    enum { ActiveFlags = TFlags };
-#define ACTIVEFLAG(f) ((ActiveFlags & (f)) != 0)
-    typedef LinkTraitsDestPtr<DestType, ACTIVEFLAG(FLAG_STRONGLINK)> TraitsDestPtr;
+    static constexpr unsigned ActiveFlags = TFlags;
+    static constexpr bool IsStrongLink = (ActiveFlags & FLAG_STRONGLINK) != 0;
+    static constexpr bool IsMultiLink = (ActiveFlags & FLAG_MULTILINK) != 0;
+    static constexpr bool StorePath = (ActiveFlags & FLAG_STOREPATH) != 0;
+
+    typedef LinkTraitsDestPtr<DestType, IsStrongLink> TraitsDestPtr;
     typedef typename TraitsDestPtr::T DestPtr;
-    typedef LinkTraitsValueType<DestType, DestPtr, ACTIVEFLAG(FLAG_STRONGLINK), ACTIVEFLAG(FLAG_STOREPATH)> TraitsValueType;
+    typedef LinkTraitsValueType<DestType, DestPtr, IsStrongLink, StorePath> TraitsValueType;
     typedef typename TraitsValueType::T ValueType;
-    typedef LinkTraitsContainer<DestType, DestPtr, ValueType, ACTIVEFLAG(FLAG_MULTILINK)> TraitsContainer;
+    typedef LinkTraitsContainer<DestType, DestPtr, ValueType, IsMultiLink> TraitsContainer;
     typedef typename TraitsContainer::T Container;
     typedef typename Container::const_iterator const_iterator;
     typedef typename Container::const_reverse_iterator const_reverse_iterator;
-#undef ACTIVEFLAG
 
     TLink()
         : BaseLink(ActiveFlags)
@@ -369,7 +371,7 @@ public:
     {
         if (!v)
             return false;
-        std::size_t index = TraitsContainer::addBegin(m_value,v);
+        const std::size_t index = TraitsContainer::addBegin(m_value,v);
         updateCounter();
         added(v, index);
         return true;
@@ -379,7 +381,7 @@ public:
     {
         if (!v)
             return false;
-        std::size_t index = TraitsContainer::add(m_value,v);
+        const std::size_t index = TraitsContainer::add(m_value,v);
         updateCounter();
         added(v, index);
         return true;
@@ -428,7 +430,7 @@ public:
     bool removePath(const std::string& path)
     {
         if (path.empty()) return false;
-        std::size_t n = m_value.size();
+        const std::size_t n = m_value.size();
         for (std::size_t index=0; index<n; ++index)
         {
             std::string p = getPath(index);
@@ -464,9 +466,6 @@ public:
         if (!owner) return;
         m_owner->addLink(this);
     }
-
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1717)", "v21.12", "Use PathResolver::CheckPaths(Base*, BaseClass*, string) instead.")
-    static bool CheckPath(const std::string& path, Base* context) = delete;
 
 protected:
     OwnerType* m_owner {nullptr};
@@ -602,9 +601,6 @@ public:
     {
         return get(index);
     }
-
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1717)", "v21.12", "Use PathResolver::CheckPaths(Base*, BaseClass*, string) instead.")
-    static bool CheckPaths(const std::string& pathes, Base* context) = delete;
 
 protected:
     ValidatorFn m_validator;

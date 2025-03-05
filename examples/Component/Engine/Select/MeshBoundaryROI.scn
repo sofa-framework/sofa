@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [MergeMeshes] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [MeshBoundaryROI] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
@@ -22,7 +22,7 @@
 
     <MechanicalObject template="Vec3" position="@mesh.position" />
     <MeshBoundaryROI name="roi" triangles="@mesh.triangles" quads="@mesh.quads"/>
-    <FixedConstraint template="Vec3" indices="@roi.indices" />
+    <FixedProjectiveConstraint template="Vec3" indices="@roi.indices" />
 
 </Node>
 

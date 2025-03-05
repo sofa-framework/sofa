@@ -25,14 +25,8 @@
 #include <cstdlib>
 #include <cstring>
 
-namespace sofa
-{
 
-namespace simulation
-{
-
-
-namespace Colors
+namespace sofa::simulation::Colors
 {
 
 enum
@@ -76,7 +70,7 @@ static const char* COLOR[ALLCOLORS]=
     /*ForceField            =*/ "#bebada", // color 3
     /*Solver                =*/ "#b3de69", // color 7
     /*CollisionPipeline     =*/ "#bc80bd", // color 10
-    /*MechanicalMapping     =*/ "#4ba3fa", // color spectral4/4 (brigher)
+    /*MechanicalMapping     =*/ "#4ba3fa", // color spectral4/4 (brighter)
     /*Mapping               =*/ "#80b1d3", // color 5
     /*Mass                  =*/ "#ffffb3", // color 2
     /*Topology              =*/ "#ffed6f", // color 12
@@ -112,10 +106,5 @@ inline const char* getColor(const char* classname)
 }
 
 }
-
-
-} // namespace simulation
-
-} // namespace sofa
 
 #endif

@@ -30,10 +30,11 @@ namespace sofa::component::mechanicalload
 
 using namespace sofa::defaulttype;
 
-int QuadPressureForceFieldClass = core::RegisterObject("QuadPressure")
-        .add< QuadPressureForceField<Vec3Types> >()
-
-        ;
+void registerQuadPressureForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Pressure applied on a quadrangular geometry.")
+        .add< QuadPressureForceField<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_MECHANICALLOAD_API QuadPressureForceField<Vec3Types>;
 

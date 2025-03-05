@@ -23,10 +23,8 @@
 
 #include <sofa/helper/init.h>
 
-namespace sofa
-{
 
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 static bool s_initialized = false;
@@ -71,6 +69,6 @@ static const struct CleanupCheck
     }
 } check;
 
-} // namespace defaulttype
+} // namespace sofa::defaulttype
 
-} // namespace sofa
+

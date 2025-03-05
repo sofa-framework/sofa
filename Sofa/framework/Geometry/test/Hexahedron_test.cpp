@@ -152,8 +152,8 @@ TEST(GeometryHexahedron_test, cube_volume_vec3f)
     const sofa::type::Vec3f g{ 8.f, 8.f, 8.f };
     const sofa::type::Vec3f h{ 0.f, 8.f, 8.f };
 
-    auto testVolume = sofa::geometry::Hexahedron::volume(a, b, c, d, e, f, g, h);
-    auto expectedVolume = 8.f * 8.f * 8.f;
+    const auto testVolume = sofa::geometry::Hexahedron::volume(a, b, c, d, e, f, g, h);
+    const auto expectedVolume = 8.f * 8.f * 8.f;
 
     EXPECT_FLOAT_EQ(testVolume, expectedVolume);
 }
@@ -168,8 +168,8 @@ TEST(GeometryHexahedron_test, rand_volume_vec3f)
     const sofa::type::Vec3f g{ 9.f, 8.f, 9.f };
     const sofa::type::Vec3f h{ 0.f, 7.f, 8.f };
 
-    auto testVolume = sofa::geometry::Hexahedron::volume(a, b, c, d, e, f, g, h);
-    auto expectedVolume = 469.16667f;
+    const auto testVolume = sofa::geometry::Hexahedron::volume(a, b, c, d, e, f, g, h);
+    const auto expectedVolume = 469.16667f;
 
     EXPECT_FLOAT_EQ(testVolume, expectedVolume);
 }
@@ -178,8 +178,8 @@ TEST(GeometryHexahedron_test, null_volume_vec3f)
     // special case
     const sofa::type::Vec3f a{ 0.f, 0.f, 0.f };
 
-    auto testVolume = sofa::geometry::Hexahedron::volume(a, a, a, a, a, a, a, a);
-    auto expectedVolume = 0.f;
+    const auto testVolume = sofa::geometry::Hexahedron::volume(a, a, a, a, a, a, a, a);
+    const auto expectedVolume = 0.f;
 
     EXPECT_FLOAT_EQ(testVolume, expectedVolume);
     

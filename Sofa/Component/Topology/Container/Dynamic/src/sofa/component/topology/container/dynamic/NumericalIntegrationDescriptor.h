@@ -25,7 +25,7 @@
 #include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/type/vector.h>
-#include <sofa/helper/set.h>
+#include <set>
 
 namespace sofa::component::topology::container::dynamic
 {
@@ -65,7 +65,7 @@ public:
 	void addQuadratureMethod(const QuadratureMethod qt, const IntegrationOrder order, QuadraturePointArray qpa);
 };
 
-#if  !defined(SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_CPP)
+#if !defined(SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_CPP)
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API NumericalIntegrationDescriptor<SReal, 4>;
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API NumericalIntegrationDescriptor<SReal, 3>;
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API NumericalIntegrationDescriptor<SReal, 1>;

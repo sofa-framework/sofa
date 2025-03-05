@@ -29,17 +29,20 @@
 namespace sofa::component::collision::geometry
 {
 
-int RayCollisionModelClass = core::RegisterObject("Collision model representing a ray in space, e.g. a mouse click")
-        .add< RayCollisionModel >()
-        ;
+void registerRayCollisionModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Collision model representing a ray in space, e.g. a mouse click")
+        .add< RayCollisionModel >());
+}
 
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 RayCollisionModel::RayCollisionModel(SReal length)
-    : defaultLength(initData(&defaultLength, length, "", "TODO"))
+    : d_defaultLength(initData(&d_defaultLength, length, "defaultLength", "The default length for all rays in this collision model"))
 {
     this->contactResponse.setValue("RayContact"); // use RayContact response class
+    defaultLength.setOriginalData(&d_defaultLength);
 }
 
 void RayCollisionModel::resize(sofa::Size size)
@@ -50,7 +53,7 @@ void RayCollisionModel::resize(sofa::Size size)
     {
         length.reserve(size);
         while (length.size() < size)
-            length.push_back(defaultLength.getValue());
+            length.push_back(d_defaultLength.getValue());
         direction.reserve(size);
         while (direction.size() < size)
             direction.push_back(Vec3());
@@ -84,7 +87,7 @@ void RayCollisionModel::init()
 
 int RayCollisionModel::addRay(const Vec3& origin, const Vec3& direction, SReal length)
 {
-    int i = size;
+    const int i = size;
     resize(i);
     Ray r = getRay(i);
     r.setOrigin(origin);
@@ -97,7 +100,7 @@ void RayCollisionModel::draw(const core::visual::VisualParams* vparams, sofa::In
 {
     if( !vparams->isSupported(core::visual::API_OpenGL) ) return;
 
-    Ray r(this, index);
+    const Ray r(this, index);
     const Vec3& p1 = r.origin();
     const Vec3 p2 = p1 + r.direction()*r.l();
 
@@ -162,7 +165,7 @@ void RayCollisionModel::computeBoundingTree(int maxDepth)
 
 void RayCollisionModel::applyTranslation(double dx, double dy, double dz)
 {
-    Vec3 d(dx,dy,dz);
+    const Vec3 d(dx,dy,dz);
     for (int i = 0; i < getNbRay(); i++)
     {
         Ray ray = getRay(i);
@@ -172,7 +175,7 @@ void RayCollisionModel::applyTranslation(double dx, double dy, double dz)
 
 const type::Vec3& Ray::origin() const
 {
-    return model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue()[index];
+    return model->getMechanicalState()->read(core::vec_id::read_access::position)->getValue()[index];
 }
 
 const type::Vec3& Ray::direction() const
@@ -187,10 +190,10 @@ SReal Ray::l() const
 
 void Ray::setOrigin(const type::Vec3& newOrigin)
 {
-    auto xData = sofa::helper::getWriteAccessor(*model->getMechanicalState()->write(core::VecCoordId::position()));
+    auto xData = sofa::helper::getWriteAccessor(*model->getMechanicalState()->write(core::vec_id::write_access::position));
     xData.wref()[index] = newOrigin;
 
-    auto xDataFree = sofa::helper::getWriteAccessor(*model->getMechanicalState()->write(core::VecCoordId::freePosition()));
+    auto xDataFree = sofa::helper::getWriteAccessor(*model->getMechanicalState()->write(core::vec_id::write_access::freePosition));
     auto& freePos = xDataFree.wref();
     freePos.resize(model->getMechanicalState()->getSize());
     freePos[index] = newOrigin;

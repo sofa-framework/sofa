@@ -30,13 +30,10 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/TopologyData.inl>
-#include <SofaOpenglVisual/OglVariable.h>
+#include <sofa/gl/component/shader/OglVariable.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+
+namespace sofa::component::visualmodel
 {
 
 /**
@@ -76,30 +73,20 @@ private:
     void updateVertexBuffer();
 
     //Tables
-    sofa::component::visual::OglFloatVector4Variable::SPtr m_mappingTableValues;
-    sofa::component::visual::OglFloatVector4Variable::SPtr m_runSelectTableValues;
+    sofa::gl::component::shader::OglFloatVector4Variable::SPtr m_mappingTableValues;
+    sofa::gl::component::shader::OglFloatVector4Variable::SPtr m_runSelectTableValues;
 
 protected:
     OglTetrahedralModel();
     ~OglTetrahedralModel() override;
 public:
     void init() override;
-    void initVisual() override;
+    void doInitVisual(const core::visual::VisualParams* vparams) override;
     void drawTransparent(const core::visual::VisualParams* vparams) override;
     void computeBBox(const core::ExecParams *, bool onlyVisible=false) override;
 
-    void updateVisual() override;
+    void doUpdateVisual(const core::visual::VisualParams* vparams) override;
     virtual void computeMesh();
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const OglTetrahedralModel<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
 };
 
 #if  !defined(SOFA_COMPONENT_VISUALMODEL_OGLTETRAHEDRALMODEL_CPP)
@@ -107,11 +94,7 @@ extern template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<defaultty
 
 #endif
 
-} // namespace visualmodel
-
-} // namesapce component
-
-} // namespace sofa
+} // namespace sofa::component::visualmodel
 
 
 #endif /*OGLTETRAHEDRALMODEL_H_*/

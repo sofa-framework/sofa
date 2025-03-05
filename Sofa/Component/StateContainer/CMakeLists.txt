@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.StateContainer LANGUAGES CXX)
 
 set(SOFACOMPONENTSTATECONTAINER_SOURCE_DIR "src/sofa/component/statecontainer")

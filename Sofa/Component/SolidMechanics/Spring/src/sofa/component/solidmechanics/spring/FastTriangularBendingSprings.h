@@ -68,8 +68,8 @@ public:
 
     using Index = sofa::Index;
 
-    Data<SReal> d_bendingStiffness;  ///< Material parameter
-    Data<SReal> d_minDistValidity; ///< Minimal distance to consider a spring valid
+    Data<SReal> d_bendingStiffness; ///< Bending stiffness of the material
+    Data<SReal> d_minDistValidity; ///< Distance under which a spring is not valid
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<FastTriangularBendingSprings<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -82,6 +82,8 @@ public:
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
     void addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset) override; // compute and add all the element stiffnesses to the global stiffness matrix
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& d_x) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
@@ -208,7 +210,7 @@ protected:
     SReal m_potentialEnergy;
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API FastTriangularBendingSprings<defaulttype::Vec3Types>;
 
 #endif // !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)

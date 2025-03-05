@@ -136,10 +136,10 @@ bool CudaSortTHRUST(void* keys, void* data, unsigned int size, int /*bits*/)
 {
     if (!CudaSortTHRUSTAvailable(size, (data != NULL)))
         return false;
-    thrust::device_ptr<unsigned int> d_keys ( (unsigned int*) keys );
+    const thrust::device_ptr<unsigned int> d_keys ( (unsigned int*) keys );
     if (data)
     {
-        thrust::device_ptr<unsigned int> d_data ( (unsigned int*) data );
+        const thrust::device_ptr<unsigned int> d_data ( (unsigned int*) data );
         thrust::sort_by_key(d_keys, d_keys+size, d_data);
     }
     else

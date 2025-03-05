@@ -29,9 +29,12 @@ namespace sofa::component::statecontainer
 
 template <class DataTypes>
 MappedObject<DataTypes>::MappedObject()
-    : f_X( initData(&f_X, "position", "position vector") )
-    , f_V( initData(&f_V, "velocity", "velocity vector") )
+    : d_X(initData(&d_X, "position", "position vector") )
+    , d_V(initData(&d_V, "velocity", "velocity vector") )
 {
+    f_X.setOriginalData(&d_X);
+    f_V.setOriginalData(&d_V);
+
 }
 
 template <class DataTypes>
@@ -43,8 +46,8 @@ template <class DataTypes>
 void MappedObject<DataTypes>::init()
 {
     if (getSize() == 0)
-    {        
-        sofa::core::behavior::BaseMechanicalState* mstate = this->getContext()->getMechanicalState();
+    {
+        const sofa::core::behavior::BaseMechanicalState* mstate = this->getContext()->getMechanicalState();
         auto nbp = mstate->getSize();
         if (nbp > 0)
         {

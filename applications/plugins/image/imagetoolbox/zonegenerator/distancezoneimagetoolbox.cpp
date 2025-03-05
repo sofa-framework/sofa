@@ -1,8 +1,8 @@
 #define DISTANCEZONEIMAGETOOLBOX_CPP
 
+#include "distancezoneimagetoolbox.h"
 #include <sofa/core/ObjectFactory.h>
 
-#include "distancezoneimagetoolbox.h"
 #include <image/ImageTypes.h>
 
 

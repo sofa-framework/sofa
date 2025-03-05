@@ -29,11 +29,11 @@
 namespace sofa::component::visual
 {
 
-int Visual3DTextClass = core::RegisterObject("Display 3D camera-oriented text")
-        .add< Visual3DText >()
-        ;
-
-
+void registerVisual3DText(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Display 3D camera-oriented text.")
+        .add< Visual3DText >());
+}
 
 Visual3DText::Visual3DText()
     : d_text(initData(&d_text, "text", "Test to display"))
@@ -50,26 +50,28 @@ void Visual3DText::init()
     VisualModel::init();
 
     reinit();
-
-    updateVisual();
 }
 
 void Visual3DText::reinit()
 {
 }
 
-void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
+void Visual3DText::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if(!vparams->displayFlags().getShowVisualModels()) return;
-
     const type::Vec3f& pos = d_position.getValue();
-    float scale = d_scale.getValue();
+    const float scale = d_scale.getValue();
 
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableDepthTest();
     vparams->drawTool()->setLightingEnabled(true);
     vparams->drawTool()->draw3DText(pos,scale,d_color.getValue(),d_text.getValue().c_str());
+}
 
+void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
+{
+    if(!vparams->displayFlags().getShowVisualModels()) return;
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
+    doDrawVisual(vparams);
 }
 
 } // namespace sofa::component::visual

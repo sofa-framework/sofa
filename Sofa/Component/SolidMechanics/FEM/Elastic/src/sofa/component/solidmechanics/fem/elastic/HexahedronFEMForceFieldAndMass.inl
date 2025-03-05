@@ -22,7 +22,10 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceFieldAndMass.h>
+#include <sofa/core/behavior/Mass.inl>
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.inl>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
+#include <sofa/core/behavior/BaseLocalMassMatrix.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -45,14 +48,19 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
     HexahedronFEMForceFieldT::init();
     MassT::init();
 
-    _particleMasses.resize( this->_initialPoints.getValue().size() );
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    {
+        return;
+    }
+
+    _particleMasses.resize( this->d_initialPoints.getValue().size() );
 
     int i=0;
     for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
     {
         type::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
-            nodes[w] = this->_initialPoints.getValue()[(*it)[w]];
+            nodes[w] = this->d_initialPoints.getValue()[(*it)[w]];
 
         // volume of a element
         Real volume = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
@@ -72,7 +80,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
 
     if( d_lumpedMass.getValue() )
     {
-        _lumpedMasses.resize( this->_initialPoints.getValue().size() );
+        _lumpedMasses.resize( this->d_initialPoints.getValue().size() );
         i=0;
         for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
         {
@@ -111,7 +119,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
     {
         type::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
-            nodes[w] = this->_initialPoints.getValue()[(*it)[w]];
+            nodes[w] = this->d_initialPoints.getValue()[(*it)[w]];
 
         if( d_elementMasses.getValue().size() <= (unsigned)i )
         {
@@ -189,9 +197,9 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
 
             for(int k=0 ; k<8 ; ++k )
             {
-                int indice = k*3;
+                const int index = k*3;
                 for(int j=0 ; j<3 ; ++j )
-                    actualDx[indice+j] = _dx[(*it)[k]][j];
+                    actualDx[index+j] = _dx[(*it)[k]][j];
 
             }
 
@@ -213,7 +221,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset)
 {
     // Build Matrix Block for this ForceField
     int i,j,n1, n2, e;
@@ -222,13 +230,10 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
 
     int node1, node2;
 
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-
     for(it = this->getIndexedElements()->begin(), e=0 ; it != this->getIndexedElements()->end() ; ++it,++e)
     {
         const ElementMass &Me = d_elementMasses.getValue()[e];
 
-        Real mFactor = (Real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
@@ -244,7 +249,40 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
                         Coord(Me[3*n1+2][3*n2+0],Me[3*n1+2][3*n2+1],Me[3*n1+2][3*n2+2]));
                 for(i=0; i<3; i++)
                     for (j=0; j<3; j++)
-                        r.matrix->add(r.offset+3*node1+i, r.offset+3*node2+j, tmp[i][j]*mFactor);
+                        mat->add(offset+3*node1+i, offset+3*node2+j, tmp[i][j]*mFact);
+            }
+        }
+    }
+}
+
+template<class DataTypes>
+void HexahedronFEMForceFieldAndMass<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    HexahedronFEMForceFieldT::buildStiffnessMatrix(matrix);
+}
+
+template<class DataTypes>
+void HexahedronFEMForceFieldAndMass<DataTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
+{
+    int e = 0;
+    for(auto it = this->getIndexedElements()->begin(); it != this->getIndexedElements()->end() ; ++it, ++e)
+    {
+        const ElementMass &Me = d_elementMasses.getValue()[e];
+
+        // find index of node 1
+        for (int n1 = 0; n1<8; n1++)
+        {
+            const int node1 = (*it)[n1];
+
+            // find index of node 2
+            for (int n2 = 0; n2<8; n2++)
+            {
+                const int node2 = (*it)[n2];
+
+                const Mat33 tmp = Mat33(Coord(Me[3*n1+0][3*n2+0],Me[3*n1+0][3*n2+1],Me[3*n1+0][3*n2+2]),
+                        Coord(Me[3*n1+1][3*n2+0],Me[3*n1+1][3*n2+1],Me[3*n1+1][3*n2+2]),
+                        Coord(Me[3*n1+2][3*n2+0],Me[3*n1+2][3*n2+1],Me[3*n1+2][3*n2+2]));
+                matrices->add(3 * node1, 3 * node2, tmp);
             }
         }
     }
@@ -312,7 +350,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
 
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     // since drawTool requires a std::vector<Vec3> we have to convert x in an ugly way
     std::vector<type::Vec3> pos;
     pos.resize(x.size());

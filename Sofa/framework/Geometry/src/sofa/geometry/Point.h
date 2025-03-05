@@ -22,13 +22,15 @@
 #pragma once
 
 #include <sofa/geometry/config.h>
+#include <sofa/geometry/ElementType.h>
 
 namespace sofa::geometry
 {
 
 struct Point
 {
-    static constexpr sofa::Size NumberOfNodes = 1;
+    static constexpr ::sofa::Size NumberOfNodes = 1;
+    static constexpr ElementType Element_type = ElementType::POINT;
 
     Point() = delete;
 };

@@ -1,13 +1,17 @@
-cmake_minimum_required(VERSION 3.12)
-project(Sofa) # Cannot use VERSION with patch like "00"
+cmake_minimum_required(VERSION 3.22)
+project(Sofa
+    HOMEPAGE_URL https://www.sofa-framework.org/
+) # Cannot use VERSION with patch like "00"
 
 include(CMakeDependentOption)
 
 # Manually define VERSION
-set(Sofa_VERSION_MAJOR 23)
+set(Sofa_VERSION_MAJOR 25)
 set(Sofa_VERSION_MINOR 06)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
+
+set(SOFA_URL "${CMAKE_PROJECT_HOMEPAGE_URL}")
 
 set(SOFA_VERSION_STR "\"${Sofa_VERSION}\"")
 set(SOFA_VERSION "${Sofa_VERSION_MAJOR}${Sofa_VERSION_MINOR}${Sofa_VERSION_PATCH}")
@@ -34,21 +38,23 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTOR
 # Option for packaging
 option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 
+# Option to allow some dependencies such as cxxopts to be fetched by cmake if
+# the package is not found
+option(SOFA_ALLOW_FETCH_DEPENDENCIES "Allow compatible dependencies to be fetched if the package is not found by cmake.
+  List of dependencies that can be fetched: cxxopts, gtest, metis, CImg" ON)
+
 # Option to accelerate the compilation
 # see https://cmake.org/cmake/help/v3.16/command/target_precompile_headers.html
 # and https://cmake.org/cmake/help/v3.16/prop_tgt/DISABLE_PRECOMPILE_HEADERS.html
 
 # https://cmake.org/cmake/help/latest/policy/CMP0127.html
-if (${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.22)
-    cmake_policy(SET CMP0127 NEW)
-endif()
-cmake_dependent_option(SOFA_BUILD_WITH_PCH_ENABLED 
-    "Compile SOFA using precompiled header (to accelerate the build process)" OFF
-    "CMAKE_VERSION VERSION_GREATER_EQUAL 3.16" OFF)
+cmake_policy(SET CMP0127 NEW)
+
+option(SOFA_BUILD_WITH_PCH_ENABLED "Compile SOFA using precompiled header (to accelerate the build process)" OFF)
 if(SOFA_BUILD_WITH_PCH_ENABLED)
     message("-- Precompiled headers: enabled (SOFA_BUILD_WITH_PCH_ENABLED is ON).")
 else()
-    message("-- Precompiled headers: disabled (SOFA_BUILD_WITH_PCH_ENABLED is OFF or CMake < 3.16).")
+    message("-- Precompiled headers: disabled (SOFA_BUILD_WITH_PCH_ENABLED is OFF).")
     set(DISABLE_PRECOMPILE_HEADERS ON)
 endif()
 
@@ -86,6 +92,7 @@ install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindEigen3.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/macdeployqt.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/windeployqt.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindTinyXML2.cmake"
     DESTINATION lib/cmake/Modules
     COMPONENT headers
     )
@@ -118,22 +125,26 @@ if(UNIX)
     endif()
 endif(UNIX)
 
+
 ### Windows config
 if(MSVC)
+    option(SOFA_USE_DEPENDENCY_PACK "Enable the use of the Windows Dependency Pack" ON)
     # WinDepPack
-    set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack")
-    if(NOT EXISTS ${SOFA_DEPENDENCY_PACK_DIR})
-        # force back to default value
-        set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack" FORCE)
-    endif()
-    list(APPEND CMAKE_INCLUDE_PATH ${SOFA_DEPENDENCY_PACK_DIR}/include)
-    if(CMAKE_CL_64)
-        list(APPEND CMAKE_LIBRARY_PATH ${SOFA_DEPENDENCY_PACK_DIR}/lib/win64)
-    else()
-        list(APPEND CMAKE_LIBRARY_PATH ${SOFA_DEPENDENCY_PACK_DIR}/lib/win32)
-    endif()
-    install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/include/ DESTINATION include/extlibs/WinDepPack COMPONENT headers)
-    install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
+    if(SOFA_USE_DEPENDENCY_PACK)
+        set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack")
+        if(NOT EXISTS ${SOFA_DEPENDENCY_PACK_DIR})
+            # force back to default value
+            set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack" FORCE)
+        endif()
+        list(APPEND CMAKE_INCLUDE_PATH ${SOFA_DEPENDENCY_PACK_DIR}/include)
+        if(CMAKE_CL_64)
+            list(APPEND CMAKE_LIBRARY_PATH ${SOFA_DEPENDENCY_PACK_DIR}/lib/win64)
+        else()
+            list(APPEND CMAKE_LIBRARY_PATH ${SOFA_DEPENDENCY_PACK_DIR}/lib/win32)
+        endif()
+        install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/include/ DESTINATION include/extlibs/WinDepPack COMPONENT headers)
+        install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
+    endif ()
 endif()
 
 ### Testing
@@ -157,30 +168,24 @@ endif()
 ### Ninja build pools
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
+### Warn the user that the legacy option has been deleted and is useless now
+if(DEFINED SOFA_ENABLE_LEGACY_HEADERS)
+    message(WARNING "SOFA_ENABLE_LEGACY_HEADERS cmake option has been deleted in v24.12 and is now meaningless.")
+endif()
+### Warn the user that HeadlessRecorder option has been renamed (due to its move into applications/plguins)
+if(DEFINED PLUGIN_SOFA_GUI_HEADLESSRECORDER AND PLUGIN_SOFA_GUI_HEADLESSRECORDER)
+    message(WARNING "HeadlessRecorder has been moved to applications/plugins in v24.12, thus its cmake option is named PLUGIN_HEADLESSRECORDER now.")
+endif()
+
+
 # Sofa.Config sets the environment (options, compiler flags, global variables)
 sofa_add_subdirectory(library Sofa/framework/Config Sofa.Config ON)
 
 ### Extlibs
 add_subdirectory(extlibs)
 
-### Compatibility
-option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated cmake modules." ON)
-if(SOFA_ENABLE_LEGACY_HEADERS)
-    message("Using legacy headers is enabled.")
-    message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
-endif()
-sofa_add_subdirectory(library Sofa/framework/Compat Sofa.Compat ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
-sofa_add_subdirectory(library Sofa/Component/Compat Sofa.Component.Compat ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
-
 ### SOFA (framework and components)
 add_subdirectory(Sofa)
-
-### Compatibility
-# Deprecated (hollow) framework and component modules.
-# All depend on SOFA_ENABLE_LEGACY_HEADERS
-# Some still contain (maybe useful) components not moved in Sofa/ yet.
-# TODO: finally empty those remnants
-add_subdirectory(applications/collections/deprecated)
 
 ## Tutorials option
 option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
@@ -253,14 +258,15 @@ endif()
 #install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION . COMPONENT headers)
 install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION . COMPONENT applications)
 install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION . COMPONENT applications)
-install(FILES "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt" DESTINATION . COMPONENT applications)
+install(FILES "${CMAKE_SOURCE_DIR}/LICENSE-LGPL.md" DESTINATION . COMPONENT applications)
 install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applications)
 
-option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
+option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/, tools/sofa-launcher/) when installing" ON)
 ## Install resource files
 if(SOFA_INSTALL_RESOURCES_FILES)
     install(DIRECTORY share/ DESTINATION share/sofa COMPONENT resources)
     install(DIRECTORY examples/ DESTINATION share/sofa/examples COMPONENT resources)
+    install(DIRECTORY tools/sofa-launcher/ DESTINATION share/sofa/sofa-launcher COMPONENT resources)
 endif()
 
 file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt"
@@ -285,9 +291,6 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
     ################
     # Package config
     include(CPackComponent)
-    if(WIN32 AND ${CMAKE_VERSION} VERSION_LESS "3.13.0")
-        include(CPackNSIS)
-    endif()
     include(CPackIFW)
     set(CPACK_PACKAGE_VERSION "${Sofa_VERSION}")
     set(CPACK_PACKAGE_NAME "SOFA v${CPACK_PACKAGE_VERSION}")
@@ -316,7 +319,7 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
             set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}_Linux")
         endif()
     endif()
-    set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt")
+    set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE-LGPL.md")
     set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
     set(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_SOURCE_DIR}/README.md")
     ################
@@ -437,7 +440,7 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
         set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "${EXTRA_INSTALL_COMMAND}")
         set(CPACK_NSIS_MENU_LINKS
             "https://www.sofa-framework.org/documentation/" "SOFA User Documentation"
-            "https://www.sofa-framework.org/api/" "SOFA Developper API"
+            "https://www.sofa-framework.org/api/" "SOFA Developer API"
             "https://github.com/sofa-framework/sofa/discussions" "SOFA Support")
     endif()
     #######################

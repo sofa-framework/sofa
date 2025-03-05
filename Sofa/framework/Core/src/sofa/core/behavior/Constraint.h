@@ -59,8 +59,10 @@ protected:
     Constraint(MechanicalState<DataTypes> *mm = nullptr);
 
     ~Constraint() override;
+
+    virtual void init() override;
 public:
-    Data<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
+    Data<Real> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
     using BaseConstraintSet::getConstraintViolation;
@@ -74,8 +76,8 @@ public:
     /// Construct the Constraint violations vector of each constraint
     ///
     /// \param resV is the result vector that contains the whole constraints violations
-    /// \param x is the position vector used to compute contraint position violation
-    /// \param v is the velocity vector used to compute contraint velocity violation
+    /// \param x is the position vector used to compute constraint position violation
+    /// \param v is the velocity vector used to compute constraint velocity violation
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
@@ -93,7 +95,7 @@ public:
     ///
     /// \param c is the result constraint sparse matrix
     /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
-    /// \param x is the position vector used for contraint equation computation
+    /// \param x is the position vector used for constraint equation computation
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
@@ -115,11 +117,24 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
+    virtual type::vector<std::string> getBaseConstraintIdentifiers() override final
+    {
+        type::vector<std::string> ids = getConstraintIdentifiers();
+        ids.push_back("Constraint");
+        return ids;
+    }
+
+protected:
+
+    virtual type::vector<std::string> getConstraintIdentifiers(){ return {}; }
+
+
 private:
     void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::linearalgebra::BaseVector* lambda);
 };
 
-#if  !defined(SOFA_CORE_BEHAVIOR_CONSTRAINT_CPP)
+#if !defined(SOFA_CORE_BEHAVIOR_CONSTRAINT_CPP)
+extern template class SOFA_CORE_API Constraint<defaulttype::Vec6Types>;
 extern template class SOFA_CORE_API Constraint<defaulttype::Vec3Types>;
 extern template class SOFA_CORE_API Constraint<defaulttype::Vec2Types>;
 extern template class SOFA_CORE_API Constraint<defaulttype::Vec1Types>;

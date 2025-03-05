@@ -28,13 +28,8 @@
 #include <iostream>
 #include <string>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 class BaseFileAccess;
@@ -93,10 +88,7 @@ inline void BaseFileAccess::SetCreator()
     OurCreator = new FileAccessCreator<T>();
 }
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif // SOFA_HELPER_IO_BASEFILEACCESS_H

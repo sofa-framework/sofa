@@ -116,7 +116,7 @@ public:
 
     static Quat identity()
     {
-        return Quat(0,0,0,1);
+        return Quat(0, 0, 0, 1);
     }
 
     void set(Real x, Real y, Real z, Real w)
@@ -147,7 +147,7 @@ public:
 
     void clear()
     {
-        set(0.0,0.0,0.0,1);
+        set(0, 0, 0, 1);
     }
 
     /// Convert the reference frame orientation into an orientation quaternion
@@ -214,7 +214,7 @@ public:
     }
 
     /// Given two quaternions, add them together to get a third quaternion.
-    /// Adding quaternions to get a compound rotation is analagous to adding
+    /// Adding quaternions to get a compound rotation is analogous to adding
     /// translations to get a compound translation.
     auto operator+(const Quat &q1) const -> Quat;
     constexpr auto operator*(const Quat& q1) const -> Quat
@@ -309,6 +309,30 @@ public:
     {
         assert(index < 4);
         return _q[index];
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr Real& get() & noexcept requires (I < 4)
+    {
+        return _q[I];
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr const Real& get() const& noexcept requires (I < 4)
+    {
+        return _q[I];
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr Real&& get() && noexcept requires (I < 4)
+    {
+        return std::move(_q[I]);
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr const Real&& get() const&& noexcept requires (I < 4)
+    {
+        return std::move(_q[I]);
     }
 
     auto inverse() const -> Quat;
@@ -462,3 +486,17 @@ extern template class SOFA_TYPE_API Quat<float>;
 #endif
 
 } // namespace sofa::type
+
+namespace std
+{
+
+template<class Real>
+struct tuple_size<::sofa::type::Quat<Real> > : integral_constant<size_t, 4> {};
+
+template<std::size_t I, class Real>
+struct tuple_element<I, ::sofa::type::Quat<Real> >
+{
+    using type = typename::sofa::type::Quat<Real>::value_type;
+};
+
+}

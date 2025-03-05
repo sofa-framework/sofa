@@ -31,8 +31,7 @@ namespace sofa::component::collision::detection::algorithm
 using namespace sofa::component::collision::geometry;
 
 DirectSAPNarrowPhase::DirectSAPNarrowPhase()
-        : d_draw(initData(&d_draw, false, "draw", "enable/disable display of results"))
-        , d_showOnlyInvestigatedBoxes(initData(&d_showOnlyInvestigatedBoxes, true, "showOnlyInvestigatedBoxes", "Show only boxes which will be sent to narrow phase"))
+        : d_showOnlyInvestigatedBoxes(initData(&d_showOnlyInvestigatedBoxes, true, "showOnlyInvestigatedBoxes", "Show only boxes which will be sent to narrow phase"))
         , d_nbPairs(initData(&d_nbPairs, 0, "nbPairs", "number of pairs of elements sent to narrow phase"))
         , m_currentAxis(0)
         , m_alarmDist(0)
@@ -130,7 +129,7 @@ void DirectSAPNarrowPhase::endNarrowPhase()
 
 void DirectSAPNarrowPhase::checkNewCollisionModels()
 {
-    helper::ScopedAdvancedTimer scopeTimer("Direct SAP check new cm");
+    SCOPED_TIMER_VARNAME(scopeTimer, "Direct SAP check new cm");
     for (auto *cm : m_broadPhaseCollisionModels)
     {
         auto *last = cm->getLast();
@@ -191,7 +190,7 @@ int DirectSAPNarrowPhase::greatestVarianceAxis() const
 
 void DirectSAPNarrowPhase::updateBoxes()
 {
-    sofa::helper::ScopedAdvancedTimer scopeTimer("Direct SAP update boxes");
+    SCOPED_TIMER_VARNAME(scopeTimer, "Direct SAP update boxes");
     m_currentAxis = greatestVarianceAxis();
     for (auto& dsapBox : m_boxes)
     {
@@ -221,7 +220,7 @@ bool DirectSAPNarrowPhase::isSquaredDistanceLessThan(const DSAPBox &a, const DSA
 
 void DirectSAPNarrowPhase::cacheData()
 {
-    sofa::helper::ScopedAdvancedTimer scopeTimer("Direct SAP cache");
+    SCOPED_TIMER_VARNAME(scopeTimer, "Direct SAP cache");
 
     unsigned int i{ 0 };
     for (const auto& box : m_boxes)
@@ -236,25 +235,25 @@ void DirectSAPNarrowPhase::cacheData()
         data.doesBoxSelfCollide = lastCollisionModel->getSelfCollision();
         data.isBoxSimulated = lastCollisionModel->isSimulated();
         data.collisionElementIterator = box.cube.getExternalChildren().first;
-        data.isInBroadPhase = (m_broadPhaseCollisionModels.find(firstCollisionModel) != m_broadPhaseCollisionModels.end() );
+        data.isInBroadPhase = m_broadPhaseCollisionModels.contains(firstCollisionModel);
     }
 }
 
 void DirectSAPNarrowPhase::sortEndPoints()
 {
-    sofa::helper::ScopedAdvancedTimer scopeTimer("Direct SAP sort");
+    SCOPED_TIMER_VARNAME(scopeTimer, "Direct SAP sort");
     std::sort(m_sortedEndPoints.begin(), m_sortedEndPoints.end(), CompPEndPoint());
 }
 
 void DirectSAPNarrowPhase::narrowCollisionDetectionFromSortedEndPoints()
 {
-    sofa::helper::ScopedAdvancedTimer scopeTimer("Direct SAP intersection");
+    SCOPED_TIMER_VARNAME(scopeTimer, "Direct SAP intersection");
     int nbInvestigatedPairs{ 0 };
 
-    std::list<int> activeBoxes;//active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
+    std::list<int> activeBoxes;//active boxes are the one that we encountered only their min (end point), so if there are two boxes b0 and b1,
     //if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
     //                                                                                                      b1_min---------------------b1_max
-    //once we encouter b0_max, b0 will not intersect with nothing (trivial), so we delete it from active_boxes.
+    //once we encounter b0_max, b0 will not intersect with nothing (trivial), so we delete it from active_boxes.
     //so the rule is : -every time we encounter a box min end point, we check if it is overlapping with other active_boxes and add the owner (a box) of this end point to
     //                  the active boxes.
     //                 -every time we encounter a max end point of a box, we are sure that we encountered min end point of a box because _end_points is sorted,
@@ -263,7 +262,7 @@ void DirectSAPNarrowPhase::narrowCollisionDetectionFromSortedEndPoints()
     // Iterators to activeBoxes are stored in a map for a fast access from a box id
     std::unordered_map<int, decltype(activeBoxes)::const_iterator> activeBoxesIt;
 
-    for (auto* endPoint : m_sortedEndPoints)
+    for (const auto* endPoint : m_sortedEndPoints)
     {
         assert(endPoint != nullptr);
 
@@ -289,9 +288,9 @@ void DirectSAPNarrowPhase::narrowCollisionDetectionFromSortedEndPoints()
         {
             const DSAPBox& box0 = m_boxes[boxId0];
             core::CollisionModel *cm0 = data0.lastCollisionModel;
-            auto collisionElement0 = data0.collisionElementIterator;
+            const auto collisionElement0 = data0.collisionElementIterator;
 
-            for (int boxId1 : activeBoxes)
+            for (const int boxId1 : activeBoxes)
             {
                 const BoxData& data1 = m_boxData[boxId1];
 
@@ -364,12 +363,12 @@ void DirectSAPNarrowPhase::narrowCollisionDetectionForPair(core::collision::Elem
 {
     sofa::core::collision::DetectionOutputVector*& outputs = this->getDetectionOutputs(collisionModel0, collisionModel1);
     intersector->beginIntersect(collisionModel0, collisionModel1, outputs);//creates outputs if null
-    intersector->intersect(collisionModelIterator0, collisionModelIterator1, outputs);
+    intersector->intersect(collisionModelIterator0, collisionModelIterator1, outputs, this->intersectionMethod);
 }
 
 void DirectSAPNarrowPhase::draw(const core::visual::VisualParams* vparams)
 {
-    if (!d_draw.getValue())
+    if (!vparams->displayFlags().getShowDetectionOutputs())
         return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
@@ -450,11 +449,10 @@ inline void DSAPBox::show()const
                         <<"MAX "<<cube.maxVect() ;
 }
 
-using namespace sofa::defaulttype;
-using namespace collision;
-
-int DirectSAPNarrowPhaseClass = core::RegisterObject("Collision detection using sweep and prune")
-        .add< DirectSAPNarrowPhase >()
-;
+void registerDirectSAPNarrowPhase(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Narrow phase of the collision detection using sweep and prune.")
+        .add< DirectSAPNarrowPhase >());
+}
 
 }

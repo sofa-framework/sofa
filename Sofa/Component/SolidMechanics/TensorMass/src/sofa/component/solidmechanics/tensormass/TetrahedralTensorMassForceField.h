@@ -33,6 +33,7 @@
 #include <sofa/core/topology/TopologyData.h>
 #include <sofa/type/trait/Rebind.h>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::solidmechanics::tensormass
 {
@@ -58,27 +59,12 @@ public:
 
     using Index = sofa::Index;
 
-    class Mat3 : public type::fixed_array<Deriv,3>
-    {
-    public:
-        Deriv operator*(const Deriv& v) const
-        {
-            return Deriv((*this)[0]*v,(*this)[1]*v,(*this)[2]*v);
-        }
-        Deriv transposeMultiply(const Deriv& v) const
-        {
-            return Deriv(v[0]*((*this)[0])[0]+v[1]*((*this)[1])[0]+v[2]*((*this)[2][0]),
-                    v[0]*((*this)[0][1])+v[1]*((*this)[1][1])+v[2]*((*this)[2][1]),
-                    v[0]*((*this)[0][2])+v[1]*((*this)[1][2])+v[2]*((*this)[2][2]));
-        }
-    };
-
 protected:
 
     class EdgeRestInformation
     {
     public:
-        Mat3 DfDx; /// the edge stiffness matrix
+        sofa::type::Mat<3, 3, Real> DfDx; /// the edge stiffness matrix
         float vertices[2]; // the vertices of this edge
 
         EdgeRestInformation()
@@ -98,12 +84,18 @@ protected:
     };
     using edgeRestInfoVector = type::rebind_to<VecCoord, EdgeRestInformation>;
 
-    VecCoord  _initialPoints;///< the intial positions of the points
+    VecCoord  _initialPoints;///< the initial positions of the points
 
     bool updateMatrix;
 
-    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
-    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_poissonRatio;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_youngModulus;
+
+    Data<Real> d_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> d_youngModulus; ///< Young's modulus in Hooke's law
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
@@ -123,6 +115,8 @@ public:
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         msg_warning() << "Method getPotentialEnergy not implemented yet.";
@@ -135,26 +129,26 @@ public:
     SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override;
     void setYoungModulus(const Real modulus)
     {
-        f_youngModulus.setValue(modulus);
+        d_youngModulus.setValue(modulus);
     }
     void setPoissonRatio(const Real ratio)
     {
-        f_poissonRatio.setValue(ratio);
+        d_poissonRatio.setValue(ratio);
     }
     void draw(const core::visual::VisualParams* vparams) override;
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 
     /** Method to initialize @sa EdgeRestInformation when a new edge is created.
-    * Will be set as creation callback in the EdgeData @sa edgeInfo
+    * Will be set as creation callback in the EdgeData @sa d_edgeInfo
     */
     void createEdgeRestInformation(Index edgeIndex, EdgeRestInformation& ei,
         const core::topology::BaseMeshTopology::Edge&,
         const sofa::type::vector< Index >&,
         const sofa::type::vector< SReal >&);
 
-    /** Method to update @sa edgeInfo when a new Tetrahedron is created.
-    * Will be set as callback in the EdgeData @sa edgeInfo when TETRAHEDRAADDED event is fired
+    /** Method to update @sa d_edgeInfo when a new Tetrahedron is created.
+    * Will be set as callback in the EdgeData @sa d_edgeInfo when TETRAHEDRAADDED event is fired
     * to create a new spring in created Tetrahedron.
     */
     void applyTetrahedronCreation(const sofa::type::vector<Index>& tetrahedronAdded,
@@ -163,21 +157,24 @@ public:
         const sofa::type::vector<sofa::type::vector<SReal> >&);
 
     /** Method to update @sa d_edgeSprings when a triangle is removed.
-    * Will be set as callback in the EdgeData @sa edgeInfo when TETRAHEDRAREMOVED event is fired
+    * Will be set as callback in the EdgeData @sa d_edgeInfo when TETRAHEDRAREMOVED event is fired
     * to remove spring if needed or update adjacent Tetrahedron.
     */
     void applyTetrahedronDestruction(const sofa::type::vector<Index>& tetrahedronRemoved);
 
-    core::topology::EdgeData < edgeRestInfoVector >& getEdgeInfo() { return edgeInfo; }
+    core::topology::EdgeData < edgeRestInfoVector >& getEdgeInfo() { return d_edgeInfo; }
 
 protected:
-    core::topology::EdgeData < edgeRestInfoVector > edgeInfo; ///< Internal edge data
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
+    sofa::core::objectmodel::lifecycle::RenamedData <edgeRestInfoVector> edgeInfo;
+
+    core::topology::EdgeData < edgeRestInfoVector > d_edgeInfo; ///< Internal edge data
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_CPP)
 
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_TENSORMASS_API TetrahedralTensorMassForceField<sofa::defaulttype::Vec3Types>;
 

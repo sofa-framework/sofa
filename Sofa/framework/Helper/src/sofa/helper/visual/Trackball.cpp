@@ -150,14 +150,14 @@ void Trackball::ComputeQuaternion(double p1x, double p1y, double p2x,
     }
 
     // First, figure out z-coordinates for projection of P1 and P2 to deformed sphere
-    Vec3	p1	((SReal)p1x, (SReal)p1y, (SReal)tb_project_to_sphere(TRACKBALLSIZE, p1x, p1y));
-    Vec3	p2	((SReal)p2x, (SReal)p2y, (SReal)tb_project_to_sphere(TRACKBALLSIZE, p2x, p2y));
+    const Vec3	p1	((SReal)p1x, (SReal)p1y, (SReal)tb_project_to_sphere(TRACKBALLSIZE, p1x, p1y));
+    const Vec3	p2	((SReal)p2x, (SReal)p2y, (SReal)tb_project_to_sphere(TRACKBALLSIZE, p2x, p2y));
 
     // Now, we want the cross product of P1 and P2
-    Vec3	a = cross(p2,p1);
+    const Vec3	a = cross(p2,p1);
 
     // Figure out how much to rotate around that axis.
-    Vec3	d	= p1 - p2;
+    const Vec3	d	= p1 - p2;
     t = d.norm() / (2.0 * TRACKBALLSIZE);
 
     // Avoid problems with out-of-control values...
@@ -190,7 +190,7 @@ static double tb_project_to_sphere(double r, double x, double y)
     else
     {
         /* On hyperbola */
-        double t = r / 1.41421356237309504880;
+        const double t = r / 1.41421356237309504880;
         z = t * t / d;
     }
     return z;

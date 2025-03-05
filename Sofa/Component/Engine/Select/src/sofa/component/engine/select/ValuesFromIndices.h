@@ -65,7 +65,7 @@ public:
     Data<std::string> f_outStr; ///< Output values corresponding to the indices, converted as a string
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_VALUESFROMINDICES_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_VALUESFROMINDICES_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<std::string>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<int>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<unsigned int>;
@@ -73,11 +73,11 @@ extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::fixed_array<unsigned int, 3> >;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::fixed_array<unsigned int, 4> >;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::fixed_array<unsigned int, 8> >;
-extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<double>;
-extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec2d>;
-extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec3d>;
-extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec4d>;
-extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec6d>;
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<SReal>;
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec2>;
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec3>;
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec4>;
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec6>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<defaulttype::Rigid2Types::Coord>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<defaulttype::Rigid2Types::Deriv>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<defaulttype::Rigid3Types::Coord>;

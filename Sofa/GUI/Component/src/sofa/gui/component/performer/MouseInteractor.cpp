@@ -28,15 +28,15 @@
 namespace sofa::gui::component::performer
 {
 
-int MouseInteractorClass = core::RegisterObject("Perform tasks related to the interaction with the mouse")
+void registerMouseInteractor(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Perform tasks related to the interaction with the mouse.")
         .add< MouseInteractor<defaulttype::Vec2Types> >()
-        .add< MouseInteractor<defaulttype::Vec3Types> >()
+        .add< MouseInteractor<defaulttype::Vec3Types> >());
 
-        ;
-int MouseInteractorRigidClass = core::RegisterObject("Perform tasks related to the interaction with the mouse and rigid objects")
-        .add< MouseInteractor<defaulttype::Rigid3Types> >()
-
-        ;
+    factory->registerObjects(core::ObjectRegistrationData("Perform tasks related to the interaction with the mouse and rigid objects")
+        .add< MouseInteractor<defaulttype::Rigid3Types> >());
+}
 
 template class SOFA_GUI_COMPONENT_API MouseInteractor<defaulttype::Vec2Types>;
 template class SOFA_GUI_COMPONENT_API MouseInteractor<defaulttype::Vec3Types>;
@@ -70,7 +70,7 @@ void BaseMouseInteractor::addInteractionPerformer( InteractionPerformer *perf)
 
 bool BaseMouseInteractor::removeInteractionPerformer( InteractionPerformer *i)
 {
-    VecPerformer::iterator found=std::find(performers.begin(), performers.end(), i);
+    const VecPerformer::iterator found=std::find(performers.begin(), performers.end(), i);
     if (found == performers.end()) return false;
     else
     {
@@ -82,10 +82,9 @@ bool BaseMouseInteractor::removeInteractionPerformer( InteractionPerformer *i)
 
 void BaseMouseInteractor::updatePosition(SReal )
 {
-    VecPerformer::iterator it=performers.begin(), it_end=performers.end();
-    for (; it!=it_end; ++it)
+    for (const auto perf : performers)
     {
-        (*it)->execute();
+        perf->execute();
     }
 }
 

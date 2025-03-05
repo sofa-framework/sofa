@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 
 project(Sofa.Component.Engine.Select_test)
 
@@ -8,6 +8,7 @@ set(SOURCE_FILES
     Engine.Select_DataUpdate_test.cpp
     IndicesFromValues_test.cpp
     MeshROI_test.cpp
+    MeshSubsetEngine_test.cpp
     PlaneROI_test.cpp
     SphereROI_test.cpp
 )

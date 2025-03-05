@@ -1,59 +1,39 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: linux-postinstall-fixup.sh <build-dir> <install-dir> [qt-lib-dir] [qt-data-dir]"
+    echo "Usage: linux-postinstall-fixup.sh <script-dir> <build-dir> <install-dir> [qt-lib-dir] [qt-data-dir]"
 }
 
-if [ "$#" -ge 2 ]; then
-    BUILD_DIR="$(cd $1 && pwd)"
-    INSTALL_DIR="$(cd $2 && pwd)"
-    QT_LIB_DIR="$3"
-    QT_DATA_DIR="$4"
+if [ "$#" -ge 3 ]; then
+    SCRIPT_DIR="$(cd $1 && pwd)"
+    BUILD_DIR="$(cd $2 && pwd)"
+    INSTALL_DIR="$(cd $3 && pwd)"
+    if [ "$#" -ge 4 ]; then
+      QT_LIB_DIR="$4"
+      QT_DATA_DIR="$5"
+      SHIP_QT=1
+    else
+      SHIP_QT=0
+    fi
 else
     usage; exit 1
 fi
+
+
+echo "SCRIPT_DIR = $SCRIPT_DIR"
+echo "BUILD_DIR = $BUILD_DIR"
+echo "INSTALL_DIR = $INSTALL_DIR"
+echo "QT_LIB_DIR = $QT_LIB_DIR"
+echo "QT_DATA_DIR = $QT_DATA_DIR"
+
 
 # Adapt INSTALL_DIR to IFW install
 if [ -d "$INSTALL_DIR/packages/Runtime/data" ]; then
     INSTALL_DIR="$INSTALL_DIR/packages/Runtime/data"
 fi
 
-# Keep plugin_list as short as possible
-echo "" > "$INSTALL_DIR/lib/plugin_list.conf"
-disabled_plugins='plugins_ignored_by_default'
-for plugin in \
-        ArticulatedSystemPlugin   \
-        CollisionOBBCapsule       \
-        Compliant                 \
-        DiffusionSolver           \
-        ExternalBehaviorModel     \
-        Flexible                  \
-        Geomagic                  \
-        image                     \
-        InvertibleFVM             \
-        LMConstraint              \
-        ManifoldTopologies        \
-        ManualMapping             \
-        MultiThreading            \
-        OptiTrackNatNet           \
-        PluginExample             \
-        Registration              \
-        RigidScale                \
-        SensableEmulation         \
-        SofaAssimp                \
-        SofaCUDA                  \
-        SofaCarving               \
-        SofaDistanceGrid          \
-        SofaEulerianFluid         \
-        SofaImplicitField         \
-        SofaPython                \
-        SofaSimpleGUI             \
-        SofaSphFluid              \
-        THMPGSpatialHashing       \
-    ; do
-    disabled_plugins=$disabled_plugins'\|'$plugin
-done
-grep -v $disabled_plugins "$INSTALL_DIR/lib/plugin_list.conf.default" >> "$INSTALL_DIR/lib/plugin_list.conf"
+source $SCRIPT_DIR/common.sh
+clean_default_plugins "$INSTALL_DIR/lib"
 
 echo "Fixing up libs..."
 
@@ -64,35 +44,38 @@ rm -rf "$INSTALL_DIR/plugins/platforms"
 rm -rf "$INSTALL_DIR/plugins/styles"
 rm -rf "$INSTALL_DIR/plugins/xcbglintegrations"
 
-QT_PLUGINS_DIR="$QT_DATA_DIR/plugins"
-QT_LIBEXEC_DIR="$QT_DATA_DIR/libexec"
-if [[ "$QT_LIB_DIR" == "/usr/lib"* ]]; then
-    QT_WEBENGINE_DATA_DIR="/usr/share/qt5/resources"
-else
-    QT_WEBENGINE_DATA_DIR="$QT_DATA_DIR"
+if [ "$SHIP_QT" = "1" ]; then
+  QT_PLUGINS_DIR="$QT_DATA_DIR/plugins"
+  QT_LIBEXEC_DIR="$QT_DATA_DIR/libexec"
+  if [[ "$QT_LIB_DIR" == "/usr/lib"* ]]; then
+      QT_WEBENGINE_DATA_DIR="/usr/share/qt5/resources"
+  else
+      QT_WEBENGINE_DATA_DIR="$QT_DATA_DIR"
+  fi
+
+  echo "QT_LIB_DIR = $QT_LIB_DIR"
+  echo "QT_DATA_DIR = $QT_DATA_DIR"
+  echo "QT_PLUGINS_DIR = $QT_PLUGINS_DIR"
+  echo "QT_LIBEXEC_DIR = $QT_LIBEXEC_DIR"
+  echo "QT_WEBENGINE_DATA_DIR = $QT_WEBENGINE_DATA_DIR"
+
+  if [ -d "$QT_PLUGINS_DIR/iconengines" ]; then
+      cp -R "$QT_PLUGINS_DIR/iconengines" "$INSTALL_DIR/bin"
+  fi
+  if [ -d "$QT_PLUGINS_DIR/imageformats" ]; then
+      cp -R "$QT_PLUGINS_DIR/imageformats" "$INSTALL_DIR/bin"
+  fi
+  if [ -d "$QT_PLUGINS_DIR/platforms" ]; then
+      cp -R "$QT_PLUGINS_DIR/platforms" "$INSTALL_DIR/bin"
+  fi
+  if [ -d "$QT_PLUGINS_DIR/styles" ]; then
+      cp -R "$QT_PLUGINS_DIR/styles" "$INSTALL_DIR/bin"
+  fi
+  if [ -d "$QT_PLUGINS_DIR/xcbglintegrations" ]; then
+      cp -R "$QT_PLUGINS_DIR/xcbglintegrations" "$INSTALL_DIR/bin"
+  fi
 fi
 
-echo "QT_LIB_DIR = $QT_LIB_DIR"
-echo "QT_DATA_DIR = $QT_DATA_DIR"
-echo "QT_PLUGINS_DIR = $QT_PLUGINS_DIR"
-echo "QT_LIBEXEC_DIR = $QT_LIBEXEC_DIR"
-echo "QT_WEBENGINE_DATA_DIR = $QT_WEBENGINE_DATA_DIR"
-
-if [ -d "$QT_PLUGINS_DIR/iconengines" ]; then
-    cp -R "$QT_PLUGINS_DIR/iconengines" "$INSTALL_DIR/bin"
-fi
-if [ -d "$QT_PLUGINS_DIR/imageformats" ]; then
-    cp -R "$QT_PLUGINS_DIR/imageformats" "$INSTALL_DIR/bin"
-fi
-if [ -d "$QT_PLUGINS_DIR/platforms" ]; then
-    cp -R "$QT_PLUGINS_DIR/platforms" "$INSTALL_DIR/bin"
-fi
-if [ -d "$QT_PLUGINS_DIR/styles" ]; then
-    cp -R "$QT_PLUGINS_DIR/styles" "$INSTALL_DIR/bin"
-fi
-if [ -d "$QT_PLUGINS_DIR/xcbglintegrations" ]; then
-    cp -R "$QT_PLUGINS_DIR/xcbglintegrations" "$INSTALL_DIR/bin"
-fi
 
 echo_debug() {
     if [ -n "$DEBUG" ] && [ "$DEBUG" -gt 0 ]; then
@@ -116,7 +99,7 @@ get-lib-deps-assoc() {
     ldd $libs | # get all deps from libs in build_dir/[bin,lib] and install_dir/[bin,lib]
         grep " => [^ \.].* " | # remove unneeded results
         grep -v "$base_dir" | # remove deps already satisfied locally
-        cut -c2- | # remove tabulation at beggining of each line
+        cut -c2- | # remove tabulation at beginning of each line
         sed -e 's/ (.*//g' | # keep only "libname => libpath"
         sort | uniq > "$output"
 
@@ -194,7 +177,7 @@ for deps_file in postinstall_deps_SOFA.tmp postinstall_deps_plugin_*.tmp; do
                 continue
             fi
             # take first path found for the dep lib (paths are sorted so "/a/b/c" comes before "not found")
-            if [[ "$group" == "libQt" ]] && [ -e "$QT_LIB_DIR/$lib_name" ]; then
+            if [[ "$group" == "libQt" ]] && [ "$SHIP_QT" = "1" ] && [ -e "$QT_LIB_DIR/$lib_name" ]; then
                 lib_path="$QT_LIB_DIR/$lib_name"
             else
                 lib_path="$(cat $deps_file | grep "${lib_name} =>" | sed -e 's/.* => //g' | sort | uniq | head -n 1)"
@@ -218,9 +201,10 @@ for deps_file in postinstall_deps_SOFA.tmp postinstall_deps_plugin_*.tmp; do
     done
 done
 
+move_metis "$INSTALL_DIR"
 
 # Add QtWebEngine dependencies
-if [ -e "$INSTALL_DIR/lib/libQt5WebEngineCore.so.5" ] && [ -d "$QT_LIBEXEC_DIR" ] && [ -d "$QT_WEBENGINE_DATA_DIR" ]; then
+if [ "$SHIP_QT" = "1" ] && [ -e "$INSTALL_DIR/lib/libQt5WebEngineCore.so.5" ] && [ -d "$QT_LIBEXEC_DIR" ] && [ -d "$QT_WEBENGINE_DATA_DIR" ]; then
     cp "$QT_LIBEXEC_DIR/QtWebEngineProcess" "$INSTALL_DIR/bin" # not in INSTALL_DIR/libexec ; see our custom bin/qt.conf
     mkdir "$INSTALL_DIR/translations"
     cp -R "$QT_WEBENGINE_DATA_DIR/translations/qtwebengine_locales" "$INSTALL_DIR/translations"

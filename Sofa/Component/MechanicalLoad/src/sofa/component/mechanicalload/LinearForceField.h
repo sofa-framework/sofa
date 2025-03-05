@@ -82,8 +82,6 @@ protected:
     ~LinearForceField() override { delete data; }
 
 public:
-    void draw(const core::visual::VisualParams* vparams) override;
-
     /// methods to add/remove some indices, keyTimes, keyForces
     void addPoint(unsigned index);
     void removePoint(unsigned int index);
@@ -109,6 +107,10 @@ public:
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */) override;
 
     void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
+
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
 
@@ -136,7 +138,7 @@ SReal SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<defaulttype::Rigid2Type
 
 
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<sofa::defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<sofa::defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<sofa::defaulttype::Vec1Types>;

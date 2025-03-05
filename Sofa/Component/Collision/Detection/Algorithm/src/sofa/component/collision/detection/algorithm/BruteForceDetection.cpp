@@ -27,9 +27,11 @@
 namespace sofa::component::collision::detection::algorithm
 {
 
-int BruteForceDetectionClass = core::RegisterObject(
-        "Combination of brute force broad phase and BVH narrow phase collision detection")
-        .add<BruteForceDetection>();
+void registerBruteForceDetection(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Combination of brute force broad phase and BVH narrow phase collision detection.")
+        .add<BruteForceDetection>());
+}
 
 void BruteForceDetection::init()
 {

@@ -117,7 +117,7 @@ void JoinPoints<DataTypes>::doUpdate()
     {
         typename std::list<Coord>::iterator itNearestPoint;
         std::list<int>::iterator itNearestCoeff;
-        bool hasNearestPoint = getNearestPoint(itCurrentPoint, copyPoints, coeffs, itNearestPoint, itNearestCoeff, distance);
+        const bool hasNearestPoint = getNearestPoint(itCurrentPoint, copyPoints, coeffs, itNearestPoint, itNearestCoeff, distance);
 
         //if we get a point in the sphere's ROI
         if (hasNearestPoint)

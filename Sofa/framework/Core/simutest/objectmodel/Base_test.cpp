@@ -115,7 +115,7 @@ TEST_F(Base_test , testBaseClass)
 
 TEST_F(Base_test , testGetClassName)
 {
-    CustomBaseObject o;
+    const CustomBaseObject o;
     EXPECT_EQ(o.getClassName(), "CustomBaseObject");
     EXPECT_EQ(o.getTemplateName(), "");
     EXPECT_EQ(o.getTypeName(), "CustomBaseObject");

@@ -89,7 +89,7 @@ public:
     Data< int > gestureType; ///< Type of the current gesture detected by the Leap Motion
     Data< Vec3d > gesturePosition; ///< Position of the current gesture detected by the Leap Motion
     Data< Vec3d > gestureDirection; ///< Direction of the current gesture detected by the Leap Motion
-    Data< int > scrollDirection; ///< Enter 0 if no scrolling (1 if scoll increases the value, 2 if scroll decreases it)
+    Data< int > scrollDirection; ///< Enter 0 if no scrolling (1 if scroll increases the value, 2 if scroll decreases it)
     Data< bool > displayHand; ///< display the hand detected by the Leap Motion
     Data< double > speed;
 
@@ -97,7 +97,6 @@ public:
     virtual ~LeapMotionDriver();
 
     void init();
-    void bwdInit();
     void reset();
     void reinit();
 

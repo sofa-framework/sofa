@@ -15,7 +15,7 @@
 		/> -->
 <?php echo '<RegularGrid
 			nx="16" ny="16" nz="'.(5*$size+1).'" xmin="0" xmax="3" ymin="0" ymax="3" zmin="0" zmax="'.$size.'" />'."\n"; ?>
-		<FixedConstraint indices="0-255" />
+		<FixedProjectiveConstraint indices="0-255" />
 		<TetrahedronFEMForceField name="FEM" youngModulus="24000" poissonRatio="0.3" method="large" />
 	</Node>
 </Node>

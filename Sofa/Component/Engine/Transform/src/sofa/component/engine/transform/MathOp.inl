@@ -410,7 +410,7 @@ void MathOp<VecT>::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
     const char* p = arg->getAttribute(f_nbInputs.getName().c_str());
     if (p)
     {
-        std::string nbStr = p;
+        const std::string nbStr = p;
         msg_info() << "parse: setting nbInputs=";
         f_nbInputs.read(nbStr);
         createInputs();
@@ -422,7 +422,7 @@ void MathOp<VecT>::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
 template <class VecT>
 void MathOp<VecT>::parseFields ( const std::map<std::string,std::string*>& str )
 {
-    std::map<std::string,std::string*>::const_iterator it = str.find(f_nbInputs.getName());
+    const std::map<std::string,std::string*>::const_iterator it = str.find(f_nbInputs.getName());
     if (it != str.end() && it->second)
     {
         std::string nbStr = *it->second;
@@ -442,7 +442,7 @@ void MathOp<VecT>::init()
     addOutput(&f_output);
     
     std::string op = f_op.getValue().getSelectedItem();
-    bool result = MathOpApply< typename MathOpTraits<Value>::Ops >::isSupported(op);
+    const bool result = MathOpApply< typename MathOpTraits<Value>::Ops >::isSupported(op);
     if (!result)
         msg_error() << "Operation " << op << " NOT SUPPORTED";
 
@@ -463,7 +463,7 @@ void MathOp<VecT>::doUpdate()
 //    createInputs();
     std::string op = f_op.getValue().getSelectedItem();
 
-    bool result = MathOpApply< typename MathOpTraits<Value>::Ops >::apply(
+const bool result = MathOpApply< typename MathOpTraits<Value>::Ops >::apply(
         op, &f_output, vf_inputs);
     if (!result)
         msg_error() << "Operation " << op << " FAILED";

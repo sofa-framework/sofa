@@ -23,6 +23,7 @@
 
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/Mass.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
@@ -79,18 +80,10 @@ void Mass<DataTypes>::accFromF(const MechanicalParams* /*mparams*/, DataVecDeriv
 
 
 template<class DataTypes>
-void Mass<DataTypes>::addDForce(const MechanicalParams*
-                                #ifndef NDEBUG
-                                mparams
-                                #endif
-                                ,
+void Mass<DataTypes>::addDForce(const MechanicalParams* mparams,
                                 DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/)
 {
-#ifndef NDEBUG
-    // @TODO Remove
-    // Hack to disable warning message
-    sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-#endif
+    SOFA_UNUSED(mparams);
 }
 
 template<class DataTypes>
@@ -207,9 +200,9 @@ void Mass<DataTypes>::initGnuplot(const std::string path)
     if (!this->getName().empty())
     {
         if (m_gnuplotFileEnergy != nullptr)
-            delete m_gnuplotFileEnergy;
+            m_gnuplotFileEnergy.reset();
 
-        m_gnuplotFileEnergy = new std::ofstream( (path+this->getName()+"_Energy.txt").c_str() );
+        m_gnuplotFileEnergy = std::make_unique<std::ofstream>( (path+this->getName()+"_Energy.txt").c_str() );
     }
 }
 

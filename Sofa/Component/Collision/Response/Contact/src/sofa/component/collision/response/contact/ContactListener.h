@@ -116,10 +116,10 @@ public:
         std::string collModelPath1;
         std::string collModelPath2;
 
-        if(arg)
+        if(arg && context)
         {
-            collModelPath1 = arg->getAttribute(std::string("collisionModel1"), nullptr );
-            collModelPath2 = arg->getAttribute(std::string("collisionModel2"), nullptr );
+            collModelPath1 = arg->getAttribute(std::string("collisionModel1"), "" );
+            collModelPath2 = arg->getAttribute(std::string("collisionModel2"), "" );
 
             // now 3 cases
             if ( strcmp( collModelPath1.c_str(),"" ) != 0  )

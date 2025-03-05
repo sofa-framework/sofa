@@ -25,39 +25,18 @@
 namespace sofa::type::trait
 {
 
-/// Detect if a type T has iterator/const iterator function and operator[](size_t)
+/// Detect if a type T has iterator/const iterator function, operator[](size_t) and is dynamically resizable (resize function)
 template<typename T>
-struct is_vector
+concept is_vector = requires(std::remove_cv_t<T> t, const std::remove_cv_t<T> ct)
 {
-    typedef typename std::remove_const<T>::type test_type;
+    {t.begin()} -> std::convertible_to<typename T::iterator>;
+    {t.end()} -> std::convertible_to<typename T::iterator>;
 
-    template<typename A>
-    static constexpr bool test(
-        A * pt,
-        A const * cpt = nullptr,
-        decltype(pt->begin()) * = nullptr,
-        decltype(pt->end()) * = nullptr,
-        decltype(cpt->begin()) * = nullptr,
-        decltype(cpt->end()) * = nullptr,
-        typename std::decay<decltype((*pt)[0])>::type * = nullptr,   ///< Is there an operator[] ?
-        typename A::iterator * = nullptr,
-        typename A::const_iterator * = nullptr,
-        typename A::value_type * = nullptr) {
+    {ct.begin()} -> std::convertible_to<typename T::const_iterator>;
+    {ct.end()} -> std::convertible_to<typename T::const_iterator>;
 
-        typedef typename A::iterator iterator;
-        typedef typename A::const_iterator const_iterator;
-        return  std::is_same<decltype(pt->begin()),iterator>::value
-                && std::is_same<decltype(pt->end()),iterator>::value
-                && std::is_same<decltype(cpt->begin()),const_iterator>::value
-                && std::is_same<decltype(cpt->end()),const_iterator>::value;
-    }
-
-    template<typename A>
-    static constexpr bool test(...) {
-        return false;
-    }
-
-    static const bool value = test<test_type>(nullptr);
+    { t[0] } -> std::convertible_to<typename T::value_type>;
+    t.resize(1);
 };
 
 }

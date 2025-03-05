@@ -36,8 +36,8 @@ VisualParams::VisualParams()
     , m_pass(Std)
     , m_drawTool(nullptr)
     //, m_boundFrameBuffer(nullptr)
-    , m_x (ConstVecCoordId::position())
-    , m_v (ConstVecDerivId::velocity())
+    , m_x (vec_id::read_access::position)
+    , m_v (vec_id::read_access::velocity)
     , m_supportedAPIs(0)
 {
     m_displayFlags.setShowVisualModels(true); // BUGFIX: visual models are visible by default
@@ -46,13 +46,7 @@ VisualParams::VisualParams()
 /// Get the default VisualParams, to be used to provide a default values for method parameters
 VisualParams* VisualParams::defaultInstance()
 {
-    SOFA_THREAD_SPECIFIC_PTR(VisualParams, threadParams);
-    VisualParams* ptr = threadParams;
-    if (!ptr)
-    {
-        ptr = new VisualParams;
-        threadParams = ptr;
-    }
-    return ptr;
+    thread_local VisualParams threadParams;
+    return &threadParams;
 }
 } // namespace sofa::core::visual

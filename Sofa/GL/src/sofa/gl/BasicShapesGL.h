@@ -116,7 +116,7 @@ private:
 
 };
 
-#if  !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
+#if !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
 extern template class SOFA_GL_API BasicShapesGL_Sphere<type::fixed_array< float, 3 > >;
 extern template class SOFA_GL_API BasicShapesGL_Sphere<type::fixed_array< double, 3 > >;
 extern template class SOFA_GL_API BasicShapesGL_FakeSphere<type::fixed_array< float, 3 > >;

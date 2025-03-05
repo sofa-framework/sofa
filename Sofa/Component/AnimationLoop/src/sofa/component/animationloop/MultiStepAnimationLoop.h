@@ -25,6 +25,7 @@
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/simulation/CollisionAnimationLoop.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::animationloop
 {
@@ -35,25 +36,20 @@ public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;
     SOFA_CLASS(MultiStepAnimationLoop, sofa::simulation::CollisionAnimationLoop);
 protected:
-    MultiStepAnimationLoop(simulation::Node* gnode);
+    MultiStepAnimationLoop();
 
     ~MultiStepAnimationLoop() override;
 public:
     void step (const sofa::core::ExecParams* params, SReal dt) override;
 
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
-    {
-        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ANIMATIONLOOP()
+    sofa::core::objectmodel::lifecycle::RenamedData<int> collisionSteps;
 
-    Data<int> collisionSteps; ///< number of collision steps between each frame rendering
-    Data<int> integrationSteps; ///< number of integration steps between each collision detection
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ANIMATIONLOOP()
+    sofa::core::objectmodel::lifecycle::RenamedData<int> integrationSteps;
+
+    Data<int> d_collisionSteps; ///< number of collision steps between each frame rendering
+    Data<int> d_integrationSteps; ///< number of integration steps between each collision detection
 };
 
 } // namespace sofa::component::animationloop

@@ -95,10 +95,19 @@ public:
 
     /// Add the corresponding ConstraintResolution using the offset parameter
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC) and resolution parameters (smoothness, ...)
-    /// \param resTab is the result vector that contains the contraint resolution algorithms
+    /// \param resTab is the result vector that contains the constraint resolution algorithms
     virtual void getConstraintResolution(const ConstraintParams* cParams, std::vector<ConstraintResolution*> &resTab, unsigned int &offset);
 
     virtual void getConstraintResolution(std::vector<ConstraintResolution*> &resTab, unsigned int &offset);
+
+    type::vector<std::string> getIdentifiers()
+    {
+        type::vector<std::string> ids = getBaseConstraintIdentifiers();
+        ids.push_back("Base");
+        return ids;
+    }
+
+    virtual type::vector<std::string> getBaseConstraintIdentifiers() = 0;
 
 
     /// Store the constraint lambda at the constraint dofs at the given VecDerivId location. 

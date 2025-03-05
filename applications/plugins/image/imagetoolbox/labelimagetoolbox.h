@@ -24,7 +24,7 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <QObject>
-#include <image/image_gui/config.h>
+#include <image_gui/config.h>
 #include <image/ImageTypes.h>
 #include "sofa/defaulttype/config.h"
 #include "sofa/defaulttype/VecTypes.h"
@@ -67,7 +67,7 @@ using type::Mat;
 using namespace cimg_library;
 
 /**
- * This class coorespond to a label visualized by imagetoolbox
+ * This class corresponds to a label visualized by imagetoolbox
  */
 
 class SOFA_IMAGE_GUI_API LabelImageToolBox : public core::DataEngine

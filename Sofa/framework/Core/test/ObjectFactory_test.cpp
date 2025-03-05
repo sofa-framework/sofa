@@ -58,7 +58,7 @@ public:
     void testDuplicatedRegistration()
     {       
         EXPECT_MSG_EMIT(Warning);
-        int C = RegisterObject("Already registered object.")
+        const int C = RegisterObject("Already registered object.")
                     .add< TestObject<long> >();
         SOFA_UNUSED(C);
     }

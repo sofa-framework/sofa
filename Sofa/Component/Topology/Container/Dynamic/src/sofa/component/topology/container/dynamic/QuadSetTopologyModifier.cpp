@@ -30,14 +30,14 @@
 
 namespace sofa::component::topology::container::dynamic
 {
-int QuadSetTopologyModifierClass = core::RegisterObject("Quad set topology modifier")
-        .add< QuadSetTopologyModifier >();
 
+void registerQuadSetTopologyModifier(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology modifier dedicated to a quad topology.")
+        .add< QuadSetTopologyModifier >());
+}
 
-using namespace std;
-using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
-
 
 void QuadSetTopologyModifier::init()
 {
@@ -55,7 +55,7 @@ void QuadSetTopologyModifier::init()
 
 void QuadSetTopologyModifier::addQuads(const sofa::type::vector<Quad> &quads)
 {
-    size_t nQuads = m_container->getNbQuads();
+    const size_t nQuads = m_container->getNbQuads();
 
     /// effectively add triangles in the topology container
     addQuadsProcess(quads);
@@ -79,7 +79,7 @@ void QuadSetTopologyModifier::addQuads(const sofa::type::vector<Quad> &quads,
         const sofa::type::vector<sofa::type::vector<QuadID> > &ancestors,
         const sofa::type::vector<sofa::type::vector<SReal> > &baryCoefs)
 {
-    size_t nQuads = m_container->getNbQuads();
+    const size_t nQuads = m_container->getNbQuads();
 
     /// effectively add triangles in the topology container
     addQuadsProcess(quads);
@@ -209,7 +209,7 @@ void QuadSetTopologyModifier::addQuadsWarning(const size_t nQuads,
 {
     m_container->setQuadTopologyToDirty();
     // Warning that quads just got created
-    QuadsAdded *e = new QuadsAdded(nQuads, quadsList, quadsIndexList);
+    const QuadsAdded *e = new QuadsAdded(nQuads, quadsList, quadsIndexList);
     addTopologyChange(e);
 }
 
@@ -222,7 +222,7 @@ void QuadSetTopologyModifier::addQuadsWarning(const size_t nQuads,
 {
     m_container->setQuadTopologyToDirty();
     // Warning that quads just got created
-    QuadsAdded *e=new QuadsAdded(nQuads, quadsList,quadsIndexList,ancestors,baryCoefs);
+    const QuadsAdded *e=new QuadsAdded(nQuads, quadsList,quadsIndexList,ancestors,baryCoefs);
     addTopologyChange(e);
 }
 
@@ -234,7 +234,7 @@ void QuadSetTopologyModifier::removeQuadsWarning( sofa::type::vector<QuadID> &qu
     std::sort( quads.begin(), quads.end(), std::greater<QuadID>() );
 
     // Warning that these quads will be deleted
-    QuadsRemoved *e=new QuadsRemoved(quads);
+    const QuadsRemoved *e=new QuadsRemoved(quads);
     addTopologyChange(e);
 }
 
@@ -323,12 +323,12 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::type::vector<QuadID
         if(m_container->hasEdgesInQuad())
         {
             m_container->m_edgesInQuad[ indices[i] ] = m_container->m_edgesInQuad[ lastQuad ]; // overwriting with last valid value.
-            m_container->m_edgesInQuad.resize( lastQuad ); // resizing to erase multiple occurence of the quad.
+            m_container->m_edgesInQuad.resize( lastQuad ); // resizing to erase multiple occurrence of the quad.
         }
 
         // removes the quad from the quadArray
         m_quad[ indices[i] ] = m_quad[ lastQuad ]; // overwriting with last valid value.
-        m_quad.resize( lastQuad ); // resizing to erase multiple occurence of the quad.
+        m_quad.resize( lastQuad ); // resizing to erase multiple occurrence of the quad.
     }
 
     if(!edgeToBeRemoved.empty())
@@ -425,7 +425,7 @@ void QuadSetTopologyModifier::removeEdgesProcess( const sofa::type::vector<EdgeI
             for(sofa::type::vector<QuadID>::iterator itt = m_container->m_quadsAroundEdge[lastEdge].begin();
                 itt != m_container->m_quadsAroundEdge[lastEdge].end(); ++itt)
             {
-                EdgeID edgeIndex = m_container->getEdgeIndexInQuad(m_container->m_edgesInQuad[*itt], (EdgeID)lastEdge);
+                const EdgeID edgeIndex = m_container->getEdgeIndexInQuad(m_container->m_edgesInQuad[*itt], (EdgeID)lastEdge);
                 m_container->m_edgesInQuad[*itt][edgeIndex] = indices[i];
             }
 
@@ -507,7 +507,7 @@ void QuadSetTopologyModifier::propagateTopologicalEngineChanges()
         return EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 
     auto& quadTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::QUAD);
-    for (auto topoHandler : quadTopologyHandlerList)
+    for (const auto topoHandler : quadTopologyHandlerList)
     {
         if (topoHandler->isDirty())
         {

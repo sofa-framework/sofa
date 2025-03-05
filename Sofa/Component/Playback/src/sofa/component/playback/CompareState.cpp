@@ -55,7 +55,7 @@ look for potential CompareStateFile formatted likewise
 with
 - %0 the current scene name
 - %1 the current comparestate counter value
-- %2 the name of the mstate which will undergo comparizons.
+- %2 the name of the mstate which will undergo comparisons.
 */
 std::string lookForValidCompareStateFile( const std::string& sceneName,
         const std::string& mstateName,
@@ -98,10 +98,11 @@ std::string lookForValidCompareStateFile( const std::string& sceneName,
 
 }
 
-
-
-int CompareStateClass = core::RegisterObject("Compare State vectors from a reference frame to the associated Mechanical State")
-        .add< CompareState >();
+void registerCompareState(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compare State vectors from a reference frame to the associated Mechanical State.")
+        .add< CompareState >());
+}
 
 CompareState::CompareState(): ReadState()
 {
@@ -149,22 +150,22 @@ void CompareState::processCompareState()
         if (cmd.compare("X=") == 0)
         {
             last_X = *it;
-            currentError = mmodel->compareVec(core::VecId::position(), str);
+            currentError = mmodel->compareVec(sofa::core::vec_id::read_access::position, str);
 
 
             totalError_X +=currentError;
 
-            double dsize = (double)this->mmodel->getSize();
+            const double dsize = (double)this->mmodel->getSize();
             if (dsize != 0.0)
                 dofError_X +=currentError/dsize;
         }
         else if (cmd.compare("V=") == 0)
         {
             last_V = *it;
-            currentError = mmodel->compareVec(core::VecId::velocity(), str);
+            currentError = mmodel->compareVec(sofa::core::vec_id::read_access::velocity, str);
             totalError_V +=currentError;
 
-            double dsize = (double)this->mmodel->getSize();
+            const double dsize = (double)this->mmodel->getSize();
             if (dsize != 0.0)
                 dofError_V += currentError/dsize;
         }
@@ -176,6 +177,8 @@ void CompareState::processCompareState()
 //-------------------------------- processCompareState------------------------------------
 void CompareState::draw(const core::visual::VisualParams* vparams)
 {
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
     SReal time = getContext()->getTime() + d_shift.getValue();
     time += getContext()->getDt() * 0.001;
     //lastTime = time+0.00001;
@@ -213,7 +216,7 @@ void CompareState::draw(const core::visual::VisualParams* vparams)
         str >> cmd;
         mmodel->readVec(refX, str);
 
-        const core::objectmodel::BaseData* dataX = mmodel->baseRead(core::VecCoordId::position());
+        const core::objectmodel::BaseData* dataX = mmodel->baseRead(core::vec_id::write_access::position);
         const core::objectmodel::BaseData* dataRefX = mmodel->baseRead(refX);
         if (dataX && dataRefX)
         {
@@ -260,7 +263,7 @@ void CompareState::draw(const core::visual::VisualParams* vparams)
 CompareStateCreator::CompareStateCreator(const core::ExecParams* params)
     : Visitor(params)
     , sceneName("")
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -274,7 +277,7 @@ CompareStateCreator::CompareStateCreator(const core::ExecParams* params)
 CompareStateCreator::CompareStateCreator(const std::string &n, const core::ExecParams* params, bool i, int c)
     : Visitor(params)
     , sceneName(n)
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -304,7 +307,7 @@ simulation::Visitor::Result CompareStateCreator::processNodeTopDown( simulation:
 
 void CompareStateCreator::addCompareState(sofa::core::behavior::BaseMechanicalState *ms, simulation::Node* gnode)
 {
-    sofa::core::objectmodel::BaseContext* context = gnode->getContext();
+    const sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping; context->get(mapping);
     if (createInMapping || mapping== nullptr)
     {

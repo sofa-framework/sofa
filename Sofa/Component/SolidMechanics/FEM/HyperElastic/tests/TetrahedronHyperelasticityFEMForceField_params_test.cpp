@@ -30,7 +30,7 @@ using sofa::testing::BaseSimulationTest;
 
 #include <iostream>
 #include <fstream>
-
+#include <climits>
 
 
 namespace sofa {
@@ -74,7 +74,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
     unsigned char flags; ///< testing options. (all by default). To be used with precaution.
     /// }
 
-    void SetUp() override
+    void doSetUp() override
     {
 
     }
@@ -84,8 +84,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
     {
         timeStep = 0.02;
 
-        simulation::Simulation* simu;
-        sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simu = sofa::simulation::getSimulation();
 
         /// Load the scene
         root = simu->createNewGraph("root");
@@ -93,7 +92,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
 
     void scene_load()
     {
-        root = sofa::simulation::getSimulation()->load(sceneFilename.c_str());
+        root = sofa::simulation::node::load(sceneFilename.c_str());
 
         hyperelasticNode = root->getChild("Hyperelastic-Liver");
 
@@ -123,7 +122,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
         FF->setparameter(param_vector);
 
         // Init simulation
-        sofa::simulation::getSimulation()->init(this->root.get());
+        sofa::simulation::node::initRoot(this->root.get());
 
         //Check component creation
         sofa::core::objectmodel::BaseObject* hefem = root->getTreeNode("Hyperelastic-Liver")->getObject("FEM") ;
@@ -132,12 +131,12 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
 };
 
 
-// ========= Define the list of types to instanciate.
+// ========= Define the list of types to instantiate.
 //using ::testing::Types;
-typedef ::testing::Types<sofa::component::solidmechanics::fem::hyperelastic::TetrahedronHyperelasticityFEMForceField<defaulttype::Vec3Types> > TestTypes; // the types to instanciate.
+typedef ::testing::Types<sofa::component::solidmechanics::fem::hyperelastic::TetrahedronHyperelasticityFEMForceField<defaulttype::Vec3Types> > TestTypes; // the types to instantiate.
 
 
-// ========= Tests to run for each instanciated type
+// ========= Tests to run for each instantiated type
 TYPED_TEST_SUITE(TetrahedronHyperelasticityFEMForceField_params_test, TestTypes);
 
 // test case

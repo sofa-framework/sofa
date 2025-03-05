@@ -23,13 +23,8 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
-{
 
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 ConfigurationSetting::ConfigurationSetting()
@@ -46,6 +41,8 @@ ConfigurationSetting::~ConfigurationSetting()
 
 void ConfigurationSetting::init()
 {
+    Inherit1::init();
+
     //Set all the Data in read only mode:
     for (VecData::const_iterator it = m_vecData.begin(); it!=m_vecData.end(); ++it)
     {
@@ -70,8 +67,8 @@ bool ConfigurationSetting::removeInNode( objectmodel::BaseNode* node )
 }
 
 
-} // namespace objectmodel
+} // namespace sofa::core::objectmodel
 
-} // namespace core
 
-} // namespace sofa
+
+

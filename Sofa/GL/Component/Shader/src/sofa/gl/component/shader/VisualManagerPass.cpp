@@ -31,10 +31,11 @@ using namespace sofa::gl;
 using namespace simulation;
 using namespace core::visual;
 
-//Register LightManager in the Object Factory
-int VisualManagerPassClass = core::RegisterObject("VisualManagerPass")
-        .add< VisualManagerPass >()
-        ;
+void registerVisualManagerPass(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Render pass element: render the relevant tagged objects in a FBO.")
+        .add< VisualManagerPass >());
+}
 
 VisualManagerPass::VisualManagerPass()
     : factor(initData(&factor, 1.0f, "factor","set the resolution factor for the output pass. default value:1.0")),
@@ -66,7 +67,7 @@ VisualManagerPass::~VisualManagerPass()
 
 bool VisualManagerPass::checkMultipass(sofa::core::objectmodel::BaseContext* con)
 {
-    sofa::gl::component::shader::CompositingVisualLoop* isMultipass=nullptr;
+    const sofa::gl::component::shader::CompositingVisualLoop* isMultipass=nullptr;
     isMultipass= con->core::objectmodel::BaseContext::get<sofa::gl::component::shader::CompositingVisualLoop>();
     return (isMultipass!=nullptr);
 }
@@ -78,7 +79,7 @@ void VisualManagerPass::init()
 }
 
 /* herited from VisualModel */
-void VisualManagerPass::initVisual()
+void VisualManagerPass::doInitVisual(const core::visual::VisualParams*)
 {
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
@@ -167,7 +168,7 @@ void VisualManagerPass::postDrawScene(VisualParams* /*vp*/)
 }
 
 
-//keyboard event management. Not sure what I'm gonna do with that for the moment, but I'm quite sure it should be usefull in the future
+//keyboard event management. Not sure what I'm gonna do with that for the moment, but I'm quite sure it should be useful in the future
 void VisualManagerPass::handleEvent(sofa::core::objectmodel::Event* /*event*/)
 {
 }

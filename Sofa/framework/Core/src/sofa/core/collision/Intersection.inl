@@ -24,6 +24,8 @@
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/Factory.h>
 
+#include <sofa/version.h>
+
 namespace sofa::core::collision
 {
 
@@ -35,11 +37,14 @@ public:
     typedef typename Elem2::Model Model2;
     MemberElementIntersector(T* ptr) : impl(ptr) {}
     /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
-    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) override
+    SOFA_ATTRIBUTE_DISABLED__CORE_INTERSECTION_AS_PARAMETER()
+    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) = delete;
+    
+    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, const core::collision::Intersection* currentIntersection) override
     {
         Elem1 e1(elem1);
         Elem2 e2(elem2);
-        return impl->testIntersection(e1, e2);
+        return impl->testIntersection(e1, e2, currentIntersection);
     }
 
     /// Begin intersection tests between two collision models. Return the number of contacts written in the contacts vector.
@@ -56,11 +61,14 @@ public:
     }
 
     /// Compute the intersection between 2 elements.
-    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2,  DetectionOutputVector* contacts) override
+    SOFA_ATTRIBUTE_DISABLED__CORE_INTERSECTION_AS_PARAMETER()
+    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2,  DetectionOutputVector* contacts) = delete;
+    
+    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2,  DetectionOutputVector* contacts, const core::collision::Intersection* currentIntersection) override
     {
         Elem1 e1(elem1);
         Elem2 e2(elem2);
-        return impl->computeIntersection(e1, e2, impl->getOutputVector(e1.getCollisionModel(), e2.getCollisionModel(), contacts));
+        return impl->computeIntersection(e1, e2, impl->getOutputVector(e1.getCollisionModel(), e2.getCollisionModel(), contacts), currentIntersection);
     }
 
     std::string name() const override

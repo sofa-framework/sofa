@@ -68,13 +68,6 @@ public:
                                     sofa::type::rebind_to<memory_manager, T2>,
                                     sofa::type::rebind_to<datatypeinfo_manager, T2> >;
 
-    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
-    {
-        typedef DeprecatedAndRemoved other;
-    };
-
-
-
 protected:
     Size     vectorSize;     ///< Current size of the vector
     Size     allocSize;      ///< Allocated size on host
@@ -86,10 +79,10 @@ protected:
 #endif
     mutable Size      clearSize;  ///< when initializing missing device data, up to where entries should be set to zero ?
     T* hostPointer;    ///< Pointer to the data on the CPU side
-    mutable int   deviceIsValid;  ///< True if the data on the GPU is currently valid (up to the given deviceVectorSize of each device, i.e. additionnal space may need to be allocated and/or initialized)
+    mutable int   deviceIsValid;  ///< True if the data on the GPU is currently valid (up to the given deviceVectorSize of each device, i.e. additional space may need to be allocated and/or initialized)
     mutable bool  hostIsValid;    ///< True if the data on the CPU is currently valid
     mutable bool  bufferIsRegistered;  ///< True if the buffer is registered with CUDA
-    buffer_id_type  bufferObject;   ///< Optionnal associated buffer ID
+    buffer_id_type  bufferObject;   ///< Optional associated buffer ID
 
     inline static int cptid = 0;
 
@@ -101,6 +94,10 @@ protected:
 public:
 
     vector_device()
+        : vector_device(0)
+    {}
+
+    explicit vector_device(const Size n)
         : vectorSize(0), allocSize(0), hostPointer(nullptr), deviceIsValid(ALL_DEVICE_VALID), hostIsValid(true), bufferIsRegistered(false)
         , bufferObject(0)
     {
@@ -117,44 +114,26 @@ public:
         deviceReserveSize = 0;
 #endif
         clearSize = 0;
-    }
-    vector_device(Size n)
-        : vectorSize(0), allocSize(0), hostPointer(nullptr), deviceIsValid(ALL_DEVICE_VALID), hostIsValid(true), bufferIsRegistered(false)
-        , bufferObject(0)
-    {
-        DEBUG_OUT_V(id = cptid);
-        DEBUG_OUT_V(cptid++);
-        DEBUG_OUT_V(spaceDebug = 0);
-        for (int d = 0; d < MemoryManager::numDevices(); d++)
+
+        if (n > 0)
         {
-            devicePointer[d] = MemoryManager::null();
-            deviceAllocSize[d] = 0;
-            deviceVectorSize[d] = 0;
+            resize(n);
         }
-#ifdef SOFA_VECTOR_DEVICE_CUSTOM_SIZE
-        deviceReserveSize = 0;
-#endif
-        clearSize = 0;
-        resize(n);
     }
+
     vector_device(const vector_device<T, MemoryManager, DataTypeInfoManager>& v)
-        : vectorSize(0), allocSize(0), hostPointer(nullptr), deviceIsValid(ALL_DEVICE_VALID), hostIsValid(true), bufferIsRegistered(false)
-        , bufferObject(0)
+        : vector_device()
     {
-        DEBUG_OUT_V(id = cptid);
-        DEBUG_OUT_V(cptid++);
-        DEBUG_OUT_V(spaceDebug = 0);
-        for (int d = 0; d < MemoryManager::numDevices(); d++)
-        {
-            devicePointer[d] = MemoryManager::null();
-            deviceAllocSize[d] = 0;
-            deviceVectorSize[d] = 0;
-        }
-        clearSize = 0;
-#ifdef SOFA_VECTOR_DEVICE_CUSTOM_SIZE
-        deviceReserveSize = 0;
-#endif
         * this = v;
+    }
+
+    vector_device(const std::initializer_list<T>& t) : vector_device()
+    {
+        if (!std::empty(t))
+        {
+            fastResize(t.size());
+            std::copy(t.begin(), t.end(), hostPointer);
+        }
     }
 
     bool isHostValid() const
@@ -187,7 +166,7 @@ public:
         DEBUG_OUT_V(SPACEP << "operator=, id is " << v.id << "(" << v.hostIsValid << "," << (v.deviceIsValid & 1) << ") " << std::endl);
         DEBUG_OUT_V(std::cout << v.id << " : " << "(" << v.hostIsValid << "," << (v.deviceIsValid & 1) << ") " << ". operator= param " << id << std::endl);
 
-        Size newSize = v.size();
+        const Size newSize = v.size();
         clear();
 
         fastResize(newSize);
@@ -658,7 +637,7 @@ public:
     {
         iterator p0 = begin();
         Size i = position - p0;
-        Size n = size();
+        const Size n = size();
         if (i >= n) return end();
         for (Size j = i + 1; j < n; ++j)
             *(p0 + (j - 1)) = *(p0 + j);
@@ -669,7 +648,7 @@ public:
     iterator insert(iterator position, const T& x)
     {
         Size i = position - begin();
-        Size n = size();
+        const Size n = size();
         if (i > n) i = n;
         resize(n + 1);
         iterator p0 = begin();

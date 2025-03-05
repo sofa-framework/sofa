@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_TRIANGLEBENDINGSPRINGS_CPP
 #include <sofa/component/solidmechanics/spring/TriangleBendingSprings.inl>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
@@ -31,12 +31,12 @@ namespace sofa::component::solidmechanics::spring
 
 using namespace sofa::defaulttype;
 
-// Register in the Factory
-int TriangleBendingSpringsClass = core::RegisterObject("Springs added to a traingular mesh to prevent bending")
+void registerTriangleBendingSprings(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Springs added to a triangular mesh to prevent bending.")
         .add< TriangleBendingSprings<Vec3Types> >()
-        .add< TriangleBendingSprings<Vec2Types> >()
-
-        ;
+        .add< TriangleBendingSprings<Vec2Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API TriangleBendingSprings<Vec3Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API TriangleBendingSprings<Vec2Types>;

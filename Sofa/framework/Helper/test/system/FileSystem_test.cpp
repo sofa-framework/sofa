@@ -22,7 +22,9 @@
 #include <sofa/testing/config.h>
 
 #include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/Utils.h>
 #include <gtest/gtest.h>
+#include <sofa/helper/logging/MessageDispatcher.h>
 #include <exception>
 #include <algorithm>
 #include <fstream>
@@ -47,6 +49,9 @@ static std::string getPath(std::string s) {
 
 TEST(FileSystemTest, listDirectory_nonEmpty)
 {
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+
     EXPECT_MSG_NOEMIT(Error) ;
 
     std::vector<std::string> fileList;
@@ -63,6 +68,9 @@ TEST(FileSystemTest, listDirectory_nonEmpty)
 
 TEST(FileSystemTest, listDirectory_nonEmpty_trailingSlash)
 {
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+
     EXPECT_MSG_NOEMIT(Error) ;
 
     std::vector<std::string> fileList;
@@ -79,6 +87,9 @@ TEST(FileSystemTest, listDirectory_nonEmpty_trailingSlash)
 
 TEST(FileSystemTest, listDirectory_withExtension_multipleMatches)
 {
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+
     EXPECT_MSG_NOEMIT(Error) ;
 
     std::vector<std::string> fileList;
@@ -90,6 +101,9 @@ TEST(FileSystemTest, listDirectory_withExtension_multipleMatches)
 
 TEST(FileSystemTest, listDirectory_withExtension_oneMatch)
 {
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+
     EXPECT_MSG_NOEMIT(Error) ;
 
     std::vector<std::string> fileList;
@@ -100,6 +114,9 @@ TEST(FileSystemTest, listDirectory_withExtension_oneMatch)
 
 TEST(FileSystemTest, listDirectory_withExtension_noMatch)
 {
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+
     EXPECT_MSG_NOEMIT(Error) ;
 
     std::vector<std::string> fileList;
@@ -109,6 +126,9 @@ TEST(FileSystemTest, listDirectory_withExtension_noMatch)
 
 TEST(FileSystemTest, createDirectory)
 {
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+
     EXPECT_MSG_NOEMIT(Error) ;
 
     EXPECT_FALSE(FileSystem::createDirectory("createDirectoryTestDir"));
@@ -120,6 +140,9 @@ TEST(FileSystemTest, createDirectory)
 
 TEST(FileSystemTest, createDirectory_alreadyExists)
 {
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+
     {
         EXPECT_MSG_NOEMIT(Error) ;
         FileSystem::createDirectory("createDirectoryTestDir");
@@ -136,6 +159,9 @@ TEST(FileSystemTest, createDirectory_alreadyExists)
 
 TEST(FileSystemTest, removeDirectory)
 {
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+
     EXPECT_MSG_NOEMIT(Error) ;
 
     FileSystem::createDirectory("removeDirectoryTestDir");
@@ -145,6 +171,9 @@ TEST(FileSystemTest, removeDirectory)
 
 TEST(FileSystemTest, removeDirectory_doesNotExists)
 {
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+
     {
         // this test will raise an error on purpose
         EXPECT_MSG_EMIT(Error) ;
@@ -310,4 +339,90 @@ TEST(FileSystemTest, stripDirectory)
     EXPECT_EQ("ghi", FileSystem::stripDirectory("abc/def/ghi/"));
     EXPECT_EQ("ghi", FileSystem::stripDirectory("C:/abc/def/ghi"));
     EXPECT_EQ("ghi", FileSystem::stripDirectory("C:/abc/def/ghi/"));
+}
+
+TEST(FileSystemTest, append)
+{
+    EXPECT_EQ(FileSystem::append("C:/", "folder"), "C:/folder");
+    EXPECT_EQ(FileSystem::append("C:", "folder"), "C:/folder");
+    EXPECT_EQ(FileSystem::append("C:\\", "folder"), "C:/folder");
+
+    EXPECT_EQ(FileSystem::append("", "folder"), "/folder");
+
+    EXPECT_EQ(FileSystem::append("a/b/c/d", ""), "a/b/c/d");
+    EXPECT_EQ(FileSystem::append("a/b/c/d", "/folder"), "a/b/c/d/folder");
+    EXPECT_EQ(FileSystem::append("a/b/c/d/", "/folder"), "a/b/c/d/folder");
+    EXPECT_EQ(FileSystem::append("a/b/c/d//", "/folder"), "a/b/c/d/folder");
+
+    EXPECT_EQ(FileSystem::append("a/b/c/d", "e", "f", "g"), "a/b/c/d/e/f/g");
+    EXPECT_EQ(FileSystem::append("a/b/c/d/", "e", "f", "g"), "a/b/c/d/e/f/g");
+    EXPECT_EQ(FileSystem::append("a/b/c/d/", "e", "/f", "g"), "a/b/c/d/e/f/g");
+    EXPECT_EQ(FileSystem::append("a/b/c/d/", "e", "/f", "/g"), "a/b/c/d/e/f/g");
+    EXPECT_EQ(FileSystem::append("a/b/c/d/", "/e", "/f", "/g"), "a/b/c/d/e/f/g");
+}
+
+TEST(FileSystemTest, ensureFolderExists)
+{
+    ASSERT_TRUE(FileSystem::isDirectory(sofa::helper::Utils::getSofaPathPrefix()));
+
+    const auto parentDir = FileSystem::append(sofa::helper::Utils::getSofaPathPrefix(), "test_folder");
+    const auto dir = FileSystem::append(parentDir, "another_layer");
+
+    //the folders don't exist yet
+    EXPECT_FALSE(FileSystem::isDirectory(parentDir));
+    EXPECT_FALSE(FileSystem::isDirectory(dir));
+
+    FileSystem::ensureFolderExists(dir);
+
+    EXPECT_TRUE(FileSystem::isDirectory(parentDir));
+    EXPECT_TRUE(FileSystem::isDirectory(dir));
+
+    //cleanup
+    EXPECT_FALSE(FileSystem::removeDirectory(dir));
+    EXPECT_FALSE(FileSystem::removeDirectory(parentDir));
+}
+
+TEST(FileSystemTest, ensureFolderForFileExists_fileAndFolderDontExist)
+{
+    ASSERT_TRUE(FileSystem::isDirectory(sofa::helper::Utils::getSofaPathPrefix()));
+
+    const auto parentDir = FileSystem::append(sofa::helper::Utils::getSofaPathPrefix(), "test_folder");
+    const auto dir = FileSystem::append(parentDir, "another_layer");
+
+    //the folder does not exist yet
+    EXPECT_FALSE(FileSystem::isDirectory(dir));
+
+    const auto file = FileSystem::append(dir, "file.txt");
+    FileSystem::ensureFolderForFileExists(file);
+
+    EXPECT_TRUE(FileSystem::isDirectory(dir));
+    EXPECT_FALSE(FileSystem::isDirectory(file));
+
+    EXPECT_FALSE(FileSystem::exists(file));
+
+    //cleanup
+    EXPECT_FALSE(FileSystem::removeDirectory(dir));
+    EXPECT_FALSE(FileSystem::removeDirectory(parentDir));
+}
+
+TEST(FileSystemTest, ensureFolderForFileExists_fileExist)
+{
+    ASSERT_TRUE(FileSystem::isDirectory(sofa::helper::Utils::getSofaPathPrefix()));
+
+    const auto file = FileSystem::append(sofa::helper::Utils::getSofaPathPrefix(), "file.txt");
+    EXPECT_FALSE(FileSystem::exists(file));
+
+    std::ofstream fileStream;
+    fileStream.open(file);
+    fileStream << "Hello";
+    fileStream.close();
+
+    EXPECT_TRUE(FileSystem::exists(file));
+
+    FileSystem::ensureFolderForFileExists(file);
+
+    EXPECT_TRUE(FileSystem::exists(file));
+
+    //cleanup
+    EXPECT_TRUE(FileSystem::removeFile(file));
 }

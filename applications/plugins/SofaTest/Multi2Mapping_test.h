@@ -3,17 +3,17 @@
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -110,7 +110,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
     simulation::Node::SPtr parentsIn1, parentsIn2; ///< Parent nodes, created by setupScene
     simulation::Simulation* simulation; ///< created by the constructor an re-used in the tests
     std::pair<Real, Real> deltaRange; ///< The minimum and maximum magnitudes of the change of each scalar value of the small displacement is deltaRange * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
-    Real errorMax; ///< The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
+    Real errorMax; ///< The test is successful if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
 
 
     /// Constructor
@@ -126,7 +126,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
             sofa::simulation::getSimulation()->unload(root);
     }
 
-    /** Returns OutCoord substraction a-b (should return a OutDeriv, but???)
+    /** Returns OutCoord subtraction a-b (should return a OutDeriv, but???)
     */
     OutDeriv difference(const OutCoord& c1, const OutCoord& c2)
     {
@@ -163,7 +163,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
     * the resulting child position is compared with the expected one.
     * Additionally, the Jacobian-related methods are tested using finite differences.
     *
-    * The parent coordinates are transfered in the parent states, then the scene is initialized, then various mapping functions are applied.
+    * The parent coordinates are transferred in the parent states, then the scene is initialized, then various mapping functions are applied.
     * The parent states are resized based on the size of the parentCoords vectors. The child state is not resized. Its should be already sized,
     * or its size set automatically during initialization.
     *
@@ -178,7 +178,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
 
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
-        mparams.setSymmetricMatrix(false);
+        mparams.setSupportOnlySymmetricMatrix(false);
 
         // transfer the parent values in the parent states
         // --- Rigid dofs

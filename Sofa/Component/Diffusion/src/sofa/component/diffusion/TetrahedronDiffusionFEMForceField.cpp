@@ -30,13 +30,13 @@ namespace sofa::component::diffusion
 
 using namespace sofa::defaulttype;
 
-
-// Register in the Factory
-int TetrahedronDiffusionFEMForceFieldClass = core::RegisterObject("Isotropic or anisotropic diffusion on Tetrahedral Meshes")
-  .add< TetrahedronDiffusionFEMForceField<Vec1Types> >()
-  .add< TetrahedronDiffusionFEMForceField<Vec2Types> >(true)
-  .add< TetrahedronDiffusionFEMForceField<Vec3Types> >()
-;
+void registerTetrahedronDiffusionFEMForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Isotropic or anisotropic diffusion on Tetrahedral Meshes.")
+        .add< TetrahedronDiffusionFEMForceField<Vec1Types> >()
+        .add< TetrahedronDiffusionFEMForceField<Vec2Types> >(true)
+        .add< TetrahedronDiffusionFEMForceField<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_DIFFUSION_API TetrahedronDiffusionFEMForceField<Vec1Types>;
 template class SOFA_COMPONENT_DIFFUSION_API TetrahedronDiffusionFEMForceField<Vec2Types>;

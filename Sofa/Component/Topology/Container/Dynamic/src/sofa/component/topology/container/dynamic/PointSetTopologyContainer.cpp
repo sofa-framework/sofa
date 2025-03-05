@@ -49,28 +49,29 @@ struct GeneratePointID
 
 }
 
-using namespace sofa::defaulttype;
-
-int PointSetTopologyContainerClass = core::RegisterObject("Point set topology container")
-        .add< PointSetTopologyContainer >()
-        ;
+void registerPointSetTopologyContainer(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology container dedicated to a point topology.")
+        .add< PointSetTopologyContainer >());
+}
 
 PointSetTopologyContainer::PointSetTopologyContainer(Size npoints)
     : d_initPoints (initData(&d_initPoints, "position", "Initial position of points",true,true))
     , d_checkTopology (initData(&d_checkTopology, false, "checkTopology", "Parameter to activate internal topology checks (might slow down the simulation)"))
-    , nbPoints (initData(&nbPoints, npoints, "nbPoints", "Number of points"))
+    , d_nbPoints (initData(&d_nbPoints, npoints, "nbPoints", "Number of points"))
 {
     addAlias(&d_initPoints,"points");
+    nbPoints.setOriginalData(&d_nbPoints);
 }
 
 void PointSetTopologyContainer::setNbPoints(Size n)
 {
-    nbPoints.setValue(n);  
+    d_nbPoints.setValue(n);
 }
 
 Size PointSetTopologyContainer::getNumberOfElements() const
 {
-    return nbPoints.getValue();
+    return d_nbPoints.getValue();
 }
 
 bool PointSetTopologyContainer::checkTopology() const
@@ -80,7 +81,7 @@ bool PointSetTopologyContainer::checkTopology() const
 
 void PointSetTopologyContainer::clear()
 {
-    nbPoints.setValue(sofa::Size(0));
+    d_nbPoints.setValue(sofa::Size(0));
     helper::WriteAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     initPoints.clear();
 }
@@ -93,7 +94,7 @@ void PointSetTopologyContainer::addPoint(SReal px, SReal py, SReal pz)
 
     auto initPoints = sofa::helper::getWriteAccessor(d_initPoints);
     initPoints.push_back(InitTypes::Coord(px, py, pz));
-    if (initPoints.size() > nbPoints.getValue())
+    if (initPoints.size() > d_nbPoints.getValue())
     {
         setNbPoints(Size(initPoints.size()));
     }
@@ -101,13 +102,13 @@ void PointSetTopologyContainer::addPoint(SReal px, SReal py, SReal pz)
 
 bool PointSetTopologyContainer::hasPos() const
 {
-    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
+    const helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     return !initPoints.empty();
 }
 
 SReal PointSetTopologyContainer::getPX(Index i) const
 {
-    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
+    const helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
         return initPoints[i][0];
     else
@@ -116,7 +117,7 @@ SReal PointSetTopologyContainer::getPX(Index i) const
 
 SReal PointSetTopologyContainer::getPY(Index i) const
 {
-    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
+    const helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
         return initPoints[i][1];
     else
@@ -125,7 +126,7 @@ SReal PointSetTopologyContainer::getPY(Index i) const
 
 SReal PointSetTopologyContainer::getPZ(Index i) const
 {
-    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
+    const helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
         return initPoints[i][2];
     else
@@ -135,8 +136,8 @@ SReal PointSetTopologyContainer::getPZ(Index i) const
 void PointSetTopologyContainer::init()
 {
     core::topology::TopologyContainer::init();
-    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
-    int pointsDiff = (int)initPoints.size() - (int)getNbPoints(); 
+    const helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
+    const int pointsDiff = (int)initPoints.size() - (int)getNbPoints(); 
     if( pointsDiff > 0 )
     {
         addPoints( pointsDiff );
@@ -146,23 +147,23 @@ void PointSetTopologyContainer::init()
 
 void PointSetTopologyContainer::addPoints(const Size nPoints)
 {
-    setNbPoints( nbPoints.getValue() + nPoints );
+    setNbPoints(d_nbPoints.getValue() + nPoints );
 }
 
 void PointSetTopologyContainer::removePoints(const Size nPoints)
 {
-    setNbPoints( nbPoints.getValue() - nPoints );
+    setNbPoints(d_nbPoints.getValue() - nPoints );
 }
 
 void PointSetTopologyContainer::addPoint()
 {
-    setNbPoints( nbPoints.getValue() + 1 );
+    setNbPoints(d_nbPoints.getValue() + 1 );
 }
 
 void PointSetTopologyContainer::removePoint()
 {
     //nbPoints.setValue(nbPoints.getValue()-1);
-    setNbPoints( nbPoints.getValue() - 1 );
+    setNbPoints(d_nbPoints.getValue() - 1 );
 }
 
 void PointSetTopologyContainer::setPointTopologyToDirty()
@@ -172,7 +173,7 @@ void PointSetTopologyContainer::setPointTopologyToDirty()
 
     // set all engines link to this container to dirty
     auto& pointTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::POINT);
-    for (auto topoHandler : pointTopologyHandlerList)
+    for (const auto topoHandler : pointTopologyHandlerList)
     {
         topoHandler->setDirtyValue();
         msg_info() << "Point Topology Set dirty engine: " << topoHandler->getName();
@@ -185,7 +186,7 @@ void PointSetTopologyContainer::cleanPointTopologyFromDirty()
 
     // security, clean all engines to avoid loops
     auto& pointTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::POINT);
-    for (auto topoHandler : pointTopologyHandlerList)
+    for (const auto topoHandler : pointTopologyHandlerList)
     {
         if (topoHandler->isDirty())
         {

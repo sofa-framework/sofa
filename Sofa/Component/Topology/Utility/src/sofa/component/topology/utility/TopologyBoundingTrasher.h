@@ -85,7 +85,7 @@ public:
 public:
     Data<VecCoord> d_positions; ///< position coordinates of the topology object to interact with.
     Data<Vec6>  d_borders; ///< List of boxes defined by xmin,ymin,zmin, xmax,ymax,zmax
-    Data<bool>  d_drawBox; ///< draw bounding box
+    Data<bool>  d_drawBox; ///< Draw bounding box (default = false)
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TopologyBoundingTrasher, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -93,7 +93,7 @@ public:
 
 protected:
     core::topology::BaseMeshTopology::SPtr m_topology;
-    sofa::core::topology::TopologyElementType m_topologyType;
+    sofa::geometry::ElementType m_topologyType;
 
     sofa::core::sptr<container::dynamic::EdgeSetTopologyModifier> edgeModifier;
     sofa::core::sptr<container::dynamic::TriangleSetTopologyModifier> triangleModifier;
@@ -104,7 +104,7 @@ protected:
     type::vector<Index> m_indicesToRemove;
 };
 
-#if  !defined(SOFA_COMPONENT_TOPOLOGY_UTILITY_TOPOLOGYBOUNDINGTRASHER_CPP)
+#if !defined(SOFA_COMPONENT_TOPOLOGY_UTILITY_TOPOLOGYBOUNDINGTRASHER_CPP)
 extern template class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologyBoundingTrasher<sofa::defaulttype::Vec3Types>;
 #endif //  !defined(SOFA_COMPONENT_TOPOLOGY_UTILITY_TOPOLOGYBOUNDINGTRASHER_CPP)
 

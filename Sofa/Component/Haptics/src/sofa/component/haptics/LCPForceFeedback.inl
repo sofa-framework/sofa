@@ -37,7 +37,7 @@ template <typename DataTypes>
 bool derivVectors(const typename DataTypes::VecCoord& x0, const typename DataTypes::VecCoord& x1, typename DataTypes::VecDeriv& d, bool /*derivRotation*/)
 {
     size_t sz0 = x0.size();
-    size_t szmin = std::min(sz0,x1.size());
+    const size_t szmin = std::min(sz0,x1.size());
 
     d.resize(sz0);
     for(size_t i=0; i<szmin; ++i)
@@ -56,7 +56,7 @@ template <typename DataTypes>
 bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename DataTypes::VecCoord& x1, typename DataTypes::VecDeriv& d, bool derivRotation=false)
 {
     size_t sz0 = x0.size();
-    size_t szmin = std::min(sz0,x1.size());
+    const size_t szmin = std::min(sz0,x1.size());
 
     d.resize(sz0);
     for(size_t i=0; i<szmin; ++i)
@@ -121,8 +121,8 @@ namespace sofa::component::haptics
 
 template <class DataTypes>
 LCPForceFeedback<DataTypes>::LCPForceFeedback()
-    : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef."))
-    , solverTimeout(initData(&solverTimeout, 0.0008, "solverTimeout","max time to spend solving constraints."))
+    : d_forceCoef(initData(&d_forceCoef, 0.03, "forceCoef", "multiply haptic force by this coef."))
+    , d_solverTimeout(initData(&d_solverTimeout, 0.0008, "solverTimeout", "max time to spend solving constraints."))
     , d_solverMaxIt(initData(&d_solverMaxIt, 100, "solverMaxIt", "max iteration to spend solving constraints"))
     , d_derivRotations(initData(&d_derivRotations, false, "derivRotations", "if true, deriv the rotations when updating the violations"))
     , d_localHapticConstraintAllFrames(initData(&d_localHapticConstraintAllFrames, false, "localHapticConstraintAllFrames", "Flag to enable/disable constraint haptic influence from all frames"))
@@ -144,13 +144,17 @@ LCPForceFeedback<DataTypes>::LCPForceFeedback()
     _timer = new helper::system::thread::CTime();
     time_buf = _timer->getTime();
     timer_iterations = 0;
+
+    forceCoef.setOriginalData(&d_forceCoef);
+    solverTimeout.setOriginalData(&d_solverTimeout);
+
 }
 
 
 template <class DataTypes>
 void LCPForceFeedback<DataTypes>::init()
 {
-    core::objectmodel::BaseContext* c = this->getContext();
+    const core::objectmodel::BaseContext* c = this->getContext();
 
     this->ForceFeedback::init();
     if(!c)
@@ -203,7 +207,7 @@ void LCPForceFeedback<DataTypes>::updateStats()
 {
     using namespace helper::system::thread;
 
-    ctime_t actualTime = _timer->getTime();
+    const ctime_t actualTime = _timer->getTime();
     ++timer_iterations;
     if (actualTime - time_buf >= sofa::helper::system::thread::CTime::getTicksPerSec())
     {
@@ -216,7 +220,7 @@ void LCPForceFeedback<DataTypes>::updateStats()
 template <class DataTypes>
 bool LCPForceFeedback<DataTypes>::updateConstraintProblem()
 {
-    int prevId = mCurBufferId;
+    const int prevId = mCurBufferId;
 
     //
     // Retrieve the last LCP and constraints computed by the Sofa thread.
@@ -228,9 +232,9 @@ bool LCPForceFeedback<DataTypes>::updateConstraintProblem()
         mCurBufferId = mNextBufferId;
     }
 
-    bool changed = (prevId != mCurBufferId);
+    const bool changed = (prevId != mCurBufferId);
 
-    sofa::component::constraint::lagrangian::solver::ConstraintProblem* cp = mCP[mCurBufferId];
+    const sofa::component::constraint::lagrangian::solver::ConstraintProblem* cp = mCP[mCurBufferId];
 
     if(!cp)
     {
@@ -287,7 +291,7 @@ void LCPForceFeedback<DataTypes>::doComputeForce(const VecCoord& state,  VecDeri
         s_mtx.lock();
 
         // Solving constraints
-        cp->solveTimed(cp->tolerance * 0.001, d_solverMaxIt.getValue(), solverTimeout.getValue());	// tol, maxIt, timeout
+        cp->solveTimed(cp->tolerance * 0.001, d_solverMaxIt.getValue(), d_solverTimeout.getValue());	// d_tol, maxIt, timeout
 
         // Restore Dfree
         for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
@@ -320,7 +324,7 @@ void LCPForceFeedback<DataTypes>::doComputeForce(const VecCoord& state,  VecDeri
 
         for(unsigned int i = 0; i < stateSize; ++i)
         {
-            forces[i] = tempForces[i] * forceCoef.getValue();
+            forces[i] = tempForces[i] * d_forceCoef.getValue();
         }
     }
 }
@@ -346,8 +350,8 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
     // Find available buffer
 
     unsigned char buf_index=0;
-    unsigned char cbuf_index=mCurBufferId;
-    unsigned char nbuf_index=mNextBufferId;
+    const unsigned char cbuf_index=mCurBufferId;
+    const unsigned char nbuf_index=mNextBufferId;
 
     if (buf_index == cbuf_index || buf_index == nbuf_index)
     {
@@ -367,13 +371,13 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
     mCP[buf_index] = new_cp;
 
     // Update Val
-    val = mState->read(sofa::core::VecCoordId::freePosition())->getValue();
+    val = mState->read(sofa::core::vec_id::write_access::freePosition)->getValue();
 
     // Update constraints and id_buf
     constraints.clear();
     //	id_buf.clear();
 
-    const MatrixDeriv& c = mState->read(core::ConstMatrixDerivId::constraintJacobian())->getValue()   ;
+    const MatrixDeriv& c = mState->read(core::vec_id::read_access::constraintJacobian)->getValue()   ;
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 
@@ -381,6 +385,9 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
     {
         constraints.addLine(rowIt.index(), rowIt.row());
     }
+
+    // make sure the MatrixDeriv has been compressed
+    constraints.compress();
 
     // valid buffer
 
@@ -409,9 +416,9 @@ void LCPForceFeedback<DataTypes>::computeForce(SReal , SReal, SReal, SReal, SRea
 
 
 template <typename DataTypes>
-void LCPForceFeedback<DataTypes>::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &,
-        const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &,
-        sofa::defaulttype::SolidTypes<SReal>::SpatialVector & )
+void LCPForceFeedback<DataTypes>::computeWrench(const sofa::type::Transform<SReal> &,
+        const sofa::type::SpatialVector<SReal> &,
+        sofa::type::SpatialVector<SReal> & )
 {
 
 }
@@ -422,9 +429,9 @@ template <>
 void SOFA_COMPONENT_HAPTICS_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeForce(SReal x, SReal y, SReal z, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz);
 
 template <>
-void SOFA_COMPONENT_HAPTICS_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool,
-        const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &/*V_tool_world*/,
-        sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world );
+void SOFA_COMPONENT_HAPTICS_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeWrench(const sofa::type::Transform<SReal> &world_H_tool,
+        const sofa::type::SpatialVector<SReal> &/*V_tool_world*/,
+        sofa::type::SpatialVector<SReal> &W_tool_world );
 
 
 

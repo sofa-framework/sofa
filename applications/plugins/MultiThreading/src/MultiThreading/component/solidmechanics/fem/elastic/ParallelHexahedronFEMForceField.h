@@ -101,7 +101,7 @@ protected:
     sofa::type::vector<sofa::core::topology::BaseMeshTopology::HexahedraAroundVertex> m_around;
 
 private:
-    bool updateStiffnessMatrices; /// cache to avoid calling 'getValue' on f_updateStiffnessMatrix
+    bool updateStiffnessMatrices; /// cache to avoid calling 'getValue' on d_updateStiffnessMatrix
 };
 
 #if  !defined(SOFA_MULTITHREADING_PARALLELHEXAHEDRONFEMFORCEFIELD_CPP)

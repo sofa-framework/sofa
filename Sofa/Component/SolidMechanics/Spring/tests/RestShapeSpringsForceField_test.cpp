@@ -22,7 +22,7 @@
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 using namespace sofa::simpleapi;
 
 #include <sofa/component/solidmechanics/spring/RestShapeSpringsForceField.h>
@@ -37,10 +37,10 @@ using sofa::helper::ReadAccessor;
 using sofa::Data;
 
 /// Test suite for RestShapeSpringsForceField
-class RestStiffSpringsForceField_test : public BaseTest
+class RestSpringsForceField_test : public BaseTest
 {
 public:
-    ~RestStiffSpringsForceField_test() override;
+    ~RestSpringsForceField_test() override;
     sofa::simulation::Node::SPtr createScene(const std::string& type);
 
     template<class Type>
@@ -50,26 +50,26 @@ public:
     void checkDifference(MechanicalObject<Type>& mo, bool isFixed);
 };
 
-RestStiffSpringsForceField_test::~RestStiffSpringsForceField_test()
+RestSpringsForceField_test::~RestSpringsForceField_test()
 {
 }
 
-sofa::simulation::Node::SPtr RestStiffSpringsForceField_test::createScene(const std::string& type)
+sofa::simulation::Node::SPtr RestSpringsForceField_test::createScene(const std::string& type)
 {
-    auto theSimulation = createSimulation();
+    const auto theSimulation = createSimulation();
     auto theRoot = createRootNode(theSimulation, "root");
-    sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
-    sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
-    sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-    sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+    sofa::simpleapi::importPlugin(Sofa.Component.ODESolver.Backward);
+    sofa::simpleapi::importPlugin(Sofa.Component.LinearSolver.Iterative);
+    sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+    sofa::simpleapi::importPlugin(Sofa.Component.Mass);
     
     createObject(theRoot, "DefaultAnimationLoop");
     createObject(theRoot, "EulerImplicitSolver");
     createObject(theRoot, "CGLinearSolver", {{ "iterations", "25" }, { "tolerance", "1e-5" }, {"threshold", "1e-5"}});
 
-    /// Create an object with a mass and use a rest shape spring ff so it stay
+    /// Create an object with a mass and use a rest shape spring ff so it stays
     /// at the initial position
-    auto fixedObject = createChild(theRoot, "fixedObject");
+    const auto fixedObject = createChild(theRoot, "fixedObject");
     auto fixedObject_dofs = createObject(fixedObject, "MechanicalObject", {{"name","dofs"},
                                                                            {"size","10"},
                                                                            {"template",type}});
@@ -77,22 +77,22 @@ sofa::simulation::Node::SPtr RestStiffSpringsForceField_test::createScene(const 
 
     createObject(fixedObject, "RestShapeSpringsForceField", {{"stiffness","1000"}});
 
-    auto movingObject = createChild(theRoot, "movingObject");
+    const auto movingObject = createChild(theRoot, "movingObject");
     auto movingObject_dofs =createObject(movingObject, "MechanicalObject", {{"name","dofs"},
                                                                             {"size","10"},
                                                                             {"template",type}});
     createObject(movingObject, "UniformMass", {{"totalMass", "1"}});
 
-    theSimulation->init(theRoot.get());
+    sofa::simulation::node::initRoot(theRoot.get());
     for(unsigned int i=0;i<20;i++)
     {
-        theSimulation->animate(theRoot.get(), 0.01);
+        sofa::simulation::node::animate(theRoot.get(), 0.01_sreal);
     }
     return theRoot;
 }
 
 template<class Type>
-void RestStiffSpringsForceField_test::checkDifference(MechanicalObject<Type>& mo, bool isFixed)
+void RestSpringsForceField_test::checkDifference(MechanicalObject<Type>& mo, bool isFixed)
 {
     ReadAccessor< Data<typename Type::VecCoord> > positions = mo.x;
     ReadAccessor< Data<typename Type::VecCoord> > rest_positions = mo.x0;
@@ -109,20 +109,20 @@ void RestStiffSpringsForceField_test::checkDifference(MechanicalObject<Type>& mo
         }
         else
         {
-            ASSERT_TRUE( fabs(pos.x()-rpos.x()) < 1 );
-            ASSERT_TRUE( fabs(pos.y()-rpos.y()) < 1 );
-            ASSERT_TRUE( fabs(pos.z()-rpos.z()) < 1 );
+            ASSERT_LT( fabs(pos.x()-rpos.x()), 1 );
+            ASSERT_LT( fabs(pos.y()-rpos.y()), 1 );
+            ASSERT_LT( fabs(pos.z()-rpos.z()), 1 );
         }
     }
 }
 
 template<class Type>
-void RestStiffSpringsForceField_test::testDefaultBehavior(sofa::simulation::Node::SPtr root)
+void RestSpringsForceField_test::testDefaultBehavior(sofa::simulation::Node::SPtr root)
 {
     auto fixedDofs = dynamic_cast<MechanicalObject<Type>*>(root->getChild("fixedObject")->getObject("dofs"));
     ASSERT_TRUE( fixedDofs != nullptr );
 
-    auto movingDofs = dynamic_cast<MechanicalObject<Type>*>(root->getChild("fixedObject")->getObject("dofs"));
+    auto movingDofs = dynamic_cast<MechanicalObject<Type>*>(root->getChild("movingObject")->getObject("dofs"));
     ASSERT_TRUE( movingDofs != nullptr );
 
     checkDifference(*fixedDofs, true);
@@ -130,12 +130,12 @@ void RestStiffSpringsForceField_test::testDefaultBehavior(sofa::simulation::Node
 }
 
 
-TEST_F(RestStiffSpringsForceField_test, defaultBehaviorVec3)
+TEST_F(RestSpringsForceField_test, defaultBehaviorVec3)
 {
     this->testDefaultBehavior<Vec3Types>(this->createScene("Vec3"));
 }
 
-TEST_F(RestStiffSpringsForceField_test, defaultBehaviorRigid3)
+TEST_F(RestSpringsForceField_test, defaultBehaviorRigid3)
 {
     this->testDefaultBehavior<sofa::defaulttype::Rigid3Types>(this->createScene("Rigid3"));
 }

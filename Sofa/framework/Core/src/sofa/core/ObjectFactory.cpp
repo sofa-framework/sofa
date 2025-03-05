@@ -26,6 +26,7 @@
 #include <sofa/helper/ComponentChange.h>
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/DiffLib.h>
+#include <sofa/helper/system/PluginManager.h>
 
 namespace sofa::core
 {
@@ -36,8 +37,9 @@ ObjectFactory::~ObjectFactory()
 
 ObjectFactory::ClassEntry& ObjectFactory::getEntry(std::string classname)
 {
-    if (registry.find(classname) == registry.end()) {
-        registry[classname] = ClassEntry::SPtr(new ClassEntry);
+    if (!registry.contains(classname))
+    {
+        registry[classname] = std::make_shared<ClassEntry>();
         registry[classname]->className = classname;
     }
 
@@ -47,10 +49,10 @@ ObjectFactory::ClassEntry& ObjectFactory::getEntry(std::string classname)
 /// Test if a creator exists for a given classname
 bool ObjectFactory::hasCreator(std::string classname)
 {
-    ClassEntryMap::iterator it = registry.find(classname);
+    const ClassEntryMap::iterator it = registry.find(classname);
     if (it == registry.end())
         return false;
-    ClassEntry::SPtr entry = it->second;
+    const ClassEntry::SPtr entry = it->second;
     return (!entry->creatorMap.empty());
 }
 
@@ -58,14 +60,14 @@ std::string ObjectFactory::shortName(std::string classname)
 {
     std::string shortname;
 
-    ClassEntryMap::iterator it = registry.find(classname);
+    const ClassEntryMap::iterator it = registry.find(classname);
     if (it != registry.end())
     {
-        ClassEntry::SPtr entry = it->second;
+        const ClassEntry::SPtr entry = it->second;
         if(!entry->creatorMap.empty())
         {
-            CreatorMap::iterator myit = entry->creatorMap.begin();
-            Creator::SPtr c = myit->second;
+            const CreatorMap::iterator myit = entry->creatorMap.begin();
+            const Creator::SPtr c = myit->second;
             shortname = c->getClass()->shortName;
         }
     }
@@ -76,14 +78,14 @@ bool ObjectFactory::addAlias(std::string name, std::string target, bool force,
                              ClassEntry::SPtr* previous)
 {
     // Check that the pointed class does exist
-    ClassEntryMap::iterator it = registry.find(target);
+    const ClassEntryMap::iterator it = registry.find(target);
     if (it == registry.end())
     {
         msg_error("ObjectFactory::addAlias()") << "Target class for alias '" << target << "' not found: " << name;
         return false;
     }
 
-    ClassEntry::SPtr& pointedEntry = it->second;
+    const ClassEntry::SPtr& pointedEntry = it->second;
     ClassEntry::SPtr& aliasEntry = registry[name];
 
     // Check that the alias does not already exist, unless 'force' is true
@@ -94,7 +96,7 @@ bool ObjectFactory::addAlias(std::string name, std::string target, bool force,
     }
 
     if (previous) {
-        ClassEntry::SPtr& entry = aliasEntry;
+        const ClassEntry::SPtr& entry = aliasEntry;
         *previous = entry;
     }
 
@@ -108,6 +110,34 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
     registry[name] = previous;
 }
 
+
+void findTemplatedCreator(
+    objectmodel::BaseContext* context,
+    const ObjectFactory::Creator::SPtr& creator, const std::string& templateName,
+    std::map<std::string, std::vector<std::string>>& creatorsErrors,
+    std::vector< std::pair<std::string, ObjectFactory::Creator::SPtr> >& creators,
+    objectmodel::BaseObjectDescription* arg)
+{
+    if (helper::system::PluginManager::getInstance().isPluginUnloaded(creator->getTarget()))
+    {
+        creatorsErrors[templateName].emplace_back(
+            "The object was previously registered, but the module that "
+            "registered the object has been unloaded, preventing the object creation.");
+        arg->clearErrors();
+    }
+    else
+    {
+        if (creator->canCreate(context, arg))
+        {
+            creators.emplace_back(templateName, creator);
+        }
+        else
+        {
+            creatorsErrors[templateName] = arg->getErrors();
+            arg->clearErrors();
+        }
+    }
+}
 
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
@@ -149,48 +179,46 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+    //Check if object has been renamed
+
+    using sofa::helper::lifecycle::renamedComponents;
+    auto renamedComponent = renamedComponents.find(classname);
+    if( renamedComponent != renamedComponents.end() )
+    {
+        classname = renamedComponent->second.getNewName();
+    }
+
+
     // In order to get the errors from the creators only, we save the current errors at this point
     // and we clear them. Once we extracted the errors from the creators, we put push them back.
     std::map<std::string, std::vector<std::string>> creators_errors; // (template_name, errors)
     const auto previous_errors = arg->getErrors();
     arg->clearErrors();
 
-    // For every classes in the registery
+    // For every classes in the registry
     ClassEntryMap::iterator it = registry.find(classname);
     if (it != registry.end()) // Found the classname
     {
         entry = it->second;
         // If no template has been given or if the template does not exist, first try with the default one
-        if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
+        if(templatename.empty() || !entry->creatorMap.contains(templatename))
             templatename = entry->defaultTemplate;
 
-        CreatorMap::iterator it2 = entry->creatorMap.find(templatename);
-        if (it2 != entry->creatorMap.end())
+
+        if (auto it2 = entry->creatorMap.find(templatename);
+            it2 != entry->creatorMap.end())
         {
-            Creator::SPtr c = it2->second;
-            if (c->canCreate(context, arg)) {
-                creators.push_back(*it2);
-            } else {
-                creators_errors[templatename] = arg->getErrors();
-                arg->clearErrors();
-            }
+            findTemplatedCreator(context, it2->second, it2->first, creators_errors, creators, arg);
         }
 
         // If object cannot be created with the given template (or the default one), try all possible ones
         if (creators.empty())
         {
-            CreatorMap::iterator it3;
-            for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
+            for (const auto& [creatorTemplateName, creator] : entry->creatorMap)
             {
-                if (it3->first == templatename)
-                    continue; // We already tried to create the object with the specified (or default) template
-
-                Creator::SPtr c = it3->second;
-                if (c->canCreate(context, arg)){
-                    creators.push_back(*it3);
-                } else {
-                    creators_errors[it3->first] = arg->getErrors();
-                    arg->clearErrors();
+                if (creatorTemplateName != templatename)
+                {
+                    findTemplatedCreator(context, creator, creatorTemplateName, creators_errors, creators, arg);
                 }
             }
         }
@@ -206,13 +234,42 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
 
         using sofa::helper::lifecycle::ComponentChange;
         using sofa::helper::lifecycle::uncreatableComponents;
+        using sofa::helper::lifecycle::movedComponents;
+        using sofa::helper::lifecycle::dealiasedComponents;
         if(it == registry.end())
         {
-            arg->logError("The object '" + classname + "' is not in the factory.");
-            auto uuncreatableComponent = uncreatableComponents.find(classname);
-            if( uuncreatableComponent != uncreatableComponents.end() )
+            arg->logError("The component '" + classname + "' cannot be found in the factory.");
+            auto uncreatableComponent = uncreatableComponents.find(classname);
+            auto movedComponent = movedComponents.find(classname);
+            auto dealiasedComponent = dealiasedComponents.find(classname);
+
+            const bool isUncreatable =  uncreatableComponent != uncreatableComponents.end();
+            const bool isMoved = movedComponent != movedComponents.end();
+            const bool isDealiased = dealiasedComponent != dealiasedComponents.end();
+
+            const bool multipleReasons = static_cast<std::size_t>(isUncreatable) + static_cast<std::size_t>(isMoved) + static_cast<std::size_t>(isDealiased) > 1;
+            std::size_t reasonNumber = 1;
+            const auto number = [&reasonNumber, multipleReasons]() -> std::string
             {
-                arg->logError( uuncreatableComponent->second.getMessage() );
+                return multipleReasons ? std::to_string(reasonNumber++) + ") " : "";
+            };
+
+            if (multipleReasons)
+            {
+                arg->logError("Several reasons are possible:");
+            }
+
+            if(isUncreatable)
+            {
+                arg->logError(number() + uncreatableComponent->second.getMessage() );
+            }
+            if (isMoved)
+            {
+                arg->logError(number() + movedComponent->second.getMessage() );
+            }
+            if (isDealiased)
+            {
+                arg->logError(number() + dealiasedComponent->second.getMessage());
             }
             else
             {
@@ -223,7 +280,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                     possibleNames.emplace_back(k.first);
                 }
 
-                arg->logError("But the following exits:");
+                arg->logError("But the following object(s) exist:");
                 for(auto& [name, score] : sofa::helper::getClosestMatch(classname, possibleNames, 5, 0.6))
                 {
                     arg->logError( "                      : " + name + " ("+ std::to_string((int)(100*score))+"% match)");
@@ -378,16 +435,44 @@ ObjectFactory* ObjectFactory::getInstance()
     return &instance;
 }
 
-void ObjectFactory::getAllEntries(std::vector<ClassEntry::SPtr>& result)
+void ObjectFactory::getAllEntries(std::vector<ClassEntry::SPtr>& result, const bool filterUnloadedPlugins)
 {
     result.clear();
-    for(ClassEntryMap::iterator it = registry.begin(), itEnd = registry.end();
-        it != itEnd; ++it)
+    for (const auto& [className, entry] : registry)
     {
-        ClassEntry::SPtr entry = it->second;
         // Push the entry only if it is not an alias
-        if (entry->className == it->first)
+        if (entry->className == className)
+        {
             result.push_back(entry);
+        }
+    }
+
+    if (filterUnloadedPlugins)
+    {
+        for (auto itEntry = result.begin(); itEntry != result.end();)
+        {
+            auto& creatorMap = (*itEntry)->creatorMap;
+            for (auto itCreator = creatorMap.begin(); itCreator != creatorMap.end();)
+            {
+                if (helper::system::PluginManager::getInstance().isPluginUnloaded(itCreator->second->getTarget()))
+                {
+                    itCreator = creatorMap.erase(itCreator);
+                }
+                else
+                {
+                    ++itCreator;
+                }
+            }
+
+            if (creatorMap.empty())
+            {
+                itEntry = result.erase(itEntry);
+            }
+            else
+            {
+                ++itEntry;
+            }
+        }
     }
 }
 
@@ -404,7 +489,7 @@ void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result, 
             bool inTarget = false;
             for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
             {
-                Creator::SPtr c = itc->second;
+                const Creator::SPtr c = itc->second;
                 if (target == c->getTarget())
                 {
                     inTarget = true;
@@ -435,7 +520,7 @@ void ObjectFactory::dump(std::ostream& out)
 {
     for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
     {
-        ClassEntry::SPtr entry = it->second;
+        const ClassEntry::SPtr entry = it->second;
         if (entry->className != it->first) continue;
         out << "class " << entry->className <<" :\n";
         if (!entry->aliases.empty())
@@ -451,6 +536,8 @@ void ObjectFactory::dump(std::ostream& out)
             out << "  authors : " << entry->authors << "\n";
         if (!entry->license.empty())
             out << "  license : " << entry->license << "\n";
+        if (!entry->documentationURL.empty())
+            out << "  documentation : " << entry->documentationURL << "\n";
         for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
         {
             out << "  template instance : " << itc->first << "\n";
@@ -480,7 +567,7 @@ void ObjectFactory::dumpXML(std::ostream& out)
 {
     for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
     {
-        ClassEntry::SPtr entry = it->second;
+        const ClassEntry::SPtr entry = it->second;
         if (entry->className != it->first) continue;
         out << "<class name=\"" << xmlencode(entry->className) <<"\">\n";
         for (std::set<std::string>::iterator myit = entry->aliases.begin(), itend = entry->aliases.end(); myit != itend; ++myit)
@@ -491,6 +578,8 @@ void ObjectFactory::dumpXML(std::ostream& out)
             out << "<authors>"<<entry->authors<<"</authors>\n";
         if (!entry->license.empty())
             out << "<license>"<<entry->license<<"</license>\n";
+        if (!entry->documentationURL.empty())
+            out << "<documentation>"<<entry->documentationURL<<"</documentation>\n";
         for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
         {
             out << "<creator";
@@ -506,7 +595,7 @@ void ObjectFactory::dumpHTML(std::ostream& out)
     out << "<ul>\n";
     for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
     {
-        ClassEntry::SPtr entry = it->second;
+        const ClassEntry::SPtr entry = it->second;
         if (entry->className != it->first) continue;
         out << "<li><b>" << xmlencode(entry->className) <<"</b>\n";
         if (!entry->description.empty())
@@ -523,6 +612,8 @@ void ObjectFactory::dumpHTML(std::ostream& out)
             out << "<li>Authors: <i>"<<entry->authors<<"</i></li>\n";
         if (!entry->license.empty())
             out << "<li>License: <i>"<<entry->license<<"</i></li>\n";
+        if (!entry->documentationURL.empty())
+            out << "<li>Documentation: <i>"<<entry->documentationURL<<"</i></li>\n";
         if (entry->creatorMap.size()>2 || (entry->creatorMap.size()==1 && !entry->creatorMap.begin()->first.empty()))
         {
             out << "<li>Template instances:<i>";
@@ -541,7 +632,12 @@ void ObjectFactory::dumpHTML(std::ostream& out)
     out << "</ul>\n";
 }
 
-RegisterObject::RegisterObject(const std::string& description)
+bool ObjectFactory::registerObjects(ObjectRegistrationData& ro)
+{
+    return ro.commitTo(this);
+}
+
+ObjectRegistrationData::ObjectRegistrationData(const std::string& description)
 {
     if (!description.empty())
     {
@@ -549,42 +645,48 @@ RegisterObject::RegisterObject(const std::string& description)
     }
 }
 
-RegisterObject& RegisterObject::addAlias(std::string val)
+ObjectRegistrationData& ObjectRegistrationData::addAlias(std::string val)
 {
     entry.aliases.insert(val);
     return *this;
 }
 
-RegisterObject& RegisterObject::addDescription(std::string val)
+ObjectRegistrationData& ObjectRegistrationData::addDescription(std::string val)
 {
     val += '\n';
     entry.description += val;
     return *this;
 }
 
-RegisterObject& RegisterObject::addAuthor(std::string val)
+ObjectRegistrationData& ObjectRegistrationData::addAuthor(std::string val)
 {
     val += ' ';
     entry.authors += val;
     return *this;
 }
 
-RegisterObject& RegisterObject::addLicense(std::string val)
+ObjectRegistrationData& ObjectRegistrationData::addLicense(std::string val)
 {
     entry.license += val;
     return *this;
 }
 
-RegisterObject& RegisterObject::addCreator(std::string classname,
+ObjectRegistrationData& ObjectRegistrationData::addDocumentationURL(std::string url)
+{
+    entry.documentationURL += url;
+    return *this;
+}
+
+ObjectRegistrationData& ObjectRegistrationData::addCreator(std::string classname,
                                            std::string templatename,
                                            ObjectFactory::Creator::SPtr creator)
 {
 
     if (!entry.className.empty() && entry.className != classname)
     {
-        msg_error("ObjectFactory") << "Template already instanciated with a different classname: " << entry.className << " != " << classname;
+        msg_error("ObjectFactory") << "Template already instantiated with a different classname: " << entry.className << " != " << classname;
     }
-    else if (entry.creatorMap.find(templatename) != entry.creatorMap.end())
+    else if (entry.creatorMap.contains(templatename))
     {
         msg_error("ObjectFactory") << "Component already registered: " << classname << "<" << templatename << ">";
     }
@@ -596,18 +698,19 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
     return *this;
 }
 
-RegisterObject::operator int()
+bool ObjectRegistrationData::commitTo(sofa::core::ObjectFactory* objectFactory) const
 {
-    if (entry.className.empty())
+    if (entry.className.empty() || objectFactory == nullptr)
     {
-        return 0;
+        return false;
     }
     else
     {
-        ObjectFactory::ClassEntry& reg = ObjectFactory::getInstance()->getEntry(entry.className);
+        ObjectFactory::ClassEntry& reg = objectFactory->getEntry(entry.className);
         reg.description += entry.description;
         reg.authors += entry.authors;
         reg.license += entry.license;
+        reg.documentationURL += entry.documentationURL;
         if (!entry.defaultTemplate.empty())
         {
             if (!reg.defaultTemplate.empty())
@@ -619,29 +722,131 @@ RegisterObject::operator int()
                 reg.defaultTemplate = entry.defaultTemplate;
             }
         }
-        for (auto & creator_entry : entry.creatorMap)
+        for (const auto& creator_entry : entry.creatorMap)
         {
             const std::string & template_name = creator_entry.first;
-            if (reg.creatorMap.find(template_name) != reg.creatorMap.end()) {
-                if (template_name.empty()) {
-                    msg_warning("ObjectFactory") << "Class already registered: " << entry.className;
-                } else {
-                    msg_warning("ObjectFactory") << "Class already registered: " << entry.className << "<" << template_name << ">";
+            const auto [it, success] = reg.creatorMap.insert(creator_entry);
+            if (!success)
+            {
+                std::string classType = entry.className;
+                if (!template_name.empty())
+                {
+                    classType += "<" + template_name + ">";
                 }
-            } else {
-                reg.creatorMap.insert(creator_entry);
+
+                msg_warning("ObjectFactory") << "Class already registered in the ObjectFactory: " << classType;
             }
         }
 
         for (const auto & alias : entry.aliases)
         {
-            if (reg.aliases.find(alias) == reg.aliases.end())
+            if (!reg.aliases.contains(alias))
             {
-                ObjectFactory::getInstance()->addAlias(alias,entry.className);
+                objectFactory->addAlias(alias,entry.className);
             }
         }
-        return 1;
+        return true;
     }
+
+}
+
+typedef struct ObjectRegistrationEntry
+{
+    inline static const char* symbol = "registerObjects";
+    typedef void (*FuncPtr) (sofa::core::ObjectFactory*);
+    FuncPtr func;
+    void operator()(sofa::core::ObjectFactory* data)
+    {
+        if (func) return func(data);
+    }
+    ObjectRegistrationEntry() :func(nullptr) {}
+} ObjectRegistrationEntry;
+
+bool ObjectFactory::registerObjectsFromPlugin(const std::string& pluginName)
+{
+    sofa::helper::system::PluginManager& pluginManager = sofa::helper::system::PluginManager::getInstance();
+    auto* plugin = pluginManager.getPlugin(pluginName);
+    if (plugin == nullptr)
+    {
+        msg_error("ObjectFactory") << pluginName << " has not been loaded yet.";
+        return false;
+    }
+
+    // do not register if it was already done before
+    if(m_registeredPluginSet.contains(pluginName))
+    {
+        // This warning should be generalized (i.e not only in dev mode) when runSofa will not auto-load modules/plugins by default anymore
+        // Commented warning since it is triggered even for SOFA meta-modules (e.g. Sofa.Components)
+        // dmsg_warning("ObjectFactory") << pluginName << " has already registered its components.";
+        return false;
+    }
+
+    ObjectRegistrationEntry registerObjects;
+    if (pluginManager.getEntryFromPlugin(plugin, registerObjects))
+    {
+        registerObjects(this);
+        m_registeredPluginSet.insert(pluginName);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+RegisterObject::RegisterObject(const std::string& description)
+    : m_objectRegistrationdata(description)
+{
+
+}
+
+RegisterObject& RegisterObject::addAlias(std::string val)
+{
+    m_objectRegistrationdata.addAlias(val);
+    return *this;
+}
+
+RegisterObject& RegisterObject::addDescription(std::string val)
+{
+    m_objectRegistrationdata.addDescription(val);
+    return *this;
+}
+
+RegisterObject& RegisterObject::addAuthor(std::string val)
+{
+    m_objectRegistrationdata.addAuthor(val);
+    return *this;
+}
+
+RegisterObject& RegisterObject::addLicense(std::string val)
+{
+    m_objectRegistrationdata.addLicense(val);
+    return *this;
+}
+
+RegisterObject& RegisterObject::addDocumentationURL(std::string url)
+{
+    m_objectRegistrationdata.addDocumentationURL(url);
+    return *this;
+}
+
+RegisterObject& RegisterObject::addCreator(std::string classname, std::string templatename,
+    ObjectFactory::Creator::SPtr creator)
+{
+    m_objectRegistrationdata.addCreator(classname, templatename, creator);
+    return *this;
+}
+
+RegisterObject::operator int() const
+{
+    dmsg_warning("RegisterObject") << m_objectRegistrationdata.entry.className
+                                  << ": Implicit object registration is deprecated since v24.12. Check #4429 for more information.";
+    return commitTo(ObjectFactory::getInstance());
+}
+
+int RegisterObject::commitTo(ObjectFactory* factory) const
+{
+    return (m_objectRegistrationdata.commitTo(factory) ? 1 : 0);
 }
 
 } // namespace sofa::core

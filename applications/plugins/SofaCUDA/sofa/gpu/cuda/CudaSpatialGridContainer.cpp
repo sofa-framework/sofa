@@ -23,13 +23,8 @@
 #include <sofa/component/statecontainer/MechanicalObject.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
 
-namespace component
-{
-
-namespace container
+namespace sofa::component::container
 {
 
 using namespace sofa::defaulttype;
@@ -51,8 +46,8 @@ template class SpatialGrid< SpatialGridTypes< CudaVec3dTypes > >;
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace container
+} // namespace sofa::component::container
 
-} // namespace component
 
-} // namespace sofa
+
+

@@ -32,15 +32,14 @@ BarycentricMapperEdgeSetTopology<In,Out>::BarycentricMapperEdgeSetTopology(sofa:
 {}
 
 template <class In, class Out>
-typename BarycentricMapperEdgeSetTopology<In, Out>::Index BarycentricMapperEdgeSetTopology<In,Out>::addPointInLine ( const Index edgeIndex, const SReal* baryCoords )
+auto BarycentricMapperEdgeSetTopology<In,Out>::addPointInLine ( const Index edgeIndex, const SReal* baryCoords ) -> Index
 {
-    type::vector<MappingData>& vectorData = *(d_map.beginEdit());
-    vectorData.resize ( d_map.getValue().size() +1 );
-    d_map.endEdit();
-    MappingData& data = *vectorData.rbegin();
+    auto vectorData = sofa::helper::getWriteAccessor(d_map);
+    MappingData data;
     data.in_index = edgeIndex;
-    data.baryCoords[0] = ( Real ) baryCoords[0];
-    return Size(d_map.getValue().size()-1);
+    data.baryCoords[0] = static_cast<Real>(baryCoords[0]);
+    vectorData->emplace_back(data);
+    return static_cast<Index>(vectorData.size() - 1u);
 }
 
 template <class In, class Out>

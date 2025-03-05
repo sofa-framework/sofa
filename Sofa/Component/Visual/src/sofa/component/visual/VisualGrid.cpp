@@ -28,26 +28,26 @@
 namespace sofa::component::visual
 {
 
-int VisualGridClass = core::RegisterObject("Display a simple grid")
-        .add< VisualGrid>()
-        ;
+void registerVisualGrid(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Display a simple grid.")
+        .add< VisualGrid >());
+}
 
 using namespace sofa::defaulttype;
 
 VisualGrid::VisualGrid()
-    : d_plane(initData(&d_plane, std::string("z"),  "plane", "Plane of the grid"))
+    : d_plane(initData(&d_plane, PlaneType("z"),  "plane", ("Plane of the grid\n"+PlaneType::dataDescription()).c_str()))
     , d_size(initData(&d_size, 10.0f,  "size", "Size of the squared grid"))
     , d_nbSubdiv(initData(&d_nbSubdiv, 16,  "nbSubdiv", "Number of subdivisions"))
     , d_color(initData(&d_color, sofa::type::RGBAColor(0.34117647058f,0.34117647058f,0.34117647058f,1.0f),  "color", "Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)"))
     , d_thickness(initData(&d_thickness, 1.0f,  "thickness", "Thickness of the lines in the grid"))
-    , d_draw(initData(&d_draw, true,  "draw", "Display the grid or not"))
-    , internalPlane(PLANE_Z)
 {
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
     addUpdateCallback("buildGrid", {&d_plane, &d_size, &d_nbSubdiv}, [this](const core::DataTracker& t)
     {
         SOFA_UNUSED(t);
-        updateVisual();
+        updateGrid();
         return sofa::core::objectmodel::ComponentState::Valid;
     }, {});
 }
@@ -55,54 +55,23 @@ VisualGrid::VisualGrid()
 void VisualGrid::init()
 {
     Inherit1::init();
-    updateVisual();
+    updateGrid();
 
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 void VisualGrid::reinit()
 {
-    updateVisual();
+    updateGrid();
 }
 
-void VisualGrid::updateVisual()
+void VisualGrid::doUpdateVisual(const core::visual::VisualParams*)
 {
-    const auto planeValue = d_plane.getValue();
+    updateGrid();
+}
 
-    if (planeValue == "x" ||
-             planeValue == "X" ||
-            planeValue == "zOy" ||
-            planeValue == "ZOY" ||
-            planeValue == "yOz" ||
-            planeValue == "YOZ")
-    {
-        internalPlane = PLANE_X;
-    }
-    else if (planeValue == "y" ||
-             planeValue == "Y" ||
-             planeValue == "zOx" ||
-             planeValue == "ZOX" ||
-             planeValue == "xOz" ||
-             planeValue == "XOZ")
-    {
-        internalPlane = PLANE_Y;
-    }
-    else if (planeValue == "z" ||
-             planeValue == "Z" ||
-             planeValue == "xOy" ||
-             planeValue == "XOY" ||
-             planeValue == "yOx" ||
-             planeValue == "YOX")
-    {
-        internalPlane = PLANE_Z;
-    }
-    else
-    {
-        msg_error() << "Plane parameter " << d_plane.getValue() << " not recognized. Set to z instead";
-        d_plane.setValue("z");
-        internalPlane = PLANE_Z;
-    }
-
+void VisualGrid::updateGrid()
+{
     const int nb = d_nbSubdiv.getValue();
     if (nb < 2)
     {
@@ -116,8 +85,9 @@ void VisualGrid::updateVisual()
     auto s = d_size.getValue() * 0.5f;
     sofa::type::Vec3f min(-s, -s, -s);
     sofa::type::Vec3f max( s,  s,  s);
-    min[internalPlane] = -s * 0.2f;
-    max[internalPlane] =  s * 0.2f;
+    const auto& plane = d_plane.getValue();
+    min[static_cast<unsigned int>(plane)] = -s * 0.2f;
+    max[static_cast<unsigned int>(plane)] =  s * 0.2f;
     f_bbox.setValue(sofa::type::BoundingBox(min,max));
 }
 
@@ -133,9 +103,9 @@ void VisualGrid::buildGrid()
 
     m_drawnPoints.reserve(4u * (nb + 1));
 
-    switch(internalPlane)
+    switch(d_plane.getValue())
     {
-    case PLANE_X:
+    case PlaneType("x"):
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
             m_drawnPoints.emplace_back(0.0, -hs + i * s_nb, -hs);
@@ -147,7 +117,7 @@ void VisualGrid::buildGrid()
             m_drawnPoints.emplace_back(0.0,  hs, -hs + i * s_nb);
         }
         break;
-    case PLANE_Y:
+    case PlaneType("y"):
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
             m_drawnPoints.emplace_back(-hs, 0.0, -hs + i * s_nb);
@@ -159,7 +129,8 @@ void VisualGrid::buildGrid()
             m_drawnPoints.emplace_back(-hs + i * s_nb, 0.0,  hs);
         }
         break;
-    case PLANE_Z:
+    case PlaneType("z"):
+    default:
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
             m_drawnPoints.emplace_back(-hs, -hs + i * s_nb, 0.0);
@@ -174,17 +145,10 @@ void VisualGrid::buildGrid()
     }
 }
 
-void VisualGrid::drawVisual(const core::visual::VisualParams* vparams)
+void VisualGrid::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if (!d_draw.getValue()) return;
-
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
-
     vparams->drawTool()->drawLines(m_drawnPoints, d_thickness.getValue(), d_color.getValue());
-
-
-
 }
 
 } // namespace sofa::component::visual

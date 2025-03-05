@@ -79,7 +79,7 @@ See e.g. Compliant_test.
 
 - Force field: Force field tests should derive from the base class ForceField_test.h available in  plugin SofaTest.This base class creates a minimal scene with a mechanical object and a forcefield. Then call  the function run_test with positions, velocities and the corresponding expected forces. This function automatically checks not only the forces (function addForce), but also the stiffness (methods addDForce and addKToMatrix), using finite differences.
 
-For example, see StiffSpringForceField_test or QuadPressureForceField_test.
+For example, see SpringForceField_test or QuadPressureForceField_test.
 
 - Mapping: Mapping tests should derive from the base class Mapping_test.h available in plugin SofaTest.This base class creates a scene with two mechanical objects (parent and children nodes) and a mapping between them. Then it compares the actual output positions with the expected ones and automatically tests the methods related to Jacobian (applyJ, applyJT, applyDJT and getJs).
 
@@ -95,9 +95,9 @@ Other solver tests are available in Compliant_test: AssembledSolver_test and Dam
     -if constrained particle have the expected position.
     -if unconstrained particle have not changed.
 
-Some projective constraint tests are available in SofaTest_test: ProjectToLineConstraint and ProjectToPlaneConstraint.
+Some projective constraint tests are available in SofaTest_test: LineProjectiveConstraint and ProjectToPlaneConstraint.
 
-- Engine test: To test engine you set input values and check if the ouput values correspond to the expected ones. The test Engine_test tests if the update method is called only if necessary. To test this a minimal engine TestEngine was created with a counter in its update method.
+- Engine test: To test engine you set input values and check if the output values correspond to the expected ones. The test Engine_test tests if the update method is called only if necessary. To test this a minimal engine TestEngine was created with a counter in its update method.
 
 
 <h3> Test entirely written in python </h3>
@@ -135,7 +135,7 @@ For example:
 - to test force field you need to have a mechanical object
 - to test mapping you need to have two mechanical objects and a mapping between them.
 For mapping and force field, two base classes are available in SofaTest.
-Then to test a force field/mapping, you just have to create a class inherited from the base class ForceField_test/Mapping_test (see StiffSpringForceField_test.cpp/RigidMapping_test.cpp in SofaTest_test).
+Then to test a force field/mapping, you just have to create a class inherited from the base class ForceField_test/Mapping_test (see SpringForceField_test.cpp/RigidMapping_test.cpp in SofaTest_test).
 
 To do a middle-level test, one needs to create the minimal scene necessary to test the component. Then one can directly test the function (for example AddForce() for force, apply() for mapping).
 

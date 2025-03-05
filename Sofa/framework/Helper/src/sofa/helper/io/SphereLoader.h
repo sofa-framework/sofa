@@ -26,13 +26,8 @@
 
 #include <sofa/type/Vec.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 /// @brief Inherit this class to load data from sphere description.
@@ -51,7 +46,7 @@ public:
     /// This method is called by the XspLoader when the loading is done.
     /// Overriding this method allows client-code to implement post-loading checking.
     /// @param isOk is set to false this means that the loading code detected a
-    /// problem and that the loaded informations are invalid and should be removed from
+    /// problem and that the loaded information are invalid and should be removed from
     /// the container.
     virtual void finalizeLoading(const bool isOk){ SOFA_UNUSED(isOk); }
 
@@ -72,7 +67,7 @@ public:
     /// @param filename the name of the file in the RessourceRepository to read data from.
     /// @param data pass a object of this type (or inherit one) to load the file in caller's data
     ///        structures
-    /// @return wheter the loading succeded.
+    /// @return whether the loading succeeded.
     /// @example
     /// class MySphereData : public SphereLoaderDataHook
     /// {
@@ -94,10 +89,7 @@ public:
     static bool Load(const std::string& filename, SphereLoaderDataHook& data);
 };
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif

@@ -21,11 +21,11 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 
 #include <sofa/core/Mapping.h>
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/TopologyTypes.h>
 
 #include <sofa/component/mapping/linear/Mesh2PointTopologicalMapping.h>
 
@@ -35,12 +35,12 @@ namespace sofa::component::mapping::linear
 {
 
 template <class TIn, class TOut>
-class Mesh2PointMechanicalMapping : public core::Mapping<TIn, TOut>
+class Mesh2PointMechanicalMapping : public LinearMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(Mesh2PointMechanicalMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(Mesh2PointMechanicalMapping,TIn,TOut), SOFA_TEMPLATE2(LinearMapping,TIn,TOut));
 
-    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef LinearMapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
 
@@ -76,15 +76,14 @@ public:
 
     void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
 
-protected:
-    Mesh2PointTopologicalMapping* topoMap;
-    core::topology::BaseMeshTopology* inputTopo;
-    core::topology::BaseMeshTopology* outputTopo;
+    SingleLink<Mesh2PointMechanicalMapping, Mesh2PointTopologicalMapping, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topologicalMapping;
+    SingleLink<Mesh2PointMechanicalMapping, core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_inputTopology;
+    SingleLink<Mesh2PointMechanicalMapping, core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_outputTopology;
 };
 
 
 
-#if  !defined(SOFA_COMPONENT_MAPPING_MESH2POINTMECHANICALMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_MESH2POINTMECHANICALMAPPING_CPP)
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API Mesh2PointMechanicalMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
 #endif
 

@@ -50,15 +50,14 @@ template <class In, class Out>
 typename BarycentricMapperHexahedronSetTopology<In, Out>::Index 
 BarycentricMapperHexahedronSetTopology<In,Out>::addPointInCube ( const Index cubeIndex, const SReal* baryCoords )
 {
-    type::vector<MappingData>& vectorData = *(d_map.beginEdit());
-    vectorData.resize ( d_map.getValue().size() +1 );
-    MappingData& data = *vectorData.rbegin();
-    d_map.endEdit();
+    auto vectorData = sofa::helper::getWriteAccessor(d_map);
+    MappingData data;
     data.in_index = cubeIndex;
-    data.baryCoords[0] = ( Real ) baryCoords[0];
-    data.baryCoords[1] = ( Real ) baryCoords[1];
-    data.baryCoords[2] = ( Real ) baryCoords[2];
-    return (int)d_map.getValue().size()-1;
+    data.baryCoords[0] = static_cast<Real>(baryCoords[0]);
+    data.baryCoords[1] = static_cast<Real>(baryCoords[1]);
+    data.baryCoords[2] = static_cast<Real>(baryCoords[2]);
+    vectorData->emplace_back(data);
+    return static_cast<Index>(vectorData.size() - 1u);
 }
 
 
@@ -66,16 +65,16 @@ template <class In, class Out>
 typename BarycentricMapperHexahedronSetTopology<In, Out>::Index 
 BarycentricMapperHexahedronSetTopology<In,Out>::setPointInCube ( const Index pointIndex, const Index cubeIndex, const SReal* baryCoords )
 {
-    if ( pointIndex >= d_map.getValue().size() )
+    auto vectorData = sofa::helper::getWriteAccessor(d_map);
+
+    if ( pointIndex >= vectorData.size() )
         return sofa::InvalidID;
 
-    type::vector<MappingData>& vectorData = *(d_map.beginEdit());
     MappingData& data = vectorData[pointIndex];
     data.in_index = cubeIndex;
-    data.baryCoords[0] = ( Real ) baryCoords[0];
-    data.baryCoords[1] = ( Real ) baryCoords[1];
-    data.baryCoords[2] = ( Real ) baryCoords[2];
-    d_map.endEdit();
+    data.baryCoords[0] = static_cast<Real>(baryCoords[0]);
+    data.baryCoords[1] = static_cast<Real>(baryCoords[1]);
+    data.baryCoords[2] = static_cast<Real>(baryCoords[2]);
 
     if(cubeIndex == sofa::InvalidID)
         m_invalidIndex.insert(pointIndex);
@@ -162,8 +161,8 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
     if ( this->m_fromTopology->beginChange() == this->m_fromTopology->endChange() )
         return;
 
-    std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->m_fromTopology->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->m_fromTopology->endChange();
+    const std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->m_fromTopology->beginChange();
+    const std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->m_fromTopology->endChange();
 
     for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
             changeIt != itEnd; ++changeIt )
@@ -184,7 +183,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                     const auto j = *iter;
                     if ( mapData[j].in_index == sofa::InvalidID ) // compute new mapping
                     {
-                        sofa::type::fixed_array<SReal, 3> coefs;
+                        type::Vec3 coefs;
                         typename In::Coord pos;
                         pos[0] = mapData[j].baryCoords[0];
                         pos[1] = mapData[j].baryCoords[1];
@@ -198,7 +197,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                         typedef MechanicalState<In> InMechanicalStateT;
                         InMechanicalStateT* inState;
                         this->m_fromTopology->getContext()->get(inState);
-                        const auto& inRestPos = (inState->read(core::ConstVecCoordId::restPosition())->getValue());
+                        const auto& inRestPos = (inState->read(core::vec_id::read_access::restPosition)->getValue());
                         if( this->m_toTopology)
                         {
                             typedef MechanicalState<Out> MechanicalStateT;
@@ -210,7 +209,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                             }
                             else
                             {
-                                const typename MechanicalStateT::VecCoord& outXto0 = (mState->read(core::ConstVecCoordId::restPosition())->getValue());
+                                const typename MechanicalStateT::VecCoord& outXto0 = (mState->read(core::vec_id::read_access::restPosition)->getValue());
                                 const decltype(inRestPos[0])& outRestPos = Out::getCPos(outXto0[j]); //decltype stuff is to force the same type of coordinates between in and out
                                 index = sofa::topology::getClosestHexahedronIndex(inRestPos, m_fromTopology->getHexahedra(), outRestPos, coefs, distance);
                             }
@@ -257,7 +256,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
             typedef MechanicalState<In> InMechanicalStateT;
             InMechanicalStateT* inState;
             this->m_fromTopology->getContext()->get(inState);
-            const auto& inRestPos = (inState->read(core::ConstVecCoordId::restPosition())->getValue());
+            const auto& inRestPos = (inState->read(core::vec_id::read_access::restPosition)->getValue());
 
             const auto nbHexahedra = this->m_fromTopology->getNbHexahedra();
 
@@ -328,7 +327,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyOnePoint( const Index&
     const Real fx = d_map.getValue()[hexaPointId].baryCoords[0];
     const Real fy = d_map.getValue()[hexaPointId].baryCoords[1];
     const Real fz = d_map.getValue()[hexaPointId].baryCoords[2];
-    Index index = d_map.getValue()[hexaPointId].in_index;
+    const Index index = d_map.getValue()[hexaPointId].in_index;
     const Hexahedron& cube = cubes[index];
     Out::setCPos(out[hexaPointId] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
             + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )

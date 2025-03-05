@@ -5,7 +5,7 @@
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetTopologyContainer] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BarycentricMapping DiagonalMass FixedConstraint MechanicalObject MeshSpringForceField TetrahedronSetGeometryAlgorithms] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BarycentricMapping DiagonalMass FixedProjectiveConstraint MechanicalObject MeshSpringForceField TetrahedronSetGeometryAlgorithms] -->
 	
     <Node name="Liver" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -16,7 +16,7 @@
         <TetrahedronSetGeometryAlgorithms template="CudaVec3f" name="GeomAlgo" />
         <DiagonalMass template="CudaVec3f"  name="DiagonalMass" massDensity="1" />
         <MeshSpringForceField template="CudaVec3f" name="FEM" tetrahedraStiffness="10000"/>
-        <FixedConstraint  name="FixedConstraint" indices="3 39 64" />
+        <FixedProjectiveConstraint  name="FixedProjectiveConstraint" indices="3 39 64" />
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
             <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
             <OglModel  name="VisualModel" src="@meshLoader_0" />

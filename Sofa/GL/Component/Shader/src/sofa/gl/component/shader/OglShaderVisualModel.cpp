@@ -34,9 +34,11 @@ namespace sofa::gl::component::shader
 using namespace sofa::core::topology;
 using namespace sofa::core::behavior;
 
-int OglShaderVisualModelClass = core::RegisterObject("Visual model for OpenGL display using Glew extensions")
-        .add< OglShaderVisualModel >()
-        ;
+void registerOglShaderVisualModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Visual model for OpenGL display using a custom shader.")
+        .add< OglShaderVisualModel >());
+}
 
 OglShaderVisualModel::OglShaderVisualModel()
     : shader(nullptr)
@@ -85,7 +87,7 @@ void OglShaderVisualModel::init()
     if (!shader)
         OglModel::init();
 
-    sofa::core::objectmodel::BaseContext* context = this->getContext();
+    const sofa::core::objectmodel::BaseContext* context = this->getContext();
     shader = context->core::objectmodel::BaseContext::get<OglShader>();
 
     if( shader)
@@ -132,15 +134,10 @@ void OglShaderVisualModel::init()
     }
 }
 
-
-void OglShaderVisualModel::initVisual()
+void OglShaderVisualModel::doUpdateVisual(const core::visual::VisualParams* vparams)
 {
-    OglModel::initVisual();
-}
+    OglModel::doUpdateVisual(vparams);
 
-void OglShaderVisualModel::updateVisual()
-{
-    OglModel::updateVisual();
     computeRestPositions();
 }
 
@@ -151,8 +148,8 @@ void OglShaderVisualModel::computeRestPositions()
     //    if (counter == restPosition_lastUpdate) return;
     //    restPosition_lastUpdate = counter;
 
-    helper::ReadAccessor< Data<VecCoord > > positions = m_positions;
-    helper::ReadAccessor< Data<VecCoord > > restpositions = m_restPositions;
+    const helper::ReadAccessor< Data<VecCoord > > positions = m_positions;
+    const helper::ReadAccessor< Data<VecCoord > > restpositions = m_restPositions;
 
     //Get the position of the new point (should be the rest position to avoid artefact !
     if (restpositions.size()!=positions.size()) {
@@ -181,8 +178,8 @@ void OglShaderVisualModel::handleTopologyChange()
     if (m_topology && shader)
     {
         //        bool update=false;
-        std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
-        std::list<const TopologyChange *>::const_iterator itEnd=m_topology->endChange();
+        const std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
+        const std::list<const TopologyChange *>::const_iterator itEnd=m_topology->endChange();
 
         //        while( itBegin != itEnd )
         //        {
@@ -219,8 +216,8 @@ void OglShaderVisualModel::computeRestNormals()
 {
     if (!vrestpositions || !vrestnormals) return;
     auto& vrestpos = vrestpositions->getValue();
-    auto& triangles = m_triangles.getValue();
-    auto& quads = m_quads.getValue();
+    auto& triangles = d_triangles.getValue();
+    auto& quads = d_quads.getValue();
     auto& restNormals = * ( vrestnormals->beginEdit() );
     restNormals.resize(vrestpos.size());
     for (unsigned int i = 0; i < restNormals.size(); i++)

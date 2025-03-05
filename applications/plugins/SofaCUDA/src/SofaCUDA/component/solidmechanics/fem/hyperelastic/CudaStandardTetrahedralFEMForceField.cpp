@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.inl>
+#include <SofaCUDA/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/solidmechanics/fem/hyperelastic/StandardTetrahedralFEMForceField.inl>
@@ -28,10 +28,8 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 int StandardTetrahedralFEMForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
@@ -42,9 +40,7 @@ int StandardTetrahedralFEMForceFieldCudaClass = core::RegisterObject("Supports G
 ;
 
 
-} // namespace cuda
-
-} // namespace gpu
+} // namespace gpu::cuda
 
 
 template class SOFA_GPU_CUDA_API sofa::component::solidmechanics::fem::hyperelastic::StandardTetrahedralFEMForceField<sofa::gpu::cuda::CudaVec3fTypes>;

@@ -39,7 +39,7 @@ namespace sofa::core::objectmodel
  *  \brief Base class for Context classes, storing shared variables and parameters.
  *
  *  A Context contains values or pointers to variables and parameters shared
- *  by a group of objects, typically refering to the same simulated body.
+ *  by a group of objects, typically referring to the same simulated body.
  *  Derived classes can defined simple isolated contexts or more powerful
  *  hierarchical representations (scene-graphs), in which case the context also
  *  implements the BaseNode interface.
@@ -185,7 +185,7 @@ public:
         return result ;
     }
 
-    /// Returns a list of object of type passed as a parameter. There shoud be no
+    /// Returns a list of object of type passed as a parameter. There should be no
     /// Copy constructor because of Return Value Optimization.
     /// eg:
     ///    for(BaseObject* o : context->getObjects() ){ ... }
@@ -413,7 +413,7 @@ public:
     GetObjectsCallBackT(Container* d) : dest(d) {}
     void operator()(void* ptr) override
     {
-        if constexpr (sofa::type::trait::is_vector<Container>::value)
+        if constexpr (sofa::type::trait::is_vector<Container>)
         {
             dest->push_back(reinterpret_cast<T*>(ptr));
         }

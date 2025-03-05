@@ -23,9 +23,9 @@
 
 #include <sofa/component/mapping/nonlinear/config.h>
 
-#include <sofa/core/Mapping.h>
+#include <sofa/component/mapping/nonlinear/BaseNonLinearMapping.h>
+#include <sofa/component/mapping/nonlinear/NonLinearMappingData.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
-
 
 namespace sofa::component::mapping::nonlinear
 {
@@ -38,75 +38,40 @@ namespace sofa::component::mapping::nonlinear
 
 */
 template <class TIn, class TOut>
-class SquareMapping : public core::Mapping<TIn, TOut>
+class SquareMapping : public BaseNonLinearMapping<TIn, TOut, false>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SquareMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(SquareMapping,TIn,TOut), SOFA_TEMPLATE3(BaseNonLinearMapping,TIn,TOut,false));
 
-    typedef core::Mapping<TIn, TOut> Inherit;
-    typedef TIn In;
-    typedef TOut Out;
-    typedef typename Out::VecCoord OutVecCoord;
-    typedef typename Out::VecDeriv OutVecDeriv;
-    typedef typename Out::Coord OutCoord;
-    typedef typename Out::Deriv OutDeriv;
-    typedef typename Out::MatrixDeriv OutMatrixDeriv;
-    typedef typename Out::Real Real;
-    typedef typename In::Deriv InDeriv;
-    typedef typename In::MatrixDeriv InMatrixDeriv;
-    typedef typename In::Coord InCoord;
-    typedef typename In::VecCoord InVecCoord;
-    typedef typename In::VecDeriv InVecDeriv;
-    typedef linearalgebra::EigenSparseMatrix<TIn,TOut>   SparseMatrixEigen;
-    typedef linearalgebra::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
-    typedef Data<InVecCoord> InDataVecCoord;
-    typedef Data<InVecDeriv> InDataVecDeriv;
-    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
-    typedef Data<OutVecCoord> OutDataVecCoord;
-    typedef Data<OutVecDeriv> OutDataVecDeriv;
-    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
-    typedef type::Vec<In::spatial_dimensions,Real> Direction;
+    using In = TIn;
+    using Out = TOut;
 
+    using Real = Real_t<Out>;
 
-    Data< unsigned > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS)
+    static constexpr auto Nin = In::deriv_total_size;
 
-    void init() override;
-
-    using Inherit::apply;
-
-    void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in) override;
-
-    void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in) override;
-
-    void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in) override;
-
-    void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
-
-    void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
-
-    const sofa::linearalgebra::BaseMatrix* getJ() override;
-    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
-
-    void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
-    const linearalgebra::BaseMatrix* getK() override;
+    void apply(const core::MechanicalParams *mparams, DataVecCoord_t<Out>& out, const DataVecCoord_t<In>& in) override;
+    void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
 
 protected:
-    SquareMapping();
-    virtual ~SquareMapping();
 
-    SparseMatrixEigen jacobian;                             ///< Jacobian of the mapping
-    type::vector<linearalgebra::BaseMatrix*> baseMatrices;  ///< Jacobian of the mapping, in a vector
-    SparseKMatrixEigen K;                                   ///< Assembled geometric stiffness matrix
+    void matrixFreeApplyDJT(const core::MechanicalParams* mparams, Real kFactor,
+                            Data<VecDeriv_t<In> >& parentForce,
+                            const Data<VecDeriv_t<In> >& parentDisplacement,
+                            const Data<VecDeriv_t<Out> >& childForce) override;
 
+    using typename Inherit1::SparseKMatrixEigen;
+
+    void doUpdateK(
+        const core::MechanicalParams* mparams, const Data<VecDeriv_t<Out> >& childForce,
+        SparseKMatrixEigen& matrix) override;
 };
 
 
 
 
-#if  !defined(SOFA_COMPONENT_MAPPING_SquareMapping_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_SquareMapping_CPP)
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API SquareMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
-
-
 #endif
 
 } // namespace sofa::component::mapping::nonlinear

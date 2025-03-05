@@ -58,7 +58,7 @@ protected:
 
     ~PairInteractionConstraint() override;
 public:
-    Data<SReal> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
+    Data<SReal> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
     using BaseConstraintSet::getConstraintViolation;
@@ -71,8 +71,8 @@ public:
     /// Construct the Constraint violations vector of each constraint
     ///
     /// \param v is the result vector that contains the whole constraints violations
-    /// \param x1 and x2 are the position vectors used to compute contraint position violation
-    /// \param v1 and v2 are the velocity vectors used to compute contraint velocity violation
+    /// \param x1 and x2 are the position vectors used to compute constraint position violation
+    /// \param v1 and v2 are the velocity vectors used to compute constraint velocity violation
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
@@ -90,7 +90,7 @@ public:
     ///
     /// \param c1 and c2 are the results constraint sparse matrix
     /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
-    /// \param x1 and x2 are the position vectors used for contraint equation computation
+    /// \param x1 and x2 are the position vectors used for constraint equation computation
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
@@ -109,8 +109,7 @@ public:
         MechanicalState<DataTypes>* mstate2 = nullptr;
         std::string object1 = arg->getAttribute("object1","@./");
         std::string object2 = arg->getAttribute("object2","@./");
-        if (object1.empty()) object1 = "@./";
-        if (object2.empty()) object2 = "@./";
+
         context->findLinkDest(mstate1, object1, nullptr);
         context->findLinkDest(mstate2, object2, nullptr);
 
@@ -134,8 +133,8 @@ public:
 
         if (arg)
         {
-            std::string object1 = arg->getAttribute("object1","");
-            std::string object2 = arg->getAttribute("object2","");
+            const std::string object1 = arg->getAttribute("object1","");
+            const std::string object2 = arg->getAttribute("object2","");
             if (!object1.empty())
             {
                 arg->setAttribute("object1", object1);
@@ -144,7 +143,10 @@ public:
             {
                 arg->setAttribute("object2", object2);
             }
-            obj->parse(arg);
+            if (obj)
+            {
+                obj->parse(arg);
+            }
         }
 
         return obj;
@@ -154,11 +156,21 @@ public:
     using Inherit2::getMechModel2;
 
 protected:
+
+     virtual type::vector<std::string> getInteractionIdentifiers() override final
+     {
+            type::vector<std::string> ids = getPairInteractionIdentifiers();
+            ids.push_back("Pair");
+            return ids;
+     }
+
+     virtual type::vector<std::string> getPairInteractionIdentifiers(){ return {}; }
+
     void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& res1, Data<VecDeriv>& res2, const Data<MatrixDeriv>& j1, const Data<MatrixDeriv>& j2,
                                const sofa::linearalgebra::BaseVector* lambda);
 };
 
-#if  !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_CPP)
+#if !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_CPP)
 extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec3Types>;
 extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec2Types>;
 extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec1Types>;

@@ -36,7 +36,7 @@ void LCPForceFeedback< Rigid3Types >::computeForce(SReal x, SReal y, SReal z, SR
     Rigid3Types::VecCoord state;
     Rigid3Types::VecDeriv forces;
     state.resize(1);
-    state[0].getCenter() = sofa::type::Vec3d(x,y,z);
+    state[0].getCenter() = sofa::type::Vec3(x,y,z);
     computeForce(state,forces);
     fx = getVCenter(forces[0]).x();
     fy = getVCenter(forces[0]).y();
@@ -45,9 +45,9 @@ void LCPForceFeedback< Rigid3Types >::computeForce(SReal x, SReal y, SReal z, SR
 
 
 template <>
-void LCPForceFeedback< Rigid3Types >::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool,
-        const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &/*V_tool_world*/,
-        sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world )
+void LCPForceFeedback< Rigid3Types >::computeWrench(const sofa::type::Transform<SReal> &world_H_tool,
+        const sofa::type::SpatialVector<SReal> &/*V_tool_world*/,
+        sofa::type::SpatialVector<SReal> &W_tool_world )
 {
     if (!this->d_activate.getValue())
     {
@@ -66,9 +66,12 @@ void LCPForceFeedback< Rigid3Types >::computeWrench(const sofa::defaulttype::Sol
     W_tool_world.setTorque(getVOrientation(forces[0]));
 }
 
-int lCPForceFeedbackClass = sofa::core::RegisterObject("LCP force feedback for the device")
+void registerLCPForceFeedback(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("LCP force feedback for the device.")
         .add< LCPForceFeedback<defaulttype::Vec1Types> >()
-        .add< LCPForceFeedback<defaulttype::Rigid3Types> >();
+        .add< LCPForceFeedback<defaulttype::Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_HAPTICS_API LCPForceFeedback<defaulttype::Vec1Types>;
 template class SOFA_COMPONENT_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3Types>;

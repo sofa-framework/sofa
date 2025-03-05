@@ -55,7 +55,7 @@ using MeshSpringForceField3 = sofa::component::solidmechanics::spring::MeshSprin
 using RegularGridSpringForceField3 = sofa::component::solidmechanics::spring::RegularGridSpringForceField<Vec3Types>;
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
 using TetrahedronFEMForceField3 = sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<Vec3Types>;
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/component/init.h>
 
 using sofa::core::objectmodel::New;
@@ -244,7 +244,6 @@ int main(int argc, char** argv)
     sofa::gui::common::GUIManager::Init(argv[0]);
 
     auto simulation = sofa::simpleapi::createSimulation();
-    sofa::simulation::setSimulation( simulation.get() );
 
     // The graph root node
     Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
@@ -255,7 +254,7 @@ int main(int argc, char** argv)
 
     root->setAnimate(false);
 
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
 
     //=======================================

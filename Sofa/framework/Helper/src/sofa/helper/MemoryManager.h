@@ -26,10 +26,7 @@
 #include <sofa/type/config.h>
 #include <cstring>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 #ifndef MAXIMUM_NUMBER_OF_DEVICES
@@ -37,7 +34,7 @@ namespace helper
 #endif
 
 /** Generic MemoryManager
- * Its use is informative only and it cannot be instancied (linkage error otherwise).
+ * Its use is informative only, and it cannot be instantiated (linkage error otherwise).
  */
 template <class T>
 class MemoryManager
@@ -45,7 +42,7 @@ class MemoryManager
 public :
     typedef T* host_pointer;
 
-    //have to be changed according of the type of device
+    //have to be changed according to the type of device
     typedef void* device_pointer;
 
     typedef unsigned int buffer_id_type;
@@ -83,23 +80,6 @@ public :
     static bool isNull(device_pointer p) {return p==nullptr;}
 };
 
-/// CPU MemoryManager
-template <class T >
-class CPUMemoryManager : public MemoryManager<T>
-{
-public:
-
-    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
-    {
-        typedef DeprecatedAndRemoved other;
-    };
-
-};
-
-}
-
 }
 
 #endif //SOFA_HELPER_MEMORYMANAGER_H
-
-

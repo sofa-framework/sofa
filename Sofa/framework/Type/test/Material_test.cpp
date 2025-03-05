@@ -43,7 +43,7 @@ public:
 
     void checkConstructor()
     {
-        Material m;
+        const Material m;
         EXPECT_FALSE( m.activated );
         EXPECT_TRUE( m.useAmbient );
         EXPECT_TRUE( m.useDiffuse );

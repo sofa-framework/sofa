@@ -32,32 +32,32 @@ namespace sofa::component::constraint::lagrangian::correction
 template<>
 SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void PrecomputedConstraintCorrection< defaulttype::Rigid3Types >::rotateConstraints(bool back)
 {
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::constraintJacobian());
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& x0 = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
+    helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::vec_id::write_access::constraintJacobian);
     MatrixDeriv& c = cData.wref();
 
     // On fait tourner les normales (en les ramenant dans le "pseudo" repere initial)
+    const auto rowItEnd = c.end();
 
-    MatrixDerivRowIterator rowItEnd = c.end();
-
-    for (MatrixDerivRowIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
+    for (auto rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        MatrixDerivColIterator colItEnd = rowIt.end();
+        [[maybe_unused]] auto rowWrite = c.writeLine(rowIt.index());
+        auto colItEnd = rowIt.end();
 
-        for (MatrixDerivColIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+        for (auto colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
-            Deriv& n = colIt.val();
+            Deriv n = colIt.val();
             const unsigned int localRowNodeIdx = colIt.index();
 
             sofa::type::Quat<SReal> q;
-            if (m_restRotations.getValue())
+            if (d_restRotations.getValue())
                 q = x[localRowNodeIdx].getOrientation() * x0[localRowNodeIdx].getOrientation().inverse();
             else
                 q = x[localRowNodeIdx].getOrientation();
 
-            sofa::type::Vec3d n_i = q.inverseRotate(getVCenter(n));
-            sofa::type::Vec3d wn_i= q.inverseRotate(getVOrientation(n));
+            sofa::type::Vec3 n_i = q.inverseRotate(getVCenter(n));
+            sofa::type::Vec3 wn_i= q.inverseRotate(getVOrientation(n));
 
             if(back)
             {
@@ -84,16 +84,16 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void PrecomputedConstraintCo
 template<>
 SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::rotateResponse()
 {
-    helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::VecDerivId::dx());
+    helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::vec_id::write_access::dx);
     VecDeriv& dx = dxData.wref();
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& x0 = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     for(unsigned int j = 0; j < dx.size(); j++)
     {
         // on passe les deplacements du repere local (au repos) au repere global
         Deriv temp ;
         sofa::type::Quat<SReal> q;
-        if (m_restRotations.getValue())
+        if (d_restRotations.getValue())
             q = x[j].getOrientation() * x0[j].getOrientation().inverse();
         else
             q = x[j].getOrientation();
@@ -121,17 +121,15 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void PrecomputedConstraintCo
 {
 }
 
-
-
-
 using namespace sofa::defaulttype;
 
-int PrecomputedConstraintCorrectionClass = core::RegisterObject("Component computing constraint forces within a simulated body using the compliance method.")
+void registerPrecomputedConstraintCorrection(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Component precomputing constraint forces within a simulated body using the compliance method.")
         .add< PrecomputedConstraintCorrection<Vec3Types> >()
         .add< PrecomputedConstraintCorrection<Vec1Types> >()
-        .add< PrecomputedConstraintCorrection<Rigid3Types> >()
-
-        ;
+        .add< PrecomputedConstraintCorrection<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API PrecomputedConstraintCorrection<Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API PrecomputedConstraintCorrection<Vec1Types>;

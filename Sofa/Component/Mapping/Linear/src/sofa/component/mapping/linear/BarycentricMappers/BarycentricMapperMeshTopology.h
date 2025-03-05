@@ -53,6 +53,7 @@ public:
     typedef typename Inherit1::MBloc MBloc;
     typedef typename Inherit1::MatrixType MatrixType;
     typedef typename MatrixType::Index MatrixTypeIndex;
+    using Mat3x3 = sofa::type::Mat<3, 3, Real>;
 
     using Index = sofa::Index;
 

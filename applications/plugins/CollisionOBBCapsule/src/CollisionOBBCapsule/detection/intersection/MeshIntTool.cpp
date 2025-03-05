@@ -47,7 +47,7 @@ int MeshIntTool::doCapLineInt(const type::Vec3 & p1,const type::Vec3 & p2,SReal 
     const type::Vec3 CD = q2-q1;//line segment
     const type::Vec3 AC = q1-p1;
     Matrix2 A;
-    Vector2 b;
+    Vec2 b;
     A[0][0] = AB*AB;
     A[1][1] = CD*CD;
     A[0][1] = A[1][0] = -CD*AB;
@@ -75,13 +75,13 @@ int MeshIntTool::doCapLineInt(const type::Vec3 & p1,const type::Vec3 & p2,SReal 
     }
     else{//Segments on a same plane. Here the idea to find the nearest points
         //is to project segment apexes on the other segment.
-        //Visual example with semgents AB and CD :
+        //Visual example with segments AB and CD :
         //            A----------------B
         //                     C----------------D
         //After projection :
         //            A--------c-------B
         //                     C-------b--------D
-        //So the nearest points are p and q which are respecively in the middle of cB and Cb:
+        //So the nearest points are p and q which are respectively in the middle of cB and Cb:
         //            A--------c---p---B
         //                     C---q---b--------D
 
@@ -196,7 +196,7 @@ int MeshIntTool::doIntersectionTrianglePoint(SReal dist2, int flags, const type:
     const type::Vec3 AC = p3-p1;
     const type::Vec3 AQ = q -p1;
     Matrix2 A;
-    Vector2 b;
+    Vec2 b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
@@ -289,7 +289,7 @@ int MeshIntTool::doIntersectionTrianglePoint(SReal dist2, int flags, const type:
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
 
-    ///!\ CAUTION : uninitialized fields detection->elem and detection->id and detection->value, you have to substract contactDist
+    ///!\ CAUTION : uninitialized fields detection->elem and detection->id and detection->value, you have to subtract contactDist
 
     return 1;
 }
@@ -333,7 +333,7 @@ int MeshIntTool::projectPointOnTriangle(int flags, const type::Vec3& p1, const t
     const type::Vec3 AC = p3-p1;
     const type::Vec3 AQ = to_be_projected -p1;
     Matrix2 A;
-    Vector2 b;
+    Vec2 b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
@@ -413,7 +413,7 @@ void MeshIntTool::triangleBaryCoords(const type::Vec3& to_be_projected,const typ
     const type::Vec3 AC = p3-p1;
     const type::Vec3 AQ = to_be_projected -p1;
     Matrix2 A;
-    Vector2 b;
+    Vec2 b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;

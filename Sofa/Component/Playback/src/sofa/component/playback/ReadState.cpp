@@ -29,8 +29,11 @@ namespace sofa::component::playback
 
 using namespace defaulttype;
 
-int ReadStateClass = core::RegisterObject("Read State vectors from file at each timestep")
-        .add< ReadState >();
+void registerReadState(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Read State vectors from file at each timestep.")
+        .add< ReadState >());
+}
 
 ReadStateCreator::ReadStateCreator(const core::ExecParams* params)
     : Visitor(params)
@@ -76,7 +79,7 @@ simulation::Visitor::Result ReadStateCreator::processNodeTopDown( simulation::No
 
 void ReadStateCreator::addReadState(sofa::core::behavior::BaseMechanicalState *ms, simulation::Node* gnode)
 {
-    sofa::core::objectmodel::BaseContext* context = gnode->getContext();
+    const sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping; context->get(mapping);
     if (createInMapping || mapping== nullptr)
     {
@@ -86,8 +89,10 @@ void ReadStateCreator::addReadState(sofa::core::behavior::BaseMechanicalState *m
         {
             rs = sofa::core::objectmodel::New<ReadState>();
             gnode->addObject(rs);
-            for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); ++it)
-                rs->addTag(*it);
+            for (const auto& subset : this->subsetsToManage)
+            {
+                rs->addTag(subset);
+            }
         }
 
         std::ostringstream ofilename;

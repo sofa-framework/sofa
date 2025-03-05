@@ -40,10 +40,8 @@
 namespace sofa
 {
 
-namespace component
-{
 
-namespace mass
+namespace component::mass
 {
 
 template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes>;
@@ -63,14 +61,10 @@ template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes,
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 
-} // namespace mass
+} // namespace component::mass
 
-} // namespace component
 
-namespace gpu
-{
-
-namespace cuda
+namespace gpu::cuda
 {
 
 int MeshMatrixMassClassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
@@ -90,9 +84,8 @@ int MeshMatrixMassClassCudaClass = core::RegisterObject("Supports GPU-side compu
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
 } // namespace sofa
 

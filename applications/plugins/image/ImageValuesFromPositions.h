@@ -85,7 +85,7 @@ struct ImageValuesFromPositionsSpecialization<defaulttype::Image<T>>
             {
                 Coord Tp = inT->toImage(pos[i]);
                 if(!in->isInside(Tp[0],Tp[1],Tp[2]))  val[i] = outval;
-                else val[i] = (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],0,(T)outval,cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max());
+                else val[i] = (Real)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],0,(T)outval);
             }
         }
             break;
@@ -146,11 +146,11 @@ public:
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     Data< SeqPositions > position; ///< input positions
 
-    Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubic
+    Data< helper::OptionsGroup > Interpolation; ///< Interpolation method.
 
     typedef type::vector<Real> valuesType;
     typedef helper::WriteOnlyAccessor<Data< valuesType > > waValues;
-    Data< valuesType > values;  ///< output interpolated values
+    Data< valuesType > values; ///< Interpolated values.
     Data< Real > outValue; ///< default value outside image
 
     ImageValuesFromPositions()    :   Inherited()
@@ -162,7 +162,7 @@ public:
         , outValue(initData(&outValue,(Real)0,"outValue","default value outside image"))
         , time((unsigned int)0)
     {
-        helper::OptionsGroup InterpolationOptions(3,"Nearest", "Linear", "Cubic");
+        helper::OptionsGroup InterpolationOptions{"Nearest", "Linear", "Cubic"};
         InterpolationOptions.setSelectedItem(INTERPOLATION_LINEAR);
         Interpolation.setValue(InterpolationOptions);
 

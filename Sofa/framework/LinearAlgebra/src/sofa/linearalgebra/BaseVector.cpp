@@ -20,8 +20,19 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/linearalgebra/BaseVector.h>
+#include <ostream>
 
 namespace sofa::linearalgebra
 {
+
+std::ostream& operator << (std::ostream& out, const BaseVector& v )
+{
+    const BaseVector::Index ny = v.size();
+    for (BaseVector::Index y=0; y<ny; ++y)
+    {
+        out << " " << v.element(y);
+    }
+    return out;
+}
 
 } // namespace sofa::linearalgebra

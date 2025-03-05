@@ -29,16 +29,8 @@
 
 #include <sofa/helper/config.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace system
-{
-
-namespace thread
+namespace sofa::helper::system::thread
 {
 
 enum SOFA_HELPER_API TraceLevel
@@ -96,12 +88,7 @@ public:
 #define TRACE(level, chaine){ }
 
 #endif
-} // namespace thread
+} // namespace sofa::helper::system::thread
 
-} // namespace system
-
-} // namespace helper
-
-} // namespace sofa
 
 #endif

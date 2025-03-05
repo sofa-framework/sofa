@@ -120,7 +120,7 @@ void GenerateGrid<DataTypes>::doUpdate()
 
     if (freqH==0) {
         // only output quads & triangles
-        size_t nbQuads=(freqL)*(freqW);
+        const size_t nbQuads=(freqL)*(freqW);
         SeqTriangles  &triangles = *(d_triangle.beginEdit());
         SeqQuads  &quads = *(d_quad.beginEdit());
         quads.resize(nbQuads);
@@ -148,7 +148,7 @@ void GenerateGrid<DataTypes>::doUpdate()
         // outputs hexahedra & tetrahedra
         SeqTetrahedra  &tetras = *(d_tetrahedron.beginEdit());
         SeqHexahedra  &hexas = *(d_hexahedron.beginEdit());
-        size_t nbHexahedra=(freqL)*(freqH)*(freqW);
+        const size_t nbHexahedra=(freqL)*(freqH)*(freqW);
         hexas.resize(nbHexahedra);
         tetras.resize(nbHexahedra*6);
 

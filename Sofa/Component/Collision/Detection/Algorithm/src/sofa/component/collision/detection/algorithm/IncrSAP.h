@@ -42,6 +42,9 @@
 #include <map>
 #include <deque>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
+
 namespace sofa::component::collision::detection::algorithm
 {
 
@@ -51,8 +54,8 @@ class EndPointID;
  * ISAPBox is a simple bounding box. It contains a Cube which contains only one final
  * CollisionElement and pointers to min and max EndPoints along the three dimensions. min and max end points
  * are respectively min and max coordinates of the cube on a coordinate axis.
- * The between end points (_min, _max) and the field cube is that cube is always updated whereas
- * _min and _max are stored values of the cube end points at previous time step.
+ * The between end points (d_min, d_max) and the field cube is that cube is always updated whereas
+ * d_min and d_max are stored values of the cube end points at previous time step.
  */
 class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API ISAPBox{
 public:
@@ -105,7 +108,7 @@ public:
     bool moving(double alarmDist)const;
 
     /**
-     * Inits _min and _max fiels with endPts. endPts is an one dimension array of EndPointID pointers.
+     * Inits d_min and d_max fiels with endPts. endPts is an one dimension array of EndPointID pointers.
      * After this method, the first three end points are the mins in the dimension 0, 1, 2.
      * The last three end points are the maxs in the dimension 0, 1, 2.
      * Values and IDs of endPts are updated after this method.
@@ -175,7 +178,7 @@ private:
     void updateEndPoints();
 
     /**
-     * Sets the end points ID, i.e. each end point in the list after this mehod have its position (ID) updated.
+     * Sets the end points ID, i.e. each end point in the list after this method have its position (ID) updated.
      */
     void setEndPointsID();
 
@@ -208,10 +211,13 @@ private:
      */
     void purge();
 
+    SOFA_ATTRIBUTE_DEPRECATED__REMOVE_BDRAW_DATA()
+    core::objectmodel::lifecycle::DeprecatedData bDraw {this, "v24.06", "v24.12", "draw", "This Data was not used"};
 
-    Data<bool> bDraw; ///< enable/disable display of results
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_ALGORITHM()
+    sofa::core::objectmodel::lifecycle::RenamedData< type::fixed_array<type::Vec3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
-    Data< type::fixed_array<type::Vec3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
+    Data< type::fixed_array<type::Vec3,2> > d_box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
     collision::geometry::CubeCollisionModel::SPtr boxModel;
 
@@ -248,22 +254,20 @@ protected:
     ~IncrSAP() override;
 
 public:
-    void setDraw(bool val) { bDraw.setValue(val); }
+
+    SOFA_ATTRIBUTE_DEPRECATED__REMOVE_BDRAW_DATA()
+    void setDraw(bool) {}
 
     void init() override;
     void reinit() override;
 
     void addCollisionModel (core::CollisionModel *cm) override;
 
-    // Unuseful methods because all is done in addCollisionModel
+    // Useless methods because all is done in addCollisionModel
     void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ) override {}
     void addCollisionPairs (const type::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&) override {}
 
     void beginNarrowPhase() override;
-
-
-    /* for debugging */
-    void draw(const core::visual::VisualParams*) override {}
 
     inline bool needsDeepBoundingTree()const override {return false;}
 

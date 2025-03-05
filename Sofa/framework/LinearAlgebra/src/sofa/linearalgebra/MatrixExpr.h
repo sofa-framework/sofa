@@ -34,7 +34,7 @@ template<class M1, class M2>
 class MatrixAddition;
 
 template<class M1, class M2>
-class MatrixSubstraction;
+class MatrixSubtraction;
 
 template<class M1>
 class MatrixTranspose;
@@ -45,60 +45,62 @@ class MatrixNegative;
 template<class M1, class R2>
 class MatrixScale;
 
+/// Data structure representing an operation on matrices. Used in the context of
+/// the expression templates pattern.
 template<class T>
 class MatrixExpr : public T
 {
 public:
     typedef T Expr;
 
-    MatrixExpr(const Expr& e) : Expr(e) {}
+    explicit MatrixExpr(const Expr& e) : Expr(e) {}
 
     template<class M2>
     MatrixExpr< MatrixProduct< Expr, typename M2::Expr > > operator*(const M2& m) const
     {
-        return MatrixExpr< MatrixProduct< Expr, typename M2::Expr > >(MatrixProduct< Expr, typename M2::Expr >(*this, m));
+        return MatrixExpr { MatrixProduct< Expr, typename M2::Expr >(*this, m) };
     }
     template<class M2>
     MatrixExpr< MatrixAddition< Expr, typename M2::Expr > > operator+(const M2& m) const
     {
-        return MatrixExpr< MatrixAddition< Expr, typename M2::Expr > >(MatrixAddition< Expr, typename M2::Expr >(*this, m));
+        return MatrixExpr { MatrixAddition< Expr, typename M2::Expr >(*this, m) };
     }
     template<class M2>
-    MatrixExpr< MatrixSubstraction< Expr, typename M2::Expr > > operator-(const M2& m) const
+    MatrixExpr< MatrixSubtraction< Expr, typename M2::Expr > > operator-(const M2& m) const
     {
-        return MatrixExpr< MatrixSubstraction< Expr, typename M2::Expr > >(MatrixSubstraction< Expr, typename M2::Expr >(*this, m));
+        return MatrixExpr { MatrixSubtraction< Expr, typename M2::Expr >(*this, m) };
     }
     MatrixExpr< MatrixNegative< Expr > > operator-() const
     {
-        return MatrixExpr< MatrixNegative< Expr > >(MatrixNegative< Expr >(*this));
+        return MatrixExpr { MatrixNegative< Expr >(*this) };
     }
     MatrixExpr< MatrixTranspose< Expr > > t() const
     {
-        return MatrixExpr< MatrixTranspose< Expr > >(MatrixTranspose< Expr >(*this));
+        return MatrixExpr { MatrixTranspose< Expr >(*this) };
     }
 
     MatrixExpr< MatrixScale< Expr, double > > operator*(double d) const
     {
-        return MatrixExpr< MatrixScale< Expr, double > >(MatrixScale< Expr, double >(*this, d));
+        return MatrixExpr { MatrixScale< Expr, double >(*this, d) };
     }
     friend MatrixExpr< MatrixScale< Expr, double > > operator*(double d, const MatrixExpr<Expr>& m)
     {
-        return MatrixExpr< MatrixScale< Expr, double > >(MatrixScale< Expr, double >(m, d));
+        return MatrixExpr { MatrixScale< Expr, double >(m, d) };
     }
     template<class M1>
     friend MatrixExpr< MatrixProduct< typename M1::Expr, Expr > > operator*(const M1& m1, const MatrixExpr<Expr>& m2)
     {
-        return MatrixExpr< MatrixProduct< typename M1::Expr, Expr > >(MatrixProduct< typename M1::Expr, Expr >(m1,m2));
+        return MatrixExpr { MatrixProduct< typename M1::Expr, Expr >(m1,m2) };
     }
     template<class M1>
     friend MatrixExpr< MatrixAddition< typename M1::Expr, Expr > > operator+(const M1& m1, const MatrixExpr<Expr>& m2)
     {
-        return MatrixExpr< MatrixAddition< typename M1::Expr, Expr > >(MatrixAddition< typename M1::Expr, Expr >(m1,m2));
+        return MatrixExpr { MatrixAddition< typename M1::Expr, Expr >(m1,m2) };
     }
     template<class M1>
-    friend MatrixExpr< MatrixSubstraction< typename M1::Expr, Expr > > operator-(const M1& m1, const MatrixExpr<Expr>& m2)
+    friend MatrixExpr< MatrixSubtraction< typename M1::Expr, Expr > > operator-(const M1& m1, const MatrixExpr<Expr>& m2)
     {
-        return MatrixExpr< MatrixSubstraction< typename M1::Expr, Expr > >(MatrixSubstraction< typename M1::Expr, Expr >(m1,m2));
+        return MatrixExpr { MatrixSubtraction< typename M1::Expr, Expr >(m1,m2) };
     }
 };
 
@@ -216,7 +218,8 @@ public:
     typedef typename M1::matrix_type matrix_type;
 
     const M1& m1;
-    MatrixNegative(const M1& m1) : m1(m1)
+
+    explicit MatrixNegative(const M1& m1) : m1(m1)
     {}
 
     bool valid() const
@@ -274,7 +277,8 @@ public:
     typedef typename M1::matrix_type matrix_type;
 
     const M1& m1;
-    MatrixTranspose(const M1& m1) : m1(m1)
+
+    explicit MatrixTranspose(const M1& m1) : m1(m1)
     {}
 
     bool valid() const
@@ -438,10 +442,10 @@ public:
 };
 
 template<class M1, class M2>
-class MatrixSubstraction
+class MatrixSubtraction
 {
 public:
-    typedef MatrixSubstraction<M1, M2> Expr;
+    typedef MatrixSubtraction<M1, M2> Expr;
     enum { operand = 0 };
     enum { category = ((int)M1::category>(int)M2::category) ? (int)M1::category : (int)M2::category };
     enum { m_index = (((int)M1::category>(int)M2::category)?0:1) };
@@ -449,7 +453,7 @@ public:
 
     const M1& m1;
     const M2& m2;
-    MatrixSubstraction(const M1& m1, const M2& m2) : m1(m1), m2(m2)
+    MatrixSubtraction(const M1& m1, const M2& m2) : m1(m1), m2(m2)
     {}
 
     bool valid() const
@@ -497,6 +501,9 @@ public:
         m2.addTo(&myd);
     }
 };
+
+template<class M1, class M2>
+using MatrixSubstraction SOFA_ATTRIBUTE_DEPRECATED__MATRIXSUBTRACTION() = MatrixSubtraction<M1, M2>;
 
 template<class M1, class M2>
 class MatrixProduct
@@ -556,7 +563,8 @@ public:
     enum { operand = 0 };
 
     const M1& m1;
-    MatrixInverse(const M1& m1) : m1(m1)
+
+    explicit MatrixInverse(const M1& m1) : m1(m1)
     {}
 
     bool valid() const

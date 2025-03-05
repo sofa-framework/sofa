@@ -29,9 +29,11 @@ namespace sofa::component::playback
 
 using namespace defaulttype;
 
-
-int WriteStateClass = core::RegisterObject("Write State vectors to file at each timestep")
-        .add< WriteState >();
+void registerWriteState(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Write State vectors to file at each timestep.")
+        .add< WriteState >());
+}
 
 WriteStateCreator::WriteStateCreator(const core::ExecParams* params)
     :simulation::Visitor(params)
@@ -43,14 +45,15 @@ WriteStateCreator::WriteStateCreator(const core::ExecParams* params)
 #endif
     , recordX(true)
     , recordV(true)
+    , recordF(false)
     , createInMapping(false)
     , counterWriteState(0)
 {
 }
 
-WriteStateCreator::WriteStateCreator(const core::ExecParams* params, const std::string &n, bool _recordX, bool _recordV, bool _recordF, bool _createInMapping, int c)
+WriteStateCreator::WriteStateCreator(const core::ExecParams* params, const std::string & _sceneName, bool _recordX, bool _recordV, bool _recordF, bool _createInMapping, int _counterState)
     :simulation::Visitor(params)
-    , sceneName(n)
+    , sceneName(_sceneName)
 #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
@@ -60,7 +63,7 @@ WriteStateCreator::WriteStateCreator(const core::ExecParams* params, const std::
     , recordV(_recordV)
     , recordF(_recordF)
     , createInMapping(_createInMapping)
-    , counterWriteState(c)
+    , counterWriteState(_counterState)
 {
 }
 
@@ -82,7 +85,7 @@ simulation::Visitor::Result WriteStateCreator::processNodeTopDown( simulation::N
 
 void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState *ms, simulation::Node* gnode)
 {
-    sofa::core::objectmodel::BaseContext* context = gnode->getContext();
+    const sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
     context->get(mapping);
     if ( createInMapping || mapping == nullptr)
@@ -96,9 +99,10 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
             ws->d_writeX.setValue(recordX);
             ws->d_writeV.setValue(recordV);
             ws->d_writeF.setValue(recordF);
-            for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); ++it)
-                ws->addTag(*it);
-
+            for (const auto& subset : this->subsetsToManage)
+            {
+                ws->addTag(subset);
+            }
         }
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterWriteState << "_" << ms->getName()  << "_mstate" << extension ;
@@ -106,6 +110,11 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
         ws->d_filename.setValue(ofilename.str());
         if (!m_times.empty())
             ws->d_time.setValue(m_times);
+
+        if (m_period > 0.0) 
+        {
+            ws->d_period.setValue(m_period);
+        }
 
         ws->init();
         ws->f_listening.setValue(true);  //Activated at init

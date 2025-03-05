@@ -53,6 +53,7 @@ PickHandler::PickHandler(double defaultLength):
     mouseNode(nullptr),
     mouseContainer(nullptr),
     mouseCollision(nullptr),
+    interaction(nullptr),
     renderCallback(nullptr),
     pickingMethod(RAY_CASTING),
     m_defaultLength(defaultLength)
@@ -164,14 +165,18 @@ void PickHandler::unload()
 
 Operation *PickHandler::changeOperation(sofa::component::setting::MouseButtonSetting* setting)
 {
-    if (operations[setting->button.getValue().getSelectedId()])
+    if (operations[setting->d_button.getValue().getSelectedId()])
     {
-        delete operations[setting->button.getValue().getSelectedId()];
-        operations[setting->button.getValue().getSelectedId()] = nullptr;
+        delete operations[setting->d_button.getValue().getSelectedId()];
+        operations[setting->d_button.getValue().getSelectedId()] = nullptr;
     }
     Operation *mouseOp=OperationFactory::Instanciate(setting->getOperationType());
-    mouseOp->configure(this,setting);
-    operations[setting->button.getValue().getSelectedId()]=mouseOp;
+    if (mouseOp)
+    {
+        mouseOp->configure(this,setting);
+        operations[setting->d_button.getValue().getSelectedId()]=mouseOp;
+    }
+
     return mouseOp;
 }
 
@@ -281,8 +286,8 @@ void PickHandler::updateRay(const sofa::type::Vec3 &position,const sofa::type::V
 
     mouseCollision->getRay(0).setOrigin( position+orientation*interaction->mouseInteractor->getDistanceFromMouse() );
     mouseCollision->getRay(0).setDirection( orientation );
-    MechanicalPropagateOnlyPositionVisitor(sofa::core::mechanicalparams::defaultInstance(), 0, sofa::core::VecCoordId::position()).execute(mouseCollision->getContext());
-    MechanicalPropagateOnlyPositionVisitor(sofa::core::mechanicalparams::defaultInstance(), 0, sofa::core::VecCoordId::freePosition()).execute(mouseCollision->getContext());
+    MechanicalPropagateOnlyPositionVisitor(sofa::core::mechanicalparams::defaultInstance(), 0, sofa::core::vec_id::write_access::position).execute(mouseCollision->getContext());
+    MechanicalPropagateOnlyPositionVisitor(sofa::core::mechanicalparams::defaultInstance(), 0, sofa::core::vec_id::write_access::freePosition).execute(mouseCollision->getContext());
 
     if (needToCastRay())
     {
@@ -354,7 +359,7 @@ BodyPicked PickHandler::findCollision()
     case RAY_CASTING:
         if (useCollisions)
         {
-            BodyPicked picked = findCollisionUsingPipeline();
+            const BodyPicked picked = findCollisionUsingPipeline();
             if (picked.body) 
                 result = picked;
             else 
@@ -381,9 +386,9 @@ BodyPicked PickHandler::findCollisionUsingPipeline()
         return result;
     }
 
-    const type::Vec3& origin          = mouseCollision->getRay(0).origin();
-    const type::Vec3& direction       = mouseCollision->getRay(0).direction();
-    const double& maxLength              = mouseCollision->getRay(0).l();
+    const type::Vec3 origin          = mouseCollision->getRay(0).origin();
+    const type::Vec3 direction       = mouseCollision->getRay(0).direction();
+    const double maxLength           = mouseCollision->getRay(0).l();
     
     const auto &contacts = mouseCollision->getContacts();
     for (auto it=contacts.cbegin(); it != contacts.cend(); ++it)
@@ -434,17 +439,17 @@ BodyPicked PickHandler::findCollisionUsingPipeline()
 
 BodyPicked PickHandler::findCollisionUsingBruteForce()
 {
-    const type::Vec3& origin          = mouseCollision->getRay(0).origin();
-    const type::Vec3& direction       = mouseCollision->getRay(0).direction();
-    const double& maxLength                     = mouseCollision->getRay(0).l();
+    const type::Vec3 origin          = mouseCollision->getRay(0).origin();
+    const type::Vec3 direction       = mouseCollision->getRay(0).direction();
+    const double maxLength           = mouseCollision->getRay(0).l();
 
     return findCollisionUsingBruteForce(origin, direction, maxLength, mouseNode->getRoot());
 }
 
 BodyPicked PickHandler::findCollisionUsingColourCoding()
 {
-    const type::Vec3& origin          = mouseCollision->getRay(0).origin();
-    const type::Vec3& direction       = mouseCollision->getRay(0).direction();
+    const type::Vec3 origin          = mouseCollision->getRay(0).origin();
+    const type::Vec3 direction       = mouseCollision->getRay(0).direction();
 
     return findCollisionUsingColourCoding(origin, direction);
 
@@ -476,7 +481,7 @@ BodyPicked PickHandler::findCollisionUsingColourCoding(const type::Vec3& origin,
     SOFA_UNUSED(origin);
     SOFA_UNUSED(direction);
 
-    BodyPicked result;
+    const BodyPicked result;
 
     msg_error("PickHandler") << "findCollisionUsingColourCoding not implemented!";
 

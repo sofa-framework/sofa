@@ -34,6 +34,9 @@
 #include <sofa/linearalgebra/DiagonalMatrix.h>
 #include <sofa/linearalgebra/BlockDiagonalMatrix.h>
 #include <sofa/linearalgebra/RotationMatrix.h>
+#include <sofa/component/linearsystem/TypedMatrixLinearSystem.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSystem[GraphScattered].h>
+#include <sofa/type/trait/Rebind.h>
 
 #if SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR
 #include <sofa/core/behavior/CRSMultiMatrixAccessor.h>
@@ -84,25 +87,6 @@ public:
     typedef sofa::linearalgebra::SparseMatrix<Real> JMatrixType;
     typedef linearalgebra::BaseMatrix ResMatrixType;
 
-    template<typename MReal>
-    JMatrixType * copyJmatrix(linearalgebra::SparseMatrix<MReal> * J)
-    {
-        J_local.clear();
-        J_local.resize(J->rowSize(),J->colSize());
-
-        for (auto jit1 = J->begin(); jit1 != J->end(); jit1++)
-        {
-            auto l = jit1->first;
-            for (auto i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
-            {
-                auto c = i1->first;
-                MReal val = i1->second;
-                J_local.set(l,c,val);
-            }
-        }
-        return &J_local;
-    }
-
     void projectForceInConstraintSpace(linearalgebra::BaseVector* r,const linearalgebra::BaseVector* f) {
         for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = J_local.begin(), jitend = J_local.end(); jit != jitend; ++jit) {
             auto row = jit->first;
@@ -119,35 +103,43 @@ public:
         return &J_local;
     }
 
+    /**
+     * Returns a JMatrixType as a pointer to the input matrix (if the input
+     * matrix type is a JMatrixType), or a copy of the input matrix as a pointer
+     * to the class member @J_local.
+     */
     JMatrixType * getLocalJ(linearalgebra::BaseMatrix * J)
     {
         if (JMatrixType * j = dynamic_cast<JMatrixType *>(J))
         {
             return j;
         }
-        else if (linearalgebra::SparseMatrix<double> * j = dynamic_cast<linearalgebra::SparseMatrix<double> *>(J))
-        {
-            return copyJmatrix(j);
-        }
-        else if (linearalgebra::SparseMatrix<float> * j = dynamic_cast<linearalgebra::SparseMatrix<float> *>(J))
-        {
-            return copyJmatrix(j);
-        }
-        else
-        {
-            J_local.clear();
-            J_local.resize(J->rowSize(),J->colSize());
 
-            for (typename JMatrixType::Index j=0; j<J->rowSize(); j++)
+        using OtherReal = std::conditional_t<std::is_same_v<Real, double>, float, double>;
+
+        //in case the matrix J is not the same type as JMatrixType, it is
+        //copied in the local variable. There are 2 cases:
+
+        //Case 1: J can be rebound: the copy is optimized
+        if (auto * j_d = dynamic_cast<sofa::type::rebind_to<JMatrixType, OtherReal> *>(J))
+        {
+            return convertMatrix(*j_d);
+        }
+
+        //Case 2: generic case: slow copy
+        J_local.clear();
+        J_local.resize(J->rowSize(),J->colSize());
+
+        using Index = typename JMatrixType::Index;
+        for (Index j = 0; j < J->rowSize(); ++j)
+        {
+            for (Index i = 0; i < J->colSize(); ++i)
             {
-                for (typename JMatrixType::Index i=0; i<J->colSize(); i++)
-                {
-                    J_local.set(j,i,J->element(j,i));
-                }
+                J_local.set(j, i, J->element(j, i));
             }
-
-            return &J_local;
         }
+
+        return &J_local;
     }
 
     ResMatrixType * getLocalRes(linearalgebra::BaseMatrix * R)
@@ -158,6 +150,27 @@ public:
 
     void addLocalRes(linearalgebra::BaseMatrix * /*R*/)
     {}
+
+protected:
+
+    template<typename MReal>
+    JMatrixType * convertMatrix(const linearalgebra::SparseMatrix<MReal>& inputMatrix)
+    {
+        J_local.clear();
+        J_local.resize(inputMatrix.rowSize(), inputMatrix.colSize());
+
+        for (auto jit1 = inputMatrix.begin(); jit1 != inputMatrix.end(); ++jit1)
+        {
+            const auto l = jit1->first;
+            for (auto i1 = jit1->second.begin(); i1 != jit1->second.end(); ++i1)
+            {
+                const auto c = i1->first;
+                const MReal val = i1->second;
+                J_local.set(l, c, val);
+            }
+        }
+        return &J_local;
+    }
 
 private :
     JMatrixType J_local;
@@ -182,6 +195,8 @@ public:
     MatrixLinearSolver();
     ~MatrixLinearSolver() override ;
 
+    void init() override;
+
     /// Reset the current linear system.
     void resetSystem() override;
 
@@ -198,9 +213,6 @@ public:
     /// Rebuild the system using a mass and force factor
     void rebuildSystem(SReal massFactor, SReal forceFactor) override;
 
-    /// Set the linear system matrix (only use for bench)
-    void setSystemMatrix(Matrix* matrix);
-
     /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
     void setSystemRHVector(core::MultiVecDerivId v) override;
 
@@ -209,28 +221,31 @@ public:
     void setSystemLHVector(core::MultiVecDerivId v) override;
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
-    Matrix* getSystemMatrix() override { return linearSystem.systemMatrix; }
+    Matrix* getSystemMatrix() override;
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
-    Vector* getSystemRHVector() { return linearSystem.systemRHVector; }
+    Vector* getSystemRHVector() { return l_linearSystem ? l_linearSystem->getRHSVector() : nullptr; }
 
     /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
-    Vector* getSystemLHVector() { return linearSystem.systemLHVector; }
+    Vector* getSystemLHVector() { return l_linearSystem ? l_linearSystem->getSolutionVector() : nullptr; }
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
-    linearalgebra::BaseMatrix* getSystemBaseMatrix() override { return linearSystem.systemMatrix; }
-
-    /// Get the MultiMatrix view of the linear system, or nullptr if this solved does not build it
-    const core::behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const override { return &linearSystem.matrixAccessor; }
+    linearalgebra::BaseMatrix* getSystemBaseMatrix() override;
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
-    linearalgebra::BaseVector* getSystemRHBaseVector() override { return linearSystem.systemRHVector; }
+    linearalgebra::BaseVector* getSystemRHBaseVector() override { return l_linearSystem ? l_linearSystem->getRHSVector() : nullptr; }
 
     /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
-    linearalgebra::BaseVector* getSystemLHBaseVector() override { return linearSystem.systemLHVector; }
+    linearalgebra::BaseVector* getSystemLHBaseVector() override { return l_linearSystem ? l_linearSystem->getSolutionVector() : nullptr; }
+
+    /// Returns the linear system component associated to the linear solver
+    sofa::component::linearsystem::TypedMatrixLinearSystem<Matrix, Vector>* getLinearSystem() const { return l_linearSystem.get(); }
 
     /// Solve the system as constructed using the previous methods
     void solveSystem() override;
+
+    /// Apply the solution of the system to all the objects
+    void applySystemSolution();
 
     /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
     void invertSystem() override;
@@ -259,7 +274,7 @@ public:
         v->execute( this->getContext() );
     }
 
-    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
+    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name parameters
     /// instead of the default one generated automatically by the SOFA_CLASS() macro.
     static std::string GetCustomTemplateName()
     {
@@ -289,11 +304,30 @@ public:
 
     void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* f) override;
 
+    ///< Parallelize the computation of the product J*M^{-1}*J^T where M is the
+    ///< matrix of the linear system and J is any matrix with compatible dimensions
+    Data<bool> d_parallelInverseProduct;
+
 public:
 
     MatrixInvertData * getMatrixInvertData(linearalgebra::BaseMatrix * m);
 
 protected:
+
+    virtual void checkLinearSystem();
+
+    /**
+     * Check if compatible linear systems are available in the current context. Otherwise, a linear
+     * system of type TLinearSystemType is created, with a warning to the user.
+     *
+     * @tparam TLinearSystemType Type of linear system created if no linear system found in the
+     * current context.
+     */
+    template<class TLinearSystemType>
+    void doCheckLinearSystem();
+
+    template<class TLinearSystemType>
+    void createDefaultLinearSystem();
 
     using BaseMatrixLinearSolver<Matrix, Vector>::partial_solve;
 
@@ -354,6 +388,15 @@ protected:
 
     SReal currentMFactor, currentBFactor, currentKFactor;
 
+    bool singleThreadAddJMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, SReal fact);
+
+protected:
+    SingleLink<
+        MatrixLinearSolver<Matrix,Vector,NoThreadManager>,
+        sofa::component::linearsystem::TypedMatrixLinearSystem<Matrix, Vector>,
+        BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK
+    > l_linearSystem;
+
 };
 
 //////////////////////////////////////////////////////////////
@@ -391,13 +434,10 @@ template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::rebuildSystem(SReal massFactor, SReal forceFactor);
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemRHVector(core::MultiVecDerivId v);
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemLHVector(core::MultiVecDerivId v);
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::solveSystem();
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::applySystemSolution();
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 GraphScatteredVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createPersistentVector();
@@ -406,16 +446,10 @@ template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 linearalgebra::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemBaseMatrix();
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-const core::behavior::MultiMatrixAccessor* MatrixLinearSolver<GraphScatteredMatrix, GraphScatteredVector, NoThreadManager>::getSystemMultiMatrixAccessor() const;
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 linearalgebra::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemRHBaseVector();
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 linearalgebra::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemLHBaseVector();
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemMatrix(GraphScatteredMatrix * matrix);
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/, sofa::core::MultiVecDerivId /*dx*/, const linearalgebra::BaseVector* /*f*/);
@@ -423,10 +457,13 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManage
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::computeResidual(const core::ExecParams* params,linearalgebra::BaseVector* f);
 
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::checkLinearSystem();
+
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_CPP)
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< GraphScatteredMatrix, GraphScatteredVector, NoThreadManager >;
-/// Extern template declarations don't prevent implicit instanciation in the case
-/// of explicitely specialized classes.  (See section 14.3.7 of the C++ standard
+/// Extern template declarations don't prevent implicit instantiation in the case
+/// of explicitly specialized classes.  (See section 14.3.7 of the C++ standard
 /// [temp.expl.spec]). We have to declare non-specialized member functions by
 /// hand to prevent MSVC from complaining that it doesn't find their definition.
 extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::MatrixLinearSolver();

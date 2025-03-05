@@ -26,13 +26,15 @@ using sofa::core::objectmodel::BaseNode ;
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory ;
-using sofa::core::RegisterObject ;
 
 #include <sofa/component/sceneutility/APIVersion.h>
 #include <sofa/version.h>
 #include <numeric>
 
-namespace sofa::component::sceneutility::_apiversion_
+namespace sofa::component::sceneutility
+{
+
+namespace _apiversion_
 {
 
 APIVersion::APIVersion() :
@@ -62,9 +64,9 @@ void APIVersion::checkInputData()
 
     const auto & API_version = d_level.getValue();
     static const std::set<std::string> allowedAPIVersions { "17.06", "17.12", "18.06", "18.12", "19.06", "19.12", "20.06", "20.12", SOFA_VERSION_STR } ;
-    if( allowedAPIVersions.find(API_version) == std::cend(allowedAPIVersions) )
+    if(!allowedAPIVersions.contains(API_version))
     {
-        auto allowedVersionStr = std::accumulate(std::next(allowedAPIVersions.begin()), allowedAPIVersions.end(), *(allowedAPIVersions.begin()), [](const std::string & s, const std::string & v) {
+        const auto allowedVersionStr = std::accumulate(std::next(allowedAPIVersions.begin()), allowedAPIVersions.end(), *(allowedAPIVersions.begin()), [](const std::string & s, const std::string & v) {
             return s + ", " + v;
         });
         msg_warning() << "The provided level '"<< API_version <<"' is not valid. Allowed versions are [" << allowedVersionStr << "]." ;
@@ -76,7 +78,12 @@ const std::string& APIVersion::getApiLevel()
     return d_level.getValue() ;
 }
 
-int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")
-        .add< APIVersion >();
+} // namespace _apiversion_
+
+void registerAPIVersion(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Specify the APIVersion of the component used in a scene.")
+        .add< APIVersion >());
+}
 
 } // namespace sofa::component::sceneutility

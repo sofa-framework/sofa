@@ -34,7 +34,7 @@ SceneCheckerListener* SceneCheckerListener::getInstance()
     return &sceneLoaderListener;
 }
 
-void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr node)
+void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr node, simulation::SceneLoader* sceneLoader)
 {
     if(node.get())
     {
@@ -45,7 +45,7 @@ void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr n
             sceneCheckerVisitor.addCheck(sceneCheck);
         }
 
-        sceneCheckerVisitor.validate(node.get());
+        sceneCheckerVisitor.validate(node.get(), sceneLoader);
     }
 }
 

@@ -35,10 +35,11 @@ using core::VecId;
 using namespace core::behavior;
 using namespace sofa::defaulttype;
 
-int RungeKutta4SolverClass = core::RegisterObject("A popular explicit time integrator")
-        .add< RungeKutta4Solver >()
-        .addAlias("RungeKutta4")
-        ;
+void registerRungeKutta4Solver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A popular explicit time integrator.")
+        .add< RungeKutta4Solver >());
+}
 
 void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
@@ -46,10 +47,10 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     mop->setImplicit(false); // this solver is explicit only
     // Get the Ids of the state vectors
-    MultiVecCoord pos(&vop, core::VecCoordId::position() );
-    MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
-    MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );
-    MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
+    MultiVecCoord pos(&vop, core::vec_id::write_access::position );
+    MultiVecDeriv vel(&vop, core::vec_id::write_access::velocity );
+    MultiVecCoord pos2(&vop, xResult /*core::vec_id::write_access::position*/ );
+    MultiVecDeriv vel2(&vop, vResult /*core::vec_id::write_access::velocity*/ );
 
     // Allocate auxiliary vectors
     MultiVecDeriv k1a(&vop);
@@ -160,9 +161,9 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     pos2.peq(k3v,stepBy3);
     vel2.peq(k3a,stepBy3);
     pos2.peq(k4v,stepBy6);
-    solveConstraint(dt, pos2, core::ConstraintParams::POS);
+    mop.solveConstraint(pos2, core::ConstraintOrder::POS);
     vel2.peq(k4a,stepBy6);
-    solveConstraint(dt, vel2, core::ConstraintParams::VEL);
+    mop.solveConstraint(vel2, core::ConstraintOrder::VEL);
 #else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
@@ -182,8 +183,8 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
         ops[1].second.push_back(std::make_pair(k4a.id(),stepBy6));
         vop.v_multiop(ops);
 
-        mop.solveConstraint(pos, core::ConstraintParams::POS);
-        mop.solveConstraint(vel, core::ConstraintParams::VEL);
+        mop.solveConstraint(pos, core::ConstraintOrder::POS);
+        mop.solveConstraint(vel, core::ConstraintOrder::VEL);
     }
 #endif
 }

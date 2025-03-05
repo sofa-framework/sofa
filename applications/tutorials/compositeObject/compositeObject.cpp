@@ -38,7 +38,7 @@
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/mass/UniformMass.h>
-#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 #include <sofa/component/mapping/linear/SubsetMultiMapping.h>
 #include <sofa/component/mapping/nonlinear/RigidMapping.h>
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.h>
@@ -106,18 +106,18 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     using MechanicalObjectRigid3 = sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::RigidTypes>;
     using UniformMassRigid3 = sofa::component::mass::UniformMass<sofa::defaulttype::RigidTypes>;
     using RigidMappingRigid3_to_3 = sofa::component::mapping::nonlinear::RigidMapping<sofa::defaulttype::RigidTypes, sofa::defaulttype::Vec3Types>;
-    using FixedConstraintRigid3 = sofa::component::constraint::projective::FixedConstraint<sofa::defaulttype::RigidTypes>;
+    using FixedProjectiveConstraintRigid3 = sofa::component::constraint::projective::FixedProjectiveConstraint<sofa::defaulttype::RigidTypes>;
     // The rigid object
     Node::SPtr rigidNode = simulatedScene->createChild("rigidNode");
     auto rigid_dof = addNew<MechanicalObjectRigid3>(rigidNode, "dof");
     auto rigid_mass = addNew<UniformMassRigid3>(rigidNode,"mass");
-    auto rigid_fixedConstraint = addNew<FixedConstraintRigid3>(rigidNode,"fixedConstraint");
+    auto rigid_FixedProjectiveConstraint = addNew<FixedProjectiveConstraintRigid3>(rigidNode,"FixedProjectiveConstraint");
 
 
     using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types>;
     using UniformMassRigid3 = sofa::component::mass::UniformMass<sofa::defaulttype::RigidTypes>;
     using RigidMappingRigid3_to_3 = sofa::component::mapping::nonlinear::RigidMapping<sofa::defaulttype::RigidTypes, sofa::defaulttype::Vec3Types>;
-    using FixedConstraintRigid3 = sofa::component::constraint::projective::FixedConstraint<sofa::defaulttype::Rigid3Types>;
+    using FixedProjectiveConstraintRigid3 = sofa::component::constraint::projective::FixedProjectiveConstraint<sofa::defaulttype::Rigid3Types>;
     // Particles mapped to the rigid object
     auto mappedParticles = rigidNode->createChild("mappedParticles");
     auto mappedParticles_dof = addNew< MechanicalObject3>(mappedParticles,"dof");
@@ -152,8 +152,8 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     mass->d_vertexMass.setValue( totalMass/(numX*numY*numZ) );
 
     HexahedronFEMForceField3::SPtr hexaFem = addNew<HexahedronFEMForceField3>(deformableGrid, "hexaFEM");
-    hexaFem->f_youngModulus.setValue(1000);
-    hexaFem->f_poissonRatio.setValue(0.4);
+    hexaFem->setYoungModulus(1000);
+    hexaFem->d_poissonRatio.setValue({0.4});
 
 
     // ======  Set up the multimapping and its parents, based on its child
@@ -213,9 +213,9 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     // Mapped particles. The RigidMapping requires to cluster the particles based on their parent frame.
     mappedParticles_dof->resize(numMapped);
     MechanicalObject3::WriteVecCoord xmapped = mappedParticles_dof->writePositions(); // parent positions
-    mappedParticles_mapping->globalToLocalCoords.setValue(true);                      // to define the mapped positions in world coordinates
+    mappedParticles_mapping->d_globalToLocalCoords.setValue(true);                      // to define the mapped positions in world coordinates
 
-    vector<unsigned>& rigidIndexPerPoint = *mappedParticles_mapping->rigidIndexPerPoint.beginEdit(); // to set to which rigid frame is attached each mapped particle
+    vector<unsigned>& rigidIndexPerPoint = *mappedParticles_mapping->d_rigidIndexPerPoint.beginEdit(); // to set to which rigid frame is attached each mapped particle
     rigidIndexPerPoint.clear();
     rigidIndexPerPoint.reserve( numMapped );
     unsigned mappedIndex=0;
@@ -230,7 +230,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
             mappedIndex++;
         }
     }
-    mappedParticles_mapping->rigidIndexPerPoint.endEdit();
+    mappedParticles_mapping->d_rigidIndexPerPoint.endEdit();
 
     // Declare all the particles to the multimapping
     for( unsigned i=0; i<xgrid.size(); i++ )
@@ -256,13 +256,11 @@ int main(int argc, char** argv)
     if (int err=sofa::gui::common::GUIManager::createGUI(NULL)) return err;
     sofa::gui::common::GUIManager::SetDimension(800,600);
 
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
     //=================================================
     sofa::simulation::Node::SPtr groot = createGridScene(Vec3(0,0,0), Vec3(5,1,1), 6,2,2, 1.0 );
     //=================================================
 
-    sofa::simulation::getSimulation()->init(groot.get());
+    sofa::simulation::node::initRoot(groot.get());
     sofa::gui::common::GUIManager::SetScene(groot);
 
     groot->setAnimate(true);
@@ -271,7 +269,7 @@ int main(int argc, char** argv)
     if (int err = sofa::gui::common::GUIManager::MainLoop(groot))
         return err;
 
-    sofa::simulation::getSimulation()->unload(groot);
+    sofa::simulation::node::unload(groot);
     sofa::gui::common::GUIManager::closeGUI();
 
     sofa::simulation::graph::cleanup();

@@ -65,7 +65,7 @@ public:
     template<class V>
     void applyIndex(V& v, const MapIndex& m)
     {
-        typename MapIndex::const_iterator it = m.find(v);
+        const typename MapIndex::const_iterator it = m.find(v);
         if (it != m.end())
             v = it->second;
     }
@@ -73,7 +73,7 @@ public:
     void apply(Value& v, const MapIndex& m);
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_MAPINDICES_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_MAPINDICES_CPP)
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MapIndices<int>;
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MapIndices<unsigned int>;
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MapIndices< type::fixed_array<unsigned int, 2> >;

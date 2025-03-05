@@ -25,10 +25,8 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/config.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 /**
@@ -48,8 +46,7 @@ public:
 
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

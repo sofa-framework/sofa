@@ -26,11 +26,11 @@
 
 namespace sofa::component::constraint::lagrangian::solver
 {
-MechanicalGetConstraintResolutionVisitor::MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res)
+MechanicalGetConstraintResolutionVisitor::MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset)
 : simulation::BaseMechanicalVisitor(params)
 , cparams(params)
 , _res(res)
-, _offset(0)
+, _offset(offset)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
@@ -41,7 +41,7 @@ MechanicalGetConstraintResolutionVisitor::Result MechanicalGetConstraintResoluti
 {
     if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
     {
-        ctime_t t0 = begin(node, c);
+        const ctime_t t0 = begin(node, c);
         c->getConstraintResolution(cparams, _res, _offset);
         end(node, c, t0);
     }

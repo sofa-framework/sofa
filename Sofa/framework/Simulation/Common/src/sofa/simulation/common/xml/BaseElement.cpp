@@ -84,12 +84,12 @@ void BaseElement::setSrcLine(const int l)
 
 bool BaseElement::presenceAttribute(const std::string& s)
 {
-    return (attributes.find(s) != attributes.end());
+    return attributes.contains(s);
 }
 /// Remove an attribute. Fails if this attribute is "name" or "type"
 bool BaseElement::removeAttribute(const std::string& attr)
 {
-    AttributeMap::iterator it = attributes.find(attr);
+    const AttributeMap::iterator it = attributes.find(attr);
     if (it == attributes.end())
         return false;
     attributes.erase(it);
@@ -117,7 +117,7 @@ bool BaseElement::addChild(BaseElement* child)
 bool BaseElement::removeChild(BaseElement* child)
 {
     if (child->getParent()!=this) return false;
-    ChildList::iterator it = children.begin();
+    const ChildList::iterator it = children.begin();
     while (it!=children.end())
     {
         if (*it == child)

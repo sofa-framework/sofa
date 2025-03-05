@@ -45,13 +45,8 @@ using namespace std;
 // needs to be declared AFTER windows header file 
 //(https://developercommunity.visualstudio.com/content/problem/93889/error-c2872-byte-ambiguous-symbol.html)
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace system
+namespace sofa::helper::system
 {
 
 static unsigned int getFileHashTimeSize(const string& filename)
@@ -75,7 +70,7 @@ static unsigned int getFileHashTimeSize(const string& filename)
         return 0;	// erreur !
     }
 
-    unsigned int hash = st.wMilliseconds
+    const unsigned int hash = st.wMilliseconds
             + 1000 * st.wSecond
             + 60 * 000 * st.wMinute
             + 60 * 60 * 000 * st.wHour
@@ -102,7 +97,7 @@ public:
     // update hash; returns FALSE if file changed
     bool update()
     {
-        unsigned int oldHash = m_hashTimeSize;
+        const unsigned int oldHash = m_hashTimeSize;
         m_hashTimeSize = getFileHashTimeSize(m_filename);
         return (oldHash == m_hashTimeSize);
     }
@@ -160,7 +155,7 @@ int FileMonitor::addFile(const std::string& directoryname, const std::string& fi
 int FileMonitor::updates(int timeout)
 {
     bool hadEvent = false ;
-    ctime_t t = CTime::getTime() ;
+    const ctime_t t = CTime::getTime() ;
 
     while(!hadEvent && CTime::toSecond(CTime::getRefTime()-t) < 1.0*timeout ){
         for (ListOfMonitors::iterator it_monitor = monitors.begin(); it_monitor != monitors.end(); it_monitor++)
@@ -179,6 +174,4 @@ int FileMonitor::updates(int timeout)
 }
 
 
-} // system
-} // helper
-} // sofa
+}

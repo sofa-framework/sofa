@@ -21,10 +21,8 @@
 ******************************************************************************/
 #include <sofa/simulation/PauseEvent.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 SOFA_EVENT_CPP( PauseEvent )
@@ -39,6 +37,6 @@ PauseEvent::~PauseEvent()
 {
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+

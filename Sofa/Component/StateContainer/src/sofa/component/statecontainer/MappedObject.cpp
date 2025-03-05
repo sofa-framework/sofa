@@ -23,23 +23,15 @@
 
 #include <sofa/component/statecontainer/MappedObject.inl>
 
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
+
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::statecontainer
 {
 
 using namespace defaulttype;
-
-int MappedObjectClass = core::RegisterObject("Mapped state vectors")
-        .add< MappedObject<Vec1Types> >()
-        .add< MappedObject<Vec3Types> >(true) // default template
-        .add< MappedObject<Vec2Types> >()
-        .add< MappedObject<Vec6Types> >()
-        .add< MappedObject<Rigid3Types> >()
-        .add< MappedObject<Rigid2Types> >()
-        ;
 
 template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<Vec1Types>;
 template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<Vec2Types>;
@@ -47,5 +39,16 @@ template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<Vec3Types>;
 template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<Vec6Types>;
 template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<Rigid3Types>;
 template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<Rigid2Types>;
+
+void registerMappedObject(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Mapped state vectors")
+        .add< MappedObject<Vec1Types> >()
+        .add< MappedObject<Vec3Types> >(true) // default template
+        .add< MappedObject<Vec2Types> >()
+        .add< MappedObject<Vec6Types> >()
+        .add< MappedObject<Rigid3Types> >()
+        .add< MappedObject<Rigid2Types> >());
+}
 
 } // namespace sofa::component::statecontainer

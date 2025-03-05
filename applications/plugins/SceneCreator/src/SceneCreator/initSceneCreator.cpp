@@ -23,10 +23,7 @@
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
-namespace sofa
-{
-
-namespace component
+namespace sofa::component
 {
 
 ///Here are just several convenient functions to help user to know what contains the plugin
@@ -75,7 +72,6 @@ const char* getModuleComponentList()
     /// string containing the names of the classes provided by the plugin
     return "";
 }
-} 
 } 
 
 

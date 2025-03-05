@@ -22,52 +22,29 @@
 #pragma once
 
 #include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 
 #include <sofa/core/MultiMapping.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::component::mapping::linear
 {
 
-/**
- * @class SubsetMapping
- * @brief Compute a subset of input points
- */
 template <class TIn, class TOut>
-class SubsetMultiMapping : public core::MultiMapping<TIn, TOut>
+class SubsetMultiMapping : public LinearMultiMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SubsetMultiMapping, TIn, TOut), SOFA_TEMPLATE2(core::MultiMapping, TIn, TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(SubsetMultiMapping, TIn, TOut), SOFA_TEMPLATE2(LinearMultiMapping, TIn, TOut));
 
-    typedef core::MultiMapping<TIn, TOut> Inherit;
+    typedef LinearMultiMapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
 
-    typedef typename Out::VecCoord OutVecCoord;
-    typedef typename Out::VecDeriv OutVecDeriv;
-    typedef typename Out::Coord OutCoord;
-    typedef typename Out::Deriv OutDeriv;
-    typedef typename Out::MatrixDeriv OutMatrixDeriv;
-    typedef typename In::VecCoord InVecCoord;
-    typedef typename In::VecDeriv InVecDeriv;
-    typedef typename In::Coord InCoord;
-    typedef typename In::Deriv InDeriv;
-    typedef typename In::MatrixDeriv InMatrixDeriv;
-    typedef typename InCoord::value_type Real;
-    typedef typename type::vector<const InVecCoord*> vecConstInVecCoord;
-    typedef typename type::vector<OutVecCoord*> vecOutVecCoord;
-
-    typedef Data<InVecCoord> InDataVecCoord;
-    typedef Data<InVecDeriv> InDataVecDeriv;
-    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
-
-    typedef Data<OutVecCoord> OutDataVecCoord;
-    typedef Data<OutVecDeriv> OutDataVecDeriv;
-    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
-
-    /// Correspondance array
+    /// Correspondence array
     typedef core::topology::BaseMeshTopology::SetIndex IndexArray;
 
     void init() override;
@@ -78,36 +55,37 @@ public:
     void addPoint(int fromModel, int index);
 
     // usual Mapping API
-    void apply(const core::MechanicalParams* mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos, const type::vector<const InDataVecCoord*>& dataVecInPos) override;
-    void applyJ(const core::MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel) override;
-    void applyJT(const core::MechanicalParams* mparams, const type::vector<InDataVecDeriv*>& dataVecOutForce, const type::vector<const OutDataVecDeriv*>& dataVecInForce) override;
+    void apply(const core::MechanicalParams* mparams, const type::vector<DataVecCoord_t<Out>*>& dataVecOutPos, const type::vector<const DataVecCoord_t<In>*>& dataVecInPos) override;
+    void applyJ(const core::MechanicalParams* mparams, const type::vector<DataVecDeriv_t<Out>*>& dataVecOutVel, const type::vector<const DataVecDeriv_t<In>*>& dataVecInVel) override;
+    void applyJT(const core::MechanicalParams* mparams, const type::vector<DataVecDeriv_t<In>*>& dataVecOutForce, const type::vector<const DataVecDeriv_t<Out>*>& dataVecInForce) override;
     void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
 
-    void applyJT( const core::ConstraintParams* cparams, const type::vector< InDataMatrixDeriv* >& dataMatOutConst, const type::vector< const OutDataMatrixDeriv* >& dataMatInConst ) override;
+    void applyJT( const core::ConstraintParams* cparams, const type::vector< DataMatrixDeriv_t<In>* >& dataMatOutConst, const type::vector< const DataMatrixDeriv_t<Out>* >& dataMatInConst ) override;
 
     /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().
     virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
+    sofa::core::objectmodel::lifecycle::RenamedData< type::vector<unsigned> > indexPairs;
 
-    Data< type::vector<unsigned> > indexPairs;                     ///< Two indices per child: the parent, and the index within the parent
+    Data< type::vector<unsigned> > d_indexPairs; ///< list of couples (parent index + index in the parent)
 
 protected :
 
     SubsetMultiMapping();
-    virtual ~SubsetMultiMapping();
+    virtual ~SubsetMultiMapping() override;
 
     type::vector<linearalgebra::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
 };
 
 
-#if  !defined(SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP)
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< defaulttype::Vec2Types, defaulttype::Vec2Types >;
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
-
 #endif
 
 } // namespace sofa::component::mapping::linear

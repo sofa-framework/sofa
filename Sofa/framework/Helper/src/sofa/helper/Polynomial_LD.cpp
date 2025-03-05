@@ -22,10 +22,8 @@
 #define SOFA_HELPER_POLYNOMIAL_LD_CPP
 #include <sofa/helper/Polynomial_LD.inl>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 template class SOFA_HELPER_API Monomial_LD<double,1>;
@@ -41,6 +39,6 @@ template class SOFA_HELPER_API Polynomial_LD<double,4>;
 template class SOFA_HELPER_API Polynomial_LD<double,5>;
 
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
+

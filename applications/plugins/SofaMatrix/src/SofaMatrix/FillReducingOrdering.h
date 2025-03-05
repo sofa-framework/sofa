@@ -100,7 +100,7 @@ protected:
     void updateMesh();
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_FillReducingOrdering_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_FillReducingOrdering_CPP)
 extern template class SOFA_SOFAMATRIX_API FillReducingOrdering<defaulttype::Vec3Types>;
 #endif
 

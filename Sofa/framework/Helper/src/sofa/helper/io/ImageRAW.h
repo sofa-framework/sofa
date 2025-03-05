@@ -26,13 +26,7 @@
 #include <string>
 
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 class SOFA_HELPER_API ImageRAW : public Image
@@ -58,10 +52,7 @@ private:
 };
 
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif

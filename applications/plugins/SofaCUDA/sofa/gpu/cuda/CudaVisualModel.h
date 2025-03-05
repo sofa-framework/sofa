@@ -31,24 +31,17 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 template<class DataTypes>
 class CudaKernelsCudaVisualModel;
 
-} // namespace cuda
-
-} // namespace gpu
+} // namespace gpu::cuda
 
 
-namespace component
-{
-
-namespace visualmodel
+namespace component::visualmodel
 {
 
 template <class TDataTypes>
@@ -84,7 +77,7 @@ public:
     int nbElement; ///< number of elements
     int nbVertex; ///< number of vertices to process to compute all elements
     int nbElementPerVertex; ///< max number of elements connected to a vertex
-    /// Index of elements attached to each points (layout per bloc of NBLOC vertices, with first element of each vertex, then second element, etc)
+    /// Index of elements attached to each points (layout per block of NBLOC vertices, with first element of each vertex, then second element, etc)
     gpu::cuda::CudaVector<int> velems;
 
     Data<type::Vec4f> matAmbient; ///< material ambient color
@@ -111,12 +104,13 @@ public:
     virtual void init() override;
     virtual void reinit() override;
     virtual void internalDraw(const core::visual::VisualParams* vparams);
-    virtual void drawVisual(const core::visual::VisualParams*) override;
+    virtual void doDrawVisual(const core::visual::VisualParams*) override;
     virtual void drawTransparent(const core::visual::VisualParams*) override;
     virtual void drawShadow(const core::visual::VisualParams*) override;
-    virtual void updateVisual() override;
+    virtual void doUpdateVisual(const core::visual::VisualParams* vparams) override;
     virtual void updateTopology();
     virtual void updateNormals();
+    virtual void updateTopologyAndNormals();
     virtual void handleTopologyChange() override;
 
     virtual void computeBBox(const core::ExecParams* params, bool=false) override;
@@ -130,7 +124,7 @@ protected:
         nbElement = nbe;
         nbVertex = nbv;
         nbElementPerVertex = nbelemperv;
-        int nbloc = (nbVertex+BSIZE-1)/BSIZE;
+        const int nbloc = (nbVertex+BSIZE-1)/BSIZE;
         velems.resize(nbloc*nbElementPerVertex*BSIZE);
         for (unsigned int i=0; i<velems.size(); i++)
             velems[i] = 0;
@@ -138,9 +132,9 @@ protected:
 
     void setV(int vertex, int num, int index)
     {
-        int bloc = vertex/BSIZE;
-        int b_x  = vertex%BSIZE;
-        velems[ bloc*BSIZE*nbElementPerVertex // start of the bloc
+        const int block = vertex/BSIZE;
+        const int b_x  = vertex%BSIZE;
+        velems[ block*BSIZE*nbElementPerVertex // start of the block
                 + num*BSIZE                     // offset to the element
                 + b_x                           // offset to the vertex
               ] = index+1;
@@ -151,9 +145,8 @@ protected:
     SingleLink<CudaVisualModel<DataTypes>, core::topology::BaseMeshTopology, BaseLink::FLAG_STRONGLINK> topology;
 };
 
-} // namespace visualmodel
+} // namespace component::visualmodel
 
-} // namespace component
 
 } // namespace sofa
 

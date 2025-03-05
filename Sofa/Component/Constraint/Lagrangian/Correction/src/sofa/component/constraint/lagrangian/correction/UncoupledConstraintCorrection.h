@@ -26,6 +26,8 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/topology/TopologyData.h>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::component::constraint::lagrangian::correction
 {
 
@@ -109,11 +111,21 @@ public:
 
     /// @}
 
-    core::topology::PointData< VecReal > compliance; ///< Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix
 
-    Data< Real > defaultCompliance; ///< Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
+    sofa::core::objectmodel::lifecycle::RenamedData< VecReal >  compliance;
 
-    Data<bool> f_verbose; ///< Dump the constraint matrix at each iteration
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
+    sofa::core::objectmodel::lifecycle::RenamedData<Real> defaultCompliance;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_verbose;
+
+    core::topology::PointData< VecReal > d_compliance; ///< Compliance value on each dof. If Rigid compliance (7 values): 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix
+
+    Data< Real > d_defaultCompliance; ///< Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)
+
+    Data<bool> d_verbose; ///< Dump the constraint matrix at each iteration
 
     Data< Real > d_correctionVelocityFactor; ///< Factor applied to the constraint forces when correcting the velocities
     Data< Real > d_correctionPositionFactor; ///< Factor applied to the constraint forces when correcting the positions
@@ -146,7 +158,7 @@ template<>
 void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::getComplianceMatrix(sofa::linearalgebra::BaseMatrix * /*m*/) const;
 
 
-#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP)
+#if !defined(SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP)
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API UncoupledConstraintCorrection<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API UncoupledConstraintCorrection<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API UncoupledConstraintCorrection<defaulttype::Vec1Types>;

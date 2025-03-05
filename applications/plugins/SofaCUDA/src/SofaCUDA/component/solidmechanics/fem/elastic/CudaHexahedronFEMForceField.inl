@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/gpu/cuda/CudaHexahedronFEMForceField.h>
+#include <SofaCUDA/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.inl>
 #include <sofa/gpu/cuda/mycuda.h>
 
@@ -79,11 +79,11 @@ void HexahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDer
   Data& data = *m->data;
   m->setMethod(m->LARGE);
 
-  const VecCoord& p = m->mstate->read(sofa::core::ConstVecCoordId::restPosition())->getValue();
-  m->_initialPoints.setValue(p);
+  const VecCoord& p = m->mstate->read(sofa::core::vec_id::read_access::restPosition)->getValue();
+  m->d_initialPoints.setValue(p);
 
   m->_materialsStiffnesses.resize( m->getIndexedElements()->size() );
-  m->_elementStiffnesses.beginEdit()->resize( m->getIndexedElements()->size() );
+  m->d_elementStiffnesses.beginEdit()->resize( m->getIndexedElements()->size() );
 
   m->_rotatedInitialElements.resize(m->getIndexedElements()->size());
   m->_rotations.resize( m->getIndexedElements()->size() );
@@ -128,8 +128,8 @@ void HexahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDer
 
 
   data.nbElementPerVertex = nmax;
-  std::istringstream ptchar(m->_gatherPt.getValue().getSelectedItem());
-  std::istringstream bschar(m->_gatherBsize.getValue().getSelectedItem());
+  std::istringstream ptchar(m->d_gatherPt.getValue().getSelectedItem());
+  std::istringstream bschar(m->d_gatherBsize.getValue().getSelectedItem());
   ptchar >> data.GATHER_PT;
   bschar >> data.GATHER_BSIZE;
 
@@ -145,7 +145,7 @@ void HexahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDer
 
       data.setE(ei, e, &(m->_rotatedInitialElements[ei]));
 
-      data.setS(ei, m->_rotations[ei], m->_elementStiffnesses.getValue()[i]);
+      data.setS(ei, m->_rotations[ei], m->d_elementStiffnesses.getValue()[i]);
 
       for (unsigned j = 0; j < e.size(); ++j)
       {
@@ -168,7 +168,7 @@ void HexahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDer
       }
   }
 
-  m->_elementStiffnesses.endEdit();
+  m->d_elementStiffnesses.endEdit();
 
 }
 
@@ -236,7 +236,7 @@ void HexahedronFEMForceField< gpu::cuda::CudaVec3fTypes >::addDForce(const core:
 { 
 	VecDeriv& df = *d_df.beginEdit();
 	const VecDeriv& dx = d_dx.getValue();
-    double kFactor = mparams->kFactor();
+    const double kFactor = mparams->kFactor();
 
     data->addDForce(this, df, dx, kFactor/*, bFactor*/);
 
@@ -251,7 +251,7 @@ const HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::Transformation& Hexahe
 template<>
 void HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::getRotations(linearalgebra::BaseMatrix * rotations,int offset)
 {
-    auto nbdof = this->mstate->getSize();
+    const auto nbdof = this->mstate->getSize();
 
     if (auto* diag = dynamic_cast<linearalgebra::RotationMatrix<float> *>(rotations))
     {
@@ -289,7 +289,7 @@ void HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::getRotations(linearalge
         {
             Transformation t;
             getNodeRotation(t,i);
-            int e = offset+i*3;
+            const int e = offset+i*3;
             rotations->set(e+0,e+0,t[0][0]); rotations->set(e+0,e+1,t[0][1]); rotations->set(e+0,e+2,t[0][2]);
             rotations->set(e+1,e+0,t[1][0]); rotations->set(e+1,e+1,t[1][1]); rotations->set(e+1,e+2,t[1][2]);
             rotations->set(e+2,e+0,t[2][0]); rotations->set(e+2,e+1,t[2][1]); rotations->set(e+2,e+2,t[2][2]);

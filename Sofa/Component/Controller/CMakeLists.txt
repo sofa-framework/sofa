@@ -1,20 +1,21 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.Controller LANGUAGES CXX)
 
 set(SOFACOMPONENTCONTROLLER_SOURCE_DIR "src/sofa/component/controller")
 
 set(HEADER_FILES
     ${SOFACOMPONENTCONTROLLER_SOURCE_DIR}/config.h.in
-    ${SOFACOMPONENTCONTROLLER_SOURCE_DIR}/init.h    
+    ${SOFACOMPONENTCONTROLLER_SOURCE_DIR}/init.h
+    ${SOFACOMPONENTCONTROLLER_SOURCE_DIR}/Controller.h
     ${SOFACOMPONENTCONTROLLER_SOURCE_DIR}/MechanicalStateController.h
     ${SOFACOMPONENTCONTROLLER_SOURCE_DIR}/MechanicalStateController.inl
-    ${SOFACOMPONENTCONTROLLER_SOURCE_DIR}/Controller.h
 )
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCONTROLLER_SOURCE_DIR}/init.cpp
     ${SOFACOMPONENTCONTROLLER_SOURCE_DIR}/Controller.cpp
     ${SOFACOMPONENTCONTROLLER_SOURCE_DIR}/MechanicalStateController.cpp
+
 )
 
 sofa_find_package(Sofa.Simulation.Core REQUIRED)

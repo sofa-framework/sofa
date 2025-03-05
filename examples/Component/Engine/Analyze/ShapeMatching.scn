@@ -3,8 +3,8 @@
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [PositionBasedDynamicsConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [PositionBasedDynamicsProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Analyze"/> <!-- Needed to use components [ClusteringEngine ShapeMatching] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -22,7 +22,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <DefaultContactManager name="Response" response="PenalityContactForceField" />
+    <CollisionResponse name="Response" response="PenalityContactForceField" />
 	<Node 	name="dragon"  >
 		<EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -33,7 +33,7 @@
 
 		<ClusteringEngine template="Vec3" name="clustering" radius='1'  number='50' position="@topo.position"/>
 		<ShapeMatching template="Vec3" name="shapeMatching" iterations='1' position="@dofs.position" cluster="@clustering.cluster"/>
-	 	<PositionBasedDynamicsConstraint template="Vec3" stiffness = '1' position="@shapeMatching.targetPosition"/>		
+	 	<PositionBasedDynamicsProjectiveConstraint template="Vec3" stiffness = '1' position="@shapeMatching.targetPosition"/>
 		
         <Node name="Visu">
             <MeshOBJLoader name="meshLoader_1" filename="mesh/dragon.obj" handleSeams="1" />

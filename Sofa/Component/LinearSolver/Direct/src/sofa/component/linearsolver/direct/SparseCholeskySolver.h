@@ -20,57 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/config.h>
 
-#include <sofa/component/linearsolver/direct/config.h>
-
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/component/linearsolver/direct/SparseCommon.h>
-#include <sofa/helper/OptionsGroup.h>
-
-namespace sofa::component::linearsolver::direct
-{
-
-// Direct linear solver based on Sparse Cholesky factorization, implemented with the CSPARSE library
-template<class TMatrix, class TVector>
-class SparseCholeskySolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SparseCholeskySolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
-
-    typedef TMatrix Matrix;
-    typedef TVector Vector;
-
-    SparseCholeskySolver();
-    ~SparseCholeskySolver() override;
-
-    void solve (Matrix& M, Vector& x, Vector& b) override;
-    void invert(Matrix& M) override;
-
-protected:
-
-    Data<bool> f_verbose; ///< Dump system state at each iteration
-    cs A;
-    cs* permuted_A;
-    css *S;
-    csn *N;
-    int * A_i; ///< row indices, size nzmax
-    int * A_p; ///< column pointers (size n+1) or col indices (size nzmax)
-    type::vector<int> Previous_colptr,Previous_rowind; ///<  shape of the matrix at the previous step
-    type::vector<int> perm,iperm; ///< fill reducing permutation
-    type::vector<double> A_x,z_tmp,r_tmp,tmp;
-    bool notSameShape;
-
-    Data<sofa::helper::OptionsGroup> d_typePermutation;
-
-    void suiteSparseFactorization(bool applyPermutation);
-
-    css* symbolic_Chol(cs *A);
-};
-
-#if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP)
-extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseCholeskySolver< sofa::linearalgebra::CompressedRowSparseMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >;
-#endif
-
-} // namespace sofa::component::linearsolver::direct
+SOFA_PRAGMA_ERROR( \
+    "This header has been DISABLED since v23.12. " \
+    "To fix this error you must use the CSparseSolvers plugins. " )

@@ -1,30 +1,31 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component LANGUAGES CXX)
 
 set(SOFACOMPONENT_SOURCE_DIR "src/sofa/component")
 
 sofa_add_subdirectory_modules(SOFACOMPONENT_TARGETS
     DIRECTORIES
-        ODESolver
-        IO
-        Playback
-        SceneUtility
-        Topology
-        Visual
-        LinearSolver
-        Mass
-        Diffusion
-        Mapping
-        SolidMechanics
-        StateContainer
-        Constraint
-        AnimationLoop
-        MechanicalLoad
-        Collision
-        Setting
-        Controller
-        Engine
-        Haptics
+    ODESolver
+    IO
+    Playback
+    SceneUtility
+    Topology
+    Visual
+    LinearSystem
+    LinearSolver
+    Mass
+    Diffusion
+    Mapping
+    StateContainer
+    SolidMechanics
+    Constraint
+    AnimationLoop
+    MechanicalLoad
+    Collision
+    Setting
+    Controller
+    Engine
+    Haptics
 )
 
 set(HEADER_FILES
@@ -48,3 +49,10 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFA_COMPONENT_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFA_COMPONENT_BUILD_TESTS)
+    add_subdirectory(test)
+endif()

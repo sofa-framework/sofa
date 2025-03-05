@@ -33,8 +33,8 @@ MergePoints<DataTypes>::MergePoints()
     , f_X2_mapping( initData (&f_X2_mapping, "mappingX2", "Mapping of indices to inject position2 inside position1 vertex buffer") )
     , f_indices1( initData(&f_indices1,"indices1","Indices of the points of the first object") )
     , f_indices2( initData(&f_indices2,"indices2","Indices of the points of the second object") )
-    , f_points( initData (&f_points, "points", "position coordinates of the merge") )
-    , f_noUpdate( initData (&f_noUpdate, false, "noUpdate", "do not update the output at eacth time step (false)") )
+    , f_points( initData (&f_points, "points", "position coordinates resulting from the merge") )
+    , f_noUpdate( initData (&f_noUpdate, false, "noUpdate", "do not update the output at each time step (false)") )
 {
     addInput(&f_X1);
     addInput(&f_X2);
@@ -98,7 +98,7 @@ void MergePoints<DataTypes>::doUpdate()
         int j=0;
         for(unsigned int i=0; i<points.size(); ++i)
         {
-            unsigned int posX = mapping[j];
+            const unsigned int posX = mapping[j];
             if(i == posX)
             {
                 indices2.push_back(i); // fill indices2 buffer
@@ -116,7 +116,7 @@ void MergePoints<DataTypes>::doUpdate()
             indices1.push_back(i);
         }
 
-        unsigned int index = indices1.size();
+        const unsigned int index = indices1.size();
 
         for( unsigned i=0; i<x2.size(); ++i )
         {

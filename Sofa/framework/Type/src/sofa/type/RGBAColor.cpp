@@ -23,12 +23,17 @@
 
 #include <sstream>
 #include <locale>
+#include <map>
 
+#include <sofa/type/fixed_array.h>
 #include <sofa/type/fixed_array_algorithms.h>
+#include <sofa/type/Vec.h>
+
 using namespace sofa::type::pairwise;
 
 namespace // anonymous
 {
+
     template<class T>
     T rclamp(const T& value, const T& low, const T& high)
     {
@@ -81,6 +86,7 @@ static void extractValidatedHexaString(std::istream& in, std::string& s)
     in.clear(in.rdstate() & ~std::ios_base::failbit) ;
 }
 
+
 bool RGBAColor::read(const std::string& str, RGBAColor& color)
 {
     std::stringstream s(str);
@@ -93,10 +99,10 @@ bool RGBAColor::read(const std::string& str, RGBAColor& color)
 
 void RGBAColor::set(const float r, const float g, const float b, const float a)
 {
-    this->elems[0] = r;
-    this->elems[1] = g;
-    this->elems[2] = b;
-    this->elems[3] = a;
+    this->m_components[0] = r;
+    this->m_components[1] = g;
+    this->m_components[2] = b;
+    this->m_components[3] = a;
 }
 
 
@@ -117,13 +123,13 @@ RGBAColor RGBAColor::fromFloat(const float r, const float g, const float b, cons
 }
 
 
-RGBAColor RGBAColor::fromVec4(const fixed_array<float, 4>& color)
+RGBAColor RGBAColor::fromStdArray(const std::array<float, 4>& color)
 {
     return RGBAColor(color) ;
 }
 
 
-RGBAColor RGBAColor::fromVec4(const fixed_array<double, 4>& color)
+RGBAColor RGBAColor::fromStdArray(const std::array<double, 4>& color)
 {
     return RGBAColor(float(color[0]), float(color[1]), float(color[2]), float(color[3]));
 }
@@ -159,7 +165,6 @@ RGBAColor RGBAColor::fromHSVA(const float h, const float s, const float v, const
     return rgba;
 }
 
-
 /// This function remove the leading space in the stream.
 static std::istream& trimInitialSpaces(std::istream& in)
 {
@@ -172,6 +177,30 @@ static std::istream& trimInitialSpaces(std::istream& in)
     return in;
 }
 
+const std::map<std::string, RGBAColor> stringToColorMap {
+    {"white", g_white},
+    {"black", g_black},
+    {"red", g_red},
+    {"green", g_green},
+    {"blue", g_blue},
+    {"cyan", g_cyan},
+    {"magenta", g_magenta},
+    {"yellow", g_yellow},
+    {"gray", g_gray},
+    {"darkgray", g_darkgray},
+    {"lightgray", g_lightgray},
+    {"orange", g_orange},
+    {"purple", g_purple},
+    {"pink", g_pink},
+    {"brown", g_brown},
+    {"lime", g_lime},
+    {"teal", g_teal},
+    {"navy", g_navy},
+    {"olive", g_olive},
+    {"maroon", g_maroon},
+    {"silver", g_silver},
+    {"gold", g_gold}
+};
 
 SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t)
 {
@@ -226,18 +255,14 @@ SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t)
 
         /// if end of line is returned before encountering ' ' or 7... is it fine
         /// so we can clear the failure bitset.
-
-        /// Compare the resulting string with supported colors.
-        /// If you add more colors... please also add them in the test file.
-        if (str == "white")    { r = 1.0f; g = 1.0f; b = 1.0f; }
-        else if (str == "black")    { r = 0.0f; g = 0.0f; b = 0.0f; }
-        else if (str == "red")      { r = 1.0f; g = 0.0f; b = 0.0f; }
-        else if (str == "green")    { r = 0.0f; g = 1.0f; b = 0.0f; }
-        else if (str == "blue")     { r = 0.0f; g = 0.0f; b = 1.0f; }
-        else if (str == "cyan")     { r = 0.0f; g = 1.0f; b = 1.0f; }
-        else if (str == "magenta")  { r = 1.0f; g = 0.0f; b = 1.0f; }
-        else if (str == "yellow")   { r = 1.0f; g = 1.0f; b = 0.0f; }
-        else if (str == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
+        if (const auto it = stringToColorMap.find(str);
+            it != stringToColorMap.end())
+        {
+            r = it->second.r();
+            g = it->second.g();
+            b = it->second.b();
+            a = it->second.a();
+        }
         else {
             /// If we cannot parse the field we returns that with the fail bit.
             i.setstate(std::ios_base::failbit) ;
@@ -263,8 +288,9 @@ SOFA_TYPE_API std::ostream& operator << ( std::ostream& out, const RGBAColor& t 
 /// @brief enlight a color by a given factor.
 RGBAColor RGBAColor::lighten(const RGBAColor& in, const SReal factor)
 {
-    RGBAColor c = in + ( (RGBAColor::white() - clamp(in, 0.0f, 1.0f)) * rclamp(float(factor), 0.0f, 1.0f));
-    c.a()=1.0;
+    RGBAColor c = in + ( (RGBAColor::white() - RGBAColor::clamp(in, 0.0f, 1.0f)) * rclamp(float(factor), 0.0f, 1.0f));
+
+    c.a() = 1.0;
     return c ;
 }
 

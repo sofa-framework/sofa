@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Config LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -26,7 +26,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 ### Sofa using type double or float
 set(SOFA_FLOATING_POINT_TYPE double CACHE STRING
     "Type used for floating point values in SOFA. It actually determines:
-    - what template instanciations will be compiled (via the definition of the
+    - what template instantiations will be compiled (via the definition of the
     SOFA_FLOAT and SOFA_DOUBLE macros)
     - what is the type behind the 'SReal' typedef used throughout SOFA.")
 set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double)
@@ -43,7 +43,7 @@ endif()
 # SOFA_FLOAT please consider using SOFA_WITH_FLOAT and SOFA_WITH_DOUBLE.
 # Eg: SOFA_WITH_FLOAT indicate that you need to generate the
 # float code and SOFA_WITH_DOUBLE indicates that you
-# nedd to generate the double related code.
+# need to generate the double related code.
 if(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
     set(SOFA_WITH_FLOAT 1)
     set(SOFA_WITH_DOUBLE 0)
@@ -60,18 +60,11 @@ option(SOFA_DUMP_VISITOR_INFO "Compile Sofa with the SOFA_DUMP_VISITOR_INFO macr
 if(MSVC)
     option(SOFA_VECTORIZE "(deprecated) Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
     option(SOFA_ENABLE_SIMD "Enable the use of SIMD instructions by the compiler (AVX/AVX2 for msvc, march=native for gcc/clang)." OFF)
-    option(SOFA_ENABLE_FAST_MATH "Enable floating-point model to fast (theorically faster but can bring unexpected results/bugs)." OFF)
 endif()
-### Mask
-### Removed since v21.12
-### Warn the user if he set the option by himself
-if(SOFA_USE_MASK)
-    message(WARNING "SOFA_USE_MASK is set ; use of ForceMask has been removed in v21.12. If you are using this feature, your own code will most likely not compile anymore.
-            For more information: https://github.com/sofa-framework/sofa/pull/2316")
-endif()
+option(SOFA_ENABLE_FAST_MATH "Enable floating-point model to fast (theoretically faster but can bring unexpected results/bugs)." OFF)
 
 ### SOFA_DEV_TOOL
-option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
+option(SOFA_WITH_DEVTOOLS "Compile with development extra features." ON)
 
 # Variables to expose in configured files
 sofa_set_01(SOFA_NO_UPDATE_BBOX_ VALUE ${SOFA_NO_UPDATE_BBOX}) # build_option_bbox.h.in
@@ -91,6 +84,8 @@ set(SOFACONFIGSRC_ROOT "src/sofa")
 set(HEADER_FILES
     ${SOFACONFIGSRC_ROOT}/config.h.in
     ${SOFACONFIGSRC_ROOT}/version.h.in
+    ${SOFACONFIGSRC_ROOT}/url.h.in
+    ${SOFACONFIGSRC_ROOT}/Modules.h
 )
 set(SOURCE_FILES
     ${SOFACONFIGSRC_ROOT}/initSofaConfig.cpp # necessary to build a library
@@ -101,22 +96,18 @@ set(SOFACONFIG_BUILD_OPTIONS_SRC
     ${SOFACONFIGSRC_ROOT}/config/build_option_bbox.h.in
 )
 
-# Header-only library (not handled well by macros & stuff so commented)
-# add_library(${PROJECT_NAME} INTERFACE)
-# target_sources(${PROJECT_NAME} INTERFACE "$<BUILD_INTERFACE:${HEADER_FILES};${SOFACONFIG_BUILD_OPTIONS_SRC}>")
-
 # Library
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOFACONFIG_BUILD_OPTIONS_SRC} ${SOURCE_FILES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 
-if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+if((CMAKE_SYSTEM_NAME STREQUAL Windows) AND SOFA_USE_DEPENDENCY_PACK)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
 endif()
 
 # Compile options
-# Set C++17
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+# Set C++20
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
 set(SOFACONFIG_COMPILE_OPTIONS_DEBUG "")
 set(SOFACONFIG_COMPILE_OPTIONS_RELEASE "")
@@ -125,11 +116,19 @@ set(SOFACONFIG_LINK_OPTIONS "")
 set(SOFACONFIG_LINK_OPTIONS_DEBUG "")
 set(SOFACONFIG_LINK_OPTIONS_RELEASE "")
 
-include(CheckIPOSupported)
-check_ipo_supported(RESULT IS_IPO_SUPPORTED OUTPUT IPO_ERROR)
-
 ## Link-time optimization
-if (IS_IPO_SUPPORTED)
+if(NOT IPO_CHECK_DONE)
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT IS_IPO_SUPPORTED OUTPUT IPO_ERROR)
+    set(IPO_CHECK_DONE ON CACHE INTERNAL "IPO check has been done" FORCE)
+    if (IS_IPO_SUPPORTED)
+        set(IPO_SUPPORTED ON CACHE INTERNAL "IPO can be activated" FORCE)
+    else()
+        message(STATUS "IPO / LTO not supported: <${IPO_ERROR}>")
+    endif()
+endif()
+
+if (IPO_SUPPORTED)
     # Focus on max speed with link-time optimization
     option(SOFA_ENABLE_LINK_TIME_OPTIMIZATION "Enable interprocedural optimization" OFF)
     if (SOFA_ENABLE_LINK_TIME_OPTIMIZATION)
@@ -141,18 +140,6 @@ endif()
 
 ## GCC-specific
 if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
-    ## Find out the version of g++ (and save it in GCXX_VERSION)
-    if(CMAKE_CXX_COMPILER_ARG1) # CXX="ccache g++"
-        string(STRIP ${CMAKE_CXX_COMPILER_ARG1} CMAKE_CXX_COMPILER_ARG1_stripped)
-        execute_process(COMMAND ${CMAKE_CXX_COMPILER_ARG1_stripped} -dumpversion OUTPUT_VARIABLE GCXX_VERSION)
-    else()
-        execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCXX_VERSION)
-    endif()
-
-    ## Disable partial inlining under gcc 4.6 (Why? -> the memory was exploding)
-    if("${GCXX_VERSION}" VERSION_EQUAL 4.6)
-        list(APPEND SOFACONFIG_COMPILE_OPTIONS_RELEASE "-fno-partial-inlining")
-    endif()
 
     # stack-protector
     list(APPEND SOFACONFIG_COMPILE_OPTIONS_RELEASE "-fstack-protector;--param=ssp-buffer-size=4")
@@ -173,6 +160,22 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "C
 
     # Silence attribute warnings (for example, ignored already defined external template)
     target_compile_options(${PROJECT_NAME} PUBLIC -Wno-attributes)
+
+    if(SOFA_ENABLE_FAST_MATH)
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "-ffast-math")
+    endif()
+
+    option(SOFA_ENABLE_THREAD_SANITIZER "Enable thread sanitizer (only gcc or clang)" OFF)
+    if(SOFA_ENABLE_THREAD_SANITIZER)
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "-fsanitize=thread;-fno-omit-frame-pointer")
+        list(APPEND SOFACONFIG_LINK_OPTIONS "-fsanitize=thread")
+    endif()
+
+    option(SOFA_ENABLE_MEMORY_SANITIZER "Enable memory sanitizer (only gcc or clang)" OFF)
+    if(SOFA_ENABLE_MEMORY_SANITIZER)
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "-fsanitize=address;-fno-omit-frame-pointer")
+        list(APPEND SOFACONFIG_LINK_OPTIONS "-fsanitize=address")
+    endif()
 endif()
 
 ## Windows-specific
@@ -197,10 +200,9 @@ if(WIN32)
     # it happens because we put explicit instantiation in a separate translation unit
     # it is by design, so this warning is irrelevant in our project
 
-    if(MSVC_TOOLSET_VERSION GREATER 140) # > VS 2015
-        list(APPEND SOFACONFIG_COMPILE_OPTIONS "/Zc:__cplusplus")
-    endif()
-
+    # https://learn.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/Zc:__cplusplus")
+    
     # Experimental: compilation with MSVC/Clang-cl
     if(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
         if( ${CMAKE_CXX_COMPILER_FRONTEND_VARIANT} STREQUAL MSVC) # something weird happens if we put the two test in one if ??
@@ -235,18 +237,28 @@ if(SOFA_OPENMP)
     endif()
 endif()
 
-# An important C++11 feature may be not enabled due to
-# the compiler being built without the --enable-libstdcxx-time option.
-if(CMAKE_COMPILER_IS_GNUCXX)
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
-        list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_GLIBCXX_USE_NANOSLEEP -D_GLIBCXX_USE_SCHED_YIELD")
-    endif()
+## Tracy
+option(SOFA_TRACY "Compile SOFA with the Tracy profiler client" OFF)
+if (SOFA_TRACY)
+    set(SOFA_TRACY_VERSION v0.11.1)
+    include(FetchContent)
+    option(TRACY_STATIC "Whether to build Tracy as a static library" OFF)
+    FetchContent_Declare (
+        tracy
+        GIT_REPOSITORY https://github.com/wolfpld/tracy.git
+        GIT_TAG ${SOFA_TRACY_VERSION}
+        GIT_SHALLOW TRUE
+        GIT_PROGRESS TRUE
+    )
+    FetchContent_MakeAvailable (tracy)
+    target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient )
+    message(STATUS "SOFA is compiled with the Tracy profiler client. Use the Tracy server ${SOFA_TRACY_VERSION}.")
 endif()
 
-# hack for clang on old macosx (version < 10.9, such as the dashboard servers)
-# that is using, by default at that time, a libstdc++ that did not fully implement c++11
-if(APPLE AND ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND CMAKE_SYSTEM_VERSION VERSION_LESS "10.9" AND ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" )
-    list(APPEND SOFACONFIG_COMPILE_OPTIONS "-stdlib=libc++")
+
+option(SOFA_ENABLE_BUILTIN_TIMER "Enable the builtin timers" ON)
+if(SOFA_ENABLE_BUILTIN_TIMER)
+    set(SOFA_ENABLE_SCOPED_ADVANCED_TIMER 1)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux AND NOT CMAKE_BUILD_TYPE MATCHES "Debug")
@@ -285,29 +297,22 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
   MAP_IMPORTED_CONFIG_MINSIZEREL Release
   MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release
   )
-target_compile_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELEASE>:${SOFACONFIG_COMPILE_OPTIONS_RELEASE}>")
-target_compile_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:DEBUG>:${SOFACONFIG_COMPILE_OPTIONS_DEBUG}>")
-target_compile_options(${PROJECT_NAME} PUBLIC "${SOFACONFIG_COMPILE_OPTIONS}")
 
-# target_link_option only available with cmake >= 3.13
-if(${CMAKE_VERSION} VERSION_LESS "3.13.0")
-    if(NOT SOFACONFIG_LINK_OPTIONS_RELEASE STREQUAL "")
-        string(REPLACE ";" " " SOFACONFIG_LINK_OPTIONS_RELEASE "${SOFACONFIG_LINK_OPTIONS_RELEASE}")
-        set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS_RELEASE "${SOFACONFIG_LINK_OPTIONS_RELEASE}")
-    endif()
-    if(NOT SOFACONFIG_LINK_OPTIONS_DEBUG STREQUAL "")
-        string(REPLACE ";" " " SOFACONFIG_LINK_OPTIONS_DEBUG "${SOFACONFIG_LINK_OPTIONS_DEBUG}")
-        set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS_DEBUG "${SOFACONFIG_LINK_OPTIONS_DEBUG}")
-    endif()
-    if(NOT SOFACONFIG_LINK_OPTIONS STREQUAL "")
-        string(REPLACE ";" " " SOFACONFIG_LINK_OPTIONS "${SOFACONFIG_LINK_OPTIONS}")
-        set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "${SOFACONFIG_LINK_OPTIONS}")
-    endif()
-else()
-    target_link_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELEASE>:${SOFACONFIG_LINK_OPTIONS_RELEASE}>")
-    target_link_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:DEBUG>:${SOFACONFIG_LINK_OPTIONS_DEBUG}>")
-    target_link_options(${PROJECT_NAME} PUBLIC "${SOFACONFIG_LINK_OPTIONS}")
-endif()
+set(is_cxx "$<COMPILE_LANGUAGE:CXX>")
+set(is_c "$<COMPILE_LANGUAGE:C>")
+set(is_c_cxx "$<OR:${is_cxx},${is_c}>")
+set(is_release "$<CONFIG:RELEASE>")
+set(is_debug "$<CONFIG:DEBUG>")
+set(is_c_cxx_release "$<AND:${is_c_cxx},${is_release}>")
+set(is_c_cxx_debug "$<AND:${is_c_cxx},${is_debug}>")
+
+target_compile_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx_release}:${SOFACONFIG_COMPILE_OPTIONS_RELEASE}>")
+target_compile_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx_debug}:${SOFACONFIG_COMPILE_OPTIONS_DEBUG}>")
+target_compile_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx}:${SOFACONFIG_COMPILE_OPTIONS}>")
+
+target_link_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx_release}:${SOFACONFIG_LINK_OPTIONS_RELEASE}>")
+target_link_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx_debug}:${SOFACONFIG_LINK_OPTIONS_DEBUG}>")
+target_link_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx}:${SOFACONFIG_LINK_OPTIONS}>")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
@@ -315,6 +320,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE fo
 set_target_properties(${PROJECT_NAME} PROPERTIES Sofa_VERSION "${Sofa_VERSION}")
 set_target_properties(${PROJECT_NAME} PROPERTIES SOFA_VERSION_STR "${SOFA_VERSION_STR}")
 set_target_properties(${PROJECT_NAME} PROPERTIES SOFA_VERSION "${SOFA_VERSION}")
+
+set_target_properties(${PROJECT_NAME} PROPERTIES SOFA_URL "${SOFA_URL}")
 
 # CMakeParseLibraryList.cmake
 configure_file(cmake/CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/lib/cmake/CMakeParseLibraryList.cmake COPYONLY)

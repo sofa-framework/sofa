@@ -63,7 +63,7 @@ T BaseVTKReader::VTKDataIO<T>::swapT(T t, int nestedDataSize)
     }
     else
     {
-        int singleSize = sizeof(T)/nestedDataSize;
+        const int singleSize = sizeof(T)/nestedDataSize;
         for (int i=0; i<nestedDataSize; ++i)
         {
             for (unsigned int c=0; c<sizeof(T); ++c)

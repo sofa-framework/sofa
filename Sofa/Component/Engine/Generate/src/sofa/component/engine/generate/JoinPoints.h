@@ -71,7 +71,7 @@ private:
 
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_JOINPOINTS_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_JOINPOINTS_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API JoinPoints<sofa::defaulttype::Vec3Types>;
  
 #endif

@@ -104,9 +104,9 @@ struct RungeKutta2ExplicitSolverDynamic_test : public component::odesolver::test
         for(int i=1;i< size+1; i++)
         {
             // At time t + h/2
-            double newPos = positionsArray[i-1]+0.5*h*velocitiesArray[i-1];
-            double newVel = velocitiesArray[i-1]+0.5*h*accelerationsArray[i-1];
-            double acc    = (-K*(newPos-z0)-m*g)/m;
+            const double newPos = positionsArray[i-1]+0.5*h*velocitiesArray[i-1];
+            const double newVel = velocitiesArray[i-1]+0.5*h*accelerationsArray[i-1];
+            const double acc    = (-K*(newPos-z0)-m*g)/m;
 
             // At time t + h
             positionsArray.push_back(positionsArray[i-1]+h*newVel);
@@ -126,14 +126,14 @@ struct RungeKutta2ExplicitSolverDynamic_test : public component::odesolver::test
         double time = m_si.root->getTime();
 
         // Get mechanical object
-        simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
+        const simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
         typename MechanicalObject::SPtr dofs = massNode->get<MechanicalObject>(m_si.root->SearchDown);
 
         // Animate
         do
         {              
             // Record the mass position
-            Coord p0=dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[0];
+            Coord p0=dofs.get()->read(sofa::core::vec_id::read_access::position)->getValue()[0];
 
             double absoluteError = fabs(p0[1]-positionsArray[i]);
 
@@ -159,13 +159,13 @@ struct RungeKutta2ExplicitSolverDynamic_test : public component::odesolver::test
 
 };
 
-// Define the list of DataTypes to instanciate
+// Define the list of DataTypes to instantiate
 using ::testing::Types;
 typedef Types<
     Vec3Types
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE(RungeKutta2ExplicitSolverDynamic_test, DataTypes);
 
 // Test case: h=0.1 k=100 m =10 rm=0.1 rk=0.1

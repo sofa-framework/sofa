@@ -1,7 +1,7 @@
 <Node animate="0" dt="0.01" gravity="0 -9.81 0" multiThreadSimulation="0" name="root" time="0">
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
-    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidRigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
     <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [JointSpringForceField] -->
@@ -15,10 +15,10 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid3" name="DOFs" position="0 0 0 0 0 0 1 1 0 0 0 0 0 1 3 0 0 0 0 0 1 5 0 0 0 0 0 1 7 0 0 0 0 0 1 9 0 0 0 0 0 1 11 0 0 0 0 0 1 13 0 0 0 0 0 1 15 0 0 0 0 0 1 17 0 0 0 0 0 1 19 0 0 0 0 0 1" velocity="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
         <UniformMass template="Rigid3" totalMass="10" name="mass" />
-        <FixedConstraint template="Rigid3" indices="10" name="fixOrigin" />
+        <FixedProjectiveConstraint template="Rigid3" indices="10" name="fixOrigin" />
         <Node animate="0" dt="0.01" gravity="0 -9.81 0" multiThreadSimulation="0" name="segmentsNode" time="0">
             <MechanicalObject template="Rigid3" name="attaches" position="0 0 0 -0.707214 0 0 0.707214 -1 0 0 -0.707214 0 0 0.707214 1 0 0 -0.707214 0 0 0.707214 -1 0 0 -0.707214 0 0 0.707214 1 0 0 -0.707214 0 0 0.707214 -1 0 0 -0.707214 0 0 0.707214 1 0 0 -0.707214 0 0 0.707214 -1 0 0 -0.707214 0 0 0.707214 1 0 0 -0.707214 0 0 0.707214 -1 0 0 -0.707214 0 0 0.707214 1 0 0 -0.707214 0 0 0.707214 -1 0 0 -0.707214 0 0 0.707214 1 0 0 -0.707214 0 0 0.707214 -1 0 0 -0.707214 0 0 0.707214 1 0 0 -0.707214 0 0 0.707214 -1 0 0 -0.707214 0 0 0.707214 1 0 0 -0.707214 0 0 0.707214 -1 0 0 -0.707214 0 0 0.707214 1 0 0 -0.707214 0 0 0.707214 -1 0 0 -0.707214 0 0 0.707214 1 0 0 -0.707214 0 0 0.707214" velocity="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
-            <RigidRigidMapping repartition="1 2 2 2 2 2 2 2 2 2 2" />
+            <RigidMapping rigidIndexPerPoint="1 2 2 2 2 2 2 2 2 2 2" />
             <JointSpringForceField template="Rigid3" name="joint springs" spring="BEGIN_SPRING 0 1    FREE_AXIS 0 0 0 0 0 1  KS_T 0.0 30000.0  KS_R 0.0 600000.0  END_SPRING &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;BEGIN_SPRING 2 3    FREE_AXIS 0 0 0 0 0 1  KS_T 0.0 30000.0  KS_R 0.0 600000.0  END_SPRING &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;BEGIN_SPRING 4 5    FREE_AXIS 0 0 0 0 0 1  KS_T 0.0 30000.0  KS_R 0.0 600000.0  END_SPRING &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;BEGIN_SPRING 6 7    FREE_AXIS 0 0 0 0 0 1  KS_T 0.0 30000.0  KS_R 0.0 600000.0  END_SPRING &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;BEGIN_SPRING 8 9    FREE_AXIS 0 0 0 0 0 1  KS_T 0.0 30000.0  KS_R 0.0 600000.0  END_SPRING &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;BEGIN_SPRING 10 11  FREE_AXIS 0 0 0 0 1 0  KS_T 0.0 30000.0  KS_R 0.0 600000.0  END_SPRING &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;BEGIN_SPRING 12 13  FREE_AXIS 0 0 0 0 1 0  KS_T 0.0 30000.0  KS_R 0.0 600000.0  END_SPRING &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;BEGIN_SPRING 14 15  FREE_AXIS 0 0 0 0 1 0  KS_T 0.0 30000.0  KS_R 0.0 600000.0  END_SPRING &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;BEGIN_SPRING 16 17  FREE_AXIS 0 0 0 0 1 0  KS_T 0.0 30000.0  KS_R 0.0 600000.0  END_SPRING &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;BEGIN_SPRING 18 19  FREE_AXIS 0 0 0 0 1 0  KS_T 0.0 30000.0  KS_R 0.0 600000.0  END_SPRING " />
         </Node>
     </Node>

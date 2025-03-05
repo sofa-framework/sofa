@@ -68,7 +68,7 @@ public:
                  "</Node>                                                                    \n" ;
         c = new SceneInstance("xml", scene.str()) ;
         c->initScene() ;
-        Node* root = c->root.get() ;
+        const Node* root = c->root.get() ;
         Base* b = sofa::core::PathResolver::FindBaseFromPath(root, "@/child1/child2");
         node = dynamic_cast<Node*>(b);
     }
@@ -119,7 +119,7 @@ TEST_P(SingleLink_simutest, CheckPath)
 std::vector<std::vector<std::string>> singleLinkValues={
     {"@/obj", "The linked type is an InfoComponent type while the link should point to a  object. CheckPath should return", "false"},
     {"@/child1/mstate1 @/child1/mstate1", "Using multiple link in a SingleLink::CheckPath function should fail and return", "false"},
-    {"@../mstate", "The path is not pointing to a valid mstate. CheckLink shoud return", "false"},
+    {"@../mstate", "The path is not pointing to a valid mstate. CheckLink should return", "false"},
     {"@../mstate1", "The link's target exists and is of same type. CheckPath should return", "true"}
 };
 
@@ -130,7 +130,7 @@ INSTANTIATE_TEST_SUITE_P(CheckPath,
 // introduced in https://github.com/sofa-framework/sofa/pull/1714
 TEST_F(SingleLink_simutest, DISABLED_CheckPath_tofix)
 {
-    std::vector<std::string> t{ "@/child1", "The linked type is a node, while the link should point to an object. Using two different types should return", "false" };
+    const std::vector<std::string> t{ "@/child1", "The linked type is a node, while the link should point to an object. Using two different types should return", "false" };
 
     ASSERT_NE(node, nullptr);
     if (t[2] == "true")

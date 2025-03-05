@@ -22,9 +22,28 @@
 #pragma once
 
 #include <sofa/core/State.h>
+#include <sofa/core/AccumulationVecId.inl>
 
 namespace sofa::core
 {
+template <class TDataTypes>
+void State<TDataTypes>::addToTotalForces(core::ConstVecDerivId forceId)
+{
+    accumulatedForces.addToContributingVecIds(forceId);
+}
+
+template <class TDataTypes>
+void State<TDataTypes>::removeFromTotalForces(core::ConstVecDerivId forceId)
+{
+    accumulatedForces.removeFromContributingVecIds(forceId);
+}
+
+template <class TDataTypes>
+State<TDataTypes>::State()
+    : accumulatedForces(*this)
+{
+    State::addToTotalForces(core::vec_id::read_access::force);
+}
 
 template<class DataTypes>
 objectmodel::BaseData* State<DataTypes>::baseWrite(VecId v)
@@ -55,7 +74,7 @@ const objectmodel::BaseData* State<DataTypes>::baseRead(ConstVecId v) const
 template<class DataTypes>
 auto State<DataTypes>::computeBBox() const -> sofa::type::TBoundingBox<Real>
 {
-    const VecCoord& x = read(ConstVecCoordId::position())->getValue();
+    const VecCoord& x = read(vec_id::read_access::position)->getValue();
     const size_t xSize = x.size();
 
     if (xSize <= 0)

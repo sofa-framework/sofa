@@ -31,13 +31,8 @@
 
 MSG_REGISTER_CLASS(sofa::helper::io::MeshTopologyLoader, "MeshTopologyLoader")
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 using namespace sofa::type;
@@ -150,102 +145,6 @@ bool MeshTopologyLoader::loadGmsh(const char *filename)
     return addMeshtoTopology();
 }
 
-bool MeshTopologyLoader::loadMesh(std::ifstream &file)
-{
-    return false;
-
-    std::string cmd;
-
-    while (!file.eof())
-    {
-        file >> cmd;
-        if (cmd=="line")
-        {
-            int p1,p2;
-            file >> p1 >> p2;
-            addLine(p1, p2);
-        }
-        else if (cmd=="triangle")
-        {
-            int p1,p2,p3;
-            file >> p1 >> p2 >> p3;
-            addTriangle(p1, p2, p3);
-        }
-        else if (cmd=="quad")
-        {
-            int p1,p2,p3,p4;
-            file >> p1 >> p2 >> p3 >> p4;
-            addQuad(p1, p2, p3, p4);
-        }
-        else if (cmd=="tetra")
-        {
-            int p1,p2,p3,p4;
-            file >> p1 >> p2 >> p3 >> p4;
-            addTetra(p1, p2, p3, p4);
-        }
-        else if (cmd=="cube")
-        {
-            int p1,p2,p3,p4,p5,p6,p7,p8;
-            file >> p1 >> p2 >> p3 >> p4 >> p5 >> p6 >> p7 >> p8;
-            addCube(p1, p2, p3, p4, p5, p6, p7, p8);
-        }
-        else if (cmd=="point")
-        {
-            double px,py,pz;
-            file >> px >> py >> pz;
-            addPoint(px, py, pz);
-        }
-        else if (cmd=="v")
-        {
-            double px,py,pz;
-            file >> px >> py >> pz;
-            addPoint(px, py, pz);
-        }
-        else if (cmd=="f")
-        {
-            int p1,p2,p3,p4=0;
-            file >> p1 >> p2 >> p3 >> p4;
-            if (p4)
-            {
-                addQuad(p1-1, p2-1, p3-1, p4-1);
-            }
-            else
-            {
-                addTriangle(p1-1, p2-1, p3-1);
-            }
-        }
-        else if (cmd=="mass")
-        {
-            int index;
-            char location;
-            double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
-            file >> index >> location >> px >> py >> pz >> vx >> vy >> vz >> mass >> elastic;
-            addPoint(px, py, pz);
-        }
-        else if (cmd=="lspg")
-        {
-            int	index;
-            int m1,m2;
-            double ks=0.0,kd=0.0,initpos=-1;
-            file >> index >> m1 >> m2 >> ks >> kd >> initpos;
-            --m1;
-            --m2;
-            addLine(m1,m2);
-        }
-        else if (cmd[0] == '#')	// it's a comment
-        {
-        }
-        else		// it's an unknown keyword
-        {
-            msg_error() << "Unknown Mesh keyword:" << cmd;
-            return false;
-        }
-    }
-
-    return true;
-}
-
-
 bool MeshTopologyLoader::loadVtk(const char *filename)
 {
     m_mesh = helper::io::Mesh::Create("vtu", filename);
@@ -276,10 +175,9 @@ bool MeshTopologyLoader::load(const char *filename)
 	else
 	{
 		std::ifstream file(filename);
-		if (!file.good()) return false;
-		msg_error() << "This file format: " << filename << " will not be supported anymore in sofa release 18.06.";
-		fileLoaded = loadMesh(file);
-		file.close();
+        if (!file.good())
+            return false;
+        msg_error() << "This file format: " << filename << " is not be supported.";
 	}
        
     if(fileLoaded)
@@ -297,9 +195,9 @@ bool MeshTopologyLoader::load(const char *filename)
     return fileLoaded;
 }
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
 
-} // namespace sofa
+
+
 

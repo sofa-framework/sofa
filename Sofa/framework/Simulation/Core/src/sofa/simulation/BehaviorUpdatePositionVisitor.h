@@ -27,10 +27,8 @@
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/simulation/fwd.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 /** Update the position of a new simulation step
@@ -58,8 +56,7 @@ protected:
     SReal dt;
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

@@ -62,17 +62,23 @@ void TaskSchedulerUser::initTaskScheduler()
 
 void TaskSchedulerUser::reinitTaskScheduler()
 {
-    const auto nbThreads = d_nbThreads.getValue();
-    if ( nbThreads != m_taskScheduler->getThreadCount() )
+    if (m_taskScheduler)
     {
-        m_taskScheduler->init(nbThreads);
-        sofa::simulation::initThreadLocalData();
+        const auto nbThreads = d_nbThreads.getValue();
+        if ( nbThreads != static_cast<int>(m_taskScheduler->getThreadCount()) )
+        {
+            m_taskScheduler->init(nbThreads);
+            sofa::simulation::initThreadLocalData();
+        }
     }
 }
 
 void TaskSchedulerUser::stopTaskSchduler()
 {
-    m_taskScheduler->stop();
+    if (m_taskScheduler)
+    {
+        m_taskScheduler->stop();
+    }
 }
 
 TaskSchedulerUser::TaskSchedulerUser()

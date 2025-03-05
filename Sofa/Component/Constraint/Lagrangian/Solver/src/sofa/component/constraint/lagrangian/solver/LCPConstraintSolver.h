@@ -32,14 +32,15 @@
 #include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 
-#include <sofa/helper/set.h>
 #include <sofa/helper/map.h>
 #include <sofa/helper/LCPcalc.h>
+
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
 
-class LCPConstraintProblem : public ConstraintProblem
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API LCPConstraintProblem : public ConstraintProblem
 {
 public:
     SReal mu;
@@ -52,7 +53,6 @@ class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API LCPConstraintSolver : publ
 public:
     SOFA_CLASS(LCPConstraintSolver, ConstraintSolverImpl);
 
-    typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
     typedef sofa::core::MultiVecId MultiVecId;
 
 protected:
@@ -66,9 +66,6 @@ protected:
     */
     ~LCPConstraintSolver() override;
 public:
-    void init() override;
-
-    void cleanup() override;
 
     bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
@@ -77,50 +74,99 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> displayDebug;
 
-    Data<bool> displayDebug; ///< Display debug information.
-    Data<bool> initial_guess; ///< activate LCP results history to improve its resolution performances.
-    Data<bool> build_lcp; ///< LCP is not fully built to increase performance in some case.
-    Data<SReal> tol; ///< residual error threshold for termination of the Gauss-Seidel algorithm
-    Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
-    Data<SReal> mu; ///< Friction coefficient
-    Data<SReal> minW; ///< If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored
-    Data<SReal> maxF; ///< If not zero, constraints whose response force becomes larger than this threshold will be ignored
-    Data<bool> multi_grid; ///< activate multi_grid resolution (NOT STABLE YET)
-    Data<int> multi_grid_levels; ///< if multi_grid is active: how many levels to create (>=2)
-    Data<int> merge_method; ///< if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)
-    Data<int> merge_spatial_step; ///< if merge_method is 1: grid size reduction between multigrid levels
-    Data<int> merge_local_levels; ///< if merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> initial_guess;
 
-    Data < std::set<int> > constraintGroups; ///< list of ID of groups of constraints to be handled by this solver.
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> build_lcp;
 
-    Data<std::map < std::string, sofa::type::vector<SReal> > > f_graph; ///< Graph of residuals at each iteration
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> tol;
 
-    Data<int> showLevels; ///< Number of constraint levels to display
-    Data<SReal> showCellWidth; ///< Distance between each constraint cells
-    Data<type::Vec3> showTranslation; ///< Position of the first cell
-    Data<type::Vec3> showLevelTranslation; ///< Translation between levels
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData< int> maxIt;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> mu;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> minW;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> maxF;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> multi_grid;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData< int> multi_grid_levels;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData< int> merge_method;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData< int> merge_spatial_step;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData< int> merge_local_levels;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData < std::set<int> >  constraintGroups;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData<std::map < std::string, sofa::type::vector<SReal> > > f_graph;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData< int> showLevels;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData<SReal> showCellWidth;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3> showTranslation;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
+    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3>  showLevelTranslation;
+
+
+    Data<bool> d_displayDebug; ///< Display debug information.
+    Data<bool> d_initial_guess; ///< activate LCP results history to improve its resolution performances.
+    Data<bool> d_build_lcp; ///< LCP is not fully built to increase performance in some case.
+    Data<SReal> d_tol; ///< residual error threshold for termination of the Gauss-Seidel algorithm
+    Data<int> d_maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
+    Data<SReal> d_mu; ///< Friction coefficient
+    Data<SReal> d_minW; ///< If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored
+    Data<SReal> d_maxF; ///< If not zero, constraints whose response force becomes larger than this threshold will be ignored
+    Data<bool> d_multi_grid; ///< activate multi_grid resolution (NOT STABLE YET)
+    Data<int> d_multi_grid_levels; ///< if multi_grid is active: how many levels to create (>=2)
+    Data<int> d_merge_method; ///< if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)
+    Data<int> d_merge_spatial_step; ///< if merge_method is 1: grid size reduction between multigrid levels
+    Data<int> d_merge_local_levels; ///< if merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs.
+    Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: constraint forces (stored only if computeConstraintForces=True)
+    Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field
+
+    Data < std::set<int> > d_constraintGroups; ///< list of ID of groups of constraints to be handled by this solver.
+
+    Data<std::map < std::string, sofa::type::vector<SReal> > > d_graph; ///< Graph of residuals at each iteration
+
+    Data<int> d_showLevels; ///< Number of constraint levels to display
+    Data<SReal> d_showCellWidth; ///< Distance between each constraint cells
+    Data<type::Vec3> d_showTranslation; ///< Position of the first cell
+    Data<type::Vec3> d_showLevelTranslation; ///< Translation between levels
 
     ConstraintProblem* getConstraintProblem() override;
-    void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
-
-    void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
+    void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurrent access to the LCP when using a LCPForceFeedback through an haptic thread
 
 private:
-    type::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
-    type::vector<bool> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
     void computeInitialGuess();
     void keepContactForcesValue();
 
     unsigned int _numConstraints;
-    SReal _mu;
+    SOFA_ATTRIBUTE_DEPRECATED__LCPCONSTRAINTSOLVERMUMEMBER() DeprecatedAndRemoved _mu;
 
-    /// Call the method resetConstraint on all the mechanical states and BaseConstraintSet
-    void resetConstraints(core::ConstraintParams cparams);
-    /// Call the method buildConstraintMatrix on all the BaseConstraintSet
-    void buildConstraintMatrix(core::ConstraintParams cparams);
-    /// Call the method applyJT on all the mappings
-    void accumulateMatrixDeriv(core::ConstraintParams cparams);
     /// Multigrid hierarchy is resized and cleared
     void buildHierarchy();
     /// Call the method getConstraintInfo on all the BaseConstraintSet
@@ -129,9 +175,8 @@ private:
     void addComplianceInConstraintSpace(core::ConstraintParams cparams);
 
     /// for built lcp ///
-    void build_LCP();
     LCPConstraintProblem lcp1, lcp2, lcp3; // Triple buffer for LCP.
-    LCPConstraintProblem *lcp, *last_lcp; /// use of last_lcp allows several LCPForceFeedback to be used in the same scene
+    LCPConstraintProblem *current_cp, *last_cp; /// use of last_lcp allows several LCPForceFeedback to be used in the same scene
     sofa::linearalgebra::LPtrFullMatrix<SReal>  *_W;
 
     /// multi-grid approach ///
@@ -148,17 +193,16 @@ private:
 
 
     /// common built-unbuilt
-    sofa::core::objectmodel::BaseContext *context;
     sofa::linearalgebra::FullVector<SReal> *_dFree, *_result;
+    void buildSystem();
     ///
 
     /// for unbuilt lcp ///
-    void build_problem_info();
     int lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* residuals = nullptr);
     int nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* residuals = nullptr);
     int gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* residuals = nullptr);
 
-    sofa::linearalgebra::SparseMatrix<SReal> *_Wdiag;
+    sofa::linearalgebra::SparseMatrix<SReal> _Wdiag;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem1;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem2;
 

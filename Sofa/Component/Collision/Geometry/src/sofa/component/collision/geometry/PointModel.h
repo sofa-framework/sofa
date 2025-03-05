@@ -27,6 +27,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::component::collision::geometry
 {
 
@@ -101,7 +103,11 @@ public:
 
     const Deriv& velocity(sofa::Index index) const;
 
-    Data<bool> bothSide; ///< to activate collision on both side of the point model (when surface normals are defined on these points)
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> bothSide;
+
+
+    Data<bool> d_bothSide; ///< activate collision on both side of the point model (when surface normals are defined on these points)
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -129,11 +135,17 @@ protected:
 
     core::behavior::MechanicalState<DataTypes>* mstate;
 
-    Data<bool> computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> computeNormals;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_displayFreePosition;
+
+    Data<bool> d_computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)
 
     VecDeriv normals;
 
-    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
+    Data<bool> d_displayFreePosition; ///< Display Collision Model Points free position(in green)
                                       
     /// Link to be set to the topology container in the component graph.
     SingleLink<PointCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -156,28 +168,28 @@ inline TPoint<DataTypes>::TPoint(const core::CollisionElementIterator& i)
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TPoint<DataTypes>::p() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->index]; }
+inline const typename DataTypes::Coord& TPoint<DataTypes>::p() const { return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->index]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TPoint<DataTypes>::pFree() const
 {
     if (hasFreePosition())
-        return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->index];
+        return this->model->mstate->read(core::vec_id::read_access::freePosition)->getValue()[this->index];
     else
         return p();
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]; }
+inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return this->model->mstate->read(core::vec_id::read_access::velocity)->getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(sofa::Index index) const { return mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]; }
+inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(sofa::Index index) const { return mstate->read(core::vec_id::read_access::velocity)->getValue()[index]; }
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigned)this->index<this->model->normals.size()) ? this->model->normals[this->index] : Deriv(); }
 
 template<class DataTypes>
-inline bool TPoint<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
+inline bool TPoint<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::vec_id::read_access::freePosition)->isSet(); }
 
 #if !defined(SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_CPP)
 extern template class SOFA_COMPONENT_COLLISION_GEOMETRY_API PointCollisionModel<defaulttype::Vec3Types>;

@@ -29,13 +29,12 @@ namespace sofa::component::engine::generate
 
 using namespace sofa::defaulttype;
 
-int ExtrudeQuadsAndGenerateHexasClass = core::RegisterObject("This engine extrudes a quad-based surface into a set of hexahedral elements")
-        .add< ExtrudeQuadsAndGenerateHexas<Vec3Types> >()
- 
-        ;
+void registerExtrudeQuadsAndGenerateHexas(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Engine extruding a quad-based surface into a set of hexahedral elements.")
+        .add< ExtrudeQuadsAndGenerateHexas<Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API ExtrudeQuadsAndGenerateHexas<Vec3Types>;
- 
-
 
 } //namespace sofa::component::engine::generate

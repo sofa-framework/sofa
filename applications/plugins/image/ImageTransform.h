@@ -78,7 +78,7 @@ public:
 
         f_listening.setValue(true);
 
-        helper::OptionsGroup fluidOptions(3,"No update", "Every time step", "Every draw");
+        helper::OptionsGroup fluidOptions{"No update", "Every time step", "Every draw"};
         _update.setValue(fluidOptions);
     }
 

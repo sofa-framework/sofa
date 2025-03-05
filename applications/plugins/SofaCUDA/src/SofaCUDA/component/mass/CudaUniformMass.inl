@@ -22,17 +22,15 @@
 #ifndef SOFA_GPU_CUDA_CUDAUNIFORMMASS_INL
 #define SOFA_GPU_CUDA_CUDAUNIFORMMASS_INL
 
-#include "CudaUniformMass.h"
+#include <SofaCUDA/component/mass/CudaUniformMass.h>
 #include <sofa/component/mass/UniformMass.inl>
 #include <sofa/gl/Axis.h>
 
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 extern "C"
@@ -62,14 +60,10 @@ extern "C"
 #endif // SOFA_GPU_CUDA_DOUBLE
 }
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
-namespace component
-{
-
-namespace mass
+namespace component::mass
 {
 
 using namespace gpu::cuda;
@@ -172,7 +166,7 @@ template<>
 void UniformMass<gpu::cuda::CudaRigid3fTypes>::accFromF(const core::MechanicalParams * /*mparams*/, DataVecDeriv &a, const DataVecDeriv &f)
 {
         VecDeriv& _a = *a.beginEdit();
-        VecDeriv _f = f.getValue();
+        const VecDeriv _f = f.getValue();
 
         UniformMassCudaRigid3f_accFromF(_a.size(), d_vertexMass.getValue().mass, _a.deviceWrite(), _f.deviceRead());
 
@@ -186,7 +180,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes>::addForce(const core::MechanicalPa
         VecDeriv& _f = *f.beginEdit();
         type::Vec3d g(this->getContext()->getGravity());
 
-        float m = d_vertexMass.getValue().mass;
+        const float m = d_vertexMass.getValue().mass;
         const float mg[] = { (float)(m*g(0)), (float)(m*g(1)), (float)(m*g(2)) };
         UniformMassCudaRigid3f_addForce(_f.size(), mg, _f.deviceWrite());
 
@@ -202,7 +196,7 @@ SReal UniformMass<gpu::cuda::CudaRigid3fTypes>::getPotentialEnergy(const core::M
 
     SReal e = 0;
     // gravity
-    type::Vec3d g ( this->getContext()->getGravity() );
+    const type::Vec3d g ( this->getContext()->getGravity() );
     for (unsigned int i=0; i<x.size(); i++)
     {
         e += g*d_vertexMass.getValue().mass*x[i].getCenter();
@@ -222,7 +216,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes>::draw(const core::visual::VisualPa
 #if SOFACUDA_HAVE_SOFA_GL == 1
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = mstate->read(core::vec_id::read_access::position)->getValue();
     type::Vec3d len;
 
     // The moment of inertia of a box is:
@@ -232,16 +226,16 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes>::draw(const core::visual::VisualPa
     // So to get lx,ly,lz back we need to do
     //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
     // Note that RigidMass inertiaMatrix is already divided by M
-    double m00 = d_vertexMass.getValue().inertiaMatrix[0][0];
-    double m11 = d_vertexMass.getValue().inertiaMatrix[1][1];
-    double m22 = d_vertexMass.getValue().inertiaMatrix[2][2];
+    const double m00 = d_vertexMass.getValue().inertiaMatrix[0][0];
+    const double m11 = d_vertexMass.getValue().inertiaMatrix[1][1];
+    const double m22 = d_vertexMass.getValue().inertiaMatrix[2][2];
     len[0] = sqrt(m11+m22-m00);
     len[1] = sqrt(m00+m22-m11);
     len[2] = sqrt(m00+m11-m22);
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        sofa::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
+        sofa::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len, sofa::type::RGBAColor::red(), sofa::type::RGBAColor::green(), sofa::type::RGBAColor::blue());
     }
 #endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
@@ -292,7 +286,7 @@ void UniformMass<CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mpara
 // template <>
 // bool UniformMass<gpu::cuda::CudaVec3dTypes, double>::addBBox(SReal* minBBox, SReal* maxBBox)
 // {
-//     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+//     const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 //     //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
 //     for (unsigned int i=0; i<x.size(); i++)
 //     {
@@ -349,7 +343,7 @@ void UniformMass<CudaVec3d1Types>::addForce(const core::MechanicalParams* /*mpar
 // template <>
 // bool UniformMass<gpu::cuda::CudaVec3d1Types, double>::addBBox(double* minBBox, double* maxBBox)
 // {
-//     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+//     const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 //     //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
 //     for (unsigned int i=0; i<x.size(); i++)
 //     {
@@ -390,7 +384,7 @@ void UniformMass<gpu::cuda::CudaRigid3dTypes>::draw(const core::visual::VisualPa
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = mstate->read(core::vec_id::read_access::position)->getValue();
     type::Vec3d len;
 
     // The moment of inertia of a box is:
@@ -409,15 +403,14 @@ void UniformMass<gpu::cuda::CudaRigid3dTypes>::draw(const core::visual::VisualPa
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        sofa::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
+        sofa::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len, sofa::type::RGBAColor::red(), sofa::type::RGBAColor::green(), sofa::type::RGBAColor::blue());
     }
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace mass
+} // namespace component::mass
 
-} // namespace component
 
 } // namespace sofa
 

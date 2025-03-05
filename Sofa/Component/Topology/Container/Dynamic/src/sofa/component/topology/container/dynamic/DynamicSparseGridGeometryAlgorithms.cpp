@@ -28,11 +28,13 @@ namespace sofa::component::topology::container::dynamic
 {
 
 using namespace sofa::defaulttype;
-int DynamicSparseGridGeometryAlgorithmsClass = core::RegisterObject ( "Hexahedron set geometry algorithms" )
-        .add< DynamicSparseGridGeometryAlgorithms<Vec3Types> > ( true ) // default template
-        .add< DynamicSparseGridGeometryAlgorithms<Vec2Types> >()
 
-        ;
+void registerDynamicSparseGridGeometryAlgorithms(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Dynamic sparse grid geometry algorithms.")
+        .add< DynamicSparseGridGeometryAlgorithms<Vec3Types> >(true) // default template
+        .add< DynamicSparseGridGeometryAlgorithms<Vec2Types> >());
+}
 
 template <>
 int DynamicSparseGridGeometryAlgorithms<Vec2Types>::findNearestElementInRestPos(const Coord& pos, sofa::type::Vec3& baryC, Real& distance) const
@@ -42,6 +44,5 @@ int DynamicSparseGridGeometryAlgorithms<Vec2Types>::findNearestElementInRestPos(
 
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API DynamicSparseGridGeometryAlgorithms<Vec3Types>;
 template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API DynamicSparseGridGeometryAlgorithms<Vec2Types>;
-
 
 } // namespace sofa::component::topology::container::dynamic

@@ -101,7 +101,7 @@ protected:
         {
             // We use the large prime numbers proposed in paper:
             // M.Teschner et al "Optimized Spatial Hashing for Collision Detection of Deformable Objects" (2003)
-            int h = (73856093*key.xId^19349663*key.yId^83492791*key.zId);
+            const int h = (73856093*key.xId^19349663*key.yId^83492791*key.zId);
             return size_t(h);
         }
     };

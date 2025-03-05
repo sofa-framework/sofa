@@ -27,11 +27,7 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 
-namespace sofa
-{
-namespace simulation
-{
-namespace common
+namespace sofa::simulation::common
 {
 
 struct VisitorExecuteFunc
@@ -70,8 +66,6 @@ protected:
         prepareVisitor( (sofa::simulation::Visitor*)mv );
     }
 };
-}
-}
 }
 
 #endif // SOFA_SIMULATION_CORE_VISITOREXECUTE_H

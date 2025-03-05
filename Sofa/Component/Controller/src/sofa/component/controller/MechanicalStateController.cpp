@@ -40,7 +40,7 @@ void MechanicalStateController<Vec1Types>::applyController()
 
     if(mState)
     {
-        helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
+        helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::vec_id::write_access::restPosition);
         if(buttonDevice)
         {
             if (x0[0].x() < -0.1) //angle de fermeture max
@@ -75,7 +75,7 @@ void MechanicalStateController<Vec1Types>::applyController()
     {*/
     if (mState)
     {
-        helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
+        helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::vec_id::write_access::restPosition);
         if (mouseMode==BtMiddle)
         {
             x0[0].x() =  -0.4;
@@ -130,7 +130,7 @@ void MechanicalStateController<Vec1Types>::onMouseEvent(core::objectmodel::Mouse
     default :
         break;
     }
-    if (handleEventTriggersUpdate.getValue())
+    if (d_handleEventTriggersUpdate.getValue())
         applyController();
 
 }
@@ -175,7 +175,7 @@ void MechanicalStateController<Rigid3Types>::onMouseEvent(core::objectmodel::Mou
         break;
 
     case sofa::core::objectmodel::MouseEvent::Move :
-        if (handleEventTriggersUpdate.getValue())
+        if (d_handleEventTriggersUpdate.getValue())
             applyController();
         break;
 
@@ -184,11 +184,12 @@ void MechanicalStateController<Rigid3Types>::onMouseEvent(core::objectmodel::Mou
     }
 }
 
-// Register in the Factory
-int MechanicalStateControllerClass = core::RegisterObject("Provides a Mouse & Keyboard user control on a Mechanical State.")
+void registerMechanicalStateController(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Provides a Mouse & Keyboard user control on a Mechanical State.")
         .add< MechanicalStateController<Vec1Types> >()
-        .add< MechanicalStateController<Rigid3Types> >()
-        ;
+        .add< MechanicalStateController<Rigid3Types> >());
+}
 
 template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec1Types>;
 template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid3Types>;

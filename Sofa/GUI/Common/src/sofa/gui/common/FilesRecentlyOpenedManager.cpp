@@ -70,13 +70,13 @@ void FilesRecentlyOpenedManager::openFile(const std::string &path)
     if (path.empty() || !FileSystem::exists(path))
         return;
 
-    // Remove previous occurence of the file, if any
-    type::vector<std::string>::iterator fileFound = std::find(files.begin(), files.end(), path);
+    // Remove previous occurrence of the file, if any
+    const type::vector<std::string>::iterator fileFound = std::find(files.begin(), files.end(), path);
     if (fileFound != files.end())
         files.erase(fileFound);
 
     // Add the current file to the list
-    type::vector<std::string>::iterator front=files.begin();
+    const type::vector<std::string>::iterator front=files.begin();
     files.insert(front, path);
 
     // Only keep a given number of files

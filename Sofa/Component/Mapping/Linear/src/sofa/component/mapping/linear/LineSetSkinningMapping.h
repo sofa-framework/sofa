@@ -29,17 +29,19 @@
 
 
 #include <vector>
+#include <sofa/component/mapping/linear/LinearMapping.h>
+
 
 namespace sofa::component::mapping::linear
 {
 
 template <class TIn, class TOut>
-class LineSetSkinningMapping : public core::Mapping<TIn, TOut>
+class LineSetSkinningMapping : public LinearMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(LineSetSkinningMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(LineSetSkinningMapping,TIn,TOut), SOFA_TEMPLATE2(LinearMapping,TIn,TOut));
 
-    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef LinearMapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
 
@@ -180,7 +182,7 @@ private:
     type::vector<std::set<int> > neighborhood;
 };
 
-#if  !defined(SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP)
 extern template class SOFA_COMPONENT_MAPPING_LINEAR_API LineSetSkinningMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 
 

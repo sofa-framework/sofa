@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/tensormass/TriangularTensorMassForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/topology/TopologyData.inl>
@@ -63,9 +64,9 @@ void TriangularTensorMassForceField<DataTypes>::applyTriangleCreation(const sofa
     typename DataTypes::Real mu=getMu();
     typename DataTypes::Real lambdastar, mustar;
     typename DataTypes::Coord point[3],dpk,dpl;
-    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeData = edgeInfo;
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeData = d_edgeInfo;
 
-    const typename DataTypes::VecCoord& restPosition= this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const typename DataTypes::VecCoord& restPosition= this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     for (i=0; i<triangleAdded.size(); ++i)
     {
@@ -148,8 +149,8 @@ void TriangularTensorMassForceField<DataTypes>::applyTriangleDestruction(const s
     typename DataTypes::Real lambdastar, mustar;
     typename DataTypes::Coord point[3],dpk,dpl;
 
-    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeData = edgeInfo;
-    const typename DataTypes::VecCoord& restPosition= this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeData = d_edgeInfo;
+    const typename DataTypes::VecCoord& restPosition= this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     for (i=0; i<triangleRemoved.size(); ++i)
     {
@@ -222,17 +223,19 @@ void TriangularTensorMassForceField<DataTypes>::applyTriangleDestruction(const s
 }
 
 template <class DataTypes> TriangularTensorMassForceField<DataTypes>::TriangularTensorMassForceField()
-    : edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    : d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
     , _initialPoints(0)
     , updateMatrix(true)
-    , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young's modulus in Hooke's law"))
+    , d_poissonRatio(initData(&d_poissonRatio, (Real)0.3, "poissonRatio", "Poisson ratio in Hooke's law"))
+    , d_youngModulus(initData(&d_youngModulus, (Real)1000., "youngModulus", "Young's modulus in Hooke's law"))
     , l_topology(initLink("topology", "link to the topology container"))
     , lambda(0)
     , mu(0)
     , m_topology(nullptr)
 {
-
+    edgeInfo.setOriginalData(&d_edgeInfo);
+    f_poissonRatio.setOriginalData(&d_poissonRatio);
+    f_youngModulus.setOriginalData(&d_youngModulus);
 }
 
 template <class DataTypes> TriangularTensorMassForceField<DataTypes>::~TriangularTensorMassForceField()
@@ -268,7 +271,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     updateLameCoefficients();
 
 
-    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = edgeInfo;
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = d_edgeInfo;
 
     /// prepare to store info in the edge array
     edgeInf.resize(m_topology->getNbEdges());
@@ -276,7 +279,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     if (_initialPoints.size() == 0)
     {
         // get restPosition
-        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        const VecCoord& p = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
         _initialPoints=p;
     }
 
@@ -299,23 +302,23 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
         (const sofa::type::vector<sofa::type::vector<SReal> >)0
                                       );
 
-    edgeInfo.createTopologyHandler(m_topology);
-    edgeInfo.linkToTriangleDataArray();
+    d_edgeInfo.createTopologyHandler(m_topology);
+    d_edgeInfo.linkToTriangleDataArray();
 
-    edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
-        const core::topology::BaseMeshTopology::Edge& edge,
-        const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< SReal >& coefs)
+    d_edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
+                                          const core::topology::BaseMeshTopology::Edge& edge,
+                                          const sofa::type::vector< Index >& ancestors,
+                                          const sofa::type::vector< SReal >& coefs)
     {
         applyEdgeCreation(edgeIndex, ei, edge, ancestors, coefs);
     });
 
-    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESADDED, [this](const core::topology::TopologyChange* eventTopo) {
+    d_edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESADDED, [this](const core::topology::TopologyChange* eventTopo) {
         const core::topology::TrianglesAdded* triAdd = static_cast<const core::topology::TrianglesAdded*>(eventTopo);
         applyTriangleCreation(triAdd->getIndexArray(), triAdd->getElementArray(), triAdd->ancestorsList, triAdd->coefs);
     });
 
-    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+    d_edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
         const core::topology::TrianglesRemoved* triRemove = static_cast<const core::topology::TrianglesRemoved*>(eventTopo);
         applyTriangleDestruction(triRemove->getArray());
     });
@@ -328,10 +331,10 @@ void TriangularTensorMassForceField<DataTypes>::addForce(const core::MechanicalP
     const VecCoord& x = d_x.getValue();
 
     unsigned int i,v0,v1;
-    unsigned int nbEdges=m_topology->getNbEdges();
+    const unsigned int nbEdges=m_topology->getNbEdges();
     EdgeRestInformation *einfo;
 
-    type::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<EdgeRestInformation>& edgeInf = *(d_edgeInfo.beginEdit());
 
     Coord dp0,dp1,dp;
 
@@ -348,7 +351,7 @@ void TriangularTensorMassForceField<DataTypes>::addForce(const core::MechanicalP
         f[v0]-=einfo->DfDx.transposeMultiply(dp);
     }
 
-    edgeInfo.endEdit();
+    d_edgeInfo.endEdit();
     d_f.endEdit();
 }
 
@@ -361,10 +364,10 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(const core::Mechanical
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     unsigned int v0,v1;
-    size_t nbEdges=m_topology->getNbEdges();
+    const size_t nbEdges=m_topology->getNbEdges();
     EdgeRestInformation *einfo;
 
-    type::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<EdgeRestInformation>& edgeInf = *(d_edgeInfo.beginEdit());
 
     Coord dp0,dp1,dp;
 
@@ -381,16 +384,22 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(const core::Mechanical
         df[v0]-= (einfo->DfDx.transposeMultiply(dp)) * kFactor;
     }
 
-    edgeInfo.endEdit();
+    d_edgeInfo.endEdit();
     d_df.endEdit();
+}
+
+template <class DataTypes>
+void TriangularTensorMassForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 
 template<class DataTypes>
 void TriangularTensorMassForceField<DataTypes>::updateLameCoefficients()
 {
-    lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-    mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
+    lambda= d_youngModulus.getValue() * d_poissonRatio.getValue() / (1 - d_poissonRatio.getValue() * d_poissonRatio.getValue());
+    mu = d_youngModulus.getValue() * (1 - d_poissonRatio.getValue()) / (1 - d_poissonRatio.getValue() * d_poissonRatio.getValue());
 }
 
 
@@ -405,12 +414,12 @@ void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualP
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    size_t nbTriangles=m_topology->getNbTriangles();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
+    const size_t nbTriangles=m_topology->getNbTriangles();
 
     std::vector<sofa::type::Vec3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
-    std::vector<sofa::type::Vec3> normals;
+    const std::vector<sofa::type::Vec3> normals;
 
     vparams->drawTool()->disableLighting();
 

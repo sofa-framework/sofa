@@ -32,17 +32,20 @@
 #include <vector>
 
 #include <memory>
+#include <sofa/component/mapping/linear/LinearMapping.h>
+
 
 namespace sofa::component::mapping::linear
 {
 
 template <class TIn, class TOut>
-class BeamLinearMapping : public core::Mapping<TIn, TOut>
+class BeamLinearMapping : public LinearMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(BeamLinearMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(BeamLinearMapping,TIn,TOut),
+        SOFA_TEMPLATE2(LinearMapping,TIn,TOut));
 
-    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef LinearMapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
     typedef Out OutDataTypes;
@@ -112,8 +115,8 @@ public:
 template <std::size_t N, class Real> struct RigidMappingMatrixHelper;
 
 
-#if  !defined(SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_CPP)
-extern template class SOFA_COMPONENT_MAPPING_LINEAR_API BeamLinearMapping< defaulttype::Rigid3Types, defaulttype::Vec3dTypes >;
+#if !defined(SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_CPP)
+extern template class SOFA_COMPONENT_MAPPING_LINEAR_API BeamLinearMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 #endif
 
 } // namespace sofa::component::mapping::linear

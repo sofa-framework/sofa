@@ -26,12 +26,15 @@
 namespace sofa::component::visual
 {
 
-int CameraClass = core::RegisterObject("A Camera that render the scene from a given location & orientation.")
-                    .add<Camera>() ;
+void registerCamera(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A Camera that render the scene from a given location & orientation.")
+        .add< Camera >());
+}
 
 Camera::Camera()
 {
-    p_computeZClip.setValue(false) ;
+    d_computeZClip.setValue(false) ;
 }
 
 Camera::~Camera()

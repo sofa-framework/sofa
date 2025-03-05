@@ -64,6 +64,12 @@ public:
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
+    /// The given VecDerivId is appended to a list representing all the forces containers
+    /// It is useful to be able to compute the accumulation of all forces (for example the ones
+    /// coming from force fields and the ones coming from lagrangian constraints).
+    virtual void addToTotalForces(core::ConstVecDerivId forceId);
+
+    virtual void removeFromTotalForces(core::ConstVecDerivId forceId);
 };
 
 } // namespace sofa::core

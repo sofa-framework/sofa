@@ -25,7 +25,6 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
-#include <sofa/core/behavior/MultiMatrix.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
 
@@ -46,87 +45,30 @@ StaticSolver::StaticSolver()
     : d_newton_iterations(initData(&d_newton_iterations,
             (unsigned) 1,
             "newton_iterations",
-            "Number of newton iterations between each load increments (normally, one load increment per simulation time-step."))
+            "Number of Newton iterations between each load increments (normally, one load increment per simulation time-step."))
     , d_absolute_correction_tolerance_threshold(initData(&d_absolute_correction_tolerance_threshold,
             1e-5_sreal,
             "absolute_correction_tolerance_threshold",
-            "Convergence criterion: The newton iterations will stop when the norm |du| is smaller than this threshold."))
+            "Convergence criterion of the norm |du| under which the Newton iterations stop"))
     , d_relative_correction_tolerance_threshold(initData(&d_relative_correction_tolerance_threshold,
             1e-5_sreal,
             "relative_correction_tolerance_threshold",
-            "Convergence criterion: The newton iterations will stop when the ratio |du| / |U| is smaller than this threshold."))
+            "Convergence criterion regarding the ratio |du| / |U| under which the Newton iterations stop"))
     , d_absolute_residual_tolerance_threshold( initData(&d_absolute_residual_tolerance_threshold,
             1e-5_sreal,
             "absolute_residual_tolerance_threshold",
-            "Convergence criterion: The newton iterations will stop when the norm |R| is smaller than this threshold. "
-            "Use a negative value to disable this criterion."))
+            "Convergence criterion of the norm |R| under which the Newton iterations stop."
+            "Use a negative value to disable this criterion"))
     , d_relative_residual_tolerance_threshold( initData(&d_relative_residual_tolerance_threshold,
             1e-5_sreal,
             "relative_residual_tolerance_threshold",
-            "Convergence criterion: The newton iterations will stop when the ratio |R|/|R0| is smaller than this threshold. "
-            "Use a negative value to disable this criterion."))
+            "Convergence criterion regarding the ratio |R|/|R0| under which the Newton iterations stop."
+            "Use a negative value to disable this criterion"))
     , d_should_diverge_when_residual_is_growing( initData(&d_should_diverge_when_residual_is_growing,
             false,
             "should_diverge_when_residual_is_growing",
-            "Divergence criterion: The newton iterations will stop when the residual is greater than the one from the previous iteration."))
+            "Boolean stopping Newton iterations when the residual is greater than the one from the previous iteration"))
 {}
-
-void StaticSolver::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
-{
-    /// Now handling backward compatibility with old scenes.
-    /// point is deprecated since '19.06'
-    /// massCoef, dampingCoef, stiffnessCoef, threadSafeVisitor
-    const char* val=arg->getAttribute("massCoef",nullptr) ;
-    if(val)
-    {
-        msg_deprecated() << "The attribute 'massCoef' is deprecated since SOFA v19.06'" << msgendl
-                         << "This data was previously used for stabilization purposes but it was preventing" << msgendl
-                         << "from computing a strictly-static system." << msgendl
-                         << "Use the Forum for any question.";
-
-    }
-    val=arg->getAttribute("dampingCoef",nullptr) ;
-    if(val)
-    {
-        msg_deprecated() << "The attribute 'dampingCoef' is deprecated since SOFA v19.06'" << msgendl
-                         << "This data was previously used for stabilization purposes but it was preventing" << msgendl
-                         << "from computing a strictly-static system." << msgendl
-                         << "Use the Forum for any question.";
-
-    }
-    val=arg->getAttribute("stiffnessCoef",nullptr) ;
-    if(val)
-    {
-        msg_deprecated() << "The attribute 'stiffnessCoef' is deprecated since SOFA v19.06'" << msgendl
-                         << "This data was previously used for stabilization purposes but it was preventing" << msgendl
-                         << "from computing a strictly-static system." << msgendl
-                         << "Use the Forum for any question.";
-
-    }
-    val=arg->getAttribute("applyIncrementFactor",nullptr) ;
-    if(val)
-    {
-        msg_deprecated() << "The attribute 'applyIncrementFactor' is deprecated since SOFA v19.06'" << msgendl
-                         << "The incremental loading is now supposed to be done within the desired ForceField." << msgendl
-                         << "Use the Forum for any question.";
-
-    }
-    val=arg->getAttribute("correction_tolerance_threshold",nullptr) ;
-    if(val)
-    {
-        msg_deprecated() << "The attribute 'correction_tolerance_threshold' is deprecated since SOFA v21.06'" << msgendl
-                         << "The attribute was renamed for '" << d_absolute_correction_tolerance_threshold.getName() << "'.";
-        arg->setAttribute(d_absolute_correction_tolerance_threshold.getName(), val);
-    }
-    val=arg->getAttribute("residual_tolerance_threshold",nullptr) ;
-    if(val)
-    {
-        msg_deprecated() << "The attribute 'residual_tolerance_threshold' is deprecated since SOFA v21.06'" << msgendl
-                         << "The attribute was renamed for '" << d_absolute_residual_tolerance_threshold.getName() << "'.";
-        arg->setAttribute(d_absolute_residual_tolerance_threshold.getName(), val);
-    }
-    sofa::core::behavior::OdeSolver::parse(arg) ;
-}
 
 void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
@@ -135,7 +77,6 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
 
     using std::chrono::steady_clock;
     using sofa::helper::ScopedAdvancedTimer;
-    using sofa::core::behavior::MultiMatrix;
     using sofa::simulation::common::VectorOperations;
     using sofa::simulation::common::MechanicalOperations;
 
@@ -151,8 +92,8 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
 
     // Initialize the set of multi-vectors used by this solver
     MultiVecCoord x(&vop, xResult );
-    MultiVecDeriv force( &vop, sofa::core::VecDerivId::force() );
-    MultiVecDeriv dx( &vop, sofa::core::VecDerivId::dx() );
+    MultiVecDeriv force( &vop, sofa::core::vec_id::write_access::force );
+    MultiVecDeriv dx( &vop, sofa::core::vec_id::write_access::dx );
     dx.realloc( &vop , true, true);
     U.realloc( &vop );
     U.clear();
@@ -212,7 +153,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
     }
 
     // Start the advanced timer
-    ScopedAdvancedTimer timer ("StaticSolver::Solve");
+    SCOPED_TIMER("StaticSolver::Solve");
 
     // ###########################################################################
     // #                             First residual                              #
@@ -220,20 +161,22 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
     // # Before starting any newton iterations, we first need to compute         #
     // # the residual with the updated right-hand side (the new load increment)  #
     // ###########################################################################
-    sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
-    // Step 1   Assemble the force vector
-    // 1. Clear the force vector (F := 0)
-    // 2. Go down in the current context tree calling addForce on every forcefields
-    // 3. Go up from the current context tree leaves calling applyJT on every mechanical mappings
-    mop.computeForce(force, true /* clear */);
+    {
+        SCOPED_TIMER_VARNAME(computeForceTimer, "ComputeForce");
 
-    // Step 2   Projective constraints
-    // Calls the "projectResponse" method of every BaseProjectiveConstraintSet objects found in the
-    // current context tree. An example of such constraint set is the FixedConstraint. In this case,
-    // it will set to 0 every row (i, _) of the right-hand side (force) vector for the ith degree of
-    // freedom.
-    mop.projectResponse(force);
-    sofa::helper::AdvancedTimer::stepEnd("ComputeForce");
+        // Step 1   Assemble the force vector
+        // 1. Clear the force vector (F := 0)
+        // 2. Go down in the current context tree calling addForce on every forcefields
+        // 3. Go up from the current context tree leaves calling applyJT on every mechanical mappings
+        mop.computeForce(force, true /* clear */);
+
+        // Step 2   Projective constraints
+        // Calls the "projectResponse" method of every BaseProjectiveConstraintSet objects found in the
+        // current context tree. An example of such constraint set is the FixedProjectiveConstraint. In this case,
+        // it will set to 0 every row (i, _) of the right-hand side (force) vector for the ith degree of
+        // freedom.
+        mop.projectResponse(force);
+    }
 
     // Compute the initial residual
     R_squared_norm = force.dot(force);
@@ -257,45 +200,43 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
 
     while (! converged && n_it < max_number_of_newton_iterations)
     {
-        ScopedAdvancedTimer step_timer ("NewtonStep");
+        SCOPED_TIMER_VARNAME(step_timer, "NewtonStep");
         t = steady_clock::now();
 
         // Part I. Assemble the system matrix.
-        MultiMatrix<MechanicalOperations> matrix(&mop);
         {
-            ScopedAdvancedTimer _t_("MBKBuild");
-            // 1. The MechanicalMatrix::K is a simple structure that stores three floats called factors: m, b and k.
-            // 2. the * operator simply multiplies each of the three factors with a value. No matrix is built yet.
-            // 3. The = operator first search for a linear solver in the current context. It then calls the
-            //    "setSystemMBKMatrix" method of the linear solver.
-
+            SCOPED_TIMER("MBKBuild");
             //    A. For LinearSolver using a GraphScatteredMatrix (ie, non-assembled matrices), nothing appends.
             //    B. For LinearSolver using other type of matrices (FullMatrix, SparseMatrix, CompressedRowSparseMatrix),
             //       the "addMBKToMatrix" method is called on each BaseForceField objects and the "applyConstraint" method
             //       is called on every BaseProjectiveConstraintSet objects. An example of such constraint set is the
-            //       FixedConstraint. In this case, it will set to 0 every column (_, i) and row (i, _) of the assembled
+            //       FixedProjectiveConstraint. In this case, it will set to 0 every column (_, i) and row (i, _) of the assembled
             //       matrix for the ith degree of freedom.
-            matrix.setSystemMBKMatrix(MechanicalMatrix::K * -1.0);
+            mop.setSystemMBKMatrix(
+                core::MatricesFactors::M(0),
+                core::MatricesFactors::B(0),
+                core::MatricesFactors::K(-1), l_linearSolver.get());
         }
 
         // Part II. Solve the unknown increment.
         {
-            ScopedAdvancedTimer _t_("MBKSolve");
-            // Calls methods "setSystemRHVector", "setSystemLHVector" and "solveSystem" of the LinearSolver component
+            SCOPED_TIMER("MBKSolve");
             // for CG: calls iteratively addDForce, mapped:  [applyJ, addDForce, applyJt(vec)]+
             // for Direct: solves the system, everything's already assembled
-            matrix.solve(dx, force);
+            l_linearSolver->setSystemLHVector(dx);
+            l_linearSolver->setSystemRHVector(force);
+            l_linearSolver->solveSystem();
         }
 
         // Part III. Propagate the solution increment and update geometry.
         {
-            ScopedAdvancedTimer _t_("PropagateDx");
+            SCOPED_TIMER("PropagateDx");
             // Updating the geometry
             x.peq(dx); // x := x + dx
 
             // Calls "solveConstraint" method of every ConstraintSolver objects found in the current context tree.
             // todo(jnbrunet): Shouldn't this be done AFTER the position propagation of the mapped nodes?
-            mop.solveConstraint(x, sofa::core::ConstraintParams::POS);
+            mop.solveConstraint(x, sofa::core::ConstraintOrder::POS);
 
             // Propagate positions to mapped mechanical objects, for example, identity mappings, barycentric mappings, ...
             // This will call the methods apply and applyJ on every mechanical mappings.
@@ -318,7 +259,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
 
         // Part IV. Update the force vector.
         {
-            ScopedAdvancedTimer _t_("UpdateForce");
+            SCOPED_TIMER("UpdateForce");
 
             mop.computeForce(force);
             mop.projectResponse(force);
@@ -326,7 +267,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
 
         // Part V. Compute the updated norms.
         {
-            ScopedAdvancedTimer _t_("ComputeNorms");
+            SCOPED_TIMER("ComputeNorms");
 
             // Residual norm
             R_squared_norm = force.dot(force);
@@ -460,9 +401,10 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
     sofa::helper::AdvancedTimer::valSet("correction", std::sqrt(dx_squared_norm));
 }
 
-
-int StaticSolverClass = sofa::core::RegisterObject("Static ODE Solver")
-    .add< StaticSolver >()
-;
+void registerStaticSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Static ODE Solver.")
+        .add< StaticSolver >());
+}
 
 } // namespace sofa::component::odesolver::backward

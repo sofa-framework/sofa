@@ -83,6 +83,7 @@ protected:
     std::string filename;
     static signed int nbIter;
     static std::string nbIterInp;
+    inline static bool hideProgressBar { false };
 
     /// Return true if the timer output string has a json string and the timer is setup to output json
     static bool canExportJson(const std::string& timerOutputStr, const std::string& timerId);

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
-#include <sofa/core/behavior/ForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
@@ -35,7 +35,7 @@ namespace sofa::component::solidmechanics::fem::elastic
 template<class DataTypes>
 class TriangularFEMForceFieldOptim;
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additional storage within template specializations.
 template<class DataTypes>
 class TriangularFEMForceFieldOptimInternalData
 {
@@ -59,12 +59,12 @@ public:
 */
 
 template<class DataTypes>
-class TriangularFEMForceFieldOptim : public core::behavior::ForceField<DataTypes>
+class TriangularFEMForceFieldOptim : public BaseLinearElasticityFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TriangularFEMForceFieldOptim, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TriangularFEMForceFieldOptim, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes));
 
-    typedef core::behavior::ForceField<DataTypes> Inherited;
+    typedef BaseLinearElasticityFEMForceField<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecReal VecReal;
@@ -99,17 +99,20 @@ protected:
 
     virtual ~TriangularFEMForceFieldOptim();
 public:
-    Real getPoisson() { return d_poisson.getValue(); }
-    Real getYoung() { return d_young.getValue(); }
 
     void init() override;
     void reinit() override;
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
-    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
+    
+    void computePrincipalStress();
     void getTrianglePrincipalStress(Index i, Real& stressValue, Deriv& stressDirection);
 
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
     void draw(const core::visual::VisualParams* vparams) override;
 
     // parse method attribute (for compatibility with non-optimized version)
@@ -122,6 +125,11 @@ public:
         //Index ia, ib, ic;
         Real bx, cx, cy, ss_factor;
         Transformation init_frame; // Mat<2,3,Real>
+
+        Real stress;
+        Deriv stressVector;
+        Real stress2;
+        Deriv stressVector2;
 
         TriangleInfo() :bx(0), cx(0), cy(0), ss_factor(0) { }
 
@@ -149,7 +157,6 @@ public:
         }
     };
 
-    Real gamma, mu;
     class TriangleState
     {
     public:
@@ -227,29 +234,24 @@ public:
 
 public:
 
-    /// Forcefield intern paramaters
-    Data<Real> d_poisson;
-    Data<Real> d_young; ///< Young modulus in Hooke's law
+    /// Forcefield intern parameters
     Data<Real> d_damping; ///< Ratio damping/stiffness
     Data<Real> d_restScale; ///< Scale factor applied to rest positions (to simulate pre-stretched materials)
 
-    /// Display parameters
-    Data<bool> d_showStressValue;
-    Data<bool> d_showStressVector; ///< Flag activating rendering of stress directions within each triangle
-    Data<Real> d_showStressMaxValue; ///< Max value for rendering of stress values
+    Data<bool> d_computePrincipalStress; ///< Compute principal stress for each triangle
+    Data<Real> d_stressMaxValue; ///< Max stress value computed over the triangulation
 
-    /// Link to be set to the topology container in the component graph. 
-    SingleLink<TriangularFEMForceFieldOptim<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    /// Display parameters
+    Data<bool> d_showStressVector; ///< Flag activating rendering of stress directions within each triangle
+    Data<Real> d_showStressThreshold; ///< Threshold value to render only stress vectors higher to this threshold
 
 protected:
-    Real drawPrevMaxStress;
 
-    /// Pointer to the topology container. Will be set by link @sa l_topology
-    sofa::core::topology::BaseMeshTopology* m_topology;
+    static std::pair<Real, Real> computeMuGamma(Real youngModulus, Real poissonRatio);
 };
 
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP)
 
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API TriangularFEMForceFieldOptim<defaulttype::Vec3Types>;
 

@@ -35,7 +35,7 @@ namespace sofa::component::collision::detection::algorithm
 /**
  *  \brief It is a Ray Trace based collision detection algorithm
  *
- *   For each point in one object, we trace a ray following the oposite of the point's normal
+ *   For each point in one object, we trace a ray following the opposite of the point's normal
  *   up to find a triangle in the other object. Both triangles are tested to evaluate if they are in
  *   colliding state. It must be used with a TriangleOctreeModel,as an octree is used to traverse the object.
  */
@@ -45,10 +45,11 @@ public:
     SOFA_CLASS(RayTraceNarrowPhase, core::collision::NarrowPhaseDetection);
 
 private:
-    Data < bool > bDraw; ///< enable/disable display of results
+    SOFA_ATTRIBUTE_DISABLED__DRAWNARROWPHASE()
+    sofa::core::objectmodel::lifecycle::RemovedData bDraw{this, "v23.12", "v24.06", "draw", "Use display flag 'showDetectionOutputs' instead"}; ///< enable/disable display of results
 
 protected:
-    RayTraceNarrowPhase();
+    RayTraceNarrowPhase() = default;
 
 public:
     void addCollisionPair (const std::pair < core::CollisionModel *,
@@ -56,11 +57,6 @@ public:
 
     void findPairsVolume (collision::geometry::CubeCollisionModel * cm1, collision::geometry::CubeCollisionModel* cm2);
 
-    void draw (const core::visual::VisualParams* vparams) override;
-    void setDraw (bool val)
-    {
-        bDraw.setValue (val);
-    }
 };
 
 }

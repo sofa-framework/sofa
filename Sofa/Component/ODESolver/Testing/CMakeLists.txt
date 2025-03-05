@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 
 project(Sofa.Component.ODESolver.Testing)
 
@@ -8,7 +8,6 @@ set(HEADER_FILES
     ${SOFACOMPONENTODESOLVERTESTING_SRC}/EigenTestUtilities.h
     ${SOFACOMPONENTODESOLVERTESTING_SRC}/MassSpringSystemCreation.h
     ${SOFACOMPONENTODESOLVERTESTING_SRC}/ODESolverSpringTest.h
-    ${SOFACOMPONENTODESOLVERTESTING_SRC}/SunPlanetSystemCreation.h
 )
 
 set(SOURCE_FILES

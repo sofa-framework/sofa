@@ -39,5 +39,15 @@ bool BaseState::removeInNode( objectmodel::BaseNode* node )
     Inherit1::removeInNode(node);
     return true;
 }
+
+void BaseState::addToTotalForces(core::ConstVecDerivId forceId)
+{
+    SOFA_UNUSED(forceId);
+}
+
+void BaseState::removeFromTotalForces(core::ConstVecDerivId forceId)
+{
+    SOFA_UNUSED(forceId);
+}
 } // namespace sofa::core
 

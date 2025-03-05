@@ -66,7 +66,7 @@ public:
     {
         const char* p = arg->getAttribute(size.getName().c_str());
         if (p) {
-            std::string nbStr = p;
+            const std::string nbStr = p;
             size.read(nbStr);
             resize(size.getValue());
         }
@@ -75,10 +75,10 @@ public:
 
     void parseFieldsSizeLinks(const std::map<std::string,std::string*>& str, Data<unsigned int>& size)
     {
-        std::map<std::string,std::string*>::const_iterator it = str.find(size.getName());
+        const std::map<std::string,std::string*>::const_iterator it = str.find(size.getName());
         if (it != str.end() && it->second)
         {
-            std::string nbStr = *it->second;
+            const std::string nbStr = *it->second;
             size.read(nbStr);
             resize(size.getValue());
         }

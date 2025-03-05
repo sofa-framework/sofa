@@ -86,7 +86,7 @@ public:
     {
         const char* p = arg->getAttribute(size.getName().c_str());
         if (p) {
-            std::string nbStr = p;
+            const std::string nbStr = p;
             size.read(nbStr);
             resize(size.getValue());
         }
@@ -95,10 +95,10 @@ public:
 
     void parseFieldsSizeData(const std::map<std::string,std::string*>& str, Data<unsigned int>& size)
     {
-        std::map<std::string,std::string*>::const_iterator it = str.find(size.getName());
+        const std::map<std::string,std::string*>::const_iterator it = str.find(size.getName());
         if (it != str.end() && it->second)
         {
-            std::string nbStr = *it->second;
+            const std::string nbStr = *it->second;
             size.read(nbStr);
             resize(size.getValue());
         }
@@ -147,7 +147,7 @@ public:
     /// merging several Data from a VectorData into a large Data (of the same type)
     static void merge(Data<T>& outputData, const vectorData<T>& vectorData)
     {
-        size_t nbInput = vectorData.size();
+        const size_t nbInput = vectorData.size();
         size_t nbElems = 0;
 
         for( size_t i=0 ; i<nbInput ; ++i )

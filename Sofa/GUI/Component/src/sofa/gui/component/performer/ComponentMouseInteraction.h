@@ -86,7 +86,7 @@ protected :
     MouseMapping mouseMapping;
 };
 
-#if  !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
 extern template class SOFA_GUI_COMPONENT_API TComponentMouseInteraction<defaulttype::Vec2Types>;
 extern template class SOFA_GUI_COMPONENT_API TComponentMouseInteraction<defaulttype::Vec3Types>;
 extern template class SOFA_GUI_COMPONENT_API TComponentMouseInteraction<defaulttype::Rigid3Types>;
@@ -96,7 +96,7 @@ extern template class SOFA_GUI_COMPONENT_API TComponentMouseInteraction<defaultt
 
 
 
-#if  !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
 namespace sofa::helper
 {
 extern template class SOFA_GUI_COMPONENT_API Factory<std::string, sofa::gui::component::performer::ComponentMouseInteraction, core::objectmodel::BaseContext*>;

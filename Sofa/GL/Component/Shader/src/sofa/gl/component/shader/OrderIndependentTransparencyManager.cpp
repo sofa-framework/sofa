@@ -34,10 +34,11 @@ using namespace sofa::gl;
 using namespace simulation;
 using namespace core::visual;
 
-//Register OrderIndependentTransparencyManager in the Object Factory
-int OrderIndependentTransparencyManagerClass = core::RegisterObject("OrderIndependentTransparencyManager")
-        .add< OrderIndependentTransparencyManager >()
-        ;
+void registerOrderIndependentTransparencyManager(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Order Independent Transparency Manager (to be used with OglOITShader).")
+        .add< OrderIndependentTransparencyManager >());
+}
 
 class VisualOITDrawVisitor : public VisualDrawVisitor
 {
@@ -79,7 +80,7 @@ void OrderIndependentTransparencyManager::bwdInit()
 
 }
 
-void OrderIndependentTransparencyManager::initVisual()
+void OrderIndependentTransparencyManager::doInitVisual(const core::visual::VisualParams*)
 {
     GLSLShader::InitGLSL();
 
@@ -215,7 +216,7 @@ bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)
 
     // accumulation
 
-    GLenum buffers[] = {GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT};
+    const GLenum buffers[] = {GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT};
     glDrawBuffers(2, buffers);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);

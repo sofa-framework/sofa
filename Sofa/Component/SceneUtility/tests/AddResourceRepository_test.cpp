@@ -31,7 +31,7 @@ using sofa::testing::BaseSimulationTest;
 
 #include <sofa/component/sceneutility/AddResourceRepository.h>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 namespace sofa
 {
@@ -44,18 +44,18 @@ struct AddResourceRepository_test : public BaseSimulationTest
     sofa::simulation::Node::SPtr m_root;
     std::string m_testRepoDir;
 
-    void SetUp() override
+    void doSetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.Component.SceneUtility");
+        sofa::simpleapi::importPlugin(Sofa.Component.SceneUtility);
 
         m_testRepoDir = std::string(SOFA_COMPONENT_SCENEUTILITY_TEST_RESOURCES_DIR) + std::string("/repo");
     }
 
     void buildScene(const std::string& repoType, const std::string& repoPath)
     {
-        std::string addRepoStr = "<" + repoType + " path=\""+ repoPath + "\" />";
+        const std::string addRepoStr = "<" + repoType + " path=\""+ repoPath + "\" />";
 
-        std::string scene = START_STR + addRepoStr + END_STR;
+        const std::string scene = START_STR + addRepoStr + END_STR;
         std::cout << scene << std::endl;
 
         m_root = sofa::simulation::SceneLoaderXML::loadFromMemory("scene", scene.c_str());

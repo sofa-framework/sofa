@@ -43,16 +43,18 @@ using namespace sofa::simulation;
 namespace sofa::component::animationloop
 {
 
-int MultiStepAnimationLoopClass = core::RegisterObject("Multi steps animation loop, multi integration steps in a single animation step are managed.")
-        .add< MultiStepAnimationLoop >()
-        .addAlias("MultiStepMasterSolver")
-        ;
-
-MultiStepAnimationLoop::MultiStepAnimationLoop(simulation::Node* gnode)
-    : Inherit(gnode)
-    , collisionSteps( initData(&collisionSteps,1,"collisionSteps", "number of collision steps between each frame rendering") )
-    , integrationSteps( initData(&integrationSteps,1,"integrationSteps", "number of integration steps between each collision detection") )
+void registerMultiStepAnimationLoop(sofa::core::ObjectFactory* factory)
 {
+    factory->registerObjects(core::ObjectRegistrationData("Multi steps animation loop, multi integration steps in a single animation step are managed.")
+        .add< MultiStepAnimationLoop >());
+}
+
+MultiStepAnimationLoop::MultiStepAnimationLoop() :
+      d_collisionSteps( initData(&d_collisionSteps,1,"collisionSteps", "number of collision steps between each frame rendering") )
+    , d_integrationSteps( initData(&d_integrationSteps,1,"integrationSteps", "number of integration steps between each collision detection") )
+{
+    collisionSteps.setOriginalData(&d_collisionSteps);
+    integrationSteps.setOriginalData(&d_integrationSteps);
 }
 
 MultiStepAnimationLoop::~MultiStepAnimationLoop()
@@ -61,11 +63,13 @@ MultiStepAnimationLoop::~MultiStepAnimationLoop()
 
 void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
 {
+    auto node = dynamic_cast<sofa::simulation::Node*>(this->l_node.get());
+
     if (dt == 0)
-        dt = this->gnode->getDt();
+        dt = node->getDt();
 
+    SCOPED_TIMER_VARNAME(animationStepTimer, "AnimationStep");
 
-    sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Step");
 #endif
@@ -73,19 +77,19 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     {
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
-        this->gnode->execute ( act );
+        node->execute ( act );
     }
-
-    SReal startTime = this->gnode->getTime();
+    
+    SReal startTime = node->getTime();
 
     BehaviorUpdatePositionVisitor beh(params , dt);
-    this->gnode->execute ( beh );
+    node->execute ( beh );
 
     UpdateInternalDataVisitor uid(params);
-    gnode->execute ( uid );
+    node->execute ( uid );
 
-    const int ncollis = collisionSteps.getValue();
-    const int ninteg = integrationSteps.getValue();
+    const int ncollis = d_collisionSteps.getValue();
+    const int ninteg = d_integrationSteps.getValue();
 
     SReal stepDt = dt / (ncollis * ninteg);
 
@@ -97,7 +101,7 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     for (int c = 0; c < ncollis; ++c)
     {
         // First we reset the constraints
-        MechanicalResetConstraintVisitor(&cparams).execute(this->getContext());
+        MechanicalResetConstraintVisitor(&cparams).execute(node);
         // Then do collision detection and response creation
         tmpStr << "collision" ;
 
@@ -107,40 +111,38 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
             // Then integrate the time step
             tmpStr << "integration at time = " << startTime+i*stepDt << msgendl;
             integrate(params, stepDt);
-
-            this->gnode->setTime ( startTime + (i+1)*stepDt );
-            this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
+            
+            node->setTime ( startTime + (i+1)*stepDt );
+            node->execute<UpdateSimulationContextVisitor>(params);  // propagate time
         }
     }
     msg_info() << tmpStr.str();
     {
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
-        this->gnode->execute ( act );
+        node->execute ( act );
     }
 
-    sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
-    this->gnode->execute<UpdateMappingVisitor>(params);
-    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
+    {
+        SCOPED_TIMER_VARNAME(updateMappingTimer, "UpdateMapping");
+        node->execute<UpdateMappingVisitor>(params);
+    }
     {
         UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor act ( params , &ev );
-        this->gnode->execute ( act );
+        node->execute ( act );
     }
-    sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
     if (d_computeBoundingBox.getValue())
     {
-        sofa::helper::ScopedAdvancedTimer timer("UpdateBBox");
-        this->gnode->execute<UpdateBoundingBoxVisitor>(params);
+        SCOPED_TIMER("UpdateBBox");
+        node->execute<UpdateBoundingBoxVisitor>(params);
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Step");
 #endif
-
-    sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
 } // namespace sofa::component::animationloop

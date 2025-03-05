@@ -4,7 +4,7 @@
 	<CollisionPipeline verbose="0" />
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-	<DefaultContactManager name="Response" />
+	<CollisionResponse name="Response" />
 	<CudaProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
 	<Node name="Floor">
 		<RegularGridTopology

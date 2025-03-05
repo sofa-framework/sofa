@@ -34,8 +34,11 @@ using namespace sofa::type;
 namespace sofa::component::io::mesh
 {
 
-int SphereLoaderClass = core::RegisterObject("Loader for sphere model description files")
-        .add<SphereLoader>();
+void registerSphereLoader(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Loader for sphere model description files.")
+        .add< SphereLoader >());
+}
 
 SphereLoader::SphereLoader()
     :BaseLoader(),
@@ -85,7 +88,7 @@ void SphereLoader::applyTransform()
                 msg_warning() << "Data scale should not be set to zero";
             }
         }
-        Matrix4 transformation = Matrix4::transformTranslation(translation) *
+        const Matrix4 transformation = Matrix4::transformTranslation(translation) *
             Matrix4::transformRotation(type::Quat< SReal >::createQuaterFromEuler(rotation * M_PI / 180.0)) *
             Matrix4::transformScale(scale);
 

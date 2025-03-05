@@ -34,20 +34,34 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <fstream>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::component::playback
 {
 
-/** Read Topology containers informations from file at each timestep
+/** Read Topology containers information from file at each timestep
 */
 class SOFA_COMPONENT_PLAYBACK_API ReadTopology: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(ReadTopology,core::objectmodel::BaseObject);
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
     sofa::core::objectmodel::DataFileName f_filename;
-    Data < double > f_interval; ///< time duration between inputs
-    Data < double > f_shift; ///< shift between times in the file and times when they will be read
-    Data < bool > f_loop; ///< set to 'true' to re-read the file when reaching the end
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
+    sofa::core::objectmodel::lifecycle::RenamedData < double > f_interval;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
+    sofa::core::objectmodel::lifecycle::RenamedData < double > f_shift;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
+    sofa::core::objectmodel::lifecycle::RenamedData < bool > f_loop;
+
+    sofa::core::objectmodel::DataFileName d_filename;
+    Data < double > d_interval; ///< time duration between inputs
+    Data < double > d_shift; ///< shift between times in the file and times when they will be read
+    Data < bool > d_loop; ///< set to 'true' to re-read the file when reaching the end
 
     /// Link to be set to the topology container in the component graph.
     SingleLink <ReadTopology, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

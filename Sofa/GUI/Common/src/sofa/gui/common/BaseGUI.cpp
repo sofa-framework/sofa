@@ -70,13 +70,8 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
     groot->get(defaultPath, sofa::core::objectmodel::BaseContext::SearchRoot);
     if (defaultPath)
     {
-        if (!defaultPath->recordPath.getValue().empty())
-        {
-            setRecordPath(defaultPath->recordPath.getValue());
-        }
-
-        if (!defaultPath->gnuplotPath.getValue().empty())
-            setGnuplotPath(defaultPath->gnuplotPath.getValue());
+        if (!defaultPath->d_gnuplotPath.getValue().empty())
+            setGnuplotPath(defaultPath->d_gnuplotPath.getValue());
     }
 
 
@@ -85,10 +80,10 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
     groot->get(background, sofa::core::objectmodel::BaseContext::SearchRoot);
     if (background)
     {
-        if (background->image.getValue().empty())
-            setBackgroundColor(background->color.getValue());
+        if (background->d_image.getValue().empty())
+            setBackgroundColor(background->d_color.getValue());
         else
-            setBackgroundImage(background->image.getFullPath());
+            setBackgroundImage(background->d_image.getFullPath());
     }
 
     //Stats
@@ -96,9 +91,9 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
     groot->get(stats, sofa::core::objectmodel::BaseContext::SearchRoot);
     if (stats)
     {
-        setDumpState(stats->dumpState.getValue());
-        setLogTime(stats->logTime.getValue());
-        setExportState(stats->exportState.getValue());
+        setDumpState(stats->d_dumpState.getValue());
+        setLogTime(stats->d_logTime.getValue());
+        setExportState(stats->d_exportState.getValue());
 #ifdef SOFA_DUMP_VISITOR_INFO
         setTraceVisitors(stats->traceVisitors.getValue());
 #endif
@@ -121,9 +116,9 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
 
 void BaseGUI::exportGnuplot(sofa::simulation::Node* node, std::string /*gnuplot_directory*/ )
 {
-    sofa::helper::ScopedAdvancedTimer exportGnuplotTimer("exportGnuplot");
+    SCOPED_TIMER_VARNAME(exportGnuplotTimer, "exportGnuplot");
 
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     ExportGnuplotVisitor expg ( params, node->getTime());
     node->execute ( expg );
 }

@@ -26,8 +26,12 @@
 #include <string.h>
 
 #ifdef SOFA_GPU_CUBLAS
-#include <cublas.h>
+#if __has_include(<cublas_v2.h>)
+#define SOFA_GPU_CUBLAS_V2
 #include <cublas_v2.h>
+#else
+#include <cublas.h>
+#endif
 #include <cusparse_v2.h>
 #endif
 
@@ -88,7 +92,6 @@ extern "C" {
     extern cusparseMatDescr_t SOFA_GPU_CUDA_API getCusparseMatGeneralDescr();
     extern cusparseMatDescr_t SOFA_GPU_CUDA_API getCusparseMatTriangularUpperDescr();
     extern cusparseMatDescr_t SOFA_GPU_CUDA_API getCusparseMatTriangularLowerDescr();
-
 #endif
 
 #if defined(NDEBUG) && !defined(CUDA_DEBUG)
@@ -102,6 +105,7 @@ extern "C" {
 
     extern void SOFA_GPU_CUDA_API mycudaLogError(const char* err, const char* src);
     extern int SOFA_GPU_CUDA_API mycudaPrintf(const char* fmt, ...);
+    extern int SOFA_GPU_CUDA_API mycudaPrintfError(const char* fmt, ...);
     extern int SOFA_GPU_CUDA_API mycudaGetMultiProcessorCount();
     extern void mycudaPrivateInit(int device=-1);
 

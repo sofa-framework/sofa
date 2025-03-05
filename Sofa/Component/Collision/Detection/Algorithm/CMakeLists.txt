@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.Collision.Detection.Algorithm LANGUAGES CXX)
 
 set(SOFACOMPONENTCOLLISIONDETECTIONALGORITHM_SOURCE_DIR "src/sofa/component/collision/detection/algorithm")

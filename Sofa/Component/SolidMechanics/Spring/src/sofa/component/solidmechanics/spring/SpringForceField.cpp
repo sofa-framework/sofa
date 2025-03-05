@@ -30,17 +30,16 @@ namespace sofa::component::solidmechanics::spring
 
 using namespace sofa::defaulttype;
 
-
-//Register in the Factory
-int SpringForceFieldClass = core::RegisterObject("Springs")
+void registerSpringForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Springs.")
         .add< SpringForceField<Vec3Types> >()
         .add< SpringForceField<Vec2Types> >()
         .add< SpringForceField<Vec1Types> >()
         .add< SpringForceField<Vec6Types> >()
-        .add< SpringForceField<Rigid3Types> >()
-        ;
+        .add< SpringForceField<Rigid3Types> >());
+}
 
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API LinearSpring<SReal>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec3Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec2Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec1Types>;

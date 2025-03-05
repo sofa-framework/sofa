@@ -137,7 +137,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet0(
         XT[2][2] = Dh2.x*Node1Disp.z + Dh2.y*Node2Disp.z + Dh2.z*Node3Disp.z + Dh2.w*Node4Disp.z + 1.0f;
 
         /**
-        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symetric)
+        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symmetric)
         */
         float C11, C12, C13, C22, C23, C33;
         C11 = XT[0][0]*XT[0][0] + XT[0][1]*XT[0][1] + XT[0][2]*XT[0][2];
@@ -277,7 +277,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet1(
         XT[2][2] = Dh2.x*Node1Disp.z + Dh2.y*Node2Disp.z + Dh2.z*Node3Disp.z + Dh2.w*Node4Disp.z + 1.0f;
 
         /**
-        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symetric)
+        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symmetric)
         */
         float C11, C12, C13, C22, C23, C33;
         C11 = XT[0][0]*XT[0][0] + XT[0][1]*XT[0][1] + XT[0][2]*XT[0][2];
@@ -426,7 +426,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2(
         XT[2][2] = Dh2.x*Node1Disp.z + Dh2.y*Node2Disp.z + Dh2.z*Node3Disp.z + Dh2.w*Node4Disp.z + 1.0f;
 
         /**
-        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symetric)
+        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symmetric)
         */
         float C11, C12, C13, C22, C23, C33;
         C11 = XT[0][0]*XT[0][0] + XT[0][1]*XT[0][1] + XT[0][2]*XT[0][2];
@@ -612,7 +612,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3(
         XT[2][2] = Dh2.x*Node1Disp.z + Dh2.y*Node2Disp.z + Dh2.z*Node3Disp.z + Dh2.w*Node4Disp.z + 1.0f;
 
         /**
-        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symetric)
+        * Computes the right Cauchy-Green deformation tensor C = XT*X (in fact we compute only 6 terms since C is symmetric)
         */
         float C11, C12, C13, C22, C23, C33;
         C11 = XT[0][0]*XT[0][0] + XT[0][1]*XT[0][1] + XT[0][2]*XT[0][2];
@@ -969,7 +969,7 @@ void InitGPU_TetrahedronVisco(float * Ai, float * Av, int Ni, int Nv)
 void InitGPU_TetrahedronAniso()
 {
     // A material constant
-    int Eta = 13136;    // 13136 liver
+    const int Eta = 13136;    // 13136 liver
     cudaMemcpyToSymbol("Eta_gpu", &Eta, sizeof(int));
 
     mycudaPrintf("GPU initialised for anisotropy: %s\n", cudaGetErrorString( cudaGetLastError()) );

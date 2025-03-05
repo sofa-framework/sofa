@@ -37,7 +37,7 @@ public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;
     SOFA_CLASS(MultiTagAnimationLoop,sofa::simulation::CollisionAnimationLoop);
 
-    MultiTagAnimationLoop(simulation::Node* gnode);
+    MultiTagAnimationLoop();
 
     void init() override;
 
@@ -46,17 +46,6 @@ public:
     ~MultiTagAnimationLoop() override;
 
     void step (const sofa::core::ExecParams* params, SReal dt) override;
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
-    {
-        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
 
 private:
     sofa::core::objectmodel::TagSet tagList;

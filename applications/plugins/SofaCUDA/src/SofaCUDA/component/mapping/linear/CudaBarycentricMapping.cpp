@@ -33,7 +33,7 @@ using namespace sofa::core::behavior;
 using namespace sofa::gpu::cuda;
 
 
-// Spread the instanciations over multiple files for more efficient and lightweight compilation. See CudaBarycentricMapping-*.cpp files.
+// Spread the instantiations over multiple files for more efficient and lightweight compilation. See CudaBarycentricMapping-*.cpp files.
 
 // Instantiations involving both CudaVec3fTypes and Vec3dTypes
 template class SOFA_GPU_CUDA_API BarycentricMapping< Vec3Types, CudaVec3Types>;

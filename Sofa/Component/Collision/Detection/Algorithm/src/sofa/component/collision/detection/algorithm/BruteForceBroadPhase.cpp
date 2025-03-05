@@ -28,13 +28,19 @@
 namespace sofa::component::collision::detection::algorithm
 {
 
-int BruteForceBroadPhaseClass = core::RegisterObject("Broad phase collision detection using extensive pair-wise tests")
-        .add< BruteForceBroadPhase >()
-;
+void registerBruteForceBroadPhase(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Broad phase collision detection using extensive pair-wise tests.")
+        .add< BruteForceBroadPhase >());
+}
 
 BruteForceBroadPhase::BruteForceBroadPhase()
-        : box(initData(&box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))
-{}
+        : d_box(initData(&d_box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))
+{
+
+    box.setOriginalData (&d_box);
+
+}
 
 void BruteForceBroadPhase::init()
 {
@@ -43,7 +49,7 @@ void BruteForceBroadPhase::init()
 
 void BruteForceBroadPhase::reinit()
 {
-    if (box.getValue()[0][0] >= box.getValue()[1][0])
+    if (d_box.getValue()[0][0] >= d_box.getValue()[1][0])
     {
         boxModel.reset();
     }
@@ -51,7 +57,7 @@ void BruteForceBroadPhase::reinit()
     {
         if (!boxModel) boxModel = sofa::core::objectmodel::New<collision::geometry::CubeCollisionModel>();
         boxModel->resize(1);
-        boxModel->setParentOf(0, box.getValue()[0], box.getValue()[1]);
+        boxModel->setParentOf(0, d_box.getValue()[0], d_box.getValue()[1]);
     }
 }
 
@@ -110,9 +116,9 @@ void BruteForceBroadPhase::addCollisionModel (core::CollisionModel *cm)
         {
             std::swap(cm1, cm2);
         }
-
+        
         // Here we assume a single root element is present in both models
-        if (intersector->canIntersect(cm1->begin(), cm2->begin()))
+        if (intersector->canIntersect(cm1->begin(), cm2->begin(), intersectionMethod))
         {
             //both collision models will be further examined in the narrow phase
             cmPairs.emplace_back(cm1, cm2);
@@ -137,7 +143,7 @@ bool BruteForceBroadPhase::doesSelfCollide(core::CollisionModel *cm) const
         core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm, swapModels);
         if (intersector != nullptr)
         {
-            return intersector->canIntersect(cm->begin(), cm->begin());
+            return intersector->canIntersect(cm->begin(), cm->begin(), intersectionMethod);
         }
     }
 
@@ -149,12 +155,12 @@ bool BruteForceBroadPhase::intersectWithBoxModel(core::CollisionModel *cm) const
     bool swapModels = false;
     core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, boxModel.get(), swapModels);
     if (intersector)
-    {
+    {        
         core::CollisionModel* cm1 = (swapModels?boxModel.get():cm);
         core::CollisionModel* cm2 = (swapModels?cm:boxModel.get());
 
         // Here we assume a single root element is present in both models
-        return intersector->canIntersect(cm1->begin(), cm2->begin());
+        return intersector->canIntersect(cm1->begin(), cm2->begin(), intersectionMethod);
     }
 
     return true;

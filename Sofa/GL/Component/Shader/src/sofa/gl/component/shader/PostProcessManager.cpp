@@ -27,10 +27,11 @@
 namespace sofa::gl::component::shader
 {
 
-//Register PostProcessManager in the Object Factory
-int PostProcessManagerClass = core::RegisterObject("PostProcessManager")
-        .add< PostProcessManager >()
-        ;
+void registerPostProcessManager(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Add a post process pass to the actual rendering.")
+        .add< PostProcessManager >());
+}
 
 using namespace core::visual;
 
@@ -55,7 +56,7 @@ PostProcessManager::~PostProcessManager()
 
 void PostProcessManager::init()
 {
-    sofa::core::objectmodel::BaseContext* context = this->getContext();
+    const sofa::core::objectmodel::BaseContext* context = this->getContext();
     dofShader = context->core::objectmodel::BaseContext::get<sofa::gl::component::shader::OglShader>();
 
     if (!dofShader)
@@ -66,14 +67,14 @@ void PostProcessManager::init()
     }
 }
 
-void PostProcessManager::initVisual()
+void PostProcessManager::doInitVisual(const core::visual::VisualParams*)
 {
     if (postProcessEnabled)
     {
         GLint viewport[4];
         glGetIntegerv(GL_VIEWPORT, viewport);
-        GLint windowWidth = viewport[2];
-        GLint windowHeight = viewport[3];
+        const GLint windowWidth = viewport[2];
+        const GLint windowHeight = viewport[3];
 
         fbo = std::unique_ptr<sofa::gl::FrameBufferObject>(new sofa::gl::FrameBufferObject());
         fbo->init(windowWidth, windowHeight);

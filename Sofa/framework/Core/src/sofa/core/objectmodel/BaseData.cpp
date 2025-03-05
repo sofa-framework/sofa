@@ -128,9 +128,14 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
         addInput(parent);
         BaseData::setDirtyValue();
         m_counter++;
-        m_isSet = true;
-    }else if (!path.empty())
+    }
+    // the referenced parent data has not been created yet but a path has been given
+    else if (!path.empty())
+    {
         parentData.setPath(path);
+    }
+
+    m_isSet = true;
 
     return true;
 }
@@ -158,20 +163,16 @@ void BaseData::doDelInput(DDGNode* n)
 void BaseData::update()
 {
     cleanDirty();
-    for(DDGLinkIterator it=inputs.begin(); it!=inputs.end(); ++it)
+    for (DDGNode* input : inputs)
     {
-        (*it)->updateIfDirty();
+        input->updateIfDirty();
     }
 
     /// Check if there is a parent (so a predecessor in the DDG), if so
     /// update the internal value.
-    auto parent = parentData.resolvePathAndGetTarget();
+    const auto parent = parentData.resolvePathAndGetTarget();
     if (parent)
     {
-#ifdef SOFA_DDG_TRACE
-        if (m_owner)
-            dmsg_warning(m_owner) << "Data " << m_name << ": update from parent " << parentBaseData->m_name;
-#endif
         updateValueFromLink(parent);
         // If the value is dirty clean it
         if(this->isDirty())

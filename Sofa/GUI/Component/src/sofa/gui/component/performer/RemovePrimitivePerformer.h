@@ -33,7 +33,7 @@ namespace sofa::gui::component::performer
 {
 
 /** Class to configure primitive removal. Several parameters:
-  * - topologicalOperation: if 0, other parameters arn't use.
+  * - topologicalOperation: if 0, other parameters aren't use.
   *   0 = "remove on element"
   *   1 = "remove a zone of elements"
   * - volumicMesh:
@@ -131,12 +131,12 @@ private:
     /// Point to collision class
     core::behavior::MechanicalState<DataTypes>* mstateCollision;
     /// Enum storing the type to current topolgy: TRIANGLE, QUAD, TETRAHEDRON or HEXAHEDRON
-    sofa::core::topology::TopologyElementType topoType;
+    sofa::geometry::ElementType topoType;
     /// Pointer to current topology detect by picking
     sofa::core::topology::BaseMeshTopology* topo_curr;
 };
 
-#if  !defined(SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP)
 extern template class SOFA_GUI_COMPONENT_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
 
 #endif

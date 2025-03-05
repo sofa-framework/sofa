@@ -27,7 +27,11 @@ namespace sofa::simulation::mechanicalvisitor
 
 Visitor::Result MechanicalGetNonDiagonalMassesCountVisitor::fwdMass(VisitorContext* ctx, core::behavior::BaseMass* mass)
 {
-    *ctx->nodeData += !mass->isDiagonal();
+    SOFA_UNUSED(ctx);
+
+    if(this->m_nbNonDiagonalMassesPtr && !mass->isDiagonal())
+        (*m_nbNonDiagonalMassesPtr)++;
+
     return RESULT_CONTINUE;
 }
 

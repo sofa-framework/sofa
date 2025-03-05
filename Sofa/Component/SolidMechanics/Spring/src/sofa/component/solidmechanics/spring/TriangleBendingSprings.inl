@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/spring/TriangleBendingSprings.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <iostream>
@@ -44,9 +45,9 @@ TriangleBendingSprings<DataTypes>::~TriangleBendingSprings()
 template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b )
 {
-    const VecCoord& x =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    Real s = (Real)this->ks.getValue();
-    Real d = (Real)this->kd.getValue();
+    const VecCoord& x =this->mstate1->read(core::vec_id::read_access::position)->getValue();
+    Real s = (Real)this->d_ks.getValue()[0];
+    Real d = (Real)this->d_kd.getValue()[0];
     Real l = (x[a]-x[b]).norm();
     this->SpringForceField<DataTypes>::addSpring(a,b, s, d, l );
 }
@@ -56,9 +57,9 @@ void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b
 {
     using namespace std;
     {
-        IndexPair edge(a<b ? a : b,a<b ? b : a);
-        unsigned opposite = c;
-        if( edgeMap.find( edge ) == edgeMap.end() )
+        const IndexPair edge(a<b ? a : b,a<b ? b : a);
+        const unsigned opposite = c;
+        if(!edgeMap.contains( edge ))
         {
             edgeMap[edge] = opposite;
         }
@@ -70,9 +71,9 @@ void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b
     }
 
     {
-        IndexPair edge(b<c ? b : c,b<c ? c : b);
-        unsigned opposite = a;
-        if( edgeMap.find( edge ) == edgeMap.end() )
+        const IndexPair edge(b<c ? b : c,b<c ? c : b);
+        const unsigned opposite = a;
+        if(!edgeMap.contains( edge ))
         {
             edgeMap[edge] = opposite;
         }
@@ -84,9 +85,9 @@ void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b
     }
 
     {
-        IndexPair edge(c<a ? c : a,c<a ? a : c);
-        unsigned  opposite = b;
-        if( edgeMap.find( edge ) == edgeMap.end() )
+        const IndexPair edge(c<a ? c : a,c<a ? a : c);
+        const unsigned  opposite = b;
+        if(!edgeMap.contains( edge ))
         {
             edgeMap[edge] = opposite;
         }
@@ -105,7 +106,7 @@ template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::init()
 {
     this->mstate1 = this->mstate2 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>( this->getContext()->getMechanicalState() );
-    StiffSpringForceField<DataTypes>::clear();
+    SpringForceField<DataTypes>::clear();
 
     // Set the bending springs
 
@@ -147,7 +148,7 @@ void TriangleBendingSprings<DataTypes>::init()
     }
 
     // init the parent class
-    StiffSpringForceField<DataTypes>::init();
+    SpringForceField<DataTypes>::init();
 
 }
 

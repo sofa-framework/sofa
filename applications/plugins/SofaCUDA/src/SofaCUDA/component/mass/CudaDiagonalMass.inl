@@ -22,14 +22,12 @@
 #ifndef SOFA_COMPONENT_COLLISION_CUDADIAGONALMASS_INL
 #define SOFA_COMPONENT_COLLISION_CUDADIAGONALMASS_INL
 
-#include "CudaDiagonalMass.h"
+#include <SofaCUDA/component/mass/CudaDiagonalMass.h>
 #include <sofa/component/mass/DiagonalMass.inl>
 
 namespace sofa
 {
-namespace gpu
-{
-namespace cuda
+namespace gpu::cuda
 {
 
 using namespace sofa::gpu::cuda;
@@ -49,12 +47,8 @@ extern "C"
 
 }
 
-}
 
-namespace component
-{
-
-namespace mass
+namespace component::mass
 {
 
 template<>
@@ -152,7 +146,7 @@ void DiagonalMass<CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mpar
 
 // template <>
 // bool DiagonalMass<CudaVec3dTypes>::addBBox(double* minBBox, double* maxBBox) {
-//     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+//     const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 //     //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
 //     for (unsigned int i=0; i<x.size(); i++) {
 //         //const Coord& p = x[i];
@@ -167,9 +161,8 @@ void DiagonalMass<CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mpar
 
 #endif
 
-} // namespace mass
+} // namespace component::mass
 
-} // namespace component
 
 } // namespace sofa
 

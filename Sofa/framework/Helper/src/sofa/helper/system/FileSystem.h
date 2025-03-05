@@ -28,11 +28,8 @@
 #include <string>
 #include <vector>
 
-namespace sofa
-{
-namespace helper
-{
-namespace system
+
+namespace sofa::helper::system
 {
 
 /// @brief Contains functions to interact with the file system.
@@ -96,10 +93,31 @@ static bool removeDirectory(const std::string& path);
 /// @return true on error
 static bool removeAll(const std::string& path) ;
 
+/// @brief The file or empty directory identified by the path is deleted
+///
+/// @return true if the file was deleted, false if it did not exist.
+static bool removeFile(const std::string& path);
+
 /// @brief check that all element in the path exists or create them. (This function accepts relative paths)
 ///
 /// @return the valid path.
-static std::string findOrCreateAValidPath(const std::string path) ;
+SOFA_HELPER_FILESYSTEM_FINDORCREATEAVALIDPATH_DEPRECATED()
+static std::string findOrCreateAValidPath(const std::string path);
+
+/// @brief Ensures that a folder exists at the specified path. If the folder does not exist, it will be created.
+///
+/// @param pathToFolder The path of the folder to ensure exists.
+///
+/// @note The function assumes that a path to a folder is given.
+static void ensureFolderExists(const std::string& pathToFolder);
+
+/// @brief Ensures that the folder containing the specified file path exists. If the folder does not
+/// exist, it will be created. If the file does not exist, it will not be created.
+///
+/// @param pathToFile The path to the file. The function ensures that the directory containing this file exists.
+///
+/// @note The function assumes that a path to a file is given.
+static void ensureFolderForFileExists(const std::string& pathToFile);
 
 /// @brief Return true if and only if the given file exists.
 static bool exists(const std::string& path);
@@ -141,11 +159,23 @@ static std::string getParentDirectory(const std::string& path);
 /// E.g. /a/b/c --> c
 static std::string stripDirectory(const std::string& path);
 
+
+/// Appends a string to an existing path, ensuring exactly one directory
+/// separator (/) between each part.
+static std::string append(const std::string_view& existingPath, const std::string_view& toAppend);
+
+/// Appends strings to an existing path, ensuring exactly one directory
+/// separator (/) between each part.
+template<typename... Args>
+static std::string append(const std::string_view& existingPath, const std::string_view& toAppend, Args&&... args)
+{
+    return append(append(existingPath, toAppend), args...);
+}
+
 };
 
 
-} // namespace system
-} // namespace helper
-} // namespace sofa
+} // namespace sofa::helper::system
+
 
 #endif

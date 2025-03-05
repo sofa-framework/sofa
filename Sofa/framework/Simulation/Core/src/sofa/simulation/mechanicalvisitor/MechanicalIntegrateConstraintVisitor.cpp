@@ -32,8 +32,7 @@ MechanicalIntegrateConstraintsVisitor::MechanicalIntegrateConstraintsVisitor(
         sofa::core::ConstMultiVecDerivId correction,
         sofa::core::MultiVecDerivId dx,
         sofa::core::MultiVecCoordId x,
-        sofa::core::MultiVecDerivId v,
-        const sofa::core::behavior::MultiMatrixAccessor* _matrix)
+        sofa::core::MultiVecDerivId v)
     :BaseMechanicalVisitor(cparams)
     ,cparams(cparams)
     ,positionFactor(pf)
@@ -42,35 +41,27 @@ MechanicalIntegrateConstraintsVisitor::MechanicalIntegrateConstraintsVisitor(
     ,dxId(dx)
     ,xId(x)
     ,vId(v)
-    ,matrix(_matrix)
     ,offset(0)
 {}
 
 MechanicalIntegrateConstraintsVisitor::Result MechanicalIntegrateConstraintsVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
 {
-    if (matrix) offset = matrix->getGlobalOffset(ms);
-    if (offset >= 0)
+    if (positionFactor != 0)
     {
-        unsigned int o = (unsigned int)offset;
-        offset = (int)o;
-
-        if (positionFactor != 0)
-        {
-            //x = x_free + correction * positionFactor;
-            ms->vOp(params, xId.getId(ms), cparams->x().getId(ms), correctionId.getId(ms), positionFactor);
-        }
-
-        if (velocityFactor != 0)
-        {
-            //v = v_free + correction * velocityFactor;
-            ms->vOp(params, vId.getId(ms), cparams->v().getId(ms), correctionId.getId(ms), velocityFactor);
-        }
-
-        const double correctionFactor = cparams->constOrder() == sofa::core::ConstraintParams::ConstOrder::VEL ? velocityFactor : positionFactor;
-
-        //dx *= correctionFactor;
-        ms->vOp(params,dxId.getId(ms),core::VecDerivId::null(), correctionId.getId(ms), correctionFactor);
+        //x = x_free + correction * positionFactor;
+        ms->vOp(params, xId.getId(ms), cparams->x().getId(ms), correctionId.getId(ms), positionFactor);
     }
+
+    if (velocityFactor != 0)
+    {
+        //v = v_free + correction * velocityFactor;
+        ms->vOp(params, vId.getId(ms), cparams->v().getId(ms), correctionId.getId(ms), velocityFactor);
+    }
+
+    const double correctionFactor = cparams->constOrder() == sofa::core::ConstraintOrder::VEL ? velocityFactor : positionFactor;
+
+    //dx *= correctionFactor;
+    ms->vOp(params,dxId.getId(ms),core::VecDerivId::null(), correctionId.getId(ms), correctionFactor);
 
     return RESULT_CONTINUE;
 }

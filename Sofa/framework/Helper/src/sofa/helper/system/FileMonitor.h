@@ -26,13 +26,7 @@
 
 #include <sofa/helper/config.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace system
+namespace sofa::helper::system
 {
 using std::string ;
 
@@ -103,8 +97,6 @@ public:
                                    FileEventListener* listener) ;
 };
 
-}
-}
 }
 
 #endif // FILEMONITOR_H_

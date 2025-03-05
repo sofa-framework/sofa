@@ -5,7 +5,7 @@
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [LinearSolverConstraintCorrection] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
-    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLUSolver] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [EigenSparseLU] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
     <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RestShapeSpringsForceField] -->
@@ -18,18 +18,18 @@
 
     <Node name="Object1">
         <MechanicalObject name="ms" template="Rigid3" position="0 0 0 0 0 0 0 1" showObject="false"/>
-        <SphereCollisionModel radius="0.01" color="0 1 0 1" />  
-    </Node> 
+        <SphereCollisionModel radius="0.01" color="0 1 0 1" />
+    </Node>
 
     <Node name="Object2">
         <EulerImplicitSolver rayleighMass="0" rayleighStiffness="0"/>
-        <SparseLUSolver template="CompressedRowSparseMatrix" name="LULinearSolver"/>
-        <MechanicalObject name="mstate" template="Rigid3" position="0.1 0 0  0  0 0 0 1" />     
+        <EigenSparseLU template="CompressedRowSparseMatrix" name="LULinearSolver"/>
+        <MechanicalObject name="mstate" template="Rigid3" position="0.1 0 0  0  0 0 0 1" />
         <SphereCollisionModel color="1 0 0 1" radius="0.01" />
         <RestShapeSpringsForceField stiffness="11" angularStiffness="11" external_rest_shape="@../Object1/ms" points="0" external_points="0" drawSpring="true" springColor="1 1 1 1"/>
         <UniformMass totalMass="0.01" />
         <SphereCollisionModel radius="0.0005" color="1 0 0  1" />
-            
+
         <LinearSolverConstraintCorrection linearSolver="@LULinearSolver"/>
-    </Node> 
+    </Node>
 </Node>

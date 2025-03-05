@@ -45,7 +45,7 @@ public:
     }
 };
 
-#if  !defined(SOFA_COMPONENT_COLLISION_TETRAHEDRONBARYCENTRICCONTACTMAPPER_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_TETRAHEDRONBARYCENTRICCONTACTMAPPER_CPP)
 extern template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<collision::geometry::TetrahedronCollisionModel, sofa::defaulttype::Vec3Types>;
 
 #  ifdef _MSC_VER

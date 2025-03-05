@@ -61,8 +61,8 @@ struct TestSparseMatrixTranspose : public sofa::testing::SparseMatrixTest<typena
         {
             for(typename Transpose::InnerIterator it(transposeMatrix, i); it; ++it )
             {
-                ASSERT_TRUE(it.row() < nbRows) << it.row() << " " << nbRows;
-                ASSERT_TRUE(it.col() < nbCols) << it.col() << " " << nbCols;
+                ASSERT_LT(it.row(), nbRows) << it.row() << " " << nbRows;
+                ASSERT_LT(it.col(), nbCols) << it.col() << " " << nbCols;
                 const Real initialValue = matrix.coeff(it.row(), it.col());
 
                 triplets.emplace_back(it.row(), it.col(), it.value());
@@ -78,7 +78,7 @@ struct TestSparseMatrixTranspose : public sofa::testing::SparseMatrixTest<typena
 
         if (!issues.empty())
         {
-            std::stringstream ss;
+            const std::stringstream ss;
             ADD_FAILURE() << "Found " << issues.size() << " differences in the transposed matrix compared to the initial matrix\n" << ss.str();
         }
 

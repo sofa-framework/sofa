@@ -202,7 +202,7 @@ void IntrConfigManager<geometry::TOBB<TDataTypes> >::init (const type::Vec<3,Rea
     // 7 +++
     //
     // When it returns an ordering in the IntrConfiguration, it is also
-    // guarenteed to be in-order (if 4 vertices, then they are guarenteed in
+    // guaranteed to be in-order (if 4 vertices, then they are guaranteed in
     // an order that will create a box, e.g. 0,1,3,2).
 
     Real axes[3] =
@@ -805,7 +805,7 @@ void IntrUtil<Real>::segNearestPoints(const type::Vec<3,Real> & p0,const type::V
     const type::Vec<3,Real> AC = q0-p0;
 
     type::Matrix2 Amat;//matrix helping us to find the two nearest points lying on the segments of the two segments
-    type::Vector2 b;
+    type::Vec2 b;
 
     Amat[0][0] = AB*AB;
     Amat[1][1] = CD*CD;
@@ -830,13 +830,13 @@ void IntrUtil<Real>::segNearestPoints(const type::Vec<3,Real> & p0,const type::V
     }
     else{//segment segments on a same plane. Here the idea to find the nearest points
         //is to project segment apexes on the other segment.
-        //Visual example with semgents AB and CD :
+        //Visual example with segments AB and CD :
         //            A----------------B
         //                     C----------------D
         //After projection :
         //            A--------c-------B
         //                     C-------b--------D
-        //So the nearest points are p and q which are respecively in the middle of cB and Cb:
+        //So the nearest points are p and q which are respectively in the middle of cB and Cb:
         //            A--------c---p---B
         //                     C---q---b--------D
         type::Vec<3,Real> AD = q1 - p0;

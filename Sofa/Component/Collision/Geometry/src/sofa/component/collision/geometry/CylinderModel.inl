@@ -173,13 +173,13 @@ void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
 {
     using namespace sofa::type;
     using namespace sofa::defaulttype;
-    sofa::type::RGBAColor colour(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
-    SReal h2 = height(i)/2.0;
+    const sofa::type::RGBAColor colour(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
+    const SReal h2 = height(i)/2.0;
 
     Vec3 p1(center(i));
     Vec3 p2(center(i));
 
-    Vec3 ax = axis(i);
+    const Vec3 ax = axis(i);
 
     p1 += h2 * ax;
     p2 -= h2 * ax;
@@ -190,7 +190,7 @@ void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
 template<class DataTypes>
 void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    auto df = sofa::core::visual::visualparams::getDisplayFlags(vparams);
+    const auto df = sofa::core::visual::visualparams::getDisplayFlags(vparams);
     if (df.getShowCollisionModels())
     {
 
@@ -213,7 +213,7 @@ typename CylinderCollisionModel<DataTypes>::Real CylinderCollisionModel< DataTyp
 
 template<class DataTypes>
 const typename CylinderCollisionModel<DataTypes>::Coord & CylinderCollisionModel< DataTypes >::center(sofa::Index i)const{
-    return DataTypes::getCPos((m_mstate->read(core::ConstVecCoordId::position())->getValue())[i]);
+    return DataTypes::getCPos((m_mstate->read(core::vec_id::read_access::position)->getValue())[i]);
 }
 
 template<class DataTypes>
@@ -255,7 +255,7 @@ typename TCylinder<DataTypes>::Real TCylinder<DataTypes >::radius() const
 
 template<class DataTypes>
 const typename CylinderCollisionModel<DataTypes>::Coord & CylinderCollisionModel<DataTypes >::velocity(sofa::Index index) const {
-    return DataTypes::getDPos(((m_mstate->read(core::ConstVecDerivId::velocity())->getValue()))[index]);
+    return DataTypes::getDPos(((m_mstate->read(core::vec_id::read_access::velocity)->getValue()))[index]);
 }
 
 
@@ -264,7 +264,7 @@ const typename TCylinder<DataTypes>::Coord & TCylinder<DataTypes >::v() const {r
 
 template<class DataTypes>
 const sofa::type::Quat<SReal> CylinderCollisionModel<DataTypes >::orientation(sofa::Index index)const{
-    return m_mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
+    return m_mstate->read(core::vec_id::read_access::position)->getValue()[index].getOrientation();
 }
 
 template<class DataTypes>

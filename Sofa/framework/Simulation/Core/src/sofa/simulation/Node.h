@@ -71,7 +71,7 @@ public:
     }
 };
 
-/// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
+/// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic conversion to one pointer.
 /// UPDATE: it is now an alias for the Link pointer container
 template < class T, bool duplicate = true >
 class NodeSingle : public SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)>
@@ -127,6 +127,7 @@ extern template class NodeSequence<sofa::core::objectmodel::BaseObject>;
 
 extern template class NodeSingle<sofa::core::behavior::BaseAnimationLoop>;
 extern template class NodeSingle<sofa::core::visual::VisualLoop>;
+extern template class NodeSingle<sofa::core::visual::BaseVisualStyle>;
 extern template class NodeSingle<sofa::core::topology::Topology>;
 extern template class NodeSingle<sofa::core::topology::BaseMeshTopology>;
 extern template class NodeSingle<sofa::core::BaseState>;
@@ -175,7 +176,7 @@ public:
 
     /// @name Visitor handling
     /// @param precomputedOrder is not used by default but could allow optimization on certain Node specializations
-    /// @warning when calling with precomputedOrder=true, the fonction "precomputeTraversalOrder" must be called before executing the visitor and the user must ensure by himself that the simulation graph has done been modified since the last call to "precomputeTraversalOrder"
+    /// @warning when calling with precomputedOrder=true, the function "precomputeTraversalOrder" must be called before executing the visitor and the user must ensure by himself that the simulation graph has done been modified since the last call to "precomputeTraversalOrder"
     /// @{
 
     /// Execute a recursive action starting from this node.
@@ -255,6 +256,7 @@ public:
 
     NodeSingle<sofa::core::behavior::BaseAnimationLoop> animationManager;
     NodeSingle<sofa::core::visual::VisualLoop> visualLoop;
+    NodeSingle<sofa::core::visual::BaseVisualStyle> visualStyle;
     NodeSingle<sofa::core::topology::Topology> topology;
     NodeSingle<sofa::core::topology::BaseMeshTopology> meshTopology;
     NodeSingle<sofa::core::BaseState> state;
@@ -494,7 +496,7 @@ public:
     /// Update the simulation context values(gravity, time...), based on parent and local ContextObjects
     virtual void updateSimulationContext();
 
-    /// Called during initialization to corectly propagate the visual context to the children
+    /// Called during initialization to correctly propagate the visual context to the children
     virtual void initVisualContext() {}
 
     /// Propagate an event
@@ -509,13 +511,13 @@ public:
     /// Must be called after each graph modification. Do not call it directly, apply an InitVisitor instead.
     virtual void initialize();
 
-    virtual void bwdInit();
-
     /// Called after initialization to set the default value of the visual context.
     virtual void setDefaultVisualContextValue();
 
     template <class RealObject>
     static Node::SPtr create(RealObject*, sofa::core::objectmodel::BaseObjectDescription* arg);
+
+    SOFA_ATTRIBUTE_DISABLED_NODECREATENODE()
     static Node::SPtr create( const std::string& name );
 
     /// return the smallest common parent between this and node2 (returns nullptr if separated sub-graphes)
@@ -565,7 +567,7 @@ public:
     virtual void addListener(MutationListener* obj);
     virtual void removeListener(MutationListener* obj);
 
-    /// @name virtual functions to add/remove some special components direclty in the right Sequence
+    /// @name virtual functions to add/remove some special components directly in the right Sequence
     /// @{
 
 #define NODE_DECLARE_SEQUENCE_ACCESSOR( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
@@ -599,6 +601,7 @@ public:
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::Shader, Shader, shaders )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualModel, VisualModel, visualModel )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::BaseVisualStyle, VisualStyle, visualStyle )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualManager, VisualManager, visualManager )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::CollisionModel, CollisionModel, collisionModel )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )

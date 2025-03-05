@@ -35,15 +35,6 @@ namespace sofa::simulation::graph
 using namespace sofa::defaulttype;
 
 
-Simulation* getSimulation()
-{
-    if ( simulation::Simulation::theSimulation.get() == 0 )
-    {
-        setSimulation( new DAGSimulation );
-    }
-    return simulation::getSimulation();
-}
-
 DAGSimulation::DAGSimulation()
 {
     // Safety check; it could be elsewhere, but here is a good place, I guess.
@@ -56,7 +47,6 @@ DAGSimulation::~DAGSimulation()
 
 }
 
-
 Node::SPtr DAGSimulation::createNewGraph(const std::string& name)
 {
     return createNewNode( name );
@@ -66,13 +56,5 @@ Node::SPtr DAGSimulation::createNewNode(const std::string& name)
 {
     return sofa::core::objectmodel::New<DAGNode>(name);
 }
-
-
-
-// Register in the Factory
-//int DAGSimulationClass = core::RegisterObject ( "Main simulation algorithm, based on tree graph" )
-//.add< DAGSimulation >()
-//;
-
 
 } // namespace sofa::simulation::graph

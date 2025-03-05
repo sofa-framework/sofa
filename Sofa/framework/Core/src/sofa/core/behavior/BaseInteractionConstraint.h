@@ -48,9 +48,19 @@ public:
     /// \todo Rename to getMechState2()
     virtual BaseMechanicalState* getMechModel2() { return l_mechanicalStates[1]; }
 
+    virtual type::vector<std::string> getBaseConstraintIdentifiers() override final
+    {
+        type::vector<std::string> ids = getInteractionIdentifiers();
+        ids.push_back("Interaction");
+        return ids;
+    }
+
 protected:
     BaseInteractionConstraint() {}
     ~BaseInteractionConstraint()override {}
+
+    virtual type::vector<std::string> getInteractionIdentifiers(){ return {}; }
+
 
 private:
     BaseInteractionConstraint(const BaseInteractionConstraint& n) = delete ;

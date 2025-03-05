@@ -36,8 +36,8 @@ Vec6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, con
     const auto &vertexMass= d_vertexMass.getValue();
     const auto &edgeMass= d_edgeMass.getValue();
 
-    helper::ReadAccessor< DataVecCoord > x = vx;
-    helper::ReadAccessor< DataVecDeriv > v = vv;
+    const helper::ReadAccessor< DataVecCoord > x = vx;
+    const helper::ReadAccessor< DataVecDeriv > v = vv;
 
     Vec6 momentum;
     for( unsigned int i=0 ; i<v.size() ; i++ )
@@ -71,16 +71,16 @@ Vec6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, con
     return momentum;
 }
 
-
-// Register in the Factory
-int MeshMatrixMassClass = core::RegisterObject("Define a specific mass for each particle")
+void registerMeshMatrixMass(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compute a mass matrix resulting from the space integration of a density over a domain.")
         .add< MeshMatrixMass<Vec3Types> >()
         .add< MeshMatrixMass<Vec2Types> >()
         .add< MeshMatrixMass<Vec2Types, Vec3Types> >()
         .add< MeshMatrixMass<Vec1Types> >()
         .add< MeshMatrixMass<Vec1Types, Vec2Types> >()
-        .add< MeshMatrixMass<Vec1Types, Vec3Types> >()
-;
+        .add< MeshMatrixMass<Vec1Types, Vec3Types> >());
+}
 
 template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec3Types>;
 template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec2Types>;

@@ -79,7 +79,7 @@ void SmoothMeshEngine<DataTypes>::doUpdate()
     if (!m_topology) return;
 
     helper::ReadAccessor< Data<VecCoord> > in(input_position);
-    helper::ReadAccessor< Data<type::vector<unsigned int > > > indices(input_indices);
+    const helper::ReadAccessor< Data<type::vector<unsigned int > > > indices(input_indices);
     helper::WriteAccessor< Data<VecCoord> > out(output_position);
 
     out.resize(in.size());
@@ -164,7 +164,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
     using sofa::type::Vec;
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    bool wireframe=vparams->displayFlags().getShowWireFrame();
+    const bool wireframe=vparams->displayFlags().getShowWireFrame();
 
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& tri = m_topology->getTriangles();
 

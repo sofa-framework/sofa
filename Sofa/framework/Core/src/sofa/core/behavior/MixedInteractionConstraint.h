@@ -62,10 +62,20 @@ public:
     typedef core::objectmodel::Data< MatrixDeriv2 >		DataMatrixDeriv2;
 protected:
     MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1 = nullptr, MechanicalState<DataTypes2> *mm2 = nullptr);
-
     ~MixedInteractionConstraint() override;
+
+    virtual type::vector<std::string> getInteractionIdentifiers() override final
+    {
+        type::vector<std::string> ids = getMixedInteractionIdentifiers();
+        ids.push_back("Mixed");
+        return ids;
+    }
+
+    virtual type::vector<std::string> getMixedInteractionIdentifiers(){ return {}; }
+
+
 public:
-    Data<SReal> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
+    Data<SReal> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
     using BaseConstraintSet::getConstraintViolation;
@@ -78,8 +88,8 @@ public:
     /// Construct the Constraint violations vector of each constraint
     ///
     /// \param v is the result vector that contains the whole constraints violations
-    /// \param x1 and x2 are the position vectors used to compute contraint position violation
-    /// \param v1 and v2 are the velocity vectors used to compute contraint velocity violation
+    /// \param x1 and x2 are the position vectors used to compute constraint position violation
+    /// \param v1 and v2 are the velocity vectors used to compute constraint velocity violation
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
@@ -97,30 +107,15 @@ public:
     ///
     /// \param c1 and c2 are the results constraint sparse matrix
     /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
-    /// \param x1 and x2 are the position vectors used for contraint equation computation
+    /// \param x1 and x2 are the position vectors used for constraint equation computation
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
     virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv1 &c1, DataMatrixDeriv2 &c2, unsigned int &cIndex
             , const DataVecCoord1 &x1, const DataVecCoord2 &x2) = 0;
-
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T* p0, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        typename T::SPtr obj = core::behavior::BaseInteractionConstraint::create(p0, context, arg);
-
-        if (arg)
-        {
-            obj->parse(arg);
-        }
-
-        return obj;
-    }
 };
 
-#if  !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP)
+#if !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP)
 extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec3Types, defaulttype::Vec3Types>;
 extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec2Types, defaulttype::Vec2Types>;
 extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Vec1Types, defaulttype::Vec1Types>;

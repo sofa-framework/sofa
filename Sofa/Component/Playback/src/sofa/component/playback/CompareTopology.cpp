@@ -31,10 +31,11 @@
 namespace sofa::component::playback
 {
 
-
-
-int CompareTopologyClass = core::RegisterObject("Compare Topology containers from a reference frame to the associated Topology")
-        .add< CompareTopology >();
+void registerCompareTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Compare Topology containers from a reference frame to the associated Topology.")
+        .add< CompareTopology >());
+}
 
 CompareTopology::CompareTopology(): ReadTopology()
 {
@@ -68,11 +69,11 @@ void CompareTopology::processCompareTopology()
 
     if (!topo)
     {
-        msg_error() << "CompareTopology can't acces to the Topology.";
+        msg_error() << "CompareTopology can't access to the Topology.";
         return;
     }
 
-    double time = getContext()->getTime() + f_shift.getValue();
+    double time = getContext()->getTime() + d_shift.getValue();
     std::vector<std::string> validLines;
     if (!readNext(time, validLines)) return;
 
@@ -297,7 +298,7 @@ void CompareTopology::processCompareTopology()
 CompareTopologyCreator::CompareTopologyCreator(const core::ExecParams* params)
     :Visitor(params)
     , sceneName("")
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -311,7 +312,7 @@ CompareTopologyCreator::CompareTopologyCreator(const core::ExecParams* params)
 CompareTopologyCreator::CompareTopologyCreator(const std::string &n, const core::ExecParams* params, bool i, int c)
     :Visitor(params)
     , sceneName(n)
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -339,8 +340,7 @@ simulation::Visitor::Result CompareTopologyCreator::processNodeTopDown( simulati
 
 void CompareTopologyCreator::addCompareTopology(sofa::core::topology::BaseMeshTopology* topology, simulation::Node* gnode)
 {
-
-    sofa::core::objectmodel::BaseContext* context = gnode->getContext();
+    const sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
     context->get(mapping);
     if (createInMapping || mapping== nullptr)
@@ -354,7 +354,7 @@ void CompareTopologyCreator::addCompareTopology(sofa::core::topology::BaseMeshTo
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterCompareTopology << "_" << topology->getName()  << "_topology" << extension ;
 
-        ct->f_filename.setValue(ofilename.str());  ct->f_listening.setValue(false); //Deactivated only called by extern functions
+        ct->d_filename.setValue(ofilename.str());  ct->f_listening.setValue(false); //Deactivated only called by extern functions
         if (init) ct->init();
 
         ++counterCompareTopology;
@@ -383,7 +383,7 @@ simulation::Visitor::Result CompareTopologyResult::processNodeTopDown( simulatio
     //We have a topology
     TotalError +=ct->getTotalError();
 
-    std::vector <unsigned int> tmpError = ct->getErrors();
+    const std::vector <unsigned int> tmpError = ct->getErrors();
 
     for (unsigned int i = 0 ; i<5; i++)
         listError[i] += tmpError[i];

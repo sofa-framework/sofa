@@ -36,12 +36,12 @@ public:
     SOFA_CLASS(Context, BaseContext);
 
     Data<bool> is_activated; ///< To Activate a node
-    Data<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+    Data<Vec3> worldGravity_; ///< Gravity in the world coordinate system
     Data<SReal> dt_; ///< Time step
     Data<SReal> time_; ///< Current time
     Data<bool> animate_; ///< Animate the Simulation(applied at initialization only)
-    Data<bool> d_isSleeping;				///< Tells if the context is sleeping, and thus ignored by visitors
-    Data<bool> d_canChangeSleepingState;	///< Tells if the context can change its sleeping state
+    Data<bool> d_isSleeping; ///< The node is sleeping, and thus ignored by visitors.
+    Data<bool> d_canChangeSleepingState; ///< The node can change its sleeping state.
 
 protected:
     Context();

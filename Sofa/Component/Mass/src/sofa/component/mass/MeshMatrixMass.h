@@ -105,7 +105,7 @@ public:
     Data< Real >         d_showAxisSize;  ///< factor length of the axis displayed (only used for rigids)
     /// if mass lumping should be performed (only compute mass on vertices)
     Data< bool >         d_lumping;
-    /// if specific mass information should be outputed
+    /// if specific mass information should be outputted
     Data< bool >         d_printMass; ///< Boolean to print the mass
     Data< std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of the controlled potential
 
@@ -117,14 +117,14 @@ public:
 protected:
 
     /// The type of topology to build the mass from the topology
-    sofa::core::topology::TopologyElementType m_massTopologyType;
+    sofa::geometry::ElementType m_massTopologyType;
     Real m_massLumpingCoeff;
 
     MeshMatrixMass();
     ~MeshMatrixMass() override;
 
-    sofa::core::topology::TopologyElementType checkTopology();
-    void initTopologyHandlers(sofa::core::topology::TopologyElementType topologyType);
+    sofa::geometry::ElementType checkTopology();
+    void initTopologyHandlers(sofa::geometry::ElementType topologyType);
     void massInitialization();
 
     /// Internal data required for Cuda computation (copy of vertex mass for deviceRead)
@@ -139,12 +139,12 @@ public:
     void handleEvent(sofa::core::objectmodel::Event *event) override;
     void doUpdateInternal() override;
 
-    sofa::core::topology::TopologyElementType getMassTopologyType() const
+    sofa::geometry::ElementType getMassTopologyType() const
     {
         return m_massTopologyType;
     }
 
-    void setMassTopologyType(sofa::core::topology::TopologyElementType t)
+    void setMassTopologyType(sofa::geometry::ElementType t)
     {
         m_massTopologyType = t;
     }
@@ -154,7 +154,7 @@ public:
         return d_vertexMass.getValue().size();
     }
 
-    /// Print key mass informations (totalMass, vertexMass and massDensity)
+    /// Print key mass information (totalMass, vertexMass and massDensity)
     void printMass();
 
     /// Compute the mass from input values
@@ -219,7 +219,10 @@ public:
 
 
     /// Add Mass contribution to global Matrix assembling
-    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset) override;
+    void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}
+    void buildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}
 
     SReal getElementMass(Index index) const override;
     void getElementMass(Index index, linearalgebra::BaseMatrix *m) const override;
@@ -399,7 +402,7 @@ protected:
     typename sofa::core::behavior::MechanicalState<GeometricalTypes>::SPtr m_geometryState;
 };
 
-#if  !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)
+#if !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec2Types, defaulttype::Vec3Types>;

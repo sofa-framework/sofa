@@ -34,16 +34,19 @@ void DataTracker::trackData( const objectmodel::BaseData& data )
 
 bool DataTracker::hasChanged( const objectmodel::BaseData& data ) const
 {
-    if (m_dataTrackers.find(&data) != m_dataTrackers.end())
+    if (m_dataTrackers.contains(&data))
         return m_dataTrackers.at(&data) != data.getCounter();
     return false;
 }
 
 bool DataTracker::hasChanged() const
 {
-    for( DataTrackers::const_iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
-        if( it->second != it->first->getCounter() ) return true;
-    return false;
+    return std::any_of(m_dataTrackers.begin(), m_dataTrackers.end(),
+        [](const auto& dataTracker)
+        {
+            const auto& [data, counter] = dataTracker;
+            return counter != data->getCounter();
+        });
 }
 
 void DataTracker::clean( const objectmodel::BaseData& data )
@@ -53,8 +56,10 @@ void DataTracker::clean( const objectmodel::BaseData& data )
 
 void DataTracker::clean()
 {
-    for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
-        it->second = it->first->getCounter();
+    for (auto& [data, counter] : m_dataTrackers)
+    {
+        counter = data->getCounter();
+    }
 }
 
 ////////////////////
@@ -83,7 +88,7 @@ void DataTrackerDDGNode::cleanDirty(const core::ExecParams*)
 void DataTrackerDDGNode::updateAllInputsIfDirty()
 {
     const DDGLinkContainer& inputs = DDGNode::getInputs();
-    for(auto input : inputs)
+    for(const auto input : inputs)
     {
         static_cast<core::objectmodel::BaseData*>(input)->updateIfDirty();
     }
@@ -100,7 +105,7 @@ void DataTrackerCallback::update()
 {
     updateAllInputsIfDirty();
 
-    auto cs = m_callback(m_dataTracker);
+    const auto cs = m_callback(m_dataTracker);
     if (m_owner)
         m_owner->d_componentState.setValue(cs); // but what if the state of the component was invalid for a reason that doesn't depend on this update?
     cleanDirty();

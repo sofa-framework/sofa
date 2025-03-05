@@ -42,10 +42,7 @@
 #include <Eigen/Dense>
 
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 /** Copy a given MultiVector (generally spread across the MechanicalStates) to a BaseVector
@@ -74,7 +71,7 @@ protected:
 
 };
 
-} // namespace simulation
-} // namespace sofa
+} // namespace sofa::simulation
+
 
 #endif

@@ -87,11 +87,8 @@
 #define DDS_GBIT_RG3_B2     0x1C
 #define DDS_BBIT_RG3_B2     0x03
 
-namespace sofa
-{
-namespace helper
-{
-namespace io
+
+namespace sofa::helper::io
 {
 Creator<Image::FactoryImage,ImageDDS> ImageDDSClass("dds");
 
@@ -310,14 +307,14 @@ bool ImageDDS::load(std::string filename)
     }
     }
 
-    int depth = (header.ddsCaps.dwCaps2 & DDSCAPS2_CUBEMAP)? 0 :
-            (!header.dwDepth)? 1 : header.dwDepth;
-    int mipmaps = (header.dwMipMapCount <= 0)? 1 : header.dwMipMapCount;
+    const int depth = (header.ddsCaps.dwCaps2 & DDSCAPS2_CUBEMAP)? 0 :
+                          (!header.dwDepth)? 1 : header.dwDepth;
+    const int mipmaps = (header.dwMipMapCount <= 0)? 1 : header.dwMipMapCount;
 
     // Load the content of the file.
     init(header.dwWidth, header.dwHeight, depth, mipmaps, type, channels);
-    std::size_t size = getImageSize();
-    std::size_t read = fread(getPixels(), 1, size, file);
+    const std::size_t size = getImageSize();
+    const std::size_t read = fread(getPixels(), 1, size, file);
     fclose(file);
     if (read != size)
     {
@@ -460,6 +457,6 @@ bool ImageDDS::save(std::string filename, int)
     }
     return isWriteOk;
 }
-} // namespace io
-} // namespace helper
-} // namespace sofa
+} // namespace sofa::helper::io
+
+

@@ -65,16 +65,15 @@ struct TrianglePressureForceField_test : public ForceField_test<_TrianglePressur
         DataTypes::set( v[2], 0,0,0);
 
         //Force
-         f.resize(3);
+        f.resize(3);
         Vec3 f0(0,0,0.1);
         DataTypes::set( f[0],  f0[0], f0[1], f0[2]);
         DataTypes::set( f[1],  f0[0], f0[1], f0[2]);
         DataTypes::set( f[2],  f0[0], f0[1], f0[2]);
 
         // Set the properties of the force field
-        Inherited::force->normal.setValue(Deriv(0,0,1));
-        Inherited::force->dmin.setValue(-0.01);
-        Inherited::force->dmax.setValue(0.01);
+        sofa::type::vector<Index> indices = {0};
+        Inherited::force->triangleList.setValue(indices);
         Inherited::force->pressure=Coord(0,0,0.6);
     }
 
@@ -88,12 +87,12 @@ struct TrianglePressureForceField_test : public ForceField_test<_TrianglePressur
     // Test that the force value is constant
     void test_constantForce()
     {
-        sofa::simulation::getSimulation()->init(Inherited::node.get());
+        sofa::simulation::node::initRoot(Inherited::node.get());
 
         // Do a few animation steps
         for(int k=0;k<10;k++)
         {
-            sofa::simulation::getSimulation()->animate(Inherited::node.get(),0.5);
+            sofa::simulation::node::animate(Inherited::node.get(), 0.5_sreal);
         }
 
         // run the forcefield_test

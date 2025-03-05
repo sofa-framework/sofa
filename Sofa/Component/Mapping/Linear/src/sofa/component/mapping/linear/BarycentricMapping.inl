@@ -47,12 +47,9 @@ namespace sofa::component::mapping::linear
 using namespace topology;
 using sofa::type::Vec3;
 using sofa::type::Matrix3;
-using sofa::type::Mat3x3d;
-using sofa::type::Vec3d;
 using sofa::core::objectmodel::ComponentState;
 using sofa::linearalgebra::EigenSparseMatrix;
 
-// 10/18 E.Coevoet: what's the difference between edge/line, tetra/tetrahedron, hexa/hexahedron?
 typedef typename sofa::core::topology::BaseMeshTopology::Line Edge;
 typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
 typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
@@ -286,9 +283,9 @@ void BarycentricMapping<TIn, TOut>::initMapper()
     if (d_mapper != nullptr && this->toModel != nullptr && this->fromModel != nullptr)
     {
         if (d_useRestPosition.getValue())
-            d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::restPosition())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::restPosition())->getValue() );
+            d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::vec_id::read_access::restPosition)->getValue(), ((const core::State<In> *)this->fromModel)->read(core::vec_id::read_access::restPosition)->getValue() );
         else
-            d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
+            d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::vec_id::read_access::position)->getValue(), ((const core::State<In> *)this->fromModel)->read(core::vec_id::read_access::position)->getValue() );
     }
 }
 
@@ -310,12 +307,11 @@ void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * mpara
 {
     SOFA_UNUSED(mparams);
 
-    typename Out::VecDeriv* out = _out.beginEdit();
     if (d_mapper != nullptr)
     {
-        d_mapper->applyJ(*out, in.getValue());
+        auto outWriteAccessor = sofa::helper::getWriteAccessor(_out);
+        d_mapper->applyJ(outWriteAccessor.wref(), in.getValue());
     }
-    _out.endEdit();
 }
 
 
@@ -326,8 +322,8 @@ void BarycentricMapping<TIn, TOut>::applyJT (const core::MechanicalParams * mpar
 
     if (d_mapper != nullptr)
     {
-        d_mapper->applyJT(*out.beginEdit(), in.getValue());
-        out.endEdit();
+        auto outWriteAccessor = sofa::helper::getWriteAccessor(out);
+        d_mapper->applyJT(outWriteAccessor.wref(), in.getValue());
     }
 }
 
@@ -356,7 +352,7 @@ void BarycentricMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpara
     if (this->d_componentState.getValue() != ComponentState::Valid ) return;
 
     // Draw model (out) points
-    const OutVecCoord& out = this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const OutVecCoord& out = this->toModel->read(core::vec_id::read_access::position)->getValue();
     std::vector< Vec3 > points;
     for ( unsigned int i=0; i<out.size(); i++ )
     {
@@ -365,7 +361,7 @@ void BarycentricMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpara
     vparams->drawTool()->drawPoints ( points, 7, sofa::type::RGBAColor::yellow());
 
     // Draw mapping line between models
-    const InVecCoord& in = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+    const InVecCoord& in = this->fromModel->read(core::vec_id::read_access::position)->getValue();
     if ( d_mapper!=nullptr )
         d_mapper->draw(vparams,out,in);
 
@@ -379,8 +375,8 @@ void BarycentricMapping<TIn, TOut>::applyJT(const core::ConstraintParams * cpara
 
     if (d_mapper!=nullptr )
     {
-        d_mapper->applyJT(*out.beginEdit(), in.getValue());
-        out.endEdit();
+        auto outWriteAccessor = sofa::helper::getWriteAccessor(out);
+        d_mapper->applyJT(outWriteAccessor.wref(), in.getValue());
     }
 }
 
@@ -388,10 +384,10 @@ void BarycentricMapping<TIn, TOut>::applyJT(const core::ConstraintParams * cpara
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topology* t )
 {
-    //foward topological modifications to the mapper
+    //forward topological modifications to the mapper
     if (this->d_mapper.get()){
-        this->d_mapper->processTopologicalChanges(((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(),
-                                                  ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue(),
+        this->d_mapper->processTopologicalChanges(((const core::State<Out> *)this->toModel)->read(core::vec_id::read_access::position)->getValue(),
+                                                  ((const core::State<In> *)this->fromModel)->read(core::vec_id::read_access::position)->getValue(),
                                                   t);
     }
 }

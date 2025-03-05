@@ -106,17 +106,17 @@ public:
         this->addAlias(&image, "outputImage");
         this->addAlias(&transform, "outputTransform");
 
-        helper::OptionsGroup overlapOptions(6	,"0 - Average pixels"
-                ,"1 - Use image order as priority"
-                ,"2 - Alpha blending according to distance from border"
-                ,"3 - Take farthest pixel from border"
-                ,"4 - Add pixels of each images"
-                ,"5 - Set overlapping pixels of the first image to zero (only if the corresponding pixel in the other images different to zero)"
-                                           );
+        helper::OptionsGroup overlapOptions{"0 - Average pixels"
+                                           ,"1 - Use image order as priority"
+                                           ,"2 - Alpha blending according to distance from border"
+                                           ,"3 - Take farthest pixel from border"
+                                           ,"4 - Add pixels of each images"
+                                           ,"5 - Set overlapping pixels of the first image to zero (only if the corresponding pixel in the other images different to zero)"
+                                           };
         overlapOptions.setSelectedItem(ALPHABLEND);
         overlap.setValue(overlapOptions);
 
-        helper::OptionsGroup InterpolationOptions(3,"Nearest", "Linear", "Cubic");
+        helper::OptionsGroup InterpolationOptions{"Nearest", "Linear", "Cubic"};
         InterpolationOptions.setSelectedItem(INTERPOLATION_LINEAR);
         Interpolation.setValue(InterpolationOptions);
     }

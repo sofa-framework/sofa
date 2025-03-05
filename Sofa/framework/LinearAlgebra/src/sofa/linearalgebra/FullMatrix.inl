@@ -290,8 +290,8 @@ void FullMatrix<Real>::mulT( FullMatrix<Real>& res, const FullMatrix<Real>& m ) 
 template<typename Real>
 std::ostream& readFromStream(std::ostream& out, const FullMatrix<Real>& v )
 {
-    Index nx = v.colSize();
-    Index ny = v.rowSize();
+    const Index nx = v.colSize();
+    const Index ny = v.rowSize();
     out << "[";
     for (Index y=0; y<ny; ++y)
     {

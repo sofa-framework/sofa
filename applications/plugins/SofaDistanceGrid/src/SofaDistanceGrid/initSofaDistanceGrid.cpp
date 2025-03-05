@@ -19,15 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSofaDistanceGrid.h"
+#include <SofaDistanceGrid/initSofaDistanceGrid.h>
 #include "components/collision/DistanceGridCollisionModel.h"
 #include "components/forcefield/DistanceGridForceField.h"
 #include "RegisterModelToCollisionFactory.h"
 
-namespace sofa
-{
-
-namespace component
+namespace sofadistancegrid
 {
 extern "C" {
 SOFA_SOFADISTANCEGRID_API void initExternalModule();
@@ -40,6 +37,11 @@ SOFA_SOFADISTANCEGRID_API const char* getModuleComponentList();
 
 void initExternalModule()
 {
+    initSofaDistanceGrid();
+}
+
+void initSofaDistanceGrid()
+{
     static bool first = true;
     if (first)
     {
@@ -50,12 +52,12 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "SofaDistanceGrid";
+    return sofadistancegrid::MODULE_NAME;
 }
 
 const char* getModuleVersion()
 {
-    return "1.0";
+    return sofadistancegrid::MODULE_VERSION;
 }
 
 const char* getModuleLicense()
@@ -70,13 +72,4 @@ const char* getModuleDescription()
            "point in space. This is why it is often used to implement collisions.     ";
 }
 
-const char* getModuleComponentList()
-{
-    return "DistanceGridCollisionModel FFDDistanceGridDiscreteIntersection RayDistanceGridContact "
-           "RigidDistanceGridDiscreteIntersection DistanceGridForceField";
-}
-
-} /// component
-
-} /// sofa
-
+} /// namespace sofadistancegrid

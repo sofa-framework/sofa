@@ -24,6 +24,9 @@
 
 namespace sofa::core
 {
+class GeometricStiffnessMatrix;
+
+class MappingMatrixAccumulator;
 
 /** An interface to convert a model state to an other model state.
 The model states are positions and velocities or generalizations of these (class sofa::core::BaseState).
@@ -56,10 +59,14 @@ public:
     Data<bool> f_mapMasses; ///< Are masses mapped ?
     Data<bool> f_mapMatrices; ///< Are matrix explicit mapped?
 
+    /// Return true if the mapping is linear, i.e. the derivative of the mapping
+    /// function is constant.
+    virtual bool isLinear() const { return false; }
+
     /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
-    virtual void apply (const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position() ) = 0;
+    virtual void apply (const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecCoordId outPos = vec_id::write_access::position, ConstMultiVecCoordId inPos = vec_id::read_access::position ) = 0;
     /// Compute output velocity based on input velocity, using the linearized transformation (tangent operator). Also used to propagate small displacements.
-    virtual void applyJ(const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecDerivId outVel = VecDerivId::velocity(), ConstMultiVecDerivId inVel = ConstVecDerivId::velocity() ) = 0;
+    virtual void applyJ(const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecDerivId outVel = vec_id::write_access::velocity, ConstMultiVecDerivId inVel = vec_id::read_access::velocity ) = 0;
 
     /// Accessor to the input model of this mapping
     virtual type::vector<BaseState*> getFrom() = 0;
@@ -101,7 +108,7 @@ public:
 
     /// Return true if the destination model has the same topology as the source model.
     ///
-    /// This is the case for mapping keeping a one-to-one correspondance between
+    /// This is the case for mapping keeping a one-to-one correspondence between
     /// input and output DOFs (mostly identity or data-conversion mappings).
     virtual bool sameTopology() const { return false; }
 
@@ -136,7 +143,7 @@ public:
     /// Disable the mapping to get the original coordinates of the mapped model.
     virtual void disable()=0;
 
-    /// @name New API for global matrix assembly (used in the Compliant plugin)
+    /// @name API for global matrix assembly (used in the Compliant plugin)
     /// @{
 
     /// Returns pointers to Jacobian matrices associated with parent states, consistently with getFrom(). Most mappings have only one parent, however Multimappings have several parents.
@@ -153,6 +160,27 @@ public:
     /// This matrix is associated with the parent DOFs. It is a square matrix with a size of the total number of parent DOFs.
     /// For efficiency concerns, please return a pointer to a defaulttype::EigenBaseSparseMatrix
     virtual const linearalgebra::BaseMatrix* getK() { return nullptr; }
+
+    /**
+     * \brief Assembles the geometric stiffness matrix of the mapping in the
+     *        provided matrix object.
+     *
+     * The geometric stiffness is defined as dJ^T/dx * outForce, where outForce
+     * is the forces applying on the output of the mapping, J is the jacobian
+     * matrix of the mapping and x is the position of the input of the mapping.
+     *
+     * Inside the method, outForce is retrieved, while dJ^T/dx and its product
+     * with outForce must be computed.
+     *
+     * Note that dJ^T/dx is null for linear mappings, meaning that the method
+     * can remain empty.
+     *
+     * The geometric stiffness is a term that must be added into the global
+     * mechanical matrix.
+     *
+     * \param matrices The matrix to fill in with the geometric stiffness of the mapping
+     */
+    virtual void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices);
 
     /// @}
 

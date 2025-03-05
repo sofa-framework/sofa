@@ -40,10 +40,7 @@ Visitor::Result MechanicalAddMBKdxVisitor::fwdMappedMechanicalState(simulation::
 
 Visitor::Result MechanicalAddMBKdxVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
-    if( !ff->isCompliance.getValue() )
-        ff->addMBKdx( this->mparams, res);
-    else
-        ff->addMBKdx( &mparamsWithoutStiffness, res);
+    ff->addMBKdx( this->mparams, res);
     return RESULT_CONTINUE;
 }
 

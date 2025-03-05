@@ -57,26 +57,38 @@ constexpr Mat<C,P,real> multTranspose(const Mat<L,C,real>& m1, const Mat<L,P,rea
 
 
 template <sofa::Size L, sofa::Size C, class real>
-class Mat : public fixed_array<VecNoInit<C,real>, L>
+class Mat
 {
 public:
-
     static constexpr sofa::Size N = L * C;
 
-    typedef typename fixed_array<real, N>::size_type Size;
+    typedef VecNoInit<C, real> LineNoInit;
+    using ArrayLineType = std::array<LineNoInit, L>;
 
     typedef real Real;
     typedef Vec<C,real> Line;
-    typedef VecNoInit<C,real> LineNoInit;
     typedef Vec<L,real> Col;
+    typedef sofa::Size Size;
 
     static constexpr Size nbLines = L;
     static constexpr Size nbCols  = C;
 
-    constexpr Mat() noexcept
-    {
-        clear();
-    }
+    typedef sofa::Size                              size_type;
+    typedef Line                                    value_type;
+    typedef typename ArrayLineType::iterator        iterator;
+    typedef typename ArrayLineType::const_iterator  const_iterator;
+    typedef typename ArrayLineType::reference       reference;
+    typedef typename ArrayLineType::const_reference const_reference;
+    typedef std::ptrdiff_t   difference_type;
+
+    static constexpr sofa::Size static_size = L;
+    static constexpr sofa::Size total_size = L;
+    
+    static constexpr sofa::Size size() { return static_size; }
+
+    ArrayLineType elems{};
+
+    constexpr Mat() noexcept = default;
 
     explicit constexpr Mat(NoInit) noexcept
     {
@@ -138,7 +150,7 @@ public:
         typename = std::enable_if_t< (sizeof...(ArgsT) == L && sizeof...(ArgsT) > 1) >
     >
     constexpr Mat(ArgsT&&... r) noexcept
-        : sofa::type::fixed_array<LineNoInit, L>(std::forward<ArgsT>(r)...)
+        : elems{ std::forward<ArgsT>(r)... }
     {}
 
     /// Constructor from an element
@@ -189,7 +201,7 @@ public:
         return L;
     }
 
-    /// number of colums
+    /// number of columns
     constexpr Size getNbCols() const
     {
         return C;
@@ -222,6 +234,20 @@ public:
         for (Size i=0; i<L2; i++)
             for (Size j=0; j<C2; j++)
                 m[i][j] = this->elems[i+L0][j+C0];
+    }
+
+    template <Size C2>
+    constexpr void getsub(const Size L0, const Size C0, Vec<C2, real>& m) const noexcept
+    {
+        for (Size j = 0; j < C2; j++)
+        {
+            m[j] = this->elems[L0][j + C0];
+        }
+    }
+
+    constexpr void getsub(Size L0, Size C0, real& m) const noexcept
+    {
+        m = this->elems[L0][C0];
     }
 
     template<Size L2, Size C2> 
@@ -271,7 +297,7 @@ public:
         return c;
     }
 
-    /// Write acess to line i.
+    /// Write access to line i.
     constexpr LineNoInit& operator[](Size i) noexcept
     {
         return this->elems[i];
@@ -283,7 +309,7 @@ public:
         return this->elems[i];
     }
 
-    /// Write acess to line i.
+    /// Write access to line i.
     constexpr LineNoInit& operator()(Size i) noexcept
     {
         return this->elems[i];
@@ -350,7 +376,7 @@ public:
     /// Special access to second line (read-only).
     template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 2> >
     constexpr const Line& y() const noexcept { return this->elems[1]; }
-    /// Special access to thrid line (read-only).
+    /// Special access to third line (read-only).
     template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 3> >
     constexpr const Line& z() const noexcept { return this->elems[2]; }
     /// Special access to fourth line (read-only).
@@ -384,10 +410,6 @@ public:
         }();
         return s_identity;
     }
-
-    /// precomputed identity matrix of size (L,L)
-    SOFA_ATTRIBUTE_DEPRECATED__STATIC_MATRIX_IDENTITY()
-    static const Mat<L, L, real>& s_identity;
 
     template<Size S>
     static bool canSelfTranspose(const Mat<S, S, real>& lhs, const Mat<S, S, real>& rhs) noexcept
@@ -594,7 +616,7 @@ public:
         return r;
     }
 
-    /// Substraction with the transposed of the given matrix operator \returns this - mt
+    /// Subtraction with the transposed of the given matrix operator \returns this - mt
     constexpr Mat<L,C,real>minusTransposed(const Mat<C,L,real>& m) const noexcept
     {
         Mat<L,C,real> r(NOINIT);
@@ -660,7 +682,7 @@ public:
                 (*this)[i][j] += m[j][i];
     }
 
-    /// Substraction of the transposed of m
+    /// Subtraction of the transposed of m
     constexpr void subTransposed(const Mat<C,L,real>& m) noexcept
     {
         for(Size i=0; i<L; i++)
@@ -668,7 +690,7 @@ public:
                 (*this)[i][j] -= m[j][i];
     }
 
-    /// Substraction assignment operator.
+    /// Subtraction assignment operator.
     constexpr void operator -=(const Mat<L,C,real>& m) noexcept
     {
         for(Size i=0; i<L; i++)
@@ -697,7 +719,7 @@ public:
         if (&m == this)
         {
             Mat<L,C,real> mat = m;
-            bool res = invertMatrix(*this, mat);
+            const bool res = invertMatrix(*this, mat);
             return res;
         }
         return invertMatrix(*this, m);
@@ -796,11 +818,50 @@ public:
                 this->elems[l][c] = this->elems[c][l] = ( this->elems[l][c] + this->elems[c][l] ) * 0.5f;
     }
 
+
+    // direct access to data
+    constexpr const real* data() const noexcept
+    {
+        return elems.data();
+    }
+
+    constexpr typename ArrayLineType::iterator begin() noexcept
+    {
+        return elems.begin();
+    }
+    constexpr typename ArrayLineType::const_iterator begin() const noexcept
+    {
+        return elems.begin();
+    }
+
+    constexpr typename ArrayLineType::iterator end() noexcept
+    {
+        return elems.end();
+    }
+    constexpr typename ArrayLineType::const_iterator end() const noexcept
+    {
+        return elems.end();
+    }
+
+    constexpr reference front()
+    {
+        return elems[0];
+    }
+    constexpr const_reference front() const
+    {
+        return elems[0];
+    }
+    constexpr reference back()
+    {
+        return elems[N - 1];
+    }
+    constexpr const_reference back() const
+    {
+        return elems[N - 1];
+    }
+
 };
 
-
-template <sofa::Size L, sofa::Size C, typename real>
-const Mat<L, L, real>& Mat<L, C, real>::s_identity = Mat<L, L, real>::Identity();
 
 /// Same as Mat except the values are not initialized by default
 template <sofa::Size L, sofa::Size C, typename real>
@@ -1040,7 +1101,7 @@ template<sofa::Size S, class real>
 {
     Mat<S-1,S-1,real> R, R_inv;
     from.getsub(0,0,R);
-    bool b = invertMatrix(R_inv, R);
+    const bool b = invertMatrix(R_inv, R);
 
     Mat<S-1,1,real> t, t_inv;
     from.getsub(0,S-1,t);
@@ -1137,13 +1198,19 @@ void printMaple(std::ostream& o, const Mat<L,C,real>& m)
 
 
 /// Create a matrix as \f$ u v^T \f$
-template <sofa::Size L, sofa::Size C, typename T>
-constexpr Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v ) noexcept
+template <class Tu, class Tv>
+constexpr Mat<Tu::size(), Tv::size(), typename Tu::value_type>
+dyad(const Tu& u, const Tv& v) noexcept
 {
-    Mat<L,C,T> res(NOINIT);
-    for(sofa::Size i=0; i<L; i++ )
-        for(sofa::Size j=0; j<C; j++ )
-            res[i][j] = u[i]*v[j];
+    static_assert(std::is_same_v<typename Tu::value_type, typename Tv::value_type>);
+    Mat<Tu::size(), Tv::size(), typename Tu::value_type> res(NOINIT);
+    for (sofa::Size i = 0; i < Tu::size(); ++i)
+    {
+        for (sofa::Size j = 0; j < Tv::size(); ++j)
+        {
+            res[i][j] = u[i] * v[j];
+        }
+    }
     return res;
 }
 

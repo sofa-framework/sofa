@@ -111,7 +111,7 @@ public:
     }
 
 
-    Data<DataTypes> mSource;      ///< source object to copy
+    Data<DataTypes> mSource; ///< source object to copy
     Data<DataTypes> mDestination; ///< destination object to copy
 
 private:

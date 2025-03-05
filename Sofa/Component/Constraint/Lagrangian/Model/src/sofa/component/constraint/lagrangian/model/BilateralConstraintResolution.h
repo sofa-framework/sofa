@@ -68,7 +68,7 @@ class BilateralConstraintResolution3Dof : public ConstraintResolution
 {
 public:
 
-    BilateralConstraintResolution3Dof(sofa::type::Vec3d* vec = nullptr)
+    BilateralConstraintResolution3Dof(sofa::type::Vec3* vec = nullptr)
         : ConstraintResolution(3)
         , _f(vec)
     {
@@ -90,7 +90,7 @@ public:
         assert(canInvert);
         SOFA_UNUSED(canInvert);
 
-        // invW is unsused in this scope, remove the warning:
+        // invW is unused in this scope, remove the warning:
         SOFA_UNUSED(invW);
 
         if(_f)
@@ -130,7 +130,7 @@ public:
 
 protected:
     sofa::type::Mat<3,3,SReal> invW;
-    sofa::type::Vec3d* _f;
+    sofa::type::Vec3* _f;
 };
 
 class BilateralConstraintResolutionNDof : public ConstraintResolution
@@ -155,8 +155,8 @@ public:
     void resolution(int line, SReal** /*w*/, SReal* displacement, SReal* force, SReal* /*dFree*/) override
     {
         Eigen::Map< EigenVectorX > f(&force[line], wBlock.cols());
-        Eigen::Map< EigenVectorX > d(&displacement[line], wBlock.cols());
-        EigenVectorX f_local = wBlockInv.solve(d);
+        const Eigen::Map< EigenVectorX > d(&displacement[line], wBlock.cols());
+        const EigenVectorX f_local = wBlockInv.solve(d);
         f -= f_local;
     }
 

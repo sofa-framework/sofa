@@ -44,7 +44,7 @@ bool CylinderGridTopology_test::cylinderGridCreation()
         EXPECT_MSG_NOEMIT(Warning) ;
 
         // Creating a good Grid
-        CylinderGridTopology::SPtr cylGrid = sofa::core::objectmodel::New<CylinderGridTopology>(5, 5, 5);
+        const CylinderGridTopology::SPtr cylGrid = sofa::core::objectmodel::New<CylinderGridTopology>(5, 5, 5);
         EXPECT_NE(cylGrid, nullptr);
         EXPECT_EQ(cylGrid->d_radius.getValue(), 1.0);
         EXPECT_EQ(cylGrid->d_length.getValue(), 1.0);
@@ -71,12 +71,12 @@ bool CylinderGridTopology_test::cylinderGridSize()
     int nx = 5;
     int ny = 5;
     int nz = 5;
-    CylinderGridTopology::SPtr cylGrid = sofa::core::objectmodel::New<CylinderGridTopology>(nx, ny, nz);
+    const CylinderGridTopology::SPtr cylGrid = sofa::core::objectmodel::New<CylinderGridTopology>(nx, ny, nz);
     cylGrid->init();
 
     EXPECT_EQ(cylGrid->getNbPoints(), nx*ny*nz);
 
-    int nbHexa = (nx-1)*(ny-1)*(nz-1);
+    const int nbHexa = (nx-1)*(ny-1)*(nz-1);
     EXPECT_EQ(cylGrid->getNbHexahedra(), nbHexa);
 
     return true;
@@ -90,10 +90,10 @@ bool CylinderGridTopology_test::cylinderGridPosition()
     int nx = 8;
     int ny = 8;
     int nz = 5;
-    CylinderGridTopology::SPtr cylGrid = sofa::core::objectmodel::New<CylinderGridTopology>(nx, ny, nz);
+    const CylinderGridTopology::SPtr cylGrid = sofa::core::objectmodel::New<CylinderGridTopology>(nx, ny, nz);
     cylGrid->init();
 
-    SReal length = cylGrid->d_length.getValue();
+    const SReal length = cylGrid->d_length.getValue();
 
     // Check first circle with
     sofa::type::Vec3 p0 = cylGrid->getPoint(0);

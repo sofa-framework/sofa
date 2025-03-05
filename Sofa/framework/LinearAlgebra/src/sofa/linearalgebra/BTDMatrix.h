@@ -122,7 +122,7 @@ public:
         return BSIZE;
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__GETSUBMATRIXSIZE("Use directly getSubMatrixDim(), without any parameter")
+    SOFA_ATTRIBUTE_DISABLED__GETSUBMATRIXSIZE("Use directly getSubMatrixDim(), without any parameter")
     static Index getSubMatrixDim(Index)
     {
         return getSubMatrixDim();
@@ -185,6 +185,12 @@ public:
 
     void add(Index i, Index j, double v) override;
 
+    /**
+     * Accumulation specialized on contributions of the same size than the blocks.
+     */
+    template <std::size_t M = N, std::enable_if_t<(M > 3), int> = 0>
+    void add(Index row, Index col, const type::Mat<BSIZE, BSIZE, Real>& v);
+
     void clear(Index i, Index j) override;
 
     void clearRow(Index i) override;
@@ -201,8 +207,8 @@ public:
         FullVector<Real2> res(rowSize());
         for (Index bi=0; bi<nBRow; ++bi)
         {
-            Index b0 = (bi > 0) ? 0 : 1;
-            Index b1 = ((bi < nBRow - 1) ? 3 : 2);
+            const Index b0 = (bi > 0) ? 0 : 1;
+            const Index b1 = ((bi < nBRow - 1) ? 3 : 2);
             for (Index i=0; i<BSIZE; ++i)
             {
                 Real r = 0;
@@ -225,6 +231,36 @@ public:
         return name.c_str();
     }
 };
+
+
+template <std::size_t N, typename T>
+template <std::size_t M, std::enable_if_t<(M > 3), int>>
+void BTDMatrix<N, T>::add(Index row, Index col,
+    const type::Mat<BSIZE, BSIZE, Real>& v)
+{
+    if (row % BSIZE == 0 && col % BSIZE == 0)
+    {
+        const Index bi = row / BSIZE;
+        const Index bj = col / BSIZE;
+        const Index bindex = bj - bi + 1;
+        if (bindex >= 3)
+        {
+            return;
+        }
+        data[bi * 3 + bindex] += v;
+    }
+    else
+    {
+        for (sofa::Index i = 0; i < BSIZE; ++i)
+        {
+            for (sofa::Index j = 0; j < BSIZE; ++j)
+            {
+                this->add(row + i, col + j, v(i, j));
+            }
+        }
+    }
+}
+
 
 #if !defined(SOFA_LINEARALGEBRA_BTDMATRIX_CPP)
 extern template class SOFA_LINEARALGEBRA_API linearalgebra::BTDMatrix<6, SReal>;

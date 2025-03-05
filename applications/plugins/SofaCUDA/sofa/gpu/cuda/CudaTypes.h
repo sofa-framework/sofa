@@ -29,7 +29,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
 #include <sofa/type/vector_device.h>
-#include <sofa/defaulttype/MapMapSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraint.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/core/behavior/ForceField.h>
@@ -40,10 +40,8 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 // Empty class to be used to highlight deprecated objects in SofaCUDA plugin at compilation time.
@@ -57,29 +55,12 @@ class CudaDeprecatedAndRemoved {};
 template<typename T>
 struct DataTypeInfoManager
 {
-    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
-    {
-        typedef DeprecatedAndRemoved other;
-    };
-
     static const bool ZeroConstructor = sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor;
     static const bool SimpleCopy = sofa::defaulttype::DataTypeInfo<T>::SimpleCopy;
 };
 
 template<class T>
-class CudaVector : public type::vector_device<T,CudaMemoryManager<T>, DataTypeInfoManager<T> >
-{
-public :
-    using Inherit = type::vector_device<T, CudaMemoryManager<T>, DataTypeInfoManager<T> >;
-    typedef size_t Size;
-
-    CudaVector() : Inherit() {}
-
-    CudaVector(Size n) : Inherit(n) {}
-
-    CudaVector(const Inherit& v) : Inherit(v) {}
-
-};
+using CudaVector = type::vector_device<T,CudaMemoryManager<T>, DataTypeInfoManager<T> >;
 
 template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
 class CudaVectorTypes
@@ -91,7 +72,7 @@ public:
     typedef CudaVector<Coord> VecCoord;
     typedef CudaVector<Deriv> VecDeriv;
     typedef CudaVector<Real> VecReal;
-    typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef linearalgebra::CompressedRowSparseMatrixConstraint<Deriv> MatrixDeriv;
 
     static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
     static constexpr sofa::Size coord_total_size = Coord::total_size;
@@ -105,7 +86,7 @@ public:
     static void setDPos(Deriv& d, const DPos& v) { d = v; }
 
 
-    /// @internal size dependant specializations
+    /// @internal size dependent specializations
     /// @{
 
     /// default implementation for size >= 3
@@ -493,7 +474,7 @@ public:
     typedef CudaVector<Coord> VecCoord;
     typedef CudaVector<Deriv> VecDeriv;
     typedef CudaVector<Real> VecReal;
-    typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef linearalgebra::CompressedRowSparseMatrixConstraint<Deriv> MatrixDeriv;
     typedef Vec3 AngularVector;
 
     static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
@@ -677,7 +658,7 @@ public:
     typedef CudaVector<Deriv> VecDeriv;
     typedef CudaVector<Real> VecReal;
 
-    typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef linearalgebra::CompressedRowSparseMatrixConstraint<Deriv> MatrixDeriv;
 
     template<typename T>
     static void set(Coord& c, T x, T y, T)
@@ -891,9 +872,8 @@ inline real operator*(const sofa::gpu::cuda::Vec3r1<real>& v1, const sofa::type:
     return r;
 }
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
 // Overload helper::ReadAccessor and helper::WriteAccessor on CudaVector
 
@@ -997,10 +977,8 @@ public:
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
 
-namespace sofa
-{
 
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 template<class T>
@@ -1025,9 +1003,8 @@ template<> struct DataTypeName<sofa::gpu::cuda::Vec3d1> { static const char* nam
 
 /// \endcond
 
-} // namespace defaulttype
+} // namespace sofa::defaulttype
 
-} // namespace sofa
 
 // define MassType for CudaTypes
 namespace sofa::component::mass
@@ -1046,5 +1023,20 @@ namespace sofa::component::mass
 
 } // namespace sofa::component::mass
 
+
+// define block traits for Vec3r1 (see matrix_bloc_traits.h)
+// mainly used with CompressedRowSparseMatrix
+namespace sofa::linearalgebra
+{
+
+template <class T, typename IndexType >
+class matrix_bloc_traits < sofa::gpu::cuda::Vec3r1<T>, IndexType > : public matrix_bloc_traits<sofa::type::Vec<3, T>, IndexType>
+{
+public:
+    typedef sofa::gpu::cuda::Vec3r1<T> Block;
+
+};
+
+} // namespace sofa::linearalgebra
 
 #endif

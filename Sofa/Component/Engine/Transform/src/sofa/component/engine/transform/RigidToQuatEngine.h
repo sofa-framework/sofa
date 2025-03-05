@@ -57,11 +57,11 @@ public:
 
     Data<type::vector<Vec3 > > f_positions; ///< Positions (Vector of 3)
     Data<type::vector<Quat> > f_orientations; ///< Orientations (Quaternion)
-    Data<type::vector<Vec3> > f_orientationsEuler; ///< Orientation (Euler angle)
+    Data<type::vector<Vec3> > f_orientationsEuler; ///< Orientations (Euler angle)
     Data<type::vector<RigidVec3> > f_rigids; ///< Rigid (Position + Orientation)
 };
 
-#if  !defined(RIGIDTOQUATENGINE_CPP)
+#if !defined(RIGIDTOQUATENGINE_CPP)
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API RigidToQuatEngine<defaulttype::Vec3Types>;
 #endif
 

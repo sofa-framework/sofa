@@ -44,8 +44,11 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    /// air drag coefficient.
-    Data< VecDeriv > dampingCoefficients;
+    /// velocity damping coefficients (by cinematic dof)
+    Data< VecDeriv > d_dampingCoefficients;
+
+    SOFA_ATTRIBUTE_DISABLED("v23.12", "v24.06", "This Data is now replaced by d_dampingCoefficients")
+    DeprecatedAndRemoved dampingCoefficients;
 
 protected:
 
@@ -58,15 +61,17 @@ public:
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx) override;
 
     void addKToMatrix(sofa::linearalgebra::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int &/*offset*/) override {}
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override;
 
     void addBToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal bFact, unsigned int& offset) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* matrix) override;
 
     SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const override;
 
 };
 
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_DIAGONALVELOCITYDAMPINGFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_DIAGONALVELOCITYDAMPINGFORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<defaulttype::Vec1Types>;

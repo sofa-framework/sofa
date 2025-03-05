@@ -29,10 +29,8 @@
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 
 template<class real>
@@ -58,14 +56,10 @@ struct GPUSPHFluid
 typedef GPUSPHFluid<float> GPUSPHFluid3f;
 typedef GPUSPHFluid<double> GPUSPHFluid3d;
 
-} // namespace cuda
+} // namespace gpu::cuda
 
-} // namespace gpu
 
-namespace component
-{
-
-namespace forcefield
+namespace component::forcefield
 {
 
 template <class TCoord, class TDeriv, class TReal>
@@ -133,9 +127,8 @@ void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::Mechan
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace forcefield
+} // namespace component::forcefield
 
-} // namespace component
 
 } // namespace sofa
 

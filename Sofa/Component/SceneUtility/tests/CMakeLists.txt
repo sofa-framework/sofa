@@ -1,11 +1,9 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 
 project(Sofa.Component.SceneUtility_test)
 
 set(SOURCE_FILES
     AddResourceRepository_test.cpp
-    MakeAliasComponent_test.cpp
-    MakeDataAliasComponent_test.cpp
     MessageHandlerComponent_test.cpp
 )
 

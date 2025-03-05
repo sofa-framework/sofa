@@ -112,11 +112,8 @@ public:
     /// the result is accumulated in Vecid::force()
     virtual void computeResidual(const core::ExecParams* /*params*/, linearalgebra::BaseVector * /*lambda*/) ;
 
-    /// @name Deprecated API
-    /// @{
     virtual void applyContactForce(const linearalgebra::BaseVector *f) = 0;
     virtual void resetContactForce() = 0;
-    /// @}
 
     /// @name Unbuilt constraint system during resolution
     /// @{

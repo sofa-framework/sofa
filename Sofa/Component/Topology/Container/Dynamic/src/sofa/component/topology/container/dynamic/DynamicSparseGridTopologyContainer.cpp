@@ -30,26 +30,33 @@
 namespace sofa::component::topology::container::dynamic
 {
 
-using namespace std;
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-int DynamicSparseGridTopologyContainerClass = core::RegisterObject ( "Hexahedron set topology container" )
-        .add< DynamicSparseGridTopologyContainer >()
-        ;
+void registerDynamicSparseGridTopologyContainer(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Dynamic sparse grid geometry container.")
+        .add< DynamicSparseGridTopologyContainer >());
+}
 
 DynamicSparseGridTopologyContainer::DynamicSparseGridTopologyContainer()
-    : HexahedronSetTopologyContainer()
-    , resolution ( initData ( &resolution, type::Vec3i ( 0, 0, 0 ), "resolution", "voxel grid resolution" ) )
-    , valuesIndexedInRegularGrid( initData ( &valuesIndexedInRegularGrid, sofa::type::vector<unsigned char>(), "valuesIndexedInRegularGrid", "values indexed in the Regular Grid" ) )
-    , valuesIndexedInTopology( initData(&valuesIndexedInTopology, "valuesIndexedInTopology", "values indexed in the topology"))
-    , idxInRegularGrid( initData ( &idxInRegularGrid, sofa::type::vector<BaseMeshTopology::HexaID>(), "idxInRegularGrid", "indices in the Regular Grid" ) )
-    , idInRegularGrid2IndexInTopo( initData ( &idInRegularGrid2IndexInTopo, std::map< unsigned int, BaseMeshTopology::HexaID> (), "idInRegularGrid2IndexInTopo", "map between id in the Regular Grid and index in the topology" ) )
-    , voxelSize( initData(&voxelSize, type::Vec3(1_sreal,1_sreal,1_sreal), "voxelSize", "Size of the Voxels"))
+    : d_resolution (initData (&d_resolution, type::Vec3i (0, 0, 0 ), "resolution", "voxel grid resolution" ) )
+    , d_valuesIndexedInRegularGrid(initData (&d_valuesIndexedInRegularGrid, sofa::type::vector<unsigned char>(), "valuesIndexedInRegularGrid", "values indexed in the Regular Grid" ) )
+    , d_valuesIndexedInTopology(initData(&d_valuesIndexedInTopology, "valuesIndexedInTopology", "values indexed in the topology"))
+    , d_idxInRegularGrid(initData (&d_idxInRegularGrid, sofa::type::vector<BaseMeshTopology::HexaID>(), "idxInRegularGrid", "indices in the Regular Grid" ) )
+    , d_idInRegularGrid2IndexInTopo(initData (&d_idInRegularGrid2IndexInTopo, std::map< unsigned int, BaseMeshTopology::HexaID> (), "idInRegularGrid2IndexInTopo", "map between id in the Regular Grid and index in the topology" ) )
+    , d_voxelSize(initData(&d_voxelSize, type::Vec3(1_sreal, 1_sreal, 1_sreal), "voxelSize", "Size of the Voxels"))
 {
-    valuesIndexedInRegularGrid.setDisplayed( false);
-    valuesIndexedInTopology.setDisplayed( false);
-    idInRegularGrid2IndexInTopo.setDisplayed( false);
+    d_valuesIndexedInRegularGrid.setDisplayed(false);
+    d_valuesIndexedInTopology.setDisplayed(false);
+    d_idInRegularGrid2IndexInTopo.setDisplayed(false);
+
+    resolution.setOriginalData(&d_resolution);
+    valuesIndexedInRegularGrid.setOriginalData(&d_valuesIndexedInRegularGrid);
+    valuesIndexedInTopology.setOriginalData(&d_valuesIndexedInTopology);
+    idxInRegularGrid.setOriginalData(&d_idxInRegularGrid);
+    idInRegularGrid2IndexInTopo.setOriginalData(&d_idInRegularGrid2IndexInTopo);
+    voxelSize.setOriginalData(&d_voxelSize);
 }
 
 void DynamicSparseGridTopologyContainer::init()
@@ -60,31 +67,47 @@ void DynamicSparseGridTopologyContainer::init()
     this->getContext()->get(VoxelLoader);
     if ( !VoxelLoader )
     {
-        msg_error() << "DynamicSparseGridTopologyContainer::init(): No VoxelLoader found! Aborting...";
-        exit(EXIT_FAILURE);
+        msg_error() << "No VoxelLoader found! Aborting...";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
 
-    const type::vector<BaseMeshTopology::HexaID>& iirg = idxInRegularGrid.getValue();
-    std::map< unsigned int, BaseMeshTopology::HexaID> &idrg2tpo = *idInRegularGrid2IndexInTopo.beginEdit();
-    type::vector<unsigned char>& viirg = *(valuesIndexedInRegularGrid.beginEdit());
-    type::vector<unsigned char>& viit = *(valuesIndexedInTopology.beginEdit());
+    const type::vector<BaseMeshTopology::HexaID>& iirg = d_idxInRegularGrid.getValue();
+    std::map< unsigned int, BaseMeshTopology::HexaID> &idrg2tpo = *d_idInRegularGrid2IndexInTopo.beginEdit();
+    type::vector<unsigned char>& viirg = *(d_valuesIndexedInRegularGrid.beginEdit());
+    type::vector<unsigned char>& viit = *(d_valuesIndexedInTopology.beginEdit());
 
     for( unsigned int i = 0; i < iirg.size(); i++)
     {
-        idrg2tpo.insert( make_pair( iirg[i], i ));
+        idrg2tpo.insert( std::make_pair( iirg[i], i ));
     }
 
     // Init values
-    int dataSize = VoxelLoader->getDataSize();
+    const int dataSize = VoxelLoader->getDataSize();
+
+    if ( !dataSize )
+    {
+        msg_error() << "Empty data size in VoxelLoader";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     const unsigned char* data = VoxelLoader->getData();
+
+    if ( !data )
+    {
+        msg_error() << "Empty data in VoxelLoader";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // init values in regular grid. (dense).
     viirg.resize( dataSize);
     //for( int i = 0; i < dataSize; i++)
     //  viirg[i] = data[i];
-    for( unsigned int i = 0; i < iirg.size(); ++i)
+    for(const unsigned int hexaId : iirg)
     {
-        viirg[iirg[i]] = 255;
+        viirg[hexaId] = 255;
     }
 
     // init values in topo. (pas dense).
@@ -95,9 +118,9 @@ void DynamicSparseGridTopologyContainer::init()
     }
 
 
-    idInRegularGrid2IndexInTopo.endEdit();
-    valuesIndexedInRegularGrid.endEdit();
-    valuesIndexedInTopology.endEdit();
+    d_idInRegularGrid2IndexInTopo.endEdit();
+    d_valuesIndexedInRegularGrid.endEdit();
+    d_valuesIndexedInTopology.endEdit();
 
 }
 

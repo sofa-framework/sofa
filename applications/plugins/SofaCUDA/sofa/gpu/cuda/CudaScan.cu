@@ -89,7 +89,7 @@ bool CudaScanSOFAAvailable(unsigned int size, ScanType type)
         sofaScanMaxElements = ((sofaScanMaxElements + 255) & ~255);
 
         mycudaPrintf("CudaScan: Using SOFA Scan for %d elements.\n", sofaScanMaxElements);
-        int tmpsize = CudaScan_TempStorage(sofaScanMaxElements);
+        const int tmpsize = CudaScan_TempStorage(sofaScanMaxElements);
         mycudaMalloc(&sofaScanTmpDev, tmpsize*sizeof(unsigned int));
     }
     return true;
@@ -260,7 +260,7 @@ bool CudaScanSOFA(const void* input, void* output, unsigned int size, ScanType t
 {
     if (!CudaScanSOFAAvailable(size, type))
         return false;
-    unsigned int nbb = (size+SCAN_THREAD-1)/SCAN_THREAD;
+    const unsigned int nbb = (size+SCAN_THREAD-1)/SCAN_THREAD;
     dim3 threads(SCAN_THREAD,1);
     dim3 grid(nbb,1);
     void* tmp = sofaScanTmpDev;
@@ -358,8 +358,8 @@ bool CudaScanTHRUST(const void* input, void* output, unsigned int size, ScanType
 {
     if (!CudaScanTHRUSTAvailable(size, type))
         return false;
-    thrust::device_ptr<unsigned int> d_input ( (unsigned int*) input );
-    thrust::device_ptr<unsigned int> d_output ( (unsigned int*) output );
+    const thrust::device_ptr<unsigned int> d_input ( (unsigned int*) input );
+    const thrust::device_ptr<unsigned int> d_output ( (unsigned int*) output );
     switch(type)
     {
     case SCAN_INCLUSIVE:

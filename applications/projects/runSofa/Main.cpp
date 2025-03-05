@@ -33,7 +33,7 @@ using std::vector;
 
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
+#include <sofa/simulation/config.h>
 #include <sofa/simulation/common/init.h>
 #include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -78,9 +78,8 @@ using  sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/gui/common/GuiDataRepository.h>
-using sofa::gui::common::GuiDataRepository ;
 
 using sofa::helper::system::DataRepository;
 using sofa::helper::system::PluginRepository;
@@ -95,32 +94,37 @@ using sofa::helper::logging::ClangMessageHandler ;
 #include <sofa/helper/logging/ExceptionMessageHandler.h>
 using sofa::helper::logging::ExceptionMessageHandler;
 
+#ifdef TRACY_ENABLE
+#include <sofa/helper/logging/TracyMessageHandler.h>
+#endif
+
 #include <sofa/gui/common/ArgumentParser.h>
 
-
+#include <sofa/core/ObjectFactory.h>
 
 void addGUIParameters(sofa::gui::common::ArgumentParser* argumentParser)
 {
     GUIManager::RegisterParameters(argumentParser);
 }
 
+static std::string appName { "runSofa" };
+
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    // Add resources dir to GuiDataRepository
-    const std::string runSofaIniFilePath = Utils::getSofaPathTo("/etc/runSofa.ini");
-    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(runSofaIniFilePath);
-    if (iniFileValues.find("RESOURCES_DIR") != iniFileValues.end())
-    {
-        std::string dir = iniFileValues["RESOURCES_DIR"];
-        dir = SetDirectory::GetRelativeFromProcess(dir.c_str());
-        if(FileSystem::isDirectory(dir))
-        {
-            sofa::gui::common::GuiDataRepository.addFirstPath(dir);
-        }
-    }
+
+  sofa::helper::system::FileRepository runSofaDataRepository(
+            "RUNSOFA_DATA_PATH",
+            {
+                    Utils::getSofaPathTo("share/sofa/gui/runSofa")
+            },
+            {
+                    { Utils::getSofaPathTo("etc/runSofa.ini").c_str(), {"RESOURCES_DIR"} }
+            }
+    );
+
 
     sofa::helper::BackTrace::autodump();
 
@@ -151,10 +155,8 @@ int main(int argc, char** argv)
     bool        printFactory = false;
     bool        loadRecent = false;
     bool        temporaryFile = false;
-    bool        testMode = false;
     bool        noAutoloadPlugins = false;
     bool        noSceneCheck = false;
-    unsigned int nbMSSASamples = 1;
     bool computationTimeAtBegin = false;
     unsigned int computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
     string    computationTimeOutputType="stdout";
@@ -162,18 +164,11 @@ int main(int argc, char** argv)
     string gui = "";
     string verif = "";
 
-#if defined(SOFA_HAVE_DAG)
-    string simulationType = "dag";
-#else
-    string simulationType = "tree";
-#endif
-
     vector<string> plugins;
     vector<string> files;
 
     string colorsStatus = "unset";
     string messageHandler = "auto";
-    bool enableInteraction = false ;
     int width = 800;
     int height = 600;
 
@@ -258,21 +253,10 @@ int main(int argc, char** argv)
         "load most recently opened file"
     );
     argParser->addArgument(
-        cxxopts::value<std::string>(simulationType),
-        "s,simu", 
-        "select the type of simulation (bgl, dag, tree)"
-    );
-    argParser->addArgument(
         cxxopts::value<bool>(temporaryFile)
         ->default_value("false")->implicit_value("true"),
         "tmp",
         "the loaded scene won't appear in history of opened files"
-    );
-    argParser->addArgument(
-        cxxopts::value<bool>(testMode)
-        ->default_value("false")->implicit_value("true"),
-        "test",
-        "select test mode with xml output after N iteration"
     );
     argParser->addArgument(
         cxxopts::value<std::string>(verif)
@@ -294,16 +278,20 @@ int main(int argc, char** argv)
         "select the message formatting to use (auto, clang, sofa, rich, test)"
     );
     argParser->addArgument(
+        cxxopts::value<std::vector<std::string> >(sofa::gui::common::ArgumentParser::extra),
+        "argv",
+        "forward extra args to the python interpreter"
+    );
+    
+    // these options are actually read in RealGUI
+    bool enableInteraction = false;
+    unsigned int nbMSSASamples = 1;
+    argParser->addArgument(
         cxxopts::value<bool>(enableInteraction)
         ->default_value("false")
         ->implicit_value("true"),
         "i,interactive",
         "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)"
-    );
-    argParser->addArgument(
-        cxxopts::value<std::vector<std::string> >(),
-        "argv",
-        "forward extra args to the python interpreter"
     );
     argParser->addArgument(
         cxxopts::value<unsigned int>(nbMSSASamples)
@@ -325,9 +313,7 @@ int main(int argc, char** argv)
     // even if everything is ok e.g. asking for help
     sofa::simulation::graph::init();
 
-    if (simulationType == "tree")
-        msg_warning("runSofa") << "Tree based simulation, switching back to graph simulation.";
-    sofa::simulation::setSimulation(new DAGSimulation());
+    assert(sofa::simulation::getSimulation());
 
     if (colorsStatus == "unset") {
         // If the parameter is unset, check the environment variable
@@ -373,24 +359,31 @@ int main(int argc, char** argv)
         MessageDispatcher::addHandler( new ExceptionMessageHandler() ) ;
     }
     else{
-        msg_warning("") << "Invalid argument '" << messageHandler << "' for '--formatting'";
+        msg_warning(appName) << "Invalid argument '" << messageHandler << "' for '--formatting'";
     }
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+#ifdef TRACY_ENABLE
+    MessageDispatcher::addHandler(&sofa::helper::logging::MainTracyMessageHandler::getInstance());
+#endif
 
     // Output FileRepositories
-    msg_info("runSofa") << "PluginRepository paths = " << PluginRepository.getPathsJoined();
-    msg_info("runSofa") << "DataRepository paths = " << DataRepository.getPathsJoined();
-    msg_info("runSofa") << "GuiDataRepository paths = " << GuiDataRepository.getPathsJoined();
+    msg_info(appName) << "PluginRepository paths = " << PluginRepository.getPathsJoined();
+    msg_info(appName) << "DataRepository paths = " << DataRepository.getPathsJoined();
+    msg_info(appName) << "runSofaDataRepository paths = " << runSofaDataRepository.getPathsJoined();
 
     // Initialise paths
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
     BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
 
-    // Add Batch GUI (runSofa without any GUIs wont be useful)
+    // Add Batch GUI (runSofa without any GUIs won't be useful)
     sofa::gui::batch::init();
 
-    for (unsigned int i=0; i<plugins.size(); i++)
-        PluginManager::getInstance().loadPlugin(plugins[i]);
+    auto& pluginManager = PluginManager::getInstance();
+
+    for (const auto& plugin : plugins)
+    {
+        pluginManager.loadPlugin(plugin);
+    }
 
     if (!noAutoloadPlugins)
     {
@@ -399,34 +392,42 @@ int main(int argc, char** argv)
 
         if (PluginRepository.findFile(configPluginPath, "", nullptr))
         {
-            msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
-            PluginManager::getInstance().readFromIniFile(configPluginPath);
+            msg_info(appName) << "Loading automatically plugin list in " << configPluginPath;
+            pluginManager.readFromIniFile(configPluginPath);
         }
         else if (PluginRepository.findFile(defaultConfigPluginPath, "", nullptr))
         {
-            msg_info("runSofa") << "Loading automatically plugin list in " << defaultConfigPluginPath;
-            PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
+            msg_info(appName) << "Loading automatically plugin list in " << defaultConfigPluginPath;
+            pluginManager.readFromIniFile(defaultConfigPluginPath);
         }
         else
         {
-            msg_info("runSofa") << "No plugin list found. No plugin will be automatically loaded.";
+            msg_info(appName) << "No plugin list found. No plugin will be automatically loaded.";
         }
     }
     else
     {
-        msg_info("runSofa") << "Automatic plugin loading disabled.";
+        msg_info(appName) << "Automatic plugin loading disabled.";
+    }
+
+    sofa::core::ObjectFactory* objectFactory = sofa::core::ObjectFactory::getInstance();
+    // calling explicitly registerObjects from loadedPlugins
+    for (const auto& [pluginPath, plugin] : pluginManager.getPluginMap())
+    {
+        const auto& pluginName = plugin.getModuleName();
+        objectFactory->registerObjectsFromPlugin(pluginName);
     }
 
     // Parse again to take into account the potential new options
     addGUIParameters(argParser);
     argParser->parse();
 
-    // Fetching file name must be done after the additionnal potential options have been added
+    // Fetching file name must be done after the additional potential options have been added
     // otherwise the first parsing will take the unknown options as the file name
     // (because of its positional parameter)
     files = argParser->getInputFileList();
 
-    PluginManager::getInstance().init();
+    pluginManager.init();
 
     if (int err = GUIManager::Init(argv[0],gui.c_str()))
     {
@@ -468,7 +469,7 @@ int main(int argc, char** argv)
     }
 
     const std::vector<std::string> sceneArgs = sofa::gui::common::ArgumentParser::extra_args();
-    Node::SPtr groot = sofa::simulation::getSimulation()->load(fileName, false, sceneArgs);
+    Node::SPtr groot = sofa::simulation::node::load(fileName, false, sceneArgs);
     if( !groot )
         groot = sofa::simulation::getSimulation()->createNewGraph("");
 
@@ -485,10 +486,10 @@ int main(int argc, char** argv)
         sofa::helper::AdvancedTimer::begin("Init");
     }
 
-    sofa::simulation::getSimulation()->init(groot.get());
+    sofa::simulation::node::initRoot(groot.get());
     if( computationTimeAtBegin )
     {
-        msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot->getTime(), groot->getDt());
+        msg_info(appName) << sofa::helper::AdvancedTimer::end("Init", groot->getTime(), groot->getDt());
     }
 
     //=======================================
@@ -503,9 +504,9 @@ int main(int argc, char** argv)
 
     if (printFactory)
     {
-        msg_info("") << "////////// FACTORY //////////" ;
+        msg_info(appName) << "////////// FACTORY //////////" ;
         sofa::helper::printFactoryLog();
-        msg_info("") << "//////// END FACTORY ////////" ;
+        msg_info(appName) << "//////// END FACTORY ////////" ;
     }
 
     if( computationTimeSampling>0 )
@@ -521,20 +522,14 @@ int main(int argc, char** argv)
         return err;
     groot = dynamic_cast<Node*>( GUIManager::CurrentSimulation() );
 
-    if (testMode)
-    {
-        string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
-        msg_info("") << "Exporting to XML " << xmlname ;
-        sofa::simulation::getSimulation()->exportXML(groot.get(), xmlname.c_str());
-    }
-
     if (groot!=nullptr)
-        sofa::simulation::getSimulation()->unload(groot);
+        sofa::simulation::node::unload(groot);
 
 
     GUIManager::closeGUI();
 
     sofa::simulation::common::cleanup();
     sofa::simulation::graph::cleanup();
+
     return 0;
 }

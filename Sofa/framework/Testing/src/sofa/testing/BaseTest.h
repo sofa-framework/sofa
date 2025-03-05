@@ -21,10 +21,13 @@
 ******************************************************************************/
 #pragma once
 
+#include <deque>
 #include <sofa/testing/config.h>
+#include <sofa/Modules.h>
 
 #include <gtest/gtest.h>
 #include <sofa/testing/TestMessageHandler.h>
+#include <sofa/testing/ScopedPlugin.h>
 
 namespace sofa::testing
 {
@@ -45,15 +48,25 @@ public:
     BaseTest() ;
     ~BaseTest() override;
 
+    virtual void doSetUp() { onSetUp(); }
+    virtual void doTearDown() { onTearDown(); }
+
+    SOFA_ATTRIBUTE_DEPRECATED__TESTING_ONSETUP()
     virtual void onSetUp() {}
+
+    SOFA_ATTRIBUTE_DEPRECATED__TESTING_ONTEARDOWN()
     virtual void onTearDown() {}
 
     /// Seed value
     static int seed;
 
+    void loadPlugins(const std::initializer_list<std::string>& pluginNames);
+
 private:
-    void SetUp() override ;
-    void TearDown() override ;
+    void SetUp() final ;
+    void TearDown() final ;
+
+    std::deque<sofa::testing::ScopedPlugin> m_loadedPlugins;
 };
 
 } // namespace sofa::testing

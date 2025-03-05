@@ -31,10 +31,8 @@
 #include <iostream>
 #include <algorithm>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 /** Comparison operator used to compute sorted permutations of a container.
@@ -76,9 +74,7 @@ type::vector<unsigned> sortedPermutation( const Container& values )
 ///     std::cout << permutation << "\n";
 
 
+} // namespace sofa::helper
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif

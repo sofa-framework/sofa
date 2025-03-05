@@ -25,6 +25,8 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/helper/SelectableItem.h>
+
 
 namespace sofa::gl::component::rendering3d
 {
@@ -38,18 +40,28 @@ public:
     typedef core::visual::VisualParams::Viewport Viewport;
 
     Data<bool> d_drawFrame; ///< Display the frame or not
-    Data<sofa::helper::OptionsGroup> d_style; ///< Style of the frame
-    Data<sofa::helper::OptionsGroup> d_alignment; ///< Alignment of the frame in the view
+
+    MAKE_SELECTABLE_ITEMS(Style,
+        sofa::helper::Item{"Arrows", "The frame is composed of arrows"},
+        sofa::helper::Item{"Cylinders", "The frame is composed of cylinders"},
+        sofa::helper::Item{"CubeCones", "The frame is composed of cubes and cones"},
+    );
+
+    Data<Style> d_style; ///< Style of the frame
+
+    MAKE_SELECTABLE_ITEMS(Alignment,
+        sofa::helper::Item{"BottomLeft", "The scene frame is displayed in the bottom-left corner"},
+        sofa::helper::Item{"BottomRight", "The scene frame is displayed in the bottom-right corner"},
+        sofa::helper::Item{"TopRight", "The scene frame is displayed in the top-right corner"},
+        sofa::helper::Item{"TopLeft", "The scene frame is displayed in the top-left corner"}
+    );
+
+    Data<Alignment> d_alignment; ///< Alignment of the frame in the view
     Data<int> d_viewportSize; ///< Size of the viewport where the frame is rendered
 
     OglSceneFrame();
 
-    void init() override;
-    void reinit() override;
-    void draw(const core::visual::VisualParams*) override;
-
-    SOFA_ATTRIBUTE_DISABLED__RENDERING3D_DATA_WITH_PREFIX
-    DeprecatedAndRemoved drawFrame, style, alignment;
+    void doDrawVisual(const core::visual::VisualParams*) override;
 
 private:
     static void drawArrows(const core::visual::VisualParams* vparams);

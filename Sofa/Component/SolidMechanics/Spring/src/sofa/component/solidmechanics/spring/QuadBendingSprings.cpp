@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_QUADBENDINGSPRINGS_CPP
 #include <sofa/component/solidmechanics/spring/QuadBendingSprings.inl>
 
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
@@ -32,14 +32,12 @@ namespace sofa::component::solidmechanics::spring
 
 using namespace sofa::defaulttype;
 
-
-// Register in the Factory
-int QuadBendingSpringsClass = core::RegisterObject("Springs added to a quad mesh to prevent bending")
+void registerQuadBendingSprings(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Springs added to a quad mesh to prevent bending.")
         .add< QuadBendingSprings<Vec3Types> >()
-        .add< QuadBendingSprings<Vec2Types> >()
-
-        ;
-
+        .add< QuadBendingSprings<Vec2Types> >());
+}
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API QuadBendingSprings<Vec3Types>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API QuadBendingSprings<Vec2Types>;

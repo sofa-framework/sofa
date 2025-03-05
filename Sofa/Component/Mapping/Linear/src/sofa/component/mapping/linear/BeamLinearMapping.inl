@@ -63,10 +63,10 @@ struct RigidMappingMatrixHelper<3, Real>
 template <class TIn, class TOut>
 void BeamLinearMapping<TIn, TOut>::init()
 {
-    bool local = localCoord.getValue();
+    const bool local = localCoord.getValue();
     if (this->points.empty() && this->toModel!=nullptr)
     {
-        const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+        const typename In::VecCoord& xfrom = this->fromModel->read(core::vec_id::read_access::position)->getValue();
         beamLength.resize(xfrom.size());
 
         for (unsigned int i=0; i<xfrom.size()-1; i++)
@@ -77,7 +77,7 @@ void BeamLinearMapping<TIn, TOut>::init()
         if (xfrom.size()>=2)
             beamLength[xfrom.size()-1] = beamLength[xfrom.size()-2];
 
-        const VecCoord& x = this->toModel->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& x = this->toModel->read(core::vec_id::read_access::position)->getValue();
         msg_info() << "BeamLinearMapping: init "<<x.size()<<" points.";
         points.resize(x.size());
 
@@ -200,14 +200,14 @@ void BeamLinearMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpar
 // if one constraint along (vector n) with a value (v) is applied on the childModel (like collision model)
 // then this constraint is transformed by (Jt.n) with value (v) for the rigid model
 // There is a specificity of this propagateConstraint: we have to find the application point on the childModel
-// in order to compute the right constaint on the rigidModel.
+// in order to compute the right constraint on the rigidModel.
 template <class TIn, class TOut>
 void BeamLinearMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/, Data< typename In::MatrixDeriv >& _out, const Data< typename Out::MatrixDeriv >& _in)
 {
     typename In::MatrixDeriv* out = _out.beginEdit();
     const typename Out::MatrixDeriv& in = _in.getValue();
 
-    const typename In::VecCoord& x = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+    const typename In::VecCoord& x = this->fromModel->read(core::vec_id::read_access::position)->getValue();
 
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
@@ -265,7 +265,7 @@ void BeamLinearMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparam
     std::vector< sofa::type::Vec3 > points;
     sofa::type::Vec3 point;
 
-    const typename Out::VecCoord& x = this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const typename Out::VecCoord& x = this->toModel->read(core::vec_id::read_access::position)->getValue();
     for (unsigned int i=0; i<x.size(); i++)
     {
         point = OutDataTypes::getCPos(x[i]);
@@ -321,11 +321,11 @@ const sofa::linearalgebra::BaseMatrix* BeamLinearMapping<TIn, TOut>::getJ()
 //	        Deriv out1 = getVCenter(in[in1]) - cross(rotatedPoints1[i], omega1);
 
             Coord rotatedPoint0 = rotatedPoints0[outIdx] * (1-fact);
-            MBloc& block0 = *matrixJ->wbloc(outIdx, in0, true);
+            MBloc& block0 = *matrixJ->wblock(outIdx, in0, true);
             RigidMappingMatrixHelper<N, Real>::setMatrix(block0, rotatedPoint0);
 
             Coord rotatedPoint1 = rotatedPoints1[outIdx] * fact;
-            MBloc& block1 = *matrixJ->wbloc(outIdx, in1, true);
+            MBloc& block1 = *matrixJ->wblock(outIdx, in1, true);
             RigidMappingMatrixHelper<N, Real>::setMatrix(block1, rotatedPoint1);
 
         }

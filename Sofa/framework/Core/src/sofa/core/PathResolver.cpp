@@ -34,7 +34,7 @@ using sofa::core::objectmodel::AbstractDataLink;
 
 bool PathResolver::PathHasValidSyntax(const std::string &path)
 {
-    std::regex forbiddenSymbols {"[^\\./[:alnum:]]"};
+    const std::regex forbiddenSymbols {"[^\\./[:alnum:]]"};
     return !std::regex_search(path, forbiddenSymbols);
 }
 
@@ -99,7 +99,7 @@ Base* PathResolver::FindLinkDestClass(Base* context, const BaseClass* destType, 
 
 bool PathResolver::CheckPath(sofa::core::objectmodel::Base* context, const sofa::core::objectmodel::BaseClass* classType, const std::string& path)
 {
-    void* tmp = PathResolver::FindLinkDestClass(context, classType, path, nullptr);
+    const void* tmp = PathResolver::FindLinkDestClass(context, classType, path, nullptr);
     return tmp != nullptr;
 }
 

@@ -99,7 +99,7 @@ protected:
     ~MechanicalState() override {}
 };
 
-#if  !defined(SOFA_CORE_BEHAVIOR_MECHANICALSTATE_CPP)
+#if !defined(SOFA_CORE_BEHAVIOR_MECHANICALSTATE_CPP)
 extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec1Types>;
 extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec2Types>;
 extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec3Types>;

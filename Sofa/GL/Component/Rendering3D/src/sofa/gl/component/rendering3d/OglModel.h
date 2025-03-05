@@ -61,11 +61,12 @@ protected:
     Data<GLfloat> pointSize; ///< Point size (set if != 1, only for points rendering)
     Data<bool> lineSmooth; ///< Enable smooth line rendering
     Data<bool> pointSmooth; ///< Enable smooth point rendering
-    /// Suppress field for save as function
-    Data < bool > isEnabled;
+
+    // SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06")
+    DeprecatedAndRemoved isEnabled;
 
     // primitive types
-    Data<sofa::helper::OptionsGroup> primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tesselation)
+    Data<sofa::helper::OptionsGroup> primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tessellation)
 
     //alpha blend function
     Data<sofa::helper::OptionsGroup> blendEquation; ///< if alpha blending is enabled this specifies how source and destination colors are combined
@@ -73,10 +74,11 @@ protected:
     Data<sofa::helper::OptionsGroup> destFactor; ///< if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed
     GLenum blendEq, sfactor, dfactor;
 
-    sofa::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn
+    sofa::gl::Texture *m_tex; //this texture is used only if a texture name is specified in the scn
     GLuint vbo, iboEdges, iboTriangles, iboQuads;
     bool VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
     size_t oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
+    int edgesRevision, trianglesRevision, quadsRevision;
 
     /// These two buffers are used to convert the data field to float type before being sent to
     /// opengl
@@ -97,20 +99,19 @@ protected:
 
     GLenum getGLenum(const char* c ) const;
 
-
     OglModel();
 
     ~OglModel() override;
 public:
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     bool loadTexture(const std::string& filename) override;
     bool loadTextures() override;
 
     void initTextures();
-    void initVisual() override;
+    void doInitVisual(const core::visual::VisualParams* vparams) override;
 
     void init() override { VisualModelImpl::init(); }
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     void updateBuffers() override;
 
@@ -125,7 +126,7 @@ public:
     bool isUseTriangles()	{ return useTriangles; }
     bool isUseQuads()	{ return useQuads; }
 
-    sofa::gl::Texture* getTex() const	{ return tex; }
+    sofa::gl::Texture* getTex() const	{ return m_tex; }
     GLuint getVbo()	{ return vbo;	}
     GLuint getIboEdges() { return iboEdges; }
     GLuint getIboTriangles() { return iboTriangles; }

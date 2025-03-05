@@ -34,6 +34,7 @@
 #include <sofa/core/collision/Pipeline.h>
 
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
@@ -71,40 +72,34 @@ AnimateVisitor::AnimateVisitor(const core::ExecParams* params, SReal dt)
 
 void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::behavior::BaseInteractionForceField* obj)
 {
-    sofa::helper::AdvancedTimer::stepBegin("InteractionFF",obj);
+    helper::ScopedAdvancedTimer timer("InteractionFF", obj);
 
-    MultiVecDerivId   ffId      = VecDerivId::externalForce();
+    const MultiVecDerivId   ffId      = vec_id::write_access::externalForce;
     MechanicalParams mparams;
     mparams.setDt(this->dt);
     obj->addForce(&mparams, ffId);
-
-    sofa::helper::AdvancedTimer::stepEnd("InteractionFF",obj);
 }
 
 void AnimateVisitor::processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj)
 {
-    sofa::helper::AdvancedTimer::stepBegin("Collision",obj);
+    helper::ScopedAdvancedTimer collisionTimer("Collision", obj);
 
-    sofa::helper::AdvancedTimer::stepBegin("begin collision",obj);
     {
+        helper::ScopedAdvancedTimer timer("begin collision", obj);
         CollisionBeginEvent evBegin;
         PropagateEventVisitor eventPropagation( params, &evBegin);
         eventPropagation.execute(node->getContext());
     }
-    sofa::helper::AdvancedTimer::stepEnd("begin collision",obj);
 
     CollisionVisitor act(this->params);
     node->execute(&act);
 
-    sofa::helper::AdvancedTimer::stepBegin("end collision",obj);
     {
+        helper::ScopedAdvancedTimer timer("end collision", obj);
         CollisionEndEvent evEnd;
         PropagateEventVisitor eventPropagation( params, &evEnd);
         eventPropagation.execute(node->getContext());
     }
-    sofa::helper::AdvancedTimer::stepEnd("end collision",obj);
-
-    sofa::helper::AdvancedTimer::stepEnd("Collision",obj);
 }
 
 Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
@@ -146,12 +141,12 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         core::ConstraintParams cparams;
         {
             unsigned int constraintId=0;
-            MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, core::MatrixDerivId::constraintJacobian(), constraintId );
+            MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, core::vec_id::write_access::constraintJacobian, constraintId );
             buildConstraintMatrix.execute(node);
         }
 
         {
-            MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, core::MatrixDerivId::constraintJacobian());
+            MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, core::vec_id::write_access::constraintJacobian);
             accumulateMatrixDeriv.execute(node);
         }
 
@@ -163,11 +158,11 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         }
 
         MechanicalProjectPositionAndVelocityVisitor(&m_mparams, nextTime,
-                                                    sofa::core::VecCoordId::position(), sofa::core::VecDerivId::velocity()
+                                                    sofa::core::vec_id::write_access::position, sofa::core::vec_id::write_access::velocity
                                                     ).execute( node );
         MechanicalPropagateOnlyPositionAndVelocityVisitor(&m_mparams, nextTime,
-                                                          VecCoordId::position(),
-                                                          VecDerivId::velocity()).execute( node );
+                                                          vec_id::write_access::position,
+                                                          vec_id::write_access::velocity).execute( node );
 
         MechanicalEndIntegrationVisitor endVisitor(this->params, dt);
         node->execute(&endVisitor);

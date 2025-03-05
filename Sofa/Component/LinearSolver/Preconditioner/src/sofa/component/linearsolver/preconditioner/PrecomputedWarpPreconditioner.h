@@ -32,6 +32,8 @@
 #include <cmath>
 #include <fstream>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::component::linearsolver::preconditioner
 {
 
@@ -105,30 +107,40 @@ public:
 
     typedef sofa::type::MatNoInit<3, 3, Real> Transformation;
 
-    Data<bool> jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
-    Data<bool> f_verbose; ///< Dump system state at each iteration
-    Data<bool> use_file; ///< Dump system matrix in a file
-    Data<bool> share_matrix; ///< Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)
+    Data<bool> d_jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
+
+    SOFA_ATTRIBUTE_DISABLED__PRECONDITIONER_VERBOSEDATA()
+    sofa::core::objectmodel::lifecycle::RemovedData f_verbose{this, "v23.12", "v24.06", "verbose", "This Data is no longer used"};
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> jmjt_twostep;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> use_file;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> share_matrix;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> use_rotations;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
+    sofa::core::objectmodel::lifecycle::RenamedData<double> draw_rotations_scale;
+
+
+    Data<bool> d_use_file; ///< Dump system matrix in a file
+    Data<bool> d_share_matrix; ///< Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)
     SingleLink<PrecomputedWarpPreconditioner, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used to precompute the first matrix
-    Data<bool> use_rotations; ///< Use Rotations around the preconditioner
-    Data<double> draw_rotations_scale; ///< Scale rotations in draw function
-
-    SOFA_ATTRIBUTE_DISABLED__PRECONDITIONER_EXPLICITLINK()
-    Data <std::string> solverName;
-    //SOFA_ATTRIBUTE_DISABLED__PRECONDITIONER_EXPLICITLINK()
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
-    {
-        Inherit1::parse(arg);
-        if (arg->getAttribute("solverName"))
-        {
-            msg_warning() << "String data \"solverName\" is now replaced by explicit data link: \"linearSolver\" (PR #3155)";
-        }
-    }
-
+    Data<bool> d_use_rotations; ///< Use Rotations around the preconditioner
+    Data<double> d_draw_rotations_scale; ///< Scale rotations in draw function
 
     MState * mstate;
+
 protected:
     PrecomputedWarpPreconditioner();
+
+    void checkLinearSystem() override;
+
 public:
     void solve (TMatrix& M, TVector& x, TVector& b) override;
     void invert(TMatrix& M) override;
@@ -165,9 +177,7 @@ protected :
     PrecomputedWarpPreconditionerInternalData<TDataTypes> internalData;
 
     void rotateConstraints();
-#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
-    void loadMatrixWithCSparse(TMatrix& M);
-#endif
+    void loadMatrixWithCholeskyDecomposition(TMatrix& M);
     void loadMatrixWithSolver();
 
     template<class JMatrix>

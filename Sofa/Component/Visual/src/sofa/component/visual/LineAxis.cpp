@@ -29,32 +29,42 @@
 namespace sofa::component::visual
 {
 
-int LineAxisClass = core::RegisterObject("Display scene axis")
-        .add< LineAxis >()
-        ;
+using helper::visual::DrawTool;
+
+void registerLineAxis(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Display scene axis")
+        .add< LineAxis >());
+}
 
 using namespace sofa::defaulttype;
 
 LineAxis::LineAxis()
-    : d_axis(initData(&d_axis, std::string("xyz"),  "axis", "Axis to draw"))
-    , d_size(initData(&d_size, 10.f,  "size", "Size of the squared grid"))
-    , d_thickness(initData(&d_thickness, 1.f,  "thickness", "Thickness of the lines in the grid"))
-    , d_draw(initData(&d_draw, true,  "draw", "Display the grid or not"))
+    : d_axis(initData(&d_axis, std::string("xyz"),  "axis", "Axis to draw."))
+    , d_size(initData(&d_size, 10.f,  "size", "Size of the lines."))
+    , d_infinite(initData(&d_infinite, false,  "infinite", "If true, ignore the 'size' and draw infinite lines."))
+    , d_thickness(initData(&d_thickness, 1.f,  "thickness", "Thickness of the lines."))
+    , d_vanishing(initData(&d_vanishing, false,  "vanishing", "In case of infinite lines, should the lines gradually vanish."))
     , m_drawX(true), m_drawY(true), m_drawZ(true)
 {}
 
 void LineAxis::init()
 {
     Inherit1::init();
-    updateVisual();
+    updateLine();
 }
 
 void LineAxis::reinit()
 {
-    updateVisual();
+    updateLine();
 }
 
-void LineAxis::updateVisual()
+void LineAxis::doUpdateVisual(const core::visual::VisualParams*)
+{
+    updateLine();
+}
+
+void LineAxis::updateLine()
 {
     const std::string a = d_axis.getValue();
 
@@ -63,37 +73,76 @@ void LineAxis::updateVisual()
     m_drawZ = a.find_first_of("zZ")!=std::string::npos;
 }
 
-void LineAxis::drawVisual(const core::visual::VisualParams* vparams)
+void LineAxis::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if (!d_draw.getValue()) return;
-
     const double s = sofa::helper::narrow_cast<double>(d_size.getValue());
 
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-    vparams->drawTool()->disableLighting();
+    auto drawtool = vparams->drawTool();
+    drawtool->disableLighting();
+
+    std::vector<type::Vec3> points;
+    points.resize(2);
+
+    std::vector<type::Vec2i> indices = {type::Vec2i(0,1)};
+
+    const auto& bbox = helper::getReadAccessor(getContext()->f_bbox);
+    auto v = bbox->maxBBox() - bbox->minBBox();
+    const auto& thickness = helper::getReadAccessor(d_thickness);
+    const auto& vanishing = helper::getReadAccessor(d_vanishing);
+    const auto& infinite = helper::getReadAccessor(d_infinite);
 
     if(m_drawX)
     {
-        vparams->drawTool()->drawLine(
-            helper::visual::DrawTool::Vec3(-s*0.5, 0.0, 0.0),
-            helper::visual::DrawTool::Vec3(s*0.5, 0.0, 0.0),
-            helper::visual::DrawTool::RGBAColor(1.0f, 0.0f, 0.0f, 1.0f));
+        points[0] = DrawTool::Vec3(-s*0.5, 0.0, 0.0);
+        points[1] = DrawTool::Vec3(s*0.5, 0.0, 0.0);
+
+        if (!infinite)
+        {
+            drawtool->drawLines(points, indices, thickness, DrawTool::RGBAColor::red());
+        }
+        else // infinite line
+        {
+            drawtool->drawInfiniteLine(DrawTool::Vec3(0, 0, 0), DrawTool::Vec3(v.x(), 0, 0), thickness,
+                                                  DrawTool::RGBAColor::red(), vanishing);
+            drawtool->drawInfiniteLine(DrawTool::Vec3(0, 0, 0), DrawTool::Vec3(-v.x(), 0, 0), thickness,
+                                                  DrawTool::RGBAColor::red(), vanishing);
+        }
     }
 
     if(m_drawY)
     {
-        vparams->drawTool()->drawLine(
-            helper::visual::DrawTool::Vec3(0.0, -s*0.5, 0.0),
-            helper::visual::DrawTool::Vec3(0.0,  s*0.5, 0.0),
-            helper::visual::DrawTool::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f));
+        points[0] = DrawTool::Vec3(0.0, -s*0.5, 0.0);
+        points[1] = DrawTool::Vec3(0.0,  s*0.5, 0.0);
+
+        if (!infinite)
+        {
+            drawtool->drawLines(points, indices, thickness, DrawTool::RGBAColor::green());
+        }
+        else // infinite line
+        {
+            drawtool->drawInfiniteLine(DrawTool::Vec3(0, 0, 0), DrawTool::Vec3(0, v.y(), 0), thickness,
+                                                  DrawTool::RGBAColor::green(), vanishing);
+            drawtool->drawInfiniteLine(DrawTool::Vec3(0, 0, 0), DrawTool::Vec3(0, -v.y(), 0), thickness,
+                                                  DrawTool::RGBAColor::green(), vanishing);
+        }
     }
 
     if(m_drawZ)
     {
-        vparams->drawTool()->drawLine(
-            helper::visual::DrawTool::Vec3(0.0, 0.0, -s*0.5),
-            helper::visual::DrawTool::Vec3(0.0, 0.0, s*0.5),
-            helper::visual::DrawTool::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f));
+        points[0] = DrawTool::Vec3(0.0, 0.0, -s*0.5);
+        points[1] = DrawTool::Vec3(0.0, 0.0, s*0.5);
+
+        if (!infinite)
+        {
+            drawtool->drawLines(points, indices, thickness, DrawTool::RGBAColor::blue());
+        }
+        else // infinite line
+        {
+            drawtool->drawInfiniteLine(DrawTool::Vec3(0, 0, 0), DrawTool::Vec3(0, 0, v.z()), thickness,
+                                                  DrawTool::RGBAColor::blue(), vanishing);
+            drawtool->drawInfiniteLine(DrawTool::Vec3(0, 0, 0), DrawTool::Vec3(0, 0, -v.z()), thickness,
+                                                  DrawTool::RGBAColor::blue(), vanishing);
+        }
     }
 }
 

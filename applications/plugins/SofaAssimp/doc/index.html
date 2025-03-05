@@ -131,11 +131,11 @@ Another example with a scene containing two meshes, one with the same bones as i
 <br />
 <br />
 &nbsp; &nbsp; &nbsp; As you can see in Sofa Modeler, the scene to load a collada file is very simple. We have the SceneColladaLoader to load it and, important thing, we also have an EulerSolver 
-which will be used by the potential SkeletalMotionConstraints to "play" the animation updating positions and velocities.
+which will be used by the potential SkeletalMotionProjectiveConstraints to "play" the animation updating positions and velocities.
 When you launch runSofa with this scene, a new node will be added which contains the whole collada scene. The name of this node is the name you gave to the 
 SceneColladaLoader plus the string "_scene". On the right picture, the loader generated two child nodes call "mesh 0" which contains a mesh without skinning (the sphere), and 
 "mesh 1" which contains a mesh with skinning and bones animation directly from the collada file.
-The SkeletalMotionConstraint automatically interpolates between animation frames, play with the animation time step to slown down or speed up the animation.
+The SkeletalMotionProjectiveConstraint automatically interpolates between animation frames, play with the animation time step to slown down or speed up the animation.
 <br />
 <br />
 As you can see on the other example below, the woman's hair does not fit her head very well because its coordinates system belongs to a dummy object not supported for the moment.

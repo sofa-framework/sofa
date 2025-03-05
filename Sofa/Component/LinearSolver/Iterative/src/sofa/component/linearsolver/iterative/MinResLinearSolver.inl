@@ -40,11 +40,10 @@ template<class TMatrix, class TVector>
 MinResLinearSolver<TMatrix,TVector>::MinResLinearSolver()
     : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
     , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
-    , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
     f_graph.setWidget("graph");
-//    f_graph.setReadOnly(true);
+//    d_graph.setReadOnly(true);
 
 	f_maxIter.setRequired(true);
 	f_tolerance.setRequired(true);
@@ -165,7 +164,7 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             alpha = v.dot( y );	// alphak
             y.peq( *r2, -alpha/beta ); // y += -a/b * r2
 
-            std::swap( r1, r2 ); // save a copy by swaping pointers
+            std::swap( r1, r2 ); // save a copy by swapping pointers
 
             oldb = beta; //oldb = betak
             beta = y.dot( y );
@@ -183,7 +182,7 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             gbar   = sn*dbar - cs*alpha;
             epsln  =           sn*beta;
             dbar   =         - cs*beta;
-            SReal root(sqrt(gbar*gbar + dbar*dbar));
+            const SReal root(sqrt(gbar*gbar + dbar*dbar));
             //Arnorm = phibar * root; // ||Ar_{k-1}||
 
             // Compute next plane rotation Q_k
@@ -236,10 +235,10 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
              */
 //            Acond = gmax/gmin;
 
-            SReal test2 = root / Anorm;  // ||A r_{k-1}|| / (||A|| ||r_{k-1}||)
+            const SReal test2 = root / Anorm;  // ||A r_{k-1}|| / (||A|| ||r_{k-1}||)
 
             //See if any of the stopping criteria is satisfied
-            if( test1 <= 0. ||  //This test work if tol < eps
+            if( test1 <= 0. ||  //This test work if d_tol < eps
                 test2 <= 0.||
                 itn >= max_iter-1||
                 /*Acond*/ gmax/gmin >= .1/eps||
@@ -257,5 +256,16 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     vtmp.deleteTempVector(&v);
 }
 
+template <class TMatrix, class TVector>
+void MinResLinearSolver<TMatrix, TVector>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("verbose"))
+    {
+        msg_warning() << "Attribute 'verbose' has no use in this component. "
+                         "To disable this warning, remove the attribute from the scene.";
+    }
+
+    Inherit::parse(arg);
+}
 
 } //namespace sofa::component::linearsolver::iterative

@@ -25,11 +25,10 @@
 namespace sofa::component::engine::transform
 {
 
-using namespace sofa;
-
-int ROIValueMapperClass = core::RegisterObject("Generate a list of values from value-indices pairs")
-        .add< ROIValueMapper >(true)
-        ;
-
+void registerROIValueMapper(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Generate a list of values from value-indices pairs.")
+        .add< ROIValueMapper >());
+}
 
 } //namespace sofa::component::engine::transform

@@ -25,6 +25,7 @@
 #include <sofa/core/BaseState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/AccumulationVecId.h>
 
 namespace sofa::core
 {
@@ -84,12 +85,12 @@ public:
     typedef helper::ReadAccessor     <Data<VecCoord> > ReadVecCoord;
     typedef helper::WriteAccessor    <Data<VecCoord> > WriteVecCoord;
     typedef helper::WriteOnlyAccessor<Data<VecCoord> > WriteOnlyVecCoord;
-    ReadVecCoord  readPositions() const     { return ReadVecCoord (*this->read (core::ConstVecCoordId::position())); }
-    WriteVecCoord writePositions()          { return WriteVecCoord(*this->write(core::VecCoordId::position())); }
-    WriteOnlyVecCoord writeOnlyPositions()      { return WriteOnlyVecCoord(*this->write(core::VecCoordId::position())); }
-    ReadVecCoord  readRestPositions() const { return ReadVecCoord (*this->read (core::ConstVecCoordId::restPosition())); }
-    WriteVecCoord writeRestPositions()      { return WriteVecCoord(*this->write(core::VecCoordId::restPosition())); }
-    WriteOnlyVecCoord writeOnlyRestPositions()  { return WriteOnlyVecCoord(*this->write(core::VecCoordId::restPosition())); }
+    ReadVecCoord  readPositions() const     { return ReadVecCoord (*this->read (core::vec_id::read_access::position)); }
+    WriteVecCoord writePositions()          { return WriteVecCoord(*this->write(core::vec_id::write_access::position)); }
+    WriteOnlyVecCoord writeOnlyPositions()      { return WriteOnlyVecCoord(*this->write(core::vec_id::write_access::position)); }
+    ReadVecCoord  readRestPositions() const { return ReadVecCoord (*this->read (core::vec_id::read_access::restPosition)); }
+    WriteVecCoord writeRestPositions()      { return WriteVecCoord(*this->write(core::vec_id::write_access::restPosition)); }
+    WriteOnlyVecCoord writeOnlyRestPositions()  { return WriteOnlyVecCoord(*this->write(core::vec_id::write_access::restPosition)); }
 
     typedef helper::ReadAccessor     <Data<Deriv> >    ReadDeriv;
     typedef helper::WriteAccessor    <Data<Deriv> >    WriteDeriv;
@@ -97,21 +98,32 @@ public:
     typedef helper::ReadAccessor     <Data<VecDeriv> > ReadVecDeriv;
     typedef helper::WriteAccessor    <Data<VecDeriv> > WriteVecDeriv;
     typedef helper::WriteOnlyAccessor<Data<VecDeriv> > WriteOnlyVecDeriv;
-    ReadVecDeriv  readVelocities() const    { return ReadVecDeriv (*this->read (core::ConstVecDerivId::velocity())); }
-    WriteVecDeriv writeVelocities()         { return WriteVecDeriv(*this->write(core::VecDerivId::velocity())); }
-    WriteOnlyVecDeriv writeOnlyVelocities() { return WriteOnlyVecDeriv(*this->write(core::VecDerivId::velocity())); }
-    ReadVecDeriv  readForces() const        { return ReadVecDeriv (*this->read (core::ConstVecDerivId::force())); }
-    WriteVecDeriv writeForces()             { return WriteVecDeriv(*this->write(core::VecDerivId::force())); }
-    WriteOnlyVecDeriv writeOnlyForces()     { return WriteOnlyVecDeriv(*this->write(core::VecDerivId::force())); }
-    ReadVecDeriv  readDx() const            { return ReadVecDeriv (*this->read (core::ConstVecDerivId::dx())); }
-    WriteVecDeriv writeDx()                 { return WriteVecDeriv(*this->write(core::VecDerivId::dx())); }
-    WriteOnlyVecDeriv writeOnlyDx()         { return WriteOnlyVecDeriv(*this->write(core::VecDerivId::dx())); }
-    ReadVecDeriv  readNormals() const       { return ReadVecDeriv (*this->read (core::ConstVecDerivId::normal())); }
+    ReadVecDeriv  readVelocities() const    { return ReadVecDeriv (*this->read (core::vec_id::read_access::velocity)); }
+    WriteVecDeriv writeVelocities()         { return WriteVecDeriv(*this->write(core::vec_id::write_access::velocity)); }
+    WriteOnlyVecDeriv writeOnlyVelocities() { return WriteOnlyVecDeriv(*this->write(core::vec_id::write_access::velocity)); }
+    ReadVecDeriv  readForces() const        { return ReadVecDeriv (*this->read (core::vec_id::read_access::force)); }
+    WriteVecDeriv writeForces()             { return WriteVecDeriv(*this->write(core::vec_id::write_access::force)); }
+    WriteOnlyVecDeriv writeOnlyForces()     { return WriteOnlyVecDeriv(*this->write(core::vec_id::write_access::force)); }
+    ReadVecDeriv  readDx() const            { return ReadVecDeriv (*this->read (core::vec_id::read_access::dx)); }
+    WriteVecDeriv writeDx()                 { return WriteVecDeriv(*this->write(core::vec_id::write_access::dx)); }
+    WriteOnlyVecDeriv writeOnlyDx()         { return WriteOnlyVecDeriv(*this->write(core::vec_id::write_access::dx)); }
+    ReadVecDeriv  readNormals() const       { return ReadVecDeriv (*this->read (core::vec_id::read_access::normal)); }
+
+    /// Stores all the VecDerivId corresponding to a force. They can then be accumulated
+    AccumulationVecId<TDataTypes, V_DERIV, V_READ> accumulatedForces;
+
+    /// Returns a proxy objects offering simplified access to elements of the cumulative sum of all force containers
+    const AccumulationVecId<TDataTypes, V_DERIV, V_READ>& readTotalForces() const { return accumulatedForces;}
     //@}
 
+    /// The provided VecDerivId will contribute to the sum of all force containers
+    void addToTotalForces(core::ConstVecDerivId forceId) override;
+
+    void removeFromTotalForces(core::ConstVecDerivId forceId) override;
 
 protected:
-    State() {}
+    State();
+
     ~State() override { }
 	
 private:
@@ -147,7 +159,7 @@ public:
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 };
 
-#if  !defined(SOFA_CORE_STATE_CPP)
+#if !defined(SOFA_CORE_STATE_CPP)
 extern template class SOFA_CORE_API State<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Vec2Types>;
 extern template class SOFA_CORE_API State<defaulttype::Vec1Types>;

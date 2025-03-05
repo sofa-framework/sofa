@@ -25,27 +25,103 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/Topology.h>
 
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/BoyceAndArruda.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/NeoHookean.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/MooneyRivlin.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/VerondaWestman.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/STVenantKirchhoff.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/Costa.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/Ogden.h>
+
 
 namespace sofa::component::solidmechanics::fem::hyperelastic
 {
 
-template <class VecCoord>
-void drawHyperelasticTets(const core::visual::VisualParams* vparams, const VecCoord& x, core::topology::BaseMeshTopology* topology, const std::string& materialName)
+template <class DataTypes>
+void selectColors(const std::string& materialName, sofa::type::RGBAColor& color1, sofa::type::RGBAColor& color2, sofa::type::RGBAColor& color3, sofa::type::RGBAColor& color4)
+{
+    if (materialName == material::BoyceAndArruda<DataTypes>::Name)
+    {
+        color1 = type::RGBAColor(0.0, 1.0, 0.0, 1.0);
+        color2 = type::RGBAColor(0.5, 1.0, 0.0, 1.0);
+        color3 = type::RGBAColor(1.0, 1.0, 0.0, 1.0);
+        color4 = type::RGBAColor(1.0, 1.0, 0.5, 1.0);
+    }
+    else if (materialName == material::STVenantKirchhoff<DataTypes>::Name)
+    {
+        color1 = type::RGBAColor(1.0,0.0,0.0,1.0);
+        color2 = type::RGBAColor(1.0,0.0,0.5,1.0);
+        color3 = type::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = type::RGBAColor(1.0,0.5,1.0,1.0);
+    }
+    else if (materialName == material::NeoHookean<DataTypes>::Name)
+    {
+        color1 = type::RGBAColor(0.0, 1.0, 1.0, 1.0);
+        color2 = type::RGBAColor(0.5, 0.0, 1.0, 1.0);
+        color3 = type::RGBAColor(1.0, 0.0, 1.0, 1.0);
+        color4 = type::RGBAColor(1.0, 0.5, 1.0, 1.0);
+    }
+    else if (materialName == material::MooneyRivlin<DataTypes>::Name)
+    {
+        color1 = type::RGBAColor(0.0, 1.0, 0.0, 1.0);
+        color2 = type::RGBAColor(0.0, 1.0, 0.5, 1.0);
+        color3 = type::RGBAColor(0.0, 1.0, 1.0, 1.0);
+        color4 = type::RGBAColor(0.5, 1.0, 1.0, 1.0);
+    }
+    else if (materialName == material::VerondaWestman<DataTypes>::Name)
+    {
+        color1 = type::RGBAColor(0.0, 1.0, 0.0, 1.0);
+        color2 = type::RGBAColor(0.5, 1.0, 0.0, 1.0);
+        color3 = type::RGBAColor(1.0, 1.0, 0.0, 1.0);
+        color4 = type::RGBAColor(1.0, 1.0, 0.5, 1.0);
+    }
+    else if (materialName == material::Costa<DataTypes>::Name)
+    {
+        color1 = type::RGBAColor(0.0, 1.0, 0.0, 1.0);
+        color2 = type::RGBAColor(0.5, 1.0, 0.0, 1.0);
+        color3 = type::RGBAColor(1.0, 1.0, 0.0, 1.0);
+        color4 = type::RGBAColor(1.0, 1.0, 0.5, 1.0);
+    }
+    else if (materialName == material::Ogden<DataTypes>::Name)
+    {
+        color1 = type::RGBAColor(0.0, 1.0, 0.0, 1.0);
+        color2 = type::RGBAColor(0.5, 1.0, 0.0, 1.0);
+        color3 = type::RGBAColor(1.0, 1.0, 0.0, 1.0);
+        color4 = type::RGBAColor(1.0, 1.0, 0.5, 1.0);
+    }
+    else
+    {
+        color1 = type::RGBAColor(0.0, 1.0, 0.0, 1.0);
+        color2 = type::RGBAColor(0.5, 1.0, 0.0, 1.0);
+        color3 = type::RGBAColor(1.0, 1.0, 0.0, 1.0);
+        color4 = type::RGBAColor(1.0, 1.0, 0.5, 1.0);
+    }
+}
+
+template <class DataTypes>
+void drawHyperelasticTets(const core::visual::VisualParams* vparams,
+                          const typename DataTypes::VecCoord& x,
+                          core::topology::BaseMeshTopology* topology,
+                          const std::string& materialName,
+                          const sofa::type::vector<core::topology::Topology::TetrahedronID>& indicesToDraw)
 {
     std::vector<type::Vec3 > points[4];
     for(auto& p : points)
     {
-        p.reserve(3 * topology->getNbTetrahedra());
+        p.reserve(3 * indicesToDraw.size());
     }
 
-    for(core::topology::Topology::TetrahedronID i = 0 ; i < topology->getNbTetrahedra();++i)
-    {
-        const auto t = topology->getTetrahedron(i);
+    const auto& tetrahedra = topology->getTetrahedra();
 
-        Index a = t[0];
-        Index b = t[1];
-        Index c = t[2];
-        Index d = t[3];
+    for(const auto i : indicesToDraw)
+    {
+        const auto t = tetrahedra[i];
+
+        const Index a = t[0];
+        const Index b = t[1];
+        const Index c = t[2];
+        const Index d = t[3];
+
         const auto center = (x[a] + x[b] + x[c] + x[d]) * 0.125;
         const auto pa = (x[a] + center) * 0.666667;
         const auto pb = (x[b] + center) * 0.666667;
@@ -69,64 +145,25 @@ void drawHyperelasticTets(const core::visual::VisualParams* vparams, const VecCo
         points[3].push_back(pb);
     }
 
-    sofa::type::RGBAColor color1;
-    sofa::type::RGBAColor color2;
-    sofa::type::RGBAColor color3;
-    sofa::type::RGBAColor color4;
+    std::array<sofa::type::RGBAColor, 4> colors;
+    selectColors<DataTypes>(materialName, colors[0], colors[1], colors[2], colors[3]);
 
-    if (materialName=="ArrudaBoyce") {
-        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
-    }
-    else if (materialName=="StVenantKirchhoff"){
-        color1 = sofa::type::RGBAColor(1.0,0.0,0.0,1.0);
-        color2 = sofa::type::RGBAColor(1.0,0.0,0.5,1.0);
-        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::type::RGBAColor(1.0,0.5,1.0,1.0);
-    }
-    else if (materialName=="NeoHookean"){
-        color1 = sofa::type::RGBAColor(0.0,1.0,1.0,1.0);
-        color2 = sofa::type::RGBAColor(0.5,0.0,1.0,1.0);
-        color3 = sofa::type::RGBAColor(1.0,0.0,1.0,1.0);
-        color4 = sofa::type::RGBAColor(1.0,0.5,1.0,1.0);
-    }
-    else if (materialName=="MooneyRivlin"){
-        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::type::RGBAColor(0.0,1.0,0.5,1.0);
-        color3 = sofa::type::RGBAColor(0.0,1.0,1.0,1.0);
-        color4 = sofa::type::RGBAColor(0.5,1.0,1.0,1.0);
-    }
-    else if (materialName=="VerondaWestman"){
-        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
-    }
-    else if (materialName=="Costa"){
-        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
-    }
-    else if (materialName=="Ogden"){
-        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
-    }
-    else {
-        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
-    }
-
-    vparams->drawTool()->drawTriangles(points[0], color1);
-    vparams->drawTool()->drawTriangles(points[1], color2);
-    vparams->drawTool()->drawTriangles(points[2], color3);
-    vparams->drawTool()->drawTriangles(points[3], color4);
+    vparams->drawTool()->drawTriangles(points[0], colors[0]);
+    vparams->drawTool()->drawTriangles(points[1], colors[1]);
+    vparams->drawTool()->drawTriangles(points[2], colors[2]);
+    vparams->drawTool()->drawTriangles(points[3], colors[3]);
 }
+
+template <class DataTypes>
+void drawHyperelasticTets(const core::visual::VisualParams* vparams,
+                          const typename DataTypes::VecCoord& x,
+                          core::topology::BaseMeshTopology* topology,
+                          const std::string& materialName)
+{
+    sofa::type::vector<core::topology::Topology::TetrahedronID> allIndices(topology->getNbTetrahedra());
+    std::iota(allIndices.begin(), allIndices.end(), static_cast<core::topology::Topology::TetrahedronID>(0));
+    drawHyperelasticTets<DataTypes>(vparams, x, topology, materialName, allIndices);
+}
+
 
 }

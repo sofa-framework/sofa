@@ -21,10 +21,11 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/Modules.h>
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <sofa/testing/NumericTest.h>
 #include <sofa/simulation/Node.h>
@@ -43,12 +44,12 @@ struct ODESolverSpringTest : public BaseSimulationTest
         // Create the scene
         m_si.root->setGravity({ 0, -10, 0 });
 
-        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver");
-        sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
-        sofa::simpleapi::importPlugin("Sofa.Component.Constraint.Projective");
-        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
+        sofa::simpleapi::importPlugin(Sofa.Component.ODESolver);
+        sofa::simpleapi::importPlugin(Sofa.Component.LinearSolver.Iterative);
+        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
+        sofa::simpleapi::importPlugin(Sofa.Component.Constraint.Projective);
+        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.Spring);
 
         // remove warnings
         simpleapi::createObject(m_si.root, "DefaultAnimationLoop", {});

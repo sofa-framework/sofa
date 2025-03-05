@@ -154,7 +154,7 @@ public:
             const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs,
             const bool removeIsolatedPoints = true);
 
-    /** \brief Gives the optimal vertex permutation according to the Reverse CuthillMckee algorithm (use BOOST GRAPH LIBRAIRY)
+    /** \brief Gives the optimal vertex permutation according to the Reverse CuthillMckee algorithm (use BOOST GRAPH LIBRARY)
     */
     virtual void resortCuthillMckee(sofa::type::vector<int>& inverse_permutation);
 

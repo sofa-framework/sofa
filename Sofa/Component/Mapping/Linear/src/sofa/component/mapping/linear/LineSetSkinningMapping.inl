@@ -39,7 +39,7 @@ type::Vec<3,double> LineSetSkinningMapping<TIn, TOut>::projectToSegment(const ty
 
     if(v_f*segment>0.0 && -segment*v_l>0.0)
     {
-        double prod = v_f*segment;
+        const double prod = v_f*segment;
         return first + (segment * (prod/segment.norm2()));
     }
     else
@@ -74,8 +74,8 @@ double LineSetSkinningMapping<TIn, TOut>::convolutionSegment(const type::Vec<3,R
 template <class TIn, class TOut>
 void LineSetSkinningMapping<TIn, TOut>::init()
 {
-    const OutVecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();
-    const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+    const OutVecCoord& xto = this->toModel->read(core::vec_id::read_access::position)->getValue();
+    const InVecCoord& xfrom = this->fromModel->read(core::vec_id::read_access::position)->getValue();
     m_topology = this->fromModel->getContext()->getMeshTopology();
     linesInfluencedByVertice.resize(xto.size());
 
@@ -100,7 +100,7 @@ void LineSetSkinningMapping<TIn, TOut>::init()
     for(unsigned int line1Index=0; line1Index< (unsigned) m_topology->getNbLines(); line1Index++)
     {
         std::set<int> result;
-        std::insert_iterator<std::set<int> > res_ins(result, result.begin());
+        const std::insert_iterator<std::set<int> > res_ins(result, result.begin());
 
         neighborhood[line1Index] = neighborhoodLinesSet[line1Index];
 
@@ -114,6 +114,9 @@ void LineSetSkinningMapping<TIn, TOut>::init()
             neighborhood[line1Index] = result;
         }
     }
+
+    if (m_topology->getNbLines() == 0)
+        return;
 
     for(unsigned int verticeIndex=0; verticeIndex<xto.size(); verticeIndex++)
     {
@@ -134,18 +137,19 @@ void LineSetSkinningMapping<TIn, TOut>::init()
                     {
                         lines[i].lineIndex = lines[i-1].lineIndex;
                         lines[i].weight = lines[i-1].weight;
-                        lines[i].position = lines[i-1].position;
+                        lines[i].position = lines[i - 1].position;
                     }
                     lines[lineInfluencedIndex].lineIndex = lineIndex;
                     lines[lineInfluencedIndex].weight = _weight;
-                    lines[lineInfluencedIndex].position = xfrom[line[0]].getOrientation().inverseRotate(xto[verticeIndex] - xfrom[line[0]].getCenter());
+                    lines[lineInfluencedIndex].position =
+                            xfrom[line[0]].getOrientation().inverseRotate(xto[verticeIndex] - xfrom[line[0]].getCenter());
                     break;
                 }
             }
         }
 
         unsigned int lineInfluencedIndex = 0;
-        int max = lines[lineInfluencedIndex].lineIndex;
+        const int max = lines[lineInfluencedIndex].lineIndex;
         sumWeights += lines[lineInfluencedIndex].weight;
         linesInfluencedByVertice[verticeIndex].push_back(lines[lineInfluencedIndex]);
         influencedVerticeType vertice;
@@ -158,7 +162,7 @@ void LineSetSkinningMapping<TIn, TOut>::init()
 
         while (linesInfluencedByVertice[verticeIndex].size() < numberInfluencedLines.getValue() && lineInfluencedIndex < lines.size())
         {
-            if (neighborhood[max].count(lines[lineInfluencedIndex].lineIndex) != 0)
+            if (neighborhood[max].contains(lines[lineInfluencedIndex].lineIndex))
             {
                 sumWeights += lines[lineInfluencedIndex].weight;
                 linesInfluencedByVertice[verticeIndex].push_back(lines[lineInfluencedIndex]);
@@ -195,8 +199,8 @@ void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* v
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
-    const OutVecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();
-    const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+    const OutVecCoord& xto = this->toModel->read(core::vec_id::read_access::position)->getValue();
+    const InVecCoord& xfrom = this->fromModel->read(core::vec_id::read_access::position)->getValue();
 
     std::vector<sofa::type::RGBAColor> colorVector;
     std::vector<sofa::type::Vec3> vertices;
@@ -245,7 +249,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalPara
 {
     SOFA_UNUSED(mparams);
 
-    const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+    const InVecCoord& xfrom = this->fromModel->read(core::vec_id::read_access::position)->getValue();
     OutVecDeriv& out = *outData.beginEdit();
     const InVecDeriv& in = inData.getValue();
     for (unsigned int verticeIndex=0; verticeIndex<out.size(); verticeIndex++)
@@ -269,7 +273,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalPar
 
     InVecDeriv& out = *outData.beginEdit();
     const OutVecDeriv& in = inData.getValue();
-    const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+    const InVecCoord& xfrom = this->fromModel->read(core::vec_id::read_access::position)->getValue();
     out.clear();
     out.resize(xfrom.size());
 
@@ -315,7 +319,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::ConstraintPar
 
     InMatrixDeriv& out = *outData.beginEdit();
     const OutMatrixDeriv& in = inData.getValue();
-    const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+    const InVecCoord& xfrom = this->fromModel->read(core::vec_id::read_access::position)->getValue();
 
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
@@ -334,14 +338,14 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::ConstraintPar
                 const OutDeriv data = colIt.val();
                 const unsigned int verticeIndex = colIt.index();
 
-                //printf(" normale : %f %f %f",d.x(), d.y(), d.z());
+                //printf(" normal : %f %f %f",d.x(), d.y(), d.z());
                 for (unsigned int lineInfluencedIndex = 0; lineInfluencedIndex < linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
                 {
                     influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
                     type::Vec<3,Real> IP = xfrom[m_topology->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
                     InDeriv direction;
                     getVCenter(direction) = data * iline.weight;
-                    //printf("\n Weighted normale : %f %f %f",direction.getVCenter().x(), direction.getVCenter().y(), direction.getVCenter().z());
+                    //printf("\n Weighted normal : %f %f %f",direction.getVCenter().x(), direction.getVCenter().y(), direction.getVCenter().z());
                     getVOrientation(direction) = IP.cross(data) * iline.weight;
 
                     o.addCol(m_topology->getLine(iline.lineIndex)[0], direction);

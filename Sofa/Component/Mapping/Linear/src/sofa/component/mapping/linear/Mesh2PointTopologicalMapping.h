@@ -127,7 +127,7 @@ protected:
 
     Data< bool > copyEdges; ///< Activate mapping of input edges into the output topology (requires at least one item in pointBaryCoords)
     Data< bool > copyTriangles; ///< Activate mapping of input triangles into the output topology (requires at least one item in pointBaryCoords)
-	Data< bool > copyTetrahedra; ///< Activate mapping of input tetrahedras into the output topology (requires at least one item in pointBaryCoords)
+	Data< bool > copyTetrahedra; ///< Activate mapping of input tetrahedra into the output topology (requires at least one item in pointBaryCoords)
 
     type::fixed_array< type::vector< type::vector<Index> >, NB_ELEMENTS > pointsMappedFrom; ///< Points mapped from the differents elements (see the enum Element declared before)
 

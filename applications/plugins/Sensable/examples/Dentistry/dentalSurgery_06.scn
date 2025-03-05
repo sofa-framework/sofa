@@ -3,7 +3,7 @@ Using LCP contact detection and resolution:
  + Added a driver for the Omni phantom device 
  + Added a mechanical state controller that gathers data from the phantom and updates the position of a representation of the device in the simulation 
  + Added a computation (LCPForceFeedback) of the haptic forces 
- + Added VectorSpringForceField && JointSpringForceField to link the mouvements of the Omni phantom and the instrument
+ + Added VectorSpringForceField && JointSpringForceField to link the movements of the Omni phantom and the instrument
 -->
 <Node name="root" dt="0.005">
     <RequiredPlugin name="SofaOpenglVisual"/>
@@ -14,7 +14,7 @@ Using LCP contact detection and resolution:
     <CollisionPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="response" response="FrictionContactConstraint" />
+    <CollisionResponse name="response" response="FrictionContactConstraint" />
     <LocalMinDistance name="proximity" alarmDistance="0.3" contactDistance="0.15" angleCone="0.0" />
     <FreeMotionAnimationLoop />
     <OmniDriver scale="0.1" orientation="0 180 0" />

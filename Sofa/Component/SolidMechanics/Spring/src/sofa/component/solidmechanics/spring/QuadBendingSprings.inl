@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/spring/QuadBendingSprings.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <iostream>
@@ -31,10 +32,11 @@ namespace sofa::component::solidmechanics::spring
 
 template<class DataTypes>
 QuadBendingSprings<DataTypes>::QuadBendingSprings()
-    : StiffSpringForceField<DataTypes>()
-    , localRange( initData(&localRange, type::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    : SpringForceField<DataTypes>()
+    , d_localRange( initData(&d_localRange, type::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitioning)" ) )
     , l_topology(initLink("topology", "link to the topology container"))
 {
+    localRange.setOriginalData(&d_localRange);
 }
 
 
@@ -45,20 +47,20 @@ QuadBendingSprings<DataTypes>::~QuadBendingSprings()
 template<class DataTypes>
 void QuadBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b, std::set<IndexPair>& springSet )
 {
-    if (localRange.getValue()[0] >= 0)
+    if (d_localRange.getValue()[0] >= 0)
     {
-        if ((int)a < localRange.getValue()[0] && (int)b < localRange.getValue()[0]) return;
+        if ((int)a < d_localRange.getValue()[0] && (int)b < d_localRange.getValue()[0]) return;
     }
-    if (localRange.getValue()[1] >= 0)
+    if (d_localRange.getValue()[1] >= 0)
     {
-        if ((int)a > localRange.getValue()[1] && (int)b > localRange.getValue()[1]) return;
+        if ((int)a > d_localRange.getValue()[1] && (int)b > d_localRange.getValue()[1]) return;
     }
-    IndexPair ab(a<b?a:b, a<b?b:a);
-    if (springSet.find(ab) != springSet.end()) return;
+    const IndexPair ab(a<b?a:b, a<b?b:a);
+    if (springSet.contains(ab)) return;
     springSet.insert(ab);
-    const VecCoord& x =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    Real s = (Real)this->ks.getValue();
-    Real d = (Real)this->kd.getValue();
+    const VecCoord& x =this->mstate1->read(core::vec_id::read_access::position)->getValue();
+    Real s = (Real)this->d_ks.getValue()[0];
+    Real d = (Real)this->d_kd.getValue()[0];
     Real l = (x[a]-x[b]).norm();
     this->SpringForceField<DataTypes>::addSpring(a,b, s, d, l );
 }
@@ -71,14 +73,14 @@ void QuadBendingSprings<DataTypes>::registerEdge( IndexPair ab, IndexPair cd, st
         ab = std::make_pair(ab.second,ab.first);
         cd = std::make_pair(cd.second,cd.first);
     }
-    if (edgeMap.find(ab) == edgeMap.end())
+    if (!edgeMap.contains(ab))
     {
         edgeMap[ab] = cd;
     }
     else
     {
         // create a spring between the opposite
-        IndexPair ef = edgeMap[ab];
+        const IndexPair ef = edgeMap[ab];
         this->addSpring(cd.first, ef.first, springSet);
         this->addSpring(cd.second, ef.second, springSet);
     }
@@ -121,7 +123,7 @@ void QuadBendingSprings<DataTypes>::init()
     }
 
     // init the parent class
-    StiffSpringForceField<DataTypes>::init();
+    SpringForceField<DataTypes>::init();
 }
 
 

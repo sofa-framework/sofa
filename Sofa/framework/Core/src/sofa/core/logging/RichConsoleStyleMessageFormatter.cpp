@@ -213,7 +213,7 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
 
     setColor(out, m.type()) << getPrefixText(m.type());
 
-    SofaComponentInfo* nfo = dynamic_cast<SofaComponentInfo*>(m.componentInfo().get()) ;
+    const SofaComponentInfo* nfo = dynamic_cast<SofaComponentInfo*>(m.componentInfo().get()) ;
     if( nfo != nullptr )
     {
         const std::string& classname= nfo->sender();
@@ -234,7 +234,7 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
 
     if(m_showFileInfo && m.fileInfo()){
         std::stringstream buf;
-        std::string emptyspace(psize, ' ') ;
+        const std::string emptyspace(psize, ' ') ;
         buf << "Emitted from '" << m.fileInfo()->filename << "' line " << m.fileInfo()->line ;
         out << "\n" << console::Style::Reset << emptyspace ;
         simpleFormat(psize , buf.str(), console::getColumnCount()-psize, out) ;

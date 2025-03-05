@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "CudaTetrahedronFEMForceField.h"
+#include <SofaCUDA/component/solidmechanics/fem/elastic/CudaTetrahedronFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.inl>
 #include <sofa/core/MechanicalParams.h>
 
@@ -134,9 +134,9 @@ using namespace gpu::cuda;
 template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::reinit(Main* m)
 {
-    if (!m->m_topology->getTetrahedra().empty())
+    if (!m->l_topology->getTetrahedra().empty())
     {
-        m->_indexedElements = & (m->m_topology->getTetrahedra());
+        m->_indexedElements = & (m->l_topology->getTetrahedra());
     }
 
     Data& data = m->data;
@@ -145,8 +145,8 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
     const VecElement& elems = *m->_indexedElements;
 
-    const VecCoord& p = m->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    m->_initialPoints.setValue(p);
+    const VecCoord& p = m->mstate->read(core::vec_id::read_access::restPosition)->getValue();
+    m->d_initialPoints.setValue(p);
 
     m->rotations.resize( m->_indexedElements->size() );
     m->_initialRotations.resize( m->_indexedElements->size() );
@@ -210,8 +210,8 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
 
     data.nbElementPerVertex = nmax;
-    std::istringstream ptchar(m->_gatherPt.getValue().getSelectedItem());
-    std::istringstream bschar(m->_gatherBsize.getValue().getSelectedItem());
+    std::istringstream ptchar(m->d_gatherPt.getValue().getSelectedItem());
+    std::istringstream bschar(m->d_gatherBsize.getValue().getSelectedItem());
     ptchar >> data.GATHER_PT;
     bschar >> data.GATHER_BSIZE;
 
@@ -407,25 +407,25 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
                 }
             }
 
-            *crsmat->wbloc(offd3 + e[0], offd3 + e[0],true) += tmpBlock[0][0];
-            *crsmat->wbloc(offd3 + e[0], offd3 + e[1],true) += tmpBlock[0][1];
-            *crsmat->wbloc(offd3 + e[0], offd3 + e[2],true) += tmpBlock[0][2];
-            *crsmat->wbloc(offd3 + e[0], offd3 + e[3],true) += tmpBlock[0][3];
+            *crsmat->wblock(offd3 + e[0], offd3 + e[0],true) += tmpBlock[0][0];
+            *crsmat->wblock(offd3 + e[0], offd3 + e[1],true) += tmpBlock[0][1];
+            *crsmat->wblock(offd3 + e[0], offd3 + e[2],true) += tmpBlock[0][2];
+            *crsmat->wblock(offd3 + e[0], offd3 + e[3],true) += tmpBlock[0][3];
 
-            *crsmat->wbloc(offd3 + e[1], offd3 + e[0],true) += tmpBlock[1][0];
-            *crsmat->wbloc(offd3 + e[1], offd3 + e[1],true) += tmpBlock[1][1];
-            *crsmat->wbloc(offd3 + e[1], offd3 + e[2],true) += tmpBlock[1][2];
-            *crsmat->wbloc(offd3 + e[1], offd3 + e[3],true) += tmpBlock[1][3];
+            *crsmat->wblock(offd3 + e[1], offd3 + e[0],true) += tmpBlock[1][0];
+            *crsmat->wblock(offd3 + e[1], offd3 + e[1],true) += tmpBlock[1][1];
+            *crsmat->wblock(offd3 + e[1], offd3 + e[2],true) += tmpBlock[1][2];
+            *crsmat->wblock(offd3 + e[1], offd3 + e[3],true) += tmpBlock[1][3];
 
-            *crsmat->wbloc(offd3 + e[2], offd3 + e[0],true) += tmpBlock[2][0];
-            *crsmat->wbloc(offd3 + e[2], offd3 + e[1],true) += tmpBlock[2][1];
-            *crsmat->wbloc(offd3 + e[2], offd3 + e[2],true) += tmpBlock[2][2];
-            *crsmat->wbloc(offd3 + e[2], offd3 + e[3],true) += tmpBlock[2][3];
+            *crsmat->wblock(offd3 + e[2], offd3 + e[0],true) += tmpBlock[2][0];
+            *crsmat->wblock(offd3 + e[2], offd3 + e[1],true) += tmpBlock[2][1];
+            *crsmat->wblock(offd3 + e[2], offd3 + e[2],true) += tmpBlock[2][2];
+            *crsmat->wblock(offd3 + e[2], offd3 + e[3],true) += tmpBlock[2][3];
 
-            *crsmat->wbloc(offd3 + e[3], offd3 + e[0],true) += tmpBlock[3][0];
-            *crsmat->wbloc(offd3 + e[3], offd3 + e[1],true) += tmpBlock[3][1];
-            *crsmat->wbloc(offd3 + e[3], offd3 + e[2],true) += tmpBlock[3][2];
-            *crsmat->wbloc(offd3 + e[3], offd3 + e[3],true) += tmpBlock[3][3];
+            *crsmat->wblock(offd3 + e[3], offd3 + e[0],true) += tmpBlock[3][0];
+            *crsmat->wblock(offd3 + e[3], offd3 + e[1],true) += tmpBlock[3][1];
+            *crsmat->wblock(offd3 + e[3], offd3 + e[2],true) += tmpBlock[3][2];
+            *crsmat->wblock(offd3 + e[3], offd3 + e[3],true) += tmpBlock[3][3];
         }
     }
     else if (sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,float> > * >(mat))
@@ -475,25 +475,25 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
                 }
             }
 
-            *crsmat->wbloc(offd3 + e[0], offd3 + e[0],true) += tmpBlock[0][0];
-            *crsmat->wbloc(offd3 + e[0], offd3 + e[1],true) += tmpBlock[0][1];
-            *crsmat->wbloc(offd3 + e[0], offd3 + e[2],true) += tmpBlock[0][2];
-            *crsmat->wbloc(offd3 + e[0], offd3 + e[3],true) += tmpBlock[0][3];
+            *crsmat->wblock(offd3 + e[0], offd3 + e[0],true) += tmpBlock[0][0];
+            *crsmat->wblock(offd3 + e[0], offd3 + e[1],true) += tmpBlock[0][1];
+            *crsmat->wblock(offd3 + e[0], offd3 + e[2],true) += tmpBlock[0][2];
+            *crsmat->wblock(offd3 + e[0], offd3 + e[3],true) += tmpBlock[0][3];
 
-            *crsmat->wbloc(offd3 + e[1], offd3 + e[0],true) += tmpBlock[1][0];
-            *crsmat->wbloc(offd3 + e[1], offd3 + e[1],true) += tmpBlock[1][1];
-            *crsmat->wbloc(offd3 + e[1], offd3 + e[2],true) += tmpBlock[1][2];
-            *crsmat->wbloc(offd3 + e[1], offd3 + e[3],true) += tmpBlock[1][3];
+            *crsmat->wblock(offd3 + e[1], offd3 + e[0],true) += tmpBlock[1][0];
+            *crsmat->wblock(offd3 + e[1], offd3 + e[1],true) += tmpBlock[1][1];
+            *crsmat->wblock(offd3 + e[1], offd3 + e[2],true) += tmpBlock[1][2];
+            *crsmat->wblock(offd3 + e[1], offd3 + e[3],true) += tmpBlock[1][3];
 
-            *crsmat->wbloc(offd3 + e[2], offd3 + e[0],true) += tmpBlock[2][0];
-            *crsmat->wbloc(offd3 + e[2], offd3 + e[1],true) += tmpBlock[2][1];
-            *crsmat->wbloc(offd3 + e[2], offd3 + e[2],true) += tmpBlock[2][2];
-            *crsmat->wbloc(offd3 + e[2], offd3 + e[3],true) += tmpBlock[2][3];
+            *crsmat->wblock(offd3 + e[2], offd3 + e[0],true) += tmpBlock[2][0];
+            *crsmat->wblock(offd3 + e[2], offd3 + e[1],true) += tmpBlock[2][1];
+            *crsmat->wblock(offd3 + e[2], offd3 + e[2],true) += tmpBlock[2][2];
+            *crsmat->wblock(offd3 + e[2], offd3 + e[3],true) += tmpBlock[2][3];
 
-            *crsmat->wbloc(offd3 + e[3], offd3 + e[0],true) += tmpBlock[3][0];
-            *crsmat->wbloc(offd3 + e[3], offd3 + e[1],true) += tmpBlock[3][1];
-            *crsmat->wbloc(offd3 + e[3], offd3 + e[2],true) += tmpBlock[3][2];
-            *crsmat->wbloc(offd3 + e[3], offd3 + e[3],true) += tmpBlock[3][3];
+            *crsmat->wblock(offd3 + e[3], offd3 + e[0],true) += tmpBlock[3][0];
+            *crsmat->wblock(offd3 + e[3], offd3 + e[1],true) += tmpBlock[3][1];
+            *crsmat->wblock(offd3 + e[3], offd3 + e[2],true) += tmpBlock[3][2];
+            *crsmat->wblock(offd3 + e[3], offd3 + e[3],true) += tmpBlock[3][3];
         }
     }
     else
@@ -602,8 +602,8 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         {
             for (int i=0; i<data.nbVertex; i++)
             {
-                int i9 = i*9;
-                int e = offset+i*3;
+                const int i9 = i*9;
+                const int e = offset+i*3;
                 rotations->set(e+0,e+0,data.vecTmpRotation[i9+0]);
                 rotations->set(e+0,e+1,data.vecTmpRotation[i9+1]);
                 rotations->set(e+0,e+2,data.vecTmpRotation[i9+2]);

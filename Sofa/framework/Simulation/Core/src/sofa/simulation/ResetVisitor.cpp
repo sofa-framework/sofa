@@ -22,10 +22,8 @@
 #include <sofa/simulation/ResetVisitor.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -66,7 +64,7 @@ void StoreResetStateVisitor::processNodeBottomUp(simulation::Node* /*node*/)
 {
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

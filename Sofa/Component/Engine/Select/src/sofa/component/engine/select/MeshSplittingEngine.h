@@ -107,7 +107,7 @@ public:
     {
         const char* p = arg->getAttribute(nbInputs.getName().c_str());
         if (p) {
-            std::string nbStr = p;
+            const std::string nbStr = p;
             nbInputs.read(nbStr);
             resizeData();
         }
@@ -117,10 +117,10 @@ public:
     /// Assign the field values stored in the given map of name -> value pairs
     void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
-        std::map<std::string,std::string*>::const_iterator it = str.find(nbInputs.getName());
+        const std::map<std::string,std::string*>::const_iterator it = str.find(nbInputs.getName());
         if (it != str.end() && it->second)
         {
-            std::string nbStr = *it->second;
+            const std::string nbStr = *it->second;
             nbInputs.read(nbStr);
             resizeData();
         }
@@ -143,7 +143,7 @@ protected:
 
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_MeshSplittingEngine_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_MeshSplittingEngine_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API MeshSplittingEngine<defaulttype::Vec3Types>;
  
 #endif

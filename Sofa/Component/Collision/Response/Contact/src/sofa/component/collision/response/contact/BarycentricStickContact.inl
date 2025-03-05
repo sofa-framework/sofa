@@ -30,10 +30,12 @@ namespace sofa::component::collision::response::contact
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::BarycentricStickContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1), model2(model2), intersectionMethod(intersectionMethod), ff(nullptr), parent(nullptr)
-    , f_keepAlive(initData(&f_keepAlive, true, "keepAlive", "set to true to keep this contact alive even after collisions are no longer detected"))
+    , d_keepAlive(initData(&d_keepAlive, true, "keepAlive", "set to true to keep this contact alive even after collisions are no longer detected"))
 {
     mapper1.setCollisionModel(model1);
     mapper2.setCollisionModel(model2);
+
+    f_keepAlive.setOriginalData(&d_keepAlive);
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
@@ -91,7 +93,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         if (index < 0) // duplicate contact
         {
             int i2 = -1-index;
-            sofa::core::collision::DetectionOutput* o2 = &outputs[i2];
+            const sofa::core::collision::DetectionOutput* o2 = &outputs[i2];
             if (o2->value <= o->value)
             {
                 // current contact is ignored
@@ -137,7 +139,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         if (index >= 0)
         {
             msg_info() << "BarycentricStickContact: Removed contact "<<it->first;
-            ContactIndexMap::iterator oldit = it;
+            const ContactIndexMap::iterator oldit = it;
             ++it;
             contactIndex.erase(oldit);
         }
@@ -154,7 +156,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
     mapper2.resize(size);
     for (int i=0; i<insize; i++)
     {
-        int index = oldIndex[i];
+        const int index = oldIndex[i];
         if (index < 0) continue; // this contact is ignored
         sofa::core::collision::DetectionOutput* o = &outputs[i];
         CollisionElement1 elem1(o->elem.first);
@@ -170,7 +172,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         index2 = mapper2.addPointB(o->point[1], index2, r2);
 
         const double stiffness = (elem1.getContactStiffness() + elem2.getContactStiffness());
-        ff->m_stiffness.setValue(stiffness);
+        ff->d_stiffness.setValue(stiffness);
 
         const double mu_v = (elem1.getContactFriction() + elem2.getContactFriction());
 

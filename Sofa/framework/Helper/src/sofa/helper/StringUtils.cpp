@@ -21,12 +21,89 @@
 ******************************************************************************/
 #include <cstring>
 #include <sofa/helper/StringUtils.h>
+#include <algorithm>
+#include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/system/Locale.h>
 
-namespace sofa
+
+namespace sofa::helper
 {
 
-namespace helper
+std::wstring widenString(const std::string& s)
 {
+    // Set LC_CTYPE according to the environment variable, for mbsrtowcs().
+    system::TemporaryLocale locale(LC_CTYPE, "");
+
+    const char * src = s.c_str();
+    // Call mbsrtowcs() once to find out the length of the converted string.
+    size_t length = mbsrtowcs(nullptr, &src, 0, nullptr);
+    if (length == size_t(-1)) {
+        const int error = errno;
+        msg_warning("Utils::widenString()") << strerror(error);
+        return L"";
+    }
+
+    // Call mbsrtowcs() again with a correctly sized buffer to actually do the conversion.
+    wchar_t * buffer = new wchar_t[length + 1];
+    length = mbsrtowcs(buffer, &src, length + 1, nullptr);
+    if (length == size_t(-1)) {
+        const int error = errno;
+        msg_warning("Utils::widenString()") << strerror(error);
+        delete[] buffer;
+        return L"";
+    }
+
+    if (src != nullptr) {
+        msg_warning("Utils::widenString()") << "Conversion failed (\"" << s << "\")";
+        delete[] buffer;
+        return L"";
+    }
+
+    std::wstring result(buffer);
+    delete[] buffer;
+    return result;
+}
+
+std::string narrowString(const std::wstring& ws)
+{
+    // Set LC_CTYPE according to the environment variable, for wcstombs().
+    system::TemporaryLocale locale(LC_CTYPE, "");
+
+    const wchar_t * src = ws.c_str();
+    // Call wcstombs() once to find out the length of the converted string.
+    size_t length = wcstombs(nullptr, src, 0);
+    if (length == size_t(-1)) {
+        msg_warning("Utils::narrowString()") << "Conversion failed";
+        return "";
+    }
+
+    // Call wcstombs() again with a correctly sized buffer to actually do the conversion.
+    char * buffer = new char[length + 1];
+    length = wcstombs(buffer, src, length + 1);
+    if (length == size_t(-1)) {
+        msg_warning("Utils::narrowString()") << "Conversion failed";
+        delete[] buffer;
+        return "";
+    }
+
+    std::string result(buffer);
+    delete[] buffer;
+    return result;
+}
+
+std::string downcaseString(const std::string& s)
+{
+    std::string result = s;
+    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    return result;
+}
+
+std::string upcaseString(const std::string& s)
+{
+    std::string result = s;
+    std::transform(result.begin(), result.end(), result.begin(), ::toupper);
+    return result;
+}
 
 /// Taken from https://www.fluentcpp.com/2017/04/21/how-to-split-a-string-in-c/
 std::vector<std::string> split(const std::string& s, char delimiter)
@@ -85,8 +162,27 @@ std::string safeCharToString(const char* c)
     return std::string(c);
 }
 
+std::string_view removeTrailingCharacter(std::string_view sv, char character)
+{
+    auto end = sv.end();
+    while (end != sv.begin() && *(end - 1) == character)
+    {
+        --end;
+    }
+    return sv.substr(0, end - sv.begin());
+}
 
-} // namespace helper
+std::string_view removeTrailingCharacters(std::string_view sv, const std::initializer_list<char> characters)
+{
+    auto end = sv.end();
+    while (end != sv.begin() && std::find(characters.begin(), characters.end(), *(end - 1)) != characters.end())
+    {
+        --end;
+    }
+    return sv.substr(0, end - sv.begin());
+}
 
-} // namespace sofa
+} // namespace sofa::helper
+
+
 

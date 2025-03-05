@@ -35,7 +35,7 @@ MechanicalGetConstraintViolationVisitor::MechanicalGetConstraintViolationVisitor
 simulation::Visitor::Result MechanicalGetConstraintViolationVisitor::fwdConstraintSet(
     simulation::Node* node, core::behavior::BaseConstraintSet* c)
 {
-    ctime_t t0 = begin(node, c);
+    const ctime_t t0 = begin(node, c);
     c->getConstraintViolation(cparams, m_v);
     end(node, c, t0);
     return RESULT_CONTINUE;

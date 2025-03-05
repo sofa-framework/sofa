@@ -25,7 +25,6 @@
 
 #include <sofa/component/topology/container/dynamic/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/component/topology/container/dynamic/DynamicSparseGridTopologyContainer.h>
-#include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa::component::topology::container::dynamic
 {
@@ -42,7 +41,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    typedef sofa::core::behavior::MechanicalState<DataTypes> MObject;
+    typedef sofa::core::State<DataTypes> MObject;
 protected:
     DynamicSparseGridGeometryAlgorithms()
         : HexahedronSetGeometryAlgorithms<DataTypes>()
@@ -71,7 +70,7 @@ template <>
 int SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec1Types>::findNearestElementInRestPos(const Coord& pos, sofa::type::Vec3& baryC, Real& distance) const;
 
 
-#if  !defined(SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDGEOMETRYALGORITHMS_CPP)
+#if !defined(SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDGEOMETRYALGORITHMS_CPP)
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec2Types>;
 #endif

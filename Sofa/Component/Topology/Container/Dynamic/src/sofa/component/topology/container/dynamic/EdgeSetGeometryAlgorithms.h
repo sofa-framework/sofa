@@ -81,8 +81,6 @@ protected:
 
     void defineEdgeCubaturePoints();
 public:
-    //virtual void reinit();
-
     void draw(const core::visual::VisualParams* vparams) override;
 
     /// computes the length of edge no i and returns it
@@ -111,9 +109,15 @@ public:
     // test if a point is on the triangle indexed by ind_e
     bool isPointOnEdge(const sofa::type::Vec<3, Real> &pt, const EdgeID ind_e) const;
 
-    // compute barycentric coefficients
-    sofa::type::vector< SReal > compute2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const;
-    sofa::type::vector< SReal > computeRest2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const;
+
+    /** \brief Compute the barycentric coordinates of input point p between edge of indices [ind_p1; ind_p2] using either current position or restPosition depending on useRestPosition value.
+    * @param p position of the point to compute the coefficients.
+    * @param ind_p1 PointID of first vertex to be used to compute the barycentric coordinates of input point.
+    * @param ind_p2 PointID of second vertex to be used to compute the barycentric coordinates of input point.
+    * @param useRestPosition bool false to use position, true to use rest_position.
+    * @return the 2 barycentric coordinates inside a vector<SReal>.
+    */
+    sofa::type::vector< SReal > computeEdgeBarycentricCoordinates(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2, bool useRestPosition = false) const;
 
     /** \brief Compute the projection coordinate of a point C on the edge i. Using compute2EdgesIntersection().
     * @param i edgeID on which point is projected.
@@ -126,15 +130,22 @@ public:
     /** \brief Compute the intersection coordinate of the 2 input straight lines. Lines vector director are computed using coord given in input.
     * @param edge1 tab Coord[2] from the 2 vertices composing first edge
     * @param edge2 same for second edge
-    * @param intersected bool default value true, changed as false if no intersection is done.
+    * @param intersected bool set to true if intersection otherwise false.
     * @return Coord of intersection point, 0 if no intersection.
     */
     Coord compute2EdgesIntersection (const Coord edge1[2], const Coord edge2[2], bool& intersected);
 
+    /** \brief Compute the intersection coordinate of an Edge from the topology and a segment defined by 2 points [a, b].
+    * @param edgeID index of the first edge
+    * @param segment defined by 2 points [a, b]
+    * @param intersected bool set to true if intersection otherwise false.
+    * @return Coord of intersection point, 0 if no intersection.
+    */
+    Coord computeEdgeSegmentIntersection(const EdgeID edgeID, const type::Vec3& a, const type::Vec3& b, bool& intersected);
+
     bool computeEdgePlaneIntersection (EdgeID edgeID, sofa::type::Vec<3,Real> pointOnPlane, sofa::type::Vec<3,Real> normalOfPlane, sofa::type::Vec<3,Real>& intersection);
     bool computeRestEdgePlaneIntersection (EdgeID edgeID, sofa::type::Vec<3,Real> pointOnPlane, sofa::type::Vec<3,Real> normalOfPlane, sofa::type::Vec<3,Real>& intersection);
 
-    void writeMSHfile(const char *filename) const;
 
     /** Computes weights allowing to compute the deformation gradient (deformed basis)  at each vertex during the simulation, for a volumetric object.
       For each vertex, computes the weights associated with each edge around the vertex, so that the weighted sum of the edges corresponds to the identity.
@@ -157,10 +168,20 @@ public:
     /** return a pointer to the container of cubature points */
     NumericalIntegrationDescriptor<Real,1> &getEdgeNumericalIntegrationDescriptor();
 
-    bool computeEdgeSegmentIntersection(EdgeID edgeID,
-        const sofa::type::Vec<3,Real>& a,
-        const sofa::type::Vec<3, Real>& b,
-        Real &baryCoef);
+
+    SOFA_ATTRIBUTE_DEPRECATED("v24.06", "v24.12", "Use the method computeEdgeSegmentIntersection returning a Coord")
+    bool computeEdgeSegmentIntersection(EdgeID edgeID, const type::Vec3& a, const type::Vec3& b, Real &baryCoef);
+
+
+    // compute barycentric coefficients
+    SOFA_ATTRIBUTE_DISABLED("v23.12", "v24.06", "Use sofa::component::topology::container::dynamic::EdgeSetGeometryAlgorithms::computeEdgeBarycentricCoordinates")
+    sofa::type::vector< SReal > compute2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const = delete;
+
+    SOFA_ATTRIBUTE_DISABLED("v23.12", "v24.06", "Use sofa::component::topology::container::dynamic::EdgeSetGeometryAlgorithms::computeEdgeBarycentricCoordinates with useRestPosition = true")
+    sofa::type::vector< SReal > computeRest2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const = delete;
+
+    SOFA_ATTRIBUTE_DISABLED("v23.12", "v23.12", "Method writeMSHfile has been disabled. To export the topology as .gmsh file, use the sofa::component::io::mesh::MeshExporter.")
+    void writeMSHfile(const char *filename) const {msg_deprecated() << "Method writeMSHfile has been disabled. To export the topology as " << filename << " file, use the sofa::component::io::mesh::MeshExporter."; }
 
 protected:
     Data<bool> showEdgeIndices; ///< Debug : view Edge indices.
@@ -172,7 +193,7 @@ protected:
     bool mustComputeBBox() const override;
 };
 
-#if  !defined(SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP)
+#if !defined(SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP)
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API EdgeSetGeometryAlgorithms<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API EdgeSetGeometryAlgorithms<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API EdgeSetGeometryAlgorithms<defaulttype::Vec1Types>;

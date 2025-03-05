@@ -2,8 +2,8 @@
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint PartialFixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint PartialFixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
@@ -22,13 +22,13 @@
     <CollisionPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="Response" />
+    <CollisionResponse name="Response" />
     <NewProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
     <Node name="RotatingObstacle">
         <EulerExplicitSolver name="odesolver" printLog="false" />
         <MechanicalObject name="MS2" template="Rigid3" position="0 5 3 0 0 0 1" velocity="0 0 0 -0.1 0 0" />
         <UniformMass totalMass="1" />
-        <PartialFixedConstraint indices="0" fixedDirections="1 1 1 0 0 0" />
+        <PartialFixedProjectiveConstraint indices="0" fixedDirections="1 1 1 0 0 0" />
     </Node>
     <Node name="SquareCloth1">
         <EulerImplicitSolver name="odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -37,9 +37,9 @@
         <UniformMass totalMass="100" />
         <RegularGridTopology nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
         <BoxROI name="box1" box="-12 7 12 -10 7 12" />
-        <FixedConstraint indices="@box1.indices"/>
+        <FixedProjectiveConstraint indices="@box1.indices"/>
         <BoxROI name="box2" box="-12 7 12 -10 7 12" />
-        <FixedConstraint indices="@box2.indices"/>
+        <FixedProjectiveConstraint indices="@box2.indices"/>
         <MeshSpringForceField name="Springs" stiffness="2000" damping="0" />
         <QuadBendingSprings name="Bend" stiffness="20" damping="0" />
         <InteractionEllipsoidForceField template="Vec3,Rigid3" object1="@MS1" object2="@../RotatingObstacle/MS2" stiffness="1000" damping="1" center="0 0 0 0 -5 0" vradius="6 2 4   2 4 2" object2_forces="false" object2_invert="false" />

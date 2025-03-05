@@ -107,7 +107,7 @@ public:
     /// to display the center of gravity of the system
     Data< bool > d_showCenterOfGravity;
 
-    Data< float > d_showAxisSize; ///< factor length of the axis displayed (only used for rigids)
+    Data< float > d_showAxisSize; ///< Factor length of the axis displayed (only used for rigids)
     core::objectmodel::DataFileName d_fileMass; ///< an Xsp3.0 file to specify the mass parameters
 
     /// value defining the initialization process of the mass (0 : totalMass, 1 : massDensity, 2 : vertexMass)
@@ -262,12 +262,8 @@ public:
     SReal getTotalMass() const { return d_totalMass.getValue(); }
     std::size_t getMassCount() { return d_vertexMass.getValue().size(); }
 
-    /// Print key mass informations (totalMass, vertexMass and massDensity)
+    /// Print key mass information (totalMass, vertexMass and massDensity)
     void printMass();
-
-    /// Compute the mass from input values
-    SOFA_ATTRIBUTE_DISABLED("v21.06", "v21.12", "ComputeMass should not be called from outside. Changing one of the Data: density, totalMass or vertexMass will recompute the mass.")
-    void computeMass() = delete;
 
     /// @name Read and write access functions in mass information
     /// @{
@@ -314,8 +310,10 @@ public:
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
     /// Add Mass contribution to global Matrix assembling
-    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-
+    void addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset) override;
+    void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}
+    void buildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}
 
     SReal getElementMass(sofa::Index index) const override;
     void getElementMass(sofa::Index, linearalgebra::BaseMatrix *m) const override;
@@ -385,7 +383,7 @@ type::Vec6 DiagonalMass<defaulttype::Rigid3Types>::getMomentum ( const core::Mec
 
 
 
-#if  !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
+#if !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec2Types, defaulttype::Vec3Types>;

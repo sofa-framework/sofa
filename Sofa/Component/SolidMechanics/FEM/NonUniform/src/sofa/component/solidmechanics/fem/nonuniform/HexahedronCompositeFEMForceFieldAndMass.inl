@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/nonuniform/HexahedronCompositeFEMForceFieldAndMass.h>
+#include <sofa/component/solidmechanics/fem/nonuniform/NonUniformHexahedronFEMForceFieldAndMass.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/container/grid/SparseGridRamificationTopology.h>
 #include <iomanip>
@@ -438,7 +439,7 @@ void HexahedronCompositeFEMForceFieldAndMass<DataTypes>::init()
     NonUniformHexahedronFEMForceFieldAndMassT::init();
 
 
-    if(d_drawSize.getValue()==-1)
+    if(d_drawSize.getValue()==-1 && this->_sparseGrid != nullptr)
         d_drawSize.setValue( (float)((this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004f) );
 
 }
@@ -474,10 +475,10 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
             //       //given an elementIndice, find the 8 others from the sparse grid
             //       //compute MaterialStiffness
             MaterialStiffness material;
-            this->computeMaterialStiffness(material, this->f_youngModulus.getValue(),this->f_poissonRatio.getValue());
+            this->computeMaterialStiffness(material, this->getYoungModulusInElement(i), this->getPoissonRatioInElement(i));
 
 
-            HexahedronFEMForceFieldAndMassT::computeElementStiffness((*this->_elementStiffnesses.beginEdit())[i],material,nodes,i, this->_sparseGrid->getStiffnessCoef( i )); // classical stiffness
+            HexahedronFEMForceFieldAndMassT::computeElementStiffness((*this->d_elementStiffnesses.beginEdit())[i], material, nodes, i, this->_sparseGrid->getStiffnessCoef(i )); // classical stiffness
 
             HexahedronFEMForceFieldAndMassT::computeElementMass((*this->d_elementMasses.beginEdit())[i],nodes,i,this->_sparseGrid->getMassCoef( i ));
         }
@@ -489,7 +490,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
 
 
     _weights.resize( this->d_nbVirtualFinerLevels.getValue() );
-    int finestLevel = this->_sparseGrid->getNbVirtualFinerLevels()-this->d_nbVirtualFinerLevels.getValue();
+    const int finestLevel = this->_sparseGrid->getNbVirtualFinerLevels()-this->d_nbVirtualFinerLevels.getValue();
 
     for(int i=0; i<this->d_nbVirtualFinerLevels.getValue(); ++i)
     {
@@ -501,14 +502,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
 
     if( d_finestToCoarse.getValue() )
         for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
-            computeMechanicalMatricesDirectlyFromTheFinestToCoarse( (*this->_elementStiffnesses.beginEdit())[i], (*this->d_elementMasses.beginEdit())[i], i );
+            computeMechanicalMatricesDirectlyFromTheFinestToCoarse((*this->d_elementStiffnesses.beginEdit())[i], (*this->d_elementMasses.beginEdit())[i], i );
     else
     {
         auto* sparseGridRamification = dynamic_cast<component::topology::container::grid::SparseGridRamificationTopology*>( this->_sparseGrid );
         if( d_useRamification.getValue() && sparseGridRamification )
         {
             for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
-                computeMechanicalMatricesRecursivelyWithRamifications( (*this->_elementStiffnesses.beginEdit())[i], (*this->d_elementMasses.beginEdit())[i], i, 0 );
+                computeMechanicalMatricesRecursivelyWithRamifications((*this->d_elementStiffnesses.beginEdit())[i], (*this->d_elementMasses.beginEdit())[i], i, 0 );
 
 
             for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
@@ -526,7 +527,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
         else
         {
             for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
-                computeMechanicalMatricesRecursively( (*this->_elementStiffnesses.beginEdit())[i], (*this->d_elementMasses.beginEdit())[i], i, 0 );
+                computeMechanicalMatricesRecursively((*this->d_elementStiffnesses.beginEdit())[i], (*this->d_elementMasses.beginEdit())[i], i, 0 );
 
             for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
             {
@@ -661,7 +662,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
     EigenMatrix Kg = EigenMatrix::Zero(sizeass * 3, 8 * 3); // stiffness of contrained nodes
-    EigenMatrix A = EigenMatrix::Zero(sizeass * 3, sizeass * 3); // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
+    EigenMatrix A = EigenMatrix::Zero(sizeass * 3, sizeass * 3); // [Kf -G] ==  Kf (stiffness of free nodes) with the constraints
 
     for ( std::size_t i=0; i<sizeass; ++i)
     {
@@ -945,7 +946,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
         type::Mat<27*3, 8*3, Real> Kg; // stiffness of contrained nodes
-        type::Mat<27*3, 27*3, Real> A; // [Kf -G]  Kf (stiffness of free nodes) with the constaints
+        type::Mat<27*3, 27*3, Real> A; // [Kf -G]  Kf (stiffness of free nodes) with the constraints
         type::Mat<27*3, 27*3, Real> Ainv;
 
 
@@ -1043,7 +1044,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
         else
         {
-
+            const auto poissonRatio = this->getPoissonRatioInElement(0);
             for(int i=0; i<27*3; ++i)
             {
                 for(int j=0; j<8*3; ++j)
@@ -1052,7 +1053,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                         WB[i][j] = WBmeca[i][j];
                     else
                     {
-                        WB[i][j] = (Real)(WB[i][j]/fabs(WB[i][j]) * WEIGHT_MASK_CROSSED_DIFF[i][j] * this->f_poissonRatio.getValue() * .3);
+                        WB[i][j] = (Real)(WB[i][j] / fabs(WB[i][j]) * WEIGHT_MASK_CROSSED_DIFF[i][j] * poissonRatio * .3);
                     }
                 }
             }
@@ -1331,7 +1332,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
         EigenMatrix Kg = EigenMatrix::Zero(sizeass * 3, idxcutasscoarse * 3);// stiffness of contrained nodes
-        EigenMatrix A = EigenMatrix::Zero(sizeass * 3, sizeass * 3); // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
+        EigenMatrix A = EigenMatrix::Zero(sizeass * 3, sizeass * 3); // [Kf -G] ==  Kf (stiffness of free nodes) with the constraints
         
         for( auto it = map_idxq_idxcutass.begin(); it!=map_idxq_idxcutass.end(); ++it)
         {
@@ -1557,7 +1558,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
 
     sofa::type::RGBAColor colour;

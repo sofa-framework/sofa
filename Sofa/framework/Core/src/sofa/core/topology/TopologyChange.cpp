@@ -36,49 +36,49 @@ namespace sofa::core::objectmodel
 namespace sofa::core::topology
 {
 
-SOFA_CORE_API TopologyElementType parseTopologyElementTypeFromString(const std::string& s)
+SOFA_CORE_API geometry::ElementType parseElementTypeFromString(const std::string& s)
 {
     std::string sUP = s;
     std::transform( sUP.begin(), sUP.end(), sUP.begin(), ::tolower);
 #define SOFA_ENUM_CASE(e) if (sUP == sofa_tostring(e)) return e
-    SOFA_ENUM_CASE(TopologyElementType::POINT);
-    SOFA_ENUM_CASE(TopologyElementType::EDGE);
-    SOFA_ENUM_CASE(TopologyElementType::TRIANGLE);
-    SOFA_ENUM_CASE(TopologyElementType::QUAD);
-    SOFA_ENUM_CASE(TopologyElementType::TETRAHEDRON);
-    SOFA_ENUM_CASE(TopologyElementType::HEXAHEDRON);
+    SOFA_ENUM_CASE(geometry::ElementType::POINT);
+    SOFA_ENUM_CASE(geometry::ElementType::EDGE);
+    SOFA_ENUM_CASE(geometry::ElementType::TRIANGLE);
+    SOFA_ENUM_CASE(geometry::ElementType::QUAD);
+    SOFA_ENUM_CASE(geometry::ElementType::TETRAHEDRON);
+    SOFA_ENUM_CASE(geometry::ElementType::HEXAHEDRON);
 #undef SOFA_ENUM_CASE
-    msg_error("TopologyElementType")
-            << "unable to parse '" << s << "' as TopologyElementType, defaulting to POINT" ;
-    return TopologyElementType::POINT;
+    msg_error("ElementType")
+            << "unable to parse '" << s << "' as ElementType, defaulting to POINT" ;
+    return geometry::ElementType::POINT;
 }
 
-SOFA_CORE_API std::string parseTopologyElementTypeToString(TopologyElementType t)
+SOFA_CORE_API std::string parseElementTypeToString(geometry::ElementType t)
 {
-    switch (t)
+    switch ((int)t)
     {
 #define SOFA_ENUM_CASE(e) case e: return sofa_tostring(e);
-    SOFA_ENUM_CASE(TopologyElementType::POINT);
-    SOFA_ENUM_CASE(TopologyElementType::EDGE);
-    SOFA_ENUM_CASE(TopologyElementType::TRIANGLE);
-    SOFA_ENUM_CASE(TopologyElementType::QUAD);
-    SOFA_ENUM_CASE(TopologyElementType::TETRAHEDRON);
-    SOFA_ENUM_CASE(TopologyElementType::HEXAHEDRON);
+    SOFA_ENUM_CASE((int)geometry::ElementType::POINT);
+    SOFA_ENUM_CASE((int)geometry::ElementType::EDGE);
+    SOFA_ENUM_CASE((int)geometry::ElementType::TRIANGLE);
+    SOFA_ENUM_CASE((int)geometry::ElementType::QUAD);
+    SOFA_ENUM_CASE((int)geometry::ElementType::TETRAHEDRON);
+    SOFA_ENUM_CASE((int)geometry::ElementType::HEXAHEDRON);
 #undef SOFA_ENUM_CASE
     default: return std::string("UNKNOWN");
     }
 }
 /*
-SOFA_CORE_API std::ostream& operator << (std::ostream& out, const TopologyElementType& d)
+SOFA_CORE_API std::ostream& operator << (std::ostream& out, const ElementType& d)
 {
-    return out << parseTopologyElementTypeToString(d);
+    return out << parseElementTypeToString(d);
 }
 
-SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyElementType& d)
+SOFA_CORE_API std::istream& operator >> (std::istream& in, ElementType& d)
 {
     std::string s;
     in >> s;
-    d = parseTopologyElementTypeFromString(s);
+    d = parseElementTypeFromString(s);
     return in;
 }
 */
@@ -206,7 +206,7 @@ SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyChangeType& d
 
 SOFA_CORE_API std::ostream& operator << (std::ostream& out, const TopologyElemID& d)
 {
-    out << parseTopologyElementTypeToString(d.type) << " " << d.index;
+    out << parseElementTypeToString(d.type) << " " << d.index;
     return out;
 }
 
@@ -214,14 +214,14 @@ SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyElemID& /* d 
 {/*
     std::string tstr;
     in >> tstr;
-    d.type = parseTopologyElementTypeFromString(tstr);
+    d.type = parseElementTypeFromString(tstr);
     in >> d.index;*/
     return in;
 }
 
 SOFA_CORE_API std::ostream& operator << (std::ostream& out, const PointAncestorElem& d)
 {
-    out << parseTopologyElementTypeToString(d.type) << " " << d.index << " " << d.localCoords;
+    out << parseElementTypeToString(d.type) << " " << d.index << " " << d.localCoords;
     return out;
 }
 
@@ -229,7 +229,7 @@ SOFA_CORE_API std::istream& operator >> (std::istream& in, PointAncestorElem& /*
 {/*
     std::string tstr;
     in >> tstr;
-    d.type = parseTopologyElementTypeFromString(tstr);
+    d.type = parseElementTypeFromString(tstr);
     in >> d.index;
     in >> d.localCoords;*/
     return in;

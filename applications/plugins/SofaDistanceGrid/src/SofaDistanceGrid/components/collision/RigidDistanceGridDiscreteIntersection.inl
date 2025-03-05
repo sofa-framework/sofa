@@ -27,7 +27,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.inl>
-#include <sofa/helper/proximity.h>
 
 #include "RigidDistanceGridDiscreteIntersection.h"
 
@@ -41,13 +40,13 @@ namespace collision
 {
 
 template<class T>
-bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, geometry::TSphere<T>&)
+bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, geometry::TSphere<T>&, const core::collision::Intersection*)
 {
     return true;
 }
 
 template<class T>
-int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, geometry::TSphere<T>& e2, OutputVector* contacts)
+int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, geometry::TSphere<T>& e2, OutputVector* contacts, const core::collision::Intersection* intersection)
 {
     DistanceGrid* grid1 = e1.getGrid();
     bool useXForm = e1.isTransformed();

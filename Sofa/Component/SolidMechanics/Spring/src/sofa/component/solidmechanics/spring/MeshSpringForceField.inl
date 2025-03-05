@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
-
+#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/RGBAColor.h>
@@ -46,11 +46,11 @@ MeshSpringForceField<DataTypes>::MeshSpringForceField()
     , d_drawMinElongationRange(initData(&d_drawMinElongationRange, Real(8.), "drawMinElongationRange","Min range of elongation (red eongation - blue neutral - green compression)"))
     , d_drawMaxElongationRange(initData(&d_drawMaxElongationRange, Real(15.), "drawMaxElongationRange","Max range of elongation (red eongation - blue neutral - green compression)"))
     , d_drawSpringSize(initData(&d_drawSpringSize, Real(8.), "drawSpringSize","Size of drawed lines"))
-    , d_localRange( initData(&d_localRange, type::Vec<2, sofa::Index>(sofa::InvalidID, sofa::InvalidID), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , d_localRange( initData(&d_localRange, type::Vec<2, sofa::Index>(sofa::InvalidID, sofa::InvalidID), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitioning)" ) )
     , l_topology(initLink("topology", "link to the topology container"))
 {
-	this->ks.setDisplayed(false);
-    this->kd.setDisplayed(false);
+	this->d_ks.setDisplayed(false);
+    this->d_kd.setDisplayed(false);
     this->addAlias(&d_linesStiffness,     "stiffness"); this->addAlias(&d_linesDamping,     "damping");
     this->addAlias(&d_trianglesStiffness, "stiffness"); this->addAlias(&d_trianglesDamping, "damping");
     this->addAlias(&d_quadsStiffness,     "stiffness"); this->addAlias(&d_quadsDamping,     "damping");
@@ -80,29 +80,35 @@ void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<sofa::Index, 
 
     if (m1<m2)
     {
-        if (sset.count(std::make_pair(m1,m2))>0) return;
+        if (sset.contains(std::make_pair(m1,m2))) return;
         sset.insert(std::make_pair(m1,m2));
     }
     else
     {
-        if (sset.count(std::make_pair(m2,m1))>0) return;
+        if (sset.contains(std::make_pair(m2,m1))) return;
         sset.insert(std::make_pair(m2,m1));
     }
-    const Real l = ((mstate2->read(core::ConstVecCoordId::restPosition())->getValue())[m2] - (mstate1->read(core::ConstVecCoordId::restPosition())->getValue())[m1]).norm();
+    const Real l = ((mstate2->read(core::vec_id::read_access::restPosition)->getValue())[m2] - (mstate1->read(core::vec_id::read_access::restPosition)->getValue())[m1]).norm();
     if (l > std::numeric_limits<Real>::epsilon())
     {
-        sofa::helper::getWriteAccessor(springs)->emplace_back(m1,m2,stiffness/l, damping/l, l, d_noCompression.getValue());
+        sofa::helper::getWriteAccessor(d_springs)->emplace_back(m1, m2, stiffness / l, damping / l, l, d_noCompression.getValue());
     }
     else
     {
-        sofa::helper::getWriteAccessor(springs)->emplace_back(m1,m2,stiffness, damping, l, d_noCompression.getValue());
+        sofa::helper::getWriteAccessor(d_springs)->emplace_back(m1, m2, stiffness, damping, l, d_noCompression.getValue());
     }
 }
 
 template<class DataTypes>
 void MeshSpringForceField<DataTypes>::init()
 {
-    StiffSpringForceField<DataTypes>::clear();
+    if(this->d_springsIndices[0].getValue().size() || this->d_springsIndices[1].getValue().size())
+    {
+        msg_warning(this) << "Setting springs of MeshSpringForcefield through datas \'indices1\' and \'indices2\' has been disabled since v24.12. The input indices will be overridden by the mesh.";
+    }
+
+    SpringForceField<DataTypes>::clear();
+
     if(!(mstate1) || !(mstate2))
         mstate2 = mstate1 = dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes> *>(this->getContext()->getMechanicalState());
 
@@ -206,7 +212,7 @@ void MeshSpringForceField<DataTypes>::init()
         }
     }
 
-    StiffSpringForceField<DataTypes>::init();
+    SpringForceField<DataTypes>::init();
 }
 
 
@@ -221,10 +227,10 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
     if(vparams->displayFlags().getShowForceFields())
     {
         typedef typename Inherit1::Spring  Spring;
-        const sofa::type::vector<Spring> &ss = springs.getValue();
+        const sofa::type::vector<Spring> &ss = d_springs.getValue();
         
-        const VecCoord& p1 = mstate1->read(core::ConstVecCoordId::position())->getValue();
-        const VecCoord& p2 = mstate2->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& p1 = mstate1->read(core::vec_id::read_access::position)->getValue();
+        const VecCoord& p2 = mstate2->read(core::vec_id::read_access::position)->getValue();
         
         Real minElongation = std::numeric_limits<Real>::max();
         Real maxElongation = 0.;

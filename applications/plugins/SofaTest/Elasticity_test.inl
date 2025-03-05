@@ -3,17 +3,17 @@
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -36,10 +36,10 @@
 
 
 // Constraint
-#include <sofa/component/constraint/projective/ProjectToLineConstraint.h>
+#include <sofa/component/constraint/projective/LineProjectiveConstraint.h>
 #include <sofa/component/constraint/projective/FixedConstraint.h>
-#include <sofa/component/constraint/projective/AffineMovementConstraint.h>
-#include <sofa/component/constraint/projective/FixedPlaneConstraint.h>
+#include <sofa/component/constraint/projective/AffineMovementProjectiveConstraint.h>
+#include <sofa/component/constraint/projective/FixedPlaneProjectiveConstraint.h>
 
 // ForceField
 #include <sofa/component/mechanicalload/TrianglePressureForceField.h>
@@ -56,7 +56,7 @@
 #include <sofa/component/visual/VisualStyle.h>
 
 #include <sofa/component/solidmechanics/spring/RegularGridSpringForceField.h>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 
 #include <sofa/component/mapping/linear/SubsetMultiMapping.h>
 #include <sofa/component/mapping/nonlinear/RigidMapping.h>
@@ -67,7 +67,7 @@ namespace sofa
 typedef component::statecontainer::MechanicalObject<defaulttype::Rigid3Types> MechanicalObjectRigid3;
 typedef component::statecontainer::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
 typedef component::solidmechanics::spring::RegularGridSpringForceField<defaulttype::Vec3Types> RegularGridSpringForceField3;
-typedef component::solidmechanics::spring::StiffSpringForceField<defaulttype::Vec3Types > StiffSpringForceField3;
+typedef component::solidmechanics::spring::SpringForceField<defaulttype::Vec3Types > SpringForceField3;
 typedef component::linearsolver::iterative::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 typedef component::mapping::nonlinear::RigidMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types> RigidMappingRigid3_to_3;
 typedef component::mapping::linear::SubsetMultiMapping<defaulttype::Vec3Types, defaulttype::Vec3Types> SubsetMultiMapping3_to_3;
@@ -98,7 +98,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     typedef component::topology::container::grid::RegularGridTopology RegularGridTopology;
     typedef typename component::engine::select::BoxROI<DataTypes> BoxRoi;
     typedef typename sofa::component::engine::select::PairBoxROI<DataTypes> PairBoxRoi;
-    typedef typename sofa::component::constraint::projective::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
+    typedef typename sofa::component::constraint::projective::AffineMovementProjectiveConstraint<DataTypes> AffineMovementProjectiveConstraint;
     typedef component::linearsolver::iterative::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
     // Root node
@@ -144,7 +144,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     pairBoxRoi->includedBox.setValue(includedBox);
 
     //Affine constraint
-    patchStruct.affineConstraint  = modeling::addNew<AffineMovementConstraint>(SquareNode,"affineConstraint");
+    patchStruct.affineConstraint  = modeling::addNew<AffineMovementProjectiveConstraint>(SquareNode,"affineConstraint");
     modeling::setDataLink(&boxRoi->d_indices,&patchStruct.affineConstraint->m_meshIndices);
     modeling::setDataLink(&pairBoxRoi->f_indices,& patchStruct.affineConstraint->m_indices);
 
@@ -223,9 +223,9 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     typename component::constraint::projective::FixedConstraint<DataTypes>::SPtr fc=
         modeling::addNew<typename component::constraint::projective::FixedConstraint<DataTypes> >(root);
     sofa::modeling::setDataLink(&boxRoi1->d_indices,&fc->d_indices);
-    // FixedPlaneConstraint
-    typename component::constraint::projective::FixedPlaneConstraint<DataTypes>::SPtr fpc=
-            modeling::addNew<typename component::constraint::projective::FixedPlaneConstraint<DataTypes> >(root);
+    // FixedPlaneProjectiveConstraint
+    typename component::constraint::projective::FixedPlaneProjectiveConstraint<DataTypes>::SPtr fpc=
+            modeling::addNew<typename component::constraint::projective::FixedPlaneProjectiveConstraint<DataTypes> >(root);
     fpc->d_dmin= -0.01;
     fpc->d_dmax= 0.01;
     fpc->d_direction=Coord(0,0,1);
@@ -241,9 +241,9 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
             modeling::addNew<typename sofa::component::mechanicalload::TrianglePressureForceField<DataTypes> >(root);
     tractionStruct.forceField=tpff;
     sofa::modeling::setDataLink(&boxRoi2->d_triangleIndices,&tpff->triangleList);
-    // ProjectToLineConstraint
-    typename component::constraint::projective::ProjectToLineConstraint<DataTypes>::SPtr ptlc=
-            modeling::addNew<typename component::constraint::projective::ProjectToLineConstraint<DataTypes> >(root);
+    // LineProjectiveConstraint
+    typename component::constraint::projective::LineProjectiveConstraint<DataTypes>::SPtr ptlc=
+            modeling::addNew<typename component::constraint::projective::LineProjectiveConstraint<DataTypes> >(root);
     ptlc->f_direction=Coord(1,0,0);
     ptlc->f_origin=Coord(0,0,0);
     sofa::type::vector<sofa::Index> vArray;
@@ -370,7 +370,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     mappedParticles_dof->resize(numMapped);
     independentParticles_dof->resize( numX*numY*numZ - numMapped );
     MechanicalObject3::WriteVecCoord xmapped = mappedParticles_dof->writePositions();
-    mappedParticles_mapping->globalToLocalCoords.setValue(true); // to define the mapped positions in world coordinates
+    mappedParticles_mapping->d_globalToLocalCoords.setValue(true); // to define the mapped positions in world coordinates
     MechanicalObject3::WriteVecCoord xindependent = independentParticles_dof->writePositions();
     vector< std::pair<MechanicalObject3*,size_t> > parentParticles(xgrid.size());
 
@@ -386,7 +386,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
     // mapped particles
     size_t mappedIndex=0;
-    vector<unsigned>* rigidIndexPerPoint = mappedParticles_mapping->rigidIndexPerPoint.beginEdit();
+    vector<unsigned>* rigidIndexPerPoint = mappedParticles_mapping->d_rigidIndexPerPoint.beginEdit();
     for( size_t b=0; b<numRigid; b++ )
     {
         const vector<size_t>& ind = indices[b];
@@ -399,7 +399,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
         }
     }
-    mappedParticles_mapping->rigidIndexPerPoint.endEdit();
+    mappedParticles_mapping->d_rigidIndexPerPoint.endEdit();
 
     // now add all the particles to the multimapping
     for( size_t i=0; i<xgrid.size(); i++ )
@@ -454,7 +454,7 @@ UniformMass3::SPtr massPtr = modeling::addNew<UniformMass3>(massNode,"mass");
 massPtr->d_totalMass.setValue( mass );
 
 // attach a spring
-StiffSpringForceField3::SPtr spring = core::objectmodel::New<StiffSpringForceField3>(FixedPoint.get(), massDof.get());
+SpringForceField3::SPtr spring = core::objectmodel::New<SpringForceField3>(FixedPoint.get(), massDof.get());
 root->addObject(spring);
 spring->addSpring(0,0,stiffness ,0, restLength);
 

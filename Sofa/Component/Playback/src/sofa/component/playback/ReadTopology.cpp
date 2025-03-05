@@ -28,8 +28,11 @@ namespace sofa::component::playback
 
 using namespace defaulttype;
 
-int ReadTopologyClass = core::RegisterObject("Read topology containers informations from file at each timestep")
-        .add< ReadTopology >();
+void registerReadTopology(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Read topology containers information from file at each timestep.")
+        .add< ReadTopology >());
+}
 
 ReadTopologyCreator::ReadTopologyCreator(const core::ExecParams* params)
     :Visitor(params)
@@ -71,7 +74,7 @@ simulation::Visitor::Result ReadTopologyCreator::processNodeTopDown( simulation:
 
 void ReadTopologyCreator::addReadTopology(core::topology::BaseMeshTopology* topology, simulation::Node* gnode)
 {
-    sofa::core::objectmodel::BaseContext* context = gnode->getContext();
+    const sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
     context->get(mapping);
     if (createInMapping || mapping== nullptr)
@@ -82,14 +85,16 @@ void ReadTopologyCreator::addReadTopology(core::topology::BaseMeshTopology* topo
         {
             rt = sofa::core::objectmodel::New<ReadTopology>();
             gnode->addObject(rt);
-            for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); ++it)
-                rt->addTag(*it);
+            for (const auto& subset : this->subsetsToManage)
+            {
+                rt->addTag(subset);
+            }
         }
 
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterReadTopology << "_" << topology->getName()  << "_topology" << extension ;
 
-        rt->f_filename.setValue(ofilename.str());  rt->f_listening.setValue(false); //Deactivated only called by extern functions
+        rt->d_filename.setValue(ofilename.str());  rt->f_listening.setValue(false); //Deactivated only called by extern functions
         if (init) rt->init();
 
         ++counterReadTopology;

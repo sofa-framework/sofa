@@ -59,7 +59,7 @@ typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* 
         msg_error("BarycentricContactMapper") << "BarycentricContactMapper only works for scenegraph scenes.";
         return nullptr;
     }
-    simulation::Node::SPtr child = parent->createChild(name);
+    const simulation::Node::SPtr child = parent->createChild(name);
     typename MMechanicalObject::SPtr mstate = sofa::core::objectmodel::New<MMechanicalObject>();
     mstate->setName(GenerateStringID::generate().c_str());
     child->addObject(mstate);

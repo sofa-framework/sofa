@@ -72,7 +72,7 @@ protected:
     sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
-#if  !defined(SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_CPP)
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API SmoothMeshEngine<defaulttype::Vec3Types>;
 #endif
 

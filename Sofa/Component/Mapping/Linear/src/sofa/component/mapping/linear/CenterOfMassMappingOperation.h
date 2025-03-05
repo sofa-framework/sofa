@@ -39,7 +39,7 @@ public :
     static inline VecDeriv *getVecDeriv(Model *m, const sofa::core::VecId id) { return m->getVecDeriv(id.index); }
 
     static inline const sofa::core::behavior::BaseMass *fetchMass(const Model *m) {
-        sofa::core::behavior::BaseMass *mass = m->getContext()->getMass();
+        const sofa::core::behavior::BaseMass *mass = m->getContext()->getMass();
         return mass;
     }
 

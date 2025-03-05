@@ -77,7 +77,7 @@ public:
     Result processNodeTopDown(simulation::Node* node) override
     {
         const DAGNode* dagnode = dynamic_cast<const DAGNode*>(node);
-        if( dagnode->_descendancy.find(_searchNode)!=dagnode->_descendancy.end() ) // searchNode is in the current node descendancy, so the current node is a parent of searchNode
+        if( dagnode->_descendancy.contains(_searchNode) ) // searchNode is in the current node descendancy, so the current node is a parent of searchNode
         {
             dagnode->getLocalObjects( _class_info, _container, _tags );
             return RESULT_CONTINUE;
@@ -131,7 +131,7 @@ DAGNode::~DAGNode()
 {
     for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
     {
-        DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(*it);
+        const DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(*it);
         dagnode->l_parents.remove(this);
     }
 }
@@ -178,8 +178,8 @@ Node::SPtr DAGNode::createChild(const std::string& nodeName)
 
 void DAGNode::moveChild(BaseNode::SPtr node)
 {
-    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
-    for (auto& parent : dagnode->getParents()) {
+    const DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
+    for (const auto& parent : dagnode->getParents()) {
         Node::moveChild(node, parent);
     }
 }
@@ -188,7 +188,7 @@ void DAGNode::moveChild(BaseNode::SPtr node)
 /// Add a child node
 void DAGNode::doAddChild(BaseNode::SPtr node)
 {
-    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
+    const DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
     setDirtyDescendancy();
     child.add(dagnode);
     dagnode->l_parents.add(this);
@@ -198,7 +198,7 @@ void DAGNode::doAddChild(BaseNode::SPtr node)
 /// Remove a child
 void DAGNode::doRemoveChild(BaseNode::SPtr node)
 {
-    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
+    const DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
     setDirtyDescendancy();
     child.remove(dagnode);
     dagnode->l_parents.remove(this);
@@ -207,7 +207,7 @@ void DAGNode::doRemoveChild(BaseNode::SPtr node)
 /// Move a node from another node
 void DAGNode::doMoveChild(BaseNode::SPtr node, BaseNode::SPtr previous_parent)
 {
-    DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
+    const DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
     if (!dagnode) return;
 
     setDirtyDescendancy();
@@ -331,8 +331,8 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     {
         std::string::size_type pend = path.find('/');
         if (pend == std::string::npos) pend = path.length();
-        std::string name ( path, 0, pend );
-        Node* child = getChild(name);
+        const std::string name ( path, 0, pend );
+        const Node* child = getChild(name);
         if (child)
         {
             while (pend < path.length() && path[pend] == '/')
@@ -522,7 +522,7 @@ sofa::core::topology::BaseMeshTopology* DAGNode::getMeshTopologyLink(SearchDirec
 
 void DAGNode::precomputeTraversalOrder( const sofa::core::ExecParams* params )
 {
-    // acumulating traversed Nodes
+    // accumulating traversed Nodes
     class TraversalOrderVisitor : public Visitor
     {
         NodeList& _orderList;
@@ -594,7 +594,7 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrde
             //
             // A child node is visited only when all its parents have been visited.
             // A child node is 'pruned' only if all its parents are 'pruned'.
-            // Every excecuted node in the forward traversal are stored in 'executedNodes',
+            // Every executed node in the forward traversal are stored in 'executedNodes',
             // its reverse order is used for the backward traversal.
 
             // Note that a newly 'pruned' node is still traversed (w/o execution) to be sure to execute its child nodes,
@@ -653,7 +653,7 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         for ( unsigned int i = 0; i < parents.size() ; i++ )
         {
             // if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, do not consider the outside node by looking on the sub-graph descendancy
-            if ( visitorRoot->_descendancy.find(parents[i])!=visitorRoot->_descendancy.end() || parents[i]==visitorRoot )
+            if ( visitorRoot->_descendancy.contains(parents[i]) || parents[i]==visitorRoot )
             {
                 // all parents must have been visited before
                 if ( statusMap[parents[i]] == NOT_VISITED )
@@ -682,7 +682,7 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
     else
     {
         // execute the visitor on this node
-        Visitor::Result result = action->processNodeTopDown(this);
+        const Visitor::Result result = action->processNodeTopDown(this);
 
         // update status
         statusMap[this] = ( result == simulation::Visitor::RESULT_PRUNE ? PRUNED : VISITED );
@@ -834,7 +834,7 @@ DAGNode* DAGNode::findCommonParent(DAGNode* node1, DAGNode* node2)
 {
     updateDescendancy();
 
-    if (_descendancy.find(node1) == _descendancy.end() || _descendancy.find(node2) == _descendancy.end())
+    if (!_descendancy.contains(node1) || !_descendancy.contains(node2))
         return nullptr; // this is NOT a parent
 
     // this is a parent

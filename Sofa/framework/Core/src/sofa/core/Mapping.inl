@@ -98,15 +98,17 @@ type::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechTo()
 template <class In, class Out>
 void Mapping<In,Out>::init()
 {
+    Inherit1::init();
+
     if(toModel && !testMechanicalState(toModel.get()))
     {
         setNonMechanical();
     }
 
-    apply(mechanicalparams::defaultInstance(), VecCoordId::position(), ConstVecCoordId::position());
-    applyJ(mechanicalparams::defaultInstance(), VecDerivId::velocity(), ConstVecDerivId::velocity());
+    apply(mechanicalparams::defaultInstance(), vec_id::write_access::position, vec_id::read_access::position);
+    applyJ(mechanicalparams::defaultInstance(), vec_id::write_access::velocity, vec_id::read_access::velocity);
     if (f_applyRestPosition.getValue())
-        apply(mechanicalparams::defaultInstance(), VecCoordId::restPosition(), ConstVecCoordId::restPosition());
+        apply(mechanicalparams::defaultInstance(), vec_id::write_access::restPosition, vec_id::read_access::restPosition);
 }
 
 template <class In, class Out>

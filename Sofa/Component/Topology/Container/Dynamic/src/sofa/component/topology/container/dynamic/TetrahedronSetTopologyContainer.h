@@ -193,8 +193,8 @@ public:
     /// Dynamic Topology API
     /// @{
 
-    /// Method called by component Init method. Will create all the topology neighboorhood buffers and call @see TriangleSetTopologyContainer::initTopology()
-    void initTopology();
+    /// Method called by component Init method. Will create all the topology neighboorhood buffers and call @see TriangleSetTopologyContainer::computeCrossElementBuffers()
+    void computeCrossElementBuffers() override;
 
     /** \brief Checks if the topology is coherent
      *
@@ -284,7 +284,7 @@ public:
     /// @}
 
     /** \brief Returns the type of the topology */
-    sofa::core::topology::TopologyElementType getTopologyType() const override {return sofa::core::topology::TopologyElementType::TETRAHEDRON;}
+    sofa::geometry::ElementType getTopologyType() const override {return sofa::geometry::ElementType::TETRAHEDRON;}
 
     bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
 

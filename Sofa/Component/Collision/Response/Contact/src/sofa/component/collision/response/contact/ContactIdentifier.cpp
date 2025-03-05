@@ -26,18 +26,7 @@ namespace sofa::component::collision::response::contact
 
 ContactIdentifier::ContactIdentifier()
 {
-    if (!availableId.empty())
-    {
-        id = availableId.front();
-        availableId.pop_front();
-    }
-    else
-        id = cpt++;
-}
-
-ContactIdentifier::~ContactIdentifier()
-{
-    availableId.push_back(id);
+    id = cpt.fetch_add(1) ;
 }
 
 } //namespace sofa::component::collision::response::contact

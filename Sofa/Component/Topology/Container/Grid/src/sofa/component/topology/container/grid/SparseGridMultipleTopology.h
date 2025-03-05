@@ -26,12 +26,14 @@
 
 #include <string>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::component::topology::container::grid
 {
 
 /**
 Build a SparseGridTopology for several given Triangular meshes.
-A stiffness coefficient has to be assigned for each mesh. The last found stiffness coefficient is used for an element shared by several meshes => The mesh ordering is important, and so, more specific stiffness informations must appear in last.
+A stiffness coefficient has to be assigned for each mesh. The last found stiffness coefficient is used for an element shared by several meshes => The mesh ordering is important, and so, more specific stiffness information must appear in last.
 */
 class SOFA_COMPONENT_TOPOLOGY_CONTAINER_GRID_API SparseGridMultipleTopology : public SparseGridRamificationTopology
 {
@@ -42,7 +44,7 @@ protected:
 public:
     void init() override
     {
-        if(_computeRamifications.getValue())
+        if(d_computeRamifications.getValue())
             SparseGridRamificationTopology::init(  );
         else
             SparseGridTopology::init(  );
@@ -51,7 +53,7 @@ public:
     void buildAsFinest() override;
     void buildFromFiner() override
     {
-        if(_computeRamifications.getValue())
+        if(d_computeRamifications.getValue())
             SparseGridRamificationTopology::buildFromFiner(  );
         else
             SparseGridTopology::buildFromFiner(  );
@@ -61,7 +63,7 @@ public:
 
     Index findCube(const type::Vec3 &pos, SReal &fx, SReal &fy, SReal &fz) override
     {
-        if(_computeRamifications.getValue())
+        if(d_computeRamifications.getValue())
             return SparseGridRamificationTopology::findCube( pos,fx,fy,fz  );
         else
             return SparseGridTopology::findCube( pos,fx,fy,fz );
@@ -69,7 +71,7 @@ public:
 
     Index findNearestCube(const type::Vec3& pos, SReal& fx, SReal &fy, SReal &fz) override
     {
-        if(_computeRamifications.getValue())
+        if(d_computeRamifications.getValue())
             return SparseGridRamificationTopology::findNearestCube( pos,fx,fy,fz );
         else
             return SparseGridTopology::findNearestCube( pos,fx,fy,fz );
@@ -79,12 +81,27 @@ public:
 
 protected :
 
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
+    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<std::string>> _fileTopologies;
 
-    Data< type::vector< std::string > > _fileTopologies; ///< All topology filenames
-    Data< type::vector< float > > _dataStiffnessCoefs; ///< A stiffness coefficient for each topology filename
-    Data< type::vector< float > > _dataMassCoefs; ///< A mass coefficient for each topology filename
-    Data<bool> _computeRamifications; ///< Are ramifications wanted?
-    Data<bool> _erasePreviousCoef; ///< Does a new stiffness/mass coefficient replace the previous or blend half/half with it?
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
+    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<float>> _dataStiffnessCoefs;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
+    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<float>> _dataMassCoefs;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> _computeRamifications;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> _erasePreviousCoef;
+
+
+    Data< type::vector< std::string > > d_fileTopologies; ///< All topology filenames
+    Data< type::vector< float > > d_dataStiffnessCoefs; ///< A stiffness coefficient for each topology filename
+    Data< type::vector< float > > d_dataMassCoefs; ///< A mass coefficient for each topology filename
+    Data<bool> d_computeRamifications; ///< Are ramifications wanted?
+    Data<bool> d_erasePreviousCoef; ///< Does a new stiffness/mass coefficient replace the previous or blend half/half with it?
 
 
 

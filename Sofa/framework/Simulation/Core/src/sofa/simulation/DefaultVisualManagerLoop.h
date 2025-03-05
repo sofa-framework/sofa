@@ -25,13 +25,8 @@
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/visual/VisualLoop.h>
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/simulation/Node.h>
 
-namespace sofa::core::objectmodel
-{
-// Forward declaration for extern template declaration. This design permit to
-// not #include<sofa::simulation::Node>
-extern template class SingleLink< sofa::simulation::DefaultVisualManagerLoop, simulation::Node, BaseLink::FLAG_STOREPATH>;
-}
 
 namespace sofa::simulation
 {
@@ -48,17 +43,16 @@ public:
     typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
     SOFA_CLASS(DefaultVisualManagerLoop,sofa::core::visual::VisualLoop);
 protected:
-    DefaultVisualManagerLoop(simulation::Node* gnode = nullptr);
-
+    DefaultVisualManagerLoop();
     ~DefaultVisualManagerLoop() override;
 public:
     void init() override;
 
     /// Initialize the textures
-    void initStep(sofa::core::ExecParams* params) override;
+    void initStep(sofa::core::visual::VisualParams* vparams) override;
 
     /// Update the Visual Models: triggers the Mappings
-    void updateStep(sofa::core::ExecParams* params) override;
+    void updateStep(sofa::core::visual::VisualParams* vparams) override;
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
     void updateContextStep(sofa::core::visual::VisualParams* vparams) override;
@@ -69,22 +63,7 @@ public:
     /// Compute the bounding box of the scene. If init is set to "true", then minBBox and maxBBox will be initialised to a default value
     void computeBBoxStep(sofa::core::visual::VisualParams* vparams, SReal* minBBox, SReal* maxBBox, bool init) override;
 
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
-    {
-        simulation::Node* gnode = getNodeFromContext(context);
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
-
     SingleLink< DefaultVisualManagerLoop, simulation::Node, BaseLink::FLAG_STOREPATH> l_node;  ///< Link to the scene's node where the rendering will take place
-
-protected:
-    static simulation::Node* getNodeFromContext(BaseContext*);
 };
 
 } // namespace sofa

@@ -28,13 +28,15 @@
 #include <cuda_gl_interop.h>
 #include <iostream>
 
-
-//#define NO_CUDA
-
 cudaDeviceProp mycudaDeviceProp;
 
 
 #if defined(__cplusplus)
+
+#define STRINGIFY(x) #x
+#define _STR(x) STRINGIFY(x)
+SOFA_PRAGMA_MESSAGE("__cplusplus value: " _STR(__cplusplus))
+
 namespace sofa
 {
 namespace gpu
@@ -42,139 +44,6 @@ namespace gpu
 namespace cuda
 {
 #endif
-
-#ifdef NO_CUDA
-
-bool cudaCheck(cudaError_t, const char*)
-{
-    return true;
-}
-
-bool cudaInitCalled = false;
-
-int mycudaInit(int)
-{
-    cudaInitCalled = true;
-    return 0;
-}
-
-void mycudaMalloc(void **devPtr, size_t,int )
-{
-    *devPtr = NULL;
-}
-
-void mycudaMallocPitch(void **devPtr, size_t*, size_t, size_t)
-{
-    *devPtr = NULL;
-}
-
-void mycudaFree(void *, int)
-{
-}
-
-void mycudaMallocHost(void **hostPtr, size_t size)
-{
-    *hostPtr = malloc(size);
-}
-
-void mycudaFreeHost(void *hostPtr)
-{
-    free(hostPtr);
-}
-
-void mycudaMemcpyHostToDevice(void *, const void *, size_t, int)
-{
-}
-
-void mycudaMemcpyDeviceToDevice(void *, const void *, size_t,int )
-{
-}
-
-void mycudaMemcpyDeviceToHost(void *, const void *, size_t,int )
-{
-}
-
-void mycudaMemcpyHostToDevice2D(void *, size_t, const void *, size_t, size_t, size_t)
-{
-}
-
-void mycudaMemcpyDeviceToDevice2D(void *, size_t, const void *, size_t, size_t, size_t )
-{
-}
-
-void mycudaMemcpyDeviceToHost2D(void *, size_t, const void *, size_t, size_t, size_t)
-{
-}
-
-void mycudaGLRegisterBufferObject(int)
-{
-}
-
-void mycudaGLUnregisterBufferObject(int)
-{
-}
-
-void mycudaGLMapBufferObject(void** ptr, int)
-{
-    *ptr = NULL;
-}
-
-void mycudaGLUnmapBufferObject(int)
-{
-}
-
-int mycudaGetnumDevices()
-{
-    return 0;
-}
-
-int mycudaGetBufferDevice()
-{
-    return 0;
-}
-
-void mycudaMemset(void *devPtr, int val, size_t size,int )
-{
-}
-
-void cuda_void_kernel()
-{
-}
-
-#ifdef SOFA_GPU_CUBLAS
-cusparseHandle_t getCusparseCtx()
-{
-    return NULL;
-}
-
-cublasHandle_t getCublasCtx()
-{
-    return NULL;
-}
-
-cusparseMatDescr_t getCusparseMatGeneralDescr()
-{
-    return NULL;
-}
-
-cusparseMatDescr_t getCusparseMatTriangularLowerDescr()
-{
-    return NULL;
-}
-
-cusparseMatDescr_t getCusparseMatTriangularUpperDescr()
-{
-    return NULL;
-}
-
-
-void SOFA_GPU_CUDA_API mycudaMemGetInfo(size_t *  	free,size_t *  	total) {
-
-}
-
-#endif //SOFA_GPU_CUBLAS
-
-#else
 
 extern "C"
 {
@@ -193,14 +62,33 @@ bool cudaCheck(cudaError_t err, const char* src="?")
 bool cudaInitCalled = false;
 int deviceCount = 0;
 
+#ifdef SOFA_WITH_DEVTOOLS
+__global__ void print_cuda_standard()
+{
+    /**
+    * 199711L = C++98
+    * 201103L = C++11
+    * 201402L = C++14
+    * 201703L = C++17
+    * 202002L = C++20
+    */
+    printf("CUDA Standard: %ld\n", __cplusplus);
+}
+#endif
+
 int mycudaInit(int device)
 {
     if (cudaInitCalled) return 1;
+
+#if defined(__cplusplus)
+    mycudaPrintf("C++ standard = %ld", __cplusplus);
+#endif
+
     cudaInitCalled = true;
     const cudaError_t getDeviceCountError = cudaGetDeviceCount(&deviceCount);
     if (getDeviceCountError != cudaSuccess)
     {
-        std::cerr << "CUDA error returned from cudaGetDeviceCount: " << cudaGetErrorString(getDeviceCountError) << "\n";
+        mycudaPrintfError("error returned from cudaGetDeviceCount: %s", cudaGetErrorString(getDeviceCountError));
         return 0;
     }
     mycudaPrintf("CUDA: %d device(s) found.\n", deviceCount);
@@ -254,9 +142,15 @@ int mycudaInit(int device)
     }
 
 
-#ifdef SOFA_GPU_CUBLAS
+#if defined(SOFA_GPU_CUBLAS) && !defined(SOFA_GPU_CUBLAS_V2)
     cublasInit();
 #endif
+
+#ifdef SOFA_WITH_DEVTOOLS
+    print_cuda_standard<<<1, 1>>>();
+    cudaCheck(cudaDeviceSynchronize());
+#endif
+
     return 1;
 }
 
@@ -512,8 +406,6 @@ void SOFA_GPU_CUDA_API mycudaMemGetInfo(size_t * free,size_t * total) {
 }
 
 #endif //SOFA_GPU_CUBLAS
-
-#endif
 
 #if defined(__cplusplus)
 } // namespace cuda

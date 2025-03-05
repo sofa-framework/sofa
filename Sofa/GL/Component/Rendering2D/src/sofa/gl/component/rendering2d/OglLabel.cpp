@@ -45,9 +45,8 @@ OglLabel::OglLabel():
   ,d_y(initData(&d_y, (unsigned int)10, "y", "The y position of the text on the screen"))
   ,d_fontsize(initData(&d_fontsize, (unsigned int)14, "fontsize", "The size of the font used to display the text on the screen"))
   ,d_color(initData(&d_color, sofa::type::RGBAColor::gray(), "color", "The color of the text to display. (default='gray')"))
-  ,d_selectContrastingColor(initData(&d_selectContrastingColor, false, "selectContrastingColor", "Overide the color value but one that contrast with the background color"))
+  ,d_selectContrastingColor(initData(&d_selectContrastingColor, false, "selectContrastingColor", "Override the color value but one that contrast with the background color"))
   ,d_updateLabelEveryNbSteps(initData(&d_updateLabelEveryNbSteps, (unsigned int)0, "updateLabelEveryNbSteps", "Update the display of the label every nb of time steps"))
-  ,d_visible(initData(&d_visible,true,"visible","Is label displayed"))
   ,m_stepCounter(0)
 {
     f_listening.setValue(true);
@@ -85,7 +84,7 @@ void OglLabel::reinit()
 {
     if( d_selectContrastingColor.isSet() && d_color.isSet() ){
         msg_warning() << "The selectContrastingColor and color attributes are both set. " << msgendl
-                      << "The color attribute will be overriden by the contrasting color. ";
+                      << "The color attribute will be overridden by the contrasting color. ";
     }
 
     m_internalLabel = d_label.getValue();
@@ -97,7 +96,7 @@ void OglLabel::reinit()
         if (backgroundSetting)
         {
             //in contrast mode, the text color is selected between black or white depending on the background color
-            const RGBAColor& backgroundColor = backgroundSetting->color.getValue();
+            const RGBAColor& backgroundColor = backgroundSetting->d_color.getValue();
             float yiq = (float)(backgroundColor[0]*255*299 + backgroundColor[1]*255*587 + backgroundColor[2]*255*114);
             yiq /= 1000;
             if (yiq >= 128)
@@ -119,7 +118,7 @@ void OglLabel::reinit()
     }
 }
 
-void OglLabel::updateVisual()
+void OglLabel::doUpdateVisual(const core::visual::VisualParams*)
 {
     if (!d_updateLabelEveryNbSteps.getValue()) m_internalLabel = d_label.getValue();
 }
@@ -140,41 +139,28 @@ void OglLabel::handleEvent(sofa::core::objectmodel::Event *event)
     }
 }
 
-void OglLabel::drawVisual(const core::visual::VisualParams* vparams)
+void OglLabel::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-
-    if (!d_visible.getValue() ) return;
-
-    // Save state and disable clipping plane
-    glPushAttrib(GL_ENABLE_BIT);
-    for(int i = 0; i < GL_MAX_CLIP_PLANES; ++i)
-        glDisable(GL_CLIP_PLANE0+i);
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_TEXTURE_1D);
-    glDisable(GL_BLEND);
-    glDepthMask(1);
+    // Workaround: Disable showWireframe (polygon mode set to true forcefully in VisualModel drawVisual())
+    if (vparams->displayFlags().getShowWireFrame())
+    {
+        vparams->drawTool()->setPolygonMode(0, false);
+    }
 
     vparams->drawTool()->setLightingEnabled(false);
 
-    // color of the text
-    glColor4fv( d_color.getValue().data() );
-
-    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, d_color.getValue().data() );
-    static const float emissive[4] = { 0.0f, 0.0f, 0.0f, 0.0f};
-    static const float specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f};
-    glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive);
-    glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-    glMaterialf  (GL_FRONT_AND_BACK, GL_SHININESS, 20);
-
-    std::string text = d_prefix.getValue() + m_internalLabel.c_str() + d_suffix.getValue();
+    const std::string text = d_prefix.getValue() + m_internalLabel.c_str() + d_suffix.getValue();
 
     vparams->drawTool()->writeOverlayText(
         d_x.getValue(), d_y.getValue(), d_fontsize.getValue(),  // x, y, size
         d_color.getValue(),
         text.c_str());
 
-    // Restore state
-    glPopAttrib();
+    // restore polygon mode if needed
+    if (vparams->displayFlags().getShowWireFrame())
+    {
+        vparams->drawTool()->setPolygonMode(0, true);
+    }
 }
 
 void OglLabel::setColor(float r, float g, float b, float a)
@@ -183,9 +169,10 @@ void OglLabel::setColor(float r, float g, float b, float a)
     d_color.endEdit();
 }
 
-
-int OglLabelClass = core::RegisterObject("Display 2D text in the viewport.")
-        .add< OglLabel >()
-        ;
+void registerOglLabel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Display 2D text in the viewport.")
+        .add< OglLabel >());
+}
 
 } // namespace sofa::gl::component::rendering2d

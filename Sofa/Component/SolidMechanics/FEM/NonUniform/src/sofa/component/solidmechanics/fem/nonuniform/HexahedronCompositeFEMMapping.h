@@ -121,8 +121,8 @@ protected :
     // in order to treat large dispacements in translation (rotation is given by the corotational force field)
 // 	  InVecCoord _baycenters0;
 // 	  InCoord computeTranslation( const SparseGridTopologyT::Hexa& hexa, unsigned idx );
-    OutVecCoord _p0; // intial position of the interpolated vertices
-    InVecCoord _qCoarse0, _qFine0; // intial position of the element nodes
+    OutVecCoord _p0; // initial position of the interpolated vertices
+    InVecCoord _qCoarse0, _qFine0; // initial position of the element nodes
     InVecCoord _qFine; // only for drawing
 
 // 	  type::vector< type::Quat<Real> > _rotations;
@@ -144,7 +144,7 @@ protected :
 
 };
 
-#if  !defined(SOFA_COMPONENT_MAPPING_HEXAHEDRONCOMPOSITEFEMMAPPING_CPP)
+#if !defined(SOFA_COMPONENT_MAPPING_HEXAHEDRONCOMPOSITEFEMMAPPING_CPP)
 extern template class HexahedronCompositeFEMMapping< core::Mapping< defaulttype::Vec3Types, defaulttype::Vec3Types > >;
 
 

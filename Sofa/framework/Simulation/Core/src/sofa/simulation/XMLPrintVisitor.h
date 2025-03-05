@@ -27,10 +27,7 @@
 #include <sofa/simulation/Visitor.h>
 
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -58,8 +55,7 @@ public:
 	bool treeTraversal(TreeTraversalRepetition& repeat) override;
 };
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
 
 #endif

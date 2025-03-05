@@ -49,10 +49,11 @@ struct DistanceMappingTest : public sofa::mapping_test::Mapping_test<DistanceMap
     bool test()
     {
         DistanceMapping* map = static_cast<DistanceMapping*>( this->mapping );
-        map->f_computeDistance.setValue(true);
-        map->d_geometricStiffness.setValue(1);
+        map->d_computeDistance.setValue(true);
+        sofa::helper::getWriteAccessor(map->d_geometricStiffness)->setSelectedItem(1);
 
-        component::topology::container::dynamic::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::container::dynamic::EdgeSetTopologyContainer>(this->root);
+        const component::topology::container::dynamic::EdgeSetTopologyContainer::SPtr edges = sofa::core::objectmodel::New<component::topology::container::dynamic::EdgeSetTopologyContainer>();
+        this->root->addObject(edges);
         edges->addEdge( 0, 1 );
 
         // parent positions
@@ -70,14 +71,14 @@ struct DistanceMappingTest : public sofa::mapping_test::Mapping_test<DistanceMap
 };
 
 
-// Define the list of types to instanciate.
+// Define the list of types to instantiate.
 using ::testing::Types;
 typedef Types<
 component::mapping::nonlinear::DistanceMapping<defaulttype::Vec3Types,defaulttype::Vec1Types>,
 component::mapping::nonlinear::DistanceMapping<defaulttype::Rigid3Types,defaulttype::Vec1Types>
-> DataTypes; // the types to instanciate.
+> DataTypes; // the types to instantiate.
 
-// Test suite for all the instanciations
+// Test suite for all the instantiations
 TYPED_TEST_SUITE( DistanceMappingTest, DataTypes );
 
 // test case

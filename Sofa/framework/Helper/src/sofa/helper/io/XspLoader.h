@@ -27,13 +27,7 @@
 #include <sofa/helper/config.h>     /// For SOFA_HELPER_API
 
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 /// @brief Inherit this class to load data from a Xsp file.
@@ -57,7 +51,7 @@ public:
     /// This method is called by the XspLoader when the loading is done.
     /// Overriding this method allows client-code to implement post-loading checking.
     /// @param isOk is set to false this means that the loading code detected a
-    /// problem and that the loaded informations are invalid and should be removed from
+    /// problem and that the loaded information are invalid and should be removed from
     /// the container.
     virtual void finalizeLoading(bool isOk) { SOFA_UNUSED(isOk); }
 
@@ -100,7 +94,7 @@ public:
     /// @param filename the name of the file in the RessourceRepository to read data from.
     /// @param data pass a object of this type (or inherit one) to load the file in caller's data
     ///        structures
-    /// @return wheter the loading succeded.
+    /// @return whether the loading succeeded.
     /// @example
     /// class MyXspLoader : public XspLoaderDataHook
     /// {
@@ -129,10 +123,7 @@ private:
 
 };
 
-} // namespace io
+} // namespace sofa::helper::io
 
-} // namespace helper
-
-} // namespace sofa
 
 #endif

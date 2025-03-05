@@ -26,13 +26,8 @@
 #include <string>
 #include <sofa/helper/config.h>
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace messaging
+namespace sofa::helper::messaging
 {
 
 class SOFA_HELPER_API FileMessage
@@ -44,8 +39,6 @@ public:
 
 };
 
-} // logging
-} // helper
-} // sofa
+}
 
 #endif // FILEMESSAGE_H

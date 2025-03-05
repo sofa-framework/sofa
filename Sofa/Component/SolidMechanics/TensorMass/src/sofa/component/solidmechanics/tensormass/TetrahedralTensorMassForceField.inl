@@ -22,10 +22,13 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 
 namespace sofa::component::solidmechanics::tensormass
 {
@@ -60,7 +63,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
         const sofa::type::vector<sofa::type::vector<Index> > &,
         const sofa::type::vector<sofa::type::vector<SReal> > &)
 {
-    unsigned int i,j,k,l,u,v;
+    unsigned int j,k,l,u,v;
 
     typename DataTypes::Real val1,volume;
     typename DataTypes::Real lambda=getLambda();
@@ -68,20 +71,20 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
     typename DataTypes::Real lambdastar, mustar;
     typename DataTypes::Coord point[4],shapeVector[4];
 
-    const typename DataTypes::VecCoord restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const auto& restPosition=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
-    edgeRestInfoVector& edgeData = *(edgeInfo.beginEdit());
+    edgeRestInfoVector& edgeData = *(d_edgeInfo.beginEdit());
+    const auto& tetraArray = m_topology->getTetrahedra();
 
-    for (i=0; i<tetrahedronAdded.size(); ++i)
+    for (const Index tetraId : tetrahedronAdded)
     {
-
         /// get a reference on the edge set of the ith added tetrahedron
-        const EdgesInTetrahedron &te= m_topology->getEdgesInTetrahedron(tetrahedronAdded[i]);
+        const EdgesInTetrahedron& te = m_topology->getEdgesInTetrahedron(tetraId);
         ///get a reference on the vertex set of the ith added tetrahedron
-        const Tetrahedron &t= m_topology->getTetrahedron(tetrahedronAdded[i]);
+        const Tetrahedron& tetra = tetraArray[tetraId];
         // store points
         for(j=0; j<4; ++j)
-            point[j]=(restPosition)[t[j]];
+            point[j]=(restPosition)[tetra[j]];
         /// compute 6 times the rest volume
         volume=dot(cross(point[1]-point[0],point[2]-point[0]),point[0]-point[3]);
         // store shape vectors
@@ -103,14 +106,14 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
             k = m_topology->getLocalEdgesInTetrahedron(j)[0];
             l = m_topology->getLocalEdgesInTetrahedron(j)[1];
 
-            Mat3 &m=edgeData[te[j]].DfDx;
+            auto& m = edgeData[te[j]].DfDx;
 
             val1= dot(shapeVector[k],shapeVector[l])*mustar;
 
             // print if obtuse tetrahedron along that edge
-            msg_info_when(val1<0) << "negative cotangent["<<tetrahedronAdded[i]<<"]["<<j<<"]" ;
+            msg_info_when(val1 < 0) << "negative cotangent[" << tetrahedronAdded[tetraId] << "][" << j << "]";
 
-            if (m_topology->getEdge(te[j])[0]!=t[l])
+            if (m_topology->getEdge(te[j])[0]!= tetra[l])
             {
                 for (u=0; u<3; ++u)
                 {
@@ -136,7 +139,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
 
         }
     }
-    edgeInfo.endEdit();
+    d_edgeInfo.endEdit();
 }
 
 template< class DataTypes>
@@ -150,9 +153,9 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronDestruction(con
     typename DataTypes::Real lambdastar, mustar;
     typename DataTypes::Coord point[4],shapeVector[4];
 
-    const typename DataTypes::VecCoord restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const typename DataTypes::VecCoord restPosition=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
-    edgeRestInfoVector& edgeData = *(edgeInfo.beginEdit());
+    edgeRestInfoVector& edgeData = *(d_edgeInfo.beginEdit());
 
     for (i=0; i<tetrahedronRemoved.size(); ++i)
     {
@@ -184,7 +187,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronDestruction(con
             k = m_topology->getLocalEdgesInTetrahedron(j)[0];
             l = m_topology->getLocalEdgesInTetrahedron(j)[1];
 
-            Mat3 &m=edgeData[te[j]].DfDx;
+            auto& m = edgeData[te[j]].DfDx;
 
             val1= dot(shapeVector[k],shapeVector[l])*mustar;
             // print if obtuse tetrahedron along that edge
@@ -217,7 +220,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronDestruction(con
         }
 
     }
-    edgeInfo.endEdit();
+    d_edgeInfo.endEdit();
 }
 
 
@@ -225,15 +228,17 @@ template <class DataTypes>
 TetrahedralTensorMassForceField<DataTypes>::TetrahedralTensorMassForceField()
     : _initialPoints(0)
     , updateMatrix(true)
-    , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young's modulus in Hooke's law"))
+    , d_poissonRatio(initData(&d_poissonRatio, (Real)0.3, "poissonRatio", "Poisson ratio in Hooke's law"))
+    , d_youngModulus(initData(&d_youngModulus, (Real)1000., "youngModulus", "Young's modulus in Hooke's law"))
     , lambda(0)
     , mu(0)
     , l_topology(initLink("topology", "link to the topology container"))
-    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    , d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
     , m_topology(nullptr)
 {
-
+        f_poissonRatio.setOriginalData(&d_poissonRatio);
+        edgeInfo.setOriginalData(&d_edgeInfo);
+        f_youngModulus.setOriginalData(&d_youngModulus);
 }
 
 template <class DataTypes> 
@@ -263,8 +268,8 @@ TetrahedralTensorMassForceField<DataTypes>::init()
         return;
     }
 
-    edgeInfo.createTopologyHandler(m_topology);
-    edgeInfo.linkToTetrahedronDataArray();
+    d_edgeInfo.createTopologyHandler(m_topology);
+    d_edgeInfo.linkToTetrahedronDataArray();
 
     if (m_topology->getNbTetrahedra()==0)
     {
@@ -272,7 +277,7 @@ TetrahedralTensorMassForceField<DataTypes>::init()
     }
     updateLameCoefficients();
 
-    edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
+    edgeRestInfoVector& edgeInf = *(d_edgeInfo.beginEdit());
 
 
     /// prepare to store info in the edge array
@@ -282,7 +287,7 @@ TetrahedralTensorMassForceField<DataTypes>::init()
     if (_initialPoints.size() == 0)
     {
         // get restPosition
-        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        const VecCoord& p = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
         _initialPoints=p;
     }
 
@@ -305,27 +310,27 @@ TetrahedralTensorMassForceField<DataTypes>::init()
         (const sofa::type::vector<sofa::type::vector<SReal> >)0);
 
 
-    edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
-        const core::topology::BaseMeshTopology::Edge& edge,
-        const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< SReal >& coefs)
+    d_edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
+                                          const core::topology::BaseMeshTopology::Edge& edge,
+                                          const sofa::type::vector< Index >& ancestors,
+                                          const sofa::type::vector< SReal >& coefs)
     {
         createEdgeRestInformation(edgeIndex, ei, edge, ancestors, coefs);
     });
 
-    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo)
+    d_edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo)
     {
         const core::topology::TetrahedraAdded* tAdd = static_cast<const core::topology::TetrahedraAdded*>(eventTopo);
         applyTetrahedronCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
     });
 
-    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo)
+    d_edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo)
     {
         const core::topology::TetrahedraRemoved* tRemove = static_cast<const core::topology::TetrahedraRemoved*>(eventTopo);
         applyTetrahedronDestruction(tRemove->getArray());
     });
 
-    edgeInfo.endEdit();
+    d_edgeInfo.endEdit();
 
     /// FOR CUDA
     /// Save the neighbourhood for points (in case of CudaTypes)
@@ -339,18 +344,18 @@ void TetrahedralTensorMassForceField<DataTypes>::initNeighbourhoodPoints() {}
 template <class DataTypes>
 SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */) const
 {
-    sofa::helper::AdvancedTimer::stepBegin("getPotentialEnergy");
+    SCOPED_TIMER("getPotentialEnergy");
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     SReal energy=0;
 
     unsigned int v0,v1;
-    int nbEdges=m_topology->getNbEdges();
+    const int nbEdges=m_topology->getNbEdges();
 
     const EdgeRestInformation *einfo;
 
-    const edgeRestInfoVector edgeInf = edgeInfo.getValue();
+    const edgeRestInfoVector edgeInf = d_edgeInfo.getValue();
     Deriv force,dp;
     Deriv dp0,dp1;
 
@@ -364,7 +369,7 @@ SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core
         dp = dp1-dp0;
         force=einfo->DfDx*dp;
         energy+=dot(force,dp1);
-        force=einfo->DfDx.transposeMultiply(dp);
+        force=einfo->DfDx.multTranspose(dp);
         energy-=dot(force,dp0);
     }
 
@@ -372,24 +377,23 @@ SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core
 
     msg_info() << "energy="<<energy ;
 
-    sofa::helper::AdvancedTimer::stepEnd("getPotentialEnergy");
     return(energy);
 }
 
 template <class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
-    sofa::helper::AdvancedTimer::stepBegin("addForceTetraTensorMass");
+    SCOPED_TIMER("addForceTetraTensorMass");
 
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
 
     unsigned int v0,v1;
-    int nbEdges=m_topology->getNbEdges();
+    const int nbEdges=m_topology->getNbEdges();
 
     EdgeRestInformation *einfo;
 
-    edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
+    edgeRestInfoVector& edgeInf = *(d_edgeInfo.beginEdit());
 
     Coord dp0,dp1,dp;
 
@@ -403,31 +407,29 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::Mechanical
         dp = dp1-dp0;
 
         f[v1]+=einfo->DfDx*dp;
-        f[v0]-=einfo->DfDx.transposeMultiply(dp);
+        f[v0]-=einfo->DfDx.multTranspose(dp);
     }
 
-    edgeInfo.endEdit();
+    d_edgeInfo.endEdit();
     d_f.endEdit();
-
-    sofa::helper::AdvancedTimer::stepEnd("addForceTetraTensorMass");
 }
 
 
 template <class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    sofa::helper::AdvancedTimer::stepBegin("addDForceTetraTensorMass");
+    SCOPED_TIMER("addDForceTetraTensorMass");
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     unsigned int v0,v1;
-    int nbEdges=m_topology->getNbEdges();
+    const int nbEdges=m_topology->getNbEdges();
 
     EdgeRestInformation *einfo;
 
-    edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
+    edgeRestInfoVector& edgeInf = *(d_edgeInfo.beginEdit());
 
     Coord dp0,dp1,dp;
 
@@ -441,21 +443,52 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
         dp = dp1-dp0;
 
         df[v1]+= (einfo->DfDx*dp) * kFactor;
-        df[v0]-= (einfo->DfDx.transposeMultiply(dp)) * kFactor;
+        df[v0]-= (einfo->DfDx.multTranspose(dp)) * kFactor;
     }
-    edgeInfo.endEdit();
+    d_edgeInfo.endEdit();
 
     d_df.endEdit();
+}
 
-    sofa::helper::AdvancedTimer::stepEnd("addDForceTetraTensorMass");
+template <class DataTypes>
+void TetrahedralTensorMassForceField<DataTypes>::buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
+{
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+    const sofa::Size nbEdges = m_topology->getNbEdges();
+
+    const auto edgeInf = sofa::helper::getReadAccessor(d_edgeInfo);
+    const auto edges = m_topology->getEdges();
+
+    for (sofa::Size i = 0; i < nbEdges; ++i)
+    {
+        const sofa::topology::Edge& edge = edges[i];
+
+        const unsigned p0 = Deriv::total_size * edge[0];
+        const unsigned p1 = Deriv::total_size * edge[1];
+
+        const auto& localDfdx = edgeInf[i].DfDx;
+        const auto localDfdx_T = edgeInf[i].DfDx.transposed();
+
+        dfdx(p0, p0) +=  localDfdx_T;
+        dfdx(p0, p1) += -localDfdx_T;
+        dfdx(p1, p0) += -localDfdx;
+        dfdx(p1, p1) +=  localDfdx;
+    }
+}
+
+template <class DataTypes>
+void TetrahedralTensorMassForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
 }
 
 
 template<class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::updateLameCoefficients()
 {
-    lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/((1-2*f_poissonRatio.getValue())*(1+f_poissonRatio.getValue()));
-    mu = f_youngModulus.getValue()/(2*(1+f_poissonRatio.getValue()));
+    lambda= d_youngModulus.getValue() * d_poissonRatio.getValue() / ((1 - 2 * d_poissonRatio.getValue()) * (1 + d_poissonRatio.getValue()));
+    mu = d_youngModulus.getValue() / (2 * (1 + d_poissonRatio.getValue()));
 }
 
 
@@ -474,8 +507,8 @@ void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::Visual
     constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
     std::vector<sofa::type::Vec3> vertices;
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    int nbTriangles=m_topology->getNbTriangles();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
+    const int nbTriangles=m_topology->getNbTriangles();
 
     for(int i=0;i<nbTriangles; ++i)
     {

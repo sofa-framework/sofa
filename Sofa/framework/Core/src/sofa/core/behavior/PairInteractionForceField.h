@@ -132,7 +132,7 @@ public:
 
     /// Get the potential energy associated to this ForceField.
     ///
-    /// Used to extimate the total energy of the system by some
+    /// Used to estimate the total energy of the system by some
     /// post-stabilization techniques.
     ///
     /// This method retrieves the x vector from the MechanicalState and call
@@ -142,7 +142,7 @@ public:
 
     /// Get the potential energy associated to this ForceField.
     ///
-    /// Used to extimate the total energy of the system by some
+    /// Used to estimate the total energy of the system by some
     /// post-stabilization techniques.
     ///
     /// This method must be implemented by the component, and is usually called
@@ -166,8 +166,6 @@ public:
         MechanicalState<DataTypes>* mstate2 = nullptr;
         std::string object1 = arg->getAttribute("object1","@./");
         std::string object2 = arg->getAttribute("object2","@./");
-        if (object1.empty()) object1 = "@./";
-        if (object2.empty()) object2 = "@./";
 
         context->findLinkDest(mstate1, object1, nullptr);
         context->findLinkDest(mstate2, object2, nullptr);
@@ -195,8 +193,8 @@ public:
 
         if (arg)
         {
-            std::string object1 = arg->getAttribute("object1","");
-            std::string object2 = arg->getAttribute("object2","");
+            const std::string object1 = arg->getAttribute("object1","");
+            const std::string object2 = arg->getAttribute("object2","");
             if (!object1.empty())
             {
                 arg->setAttribute("object1", object1);
@@ -222,7 +220,7 @@ public:
 
 };
 
-#if  !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_CPP)
+#if !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_CPP)
 extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec6Types>;
 extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec3Types>;
 extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec2Types>;

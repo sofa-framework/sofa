@@ -21,75 +21,39 @@
 ******************************************************************************/
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
-//#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/mapping/linear/SubsetMultiMapping.h>
 
 #include <sofa/component/mapping/testing/MultiMappingTestCreation.h>
 
 namespace sofa {
-namespace {
 
-using namespace core;
-using namespace component;
-using type::Vec;
-using type::Mat;
-using type::vector;
+using component::mapping::linear::SubsetMultiMapping;
 
-
-/**  Test suite for SubsetMultiMapping.
-  */
+/**
+ * Test suite for SubsetMultiMapping.
+ */
 template <typename _SubsetMultiMapping>
 struct SubsetMultiMappingTest : public MultiMapping_test<_SubsetMultiMapping>
 {
+    using In = typename _SubsetMultiMapping::In;
+    using Out = typename _SubsetMultiMapping::Out;
 
-    typedef _SubsetMultiMapping SubsetMultiMapping;
-
-    typedef typename SubsetMultiMapping::In InDataTypes;
-    typedef typename InDataTypes::VecCoord InVecCoord;
-    typedef typename InDataTypes::VecDeriv InVecDeriv;
-    typedef typename InDataTypes::Coord InCoord;
-    typedef typename InDataTypes::Deriv InDeriv;
-    typedef statecontainer::MechanicalObject<InDataTypes> InMechanicalObject;
-    typedef typename InMechanicalObject::ReadVecCoord  ReadInVecCoord;
-    typedef typename InMechanicalObject::WriteVecCoord WriteInVecCoord;
-    typedef typename InMechanicalObject::WriteVecDeriv WriteInVecDeriv;
-    typedef typename InDataTypes::Real InReal;
-    typedef Mat<InDataTypes::spatial_dimensions,InDataTypes::spatial_dimensions,InReal> RotationMatrix;
-
-
-    typedef typename SubsetMultiMapping::Out OutDataTypes;
-    typedef typename OutDataTypes::VecCoord OutVecCoord;
-    typedef typename OutDataTypes::VecDeriv OutVecDeriv;
-    typedef typename OutDataTypes::Coord OutCoord;
-    typedef typename OutDataTypes::Deriv OutDeriv;
-    typedef statecontainer::MechanicalObject<OutDataTypes> OutMechanicalObject;
-    typedef typename OutMechanicalObject::WriteVecCoord WriteOutVecCoord;
-    typedef typename OutMechanicalObject::WriteVecDeriv WriteOutVecDeriv;
-    typedef typename OutMechanicalObject::ReadVecCoord ReadOutVecCoord;
-    typedef typename OutMechanicalObject::ReadVecDeriv ReadOutVecDeriv;
-
-    void SetUp() override
-    {
-    }
-
-    /** @name Test_Cases
-      For each of these cases, we can test if the mapping work
-      */
-    ///@{
-    /** Two parent particles, two children
-    */
+    /**
+     * Two parent particles, two children
+     */
     bool test_two_parents_one_child()
     {
-        const int NP = 2;
+        static constexpr int NP = 2;
         this->setupScene(NP); // NP parents, 1 child
-        SubsetMultiMapping* smm = static_cast<SubsetMultiMapping*>( this->mapping );
+        _SubsetMultiMapping* smm = static_cast<_SubsetMultiMapping*>( this->mapping );
 
         // parent positions
-        vector< InVecCoord > incoords(NP);
-        for( int i=0; i<NP; i++ )
+        type::vector< VecCoord_t<In> > incoords(NP);
+        for (int i = 0; i < NP; i++)
         {
             incoords[i].resize(1);
-            InDataTypes::set( incoords[i][0], i+1.,-2., 3. );
+            In::set( incoords[i][0], i+1.,-2., 3. );
         }
 
         // subset
@@ -97,34 +61,28 @@ struct SubsetMultiMappingTest : public MultiMapping_test<_SubsetMultiMapping>
         smm->addPoint(smm->getMechFrom()[1],0);  // parent, index in parent
 
         // expected child positions
-        OutVecCoord outcoords(2);
-        OutDataTypes::set( outcoords[0], 1.  , -2., 3. );
-        OutDataTypes::set( outcoords[1], 1+1., -2., 3. );
+        VecCoord_t<Out> outcoords(2);
+        Out::set( outcoords[0], 1.  , -2., 3. );
+        Out::set( outcoords[1], 1+1., -2., 3. );
 
         return this->runTest(incoords,outcoords);
     }
-
-
-    ///@}
-
-
 };
 
-
-// Define the list of types to instanciate. We do not necessarily need to test all combinations.
 using ::testing::Types;
 typedef Types<
-mapping::linear::SubsetMultiMapping<defaulttype::Rigid3Types,defaulttype::Rigid3Types>,
-mapping::linear::SubsetMultiMapping<defaulttype::Vec3Types,defaulttype::Vec3Types>
-> DataTypes; // the types to instanciate.
+    SubsetMultiMapping<defaulttype::Vec3Types,defaulttype::Vec3Types>,
+    SubsetMultiMapping<defaulttype::Vec2Types,defaulttype::Vec2Types>,
+    SubsetMultiMapping<defaulttype::Vec1Types,defaulttype::Vec1Types>,
+    SubsetMultiMapping<defaulttype::Rigid3Types,defaulttype::Rigid3Types>,
+    SubsetMultiMapping<defaulttype::Rigid3Types,defaulttype::Vec3Types>
+> DataTypes;
 
-// Test suite for all the instanciations
 TYPED_TEST_SUITE(SubsetMultiMappingTest, DataTypes);
-// first test case
+
 TYPED_TEST( SubsetMultiMappingTest , two_parents_one_child )
 {
     ASSERT_TRUE(this->test_two_parents_one_child());
 }
 
-} // namespace
 } // namespace sofa

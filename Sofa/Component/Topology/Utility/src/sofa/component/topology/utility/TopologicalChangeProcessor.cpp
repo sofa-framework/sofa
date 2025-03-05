@@ -20,11 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/topology/utility/TopologicalChangeProcessor.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-
-#include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
 
 #include <sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h>
 #include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h>
@@ -33,7 +35,6 @@
 #include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyModifier.h>
 #include <sofa/component/topology/container/dynamic/HexahedronSetTopologyModifier.h>
 #include <sofa/component/topology/container/dynamic/PointSetTopologyModifier.h>
-#include <sofa/simulation/Simulation.h>
 
 #include <ctime>
 
@@ -49,30 +50,30 @@ namespace sofa::component::topology::utility
 using namespace sofa::type;
 using namespace defaulttype;
 
-
-
-int TopologicalChangeProcessorClass = core::RegisterObject("Read topological Changes and process them.")
-        .add< TopologicalChangeProcessor >();
-
+void registerTopologicalChangeProcessor(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Read topological changes and process them.")
+        .add< TopologicalChangeProcessor >());
+}
 
 TopologicalChangeProcessor::TopologicalChangeProcessor()
-    : m_filename( initData(&m_filename, "filename", "input file name for topological changes."))
-    , m_listChanges (initData (&m_listChanges, "listChanges", "0 for adding, 1 for removing, 2 for cutting and associated indices."))
-    , m_interval( initData(&m_interval, 0.0, "interval", "time duration between 2 actions"))
-    , m_shift( initData(&m_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
-    , m_loop( initData(&m_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
-    , m_useDataInputs( initData(&m_useDataInputs, false, "useDataInputs", "If true, will perform operation using Data input lists rather than text file."))
-    , m_timeToRemove( initData(&m_timeToRemove, 0.0, "timeToRemove", "If using option useDataInputs, time at which will be done the operations. Possibility to use the interval Data also."))
-    , m_pointsToRemove(initData (&m_pointsToRemove, "pointsToRemove", "List of point IDs to be removed."))
-    , m_edgesToRemove (initData (&m_edgesToRemove, "edgesToRemove", "List of edge IDs to be removed."))
-    , m_trianglesToRemove (initData (&m_trianglesToRemove, "trianglesToRemove", "List of triangle IDs to be removed."))
-    , m_quadsToRemove (initData (&m_quadsToRemove, "quadsToRemove", "List of quad IDs to be removed."))
-    , m_tetrahedraToRemove (initData (&m_tetrahedraToRemove, "tetrahedraToRemove", "List of tetrahedron IDs to be removed."))
-    , m_hexahedraToRemove (initData (&m_hexahedraToRemove, "hexahedraToRemove", "List of hexahedron IDs to be removed."))
-    , m_saveIndicesAtInit( initData(&m_saveIndicesAtInit, false, "saveIndicesAtInit", "set to 'true' to save the incision to do in the init to incise even after a movement"))
-    , m_epsilonSnapPath( initData(&m_epsilonSnapPath, (SReal)0.1, "epsilonSnapPath", "epsilon snap path"))
-    , m_epsilonSnapBorder( initData(&m_epsilonSnapBorder, (SReal)0.25, "epsilonSnapBorder", "epsilon snap path"))
-    , m_draw( initData(&m_draw, false, "draw", "draw information"))
+    : d_filename(initData(&d_filename, "filename", "input file name for topological changes."))
+    , d_listChanges (initData (&d_listChanges, "listChanges", "0 for adding, 1 for removing, 2 for cutting and associated indices."))
+    , d_interval(initData(&d_interval, 0.0, "interval", "time duration between 2 actions"))
+    , d_shift(initData(&d_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
+    , d_loop(initData(&d_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
+    , d_useDataInputs(initData(&d_useDataInputs, false, "useDataInputs", "If true, will perform operation using Data input lists rather than text file."))
+    , d_timeToRemove(initData(&d_timeToRemove, 0.0, "timeToRemove", "If using option useDataInputs, time at which will be done the operations. Possibility to use the interval Data also."))
+    , d_pointsToRemove(initData (&d_pointsToRemove, "pointsToRemove", "List of point IDs to be removed."))
+    , d_edgesToRemove (initData (&d_edgesToRemove, "edgesToRemove", "List of edge IDs to be removed."))
+    , d_trianglesToRemove (initData (&d_trianglesToRemove, "trianglesToRemove", "List of triangle IDs to be removed."))
+    , d_quadsToRemove (initData (&d_quadsToRemove, "quadsToRemove", "List of quad IDs to be removed."))
+    , d_tetrahedraToRemove (initData (&d_tetrahedraToRemove, "tetrahedraToRemove", "List of tetrahedron IDs to be removed."))
+    , d_hexahedraToRemove (initData (&d_hexahedraToRemove, "hexahedraToRemove", "List of hexahedron IDs to be removed."))
+    , d_saveIndicesAtInit(initData(&d_saveIndicesAtInit, false, "saveIndicesAtInit", "set to 'true' to save the incision to do in the init to incise even after a movement"))
+    , d_epsilonSnapPath(initData(&d_epsilonSnapPath, (SReal)0.1, "epsilonSnapPath", "epsilon snap path"))
+    , d_epsilonSnapBorder(initData(&d_epsilonSnapBorder, (SReal)0.25, "epsilonSnapBorder", "epsilon snap path"))
+    , d_draw(initData(&d_draw, false, "draw", "draw information"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
     , infile(nullptr)
@@ -84,6 +85,24 @@ TopologicalChangeProcessor::TopologicalChangeProcessor()
     , loopTime(0)
 {
     this->f_listening.setValue(true);
+    m_filename.setParent(&d_filename);
+    m_listChanges.setOriginalData(&d_listChanges);
+    m_interval.setOriginalData(&d_interval);
+    m_shift.setOriginalData(&d_shift);
+    m_loop.setOriginalData(&d_loop);
+    m_useDataInputs.setOriginalData(&d_useDataInputs);
+    m_timeToRemove.setOriginalData(&d_timeToRemove);
+    m_pointsToRemove.setOriginalData(&d_pointsToRemove);
+    m_edgesToRemove.setOriginalData(&d_edgesToRemove);
+    m_trianglesToRemove.setOriginalData(&d_trianglesToRemove);
+    m_quadsToRemove.setOriginalData(&d_quadsToRemove);
+    m_tetrahedraToRemove.setOriginalData(&d_tetrahedraToRemove);
+    m_hexahedraToRemove.setOriginalData(&d_hexahedraToRemove);
+    m_saveIndicesAtInit.setOriginalData(&d_saveIndicesAtInit);
+    m_epsilonSnapPath.setOriginalData(&d_epsilonSnapPath);
+    m_epsilonSnapBorder.setOriginalData(&d_epsilonSnapBorder);
+    m_draw.setOriginalData(&d_draw);
+
 }
 
 
@@ -116,13 +135,13 @@ void TopologicalChangeProcessor::init()
         return;
     }
 
-    if (!m_useDataInputs.getValue())
+    if (!d_useDataInputs.getValue())
         this->readDataFile();
 }
 
 void TopologicalChangeProcessor::reinit()
 {
-    if (!m_useDataInputs.getValue())
+    if (!d_useDataInputs.getValue())
         this->readDataFile();
 }
 
@@ -143,7 +162,7 @@ void TopologicalChangeProcessor::readDataFile()
     }
 #endif
 
-    const std::string& filename = m_filename.getFullPath();
+    const std::string& filename = d_filename.getFullPath();
     if (filename.empty())
     {
         msg_error() << "empty filename";
@@ -172,7 +191,7 @@ void TopologicalChangeProcessor::readDataFile()
     lastTime = 0;
     loopTime = 0;
 
-    if (m_saveIndicesAtInit.getValue())
+    if (d_saveIndicesAtInit.getValue())
         saveIndices();
 
     return;
@@ -183,7 +202,7 @@ void TopologicalChangeProcessor::setTime(double time)
 {
     if (time < nextTime)
     {
-        if (!m_useDataInputs.getValue())
+        if (!d_useDataInputs.getValue())
             this->readDataFile();
     }
 }
@@ -193,7 +212,7 @@ void TopologicalChangeProcessor::handleEvent(sofa::core::objectmodel::Event* eve
 {
     if (/* simulation::AnimateBeginEvent* ev = */simulation::AnimateBeginEvent::checkEventType(event))
     {
-        if (m_useDataInputs.getValue())
+        if (d_useDataInputs.getValue())
             processTopologicalChanges(this->getTime());
         else
             processTopologicalChanges();
@@ -207,7 +226,7 @@ void TopologicalChangeProcessor::handleEvent(sofa::core::objectmodel::Event* eve
 
 void TopologicalChangeProcessor::processTopologicalChanges(double time)
 {
-    if (!m_useDataInputs.getValue())
+    if (!d_useDataInputs.getValue())
     {
         if (time == lastTime) return;
         setTime(time);
@@ -215,16 +234,16 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
     }
     else
     {
-        if (m_timeToRemove.getValue() >= time)
+        if (d_timeToRemove.getValue() >= time)
             return;
 
         // process topological changes
-        helper::ReadAccessor< Data<type::vector<Index> > > points = m_pointsToRemove;
-        helper::ReadAccessor< Data<type::vector<Index> > > edges = m_edgesToRemove;
-        helper::ReadAccessor< Data<type::vector<Index> > > triangles = m_trianglesToRemove;
-        helper::ReadAccessor< Data<type::vector<Index> > > quads = m_quadsToRemove;
-        helper::ReadAccessor< Data<type::vector<Index> > > tetrahedra = m_tetrahedraToRemove;
-        helper::ReadAccessor< Data<type::vector<Index> > > hexahedra = m_hexahedraToRemove;
+        const helper::ReadAccessor< Data<type::vector<Index> > > points = d_pointsToRemove;
+        const helper::ReadAccessor< Data<type::vector<Index> > > edges = d_edgesToRemove;
+        const helper::ReadAccessor< Data<type::vector<Index> > > triangles = d_trianglesToRemove;
+        const helper::ReadAccessor< Data<type::vector<Index> > > quads = d_quadsToRemove;
+        const helper::ReadAccessor< Data<type::vector<Index> > > tetrahedra = d_tetrahedraToRemove;
+        const helper::ReadAccessor< Data<type::vector<Index> > > hexahedra = d_hexahedraToRemove;
 
         if (!hexahedra.empty())
         {
@@ -305,12 +324,12 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
         }
 
         // iterate, time set to infini if no interval.
-        double& newTime = *m_timeToRemove.beginEdit();
-        if (m_interval.getValue() != 0.0)
-            newTime += m_interval.getValue();
+        double& newTime = *d_timeToRemove.beginEdit();
+        if (d_interval.getValue() != 0.0)
+            newTime += d_interval.getValue();
         else
             newTime = (Index)-1;
-        m_timeToRemove.endEdit();
+        d_timeToRemove.endEdit();
     }
 }
 
@@ -335,7 +354,7 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
         {
             if (gzeof(gzfile))
             {
-                if (!m_loop.getValue())
+                if (!d_loop.getValue())
                     break;
                 gzrewind(gzfile);
                 loopTime = nextTime;
@@ -345,7 +364,7 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
             buf[0] = '\0';
             while (gzgets(gzfile,buf,sizeof(buf))!=nullptr && buf[0])
             {
-                size_t l = strlen(buf);
+                const size_t l = strlen(buf);
                 if (buf[l-1] == '\n')
                 {
                     buf[l-1] = '\0';
@@ -365,7 +384,7 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
             {
                 if (infile->eof())
                 {
-                    if (!m_loop.getValue())
+                    if (!d_loop.getValue())
                         break;
                     infile->clear();
                     infile->seekg(0);
@@ -394,7 +413,7 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
 
 void TopologicalChangeProcessor::processTopologicalChanges()
 {
-    double time = getContext()->getTime() + m_shift.getValue();
+    double time = getContext()->getTime() + d_shift.getValue();
     std::vector<std::string> validLines;
     if (!readNext(time, validLines)) return;
 
@@ -628,7 +647,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
         {
             msg_info() << "processTopologicalChanges: about to make a incision with time = " << time;
 
-            if (m_saveIndicesAtInit.getValue())
+            if (d_saveIndicesAtInit.getValue())
             {
                 inciseWithSavedIndices();
                 ++it; ++it; continue;
@@ -692,7 +711,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 }
 
                 // Output declarations
-                sofa::type::vector<sofa::core::topology::TopologyElementType>       topoPath_list;
+                sofa::type::vector<sofa::geometry::ElementType>       topoPath_list;
                 sofa::type::vector<Index> indices_list;
                 sofa::type::vector<Vec3 > coords2_list;
 
@@ -704,7 +723,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     core::behavior::MechanicalState<Vec3Types> * mstate =
                         m_topology->getContext()->get< core::behavior::MechanicalState<Vec3Types> > ();
                     //get the coordinates of the mechanical state
-                    const auto &v_coords = mstate->read(core::ConstVecCoordId::position())->getValue();
+                    const auto &v_coords = mstate->read(core::vec_id::read_access::position)->getValue();
                     a = v_coords[a_last];
                 }
 
@@ -966,7 +985,7 @@ void TopologicalChangeProcessor::saveIndices()
 
 TopologicalChangeProcessor::Index TopologicalChangeProcessor::findIndexInListOfTime(SReal time)
 {
-    double epsilon = 1e-10;
+    const double epsilon = 1e-10;
     for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
     {
         if ( fabs(time - triangleIncisionInformation[i].timeToIncise) < epsilon )
@@ -1007,18 +1026,18 @@ std::vector<SReal> TopologicalChangeProcessor::getValuesInLine(std::string line,
             {
                 if (nbElements*4 < values.size())
                 {
-                    msg_warning() << "Incorrect input in '" << m_filename.getValue() << "'. Too much values (" << values.size() << ") in input in " << std::string(line);
+                    msg_warning() << "Incorrect input in '" << d_filename.getValue() << "'. Too much values (" << values.size() << ") in input in " << std::string(line);
                 }
                 else if (nbElements*3 > values.size())
                 {
-                    msg_error() << "Incorrect input in '" << m_filename.getValue() <<"'. Not enough values in input in " << std::string(line) << msgendl
+                    msg_error() << "Incorrect input in '" << d_filename.getValue() << "'. Not enough values in input in " << std::string(line) << msgendl
                                 << "Topological changes aborted" ;
                     values.clear();
                     return values;
                 }
                 else
                 {
-                    msg_warning() << "Incorrect input in '" << m_filename.getValue() << "' in line " << std::string(line) << msgendl
+                    msg_warning() << "Incorrect input in '" << d_filename.getValue() << "' in line " << std::string(line) << msgendl
                                   << "If only coordinates are wanted, there are too much values. If coordinates with the index are wanted, there are not enough values."
                                   << "Will consider values as coordinates only." ;
                 }
@@ -1027,7 +1046,7 @@ std::vector<SReal> TopologicalChangeProcessor::getValuesInLine(std::string line,
     }
     else
     {
-        msg_error() << "No input values in '" << m_filename.getValue() << "'." ;
+        msg_error() << "No input values in '" << d_filename.getValue() << "'." ;
         values.clear();
         return values;
     }
@@ -1046,7 +1065,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vec3 coord, Index& triangleIn
         return;
 
     //get the number of triangle in the topology
-    size_t nbTriangle = m_topology->getNbTriangles();
+    const size_t nbTriangle = m_topology->getNbTriangles();
 
     sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
@@ -1114,25 +1133,25 @@ void  TopologicalChangeProcessor::findElementIndex(Vec3 coord, Index& triangleIn
     /***
      * Projection of the point followed by a including test
      */
-    SReal x = coord[0], y = coord[1], z = coord[2];
+    const SReal x = coord[0], y = coord[1], z = coord[2];
     //project point along the normal
     for (unsigned int i = 0 ; i < nbTriangle ; i++)
     {
         //get the normal of the current triangle
         auto normal = triangleGeo->computeTriangleNormal(i);
-        SReal normalNorm = normal.norm();
+        const SReal normalNorm = normal.norm();
         if (!normalNorm)
             break;
         //normalize the normal (avoids to divide by the norm)
         normal /= normal.norm();
-        SReal a = normal[0], b = normal[1], c = normal[2];
+        const SReal a = normal[0], b = normal[1], c = normal[2];
 
         //get the coordinates points of the triangle
         sofa::type::Vec3 points[3];
         triangleGeo->getTriangleVertexCoordinates(i, points);
 
         //get d in the equation of the plane of the triangle ax+by+cz + d = 0
-        SReal d = - (points[0][0] * a + points[0][1] * b + points[0][2] * c );
+        const SReal d = - (points[0][0] * a + points[0][1] * b + points[0][2] * c );
         sofa::type::Vec3 projectedPoint;
 
         projectedPoint[0] = ((b * b + c * c) * x - a * b * y - a * c * z - d * a) /*/normalNorm*/;
@@ -1198,7 +1217,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
 
-    int indexOfTime = findIndexInListOfTime(getContext()->getTime());
+    const int indexOfTime = findIndexInListOfTime(getContext()->getTime());
 
     if (indexOfTime == -1)
     {
@@ -1217,7 +1236,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     sofa::type::Vec3 b;
 
     sofa::Index a_last = sofa::InvalidID;
-    sofa::Index b_last = sofa::InvalidID;
+    const sofa::Index b_last = sofa::InvalidID;
     bool firstCut= true;
 
     std::vector<Vec3> coordinates;
@@ -1260,7 +1279,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         b = coordinates[i];
 
         // Output declarations
-        sofa::type::vector< sofa::core::topology::TopologyElementType> topoPath_list;
+        sofa::type::vector< sofa::geometry::ElementType> topoPath_list;
         sofa::type::vector<Index> indices_list;
         sofa::type::vector< Vec3 > coords2_list;
 
@@ -1268,9 +1287,9 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
             a_last = sofa::InvalidID;
         else
         {
-            core::behavior::MechanicalState<Vec3Types>* mstate = m_topology->getContext()->get<core::behavior::MechanicalState<Vec3Types> >();
+            const core::behavior::MechanicalState<Vec3Types>* mstate = m_topology->getContext()->get<core::behavior::MechanicalState<Vec3Types> >();
             //get the coordinates of the mechanical state
-            const auto &v_coords =  mstate->read(core::ConstVecCoordId::position())->getValue();
+            const auto &v_coords =  mstate->read(core::vec_id::read_access::position)->getValue();
             a = v_coords[a_last];
         }
 
@@ -1278,7 +1297,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         errorTrianglesIndices.push_back(ind_tb);
 
         //Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.
-        bool isPathOk = triangleGeo->computeIntersectedObjectsList(a_last, a, b, ind_ta, ind_tb, topoPath_list, indices_list, coords2_list);
+        const bool isPathOk = triangleGeo->computeIntersectedObjectsList(a_last, a, b, ind_ta, ind_tb, topoPath_list, indices_list, coords2_list);
 
         if (!isPathOk)
         {
@@ -1299,7 +1318,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         sofa::type::vector< Index > new_edges;
 
         //Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
-        triangleGeo->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, m_epsilonSnapPath.getValue(), m_epsilonSnapBorder.getValue());
+        triangleGeo->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, d_epsilonSnapPath.getValue(), d_epsilonSnapBorder.getValue());
 
         sofa::type::vector<Index> new_points;
         sofa::type::vector<Index> end_points;
@@ -1331,7 +1350,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
  */
 void TopologicalChangeProcessor::updateTriangleIncisionInformation()
 {
-    size_t nbTriangleInfo = triangleIncisionInformation.size();
+    const size_t nbTriangleInfo = triangleIncisionInformation.size();
     sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
 
@@ -1377,7 +1396,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     if (!m_topology)
         return;
 
-    if(!m_draw.getValue())
+    if(!d_draw.getValue())
         return;
 
     if (!vparams->displayFlags().getShowBehaviorModels())
@@ -1389,7 +1408,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     if (!triangleGeo)
         return;
 
-    size_t nbTriangles = m_topology->getNbTriangles();
+    const size_t nbTriangles = m_topology->getNbTriangles();
 
     std::vector< Vec3 > trianglesToDraw;
     std::vector< Vec3 > pointsToDraw;
@@ -1398,7 +1417,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     {
         for (size_t j = 0 ; j < triangleIncisionInformation[i].triangleIndices.size() ; j++)
         {
-            unsigned int triIndex = triangleIncisionInformation[i].triangleIndices[j];
+            const unsigned int triIndex = triangleIncisionInformation[i].triangleIndices[j];
 
             if ( triIndex > nbTriangles -1)
                 break;
@@ -1427,7 +1446,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
         /* initialize random seed: */
         srand ( (unsigned int)time(nullptr) );
 
-        for (unsigned int errorTrianglesIndex : errorTrianglesIndices)
+        for (const unsigned int errorTrianglesIndex : errorTrianglesIndices)
         {
             Vec3Types::Coord coord[3];
             triangleGeo->getTriangleVertexCoordinates(errorTrianglesIndex, coord);

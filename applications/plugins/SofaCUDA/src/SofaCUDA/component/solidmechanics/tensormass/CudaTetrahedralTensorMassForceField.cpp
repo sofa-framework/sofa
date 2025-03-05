@@ -21,16 +21,14 @@
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/behavior/ForceField.inl>
-#include <sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl>
+#include <SofaCUDA/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
-namespace gpu
-{
 
-namespace cuda
+namespace gpu::cuda
 {
 int TetrahedralTensorMassForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
 .add< sofa::component::solidmechanics::tensormass::TetrahedralTensorMassForceField<CudaVec3fTypes> >()
@@ -40,9 +38,7 @@ int TetrahedralTensorMassForceFieldCudaClass = core::RegisterObject("Supports GP
 ;
 
 
-} // namespace cuda
-
-} // namespace gpu
+} // namespace gpu::cuda
 
 
 template class SOFA_GPU_CUDA_API sofa::component::solidmechanics::tensormass::TetrahedralTensorMassForceField<sofa::gpu::cuda::CudaVec3fTypes>;

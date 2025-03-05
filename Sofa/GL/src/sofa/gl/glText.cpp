@@ -111,8 +111,8 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
 
     std::ostringstream oss;
     oss << text;
-    std::string str = oss.str();
-    std::size_t length = str.size();
+    const std::string str = oss.str();
+    const std::size_t length = str.size();
 
     glPushAttrib(GL_TEXTURE_BIT);
     glEnable(GL_TEXTURE_2D);
@@ -140,7 +140,7 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
         vertices.push_back(vertex_down_right);
         vertices.push_back(vertex_up_right);
 
-        char character = str[j] - 32;
+        const char character = str[j] - 32;
 
         float uv_x = (character % nb_char_width) / (float)nb_char_width;
         float uv_y = 1.0f - ((character / nb_char_height) / (float)nb_char_height);
@@ -199,7 +199,7 @@ void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, cons
         std::ostringstream oss;
         oss << i;
         std::string str = oss.str();
-        std::size_t length = str.size();
+        const std::size_t length = str.size();
 
         std::vector<Vec3f> vertices;
         std::vector<Vec2f> UVs;
@@ -233,7 +233,7 @@ void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, cons
             vertices.push_back(vertex_down_right);
             vertices.push_back(vertex_up_right);
 
-            char character = str[j] - 32;
+            const char character = str[j] - 32;
 
             float uv_x = (character % nb_char_width) / (float)nb_char_width;
             float uv_y = 1.0f - ((character / nb_char_height) / (float)nb_char_height);

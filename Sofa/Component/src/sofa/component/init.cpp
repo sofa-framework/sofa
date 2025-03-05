@@ -31,6 +31,7 @@
 #include <sofa/component/haptics/init.h>
 #include <sofa/component/io/init.h>
 #include <sofa/component/linearsolver/init.h>
+#include <sofa/component/linearsystem/init.h>
 #include <sofa/component/mapping/init.h>
 #include <sofa/component/mass/init.h>
 #include <sofa/component/mechanicalload/init.h>
@@ -43,13 +44,17 @@
 #include <sofa/component/topology/init.h>
 #include <sofa/component/visual/init.h>
 
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/Modules.h>
+
 namespace sofa::component
 {
-    
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory * factory);
 }
 
 void initExternalModule()
@@ -67,6 +72,31 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjectsFromPlugin(Sofa.Component.AnimationLoop);
+    factory->registerObjectsFromPlugin(Sofa.Component.Collision);
+    factory->registerObjectsFromPlugin(Sofa.Component.Constraint);
+    factory->registerObjectsFromPlugin(Sofa.Component.Controller);
+    factory->registerObjectsFromPlugin(Sofa.Component.Diffusion);
+    factory->registerObjectsFromPlugin(Sofa.Component.Engine);
+    factory->registerObjectsFromPlugin(Sofa.Component.Haptics);
+    factory->registerObjectsFromPlugin(Sofa.Component.IO);
+    factory->registerObjectsFromPlugin(Sofa.Component.LinearSolver);
+    factory->registerObjectsFromPlugin(Sofa.Component.LinearSystem);
+    factory->registerObjectsFromPlugin(Sofa.Component.Mapping);
+    factory->registerObjectsFromPlugin(Sofa.Component.Mass);
+    factory->registerObjectsFromPlugin(Sofa.Component.MechanicalLoad);
+    factory->registerObjectsFromPlugin(Sofa.Component.ODESolver);
+    factory->registerObjectsFromPlugin(Sofa.Component.Playback);
+    factory->registerObjectsFromPlugin(Sofa.Component.SceneUtility);
+    factory->registerObjectsFromPlugin(Sofa.Component.Setting);
+    factory->registerObjectsFromPlugin(Sofa.Component.SolidMechanics);
+    factory->registerObjectsFromPlugin(Sofa.Component.StateContainer);
+    factory->registerObjectsFromPlugin(Sofa.Component.Topology);
+    factory->registerObjectsFromPlugin(Sofa.Component.Visual);
+}
+
 void init()
 {
     static bool first = true;
@@ -81,6 +111,7 @@ void init()
         sofa::component::haptics::init();
         sofa::component::io::init();
         sofa::component::linearsolver::init();
+        sofa::component::linearsystem::init();
         sofa::component::mapping::init();
         sofa::component::mass::init();
         sofa::component::mechanicalload::init();

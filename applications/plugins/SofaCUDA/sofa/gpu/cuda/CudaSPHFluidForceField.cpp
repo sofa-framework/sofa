@@ -25,13 +25,8 @@
 #include <sofa/core/behavior/ForceField.inl>
 #include <SofaSphFluid/SPHFluidForceField.inl>
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int SPHFluidForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
@@ -41,8 +36,8 @@ int SPHFluidForceFieldCudaClass = core::RegisterObject("Supports GPU-side comput
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
 
-} // namespace sofa
+
+

@@ -331,35 +331,35 @@ public:
 
     MatrixExpr< MatrixTranspose< SparseMatrix<T> > > t() const
     {
-        return MatrixExpr< MatrixTranspose< SparseMatrix<T> > >(MatrixTranspose< SparseMatrix<T> >(*this));
+        return MatrixExpr { MatrixTranspose< SparseMatrix<T> >(*this) };
     }
 
     MatrixExpr< MatrixNegative< SparseMatrix<T> > > operator-() const
     {
-        return MatrixExpr< MatrixNegative< SparseMatrix<T> > >(MatrixNegative< SparseMatrix<T> >(*this));
+        return MatrixExpr { MatrixNegative< SparseMatrix<T> >(*this) };
     }
 
     template<class Real2>
     MatrixExpr< MatrixProduct< SparseMatrix<T>, SparseMatrix<Real2> > > operator*(const SparseMatrix<Real2>& m) const
     {
-        return MatrixExpr< MatrixProduct< SparseMatrix<T>, SparseMatrix<Real2> > >(MatrixProduct< SparseMatrix<T>, SparseMatrix<Real2> >(*this, m));
+        return MatrixExpr { MatrixProduct< SparseMatrix<T>, SparseMatrix<Real2> >(*this, m) };
     }
 
     MatrixExpr< MatrixScale< SparseMatrix<T>, double > > operator*(const double& r) const
     {
-        return MatrixExpr< MatrixScale< SparseMatrix<T>, double > >(MatrixScale< SparseMatrix<T>, double >(*this, r));
+        return MatrixExpr { MatrixScale< SparseMatrix<T>, double >(*this, r) };
     }
 
     template<class Real2>
     MatrixExpr< MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> > > operator+(const SparseMatrix<Real2>& m) const
     {
-        return MatrixExpr< MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> > >(MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> >(*this, m));
+        return MatrixExpr { MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> >(*this, m) };
     }
 
     template<class Real2>
     MatrixExpr< MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> > > operator-(const SparseMatrix<Real2>& m) const
     {
-        return MatrixExpr< MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> > >(MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> >(*this, m));
+        return MatrixExpr { MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> >(*this, m) };
     }
 
     void swap(SparseMatrix<T>& m)

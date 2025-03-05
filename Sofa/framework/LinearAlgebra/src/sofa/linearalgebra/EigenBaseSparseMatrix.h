@@ -56,19 +56,9 @@ Rows, columns, or the full matrix can be set to zero using the clear* methods.
 template<class TReal>
 class EigenBaseSparseMatrix : public linearalgebra::BaseMatrix
 {
-    void set(Index i, Index j, double v) override
-    {
-        for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
-        {
-            if(Index(it.index()) == j) // diagonal entry
-                it.valueRef()=0.0;
-        }
-
-        incoming.push_back( Triplet(i,j,(Real)v) );
-    }
-
 
 public:
+
 
     typedef TReal Real;
     typedef Eigen::SparseMatrix<Real,Eigen::RowMajor> CompressedMatrix;
@@ -76,15 +66,8 @@ public:
     typedef EigenBaseSparseMatrix<TReal> ThisMatrix;
     typedef Eigen::Triplet<Real> Triplet;
 
-private:
-
-    type::vector<Triplet> incoming;             ///< Scheduled additions
-
 
 public:
-
-    CompressedMatrix compressedMatrix;    ///< the compressed matrix
-
 
     EigenBaseSparseMatrix(Index nbRow=0, Index nbCol=0)
     {
@@ -104,6 +87,18 @@ public:
         compressedMatrix = m.compressedMatrix;
     }
 
+
+    void set(Index i, Index j, double v) override
+    {
+        for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
+        {
+            if(Index(it.index()) == j) // diagonal entry
+                it.valueRef()=0.0;
+        }
+
+        incoming.push_back( Triplet(i,j,(Real)v) );
+    }
+
     void setIdentity()
     {
         clear();
@@ -114,6 +109,8 @@ public:
         }
         compress();
     }
+
+
 
     /// Schedule the addition of the value at the given place. Scheduled additions must be finalized using function compress().
     void add( Index row, Index col, double value ) override{
@@ -275,7 +272,7 @@ public:
     /// Set all values to 0, by resizing to the same size. @todo check that it really resets.
     void clear() override
     {
-        Index r=rowSize(), c=colSize();
+        const Index r=rowSize(), c=colSize();
         resize(0,0);
         resize(r,c);
         incoming.clear();
@@ -320,10 +317,6 @@ public:
     static const char* Name();
 
     // sparse solver support
-protected:
-    typedef Eigen::SimplicialCholesky<Eigen::SparseMatrix<Real> >  SimplicialCholesky;
-    SimplicialCholesky cholesky; ///< used to factorize the matrix and solve systems using Cholesky method, for symmetric positive definite matrices only.
-public:
     /// Try to compute the LDLT decomposition, and return true if success. The matrix is unchanged.
     bool choleskyDecompose()
     {
@@ -355,8 +348,6 @@ public:
             }
     }
 
-
-public:
 
     /// EigenBaseSparseMatrix multiplication
     /// res can be the same variable as this or rhs
@@ -399,6 +390,15 @@ public:
 #endif
     }
 
+public:
+	CompressedMatrix compressedMatrix;    ///< the compressed matrix
+
+protected:
+    typedef Eigen::SimplicialCholesky<Eigen::SparseMatrix<Real> >  SimplicialCholesky;
+    SimplicialCholesky cholesky; ///< used to factorize the matrix and solve systems using Cholesky method, for symmetric positive definite matrices only.
+
+private:
+    type::vector<Triplet> incoming;             ///< Scheduled additions
 
 };
 

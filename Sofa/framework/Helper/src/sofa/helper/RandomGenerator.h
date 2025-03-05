@@ -34,10 +34,7 @@
 #define RAND48_MULT_2   (0x0005)
 #define RAND48_ADD      (0x000b)
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 
@@ -101,7 +98,7 @@ private:
 template<>
 inline long RandomGenerator::random( long min, long max )
 {
-    SReal randomReal = min + ((max - min)*(SReal)randomBase())/(SReal)RANDOM_BASE_MAX;
+    const SReal randomReal = min + ((max - min)*(SReal)randomBase())/(SReal)RANDOM_BASE_MAX;
 	return (long)(randomReal);
 }
 
@@ -139,8 +136,6 @@ template<>
 inline float RandomGenerator::random()
 {
 	return random<float>( -(float)RANDOM_BASE_MAX, (float)RANDOM_BASE_MAX );
-}
-
 }
 
 }

@@ -62,7 +62,7 @@ public:
 protected:
     LinearSolverConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr);
 
-    virtual ~LinearSolverConstraintCorrection();
+    ~LinearSolverConstraintCorrection() override;
 public:
     void init() override;
 
@@ -97,20 +97,6 @@ public:
     SingleLink<LinearSolverConstraintCorrection, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used to compute the compliance matrix, requiring the inverse of the linear system matrix
     SingleLink<LinearSolverConstraintCorrection, sofa::core::behavior::OdeSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_ODESolver; ///< Link towards the ODE solver used to recover the integration factors
 
-
-    SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
-    Data< type::vector< std::string > >  solverName; ///< name of the constraint solver
-    //SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
-    {
-        Inherit1::parse(arg);
-        if (arg->getAttribute("solverName"))
-        {
-            msg_warning() << "String data \"solverName\" is now replaced by explicit data link: \"linearSolver\" (PR #3152)";
-        }
-    }
-
-
     void verify_constraints();
 
     bool hasConstraintNumber(int index) override;  // virtual ???
@@ -124,13 +110,22 @@ public:
     void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
 
 protected:
-    linearalgebra::SparseMatrix<SReal> J; ///< constraint matrix
+    DeprecatedAndRemoved J; ///< use m_constraintMatrix instead
+
+    linearalgebra::SparseMatrix<Real> m_constraintJacobian;
+
+    SOFA_ATTRIBUTE_DEPRECATED__FORCES_IN_LINEARSOLVERCONSTRAINTCORRECTION()
     linearalgebra::FullVector<SReal> F; ///< forces computed from the constraints
 
     /**
-    * @brief Compute the compliance matrix
+    * @brief Convert the constraint matrix
     */
-    virtual void computeJ(sofa::linearalgebra::BaseMatrix* W, const MatrixDeriv& j);
+    void convertConstraintMatrix(sofa::SignedIndex numberOfConstraints, const MatrixDeriv& inputConstraintMatrix);
+
+    virtual void computeJ(sofa::linearalgebra::BaseMatrix* W, const MatrixDeriv& j)
+    {
+        convertConstraintMatrix(W->rowSize(), j);
+    }
 
 
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -157,7 +152,7 @@ private:
     bool _new_force; // if true, a "new" force was added in setConstraintDForce which is not yet integrated by a new computation in addConstraintDisplacements
 };
 
-#if  !defined(SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP)
+#if !defined(SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP)
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec1Types>;

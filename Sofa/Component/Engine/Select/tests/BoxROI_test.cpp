@@ -34,7 +34,7 @@ using ::testing::Types;
 #include <sofa/core/objectmodel/ComponentState.h>
 using sofa::core::objectmodel::ComponentState;
 
-#include <sofa/component/engine/select/BoxROI.h>
+#include <sofa/component/engine/select/BoxROI.inl>
 using sofa::component::engine::select::BoxROI;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -42,7 +42,6 @@ using sofa::simulation::Simulation;
 using sofa::simulation::graph::DAGSimulation;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
-using sofa::simulation::setSimulation;
 using sofa::core::objectmodel::BaseObject;
 using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::New;
@@ -60,7 +59,7 @@ using sofa::helper::logging::MessageDispatcher;
 #include <sofa/testing/TestMessageHandler.h>
 #include <sofa/testing/BaseTest.h>
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 template <typename TDataType>
 struct BoxROITest :  public sofa::testing::BaseTest
@@ -71,13 +70,16 @@ struct BoxROITest :  public sofa::testing::BaseTest
     Node::SPtr m_node;
     typename TheBoxROI::SPtr m_boxroi;
 
-    void SetUp() override
+    void doSetUp() override
     {
-        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
-        sofa::simpleapi::importPlugin("Sofa.Component.Engine.Select");
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.Topology.Container.Dynamic,
+            Sofa.Component.Engine.Select});
 
-        setSimulation( m_simu = new DAGSimulation() );
+        m_simu = sofa::simulation::getSimulation();
+        ASSERT_NE(m_simu, nullptr);
+
         m_root = m_simu->createNewGraph("root");
 
         m_node = m_root->createChild("node");
@@ -85,10 +87,10 @@ struct BoxROITest :  public sofa::testing::BaseTest
         m_node->addObject(m_boxroi);
     }
 
-    void TearDown() override
+    void doTearDown() override
     {
         if (m_root != nullptr){
-            m_simu->unload(m_root);
+            sofa::simulation::node::unload(m_root);
         }
     }
 
@@ -118,7 +120,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
     }
 
     void checkGracefullHandlingOfInvalidUsage(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node name='Root' gravity='0 0 0' time='0' animate='0'>       "
                 "   <Node name='Level 1'>                                      "
@@ -127,7 +129,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
                 "</Node>                                                       ";
 
         EXPECT_MSG_EMIT(Error); // Unable to find a MechanicalObject for this component.
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
         EXPECT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
@@ -139,13 +141,13 @@ struct BoxROITest :  public sofa::testing::BaseTest
 
         boxroi->reinit();
 
-        EXPECT_EQ(boxroi->getComponentState(), ComponentState::Invalid ) << "Reinit shouln't crash or change the state because there is still no MechanicalObject. ";
+        EXPECT_EQ(boxroi->getComponentState(), ComponentState::Invalid ) << "Reinit shouldn't crash or change the state because there is still no MechanicalObject. ";
 
     }
 
 
     void checkAutomaticSearchingOfMechanicalObject(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node name='Root' gravity='0 0 0' time='0' animate='0'>       "
                 "   <Node name='Level 1'>                                      "
@@ -155,7 +157,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
                 "   </Node>                                                    "
                 "</Node>                                                       ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
         EXPECT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
@@ -166,7 +168,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
 
 
     void checkAutomaticSearchingOfMechanicalObjectParent(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >   "
                 "   <MechanicalObject name='meca' position='0 0 0 1 1 1'/>     "
@@ -176,7 +178,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
                 "   </Node>                                                    "
                 "</Node>                                                       ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene.c_str());
         EXPECT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
@@ -186,7 +188,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
     }
 
     void checkAutomaticSearchingOfMeshLoader(){
-        string scene =
+        const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >   "
                 "   <Node name='Level 1'>                                      "
@@ -197,7 +199,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
                 "   </Node>                                                    "
                 "</Node>                                                       ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
         EXPECT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
         BaseObject* boxroi = root->getTreeNode("Level 1")->getObject("myBoxROI");
@@ -329,15 +331,15 @@ struct BoxROITest :  public sofa::testing::BaseTest
         m_boxroi->findData("box")->read("-1. -1. -1.  0. 0. 0.   1. 1. 1.  2. 2. 2.");
         m_boxroi->computeBBox(nullptr, false);
 
-        EXPECT_EQ(m_boxroi->f_bbox.getValue().minBBox(), Vec3d(-1,-1,-1));
-        EXPECT_EQ(m_boxroi->f_bbox.getValue().maxBBox(), Vec3d(2,2,2));
+        EXPECT_EQ(m_boxroi->f_bbox.getValue().minBBox(), Vec3(-1,-1,-1));
+        EXPECT_EQ(m_boxroi->f_bbox.getValue().maxBBox(), Vec3(2,2,2));
 
         m_boxroi->findData("box")->read("-1. -1. -1.  0. 0. 0.");
         m_boxroi->findData("orientedBox")->read("0 0 0  2 0 0  2 2 0 2");
         m_boxroi->computeBBox(nullptr, false);
 
-        EXPECT_EQ(m_boxroi->f_bbox.getValue().minBBox(), Vec3d(-1,-1,-1));
-        EXPECT_EQ(m_boxroi->f_bbox.getValue().maxBBox(), Vec3d(2,2,1));
+        EXPECT_EQ(m_boxroi->f_bbox.getValue().minBBox(), Vec3(-1,-1,-1));
+        EXPECT_EQ(m_boxroi->f_bbox.getValue().maxBBox(), Vec3(2,2,1));
     }
 
 };
@@ -347,7 +349,6 @@ struct BoxROITest :  public sofa::testing::BaseTest
 //Please fix this either the tests or the BoxROI implementation
 typedef Types<
     Vec3Types
-    ,Vec3dTypes
     //,Rigid3dTypes
 
 > DataTypes;

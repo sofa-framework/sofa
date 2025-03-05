@@ -24,6 +24,8 @@
 
 #include <sofa/component/io/mesh/MeshOffLoader.h>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::component::io::mesh
 {
 
@@ -48,10 +50,16 @@ public:
     void clear();
 
 private:
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    sofa::core::objectmodel::lifecycle::RenamedData<int> nbFiles;
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
+    sofa::core::objectmodel::lifecycle::RenamedData<double> stepDuration;
+
+
     /// the number of files in the sequences
-    Data<int> nbFiles;
+    Data<int> d_nbFiles;
     /// duration each file must be loaded
-    Data<double> stepDuration;
+    Data<double> d_stepDuration;
 
     /// index of the first file
     int firstIndex;

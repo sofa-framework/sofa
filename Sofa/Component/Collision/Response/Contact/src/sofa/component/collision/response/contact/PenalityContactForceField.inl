@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/collision/response/contact/PenalityContactForceField.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
@@ -118,7 +119,7 @@ void PenalityContactForceField<DataTypes>::addDForce(const sofa::core::Mechanica
         {
             Coord du = dx2[c.m2]-dx1[c.m1];
             Real dpen = - du*c.norm;
-            //if (c.pen < 0) dpen += c.pen; // start penality at distance 0
+            //if (c.pen < 0) dpen += c.pen; // start penalty at distance 0
             Real dfN = c.ks * dpen * (Real)kFactor;
             Deriv dforce = -c.norm*dfN;
             df1[c.m1]+=dforce;
@@ -199,6 +200,69 @@ void PenalityContactForceField<DataTypes>::addKToMatrix(const sofa::core::Mechan
 }
 
 template <class DataTypes>
+void PenalityContactForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    const type::vector<Contact>& cc = contacts.getValue();
+
+    if (this->mstate1 == this->mstate2)
+    {
+        auto dfdx = matrix->getForceDerivativeIn(this->mstate1.get())
+                           .withRespectToPositionsIn(this->mstate1.get());
+
+        for (const auto& contact : cc)
+        {
+            if (contact.pen > 0)
+            {
+                const sofa::Index p1 = Deriv::total_size * contact.m1;
+                const sofa::Index p2 = Deriv::total_size * contact.m2;
+                const auto localMatrix = contact.ks * sofa::type::dyad(contact.norm, contact.norm);
+
+                dfdx(p1, p1) += -localMatrix;
+                dfdx(p1, p2) +=  localMatrix;
+                dfdx(p2, p1) +=  localMatrix;
+                dfdx(p2, p2) += -localMatrix;
+            }
+        }
+    }
+    else
+    {
+        auto* m1 = this->mstate1.get();
+        auto* m2 = this->mstate2.get();
+
+        auto df1_dx1 = matrix->getForceDerivativeIn(m1).withRespectToPositionsIn(m1);
+        auto df1_dx2 = matrix->getForceDerivativeIn(m1).withRespectToPositionsIn(m2);
+        auto df2_dx1 = matrix->getForceDerivativeIn(m2).withRespectToPositionsIn(m1);
+        auto df2_dx2 = matrix->getForceDerivativeIn(m2).withRespectToPositionsIn(m2);
+
+        df1_dx1.checkValidity(this);
+        df1_dx2.checkValidity(this);
+        df2_dx1.checkValidity(this);
+        df2_dx2.checkValidity(this);
+
+        for (const auto& contact : cc)
+        {
+            if (contact.pen > 0)
+            {
+                const sofa::Index p1 = Deriv::total_size * contact.m1;
+                const sofa::Index p2 = Deriv::total_size * contact.m2;
+                const auto localMatrix = contact.ks * sofa::type::dyad(contact.norm, contact.norm);
+
+                df1_dx1(p1, p1) += -localMatrix;
+                df1_dx2(p1, p2) +=  localMatrix;
+                df2_dx1(p2, p1) +=  localMatrix;
+                df2_dx2(p2, p2) += -localMatrix;
+            }
+        }
+    }
+}
+
+template <class DataTypes>
+void PenalityContactForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
+template <class DataTypes>
 SReal PenalityContactForceField<DataTypes>::getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const
 {
     msg_error() << "PenalityContactForceField::getPotentialEnergy-not-implemented !!!";
@@ -213,8 +277,8 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
     
     using sofa::type::RGBAColor;
 
-    const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p1 = this->mstate1->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& p2 = this->mstate2->read(core::vec_id::read_access::position)->getValue();
     const type::vector<Contact>& cc = contacts.getValue();
 
     std::vector< type::Vec3 > points[4];
@@ -283,13 +347,13 @@ void PenalityContactForceField<DataTypes>::grabPoint(
 
     if (static_cast< core::objectmodel::BaseObject *>(this->mstate1) == static_cast< const core::objectmodel::BaseObject *>(tool))
     {
-        const auto& mstate2Pos = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+        const auto& mstate2Pos = this->mstate2->read(core::vec_id::read_access::position)->getValue();
 
         for (sofa::Index i=0; i< contactsRef.size(); i++)
         {
             for (sofa::Index j=0; j<index.size(); j++)
             {
-                if (contactsRef[i].m1  == index[j])
+                if (contactsRef[i].m1 == index[j])
                 {
                     result.push_back(std::make_pair(static_cast< core::objectmodel::BaseObject *>(this),mstate2Pos[contactsRef[i].m2]));
                     triangle.push_back(contactsRef[i].index2);
@@ -300,12 +364,12 @@ void PenalityContactForceField<DataTypes>::grabPoint(
     }
     else if (static_cast< core::objectmodel::BaseObject *>(this->mstate2) == static_cast< const core::objectmodel::BaseObject *>(tool))
     {
-        const auto& mstate1Pos = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+        const auto& mstate1Pos = this->mstate1->read(core::vec_id::read_access::position)->getValue();
         for (sofa::Index i=0; i< contactsRef.size(); i++)
         {
             for (sofa::Index j=0; j<index.size(); j++)
             {
-                if (contactsRef[i].m2  == index[j])
+                if (contactsRef[i].m2 == index[j])
                 {
                     result.push_back(std::make_pair(static_cast< core::objectmodel::BaseObject *>(this), mstate1Pos[contactsRef[i].m1]));
                     triangle.push_back(contactsRef[i].index1);

@@ -34,16 +34,8 @@
  * Time measurement *
  ********************/
 
-namespace sofa
-{
 
-namespace helper
-{
-
-namespace system
-{
-
-namespace thread
+namespace sofa::helper::system::thread
 {
 
 #ifdef WIN32
@@ -69,7 +61,7 @@ public:
     // Get the frequency of the fast timer
     static ctime_t getTicksPerSec();
 
-    // Same as getFastTime, but with the additionnal guaranty that it will never decrease.
+    // Same as getFastTime, but with the additional guaranty that it will never decrease.
     static /*volatile*/ ctime_t getTime();
 
     // Sleep for the given duration in second
@@ -81,12 +73,7 @@ protected:
     static ctime_t computeTicksPerSec();
 };
 
-} // namespace thread
+} // namespace sofa::helper::system::thread
 
-} // namespace system
-
-} // namespace helper
-
-} // namespace sofa
 
 #endif

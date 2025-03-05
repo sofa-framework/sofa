@@ -60,7 +60,7 @@ void drawCone(const V& p1, const V& p2, const float& radius1, const float& radiu
         ct = (float)cos(theta);
         /* construct normal */
         tmp = p*ct+q*st;
-        /* set the normal for the two subseqent points */
+        /* set the normal for the two subsequent points */
         gl::glNormalT(tmp);
         /* point on disk 1 */
         V w(p1);
@@ -140,9 +140,9 @@ void drawTorus(const float* coordinateMatrix, const float& bodyRad=0.0,  const f
     glMultMatrixf(coordinateMatrix);
     //gluDisk(quadric, 2.0*bodyRad, 2.0*rad, 10, 10);
 
-    float rr=1.5f*bodyRad;
-    double dv=2*M_PI/precision;
-    double dw=2*M_PI/precision;
+    const float rr=1.5f*bodyRad;
+    const double dv=2*M_PI/precision;
+    const double dw=2*M_PI/precision;
     double v=0.0f;
     double w=0.0f;
 

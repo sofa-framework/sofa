@@ -26,6 +26,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #ifdef DEBUG_DRAW
 #define DO_DEBUG_DRAW true
@@ -33,10 +34,8 @@
 #define DO_DEBUG_DRAW false
 #endif // DEBUG_DRAW
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 Visitor::Result VisualVisitor::processNodeTopDown(simulation::Node* node)
@@ -47,13 +46,34 @@ Visitor::Result VisualVisitor::processNodeTopDown(simulation::Node* node)
 }
 
 
+void VisualVisitor::fwdProcessVisualStyle(simulation::Node* node, core::visual::BaseVisualStyle* vm)
+{
+    SOFA_UNUSED(node);
+    vm-> updateVisualFlags(vparams);
+}
+
+
+void VisualVisitor::bwdProcessVisualStyle(simulation::Node* node, core::visual::BaseVisualStyle* vm)
+{
+    SOFA_UNUSED(node);
+    vm-> applyBackupFlags(vparams);
+}
+
+
 Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
 {
     // NB: hasShader is only used when there are visual models and getShader does a graph search when there is no shader,
     // which will most probably be the case when there are no visual models, so we skip the search unless we have visual models.
     hasShader = !node->visualModel.empty() && (node->getShader()!=nullptr);
 
+    if(node->visualStyle.get())
+    {
+        fwdProcessVisualStyle(node,node->visualStyle.get());
+    }
+
+
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::fwdVisualModel);
+
     this->VisualVisitor::processNodeTopDown(node);
 
     return RESULT_CONTINUE;
@@ -61,6 +81,16 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
 
 void VisualDrawVisitor::processNodeBottomUp(simulation::Node* node)
 {
+    // don't draw if specified not to do so in the user interface
+    if (!vparams->displayFlags().getShowVisualModels())
+        return;
+
+    if(node->visualStyle.get())
+    {
+        bwdProcessVisualStyle(node,node->visualStyle.get());
+    }
+
+
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::bwdVisualModel);
 }
 
@@ -96,61 +126,80 @@ void VisualDrawVisitor::bwdVisualModel(simulation::Node* /*node*/,core::visual::
 
 void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual::VisualModel* vm)
 {
+    // don't draw if specified not to do so in the user interface
+    if (!vparams->displayFlags().getShowVisualModels())
+        return;
+
+    // don't draw if this component is specifically configured to be disabled
+    if (!vm->d_enable.getValue())
+        return;
+
+    // don't draw if the component is not in valid state
+    if( vm->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid )
+        return;
+
+    if(vparams->pass() == core::visual::VisualParams::Shadow)
+    {
+        msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawShadow" ;
+        vm->drawShadow(vparams);
+        msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawVisual" ;
+        return;
+    }
+
     sofa::core::visual::Shader* shader = nullptr;
     if (hasShader)
         shader = node->getShader(subsetsToManage);
 
+    if (shader && shader->isActive())
+        shader->start();
+
     switch(vparams->pass())
     {
-    case core::visual::VisualParams::Std:
-    {
-        if (shader && shader->isActive())
-            shader->start();
-
-        msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawVisual" ;
-
-        vm->drawVisual(vparams);
-
-        msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawVisual" ;
-
-        if (shader && shader->isActive())
-            shader->stop();
-        break;
+        case core::visual::VisualParams::Std:
+            msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawVisual" ;
+            vm->drawVisual(vparams);
+            msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawVisual" ;
+            break;
+        case core::visual::VisualParams::Transparent:
+            msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawTransparent" ;
+            vm->drawTransparent(vparams);
+            msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawTransparent" ;
+            break;
+        default:
+            return;
     }
-    case core::visual::VisualParams::Transparent:
-    {
-        if (shader && shader->isActive())
-            shader->start();
 
-        msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawTransparent" ;
-
-        vm->drawTransparent(vparams);
-
-        msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawTransparent" ;
-        if (shader && shader->isActive())
-            shader->stop();
-        break;
-    }
-    case core::visual::VisualParams::Shadow:
-        msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawShadow" ;
-        vm->drawShadow(vparams);
-        msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawVisual" ;
-        break;
-    }
+    if (shader && shader->isActive())
+        shader->stop();
 }
 
 Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)
 {
-    for_each(this, node, node->visualModel,              &VisualUpdateVisitor::processVisualModel);
+    //Necessary check for first draw
+    if(node->visualStyle.get())
+    {
+        fwdProcessVisualStyle(node,node->visualStyle.get());
+    }
+
+    for_each(this, node, node->visualModel,     &VisualUpdateVisitor::processVisualModel);
 
     return RESULT_CONTINUE;
 }
 
+void VisualUpdateVisitor::processNodeBottomUp(simulation::Node* node)
+{
+    //Necessary check for first draw
+    if(node->visualStyle.get())
+    {
+        bwdProcessVisualStyle(node,node->visualStyle.get());
+    }
+}
+
+
 void VisualUpdateVisitor::processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
 {
-    sofa::helper::AdvancedTimer::stepBegin("VisualUpdateVisitor process: " + vm->getName());
-    vm->updateVisual();
-    sofa::helper::AdvancedTimer::stepEnd("VisualUpdateVisitor process: " + vm->getName());
+    helper::ScopedAdvancedTimer timer("VisualUpdateVisitor process: " + vm->getName());
+    vm->updateVisual(vparams);
 }
 
 
@@ -162,7 +211,7 @@ Visitor::Result VisualInitVisitor::processNodeTopDown(simulation::Node* node)
 }
 void VisualInitVisitor::processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
 {
-    vm->initVisual();
+    vm->initVisual(vparams);
 }
 
 VisualComputeBBoxVisitor::VisualComputeBBoxVisitor(const core::ExecParams* params)
@@ -197,7 +246,7 @@ void VisualComputeBBoxVisitor::processBehaviorModel(simulation::Node*, core::Beh
     bm->addBBox(minBBox, maxBBox);
 }
 
-} // namespace simulation
+} // namespace sofa::simulation
 
-} // namespace sofa
+
 

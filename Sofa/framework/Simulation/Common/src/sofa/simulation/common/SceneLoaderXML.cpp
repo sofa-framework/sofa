@@ -63,6 +63,20 @@ void SceneLoaderXML::getExtensionList(ExtensionList* list)
     list->push_back("scn");
 }
 
+bool SceneLoaderXML::syntaxForAddingRequiredPlugin(const std::string& pluginName,
+                                                   const std::vector<std::string>& listComponents, std::ostream& ss, sofa::simulation::Node* nodeWhereAdded)
+{
+    SOFA_UNUSED(nodeWhereAdded);
+
+    ss << "<RequiredPlugin name=\"" << pluginName << "\"/> <!-- Needed to use components [";
+    if (!listComponents.empty())
+    {
+        ss << sofa::helper::join(listComponents, ',');
+    }
+    ss << "] -->" << msgendl;
+    return true;
+}
+
 sofa::simulation::Node::SPtr SceneLoaderXML::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
     SOFA_UNUSED(sceneArgs);
@@ -81,7 +95,7 @@ sofa::simulation::Node::SPtr SceneLoaderXML::doLoad(const std::string& filename,
 
 void SceneLoaderXML::write(Node *node, const char *filename)
 {
-    simulation::getSimulation()->exportXML( node, filename );
+    sofa::simulation::node::exportInXML(node, filename);
 }
 
 /// Load a scene from a file
@@ -93,7 +107,6 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     {
         return nullptr;
     }
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
     // We go the current file's directory so that all relative path are correct
     helper::system::SetDirectory chdir ( filename );
@@ -126,27 +139,27 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
 
     Node::SPtr root = down_cast<Node> ( baseroot );
 
-    // Find the Simulation component in the scene
-    FindByTypeVisitor<Simulation> findSimu(params);
-    findSimu.execute(root.get());
-    if( !findSimu.found.empty() )
-        setSimulation( findSimu.found[0] );
-
     return root;
 }
 
-/// Load from a string in memory
-Node::SPtr SceneLoaderXML::loadFromMemory(const char* filename, const char* data)
+NodeSPtr SceneLoaderXML::doLoadFromMemory(const char* filename, const char* data)
 {
-    notifyLoadingSceneBefore();
+    notifyLoadingSceneBefore(this);
 
     xml::BaseElement* xml = xml::loadFromMemory(filename, data);
 
     Node::SPtr root = processXML(xml, filename);
 
     delete xml;
-    notifyLoadingSceneAfter(root);
+    notifyLoadingSceneAfter(root, this);
     return root;
+}
+
+/// Load from a string in memory
+Node::SPtr SceneLoaderXML::loadFromMemory(const char* filename, const char* data)
+{
+    SceneLoaderXML sceneLoader;
+    return sceneLoader.doLoadFromMemory(filename, data);
 }
 
 

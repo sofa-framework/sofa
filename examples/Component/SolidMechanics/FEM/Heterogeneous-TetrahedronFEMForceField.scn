@@ -4,11 +4,11 @@
     <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [LinearSolverConstraintCorrection] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [IndexValueMapper] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
-    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [ShewchukPCGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [PCGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping IdentityMapping] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [ConstantForceField] -->
@@ -39,7 +39,7 @@
 
     <Node name="FEM">
         <EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.1" _velocityDamping="0.5"/>
-        <ShewchukPCGLinearSolver preconditioner="@precond" update_step="15"/>
+        <PCGLinearSolver preconditioner="@precond" update_step="15"/>
         <SparseLDLSolver name="precond" template="CompressedRowSparseMatrixMat3x3"/>
 
         <TetrahedronSetTopologyContainer name="Container" position="@../Topology/HexaTop.position" tetrahedra="@../Topology/Container.tetrahedra"/>
@@ -58,7 +58,7 @@
         <IndexValueMapper name="Young3" indices="@Gel3.tetrahedronIndices" value="3e4" inputValues="@Young2.outputValues"/>
         <IndexValueMapper name="Young4" indices="@Gel4.tetrahedronIndices" value="3e5" inputValues="@Young3.outputValues"/>
         <TetrahedronFEMForceField youngModulus="@Young4.outputValues" poissonRatio="0.4"/>
-        <ConstantForceField force="0.1 0 0" />
+        <ConstantForceField forces="0.1 0 0" />
         <UniformMass totalMass="0.3"/>
 
 

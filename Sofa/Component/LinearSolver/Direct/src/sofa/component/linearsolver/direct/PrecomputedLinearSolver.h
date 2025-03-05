@@ -32,6 +32,8 @@
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <fstream>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 namespace sofa::component::linearsolver::direct
 {
 
@@ -80,19 +82,26 @@ public:
     typedef typename TMatrix::Real Real;
     typedef typename PrecomputedLinearSolverInternalData<TMatrix,TVector>::TBaseMatrix TBaseMatrix;
 
-    Data<bool> jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
-    Data<bool> f_verbose; ///< Dump system state at each iteration
-    Data<bool> use_file; ///< Dump system matrix in a file
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> jmjt_twostep;
+
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> use_file;
+
+
+    Data<bool> d_jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
+    Data<bool> d_use_file; ///< Dump system matrix in a file
     Data<double> init_Tolerance;
+
+    SOFA_ATTRIBUTE_DISABLED__SOLVER_DIRECT_VERBOSEDATA()
+    sofa::core::objectmodel::lifecycle::RemovedData f_verbose{this, "v23.12", "v24.06", "verbose", "This Data is no longer used"};
 
     PrecomputedLinearSolver();
     void solve (TMatrix& M, TVector& x, TVector& b) override;
     void invert(TMatrix& M) override;
     void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     void loadMatrix(TMatrix& M);
-#if SOFASPARSESOLVER_HAVE_CSPARSE
-    void loadMatrixWithCSparse(TMatrix& M);
-#endif
+    void loadMatrixWithCholeskyDecomposition(TMatrix& M);
     bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
 
     /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
@@ -107,6 +116,8 @@ public:
     {
         return &internalData.Minv;
     }
+
+    void parse(core::objectmodel::BaseObjectDescription *arg) override;
 
 protected :
     template<class JMatrix>

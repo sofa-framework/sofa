@@ -37,7 +37,7 @@ public:
     void init() override;
 
     void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override;
-    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override;
+    void computeWrench(const sofa::type::Transform<SReal> &world_H_tool, const sofa::type::SpatialVector<SReal> &V_tool_world, sofa::type::SpatialVector<SReal> &W_tool_world ) override;
 };
 
 } // namespace sofa::component::haptics

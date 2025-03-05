@@ -25,20 +25,18 @@
 #include <cassert>
 #include <iostream>
 
-namespace sofa
-{
 
-namespace core
+namespace sofa::core
 {
 
 ConstraintParams::ConstraintParams(const sofa::core::ExecParams& p)
     : sofa::core::ExecParams(p)
-    , m_x(ConstVecCoordId::position())
-    , m_v(ConstVecDerivId::velocity())
-    , m_j(MatrixDerivId::constraintJacobian())
-    , m_dx(VecDerivId::dx())
-    , m_lambda(VecDerivId::externalForce())
-    , m_constOrder (POS_AND_VEL)
+    , m_x(vec_id::read_access::position)
+    , m_v(vec_id::read_access::velocity)
+    , m_j(vec_id::write_access::constraintJacobian)
+    , m_dx(vec_id::write_access::dx)
+    , m_lambda(vec_id::write_access::externalForce)
+    , m_constOrder (ConstraintOrder::POS_AND_VEL)
     , m_smoothFactor (1)
 {
 }
@@ -52,16 +50,10 @@ ConstraintParams& ConstraintParams::setExecParams(const core::ExecParams* params
 /// Get the default ConstraintParams, to be used to provide a default values for method parameters
 const ConstraintParams* ConstraintParams::defaultInstance()
 {
-    SOFA_THREAD_SPECIFIC_PTR(ConstraintParams, threadParams);
-    ConstraintParams* ptr = threadParams;
-    if (!ptr)
-    {
-        ptr = new ConstraintParams;
-        threadParams = ptr;
-    }
-    return ptr;
+    thread_local ConstraintParams threadParams;
+    return &threadParams;
 }
 
-} // namespace core
+} // namespace sofa::core
 
-} // namespace sofa
+

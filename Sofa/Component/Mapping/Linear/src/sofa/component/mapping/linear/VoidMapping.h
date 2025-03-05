@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/BaseMapping.h>
@@ -30,12 +31,12 @@
 namespace sofa::component::mapping::linear
 {
 
-class VoidMapping : public sofa::core::BaseMapping
+class VoidMapping : public LinearBaseMapping
 {
 public:
-    SOFA_CLASS(VoidMapping, sofa::core::BaseMapping);
+    SOFA_CLASS(VoidMapping, LinearBaseMapping);
 
-    typedef sofa::core::BaseMapping Inherit;
+    typedef LinearBaseMapping Inherit;
     typedef sofa::core::behavior::BaseMechanicalState In;
     typedef sofa::core::behavior::BaseMechanicalState Out;
 

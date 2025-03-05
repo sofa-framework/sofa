@@ -65,12 +65,6 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void ExtrudeEdgesAndGenerateQuads<DataTypes>::bwdInit()
-{
-    checkInput();
-}
-
-template <class DataTypes>
 void ExtrudeEdgesAndGenerateQuads<DataTypes>::checkInput()
 {
     if (d_curveEdges.getValue().size() < 1 || d_curveVertices.getValue().size() < 1)
@@ -86,14 +80,14 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::checkInput()
 template <class DataTypes>
 void ExtrudeEdgesAndGenerateQuads<DataTypes>::doUpdate()
 {
+    checkInput();
+
     const vector<BaseMeshTopology::Edge>& curveEdges = d_curveEdges.getValue();
     const VecCoord& curveVertices = d_curveVertices.getValue();
 
     if (curveEdges.size() < 1 || curveVertices.size() < 1)
     {
-
         msg_warning() << "Initial mesh does not contain vertices or edges... No extruded mesh will be generated";
-
         return;
     }
 
@@ -105,7 +99,7 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::doUpdate()
     extrudedQuads->clear();
 
     int nbSections = d_nbSections.getValue();
-    int nbVertices = curveVertices.size();
+    const int nbVertices = curveVertices.size();
 
     // compute coordinates of extruded vertices (including initial vertices)
     Real scale = (d_thicknessIn.getValue() + d_thicknessOut.getValue())/(Real)nbSections;
@@ -156,7 +150,7 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::doUpdate()
     // curve not closed
     if(curveEdges.size() < curveVertices.size())
     {
-        int e = curveEdges.size()-1;
+        const int e = curveEdges.size()-1;
         for (int n=0; n<nbSections; n++)
         {
             BaseMeshTopology::Edge edge = BaseMeshTopology::Edge(curveEdges[e][1]+n*nbVertices, curveEdges[e][1]+(n+1)*nbVertices);

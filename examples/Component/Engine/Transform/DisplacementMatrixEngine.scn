@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node 	 name="root"  dt="0.01" animate="1" >
-    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [LinearMovementConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [LinearMovementProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [DisplacementTransformEngine] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
     <RequiredPlugin name="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [EulerExplicitSolver] -->
@@ -13,7 +13,7 @@
     <EulerExplicitSolver name="odesolver"  />
     <Node 	 name="DeformableObject"   >
         <MechanicalObject template="Rigid3" name="Bones"  position="0 -2 0 0 0 0 1 0 2 0 0 0 0 1" rest_position="0 -2 0 0 0 0 1 0 2 0 0 0 0 1"  showObject="1"  showObjectScale="0.5" />
-        <LinearMovementConstraint template="Rigid3" name="BoneTrajectories"  indices="1"  keyTimes="0 1 2 3 4 5 6 7 8 9 10 11 12 20"  movements=" 0 0 0 0 0 0 0 0 0 1.5708 0 0 0 0 0 0 0 0 0 0 0 0 1.5708 0 0 0 0 0 0 0 0 0 0 0 0 1.5708 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+        <LinearMovementProjectiveConstraint template="Rigid3" name="BoneTrajectories"  indices="1"  keyTimes="0 1 2 3 4 5 6 7 8 9 10 11 12 20"  movements=" 0 0 0 0 0 0 0 0 0 1.5708 0 0 0 0 0 0 0 0 0 0 0 0 1.5708 0 0 0 0 0 0 0 0 0 0 0 0 1.5708 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
         <Node 	 name="StaticMesh" >
             <MechanicalObject template="Vec3" name="2"  position="-1 -2 0 1 -2 0 -1 0 0 1 0 0 -1 2 0 1 2 0"    />
             <MeshTopology   triangles="0 1 2  2 1 3  2 3 4  4 3 5 " />

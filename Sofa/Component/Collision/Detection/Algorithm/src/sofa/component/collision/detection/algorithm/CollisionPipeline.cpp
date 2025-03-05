@@ -48,16 +48,17 @@ using namespace core::objectmodel;
 using namespace core::collision;
 using namespace sofa::defaulttype;
 
-int CollisionPipelineClass = core::RegisterObject("The default collision detection and modeling pipeline")
-        .add< CollisionPipeline >()
-        .addAlias("DefaultPipeline")
-        ;
+void registerCollisionPipeline(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("The default collision detection and modeling pipeline.")
+        .add< CollisionPipeline >());
+}
 
 const int CollisionPipeline::defaultDepthValue = 6;
 
 CollisionPipeline::CollisionPipeline()
     : d_doPrintInfoMessage(initData(&d_doPrintInfoMessage, false, "verbose",
-                                    "Display extra informations at each computation step. (default=false)"))
+                                    "Display extra information at each computation step. (default=false)"))
     , d_doDebugDraw(initData(&d_doDebugDraw, false, "draw",
                              "Draw the detected collisions. (default=false)"))
 
@@ -132,7 +133,7 @@ void CollisionPipeline::doCollisionReset()
 
 void CollisionPipeline::doCollisionDetection(const type::vector<core::CollisionModel*>& collisionModels)
 {
-    ScopedAdvancedTimer docollisiontimer("doCollisionDetection");
+    SCOPED_TIMER_VARNAME(docollisiontimer, "doCollisionDetection");
 
     msg_info_when(d_doPrintInfoMessage.getValue())
          << "doCollisionDetection, compute Bounding Trees" ;
@@ -142,7 +143,7 @@ void CollisionPipeline::doCollisionDetection(const type::vector<core::CollisionM
 
     type::vector<CollisionModel*> vectBoundingVolume;
     {
-        ScopedAdvancedTimer bboxtimer("ComputeBoundingTree");
+        SCOPED_TIMER_VARNAME(bboxtimer, "ComputeBoundingTree");
 
 #ifdef SOFA_DUMP_VISITOR_INFO
         simulation::Visitor::printNode("ComputeBoundingTree");
@@ -203,7 +204,7 @@ void CollisionPipeline::doCollisionDetection(const type::vector<core::CollisionM
     simulation::Visitor::printNode("BroadPhase");
 #endif
     {
-        ScopedAdvancedTimer broadphase("BroadPhase");
+        SCOPED_TIMER_VARNAME(broadphase, "BroadPhase");
         intersectionMethod->beginBroadPhase();
         broadPhaseDetection->beginBroadPhase();
         broadPhaseDetection->addCollisionModels(vectBoundingVolume);  // detection is done there
@@ -227,10 +228,10 @@ void CollisionPipeline::doCollisionDetection(const type::vector<core::CollisionM
     simulation::Visitor::printNode("NarrowPhase");
 #endif
     {
-        ScopedAdvancedTimer narrowphase("NarrowPhase");
+        SCOPED_TIMER_VARNAME(narrowphase, "NarrowPhase");
         intersectionMethod->beginNarrowPhase();
         narrowPhaseDetection->beginNarrowPhase();
-        type::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
+        const type::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
 
         msg_info_when(d_doPrintInfoMessage.getValue())
                 << "doCollisionDetection, "<< vectCMPair.size()<<" colliding model pairs" ;
@@ -257,9 +258,10 @@ void CollisionPipeline::doCollisionResponse()
     msg_info_when(d_doPrintInfoMessage.getValue())
         << "Create Contacts " << contactManager->getName() ;
 
-    sofa::helper::AdvancedTimer::stepBegin("CreateContacts");
-    contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs());
-    sofa::helper::AdvancedTimer::stepEnd("CreateContacts");
+    {
+        SCOPED_TIMER_VARNAME(createContactsTimer, "CreateContacts");
+        contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs());
+    }
 
     // finally we start the creation of collisionGroup
 
@@ -268,28 +270,29 @@ void CollisionPipeline::doCollisionResponse()
     // First we remove all contacts with non-simulated objects and directly add them
     type::vector<Contact::SPtr> notStaticContacts;
 
-    sofa::helper::AdvancedTimer::stepBegin("CreateStaticObjectsResponse");
-    for (const auto& contact : contacts)
     {
-        const auto collisionModels = contact->getCollisionModels();
-        if (collisionModels.first != nullptr && !collisionModels.first->isSimulated())
+        SCOPED_TIMER_VARNAME(createStaticObjectsResponseTimer, "CreateStaticObjectsResponse");
+        for (const auto& contact : contacts)
         {
-            contact->createResponse(collisionModels.second->getContext());
-        }
-        else if (collisionModels.second != nullptr && !collisionModels.second->isSimulated())
-        {
-            contact->createResponse(collisionModels.first->getContext());
-        }
-        else
-        {
-            notStaticContacts.push_back(contact);
+            const auto collisionModels = contact->getCollisionModels();
+            if (collisionModels.first != nullptr && !collisionModels.first->isSimulated())
+            {
+                contact->createResponse(collisionModels.second->getContext());
+            }
+            else if (collisionModels.second != nullptr && !collisionModels.second->isSimulated())
+            {
+                contact->createResponse(collisionModels.first->getContext());
+            }
+            else
+            {
+                notStaticContacts.push_back(contact);
+            }
         }
     }
-    sofa::helper::AdvancedTimer::stepEnd("CreateStaticObjectsResponse");
 
     if (groupManager == nullptr)
     {
-        ScopedAdvancedTimer createResponseTimer("CreateMovingObjectsResponse");
+        SCOPED_TIMER_VARNAME(createResponseTimer, "CreateMovingObjectsResponse");
 
         msg_info_when(d_doPrintInfoMessage.getValue())
             << "Linking all contacts to Scene" ;

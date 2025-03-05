@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.22)
 project(SofaModeler VERSION 0.1)
 
-find_package(TinyXML REQUIRED)
+find_package(TinyXML2 REQUIRED)
 
 set(HEADER_FILES
     AddPreset.h
@@ -43,7 +43,7 @@ set(MOC_FILES_GROUP "Generated")
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGui SofaBase SofaCommon SofaGeneral SofaMisc)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core Qt5::Gui Qt5::OpenGL Qt5::Widgets)
-target_link_libraries(${PROJECT_NAME} PUBLIC tinyxml) # Public because needed by Modeler (exec)
+target_link_libraries(${PROJECT_NAME} PUBLIC tinyxml2::tinyxml2) # Public because needed by Modeler (exec)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

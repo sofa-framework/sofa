@@ -68,12 +68,12 @@ public:
     /// Public method to init tool. Can be called from thirdparty if @sa d_manualStart is set to true
     virtual void initDevice() override;
 
-    /// Method to clear sheduler and free device. Called by default at driver destruction
+    /// Method to clear scheduler and free device. Called by default at driver destruction
     virtual void clearDevice() override;
 
 
 
-    Data <SReal> d_speedFactor; ///< factor to increase/decrease the movements speed    
+    Data <SReal> d_speedFactor; ///< factor to increase/decrease the movements speed
 
     void applyTranslation(sofa::type::Vec3 translation);
     void worldToLocal(sofa::type::Vec3& vector);

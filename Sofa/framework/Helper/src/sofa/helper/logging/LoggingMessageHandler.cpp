@@ -25,13 +25,8 @@
 ******************************************************************************/
 #include <sofa/helper/logging/LoggingMessageHandler.h>
 
-namespace sofa
-{
-namespace helper
-{
-namespace logging
-{
-namespace loggingmessagehandler
+
+namespace sofa::helper::logging::loggingmessagehandler
 {
 
 void LoggingMessageHandler::process(Message& m)
@@ -58,7 +53,7 @@ size_t LoggingMessageHandler::deactivate()
     assert(m_activationCount>0) ;
     m_activationCount--;
 
-    size_t size = m_messages.size();
+    const size_t size = m_messages.size();
 
     if(m_activationCount<=0)
         m_messages.clear() ;
@@ -96,8 +91,4 @@ const vector<Message>& MainLoggingMessageHandler::getMessages()
     return getInstance().getMessages() ;
 }
 
-} // loggingmessagehandler
-} // logging
-} // helper
-} // sofa
-
+}

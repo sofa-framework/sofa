@@ -36,23 +36,26 @@
 namespace sofa::component::topology::container::dynamic
 {
 
-using namespace std;
 using namespace sofa::defaulttype;
-int EdgeSetTopologyContainerClass = core::RegisterObject("Edge set topology container")
-        .add< EdgeSetTopologyContainer >()
-        ;
+
+void registerEdgeSetTopologyContainer(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Topology container for an edge topology.")
+        .add< EdgeSetTopologyContainer >());
+}
 
 EdgeSetTopologyContainer::EdgeSetTopologyContainer()
     : PointSetTopologyContainer( )
     , d_edge(initData(&d_edge, "edges", "List of edge indices"))
-    , m_checkConnexity(initData(&m_checkConnexity, false, "checkConnexity", "It true, will check the connexity of the mesh."))
+    , d_checkConnexity(initData(&d_checkConnexity, false, "checkConnexity", "It true, will check the connexity of the mesh."))
 {
+    m_checkConnexity.setOriginalData(&d_checkConnexity);
 }
 
 
 void EdgeSetTopologyContainer::init()
 {
-    helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
+    const helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
     
     if (d_initPoints.isSet())
     {
@@ -64,7 +67,7 @@ void EdgeSetTopologyContainer::init()
         {
             for(sofa::Index j=0; j<2; ++j)
             {
-                EdgeID a = m_edge[i][j];
+                const EdgeID a = m_edge[i][j];
                 if (a >= getNbPoints()) setNbPoints(a+1);
             }
         }
@@ -74,10 +77,10 @@ void EdgeSetTopologyContainer::init()
 
     // only init if edges are present at init.
     if (!m_edge.empty())
-        initTopology();
+        computeCrossElementBuffers();
 }
 
-void EdgeSetTopologyContainer::initTopology()
+void EdgeSetTopologyContainer::computeCrossElementBuffers()
 {
     // force computation of neighborhood elements
     createEdgesAroundVertexArray();
@@ -102,7 +105,7 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
     if (hasEdgesAroundVertex()) // created by upper topology
         return;
 
-    helper::ReadAccessor< Data< sofa::type::vector<Edge> > > edges = d_edge;
+    const helper::ReadAccessor< Data< sofa::type::vector<Edge> > > edges = d_edge;
 
     if (edges.empty())
     {
@@ -110,7 +113,7 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
         return;
     }
 
-    std::size_t nbPoints = getNbPoints();
+    const std::size_t nbPoints = getNbPoints();
     if (nbPoints == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
         this->setNbPoints(sofa::Size(d_initPoints.getValue().size()));
 
@@ -122,7 +125,7 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
         
         if (edge[0] >= unsigned(nbPoints) || edge[1] >= unsigned(nbPoints))
         {
-            msg_warning() << "EdgesAroundVertex creation failed, Edge buffer is not concistent with number of points: Edge: " << edge << " for: " << nbPoints << " points.";
+            msg_warning() << "EdgesAroundVertex creation failed, Edge buffer is not consistent with number of points, Edge: " << edge << " for: " << nbPoints << " points.";
             continue;
         }
 
@@ -130,7 +133,7 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
         m_edgesAroundVertex[ edge[1] ].push_back(edgeId);
     }
 
-    if (m_checkConnexity.getValue())
+    if (d_checkConnexity.getValue())
         this->checkConnexity();
 }
 
@@ -140,7 +143,7 @@ void EdgeSetTopologyContainer::reinit()
 
     createEdgesAroundVertexArray();
 
-    if (m_checkConnexity.getValue())
+    if (d_checkConnexity.getValue())
         this->checkConnexity();
 }
 
@@ -171,7 +174,7 @@ EdgeSetTopologyContainer::EdgeID EdgeSetTopologyContainer::getEdgeIndex(PointID 
     if (es1.empty())
         return InvalidID;
 
-    helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
+    const helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
 
     EdgeID result = InvalidID;
     for(size_t i=0; (i < es1.size()) && (result == InvalidID); ++i)
@@ -193,7 +196,7 @@ const EdgeSetTopologyContainer::Edge EdgeSetTopologyContainer::getEdge (EdgeID i
 }
 
 
-// Return the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
+// Return the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRARY)
 int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::type::vector<EdgeID>& components)
 {
     using namespace boost;
@@ -201,7 +204,7 @@ int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::type::vector<Ed
     typedef adjacency_list <vecS, vecS, undirectedS> Graph;
 
     Graph G;
-    helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
+    const helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
 
     for (size_t k=0; k<m_edge.size(); ++k)
     {
@@ -209,7 +212,7 @@ int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::type::vector<Ed
     }
 
     components.resize(num_vertices(G));
-    int num = (int) connected_components(G, &components[0]);
+    const int num = (int) connected_components(G, &components[0]);
 
     return num;
 }
@@ -223,7 +226,7 @@ bool EdgeSetTopologyContainer::checkTopology() const
 
     if (hasEdgesAroundVertex())
     {
-        helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
+        const helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
         std::set<int> edgeSet;
 
         // loop on all edges around vertex
@@ -259,8 +262,7 @@ bool EdgeSetTopologyContainer::checkTopology() const
 /// @{
 bool EdgeSetTopologyContainer::checkConnexity()
 {
-
-    size_t nbr = this->getNbEdges();
+    const size_t nbr = this->getNbEdges();
 
     if (nbr == 0)
     {
@@ -268,11 +270,11 @@ bool EdgeSetTopologyContainer::checkConnexity()
         return false;
     }
 
-    VecEdgeID elemAll = this->getConnectedElement(0);
+    const VecEdgeID elemAll = this->getConnectedElement(0);
 
     if (elemAll.size() != nbr)
     {
-		msg_warning() << "CheckConnexity: Edges are missings. There is more than one connexe component.";
+		msg_warning() << "CheckConnexity: Edges are missing. There is more than one connexe component.";
         return false;
     }
 
@@ -282,7 +284,7 @@ bool EdgeSetTopologyContainer::checkConnexity()
 
 Size EdgeSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    auto nbr = this->getNbEdges();
+    const auto nbr = this->getNbEdges();
 
     if (nbr == 0)
     {
@@ -327,7 +329,7 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getConnected
     VecEdgeID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     size_t cpt = 0;
-    size_t nbr = this->getNbEdges();
+    const size_t nbr = this->getNbEdges();
 
     // init algo
     elemAll.push_back(elem);
@@ -394,7 +396,7 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
     {
         const EdgesAroundVertex& edgeAV = this->getEdgesAroundVertex(the_edge[i]);
         if (edgeAV.empty()) {
-            msg_error() << "No edge found aroud of vertex id: " << the_edge[i] << ". Should at least found edge id: " << elem;
+            msg_error() << "No edge found around vertex id: " << the_edge[i] << ". Should at least found edge id: " << elem;
             continue;
         }
 
@@ -548,7 +550,7 @@ void EdgeSetTopologyContainer::setEdgeTopologyToDirty()
     m_edgeTopologyDirty = true;
 
     auto& edgeTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::EDGE);
-    for (auto topoHandler : edgeTopologyHandlerList)
+    for (const auto topoHandler : edgeTopologyHandlerList)
     {
         topoHandler->setDirtyValue();
         msg_info() << "Edge Topology Set dirty engine: " << topoHandler->getName();
@@ -562,7 +564,7 @@ void EdgeSetTopologyContainer::cleanEdgeTopologyFromDirty()
 
     // security, clean all engines to avoid loops
     auto& edgeTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::EDGE);
-    for (auto topoHandler : edgeTopologyHandlerList)
+    for (const auto topoHandler : edgeTopologyHandlerList)
     {
         if (topoHandler->isDirty())
         {
