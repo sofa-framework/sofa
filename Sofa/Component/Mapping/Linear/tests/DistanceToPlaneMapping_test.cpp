@@ -42,7 +42,7 @@ using sofa::component::statecontainer::MechanicalObject ;
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/trait/DataTypes.h>
 
-#define EPSILON 1e-12
+static constexpr SReal EPSILON=1e-12;
 
 using sofa::defaulttype::Vec1Types;
 
@@ -85,7 +85,7 @@ public:
 
     PlaneNormalType getPseudoRandomNormal()
     {
-        constexpr std::array<double,6> randomValuesForNormal = {1, 5.1, -6, 0, 9.5, 4};
+        constexpr std::array<SReal,6> randomValuesForNormal = {1, 5.1, -6, 0, 9.5, 4};
         PlaneNormalType returnVec;
         for (unsigned i = 0; i< sofa::Deriv_t<DataType>::spatial_dimensions; ++i)
         {
@@ -97,7 +97,7 @@ public:
 
     PlanePointType getPseudoRandomPoint()
     {
-        constexpr std::array<double,7> randomValuesForPoint = {-2.5, 1.4, 3, 0, 0.7, 12, 7.07};
+        constexpr std::array<SReal,7> randomValuesForPoint = {-2.5, 1.4, 3, 0, 0.7, 12, 7.07};
         PlanePointType returnVec;
         for (unsigned i = 0; i< sofa::Coord_t<DataType>::spatial_dimensions; ++i)
         {
@@ -112,7 +112,7 @@ public:
         typename sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>::SPtr mapping = New<sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>>();
         mapping->d_planeNormal.setValue(planeNormal);
         auto simu = this->createSimpleScene(mapping);
-        EXPECT_LE(fabs(mapping->d_planeNormal.getValue().norm() - 1.0),EPSILON);
+        EXPECT_LE(std::fabs<SReal>(mapping->d_planeNormal.getValue().norm() - 1.0),EPSILON);
         EXPECT_EQ(mapping->getFrom()[0]->getSize(),10);
         EXPECT_EQ(mapping->getTo()[0]->getSize(),mapping->getFrom()[0]->getSize());
     }
@@ -140,7 +140,7 @@ public:
 
         sofa::DataVecCoord_t<DataType> inPos{typename sofa::DataVecCoord_t<DataType>::InitData()};
 
-        std::vector<double> dists{0.2,-0.5,-2.1,0.5};
+        std::vector<SReal> dists{0.2,-0.5,-2.1,0.5};
 
         inPos.setValue({fullPlanePoint + fullNormal * dists[0],
                            fullPlanePoint + fullNormal * dists[1] + planeTangent1 * 10,
@@ -155,7 +155,7 @@ public:
 
         for (unsigned i = 0; i<outVec.getValue().size(); ++i)
         {
-            EXPECT_LE(fabs(outVec.getValue()[i][0] - dists[i]), EPSILON);
+            EXPECT_LE(std::fabs<SReal>(outVec.getValue()[i][0] - dists[i]), EPSILON);
         }
     }
 
@@ -178,7 +178,7 @@ public:
 
         sofa::DataVecDeriv_t<DataType> inPos{typename sofa::DataVecDeriv_t<DataType>::InitData()};
 
-        std::vector<double> dists{0.2,-0.5,-2.1,0.5};
+        std::vector<SReal> dists{0.2,-0.5,-2.1,0.5};
 
         inPos.setValue({ fullNormal * dists[0],
                             fullNormal * dists[1] + planeTangent1 * 10,
@@ -192,7 +192,7 @@ public:
 
         for (unsigned i = 0; i<outVec.getValue().size(); ++i)
         {
-            EXPECT_LE(fabs(outVec.getValue()[i][0] - dists[i]), EPSILON  );
+            EXPECT_LE(std::fabs<SReal>(outVec.getValue()[i][0] - dists[i]), EPSILON  );
         }
     }
 
@@ -217,7 +217,7 @@ public:
         {
             for (unsigned j=0; j< PlaneNormalType::size(); ++j)
             {
-                EXPECT_LE(fabs(outVec.getValue()[i][j] - planeNormal[j] * inPos.getValue()[i][0]),EPSILON);
+                EXPECT_LE(std::fabs<SReal>(outVec.getValue()[i][j] - planeNormal[j] * inPos.getValue()[i][0]),EPSILON);
             }
         }
     }
