@@ -45,10 +45,10 @@ void DistanceToPlaneMapping<TIn>::init()
     Inherit::init();
 
     //Normalize plane normal
-    const double normalNorm = d_planeNormal.getValue().norm();
-    if (normalNorm<std::numeric_limits<double>::epsilon())
+    const SReal normalNorm = d_planeNormal.getValue().norm();
+    if (normalNorm<std::numeric_limits<SReal>::epsilon())
     {
-        msg_error(this)<<" planeNormal data has null norm.";
+        msg_error()<<" planeNormal data has null norm.";
         this->d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
         return;
     }
@@ -90,7 +90,7 @@ void DistanceToPlaneMapping<TIn>::apply(const core::MechanicalParams *mparams, D
 
     const auto planeNormal = d_planeNormal.getValue();
 
-    double planeDistanceToOrigin = dot(d_planePoint.getValue(),planeNormal);
+    SReal planeDistanceToOrigin = dot(d_planePoint.getValue(),planeNormal);
 
 
     for ( unsigned i = 0; i<readIn.size(); i++ )
