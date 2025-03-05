@@ -92,14 +92,6 @@
         "SOFA_FETCH_SOFA.QT": {
           "type": "BOOL",
           "value": "ON"
-        },
-        "SOFA_QT_ENABLE_QDOCBROWSER": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "SOFA_QT_ENABLE_NODEGRAPH": {
-          "type": "BOOL",
-          "value": "OFF"
         }
       }
     },
