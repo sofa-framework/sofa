@@ -315,8 +315,8 @@ const std::string& Utils::getSofaUserLocalDirectory()
 {
     constexpr std::string_view sofaLocalDirSuffix = "SOFA";
 
-    static std::string sofaLocalDirectory = FileSystem::cleanPath(FileSystem::findOrCreateAValidPath(
-        FileSystem::append(getUserLocalDirectory(), sofaLocalDirSuffix)));
+    static const auto sofaLocalDirectory = FileSystem::cleanPath(FileSystem::append(getUserLocalDirectory(), sofaLocalDirSuffix));
+    FileSystem::ensureFolderExists(sofaLocalDirectory);
 
     return sofaLocalDirectory;
 }

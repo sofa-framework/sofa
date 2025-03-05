@@ -19,59 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/visual/config.h>
+#include <SceneChecking/SceneCheckEmptyNodeName.h>
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/type/RGBAColor.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/SceneCheckMainRegistry.h>
 
-namespace sofa::component::visual
+namespace sofa::scenechecking
 {
 
-namespace
+const bool SceneCheckEmptyNodeNameRegistered = sofa::simulation::SceneCheckMainRegistry::addToRegistry(SceneCheckEmptyNodeName::newSPtr());
+
+SceneCheckEmptyNodeName::~SceneCheckEmptyNodeName() {}
+const std::string SceneCheckEmptyNodeName::getName() { return "SceneCheckEmptyNodeName"; }
+const std::string SceneCheckEmptyNodeName::getDesc() { return "Check if a Node has an empty name."; }
+
+void SceneCheckEmptyNodeName::doInit(sofa::simulation::Node* node)
 {
-    using sofa::type::Vec3;
+    m_nbNodesWithEmptyName = 0;
 }
 
-class SOFA_COMPONENT_VISUAL_API VisualGrid : public core::visual::VisualModel
+void SceneCheckEmptyNodeName::doCheckOn(sofa::simulation::Node* node)
 {
-public:
-    SOFA_CLASS(VisualGrid, VisualModel);
+    const auto& nodeName = node->getName();
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
+    if (nodeName.empty())
+    {
+        ++m_nbNodesWithEmptyName;
+    }
+}
 
-    MAKE_SELECTABLE_ITEMS(PlaneType,
-        sofa::helper::Item{"x", "The grid is oriented in the plane defined by the equation x=0"},
-        sofa::helper::Item{"y", "The grid is oriented in the plane defined by the equation y=0"},
-        sofa::helper::Item{"z", "The grid is oriented in the plane defined by the equation z=0"}
-    );
+void SceneCheckEmptyNodeName::doPrintSummary()
+{
+    msg_warning_when(m_nbNodesWithEmptyName > 0, getName()) << "Nodes with empty name are found in"
+        " the scene. This can lead to undefined behaviors. It is recommended to give a name to all Nodes.";
+}
 
-    Data<PlaneType> d_plane; ///< Plane of the grid
-
-
-    Data<float> d_size; ///< Size of the squared grid
-    Data<int> d_nbSubdiv; ///< Number of subdivisions
-
-    Data<sofa::type::RGBAColor> d_color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
-    Data<float> d_thickness; ///< Thickness of the lines in the grid
-    core::objectmodel::lifecycle::RemovedData d_draw {this, "v23.06", "23.12", "draw", "Use the 'enable' data field instead of 'draw'"};
-
-
-    VisualGrid();
-    ~VisualGrid() override = default;
-
-    void init() override;
-    void reinit() override;
-    void doDrawVisual(const core::visual::VisualParams*) override;
-    void doUpdateVisual(const core::visual::VisualParams*) override;
-    void updateGrid();
-    void buildGrid();
-
-protected:
-
-    ///< Pre-computed points used to draw the grid
-    sofa::type::vector<Vec3> m_drawnPoints;
-
-};
-
-} // namespace sofa::component::visual
+}  // namespace sofa::scenechecking
