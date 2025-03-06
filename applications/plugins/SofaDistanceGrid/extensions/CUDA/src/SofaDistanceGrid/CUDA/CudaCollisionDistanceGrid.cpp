@@ -33,7 +33,6 @@
 #include <sofa/component/collision/detection/intersection/NewProximityIntersection.inl>
 #include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.inl>
 #include <sofa/component/collision/detection/intersection/RayDiscreteIntersection.inl>
-#include <sofa/component/collision/detection/intersection/NewProximityIntersection.inl>
 #include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 #include <sofa/component/collision/response/contact/RayContact.h>
 #include <sofa/component/collision/response/contact/BarycentricPenalityContact.inl>
