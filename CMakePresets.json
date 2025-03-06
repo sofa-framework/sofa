@@ -89,7 +89,7 @@
           "type": "BOOL",
           "value": "ON"
         },
-        "SOFA_FETCH_SOFA.QT": {
+        "SOFA_FETCH_SOFA_QT": {
           "type": "BOOL",
           "value": "ON"
         }
