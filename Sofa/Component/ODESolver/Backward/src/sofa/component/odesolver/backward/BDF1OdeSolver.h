@@ -22,9 +22,7 @@
 #pragma once
 
 #include <sofa/component/odesolver/backward/config.h>
-#include <sofa/core/behavior/OdeSolver.h>
-
-#include "BaseLinearMultiStepMethod.h"
+#include <sofa/component/odesolver/backward/BaseLinearMultiStepMethod.h>
 
 namespace sofa::component::odesolver::backward
 {
@@ -32,12 +30,15 @@ namespace sofa::component::odesolver::backward
 struct SOFA_COMPONENT_ODESOLVER_BACKWARD_API BDF1Parameters
 {
     static constexpr std::size_t Order = 1;
-    static constexpr sofa::type::fixed_array<SReal, Order> a_coef {1};
-    static constexpr sofa::type::fixed_array<SReal, Order> b_coef {1};
+    static constexpr sofa::type::fixed_array<SReal, Order + 1> a_coef {-1, 1};
+    static constexpr sofa::type::fixed_array<SReal, Order + 1> b_coef {0, 1};
 };
 
 class SOFA_COMPONENT_ODESOLVER_BACKWARD_API BDF1OdeSolver :
 public BaseLinearMultiStepMethod<BDF1Parameters>
-{};
+{
+public:
+    SOFA_CLASS(BDF1OdeSolver, BaseLinearMultiStepMethod<BDF1Parameters>);
+};
 
 }
