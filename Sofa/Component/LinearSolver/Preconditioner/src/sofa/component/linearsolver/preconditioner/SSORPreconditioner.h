@@ -53,9 +53,6 @@ public:
     typedef SReal Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager> Inherit;
 
-    SOFA_ATTRIBUTE_DISABLED__PRECONDITIONER_VERBOSEDATA()
-    sofa::core::objectmodel::lifecycle::RemovedData f_verbose{this, "v23.12", "v24.06", "verbose", "This Data is no longer used"};
-
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
     sofa::core::objectmodel::lifecycle::RenamedData<double> f_omega;
 

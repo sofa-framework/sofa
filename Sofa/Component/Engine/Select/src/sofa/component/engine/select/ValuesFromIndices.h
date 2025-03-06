@@ -44,8 +44,6 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(ValuesFromIndices,T),core::DataEngine);
     typedef T Value;
     typedef sofa::type::vector<T> VecValue;
-
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
     typedef sofa::type::vector<sofa::Index> VecIndex;
 
 protected:

@@ -70,11 +70,7 @@ public:
     typedef typename DataTypes::MatrixDeriv::ColConstIterator	MatrixDerivColConstIterator;
     typedef typename DataTypes::MatrixDeriv::RowIterator		MatrixDerivRowIterator;
     typedef typename DataTypes::MatrixDeriv::ColIterator		MatrixDerivColIterator;
-
     typedef typename core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
-
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
 
 protected:
     MechanicalObject();
