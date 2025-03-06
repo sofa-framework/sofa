@@ -112,7 +112,7 @@ public:
         typename sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>::SPtr mapping = New<sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>>();
         mapping->d_planeNormal.setValue(planeNormal);
         auto simu = this->createSimpleScene(mapping);
-        EXPECT_LE(std::fabs<SReal>(mapping->d_planeNormal.getValue().norm() - 1.0),EPSILON);
+        EXPECT_LE(std::fabs(mapping->d_planeNormal.getValue().norm() - 1.0),EPSILON);
         EXPECT_EQ(mapping->getFrom()[0]->getSize(),10);
         EXPECT_EQ(mapping->getTo()[0]->getSize(),mapping->getFrom()[0]->getSize());
     }
@@ -155,7 +155,7 @@ public:
 
         for (unsigned i = 0; i<outVec.getValue().size(); ++i)
         {
-            EXPECT_LE(std::fabs<SReal>(outVec.getValue()[i][0] - dists[i]), EPSILON);
+            EXPECT_LE(std::fabs(outVec.getValue()[i][0] - dists[i]), EPSILON);
         }
     }
 
@@ -192,7 +192,7 @@ public:
 
         for (unsigned i = 0; i<outVec.getValue().size(); ++i)
         {
-            EXPECT_LE(std::fabs<SReal>(outVec.getValue()[i][0] - dists[i]), EPSILON  );
+            EXPECT_LE(std::fabs(outVec.getValue()[i][0] - dists[i]), EPSILON  );
         }
     }
 
@@ -217,7 +217,7 @@ public:
         {
             for (unsigned j=0; j< PlaneNormalType::size(); ++j)
             {
-                EXPECT_LE(std::fabs<SReal>(outVec.getValue()[i][j] - planeNormal[j] * inPos.getValue()[i][0]),EPSILON);
+                EXPECT_LE(std::fabs(outVec.getValue()[i][j] - planeNormal[j] * inPos.getValue()[i][0]),EPSILON);
             }
         }
     }
