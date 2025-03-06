@@ -109,7 +109,7 @@ struct StaticResidualFunction : newton_raphson::BaseNonLinearFunction
     core::behavior::MultiVecCoord& x;
     core::behavior::MultiVecDeriv& force;
     core::behavior::MultiVecDeriv& dx;
-    core::behavior::LinearSolver* linearSolver;
+    core::behavior::LinearSolver* linearSolver { nullptr };
 
     StaticResidualFunction(sofa::simulation::common::MechanicalOperations& mop,
                            core::behavior::MultiVecCoord& x,

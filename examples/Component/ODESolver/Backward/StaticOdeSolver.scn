@@ -22,7 +22,7 @@
     <NewtonRaphsonSolver name="newtonSolver" printLog="true" maxNbIterationsNewton="100" />
 
     <Node name="CoFEM">
-        <StaticOdeSolver newtonSolver="@../newtonSolver"/>
+        <StaticOdeSolver newtonSolver="@../newtonSolver" printLog="true"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh"/>
         <MeshTopology src="@loader" />
