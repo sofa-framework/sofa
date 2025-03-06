@@ -40,10 +40,6 @@ class SOFA_COMPONENT_VISUAL_API BaseCamera : public core::objectmodel::BaseObjec
 public:
     SOFA_CLASS(BaseCamera, core::objectmodel::BaseObject);
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Ray, sofa::type::Ray);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec2, sofa::type::Vec2);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3, sofa::type::Vec3);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec4, sofa::type::Vec4);
     typedef type::Quat<SReal> Quat;
 
     enum Side {LEFT, RIGHT, MONO};
