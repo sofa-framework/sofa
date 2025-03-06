@@ -28,23 +28,57 @@
 namespace sofa::component::odesolver::backward::newton_raphson
 {
 
+/**
+ * Base class of a representation of a nonlinear function in the context of the resolution of a
+ * nonlinear (system of) equation(s) with the Newton-Raphson method.
+ *
+ * In the objective to be very generic, the computations required by the Newton-Raphson are defined
+ * inside @BaseNonLinearFunction. For example, a Newton iteration requires to solve a linear
+ * equation that can be solved using a linear solver in the case of a system of equations, or by a
+ * scalar inversion in the case of a scalar equation. The only required interaction with the outside
+ * is the squared norm of the last evaluation.
+ *
+ * If r is the nonlinear function, a Newton iteration leads to the following linear equation:
+ * J_r (x^{i+1} - x^i) = -r(x^i)
+ * where J_r is the Jacobian of r and x^i is the current guess of r at iteration i.
+ */
 class SOFA_COMPONENT_ODESOLVER_BACKWARD_API BaseNonLinearFunction
 {
 public:
     virtual ~BaseNonLinearFunction() = default;
 
     /**
-     *
+     * Evaluation of the function where the input is the current guess. If the function is called
+     * for the first time, then it is called on the initial guess.
+     * The evaluation is computed internally. It is not necessary to share this evaluation with the
+     * outside.
      */
     virtual void evaluateCurrentGuess() = 0;
 
+    /**
+     * Returns the squared norm of the last evaluation of the function
+     */
     virtual SReal squaredNormLastEvaluation() = 0;
 
+    /**
+     * Compute the gradient internally. It is not necessary to share this gradient with the outside
+     */
     virtual void computeGradientFromCurrentGuess() = 0;
 
+    /**
+     * Solve the linear equation from a Newton iteration, i.e. it computes (x^{i+1}-x^i).
+     * It is solved internally. It is not necessary to share the result with the outside
+     */
+    virtual void solveLinearEquation() = 0;
+
+    /**
+     * Once (x^{i+1}-x^i) has been computed, the result is used internally to update the current
+     * guess. It computes x^{i+1} += dx, where dx is the result of the linear system. It is not
+     * necessary to share the result with the Newton-Raphson method.
+     */
     virtual void updateGuessFromLinearSolution() = 0;
 
-    virtual void solveLinearEquation() = 0;
+
 };
 
 }
