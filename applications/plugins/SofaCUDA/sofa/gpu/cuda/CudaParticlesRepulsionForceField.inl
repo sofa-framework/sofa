@@ -90,7 +90,7 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const co
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
     Real bFactor = (Real)sofa::core::mechanicalparams::bFactor(mparams);
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(sofa::core::vec_id::read_access::position)->getValue();
     GPURepulsion3f repulsion;
     repulsion.d = distance.getValue();
     repulsion.d2 = repulsion.d*repulsion.d;
@@ -142,7 +142,7 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const co
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
     Real bFactor = (Real)sofa::core::mechanicalparams::bFactor(mparams);
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = this->mstate->read(sofa::core::vec_id::read_access::position)->getValue();
     GPURepulsion3d repulsion;
     repulsion.d = distance.getValue();
     repulsion.d2 = repulsion.d*repulsion.d;
