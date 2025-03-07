@@ -96,7 +96,7 @@ sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Ri
 
     //editing DOF related to the SphereCollisionModel<sofa::defaulttype::Vec3Types> to be created, size is 1 because it contains just one Sphere
     sphDOF->resize(1);
-    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *sphDOF->write( sofa::core::VecId::position() );
+    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *sphDOF->write( sofa::core::vec_id::write_access::position );
     MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
     positions[0] = Rigid3Types::Coord(center,Quat<SReal>(0,0,0,1));
@@ -104,7 +104,7 @@ sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Ri
     dpositions.endEdit();
 
     //Editing the velocity of the Sphere
-    Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *sphDOF->write( sofa::core::VecId::velocity() );
+    Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *sphDOF->write( sofa::core::vec_id::write_access::velocity );
 
     MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
     velocities[0] = v;
