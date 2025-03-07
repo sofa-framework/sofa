@@ -1,0 +1,53 @@
+<Node name="root" dt="1e-2" gravity="0.0 0.0 0.0">
+
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name='SofaMiscMapping'/>
+    <RequiredPlugin name='SofaSparseSolver'/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralTopology'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+
+    <RequiredPlugin name='BeamPlastic'/>
+
+    <DefaultAnimationLoop />
+
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" /> <!-- showCollisionModels -->
+    <DefaultVisualManagerLoop />
+    <DefaultPipeline depth="6" verbose="0" draw="0" />
+    <BruteForceBroadPhase />
+    <BVHNarrowPhase />
+    <MinProximityIntersection name="Proximity" alarmDistance="5e-5" contactDistance="2.5e-5" />
+    <DefaultContactManager name="Response" response="default" />
+
+    <Node name="beam">
+        <EulerImplicitSolver rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
+        <SparseLUSolver verbose="false" />
+        <MechanicalObject template="Rigid3d" name="DOFs" position="0 0 0 0 0 0 1  5e-4 0 0 0 0 0 1  1e-3 0 0 0 0 0 1  1.5e-3 0 0 0 0 0 1  2e-3 0 0 0 0 0 1  2.5e-3 0 0 0 0 0 1  3e-3 0 0 0 0 0 1  3.5e-3 0 0 0 0 0 1" />
+        <MeshTopology name="lines" lines="0 1 1 2 2 3 3 4 4 5 5 6 6 7" />
+        <FixedConstraint name="FixedConstraint" indices="0" />
+        <UniformMass totalMass="1e-3" printLog="false" showAxisSizeFactor="5e-5" />
+        <BeamPlasticFEMForceField name="FEM" poissonRatio="0.3" youngModulus="2.03e11" initialYieldStress="8.80e8"
+                                  zSection="5e-5" ySection="5e-5"
+                                  usePrecomputedStiffness="false"
+                                  useConsistentTangentOperator="false"
+                                  isPerfectlyPlastic="true"
+                                  isTimoshenko="true"/> <!-- false => Euler-Bernoulli -->
+        <!-- NB : youngModulus = 203 000 000 000 Pa (kg.m-1.s-2) : References for platinum-chromium alloy Young Modulus : 2017, Idziak-Jablonska et al, JAMCM -->
+        <!-- NB : yield stress = 4.80e8 Pa : References for platinum-chromium alloy yield stress : 2017, Idziak-Jablonska et al, JAMCM -->
+
+        <!-- With moment -->
+        <!-- <ConstantForceField name="ElongationForce" indices="7" forces="0.0 0.0 0.0 0 0 2e-5 8e-5" showArrowSize="3e-5" showColor="0.235 0.627 0.969" /> -->
+        <!-- With force -->
+        <ConstantForceField name="ElongationForce" indices="7" forces="-1.2e-2 1.2e-2 0.0 0 0 0 1" showArrowSize="1e-2" showColor="0.235 0.627 0.969" />
+
+        <Node name="Collision">
+            <CubeTopology nx="15" ny="2" nz="2" min="0 -0.1 -0.1" max="7 0.1 0.1" />
+            <MechanicalObject />
+            <BeamLinearMapping isMechanical="true" />
+            <TriangleCollisionModel />
+        </Node>
+    </Node>
+
+
+</Node>

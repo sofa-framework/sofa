@@ -1,0 +1,7 @@
+# CMake package configuration file for the BeamPlastic plugin
+
+@PACKAGE_INIT@
+
+find_package(SofaFramework REQUIRED)
+
+check_required_components(BeamPlastic)
