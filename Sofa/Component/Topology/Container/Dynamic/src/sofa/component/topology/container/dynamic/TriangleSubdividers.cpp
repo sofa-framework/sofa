@@ -83,25 +83,98 @@ bool TriangleSubdivider::subdivide(const sofa::type::fixed_array<sofa::type::Vec
         }
     }
 
-    msg_warning("TriangleSubdivider") << "subdivide with " << nbrPE << " points on Edge and " << nbrPT << " inside Triangle is not supported";
+    if (!m_snappedPoints.empty())
+    {
+        // Backup data of current triangle as new triangle will be created with vertex renumbered due to snapping
+        type::vector<TriangleID> ancestors = { m_triangleId };
+        type::vector<SReal> coefs = { 1_sreal };
+        auto TTA = new TriangleToAdd(1000000 * m_triangleId, m_triangle, ancestors, coefs);
+        TTA->m_triCoords = triCoords;
+        m_trianglesToAdd.push_back(TTA);
+        return true;
+    }
+
+    msg_warning("TriangleSubdivider") << "subdivide with " << nbrPE << " points on Edge and " << nbrPT << " inside Triangle is not supported.";
     return false;
 }
 
 
 void TriangleSubdivider::addPoint(std::shared_ptr<PointToAdd> pTA)
 {
-    bool found = false;
-    for (auto ptAIt : m_points)
+    if (pTA->m_isSnapped)
     {
-        if (ptAIt->m_uniqueID == pTA->m_uniqueID)
+        m_snappedPoints.push_back(pTA);
+    }
+    else
+    {
+        bool found = false;
+        for (auto ptAIt : m_points)
         {
-            found = true;
-            break;
+            if (ptAIt->m_uniqueID == pTA->m_uniqueID)
+            {
+                found = true;
+                msg_warning("TriangleSubdivider") << "PointToAdd with uniqId: " << pTA->m_uniqueID << " already added.";
+                break;
+            }
+        }
+
+        if (!found)
+            m_points.push_back(pTA);
+    }
+}
+
+
+void TriangleSubdivider::cutTriangles(const sofa::type::Vec3& ptA, const sofa::type::Vec3& ptB, const sofa::type::Vec3& cutNorm)
+{
+    const sofa::type::Vec3 cutPath = ptB - ptA;
+
+    for (TriangleToAdd* TTA : m_trianglesToAdd)
+    {
+        const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords = TTA->m_triCoords;
+        sofa::type::Vec3 gravityCenter = (triCoords[0] + triCoords[1] + triCoords[2]) / 3;
+        sofa::type::Vec3 triCutNorm = cutPath.cross(gravityCenter - ptA);
+        SReal dotValue = triCutNorm * cutNorm;
+
+        // We decide that all triangles detected below the cut (means angle between cutPath and [A - tri barycenter] is negative 
+        // have to change their indices to use the new points on the cut path. All triangles above keep original vertex indices
+        if (dotValue < 0)
+        {
+            TTA->isUp = false; // need to update points
+            for (auto PTA : m_points)
+            {
+                if (PTA->m_idClone == sofa::InvalidID)
+                    continue;
+
+                for (unsigned int k = 0; k < 3; ++k)
+                {
+                    if (TTA->m_triangle[k] == PTA->m_idPoint)
+                    {
+                        TTA->m_triangle[k] = PTA->m_idClone;
+                        break;
+                    }
+                }
+            }
+
+            for (auto PTA : m_snappedPoints)
+            {
+                if (PTA->m_idClone == sofa::InvalidID)
+                    continue;
+
+                for (unsigned int k = 0; k < 3; ++k)
+                {
+                    if (TTA->m_triangle[k] == PTA->m_idPoint)
+                    {
+                        TTA->m_triangle[k] = PTA->m_idClone;
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            TTA->isUp = true;
         }
     }
-
-    if (!found)
-        m_points.push_back(pTA);
 }
 
 
