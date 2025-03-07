@@ -165,6 +165,9 @@ bool CollisionModel::canCollideWith(CollisionModel* model)
     if (model->getContext() == this->getContext()) // models are in the Node -> is self collision activated?
         return bSelfCollision.getValue();
 
+    if (model->layer.getValue() != this->layer.getValue()) // no collisions between models in different layers
+        return false;
+
     const auto& myGroups = this->group.getValue();
     if (myGroups.empty()) // a collision model without any group always collides
         return true;
