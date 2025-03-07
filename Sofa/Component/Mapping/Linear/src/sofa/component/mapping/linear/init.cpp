@@ -33,6 +33,7 @@ extern void registerCenterOfMassMapping(sofa::core::ObjectFactory* factory);
 extern void registerCenterOfMassMulti2Mapping(sofa::core::ObjectFactory* factory);
 extern void registerCenterOfMassMultiMapping(sofa::core::ObjectFactory* factory);
 extern void registerDeformableOnRigidFrameMapping(sofa::core::ObjectFactory* factory);
+extern void registerDistanceToPlaneMapping(sofa::core::ObjectFactory* factory);
 extern void registerIdentityMapping(sofa::core::ObjectFactory* factory);
 extern void registerIdentityMultiMapping(sofa::core::ObjectFactory* factory);
 extern void registerLineSetSkinningMapping(sofa::core::ObjectFactory* factory);
@@ -78,6 +79,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerCenterOfMassMulti2Mapping(factory);
     registerCenterOfMassMultiMapping(factory);
     registerDeformableOnRigidFrameMapping(factory);
+    registerDistanceToPlaneMapping(factory);
     registerIdentityMapping(factory);
     registerIdentityMultiMapping(factory);
     registerLineSetSkinningMapping(factory);
