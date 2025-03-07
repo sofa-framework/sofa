@@ -137,6 +137,7 @@ public:
     Data<bool> d_build_lcp; ///< LCP is not fully built to increase performance in some case.
     Data<SReal> d_tol; ///< residual error threshold for termination of the Gauss-Seidel algorithm
     Data<int> d_maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
+    Data<SReal> d_regularizationTerm; ///< add regularization*Id to W when solving for constraints
     Data<SReal> d_mu; ///< Friction coefficient
     Data<SReal> d_minW; ///< If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored
     Data<SReal> d_maxF; ///< If not zero, constraints whose response force becomes larger than this threshold will be ignored
@@ -161,6 +162,7 @@ public:
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurrent access to the LCP when using a LCPForceFeedback through an haptic thread
 
 private:
+    void addRegularization(linearalgebra::BaseMatrix& W);
     void computeInitialGuess();
     void keepContactForcesValue();
 

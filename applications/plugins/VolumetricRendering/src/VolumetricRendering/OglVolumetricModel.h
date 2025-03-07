@@ -42,10 +42,10 @@ namespace sofa::component::visualmodel
  *
  */
 
-class SOFA_VOLUMETRICRENDERING_API OglVolumetricModel : public core::visual::VisualModel, public component::visual::Vec3State
+class SOFA_VOLUMETRICRENDERING_API OglVolumetricModel : public core::visual::VisualModel, public sofa::core::visual::VisualState<defaulttype::Vec3Types>
 {
 public:
-    SOFA_CLASS2(OglVolumetricModel, core::visual::VisualModel, component::visual::Vec3State);
+    SOFA_CLASS2(OglVolumetricModel, core::visual::VisualModel, sofa::core::visual::VisualState<defaulttype::Vec3Types>);
 
     typedef sofa::core::topology::Tetrahedron Tetrahedron;
     typedef sofa::core::topology::Hexahedron Hexahedron;

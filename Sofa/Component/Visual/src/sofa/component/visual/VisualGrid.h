@@ -40,14 +40,13 @@ public:
 
     SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
 
-    enum PLANE
-    {
-        PLANE_X = 0,
-        PLANE_Y = 1,
-        PLANE_Z = 2
-    };
+    MAKE_SELECTABLE_ITEMS(PlaneType,
+        sofa::helper::Item{"x", "The grid is oriented in the plane defined by the equation x=0"},
+        sofa::helper::Item{"y", "The grid is oriented in the plane defined by the equation y=0"},
+        sofa::helper::Item{"z", "The grid is oriented in the plane defined by the equation z=0"}
+    );
 
-    Data<std::string> d_plane; ///< Plane of the grid
+    Data<PlaneType> d_plane; ///< Plane of the grid
 
 
     Data<float> d_size; ///< Size of the squared grid
@@ -69,8 +68,6 @@ public:
     void buildGrid();
 
 protected:
-
-    PLANE internalPlane;
 
     ///< Pre-computed points used to draw the grid
     sofa::type::vector<Vec3> m_drawnPoints;

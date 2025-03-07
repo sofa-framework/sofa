@@ -292,8 +292,18 @@ struct Edge
                 return false;
             }
 
-            const T alpha = alphaNom / alphaDenom;
-            const T beta = (dCACD + alpha * dABCD) / dCDCD;
+            T alpha = alphaNom / alphaDenom;
+            T beta = (dCACD + alpha * dABCD) / dCDCD;
+
+            if (fabs(alpha) < EQUALITY_THRESHOLD)
+                alpha = 0;
+            else if (fabs(1-alpha) < EQUALITY_THRESHOLD)
+                alpha = 1;
+
+            if (fabs(beta) < EQUALITY_THRESHOLD)
+                beta = 0;
+            else if (fabs(1-beta) < EQUALITY_THRESHOLD)
+                beta = 1;
 
             const Node pX = pA + alpha * AB;
             const Node pY = pC + beta * CD;

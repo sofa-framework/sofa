@@ -56,6 +56,7 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa
     , d_rotations(initData(&d_rotations, false, "rotations", ""))
     , d_restRotations(initData(&d_restRotations, false, "restDeformations", ""))
     , d_recompute(initData(&d_recompute, false, "recompute", "if true, always recompute the compliance"))
+    , d_regularizationTerm(initData(&d_regularizationTerm, 0.0_sreal, "regularizationTerm", "Add regularization factor times the identity matrix to the compliance W when solving constraints"))
     , d_debugViewFrameScale(initData(&d_debugViewFrameScale, 1.0_sreal, "debugViewFrameScale", "Scale on computed node's frame"))
     , d_fileCompliance(initData(&d_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
     , d_fileDir(initData(&d_fileDir, "fileDir", "If not empty, the compliance will be saved in this repertory"))
@@ -524,6 +525,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     }
 
     unsigned int curConstraint = 0;
+    const SReal regularization = d_regularizationTerm.getValue();
 
     for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
@@ -548,12 +550,16 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 
                 if (indexCurRowConst != indexCurColConst)
                     W->add(indexCurColConst, indexCurRowConst, w);
+                else
+                    W->add(indexCurColConst, indexCurRowConst,regularization);
+
 
                 curColConst++;
             }
         }
         curConstraint++;
     }
+
 }
 
 template<class DataTypes>
@@ -1371,6 +1377,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(line
 
 #else
 
+    const SReal regularizationTerm = d_regularizationTerm.getValue();
     for (int id1 = begin; id1<=end; id1++)
     {
         int c1 = id_to_localIndex[id1];
@@ -1382,6 +1389,8 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(line
             W->add(id1, id2, w);
             if (id1 != id2)
                 W->add(id2, id1, w);
+            else
+                W->add(id2, id1, regularizationTerm);
         }
     }
 

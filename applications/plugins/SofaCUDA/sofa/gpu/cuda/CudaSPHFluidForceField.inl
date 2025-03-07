@@ -234,7 +234,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::draw(const core::visual::Vis
     if (!vparams->displayFlags().getShowForceFields()) return;
     //if (m_grid != NULL)
     //	grid->draw(vparams);
-    helper::ReadAccessor<VecCoord> x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    helper::ReadAccessor<VecCoord> x = this->mstate->read(sofa::core::vec_id::read_access::position)->getValue();
     helper::ReadAccessor<gpu::cuda::CudaVector<type::Vec4f> > pos4 = this->data.pos4;
     if (pos4.empty()) return;
     glDisable(GL_LIGHTING);

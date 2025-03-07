@@ -776,7 +776,8 @@ bool ObjectFactory::registerObjectsFromPlugin(const std::string& pluginName)
     if(m_registeredPluginSet.contains(pluginName))
     {
         // This warning should be generalized (i.e not only in dev mode) when runSofa will not auto-load modules/plugins by default anymore
-        dmsg_warning("ObjectFactory") << pluginName << " has already registered its components.";
+        // Commented warning since it is triggered even for SOFA meta-modules (e.g. Sofa.Components)
+        // dmsg_warning("ObjectFactory") << pluginName << " has already registered its components.";
         return false;
     }
 

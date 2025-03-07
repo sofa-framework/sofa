@@ -52,6 +52,7 @@ GenericConstraintCorrection::GenericConstraintCorrection()
 : l_linearSolver(initLink("linearSolver", "Link towards the linear solver used to compute the compliance matrix, requiring the inverse of the linear system matrix"))
 , l_ODESolver(initLink("ODESolver", "Link towards the ODE solver used to recover the integration factors"))
 , d_complianceFactor(initData(&d_complianceFactor, 1.0_sreal, "complianceFactor", "Factor applied to the position factor and velocity factor used to calculate compliance matrix"))
+, d_regularizationTerm(initData(&d_regularizationTerm, 0.0_sreal, "regularizationTerm", "Add regularization factor times the identity matrix to the compliance W when solving constraints"))
 {
 }
 
@@ -166,7 +167,8 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
 
     factor *= complianceFactor;
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    l_linearSolver.get()->buildComplianceMatrix(cparams, W, factor);
+    l_linearSolver.get()->buildComplianceMatrix(cparams, W, factor, d_regularizationTerm.getValue());
+
 }
 
 void GenericConstraintCorrection::computeMotionCorrectionFromLambda(const ConstraintParams* cparams, MultiVecDerivId dx, const linearalgebra::BaseVector * lambda)

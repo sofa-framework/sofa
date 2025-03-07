@@ -223,6 +223,10 @@ void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
+    if (vparams->displayFlags().getShowWireFrame())
+        vparams->drawTool()->setPolygonMode(0, true);
+
+
     type::Vec3d center;
     DataTypes::get(center[0], center[1], center[2], d_sphereCenter.getValue());
     const Real& r = d_sphereRadius.getValue();

@@ -67,6 +67,7 @@ GenericConstraintSolver::GenericConstraintSolver()
     , d_maxIt(initData(&d_maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
     , d_tolerance(initData(&d_tolerance, 0.001_sreal, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , d_sor(initData(&d_sor, 1.0_sreal, "sor", "Successive Over Relaxation parameter (0-2)"))
+    , d_regularizationTerm(initData(&d_regularizationTerm, 0.0_sreal, "regularizationTerm", "Add regularization factor times the identity matrix to the compliance W when solving constraints"))
     , d_scaleTolerance(initData(&d_scaleTolerance, true, "scaleTolerance", "Scale the error tolerance with the number of constraints"))
     , d_allVerified(initData(&d_allVerified, false, "allVerified", "All constraints must be verified (each constraint's error < tolerance)"))
     , d_newtonIterations(initData(&d_newtonIterations, 100, "newtonIterations", "Maximum iteration number of Newton (for the NonsmoothNonlinearConjugateGradient solver only)"))
@@ -244,6 +245,18 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     return true;
 }
 
+void GenericConstraintSolver::addRegularization(linearalgebra::BaseMatrix& W)
+{
+    const SReal regularization =  d_regularizationTerm.getValue();
+    if (regularization>std::numeric_limits<SReal>::epsilon())
+    {
+        for (int i=0; i<W.rowSize(); ++i)
+        {
+            W.add(i,i,regularization);
+        }
+    }
+}
+
 void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints)
 {
     for (const auto& cc : l_constraintCorrections)
@@ -300,6 +313,10 @@ void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints
     current_cp->change_sequence = false;
     if(current_cp->constraints_sequence.size() == nbObjects)
         current_cp->change_sequence=true;
+
+    addRegularization(current_cp->W);
+    addRegularization(current_cp->Wdiag);
+
 }
 
 GenericConstraintSolver::ComplianceWrapper::ComplianceMatrixType& GenericConstraintSolver::
@@ -368,6 +385,7 @@ void GenericConstraintSolver::buildSystem_matrixAssembly(const core::ConstraintP
             compliance.assembleMatrix();
         });
 
+    addRegularization(current_cp->W);
     dmsg_info() << " computeCompliance_done "  ;
 }
 

@@ -298,7 +298,7 @@ public:
 
     bool addMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
 
-    bool buildComplianceMatrix(const core::ConstraintParams* cparams, linearalgebra::BaseMatrix* result, SReal fact) override;
+    bool buildComplianceMatrix(const core::ConstraintParams* cparams, linearalgebra::BaseMatrix* result, SReal fact, SReal regularizationTerm) override;
 
     void applyConstraintForce(const sofa::core::ConstraintParams* cparams, sofa::core::MultiVecDerivId dx, const linearalgebra::BaseVector* f) override;
 
@@ -473,7 +473,7 @@ extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API bool MatrixLinearSolve
 extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addMInvJt(linearalgebra::BaseMatrix*, linearalgebra::BaseMatrix*, SReal);
 extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addJMInvJtLocal(GraphScatteredMatrix*, ResMatrixType*, const JMatrixType*, SReal);
 extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addMInvJtLocal(GraphScatteredMatrix*, ResMatrixType*, const  JMatrixType*, SReal);
-extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::buildComplianceMatrix(const core::ConstraintParams*, linearalgebra::BaseMatrix*, SReal);
+extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::buildComplianceMatrix(const core::ConstraintParams*, linearalgebra::BaseMatrix*, SReal, SReal);
 extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixInvertData* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getMatrixInvertData(linearalgebra::BaseMatrix * m);
 extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixInvertData* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createInvertData();
 
