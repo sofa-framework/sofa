@@ -43,8 +43,6 @@ class PlasticMaterial : public BaseMaterial
 public:
     SOFA_CLASS(PlasticMaterial, BaseMaterial);
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-
     typedef sofa::type::vector<double> VecDouble;
     typedef sofa::type::vector<Vec3> VecStress;
 

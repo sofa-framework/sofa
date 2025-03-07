@@ -167,7 +167,6 @@ private:
     void keepContactForcesValue();
 
     unsigned int _numConstraints;
-    SOFA_ATTRIBUTE_DEPRECATED__LCPCONSTRAINTSOLVERMUMEMBER() DeprecatedAndRemoved _mu;
 
     /// Multigrid hierarchy is resized and cleared
     void buildHierarchy();
