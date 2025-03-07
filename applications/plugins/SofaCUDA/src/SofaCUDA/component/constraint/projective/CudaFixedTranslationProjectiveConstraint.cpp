@@ -73,7 +73,7 @@ void component::constraint::projective::FixedTranslationProjectiveConstraint<gpu
 template <>
 void component::constraint::projective::FixedTranslationProjectiveConstraint<gpu::cuda::CudaVec6dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = f_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
@@ -81,7 +81,7 @@ void component::constraint::projective::FixedTranslationProjectiveConstraint<gpu
     glPointSize(10);
     glColor4f(1, 0.5, 0.5, 1);
     glBegin(GL_POINTS);
-    if (f_fixAll.getValue() == true)
+    if (d_fixAll.getValue() == true)
     {
         for (unsigned i = 0; i < x.size(); i++)
         {
