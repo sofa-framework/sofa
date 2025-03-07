@@ -199,7 +199,7 @@
           "type": "BOOL",
           "value": "ON"
         },
-        "SOFA_FETCH_SOFA.METIS": {
+        "SOFA_FETCH_SOFA_METIS": {
           "type": "BOOL",
           "value": "ON"
         },
