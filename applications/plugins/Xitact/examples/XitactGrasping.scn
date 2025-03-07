@@ -85,7 +85,7 @@
     <UniformMass totalMass="0.01"/>
 
 
-    <RestShapeSpringsForceField points="0" stiffness="10000" angularStiffness="1000000000"/> <!--external_rest_shape="@toto"/>-->
+    <FixedWeakConstraint indices="0" stiffness="10000" angularStiffness="1000000000"/> <!--external_rest_shape="@toto"/>-->
     <UncoupledConstraintCorrection compliance="0.0001  0.000000001 0 0 0.000000001 0 0.000000001"/>
     
 
@@ -104,7 +104,7 @@
     <Node name="Grasper">
       <MechanicalObject name="Articulations" template="Vec1d" position="0 0 0 0 0 0" rest_position="0 0 0 0 0 0"/>
       <!--	<UniformMass vertexMass="10.0 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
-      <RestShapeSpringsForceField points="0 1 2 3 4 5" stiffness="1000000 1000000 1000000 1000 1000000 1000000 " printLog="true"/>
+      <FixedWeakConstraint indices="0 1 2 3 4 5" stiffness="1000000 1000000 1000000 1000 1000000 1000000 " printLog="true"/>
       <UncoupledConstraintCorrection compliance="0.000001 0.000001 0.000001 0.001 0.000001 0.000001 " />
       <IHPDriver Scale="1000" listening="1" permanent="1"/>
 
