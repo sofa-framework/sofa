@@ -15,14 +15,14 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
     <VisualStyle displayFlags="showWireframe showVisual showBehaviorModels showForceFields" />
-    <DefaultAnimationLoop/>
+    <DefaultAnimationLoop parallelODESolving="true"/>
 
     <Node name="DeformableObject">
 
-        <Static printLog="true"/>
-        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="true"
+        <BDFOdeSolver order="2" printLog="false" rayleighMass="0.01" rayleighStiffness="0.01"/>
+        <NewtonRaphsonSolver name="newton" printLog="false"
                              maxNbIterationsNewton="1" absoluteResidualStoppingThreshold="1e-5"
-                             maxNbIterationsLineSearch="1" lineSearchCoefficient="0.5"
+                             maxNbIterationsLineSearch="5" lineSearchCoefficient="0.5"
                              absoluteEstimateDifferenceThreshold="1e-5"
                              relativeEstimateDifferenceThreshold="1e-5"/>
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrix" name="A" checkIndices="false"/>
@@ -37,7 +37,6 @@
         <BoxROI name="box" box="-10 -20 -10  10 -17.5 10" drawBoxes="true"/>
         <FixedProjectiveConstraint indices="@box.indices" />
         <TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.49" method="large" />
-<!--        <MeshSpringForceField name="springs" tetrasStiffness="10000"/>-->
 
         <Node name="visual">
             <MeshOBJLoader name="meshLoader_0" filename="mesh/truthcylinder1.obj" handleSeams="1" />
@@ -47,8 +46,8 @@
     </Node>
 
     <Node name="RefDeformableObject">
-        
-        <StaticSolver printLog="true"/>
+
+        <EulerImplicitSolver rayleighMass="0.01" rayleighStiffness="0.01"/>
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrix" name="A" checkIndices="false"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrix"/>
 
@@ -61,7 +60,6 @@
         <BoxROI name="box" box="-10 -20 -10  10 -17.5 10" drawBoxes="true"/>
         <FixedProjectiveConstraint indices="@box.indices" />
         <TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.49" method="large" />
-        <!--        <MeshSpringForceField name="springs" tetrasStiffness="10000"/>-->
 
         <Node name="visual">
             <MeshOBJLoader name="meshLoader_0" filename="mesh/truthcylinder1.obj" handleSeams="1" />
