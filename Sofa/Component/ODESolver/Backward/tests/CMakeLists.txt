@@ -7,6 +7,7 @@ set(SOURCE_FILES
     EulerImplicitSolverStatic_test.cpp
     EulerImplicitSolver_withDamping_test.cpp
     NewmarkImplicitSolverDynamic_test.cpp
+    NewtonRaphsonSolver_test.cpp
     StaticSolver_test.cpp
     SpringSolverDynamic_test.cpp
     VariationalSymplecticExplicitSolverDynamic_test.cpp
@@ -17,4 +18,8 @@ add_definitions("-DSOFACOMPONENTODESOLVERBACKWARD_TEST_SCENES_DIR=\"${CMAKE_CURR
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 # dependencies are managed directly in the target_link_libraries pass
-target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Component.ODESolver.Testing Sofa.Component.ODESolver.Backward Sofa.Component.StateContainer)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing 
+    Sofa.Component.ODESolver.Testing 
+    Sofa.Component.ODESolver.Backward 
+    Sofa.Component.LinearSolver.Direct
+    Sofa.Component.StateContainer)

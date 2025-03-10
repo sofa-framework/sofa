@@ -19,64 +19,68 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/backward/init.h>
+#include <sofa/component/odesolver/backward/BDFOdeSolver.h>
+
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
 
 namespace sofa::component::odesolver::backward
 {
 
-extern void registerEulerImplicitSolver(sofa::core::ObjectFactory* factory);
-extern void registerNewmarkImplicitSolver(sofa::core::ObjectFactory* factory);
-extern void registerStaticSolver(sofa::core::ObjectFactory* factory);
-extern void registerVariationalSymplecticSolver(sofa::core::ObjectFactory* factory);
-extern void registerNewtonRaphsonSolver(sofa::core::ObjectFactory* factory);
-extern void registerBDFOdeSolver(sofa::core::ObjectFactory* factory);
-extern void registerStaticOdeSolver(sofa::core::ObjectFactory* factory);
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
+void registerBDFOdeSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(
+        core::ObjectRegistrationData("Velocity-based ODE solver using Backward Differentiation Formula (BDF), at any order, supporting variable time step size.")
+            .add<BDFOdeSolver>());
 }
 
-void initExternalModule()
+void BDFOdeSolver::recomputeCoefficients(std::size_t order, SReal dt)
 {
-    init();
-}
+    assert(order > 0);
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+    m_a_coef.resize(order+1);
+    m_b_coef.resize(order+1);
 
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-    registerEulerImplicitSolver(factory);
-    registerNewmarkImplicitSolver(factory);
-    registerStaticSolver(factory);
-    registerVariationalSymplecticSolver(factory);
-    registerNewtonRaphsonSolver(factory);
-    registerBDFOdeSolver(factory);
-    registerStaticOdeSolver(factory);
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
+    /**
+     * Computation of the derivative of the Lagrange inteperpolation polynomials
+     */
+    for (std::size_t j = 0; j < m_a_coef.size(); ++j)
     {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+        auto& a_j = m_a_coef[j];
 
-        first = false;
+        a_j = 0;
+        for (std::size_t i = 0; i < order+1; ++i)
+        {
+            if (i != j)
+            {
+                SReal product = 1_sreal;
+                for (std::size_t m = 0; m < order + 1; ++m)
+                {
+                    if (m != i && m != j)
+                    {
+                        product *= (m_timeList[order] - m_timeList[m]) / (m_timeList[j] - m_timeList[m]);
+                    }
+                }
+                a_j += product / (m_timeList[j] - m_timeList[i]);
+            }
+        }
+    }
+
+    for (SReal& j : m_a_coef)
+    {
+        j *= dt;
+    }
+
+    for (std::size_t j = 0; j < m_a_coef.size() - 1; ++j)
+    {
+        m_a_coef[j] /= m_a_coef[order];
+    }
+    m_b_coef[order] = 1 / m_a_coef[order];
+    m_a_coef[order] = 1;
+
+    for (std::size_t j = 0; j < m_b_coef.size() - 1; ++j)
+    {
+        m_b_coef[j] = 0;
     }
 }
 
-} // namespace sofa::component::odesolver::backward
+}  // namespace sofa::component::odesolver::backward
