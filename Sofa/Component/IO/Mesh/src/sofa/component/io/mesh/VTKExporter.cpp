@@ -30,9 +30,9 @@
 namespace sofa::component::_vtkexporter_
 {
 
-VTKExporter::VTKExporter()
-    : m_stepCounter(0), outfile(nullptr)
-    , d_vtkFilename(initData(&d_vtkFilename, "filename", "output VTK file name"))
+VTKExporter::VTKExporter() 
+    : sofa::simulation::BaseSimulationExporter()
+    , outfile(nullptr)
     , d_fileFormat(initData(&d_fileFormat, (bool) true, "XMLformat", "Set to true to use XML format"))
     , d_position(initData(&d_position, "position", "points position (will use points from topology or mechanical state if this is empty)"))
     , d_writeEdges(initData(&d_writeEdges, (bool) true, "edges", "write edge topology"))
@@ -42,13 +42,10 @@ VTKExporter::VTKExporter()
     , d_writeHexas(initData(&d_writeHexas, (bool) false, "hexas", "write hexa topology"))
     , d_dPointsDataFields(initData(&d_dPointsDataFields, "pointsDataFields", "Data to visualize (on points)"))
     , d_dCellsDataFields(initData(&d_dCellsDataFields, "cellsDataFields", "Data to visualize (on cells)"))
-    , d_exportEveryNbSteps(initData(&d_exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
-    , d_exportAtBegin(initData(&d_exportAtBegin, false, "exportAtBegin", "export file at the initialization"))
-    , d_exportAtEnd(initData(&d_exportAtEnd, false, "exportAtEnd", "export file when the simulation is finished"))
     , d_overwrite(initData(&d_overwrite, false, "overwrite", "overwrite the file, otherwise create a new file at each export, with suffix in the filename"))
 {
 
-    vtkFilename.setParent(&d_vtkFilename);
+    vtkFilename.setParent(&d_filename);
     fileFormat.setOriginalData(&d_fileFormat);
     position.setOriginalData(&d_position);
     writeEdges.setOriginalData(&d_writeEdges);
@@ -70,7 +67,12 @@ VTKExporter::~VTKExporter()
         delete outfile;
 }
 
-void VTKExporter::init()
+void VTKExporter::doInit() 
+{ 
+    doReInit(); 
+}
+
+void VTKExporter::doReInit()
 {
     const sofa::core::objectmodel::BaseContext* context = this->getContext();
     context->get(m_topology);
@@ -342,9 +344,23 @@ std::string VTKExporter::segmentString(std::string str, unsigned int n)
 }
 
 
-void VTKExporter::writeVTKSimple()
+bool VTKExporter::write()
+{ 
+    if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid) 
+        return false;
+    
+    if (d_fileFormat.getValue())
+        return writeVTKXML();
+    return writeVTKSimple();
+}
+
+
+bool VTKExporter::writeVTKSimple()
 {
-    std::string filename = d_vtkFilename.getFullPath();
+    if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid) 
+        return false;
+
+    std::string filename = d_filename.getFullPath();
 
     std::ostringstream oss;
     oss << "_" << nbFiles;
@@ -393,7 +409,7 @@ void VTKExporter::writeVTKSimple()
         msg_error() << "Error creating file "<<filename;
         delete outfile;
         outfile = nullptr;
-        return;
+        return false;
     }
 
     const type::vector<std::string>& pointsData = d_dPointsDataFields.getValue();
@@ -539,11 +555,13 @@ void VTKExporter::writeVTKSimple()
     ++nbFiles;
 
     msg_info() << "Export VTK in file " << filename << "  done.";
+
+    return true;
 }
 
-void VTKExporter::writeVTKXML()
+bool VTKExporter::writeVTKXML()
 {
-    std::string filename = d_vtkFilename.getFullPath();
+    std::string filename = d_filename.getFullPath();
 
     std::ostringstream oss;
     oss << nbFiles;
@@ -566,7 +584,7 @@ void VTKExporter::writeVTKXML()
         msg_error() << "Error creating file "<<filename;
         delete outfile;
         outfile = nullptr;
-        return;
+        return false;
     }
     const type::vector<std::string>& pointsData = d_dPointsDataFields.getValue();
     const type::vector<std::string>& cellsData = d_dCellsDataFields.getValue();
@@ -756,11 +774,13 @@ void VTKExporter::writeVTKXML()
     ++nbFiles;
 
     msg_info() << "Export VTK XML in file " << filename << "  done.";
+
+    return true;
 }
 
 void VTKExporter::writeParallelFile()
 {
-    std::string filename = d_vtkFilename.getFullPath();
+    std::string filename = d_filename.getFullPath();
     filename.insert(0, "P_");
     filename += ".vtk";
 
@@ -936,7 +956,7 @@ void VTKExporter::writeParallelFile()
     {
         std::ostringstream oss;
         oss << i;
-        *outfile << "    <Piece Source=\"" << d_vtkFilename.getFullPath() << oss.str() << ".vtu" << "\"/>" << std::endl;
+        *outfile << "    <Piece Source=\"" << d_filename.getFullPath() << oss.str() << ".vtu" << "\"/>" << std::endl;
     }
 
     //write end
