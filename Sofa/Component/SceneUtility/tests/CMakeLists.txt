@@ -4,8 +4,6 @@ project(Sofa.Component.SceneUtility_test)
 
 set(SOURCE_FILES
     AddResourceRepository_test.cpp
-    MakeAliasComponent_test.cpp
-    MakeDataAliasComponent_test.cpp
     MessageHandlerComponent_test.cpp
 )
 

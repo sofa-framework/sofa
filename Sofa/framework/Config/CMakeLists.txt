@@ -64,7 +64,7 @@ endif()
 option(SOFA_ENABLE_FAST_MATH "Enable floating-point model to fast (theoretically faster but can bring unexpected results/bugs)." OFF)
 
 ### SOFA_DEV_TOOL
-option(SOFA_WITH_DEVTOOLS "Compile with development extra features." ON)
+option(SOFA_WITH_DEVTOOLS "Compile with development extra features." OFF)
 
 # Variables to expose in configured files
 sofa_set_01(SOFA_NO_UPDATE_BBOX_ VALUE ${SOFA_NO_UPDATE_BBOX}) # build_option_bbox.h.in
@@ -240,7 +240,7 @@ endif()
 ## Tracy
 option(SOFA_TRACY "Compile SOFA with the Tracy profiler client" OFF)
 if (SOFA_TRACY)
-    set(SOFA_TRACY_VERSION v0.9.1)
+    set(SOFA_TRACY_VERSION v0.11.1)
     include(FetchContent)
     option(TRACY_STATIC "Whether to build Tracy as a static library" OFF)
     FetchContent_Declare (

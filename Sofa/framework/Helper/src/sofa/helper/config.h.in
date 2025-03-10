@@ -91,3 +91,11 @@ SOFA_ATTRIBUTE_DISABLED( \
 SOFA_ATTRIBUTE_DEPRECATED( \
 "v24.12", "v25.06", "This function is now in StringUtils.h")
 #endif // SOFA_BUILD_SOFA_HELPER
+
+#ifdef SOFA_BUILD_SOFA_HELPER
+#define SOFA_HELPER_FILESYSTEM_FINDORCREATEAVALIDPATH_DEPRECATED()
+#else
+#define SOFA_HELPER_FILESYSTEM_FINDORCREATEAVALIDPATH_DEPRECATED() \
+SOFA_ATTRIBUTE_DEPRECATED( \
+"v25.06", "v25.12", "It is not clear that this function works on folders or files. Use ensureFolderExists or ensureFolderForFileExists instead.")
+#endif // SOFA_BUILD_SOFA_HELPER
