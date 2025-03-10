@@ -43,14 +43,14 @@ static constexpr NewtonStatus defaultStatus("Undefined");
 NewtonRaphsonSolver::NewtonRaphsonSolver()
     : d_maxNbIterationsNewton(
           initData(&d_maxNbIterationsNewton, 1u, "maxNbIterationsNewton",
-                   "Maximum number of iterations of the Newton's method if it has not converged.")),
-      d_relativeSuccessiveStoppingThreshold(initData(
+                   "Maximum number of iterations of the Newton's method if it has not converged."))
+    , d_relativeSuccessiveStoppingThreshold(initData(
           &d_relativeSuccessiveStoppingThreshold, 1e-5_sreal, "relativeSuccessiveStoppingThreshold",
           "Threshold for the relative successive progress criterion. The Newton "
           "iterations will stop when the ratio between the norm of the residual "
           "at iteration k over the norm of the residual at iteration k-1 is lower"
-          " than this threshold.")),
-      d_relativeInitialStoppingThreshold(initData(
+          " than this threshold."))
+    , d_relativeInitialStoppingThreshold(initData(
           &d_relativeInitialStoppingThreshold, 1e-5_sreal, "relativeInitialStoppingThreshold",
           "Threshold for the relative initial progress criterion. The Newton"
           " iterations will stop when the ratio between the norm of the residual "
@@ -59,35 +59,35 @@ NewtonRaphsonSolver::NewtonRaphsonSolver()
           "made since the beginning of the iteration process. If the ratio is "
           "significantly smaller than 1, it indicates that the iterative process "
           "is making substantial progress, and the method is converging toward the"
-          " root.")),
-      d_absoluteResidualStoppingThreshold(initData(
+          " root."))
+    , d_absoluteResidualStoppingThreshold(initData(
           &d_absoluteResidualStoppingThreshold, 1e-5_sreal, "absoluteResidualStoppingThreshold",
           "Threshold for the absolute function value stopping criterion. The "
           "Newton iterations will stop when the norm of the residual at iteration "
           "k is lower than this threshold. This criterion indicates the current "
-          "iteration found an estimate close to the root.")),
-      d_relativeEstimateDifferenceThreshold(initData(
+          "iteration found an estimate close to the root."))
+    , d_relativeEstimateDifferenceThreshold(initData(
           &d_relativeEstimateDifferenceThreshold, 0_sreal, "relativeEstimateDifferenceThreshold",
           "Threshold for the relative change in root estimate criterion. The "
           "Newton iterations will stop when the difference between two successive "
-          "estimates divided by the previous estimate is smaller than this threshold")),
-      d_absoluteEstimateDifferenceThreshold(initData(
+          "estimates divided by the previous estimate is smaller than this threshold"))
+    , d_absoluteEstimateDifferenceThreshold(initData(
           &d_absoluteEstimateDifferenceThreshold, 0_sreal, "absoluteEstimateDifferenceThreshold",
           "Threshold for the absolute change in root estimate criterion. The "
           "Newton iterations will stop when the difference between two successive "
-          "estimates is smaller than this threshold.")),
-      d_maxNbIterationsLineSearch(initData(
+          "estimates is smaller than this threshold."))
+    , d_maxNbIterationsLineSearch(initData(
           &d_maxNbIterationsLineSearch, 5u, "maxNbIterationsLineSearch",
-          "Maximum number of iterations of the line search method if it has not converged.")),
-      d_lineSearchCoefficient(initData(&d_lineSearchCoefficient, 0.5_sreal, "lineSearchCoefficient",
-                                       "Line search coefficient")),
-      d_updateStateWhenDiverged(initData(&d_updateStateWhenDiverged, true,
+          "Maximum number of iterations of the line search method if it has not converged."))
+    , d_lineSearchCoefficient(initData(&d_lineSearchCoefficient, 0.5_sreal, "lineSearchCoefficient",
+                                       "Line search coefficient"))
+    , d_updateStateWhenDiverged(initData(&d_updateStateWhenDiverged, true,
                                          "updateStateWhenDiverged",
                                          "Update the states within the last iteration even if the "
-                                         "iterative process is considered diverged.")),
-      d_status(initData(&d_status, defaultStatus, "status",
-                        ("status\n" + NewtonStatus::dataDescription()).c_str())),
-      d_residualGraph(
+                                         "iterative process is considered diverged."))
+    , d_status(initData(&d_status, defaultStatus, "status",
+                        ("status\n" + NewtonStatus::dataDescription()).c_str()))
+    , d_residualGraph(
           initData(&d_residualGraph, "residualGraph", "Graph of the residual over the iterations"))
 {
     d_status.setReadOnly(true);

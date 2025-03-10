@@ -57,29 +57,6 @@ void BaseLinearMultiStepMethod::init()
         d_componentState.setValue(core::objectmodel::ComponentState::Valid);
     }
 
-    simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(),
-                                             this->getContext());
-
-    const auto order = d_order.getValue();
-    m_position.resize(order + 1);
-    m_velocity.resize(order + 1);
-    m_force.resize(order + 1);
-
-    for (unsigned int i = 0; i < order + 1; ++i)
-    {
-        if (i != order - 1)
-        {
-            realloc(vop, m_position[i], "x+" + std::to_string(i));
-            realloc(vop, m_velocity[i], "v+" + std::to_string(i));
-            realloc(vop, m_force[i], "f+" + std::to_string(i));
-        }
-    }
-
-    realloc(vop, m_r1, "r1");
-    realloc(vop, m_r2, "r2");
-    realloc(vop, m_rhs, "rhs");
-    realloc(vop, m_dv, "dv");
-
     if (auto* context = this->getContext())
     {
         m_timeList.push_back(context->getTime());
@@ -88,10 +65,6 @@ void BaseLinearMultiStepMethod::init()
 
 void BaseLinearMultiStepMethod::reset()
 {
-    while (!m_dtList.empty())
-    {
-        m_dtList.pop_front();
-    }
     while (!m_timeList.empty())
     {
         m_timeList.pop_front();
@@ -346,14 +319,15 @@ void BaseLinearMultiStepMethod::solve(
         return;
     }
 
+    /**
+     * High-order methods requires an amount of previous time steps. At the begining of the simulation,
+     * those time steps are not yet computed. Therefore, the order is reduced to the appropriate order.
+     */
     const auto order = std::min(d_order.getValue(), m_currentSolve + 1);
 
-    m_dtList.push_back(dt);
-    while (m_dtList.size() > order + 1)
-    {
-        m_dtList.pop_front();
-    }
-
+    /**
+     * Save the time into a list of size order
+     */
     if (auto* context = this->getContext())
     {
         m_timeList.push_back(context->getTime() + dt);
@@ -424,18 +398,6 @@ void BaseLinearMultiStepMethod::solve(
         .setRHS(m_rhs)
         .setLinearSolver(l_linearSolver.get());
     l_newtonSolver->solve(residualFunction);
-
-    if (f_printLog.getValue())
-    {
-        for (unsigned int i = 0; i < order + 1; ++i)
-        {
-            core::behavior::MultiVecDeriv v(&vop, m_velocity[i]);
-            std::cout << "v[" << i << "] = " << v << std::endl;
-
-            core::behavior::MultiVecCoord x(&vop, m_position[i]);
-            std::cout << "x[" << i << "] = " << x << std::endl;
-        }
-    }
 
     //update state
     for (unsigned int i = 0; i < order; ++i)
