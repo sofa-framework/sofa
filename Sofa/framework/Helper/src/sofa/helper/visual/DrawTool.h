@@ -61,7 +61,8 @@ public:
     virtual void drawPoints(const std::vector<Vec3> &points, float size, const std::vector<RGBAColor>& color) = 0;
 
     virtual void drawLine(const Vec3 &p1, const Vec3 &p2, const RGBAColor& color) =  0;
-    virtual void drawInfiniteLine(const Vec3 &point, const Vec3 &direction, const RGBAColor& color) = 0;
+    virtual void drawInfiniteLine(const Vec3 &point, const Vec3 &direction, const RGBAColor& color, const bool& vanishing=false) = 0;
+    virtual void drawInfiniteLine(const Vec3 &point, const Vec3 &direction, const float& size, const RGBAColor& color, const bool& vanishing=false) = 0;
     virtual void drawLines(const std::vector<Vec3> &points, float size, const RGBAColor& color) = 0 ;
     virtual void drawLines(const std::vector<Vec3> &points, float size, const std::vector<RGBAColor>& colors) = 0 ;
     virtual void drawLines(const std::vector<Vec3> &points, const std::vector< Vec2i > &index , float size, const RGBAColor& color) = 0 ;
