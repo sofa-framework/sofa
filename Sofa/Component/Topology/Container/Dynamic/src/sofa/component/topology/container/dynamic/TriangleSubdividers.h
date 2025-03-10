@@ -74,6 +74,8 @@ public:
 
     virtual bool subdivide(const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords);
 
+    void cutTriangles(const sofa::type::Vec3& ptA, const sofa::type::Vec3& ptB, const sofa::type::Vec3& cutNorm);
+
     /// Method to add a new @sa PointToAdd into this Triangle Subdivider
     void addPoint(std::shared_ptr<PointToAdd> pTA);
 
@@ -121,6 +123,8 @@ protected:
     sofa::core::topology::BaseMeshTopology::Triangle m_triangle; ///< Triangle fixed array of the 3 vertex indices
 
     type::vector<std::shared_ptr<PointToAdd> > m_points; ///< Vector of new point to be added while subdividing this Triangle
+    type::vector<std::shared_ptr<PointToAdd> > m_snappedPoints; ///< Vector of new point to be snapped while subdividing this Triangle
+
     type::vector<TriangleToAdd*> m_trianglesToAdd; ///< Vector of triangle to be added while subdividing this Triangle
 };
 
