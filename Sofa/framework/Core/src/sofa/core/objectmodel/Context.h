@@ -102,10 +102,10 @@ public:
     /// @}
 
     /// Copy the context variables from the given instance
-    void copyContext(const Context& c);
+    void copyContext(Context& c);
 
     /// Copy the context variables of visualization from the given instance
-    void copySimulationContext(const Context& c);
+    void copySimulationContext(Context& c);
 
 };
 } // namespace sofa::core::objectmodel
