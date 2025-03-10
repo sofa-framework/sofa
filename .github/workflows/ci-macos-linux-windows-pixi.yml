@@ -1,0 +1,40 @@
+name: CI - MacOS/Linux/Windows via Pixi
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sofa-pixi:
+    name: ${{ matrix.os }} - Env ${{ matrix.environment }} ${{ matrix.build_type }} ${{ matrix.compiler }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, macos-13, windows-latest]
+        environment: [full-scope]
+        build_type: [Release]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: prefix-dev/setup-pixi@v0.8.1
+        with:
+          cache: true
+          environments: ${{ matrix.environment }}
+
+      - name: Build SOFA [MacOS/Linux/Windows]
+        shell: bash -el {0}
+        env:
+          SOFA_BUILD_TYPE: ${{ matrix.build_type }}
+        run: |
+          pixi run -e ${{ matrix.environment }} configure
+          pixi run -e ${{ matrix.environment }} cmake --build build --target all
+          pixi run -e ${{ matrix.environment }} ctest --test-dir build --output-on-failure
+          pixi run -e ${{ matrix.environment }} cmake --install build
