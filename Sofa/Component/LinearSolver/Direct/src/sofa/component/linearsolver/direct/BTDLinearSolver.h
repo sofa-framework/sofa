@@ -54,9 +54,6 @@ public:
     Data<bool> d_subpartSolve; ///< Allows for the computation of a subpart of the system
     Data<bool> d_verification; ///< verification of the subpartSolve
 
-    SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATABLOCKSIZE("d_blockSize has been deleted, as it was never actually used.")
-    DeprecatedAndRemoved d_blockSize;
-
     typedef typename Vector::SubVectorType SubVector;
     typedef typename Matrix::SubMatrixType SubMatrix;
     typedef typename Vector::Real Real;

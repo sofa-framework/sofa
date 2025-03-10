@@ -31,7 +31,6 @@ class SOFA_COMPONENT_TOPOLOGY_CONTAINER_CONSTANT_API SphereQuadTopology : public
 {
 public:
     SOFA_CLASS(SphereQuadTopology,CubeTopology);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
 
 protected:
     SphereQuadTopology(int nx, int ny, int nz);

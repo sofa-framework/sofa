@@ -38,8 +38,6 @@ class SOFA_COMPONENT_VISUAL_API VisualGrid : public core::visual::VisualModel
 public:
     SOFA_CLASS(VisualGrid, VisualModel);
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-
     MAKE_SELECTABLE_ITEMS(PlaneType,
         sofa::helper::Item{"x", "The grid is oriented in the plane defined by the equation x=0"},
         sofa::helper::Item{"y", "The grid is oriented in the plane defined by the equation y=0"},

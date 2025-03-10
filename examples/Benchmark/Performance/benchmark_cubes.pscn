@@ -25,7 +25,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
-    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultContactManager name="Response" response="FrictionContactConstraint" />
     <LCPConstraintSolver maxIt="1000" tolerance="0.001"  build_lcp="false"/>
     <!-- Using a rigid cube using collision triangles, lines and points  -->
 

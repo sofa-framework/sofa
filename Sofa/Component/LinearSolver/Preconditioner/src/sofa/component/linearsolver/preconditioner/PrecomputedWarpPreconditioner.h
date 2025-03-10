@@ -109,9 +109,6 @@ public:
 
     Data<bool> d_jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
 
-    SOFA_ATTRIBUTE_DISABLED__PRECONDITIONER_VERBOSEDATA()
-    sofa::core::objectmodel::lifecycle::RemovedData f_verbose{this, "v23.12", "v24.06", "verbose", "This Data is no longer used"};
-
     SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
     sofa::core::objectmodel::lifecycle::RenamedData<bool> jmjt_twostep;
 
