@@ -1,4 +1,4 @@
-<Node name="root" gravity="0 0 -9.81" dt="0.01">
+<Node name="root" gravity="0 -9.81 0" dt="0.01">
     <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [EigenSimplicialLDLT] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
@@ -10,40 +10,49 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglCylinderModel] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetTopologyContainer] -->
 
-
     <VisualStyle displayFlags="showWireframe showVisual showBehaviorModels showForceFields" />
     <DefaultAnimationLoop/>
     <VisualGrid size="2"/>
     <LineAxis size="2"/>
 
-    <Node name="Newton">
+    <Node name="BDF-1">
 
-        <Static printLog="true"/>
-        <NewtonRaphsonSolver name="odeImplicitSolver" printLog="true" maxNbIterationsNewton="10" 
-                             absoluteResidualStoppingThreshold="1e-8" relativeSuccessiveStoppingThreshold="1e-6"
-                             relativeEstimateDifferenceThreshold="1e-10"
-                             maxNbIterationsLineSearch="1" lineSearchCoefficient="0.5"/>
-        <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
+        <BDFOdeSolver order="1" printLog="false" rayleighMass="0.01" rayleighStiffness="0.01"/>
+        <NewtonRaphsonSolver name="newton" printLog="false" maxNbIterationsNewton="4" maxNbIterationsLineSearch="2" absoluteResidualStoppingThreshold="1e-6"/>
+        <EigenSimplicialLDLT template="CompressedRowSparseMatrix"/>
 
-        <MechanicalObject name="dofs" position="0 0 0  1 1 0" showObject="true"/>
+        <MechanicalObject name="dofs" template="Vec3" position="0 0 0  1 1 0 " showObject="true" showObjectScale="20"/>
         <EdgeSetTopologyContainer name="topologyContainer" edges="0 1" position="@dofs.position"/>
         <UniformMass totalMass="15" topology="@topologyContainer"/>
         <SpringForceField spring="0 1 1000 0 1"/>
-
         <FixedProjectiveConstraint indices="0" />
 
     </Node>
 
-    <Node name="StaticSolverRef">
+    <Node name="BDF-2">
 
-        <StaticSolver printLog="true"/>
-        <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
+        <BDFOdeSolver order="2" printLog="false" rayleighMass="0.01" rayleighStiffness="0.01"/>
+        <NewtonRaphsonSolver name="newton" printLog="false" maxNbIterationsNewton="4" maxNbIterationsLineSearch="2" absoluteResidualStoppingThreshold="1e-6"/>
+        <EigenSimplicialLDLT template="CompressedRowSparseMatrix"/>
 
-        <MechanicalObject name="dofs" position="0 0 0  1 1 0" showObject="true"/>
+        <MechanicalObject name="dofs" template="Vec3" position="0 0 0  1 1 0 " showObject="true" showObjectScale="20"/>
         <EdgeSetTopologyContainer name="topologyContainer" edges="0 1" position="@dofs.position"/>
         <UniformMass totalMass="15" topology="@topologyContainer"/>
         <SpringForceField spring="0 1 1000 0 1"/>
+        <FixedProjectiveConstraint indices="0" />
 
+    </Node>
+
+    <Node name="BDF-3">
+
+        <BDFOdeSolver order="3" printLog="false" rayleighMass="0.01" rayleighStiffness="0.01"/>
+        <NewtonRaphsonSolver name="newton" printLog="false" maxNbIterationsNewton="4" maxNbIterationsLineSearch="2" absoluteResidualStoppingThreshold="1e-6"/>
+        <EigenSimplicialLDLT template="CompressedRowSparseMatrix"/>
+
+        <MechanicalObject name="dofs" template="Vec3" position="0 0 0  1 1 0 " showObject="true" showObjectScale="20"/>
+        <EdgeSetTopologyContainer name="topologyContainer" edges="0 1" position="@dofs.position"/>
+        <UniformMass totalMass="15" topology="@topologyContainer"/>
+        <SpringForceField spring="0 1 1000 0 1"/>
         <FixedProjectiveConstraint indices="0" />
 
     </Node>

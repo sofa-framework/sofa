@@ -15,10 +15,34 @@
     <VisualGrid size="2"/>
     <LineAxis size="2"/>
 
-    <Node name="Newton">
+    <Node name="BDF-1">
 
-        <BDF1OdeSolver printLog="true" rayleighMass="0.01" rayleighStiffness="0.01"/>
-        <NewtonRaphsonSolver name="newton" printLog="true" maxNbIterationsNewton="4" maxNbIterationsLineSearch="2" absoluteResidualStoppingThreshold="1e-6"/>
+        <BDFOdeSolver order="1" printLog="false" rayleighMass="0.01" rayleighStiffness="0.01"/>
+        <NewtonRaphsonSolver name="newton" printLog="false" maxNbIterationsNewton="4" maxNbIterationsLineSearch="2" absoluteResidualStoppingThreshold="1e-6"/>
+        <EigenSimplicialLDLT template="CompressedRowSparseMatrix"/>
+
+        <MechanicalObject name="dofs" template="Vec1" position="1 " rest_position="0" showObject="true" showObjectScale="20"/>
+        <PointSetTopologyContainer name="topologyContainer" position="1"/>
+        <UniformMass totalMass="1" topology="@topologyContainer"/>
+        <RestShapeSpringsForceField points="0"/>
+    </Node>
+
+    <Node name="BDF-2">
+
+        <BDFOdeSolver order="2" printLog="false" rayleighMass="0.01" rayleighStiffness="0.01"/>
+        <NewtonRaphsonSolver name="newton" printLog="false" maxNbIterationsNewton="4" maxNbIterationsLineSearch="2" absoluteResidualStoppingThreshold="1e-6"/>
+        <EigenSimplicialLDLT template="CompressedRowSparseMatrix"/>
+
+        <MechanicalObject name="dofs" template="Vec1" position="1 " rest_position="0" showObject="true" showObjectScale="20"/>
+        <PointSetTopologyContainer name="topologyContainer" position="1"/>
+        <UniformMass totalMass="1" topology="@topologyContainer"/>
+        <RestShapeSpringsForceField points="0"/>
+    </Node>
+
+    <Node name="BDF-3">
+
+        <BDFOdeSolver order="3" printLog="false" rayleighMass="0.01" rayleighStiffness="0.01"/>
+        <NewtonRaphsonSolver name="newton" printLog="false" maxNbIterationsNewton="4" maxNbIterationsLineSearch="2" absoluteResidualStoppingThreshold="1e-6"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrix"/>
 
         <MechanicalObject name="dofs" template="Vec1" position="1 " rest_position="0" showObject="true" showObjectScale="20"/>

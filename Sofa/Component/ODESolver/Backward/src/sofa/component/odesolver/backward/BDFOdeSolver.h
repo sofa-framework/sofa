@@ -19,18 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/backward/BDF1OdeSolver.h>
+#pragma once
 
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/odesolver/backward/config.h>
+
+#include <sofa/component/odesolver/backward/BaseLinearMultiStepMethod.h>
 
 namespace sofa::component::odesolver::backward
 {
 
-void registerBDF1OdeSolver(sofa::core::ObjectFactory* factory)
+class SOFA_COMPONENT_ODESOLVER_BACKWARD_API BDFOdeSolver :
+    public BaseLinearMultiStepMethod
 {
-    factory->registerObjects(
-        core::ObjectRegistrationData("Velocity-based Backward Euler integration method.")
-            .add<BDF1OdeSolver>());
-}
+public:
+    SOFA_CLASS(BDFOdeSolver, BaseLinearMultiStepMethod);
 
-}  // namespace sofa::component::odesolver::backward
+protected:
+    void recomputeCoefficients(std::size_t order, SReal dt) override;
+
+};
+
+}

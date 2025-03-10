@@ -31,8 +31,7 @@ extern void registerNewmarkImplicitSolver(sofa::core::ObjectFactory* factory);
 extern void registerStaticSolver(sofa::core::ObjectFactory* factory);
 extern void registerVariationalSymplecticSolver(sofa::core::ObjectFactory* factory);
 extern void registerNewtonRaphsonSolver(sofa::core::ObjectFactory* factory);
-extern void registerBDF1OdeSolver(sofa::core::ObjectFactory* factory);
-extern void registerBDF2OdeSolver(sofa::core::ObjectFactory* factory);
+extern void registerBDFOdeSolver(sofa::core::ObjectFactory* factory);
 extern void registerStaticOdeSolver(sofa::core::ObjectFactory* factory);
 
 extern "C" {
@@ -64,8 +63,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerStaticSolver(factory);
     registerVariationalSymplecticSolver(factory);
     registerNewtonRaphsonSolver(factory);
-    registerBDF1OdeSolver(factory);
-    registerBDF2OdeSolver(factory);
+    registerBDFOdeSolver(factory);
     registerStaticOdeSolver(factory);
 }
 
