@@ -67,7 +67,6 @@ protected:
         id = vec.id();
     }
 
-    std::deque<SReal> m_dtList;
     std::deque<SReal> m_timeList;
 
     std::size_t m_currentSolve { 0 };
