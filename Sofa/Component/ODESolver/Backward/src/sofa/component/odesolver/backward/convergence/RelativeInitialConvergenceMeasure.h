@@ -52,7 +52,14 @@ public:
             << ") after " << (newtonIterationCount+1) << " Newton iterations.";
         return ss.str();
     }
-    
+
+    std::string writeWhenNotConverged() const override
+    {
+        std::stringstream ss;
+        ss << "residual initial ratio = " << std::sqrt(squaredResidualNorm / firstSquaredResidualNorm) << " (threshold = " << param << ")";
+        return ss.str();
+    }
+
     [[nodiscard]] std::string_view measureName() const override
     {
         return "Relative initial convergence";
