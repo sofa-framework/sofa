@@ -1983,17 +1983,17 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangulationInte
                 return false;
             }
 
-            int nbrInter = intersectedEdges.size();
+            sofa::Size nbrInter = intersectedEdges.size();
             // find next edge in correct initial intersection
-            int curLocalId = sofa::InvalidID;
-            for (int j = 0; j < nbrInter; j++)
+            sofa::Index curLocalId = sofa::InvalidID;
+            for (sofa::Index j = 0; j < nbrInter; j++)
             {
                 if (tmp_intersectedEdges[0] == intersectedEdges[j]) {
                     curLocalId = j;
                     break;
                 }
             }
-            int nextLocalId = (curLocalId + 1) % nbrInter;
+            sofa::Index nextLocalId = (curLocalId + 1) % nbrInter;
 
             edges_list.push_back(intersectedEdges[nextLocalId]);
             coords_list.push_back(baryCoefs[nextLocalId]);
@@ -2022,10 +2022,10 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangulationInte
         else if (intersectedEdges.size() == 3) // triangle fully traversed and going in/out through a vertex
         {
             // double check that one edge is the previous one and the 2 others have a baryCoef equal to 0 or 1
-            int curLocalId = sofa::InvalidID;
-            int localNoSnapId = sofa::InvalidID;
-            int nbrV = 0;
-            for (int j = 0; j < 3; j++)
+            sofa::Index curLocalId = sofa::InvalidID;
+            sofa::Index localNoSnapId = sofa::InvalidID;
+            sofa::Size nbrV = 0;
+            for (sofa::Index j = 0; j < 3; j++)
             {
                 if (current_edgeID == intersectedEdges[j]) {
                     curLocalId = j;
