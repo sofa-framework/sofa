@@ -40,6 +40,8 @@ struct NewtonRaphsonSquareRootTest : public testing::NumericTest<SReal>
         solver->d_relativeInitialStoppingThreshold.setValue(-1);
         solver->d_absoluteResidualStoppingThreshold.setValue(-1);
         solver->d_relativeSuccessiveStoppingThreshold.setValue(-1);
+        solver->d_maxNbIterationsLineSearch.setValue(1);
+        solver->d_maxNbIterationsLineSearch.setValue(false);
         solver->f_printLog.setValue(false);
 
         simulation::node::initRoot(root.get());
@@ -65,9 +67,9 @@ struct NewtonRaphsonSquareRootTest : public testing::NumericTest<SReal>
                 m_gradient = 2 * m_guesses.back();
             }
 
-            void updateGuessFromLinearSolution() override
+            void updateGuessFromLinearSolution(SReal alpha) override
             {
-                m_guesses.push_back(m_guesses.back() + m_linearSolverSolution);
+                m_guesses.push_back(m_guesses.back() + alpha * m_linearSolverSolution);
             }
 
             void solveLinearEquation() override
@@ -181,7 +183,7 @@ struct NewtonRaphsonParameters
     unsigned int maxNbIterationsLineSearch = 1;
     unsigned int maxNbIterationsNewton = 1;
 
-    void apply(component::odesolver::backward::NewtonRaphsonSolverBackup* solver) const
+    void apply(component::odesolver::backward::NewtonRaphsonSolver* solver) const
     {
         solver->d_relativeSuccessiveStoppingThreshold.setValue(relativeSuccessiveStoppingThreshold);
         solver->d_relativeInitialStoppingThreshold.setValue(relativeInitialStoppingThreshold);
@@ -197,21 +199,20 @@ struct NewtonRaphsonTest : public testing::BaseSimulationTest
 {
     SceneInstance m_scene{};
 
-    component::odesolver::backward::NewtonRaphsonSolverBackup* m_solver { nullptr };
+    component::odesolver::backward::NewtonRaphsonSolver* m_solver { nullptr };
     component::statecontainer::MechanicalObject<defaulttype::Vec1Types>* m_state { nullptr };
 
     void onSetUp() override
     {
         sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Direct");
         sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
-        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Integration");
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
 
         sofa::simpleapi::createObject(m_scene.root, "DefaultAnimationLoop");
-        sofa::simpleapi::createObject(m_scene.root, "BDF1");
+        sofa::simpleapi::createObject(m_scene.root, "BDFOdeSolver", {{"order", "1"}});
         auto solverObject = sofa::simpleapi::createObject(m_scene.root, "NewtonRaphsonSolver", {{"printLog", "true"}});
-        m_solver = dynamic_cast<component::odesolver::backward::NewtonRaphsonSolverBackup*>(solverObject.get());
+        m_solver = dynamic_cast<component::odesolver::backward::NewtonRaphsonSolver*>(solverObject.get());
         sofa::simpleapi::createObject(m_scene.root, "EigenSimplicialLDLT", {{"template", "CompressedRowSparseMatrix"}});
         auto stateObject = sofa::simpleapi::createObject(m_scene.root, "MechanicalObject", {{"template", "Vec1"}, {"position", "1"}, {"rest_position", "0"}});
         m_state = dynamic_cast<component::statecontainer::MechanicalObject<defaulttype::Vec1Types>*>(stateObject.get());

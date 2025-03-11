@@ -48,6 +48,8 @@ public:
     Data<bool> d_updateStateWhenDiverged;
     Data<NewtonStatus> d_status;
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_residualGraph;
+    Data<bool> d_warnWhenLineSearchFails;
+    Data<bool> d_warnWhenDiverge;
 
     void init() override;
     void reset() override;
