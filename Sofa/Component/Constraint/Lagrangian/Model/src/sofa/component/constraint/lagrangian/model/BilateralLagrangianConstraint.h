@@ -118,6 +118,7 @@ protected:
 
     Data<bool> d_activate; ///< control constraint activation (true by default)
     Data<bool> d_keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
+    Data<SReal> d_load; ///< Apply this factor to the constraint force to enable incremental loading
 
 
     SingleLink<BilateralLagrangianConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology1; ///< Link to be set to the first topology container in order to support topological changes
