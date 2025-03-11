@@ -152,6 +152,7 @@ bool NewtonRaphsonSolver::measureConvergence(
     }
     return false;
 }
+
 void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
 {
     if (!this->isComponentStateValid())
@@ -172,8 +173,12 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
     {
         SCOPED_TIMER("ComputeError");
 
+        // compute r(x^i)
         function.evaluateCurrentGuess();
+
+        // compute ||r(x^i)||
         squaredResidualNorm = function.squaredNormLastEvaluation();
+
         residualList.push_back(squaredResidualNorm);
     }
 
@@ -216,12 +221,21 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
             absoluteEstimateDifferenceMeasure.newtonIterationCount = newtonIterationCount;
             relativeEstimateDifferenceMeasure.newtonIterationCount = newtonIterationCount;
 
+            // compute J_r(x^i)
             function.computeGradientFromCurrentGuess();
+
+            // solve J_r(x^i) * dx == -r(x^i)
             function.solveLinearEquation();
+
+            // compute x^{i+1} = x^i + dx
             function.updateGuessFromLinearSolution();
 
             const auto previousSquaredResidualNorm = squaredResidualNorm;
+
+            // compute r(x^i)
             function.evaluateCurrentGuess();
+
+            // compute ||r(x^i)||
             squaredResidualNorm = function.squaredNormLastEvaluation();
 
             residualList.push_back(squaredResidualNorm);
