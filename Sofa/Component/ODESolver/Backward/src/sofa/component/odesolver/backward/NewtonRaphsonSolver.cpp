@@ -90,7 +90,7 @@ NewtonRaphsonSolver::NewtonRaphsonSolver()
     , d_residualGraph(
           initData(&d_residualGraph, "residualGraph", "Graph of the residual over the iterations"))
     , d_warnWhenLineSearchFails(initData(&d_warnWhenLineSearchFails, true, "warnWhenLineSearchFails", "Trigger a warning if line search fails"))
-    , d_warnWhenDiverge(initData(&d_warnWhenDiverge, true, "warnWhenDiverge", "Trigger a warning if Newton-Raphson diverge"))
+    , d_warnWhenDiverge(initData(&d_warnWhenDiverge, true, "warnWhenDiverge", "Trigger a warning if Newton-Raphson diverges"))
 {
     d_status.setReadOnly(true);
 
@@ -101,6 +101,14 @@ NewtonRaphsonSolver::NewtonRaphsonSolver()
     static std::string groupLineSearch{"Line Search"};
     d_maxNbIterationsLineSearch.setGroup(groupLineSearch);
     d_lineSearchCoefficient.setGroup(groupLineSearch);
+
+    static std::string groupStoppingCriteria{"Stopping criteria"};
+    d_maxNbIterationsNewton.setGroup(groupStoppingCriteria);
+    d_relativeSuccessiveStoppingThreshold.setGroup(groupStoppingCriteria);
+    d_relativeInitialStoppingThreshold.setGroup(groupStoppingCriteria);
+    d_absoluteResidualStoppingThreshold.setGroup(groupStoppingCriteria);
+    d_relativeEstimateDifferenceThreshold.setGroup(groupStoppingCriteria);
+    d_absoluteEstimateDifferenceThreshold.setGroup(groupStoppingCriteria);
 
     d_residualGraph.setWidget("graph");
 }
