@@ -19,7 +19,7 @@
         <OglModel src="@meshLoader_1" dx="0" dy="-1" dz="0" color="green" />
     </Node>
 
-    <NewtonRaphsonSolver name="newtonSolver" printLog="true" maxNbIterationsNewton="100" />
+    <NewtonRaphsonSolver name="newtonSolver" printLog="true" maxNbIterationsNewton="100" maxNbIterationsLineSearch="1" warnWhenLineSearchFails="false"/>
 
     <Node name="CoFEM">
         <StaticOdeSolver newtonSolver="@../newtonSolver" printLog="true"/>
