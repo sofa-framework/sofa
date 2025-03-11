@@ -145,6 +145,14 @@ bool NewtonRaphsonSolver::measureConvergence(
 
             return true;
         }
+        else
+        {
+            const auto print = measure.writeWhenNotConverged();
+            if (!print.empty())
+            {
+                os <<  "\n* " << print;
+            }
+        }
     }
     else if (notMuted())
     {
@@ -205,7 +213,7 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
         RelativeEstimateDifferenceMeasure relativeEstimateDifferenceMeasure(d_relativeEstimateDifferenceThreshold.getValue());
 
         const auto maxNbIterationsNewton = d_maxNbIterationsNewton.getValue();
-        const auto maxNbIterationsLineSearch = d_maxNbIterationsLineSearch.getValue();
+        const auto maxNbIterationsLineSearch = std::max(d_maxNbIterationsLineSearch.getValue(), 1u);
         bool hasConverged = false;
         bool hasLineSearchFailed = false;
         const auto lineSearchCoefficient = d_lineSearchCoefficient.getValue();
@@ -214,6 +222,8 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
         for (; newtonIterationCount < maxNbIterationsNewton; ++newtonIterationCount)
         {
             msg_info() << "Newton iteration #" << newtonIterationCount;
+
+            const auto previousSquaredResidualNorm = squaredResidualNorm;
 
             relativeSuccessiveConvergenceMeasure.newtonIterationCount = newtonIterationCount;
             relativeInitialConvergenceMeasure.newtonIterationCount = newtonIterationCount;
@@ -227,18 +237,44 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
             // solve J_r(x^i) * dx == -r(x^i)
             function.solveLinearEquation();
 
-            // compute x^{i+1} = x^i + dx
-            function.updateGuessFromLinearSolution();
+            SReal lineSearchAlpha = 1_sreal;
+            SReal previousAlpha = 0;
 
-            const auto previousSquaredResidualNorm = squaredResidualNorm;
+            bool lineSearchSuccess = false;
+            unsigned int lineSearchIterationCount = 0;
+            for (; lineSearchIterationCount < maxNbIterationsLineSearch; ++lineSearchIterationCount)
+            {
+                // compute x^{i+1} += alpha * dx
+                function.updateGuessFromLinearSolution(lineSearchAlpha - previousAlpha);
 
-            // compute r(x^i)
-            function.evaluateCurrentGuess();
+                // compute r(x^{i+1})
+                function.evaluateCurrentGuess();
 
-            // compute ||r(x^i)||
-            squaredResidualNorm = function.squaredNormLastEvaluation();
+                // compute ||r(x^{i+1}||
+                squaredResidualNorm = function.squaredNormLastEvaluation();
+
+                if (squaredResidualNorm < previousSquaredResidualNorm)
+                {
+                    lineSearchSuccess = true;
+                    break;
+                }
+
+                previousAlpha = lineSearchAlpha;
+                lineSearchAlpha *= lineSearchCoefficient;
+            }
 
             residualList.push_back(squaredResidualNorm);
+
+            if (!lineSearchSuccess)
+            {
+                hasLineSearchFailed = true;
+                msg_warning() << "Line search failed at Newton iteration "
+                    << newtonIterationCount << ". Stopping the iterative process.";
+            }
+            else
+            {
+                msg_info() << "Line search succeeded after " << (lineSearchIterationCount+1) << " iterations";
+            }
 
             std::stringstream iterationResults;
             if (printLog)

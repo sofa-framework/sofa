@@ -32,6 +32,7 @@ struct NewtonRaphsonConvergenceMeasure
     virtual bool hasConverged() const = 0;
     virtual NewtonStatus status() const = 0;
     virtual std::string writeWhenConverged() const = 0;
+    virtual std::string writeWhenNotConverged() const { return {}; };
     virtual std::string_view measureName() const = 0;
 
     unsigned int newtonIterationCount = 0;

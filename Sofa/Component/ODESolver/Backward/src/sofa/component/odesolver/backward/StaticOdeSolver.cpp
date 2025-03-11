@@ -91,9 +91,9 @@ struct StaticResidualFunction : newton_raphson::BaseNonLinearFunction
         mop.setSystemMBKMatrix(m, b, k, linearSolver);
     }
 
-    void updateGuessFromLinearSolution() override
+    void updateGuessFromLinearSolution(SReal alpha) override
     {
-        x.peq(dx);
+        x.peq(dx, alpha);
         mop.solveConstraint(x, sofa::core::ConstraintOrder::POS);
         mop.propagateX(x);
     }

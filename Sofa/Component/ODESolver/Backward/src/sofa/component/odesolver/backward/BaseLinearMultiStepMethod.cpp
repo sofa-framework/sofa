@@ -180,9 +180,10 @@ struct ResidualFunction : newton_raphson::BaseNonLinearFunction
         mop.projectResponse(rhs);
     }
 
-    void updateGuessFromLinearSolution() override
+    void updateGuessFromLinearSolution(SReal alpha) override
     {
-        vop.v_peq(velocity[order], dv);
+        vop.v_peq(velocity[order], dv, alpha);
+        computeDxFromDv();
         vop.v_peq(position[order], dx);
 
         mop.projectPositionAndVelocity(position[order], velocity[order]);
@@ -196,7 +197,10 @@ struct ResidualFunction : newton_raphson::BaseNonLinearFunction
         linearSolver->setSystemLHVector(dv);
         linearSolver->setSystemRHVector(rhs);
         linearSolver->solveSystem();
+    }
 
+    void computeDxFromDv()
+    {
         core::behavior::MultiVecDeriv dxVec(&vop, dx);
         dxVec.eq(dv, dt * b_coef[order] / a_coef[order]);
         dxVec.peq(r1, - 1 / a_coef[order]);
@@ -388,6 +392,12 @@ void BaseLinearMultiStepMethod::solve(
     //initial guess
     vop.v_eq(m_position[order], m_position[order - 1]);
     vop.v_eq(m_velocity[order], m_velocity[order - 1]);
+
+    //prediction using the previous velocity
+    vop.v_peq(m_position[order], m_velocity[order], dt);
+
+    mop.propagateX(m_position[order]);
+    mop.propagateV(m_velocity[order]);
 
     ResidualFunction residualFunction(mop, vop);
     residualFunction.order = order;

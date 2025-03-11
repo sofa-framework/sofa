@@ -73,10 +73,10 @@ public:
 
     /**
      * Once (x^{i+1}-x^i) has been computed, the result is used internally to update the current
-     * guess. It computes x^{i+1} += dx, where dx is the result of the linear system. It is not
-     * necessary to share the result with the Newton-Raphson method.
+     * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
+     * not necessary to share the result with the Newton-Raphson method.
      */
-    virtual void updateGuessFromLinearSolution() = 0;
+    virtual void updateGuessFromLinearSolution(SReal alpha) = 0;
 
 
 };

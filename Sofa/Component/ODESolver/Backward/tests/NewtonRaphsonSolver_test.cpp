@@ -20,7 +20,6 @@
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
 #include <sofa/component/odesolver/backward/NewtonRaphsonSolver.h>
-#include <sofa/component/odesolver/backward/NewtonRaphsonSolverBackup.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/testing/BaseSimulationTest.h>
