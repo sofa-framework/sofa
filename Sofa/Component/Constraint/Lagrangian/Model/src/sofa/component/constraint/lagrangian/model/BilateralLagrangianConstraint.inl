@@ -46,6 +46,7 @@ BilateralLagrangianConstraint<DataTypes>::BilateralLagrangianConstraint(Mechanic
     , d_restVector(initData(&d_restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
     , d_activate( initData(&d_activate, true, "activate", "control constraint activation (true by default)"))
     , d_keepOrientDiff(initData(&d_keepOrientDiff, false, "keepOrientationDifference", "keep the initial difference in orientation (only for rigids)"))
+    , d_load(initData(&d_load, 1.0_sreal, "load", "Apply this factor to the constraint force to enable incremental loading"))
     , l_topology1(initLink("topology1", "link to the first topology container"))
     , l_topology2(initLink("topology2", "link to the second topology container"))
 {
@@ -268,9 +269,10 @@ void BilateralLagrangianConstraint<DataTypes>::getConstraintResolution(const Con
     const unsigned minp=std::min(d_m1.getValue().size(), d_m2.getValue().size());
 
     prevForces.resize(minp);
+    const SReal load = d_load.getValue();
     for (unsigned pid=0; pid<minp; pid++)
     {
-        resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces[pid]);
+        resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces[pid], load);
         offset += 3;
     }
 }
