@@ -25,7 +25,7 @@ namespace sofa::component::odesolver::backward
 {
 
 BaseLinearMultiStepMethod::BaseLinearMultiStepMethod()
-    : d_order(initData(&d_order, static_cast<std::size_t>(1), "order", "Order of the numerical method"))
+    : d_order(initData(&d_order, static_cast<std::size_t>(1), "order", "Order of the numerical method."))
     , d_rayleighStiffness(initData(&d_rayleighStiffness, 0_sreal, "rayleighStiffness",
                                    "Rayleigh damping coefficient related to stiffness, > 0"))
     , d_rayleighMass(initData(&d_rayleighMass, 0_sreal, "rayleighMass",
@@ -52,14 +52,14 @@ void BaseLinearMultiStepMethod::init()
         }
     }
 
-    if (this->d_componentState.getValue() != core::objectmodel::ComponentState::Invalid)
-    {
-        d_componentState.setValue(core::objectmodel::ComponentState::Valid);
-    }
-
     if (auto* context = this->getContext())
     {
         m_timeList.push_back(context->getTime());
+    }
+
+    if (this->d_componentState.getValue() != core::objectmodel::ComponentState::Invalid)
+    {
+        d_componentState.setValue(core::objectmodel::ComponentState::Valid);
     }
 }
 
@@ -77,6 +77,15 @@ void BaseLinearMultiStepMethod::reset()
     m_currentSolve = 0;
 }
 
+/**
+ * Represent the mathematical function to be solved by a Newton-Raphson solver. See documentation of
+ * @BaseNonLinearFunction
+ *
+ * The function is r(x) = [r1(x), r2(x)] with
+ * x = [position, velocity]
+ * r_1(x) = \sum_{j=0}^s a_j \text{position}_j - h \sum_{j=0}^s b_j \text{velocity}_j
+ * r_2(x) = \sum_{j=0}^s a_j M \text{velocity}_j - h \sum_{j=0}^s b_j \text{force}_j
+ */
 struct ResidualFunction : newton_raphson::BaseNonLinearFunction
 {
     void evaluateCurrentGuess() override
@@ -120,15 +129,15 @@ struct ResidualFunction : newton_raphson::BaseNonLinearFunction
             }
         }
 
-        core::behavior::MultiVecDeriv tmp(&vop);
+        core::behavior::MultiVecDeriv velocitySum(&vop);
         for (unsigned int i = 0; i < order + 1; ++i)
         {
             if (a_coef[i] != 0)
             {
-                tmp.peq(velocity[i], a_coef[i]);
+                velocitySum.peq(velocity[i], a_coef[i]);
             }
         }
-        mop.addMdx(r2, tmp, core::MatricesFactors::M(1).get());
+        mop.addMdx(r2, velocitySum, core::MatricesFactors::M(1).get());
 
         for (unsigned int i = 0; i < order + 1; ++i)
         {
@@ -381,22 +390,22 @@ void BaseLinearMultiStepMethod::solve(
     vop.v_eq(m_velocity[order], m_velocity[order - 1]);
 
     ResidualFunction residualFunction(mop, vop);
-    residualFunction
-        .setOrder(order)
-        .setACoef(m_a_coef)
-        .setBCoef(m_b_coef)
-        .setDt(dt)
-        .setRayleighMass(d_rayleighMass.getValue())
-        .setRayleighStiffness(d_rayleighStiffness.getValue())
-        .setPosition(m_position)
-        .setVelocity(m_velocity)
-        .setForce(m_force)
-        .setR1(m_r1)
-        .setR2(m_r2)
-        .setDx(sofa::core::vec_id::write_access::dx)
-        .setDv(m_dv)
-        .setRHS(m_rhs)
-        .setLinearSolver(l_linearSolver.get());
+    residualFunction.order = order;
+    residualFunction.a_coef = m_a_coef;
+    residualFunction.b_coef = m_b_coef;
+    residualFunction.dt = dt;
+    residualFunction.rayleighMass = d_rayleighMass.getValue();
+    residualFunction.rayleighStiffness = d_rayleighStiffness.getValue();
+    residualFunction.position = m_position;
+    residualFunction.velocity = m_velocity;
+    residualFunction.force = m_force;
+    residualFunction.r1 = m_r1;
+    residualFunction.r2 = m_r2;
+    residualFunction.dx = sofa::core::vec_id::write_access::dx;
+    residualFunction.dv = m_dv;
+    residualFunction.rhs = m_rhs;
+    residualFunction.linearSolver = l_linearSolver.get();
+
     l_newtonSolver->solve(residualFunction);
 
     //update state
