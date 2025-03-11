@@ -22,7 +22,6 @@
 #pragma once
 #include <sofa/component/odesolver/backward/NewtonStatus.h>
 #include <sofa/component/odesolver/backward/config.h>
-#include <sofa/core/behavior/BaseIntegrationMethod.h>
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/MechanicalOperations.h>
