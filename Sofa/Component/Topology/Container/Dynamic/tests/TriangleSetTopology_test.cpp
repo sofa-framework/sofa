@@ -34,6 +34,11 @@ using namespace sofa::testing;
 class TriangleSetTopology_test : public BaseTest
 {
 public:
+    using EdgeID = TriangleSetTopologyContainer::EdgeID;
+    using Edge = TriangleSetTopologyContainer::Edge;
+    using TriangleID = TriangleSetTopologyContainer::TriangleID;
+    using Triangle = TriangleSetTopologyContainer::Triangle;
+
     /// Test on TriangleSetTopologyContainer creation without Data. All container should be empty.
     bool testEmptyContainer();
 
