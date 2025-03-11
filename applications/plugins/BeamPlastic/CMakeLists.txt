@@ -9,17 +9,17 @@ set(BEAMPLASTIC_SRC src/BeamPlastic)
 set(HEADER_FILES
     ${BEAMPLASTIC_SRC}/config.h.in
     ${BEAMPLASTIC_SRC}/init.h
-    ${BEAMPLASTIC_SRC}/forceField/BeamPlasticFEMForceField.h
-    ${BEAMPLASTIC_SRC}/forceField/BeamPlasticFEMForceField.inl
-    ${BEAMPLASTIC_SRC}/constitutiveLaw/PlasticConstitutiveLaw.h
-    ${BEAMPLASTIC_SRC}/constitutiveLaw/RambergOsgood.h
+    ${BEAMPLASTIC_SRC}/forcefield/BeamPlasticFEMForceField.h
+    ${BEAMPLASTIC_SRC}/forcefield/BeamPlasticFEMForceField.inl
+    ${BEAMPLASTIC_SRC}/constitutivelaw/PlasticConstitutiveLaw.h
+    ${BEAMPLASTIC_SRC}/constitutivelaw/RambergOsgood.h
     ${BEAMPLASTIC_SRC}/quadrature/gaussian.h
     ${BEAMPLASTIC_SRC}/quadrature/quadrature.h
 )
 
 set(SOURCE_FILES
     ${BEAMPLASTIC_SRC}/init.cpp
-    ${BEAMPLASTIC_SRC}/forceField/BeamPlasticFEMForceField.cpp
+    ${BEAMPLASTIC_SRC}/forcefield/BeamPlasticFEMForceField.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
