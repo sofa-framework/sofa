@@ -89,6 +89,8 @@ NewtonRaphsonSolver::NewtonRaphsonSolver()
                         ("status\n" + NewtonStatus::dataDescription()).c_str()))
     , d_residualGraph(
           initData(&d_residualGraph, "residualGraph", "Graph of the residual over the iterations"))
+    , d_warnWhenLineSearchFails(initData(&d_warnWhenLineSearchFails, true, "warnWhenLineSearchFails", "Trigger a warning if line search fails"))
+    , d_warnWhenDiverge(initData(&d_warnWhenDiverge, true, "warnWhenDiverge", "Trigger a warning if Newton-Raphson diverge"))
 {
     d_status.setReadOnly(true);
 
@@ -268,8 +270,9 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
             if (!lineSearchSuccess)
             {
                 hasLineSearchFailed = true;
-                msg_warning() << "Line search failed at Newton iteration "
-                    << newtonIterationCount << ". Stopping the iterative process.";
+                msg_warning_when(d_warnWhenLineSearchFails.getValue())
+                    << "Line search failed at Newton iteration "
+                    << newtonIterationCount << ".";
             }
             else
             {
@@ -315,7 +318,8 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
 
         if (!hasConverged)
         {
-            msg_warning() << "Newton-Raphson method failed to converge after " << newtonIterationCount
+            msg_warning_when(d_warnWhenDiverge.getValue()) <<
+                "Newton-Raphson method failed to converge after " << newtonIterationCount
                 << " iteration(s) with residual squared norm = " << squaredResidualNorm << ". ";
 
             if (!hasLineSearchFailed)
