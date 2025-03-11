@@ -231,6 +231,7 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
             {
                 iterationResults << "Newton iteration results:";
                 iterationResults << "\n* Current iteration = " << newtonIterationCount;
+                iterationResults << "\n* Squared residual norm = " << squaredResidualNorm;
                 iterationResults << "\n* Residual norm = " << std::sqrt(squaredResidualNorm) << " (absolute threshold = " << absoluteStoppingThreshold << ")";
                 iterationResults << "\n* Successive relative ratio = " << std::sqrt(squaredResidualNorm / previousSquaredResidualNorm) << " (threshold = " << relativeSuccessiveStoppingThreshold << ", previous residual norm = " << std::sqrt(previousSquaredResidualNorm) << ")";
             }
