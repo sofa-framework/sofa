@@ -1,0 +1,49 @@
+<!-- Mechanical MassSpring Group Basic Example -->
+<Node name="root" dt="0.02" gravity="0 0 0">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TriangleFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+
+    <FreeMotionAnimationLoop/>
+    <VisualStyle displayFlags="showBehaviorModels showMappings" />
+    <GenericConstraintSolver/>
+
+
+    <Node name="Langrangian-Bileateral">
+        <EulerImplicitSolver />
+        <SparseLDLSolver />
+        <MechanicalObject name="mstate" template="Vec3d" position="4 2 5  1 5 -8  0 1 -5  5 6 8" showObject="true" showObjectScale="0.2" drawMode="2" />
+        <UniformMass vertexMass="1" />
+        <Node name="DistanceToPlane">
+            <MechanicalObject name="distance" template="Vec1" rest_position="0 0 0 0"/>
+            <FixedLagrangianConstraint template="Vec1" fixAll="true"/>
+            <DistanceToPlaneMapping input="@../mstate" output="@distance" planeNormal="0 0 1" planePoint="0 0 2" />
+        </Node>
+        <UncoupledConstraintCorrection defaultCompliance="1"/>
+    </Node>
+    <Node name="Springs">
+        <EulerImplicitSolver rayleighMass="0.1" />
+        <SparseLDLSolver />
+        <MechanicalObject name="mstate" template="Vec3d" position="4 2 5  1 5 -8  0 1 -5  5 6 8" showColor="0 1 0 1" showObject="true" showObjectScale="0.2" drawMode="1" />
+        <UniformMass vertexMass="1" />
+        <Node name="DistanceToPlane">
+            <MechanicalObject name="distance" template="Vec1" rest_position="0 0 0 0"/>
+            <RestShapeSpringsForceField template="Vec1" stiffness="10" />
+            <DistanceToPlaneMapping input="@../mstate" output="@distance" planeNormal="0 0 1" planePoint="0 0 2" />
+        </Node>
+        <UncoupledConstraintCorrection defaultCompliance="1"/>
+    </Node>
+</Node>
