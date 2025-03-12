@@ -78,7 +78,10 @@ public:
      */
     virtual void updateGuessFromLinearSolution(SReal alpha) = 0;
 
-
+    /**
+     * Compute ||x^{i+1}-x^i||^2
+     */
+    virtual SReal squaredNormDx() = 0;
 };
 
 }

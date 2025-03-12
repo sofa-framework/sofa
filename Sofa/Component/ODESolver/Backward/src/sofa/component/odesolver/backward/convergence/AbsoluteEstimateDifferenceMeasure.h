@@ -48,7 +48,7 @@ public:
         std::stringstream ss;
         ss << "absolute successive estimate difference (" <<
             std::sqrt(squaredAbsoluteDifference) << ") is smaller than the threshold ("
-            << squaredParam << ") after "
+            << param << ") after "
             << (newtonIterationCount+1) << " Newton iterations.";
         return ss.str();
     }
