@@ -47,6 +47,9 @@ class SOFA_COMPONENT_ODESOLVER_BACKWARD_API BaseNonLinearFunction
 public:
     virtual ~BaseNonLinearFunction() = default;
 
+    virtual void startNewtonIteration() {}
+    virtual void endNewtonIteration() {}
+
     /**
      * Evaluation of the function where the input is the current guess. If the function is called
      * for the first time, then it is called on the initial guess.
@@ -82,6 +85,11 @@ public:
      * Compute ||x^{i+1}-x^i||^2
      */
     virtual SReal squaredNormDx() = 0;
+
+    /**
+     * Compute ||x^{i+1}||^2
+     */
+    virtual SReal squaredLastEvaluation() = 0;
 };
 
 }

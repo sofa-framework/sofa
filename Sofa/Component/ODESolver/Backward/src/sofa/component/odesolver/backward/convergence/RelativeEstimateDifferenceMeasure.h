@@ -36,8 +36,8 @@ public:
     
     bool hasConverged() const override
     {
-        return squaredPreviousVelocity > 0
-            && squaredAbsoluteDifference < squaredPreviousVelocity * squaredParam;
+        return squaredPreviousEvaluation > 0
+            && squaredAbsoluteDifference < squaredPreviousEvaluation * squaredParam;
     }
     
     NewtonStatus status() const override
@@ -50,9 +50,9 @@ public:
     {
         std::stringstream ss;
         ss << "relative successive estimate difference (" <<
-            std::sqrt(squaredAbsoluteDifference / squaredPreviousVelocity)
+            std::sqrt(squaredAbsoluteDifference / squaredPreviousEvaluation)
             << ") is smaller than the threshold ("
-            << squaredParam << ") after "
+            << param << ") after "
             << (newtonIterationCount+1) << " Newton iterations.";
         return ss.str();
     }
@@ -63,7 +63,7 @@ public:
     }
 
     SReal squaredAbsoluteDifference = 0;
-    SReal squaredPreviousVelocity = 0;
+    SReal squaredPreviousEvaluation = 0;
 };
 
 }

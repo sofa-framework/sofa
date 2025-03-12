@@ -51,9 +51,15 @@ struct NewtonRaphsonSquareRootTest : public testing::NumericTest<SReal>
     {
         struct SquareRootFunction : public component::odesolver::backward::newton_raphson::BaseNonLinearFunction
         {
+            void setInitialGuess(SReal initialGuess)
+            {
+                m_currentGuess = initialGuess;
+                m_guesses.push_back(initialGuess);
+            }
+
             void evaluateCurrentGuess() override
             {
-                const SReal x2 = m_guesses.back() * m_guesses.back();
+                const SReal x2 = m_currentGuess * m_currentGuess;
                 m_currentEvaluation = x2 - m_positiveNumber;
             }
 
@@ -64,12 +70,12 @@ struct NewtonRaphsonSquareRootTest : public testing::NumericTest<SReal>
 
             void computeGradientFromCurrentGuess() override
             {
-                m_gradient = 2 * m_guesses.back();
+                m_gradient = 2 * m_currentGuess;
             }
 
             void updateGuessFromLinearSolution(SReal alpha) override
             {
-                m_guesses.push_back(m_guesses.back() + alpha * m_linearSolverSolution);
+                m_currentGuess += alpha * m_linearSolverSolution;
             }
 
             void solveLinearEquation() override
@@ -82,7 +88,18 @@ struct NewtonRaphsonSquareRootTest : public testing::NumericTest<SReal>
                 return m_linearSolverSolution * m_linearSolverSolution;
             }
 
+            SReal squaredLastEvaluation() override
+            {
+                return m_currentGuess * m_currentGuess;
+            }
+
+            void endNewtonIteration() override
+            {
+                m_guesses.push_back(m_currentGuess);
+            }
+
             sofa::type::vector<SReal> m_guesses;
+            SReal m_currentGuess = 0;
             SReal m_currentEvaluation = 0;
             SReal m_gradient = 0;
             SReal m_linearSolverSolution = 0;
@@ -91,7 +108,7 @@ struct NewtonRaphsonSquareRootTest : public testing::NumericTest<SReal>
         } squareRootFunction;
 
         squareRootFunction.m_positiveNumber = x;
-        squareRootFunction.m_guesses.push_back(initialGuess);
+        squareRootFunction.setInitialGuess(initialGuess);
 
         solver->solve(squareRootFunction);
 
