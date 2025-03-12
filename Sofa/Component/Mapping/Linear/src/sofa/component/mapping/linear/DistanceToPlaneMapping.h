@@ -20,58 +20,53 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/visual/config.h>
+#include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/type/RGBAColor.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
+#include <sofa/core/Mapping.h>
+#include <sofa/core/Mapping.inl>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/type/vector.h>
+#include <sofa/core/trait/DataTypes.h>
 
-namespace sofa::component::visual
+
+namespace sofa::component::mapping::linear
 {
 
-namespace
-{
-    using sofa::type::Vec3;
-}
-
-class SOFA_COMPONENT_VISUAL_API VisualGrid : public core::visual::VisualModel
+template <class TIn>
+class DistanceToPlaneMapping : public LinearMapping<TIn, defaulttype::Vec1dTypes>
 {
 public:
-    SOFA_CLASS(VisualGrid, VisualModel);
-
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-
-    MAKE_SELECTABLE_ITEMS(PlaneType,
-        sofa::helper::Item{"x", "The grid is oriented in the plane defined by the equation x=0"},
-        sofa::helper::Item{"y", "The grid is oriented in the plane defined by the equation y=0"},
-        sofa::helper::Item{"z", "The grid is oriented in the plane defined by the equation z=0"}
-    );
-
-    Data<PlaneType> d_plane; ///< Plane of the grid
-
-
-    Data<float> d_size; ///< Size of the squared grid
-    Data<int> d_nbSubdiv; ///< Number of subdivisions
-
-    Data<sofa::type::RGBAColor> d_color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
-    Data<float> d_thickness; ///< Thickness of the lines in the grid
-    core::objectmodel::lifecycle::RemovedData d_draw {this, "v23.06", "23.12", "draw", "Use the 'enable' data field instead of 'draw'"};
-
-
-    VisualGrid();
-    ~VisualGrid() override = default;
+    SOFA_CLASS(SOFA_TEMPLATE(DistanceToPlaneMapping,TIn), SOFA_TEMPLATE2(LinearMapping,TIn, defaulttype::Vec1dTypes));
+    typedef LinearMapping<TIn,  defaulttype::Vec1dTypes> Inherit;
+    typedef  defaulttype::Vec1dTypes TOut;
 
     void init() override;
-    void reinit() override;
-    void doDrawVisual(const core::visual::VisualParams*) override;
-    void doUpdateVisual(const core::visual::VisualParams*) override;
-    void updateGrid();
-    void buildGrid();
+
+    void apply(const core::MechanicalParams *mparams, Data<VecCoord_t<TOut>>& out, const Data<VecCoord_t<TIn>>& in) override;
+
+    void applyJ(const core::MechanicalParams *mparams, Data<VecDeriv_t<TOut>>& out, const Data<VecDeriv_t<TIn>>& in) override;
+
+    void applyJT(const core::MechanicalParams *mparams, Data<VecDeriv_t<TIn>>& out, const Data<VecDeriv_t<TOut>>& in) override;
+
+    void applyJT(const core::ConstraintParams *cparams, Data<MatrixDeriv_t<TIn>>& out, const Data<MatrixDeriv_t<TOut>>& in) override;
+
+    const linearalgebra::BaseMatrix* getJ() override;
+
+    void handleTopologyChange() override;
+
+
+    Data<type::Vec<Deriv_t<TIn>::spatial_dimensions,typename Deriv_t<TIn>::value_type>> d_planeNormal;
+    Data<type::Vec<Coord_t<TIn>::spatial_dimensions,typename Coord_t<TIn>::value_type>> d_planePoint;
 
 protected:
 
-    ///< Pre-computed points used to draw the grid
-    sofa::type::vector<Vec3> m_drawnPoints;
+    DistanceToPlaneMapping();
+    virtual ~DistanceToPlaneMapping() {};
 
+    linearalgebra::EigenSparseMatrix<TIn, TOut> J;
 };
 
-} // namespace sofa::component::visual
+
+}
