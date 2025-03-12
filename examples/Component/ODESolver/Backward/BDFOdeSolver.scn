@@ -16,20 +16,21 @@
         <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     </Node>
 
-    <VisualStyle displayFlags="showWireframe showVisual showBehaviorModels showForceFields" />
+    <VisualStyle displayFlags="showWireframe showVisual showBehaviorModels hideForceFields" />
     <DefaultAnimationLoop parallelODESolving="false"/>
 
     <Node name="DeformableObject">
 
         <BDFOdeSolver order="2" printLog="false" rayleighMass="0.01" rayleighStiffness="0.01"/>
         <NewtonRaphsonSolver name="newton" printLog="false"
-                             maxNbIterationsNewton="30" absoluteResidualStoppingThreshold="1e-5"
+                             maxNbIterationsNewton="10" absoluteResidualStoppingThreshold="1e-5"
                              maxNbIterationsLineSearch="5" lineSearchCoefficient="0.5"
                              relativeInitialStoppingThreshold="1e-3"
                              absoluteEstimateDifferenceThreshold="1e-5"
                              relativeEstimateDifferenceThreshold="1e-5"/>
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrix" name="A" checkIndices="false"/>
-        <EigenSimplicialLDLT template="CompressedRowSparseMatrix"/>
+        <PCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner"/>
+        <AsyncSparseLDLSolver name="preconditioner"/>
 
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
         <TetrahedronSetTopologyContainer src="@loader" name="topologyContainer"/>
