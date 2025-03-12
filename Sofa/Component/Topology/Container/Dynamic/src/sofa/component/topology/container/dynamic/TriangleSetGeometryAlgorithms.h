@@ -391,9 +391,6 @@ public:
         bool bRest = false) const;
     //}
 
-    SOFA_ATTRIBUTE_DISABLED("v23.12", "v23.12", "Method writeMSHfile has been disabled. To export the topology as .gmsh file, use the sofa::component::io::mesh::MeshExporter.")
-    void writeMSHfile(const char *filename) const {msg_deprecated() << "Method writeMSHfile has been disabled. To export the topology as " << filename << " file, use the sofa::component::io::mesh::MeshExporter."; }
-
 protected:
     Data<bool> showTriangleIndices; ///< Debug : view Triangle indices
     Data<bool> _draw; ///< if true, draw the triangles in the topology
