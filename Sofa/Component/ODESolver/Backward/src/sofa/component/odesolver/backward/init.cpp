@@ -32,7 +32,6 @@ extern void registerStaticSolver(sofa::core::ObjectFactory* factory);
 extern void registerVariationalSymplecticSolver(sofa::core::ObjectFactory* factory);
 extern void registerNewtonRaphsonSolver(sofa::core::ObjectFactory* factory);
 extern void registerBDFOdeSolver(sofa::core::ObjectFactory* factory);
-extern void registerStaticOdeSolver(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -64,7 +63,6 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerVariationalSymplecticSolver(factory);
     registerNewtonRaphsonSolver(factory);
     registerBDFOdeSolver(factory);
-    registerStaticOdeSolver(factory);
 }
 
 void init()
