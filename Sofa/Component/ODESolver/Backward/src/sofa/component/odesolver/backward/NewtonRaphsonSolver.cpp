@@ -140,9 +140,8 @@ void NewtonRaphsonSolver::initialConvergence(SReal squaredResidualNorm,
     d_status.setValue(convergedEquilibrium);
 }
 
-bool NewtonRaphsonSolver::measureConvergence(
-    const NewtonRaphsonConvergenceMeasure& measure,
-    std::stringstream& os)
+bool NewtonRaphsonSolver::measureConvergence(const NewtonRaphsonConvergenceMeasure& measure,
+                                             std::stringstream& os)
 {
     if (measure.isMeasured())
     {
@@ -160,7 +159,7 @@ bool NewtonRaphsonSolver::measureConvergence(
             const auto print = measure.writeWhenNotConverged();
             if (!print.empty())
             {
-                os <<  "\n* " << print;
+                os << "\n* " << print;
             }
         }
     }
@@ -171,6 +170,20 @@ bool NewtonRaphsonSolver::measureConvergence(
     return false;
 }
 
+void NewtonRaphsonSolver::lineSearchIteration(
+    newton_raphson::BaseNonLinearFunction& function, SReal& squaredResidualNorm,
+    SReal lineSearchAlpha)
+{
+    // compute x^{i+1} += alpha * dx
+    function.updateGuessFromLinearSolution(lineSearchAlpha);
+
+    // compute r(x^{i+1})
+    function.evaluateCurrentGuess();
+
+    // compute ||r(x^{i+1}||
+    squaredResidualNorm = function.squaredNormLastEvaluation();
+
+}
 void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
 {
     if (!this->isComponentStateValid())
@@ -215,7 +228,7 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
 
         const auto relativeSuccessiveStoppingThreshold = d_relativeSuccessiveStoppingThreshold.getValue();
 
-        RelativeSuccessiveConvergenceMeasure relativeSuccessiveConvergenceMeasure(d_relativeSuccessiveStoppingThreshold.getValue());
+        RelativeSuccessiveConvergenceMeasure relativeSuccessiveConvergenceMeasure(relativeSuccessiveStoppingThreshold);
         RelativeInitialConvergenceMeasure relativeInitialConvergenceMeasure(d_relativeInitialStoppingThreshold.getValue());
         relativeInitialConvergenceMeasure.firstSquaredResidualNorm = squaredResidualNorm;
         AbsoluteConvergenceMeasure absoluteConvergenceMeasure(absoluteStoppingThreshold);
@@ -225,7 +238,6 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
         const auto maxNbIterationsNewton = d_maxNbIterationsNewton.getValue();
         const auto maxNbIterationsLineSearch = std::max(d_maxNbIterationsLineSearch.getValue(), 1u);
         bool hasConverged = false;
-        bool hasLineSearchFailed = false;
         const auto lineSearchCoefficient = d_lineSearchCoefficient.getValue();
 
         unsigned int newtonIterationCount = 0;
@@ -254,14 +266,7 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
             unsigned int lineSearchIterationCount = 0;
             for (; lineSearchIterationCount < maxNbIterationsLineSearch; ++lineSearchIterationCount)
             {
-                // compute x^{i+1} += alpha * dx
-                function.updateGuessFromLinearSolution(lineSearchAlpha - previousAlpha);
-
-                // compute r(x^{i+1})
-                function.evaluateCurrentGuess();
-
-                // compute ||r(x^{i+1}||
-                squaredResidualNorm = function.squaredNormLastEvaluation();
+                lineSearchIteration(function, squaredResidualNorm, lineSearchAlpha - previousAlpha);
 
                 if (squaredResidualNorm < previousSquaredResidualNorm)
                 {
@@ -273,19 +278,24 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
                 lineSearchAlpha *= lineSearchCoefficient;
             }
 
-            residualList.push_back(squaredResidualNorm);
-
             if (!lineSearchSuccess)
             {
-                hasLineSearchFailed = true;
                 msg_warning_when(d_warnWhenLineSearchFails.getValue())
                     << "Line search failed at Newton iteration "
                     << newtonIterationCount << ".";
+
+                static constexpr auto divergedMaxIterations = NewtonStatus("DivergedLineSearch");
+                d_status.setValue(divergedMaxIterations);
+
+                lineSearchAlpha = 1_sreal;
+                lineSearchIteration(function, squaredResidualNorm, lineSearchAlpha - previousAlpha);
             }
             else
             {
                 msg_info() << "Line search succeeded after " << (lineSearchIterationCount+1) << " iterations";
             }
+
+            residualList.push_back(squaredResidualNorm);
 
             std::stringstream iterationResults;
             if (printLog)
@@ -293,6 +303,7 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
                 iterationResults << "Newton iteration results:";
                 iterationResults << "\n* Current iteration = " << newtonIterationCount;
                 iterationResults << "\n* Squared residual norm = " << squaredResidualNorm;
+                iterationResults << "\n* Line search status: " << (lineSearchSuccess ? "SUCCESSFUL" : "FAILED");
                 iterationResults << "\n* Residual norm = " << std::sqrt(squaredResidualNorm) << " (absolute threshold = " << absoluteStoppingThreshold << ")";
                 iterationResults << "\n* Successive relative ratio = " << std::sqrt(squaredResidualNorm / previousSquaredResidualNorm) << " (threshold = " << relativeSuccessiveStoppingThreshold << ", previous residual norm = " << std::sqrt(previousSquaredResidualNorm) << ")";
             }
@@ -326,15 +337,12 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
 
         if (!hasConverged)
         {
-            msg_warning_when(d_warnWhenDiverge.getValue()) <<
-                "Newton-Raphson method failed to converge after " << newtonIterationCount
+            msg_warning_when(d_warnWhenDiverge.getValue())
+                << "Newton-Raphson method failed to converge after " << newtonIterationCount
                 << " iteration(s) with residual squared norm = " << squaredResidualNorm << ". ";
 
-            if (!hasLineSearchFailed)
-            {
-                static constexpr auto divergedMaxIterations = NewtonStatus("DivergedMaxIterations");
-                d_status.setValue(divergedMaxIterations);
-            }
+            static constexpr auto divergedMaxIterations = NewtonStatus("DivergedMaxIterations");
+            d_status.setValue(divergedMaxIterations);
         }
     }
 }

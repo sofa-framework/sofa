@@ -27,8 +27,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/map.h>
 
-#include "convergence/RelativeSuccessiveConvergenceMeasure.h"
-
 namespace sofa::component::odesolver::backward
 {
 
@@ -53,13 +51,9 @@ public:
 
     void init() override;
     void reset() override;
-    void initialConvergence(SReal squaredResidualNorm, SReal squaredAbsoluteStoppingThreshold);
-    bool measureConvergence(
-        const NewtonRaphsonConvergenceMeasure& measure,
-        std::stringstream& os);
 
     /**
-     *
+     * Main function to call to solve a nonlinear function
      * @param function The nonlinear function to solve
      */
     void solve(newton_raphson::BaseNonLinearFunction& function);
@@ -68,6 +62,12 @@ protected:
     NewtonRaphsonSolver();
 
     void start();
+
+    void initialConvergence(SReal squaredResidualNorm, SReal squaredAbsoluteStoppingThreshold);
+    bool measureConvergence(const NewtonRaphsonConvergenceMeasure& measure, std::stringstream& os);
+
+    static void lineSearchIteration(newton_raphson::BaseNonLinearFunction& function,
+        SReal& squaredResidualNorm, const SReal lineSearchCoefficient);
 };
 
 }
