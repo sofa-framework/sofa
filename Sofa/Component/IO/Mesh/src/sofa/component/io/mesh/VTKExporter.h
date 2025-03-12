@@ -128,7 +128,6 @@ protected:
 public:
     void doInit() override;
     void doReInit() override;
-    void cleanup() override;
     void handleEvent(sofa::core::objectmodel::Event *) override;
 };
 

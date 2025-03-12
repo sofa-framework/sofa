@@ -109,6 +109,8 @@ void VTKExporter::doReInit()
     /// Activate the listening to the event in order to be able to export file at first step and/or the nth-step
     if(d_exportEveryNbSteps.getValue() != 0 || d_exportAtBegin.getValue())
         this->f_listening.setValue(true);
+
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid) ;
 }
 
 void VTKExporter::fetchDataFields(const type::vector<std::string>& strData, type::vector<std::string>& objects, type::vector<std::string>& fields, type::vector<std::string>& names)
@@ -357,9 +359,6 @@ bool VTKExporter::write()
 
 bool VTKExporter::writeVTKSimple()
 {
-    if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid) 
-        return false;
-
     std::string filename = d_filename.getFullPath();
 
     std::ostringstream oss;
@@ -979,14 +978,7 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
 
         case 'E':
         case 'e':
-            if(d_fileFormat.getValue())
-            {
-                writeVTKXML();
-            }
-            else
-            {
-                writeVTKSimple();
-            }
+            write();
             break;
 
         case 'F':
@@ -995,40 +987,10 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
                 writeParallelFile();
         }
     }
-    else if ( /*simulation::AnimateEndEvent* ev =*/ simulation::AnimateEndEvent::checkEventType(event))
+    else
     {
-        const unsigned int maxStep = d_exportEveryNbSteps.getValue();
-        if (maxStep == 0) return;
-
-        m_stepCounter++;
-        if(m_stepCounter >= maxStep)
-        {
-            m_stepCounter = 0;
-            if(d_fileFormat.getValue())
-                writeVTKXML();
-            else
-                writeVTKSimple();
-        }
+        BaseSimulationExporter::handleEvent(event);
     }
-    else if ( simulation::SimulationInitDoneEvent::checkEventType(event) )
-    {
-        if (d_exportAtBegin.getValue())
-        {
-            if (d_fileFormat.getValue())
-            {
-                writeVTKXML();
-            } else
-            {
-                writeVTKSimple();
-            }
-        }
-    }
-}
-
-void VTKExporter::cleanup()
-{
-    if (d_exportAtEnd.getValue())
-        (d_fileFormat.getValue()) ? writeVTKXML() : writeVTKSimple();
 }
 
 } // namespace sofa::component::_vtkexporter_
