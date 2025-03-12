@@ -184,6 +184,21 @@ void NewtonRaphsonSolver::lineSearchIteration(
     squaredResidualNorm = function.squaredNormLastEvaluation();
 }
 
+struct NewtonIterationRAII
+{
+    explicit NewtonIterationRAII(newton_raphson::BaseNonLinearFunction& function) : function(function)
+    {
+        function.startNewtonIteration();
+    }
+
+    ~NewtonIterationRAII()
+    {
+        function.endNewtonIteration();
+    }
+
+    newton_raphson::BaseNonLinearFunction& function;
+};
+
 void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
 {
     if (!this->isComponentStateValid())
@@ -243,6 +258,8 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
         unsigned int newtonIterationCount = 0;
         for (; newtonIterationCount < maxNbIterationsNewton; ++newtonIterationCount)
         {
+            NewtonIterationRAII newtonIteration(function);
+
             msg_info() << "Newton iteration #" << newtonIterationCount;
 
             const auto previousSquaredResidualNorm = squaredResidualNorm;
@@ -252,6 +269,11 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
             absoluteConvergenceMeasure.newtonIterationCount = newtonIterationCount;
             absoluteEstimateDifferenceMeasure.newtonIterationCount = newtonIterationCount;
             relativeEstimateDifferenceMeasure.newtonIterationCount = newtonIterationCount;
+
+            if (relativeEstimateDifferenceMeasure.isMeasured())
+            {
+                relativeEstimateDifferenceMeasure.squaredPreviousEvaluation = function.squaredLastEvaluation();
+            }
 
             // compute J_r(x^i)
             function.computeGradientFromCurrentGuess();
@@ -287,8 +309,11 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
                 static constexpr auto divergedMaxIterations = NewtonStatus("DivergedLineSearch");
                 d_status.setValue(divergedMaxIterations);
 
-                lineSearchAlpha = 1_sreal;
-                lineSearchIteration(function, squaredResidualNorm, lineSearchAlpha - previousAlpha);
+                if (maxNbIterationsLineSearch > 1)
+                {
+                    lineSearchAlpha = 1_sreal;
+                    lineSearchIteration(function, squaredResidualNorm, lineSearchAlpha - previousAlpha);
+                }
             }
             else
             {
@@ -339,6 +364,13 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
                 if (printLog)
                 {
                     iterationResults << "\n* Successive estimate difference = " << std::sqrt(squaredAbsoluteDifference);
+                }
+
+                relativeEstimateDifferenceMeasure.squaredAbsoluteDifference = squaredAbsoluteDifference;
+                if (measureConvergence(relativeEstimateDifferenceMeasure, iterationResults))
+                {
+                    hasConverged = true;
+                    break;
                 }
 
                 absoluteEstimateDifferenceMeasure.squaredAbsoluteDifference = squaredAbsoluteDifference;

@@ -110,6 +110,11 @@ struct StaticResidualFunction : newton_raphson::BaseNonLinearFunction
         return dx.dot(dx);
     }
 
+    SReal squaredLastEvaluation() override
+    {
+        return x.dot(x);
+    }
+
     sofa::simulation::common::MechanicalOperations& mop;
     core::behavior::MultiVecCoord& x;
     core::behavior::MultiVecDeriv& force;

@@ -212,6 +212,12 @@ struct ResidualFunction : newton_raphson::BaseNonLinearFunction
         return dvVec.dot(dvVec);
     }
 
+    SReal squaredLastEvaluation() override
+    {
+        core::behavior::MultiVecDeriv v(&vop, velocity[order]);
+        return v.dot(v);
+    }
+
     std::size_t order = 1;
     sofa::type::vector<SReal> a_coef;
     sofa::type::vector<SReal> b_coef;
