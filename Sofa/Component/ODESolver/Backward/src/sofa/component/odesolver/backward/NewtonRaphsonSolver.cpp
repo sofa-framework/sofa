@@ -182,8 +182,8 @@ void NewtonRaphsonSolver::lineSearchIteration(
 
     // compute ||r(x^{i+1}||
     squaredResidualNorm = function.squaredNormLastEvaluation();
-
 }
+
 void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
 {
     if (!this->isComponentStateValid())
@@ -330,6 +330,23 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
             {
                 hasConverged = true;
                 break;
+            }
+
+            if (absoluteEstimateDifferenceMeasure.isMeasured()
+                || relativeEstimateDifferenceMeasure.isMeasured())
+            {
+                const auto squaredAbsoluteDifference = function.squaredNormDx();
+                if (printLog)
+                {
+                    iterationResults << "\n* Successive estimate difference = " << std::sqrt(squaredAbsoluteDifference);
+                }
+
+                absoluteEstimateDifferenceMeasure.squaredAbsoluteDifference = squaredAbsoluteDifference;
+                if (measureConvergence(absoluteEstimateDifferenceMeasure, iterationResults))
+                {
+                    hasConverged = true;
+                    break;
+                }
             }
 
             msg_info() << iterationResults.str();

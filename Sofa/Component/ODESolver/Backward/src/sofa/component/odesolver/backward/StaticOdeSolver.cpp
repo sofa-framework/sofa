@@ -105,6 +105,11 @@ struct StaticResidualFunction : newton_raphson::BaseNonLinearFunction
         linearSolver->solveSystem();
     }
 
+    SReal squaredNormDx() override
+    {
+        return dx.dot(dx);
+    }
+
     sofa::simulation::common::MechanicalOperations& mop;
     core::behavior::MultiVecCoord& x;
     core::behavior::MultiVecDeriv& force;
@@ -112,12 +117,12 @@ struct StaticResidualFunction : newton_raphson::BaseNonLinearFunction
     core::behavior::LinearSolver* linearSolver { nullptr };
 
     StaticResidualFunction(sofa::simulation::common::MechanicalOperations& mop,
-                           core::behavior::MultiVecCoord& x,
-                           core::behavior::MultiVecDeriv& force,
+                           core::behavior::MultiVecCoord& x, core::behavior::MultiVecDeriv& force,
                            core::behavior::MultiVecDeriv& dx,
                            core::behavior::LinearSolver* linearSolver)
         : mop(mop), x(x), force(force), dx(dx), linearSolver(linearSolver)
-    {}
+    {
+    }
 };
 
 void StaticOdeSolver::solve(const core::ExecParams* params, SReal dt, core::MultiVecCoordId xResult,

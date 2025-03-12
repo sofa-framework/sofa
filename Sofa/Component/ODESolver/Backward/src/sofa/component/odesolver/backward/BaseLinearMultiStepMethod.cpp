@@ -206,6 +206,12 @@ struct ResidualFunction : newton_raphson::BaseNonLinearFunction
         dxVec.peq(r1, - 1 / a_coef[order]);
     }
 
+    SReal squaredNormDx() override
+    {
+        core::behavior::MultiVecDeriv dvVec(&vop, dv);
+        return dvVec.dot(dvVec);
+    }
+
     std::size_t order = 1;
     sofa::type::vector<SReal> a_coef;
     sofa::type::vector<SReal> b_coef;
@@ -224,11 +230,11 @@ struct ResidualFunction : newton_raphson::BaseNonLinearFunction
     core::MultiVecDerivId rhs;
     core::behavior::LinearSolver* linearSolver { nullptr };
 
-    ResidualFunction(
-        sofa::simulation::common::MechanicalOperations& mop,
-        simulation::common::VectorOperations& vop)
-    : mop(mop), vop(vop)
-    {}
+    ResidualFunction(sofa::simulation::common::MechanicalOperations& mop,
+                     simulation::common::VectorOperations& vop)
+        : mop(mop), vop(vop)
+    {
+    }
 };
 
 void BaseLinearMultiStepMethod::solve(

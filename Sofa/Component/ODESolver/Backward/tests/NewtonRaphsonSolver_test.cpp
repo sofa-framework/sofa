@@ -77,6 +77,11 @@ struct NewtonRaphsonSquareRootTest : public testing::NumericTest<SReal>
                 m_linearSolverSolution = -m_currentEvaluation / m_gradient;
             }
 
+            SReal squaredNormDx() override
+            {
+                return m_linearSolverSolution * m_linearSolverSolution;
+            }
+
             sofa::type::vector<SReal> m_guesses;
             SReal m_currentEvaluation = 0;
             SReal m_gradient = 0;
