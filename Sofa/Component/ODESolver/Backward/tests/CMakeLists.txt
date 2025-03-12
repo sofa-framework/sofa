@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.ODESolver.Backward_test)
 
 set(SOURCE_FILES
+    BDFOdeSolver_test.cpp
     EulerImplicitSolverDynamic_test.cpp
     EulerImplicitSolverStatic_test.cpp
     EulerImplicitSolver_withDamping_test.cpp

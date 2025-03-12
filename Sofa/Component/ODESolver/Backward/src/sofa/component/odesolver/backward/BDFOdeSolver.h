@@ -34,6 +34,9 @@ class SOFA_COMPONENT_ODESOLVER_BACKWARD_API BDFOdeSolver :
 public:
     SOFA_CLASS(BDFOdeSolver, BaseLinearMultiStepMethod);
 
+    static void computeLinearMultiStepCoefficients(const std::deque<SReal>& samples,
+        sofa::type::vector<SReal>& a_coef, sofa::type::vector<SReal>& b_coef);
+
 protected:
     void recomputeCoefficients(std::size_t order, SReal dt) override;
 
