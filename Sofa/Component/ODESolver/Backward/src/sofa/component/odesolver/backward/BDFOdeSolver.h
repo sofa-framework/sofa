@@ -40,6 +40,9 @@ public:
 protected:
     void recomputeCoefficients(std::size_t order, SReal dt) override;
 
+
+    BDFOdeSolver();
+
 };
 
 }
