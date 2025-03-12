@@ -245,7 +245,7 @@ void BaseLinearMultiStepMethod::solve(
      * High-order methods requires an amount of previous time steps. At the begining of the simulation,
      * those time steps are not yet computed. Therefore, the order is reduced to the appropriate order.
      */
-    const auto order = std::min(d_order.getValue(), m_currentSolve + 1);
+    const auto order = std::max(std::min(d_order.getValue(), m_currentSolve + 1), static_cast<std::size_t>(1));
 
     /**
      * Save the time into a list of size order
