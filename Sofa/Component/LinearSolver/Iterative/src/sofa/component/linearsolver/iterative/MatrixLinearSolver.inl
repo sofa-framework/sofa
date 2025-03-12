@@ -577,7 +577,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJt(linearalgebra::BaseMatrix* res
 }
 
 template<class Matrix, class Vector>
-bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, linearalgebra::BaseMatrix* result, SReal fact)
+bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, linearalgebra::BaseMatrix* result, SReal fact, SReal regularizationTerm)
 {
     JMatrixType * j_local = internalData.getLocalJ();
     j_local->clear();
@@ -590,7 +590,20 @@ bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::
 
     executeVisitor(MechanicalGetConstraintJacobianVisitor(cparams, j_local));
 
-    return addJMInvJt(result, j_local, fact);
+    bool boolRes = addJMInvJt(result, j_local, fact);
+
+    if (boolRes && regularizationTerm > std::numeric_limits<SReal>::epsilon())
+    {
+        for (auto rowIt = j_local->begin(); rowIt != j_local->end(); ++rowIt)
+        {
+            if (rowIt->second.size() != 0)
+            {
+                result->add(rowIt->first,rowIt->first,regularizationTerm);
+            }
+        }
+    }
+
+    return boolRes;
 }
 
 template<class Matrix, class Vector>

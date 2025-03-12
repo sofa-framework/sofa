@@ -19,59 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/visual/config.h>
+#define SOFA_COMPONENT_MAPPING_DISTANCETOPLANEMAPPING_CPP
+#include <sofa/component/mapping/linear/DistanceToPlaneMapping.inl>
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/type/RGBAColor.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/mapping/linear/config.h>
 
-namespace sofa::component::visual
+namespace sofa::component::mapping::linear
 {
 
-namespace
+using namespace sofa::defaulttype;
+
+void registerDistanceToPlaneMapping(sofa::core::ObjectFactory* factory)
 {
-    using sofa::type::Vec3;
+    factory->registerObjects(core::ObjectRegistrationData("Mapping that computes the distance to a plane")
+        .add< DistanceToPlaneMapping< Vec3Types > >()
+        .add< DistanceToPlaneMapping< Vec2Types > >()
+        .add< DistanceToPlaneMapping< Vec6Types > >()
+        .add< DistanceToPlaneMapping< Rigid3Types > >()
+        .add< DistanceToPlaneMapping< Rigid2Types > >());
 }
 
-class SOFA_COMPONENT_VISUAL_API VisualGrid : public core::visual::VisualModel
-{
-public:
-    SOFA_CLASS(VisualGrid, VisualModel);
+template class SOFA_COMPONENT_MAPPING_LINEAR_API DistanceToPlaneMapping< Vec3Types > ;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API DistanceToPlaneMapping< Vec2Types > ;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API DistanceToPlaneMapping< Vec6Types > ;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API DistanceToPlaneMapping< Rigid3Types >;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API DistanceToPlaneMapping< Rigid2Types >;
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-
-    MAKE_SELECTABLE_ITEMS(PlaneType,
-        sofa::helper::Item{"x", "The grid is oriented in the plane defined by the equation x=0"},
-        sofa::helper::Item{"y", "The grid is oriented in the plane defined by the equation y=0"},
-        sofa::helper::Item{"z", "The grid is oriented in the plane defined by the equation z=0"}
-    );
-
-    Data<PlaneType> d_plane; ///< Plane of the grid
-
-
-    Data<float> d_size; ///< Size of the squared grid
-    Data<int> d_nbSubdiv; ///< Number of subdivisions
-
-    Data<sofa::type::RGBAColor> d_color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
-    Data<float> d_thickness; ///< Thickness of the lines in the grid
-    core::objectmodel::lifecycle::RemovedData d_draw {this, "v23.06", "23.12", "draw", "Use the 'enable' data field instead of 'draw'"};
-
-
-    VisualGrid();
-    ~VisualGrid() override = default;
-
-    void init() override;
-    void reinit() override;
-    void doDrawVisual(const core::visual::VisualParams*) override;
-    void doUpdateVisual(const core::visual::VisualParams*) override;
-    void updateGrid();
-    void buildGrid();
-
-protected:
-
-    ///< Pre-computed points used to draw the grid
-    sofa::type::vector<Vec3> m_drawnPoints;
-
-};
-
-} // namespace sofa::component::visual
+} // namespace sofa::component::mapping::linear

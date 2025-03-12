@@ -317,7 +317,7 @@ const std::string& Utils::getUserLocalDirectory()
             CoTaskMemFree(path);
         }
 
-        return Utils::narrowString(wresult);
+        return sofa::helper::narrowString(wresult);
 #elif defined(__APPLE__) // macOS : ${HOME}/Library/Application Support
         return getUserHomeDirectory();
 #else // Linux: either ${XDG_CONFIG_HOME} if defined, or ${HOME}/.config (should be equivalent)
