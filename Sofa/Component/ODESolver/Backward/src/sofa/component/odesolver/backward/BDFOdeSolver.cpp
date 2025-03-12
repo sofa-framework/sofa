@@ -28,24 +28,28 @@ namespace sofa::component::odesolver::backward
 
 void registerBDFOdeSolver(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(
-        core::ObjectRegistrationData("Velocity-based ODE solver using Backward Differentiation Formula (BDF), at any order, supporting variable time step size.")
-            .add<BDFOdeSolver>());
+    factory->registerObjects(core::ObjectRegistrationData(
+        "Velocity-based ODE solver using Backward Differentiation Formula (BDF), at any order, supporting variable time step size.")
+        .add<BDFOdeSolver>());
 }
 
-void BDFOdeSolver::recomputeCoefficients(std::size_t order, SReal dt)
+void BDFOdeSolver::computeLinearMultiStepCoefficients(const std::deque<SReal>& samples,
+                                                      sofa::type::vector<SReal>& a_coef,
+                                                      sofa::type::vector<SReal>& b_coef)
 {
-    assert(order > 0);
+    assert(samples.size() > 1);
+    const auto order = samples.size() - 1;
+    assert(order > 1);
 
-    m_a_coef.resize(order+1);
-    m_b_coef.resize(order+1);
+    a_coef.resize(order+1);
+    b_coef.resize(order+1);
 
     /**
      * Computation of the derivative of the Lagrange inteperpolation polynomials
      */
-    for (std::size_t j = 0; j < m_a_coef.size(); ++j)
+    for (std::size_t j = 0; j < order+1; ++j)
     {
-        auto& a_j = m_a_coef[j];
+        auto& a_j = a_coef[j];
 
         a_j = 0;
         for (std::size_t i = 0; i < order+1; ++i)
@@ -57,30 +61,39 @@ void BDFOdeSolver::recomputeCoefficients(std::size_t order, SReal dt)
                 {
                     if (m != i && m != j)
                     {
-                        product *= (m_timeList[order] - m_timeList[m]) / (m_timeList[j] - m_timeList[m]);
+                        product *= (samples[order] - samples[m]) / (samples[j] - samples[m]);
                     }
                 }
-                a_j += product / (m_timeList[j] - m_timeList[i]);
+                a_j += product / (samples[j] - samples[i]);
             }
         }
     }
 
-    for (SReal& j : m_a_coef)
+    const auto dt = samples.at(samples.size() - 1) - samples.at(samples.size() - 2);
+
+    for (SReal& j : a_coef)
     {
         j *= dt;
     }
 
-    for (std::size_t j = 0; j < m_a_coef.size() - 1; ++j)
+    assert(a_coef[order] != 0);
+    for (std::size_t j = 0; j < a_coef.size() - 1; ++j)
     {
-        m_a_coef[j] /= m_a_coef[order];
+        a_coef[j] /= a_coef[order];
     }
-    m_b_coef[order] = 1 / m_a_coef[order];
-    m_a_coef[order] = 1;
+    b_coef[order] = 1 / a_coef[order];
+    a_coef[order] = 1;
 
-    for (std::size_t j = 0; j < m_b_coef.size() - 1; ++j)
+    for (std::size_t j = 0; j < b_coef.size() - 1; ++j)
     {
-        m_b_coef[j] = 0;
+        b_coef[j] = 0;
     }
+}
+
+void BDFOdeSolver::recomputeCoefficients(std::size_t order, SReal dt)
+{
+    assert(m_timeList.size() == order);
+    computeLinearMultiStepCoefficients(m_timeList, m_a_coef, m_b_coef);
 }
 
 }  // namespace sofa::component::odesolver::backward
