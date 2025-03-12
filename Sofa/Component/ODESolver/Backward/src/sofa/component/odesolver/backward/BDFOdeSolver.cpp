@@ -33,6 +33,24 @@ void registerBDFOdeSolver(sofa::core::ObjectFactory* factory)
         .add<BDFOdeSolver>());
 }
 
+BDFOdeSolver::BDFOdeSolver()
+{
+    this->addUpdateCallback("checkOrder", {&d_order}, [this](const core::DataTracker& )
+    {
+        auto order = sofa::helper::getWriteAccessor(d_order);
+        if (order > 6)
+        {
+            msg_warning() << "The method with order " << order << " is not zero-stable";
+        }
+        else if (order == 0)
+        {
+            msg_warning() << "The method cannot have order 0. Setting it to 1.";
+            order.wref() = 1;
+        }
+        return this->getComponentState();
+    }, {});
+}
+
 void BDFOdeSolver::computeLinearMultiStepCoefficients(const std::deque<SReal>& samples,
                                                       sofa::type::vector<SReal>& a_coef,
                                                       sofa::type::vector<SReal>& b_coef)
