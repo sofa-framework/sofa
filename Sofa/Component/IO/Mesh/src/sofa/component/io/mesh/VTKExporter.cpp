@@ -32,7 +32,7 @@ namespace sofa::component::_vtkexporter_
 
 VTKExporter::VTKExporter() 
     : sofa::simulation::BaseSimulationExporter()
-    , outfile(nullptr)
+    , m_outfile(nullptr)
     , d_fileFormat(initData(&d_fileFormat, (bool) true, "XMLformat", "Set to true to use XML format"))
     , d_position(initData(&d_position, "position", "points position (will use points from topology or mechanical state if this is empty)"))
     , d_writeEdges(initData(&d_writeEdges, (bool) true, "edges", "write edge topology"))
@@ -63,8 +63,8 @@ VTKExporter::VTKExporter()
 
 VTKExporter::~VTKExporter()
 {
-    if (outfile)
-        delete outfile;
+    if (m_outfile)
+        delete m_outfile;
 }
 
 void VTKExporter::doInit() 
@@ -198,9 +198,9 @@ void VTKExporter::writeData(const type::vector<std::string>& objects, const type
             //if this is a scalar
             if (!line.empty())
             {
-                *outfile << "SCALARS" << " " << names[i] << " ";
-                *outfile << line << std::endl;
-                *outfile << "LOOKUP_TABLE default" << std::endl;
+                *m_outfile << "SCALARS" << " " << names[i] << " ";
+                *m_outfile << line << std::endl;
+                *m_outfile << "LOOKUP_TABLE default" << std::endl;
             }
             else
             {
@@ -215,12 +215,12 @@ void VTKExporter::writeData(const type::vector<std::string>& objects, const type
                     line = "double";
                     sizeSeg = 3;
                 }
-                *outfile << "VECTORS" << " " << names[i] << " ";
-                *outfile << line << std::endl;
+                *m_outfile << "VECTORS" << " " << names[i] << " ";
+                *m_outfile << line << std::endl;
             }
 
-            *outfile << segmentString(field->getValueString(),sizeSeg) << std::endl;
-            *outfile << std::endl;
+            *m_outfile << segmentString(field->getValueString(),sizeSeg) << std::endl;
+            *m_outfile << std::endl;
 
 
         }
@@ -313,12 +313,12 @@ void VTKExporter::writeDataArray(const type::vector<std::string>& objects, const
                     sizeSeg = 3;
                 }
             }
-            *outfile << "        <DataArray type=\""<< type << "\" Name=\"" << names[i];
+            *m_outfile << "        <DataArray type=\""<< type << "\" Name=\"" << names[i];
             if(sizeSeg > 1)
-                *outfile << "\" NumberOfComponents=\"" << sizeSeg;
-            *outfile << "\" format=\"ascii\">" << std::endl;
-            *outfile << segmentString(field->getValueString(),sizeSeg) << std::endl;
-            *outfile << "        </DataArray>" << std::endl;
+                *m_outfile << "\" NumberOfComponents=\"" << sizeSeg;
+            *m_outfile << "\" format=\"ascii\">" << std::endl;
+            *m_outfile << segmentString(field->getValueString(),sizeSeg) << std::endl;
+            *m_outfile << "        </DataArray>" << std::endl;
         }
     }
 }
@@ -402,12 +402,12 @@ bool VTKExporter::writeVTKSimple()
         filename += ".vtu";
     }*/
 
-    outfile = new std::ofstream(filename.c_str());
-    if( !outfile->is_open() )
+    m_outfile = new std::ofstream(filename.c_str());
+    if( !m_outfile->is_open() )
     {
         msg_error() << "Error creating file "<<filename;
-        delete outfile;
-        outfile = nullptr;
+        delete m_outfile;
+        m_outfile = nullptr;
         return false;
     }
 
@@ -419,44 +419,44 @@ bool VTKExporter::writeVTKSimple()
     const size_t nbp = (!pointsPos.empty()) ? pointsPos.size() : m_topology->getNbPoints();
 
     //Write header
-    *outfile << "# vtk DataFile Version 2.0" << std::endl;
+    *m_outfile << "# vtk DataFile Version 2.0" << std::endl;
 
     //write Title
-    *outfile << "Exported VTK file" << std::endl;
+    *m_outfile << "Exported VTK file" << std::endl;
 
     //write Data type
-    *outfile << "ASCII" << std::endl;
+    *m_outfile << "ASCII" << std::endl;
 
-    *outfile << std::endl;
+    *m_outfile << std::endl;
 
     //write dataset (geometry, unstructured grid)
-    *outfile << "DATASET " << "UNSTRUCTURED_GRID" << std::endl;
+    *m_outfile << "DATASET " << "UNSTRUCTURED_GRID" << std::endl;
 
-    *outfile << "POINTS " << nbp << " float" << std::endl;
+    *m_outfile << "POINTS " << nbp << " float" << std::endl;
     //write Points
     if (!pointsPos.empty())
     {
         for (size_t i=0 ; i<nbp; i++)
         {
-            *outfile << pointsPos[i] << std::endl;
+            *m_outfile << pointsPos[i] << std::endl;
         }
     }
     else if (m_mstate && m_mstate->getSize() == (size_t)nbp)
     {
         for (size_t i=0 ; i<m_mstate->getSize() ; i++)
         {
-            *outfile << m_mstate->getPX(i) << " " << m_mstate->getPY(i) << " " << m_mstate->getPZ(i) << std::endl;
+            *m_outfile << m_mstate->getPX(i) << " " << m_mstate->getPY(i) << " " << m_mstate->getPZ(i) << std::endl;
         }
     }
     else
     {
         for (size_t i=0 ; i<nbp ; i++)
         {
-            *outfile << m_topology->getPX(i) << " " << m_topology->getPY(i) << " " << m_topology->getPZ(i) << std::endl;
+            *m_outfile << m_topology->getPX(i) << " " << m_topology->getPY(i) << " " << m_topology->getPZ(i) << std::endl;
         }
     }
 
-    *outfile << std::endl;
+    *m_outfile << std::endl;
 
     //Write Cells
     size_t numberOfCells, totalSize;
@@ -472,84 +472,84 @@ bool VTKExporter::writeVTKSimple()
             +((d_writeHexas.getValue()) ? 9 * m_topology->getNbHexas() : 0 );
 
 
-    *outfile << "CELLS " << numberOfCells << " " << totalSize << std::endl;
+    *m_outfile << "CELLS " << numberOfCells << " " << totalSize << std::endl;
 
     if (d_writeEdges.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbEdges() ; i++)
-            *outfile << 2 << " " << m_topology->getEdge(i) << std::endl;
+            *m_outfile << 2 << " " << m_topology->getEdge(i) << std::endl;
     }
 
     if (d_writeTriangles.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbTriangles() ; i++)
-            *outfile << 3 << " " <<  m_topology->getTriangle(i) << std::endl;
+            *m_outfile << 3 << " " <<  m_topology->getTriangle(i) << std::endl;
     }
     if (d_writeQuads.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbQuads() ; i++)
-            *outfile << 4 << " " << m_topology->getQuad(i) << std::endl;
+            *m_outfile << 4 << " " << m_topology->getQuad(i) << std::endl;
     }
 
     if (d_writeTetras.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbTetras() ; i++)
-            *outfile << 4 << " " <<  m_topology->getTetra(i) << std::endl;
+            *m_outfile << 4 << " " <<  m_topology->getTetra(i) << std::endl;
     }
     if (d_writeHexas.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbHexas() ; i++)
-            *outfile << 8 << " " <<  m_topology->getHexa(i) << std::endl;
+            *m_outfile << 8 << " " <<  m_topology->getHexa(i) << std::endl;
     }
 
-    *outfile << std::endl;
+    *m_outfile << std::endl;
 
-    *outfile << "CELL_TYPES " << numberOfCells << std::endl;
+    *m_outfile << "CELL_TYPES " << numberOfCells << std::endl;
 
     if (d_writeEdges.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbEdges() ; i++)
-            *outfile << 3 << std::endl;
+            *m_outfile << 3 << std::endl;
     }
 
     if (d_writeTriangles.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbTriangles() ; i++)
-            *outfile << 5 << std::endl;
+            *m_outfile << 5 << std::endl;
     }
     if (d_writeQuads.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbQuads() ; i++)
-            *outfile << 9 << std::endl;
+            *m_outfile << 9 << std::endl;
     }
 
     if (d_writeTetras.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbTetras() ; i++)
-            *outfile << 10 << std::endl;
+            *m_outfile << 10 << std::endl;
     }
     if (d_writeHexas.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbHexas() ; i++)
-            *outfile << 12 << std::endl;
+            *m_outfile << 12 << std::endl;
     }
 
-    *outfile << std::endl;
+    *m_outfile << std::endl;
 
     //write dataset attributes
     if (!pointsData.empty())
     {
-        *outfile << "POINT_DATA " << nbp << std::endl;
+        *m_outfile << "POINT_DATA " << nbp << std::endl;
         writeData(pointsDataObject, pointsDataField, pointsDataName);
     }
 
     if (!cellsData.empty())
     {
-        *outfile << "CELL_DATA " << numberOfCells << std::endl;
+        *m_outfile << "CELL_DATA " << numberOfCells << std::endl;
         writeData(cellsDataObject, cellsDataField, cellsDataName);
     }
 
-    outfile->close();
+    m_outfile->close();
 
     ++nbFiles;
 
@@ -577,12 +577,12 @@ bool VTKExporter::writeVTKXML()
         filename += ".vtu";
     }
 
-    outfile = new std::ofstream(filename.c_str());
-    if( !outfile->is_open() )
+    m_outfile = new std::ofstream(filename.c_str());
+    if( !m_outfile->is_open() )
     {
         msg_error() << "Error creating file "<<filename;
-        delete outfile;
-        outfile = nullptr;
+        delete m_outfile;
+        m_outfile = nullptr;
         return false;
     }
     const type::vector<std::string>& pointsData = d_dPointsDataFields.getValue();
@@ -610,93 +610,93 @@ bool VTKExporter::writeVTKXML()
                << "Total nb cells: " << numberOfCells << msgendl;
 
     //write header
-    *outfile << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"BigEndian\">" << std::endl;
-    *outfile << "  <UnstructuredGrid>" << std::endl;
+    *m_outfile << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"BigEndian\">" << std::endl;
+    *m_outfile << "  <UnstructuredGrid>" << std::endl;
 
     //write piece
-    *outfile << "    <Piece NumberOfPoints=\"" << nbp << "\" NumberOfCells=\""<< numberOfCells << "\">" << std::endl;
+    *m_outfile << "    <Piece NumberOfPoints=\"" << nbp << "\" NumberOfCells=\""<< numberOfCells << "\">" << std::endl;
 
     //write point data
     if (!pointsData.empty())
     {
-        *outfile << "      <PointData>" << std::endl;
+        *m_outfile << "      <PointData>" << std::endl;
         writeDataArray(pointsDataObject, pointsDataField, pointsDataName);
-        *outfile << "      </PointData>" << std::endl;
+        *m_outfile << "      </PointData>" << std::endl;
     }
     //write cell data
     if (!cellsData.empty())
     {
-        *outfile << "      <CellData>" << std::endl;
+        *m_outfile << "      <CellData>" << std::endl;
         writeDataArray(cellsDataObject, cellsDataField, cellsDataName);
-        *outfile << "      </CellData>" << std::endl;
+        *m_outfile << "      </CellData>" << std::endl;
     }
 
 
 
     //write points
-    *outfile << "      <Points>" << std::endl;
-    *outfile << "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">" << std::endl;
+    *m_outfile << "      <Points>" << std::endl;
+    *m_outfile << "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">" << std::endl;
     if (!pointsPos.empty())
     {
         for (size_t i = 0 ; i < nbp; i++)
         {
-            *outfile << "\t" << pointsPos[i] << std::endl;
+            *m_outfile << "\t" << pointsPos[i] << std::endl;
         }
     }
     else if (m_mstate && m_mstate->getSize() == (size_t)nbp)
     {
         for (size_t i = 0; i < m_mstate->getSize(); i++)
-            *outfile << "          " << m_mstate->getPX(i) << " " << m_mstate->getPY(i) << " " << m_mstate->getPZ(i) << std::endl;
+            *m_outfile << "          " << m_mstate->getPX(i) << " " << m_mstate->getPY(i) << " " << m_mstate->getPZ(i) << std::endl;
     }
     else
     {
         for (size_t i = 0; i < nbp; i++)
-            *outfile << "          " << m_topology->getPX(i) << " " << m_topology->getPY(i) << " " << m_topology->getPZ(i) << std::endl;
+            *m_outfile << "          " << m_topology->getPX(i) << " " << m_topology->getPY(i) << " " << m_topology->getPZ(i) << std::endl;
     }
-    *outfile << "        </DataArray>" << std::endl;
-    *outfile << "      </Points>" << std::endl;
+    *m_outfile << "        </DataArray>" << std::endl;
+    *m_outfile << "      </Points>" << std::endl;
 
     //write cells
-    *outfile << "      <Cells>" << std::endl;
+    *m_outfile << "      <Cells>" << std::endl;
     //write connectivity
-    *outfile << "        <DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\">" << std::endl;
+    *m_outfile << "        <DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\">" << std::endl;
     if (d_writeEdges.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbEdges() ; i++)
-            *outfile << "          " << m_topology->getEdge(i) << std::endl;
+            *m_outfile << "          " << m_topology->getEdge(i) << std::endl;
     }
 
     if (d_writeTriangles.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbTriangles() ; i++)
-            *outfile << "          " <<  m_topology->getTriangle(i) << std::endl;
+            *m_outfile << "          " <<  m_topology->getTriangle(i) << std::endl;
     }
     if (d_writeQuads.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbQuads() ; i++)
-            *outfile << "          " << m_topology->getQuad(i) << std::endl;
+            *m_outfile << "          " << m_topology->getQuad(i) << std::endl;
     }
     if (d_writeTetras.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbTetras() ; i++)
-            *outfile << "          " <<  m_topology->getTetra(i) << std::endl;
+            *m_outfile << "          " <<  m_topology->getTetra(i) << std::endl;
     }
     if (d_writeHexas.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbHexas() ; i++)
-            *outfile << "          " <<  m_topology->getHexa(i) << std::endl;
+            *m_outfile << "          " <<  m_topology->getHexa(i) << std::endl;
     }
-    *outfile << "        </DataArray>" << std::endl;
+    *m_outfile << "        </DataArray>" << std::endl;
     //write offsets
     int num = 0;
-    *outfile << "        <DataArray type=\"Int32\" Name=\"offsets\" format=\"ascii\">" << std::endl;
-    *outfile << "          ";
+    *m_outfile << "        <DataArray type=\"Int32\" Name=\"offsets\" format=\"ascii\">" << std::endl;
+    *m_outfile << "          ";
     if (d_writeEdges.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbEdges() ; i++)
         {
             num += 2;
-            *outfile << num << " ";
+            *m_outfile << num << " ";
         }
     }
     if (d_writeTriangles.getValue())
@@ -704,7 +704,7 @@ bool VTKExporter::writeVTKXML()
         for (unsigned int i=0 ; i<m_topology->getNbTriangles() ; i++)
         {
             num += 3;
-            *outfile << num << " ";
+            *m_outfile << num << " ";
         }
     }
     if (d_writeQuads.getValue())
@@ -712,7 +712,7 @@ bool VTKExporter::writeVTKXML()
         for (unsigned int i=0 ; i<m_topology->getNbQuads() ; i++)
         {
             num += 4;
-            *outfile << num << " ";
+            *m_outfile << num << " ";
         }
     }
     if (d_writeTetras.getValue())
@@ -720,7 +720,7 @@ bool VTKExporter::writeVTKXML()
         for (unsigned int i=0 ; i<m_topology->getNbTetras() ; i++)
         {
             num += 4;
-            *outfile << num << " ";
+            *m_outfile << num << " ";
         }
     }
     if (d_writeHexas.getValue())
@@ -728,48 +728,48 @@ bool VTKExporter::writeVTKXML()
         for (unsigned int i=0 ; i<m_topology->getNbHexas() ; i++)
         {
             num += 8;
-            *outfile << num << " ";
+            *m_outfile << num << " ";
         }
     }
-    *outfile << std::endl;
-    *outfile << "        </DataArray>" << std::endl;
+    *m_outfile << std::endl;
+    *m_outfile << "        </DataArray>" << std::endl;
     //write types
-    *outfile << "        <DataArray type=\"UInt8\" Name=\"types\" format=\"ascii\">" << std::endl;
-    *outfile << "          ";
+    *m_outfile << "        <DataArray type=\"UInt8\" Name=\"types\" format=\"ascii\">" << std::endl;
+    *m_outfile << "          ";
     if (d_writeEdges.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbEdges() ; i++)
-            *outfile << 3 << " ";
+            *m_outfile << 3 << " ";
     }
     if (d_writeTriangles.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbTriangles() ; i++)
-            *outfile << 5 << " ";
+            *m_outfile << 5 << " ";
     }
     if (d_writeQuads.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbQuads() ; i++)
-            *outfile << 9 << " ";
+            *m_outfile << 9 << " ";
     }
     if (d_writeTetras.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbTetras() ; i++)
-            *outfile << 10 << " ";
+            *m_outfile << 10 << " ";
     }
     if (d_writeHexas.getValue())
     {
         for (unsigned int i=0 ; i<m_topology->getNbHexas() ; i++)
-            *outfile << 12 << " ";
+            *m_outfile << 12 << " ";
     }
-    *outfile << std::endl;
-    *outfile << "        </DataArray>" << std::endl;
-    *outfile << "      </Cells>" << std::endl;
+    *m_outfile << std::endl;
+    *m_outfile << "        </DataArray>" << std::endl;
+    *m_outfile << "      </Cells>" << std::endl;
 
     //write end
-    *outfile << "    </Piece>" << std::endl;
-    *outfile << "  </UnstructuredGrid>" << std::endl;
-    *outfile << "</VTKFile>" << std::endl;
-    outfile->close();
+    *m_outfile << "    </Piece>" << std::endl;
+    *m_outfile << "  </UnstructuredGrid>" << std::endl;
+    *m_outfile << "</VTKFile>" << std::endl;
+    m_outfile->close();
     ++nbFiles;
 
     msg_info() << "Export VTK XML in file " << filename << "  done.";
@@ -783,17 +783,17 @@ void VTKExporter::writeParallelFile()
     filename.insert(0, "P_");
     filename += ".vtk";
 
-    outfile = new std::ofstream(filename.c_str());
-    if( !outfile->is_open() )
+    m_outfile = new std::ofstream(filename.c_str());
+    if( !m_outfile->is_open() )
     {
         msg_error() << "Error creating file "<<filename;
-        delete outfile;
-        outfile = nullptr;
+        delete m_outfile;
+        m_outfile = nullptr;
         return;
     }
 
-    *outfile << "<VTKFile type=\"PUnstructuredGrid\" version=\"0.1\" byte_order=\"BigEndian\">" << std::endl;
-    *outfile << "  <PUnstructuredGrid GhostLevel=\"0\">" << std::endl;
+    *m_outfile << "<VTKFile type=\"PUnstructuredGrid\" version=\"0.1\" byte_order=\"BigEndian\">" << std::endl;
+    *m_outfile << "  <PUnstructuredGrid GhostLevel=\"0\">" << std::endl;
 
     const type::vector<std::string>& pointsData = d_dPointsDataFields.getValue();
     const type::vector<std::string>& cellsData = d_dCellsDataFields.getValue();
@@ -863,12 +863,12 @@ void VTKExporter::writeParallelFile()
                     }
                 }
 
-                *outfile << "    <PPointData>" << std::endl;
-                *outfile << "      <PDataArray type=\""<< type << "\" Name=\"" << pointsDataName[i];
+                *m_outfile << "    <PPointData>" << std::endl;
+                *m_outfile << "      <PDataArray type=\""<< type << "\" Name=\"" << pointsDataName[i];
                 if(sizeSeg > 1)
-                    *outfile << "\" NumberOfComponents=\"" << sizeSeg;
-                *outfile << "\"/>" << std::endl;
-                *outfile << "    </PPointData>" << std::endl;
+                    *m_outfile << "\" NumberOfComponents=\"" << sizeSeg;
+                *m_outfile << "\"/>" << std::endl;
+                *m_outfile << "    </PPointData>" << std::endl;
             }
         }
     }
@@ -936,32 +936,32 @@ void VTKExporter::writeParallelFile()
                     }
                 }
 
-                *outfile << "    <PCellData>" << std::endl;
-                *outfile << "      <PDataArray type=\""<< type << "\" Name=\"" << cellsDataName[i];
+                *m_outfile << "    <PCellData>" << std::endl;
+                *m_outfile << "      <PDataArray type=\""<< type << "\" Name=\"" << cellsDataName[i];
                 if(sizeSeg > 1)
-                    *outfile << "\" NumberOfComponents=\"" << sizeSeg;
-                *outfile << "\"/>" << std::endl;
-                *outfile << "    </PCellData>" << std::endl;
+                    *m_outfile << "\" NumberOfComponents=\"" << sizeSeg;
+                *m_outfile << "\"/>" << std::endl;
+                *m_outfile << "    </PCellData>" << std::endl;
             }
         }
     }
 
-    *outfile << "    <PPoints>" << std::endl;
-    *outfile << "      <PDataArray type=\"Float32\" NumberOfComponents=\"3\"/>" << std::endl;
-    *outfile << "    </PPoints>" << std::endl;
+    *m_outfile << "    <PPoints>" << std::endl;
+    *m_outfile << "      <PDataArray type=\"Float32\" NumberOfComponents=\"3\"/>" << std::endl;
+    *m_outfile << "    </PPoints>" << std::endl;
 
     //write piece
     for(int i = 1; i < nbFiles; ++i)
     {
         std::ostringstream oss;
         oss << i;
-        *outfile << "    <Piece Source=\"" << d_filename.getFullPath() << oss.str() << ".vtu" << "\"/>" << std::endl;
+        *m_outfile << "    <Piece Source=\"" << d_filename.getFullPath() << oss.str() << ".vtu" << "\"/>" << std::endl;
     }
 
     //write end
-    *outfile << "  </PUnstructuredGrid>" << std::endl;
-    *outfile << "</VTKFile>" << std::endl;
-    outfile->close();
+    *m_outfile << "  </PUnstructuredGrid>" << std::endl;
+    *m_outfile << "</VTKFile>" << std::endl;
+    m_outfile->close();
 
     msg_info() << "Export VTK in file " << filename << "  done.";
 }
