@@ -118,24 +118,16 @@ public:
      */
     Real computeRestTriangleArea(const TriangleID i) const;
 
-    /** \brief Computes barycentric coefficients of point p in triangle (a,b,c) indexed by ind_t
-    *
-    */
-    sofa::type::vector< SReal > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3,Real> &p) const;
 
-    /** \brief Computes barycentric coefficients of point p in initial triangle (a,b,c) indexed by ind_t
-    *
+    /** \brief Compute the barycentric coordinates of input point @param p inside triangle given by index @param ind_t using either current position or restPosition depending on @param useRestPosition value.
+    * Will call @sa sofa::geometry::Triangle::getBarycentricCoordinates
+    * @param p position of the point to compute the coefficients
+    * @param ind_t Index of the triangle used to compute the barycentric coordinates
+    * @param useRestPosition bool false to use position, true to use rest_position
+    * @return the 3 barycentric coordinates inside a sofa::type::Vec<3, Real>
     */
-    sofa::type::vector< SReal > computeRestTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p) const;
+    sofa::type::Vec<3, Real> computeTriangleBarycentricCoordinates(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p, bool useRestPosition = false) const;
 
-    /** \brief Computes barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
-     *
-     */
-    sofa::type::vector< SReal > compute3PointsBarycoefs( const sofa::type::Vec<3, Real> &p,
-            PointID ind_p1,
-            PointID ind_p2,
-            PointID ind_p3,
-            bool bRest=false) const;
 
     /** \brief Finds the two closest points from two triangles (each of the point belonging to one triangle)
      *
@@ -400,8 +392,21 @@ public:
     virtual bool InciseAlongEdgeList(const sofa::type::vector<EdgeID>& edges, sofa::type::vector<PointID>& new_points, sofa::type::vector<PointID>& end_points, bool& reachBorder);
 
 
-    SOFA_ATTRIBUTE_DISABLED("v23.12", "v23.12", "Method writeMSHfile has been disabled. To export the topology as .gmsh file, use the sofa::component::io::mesh::MeshExporter.")
-    void writeMSHfile(const char *filename) const {msg_deprecated() << "Method writeMSHfile has been disabled. To export the topology as " << filename << " file, use the sofa::component::io::mesh::MeshExporter."; }
+    // compute barycentric coefficients
+    // {
+    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Use sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms::computeTriangleBarycentricCoordinates")
+    sofa::type::vector< SReal > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p) const;
+
+    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Use sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms::computeTriangleBarycentricCoordinates with useRestPosition set to true")
+    sofa::type::vector< SReal > computeRestTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p) const;
+
+    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Use sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms::computeTriangleBarycentricCoordinates")
+    sofa::type::vector< SReal > compute3PointsBarycoefs(const sofa::type::Vec<3, Real>& p,
+        PointID ind_p1,
+        PointID ind_p2,
+        PointID ind_p3,
+        bool bRest = false) const;
+    //}
 
 protected:
     Data<bool> showTriangleIndices; ///< Debug : view Triangle indices
