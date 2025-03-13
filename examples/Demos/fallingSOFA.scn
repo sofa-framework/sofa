@@ -27,12 +27,12 @@
     <VisualStyle displayFlags="showVisual"/>
     <ConstraintAttachButtonSetting /> <!-- The presence of this component sets the mouse interaction to Lagrangian-based constraints at the GUI launch -->
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver maxIterations="200" tolerance="1.0e-8"/>
+    <GenericConstraintSolver maxIterations="50" tolerance="1.0e-6"/>
     <CollisionPipeline name="Pipeline" />
-    <BruteForceBroadPhase name="BroadPhase" />
-    <BVHNarrowPhase name="NarrowPhase" />
+    <ParallelBruteForceBroadPhase name="BroadPhase" />
+    <ParallelBVHNarrowPhase name="NarrowPhase" />
     <CollisionResponse name="ContactManager" response="FrictionContactConstraint" responseParams="mu=0.3" />
-    <NewProximityIntersection name="Intersection" alarmDistance="0.05" contactDistance="0.002" />
+    <NewProximityIntersection name="Intersection" alarmDistance="0.02" contactDistance="0.002" />
 
     <Node name="BEAMVOLUME">
         <RegularGridTopology name="HexaTop" n="15 3 6" min="0 0.02 0" max="0.5 0.08 0.22"/>
@@ -43,16 +43,13 @@
 
     <Node name="FEM">
         <EulerImplicitSolver />
-        <PCGLinearSolver preconditioner="@precond"/>
-        <SparseLDLSolver name="precond" template="CompressedRowSparseMatrixMat3x3" parallelInverseProduct="true" />
-
-        <TetrahedronSetTopologyContainer name="Container" position="@../BEAMVOLUME/HexaTop.position"
-                                         tetrahedra="@../BEAMVOLUME/Container.tetrahedra"/>
+        <SparseLDLSolver name="ldl" template="CompressedRowSparseMatrixMat3x3" parallelInverseProduct="true" />
+        <TetrahedronSetTopologyContainer name="Container" position="@../BEAMVOLUME/HexaTop.position" tetrahedra="@../BEAMVOLUME/Container.tetrahedra"/>
         <TetrahedronSetTopologyModifier name="Modifier"/>
 
         <MechanicalObject name="mstate" template="Vec3d" src="@Container"/>
-        <TetrahedronFEMForceField name="forceField" listening="true" youngModulus="2e4" poissonRatio="0.4" />
-        <UniformMass totalMass="1.2"/>
+        <TetrahedronFEMForceField name="forceField" listening="true" youngModulus="2e4" poissonRatio="0.45" />
+        <MeshMatrixMass totalMass="1.2"/>
 
         <Node name="Surface">
             <TriangleSetTopologyContainer name="Container"/>
@@ -94,10 +91,8 @@
             <BarycentricMapping name="MappingVisu" input="@../mstate" output="@VisualModel" isMechanical="false" />
         </Node>
 
-        <LinearSolverConstraintCorrection linearSolver="@precond"/>
-
+        <LinearSolverConstraintCorrection linearSolver="@ldl"/>
     </Node>
-
 
     <Node name="Floor" tags="NoBBox" >
         <VisualStyle displayFlags="showCollisionModels"/>
