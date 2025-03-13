@@ -72,9 +72,9 @@ void DistanceToPlaneMapping<TIn>::init()
         {
             J.compressedMatrix.insertBack( i, col + j ) = planeNormal[j];
         }
-        J.compressedMatrix.finalize();
 
     }
+    J.compressedMatrix.finalize();
 
     this->d_componentState.setValue(core::objectmodel::ComponentState::Valid);
 }
