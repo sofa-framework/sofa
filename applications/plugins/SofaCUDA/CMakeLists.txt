@@ -111,6 +111,7 @@ set(SOURCE_FILES
     ### Mechanical
     ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.cpp
     sofa/gpu/cuda/CudaSetTopology.cpp
+    sofa/gpu/cuda/CudaSingleStateAccessor.cpp
 
     ### Mappings
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f.cpp
