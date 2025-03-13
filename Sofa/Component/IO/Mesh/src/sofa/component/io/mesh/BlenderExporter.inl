@@ -43,12 +43,17 @@ BlenderExporter<T>::BlenderExporter()
 }
 
 template<class T>
-void BlenderExporter<T>::init()
+void BlenderExporter<T>::doInit()
+{
+    doReInit();
+}
+
+template<class T>
+void BlenderExporter<T>::doReInit()
 {
     mmodel = getContext()->template get<DataType>(sofa::core::objectmodel::BaseContext::SearchDirection::Local);
     if(mmodel == nullptr)
         msg_error()<<"Initialization failed!";
-    Inherit::init();
     // if hair type simulation, create an additional information frame
     if(d_simulationType.getValue() == Hair)
     {
@@ -70,6 +75,12 @@ void BlenderExporter<T>::init()
             file.close();
         }
     }
+}
+
+template<class T>
+bool BlenderExporter<T>::write()
+{
+    return true;
 }
 
 template<class T>
