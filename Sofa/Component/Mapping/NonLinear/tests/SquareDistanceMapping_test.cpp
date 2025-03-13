@@ -182,7 +182,7 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
                                 {{"topology", "@../topology"}, {"input", "@../defoDOF"},
                                  {"output", "@extensionsDOF"}, {"geometricStiffness", "1"},
                                  {"applyRestPosition", "true"}});
-        simpleapi::createObject(oneMappingExtension, "RestShapeSpringsForceField", {{"template", "Vec1"}, {"stiffness", "10000"}});
+        simpleapi::createObject(oneMappingExtension, "FixedWeakConstraint", {{"template", "Vec1"}, {"stiffness", "10000"},{"fixAll", "true"}});
 
 
 
@@ -197,7 +197,7 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
                                         {{"input", "@../extensionsDOF"},
                                          {"output", "@squaredDOF"}, {"geometricStiffness", "1"},
                                          {"applyRestPosition", "true"}});
-        simpleapi::createObject(distanceMappingNode, "RestShapeSpringsForceField", {{"template", "Vec1"}, {"stiffness", "10000"}});
+        simpleapi::createObject(distanceMappingNode, "FixedWeakConstraint", {{"template", "Vec1"}, {"stiffness", "10000"},{"fixAll", "true"}});
 
     }
 
