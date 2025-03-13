@@ -442,7 +442,7 @@ Index TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collis
 // Handle Cutting (activated only for a triangular topology), using global variables to register the two last input points
 bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionElementIterator elem, sofa::type::Vec3& pos, const bool firstInput, int snapingValue, int snapingBorderValue)
 {
-    const Triangle triangle(elem);
+    const sofa::component::collision::geometry::Triangle triangle(elem);
     TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model = triangle.getCollisionModel();
 
     if (model != nullptr)
@@ -510,8 +510,8 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
     TriangleCollisionModel<sofa::defaulttype::Vec3Types>* firstCollisionModel = dynamic_cast< TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(firstModel);
     TriangleCollisionModel<sofa::defaulttype::Vec3Types>* secondCollisionModel = dynamic_cast< TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(secondModel);
 
-    Triangle firstTriangle(firstCollisionModel, idxA);
-    Triangle secondTriangle(secondCollisionModel, idxB);
+    sofa::component::collision::geometry::Triangle firstTriangle(firstCollisionModel, idxA);
+    sofa::component::collision::geometry::Triangle secondTriangle(secondCollisionModel, idxB);
 
     if (firstCollisionModel != secondCollisionModel)
     {

@@ -16,6 +16,7 @@ set(HEADER_FILES
     ${SCENECHECK_SRC_DIR}/SceneCheckCollisionResponse.h
     ${SCENECHECK_SRC_DIR}/SceneCheckDeprecatedComponents.h
     ${SCENECHECK_SRC_DIR}/SceneCheckDuplicatedName.h
+    ${SCENECHECK_SRC_DIR}/SceneCheckEmptyNodeName.h
     ${SCENECHECK_SRC_DIR}/SceneCheckMissingRequiredPlugin.h
     ${SCENECHECK_SRC_DIR}/SceneCheckUsingAlias.h
     ${SCENECHECK_SRC_DIR}/SceneCheckerListener.h
@@ -28,6 +29,7 @@ set(SOURCE_FILES
     ${SCENECHECK_SRC_DIR}/SceneCheckCollisionResponse.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckDeprecatedComponents.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckDuplicatedName.cpp
+    ${SCENECHECK_SRC_DIR}/SceneCheckEmptyNodeName.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckMissingRequiredPlugin.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckUsingAlias.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckerListener.cpp

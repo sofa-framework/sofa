@@ -54,7 +54,7 @@ inline sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaul
 
     //editing DOF related to the TriangleCollisionModel<sofa::defaulttype::Vec3Types> to be created, size is 3 (3 points) because it contains just one Triangle
     triDOF->resize(3);
-    Data<MechanicalObject3::VecCoord>& dpositions = *triDOF->write(sofa::core::VecId::position());
+    Data<MechanicalObject3::VecCoord>& dpositions = *triDOF->write(sofa::core::vec_id::write_access::position);
     MechanicalObject3::VecCoord& positions = *dpositions.beginEdit();
 
     //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
@@ -65,7 +65,7 @@ inline sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaul
     dpositions.endEdit();
 
     //Editing the velocity of the OBB
-    Data<MechanicalObject3::VecDeriv>& dvelocities = *triDOF->write(sofa::core::VecId::velocity());
+    Data<MechanicalObject3::VecDeriv>& dvelocities = *triDOF->write(sofa::core::vec_id::write_access::velocity);
 
     MechanicalObject3::VecDeriv& velocities = *dvelocities.beginEdit();
     velocities[0] = v;

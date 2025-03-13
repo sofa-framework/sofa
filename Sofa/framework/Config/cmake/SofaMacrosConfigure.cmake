@@ -209,7 +209,8 @@ function(sofa_add_generic_external directory name type)
     endif()
 
     # Create option
-    string(TOUPPER ${PROJECT_NAME}_FETCH_${name} fetch_enabled)
+    string(REPLACE "\." "_"  fixed_name ${name})
+    string(TOUPPER ${PROJECT_NAME}_FETCH_${fixed_name} fetch_enabled)
     if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
         cmake_dependent_option(${fetch_enabled} "Fetch/update ${name} repository." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
     else()

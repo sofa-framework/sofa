@@ -24,7 +24,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/mass/UniformMass.h>
-#include <sofa/component/odesolver/forward/EulerSolver.h>
+#include <sofa/component/odesolver/forward/EulerExplicitSolver.h>
 #include <sofa/component/visual/VisualStyle.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/component/collision/geometry/SphereModel.h>
@@ -82,10 +82,10 @@ int main(int argc, char** argv)
     particule_node->addObject(dof);
     dof->resize(1);
     // get write access the particle positions vector
-    auto positions = sofa::helper::getWriteAccessor(*dof->write(VecId::position()));
+    auto positions = sofa::helper::getWriteAccessor(*dof->write(sofa::core::vec_id::write_access::position));
     positions[0] = { 0,0,0 };
     // get write access the particle velocities vector
-    auto velocities = sofa::helper::getWriteAccessor(*dof->write(VecId::velocity()));
+    auto velocities = sofa::helper::getWriteAccessor(*dof->write(sofa::core::vec_id::write_access::velocity));
     velocities[0] = { 0,0,0 };
     // show the particle
     dof->showObject.setValue(true);

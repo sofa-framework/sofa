@@ -21,4 +21,26 @@
 ******************************************************************************/
 #pragma once
 
-#error This class has been removed in PR #1546. DynamicSparseGridSetGeometryAlgorithms or DynamicSparseGridSetTopologyModifier should be used.
+#include <SceneChecking/config.h>
+#include <sofa/simulation/SceneCheck.h>
+
+namespace sofa::scenechecking
+{
+
+class SOFA_SCENECHECKING_API SceneCheckEmptyNodeName : public sofa::simulation::SceneCheck
+{
+public:
+    ~SceneCheckEmptyNodeName() override;
+    typedef std::shared_ptr<SceneCheckEmptyNodeName> SPtr;
+    static SPtr newSPtr() { return std::make_shared<SceneCheckEmptyNodeName>(); }
+    const std::string getName() override;
+    const std::string getDesc() override;
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
+    void doPrintSummary() override;
+
+private:
+    unsigned int m_nbNodesWithEmptyName = 0;
+};
+
+}

@@ -253,7 +253,7 @@ const std::string& Utils::getUserLocalDirectory()
             CoTaskMemFree(path);
         }
 
-        return Utils::narrowString(wresult);
+        return sofa::helper::narrowString(wresult);
 
 #elif defined(__APPLE__) // macOS : ${HOME}/Library/Application Support
         // https://stackoverflow.com/questions/5123361/finding-library-application-support-from-c
@@ -315,8 +315,8 @@ const std::string& Utils::getSofaUserLocalDirectory()
 {
     constexpr std::string_view sofaLocalDirSuffix = "SOFA";
 
-    static std::string sofaLocalDirectory = FileSystem::cleanPath(FileSystem::findOrCreateAValidPath(
-        FileSystem::append(getUserLocalDirectory(), sofaLocalDirSuffix)));
+    static const auto sofaLocalDirectory = FileSystem::cleanPath(FileSystem::append(getUserLocalDirectory(), sofaLocalDirSuffix));
+    FileSystem::ensureFolderExists(sofaLocalDirectory);
 
     return sofaLocalDirectory;
 }
