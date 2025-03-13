@@ -10,10 +10,11 @@
     <MechanicalObject src="@loader" template="Vec3" name="mecha" showObject="1" />
     <TetrahedronSetTopologyContainer src="@loader" name="topo" />
     <BlenderExporter 
-        path="./" 
-        baseName="example"
-        step="3"
+        filename="example"
         listening="true" 
         exportAtBegin="1" 
+        exportAtEnd="1" 
+        exportEveryNumberOfSteps="3"
+        printLog="1"
     />
 </Node>

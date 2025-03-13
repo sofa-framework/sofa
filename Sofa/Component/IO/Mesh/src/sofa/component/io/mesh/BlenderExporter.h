@@ -127,10 +127,6 @@ public:
         }
         return BaseObject::canCreate(obj, context, arg);
     }
-
-protected:
-
-    unsigned frameCounter;
 };
 
 } // namespace _blenderexporter_
