@@ -18,7 +18,7 @@ if not GITHUB_TOKEN or not PR_NUMBER or not REPO_NAME:
 
 
 # GitHub API base URL
-API_URL = f"https://api.github.com/repos/sofa-framework/sofa"
+API_URL = f"https://api.github.com/repos/bakpaul/sofa"
 
 # Headers for authentication
 HEADERS = {
@@ -127,7 +127,7 @@ if to_review_label_found and not is_draft_pr:
             print(f"Found ci-depends-on dependency: {dependency}")
 
     # GitHub repository details
-    API_URL_DISPATCH = f"https://api.github.com/repos/sofa-framework/sofa/dispatches"
+    API_URL_DISPATCH = f"https://api.github.com/repos/bakpaul/sofa/dispatches"
 
     # JSON payload for the dispatch event
     PAYLOAD = {

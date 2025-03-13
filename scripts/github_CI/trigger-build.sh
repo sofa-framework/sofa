@@ -14,5 +14,5 @@ curl -L -X POST \
 -H "Accept: application/vnd.github+json" \
 -H "Authorization: Bearer $1"  \
 -H "X-GitHub-Api-Version: 2022-11-28" \
-https://api.github.com/repos/sofa-framework/sofa/dispatches \
--d '{"event_type":"CI Build","client_payload":{"owner":"sofa-framework","branch":"$2","commit_hash":"$3","preset":"$4","ci-depends-on":"$5", "with-all-tests":"$6", "force-full-build":"7", "out-of-tree-build":"$8", "generate-binaries":"$9"}}'
+https://api.github.com/repos/bakpaul/sofa/dispatches \
+-d '{"event_type":"CI Build","client_payload":{"owner":"bakpaul","branch":"$2","commit_hash":"$3","preset":"$4","ci-depends-on":"$5", "with-all-tests":"$6", "force-full-build":"7", "out-of-tree-build":"$8", "generate-binaries":"$9"}}'
