@@ -34,6 +34,11 @@ using namespace sofa::testing;
 class TriangleSetTopology_test : public BaseTest
 {
 public:
+    using EdgeID = TriangleSetTopologyContainer::EdgeID;
+    using Edge = TriangleSetTopologyContainer::Edge;
+    using TriangleID = TriangleSetTopologyContainer::TriangleID;
+    using Triangle = TriangleSetTopologyContainer::Triangle;
+
     /// Test on TriangleSetTopologyContainer creation without Data. All container should be empty.
     bool testEmptyContainer();
 
@@ -62,6 +67,14 @@ public:
 
     /// Test on @sa TriangleSetGeometryAlgorithms::computeSegmentTriangleIntersectionInPlane method.
     bool testTriangleSegmentIntersectionInPlane(const sofa::type::Vec3& bufferZ);
+
+
+    /// Test on @sa TriangleSetGeometryAlgorithms::computeSegmentTriangulationIntersections method for simple cases.
+    bool testSegmentTriangulationIntersections_simpleCases();
+
+    /// Test on @sa TriangleSetGeometryAlgorithms::computeSegmentTriangulationIntersections method starting/ending on vertices or edges.
+    bool testSegmentTriangulationIntersections_snappingBounderies();
+
 
 private:
     /// Method to factorize the creation and loading of the @sa m_scene and retrieve Topology container @sa m_topoCon
@@ -602,6 +615,184 @@ bool TriangleSetTopology_test::testTriangleSegmentIntersectionInPlane(const sofa
 }
 
 
+bool TriangleSetTopology_test::testSegmentTriangulationIntersections_simpleCases()
+{
+    if (!loadTopologyContainer("mesh/square1.obj"))
+        return false;
+
+    // Get access to the Triangle modifier
+    const TriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3Types>::SPtr triangleGeo = m_scene->getNode()->get<TriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3Types> >();
+    using Real = sofa::defaulttype::Vec3Types::Real;
+
+    if (triangleGeo == nullptr)
+        return false;
+
+    // Case 1: Normal case, full intersection of an edge between 2 triangles
+    TriangleID ind_ta = 14;
+    TriangleID ind_tb = 13;
+    sofa::type::Vec3 ptA = triangleGeo->computeTriangleCenter(ind_ta);
+    sofa::type::Vec3 ptB = triangleGeo->computeTriangleCenter(ind_tb);
+
+    sofa::type::vector< TriangleID > triangles_list;
+    sofa::type::vector< EdgeID > edges_list;
+    sofa::type::vector< Real > coords_list;
+    triangleGeo->computeSegmentTriangulationIntersections(ptA, ptB, ind_ta, ind_tb, triangles_list, edges_list, coords_list);
+    
+    EXPECT_EQ(triangles_list.size(), 2);
+    EXPECT_EQ(triangles_list[0], ind_ta);
+    EXPECT_EQ(triangles_list[1], ind_tb);
+
+    EXPECT_EQ(edges_list.size(), 1);
+    EXPECT_EQ(edges_list[0], 26);
+
+    EXPECT_EQ(coords_list.size(), 1);
+    EXPECT_NEAR(coords_list[0], 0.538563, 1e-4);
+
+
+    // Case 2: Normal case, full intersection of an edge between 2 triangles
+    ind_tb = 10;
+    ptB = triangleGeo->computeTriangleCenter(ind_tb);
+    triangles_list.clear();
+    edges_list.clear();
+    coords_list.clear();
+    triangleGeo->computeSegmentTriangulationIntersections(ptA, ptB, ind_ta, ind_tb, triangles_list, edges_list, coords_list);
+
+    EXPECT_EQ(triangles_list.size(), 4);
+    EXPECT_EQ(triangles_list[0], ind_ta);
+    EXPECT_EQ(triangles_list[1], 13);
+    EXPECT_EQ(triangles_list[2], 12);
+    EXPECT_EQ(triangles_list[3], ind_tb);
+
+    EXPECT_EQ(edges_list.size(), 3);
+    EXPECT_EQ(edges_list[0], 26);
+    EXPECT_EQ(edges_list[1], 24);
+    EXPECT_EQ(edges_list[2], 22);
+
+    EXPECT_EQ(coords_list.size(), 3);
+    EXPECT_NEAR(coords_list[0], 0.437572, 1e-4);
+    EXPECT_NEAR(coords_list[1], 0.462756, 1e-4);
+    EXPECT_NEAR(coords_list[2], 0.519393, 1e-4);
+
+    return true;
+}
+
+
+bool TriangleSetTopology_test::testSegmentTriangulationIntersections_snappingBounderies()
+{
+    if (!loadTopologyContainer("mesh/square1.obj"))
+        return false;
+
+    // Get access to the Triangle modifier
+    const TriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3Types>::SPtr triangleGeo = m_scene->getNode()->get<TriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3Types> >();
+    using Real = sofa::defaulttype::Vec3Types::Real;
+
+    if (triangleGeo == nullptr)
+        return false;
+
+    // Case 3: intersection ends on an edge
+    TriangleID ind_ta = 14;
+    TriangleID ind_tb = 12;
+    EdgeID ind_edge = 22;
+    sofa::type::Vec3 ptA = triangleGeo->computeTriangleCenter(ind_ta);
+    sofa::type::Vec3 ptB = triangleGeo->computeEdgeCenter(ind_edge);
+
+    sofa::type::vector< TriangleID > triangles_list;
+    sofa::type::vector< EdgeID > edges_list;
+    sofa::type::vector< Real > coords_list;
+    triangleGeo->computeSegmentTriangulationIntersections(ptA, ptB, ind_ta, ind_tb, triangles_list, edges_list, coords_list);
+    
+    EXPECT_EQ(triangles_list.size(), 3);
+    EXPECT_EQ(triangles_list[0], ind_ta);
+    EXPECT_EQ(triangles_list[1], 13);
+    EXPECT_EQ(triangles_list[2], ind_tb);
+
+    EXPECT_EQ(edges_list.size(), 3);
+    EXPECT_EQ(edges_list[0], 26);
+    EXPECT_EQ(edges_list[1], 24);
+    EXPECT_EQ(edges_list[2], ind_edge);
+
+    EXPECT_EQ(coords_list.size(), 3);
+    EXPECT_NEAR(coords_list[0], 0.432756, 1e-4);
+    EXPECT_NEAR(coords_list[1], 0.450172, 1e-4);
+    EXPECT_NEAR(coords_list[2], 0.5, 1e-4);
+
+
+    // Case 4: intersection ends on a point
+    ptB = triangleGeo->getPointPosition(15);
+    triangles_list.clear();
+    edges_list.clear();
+    coords_list.clear();
+    triangleGeo->computeSegmentTriangulationIntersections(ptA, ptB, ind_ta, ind_tb, triangles_list, edges_list, coords_list);
+
+    EXPECT_EQ(triangles_list.size(), 3);
+    EXPECT_EQ(triangles_list[0], ind_ta);
+    EXPECT_EQ(triangles_list[1], 13);
+    EXPECT_EQ(triangles_list[2], ind_tb);
+
+    EXPECT_EQ(edges_list.size(), 3);
+    EXPECT_EQ(edges_list[0], 26);
+    EXPECT_EQ(edges_list[1], 24);
+    EXPECT_EQ(edges_list[2], 23);
+
+    EXPECT_EQ(coords_list.size(), 3);
+    EXPECT_NEAR(coords_list[0], 0.308243, 1e-4);
+    EXPECT_NEAR(coords_list[1], 0.225317, 1e-4);
+    EXPECT_NEAR(coords_list[2], 1, 1e-4);
+
+
+    // Case 5: intersection starts on an edge
+    ind_ta = 14;
+    ind_tb = 12;
+    ind_edge = 26;
+    ptA = triangleGeo->computeEdgeCenter(ind_edge);
+    ptB = triangleGeo->computeTriangleCenter(ind_tb);
+    triangles_list.clear();
+    edges_list.clear();
+    coords_list.clear();
+    triangleGeo->computeSegmentTriangulationIntersections(ptA, ptB, ind_ta, ind_tb, triangles_list, edges_list, coords_list);
+    
+    EXPECT_EQ(triangles_list.size(), 3);
+    EXPECT_EQ(triangles_list[0], ind_ta);
+    EXPECT_EQ(triangles_list[1], 13);
+    EXPECT_EQ(triangles_list[2], ind_tb);
+
+    EXPECT_EQ(edges_list.size(), 2);
+    EXPECT_EQ(edges_list[0], ind_edge);
+    EXPECT_EQ(edges_list[1], 24);
+
+    EXPECT_EQ(coords_list.size(), 2);
+    EXPECT_NEAR(coords_list[0], 0.5, 1e-4);
+    EXPECT_NEAR(coords_list[1], 0.390745, 1e-4);
+
+
+    // Case 6: intersection starts on a vertex
+    ind_ta = 14;
+    ind_tb = 12;
+    ind_edge = 26;
+    ptA = triangleGeo->getPointPosition(18);
+    triangles_list.clear();
+    edges_list.clear();
+    coords_list.clear();
+    triangleGeo->computeSegmentTriangulationIntersections(ptA, ptB, ind_ta, ind_tb, triangles_list, edges_list, coords_list);
+    
+    EXPECT_EQ(triangles_list.size(), 3);
+    EXPECT_EQ(triangles_list[0], ind_ta);
+    EXPECT_EQ(triangles_list[1], 13);
+    EXPECT_EQ(triangles_list[2], ind_tb);
+
+    EXPECT_EQ(edges_list.size(), 3);
+    EXPECT_EQ(edges_list[0], 27);
+    EXPECT_EQ(edges_list[1], ind_edge);
+    EXPECT_EQ(edges_list[2], 24);
+
+    EXPECT_EQ(coords_list.size(), 3);
+    EXPECT_NEAR(coords_list[0], 0.0, 1e-4);
+    EXPECT_NEAR(coords_list[1], 0.292603, 1e-4);
+    EXPECT_NEAR(coords_list[2], 0.302437, 1e-4);
+    
+    return true;
+}
+
 
 TEST_F(TriangleSetTopology_test, testEmptyContainer)
 {
@@ -657,6 +848,17 @@ TEST_F(TriangleSetTopology_test, testTriangleSegmentIntersectionOutPlane)
 {
     sofa::type::Vec3 outPlane = sofa::type::Vec3(0.0, 0.0, 1.0);
     ASSERT_TRUE(testTriangleSegmentIntersectionInPlane(outPlane));
+}
+
+
+TEST_F(TriangleSetTopology_test, testSegmentTriangulationIntersections_simpleCases)
+{
+    ASSERT_TRUE(testSegmentTriangulationIntersections_simpleCases());
+}
+
+TEST_F(TriangleSetTopology_test, testSegmentTriangulationIntersections_snappingBounderies)
+{
+    ASSERT_TRUE(testSegmentTriangulationIntersections_snappingBounderies());
 }
 
 
