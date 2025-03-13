@@ -48,81 +48,81 @@ jobs:
          with:
            python-version: '3.12'
 
-      - name: Install pip packages
-        run: |
-          pip install python-graphql-client
-          pip install requests
+       - name: Install pip packages
+         run: |
+           pip install python-graphql-client
+           pip install requests
         
-      - name: Run on dispatch
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: |
-          echo "This step runs only for binary generation."
+       - name: Run on dispatch
+         if: ${{ github.event_name == 'workflow_dispatch' }}
+         run: |
+           echo "This step runs only for binary generation."
           
-          BRANCH=${{ github.event.inputs.branch }}
-          COMMIT=${{ github.event.inputs.commit }}
+           BRANCH=${{ github.event.inputs.branch }}
+           COMMIT=${{ github.event.inputs.commit }}
           
-          # Validate branch format (e.g., v25.06)
-          if [[ ! "$BRANCH" =~ ^v[0-9]{2}\.[0-9]{2}$ ]]; then
-            echo "Invalid branch name format: $BRANCH"
-            exit 1
-          fi
-          echo "Branch name $BRANCH is valid."
+           # Validate branch format (e.g., v25.06)
+           if [[ ! "$BRANCH" =~ ^v[0-9]{2}\.[0-9]{2}$ ]]; then
+             echo "Invalid branch name format: $BRANCH"
+             exit 1
+           fi
+           echo "Branch name $BRANCH is valid."
 
-          # Check commit SHA format
-          if [[ ! "$COMMIT" =~ ^[a-fA-F0-9]{40}$ ]]; then
-            echo "Invalid commit SHA format: $COMMIT"
-            exit 1
-          fi
-          # Check the commit exists in the repository
-          if git cat-file -e "$COMMIT" 2>/dev/null; then
-            echo "Commit $COMMIT is valid."
-          else
-            echo "Commit $COMMIT does not exist in the repository."
-            exit 1
-          fi
+           # Check commit SHA format
+           if [[ ! "$COMMIT" =~ ^[a-fA-F0-9]{40}$ ]]; then
+             echo "Invalid commit SHA format: $COMMIT"
+             exit 1
+           fi
+           # Check the commit exists in the repository
+           if git cat-file -e "$COMMIT" 2>/dev/null; then
+             echo "Commit $COMMIT is valid."
+           else
+             echo "Commit $COMMIT does not exist in the repository."
+             exit 1
+           fi
           
-          ./scripts/github_CI/trigger-build.sh ${{ secrets.GITHUB_TOKEN }} $BRANCH $COMMIT full None False True False True
+           ./scripts/github_CI/trigger-build.sh ${{ secrets.GITHUB_TOKEN }} $BRANCH $COMMIT full None False True False True
 
-      - name: Run when nightly
-        if: github.event.schedule == '0 2 * * *'
-        run: |
-          echo "This step runs only for nightly build."
-          ./scripts/github_CI/trigger-build.sh ${{ secrets.GITHUB_TOKEN }} master ${{ github.sha }} standard None False True False True
-          
-      - name: Check push on master case
-        if: ${{ github.event_name == 'push'}}
-        run: |
-          echo "This step runs only when a commit is pushed on the master branch."
-          ./scripts/github_CI/trigger-build.sh ${{ secrets.GITHUB_TOKEN }} master ${{ github.sha }} full None True True False False
-          
-      - name: Run when PR is opened
-        if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          OWNER_NAME: ${{ github.event.pull_request.head.repo.owner.login }}
-          COMMIT_SHA: ${{ github.sha }}
-        run: |
-          echo "This step runs only when a PR is opened or synchronized."
-          
-          # Trigger the Build action
-          python scripts/github_CI/checkPRInfoBeforeBuild.py
-                
-      - name: Run when PR comment is edited
-        if: ${{ github.event_name == 'pull_request_review_comment' && ( github.event.action == 'created'|| github.event.action == 'edited' ) }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          OWNER_NAME: ${{ github.event.pull_request.head.repo.owner.login }}
-          COMMIT_SHA: ${{ github.sha }}
-        run: |
-          echo "This step runs only when a PR comment is created or edited."
+       - name: Run when nightly
+         if: github.event.schedule == '0 2 * * *'
+         run: |
+           echo "This step runs only for nightly build."
+           ./scripts/github_CI/trigger-build.sh ${{ secrets.GITHUB_TOKEN }} master ${{ github.sha }} standard None False True False True
+           
+       - name: Check push on master case
+         if: ${{ github.event_name == 'push'}}
+         run: |
+           echo "This step runs only when a commit is pushed on the master branch."
+           ./scripts/github_CI/trigger-build.sh ${{ secrets.GITHUB_TOKEN }} master ${{ github.sha }} full None True True False False
+           
+       - name: Run when PR is opened
+         if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           PR_NUMBER: ${{ github.event.pull_request.number }}
+           OWNER_NAME: ${{ github.event.pull_request.head.repo.owner.login }}
+           COMMIT_SHA: ${{ github.sha }}
+         run: |
+           echo "This step runs only when a PR is opened or synchronized."
+           
+           # Trigger the Build action
+           python scripts/github_CI/checkPRInfoBeforeBuild.py
+                 
+        
+       - name: Run when PR comment is edited
+         if: ${{ github.event_name == 'pull_request_review_comment' && ( github.event.action == 'created'|| github.event.action == 'edited' ) }}
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           PR_NUMBER: ${{ github.event.pull_request.number }}
+           OWNER_NAME: ${{ github.event.pull_request.head.repo.owner.login }}
+           COMMIT_SHA: ${{ github.sha }}
+         run: |
+           echo "This step runs only when a PR comment is created or edited."
 
-          COMMENT_BODY=$(jq -r '.comment.body' < $GITHUB_EVENT_PATH)
-          echo "Comment: $COMMENT_BODY"
+           COMMENT_BODY=$(jq -r '.comment.body' < $GITHUB_EVENT_PATH)
+           echo "Comment: $COMMENT_BODY"
           
-          # Trigger the Build action if [ci-build] is in the comment 
-          if [[ "$COMMENT_BODY" == *"[ci-build]"* ]]; then
-            python scripts/github_CI/checkPRInfoBeforeBuild.py
-          fi
-
+           # Trigger the Build action if [ci-build] is in the comment 
+           if [[ "$COMMENT_BODY" == *"[ci-build]"* ]]; then
+             python scripts/github_CI/checkPRInfoBeforeBuild.py
+           fi
