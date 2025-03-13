@@ -157,16 +157,6 @@ public:
     /// Specify whether this visitor can be parallelized.
     virtual bool isThreadSafe() const { return false; }
 
-    /// Callback method called when descending to a new node. Recursion will stop if this method returns RESULT_PRUNE
-    /// This version is offered a LocalStorage to store temporary data
-    SOFA_ATTRIBUTE_DISABLED_LOCALSTORAGE()
-    virtual Result processNodeTopDown(simulation::Node* node, LocalStorage*)  = delete;
-
-    /// Callback method called after child node have been processed and before going back to the parent node.
-    /// This version is offered a LocalStorage to store temporary data
-    SOFA_ATTRIBUTE_DISABLED_LOCALSTORAGE()
-    virtual void processNodeBottomUp(simulation::Node* node, LocalStorage*) = delete;
-
     typedef sofa::core::objectmodel::Tag Tag;
     typedef sofa::core::objectmodel::TagSet TagSet;
     /// list of the subsets
