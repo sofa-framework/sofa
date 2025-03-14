@@ -344,7 +344,7 @@ std::string VTKExporter::segmentString(std::string str, unsigned int n)
 
 bool VTKExporter::write()
 { 
-    if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid) 
+    if (!this->isComponentStateValid()) 
         return false;
     
     if (d_fileFormat.getValue())
