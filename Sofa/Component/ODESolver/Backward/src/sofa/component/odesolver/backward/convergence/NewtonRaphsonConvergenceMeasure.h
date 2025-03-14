@@ -19,62 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/backward/init.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
+#pragma once
+#include <sofa/component/odesolver/backward/NewtonStatus.h>
 
 namespace sofa::component::odesolver::backward
 {
 
-extern void registerEulerImplicitSolver(sofa::core::ObjectFactory* factory);
-extern void registerNewmarkImplicitSolver(sofa::core::ObjectFactory* factory);
-extern void registerStaticSolver(sofa::core::ObjectFactory* factory);
-extern void registerVariationalSymplecticSolver(sofa::core::ObjectFactory* factory);
-extern void registerNewtonRaphsonSolver(sofa::core::ObjectFactory* factory);
-extern void registerBDFOdeSolver(sofa::core::ObjectFactory* factory);
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
-}
-
-void initExternalModule()
+struct NewtonRaphsonConvergenceMeasure
 {
-    init();
-}
+    virtual ~NewtonRaphsonConvergenceMeasure() = default;
+    virtual bool isMeasured() const = 0;
+    virtual bool hasConverged() const = 0;
+    virtual NewtonStatus status() const = 0;
+    virtual std::string writeWhenConverged() const = 0;
+    virtual std::string writeWhenNotConverged() const { return {}; };
+    virtual std::string_view measureName() const = 0;
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+    unsigned int newtonIterationCount = 0;
+};
 
-const char* getModuleVersion()
+struct NewtonRaphsonConvergenceMeasureWithSquaredParameter : NewtonRaphsonConvergenceMeasure
 {
-    return MODULE_VERSION;
-}
+    SReal param;
+    SReal squaredParam;
 
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-    registerEulerImplicitSolver(factory);
-    registerNewmarkImplicitSolver(factory);
-    registerStaticSolver(factory);
-    registerVariationalSymplecticSolver(factory);
-    registerNewtonRaphsonSolver(factory);
-    registerBDFOdeSolver(factory);
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
+    explicit NewtonRaphsonConvergenceMeasureWithSquaredParameter(SReal p)
     {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
-        first = false;
+        setParam(p);
     }
-}
 
-} // namespace sofa::component::odesolver::backward
+    void setParam(const SReal p)
+    {
+        param = p;
+        squaredParam = param * param;
+    }
+
+    [[nodiscard]] bool isMeasured() const override
+    {
+        return param > 0;
+    }
+};
+
+}
