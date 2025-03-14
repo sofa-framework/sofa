@@ -41,7 +41,6 @@ class SOFA_COMPONENT_TOPOLOGY_CONTAINER_GRID_API CylinderGridTopology : public G
 {
 public:
     SOFA_CLASS(CylinderGridTopology,GridTopology);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
 
 protected:
     /// Default constructor
