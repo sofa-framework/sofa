@@ -118,24 +118,16 @@ public:
      */
     Real computeRestTriangleArea(const TriangleID i) const;
 
-    /** \brief Computes barycentric coefficients of point p in triangle (a,b,c) indexed by ind_t
-    *
-    */
-    sofa::type::vector< SReal > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3,Real> &p) const;
 
-    /** \brief Computes barycentric coefficients of point p in initial triangle (a,b,c) indexed by ind_t
-    *
+    /** \brief Compute the barycentric coordinates of input point @param p inside triangle given by index @param ind_t using either current position or restPosition depending on @param useRestPosition value.
+    * Will call @sa sofa::geometry::Triangle::getBarycentricCoordinates
+    * @param p position of the point to compute the coefficients
+    * @param ind_t Index of the triangle used to compute the barycentric coordinates
+    * @param useRestPosition bool false to use position, true to use rest_position
+    * @return the 3 barycentric coordinates inside a sofa::type::Vec<3, Real>
     */
-    sofa::type::vector< SReal > computeRestTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p) const;
+    sofa::type::Vec<3, Real> computeTriangleBarycentricCoordinates(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p, bool useRestPosition = false) const;
 
-    /** \brief Computes barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
-     *
-     */
-    sofa::type::vector< SReal > compute3PointsBarycoefs( const sofa::type::Vec<3, Real> &p,
-            PointID ind_p1,
-            PointID ind_p2,
-            PointID ind_p3,
-            bool bRest=false) const;
 
     /** \brief Finds the two closest points from two triangles (each of the point belonging to one triangle)
      *
@@ -280,6 +272,25 @@ public:
             sofa::type::vector< Real >& coords_list,
             bool& is_on_boundary) const;
 
+
+    /** \brief This method computes all the intersection between the segment [@param ptA, @param ptB], respectively inside triangle indices @param ind_ta and @param ind_tb, and the current triangulation.
+    * All intersected triangles will stored inside @param triangles_lis, same for edges inside @param edges_list and the list fo barycentric coordinates related to the intersected edges.
+    *
+    * @param ptA : first input point of the segment
+    * @param ptB : last input point of the segment
+    * @param ind_ta : triangle index where ptA is located
+    * @param ind_tb : triangle index where ptB is located
+    * @param triangles_list : vector used as input/output to store triangle indices intersected by [ptA, ptB]
+    * @param edges_list : vector used as input/output to store edge indices intersected by [ptA, ptB]
+    * @param coords_list : vector used as input/output to store barycentric coordinates of each intersection between each edge from @param edges_list and [ptA, ptB] 
+    */
+    bool computeSegmentTriangulationIntersections(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
+        const TriangleID ind_ta, const TriangleID ind_tb,
+        sofa::type::vector< TriangleID >& triangles_list,
+        sofa::type::vector< EdgeID >& edges_list,
+        sofa::type::vector< Real >& coords_list) const;
+
+
     /** \brief Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.
      *
      * @return List of object intersect (type enum @see geometry::ElementType)
@@ -329,7 +340,6 @@ public:
         const sofa::type::vector< TriangleID > &input_triangles);
 
 
-
     /** \brief Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
      * Each end of the path is given either by an existing point or a point inside the first/last triangle. If the first/last triangle is (TriangleID)-1, it means that to path crosses the boundary of the surface.
      * @returns the indice of the end point, or -1 if the incision failed.
@@ -365,8 +375,21 @@ public:
     virtual bool InciseAlongEdgeList(const sofa::type::vector<EdgeID>& edges, sofa::type::vector<PointID>& new_points, sofa::type::vector<PointID>& end_points, bool& reachBorder);
 
 
-    SOFA_ATTRIBUTE_DISABLED("v23.12", "v23.12", "Method writeMSHfile has been disabled. To export the topology as .gmsh file, use the sofa::component::io::mesh::MeshExporter.")
-    void writeMSHfile(const char *filename) const {msg_deprecated() << "Method writeMSHfile has been disabled. To export the topology as " << filename << " file, use the sofa::component::io::mesh::MeshExporter."; }
+    // compute barycentric coefficients
+    // {
+    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Use sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms::computeTriangleBarycentricCoordinates")
+    sofa::type::vector< SReal > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p) const;
+
+    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Use sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms::computeTriangleBarycentricCoordinates with useRestPosition set to true")
+    sofa::type::vector< SReal > computeRestTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p) const;
+
+    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Use sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms::computeTriangleBarycentricCoordinates")
+    sofa::type::vector< SReal > compute3PointsBarycoefs(const sofa::type::Vec<3, Real>& p,
+        PointID ind_p1,
+        PointID ind_p2,
+        PointID ind_p3,
+        bool bRest = false) const;
+    //}
 
 protected:
     Data<bool> showTriangleIndices; ///< Debug : view Triangle indices

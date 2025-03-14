@@ -19,9 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYALGORITHMS_H
-#define SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYALGORITHMS_H
+#define SOFA_COMPONENT_MAPPING_DISTANCETOPLANEMAPPING_CPP
+#include <sofa/component/mapping/linear/DistanceToPlaneMapping.inl>
 
-#error This class has been removed in PR #1546. QuadSetGeometryAlgorithms or QuadSetTopologyModifier should be used.
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/mapping/linear/config.h>
 
-#endif
+namespace sofa::component::mapping::linear
+{
+
+using namespace sofa::defaulttype;
+
+void registerDistanceToPlaneMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Mapping that computes the distance to a plane")
+        .add< DistanceToPlaneMapping< Vec3Types > >()
+        .add< DistanceToPlaneMapping< Vec2Types > >()
+        .add< DistanceToPlaneMapping< Vec6Types > >()
+        .add< DistanceToPlaneMapping< Rigid3Types > >()
+        .add< DistanceToPlaneMapping< Rigid2Types > >());
+}
+
+template class SOFA_COMPONENT_MAPPING_LINEAR_API DistanceToPlaneMapping< Vec3Types > ;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API DistanceToPlaneMapping< Vec2Types > ;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API DistanceToPlaneMapping< Vec6Types > ;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API DistanceToPlaneMapping< Rigid3Types >;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API DistanceToPlaneMapping< Rigid2Types >;
+
+} // namespace sofa::component::mapping::linear
