@@ -164,9 +164,6 @@ public:
     void subDivideRestTetrahedronsWithPlane(sofa::type::vector<Coord>& intersectedPoints, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord planePos, Coord planeNormal);
     int subDivideRestTetrahedronWithPlane(TetraID tetraIdx, sofa::type::vector<EdgeID>& intersectedEdgeID, sofa::type::vector<PointID>& intersectedPointID, Coord planeNormal, sofa::type::vector<Tetra>& toBeAddedTetra);
 
-    SOFA_ATTRIBUTE_DISABLED("v23.12", "v23.12", "Method writeMSHfile has been disabled. To export the topology as .gmsh file, use the sofa::component::io::mesh::MeshExporter.")
-    void writeMSHfile(const char *filename) const {msg_deprecated() << "Method writeMSHfile has been disabled. To export the topology as " << filename << " file, use the sofa::component::io::mesh::MeshExporter."; }
-
 protected:
     Data<bool> d_showTetrahedraIndices; ///< Debug : view Tetrahedrons indices
     Data<bool> d_drawTetrahedra; ///< if true, draw the tetrahedra in the topology

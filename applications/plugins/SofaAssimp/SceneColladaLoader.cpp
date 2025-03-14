@@ -33,7 +33,7 @@
 #include <sofa/component/mapping/linear/SkinningMapping.h>
 #include <sofa/component/mapping/linear/BarycentricMapping.h>
 #include <sofa/component/mapping/linear/IdentityMapping.h>
-#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 #include <sofa/component/constraint/projective/SkeletalMotionProjectiveConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -291,7 +291,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             currentBoneMechanicalObject->resize(currentAiMesh->mNumBones);
 
                             {
-                                Data<Rigid3Types::VecCoord>* d_x = currentBoneMechanicalObject->write(core::VecCoordId::position());
+                                Data<Rigid3Types::VecCoord>* d_x = currentBoneMechanicalObject->write(core::vec_id::write_access::position);
                                 Rigid3Types::VecCoord &x = *d_x->beginEdit();
                                 for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
                                 {
@@ -370,7 +370,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             currentBoneMechanicalObject->resize(1);
 
                             {
-                                Data<type::vector<Rigid3Types::Coord> >* d_x = currentBoneMechanicalObject->write(core::VecCoordId::position());
+                                Data<type::vector<Rigid3Types::Coord> >* d_x = currentBoneMechanicalObject->write(core::vec_id::write_access::position);
                                 type::vector<Rigid3Types::Coord> &x = *d_x->beginEdit();
 
                                 Vec3d boneTranslation(0.0, 0.0, 0.0);
@@ -393,7 +393,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             currentUniformMass->setName(nameStream.str());
                         }
 
-                        FixedConstraint<Rigid3Types>::SPtr currentFixedConstraint = sofa::core::objectmodel::New<FixedConstraint<Rigid3Types> >();
+                        FixedProjectiveConstraint<Rigid3Types>::SPtr currentFixedConstraint = sofa::core::objectmodel::New<FixedProjectiveConstraint<Rigid3Types> >();
                         {
                             // adding the generated FixedConstraint to its parent Node
                             currentSubNode->addObject(currentFixedConstraint);
@@ -448,7 +448,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             currentMechanicalObject->resize(vertexMap.size());
 
                             {
-                                Data<type::vector<Vec3Types::Coord> >* d_x = currentMechanicalObject->write(core::VecCoordId::position());
+                                Data<type::vector<Vec3Types::Coord> >* d_x = currentMechanicalObject->write(core::vec_id::write_access::position);
                                 type::vector<Vec3Types::Coord> &x = *d_x->beginEdit();
                                 for( std::map<Vec3d,unsigned>::iterator it=vertexMap.begin() , itend=vertexMap.end() ; it!=itend ; ++it )
                                     x[it->second] = it->first;

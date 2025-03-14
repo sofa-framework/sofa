@@ -148,7 +148,7 @@ if(MSVC)
 endif()
 
 ### Testing
-option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
+option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." OFF)
 
 ## Active or not the use of ccache
 option(SOFA_USE_CCACHE "Compile using ccache optimization" OFF)

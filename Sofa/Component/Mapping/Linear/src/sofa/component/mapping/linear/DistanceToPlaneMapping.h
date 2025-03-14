@@ -20,34 +20,53 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/config.h>
-#include <sofa/simulation/fwd.h>
-#include <memory>
+#include <sofa/component/mapping/linear/config.h>
+#include <sofa/component/mapping/linear/LinearMapping.h>
+
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
+#include <sofa/core/Mapping.h>
+#include <sofa/core/Mapping.inl>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/type/vector.h>
+#include <sofa/core/trait/DataTypes.h>
 
 
-
-namespace sofa::simulation::graph
+namespace sofa::component::mapping::linear
 {
 
-/** Main controller of the scene.
-Defines how the scene is inited at the beginning, and updated at each time step.
-Derives from BaseObject in order to model the parameters as Datas, which makes their edition easy in the GUI.
- */
-class SOFA_SIMULATION_GRAPH_API DAGSimulation: public Simulation
+template <class TIn>
+class DistanceToPlaneMapping : public LinearMapping<TIn, defaulttype::Vec1dTypes>
 {
 public:
-    DAGSimulation();
-    ~DAGSimulation() override; // this is a terminal class
+    SOFA_CLASS(SOFA_TEMPLATE(DistanceToPlaneMapping,TIn), SOFA_TEMPLATE2(LinearMapping,TIn, defaulttype::Vec1dTypes));
+    typedef LinearMapping<TIn,  defaulttype::Vec1dTypes> Inherit;
+    typedef  defaulttype::Vec1dTypes TOut;
 
-    /// create a new graph(or tree) and return its root node.
-    virtual NodeSPtr createNewGraph(const std::string& name) override;
+    void init() override;
 
-    /// creates and returns a new node.
-    virtual NodeSPtr createNewNode(const std::string& name) override;
+    void apply(const core::MechanicalParams *mparams, Data<VecCoord_t<TOut>>& out, const Data<VecCoord_t<TIn>>& in) override;
 
-    /// Can the simulation handle a directed acyclic graph?
-    bool isDirectedAcyclicGraph() override { return true; }
+    void applyJ(const core::MechanicalParams *mparams, Data<VecDeriv_t<TOut>>& out, const Data<VecDeriv_t<TIn>>& in) override;
+
+    void applyJT(const core::MechanicalParams *mparams, Data<VecDeriv_t<TIn>>& out, const Data<VecDeriv_t<TOut>>& in) override;
+
+    void applyJT(const core::ConstraintParams *cparams, Data<MatrixDeriv_t<TIn>>& out, const Data<MatrixDeriv_t<TOut>>& in) override;
+
+    const linearalgebra::BaseMatrix* getJ() override;
+
+    void handleTopologyChange() override;
+
+
+    Data<type::Vec<Deriv_t<TIn>::spatial_dimensions,typename Deriv_t<TIn>::value_type>> d_planeNormal;
+    Data<type::Vec<Coord_t<TIn>::spatial_dimensions,typename Coord_t<TIn>::value_type>> d_planePoint;
+
+protected:
+
+    DistanceToPlaneMapping();
+    virtual ~DistanceToPlaneMapping() {};
+
+    linearalgebra::EigenSparseMatrix<TIn, TOut> J;
 };
 
-} // namespace sofa::simulation::graph
+
+}

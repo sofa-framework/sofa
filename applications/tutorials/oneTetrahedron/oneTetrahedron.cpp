@@ -52,8 +52,8 @@ using UniformMass3 = sofa::component::mass::UniformMass<Vec3Types>;
 using sofa::component::topology::container::constant::MeshTopology;
 #include <sofa/component/visual/VisualStyle.h>
 using sofa::component::visual::VisualStyle;
-#include <sofa/component/constraint/projective/FixedConstraint.h>
-using FixedConstraint3 = sofa::component::constraint::projective::FixedConstraint<Vec3Types>;
+#include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
+using FixedConstraint3 = sofa::component::constraint::projective::FixedProjectiveConstraint<Vec3Types>;
 #include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
 using sofa::component::odesolver::backward::EulerImplicitSolver;
 #include <sofa/gl/component/rendering3d/OglModel.h>
@@ -110,7 +110,7 @@ int main(int argc, char** argv)
     DOF->resize(4);
     DOF->setName("DOF");
     //get write access to the position vector of mechanical object DOF
-    WriteAccessor<Data<VecCoord3> > x = *DOF->write(VecId::position());
+    WriteAccessor<Data<VecCoord3> > x = *DOF->write(sofa::core::vec_id::write_access::position);
     x[0] = Coord3(0,10,0);
     x[1] = Coord3(10,0,0);
     x[2] = Coord3(-10*0.5,0,10*0.866);
