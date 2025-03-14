@@ -28,7 +28,6 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaMemoryManager.h
     sofa/gpu/cuda/CudaScan.h
     sofa/gpu/cuda/CudaSort.h
-    sofa/gpu/cuda/CudaTexture.h
     sofa/gpu/cuda/CudaTypes.h
     sofa/gpu/cuda/mycuda.h
 

@@ -82,7 +82,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/map.h
     ${SRC_ROOT}/map_ptr_stable_compare.h
     ${SRC_ROOT}/pair.h
-    ${SRC_ROOT}/proximity.h
     ${SRC_ROOT}/random.h
     ${SRC_ROOT}/rmath.h
     ${SRC_ROOT}/set.h

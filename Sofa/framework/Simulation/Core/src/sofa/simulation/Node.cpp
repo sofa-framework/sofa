@@ -49,7 +49,6 @@
 #include <sofa/core/Mapping.h>
 
 #include <sofa/simulation/Node.inl>
-#include <sofa/simulation/VisitorScheduler.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/AnimateVisitor.h>
