@@ -61,11 +61,7 @@ VTKExporter::VTKExporter()
     overwrite.setOriginalData(&d_overwrite);
 }
 
-VTKExporter::~VTKExporter()
-{
-    if (m_outfile)
-        delete m_outfile;
-}
+VTKExporter::~VTKExporter(){}
 
 void VTKExporter::doInit() 
 { 
@@ -402,12 +398,11 @@ bool VTKExporter::writeVTKSimple()
         filename += ".vtu";
     }*/
 
-    m_outfile = new std::ofstream(filename.c_str());
+    m_outfile.reset(new std::ofstream(filename.c_str()));
     if( !m_outfile->is_open() )
     {
         msg_error() << "Error creating file "<<filename;
-        delete m_outfile;
-        m_outfile = nullptr;
+        m_outfile.reset();
         return false;
     }
 
@@ -577,12 +572,11 @@ bool VTKExporter::writeVTKXML()
         filename += ".vtu";
     }
 
-    m_outfile = new std::ofstream(filename.c_str());
+    m_outfile.reset(new std::ofstream(filename.c_str()));
     if( !m_outfile->is_open() )
     {
         msg_error() << "Error creating file "<<filename;
-        delete m_outfile;
-        m_outfile = nullptr;
+        m_outfile.reset();
         return false;
     }
     const type::vector<std::string>& pointsData = d_dPointsDataFields.getValue();
@@ -783,12 +777,11 @@ void VTKExporter::writeParallelFile()
     filename.insert(0, "P_");
     filename += ".vtk";
 
-    m_outfile = new std::ofstream(filename.c_str());
+    m_outfile.reset(new std::ofstream(filename.c_str()));
     if( !m_outfile->is_open() )
     {
         msg_error() << "Error creating file "<<filename;
-        delete m_outfile;
-        m_outfile = nullptr;
+        m_outfile.reset();
         return;
     }
 

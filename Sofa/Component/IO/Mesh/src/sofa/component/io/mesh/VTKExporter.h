@@ -45,7 +45,7 @@ protected:
     sofa::core::topology::BaseMeshTopology* m_topology;
     sofa::core::behavior::BaseMechanicalState* m_mstate;
 
-    std::ofstream* m_outfile;
+    std::unique_ptr<std::ofstream> m_outfile;
 
     void fetchDataFields(const type::vector<std::string>& strData, type::vector<std::string>& objects, type::vector<std::string>& fields, type::vector<std::string>& names);
     bool write() override;
