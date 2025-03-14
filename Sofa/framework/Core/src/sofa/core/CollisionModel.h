@@ -408,6 +408,9 @@ protected:
     /// models included in a common group (i.e. sharing a common id)
     Data< std::set<int> > group;
 
+    // No collision can occur between collision models in different layers
+    Data<int> layer;
+
     /// Number of collision elements
     Size size;
 
