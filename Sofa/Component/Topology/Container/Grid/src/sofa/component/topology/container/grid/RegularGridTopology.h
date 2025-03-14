@@ -38,11 +38,6 @@ class SOFA_COMPONENT_TOPOLOGY_CONTAINER_GRID_API RegularGridTopology : public Gr
 public:
     SOFA_CLASS(RegularGridTopology,GridTopology);
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3i, sofa::type::Vec3i);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3ui, sofa::type::Vec3u);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(BoundingBox, sofa::type::BoundingBox);
-
 protected:
     /// Delegated constructor
     RegularGridTopology(const type::Vec3i &dimXYZ);

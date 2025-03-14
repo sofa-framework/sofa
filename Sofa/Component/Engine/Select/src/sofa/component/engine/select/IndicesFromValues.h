@@ -43,7 +43,6 @@ public:
     typedef T Value;
     typedef sofa::type::vector<T> VecValue;
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
     typedef sofa::type::vector<sofa::Index> VecIndex;
 
 protected:
