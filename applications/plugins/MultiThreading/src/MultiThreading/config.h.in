@@ -35,11 +35,3 @@ namespace multithreading
     constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
     constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace multithreading
-
-#ifdef SOFA_BUILD_MULTITHREADING
-#define SOFA_ATTRIBUTE_DISABLED__TASKSCHEDULERUSER_DATANAME(msg)
-#else
-#define SOFA_ATTRIBUTE_DISABLED__TASKSCHEDULERUSER_DATANAME(msg) \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v23.06", "v23.12", msg)
-#endif
