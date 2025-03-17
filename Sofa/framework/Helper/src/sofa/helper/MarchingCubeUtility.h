@@ -38,13 +38,8 @@ class SOFA_HELPER_API MarchingCubeUtility
 {
 public:
     typedef sofa::Index PointID;
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3i, sofa::type::Vec3i);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec6i, sofa::type::Vec6i);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Real, SReal);
 
     MarchingCubeUtility();
-
     ~MarchingCubeUtility() {};
 
     void setDataResolution ( const type::Vec3i   &resolution )

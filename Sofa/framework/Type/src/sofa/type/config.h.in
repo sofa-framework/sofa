@@ -34,15 +34,6 @@
 
 
 #ifdef SOFA_BUILD_SOFA_TYPE
-#define SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
-#else
-#define SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v23.12", "v24.06", \
-        "RGBAColor does not inherit anymore from sofa::type::fixed_array. Use respective functions accordingly.")
-#endif
-
-#ifdef SOFA_BUILD_SOFA_TYPE
 #define SOFA_ATTRIBUTE_DISABLED__BOUNDINGBOX_TYPO()
 #else
 #define SOFA_ATTRIBUTE_DISABLED__BOUNDINGBOX_TYPO() \
