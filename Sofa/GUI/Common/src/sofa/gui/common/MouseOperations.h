@@ -234,7 +234,7 @@ public:
     void setScale (double s) {scale = s;}
     void setVolumicMesh (bool v) {volumicMesh = v;}
 
-    virtual int getTopologicalOperation() const { return volumicMesh;}
+    virtual int getTopologicalOperation() const { return topologicalOperation;}
     virtual double getScale() const {return scale;}
     virtual bool getVolumicMesh() const {return volumicMesh;}
 
