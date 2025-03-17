@@ -21,10 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/io/mesh/config.h>
-
 #include <sofa/core/loader/VoxelLoader.h>
-
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::io::mesh
 {

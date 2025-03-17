@@ -23,8 +23,6 @@
 #include <sofa/component/io/mesh/config.h>
 #include <sofa/core/loader/MeshLoader.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::io::mesh
 {
 

@@ -38,8 +38,6 @@
 
 #include <fstream>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component
 {
 namespace _blenderexporter_

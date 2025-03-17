@@ -69,8 +69,8 @@ public:
     void updateVisualFlags(VisualParams* ) override;
     void applyBackupFlags(VisualParams* ) override;
 
-    bool insertInNode( sofa::core::objectmodel::BaseNode* node );
-    bool removeInNode( sofa::core::objectmodel::BaseNode* node );
+    bool insertInNode(sofa::core::objectmodel::BaseNode* node) override;
+    bool removeInNode(sofa::core::objectmodel::BaseNode* node) override;
 
     Data<DisplayFlags> d_displayFlags; ///< Display Flags
 
