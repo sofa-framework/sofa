@@ -387,7 +387,7 @@ bool LCPForceFeedback_test::test_multiThread()
     m_meanForceFFBack = m_meanForceFFBack / float(m_cptLoopContact);
 
     EXPECT_GT(m_cptLoop, nbSimuSteps); // we assume the LCP runs faster than the current simulation speed
-    EXPECT_GT(m_cptLoopContact, 0); // check that the simulate reached collision between instrument and floor
+    EXPECT_GT(m_cptLoopContact, 0); // check that the simulation reached collision between instrument and floor
 
     // make a simple test FFBack not equal to 0. Not possible to test exact value as CI have different thread speed
     EXPECT_NE(m_meanForceFFBack[0], 0.0);
