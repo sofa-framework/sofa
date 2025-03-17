@@ -2238,7 +2238,6 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
                 _borderSplit[i] = false;
             }
 
-            //std::cout << "Snap Edge needed here: " << edgeId << " with split: " << _borderSplit[i] << std::endl;
         }
         else
         {
@@ -2256,11 +2255,6 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
     bool validPath = computeSegmentTriangulationIntersections(pathPts[0], pathPts[1], ind_ta, ind_tb, triangles_list, edges_list, coords_list);
     if (!validPath)
         return _pointsToAdd;
-    //std::cout << "ptA: " << ptA << " -> " << pathPts[0] << std::endl;
-    //std::cout << "ptB: " << ptB << " -> " << pathPts[1] << std::endl;
-    //std::cout << "triangles_list: " << triangles_list << std::endl;
-    //std::cout << "edges_list: " << edges_list << std::endl;
-    //std::cout << "coords_list: " << coords_list << std::endl;
 
     // 4. post processing the list of intersected edges if snapping is requested
     std::set <PointID> psnap;
@@ -2333,7 +2327,6 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
         // Adding new PTA to the vector
         if (PTA->m_ancestorType == sofa::geometry::ElementType::POINT) // check to add it only once
         {
-            //std::cout << "ADD PTA as point for id: " << PTA->m_idPoint << " | owner: " << PTA->m_ownerId << " | clone " << PTA->m_idClone << std::endl;
             bool found = false;
             for (const auto& ptAdded : _pointsToAdd)
             {
