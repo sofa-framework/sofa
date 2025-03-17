@@ -47,7 +47,25 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, SuturePointPe
 namespace sofa::gui::common
 {
 
-//*******************************************************************************************
+Operation::Operation(sofa::component::setting::MouseButtonSetting::SPtr s)
+    : pickHandle(nullptr), mbsetting(s), performer(nullptr), button(NONE)
+{
+}
+
+Operation::~Operation() = default;
+
+void Operation::configure(PickHandler* picker, const MOUSE_BUTTON b)
+{
+    pickHandle = picker;
+    button = b;
+}
+
+void Operation::configure(PickHandler* picker, sofa::component::setting::MouseButtonSetting* s)
+{
+    setSetting(s);
+    configure(picker, GetMouseId(s->d_button.getValue().getSelectedId()));
+}
+
 void Operation::start()
 {
     if (!performer)
@@ -114,7 +132,22 @@ void Operation::end()
     if (performer)
     {
         pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-        delete performer; performer=nullptr;
+        delete performer;
+        performer = nullptr;
+    }
+}
+MOUSE_BUTTON Operation::GetMouseId(unsigned int i)
+{
+    switch (i)
+    {
+        case LEFT:
+            return LEFT;
+        case MIDDLE:
+            return MIDDLE;
+        case RIGHT:
+            return RIGHT;
+        default:
+            return NONE;
     }
 }
 
