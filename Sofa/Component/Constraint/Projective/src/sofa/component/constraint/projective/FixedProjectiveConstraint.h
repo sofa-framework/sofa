@@ -70,7 +70,6 @@ public:
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
     typedef sofa::core::topology::Point Point;
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3, sofa::type::Vec3);
 protected:
     FixedProjectiveConstraint();
 

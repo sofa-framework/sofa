@@ -50,9 +50,4 @@ public:
     bool isDirectedAcyclicGraph() override { return true; }
 };
 
-/** Get the (unique) simulation which controls the scene.
-Automatically creates one if no Simulation has been set.
- */
-SOFA_ATTRIBUTE_DISABLED_DAGSIMULATION_GETSIMULATION()
-Simulation* getSimulation() = delete;
 } // namespace sofa::simulation::graph
