@@ -1,7 +1,7 @@
 from os import system, listdir, path, walk
 system("clear")
 LOGFILE = open("LogRSSFF.txt", "w")
-desktop_dir = r"../"
+desktop_dir = r"../../"
 #desktop_dir = r"/home/rtrivi/wor/Sofa/src/sofa-stable_v16.08"
 
 for root, dirs, files in walk(desktop_dir):
