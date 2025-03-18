@@ -93,8 +93,8 @@ public:
 
     void printValue()
     {
-        std::cout << "PTA: " << m_uniqueID << " | idPoint: " << m_idPoint << " | idClone: " << m_idClone << " | m_ancestorType: " << int(m_ancestorType) << std::endl;
-        std::cout << "PTA: " << m_uniqueID << " | ancestors: " << m_ancestors << " | coefs: " << m_coefs << std::endl;
+        msg_info("PointToAdd") << "PTA: " << m_uniqueID << " | idPoint: " << m_idPoint << " | idClone: " << m_idClone << " | m_ancestorType: " << int(m_ancestorType);
+        msg_info("PointToAdd") << "PTA: " << m_uniqueID << " | ancestors: " << m_ancestors << " | coefs: " << m_coefs;
     }
 
 
