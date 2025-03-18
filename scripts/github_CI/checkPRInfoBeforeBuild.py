@@ -1,15 +1,11 @@
 #!python
 
-import os
-import requests
-from python_graphql_client import GraphqlClient
+import os, re, requests
 
-
-client = GraphqlClient(endpoint="https://api.github.com/graphql")
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 PR_NUMBER = os.getenv('PR_NUMBER')
 OWNER_NAME = os.getenv('OWNER_NAME')
-COMMIT_SHA = os.getenv('COMMIT_SHA')
+PR_COMMIT_SHA = os.getenv('PR_COMMIT_SHA')
 
 
 if not GITHUB_TOKEN or not PR_NUMBER or not REPO_NAME:
@@ -32,7 +28,7 @@ to_review_label_found = False
 is_draft_pr = False
 with_all_tests_found = False
 force_full_build_found = False
-
+dependency_dict = {}
 
 # ========================================================================
 
@@ -53,6 +49,7 @@ def check_labels():
         to_review_label_found = True
         print("PR is marked as 'to review'.")
 
+
 # ========================================================================
 
 # Check the PR draft status
@@ -70,6 +67,9 @@ def check_if_draft():
 
     if is_draft_pr:
         print("The pull request is a draft. The Bash script will not run.")
+
+    ## TODO : save PR_OWNER_URL, PR_BRANCH_NAME, PR_COMMIT_SHA
+
 
 # ========================================================================
 
@@ -97,28 +97,53 @@ def check_comments():
 
 # ========================================================================
 
-
-# Execute the checks
-check_labels()
-check_if_draft()
-
-
-# Trigger the build if conditions are met
-if to_review_label_found and not is_draft_pr:
-    
-    # Check compilation options in PR comments
-    check_comments()
-    
+# Export all needed PR information
+def export_pr_info():
     pr_url = f"{API_URL}/pulls/{PR_NUMBER}"
     response = requests.get(pr_url, headers=HEADERS)
+
+    if response.status_code != 200:
+        print(f"Failed to fetch pull request details: {response.status_code}")
+        exit(1)
+
     pr_data = response.json()
-    branch = pr_data.get("head", {}).get("ref", None)
-    
-            
+
+    pr_url = str(pr_data['user']['html_url']) + str(pr_data['repo']['name'])
+    pr_branch_name = pr_data['head']['ref']
+    pr_commit_sha = pr_data['head']['sha']
+
+    print("PR comes from the repository: "+str(pr_url))
+    print("PR branch name is: "+str(pr_branch_name))
+    print("PR commit sha is: "+str(pr_commit_sha))
+
+    with open(os.environ["GITHUB_ENV"], "a") as env_file:
+        env_file.write(f"PR_OWNER_URL={pr_url}\n")
+        env_file.write(f"PR_BRANCH_NAME={pr_branch_name}\n")
+        env_file.write(f"PR_COMMIT_SHA={pr_commit_sha}\n")
+
+    ## TODO : pr_data.get('mergeable', False) could also let us know if it is mergeable
+
+
+# ========================================================================
+
+# Extract repositories from ci-depends-on
+def extract_ci_depends_on():
+    global dependency_dict
+
+    pr_url = f"{API_URL}/pulls/{PR_NUMBER}"
+    response = requests.get(pr_url, headers=HEADERS)
+
+    if response.status_code != 200:
+        print(f"Failed to fetch pull request details: {response.status_code}")
+        exit(1)
+
+    pr_data = response.json()
+
     # Extract the PR description and look for [ci-depends-on ...] patterns
     pr_body = pr_data.get("body", "")
     ci_depends_on = []
 
+    # Search in each line for the pattern "[ci-depends-on ...]"
     for line in pr_body.splitlines():
         match = re.search(r'\[ci-depends-on (.+?)\]', line)
         if match:
@@ -126,47 +151,62 @@ if to_review_label_found and not is_draft_pr:
             ci_depends_on.append(dependency)
             print(f"Found ci-depends-on dependency: {dependency}")
 
-    # GitHub repository details
-    API_URL_DISPATCH = f"https://api.github.com/repos/bakpaul/sofa/dispatches"
+            # Ensure the URL is in the expected dependency format, e.g. https://github.com/sofa-framework/Sofa.Qt/pull/6
+            parts = dependency.split('/')
+            if len(parts) != 6 or parts[0] != 'https:' or parts[1] != '' or parts[2] != 'github.com':
+                raise ValueError("")
+                print(f"Invalid URL ci-depends-on format: {dependency}")
+                exit(1)
 
-    # JSON payload for the dispatch event
-    PAYLOAD = {
-        "event_type": "CI Build",
-        "client_payload": {
-            "owner": {OWNER_NAME},
-            "branch": {branch},
-            "commit_hash": {COMMIT_SHA},
-            "preset": "full",
-            "ci-depends-on": {ci_depends_on},
-            "with-all-tests": {with_all_tests_found},
-            "force-full-build": {force_full_build_found},
-            "out-of-tree-build": "False",
-            "generate-binaries": "False",
-        },
-    }
+            owner = parts[3]
+            repo = parts[4]
+            pull_number = parts[5]
+            dependency_request_url = f"https://api.github.com/repos/{owner}/{repo}/pulls/{pull_number}"
 
-    # Headers for the GitHub API request
-    REQUEST_HEADERS = {
-        "Accept": "application/vnd.github+json",
-        "Authorization": f"Bearer {GITHUB_TOKEN}",
-        "X-GitHub-Api-Version": "2022-11-28",
-    }
+            response = requests.get(dependency_request_url, headers=HEADERS)
 
-    # Perform the API request
-    try:
-        response = requests.post(API_URL_DISPATCH, json=PAYLOAD, headers=REQUEST_HEADERS)
-        
-        # Check for successful request
-        if response.status_code == 204:
-            print("CI Build event triggered successfully.")
-        else:
-            print(f"Failed to trigger CI Build event. Status code: {response.status_code}")
-            print("Response:", response.text)
-            sys.exit(1)
-    except requests.RequestException as e:
-        print("Error during the API request:", e)
-        sys.exit(1)
-else:
-    print("Conditions not met. Bash script will not run.")
+            if response.status_code != 200:
+                print(f"Failed to fetch pull request details: {response.status_code}")
+                exit(1)
+
+            dependency_pr_data = response.json()
+
+            key = dependency_pr_data['repo']['name'] #Sofa.Qt
+            repo_url = dependency_pr_data['html_url'] #https://github.com/sofa-framework/Sofa.Qt
+            branch_name = dependency_pr_data['head']['ref'] #my_feature_branch
+
+            dependency_dict[key] = {
+                "repo_url": repo_url,
+                "branch_name": branch_name
+            }
+
+
+# ========================================================================
+# Script core
+# ========================================================================
+
+
+# Execute the checks
+check_labels()
+check_if_draft()
+
+# Trigger the build if conditions are met
+if to_review_label_found and not is_draft_pr:
+    # Export PR information (url, name, sha)
+    export_pr_info()
+
+    # Check compilation options in PR comments
+    check_comments()
+    
+    with open(os.environ["GITHUB_ENV"], "a") as env_file:
+        env_file.write(f"WITH_ALL_TESTS={with_all_tests_found}\n")
+        env_file.write(f"FORCE_FULL_BUILD={force_full_build_found}\n")
+
+    # Extract dependency repositories
+    extract_ci_depends_on()
+
+    with open(os.environ["GITHUB_ENV"], "a") as env_file:
+        env_file.write(f"CI_DEPENDS_ON={dependency_dict}\n")
+
 
 # ========================================================================

@@ -12,11 +12,23 @@ on:
       branch:
         description: 'Specify the stable branch to use to generate the new binaries'
         required: true
+        type: string
       commit_sha:
         description: 'Commit SHA to check out'
         required: true
         default: 'head'
-        
+        type: string
+      python_version:
+        description: 'Version of Python used'
+        required: true
+        default: '3.12'
+        type: string
+      generate_binaries:
+        description: 'Boolean to generate the binaries'
+        required: true
+        default: 'true'
+        type: boolean
+
   # Nightly build
   schedule:
     - cron: '0 2 * * *'   # Evevery night
@@ -26,7 +38,7 @@ on:
     types: [opened, synchronize]
     
   # Comment on PR
-  pull_request_review_comment:
+  issue_comment:
     types: [created, edited]
     
   # CI for dashboard master
@@ -37,98 +49,169 @@ on:
 # ===============================================================
 # ===============================================================
 
+env:
+  SOFA_BRANCH_NAME: "master"
+  SOFA_COMMIT_SHA: "HEAD"
+  PRESET: "full"
+  PYTHON_VERSION: "3.12"
+  CI_DEPENDS_ON: ""
+  WITH_ALL_TESTS: false
+  FORCE_FULL_BUILD: false
+  OUT_OF_TREE_BUILD: ""
+  GENERATE_BINARIES: false
+  PR_OWNER_URL: ""
+  PR_BRANCH_NAME: ""
+  PR_COMMIT_SHA: "HEAD"
+
 jobs:
   filter_build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sofa_version: [master, v24.12]
     ### if: ${{ github.repository_owner == 'sofa-framework' }}
     
     steps:
-       - name: Set up python
-         uses: actions/setup-python@v5
-         with:
-           python-version: '3.12'
+      - name: Run on dispatch
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo "This step runs only for binary generation."
 
-       - name: Install pip packages
-         run: |
-           pip install python-graphql-client
-           pip install requests
+          BRANCH=${{ github.event.inputs.branch }}
+          COMMIT=${{ github.event.inputs.commit_sha }}
+          PYTHON=${{ github.event.inputs.python_version }}
+          PRESET=${{ github.event.inputs.preset }}
+          GENERATE_BINARIES=${{ github.event.inputs.generate_binaries }}
 
-       - name: Check out code
-         uses: actions/checkout@v2
-        
-       - name: Run on dispatch
-         if: ${{ github.event_name == 'workflow_dispatch' }}
-         run: |
-           echo "This step runs only for binary generation."
+          # Validate branch format (e.g., v25.06)
+          if [[ ! "$BRANCH" =~ ^v[0-9]{2}\.[0-9]{2}$ ]]; then
+            echo "Error: Invalid branch name format: $BRANCH"
+            exit 1
+          fi
+          echo "Branch name $BRANCH is valid."
+
+          # Check commit SHA format
+          if [[ ! "$COMMIT" =~ ^[a-fA-F0-9]{40}$ ]]; then
+            echo "Error: Invalid commit SHA format: $COMMIT"
+            exit 1
+          fi
+          # Check the commit exists in the repository
+          if git cat-file -e "$COMMIT" 2>/dev/null; then
+            echo "Commit $COMMIT is valid."
+          else
+            echo "Commit $COMMIT does not exist in the repository."
+            exit 1
+          fi
           
-           BRANCH=${{ github.event.inputs.branch }}
-           COMMIT=${{ github.event.inputs.commit }}
+          # Validate Python version format (e.g., 3.12)
+          if [[ ! "PYTHON" =~ ^[0-9]{1}\.[0-9]{2}$ ]]; then
+            if [[ ! "PYTHON" =~ ^3\.(9|1[0-8])$ ]]; then
+              echo "Error: Invalid Python version format: PYTHON"
+              exit 1
+            fi
+          fi
+          echo "Python version $PYTHON is valid."
           
-           # Validate branch format (e.g., v25.06)
-           if [[ ! "$BRANCH" =~ ^v[0-9]{2}\.[0-9]{2}$ ]]; then
-             echo "Invalid branch name format: $BRANCH"
-             exit 1
-           fi
-           echo "Branch name $BRANCH is valid."
-
-           # Check commit SHA format
-           if [[ ! "$COMMIT" =~ ^[a-fA-F0-9]{40}$ ]]; then
-             echo "Invalid commit SHA format: $COMMIT"
-             exit 1
-           fi
-           # Check the commit exists in the repository
-           if git cat-file -e "$COMMIT" 2>/dev/null; then
-             echo "Commit $COMMIT is valid."
-           else
-             echo "Commit $COMMIT does not exist in the repository."
-             exit 1
-           fi
-           
-           chmod +x /scripts/github_CI/trigger-build.sh
-           ./scripts/github_CI/trigger-build.sh ${{ secrets.GITHUB_TOKEN }} $BRANCH $COMMIT full None False True False True
-
-       - name: Run when nightly
-         if: github.event.schedule == '0 2 * * *'
-         run: |
-           echo "This step runs only for nightly build."
-           chmod +x /scripts/github_CI/trigger-build.sh
-           ./scripts/github_CI/trigger-build.sh ${{ secrets.GITHUB_TOKEN }} master ${{ github.sha }} standard None False True False True
-           
-       - name: Check push on master case
-         if: ${{ github.event_name == 'push'}}
-         run: |
-           echo "This step runs only when a commit is pushed on the master branch."
-           chmod +x /scripts/github_CI/trigger-build.sh
-           ./scripts/github_CI/trigger-build.sh ${{ secrets.GITHUB_TOKEN }} master ${{ github.sha }} full None True True False False
-           
-       - name: Run when PR is opened
-         if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
-         env:
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-           PR_NUMBER: ${{ github.event.pull_request.number }}
-           OWNER_NAME: ${{ github.event.pull_request.head.repo.owner.login }}
-           COMMIT_SHA: ${{ github.sha }}
-         run: |
-           echo "This step runs only when a PR is opened or synchronized."
-           
-           # Trigger the Build action
-           python scripts/github_CI/checkPRInfoBeforeBuild.py
-                 
-        
-       - name: Run when PR comment is edited
-         if: ${{ github.event_name == 'pull_request_review_comment' && ( github.event.action == 'created'|| github.event.action == 'edited' ) }}
-         env:
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-           PR_NUMBER: ${{ github.event.pull_request.number }}
-           OWNER_NAME: ${{ github.event.pull_request.head.repo.owner.login }}
-           COMMIT_SHA: ${{ github.sha }}
-         run: |
-           echo "This step runs only when a PR comment is created or edited."
-
-           COMMENT_BODY=$(jq -r '.comment.body' < $GITHUB_EVENT_PATH)
-           echo "Comment: $COMMENT_BODY"
+          # Check if the preset is valid
+          ALLOWED_PRESETS=("minimal" "standard" "full" "minimal-dev" "standard-dev" "full-dev")
+          if [[ ! " ${ALLOWED_PRESETS[@]} " =~ " ${PRESET} " ]]; then
+            echo "Error: Invalid preset $PRESET. Must be one of: ${ALLOWED_PRESETS[*]}"
+            exit 1
+          fi
+          echo "Preset $PRESET is valid."
           
-           # Trigger the Build action if [ci-build] is in the comment 
-           if [[ "$COMMENT_BODY" == *"[ci-build]"* ]]; then
-             python scripts/github_CI/checkPRInfoBeforeBuild.py
-           fi
+          # Validate generate_binaries (must be true or false)
+          if [[ "$GENERATE_BINARIES" != "true" && "$GENERATE_BINARIES" != "false" ]]; then
+            echo "Error: 'generate_binaries' must be either 'true' or 'false'."
+            exit 1
+          fi
+          
+          # Save all information in environment variables
+          echo "SOFA_BRANCH_NAME=$BRANCH" >> $GITHUB_ENV
+          echo "SOFA_COMMIT_SHA=$COMMIT" >> $GITHUB_ENV
+          echo "PRESET=$PRESET" >> $GITHUB_ENV
+          echo "PYTHON_VERSION=$PYTHON" >> $GITHUB_ENV
+          echo "GENERATE_BINARIES=$GENERATE_BINARIES" >> $GITHUB_ENV
+
+      - name: Set up python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ PYTHON_VERSION }}
+
+      - name: Install pip packages
+        run: |
+          pip install python-graphql-client
+          pip install requests
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Run when nightly
+        if: github.event.schedule == '0 2 * * *'
+        run: |
+          echo "This step runs only for nightly builds."
+          echo "SOFA_BRANCH_NAME=${{ matrix.sofa_version }}" >> $GITHUB_ENV
+          echo "PRESET=standard" >> $GITHUB_ENV
+          echo "WITH_ALL_TESTS=true" >> $GITHUB_ENV
+          echo "GENERATE_BINARIES=true" >> $GITHUB_ENV
+
+      - name: Check push on master case
+        if: ${{ github.event_name == 'push'}}
+        run: |
+          echo "This step runs only for push on the master branch."
+          echo "COMMIT_SHA=${{ github.after }}>> $GITHUB_ENV
+          echo "WITH_ALL_TESTS=true" >> $GITHUB_ENV
+          echo "FORCE_FULL_BUILD=true" >> $GITHUB_ENV
+
+      - name: Run when PR is opened
+        if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          OWNER_NAME: ${{ github.event.pull_request.head.repo.owner.login }}
+          PR_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          echo "This step runs only when a PR is opened or synchronized."
+          
+          # Trigger the Build action
+          python scripts/github_CI/checkPRInfoBeforeBuild.py
+           
+
+      - name: Run when PR comment is edited
+        if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request && ( github.event.action == 'created'|| github.event.action == 'edited' ) }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.pull_request.number }}
+          OWNER_NAME: ${{ github.event.issue.pull_request.head.repo.owner.login }}
+          PR_COMMIT_SHA: ${{ github.event.issue.pull_request.head.sha }}
+        run: |
+          echo "This step runs only when a PR comment is created or edited."
+          COMMENT_BODY=$(jq -r '.comment.body' < $GITHUB_EVENT_PATH)
+          echo "Comment: $COMMENT_BODY"
+          
+          # Trigger the Build action if [ci-build] is in the comment 
+          if [[ "$COMMENT_BODY" == *"[ci-build]"* ]]; then
+            python scripts/github_CI/checkPRInfoBeforeBuild.py
+          fi
+
+  # ===============================================================
+  # ===============================================================
+
+  # Trigger the build with all parameters
+  call-workflow-passing-data:
+    uses: sofa-framework/sofa/.github/workflows/build-and-test.yml@master
+    with:
+      branch-name: ${{ SOFA_BRANCH_NAME }}
+      commit-sha: ${{ SOFA_COMMIT_SHA }}
+      preset: ${{ PRESET }}
+      python-version: ${{ PYTHON_VERSION }}
+      ci-depends-on: ${{ CI_DEPENDS_ON }}
+      with-all-tests: ${{ WITH_ALL_TESTS }}
+      force-full-build: ${{ FORCE_FULL_BUILD }}
+      out-of-tree-build: ${{ OUT_OF_TREE_BUILD }}
+      generate-binaries: ${{ GENERATE_BINARIES }}
+      pr-owner-url: ${{ PR_OWNER_URL }}
+      pr-branch-name: ${{ PR_BRANCH_NAME }}
+      pr-commit-sha: ${{ PR_COMMIT_SHA }}
+    secrets:
+      personal_access_token: ${{ secrets.GITHUB_TOKEN }}
