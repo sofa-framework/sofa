@@ -86,6 +86,12 @@ public:
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
 
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.Topology.Container.Dynamic,
+            Sofa.Component.SolidMechanics.Spring
+        });
+
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");        
         createObject(m_root, "MechanicalObject", {{"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0  1 1 1"} });
@@ -105,6 +111,15 @@ public:
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
         m_root->setGravity(type::Vec3(0.0, -1.0, 0.0));
         m_root->setDt(0.01);
+
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.Topology.Container.Grid,
+            Sofa.Component.SolidMechanics.Spring,
+            Sofa.Component.ODESolver.Backward,
+            Sofa.Component.LinearSolver.Iterative,
+            Sofa.Component.Mass
+        });
 
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
@@ -151,6 +166,12 @@ public:
     void checkNoTopology()
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.SolidMechanics.Spring
+        });
+
         createObject(m_root, "MechanicalObject", { {"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0  1 1 1"} });
         createObject(m_root, "TriangularBendingSprings");
 
@@ -164,6 +185,13 @@ public:
     void checkEmptyTopology()
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.Topology.Container.Dynamic,
+            Sofa.Component.SolidMechanics.Spring
+        });
+
         createObject(m_root, "MechanicalObject", { {"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0  1 1 1"} });
         createObject(m_root, "TriangleSetTopologyContainer");
         createObject(m_root, "TriangularBendingSprings");
@@ -178,6 +206,12 @@ public:
     void checkDefaultAttributes()
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.Topology.Container.Dynamic,
+            Sofa.Component.SolidMechanics.Spring
+        });
 
         createObject(m_root, "MechanicalObject", { {"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0  1 1 1"} });
         createObject(m_root, "TriangleSetTopologyContainer", { {"triangles","0 1 2  1 3 2"} });

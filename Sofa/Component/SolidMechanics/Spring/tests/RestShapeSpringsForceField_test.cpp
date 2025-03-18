@@ -63,7 +63,8 @@ sofa::simulation::Node::SPtr RestSpringsForceField_test::createScene(const std::
         Sofa.Component.ODESolver.Backward,
         Sofa.Component.LinearSolver.Iterative,
         Sofa.Component.StateContainer,
-        Sofa.Component.Mass
+        Sofa.Component.Mass,
+        Sofa.Component.SolidMechanics.Spring
     });
     
     createObject(theRoot, "DefaultAnimationLoop");
