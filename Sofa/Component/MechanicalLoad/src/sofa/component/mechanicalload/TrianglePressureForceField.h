@@ -27,8 +27,6 @@
 #include <sofa/core/topology/TopologySubsetData.h>
 #include <sofa/type/MatSym.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::mechanicalload
 {
 
@@ -50,22 +48,6 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     using Index = sofa::Index;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Deriv> pressure;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<MatSym3> cauchyStress;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<Index> > triangleList;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_showForces;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_useConstantForce;
-
 
     Data<Deriv> d_pressure; ///< Pressure force per unit area
   	Data<MatSym3> d_cauchyStress; ///< Cauchy Stress applied on the normal of each triangle

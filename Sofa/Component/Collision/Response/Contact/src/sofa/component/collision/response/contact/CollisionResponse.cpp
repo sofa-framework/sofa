@@ -40,8 +40,6 @@ CollisionResponse::CollisionResponse()
     : d_response(initData(&d_response, "response", "contact response class"))
     , d_responseParams(initData(&d_responseParams, "responseParams", "contact response parameters (syntax: name1=value1&name2=value2&...)"))
 {
-    response.setOriginalData(&d_response);
-    responseParams.setOriginalData(&d_responseParams);
 }
 
 sofa::helper::OptionsGroup CollisionResponse::initializeResponseOptions(sofa::core::objectmodel::BaseContext *context)

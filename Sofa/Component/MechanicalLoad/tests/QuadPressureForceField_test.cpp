@@ -74,7 +74,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
         DataTypes::set( f[3],  f0[0], f0[1], f0[2]);
 
         // Set the properties of the force field
-        Inherited::force->normal.setValue(Deriv(0,0,1));
+        Inherited::force->d_normal.setValue(Deriv(0,0,1));
         Inherited::force->d_dmin.setValue(-0.01);
         Inherited::force->d_dmax.setValue(0.01);
         Inherited::force->d_pressure=Coord(0, 0, 0.2);

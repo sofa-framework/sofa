@@ -29,8 +29,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/engine/select/BaseROI.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::engine::select
 {
 
@@ -79,19 +77,6 @@ public:
     Data< type::Vec3 > d_normal; ///< Normal direction of the triangles (if triAngle > 0)
     Data< Real > d_edgeAngle; ///< Max angle between the direction of the selected edges and the specified direction
     Data< Real > d_triAngle; ///< Max angle between the normal of the selected triangle and the specified normal direction
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::vector<CPos> > centers;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::vector<Real> > radii;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::Vec3 > direction;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::Vec3 > normal;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    sofa::core::objectmodel::lifecycle::RenamedData< Real > edgeAngle;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    sofa::core::objectmodel::lifecycle::RenamedData< Real > triAngle;
 };
 
 #if !defined(SOFA_COMPONENT_ENGINE_SPHEREROI_CPP)

@@ -78,8 +78,6 @@ FreeMotionAnimationLoop::FreeMotionAnimationLoop() :
 {
     d_parallelCollisionDetectionAndFreeMotion.setGroup("Multithreading");
     d_parallelODESolving.setGroup("Multithreading");
-
-    m_solveVelocityConstraintFirst.setOriginalData(&d_solveVelocityConstraintFirst);
 }
 
 FreeMotionAnimationLoop::~FreeMotionAnimationLoop()
@@ -173,7 +171,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     cparams.setV(freeVel);
     cparams.setDx(l_constraintSolver->getDx());
     cparams.setLambda(l_constraintSolver->getLambda());
-    cparams.setOrder(m_solveVelocityConstraintFirst.getValue() ? core::ConstraintOrder::VEL : core::ConstraintOrder::POS_AND_VEL);
+    cparams.setOrder(d_solveVelocityConstraintFirst.getValue() ? core::ConstraintOrder::VEL : core::ConstraintOrder::POS_AND_VEL);
 
     MultiVecDeriv dx(&vop, core::vec_id::write_access::dx);
     dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
