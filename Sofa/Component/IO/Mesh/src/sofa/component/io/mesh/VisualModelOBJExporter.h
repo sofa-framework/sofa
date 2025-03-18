@@ -42,8 +42,6 @@ public:
     bool write() override;
     bool writeOBJ();
 
-    void handleEvent(Event *event) override;
-
 protected:
     ~VisualModelOBJExporter() override;
 };
