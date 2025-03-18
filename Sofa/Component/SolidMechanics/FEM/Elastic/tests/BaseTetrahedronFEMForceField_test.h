@@ -126,9 +126,10 @@ public:
         this->loadPlugins({
             Sofa.Component.StateContainer,
             Sofa.Component.Topology.Container.Dynamic,
+            Sofa.Component.Topology.Container.Grid,
             Sofa.Component.SolidMechanics.FEM.Elastic,
             Sofa.Component.Mass,
-            Sofa.Component.LinearSolver.Direct,
+            Sofa.Component.LinearSolver.Iterative,
             Sofa.Component.ODESolver.Backward,
             Sofa.Component.Constraint.Lagrangian,
             Sofa.Component.Topology.Mapping,
@@ -222,7 +223,8 @@ public:
 
         this->loadPlugins({
             Sofa.Component.StateContainer,
-            Sofa.Component.Topology.Container.Dynamic
+            Sofa.Component.Topology.Container.Dynamic,
+            Sofa.Component.SolidMechanics.FEM.Elastic
         });
 
         simpleapi::createObject(m_root, "MechanicalObject", { {"template","Vec3"} });

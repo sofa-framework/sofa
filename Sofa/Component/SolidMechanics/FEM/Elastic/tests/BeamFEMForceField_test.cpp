@@ -86,6 +86,16 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
 
+        this->loadPlugins({
+            Sofa.Component.ODESolver.Backward,
+            Sofa.Component.LinearSolver.Iterative,
+            Sofa.Component.StateContainer,
+            Sofa.Component.Topology.Container.Dynamic,
+            Sofa.Component.SolidMechanics.FEM.Elastic,
+            Sofa.Component.Mass,
+            Sofa.Component.Constraint.Projective
+        });
+
         createObject(m_root, "EulerImplicitSolver");
         createObject(m_root, "CGLinearSolver", { { "iterations", "20" }, { "threshold", "1e-8" }, {"tolerance", "1e-5"} });
         createObject(m_root, "MechanicalObject", {{"template", rigidTypeName}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
@@ -131,15 +141,22 @@ public:
 
     void checkNoTopology()
     {
-        EXPECT_MSG_EMIT(Error);
-
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+
+        this->loadPlugins({
+            Sofa.Component.ODESolver.Backward,
+            Sofa.Component.LinearSolver.Iterative,
+            Sofa.Component.StateContainer,
+            Sofa.Component.SolidMechanics.FEM.Elastic
+        });
+
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "EulerImplicitSolver");
         createObject(m_root, "CGLinearSolver", { { "iterations", "20" }, { "threshold", "1e-8" }, {"tolerance", "1e-5"} });
         createObject(m_root, "MechanicalObject", { {"template", rigidTypeName}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
         createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", rigidTypeName} });
 
+        EXPECT_MSG_EMIT(Error);
         sofa::simulation::node::initRoot(m_root.get());
 
         sofa::simulation::node::animate(m_root.get(), 0.01_sreal);
@@ -149,6 +166,13 @@ public:
     void checkEmptyTopology()
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.Topology.Container.Dynamic,
+            Sofa.Component.SolidMechanics.FEM.Elastic
+        });
+
         createObject(m_root, "MechanicalObject", { {"template",rigidTypeName}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
         createObject(m_root, "EdgeSetTopologyContainer");
         createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", rigidTypeName} });
@@ -163,6 +187,12 @@ public:
     void checkDefaultAttributes()
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.Topology.Container.Dynamic,
+            Sofa.Component.SolidMechanics.FEM.Elastic
+        });
 
         createObject(m_root, "MechanicalObject", { {"template",rigidTypeName}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
         createObject(m_root, "EdgeSetTopologyContainer", { {"edges","0 1  1 2  2 3"} });
