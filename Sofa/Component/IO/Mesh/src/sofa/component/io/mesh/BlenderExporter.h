@@ -94,8 +94,6 @@ public:
 
     void reset() override;
 
-    void handleEvent(sofa::core::objectmodel::Event* event) override;
-
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T2>

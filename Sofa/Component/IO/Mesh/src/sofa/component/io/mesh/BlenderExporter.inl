@@ -216,11 +216,5 @@ void BlenderExporter<T>::reset()
     m_stepCounter=0;
 }
 
-template<class T>
-void BlenderExporter<T>::handleEvent(sofa::core::objectmodel::Event* event)
-{
-    BaseSimulationExporter::handleEvent(event);
-}
-
 
 } // namespace sofa::component::_blenderexporter_
