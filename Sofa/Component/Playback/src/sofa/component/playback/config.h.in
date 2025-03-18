@@ -38,12 +38,3 @@ namespace sofa::component::playback
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::playback
-
-// Keep the previous macros
-// This backward compatibility will be removed at v23.06
-#ifndef SOFAGENERALLOADER_HAVE_ZLIB
-#define SOFAGENERALLOADER_HAVE_ZLIB SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
-#endif
-#ifndef SOFAEXPORTER_HAVE_ZLIB
-#define SOFAEXPORTER_HAVE_ZLIB SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
-#endif
