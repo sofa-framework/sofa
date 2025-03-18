@@ -57,7 +57,7 @@ struct EulerImplicit_with_damping_forcefield : public BaseSimulationTest, Numeri
 
         //*******
         // load appropriate modules
-        makeScopedPlugin({
+        loadPlugins({
             Sofa.Component.ODESolver.Backward,
             Sofa.Component.LinearSolver.Iterative,
             Sofa.Component.StateContainer,

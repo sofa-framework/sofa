@@ -103,7 +103,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
         const simulation::Node::SPtr root = simpleapi::createRootNode(simu, "root");
         //*******
         // begin create scene under the root node
-        makeScopedPlugin({
+        this->loadPlugins({
             Sofa.Component.ODESolver.Backward,
             Sofa.Component.LinearSolver.Iterative,
             Sofa.Component.StateContainer,
@@ -203,7 +203,7 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         // create scene
         root->setGravity(Vec3(0,0,0));
 
-        makeScopedPlugin({
+        loadPlugins({
             Sofa.Component.ODESolver.Backward,
             Sofa.Component.LinearSolver.Iterative,
             Sofa.Component.StateContainer,
