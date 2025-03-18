@@ -19,7 +19,6 @@ set(HEADER_FILES
     ${SOFAGLSRC_ROOT}/gl.h
     ${SOFAGLSRC_ROOT}/glu.h
     ${SOFAGLSRC_ROOT}/Capture.h
-    ${SOFAGLSRC_ROOT}/Color.h
     ${SOFAGLSRC_ROOT}/RAII.h
     ${SOFAGLSRC_ROOT}/template.h
     ${SOFAGLSRC_ROOT}/Axis.h
