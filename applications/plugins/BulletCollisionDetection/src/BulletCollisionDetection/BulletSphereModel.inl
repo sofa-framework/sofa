@@ -52,7 +52,7 @@ void TBulletSphereModel<DataTypes>::initBullet(){
     sofa::core::objectmodel::BaseObject::f_listening.setValue(true);
     _bt_cshape = new btCompoundShape();
 
-    const VecCoord & pos = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord & pos = this->mstate->read(core::vec_id::read_access::position)->getValue();
     int npoints = pos.size();
 
     const VecReal & radii = this->radius.getValue();
@@ -78,7 +78,7 @@ template <class DataTypes>
 void TBulletSphereModel<DataTypes>::updateBullet(){
     sofa::core::objectmodel::BaseObject::f_listening.setValue(true);
 
-    const VecCoord & pos = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord & pos = this->mstate->read(core::vec_id::read_access::position)->getValue();
     int npoints = pos.size();
 
     for(int i = 0 ; i < npoints ; ++i){

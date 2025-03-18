@@ -219,7 +219,7 @@ bool BilateralInteractionLangrangianConstraint_test<Vec3Types>::test_Vec3Constra
     if(meca.size()==2)
     {
         for(unsigned int i=0; i<meca.size(); i++)
-            points[i] = meca[i]->read(core::ConstVecCoordId::position())->getValue()[0];
+            points[i] = meca[i]->read(core::vec_id::read_access::position)->getValue()[0];
     }
 
     component::constraintset::GenericConstraintSolver *test;

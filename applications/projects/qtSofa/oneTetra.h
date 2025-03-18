@@ -69,7 +69,7 @@ Node::SPtr oneTetra()
     DOF->resize(4);
     DOF->setName("DOF");
     //get write access to the position vector of mechanical object DOF
-    WriteAccessor<Data<VecCoord3> > x = *DOF->write(VecId::position());
+    WriteAccessor<Data<VecCoord3> > x = *DOF->write(sofa::core::vec_id::write_access::position);
     x[0] = Coord3(0,10,0);
     x[1] = Coord3(10,0,0);
     x[2] = Coord3(-10*0.5,0,10*0.866);
