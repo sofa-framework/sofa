@@ -68,8 +68,6 @@ def check_if_draft():
     if is_draft_pr:
         print("The pull request is a draft. The Bash script will not run.")
 
-    ## TODO : save PR_OWNER_URL, PR_BRANCH_NAME, PR_COMMIT_SHA
-
 
 # ========================================================================
 
