@@ -78,7 +78,10 @@ jobs:
               git checkout ${{ inputs.sofa-commit-sha }}
           fi
 
-          
+
+          ## Clone CI and use ci-depends-on structure
+          # Use jq to explore json graph to see if ci is depends-on
+
           cd $WORKSPACE
           echo "Cloning CI"
           #TODO : clone ci branch with same name as the sofa branch against which the PR is compared OR the branch from which the commit comes
