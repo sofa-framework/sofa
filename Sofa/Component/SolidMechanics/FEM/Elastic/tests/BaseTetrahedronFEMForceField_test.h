@@ -93,10 +93,12 @@ public:
         simpleapi::createObject(m_root, "DefaultAnimationLoop");
         simpleapi::createObject(m_root, "DefaultVisualManagerLoop");
 
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
-        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
-        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
-        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.Topology.Container.Dynamic,
+            Sofa.Component.SolidMechanics.FEM.Elastic,
+            Sofa.Component.Mass
+        });
 
         simpleapi::createObject(m_root, "MechanicalObject", { {"template", dataTypeName}, {"position", "0 0 0  1 0 0  0 1 0  0 0 1"} });
         simpleapi::createObject(m_root, "TetrahedronSetTopologyContainer", { {"tetrahedra","2 3 1 0"} });
@@ -121,17 +123,18 @@ public:
         simpleapi::createObject(m_root, "DefaultAnimationLoop");
         simpleapi::createObject(m_root, "DefaultVisualManagerLoop");
 
-
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
-        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
-        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
-        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
-        sofa::simpleapi::importPlugin(Sofa.Component.LinearSolver.Direct);
-        sofa::simpleapi::importPlugin(Sofa.Component.ODESolver.Backward);
-        sofa::simpleapi::importPlugin(Sofa.Component.Constraint.Lagrangian);
-        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Mapping);
-        sofa::simpleapi::importPlugin(Sofa.Component.Engine.Select);
-        sofa::simpleapi::importPlugin(Sofa.Component.Constraint.Projective);
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.Topology.Container.Dynamic,
+            Sofa.Component.SolidMechanics.FEM.Elastic,
+            Sofa.Component.Mass,
+            Sofa.Component.LinearSolver.Direct,
+            Sofa.Component.ODESolver.Backward,
+            Sofa.Component.Constraint.Lagrangian,
+            Sofa.Component.Topology.Mapping,
+            Sofa.Component.Engine.Select,
+            Sofa.Component.Constraint.Projective
+        });
 
         simpleapi::createObject(m_root, "GenericConstraintSolver", { {"tolerance", "1e-3"}, {"maxIt", "1000"} });
 
@@ -195,7 +198,7 @@ public:
         simpleapi::createObject(m_root, "DefaultAnimationLoop");
         simpleapi::createObject(m_root, "DefaultVisualManagerLoop");
 
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        this->loadPlugins({Sofa.Component.StateContainer});
 
         simpleapi::createObject(m_root, "MechanicalObject", { {"template","Vec3"}, {"position", "0 0 0  1 0 0  0 1 0  0 0 1"} });
         addTetraFEMForceField(m_root, 100, 0.3, "large");
@@ -214,8 +217,10 @@ public:
         simpleapi::createObject(m_root, "DefaultAnimationLoop");
         simpleapi::createObject(m_root, "DefaultVisualManagerLoop");
 
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
-        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.Topology.Container.Dynamic
+        });
 
         simpleapi::createObject(m_root, "MechanicalObject", { {"template","Vec3"} });
         simpleapi::createObject(m_root, "TetrahedronSetTopologyContainer");
@@ -234,9 +239,11 @@ public:
         simpleapi::createObject(m_root, "DefaultAnimationLoop");
         simpleapi::createObject(m_root, "DefaultVisualManagerLoop");
 
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
-        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
-        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.Topology.Container.Dynamic,
+            Sofa.Component.SolidMechanics.FEM.Elastic
+        });
 
         simpleapi::createObject(m_root, "MechanicalObject", { {"template", dataTypeName}, {"position", "0 0 0  1 0 0  0 1 0  0 0 1"} });
         simpleapi::createObject(m_root, "TetrahedronSetTopologyContainer", { {"tetrahedra","2 3 1 0"} });
