@@ -83,19 +83,22 @@ jobs:
              echo "Commit $COMMIT does not exist in the repository."
              exit 1
            fi
-          
+           
+           chmod +x /scripts/github_CI/trigger-build.sh
            ./scripts/github_CI/trigger-build.sh ${{ secrets.GITHUB_TOKEN }} $BRANCH $COMMIT full None False True False True
 
        - name: Run when nightly
          if: github.event.schedule == '0 2 * * *'
          run: |
            echo "This step runs only for nightly build."
+           chmod +x /scripts/github_CI/trigger-build.sh
            ./scripts/github_CI/trigger-build.sh ${{ secrets.GITHUB_TOKEN }} master ${{ github.sha }} standard None False True False True
            
        - name: Check push on master case
          if: ${{ github.event_name == 'push'}}
          run: |
            echo "This step runs only when a commit is pushed on the master branch."
+           chmod +x /scripts/github_CI/trigger-build.sh
            ./scripts/github_CI/trigger-build.sh ${{ secrets.GITHUB_TOKEN }} master ${{ github.sha }} full None True True False False
            
        - name: Run when PR is opened
