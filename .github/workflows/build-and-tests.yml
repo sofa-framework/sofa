@@ -1,0 +1,124 @@
+name: Compile SOFA and run Tests
+on:
+  workflow_call:
+    inputs:
+      owner:
+        type: string
+        required: true
+      branch:
+        type: string
+        required: true
+      commit_hash:
+        type: string
+        required: true
+      preset:
+        type: string
+        required: true
+      python_version:
+        type: string
+        required: true
+      ci-depends-on:
+        type: string
+        required: false
+      with-all-tests:
+        type: boolean
+        required: false
+        default: false
+      force-full-build:
+        type: boolean
+        required: false
+        default: false
+      generate-binaries:
+        type: boolean
+        required: false
+        default: false
+      out-of-tree-build:
+        type: string
+        required: false
+
+jobs:
+  build:
+    runs-on: [sh-ubuntu]
+    steps:
+      - name: Clone SOFA and CI
+        shell: bash
+        run: |
+          WORKSPACE=$(cat $GITHUB_WORKFLOW_SHA) 
+          cd $WORKSPACE
+
+          echo "Cloning SOFA at commit $GITHUB_WORKFLOW_SHA"
+          #TODO (for PR) : clone branch against which the PR is compared then merge the PR 
+
+          if [ -d  $WORKSPACE/src ]; then
+            rm -rf $WORKSPACE/src
+          fi
+          mkdir $WORKSPACE/src && cd $WORKSPACE/src 
+          SRC_DIR=$(pwd)
+
+          git init
+          git remote add origin https://www.github.com/$GITHUB_REPOSITORY_OWNER/sofa.git
+          git fetch origin $GITHUB_WORKFLOW_SHA
+          git checkout FETCH_HEAD
+
+          cd $WORKSPACE
+
+          echo "Cloning CI"
+          #TODO : clone ci branch with same name as the sofa branch against which the PR is compared OR the branch from which the commit comes
+          
+          if [ -d  $WORKSPACE/ci ]; then
+            rm -rf $WORKSPACE/ci
+          fi
+          mkdir $WORKSPACE/ci && cd $WORKSPACE/ci 
+          CI_DIR=$(pwd)
+
+          git init
+          git remote add origin https://www.github.com/sofa-framework/ci.git
+          git fetch origin master
+          git checkout FETCH_HEAD
+
+          cd $WORKSPACE
+
+          #TODO: transform infos to force-full-build
+          if [ -d  $WORKSPACE/build ]; then
+            rm -rf $WORKSPACE/build
+          fi
+          mkdir $WORKSPACE/build
+
+      - name: Notify dashboard
+        shell: bash
+        run: |
+          #TODO
+
+      - name: Build
+        continue-on-error: true
+        shell: bash
+        run: |
+          #TODO
+          #HEre we use docker if possible
+
+      - name: Notify dashboard
+        shell: bash
+        run: |
+          #TODO
+
+      - name: Launch tests
+        continue-on-error: true
+        if: steps.Build.outcome == 'success'
+        shell: bash
+        run: |
+          #TODO
+          #Use new action with workflow call
+
+      - name: Publish artifacts
+        if: steps.Build.outcome == 'success' && inputs.generate-binaries == true
+        shell: bash
+        run: |
+          #TODO
+          #Use new action with workflow call
+      
+      - name: Publish logs
+        if: always()
+        shell: bash
+        run: |
+          #TODO
+          #Use new action with workflow call
