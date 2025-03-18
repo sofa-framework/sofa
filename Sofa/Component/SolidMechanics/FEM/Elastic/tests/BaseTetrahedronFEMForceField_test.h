@@ -198,7 +198,10 @@ public:
         simpleapi::createObject(m_root, "DefaultAnimationLoop");
         simpleapi::createObject(m_root, "DefaultVisualManagerLoop");
 
-        this->loadPlugins({Sofa.Component.StateContainer});
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.SolidMechanics.FEM.Elastic
+        });
 
         simpleapi::createObject(m_root, "MechanicalObject", { {"template","Vec3"}, {"position", "0 0 0  1 0 0  0 1 0  0 0 1"} });
         addTetraFEMForceField(m_root, 100, 0.3, "large");
