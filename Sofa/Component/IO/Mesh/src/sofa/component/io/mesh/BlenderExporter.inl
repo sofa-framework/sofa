@@ -44,12 +44,6 @@ BlenderExporter<T>::BlenderExporter()
 template<class T>
 void BlenderExporter<T>::doInit()
 {
-    doReInit();
-}
-
-template<class T>
-void BlenderExporter<T>::doReInit()
-{
     mmodel = getContext()->template get<DataType>(sofa::core::objectmodel::BaseContext::SearchDirection::Local);
     if(mmodel == nullptr)
         msg_error()<<"Initialization failed!";
@@ -72,6 +66,12 @@ void BlenderExporter<T>::doReInit()
         }
     }
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+}
+
+template<class T>
+void BlenderExporter<T>::doReInit()
+{
+    doInit();
 }
 
 template<class T>
