@@ -23,10 +23,15 @@ on:
         required: true
         default: '3.12'
         type: string
+      preset:
+        description: 'Preset to use from CMakePresets.json file in main repository'
+        required: true
+        default: 'full'
+        type: string
       generate_binaries:
         description: 'Boolean to generate the binaries'
         required: true
-        default: 'true'
+        default: true
         type: boolean
 
   # Nightly build
@@ -136,7 +141,7 @@ jobs:
       - name: Set up python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ PYTHON_VERSION }}
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install pip packages
         run: |
@@ -201,17 +206,17 @@ jobs:
   call-workflow-passing-data:
     uses: bakpaul/sofa/.github/workflows/build-and-test.yml@master
     with:
-      sofa-branch-name: ${{ SOFA_BRANCH_NAME }}
-      sofa-commit-sha: ${{ SOFA_COMMIT_SHA }}
-      preset: ${{ PRESET }}
-      python-version: ${{ PYTHON_VERSION }}
-      ci-depends-on: ${{ CI_DEPENDS_ON }}
-      with-all-tests: ${{ WITH_ALL_TESTS }}
-      force-full-build: ${{ FORCE_FULL_BUILD }}
-      out-of-tree-build: ${{ OUT_OF_TREE_BUILD }}
-      generate-binaries: ${{ GENERATE_BINARIES }}
-      pr-owner-url: ${{ PR_OWNER_URL }}
-      pr-branch-name: ${{ PR_BRANCH_NAME }}
-      pr-commit-sha: ${{ PR_COMMIT_SHA }}
+      sofa-branch-name: ${{ env.SOFA_BRANCH_NAME }}
+      sofa-commit-sha: ${{ env.SOFA_COMMIT_SHA }}
+      preset: ${{ env.PRESET }}
+      python-version: ${{ env.PYTHON_VERSION }}
+      ci-depends-on: ${{ env.CI_DEPENDS_ON }}
+      with-all-tests: ${{ env.WITH_ALL_TESTS }}
+      force-full-build: ${{ env.FORCE_FULL_BUILD }}
+      out-of-tree-build: ${{ env.OUT_OF_TREE_BUILD }}
+      generate-binaries: ${{ env.GENERATE_BINARIES }}
+      pr-owner-url: ${{ env.PR_OWNER_URL }}
+      pr-branch-name: ${{ env.PR_BRANCH_NAME }}
+      pr-commit-sha: ${{ env.PR_COMMIT_SHA }}
     secrets:
       personal_access_token: ${{ secrets.GITHUB_TOKEN }}
