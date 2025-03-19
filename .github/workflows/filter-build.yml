@@ -201,8 +201,8 @@ jobs:
   call-workflow-passing-data:
     uses: sofa-framework/sofa/.github/workflows/build-and-test.yml@master
     with:
-      branch-name: ${{ SOFA_BRANCH_NAME }}
-      commit-sha: ${{ SOFA_COMMIT_SHA }}
+      sofa-branch-name: ${{ SOFA_BRANCH_NAME }}
+      sofa-commit-sha: ${{ SOFA_COMMIT_SHA }}
       preset: ${{ PRESET }}
       python-version: ${{ PYTHON_VERSION }}
       ci-depends-on: ${{ CI_DEPENDS_ON }}
