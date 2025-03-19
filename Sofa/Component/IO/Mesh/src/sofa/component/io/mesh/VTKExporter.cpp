@@ -65,11 +65,6 @@ VTKExporter::~VTKExporter(){}
 
 void VTKExporter::doInit() 
 { 
-    doReInit(); 
-}
-
-void VTKExporter::doReInit()
-{
     const sofa::core::objectmodel::BaseContext* context = this->getContext();
     context->get(m_topology);
     context->get(m_mstate);
@@ -107,6 +102,11 @@ void VTKExporter::doReInit()
         this->f_listening.setValue(true);
 
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid) ;
+}
+
+void VTKExporter::doReInit()
+{
+    doInit();
 }
 
 void VTKExporter::fetchDataFields(const type::vector<std::string>& strData, type::vector<std::string>& objects, type::vector<std::string>& fields, type::vector<std::string>& names)
