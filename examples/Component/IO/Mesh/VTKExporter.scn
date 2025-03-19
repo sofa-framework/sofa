@@ -9,7 +9,7 @@
     <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
     <MechanicalObject src="@loader" template="Vec3" name="mecha" showObject="1" />
     <TetrahedronSetTopologyContainer src="@loader" name="topo" />
-    <VTKExporter 
+    <VTKExporter name="Exporter"
         filename="example.vtk" 
         listening="true" 
         edges="0" 
