@@ -34,6 +34,7 @@ set(HEADER_FILES
     ### Mechanical
     ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.h
     ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.inl
+    sofa/gpu/cuda/CudaSingleStateAccessor.h
 
     ### Mappings
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.h
