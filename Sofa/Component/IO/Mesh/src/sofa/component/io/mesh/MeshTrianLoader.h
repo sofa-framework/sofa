@@ -21,10 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/io/mesh/config.h>
-
 #include <sofa/core/loader/MeshLoader.h>
-
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::io::mesh
 {
@@ -54,19 +51,6 @@ protected:
     bool readTrian2(const char* filename);
 
 public:
-    //Add specific Data here:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData <bool> p_trian2;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData <type::vector< type::fixed_array <int,3> > > neighborTable;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData <type::vector< type::vector<unsigned int> > > edgesOnBorder;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData <type::vector<unsigned int> > trianglesOnBorderList;
-
     Data <bool> d_trian2; ///< Set to true if the mesh is a trian2 format.
     Data <type::vector< type::fixed_array <int,3> > > d_neighborTable; ///< Table of neighborhood triangle indices for each triangle.
     Data <type::vector< type::vector<unsigned int> > > d_edgesOnBorder; ///< List of edges which are on the border of the mesh loaded.

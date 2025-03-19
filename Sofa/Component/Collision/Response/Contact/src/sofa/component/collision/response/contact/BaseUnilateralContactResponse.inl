@@ -53,9 +53,6 @@ BaseUnilateralContactResponse<TCollisionModel1, TCollisionModel2, ConstraintPara
     if (!selfCollision) mapper2.setCollisionModel(model2);
     contacts.clear();
     mappedContacts.clear();
-
-    tol.setOriginalData(&d_tol);
-
 }
 
 template <class TCollisionModel1, class TCollisionModel2, class ConstraintParameters, class ResponseDataTypes >

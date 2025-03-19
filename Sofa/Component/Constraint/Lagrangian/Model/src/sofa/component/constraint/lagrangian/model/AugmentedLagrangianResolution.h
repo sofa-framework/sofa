@@ -36,7 +36,10 @@ namespace sofa::component::constraint::lagrangian::model
 class AugmentedLagrangianResolution : public core::behavior::ConstraintResolution
 {
    public:
-    AugmentedLagrangianResolution(SReal epsilon) : core::behavior::ConstraintResolution(1), m_epsilon(epsilon) {}
+    AugmentedLagrangianResolution(SReal epsilon) : core::behavior::ConstraintResolution(1), m_epsilon(epsilon)
+    {
+        SOFA_UNUSED(m_epsilon);
+    }
 
     void resolution(int line, SReal** w, SReal* d, SReal* force, SReal* dfree) override
     {

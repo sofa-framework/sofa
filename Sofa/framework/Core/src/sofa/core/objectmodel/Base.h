@@ -176,8 +176,8 @@ public:
     virtual void parseFields ( const std::map<std::string,std::string*>& str );
 
     /// Write the current field values to the given map of name -> value pairs
-    SOFA_ATTRIBUTE_DEPRECATED__BASEWRITEDATAS()
-    void writeDatas (std::map<std::string,std::string*>& str);
+    SOFA_ATTRIBUTE_DISABLED__BASEWRITEDATAS()
+    void writeDatas (std::map<std::string,std::string*>& str) = delete;
 
     /// Write the current field values to the given output stream
     /// separated with the given separator (" " used by default for XML)

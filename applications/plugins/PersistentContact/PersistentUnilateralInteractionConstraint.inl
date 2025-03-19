@@ -150,8 +150,8 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::addContact(double mu,
 
     typename Inherited::Contact& c = this->contacts[lastContactIndex];
 
-    c.P					= this->getMState2()->read(core::ConstVecCoordId::position())->getValue()[m2];
-    c.Q					= this->getMState1()->read(core::ConstVecCoordId::position())->getValue()[m1];
+    c.P					= this->getMState2()->read(core::vec_id::read_access::position)->getValue()[m2];
+    c.Q					= this->getMState1()->read(core::vec_id::read_access::position)->getValue()[m1];
     c.m1				= m1;
     c.m2				= m2;
     c.norm				= norm;
@@ -169,8 +169,8 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::addContact(double mu,
 template<class DataTypes>
 void PersistentUnilateralInteractionConstraint<DataTypes>::getPositionViolation(linearalgebra::BaseVector *v)
 {
-    const VecCoord &PfreeVec = this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue();
-    const VecCoord &QfreeVec = this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue();
+    const VecCoord &PfreeVec = this->getMState2()->read(core::vec_id::read_access::freePosition)->getValue();
+    const VecCoord &QfreeVec = this->getMState1()->read(core::vec_id::read_access::freePosition)->getValue();
 
     Real dfree		= (Real)0.0;
     Real dfree_t	= (Real)0.0;
@@ -250,8 +250,8 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::getPositionViolation(
 template<class DataTypes>
 void PersistentUnilateralInteractionConstraint<DataTypes>::getVelocityViolation(linearalgebra::BaseVector *v)
 {
-    const VecDeriv &PvfreeVec = this->getMState2()->read(core::ConstVecDerivId::freeVelocity())->getValue();
-    const VecDeriv &QvfreeVec = this->getMState1()->read(core::ConstVecDerivId::freeVelocity())->getValue();
+    const VecDeriv &PvfreeVec = this->getMState2()->read(core::vec_id::read_access::freeVelocity)->getValue();
+    const VecDeriv &QvfreeVec = this->getMState1()->read(core::vec_id::read_access::freeVelocity)->getValue();
 
     const unsigned int cSize = this->contacts.size();
 

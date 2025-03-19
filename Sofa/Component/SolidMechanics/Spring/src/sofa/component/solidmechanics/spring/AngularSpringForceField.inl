@@ -40,12 +40,6 @@ AngularSpringForceField<DataTypes>::AngularSpringForceField()
     , d_drawSpring(initData(&d_drawSpring, false, "drawSpring", "draw Spring"))
     , d_springColor(initData(&d_springColor, type::RGBAColor::green(), "springColor", "spring color"))
 {
-    indices.setOriginalData(&d_indices);
-    angularStiffness.setOriginalData(&d_angularStiffness);
-    angularLimit.setOriginalData(&d_angularLimit);
-    drawSpring.setOriginalData(&d_drawSpring);
-    springColor.setOriginalData(&d_springColor);
-
 }
 
 

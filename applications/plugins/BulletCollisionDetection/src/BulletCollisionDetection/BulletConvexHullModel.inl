@@ -113,8 +113,8 @@ void TBulletConvexHullModel<DataTypes>::initBullet(){
         }
     }
 
-    const Quaternion & ori = _mstate->read(core::ConstVecCoordId::position())->getValue()[0].getOrientation();
-    const Coord & center = _mstate->read(core::ConstVecCoordId::position())->getValue()[0].getCenter();
+    const Quaternion & ori = _mstate->read(core::vec_id::read_access::position)->getValue()[0].getOrientation();
+    const Coord & center = _mstate->read(core::vec_id::read_access::position)->getValue()[0].getCenter();
 
     _bt_trans.setRotation(btQuaternion(ori[0],ori[1],ori[2],ori[3]));
     _bt_trans.setOrigin(btVector3(center[0],center[1],center[2]));
@@ -276,8 +276,8 @@ void TBulletConvexHullModel<DataTypes>::initBullet(){
 
 template <class DataTypes>
 void TBulletConvexHullModel<DataTypes>::updateBullet(){
-    const Quaternion & ori = _mstate->read(core::ConstVecCoordId::position())->getValue()[0].getOrientation();
-    const Coord & center = _mstate->read(core::ConstVecCoordId::position())->getValue()[0].getCenter();
+    const Quaternion & ori = _mstate->read(core::vec_id::read_access::position)->getValue()[0].getOrientation();
+    const Coord & center = _mstate->read(core::vec_id::read_access::position)->getValue()[0].getCenter();
 
     _bt_trans.setIdentity();
     _bt_trans.setOrigin(btVector3(center[0],center[1],center[2]));
@@ -349,8 +349,8 @@ void TBulletConvexHullModel<DataTypes>::draw(const core::visual::VisualParams* v
     if(!bmsh)
         return;
 
-    const Quaternion & ori = _mstate->read(core::ConstVecCoordId::position())->getValue()[0].getOrientation();
-    const Coord & center = _mstate->read(core::ConstVecCoordId::position())->getValue()[0].getCenter();
+    const Quaternion & ori = _mstate->read(core::vec_id::read_access::position)->getValue()[0].getOrientation();
+    const Coord & center = _mstate->read(core::vec_id::read_access::position)->getValue()[0].getCenter();
 
     type::Matrix3 sofa_mat;
     ori.toMatrix(sofa_mat);

@@ -35,8 +35,6 @@
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <set>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::constraint::projective
 {
 
@@ -83,19 +81,6 @@ protected:
     virtual ~LineProjectiveConstraint();
 
 public:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData< sofa::type::vector< sofa::Index > > f_indices;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<SReal> f_drawSize;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<CPos> f_origin;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<CPos> f_direction;
-
     IndexSubsetData d_indices;  ///< the particles to project
     Data<SReal> d_drawSize; ///< Size of the rendered particles (0 -> point based rendering, >0 -> radius of spheres)
     Data<CPos> d_origin; ///< A point in the line
@@ -107,7 +92,6 @@ public:
 protected:
     std::unique_ptr<LineProjectiveConstraintInternalData<DataTypes>> data { nullptr };
     friend class LineProjectiveConstraintInternalData<DataTypes>;
-
 
 public:
     void clearConstraints();

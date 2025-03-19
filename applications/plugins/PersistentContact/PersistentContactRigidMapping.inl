@@ -56,7 +56,7 @@ void PersistentContactRigidMapping<TIn, TOut>::beginAddContactPoint()
     {
         if (this->f_printLog.getValue())
         {
-            std::cout << "BeginAddContactPoint : pos = " << this->toModel->read(core::ConstVecCoordId::position())->getValue() << " before suppr the contact" << std::endl;
+            std::cout << "BeginAddContactPoint : pos = " << this->toModel->read(core::vec_id::read_access::position)->getValue() << " before suppr the contact" << std::endl;
         }
 
         m_previousPoints = this->points.getValue();
@@ -77,7 +77,7 @@ int PersistentContactRigidMapping<TIn, TOut>::addContactPointFromInputMapping(co
         std::cout << "addContactPointFromInputMapping  Pos Ref = " << pos <<std::endl;
     }
 
-    const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+    const typename In::VecCoord& xfrom = this->fromModel->read(core::vec_id::read_access::position)->getValue();
 
     Coord posContact;
     for (unsigned int i = 0; i < 3; i++)
@@ -184,8 +184,8 @@ void PersistentContactRigidMapping<TIn, TOut>::reset()
 template <class TIn, class TOut>
 void PersistentContactRigidMapping<TIn, TOut>::setDefaultValues()
 {
-    m_previousPosition = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
-    m_previousFreePosition = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+    m_previousPosition = this->fromModel->read(core::vec_id::read_access::position)->getValue();
+    m_previousFreePosition = this->fromModel->read(core::vec_id::read_access::position)->getValue();
     m_previousDx.resize(m_previousFreePosition.size());
 }
 
@@ -204,8 +204,8 @@ void PersistentContactRigidMapping<TIn, TOut>::handleEvent(sofa::core::objectmod
 template <class TIn, class TOut>
 void PersistentContactRigidMapping<TIn, TOut>::storeFreePositionAndDx()
 {
-    m_previousFreePosition = this->fromModel->read(core::ConstVecCoordId::freePosition())->getValue();
-    m_previousDx = this->fromModel->read(core::ConstVecDerivId::dx())->getValue();
+    m_previousFreePosition = this->fromModel->read(core::vec_id::read_access::freePosition)->getValue();
+    m_previousDx = this->fromModel->read(core::vec_id::read_access::dx)->getValue();
 
     if (this->f_printLog.getValue())
     {
@@ -240,7 +240,7 @@ void PersistentContactRigidMapping<TIn, TOut>::applyLinearizedPosition()
 
     this->applyJ(0, newDx, prevDx);
 
-    Data< VecCoord >* newPos_d = this->toModel->write(core::VecCoordId::position());
+    Data< VecCoord >* newPos_d = this->toModel->write(core::vec_id::read_access::position);
     VecCoord &newPos = *newPos_d->beginEdit();
 
     newPos = newXFree.getValue();
@@ -258,9 +258,9 @@ template <class TIn, class TOut>
 void PersistentContactRigidMapping<TIn, TOut>::applyPositionAndFreePosition()
 {
     applyLinearizedPosition();
-    core::Mapping<TIn, TOut>::apply(0, sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
-    core::Mapping<TIn, TOut>::applyJ(0, sofa::core::VecDerivId::velocity(), sofa::core::ConstVecDerivId::velocity());
-    core::Mapping<TIn, TOut>::applyJ(0, sofa::core::VecDerivId::freeVelocity(), sofa::core::ConstVecDerivId::freeVelocity());
+    core::Mapping<TIn, TOut>::apply(0, sofa::core::vec_id::write_access::freePosition, sofa::core::vec_id::read_access::freePosition);
+    core::Mapping<TIn, TOut>::applyJ(0, sofa::core::vec_id::write_access::velocity, sofa::core::vec_id::read_access::velocity);
+    core::Mapping<TIn, TOut>::applyJ(0, sofa::core::vec_id::write_access::freeVelocity, sofa::core::vec_id::read_access::freeVelocity);
 }
 
 

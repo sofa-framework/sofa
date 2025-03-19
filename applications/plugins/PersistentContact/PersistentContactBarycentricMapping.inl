@@ -400,7 +400,7 @@ int PersistentContactBarycentricMapping<TIn, TOut>::addContactPointFromInputMapp
 {
     if (m_persistentMapper)
     {
-        const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+        const InVecCoord& xfrom = this->fromModel->read(core::vec_id::read_access::position)->getValue();
 
         int index = m_persistentMapper->addContactPointFromInputMapping(xfrom, pos, baryCoords);
         this->toModel->resize(index+1);
@@ -519,10 +519,10 @@ void PersistentContactBarycentricMapping<TIn, TOut>::createPersistentMapperFromT
 template <class TIn, class TOut>
 void PersistentContactBarycentricMapping<TIn, TOut>::applyPositionAndFreePosition()
 {
-    core::Mapping<TIn, TOut>::apply(0, sofa::core::VecCoordId::position(), sofa::core::ConstVecCoordId::position());
-    core::Mapping<TIn, TOut>::applyJ(0, sofa::core::VecDerivId::velocity(), sofa::core::ConstVecDerivId::velocity());
-    core::Mapping<TIn, TOut>::apply(0, sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
-    core::Mapping<TIn, TOut>::applyJ(0, sofa::core::VecDerivId::freeVelocity(), sofa::core::ConstVecDerivId::freeVelocity());
+    core::Mapping<TIn, TOut>::apply(0, sofa::core::vec_id::write_access::position, sofa::core::vec_id::read_access::position);
+    core::Mapping<TIn, TOut>::applyJ(0, sofa::core::vec_id::write_access::velocity, sofa::core::vec_id::read_access::velocity);
+    core::Mapping<TIn, TOut>::apply(0, sofa::core::vec_id::write_access::freePosition, sofa::core::vec_id::read_access::freePosition);
+    core::Mapping<TIn, TOut>::applyJ(0, sofa::core::vec_id::write_access::freeVelocity, sofa::core::vec_id::read_access::freeVelocity);
 }
 
 

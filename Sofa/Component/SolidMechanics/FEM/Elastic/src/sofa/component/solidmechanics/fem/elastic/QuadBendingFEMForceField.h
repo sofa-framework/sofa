@@ -36,8 +36,6 @@
 #include <map>
 #include <sofa/helper/map.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
@@ -169,14 +167,6 @@ public:
         }
     };
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData <sofa::type::vector<QuadInformation> > quadInfo;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData <sofa::type::vector<VertexInformation> > vertexInfo;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData <sofa::type::vector<EdgeInformation> > edgeInfo;
     /// Topology Data
     core::topology::QuadData<sofa::type::vector<QuadInformation> > d_quadInfo;
     core::topology::PointData<sofa::type::vector<VertexInformation> > d_vertexInfo; ///< Internal point data
@@ -231,18 +221,6 @@ public:
 
     /// Forcefield intern parameters
     int method;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::string> f_method;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<Real>> f_poisson;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<Real>> f_young;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_thickness;
 
     Data<std::string> d_method; ///< large: large displacements, small: small displacements
     Data<type::vector<Real> > d_poisson; ///< Poisson ratio in Hooke's law (vector)

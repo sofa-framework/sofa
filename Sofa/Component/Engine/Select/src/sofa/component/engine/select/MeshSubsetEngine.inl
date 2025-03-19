@@ -55,16 +55,6 @@ MeshSubsetEngine<DataTypes>::MeshSubsetEngine()
     addOutput(&d_quads);
     addOutput(&d_tetrahedra);
     addOutput(&d_hexahedra);
-
-    inputPosition.setOriginalData(&d_inputPosition);
-    inputEdges.setOriginalData(&d_inputEdges);
-    inputTriangles.setOriginalData(&d_inputTriangles);
-    inputQuads.setOriginalData(&d_inputQuads);
-    indices.setOriginalData(&d_indices);
-    position.setOriginalData(&d_position);
-    edges.setOriginalData(&d_edges);
-    triangles.setOriginalData(&d_triangles);
-    quads.setOriginalData(&d_quads);
 }
 
 template <class DataTypes>

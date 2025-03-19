@@ -173,7 +173,7 @@ struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public Ba
         do
         {
             // Record the planet position
-            Coord p0=dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[1];
+            Coord p0=dofs.get()->read(sofa::core::vec_id::read_access::position)->getValue()[1];
 
             // Compute angle
             angle = atan2(p0[1],p0[0]);

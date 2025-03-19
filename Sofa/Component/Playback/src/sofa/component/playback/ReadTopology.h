@@ -34,8 +34,6 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <fstream>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::playback
 {
 
@@ -45,18 +43,6 @@ class SOFA_COMPONENT_PLAYBACK_API ReadTopology: public core::objectmodel::BaseOb
 {
 public:
     SOFA_CLASS(ReadTopology,core::objectmodel::BaseObject);
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::DataFileName f_filename;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::lifecycle::RenamedData < double > f_interval;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::lifecycle::RenamedData < double > f_shift;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::lifecycle::RenamedData < bool > f_loop;
 
     sofa::core::objectmodel::DataFileName d_filename;
     Data < double > d_interval; ///< time duration between inputs

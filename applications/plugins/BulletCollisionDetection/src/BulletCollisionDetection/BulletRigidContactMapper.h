@@ -90,7 +90,7 @@ public:
         }
         else
         {
-            helper::WriteAccessor<Data<VecCoord> > xData = *outmodel->write(core::VecCoordId::position());
+            helper::WriteAccessor<Data<VecCoord> > xData = *outmodel->write(core::vec_id::write_access::position);
             xData.wref()[i] = P;
         }
         return i;
@@ -101,8 +101,8 @@ public:
         if (mapping!=NULL)
         {
             core::BaseMapping* map = mapping.get();
-            map->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-            map->applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+            map->apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::position, core::vec_id::read_access::position);
+            map->applyJ(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::velocity, core::vec_id::read_access::velocity);
         }
     }
 
@@ -111,7 +111,7 @@ public:
         if (mapping!=NULL)
         {
             core::BaseMapping* map = mapping.get();
-            map->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
+            map->apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::freePosition, core::vec_id::read_access::freePosition);
         }
     }
 };

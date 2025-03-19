@@ -365,7 +365,7 @@ namespace sofa
 					{
 						sout << "Enabling tool transition spring" << sendl;
 
-						sofa::helper::ReadAccessor<Data<sofa::type::vector<sofa::defaulttype::RigidCoord<3,double> > > > x = *this->mState->read(sofa::core::VecCoordId::position());
+						sofa::helper::ReadAccessor<Data<sofa::type::vector<sofa::defaulttype::RigidCoord<3,double> > > > x = *this->mState->read(sofa::core::vec_id::read_access::position);
 						Transform world_H_new_virtualTool(x[newToolIndex].getCenter(), x[newToolIndex].getOrientation());
 						Transform baseDevice_H_endDevice2 = data.world_H_baseDevice.inversed() * world_H_new_virtualTool * data.endDevice_H_virtualTool.inversed();
 						transitionEffect.reset(
@@ -415,8 +415,8 @@ namespace sofa
 					sofa::helper::AdvancedTimer::stepBegin("SetState");
 					/// TODO : SHOULD INCLUDE VELOCITY !!
 
-					sofa::helper::WriteAccessor<Data<sofa::type::vector<sofa::defaulttype::RigidCoord<3,double> > > > x = *this->mState->write(sofa::core::VecCoordId::position());
-					sofa::helper::WriteAccessor<Data<sofa::type::vector<sofa::defaulttype::RigidCoord<3,double> > > > xfree = *this->mState->write(sofa::core::VecCoordId::freePosition());
+					sofa::helper::WriteAccessor<Data<sofa::type::vector<sofa::defaulttype::RigidCoord<3,double> > > > x = *this->mState->write(sofa::core::vec_id::write_access::position);
+					sofa::helper::WriteAccessor<Data<sofa::type::vector<sofa::defaulttype::RigidCoord<3,double> > > > xfree = *this->mState->write(sofa::core::vec_id::write_access::freePosition);
 
 					xfree[currentToolIndex].getCenter() = world_H_virtualTool.getOrigin();
 					x[currentToolIndex].getCenter() = world_H_virtualTool.getOrigin();

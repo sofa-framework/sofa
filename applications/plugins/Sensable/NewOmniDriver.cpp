@@ -648,7 +648,7 @@ void NewOmniDriver::bwdInit()
         }
         else
         {
-          sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > xfree = *DOFs->write(this->setRestShape.getValue() ? sofa::core::VecCoordId::restPosition() : sofa::core::VecCoordId::freePosition());
+          sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > xfree = *DOFs->write(this->setRestShape.getValue() ? sofa::core::vec_id::write_access::restPosition : sofa::core::vec_id::write_access::freePosition);
           if (xfree.size() == 0)
             xfree.resize(1);
           autreOmniDriver[this->deviceIndex.getValue()]->DOFs = DOFs;
@@ -990,8 +990,8 @@ void NewOmniDriver::onAnimateBeginEvent()
 
         if(DOFs!=NULL)
         {
-            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > x = *DOFs->write(this->setRestShape.getValue() ? sofa::core::VecCoordId::restPosition() : sofa::core::VecCoordId::position());
-            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > xfree = *DOFs->write(this->setRestShape.getValue() ? sofa::core::VecCoordId::restPosition() : sofa::core::VecCoordId::freePosition());
+            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > x = *DOFs->write(this->setRestShape.getValue() ? sofa::core::vec_id::write_access::restPosition : sofa::core::vec_id::write_access::position);
+            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > xfree = *DOFs->write(this->setRestShape.getValue() ? sofa::core::vec_id::write_access::restPosition : sofa::core::vec_id::write_access::freePosition);
             unsigned int index = 0;
 
             x    [index].getCenter()=world_H_virtualTool.getOrigin();

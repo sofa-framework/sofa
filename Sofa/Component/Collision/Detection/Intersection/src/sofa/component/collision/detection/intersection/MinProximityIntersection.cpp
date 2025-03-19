@@ -53,11 +53,6 @@ MinProximityIntersection::MinProximityIntersection()
     , d_useLinePoint(initData(&d_useLinePoint, true, "useLinePoint", "activate Line-Point intersection tests"))
     , d_useLineLine(initData(&d_useLineLine, true, "useLineLine", "activate Line-Line  intersection tests"))
 {
-    useSphereTriangle.setOriginalData(&d_useSphereTriangle);
-    usePointPoint.setOriginalData(&d_usePointPoint);
-    useLinePoint.setOriginalData(&d_useLinePoint);
-    useLineLine.setOriginalData(&d_useLineLine);
-    useSurfaceNormals.setOriginalData(&d_useSurfaceNormals);
 }
 
 void MinProximityIntersection::init()

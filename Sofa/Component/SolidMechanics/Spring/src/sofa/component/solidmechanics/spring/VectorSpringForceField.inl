@@ -132,12 +132,6 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
     , l_topology(initLink("topology", "link to the topology container"))    
     , m_topology(nullptr)
 {
-    springArray.setOriginalData(&d_springArray);
-    m_filename.setParent(&d_filename);
-    m_stiffness.setOriginalData(&d_stiffness);
-    m_viscosity.setOriginalData(&d_viscosity);
-    m_useTopology.setOriginalData(&d_useTopology);
-
 }
 
 template<class DataTypes>

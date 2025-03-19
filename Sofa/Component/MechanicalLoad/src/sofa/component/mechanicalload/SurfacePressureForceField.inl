@@ -56,20 +56,6 @@ SurfacePressureForceField<DataTypes>::SurfacePressureForceField()
     , state(INCREASE)
     , m_topology(nullptr)
 {
-    m_pressure.setOriginalData(&d_pressure);
-    m_min.setOriginalData(&d_min);
-    m_max.setOriginalData(&d_max);
-    m_triangleIndices.setOriginalData(&d_triangleIndices);
-    m_quadIndices.setOriginalData(&d_quadIndices);
-    m_pulseMode.setOriginalData(&d_pulseMode);
-    m_pressureLowerBound.setOriginalData(&d_pressureLowerBound);
-    m_pressureSpeed.setOriginalData(&d_pressureSpeed);
-    m_volumeConservationMode.setOriginalData(&d_volumeConservationMode);
-    m_useTangentStiffness.setOriginalData(&d_useTangentStiffness);
-    m_defaultVolume.setOriginalData(&d_defaultVolume);
-    m_mainDirection.setOriginalData(&d_mainDirection);
-    m_drawForceScale.setOriginalData(&d_drawForceScale);
-
 }
 
 

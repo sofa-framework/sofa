@@ -24,8 +24,6 @@
 
 #include <sofa/component/topology/container/constant/MeshTopology.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::topology::container::constant
 {
 
@@ -94,28 +92,6 @@ public:
     void setSplitNormals(bool b) {d_splitNormals.setValue(b);}
 
 protected:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::lifecycle::RenamedData<int> nx;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::lifecycle::RenamedData<int> ny;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::lifecycle::RenamedData<int> nz;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> internalPoints;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> splitNormals;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::lifecycle::RenamedData<Vec3> min;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::lifecycle::RenamedData<Vec3> max;
-
-
     Data<int> d_nx; ///< x grid resolution
     Data<int> d_ny; ///< y grid resolution
     Data<int> d_nz; ///< z grid resolution

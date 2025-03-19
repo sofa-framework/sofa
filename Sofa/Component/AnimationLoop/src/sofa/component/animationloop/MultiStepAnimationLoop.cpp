@@ -53,8 +53,6 @@ MultiStepAnimationLoop::MultiStepAnimationLoop() :
       d_collisionSteps( initData(&d_collisionSteps,1,"collisionSteps", "number of collision steps between each frame rendering") )
     , d_integrationSteps( initData(&d_integrationSteps,1,"integrationSteps", "number of integration steps between each collision detection") )
 {
-    collisionSteps.setOriginalData(&d_collisionSteps);
-    integrationSteps.setOriginalData(&d_integrationSteps);
 }
 
 MultiStepAnimationLoop::~MultiStepAnimationLoop()

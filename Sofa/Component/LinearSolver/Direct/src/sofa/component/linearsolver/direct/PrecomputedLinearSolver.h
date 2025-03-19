@@ -32,8 +32,6 @@
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <fstream>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::linearsolver::direct
 {
 
@@ -81,13 +79,6 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef typename TMatrix::Real Real;
     typedef typename PrecomputedLinearSolverInternalData<TMatrix,TVector>::TBaseMatrix TBaseMatrix;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> jmjt_twostep;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_DIRECT()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> use_file;
-
 
     Data<bool> d_jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
     Data<bool> d_use_file; ///< Dump system matrix in a file

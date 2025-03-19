@@ -173,11 +173,6 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
 
     }, {}
     );
-
-    compliance.setOriginalData(&d_compliance);
-    defaultCompliance.setOriginalData(&d_defaultCompliance);
-    f_verbose.setOriginalData(&d_verbose);
-
 }
 
 template<class DataTypes>

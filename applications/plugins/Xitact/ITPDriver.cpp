@@ -280,7 +280,7 @@ void ITPDriver::handleEvent(core::objectmodel::Event *event)
 
             if(_mstate->getSize()>5)
             {
-                Data<Vec1dTypes::VecCoord >* dataTrocar = _mstate->write(sofa::core::VecCoordId::restPosition());
+                Data<Vec1dTypes::VecCoord >* dataTrocar = _mstate->write(sofa::core::vec_id::write_access::restPosition);
                 helper::WriteAccessor< Data< Vec1dTypes::VecCoord > > vecXTrocar = dataTrocar;
 
                 vecXTrocar[0].x() = thetaX;

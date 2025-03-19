@@ -42,11 +42,6 @@ FixedTranslationProjectiveConstraint<DataTypes>::FixedTranslationProjectiveConst
     // default to indice 0
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
-
-    f_indices.setOriginalData(&d_indices);
-    f_fixAll.setOriginalData(&d_fixAll);
-    _drawSize.setOriginalData(&d_drawSize);
-    f_coordinates.setOriginalData(&d_coordinates);
 }
 
 

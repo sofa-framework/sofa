@@ -518,8 +518,8 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 
                 /// TODO : SHOULD INCLUDE VELOCITY !!
 
-                helper::WriteAccessor<Data<type::vector<RigidCoord<3,double> > > > x = *this->mState->write(core::VecCoordId::position());
-                helper::WriteAccessor<Data<type::vector<RigidCoord<3,double> > > > xfree = *this->mState->write(core::VecCoordId::freePosition());
+                helper::WriteAccessor<Data<type::vector<RigidCoord<3,double> > > > x = *this->mState->write(core::vec_id::write_access::position);
+                helper::WriteAccessor<Data<type::vector<RigidCoord<3,double> > > > xfree = *this->mState->write(core::vec_id::write_access::freePosition);
                 sofa::helper::AdvancedTimer::stepEnd("OmniDriver::3");
 
                 sofa::helper::AdvancedTimer::stepBegin("OmniDriver::4");

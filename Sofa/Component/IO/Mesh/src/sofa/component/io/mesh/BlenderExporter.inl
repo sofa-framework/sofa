@@ -40,13 +40,6 @@ BlenderExporter<T>::BlenderExporter()
       frameCounter(0)
 {
     Inherit::f_listening.setValue(true);
-
-    path.setOriginalData(&d_path);
-    baseName.setOriginalData(&d_baseName);
-    simulationType.setOriginalData(&d_simulationType);
-    simulationStep.setOriginalData(&d_simulationStep);
-    nbPtsByHair.setOriginalData(&d_nbPtsByHair);
-
 }
 
 template<class T>

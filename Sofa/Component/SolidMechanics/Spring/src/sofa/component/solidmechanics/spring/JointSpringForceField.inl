@@ -54,10 +54,6 @@ JointSpringForceField<DataTypes>::JointSpringForceField(MechanicalState* object1
     , d_showExtraTorsion(initData(&d_showExtraTorsion, false, "showExtraTorsion", "display the illicit part of the joint rotation"))
     , d_showFactorSize(initData(&d_showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
 {
-    f_outfilename.setParent(&d_outfilename);
-    f_infilename.setParent(&d_infilename);
-    f_period.setOriginalData(&d_period);
-    f_reinit.setOriginalData(&d_reinit);
 }
 
 template<class DataTypes>

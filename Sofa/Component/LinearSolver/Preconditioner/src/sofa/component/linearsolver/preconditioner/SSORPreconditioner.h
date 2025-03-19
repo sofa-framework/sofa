@@ -30,8 +30,6 @@
 
 #include <cmath>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::linearsolver::preconditioner
 {
 
@@ -52,9 +50,6 @@ public:
     typedef TThreadManager ThreadManager;
     typedef SReal Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager> Inherit;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
-    sofa::core::objectmodel::lifecycle::RenamedData<double> f_omega;
 
     Data<double> d_omega; ///< Omega coefficient
 protected:

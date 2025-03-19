@@ -29,8 +29,6 @@
 
 #include <sofa/core/BaseMapping.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::topology::mapping
 {
 
@@ -76,13 +74,7 @@ public:
     Index getFromIndex(Index ind) override;
 
 protected:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> flipNormals;
-
-
     Data<bool> d_flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)
-
 };
 
 } //namespace sofa::component::topology::mapping

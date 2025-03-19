@@ -27,8 +27,6 @@
 #include <sofa/type/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::setting
 {
 
@@ -50,19 +48,6 @@ protected:
      */
     ViewerSetting();
 public:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::Vec<2,int> > resolution;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> fullscreen;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::helper::OptionsGroup> cameraMode;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SETTING()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::helper::OptionsGroup> objectPickingMethod;
-
     Data<sofa::type::Vec<2,int> > d_resolution; ///< resolution of the Viewer
     Data<bool> d_fullscreen; ///< Fullscreen mode
     Data<sofa::helper::OptionsGroup> d_cameraMode; ///< Camera mode

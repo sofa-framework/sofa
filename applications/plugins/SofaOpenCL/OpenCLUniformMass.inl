@@ -179,7 +179,7 @@ void UniformMass<gpu::opencl::OpenCLRigid3fTypes, sofa::defaulttype::Rigid3fMass
 {
     if (!vparams->displayFlags().getShowBehaviorModels())return;
     //	if (!getContext()->getShowBehaviorModels())return;
-    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = mstate->read(core::vec_id::read_access::position)->getValue();
     type::Vec3d len;
 
     // The moment of inertia of a box is:
@@ -344,7 +344,7 @@ void UniformMass<gpu::opencl::OpenCLRigid3dTypes, sofa::defaulttype::Rigid3Mass>
 {
     if(!vparams->displayFlags().getShowBehaviorModels())return;
 //	if (!getContext()->getShowBehaviorModels())return;
-    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = mstate->read(core::vec_id::read_access::position)->getValue();
     type::Vec3d len;
 
     // The moment of inertia of a box is:

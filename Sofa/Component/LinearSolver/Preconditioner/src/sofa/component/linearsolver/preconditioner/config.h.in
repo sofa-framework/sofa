@@ -38,11 +38,3 @@ namespace sofa::component::linearsolver::preconditioner
 } // namespace sofa::component::linearsolver::preconditioner
 
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v24.12", "v25.06", \
-        "Data renamed according to the guidelines")
-#endif

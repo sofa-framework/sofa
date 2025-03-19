@@ -186,13 +186,13 @@ public:
     /// @{
 
     /// Considered as compliance, else considered as stiffness (default to false)
-    SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT()
-    objectmodel::lifecycle::DeprecatedData isCompliance;
+    SOFA_ATTRIBUTE_DISABLED__COMPLIANT()
+    objectmodel::lifecycle::RemovedData isCompliance;
 
     /// Return a pointer to the compliance matrix C
     /// \f$ C = K^{-1} \f$
-    SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT()
-    virtual const sofa::linearalgebra::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return nullptr; }
+    SOFA_ATTRIBUTE_DISABLED__COMPLIANT()
+    virtual const sofa::linearalgebra::BaseMatrix* getComplianceMatrix(const MechanicalParams*) = delete;
 
     /// \brief Accumulate the contribution of the C compliant matrix multiplied
     /// by the given Lagrange multipliers lambda vector with the given cFactor coefficient.
@@ -204,8 +204,8 @@ public:
     /// where C is the Compliant matrix (inverse of the Stiffness matrix \f$ K \f$:
     /// \f$ C = K^{-1} \f$)
     ///
-    SOFA_ATTRIBUTE_DEPRECATED__COMPLIANT()
-    virtual void addClambda(const MechanicalParams* /*mparams*/, MultiVecDerivId /*resId*/, MultiVecDerivId /*lambdaId*/, SReal /*cFactor*/ ){}
+    SOFA_ATTRIBUTE_DISABLED__COMPLIANT()
+    virtual void addClambda(const MechanicalParams* /*mparams*/, MultiVecDerivId /*resId*/, MultiVecDerivId /*lambdaId*/, SReal /*cFactor*/ ) = delete;
 
     /// @}
 

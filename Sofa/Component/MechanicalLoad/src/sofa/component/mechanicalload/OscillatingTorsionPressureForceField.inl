@@ -46,17 +46,6 @@ OscillatingTorsionPressureForceField<DataTypes>::OscillatingTorsionPressureForce
     , d_showForces(initData(&d_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
     , rotationAngle(0)
 {
-    trianglePressureMap.setOriginalData(&d_trianglePressureMap);
-    moment.setOriginalData(&d_moment);
-    triangleList.setOriginalData(&d_triangleList);
-    axis.setOriginalData(&d_axis);
-    center.setOriginalData(&d_center);
-    penalty.setOriginalData(&d_penalty);
-    frequency.setOriginalData(&d_frequency);
-    dmin.setOriginalData(&d_dmin);
-    dmax.setOriginalData(&d_dmax);
-    p_showForces.setOriginalData(&d_showForces);
-
 }
 
 template <class DataTypes>
