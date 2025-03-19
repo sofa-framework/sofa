@@ -199,7 +199,7 @@ jobs:
 
   # Trigger the build with all parameters
   call-workflow-passing-data:
-    uses: sofa-framework/sofa/.github/workflows/build-and-test.yml@master
+    uses: bakpaul/sofa/.github/workflows/build-and-test.yml@master
     with:
       sofa-branch-name: ${{ SOFA_BRANCH_NAME }}
       sofa-commit-sha: ${{ SOFA_COMMIT_SHA }}
