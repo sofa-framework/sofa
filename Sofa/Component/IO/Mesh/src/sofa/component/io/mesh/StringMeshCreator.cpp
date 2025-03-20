@@ -50,8 +50,6 @@ StringMeshCreator::StringMeshCreator(): MeshLoader()
         return sofa::core::objectmodel::ComponentState::Invalid;
 
     }, {&d_positions, &d_edges});
-
-    resolution.setOriginalData(&d_resolution);
 }
 
 void StringMeshCreator::doClearBuffers()

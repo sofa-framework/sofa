@@ -41,10 +41,6 @@ StatsSetting::StatsSetting():
     , traceVisitors(initData(&traceVisitors, "traceVisitors", "Trace the time spent by each visitor, and allows to profile precisely one step of a simulation"))
 #endif
 {
-    dumpState.setOriginalData(&d_dumpState);
-    logTime.setOriginalData(&d_logTime);
-    exportState.setOriginalData(&d_exportState);
-
 }
 
 } // namespace sofa::component::setting

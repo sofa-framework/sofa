@@ -28,8 +28,6 @@
 #include <sofa/core/visual/Data[DisplayFlags].h>
 #include <sofa/simulation/fwd.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::visual
 {
 /** \brief VisualStyle component controls the DisplayFlags state
@@ -73,9 +71,6 @@ public:
 
     bool insertInNode(sofa::core::objectmodel::BaseNode* node) override;
     bool removeInNode(sofa::core::objectmodel::BaseNode* node) override;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData<DisplayFlags> displayFlags;
 
     Data<DisplayFlags> d_displayFlags; ///< Display Flags
 

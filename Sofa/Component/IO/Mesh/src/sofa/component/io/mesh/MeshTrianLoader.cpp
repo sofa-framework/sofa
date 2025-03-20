@@ -49,12 +49,6 @@ MeshTrianLoader::MeshTrianLoader() : MeshLoader()
     d_neighborTable.setPersistent(false);
     d_edgesOnBorder.setPersistent(false);
     d_trianglesOnBorderList.setPersistent(false);
-
-    p_trian2.setOriginalData(&d_trian2);
-    neighborTable.setOriginalData(&d_neighborTable);
-    edgesOnBorder.setOriginalData(&d_edgesOnBorder);
-    trianglesOnBorderList.setOriginalData(&d_trianglesOnBorderList);
-
 }
 
 

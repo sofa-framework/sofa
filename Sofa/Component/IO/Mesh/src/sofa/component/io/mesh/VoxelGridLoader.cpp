@@ -59,17 +59,6 @@ VoxelGridLoader::VoxelGridLoader()
       bpp(8) // bits per pixel
 {
     addAlias(&d_filename,"segmentationFile");
-    voxelSize.setOriginalData(&d_voxelSize);
-    dataResolution.setOriginalData(&d_dataResolution);
-    roi.setOriginalData(&d_roi);
-    headerSize.setOriginalData(&d_headerSize);
-    segmentationHeaderSize.setOriginalData(&d_segmentationHeaderSize);
-    idxInRegularGrid.setOriginalData(&d_idxInRegularGrid);
-    backgroundValue.setOriginalData(&d_backgroundValue);
-    activeValue.setOriginalData(&d_activeValue);
-    generateHexa.setOriginalData(&d_generateHexa);
-
-
 }
 
 VoxelGridLoader::~VoxelGridLoader()
