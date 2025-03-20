@@ -22,7 +22,6 @@
 #pragma once
 #include <sofa/component/io/mesh/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -32,24 +31,26 @@
 
 #include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
+#include <sofa/simulation/BaseSimulationExporter.h>
+
 namespace sofa::component::_vtkexporter_
 {
 
-class SOFA_COMPONENT_IO_MESH_API VTKExporter : public core::objectmodel::BaseObject
+class SOFA_COMPONENT_IO_MESH_API VTKExporter : public sofa::simulation::BaseSimulationExporter
 {
 public:
-    SOFA_CLASS(VTKExporter,core::objectmodel::BaseObject);
+    SOFA_CLASS(VTKExporter,sofa::simulation::BaseSimulationExporter);
 
 protected:
     sofa::core::topology::BaseMeshTopology* m_topology;
     sofa::core::behavior::BaseMechanicalState* m_mstate;
-    unsigned int m_stepCounter;
 
-    std::ofstream* outfile;
+    std::unique_ptr<std::ofstream> m_outfile;
 
     void fetchDataFields(const type::vector<std::string>& strData, type::vector<std::string>& objects, type::vector<std::string>& fields, type::vector<std::string>& names);
-    void writeVTKSimple();
-    void writeVTKXML();
+    bool write() override;
+    bool writeVTKSimple();
+    bool writeVTKXML();
     void writeParallelFile();
     void writeData(const type::vector<std::string>& objects, const type::vector<std::string>& fields, const type::vector<std::string>& names);
     void writeDataArray(const type::vector<std::string>& objects, const type::vector<std::string>& fields, const type::vector<std::string>& names);
@@ -101,7 +102,6 @@ public:
 
 
 
-    sofa::core::objectmodel::DataFileName d_vtkFilename;
     Data<bool> d_fileFormat; ///< Set to true to use XML format
     Data<defaulttype::Vec3Types::VecCoord> d_position; ///< points position (will use points from topology or mechanical state if this is empty)
     Data<bool> d_writeEdges; ///< write edge topology
@@ -111,9 +111,6 @@ public:
     Data<bool> d_writeHexas; ///< write hexa topology
     Data<type::vector<std::string> > d_dPointsDataFields; ///< Data to visualize (on points)
     Data<type::vector<std::string> > d_dCellsDataFields; ///< Data to visualize (on cells)
-    Data<unsigned int> d_exportEveryNbSteps; ///< export file only at specified number of steps (0=disable)
-    Data<bool> d_exportAtBegin; ///< export file at the initialization
-    Data<bool> d_exportAtEnd; ///< export file when the simulation is finished
     Data<bool> d_overwrite; ///< overwrite the file, otherwise create a new file at each export, with suffix in the filename
 
     int nbFiles;
@@ -129,8 +126,8 @@ protected:
     VTKExporter();
     ~VTKExporter() override;
 public:
-    void init() override;
-    void cleanup() override;
+    void doInit() override;
+    void doReInit() override;
     void handleEvent(sofa::core::objectmodel::Event *) override;
 };
 
