@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,45 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_GPU_CUDA_CUDASINGLESTATEACCESSOR_CPP
+#include <sofa/gpu/cuda/CudaTypes.h>
 
-#include <sofa/core/behavior/StateAccessor.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/gpu/cuda/CudaSingleStateAccessor.h>
+
+#include <sofa/core/behavior/SingleStateAccessor.inl>
+
 
 namespace sofa::core::behavior
 {
 
-/**
- * Base class for components having access to one mechanical state with a specific template parameter, in order to read
- * and/or write state variables.
- */
-template<class DataTypes>
-class SingleStateAccessor : public virtual StateAccessor
-{
-public:
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(SingleStateAccessor, DataTypes), StateAccessor);
+using namespace sofa::gpu::cuda;
 
-    void init() override;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec1dTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec2dTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec6dTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid2dTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec1fTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec2fTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec6fTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid2fTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid3fTypes>;
 
-    MechanicalState<DataTypes>* getMState();
-    const MechanicalState<DataTypes>* getMState() const;
-
-protected:
-
-    explicit SingleStateAccessor(MechanicalState<DataTypes>* mm = nullptr);
-
-    ~SingleStateAccessor() override = default;
-
-    SingleLink<SingleStateAccessor<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STRONGLINK> mstate;
-};
-
-#if !defined(SOFA_CORE_BEHAVIOR_SINGLESTATEACCESSOR_CPP)
-extern template class SOFA_CORE_API SingleStateAccessor<sofa::defaulttype::Vec1Types>;
-extern template class SOFA_CORE_API SingleStateAccessor<sofa::defaulttype::Vec2Types>;
-extern template class SOFA_CORE_API SingleStateAccessor<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_CORE_API SingleStateAccessor<sofa::defaulttype::Vec6Types>;
-extern template class SOFA_CORE_API SingleStateAccessor<sofa::defaulttype::Rigid2Types>;
-extern template class SOFA_CORE_API SingleStateAccessor<sofa::defaulttype::Rigid3Types>;
-#endif
-
-}
+} // namespace sofa::core::behavior

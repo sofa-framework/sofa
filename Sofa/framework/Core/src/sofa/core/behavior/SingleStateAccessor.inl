@@ -21,43 +21,56 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/behavior/StateAccessor.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
 namespace sofa::core::behavior
 {
 
-/**
- * Base class for components having access to one mechanical state with a specific template parameter, in order to read
- * and/or write state variables.
- */
 template<class DataTypes>
-class SingleStateAccessor : public virtual StateAccessor
+void SingleStateAccessor<DataTypes>::init()
 {
-public:
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(SingleStateAccessor, DataTypes), StateAccessor);
+    Inherit1::init();
 
-    void init() override;
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 
-    MechanicalState<DataTypes>* getMState();
-    const MechanicalState<DataTypes>* getMState() const;
+    if (!mstate.get())
+    {
+        mstate.set(dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));
 
-protected:
+        if(!mstate)
+        {
 
-    explicit SingleStateAccessor(MechanicalState<DataTypes>* mm = nullptr);
+            msg_error() << "No compatible MechanicalState found in the current context. "
+                "This may be because there is no MechanicalState in the local context, "
+                "or because the type is not compatible";
+            d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        }
+        else
+        {
+            msg_info() << "No link given for mstate, but it has been found in the context";
+        }
+    }
 
-    ~SingleStateAccessor() override = default;
+    l_mechanicalStates.clear();
+    l_mechanicalStates.add(mstate);
+}
 
-    SingleLink<SingleStateAccessor<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STRONGLINK> mstate;
-};
+template<class DataTypes>
+auto SingleStateAccessor<DataTypes>::getMState() -> MechanicalState<DataTypes>*
+{ 
+    return mstate.get(); 
+}
 
-#if !defined(SOFA_CORE_BEHAVIOR_SINGLESTATEACCESSOR_CPP)
-extern template class SOFA_CORE_API SingleStateAccessor<sofa::defaulttype::Vec1Types>;
-extern template class SOFA_CORE_API SingleStateAccessor<sofa::defaulttype::Vec2Types>;
-extern template class SOFA_CORE_API SingleStateAccessor<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_CORE_API SingleStateAccessor<sofa::defaulttype::Vec6Types>;
-extern template class SOFA_CORE_API SingleStateAccessor<sofa::defaulttype::Rigid2Types>;
-extern template class SOFA_CORE_API SingleStateAccessor<sofa::defaulttype::Rigid3Types>;
-#endif
+template<class DataTypes>
+auto SingleStateAccessor<DataTypes>::getMState() const -> const MechanicalState<DataTypes>*
+{ 
+    return mstate.get(); 
+}
+
+template<class DataTypes>
+SingleStateAccessor<DataTypes>::SingleStateAccessor(MechanicalState<DataTypes> *mm)
+    : Inherit1()
+    , mstate(initLink("mstate", "MechanicalState used by this component"), mm)
+{}
 
 }
