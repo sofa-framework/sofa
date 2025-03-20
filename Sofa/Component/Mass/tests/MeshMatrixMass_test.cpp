@@ -101,10 +101,12 @@ public:
 
     void doSetUp() override
     {
-        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
-        sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Grid);
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
-        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
+        this->loadPlugins({
+            Sofa.Component.Topology.Container.Dynamic,
+            Sofa.Component.Topology.Container.Grid,
+            Sofa.Component.StateContainer,
+            Sofa.Component.Mass
+        });
 
         simulation = simulation::getSimulation();
         root = simulation::getSimulation()->createNewGraph("root");

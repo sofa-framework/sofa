@@ -33,7 +33,7 @@ struct MeshSubsetEngine_test : public testing::BaseSimulationTest
 
     void doSetUp() override
     {
-        simpleapi::importPlugin(Sofa.Component.Engine.Select);
+        loadPlugins({Sofa.Component.Engine.Select});
 
         m_root = simulation::getSimulation()->createNewNode("root");
         ASSERT_NE(nullptr, m_root);
