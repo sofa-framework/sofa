@@ -42,7 +42,8 @@ namespace sofa::testing
 
 bool BaseSimulationTest::importPlugin(const std::string& name)
 {
-    return sofa::simpleapi::importPlugin(name);
+    this->loadPlugins({name});
+    return true;
 }
 
 BaseSimulationTest::SceneInstance::SceneInstance(const std::string& type, const std::string& desc)
