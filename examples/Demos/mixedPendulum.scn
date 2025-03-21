@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<Node name="lroot" gravity="0 -10 0" dt="0.01">
+    <DefaultAnimationLoop/>
+    <VisualStyle displayFlags="showInteractionForceFields showMechanicalMappings showForceFields showVisualModels showBehaviorModels" />
+    <EulerExplicitSolver name="odeExplicitSolver"/>
+
+    <Node name="deformableBody">
+        <MechanicalObject name="Dof1" template="Vec3" position="0 0 0  1 0 0" />
+        <UniformMass name="M1" totalMass="1" />
+        <FixedProjectiveConstraint name="C" indices="0" />
+        <SpringForceField name="F1" object1="@Dof1" object2="@Dof1" indices1="0" indices2="1" stiffness="100" damping="1" lengths="1" />
+
+    </Node>
+
+    <Node name="rigidBody">
+        <MechanicalObject name="Dof2" template="Rigid3" position="3 0 0  0 0 0 1" />
+        <UniformMass name="M2" vertexMass="0.3 0.3 [0.1 0 0,0 0.1 0,0 0 0.1]" />
+        <Node name="rigidParticles">
+            <MechanicalObject name="Dof3" template="Vec3" position="-1 0 0" />
+            <RigidMapping name="Map23"/>
+        </Node>
+    </Node>
+    <SpringForceField name="F1" object1="@deformableBody/Dof1" object2="@rigidBody/rigidParticles/Dof3" indices1="1" indices2="0" stiffness="100" damping="1" lengths="1" />
+
+</Node>
