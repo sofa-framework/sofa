@@ -52,14 +52,9 @@ class SOFA_COMPONENT_TOPOLOGY_CONTAINER_GRID_API SparseGridTopology : public con
 {
 public:
     SOFA_CLASS(SparseGridTopology,MeshTopology);
-
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3i, sofa::type::Vec3i);
     typedef sofa::type::fixed_array<type::Vec3,8> CubeCorners;
-
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(BoundingBox, sofa::type::BoundingBox);
-
     typedef enum {OUTSIDE,INSIDE,BOUNDARY} Type; ///< each cube has a type depending on its filling ratio
+
 protected:
     SparseGridTopology(bool _isVirtual=false);
 

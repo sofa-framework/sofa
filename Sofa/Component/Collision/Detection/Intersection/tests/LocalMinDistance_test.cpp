@@ -56,11 +56,7 @@ namespace
 struct TestLocalMinDistance : public BaseSimulationTest {
     void doSetUp() override
     {
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
-        sofa::simpleapi::importPlugin(Sofa.Component.Collision.Detection.Intersection);
-    }
-    void doTearDown() override
-    {
+        loadPlugins({Sofa.Component.StateContainer, Sofa.Component.Collision.Detection.Intersection});
     }
 
     void checkAttributes();

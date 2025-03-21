@@ -15,9 +15,9 @@
   zlib,
 }:
 
-stdenv.mkDerivation {
+stdenv.mkDerivation (finalAttrs: {
   pname = "sofa";
-  version = "24.06.00";
+  version = "25.06.99";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -66,9 +66,9 @@ stdenv.mkDerivation {
 
   postFixup = lib.optionalString stdenv.hostPlatform.isDarwin ''
     install_name_tool -change \
-      $out/lib/libSceneChecking.24.12.99.dylib \
-      $out/plugins/SceneChecking/lib/libSceneChecking.24.12.99.dylib \
-      $out/bin/.runSofa-24.12.99-wrapped
+      $out/lib/libSceneChecking.${finalAttrs.version}.dylib \
+      $out/plugins/SceneChecking/lib/libSceneChecking.${finalAttrs.version}.dylib \
+      $out/bin/.runSofa-${finalAttrs.version}-wrapped
   '';
 
   meta = {
@@ -79,4 +79,4 @@ stdenv.mkDerivation {
     mainProgram = "runSofa";
     platforms = lib.platforms.unix ++ lib.platforms.windows;
   };
-}
+})

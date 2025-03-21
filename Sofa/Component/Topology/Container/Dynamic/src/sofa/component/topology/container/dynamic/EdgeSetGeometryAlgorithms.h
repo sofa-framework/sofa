@@ -111,6 +111,7 @@ public:
 
 
     /** \brief Compute the barycentric coordinates of input point p between edge of indices [ind_p1; ind_p2] using either current position or restPosition depending on useRestPosition value.
+    * Will call @sa sofa::geometry::Edge::getBarycentricCoordinates
     * @param p position of the point to compute the coefficients.
     * @param ind_p1 PointID of first vertex to be used to compute the barycentric coordinates of input point.
     * @param ind_p2 PointID of second vertex to be used to compute the barycentric coordinates of input point.
@@ -179,9 +180,6 @@ public:
 
     SOFA_ATTRIBUTE_DISABLED("v23.12", "v24.06", "Use sofa::component::topology::container::dynamic::EdgeSetGeometryAlgorithms::computeEdgeBarycentricCoordinates with useRestPosition = true")
     sofa::type::vector< SReal > computeRest2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const = delete;
-
-    SOFA_ATTRIBUTE_DISABLED("v23.12", "v23.12", "Method writeMSHfile has been disabled. To export the topology as .gmsh file, use the sofa::component::io::mesh::MeshExporter.")
-    void writeMSHfile(const char *filename) const {msg_deprecated() << "Method writeMSHfile has been disabled. To export the topology as " << filename << " file, use the sofa::component::io::mesh::MeshExporter."; }
 
 protected:
     Data<bool> showEdgeIndices; ///< Debug : view Edge indices.

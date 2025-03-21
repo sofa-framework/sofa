@@ -56,6 +56,7 @@ public:
     bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void rebuildSystem(SReal massFactor, SReal forceFactor) override;
+    void addRegularization(linearalgebra::BaseMatrix & W);
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void computeResidual(const core::ExecParams* /*params*/) override;
@@ -118,6 +119,7 @@ public:
     Data<int> d_maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
     Data<SReal> d_tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
     Data<SReal> d_sor; ///< Successive Over Relaxation parameter (0-2)
+    Data< SReal > d_regularizationTerm; ///< add regularization*Id to W when solving for constraints
     Data<bool> d_scaleTolerance; ///< Scale the error tolerance with the number of constraints
     Data<bool> d_allVerified; ///< All constraints must be verified (each constraint's error < tolerance)
     Data<int> d_newtonIterations; ///< Maximum iteration number of Newton (for the NonsmoothNonlinearConjugateGradient solver only)
@@ -147,7 +149,6 @@ protected:
     sofa::type::fixed_array<GenericConstraintProblem, CP_BUFFER_SIZE> m_cpBuffer;
     sofa::type::fixed_array<bool, CP_BUFFER_SIZE> m_cpIsLocked;
     GenericConstraintProblem *current_cp, *last_cp;
-    SOFA_ATTRIBUTE_DISABLED__GENERICCONSTRAINTSOLVER_CONSTRAINTCORRECTIONS() DeprecatedAndRemoved constraintCorrections; //use ConstraintSolverImpl::l_constraintCorrections instead
 
     sofa::core::MultiVecDerivId m_lambdaId;
     sofa::core::MultiVecDerivId m_dxId;

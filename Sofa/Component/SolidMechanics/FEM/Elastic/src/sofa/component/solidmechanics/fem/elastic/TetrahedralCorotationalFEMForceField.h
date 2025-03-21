@@ -195,7 +195,7 @@ public:
     Data<sofa::type::RGBAColor> d_drawColor4; ///<  draw color for faces 4
     Data<std::map < std::string, sofa::type::vector<double> > > _volumeGraph;
     
-    Data<bool> d_computeVonMisesStress;
+    Data<bool> d_computeVonMisesStress; ///< compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain. Set listening=1
     Data<type::vector<Real> > d_vonMisesPerElement; ///< von Mises Stress per element
     Data<type::vector<Real> > d_vonMisesPerNode; ///< von Mises Stress per node
     

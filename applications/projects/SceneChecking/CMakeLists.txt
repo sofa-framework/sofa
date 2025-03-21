@@ -11,7 +11,6 @@ set(SCENECHECK_SRC_DIR src/SceneChecking)
 set(HEADER_FILES
     ${SCENECHECK_SRC_DIR}/config.h.in
     ${SCENECHECK_SRC_DIR}/init.h
-    ${SCENECHECK_SRC_DIR}/SceneCheck.h
     ${SCENECHECK_SRC_DIR}/SceneCheckAPIChange.h
     ${SCENECHECK_SRC_DIR}/SceneCheckCollisionResponse.h
     ${SCENECHECK_SRC_DIR}/SceneCheckDeprecatedComponents.h

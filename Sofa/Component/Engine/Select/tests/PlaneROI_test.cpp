@@ -71,6 +71,8 @@ struct PlaneROI_test : public BaseSimulationTest,
         m_node1 = m_simu->createNewGraph("root");
         m_node1->addObject(m_thisObject);
 
+        this->loadPlugins({Sofa.Component.Engine.Select});
+
 
         // SetUp2
         const string scene1 =

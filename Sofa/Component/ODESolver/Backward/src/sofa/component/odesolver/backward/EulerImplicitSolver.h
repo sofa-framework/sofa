@@ -134,8 +134,8 @@ public:
     Data<bool> d_solveConstraint; ///< Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
 
-    Data<bool> d_computeResidual;
-    Data<SReal> d_residual;
+    Data<bool> d_computeResidual; ///< If true, the residual is computed at the end of the solving
+    Data<SReal> d_residual; ///< Residual norm at the end of the free-motion solving
     
 protected:
     EulerImplicitSolver();

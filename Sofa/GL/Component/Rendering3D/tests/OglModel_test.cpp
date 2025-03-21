@@ -19,11 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gl/component/rendering3d/OglModel.h>
 #include <gtest/gtest.h>
+#include <sofa/Modules.h>
+#include <sofa/gl/component/rendering3d/OglModel.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simpleapi/SimpleApi.h>
+#include <sofa/testing/ScopedPlugin.h>
 #include <sofa/testing/TestMessageHandler.h>
 
 namespace sofa
@@ -43,6 +45,8 @@ TEST(OglModel, templateName)
 
     simulation::Simulation* simulation = sofa::simulation::getSimulation();
     const simulation::Node::SPtr root = simulation->createNewGraph("root");
+
+    const auto plugins = testing::makeScopedPlugin({Sofa.GL.Component.Rendering3D});
 
     {
         EXPECT_MSG_NOEMIT(Error);

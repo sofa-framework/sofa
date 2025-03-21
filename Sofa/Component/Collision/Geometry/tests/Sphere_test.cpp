@@ -72,15 +72,11 @@ struct TestSphere : public BaseSimulationTest
 {
     void doSetUp() override
     {
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
-        sofa::simpleapi::importPlugin(Sofa.Component.Collision.Geometry);
+        loadPlugins({Sofa.Component.StateContainer, Sofa.Component.Collision.Geometry});
 
         m_proxIntersection = sofa::core::objectmodel::New<MinProximityIntersection>();
         m_proxIntersection->setAlarmDistance(1.0);
         m_proxIntersection->setContactDistance(1.0);
-    }
-    void doTearDown() override
-    {
     }
 
     bool rigidRigid1();

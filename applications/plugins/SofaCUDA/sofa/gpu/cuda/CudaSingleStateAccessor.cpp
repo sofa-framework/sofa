@@ -19,7 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/config.h>
+#define SOFA_GPU_CUDA_CUDASINGLESTATEACCESSOR_CPP
+#include <sofa/gpu/cuda/CudaTypes.h>
 
-SOFA_HEADER_DISABLED_NOT_REPLACED("v17.06", "v23.12")
+#include <sofa/gpu/cuda/CudaSingleStateAccessor.h>
+
+#include <sofa/core/behavior/SingleStateAccessor.inl>
+
+
+namespace sofa::core::behavior
+{
+
+using namespace sofa::gpu::cuda;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec1dTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec2dTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec6dTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid2dTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec1fTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec2fTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec6fTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid2fTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid3fTypes>;
+
+} // namespace sofa::core::behavior

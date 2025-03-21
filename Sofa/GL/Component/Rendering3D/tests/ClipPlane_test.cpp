@@ -62,8 +62,10 @@ class TestClipPlane : public BaseTest {
 public:
     void doSetUp() override
     {
-        sofa::simpleapi::importPlugin(Sofa.GL.Component.Rendering3D);
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        this->loadPlugins({
+            Sofa.GL.Component.Rendering3D,
+            Sofa.Component.StateContainer
+        });
     }
 
     void checkClipPlaneValidAttributes();

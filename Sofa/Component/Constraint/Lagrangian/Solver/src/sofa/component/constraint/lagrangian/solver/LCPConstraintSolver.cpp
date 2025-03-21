@@ -48,6 +48,7 @@ LCPConstraintSolver::LCPConstraintSolver()
     , d_build_lcp(initData(&d_build_lcp, true, "build_lcp", "LCP is not fully built to increase performance in some case."))
     , d_tol(initData(&d_tol, 0.001_sreal, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , d_maxIt(initData(&d_maxIt, 1000, "maxIt", "maximal number of iterations of the Gauss-Seidel algorithm"))
+    , d_regularizationTerm(initData(&d_regularizationTerm, 0.0_sreal, "regularizationTerm", "Add regularization factor times the identity matrix to the compliance W when solving constraints"))
     , d_mu(initData(&d_mu, 0.6_sreal, "mu", "Friction coefficient"))
     , d_minW(initData(&d_minW, 0.0_sreal, "minW", "If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored"))
     , d_maxF(initData(&d_maxF, 0.0_sreal, "maxF", "If not zero, constraints whose response force becomes larger than this threshold will be ignored"))
@@ -126,6 +127,19 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
     }
 
     return true;
+}
+
+
+void LCPConstraintSolver::addRegularization(linearalgebra::BaseMatrix& W)
+{
+    const SReal regularization =  d_regularizationTerm.getValue();
+    if (regularization>std::numeric_limits<SReal>::epsilon())
+    {
+        for (int i=0; i<W.rowSize(); ++i)
+        {
+            W.add(i,i,regularization);
+        }
+    }
 }
 
 bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2)
@@ -346,6 +360,8 @@ void LCPConstraintSolver::addComplianceInConstraintSpace(core::ConstraintParams 
         cc->addComplianceInConstraintSpace(&cparams, _W);
     }
 
+
+    addRegularization(* _W);
     dmsg_info() << "W=" << *_W ;
 }
 
@@ -866,6 +882,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::v
         dmsg_info() <<" "<<msgendl;
     }
 
+    addRegularization(_Wdiag);
 
 
     // allocation of the inverted system 3x3
@@ -884,6 +901,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::v
         w[5] = _Wdiag.element(3*c1+2, 3*c1+2);
         W33[c1].compute(w[0], w[1] , w[2], w[3], w[4] , w[5]);
     }
+
 
     dmsg_info() <<" Compliance In constraint Space : \n W ="<<(* _W)<<msgendl
                 <<"getBlockDiagonalCompliance   \n Wdiag = "<< _Wdiag ;
@@ -1110,6 +1128,8 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::ve
             _cclist_elem2[c1]->getBlockDiagonalCompliance(&_Wdiag, c1, c1);
         }
     }
+
+    addRegularization(_Wdiag);
 
     unbuilt_W11.resize(numContacts);
     SReal *W11 = &(unbuilt_W11[0]);

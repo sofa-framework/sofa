@@ -34,22 +34,6 @@ OptionsGroup::OptionsGroup() : textItems()
     selectedItem=0;
 }
 ///////////////////////////////////////
-OptionsGroup::OptionsGroup(int nbofRadioButton,...)
-{
-    textItems.resize(nbofRadioButton);
-    va_list vl;
-    va_start(vl,nbofRadioButton);
-    for (auto& item : textItems)
-    {
-        const char * tempochar=va_arg(vl,char *);
-        assert( strcmp( tempochar, "") );
-        const std::string tempostring(tempochar);
-        item = tempostring;
-    }
-    va_end(vl);
-    selectedItem=0;
-}
-///////////////////////////////////////
 OptionsGroup::OptionsGroup(const OptionsGroup & m_radiotrick) : textItems(m_radiotrick.textItems)
 {
     selectedItem = m_radiotrick.getSelectedId();
@@ -64,22 +48,6 @@ void OptionsGroup::setNbItems(const size_type nbofRadioButton )
 void OptionsGroup::setItemName(const unsigned int id_item, const std::string& name )
 {
     textItems[id_item] = name;
-}
-///////////////////////////////////////
-void OptionsGroup::setNames(int nbofRadioButton,...)
-{
-    textItems.resize(nbofRadioButton);
-    va_list vl;
-    va_start(vl,nbofRadioButton);
-    for (auto& item : textItems)
-    {
-        const char * tempochar=va_arg(vl,char *);
-        const std::string  tempostring(tempochar);
-        assert( strcmp( tempochar, "") );
-        item=tempostring;
-    }
-    va_end(vl);
-    selectedItem=0;
 }
 ///////////////////////////////////////
 int OptionsGroup::isInOptionsList(const std::string & tempostring) const

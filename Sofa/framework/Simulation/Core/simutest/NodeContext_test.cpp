@@ -39,10 +39,12 @@ class NodeContext_test: public BaseSimulationTest
 public:
 
 
-    NodeContext_test()
+    void doSetUp() override
     {
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
-        sofa::simpleapi::importPlugin(Sofa.Component.SceneUtility);
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.SceneUtility
+        });
     }
 
     void testGetNodeObjects()

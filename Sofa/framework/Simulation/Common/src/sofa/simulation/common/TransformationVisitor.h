@@ -37,8 +37,6 @@ namespace
 class SOFA_SIMULATION_COMMON_API TransformationVisitor : public Visitor
 {
 public:
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-
     TransformationVisitor(const sofa::core::ExecParams* params);
 
     void setTranslation(SReal dx, SReal dy, SReal dz) { translation = Vec3(dx,dy,dz);}

@@ -76,8 +76,12 @@ public:
 
     void doSetUp() override
     {
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
-        sofa::simpleapi::importPlugin(Sofa.Component.Collision);
+        this->loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.Collision.Detection.Algorithm,
+            Sofa.Component.Collision.Detection.Intersection,
+            Sofa.Component.Collision.Response.Contact
+        });
     }
 
     void doTearDown() override

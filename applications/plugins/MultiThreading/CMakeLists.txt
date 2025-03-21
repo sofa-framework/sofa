@@ -9,7 +9,6 @@ set(HEADER_FILES
     src/MultiThreading/MeanComputation.h
     src/MultiThreading/MeanComputation.inl
     src/MultiThreading/component/animationloop/AnimationLoopParallelScheduler.h
-    src/MultiThreading/component/animationloop/StepTask.h
     src/MultiThreading/component/collision/detection/algorithm/ParallelBVHNarrowPhase.h
     src/MultiThreading/component/collision/detection/algorithm/ParallelBruteForceBroadPhase.h
     src/MultiThreading/component/linearsolver/iterative/ParallelCGLinearSolver.h

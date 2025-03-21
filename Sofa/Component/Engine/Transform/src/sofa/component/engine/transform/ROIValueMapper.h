@@ -42,8 +42,6 @@ public:
     typedef core::DataEngine Inherited;
 
     SOFA_CLASS(ROIValueMapper,Inherited);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Real, SReal);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
 
     //Input
     Data<unsigned int> nbROIs; ///< size of indices/value vector
