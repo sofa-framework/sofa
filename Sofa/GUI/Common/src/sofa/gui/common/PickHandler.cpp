@@ -170,7 +170,7 @@ Operation *PickHandler::changeOperation(sofa::component::setting::MouseButtonSet
         delete operations[setting->d_button.getValue().getSelectedId()];
         operations[setting->d_button.getValue().getSelectedId()] = nullptr;
     }
-    Operation *mouseOp=OperationFactory::Instanciate(setting->getOperationType());
+    Operation *mouseOp=OperationFactory::Instantiate(setting->getOperationType());
     if (mouseOp)
     {
         mouseOp->configure(this,setting);
@@ -187,7 +187,7 @@ Operation *PickHandler::changeOperation(MOUSE_BUTTON button, const std::string &
         delete operations[button];
         operations[button] = nullptr;
     }
-    Operation *mouseOp=OperationFactory::Instanciate(op);
+    Operation *mouseOp=OperationFactory::Instantiate(op);
     mouseOp->configure(this,button);
     operations[button]=mouseOp;
     return mouseOp;
