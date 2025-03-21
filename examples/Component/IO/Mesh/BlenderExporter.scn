@@ -1,0 +1,20 @@
+<Node name="root" dt="0.01" gravity="0 -9.81 0">
+	<RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader VTKExporter] -->
+	<RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+	<RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+	<RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetTopologyContainer] -->
+	<DefaultAnimationLoop/>
+
+    <MeshTopology name="mesh" filename="mesh/dragon.obj" />
+    <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
+    <MechanicalObject src="@loader" template="Vec3" name="mecha" showObject="1" />
+    <TetrahedronSetTopologyContainer src="@loader" name="topo" />
+    <BlenderExporter name="ExportToBlender"
+        filename="example"
+        listening="true" 
+        exportAtBegin="1" 
+        exportAtEnd="1" 
+        exportEveryNumberOfSteps="3"
+        printLog="1"
+    />
+</Node>
