@@ -25,7 +25,7 @@ namespace sofa::component::odesolver::backward
 {
 
 BaseLinearMultiStepMethod::BaseLinearMultiStepMethod()
-    : d_order(initData(&d_order, static_cast<std::size_t>(1), "order", "Order of the numerical method."))
+    : d_order(initData(&d_order, static_cast<std::size_t>(1), "order", "Order of the numerical method"))
     , d_rayleighStiffness(initData(&d_rayleighStiffness, 0_sreal, "rayleighStiffness",
                                    "Rayleigh damping coefficient related to stiffness, > 0"))
     , d_rayleighMass(initData(&d_rayleighMass, 0_sreal, "rayleighMass",
@@ -275,9 +275,8 @@ void BaseLinearMultiStepMethod::solve(
 
 
     // Create the vector and mechanical operations tools. These are used to execute special
-    // operations (multiplication,
-    // additions, etc.) on multi-vectors (a vector that is stored in different buffers inside
-    // the mechanical objects)
+    // operations (multiplication, additions, etc.) on multi-vectors (a vector that is stored
+    // in different buffers inside the mechanical objects)
     sofa::simulation::common::VectorOperations vop(params, this->getContext());
     sofa::simulation::common::MechanicalOperations mop(params, this->getContext());
     mop->setImplicit(true);
