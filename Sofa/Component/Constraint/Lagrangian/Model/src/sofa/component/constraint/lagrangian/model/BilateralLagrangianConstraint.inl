@@ -56,13 +56,13 @@ BilateralLagrangianConstraint<DataTypes>::BilateralLagrangianConstraint(Mechanic
     {
         if (d_load.getValue()<0.0_sreal)
         {
-            msg_warning()<<"The load cannot be negative. Setting it back to 0.0";
-            *d_load.beginWriteOnly() = 0.0_sreal;
+            msg_warning()<<"The load cannot be negative. Setting it back to 0.0. Input value is "<<d_load.getValue();
+            d_load.setValue(0.0_sreal);
         }
         else if (d_load.getValue()>1.0_sreal)
         {
-            msg_warning()<<"The load cannot be greater than 1.0. Setting it back to 1.0";
-            *d_load.beginWriteOnly() = 1.0_sreal;
+            msg_warning()<<"The load cannot be greater than 1.0. Setting it back to 1.0. Input value is "<<d_load.getValue();
+            d_load.setValue(1.0_sreal);
         }
 
     });
