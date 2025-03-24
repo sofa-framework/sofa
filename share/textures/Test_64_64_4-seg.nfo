@@ -1,0 +1,4 @@
+voxelType: 1
+dimensions: 64 64 4
+origin: 0 0 0
+voxelSize: 0.1 0.1 0.1
