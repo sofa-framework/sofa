@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,6 +20,57 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/config.h>
 
-SOFA_HEADER_DISABLED("v23.06", "v23.12", "sofa/component/collision/detection/algorithm/CollisionPipeline.h")
+#include <sofa/core/behavior/SingleStateAccessor.h>
+
+namespace sofa::core::behavior
+{
+
+template<class DataTypes>
+void SingleStateAccessor<DataTypes>::init()
+{
+    Inherit1::init();
+
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+
+    if (!mstate.get())
+    {
+        mstate.set(dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));
+
+        if(!mstate)
+        {
+
+            msg_error() << "No compatible MechanicalState found in the current context. "
+                "This may be because there is no MechanicalState in the local context, "
+                "or because the type is not compatible";
+            d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        }
+        else
+        {
+            msg_info() << "No link given for mstate, but it has been found in the context";
+        }
+    }
+
+    l_mechanicalStates.clear();
+    l_mechanicalStates.add(mstate);
+}
+
+template<class DataTypes>
+auto SingleStateAccessor<DataTypes>::getMState() -> MechanicalState<DataTypes>*
+{ 
+    return mstate.get(); 
+}
+
+template<class DataTypes>
+auto SingleStateAccessor<DataTypes>::getMState() const -> const MechanicalState<DataTypes>*
+{ 
+    return mstate.get(); 
+}
+
+template<class DataTypes>
+SingleStateAccessor<DataTypes>::SingleStateAccessor(MechanicalState<DataTypes> *mm)
+    : Inherit1()
+    , mstate(initLink("mstate", "MechanicalState used by this component"), mm)
+{}
+
+}
