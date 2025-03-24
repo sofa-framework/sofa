@@ -20,6 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#define SOFA_COMPONENT_LINEARSYSTEM_TYPEDMATRIXLINEARSYSTEM_CPP
+
+
 #include <sofa/component/linearsystem/TypedMatrixLinearSystem.inl>
 
 #include <sofa/linearalgebra/FullMatrix.h>
