@@ -280,7 +280,7 @@ function(sofa_add_generic_external directory name type)
         if(NOT ARG_FETCH_ONLY AND "${type}" MATCHES ".*directory.*")
             add_subdirectory("${fetched_dir}" "${CMAKE_BINARY_DIR}/${relative_path}")
         elseif(NOT ARG_FETCH_ONLY AND "${type}" MATCHES ".*plugin.*")
-            sofa_add_subdirectory(plugin "${fetched_dir}" "${name}" ${active} BINARY_DIR "${CMAKE_BINARY_DIR}/${relative_path}")
+            sofa_add_generic("${fetched_dir}" "${name}" plugin DEFAULT_VALUE ${active} BINARY_DIR "${CMAKE_BINARY_DIR}/${relative_path}")
         endif()
     endif()
 endfunction()
@@ -336,7 +336,7 @@ macro(sofa_add_subdirectory_modules output_targets)
     set(missing_targets)
     foreach(dir ${ARG_DIRECTORIES})
         set(subdir_name "${PROJECT_NAME}.${dir}")
-        sofa_add_subdirectory(module ${dir} ${subdir_name} ON)
+        sofa_add_generic(${dir} ${subdir_name} module DEFAULT_VALUE ON)
         if(TARGET ${subdir_name})
             list(APPEND ${output_targets} ${subdir_name})
         else()
@@ -460,47 +460,3 @@ macro(sofa_set_targets_release_only)
 endmacro()
 
 
-
-#######################################################
-################## DEPRECATED MACROS ##################
-#######################################################
-
-macro(sofa_add_collection directory name)
-    message(WARNING "Deprecated macro 'sofa_add_collection'.\n Use 'sofa_add_subdirectory(collection ${directory} ${name})' instead.")
-    sofa_add_subdirectory(collection ${ARGV})
-endmacro()
-
-macro(sofa_add_plugin directory plugin_name)
-    message(WARNING "Deprecated macro 'sofa_add_plugin'.\n Use 'sofa_add_subdirectory(plugin ${directory} ${plugin_name})' instead.")
-    sofa_add_subdirectory(plugin ${ARGV})
-endmacro()
-
-macro(sofa_add_plugin_experimental directory plugin_name)
-    message(WARNING "Deprecated macro 'sofa_add_plugin_experimental'.\n Use 'sofa_add_subdirectory(plugin ${directory} ${plugin_name} EXPERIMENTAL)' instead.")
-    sofa_add_subdirectory(plugin ${ARGV} EXPERIMENTAL)
-endmacro()
-
-macro(sofa_add_module directory module_name)
-    message(WARNING "Deprecated macro 'sofa_add_module'.\n Use 'sofa_add_subdirectory(module ${directory} ${module_name})' instead.")
-    sofa_add_subdirectory(module ${ARGV})
-endmacro()
-
-macro(sofa_add_module_experimental directory module_name)
-    message(WARNING "Deprecated macro 'sofa_add_module_experimental'.\n Use 'sofa_add_subdirectory(module ${directory} ${module_name} EXPERIMENTAL)' instead.")
-    sofa_add_subdirectory(module ${ARGV} EXPERIMENTAL)
-endmacro()
-
-macro(sofa_add_application directory app_name)
-    message(WARNING "Deprecated macro 'sofa_add_application'.\n Use 'sofa_add_subdirectory(application ${directory} ${app_name})' instead.")
-    sofa_add_subdirectory(application ${ARGV})
-endmacro()
-
-function(sofa_add_subdirectory_external directory name)
-    message(WARNING "Deprecated macro 'sofa_add_subdirectory_external'.\n Use 'sofa_add_subdirectory(directory ${directory} ${name} EXTERNAL)' instead.")
-    sofa_add_subdirectory(directory ${ARGV} EXTERNAL)
-endfunction()
-
-function(sofa_add_plugin_external directory name)
-    message(WARNING "Deprecated macro 'sofa_add_plugin_external'.\n Use 'sofa_add_subdirectory(plugin ${directory} ${name} EXTERNAL)' instead.")
-    sofa_add_subdirectory(plugin ${ARGV} EXTERNAL)
-endfunction()
