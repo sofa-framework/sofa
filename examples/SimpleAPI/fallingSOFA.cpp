@@ -5,14 +5,19 @@
 #include <sofa/simulation/common/init.h>
 #include <sofa/simulation/graph/init.h>
 #include <sofa/simpleapi/SimpleApi.h>
+#include <sofa/gui/init.h>
+#include <sofa/gui/common/GUIManager.h>
 #include <vector>
 #include <string>
 
 
-int main()
+sofa::simulation::Node::SPtr createScene(const sofa::simpleapi::Simulation::SPtr simu)
 {
-    const auto simu = sofa::simpleapi::createSimulation("DAG") ;
     const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(simu, "root") ;
+
+    root->setGravity( sofa::type::Vec3(0,-9.81,0) );
+    root->setAnimate(false);
+    root->setDt(0.005);
 
     sofa::simpleapi::importPlugin(Sofa.Component.AnimationLoop);
     sofa::simpleapi::importPlugin(Sofa.Component.AnimationLoop);
@@ -39,7 +44,7 @@ int main()
     sofa::simpleapi::importPlugin("MultiThreading");
 
     sofa::simpleapi::createObject(root, "VisualStyle", {{"displayFlags", "showVisual"}});
-    sofa::simpleapi::createObject(root, "ConstraintAttachButtonSetting");
+//    sofa::simpleapi::createObject(root, "ConstraintAttachButtonSetting");
     sofa::simpleapi::createObject(root, "FreeMotionAnimationLoop");
     sofa::simpleapi::createObject(root, "GenericConstraintSolver",{{"maxIterations","50"}, {"tolerance","1.0e-6"}});
 
@@ -47,11 +52,11 @@ int main()
     sofa::simpleapi::createObject(root, "ParallelBruteForceBroadPhase",{{"name","BroadPhase"}});
     sofa::simpleapi::createObject(root, "ParallelBVHNarrowPhase",{{"name","NarrowPhase"}});
     sofa::simpleapi::createObject(root, "CollisionResponse",{{"name","ContactManager"},
-                                                                                 {"response","FrictionContactConstraint"},
-                                                                                 {"responseParams","mu=0.3"}});
+                                                              {"response","FrictionContactConstraint"},
+                                                              {"responseParams","mu=0.3"}});
     sofa::simpleapi::createObject(root, "NewProximityIntersection",{{"name","Intersection"},
-                                                                                 {"alarmDistance","0.02"},
-                                                                                 {"contactDistance","0.002"}});
+                                                                     {"alarmDistance","0.02"},
+                                                                     {"contactDistance","0.002"}});
 
     //Simulated Topology creation node
     const sofa::simulation::Node::SPtr BeamDomainFromGridTopology = sofa::simpleapi::createChild(root,"BeamDomainFromGridTopology");
@@ -98,6 +103,36 @@ int main()
                                                                           {"triangles","0 2 1  0 3 2  0 1 5  0 5 4  0 4 7  0 7 3  1 2 6  1 6 5  3 7 6  3 6 2  4 5 6  4 6 7"}} );
     sofa::simpleapi::createObject(Floor, "MechanicalObject", {{"template","Vec3"}});
     sofa::simpleapi::createObject(Floor, "TriangleCollisionModel", {{"name","FloorCM"}, {"proximity","0.001"}, {"moving","0"}, {"simulated","0"}} );
+    return root;
+}
 
+int main(int argc, char** argv)
+{
+    sofa::simulation::common::init();
+    sofa::simulation::graph::init();
+    sofa::gui::init();
+
+    const sofa::simpleapi::Simulation::SPtr simu = sofa::simpleapi::createSimulation("DAG") ;
+    const auto root = createScene(simu);
+
+    if (int err = sofa::gui::common::GUIManager::Init(argv[0],"")) return err;
+    if (int err=sofa::gui::common::GUIManager::createGUI(nullptr)) return err;
+    sofa::gui::common::GUIManager::SetDimension(800,600);
+    sofa::gui::common::GUIManager::CenterWindow();
+
+
+    sofa::simulation::node::initRoot(root.get());
+    sofa::gui::common::GUIManager::SetScene(root);
+
+    if (int err = sofa::gui::common::GUIManager::MainLoop(root))
+        return err;
+
+    if (root!=nullptr)
+        sofa::simulation::node::unload(root);
+
+
+    sofa::gui::common::GUIManager::closeGUI();
+    sofa::simulation::common::cleanup();
+    sofa::simulation::graph::cleanup();
     return 0;
 }
