@@ -38,8 +38,6 @@
 
 #include <fstream>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component
 {
 namespace _blenderexporter_
@@ -71,22 +69,6 @@ public:
     typedef enum{SoftBody,Particle,Cloth,Hair}SimulationType;
 
     SOFA_CLASS(SOFA_TEMPLATE(BlenderExporter,T),core::objectmodel::BaseObject);
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::string> path;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::string> baseName;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData<int> simulationType;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData<int> simulationStep;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData<int> nbPtsByHair;
-
 
     Data < std::string > d_path; ///< output path
     Data < std::string > d_baseName; ///< Base name for the output files

@@ -44,21 +44,6 @@ VTKExporter::VTKExporter()
     , d_dCellsDataFields(initData(&d_dCellsDataFields, "cellsDataFields", "Data to visualize (on cells)"))
     , d_overwrite(initData(&d_overwrite, false, "overwrite", "overwrite the file, otherwise create a new file at each export, with suffix in the filename"))
 {
-
-    vtkFilename.setParent(&d_filename);
-    fileFormat.setOriginalData(&d_fileFormat);
-    position.setOriginalData(&d_position);
-    writeEdges.setOriginalData(&d_writeEdges);
-    writeTriangles.setOriginalData(&d_writeTriangles);
-    writeQuads.setOriginalData(&d_writeQuads);
-    writeTetras.setOriginalData(&d_writeTetras);
-    writeHexas.setOriginalData(&d_writeHexas);
-    dPointsDataFields.setOriginalData(&d_dPointsDataFields);
-    dCellsDataFields.setOriginalData(&d_dCellsDataFields);
-    exportEveryNbSteps.setOriginalData(&d_exportEveryNbSteps);
-    exportAtBegin.setOriginalData(&d_exportAtBegin);
-    exportAtEnd.setOriginalData(&d_exportAtEnd);
-    overwrite.setOriginalData(&d_overwrite);
 }
 
 VTKExporter::~VTKExporter(){}
