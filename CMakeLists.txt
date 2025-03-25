@@ -199,6 +199,10 @@ add_subdirectory(applications/plugins)
 ## Applications
 add_subdirectory(applications/projects)
 
+## SimpleAPI examples
+add_subdirectory(examples/SimpleAPI)
+
+
 ## SOFA scenes
 option(SOFA_BUILD_ADD_SCENES "Add SOFA scenes as a project of the build." OFF)
 if (SOFA_BUILD_ADD_SCENES)
