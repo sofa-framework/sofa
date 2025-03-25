@@ -6,8 +6,10 @@
 #include <sofa/simulation/graph/init.h>
 #include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/gui/init.h>
+#include <sofa/gui/common/BaseGUI.h>
 #include <sofa/gui/common/GUIManager.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/Utils.h>
 #include <vector>
 #include <string>
 
@@ -112,6 +114,9 @@ int main(int /**argc**/, char** argv)
 
     sofa::simulation::common::init();
     sofa::simulation::graph::init();
+
+    sofa::gui::common::BaseGUI::setConfigDirectoryPath(sofa::helper::Utils::getSofaPathPrefix() + "/config", true);
+    sofa::gui::common::BaseGUI::setScreenshotDirectoryPath(sofa::helper::Utils::getSofaPathPrefix() + "/screenshots", true);
 
     sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaImGui");
     sofa::helper::system::PluginManager::getInstance().init();
