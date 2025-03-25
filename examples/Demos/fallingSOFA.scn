@@ -54,7 +54,7 @@
     <NewProximityIntersection name="Intersection" alarmDistance="0.02" contactDistance="0.002" />
 
     <!-- Non-simulated node used to create underlying deformable topology -->
-    <Node name="BEAMVOLUME">
+    <Node name="BeamDomainFromGridTopology">
         <!-- Computes a hexahedral topology based on a parametric grid -->
         <RegularGridTopology name="HexaTop" n="15 3 6" min="0 0.02 0" max="0.5 0.08 0.22"/>
 
@@ -72,7 +72,7 @@
         <!-- Direct linear solver used for the computation of linear products using the system matrix $Ax=b$ -->
         <SparseLDLSolver name="ldl" template="CompressedRowSparseMatrixMat3x3" parallelInverseProduct="true" />
         <!-- Topology contains all topological information: elements type, elements array-->
-        <TetrahedronSetTopologyContainer name="Container" position="@../BEAMVOLUME/HexaTop.position" tetrahedra="@../BEAMVOLUME/Container.tetrahedra"/>
+        <TetrahedronSetTopologyContainer name="Container" position="@../BeamDomainFromGridTopology/HexaTop.position" tetrahedra="@../BeamDomainFromGridTopology/Container.tetrahedra"/>
         <TetrahedronSetTopologyModifier name="Modifier"/>
 
         <!-- MechanicalObject contains all mechanical quantity of the object (e.g. position, velocity, acceleration, forces, constraints forces, etc...)
@@ -156,7 +156,7 @@
                                                  3 7 6  3 6 2
                                                  4 5 6  4 6 7" />
         <MechanicalObject template="Vec3"/>
-        <!-- Because it in neither simulated nor moving, we can speed the solver and collision detection by setting parameters moving="0" simulated="0" -->
+        <!-- Because it is neither simulated nor moving, we can speed the solver and collision detection by setting parameters moving="0" simulated="0" -->
         <TriangleCollisionModel name="FloorCM" proximity="0.001" moving="0" simulated="0" />
     </Node>
 
