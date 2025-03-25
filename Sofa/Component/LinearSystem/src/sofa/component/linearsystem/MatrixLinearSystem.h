@@ -34,6 +34,12 @@
 #include <sofa/component/linearsystem/BaseMatrixProjectionMethod.h>
 #include <sofa/component/linearsystem/MappedMassMatrixObserver.h>
 
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
+#include <sofa/linearalgebra/DiagonalMatrix.h>
+#include <sofa/linearalgebra/RotationMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/BlockDiagonalMatrix.h>
 
 namespace sofa::component::linearsystem
 {
@@ -338,5 +344,27 @@ inline std::ostream& operator<<(std::ostream& os,
     }
     return os;
 }
+
+#if !defined(SOFA_COMPONENT_LINEARSYSTEM_MATRIXLINEARSYSTEM_CPP)
+using sofa::linearalgebra::CompressedRowSparseMatrix;
+using sofa::linearalgebra::SparseMatrix;
+using sofa::linearalgebra::DiagonalMatrix;
+using sofa::linearalgebra::BlockDiagonalMatrix;
+using sofa::linearalgebra::RotationMatrix;
+using sofa::linearalgebra::FullMatrix;
+using sofa::linearalgebra::FullVector;
+
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< FullMatrix<SReal>, FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< SparseMatrix<SReal>, FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< CompressedRowSparseMatrix<SReal>, FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<2,2,SReal> >, FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<3,3,SReal> >, FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<4,4,SReal> >, FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<6,6,SReal> >, FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<8,8,SReal> >, FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< DiagonalMatrix<SReal>, FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< BlockDiagonalMatrix<3,SReal>, FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API MatrixLinearSystem< RotationMatrix<SReal>, FullVector<SReal> >;
+#endif
 
 } //namespace sofa::component::linearsystem
