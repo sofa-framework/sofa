@@ -7,6 +7,7 @@
 #include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/gui/init.h>
 #include <sofa/gui/common/GUIManager.h>
+#include <sofa/helper/system/PluginManager.h>
 #include <vector>
 #include <string>
 
@@ -15,7 +16,7 @@ sofa::simulation::Node::SPtr createScene(const sofa::simpleapi::Simulation::SPtr
 {
     const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(simu, "root") ;
 
-    root->setGravity( sofa::type::Vec3(0,-9.81,0) );
+    root->setGravity( sofa::type::Vec3(0,0,-9.81) );
     root->setAnimate(false);
     root->setDt(0.005);
 
@@ -96,7 +97,7 @@ sofa::simulation::Node::SPtr createScene(const sofa::simpleapi::Simulation::SPtr
 
     sofa::simpleapi::createObject(FEMechanicalModel, "LinearSolverConstraintCorrection", {{"linearSolver","@ldl"}});
 
-    const sofa::simulation::Node::SPtr Floor = sofa::simpleapi::createChild(FEMechanicalModel,"Floor", {{"tags","NoBBox"}});
+    const sofa::simulation::Node::SPtr Floor = sofa::simpleapi::createChild(root,"Floor", {{"tags","NoBBox"}});
     sofa::simpleapi::createObject(Floor, "VisualStyle", {{"displayFlags","showCollisionModels"}});
     sofa::simpleapi::createObject(Floor, "TriangleSetTopologyContainer", {{"name","FloorTopo"},
                                                                           {"position","0.2 0 -0.5  0.2 0.1 -0.5  0.3 0.1 -0.5  0.3 0 -0.5  0.2 0 -0.6  0.2 0.1 -0.6  0.3 0.1 -0.6  0.3 0 -0.6"},
@@ -106,16 +107,20 @@ sofa::simulation::Node::SPtr createScene(const sofa::simpleapi::Simulation::SPtr
     return root;
 }
 
-int main(int argc, char** argv)
+int main(int /**argc**/, char** argv)
 {
+
     sofa::simulation::common::init();
     sofa::simulation::graph::init();
+
+    sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaImGui");
+    sofa::helper::system::PluginManager::getInstance().init();
     sofa::gui::init();
 
     const sofa::simpleapi::Simulation::SPtr simu = sofa::simpleapi::createSimulation("DAG") ;
     const auto root = createScene(simu);
 
-    if (int err = sofa::gui::common::GUIManager::Init(argv[0],"")) return err;
+    if (int err = sofa::gui::common::GUIManager::Init(argv[0],"imgui")) return err;
     if (int err=sofa::gui::common::GUIManager::createGUI(nullptr)) return err;
     sofa::gui::common::GUIManager::SetDimension(800,600);
     sofa::gui::common::GUIManager::CenterWindow();
