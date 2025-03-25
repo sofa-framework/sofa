@@ -53,12 +53,12 @@
     detection is being performed. The contact distance increases the contact distance between object, enforcing a 'skinning' behavior -->
     <NewProximityIntersection name="Intersection" alarmDistance="0.02" contactDistance="0.002" />
 
-    <!-- Non simulated node used to create underlying deformable topology -->
+    <!-- Non-simulated node used to create underlying deformable topology -->
     <Node name="BEAMVOLUME">
-        <!-- Computes a Hexaedric topology based on a parametric grid -->
+        <!-- Computes a hexahedral topology based on a parametric grid -->
         <RegularGridTopology name="HexaTop" n="15 3 6" min="0 0.02 0" max="0.5 0.08 0.22"/>
 
-        <!-- Transform the Hexaedric topology into a Tetraedric topology
+        <!-- Transform the hexahedral topology into a tetrahedral topology
         For more information see : https://sofa-framework.github.io/doc/simulation-principles/multi-model-representation/mapping/#topological-mapping -->
         <TetrahedronSetTopologyContainer name="Container" position="@HexaTop.position"/>
         <TetrahedronSetTopologyModifier name="Modifier"/>
@@ -66,12 +66,12 @@
     </Node>
 
     <!-- Simulated node -->
-    <Node name="FEM">
+    <Node name="FE-MechanicalModel">
         <!-- Use implicit integration scheme -->
         <EulerImplicitSolver />
         <!-- Direct linear solver used for the computation of linear products using the system matrix $Ax=b$ -->
         <SparseLDLSolver name="ldl" template="CompressedRowSparseMatrixMat3x3" parallelInverseProduct="true" />
-        <!-- Topology contains all topological information : elements type, elements array-->
+        <!-- Topology contains all topological information: elements type, elements array-->
         <TetrahedronSetTopologyContainer name="Container" position="@../BEAMVOLUME/HexaTop.position" tetrahedra="@../BEAMVOLUME/Container.tetrahedra"/>
         <TetrahedronSetTopologyModifier name="Modifier"/>
 
@@ -93,7 +93,7 @@
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="false"/>
             <MechanicalObject name="dofs" rest_position="@../mstate.rest_position"/>
 
-            <!-- This uses triangles as colliding element. It uses the triangles elements that arte presents in the topology
+            <!-- This uses triangles as colliding element. These triangular primitives are the triangles present in the topology
             For more information on collision models see : https://sofa-framework.github.io/doc/components/collision/geometry/collisionmodels/ -->
             <TriangleCollisionModel name="Collision" proximity="0.001" color="0.94117647058824 0.93725490196078 0.89411764705882" />
 
@@ -104,7 +104,7 @@
             <IdentityMapping name="SurfaceMapping"/>
         </Node>
 
-        <!-- Visual model is constituted of all the parts of the logo, mapped using barycentric mapping -->
+        <!-- Visual model is made up of all the parts of the logo, mapped using barycentric mapping -->
         <Node name="VisuLogo">
             <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/LogoVisu.obj" scale3d="0.015 0.015 0.015" translation="0 0.05 0" rotation="180 0 0"/>
             <!-- This replaces MechanicalObject for nodes that are only there for visualization -->
@@ -137,7 +137,7 @@
         </Node>
 
         <!-- Solver needed to compute lagrangian-based constraints interaction
-        It uses the Linear solver to compute the Compliance matrix and the motion correction
+        It uses the LinearSolver to compute the Compliance matrix and the motion correction
         For more information see : https://sofa-framework.github.io/doc/simulation-principles/constraint/lagrange-constraint/#constraintcorrection -->
         <LinearSolverConstraintCorrection linearSolver="@ldl"/>
     </Node>
