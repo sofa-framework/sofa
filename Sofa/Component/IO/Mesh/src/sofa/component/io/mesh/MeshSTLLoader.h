@@ -23,8 +23,6 @@
 #include <sofa/component/io/mesh/config.h>
 #include <sofa/core/loader/MeshLoader.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::io::mesh
 {
 
@@ -49,19 +47,9 @@ private:
     bool doLoad() override;
 
 public:
-    //Add Data here
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData <bool> _forceBinary;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData <unsigned int> _headerSize;
-
-
-
     Data <unsigned int> d_headerSize; ///< Size of the header binary file (just before the number of facet).
     Data <bool> d_forceBinary; ///< Force reading in binary mode. Even in first keyword of the file is solid.
     Data <bool> d_mergePositionUsingMap; ///< Since positions are duplicated in a STL, they have to be merged. Using a map to do so will temporarily duplicate memory but should be more efficient. Disable it if memory is really an issue.
-
 };
 
 } //namespace sofa::component::io::mesh

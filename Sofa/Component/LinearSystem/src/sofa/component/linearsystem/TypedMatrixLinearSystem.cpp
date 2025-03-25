@@ -20,14 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#define SOFA_COMPONENT_LINEARSYSTEM_TYPEDMATRIXLINEARSYSTEM_CPP
+
+
 #include <sofa/component/linearsystem/TypedMatrixLinearSystem.inl>
 
-#include <sofa/linearalgebra/FullMatrix.h>
-#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
-#include <sofa/linearalgebra/SparseMatrix.h>
-#include <sofa/linearalgebra/DiagonalMatrix.h>
-#include <sofa/linearalgebra/RotationMatrix.h>
-#include <sofa/linearalgebra/BlockDiagonalMatrix.h>
 
 namespace sofa::component::linearsystem
 {
