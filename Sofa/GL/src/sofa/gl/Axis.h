@@ -38,9 +38,6 @@ namespace sofa::gl
 class SOFA_GL_API Axis
 {
 public:
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec4f, sofa::type::Vec4f);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3d, sofa::type::Vec3d);
 
     typedef sofa::type::Quat<SReal> Quaternion;
     Axis(SReal len=1.0_sreal);
@@ -65,22 +62,6 @@ public:
     static void draw(const type::Vec3& center, const Quaternion& orient, SReal length = 1.0_sreal, const type::RGBAColor& colorX = type::RGBAColor::red(), const type::RGBAColor& colorY = type::RGBAColor::green(), const type::RGBAColor& colorZ = type::RGBAColor::red());
     static void draw(const type::Vec3& center, const double orient[4][4], SReal length = 1.0_sreal, const type::RGBAColor& colorX = type::RGBAColor::red(), const type::RGBAColor& colorY = type::RGBAColor::green(), const type::RGBAColor& colorZ = type::RGBAColor::red());
     static void draw(const double* mat, SReal length = 1.0_sreal, const type::RGBAColor& colorX = type::RGBAColor::red(), const type::RGBAColor& colorY = type::RGBAColor::green(), const type::RGBAColor& colorZ = type::RGBAColor::red());
-
-    SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
-    void draw(const type::Vec4f& colorX = type::Vec4f(1, 0, 0, 1), const type::Vec4f& colorY = type::Vec4f(0, 1, 0, 1), const type::Vec4f& colorZ = type::Vec4f(0, 0, 1, 1)) = delete;
-    SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
-    static void draw(const type::Vec3& center, const Quaternion& orient, const type::Vec3& length, const type::Vec4f& colorX = type::Vec4f(1, 0, 0, 1), const type::Vec4f& colorY = type::Vec4f(0, 1, 0, 1), const type::Vec4f& colorZ = type::Vec4f(0, 0, 1, 1)) = delete;
-    SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
-    static void draw(const type::Vec3& center, const double orient[4][4], const type::Vec3& length, const type::Vec4f& colorX = type::Vec4f(1, 0, 0, 1), const type::Vec4f& colorY = type::Vec4f(0, 1, 0, 1), const type::Vec4f& colorZ = type::Vec4f(0, 0, 1, 1)) = delete;
-    SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
-    void draw(const double* mat, const type::Vec3& length, const type::Vec4f& colorX = type::Vec4f(1, 0, 0, 1), const type::Vec4f& colorY = type::Vec4f(0, 1, 0, 1), const type::Vec4f& colorZ = type::Vec4f(0, 0, 1, 1)) = delete;
-    SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
-    static void draw(const type::Vec3& center, const Quaternion& orient, SReal length = 1.0_sreal, const type::Vec4f& colorX = type::Vec4f(1, 0, 0, 1), const type::Vec4f& colorY = type::Vec4f(0, 1, 0, 1), const type::Vec4f& colorZ = type::Vec4f(0, 0, 1, 1)) = delete;
-    SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
-    static void draw(const type::Vec3& center, const double orient[4][4], SReal length = 1.0_sreal, const type::Vec4f& colorX = type::Vec4f(1, 0, 0, 1), const type::Vec4f& colorY = type::Vec4f(0, 1, 0, 1), const type::Vec4f& colorZ = type::Vec4f(0, 0, 1, 1)) = delete;
-    SOFA_ATTRIBUTE_DISABLED__RGBACOLOR_AS_FIXEDARRAY()
-    static void draw(const double* mat, SReal length = 1.0_sreal, const type::Vec4f& colorX = type::Vec4f(1, 0, 0, 1), const type::Vec4f& colorY = type::Vec4f(0, 1, 0, 1), const type::Vec4f& colorZ = type::Vec4f(0, 0, 1, 1)) = delete;
-
 
     //Draw a nice vector (cylinder + cone) given 2 points and a radius (used to draw the cylinder)
     static void draw(const type::Vec3& center, const type::Vec3& ext, const double& radius );

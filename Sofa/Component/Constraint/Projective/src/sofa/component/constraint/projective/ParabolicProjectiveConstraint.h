@@ -27,8 +27,6 @@
 #include <sofa/type/vector.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::constraint::projective
 {
 
@@ -58,25 +56,6 @@ public:
     typedef type::Quat<Real> QuatR;
 
 protected:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData< sofa::type::vector<sofa::Index> > m_indices;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<Vec3R> m_P1;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<Vec3R> m_P2;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<Vec3R> m_P3;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_tBegin;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> m_tEnd;
-
     ///indices of the DOFs constraints
     SetIndex d_indices;
 

@@ -40,8 +40,6 @@ DampVelocitySolver::DampVelocitySolver()
     : d_rate(initData(&d_rate, 0.99_sreal, "rate", "Factor used to reduce the velocities. Typically between 0 and 1.") )
     , d_threshold(initData(&d_threshold, 0.0_sreal, "threshold", "Threshold under which the velocities are canceled.") )
 {
-    rate.setOriginalData(&d_rate);
-    threshold.setOriginalData(&d_threshold);
 }
 
 void DampVelocitySolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId /*xResult*/, sofa::core::MultiVecDerivId vResult)

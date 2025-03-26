@@ -31,26 +31,6 @@ namespace sofa::helper
 class SOFA_HELPER_API NameDecoder
 {
 public:
-    SOFA_ATTRIBUTE_DISABLED__BASECLASS_FEATURES_IN_NAMEDECODER()
-    template<class T>
-    std::string getClassName()
-    {
-        return decodeNamespaceName(typeid(T));
-    }
-
-    SOFA_ATTRIBUTE_DISABLED__BASECLASS_FEATURES_IN_NAMEDECODER()
-    template<class T>
-    std::string getTemplateName()
-    {
-        return decodeTemplateName(typeid(T));
-    }
-
-    SOFA_ATTRIBUTE_DISABLED__BASECLASS_FEATURES_IN_NAMEDECODER()
-    template<class T>
-    static std::string getShortName()
-    {
-        return shortName(decodeTypeName(typeid(T)));
-    }
 
     /// Helper method to get the type name
     template<class T>
@@ -83,11 +63,6 @@ public:
 
     /// Helper method to extract the template name (removing namespaces and class name)
     static std::string decodeTemplateName(const std::type_info& t);
-
-private:
-    SOFA_ATTRIBUTE_DISABLED__BASECLASS_FEATURES_IN_NAMEDECODER()
-    template<class T>
-    struct DefaultTypeTemplateName{};
 };
 
 } /// namespace sofa::helper

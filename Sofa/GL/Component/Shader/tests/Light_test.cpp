@@ -49,9 +49,11 @@ class TestLight : public BaseTest {
 public:
 
     void doSetUp() override
- {
-         sofa::simpleapi::importPlugin(Sofa.GL.Component.Shader);
-         sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+    {
+        this->loadPlugins({
+            Sofa.GL.Component.Shader,
+            Sofa.Component.StateContainer
+        });
     }
 
     void checkSpotLightValidAttributes();

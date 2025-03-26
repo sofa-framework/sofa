@@ -23,6 +23,40 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <gtest/gtest.h>
 
+template < sofa::Size N, typename ValueType>
+void defaultConstructor()
+{
+    const sofa::type::Vec<N, ValueType> vec;
+    for (const auto& value : vec)
+    {
+        EXPECT_EQ(value, ValueType());
+    }
+}
+
+
+TEST(VecTest, DefaultConstructor)
+{
+    defaultConstructor<1, unsigned int>();
+    defaultConstructor<2, unsigned int>();
+    defaultConstructor<3, unsigned int>();
+    defaultConstructor<6, unsigned int>();
+
+    defaultConstructor<1, int>();
+    defaultConstructor<2, int>();
+    defaultConstructor<3, int>();
+    defaultConstructor<6, int>();
+
+    defaultConstructor<1, float>();
+    defaultConstructor<2, float>();
+    defaultConstructor<3, float>();
+    defaultConstructor<6, float>();
+
+    defaultConstructor<1, double>();
+    defaultConstructor<2, double>();
+    defaultConstructor<3, double>();
+    defaultConstructor<6, double>();
+}
+
 TEST(VecTest, StructuredBindings)
 {
     constexpr sofa::type::Vec3 vec { 1.0, 2.0, 3.0 };

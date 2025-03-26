@@ -27,8 +27,6 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/map_ptr_stable_compare.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::collision::response::contact
 {
 
@@ -36,13 +34,6 @@ class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API CollisionResponse : public c
 {
 public :
     SOFA_CLASS(CollisionResponse,sofa::core::collision::ContactManager);
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::helper::OptionsGroup> response;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_RESPONSE_CONTACT()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::string> responseParams;
-
 
     Data<sofa::helper::OptionsGroup> d_response; ///< contact response class
     Data<std::string> d_responseParams; ///< contact response parameters (syntax: name1=value1&name2=value2&...)
@@ -67,28 +58,6 @@ public :
         if (arg)
             obj->parse(arg);
 
-        //SOFA_ATTRIBUTE_DISABLED("v21.12 (PR#2522)", "v24.06","This attribute was only added to build a compatibility layer on the response name.")
-        {
-            static const std::map<std::string,std::string> renamingResponseMethod = {
-                {"ray", "RayContact"},
-                {"default", "PenalityContactForceField"},
-                {"FrictionContact", "FrictionContactConstraint"},
-                {"registration", "RegistrationContactForceField"},
-                {"stick", "StickContactForceField"},
-            };
-
-            const std::string responseDesired = arg->getAttribute("response","");
-            const auto it = renamingResponseMethod.find(responseDesired);
-
-            if(it != renamingResponseMethod.end())
-            {
-                msg_error("CollisionResponse")
-                    << "Option \"" << it->first << "\" "
-                    << "for data \"response\" has been renamed since v21.12 (PR#2522). "
-                    << "Use \"" << it->second << "\" instead.";
-            }
-        }
-        
         return obj;
     }
 

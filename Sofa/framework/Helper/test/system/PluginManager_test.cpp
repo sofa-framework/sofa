@@ -196,8 +196,6 @@ TEST_F(PluginManager_test, pluginEntries)
     EXPECT_TRUE(p.getModuleVersion.func != nullptr);
     EXPECT_TRUE(p.getModuleLicense.func != nullptr);
     EXPECT_TRUE(p.getModuleDescription.func != nullptr);
-    EXPECT_TRUE(p.getModuleComponentList.func != nullptr);
-
 }
 
 TEST_F(PluginManager_test, pluginEntriesValues)
@@ -226,8 +224,8 @@ TEST_F(PluginManager_test, pluginEntriesValues)
     ASSERT_EQ(0, std::string(p.getModuleDescription()).compare(testModuleDescription));
     ASSERT_NE(0, std::string(p.getModuleDescription()).compare(testModuleDescription + "blablablabalbal"));
 
-    ASSERT_EQ(0, std::string(p.getModuleComponentList()).compare(testModuleComponentList));
-    ASSERT_NE(0, std::string(p.getModuleComponentList()).compare(testModuleComponentList + "ComponentZ"));
+    ASSERT_EQ(0, std::string(sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(testModuleName)).compare(testModuleComponentList));
+    ASSERT_NE(0, std::string(sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(testModuleName)).compare(testModuleComponentList + "ComponentZ"));
 
 }
 

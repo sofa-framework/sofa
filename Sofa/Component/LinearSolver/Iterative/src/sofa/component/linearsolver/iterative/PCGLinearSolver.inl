@@ -49,14 +49,6 @@ PCGLinearSolver<TMatrix,TVector>::PCGLinearSolver()
     d_graph.setWidget("graph");
     first = true;
     this->f_listening.setValue(true);
-
-    f_maxIter.setOriginalData(&d_maxIter);
-    f_tolerance.setOriginalData(&d_tolerance);
-    f_use_precond.setOriginalData(&d_use_precond);
-    f_update_step.setOriginalData(&d_update_step);
-    f_build_precond.setOriginalData(&d_build_precond);
-    f_graph.setOriginalData(&d_graph);
-
 }
 
 template<class TMatrix, class TVector>

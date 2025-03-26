@@ -27,8 +27,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::mapping::nonlinear
 {
 
@@ -75,12 +73,6 @@ public:
     typedef typename type::vector<const InVecCoord*> vecConstInVecCoord;
     typedef sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef type::Vec<In::spatial_dimensions,Real> Direction;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_NONLINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_computeDistance;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_NONLINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<Real>>  f_restLengths;
 
     Data<bool> d_computeDistance; ///< if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial length of each of them
     Data<type::vector<Real>> d_restLengths; ///< Rest lengths of the connections

@@ -43,9 +43,6 @@ public:
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
-    SOFA_ATTRIBUTE_DISABLED__PRECONDITIONER_VERBOSEDATA()
-    sofa::core::objectmodel::lifecycle::RemovedData f_verbose{this, "v23.12", "v24.06", "verbose", "This Data is no longer used"};
-
 protected:
     JacobiPreconditioner();
 public:
