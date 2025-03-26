@@ -30,8 +30,6 @@
 #include <sofa/type/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::mapping::nonlinear
 {
 
@@ -75,17 +73,6 @@ public:
     using InVecCoord = VecCoord_t<In>;
 
     typedef type::Vec<In::deriv_total_size> Direction;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_NONLINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<unsigned>> f_indices;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_NONLINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<InVecCoord> f_targetPositions;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_NONLINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<Real>> f_restDistances;
-
-// d_showObjectScale and d_color are already up-to-date with the new naming convention, so they do not require deprecation notices.
 
     Data<type::vector<unsigned>> d_indices; ///< Indices of the parent points
     Data<InVecCoord> d_targetPositions; ///< Positions to compute the distances from

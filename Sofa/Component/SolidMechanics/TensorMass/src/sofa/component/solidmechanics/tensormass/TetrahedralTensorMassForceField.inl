@@ -236,15 +236,11 @@ TetrahedralTensorMassForceField<DataTypes>::TetrahedralTensorMassForceField()
     , d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
     , m_topology(nullptr)
 {
-        f_poissonRatio.setOriginalData(&d_poissonRatio);
-        edgeInfo.setOriginalData(&d_edgeInfo);
-        f_youngModulus.setOriginalData(&d_youngModulus);
 }
 
 template <class DataTypes> 
 TetrahedralTensorMassForceField<DataTypes>::~TetrahedralTensorMassForceField()
 {
-
 }
 
 template <class DataTypes> void 

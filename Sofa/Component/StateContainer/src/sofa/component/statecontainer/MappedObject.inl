@@ -32,9 +32,6 @@ MappedObject<DataTypes>::MappedObject()
     : d_X(initData(&d_X, "position", "position vector") )
     , d_V(initData(&d_V, "velocity", "velocity vector") )
 {
-    f_X.setOriginalData(&d_X);
-    f_V.setOriginalData(&d_V);
-
 }
 
 template <class DataTypes>

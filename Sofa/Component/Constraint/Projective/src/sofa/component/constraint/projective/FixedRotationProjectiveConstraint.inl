@@ -37,10 +37,6 @@ FixedRotationProjectiveConstraint<DataTypes>::FixedRotationProjectiveConstraint(
       d_fixedYRotation(initData(&d_fixedYRotation, false, "FixedYRotation", "Prevent Rotation around Y axis")),
       d_fixedZRotation(initData(&d_fixedZRotation, false, "FixedZRotation", "Prevent Rotation around Z axis"))
 {
-          FixedXRotation.setOriginalData(&d_fixedXRotation);
-          FixedYRotation.setOriginalData(&d_fixedYRotation);
-          FixedZRotation.setOriginalData(&d_fixedZRotation);
-
 }
 
 

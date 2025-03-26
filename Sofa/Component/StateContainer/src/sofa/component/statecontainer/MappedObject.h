@@ -26,8 +26,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::statecontainer
 {
 //using core::objectmodel::Data;
@@ -63,12 +61,6 @@ protected:
     virtual ~MappedObject();
 public:
     void init() override;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_STATECONTAINER()
-    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> f_X;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_STATECONTAINER()
-    sofa::core::objectmodel::lifecycle::RenamedData<VecDeriv> f_V;
 
     Data<VecCoord> d_X; ///< position vector
     Data<VecDeriv> d_V; ///< velocity vector

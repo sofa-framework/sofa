@@ -43,9 +43,6 @@ LineCollisionModel<DataTypes>::LineCollisionModel()
     , mstate(nullptr), topology(nullptr), meshRevision(-1)
 {
     enum_type = LINE_TYPE;
-
-    bothSide.setOriginalData(&d_bothSide);
-    m_displayFreePosition.setOriginalData(&d_displayFreePosition);
 }
 
 

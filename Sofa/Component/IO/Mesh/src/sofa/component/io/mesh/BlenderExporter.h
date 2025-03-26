@@ -25,7 +25,7 @@
 #include <sofa/component/io/mesh/config.h>
 
 #include <sofa/core/State.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/simulation/BaseSimulationExporter.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -54,10 +54,10 @@ namespace _blenderexporter_
 // TODO: currently the export only support soft body and hair simulations, clothes, smoke and fluid simulation could be added.
 
 template<class T>
-class SOFA_COMPONENT_IO_MESH_API BlenderExporter: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_IO_MESH_API BlenderExporter: public sofa::simulation::BaseSimulationExporter
 {
 public:
-    typedef core::objectmodel::BaseObject Inherit;
+    typedef sofa::simulation::BaseSimulationExporter Inherit;
     typedef sofa::core::State<T> DataType;
     typedef typename DataType::VecCoord VecCoord;
     typedef typename DataType::VecDeriv VecDeriv;
@@ -68,7 +68,7 @@ public:
 
     typedef enum{SoftBody,Particle,Cloth,Hair}SimulationType;
 
-    SOFA_CLASS(SOFA_TEMPLATE(BlenderExporter,T),core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(BlenderExporter,T),sofa::simulation::BaseSimulationExporter);
 
     Data < std::string > d_path; ///< output path
     Data < std::string > d_baseName; ///< Base name for the output files
@@ -88,11 +88,11 @@ public:
 
     static const char* Name(){return "Blender exporter";}
 
-    void init() override;
+    void doInit() override;
+    void doReInit() override;
+    bool write() override;
 
     void reset() override;
-
-    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -107,10 +107,6 @@ public:
         }
         return BaseObject::canCreate(obj, context, arg);
     }
-
-protected:
-
-    unsigned frameCounter;
 };
 
 } // namespace _blenderexporter_

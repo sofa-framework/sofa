@@ -29,8 +29,6 @@
 #include <sofa/type/Mat.h>
 #include <sofa/core/topology/TopologyData.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::solidmechanics::spring
 {
 
@@ -115,22 +113,6 @@ protected:
         }
     };
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> _initialPoints;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_poissonRatio;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_youngModulus;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_dampingRatio;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_useAngularSprings;
-
-
     Data< VecCoord > d_initialPoints; ///< Initial Position
 
     bool updateMatrix;
@@ -203,13 +185,7 @@ public:
     */
     void applyTriangleDestruction(Index triangleIndex, TriangleRestInformation& tinfo);
 
-protected :
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<TriangleRestInformation>> triangleInfo;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<EdgeRestInformation> > edgeInfo;
-
+protected:
     sofa::core::topology::TriangleData<sofa::type::vector<TriangleRestInformation> > d_triangleInfo; ///< Internal triangle data
     sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > d_edgeInfo; ///< Internal edge data
 

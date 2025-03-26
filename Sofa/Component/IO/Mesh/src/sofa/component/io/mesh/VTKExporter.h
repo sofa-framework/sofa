@@ -29,8 +29,8 @@
 
 #include <fstream>
 
-
 #include <sofa/simulation/BaseSimulationExporter.h>
+
 
 namespace sofa::component::_vtkexporter_
 {

@@ -68,11 +68,6 @@ BilateralLagrangianConstraint<DataTypes>::BilateralLagrangianConstraint(Mechanic
     });
 
     this->f_listening.setValue(true);
-
-    m1.setOriginalData(&d_m1);
-    m2.setOriginalData(&d_m2);
-    restVector.setOriginalData(&d_restVector);
-    keepOrientDiff.setOriginalData(&d_keepOrientDiff);
 }
 
 template<class DataTypes>
