@@ -67,9 +67,11 @@ public:
 
     void doSetUp() override
     {
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
-        sofa::simpleapi::importPlugin(Sofa.Component.Visual);
-        sofa::simpleapi::importPlugin(Sofa.Component.IO.Mesh);
+        loadPlugins({
+            Sofa.Component.StateContainer,
+            Sofa.Component.Visual,
+            Sofa.Component.IO.Mesh
+        });
     }
 
     void doTearDown() override

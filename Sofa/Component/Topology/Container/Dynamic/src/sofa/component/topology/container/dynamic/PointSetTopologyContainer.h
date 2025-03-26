@@ -26,8 +26,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseTopology.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::topology::container::dynamic
 {
 class PointSetTopologyModifier;
@@ -159,9 +157,6 @@ protected:
     bool m_pointTopologyDirty = false;
 
 private:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_DYNAMIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<Size> nbPoints;
-
     Data<Size> d_nbPoints; ///< Number of points
 };
 

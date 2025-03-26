@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,49 +19,58 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMain/init.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
-#include <iostream>
-#include <fstream>
-#include <string>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
-using std::string;
-using namespace sofa::core;
-using namespace sofa::core::objectmodel;
-
-string make_link(ObjectFactory::Creator::SPtr creator) {
-    const BaseClass* Class = creator->getClass();
-    string str(Class->namespaceName + "::" + Class->className);
-    size_t index;
-    while ((index = str.find("::", 0)) != string::npos)
-        str.replace(index, 2, "_1_1");
-    for (char c = 'A'; c <= 'Z' ; c++)
-        while ((index = str.find(c, 0)) != string::npos)
-            str.replace(index, 1, "_"+string(1, c-'A'+'a'));
-    string link(string(creator->getTarget()) + "/class" + str + ".html");
-    return "<a href=\"../" + link + "\">" + Class->className +"</a>";
-}
-
-
-void print(const std::string& s) {
-    std::cout << s << std::endl;
-}
-
-int main()
+namespace sofa::core::behavior
 {
-    sofa::component::init();
-    std::vector<ObjectFactory::ClassEntry::SPtr> entries;
-    ObjectFactory::getInstance()->getAllEntries(entries);
-    print("/**");
-    print("   \\page sofa_modules_component_list Component List");
-    print("  <ul>");
-    for (size_t i = 0 ; i != entries.size() ; i++)
-        if (!entries[i]->creatorMap.empty()) {
-            const ObjectFactory::Creator::SPtr creator = entries[i]->creatorMap.begin()->second;
-            print("    <li>" + make_link(creator) + "</li>");
+
+template<class DataTypes>
+void SingleStateAccessor<DataTypes>::init()
+{
+    Inherit1::init();
+
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+
+    if (!mstate.get())
+    {
+        mstate.set(dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));
+
+        if(!mstate)
+        {
+
+            msg_error() << "No compatible MechanicalState found in the current context. "
+                "This may be because there is no MechanicalState in the local context, "
+                "or because the type is not compatible";
+            d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         }
-    print("  </ul>");
-    print("*/");
-    return 0;
+        else
+        {
+            msg_info() << "No link given for mstate, but it has been found in the context";
+        }
+    }
+
+    l_mechanicalStates.clear();
+    l_mechanicalStates.add(mstate);
+}
+
+template<class DataTypes>
+auto SingleStateAccessor<DataTypes>::getMState() -> MechanicalState<DataTypes>*
+{ 
+    return mstate.get(); 
+}
+
+template<class DataTypes>
+auto SingleStateAccessor<DataTypes>::getMState() const -> const MechanicalState<DataTypes>*
+{ 
+    return mstate.get(); 
+}
+
+template<class DataTypes>
+SingleStateAccessor<DataTypes>::SingleStateAccessor(MechanicalState<DataTypes> *mm)
+    : Inherit1()
+    , mstate(initLink("mstate", "MechanicalState used by this component"), mm)
+{}
+
 }

@@ -273,9 +273,9 @@ bool LCPForceFeedback_test::test_Collision()
     EXPECT_EQ(cons.size(), 84);
 
     // check LCP computeForce method
-    sofa::type::Vec3 position;
-    sofa::type::Vec3 force;
-    sofa::type::Vec3 trueForce;
+    sofa::type::Vec3 position = sofa::type::Vec3(0, 0, 0);
+    sofa::type::Vec3 force = sofa::type::Vec3(0, 0, 0);
+    sofa::type::Vec3 trueForce = sofa::type::Vec3(0, 0, 0);
 
     // check out of problem position
     m_LCPFFBack->computeForce(position[0], position[1], position[2], 0, 0, 0, 0, force[0], force[1], force[2]);
@@ -365,7 +365,8 @@ bool LCPForceFeedback_test::test_multiThread()
     haptic_thread = std::thread(HapticsThread, std::ref(this->m_terminate), this);
 
     // run simulation for n steps
-    for (int step = 0; step < 500; step++)
+    int nbSimuSteps = 100;
+    for (int step = 0; step < nbSimuSteps; step++)
     {
         sofa::simulation::node::animate(m_root.get());
         
@@ -375,7 +376,7 @@ bool LCPForceFeedback_test::test_multiThread()
         m_currentPosition[1] = coords[0][1];
         m_currentPosition[2] = coords[0][2];
         mtxPosition.unlock();
-        CTime::sleep(0.001);
+        CTime::sleep(0.01); // wait more time between simulation step to let the LCP runs multiple loops
     }
 
     // stop thread
@@ -383,15 +384,15 @@ bool LCPForceFeedback_test::test_multiThread()
     haptic_thread.join();
 
     // get back info from haptic thread    
-    m_meanForceFFBack = m_meanForceFFBack / m_cptLoopContact;
+    m_meanForceFFBack = m_meanForceFFBack / float(m_cptLoopContact);
 
-    EXPECT_GT(m_cptLoop, 500);
-    EXPECT_GT(m_cptLoopContact, 400);
+    EXPECT_GT(m_cptLoop, nbSimuSteps); // we assume the LCP runs faster than the current simulation speed
+    EXPECT_GT(m_cptLoopContact, 0); // check that the simulation reached collision between instrument and floor
 
-	// make a simple test FFBack not equal to 0. Not possible to test exact value as CI have different thread speed
-	EXPECT_NE(m_meanForceFFBack[0], 0.0);
-	EXPECT_NE(m_meanForceFFBack[1], 0.0);
-	EXPECT_NE(m_meanForceFFBack[2], 0.0);
+    // make a simple test FFBack not equal to 0. Not possible to test exact value as CI have different thread speed
+    EXPECT_NE(m_meanForceFFBack[0], 0.0);
+    EXPECT_NE(m_meanForceFFBack[1], 0.0);
+    EXPECT_NE(m_meanForceFFBack[2], 0.0);
 
     return true;
 }

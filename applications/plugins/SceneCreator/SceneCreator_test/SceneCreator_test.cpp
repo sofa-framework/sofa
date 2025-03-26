@@ -60,8 +60,18 @@ class SceneCreator_test : public BaseSimulationTest
 public:
     void doSetUp() override
     {
-        sofa::simpleapi::importPlugin(Sofa.Component);
-        sofa::simpleapi::importPlugin(Sofa.GL.Component.Rendering3D);
+        this->loadPlugins({
+            Sofa.Component.Collision.Detection.Algorithm,
+            Sofa.Component.Collision.Detection.Intersection,
+            Sofa.Component.Collision.Response.Contact,
+            Sofa.Component.StateContainer,
+            Sofa.Component.Mass,
+            Sofa.Component.SolidMechanics.FEM.Elastic,
+            Sofa.Component.Topology.Container,
+            Sofa.Component.Collision.Geometry,
+            Sofa.Component.Mapping.Linear,
+            Sofa.GL.Component.Rendering3D
+        });
     }
 
     bool createCubeFailed();

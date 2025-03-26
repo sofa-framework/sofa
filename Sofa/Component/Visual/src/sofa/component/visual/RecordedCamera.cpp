@@ -64,26 +64,6 @@ RecordedCamera::RecordedCamera()
     , firstIterationforNavigation(true)
 {
     this->f_listening.setValue(true);
-
-    p_zoomSpeed.setOriginalData(&d_zoomSpeed);
-    p_panSpeed.setOriginalData(&d_panSpeed);
-    p_pivot.setOriginalData(&d_pivot);
-    m_startTime.setOriginalData(&d_startTime);
-    m_endTime.setOriginalData(&d_endTime);
-    m_rotationMode.setOriginalData(&d_rotationMode);
-    m_translationMode.setOriginalData(&d_translationMode);
-    m_navigationMode.setOriginalData(&d_navigationMode);
-    m_rotationSpeed.setOriginalData(&d_rotationSpeed);
-    m_rotationCenter.setOriginalData(&d_rotationCenter);
-    m_rotationStartPoint.setOriginalData(&d_rotationStartPoint);
-    m_rotationLookAt.setOriginalData(&d_rotationLookAt);
-    m_rotationAxis.setOriginalData(&d_rotationAxis);
-    m_cameraUp.setOriginalData(&d_cameraUp);
-    p_drawRotation.setOriginalData(&d_drawRotation);
-    p_drawTranslation.setOriginalData(&d_drawTranslation);
-    m_translationPositions.setOriginalData(&d_translationPositions);
-    m_translationOrientations.setOriginalData(&d_translationOrientations);
-
 }
 
 void RecordedCamera::init()

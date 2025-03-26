@@ -36,6 +36,7 @@
 #include <sofa/component/constraint/lagrangian/model/BilateralConstraintResolution.h>
 
 #include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+#include <sofa/core/objectmodel/DataCallback.h>
 
 namespace sofa::component::constraint::lagrangian::model
 {
@@ -118,6 +119,9 @@ protected:
 
     Data<bool> d_activate; ///< control constraint activation (true by default)
     Data<bool> d_keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
+    Data<SReal> d_load; ///< Apply this factor to the constraint force to enable incremental loading. This value should be in the interval [0.0, 1.0].
+    core::objectmodel::DataCallback c_loadCallback;
+
 
 
     SingleLink<BilateralLagrangianConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology1; ///< Link to be set to the first topology container in order to support topological changes

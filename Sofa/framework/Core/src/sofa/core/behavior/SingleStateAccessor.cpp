@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,11 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_LOCALSTORAGE_H
-#define SOFA_SIMULATION_TREE_LOCALSTORAGE_H
+#define SOFA_CORE_BEHAVIOR_SINGLESTATEACCESSOR_CPP
 
-#include <sofa/simulation/config.h>
+#include <sofa/core/behavior/SingleStateAccessor.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-SOFA_HEADER_DISABLED_LOCALSTORAGE()
+namespace sofa::core::behavior
+{
 
-#endif
+using namespace sofa::defaulttype;
+
+template class SOFA_CORE_API SingleStateAccessor<Vec1Types>;
+template class SOFA_CORE_API SingleStateAccessor<Vec2Types>;
+template class SOFA_CORE_API SingleStateAccessor<Vec3Types>;
+template class SOFA_CORE_API SingleStateAccessor<Vec6Types>;
+template class SOFA_CORE_API SingleStateAccessor<Rigid2Types>;
+template class SOFA_CORE_API SingleStateAccessor<Rigid3Types>;
+
+}

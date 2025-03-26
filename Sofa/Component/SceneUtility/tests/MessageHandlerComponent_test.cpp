@@ -45,8 +45,6 @@ using sofa::helper::logging::MessageDispatcher ;
 
 bool perTestInit()
 {
-    sofa::simpleapi::importPlugin(Sofa.Component.SceneUtility);
-
     /// THE TESTS HERE ARE NOT INHERITING FROM SOFA TEST SO WE NEED TO MANUALLY INSTALL THE HANDLER
     /// DO NO REMOVE
     MessageDispatcher::addHandler( sofa::testing::MainGtestMessageHandler::getInstance() );
@@ -58,6 +56,7 @@ bool inited = perTestInit() ;
 
 TEST(MessageHandlerComponent, simpleInit)
 {
+    const auto plugins = sofa::testing::makeScopedPlugin({Sofa.Component.SceneUtility});
     const string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
@@ -78,6 +77,7 @@ TEST(MessageHandlerComponent, simpleInit)
 
 TEST(MessageHandlerComponent, missingHandler)
 {
+    const auto plugins = sofa::testing::makeScopedPlugin({Sofa.Component.SceneUtility});
     const string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
@@ -94,6 +94,7 @@ TEST(MessageHandlerComponent, missingHandler)
 
 TEST(MessageHandlerComponent, invalidHandler)
 {
+    const auto plugins = sofa::testing::makeScopedPlugin({Sofa.Component.SceneUtility});
     const string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
@@ -110,6 +111,7 @@ TEST(MessageHandlerComponent, invalidHandler)
 
 TEST(MessageHandlerComponent, clangHandler)
 {
+    const auto plugins = sofa::testing::makeScopedPlugin({Sofa.Component.SceneUtility});
     const string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
