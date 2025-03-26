@@ -48,12 +48,6 @@ TorsionForceField<DataTypes>::TorsionForceField() :
         m_u.normalize();
         return sofa::core::objectmodel::ComponentState::Valid;
     }, {&d_indices});
-
-    m_indices.setOriginalData(&d_indices);
-    m_torque.setOriginalData(&d_torque);
-    m_axis.setOriginalData(&d_axis);
-    m_origin.setOriginalData(&d_origin);
-
 }
 
 template<typename DataTypes>

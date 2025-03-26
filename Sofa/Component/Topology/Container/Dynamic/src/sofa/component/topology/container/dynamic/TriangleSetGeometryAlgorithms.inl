@@ -1324,7 +1324,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
     sofa::type::vector<Real>& baryCoefs) const
 {
     // Get coordinates of each vertex of the triangle
-    const typename DataTypes::VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& coords = (this->object->read(core::vec_id::read_access::position)->getValue());
     const Triangle& tri = this->m_topology->getTriangle(triId);
 
     const typename DataTypes::Coord& c0 = coords[tri[0]];
@@ -1949,7 +1949,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangulationInte
     if (ind_ta == ind_tb)
         return false;
 
-    const typename DataTypes::VecCoord& coords = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& coords = (this->object->read(core::vec_id::read_access::position)->getValue());
     sofa::type::Vec<3, Real> current_point = ptA;
     TriangleID current_triID = ind_ta;
     EdgeID current_edgeID = sofa::InvalidID;

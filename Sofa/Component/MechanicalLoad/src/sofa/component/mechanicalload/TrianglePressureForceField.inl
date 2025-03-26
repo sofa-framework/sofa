@@ -46,14 +46,7 @@ template <class DataTypes>  TrianglePressureForceField<DataTypes>::TrianglePress
     , d_trianglePressureMap(initData(&d_trianglePressureMap, "trianglePressureMap", "Map between triangle indices and their pressure"))
     , m_topology(nullptr)
 {
-    pressure.setOriginalData(&d_pressure);
-    cauchyStress.setOriginalData(&d_cauchyStress);
-    triangleList.setOriginalData(&d_triangleList);
-    p_showForces.setOriginalData(&d_showForces);
-    p_useConstantForce.setOriginalData(&d_useConstantForce);
-
-
-    this->addUpdateCallback("pressure_change", { &pressure }, [this](const core::DataTracker& t)
+    this->addUpdateCallback("pressure_change", { &d_pressure }, [this](const core::DataTracker& t)
     {
         SOFA_UNUSED(t);
         updateTriangleInformation();
@@ -61,13 +54,12 @@ template <class DataTypes>  TrianglePressureForceField<DataTypes>::TrianglePress
     }, {});
 
 
-    this->addUpdateCallback("triangles_change", { &triangleList }, [this](const core::DataTracker& t)
+    this->addUpdateCallback("triangles_change", { &d_triangleList }, [this](const core::DataTracker& t)
     {
         SOFA_UNUSED(t);
         initTriangleInformation();
         return sofa::core::objectmodel::ComponentState::Valid;
     }, {});
-
 }
 
 
@@ -151,11 +143,11 @@ void TrianglePressureForceField<DataTypes>::addDForce(const core::MechanicalPara
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::initTriangleInformation()
 {
-    if (triangleList.getValue().empty())
+    if (d_triangleList.getValue().empty())
         return;
 
     // Get list of input triangle indices
-    type::vector<Index> _triangleList = triangleList.getValue();
+    type::vector<Index> _triangleList = d_triangleList.getValue();
 
     // Get write access to TopologySubset Data storing pressure information per triangle
     auto my_subset = sofa::helper::getWriteOnlyAccessor(d_trianglePressureMap);
@@ -165,7 +157,7 @@ void TrianglePressureForceField<DataTypes>::initTriangleInformation()
 
     // Fill pressure data
     const VecCoord& x0 = this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
-    const Deriv& my_pressure = pressure.getValue();
+    const Deriv& my_pressure = d_pressure.getValue();
 
     for (unsigned int i = 0; i < _triangleList.size(); ++i)
     {
@@ -188,7 +180,7 @@ void TrianglePressureForceField<DataTypes>::updateTriangleInformation()
 {
     sofa::type::vector<TrianglePressureInformation>& my_subset = *(d_trianglePressureMap).beginEdit();
 
-    const Deriv& my_pressure = pressure.getValue();
+    const Deriv& my_pressure = d_pressure.getValue();
     for (unsigned int i = 0; i < my_subset.size(); ++i)
         my_subset[i].force = (my_pressure * my_subset[i].area);
 
@@ -198,7 +190,7 @@ void TrianglePressureForceField<DataTypes>::updateTriangleInformation()
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!p_showForces.getValue())
+    if (!d_showForces.getValue())
         return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();

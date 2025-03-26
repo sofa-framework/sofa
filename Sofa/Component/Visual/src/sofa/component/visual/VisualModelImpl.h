@@ -32,8 +32,6 @@
 
 #include <string>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::visual
 {
 
@@ -78,58 +76,6 @@ public:
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_initRestPositions;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_useNormals;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_updateNormals;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_computeTangents;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_updateTangents;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_handleDynamicTopology;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_fixMergedUVSeams;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_keepLines;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> m_vertices2;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< VecTexCoord > m_vtexcoords;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< VecCoord > m_vtangents;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< VecCoord > m_vbitangents;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< VecVisualEdge > m_edges;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< VecVisualTriangle >  m_triangles;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< VecVisualQuad > m_quads;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::vector<visual_index_type> > m_vertPosIdx;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::vector<visual_index_type> > m_vertNormIdx;
-
-
     Data<bool> d_initRestPositions; ///< True if rest positions must be initialized with initial positions
     Data<bool> d_useNormals; ///< True if normals should be read from file
     Data<bool> d_updateNormals; ///< True if normals should be updated at each iteration
@@ -162,33 +108,12 @@ public:
     virtual void internalDraw(const core::visual::VisualParams* /*vparams*/, bool /*transparent*/) {}
 
 public:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::DataFileName fileMesh;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::DataFileName texturename;
-
     sofa::core::objectmodel::DataFileName d_fileMesh;
     sofa::core::objectmodel::DataFileName d_texturename;
 
     /// @name Initial transformation attributes
     /// @{
     typedef sofa::type::Vec<3,Real> Vec3Real;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< Vec3Real >m_translation;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< Vec3Real >  m_rotation;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< Vec3Real >m_scale;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< TexCoord > m_scaleTex;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< TexCoord >  m_translationTex;
 
     Data< Vec3Real > d_translation; ///< Initial Translation of the object
     Data< Vec3Real > d_rotation; ///< Initial Rotation of the object
@@ -230,15 +155,6 @@ public:
 
     sofa::type::Vec3f bbox[2];
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< sofa::type::Material >material;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> putOnlyTexCoords;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> srgbTexturing;
-
     Data< sofa::type::Material > d_material;
     Data< bool > d_putOnlyTexCoords;
     Data< bool > d_srgbTexturing;
@@ -276,11 +192,6 @@ public:
             return in;
         }
     };
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::vector<sofa::type::Material> > materials;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_VISUAL()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::vector<FaceGroup> > groups;
 
     Data< type::vector<sofa::type::Material> > d_materials;
     Data< type::vector<FaceGroup> > d_groups;

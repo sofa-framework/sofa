@@ -33,8 +33,6 @@
 #include <sofa/core/topology/TopologyData.h>
 #include <sofa/type/trait/Rebind.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::solidmechanics::tensormass
 {
 
@@ -87,12 +85,6 @@ protected:
     VecCoord  _initialPoints;///< the initial positions of the points
 
     bool updateMatrix;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_poissonRatio;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_youngModulus;
 
     Data<Real> d_poissonRatio; ///< Poisson ratio in Hooke's law
     Data<Real> d_youngModulus; ///< Young's modulus in Hooke's law
@@ -165,9 +157,6 @@ public:
     core::topology::EdgeData < edgeRestInfoVector >& getEdgeInfo() { return d_edgeInfo; }
 
 protected:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_TENSORMASS()
-    sofa::core::objectmodel::lifecycle::RenamedData <edgeRestInfoVector> edgeInfo;
-
     core::topology::EdgeData < edgeRestInfoVector > d_edgeInfo; ///< Internal edge data
 
     sofa::core::topology::BaseMeshTopology* m_topology;

@@ -32,8 +32,6 @@
 #include <poll.h>
 #endif
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::playback
 {
 
@@ -74,27 +72,6 @@ public:
     void handleEvent(core::objectmodel::Event *event) override;
 
 private:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::DataFileName filename;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> inverseSense;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_printEvent;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::lifecycle::RenamedData<char> p_key1;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::lifecycle::RenamedData<char> p_key2;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_writeEvents;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_PLAYBACK()
-    sofa::core::objectmodel::DataFileName p_outputFilename;
-
     sofa::core::objectmodel::DataFileName d_filename; ///< file in which the events are read.
     Data<bool> d_inverseSense; ///< inverse the sense of the movement
     Data<bool> d_printEvent; ///< Print event information

@@ -31,8 +31,6 @@
 #include <vector>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::solidmechanics::spring
 {
 
@@ -288,21 +286,6 @@ public:
         getVectorAngle(u,v,w);
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<Spring> > springs;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::DataFileName f_filename;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_period;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_reinit;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> showFactorSize;
-
     /// the list of the springs
     Data<sofa::type::vector<Spring> > d_springs;
     sofa::core::objectmodel::DataFileName d_filename; ///< output file name
@@ -312,7 +295,6 @@ public:
 
     /// bool to allow the display of the extra torsion
     Data<Real> d_showFactorSize;
-
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_GEARSPRINGFORCEFIELD_CPP)

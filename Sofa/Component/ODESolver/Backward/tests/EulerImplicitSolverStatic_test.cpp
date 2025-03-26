@@ -103,12 +103,14 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
         const simulation::Node::SPtr root = simpleapi::createRootNode(simu, "root");
         //*******
         // begin create scene under the root node
-        sofa::simpleapi::importPlugin(Sofa.Component.ODESolver);
-        sofa::simpleapi::importPlugin(Sofa.Component.LinearSolver.Iterative);
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
-        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
-        sofa::simpleapi::importPlugin(Sofa.Component.Constraint.Projective);
-        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.Spring);
+        this->loadPlugins({
+            Sofa.Component.ODESolver.Backward,
+            Sofa.Component.LinearSolver.Iterative,
+            Sofa.Component.StateContainer,
+            Sofa.Component.Mass,
+            Sofa.Component.Constraint.Projective,
+            Sofa.Component.SolidMechanics.Spring
+        });
 
         // remove warnings
         simpleapi::createObject(root, "DefaultAnimationLoop", {});
@@ -144,8 +146,8 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
         // run simulation
 
         Eigen::VectorXd x0, x1, v0, v1;
-        x0 = component::odesolver::testing::getVector( root, core::VecId::position() ); //cerr<<"EulerImplicit_test, initial positions : " << x0.transpose() << endl;
-        v0 = component::odesolver::testing::getVector( root, core::VecId::velocity() );
+        x0 = component::odesolver::testing::getVector( root, core::vec_id::write_access::position ); //cerr<<"EulerImplicit_test, initial positions : " << x0.transpose() << endl;
+        v0 = component::odesolver::testing::getVector( root, core::vec_id::write_access::velocity );
 
         Eigen::VectorXd::RealScalar dx, dv;
         unsigned n=0;
@@ -154,8 +156,8 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
         do {
             sofa::simulation::node::animate(root.get(), 1_sreal);
 
-            x1 = component::odesolver::testing::getVector( root, core::VecId::position() ); //cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
-            v1 = component::odesolver::testing::getVector( root, core::VecId::velocity() );
+            x1 = component::odesolver::testing::getVector( root, core::vec_id::read_access::position ); //cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
+            v1 = component::odesolver::testing::getVector( root, core::vec_id::read_access::velocity );
 
             dx = (x0-x1).lpNorm<Eigen::Infinity>();
             dv = (v0-v1).lpNorm<Eigen::Infinity>();
@@ -201,12 +203,15 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         // create scene
         root->setGravity(Vec3(0,0,0));
 
-        sofa::simpleapi::importPlugin(Sofa.Component.ODESolver);
-        sofa::simpleapi::importPlugin(Sofa.Component.LinearSolver.Iterative);
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
-        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
-        sofa::simpleapi::importPlugin(Sofa.Component.Constraint.Projective);
-        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.Spring);
+        loadPlugins({
+            Sofa.Component.ODESolver.Backward,
+            Sofa.Component.LinearSolver.Iterative,
+            Sofa.Component.StateContainer,
+            Sofa.Component.Mass,
+            Sofa.Component.Constraint.Projective,
+            Sofa.Component.SolidMechanics.Spring
+        });
+
         // remove warnings
         simpleapi::createObject(root, "DefaultAnimationLoop", {});
         simpleapi::createObject(root, "DefaultVisualManagerLoop", {});
@@ -260,8 +265,8 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         // run simulation
 
         Eigen::VectorXd x0, x1, v0, v1;
-        x0 = component::odesolver::testing::getVector(root, core::VecId::position() ); //cerr<<"EulerImplicit_test, initial positions : " << x0.transpose() << endl;
-        v0 = component::odesolver::testing::getVector(root, core::VecId::velocity() );
+        x0 = component::odesolver::testing::getVector(root, core::vec_id::write_access::position ); //cerr<<"EulerImplicit_test, initial positions : " << x0.transpose() << endl;
+        v0 = component::odesolver::testing::getVector(root, core::vec_id::write_access::velocity );
 
         SReal dx, dv;
         unsigned n=0;
@@ -270,8 +275,8 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         do {
             sofa::simulation::node::animate(root.get(), 1_sreal);
 
-            x1 = component::odesolver::testing::getVector(root, core::VecId::position() ); //cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
-            v1 = component::odesolver::testing::getVector(root, core::VecId::velocity() );
+            x1 = component::odesolver::testing::getVector(root, core::vec_id::read_access::position ); //cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
+            v1 = component::odesolver::testing::getVector(root, core::vec_id::read_access::velocity );
 
             dx = (x0-x1).lpNorm<Eigen::Infinity>();
             dv = (v0-v1).lpNorm<Eigen::Infinity>();

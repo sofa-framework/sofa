@@ -31,8 +31,6 @@
 #include <sofa/component/collision/geometry/CubeModel.h>
 #include <sofa/component/collision/geometry/RayModel.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::collision::detection::intersection
 {
 
@@ -62,19 +60,6 @@ public:
     SOFA_CLASS(LocalMinDistance,BaseProximityIntersection);
 
     typedef core::collision::IntersectorFactory<LocalMinDistance> IntersectorFactory;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> filterIntersection;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    sofa::core::objectmodel::lifecycle::RenamedData<double> angleCone;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    sofa::core::objectmodel::lifecycle::RenamedData<double> coneFactor;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> useLMDFilters;
-
 
     Data<bool> d_filterIntersection; ///< Activate LMD filter
     Data<double> d_angleCone; ///< Filtering cone extension angle

@@ -581,26 +581,6 @@ void Base::updateLinks(bool logErrors)
     }
 }
 
-void  Base::writeDatas ( std::map<std::string,std::string*>& args )
-{
-    for(const auto& field : m_vecData)
-    {
-        std::string name = field->getName();
-        if( args[name] != nullptr )
-            *args[name] = field->getValueString();
-        else
-            args[name] =  new string(field->getValueString());
-    }
-    for(const auto& link : m_vecLink)
-    {
-        std::string name = link->getName();
-        if( args[name] != nullptr )
-            *args[name] = link->getValueString();
-        else
-            args[name] =  new string(link->getValueString());
-    }
-}
-
 static std::string xmlencode(const std::string& str)
 {
     std::string res;

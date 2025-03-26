@@ -39,9 +39,6 @@ SphereCollisionModel<DataTypes>::SphereCollisionModel()
     , mstate(nullptr)
 {
     enum_type = SPHERE_TYPE;
-
-    radius.setOriginalData(&d_radius);
-    defaultRadius.setOriginalData(&d_defaultRadius);
 }
 
 template<class DataTypes>

@@ -48,11 +48,6 @@ EulerImplicitSolver::EulerImplicitSolver()
     , d_computeResidual(initData(&d_computeResidual, false, "computeResidual", "If true, the residual is computed at the end of the solving"))
     , d_residual(initData(&d_residual, std::numeric_limits<SReal>::max(), "residual", "Residual norm at the end of the free-motion solving"))
 {
-    f_rayleighStiffness.setOriginalData(&d_rayleighStiffness);
-    f_rayleighMass.setOriginalData(&d_rayleighMass);
-    f_velocityDamping.setOriginalData(&d_velocityDamping);
-    f_firstOrder.setOriginalData(&d_firstOrder);
-    f_solveConstraint.setOriginalData(&d_solveConstraint);
 }
 
 void EulerImplicitSolver::init()
