@@ -19,62 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/backward/init.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
+#pragma once
+#include <sofa/helper/SelectableItem.h>
+#include <array>
 
 namespace sofa::component::odesolver::backward
 {
-
-extern void registerEulerImplicitSolver(sofa::core::ObjectFactory* factory);
-extern void registerNewmarkImplicitSolver(sofa::core::ObjectFactory* factory);
-extern void registerStaticSolver(sofa::core::ObjectFactory* factory);
-extern void registerVariationalSymplecticSolver(sofa::core::ObjectFactory* factory);
-extern void registerNewtonRaphsonSolver(sofa::core::ObjectFactory* factory);
-extern void registerBDFOdeSolver(sofa::core::ObjectFactory* factory);
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
+MAKE_SELECTABLE_ITEMS(NewtonStatus,
+    sofa::helper::Item{"Undefined", "The solver has not been called yet"},
+    sofa::helper::Item{"Running", "The solver is still running and/or did not finish"},
+    sofa::helper::Item{"ConvergedEquilibrium", "Converged: the iterations did not start because the system is already at equilibrium"},
+    sofa::helper::Item{"DivergedLineSearch", "Diverged: line search failed"},
+    sofa::helper::Item{"DivergedMaxIterations", "Diverged: Reached the maximum number of iterations"},
+    sofa::helper::Item{"ConvergedResidualSuccessiveRatio", "Converged: Residual successive ratio is smaller than the threshold"},
+    sofa::helper::Item{"ConvergedResidualInitialRatio", "Converged: Residual initial ratio is smaller than the threshold"},
+    sofa::helper::Item{"ConvergedAbsoluteResidual", "Converged: Absolute residual is smaller than the threshold"},
+    sofa::helper::Item{"ConvergedRelativeEstimateDifference", "Converged: Relative estimate difference is smaller than the threshold"},
+    sofa::helper::Item{"ConvergedAbsoluteEstimateDifference", "Converged: Absolute estimate difference is smaller than the threshold"});
 }
-
-void initExternalModule()
-{
-    init();
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-    registerEulerImplicitSolver(factory);
-    registerNewmarkImplicitSolver(factory);
-    registerStaticSolver(factory);
-    registerVariationalSymplecticSolver(factory);
-    registerNewtonRaphsonSolver(factory);
-    registerBDFOdeSolver(factory);
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
-        first = false;
-    }
-}
-
-} // namespace sofa::component::odesolver::backward

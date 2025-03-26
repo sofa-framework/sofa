@@ -19,62 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/backward/init.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
+#pragma once
+
+#include <sofa/component/odesolver/backward/convergence/NewtonRaphsonConvergenceMeasure.h>
 
 namespace sofa::component::odesolver::backward
 {
 
-extern void registerEulerImplicitSolver(sofa::core::ObjectFactory* factory);
-extern void registerNewmarkImplicitSolver(sofa::core::ObjectFactory* factory);
-extern void registerStaticSolver(sofa::core::ObjectFactory* factory);
-extern void registerVariationalSymplecticSolver(sofa::core::ObjectFactory* factory);
-extern void registerNewtonRaphsonSolver(sofa::core::ObjectFactory* factory);
-extern void registerBDFOdeSolver(sofa::core::ObjectFactory* factory);
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
-}
-
-void initExternalModule()
+class AbsoluteConvergenceMeasure : public NewtonRaphsonConvergenceMeasureWithSquaredParameter
 {
-    init();
-}
+public:
+    explicit AbsoluteConvergenceMeasure(SReal absoluteStoppingThreshold)
+        : NewtonRaphsonConvergenceMeasureWithSquaredParameter(absoluteStoppingThreshold)
+    {}
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-    registerEulerImplicitSolver(factory);
-    registerNewmarkImplicitSolver(factory);
-    registerStaticSolver(factory);
-    registerVariationalSymplecticSolver(factory);
-    registerNewtonRaphsonSolver(factory);
-    registerBDFOdeSolver(factory);
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
+    [[nodiscard]] bool hasConverged() const override
     {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
-        first = false;
+        return squaredResidualNorm < squaredParam;
     }
-}
 
-} // namespace sofa::component::odesolver::backward
+    [[nodiscard]] NewtonStatus status() const override
+    {
+        static constexpr auto convergedAbsoluteResidual = NewtonStatus("ConvergedAbsoluteResidual");
+        return convergedAbsoluteResidual;
+    }
+
+    [[nodiscard]] std::string writeWhenConverged() const override
+    {
+        std::stringstream ss;
+        ss << "residual squared norm (" << squaredResidualNorm
+           << ") is smaller than the threshold ("
+           << squaredParam << ") after "
+           << (newtonIterationCount + 1) << " Newton iterations.";
+        return ss.str();
+    }
+    
+    [[nodiscard]] std::string_view measureName() const override
+    {
+        return "Absolute convergence";
+    }
+
+    SReal squaredResidualNorm = 0;
+};
+
+}
