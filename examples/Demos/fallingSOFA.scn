@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+
+<Node name="root" dt="0.005" gravity="0 0 -9.81">
+    <!-- List of plugins needed to load all components used by this scene -->
+    <Node name="plugins">
+        <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+        <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+        <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
+        <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
+        <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [LinearSolverConstraintCorrection] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
+        <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
+        <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [PCGLinearSolver] -->
+        <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+        <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+        <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
+        <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping Tetra2TriangleTopologicalMapping] -->
+        <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+        <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+        <RequiredPlugin name="Sofa.GUI.Component"/> <!-- Needed to use components [ConstraintAttachButtonSetting] -->
+        <RequiredPlugin name="MultiThreading"/> <!-- Needed to use components [ParallelBVHNarrowPhase,ParallelBruteForceBroadPhase] -->
+        <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    </Node>
+
+
+    <!-- Rendering settings -->
+    <VisualStyle displayFlags="showVisual"/>
+
+    <!-- Define Mouse left click as a Bilateral Lagrangian constraint -->
+    <ConstraintAttachButtonSetting />
+
+    <!-- Header of the simulation -->
+    <!-- This animation loop will add steps in the time intyegration to enable Lagrangian-based constraint solving
+     For more information see : https://sofa-framework.github.io/doc/components/animationloop/freemotionanimationloop/ -->
+    <FreeMotionAnimationLoop />
+    <!-- This solver will perform the different constraint solving stages a.k.a. the constraint system building, the constraint solving and the motion correction
+     For more information see : https://sofa-framework.github.io/doc/simulation-principles/constraint/lagrange-constraint/ -->
+    <GenericConstraintSolver maxIterations="50" tolerance="1.0e-6"/>
+
+    <!-- Definition of the collision pipeline -->
+    <CollisionPipeline name="Pipeline" />
+    <ParallelBruteForceBroadPhase name="BroadPhase" />
+    <ParallelBVHNarrowPhase name="NarrowPhase" />
+    <!-- This set the model used for contact behavior as Colomb's friction contact law using Lagrangian-based constraints -->
+    <CollisionResponse name="ContactManager" response="FrictionContactConstraint" responseParams="mu=0.3" />
+    <!-- This object is responsible for defining pairs of points used for contact simulation.
+    Alarm distance and contact distance are key parameters: alarm distance is the distance at which the collision
+    detection is being performed. The contact distance increases the contact distance between object, enforcing a 'skinning' behavior -->
+    <NewProximityIntersection name="Intersection" alarmDistance="0.02" contactDistance="0.002" />
+
+    <!-- Non-simulated node used to create underlying deformable topology -->
+    <Node name="BeamDomainFromGridTopology">
+        <!-- Computes a hexahedral topology based on a parametric grid -->
+        <RegularGridTopology name="HexaTop" n="15 3 6" min="0 0.02 0" max="0.5 0.08 0.22"/>
+
+        <!-- Transform the hexahedral topology into a tetrahedral topology
+        For more information see : https://sofa-framework.github.io/doc/simulation-principles/multi-model-representation/mapping/#topological-mapping -->
+        <TetrahedronSetTopologyContainer name="Container" position="@HexaTop.position"/>
+        <TetrahedronSetTopologyModifier name="Modifier"/>
+        <Hexa2TetraTopologicalMapping input="@HexaTop" output="@Container" swapping="true"/>
+    </Node>
+
+    <!-- Simulated node -->
+    <Node name="FE-MechanicalModel">
+        <!-- Use implicit integration scheme -->
+        <EulerImplicitSolver />
+        <!-- Direct linear solver used for the computation of linear products using the system matrix $Ax=b$ -->
+        <SparseLDLSolver name="ldl" template="CompressedRowSparseMatrixMat3x3" parallelInverseProduct="true" />
+        <!-- Topology contains all topological information: elements type, elements array-->
+        <TetrahedronSetTopologyContainer name="Container" position="@../BeamDomainFromGridTopology/HexaTop.position" tetrahedra="@../BeamDomainFromGridTopology/Container.tetrahedra"/>
+        <TetrahedronSetTopologyModifier name="Modifier"/>
+
+        <!-- MechanicalObject contains all mechanical quantity of the object (e.g. position, velocity, acceleration, forces, constraints forces, etc...)
+        For more information see : https://sofa-framework.github.io/doc/simulation-principles/mechanicalobject/ -->
+        <MechanicalObject name="mstate" template="Vec3d" src="@Container"/>
+
+        <!-- Use corotationnal linear elasticity for speed and stability -->
+        <TetrahedronFEMForceField name="forceField" listening="true" youngModulus="2e4" poissonRatio="0.45" method="large"/>
+        <!-- This is the more precise way to define mass for a meshed object, it is a full implementation of the FE method -->
+        <MeshMatrixMass totalMass="1.2"/>
+
+        <!-- Collision surface node -->
+        <Node name="Surface">
+            <TriangleSetTopologyContainer name="Container"/>
+            <TriangleSetTopologyModifier name="Modifier"/>
+
+            <!-- Extract surface of the simulated topology to account for contacts -->
+            <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="false"/>
+            <MechanicalObject name="dofs" rest_position="@../mstate.rest_position"/>
+
+            <!-- This uses triangles as colliding element. These triangular primitives are the triangles present in the topology
+            For more information on collision models see : https://sofa-framework.github.io/doc/components/collision/geometry/collisionmodels/ -->
+            <TriangleCollisionModel name="Collision" proximity="0.001" color="0.94117647058824 0.93725490196078 0.89411764705882" />
+
+            <!-- This is a mapping: it relates the position of this node to the one of the simulated node.
+            The position of this node (the output of the mapping) is totally defined by the position of the input node
+            (the simulated one) and forces from applied to this node will be transferred to the mechanical node.
+            For more info see : https://sofa-framework.github.io/doc/simulation-principles/multi-model-representation/mapping/ -->
+            <IdentityMapping name="SurfaceMapping"/>
+        </Node>
+
+        <!-- Visual model is made up of all the parts of the logo, mapped using barycentric mapping -->
+        <Node name="VisuLogo">
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/LogoVisu.obj" scale3d="0.015 0.015 0.015" translation="0 0.05 0" rotation="180 0 0"/>
+            <!-- This replaces MechanicalObject for nodes that are only there for visualization -->
+            <OglModel name="VisualModel" color="0.7 .35 0 1.0" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
+            <BarycentricMapping name="MappingVisu" input="@../mstate" output="@VisualModel" isMechanical="false" />
+        </Node>
+
+        <Node name="VisuS">
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/SVisu.obj" scale3d="0.015 0.015 0.015" translation="0 0.05 0" rotation="180 0 0"/>
+            <OglModel name="VisualModel" color="0.7 0.7 0.7 1" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
+            <BarycentricMapping name="MappingVisu" input="@../mstate" output="@VisualModel" isMechanical="false" />
+        </Node>
+
+        <Node name="VisuO">
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/O.obj" scale3d="0.015 0.015 0.015"  translation="0 0.05 0" rotation="180 0 0"/>
+            <OglModel name="VisualModel" color="0.7 0.7 0.7 1" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
+            <BarycentricMapping name="MappingVisu" input="@../mstate" output="@VisualModel" isMechanical="false" />
+        </Node>
+
+        <Node name="VisuF">
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/FVisu.obj" scale3d="0.015 0.015 0.015" translation="0 0.05 0" rotation="180 0 0"/>
+            <OglModel name="VisualModel" color="0.7 0.7 0.7 1" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
+            <BarycentricMapping name="MappingVisu" input="@../mstate" output="@VisualModel" isMechanical="false" />
+        </Node>
+
+        <Node name="VisuA">
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/AVisu.obj" scale3d="0.015 0.015 0.015" translation="0 0.05 0" rotation="180 0 0"/>
+            <OglModel name="VisualModel" color="0.7 0.7 0.7 1" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
+            <BarycentricMapping name="MappingVisu" input="@../mstate" output="@VisualModel" isMechanical="false" />
+        </Node>
+
+        <!-- Solver needed to compute lagrangian-based constraints interaction
+        It uses the LinearSolver to compute the Compliance matrix and the motion correction
+        For more information see : https://sofa-framework.github.io/doc/simulation-principles/constraint/lagrange-constraint/#constraintcorrection -->
+        <LinearSolverConstraintCorrection linearSolver="@ldl"/>
+    </Node>
+
+    <!-- Non-simulated obstacle -->
+    <Node name="Floor" tags="NoBBox" >
+        <VisualStyle displayFlags="showCollisionModels"/>
+        <!-- Surface triangles are defined by hand -->
+        <TriangleSetTopologyContainer name="FloorTopo"
+                                      position="0.2 0 -0.5   0.2 0.1 -0.5  0.3 0.1 -0.5   0.3 0 -0.5
+                                                0.2 0 -0.6   0.2 0.1 -0.6  0.3 0.1 -0.6   0.3 0 -0.6"
+                                      triangles="0 2 1  0 3 2
+                                                 0 1 5  0 5 4
+                                                 0 4 7  0 7 3
+                                                 1 2 6  1 6 5
+                                                 3 7 6  3 6 2
+                                                 4 5 6  4 6 7" />
+        <MechanicalObject template="Vec3"/>
+        <!-- Because it is neither simulated nor moving, we can speed the solver and collision detection by setting parameters moving="0" simulated="0" -->
+        <TriangleCollisionModel name="FloorCM" proximity="0.001" moving="0" simulated="0" />
+    </Node>
+
+</Node>
+
+
