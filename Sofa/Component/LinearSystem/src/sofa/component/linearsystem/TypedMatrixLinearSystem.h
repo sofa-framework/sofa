@@ -31,6 +31,13 @@
 #include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 #include <sofa/core/behavior/BaseLocalMassMatrix.h>
 
+#include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
+#include <sofa/linearalgebra/DiagonalMatrix.h>
+#include <sofa/linearalgebra/RotationMatrix.h>
+#include <sofa/linearalgebra/BlockDiagonalMatrix.h>
+
 namespace sofa::component::linearsystem
 {
 
@@ -143,5 +150,33 @@ protected:
         }
     }
 };
+
+#if !defined(SOFA_COMPONENT_LINEARSYSTEM_TYPEDMATRIXLINEARSYSTEM_CPP)
+using namespace sofa::linearalgebra;
+
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< FullMatrix<double>, FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< FullMatrix<float>, FullVector<float> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< SparseMatrix<double>, FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< SparseMatrix<float>, FullVector<float> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< CompressedRowSparseMatrix<double>, FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< CompressedRowSparseMatrix<float>, FullVector<float> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<2,2,double> >, FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<2,2,float> >, FullVector<float> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<3,3,double> >, FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<3,3,float> >, FullVector<float> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<4,4,double> >, FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<4,4,float> >, FullVector<float> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<6,6,double> >, FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<6,6,float> >, FullVector<float> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<8,8,double> >, FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<8,8,float> >, FullVector<float> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< DiagonalMatrix<double>, FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< DiagonalMatrix<float>, FullVector<float> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< BlockDiagonalMatrix<3,double>, FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< BlockDiagonalMatrix<3,float>, FullVector<float> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< RotationMatrix<double>, FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< RotationMatrix<float>, FullVector<float> >;
+#endif
+
 
 } //namespace sofa::component::linearsystem

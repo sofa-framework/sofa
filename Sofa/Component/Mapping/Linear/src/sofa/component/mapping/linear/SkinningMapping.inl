@@ -48,14 +48,6 @@ SkinningMapping<TIn, TOut>::SkinningMapping ()
     defaultNbRef.push_back((unsigned ) 4);
 
     d_nbRef.setValue(defaultNbRef);
-
-    f_initPos.setOriginalData(&d_initPos);
-    nbRef.setOriginalData(&d_nbRef);
-    f_index.setOriginalData(&d_index);
-    weight.setOriginalData(&d_weight);
-    showFromIndex.setOriginalData(&d_showFromIndex);
-    showWeights.setOriginalData(&d_showWeights);
-
 }
 
 

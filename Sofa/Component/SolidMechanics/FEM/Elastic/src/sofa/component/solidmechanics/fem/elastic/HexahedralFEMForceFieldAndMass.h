@@ -28,8 +28,6 @@
 
 #include <sofa/core/topology/TopologyData.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
@@ -126,25 +124,6 @@ protected:
     void computeLumpedMasses();
 
 protected:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> _density;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> _useLumpedMass;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<ElementMass>> _elementMasses;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<Real> > _elementTotalMass;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<Real> > _particleMasses;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<Coord> > _lumpedMasses;
-
     Data<Real> d_density; ///< density == volumetric mass in english (kg.m-3)
     Data<bool> d_useLumpedMass; ///< Does it use lumped masses?
 

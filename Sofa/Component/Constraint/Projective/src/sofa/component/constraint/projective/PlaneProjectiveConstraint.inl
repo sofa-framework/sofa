@@ -44,11 +44,6 @@ PlaneProjectiveConstraint<DataTypes>::PlaneProjectiveConstraint()
 {
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
-
-    f_indices.setOriginalData(&d_indices);
-    f_origin.setOriginalData(&d_origin);
-    f_normal.setOriginalData(&d_normal);
-    f_drawSize.setOriginalData(&d_drawSize);
 }
 
 

@@ -20,6 +20,7 @@ Demos/collisionMultiple.scn 100 1e-4 1 1
 Demos/liver.scn 100 1e-4 1 1
 Demos/simpleBoundaryConditions.scn 100 1e-4 1 1
 Demos/fallingBeamLagrangianCollision.scn 46 1e-7 1 1
+Demos/fallingSOFA.scn 200 1e-7 1 1
 Demos/SofaScene.scn 120 1e-5 1 1
 
 

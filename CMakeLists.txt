@@ -187,9 +187,6 @@ add_subdirectory(extlibs)
 ### SOFA (framework and components)
 add_subdirectory(Sofa)
 
-## Tutorials option
-option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
-
 # SceneCreator plugin
 # Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
 sofa_add_subdirectory(plugin applications/plugins/SceneCreator SceneCreator OFF
@@ -202,10 +199,9 @@ add_subdirectory(applications/plugins)
 ## Applications
 add_subdirectory(applications/projects)
 
-# Tutorial add subdirectory
-if(SOFA_BUILD_TUTORIALS)
-    add_subdirectory(applications/tutorials)
-endif()
+## SimpleAPI examples
+add_subdirectory(examples/SimpleAPI)
+
 
 ## SOFA scenes
 option(SOFA_BUILD_ADD_SCENES "Add SOFA scenes as a project of the build." OFF)
@@ -229,11 +225,6 @@ if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
     endforeach()
 endif()
 
-## Custom
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
-    message("Adding custom file")
-    include( "custom.cmake" )
-endif()
 
 ## IDE directories
 # Sofa.Component

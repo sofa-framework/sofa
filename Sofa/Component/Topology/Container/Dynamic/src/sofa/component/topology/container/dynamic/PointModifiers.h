@@ -39,28 +39,87 @@ using PointID = core::topology::BaseMeshTopology::PointID;
 class SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC_API PointToAdd
 {
 public:
-    PointToAdd(PointID uniqueID, PointID idPoint, const sofa::type::vector<PointID>& ancestors, const sofa::type::vector<SReal>& coefs)
+    PointToAdd(PointID uniqueID, PointID idPoint,
+        const sofa::type::vector<PointID>& ancestors,
+        const sofa::type::vector<SReal>& coefs, SReal snapValue = 1_sreal)
         : m_uniqueID(uniqueID)
         , m_idPoint(idPoint)
+        , m_snapValue(snapValue)
         , m_ancestors(ancestors)
         , m_coefs(coefs)
-    {}
-    
+    {
+        if (ancestors.size() != coefs.size())
+        {
+            msg_error("PointToAdd") << "Not the same size of ancestors: " << ancestors.size() << " vs coefs: " << coefs.size() << " given for PointToAdd id: " << uniqueID;
+            m_ancestorType = sofa::geometry::ElementType::UNKNOWN;
+            return;
+        }
+    }
+
+
+    // bool return true if point is snap
+    void updatePointIDForDuplication(bool split = true) 
+    {
+        if (m_ancestorType == sofa::geometry::ElementType::POINT)
+        {
+            m_idClone = m_idPoint;
+            m_idPoint = m_ownerId;
+            m_isSnapped = true;
+        }
+        else if (m_ancestorType == sofa::geometry::ElementType::EDGE)
+        {
+            m_idClone = m_idPoint + 1;
+        }
+        else if (m_ancestorType == sofa::geometry::ElementType::TRIANGLE)
+        {
+            // point in middle of a triangle. It should not be duplicated
+        }
+
+        if (split == false)
+            m_idClone = sofa::InvalidID;
+    }
+
+    PointID getNbrNewPoint()
+    {
+        PointID nbr = 2;
+        if (m_isSnapped)
+            nbr--;
+        if (m_idClone == sofa::InvalidID)
+            nbr--;
+
+        return nbr;
+    }
+
+
+    void printValue()
+    {
+        msg_info("PointToAdd") << "PTA: " << m_uniqueID << " | idPoint: " << m_idPoint << " | idClone: " << m_idClone << " | m_ancestorType: " << int(m_ancestorType);
+        msg_info("PointToAdd") << "PTA: " << m_uniqueID << " | ancestors: " << m_ancestors << " | coefs: " << m_coefs;
+    }
+
+
     /// Unique ID of this point structure. Will be a code combining ancestors ids
     PointID m_uniqueID;
-    
+
     /// Future pointID of this pointToAdd
     PointID m_idPoint = sofa::InvalidID;
     /// Future pointID of this pointToAdd if this point is duplicated due to a cut
     PointID m_idClone = sofa::InvalidID;
 
     sofa::geometry::ElementType m_ancestorType = sofa::geometry::ElementType::UNKNOWN;
-    
+
+    core::topology::BaseMeshTopology::ElemID m_ownerId = sofa::InvalidID;
+
     /// List of ancestors (existing point ID of the mesh)
     sofa::type::vector<PointID> m_ancestors;
     /// List of corresponding coefficients 
     sofa::type::vector<SReal> m_coefs;
+
+    bool m_isSnapped = false;
+
+    SReal m_snapValue;
 };
+
 
 
 /// static method to compute and consistently generate a unique ID based on the IDs of its ancestors. The ID is determined by combining both ancestor IDs in ascending order, separated by a unit of 1e6. 

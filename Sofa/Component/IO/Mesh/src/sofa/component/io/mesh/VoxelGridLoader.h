@@ -21,10 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/io/mesh/config.h>
-
 #include <sofa/core/loader/VoxelLoader.h>
-
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::io::mesh
 {
@@ -73,34 +70,6 @@ public:
 
     // fill the texture by 'image' only where there is the 'segmentation' of 'd_activeValue' and give the 3D texture sizes
     void createSegmentation3DTexture( unsigned char **textureData, int& width, int& height, int& depth) override;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::Vec3 > voxelSize;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData< Vec3i > dataResolution;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData< Vec6i > roi;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData< int > headerSize;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData< int > segmentationHeaderSize;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::vector<unsigned int> > idxInRegularGrid;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::vector<int> > backgroundValue;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::vector<int> > activeValue;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_IO_MESH()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> generateHexa;
-
-
 
     Data< type::Vec3 > d_voxelSize; ///< Dimension of one voxel
     Data< Vec3i > d_dataResolution; ///< Resolution of the voxel file

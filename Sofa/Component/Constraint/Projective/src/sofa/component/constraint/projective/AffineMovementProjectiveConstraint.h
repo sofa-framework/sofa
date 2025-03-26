@@ -34,8 +34,6 @@
 #include <type_traits>
 #include <set>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::constraint::projective
 {
 
@@ -80,32 +78,6 @@ protected:
     friend class AffineMovementProjectiveConstraintInternalData<DataTypes>;
 
 public :
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<sofa::Index> > m_meshIndices;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<sofa::Index> > m_indices;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<SReal> m_beginConstraintTime;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<SReal> m_endConstraintTime;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<RotationMatrix> m_rotation;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<Quat>  m_quaternion;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<Vec3> m_translation;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_PROJECTIVE()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_drawConstrainedPoints;
-
-
     /// indices of the DOFs of the mesh
     SetIndex d_meshIndices;
      /// indices of the DOFs the constraint is applied to

@@ -42,9 +42,6 @@
 #include <map>
 #include <deque>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
-
 namespace sofa::component::collision::detection::algorithm
 {
 
@@ -211,12 +208,6 @@ private:
      */
     void purge();
 
-    SOFA_ATTRIBUTE_DEPRECATED__REMOVE_BDRAW_DATA()
-    core::objectmodel::lifecycle::DeprecatedData bDraw {this, "v24.06", "v24.12", "draw", "This Data was not used"};
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_ALGORITHM()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::fixed_array<type::Vec3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
-
     Data< type::fixed_array<type::Vec3,2> > d_box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
     collision::geometry::CubeCollisionModel::SPtr boxModel;
@@ -254,10 +245,6 @@ protected:
     ~IncrSAP() override;
 
 public:
-
-    SOFA_ATTRIBUTE_DEPRECATED__REMOVE_BDRAW_DATA()
-    void setDraw(bool) {}
-
     void init() override;
     void reinit() override;
 
