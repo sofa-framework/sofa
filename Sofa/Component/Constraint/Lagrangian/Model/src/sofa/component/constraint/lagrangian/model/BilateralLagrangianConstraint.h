@@ -34,8 +34,6 @@
 #include <deque>
 
 #include <sofa/component/constraint/lagrangian/model/BilateralConstraintResolution.h>
-
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 #include <sofa/core/objectmodel/DataCallback.h>
 
 namespace sofa::component::constraint::lagrangian::model
@@ -97,18 +95,6 @@ protected:
     Quat<SReal> q;
 
     std::vector<unsigned int> cid;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<Index> > m1;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<Index> > m2;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::lifecycle::RenamedData<VecDeriv> restVector;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> keepOrientDiff;
 
     DataSubsetIndices d_m1; ///< index of the constraint on the first model
     DataSubsetIndices d_m2; ///< index of the constraint on the second model

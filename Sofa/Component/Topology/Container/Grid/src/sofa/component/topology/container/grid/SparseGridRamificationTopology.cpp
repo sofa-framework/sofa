@@ -37,7 +37,6 @@ SparseGridRamificationTopology::SparseGridRamificationTopology(bool isVirtual)
     : SparseGridTopology(isVirtual)
     , d_finestConnectivity(initData(&d_finestConnectivity, true, "finestConnectivity", "Test for connectivity at the finest level? (more precise but slower by testing all intersections between the model mesh and the faces between boundary cubes)"))
 {
-    _finestConnectivity.setOriginalData(&d_finestConnectivity);
 }
 
 SparseGridRamificationTopology::~SparseGridRamificationTopology()

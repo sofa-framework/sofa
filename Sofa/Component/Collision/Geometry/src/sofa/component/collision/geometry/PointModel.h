@@ -27,8 +27,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::collision::geometry
 {
 
@@ -103,10 +101,6 @@ public:
 
     const Deriv& velocity(sofa::Index index) const;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> bothSide;
-
-
     Data<bool> d_bothSide; ///< activate collision on both side of the point model (when surface normals are defined on these points)
 
     /// Pre-construction check method called by ObjectFactory.
@@ -135,18 +129,11 @@ protected:
 
     core::behavior::MechanicalState<DataTypes>* mstate;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> computeNormals;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> m_displayFreePosition;
-
     Data<bool> d_computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)
+    Data<bool> d_displayFreePosition; ///< Display Collision Model Points free position(in green)
 
     VecDeriv normals;
 
-    Data<bool> d_displayFreePosition; ///< Display Collision Model Points free position(in green)
-                                      
     /// Link to be set to the topology container in the component graph.
     SingleLink<PointCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 

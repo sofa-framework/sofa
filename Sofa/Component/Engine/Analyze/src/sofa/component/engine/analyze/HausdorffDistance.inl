@@ -45,15 +45,6 @@ HausdorffDistance<DataTypes>::HausdorffDistance()
     d_max.setGroup("Output");
 
     f_listening.setValue(true);
-
-    f_points_1.setOriginalData(&d_points_1);
-    f_points_2.setOriginalData(&d_points_2);
-    d12.setOriginalData(&d_d12);
-    d21.setOriginalData(&d_d21);
-    max.setOriginalData(&d_max);
-    f_update.setOriginalData(&d_update);
-
-
 }
 
 template <class DataTypes>

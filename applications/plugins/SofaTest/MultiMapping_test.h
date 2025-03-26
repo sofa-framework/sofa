@@ -166,8 +166,8 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         sofa::simulation::getSimulation()->init(root.get());
 
         /// apply the mapping
-        mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
-        mapping->applyJ(&mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity());
+        mapping->apply(&mparams, core::vec_id::write_access::position, core::vec_id::read_access::position);
+        mapping->applyJ(&mparams, core::vec_id::write_access::velocity, core::vec_id::read_access::velocity);
 
         /// test apply: check if the child positions are the expected ones
         bool succeed=true;
@@ -217,7 +217,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
         WriteOutVecDeriv fout = outDofs->writeForces();
         copyToData( fout, fc );
-        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        mapping->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::read_access::force );
         for(Index i=0; i<Np.size(); i++) copyFromData( fp[i], inDofs[i]->readForces() );
         //        cout<<"parent forces fp = "<<fp<<endl;
 
@@ -238,8 +238,8 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             WriteInVecDeriv vin = inDofs[p]->writeVelocities();
             copyToData( vin, vp[p] );
         }
-        mparams.setDx(core::ConstVecDerivId::velocity());
-        mapping->applyJ( &mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
+        mparams.setDx(core::vec_id::write_access::velocity);
+        mapping->applyJ( &mparams, core::vec_id::write_access::velocity, core::vec_id::read_access::velocity );
         ReadOutVecDeriv vout = outDofs->readVelocities();
         copyFromData( vc, vout);
         //        cout<<"child velocity vc = " << vc << endl;
@@ -255,8 +255,8 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             WriteInVecDeriv fin = inDofs[p]->writeForces();
             copyToData( fin, dfp[p] );
         }
-        mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
-        mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        mapping->updateK( &mparams, core::vec_id::write_access::force ); // updating stiffness matrix for the current state and force
+        mapping->applyDJT( &mparams, core::vec_id::write_access::force, core::vec_id::read_access::force );
         for( Index p=0; p<Np.size(); p++ ){
             copyFromData( dfp[p], inDofs[p]->readForces() ); // fp + df due to geometric stiffness
 //            cout<<"dfp["<< p <<"] = " << dfp[p] << endl;
@@ -308,7 +308,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             copyToData( fin, fp[p] );  // reset parent forces before accumulating child forces
         }
         copyToData( fout, fc );
-        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        mapping->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::read_access::force );
         for( Index p=0; p<Np.size(); p++ )
             copyFromData( fp[p], inDofs[p]->readForces() );
 
@@ -323,7 +323,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             copyToData( pin, xp1[p] );
 //            cout<<"new parent positions xp1["<< p << "] = " << xp1[p] << endl;
         }
-        mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
+        mapping->apply ( &mparams, core::vec_id::write_access::position, core::vec_id::read_access::position );
         ReadOutVecCoord pout = outDofs->readPositions();
         copyFromData( xc1, pout );
 //        cout<<"new child positions xc1 = " << xc1 << endl;
@@ -349,7 +349,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             copyToData( fin, fp2[p] );  // reset parent forces before accumulating child forces
         }
         copyToData( fout, fc );
-        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        mapping->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::read_access::force );
         type::vector<InVecDeriv> fp12(Np.size());
         for( Index p=0; p<Np.size(); p++ ){
             copyFromData( fp2[p], inDofs[p]->readForces() );

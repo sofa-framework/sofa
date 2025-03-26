@@ -114,22 +114,6 @@ GenericConstraintSolver::GenericConstraintSolver()
 
     d_maxIt.setRequired(true);
     d_tolerance.setRequired(true);
-
-    maxIt.setOriginalData(&d_maxIt);
-    tolerance.setOriginalData(&d_tolerance);
-    sor.setOriginalData(&d_sor);
-    scaleTolerance.setOriginalData(&d_scaleTolerance);
-    allVerified.setOriginalData(&d_allVerified);
-    computeGraphs.setOriginalData(&d_computeGraphs);
-    graphErrors.setOriginalData(&d_graphErrors);
-    graphConstraints.setOriginalData(&d_graphConstraints);
-    graphForces.setOriginalData(&d_graphForces);
-    graphViolations.setOriginalData(&d_graphViolations);
-    currentNumConstraints.setOriginalData(&d_currentNumConstraints);
-    currentNumConstraintGroups.setOriginalData(&d_currentNumConstraintGroups);
-    currentIterations.setOriginalData(&d_currentIterations);
-    currentError.setOriginalData(&d_currentError);
-    reverseAccumulateOrder.setOriginalData(&d_reverseAccumulateOrder);
 }
 
 GenericConstraintSolver::~GenericConstraintSolver()
