@@ -47,7 +47,7 @@ sofa::simulation::Node::SPtr createScene(const sofa::simpleapi::Simulation::SPtr
     sofa::simpleapi::importPlugin("MultiThreading");
 
     sofa::simpleapi::createObject(root, "VisualStyle", {{"displayFlags", "showVisual"}});
-//    sofa::simpleapi::createObject(root, "ConstraintAttachButtonSetting");
+    sofa::simpleapi::createObject(root, "ConstraintAttachButtonSetting");
     sofa::simpleapi::createObject(root, "FreeMotionAnimationLoop");
     sofa::simpleapi::createObject(root, "GenericConstraintSolver",{{"maxIterations","50"}, {"tolerance","1.0e-6"}});
 
@@ -111,9 +111,13 @@ sofa::simulation::Node::SPtr createScene(const sofa::simpleapi::Simulation::SPtr
 
 int main(int /**argc**/, char** argv)
 {
-
     sofa::simulation::common::init();
     sofa::simulation::graph::init();
+
+    const sofa::simpleapi::Simulation::SPtr simu = sofa::simpleapi::createSimulation("DAG") ;
+    const auto root = createScene(simu);
+
+    sofa::simulation::node::initRoot(root.get());
 
     sofa::gui::common::BaseGUI::setConfigDirectoryPath(sofa::helper::Utils::getSofaPathPrefix() + "/config", true);
     sofa::gui::common::BaseGUI::setScreenshotDirectoryPath(sofa::helper::Utils::getSofaPathPrefix() + "/screenshots", true);
@@ -122,16 +126,11 @@ int main(int /**argc**/, char** argv)
     sofa::helper::system::PluginManager::getInstance().init();
     sofa::gui::init();
 
-    const sofa::simpleapi::Simulation::SPtr simu = sofa::simpleapi::createSimulation("DAG") ;
-    const auto root = createScene(simu);
-
     if (int err = sofa::gui::common::GUIManager::Init(argv[0],"imgui")) return err;
     if (int err=sofa::gui::common::GUIManager::createGUI(nullptr)) return err;
     sofa::gui::common::GUIManager::SetDimension(800,600);
     sofa::gui::common::GUIManager::CenterWindow();
 
-
-    sofa::simulation::node::initRoot(root.get());
     sofa::gui::common::GUIManager::SetScene(root);
 
     if (int err = sofa::gui::common::GUIManager::MainLoop(root))
