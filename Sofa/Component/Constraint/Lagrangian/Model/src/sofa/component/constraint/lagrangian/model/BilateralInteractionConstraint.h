@@ -23,10 +23,4 @@
 
 #include <sofa/component/constraint/lagrangian/model/BilateralLagrangianConstraint.h>
 
-SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/BilateralLagrangianConstraint.h")
-
-namespace sofa::component::constraint::lagrangian::model
-{
-template<class T>
-using BilateralInteractionConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "BilateralInteractionConstraint has been renamed to BilateralLagrangianConstraint") = BilateralLagrangianConstraint<T>;
-}
+SOFA_HEADER_DISABLED("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/BilateralLagrangianConstraint.h")
