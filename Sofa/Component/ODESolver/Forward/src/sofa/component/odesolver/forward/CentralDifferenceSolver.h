@@ -24,8 +24,6 @@
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::odesolver::forward
 {
 
@@ -43,8 +41,6 @@ protected:
     CentralDifferenceSolver();
 public:
     void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_FORWARD()
-    sofa::core::objectmodel::lifecycle::RenamedData<SReal> f_rayleighMass;
 
     Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.

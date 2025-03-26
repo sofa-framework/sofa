@@ -65,13 +65,6 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa
     , nbRows(0), nbCols(0), dof_on_node(0), nbNodes(0)
 {
     this->addAlias(&d_fileCompliance, "filePrefix");
-
-    m_rotations.setOriginalData(&d_rotations);
-    m_restRotations.setOriginalData(&d_restRotations);
-    recompute.setOriginalData(&d_recompute);
-    debugViewFrameScale.setOriginalData(&d_debugViewFrameScale);
-    f_fileCompliance.setOriginalData(&d_fileCompliance);
-    fileDir.setOriginalData(&d_fileDir);
 }
 
 template<class DataTypes>

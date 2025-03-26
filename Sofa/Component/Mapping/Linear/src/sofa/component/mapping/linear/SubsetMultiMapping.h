@@ -29,8 +29,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::mapping::linear
 {
 
@@ -64,9 +62,6 @@ public:
 
     /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().
     virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::vector<unsigned> > indexPairs;
 
     Data< type::vector<unsigned> > d_indexPairs; ///< list of couples (parent index + index in the parent)
 

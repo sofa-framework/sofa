@@ -100,7 +100,7 @@ public:
 
     void applyJT(const core::ConstraintParams *cparams  /* PARAMS FIRST */, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in)
     {
-        m_previousPosition = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+        m_previousPosition = this->fromModel->read(core::vec_id::read_access::position)->getValue();
 
 //         std::cout<<"applyJT   m_previousPosition = "<<m_previousPosition<<std::endl;
 

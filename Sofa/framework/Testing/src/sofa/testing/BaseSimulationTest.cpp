@@ -40,12 +40,6 @@ using sofa::helper::system::PluginManager ;
 namespace sofa::testing
 {
 
-bool BaseSimulationTest::importPlugin(const std::string& name)
-{
-    this->loadPlugins({name});
-    return true;
-}
-
 BaseSimulationTest::SceneInstance::SceneInstance(const std::string& type, const std::string& desc)
 {
     if(type != "xml"){

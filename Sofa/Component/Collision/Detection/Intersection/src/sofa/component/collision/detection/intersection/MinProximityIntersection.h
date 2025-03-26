@@ -24,8 +24,6 @@
 
 #include <sofa/component/collision/detection/intersection/BaseProximityIntersection.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::collision::detection::intersection
 {
 
@@ -56,22 +54,6 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MinProximityIntersecti
 {
 public:
     SOFA_CLASS(MinProximityIntersection,BaseProximityIntersection);
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> useSphereTriangle;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> usePointPoint;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> useSurfaceNormals;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> useLinePoint;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_DETECTION_INTERSECTION()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> useLineLine;
-
-
 
     Data<bool> d_useSphereTriangle; ///< activate Sphere-Triangle intersection tests
     Data<bool> d_usePointPoint; ///< activate Point-Point intersection tests

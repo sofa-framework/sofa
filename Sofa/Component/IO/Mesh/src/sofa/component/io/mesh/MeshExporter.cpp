@@ -872,11 +872,6 @@ bool MeshExporter::writeMeshObj()
     return true ;
 }
 
-void MeshExporter::handleEvent(sofa::core::objectmodel::Event *event)
-{
-    BaseSimulationExporter::handleEvent(event);
-}
-
 } // namespace sofa::component::_meshexporter_
 
 namespace sofa::component::io::mesh

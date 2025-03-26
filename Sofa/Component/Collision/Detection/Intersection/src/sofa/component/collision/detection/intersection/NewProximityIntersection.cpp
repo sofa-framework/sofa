@@ -48,7 +48,6 @@ NewProximityIntersection::NewProximityIntersection()
     : BaseProximityIntersection()
     , d_useLineLine(initData(&d_useLineLine, false, "useLineLine", "Line-line collision detection enabled"))
 {
-    useLineLine.setOriginalData(&d_useLineLine);
 }
 
 void NewProximityIntersection::init()

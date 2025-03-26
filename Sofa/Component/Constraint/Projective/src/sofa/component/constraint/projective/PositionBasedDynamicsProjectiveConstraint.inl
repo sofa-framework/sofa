@@ -38,10 +38,6 @@ PositionBasedDynamicsProjectiveConstraint<DataTypes>::PositionBasedDynamicsProje
     , d_velocity(initData(&d_velocity, "velocity", "Velocities."))
     , d_old_position(initData(&d_old_position, "old_position", "Old positions."))
 {
-    stiffness.setOriginalData(&d_stiffness);
-    position.setOriginalData(&d_position);
-    velocity.setOriginalData(&d_velocity);
-    old_position.setOriginalData(&d_old_position);
 }
 
 

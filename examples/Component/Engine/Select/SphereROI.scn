@@ -41,7 +41,8 @@
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="50" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
-            <TrianglePressureForceField normal="0 -0.2 1" dmin="0.9" dmax="1.1" pressure="0.4 0 0" />
+            <PlaneROI plane="0 0 0.9 1. 0 0.9 0 1 1.1 0.2" position="@../Volume.position" drawTriangles="1" drawTetrahedra="1" triangles="@Container.triangles" tetrahedra="@../Container.tetrahedra" name="planeROI" />
+            <TrianglePressureForceField triangleIndices="@planeROI.triangleIndices" pressure="0.4 0 0" />
             <TriangleCollisionModel />
             <SphereROI centers="0 0 1" radii="0.2" drawSphere="1" position="@../Volume.position" drawTriangles="1" drawTetrahedra="1" triangles="@Container.triangles" tetrahedra="@../Container.tetrahedra" name="SphereROI" />
             <Node name="Visu">

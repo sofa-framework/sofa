@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<Node name="lroot" gravity="0 -10 0" dt="0.01">
+    <DefaultAnimationLoop/>
+    <VisualStyle displayFlags="showForceFields showVisualModels showBehaviorModels showWireFrame" />
+    <EulerImplicitSolver name="odeImplicitSolver"/>
+    <CGLinearSolver name="linearSolver" maxIter="25" tolerance="1e-5" smallDenominatorThreshold="1e-5"/>
+
+    <MeshTopology name="Topo" tetrahedra="0 1 2 3" />
+
+    <MechanicalObject name="DOF" template="Vec3" position="0 10 0  10 0 0  -5 0 8.66  -5 0 -8.66" showObject="true" showObjectScale="10" />
+    <UniformMass name="mass" totalMass="2" />
+    <TetrahedronFEMForceField name="FEM" indices="0" method="polar" updateStiffnessMatrix="true" youngModulus="6" poissonRatio="0.45" />
+    <FixedProjectiveConstraint name="constraints" indices="0" />
+
+    <Node name="skin">
+        <MeshOBJLoader name="meshLoader" filename="mesh/liver-smooth.obj" scale3d="0.7 0.7 0.7" translation="1.2 0.8 0" />
+        <OglModel name="visual" color="red" src="@meshLoader" />
+        <BarycentricMapping/>
+    </Node>
+
+</Node>
