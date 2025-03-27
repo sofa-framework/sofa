@@ -188,9 +188,9 @@ add_subdirectory(extlibs)
 add_subdirectory(Sofa)
 
 # SceneCreator plugin
-# Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
+# Library used by SOFA_BUILD_TESTS
 sofa_add_subdirectory(plugin applications/plugins/SceneCreator SceneCreator OFF
-    WHEN_TO_SHOW "NOT SOFA_BUILD_SCENECREATOR AND NOT SOFA_BUILD_TESTS AND NOT SOFA_BUILD_TUTORIALS AND NOT SOFA_BUILD_RELEASE_PACKAGE"
+    WHEN_TO_SHOW "NOT SOFA_BUILD_SCENECREATOR AND NOT SOFA_BUILD_TESTS AND NOT SOFA_BUILD_RELEASE_PACKAGE"
     VALUE_IF_HIDDEN "ON")
 
 ## Plugins
@@ -252,12 +252,11 @@ install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION . COMPONENT applica
 install(FILES "${CMAKE_SOURCE_DIR}/LICENSE-LGPL.md" DESTINATION . COMPONENT applications)
 install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applications)
 
-option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/, tools/sofa-launcher/) when installing" ON)
+option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (share/, examples/) when installing" ON)
 ## Install resource files
 if(SOFA_INSTALL_RESOURCES_FILES)
     install(DIRECTORY share/ DESTINATION share/sofa COMPONENT resources)
     install(DIRECTORY examples/ DESTINATION share/sofa/examples COMPONENT resources)
-    install(DIRECTORY tools/sofa-launcher/ DESTINATION share/sofa/sofa-launcher COMPONENT resources)
 endif()
 
 file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt"
