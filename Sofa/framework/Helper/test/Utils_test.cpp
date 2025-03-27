@@ -88,7 +88,7 @@ bool testGetUserHomeDirectory()
 
     const std::string path = Utils::getUserHomeDirectory();
 #if defined(WIN32)
-    result = (path == "J:/0");
+    result = (path == "C:/Windows/system32/config/systemprofile");
 #elif defined (__APPLE__)
     result = (path.find("Library") != std::string::npos);
     result = result && (path.find("Application Support") != std::string::npos);
@@ -96,13 +96,12 @@ bool testGetUserHomeDirectory()
     result = (path == "/home/runner");
 #endif
 
-    EXPECT_TRUE(result) << "Utils::getUserHomeDirectory() = " << path;
     return result;
 }
 
 TEST(UtilsTest, getUserHomeDirectory)
 {
-    EXPECT_TRUE(testGetUserHomeDirectory());
+    EXPECT_TRUE(testGetUserHomeDirectory()) << "Expected to fail outside the CI environment.";
 }
 
 TEST(UtilsTest, getSofaDataDirectory)
