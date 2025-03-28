@@ -85,7 +85,6 @@ file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/etc/sofa/python.d)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Sofa/framework/Config/cmake")
-list(APPEND CMAKE_IGNORE_PATH "${CMAKE_INSTALL_PREFIX}") # ignore install directory for findXXX commands
 include(SofaMacros)
 
 install(FILES
