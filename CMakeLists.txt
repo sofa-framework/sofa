@@ -200,7 +200,10 @@ add_subdirectory(applications/plugins)
 add_subdirectory(applications/projects)
 
 ## SimpleAPI examples
-add_subdirectory(examples/SimpleAPI)
+option(SOFA_BUILD_SIMPLEAPI_EXAMPLES "Build SOFA scenes based on SimpleAPI." OFF)
+if(SOFA_BUILD_SIMPLEAPI_EXAMPLES)
+    add_subdirectory(examples/SimpleAPI)
+endif()
 
 
 ## SOFA scenes
