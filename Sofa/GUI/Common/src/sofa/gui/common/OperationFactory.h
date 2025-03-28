@@ -69,7 +69,12 @@ public:
 
     }
 
-    static Operation* Instanciate(const std::string &name)
+    SOFA_ATTRIBUTE_DEPRECATED__TYPO() static Operation* Instanciate(const std::string &name)
+    {
+        return Instantiate(name);
+    }
+
+    static Operation* Instantiate(const std::string &name)
     {
         const RegisterStorage &reg = getInstance()->registry;
         const RegisterStorage::const_iterator it = reg.find(name);
@@ -89,7 +94,7 @@ class SOFA_GUI_COMMON_API RegisterOperation
 {
 public:
     std::string name;
-    OperationCreator *creator;
+    OperationCreator *creator { nullptr };
 
     RegisterOperation(const std::string &n)
     {
