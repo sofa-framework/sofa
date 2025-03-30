@@ -23,10 +23,4 @@
 
 #include <sofa/component/constraint/projective/FixedTranslationProjectiveConstraint.h>
 
-SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "sofa/component/constraint/projective/FixedTranslationProjectiveConstraint.h")
-
-namespace sofa::component::constraint::projective
-{
-template <class T>
-using FixedTranslationConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "FixedTranslationConstraint has been renamed to FixedTranslationProjectiveConstraint") = FixedTranslationProjectiveConstraint<T>;
-}
+SOFA_HEADER_DISABLED("v24.06", "v25.06", "sofa/component/constraint/projective/FixedTranslationProjectiveConstraint.h")

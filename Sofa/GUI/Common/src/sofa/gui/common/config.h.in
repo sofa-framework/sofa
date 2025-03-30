@@ -33,3 +33,10 @@
 #else
 #  define SOFA_GUI_COMMON_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__TYPO()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__TYPO() \
+    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Use function Instantiate instead.")
+#endif

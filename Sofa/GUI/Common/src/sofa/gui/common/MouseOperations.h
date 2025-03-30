@@ -57,29 +57,21 @@ class SOFA_GUI_COMMON_API Operation
 {
     friend class OperationFactory;
 public:
-    Operation(sofa::component::setting::MouseButtonSetting::SPtr s = nullptr): pickHandle(nullptr),mbsetting(s),performer(nullptr),button(NONE) {}
-    virtual ~Operation() {}
-    virtual void configure(PickHandler*picker, MOUSE_BUTTON b) { pickHandle=picker; button=b; }
-    virtual void configure(PickHandler* picker, sofa::component::setting::MouseButtonSetting* s)
-    { setSetting(s); configure(picker,GetMouseId(s->d_button.getValue().getSelectedId())); }
+    explicit Operation(sofa::component::setting::MouseButtonSetting::SPtr s = nullptr);
+    virtual ~Operation();
+    virtual void configure(PickHandler* picker, MOUSE_BUTTON b);
+    virtual void configure(PickHandler* picker, sofa::component::setting::MouseButtonSetting* s);
     virtual void start();                      /// This function is called each time the mouse is clicked.
     virtual void execution() {}
     virtual void end();                        /// This function is called after each mouse click.
     virtual void endOperation() { this->end(); }  /// This function is called when shift key is released.
     virtual void wait() {}
-    static MOUSE_BUTTON GetMouseId(unsigned int i)
-    {
-        switch (i)
-        {
-        case LEFT:   return LEFT;
-        case MIDDLE: return MIDDLE;
-        case RIGHT:  return RIGHT;
-        default:     return NONE;
-        }
-    }
+    static MOUSE_BUTTON GetMouseId(unsigned int i);
+
 protected:
     PickHandler *pickHandle;
     sofa::component::setting::MouseButtonSetting::SPtr mbsetting;
+
 public:
     virtual void setSetting(sofa::component::setting::MouseButtonSetting* s) { mbsetting = s; }
     sofa::gui::component::performer::InteractionPerformer *performer;
@@ -88,8 +80,10 @@ public:
     virtual void configurePerformer(sofa::gui::component::performer::InteractionPerformer* p);
     MOUSE_BUTTON getMouseButton() const { return button; }
     std::string getId() { return id; }
+
 protected:
     MOUSE_BUTTON button;
+
 private:
     std::string id;
 };
@@ -97,7 +91,8 @@ private:
 class SOFA_GUI_COMMON_API AttachOperation : public Operation
 {
 public:
-    AttachOperation(sofa::gui::component::AttachBodyButtonSetting::SPtr s = sofa::core::objectmodel::New<sofa::gui::component::AttachBodyButtonSetting>()) : Operation(s), setting(s)
+    explicit AttachOperation(sofa::gui::component::AttachBodyButtonSetting::SPtr s = sofa::core::objectmodel::New<sofa::gui::component::AttachBodyButtonSetting>())
+        : Operation(s), setting(s)
     {}
     ~AttachOperation() override {}
 
@@ -158,31 +153,40 @@ protected:
 class SOFA_GUI_COMMON_API AddRecordedCameraOperation : public Operation
 {
 public:
-	AddRecordedCameraOperation() : setting(sofa::core::objectmodel::New<sofa::gui::component::AddRecordedCameraButtonSetting>())
-	{}
-	static std::string getDescription() {return "Save camera's view points for navigation ";}
+    AddRecordedCameraOperation() : setting(sofa::core::objectmodel::New<sofa::gui::component::AddRecordedCameraButtonSetting>())
+    {}
+    static std::string getDescription() {return "Save camera's view points for navigation ";}
 protected:
     virtual std::string defaultPerformerType() override;
-	void configurePerformer(sofa::gui::component::performer::InteractionPerformer* p) override;
-	sofa::gui::component::AddRecordedCameraButtonSetting::SPtr setting;
+    void configurePerformer(sofa::gui::component::performer::InteractionPerformer* p) override;
+    sofa::gui::component::AddRecordedCameraButtonSetting::SPtr setting;
 };
 
 class SOFA_GUI_COMMON_API StartNavigationOperation : public Operation
 {
 public:
-	StartNavigationOperation() : setting(sofa::core::objectmodel::New<sofa::gui::component::StartNavigationButtonSetting>())
-	{}
-	static std::string getDescription() {return "Start navigation if camera's view points have been saved";}
+    StartNavigationOperation() : setting(sofa::core::objectmodel::New<sofa::gui::component::StartNavigationButtonSetting>())
+    {}
+    static std::string getDescription() {return "Start navigation if camera's view points have been saved";}
 protected:
     virtual std::string defaultPerformerType() override;
-	void configurePerformer(sofa::gui::component::performer::InteractionPerformer* p) override;
-	sofa::gui::component::StartNavigationButtonSetting::SPtr setting;
+    void configurePerformer(sofa::gui::component::performer::InteractionPerformer* p) override;
+    sofa::gui::component::StartNavigationButtonSetting::SPtr setting;
 };
 
 class SOFA_GUI_COMMON_API InciseOperation : public Operation
 {
 public:
-    InciseOperation():startPerformer(nullptr), cpt (0) {}
+    InciseOperation()
+     : startPerformer(nullptr),
+       method(0),
+       snapingBorderValue(0),
+       snapingValue(0),
+       cpt(0),
+       finishIncision(false),
+       keepPoint(false)
+    {}
+
     ~InciseOperation() override;
     void start() override ;
     void execution() override ;
@@ -216,7 +220,9 @@ protected:
 class SOFA_GUI_COMMON_API TopologyOperation : public Operation
 {
 public:
-    TopologyOperation():scale (0.0), volumicMesh (false), firstClick(true) {}
+    TopologyOperation() :
+        topologicalOperation(0), scale(0.0), volumicMesh(false), firstClick(true)
+    {}
 
     ~TopologyOperation() override {}
     void start() override;
@@ -228,7 +234,7 @@ public:
     void setScale (double s) {scale = s;}
     void setVolumicMesh (bool v) {volumicMesh = v;}
 
-    virtual int getTopologicalOperation() const { return volumicMesh;}
+    virtual int getTopologicalOperation() const { return topologicalOperation;}
     virtual double getScale() const {return scale;}
     virtual bool getVolumicMesh() const {return volumicMesh;}
 
