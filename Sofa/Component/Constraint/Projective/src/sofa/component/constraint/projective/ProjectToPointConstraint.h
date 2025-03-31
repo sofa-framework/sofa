@@ -23,10 +23,4 @@
 
 #include <sofa/component/constraint/projective/PointProjectiveConstraint.h>
 
-SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "sofa/component/constraint/projective/PointProjectiveConstraint.h")
-
-namespace sofa::component::constraint::projective
-{
-template <class T>
-using ProjectToPointConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "ProjectToPointConstraint has been renamed to PointProjectiveConstraint") = PointProjectiveConstraint<T>;
-}
+SOFA_HEADER_DISABLED("v24.06", "v25.06", "sofa/component/constraint/projective/PointProjectiveConstraint.h")

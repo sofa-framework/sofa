@@ -32,8 +32,6 @@
 #include <stack>
 #include <string>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::core::loader
 {
     class VoxelLoader;
@@ -186,42 +184,12 @@ public:
     {
         return d_dataVoxels.getValue()[index] == 1;
     }
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> _fillWeighted;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> bOnlyInsideCells;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::vector< unsigned char > >     dataVoxels;
-
 
     Data< type::vector< unsigned char > >     d_dataVoxels;
-
     Data<bool> d_fillWeighted; ///< Is quantity of matter inside a cell taken into account? (.5 for boundary, 1 for inside)
-
     Data<bool> d_bOnlyInsideCells; ///< Select only inside cells (exclude boundary cells)
 
-
 protected:
-
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::lifecycle::RenamedData< sofa::type::Vec< 3, int > >  n;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3> _min;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3> _max;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::lifecycle::RenamedData<SReal> _cellWidth;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::lifecycle::RenamedData<int> _nbVirtualFinerLevels;
-
-
     bool isVirtual;
     /// cutting number in all directions
     Data< sofa::type::Vec< 3, int > > d_n;
@@ -231,24 +199,8 @@ protected:
     Data< int > d_nbVirtualFinerLevels; ///< create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (useful to compute better mechanical properties for example)
 
 public:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3i> dataResolution;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec3> voxelSize;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::lifecycle::RenamedData<unsigned int> marchingCubeStep;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::lifecycle::RenamedData<unsigned int> convolutionSize;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_GRID()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::vector< type::vector<Index> > > facets;
-
-    Data< type::Vec3i >			d_dataResolution; ///< Dimension of the voxel File
-    Data< type::Vec3 >         d_voxelSize; ///< Dimension of one voxel
+    Data< type::Vec3i >		d_dataResolution; ///< Dimension of the voxel File
+    Data< type::Vec3 >      d_voxelSize; ///< Dimension of one voxel
     Data< unsigned int >    d_marchingCubeStep; ///< Step of the Marching Cube algorithm
     Data< unsigned int >    d_convolutionSize; ///< Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required.
 

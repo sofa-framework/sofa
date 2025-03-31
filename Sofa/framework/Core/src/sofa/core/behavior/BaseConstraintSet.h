@@ -27,8 +27,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/MultiVecId.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::core::behavior
 {
 
@@ -93,15 +91,8 @@ protected:
 public:
     Data< sofa::Index > d_constraintIndex; ///< Constraint index (first index in the right hand term resolution vector)
 
-    SOFA_ATTRIBUTE_DEPRECATED__CORE_RENAME_DATA_IN_CORE()
-    sofa::core::objectmodel::lifecycle::RenamedData< unsigned int > m_constraintIndex;
-
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
-
-    SOFA_ATTRIBUTE_DEPRECATED__REMOVED_CID()
-    DeprecatedAndRemoved m_cId{};
-
 };
 
 } // namespace sofa::core::behavior

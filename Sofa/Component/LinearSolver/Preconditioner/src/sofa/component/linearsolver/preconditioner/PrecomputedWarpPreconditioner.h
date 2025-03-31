@@ -32,8 +32,6 @@
 #include <cmath>
 #include <fstream>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::linearsolver::preconditioner
 {
 
@@ -108,23 +106,6 @@ public:
     typedef sofa::type::MatNoInit<3, 3, Real> Transformation;
 
     Data<bool> d_jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> jmjt_twostep;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> use_file;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> share_matrix;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> use_rotations;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_LINEARSOLVER_PRECONDITIONER()
-    sofa::core::objectmodel::lifecycle::RenamedData<double> draw_rotations_scale;
-
-
     Data<bool> d_use_file; ///< Dump system matrix in a file
     Data<bool> d_share_matrix; ///< Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)
     SingleLink<PrecomputedWarpPreconditioner, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used to precompute the first matrix

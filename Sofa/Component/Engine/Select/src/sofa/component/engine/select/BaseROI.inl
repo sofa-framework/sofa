@@ -123,8 +123,6 @@ BaseROI<DataTypes>::BaseROI()
     addOutput(&d_edgeOutIndices);
     addOutput(&d_triangleOutIndices);
     addOutput(&d_tetrahedronOutIndices);
-
-    d_X0.setOriginalData(&d_positions);
 }
 
 template <class DataTypes>

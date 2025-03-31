@@ -76,14 +76,9 @@ int ComponentDeprecatedClassId = sofa::core::RegisterObject("")
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct SceneChecker_test : public BaseSimulationTest
 {
-    void doSetUp() override
-    {
-    }
-
     void checkRequiredPlugin(bool missing)
     {
-        sofa::simpleapi::importPlugin(Sofa.Component.ODESolver.Forward);
-
+        this->loadPlugins({Sofa.Component.ODESolver.Forward});
         const std::string missStr = missing ? "" : "<RequiredPlugin name='Sofa.Component.ODESolver.Forward'/> \n";
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                             \n"
@@ -173,8 +168,8 @@ struct SceneChecker_test : public BaseSimulationTest
         EXPECT_MSG_NOEMIT(Warning);
 
         const std::string lvl = (shouldWarn)?"17.06":"17.12";
-        
-        sofa::simpleapi::importPlugin("Sofa.Component.SceneUtility");
+
+        this->loadPlugins({Sofa.Component.SceneUtility});
         
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                           \n"

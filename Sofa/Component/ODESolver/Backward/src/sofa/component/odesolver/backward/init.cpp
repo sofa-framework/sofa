@@ -30,6 +30,8 @@ extern void registerEulerImplicitSolver(sofa::core::ObjectFactory* factory);
 extern void registerNewmarkImplicitSolver(sofa::core::ObjectFactory* factory);
 extern void registerStaticSolver(sofa::core::ObjectFactory* factory);
 extern void registerVariationalSymplecticSolver(sofa::core::ObjectFactory* factory);
+extern void registerNewtonRaphsonSolver(sofa::core::ObjectFactory* factory);
+extern void registerBDFOdeSolver(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -59,6 +61,8 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerNewmarkImplicitSolver(factory);
     registerStaticSolver(factory);
     registerVariationalSymplecticSolver(factory);
+    registerNewtonRaphsonSolver(factory);
+    registerBDFOdeSolver(factory);
 }
 
 void init()

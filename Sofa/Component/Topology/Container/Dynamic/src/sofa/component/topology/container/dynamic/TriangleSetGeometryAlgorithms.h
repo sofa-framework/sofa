@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/topology/container/dynamic/config.h>
-
 #include <sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TriangleSubdividers.h>
 #include <sofa/type/Vec.h>
 
 namespace sofa::component::topology::container::dynamic
@@ -289,6 +289,23 @@ public:
         sofa::type::vector< TriangleID >& triangles_list,
         sofa::type::vector< EdgeID >& edges_list,
         sofa::type::vector< Real >& coords_list) const;
+
+
+    /** \brief This method computes the incision path between the segment defined by [@param ptA, @param ptB], respectively inside triangle indices @param ind_ta and @param ind_tb, and the current triangulation.
+    * All intersection points in the triangulation will be stored as @sa PointToAdd. The method returns a vector of PointToAdd. Those point can be located on triangle, edge or vertex of the mesh.
+    * This method can take as input @param snapThreshold and @param snapThresholdBorder to process path snapping to avoid small triangle creation. 
+    * Those parameters behave as threshold. If intersection point has a barycentric coordinate (on edge or triangle) above the threshold. It will be snapped. Default value is 1.0, meaning no snapping.
+    *
+    * @param ptA : first input point of the segment
+    * @param ptB : last input point of the segment
+    * @param ind_ta : triangle index where ptA is located
+    * @param ind_tb : triangle index where ptB is located
+    * @param snapThreshold : snapping coefficient to be used to snap intersection point along the incision path. Correspond to the barycentric coordinate regarding a vertex.
+    * @param snapThresholdBorder : snapping coefficient to be used at start and end of the incision path.
+    * @return a vector shared pointer of @sa PointToAdd
+    */
+    type::vector< std::shared_ptr<PointToAdd> > computeIncisionPath(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
+        const TriangleID ind_ta, const TriangleID ind_tb, Real snapThreshold = 1.0, Real snapThresholdBorder = 1.0) const;
 
 
     /** \brief Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.

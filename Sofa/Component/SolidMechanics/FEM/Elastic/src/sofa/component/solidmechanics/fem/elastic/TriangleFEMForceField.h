@@ -28,8 +28,6 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 // corotational triangle from
 // @InProceedings{NPF05,
 //   author       = "Nesme, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",
@@ -91,9 +89,6 @@ protected:
 
     const VecElement* _indexedElements;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> _initialPoints;
-
     Data< VecCoord > d_initialPoints; ///< Initial Position
 
     TriangleFEMForceField();
@@ -119,20 +114,6 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
     int method;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::string> f_method;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_poisson;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_young;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_thickness;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_planeStrain;
 
     Data<std::string> d_method; ///< large: large displacements, small: small displacements
     Data<Real> d_thickness; ///< Thickness of the elements

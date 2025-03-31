@@ -89,16 +89,6 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
     _coef[7][2]=1;
 
     _alreadyInit=false;
-
-    f_method.setOriginalData(&d_method);
-    f_updateStiffnessMatrix.setOriginalData(&d_updateStiffnessMatrix);
-    _gatherPt.setOriginalData(&d_gatherPt);
-    _gatherBsize.setOriginalData(&d_gatherBsize);
-    f_drawing.setOriginalData(&d_drawing);
-    f_drawPercentageOffset.setOriginalData(&d_drawPercentageOffset);
-    _elementStiffnesses.setOriginalData(&d_elementStiffnesses);
-    _initialPoints.setOriginalData(&d_initialPoints);
-
 }
 
 

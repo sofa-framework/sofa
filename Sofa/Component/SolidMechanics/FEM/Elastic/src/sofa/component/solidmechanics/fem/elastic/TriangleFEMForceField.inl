@@ -42,11 +42,6 @@ TriangleFEMForceField()
     , d_thickness(initData(&d_thickness, Real(1.), "thickness", "Thickness of the elements"))
     , d_planeStrain(initData(&d_planeStrain, false, "planeStrain", "Plane strain or plane stress assumption"))
 {
-    _initialPoints.setOriginalData(&d_initialPoints);
-    f_method.setOriginalData(&d_method);
-    f_thickness.setOriginalData(&d_thickness);
-    f_planeStrain.setOriginalData(&d_planeStrain);
-
 }
 
 template <class DataTypes>
@@ -251,7 +246,7 @@ void TriangleFEMForceField<DataTypes>::initSmall()
 {
     _rotatedInitialElements.resize(_indexedElements->size());
 
-    const VecCoord& pos = _initialPoints.getValue();
+    const VecCoord& pos = d_initialPoints.getValue();
     for (unsigned i = 0; i < _indexedElements->size(); ++i)
     {
         _rotations[i] = Transformation::Identity();

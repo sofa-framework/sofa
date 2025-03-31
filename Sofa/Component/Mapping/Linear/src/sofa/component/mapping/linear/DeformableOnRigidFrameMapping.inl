@@ -41,13 +41,6 @@ DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping
     , m_toModel(nullptr)
     , m_fromRootModel(nullptr)
 {
-    index.setOriginalData(&d_index);
-    indexFromEnd.setOriginalData(&d_indexFromEnd);
-    repartition.setOriginalData(&d_repartition);
-    globalToLocalCoords.setOriginalData(&d_globalToLocalCoords);
-    m_rootAngularForceScaleFactor.setOriginalData(&d_rootAngularForceScaleFactor);
-    m_rootLinearForceScaleFactor.setOriginalData(&d_rootLinearForceScaleFactor);
-
 }
 
 template <class TIn, class TInRoot, class TOut>

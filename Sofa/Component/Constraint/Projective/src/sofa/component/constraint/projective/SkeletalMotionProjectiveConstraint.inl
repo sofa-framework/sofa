@@ -42,10 +42,6 @@ SkeletalMotionProjectiveConstraint<DataTypes>::SkeletalMotionProjectiveConstrain
     , d_active(initData(&d_active, true, "active", "is the constraint active?"))
     , finished(false)
 {
-    skeletonJoints.setOriginalData(&d_skeletonJoints);
-    skeletonBones.setOriginalData(&d_skeletonBones);
-    animationSpeed.setOriginalData(&d_animationSpeed);
-    active.setOriginalData(&d_active);
 }
 
 template <class DataTypes>
