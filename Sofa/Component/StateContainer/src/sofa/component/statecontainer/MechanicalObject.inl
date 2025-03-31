@@ -1908,6 +1908,7 @@ bool vOp_vbf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId 
 template <core::VecType vtype, core::VecType btype, class DataTypes>
 bool vOp_va(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> f)
 {
+    SOFA_UNUSED(f);
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc){vc[0] = bc[0];})
     {
         auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
@@ -1921,6 +1922,7 @@ bool vOp_va(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b
 template <core::VecType vtype, core::VecType btype, class DataTypes>
 bool vOp_vb(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> f)
 {
+    SOFA_UNUSED(f);
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc){vc[0] += bc[0];})
     {
         auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
@@ -1973,6 +1975,8 @@ bool vOp_v_inc_bf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstV
 template <core::VecType vtype, core::VecType atype, core::VecType btype, class DataTypes>
 bool vOp_vab(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId a, core::ConstVecId b, Real_t<DataTypes> f)
 {
+    SOFA_UNUSED(f);
+
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, atype> ac, core::StateVecType_t<DataTypes, btype> bc){vc[0] = ac[0] + bc[0];})
     {
         auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
