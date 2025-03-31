@@ -82,6 +82,8 @@ void DistanceToPlaneMapping<TIn>::init()
 template <class TIn>
 void DistanceToPlaneMapping<TIn>::apply(const core::MechanicalParams *mparams, Data<VecCoord_t<TOut>>& out, const Data<VecCoord_t<TIn>>& in)
 {
+    SOFA_UNUSED(mparams);
+
     if (this-> d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
@@ -102,6 +104,8 @@ void DistanceToPlaneMapping<TIn>::apply(const core::MechanicalParams *mparams, D
 template <class TIn>
 void DistanceToPlaneMapping<TIn>::applyJ(const core::MechanicalParams *mparams, Data<VecDeriv_t<TOut>>& out, const Data<VecDeriv_t<TIn>>& in)
 {
+    SOFA_UNUSED(mparams);
+
     if (this-> d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
@@ -118,6 +122,8 @@ void DistanceToPlaneMapping<TIn>::applyJ(const core::MechanicalParams *mparams, 
 template <class TIn>
 void DistanceToPlaneMapping<TIn>::applyJT(const core::MechanicalParams *mparams, Data<VecDeriv_t<TIn>>& out, const Data<VecDeriv_t<TOut>>& in)
 {
+    SOFA_UNUSED(mparams);
+
     if (this-> d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
@@ -135,6 +141,8 @@ void DistanceToPlaneMapping<TIn>::applyJT(const core::MechanicalParams *mparams,
 template <class TIn>
 void DistanceToPlaneMapping<TIn>::applyJT(const core::ConstraintParams *cparams, Data<MatrixDeriv_t<TIn>>& out, const Data<MatrixDeriv_t<TOut>>& in)
 {
+    SOFA_UNUSED(cparams);
+
     if (this-> d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
