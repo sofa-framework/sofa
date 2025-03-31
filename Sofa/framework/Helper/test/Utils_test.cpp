@@ -101,7 +101,7 @@ bool testGetUserHomeDirectory()
 
 TEST(UtilsTest, getUserHomeDirectory)
 {
-    EXPECT_TRUE(testGetUserHomeDirectory()) << "Expected to fail outside the CI environment.";
+    EXPECT_TRUE(testGetUserHomeDirectory()) << "Expected to fail outside the CI environment. getUserHomeDirectory() = " << Utils::getUserHomeDirectory();
 }
 
 TEST(UtilsTest, getSofaDataDirectory)

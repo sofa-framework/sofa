@@ -268,8 +268,9 @@ const std::string& Utils::getSofaDataDirectory()
 {
     constexpr std::string_view sofaDataDirSuffix = "SOFAData";
 
-    static std::string sofaDataDirectory = FileSystem::cleanPath(FileSystem::findOrCreateAValidPath(
-        FileSystem::append(getUserHomeDirectory(), sofaDataDirSuffix)));
+    static std::string sofaDataDirectory = FileSystem::append(getUserHomeDirectory(), sofaDataDirSuffix);
+    FileSystem::cleanPath(sofaDataDirectory);
+    FileSystem::ensureFolderExists(sofaDataDirectory);
 
     return sofaDataDirectory;
 }
