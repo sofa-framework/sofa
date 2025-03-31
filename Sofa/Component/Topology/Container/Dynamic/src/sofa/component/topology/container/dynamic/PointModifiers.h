@@ -44,9 +44,9 @@ public:
         const sofa::type::vector<SReal>& coefs, SReal snapValue = 1_sreal)
         : m_uniqueID(uniqueID)
         , m_idPoint(idPoint)
-        , m_snapValue(snapValue)
         , m_ancestors(ancestors)
         , m_coefs(coefs)
+        , m_snapValue(snapValue)
     {
         if (ancestors.size() != coefs.size())
         {
@@ -122,8 +122,8 @@ public:
 
 
 
-/// static method to compute and consistently generate a unique ID based on the IDs of its ancestors. The ID is determined by combining both ancestor IDs in ascending order, separated by a unit of 1e6. 
-static PointID getUniqueId(PointID ancestor0, PointID ancestor1)
+/// global function to compute and consistently generate a unique ID based on the IDs of its ancestors. The ID is determined by combining both ancestor IDs in ascending order, separated by a unit of 1e6.
+inline PointID getUniqueId(PointID ancestor0, PointID ancestor1)
 {
     PointID uniqID;
     if (ancestor0 > ancestor1)
@@ -134,8 +134,8 @@ static PointID getUniqueId(PointID ancestor0, PointID ancestor1)
     return uniqID;
 }
 
-/// static method to compute and consistently generate a unique ID based on the IDs of its ancestors. The ID is determined by combining the 3 ancestor IDs in ascending order, separated by a unit of 1e6 and 1e12.
-static PointID getUniqueId(PointID ancestor0, PointID ancestor1, PointID ancestor2)
+/// global function to compute and consistently generate a unique ID based on the IDs of its ancestors. The ID is determined by combining the 3 ancestor IDs in ascending order, separated by a unit of 1e6 and 1e12.
+inline PointID getUniqueId(PointID ancestor0, PointID ancestor1, PointID ancestor2)
 {
     PointID uniqID;
     if (ancestor0 > ancestor1) 
