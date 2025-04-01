@@ -312,7 +312,7 @@ void BaseContactLagrangianConstraint<DataTypes, ContactParams>::getConstraintVio
 
 
 template<class DataTypes, class ContactParams>
-void BaseContactLagrangianConstraint<DataTypes, ContactParams>::getConstraintInfo(const core::ConstraintParams*, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& /*positions*/, VecConstDeriv& directions, VecConstArea& /*areas*/)
+void BaseContactLagrangianConstraint<DataTypes, ContactParams>::getConstraintInfo(const core::ConstraintParams*, VecConstraintBlockInfo& blocks, VecPersistentID& ids)
 {
     if (contacts.empty()) return;
     const bool friction = (contacts[0].parameters.mu > 0.0); /// @todo: can there be both friction-less and friction contacts in the same BaseContactLagrangianConstraint ???
@@ -322,21 +322,7 @@ void BaseContactLagrangianConstraint<DataTypes, ContactParams>::getConstraintInf
     info.nbLines = friction ? 3 : 1;
     info.hasId = true;
     info.offsetId = ids.size();
-    info.hasDirection = true;
-    info.offsetDirection = directions.size();
     info.nbGroups = contacts.size();
-
-    for (unsigned int i=0; i<contacts.size(); i++)
-    {
-        Contact& c = contacts[i];
-        ids.push_back( yetIntegrated ? c.contactId : -c.contactId);
-        directions.push_back( c.norm );
-        if (friction)
-        {
-            directions.push_back( c.t );
-            directions.push_back( c.s );
-        }
-    }
 
     yetIntegrated = true;
 
