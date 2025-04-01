@@ -31,11 +31,8 @@ class SOFA_SIMULATION_CORE_API MechanicalGetConstraintInfoVisitor : public simul
 public:
     typedef core::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
     typedef core::behavior::BaseConstraint::VecPersistentID VecPersistentID;
-    typedef core::behavior::BaseConstraint::VecConstCoord VecConstCoord;
-    typedef core::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
-    typedef core::behavior::BaseConstraint::VecConstArea VecConstArea;
 
-    MechanicalGetConstraintInfoVisitor(const core::ConstraintParams* params, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas);
+    MechanicalGetConstraintInfoVisitor(const core::ConstraintParams* params, VecConstraintBlockInfo& blocks, VecPersistentID& ids);
 
     Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
 
@@ -49,9 +46,6 @@ public:
 private:
     VecConstraintBlockInfo& _blocks;
     VecPersistentID& _ids;
-    VecConstCoord& _positions;
-    VecConstDeriv& _directions;
-    VecConstArea& _areas;
     const core::ConstraintParams* _cparams;
 };
 

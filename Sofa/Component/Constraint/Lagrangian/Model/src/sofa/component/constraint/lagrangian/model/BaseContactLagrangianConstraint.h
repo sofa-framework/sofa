@@ -63,13 +63,9 @@ public:
 
     typedef core::behavior::BaseConstraint::ConstraintBlockInfo ConstraintBlockInfo;
     typedef core::behavior::BaseConstraint::PersistentID PersistentID;
-    typedef core::behavior::BaseConstraint::ConstCoord ConstCoord;
 
     typedef core::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
     typedef core::behavior::BaseConstraint::VecPersistentID VecPersistentID;
-    typedef core::behavior::BaseConstraint::VecConstCoord VecConstCoord;
-    typedef core::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
-    typedef core::behavior::BaseConstraint::VecConstArea VecConstArea;
 
     typedef core::objectmodel::Data<VecCoord>		DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv>		DataVecDeriv;
@@ -148,7 +144,7 @@ public:
             , const DataVecDeriv &v1, const DataVecDeriv &v2) override;
 
 
-    void getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas) override;
+    void getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids) override;
 
     virtual void getConstraintResolution(const core::ConstraintParams *,std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) =0;
     bool isActive() const override;

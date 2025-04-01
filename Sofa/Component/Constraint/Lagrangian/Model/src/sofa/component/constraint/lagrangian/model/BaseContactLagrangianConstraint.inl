@@ -367,7 +367,7 @@ void BaseContactLagrangianConstraint<DataTypes, ContactParams>::draw(const core:
     {
         const Contact& c = contacts[i];
 
-        otherVertices.push_back(c.P);        
+        otherVertices.push_back(c.P);
         otherVertices.push_back(c.P + c.norm);
         otherColors.push_back(sofa::type::RGBAColor::white());
 
