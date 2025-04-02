@@ -97,7 +97,8 @@ macro(sofa_add_generic directory name type)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
+    if(   EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}"
+       OR EXISTS "${directory}" AND IS_DIRECTORY "${directory}")
         string(TOUPPER ${type}_${name} option)
         string(REPLACE "." "_" option ${option})
         string(TOLOWER ${type} type_lower)
@@ -168,10 +169,20 @@ macro(sofa_add_generic directory name type)
             endif()
         endif()
     else()
-        message("The ${type_lower} ${name} (${CMAKE_CURRENT_LIST_DIR}/${directory}) does not exist and will be ignored.")
+        message("ERROR while adding ${type_lower} ${name}: neither ${CMAKE_CURRENT_LIST_DIR}/${directory} nor ${directory} exist. It will thus be ignored.")
     endif()
 endmacro()
 
+### Macro to help external projects management
+# It produces the correct naming for cmake flag generation and the actual name of the project
+macro(get_name_from_source_dir)
+    get_filename_component(ProjectId ${CMAKE_CURRENT_LIST_DIR} NAME)
+    string(REPLACE "\." "_"  fixed_name ${ProjectId})
+    string(TOUPPER ${fixed_name} fixed_name)
+
+    set(inner-project-name ${ProjectId})
+    set(inner-project-name-upper ${fixed_name})
+endmacro()
 
 ### External projects management
 # Thanks to http://crascit.com/2015/07/25/cmake-gtest/
@@ -185,20 +196,11 @@ endmacro()
 # FETCH_ONLY = do not "add_subdirectory" the fetched repository
 # See plugins/SofaHighOrder for example
 #
-function(sofa_add_generic_external directory name type)
+function(sofa_add_generic_external name type)
     set(optionArgs FETCH_ONLY)
-    set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN GIT_REF)
+    set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN GIT_REF GIT_REPOSITORY)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-
-    # Make directory absolute
-    if(NOT IS_ABSOLUTE "${directory}")
-        set(directory "${CMAKE_CURRENT_LIST_DIR}/${directory}")
-    endif()
-    if(NOT EXISTS "${directory}")
-        message("${directory} does not exist and will be ignored.")
-        return()
-    endif()
 
     string(TOLOWER ${type} type_lower)
 
@@ -208,9 +210,12 @@ function(sofa_add_generic_external directory name type)
         set(active ON)
     endif()
 
+    set(directory "${CMAKE_CURRENT_LIST_DIR}/${name}")
+
     # Create option
     string(REPLACE "\." "_"  fixed_name ${name})
     string(TOUPPER ${PROJECT_NAME}_FETCH_${fixed_name} fetch_enabled)
+    string(TOUPPER ${fixed_name} upper_name)
     if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
         cmake_dependent_option(${fetch_enabled} "Fetch/update ${name} repository." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
     else()
@@ -219,71 +224,69 @@ function(sofa_add_generic_external directory name type)
 
     # Setup fetch directory
     set(fetched_dir "${CMAKE_BINARY_DIR}/external_directories/fetched/${name}" )
+    file(RELATIVE_PATH relative_path "${CMAKE_SOURCE_DIR}" "${directory}")
 
     # Fetch
     if(${fetch_enabled})
-        message("Fetching ${type_lower} ${name}")
+        set(${upper_name}_GIT_REPOSITORY "${ARG_GIT_REPOSITORY}" CACHE STRING "Repository address" )
+        set(${upper_name}_GIT_TAG "${ARG_GIT_REF}" CACHE STRING "Branch or commit SHA to checkout" )
 
-        if("${ARG_GIT_REF}" STREQUAL "")
-            message(SEND_ERROR "One value argument GIT_REF is required when option EXTERNAL is set. This is the name of the branch or the tag checkouted when cloning the subdirectory.")
-            return()
+        message("Fetching ${type_lower} ${name} in ${fetched_dir}")
+        message(STATUS "Checkout reference ${${upper_name}_GIT_TAG} from repository ${${upper_name}_GIT_REPOSITORY} ")
+
+        #Generate temporary folder to store project that will fetch the sources
+        if(NOT EXISTS ${fetched_dir}-temp)
+            file(MAKE_DIRECTORY "${fetched_dir}-temp/")
         endif()
 
-        if(NOT EXISTS ${fetched_dir})
-            file(MAKE_DIRECTORY "${fetched_dir}/")
-        endif()
 
-        # Download and unpack at configure time
-        configure_file(${directory}/ExternalProjectConfig.cmake.in ${fetched_dir}/CMakeLists.txt)
-        # Copy ExternalProjectConfig.cmake.in in build dir for post-pull recovery in src dir
-        file(COPY ${directory}/ExternalProjectConfig.cmake.in DESTINATION ${fetched_dir})
+        file(WRITE ${fetched_dir}-temp/CMakeLists.txt "
+        cmake_minimum_required(VERSION 3.22)
+        include(ExternalProject)
+        ExternalProject_Add(
+            ${name}
+            GIT_REPOSITORY ${${upper_name}_GIT_REPOSITORY}
+            GIT_TAG ${${upper_name}_GIT_TAG}
+            SOURCE_DIR ${fetched_dir}
+            BINARY_DIR \"\"
+            CONFIGURE_COMMAND \"\"
+            BUILD_COMMAND \"\"
+            INSTALL_COMMAND \"\"
+            TEST_COMMAND \"\"
+            GIT_CONFIG \"remote.origin.fetch=+refs/pull/*:refs/remotes/origin/pr/*\"
+            )"
+        )
 
-
-        # Execute commands to fetch content
-        message("  Pulling reference ${ARG_GIT_REF}...")
-
-        file(WRITE "${fetched_dir}/logs.txt" "") # Empty log file
         execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM} -G "${CMAKE_GENERATOR}" .
-            WORKING_DIRECTORY "${fetched_dir}"
-            RESULT_VARIABLE generate_exitcode
-            OUTPUT_VARIABLE generate_logs ERROR_VARIABLE generate_logs)
-        file(APPEND "${fetched_dir}/logs.txt" "${generate_logs}")
+                WORKING_DIRECTORY "${fetched_dir}-temp"
+                RESULT_VARIABLE generate_exitcode
+                OUTPUT_VARIABLE generate_logs ERROR_VARIABLE generate_logs)
+        file(APPEND "${fetched_dir}-temp/logs.txt" "${generate_logs}")
         execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-            WORKING_DIRECTORY "${fetched_dir}"
-            RESULT_VARIABLE build_exitcode
-            OUTPUT_VARIABLE build_logs ERROR_VARIABLE build_logs)
-        file(APPEND "${fetched_dir}/logs.txt" "${build_logs}")
+                WORKING_DIRECTORY "${fetched_dir}-temp"
+                RESULT_VARIABLE build_exitcode
+                OUTPUT_VARIABLE build_logs ERROR_VARIABLE build_logs)
+        file(APPEND "${fetched_dir}-temp/logs.txt" "${build_logs}")
 
-        if(generate_exitcode EQUAL 0 AND build_exitcode EQUAL 0 AND EXISTS "${directory}/.git")
-            message("  Success.")
-            # Add .gitignore for Sofa
-            file(WRITE "${directory}/.gitignore" "*")
-            # Recover ExternalProjectConfig.cmake.in from build dir (erased by pull)
-            file(COPY ${fetched_dir}/ExternalProjectConfig.cmake.in DESTINATION ${directory})
-            # Disable fetching for next configure
-            set(${fetch_enabled} OFF CACHE BOOL "Fetch/update ${name} repository." FORCE)
-            message("  ${fetch_enabled} is now OFF. Set it back to ON to trigger a new fetch.")
-        else()
-            message(SEND_ERROR "Failed to add external repository ${name}."
-                               "\nSee logs in ${fetched_dir}/logs.txt")
+        if(NOT generate_exitcode EQUAL 0 OR NOT build_exitcode EQUAL 0)
+            message(SEND_ERROR "Failed to fetch external repository ${name}." "\nSee logs in ${fetched_dir}/logs.txt")
         endif()
+
     endif()
 
     # Add
-    if(EXISTS "${directory}/.git" AND IS_DIRECTORY "${directory}/.git")
-        configure_file(${directory}/ExternalProjectConfig.cmake.in ${fetched_dir}/CMakeLists.txt)
+    if(EXISTS "${fetched_dir}/.git" AND IS_DIRECTORY "${fetched_dir}/.git")
         if(NOT ARG_FETCH_ONLY AND "${type}" MATCHES ".*directory.*")
-            add_subdirectory("${directory}")
+            add_subdirectory("${fetched_dir}" "${CMAKE_BINARY_DIR}/${relative_path}")
         elseif(NOT ARG_FETCH_ONLY AND "${type}" MATCHES ".*plugin.*")
-            sofa_add_subdirectory(plugin "${name}" "${name}" ${active})
+            sofa_add_generic("${fetched_dir}" "${name}" plugin DEFAULT_VALUE ${active} BINARY_DIR "${CMAKE_BINARY_DIR}/${relative_path}")
         endif()
     endif()
 endfunction()
 
 
 macro(sofa_add_subdirectory type directory name)
-    set(optionArgs EXTERNAL EXPERIMENTAL)
-    set(oneValueArgs GIT_REF)
+    set(optionArgs EXPERIMENTAL)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -295,22 +298,12 @@ macro(sofa_add_subdirectory type directory name)
     endif()
 
     set(default_value OFF)
-    if(ARG_EXTERNAL)
-        set(input_value ${ARGV6})
-    else()
-        set(input_value ${ARGV3})
-    endif ()
-
+    set(input_value ${ARGV3})
     if(${input_value})
         set(default_value ON)
     endif()
 
-
-    if(ARG_EXTERNAL)
-        sofa_add_generic_external(${directory} ${name} "External ${type_lower}" GIT_REF ${ARG_GIT_REF} DEFAULT_VALUE ${default_value}  ${ARGN})
-    else()
-        sofa_add_generic(${directory} ${name} ${type_lower} DEFAULT_VALUE ${default_value} ${ARGN})
-    endif()
+    sofa_add_generic(${directory} ${name} ${type_lower} DEFAULT_VALUE ${default_value} ${ARGN})
 
     if(ARG_EXPERIMENTAL)
         if(TARGET ${name})
@@ -319,7 +312,28 @@ macro(sofa_add_subdirectory type directory name)
     endif()
 endmacro()
 
+macro(sofa_add_external type name)
+    set(optionArgs EXPERIMENTAL)
+    set(oneValueArgs GIT_REF GIT_REPOSITORY)
+    set(multiValueArgs)
+    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
+    set(valid_types "application" "project" "plugin" "module" "library" "collection" "directory")
+
+    string(TOLOWER "${type}" type_lower)
+    if(NOT "${type}" IN_LIST valid_types)
+        message(SEND_ERROR "Type \"${type}\" is invalid. Valid types are: ${valid_types}.")
+    endif()
+
+    set(default_value OFF)
+    set(input_value ${ARGV6})
+    if(${input_value})
+        set(default_value ON)
+    endif()
+
+    sofa_add_generic_external(${directory} ${name} "External ${type_lower}" GIT_REF ${ARG_GIT_REF} GIT_REPOSITORY ${ARG_GIT_REPOSITORY}  DEFAULT_VALUE ${default_value}  ${ARGN})
+
+endmacro()
 
 macro(sofa_add_subdirectory_modules output_targets)
     set(optionArgs)
@@ -331,7 +345,7 @@ macro(sofa_add_subdirectory_modules output_targets)
     set(missing_targets)
     foreach(dir ${ARG_DIRECTORIES})
         set(subdir_name "${PROJECT_NAME}.${dir}")
-        sofa_add_subdirectory(module ${dir} ${subdir_name} ON)
+        sofa_add_generic(${dir} ${subdir_name} module DEFAULT_VALUE ON)
         if(TARGET ${subdir_name})
             list(APPEND ${output_targets} ${subdir_name})
         else()
@@ -455,47 +469,3 @@ macro(sofa_set_targets_release_only)
 endmacro()
 
 
-
-#######################################################
-################## DEPRECATED MACROS ##################
-#######################################################
-
-macro(sofa_add_collection directory name)
-    message(WARNING "Deprecated macro 'sofa_add_collection'.\n Use 'sofa_add_subdirectory(collection ${directory} ${name})' instead.")
-    sofa_add_subdirectory(collection ${ARGV})
-endmacro()
-
-macro(sofa_add_plugin directory plugin_name)
-    message(WARNING "Deprecated macro 'sofa_add_plugin'.\n Use 'sofa_add_subdirectory(plugin ${directory} ${plugin_name})' instead.")
-    sofa_add_subdirectory(plugin ${ARGV})
-endmacro()
-
-macro(sofa_add_plugin_experimental directory plugin_name)
-    message(WARNING "Deprecated macro 'sofa_add_plugin_experimental'.\n Use 'sofa_add_subdirectory(plugin ${directory} ${plugin_name} EXPERIMENTAL)' instead.")
-    sofa_add_subdirectory(plugin ${ARGV} EXPERIMENTAL)
-endmacro()
-
-macro(sofa_add_module directory module_name)
-    message(WARNING "Deprecated macro 'sofa_add_module'.\n Use 'sofa_add_subdirectory(module ${directory} ${module_name})' instead.")
-    sofa_add_subdirectory(module ${ARGV})
-endmacro()
-
-macro(sofa_add_module_experimental directory module_name)
-    message(WARNING "Deprecated macro 'sofa_add_module_experimental'.\n Use 'sofa_add_subdirectory(module ${directory} ${module_name} EXPERIMENTAL)' instead.")
-    sofa_add_subdirectory(module ${ARGV} EXPERIMENTAL)
-endmacro()
-
-macro(sofa_add_application directory app_name)
-    message(WARNING "Deprecated macro 'sofa_add_application'.\n Use 'sofa_add_subdirectory(application ${directory} ${app_name})' instead.")
-    sofa_add_subdirectory(application ${ARGV})
-endmacro()
-
-function(sofa_add_subdirectory_external directory name)
-    message(WARNING "Deprecated macro 'sofa_add_subdirectory_external'.\n Use 'sofa_add_subdirectory(directory ${directory} ${name} EXTERNAL)' instead.")
-    sofa_add_subdirectory(directory ${ARGV} EXTERNAL)
-endfunction()
-
-function(sofa_add_plugin_external directory name)
-    message(WARNING "Deprecated macro 'sofa_add_plugin_external'.\n Use 'sofa_add_subdirectory(plugin ${directory} ${name} EXTERNAL)' instead.")
-    sofa_add_subdirectory(plugin ${ARGV} EXTERNAL)
-endfunction()
