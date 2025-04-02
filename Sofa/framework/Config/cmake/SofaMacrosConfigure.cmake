@@ -196,20 +196,11 @@ endmacro()
 # FETCH_ONLY = do not "add_subdirectory" the fetched repository
 # See plugins/SofaHighOrder for example
 #
-function(sofa_add_generic_external directory name type)
+function(sofa_add_generic_external name type)
     set(optionArgs FETCH_ONLY)
-    set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN GIT_REF)
+    set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN GIT_REF GIT_REPOSITORY)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-
-    # Make directory absolute
-    if(NOT IS_ABSOLUTE "${directory}")
-        set(directory "${CMAKE_CURRENT_LIST_DIR}/${directory}")
-    endif()
-    if(NOT EXISTS "${directory}")
-        message("${directory} does not exist and will be ignored.")
-        return()
-    endif()
 
     string(TOLOWER ${type} type_lower)
 
@@ -218,6 +209,8 @@ function(sofa_add_generic_external directory name type)
     if(${ARG_DEFAULT_VALUE})
         set(active ON)
     endif()
+
+    set(directory "${CMAKE_CURRENT_LIST_DIR}/${name}")
 
     # Create option
     string(REPLACE "\." "_"  fixed_name ${name})
@@ -242,8 +235,8 @@ function(sofa_add_generic_external directory name type)
             file(MAKE_DIRECTORY "${fetched_dir}-temp/")
         endif()
 
-        include(${directory}/GitConfig.cmake)
-
+        set(${PROJECT_NAME}_GIT_REPOSITORY "${ARG_GIT_REPOSITORY}" CACHE STRING "Repository address" )
+        set(${PROJECT_NAME}_GIT_TAG "${ARG_GIT_REF}" CACHE STRING "Branch or commit SHA to checkout" )
 
         file(WRITE ${fetched_dir}-temp/CMakeLists.txt "
         cmake_minimum_required(VERSION 3.22)
@@ -287,8 +280,7 @@ endfunction()
 
 
 macro(sofa_add_subdirectory type directory name)
-    set(optionArgs EXTERNAL EXPERIMENTAL)
-    set(oneValueArgs GIT_REF)
+    set(optionArgs EXPERIMENTAL)
     set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -300,22 +292,12 @@ macro(sofa_add_subdirectory type directory name)
     endif()
 
     set(default_value OFF)
-    if(ARG_EXTERNAL)
-        set(input_value ${ARGV6})
-    else()
-        set(input_value ${ARGV3})
-    endif ()
-
+    set(input_value ${ARGV3})
     if(${input_value})
         set(default_value ON)
     endif()
 
-
-    if(ARG_EXTERNAL)
-        sofa_add_generic_external(${directory} ${name} "External ${type_lower}" GIT_REF ${ARG_GIT_REF} DEFAULT_VALUE ${default_value}  ${ARGN})
-    else()
-        sofa_add_generic(${directory} ${name} ${type_lower} DEFAULT_VALUE ${default_value} ${ARGN})
-    endif()
+    sofa_add_generic(${directory} ${name} ${type_lower} DEFAULT_VALUE ${default_value} ${ARGN})
 
     if(ARG_EXPERIMENTAL)
         if(TARGET ${name})
@@ -324,7 +306,28 @@ macro(sofa_add_subdirectory type directory name)
     endif()
 endmacro()
 
+macro(sofa_add_external type name)
+    set(optionArgs EXPERIMENTAL)
+    set(oneValueArgs GIT_REF GIT_REPOSITORY)
+    set(multiValueArgs)
+    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
+    set(valid_types "application" "project" "plugin" "module" "library" "collection" "directory")
+
+    string(TOLOWER "${type}" type_lower)
+    if(NOT "${type}" IN_LIST valid_types)
+        message(SEND_ERROR "Type \"${type}\" is invalid. Valid types are: ${valid_types}.")
+    endif()
+
+    set(default_value OFF)
+    set(input_value ${ARGV6})
+    if(${input_value})
+        set(default_value ON)
+    endif()
+
+    sofa_add_generic_external(${directory} ${name} "External ${type_lower}" GIT_REF ${ARG_GIT_REF} GIT_REPOSITORY ${ARG_GIT_REPOSITORY}  DEFAULT_VALUE ${default_value}  ${ARGN})
+
+endmacro()
 
 macro(sofa_add_subdirectory_modules output_targets)
     set(optionArgs)
