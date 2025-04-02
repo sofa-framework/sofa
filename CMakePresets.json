@@ -1,4 +1,4 @@
-???{
+{
   "version": 3,
   "cmakeMinimumRequired": {
     "major": 3,
@@ -219,7 +219,7 @@
           "type": "BOOL",
           "value": "ON"
         },
-	"SOFA_FETCH_BEAMPLASTIC": {
+        "SOFA_FETCH_BEAMPLASTIC": {
           "type": "BOOL",
           "value": "ON"
         },
