@@ -2,8 +2,17 @@
 # REGRESSION_TEST DOES NOT SUPPORT DASHES ("-") IN SCENE NAMES.
 # USE UNDERSCORES ("_") INSTEAD.
 
+# The file contains the path to the reference folder. This path should be relative to this folder path. The folder
+# should be structured as the folder containig this file and each reference of each scene should have a relative path to
+# the reference folder equivalent to the relative path of the corresponding scene in this folder. e.g. for the scene in
+# path/to/MyScene.scn, a reference with the same name as the scene should be found in referenceFolder/path/to/
+# --> INFO : a special string can be use while specifying this path: `$REGRESSION_DIR`. If used at the beginning of the
+#     path, then it will be used as an absolute path with $REGRESSION_DIR replaced by the content of the environment
+#     variable with the same name. Use this, when the reference are not in the repository containing the examples but
+#     directly in the repo Regression
+
 ### References relative path ###
-../projects/Regression/references/applications/plugins
+$REGRESSION_DIR/references/applications/plugins
 
 
 ### MultiThreading ###
