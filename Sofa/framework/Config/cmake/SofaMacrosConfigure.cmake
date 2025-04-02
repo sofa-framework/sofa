@@ -228,15 +228,17 @@ function(sofa_add_generic_external name type)
 
     # Fetch
     if(${fetch_enabled})
-        message("Fetching ${type_lower} ${name}")
+        set(${upper_name}_GIT_REPOSITORY "${ARG_GIT_REPOSITORY}" CACHE STRING "Repository address" )
+        set(${upper_name}_GIT_TAG "${ARG_GIT_REF}" CACHE STRING "Branch or commit SHA to checkout" )
+
+        message("Fetching ${type_lower} ${name} in ${fetched_dir}")
+        message(STATUS "Checkout reference ${${upper_name}_GIT_TAG} from repository ${${upper_name}_GIT_REPOSITORY} ")
 
         #Generate temporary folder to store project that will fetch the sources
         if(NOT EXISTS ${fetched_dir}-temp)
             file(MAKE_DIRECTORY "${fetched_dir}-temp/")
         endif()
 
-        set(${PROJECT_NAME}_GIT_REPOSITORY "${ARG_GIT_REPOSITORY}" CACHE STRING "Repository address" )
-        set(${PROJECT_NAME}_GIT_TAG "${ARG_GIT_REF}" CACHE STRING "Branch or commit SHA to checkout" )
 
         file(WRITE ${fetched_dir}-temp/CMakeLists.txt "
         cmake_minimum_required(VERSION 3.22)
@@ -265,6 +267,10 @@ function(sofa_add_generic_external name type)
                 RESULT_VARIABLE build_exitcode
                 OUTPUT_VARIABLE build_logs ERROR_VARIABLE build_logs)
         file(APPEND "${fetched_dir}-temp/logs.txt" "${build_logs}")
+
+        if(NOT generate_exitcode EQUAL 0 OR NOT build_exitcode EQUAL 0)
+            message(SEND_ERROR "Failed to fetch external repository ${name}." "\nSee logs in ${fetched_dir}/logs.txt")
+        endif()
 
     endif()
 
