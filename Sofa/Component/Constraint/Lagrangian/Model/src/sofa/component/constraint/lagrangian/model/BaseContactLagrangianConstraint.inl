@@ -324,6 +324,13 @@ void BaseContactLagrangianConstraint<DataTypes, ContactParams>::getConstraintInf
     info.offsetId = ids.size();
     info.nbGroups = contacts.size();
 
+    for (unsigned int i=0; i<contacts.size(); i++)
+    {
+        Contact& c = contacts[i];
+        ids.push_back( yetIntegrated ? c.contactId : -c.contactId);
+    }
+
+
     yetIntegrated = true;
 
     blocks.push_back(info);
