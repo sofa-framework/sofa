@@ -25,8 +25,6 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/TopologySubsetData.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::mechanicalload
 {
 
@@ -81,39 +79,6 @@ protected:
     sofa::core::topology::EdgeSubsetData<sofa::type::vector< EdgePressureInformation> > d_edgePressureMap; ///< map between edge indices and their pressure
 
     sofa::core::topology::BaseMeshTopology* _completeTopology{nullptr};
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector< EdgePressureInformation> > edgePressureMap;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Deriv> pressure;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<Index> >edgeIndices;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<sofa::core::topology::Edge> > edges;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Deriv> normal;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> dmin;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> dmax;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<SReal> arrowSizeCoef;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::vector<Real> >  p_intensity;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Coord> p_binormal;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_showForces;
 
     Data<Deriv> d_pressure; ///< Pressure force per unit area
     Data<type::vector<Index> > d_edgeIndices; ///< Indices of edges separated with commas where a pressure is applied

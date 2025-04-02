@@ -33,7 +33,6 @@
 
 #include <sofa/helper/ColorMap.h>
 #include <sofa/simulation/ParallelForEach.h>
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,
@@ -188,29 +187,8 @@ public:
     type::vector< Mat33 > m_rotations;
     const type::vector<Mat33>& getRotations() override;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<VecCoord> _initialPoints;
-
     Data< VecCoord > d_initialPoints; ///< Initial Position
     int method;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<std::string> f_method;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    DeprecatedAndRemoved _poissonRatio;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<VecReal> _youngModulus;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<VecReal> _localStiffnessFactor;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<bool> _updateStiffnessMatrix;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<bool> _assembling;
 
     Data<std::string> d_method; ///< "small", "large" (by QR), "polar" or "svd" displacements
 
@@ -218,30 +196,12 @@ public:
     Data<bool> d_updateStiffnessMatrix;
     Data<bool> d_assembling;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<Real> _plasticMaxThreshold;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<Real> _plasticYieldThreshold;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<Real> _plasticCreep;
-
     /// @name Plasticity such as "Interactive Virtual Materials", Muller & Gross, GI 2004
     /// @{
     Data<Real> d_plasticMaxThreshold;
     Data<Real> d_plasticYieldThreshold; ///< Plastic Yield Threshold (2-norm of the strain)
     Data<Real> d_plasticCreep; ///< Plastic Creep Factor * dt [0,1]. Warning this factor depends on dt.
     /// @}
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<sofa::helper::OptionsGroup> _gatherPt;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<sofa::helper::OptionsGroup> _gatherBsize;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<bool> drawHeterogeneousTetra;
 
     Data< sofa::helper::OptionsGroup > d_gatherPt; ///< number of dof accumulated per threads during the gather operation (Only use in GPU version)
     Data< sofa::helper::OptionsGroup > d_gatherBsize; ///< number of dof accumulated per threads during the gather operation (Only use in GPU version)
@@ -258,18 +218,6 @@ public:
 
     Real prevMaxStress;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<int> _computeVonMisesStress;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<type::vector<Real> > _vonMisesPerElement;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<type::vector<Real> >  _vonMisesPerNode;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<type::vector<type::RGBAColor> > _vonMisesStressColors;
-
     Data<int> d_computeVonMisesStress; ///< compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain. Set listening=1
     Data<type::vector<Real> > d_vonMisesPerElement; ///< von Mises Stress per element
     Data<type::vector<Real> > d_vonMisesPerNode; ///< von Mises Stress per node
@@ -277,24 +225,6 @@ public:
 
     Real m_minVonMisesPerNode;
     Real m_maxVonMisesPerNode;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<std::string> _showStressColorMap;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<float> _showStressAlpha;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<bool> _showVonMisesStressPerNode;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<bool> _showVonMisesStressPerNodeColorMap;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<bool> _showVonMisesStressPerElement;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    core::objectmodel::lifecycle::RenamedData<bool> _updateStiffness;
 
     Data<std::string> d_showStressColorMap; ///< Color map used to show stress values
     Data<float> d_showStressAlpha; ///< Alpha for vonMises visualisation

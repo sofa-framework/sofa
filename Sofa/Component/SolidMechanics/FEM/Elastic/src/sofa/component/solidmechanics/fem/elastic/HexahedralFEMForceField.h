@@ -30,8 +30,6 @@
 
 #include <sofa/core/topology/TopologyData.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
@@ -185,16 +183,6 @@ protected:
 public:
     int method;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::string> f_method;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_poissonRatio;
-
-    SOFA_ATTRIBUTE_DISABLED("", "v24.12", "Use d_youngModulus instead") DeprecatedAndRemoved f_youngModulus;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_FEM_ELASTIC()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<HexahedronInformation> > hexahedronInfo;
 
     Data<std::string> d_method; ///< "large" or "polar" displacements
 

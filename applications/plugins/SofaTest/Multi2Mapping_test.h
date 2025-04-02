@@ -201,8 +201,8 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
 
         /// Apply the mapping
         // --- Use of the method apply
-        this->mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
-        this->mapping->applyJ(&mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
+        this->mapping->apply(&mparams, core::vec_id::write_access::position, core::vec_id::read_access::position);
+        this->mapping->applyJ(&mparams, core::vec_id::write_access::velocity, core::vec_id::read_access::velocity );
         // ================ test apply : check if the child positions are the expected ones
         bool succeed = true;
         ReadOutVecCoord xout = this->outDofs->readPositions();
@@ -250,7 +250,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
 
         WriteOutVecDeriv fout = outDofs->writeForces();
         copyToData(fout, fc);
-        this->mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        this->mapping->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::read_access::force );
         for (Index i = 0; i < Np1.size(); i++) copyFromData(fIn1p[i], this->in1Dofs[i]->readForces());
         for (Index i = 0; i < Np2.size(); i++) copyFromData(fIn2p[i], this->in2Dofs[i]->readForces());
 
@@ -285,7 +285,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
             WriteIn2VecDeriv vIn2 = this->in2Dofs[p]->writeVelocities();
             copyToData(vIn2, vIn2p[p]);
         }
-        this->mapping->applyJ(&mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
+        this->mapping->applyJ(&mparams, core::vec_id::write_access::velocity, core::vec_id::read_access::velocity );
         ReadOutVecDeriv vout = this->outDofs->readVelocities();
         copyFromData(vc, vout);
 
@@ -308,7 +308,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
             WriteIn2VecDeriv fin2 = this->in2Dofs[p]->writeForces();
             copyToData( fin2, dfIn2p[p] );
         }
-        mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        mapping->applyDJT( &mparams, core::vec_id::write_access::force, core::vec_id::read_access::force );
         for( Index p=0; p<Np1.size(); p++ ) copyFromData( dfIn1p[p], in1Dofs[p]->readForces() ); // fp + df due to geometric stiffness
         for( Index p=0; p<Np2.size(); p++ ) copyFromData( dfIn2p[p], in2Dofs[p]->readForces() ); // fp + df due to geometric stiffness
 
@@ -367,7 +367,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
             copyToData(fin, fIn2p[p]);  // reset parent forces before accumulating child forces
         }
         copyToData(fout, fc);
-        this->mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        this->mapping->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::read_access::force );
         for (Index i = 0; i < Np1.size(); i++) copyFromData(fIn1p[i], this->in1Dofs[i]->readForces());
         for (Index i = 0; i < Np2.size(); i++) copyFromData(fIn2p[i], this->in2Dofs[i]->readForces());
 
@@ -383,7 +383,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
             WriteIn2VecCoord pin2 = in2Dofs[p]->writePositions();
             copyToData(pin2, xIn2p1[p]);
         }
-        this->mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
+        this->mapping->apply(&mparams, core::vec_id::write_access::position, core::vec_id::read_access::position);
         WriteOutVecCoord pout = this->outDofs->writePositions();
         copyFromData(xc1, pout);
 

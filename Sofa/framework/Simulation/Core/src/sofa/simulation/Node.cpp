@@ -49,7 +49,6 @@
 #include <sofa/core/Mapping.h>
 
 #include <sofa/simulation/Node.inl>
-#include <sofa/simulation/VisitorScheduler.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/AnimateVisitor.h>
@@ -1004,15 +1003,6 @@ void Node::printComponents()
     sstream << "\n";
 
     msg_info() << sstream.str();
-}
-
-Node::SPtr Node::create( const std::string& name )
-{
-    if (Simulation* simulation = getSimulation())
-    {
-        return simulation->createNewNode(name);
-    }
-    return nullptr;
 }
 
 void Node::setSleeping(bool val)

@@ -65,11 +65,6 @@ MeshROI<DataTypes>::MeshROI()
         // so this emulates a default value to false.
         this->d_strict.setValue(false);
     }
-
-    d_X0_i.setOriginalData(&d_roiPositions);
-    d_edges_i.setOriginalData(&d_roiEdges);
-    d_triangles_i.setOriginalData(&d_roiTriangles);
-
 }
 
 template <class DataTypes>

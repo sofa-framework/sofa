@@ -23,11 +23,4 @@
 
 #include <sofa/component/constraint/lagrangian/model/StopperLagrangianConstraint.h>
 
-SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/StopperLagrangianConstraint.h")
-
-
-namespace sofa::component::constraint::lagrangian::model
-{
-template<class T>
-using StopperConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "StopperConstraint has been renamed to StopperLagrangianConstraint") = StopperLagrangianConstraint<T>;
-}
+SOFA_HEADER_DISABLED("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/StopperLagrangianConstraint.h")

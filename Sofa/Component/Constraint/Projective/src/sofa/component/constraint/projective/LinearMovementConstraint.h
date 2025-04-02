@@ -23,10 +23,4 @@
 
 #include <sofa/component/constraint/projective/LinearMovementProjectiveConstraint.h>
 
-SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "sofa/component/constraint/projective/LinearMovementProjectiveConstraint.h")
-
-namespace sofa::component::constraint::projective
-{
-template <class T>
-using LinearMovementConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "LinearMovementConstraint has been renamed to LinearMovementProjectiveConstraint") = LinearMovementProjectiveConstraint<T>;
-}
+SOFA_HEADER_DISABLED("v24.06", "v25.06", "sofa/component/constraint/projective/LinearMovementProjectiveConstraint.h")

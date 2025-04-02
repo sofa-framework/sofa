@@ -98,7 +98,7 @@
     {
       "name": "standard",
       "displayName": "Standard Config",
-      "description": "Adds the default GUI, the SofaPhysics API, the tutorials and the Python3 support",
+      "description": "Adds the default GUI, the SofaPhysics API, the examples based on SimpleAPI and the Python3 support",
       "hidden": false,
       "inherits": ["minimal","defaultGUI"],
       "cacheVariables": {
@@ -106,7 +106,7 @@
           "type": "BOOL",
           "value": "ON"
         },
-        "SOFA_BUILD_TUTORIALS": {
+        "SOFA_BUILD_SIMPLEAPI_EXAMPLES": {
           "type": "BOOL",
           "value": "ON"
         },

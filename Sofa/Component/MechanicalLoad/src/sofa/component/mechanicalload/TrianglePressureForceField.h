@@ -27,8 +27,6 @@
 #include <sofa/core/topology/TopologySubsetData.h>
 #include <sofa/type/MatSym.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::mechanicalload
 {
 
@@ -51,22 +49,6 @@ public:
 
     using Index = sofa::Index;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Deriv> pressure;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<MatSym3> cauchyStress;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<Index> > triangleList;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_showForces;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_useConstantForce;
-
-
     Data<Deriv> d_pressure; ///< Pressure force per unit area
   	Data<MatSym3> d_cauchyStress; ///< Cauchy Stress applied on the normal of each triangle
 
@@ -78,9 +60,9 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<TrianglePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    core::objectmodel::lifecycle::DeprecatedData normal{ this, "v24.06", "v24.12", "normal", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
-    core::objectmodel::lifecycle::DeprecatedData dmin{ this, "v24.06", "v24.12", "dmin", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
-    core::objectmodel::lifecycle::DeprecatedData dmax{ this, "v24.06", "v24.12", "dmax", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
+    core::objectmodel::lifecycle::RemovedData normal{ this, "v24.06", "v24.12", "normal", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
+    core::objectmodel::lifecycle::RemovedData dmin{ this, "v24.06", "v24.12", "dmin", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
+    core::objectmodel::lifecycle::RemovedData dmax{ this, "v24.06", "v24.12", "dmax", "Plan selection using normal, dmin, dmax has been removed. Triangles should be selected using an Engine.Select and passed using Data triangleList" };
 
 protected:
 

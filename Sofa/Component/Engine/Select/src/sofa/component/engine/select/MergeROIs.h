@@ -42,9 +42,6 @@ class SOFA_COMPONENT_ENGINE_SELECT_API MergeROIs : public sofa::core::DataEngine
 public:
     SOFA_CLASS(MergeROIs, DataEngine);
 
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Inherited, Inherit1);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
-
     //Input
     Data<unsigned int> d_nbROIs; ///< size of indices/value vector
     core::objectmodel::vectorData<type::vector<sofa::Index> > f_indices;

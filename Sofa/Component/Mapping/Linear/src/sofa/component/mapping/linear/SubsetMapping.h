@@ -32,8 +32,6 @@
 #include <sofa/type/vector.h>
 #include <sofa/type/trait/Rebind.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::mapping::linear
 {
 
@@ -85,28 +83,6 @@ public:
     /// Correspondence array
     using IndexArray = sofa::type::rebind_to<InVecCoord, Index>;
     typedef sofa::core::topology::PointSubsetData< IndexArray > SetIndex;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<IndexArray> f_indices;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<Index> f_first;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<Index> f_last;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real>  f_radius;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_handleTopologyChange;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_ignoreNotFound;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_resizeToModel;
-
 
     SetIndex d_indices;
 

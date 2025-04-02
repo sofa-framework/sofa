@@ -47,10 +47,6 @@ ReadTopology::ReadTopology()
     , loopTime(0.0)
 {
     this->f_listening.setValue(true);
-    f_filename.setParent(&d_filename);
-    f_interval.setOriginalData(&d_interval);
-    f_shift.setOriginalData(&d_shift);
-    f_loop.setOriginalData(&d_loop);
 }
 
 ReadTopology::~ReadTopology()

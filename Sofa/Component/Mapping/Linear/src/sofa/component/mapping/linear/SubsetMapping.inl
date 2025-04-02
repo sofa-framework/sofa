@@ -40,14 +40,6 @@ SubsetMapping<TIn, TOut>::SubsetMapping()
     , matrixJ()
     , updateJ(false)
 {
-    f_indices.setOriginalData(&d_indices);
-    f_first.setOriginalData(&d_first);
-    f_last.setOriginalData(&d_last);
-    f_radius.setOriginalData(&d_radius);
-    f_handleTopologyChange.setOriginalData(&d_handleTopologyChange);
-    f_ignoreNotFound.setOriginalData(&d_ignoreNotFound);
-    f_resizeToModel.setOriginalData(&d_resizeToModel);
-
 }
 
 template <class TIn, class TOut>

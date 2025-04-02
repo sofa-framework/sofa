@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/topology/container/dynamic/config.h>
-
 #include <sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TriangleSubdividers.h>
 #include <sofa/type/Vec.h>
 
 namespace sofa::component::topology::container::dynamic
@@ -118,24 +118,16 @@ public:
      */
     Real computeRestTriangleArea(const TriangleID i) const;
 
-    /** \brief Computes barycentric coefficients of point p in triangle (a,b,c) indexed by ind_t
-    *
-    */
-    sofa::type::vector< SReal > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3,Real> &p) const;
 
-    /** \brief Computes barycentric coefficients of point p in initial triangle (a,b,c) indexed by ind_t
-    *
+    /** \brief Compute the barycentric coordinates of input point @param p inside triangle given by index @param ind_t using either current position or restPosition depending on @param useRestPosition value.
+    * Will call @sa sofa::geometry::Triangle::getBarycentricCoordinates
+    * @param p position of the point to compute the coefficients
+    * @param ind_t Index of the triangle used to compute the barycentric coordinates
+    * @param useRestPosition bool false to use position, true to use rest_position
+    * @return the 3 barycentric coordinates inside a sofa::type::Vec<3, Real>
     */
-    sofa::type::vector< SReal > computeRestTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p) const;
+    sofa::type::Vec<3, Real> computeTriangleBarycentricCoordinates(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p, bool useRestPosition = false) const;
 
-    /** \brief Computes barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
-     *
-     */
-    sofa::type::vector< SReal > compute3PointsBarycoefs( const sofa::type::Vec<3, Real> &p,
-            PointID ind_p1,
-            PointID ind_p2,
-            PointID ind_p3,
-            bool bRest=false) const;
 
     /** \brief Finds the two closest points from two triangles (each of the point belonging to one triangle)
      *
@@ -299,6 +291,23 @@ public:
         sofa::type::vector< Real >& coords_list) const;
 
 
+    /** \brief This method computes the incision path between the segment defined by [@param ptA, @param ptB], respectively inside triangle indices @param ind_ta and @param ind_tb, and the current triangulation.
+    * All intersection points in the triangulation will be stored as @sa PointToAdd. The method returns a vector of PointToAdd. Those point can be located on triangle, edge or vertex of the mesh.
+    * This method can take as input @param snapThreshold and @param snapThresholdBorder to process path snapping to avoid small triangle creation. 
+    * Those parameters behave as threshold. If intersection point has a barycentric coordinate (on edge or triangle) above the threshold. It will be snapped. Default value is 1.0, meaning no snapping.
+    *
+    * @param ptA : first input point of the segment
+    * @param ptB : last input point of the segment
+    * @param ind_ta : triangle index where ptA is located
+    * @param ind_tb : triangle index where ptB is located
+    * @param snapThreshold : snapping coefficient to be used to snap intersection point along the incision path. Correspond to the barycentric coordinate regarding a vertex.
+    * @param snapThresholdBorder : snapping coefficient to be used at start and end of the incision path.
+    * @return a vector shared pointer of @sa PointToAdd
+    */
+    type::vector< std::shared_ptr<PointToAdd> > computeIncisionPath(const sofa::type::Vec<3, Real>& ptA, const sofa::type::Vec<3, Real>& ptB,
+        const TriangleID ind_ta, const TriangleID ind_tb, Real snapThreshold = 1.0, Real snapThresholdBorder = 1.0) const;
+
+
     /** \brief Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.
      *
      * @return List of object intersect (type enum @see geometry::ElementType)
@@ -382,6 +391,22 @@ public:
      */
     virtual bool InciseAlongEdgeList(const sofa::type::vector<EdgeID>& edges, sofa::type::vector<PointID>& new_points, sofa::type::vector<PointID>& end_points, bool& reachBorder);
 
+
+    // compute barycentric coefficients
+    // {
+    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Use sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms::computeTriangleBarycentricCoordinates")
+    sofa::type::vector< SReal > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p) const;
+
+    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Use sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms::computeTriangleBarycentricCoordinates with useRestPosition set to true")
+    sofa::type::vector< SReal > computeRestTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p) const;
+
+    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Use sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms::computeTriangleBarycentricCoordinates")
+    sofa::type::vector< SReal > compute3PointsBarycoefs(const sofa::type::Vec<3, Real>& p,
+        PointID ind_p1,
+        PointID ind_p2,
+        PointID ind_p3,
+        bool bRest = false) const;
+    //}
 
 protected:
     Data<bool> showTriangleIndices; ///< Debug : view Triangle indices

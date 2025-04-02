@@ -84,19 +84,6 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , m_vonMisesColorMap(nullptr)
 {
     this->addAlias(&d_assembling, "assembling");
-
-    tetrahedronInfo.setOriginalData(&d_tetrahedronInfo);
-    f_method.setOriginalData(&d_method);
-    _localStiffnessFactor.setOriginalData(&d_localStiffnessFactor);
-    _updateStiffnessMatrix.setOriginalData(&d_updateStiffnessMatrix);
-    _assembling.setOriginalData(&d_assembling);
-    f_drawing.setOriginalData(&d_drawing);
-    drawColor1.setOriginalData(&d_drawColor1);
-    drawColor2.setOriginalData(&d_drawColor2);
-    drawColor3.setOriginalData(&d_drawColor3);
-    drawColor4.setOriginalData(&d_drawColor4);
-
-
 }
 
 
@@ -900,7 +887,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initLarge(int i, Index&a, 
 
     [[maybe_unused]] const bool canInvert = type::invertMatrix(tetrahedronInf[i].elemShapeFun, matVert);
 
-    tetrahedronInfo.endEdit();
+    d_tetrahedronInfo.endEdit();
 }
 
 template<class DataTypes>
@@ -1231,7 +1218,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
     const VecCoord& X = mechanicalObject->read(core::vec_id::read_access::position)->getValue();
 
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetras = this->l_topology->getTetrahedra();
-    const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
+    const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = d_tetrahedronInfo.getValue();
 
     helper::WriteAccessor<Data<type::vector<Real> > > vME = d_vonMisesPerElement;
     vME.resize(tetras.size());

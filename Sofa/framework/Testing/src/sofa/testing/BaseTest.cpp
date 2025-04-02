@@ -110,5 +110,15 @@ void BaseTest::TearDown()
     doTearDown();
 }
 
+void BaseTest::doSetUp()
+{
+    onSetUp();
+}
+
+void BaseTest::doTearDown()
+{
+    onTearDown();
+}
+
 
 } // namespace sofa::testing

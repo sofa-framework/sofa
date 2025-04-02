@@ -41,10 +41,6 @@ PointCollisionModel<DataTypes>::PointCollisionModel()
     , l_topology(initLink("topology", "link to the topology container"))
 {
     enum_type = POINT_TYPE;
-
-    bothSide.setOriginalData(&d_bothSide);
-    computeNormals.setOriginalData(&d_computeNormals);
-    m_displayFreePosition.setOriginalData(&d_displayFreePosition);
 }
 
 template<class DataTypes>
