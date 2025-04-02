@@ -78,7 +78,7 @@ public:
     void addPoint(std::shared_ptr<PointToAdd> pTA);
 
     /// Return the index of the triangle, in the TopologyContainer, to split
-    const TriangleID getTriangleIdToSplit() { return m_triangleId; }
+    TriangleID getTriangleIdToSplit() { return m_triangleId; }
 
     /// Getter to the list of new @sa TriangleToAdd* created by this Triangle subdivider
     const type::vector<TriangleToAdd*>& getTrianglesToAdd() { return m_trianglesToAdd; }

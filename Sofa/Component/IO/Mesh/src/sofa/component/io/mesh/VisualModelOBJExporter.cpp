@@ -82,12 +82,6 @@ bool VisualModelOBJExporter::writeOBJ()
     return true ;
 }
 
-
-void VisualModelOBJExporter::handleEvent(Event *event)
-{
-    BaseSimulationExporter::handleEvent(event) ;
-}
-
 } // namespace sofa::component::_visualmodelobjexporter_
 
 namespace sofa::component::io::mesh

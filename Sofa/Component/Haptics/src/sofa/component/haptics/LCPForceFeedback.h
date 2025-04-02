@@ -29,8 +29,6 @@
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::haptics
 {
 
@@ -62,17 +60,8 @@ public:
         dmsg_info() << "haptic_freq = " << std::fixed << haptic_freq << " Hz   " << '\xd';
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_HAPTICS()
-    sofa::core::objectmodel::lifecycle::RenamedData<double> forceCoef;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_HAPTICS()
-    sofa::core::objectmodel::lifecycle::RenamedData<double> solverTimeout;
-
-
     Data< double > d_forceCoef; ///< multiply haptic force by this coef.
-
     Data< double > d_solverTimeout; ///< max time to spend solving constraints.
-
     Data< int > d_solverMaxIt; ///< max iteration to spend solving constraints
 
     // deriv (or not) the rotations when updating the violations

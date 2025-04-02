@@ -29,8 +29,6 @@
 
 #include <sofa/type/RGBAColor.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::mechanicalload
 {
 
@@ -83,38 +81,12 @@ protected:
         }
 
     };
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<Contact> > contacts;
 
     Data<sofa::type::vector<Contact> > d_contacts; ///< Contacts
 
     SphereForceFieldInternalData<DataTypes> data;
 
 public:
-
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Coord> sphereCenter;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> sphereRadius;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> stiffness;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> damping;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::RGBAColor> color;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::Vec<2,int>> localRange;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> bilateral;
-
-
     Data<Coord> d_sphereCenter; ///< sphere center
     Data<Real> d_sphereRadius; ///< sphere radius
     Data<Real> d_stiffness; ///< force stiffness

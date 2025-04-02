@@ -732,26 +732,6 @@ void EdgeSetGeometryAlgorithms<DataTypes>::initPointAdded(PointID index, const c
     }
 }
 
-template<class DataTypes>
-bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID edgeID,
-    const type::Vec3& a,
-    const type::Vec3& b,
-    Real &baryCoef)
-{
-    const Edge& theEdge = this->m_topology->getEdge(edgeID);
-    const VecCoord& pos = (this->object->read(core::vec_id::read_access::position)->getValue());
-
-    const typename DataTypes::Coord& e0 = pos[theEdge[0]];
-    const typename DataTypes::Coord& e1 = pos[theEdge[1]];
-    auto p0 = type::Vec3(DataTypes::getCPos(e0));
-    auto p1 = type::Vec3(DataTypes::getCPos(e1));
-
-    type::Vec2 baryCoords(type::NOINIT);
-    bool is_intersect = sofa::geometry::Edge::intersectionWithEdge(p0, p1, a, b, baryCoords);
-    baryCoef = baryCoords[0];
-
-    return is_intersect;
-}
 
 template <class DataTypes>
 bool EdgeSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const

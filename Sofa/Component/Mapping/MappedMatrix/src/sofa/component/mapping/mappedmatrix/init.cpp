@@ -51,6 +51,7 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
+    SOFA_UNUSED(factory);
     // this plugin does not register any component.
 }
 

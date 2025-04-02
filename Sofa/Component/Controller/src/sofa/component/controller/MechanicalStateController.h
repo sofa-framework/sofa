@@ -27,8 +27,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::controller
 {
 
@@ -130,18 +128,6 @@ public:
      */
     void applyController(void);
 protected:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONTROLLER()
-    sofa::core::objectmodel::lifecycle::RenamedData< unsigned int > index;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONTROLLER()
-    sofa::core::objectmodel::lifecycle::RenamedData< bool > onlyTranslation;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONTROLLER()
-    sofa::core::objectmodel::lifecycle::RenamedData< bool > buttonDeviceState;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONTROLLER()
-    sofa::core::objectmodel::lifecycle::RenamedData< sofa::type::Vec<3,Real> > mainDirection;
-
     Data< unsigned int > d_index; ///< Index of the controlled DOF
     Data< bool > d_onlyTranslation; ///< Controlling the DOF only in translation
     Data< bool > d_buttonDeviceState; ///< state of ths device button

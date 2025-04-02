@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.22)
 
-sofa_add_subdirectory(directory SofaGLFW SofaGLFW EXTERNAL GIT_REF master)
-sofa_add_subdirectory(plugin Sofa.Qt Sofa.Qt EXTERNAL GIT_REF master OFF)
-
+sofa_add_external(directory SofaGLFW GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/SofaGLFW.git)
+sofa_add_external(plugin Sofa.Qt GIT_REF master OFF GIT_REPOSITORY https://www.github.com/sofa-framework/Sofa.Qt.git)

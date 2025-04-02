@@ -42,10 +42,6 @@ DistanceFromTargetMapping<TIn, TOut>::DistanceFromTargetMapping()
     , d_showObjectScale(initData(&d_showObjectScale, 0.f, "showObjectScale", "Scale for object display"))
     , d_color(initData(&d_color, sofa::type::RGBAColor::yellow(), "showColor", "Color for object display."))
 {
-    f_indices.setOriginalData(&d_indices);
-    f_targetPositions.setOriginalData(&d_targetPositions);
-    f_restDistances.setOriginalData(&d_restDistances);
-
 }
 
 template <class TIn, class TOut>

@@ -178,9 +178,9 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         sofa::simulation::getSimulation()->init(this->node.get());
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
-        MechanicalResetForceVisitor resetForce(&mparams, core::VecDerivId::force());
+        MechanicalResetForceVisitor resetForce(&mparams, core::vec_id::write_access::force);
         node->execute(resetForce);
-        MechanicalComputeForceVisitor computeForce( &mparams, core::VecDerivId::force() );
+            MechanicalComputeForceVisitor computeForce( &mparams, core::vec_id::write_access::force );
         this->node->execute(computeForce);
 
         // check force
@@ -251,10 +251,10 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
 
         // check computeDf: compare its result to actual change
         node->execute(resetForce);
-        dof->vRealloc( &mparams, core::VecDerivId::dx()); // dx is not allocated by default
+        dof->vRealloc( &mparams, core::vec_id::write_access::dx); // dx is not allocated by default
         typename DOF::WriteVecDeriv wdx = dof->writeDx();
         copyToData ( wdx, dX );
-        MechanicalComputeDfVisitor computeDf( &mparams, core::VecDerivId::force() );
+        MechanicalComputeDfVisitor computeDf( &mparams, core::vec_id::write_access::force );
         node->execute(computeDf);
         VecDeriv dF;
         copyFromData( dF, dof->readForces() );

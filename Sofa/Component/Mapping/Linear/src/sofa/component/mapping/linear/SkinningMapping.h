@@ -32,8 +32,6 @@
 #include <sofa/type/Mat.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::mapping::linear
 {
 
@@ -77,25 +75,6 @@ public:
     typedef linearalgebra::EigenSparseMatrix<In, Out> SparseJMatrixEigen;
 
 protected:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<OutVecCoord> f_initPos;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData< type::vector<unsigned int>  > nbRef;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<sofa::type::SVector<unsigned int> > > f_index;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<sofa::type::SVector<InReal> > > weight;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<unsigned int> showFromIndex;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MAPPING_LINEAR()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> showWeights;
-
-
     Data<OutVecCoord> d_initPos; ///< initial child coordinates in the world reference frame.
 
     // data for linear blending
