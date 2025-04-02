@@ -1,4 +1,4 @@
-﻿{
+???{
   "version": 3,
   "cmakeMinimumRequired": {
     "major": 3,
@@ -216,6 +216,14 @@
           "value": "ON"
         },
         "PLUGIN_MODELORDERREDUCTION": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+	"SOFA_FETCH_BEAMPLASTIC": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_BEAMPLASTIC": {
           "type": "BOOL",
           "value": "ON"
         }
