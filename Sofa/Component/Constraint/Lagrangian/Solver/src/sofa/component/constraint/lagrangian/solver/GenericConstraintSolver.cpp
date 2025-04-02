@@ -91,6 +91,7 @@ GenericConstraintSolver::GenericConstraintSolver()
 {
     addAlias(&d_maxIt, "maxIt");
 
+
     d_graphErrors.setWidget("graph");
     d_graphErrors.setGroup("Graph");
 
