@@ -128,7 +128,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::Mechan
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
+    const VecDeriv& v = this->mstate->read(core::vec_id::read_access::velocity)->getValue();
     data.fillParams(this, kernelT, mparams->kFactor(), sofa::core::mechanicalparams::bFactor(mparams));
     df.resize(dx.size());
     Grid::Grid* g = m_grid->getGrid();
@@ -212,7 +212,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::Mechan
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
     //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
+    const VecDeriv& v = this->mstate->read(core::vec_id::read_access::velocity)->getValue();
     data.fillParams(this, mparams->kFactor(), sofa::core::mechanicalparams::bFactor(mparams));
     df.resize(dx.size());
     Grid::Grid* g = m_grid->getGrid();

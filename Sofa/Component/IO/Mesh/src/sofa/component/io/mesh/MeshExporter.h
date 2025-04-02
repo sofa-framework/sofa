@@ -78,7 +78,6 @@ public:
 
     void doInit() override ;
     void doReInit() override ;
-    void handleEvent(Event *) override ;
 
     bool write() override ;
 

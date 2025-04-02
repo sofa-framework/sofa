@@ -23,10 +23,4 @@
 
 #include <sofa/component/constraint/projective/AffineMovementProjectiveConstraint.h>
 
-SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "sofa/component/constraint/projective/AffineMovementConstraint.h")
-
-namespace sofa::component::constraint::projective
-{
-template<class T>
-using AffineMovementConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "AffineMovementConstraint has been renamed to AffineMovementProjectiveConstraint") = AffineMovementProjectiveConstraint<T>;
-}
+SOFA_HEADER_DISABLED("v24.06", "v25.06", "sofa/component/constraint/projective/AffineMovementConstraint.h")

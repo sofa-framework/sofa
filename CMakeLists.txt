@@ -187,13 +187,10 @@ add_subdirectory(extlibs)
 ### SOFA (framework and components)
 add_subdirectory(Sofa)
 
-## Tutorials option
-option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
-
 # SceneCreator plugin
-# Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
+# Library used by SOFA_BUILD_TESTS
 sofa_add_subdirectory(plugin applications/plugins/SceneCreator SceneCreator OFF
-    WHEN_TO_SHOW "NOT SOFA_BUILD_SCENECREATOR AND NOT SOFA_BUILD_TESTS AND NOT SOFA_BUILD_TUTORIALS AND NOT SOFA_BUILD_RELEASE_PACKAGE"
+    WHEN_TO_SHOW "NOT SOFA_BUILD_SCENECREATOR AND NOT SOFA_BUILD_TESTS AND NOT SOFA_BUILD_RELEASE_PACKAGE"
     VALUE_IF_HIDDEN "ON")
 
 ## Plugins
@@ -202,10 +199,12 @@ add_subdirectory(applications/plugins)
 ## Applications
 add_subdirectory(applications/projects)
 
-# Tutorial add subdirectory
-if(SOFA_BUILD_TUTORIALS)
-    add_subdirectory(applications/tutorials)
+## SimpleAPI examples
+option(SOFA_BUILD_SIMPLEAPI_EXAMPLES "Build SOFA scenes based on SimpleAPI." OFF)
+if(SOFA_BUILD_SIMPLEAPI_EXAMPLES)
+    add_subdirectory(examples/SimpleAPI)
 endif()
+
 
 ## SOFA scenes
 option(SOFA_BUILD_ADD_SCENES "Add SOFA scenes as a project of the build." OFF)
@@ -229,11 +228,6 @@ if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
     endforeach()
 endif()
 
-## Custom
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
-    message("Adding custom file")
-    include( "custom.cmake" )
-endif()
 
 ## IDE directories
 # Sofa.Component
@@ -261,12 +255,11 @@ install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION . COMPONENT applica
 install(FILES "${CMAKE_SOURCE_DIR}/LICENSE-LGPL.md" DESTINATION . COMPONENT applications)
 install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applications)
 
-option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/, tools/sofa-launcher/) when installing" ON)
+option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (share/, examples/) when installing" ON)
 ## Install resource files
 if(SOFA_INSTALL_RESOURCES_FILES)
     install(DIRECTORY share/ DESTINATION share/sofa COMPONENT resources)
     install(DIRECTORY examples/ DESTINATION share/sofa/examples COMPONENT resources)
-    install(DIRECTORY tools/sofa-launcher/ DESTINATION share/sofa/sofa-launcher COMPONENT resources)
 endif()
 
 file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt"

@@ -27,8 +27,6 @@
 #include <sofa/core/topology/TopologySubsetData.h>
 #include <fstream>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::mechanicalload
 {
 
@@ -83,36 +81,6 @@ protected:
     std::ofstream file;
 
 public:
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector <TrianglePressureInformation> > trianglePressureMap;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> moment;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<sofa::type::vector<Index> > triangleList;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Deriv> axis;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Coord> center;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> penalty;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> frequency;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> dmin;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> dmax;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_MECHANICALLOAD()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> p_showForces;
-
     sofa::core::topology::TriangleSubsetData<sofa::type::vector <TrianglePressureInformation> > d_trianglePressureMap; ///< Map between triangle indices and their pressure
 
     Data<Real> d_moment; ///< Moment force applied on the entire surface

@@ -50,10 +50,6 @@ PrecomputedLinearSolver<TMatrix,TVector>::PrecomputedLinearSolver()
     , d_use_file(initData(&d_use_file, true, "use_file", "Dump system matrix in a file") )
 {
     first = true;
-
-    jmjt_twostep.setOriginalData(&d_jmjt_twostep);
-    use_file.setOriginalData(&d_use_file);
-
 }
 
 template<class TMatrix,class TVector>

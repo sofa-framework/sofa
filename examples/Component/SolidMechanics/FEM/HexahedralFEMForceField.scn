@@ -17,7 +17,7 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <DefaultAnimationLoop/>
-    <VisualStyle displayFlags="showBehaviorModels" />
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <CollisionPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
@@ -28,21 +28,29 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/nine_hexa.msh" />
         <MechanicalObject src="@loader" name="Hexa" />
-        <include href="Objects/HexahedronSetTopology.xml" src="@loader" />
+        <HexahedronSetTopologyContainer name="Container" src="@loader"/>
+        <HexahedronSetTopologyModifier name="Modifier" />
+        <HexahedronSetGeometryAlgorithms name="GeomAlgo" />
         <HexahedralFEMForceField name="FEM" youngModulus="100" poissonRatio="0.3" method="large" />
         <DiagonalMass massDensity="0.2" />
         <FixedProjectiveConstraint indices="12 15 28 31" />
         <Node name="Q">
-            <include href="Objects/QuadSetTopology.xml" src="@../loader" />
+            <QuadSetTopologyContainer name="Container" />
+            <QuadSetTopologyModifier name="Modifier" />
+            <QuadSetGeometryAlgorithms name="GeomAlgo" />
             <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
-            <Node name="Visu">
-                <OglModel name="Visual" color="yellow" />
-                <IdentityMapping input="@../../Hexa" output="@Visual" />
-            </Node>
+
             <Node name="T">
-                <include href="Objects/TriangleSetTopology.xml" src="@../Container" />
+                <TriangleSetTopologyContainer name="Container" />
+                <TriangleSetTopologyModifier name="Modifier" />
+                <TriangleSetGeometryAlgorithms name="GeomAlgo" />
                 <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
                 <TriangleCollisionModel />
+                
+                <Node name="Visu">
+                    <OglModel name="Visual" color="yellow" />
+                    <IdentityMapping input="@../../../Hexa" output="@Visual" />
+                </Node>
             </Node>
         </Node>
     </Node>

@@ -78,7 +78,7 @@ public:
     void addPoint(std::shared_ptr<PointToAdd> pTA);
 
     /// Return the index of the triangle, in the TopologyContainer, to split
-    const TriangleID getTriangleIdToSplit() { return m_triangleId; }
+    TriangleID getTriangleIdToSplit() { return m_triangleId; }
 
     /// Getter to the list of new @sa TriangleToAdd* created by this Triangle subdivider
     const type::vector<TriangleToAdd*>& getTrianglesToAdd() { return m_trianglesToAdd; }
@@ -121,6 +121,8 @@ protected:
     sofa::core::topology::BaseMeshTopology::Triangle m_triangle; ///< Triangle fixed array of the 3 vertex indices
 
     type::vector<std::shared_ptr<PointToAdd> > m_points; ///< Vector of new point to be added while subdividing this Triangle
+    type::vector<std::shared_ptr<PointToAdd> > m_snappedPoints; ///< Vector of new point to be snapped while subdividing this Triangle
+
     type::vector<TriangleToAdd*> m_trianglesToAdd; ///< Vector of triangle to be added while subdividing this Triangle
 };
 

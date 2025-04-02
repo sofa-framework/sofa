@@ -63,27 +63,14 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , p_computeDrawInfo(false)
 {
     _anisotropicMaterial = false;
+    p_drawColorMap = new helper::ColorMap(256, "Blue to Red");
+
 #ifdef PLOT_CURVE
     f_graphStress.setWidget("graph");
     f_graphCriteria.setWidget("graph");
     f_graphOrientation.setWidget("graph");
 #endif
-
-    p_drawColorMap = new helper::ColorMap(256, "Blue to Red");
-
-    triangleInfo.setOriginalData(&d_triangleInfo);
-    vertexInfo.setOriginalData(&d_vertexInfo);
-    f_method.setOriginalData(&d_method);
-    m_rotatedInitialElements.setOriginalData(&d_rotatedInitialElements);
-    m_initialTransformation.setOriginalData(&d_initialTransformation);
-    hosfordExponant.setOriginalData(&d_hosfordExponant);
-    criteriaValue.setOriginalData(&d_criteriaValue);
-    showStressValue.setOriginalData(&d_showStressValue);
-    showStressVector.setOriginalData(&d_showStressVector);
-    showFracturableTriangles.setOriginalData(&d_showFracturableTriangles);
-    f_computePrincipalStress.setOriginalData(&d_computePrincipalStress);
-
-    }
+}
 
 
 template <class DataTypes>

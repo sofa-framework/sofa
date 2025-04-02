@@ -58,10 +58,6 @@ LocalMinDistance::LocalMinDistance()
     , d_coneFactor(initData(&d_coneFactor, 0.5, "coneFactor", "Factor for filtering cone angle computation"))
     , d_useLMDFilters(initData(&d_useLMDFilters, false, "useLMDFilters", "Use external cone computation"))
 {
-    filterIntersection.setOriginalData(&d_filterIntersection);
-    angleCone.setOriginalData(&d_angleCone);
-    coneFactor.setOriginalData(&d_coneFactor);
-    useLMDFilters.setOriginalData(&d_useLMDFilters);
 }
 
 void LocalMinDistance::init()

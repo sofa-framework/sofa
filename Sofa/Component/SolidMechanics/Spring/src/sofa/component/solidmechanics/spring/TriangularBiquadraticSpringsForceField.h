@@ -29,8 +29,6 @@
 #include <sofa/type/Mat.h>
 #include <sofa/core/topology/TopologyData.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 namespace sofa::component::solidmechanics::spring
 {
 
@@ -123,34 +121,6 @@ protected:
         }
     };
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<TriangleRestInformation> > triangleInfo;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<type::vector<EdgeRestInformation> > edgeInfo;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<VecCoord> _initialPoints;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_poissonRatio;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_youngModulus;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_dampingRatio;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_useAngularSprings;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> f_compressible;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_SOLIDMECHANICS_SPRING()
-    sofa::core::objectmodel::lifecycle::RenamedData<Real> f_stiffnessMatrixRegularizationWeight;
-
-
 
     sofa::core::topology::TriangleData<type::vector<TriangleRestInformation> > d_triangleInfo; ///< Internal triangle data
     sofa::core::topology::EdgeData<type::vector<EdgeRestInformation> > d_edgeInfo; ///< Internal edge data
@@ -158,8 +128,6 @@ protected:
     Data < VecCoord >  d_initialPoints; ///< Initial Position
 
     bool updateMatrix;
-
-
 
     Data<Real> d_poissonRatio; ///< Poisson ratio in Hooke's law
     Data<Real> d_youngModulus; ///< Young modulus in Hooke's law

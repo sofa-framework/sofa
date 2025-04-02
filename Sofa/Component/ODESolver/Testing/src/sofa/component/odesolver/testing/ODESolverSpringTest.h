@@ -39,17 +39,22 @@ struct ODESolverSpringTest : public BaseSimulationTest
 {
     SceneInstance m_si{};
 
+    void doSetUp() override
+    {
+        this->loadPlugins({
+            Sofa.Component.ODESolver,
+            Sofa.Component.LinearSolver.Iterative,
+            Sofa.Component.StateContainer,
+            Sofa.Component.Mass,
+            Sofa.Component.Constraint.Projective,
+            Sofa.Component.SolidMechanics.Spring
+        });
+    }
+
     inline void prepareScene(double K, double m, double l0)
     {
         // Create the scene
         m_si.root->setGravity({ 0, -10, 0 });
-
-        sofa::simpleapi::importPlugin(Sofa.Component.ODESolver);
-        sofa::simpleapi::importPlugin(Sofa.Component.LinearSolver.Iterative);
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
-        sofa::simpleapi::importPlugin(Sofa.Component.Mass);
-        sofa::simpleapi::importPlugin(Sofa.Component.Constraint.Projective);
-        sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.Spring);
 
         // remove warnings
         simpleapi::createObject(m_si.root, "DefaultAnimationLoop", {});

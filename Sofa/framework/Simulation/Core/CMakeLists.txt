@@ -11,7 +11,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/AnimateVisitor.h
     ${SRC_ROOT}/BaseMechanicalVisitor.h
     ${SRC_ROOT}/BehaviorUpdatePositionVisitor.h
-    ${SRC_ROOT}/CactusStackStorage.h
     ${SRC_ROOT}/CleanupVisitor.h
     ${SRC_ROOT}/CollisionAnimationLoop.h
     ${SRC_ROOT}/CollisionBeginEvent.h
@@ -30,7 +29,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/InitVisitor.h
     ${SRC_ROOT}/IntegrateBeginEvent.h
     ${SRC_ROOT}/IntegrateEndEvent.h
-    ${SRC_ROOT}/LocalStorage.h
     ${SRC_ROOT}/MechanicalOperations.h
     ${SRC_ROOT}/MechanicalVPrintVisitor.h
     ${SRC_ROOT}/MechanicalVisitor.h
@@ -39,7 +37,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/Node.inl
     ${SRC_ROOT}/ParallelForEach.h
     ${SRC_ROOT}/ParallelSparseMatrixProduct.h
-    ${SRC_ROOT}/ParallelVisitorScheduler.h
     ${SRC_ROOT}/PauseEvent.h
     ${SRC_ROOT}/PipelineImpl.h
     ${SRC_ROOT}/PositionEvent.h
@@ -63,7 +60,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/VelocityThresholdVisitor.h
     ${SRC_ROOT}/Visitor.h
     ${SRC_ROOT}/VisitorExecuteFunc.h
-    ${SRC_ROOT}/VisitorScheduler.h
     ${SRC_ROOT}/VisualVisitor.h
     ${SRC_ROOT}/WriteStateVisitor.h
     ${SRC_ROOT}/XMLPrintVisitor.h

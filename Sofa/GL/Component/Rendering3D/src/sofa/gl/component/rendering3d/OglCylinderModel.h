@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/config.h>
 
-SOFA_HEADER_DEPRECATED("v24.12", "v25.06", "sofa/component/visual/CylinderVisualModel.h")
-
-#include <sofa/component/visual/CylinderVisualModel.h>
-
-namespace sofa::gl::component::rendering3d
-{
-using OglCylinderModel = sofa::component::visual::CylinderVisualModel;
-}
+SOFA_HEADER_DISABLED("v24.12", "v25.06", "sofa/component/visual/CylinderVisualModel.h")
