@@ -1,8 +1,0 @@
-# CMake package configuration file for the BeamPlastic plugin
-
-@PACKAGE_INIT@
-
-find_package(Sofa.Config QUIET REQUIRED)
-sofa_find_package(Sofa.Core QUIET REQUIRED)
-
-check_required_components(BeamPlastic)

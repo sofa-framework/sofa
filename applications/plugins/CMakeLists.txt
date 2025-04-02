@@ -51,7 +51,7 @@ sofa_add_external(plugin CSparseSolvers GIT_REF master GIT_REPOSITORY https://ww
 sofa_add_external(plugin ModelOrderReduction GIT_REF master GIT_REPOSITORY https://www.github.com/SofaDefrost/ModelOrderReduction.git)
 sofa_add_external(plugin Sofa.Metis GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/Sofa.Metis.git)
 sofa_add_external(plugin SofaValidation GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/SofaValidation.git)
-sofa_add_subdirectory(plugin BeamPlastic BeamPlastic ON)
+sofa_add_external(plugin BeamPlastic GIT_REF master GIT_REPOSITORY https://www.github.com/fredroy/BeamPlastic.git)
 
 
 
