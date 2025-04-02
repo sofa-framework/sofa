@@ -81,29 +81,6 @@ TEST(UtilsTest, getSofaUserLocalDirectory)
     EXPECT_TRUE(path.find("SOFA") != std::string::npos);
 }
 
-// This test is expected to fail outside the CI environment
-bool testGetUserHomeDirectory()
-{
-    bool result = false;
-
-    const std::string path = Utils::getUserHomeDirectory();
-#if defined(WIN32)
-    result = (path == "C:/Windows/system32/config/systemprofile");
-#elif defined (__APPLE__)
-    result = (path.find("Library") != std::string::npos);
-    result = result && (path.find("Application Support") != std::string::npos);
-#else // Linux
-    result = (path == "/home/runner");
-#endif
-
-    return result;
-}
-
-TEST(UtilsTest, getUserHomeDirectory)
-{
-    EXPECT_TRUE(testGetUserHomeDirectory()) << "Expected to fail outside the CI environment. getUserHomeDirectory() = " << Utils::getUserHomeDirectory();
-}
-
 TEST(UtilsTest, getSofaDataDirectory)
 {
     const std::string path = Utils::getSofaDataDirectory();
