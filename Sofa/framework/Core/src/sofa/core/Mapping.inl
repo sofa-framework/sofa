@@ -100,6 +100,40 @@ void Mapping<In,Out>::init()
 {
     Inherit1::init();
 
+    const auto setLink = [this]<typename LinkType>(LinkType& link, const char* attributeName, const std::string& defaultPath)
+    {
+        if (!link)
+        {
+            typename LinkType::DestType* state = nullptr;
+            this->getContext()->findLinkDest(state, defaultPath, nullptr);
+
+            if (state)
+            {
+                const std::string linkPath = "@" + state->getPathName();
+                msg_warning()
+                    << "The attribute '" << attributeName
+                    << "' of this component has not been defined. It is automatically set to '"
+                    << linkPath << "'. It is recommended to define it to avoid any error.";
+                link.setPath(linkPath);
+            }
+            else
+            {
+                msg_error()
+                    << "The attribute '" << attributeName
+                    << "' of this component has not been defined, and could not be found automatically.";
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            }
+        }
+    };
+
+    setLink(this->fromModel, "input", "@../");
+    setLink(this->toModel, "output", "@./");
+
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+    {
+        return;
+    }
+
     if(toModel && !testMechanicalState(toModel.get()))
     {
         setNonMechanical();
