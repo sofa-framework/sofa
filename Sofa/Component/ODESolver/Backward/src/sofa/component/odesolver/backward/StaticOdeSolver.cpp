@@ -39,6 +39,12 @@ void registerStaticOdeSolver(sofa::core::ObjectFactory* factory)
 
 StaticOdeSolver::StaticOdeSolver()
     : l_newtonSolver(initLink("newtonSolver", "Link to a NewtonRaphsonSolver"))
+    , d_newton_iterations(this, "newton_iterations")
+    , d_absolute_correction_tolerance_threshold(this, "absolute_correction_tolerance_threshold")
+    , d_relative_correction_tolerance_threshold(this, "relative_correction_tolerance_threshold")
+    , d_absolute_residual_tolerance_threshold(this, "absolute_residual_tolerance_threshold")
+    , d_relative_residual_tolerance_threshold(this, "relative_residual_tolerance_threshold")
+    , d_should_diverge_when_residual_is_growing(this, "should_diverge_when_residual_is_growing")
 {}
 
 void StaticOdeSolver::init()
