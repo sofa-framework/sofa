@@ -45,7 +45,28 @@ public:
 
     void init() override;
 
-    SingleLink<StaticOdeSolver, NewtonRaphsonSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_newtonSolver;
+    SingleLink<StaticOdeSolver, NewtonRaphsonSolver,
+               BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK>
+        l_newtonSolver;
+
+    auto squared_residual_norms() const -> const std::vector<SReal> & = delete;
+    auto squared_increment_norms() const -> const std::vector<SReal> & = delete;
+
+protected:
+
+    struct NewtonRaphsonDeprecatedData : core::objectmodel::lifecycle::DeprecatedData
+    {
+        NewtonRaphsonDeprecatedData(Base* b, const std::string name)
+            : DeprecatedData(b, "v25.06", "v25.12", name, "The Data related to the Newton-Raphson parameters must be defined in the NewtonRaphsonSolver component.")
+        {}
+    };
+
+    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData d_newton_iterations;
+    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData d_absolute_correction_tolerance_threshold;
+    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData d_relative_correction_tolerance_threshold;
+    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData d_absolute_residual_tolerance_threshold;
+    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData d_relative_residual_tolerance_threshold;
+    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData d_should_diverge_when_residual_is_growing;
 };
 
 }
