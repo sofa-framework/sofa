@@ -76,7 +76,7 @@ sofa_find_package(Sofa.Config REQUIRED)
 ## Boost (1.54.0 or higher) is now mandatory.
 set(BOOST_MIN_VERSION "1.54.0")
 set(Boost_NO_BOOST_CMAKE TRUE)
-sofa_find_package(Boost ${BOOST_MIN_VERSION} QUIET)
+sofa_find_package(Boost ${BOOST_MIN_VERSION} QUIET NO_MODULE)
 if(NOT Boost_FOUND)
     if(WIN32)
         message(FATAL_ERROR "Boost (${BOOST_MIN_VERSION} or higher) is mandatory.\n"
@@ -88,7 +88,7 @@ if(NOT Boost_FOUND)
         message(FATAL_ERROR "Boost (${BOOST_MIN_VERSION} or higher) is mandatory.")
     endif()
 endif()
-sofa_find_package(Boost QUIET REQUIRED)
+sofa_find_package(Boost QUIET REQUIRED NO_MODULE)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
