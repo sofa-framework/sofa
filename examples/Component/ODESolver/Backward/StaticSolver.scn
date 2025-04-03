@@ -21,6 +21,7 @@
     <Node name="Springs">
 
         <StaticSolver  />
+        <NewtonRaphsonSolver name="newtonSolver" printLog="true" maxNbIterationsNewton="100" maxNbIterationsLineSearch="1" warnWhenLineSearchFails="false"/>
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
         <MeshTopology src="@loader" />
@@ -36,6 +37,7 @@
     </Node>
     <Node name="CoFEM">
         <StaticSolver  />
+        <NewtonRaphsonSolver name="newtonSolver" printLog="true" maxNbIterationsNewton="100" maxNbIterationsLineSearch="1" warnWhenLineSearchFails="false"/>
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh"/>
         <MeshTopology src="@loader" />
@@ -51,6 +53,7 @@
     </Node>
     <Node name="LinearFEM">
         <StaticSolver  />
+        <NewtonRaphsonSolver name="newtonSolver" printLog="true" maxNbIterationsNewton="100" maxNbIterationsLineSearch="1" warnWhenLineSearchFails="false"/>
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh"/>
         <MeshTopology src="@loader" />
