@@ -68,6 +68,8 @@ ConstantForceField<DataTypes>::ConstantForceField()
             msg_info() << "totalForce data is initially used, the callback associated with the forces vector is skipped";
             return updateFromTotalForce();
         }
+        else
+            return sofa::core::objectmodel::ComponentState::Invalid;
     }, {});
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalForce", {&d_totalForce, &d_indices}, [this](const core::DataTracker& )
@@ -82,6 +84,8 @@ ConstantForceField<DataTypes>::ConstantForceField()
             msg_info() << "forces data is initially used, the callback associated with the totalForce is skipped";
             return updateFromForcesVector();
         }
+        else
+            return sofa::core::objectmodel::ComponentState::Invalid;
     }, {});
 }
 

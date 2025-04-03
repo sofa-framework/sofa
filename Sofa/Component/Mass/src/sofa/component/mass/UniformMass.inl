@@ -92,6 +92,8 @@ UniformMass<DataTypes>::UniformMass()
             msg_info() << "vertexMass data is initially used, the callback associated with the totalMass is skipped";
             return updateFromVertexMass();
         }
+        else
+            return sofa::core::objectmodel::ComponentState::Invalid;
     }, {});
 
 
@@ -107,6 +109,8 @@ UniformMass<DataTypes>::UniformMass()
             msg_info() << "totalMass data is initially used, the callback associated with the vertexMass is skipped";
             return updateFromTotalMass();
         }
+        else
+            return sofa::core::objectmodel::ComponentState::Invalid;
     }, {});
 }
 
@@ -162,19 +166,14 @@ void UniformMass<DataTypes>::initDefaultImpl()
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 
-
     /// SingleStateAccessor checks the mstate pointer to a MechanicalObject
     Mass<DataTypes>::init();
 
-    if(!this->isComponentStateValid())
-        return;
-        
     /// Check filename
     if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" )
     {
         loadRigidMass(d_filenameMass.getFullPath()) ;
     }
-
 
     /// Check indices
     WriteAccessor<Data<SetIndexArray > > indices = d_indices;
@@ -196,7 +195,6 @@ void UniformMass<DataTypes>::initDefaultImpl()
         for(int i=0; i<int(mstate->getSize()); i++)
             indices.push_back(i);
     }
-
 
     /// Check link to topology
     if (l_topology.empty())
@@ -579,9 +577,7 @@ template <class DataTypes>
 void UniformMass<DataTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     if (!this->isComponentStateValid())
-    {
         return;
-    }
 
     const MassType& m = d_vertexMass.getValue();
     static constexpr auto N = Deriv::total_size;
