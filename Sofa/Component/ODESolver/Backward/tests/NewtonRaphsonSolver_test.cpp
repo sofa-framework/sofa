@@ -294,7 +294,7 @@ struct NewtonRaphsonTest : public testing::BaseSimulationTest
     {
         sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
 
-        sofa::simpleapi::createObject(m_scene.root, "RestShapeSpringsForceField", {{"points", "0"}, {"stiffness", std::to_string(k)}});
+        sofa::simpleapi::createObject(m_scene.root, "FixedWeakConstraint", {{"indices", "0"}, {"stiffness", std::to_string(k)}});
 
         m_scene.initScene();
         EXPECT_EQ(m_solver->d_status.getValue(), component::odesolver::backward::NewtonStatus("Undefined"));
