@@ -23,6 +23,7 @@
 
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/fwd.h>
+#include <sofa/core/config.h>
 
 namespace sofa::core::behavior
 {
@@ -86,6 +87,7 @@ public:
     typedef sofa::type::vector<type::Vec<3,double>> VecConstCoord;
     typedef sofa::type::vector<type::Vec<3,double>> VecConstDeriv;
     typedef sofa::type::vector<double> VecConstArea;
+    SOFA_ATTRIBUTE_DEPRECATED__DELETED_ARGUMENTS()
     virtual void getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas) final;
 
     /// Add the corresponding ConstraintResolution using the offset parameter
