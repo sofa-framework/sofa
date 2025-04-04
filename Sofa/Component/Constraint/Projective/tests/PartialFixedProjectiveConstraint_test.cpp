@@ -79,11 +79,13 @@ struct PartialFixedProjectiveConstraint_test : public BaseSimulationTest
         node->addObject(mstate);
         createUniformMass<DataTypes>(node, *mstate.get());
 
-        Deriv force;
-        const size_t sizeD = force.size();
+        VecDeriv force;
+        force.resize(1);
+
+        const size_t sizeD = force[0].size();
         for(unsigned i=0; i<sizeD; i++)
         {
-            force[i]=10;
+            force[0][i]=10;
         }
 
         VecBool fixed;
@@ -93,7 +95,7 @@ struct PartialFixedProjectiveConstraint_test : public BaseSimulationTest
         }
 
         typename ForceField::SPtr forceField = addNew<ForceField>(node);
-        forceField->setForce( 0, force );
+        forceField->d_forces.setValue(force);
         typename PartialFixedProjectiveConstraint::SPtr constraint = addNew<PartialFixedProjectiveConstraint>(node);
 
         // Init simulation

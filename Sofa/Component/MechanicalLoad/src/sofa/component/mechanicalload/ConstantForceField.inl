@@ -413,18 +413,35 @@ void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
     if(!this->isComponentStateValid())
         return;
 
+    // Check the initialization method
     if(m_initMethod == InitMethod::TOTALFORCE)
     {
-        msg_warning() << "\'forces\' vector is modified using setForce() while totalMass is initially used. "
-                      << "Now the 'forces\' vector is used.";
-        m_initMethod = InitMethod::FORCESVECTOR;
+        msg_error() << "Function setForce() is called to modify the \'forces\' vector while totalMass is initially used.";
+        return;
     }
-
+    else
+        m_initMethod == InitMethod::FORCESVECTOR;
+    
+    // Access vectors
     auto indices = sofa::helper::getWriteAccessor(d_indices);
     sofa::helper::WriteAccessor<DataVecDeriv> f = d_forces;
 
-    indices.push_back(i);
-    f.push_back( force );
+    msg_warning() << f.size() ;
+
+    // Create an empty forces vector if not created
+    if(f.size() == 0)
+    {
+        computeForceFromSingleForce(Deriv());
+    }
+
+    // Check given indice
+    if( i > m_systemSize )
+    {
+        msg_error() << "Indices incorrect: indice = "<< i <<" exceeds system size";
+        return;
+    }
+    
+    f[i] = force ;
 }
 
 
