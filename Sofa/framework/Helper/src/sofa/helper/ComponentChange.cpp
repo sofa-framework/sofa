@@ -30,7 +30,7 @@ const std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
     {"BruteForceDetection", Deprecated("v21.06", "v21.12")},
     {"DirectSAP", Deprecated("v21.06", "v21.12")},
     {"RigidRigidMapping", Deprecated("v23.06", "v23.12", "You can use the component RigidMapping with template='Rigid3,Rigid3' instead")},
-    {"UniformVelocityDampingForceField", Deprecated("v25.12", "v25.06", "You can use the NodalLinearDampingForceField instead")},
+    {"UniformVelocityDampingForceField", Deprecated("v25.06", "v25.12", "You can use the NodalLinearDampingForceField instead")},
 };
 
 const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
