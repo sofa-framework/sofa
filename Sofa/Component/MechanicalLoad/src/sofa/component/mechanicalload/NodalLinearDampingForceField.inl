@@ -33,7 +33,7 @@ namespace sofa::component::mechanicalload
 template<class DataTypes>
 NodalLinearDampingForceField<DataTypes>::NodalLinearDampingForceField()
     : d_dampingCoefficientVector(initData(&d_dampingCoefficientVector, "dampingCoefficientVector", "Vector of velocity damping coefficients (by cinematic dof and by node)"))
-    , d_constantIsotropicDampingCoefficient(initData(&d_constantIsotropicDampingCoefficient, "constantIsotropicDampingCoefficient", "Node-constant and isotropic damping coefficient"))
+    , d_dampingCoefficient(initData(&d_dampingCoefficient, "dampingCoefficient", "Node-constant and isotropic damping coefficient"))
 {
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromDampingCoefficientVector", {&d_dampingCoefficientVector}, [this](const core::DataTracker& )
     {
@@ -41,10 +41,10 @@ NodalLinearDampingForceField<DataTypes>::NodalLinearDampingForceField()
         return updateFromDampingCoefficientVector();
     }, {});
 
-    sofa::core::objectmodel::Base::addUpdateCallback("updateFromConstantIsotropicDampingCoefficient", {&d_constantIsotropicDampingCoefficient}, [this](const core::DataTracker& )
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromSingleDampingCoefficient", {&d_dampingCoefficient}, [this](const core::DataTracker& )
     {
-        msg_info() << "call back update: from constantIsotropicDampingCoefficient";
-        return updateFromConstantIsotropicDampingCoefficient();
+        msg_info() << "call back update: from dampingCoefficient";
+        return updateFromSingleDampingCoefficient();
     }, {});
 }
 
@@ -116,19 +116,19 @@ sofa::core::objectmodel::ComponentState NodalLinearDampingForceField<DataTypes>:
 
 
 template<class DataTypes>
-sofa::core::objectmodel::ComponentState NodalLinearDampingForceField<DataTypes>::updateFromConstantIsotropicDampingCoefficient()
+sofa::core::objectmodel::ComponentState NodalLinearDampingForceField<DataTypes>::updateFromSingleDampingCoefficient()
 {
-    // Check if the given constantIsotropicDampingCoefficient
-    Real dampingCoefficient = d_constantIsotropicDampingCoefficient.getValue();
+    // Check if the given dampingCoefficient
+    Real dampingCoefficient = d_dampingCoefficient.getValue();
     
     if(dampingCoefficient < 0.)
     {
-        msg_error() << "Negative \'constantIsotropicDampingCoefficient\' given";
+        msg_error() << "Negative \'dampingCoefficient\' given";
         return sofa::core::objectmodel::ComponentState::Invalid;
     }
 
     isConstantIsotropic = true;
-    msg_info() << "Update from constantIsotropicDampingCoefficient successfully done";
+    msg_info() << "Update from dampingCoefficient successfully done";
     return sofa::core::objectmodel::ComponentState::Valid;
 }
 
@@ -138,16 +138,18 @@ void NodalLinearDampingForceField<DataTypes>::init()
 {
     Inherit::init();
 
-    if(!d_constantIsotropicDampingCoefficient.isSet() && !d_dampingCoefficientVector.isSet())
+    // Case no input is given
+    if(!d_dampingCoefficient.isSet() && !d_dampingCoefficientVector.isSet())
     {
-        msg_error() << "One damping coefficient should be specified (either \'dampingCoefficientVector\' or \'constantIsotropicDampingCoefficient\')";
+        msg_error() << "One damping coefficient should be specified (either \'dampingCoefficientVector\' or \'dampingCoefficient\')";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    if(d_constantIsotropicDampingCoefficient.isSet() && d_dampingCoefficientVector.isSet())
+    // Too many input damping information
+    if(d_dampingCoefficient.isSet() && d_dampingCoefficientVector.isSet())
     {
-        msg_warning() << "Too many inputs given: either using \'dampingCoefficientVector\' or \'constantIsotropicDampingCoefficient\' should be specified \nconstantIsotropicDampingCoefficient will be used";
+        msg_warning() << "Too many input damping information: either using \'dampingCoefficientVector\' or \'dampingCoefficient\' should be specified \ndampingCoefficient will be used";
     }
 
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
@@ -168,7 +170,7 @@ void NodalLinearDampingForceField<DataTypes>::addForce(const core::MechanicalPar
     // Constant and isotropic damping
     if(isConstantIsotropic)
     {
-        const Real singleCoefficient = d_constantIsotropicDampingCoefficient.getValue();
+        const Real singleCoefficient = d_dampingCoefficient.getValue();
 
         for(std::size_t i = 0; i < v.size(); ++i)
         {
@@ -212,7 +214,7 @@ void NodalLinearDampingForceField<DataTypes>::addDForce(const core::MechanicalPa
     // Constant and isotropic damping
     if(isConstantIsotropic)
     {
-        const Real singleCoefficient = d_constantIsotropicDampingCoefficient.getValue();
+        const Real singleCoefficient = d_dampingCoefficient.getValue();
         Real factor = singleCoefficient * bfactor;
 
         for (std::size_t i = 0; i < dx.size(); i++)
@@ -258,7 +260,7 @@ void NodalLinearDampingForceField<DataTypes>::addBToMatrix(sofa::linearalgebra::
     // Constant and isotropic damping
     if(isConstantIsotropic && bFact)
     {
-        const Real factor = d_constantIsotropicDampingCoefficient.getValue() * bFact;
+        const Real factor = d_dampingCoefficient.getValue() * bFact;
         const unsigned int size = this->mstate->getSize();
 
         for (std::size_t i = 0; i < size; i++)
@@ -306,7 +308,7 @@ void NodalLinearDampingForceField<DataTypes>::buildDampingMatrix(core::behavior:
     // Constant and isotropic damping
     if(isConstantIsotropic)
     {
-        const Real constantIsotropicDampingCoefficient = d_constantIsotropicDampingCoefficient.getValue();
+        const Real dampingCoefficient = d_dampingCoefficient.getValue();
 
         for (std::size_t i = 0; i < size; i++)
         {
@@ -314,7 +316,7 @@ void NodalLinearDampingForceField<DataTypes>::buildDampingMatrix(core::behavior:
             for (unsigned j = 0; j < Deriv::total_size; j++)
             {
                 const unsigned row = blockrow + j;
-                dfdv(row, row) += -constantIsotropicDampingCoefficient;
+                dfdv(row, row) += -dampingCoefficient;
             }
         }
     }

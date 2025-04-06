@@ -48,35 +48,18 @@ public:
     Data< VecDeriv > d_dampingCoefficientVector;
 
     /// Node-constant and isotropic damping coefficient
-    Data< Real > d_constantIsotropicDampingCoefficient;
-
-    sofa::core::objectmodel::lifecycle::DeprecatedData d_dampingCoefficient{this, "v25.06", "v25.12", "dampingCoefficient", "Damping should be defined either through the data dampingCoefficientVector or constantIsotropicDampingCoefficient"};
+    Data< Real > d_dampingCoefficient;
 
 protected:
 
     NodalLinearDampingForceField();
 
     sofa::core::objectmodel::ComponentState updateFromDampingCoefficientVector();
-    sofa::core::objectmodel::ComponentState updateFromConstantIsotropicDampingCoefficient();
+    sofa::core::objectmodel::ComponentState updateFromSingleDampingCoefficient();
 
     bool isConstantIsotropic;
 
 public:
-
-    /// Use parse to allow isotropic and anisotropic damping
-    void parse ( core::objectmodel::BaseObjectDescription* arg ) override
-    {
-        Inherit::parse(arg);
-
-        if (arg->getAttribute("dampingCoefficient") != nullptr)
-        {
-            Real constantIsotropicDamping = (Real)arg->getAttributeAsFloat("dampingCoefficient", -1.0);
-            if(constantIsotropicDamping != -1.0)
-            {
-                d_constantIsotropicDampingCoefficient.setValue(constantIsotropicDamping);
-            }
-        }
-    }
 
     void init() override;
 
