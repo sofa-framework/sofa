@@ -23,7 +23,7 @@
     <Node name="isotropic (green)"  >
         <MechanicalObject template="Vec3" name="mObject2"  position="0 0 0"  velocity="1 1 1"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObject="1"  showObjectScale="0.1"  drawMode="3" />
         <UniformMass name="uniformMass3" totalMass="1.0"/>
-        <NodalLinearDampingForceField template="Vec3" name="uniformVelocityDampingFF0" constantIsotropicDampingCoefficient="0.5" />
+        <NodalLinearDampingForceField template="Vec3" name="uniformVelocityDampingFF0" dampingCoefficient="0.5" />
         <TrailRenderer template="Vec3" position="@mObject2.position" color="0 1 0 1"/>
     </Node>
 
