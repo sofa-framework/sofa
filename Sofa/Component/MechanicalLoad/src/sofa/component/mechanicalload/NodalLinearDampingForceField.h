@@ -68,8 +68,7 @@ public:
                 VecDeriv coef;
                 coef.resize(1);
 
-                const typename DataTypes::DPos& dpos = DataTypes::getDPos(coef[0]);
-                for(Size j=0 ; j<dpos.size() && j<3; j++)
+                for(Size j=0 ; j<Deriv::spatial_dimensions; j++)
                     coef[0][j] = isotropicDamping;
 
                 d_dampingCoefficients.setValue(coef);
