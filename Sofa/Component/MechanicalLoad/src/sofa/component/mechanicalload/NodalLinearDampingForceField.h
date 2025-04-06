@@ -44,14 +44,22 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    /// Velocity damping coefficients (by cinematic dof)
-    Data< VecDeriv > d_dampingCoefficients;
+    /// Vector of velocity damping coefficients (by cinematic dof and by node)
+    Data< VecDeriv > d_dampingCoefficientVector;
+
+    /// Node-constant and isotropic damping coefficient
+    Data< Real > d_constantIsotropicDampingCoefficient;
+
+    sofa::core::objectmodel::lifecycle::DeprecatedData d_dampingCoefficient{this, "v25.06", "v25.12", "dampingCoefficient", "Damping should be defined either through the data dampingCoefficientVector or constantIsotropicDampingCoefficient"};
 
 protected:
 
     NodalLinearDampingForceField();
 
-    sofa::core::objectmodel::ComponentState updateFromDampingCoefficient();
+    sofa::core::objectmodel::ComponentState updateFromDampingCoefficientVector();
+    sofa::core::objectmodel::ComponentState updateFromConstantIsotropicDampingCoefficient();
+
+    bool isConstantIsotropic;
 
 public:
 
@@ -62,19 +70,15 @@ public:
 
         if (arg->getAttribute("dampingCoefficient") != nullptr)
         {
-            Real isotropicDamping = (Real)arg->getAttributeAsFloat("dampingCoefficient", -1.0);
-            if(isotropicDamping != -1.0)
+            Real constantIsotropicDamping = (Real)arg->getAttributeAsFloat("dampingCoefficient", -1.0);
+            if(constantIsotropicDamping != -1.0)
             {
-                VecDeriv coef;
-                coef.resize(1);
-
-                for(Size j=0 ; j<Deriv::spatial_dimensions; j++)
-                    coef[0][j] = isotropicDamping;
-
-                d_dampingCoefficients.setValue(coef);
+                d_constantIsotropicDampingCoefficient.setValue(constantIsotropicDamping);
             }
         }
     }
+
+    void init() override;
 
     /// Definition of the ForceField API
     void addForce (const core::MechanicalParams*, DataVecDeriv&, const DataVecCoord&, const DataVecDeriv&) override;
@@ -96,7 +100,6 @@ extern template class SOFA_COMPONENT_MECHANICALLOAD_API NodalLinearDampingForceF
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API NodalLinearDampingForceField<defaulttype::Vec6Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API NodalLinearDampingForceField<defaulttype::Rigid3Types>;
 extern template class SOFA_COMPONENT_MECHANICALLOAD_API NodalLinearDampingForceField<defaulttype::Rigid2Types>;
-
 #endif
 
 } // namespace sofa::component::mechanicalload
