@@ -45,11 +45,8 @@ NodalLinearDampingForceField<DataTypes>::NodalLinearDampingForceField()
 template<class DataTypes>
 sofa::core::objectmodel::ComponentState NodalLinearDampingForceField<DataTypes>::updateFromDampingCoefficient()
 {
-    const auto coefs = sofa::helper::getReadAccessor(d_dampingCoefficients);
-    const unsigned int sizeCoefs = coefs.size();
-
-
     // Check if the dampingCoefficients vector has a null size
+    const unsigned int sizeCoefs = d_dampingCoefficients.getValue().size();
     if(sizeCoefs == 0)
     {
         msg_error() << "Size of the \'dampingCoefficients\' vector is null";
