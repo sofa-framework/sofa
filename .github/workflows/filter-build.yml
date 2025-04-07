@@ -33,6 +33,10 @@ on:
         required: true
         default: true
         type: boolean
+      builder_os:
+        type: string
+        required: true
+        default: '["sh-ubuntu_gcc_release"]'
 
   # Nightly build
   schedule:
@@ -54,19 +58,6 @@ on:
 # ===============================================================
 # ===============================================================
 
-env:
-  SOFA_BRANCH_NAME: "master"
-  SOFA_COMMIT_SHA: "HEAD"
-  PRESET: "full"
-  PYTHON_VERSION: "3.12"
-  CI_DEPENDS_ON: ""
-  WITH_ALL_TESTS: false
-  FORCE_FULL_BUILD: false
-  OUT_OF_TREE_BUILD: ""
-  GENERATE_BINARIES: false
-  PR_OWNER_URL: ""
-  PR_BRANCH_NAME: ""
-  PR_COMMIT_SHA: "HEAD"
 
 jobs:
   filter_build:
@@ -75,8 +66,38 @@ jobs:
       matrix:
         sofa_version: [master, v24.12]
     ### if: ${{ github.repository_owner == 'sofa-framework' }}
-    
+    outputs:
+      SOFA_BRANCH_NAME: ${{ steps.export-vars.outputs.SOFA_BRANCH_NAME }}
+      SOFA_COMMIT_SHA: ${{ steps.export-vars.outputs.SOFA_COMMIT_SHA }}
+      PRESET: ${{ steps.export-vars.outputs.PRESET }}
+      PYTHON_VERSION: ${{ steps.export-vars.outputs.PYTHON_VERSION }}
+      CI_DEPENDS_ON: ${{ steps.export-vars.outputs.CI_DEPENDS_ON }}
+      WITH_ALL_TESTS: ${{ steps.export-vars.outputs.WITH_ALL_TESTS }}
+      FORCE_FULL_BUILD: ${{ steps.export-vars.outputs.FORCE_FULL_BUILD }}
+      OUT_OF_TREE_BUILD: ${{ steps.export-vars.outputs.OUT_OF_TREE_BUILD }}
+      GENERATE_BINARIES: ${{ steps.export-vars.outputs.GENERATE_BINARIES }}
+      PR_OWNER_URL: ${{ steps.export-vars.outputs.PR_OWNER_URL }}
+      PR_BRANCH_NAME: ${{ steps.export-vars.outputs.PR_BRANCH_NAME }}
+      PR_COMMIT_SHA: ${{ steps.export-vars.outputs.PR_COMMIT_SHA }}
+      BUILDER_OS: ${{ steps.export-vars.outputs.BUILDER_OS }}
+      
     steps:
+      - name: Default values of environment variables
+        run: |
+          echo "SOFA_BRANCH_NAME=master" >> $GITHUB_ENV    # SOFA_BRANCH_NAME: "master"
+          echo "SOFA_COMMIT_SHA=HEAD" >> $GITHUB_ENV       # SOFA_COMMIT_SHA: "HEAD"
+          echo "PRESET=full" >> $GITHUB_ENV                # PRESET: "full"
+          echo "PYTHON_VERSION=3.12" >> $GITHUB_ENV        # PYTHON_VERSION: "3.12"
+          echo "CI_DEPENDS_ON=" >> $GITHUB_ENV             # CI_DEPENDS_ON: ""
+          echo "WITH_ALL_TESTS=false" >> $GITHUB_ENV       # WITH_ALL_TESTS: false
+          echo "FORCE_FULL_BUILD=false" >> $GITHUB_ENV     # FORCE_FULL_BUILD: false
+          echo "OUT_OF_TREE_BUILD=" >> $GITHUB_ENV         # OUT_OF_TREE_BUILD: ""
+          echo "GENERATE_BINARIES=false" >> $GITHUB_ENV    # GENERATE_BINARIES: false
+          echo "PR_OWNER_URL=" >> $GITHUB_ENV              # PR_OWNER_URL: ""
+          echo "PR_BRANCH_NAME=" >> $GITHUB_ENV            # PR_BRANCH_NAME: ""
+          echo "PR_COMMIT_SHA=HEAD" >> $GITHUB_ENV         # PR_COMMIT_SHA: "HEAD"
+          echo 'BUILDER_OS=["sh-ubuntu_gcc_release"]' >> $GITHUB_ENV            # BUILDER_OS: ["sh-ubuntu_gcc_release"]
+          
       - name: Run on dispatch
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
@@ -87,6 +108,7 @@ jobs:
           PYTHON=${{ github.event.inputs.python_version }}
           PRESET=${{ github.event.inputs.preset }}
           GENERATE_BINARIES=${{ github.event.inputs.generate_binaries }}
+          BUILDER_OS=${{ github.event.inputs.builder_os }}
 
           # Validate branch format (e.g., v25.06)
           if [[ ! "$BRANCH" =~ ^v[0-9]{2}\.[0-9]{2}$ ]]; then
@@ -130,6 +152,13 @@ jobs:
             echo "Error: 'generate_binaries' must be either 'true' or 'false'."
             exit 1
           fi
+
+          # Validate builder_os (must be a list)
+          python3 -c "import ast; x=ast.literal_eval('$BUILDER_OS'); assert isinstance(x, list)" 2>/dev/null
+          if [[ $? -ne 0 ]]; then
+            echo "Error: 'builder_os' must be a list."
+            return 1
+          fi
           
           # Save all information in environment variables
           echo "SOFA_BRANCH_NAME=$BRANCH" >> $GITHUB_ENV
@@ -137,6 +166,7 @@ jobs:
           echo "PRESET=$PRESET" >> $GITHUB_ENV
           echo "PYTHON_VERSION=$PYTHON" >> $GITHUB_ENV
           echo "GENERATE_BINARIES=$GENERATE_BINARIES" >> $GITHUB_ENV
+          echo "BUILDER_OS=$BUILDER_OS" >> $GITHUB_ENV
 
       - name: Set up python
         uses: actions/setup-python@v5
@@ -159,6 +189,7 @@ jobs:
           echo "PRESET=standard" >> $GITHUB_ENV
           echo "WITH_ALL_TESTS=true" >> $GITHUB_ENV
           echo "GENERATE_BINARIES=true" >> $GITHUB_ENV
+          echo 'BUILDER_OS=["sh-ubuntu_gcc_release","sh-windows_vs2022_release","sh-macos_clang_release"]' >> $GITHUB_ENV
 
       - name: Check push on master case
         if: ${{ github.event_name == 'push'}}
@@ -167,6 +198,7 @@ jobs:
           echo "COMMIT_SHA=${{ github.after }}>> $GITHUB_ENV
           echo "WITH_ALL_TESTS=true" >> $GITHUB_ENV
           echo "FORCE_FULL_BUILD=true" >> $GITHUB_ENV
+          echo 'BUILDER_OS=["sh-ubuntu_gcc_release","sh-ubuntu_clang_release","sh-ubuntu_clang_debug","sh-fedora_clang_release","sh-windows_vs2022_release","sh-macos_clang_release"]' >> $GITHUB_ENV
 
       - name: Run when PR is opened
         if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
@@ -181,7 +213,6 @@ jobs:
           # Trigger the Build action
           python scripts/github_CI/checkPRInfoBeforeBuild.py
            
-
       - name: Run when PR comment is edited
         if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request && ( github.event.action == 'created'|| github.event.action == 'edited' ) }}
         env:
@@ -199,24 +230,42 @@ jobs:
             python scripts/github_CI/checkPRInfoBeforeBuild.py
           fi
 
+      - name: Export environment variables as outputs
+        id: export-vars
+        run: |
+          echo "SOFA_BRANCH_NAME=${SOFA_BRANCH_NAME}" >> $GITHUB_OUTPUT
+          echo "SOFA_COMMIT_SHA=${SOFA_COMMIT_SHA}" >> $GITHUB_OUTPUT
+          echo "PRESET=${PRESET}" >> $GITHUB_OUTPUT
+          echo "PYTHON_VERSION=${PYTHON_VERSION}" >> $GITHUB_OUTPUT
+          echo "CI_DEPENDS_ON=${CI_DEPENDS_ON}" >> $GITHUB_OUTPUT
+          echo "WITH_ALL_TESTS=${WITH_ALL_TESTS}" >> $GITHUB_OUTPUT
+          echo "FORCE_FULL_BUILD=${FORCE_FULL_BUILD}" >> $GITHUB_OUTPUT
+          echo "OUT_OF_TREE_BUILD=${OUT_OF_TREE_BUILD}" >> $GITHUB_OUTPUT
+          echo "GENERATE_BINARIES=${GENERATE_BINARIES}" >> $GITHUB_OUTPUT
+          echo "PR_OWNER_URL=${PR_OWNER_URL}" >> $GITHUB_OUTPUT
+          echo "PR_BRANCH_NAME=${PR_BRANCH_NAME}" >> $GITHUB_OUTPUT
+          echo "PR_COMMIT_SHA=${PR_COMMIT_SHA}" >> $GITHUB_OUTPUT
+          echo "BUILDER_OS=${BUILDER_OS}" >> $GITHUB_OUTPUT
+
+
   # ===============================================================
   # ===============================================================
 
   # Trigger the build with all parameters
   call-workflow-passing-data:
+    needs: filter_build
     uses: bakpaul/sofa/.github/workflows/build-and-test.yml@master
     with:
-      sofa-branch-name: ${{ SOFA_BRANCH_NAME }}
-      sofa-commit-sha: ${{ SOFA_COMMIT_SHA }}
-      preset: ${{ PRESET }}
-      python-version: ${{ PYTHON_VERSION }}
-      ci-depends-on: ${{ CI_DEPENDS_ON }}
-      with-all-tests: ${{ WITH_ALL_TESTS }}
-      force-full-build: ${{ FORCE_FULL_BUILD }}
-      out-of-tree-build: ${{ OUT_OF_TREE_BUILD }}
-      generate-binaries: ${{ GENERATE_BINARIES }}
-      pr-owner-url: ${{ PR_OWNER_URL }}
-      pr-branch-name: ${{ PR_BRANCH_NAME }}
-      pr-commit-sha: ${{ PR_COMMIT_SHA }}
-    secrets:
-      personal_access_token: ${{ secrets.GITHUB_TOKEN }}
+      sofa-branch-name: ${{ needs.set-vars.outputs.SOFA_BRANCH_NAME }}
+      sofa-commit-sha: ${{ needs.set-vars.outputs.SOFA_COMMIT_SHA }}
+      preset: ${{ needs.set-vars.outputs.PRESET }}
+      python-version: ${{ needs.set-vars.outputs.PYTHON_VERSION }}
+      ci-depends-on: ${{ needs.set-vars.outputs.CI_DEPENDS_ON }}
+      with-all-tests: ${{ needs.set-vars.outputs.WITH_ALL_TESTS == 'true'}}
+      force-full-build: ${{ needs.set-vars.outputs.FORCE_FULL_BUILD == 'true'}}
+      out-of-tree-build: ${{ needs.set-vars.outputs.OUT_OF_TREE_BUILD }}
+      generate-binaries: ${{ needs.set-vars.outputs.GENERATE_BINARIES == 'true'}}
+      pr-owner-url: ${{ needs.set-vars.outputs.PR_OWNER_URL }}
+      pr-branch-name: ${{ needs.set-vars.outputs.PR_BRANCH_NAME }}
+      pr-commit-sha: ${{ needs.set-vars.outputs.PR_COMMIT_SHA }}
+      builder-os: ${{ needs.set-vars.outputs.BUILDER_OS }}

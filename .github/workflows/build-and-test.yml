@@ -55,7 +55,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: ${{ fromJson(inputs.os) }}
+        os: ${{ fromJson(inputs.builder-os) }}
     runs-on: ${{ matrix.os }}
     steps:
       - name: Configure builder
@@ -123,6 +123,8 @@ jobs:
               ci_repo_url=$(echo "${{ inputs.ci-depends-on }}" | jq .ci.repo_url)
               ci_branch=$(echo "${{ inputs.ci-depends-on }}" | jq .ci.branch_name)
           fi
+          echo "CI_BRANCH=$ci_branch" >> $GITHUB_ENV
+
 
           echo "Cloning CI from remote ${ci_repo_url}, selecting branch ${ci_branch}"
           
@@ -165,6 +167,7 @@ jobs:
           #TODO
           #HEre we use docker if possible
 
+
           . ${CI_DIR}/scripts/utils.sh
 
           ## Setup env variables
@@ -184,8 +187,9 @@ jobs:
             branch_name=$(echo "${{ inputs.ci-depends-on }}" | jq -r ".\"$key\".branch_name")
 
             # Format the CMake flags for this key and append to the result
-            flag_repository="-D$(echo "$key" | gsub("\\.";"_" | ascii_upcase)_GIT_REPOSITORY=\"$repo_url\")"
-            flag_tag="-D$(echo "$key" | gsub("\\.";"_" | ascii_upcase)_GIT_TAG=\"$branch_name\")"
+            fixed_name=$(echo "$key" |  awk '{gsub(/\./, "_"); print toupper($0)}')
+            flag_repository="-D${fixed_name}_GIT_REPOSITORY=\"$repo_url\")"
+            flag_tag="-D${fixed_name}_GIT_TAG=\"$branch_name\")"
 
             # Append both flags to the result string with a space
             CMAKE_OPTIONS="$CMAKE_OPTIONS $flag_repository $flag_tag "

@@ -8,8 +8,16 @@ OWNER_NAME = os.getenv('OWNER_NAME')
 PR_COMMIT_SHA = os.getenv('PR_COMMIT_SHA')
 
 
-if not GITHUB_TOKEN or not PR_NUMBER or not REPO_NAME:
+if (not GITHUB_TOKEN) or (not PR_NUMBER) or (not OWNER_NAME) or (not PR_COMMIT_SHA):
     print("Error: Missing required environment variables.")
+    if (not GITHUB_TOKEN):
+        print("     - Missing GITHUB_TOKEN")
+    if (not PR_NUMBER):
+        print("     - Missing PR_NUMBER")
+    if (not OWNER_NAME):
+        print("     - Missing OWNER_NAME")
+    if (not PR_COMMIT_SHA):
+        print("     - Missing PR_COMMIT_SHA")
     exit(1)
 
 
@@ -43,11 +51,14 @@ def check_labels():
         exit(1)
 
     labels = [label['name'].lower() for label in response.json()]
-    print(f"Labels found: {labels}")
+    print(f"Labels found: {labels}.")
 
     if "pr: status to review" in labels:
         to_review_label_found = True
         print("PR is marked as 'to review'.")
+    else:
+        print(f"Flag to review has not been found. CI will stop.")
+        exit(1)
 
 
 # ========================================================================
@@ -83,7 +94,6 @@ def check_comments():
         exit(1)
 
     comments = [comment['body'].lower() for comment in response.json()]
-    print(f"Comments found: {comments}")
 
     if any("[with-all-tests]" in comment for comment in comments):
         with_all_tests_found = True
@@ -106,7 +116,7 @@ def export_pr_info():
 
     pr_data = response.json()
 
-    pr_url = str(pr_data['user']['html_url']) + str(pr_data['repo']['name'])
+    pr_url = str(pr_data['user']['html_url']) + "/" + str(pr_data['base']['repo']['name'])
     pr_branch_name = pr_data['head']['ref']
     pr_commit_sha = pr_data['head']['sha']
 
@@ -177,6 +187,10 @@ def extract_ci_depends_on():
                 "repo_url": repo_url,
                 "branch_name": branch_name
             }
+        
+        match = re.search(r'\[with-all-tests\]', line)
+        if match:
+            with_all_tests_found = True
 
 
 # ========================================================================
@@ -196,15 +210,15 @@ if to_review_label_found and not is_draft_pr:
     # Check compilation options in PR comments
     check_comments()
     
-    with open(os.environ["GITHUB_ENV"], "a") as env_file:
-        env_file.write(f"WITH_ALL_TESTS={with_all_tests_found}\n")
-        env_file.write(f"FORCE_FULL_BUILD={force_full_build_found}\n")
-
     # Extract dependency repositories
     extract_ci_depends_on()
 
+    # Export all environment variables specific to pull-requests
     with open(os.environ["GITHUB_ENV"], "a") as env_file:
+        env_file.write(f"WITH_ALL_TESTS={with_all_tests_found}\n")
+        env_file.write(f"FORCE_FULL_BUILD={force_full_build_found}\n")
         env_file.write(f"CI_DEPENDS_ON={dependency_dict}\n")
+        env_file.write(f'BUILDER_OS=["sh-ubuntu_gcc_release","sh-fedora_clang_release","sh-windows_vs2022_release","sh-macos_clang_release"]')
 
 
 # ========================================================================
