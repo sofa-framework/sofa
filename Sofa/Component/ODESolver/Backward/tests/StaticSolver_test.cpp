@@ -101,16 +101,14 @@ public:
         sofa::simulation::node::unload(root);
     }
 
-    auto execute() -> std::pair<std::vector<SReal>, std::vector<SReal>> {
+    auto execute() -> std::vector<SReal> {
         using namespace std;
         sofa::simulation::node::initRoot(root.get());
         sofa::simulation::node::animate(root.get(), 1_sreal);
         const auto& residualGraph = newtonSolver->d_residualGraph.getValue();
         auto residuals = residualGraph.at("residual");
-        // auto corrections = staticSolver->squared_increment_norms();
         transform(begin(residuals), end(residuals), begin(residuals), [](SReal r) {return sqrt(r);});
-        // transform(begin(corrections), end(corrections), begin(corrections), [](SReal r) {return sqrt(r);});
-        return {residuals, residuals};
+        return residuals;
     }
 
 
@@ -145,7 +143,7 @@ TEST_F(StaticSolverTest, Residuals) {
     newtonSolver->d_absoluteEstimateDifferenceThreshold.setValue(-1);
     newtonSolver->d_warnWhenDiverge.setValue(false);
 
-    const std::vector<SReal> actual_force_residual_norms = this->execute().first;
+    const std::vector<SReal> actual_force_residual_norms = this->execute();
 
     EXPECT_EQ(actual_force_residual_norms.size(), expected_force_residual_norms.size())
     << "The static ODE solver is supposed to execute 10 Newton steps since the convergence criteria were deactivated.";
@@ -168,7 +166,7 @@ TEST_F(StaticSolverTest, RelativeResiduals)
     newtonSolver->d_absoluteEstimateDifferenceThreshold.setValue(-1);
     newtonSolver->d_warnWhenDiverge.setValue(false);
 
-    const sofa::type::vector<SReal> actual_force_residual_norms = this->execute().first;
+    const sofa::type::vector<SReal> actual_force_residual_norms = this->execute();
     EXPECT_EQ(actual_force_residual_norms.size(), 7)
     << "The static ODE solver is supposed to converge after 7 Newton steps when using a relative residual threshold of 1e-5.\n"
     << actual_force_residual_norms;
@@ -184,7 +182,7 @@ TEST_F(StaticSolverTest, AbsoluteResiduals) {
     newtonSolver->d_absoluteEstimateDifferenceThreshold.setValue(1e-5_sreal);
     newtonSolver->d_warnWhenDiverge.setValue(true);
 
-    const sofa::type::vector<SReal> actual_force_residual_norms = this->execute().first;
+    const sofa::type::vector<SReal> actual_force_residual_norms = this->execute();
     EXPECT_EQ(actual_force_residual_norms.size(), 9)
     << "The static ODE solver is supposed to converge after 9 Newton steps when using an absolute residual threshold of 1e-5.\n"
     << actual_force_residual_norms;
