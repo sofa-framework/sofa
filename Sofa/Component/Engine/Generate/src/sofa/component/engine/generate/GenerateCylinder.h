@@ -33,10 +33,6 @@
 namespace sofa::component::engine::generate
 {
 
-/**
- * This class dilates the positions of one DataFields into new positions after applying a dilateation
-This dilateation can be either translation, rotation, scale
- */
 template <class DataTypes>
 class GenerateCylinder : public core::DataEngine
 {
