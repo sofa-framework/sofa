@@ -217,35 +217,29 @@ const std::string& Utils::getUserHomeDirectory()
 #ifdef WIN32 // Windows: ${HOME}
         const char* homeDir = std::getenv("USERPROFILE");
         return std::string(homeDir);
-#elif defined(__APPLE__) // macOS : ${HOME}/Library/Application Support
-       // https://stackoverflow.com/questions/5123361/finding-library-application-support-from-c
-
-        char path[PATH_MAX];
-        auto state = sysdir_start_search_path_enumeration(SYSDIR_DIRECTORY_APPLICATION_SUPPORT,
-                                                          SYSDIR_DOMAIN_MASK_USER);
-        if ((state = sysdir_get_next_search_path_enumeration(state, path)))
+#elif defined(__APPLE__) // macOS : ${HOME} (usually /Users/username)
+        glob_t globbuf;
+        if (glob("~", GLOB_TILDE, nullptr, &globbuf) == 0)
         {
-            glob_t globbuf;
-            if (glob(path, GLOB_TILDE, nullptr, &globbuf) == 0)
+            std::string result(globbuf.gl_pathv[0]);
+            globfree(&globbuf);
+            return result;
+        }
+        else // Unable to expand tilde, fallback to env method
+        {
+            const char* homeDir;
+
+            // if HOME is defined
+            if ((homeDir = std::getenv("HOME")) != nullptr)
             {
-                std::string result(globbuf.gl_pathv[0]);
-                globfree(&globbuf);
-                return result;
+                return std::string(homeDir);
             }
             else
             {
-                // "Unable to expand tilde"
                 return std::string("");
             }
         }
-        else
-        {
-            // "Failed to get settings folder"
-            return std::string("");
-        }
-
 #else // Linux: ${HOME}
-
     const char* homeDir;
 
     // if HOME is defined
@@ -296,7 +290,31 @@ const std::string& Utils::getUserLocalDirectory()
 
         return sofa::helper::narrowString(wresult);
 #elif defined(__APPLE__) // macOS : ${HOME}/Library/Application Support
-        return getUserHomeDirectory();
+        // https://stackoverflow.com/questions/5123361/finding-library-application-support-from-c
+
+         char path[PATH_MAX];
+         auto state = sysdir_start_search_path_enumeration(SYSDIR_DIRECTORY_APPLICATION_SUPPORT,
+                                                           SYSDIR_DOMAIN_MASK_USER);
+         if ((state = sysdir_get_next_search_path_enumeration(state, path)))
+         {
+             glob_t globbuf;
+             if (glob(path, GLOB_TILDE, nullptr, &globbuf) == 0)
+             {
+                 std::string result(globbuf.gl_pathv[0]);
+                 globfree(&globbuf);
+                 return result;
+             }
+             else
+             {
+                 // "Unable to expand tilde"
+                 return std::string("");
+             }
+         }
+         else
+         {
+             // "Failed to get settings folder"
+             return std::string("");
+         }
 #else // Linux: either ${XDG_CONFIG_HOME} if defined, or ${HOME}/.config (should be equivalent)
         const char* configDir;
 
