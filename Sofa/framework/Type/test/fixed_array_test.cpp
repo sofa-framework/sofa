@@ -43,4 +43,11 @@ TEST(fixed_array, structuredBindings)
     EXPECT_EQ(c, 4);
     EXPECT_EQ(d,-1);
 }
+
+TEST(VecTest, DeductionGuide)
+{
+    constexpr sofa::type::fixed_array array { 1.0_sreal, 2.0_sreal, 3.0_sreal };
+    static_assert(std::is_same_v<decltype(array)::value_type, SReal>);
+}
+
 }

@@ -681,8 +681,8 @@ public:
     /// @}
 };
 
-
-
+template <class First, class... Rest>
+Vec(First, Rest...) -> Vec<1 + sizeof...(Rest), std::common_type_t<First, Rest...> >;
 
 /// Same as Vec except the values are not initialized by default
 template <sofa::Size N, typename real>
@@ -711,6 +711,9 @@ public:
         return v*r;
     }
 };
+
+template <class First, class... Rest>
+VecNoInit(First, Rest...) -> VecNoInit<1 + sizeof...(Rest), std::common_type_t<First, Rest...> >;
 
 /// Read from an input stream
 template<sofa::Size N,typename Real>
