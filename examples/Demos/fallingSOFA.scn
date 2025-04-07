@@ -37,7 +37,7 @@
     <!-- Header of the simulation -->
     <!-- This animation loop will add steps in the time intyegration to enable Lagrangian-based constraint solving
      For more information see : https://sofa-framework.github.io/doc/components/animationloop/freemotionanimationloop/ -->
-    <FreeMotionAnimationLoop />
+    <FreeMotionAnimationLoop computeBoundingBox="false"/>
     <!-- This solver will perform the different constraint solving stages a.k.a. the constraint system building, the constraint solving and the motion correction
      For more information see : https://sofa-framework.github.io/doc/simulation-principles/constraint/lagrange-constraint/ -->
     <GenericConstraintSolver maxIterations="50" tolerance="1.0e-6"/>
@@ -58,11 +58,13 @@
         <!-- Computes a hexahedral topology based on a parametric grid -->
         <RegularGridTopology name="HexaTop" n="15 3 6" min="0 0.02 0" max="0.5 0.08 0.22"/>
 
-        <!-- Transform the hexahedral topology into a tetrahedral topology
-        For more information see : https://sofa-framework.github.io/doc/simulation-principles/multi-model-representation/mapping/#topological-mapping -->
-        <TetrahedronSetTopologyContainer name="Container" position="@HexaTop.position"/>
-        <TetrahedronSetTopologyModifier name="Modifier"/>
-        <Hexa2TetraTopologicalMapping input="@HexaTop" output="@Container" swapping="true"/>
+        <Node name="TetraTopology">
+            <!-- Transform the hexahedral topology into a tetrahedral topology
+            For more information see : https://sofa-framework.github.io/doc/simulation-principles/multi-model-representation/mapping/#topological-mapping -->
+            <TetrahedronSetTopologyContainer name="Container" position="@HexaTop.position"/>
+            <TetrahedronSetTopologyModifier name="Modifier"/>
+            <Hexa2TetraTopologicalMapping input="@HexaTop" output="@Container" swapping="true"/>
+        </Node>
     </Node>
 
     <!-- Simulated node -->
@@ -72,7 +74,7 @@
         <!-- Direct linear solver used for the computation of linear products using the system matrix $Ax=b$ -->
         <SparseLDLSolver name="ldl" template="CompressedRowSparseMatrixMat3x3" parallelInverseProduct="true" />
         <!-- Topology contains all topological information: elements type, elements array-->
-        <TetrahedronSetTopologyContainer name="Container" position="@../BeamDomainFromGridTopology/HexaTop.position" tetrahedra="@../BeamDomainFromGridTopology/Container.tetrahedra"/>
+        <TetrahedronSetTopologyContainer name="Container" position="@../BeamDomainFromGridTopology/HexaTop.position" tetrahedra="@../BeamDomainFromGridTopology/TetraTopology/Container.tetrahedra"/>
         <TetrahedronSetTopologyModifier name="Modifier"/>
 
         <!-- MechanicalObject contains all mechanical quantity of the object (e.g. position, velocity, acceleration, forces, constraints forces, etc...)
@@ -143,10 +145,10 @@
     </Node>
 
     <!-- Non-simulated obstacle -->
-    <Node name="Floor" tags="NoBBox" >
+    <Node name="Cube" >
         <VisualStyle displayFlags="showCollisionModels"/>
         <!-- Surface triangles are defined by hand -->
-        <TriangleSetTopologyContainer name="FloorTopo"
+        <TriangleSetTopologyContainer name="CubeTopo"
                                       position="0.2 0 -0.5   0.2 0.1 -0.5  0.3 0.1 -0.5   0.3 0 -0.5
                                                 0.2 0 -0.6   0.2 0.1 -0.6  0.3 0.1 -0.6   0.3 0 -0.6"
                                       triangles="0 2 1  0 3 2
@@ -157,9 +159,6 @@
                                                  4 5 6  4 6 7" />
         <MechanicalObject template="Vec3"/>
         <!-- Because it is neither simulated nor moving, we can speed the solver and collision detection by setting parameters moving="0" simulated="0" -->
-        <TriangleCollisionModel name="FloorCM" proximity="0.001" moving="0" simulated="0" />
+        <TriangleCollisionModel name="CubeCM" proximity="0.001" moving="0" simulated="0" />
     </Node>
-
 </Node>
-
-
