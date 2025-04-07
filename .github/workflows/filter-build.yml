@@ -248,6 +248,7 @@ jobs:
           echo "BUILDER_OS=${BUILDER_OS}" >> $GITHUB_OUTPUT
 
 
+
   # ===============================================================
   # ===============================================================
 
@@ -256,16 +257,16 @@ jobs:
     needs: filter_build
     uses: bakpaul/sofa/.github/workflows/build-and-test.yml@master
     with:
-      sofa-branch-name: ${{ needs.set-vars.outputs.SOFA_BRANCH_NAME }}
-      sofa-commit-sha: ${{ needs.set-vars.outputs.SOFA_COMMIT_SHA }}
-      preset: ${{ needs.set-vars.outputs.PRESET }}
-      python-version: ${{ needs.set-vars.outputs.PYTHON_VERSION }}
-      ci-depends-on: ${{ needs.set-vars.outputs.CI_DEPENDS_ON }}
-      with-all-tests: ${{ needs.set-vars.outputs.WITH_ALL_TESTS == 'true'}}
-      force-full-build: ${{ needs.set-vars.outputs.FORCE_FULL_BUILD == 'true'}}
-      out-of-tree-build: ${{ needs.set-vars.outputs.OUT_OF_TREE_BUILD }}
-      generate-binaries: ${{ needs.set-vars.outputs.GENERATE_BINARIES == 'true'}}
-      pr-owner-url: ${{ needs.set-vars.outputs.PR_OWNER_URL }}
-      pr-branch-name: ${{ needs.set-vars.outputs.PR_BRANCH_NAME }}
-      pr-commit-sha: ${{ needs.set-vars.outputs.PR_COMMIT_SHA }}
-      builder-os: ${{ needs.set-vars.outputs.BUILDER_OS }}
+      sofa-branch-name: ${{ needs.filter_build.outputs.SOFA_BRANCH_NAME }}
+      sofa-commit-sha: ${{ needs.filter_build.outputs.SOFA_COMMIT_SHA }}
+      preset: ${{ needs.filter_build.outputs.PRESET }}
+      python-version: ${{ needs.filter_build.outputs.PYTHON_VERSION }}
+      ci-depends-on: ${{ needs.filter_build.outputs.CI_DEPENDS_ON }}
+      with-all-tests: ${{ needs.filter_build.outputs.WITH_ALL_TESTS == 'true'}}
+      force-full-build: ${{ needs.filter_build.outputs.FORCE_FULL_BUILD == 'true'}}
+      out-of-tree-build: ${{ needs.filter_build.outputs.OUT_OF_TREE_BUILD }}
+      generate-binaries: ${{ needs.filter_build.outputs.GENERATE_BINARIES == 'true'}}
+      pr-owner-url: ${{ needs.filter_build.outputs.PR_OWNER_URL }}
+      pr-branch-name: ${{ needs.filter_build.outputs.PR_BRANCH_NAME }}
+      pr-commit-sha: ${{ needs.filter_build.outputs.PR_COMMIT_SHA }}
+      builder-os: ${{ needs.filter_build.outputs.BUILDER_OS }}
