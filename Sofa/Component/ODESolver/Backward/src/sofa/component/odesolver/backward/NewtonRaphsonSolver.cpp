@@ -77,7 +77,7 @@ NewtonRaphsonSolver::NewtonRaphsonSolver()
           "Newton iterations will stop when the difference between two successive "
           "estimates is smaller than this threshold."))
     , d_maxNbIterationsLineSearch(initData(
-          &d_maxNbIterationsLineSearch, 5u, "maxNbIterationsLineSearch",
+          &d_maxNbIterationsLineSearch, 1u, "maxNbIterationsLineSearch",
           "Maximum number of iterations of the line search method if it has not converged."))
     , d_lineSearchCoefficient(initData(&d_lineSearchCoefficient, 0.5_sreal, "lineSearchCoefficient",
                                        "Line search coefficient"))
