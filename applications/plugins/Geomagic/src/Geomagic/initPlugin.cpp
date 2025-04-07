@@ -22,6 +22,8 @@
 #include <Geomagic/config.h>
 #include <string>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
 #include <stdio.h>
 
 #define Q(x) #x
@@ -33,10 +35,14 @@
 #define PLUGIN_DATA_DIR_ QUOTE(PLUGIN_DATA_DIR)
 #endif
 
-namespace sofa
-{
 
-namespace component
+namespace sofa::component::controller
+{
+    extern void registerGeomagicDriver(sofa::core::ObjectFactory* factory);
+    extern void registerGeomagicEmulator(sofa::core::ObjectFactory* factory);
+}
+
+namespace geomagic
 {
 
 	//Here are just several convenient functions to help user to know what contains the plugin
@@ -48,6 +54,9 @@ namespace component
                 SOFA_GEOMAGIC_API const char* getModuleLicense();
                 SOFA_GEOMAGIC_API const char* getModuleDescription();
                 SOFA_GEOMAGIC_API const char* getModuleComponentList();
+                
+                SOFA_GEOMAGIC_API void registerGeomagicDriver(sofa::core::ObjectFactory* factory);
+                SOFA_GEOMAGIC_API void registerGeomagicEmulator(sofa::core::ObjectFactory* factory);
 	}
 	
 
@@ -56,6 +65,8 @@ namespace component
         static bool first = true;
         if (first) {
             first = false;
+            // make sure that this plugin is registered into the PluginManager
+            sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
 
             sofa::helper::system::DataRepository.addLastPath(std::string(PLUGIN_DATA_DIR_));
             sofa::helper::system::DataRepository.addLastPath(std::string(PLUGIN_DATA_DIR_) + "/data");
@@ -86,7 +97,4 @@ namespace component
 	{
                 return "GeomagicDriver";
 	}
-
 } 
-} 
-
