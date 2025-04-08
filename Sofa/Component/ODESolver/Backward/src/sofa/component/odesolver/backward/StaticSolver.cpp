@@ -90,7 +90,7 @@ struct StaticResidualFunction : newton_raphson::BaseNonLinearFunction
 
     void computeGradientFromCurrentGuess() override
     {
-        SCOPED_TIMER("ComputeGradient");
+        SCOPED_TIMER("MBKBuild");
 
         static constexpr core::MatricesFactors::M m(0);
         static constexpr core::MatricesFactors::B b(0);
@@ -108,6 +108,8 @@ struct StaticResidualFunction : newton_raphson::BaseNonLinearFunction
 
     void solveLinearEquation() override
     {
+        SCOPED_TIMER("MBKSolve");
+
         linearSolver->setSystemLHVector(dx);
         linearSolver->setSystemRHVector(force);
         linearSolver->solveSystem();
@@ -159,6 +161,8 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, core::MultiVe
 
     core::behavior::MultiVecDeriv dx(&vop, core::vec_id::write_access::dx);
     dx.realloc(&vop, true, true);
+
+    SCOPED_TIMER("StaticSolver::Solve");
 
     StaticResidualFunction staticResidualFunction(mop, x, force, dx, l_linearSolver.get());
     l_newtonSolver->solve(staticResidualFunction);
