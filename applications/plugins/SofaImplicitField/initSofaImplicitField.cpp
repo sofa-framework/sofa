@@ -59,13 +59,12 @@ namespace sofaimplicitfield
 {
 
 extern "C" {
-SOFA_SOFAIMPLICITFIELD_API void initExternalModule();
-SOFA_SOFAIMPLICITFIELD_API const char* getModuleName();
-SOFA_SOFAIMPLICITFIELD_API const char* getModuleVersion();
-SOFA_SOFAIMPLICITFIELD_API const char* getModuleLicense();
-SOFA_SOFAIMPLICITFIELD_API const char* getModuleDescription();
-SOFA_SOFAIMPLICITFIELD_API const char* getModuleComponentList();
-SOFA_SOFAIMPLICITFIELD_API void registerObjects(sofa::core::ObjectFactory* factory);
+    SOFA_SOFAIMPLICITFIELD_API void initExternalModule();
+    SOFA_SOFAIMPLICITFIELD_API const char* getModuleName();
+    SOFA_SOFAIMPLICITFIELD_API const char* getModuleVersion();
+    SOFA_SOFAIMPLICITFIELD_API const char* getModuleLicense();
+    SOFA_SOFAIMPLICITFIELD_API const char* getModuleDescription();
+    SOFA_SOFAIMPLICITFIELD_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -95,18 +94,11 @@ const char* getModuleLicense()
     return "LGPL";
 }
 
-
 const char* getModuleDescription()
 {
     return "ImplicitField describe shapes of objects using implicit equation.  \n"
            "In general of function of a n-dimentional space f(X) returns a scalar value  \n"
            "The surface is then defined as f(x) = aConstant.";
-}
-
-const char* getModuleComponentList()
-{
-    return "SphereSurface ImplicitSurfaceMapping InterpolatedImplicitSurface "
-           "SphericalField DiscreteGridField";
 }
 
 void registerObjects(sofa::core::ObjectFactory* factory)
