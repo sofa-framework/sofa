@@ -152,7 +152,7 @@ static void setDirectoryPath(std::string& outputVariable, const std::string& pat
     {
         msg_error("BaseGUI") << "No such directory '" << path << "'";
     }
-    else if (pathExists && !FileSystem::isDirectory(path))
+    else if (pathExists && !std::filesystem::is_directory(path))
     {
          msg_error("BaseGUI") << "Not a directory: " << path << "'";
     }
@@ -160,8 +160,10 @@ static void setDirectoryPath(std::string& outputVariable, const std::string& pat
     {
         if (!pathExists)
         {
-            FileSystem::createDirectory(path);
-            msg_info("BaseGUI") << "Created directory: " << path;
+            if(std::filesystem::create_directories(path))
+            {
+                msg_info("BaseGUI") << "Created directory: " << path;
+            }
         }
         outputVariable = path;
     }
