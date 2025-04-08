@@ -132,7 +132,7 @@ jobs:
               fi
           else
               echo "This is not a PR: checking out sha ${{ inputs.sofa-commit-sha }} from branch ${{ inputs.sofa-branch-name }}"
-              git clone -b ${{ inputs.sofa-branch-name }} --single-branch https://www.github.com/sofa-framework/sofa
+              git clone -b ${{ inputs.sofa-branch-name }} --single-branch https://www.github.com/bakpaul/sofa ## TODO : REMOVE THIS WITH SOFA_FRAMEWORK @@@@@@@@@@@@@
               cd sofa
               git checkout ${{ inputs.sofa-commit-sha }}
           fi
