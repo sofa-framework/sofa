@@ -103,7 +103,7 @@ public:
     /// Relevant only if this type can be casted to `double`.
     double      getScalarValue (const void*, Index) const override {return 0;}
     /// Get the value at \a index of \a data as a string.
-    std::string getTextValue   (const void*, Index) const override {return 0;}
+    std::string getTextValue   (const void*, Index) const override {return "";}
 
     /// Set the value at \a index of \a data from an integer value.
     void setIntegerValue(void*, Index, long long ) const override {return;}
