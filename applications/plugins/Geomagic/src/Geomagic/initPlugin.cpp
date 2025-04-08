@@ -53,7 +53,6 @@ namespace geomagic
                 SOFA_GEOMAGIC_API const char* getModuleVersion();
                 SOFA_GEOMAGIC_API const char* getModuleLicense();
                 SOFA_GEOMAGIC_API const char* getModuleDescription();
-                SOFA_GEOMAGIC_API const char* getModuleComponentList();
                 
                 SOFA_GEOMAGIC_API void registerObjects(sofa::core::ObjectFactory* factory);
     }
@@ -92,10 +91,6 @@ namespace geomagic
         return "a module for interfacing Geomagic haptic devices";
     }
 
-    const char* getModuleComponentList()
-    {
-        return "GeomagicDriver";
-    }
 
     void registerObjects(sofa::core::ObjectFactory* factory)
     {
