@@ -34,7 +34,7 @@ namespace sofa::component::geometry::_BottleField_
 {
     extern void registerBottleField(sofa::core::ObjectFactory* factory);
 }
-namespace sofa::component::geometry_sphericalfield_
+namespace sofa::component::geometry::_sphericalfield_
 {
     extern void registerSphericalField(sofa::core::ObjectFactory* factory);
 }
@@ -104,7 +104,7 @@ const char* getModuleDescription()
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
     sofa::component::geometry::_BottleField_::registerBottleField(factory);
-    sofa::component::geometry_sphericalfield_::registerSphericalField(factory);
+    sofa::component::geometry::_sphericalfield_::registerSphericalField(factory);
     sofa::component::geometry::_StarShapedField_::registerStarShapedField(factory);
     sofa::component::mapping::registerImplicitSurfaceMapping(factory);
     sofa::component::container::registerInterpolatedImplicitSurface(factory);
