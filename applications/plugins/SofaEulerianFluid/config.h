@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAEULERIANFLUID_CONFIG_H
-#define SOFAEULERIANFLUID_CONFIG_H
+#pragma once
 
 #include <sofa/config.h>
 
@@ -31,5 +30,9 @@
 #  define SOFA_EULERIAN_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+namespace sofaeulerianfluid
+{
+    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+} // namespace sofaeulerianfluid
 
-#endif

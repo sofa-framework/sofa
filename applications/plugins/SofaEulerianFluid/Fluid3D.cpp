@@ -43,11 +43,11 @@ using namespace sofa::type;
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 
-int Fluid3DClass = core::RegisterObject("Eulerian 3D fluid")
-        .add< Fluid3D >()
-        .addLicense("LGPL")
-        .addAuthor("Jeremie Allard")
-        ;
+void registerFluid3D(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Eulerian 3D fluid.")
+    .add< Fluid3D >());
+}
 
 Fluid3D::Fluid3D():
     f_nx ( initData(&f_nx, (int)16, "nx", "grid size along x axis") ),

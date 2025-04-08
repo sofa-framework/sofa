@@ -40,11 +40,11 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
-int Fluid2DClass = core::RegisterObject("Eulerian 2D fluid")
-        .add< Fluid2D >()
-        .addLicense("LGPL")
-        .addAuthor("Jeremie Allard")
-        ;
+void registerFluid2D(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Eulerian 2D fluid.")
+    .add< Fluid2D >());
+}
 
 Fluid2D::Fluid2D():
     f_nx ( initData(&f_nx, (int)16, "nx", "grid size along x axis") ),

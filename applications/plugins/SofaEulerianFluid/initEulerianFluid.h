@@ -29,7 +29,6 @@ namespace sofa
 namespace component
 {
 
-
 void SOFA_EULERIAN_FLUID_API initEulerianFluid();
 
 } // namespace component
