@@ -25,6 +25,7 @@
 #include <sofa/component/odesolver/backward/config.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolverAccessor.h>
+#include <optional>
 
 namespace sofa::component::odesolver::backward
 {
@@ -43,6 +44,7 @@ public:
         core::MultiVecCoordId xResult,
         core::MultiVecDerivId vResult) override;
 
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
     void init() override;
 
     SingleLink<StaticSolver, NewtonRaphsonSolver,
@@ -129,19 +131,22 @@ public:
 
 protected:
 
+    template<class T>
     struct NewtonRaphsonDeprecatedData : core::objectmodel::lifecycle::DeprecatedData
     {
         NewtonRaphsonDeprecatedData(Base* b, const std::string name)
             : DeprecatedData(b, "v25.06", "v25.12", name, "The Data related to the Newton-Raphson parameters must be defined in the NewtonRaphsonSolver component.")
         {}
+
+        std::optional<T> value;
     };
 
-    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData d_newton_iterations;
-    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData d_absolute_correction_tolerance_threshold;
-    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData d_relative_correction_tolerance_threshold;
-    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData d_absolute_residual_tolerance_threshold;
-    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData d_relative_residual_tolerance_threshold;
-    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData d_should_diverge_when_residual_is_growing;
+    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<int> d_newton_iterations;
+    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<SReal> d_absolute_correction_tolerance_threshold;
+    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<SReal> d_relative_correction_tolerance_threshold;
+    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<SReal> d_absolute_residual_tolerance_threshold;
+    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<SReal> d_relative_residual_tolerance_threshold;
+    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<SReal> d_should_diverge_when_residual_is_growing;
 };
 
 }

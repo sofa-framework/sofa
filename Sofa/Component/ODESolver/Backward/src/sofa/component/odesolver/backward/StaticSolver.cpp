@@ -47,6 +47,28 @@ StaticSolver::StaticSolver()
     , d_should_diverge_when_residual_is_growing(this, "should_diverge_when_residual_is_growing")
 {}
 
+void StaticSolver::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    Inherit1::parse(arg);
+
+    const auto warnNewAttribute = [&, arg](auto& data, const std::string& newAttributeName)
+    {
+        if (const char* attribute = arg->getAttribute(data.m_name))
+        {
+            data.value.emplace(std::stod(attribute));
+            msg_warning() << "The attribute '" << data.m_name
+                << "' is no longer defined in this component. Instead, define the attribute '"
+                << newAttributeName << "' in the NewtonRaphsonSolver component associated with this StaticSolver.";
+        }
+    };
+
+    warnNewAttribute(d_newton_iterations, "maxNbIterationsNewton");
+    warnNewAttribute(d_absolute_correction_tolerance_threshold, "absoluteEstimateDifferenceThreshold");
+    warnNewAttribute(d_relative_correction_tolerance_threshold, "relativeEstimateDifferenceThreshold");
+    warnNewAttribute(d_absolute_residual_tolerance_threshold, "absoluteResidualStoppingThreshold");
+    warnNewAttribute(d_relative_residual_tolerance_threshold, "relativeEstimateDifferenceThreshold");
+}
+
 void StaticSolver::init()
 {
     OdeSolver::init();
@@ -60,8 +82,26 @@ void StaticSolver::init()
         {
             msg_warning() << "A Newton-Raphson solver is required by this component but has not been found. It will be created automatically";
             auto newtonRaphsonSolver = core::objectmodel::New<NewtonRaphsonSolver>();
+            newtonRaphsonSolver->setName(this->getContext()->getNameHelper().resolveName(newtonRaphsonSolver->getClassName(), core::ComponentNameHelper::Convention::xml));
             this->getContext()->addObject(newtonRaphsonSolver);
             l_newtonSolver.set(newtonRaphsonSolver);
+
+            const auto setDeprecatedAttribute = [&]<class T1, class T2>(const NewtonRaphsonDeprecatedData<T1>& oldData, Data<T2>& newData)
+            {
+                if (oldData.value.has_value())
+                {
+                    newData.setValue(*oldData.value);
+                    msg_warning() << "The attribute '" << newData.getName() << "' in " << newData.getOwner()->getPathName()
+                        << " is set from the deprecated attribute '" << oldData.m_name << "'. This will be removed in the future.";
+                }
+            };
+
+            setDeprecatedAttribute(d_newton_iterations, l_newtonSolver->d_maxNbIterationsNewton);
+            setDeprecatedAttribute(d_absolute_correction_tolerance_threshold, l_newtonSolver->d_absoluteEstimateDifferenceThreshold);
+            setDeprecatedAttribute(d_relative_correction_tolerance_threshold, l_newtonSolver->d_relativeEstimateDifferenceThreshold);
+            setDeprecatedAttribute(d_absolute_residual_tolerance_threshold, l_newtonSolver->d_absoluteResidualStoppingThreshold);
+            setDeprecatedAttribute(d_relative_residual_tolerance_threshold, l_newtonSolver->d_relativeEstimateDifferenceThreshold);
+
         }
     }
 
@@ -141,7 +181,7 @@ struct StaticResidualFunction : newton_raphson::BaseNonLinearFunction
 };
 
 void StaticSolver::solve(const core::ExecParams* params, SReal dt, core::MultiVecCoordId xResult,
-                            core::MultiVecDerivId vResult)
+                         core::MultiVecDerivId vResult)
 {
     if (!isComponentStateValid())
     {
@@ -155,7 +195,7 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, core::MultiVe
     sofa::simulation::common::MechanicalOperations mop(params, this->getContext());
     mop->setImplicit(true);
 
-    core::behavior::MultiVecCoord x(&vop, xResult );
+    core::behavior::MultiVecCoord x(&vop, xResult);
 
     core::behavior::MultiVecDeriv force(&vop, sofa::core::vec_id::write_access::force);
 
@@ -167,6 +207,5 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, core::MultiVe
     StaticResidualFunction staticResidualFunction(mop, x, force, dx, l_linearSolver.get());
     l_newtonSolver->solve(staticResidualFunction);
 }
-
 
 }  // namespace sofa::component::odesolver::backward
