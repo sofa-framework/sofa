@@ -46,13 +46,12 @@ namespace sofa::gpu::cuda
 namespace sofadistancegrid
 {
 extern "C" {
-SOFA_SOFADISTANCEGRID_API void initExternalModule();
-SOFA_SOFADISTANCEGRID_API const char* getModuleName();
-SOFA_SOFADISTANCEGRID_API const char* getModuleVersion();
-SOFA_SOFADISTANCEGRID_API const char* getModuleLicense();
-SOFA_SOFADISTANCEGRID_API const char* getModuleDescription();
-SOFA_SOFADISTANCEGRID_API const char* getModuleComponentList();
-SOFA_SOFADISTANCEGRID_API void registerObjects(sofa::core::ObjectFactory* factory);
+    SOFA_SOFADISTANCEGRID_API void initExternalModule();
+    SOFA_SOFADISTANCEGRID_API const char* getModuleName();
+    SOFA_SOFADISTANCEGRID_API const char* getModuleVersion();
+    SOFA_SOFADISTANCEGRID_API const char* getModuleLicense();
+    SOFA_SOFADISTANCEGRID_API const char* getModuleDescription();
+    SOFA_SOFADISTANCEGRID_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
