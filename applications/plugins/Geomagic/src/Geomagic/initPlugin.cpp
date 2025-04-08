@@ -45,9 +45,9 @@ namespace sofa::component::controller
 namespace geomagic
 {
 
-	//Here are just several convenient functions to help user to know what contains the plugin
+    //Here are just several convenient functions to help user to know what contains the plugin
 
-	extern "C" {
+    extern "C" {
                 SOFA_GEOMAGIC_API void initExternalModule();
                 SOFA_GEOMAGIC_API const char* getModuleName();
                 SOFA_GEOMAGIC_API const char* getModuleVersion();
@@ -56,7 +56,7 @@ namespace geomagic
                 SOFA_GEOMAGIC_API const char* getModuleComponentList();
                 
                 SOFA_GEOMAGIC_API void registerObjects(sofa::core::ObjectFactory* factory);
-	}
+    }
 	
 
     void initExternalModule()
@@ -72,30 +72,30 @@ namespace geomagic
         }
     }
 
-	const char* getModuleName()
-	{
-                 return MODULE_NAME;
-	}
+    const char* getModuleName()
+    {
+        return MODULE_NAME;
+    }
 
-	const char* getModuleVersion()
-	{
-                return MODULE_VERSION;
-	}
+    const char* getModuleVersion()
+    {
+        return MODULE_VERSION;
+    }
 
-	const char* getModuleLicense()
-	{
-		return "LGPL";
-	}
+    const char* getModuleLicense()
+    {
+        return "LGPL";
+    }
 
-	const char* getModuleDescription()
-	{
-                return "a module for interfacing Geomagic haptic devices";
-	}
+    const char* getModuleDescription()
+    {
+        return "a module for interfacing Geomagic haptic devices";
+    }
 
-	const char* getModuleComponentList()
-	{
-                return "GeomagicDriver";
-	}
+    const char* getModuleComponentList()
+    {
+        return "GeomagicDriver";
+    }
 
     void registerObjects(sofa::core::ObjectFactory* factory)
     {
