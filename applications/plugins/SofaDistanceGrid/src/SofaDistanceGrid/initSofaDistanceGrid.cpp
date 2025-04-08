@@ -36,12 +36,6 @@ namespace sofa::component::collision
     extern void registerRigidDistanceGridCollisionModel(sofa::core::ObjectFactory* factory);
     extern void registerFFDDistanceGridCollisionModel(sofa::core::ObjectFactory* factory);
 }
-namespace sofa::gpu::cuda
-{
-    extern void registerCudaCollisionDetection(sofa::core::ObjectFactory* factory);
-    extern void registerCudaRigidDistanceGridCollisionModel(sofa::core::ObjectFactory* factory);
-}
-
 
 namespace sofadistancegrid
 {
@@ -99,8 +93,6 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     sofa::component::forcefield::registerDistanceGridForceField(factory);
     sofa::component::collision::registerRigidDistanceGridCollisionModel(factory);
     sofa::component::collision::registerFFDDistanceGridCollisionModel(factory);
-    sofa::gpu::cuda::registerCudaCollisionDetection(factory);
-    sofa::gpu::cuda::registerCudaRigidDistanceGridCollisionModel(factory);
 }
 
 } /// namespace sofadistancegrid
