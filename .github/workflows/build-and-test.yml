@@ -108,17 +108,20 @@ jobs:
       - name: Clone SOFA and CI
         shell: bash
         run: |
+          cd $WORKSPACE
+
           ## Clone sofa and merge origin master
           echo "Cloning SOFA at commit $GITHUB_WORKFLOW_SHA"
           if [ -d  $WORKSPACE/sofa ]; then
               rm -rf $WORKSPACE/sofa 
-          if
+          fi
           SRC_DIR=$(pwd)/sofa
           echo "SRC_DIR=$SRC_DIR" >> $GITHUB_ENV
 
           if [ -z "${{ inputs.pr-owner-url }}" ]; then
               echo "This is a PR, merging branch ${{ inputs.pr-branch-name }} from remote ${{ inputs.pr-owner-url }} into origin branch ${{ inputs.sofa-branch-name }}"
               git clone -b ${{ inputs.sofa-branch-name }} --single-branch https://www.github.com/sofa-framework/sofa
+              cd sofa
               git remote add pr ${{ inputs.pr-owner-url }}
               git fetch pr 
               
@@ -130,12 +133,14 @@ jobs:
           else
               echo "This is not a PR: checking out sha ${{ inputs.sofa-commit-sha }} from branch ${{ inputs.sofa-branch-name }}"
               git clone -b ${{ inputs.sofa-branch-name }} --single-branch https://www.github.com/sofa-framework/sofa
+              cd sofa
               git checkout ${{ inputs.sofa-commit-sha }}
           fi
 
+          cd $WORKSPACE
  
           ## Clone CI and use ci-depends-on structure
-          ci_branch="inputs.sofa-branch-name"
+          ci_branch=${{ inputs.sofa-branch-name }}
           ci_repo_url="https://www.github.com/sofa-framework/ci"
 
           # check if ci has a ci-depends-on 
@@ -155,7 +160,6 @@ jobs:
           CI_DIR=$WORKSPACE/ci
           echo "CI_DIR=$CI_DIR" >> $GITHUB_ENV
 
-          git init
           git clone -b ${ci_branch} --single-branch ${ci_repo_url}
 
           cd $WORKSPACE
@@ -188,15 +192,13 @@ jobs:
           #TODO
           #HEre we use docker if possible
 
-
+          # Setup variables for following calls
           . ${CI_DIR}/scripts/utils.sh
+          NODE_NAME="$(hostname)" # Needed by load-vm-env --> TODO: be able to get hostname multiplatform
+          SCRIPT_DIR=${CI_DIR}/scripts/  # Needed by load-vm-env, might need to run this inside the docker env
+          CI_PYTHON3_VERSION=${{ inputs.python-version }} # Needed by load-vm-env, might need to run this inside the docker env
 
           ## Setup env variables
-          CI_PYTHON3_VERSION=${{ inputs.python-version }} # Needed by load-vm-env
-          # TODO: be able to get hostname to load correct env file --> set 
-          host_name="sofa-ci-dev-ubuntu2204-0"
-          NODE_NAME="$host_name" # Needed by load-vm-env
-          # then run 
           load-vm-env
 
           ## Deal with ci-depends-on
