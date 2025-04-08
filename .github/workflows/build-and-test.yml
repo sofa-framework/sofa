@@ -218,6 +218,11 @@ jobs:
             CMAKE_OPTIONS="$CMAKE_OPTIONS $flag_repository $flag_tag "
           done
 
+          if [[ ! -n "$CMAKE_OPTIONS" ]]; then
+            CMAKE_OPTIONS="no-ci-depends-on"
+          fi
+
+
           ## Configure the build: setup cmake variables
           # retrive build type and compiler
           BUILD_TYPE=$(echo ${{ matrix.os }} | awk -F '_' '{print $3}')
@@ -228,7 +233,7 @@ jobs:
               BUILD_OPTIONS="$BUILD_OPTIONS build-release-package"
           fi
 
-          . ${CI_DIR}/scripts/configure.sh "$BUILD_DIR" "$SRC_DIR" "$CONFIG" "$BUILD_TYPE" "$BUILD_OPTIONS" "$CMAKE_OPTIONS"
+          . ${CI_DIR}/scripts/configure.sh "$BUILD_DIR" "$SRC_DIR" "$CONFIG" "$CMAKE_OPTIONS" "$BUILD_TYPE" "$BUILD_OPTIONS" 
 
           ## Call to build 
           $SCRIPT_DIR/compile.sh "$BUILD_DIR" "$CONFIG" "$BUILD_OPTIONS"
