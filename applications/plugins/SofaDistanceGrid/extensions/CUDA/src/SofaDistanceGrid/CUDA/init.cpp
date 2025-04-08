@@ -23,6 +23,9 @@
 #include <SofaDistanceGrid/initSofaDistanceGrid.h>
 #include <SofaCUDA/init.h>
 
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+
 namespace sofa::gpu::cuda
 {
     extern void registerCudaCollisionDetection(sofa::core::ObjectFactory* factory);
@@ -59,6 +62,9 @@ void init()
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         sofadistancegrid::initSofaDistanceGrid();
         sofa::gpu::cuda::init();
         first = false;
