@@ -25,7 +25,7 @@ using sofa::core::RegisterObject ;
 
 #include "SphericalField.h"
 
-namespace sofa::component::geometry_sphericalfield_
+namespace sofa::component::geometry::_sphericalfield_
 {
 
 SphericalField::SphericalField()
@@ -109,4 +109,4 @@ void registerSphericalField(sofa::core::ObjectFactory* factory)
     .add< SphericalField >());
 }
 
-} /// sofa::component::geometry_sphericalfield_
+} /// sofa::component::geometry::_sphericalfield_
