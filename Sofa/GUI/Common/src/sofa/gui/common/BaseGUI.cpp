@@ -35,6 +35,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <filesystem>
 
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
@@ -145,7 +146,7 @@ const std::string& BaseGUI::getScreenshotDirectoryPath()
 
 static void setDirectoryPath(std::string& outputVariable, const std::string& path, bool createIfNecessary)
 {
-    const bool pathExists = FileSystem::exists(path);
+    const bool pathExists = std::filesystem::exists(path);
 
     if (!pathExists && !createIfNecessary)
     {
