@@ -1457,12 +1457,12 @@ std::string AdvancedTimer::getTimeAnalysis(IdTimer id, double time, double delta
     if (curTimer.empty())
     {
         msg_error("AdvancedTimer::end") << "timer[" << id << "] called while begin was not" ;
-        return nullptr;
+        return "";
     }
     if (id != curTimer.top())
     {
         msg_error("AdvancedTimer::end") << "timer[" << id << "] does not correspond to last call to begin(" << curTimer.top() << ")" ;
-        return nullptr;
+        return "";
     }
     type::vector<Record>* curRecords = getCurRecords();
     if (curRecords)
