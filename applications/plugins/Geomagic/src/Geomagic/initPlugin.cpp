@@ -55,8 +55,7 @@ namespace geomagic
                 SOFA_GEOMAGIC_API const char* getModuleDescription();
                 SOFA_GEOMAGIC_API const char* getModuleComponentList();
                 
-                SOFA_GEOMAGIC_API void registerGeomagicDriver(sofa::core::ObjectFactory* factory);
-                SOFA_GEOMAGIC_API void registerGeomagicEmulator(sofa::core::ObjectFactory* factory);
+                SOFA_GEOMAGIC_API void registerObjects(sofa::core::ObjectFactory* factory);
 	}
 	
 
@@ -75,12 +74,12 @@ namespace geomagic
 
 	const char* getModuleName()
 	{
-                 return "Geomagic";
+                 return MODULE_NAME;
 	}
 
 	const char* getModuleVersion()
 	{
-                return "1.0";
+                return MODULE_VERSION;
 	}
 
 	const char* getModuleLicense()
@@ -97,4 +96,10 @@ namespace geomagic
 	{
                 return "GeomagicDriver";
 	}
+
+    void registerObjects(sofa::core::ObjectFactory* factory)
+    {
+        sofa::component::controller::registerGeomagicDriver(factory);
+        sofa::component::controller::registerGeomagicEmulator(factory);
+    }
 } 
