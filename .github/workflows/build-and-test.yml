@@ -118,7 +118,7 @@ jobs:
           SRC_DIR=$(pwd)/sofa
           echo "SRC_DIR=$SRC_DIR" >> $GITHUB_ENV
 
-          if [ -z "${{ inputs.pr-owner-url }}" ]; then
+          if [ ! -z "${{ inputs.pr-owner-url }}" ]; then
               echo "This is a PR, merging branch ${{ inputs.pr-branch-name }} from remote ${{ inputs.pr-owner-url }} into origin branch ${{ inputs.sofa-branch-name }}"
               git clone -b ${{ inputs.sofa-branch-name }} --single-branch https://www.github.com/sofa-framework/sofa
               cd sofa

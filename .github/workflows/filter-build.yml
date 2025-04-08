@@ -195,7 +195,7 @@ jobs:
         if: ${{ github.event_name == 'push'}}
         run: |
           echo "This step runs only for push on the master branch."
-          echo "SOFA_COMMIT_SHA=${{ github.after }}">> $GITHUB_ENV
+          echo "SOFA_COMMIT_SHA=${{ github.sha }}">> $GITHUB_ENV
           echo "WITH_ALL_TESTS=true" >> $GITHUB_ENV
           echo "FORCE_FULL_BUILD=true" >> $GITHUB_ENV
           echo 'BUILDER_OS=["sh-ubuntu_gcc_release","sh-ubuntu_clang_release","sh-ubuntu_clang_debug","sh-fedora_clang_release","sh-windows_vs2022_release","sh-macos_clang_release"]' >> $GITHUB_ENV
