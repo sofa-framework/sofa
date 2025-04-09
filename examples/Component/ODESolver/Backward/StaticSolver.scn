@@ -25,10 +25,11 @@
     <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
 
     <Node name="Springs">
-        <StaticSolver  />
         <NewtonRaphsonSolver name="newtonSolver_springs" maxNbIterationsNewton="100"
                              maxNbIterationsLineSearch="1" warnWhenLineSearchFails="false"/>
+        <StaticSolver newtonSolver="@newtonSolver_springs"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
+
         <MeshTopology src="@../loader" />
         <MechanicalObject src="@../loader" dx="15" />
         <UniformMass totalMass="15" />
@@ -41,10 +42,11 @@
         </Node>
     </Node>
     <Node name="CoFEM">
-        <StaticSolver  />
         <NewtonRaphsonSolver name="newtonSolver_corot" maxNbIterationsNewton="100"
                              maxNbIterationsLineSearch="1" warnWhenLineSearchFails="false"/>
+        <StaticSolver newtonSolver="@newtonSolver_corot"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
+
         <MeshTopology src="@../loader" />
         <MechanicalObject src="@../loader" dx="30" />
         <UniformMass totalMass="15" />
@@ -57,10 +59,11 @@
         </Node>
     </Node>
     <Node name="LinearFEM">
-        <StaticSolver  />
         <NewtonRaphsonSolver name="newtonSolver_lin" maxNbIterationsNewton="100"
                              maxNbIterationsLineSearch="1" warnWhenLineSearchFails="false"/>
+        <StaticSolver newtonSolver="@newtonSolver_lin"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
+
         <MeshTopology src="@../loader" />
         <MechanicalObject src="@../loader" dx="45" />
         <UniformMass totalMass="15" />
