@@ -188,7 +188,10 @@ void NodalLinearDampingForceField<DataTypes>::addForce(const core::MechanicalPar
             for(std::size_t i = 0; i < v.size(); ++i)
             {
                 const auto coefId = std::min(i, nbDampingCoeff-1);
-                f[i] -= v[i] * coefs[coefId];
+                for(unsigned j = 0; j < Deriv::total_size; ++j)
+                {
+                    f[i][j] -= v[i][j] * coefs[coefId][j];
+                }
             }
         }
     }
@@ -223,10 +226,12 @@ void NodalLinearDampingForceField<DataTypes>::addDForce(const core::MechanicalPa
 
         if (nbDampingCoeff && bfactor)
         {
-
             for (std::size_t i = 0; i < dx.size(); i++)
             {
-                df[i] -= dx[i] * coefs[i] * bfactor;
+                for (unsigned j = 0; j < Deriv::total_size; j++)
+                {
+                    df[i][j] -= dx[i][j] * coefs[i][j] * bfactor;
+                }
             }
         }
     }
