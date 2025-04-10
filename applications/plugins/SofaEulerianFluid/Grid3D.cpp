@@ -28,16 +28,7 @@
 #define EMIT_EXTRA_FMM_MESSAGE false
 
 //TODO(dmarchal 2017-05-18): There is code duplication here with SofaDistanceGrid (fastmaching implementation).
-namespace sofa
-{
-
-namespace component
-{
-
-namespace behaviormodel
-{
-
-namespace eulerianfluid
+namespace sofaeulerianfluid
 {
 
 using namespace sofa::helper;
@@ -1037,11 +1028,5 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
     });
 }
 
-} // namespace eulerianfluid
-
-} // namespace behaviormodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofaeulerianfluid
 

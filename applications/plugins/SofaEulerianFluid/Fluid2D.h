@@ -19,25 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_FLUID2D_H
-#define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_FLUID2D_H
-#include "config.h"
+#ifndef SOFAEULERIANFLUID_FLUID2D_H
+#define SOFAEULERIANFLUID_FLUID2D_H
+
+#include <SofaEulerianFluid/config.h>
 
 #include <SofaEulerianFluid/Grid2D.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/objectmodel/Data.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace behaviormodel
-{
-
-namespace eulerianfluid
+namespace sofaeulerianfluid
 {
 
 class SOFA_EULERIAN_FLUID_API Fluid2D : public sofa::core::BehaviorModel
@@ -146,12 +138,6 @@ protected:
 
 };
 
-} // namespace eulerianfluid
-
-} // namespace behaviormodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofaeulerianfluid
 
 #endif

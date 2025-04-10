@@ -27,16 +27,7 @@
 #include <cstring>
 #include <sofa/type/BoundingBox.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace behaviormodel
-{
-
-namespace eulerianfluid
+namespace sofaeulerianfluid
 {
 
 using namespace sofa::type;
@@ -475,11 +466,4 @@ void Fluid3D::computeBBox(const core::ExecParams*  params , bool onlyVisible)
     this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
-} // namespace eulerianfluid
-
-} // namespace behaviormodel
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofaeulerianfluid

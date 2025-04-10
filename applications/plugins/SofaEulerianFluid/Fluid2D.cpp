@@ -28,16 +28,7 @@
 #include <sofa/helper/MarchingCubeUtility.h> // for marching cube tables
 #include <sofa/type/BoundingBox.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace behaviormodel
-{
-
-namespace eulerianfluid
+namespace sofaeulerianfluid
 {
 
 void registerFluid2D(sofa::core::ObjectFactory* factory)
@@ -434,11 +425,5 @@ void Fluid2D::computeBBox(const core::ExecParams*  params , bool onlyVisible)
 
 }
 
-} // namespace eulerianfluid
-
-} // namespace behaviormodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofaeulerianfluid
 

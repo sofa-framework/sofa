@@ -19,20 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaEulerianFluid/initEulerianFluid.h>
+#include <SofaEulerianFluid/config.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
 
-namespace sofa::component::behaviormodel::eulerianfluid
-{
-    extern void registerFluid2D(sofa::core::ObjectFactory* factory);
-    extern void registerFluid3D(sofa::core::ObjectFactory* factory);
-}
-
 
 namespace sofaeulerianfluid
 {
+
+    extern void registerFluid2D(sofa::core::ObjectFactory* factory);
+    extern void registerFluid3D(sofa::core::ObjectFactory* factory);
 
 /// Convenient functions to help user to know what contains the plugin
 extern "C" {
@@ -78,8 +75,8 @@ const char* getModuleDescription()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    sofa::component::behaviormodel::eulerianfluid::registerFluid2D(factory);
-    sofa::component::behaviormodel::eulerianfluid::registerFluid3D(factory);
+    registerFluid2D(factory);
+    registerFluid3D(factory);
 }
 
 } /// namespace sofaeulerianfluid
