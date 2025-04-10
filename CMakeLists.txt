@@ -193,11 +193,8 @@ sofa_add_subdirectory(plugin applications/plugins/SceneCreator SceneCreator OFF
     WHEN_TO_SHOW "NOT SOFA_BUILD_SCENECREATOR AND NOT SOFA_BUILD_TESTS AND NOT SOFA_BUILD_RELEASE_PACKAGE"
     VALUE_IF_HIDDEN "ON")
 
-## Plugins
-add_subdirectory(applications/plugins)
-
-## Applications
-add_subdirectory(applications/projects)
+## add SofaPython3, guis, plugins, projects
+add_subdirectory(applications)
 
 ## SimpleAPI examples
 option(SOFA_BUILD_SIMPLEAPI_EXAMPLES "Build SOFA scenes based on SimpleAPI." OFF)
