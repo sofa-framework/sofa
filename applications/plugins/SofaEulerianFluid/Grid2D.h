@@ -39,6 +39,7 @@ namespace sofaeulerianfluid
 
 class SOFA_EULERIAN_FLUID_API Grid2D
 {
+
 public:
 
     typedef float real;

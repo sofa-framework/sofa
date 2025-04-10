@@ -98,7 +98,7 @@ void Fluid3D::updatePosition(SReal dt)
     Grid3D* p = fluid; fluid=fnext; fnext=p;
 }
 
-void Fluid3D::draw(const core::visual::VisualParams* vparams)
+void Fluid3D::draw(const sofa::core::visual::VisualParams* vparams)
 {
     updateVisual();
     glPushMatrix();
@@ -404,7 +404,7 @@ void Fluid3D::updateVisual()
                 if (data[i         ]>iso) mk|= 64;
                 if (data[i-dx      ]>iso) mk|= 128;
 
-                tri = helper::MarchingCubeTriTable[mk];
+                tri = sofa::helper::MarchingCubeTriTable[mk];
                 while (*tri>=0)
                 {
                     int* b = base+3*i;
@@ -449,7 +449,7 @@ void Fluid3D::updateVisual()
         points[ii].n.normalize();
 }
 
-void Fluid3D::computeBBox(const core::ExecParams*  params , bool onlyVisible)
+void Fluid3D::computeBBox(const sofa::core::ExecParams*  params , bool onlyVisible)
 {
     SOFA_UNUSED(params);
     SOFA_UNUSED(onlyVisible);

@@ -74,14 +74,14 @@ public:
 
     void updatePosition(SReal dt) override;
 
-    void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const sofa::core::visual::VisualParams* vparams) override;
 
     virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex);
 
 
     virtual void updateVisual();
 
-    void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override;
+    void computeBBox(const sofa::core::ExecParams*  params, bool onlyVisible=false ) override;
 
 protected:
     // marching cube

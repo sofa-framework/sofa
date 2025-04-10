@@ -31,7 +31,7 @@
 
 namespace sofaeulerianfluid
 {
-
+    
 class SOFA_EULERIAN_FLUID_API Fluid2D : public sofa::core::BehaviorModel
 {
 public:
@@ -70,9 +70,9 @@ public:
 
     void updatePosition(SReal dt) override;
 
-    void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const sofa::core::visual::VisualParams* vparams) override;
 
-    void computeBBox(const core::ExecParams* /* params */, bool onlyVisible=false) override;
+    void computeBBox(const sofa::core::ExecParams* /* params */, bool onlyVisible=false) override;
 
     virtual void updateVisual();
 
