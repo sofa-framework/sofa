@@ -31,7 +31,6 @@ stdenv.mkDerivation (finalAttrs: {
       ./examples
       ./extlibs
       ./LICENSE-LGPL.md
-      ./package.cmake
       ./README.md
       ./scripts
       ./share
