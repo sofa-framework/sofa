@@ -205,8 +205,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
-          OWNER_NAME: ""     # Must be retrieved
-          PR_COMMIT_SHA: ""  # Must be retrieved
         run: |
           echo "This step runs only when a PR comment is created or edited."
           COMMENT_BODY=$(jq -r '.comment.body' < $GITHUB_EVENT_PATH)
@@ -220,9 +218,6 @@ jobs:
               -H "Accept: application/vnd.github+json" \
               "https://api.github.com/repos/bakpaul/sofa/pulls/$PR_NUMBER")
 
-            # Output full PR data if debugging
-            echo "$pr_data" | jq .
-
             # Extract data
             pr_owner=$(echo "$pr_data" | jq -r '.user.login')
             pr_sha=$(echo "$pr_data" | jq -r '.head.sha')
@@ -234,7 +229,7 @@ jobs:
             # Save to environment variables for future steps
             echo "OWNER_NAME=$pr_owner" >> $GITHUB_ENV
             echo "PR_COMMIT_SHA=$pr_sha" >> $GITHUB_ENV
-            
+
             python scripts/github_CI/checkPRInfoBeforeBuild.py
           fi
 
