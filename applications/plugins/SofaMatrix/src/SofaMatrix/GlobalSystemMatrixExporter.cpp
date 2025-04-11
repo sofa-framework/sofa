@@ -29,8 +29,11 @@
 namespace sofa::component::linearsystem
 {
 
-int GlobalSystemMatrixExporterClass = core::RegisterObject("Export the global system matrix from a linear solver.")
-        .add<GlobalSystemMatrixExporter>();
+void registerGlobalSystemMatrixExporter(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Export the global system matrix from a linear solver.")
+    .add<GlobalSystemMatrixExporter>());
+}
 
 GlobalSystemMatrixExporter::GlobalSystemMatrixExporter()
 : Inherit1()

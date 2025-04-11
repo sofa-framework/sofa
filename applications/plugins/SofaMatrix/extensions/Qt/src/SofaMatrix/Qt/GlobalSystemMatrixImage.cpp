@@ -27,8 +27,11 @@
 namespace sofa::component::linearsolver
 {
 
-int GlobalSystemMatrixImageClass = core::RegisterObject("View the global linear system matrix as a binary image.")
-    .add<GlobalSystemMatrixImage>();
+void registerGlobalSystemMatrixImage(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("View the global linear system matrix as a binary image.")
+    .add< GlobalSystemMatrixImage >());
+}
 
 GlobalSystemMatrixImage::GlobalSystemMatrixImage()
     : Inherit1()
