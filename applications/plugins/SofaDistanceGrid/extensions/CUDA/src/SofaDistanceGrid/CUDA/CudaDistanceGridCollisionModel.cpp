@@ -41,12 +41,14 @@ namespace gpu
 namespace cuda
 {
 
-int CudaRigidDistanceGridCollisionModelClass = core::RegisterObject("GPU-based grid distance field using CUDA")
-        .add< CudaRigidDistanceGridCollisionModel >()
-        .addAlias("CudaDistanceGridCollisionModel")
-        .addAlias("CudaRigidDistanceGrid")
-        .addAlias("CudaDistanceGrid")
-        ;
+void registerCudaRigidDistanceGridCollisionModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("GPU-based grid distance field using CUDA.")
+    .add< CudaRigidDistanceGridCollisionModel >()
+    .addAlias("CudaDistanceGridCollisionModel")
+    .addAlias("CudaRigidDistanceGrid")
+    .addAlias("CudaDistanceGrid"));
+}
 
 using namespace defaulttype;
 
