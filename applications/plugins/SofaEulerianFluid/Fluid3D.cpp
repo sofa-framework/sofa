@@ -27,27 +27,18 @@
 #include <cstring>
 #include <sofa/type/BoundingBox.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace behaviormodel
-{
-
-namespace eulerianfluid
+namespace sofaeulerianfluid
 {
 
 using namespace sofa::type;
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 
-int Fluid3DClass = core::RegisterObject("Eulerian 3D fluid")
-        .add< Fluid3D >()
-        .addLicense("LGPL")
-        .addAuthor("Jeremie Allard")
-        ;
+void registerFluid3D(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Eulerian 3D fluid.")
+    .add< Fluid3D >());
+}
 
 Fluid3D::Fluid3D():
     f_nx ( initData(&f_nx, (int)16, "nx", "grid size along x axis") ),
@@ -107,7 +98,7 @@ void Fluid3D::updatePosition(SReal dt)
     Grid3D* p = fluid; fluid=fnext; fnext=p;
 }
 
-void Fluid3D::draw(const core::visual::VisualParams* vparams)
+void Fluid3D::draw(const sofa::core::visual::VisualParams* vparams)
 {
     updateVisual();
     glPushMatrix();
@@ -413,7 +404,7 @@ void Fluid3D::updateVisual()
                 if (data[i         ]>iso) mk|= 64;
                 if (data[i-dx      ]>iso) mk|= 128;
 
-                tri = helper::MarchingCubeTriTable[mk];
+                tri = sofa::helper::MarchingCubeTriTable[mk];
                 while (*tri>=0)
                 {
                     int* b = base+3*i;
@@ -458,7 +449,7 @@ void Fluid3D::updateVisual()
         points[ii].n.normalize();
 }
 
-void Fluid3D::computeBBox(const core::ExecParams*  params , bool onlyVisible)
+void Fluid3D::computeBBox(const sofa::core::ExecParams*  params , bool onlyVisible)
 {
     SOFA_UNUSED(params);
     SOFA_UNUSED(onlyVisible);
@@ -475,11 +466,4 @@ void Fluid3D::computeBBox(const core::ExecParams*  params , bool onlyVisible)
     this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
-} // namespace eulerianfluid
-
-} // namespace behaviormodel
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofaeulerianfluid

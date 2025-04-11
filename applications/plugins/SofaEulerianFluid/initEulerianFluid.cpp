@@ -19,14 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaEulerianFluid/initEulerianFluid.h>
+#include <SofaEulerianFluid/config.h>
+
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
 
 
-namespace sofa
+namespace sofaeulerianfluid
 {
 
-namespace component
-{
+    extern void registerFluid2D(sofa::core::ObjectFactory* factory);
+    extern void registerFluid3D(sofa::core::ObjectFactory* factory);
 
 /// Convenient functions to help user to know what contains the plugin
 extern "C" {
@@ -35,7 +38,7 @@ extern "C" {
     SOFA_EULERIAN_FLUID_API const char* getModuleVersion();
     SOFA_EULERIAN_FLUID_API const char* getModuleLicense();
     SOFA_EULERIAN_FLUID_API const char* getModuleDescription();
-    SOFA_EULERIAN_FLUID_API const char* getModuleComponentList();
+    SOFA_EULERIAN_FLUID_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -43,18 +46,21 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         first = false;
     }
 }
 
 const char* getModuleName()
 {
-    return "SofaEulerianFluid";
+    return MODULE_NAME;
 }
 
 const char* getModuleVersion()
 {
-    return "1.0";
+    return MODULE_VERSION;
 }
 
 const char* getModuleLicense()
@@ -62,19 +68,15 @@ const char* getModuleLicense()
     return "LGPL";
 }
 
-
 const char* getModuleDescription()
 {
     return "This plugin expose component implementing fluid simulation in 2D and 3D.";
 }
 
-const char* getModuleComponentList()
+void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    /// string containing the names of the classes provided by the plugin
-    return "Fluid2D Fluid3D";
+    registerFluid2D(factory);
+    registerFluid3D(factory);
 }
 
-
-} /// namespace component
-
-} /// namespace sofa
+} /// namespace sofaeulerianfluid
