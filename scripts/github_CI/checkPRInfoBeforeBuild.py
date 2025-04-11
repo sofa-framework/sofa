@@ -161,14 +161,14 @@ def extract_ci_depends_on():
 
             # Ensure the URL is in the expected dependency format, e.g. https://github.com/sofa-framework/Sofa.Qt/pull/6
             parts = dependency.split('/')
-            if len(parts) != 6 or parts[0] != 'https:' or parts[1] != '' or parts[2] != 'github.com':
+            if len(parts) != 7 or parts[0] != 'https:' or parts[1] != '' or parts[2] != 'github.com':
                 raise ValueError("")
                 print(f"Invalid URL ci-depends-on format: {dependency}")
                 exit(1)
 
             owner = parts[3]
             repo = parts[4]
-            pull_number = parts[5]
+            pull_number = parts[6]
             dependency_request_url = f"https://api.github.com/repos/{owner}/{repo}/pulls/{pull_number}"
 
             response = requests.get(dependency_request_url, headers=HEADERS)
@@ -179,7 +179,7 @@ def extract_ci_depends_on():
 
             dependency_pr_data = response.json()
 
-            key = dependency_pr_data['repo']['name'] #Sofa.Qt
+            key = dependency_pr_data['head']['repo']['name'] #Sofa.Qt
             repo_url = dependency_pr_data['html_url'] #https://github.com/sofa-framework/Sofa.Qt
             branch_name = dependency_pr_data['head']['ref'] #my_feature_branch
 
