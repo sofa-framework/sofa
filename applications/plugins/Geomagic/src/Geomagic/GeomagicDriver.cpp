@@ -527,9 +527,11 @@ void GeomagicDriver::handleEvent(core::objectmodel::Event *event)
 }
 
 
-int GeomagicDriverClass = core::RegisterObject("Driver allowing interfacing with Geomagic haptic devices.")
-.add< GeomagicDriver >()
-.addAlias("DefaultHapticsDevice")
-;
+void registerGeomagicDriver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Driver allowing interfacing with Geomagic haptic devices.")
+    .add< GeomagicDriver >()
+    .addAlias("DefaultHapticsDevice"));
+}
 
 } // namespace sofa::component::controller
