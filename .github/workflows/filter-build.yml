@@ -204,29 +204,37 @@ jobs:
         if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.pull_request.number }}
-          OWNER_NAME: ${{ github.event.issue.pull_request.head.repo.owner.login }}
-          PR_COMMIT_SHA: ${{ github.event.issue.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          OWNER_NAME: ""     # Must be retrieved
+          PR_COMMIT_SHA: ""  # Must be retrieved
         run: |
           echo "This step runs only when a PR comment is created or edited."
           COMMENT_BODY=$(jq -r '.comment.body' < $GITHUB_EVENT_PATH)
           echo "Comment: $COMMENT_BODY"
-          
-          echo "PR_NUMBER=$PR_NUMBER"
-          echo "OWNER_NAME=$OWNER_NAME"
-          echo "PR_COMMIT_SHA=$PR_COMMIT_SHA"
-          echo "github.event.issue=${{ github.event.issue }}"
-          echo "github.event.issue.number=${{ github.event.issue.number }}"
-          echo "github.event.issue.pull_request=${{ github.event.issue.pull_request }}"
-          echo "github.event.issue.pull_request.number=${{ github.event.issue.pull_request.number }}"
-          echo "github.event.issue.pull_request.head.repo.owner.login=${{ github.event.issue.pull_request.head.repo.owner.login }}"
-          echo "github.event.issue.pull_request.head.sha=${{ github.event.issue.pull_request.head.sha }}"
-          echo "github.event.pull_request.number=${{ github.event.issue.pull_request.number }}"
-          echo "github.event.pull_request.head.repo.owner.login=${{ github.event.issue.pull_request.head.repo.owner.login }}"
-          echo "github.event.pull_request.head.sha=${{ github.event.issue.pull_request.head.sha }}"
 
           # Trigger the Build action if [ci-build] is in the comment 
           if [[ "$COMMENT_BODY" == *"[ci-build]"* ]]; then
+            echo "Fetching PR #$PR_NUMBER information"
+
+            pr_data=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/bakpaul/sofa/pulls/$PR_NUMBER")
+
+            # Output full PR data if debugging
+            echo "$pr_data" | jq .
+
+            # Extract data
+            pr_owner=$(echo "$pr_data" | jq -r '.user.login')
+            pr_sha=$(echo "$pr_data" | jq -r '.head.sha')
+
+            echo "PR number      : $PR_NUMBER"
+            echo "PR owner name : $pr_owner"
+            echo "PR commit SHA     : $pr_sha"
+
+            # Save to environment variables for future steps
+            echo "OWNER_NAME=$pr_owner" >> $GITHUB_ENV
+            echo "PR_COMMIT_SHA=$pr_sha" >> $GITHUB_ENV
+            
             python scripts/github_CI/checkPRInfoBeforeBuild.py
           fi
 
