@@ -231,6 +231,7 @@ jobs:
             echo "PR_COMMIT_SHA=$pr_sha" >> $GITHUB_ENV
 
             echo "Env: OWNER_NAME = $OWNER_NAME"
+            echo "Env: PR_COMMIT_SHA = $PR_COMMIT_SHA"
 
             python scripts/github_CI/checkPRInfoBeforeBuild.py
           fi
