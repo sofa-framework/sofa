@@ -187,44 +187,6 @@ jobs:
           echo "FORCE_FULL_BUILD=true" >> $GITHUB_ENV
           echo 'BUILDER_OS=["sh-ubuntu_gcc_release","sh-ubuntu_clang_release","sh-ubuntu_clang_debug","sh-fedora_clang_release","sh-windows_vs2022_release","sh-macos_clang_release"]' >> $GITHUB_ENV
 
-      - name: Check in a PR when a commit is pushed or when a comment is created or edited
-        if: ${{ (github.event_name == 'pull_request' &&  github.event.action == 'synchronize') || (github.event_name == 'issue_comment' && github.event.issue.pull_request ) }}
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const currentRunId = context.runId;
-            const workflowName = context.workflow;
-            const prNumber = ${{ github.event.pull_request.number }};
-
-            const runs = await github.rest.actions.listWorkflowRunsForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              per_page: 100,
-              status: 'in_progress'
-            });
-
-            const matchingRuns = runs.data.workflow_runs.filter(run => {
-              return run.name === workflowName &&
-                     run.id !== currentRunId &&
-                     run.head_branch === "${{ github.event.pull_request.head.ref }}";
-            });
-
-            for (const run of matchingRuns) {
-              console.log(`Cancelling previous run: ${run.id}`);
-              await github.rest.actions.cancelWorkflowRun({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                run_id: run.id
-              });
-            }
-
-            if (matchingRuns.length > 0) {
-            console.log("Sleeping for 5 seconds to allow previous runs to cancel...");
-            await new Promise(resolve => setTimeout(resolve, 5000));
-            } else {
-              console.log("No previous runs to cancel. Continuing...");
-            }
-      
       - name: Run when PR is opened or a commit is pushed in a PR
         if: ${{ github.event_name == 'pull_request' }}
         env:
@@ -261,7 +223,6 @@ jobs:
           echo "github.event.issue.number=${github.event.issue.number}"
           echo "github.event.issue.pull_request=${github.event.issue.pull_request}"
           echo "github.event.issue=${github.event.issue}"
-
 
       - name: Export environment variables as outputs
         id: export-vars
