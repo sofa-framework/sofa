@@ -219,16 +219,16 @@ jobs:
               "https://api.github.com/repos/bakpaul/sofa/pulls/$PR_NUMBER")
 
             # Extract data
-            pr_owner=$(echo "$pr_data" | jq -r '.user.login')
-            pr_sha=$(echo "$pr_data" | jq -r '.head.sha')
+            OWNER_NAME=$(echo "$pr_data" | jq -r '.user.login')
+            PR_COMMIT_SHA=$(echo "$pr_data" | jq -r '.head.sha')
 
             echo "- PR number         : $PR_NUMBER"
-            echo "- PR owner name     : $pr_owner"
-            echo "- PR commit SHA     : $pr_sha"
+            echo "- PR owner name     : $OWNER_NAME"
+            echo "- PR commit SHA     : $PR_COMMIT_SHA"
 
             # Save to environment variables for future steps
-            echo "OWNER_NAME=$pr_owner" >> $GITHUB_ENV
-            echo "PR_COMMIT_SHA=$pr_sha" >> $GITHUB_ENV
+            echo "OWNER_NAME=$OWNER_NAME" >> $GITHUB_ENV
+            echo "PR_COMMIT_SHA=$PR_COMMIT_SHA" >> $GITHUB_ENV
 
             echo "Env: OWNER_NAME = $OWNER_NAME"
             echo "Env: PR_COMMIT_SHA = $PR_COMMIT_SHA"
