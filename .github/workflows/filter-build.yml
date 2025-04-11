@@ -221,6 +221,9 @@ jobs:
           echo "github.event.issue.pull_request.number=${{ github.event.issue.pull_request.number }}"
           echo "github.event.issue.pull_request.head.repo.owner.login=${{ github.event.issue.pull_request.head.repo.owner.login }}"
           echo "github.event.issue.pull_request.head.sha=${{ github.event.issue.pull_request.head.sha }}"
+          echo "github.event.pull_request.number=${{ github.event.issue.pull_request.number }}"
+          echo "github.event.pull_request.head.repo.owner.login=${{ github.event.issue.pull_request.head.repo.owner.login }}"
+          echo "github.event.pull_request.head.sha=${{ github.event.issue.pull_request.head.sha }}"
 
           # Trigger the Build action if [ci-build] is in the comment 
           if [[ "$COMMENT_BODY" == *"[ci-build]"* ]]; then
