@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SOFAIMPLICITFIELD_CONFIG_H
-#define SOFA_SOFAIMPLICITFIELD_CONFIG_H
+#pragma once
 
 #include <sofa/config.h>
 
@@ -31,4 +30,8 @@
 #  define SOFA_SOFAIMPLICITFIELD_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif
+namespace sofaimplicitfield
+{
+    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+} // namespace sofaimplicitfield

@@ -161,10 +161,11 @@ void BottleField::getHessian(Vec3d &Pos, Mat3x3& h)
     return;
 }
 
-
 // Register in the Factory
-int BottleFieldClass = core::RegisterObject("A spherical implicit field.")
-        .add< BottleField >()
-        ;
+void registerBottleField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("A bottle implicit field.")
+    .add< BottleField >());
+}
 
 } // namespace sofa::component::geometry::_BottleField_
