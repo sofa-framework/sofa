@@ -200,7 +200,7 @@ jobs:
           # Trigger the Build action
           python scripts/github_CI/checkPRInfoBeforeBuild.py
       
-      - name: Run when PR comment is created or edited
+      - name: Run when PR comment is created or edited (set up environment var for python script)
         if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -232,10 +232,21 @@ jobs:
 
             echo "Env: OWNER_NAME = $OWNER_NAME"
             echo "Env: PR_COMMIT_SHA = $PR_COMMIT_SHA"
-
-            python scripts/github_CI/checkPRInfoBeforeBuild.py
           fi
 
+      - name: Run when PR comment is created or edited (trigger python script)
+        if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+            COMMENT_BODY=$(jq -r '.comment.body' < $GITHUB_EVENT_PATH)
+            echo "Comment: $COMMENT_BODY"
+  
+            # Trigger the Build action if [ci-build] is in the comment 
+            if [[ "$COMMENT_BODY" == *"[ci-build]"* ]]; then  
+              python scripts/github_CI/checkPRInfoBeforeBuild.py
+            fi
+  
       - name: Export environment variables as outputs
         id: export-vars
         run: |
