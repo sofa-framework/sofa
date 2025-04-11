@@ -238,6 +238,7 @@ jobs:
         if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
         run: |
             COMMENT_BODY=$(jq -r '.comment.body' < $GITHUB_EVENT_PATH)
             echo "Comment: $COMMENT_BODY"
