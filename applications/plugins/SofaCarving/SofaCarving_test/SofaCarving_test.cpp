@@ -25,8 +25,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/testing/BaseSimulationTest.h>
 
+using namespace sofacarving;
 using namespace sofa::testing;
-using namespace sofa::component::collision;
 using namespace sofa::simpleapi;
 
 /// <summary>

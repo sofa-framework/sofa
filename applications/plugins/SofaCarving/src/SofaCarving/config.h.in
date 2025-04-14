@@ -29,3 +29,12 @@
 #else
 #  define SOFA_SOFACARVING_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
+
+using namespace sofa;
+
+
+namespace sofacarving
+{
+    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+} // namespace sofacarving
