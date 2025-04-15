@@ -25,7 +25,7 @@ using sofa::core::RegisterObject ;
 
 #include "StarShapedField.h"
 
-namespace sofa::component::geometry::_StarShapedField_
+namespace sofaimplicitfield
 {
 
 
@@ -133,5 +133,5 @@ void registerStarShapedField(sofa::core::ObjectFactory* factory)
     .add< StarShapedField >());
 }
 
-} // namespace sofa::component::geometry::_StarShapedField_
+} // namespace sofaimplicitfield
 

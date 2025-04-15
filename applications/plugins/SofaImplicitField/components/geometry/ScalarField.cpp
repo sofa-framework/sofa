@@ -28,16 +28,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include "ScalarField.h"
-namespace sofa
-{
-
-namespace component
-{
-
-namespace geometry
-{
-
-namespace _scalarfield_
+namespace sofaimplicitfield
 {
 
 Vec3d ScalarField::getGradientByFinitDifference(Vec3d& pos, int& i)
@@ -277,10 +268,4 @@ bool ScalarField::projectPointOutOfSurface(Vec3d& point, int i, Vec3d& dir, doub
 
 }
 
-} /// namespace _scalarfield_
-
-} /// namespace geometry
-
-} /// namespace component
-
-} /// namespace sofa
+} /// namespace sofaimplicitfield

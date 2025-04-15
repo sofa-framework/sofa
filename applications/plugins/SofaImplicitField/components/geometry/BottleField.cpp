@@ -25,7 +25,7 @@ using sofa::core::RegisterObject ;
 
 #include "BottleField.h"
 
-namespace sofa::component::geometry::_BottleField_
+namespace sofaimplicitfield
 {
 
 using sofa::type::Vec2;
@@ -168,4 +168,4 @@ void registerBottleField(sofa::core::ObjectFactory* factory)
     .add< BottleField >());
 }
 
-} // namespace sofa::component::geometry::_BottleField_
+} // namespace sofaimplicitfield

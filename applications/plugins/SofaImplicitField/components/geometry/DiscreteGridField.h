@@ -26,16 +26,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <SofaImplicitField/components/geometry/ScalarField.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace geometry
-{
-
-namespace _discretegrid_
+namespace sofaimplicitfield
 {
 
 using sofa::type::Vec3d;
@@ -86,14 +77,7 @@ public:
     std::vector<DomainCache> m_domainCache;
 };
 
-} /// namespace _discretegrid_
-using _discretegrid_::DiscreteGridField ;
-
-} /// namespace geometry
-
-} /// namespace component
-
-} /// namespace sofa
+} /// namespace sofaimplicitfield
 
 #endif
 

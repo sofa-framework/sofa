@@ -32,10 +32,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/type/Mat.h>
 
-namespace sofa::component::geometry
-{
-
-namespace _scalarfield_
+namespace sofaimplicitfield
 {
 
 using sofa::core::objectmodel::BaseObject ;
@@ -131,11 +128,7 @@ private:
 };
 
 
-} /// namespace _scalarfield_
-
-using _scalarfield_::ScalarField ;
-
-} /// namespace sofa::component::geometry
+} /// namespace sofaimplicitfield
 
 #endif
 

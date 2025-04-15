@@ -24,10 +24,7 @@
 #include "ScalarField.h"
 #include <sofa/type/Mat.h>
 
-namespace sofa::component::geometry
-{
-
-namespace _StarShapedField_
+namespace sofaimplicitfield
 {
 
 using sofa::type::Vec3d;
@@ -71,9 +68,5 @@ protected:
     double m_branchesRadius;
 };
 
-} // namespace _StarShapedField_
-
-using sofa::component::geometry::_StarShapedField_::StarShapedField;
-
-} // namespace sofa::component::geometry
+} // namespace sofaimplicitfield
 

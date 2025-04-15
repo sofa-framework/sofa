@@ -24,7 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include "ImplicitSurfaceMapping.inl"
 
-namespace sofa::component::mapping
+namespace sofaimplicitfield
 {
 
 using namespace sofa::defaulttype;
@@ -39,5 +39,5 @@ void registerImplicitSurfaceMapping(sofa::core::ObjectFactory* factory)
 template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes >;
 
 
-} // namespace sofa::component::mapping
+} // namespace sofaimplicitfield
 

@@ -27,7 +27,7 @@ using sofa::core::RegisterObject ;
 #include "DiscreteGridField.h"
 
 
-namespace sofa::component::geometry::_discretegrid_
+namespace sofaimplicitfield
 {
 
 /**
@@ -362,4 +362,4 @@ void registerDiscreteGridField(sofa::core::ObjectFactory* factory)
     .add< DiscreteGridField >());
 }
 
-} ///namespace sofa::component::geometry::_discretegrid_
+} ///namespace sofaimplicitfield

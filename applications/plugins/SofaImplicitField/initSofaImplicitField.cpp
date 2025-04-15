@@ -30,33 +30,14 @@
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
-namespace sofa::component::geometry::_BottleField_
-{
-    extern void registerBottleField(sofa::core::ObjectFactory* factory);
-}
-namespace sofa::component::geometry::_sphericalfield_
-{
-    extern void registerSphericalField(sofa::core::ObjectFactory* factory);
-}
-namespace sofa::component::geometry::_StarShapedField_
-{
-    extern void registerStarShapedField(sofa::core::ObjectFactory* factory);
-}
-namespace sofa::component::mapping
-{
-    extern void registerImplicitSurfaceMapping(sofa::core::ObjectFactory* factory);
-}
-namespace sofa::component::container
-{
-    extern void registerInterpolatedImplicitSurface(sofa::core::ObjectFactory* factory);
-}
-namespace sofa::component::geometry::_discretegrid_
-{
-    extern void registerDiscreteGridField(sofa::core::ObjectFactory* factory);
-}
-
 namespace sofaimplicitfield
 {
+    extern void registerBottleField(sofa::core::ObjectFactory* factory);
+    extern void registerSphericalField(sofa::core::ObjectFactory* factor);
+    extern void registerStarShapedField(sofa::core::ObjectFactory* factory);
+    extern void registerImplicitSurfaceMapping(sofa::core::ObjectFactory* factory);
+    extern void registerInterpolatedImplicitSurface(sofa::core::ObjectFactory* factory);
+    extern void registerDiscreteGridField(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_SOFAIMPLICITFIELD_API void initExternalModule();
@@ -103,12 +84,12 @@ const char* getModuleDescription()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    sofa::component::geometry::_BottleField_::registerBottleField(factory);
-    sofa::component::geometry::_sphericalfield_::registerSphericalField(factory);
-    sofa::component::geometry::_StarShapedField_::registerStarShapedField(factory);
-    sofa::component::mapping::registerImplicitSurfaceMapping(factory);
-    sofa::component::container::registerInterpolatedImplicitSurface(factory);
-    sofa::component::geometry::_discretegrid_::registerDiscreteGridField(factory);
+    registerBottleField(factory);
+    registerSphericalField(factory);
+    registerStarShapedField(factory);
+    registerImplicitSurfaceMapping(factory);
+    registerInterpolatedImplicitSurface(factory);
+    registerDiscreteGridField(factory);
 }
 
 } /// sofaimplicitfield
