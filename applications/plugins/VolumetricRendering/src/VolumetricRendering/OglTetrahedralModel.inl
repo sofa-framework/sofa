@@ -31,7 +31,7 @@
 #include <limits>
 
 
-namespace sofa::component::visualmodel
+namespace volumetricrendering
 {
 
 template<class DataTypes>
@@ -320,8 +320,11 @@ void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualP
 }
 
 template<class DataTypes>
-void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params, bool /* onlyVisible */)
+void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+    SOFA_UNUSED(onlyVisible);
+
     const type::vector<Coord>& position = m_positions.getValue();
 
     if (m_topology && position.size() > 0)
@@ -377,6 +380,6 @@ void OglTetrahedralModel<DataTypes>::updateVertexBuffer()
 }
 
 
-} // namespace sofa::component::visualmodel
+} // namespace volumetricrendering
 
 #endif //OGLTETRAHEDRALMODEL_H_
