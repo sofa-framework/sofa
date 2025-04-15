@@ -23,6 +23,8 @@
 
 #include <sofa/config.h>
 
+using namespace sofa;
+
 #cmakedefine01 GEOMAGIC_HAVE_OPENHAPTICS
 
 #ifdef SOFA_BUILD_GEOMAGIC

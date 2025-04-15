@@ -36,14 +36,10 @@
 #endif
 
 
-namespace sofa::component::controller
+namespace geomagic
 {
     extern void registerGeomagicDriver(sofa::core::ObjectFactory* factory);
     extern void registerGeomagicEmulator(sofa::core::ObjectFactory* factory);
-}
-
-namespace geomagic
-{
 
     //Here are just several convenient functions to help user to know what contains the plugin
 
@@ -94,7 +90,7 @@ namespace geomagic
 
     void registerObjects(sofa::core::ObjectFactory* factory)
     {
-        sofa::component::controller::registerGeomagicDriver(factory);
-        sofa::component::controller::registerGeomagicEmulator(factory);
+        registerGeomagicDriver(factory);
+        registerGeomagicEmulator(factory);
     }
 } 

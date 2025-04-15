@@ -31,7 +31,7 @@
 #include <thread>
 #include <chrono>
 
-namespace sofa::component::controller
+namespace geomagic
 {
     
 using namespace sofa::defaulttype;
@@ -534,4 +534,4 @@ void registerGeomagicDriver(sofa::core::ObjectFactory* factory)
     .addAlias("DefaultHapticsDevice"));
 }
 
-} // namespace sofa::component::controller
+} // namespace geomagic

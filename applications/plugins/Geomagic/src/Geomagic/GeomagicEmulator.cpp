@@ -38,7 +38,7 @@
 #include <chrono>
 #include <thread>
 
-namespace sofa::component::controller
+namespace geomagic
 {
 using namespace sofa::type;
 
@@ -225,4 +225,4 @@ void registerGeomagicEmulator(sofa::core::ObjectFactory* factory)
     .add< GeomagicEmulator >());
 }
 
-} // namespace sofa::component::controller
+} // namespace geomagic
