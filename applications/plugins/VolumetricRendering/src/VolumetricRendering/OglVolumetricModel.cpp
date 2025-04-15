@@ -31,13 +31,14 @@
 #include <sofa/type/BoundingBox.h>
 #include <sofa/gl/component/shader/OglAttribute.inl>
 
-namespace sofa::component::visualmodel
+namespace volumetricrendering
 {
 
-int OglVolumetricModelClass = sofa::core::RegisterObject("Volumetric model for OpenGL display")
-.add < OglVolumetricModel >();
-
-
+void registerOglVolumetricModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Volumetric model for OpenGL display.")
+    .add < OglVolumetricModel >());
+}
 
 OglVolumetricModel::OglVolumetricModel()
     : d_tetrahedra(initData(&d_tetrahedra, "tetrahedra", "Tetrahedra to draw"))
@@ -532,4 +533,4 @@ void OglVolumetricModel::updateVertexBuffer()
 
 }
 
-} // namespace sofa::component::visualmodel
+} // namespace volumetricrendering
