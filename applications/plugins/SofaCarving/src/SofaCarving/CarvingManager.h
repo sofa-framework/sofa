@@ -33,7 +33,7 @@
 
 #include <fstream>
 
-namespace sofa::component::collision
+namespace sofacarving
 {
 
 /**
@@ -100,4 +100,4 @@ protected:
    
 };
 
-} // namespace sofa::component::collision
+} // namespace sofacarving
