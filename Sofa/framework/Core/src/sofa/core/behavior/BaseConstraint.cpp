@@ -34,15 +34,19 @@ void BaseConstraint::setGroup(int g)
 }
 
 void BaseConstraint::getConstraintInfo(const ConstraintParams* cParams, VecConstraintBlockInfo& blocks,
-    VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
+    VecPersistentID& ids)
 {
     SOFA_UNUSED(cParams);
     SOFA_UNUSED(blocks);
     SOFA_UNUSED(ids);
+}
+void BaseConstraint::getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
+{
+    msg_warning()<<"BaseConstraint::getConstraintInfo signature has changed. Positions, directions and areas are not used anymore. This method is deprecated since v25.06 and will be deleted in v25.12.";
+    this->getConstraintInfo(cParams, blocks, ids);
     SOFA_UNUSED(positions);
     SOFA_UNUSED(directions);
     SOFA_UNUSED(areas);
-
 }
 
 void BaseConstraint::getConstraintResolution(const ConstraintParams* cParams,
