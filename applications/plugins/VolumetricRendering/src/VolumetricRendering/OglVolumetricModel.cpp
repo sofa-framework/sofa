@@ -31,13 +31,14 @@
 #include <sofa/type/BoundingBox.h>
 #include <sofa/gl/component/shader/OglAttribute.inl>
 
-namespace sofa::component::visualmodel
+namespace volumetricrendering
 {
 
-int OglVolumetricModelClass = sofa::core::RegisterObject("Volumetric model for OpenGL display")
-.add < OglVolumetricModel >();
-
-
+void registerOglVolumetricModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Volumetric model for OpenGL display.")
+    .add < OglVolumetricModel >());
+}
 
 OglVolumetricModel::OglVolumetricModel()
     : d_tetrahedra(initData(&d_tetrahedra, "tetrahedra", "Tetrahedra to draw"))
@@ -310,7 +311,6 @@ void OglVolumetricModel::computeMeshFromTopology()
 
 void OglVolumetricModel::splitHexahedra()
 {
-    helper::ReadAccessor< Data< type::vector<Tetrahedron> > > tetrahedra = d_tetrahedra;
     helper::ReadAccessor< Data< type::vector<Hexahedron> > > hexahedra = d_hexahedra;
     m_hexaToTetrahedra.clear();
 
@@ -452,7 +452,6 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
     glEnableClientState(GL_VERTEX_ARRAY);
 
     const type::vector<Tetrahedron>& tetrahedra = d_tetrahedra.getValue();
-    const type::vector<Hexahedron>& hexahedra = d_hexahedra.getValue();
     //glEnable(GL_CLIP_DISTANCE0);
 
 
@@ -487,8 +486,11 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
     glPopAttrib();
 }
 
-void OglVolumetricModel::computeBBox(const core::ExecParams * params, bool /* onlyVisible */)
+void OglVolumetricModel::computeBBox(const core::ExecParams * params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+    SOFA_UNUSED(onlyVisible);
+
     //if (m_topology)
     {
         Coord v;
@@ -532,4 +534,4 @@ void OglVolumetricModel::updateVertexBuffer()
 
 }
 
-} // namespace sofa::component::visualmodel
+} // namespace volumetricrendering
