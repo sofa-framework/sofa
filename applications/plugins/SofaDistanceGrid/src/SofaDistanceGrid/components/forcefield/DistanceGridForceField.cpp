@@ -37,10 +37,12 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-int DistanceGridForceFieldClass = core::RegisterObject("Force applied by a distancegrid toward the exterior, the interior, or the surface")
-        .add< DistanceGridForceField<Vec3Types> >()
+void registerDistanceGridForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Force applied by a distancegrid toward the exterior, the interior, or the surface.")
+    .add< DistanceGridForceField<Vec3Types> >());
+}
 
-        ;
 template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<Vec3Types>;
 
 
