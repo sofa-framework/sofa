@@ -149,8 +149,13 @@ jobs:
           cd $WORKSPACE
  
           ## Clone CI and use ci-depends-on structure
-          ci_branch=${{ inputs.sofa-branch-name }}
-          ci_repo_url="https://www.github.com/sofa-framework/ci"
+          ### TODO: UNCOMMENT THIS WHEN PUSHIN TO REAL SOFA
+          # ci_branch=${{ inputs.sofa-branch-name }}
+          # ci_repo_url="https://www.github.com/sofa-framework/ci"
+          ### AND REMOVE THOSE
+          ci_branch=jenkins_gha_migration
+          ci_repo_url="https://www.github.com/bakpaul/ci"
+           
 
           # check if ci has a ci-depends-on 
           ci_ci_depends_on=$(echo "${{ inputs.ci-depends-on }}" | jq .ci)

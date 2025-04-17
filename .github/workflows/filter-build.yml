@@ -111,16 +111,18 @@ jobs:
           echo "Branch name $BRANCH is valid."
 
           # Check commit SHA format
-          if [[ ! "$COMMIT" =~ ^[a-fA-F0-9]{40}$ ]]; then
-            echo "Error: Invalid commit SHA format: $COMMIT"
-            exit 1
-          fi
-          # Check the commit exists in the repository
-          if git cat-file -e "$COMMIT" 2>/dev/null; then
-            echo "Commit $COMMIT is valid."
-          else
-            echo "Commit $COMMIT does not exist in the repository."
-            exit 1
+          if [[ "$COMMIT" != "HEAD" ]]; then
+            if [[ ! "$COMMIT" =~ ^[a-fA-F0-9]{40}$ ]]; then
+              echo "Error: Invalid commit SHA format: $COMMIT"
+              exit 1
+            fi
+            # Check the commit exists in the repository
+            if git cat-file -e "$COMMIT" 2>/dev/null; then
+              echo "Commit $COMMIT is valid."
+            else
+              echo "Commit $COMMIT does not exist in the repository."
+              exit 1
+            fi
           fi
           
           # Validate Python version format (e.g., 3.12)
