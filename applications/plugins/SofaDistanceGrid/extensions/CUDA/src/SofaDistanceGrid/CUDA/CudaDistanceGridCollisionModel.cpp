@@ -26,9 +26,6 @@
 #include <sofa/component/collision/geometry/CubeModel.h>
 #include <sofa/gl/template.h>
 #include <sofa/helper/rmath.h>
-#if SOFACUDA_HAVE_MINIFLOWVR
-    #include <flowvr/render/mesh.h>
-#endif // SOFACUDA_HAVE_MINIFLOWVR
 #include <GL/glew.h>
 #include <fstream>
 
@@ -136,67 +133,6 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
             grid->sampleSurface(sampling);
         return grid;
     }
-#if SOFACUDA_HAVE_MINIFLOWVR
-    else if (filename.length()>6 && filename.substr(filename.length()-6) == ".fmesh")
-    {
-        flowvr::render::Mesh mesh;
-        if (!mesh.load(filename.c_str()))
-        {
-            std::cerr << "ERROR loading FlowVR mesh file "<<filename<<std::endl;
-            return NULL;
-        }
-        //std::cout << "bbox = "<<mesh.bb<<std::endl;
-
-        if (!mesh.getAttrib(flowvr::render::Mesh::MESH_DISTMAP))
-        {
-            std::cerr << "ERROR: FlowVR mesh "<<filename<<" does not contain distance information. Please use flowvr-distmap."<<std::endl;
-            return NULL;
-        }
-        nx = mesh.distmap->nx;
-        ny = mesh.distmap->ny;
-        nz = mesh.distmap->nz;
-        ftl::Vec3f fpmin = ftl::transform(mesh.distmap->mat,ftl::Vec3f(0,0,0))*(float)scale;
-        ftl::Vec3f fpmax = ftl::transform(mesh.distmap->mat,ftl::Vec3f((float)(nx-1),(float)(ny-1),(float)(nz-1)))*(float)scale;
-        pmin = Coord(fpmin.ptr());
-        pmax = Coord(fpmax.ptr());
-        std::cout << "Copying "<<nx<<"x"<<ny<<"x"<<nz<<" distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
-        CudaDistanceGrid* grid = new CudaDistanceGrid(nx, ny, nz, pmin, pmax);
-        for (int i=0; i< grid->nxnynz; i++)
-            grid->dists[i] = mesh.distmap->data[i]*(float)scale;
-
-        if (sampling)
-            grid->sampleSurface(sampling);
-        else if (mesh.getAttrib(flowvr::render::Mesh::MESH_POINTS_GROUP))
-        {
-            int nbpos = 0;
-            for (int i=0; i<mesh.nbg(); i++)
-            {
-                if (mesh.getGP0(i) >= 0)
-                    ++nbpos;
-            }
-            std::cout << "Copying "<<nbpos<<" mesh vertices."<<std::endl;
-            grid->meshPts.resize(nbpos);
-            int p = 0;
-            for (int i=0; i<mesh.nbg(); i++)
-            {
-                int p0 = mesh.getGP0(i);
-                if (p0 >= 0)
-                    grid->meshPts[p++] = Coord(mesh.getPP(p0).ptr())*scale;
-            }
-        }
-        else
-        {
-            int nbpos = mesh.nbp();
-            std::cout << "Copying "<<nbpos<<" mesh vertices."<<std::endl;
-            grid->meshPts.resize(nbpos);
-            for (int i=0; i<nbpos; i++)
-                grid->meshPts[i] = Coord(mesh.getPP(i).ptr())*scale;
-        }
-        grid->computeBBox();
-        std::cout << "Distance grid creation DONE."<<std::endl;
-        return grid;
-    }
-#endif // SOFACUDA_HAVE_MINIFLOWVR
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
         sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);

@@ -1,23 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 project(SofaDistanceGrid LANGUAGES CXX)
 
-option(SOFADISTANCEGRID_USE_MINIFLOWVR "Build and use the miniFlowVR library with DistanceGrid." OFF)
-if(SOFADISTANCEGRID_USE_MINIFLOWVR)
-    add_subdirectory(extlibs/miniFlowVR)
-    set_target_properties(miniFlowVR PROPERTIES DEBUG_POSTFIX "_d")
-    #set_target_properties(miniFlowVR PROPERTIES FOLDER "SofaExtlibs")
-endif()
-
-option(SOFADISTANCEGRID_USE_MESHCONV "Build meshconv, mainly used to generate DistanceGrid file. Needs miniFlowVR." OFF)
-if(SOFADISTANCEGRID_USE_MESHCONV)
-    find_package(MiniFlowVR QUIET)
-    if(MiniFlowVR_FOUND)
-        sofa_add_subdirectory(application applications/meshconv meshconv OFF)
-    else()
-        message(WARNING "meshconv needs miniFlowVR; enable SOFADISTANCEGRID_USE_MINIFLOWVR to build it.")
-    endif()
-endif()
-
 set(SOFADISTANCEGRID_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
@@ -65,17 +48,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision)
 
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
-endif()
-
-if(MiniFlowVR_FOUND)
-    target_link_libraries(${PROJECT_NAME} PRIVATE miniFlowVR) # Private because not exported in API
-    message(STATUS "SofaDistanceGrid: MiniFlowVR found.")
-else()
-    message(STATUS "SofaDistanceGrid: MiniFlowVR not found, some features will not be compiled.")
-endif()
-
-if(SOFA_BUILD_TESTS)
-    add_subdirectory(SofaDistanceGrid_test)
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
