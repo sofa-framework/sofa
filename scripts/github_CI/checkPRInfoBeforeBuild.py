@@ -179,8 +179,8 @@ def extract_ci_depends_on():
 
             dependency_pr_data = response.json()
 
-            key = dependency_pr_data['head']['repo']['name'] #Sofa.Qt
-            repo_url = dependency_pr_data['html_url'] #https://github.com/sofa-framework/Sofa.Qt
+            key = dependency_pr_data['base']['repo']['name'] #Sofa.Qt
+            repo_url = dependency_pr_data['head']['repo']['html_url'] #https://github.com/{remote from which pr comes}/Sofa.Qt
             branch_name = dependency_pr_data['head']['ref'] #my_feature_branch
 
             dependency_dict[key] = {
@@ -217,7 +217,9 @@ if to_review_label_found and not is_draft_pr:
     with open(os.environ["GITHUB_ENV"], "a") as env_file:
         env_file.write(f"WITH_ALL_TESTS={with_all_tests_found}\n")
         env_file.write(f"FORCE_FULL_BUILD={force_full_build_found}\n")
-        env_file.write(f"CI_DEPENDS_ON={dependency_dict}\n")
+
+        ci_depends_on_str = f"{dependency_dict}".replace("'", "\\\"")
+        env_file.write(f"CI_DEPENDS_ON={ci_depends_on_str}\n")
         env_file.write(f'BUILDER_OS=["sh-ubuntu_gcc_release","sh-fedora_clang_release","sh-windows_vs2022_release","sh-macos_clang_release"]')
 
 
