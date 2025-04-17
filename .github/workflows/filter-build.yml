@@ -124,9 +124,9 @@ jobs:
           fi
           
           # Validate Python version format (e.g., 3.12)
-          if [[ ! "PYTHON" =~ ^[0-9]{1}\.[0-9]{2}$ ]]; then
-            if [[ ! "PYTHON" =~ ^3\.(9|1[0-8])$ ]]; then
-              echo "Error: Invalid Python version format: PYTHON"
+          if [[ ! "$PYTHON" =~ ^[0-9]{1}\.[0-9]{2}$ ]]; then
+            if [[ ! "$PYTHON" =~ ^3\.(9|1[0-8])$ ]]; then
+              echo "Error: Invalid Python version format: $PYTHON"
               exit 1
             fi
           fi
