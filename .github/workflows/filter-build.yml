@@ -94,11 +94,7 @@ jobs:
           echo "This step runs only for binary generation."
 
           BRANCH=${{ github.event.inputs.branch }}
-          COMMIT="HEAD"
           PYTHON=${{ github.event.inputs.python_version }}
-          PRESET="full"
-          GENERATE_BINARIES=true
-          BUILDER_OS=["sh-ubuntu_gcc_release","sh-windows_vs2022_release","sh-macos_clang_release"]
           EXTERNAL_PLUGINS="${{ inputs.external-plugins }}"
           ADDITIONNAL_CMAKE_FLAGS="${{ inputs.additionnal-cmake-flags }}"
 
@@ -121,11 +117,11 @@ jobs:
           
           # Save all information in environment variables
           echo "SOFA_BRANCH_NAME=$BRANCH" >> $GITHUB_ENV
-          echo "SOFA_COMMIT_SHA=$COMMIT" >> $GITHUB_ENV
-          echo "PRESET=$PRESET" >> $GITHUB_ENV
+          echo "SOFA_COMMIT_SHA=HEAD" >> $GITHUB_ENV
+          echo "PRESET=full" >> $GITHUB_ENV
           echo "PYTHON_VERSION=$PYTHON" >> $GITHUB_ENV
-          echo "GENERATE_BINARIES=$GENERATE_BINARIES" >> $GITHUB_ENV
-          echo "BUILDER_OS=$BUILDER_OS" >> $GITHUB_ENV
+          echo "GENERATE_BINARIES=true" >> $GITHUB_ENV
+          echo "BUILDER_OS=["sh-ubuntu_gcc_release","sh-windows_vs2022_release","sh-macos_clang_release"]" >> $GITHUB_ENV
           echo "EXTERNAL_PLUGINS=$EXTERNAL_PLUGINS" >> $GITHUB_ENV
           echo "ADDITIONNAL_CMAKE_FLAGS=$ADDITIONNAL_CMAKE_FLAGS" >> $GITHUB_ENV
           
