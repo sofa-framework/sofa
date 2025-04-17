@@ -24,16 +24,7 @@
 
 #include "ScalarField.h"
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace geometry
-{
-
-namespace _sphericalfield_
+namespace sofaimplicitfield
 {
 
 using sofa::type::Vec3d ;
@@ -70,14 +61,6 @@ protected:
     bool m_inside;
 };
 
-} /// _sphericalfield_
-
-using _sphericalfield_::SphericalField ;
-
-} /// geometry
-
-} /// component
-
-} /// sofa
+} /// namespace sofaimplicitfield
 
 #endif

@@ -30,13 +30,7 @@
 
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofaimplicitfield
 {
 
 template <class In, class Out>
@@ -274,10 +268,5 @@ void ImplicitSurfaceMapping<In,Out>::applyJ(const core::MechanicalParams * /*mpa
 {
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofaimplicitfield
 #endif

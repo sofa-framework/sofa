@@ -29,13 +29,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofaimplicitfield
 {
 
 template <class In, class Out>
@@ -221,10 +215,6 @@ extern template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< default
 #endif
 
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofaimplicitfield
 
 #endif

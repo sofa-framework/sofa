@@ -25,7 +25,7 @@ using sofa::core::RegisterObject ;
 
 #include "StarShapedField.h"
 
-namespace sofa::component::geometry::_StarShapedField_
+namespace sofaimplicitfield
 {
 
 
@@ -127,9 +127,11 @@ void StarShapedField::getHessian(Vec3d &Pos, Mat3x3& h)
 }
 
 // Register in the Factory
-int StarShapedFieldClass = core::RegisterObject("A spherical implicit field.")
-        .add< StarShapedField >()
-        ;
+void registerStarShapedField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("A star-shape implicit field.")
+    .add< StarShapedField >());
+}
 
-} // namespace sofa::component::geometry::_StarShapedField_
+} // namespace sofaimplicitfield
 
