@@ -25,6 +25,20 @@
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
+#include <sofa/helper/system/PluginManager.h>
+
+namespace sofa::component::linearsolver
+{
+    extern void registerGlobalSystemMatrixImage(sofa::core::ObjectFactory* factory);
+}
+namespace sofa::component::constraintset
+{
+    extern void registerComplianceMatrixImage(sofa::core::ObjectFactory* factory);
+}
+
+
+namespace sofamatrix::qt
+{
 
 extern "C" {
     SOFA_SOFAMATRIX_API void initExternalModule();
@@ -32,7 +46,7 @@ extern "C" {
     SOFA_SOFAMATRIX_API const char* getModuleVersion();
     SOFA_SOFAMATRIX_API const char* getModuleLicense();
     SOFA_SOFAMATRIX_API const char* getModuleDescription();
-    SOFA_SOFAMATRIX_API const char* getModuleComponentList();
+    SOFA_SOFAMATRIX_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -40,6 +54,9 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         first = false;
 
         sofa::component::initializeMatrixExporterComponents();
@@ -48,12 +65,12 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return sofa_tostring(SOFA_TARGET);
+    return MODULE_NAME;
 }
 
 const char* getModuleVersion()
 {
-    return sofa_tostring(SOFAMATRIX_VERSION);
+    return MODULE_VERSION;
 }
 
 const char* getModuleLicense()
@@ -63,13 +80,14 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "Sofa plugin gathering components related to linear system matrices.";
+    return "SOFA plugin gathering components related to linear system matrices.";
 }
 
-const char* getModuleComponentList()
+void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
+    sofa::component::linearsolver::registerGlobalSystemMatrixImage(factory);
+    sofa::component::constraintset::registerComplianceMatrixImage(factory);
+}
+
 }
 
