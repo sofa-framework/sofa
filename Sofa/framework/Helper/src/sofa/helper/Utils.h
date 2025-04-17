@@ -75,6 +75,12 @@ static const std::string& getExecutablePath();
 /// @brief Get the path to the directory of the executable that is currently running.
 static const std::string& getExecutableDirectory();
 
+/// @brief Get the path to the current user home directory.
+static const std::string& getUserHomeDirectory();
+
+/// @brief Get the path to the SOFA data directory into the current user home directory.
+static const std::string& getSofaDataDirectory();
+
 /// @brief Get the path to the current user local config directory.
 static const std::string& getUserLocalDirectory();
 
