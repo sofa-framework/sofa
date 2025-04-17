@@ -66,10 +66,10 @@ public:
     void draw(const core::visual::VisualParams* vparams) final; 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) final;
 
-    virtual void roiInit() {};
-    virtual bool roiDoUpdate() { return true; };
-    virtual void roiDraw(const core::visual::VisualParams*) {};
-    virtual void roiComputeBBox(const core::ExecParams*, type::BoundingBox&) {};
+    virtual void roiInit() {}
+    virtual bool roiDoUpdate() { return true; }
+    virtual void roiDraw(const core::visual::VisualParams*) {}
+    virtual void roiComputeBBox(const core::ExecParams*, type::BoundingBox&) {}
 
 public:
     //Input
