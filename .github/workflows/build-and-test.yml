@@ -150,7 +150,7 @@ jobs:
 
           # check if ci has a ci-depends-on 
           ci_ci_depends_on=$(echo "${{ inputs.ci-depends-on }}" | jq .ci)
-          if [ "$ci_ci_depends_on" != "null" ]; then
+          if [ -n "${{ inputs.ci-depends-on }}" ] && [ "$ci_ci_depends_on" != "null" ]; then
               echo "ci-depends-on for ci repository detected."
               ci_repo_url=$(echo "${{ inputs.ci-depends-on }}" | jq .ci.repo_url)
               ci_branch=$(echo "${{ inputs.ci-depends-on }}" | jq .ci.branch_name)
