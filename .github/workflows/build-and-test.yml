@@ -197,8 +197,8 @@ jobs:
                   plugin_branch=${plugin##*@}
                   plugin_repo=$(basename "$plugin_base")
 
-                  echo "Adding line 'sofa_add_external(plugin $plugin_repo GIT_REF $plugin_branch GIT_REPOSITORY $plugin_base)' to file ${SRC_DIR}/applications/CMakeLists.txt"
-                  echo "sofa_add_external(plugin $plugin_repo GIT_REF $plugin_branch GIT_REPOSITORY $plugin_base)' >> ${SRC_DIR}/applications/CMakeLists.txt"
+                  echo "Adding line 'sofa_add_external(plugin $plugin_repo GIT_REF $plugin_branch GIT_REPOSITORY $plugin_base ON)' to file ${SRC_DIR}/applications/CMakeLists.txt"
+                  echo "sofa_add_external(plugin $plugin_repo GIT_REF $plugin_branch GIT_REPOSITORY $plugin_base ON)' >> ${SRC_DIR}/applications/CMakeLists.txt"
               done
           fi
 
