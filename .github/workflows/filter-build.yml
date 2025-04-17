@@ -60,7 +60,9 @@ on:
 
 
 jobs:
+  # Filter build handling : push in master, commits in PR, comments in PR and dispatch
   filter_build:
+    if: ${{ github.event_name != 'schedule'}}
     runs-on: ubuntu-latest
     outputs:
       SOFA_BRANCH_NAME: ${{ steps.export-vars.outputs.SOFA_BRANCH_NAME }}
@@ -200,7 +202,8 @@ jobs:
           # Trigger the Build action
           python scripts/github_CI/checkPRInfoBeforeBuild.py
       
-      - name: Run when PR comment is created or edited (set up environment var for python script)
+      - name: Run when PR comment is created or edited > set up environment variables
+        id: pr-comment-setup
         if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -234,8 +237,8 @@ jobs:
             echo "Env: PR_COMMIT_SHA = $PR_COMMIT_SHA"
           fi
 
-      - name: Run when PR comment is created or edited (trigger python script)
-        if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request }}
+      - name: Run when PR comment is created or edited > trigger python script
+        if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request && steps.pr-comment-setup.outcome == 'success' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
@@ -274,7 +277,7 @@ jobs:
 
 
 
-          
+  # Nightly build triggered once a day        
   nightly_build:
     runs-on: ubuntu-latest
     if: github.event.schedule == '0 2 * * *'
@@ -359,7 +362,7 @@ jobs:
   # ===============================================================
   # ===============================================================
 
-  # Trigger the build with all parameters
+  # Trigger the build and sharing all parameters from filter_build > outputs
   call-workflow-passing-data:
     needs: filter_build
     uses: bakpaul/sofa/.github/workflows/build-and-test.yml@master
