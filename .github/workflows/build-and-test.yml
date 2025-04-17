@@ -38,7 +38,10 @@ on:
         type: boolean
         required: false
         default: false
-      out-of-tree-build:
+      external-plugins:
+        type: string
+        required: false
+      additionnal-cmake-flags:
         type: string
         required: false
       builder-os:
@@ -70,7 +73,8 @@ jobs:
             echo "with-all-tests : ${{ inputs.with-all-tests }}"
             echo "force-full-build : ${{ inputs.force-full-build }}"
             echo "generate-binaries : ${{ inputs.generate-binaries }}"
-            echo "out-of-tree-build : ${{ inputs.out-of-tree-build }}"
+            echo "external-plugins : ${{ inputs.external-plugins }}"
+            echo "additionnal-cmake-flags : ${{ inputs.additionnal-cmake-flags }}"
             echo "builder-os : ${{ inputs.builder-os }}"
 
   build:
@@ -181,6 +185,18 @@ jobs:
           BUILD_DIR=$WORKSPACE/build
           echo "BUILD_DIR=$BUILD_DIR" >> $GITHUB_ENV
 
+          if [ -n "${{ inputs.external-plugins }}" ]; then
+              echo "Setting up external plugins."
+              for plugin in ${{ inputs.external-plugins }}; do
+                  plugin_base=${plugin%@*}
+                  plugin_branch=${plugin##*@}
+                  plugin_repo=$(basename "$plugin_base")
+
+                  echo "Adding line 'sofa_add_external(plugin $plugin_repo GIT_REF $plugin_branch GIT_REPOSITORY $plugin_base)' to file ${SRC_DIR}/applications/CMakeLists.txt"
+                  echo "sofa_add_external(plugin $plugin_repo GIT_REF $plugin_branch GIT_REPOSITORY $plugin_base)' >> ${SRC_DIR}/applications/CMakeLists.txt"
+              done
+          fi
+
 
       - name: Notify dashboard
         shell: bash
@@ -204,7 +220,7 @@ jobs:
 
           ## Deal with ci-depends-on
           # Loop over each key-value pair in the JSON avoiding ci repository if inside
-          CMAKE_OPTIONS=""
+          CMAKE_OPTIONS="${{inputs.additionnal-cmake-flags}}"
           for key in $(echo "${{ inputs.ci-depends-on }}" | jq -r 'keys[]' | grep -v '^ci$'); do
 
             repo_url=$(echo "${{ inputs.ci-depends-on }}" | jq -r ".\"$key\".repo_url")
@@ -220,10 +236,10 @@ jobs:
           done
 
           if [[ ! -n "$CMAKE_OPTIONS" ]]; then
-              CMAKE_OPTIONS="no-ci-depends-on"
+              CMAKE_OPTIONS="no-additionnal-cmake-flags"
               echo "No ci-depends-on detected."
           else
-              echo "ci-depends-on detected, adding the following cmake variable : $CMAKE_OPTIONS"
+              echo "Adding the following cmake variable : $CMAKE_OPTIONS"
           fi
 
           echo ""

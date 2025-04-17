@@ -13,30 +13,20 @@ on:
         description: 'Specify the stable branch to use to generate the new binaries'
         required: true
         type: string
-      commit_sha:
-        description: 'Commit SHA to check out'
-        required: true
-        default: 'head'
-        type: string
       python_version:
         description: 'Version of Python used'
         required: true
         default: '3.12'
         type: string
-      preset:
-        description: 'Preset to use from CMakePresets.json file in main repository'
-        required: true
-        default: 'full'
+      external-plugins:
+        description: 'List of github repository and branch name to add to build tree, separated by a space. Syntax: https://www.github.com/me/myrepo@mybranch'
+        required: false
         type: string
-      generate_binaries:
-        description: 'Boolean to generate the binaries'
-        required: true
-        default: true
-        type: boolean
-      builder_os:
+      additionnal-cmake-flags:
+        description: 'CMake flags to add during the CMake call. This is to be used along external-plugins. The syntax is identical to a CMake call'
+        required: false
         type: string
-        required: true
-        default: '["sh-ubuntu_gcc_release"]'
+
 
   # Nightly build
   schedule:
@@ -72,7 +62,8 @@ jobs:
       CI_DEPENDS_ON: ${{ steps.export-vars.outputs.CI_DEPENDS_ON }}
       WITH_ALL_TESTS: ${{ steps.export-vars.outputs.WITH_ALL_TESTS }}
       FORCE_FULL_BUILD: ${{ steps.export-vars.outputs.FORCE_FULL_BUILD }}
-      OUT_OF_TREE_BUILD: ${{ steps.export-vars.outputs.OUT_OF_TREE_BUILD }}
+      EXTERNAL_PLUGINS: ${{ steps.export-vars.outputs.EXTERNAL_PLUGINS }}
+      ADDITIONNAL_CMAKE_FLAGS: ${{ steps.export-vars.outputs.ADDITIONNAL_CMAKE_FLAGS }}
       GENERATE_BINARIES: ${{ steps.export-vars.outputs.GENERATE_BINARIES }}
       PR_OWNER_URL: ${{ steps.export-vars.outputs.PR_OWNER_URL }}
       PR_BRANCH_NAME: ${{ steps.export-vars.outputs.PR_BRANCH_NAME }}
@@ -89,7 +80,8 @@ jobs:
           echo "CI_DEPENDS_ON=" >> $GITHUB_ENV             # CI_DEPENDS_ON: ""
           echo "WITH_ALL_TESTS=false" >> $GITHUB_ENV       # WITH_ALL_TESTS: false
           echo "FORCE_FULL_BUILD=false" >> $GITHUB_ENV     # FORCE_FULL_BUILD: false
-          echo "OUT_OF_TREE_BUILD=" >> $GITHUB_ENV         # OUT_OF_TREE_BUILD: ""
+          echo "EXTERNAL_PLUGINS=" >> $GITHUB_ENV         # EXTERNAL_PLUGINS: ""
+          echo "ADDITIONNAL_CMAKE_FLAGS=" >> $GITHUB_ENV         # ADDITIONNAL_CMAKE_FLAGS: ""
           echo "GENERATE_BINARIES=false" >> $GITHUB_ENV    # GENERATE_BINARIES: false
           echo "PR_OWNER_URL=" >> $GITHUB_ENV              # PR_OWNER_URL: ""
           echo "PR_BRANCH_NAME=" >> $GITHUB_ENV            # PR_BRANCH_NAME: ""
@@ -102,11 +94,13 @@ jobs:
           echo "This step runs only for binary generation."
 
           BRANCH=${{ github.event.inputs.branch }}
-          COMMIT=${{ github.event.inputs.commit_sha }}
+          COMMIT="HEAD"
           PYTHON=${{ github.event.inputs.python_version }}
-          PRESET=${{ github.event.inputs.preset }}
-          GENERATE_BINARIES=${{ github.event.inputs.generate_binaries }}
-          BUILDER_OS=${{ github.event.inputs.builder_os }}
+          PRESET="full"
+          GENERATE_BINARIES=true
+          BUILDER_OS=["sh-ubuntu_gcc_release","sh-windows_vs2022_release","sh-macos_clang_release"]
+          EXTERNAL_PLUGINS="${{ inputs.external-plugins }}"
+          ADDITIONNAL_CMAKE_FLAGS="${{ inputs.additionnal-cmake-flags }}"
 
           # Validate branch format (e.g., v25.06)
           if [ [ ! "$BRANCH" =~ ^v[0-9]{2}\.[0-9]{2}$ ] && [ "$BRANCH" != "master" ] ]; then
@@ -166,6 +160,9 @@ jobs:
           echo "PYTHON_VERSION=$PYTHON" >> $GITHUB_ENV
           echo "GENERATE_BINARIES=$GENERATE_BINARIES" >> $GITHUB_ENV
           echo "BUILDER_OS=$BUILDER_OS" >> $GITHUB_ENV
+          echo "EXTERNAL_PLUGINS=$EXTERNAL_PLUGINS" >> $GITHUB_ENV
+          echo "ADDITIONNAL_CMAKE_FLAGS=$ADDITIONNAL_CMAKE_FLAGS" >> $GITHUB_ENV
+          
 
       - name: Set up python
         uses: actions/setup-python@v5
@@ -268,7 +265,8 @@ jobs:
           echo "CI_DEPENDS_ON=${CI_DEPENDS_ON}" >> $GITHUB_OUTPUT
           echo "WITH_ALL_TESTS=${WITH_ALL_TESTS}" >> $GITHUB_OUTPUT
           echo "FORCE_FULL_BUILD=${FORCE_FULL_BUILD}" >> $GITHUB_OUTPUT
-          echo "OUT_OF_TREE_BUILD=${OUT_OF_TREE_BUILD}" >> $GITHUB_OUTPUT
+          echo "EXTERNAL_PLUGINS=${EXTERNAL_PLUGINS}" >> $GITHUB_OUTPUT 
+          echo "ADDITIONNAL_CMAKE_FLAGS=${ADDITIONNAL_CMAKE_FLAGS}" >> $GITHUB_OUTPUT 
           echo "GENERATE_BINARIES=${GENERATE_BINARIES}" >> $GITHUB_OUTPUT
           echo "PR_OWNER_URL=${PR_OWNER_URL}" >> $GITHUB_OUTPUT
           echo "PR_BRANCH_NAME=${PR_BRANCH_NAME}" >> $GITHUB_OUTPUT
@@ -293,7 +291,8 @@ jobs:
       CI_DEPENDS_ON: ${{ steps.export-vars.outputs.CI_DEPENDS_ON }}
       WITH_ALL_TESTS: ${{ steps.export-vars.outputs.WITH_ALL_TESTS }}
       FORCE_FULL_BUILD: ${{ steps.export-vars.outputs.FORCE_FULL_BUILD }}
-      OUT_OF_TREE_BUILD: ${{ steps.export-vars.outputs.OUT_OF_TREE_BUILD }}
+      EXTERNAL_PLUGINS: ${{ steps.export-vars.outputs.EXTERNAL_PLUGINS }}
+      ADDITIONNAL_CMAKE_FLAGS: ${{ steps.export-vars.outputs.ADDITIONNAL_CMAKE_FLAGS }} 
       GENERATE_BINARIES: ${{ steps.export-vars.outputs.GENERATE_BINARIES }}
       PR_OWNER_URL: ${{ steps.export-vars.outputs.PR_OWNER_URL }}
       PR_BRANCH_NAME: ${{ steps.export-vars.outputs.PR_BRANCH_NAME }}
@@ -310,7 +309,8 @@ jobs:
           echo "CI_DEPENDS_ON=" >> $GITHUB_ENV             # CI_DEPENDS_ON: ""
           echo "WITH_ALL_TESTS=false" >> $GITHUB_ENV       # WITH_ALL_TESTS: false
           echo "FORCE_FULL_BUILD=false" >> $GITHUB_ENV     # FORCE_FULL_BUILD: false
-          echo "OUT_OF_TREE_BUILD=" >> $GITHUB_ENV         # OUT_OF_TREE_BUILD: ""
+          echo "EXTERNAL_PLUGINS=" >> $GITHUB_ENV         # EXTERNAL_PLUGINS: "" 
+          echo "ADDITIONNAL_CMAKE_FLAGS=" >> $GITHUB_ENV         # ADDITIONNAL_CMAKE_FLAGS: "" 
           echo "GENERATE_BINARIES=false" >> $GITHUB_ENV    # GENERATE_BINARIES: false
           echo "PR_OWNER_URL=" >> $GITHUB_ENV              # PR_OWNER_URL: ""
           echo "PR_BRANCH_NAME=" >> $GITHUB_ENV            # PR_BRANCH_NAME: ""
@@ -349,7 +349,8 @@ jobs:
           echo "CI_DEPENDS_ON=${CI_DEPENDS_ON}" >> $GITHUB_OUTPUT
           echo "WITH_ALL_TESTS=${WITH_ALL_TESTS}" >> $GITHUB_OUTPUT
           echo "FORCE_FULL_BUILD=${FORCE_FULL_BUILD}" >> $GITHUB_OUTPUT
-          echo "OUT_OF_TREE_BUILD=${OUT_OF_TREE_BUILD}" >> $GITHUB_OUTPUT
+          echo "EXTERNAL_PLUGINS=${EXTERNAL_PLUGINS}" >> $GITHUB_OUTPUT 
+          echo "ADDITIONNAL_CMAKE_FLAGS=${ADDITIONNAL_CMAKE_FLAGS}" >> $GITHUB_OUTPUT 
           echo "GENERATE_BINARIES=${GENERATE_BINARIES}" >> $GITHUB_OUTPUT
           echo "PR_OWNER_URL=${PR_OWNER_URL}" >> $GITHUB_OUTPUT
           echo "PR_BRANCH_NAME=${PR_BRANCH_NAME}" >> $GITHUB_OUTPUT
@@ -374,7 +375,8 @@ jobs:
       ci-depends-on: ${{ needs.filter_build.outputs.CI_DEPENDS_ON }}
       with-all-tests: ${{ needs.filter_build.outputs.WITH_ALL_TESTS == 'true'}}
       force-full-build: ${{ needs.filter_build.outputs.FORCE_FULL_BUILD == 'true'}}
-      out-of-tree-build: ${{ needs.filter_build.outputs.OUT_OF_TREE_BUILD }}
+      external-plugins: ${{ needs.filter_build.outputs.EXTERNAL_PLUGINS }}
+      additionnal-cmake-flags: ${{ needs.filter_build.outputs.ADDITIONNAL_CMAKE_FLAGS }}
       generate-binaries: ${{ needs.filter_build.outputs.GENERATE_BINARIES == 'true'}}
       pr-owner-url: ${{ needs.filter_build.outputs.PR_OWNER_URL }}
       pr-branch-name: ${{ needs.filter_build.outputs.PR_BRANCH_NAME }}
