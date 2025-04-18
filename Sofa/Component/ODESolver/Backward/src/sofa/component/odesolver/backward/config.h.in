@@ -37,3 +37,10 @@ namespace sofa::component::odesolver::backward
     constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::odesolver::backward
 
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_ODESOLVER_BACKWARD
+#define SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() \
+    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "The Data are defined in the NewtonRaphsonSolver component.")
+#endif
