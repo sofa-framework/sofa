@@ -26,10 +26,6 @@
 
 #include <sofa/helper/io/Mesh.h>
 
-#if SOFADISTANCEGRID_HAVE_MINIFLOWVR
-#include <flowvr/render/mesh.h>
-#endif
-
 #include <fstream>
 #include <sstream>
 
@@ -168,70 +164,6 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".vtk")
     {
         return loadVTKFile(filename, scale, sampling);
-    }
-    else if (filename.length()>6 && filename.substr(filename.length()-6) == ".fmesh")
-    {
-#if SOFADISTANCEGRID_HAVE_MINIFLOWVR
-        flowvr::render::Mesh mesh;
-        if (!mesh.load(filename.c_str()))
-        {
-            msg_error("DistanceGrid")<<"loading FlowVR mesh file "<<filename;
-            return NULL;
-        }
-
-        if (!mesh.getAttrib(flowvr::render::Mesh::MESH_DISTMAP))
-        {
-            msg_error("DistanceGrid")<<"FlowVR mesh "<<filename<<" does not contain distance information. Please use flowvr-distmap.";
-            return NULL;
-        }
-        nx = mesh.distmap->nx;
-        ny = mesh.distmap->ny;
-        nz = mesh.distmap->nz;
-        ftl::Vec3f fpmin = ftl::transform(mesh.distmap->mat,ftl::Vec3f(0,0,0))*(float)absscale;
-        ftl::Vec3f fpmax = ftl::transform(mesh.distmap->mat,ftl::Vec3f((float)(nx-1),(float)(ny-1),(float)(nz-1)))*(float)absscale;
-        pmin = Coord(fpmin.ptr());
-        pmax = Coord(fpmax.ptr());
-        DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
-        for (int i=0; i< grid->m_nxnynz; i++)
-            grid->m_dists[i] = mesh.distmap->data[i]*scale;
-        if (sampling)
-            grid->sampleSurface(sampling);
-        else if (mesh.getAttrib(flowvr::render::Mesh::MESH_POINTS_GROUP))
-        {
-            int nbpos = 0;
-            for (int i=0; i<mesh.nbg(); i++)
-            {
-                if (mesh.getGP0(i) >= 0)
-                    ++nbpos;
-            }
-            grid->meshPts.resize(nbpos);
-            int p = 0;
-            for (int i=0; i<mesh.nbg(); i++)
-            {
-                int p0 = mesh.getGP0(i);
-                if (p0 >= 0)
-                    grid->meshPts[p++] = Coord(mesh.getPP(p0).ptr())*absscale;
-            }
-        }
-        else
-        {
-            int nbpos = mesh.nbp();
-            grid->meshPts.resize(nbpos);
-            for (int i=0; i<nbpos; i++)
-                grid->meshPts[i] = Coord(mesh.getPP(i).ptr())*absscale;
-        }
-        if (scale < 0)
-        {
-            grid->m_bbmin = grid->m_pmin;
-            grid->m_bbmax = grid->m_pmax;
-        }
-        else
-            grid->computeBBox();
-        return grid;
-#else
-        msg_error("DistanceGrid")<<"Loading a .fmesh file requires the FlowVR library";
-        return NULL;
-#endif // SOFADISTANCEGRID_HAVE_MINIFLOWVR
     }
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
