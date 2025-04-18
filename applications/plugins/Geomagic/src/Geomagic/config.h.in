@@ -19,10 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GEOMAGIC_CONFIG_H
-#define SOFA_GEOMAGIC_CONFIG_H
+#pragma once
 
 #include <sofa/config.h>
+
+using namespace sofa;
 
 #cmakedefine01 GEOMAGIC_HAVE_OPENHAPTICS
 
@@ -33,4 +34,8 @@
 #  define SOFA_GEOMAGIC_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // SOFA_GEOMAGIC_CONFIG_H
+namespace geomagic
+{
+    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+} // namespace geomagic
