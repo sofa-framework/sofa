@@ -87,7 +87,7 @@ RigidDistanceGridCollisionModel::RigidDistanceGridCollisionModel()
     , showMinDist ( initData( &showMinDist, 0.0, "showMinDist", "Min distance to render gradients"))
     , showMaxDist ( initData( &showMaxDist, 0.0, "showMaxDist", "Max distance to render gradients"))
 {
-    rigid = NULL;
+    rigid = nullptr;
     addAlias(&fileRigidDistanceGrid,"fileRigidDistanceGrid");
 }
 
@@ -95,8 +95,8 @@ RigidDistanceGridCollisionModel::~RigidDistanceGridCollisionModel()
 {
     for (unsigned int i=0; i<elems.size(); i++)
     {
-        if (elems[i].grid!=NULL) elems[i].grid->release();
-        if (elems[i].prevGrid!=NULL) elems[i].prevGrid->release();
+        if (elems[i].grid != nullptr) elems[i].grid->release();
+        if (elems[i].prevGrid != nullptr) elems[i].prevGrid->release();
     }
 }
 
@@ -105,10 +105,10 @@ void RigidDistanceGridCollisionModel::init()
     this->core::CollisionModel::init();
     rigid = dynamic_cast< core::behavior::MechanicalState<RigidTypes>* > (getContext()->getMechanicalState());
 
-    DistanceGrid* grid = NULL;
+    std::shared_ptr<DistanceGrid> grid;
     if (fileRigidDistanceGrid.getValue().empty())
     {
-        if (elems.size() == 0 || elems[0].grid == NULL)
+        if (elems.size() == 0 || elems[0].grid == nullptr)
             msg_error() << "An input filename is required.";
         // else the grid has already been set
         return;
@@ -143,19 +143,8 @@ void RigidDistanceGridCollisionModel::resize(sofa::Size s)
     elems.resize(s);
 }
 
-void RigidDistanceGridCollisionModel::setGrid(DistanceGrid* surf, sofa::Index index)
+void RigidDistanceGridCollisionModel::setNewState(sofa::Index index, double dt, const std::shared_ptr<DistanceGrid> grid, const Matrix3& rotation, const Vec3& translation)
 {
-    if (elems[index].grid == surf) return;
-    if (elems[index].grid!=NULL) elems[index].grid->release();
-    elems[index].grid = surf->addRef();
-    modified = true;
-}
-
-void RigidDistanceGridCollisionModel::setNewState(sofa::Index index, double dt, DistanceGrid* grid, const Matrix3& rotation, const Vec3& translation)
-{
-    grid->addRef();
-    if (elems[index].prevGrid!=NULL)
-        elems[index].prevGrid->release();
     elems[index].prevGrid = elems[index].grid;
     elems[index].grid = grid;
     elems[index].prevRotation = elems[index].rotation;
@@ -276,7 +265,7 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpa
         if (vparams->displayFlags().getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    if (getPrevious()!=NULL)
+    if (getPrevious()!=nullptr)
         getPrevious()->draw(vparams);
 #endif // SOFADISTANCEGRID_HAVE_SOFA_GL == 1
 }
@@ -298,7 +287,7 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,so
         sofa::gl::glMultMatrix(m.ptr());
     }
 
-    DistanceGrid* grid = getGrid(index);
+    const std::shared_ptr<DistanceGrid> grid = getGrid(index);
     DistanceGrid::Coord corners[8];
     for(unsigned int i=0; i<8; i++)
         corners[i] = grid->getCorner(i);
@@ -445,17 +434,17 @@ FFDDistanceGridCollisionModel::FFDDistanceGridCollisionModel()
     , usePoints( initData( &usePoints, true, "usePoints", "use mesh vertices for collision detection"))
     , singleContact( initData( &singleContact, false, "singleContact", "keep only the deepest contact in each cell"))
 {
-    ffd = NULL;
-    ffdMesh = NULL;
-    ffdRGrid = NULL;
-    ffdSGrid = NULL;
+    ffd = nullptr;
+    ffdMesh = nullptr;
+    ffdRGrid = nullptr;
+    ffdSGrid = nullptr;
     addAlias(&fileFFDDistanceGrid,"fileFFDDistanceGrid");
     enum_type = FFDDISTANCE_GRIDE_TYPE;
 }
 
 FFDDistanceGridCollisionModel::~FFDDistanceGridCollisionModel()
 {
-    if (elems.size()>0 && elems[0].grid!=NULL) elems[0].grid->release();
+    if (elems.size() > 0 && elems[0].grid != nullptr) elems[0].grid->release();
 }
 
 void FFDDistanceGridCollisionModel::init()
@@ -471,7 +460,7 @@ void FFDDistanceGridCollisionModel::init()
         return;
     }
 
-    DistanceGrid* grid = NULL;
+    std::shared_ptr<DistanceGrid> grid;
     if (fileFFDDistanceGrid.getValue().empty())
     {
         msg_error() << "Requires an input filename";
@@ -583,10 +572,10 @@ bool FFDDistanceGridCollisionModel::canCollideWithElement(sofa::Index index, Col
     return true;
 }
 
-void FFDDistanceGridCollisionModel::setGrid(DistanceGrid* surf, sofa::Index index)
-{
-    elems[index].grid = surf;
-}
+//void FFDDistanceGridCollisionModel::setGrid(DistanceGrid* surf, sofa::Index index)
+//{
+//    elems[index].grid = surf;
+//}
 
 /// Create or update the bounding volume hierarchy.
 void FFDDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
@@ -719,7 +708,7 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
         if (vparams->displayFlags().getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    if (getPrevious()!=NULL)
+    if (getPrevious()!=nullptr)
         getPrevious()->draw(vparams);
 #endif // SOFADISTANCEGRID_HAVE_SOFA_GL == 1
 }

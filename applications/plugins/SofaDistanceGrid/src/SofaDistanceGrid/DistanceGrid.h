@@ -66,16 +66,16 @@ public:
 
 public:
     /// Load a distance grid
-    static DistanceGrid* load(const std::string& filename,
+    static std::unique_ptr<DistanceGrid> load(const std::string& filename,
                               double scale=1.0, double sampling=0.0,
                               int m_nx=64, int m_ny=64, int m_nz=64,
                               Coord m_pmin = Coord(), Coord m_pmax = Coord());
 
-    static DistanceGrid* loadVTKFile(const std::string& filename,
+    static std::unique_ptr<DistanceGrid> loadVTKFile(const std::string& filename,
                                      double scale=1.0, double sampling=0.0);
 
     /// Load or reuse a distance grid
-    static DistanceGrid* loadShared(const std::string& filename,
+    static std::shared_ptr<DistanceGrid> loadShared(const std::string& filename,
                                     double scale=1.0, double sampling=0.0,
                                     int m_nx=64, int m_ny=64, int m_nz=64,
                                     Coord m_pmin = Coord(), Coord m_pmax = Coord());
@@ -255,7 +255,7 @@ protected:
         bool operator>(const DistanceGridParams& v) const ;
     };
 
-    static std::map<DistanceGridParams, DistanceGrid*>& getShared();
+    static std::map<DistanceGridParams, std::shared_ptr<DistanceGrid> >& getShared();
 };
 
 } // namespace _distancegrid
