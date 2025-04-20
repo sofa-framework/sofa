@@ -28,16 +28,7 @@
 #define EMIT_EXTRA_FMM_MESSAGE false
 
 //TODO(dmarchal 2017-05-18): There is code duplication here with SofaDistanceGrid (fastmaching implementation).
-namespace sofa
-{
-
-namespace component
-{
-
-namespace behaviormodel
-{
-
-namespace eulerianfluid
+namespace sofaeulerianfluid
 {
 
 using namespace sofa::helper;
@@ -191,9 +182,9 @@ void Grid3D::seed(vec3 p0, vec3 p1, vec3 velocity)
     {
         vec3 v ((real)x,(real)y,(real)z);
         v -= center;
-        v[0] = rabs(v[0]) - dim[0];
-        v[1] = rabs(v[1]) - dim[1];
-        v[2] = rabs(v[2]) - dim[2];
+        v[0] = sofa::helper::rabs(v[0]) - dim[0];
+        v[1] = sofa::helper::rabs(v[1]) - dim[1];
+        v[2] = sofa::helper::rabs(v[2]) - dim[2];
         real d;
         if (v[0] <= 0 && v[1] <= 0 && v[2] <= 0)
         {
@@ -277,7 +268,7 @@ void Grid3D::step_levelset(Grid3D* prev, Grid3D* temp, real dt, real /*diff*/)
     FOR_INNER_CELLS(levelset,
     {
         //if (prev->fdata[ind].type != PART_WALL && rabs(prev->levelset[ind]) < 5)
-        if (rabs(prev->levelset[ind]) < 5)
+        if (sofa::helper::rabs(prev->levelset[ind]) < 5)
         {
             vec3 xn ( (real)x, (real)y, (real)z );
             //vec3 un = prev->interp(xn);
@@ -366,7 +357,7 @@ void Grid3D::step_levelset(Grid3D* prev, Grid3D* temp, real dt, real /*diff*/)
         }
         if (known)
         {
-            real phi = rabs(phi0);
+            real phi = sofa::helper::rabs(phi0);
             levelset[ind] = phi;
             fmm_status[ind] = FMM_KNOWN;
         }
@@ -662,7 +653,7 @@ void Grid3D::step_forces(const Grid3D* prev, Grid3D* /*temp*/, real dt, real /*d
             unsigned int i;
         } tmp;
         tmp.f = 2*t;
-        srand(tmp.i);
+        sofa::helper::srand(tmp.i);
         vec3 v(4,0,-4);
         int cx = 1*nz/4; //-Gx0;
         int cy = 3*ny/4; //-Gx0;
@@ -1037,11 +1028,5 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
     });
 }
 
-} // namespace eulerianfluid
-
-} // namespace behaviormodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofaeulerianfluid
 
