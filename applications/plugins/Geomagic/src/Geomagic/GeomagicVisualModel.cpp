@@ -25,7 +25,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
 
-namespace sofa::component::controller
+namespace geomagic
 {
 
 using namespace sofa::type;
@@ -260,4 +260,4 @@ void GeomagicVisualModel::drawDevice(bool button1Status, bool button2Status)
 }
 
 
-} // namespace sofa::component::controller
+} // namespace geomagic
