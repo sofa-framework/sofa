@@ -29,9 +29,11 @@ namespace sofa::component::linearsolver
 
 using namespace sofa::defaulttype;
 
-int FillReducingOrderingClass = core::RegisterObject("Reorder the degrees of freedom to reduce fill-in")
-    .add< FillReducingOrdering<Vec3Types> >()
-    ;
+void registerFillReducingOrdering(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Reorder the degrees of freedom to reduce fill-in.")
+    .add< FillReducingOrdering<Vec3Types> >());
+}
 
 template class SOFA_SOFAMATRIX_API FillReducingOrdering<Vec3Types>;
 
