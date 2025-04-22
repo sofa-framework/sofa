@@ -70,8 +70,6 @@ public:
     const type::Vec3& getTranslation();
     bool isFlipped();
 
-    //void setGrid(DistanceGrid* surf);
-
     /// @name Previous state data
     /// Used to estimate velocity in case the distance grid itself is dynamic
     /// @{
@@ -191,8 +189,6 @@ public:
         return flipNormals.getValue();
     }
 
-    //void setGrid(DistanceGrid* surf, sofa::Index index=0);
-
     std::shared_ptr<DistanceGrid> getPrevGrid(sofa::Index index=0)
     {
         return elems[index].prevGrid;
@@ -239,7 +235,6 @@ inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(cons
 }
 
 inline std::shared_ptr<DistanceGrid> RigidDistanceGridCollisionElement::getGrid() { return model->getGrid(index); }
-//inline void RigidDistanceGridCollisionElement::setGrid(DistanceGrid* surf) { return model->setGrid(surf, index); }
 
 inline bool RigidDistanceGridCollisionElement::isTransformed() { return model->isTransformed(index); }
 inline const type::Matrix3& RigidDistanceGridCollisionElement::getRotation() { return model->getRotation(index); }
@@ -271,8 +266,6 @@ public:
     explicit FFDDistanceGridCollisionElement(const core::CollisionElementIterator& i);
 
     std::shared_ptr<DistanceGrid> getGrid();
-
-    //void setGrid(DistanceGrid* surf);
 };
 
 class SOFA_SOFADISTANCEGRID_API FFDDistanceGridCollisionModel : public core::CollisionModel
@@ -476,8 +469,6 @@ public:
         return elems[index];
     }
 
-    //void setGrid(DistanceGrid* surf, sofa::Index index=0);
-
     /// CollisionModel interface
     void resize(sofa::Size size) override;
 
@@ -501,7 +492,6 @@ inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(const co
 }
 
 inline std::shared_ptr<DistanceGrid> FFDDistanceGridCollisionElement::getGrid() { return model->getGrid(index); }
-//inline void FFDDistanceGridCollisionElement::setGrid(DistanceGrid* surf) { return model->setGrid(surf, index); }
 
 /// Mapper for FFDDistanceGridCollisionModel
 template <class DataTypes>

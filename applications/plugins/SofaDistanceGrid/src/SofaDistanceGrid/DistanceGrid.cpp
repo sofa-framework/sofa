@@ -81,7 +81,6 @@ int validateDim(int n)
 
 DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
     : meshPts()
-    , m_nbRef(1)
     , m_nx(validateDim(nx)), m_ny(validateDim(ny)), m_nz(validateDim(nz))
     , m_nxny(m_nx*m_ny), m_nxnynz(m_nx*m_ny*m_nz)
     , m_dists(m_nx*m_ny*m_nz)
@@ -93,29 +92,7 @@ DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
 }
 
 DistanceGrid::~DistanceGrid()
-{
-    std::map<DistanceGridParams, std::shared_ptr<DistanceGrid> >& shared = getShared();
-    std::map<DistanceGridParams, std::shared_ptr<DistanceGrid> >::iterator it = shared.begin();
-    while (it != shared.end() && it->second.get() != this) ++it;
-    if (it != shared.end())
-        shared.erase(it); // remove this grid from the list of already loaded grids
-}
-
-/// Add one reference to this grid. Note that loadShared already does this.
-DistanceGrid* DistanceGrid::addRef()
-{
-    ++m_nbRef;
-    return this;
-}
-
-/// Release one reference, deleting this grid if this is the last
-bool DistanceGrid::release()
-{
-    if (--m_nbRef != 0)
-        return false;
-    delete this;
-    return true;
-}
+{}
 
 //todo(dmarchal) we should make a loader for that...
 std::unique_ptr<DistanceGrid> DistanceGrid::load(const std::string& filename,
@@ -1249,7 +1226,6 @@ std::shared_ptr<DistanceGrid> DistanceGrid::loadShared(const std::string& filena
     std::map<DistanceGridParams, std::shared_ptr<DistanceGrid> >::iterator it = shared.find(params);
     if (it != shared.end())
     {
-        it->second->addRef();
         return it->second;
     }
     else

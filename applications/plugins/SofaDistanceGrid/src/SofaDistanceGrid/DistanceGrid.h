@@ -80,12 +80,6 @@ public:
                                     int m_nx=64, int m_ny=64, int m_nz=64,
                                     Coord m_pmin = Coord(), Coord m_pmax = Coord());
 
-    /// Add one reference to this grid. Note that loadShared already does this.
-    DistanceGrid* addRef();
-
-    /// Release one reference, deleting this grid if this is the last
-    bool release();
-
     /// Save current grid
     bool save(const std::string& filename);
 
@@ -222,7 +216,6 @@ public:
     VecCoord meshPts;
 
 protected:
-    int m_nbRef;
     const int m_nx,m_ny,m_nz;
     const int m_nxny, m_nxnynz;
     VecSReal m_dists;

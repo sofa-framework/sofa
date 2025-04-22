@@ -92,13 +92,7 @@ RigidDistanceGridCollisionModel::RigidDistanceGridCollisionModel()
 }
 
 RigidDistanceGridCollisionModel::~RigidDistanceGridCollisionModel()
-{
-    for (unsigned int i=0; i<elems.size(); i++)
-    {
-        if (elems[i].grid != nullptr) elems[i].grid->release();
-        if (elems[i].prevGrid != nullptr) elems[i].prevGrid->release();
-    }
-}
+{}
 
 void RigidDistanceGridCollisionModel::init()
 {
@@ -443,9 +437,7 @@ FFDDistanceGridCollisionModel::FFDDistanceGridCollisionModel()
 }
 
 FFDDistanceGridCollisionModel::~FFDDistanceGridCollisionModel()
-{
-    if (elems.size() > 0 && elems[0].grid != nullptr) elems[0].grid->release();
-}
+{}
 
 void FFDDistanceGridCollisionModel::init()
 {
@@ -571,11 +563,6 @@ bool FFDDistanceGridCollisionModel::canCollideWithElement(sofa::Index index, Col
     if (elems[index].neighbors.count(index2)) return false;
     return true;
 }
-
-//void FFDDistanceGridCollisionModel::setGrid(DistanceGrid* surf, sofa::Index index)
-//{
-//    elems[index].grid = surf;
-//}
 
 /// Create or update the bounding volume hierarchy.
 void FFDDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
