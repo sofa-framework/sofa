@@ -248,7 +248,7 @@ protected:
         bool operator>(const DistanceGridParams& v) const ;
     };
 
-    static std::map<DistanceGridParams, std::shared_ptr<DistanceGrid> >& getShared();
+    static std::map<DistanceGridParams, std::weak_ptr<DistanceGrid> > instances;
 };
 
 } // namespace _distancegrid
