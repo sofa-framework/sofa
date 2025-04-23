@@ -26,8 +26,11 @@
 namespace sofa::component::constraintset
 {
 
-int ComplianceMatrixImageClass = core::RegisterObject("View the compliance matrix as an binary image.")
-    .add<ComplianceMatrixImage>();
+void registerComplianceMatrixImage(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("View the compliance matrix as an binary image.")
+    .add< ComplianceMatrixImage >());
+}
 
 ComplianceMatrixImage::ComplianceMatrixImage()
     : Inherit1()
