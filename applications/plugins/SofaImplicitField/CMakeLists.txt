@@ -39,7 +39,6 @@ set(SOURCE_FILES
 
 set(EXTRA_FILES
     README.md
-    examples/README.md
     )
 
 if(SOFA_BUILD_TESTS)
