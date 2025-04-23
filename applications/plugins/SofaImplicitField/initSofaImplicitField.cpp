@@ -20,27 +20,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaImplicitField/config.h>
+#include <SofaImplicitField/initSofaImplicitField.h>
 
-#include "initSofaImplicitField.h"
-#include "components/geometry/ScalarField.h"
-#include "components/geometry/SphericalField.h"
-#include "components/geometry/DiscreteGridField.h"
-
-#include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
-
-namespace sofa
+namespace sofaimplicitfield
 {
 
-namespace component
-{
 extern "C" {
 SOFA_SOFAIMPLICITFIELD_API void initExternalModule();
 SOFA_SOFAIMPLICITFIELD_API const char* getModuleName();
 SOFA_SOFAIMPLICITFIELD_API const char* getModuleVersion();
 SOFA_SOFAIMPLICITFIELD_API const char* getModuleLicense();
 SOFA_SOFAIMPLICITFIELD_API const char* getModuleDescription();
-SOFA_SOFAIMPLICITFIELD_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -54,19 +44,18 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "SofaImplicitField";
+    return MODULE_NAME;
 }
 
 const char* getModuleVersion()
 {
-    return "1.0";
+    return MODULE_VERSION;
 }
 
 const char* getModuleLicense()
 {
     return "LGPL";
 }
-
 
 const char* getModuleDescription()
 {
@@ -75,13 +64,5 @@ const char* getModuleDescription()
            "The surface is then defined as f(x) = aConstant.";
 }
 
-const char* getModuleComponentList()
-{
-    return "SphereSurface ImplicitSurfaceMapping InterpolatedImplicitSurface "
-           "SphericalField DiscreteGridField";
 }
-
-} /// component
-
-} /// sofa
 
