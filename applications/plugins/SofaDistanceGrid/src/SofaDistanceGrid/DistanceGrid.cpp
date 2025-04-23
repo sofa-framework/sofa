@@ -1222,16 +1222,16 @@ std::shared_ptr<DistanceGrid> DistanceGrid::loadShared(const std::string& filena
     params.nz = nz;
     params.pmin = pmin;
     params.pmax = pmax;
-    std::map<DistanceGridParams, std::shared_ptr<DistanceGrid> >& shared = getShared();
-    std::map<DistanceGridParams, std::shared_ptr<DistanceGrid> >::iterator it = shared.find(params);
+    std::map<DistanceGridParams, std::weak_ptr<DistanceGrid> >& shared = getShared();
+    std::map<DistanceGridParams, std::weak_ptr<DistanceGrid> >::iterator it = shared.find(params);
     if (it != shared.end())
     {
-        return it->second;
+        if (!it->second.expired())
+            return it->second.lock();
     }
-    else
-    {
-        return shared[params] = load(filename, scale, sampling, nx, ny, nz, pmin, pmax);
-    }
+    std::shared_ptr<DistanceGrid> grid = load(filename, scale, sampling, nx, ny, nz, pmin, pmax);
+    shared[params] = grid;
+    return shared[params].lock();
 }
 
 
@@ -1427,9 +1427,9 @@ bool DistanceGrid::DistanceGridParams::operator>(const DistanceGridParams& v) co
     return false;
 }
 
-std::map<DistanceGrid::DistanceGridParams, std::shared_ptr<DistanceGrid> >& DistanceGrid::getShared()
+std::map<DistanceGrid::DistanceGridParams, std::weak_ptr<DistanceGrid> >& DistanceGrid::getShared()
 {
-    static std::map<DistanceGridParams, std::shared_ptr<DistanceGrid> > instance;
+    static std::map<DistanceGridParams, std::weak_ptr<DistanceGrid> > instance;
     return instance;
 }
 
