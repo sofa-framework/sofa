@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 project(SofaImplicitField VERSION 1.0)
 
-sofa_find_package(Sofa.Framework REQUIRED)
-sofa_find_package(SofaDistanceGrid REQUIRED)
+sofa_find_package(Sofa.Component.Topology.Container.Constant REQUIRED)
 
 set(HEADER_FILES
     config.h.in
@@ -11,7 +10,7 @@ set(HEADER_FILES
     # This is backward compatibility
     deprecated/SphereSurface.h
     deprecated/ImplicitSurfaceContainer.h    # This is a backward compatibility file toward ScalarField
-    deprecated/InterpolatedImplicitSurface.h # This is a backward compatibility file toward DiscreteridField
+    deprecated/InterpolatedImplicitSurface.h # This is a backward compatibility file toward DiscreteGridField
 
     components/geometry/BottleField.h
     components/geometry/DiscreteGridField.h
@@ -47,7 +46,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_compile_options(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAIMPLICITFIELD")
-target_link_libraries(${PROJECT_NAME} PRIVATE SofaDistanceGrid)
+target_link_libraries(${PROJECT_NAME} PRIVATE Sofa.Component.Topology.Container.Constant)
 
 
 ## Install rules for the library and headers; CMake package configurations files
