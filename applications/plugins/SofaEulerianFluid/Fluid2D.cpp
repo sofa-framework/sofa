@@ -28,23 +28,14 @@
 #include <sofa/helper/MarchingCubeUtility.h> // for marching cube tables
 #include <sofa/type/BoundingBox.h>
 
-namespace sofa
+namespace sofaeulerianfluid
 {
 
-namespace component
+void registerFluid2D(sofa::core::ObjectFactory* factory)
 {
-
-namespace behaviormodel
-{
-
-namespace eulerianfluid
-{
-
-int Fluid2DClass = core::RegisterObject("Eulerian 2D fluid")
-        .add< Fluid2D >()
-        .addLicense("LGPL")
-        .addAuthor("Jeremie Allard")
-        ;
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Eulerian 2D fluid.")
+    .add< Fluid2D >());
+}
 
 Fluid2D::Fluid2D():
     f_nx ( initData(&f_nx, (int)16, "nx", "grid size along x axis") ),
@@ -98,7 +89,7 @@ void Fluid2D::updatePosition(SReal dt)
     Grid2D* p = fluid; fluid=fnext; fnext=p;
 }
 
-void Fluid2D::draw(const core::visual::VisualParams* vparams)
+void Fluid2D::draw(const sofa::core::visual::VisualParams* vparams)
 {
     using namespace sofa::helper;
 
@@ -133,7 +124,7 @@ void Fluid2D::draw(const core::visual::VisualParams* vparams)
                 vec2 u = fluid->get(x,y)->u;
                 real r;
                 r = u[0]*s;
-                if (rabs(r) > 0.001f)
+                if ( sofa::helper::rabs(r) > 0.001f)
                 {
                     if (r>0.9f) r=0.9f;
                     glColor4f(1,0,0,1);
@@ -145,7 +136,7 @@ void Fluid2D::draw(const core::visual::VisualParams* vparams)
                     glVertex2f((float)x-0.5f+0.8f*r, (float)y-0.2f*r);
                 }
                 r = u[1]*s;
-                if (rabs(r) > 0.001f)
+                if ( sofa::helper::rabs(r) > 0.001f)
                 {
                     if (r>0.9f) r=0.9f;
                     glColor4f(0,1,0,1);
@@ -164,7 +155,7 @@ void Fluid2D::draw(const core::visual::VisualParams* vparams)
             for (int x=0; x<nx; x++)
             {
                 real l = *fluid->getlevelset(x,y);
-                if (rabs(l)>=5) continue;
+                if ( sofa::helper::rabs(l)>=5) continue;
                 if (l<0)
                 {
                     glColor4f(0,1+l/5,1+l/5,1);
@@ -368,7 +359,7 @@ void Fluid2D::updateVisual()
                 if (data2/*data[i         ]*/>=iso) mk|= 64;
                 if (data2/*data[i-dx      ]*/>=iso) mk|= 128;
 
-                tri= helper::MarchingCubeTriTable[mk];
+                tri= sofa::helper::MarchingCubeTriTable[mk];
                 while (*tri>=0)
                 {
                     int* b = base+3*i;
@@ -414,7 +405,7 @@ void Fluid2D::updateVisual()
     }
 }
 
-void Fluid2D::computeBBox(const core::ExecParams*  params , bool onlyVisible)
+void Fluid2D::computeBBox(const sofa::core::ExecParams*  params , bool onlyVisible)
 {
     SOFA_UNUSED(params);
     SOFA_UNUSED(onlyVisible);
@@ -434,11 +425,5 @@ void Fluid2D::computeBBox(const core::ExecParams*  params , bool onlyVisible)
 
 }
 
-} // namespace eulerianfluid
-
-} // namespace behaviormodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofaeulerianfluid
 
