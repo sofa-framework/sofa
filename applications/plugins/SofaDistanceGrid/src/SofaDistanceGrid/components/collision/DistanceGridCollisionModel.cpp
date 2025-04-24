@@ -51,9 +51,6 @@ void registerRigidDistanceGridCollisionModel(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(sofa::core::ObjectRegistrationData("Grid-based distance field.")
     .add< RigidDistanceGridCollisionModel >()
-    .addAlias("DistanceGridCollisionModel")
-    .addAlias("RigidDistanceGrid")
-    .addAlias("DistanceGrid"));
 }
       
 void registerFFDDistanceGridCollisionModel(sofa::core::ObjectFactory* factory)
