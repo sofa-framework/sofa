@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01" gravity="0 -9.81 0">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [SubsetMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->  
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->  
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [LCPConstraintSolver] -->  
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RegularGridSpringForceField] -->  
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetTopologyContainer] -->  
+    <RequiredPlugin name="SofaDistanceGrid"/> <!-- Needed to use components [RigidDistanceGridCollisionModel] -->  
+
+    <VisualStyle displayFlags="hideBehaviorModels hideForceFields hideCollisionModels hideDetectionOutputs"/>
+
+    <FreeMotionAnimationLoop/>
+    <LCPConstraintSolver tolerance="1e-3" maxIt="1000"/>
+
+    <CollisionPipeline verbose="0" draw="0"/>
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <CollisionResponse name="Response" response="FrictionContactConstraint"/>
+
+    <LocalMinDistance name="proximity" alarmDistance="1" contactDistance="0.5"/>
+
+    <Node name="Skull">
+        <MeshOBJLoader 
+            name="loader" 
+            filename="Demos/Dentistry/data/mesh/skull_and_teeth.obj" 
+            translation="0 0 0.90"
+            rotation="180 0 0"
+            scale="1.25"
+        />
+
+        <MechanicalObject 
+            template="Rigid3d" 
+            name="dofs" 
+            position="0 0 0   0 0 0 1" 
+            translation="0 0 0.90"
+            rotation="180 0 0"
+        />
+        <RigidDistanceGridCollisionModel
+            filename="Demos/Dentistry/data/mesh/skull_and_teeth.obj"
+            usePoints="1" 
+            contactFriction="0.0" 
+            scale="1.25" 
+        />
+
+        <Node name="Visual">
+            <OglModel name="VisualModel" src="@../loader" color="white"/>
+        </Node>
+    </Node>
+
+    <Node name="Torus">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
+
+        <MeshOBJLoader name='loader' filename='mesh/torus2_scale3.obj' translation="0 12 0" rotation="90 90 0"/>
+
+        <MechanicalObject name="dofs"/>
+        <UniformMass vertexMass="20"/>
+
+        <RegularGridTopology 
+            nx="6" ny="5" nz="2" 
+            zmin="-7.5" zmax="7.5" 
+            ymin="10.25" ymax="13.75" 
+            xmin="-6" xmax="6" 
+        />
+
+        <RegularGridSpringForceField name="Springs" stiffness="63000" damping="1"/>
+
+        <Node name="Surf">
+            <TriangleSetTopologyContainer src="@../loader"/>
+            <MechanicalObject name="dofs" src="@../loader"/>
+            <TriangleCollisionModel/>
+            <LineCollisionModel/>
+            <PointCollisionModel/>
+            <BarycentricMapping input="@../dofs" output="@dofs"/>
+        </Node>
+
+        <Node name="Visu">
+            <OglModel name="Visual" src="@../loader" color="blue"/>
+            <BarycentricMapping input="@../dofs" output="@Visual"/>
+        </Node>
+        <UncoupledConstraintCorrection defaultCompliance="0.1"/>
+    </Node>
+</Node>
