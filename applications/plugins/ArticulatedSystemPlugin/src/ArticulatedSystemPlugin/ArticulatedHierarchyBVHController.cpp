@@ -40,7 +40,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::controller
+namespace articulatedsystemplugin
 {
 
 void ArticulatedHierarchyBVHController::init()
@@ -173,4 +173,5 @@ void registerArticulatedHierarchyBVHController(sofa::core::ObjectFactory* factor
     .add< ArticulatedHierarchyBVHController >());
 }
 
-} // namespace sofa::component::controller
+} // namespace articulatedsystemplugin
+

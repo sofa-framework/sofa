@@ -25,25 +25,15 @@
 using sofa::core::ObjectFactory;
 
 
-namespace sofa::component::controller
+namespace articulatedsystemplugin
 {
     extern void registerArticulatedHierarchyBVHController(sofa::core::ObjectFactory* factory);
     extern void registerArticulatedHierarchyController(sofa::core::ObjectFactory* factory);
-}
-namespace sofa::component::mapping
-{
     extern void registerArticulatedSystemMapping(sofa::core::ObjectFactory* factory);
-}
-namespace sofa::component::container
-{
     extern void registerArticulatedHierarchyContainer(sofa::core::ObjectFactory* factory);
     extern void registerArticulationCenter(sofa::core::ObjectFactory* factory);
     extern void registerArticulation(sofa::core::ObjectFactory* factory);
-}
 
-
-namespace articulatedsystemplugin
-{
 
 extern "C" {
     SOFA_ARTICULATEDSYSTEMPLUGIN_API void initExternalModule();
@@ -90,12 +80,12 @@ void initArticulatedSystemPlugin()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    sofa::component::controller::registerArticulatedHierarchyBVHController(factory);
-    sofa::component::controller::registerArticulatedHierarchyController(factory);
-    sofa::component::mapping::registerArticulatedSystemMapping(factory);
-    sofa::component::container::registerArticulatedHierarchyContainer(factory);
-    sofa::component::container::registerArticulationCenter(factory);
-    sofa::component::container::registerArticulation(factory);
+    registerArticulatedHierarchyBVHController(factory);
+    registerArticulatedHierarchyController(factory);
+    registerArticulatedSystemMapping(factory);
+    registerArticulatedHierarchyContainer(factory);
+    registerArticulationCenter(factory);
+    registerArticulation(factory);
 }
 
 } // namespace sofa::articulatedsystem

@@ -25,7 +25,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::mapping
+namespace articulatedsystemplugin
 {
 
 using namespace sofa::defaulttype;
@@ -40,4 +40,5 @@ void registerArticulatedSystemMapping(sofa::core::ObjectFactory* factory)
 template class SOFA_ARTICULATEDSYSTEMPLUGIN_API ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types >;
 
 
-} //namespace sofa::component::mapping
+} //namespace articulatedsystemplugin
+

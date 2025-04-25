@@ -42,12 +42,8 @@
 
 #include <map>
 
-namespace sofa::component::controller
+namespace articulatedsystemplugin
 {
-
-using sofa::component::container::ArticulatedHierarchyContainer;
-using sofa::component::container::ArticulationCenter;
-using sofa::component::container::Articulation;
 
 /**
  * @brief ArticulatedHierarchyController Class.
@@ -57,7 +53,7 @@ using sofa::component::container::Articulation;
  * Mouse Buttons and Wheel are controlling the value.
  * Keyboard is used to select the controlled articulation.
  */
-class SOFA_ARTICULATEDSYSTEMPLUGIN_API ArticulatedHierarchyController : public Controller
+class SOFA_ARTICULATEDSYSTEMPLUGIN_API ArticulatedHierarchyController : public sofa::component::controller::Controller
 {
 public:
     SOFA_CLASS(ArticulatedHierarchyController,Controller);
@@ -158,4 +154,5 @@ protected:
 };
 
 
-} // namespace sofa::component::controller
+} // namespace articulatedsystemplugin
+

@@ -46,13 +46,11 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::controller
+namespace articulatedsystemplugin
 {
 
 using namespace sofa::helper;
 using sofa::core::behavior::MechanicalState;
-using sofa::component::controller::ArticulatedHierarchyContainer;
-
 
 ArticulatedHierarchyController::ArticulatedHierarchyController()
     : articulationsIndices( initData(&articulationsIndices, "articulationsIndices", "Indices of articulations controlled by the keyboard") )
@@ -414,4 +412,5 @@ void registerArticulatedHierarchyController(sofa::core::ObjectFactory* factory)
     .add< ArticulatedHierarchyController >());
 }
 
-} // namespace sofa::component::controller
+} // namespace articulatedsystemplugin
+

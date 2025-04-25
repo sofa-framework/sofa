@@ -23,6 +23,8 @@
 
 #include <sofa/config.h>
 
+using namespace sofa;
+
 #define ARTICULATEDSYSTEMPLUGIN_VERSION @PROJECT_VERSION@
 
 #ifdef SOFA_BUILD_ARTICULATEDSYSTEMPLUGIN

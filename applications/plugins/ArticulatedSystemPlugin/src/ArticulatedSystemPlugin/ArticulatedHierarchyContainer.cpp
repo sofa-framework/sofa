@@ -23,7 +23,7 @@
 #include <ArticulatedSystemPlugin/ArticulatedHierarchyContainer.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::container
+namespace articulatedsystemplugin
 {
 
 // Register in the Factory
@@ -45,4 +45,5 @@ void registerArticulation(sofa::core::ObjectFactory* factory)
     .add< Articulation >());
 }
 
-} // namespace sofa::component::container
+} // namespace articulatedsystemplugin
+
