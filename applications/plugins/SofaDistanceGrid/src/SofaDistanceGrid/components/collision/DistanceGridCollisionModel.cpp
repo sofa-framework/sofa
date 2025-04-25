@@ -50,14 +50,13 @@ namespace collision
 void registerRigidDistanceGridCollisionModel(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(sofa::core::ObjectRegistrationData("Grid-based distance field.")
-    .add< RigidDistanceGridCollisionModel >()
+    .add< RigidDistanceGridCollisionModel >();
 }
       
 void registerFFDDistanceGridCollisionModel(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(sofa::core::ObjectRegistrationData("Grid-based deformable distance field.")
-    .add< FFDDistanceGridCollisionModel >()
-    .addAlias("FFDDistanceGrid"));
+    .add< FFDDistanceGridCollisionModel >();
 }
 
 using namespace sofa::type;
