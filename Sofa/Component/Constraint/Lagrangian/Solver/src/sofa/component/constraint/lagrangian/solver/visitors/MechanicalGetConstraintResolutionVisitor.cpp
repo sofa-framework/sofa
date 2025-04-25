@@ -39,7 +39,7 @@ MechanicalGetConstraintResolutionVisitor::MechanicalGetConstraintResolutionVisit
 
 MechanicalGetConstraintResolutionVisitor::Result MechanicalGetConstraintResolutionVisitor::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
 {
-    if (core::behavior::BaseLagrangianConstraint *c=cSet->toBaseConstraint())
+    if (core::behavior::BaseLagrangianConstraint *c=cSet->toBaseLagrangianConstraint())
     {
         const ctime_t t0 = begin(node, c);
         c->getConstraintResolution(cparams, _res, _offset);
