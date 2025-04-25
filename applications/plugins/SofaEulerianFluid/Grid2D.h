@@ -19,9 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_GRID2D_H
-#define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_GRID2D_H
-#include "config.h"
+#ifndef SOFAEULERIANFLUID_GRID2D_H
+#define SOFAEULERIANFLUID_GRID2D_H
+
+#include <SofaEulerianFluid/config.h>
 
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
@@ -29,16 +30,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace behaviormodel
-{
-
-namespace eulerianfluid
+namespace sofaeulerianfluid
 {
 
 #ifndef NDEBUG
@@ -47,6 +39,7 @@ namespace eulerianfluid
 
 class SOFA_EULERIAN_FLUID_API Grid2D
 {
+
 public:
 
     typedef float real;
@@ -269,12 +262,6 @@ public:
     void fmm_swap(int entry1, int entry2);
 };
 
-} // namespace eulerianfluid
-
-} // namespace behaviormodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofaeulerianfluid
 
 #endif

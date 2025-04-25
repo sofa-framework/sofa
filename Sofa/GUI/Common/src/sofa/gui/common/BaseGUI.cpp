@@ -35,6 +35,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <filesystem>
 
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
@@ -145,13 +146,13 @@ const std::string& BaseGUI::getScreenshotDirectoryPath()
 
 static void setDirectoryPath(std::string& outputVariable, const std::string& path, bool createIfNecessary)
 {
-    const bool pathExists = FileSystem::exists(path);
+    const bool pathExists = std::filesystem::exists(path);
 
     if (!pathExists && !createIfNecessary)
     {
         msg_error("BaseGUI") << "No such directory '" << path << "'";
     }
-    else if (pathExists && !FileSystem::isDirectory(path))
+    else if (pathExists && !std::filesystem::is_directory(path))
     {
          msg_error("BaseGUI") << "Not a directory: " << path << "'";
     }
@@ -159,8 +160,10 @@ static void setDirectoryPath(std::string& outputVariable, const std::string& pat
     {
         if (!pathExists)
         {
-            FileSystem::createDirectory(path);
-            msg_info("BaseGUI") << "Created directory: " << path;
+            if(std::filesystem::create_directories(path))
+            {
+                msg_info("BaseGUI") << "Created directory: " << path;
+            }
         }
         outputVariable = path;
     }

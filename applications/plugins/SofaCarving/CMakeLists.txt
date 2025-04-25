@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(SofaCarving VERSION 0.1 LANGUAGES CXX)
+project(SofaCarving VERSION 0.3 LANGUAGES CXX)
 
 set(SOFACARVING_SRC src/SofaCarving)
 
