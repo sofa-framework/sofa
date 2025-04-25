@@ -26,15 +26,15 @@
 #include <sofa/gpu/cuda/CudaTypes.h>
 
 
-namespace volumetricrendering::cuda
+namespace volumetricrendering
 {
 
 template<class TCoord, class TDeriv, class TReal>
-class OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > : public core::visual::VisualModel
+class OglTetrahedralModel< gpuVectorTypes<TCoord,TDeriv,TReal> > : public core::visual::VisualModel
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(OglTetrahedralModel,SOFA_TEMPLATE3(gpu::cuda::CudaVectorTypes,TCoord,TDeriv,TReal)),core::visual::VisualModel);
-    typedef gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> DataTypes;
+    SOFA_CLASS(SOFA_TEMPLATE(OglTetrahedralModel,SOFA_TEMPLATE3(gpuVectorTypes,TCoord,TDeriv,TReal)),core::visual::VisualModel);
+    typedef gpuVectorTypes<TCoord,TDeriv,TReal> DataTypes;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -46,7 +46,7 @@ private:
     core::behavior::MechanicalState<DataTypes>* nodes;
 
     bool needUpdateTopology;
-    gpu::cuda::CudaVector<Tetra> tetras;
+    gpuVector<Tetra> tetras;
 
     Data<bool> depthTest; ///< Set Depth Test
     Data<bool> blending; ///< Set Blending
@@ -101,6 +101,6 @@ protected:
 };
 
 #endif /*OGLTETRAHEDRALMODEL_H_*/
-} // namespace volumetricrendering::cuda
+} // namespace volumetricrendering
 
 
