@@ -425,7 +425,7 @@ public:
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseProjectiveConstraintSet            )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseInteractionProjectiveConstraintSet )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraintSet                      )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraint                         )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseLagrangianConstraint               )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualModel                            )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualManager                          )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualLoop                             )
