@@ -22,6 +22,8 @@
 #include <Geomagic/config.h>
 #include <string>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
 #include <stdio.h>
 
 #define Q(x) #x
@@ -33,22 +35,23 @@
 #define PLUGIN_DATA_DIR_ QUOTE(PLUGIN_DATA_DIR)
 #endif
 
-namespace sofa
+
+namespace geomagic
 {
+    extern void registerGeomagicDriver(sofa::core::ObjectFactory* factory);
+    extern void registerGeomagicEmulator(sofa::core::ObjectFactory* factory);
 
-namespace component
-{
+    //Here are just several convenient functions to help user to know what contains the plugin
 
-	//Here are just several convenient functions to help user to know what contains the plugin
-
-	extern "C" {
+    extern "C" {
                 SOFA_GEOMAGIC_API void initExternalModule();
                 SOFA_GEOMAGIC_API const char* getModuleName();
                 SOFA_GEOMAGIC_API const char* getModuleVersion();
                 SOFA_GEOMAGIC_API const char* getModuleLicense();
                 SOFA_GEOMAGIC_API const char* getModuleDescription();
-                SOFA_GEOMAGIC_API const char* getModuleComponentList();
-	}
+                
+                SOFA_GEOMAGIC_API void registerObjects(sofa::core::ObjectFactory* factory);
+    }
 	
 
     void initExternalModule()
@@ -56,37 +59,38 @@ namespace component
         static bool first = true;
         if (first) {
             first = false;
+            // make sure that this plugin is registered into the PluginManager
+            sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
 
             sofa::helper::system::DataRepository.addLastPath(std::string(PLUGIN_DATA_DIR_));
             sofa::helper::system::DataRepository.addLastPath(std::string(PLUGIN_DATA_DIR_) + "/data");
         }
     }
 
-	const char* getModuleName()
-	{
-                 return "Geomagic";
-	}
+    const char* getModuleName()
+    {
+        return MODULE_NAME;
+    }
 
-	const char* getModuleVersion()
-	{
-                return "1.0";
-	}
+    const char* getModuleVersion()
+    {
+        return MODULE_VERSION;
+    }
 
-	const char* getModuleLicense()
-	{
-		return "LGPL";
-	}
+    const char* getModuleLicense()
+    {
+        return "LGPL";
+    }
 
-	const char* getModuleDescription()
-	{
-                return "a module for interfacing Geomagic haptic devices";
-	}
+    const char* getModuleDescription()
+    {
+        return "a module for interfacing Geomagic haptic devices";
+    }
 
-	const char* getModuleComponentList()
-	{
-                return "GeomagicDriver";
-	}
 
+    void registerObjects(sofa::core::ObjectFactory* factory)
+    {
+        registerGeomagicDriver(factory);
+        registerGeomagicEmulator(factory);
+    }
 } 
-} 
-

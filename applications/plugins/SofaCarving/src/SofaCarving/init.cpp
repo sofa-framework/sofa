@@ -21,9 +21,13 @@
 ******************************************************************************/
 #include <SofaCarving/init.h>
 
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+
 namespace sofacarving
 {
 //Here are just several convenient functions to help user to know what contains the plugin
+extern void registerCarvingManager(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_SOFACARVING_API void initExternalModule();
@@ -31,7 +35,7 @@ extern "C" {
     SOFA_SOFACARVING_API const char* getModuleVersion();
     SOFA_SOFACARVING_API const char* getModuleLicense();
     SOFA_SOFACARVING_API const char* getModuleDescription();
-    SOFA_SOFACARVING_API const char* getModuleComponentList();
+    SOFA_SOFACARVING_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -41,12 +45,12 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "SofaCarving";
+    return MODULE_NAME;
 }
 
 const char* getModuleVersion()
 {
-    return "0.3";
+    return MODULE_VERSION;
 }
 
 const char* getModuleLicense()
@@ -54,15 +58,14 @@ const char* getModuleLicense()
     return "LGPL";
 }
 
-
 const char* getModuleDescription()
 {
     return "Manager handling carving operations between a tool and an object.";
 }
 
-const char* getModuleComponentList()
+void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    return "CarvingManager";
+    registerCarvingManager(factory);
 }
 
 void init()
@@ -70,6 +73,9 @@ void init()
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         first = false;
     }
 }

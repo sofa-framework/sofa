@@ -38,7 +38,7 @@
 #include <chrono>
 #include <thread>
 
-namespace sofa::component::controller
+namespace geomagic
 {
 using namespace sofa::type;
 
@@ -219,8 +219,10 @@ void GeomagicEmulator::handleEvent(core::objectmodel::Event *event)
 }
 
 
-int GeomagicEmulatorClass = core::RegisterObject("Driver allowing interfacing with Geomagic haptic devices.")
-.add< GeomagicEmulator >()
-;
+void registerGeomagicEmulator(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Driver emulating a Geomagic haptic device.")
+    .add< GeomagicEmulator >());
+}
 
-} // namespace sofa::component::controller
+} // namespace geomagic

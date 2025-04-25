@@ -286,6 +286,9 @@ constexpr auto make_array(Ts&&... ts) -> fixed_array<std::common_type_t<Ts...>, 
     return { std::forward<Ts>(ts)... };
 }
 
+template <class First, class... Rest>
+fixed_array(First, Rest...) -> fixed_array<std::common_type_t<First, Rest...>, 1 + sizeof...(Rest)>;
+
 /// Builds a fixed_array in which all elements have the same value
 template<typename T, sofa::Size N>
 constexpr sofa::type::fixed_array<T, N> makeHomogeneousArray(const T& value)

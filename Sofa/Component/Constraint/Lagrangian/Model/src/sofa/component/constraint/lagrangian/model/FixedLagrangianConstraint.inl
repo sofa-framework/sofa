@@ -61,7 +61,6 @@ void FixedLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::Con
 
         doBuildConstraintLine(c,i);
     }
-    c_d.endEdit();
 }
 
 template<class DataTypes>

@@ -30,14 +30,12 @@ namespace sofa::core::behavior
  *  \brief Component responsible for timestep integration, i.e. advancing the state from time t to t+dt.
  *
  *  This class currently control both the integration scheme (explicit,
- *  implicit, static, etc), and the linear system resolution algorithm
- *  (conjugate gradient, matrix direct inversion, etc). Those two aspect will
- *  probably be separated in a future version.
+ *  implicit, static, etc).
  *
  *  While all computations required to do the integration step are handled by
  *  this object, they should not be implemented directly in it, but instead
  *  the solver propagates orders (or Visitor) to the other components in the
- *  scenegraph that will locally execute them. This allow for greater
+ *  scenegraph that will locally execute them. This allows for greater
  *  flexibility (the solver can just ask for the forces to be computed without
  *  knowing what type of forces are present), as well as performances
  *  (some computations can be executed in parallel).
@@ -81,7 +79,7 @@ public:
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
     ///
-    /// This method is used to compute the constraint corrections and adapt the resolution if using baumgart type scheme
+    /// This method is used to compute the constraint corrections and adapt the resolution if using Baumgarte type scheme
     /// For example, a backward-Euler dynamic implicit integrator would use:
     /// Input:      x_t  v_t  a_{t+dt}
     /// x_{t+dt}     1    dt  dt^2

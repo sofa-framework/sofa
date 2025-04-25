@@ -28,7 +28,7 @@
 #include <sofa/simulation/InitTasks.h>
 
 
-namespace sofa::component::controller
+namespace geomagic
 {
 
 using namespace sofa::defaulttype;
@@ -104,4 +104,4 @@ public:
     type::Vec3 m_toolPosition;
 };
 
-} // sofa::component::controller
+} // namespace geomagic

@@ -34,13 +34,14 @@
 #include <sofa/gui/component/performer/TopologicalChangeManager.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
-namespace sofa::component::collision
+namespace sofacarving
 {
 
-const int CarvingManagerClass = core::RegisterObject("Manager handling carving operations between a tool and an object.")
-.add< CarvingManager >()
-;
-
+void registerCarvingManager(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Manager handling carving operations between a tool and an object.")
+    .add< CarvingManager >());
+}
 
 CarvingManager::CarvingManager()
     : l_toolModel(initLink("toolModel", "link to the carving collision model, if not set, manager will search for a collision model with tag: CarvingTool."))
@@ -243,4 +244,4 @@ void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
 
 }
 
-} // namespace sofa::component::collision
+} // namespace sofacarving
