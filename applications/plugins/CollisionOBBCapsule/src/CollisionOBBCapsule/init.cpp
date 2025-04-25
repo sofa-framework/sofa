@@ -53,6 +53,7 @@ COLLISIONOBBCAPSULE_API const char* getModuleName();
 COLLISIONOBBCAPSULE_API const char* getModuleVersion();
 COLLISIONOBBCAPSULE_API const char* getModuleLicense();
 COLLISIONOBBCAPSULE_API const char* getModuleDescription();
+COLLISIONOBBCAPSULE_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
