@@ -29,9 +29,11 @@ namespace collisionobbcapsule::geometry
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-int OBBModelClass = sofa::core::RegisterObject("Collision model which represents a set of OBBs")
-        .add< OBBCollisionModel<Rigid3Types> >()
-        ;
+void registerOBBCollisionModel(sofa::core::ObjectFactory* factory)
+{
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Collision model which represents a set of OBBs.")
+        .add< OBBCollisionModel<Rigid3Types> >());
+}
 
 template class COLLISIONOBBCAPSULE_API OBBCollisionModel<Rigid3Types>;
 template class COLLISIONOBBCAPSULE_API TOBB<Rigid3Types>;
