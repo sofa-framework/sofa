@@ -214,6 +214,7 @@ jobs:
           #Need more information. Might be good to
 
       - name: Build
+        id: build-step
         continue-on-error: true
         shell: bash
         run: |
@@ -222,6 +223,7 @@ jobs:
           BUILD_TYPE=$(echo ${{ matrix.os }} | awk -F '_' '{print $3}')
           CONFIG=$(echo ${{ matrix.os }} | awk -F '_' '{print $1"_"$2}')
           NODE_NAME="${{ runner.name }}" # Needed by configure-and-build --> TODO: be able to get hostname multiplatform
+          echo "NODE_NAME=$NODE_NAME" >> $GITHUB_ENV
 
           ## Deal with ci-depends-on
           # Loop over each key-value pair in the JSON avoiding ci repository if inside
@@ -288,6 +290,9 @@ jobs:
                 DOCKER_IMAGE="sofaframework/sofabuilder_${builder_type}:${default_tag}"
               fi
 
+              echo "DOCKER_IMAGE=$DOCKER_IMAGE" >> $GITHUB_ENV
+
+
               echo "Launching configuration and build through docker using image ${DOCKER_IMAGE}. Running ./ci/scripts/configure-and-build.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
@@ -301,24 +306,37 @@ jobs:
         
 
       - name: Notify dashboard
+        if: always()
         shell: bash
         run: |
           #TODO
 
       - name: Launch tests
         continue-on-error: true
-        if: steps.Build.outcome == 'success'
+        if: steps.build-step.outcome == 'success'
         shell: bash
         run: |
-          #TODO
-          #Use new action with workflow call
+          # If os has got docker then use it
+          # Here no need to fetch it because it has already been taken care of in the build step
+          if [[ "${{ matrix.os }}" == *"ubuntu"* ]] || [[ "${{ matrix.os }}" == *"fedora"* ]]; then
+
+              echo "Launching test suite through docker using image ${DOCKER_IMAGE}. Running ./ci/scripts/test.sh /workspace/build/ /workspace/sofa/ /workspace/ci/ ${NODE_NAME} ${{ inputs.python-version }}"
+              docker run --rm \
+                  --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
+                  ${DOCKER_IMAGE} \
+                  /bin/bash -c "env ; cd /workspace; /bin/bash ./ci/scripts/test.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ ${NODE_NAME} ${{ inputs.python-version }} ${{ inputs.with-all-tests }}"             
+          else
+              echo "Launching configuration and build"
+
+              bash ${CI_DIR}/scripts/test.sh "${BUILD_DIR}" "${SRC_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}" "${{ inputs.with-all-tests }}"
+          fi
+          
 
       - name: Publish artifacts
-        if: steps.Build.outcome == 'success' && inputs.generate-binaries == true
+        if: steps.build-step.outcome == 'success' && inputs.generate-binaries == true
         shell: bash
         run: |
           #TODO
-          #Use new action with workflow call
       
       - name: Publish logs
         if: always()
