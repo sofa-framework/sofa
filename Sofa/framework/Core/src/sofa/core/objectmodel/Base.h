@@ -442,8 +442,8 @@ public:
 
 #undef SOFA_BASE_CAST_DEFINITION
 
-    virtual const behavior::BaseLagrangianConstraint* SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() toBaseConstraint() const { return toBaseLagrangianConstraint(); } \
-    virtual       behavior::BaseLagrangianConstraint* SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() toBaseConstraint()       { return toBaseLagrangianConstraint(); }
+    SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() virtual const behavior::BaseLagrangianConstraint* toBaseConstraint() const { return toBaseLagrangianConstraint(); } \
+    SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() virtual       behavior::BaseLagrangianConstraint* toBaseConstraint()       { return toBaseLagrangianConstraint(); }
 
     /// @}
 };
