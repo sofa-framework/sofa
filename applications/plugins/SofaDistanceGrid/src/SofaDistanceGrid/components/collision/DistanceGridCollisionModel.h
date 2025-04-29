@@ -114,7 +114,9 @@ protected:
 
     sofa::type::vector<ElementData> elems;
     bool modified;
-    core::behavior::MechanicalState<defaulttype::RigidTypes>* rigid;
+    core::objectmodel::SingleLink<RigidDistanceGridCollisionModel,
+                                  core::behavior::MechanicalState<defaulttype::RigidTypes>,
+                                  BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STOREPATH> l_rigid;
 
     void updateGrid();
 
@@ -146,8 +148,8 @@ protected:
 
     ~RigidDistanceGridCollisionModel() override;
 public:
-    core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
-    core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
+    core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return l_rigid; }
+    core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return l_rigid; }
 
     void init() override;
 
@@ -437,9 +439,10 @@ protected:
     Data< int > nz; ///< number of values on Z axis
     sofa::core::objectmodel::DataFileName dumpfilename;
 
-    core::behavior::MechanicalState<defaulttype::Vec3Types>* ffd;
+    core::objectmodel::SingleLink<FFDDistanceGridCollisionModel,
+                                  core::behavior::MechanicalState<defaulttype::Vec3Types>,
+                                  BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STOREPATH> l_ffd;
     core::topology::BaseMeshTopology* ffdMesh;
-    //topology::RegularGridTopology* ffdGrid;
     topology::container::grid::RegularGridTopology* ffdRGrid;
     topology::container::grid::SparseGridTopology* ffdSGrid;
 
@@ -457,11 +460,11 @@ protected:
 
     ~FFDDistanceGridCollisionModel() override;
 public:
-    core::behavior::MechanicalState<DataTypes>* getDeformModel() { return ffd; }
+    core::behavior::MechanicalState<DataTypes>* getDeformModel() { return l_ffd; }
     core::topology::BaseMeshTopology* getDeformGrid() { return ffdMesh; }
 
     /// alias used by ContactMapper
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return ffd; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return l_ffd; }
     core::topology::BaseMeshTopology* getCollisionTopology() override { return ffdMesh; }
 
     void init() override;

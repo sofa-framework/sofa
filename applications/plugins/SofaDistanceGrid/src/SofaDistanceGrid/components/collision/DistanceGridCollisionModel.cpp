@@ -86,8 +86,8 @@ RigidDistanceGridCollisionModel::RigidDistanceGridCollisionModel()
     , showGridPoints( initData( &showGridPoints, false, "showGridPoints", "Enable rendering of grid points"))
     , showMinDist ( initData( &showMinDist, 0.0, "showMinDist", "Min distance to render gradients"))
     , showMaxDist ( initData( &showMaxDist, 0.0, "showMaxDist", "Max distance to render gradients"))
+    , l_rigid(initLink("rigidState", "link to a MechanicalObject of Rigid type associated with this collision model"))
 {
-    rigid = NULL;
     addAlias(&fileRigidDistanceGrid,"fileRigidDistanceGrid");
 }
 
@@ -103,7 +103,13 @@ RigidDistanceGridCollisionModel::~RigidDistanceGridCollisionModel()
 void RigidDistanceGridCollisionModel::init()
 {
     this->core::CollisionModel::init();
-    rigid = dynamic_cast< core::behavior::MechanicalState<RigidTypes>* > (getContext()->getMechanicalState());
+
+    if (!l_rigid)
+    {
+        msg_error() << "MechanicalState is empty. Either no MechanicalState object was found in"
+            " current context or the one provided is not using a Rigid type template.";
+        return;
+    }
 
     DistanceGrid* grid = NULL;
     if (fileRigidDistanceGrid.getValue().empty())
@@ -182,9 +188,9 @@ void RigidDistanceGridCollisionModel::updateState()
 
     for (sofa::Size i=0; i<size; i++)
     {
-        if (rigid)
+        if (l_rigid)
         {
-            const RigidTypes::Coord& xform = (rigid->read(core::vec_id::read_access::position)->getValue())[i];
+            const RigidTypes::Coord& xform = (l_rigid->read(core::vec_id::read_access::position)->getValue())[i];
             elems[i].translation = xform.getCenter();
             xform.getOrientation().toMatrix(elems[i].rotation);
             if (useInitRotation)
@@ -444,8 +450,8 @@ FFDDistanceGridCollisionModel::FFDDistanceGridCollisionModel()
     , dumpfilename( initData( &dumpfilename, "dumpfilename","write distance grid to specified file"))
     , usePoints( initData( &usePoints, true, "usePoints", "use mesh vertices for collision detection"))
     , singleContact( initData( &singleContact, false, "singleContact", "keep only the deepest contact in each cell"))
+    , l_ffd(initLink("ffdState", "link to a MechanicalObject of Vec3 type associated with this collision model"))
 {
-    ffd = NULL;
     ffdMesh = NULL;
     ffdRGrid = NULL;
     ffdSGrid = NULL;
@@ -461,11 +467,10 @@ FFDDistanceGridCollisionModel::~FFDDistanceGridCollisionModel()
 void FFDDistanceGridCollisionModel::init()
 {
     this->core::CollisionModel::init();
-    ffd = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
     ffdMesh = getContext()->getMeshTopology();
     ffdRGrid = dynamic_cast< topology::container::grid::RegularGridTopology* > (ffdMesh);
     ffdSGrid = dynamic_cast< topology::container::grid::SparseGridTopology* > (ffdMesh);
-    if (!ffd || (!ffdRGrid && !ffdSGrid))
+    if (!l_ffd || (!ffdRGrid && !ffdSGrid))
     {
         msg_error() << "Requires a Vec3-based deformable model with associated RegularGridTopology or SparseGridTopology";
         return;
@@ -625,7 +630,7 @@ void FFDDistanceGridCollisionModel::updateGrid()
         DeformedCube& cube = getDeformCube( index );
         const sofa::type::vector<core::topology::BaseMeshTopology::Hexa>& cubeCorners = ffdMesh->getHexahedra();
 
-        const Vec3Types::VecCoord& x = ffd->read(core::vec_id::read_access::position)->getValue();
+        const Vec3Types::VecCoord& x = l_ffd->read(core::vec_id::read_access::position)->getValue();
         {
             int e = cube.elem;
             DistanceGrid::Coord center;
