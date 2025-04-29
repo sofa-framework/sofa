@@ -453,8 +453,6 @@ FFDDistanceGridCollisionModel::FFDDistanceGridCollisionModel()
     , l_ffd(initLink("ffdState", "link to a MechanicalObject of Vec3 type associated with this collision model"))
 {
     ffdMesh = NULL;
-    ffdRGrid = NULL;
-    ffdSGrid = NULL;
     addAlias(&fileFFDDistanceGrid,"fileFFDDistanceGrid");
     enum_type = FFDDISTANCE_GRIDE_TYPE;
 }
@@ -468,8 +466,8 @@ void FFDDistanceGridCollisionModel::init()
 {
     this->core::CollisionModel::init();
     ffdMesh = getContext()->getMeshTopology();
-    ffdRGrid = dynamic_cast< topology::container::grid::RegularGridTopology* > (ffdMesh);
-    ffdSGrid = dynamic_cast< topology::container::grid::SparseGridTopology* > (ffdMesh);
+    topology::container::grid::RegularGridTopology* ffdRGrid = dynamic_cast< topology::container::grid::RegularGridTopology* > (ffdMesh);
+    topology::container::grid::SparseGridTopology* ffdSGrid = dynamic_cast< topology::container::grid::SparseGridTopology* > (ffdMesh);
     if (!l_ffd || (!ffdRGrid && !ffdSGrid))
     {
         msg_error() << "Requires a Vec3-based deformable model with associated RegularGridTopology or SparseGridTopology";
