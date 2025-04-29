@@ -442,7 +442,8 @@ protected:
     core::objectmodel::SingleLink<FFDDistanceGridCollisionModel,
                                   core::behavior::MechanicalState<defaulttype::Vec3Types>,
                                   BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STOREPATH> l_ffd;
-    core::topology::BaseMeshTopology* ffdMesh;
+    core::objectmodel::SingleLink<FFDDistanceGridCollisionModel, core::topology::BaseMeshTopology,
+                                  BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STOREPATH> l_ffdMesh;
 
     void updateGrid();
 public:
@@ -459,11 +460,11 @@ protected:
     ~FFDDistanceGridCollisionModel() override;
 public:
     core::behavior::MechanicalState<DataTypes>* getDeformModel() { return l_ffd; }
-    core::topology::BaseMeshTopology* getDeformGrid() { return ffdMesh; }
+    core::topology::BaseMeshTopology* getDeformGrid() { return l_ffdMesh; }
 
     /// alias used by ContactMapper
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return l_ffd; }
-    core::topology::BaseMeshTopology* getCollisionTopology() override { return ffdMesh; }
+    core::topology::BaseMeshTopology* getCollisionTopology() override { return l_ffdMesh; }
 
     void init() override;
 

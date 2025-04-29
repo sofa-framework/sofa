@@ -451,8 +451,8 @@ FFDDistanceGridCollisionModel::FFDDistanceGridCollisionModel()
     , usePoints( initData( &usePoints, true, "usePoints", "use mesh vertices for collision detection"))
     , singleContact( initData( &singleContact, false, "singleContact", "keep only the deepest contact in each cell"))
     , l_ffd(initLink("ffdState", "link to a MechanicalObject of Vec3 type associated with this collision model"))
+    , l_ffdMesh(initLink("topology", "link to the topological mesh associated with this collision model"))
 {
-    ffdMesh = NULL;
     addAlias(&fileFFDDistanceGrid,"fileFFDDistanceGrid");
     enum_type = FFDDISTANCE_GRIDE_TYPE;
 }
@@ -465,9 +465,13 @@ FFDDistanceGridCollisionModel::~FFDDistanceGridCollisionModel()
 void FFDDistanceGridCollisionModel::init()
 {
     this->core::CollisionModel::init();
-    ffdMesh = getContext()->getMeshTopology();
-    topology::container::grid::RegularGridTopology* ffdRGrid = dynamic_cast< topology::container::grid::RegularGridTopology* > (ffdMesh);
-    topology::container::grid::SparseGridTopology* ffdSGrid = dynamic_cast< topology::container::grid::SparseGridTopology* > (ffdMesh);
+    if (l_ffdMesh.empty())
+    {
+        msg_warning() << "link to Topology should be set to a RegularGridTopology or SparseGridTopology. First Topology found in context will be used";
+        l_ffdMesh.set(this->getContext()->getMeshTopologyLink());
+    }
+    topology::container::grid::RegularGridTopology* ffdRGrid = dynamic_cast< topology::container::grid::RegularGridTopology* > (l_ffdMesh.get());
+    topology::container::grid::SparseGridTopology* ffdSGrid = dynamic_cast< topology::container::grid::SparseGridTopology* > (l_ffdMesh.get());
     if (!l_ffd || (!ffdRGrid && !ffdSGrid))
     {
         msg_error() << "Requires a Vec3-based deformable model with associated RegularGridTopology or SparseGridTopology";
@@ -493,8 +497,8 @@ void FFDDistanceGridCollisionModel::init()
     }
     /// place points in ffd elements
     int nbp = grid->meshPts.size();
-    elems.resize(ffdMesh->getNbHexahedra());
-    msg_info() << "Placing "<<nbp<<" points in "<<ffdMesh->getNbHexahedra()<<" cubes.";
+    elems.resize(l_ffdMesh->getNbHexahedra());
+    msg_info() << "Placing "<<nbp<<" points in "<<l_ffdMesh->getNbHexahedra()<<" cubes.";
 
     for (int i=0; i<nbp; i++)
     {
@@ -519,9 +523,9 @@ void FFDDistanceGridCollisionModel::init()
     }
     /// fill other data and remove inactive elements
 
-    msg_info() << "Initializing "<<ffdMesh->getNbHexahedra()<<" cubes.";
+    msg_info() << "Initializing "<<l_ffdMesh->getNbHexahedra()<<" cubes.";
     sofa::Size c=0;
-    for (sofa::Size e=0; e<ffdMesh->getNbHexahedra(); e++)
+    for (sofa::Size e=0; e<l_ffdMesh->getNbHexahedra(); e++)
     {
         if (c != e)
             elems[c].points.swap(elems[e].points); // move the list of points to the new
@@ -531,8 +535,8 @@ void FFDDistanceGridCollisionModel::init()
         { int t = cube[2]; cube[2] = cube[3]; cube[3] = t; }
         { int t = cube[6]; cube[6] = cube[7]; cube[7] = t; }
 
-        elems[c].initP0 = GCoord(ffdMesh->getPX(cube[0]), ffdMesh->getPY(cube[0]), ffdMesh->getPZ(cube[0]));
-        elems[c].initDP = GCoord(ffdMesh->getPX(cube[7]), ffdMesh->getPY(cube[7]), ffdMesh->getPZ(cube[7]))-elems[c].initP0;
+        elems[c].initP0 = GCoord(l_ffdMesh->getPX(cube[0]), l_ffdMesh->getPY(cube[0]), l_ffdMesh->getPZ(cube[0]));
+        elems[c].initDP = GCoord(l_ffdMesh->getPX(cube[7]), l_ffdMesh->getPY(cube[7]), l_ffdMesh->getPZ(cube[7]))-elems[c].initP0;
         elems[c].invDP[0] = 1/elems[c].initDP[0];
         elems[c].invDP[1] = 1/elems[c].initDP[1];
         elems[c].invDP[2] = 1/elems[c].initDP[2];
@@ -543,7 +547,7 @@ void FFDDistanceGridCollisionModel::init()
 
     /// compute neighbors
     type::vector<std::set<int> > shells;
-    shells.resize(ffdMesh->getNbPoints());
+    shells.resize(l_ffdMesh->getNbPoints());
     for (unsigned i = 0; i < elems.size(); ++i)
     {
         int e = elems[i].elem;
@@ -626,7 +630,7 @@ void FFDDistanceGridCollisionModel::updateGrid()
     for (sofa::Size index=0; index<size; index++)
     {
         DeformedCube& cube = getDeformCube( index );
-        const sofa::type::vector<core::topology::BaseMeshTopology::Hexa>& cubeCorners = ffdMesh->getHexahedra();
+        const sofa::type::vector<core::topology::BaseMeshTopology::Hexa>& cubeCorners = l_ffdMesh->getHexahedra();
 
         const Vec3Types::VecCoord& x = l_ffd->read(core::vec_id::read_access::position)->getValue();
         {
