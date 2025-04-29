@@ -443,8 +443,6 @@ protected:
                                   core::behavior::MechanicalState<defaulttype::Vec3Types>,
                                   BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STOREPATH> l_ffd;
     core::topology::BaseMeshTopology* ffdMesh;
-    topology::container::grid::RegularGridTopology* ffdRGrid;
-    topology::container::grid::SparseGridTopology* ffdSGrid;
 
     void updateGrid();
 public:
