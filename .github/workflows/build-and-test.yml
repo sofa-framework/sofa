@@ -326,7 +326,7 @@ jobs:
                   ${DOCKER_IMAGE} \
                   /bin/bash -c "env ; cd /workspace; /bin/bash ./ci/scripts/test.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ ${NODE_NAME} ${{ inputs.python-version }} ${{ inputs.with-all-tests }}"             
           else
-              echo "Launching configuration and build"
+              echo "Launching test suite"
 
               bash ${CI_DIR}/scripts/test.sh "${BUILD_DIR}" "${SRC_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}" "${{ inputs.with-all-tests }}"
           fi
@@ -338,9 +338,18 @@ jobs:
         run: |
           #TODO
       
-      - name: Publish logs
+      - name: Publish build logs
         if: always()
-        shell: bash
-        run: |
-          #TODO
-          #Use new action with workflow call
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: |
+            $${{ env.BUILD_DIR }}/build/make-output.txt
+
+      - name: Publish tests logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests-logs
+          path: |
+             $${{ env.BUILD_DIR }}/build/tests_results/
