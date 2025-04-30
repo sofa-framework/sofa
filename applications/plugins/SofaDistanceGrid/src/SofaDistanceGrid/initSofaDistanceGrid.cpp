@@ -24,15 +24,28 @@
 #include "components/forcefield/DistanceGridForceField.h"
 #include "RegisterModelToCollisionFactory.h"
 
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+
+namespace sofa::component::forcefield
+{
+    extern void registerDistanceGridForceField(sofa::core::ObjectFactory* factory);
+}
+namespace sofa::component::collision
+{
+    extern void registerRigidDistanceGridCollisionModel(sofa::core::ObjectFactory* factory);
+    extern void registerFFDDistanceGridCollisionModel(sofa::core::ObjectFactory* factory);
+}
+
 namespace sofadistancegrid
 {
 extern "C" {
-SOFA_SOFADISTANCEGRID_API void initExternalModule();
-SOFA_SOFADISTANCEGRID_API const char* getModuleName();
-SOFA_SOFADISTANCEGRID_API const char* getModuleVersion();
-SOFA_SOFADISTANCEGRID_API const char* getModuleLicense();
-SOFA_SOFADISTANCEGRID_API const char* getModuleDescription();
-SOFA_SOFADISTANCEGRID_API const char* getModuleComponentList();
+    SOFA_SOFADISTANCEGRID_API void initExternalModule();
+    SOFA_SOFADISTANCEGRID_API const char* getModuleName();
+    SOFA_SOFADISTANCEGRID_API const char* getModuleVersion();
+    SOFA_SOFADISTANCEGRID_API const char* getModuleLicense();
+    SOFA_SOFADISTANCEGRID_API const char* getModuleDescription();
+    SOFA_SOFADISTANCEGRID_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -47,6 +60,9 @@ void initSofaDistanceGrid()
     {
         first = false;
     }
+    // make sure that this plugin is registered into the PluginManager
+    sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
     sofa::component::collision::registerDistanceGridCollisionModel();
 }
 
@@ -70,6 +86,13 @@ const char* getModuleDescription()
     return "A distance grid stores the distance to an object into a 3d regular grid.  "
            "This is an efficient data structure to get a distance approximation for   "
            "point in space. This is why it is often used to implement collisions.     ";
+}
+
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    sofa::component::forcefield::registerDistanceGridForceField(factory);
+    sofa::component::collision::registerRigidDistanceGridCollisionModel(factory);
+    sofa::component::collision::registerFFDDistanceGridCollisionModel(factory);
 }
 
 } /// namespace sofadistancegrid
