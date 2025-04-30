@@ -20,11 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaImplicitField/config.h>
-
-#include "initSofaImplicitField.h"
-#include "components/geometry/ScalarField.h"
-#include "components/geometry/SphericalField.h"
-#include "components/geometry/DiscreteGridField.h"
+#include <SofaImplicitField/initSofaImplicitField.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -54,6 +50,7 @@ namespace sofa::component::geometry::_discretegrid_
 {
     extern void registerDiscreteGridField(sofa::core::ObjectFactory* factory);
 }
+
 
 namespace sofaimplicitfield
 {
@@ -112,4 +109,3 @@ void registerObjects(sofa::core::ObjectFactory* factory)
 }
 
 } /// sofaimplicitfield
-

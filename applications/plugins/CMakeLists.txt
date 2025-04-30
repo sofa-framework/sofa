@@ -69,4 +69,4 @@ else()
 endif()
 
 sofa_add_subdirectory(plugin SofaDistanceGrid SofaDistanceGrid) # Also defines SofaDistanceGrid.CUDA
-sofa_add_subdirectory(plugin SofaImplicitField SofaImplicitField) # Depends on SofaDistanceGrid
+sofa_add_subdirectory(plugin SofaImplicitField SofaImplicitField)
