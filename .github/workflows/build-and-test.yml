@@ -344,7 +344,7 @@ jobs:
         with:
           name: build-logs
           path: |
-            $${{ env.BUILD_DIR }}/make-output.txt
+            ${{ env.BUILD_DIR }}/make-output.txt
 
       - name: Publish tests logs
         if: always()
@@ -352,4 +352,4 @@ jobs:
         with:
           name: tests-logs
           path: |
-             $${{ env.BUILD_DIR }}/tests_results/
+             ${{ env.BUILD_DIR }}/tests_results/
