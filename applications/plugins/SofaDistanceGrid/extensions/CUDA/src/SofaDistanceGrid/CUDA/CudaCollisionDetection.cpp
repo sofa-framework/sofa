@@ -39,9 +39,11 @@ extern "C"
     void CudaCollisionDetection_runTests(unsigned int nbTests, unsigned int maxPoints, const void* tests, void* nresults);
 }
 
-int CudaCollisionDetectionClass = core::RegisterObject("GPU-based collision detection using CUDA")
-        .add< CudaCollisionDetection >()
-        ;
+void registerCudaCollisionDetection(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("GPU-based collision detection using CUDA.")
+    .add< CudaCollisionDetection >());
+}
 
 void CudaCollisionDetection::beginNarrowPhase()
 {

@@ -22,15 +22,46 @@
 #include <SofaImplicitField/config.h>
 #include <SofaImplicitField/initSofaImplicitField.h>
 
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager ;
+
+namespace sofa::component::geometry::_BottleField_
+{
+    extern void registerBottleField(sofa::core::ObjectFactory* factory);
+}
+namespace sofa::component::geometry::_sphericalfield_
+{
+    extern void registerSphericalField(sofa::core::ObjectFactory* factory);
+}
+namespace sofa::component::geometry::_StarShapedField_
+{
+    extern void registerStarShapedField(sofa::core::ObjectFactory* factory);
+}
+namespace sofa::component::mapping
+{
+    extern void registerImplicitSurfaceMapping(sofa::core::ObjectFactory* factory);
+}
+namespace sofa::component::container
+{
+    extern void registerInterpolatedImplicitSurface(sofa::core::ObjectFactory* factory);
+}
+namespace sofa::component::geometry::_discretegrid_
+{
+    extern void registerDiscreteGridField(sofa::core::ObjectFactory* factory);
+}
+
+
 namespace sofaimplicitfield
 {
 
 extern "C" {
-SOFA_SOFAIMPLICITFIELD_API void initExternalModule();
-SOFA_SOFAIMPLICITFIELD_API const char* getModuleName();
-SOFA_SOFAIMPLICITFIELD_API const char* getModuleVersion();
-SOFA_SOFAIMPLICITFIELD_API const char* getModuleLicense();
-SOFA_SOFAIMPLICITFIELD_API const char* getModuleDescription();
+    SOFA_SOFAIMPLICITFIELD_API void initExternalModule();
+    SOFA_SOFAIMPLICITFIELD_API const char* getModuleName();
+    SOFA_SOFAIMPLICITFIELD_API const char* getModuleVersion();
+    SOFA_SOFAIMPLICITFIELD_API const char* getModuleLicense();
+    SOFA_SOFAIMPLICITFIELD_API const char* getModuleDescription();
+    SOFA_SOFAIMPLICITFIELD_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -38,6 +69,9 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         first = false;
     }
 }
@@ -64,5 +98,14 @@ const char* getModuleDescription()
            "The surface is then defined as f(x) = aConstant.";
 }
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    sofa::component::geometry::_BottleField_::registerBottleField(factory);
+    sofa::component::geometry::_sphericalfield_::registerSphericalField(factory);
+    sofa::component::geometry::_StarShapedField_::registerStarShapedField(factory);
+    sofa::component::mapping::registerImplicitSurfaceMapping(factory);
+    sofa::component::container::registerInterpolatedImplicitSurface(factory);
+    sofa::component::geometry::_discretegrid_::registerDiscreteGridField(factory);
 }
 
+} /// sofaimplicitfield

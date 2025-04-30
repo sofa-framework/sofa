@@ -47,17 +47,17 @@ namespace component
 namespace collision
 {
 
-int RigidDistanceGridCollisionModelClass = core::RegisterObject("Grid-based distance field")
-        .add< RigidDistanceGridCollisionModel >()
-        .addAlias("DistanceGridCollisionModel")
-        .addAlias("RigidDistanceGrid")
-        .addAlias("DistanceGrid")
-        ;
-
-int FFDDistanceGridCollisionModelClass = core::RegisterObject("Grid-based deformable distance field")
-        .add< FFDDistanceGridCollisionModel >()
-        .addAlias("FFDDistanceGrid")
-        ;
+void registerRigidDistanceGridCollisionModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Grid-based distance field.")
+    .add< RigidDistanceGridCollisionModel >());
+}
+      
+void registerFFDDistanceGridCollisionModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Grid-based deformable distance field.")
+    .add< FFDDistanceGridCollisionModel >());
+}
 
 using namespace sofa::type;
 using namespace defaulttype;

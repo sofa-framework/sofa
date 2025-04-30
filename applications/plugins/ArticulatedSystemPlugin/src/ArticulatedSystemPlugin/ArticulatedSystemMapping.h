@@ -31,7 +31,7 @@
 
 #include <vector>
 
-namespace sofa::component::mapping
+namespace articulatedsystemplugin
 {
 
 template <class TIn, class TInRoot, class TOut>
@@ -217,9 +217,8 @@ public:
     /**
     *	Stores al the articulation centers
     */
-    std::vector< sofa::component::container::ArticulationCenter* > articulationCenters;
-
-    container::ArticulatedHierarchyContainer* ahc;
+    std::vector< ArticulationCenter* > articulationCenters;
+    ArticulatedHierarchyContainer* ahc;
 
 private:
     core::State<In>* m_fromModel;
@@ -227,7 +226,7 @@ private:
     core::State<InRoot>* m_fromRootModel;
 
     SingleLink<ArticulatedSystemMapping<TIn, TInRoot, TOut>,
-                sofa::component::container::ArticulatedHierarchyContainer,
+                ArticulatedHierarchyContainer,
                 BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK>            l_container;
     Data<sofa::Index> d_indexFromRoot; ///< Corresponding index if the base of the articulated system is attached to input2. Default is last index.
 
@@ -252,4 +251,5 @@ extern template class SOFA_ARTICULATEDSYSTEMPLUGIN_API ArticulatedSystemMapping<
 
 #endif
 
-} //namespace sofa::component::mapping
+} //namespace articulatedsystemplugin
+

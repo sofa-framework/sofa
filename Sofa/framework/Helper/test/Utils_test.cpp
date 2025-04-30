@@ -81,6 +81,12 @@ TEST(UtilsTest, getSofaUserLocalDirectory)
     EXPECT_TRUE(path.find("SOFA") != std::string::npos);
 }
 
+TEST(UtilsTest, getSofaDataDirectory)
+{
+    const std::string path = Utils::getSofaDataDirectory();
+    EXPECT_TRUE(path.find("SOFAData") != std::string::npos);
+}
+
 TEST(UtilsTest, readBasicIniFile_nonexistentFile)
 {
     // this test will raise an error on purpose

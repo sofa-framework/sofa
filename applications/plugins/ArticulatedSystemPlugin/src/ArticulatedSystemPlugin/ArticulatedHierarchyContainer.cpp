@@ -23,22 +23,27 @@
 #include <ArticulatedSystemPlugin/ArticulatedHierarchyContainer.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::container
+namespace articulatedsystemplugin
 {
 
 // Register in the Factory
-int ArticulatedHierarchyContainerClass = core::RegisterObject("This class allow to store and retrieve all the articulation centers from an articulated rigid object")
-        .add< ArticulatedHierarchyContainer >()
-        ;
+void registerArticulatedHierarchyContainer(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("This class allow to store and retrieve all the articulation centers from an articulated rigid object.")
+    .add< ArticulatedHierarchyContainer >());
+}
 
-// Register in the Factory
-int ArticulationCenterClass = core::RegisterObject("This class defines an articulation center. This contains a set of articulations.")
-        .add< ArticulationCenter >()
-        ;
+void registerArticulationCenter(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("This class defines an articulation center. This contains a set of articulations.")
+    .add< ArticulationCenter >());
+}
 
-// Register in the Factory
-int ArticulationClass = core::RegisterObject("This class defines an articulation by an axis, an orientation and an index.")
-        .add< Articulation >()
-        ;
+void registerArticulation(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("This class defines an articulation by an axis, an orientation and an index.")
+    .add< Articulation >());
+}
 
-} // namespace sofa::component::container
+} // namespace articulatedsystemplugin
+
