@@ -45,7 +45,6 @@ if(SOFA_BUILD_TESTS)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_compile_options(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAIMPLICITFIELD")
 target_link_libraries(${PROJECT_NAME} PRIVATE Sofa.Component.Topology.Container.Constant)
 
 
