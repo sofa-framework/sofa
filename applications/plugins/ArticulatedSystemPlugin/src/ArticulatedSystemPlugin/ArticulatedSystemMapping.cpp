@@ -25,16 +25,20 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::mapping
+namespace articulatedsystemplugin
 {
 
 using namespace sofa::defaulttype;
 
 // Register in the Factory
-int ArticulatedSystemMappingClass = core::RegisterObject("Mapping between a set of 6D DOF's and a set of angles (µ) using an articulated hierarchy container. ")
-        .add< ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types > >();
+void registerArticulatedSystemMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Mapping between a set of 6D DOF's and a set of angles (µ) using an articulated hierarchy container.")
+    .add< ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types > >());
+}
 
 template class SOFA_ARTICULATEDSYSTEMPLUGIN_API ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types >;
 
 
-} //namespace sofa::component::mapping
+} //namespace articulatedsystemplugin
+

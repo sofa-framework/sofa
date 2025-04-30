@@ -40,7 +40,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::controller
+namespace articulatedsystemplugin
 {
 
 void ArticulatedHierarchyBVHController::init()
@@ -167,7 +167,11 @@ void ArticulatedHierarchyBVHController::applyController(void)
 }
 
 // Register in the Factory
-int ArticulatedHierarchyBVHControllerClass = core::RegisterObject("Implements a handler that controls the values of the articulations of an articulated hierarchy container using a .bvh file.")
-        .add< ArticulatedHierarchyBVHController >()
-        ;
-} // namespace sofa::component::controller
+void registerArticulatedHierarchyBVHController(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Implements a handler that controls the values of the articulations of an articulated hierarchy container using a .bvh file.")
+    .add< ArticulatedHierarchyBVHController >());
+}
+
+} // namespace articulatedsystemplugin
+
