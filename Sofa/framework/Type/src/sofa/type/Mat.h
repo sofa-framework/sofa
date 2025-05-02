@@ -192,7 +192,16 @@ public:
     template<typename real2>
     explicit constexpr Mat(const real2* p) noexcept
     {
-        std::copy(p, p+N, this->begin()->begin());
+        if constexpr (sizeof(real2) == sizeof(real))
+        {
+            std::copy_n(p, N, this->ptr());
+        }
+        else
+        {
+            for (Size l = 0; l < L; ++l)
+                for (Size c = 0; c < C; ++c)
+                    this->elems[l][c] = static_cast<real>(p[l*C + c]);
+        }
     }
 
     /// number of lines
@@ -211,7 +220,7 @@ public:
     /// Assignment from an array of elements (stored per line).
     constexpr void operator=(const real* p) noexcept
     {
-        std::copy(p, p+N, this->begin()->begin());
+        std::copy_n(p, N, this->ptr());
     }
 
     /// Assignment from another matrix
