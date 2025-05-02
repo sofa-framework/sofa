@@ -38,7 +38,7 @@
 
         <MechanicalObject />
         <UniformMass totalMass="1000.0" />
-        <SparseGridTopology n="8 6 6" filename="mesh/liver-smooth.obj" />
+        <SparseGridTopology name="grid" n="8 6 6" filename="mesh/liver-smooth.obj" />
         <BoxROI name="box1" box="-2.5 0 -2.5 7.5 3 2" />
         <FixedProjectiveConstraint indices="@box1.indices"/>
         <HexahedronFEMForceField poissonRatio="0" youngModulus="7000"/>
@@ -49,6 +49,7 @@
             proximity="0.1" 
             contactStiffness="500.0" 
             contactFriction="0.0" 
+            topology="@grid"
         />
         <Node name="Visu">
             <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" translation="0 0 0" handleSeams="1" />
