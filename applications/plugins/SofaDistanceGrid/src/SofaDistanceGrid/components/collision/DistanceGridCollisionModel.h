@@ -34,6 +34,7 @@
 #include <sofa/component/topology/container/grid/SparseGridTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
 #include "../../DistanceGrid.h"
 
@@ -86,9 +87,10 @@ public:
 };
 
 class SOFA_SOFADISTANCEGRID_API RigidDistanceGridCollisionModel : public core::CollisionModel
+    , public core::behavior::SingleStateAccessor<defaulttype::Rigid3Types>
 {
 public:
-    SOFA_CLASS(RigidDistanceGridCollisionModel,sofa::core::CollisionModel);
+    SOFA_CLASS2(RigidDistanceGridCollisionModel, sofa::core::CollisionModel, SOFA_TEMPLATE(SingleStateAccessor, defaulttype::Rigid3Types));
 
 protected:
 
@@ -114,10 +116,6 @@ protected:
 
     sofa::type::vector<ElementData> elems;
     bool modified;
-    core::objectmodel::SingleLink<RigidDistanceGridCollisionModel,
-                                  core::behavior::MechanicalState<defaulttype::RigidTypes>,
-                                  BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STOREPATH> l_rigid;
-
     void updateGrid();
 
 public:
@@ -148,8 +146,8 @@ protected:
 
     ~RigidDistanceGridCollisionModel() override;
 public:
-    core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return l_rigid; }
-    core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return l_rigid; }
+    core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return this->mstate ; }
+    core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return this->mstate ; }
 
     void init() override;
 
@@ -278,9 +276,10 @@ public:
 };
 
 class SOFA_SOFADISTANCEGRID_API FFDDistanceGridCollisionModel : public core::CollisionModel
+    , public core::behavior::SingleStateAccessor<defaulttype::Vec3Types>
 {
 public:
-    SOFA_CLASS(FFDDistanceGridCollisionModel,sofa::core::CollisionModel);
+    SOFA_CLASS2(FFDDistanceGridCollisionModel, sofa::core::CollisionModel, SOFA_TEMPLATE(SingleStateAccessor, defaulttype::Vec3Types));
 
     typedef SReal GSReal;
     typedef DistanceGrid::Coord GCoord;
@@ -439,11 +438,8 @@ protected:
     Data< int > nz; ///< number of values on Z axis
     sofa::core::objectmodel::DataFileName dumpfilename;
 
-    core::objectmodel::SingleLink<FFDDistanceGridCollisionModel,
-                                  core::behavior::MechanicalState<defaulttype::Vec3Types>,
-                                  BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STOREPATH> l_ffd;
     core::objectmodel::SingleLink<FFDDistanceGridCollisionModel, core::topology::BaseMeshTopology,
-                                  BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STOREPATH> l_ffdMesh;
+                                  BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_ffdMesh;
 
     void updateGrid();
 public:
@@ -459,11 +455,11 @@ protected:
 
     ~FFDDistanceGridCollisionModel() override;
 public:
-    core::behavior::MechanicalState<DataTypes>* getDeformModel() { return l_ffd; }
+    core::behavior::MechanicalState<DataTypes>* getDeformModel() { return this->mstate; }
     core::topology::BaseMeshTopology* getDeformGrid() { return l_ffdMesh; }
 
     /// alias used by ContactMapper
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return l_ffd; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->mstate; }
     core::topology::BaseMeshTopology* getCollisionTopology() override { return l_ffdMesh; }
 
     void init() override;
