@@ -56,36 +56,25 @@ ConstantForceField<DataTypes>::ConstantForceField()
         return updateFromIndices();
     }, {});
 
-    sofa::core::objectmodel::Base::addUpdateCallback("updateFromForcesVector", {&d_forces, &d_indices}, [this](const core::DataTracker& )
+    sofa::core::objectmodel::Base::addUpdateCallback("updateFromForcesVector", {&d_forces, &d_totalForce, &d_indices}, [this](const core::DataTracker& tracker)
     {
-        if(m_initMethod == InitMethod::FORCESVECTOR)
-        {
-            msg_info() << "dataInternalUpdate: data forces has changed";
-            return updateFromForcesVector();
-        }
-        else if(m_initMethod == InitMethod::TOTALFORCE)
-        {
+        switch(m_initMethod){
+        case InitMethod::FORCESVECTOR:
+            if(tracker.hasChanged(d_forces) || tracker.hasChanged(d_indices))
+            {
+                msg_info() << "dataInternalUpdate: update from forces  indices";
+                return updateFromForcesVector();
+            }
+            msg_info() << "force data is initially used, the callback associated with the totalForces vector is skipped";
+        case InitMethod::TOTALFORCE:
+            if(tracker.hasChanged(d_totalForce) || tracker.hasChanged(d_indices))
+            {
+                msg_info() << "dataInternalUpdate: update from totalForce and indices";
+                return updateFromTotalForce();
+            }
             msg_info() << "totalForce data is initially used, the callback associated with the forces vector is skipped";
-            return updateFromTotalForce();
         }
-        else
-            return sofa::core::objectmodel::ComponentState::Invalid;
-    }, {});
-
-    sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalForce", {&d_totalForce, &d_indices}, [this](const core::DataTracker& )
-    {
-        if(m_initMethod == InitMethod::TOTALFORCE)
-        {
-            msg_info() << "dataInternalUpdate: data totalForce has changed";
-            return updateFromTotalForce();
-        }
-        else if(m_initMethod == InitMethod::FORCESVECTOR)
-        {
-            msg_info() << "forces data is initially used, the callback associated with the totalForce is skipped";
-            return updateFromForcesVector();
-        }
-        else
-            return sofa::core::objectmodel::ComponentState::Invalid;
+        return this->getComponentState();
     }, {});
 }
 
