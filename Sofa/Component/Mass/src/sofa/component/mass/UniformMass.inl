@@ -96,7 +96,7 @@ UniformMass<DataTypes>::UniformMass()
                 msg_info() << "dataInternalUpdate: data vertexMass has changed";
                 return updateFromVertexMass();
             }
-            msg_info() << "totalMass data is initially used, updating from a vertexMass change is disabled";
+            msg_info() << "vertexMass data is initially used, updating from a totalMass change is disabled";
         }
         return this->getComponentState();
     }, {});
