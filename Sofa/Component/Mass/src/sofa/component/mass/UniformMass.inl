@@ -79,38 +79,26 @@ UniformMass<DataTypes>::UniformMass()
 {
     constructor_message();
 
-
-    sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalMass", {&d_totalMass}, [this](const core::DataTracker& )
+    sofa::core::objectmodel::Base::addUpdateCallback("updateMass", {&d_totalMass, &d_vertexMass}, [this](const core::DataTracker& tracker)
     {
-        if(m_initMethod == InitMethod::TOTALMASS)
+        switch(m_initMethod)
         {
-            msg_info() << "dataInternalUpdate: data totalMass has changed";
-            return updateFromTotalMass();
+        case InitMethod::TOTALMASS:
+            if(tracker.hasChanged(d_totalMass))
+            {
+                msg_info() << "dataInternalUpdate: data totalMass has changed";
+                return updateFromTotalMass();
+            }
+            msg_info() << "totalMass data is initially used, updating from a vertexMass change is disabled";
+        case InitMethod::VERTEXMASS:
+            if(tracker.hasChanged(d_vertexMass))
+            {
+                msg_info() << "dataInternalUpdate: data vertexMass has changed";
+                return updateFromVertexMass();
+            }
+            msg_info() << "totalMass data is initially used, updating from a vertexMass change is disabled";
         }
-        else if(m_initMethod == InitMethod::VERTEXMASS)
-        {
-            msg_info() << "vertexMass data is initially used, the callback associated with the totalMass is skipped";
-            return updateFromVertexMass();
-        }
-        else
-            return sofa::core::objectmodel::ComponentState::Invalid;
-    }, {});
-
-
-    sofa::core::objectmodel::Base::addUpdateCallback("updateFromVertexMass", {&d_vertexMass}, [this](const core::DataTracker& )
-    {
-        if(m_initMethod == InitMethod::VERTEXMASS)
-        {
-            msg_info() << "dataInternalUpdate: data vertexMass has changed";
-            return updateFromVertexMass();
-        }
-        else if(m_initMethod == InitMethod::TOTALMASS)
-        {
-            msg_info() << "totalMass data is initially used, the callback associated with the vertexMass is skipped";
-            return updateFromTotalMass();
-        }
-        else
-            return sofa::core::objectmodel::ComponentState::Invalid;
+        return this->getComponentState();
     }, {});
 }
 
