@@ -75,6 +75,11 @@ void MeshBoundaryROI::init()
         }
     }
 
+    if (!d_triangles.isSet() && !d_quads.isSet())
+    {
+        msg_warning() << "No topology given. No mesh to process.\n";
+    }
+
     setDirtyValue();
 }
 
