@@ -53,7 +53,7 @@ set(EXTRA_FILES
     examples/FFDDistanceGridCollisionModel_liver_FreeMotionAnimationLoop.scn
     examples/RigidDistanceGridCollisionModel_liver_DefaultAnimationLoop.scn
     examples/RigidDistanceGridCollisionModel_liver_FreeMotionAnimationLoop.scn
-    examples/RigidDistanceGridCollisionModel_skull_FreeMotionAnimationLoop.scn
+    #examples/RigidDistanceGridCollisionModel_skull_FreeMotionAnimationLoop.scn
     )
 
 
