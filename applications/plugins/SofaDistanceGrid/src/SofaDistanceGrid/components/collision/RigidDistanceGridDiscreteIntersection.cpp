@@ -65,8 +65,8 @@ bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCo
 int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, RigidDistanceGridCollisionElement& e2, OutputVector* contacts, const core::collision::Intersection* intersection)
 {
     int nc = 0;
-    DistanceGrid* grid1 = e1.getGrid();
-    DistanceGrid* grid2 = e2.getGrid();
+    const std::shared_ptr<DistanceGrid> grid1 = e1.getGrid();
+    const std::shared_ptr<DistanceGrid> grid2 = e2.getGrid();
     bool useXForm = e1.isTransformed() || e2.isTransformed();
     const type::Vec3& t1 = e1.getTranslation();
     const Matrix3& r1 = e1.getRotation();
@@ -556,7 +556,7 @@ bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCo
 
 int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Point& e2, OutputVector* contacts, const core::collision::Intersection* intersection)
 {
-    DistanceGrid* grid1 = e1.getGrid();
+    const std::shared_ptr<DistanceGrid> grid1 = e1.getGrid();
     bool useXForm = e1.isTransformed();
     const type::Vec3& t1 = e1.getTranslation();
     const Matrix3& r1 = e1.getRotation();
@@ -621,7 +621,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 {
     const int f2 = e2.flags();
     if (!(f2&(TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS|TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_BEDGES))) return 0; // no points associated with this triangle
-    DistanceGrid* grid1 = e1.getGrid();
+    const std::shared_ptr<DistanceGrid> grid1 = e1.getGrid();
     const bool useXForm = e1.isTransformed();
     const type::Vec3& t1 = e1.getTranslation();
     const Matrix3& r1 = e1.getRotation();
@@ -730,7 +730,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 {
     const int f2 = e2.flags();
     if (!(f2&LineCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS)) return 0; // no points associated with this line
-    DistanceGrid* grid1 = e1.getGrid();
+    const std::shared_ptr<DistanceGrid> grid1 = e1.getGrid();
     const bool useXForm = e1.isTransformed();
     const type::Vec3& t1 = e1.getTranslation();
     const Matrix3& r1 = e1.getRotation();
@@ -797,7 +797,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(Ray& e2, RigidDis
     const double rayLength = e2.l();
 
     int nc = 0;
-    DistanceGrid* grid1 = e1.getGrid();
+    const std::shared_ptr<DistanceGrid> grid1 = e1.getGrid();
     bool useXForm = e1.isTransformed();
 
     if (useXForm)
