@@ -19,10 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef VOLUMETRICRENDERING_CONFIG_H
-#define VOLUMETRICRENDERING_CONFIG_H
+#pragma once
 
 #include <sofa/config.h>
+
+using namespace sofa;
 
 #define VOLUMETRICRENDERING_VERSION @PROJECT_VERSION@
 
@@ -39,4 +40,3 @@ namespace volumetricrendering
     constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 }
 
-#endif
