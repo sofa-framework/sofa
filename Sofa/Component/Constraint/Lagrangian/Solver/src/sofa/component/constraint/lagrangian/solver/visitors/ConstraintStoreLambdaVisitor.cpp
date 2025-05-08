@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseLagrangianConstraint.h>
 #include <sofa/component/constraint/lagrangian/solver/visitors/ConstraintStoreLambdaVisitor.h>
 #include <sofa/core/ConstraintParams.h>
 
@@ -35,7 +35,7 @@ ConstraintStoreLambdaVisitor::ConstraintStoreLambdaVisitor(const sofa::core::Con
 
 simulation::Visitor::Result ConstraintStoreLambdaVisitor::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
 {
-    if (core::behavior::BaseConstraint *c = dynamic_cast<core::behavior::BaseConstraint*>(cSet) )
+    if (core::behavior::BaseLagrangianConstraint *c = dynamic_cast<core::behavior::BaseLagrangianConstraint*>(cSet) )
     {
         const ctime_t t0 = begin(node, c);
         c->storeLambda(m_cParams, m_cParams->lambda(), m_lambda);

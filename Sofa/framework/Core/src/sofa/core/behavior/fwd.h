@@ -24,7 +24,7 @@
 namespace sofa::core::behavior
 {
     class BaseAnimationLoop;
-    class BaseConstraint;
+    class BaseLagrangianConstraint;
     class BaseConstraintCorrection;
     class BaseController;
     class BaseForceField;

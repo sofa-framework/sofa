@@ -58,6 +58,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseInteractionConstraint.h
     ${SRC_ROOT}/behavior/BaseInteractionForceField.h
     ${SRC_ROOT}/behavior/BaseInteractionProjectiveConstraintSet.h
+    ${SRC_ROOT}/behavior/BaseLagrangianConstraint.h
     ${SRC_ROOT}/behavior/BaseLinearSolver.h
     ${SRC_ROOT}/behavior/BaseLocalForceFieldMatrix.h
     ${SRC_ROOT}/behavior/BaseLocalMassMatrix.h
@@ -234,11 +235,11 @@ set(SOURCE_FILES
     ${SRC_ROOT}/State.cpp
     ${SRC_ROOT}/VecId.cpp
     ${SRC_ROOT}/behavior/BaseAnimationLoop.cpp
-    ${SRC_ROOT}/behavior/BaseConstraint.cpp
     ${SRC_ROOT}/behavior/BaseConstraintCorrection.cpp
     ${SRC_ROOT}/behavior/BaseConstraintSet.cpp
     ${SRC_ROOT}/behavior/BaseForceField.cpp
     ${SRC_ROOT}/behavior/BaseInteractionForceField.cpp
+    ${SRC_ROOT}/behavior/BaseLagrangianConstraint.cpp
     ${SRC_ROOT}/behavior/BaseLinearSolver.cpp
     ${SRC_ROOT}/behavior/BaseMass.cpp
     ${SRC_ROOT}/behavior/BaseMatrixLinearSystem.cpp

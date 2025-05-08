@@ -125,3 +125,11 @@
     #define SOFA_ATTRIBUTE_DISABLED__MAPPING_JACOBIAN() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::mappingJacobian  or sofa::core::vec_id::write_access::mappingJacobian instead")
 
 #endif
+
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() \
+    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v26.06", "Use toBaseLagrangianConstraint instead.")
+#endif
