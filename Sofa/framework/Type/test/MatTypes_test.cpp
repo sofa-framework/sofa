@@ -376,3 +376,45 @@ TEST(MatTypesTest, conversionToReal)
     const SReal p = id.toReal();
     EXPECT_EQ(p, 1_sreal);
 }
+
+TEST(MatTypesTest, fromPtrSameType)
+{
+    const float arrayMat3f[9]{ 1.0f, 2.0f, 3.0f, 2.0f, 4.0f, 6.0f, 3.0f, 6.0f, 9.0f };
+    sofa::type::Mat<3, 3, float> mat3f(arrayMat3f);
+    
+    bool comp = true;
+    for (sofa::Size i = 0; i < 3; i++)
+        for (sofa::Size j = 0; j < 3; j++)
+            comp = (arrayMat3f[i * 3 + j] == mat3f[i][j]) && comp;
+    
+    EXPECT_TRUE(comp);
+}
+
+TEST(MatTypesTest, fromPtrDifferentType)
+{
+    const float arrayMat3f[9]{ 1.0f, 2.0f, 3.0f, 2.0f, 4.0f, 6.0f, 3.0f, 6.0f, 9.0f };
+    sofa::type::Mat<3, 3, double> mat3d(arrayMat3f);
+
+    bool comp = true;
+    constexpr double epsilon = 0.00001;
+    for (sofa::Size i = 0; i < 3; i++)
+        for (sofa::Size j = 0; j < 3; j++)
+            comp = (std::fabs(arrayMat3f[i * 3 + j] - mat3d[i][j]) < epsilon) && comp;
+
+    EXPECT_TRUE(comp);
+}
+
+TEST(MatTypesTest, assignFromPtr)
+{
+    const float arrayMat3f[9]{ 1.0f, 2.0f, 3.0f, 2.0f, 4.0f, 6.0f, 3.0f, 6.0f, 9.0f };
+    sofa::type::Mat<3, 3, float> mat3f{};
+    mat3f = arrayMat3f;
+
+    bool comp = true;
+    for (sofa::Size i = 0; i < 3; i++)
+        for (sofa::Size j = 0; j < 3; j++)
+            comp = (arrayMat3f[i * 3 + j] == mat3f[i][j]) && comp;
+
+    EXPECT_TRUE(comp);
+}
+
