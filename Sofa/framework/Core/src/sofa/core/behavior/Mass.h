@@ -66,7 +66,7 @@ public:
     using BaseMass::getMomentum;
     using BaseMass::addMToMatrix;
     using BaseMass::addGravityToV;
-    
+
     /// @name Vector operations
     /// @{
     ///                         $ f += factor M dx $
@@ -149,10 +149,10 @@ public:
     /// @}
 
     /// initialization to export kinetic and potential energy to gnuplot files format
-    void initGnuplot(const std::string path) override;
+    void doInitGnuplot(const std::string path) override;
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
-    void exportGnuplot(const MechanicalParams* mparams, SReal time) override;
+    void doExportGnuplot(const MechanicalParams* mparams, SReal time) override;
 
     /// perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
     void doAddGravityToV(const MechanicalParams* mparams, MultiVecDerivId /*vid*/) override;
@@ -160,8 +160,8 @@ public:
 
 
     /// recover the mass of an element
-    SReal getElementMass(sofa::Index) const override;
-    void getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const override;
+    SReal doGetElementMass(sofa::Index) const override;
+    void doGetElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const override;
 
 protected:
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files
