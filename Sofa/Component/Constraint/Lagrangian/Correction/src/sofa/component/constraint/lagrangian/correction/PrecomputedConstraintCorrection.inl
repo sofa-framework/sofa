@@ -411,7 +411,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
 
 template< class DataTypes >
-void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::linearalgebra::BaseMatrix* W)
+void PrecomputedConstraintCorrection< DataTypes >::doAddComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::linearalgebra::BaseMatrix* W)
 {
     m_activeDofs.clear();
 
@@ -690,7 +690,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyVelocityCorrection(const s
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const linearalgebra::BaseVector *f)
+void PrecomputedConstraintCorrection<DataTypes>::doApplyContactForce(const linearalgebra::BaseVector *f)
 {
     helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::vec_id::write_access::force);
     helper::WriteAccessor<Data<VecDeriv> > dxData    = *this->mstate->write(core::vec_id::write_access::dx);
@@ -779,7 +779,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const lineara
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::getComplianceMatrix(linearalgebra::BaseMatrix* m) const
+void PrecomputedConstraintCorrection<DataTypes>::doGetComplianceMatrix(linearalgebra::BaseMatrix* m) const
 {
     m->resize(dimensionAppCompliance,dimensionAppCompliance);
 
@@ -794,7 +794,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getComplianceMatrix(linearalgeb
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::resetContactForce()
+void PrecomputedConstraintCorrection<DataTypes>::doResetContactForce()
 {
     helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::vec_id::write_access::force);
     VecDeriv& force = forceData.wref();
@@ -947,7 +947,7 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
 
 // new API for non building the constraint system during solving process //
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SReal* f, std::list<unsigned int>& /*renumbering*/)
+void PrecomputedConstraintCorrection<DataTypes>::doResetForUnbuiltResolution(SReal* f, std::list<unsigned int>& /*renumbering*/)
 {
     constraint_force = f;
     const MatrixDeriv& c = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
@@ -1117,14 +1117,14 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SReal
 
 
 template<class DataTypes>
-bool PrecomputedConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
+bool PrecomputedConstraintCorrection<DataTypes>::doHasConstraintNumber(int index)
 {
     return ((Size)index) < id_to_localIndex.size() && id_to_localIndex[index] >= 0;
 }
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(SReal* d, int begin, int end)
+void PrecomputedConstraintCorrection<DataTypes>::doAddConstraintDisplacement(SReal* d, int begin, int end)
 {
 #ifdef NEW_METHOD_UNBUILT
 
@@ -1174,7 +1174,7 @@ template<class DataTypes>
 #ifdef NEW_METHOD_UNBUILT
 void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(SReal * df, int begin, int end, bool update)
 #else
-void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(SReal * /*df*/, int begin, int end, bool update)
+void PrecomputedConstraintCorrection<DataTypes>::doSetConstraintDForce(SReal * /*df*/, int begin, int end, bool update)
 #endif
 {
 #ifdef NEW_METHOD_UNBUILT
@@ -1251,7 +1251,7 @@ void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(SReal * /*d
 }
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end)
+void PrecomputedConstraintCorrection<DataTypes>::doGetBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end)
 {
 #ifdef NEW_METHOD_UNBUILT
 

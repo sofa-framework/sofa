@@ -51,7 +51,6 @@ public:
     /// @name Compliance Matrix API
     /// @{
     virtual void addComplianceInConstraintSpace(const ConstraintParams *, linearalgebra::BaseMatrix* W) final;
-    virtual void doAddComplianceInConstraintSpace(const ConstraintParams *, linearalgebra::BaseMatrix* W) = 0;
 
     /**
      * !!! WARNING since v25.12 !!!
@@ -63,7 +62,6 @@ public:
      **/
     /// Fill the matrix m with the full Compliance Matrix
     virtual void getComplianceMatrix(linearalgebra::BaseMatrix* m) final;
-    virtual void doGetComplianceMatrix(linearalgebra::BaseMatrix* m) const = 0;
 
     /**
      * !!! WARNING since v25.12 !!!
@@ -75,7 +73,6 @@ public:
      **/
     /// For multigrid approach => constraints are merged
     virtual void getComplianceWithConstraintMerge(linearalgebra::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/) final;
-    virtual void doGetComplianceWithConstraintMerge(linearalgebra::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/);
 
     /// @}
 
@@ -91,7 +88,6 @@ public:
     ///
     /// @param s is the constraint solver
     virtual void addConstraintSolver(ConstraintSolver *s) final;
-    virtual void doAddConstraintSolver(ConstraintSolver *s) = 0;
 
 
     /**
@@ -106,7 +102,6 @@ public:
     ///
     /// @param s is the constraint solver
     virtual void removeConstraintSolver(ConstraintSolver *s) final;
-    virtual void doRemoveConstraintSolver(ConstraintSolver *s) = 0;
 
 
     /**
@@ -123,7 +118,6 @@ public:
     /// @param dx the VecId where to store the corrective motion
     /// @param lambda is the constraint space force vector
     virtual void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const linearalgebra::BaseVector * lambda) final;
-    virtual void doComputeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const linearalgebra::BaseVector * lambda) = 0;
 
 
     /**
@@ -141,7 +135,6 @@ public:
     /// @param v is the velocity result VecId
     /// @param dx if the corrective motion result VecId
     virtual void applyMotionCorrection(const ConstraintParams * cparams, MultiVecCoordId x, MultiVecDerivId v, MultiVecDerivId dx, ConstMultiVecDerivId correction) final;
-    virtual void doApplyMotionCorrection(const ConstraintParams * cparams, MultiVecCoordId x, MultiVecDerivId v, MultiVecDerivId dx, ConstMultiVecDerivId correction) = 0;
 
     /**
      * !!! WARNING since v25.12 !!!
@@ -158,7 +151,6 @@ public:
     /// @param v is the velocity result VecId
     /// @param dx if the corrective position result VecId
     virtual void applyPositionCorrection(const ConstraintParams * cparams, MultiVecCoordId x, MultiVecDerivId dx, ConstMultiVecDerivId correction) final;
-    virtual void doApplyPositionCorrection(const ConstraintParams * cparams, MultiVecCoordId x, MultiVecDerivId dx, ConstMultiVecDerivId correction) = 0;
 
 
     /**
@@ -177,7 +169,6 @@ public:
     /// @param dv if the corrective velocity result VecId
     /// @param correction is the corrective motion computed from the constraint lambda
     virtual void applyVelocityCorrection(const ConstraintParams * cparams, MultiVecDerivId v, MultiVecDerivId dv, ConstMultiVecDerivId correction) final;
-    virtual void doApplyVelocityCorrection(const ConstraintParams * cparams, MultiVecDerivId v, MultiVecDerivId dv, ConstMultiVecDerivId correction) = 0;
 
     /**
      * !!! WARNING since v25.12 !!!
@@ -193,7 +184,6 @@ public:
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
     virtual void applyPredictiveConstraintForce(const ConstraintParams * cparams, MultiVecDerivId f, const linearalgebra::BaseVector * lambda) final;
-    virtual void doApplyPredictiveConstraintForce(const ConstraintParams * cparams, MultiVecDerivId f, const linearalgebra::BaseVector * lambda) = 0;
 
     /**
      * !!! WARNING since v25.12 !!!
@@ -206,7 +196,6 @@ public:
     /// Rebuild the system using a mass and force factor
     /// Experimental API used to investigate convergence issues.
     virtual void rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/) final;
-    virtual void doRebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/);
 
     /**
      * !!! WARNING since v25.12 !!!
@@ -219,8 +208,7 @@ public:
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute Vecid::force() += J^t lambda
     /// the result is accumulated in Vecid::force()
-    virtual void computeResidual(const core::ExecParams* /*params*/, linearalgebra::BaseVector * /*lambda*/) ;
-    virtual void doComputeResidual(const core::ExecParams* /*params*/, linearalgebra::BaseVector * /*lambda*/) ;
+    virtual void computeResidual(const core::ExecParams* /*params*/, linearalgebra::BaseVector * /*lambda*/) final;
 
     /**
      * !!! WARNING since v25.12 !!!
@@ -231,7 +219,6 @@ public:
      *
      **/
     virtual void applyContactForce(const linearalgebra::BaseVector *f) final;
-    virtual void doApplyContactForce(const linearalgebra::BaseVector *f) = 0;
 
     /**
      * !!! WARNING since v25.12 !!!
@@ -242,7 +229,6 @@ public:
      *
      **/
     virtual void resetContactForce() final;
-    virtual void doResetContactForce() = 0;
 
     /// @name Unbuilt constraint system during resolution
     /// @{
@@ -254,8 +240,7 @@ public:
      * which is the method to override from now on.
      *
      **/
-    virtual bool hasConstraintNumber(int /*index*/);
-    virtual bool doHasConstraintNumber(int /*index*/);
+    virtual bool hasConstraintNumber(int /*index*/) final;
 
     /**
      * !!! WARNING since v25.12 !!!
@@ -266,7 +251,6 @@ public:
      *
      **/
     virtual void resetForUnbuiltResolution(SReal* /*f*/, std::list<unsigned int>& /*renumbering*/) final;
-    virtual void doResetForUnbuiltResolution(SReal* /*f*/, std::list<unsigned int>& /*renumbering*/);
 
     /**
      * !!! WARNING since v25.12 !!!
@@ -277,7 +261,6 @@ public:
      *
      **/
     virtual void addConstraintDisplacement(SReal* /*d*/, int /*begin*/, int /*end*/) final;
-    virtual void doAddConstraintDisplacement(SReal* /*d*/, int /*begin*/, int /*end*/);
 
     /**
      * !!! WARNING since v25.12 !!!
@@ -288,7 +271,6 @@ public:
      *
      **/
     virtual void setConstraintDForce(SReal* /*df*/, int /*begin*/, int /*end*/, bool /*update*/) final;	  // f += df
-    virtual void doSetConstraintDForce(SReal* /*df*/, int /*begin*/, int /*end*/, bool /*update*/);	  // f += df
 
     /**
      * !!! WARNING since v25.12 !!!
@@ -299,14 +281,35 @@ public:
      *
      **/
     virtual void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* /*W*/, int /*begin*/,int /*end*/) final;
-    virtual void doGetBlockDiagonalCompliance(linearalgebra::BaseMatrix* /*W*/, int /*begin*/,int /*end*/);
     /// @}
 
 protected:
     BaseConstraintCorrection();
     ~BaseConstraintCorrection() override;
 
-private:
+    //Internal methods for template method pattern
+    virtual void doAddComplianceInConstraintSpace(const ConstraintParams *, linearalgebra::BaseMatrix* W) = 0;
+    virtual void doGetComplianceMatrix(linearalgebra::BaseMatrix* m) const = 0;
+    virtual void doGetComplianceWithConstraintMerge(linearalgebra::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/);
+    virtual void doAddConstraintSolver(ConstraintSolver *s) = 0;
+    virtual void doRemoveConstraintSolver(ConstraintSolver *s) = 0;
+    virtual void doComputeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const linearalgebra::BaseVector * lambda) = 0;
+    virtual void doApplyMotionCorrection(const ConstraintParams * cparams, MultiVecCoordId x, MultiVecDerivId v, MultiVecDerivId dx, ConstMultiVecDerivId correction) = 0;
+    virtual void doApplyPositionCorrection(const ConstraintParams * cparams, MultiVecCoordId x, MultiVecDerivId dx, ConstMultiVecDerivId correction) = 0;
+    virtual void doApplyVelocityCorrection(const ConstraintParams * cparams, MultiVecDerivId v, MultiVecDerivId dv, ConstMultiVecDerivId correction) = 0;
+    virtual void doApplyPredictiveConstraintForce(const ConstraintParams * cparams, MultiVecDerivId f, const linearalgebra::BaseVector * lambda) = 0;
+    virtual void doRebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/);
+    virtual void doComputeResidual(const core::ExecParams* /*params*/, linearalgebra::BaseVector * /*lambda*/) ;
+    virtual void doApplyContactForce(const linearalgebra::BaseVector *f) = 0;
+    virtual void doResetContactForce() = 0;
+    virtual bool doHasConstraintNumber(int /*index*/);
+    virtual void doResetForUnbuiltResolution(SReal* /*f*/, std::list<unsigned int>& /*renumbering*/);
+    virtual void doAddConstraintDisplacement(SReal* /*d*/, int /*begin*/, int /*end*/);
+    virtual void doSetConstraintDForce(SReal* /*df*/, int /*begin*/, int /*end*/, bool /*update*/);	  // f += df
+    virtual void doGetBlockDiagonalCompliance(linearalgebra::BaseMatrix* /*W*/, int /*begin*/,int /*end*/);
+
+
+   private:
     BaseConstraintCorrection(const BaseConstraintCorrection& n) = delete ;
     BaseConstraintCorrection& operator=(const BaseConstraintCorrection& n) = delete ;
 

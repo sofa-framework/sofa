@@ -279,7 +279,7 @@ void UncoupledConstraintCorrection<DataTypes>::reinit()
 }
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(linearalgebra::BaseMatrix* Wmerged, std::vector<int> &constraint_merge)
+void UncoupledConstraintCorrection<DataTypes>::doGetComplianceWithConstraintMerge(linearalgebra::BaseMatrix* Wmerged, std::vector<int> &constraint_merge)
 {
     if(!this->isComponentStateValid())
         return;
@@ -352,7 +352,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * cparams, sofa::linearalgebra::BaseMatrix *W)
+void UncoupledConstraintCorrection<DataTypes>::doAddComplianceInConstraintSpace(const sofa::core::ConstraintParams * cparams, sofa::linearalgebra::BaseMatrix *W)
 {
     if(!this->isComponentStateValid())
         return;
@@ -471,7 +471,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 }
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(linearalgebra::BaseMatrix *m) const
+void UncoupledConstraintCorrection<DataTypes>::doGetComplianceMatrix(linearalgebra::BaseMatrix *m) const
 {
     if(!this->isComponentStateValid())
         return;
@@ -612,7 +612,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyVelocityCorrection(const cor
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const linearalgebra::BaseVector *f)
+void UncoupledConstraintCorrection<DataTypes>::doApplyContactForce(const linearalgebra::BaseVector *f)
 {
     if(!this->isComponentStateValid())
         return;
@@ -676,7 +676,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const linearalg
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::resetContactForce()
+void UncoupledConstraintCorrection<DataTypes>::doResetContactForce()
 {
     helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::vec_id::write_access::externalForce);
     VecDeriv& force = forceData.wref();
@@ -690,7 +690,7 @@ void UncoupledConstraintCorrection<DataTypes>::resetContactForce()
 
 ///////////////////////  new API for non building the constraint system during solving process //
 template<class DataTypes>
-bool UncoupledConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
+bool UncoupledConstraintCorrection<DataTypes>::doHasConstraintNumber(int index)
 {
     const MatrixDeriv &constraints = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
 
@@ -699,7 +699,7 @@ bool UncoupledConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SReal * f, std::list<unsigned int>& /*renumbering*/)
+void UncoupledConstraintCorrection<DataTypes>::doResetForUnbuiltResolution(SReal * f, std::list<unsigned int>& /*renumbering*/)
 {
     const MatrixDeriv& constraints = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
 
@@ -739,7 +739,7 @@ void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SReal *
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(SReal * d, int begin, int end)
+void UncoupledConstraintCorrection<DataTypes>::doAddConstraintDisplacement(SReal * d, int begin, int end)
 {
 /// in the Vec1Types and Vec3Types case, compliance is a vector of size mstate->getSize()
 /// constraint_force contains the force applied on dof involved with the contact
@@ -771,7 +771,7 @@ void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(SReal *
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(SReal * df, int begin, int end, bool update)
+void UncoupledConstraintCorrection<DataTypes>::doSetConstraintDForce(SReal * df, int begin, int end, bool update)
 {
     /// set a force difference on a set of constraints (between constraint number "begin" and constraint number "end"
     /// if update is false, do nothing
@@ -813,7 +813,7 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(SReal * df, i
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end)
+void UncoupledConstraintCorrection<DataTypes>::doGetBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end)
 {
     const MatrixDeriv& constraints = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
     const VecReal& comp = d_compliance.getValue();
