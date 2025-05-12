@@ -45,22 +45,57 @@ public:
         this->core::objectmodel::BaseObject::init();
     }
 
-
     //virtual VecN computeStress (VecN & strain,int idElement,int id_QP){return stress in the i-th quadrature point}
     //So here needed the shapefunctionvalue *  ,  quadratureformular*  (verifie if shapfunctionvalue compute with the local method)
     // The same principe for computing the strain given the displacement
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doComputeStress" internally,
+     * which is the method to override from now on.
+     * 
+     **/  
+    virtual void computeStress (type::Vec3 & stress, type::Vec3 & strain, unsigned int & elementIndex) final {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        this->doComputeStress(stress, strain, elementIndex);
+    }
 
-    virtual void computeStress (type::Vec3 & ,type::Vec3 &,unsigned int &) {}
-    virtual void computeDStress (type::Vec3 & ,type::Vec3 &) {}
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doComputeDStress" internally,
+     * which is the method to override from now on.
+     * 
+     **/  
+    virtual void computeDStress (type::Vec3 & dstress, type::Vec3 & dstrain) final {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        this->doComputeDStress(dstress, dstrain);
+    }
 
-    virtual void computeStress (unsigned int /*iElement*/)=0;//to be pure virtual
-	
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doComputeStress" internally,
+     * which is the method to override from now on.
+     * 
+     **/  
+    virtual void computeStress (unsigned int elementIndex) final {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        this->doComputeStress(elementIndex);
+    };
+
+protected:
+    virtual void doComputeStress(type::Vec3 & stress, type::Vec3 & strain, unsigned int & idElement) = 0;
+    virtual void doComputeDStress(type::Vec3 & dstress, type::Vec3 & dstrain) = 0;
+    virtual void doComputeStress(unsigned int iElement) = 0;
 
 private:
 	BaseMaterial(const BaseMaterial& n) ;
 	BaseMaterial& operator=(const BaseMaterial& n) ;
-	
 	
 };
 
