@@ -113,7 +113,7 @@ public:
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
-    SReal getElementMass(Index index) const override;
+    SReal doGetElementMass(Index index) const override;
     // visual model
 
     void draw(const core::visual::VisualParams* vparams) override;

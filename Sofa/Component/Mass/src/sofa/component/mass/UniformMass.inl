@@ -594,14 +594,14 @@ void UniformMass<DataTypes>::doBuildMassMatrix(sofa::core::behavior::MassMatrixA
 
 
 template <class DataTypes>
-SReal UniformMass<DataTypes>::getElementMass (sofa::Index ) const
+SReal UniformMass<DataTypes>::doGetElementMass (sofa::Index ) const
 {
     return (SReal ( d_vertexMass.getValue() ));
 }
 
 
 template <class DataTypes>
-void UniformMass<DataTypes>::getElementMass (sofa::Index  index, BaseMatrix *m ) const
+void UniformMass<DataTypes>::doGetElementMass (sofa::Index  index, BaseMatrix *m ) const
 {
     SOFA_UNUSED(index);
 

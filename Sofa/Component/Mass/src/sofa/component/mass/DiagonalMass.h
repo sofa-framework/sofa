@@ -315,8 +315,8 @@ public:
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}
     void buildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}
 
-    SReal getElementMass(sofa::Index index) const override;
-    void getElementMass(sofa::Index, linearalgebra::BaseMatrix *m) const override;
+    SReal doGetElementMass(sofa::Index index) const override;
+    void doGetElementMass(sofa::Index, linearalgebra::BaseMatrix *m) const override;
 
     bool isDiagonal() const override {return true;}
 

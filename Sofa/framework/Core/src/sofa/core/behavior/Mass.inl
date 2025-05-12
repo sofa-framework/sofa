@@ -187,7 +187,7 @@ void Mass<DataTypes>::addGravityToV(const MechanicalParams* /* mparams */, DataV
 
 
 template<class DataTypes>
-void Mass<DataTypes>::initGnuplot(const std::string path)
+void Mass<DataTypes>::doInitGnuplot(const std::string path)
 {
     if (!this->getName().empty())
     {
@@ -199,7 +199,7 @@ void Mass<DataTypes>::initGnuplot(const std::string path)
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams, SReal time)
+void Mass<DataTypes>::doExportGnuplot(const MechanicalParams* mparams, SReal time)
 {
     if (m_gnuplotFileEnergy!=nullptr)
     {
@@ -211,14 +211,14 @@ void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams, SReal time)
 }
 
 template <class DataTypes>
-SReal Mass<DataTypes>::getElementMass(sofa::Index ) const
+SReal Mass<DataTypes>::doGetElementMass(sofa::Index ) const
 {
     msg_warning() << "Method getElementMass with Scalar not implemented";
     return 0.0;
 }
 
 template <class DataTypes>
-void Mass<DataTypes>::getElementMass(sofa::Index, linearalgebra::BaseMatrix *m) const
+void Mass<DataTypes>::doGetElementMass(sofa::Index, linearalgebra::BaseMatrix *m) const
 {
     static const linearalgebra::BaseMatrix::Index dimension = (linearalgebra::BaseMatrix::Index) defaulttype::DataTypeInfo<Coord>::size();
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);

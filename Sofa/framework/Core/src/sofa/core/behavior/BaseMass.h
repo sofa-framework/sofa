@@ -57,6 +57,10 @@ protected:
     virtual type::Vec6 doGetMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
     virtual void doAddMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) = 0;
     virtual void doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices);
+    virtual void doInitGnuplot(const std::string path) = 0;
+    virtual void doExportGnuplot(const MechanicalParams* mparams, SReal time) = 0;
+    virtual SReal doGetElementMass(sofa::Index index) const = 0;
+    virtual void doGetElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const = 0;
 
 private:
     BaseMass(const BaseMass& n) = delete;
@@ -198,16 +202,66 @@ public:
 
     /// @}
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doInitGnuplot", internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
     /// initialization to export kinetic and potential energy to gnuplot files format
-    virtual void initGnuplot(const std::string path)=0;
+    virtual void initGnuplot(const std::string path) final
+    {
+        doInitGnuplot(path);
+    }
+
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doExportGnuplot", internally,
+     * which is the method to override from now on.
+     * 
+     **/
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
-    virtual void exportGnuplot(const MechanicalParams* mparams, SReal time)=0;
+    virtual void exportGnuplot(const MechanicalParams* mparams, SReal time) final
+    {
+        doExportGnuplot(mparams, time);
+    }
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doGetElementMass", internally,
+     * which is the method to override from now on.
+     * 
+     **/
 
     /// Get the mass relative to the DOF at \a index.
-    virtual SReal getElementMass(sofa::Index index) const =0;
+    virtual SReal getElementMass(sofa::Index index) const final
+    {
+        return doGetElementMass(index);
+    }
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doGetElementMass", internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
     /// Get the matrix relative to the DOF at \a index.
-    virtual void getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const = 0;
+    virtual void getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const final
+    {
+        doGetElementMass(index, m);
+    }
 
     virtual bool isDiagonal() const = 0;
 

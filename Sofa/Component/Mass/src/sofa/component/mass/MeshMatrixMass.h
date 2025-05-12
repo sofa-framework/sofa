@@ -224,8 +224,8 @@ public:
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}
     void buildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}
 
-    SReal getElementMass(Index index) const override;
-    void getElementMass(Index index, linearalgebra::BaseMatrix *m) const override;
+    SReal doGetElementMass(Index index) const override;
+    void doGetElementMass(Index index, linearalgebra::BaseMatrix *m) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
