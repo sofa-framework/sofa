@@ -182,7 +182,7 @@ public:
     void getRotations(VecReal& vecR) ;
     
     // BaseRotationFinder API
-    void getRotations(linearalgebra::BaseMatrix * rotations,int offset = 0) override;
+    void doGetRotations(linearalgebra::BaseMatrix * rotations,int offset = 0) override;
     // RotationFinder<T> API
     type::vector< Mat33 > m_rotations;
     const type::vector<Mat33>& getRotations() override;
