@@ -81,11 +81,29 @@ public:
         doAddMDx(mparams, fid, factor);
     }
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doAccFromF", internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
     /// dx = M^-1 f
     virtual void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) final
     {
         doAccFromF(mparams, aid);
     }
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doAddGravityToV", internally,
+     * which is the method to override from now on.
+     * 
+     **/
 
     /// \brief Perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
     ///
@@ -95,17 +113,44 @@ public:
         doAddGravityToV(mparams, vid);
     }
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doGetKineticEnergy", internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
     /// vMv/2
     virtual SReal getKineticEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final
     {
         return doGetKineticEnergy(mparams);
     }
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doGetPotentialEnergy", internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
     /// Mgx
     virtual SReal getPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final
     {
         return doGetPotentialEnergy(mparams);
     }
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doGetMomentum", internally,
+     * which is the method to override from now on.
+     * 
+     **/
 
     /// (Mv,xMv+Iw) (linear and angular momenta against world origin)
     virtual type::Vec6 getMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final
@@ -118,6 +163,15 @@ public:
     /// @name Matrix operations
     /// @{
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doAddMToMatrix", internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
     /// \brief Add Mass contribution to global Matrix assembling.
     ///
     /// This method must be implemented by the component.
@@ -127,6 +181,15 @@ public:
     {
         doAddMToMatrix(mparams, matrix);
     }
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doBuildMassMatrix", internally,
+     * which is the method to override from now on.
+     * 
+     **/
 
     virtual void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) final
     {
