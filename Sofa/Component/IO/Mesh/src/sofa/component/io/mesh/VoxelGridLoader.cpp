@@ -238,7 +238,7 @@ bool VoxelGridLoader::canLoad(  )
 
     return sofa::core::loader::VoxelLoader::canLoad() &&  canLoad;
 }
-bool VoxelGridLoader::load ()
+bool VoxelGridLoader::doLoad ()
 {
     clear();
 

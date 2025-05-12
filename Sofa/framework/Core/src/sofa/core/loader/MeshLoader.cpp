@@ -241,7 +241,7 @@ void MeshLoader::reinit()
     updateMesh();
 }
 
-bool MeshLoader::load()
+bool MeshLoader::doLoad()
 {
     // Clear previously loaded buffers
     clearBuffers();

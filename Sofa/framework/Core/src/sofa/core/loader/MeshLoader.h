@@ -78,6 +78,8 @@ protected:
 protected:
     virtual void clearBuffers() final;
 
+    virtual bool doLoad() override;
+
 private:
     virtual bool doLoadMesh() = 0;
 
@@ -92,8 +94,6 @@ public:
     void init() override;
 
     void reinit() override;
-
-    virtual bool load() final;
 
     /// Apply Homogeneous transformation to the positions
     virtual void applyTransformation (sofa::type::Matrix4 const& T);
