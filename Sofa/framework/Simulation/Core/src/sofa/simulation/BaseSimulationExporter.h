@@ -64,13 +64,26 @@ public:
 
     virtual void doInit() {}
     virtual void doReInit() {}
-    virtual bool write() = 0;
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     * 
+     **/  
+    virtual bool write() final {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        return this->doWrite(); 
+    }
 
 
 protected:
     BaseSimulationExporter() ;
     ~BaseSimulationExporter() override { }
 
+    virtual bool doWrite() = 0;
     const std::string getOrCreateTargetPath(const std::string& filename, bool autonumbering);
     void updateFromDataField();
     unsigned int m_stepCounter {0};
