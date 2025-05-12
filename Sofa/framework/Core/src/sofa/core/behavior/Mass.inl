@@ -45,7 +45,7 @@ Mass<DataTypes>::~Mass()
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor)
+void Mass<DataTypes>::doAddMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor)
 {
     if (mparams)
     {
@@ -66,7 +66,7 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* /*mparams*/, DataVecDeriv& 
 
 
 template<class DataTypes>
-void Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid)
+void Mass<DataTypes>::doAccFromF(const MechanicalParams* mparams, MultiVecDerivId aid)
 {
     if(mparams)
     {
@@ -102,7 +102,7 @@ void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId 
 }
 
 template<class DataTypes>
-SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* mparams) const
+SReal Mass<DataTypes>::doGetKineticEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
         return getKineticEnergy(mparams /* PARAMS FIRST */, *mparams->readV(this->mstate.get()));
@@ -118,7 +118,7 @@ SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/, con
 
 
 template<class DataTypes>
-SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
+SReal Mass<DataTypes>::doGetPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
         return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(this->mstate.get()));
@@ -134,7 +134,7 @@ SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/, c
 
 
 template<class DataTypes>
-type::Vec6 Mass<DataTypes>::getMomentum( const MechanicalParams* mparams ) const
+type::Vec6 Mass<DataTypes>::doGetMomentum( const MechanicalParams* mparams ) const
 {
     auto state = this->mstate.get();
     if (state)
@@ -152,7 +152,7 @@ type::Vec6 Mass<DataTypes>::getMomentum( const MechanicalParams* /*mparams*/, co
 
 
 template<class DataTypes>
-void Mass<DataTypes>::addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void Mass<DataTypes>::doAddMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)
@@ -162,11 +162,7 @@ void Mass<DataTypes>::addMToMatrix(const MechanicalParams* mparams, const sofa::
 template<class DataTypes>
 void Mass<DataTypes>::addMToMatrix(sofa::linearalgebra::BaseMatrix * /*mat*/, SReal /*mFact*/, unsigned int &/*offset*/)
 {
-    static int i=0;
-    if (i < 10) {
-        msg_warning() << "Method addMToMatrix with Scalar not implemented";
-        i++;
-    }
+    msg_warning() << "Method addMToMatrix with Scalar not implemented";
 }
 
 template<class DataTypes>
@@ -174,11 +170,11 @@ void Mass<DataTypes>::addMBKToMatrix(const MechanicalParams* mparams, const sofa
 {
     this->ForceField<DataTypes>::addMBKToMatrix(mparams, matrix);
     if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
-        addMToMatrix(mparams, matrix);
+        BaseMass::addMToMatrix(mparams, matrix);
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid)
+void Mass<DataTypes>::doAddGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid)
 {
     if(this->mstate)
     {
@@ -190,11 +186,7 @@ void Mass<DataTypes>::addGravityToV(const MechanicalParams* mparams, MultiVecDer
 template<class DataTypes>
 void Mass<DataTypes>::addGravityToV(const MechanicalParams* /* mparams */, DataVecDeriv& /* d_v */)
 {
-    static int i=0;
-    if (i < 10) {
-        msg_warning() << "Method addGravityToV with Scalar not implemented";
-        i++;
-    }
+    msg_warning() << "Method addGravityToV with Scalar not implemented";
 }
 
 
@@ -215,10 +207,10 @@ void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams, SReal time)
 {
     if (m_gnuplotFileEnergy!=nullptr)
     {
-        (*m_gnuplotFileEnergy) << time <<"\t"<< this->getKineticEnergy(mparams)
-                               <<"\t"<< this->getPotentialEnergy(mparams)
-                              <<"\t"<< this->getPotentialEnergy(mparams)
-                                +this->getKineticEnergy(mparams)<< std::endl;
+        (*m_gnuplotFileEnergy) << time <<"\t"<< BaseMass::getKineticEnergy(mparams)
+                               <<"\t"<< BaseMass::getPotentialEnergy(mparams)
+                              <<"\t"<< BaseMass::getPotentialEnergy(mparams)
+                                +BaseMass::getKineticEnergy(mparams)<< std::endl;
     }
 }
 

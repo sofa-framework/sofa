@@ -146,7 +146,7 @@ public:
 
     using Inherited::addMToMatrix;
     void addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset) override; /// Add Mass contribution to global Matrix assembling
-    void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
+    void doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}
     void buildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}
 

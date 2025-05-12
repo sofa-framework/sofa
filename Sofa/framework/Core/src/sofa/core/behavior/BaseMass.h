@@ -47,8 +47,16 @@ public:
 
 protected:
     BaseMass();
-
     ~BaseMass() override = default;
+
+    virtual void doAddMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) = 0;
+    virtual void doAccFromF(const MechanicalParams* mparams, MultiVecDerivId aid) = 0;
+    virtual void doAddGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid) = 0;
+    virtual SReal doGetKineticEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
+    virtual SReal doGetPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
+    virtual type::Vec6 doGetMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
+    virtual void doAddMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) = 0;
+    virtual void doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices);
 
 private:
     BaseMass(const BaseMass& n) = delete;
@@ -58,24 +66,52 @@ public:
     /// @name Vector operations
     /// @{
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doAddMDx", internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
     /// f += factor M dx
-    virtual void addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) =0;
+    virtual void addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) final
+    {
+        doAddMDx(mparams, fid, factor);
+    }
 
     /// dx = M^-1 f
-    virtual void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) = 0;
+    virtual void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) final
+    {
+        doAccFromF(mparams, aid);
+    }
 
     /// \brief Perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
     ///
     /// \param mparams \a sofa::core::mechanicalparams::dt(mparams) is the time step of for temporal discretization.
-    virtual void addGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid) = 0;
+    virtual void addGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid) final
+    {
+        doAddGravityToV(mparams, vid);
+    }
 
     /// vMv/2
-    virtual SReal getKineticEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
+    virtual SReal getKineticEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final
+    {
+        return doGetKineticEnergy(mparams);
+    }
+
     /// Mgx
-    virtual SReal getPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final
+    {
+        return doGetPotentialEnergy(mparams);
+    }
 
     /// (Mv,xMv+Iw) (linear and angular momenta against world origin)
-    virtual type::Vec6 getMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
+    virtual type::Vec6 getMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final
+    {
+        return doGetMomentum(mparams);
+    }
 
     /// @}
 
@@ -87,9 +123,15 @@ public:
     /// This method must be implemented by the component.
     /// \param matrix matrix to add the result to
     /// \param mparams \a mparams->mFactor() is the coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    virtual void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) = 0;
+    virtual void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) final
+    {
+        doAddMToMatrix(mparams, matrix);
+    }
 
-    virtual void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices);
+    virtual void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) final
+    {
+        doBuildMassMatrix(matrices);
+    }
 
     /// @}
 
