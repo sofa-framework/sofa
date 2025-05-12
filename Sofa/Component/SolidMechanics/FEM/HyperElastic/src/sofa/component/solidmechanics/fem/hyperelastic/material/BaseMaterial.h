@@ -91,7 +91,7 @@ public:
 protected:
     virtual void doComputeStress(type::Vec3 & stress, type::Vec3 & strain, unsigned int & idElement) = 0;
     virtual void doComputeDStress(type::Vec3 & dstress, type::Vec3 & dstrain) = 0;
-    virtual void doComputeStress(unsigned int iElement) = 0;
+    virtual void doComputeStress(unsigned int elementIndex) = 0;
 
 private:
 	BaseMaterial(const BaseMaterial& n) ;
