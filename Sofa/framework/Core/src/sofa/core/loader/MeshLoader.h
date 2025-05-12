@@ -86,8 +86,6 @@ private:
     virtual void doClearBuffers() = 0;
 
 public:
-    bool doCanLoad() override;
-
     //virtual void init();
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
