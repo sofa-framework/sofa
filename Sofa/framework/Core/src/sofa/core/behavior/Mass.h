@@ -58,6 +58,15 @@ protected:
 
 public:
 
+    // Avoid warning : hidden [-Woverloaded-virtual=]
+    using BaseMass::addMDx;
+    using BaseMass::accFromF;
+    using BaseMass::getKineticEnergy;
+    using BaseMass::getPotentialEnergy;
+    using BaseMass::getMomentum;
+    using BaseMass::addMToMatrix;
+    using BaseMass::addGravityToV;
+    
     /// @name Vector operations
     /// @{
     ///                         $ f += factor M dx $
