@@ -32,7 +32,7 @@ class SOFA_COMPONENT_IO_MESH_API MeshOffLoader : public sofa::core::loader::Mesh
 public:
     SOFA_CLASS(MeshOffLoader,sofa::core::loader::MeshLoader);
 
-    bool doLoad() override;
+    bool doLoadMesh() override;
 
 protected:
 

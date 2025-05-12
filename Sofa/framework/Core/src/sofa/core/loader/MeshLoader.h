@@ -79,7 +79,7 @@ protected:
     virtual void clearBuffers() final;
 
 private:
-    virtual bool doLoad() = 0;
+    virtual bool doLoadMesh() = 0;
 
     virtual void doClearBuffers() = 0;
 

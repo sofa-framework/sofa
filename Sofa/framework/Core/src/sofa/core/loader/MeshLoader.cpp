@@ -246,7 +246,7 @@ bool MeshLoader::load()
     // Clear previously loaded buffers
     clearBuffers();
 
-    const bool loaded = doLoad();
+    const bool loaded = doLoadMesh();
 
     // Clear (potentially) partially filled buffers
     if (!loaded)
