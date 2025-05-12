@@ -256,9 +256,9 @@ bool MeshLoader::doLoad()
 
 
 
-bool MeshLoader::canLoad()
+bool MeshLoader::doCanLoad()
 {
-    return BaseLoader::canLoad();
+    return BaseLoader::doCanLoad();
 }
 
 void MeshLoader::updateMesh()

@@ -39,6 +39,7 @@ protected:
     ~VoxelGridLoader() override;
 
     virtual bool doLoad() override;
+    virtual bool doCanLoad() override;
 
 public:
     void init() override;
@@ -46,8 +47,6 @@ public:
     void reinit() override;
 
     virtual void clear();
-
-    bool canLoad() override;
 
     void setVoxelSize ( const type::Vec3 vSize );
     type::Vec3 getVoxelSize () const override;

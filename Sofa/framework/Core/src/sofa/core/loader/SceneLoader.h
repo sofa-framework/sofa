@@ -40,7 +40,7 @@ protected:
     ~SceneLoader() override { }
 
 public:
-    bool canLoad() override;
+    bool doCanLoad() override;
 
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 

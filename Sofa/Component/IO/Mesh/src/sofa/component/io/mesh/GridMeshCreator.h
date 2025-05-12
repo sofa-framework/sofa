@@ -38,7 +38,6 @@ public:
 
     SOFA_CLASS(GridMeshCreator,sofa::core::loader::MeshLoader);
     virtual std::string type() { return "This object is procedurally created"; }
-    bool canLoad() override { return true; }
     bool doLoadMesh() override; ///< create the grid
 
     Data< type::Vec2i > d_resolution; ///< Number of vertices in each direction
@@ -46,6 +45,8 @@ public:
 
 protected:
     GridMeshCreator();
+
+    virtual bool doCanLoad() override { return true; }
 
     void doClearBuffers() override;
     ///< index of a vertex, given its integer coordinates (between 0 and resolution) in the plane.

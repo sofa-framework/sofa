@@ -42,13 +42,18 @@ public:
      * This method calls the newly introduced method "doFunctionName" internally,
      * which is the method to override from now on.
      * 
-     **/  
+     **/
     virtual bool load() final
     {
         //TODO (SPRINT SED 2025): Component state mechamism
         return this->doLoad(); 
     }
-    virtual bool canLoad() ;
+
+    virtual bool canLoad() final
+    {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        return this->doCanLoad(); 
+    }
 
     void parse(objectmodel::BaseObjectDescription *arg) override ;
 
@@ -65,6 +70,7 @@ protected:
     static bool readLine(char* buf, int size, FILE* f) ;
 
     virtual bool doLoad() = 0;
+    virtual bool doCanLoad() ;
 };
 
 } /// namespace sofa::core::loader
