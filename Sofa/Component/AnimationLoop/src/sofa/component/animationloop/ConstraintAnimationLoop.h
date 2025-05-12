@@ -91,9 +91,8 @@ public:
 protected:
     ConstraintAnimationLoop();
     ~ConstraintAnimationLoop() override;
-public:
 
-    void step(const core::ExecParams* params, SReal dt) override;
+public:
     void init() override;
 
     Data<bool> d_displayTime; ///< Display time for each important step of ConstraintAnimationLoop.
@@ -116,6 +115,8 @@ public:
     ConstraintProblem *getConstraintProblem() {return bufCP1 ? &CP1 : &CP2;}
 
 protected:
+    void doStep(const core::ExecParams* params, SReal dt) override;
+    
     void launchCollisionDetection(const core::ExecParams* params);
     void freeMotion(const core::ExecParams* params, simulation::Node *context, SReal &dt);
     void setConstraintEquations(const core::ExecParams* params, simulation::Node *context);
