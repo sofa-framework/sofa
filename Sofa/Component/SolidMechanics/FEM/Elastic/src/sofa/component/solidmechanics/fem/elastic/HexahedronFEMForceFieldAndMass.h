@@ -85,7 +85,7 @@ public:
     }
 
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix*) override;
-    void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
+    void doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
 
      void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
 
@@ -103,7 +103,7 @@ public:
         return 0.0;
     }
 
-    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/) const override
+    SReal doGetPotentialEnergy(const core::MechanicalParams* /*mparams*/) const override
     {
         msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;

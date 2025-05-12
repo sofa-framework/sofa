@@ -573,7 +573,7 @@ void UniformMass<DataTypes>::addMToMatrix (sofa::linearalgebra::BaseMatrix * mat
 }
 
 template <class DataTypes>
-void UniformMass<DataTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
+void UniformMass<DataTypes>::doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     if (!this->isComponentStateValid())
     {

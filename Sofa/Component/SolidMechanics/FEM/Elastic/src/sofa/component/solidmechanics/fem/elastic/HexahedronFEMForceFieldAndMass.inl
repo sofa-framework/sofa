@@ -262,7 +262,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::buildStiffnessMatrix(core::behav
 }
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
+void HexahedronFEMForceFieldAndMass<DataTypes>::doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     int e = 0;
     for(auto it = this->getIndexedElements()->begin(); it != this->getIndexedElements()->end() ; ++it, ++e)

@@ -628,7 +628,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::addMToMatrix(sofa::linearalgebra
 }
 
 template <class DataTypes, class GeometricalTypes>
-void DiagonalMass<DataTypes, GeometricalTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
+void DiagonalMass<DataTypes, GeometricalTypes>::doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     const MassVector &masses= d_vertexMass.getValue();
     static constexpr auto N = Deriv::total_size;

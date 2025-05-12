@@ -2271,7 +2271,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMToMatrix(sofa::linearalgeb
 }
 
 template <class DataTypes, class GeometricalTypes>
-void MeshMatrixMass<DataTypes, GeometricalTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
+void MeshMatrixMass<DataTypes, GeometricalTypes>::doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     const MassVector &vertexMass= d_vertexMass.getValue();
     const MassVector &edgeMass= d_edgeMass.getValue();

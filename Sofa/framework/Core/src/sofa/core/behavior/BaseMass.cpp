@@ -49,7 +49,7 @@ bool BaseMass::removeInNode( objectmodel::BaseNode* node )
     return true;
 }
 
-void BaseMass::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
+void BaseMass::doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     static std::set<BaseMass*> hasEmittedWarning;
     if (hasEmittedWarning.insert(this).second)
