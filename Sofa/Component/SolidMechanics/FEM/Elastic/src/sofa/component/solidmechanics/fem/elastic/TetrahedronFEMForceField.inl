@@ -2057,7 +2057,7 @@ void TetrahedronFEMForceField<DataTypes>::getRotations(VecReal& vecR)
 }
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::getRotations(linearalgebra::BaseMatrix * rotations,int offset)
+void TetrahedronFEMForceField<DataTypes>::doGetRotations(linearalgebra::BaseMatrix * rotations,int offset)
 {
     const std::size_t nbdof = this->mstate->getSize();
 
