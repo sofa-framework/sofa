@@ -47,8 +47,19 @@ public:
         int* colsIndex;
     };
 
+    /**
+     * Returns an identifier for the method name. This can be used as a key
+     * in a factory of solvers. See @EigenDirectSparseSolver
+     */
+    virtual std::string methodName() const = 0;
 
     /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doComputePermutation" internally,
+     * which is the method to override from now on.
+     * 
      * Computes a permutation so that a permutation matrix can be applied on
      * sparse matrices before a factorization. It helps to reduce the number of
      * elements in the decomposition, hence improving the computation time
@@ -59,18 +70,16 @@ public:
      * \param outInversePermutation The inverse of the computed permutation. A
      * memory space of the size of the matrix is expected.
      */
-    virtual void computePermutation(
-        const SparseMatrixPattern& inPattern,
-        int* outPermutation,
-        int* outInversePermutation) = 0;
+    virtual void computePermutation(const SparseMatrixPattern& inPattern, int* outPermutation, int* outInversePermutation) final {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        this->doComputePermutation(inPattern, outPermutation, outInversePermutation);
+    }
 
-    /**
-     * Returns an identifier for the method name. This can be used as a key
-     * in a factory of solvers. See @EigenDirectSparseSolver
-     */
-    virtual std::string methodName() const = 0;
+    static void computeInverseFromPermutation(int matrixSize, const int* inPermutation, int* outInversePermutation) ;
 
-    static void computeInverseFromPermutation(int matrixSize, const int* inPermutation, int* outInversePermutation);
+protected:
+    virtual void doComputePermutation(const SparseMatrixPattern& inPattern, int* outPermutation, int* outInversePermutation) = 0;
+
 };
 
 }
