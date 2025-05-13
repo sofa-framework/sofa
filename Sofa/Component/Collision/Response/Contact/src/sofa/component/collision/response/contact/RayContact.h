@@ -44,14 +44,17 @@ protected:
     BaseRayContact(CollisionModel1* model1, core::collision::Intersection* instersectionMethod);
 
     ~BaseRayContact() override;
-public:
-    const sofa::type::vector<core::collision::DetectionOutput*>& getDetectionOutputs() const { return collisions; }
 
-    void createResponse(core::objectmodel::BaseContext* /*group*/) override
+    const sofa::type::vector<core::collision::DetectionOutput*>& doGetDetectionOutputs() const 
+    { 
+        return collisions; 
+    }
+
+    void doCreateResponse(core::objectmodel::BaseContext* /*group*/) override
     {
     }
 
-    void removeResponse() override
+    void doRemoveResponse() override
     {
     }
 
@@ -68,13 +71,15 @@ public:
 protected:
     CollisionModel2* model2;
     core::objectmodel::BaseContext* parent;
+
 public:
     RayContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
         : BaseRayContact(model1, intersectionMethod), model2(model2)
     {
     }
 
-    void setDetectionOutputs(core::collision::DetectionOutputVector* outputs) override
+protected:
+    void doSetDetectionOutputs(core::collision::DetectionOutputVector* outputs) override
     {
         OutputVector* o = static_cast<OutputVector*>(outputs);
         //collisions = outputs;
@@ -83,7 +88,11 @@ public:
             collisions[i] = &(*o)[i];
     }
 
-    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() override { return std::make_pair(model1,model2); }
+    std::pair<core::CollisionModel*,core::CollisionModel*> doGetCollisionModels() override 
+    { 
+        return std::make_pair(model1,model2); 
+    }
+    
 };
 
 } //namespace sofa::component::collision::response::contact
