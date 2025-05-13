@@ -48,9 +48,13 @@ public:
     SOFA_BASE_CAST_IMPLEMENTATION(OdeSolver)
 protected:
     OdeSolver();
-
     ~OdeSolver() override;
 
+    virtual void doSolve(const core::ExecParams* /*params*/, SReal /*dt*/, MultiVecCoordId /*xResult*/, MultiVecDerivId /*vResult*/) = 0;
+    virtual void doComputeResidual(const core::ExecParams* /*params*/, SReal /*dt*/, sofa::core::MultiVecCoordId /*pos_t*/, sofa::core::MultiVecDerivId /*vel_t*/)
+    {
+        msg_error() << "ComputeResidual is not implemented in " << this->getName();
+    }
 private:
     OdeSolver(const OdeSolver& n) = delete;
     OdeSolver& operator=(const OdeSolver& n) = delete;
@@ -60,7 +64,18 @@ public:
     ///
     /// Specify and execute all computation for timestep integration, i.e.
     /// advancing the state from time t to t+dt, putting the resulting position and velocity in the provided vectors.
-    virtual void solve(const core::ExecParams* /*params*/, SReal /*dt*/, MultiVecCoordId /*xResult*/, MultiVecDerivId /*vResult*/) = 0;
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doSolve" internally,
+     * which is the method to override from now on.
+     *
+    **/
+    virtual void solve(const core::ExecParams* params, SReal dt, MultiVecCoordId xResult, MultiVecDerivId vResult) final
+    {
+        doSolve(params, dt, xResult, vResult);
+    }
 
     /// Main computation method.
     ///
@@ -73,8 +88,18 @@ public:
     ///
     /// pos_t and vel_t are the position and velocities at the beginning of the time step
     /// the result is accumulated in Vecid::force()
-    virtual void computeResidual(const core::ExecParams* /*params*/, SReal /*dt*/, sofa::core::MultiVecCoordId /*pos_t*/, sofa::core::MultiVecDerivId /*vel_t*/) { msg_error() << "ComputeResidual is not implemented in " << this->getName(); }
-
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doComputeResidual" internally,
+     * which is the method to override from now on.
+     *
+    **/
+    virtual void computeResidual(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId pos_t, sofa::core::MultiVecDerivId vel_t) final
+    {
+        doComputeResidual(params, dt, pos_t, vel_t);
+    }
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.

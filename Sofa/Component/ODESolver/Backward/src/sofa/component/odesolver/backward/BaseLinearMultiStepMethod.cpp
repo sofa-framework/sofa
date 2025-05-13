@@ -243,7 +243,7 @@ struct ResidualFunction : newton_raphson::BaseNonLinearFunction
     }
 };
 
-void BaseLinearMultiStepMethod::solve(
+void BaseLinearMultiStepMethod::doSolve(
     const core::ExecParams* params, SReal dt,
     core::MultiVecCoordId xResult,
     core::MultiVecDerivId vResult)
