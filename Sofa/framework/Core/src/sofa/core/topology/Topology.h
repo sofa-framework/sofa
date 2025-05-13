@@ -105,11 +105,26 @@ public:
 protected:
     Topology() {}
     virtual ~Topology() {}
+
+    virtual bool doHasPos() const { return false; }
+
 public:
     // Access to embedded position information (in case the topology is a regular grid for instance)
     // This is not very clean and is quit slow but it should only be used during initialization
 
-    virtual bool hasPos() const { return false; }
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "hasPos" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+    virtual bool hasPos() const final {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        return this->doHasPos();
+    }
+
     virtual Size getNbPoints() const { return 0; }
     virtual void setNbPoints(Size /*n*/) {}
     virtual SReal getPX(Index /*i*/) const { return 0.0; }
