@@ -76,12 +76,12 @@ void IdentityTopologicalMapping::init()
     }
 }
 
-Index IdentityTopologicalMapping::getFromIndex(Index ind)
+Index IdentityTopologicalMapping::doGetFromIndex(Index ind)
 {
     return ind;
 }
 
-void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
+void IdentityTopologicalMapping::doUpdateTopologicalMappingTopDown()
 {
     using namespace container::dynamic;
 

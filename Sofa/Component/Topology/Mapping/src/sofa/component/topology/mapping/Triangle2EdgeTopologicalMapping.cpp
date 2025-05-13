@@ -117,7 +117,7 @@ void Triangle2EdgeTopologicalMapping::init()
 }
 
 
-Index Triangle2EdgeTopologicalMapping::getFromIndex(Index ind)
+Index Triangle2EdgeTopologicalMapping::doGetFromIndex(Index ind)
 {
     if (fromModel->getTrianglesAroundEdge(ind).size()==1)
     {
@@ -129,7 +129,7 @@ Index Triangle2EdgeTopologicalMapping::getFromIndex(Index ind)
     }
 }
 
-void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
+void Triangle2EdgeTopologicalMapping::doUpdateTopologicalMappingTopDown()
 {
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;

@@ -158,7 +158,7 @@ void SimpleTesselatedTetraTopologicalMapping::init()
     tetrahedraMappedFromTetra.endEdit();
 }
 
-void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
+void SimpleTesselatedTetraTopologicalMapping::doUpdateTopologicalMappingBottomUp()
 {
     if(fromModel && toModel)
     {
@@ -368,7 +368,7 @@ void SimpleTesselatedTetraTopologicalMapping::removeOutputTetrahedra( const sofa
 
 
 
-void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
+void SimpleTesselatedTetraTopologicalMapping::doUpdateTopologicalMappingTopDown()
 {
     if(fromModel && toModel)
     {

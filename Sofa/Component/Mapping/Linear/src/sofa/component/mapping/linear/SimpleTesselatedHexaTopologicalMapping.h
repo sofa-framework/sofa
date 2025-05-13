@@ -72,7 +72,7 @@ public:
      * reflect the effects of the first topology changes on the second topology.
      *
      */
-    void updateTopologicalMappingTopDown() override {};
+    void doUpdateTopologicalMappingTopDown() override {};
 
     /** \brief Translates the TopologyChange objects from the source to the target.
      *
