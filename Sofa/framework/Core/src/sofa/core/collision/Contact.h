@@ -59,25 +59,63 @@ private:
     Contact& operator=(const Contact& n) = delete;
 	
 public:
-    /// Get the pair of collision models which are in contact
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doGetCollisionModels" internally,
+     * which is the method to override from now on.
+     *
+     * Get the pair of collision models which are in contact 
+     * 
+     **/
     virtual std::pair< core::CollisionModel*, core::CollisionModel* > getCollisionModels() final
     {
+        //TODO (SPRINT SED 2025): Component state mechamism
         return this->doGetCollisionModels();
     };
 
-    /// Set the generic description of a contact point
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doSetDetectionOuputs" internally,
+     * which is the method to override from now on.
+     *
+     * Set the generic description of a contact point
+     * 
+     **/
     virtual void setDetectionOutputs(DetectionOutputVector* outputs) final 
     {
+        //TODO (SPRINT SED 2025): Component state mechamism
         this->doSetDetectionOutputs(outputs);
     };
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
     virtual void createResponse(objectmodel::BaseContext* group) final
     {
+        //TODO (SPRINT SED 2025): Component state mechamism
         this->doCreateResponse(group);
     };
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
     virtual void removeResponse() final
     {
+        //TODO (SPRINT SED 2025): Component state mechamism
         this->doRemoveResponse();
     };
 
