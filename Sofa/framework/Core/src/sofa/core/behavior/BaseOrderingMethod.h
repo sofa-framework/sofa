@@ -70,7 +70,8 @@ public:
      * \param outInversePermutation The inverse of the computed permutation. A
      * memory space of the size of the matrix is expected.
      */
-    virtual void computePermutation(const SparseMatrixPattern& inPattern, int* outPermutation, int* outInversePermutation) final {
+    virtual void computePermutation(const SparseMatrixPattern& inPattern, int* outPermutation, int* outInversePermutation) final
+    {
         //TODO (SPRINT SED 2025): Component state mechamism
         this->doComputePermutation(inPattern, outPermutation, outInversePermutation);
     }
