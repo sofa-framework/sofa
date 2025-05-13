@@ -55,6 +55,10 @@ public:
     typedef typename DataTypes::VecDeriv         VecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+
+    // Avoid warning : hidden [-Woverloaded-virtual=]
+    using BaseForceField::addForce;
+
 protected:
     explicit ForceField(MechanicalState<DataTypes> *mm = nullptr);
 
@@ -74,7 +78,7 @@ public:
     /// This method retrieves the force, x and v vector from the MechanicalState
     /// and call the internal addForce(const MechanicalParams*, DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&)
     /// method implemented by the component.
-    void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) override;
+    void doAddForce(const MechanicalParams* mparams, MultiVecDerivId fId ) override;
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this

@@ -43,7 +43,7 @@ MixedInteractionForceField<DataTypes1, DataTypes2>::~MixedInteractionForceField(
 }
 
 template<class DataTypes1, class DataTypes2>
-void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
+void MixedInteractionForceField<DataTypes1, DataTypes2>::doAddForce(const MechanicalParams* mparams, MultiVecDerivId fId )
 {
     
     if (this->mstate1 && this->mstate2)

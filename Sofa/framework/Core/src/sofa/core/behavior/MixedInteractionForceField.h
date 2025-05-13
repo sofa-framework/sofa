@@ -61,6 +61,11 @@ public:
     typedef core::objectmodel::Data<VecCoord2> DataVecCoord2;
     typedef core::objectmodel::Data<VecDeriv2> DataVecDeriv2;
 
+    // Avoid warning : hidden [-Woverloaded-virtual=]
+    using BaseForceField::addForce;
+    using BaseInteractionForceField::getMechModel1;
+    using BaseInteractionForceField::getMechModel2;
+
 protected:
     explicit MixedInteractionForceField(MechanicalState<DataTypes1> *mm1 = nullptr, MechanicalState<DataTypes2> *mm2 = nullptr);
 
@@ -80,7 +85,7 @@ public:
     /// This method retrieves the force, x and v vector from the two MechanicalState
     /// and call the internal addForce(VecDeriv&,VecDeriv&,const VecCoord&,const VecCoord&,const VecDeriv&,const VecDeriv&)
     /// method implemented by the component.
-    void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) override;
+    void doAddForce(const MechanicalParams* mparams, MultiVecDerivId fId ) override;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -152,9 +157,6 @@ public:
         sofa::helper::replaceAll(name, "ForceField", "FF");
         return name;
     }
-
-    using Inherit2::getMechModel1;
-    using Inherit2::getMechModel2;
 };
 
 #if !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_CPP)

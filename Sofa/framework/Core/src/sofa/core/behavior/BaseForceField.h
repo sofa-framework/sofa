@@ -55,6 +55,8 @@ protected:
     BaseForceField();
     ~BaseForceField() override = default;
 
+    virtual void doAddForce(const MechanicalParams* mparams, MultiVecDerivId fId ) = 0;
+
 private:
     BaseForceField(const BaseForceField& n) = delete;
     BaseForceField& operator=(const BaseForceField& n) = delete;
@@ -63,6 +65,15 @@ private:
 public:
     /// @name Vector operations
     /// @{
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doAddForce" internally,
+     * which is the method to override from now on.
+     * 
+     **/
 
     /// \brief Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
@@ -85,7 +96,10 @@ public:
     /// - if \a mparams->energy() is true, the method computes and internally stores the potential energy,
     /// which will be subsequently returned by method getPotentialEnergy()
     /// \param fId the output vector of forces
-    virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId )=0;
+    virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) final
+    {
+        doAddForce(mparams, fId);
+    }
 
     /// \brief Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
