@@ -74,6 +74,7 @@ public:
                                              TMatrix* matrixToProject,
                                              linearalgebra::BaseMatrix* globalMatrix) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         doProjectMatrixToGlobalMatrix(mparams, mappingGraph, matrixToProject, globalMatrix);
     }
 
