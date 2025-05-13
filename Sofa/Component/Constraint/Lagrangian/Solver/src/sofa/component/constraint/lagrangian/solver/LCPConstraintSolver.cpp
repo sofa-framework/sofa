@@ -92,7 +92,7 @@ void LCPConstraintProblem::solveTimed(SReal tolerance, int maxIt, SReal timeout)
     helper::nlcp_gaussseidelTimed(dimension, getDfree(), getW(), getF(), mu, tolerance, maxIt, true, timeout);
 }
 
-bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
+bool LCPConstraintSolver::doPrepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     last_cp = current_cp;
     MechanicalVOpVisitor(core::execparams::defaultInstance(), (core::VecId)core::vec_id::write_access::dx).setMapped(true).execute( getContext()); //dX=0
@@ -122,7 +122,7 @@ void LCPConstraintSolver::addRegularization(linearalgebra::BaseMatrix& W)
     }
 }
 
-bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2)
+bool LCPConstraintSolver::doBuildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2)
 {
     SOFA_UNUSED(res1);
     SOFA_UNUSED(res2);
@@ -163,7 +163,7 @@ void LCPConstraintSolver::buildSystem()
 
 }
 
-bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
+bool LCPConstraintSolver::doSolveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     const auto _mu = d_mu.getValue();
 
@@ -272,7 +272,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
     return true;
 }
 
-bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
+bool LCPConstraintSolver::doApplyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     if (d_initial_guess.getValue())
     {

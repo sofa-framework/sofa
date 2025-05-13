@@ -48,7 +48,17 @@ protected:
     ConstraintSolver();
 
     ~ConstraintSolver() override;
-
+    virtual void doSolveConstraint(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+    virtual bool doPrepareStates(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) = 0;
+    virtual bool doBuildSystem(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) = 0;
+    virtual void doRebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/) {};
+    virtual bool doSolveSystem(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) = 0;
+    virtual bool doApplyCorrection(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) = 0;
+    virtual void doComputeResidual(const core::ExecParams* /*cParams*/)
+    {
+        dmsg_error() << "ComputeResidual is not implemented in " << this->getName() ;
+    }
+    virtual void doRemoveConstraintCorrection(BaseConstraintCorrection *s) = 0;
 private:
     ConstraintSolver(const ConstraintSolver& n) = delete;
     ConstraintSolver& operator=(const ConstraintSolver& n) = delete;
@@ -58,41 +68,115 @@ public:
     /**
      * Launch the sequence of operations in order to solve the constraints
      */
-    virtual void solveConstraint(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doSolveConstraint" internally,
+     * which is the method to override from now on.
+     *
+    **/
+    virtual void solveConstraint(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) final
+    {
+        doSolveConstraint(cParams, res1, res2);
+    }
 
     /**
      * Do the precomputation: compute free state, or propagate the states to the mapped mechanical states, where the constraint can be expressed
      */
-    virtual bool prepareStates(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doPrepareStates" internally,
+     * which is the method to override from now on.
+     *
+    **/
+    virtual bool prepareStates(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) final
+    {
+        return doPrepareStates(cParams,res1,res2);
+    }
 
     /**
      * Create the system corresponding to the constraints
      */
-    virtual bool buildSystem(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;
+    /**
+        * !!! WARNING since v25.12 !!!
+        *
+        * The template method pattern has been applied to this part of the API.
+        * This method calls the newly introduced method "doBuildSystem" internally,
+        * which is the method to override from now on.
+        *
+    **/
+    virtual bool buildSystem(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) final
+    {
+        return doBuildSystem(cParams, res1, res2);
+    }
 
     /**
      * Rebuild the system using a mass and force factor.
      * Experimental API used to investigate convergence issues.
      */
-    virtual void rebuildSystem(SReal /*massfactor*/, SReal /*forceFactor*/){}
+    /**
+        * !!! WARNING since v25.12 !!!
+        *
+        * The template method pattern has been applied to this part of the API.
+        * This method calls the newly introduced method "doRebuildSystem" internally,
+        * which is the method to override from now on.
+        *
+    **/
+    virtual void rebuildSystem(SReal massFactor, SReal forceFactor) final
+    {
+        doRebuildSystem(massFactor, forceFactor);
+    }
 
     /**
      * Use the system previously built and solve it with the appropriate algorithm
      */
-    virtual bool solveSystem(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;
+    /**
+        * !!! WARNING since v25.12 !!!
+        *
+        * The template method pattern has been applied to this part of the API.
+        * This method calls the newly introduced method "doSolveSystem" internally,
+        * which is the method to override from now on.
+        *
+    **/
+    virtual bool solveSystem(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) final
+    {
+        return doSolveSystem(cParams, res1, res2);
+    }
 
     /**
      * Correct the Mechanical State with the solution found
      */
-    virtual bool applyCorrection(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;
+    /**
+        * !!! WARNING since v25.12 !!!
+        *
+        * The template method pattern has been applied to this part of the API.
+        * This method calls the newly introduced method "doApplyCorrection" internally,
+        * which is the method to override from now on.
+        *
+    **/
+    virtual bool applyCorrection(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) final
+    {
+        return doApplyCorrection(cParams, res1, res2);
+    }
 
 
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute Vecid::force() += J^t lambda
     /// the result is accumulated in Vecid::force()
-    virtual void computeResidual(const core::ExecParams* /*params*/)
+    /**
+        * !!! WARNING since v25.12 !!!
+        *
+        * The template method pattern has been applied to this part of the API.
+        * This method calls the newly introduced method "doCompureResidual" internally,
+        * which is the method to override from now on.
+        *
+    **/
+    virtual void computeResidual(const core::ExecParams* cParams) final
     {
-        dmsg_error() << "ComputeResidual is not implemented in " << this->getName() ;
+        doComputeResidual(cParams);
     }
 
     /// @name Resolution DOFs vectors API
@@ -111,7 +195,18 @@ public:
     /// Remove reference to ConstraintCorrection
     ///
     /// @param c is the ConstraintCorrection
-    virtual void removeConstraintCorrection(BaseConstraintCorrection *s) = 0;
+    /**
+        * !!! WARNING since v25.12 !!!
+        *
+        * The template method pattern has been applied to this part of the API.
+        * This method calls the newly introduced method "doRemoveConstraintCorrection" internally,
+        * which is the method to override from now on.
+        *
+    **/
+    virtual void removeConstraintCorrection(BaseConstraintCorrection *s) final
+    {
+        doRemoveConstraintCorrection(s);
+    }
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
