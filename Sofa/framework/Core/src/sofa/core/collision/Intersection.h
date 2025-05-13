@@ -138,6 +138,22 @@ protected:
 
     virtual ElementIntersector* doFindIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels) = 0;
 
+    virtual void doBeginBroadPhase()
+    {
+    }
+
+    virtual void doEndBroadPhase()
+    {
+    }
+
+    virtual void doBeginNarrowPhase()
+    {
+    }
+
+    virtual void doEndNarrowPhase()
+    {
+    }
+
 private:
     Intersection(const Intersection& n) = delete;
     Intersection& operator=(const Intersection& n) = delete;
@@ -171,26 +187,30 @@ public:
     /// Set the contact distance (must return 0 if useProximity() is false)
     virtual void setContactDistance(SReal) { return; }
 
-
     /// Actions to accomplish when the broadPhase is started. By default do nothing.
-    virtual void beginBroadPhase()
+    virtual void beginBroadPhase() final
     {
+      this->doBeginBroadPhase();
     }
 
     /// Actions to accomplish when the broadPhase is finished. By default do nothing.
-    virtual void endBroadPhase()
+    virtual void endBroadPhase() final
     {
+      this->doEndBroadPhase();
     }
 
     /// Actions to accomplish when the narrow Phase is started. By default do nothing.
-    virtual void beginNarrowPhase()
+    virtual void beginNarrowPhase() final
     {
+      this->doBeginNarrowPhase();
     }
 
     /// Actions to accomplish when the narrow Phase is finished. By default do nothing.
-    virtual void endNarrowPhase()
+    virtual void endNarrowPhase() final
     {
+      this->doEndNarrowPhase();
     }
+
 
 
 };
