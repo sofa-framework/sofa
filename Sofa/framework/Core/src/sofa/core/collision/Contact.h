@@ -95,7 +95,7 @@ public:
      * !!! WARNING since v25.12 !!! 
      * 
      * The template method pattern has been applied to this part of the API. 
-     * This method calls the newly introduced method "doFunctionName" internally,
+     * This method calls the newly introduced method "doCreateResponse" internally,
      * which is the method to override from now on.
      *
      **/
@@ -109,7 +109,7 @@ public:
      * !!! WARNING since v25.12 !!! 
      * 
      * The template method pattern has been applied to this part of the API. 
-     * This method calls the newly introduced method "doFunctionName" internally,
+     * This method calls the newly introduced method "doRemoveResponse" internally,
      * which is the method to override from now on.
      *
      **/
