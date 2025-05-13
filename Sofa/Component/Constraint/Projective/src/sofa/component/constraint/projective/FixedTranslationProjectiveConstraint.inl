@@ -134,7 +134,7 @@ void FixedTranslationProjectiveConstraint<DataTypes>::projectResponseT(DataDeriv
 }
 
 template <class DataTypes>
-void FixedTranslationProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void FixedTranslationProjectiveConstraint<DataTypes>::doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;

@@ -74,7 +74,12 @@ protected:
     AttachProjectiveConstraint(core::behavior::MechanicalState<DataTypes> *mm1, core::behavior::MechanicalState<DataTypes> *mm2);
     ~AttachProjectiveConstraint() override;
 
+    /// Inherited from Constraint
+    void doProjectResponse(const core::MechanicalParams *mparams, DataVecDeriv& dx1, DataVecDeriv& dx2) override;
+
 public:
+    // Allows overloads of doProjectResponse
+    using core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::doProjectResponse;
 
     /// Inherited from Base
     void init() override;
@@ -83,7 +88,6 @@ public:
 
     /// Inherited from Constraint
     void projectJacobianMatrix(const core::MechanicalParams* mparams, core::MultiMatrixDerivId cId) override;
-    void projectResponse(const core::MechanicalParams *mparams, DataVecDeriv& dx1, DataVecDeriv& dx2) override;
     void projectVelocity(const core::MechanicalParams *mparams, DataVecDeriv& v1, DataVecDeriv& v2) override;
     void projectPosition(const core::MechanicalParams *mparams, DataVecCoord& x1, DataVecCoord& x2) override;
 
@@ -103,6 +107,7 @@ public:
     }
 
 protected :
+
     const Real getConstraintFactor(const int index);
     void doProjectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index, Real positionFactor);
     void doProjectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index, Real velocityFactor);

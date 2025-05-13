@@ -88,8 +88,10 @@ protected:
     std::unique_ptr<FixedProjectiveConstraintInternalData<DataTypes> > data { nullptr };
     friend class FixedProjectiveConstraintInternalData<DataTypes>;
 
-
 public:
+    // Allows to overload doProjectResponse
+    using core::behavior::ProjectiveConstraintSet<DataTypes>::doProjectResponse;
+
     void clearConstraints();
     void addConstraint(Index index);
     void removeConstraint(Index index);
@@ -98,7 +100,6 @@ public:
     void init() override;
     void reinit() override;
 
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
@@ -125,6 +126,8 @@ protected :
 
     void computeBBoxForIndices(const type::vector<Index>& indices);
 
+    // -- Constraint interface
+    void doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
 };
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPROJECTIVECONSTRAINT_CPP)

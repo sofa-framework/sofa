@@ -71,12 +71,14 @@ protected:
     PartialFixedProjectiveConstraint();
     virtual ~PartialFixedProjectiveConstraint();
 
+    // -- Constraint interface
+    void doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
+
 public:
 
     // -- Constraint interface
     void reinit() override;
 
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 

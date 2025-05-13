@@ -83,7 +83,7 @@ void PartialFixedProjectiveConstraint<DataTypes>::projectResponseT(DataDeriv& re
 }
 
 template <class DataTypes>
-void PartialFixedProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void PartialFixedProjectiveConstraint<DataTypes>::doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;

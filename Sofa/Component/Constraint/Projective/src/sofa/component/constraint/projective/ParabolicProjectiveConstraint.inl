@@ -132,7 +132,7 @@ void ParabolicProjectiveConstraint<DataTypes>::projectResponseT(DataDeriv& dx,
 }
 
 template <class DataTypes>
-void ParabolicProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void ParabolicProjectiveConstraint<DataTypes>::doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;

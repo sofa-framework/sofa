@@ -400,7 +400,7 @@ void AttachProjectiveConstraint<DataTypes>::projectVelocity(const core::Mechanic
 }
 
 template <class DataTypes>
-void AttachProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams * mparams, DataVecDeriv& res1_d, DataVecDeriv& res2_d)
+void AttachProjectiveConstraint<DataTypes>::doProjectResponse(const core::MechanicalParams * mparams, DataVecDeriv& res1_d, DataVecDeriv& res2_d)
 {
     SOFA_UNUSED(mparams);
     VecDeriv &res1 = *res1_d.beginEdit();

@@ -66,14 +66,14 @@ protected:
     /// Project dx to constrained space (dx models an acceleration).
     ///
     /// This method retrieves the dxId vector from the MechanicalState and call
-    /// the internal projectResponse(VecDeriv&) method implemented by
+    /// the internal doProjectResponse(VecDeriv&) method implemented by
     /// the component.
     void doProjectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) override;
 
 public:
 
     // to get rid of warnings
-    using BaseProjectiveConstraintSet::projectResponse;
+    using BaseProjectiveConstraintSet::doProjectResponse;
 
 
 
@@ -110,7 +110,7 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ProjectiveConstraintSet::projectResponse() method.
-    virtual void projectResponse(const MechanicalParams* mparams, DataVecDeriv& dx) = 0;
+    virtual void doProjectResponse(const MechanicalParams* mparams, DataVecDeriv& dx) = 0;
 
     /// Project v to constrained space (v models a velocity).
     ///

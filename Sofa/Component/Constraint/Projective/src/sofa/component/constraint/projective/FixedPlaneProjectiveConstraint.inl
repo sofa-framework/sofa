@@ -162,7 +162,7 @@ sofa::type::Vec6f& getVec(sofa::defaulttype::Vec6fTypes::Deriv& i) { return i; }
 const sofa::type::Vec6f& getVec(const sofa::defaulttype::Vec6fTypes::Deriv& i) { return i; }
 
 template <class DataTypes>
-void FixedPlaneProjectiveConstraint<DataTypes>::projectResponse(const MechanicalParams* mparams, DataVecDeriv& resData)
+void FixedPlaneProjectiveConstraint<DataTypes>::doProjectResponse(const MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
     WriteAccessor<DataVecDeriv> res = resData;

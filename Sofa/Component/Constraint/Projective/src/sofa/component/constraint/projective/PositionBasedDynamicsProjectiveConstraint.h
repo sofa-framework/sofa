@@ -85,7 +85,6 @@ public:
     void init() override;
     void reset() override;
 
-    void projectResponse(const core::MechanicalParams* , DataVecDeriv& ) override {}
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
@@ -95,7 +94,8 @@ public:
 
 protected :
 
-
+    // -- Constraint interface
+    void doProjectResponse(const core::MechanicalParams* , DataVecDeriv& ) override {}
 
 };
 

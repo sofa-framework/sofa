@@ -111,6 +111,9 @@ protected:
 
     virtual ~AffineMovementProjectiveConstraint();
 
+    /// Cancel the possible forces
+    void doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
+
 public:
     //Add or clear constraints
     void clearConstraints();
@@ -120,8 +123,6 @@ public:
     /// -- Constraint interface
     void init() override;
 
-    /// Cancel the possible forces
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     /// Cancel the possible velocities
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     /// Apply the computed movements to the border mesh points between beginConstraintTime and endConstraintTime
@@ -143,7 +144,7 @@ public:
 
 protected:
 
-    void projectResponseImpl(VecDeriv& dx);
+    void doProjectResponseImpl(VecDeriv& dx);
 
 private:
 

@@ -79,6 +79,9 @@ protected:
 
     virtual ~PlaneProjectiveConstraint();
 
+    // -- Constraint interface
+    void doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
+
 public:
     IndexSubsetData d_indices;  ///< the particles to project
     Data<CPos> d_origin; ///< A point in the plane
@@ -102,7 +105,6 @@ public:
     void init() override;
     void reinit() override;
 
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;

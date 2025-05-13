@@ -119,7 +119,7 @@ void SkeletalMotionProjectiveConstraint<TDataTypes>::projectResponseT(DataDeriv&
 }
 
 template <class DataTypes>
-void SkeletalMotionProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void SkeletalMotionProjectiveConstraint<DataTypes>::doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
     if( !d_active.getValue() ) return;

@@ -63,7 +63,7 @@ void FixedRotationProjectiveConstraint<DataTypes>::init()
 }
 
 template <class DataTypes>
-void FixedRotationProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*res*/)
+void FixedRotationProjectiveConstraint<DataTypes>::doProjectResponse(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*res*/)
 {
 
 }

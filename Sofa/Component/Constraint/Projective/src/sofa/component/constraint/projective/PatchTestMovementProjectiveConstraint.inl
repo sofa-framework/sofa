@@ -229,7 +229,7 @@ void PatchTestMovementProjectiveConstraint<DataTypes>::projectResponseImpl(VecDe
 }
 
 template <class DataTypes>
-void PatchTestMovementProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void PatchTestMovementProjectiveConstraint<DataTypes>::doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;

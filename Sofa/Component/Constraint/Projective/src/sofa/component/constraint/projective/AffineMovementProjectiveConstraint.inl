@@ -124,7 +124,7 @@ void AffineMovementProjectiveConstraint<DataTypes>::init()
 }
 
 template <class DataTypes>
-void AffineMovementProjectiveConstraint<DataTypes>::projectResponseImpl(VecDeriv& dx)
+void AffineMovementProjectiveConstraint<DataTypes>::doProjectResponseImpl(VecDeriv& dx)
 {
     const SetIndexArray & indices = d_indices.getValue();
     for (size_t i = 0; i< indices.size(); ++i)
@@ -134,11 +134,11 @@ void AffineMovementProjectiveConstraint<DataTypes>::projectResponseImpl(VecDeriv
 }
 
 template <class DataTypes>
-void AffineMovementProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void AffineMovementProjectiveConstraint<DataTypes>::doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseImpl(res.wref());
+    doProjectResponseImpl(res.wref());
 }
 
 
@@ -148,7 +148,7 @@ void AffineMovementProjectiveConstraint<DataTypes>::projectVelocity(const core::
 {
     SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = vData;
-    projectResponseImpl(res.wref());
+    doProjectResponseImpl(res.wref());
 }
 
 template <class DataTypes>

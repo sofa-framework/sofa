@@ -150,7 +150,7 @@ void HermiteSplineProjectiveConstraint<DataTypes>::projectResponseT(DataDeriv& d
 }
 
 template <class DataTypes>
-void HermiteSplineProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void HermiteSplineProjectiveConstraint<DataTypes>::doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;

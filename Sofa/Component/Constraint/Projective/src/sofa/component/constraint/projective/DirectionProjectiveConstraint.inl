@@ -182,7 +182,7 @@ void DirectionProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebr
 
 
 template <class DataTypes>
-void DirectionProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void DirectionProjectiveConstraint<DataTypes>::doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
 
@@ -199,7 +199,7 @@ void DirectionProjectiveConstraint<DataTypes>::projectJacobianMatrix(const core:
 template <class DataTypes>
 void DirectionProjectiveConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
-    projectResponse(mparams,vData);
+    doProjectResponse(mparams,vData);
 }
 
 template <class DataTypes>
