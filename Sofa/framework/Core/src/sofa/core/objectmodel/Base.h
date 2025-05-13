@@ -425,7 +425,7 @@ public:
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseProjectiveConstraintSet            )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseInteractionProjectiveConstraintSet )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraintSet                      )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraint                         )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseLagrangianConstraint               )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualModel                            )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualManager                          )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualLoop                             )
@@ -441,6 +441,9 @@ public:
     SOFA_BASE_CAST_DEFINITION( loader,      BaseLoader                             )
 
 #undef SOFA_BASE_CAST_DEFINITION
+
+    SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() virtual const behavior::BaseLagrangianConstraint* toBaseConstraint() const { return toBaseLagrangianConstraint(); } \
+    SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() virtual       behavior::BaseLagrangianConstraint* toBaseConstraint()       { return toBaseLagrangianConstraint(); }
 
     /// @}
 };
