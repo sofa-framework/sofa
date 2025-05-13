@@ -23,7 +23,7 @@
 #include <sofa/component/constraint/lagrangian/model/config.h>
 
 #include <sofa/type/Mat.h>
-#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseLagrangianConstraint.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
