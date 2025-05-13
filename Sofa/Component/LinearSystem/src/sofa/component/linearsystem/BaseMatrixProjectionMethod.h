@@ -48,7 +48,7 @@ public:
 
     ~BaseMatrixProjectionMethod() override;
 
-    virtual bool hasPairStates(const PairMechanicalStates& pairStates) const;
+    bool hasPairStates(const PairMechanicalStates& pairStates) const;
     void setPairStates(const PairMechanicalStates& pairStates);
 
     /**
