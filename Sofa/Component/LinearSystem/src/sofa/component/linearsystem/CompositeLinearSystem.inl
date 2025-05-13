@@ -96,7 +96,7 @@ TVector* CompositeLinearSystem<TMatrix, TVector>::getSolutionVector() const
 }
 
 template <class TMatrix, class TVector>
-linearalgebra::BaseMatrix* CompositeLinearSystem<TMatrix, TVector>::getSystemBaseMatrix() const
+linearalgebra::BaseMatrix* CompositeLinearSystem<TMatrix, TVector>::doGetSystemBaseMatrix() const
 {
     return l_solverLinearSystem ? l_solverLinearSystem->getSystemBaseMatrix() : nullptr;
 }

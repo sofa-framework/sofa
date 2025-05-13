@@ -49,7 +49,6 @@ public:
     TMatrix* getSystemMatrix() const override;
     TVector* getRHSVector() const override;
     TVector* getSolutionVector() const override;
-    [[nodiscard]] sofa::linearalgebra::BaseMatrix* getSystemBaseMatrix() const override;
     void resizeSystem(sofa::Size n) override;
     void clearSystem() override;
     void setRHS(core::MultiVecDerivId v) override;
@@ -61,6 +60,7 @@ protected:
     void allocateSystem() override;
     void resizeVectors(sofa::Size n) override;
 
+    [[nodiscard]] sofa::linearalgebra::BaseMatrix* doGetSystemBaseMatrix() const override;
     void preAssembleSystem(const core::MechanicalParams* /*mparams*/) override;
     void assembleSystem(const core::MechanicalParams* /*mparams*/) override;
     void postAssembleSystem(const core::MechanicalParams* /*mparams*/) override;
