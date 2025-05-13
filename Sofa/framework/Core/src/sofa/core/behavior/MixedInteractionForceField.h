@@ -63,6 +63,8 @@ public:
 
     // Avoid warning : hidden [-Woverloaded-virtual=]
     using BaseForceField::addForce;
+    using BaseForceField::addDForce;
+    using BaseForceField::getPotentialEnergy;
     using BaseInteractionForceField::getMechModel1;
     using BaseInteractionForceField::getMechModel2;
 
@@ -103,16 +105,6 @@ public:
     void doAddDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
 
 
-    /// Get the potential energy associated to this ForceField.
-    ///
-    /// Used to estimate the total energy of the system by some
-    /// post-stabilization techniques.
-    ///
-    /// This method retrieves the x vector from the MechanicalState and call
-    /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
-    /// the component.
-    SReal getPotentialEnergy(const MechanicalParams* mparams) const override;
-
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
     /// ForceField.
@@ -139,6 +131,17 @@ public:
     /// by the generic MixedInteractionForceField::addDForce() method.
 
     virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2)=0;
+
+
+    /// Get the potential energy associated to this ForceField.
+    ///
+    /// Used to estimate the total energy of the system by some
+    /// post-stabilization techniques.
+    ///
+    /// This method retrieves the x vector from the MechanicalState and call
+    /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
+    /// the component.
+    SReal doGetPotentialEnergy(const MechanicalParams* mparams) const override;
 
     /// Get the potential energy associated to this ForceField.
     ///

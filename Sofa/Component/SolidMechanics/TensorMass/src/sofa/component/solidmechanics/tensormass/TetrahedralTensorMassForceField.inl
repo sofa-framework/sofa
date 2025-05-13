@@ -338,12 +338,12 @@ void TetrahedralTensorMassForceField<DataTypes>::initNeighbourhoodPoints() {}
 
 
 template <class DataTypes>
-SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */) const
+SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const sofa::core::MechanicalParams* mparams, const DataVecCoord& pos) const
 {
     SCOPED_TIMER("getPotentialEnergy");
+    SOFA_UNUSED(mparams);
 
-    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
-
+    sofa::helper::ReadAccessor< Data< VecCoord > > x = pos;
     SReal energy=0;
 
     unsigned int v0,v1;

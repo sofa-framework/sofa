@@ -77,7 +77,7 @@ void ForceField<DataTypes>::doAddDForce(const MechanicalParams* mparams, MultiVe
 }
 
 template<class DataTypes>
-SReal ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
+SReal ForceField<DataTypes>::doGetPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
         return getPotentialEnergy(mparams, *mparams->readX(this->mstate.get()));

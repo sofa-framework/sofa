@@ -59,6 +59,7 @@ public:
     // Avoid warning : hidden [-Woverloaded-virtual=]
     using BaseForceField::addForce;
     using BaseForceField::addDForce;
+    using BaseForceField::getPotentialEnergy;
 
 protected:
     explicit ForceField(MechanicalState<DataTypes> *mm = nullptr);
@@ -129,7 +130,7 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy(const MechanicalParams* mparams) method.
-    SReal getPotentialEnergy(const MechanicalParams* mparams) const override;
+    SReal doGetPotentialEnergy(const MechanicalParams* mparams) const override;
 
     virtual SReal getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& x) const = 0;
 

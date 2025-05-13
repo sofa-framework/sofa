@@ -57,6 +57,7 @@ protected:
 
     virtual void doAddForce(const MechanicalParams* mparams, MultiVecDerivId fId ) = 0;
     virtual void doAddDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) = 0;
+    virtual SReal doGetPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const = 0;
 
 private:
     BaseForceField(const BaseForceField& n) = delete;
@@ -159,12 +160,24 @@ public:
     /// \param dfId the output vector
     virtual void addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId);
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetPotentialEnergy" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
     /// \brief Get the potential energy associated to this ForceField during the
     /// last call of addForce( const MechanicalParams* mparams );
     ///
     /// Used to estimate the total energy of the system by some
     /// post-stabilization techniques.
-    virtual SReal getPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const=0;
+    virtual SReal getPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const final
+    {
+        return doGetPotentialEnergy(mparams);
+    }
     /// @}
 
 

@@ -76,7 +76,7 @@ void PairInteractionForceField<DataTypes>::doAddDForce(const MechanicalParams* m
 }
 
 template<class DataTypes>
-SReal PairInteractionForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
+SReal PairInteractionForceField<DataTypes>::doGetPotentialEnergy(const MechanicalParams* mparams) const
 {
     auto state1 = this->mstate1.get();
     auto state2 = this->mstate2.get();

@@ -73,7 +73,7 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::doAddDForce(const Mecha
 
 
 template<class DataTypes1, class DataTypes2>
-SReal MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams* mparams) const
+SReal MixedInteractionForceField<DataTypes1, DataTypes2>::doGetPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate1 && this->mstate2)
         return getPotentialEnergy(mparams, *mparams->readX(this->mstate1.get()),*mparams->readX(this->mstate2.get()));

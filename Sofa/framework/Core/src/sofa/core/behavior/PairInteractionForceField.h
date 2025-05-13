@@ -54,6 +54,7 @@ public:
     // Avoid warning : hidden [-Woverloaded-virtual=]
     using BaseForceField::addForce;
     using BaseForceField::addDForce;
+    using BaseForceField::getPotentialEnergy;
 
 protected:
     explicit PairInteractionForceField(MechanicalState<DataTypes> *mm1 = nullptr, MechanicalState<DataTypes> *mm2 = nullptr);
@@ -142,7 +143,7 @@ public:
     /// This method retrieves the x vector from the MechanicalState and call
     /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
     /// the component.
-    SReal getPotentialEnergy(const MechanicalParams* mparams) const override;
+    SReal doGetPotentialEnergy(const MechanicalParams* mparams) const override;
 
     /// Get the potential energy associated to this ForceField.
     ///
