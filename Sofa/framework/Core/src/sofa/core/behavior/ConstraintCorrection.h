@@ -119,7 +119,7 @@ protected:
     /// @param cparams
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    void doApplyPredictiveConstraintForce(const core::ConstraintParams * cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda) override;
+    virtual void doApplyPredictiveConstraintForce(const core::ConstraintParams * cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda) override;
 
     /// Compute velocity correction from the constraint resolution (LCP) calculated force
     ///
@@ -127,7 +127,7 @@ protected:
     /// @param v is the velocity result VecId
     /// @param dv is the corrective velocity result VecId
     /// @param f is the motion space force vector
-    void doApplyVelocityCorrection(const core::ConstraintParams * cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction) override;
+    virtual void doApplyVelocityCorrection(const core::ConstraintParams * cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction) override;
 
     /// Compute position correction from the constraint resolution (LCP) calculated force
     ///
@@ -135,7 +135,7 @@ protected:
     /// @param x is the position result VecId
     /// @param dx id the corrective position result VecId
     /// @param f is the motion space force vector
-    void doApplyPositionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
+    virtual void doApplyPositionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
 
     /// Compute motion correction from the constraint resolution (LCP) calculated force
     ///
@@ -144,7 +144,7 @@ protected:
     /// @param v is the velocity result VecId
     /// @param dx if the corrective motion result VecId
     /// @param f is the motion space force vector
-    void doApplyMotionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
+    virtual void doApplyMotionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
 
     /// Compute the motion coming from the contact space lambda
     /// dx = A^-1 x J^t x lambda
@@ -159,10 +159,10 @@ protected:
     /// @param cparams the ConstraintParams relative to the constraint solver
     /// @param dx the VecId where to store the corrective motion
     /// @param lambda is the constraint space force vector
-    void doComputeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const linearalgebra::BaseVector * lambda) override;
+    virtual void doComputeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const linearalgebra::BaseVector * lambda) override;
 
-    void doAddConstraintSolver(core::behavior::ConstraintSolver *s) override;
-    void doRemoveConstraintSolver(core::behavior::ConstraintSolver *s) override;
+    virtual void doAddConstraintSolver(core::behavior::ConstraintSolver *s) override;
+    virtual void doRemoveConstraintSolver(core::behavior::ConstraintSolver *s) override;
 
 private:
     /// Converts constraint force from the constraints space to the motion space and accumulates it in f vector

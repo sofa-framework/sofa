@@ -70,7 +70,7 @@ void BaseConstraintCorrection::doGetBlockDiagonalCompliance(linearalgebra::BaseM
 bool BaseConstraintCorrection::hasConstraintNumber(int index)
 {
     //TODO (SPRINT SED 2025): Component state mechamism
-    doHasConstraintNumber(index);
+    return doHasConstraintNumber(index);
 }
 
 bool BaseConstraintCorrection::doHasConstraintNumber(int /*index*/) {return true;}
