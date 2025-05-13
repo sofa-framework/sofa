@@ -136,6 +136,8 @@ protected:
     Intersection() {}
     ~Intersection() override;
 
+    virtual ElementIntersector* doFindIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels) = 0;
+
 private:
     Intersection(const Intersection& n) = delete;
     Intersection& operator=(const Intersection& n) = delete;
@@ -143,7 +145,9 @@ private:
 public:
     /// Return the intersector class handling the given pair of collision models, or nullptr if not supported.
     /// @param swapModels output value set to true if the collision models must be swapped before calling the intersector.
-    virtual ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels) = 0;
+    virtual ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels) final {
+      return this->doFindIntersector(object1, object2, swapModels);
+    }
 
     /// Test if intersection between 2 types of elements is supported, i.e. an intersection test is implemented for this combinaison of types.
     /// Note that this method is deprecated in favor of findIntersector
