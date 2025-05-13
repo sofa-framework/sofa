@@ -41,7 +41,8 @@ public:
 protected:
     BaseState() {}
     ~BaseState() override {}
-	
+    virtual void doResize(Size vsize) = 0;
+
 private:
     BaseState(const BaseState& n) = delete;
     BaseState& operator=(const BaseState& n) = delete;
@@ -50,7 +51,18 @@ public:
     virtual Size getSize() const = 0;
 
     /// Resize all stored vector
-    virtual void resize(Size vsize) = 0;
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doResize" internally,
+     * which is the method to override from now on.
+     *
+    **/
+    virtual void resize(Size vsize) final
+    {
+        doResize(vsize);
+    }
 
     /// @name BaseData vectors access API based on VecId
     /// @{
