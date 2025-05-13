@@ -59,7 +59,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(co
 
 
 template<class DataTypes>
-void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
+void PairInteractionProjectiveConstraintSet<DataTypes>::doProjectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
 {
     if( !isActive() ) return;
     if (this->mstate1 && this->mstate2)

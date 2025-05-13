@@ -76,6 +76,8 @@ protected:
     ~BaseProjectiveConstraintSet() override {}
 	
     virtual type::vector< core::BaseState* > doGetModels() = 0;
+    virtual void doProjectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) = 0;
+    virtual void doProjectResponse(const MechanicalParams* /*mparams*/, double **) { };
 
 public:
     /// Get the ID of the group containing this constraint.
@@ -97,7 +99,9 @@ public:
 
     /// Project dx to constrained space (dx models an acceleration).
     /// \param dxId output vector
-    virtual void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) = 0;
+    virtual void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) final {
+      this->doProjectResponse(mparams, dxId);
+    }
 
     /// Project the L matrix of the Lagrange Multiplier equation system.
     /// \param cId output vector
@@ -118,7 +122,9 @@ public:
     /// @{
 
     /// Project the compliance Matrix to constrained space.
-    virtual void projectResponse(const MechanicalParams* /*mparams*/, double **) {}
+    virtual void projectResponse(const MechanicalParams* mparams, double ** W) final {
+      this->doProjectResponse(mparams, W);
+    }
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
     virtual void applyConstraint(const MechanicalParams* /*mparams*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}

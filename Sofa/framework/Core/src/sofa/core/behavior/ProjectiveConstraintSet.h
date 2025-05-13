@@ -63,6 +63,13 @@ protected:
         return { this->getMState() };
     }
 
+    /// Project dx to constrained space (dx models an acceleration).
+    ///
+    /// This method retrieves the dxId vector from the MechanicalState and call
+    /// the internal projectResponse(VecDeriv&) method implemented by
+    /// the component.
+    void doProjectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) override;
+
 public:
 
     // to get rid of warnings
@@ -75,13 +82,6 @@ public:
 
     /// @name Vector operations
     /// @{
-
-    /// Project dx to constrained space (dx models an acceleration).
-    ///
-    /// This method retrieves the dxId vector from the MechanicalState and call
-    /// the internal projectResponse(VecDeriv&) method implemented by
-    /// the component.
-    void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) override;
 
     /// Project the L matrix of the Lagrange Multiplier equation system.
     ///

@@ -62,7 +62,7 @@ void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalP
 
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
+void ProjectiveConstraintSet<DataTypes>::doProjectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
 {
     if (!isActive())
         return;

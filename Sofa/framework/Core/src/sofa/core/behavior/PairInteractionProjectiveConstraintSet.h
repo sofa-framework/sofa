@@ -55,6 +55,14 @@ protected:
     explicit PairInteractionProjectiveConstraintSet(MechanicalState<DataTypes> *mm1 = nullptr, MechanicalState<DataTypes> *mm2 = nullptr);
 
     ~PairInteractionProjectiveConstraintSet() override;
+
+    /// Project dx to constrained space (dx models an acceleration).
+    ///
+    /// This method retrieves the dx vector from the MechanicalState and call
+    /// the internal projectResponse(VecDeriv&,VecDeriv&) method implemented by
+    /// the component.
+    void doProjectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) override;
+
 public:
     Data<SReal> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
     virtual bool isActive() const; ///< if false, the constraint does nothing
@@ -65,13 +73,6 @@ public:
 
     /// @name Vector operations
     /// @{
-
-    /// Project dx to constrained space (dx models an acceleration).
-    ///
-    /// This method retrieves the dx vector from the MechanicalState and call
-    /// the internal projectResponse(VecDeriv&,VecDeriv&) method implemented by
-    /// the component.
-    void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) override;
 
     /// Project the L matrix of the Lagrange Multiplier equation system.
     ///
