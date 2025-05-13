@@ -36,6 +36,11 @@ class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseRayContact : public core
 public:
     typedef collision::geometry::RayCollisionModel CollisionModel1;
 
+    const sofa::type::vector<core::collision::DetectionOutput*>& getDetectionOutputs() const 
+    { 
+        return collisions; 
+    }
+
 protected:
     CollisionModel1* model1;
     sofa::type::vector<core::collision::DetectionOutput*> collisions;
@@ -44,11 +49,6 @@ protected:
     BaseRayContact(CollisionModel1* model1, core::collision::Intersection* instersectionMethod);
 
     ~BaseRayContact() override;
-
-    const sofa::type::vector<core::collision::DetectionOutput*>& doGetDetectionOutputs() const 
-    { 
-        return collisions; 
-    }
 
     void doCreateResponse(core::objectmodel::BaseContext* /*group*/) override
     {
