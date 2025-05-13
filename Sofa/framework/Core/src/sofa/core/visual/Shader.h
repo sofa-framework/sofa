@@ -41,16 +41,46 @@ protected:
     Shader() {}
     /// Destructor
     ~Shader() override { }
-	
+
+    /// Start the shader
+    virtual void doStart() = 0;
+    /// Stop the shader
+    virtual void doStop() = 0;
+
 private:
     Shader(const Shader& n) = delete;
     Shader& operator=(const Shader& n) = delete;
 	
 public:
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     * 
+     **/
     /// Start the shader
-    virtual void start() = 0;
+    virtual void start() final {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        this->doStart();
+    }
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     * 
+     **/
     /// Stop the shader
-    virtual void stop() = 0;
+    virtual void stop() final {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        this->doStop();
+    }
+
     ///Tells if it must be activated automatically(value false : the visitor will switch the shader)
     ///or manually (value true : useful when another component wants to use it for itself only)
     virtual bool isActive() = 0;
