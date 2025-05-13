@@ -61,14 +61,30 @@ public:
      * with the sizes of the @BaseMechanicalState's
      * \param globalMatrix The product is added into this matrix
      */
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doProjectMatrixToGlobalMatrix" internally,
+     * which is the method to override from now on.
+     *
+    **/
     virtual void projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
                                              const MappingGraph& mappingGraph,
                                              TMatrix* matrixToProject,
-                                             linearalgebra::BaseMatrix* globalMatrix) = 0;
+                                             linearalgebra::BaseMatrix* globalMatrix) final
+    {
+        doProjectMatrixToGlobalMatrix(mparams, mappingGraph, matrixToProject, globalMatrix);
+    }
 
 protected:
     explicit BaseMatrixProjectionMethod(const PairMechanicalStates& states);
     BaseMatrixProjectionMethod() = default;
+    virtual void doProjectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
+                                             const MappingGraph& mappingGraph,
+                                             TMatrix* matrixToProject,
+                                             linearalgebra::BaseMatrix* globalMatrix) = 0;
+
 };
 
 
