@@ -42,7 +42,10 @@ protected:
     BaseState() {}
     ~BaseState() override {}
     virtual void doResize(Size vsize) = 0;
-
+    virtual objectmodel::BaseData* doBaseWrite(VecId v) = 0;
+    virtual const objectmodel::BaseData* doBaseRead(ConstVecId v) const = 0;
+    virtual void doAddToTotalForces(core::ConstVecDerivId forceId);
+    virtual void doRemoveFromTotalForces(core::ConstVecDerivId forceId);
 private:
     BaseState(const BaseState& n) = delete;
     BaseState& operator=(const BaseState& n) = delete;
@@ -66,9 +69,31 @@ public:
 
     /// @name BaseData vectors access API based on VecId
     /// @{
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doBaseWrite" internally,
+     * which is the method to override from now on.
+     *
+    **/
+    virtual objectmodel::BaseData* baseWrite(VecId v) final
+    {
+        return doBaseWrite(v);
+    }
 
-    virtual objectmodel::BaseData* baseWrite(VecId v) = 0;
-    virtual const objectmodel::BaseData* baseRead(ConstVecId v) const = 0;
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doBaseRead" internally,
+     * which is the method to override from now on.
+     *
+    **/
+    virtual const objectmodel::BaseData* baseRead(ConstVecId v) const final
+    {
+        return doBaseRead(v);
+    }
 
     /// @}
 
@@ -79,9 +104,31 @@ public:
     /// The given VecDerivId is appended to a list representing all the forces containers
     /// It is useful to be able to compute the accumulation of all forces (for example the ones
     /// coming from force fields and the ones coming from lagrangian constraints).
-    virtual void addToTotalForces(core::ConstVecDerivId forceId);
 
-    virtual void removeFromTotalForces(core::ConstVecDerivId forceId);
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doAddToTotalForces" internally,
+     * which is the method to override from now on.
+     *
+    **/
+    virtual void addToTotalForces(core::ConstVecDerivId forceId) final
+    {
+        doAddToTotalForces(forceId);
+    }
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doRemoveFromTotalForces" internally,
+     * which is the method to override from now on.
+     *
+    **/
+    virtual void removeFromTotalForces(core::ConstVecDerivId forceId) final
+    {
+        doRemoveFromTotalForces(forceId);
+    }
 };
 
 } // namespace sofa::core

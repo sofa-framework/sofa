@@ -40,12 +40,12 @@ bool BaseState::removeInNode( objectmodel::BaseNode* node )
     return true;
 }
 
-void BaseState::addToTotalForces(core::ConstVecDerivId forceId)
+void BaseState::doAddToTotalForces(core::ConstVecDerivId forceId)
 {
     SOFA_UNUSED(forceId);
 }
 
-void BaseState::removeFromTotalForces(core::ConstVecDerivId forceId)
+void BaseState::doRemoveFromTotalForces(core::ConstVecDerivId forceId)
 {
     SOFA_UNUSED(forceId);
 }
