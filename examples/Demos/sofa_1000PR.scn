@@ -48,7 +48,9 @@
         <GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
 
         <Node name="Surf">
-            <include href="Objects/HexahedronSetTopology.xml" src="@../grid" drawHexa="1" />
+            <HexahedronSetTopologyContainer  name="Container" position="@../grid.position" hexahedra="@../grid.hexahedra"/>
+            <HexahedronSetTopologyModifier   name="Modifier" />
+            <HexahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3"/>
             <Node name="Q">
                 <QuadSetTopologyContainer  name="Container" />
                 <QuadSetTopologyModifier   name="Modifier" />
@@ -78,7 +80,9 @@
         <GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
 
         <Node name="Surf">
-            <include href="Objects/HexahedronSetTopology.xml" src="@../grid" drawHexa="1" />
+            <HexahedronSetTopologyContainer  name="Container" position="@../grid.position" hexahedra="@../grid.hexahedra" />
+            <HexahedronSetTopologyModifier   name="Modifier" />
+            <HexahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
             <Node name="Q">
                 <QuadSetTopologyContainer  name="Container" />
                 <QuadSetTopologyModifier   name="Modifier" />
@@ -107,7 +111,9 @@
         <HexahedronFEMForceField name="FEM" youngModulus="200" poissonRatio="0.3" method="large" />
         <GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
         <Node name="Surf">
-            <include href="Objects/HexahedronSetTopology.xml" src="@../grid" drawHexa="1" />
+            <HexahedronSetTopologyContainer  name="Container" position="@../grid.position" hexahedra="@../grid.hexahedra" />
+            <HexahedronSetTopologyModifier   name="Modifier" />
+            <HexahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
             <Node name="Q">
                 <QuadSetTopologyContainer  name="Container" />
                 <QuadSetTopologyModifier   name="Modifier" />
@@ -136,7 +142,9 @@
         <HexahedronFEMForceField name="FEM" youngModulus="200" poissonRatio="0.3" method="large" />
         <GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
         <Node name="Surf">
-            <include href="Objects/HexahedronSetTopology.xml" src="@../grid" drawHexa="1" />
+            <HexahedronSetTopologyContainer  name="Container" position="@../grid.position" hexahedra="@../grid.hexahedra" />
+            <HexahedronSetTopologyModifier   name="Modifier" />
+            <HexahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
             <Node name="Q">
                 <QuadSetTopologyContainer  name="Container" />
                 <QuadSetTopologyModifier   name="Modifier" />
