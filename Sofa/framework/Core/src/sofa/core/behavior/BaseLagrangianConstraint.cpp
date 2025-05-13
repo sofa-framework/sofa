@@ -19,21 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseLagrangianConstraint.h>
 
 namespace sofa::core::behavior
 {
-int BaseConstraint::getGroup() const
+int BaseLagrangianConstraint::getGroup() const
 {
     return group.getValue();
 }
 
-void BaseConstraint::setGroup(int g)
+void BaseLagrangianConstraint::setGroup(int g)
 {
     group.setValue(g);
 }
 
-void BaseConstraint::getConstraintInfo(const ConstraintParams* cParams, VecConstraintBlockInfo& blocks,
+void BaseLagrangianConstraint::getConstraintInfo(const ConstraintParams* cParams, VecConstraintBlockInfo& blocks,
     VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
 {
     SOFA_UNUSED(cParams);
@@ -45,14 +45,14 @@ void BaseConstraint::getConstraintInfo(const ConstraintParams* cParams, VecConst
 
 }
 
-void BaseConstraint::getConstraintResolution(const ConstraintParams* cParams,
+void BaseLagrangianConstraint::getConstraintResolution(const ConstraintParams* cParams,
     std::vector<ConstraintResolution*>& resTab, unsigned& offset)
 {
     getConstraintResolution(resTab, offset);
     SOFA_UNUSED(cParams);
 }
 
-void BaseConstraint::getConstraintResolution(std::vector<ConstraintResolution*>& resTab, unsigned& offset)
+void BaseLagrangianConstraint::getConstraintResolution(std::vector<ConstraintResolution*>& resTab, unsigned& offset)
 {
     SOFA_UNUSED(resTab);
     SOFA_UNUSED(offset);

@@ -24,7 +24,7 @@
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
-#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseLagrangianConstraint.h>
 
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/fwd.h>
@@ -147,17 +147,17 @@ private:
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem1;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem2;
 
-    typedef core::behavior::BaseConstraint::ConstraintBlockInfo ConstraintBlockInfo;
-    typedef core::behavior::BaseConstraint::PersistentID PersistentID;
-    typedef core::behavior::BaseConstraint::ConstCoord ConstCoord;
-    typedef core::behavior::BaseConstraint::ConstDeriv ConstDeriv;
-    typedef core::behavior::BaseConstraint::ConstArea ConstArea;
+    typedef core::behavior::BaseLagrangianConstraint::ConstraintBlockInfo ConstraintBlockInfo;
+    typedef core::behavior::BaseLagrangianConstraint::PersistentID PersistentID;
+    typedef core::behavior::BaseLagrangianConstraint::ConstCoord ConstCoord;
+    typedef core::behavior::BaseLagrangianConstraint::ConstDeriv ConstDeriv;
+    typedef core::behavior::BaseLagrangianConstraint::ConstArea ConstArea;
 
-    typedef core::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
-    typedef core::behavior::BaseConstraint::VecPersistentID VecPersistentID;
-    typedef core::behavior::BaseConstraint::VecConstCoord VecConstCoord;
-    typedef core::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
-    typedef core::behavior::BaseConstraint::VecConstArea VecConstArea;
+    typedef core::behavior::BaseLagrangianConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
+    typedef core::behavior::BaseLagrangianConstraint::VecPersistentID VecPersistentID;
+    typedef core::behavior::BaseLagrangianConstraint::VecConstCoord VecConstCoord;
+    typedef core::behavior::BaseLagrangianConstraint::VecConstDeriv VecConstDeriv;
+    typedef core::behavior::BaseLagrangianConstraint::VecConstArea VecConstArea;
 
     class ConstraintBlockBuf
     {
@@ -166,7 +166,7 @@ private:
         int nbLines; ///< how many dofs (i.e. lines in the matrix) are used by each constraint
     };
 
-    std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf> _previousConstraints;
+    std::map<core::behavior::BaseLagrangianConstraint*, ConstraintBlockBuf> _previousConstraints;
     type::vector< SReal > _previousForces;
 
     type::vector< VecConstraintBlockInfo > hierarchy_constraintBlockInfo;
