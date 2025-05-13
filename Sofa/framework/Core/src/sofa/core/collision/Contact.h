@@ -60,14 +60,26 @@ private:
 	
 public:
     /// Get the pair of collision models which are in contact
-    virtual std::pair< core::CollisionModel*, core::CollisionModel* > getCollisionModels() = 0;
+    virtual std::pair< core::CollisionModel*, core::CollisionModel* > getCollisionModels() final
+    {
+        return this->doGetCollisionModels();
+    };
 
     /// Set the generic description of a contact point
-    virtual void setDetectionOutputs(DetectionOutputVector* outputs) = 0;
+    virtual void setDetectionOutputs(DetectionOutputVector* outputs) final 
+    {
+        this->doSetDetectionOutputs(outputs);
+    };
 
-    virtual void createResponse(objectmodel::BaseContext* group) = 0;
+    virtual void createResponse(objectmodel::BaseContext* group) final
+    {
+        this->doCreateResponse(group);
+    };
 
-    virtual void removeResponse() = 0;
+    virtual void removeResponse() final
+    {
+        this->doRemoveResponse();
+    };
 
     /// Return true if this contact should be kept alive, even if objects are no longer in collision
     virtual bool keepAlive() { return false; }
@@ -107,6 +119,18 @@ public:
         if (model1==nullptr || model2==nullptr || inter==nullptr) return typename RealContact::SPtr();
         return sofa::core::objectmodel::New<RealContact>(model1, model2, inter);
     }
+
+protected:
+    /// Get the pair of collision models which are in contact
+    virtual std::pair< core::CollisionModel*, core::CollisionModel* > doGetCollisionModels() = 0;
+
+    /// Set the generic description of a contact point
+    virtual void doSetDetectionOutputs(DetectionOutputVector* outputs) = 0;
+
+    virtual void doCreateResponse(objectmodel::BaseContext* group) = 0;
+
+    virtual void doRemoveResponse() = 0;
+
 
 };
 } // namespace sofa::core::collision
