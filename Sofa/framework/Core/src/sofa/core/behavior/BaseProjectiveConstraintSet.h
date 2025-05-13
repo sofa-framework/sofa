@@ -75,6 +75,8 @@ protected:
 
     ~BaseProjectiveConstraintSet() override {}
 	
+    virtual type::vector< core::BaseState* > doGetModels() = 0;
+
 public:
     /// Get the ID of the group containing this constraint.
     /// This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
@@ -86,7 +88,9 @@ public:
 
 
     /// Return the lists of models this constraint applies to. 
-    virtual type::vector< core::BaseState* > getModels() = 0;
+    virtual type::vector< core::BaseState* > getModels() final {
+      return this->doGetModels();
+    }
 
     /// @name Vector operations
     /// @{

@@ -57,6 +57,12 @@ protected:
     ProjectiveConstraintSet(MechanicalState<DataTypes> *mm = nullptr);
 
     ~ProjectiveConstraintSet() override;
+
+    virtual type::vector< core::BaseState* > doGetModels() override
+    {
+        return { this->getMState() };
+    }
+
 public:
 
     // to get rid of warnings
@@ -66,11 +72,6 @@ public:
 
     Data<Real> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
     virtual bool isActive() const; ///< if false, the constraint does nothing
-
-    virtual type::vector< core::BaseState* > getModels() override
-    {
-        return { this->getMState() };
-    }
 
     /// @name Vector operations
     /// @{
