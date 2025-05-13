@@ -41,7 +41,7 @@ MechanicalGetConstraintInfoVisitor::MechanicalGetConstraintInfoVisitor(const cor
 Visitor::Result MechanicalGetConstraintInfoVisitor::fwdConstraintSet(simulation::Node* node,
     core::behavior::BaseConstraintSet* cSet)
 {
-    if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
+    if (core::behavior::BaseLagrangianConstraint *c=cSet->toBaseLagrangianConstraint())
     {
         const ctime_t t0 = begin(node, c);
         c->getConstraintInfo(_cparams, _blocks, _ids, _positions, _directions, _areas);
