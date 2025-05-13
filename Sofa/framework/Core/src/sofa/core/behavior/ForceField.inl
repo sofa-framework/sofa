@@ -51,7 +51,7 @@ void ForceField<DataTypes>::doAddForce(const MechanicalParams* mparams, MultiVec
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
+void ForceField<DataTypes>::doAddDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
 {
     if (mparams && this->mstate)
     {

@@ -56,6 +56,7 @@ protected:
     ~BaseForceField() override = default;
 
     virtual void doAddForce(const MechanicalParams* mparams, MultiVecDerivId fId ) = 0;
+    virtual void doAddDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) = 0;
 
 private:
     BaseForceField(const BaseForceField& n) = delete;
@@ -101,6 +102,15 @@ public:
         doAddForce(mparams, fId);
     }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doAddDForce" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+    
     /// \brief Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
     ///
@@ -120,7 +130,10 @@ public:
     /// - \a mparams->kFactor() is the coefficient for stiffness contributions (i.e. DOFs term in the ODE)
     /// - \a mparams->readDx() input vector
     /// \param dfId the output vector
-    virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )=0;
+    virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) final
+    {
+        doAddDForce(mparams, dfId);
+    }
 
     /// \brief Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.

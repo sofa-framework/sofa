@@ -61,7 +61,7 @@ void PairInteractionForceField<DataTypes>::doAddForce(const MechanicalParams* mp
 }
 
 template<class DataTypes>
-void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
+void PairInteractionForceField<DataTypes>::doAddDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
 {
     auto state1 = this->mstate1.get();
     auto state2 = this->mstate2.get();    

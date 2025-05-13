@@ -100,7 +100,7 @@ public:
     /// This method retrieves the force and dx vector from the two MechanicalState
     /// and call the internal addDForce(VecDeriv1&,VecDeriv2&,const VecDeriv1&,const VecDeriv2&,SReal,SReal)
     /// method implemented by the component.
-    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
+    void doAddDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
 
 
     /// Get the potential energy associated to this ForceField.

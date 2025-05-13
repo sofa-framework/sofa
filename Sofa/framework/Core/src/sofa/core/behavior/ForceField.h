@@ -58,6 +58,7 @@ public:
 
     // Avoid warning : hidden [-Woverloaded-virtual=]
     using BaseForceField::addForce;
+    using BaseForceField::addDForce;
 
 protected:
     explicit ForceField(MechanicalState<DataTypes> *mm = nullptr);
@@ -103,7 +104,7 @@ public:
     /// This method retrieves the force and dx vector from the MechanicalState
     /// and call the internal addDForce(VecDeriv&,const VecDeriv&,SReal,SReal)
     /// method implemented by the component.
-    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
+    void doAddDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
 
     /// Internal addDForce
     /// Overloaded function, usually called from the generic addDForce version.
