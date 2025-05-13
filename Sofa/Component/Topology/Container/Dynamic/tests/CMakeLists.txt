@@ -11,7 +11,6 @@ set(SOURCE_FILES
     TetrahedronSetTopology_test.cpp
     TriangleNumericalIntegration_test.cpp
     TriangleSetTopology_test.cpp
-    TriangleSubdividiers_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
