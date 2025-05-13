@@ -45,15 +45,38 @@ protected:
 
 public:
 
-    /// Returns the system matrix as a linearalgebra::BaseMatrix*
-    virtual linearalgebra::BaseMatrix* getSystemBaseMatrix() const { return nullptr; }
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetSystemBaseMatrix" internally,
+     * which is the method to override from now on.
+     *
+     * Returns the system matrix as a linearalgebra::BaseMatrix*
+     * 
+     **/
+    virtual linearalgebra::BaseMatrix* getSystemBaseMatrix() const final 
+    {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        return this->doGetSystemBaseMatrix();
+    }
 
     /// Construct and assemble the linear system matrix
-    void buildSystemMatrix(const core::MechanicalParams* mparams);
+    //TODO I've let this function non-virtual, should we make it virtual and final ?
+    void buildSystemMatrix(const core::MechanicalParams* mparams) {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        preAssembleSystem(mparams);
+        assembleSystem(mparams);
+        postAssembleSystem(mparams);
+    }
 
     sofa::type::Vec2u getMatrixSize() const { return d_matrixSize.getValue(); }
 
 protected:
+    virtual linearalgebra::BaseMatrix* doGetSystemBaseMatrix() const 
+    { 
+        return nullptr; 
+    }
     virtual void preAssembleSystem(const core::MechanicalParams* /*mparams*/);
     virtual void assembleSystem(const core::MechanicalParams* /*mparams*/);
     virtual void postAssembleSystem(const core::MechanicalParams* /*mparams*/) {}
