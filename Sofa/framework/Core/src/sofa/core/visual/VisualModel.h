@@ -123,6 +123,7 @@ public:
      */
     virtual void drawShadow(const VisualParams* vparams)
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         doDrawVisual(vparams);
     }
 
