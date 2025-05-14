@@ -35,7 +35,7 @@ public:
     SOFA_ABSTRACT_CLASS(BaseLoader, objectmodel::BaseObject);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseLoader)
 
-	/**
+    /**
      * !!! WARNING since v25.12 !!! 
      * 
      * The template method pattern has been applied to this part of the API. 
@@ -45,13 +45,21 @@ public:
      **/
     virtual bool load() final
     {
-        //TODO (SPRINT SED 2025): Component state mechamism
+        //TODO (SPRINT SED 2025): Component state mechanism
         return this->doLoad(); 
     }
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     * 
+     **/
     virtual bool canLoad() final
     {
-        //TODO (SPRINT SED 2025): Component state mechamism
+        //TODO (SPRINT SED 2025): Component state mechanism
         return this->doCanLoad(); 
     }
 
