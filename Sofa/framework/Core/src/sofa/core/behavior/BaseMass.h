@@ -52,9 +52,9 @@ protected:
     virtual void doAddMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) = 0;
     virtual void doAccFromF(const MechanicalParams* mparams, MultiVecDerivId aid) = 0;
     virtual void doAddGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid) = 0;
-    virtual SReal doGetKineticEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
-    virtual SReal doGetPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
-    virtual type::Vec6 doGetMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
+    virtual SReal doGetKineticEnergy(const MechanicalParams* mparams) const = 0;
+    virtual SReal doGetPotentialEnergy(const MechanicalParams* mparams) const = 0;
+    virtual type::Vec6 doGetMomentum(const MechanicalParams* mparams) const = 0;
     virtual void doAddMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) = 0;
     virtual void doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices);
     virtual void doInitGnuplot(const std::string path) = 0;
@@ -80,10 +80,7 @@ public:
      **/
 
     /// f += factor M dx
-    virtual void addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) final
-    {
-        doAddMDx(mparams, fid, factor);
-    }
+    virtual void addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) final;
 
     /**
      * !!! WARNING since v25.12 !!! 
@@ -95,10 +92,7 @@ public:
      **/
 
     /// dx = M^-1 f
-    virtual void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) final
-    {
-        doAccFromF(mparams, aid);
-    }
+    virtual void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) final;
 
     /**
      * !!! WARNING since v25.12 !!! 
@@ -112,10 +106,7 @@ public:
     /// \brief Perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
     ///
     /// \param mparams \a sofa::core::mechanicalparams::dt(mparams) is the time step of for temporal discretization.
-    virtual void addGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid) final
-    {
-        doAddGravityToV(mparams, vid);
-    }
+    virtual void addGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid) final;
 
     /**
      * !!! WARNING since v25.12 !!! 
@@ -127,10 +118,7 @@ public:
      **/
 
     /// vMv/2
-    virtual SReal getKineticEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final
-    {
-        return doGetKineticEnergy(mparams);
-    }
+    virtual SReal getKineticEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final;
 
     /**
      * !!! WARNING since v25.12 !!! 
@@ -142,10 +130,7 @@ public:
      **/
 
     /// Mgx
-    virtual SReal getPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final
-    {
-        return doGetPotentialEnergy(mparams);
-    }
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final;
 
     /**
      * !!! WARNING since v25.12 !!! 
@@ -157,10 +142,7 @@ public:
      **/
 
     /// (Mv,xMv+Iw) (linear and angular momenta against world origin)
-    virtual type::Vec6 getMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final
-    {
-        return doGetMomentum(mparams);
-    }
+    virtual type::Vec6 getMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final;
 
     /// @}
 
@@ -181,10 +163,7 @@ public:
     /// This method must be implemented by the component.
     /// \param matrix matrix to add the result to
     /// \param mparams \a mparams->mFactor() is the coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    virtual void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) final
-    {
-        doAddMToMatrix(mparams, matrix);
-    }
+    virtual void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) final;
 
     /**
      * !!! WARNING since v25.12 !!! 
@@ -195,10 +174,7 @@ public:
      * 
      **/
 
-    virtual void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) final
-    {
-        doBuildMassMatrix(matrices);
-    }
+    virtual void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) final;
 
     /// @}
 
@@ -212,11 +188,7 @@ public:
      **/
 
     /// initialization to export kinetic and potential energy to gnuplot files format
-    virtual void initGnuplot(const std::string path) final
-    {
-        doInitGnuplot(path);
-    }
-
+    virtual void initGnuplot(const std::string path) final;
 
     /**
      * !!! WARNING since v25.12 !!! 
@@ -228,10 +200,7 @@ public:
      **/
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
-    virtual void exportGnuplot(const MechanicalParams* mparams, SReal time) final
-    {
-        doExportGnuplot(mparams, time);
-    }
+    virtual void exportGnuplot(const MechanicalParams* mparams, SReal time) final;
 
     /**
      * !!! WARNING since v25.12 !!! 
@@ -243,10 +212,7 @@ public:
      **/
 
     /// Get the mass relative to the DOF at \a index.
-    virtual SReal getElementMass(sofa::Index index) const final
-    {
-        return doGetElementMass(index);
-    }
+    virtual SReal getElementMass(sofa::Index index) const final;
 
     /**
      * !!! WARNING since v25.12 !!! 
@@ -258,10 +224,7 @@ public:
      **/
 
     /// Get the matrix relative to the DOF at \a index.
-    virtual void getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const final
-    {
-        doGetElementMass(index, m);
-    }
+    virtual void getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const final;
 
     virtual bool isDiagonal() const = 0;
 
