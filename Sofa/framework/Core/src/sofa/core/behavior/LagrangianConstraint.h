@@ -34,17 +34,17 @@ namespace sofa::core::behavior
 /**
  *  \brief Component computing constraints within a simulated body.
  *
- *  This class define the abstract API common to constraints using a given type
+ *  This class defines the abstract API common to constraints using a given type
  *  of DOFs.
- *  A Constraint computes constraints applied to one simulated body given its
+ *  A LagrangianConstraint computes constraints applied to one simulated body given its
  *  current position and velocity.
  *
  */
 template<class DataTypes>
-class Constraint : public BaseLagrangianConstraint, public SingleStateAccessor<DataTypes>
+class LagrangianConstraint : public BaseLagrangianConstraint, public SingleStateAccessor<DataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(Constraint, DataTypes), BaseLagrangianConstraint, SOFA_TEMPLATE(SingleStateAccessor, DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(LagrangianConstraint, DataTypes), BaseLagrangianConstraint, SOFA_TEMPLATE(SingleStateAccessor, DataTypes));
 
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -57,9 +57,9 @@ public:
     typedef core::objectmodel::Data<VecDeriv>		DataVecDeriv;
     typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
 protected:
-    Constraint(MechanicalState<DataTypes> *mm = nullptr);
+    LagrangianConstraint(MechanicalState<DataTypes> *mm = nullptr);
 
-    ~Constraint() override;
+    ~LagrangianConstraint() override;
 
     virtual void init() override;
 public:
@@ -121,7 +121,7 @@ public:
     virtual type::vector<std::string> getBaseConstraintIdentifiers() override final
     {
         type::vector<std::string> ids = getConstraintIdentifiers();
-        ids.push_back("Constraint");
+        ids.push_back("LagrangianConstraint");
         return ids;
     }
 
@@ -135,12 +135,12 @@ private:
 };
 
 #if !defined(SOFA_CORE_BEHAVIOR_CONSTRAINT_CPP)
-extern template class SOFA_CORE_API Constraint<defaulttype::Vec6Types>;
-extern template class SOFA_CORE_API Constraint<defaulttype::Vec3Types>;
-extern template class SOFA_CORE_API Constraint<defaulttype::Vec2Types>;
-extern template class SOFA_CORE_API Constraint<defaulttype::Vec1Types>;
-extern template class SOFA_CORE_API Constraint<defaulttype::Rigid3Types>;
-extern template class SOFA_CORE_API Constraint<defaulttype::Rigid2Types>;
+extern template class SOFA_CORE_API LagrangianConstraint<defaulttype::Vec6Types>;
+extern template class SOFA_CORE_API LagrangianConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_CORE_API LagrangianConstraint<defaulttype::Vec2Types>;
+extern template class SOFA_CORE_API LagrangianConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_CORE_API LagrangianConstraint<defaulttype::Rigid3Types>;
+extern template class SOFA_CORE_API LagrangianConstraint<defaulttype::Rigid2Types>;
 
 
 #endif
