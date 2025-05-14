@@ -69,7 +69,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::doProjectResponse(const 
 }
 
 template<class DataTypes>
-void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId)
+void PairInteractionProjectiveConstraintSet<DataTypes>::doProjectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId)
 {
     if( !isActive() ) return;
     if (this->mstate1 && this->mstate2)

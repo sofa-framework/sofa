@@ -77,12 +77,19 @@ protected:
     /// the component.
     void doProjectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) override;
 
+    /// Project v to constrained space (v models a velocity).
+    ///
+    /// This method retrieves the vId vector from the MechanicalState and call
+    /// the internal projectVelocity(VecDeriv&) method implemented by
+    /// the component.
+    void doProjectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) override;
+
 public:
 
     // to get rid of warnings
     using BaseProjectiveConstraintSet::projectResponse;
     using BaseProjectiveConstraintSet::projectJacobianMatrix;
-
+    using BaseProjectiveConstraintSet::projectVelocity;
 
 
     Data<Real> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
@@ -90,13 +97,6 @@ public:
 
     /// @name Vector operations
     /// @{
-
-    /// Project v to constrained space (v models a velocity).
-    ///
-    /// This method retrieves the vId vector from the MechanicalState and call
-    /// the internal projectVelocity(VecDeriv&) method implemented by
-    /// the component.
-    void projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) override;
 
     /// Project x to constrained space (x models a position).
     ///

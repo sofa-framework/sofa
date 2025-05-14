@@ -74,7 +74,7 @@ void ProjectiveConstraintSet<DataTypes>::doProjectResponse(const MechanicalParam
 }
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId)
+void ProjectiveConstraintSet<DataTypes>::doProjectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId)
 {
     if (!isActive())
         return;

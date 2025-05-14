@@ -79,6 +79,7 @@ protected:
     virtual void doProjectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) = 0;
     virtual void doProjectResponse(const MechanicalParams* /*mparams*/, double **) { };
     virtual void doProjectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) = 0;
+    virtual void doProjectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) = 0;
 
 public:
     /// Get the ID of the group containing this constraint.
@@ -112,7 +113,9 @@ public:
 
     /// Project v to constrained space (v models a velocity).
     /// \param vId output vector
-    virtual void projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) = 0;
+    virtual void projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) final {
+      this->doProjectVelocity(mparams, vId);
+    }
 
     /// Project x to constrained space (x models a position).
     /// \param xId output vector
