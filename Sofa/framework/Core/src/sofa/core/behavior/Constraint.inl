@@ -55,7 +55,7 @@ void Constraint<DataTypes>::init()
 }
 
 template<class DataTypes>
-void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
+void Constraint<DataTypes>::doGetConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
 {
     if (cParams)
     {
@@ -65,7 +65,7 @@ void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* cPara
 
 
 template<class DataTypes>
-void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
+void Constraint<DataTypes>::doBuildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     if (cParams)
     {
