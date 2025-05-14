@@ -131,5 +131,5 @@
 #define SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT()
 #else
 #define SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() \
-    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v26.06", "Use toBaseLagrangianConstraint instead.")
+    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "Use toBaseLagrangianConstraint instead.")
 #endif
