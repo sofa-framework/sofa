@@ -64,6 +64,7 @@ public:
     **/
     virtual void resize(Size vsize) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         doResize(vsize);
     }
 
@@ -79,6 +80,7 @@ public:
     **/
     virtual objectmodel::BaseData* baseWrite(VecId v) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         return doBaseWrite(v);
     }
 
@@ -92,6 +94,7 @@ public:
     **/
     virtual const objectmodel::BaseData* baseRead(ConstVecId v) const final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         return doBaseRead(v);
     }
 
@@ -115,6 +118,7 @@ public:
     **/
     virtual void addToTotalForces(core::ConstVecDerivId forceId) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         doAddToTotalForces(forceId);
     }
     /**
@@ -127,6 +131,7 @@ public:
     **/
     virtual void removeFromTotalForces(core::ConstVecDerivId forceId) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         doRemoveFromTotalForces(forceId);
     }
 };
