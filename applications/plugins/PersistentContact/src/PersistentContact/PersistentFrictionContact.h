@@ -147,7 +147,7 @@ protected:
 
     void doCreateResponse(core::objectmodel::BaseContext* group);
 
-    virtual void doRemoveResponse();
+    void doRemoveResponse() override;
 
     std::pair<bool,bool> findMappingOrUseMapper();
 
