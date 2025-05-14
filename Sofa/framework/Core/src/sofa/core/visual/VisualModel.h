@@ -86,31 +86,100 @@ protected:
     virtual void doInitVisual(const VisualParams* /*vparams*/) {}
     virtual void doUpdateVisual(const VisualParams* /*vparams*/) {}
 
+    virtual void doClearVisual() { }
+    virtual void doFwdDraw(VisualParams* /*vparams*/) {}
+    virtual void doBwdDraw(VisualParams* /*vparams*/) {}
+    virtual void doDrawTransparent(const VisualParams* /*vparams*/) { }
+    virtual void doDrawShadow(const VisualParams* vparams)
+    {
+        doDrawVisual(vparams);
+    }
+    virtual void doParallelUpdateVisual() { }
+    virtual bool doAddBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
+    {
+        return false;
+    }
+    virtual void doApplyTranslation(const SReal /*dx*/, const SReal /*dy*/, const SReal /*dz*/) { }
+    virtual void doApplyRotation (const SReal /*rx*/, const SReal /*ry*/, const SReal /*rz*/) { }
+    virtual void doApplyRotation(const type::Quat<SReal> /*q*/) { }
+    virtual void doApplyScale(const SReal /*sx*/,const SReal /*sy*/,const SReal /*sz*/) { }
+    virtual void doExportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/,
+        sofa::Index& /*vindex*/, sofa::Index& /*nindex*/, sofa::Index& /*tindex*/, int& /*count*/) { }
+
+
 public:
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /**
      *  \brief clear some graphical resources (generally called before the deleteVisitor).
      *  \note: for more general usage you can use the cleanup visitor
      */
-    virtual void clearVisual() { }
+    virtual void clearVisual() final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doClearVisual();
+    }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /**
      *  \brief Called before objects in the current branch are displayed
      */
-    virtual void fwdDraw(VisualParams* /*vparams*/) {}
+    virtual void fwdDraw(VisualParams* vparams) final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doFwdDraw(vparams);
+    }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /**
      *  \brief Called after objects in the current branch are displayed
      */
-    virtual void bwdDraw(VisualParams* /*vparams*/) {}
+    virtual void bwdDraw(VisualParams* vparams) final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doBwdDraw(vparams);
+    }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /**
      *  \brief Display transparent surfaces.
      *
      *  Transparent objects should use this method to get a correct display order.
      */
-    virtual void drawTransparent(const VisualParams* /*vparams*/)
+    virtual void drawTransparent(const VisualParams* vparams) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doDrawTransparent(vparams);
     }
+
 
     /**
      *  \brief Display shadow-casting surfaces.
@@ -118,18 +187,37 @@ public:
      *  This method default to calling draw(). Object that do not cast any
      *  shadows, or that use a different LOD for them should reimplement it.
      */
-    virtual void drawShadow(const VisualParams* vparams)
+    virtual void drawShadow(const VisualParams* vparams) final
     {
         //TODO (SPRINT SED 2025): Component state mechanism
-        doDrawVisual(vparams);
+        doDrawShadow(vparams);
     }
 
     /**
+    * !!! WARNING since v25.12 !!!
+    *
+    * The template method pattern has been applied to this part of the API.
+    * This method calls the newly introduced method "doFunctionName" internally,
+    * which is the method to override from now on.
+    *
+    **/
+    /**
     *  \brief used to update the model if necessary.
     */
-    virtual void parallelUpdateVisual() { }
+    virtual void parallelUpdateVisual() final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doParallelUpdateVisual();
+    }
 
-
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /**
      *  \brief used to add the bounding-box of this visual model to the
      *  given bounding box in order to compute the scene bounding box or
@@ -140,49 +228,103 @@ public:
      *  information might affect performances and leads to incorrect scene
      *  bounding box.
      */
-    virtual bool addBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
+    virtual bool addBBox(SReal* minBBox, SReal* maxBBox) final
     {
-        return false;
+        //TODO (SPRINT SED 2025): Component state mechanism
+        return doAddBBox(minBBox,maxBBox);
     }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Translate the positions
     ///
     /// This method is optional, it is used when the user want to interactively change the position of an object
-    virtual void applyTranslation(const SReal /*dx*/, const SReal /*dy*/, const SReal /*dz*/)
+    virtual void applyTranslation(const SReal dx, const SReal dy, const SReal dz) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doApplyTranslation(dx, dy, dz);
     }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Rotate the positions using Euler Angles in degree
     ///
     /// This method is optional, it is used when the user want to interactively change the position of an object
-    virtual void applyRotation (const SReal /*rx*/, const SReal /*ry*/, const SReal /*rz*/)
+    virtual void applyRotation (const SReal rx, const SReal ry, const SReal rz) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doApplyRotation(rx, ry, rz);
     }
 
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Rotate the positions
     ///
     /// This method is optional, it is used when the user want to interactively change the position of an object
-    virtual void applyRotation(const type::Quat<SReal> /*q*/)
+    virtual void applyRotation(const type::Quat<SReal> q) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doApplyRotation(q);
     }
 
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Scale the positions
     ///
     /// This method is optional, it is used when the user want to interactively change the position of an object
-    virtual void applyScale(const SReal /*sx*/,const SReal /*sy*/,const SReal /*sz*/)
+    virtual void applyScale(const SReal sx,const SReal sy,const SReal sz) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doApplyScale(sx,sy,sz);
     }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /**
      *  \brief Append this mesh to an OBJ format stream.
      *
      *  The number of vertices position, normal, and texture coordinates already written is given as parameters.
      *  This method should update them.
      */
-    virtual void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, 
-        sofa::Index& /*vindex*/, sofa::Index& /*nindex*/, sofa::Index& /*tindex*/, int& /*count*/)
+    virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl,
+        sofa::Index& vindex, sofa::Index& nindex, sofa::Index& tindex, int& count) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doExportOBJ(name,out,mtl,vindex,nindex,tindex,count);
     }
+
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
