@@ -62,7 +62,6 @@ public:
     }
 
     /// Construct and assemble the linear system matrix
-    //TODO I've let this function non-virtual, should we make it virtual and final ?
     void buildSystemMatrix(const core::MechanicalParams* mparams) {
         //TODO (SPRINT SED 2025): Component state mechamism
         preAssembleSystem(mparams);
