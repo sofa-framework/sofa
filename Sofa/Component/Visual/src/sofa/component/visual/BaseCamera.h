@@ -102,7 +102,19 @@ public:
     void moveCamera(const type::Vec3 &p, const Quat &q);
 
     void rotateCameraAroundPoint( Quat& rotation, const type::Vec3& point);
-    virtual void rotateWorldAroundPoint( Quat& rotation, const type::Vec3& point, Quat orientationCam);
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doRotateWorldAroundPoint" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+    virtual void rotateWorldAroundPoint(Quat& rotation, const type::Vec3& point, Quat orientationCam) final {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        this->doRotateWorldAroundPoint(rotation, point, orientationCam);
+    }
 
     type::Vec3 screenToViewportPoint(const type::Vec3& p) const;
     type::Vec3 screenToWorldPoint(const type::Vec3& p);
@@ -192,8 +204,32 @@ public:
     //be according to the gravity.
     void setDefaultView(const type::Vec3& gravity = type::Vec3(0, -9.81, 0));
 
-    virtual void getModelViewMatrix(double mat[16]);
-    virtual void getProjectionMatrix(double mat[16]);
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetModelViewMatrix" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+    virtual void getModelViewMatrix(double mat[16]) final {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        this->doGetModelViewMatrix(mat);
+    }
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetProjectionMatrix" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+    virtual void getProjectionMatrix(double mat[16]) final {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        this->doGetProjectionMatrix(mat);
+    }
+
     void getOpenGLModelViewMatrix(double mat[16]);
     void getOpenGLProjectionMatrix(double mat[16]);
 
@@ -201,8 +237,31 @@ public:
     type::Vec3 getLookAtFromOrientation(const type::Vec3 &pos, const double &distance,const Quat & orientation);
     type::Vec3 getPositionFromOrientation(const type::Vec3 &lookAt, const double &distance, const Quat& orientation);
 
-    virtual void manageEvent(core::objectmodel::Event* event) = 0 ;
-    virtual void internalUpdate() {}
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doManageEvent" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+    virtual void manageEvent(core::objectmodel::Event* event) final {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        this->doManageEvent(event);
+    }
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doInternalUpdate" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+    virtual void internalUpdate() final {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        this->doInternalUpdate();
+    }
 
     void handleEvent(sofa::core::objectmodel::Event* event) override;
     void computeZ();
@@ -255,9 +314,33 @@ public:
 
     void draw(const core::visual::VisualParams*) override ;
     void computeClippingPlane(const core::visual::VisualParams* vp, double& zNear, double& zFar);
-    virtual void drawCamera(const core::visual::VisualParams*);
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doDrawCamera" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+    virtual void drawCamera(const core::visual::VisualParams* vparams) final {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        this->doDrawCamera(vparams);
+    }
+
 protected:
     void updateOutputData();
+
+    virtual void doRotateWorldAroundPoint(Quat& rotation, const type::Vec3& point, Quat orientationCam);
+
+    virtual void doManageEvent(core::objectmodel::Event* event) = 0;
+
+    virtual void doGetModelViewMatrix(double mat[16]);
+    virtual void doGetProjectionMatrix(double mat[16]);
+
+    virtual void doInternalUpdate() {}
+
+    virtual void doDrawCamera(const core::visual::VisualParams*);
 
     type::Vec3 sceneCenter;
     SReal sceneRadius;
