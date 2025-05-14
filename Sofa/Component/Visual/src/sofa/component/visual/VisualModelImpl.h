@@ -107,7 +107,6 @@ public:
     /// Rendering method.
     virtual void internalDraw(const core::visual::VisualParams* /*vparams*/, bool /*transparent*/) {}
 
-public:
     sofa::core::objectmodel::DataFileName d_fileMesh;
     sofa::core::objectmodel::DataFileName d_texturename;
 
@@ -121,15 +120,6 @@ public:
 
     Data< TexCoord > d_scaleTex; ///< Scale of the texture
     Data< TexCoord > d_translationTex; ///< Translation of the texture
-
-    void applyTranslation(const SReal dx, const SReal dy, const SReal dz) override;
-
-    /// Apply Rotation from Euler angles (in degree!)
-    void applyRotation (const SReal rx, const SReal ry, const SReal rz) override;
-
-    void applyRotation(const sofa::type::Quat<SReal> q) override;
-
-    void applyScale(const SReal sx, const SReal sy, const SReal sz) override;
 
     virtual void applyUVTransformation();
 
@@ -205,15 +195,31 @@ protected:
     /// Default destructor.
     ~VisualModelImpl() override;
 
+    /// Append this mesh to an OBJ format stream.
+    /// The number of vertices position, normal, and texture coordinates already written is given as parameters
+    /// This method should update them
+    void doExportOBJ(std::string name, std::ostream* out, std::ostream* mtl, sofa::Index& vindex, sofa::Index& nindex, sofa::Index& tindex, int& count) override;
+
+    void doUpdateVisual(const core::visual::VisualParams*) override;
+
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
+    void doDrawTransparent(const core::visual::VisualParams* vparams) override;
+    void doDrawShadow(const core::visual::VisualParams* vparams) override;
+
+    void doApplyTranslation(const SReal dx, const SReal dy, const SReal dz) override;
+
+    /// Apply Rotation from Euler angles (in degree!)
+    void doApplyRotation (const SReal rx, const SReal ry, const SReal rz) override;
+
+    void doApplyRotation(const sofa::type::Quat<SReal> q) override;
+
+    void doApplyScale(const SReal sx, const SReal sy, const SReal sz) override;
+
 public:
     void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     virtual bool hasTransparent();
     bool hasOpaque();
-    
-    void doDrawVisual(const core::visual::VisualParams* vparams) override;
-    void drawTransparent(const core::visual::VisualParams* vparams) override;
-    void drawShadow(const core::visual::VisualParams* vparams) override;
 
     virtual bool loadTextures() {return false;}
     virtual bool loadTexture(const std::string& /*filename*/) { return false; }
@@ -356,18 +362,12 @@ public:
     virtual void updateBuffers() {}
     virtual void deleteBuffers() {}
     virtual void deleteTextures() {}
-    
-    void doUpdateVisual(const core::visual::VisualParams*) override;
 
     void init() override;
     void initFromTopology();
     void initPositionFromVertices();
     void initFromFileMesh();
     
-    /// Append this mesh to an OBJ format stream.
-    /// The number of vertices position, normal, and texture coordinates already written is given as parameters
-    /// This method should update them
-    void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, sofa::Index& vindex, sofa::Index& nindex, sofa::Index& tindex, int& count) override;
 
     /// Returns the sofa class name. By default the name of the c++ class is exposed...
     /// More details on the name customization infrastructure is in NameDecoder.h
