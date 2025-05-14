@@ -35,7 +35,7 @@ namespace sofa::core::behavior
  *  given its current position and velocity.
  *
  *  Constraints can be internal to a given body (attached to one MechanicalState,
- *  see the Constraint class), or link several bodies together (such as contacts,
+ *  see the LagrangianConstraint class), or link several bodies together (such as contacts,
  *  see the InteractionConstraint class).
  *
  */

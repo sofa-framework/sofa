@@ -28,34 +28,34 @@ namespace sofa::core::behavior
 {
 
 template<class DataTypes>
-Constraint<DataTypes>::Constraint(MechanicalState<DataTypes> *mm)
+LagrangianConstraint<DataTypes>::LagrangianConstraint(MechanicalState<DataTypes> *mm)
     : Inherit1(), Inherit2(mm)
     , endTime( initData(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
 {
 }
 
 template<class DataTypes>
-Constraint<DataTypes>::~Constraint()
+LagrangianConstraint<DataTypes>::~LagrangianConstraint()
 {
 }
 
 
 template <class DataTypes>
-bool Constraint<DataTypes>::isActive() const
+bool LagrangianConstraint<DataTypes>::isActive() const
 {
     if( endTime.getValue()<0 ) return true;
     return endTime.getValue()>getContext()->getTime();
 }
 
 template <class DataTypes>
-void Constraint<DataTypes>::init()
+void LagrangianConstraint<DataTypes>::init()
 {
     Inherit1::init();
     Inherit2::init();
 }
 
 template<class DataTypes>
-void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
+void LagrangianConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
 {
     if (cParams)
     {
@@ -65,7 +65,7 @@ void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* cPara
 
 
 template<class DataTypes>
-void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
+void LagrangianConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     if (cParams)
     {
@@ -75,7 +75,7 @@ void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 
 
 template<class DataTypes>
-void Constraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda)
+void LagrangianConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda)
 {
     if (cParams)
     {
@@ -84,7 +84,7 @@ void Constraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVe
 }
 
 template<class DataTypes>
-void Constraint<DataTypes>::storeLambda(const ConstraintParams*, Data<VecDeriv>& result, const Data<MatrixDeriv>& jacobian, const sofa::linearalgebra::BaseVector* lambda)
+void LagrangianConstraint<DataTypes>::storeLambda(const ConstraintParams*, Data<VecDeriv>& result, const Data<MatrixDeriv>& jacobian, const sofa::linearalgebra::BaseVector* lambda)
 {
     auto res = sofa::helper::getWriteAccessor(result);
     const MatrixDeriv& j = jacobian.getValue();
