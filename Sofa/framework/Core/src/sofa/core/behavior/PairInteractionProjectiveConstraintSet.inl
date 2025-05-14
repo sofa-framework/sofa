@@ -51,7 +51,7 @@ bool PairInteractionProjectiveConstraintSet<DataTypes>::isActive() const
 }
 
 template<class DataTypes>
-void PairInteractionProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalParams* /*mparams*/, MultiMatrixDerivId /*cId*/)
+void PairInteractionProjectiveConstraintSet<DataTypes>::doProjectJacobianMatrix(const MechanicalParams* /*mparams*/, MultiMatrixDerivId /*cId*/)
 {
     msg_error()<< "NOT IMPLEMENTED YET";
 }

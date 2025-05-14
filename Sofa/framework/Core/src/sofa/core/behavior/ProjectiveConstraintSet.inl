@@ -48,7 +48,7 @@ bool ProjectiveConstraintSet<DataTypes>::isActive() const
 }
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId)
+void ProjectiveConstraintSet<DataTypes>::doProjectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId)
 {
     if (!isActive())
         return;

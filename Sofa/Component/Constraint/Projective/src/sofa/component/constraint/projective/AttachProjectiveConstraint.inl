@@ -285,7 +285,7 @@ template <>
 void AttachProjectiveConstraint<sofa::defaulttype::Rigid3Types>::calcRestRotations();
 
 template<class DataTypes>
-void AttachProjectiveConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, core::MultiMatrixDerivId cId)
+void AttachProjectiveConstraint<DataTypes>::doProjectJacobianMatrix(const core::MechanicalParams* mparams, core::MultiMatrixDerivId cId)
 {
     SOFA_UNUSED(mparams);
     SOFA_UNUSED(cId);

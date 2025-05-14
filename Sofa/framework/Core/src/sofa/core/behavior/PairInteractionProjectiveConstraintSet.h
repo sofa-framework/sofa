@@ -63,6 +63,13 @@ protected:
     /// the component.
     void doProjectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) override;
 
+    /// Project the L matrix of the Lagrange Multiplier equation system.
+    ///
+    /// This method retrieves the lines of the Jacobian Matrix from the MechanicalState and call
+    /// the internal projectResponse(MatrixDeriv&) method implemented by
+    /// the component.
+    void doProjectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) override;
+
 public:
     Data<SReal> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
     virtual bool isActive() const; ///< if false, the constraint does nothing
@@ -73,13 +80,6 @@ public:
 
     /// @name Vector operations
     /// @{
-
-    /// Project the L matrix of the Lagrange Multiplier equation system.
-    ///
-    /// This method retrieves the lines of the Jacobian Matrix from the MechanicalState and call
-    /// the internal projectResponse(MatrixDeriv&) method implemented by
-    /// the component.
-    void projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) override;
 
     /// Project v to constrained space (v models a velocity).
     ///

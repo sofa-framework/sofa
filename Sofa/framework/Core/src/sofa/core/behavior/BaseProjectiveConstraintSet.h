@@ -78,6 +78,7 @@ protected:
     virtual type::vector< core::BaseState* > doGetModels() = 0;
     virtual void doProjectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) = 0;
     virtual void doProjectResponse(const MechanicalParams* /*mparams*/, double **) { };
+    virtual void doProjectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) = 0;
 
 public:
     /// Get the ID of the group containing this constraint.
@@ -105,7 +106,9 @@ public:
 
     /// Project the L matrix of the Lagrange Multiplier equation system.
     /// \param cId output vector
-    virtual void projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) = 0;
+    virtual void projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) final {
+      this->doProjectJacobianMatrix(mparams, cId);
+    }
 
     /// Project v to constrained space (v models a velocity).
     /// \param vId output vector
