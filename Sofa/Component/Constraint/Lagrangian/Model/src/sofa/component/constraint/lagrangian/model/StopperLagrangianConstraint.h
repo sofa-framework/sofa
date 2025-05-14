@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/constraint/lagrangian/model/config.h>
 
-#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/LagrangianConstraint.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/OdeSolver.h>
