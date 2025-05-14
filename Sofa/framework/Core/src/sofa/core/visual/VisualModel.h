@@ -85,7 +85,6 @@ protected:
     VisualModel();
     ~VisualModel() override { }
 
-private:
     virtual void doDrawVisual(const VisualParams* /*vparams*/) {}
     virtual void doInitVisual(const VisualParams* /*vparams*/) {}
     virtual void doUpdateVisual(const VisualParams* /*vparams*/) {}
