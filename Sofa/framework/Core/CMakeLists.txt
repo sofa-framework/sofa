@@ -71,6 +71,8 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseVectorOperations.h
     ${SRC_ROOT}/behavior/BlocMatrixWriter.h
     ${SRC_ROOT}/behavior/BlockType.h
+    ${SRC_ROOT}/behavior/Constraint.h
+    ${SRC_ROOT}/behavior/Constraint.inl
     ${SRC_ROOT}/behavior/ConstraintCorrection.h
     ${SRC_ROOT}/behavior/ConstraintCorrection.inl
     ${SRC_ROOT}/behavior/ConstraintResolution.h
