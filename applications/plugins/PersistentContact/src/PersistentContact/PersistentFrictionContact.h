@@ -143,9 +143,9 @@ public:
 protected:
     
     /// Set the generic description of a contact point
-    void doSetDetectionOutputs(OutputVector* outputs);
+    void doSetDetectionOutputs(OutputVector* outputs) override;
 
-    void doCreateResponse(core::objectmodel::BaseContext* group);
+    void doCreateResponse(core::objectmodel::BaseContext* group) override;
 
     void doRemoveResponse() override;
 
