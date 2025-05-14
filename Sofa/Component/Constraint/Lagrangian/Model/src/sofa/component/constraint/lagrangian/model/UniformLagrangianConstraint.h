@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/constraint/lagrangian/model/config.h>
 
-#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/LagrangianConstraint.h>
 
 namespace sofa::component::constraint::lagrangian::model
 {
