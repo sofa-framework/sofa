@@ -88,7 +88,7 @@ void ProjectiveConstraintSet<DataTypes>::doProjectVelocity(const MechanicalParam
 }
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId)
+void ProjectiveConstraintSet<DataTypes>::doProjectPosition(const MechanicalParams* mparams, MultiVecCoordId xId)
 {
     if (!isActive())
         return;

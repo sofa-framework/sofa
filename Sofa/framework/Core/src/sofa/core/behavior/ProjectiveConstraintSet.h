@@ -63,6 +63,9 @@ protected:
         return { this->getMState() };
     }
 
+    /// @name Vector operations
+    /// @{
+
     /// Project dx to constrained space (dx models an acceleration).
     ///
     /// This method retrieves the dxId vector from the MechanicalState and call
@@ -84,12 +87,22 @@ protected:
     /// the component.
     void doProjectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) override;
 
+    /// Project x to constrained space (x models a position).
+    ///
+    /// This method retrieves the xId vector from the MechanicalState and call
+    /// the internal projectPosition(VecCoord&) method implemented by
+    /// the component.
+    void doProjectPosition(const MechanicalParams* mparams, MultiVecCoordId xId) override;
+
+    /// @}
+
 public:
 
     // to get rid of warnings
     using BaseProjectiveConstraintSet::projectResponse;
     using BaseProjectiveConstraintSet::projectJacobianMatrix;
     using BaseProjectiveConstraintSet::projectVelocity;
+    using BaseProjectiveConstraintSet::projectPosition;
 
 
     Data<Real> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
@@ -97,15 +110,6 @@ public:
 
     /// @name Vector operations
     /// @{
-
-    /// Project x to constrained space (x models a position).
-    ///
-    /// This method retrieves the xId vector from the MechanicalState and call
-    /// the internal projectPosition(VecCoord&) method implemented by
-    /// the component.
-    void projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId) override;
-
-
 
     /// Project dx to constrained space (dx models an acceleration).
     ///
