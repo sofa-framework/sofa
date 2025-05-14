@@ -62,7 +62,7 @@ public:
     }
 
     /// Construct and assemble the linear system matrix
-    void buildSystemMatrix(const core::MechanicalParams* mparams) {
+    virtual void buildSystemMatrix(const core::MechanicalParams* mparams) final {
         //TODO (SPRINT SED 2025): Component state mechamism
         preAssembleSystem(mparams);
         assembleSystem(mparams);
