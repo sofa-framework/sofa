@@ -28,10 +28,10 @@ namespace sofa::component::constraint::lagrangian::model
 {
 
 template < class DataTypes >
-class UniformLagrangianConstraint : public sofa::core::behavior::Constraint< DataTypes >
+class UniformLagrangianConstraint : public sofa::core::behavior::LagrangianConstraint< DataTypes >
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(UniformLagrangianConstraint, DataTypes), SOFA_TEMPLATE(sofa::core::behavior::Constraint, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(UniformLagrangianConstraint, DataTypes), SOFA_TEMPLATE(sofa::core::behavior::LagrangianConstraint, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
