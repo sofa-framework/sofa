@@ -78,6 +78,7 @@ public:
     **/
     virtual void solveConstraint(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         doSolveConstraint(cParams, res1, res2);
     }
 
@@ -94,6 +95,7 @@ public:
     **/
     virtual bool prepareStates(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         return doPrepareStates(cParams,res1,res2);
     }
 
@@ -110,6 +112,7 @@ public:
     **/
     virtual bool buildSystem(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         return doBuildSystem(cParams, res1, res2);
     }
 
@@ -127,6 +130,7 @@ public:
     **/
     virtual void rebuildSystem(SReal massFactor, SReal forceFactor) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         doRebuildSystem(massFactor, forceFactor);
     }
 
@@ -143,6 +147,7 @@ public:
     **/
     virtual bool solveSystem(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         return doSolveSystem(cParams, res1, res2);
     }
 
@@ -159,6 +164,7 @@ public:
     **/
     virtual bool applyCorrection(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         return doApplyCorrection(cParams, res1, res2);
     }
 
@@ -176,6 +182,7 @@ public:
     **/
     virtual void computeResidual(const core::ExecParams* cParams) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         doComputeResidual(cParams);
     }
 
@@ -205,6 +212,7 @@ public:
     **/
     virtual void removeConstraintCorrection(BaseConstraintCorrection *s) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         doRemoveConstraintCorrection(s);
     }
 
