@@ -74,6 +74,7 @@ public:
     **/
     virtual void solve(const core::ExecParams* params, SReal dt, MultiVecCoordId xResult, MultiVecDerivId vResult) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         doSolve(params, dt, xResult, vResult);
     }
 
@@ -98,6 +99,7 @@ public:
     **/
     virtual void computeResidual(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId pos_t, sofa::core::MultiVecDerivId vel_t) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         doComputeResidual(params, dt, pos_t, vel_t);
     }
 
