@@ -133,20 +133,21 @@ public:
 
     void cleanup();
 
-    /// Set the generic description of a contact point
-    void setDetectionOutputs(OutputVector* outputs);
-
-    void createResponse(core::objectmodel::BaseContext* group);
-
-    virtual void removeResponse();
-
     void init();
+
 
 #ifdef DEBUG_INACTIVE_CONTACTS
     void draw(const core::visual::VisualParams* vparams);
 #endif
 
 protected:
+    
+    /// Set the generic description of a contact point
+    void doSetDetectionOutputs(OutputVector* outputs);
+
+    void doCreateResponse(core::objectmodel::BaseContext* group);
+
+    virtual void doRemoveResponse();
 
     std::pair<bool,bool> findMappingOrUseMapper();
 
