@@ -127,7 +127,7 @@ MeshVTKLoader::VTKFileType MeshVTKLoader::detectFileType(const char* filename)
         {
             std::string version = match[1].str();
             if(stod(version) >= 5)
-                msg_warning() << "VTK5.+ format might not be well supported, see issue \e]8;;https://github.com/sofa-framework/sofa/issues/3405\e\\#3405\e]8;;\e\\";
+                msg_warning() << "VTK5.+ format might not be well supported, see issue https://github.com/sofa-framework/sofa/issues/3405";
             else
                 msg_info() << "Extracted version: " << version;
         }
