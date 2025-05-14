@@ -49,7 +49,7 @@ namespace sofa::component::collision::response::contact
 using namespace sofa::gpu::cuda;
 
 template <>
-void BarycentricPenalityContact<CudaPointCollisionModel,CudaRigidDistanceGridCollisionModel,CudaVec3fTypes>::setDetectionOutputs(OutputVector* o)
+void BarycentricPenalityContact<CudaPointCollisionModel,CudaRigidDistanceGridCollisionModel,CudaVec3fTypes>::doSetDetectionOutputs(OutputVector* o)
 {
     GPUDetectionOutputVector& outputs = *dynamic_cast<GPUDetectionOutputVector*>(o);
     //const bool printLog = this->f_printLog.getValue();
@@ -101,7 +101,7 @@ void BarycentricPenalityContact<CudaPointCollisionModel,CudaRigidDistanceGridCol
 }
 
 template <>
-void BarycentricPenalityContact<CudaSphereCollisionModel,CudaRigidDistanceGridCollisionModel,CudaVec3fTypes>::setDetectionOutputs(OutputVector* o)
+void BarycentricPenalityContact<CudaSphereCollisionModel,CudaRigidDistanceGridCollisionModel,CudaVec3fTypes>::doSetDetectionOutputs(OutputVector* o)
 {
 
     GPUDetectionOutputVector& outputs = *dynamic_cast<GPUDetectionOutputVector*>(o);
