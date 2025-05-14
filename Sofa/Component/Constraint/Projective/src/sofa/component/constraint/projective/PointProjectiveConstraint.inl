@@ -129,7 +129,7 @@ void  PointProjectiveConstraint<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void PointProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
+void PointProjectiveConstraint<DataTypes>::doProjectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     const unsigned blockSize = DataTypes::deriv_total_size;
 

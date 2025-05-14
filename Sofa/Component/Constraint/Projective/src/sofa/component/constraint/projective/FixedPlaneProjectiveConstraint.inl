@@ -194,7 +194,7 @@ void FixedPlaneProjectiveConstraint<DataTypes>::projectPosition(const Mechanical
 }
 
 template <class DataTypes>
-void FixedPlaneProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned /*offset*/ )
+void FixedPlaneProjectiveConstraint<DataTypes>::doProjectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned /*offset*/ )
 {
     /// clears the rows and columns associated with constrained particles
     const unsigned blockSize = DataTypes::deriv_total_size;

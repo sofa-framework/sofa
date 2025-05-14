@@ -75,6 +75,8 @@ protected:
     void doApplyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     void doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
 
+    void doProjectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
+
 public:
 
     // -- Constraint interface
@@ -83,8 +85,6 @@ public:
     void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
-
-    void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
 protected:
     template <class DataDeriv>

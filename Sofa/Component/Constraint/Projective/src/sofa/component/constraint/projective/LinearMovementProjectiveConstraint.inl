@@ -331,7 +331,7 @@ void LinearMovementProjectiveConstraint<DataTypes>::findKeyTimes()
 
 
 template <class DataTypes>
-void LinearMovementProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
+void LinearMovementProjectiveConstraint<DataTypes>::doProjectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     static const unsigned blockSize = DataTypes::deriv_total_size;
 

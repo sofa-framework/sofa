@@ -84,8 +84,11 @@ protected:
 
     virtual void doApplyConstraint(const MechanicalParams* /*mparams*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}
     virtual void doApplyConstraint(const MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}
+    virtual void doProjectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) 
+    { 
+      msg_error() << "projectMatrix not implemented, projection will not be handled appropriately";
+    }
     virtual void doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* /*matrix*/);
-
 public:
     /// Get the ID of the group containing this constraint.
     /// This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
@@ -154,9 +157,9 @@ public:
       Typically, M is the (generalized) mass matrix of the whole system, offset is the starting index of the local state in this global matrix, and P is the identity matrix with a block on the diagonal replaced by the projection matrix.
       If M is the matrix of the local state, then offset should be 0.
       */
-    virtual void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) 
+    virtual void projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset ) final
     { 
-        msg_error() << "projectMatrix not implemented, projection will not be handled appropriately";
+      this->doProjectMatrix(M, offset);
     }
 
     /// Project the global matrix to constrained space by using the ZeroDirichletCondition interface

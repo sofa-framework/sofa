@@ -171,7 +171,7 @@ void  DirectionProjectiveConstraint<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void DirectionProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
+void DirectionProjectiveConstraint<DataTypes>::doProjectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     J.copy(jacobian, M->colSize(), offset); // projection matrix for an assembled state
     BaseSparseMatrix* E = dynamic_cast<BaseSparseMatrix*>(M);

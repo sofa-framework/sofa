@@ -168,7 +168,7 @@ void  LineProjectiveConstraint<DataTypes>::updateJacobian()
 }
 
 template <class DataTypes>
-void LineProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
+void LineProjectiveConstraint<DataTypes>::doProjectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     J.copy(jacobian, M->colSize(), offset); // projection matrix for an assembled state
     BaseSparseMatrix* E = dynamic_cast<BaseSparseMatrix*>(M);

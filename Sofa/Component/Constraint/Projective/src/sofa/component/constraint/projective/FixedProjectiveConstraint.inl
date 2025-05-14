@@ -157,7 +157,7 @@ void  FixedProjectiveConstraint<DataTypes>::checkIndices()
 }
 
 template <class DataTypes>
-void FixedProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
+void FixedProjectiveConstraint<DataTypes>::doProjectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     static const unsigned blockSize = DataTypes::deriv_total_size;
 

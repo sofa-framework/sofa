@@ -323,7 +323,7 @@ void SkeletalMotionProjectiveConstraint<DataTypes>::doApplyConstraint(const core
 }
 
 template <class DataTypes>
-void SkeletalMotionProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
+void SkeletalMotionProjectiveConstraint<DataTypes>::doProjectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     const unsigned blockSize = DataTypes::deriv_total_size;
     const unsigned size = this->mstate->getSize();

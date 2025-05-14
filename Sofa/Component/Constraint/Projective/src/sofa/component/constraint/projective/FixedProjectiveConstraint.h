@@ -93,6 +93,10 @@ protected:
     std::unique_ptr<FixedProjectiveConstraintInternalData<DataTypes> > data { nullptr };
     friend class FixedProjectiveConstraintInternalData<DataTypes>;
 
+    /** Project the given matrix (Experimental API).
+      See doc in base parent class
+      */
+    void doProjectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
 public:
     void clearConstraints();
@@ -108,11 +112,6 @@ public:
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
-
-    /** Project the given matrix (Experimental API).
-      See doc in base parent class
-      */
-    void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
     void draw(const core::visual::VisualParams* vparams) override;

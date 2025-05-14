@@ -389,7 +389,7 @@ void LinearVelocityProjectiveConstraint<DataTypes>::doApplyConstraint(const core
 }
 
 template <class DataTypes>
-void LinearVelocityProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
+void LinearVelocityProjectiveConstraint<DataTypes>::doProjectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     static const unsigned blockSize = DataTypes::deriv_total_size;
 

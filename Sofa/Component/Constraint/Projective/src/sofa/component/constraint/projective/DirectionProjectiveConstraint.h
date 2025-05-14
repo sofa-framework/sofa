@@ -96,6 +96,9 @@ protected:
     void doApplyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     void doApplyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
+    /// Project the given matrix (Experimental API, see the spec in sofa::core::behavior::BaseProjectiveConstraintSet).
+    void doProjectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
+
 public:
     void clearConstraints();
     void addConstraint(Index index);
@@ -109,10 +112,6 @@ public:
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
-
-    /// Project the given matrix (Experimental API, see the spec in sofa::core::behavior::BaseProjectiveConstraintSet).
-    void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
-
 
     void draw(const core::visual::VisualParams* vparams) override;
 

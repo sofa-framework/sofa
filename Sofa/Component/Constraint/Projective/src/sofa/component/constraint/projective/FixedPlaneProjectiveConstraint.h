@@ -84,9 +84,6 @@ public:
     void projectResponse(const MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectPosition(const MechanicalParams* mparams, DataVecCoord& xData) override;
-
-    /// Implement projectMatrix for assembled solver of compliant
-    void projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset) override;
     void projectJacobianMatrix(const MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
     void setDirection (Coord dir);
@@ -125,6 +122,8 @@ protected:
 
     void doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
 
+    /// Implement projectMatrix for assembled solver of compliant
+    void doProjectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset) override;
 };
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANEPROJECTIVECONSTRAINT_CPP)
