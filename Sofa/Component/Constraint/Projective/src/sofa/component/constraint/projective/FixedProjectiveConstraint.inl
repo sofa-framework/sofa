@@ -181,7 +181,7 @@ void FixedProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::B
 
 
 template <class DataTypes>
-void FixedProjectiveConstraint<DataTypes>::doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void FixedProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
 

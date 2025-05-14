@@ -146,7 +146,7 @@ void LinearVelocityProjectiveConstraint<DataTypes>::reset()
 
 
 template <class TDataTypes>
-void LinearVelocityProjectiveConstraint<TDataTypes>::doProjectResponse(const core::MechanicalParams* /*mparams*/, DataVecDeriv& resData)
+void LinearVelocityProjectiveConstraint<TDataTypes>::projectResponse(const core::MechanicalParams* /*mparams*/, DataVecDeriv& resData)
 {
     if(!m_finished)
     {

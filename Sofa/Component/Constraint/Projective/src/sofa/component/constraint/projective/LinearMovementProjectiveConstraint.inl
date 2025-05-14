@@ -170,7 +170,7 @@ void LinearMovementProjectiveConstraint<DataTypes>::projectResponseT(DataDeriv& 
 }
 
 template <class DataTypes>
-void LinearMovementProjectiveConstraint<DataTypes>::doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void LinearMovementProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;

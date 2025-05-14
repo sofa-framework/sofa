@@ -81,6 +81,7 @@ public:
     void draw(const VisualParams* vparams) override;
 
     /// -- Constraint interface
+    void projectResponse(const MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectPosition(const MechanicalParams* mparams, DataVecCoord& xData) override;
 
@@ -123,9 +124,6 @@ protected:
     using ProjectiveConstraintSet<DataTypes>::getContext;
 
     bool isPointInPlane(const Coord& p) const ;
-
-    /// -- Constraint interface
-    void doProjectResponse(const MechanicalParams* mparams, DataVecDeriv& resData) override;
 };
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANEPROJECTIVECONSTRAINT_CPP)

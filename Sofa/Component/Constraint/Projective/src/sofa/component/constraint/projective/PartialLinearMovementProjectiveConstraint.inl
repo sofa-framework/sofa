@@ -186,7 +186,7 @@ void PartialLinearMovementProjectiveConstraint<DataTypes>::projectResponseT(Data
 }
 
 template <class DataTypes>
-void PartialLinearMovementProjectiveConstraint<DataTypes>::doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void PartialLinearMovementProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;

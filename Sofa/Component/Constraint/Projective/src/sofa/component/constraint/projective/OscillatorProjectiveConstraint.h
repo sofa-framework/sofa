@@ -82,8 +82,6 @@ protected:
 
     Data< type::vector< Oscillator > > d_constraints; ///< Define a sequence of oscillating particules:  [index, Mean(x,y,z), amplitude(x,y,z), pulsation, phase]
 
-    void doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
-
 public:
     explicit OscillatorProjectiveConstraint(core::behavior::MechanicalState<TDataTypes>* mstate=nullptr);
     ~OscillatorProjectiveConstraint() override ;
@@ -92,6 +90,7 @@ public:
                                                     const Coord& mean, const Deriv& amplitude,
                                                     Real pulsation, Real phase);
 
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;

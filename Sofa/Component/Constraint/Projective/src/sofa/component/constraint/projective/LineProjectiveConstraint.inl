@@ -179,7 +179,7 @@ void LineProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::Ba
 
 
 template <class DataTypes>
-void LineProjectiveConstraint<DataTypes>::doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void LineProjectiveConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
     
@@ -203,7 +203,7 @@ void LineProjectiveConstraint<DataTypes>::projectJacobianMatrix(const core::Mech
 template <class DataTypes>
 void LineProjectiveConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
-    doProjectResponse(mparams,vData);
+    projectResponse(mparams,vData);
 }
 
 template <class DataTypes>

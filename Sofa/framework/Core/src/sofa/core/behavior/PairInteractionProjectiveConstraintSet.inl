@@ -64,7 +64,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::doProjectResponse(const 
     if( !isActive() ) return;
     if (this->mstate1 && this->mstate2)
     {
-        doProjectResponse(mparams, *dxId[this->mstate1.get()].write(), *dxId[this->mstate2.get()].write());
+        projectResponse(mparams, *dxId[this->mstate1.get()].write(), *dxId[this->mstate2.get()].write());
     }
 }
 

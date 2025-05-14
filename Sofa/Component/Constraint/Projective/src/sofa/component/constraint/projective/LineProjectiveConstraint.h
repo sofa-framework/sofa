@@ -93,9 +93,6 @@ protected:
     std::unique_ptr<LineProjectiveConstraintInternalData<DataTypes>> data { nullptr };
     friend class LineProjectiveConstraintInternalData<DataTypes>;
 
-    // -- Constraint interface
-    void doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
-
 public:
     void clearConstraints();
     void addConstraint(Index index);
@@ -105,6 +102,7 @@ public:
     void init() override;
     void reinit() override;
 
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;

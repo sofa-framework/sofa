@@ -72,9 +72,6 @@ protected:
 
     virtual ~PointProjectiveConstraint();
 
-    // -- Constraint interface
-    void doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
-
 public:
     SetIndex d_indices;    ///< the indices of the points to project to the target
     Data<Coord> d_point; ///< Target of the projection
@@ -98,6 +95,7 @@ public:
     void init() override;
     void reinit() override;
 
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;

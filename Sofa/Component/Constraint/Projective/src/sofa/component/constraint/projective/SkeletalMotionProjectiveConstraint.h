@@ -63,8 +63,6 @@ protected:
 
     virtual ~SkeletalMotionProjectiveConstraint();
 
-    void doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
-
 public:
 
     void init() override;
@@ -75,6 +73,7 @@ public:
 
     void findKeyTimes(Real ct);
 
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData) override;
     void projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;

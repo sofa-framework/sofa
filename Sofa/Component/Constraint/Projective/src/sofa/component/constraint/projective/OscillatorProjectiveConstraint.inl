@@ -62,7 +62,7 @@ void OscillatorProjectiveConstraint<TDataTypes>::projectResponseT(DataDeriv& res
 }
 
 template <class TDataTypes>
-void OscillatorProjectiveConstraint<TDataTypes>::doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
+void OscillatorProjectiveConstraint<TDataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;

@@ -90,10 +90,6 @@ protected:
     LinearVelocityProjectiveConstraint();
 
     virtual ~LinearVelocityProjectiveConstraint();
-
-    /// -- Constraint interface
-    void doProjectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
-
 public:
     ///methods to add/remove some indices, keyTimes, keyVelocity
     void clearIndices();
@@ -111,6 +107,7 @@ public:
     /// -- Constraint interface
     void init() override;
     void reset() override;
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
