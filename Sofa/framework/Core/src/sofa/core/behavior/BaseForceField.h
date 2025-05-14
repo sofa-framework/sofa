@@ -57,7 +57,7 @@ protected:
 
     virtual void doAddForce(const MechanicalParams* mparams, MultiVecDerivId fId ) = 0;
     virtual void doAddDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) = 0;
-    virtual SReal doGetPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const = 0;
+    virtual SReal doGetPotentialEnergy( const MechanicalParams* mparams ) const = 0;
 
 private:
     BaseForceField(const BaseForceField& n) = delete;
@@ -98,10 +98,7 @@ public:
     /// - if \a mparams->energy() is true, the method computes and internally stores the potential energy,
     /// which will be subsequently returned by method getPotentialEnergy()
     /// \param fId the output vector of forces
-    virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) final
-    {
-        doAddForce(mparams, fId);
-    }
+    virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) final;
 
     /**
      * !!! WARNING since v25.12 !!!
@@ -131,10 +128,7 @@ public:
     /// - \a mparams->kFactor() is the coefficient for stiffness contributions (i.e. DOFs term in the ODE)
     /// - \a mparams->readDx() input vector
     /// \param dfId the output vector
-    virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) final
-    {
-        doAddDForce(mparams, dfId);
-    }
+    virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) final;
 
     /// \brief Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.
@@ -174,10 +168,7 @@ public:
     ///
     /// Used to estimate the total energy of the system by some
     /// post-stabilization techniques.
-    virtual SReal getPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const final
-    {
-        return doGetPotentialEnergy(mparams);
-    }
+    virtual SReal getPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const final;
     /// @}
 
 

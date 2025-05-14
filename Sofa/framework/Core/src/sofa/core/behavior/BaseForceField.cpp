@@ -36,6 +36,24 @@ BaseForceField::BaseForceField()
 {
 }
 
+void BaseForceField::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doAddForce(mparams, fId);
+}
+
+void BaseForceField::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doAddDForce(mparams, dfId);
+}
+
+SReal BaseForceField::getPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    return doGetPotentialEnergy(mparams);
+}
+
 void BaseForceField::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId)
 {
     if (sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,rayleighStiffness.getValue()) != 0.0 || sofa::core::mechanicalparams::bFactor(mparams) != 0.0)
