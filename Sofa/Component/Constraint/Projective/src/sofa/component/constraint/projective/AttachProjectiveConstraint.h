@@ -77,6 +77,14 @@ protected:
     /// Inherited from Constraint
     void doProjectJacobianMatrix(const core::MechanicalParams* mparams, core::MultiMatrixDerivId cId) override;
 
+    /// Project the global Mechanical Matrix to constrained space using offset parameter
+    void doApplyConstraint(const core::MechanicalParams *mparams,
+                         const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+
+    /// Project the global Mechanical Vector to constrained space using offset parameter
+    void doApplyConstraint(const core::MechanicalParams *mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
+
 public:
 
     /// Inherited from Base
@@ -87,14 +95,6 @@ public:
     void projectResponse(const core::MechanicalParams *mparams, DataVecDeriv& dx1, DataVecDeriv& dx2) override;
     void projectVelocity(const core::MechanicalParams *mparams, DataVecDeriv& v1, DataVecDeriv& v2) override;
     void projectPosition(const core::MechanicalParams *mparams, DataVecCoord& x1, DataVecCoord& x2) override;
-
-    /// Project the global Mechanical Matrix to constrained space using offset parameter
-    void applyConstraint(const core::MechanicalParams *mparams,
-                         const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-
-    /// Project the global Mechanical Vector to constrained space using offset parameter
-    void applyConstraint(const core::MechanicalParams *mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
 
     virtual void reinitIfChanged();
 

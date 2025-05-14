@@ -96,6 +96,19 @@ protected:
 
     /// @}
 
+    /// Project the global Mechanical Matrix to constrained space using offset parameter
+    void doApplyConstraint(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
+    {
+        msg_error() << "applyConstraint(mparams, matrix) not implemented.";
+    }
+
+
+    /// Project the global Mechanical Vector to constrained space using offset parameter
+    void doApplyConstraint(const MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
+    {
+        msg_error() << "applyConstraint(mparams, vector, matrix) not implemented.";
+    }
+
 public:
 
     // to get rid of warnings
@@ -135,19 +148,6 @@ public:
 
     /// @}
 
-
-    /// Project the global Mechanical Matrix to constrained space using offset parameter
-    void applyConstraint(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
-    {
-        msg_error() << "applyConstraint(mparams, matrix) not implemented.";
-    }
-
-
-    /// Project the global Mechanical Vector to constrained space using offset parameter
-    void applyConstraint(const MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
-    {
-        msg_error() << "applyConstraint(mparams, vector, matrix) not implemented.";
-    }
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

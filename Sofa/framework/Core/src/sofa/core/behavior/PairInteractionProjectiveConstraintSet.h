@@ -89,6 +89,16 @@ protected:
 
     /// @}
 
+    /// Project the global Mechanical Matrix to constrained space using offset parameter
+    void doApplyConstraint(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
+    {
+    }
+
+    /// Project the global Mechanical Vector to constrained space using offset parameter
+    void doApplyConstraint(const MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
+    {
+    }
+
 public:
     Data<SReal> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
     virtual bool isActive() const; ///< if false, the constraint does nothing
@@ -111,18 +121,6 @@ public:
     virtual void projectPosition(const MechanicalParams* /*mparams*/, DataVecCoord& x1, DataVecCoord& x2) = 0;
 
     /// @}
-
-    /// Project the global Mechanical Matrix to constrained space using offset parameter
-    void applyConstraint(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
-    {
-
-    }
-
-    /// Project the global Mechanical Vector to constrained space using offset parameter
-    void applyConstraint(const MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
-    {
-
-    }
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

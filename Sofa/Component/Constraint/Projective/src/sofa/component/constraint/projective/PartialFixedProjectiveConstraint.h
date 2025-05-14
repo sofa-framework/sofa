@@ -71,6 +71,10 @@ protected:
     PartialFixedProjectiveConstraint();
     virtual ~PartialFixedProjectiveConstraint();
 
+    void doApplyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void doApplyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
+
 public:
 
     // -- Constraint interface
@@ -80,12 +84,7 @@ public:
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
-    void applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-
     void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
-
-    void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
 
 protected:
     template <class DataDeriv>

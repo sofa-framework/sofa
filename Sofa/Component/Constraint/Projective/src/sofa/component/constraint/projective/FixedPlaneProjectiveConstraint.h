@@ -89,15 +89,6 @@ public:
     void projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset) override;
     void projectJacobianMatrix(const MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
-    /// Implement applyConstraint for direct solvers
-    void applyConstraint(const MechanicalParams* mparams,
-                                 const MultiMatrixAccessor* matrix) override;
-
-    void applyConstraint(const MechanicalParams* mparams, BaseVector* vect,
-                                 const MultiMatrixAccessor* matrix) override;
-
-    void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
-
     void setDirection (Coord dir);
     void selectVerticesAlongPlane();
     void setDminAndDmax(const Real _dmin,const Real _dmax);
@@ -124,6 +115,16 @@ protected:
     using ProjectiveConstraintSet<DataTypes>::getContext;
 
     bool isPointInPlane(const Coord& p) const ;
+
+    /// Implement applyConstraint for direct solvers
+    void doApplyConstraint(const MechanicalParams* mparams,
+                                 const MultiMatrixAccessor* matrix) override;
+
+    void doApplyConstraint(const MechanicalParams* mparams, BaseVector* vect,
+                                 const MultiMatrixAccessor* matrix) override;
+
+    void doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
+
 };
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANEPROJECTIVECONSTRAINT_CPP)

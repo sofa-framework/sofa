@@ -452,7 +452,7 @@ void AttachProjectiveConstraint<DataTypes>::projectResponse(const core::Mechanic
 
 // Matrix Integration interface
 template <class DataTypes>
-void AttachProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams * mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void AttachProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams * mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     if (f_twoWay.getValue())
@@ -504,7 +504,7 @@ void AttachProjectiveConstraint<DataTypes>::applyConstraint(const core::Mechanic
 
 
 template <class DataTypes>
-void AttachProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams * mparams, linearalgebra::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void AttachProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams * mparams, linearalgebra::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     if (f_twoWay.getValue())
@@ -546,7 +546,7 @@ void AttachProjectiveConstraint<DataTypes>::applyConstraint(const core::Mechanic
 }
 
 template <class DataTypes>
-void AttachProjectiveConstraint<DataTypes>::applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix)
+void AttachProjectiveConstraint<DataTypes>::doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix)
 {
     if (f_twoWay.getValue())
         return;

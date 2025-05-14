@@ -289,7 +289,7 @@ void SkeletalMotionProjectiveConstraint<DataTypes>::addChannel(unsigned int join
 
 // Matrix Integration interface
 template <class DataTypes>
-void SkeletalMotionProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+void SkeletalMotionProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
     if( !d_active.getValue() ) return;
 
@@ -308,7 +308,7 @@ void SkeletalMotionProjectiveConstraint<DataTypes>::applyConstraint(const core::
 }
 
 template <class DataTypes>
-void SkeletalMotionProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+void SkeletalMotionProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
     if( !d_active.getValue() ) return;
 

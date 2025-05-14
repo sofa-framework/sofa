@@ -82,6 +82,10 @@ protected:
     virtual void doProjectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) = 0;
     virtual void doProjectPosition(const MechanicalParams* mparams, MultiVecCoordId xId) = 0;
 
+    virtual void doApplyConstraint(const MechanicalParams* /*mparams*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}
+    virtual void doApplyConstraint(const MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}
+    virtual void doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* /*matrix*/);
+
 public:
     /// Get the ID of the group containing this constraint.
     /// This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
@@ -136,10 +140,14 @@ public:
     }
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* /*mparams*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}
+    virtual void applyConstraint(const MechanicalParams* mparams, const behavior::MultiMatrixAccessor* matrix) final {
+      this->doApplyConstraint(mparams, matrix);
+    }
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}
+    virtual void applyConstraint(const MechanicalParams* mparams, linearalgebra::BaseVector* vector, const behavior::MultiMatrixAccessor* matrix) final {
+      this->doApplyConstraint(mparams, vector, matrix);
+    }
 
     /** Project the given matrix (Experimental API).
       Replace M with PMP, where P is the projection matrix corresponding to the projectResponse method. Contrary to applyConstraint(), the diagonal blocks of the result are not reset to the identity.
@@ -153,7 +161,9 @@ public:
 
     /// Project the global matrix to constrained space by using the ZeroDirichletCondition interface
     /// It allows to define what rows and columns to discard for the projection.
-    virtual void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* /*matrix*/);
+    virtual void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) final {
+      this->doApplyConstraint(matrix);
+    }
 
     /// @}
 

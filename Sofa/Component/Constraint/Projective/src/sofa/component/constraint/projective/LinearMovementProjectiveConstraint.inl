@@ -346,7 +346,7 @@ void LinearMovementProjectiveConstraint<DataTypes>::projectMatrix( sofa::lineara
 
 // Matrix Integration interface
 template <class DataTypes>
-void LinearMovementProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void LinearMovementProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     if(const core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get()))
@@ -367,7 +367,7 @@ void LinearMovementProjectiveConstraint<DataTypes>::applyConstraint(const core::
 }
 
 template <class DataTypes>
-void LinearMovementProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void LinearMovementProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     const int o = matrix->getGlobalOffset(this->mstate.get());
@@ -386,7 +386,7 @@ void LinearMovementProjectiveConstraint<DataTypes>::applyConstraint(const core::
 }
 
 template <class TDataTypes>
-void LinearMovementProjectiveConstraint<TDataTypes>::applyConstraint(
+void LinearMovementProjectiveConstraint<TDataTypes>::doApplyConstraint(
     sofa::core::behavior::ZeroDirichletCondition* matrix)
 {
     constexpr unsigned int N = Deriv::size();

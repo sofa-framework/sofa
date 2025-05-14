@@ -222,13 +222,13 @@ void DirectionProjectiveConstraint<DataTypes>::projectPosition(const core::Mecha
 }
 
 template <class DataTypes>
-void DirectionProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+void DirectionProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
     msg_error() << "applyConstraint is not implemented";
 }
 
 template <class DataTypes>
-void DirectionProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+void DirectionProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
     dmsg_error() << "DirectionProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) is not implemented";
 }
