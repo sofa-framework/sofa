@@ -344,6 +344,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPI
 if(SOFACUDA_VERBOSE_PTXAS)
     target_compile_options(${PROJECT_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--ptxas-options=-v>)
 endif()
+if(MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler /Zc:__cplusplus>)
+endif()
 
 target_link_libraries(${PROJECT_NAME}
     Sofa.Component.Mass
