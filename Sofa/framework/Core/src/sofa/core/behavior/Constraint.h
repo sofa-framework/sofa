@@ -22,10 +22,11 @@
 #pragma once
 
 #include <sofa/core/config.h>
-#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseLagrangianConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/core/behavior/SingleStateAccessor.h>
+#include <sofa/core/config.h>
 
 namespace sofa::core::behavior
 {
@@ -40,10 +41,10 @@ namespace sofa::core::behavior
  *
  */
 template<class DataTypes>
-class Constraint : public BaseConstraint, public SingleStateAccessor<DataTypes>
+class Constraint : public BaseLagrangianConstraint, public SingleStateAccessor<DataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(Constraint, DataTypes), BaseConstraint, SOFA_TEMPLATE(SingleStateAccessor, DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(Constraint, DataTypes), BaseLagrangianConstraint, SOFA_TEMPLATE(SingleStateAccessor, DataTypes));
 
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;

@@ -63,6 +63,8 @@ void HexahedronSetTopologyContainer::addHexa(Index a, Index b, Index c, Index d,
 
 void HexahedronSetTopologyContainer::init()
 {
+    core::topology::TopologyContainer::init();
+
     const helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     if (d_initPoints.isSet())

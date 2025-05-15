@@ -22,7 +22,7 @@
 #include <sofa/component/constraint/lagrangian/solver/visitors/MechanicalGetConstraintResolutionVisitor.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/ConstraintParams.h>
-#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseLagrangianConstraint.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
@@ -39,7 +39,7 @@ MechanicalGetConstraintResolutionVisitor::MechanicalGetConstraintResolutionVisit
 
 MechanicalGetConstraintResolutionVisitor::Result MechanicalGetConstraintResolutionVisitor::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
 {
-    if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
+    if (core::behavior::BaseLagrangianConstraint *c=cSet->toBaseLagrangianConstraint())
     {
         const ctime_t t0 = begin(node, c);
         c->getConstraintResolution(cparams, _res, _offset);

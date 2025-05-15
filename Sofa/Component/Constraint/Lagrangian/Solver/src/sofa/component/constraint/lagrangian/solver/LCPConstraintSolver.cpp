@@ -676,7 +676,7 @@ void LCPConstraintSolver::computeInitialGuess()
     for (const ConstraintBlockInfo& info : constraintBlockInfo)
     {
         if (!info.hasId) continue;
-        std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf>::const_iterator previt = _previousConstraints.find(info.parent);
+        std::map<core::behavior::BaseLagrangianConstraint*, ConstraintBlockBuf>::const_iterator previt = _previousConstraints.find(info.parent);
         if (previt == _previousConstraints.end()) continue;
         const ConstraintBlockBuf& buf = previt->second;
         const int c0 = info.const0;

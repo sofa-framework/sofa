@@ -53,6 +53,8 @@ void QuadSetTopologyContainer::addQuad(Index a, Index b, Index c, Index d )
 
 void QuadSetTopologyContainer::init()
 {
+    core::topology::TopologyContainer::init();
+
     const helper::ReadAccessor< Data< sofa::type::vector<Quad> > > m_quads = d_quad;
     if (d_initPoints.isSet())
     {

@@ -100,7 +100,7 @@ class BaseForceField;
 class BaseMass;
 class BaseMechanicalState;
 class BaseAnimationLoop;
-class BaseConstraint;
+class BaseLagrangianConstraint;
 class BaseConstraintSet;
 class ConstraintSolver;
 class ConstraintResolution;
