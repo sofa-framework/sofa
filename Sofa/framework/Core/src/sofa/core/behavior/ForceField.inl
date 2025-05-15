@@ -99,15 +99,10 @@ void ForceField<DataTypes>::doAddKToMatrix(const MechanicalParams* mparams, cons
 template<class DataTypes>
 void ForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/)
 {
-    static int i=0;
-    if (i < 10)
-    {
-        // This function is called for implicit time integration where stiffness matrix assembly is expected
-        msg_warning() << "This force field does not support stiffness matrix assembly. "
-                         "Therefore, the forces are integrated explicitly. "
-                         "To support stiffness matrix assembly, addKToMatrix must be implemented.";
-        i++;
-    }
+    // This function is called for implicit time integration where stiffness matrix assembly is expected
+    msg_warning() << "This force field does not support stiffness matrix assembly. "
+                        "Therefore, the forces are integrated explicitly. "
+                        "To support stiffness matrix assembly, addKToMatrix must be implemented.";
 }
 
 template<class DataTypes>

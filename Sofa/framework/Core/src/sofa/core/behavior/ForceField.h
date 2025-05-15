@@ -67,8 +67,8 @@ public:
 
 protected:
     explicit ForceField(MechanicalState<DataTypes> *mm = nullptr);
-
     ~ForceField() override;
+    
 public:
 
     /// @name Vector operations

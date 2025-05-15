@@ -110,6 +110,7 @@ public:
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
 
     /// Constant pressure has null variation
+    using Inherit1::addKToMatrix;
     void addKToMatrix(sofa::linearalgebra::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int & /*offset*/) override {}
 
     void doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* /*matrix*/) override;

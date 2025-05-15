@@ -133,7 +133,7 @@ void PenalityContactForceField<DataTypes>::addDForce(const sofa::core::Mechanica
 }
 
 template <class DataTypes>
-void PenalityContactForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams,
+void PenalityContactForceField<DataTypes>::doAddKToMatrix(const sofa::core::MechanicalParams* mparams,
     const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     static constexpr auto N = DataTypes::spatial_dimensions;
