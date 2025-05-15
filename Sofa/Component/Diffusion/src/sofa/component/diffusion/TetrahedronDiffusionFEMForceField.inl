@@ -357,21 +357,16 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addDForce(const sofa::core::M
 
 
 template <class DataTypes>
-void TetrahedronDiffusionFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void TetrahedronDiffusionFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFactor, unsigned int &offset)
 {
     SCOPED_TIMER("addKToMatrix");
     const auto N = defaulttype::DataTypeInfo<Deriv>::size();
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    sofa::linearalgebra::BaseMatrix* mat = r.matrix;
 
-    if((sofa::Size)(mat->colSize()) != (m_topology->getNbPoints()*N) || (sofa::Size)(mat->rowSize()) != (m_topology->getNbPoints()*N))
+    if((sofa::Size)(matrix->colSize()) != (m_topology->getNbPoints()*N) || (sofa::Size)(matrix->rowSize()) != (m_topology->getNbPoints()*N))
     {
         msg_error()<<"Wrong size of the input Matrix: need resize in addKToMatrix function.";
-        mat->resize(m_topology->getNbPoints()*N,m_topology->getNbPoints()*N);
+        matrix->resize(m_topology->getNbPoints()*N,m_topology->getNbPoints()*N);
     }
-
-    Real kFactor = mparams->kFactor();
-    unsigned int &offset = r.offset;
 
     sofa::Index v0,v1;
 
@@ -381,15 +376,15 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addKToMatrix(const core::Mech
         v0 = edges[i][0];
         v1 = edges[i][1];
 
-        mat->add(offset+N*v1, offset+N*v0, -kFactor * edgeDiffusionCoefficient[i]);
-        mat->add(offset+N*v0, offset+N*v1, -kFactor * edgeDiffusionCoefficient[i]);
-        mat->add(offset+N*v0, offset+N*v0, kFactor * edgeDiffusionCoefficient[i]);
-        mat->add(offset+N*v1, offset+N*v1, kFactor * edgeDiffusionCoefficient[i]);
+        matrix->add(offset+N*v1, offset+N*v0, -kFactor * edgeDiffusionCoefficient[i]);
+        matrix->add(offset+N*v0, offset+N*v1, -kFactor * edgeDiffusionCoefficient[i]);
+        matrix->add(offset+N*v0, offset+N*v0, kFactor * edgeDiffusionCoefficient[i]);
+        matrix->add(offset+N*v1, offset+N*v1, kFactor * edgeDiffusionCoefficient[i]);
     }
 }
 
 template <class DataTypes>
-void TetrahedronDiffusionFEMForceField<DataTypes>::buildStiffnessMatrix(
+void TetrahedronDiffusionFEMForceField<DataTypes>::doBuildStiffnessMatrix(
     core::behavior::StiffnessMatrix* matrix)
 {
     constexpr auto N = DataTypes::deriv_total_size;

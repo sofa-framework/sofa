@@ -447,7 +447,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
 }
 
 template <class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
+void TetrahedralTensorMassForceField<DataTypes>::doBuildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
 {
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
                        .withRespectToPositionsIn(this->mstate);
@@ -474,7 +474,7 @@ void TetrahedralTensorMassForceField<DataTypes>::buildStiffnessMatrix(sofa::core
 }
 
 template <class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void TetrahedralTensorMassForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

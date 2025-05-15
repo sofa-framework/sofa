@@ -84,7 +84,7 @@ public:
         HexahedronFEMForceFieldT::addKToMatrix(matrix, kFact, offset);
     }
 
-    void buildStiffnessMatrix(core::behavior::StiffnessMatrix*) override;
+    void doBuildStiffnessMatrix(core::behavior::StiffnessMatrix*) override;
     void doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
 
      void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;

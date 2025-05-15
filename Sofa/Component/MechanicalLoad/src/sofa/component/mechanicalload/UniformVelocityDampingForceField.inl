@@ -84,7 +84,7 @@ void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalgeb
 }
 
 template <class DataTypes>
-void UniformVelocityDampingForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix* matrix)
+void UniformVelocityDampingForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix* matrix)
 {
     if( !d_implicit.getValue() ) return;
 

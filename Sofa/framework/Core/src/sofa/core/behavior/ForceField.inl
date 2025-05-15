@@ -85,7 +85,7 @@ SReal ForceField<DataTypes>::doGetPotentialEnergy(const MechanicalParams* mparam
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+void ForceField<DataTypes>::doAddKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     if (this->mstate)
     {
@@ -111,7 +111,7 @@ void ForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * /*mat
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void ForceField<DataTypes>::doAddBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     if (this->mstate)
     {

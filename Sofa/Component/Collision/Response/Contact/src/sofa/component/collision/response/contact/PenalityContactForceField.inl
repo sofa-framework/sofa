@@ -200,7 +200,7 @@ void PenalityContactForceField<DataTypes>::addKToMatrix(const sofa::core::Mechan
 }
 
 template <class DataTypes>
-void PenalityContactForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void PenalityContactForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     const type::vector<Contact>& cc = contacts.getValue();
 
@@ -257,7 +257,7 @@ void PenalityContactForceField<DataTypes>::buildStiffnessMatrix(core::behavior::
 }
 
 template <class DataTypes>
-void PenalityContactForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void PenalityContactForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

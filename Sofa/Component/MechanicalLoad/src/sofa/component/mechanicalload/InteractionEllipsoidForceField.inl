@@ -358,7 +358,7 @@ SReal InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnergy
 }
 
 template <typename TDataTypes1, typename TDataTypes2>
-void InteractionEllipsoidForceField<TDataTypes1, TDataTypes2>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void InteractionEllipsoidForceField<TDataTypes1, TDataTypes2>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

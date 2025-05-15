@@ -60,6 +60,10 @@ public:
     using BaseForceField::addForce;
     using BaseForceField::addDForce;
     using BaseForceField::getPotentialEnergy;
+    using BaseForceField::addKToMatrix;
+    using BaseForceField::addBToMatrix;
+    using BaseForceField::buildStiffnessMatrix;
+    using BaseForceField::buildDampingMatrix;
 
 protected:
     explicit ForceField(MechanicalState<DataTypes> *mm = nullptr);
@@ -140,7 +144,7 @@ public:
     /// @name Matrix operations
     /// @{
 
-    void addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
+    void doAddKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
     /// Internal addKToMatrix
     /// Overloaded function, usually called from the generic addKToMatrix version.
@@ -154,7 +158,7 @@ public:
     /// @param offset Starting index of the submatrix to fill in the global matrix.
     virtual void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
 
-    void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void doAddBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     /** Accumulate an element matrix to a global assembly matrix. This is a helper for addKToMatrix, to accumulate each (square) element matrix in the (square) assembled matrix.
     \param bm the global assembly matrix

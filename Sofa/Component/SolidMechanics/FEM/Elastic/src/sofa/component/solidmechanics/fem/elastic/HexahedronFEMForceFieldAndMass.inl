@@ -256,9 +256,9 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(sofa::linearalgebra
 }
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void HexahedronFEMForceFieldAndMass<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
-    HexahedronFEMForceFieldT::buildStiffnessMatrix(matrix);
+    HexahedronFEMForceFieldT::doBuildStiffnessMatrix(matrix);
 }
 
 template<class DataTypes>

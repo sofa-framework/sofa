@@ -112,11 +112,8 @@ public:
     /// Constant pressure has null variation
     void addKToMatrix(sofa::linearalgebra::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int & /*offset*/) override {}
 
-    /// Constant pressure has null variation
-    void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override {}
-
-    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /*matrix*/) override;
-    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+    void doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* /*matrix*/) override;
+    void doBuildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override { msg_warning() << "Method getPotentialEnergy not implemented yet."; return 0.0; }
 

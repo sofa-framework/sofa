@@ -85,8 +85,13 @@ public:
     /// Constant force has null variation
     virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, SReal /*kFact*/) ;
 
-    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
 
+    void doBuildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final
+    {
+        // No damping in this ForceField
+    }
+    
     SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
@@ -97,10 +102,7 @@ public:
     using Inherit::addAlias ;
     using Inherit::addKToMatrix;
 
-    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final
-    {
-        // No damping in this ForceField
-    }
+
 
 
 protected:

@@ -107,8 +107,8 @@ public:
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
-    void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
-    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+    void doBuildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
+    void doBuildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     virtual Real getLambda() const { return lambda;}
     virtual Real getMu() const { return mu;}

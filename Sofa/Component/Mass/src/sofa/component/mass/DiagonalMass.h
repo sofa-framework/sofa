@@ -312,8 +312,8 @@ public:
     /// Add Mass contribution to global Matrix assembling
     void addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset) override;
     void doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
-    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}
-    void buildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}
+    void doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}
+    void doBuildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}
 
     SReal doGetElementMass(sofa::Index index) const override;
     void doGetElementMass(sofa::Index, linearalgebra::BaseMatrix *m) const override;
