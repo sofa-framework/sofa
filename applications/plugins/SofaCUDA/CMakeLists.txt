@@ -324,7 +324,7 @@ endif()
 
 option(SOFACUDA_PRECISE "Use IEEE 754-compliant floating point operations." OFF)
 
-#include(SofaCUDANvccFlags.cmake)
+sofa_find_package(CUDAToolkit 10.0 REQUIRED)
 
 # nvcc uses a "host code compiler" to compile CPU code, specified by CUDA_HOST_COMPILER.
 # With some versions of CMake, CUDA_HOST_COMPILER defaults to CMAKE_C_COMPILER,
@@ -362,6 +362,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17 cuda_std_17)
+target_link_libraries(${PROJECT_NAME} CUDA::cudart)
 
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GL)
