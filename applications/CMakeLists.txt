@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 #Add SofaPython3 first to enable all bindings in plugins
-sofa_add_external(directory SofaPython3 GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/SofaPython3.git)
+sofa_add_external(directory SofaPython3 GIT_REF v25.06 GIT_REPOSITORY https://www.github.com/sofa-framework/SofaPython3.git)
 
 #Add guis second to enable GUI dependent codes in plugins
 add_subdirectory(guis)
