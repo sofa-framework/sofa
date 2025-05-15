@@ -1,9 +1,20 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.24)
 project(SofaCUDA LANGUAGES CUDA CXX)
 
 set(SOFACUDA_MAJOR_VERSION 0)
 set(SOFACUDA_MINOR_VERSION 1)
 set(SOFACUDA_VERSION ${SOFACUDA_MAJOR_VERSION}.${SOFACUDA_MINOR_VERSION})
+
+option(SOFACUDA_ENABLE_NATIVE_ARCHITECTURE "Set native as for CUDA_ARCHITECTURES (which will compile compatible architectures for the current system)")
+
+if(SOFACUDA_ENABLE_NATIVE_ARCHITECTURE)
+  set(CMAKE_CUDA_ARCHITECTURES native)
+else()
+    # set 75 as fallback value
+    if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
+      set(CMAKE_CUDA_ARCHITECTURES 75)
+    endif()
+endif()
 
 set(SOFACUDACORE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(SOFACUDA_SOURCE_DIR "${SOFACUDACORE_SOURCE_DIR}/SofaCUDA")
