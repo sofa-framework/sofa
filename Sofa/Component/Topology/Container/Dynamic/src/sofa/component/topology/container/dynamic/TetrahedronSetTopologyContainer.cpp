@@ -59,6 +59,8 @@ void TetrahedronSetTopologyContainer::addTetra(Index a, Index b, Index c, Index 
 
 void TetrahedronSetTopologyContainer::init()
 {
+    core::topology::TopologyContainer::init();
+
     const helper::ReadAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
 
     if (d_initPoints.isSet())
