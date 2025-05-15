@@ -161,10 +161,8 @@ void CubeCollisionModel::updateCubes()
         updateCube(i);
 }
 
-void CubeCollisionModel::draw(const core::visual::VisualParams* vparams)
+void CubeCollisionModel::drawCollisionModel(const core::visual::VisualParams* vparams)
 {
-    if (!isActive() || !((getNext()==nullptr)?vparams->displayFlags().getShowCollisionModels():vparams->displayFlags().getShowBoundingCollisionModels())) return;
-
     // The deeper in the CubeModel graph, the higher the transparency of the bounding cube lines  
     const float* collisionColor = getColor4f();
     sofa::type::RGBAColor c(collisionColor[0], collisionColor[1], collisionColor[2], collisionColor[3]);
@@ -211,10 +209,6 @@ void CubeCollisionModel::draw(const core::visual::VisualParams* vparams)
     }
 
     vparams->drawTool()->drawLines(points, 1, c);
-
-
-    if (getPrevious()!=nullptr)
-        getPrevious()->draw(vparams);
 }
 
 std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeCollisionModel::getInternalChildren(sofa::Index index) const

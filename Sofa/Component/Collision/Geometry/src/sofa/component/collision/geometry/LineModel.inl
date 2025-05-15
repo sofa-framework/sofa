@@ -307,50 +307,50 @@ void LineCollisionModel<DataTypes>::updateFromTopology()
 }
 
 template<class DataTypes>
-void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void LineCollisionModel<DataTypes>::drawCollisionModel(const core::visual::VisualParams* vparams)
 {
-    if (vparams->displayFlags().getShowCollisionModels())
+    if (vparams->displayFlags().getShowWireFrame())
     {
-        if (vparams->displayFlags().getShowWireFrame())
-            vparams->drawTool()->setPolygonMode(0,true);
-
-        std::vector<helper::visual::DrawTool::Vec3> points;
-        points.reserve(size * 2);
-        for (sofa::Size i=0; i<size; i++)
-        {
-            TLine<DataTypes> l(this,i);
-            if(l.isActive())
-            {
-                // note the conversion if !std::is_same_v<helper::visual::DrawTool::Vec3, Coord>
-                points.emplace_back(helper::visual::DrawTool::Vec3{l.p1()});
-                points.emplace_back(helper::visual::DrawTool::Vec3{l.p2()});
-            }
-        }
-
-        const auto c = getColor4f();
-        vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
-
-        if (d_displayFreePosition.getValue())
-        {
-            std::vector< type::Vec3 > pointsFree;
-            for (sofa::Size i=0; i<size; i++)
-            {
-                TLine<DataTypes> l(this,i);
-                if(l.isActive())
-                {
-                    pointsFree.push_back(l.p1Free());
-                    pointsFree.push_back(l.p2Free());
-                }
-            }
-
-            vparams->drawTool()->drawLines(pointsFree, 1, sofa::type::RGBAColor(0.0f,1.0f,0.2f,1.0f));
-        }
-
-        if (vparams->displayFlags().getShowWireFrame())
-            vparams->drawTool()->setPolygonMode(0,false);
+        vparams->drawTool()->setPolygonMode(0, true);
     }
-    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
-        getPrevious()->draw(vparams);
+
+    std::vector<helper::visual::DrawTool::Vec3> points;
+    points.reserve(size * 2);
+    for (sofa::Size i = 0; i < size; i++)
+    {
+        TLine<DataTypes> l(this, i);
+        if (l.isActive())
+        {
+            // note the conversion if !std::is_same_v<helper::visual::DrawTool::Vec3, Coord>
+            points.emplace_back(helper::visual::DrawTool::Vec3{l.p1()});
+            points.emplace_back(helper::visual::DrawTool::Vec3{l.p2()});
+        }
+    }
+
+    const auto c = getColor4f();
+    vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
+
+    if (d_displayFreePosition.getValue())
+    {
+        std::vector<type::Vec3> pointsFree;
+        for (sofa::Size i = 0; i < size; i++)
+        {
+            TLine<DataTypes> l(this, i);
+            if (l.isActive())
+            {
+                pointsFree.push_back(l.p1Free());
+                pointsFree.push_back(l.p2Free());
+            }
+        }
+
+        vparams->drawTool()->drawLines(pointsFree, 1,
+                                       sofa::type::RGBAColor(0.0f, 1.0f, 0.2f, 1.0f));
+    }
+
+    if (vparams->displayFlags().getShowWireFrame())
+    {
+        vparams->drawTool()->setPolygonMode(0, false);
+    }
 }
 
 template<class DataTypes>

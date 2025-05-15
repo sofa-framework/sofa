@@ -145,6 +145,8 @@ protected:
     RigidDistanceGridCollisionModel();
 
     ~RigidDistanceGridCollisionModel() override;
+
+    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
 public:
     core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
     core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
@@ -226,7 +228,6 @@ public:
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
 
-    void draw(const core::visual::VisualParams* vparams) override;
 };
 
 inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, Index index)
@@ -456,6 +457,8 @@ protected:
     FFDDistanceGridCollisionModel();
 
     ~FFDDistanceGridCollisionModel() override;
+
+    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
 public:
     core::behavior::MechanicalState<DataTypes>* getDeformModel() { return ffd; }
     core::topology::BaseMeshTopology* getDeformGrid() { return ffdMesh; }
@@ -487,8 +490,6 @@ public:
     bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
-
-    void draw(const core::visual::VisualParams* vparams) override;
 };
 
 inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, Index index)

@@ -22,6 +22,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/type/RGBAColor.h>
+#include <sofa/core/visual/VisualParams.h>
 
 using sofa::type::RGBAColor ;
 
@@ -140,6 +141,36 @@ void CollisionModel::setPrevious(CollisionModel::SPtr val)
         val->next.set(this);
 }
 
+void CollisionModel::draw(const core::visual::VisualParams* vparams)
+{
+    // don't draw if the component is not active
+    if(!isActive())
+        return;
+
+    // don't draw if specified not to do so in the user interface
+    if (getNext() == nullptr)
+    {
+        if (!vparams->displayFlags().getShowCollisionModels())
+            return;
+    }
+    else
+    {
+        if (!vparams->displayFlags().getShowBoundingCollisionModels())
+            return;
+    }
+
+    // don't draw if the component is not in valid state
+    if( d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid )
+        return;
+
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
+    drawCollisionModel(vparams);
+
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
+        getPrevious()->draw(vparams);
+}
+
 /// Return the first (i.e. root) CollisionModel in the hierarchy.
 CollisionModel* CollisionModel::getFirst()
 {
@@ -162,15 +193,16 @@ CollisionModel* CollisionModel::getLast()
 
 bool CollisionModel::canCollideWith(CollisionModel* model)
 {
-    if (model->getContext() == this->getContext()) // models are in the Node -> is self collision activated?
+    if (model->getContext() ==
+        this->getContext())  // models are in the Node -> is self collision activated?
         return bSelfCollision.getValue();
 
     const auto& myGroups = this->group.getValue();
-    if (myGroups.empty()) // a collision model without any group always collides
+    if (myGroups.empty())  // a collision model without any group always collides
         return true;
 
     const auto& modelGroups = model->group.getValue();
-    if (modelGroups.empty()) // a collision model without any group always collides
+    if (modelGroups.empty())  // a collision model without any group always collides
         return true;
 
     std::set<int>::const_iterator myGroupsFirst = myGroups.cbegin();
@@ -199,7 +231,13 @@ bool CollisionModel::canCollideWith(CollisionModel* model)
     return true;
 }
 
-
+void CollisionModel::drawCollisionModel(const core::visual::VisualParams* vparams)
+{
+    for (sofa::Index i = 0; i < size; i++)
+    {
+        draw(vparams, i);
+    }
+}
 
 bool CollisionModel::insertInNode( objectmodel::BaseNode* node )
 {
