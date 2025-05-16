@@ -350,6 +350,9 @@ endif()
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler /Zc:__cplusplus>)
 endif()
+if(WIN32)
+    target_compile_options(${PROJECT_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-DWIN32>)
+endif()
 
 target_link_libraries(${PROJECT_NAME}
     Sofa.Component.Mass
