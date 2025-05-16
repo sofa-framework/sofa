@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/constraint/lagrangian/model/config.h>
 
-#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/LagrangianConstraint.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/OdeSolver.h>
@@ -32,10 +32,10 @@ namespace sofa::component::constraint::lagrangian::model
 {
 
 template< class DataTypes >
-class FixedLagrangianConstraint : public core::behavior::Constraint<DataTypes>
+class FixedLagrangianConstraint : public core::behavior::LagrangianConstraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FixedLagrangianConstraint,DataTypes), SOFA_TEMPLATE(core::behavior::Constraint,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(FixedLagrangianConstraint,DataTypes), SOFA_TEMPLATE(core::behavior::LagrangianConstraint,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -43,7 +43,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef typename core::behavior::Constraint<DataTypes> Inherit;
+    typedef typename core::behavior::LagrangianConstraint<DataTypes> Inherit;
 
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef core::objectmodel::Data<VecCoord>		DataVecCoord;
