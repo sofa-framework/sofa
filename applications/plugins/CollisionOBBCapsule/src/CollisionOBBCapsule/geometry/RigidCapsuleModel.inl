@@ -160,23 +160,18 @@ void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(co
 }
 
 template<class MyReal>
-void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(const core::visual::VisualParams* vparams)
+void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::drawCollisionModel(const core::visual::VisualParams* vparams)
 {
-    if (vparams->displayFlags().getShowCollisionModels())
+    sofa::type::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
+    vparams->drawTool()->setPolygonMode(0, vparams->displayFlags().getShowWireFrame());  // maybe ??
+    vparams->drawTool()->setLightingEnabled(true);  // Enable lightning
+
+    for (sofa::Size i = 0; i < size; i++)
     {
-        sofa::type::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
-        vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());//maybe ??
-        vparams->drawTool()->setLightingEnabled(true); //Enable lightning
-
-        for (sofa::Size i=0; i<size; i++){
-            vparams->drawTool()->drawCapsule(point1(i),point2(i),(float)radius(i),col4f);
-        }
-
-        vparams->drawTool()->setLightingEnabled(false); //Disable lightning
+        vparams->drawTool()->drawCapsule(point1(i), point2(i), (float)radius(i), col4f);
     }
 
-    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
-        getPrevious()->draw(vparams);
+    vparams->drawTool()->setLightingEnabled(false);  // Disable lightning
 
     vparams->drawTool()->setPolygonMode(0,false);
 }

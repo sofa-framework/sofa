@@ -98,6 +98,9 @@ protected:
     SphereCollisionModel();
 
     SphereCollisionModel(core::behavior::MechanicalState<TDataTypes>* _mstate );
+
+    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
+
 public:
     void init() override;
 
@@ -110,9 +113,6 @@ public:
     void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
-
-    void draw(const core::visual::VisualParams* vparams) override;
-
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 

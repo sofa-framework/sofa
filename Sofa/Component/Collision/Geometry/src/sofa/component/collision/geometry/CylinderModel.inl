@@ -19,10 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/geometry/CylinderModel.h>
 #include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/CylinderModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/DisplayFlags.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/visual/DrawTool.h>
 
 namespace sofa::component::collision::geometry
@@ -186,24 +187,6 @@ void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
 
     sofa::core::visual::visualparams::getDrawTool(vparams)->drawCylinder(p2,p1,float(radius(i)),colour);
 }
-
-template<class DataTypes>
-void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
-{
-    const auto df = sofa::core::visual::visualparams::getDisplayFlags(vparams);
-    if (df.getShowCollisionModels())
-    {
-
-        for (sofa::Index i=0; i<size; i++){
-            draw(vparams,i);
-        }
-
-    }
-
-    if (getPrevious()!=nullptr && df.getShowBoundingCollisionModels())
-        getPrevious()->draw(vparams);
-}
-
 
 template<class DataTypes>
 typename CylinderCollisionModel<DataTypes>::Real CylinderCollisionModel< DataTypes >::defaultRadius() const
