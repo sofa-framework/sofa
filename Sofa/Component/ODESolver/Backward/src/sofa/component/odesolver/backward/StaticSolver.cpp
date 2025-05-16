@@ -188,6 +188,9 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, core::MultiVe
         return;
     }
 
+    SOFA_UNUSED(dt);
+    SOFA_UNUSED(vResult);
+
     // Create the vector and mechanical operations tools. These are used to execute special
     // operations (multiplication, additions, etc.) on multi-vectors (a vector that is stored
     // in different buffers inside the mechanical objects)
