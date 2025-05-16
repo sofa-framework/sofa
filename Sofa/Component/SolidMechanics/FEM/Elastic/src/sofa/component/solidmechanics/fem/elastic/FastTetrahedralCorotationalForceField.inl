@@ -466,7 +466,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
 }
 
 template <class DataTypes>
-void FastTetrahedralCorotationalForceField<DataTypes>::buildStiffnessMatrix(
+void FastTetrahedralCorotationalForceField<DataTypes>::doBuildStiffnessMatrix(
     core::behavior::StiffnessMatrix* matrix)
 {
     const sofa::Size nbEdges = this->l_topology->getNbEdges();
@@ -554,7 +554,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::buildStiffnessMatrix(
 }
 
 template <class DataTypes>
-void FastTetrahedralCorotationalForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void FastTetrahedralCorotationalForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }
