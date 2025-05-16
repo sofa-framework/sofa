@@ -42,7 +42,7 @@ public :
 
 
 public :
-    bool doLoad() override;
+    bool doLoadMesh() override;
 
 protected :
 	enum ElementType{ LINEAR, TRIANGLE, QUADRILATERAL, TETRAHEDRA, HEXAHEDRA, PRISM, PYRAMID, SPHERE, CIRCLE };
