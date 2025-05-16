@@ -102,6 +102,33 @@ protected:
     /// Destructor
     ~CollisionModel() override {}
 
+    /// Set the number of elements.
+    virtual void doResize(Size s)
+    {
+        size = s;
+    }
+
+    /// Create or update the bounding volume hierarchy.
+    virtual void doComputeBoundingTree(int maxDepth=0) = 0;
+
+    /// \brief Create or update the bounding volume hierarchy, accounting for motions
+    /// within the given timestep.
+    ///
+    /// Default to computeBoundingTree().
+    virtual void doComputeContinuousBoundingTree(SReal /*dt*/, int maxDepth=0) { computeBoundingTree(maxDepth); }
+
+    /// \brief Test if two elements can collide with each other.
+    ///
+    /// This method should be implemented by models supporting
+    /// self-collisions to prune tests between adjacent elements.
+    ///
+    /// Default to true. Note that this method assumes that canCollideWith(model2)
+    /// was already used to test if the collision models can collide.
+    virtual bool doCanCollideWithElement(Index /*index*/, CollisionModel* /*model2*/, Index /*index2*/) { return true; }
+
+    /// BaseMeshTopology associated to the collision model. TODO: epernod remove virtual pure method by l_topology.get as soons as new link will be available
+    virtual sofa::core::topology::BaseMeshTopology* doGetCollisionTopology() { return nullptr; }
+
 public:
     void bwdInit() override;
 
@@ -141,10 +168,19 @@ public:
         d_numberOfContacts.setValue(i);
     }
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doResize" internally,
+     * which is the method to override from now on.
+     * 
+     **/  
     /// Set the number of elements.
-    virtual void resize(Size s)
+    virtual void resize(Size s) final
     {
-        size = s;
+        //TODO (SPRINT SED 2025): Component state mechamism
+        this->doResize(s); 
     }
 
     /// Return an iterator to the first element.
@@ -202,14 +238,36 @@ public:
     /// \brief Set true if this CollisionModel is attached to a simulation.
     virtual void setSimulated(bool val=true) { bSimulated.setValue(val); }
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     * 
+     **/  
     /// Create or update the bounding volume hierarchy.
-    virtual void computeBoundingTree(int maxDepth=0) = 0;
+    virtual void computeBoundingTree(int maxDepth=0) final {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        this->doComputeBoundingTree(maxDepth);
+    }
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     * 
+     **/  
     /// \brief Create or update the bounding volume hierarchy, accounting for motions
     /// within the given timestep.
     ///
     /// Default to computeBoundingTree().
-    virtual void computeContinuousBoundingTree(SReal /*dt*/, int maxDepth=0) { computeBoundingTree(maxDepth); }
+    virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0) final {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        this->doComputeContinuousBoundingTree(dt, maxDepth);
+    }
 
     /// \brief Return the list (as a pair of iterators) of <i>internal children</i> of
     /// an element.
@@ -260,6 +318,14 @@ public:
     /// If both models are included in a common "group", they won't collide
     virtual bool canCollideWith(CollisionModel* model) ;
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     * 
+     **/  
     /// \brief Test if two elements can collide with each other.
     ///
     /// This method should be implemented by models supporting
@@ -267,7 +333,10 @@ public:
     ///
     /// Default to true. Note that this method assumes that canCollideWith(model2)
     /// was already used to test if the collision models can collide.
-    virtual bool canCollideWithElement(Index /*index*/, CollisionModel* /*model2*/, Index /*index2*/) { return true; }
+    virtual bool canCollideWithElement(Index index, CollisionModel* model2, Index index2) final {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        return this->doCanCollideWithElement(index, model2, index2);
+    }
 
     /// Render an collision element.
     virtual void draw(const core::visual::VisualParams* /*vparams*/, Index /*index*/) {}
@@ -353,7 +422,10 @@ public:
     /// @}
 
     /// BaseMeshTopology associated to the collision model. TODO: epernod remove virtual pure method by l_topology.get as soons as new link will be available
-    virtual sofa::core::topology::BaseMeshTopology* getCollisionTopology() { return nullptr; }
+    virtual sofa::core::topology::BaseMeshTopology* getCollisionTopology() final {
+        // TODO (SPRINT SED 2025): Component state mechamism
+        return this->doGetCollisionTopology();
+    }
 
     /// Get a color that can be used to display this CollisionModel
     const float* getColor4f();

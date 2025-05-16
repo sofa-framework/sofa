@@ -106,16 +106,17 @@ protected:
 
     virtual void updateFromTopology();
     void addTetraToDraw(const Tetrahedron& t, std::vector<sofa::type::Vec3>& tetraVertices, std::vector<sofa::type::Vec3>& normalVertices);
-public:
-    void init() override;
 
     // -- CollisionModel interface
 
-    void resize(sofa::Size size) override;
+    void doResize(sofa::Size size) override;
 
-    void computeBoundingTree(int maxDepth=0) override;
+    void doComputeBoundingTree(int maxDepth=0) override;
 
-    //virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
+    //virtual void doComputeContinuousBoundingTree(double dt, int maxDepth=0);
+
+public:
+    void init() override;
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
 

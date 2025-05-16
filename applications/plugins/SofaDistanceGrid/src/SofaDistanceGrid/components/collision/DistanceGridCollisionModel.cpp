@@ -137,9 +137,9 @@ void RigidDistanceGridCollisionModel::init()
     msg_info() << "Initialisation done.";
 }
 
-void RigidDistanceGridCollisionModel::resize(sofa::Size s)
+void RigidDistanceGridCollisionModel::doResize(sofa::Size s)
 {
-    this->core::CollisionModel::resize(s);
+    this->core::CollisionModel::doResize(s);
     elems.resize(s);
 }
 
@@ -210,7 +210,7 @@ void RigidDistanceGridCollisionModel::updateState()
 }
 
 /// Create or update the bounding volume hierarchy.
-void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
+void RigidDistanceGridCollisionModel::doComputeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = this->createPrevious<CubeCollisionModel>();
 
@@ -567,13 +567,13 @@ void FFDDistanceGridCollisionModel::init()
     msg_info() << c <<" active cubes.";
 }
 
-void FFDDistanceGridCollisionModel::resize(sofa::Size s)
+void FFDDistanceGridCollisionModel::doResize(sofa::Size s)
 {
-    this->core::CollisionModel::resize(s);
+    this->core::CollisionModel::doResize(s);
     elems.resize(s);
 }
 
-bool FFDDistanceGridCollisionModel::canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2)
+bool FFDDistanceGridCollisionModel::doCanCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2)
 {
     if (model2 != this) return true;
     if (!this->bSelfCollision.getValue()) return true;
@@ -589,7 +589,7 @@ void FFDDistanceGridCollisionModel::setGrid(DistanceGrid* surf, sofa::Index inde
 }
 
 /// Create or update the bounding volume hierarchy.
-void FFDDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
+void FFDDistanceGridCollisionModel::doComputeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = this->createPrevious<CubeCollisionModel>();
 

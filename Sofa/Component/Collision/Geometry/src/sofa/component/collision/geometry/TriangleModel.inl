@@ -50,9 +50,9 @@ TriangleCollisionModel<DataTypes>::TriangleCollisionModel()
 }
 
 template<class DataTypes>
-void TriangleCollisionModel<DataTypes>::resize(sofa::Size size)
+void TriangleCollisionModel<DataTypes>::doResize(sofa::Size size)
 {
-    this->core::CollisionModel::resize(size);
+    this->core::CollisionModel::doResize(size);
     m_normals.resize(size);
 }
 
@@ -194,7 +194,7 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
 
 
 template<class DataTypes>
-bool TriangleCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2)
+bool TriangleCollisionModel<DataTypes>::doCanCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2)
 {
     if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
     if (this->getContext() != model2->getContext()) return true;
@@ -214,7 +214,7 @@ bool TriangleCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index,
 }
 
 template<class DataTypes>
-void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
+void TriangleCollisionModel<DataTypes>::doComputeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
 
@@ -276,7 +276,7 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 }
 
 template<class DataTypes>
-void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
+void TriangleCollisionModel<DataTypes>::doComputeContinuousBoundingTree(SReal dt, int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
 

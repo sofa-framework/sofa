@@ -47,9 +47,9 @@ LineCollisionModel<DataTypes>::LineCollisionModel()
 
 
 template<class DataTypes>
-void LineCollisionModel<DataTypes>::resize(sofa::Size size)
+void LineCollisionModel<DataTypes>::doResize(sofa::Size size)
 {
-    this->core::CollisionModel::resize(size);
+    this->core::CollisionModel::doResize(size);
     elems.resize(size);
 }
 
@@ -354,7 +354,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
 }
 
 template<class DataTypes>
-bool LineCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2)
+bool LineCollisionModel<DataTypes>::doCanCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2)
 {
     if (!this->bSelfCollision.getValue()) return true;
     if (this->getContext() != model2->getContext()) return true;
@@ -458,7 +458,7 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, Col
 }
 
 template<class DataTypes>
-void LineCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
+void LineCollisionModel<DataTypes>::doComputeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     updateFromTopology();
@@ -495,7 +495,7 @@ void LineCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 }
 
 template<class DataTypes>
-void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
+void LineCollisionModel<DataTypes>::doComputeContinuousBoundingTree(SReal dt, int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     updateFromTopology();

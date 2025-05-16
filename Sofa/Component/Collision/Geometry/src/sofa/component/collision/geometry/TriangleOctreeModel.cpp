@@ -70,7 +70,7 @@ void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
 
 }
 
-void TriangleOctreeModel::computeBoundingTree(int maxDepth)
+void TriangleOctreeModel::doComputeBoundingTree(int maxDepth)
 {
     const type::vector<topology::Triangle>& tri = *m_triangles;
     if(octreeRoot)
@@ -130,9 +130,9 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
     }
 }
 
-void TriangleOctreeModel::computeContinuousBoundingTree(SReal/* dt*/, int maxDepth)
+void TriangleOctreeModel::doComputeContinuousBoundingTree(SReal/* dt*/, int maxDepth)
 {
-    computeBoundingTree(maxDepth);
+    doComputeBoundingTree(maxDepth);
 }
 
 void TriangleOctreeModel::buildOctree()

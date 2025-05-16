@@ -43,7 +43,7 @@ CubeCollisionModel::CubeCollisionModel()
     enum_type = AABB_TYPE;
 }
 
-void CubeCollisionModel::resize(sofa::Size size)
+void CubeCollisionModel::doResize(sofa::Size size)
 {
     const auto size0 = this->size;
     if (size == size0) return;
@@ -54,7 +54,7 @@ void CubeCollisionModel::resize(sofa::Size size)
         parent->resize(0);
         parent = parent->getPrevious();
     }
-    this->core::CollisionModel::resize(size);
+    this->core::CollisionModel::doResize(size);
     this->elems.resize(size);
     this->parentOf.resize(size);
     // set additional indices
@@ -104,7 +104,7 @@ Index CubeCollisionModel::addCube(Cube subcellsBegin, Cube subcellsEnd)
 {
     const sofa::Index index = size;
 
-    this->core::CollisionModel::resize(index + 1);
+    this->core::CollisionModel::doResize(index + 1);
     elems.resize(index + 1);
     
     elems[index].subcells.first = subcellsBegin;
@@ -232,7 +232,7 @@ bool CubeCollisionModel::isLeaf(sofa::Index index ) const
     return elems[index].children.first.valid();
 }
 
-void CubeCollisionModel::computeBoundingTree(int maxDepth)
+void CubeCollisionModel::doComputeBoundingTree(int maxDepth)
 {
 
     dmsg_info() << ">CubeCollisionModel::computeBoundingTree(" << maxDepth << ")";

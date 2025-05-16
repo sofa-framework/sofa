@@ -50,9 +50,9 @@ CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::CapsuleColli
 }
 
 template<class MyReal>
-void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::resize(sofa::Size size)
+void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::doResize(sofa::Size size)
 {
-    this->core::CollisionModel::resize(size);
+    this->core::CollisionModel::doResize(size);
 
     VecReal & capsule_radii = *d_capsule_radii.beginEdit();
     VecReal & capsule_heights = *d_capsule_heights.beginEdit();
@@ -103,7 +103,7 @@ Size CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::nbCap()
 }
 
 template <class MyReal>
-void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::computeBoundingTree(int maxDepth)
+void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::doComputeBoundingTree(int maxDepth)
 {
     sofa::component::collision::geometry::CubeCollisionModel* cubeModel = createPrevious<sofa::component::collision::geometry::CubeCollisionModel>();
     const auto ncap = _mstate->getSize();
@@ -111,6 +111,7 @@ void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::compute
     bool updated = false;
     if (ncap != size)
     {
+        // TODO (SPRINT SED 2025 SUGGESTION): maybe we should use doResize (because of double state check)
         resize(ncap);
         updated = true;
         cubeModel->resize(0);

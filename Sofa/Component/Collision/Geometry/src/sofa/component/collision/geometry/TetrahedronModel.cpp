@@ -50,9 +50,9 @@ TetrahedronCollisionModel::TetrahedronCollisionModel()
     enum_type = TETRAHEDRON_TYPE;
 }
 
-void TetrahedronCollisionModel::resize(sofa::Size size)
+void TetrahedronCollisionModel::doResize(sofa::Size size)
 {
-    this->core::CollisionModel::resize(size);
+    this->core::CollisionModel::doResize(size);
     elems.resize(size);
     if (getPrevious() != nullptr) getPrevious()->resize(0); // force recomputation of bounding tree
 }
@@ -198,7 +198,7 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
 
 }
 
-void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
+void TetrahedronCollisionModel::doComputeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     if (!mstate || !m_topology) return;

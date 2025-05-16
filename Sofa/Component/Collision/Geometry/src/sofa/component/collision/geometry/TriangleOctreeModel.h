@@ -39,13 +39,15 @@ public:
     SOFA_CLASS(TriangleOctreeModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
 protected:
     TriangleOctreeModel();
+
+    void doComputeBoundingTree(int maxDepth=0) override;
+    void doComputeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
+
 public:
 
     /// the normals for each point
     type::vector<type::Vec3> pNorms;
     void draw(const core::visual::VisualParams* vparams) override;
-    void computeBoundingTree(int maxDepth=0) override;
-    void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
     /// init the octree creation
     void buildOctree ();
 };

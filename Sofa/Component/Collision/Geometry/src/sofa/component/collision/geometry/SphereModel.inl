@@ -53,9 +53,9 @@ SphereCollisionModel<DataTypes>::SphereCollisionModel(core::behavior::Mechanical
 
 
 template<class DataTypes>
-void SphereCollisionModel<DataTypes>::resize(sofa::Size size)
+void SphereCollisionModel<DataTypes>::doResize(sofa::Size size)
 {
-    this->core::CollisionModel::resize(size);
+    this->core::CollisionModel::doResize(size);
 
     helper::WriteAccessor< Data<VecReal> > r = d_radius;
 
@@ -162,7 +162,7 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
 }
 
 template <class DataTypes>
-void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
+void SphereCollisionModel<DataTypes>::doComputeBoundingTree(int maxDepth)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
@@ -172,6 +172,7 @@ void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     bool updated = false;
     if (npoints != size)
     {
+        // TODO (SPRINT SED 2025 SUGGESTION): maybe we should use doResize (because of double state check)
         resize(npoints);
         updated = true;
         cubeModel->resize(0);
@@ -200,7 +201,7 @@ void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 
 
 template <class DataTypes>
-void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
+void SphereCollisionModel<DataTypes>::doComputeContinuousBoundingTree(SReal dt, int maxDepth)
 {
     using sofa::type::Vec3 ;
 
@@ -212,6 +213,7 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
     bool updated = false;
     if (npoints != size)
     {
+        // TODO (SPRINT SED 2025 SUGGESTION): maybe we should use doResize (because of double state check)
         resize(npoints);
         updated = true;
         cubeModel->resize(0);

@@ -39,9 +39,9 @@ CudaPointCollisionModel::CudaPointCollisionModel()
 {
 }
 
-void CudaPointCollisionModel::resize(Size size)
+void CudaPointCollisionModel::doResize(Size size)
 {
-    this->core::CollisionModel::resize(size);
+    this->core::CollisionModel::doResize(size);
 }
 
 void CudaPointCollisionModel::init()
@@ -108,7 +108,7 @@ void CudaPointCollisionModel::draw(const core::visual::VisualParams* vparams)
 
 using sofa::component::collision::geometry::CubeCollisionModel;
 
-void CudaPointCollisionModel::computeBoundingTree(int maxDepth)
+void CudaPointCollisionModel::doComputeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const int npoints = mstate->getSize();
@@ -117,6 +117,7 @@ void CudaPointCollisionModel::computeBoundingTree(int maxDepth)
     bool updated = false;
     if (nelems != size)
     {
+        // TODO (SPRINT SED 2025 SUGGESTION): maybe we should use doResize (because of double state check)
         resize(nelems);
         updated = true;
     }

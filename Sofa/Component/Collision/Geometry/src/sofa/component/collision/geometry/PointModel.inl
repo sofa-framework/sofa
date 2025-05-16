@@ -44,12 +44,6 @@ PointCollisionModel<DataTypes>::PointCollisionModel()
 }
 
 template<class DataTypes>
-void PointCollisionModel<DataTypes>::resize(sofa::Size size)
-{
-    this->core::CollisionModel::resize(size);
-}
-
-template<class DataTypes>
 void PointCollisionModel<DataTypes>::init()
 {
     this->CollisionModel::init();
@@ -74,7 +68,7 @@ void PointCollisionModel<DataTypes>::init()
 
 
 template<class DataTypes>
-bool PointCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2)
+bool PointCollisionModel<DataTypes>::doCanCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2)
 {
 
     if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
@@ -112,13 +106,14 @@ bool PointCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, Co
 }
 
 template<class DataTypes>
-void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
+void PointCollisionModel<DataTypes>::doComputeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const auto npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
+        // TODO (SPRINT SED 2025 SUGGESTION): maybe we should use doResize (because of double state check)
         resize(npoints);
         updated = true;
     }
@@ -143,13 +138,14 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 }
 
 template<class DataTypes>
-void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
+void PointCollisionModel<DataTypes>::doComputeContinuousBoundingTree(SReal dt, int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const auto npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
+        // TODO (SPRINT SED 2025 SUGGESTION): maybe we should use doResize (because of double state check)
         resize(npoints);
         updated = true;
     }
