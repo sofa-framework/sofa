@@ -80,6 +80,11 @@ public:
     /// Move constructor
     vector(std::vector<T,Alloc>&& v): std::vector<T,Alloc>(std::move(v)) {}
 
+    /// Constructor from a range
+    template< std::input_iterator InputIt >
+    constexpr vector(InputIt first, InputIt last)
+    : std::vector<T,Alloc>(first, last) {}
+    
     /// Copy operator
     vector& operator=(const std::vector<T, Alloc>& x)
     {
@@ -154,13 +159,17 @@ public:
         std::fill(this->begin(), this->end(), value);
     }
 
-    /// this function is useful for vector_device because it resize the vector without device operation (if device is not valid).
-    /// Therefore the function is used in asynchronous code to safely resize a vector which is either cuda of type::vector
+    /// this function is useful for vector_device because it resizes the vector without device operation (if device is not valid).
+    /// Therefore, the function is used in asynchronous code to safely resize a vector which is either cuda of type::vector
     void fastResize(Size n)
     {
         this->resize(n);
     }
 
 };
+
+//template deduction guide
+template< std::input_iterator InputIt >
+vector(InputIt first, InputIt last) -> vector<typename std::iterator_traits<InputIt>::value_type>;
 
 } /// namespace sofa::type
