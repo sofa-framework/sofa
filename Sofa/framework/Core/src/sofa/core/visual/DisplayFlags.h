@@ -48,6 +48,7 @@ namespace sofa::core::visual
 * |  |--collision
 * |  |  |--collisionmodels
 * |  |  |--boundingcollisionmodels
+* |  |  |--detectionoutputs
 * |  |--mapping
 * |  |  |--visualmappings
 * |  |  |--mechanicalmappings
