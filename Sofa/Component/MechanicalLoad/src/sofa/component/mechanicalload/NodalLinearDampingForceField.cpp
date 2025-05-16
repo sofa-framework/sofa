@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_DIAGONALVELOCITYDAMPINGFORCEFIELD_CPP
+#define SOFA_COMPONENT_FORCEFIELD_NODALLINEARDAMPINGFORCEFIELD_CPP
 
-#include <sofa/component/mechanicalload/DiagonalVelocityDampingForceField.inl>
+#include <sofa/component/mechanicalload/NodalLinearDampingForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -31,22 +31,22 @@ namespace sofa::component::mechanicalload
 
 using namespace sofa::defaulttype;
 
-void registerDiagonalVelocityDampingForceField(sofa::core::ObjectFactory* factory)
+void registerNodalLinearDampingForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Diagonal velocity damping.")
-        .add< DiagonalVelocityDampingForceField<Vec3Types> >()
-        .add< DiagonalVelocityDampingForceField<Vec2Types> >()
-        .add< DiagonalVelocityDampingForceField<Vec1Types> >()
-        .add< DiagonalVelocityDampingForceField<Vec6Types> >()
-        .add< DiagonalVelocityDampingForceField<Rigid3Types> >()
-        .add< DiagonalVelocityDampingForceField<Rigid2Types> >());
+    factory->registerObjects(core::ObjectRegistrationData("Linear damping force applied on the degrees of freedom.")
+        .add< NodalLinearDampingForceField<Vec3Types> >()
+        .add< NodalLinearDampingForceField<Vec2Types> >()
+        .add< NodalLinearDampingForceField<Vec1Types> >()
+        .add< NodalLinearDampingForceField<Vec6Types> >()
+        .add< NodalLinearDampingForceField<Rigid3Types> >()
+        .add< NodalLinearDampingForceField<Rigid2Types> >());
 }
 
-template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<Vec3Types>;
-template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<Vec2Types>;
-template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<Vec1Types>;
-template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<Vec6Types>;
-template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<Rigid3Types>;
-template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<Rigid2Types>;
+template class SOFA_COMPONENT_MECHANICALLOAD_API NodalLinearDampingForceField<Vec3Types>;
+template class SOFA_COMPONENT_MECHANICALLOAD_API NodalLinearDampingForceField<Vec2Types>;
+template class SOFA_COMPONENT_MECHANICALLOAD_API NodalLinearDampingForceField<Vec1Types>;
+template class SOFA_COMPONENT_MECHANICALLOAD_API NodalLinearDampingForceField<Vec6Types>;
+template class SOFA_COMPONENT_MECHANICALLOAD_API NodalLinearDampingForceField<Rigid3Types>;
+template class SOFA_COMPONENT_MECHANICALLOAD_API NodalLinearDampingForceField<Rigid2Types>;
 
 } // namespace sofa::component::mechanicalload
