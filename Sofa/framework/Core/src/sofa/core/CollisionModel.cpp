@@ -143,32 +143,46 @@ void CollisionModel::setPrevious(CollisionModel::SPtr val)
 
 void CollisionModel::draw(const core::visual::VisualParams* vparams)
 {
+    // don't draw if the component is not in valid state
+    if( d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid )
+        return;
+
     // don't draw if the component is not active
     if(!isActive())
         return;
+
+    struct DrawPrevious //RAII struct to draw the coarser collision model when exiting the scope
+    {
+        DrawPrevious(CollisionModel* previous, const core::visual::VisualParams* vparams) : m_previous(previous), m_vparams(vparams) {}
+        ~DrawPrevious()
+        {
+            if (m_previous && m_vparams->displayFlags().getShowBoundingCollisionModels())
+                m_previous->draw(m_vparams);
+        }
+        CollisionModel* m_previous { nullptr };
+        const core::visual::VisualParams* m_vparams { nullptr };
+    } drawPrevious(previous, vparams);
 
     // don't draw if specified not to do so in the user interface
     if (getNext() == nullptr)
     {
         if (!vparams->displayFlags().getShowCollisionModels())
+        {
             return;
+        }
     }
     else
     {
         if (!vparams->displayFlags().getShowBoundingCollisionModels())
+        {
             return;
+        }
     }
 
-    // don't draw if the component is not in valid state
-    if( d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid )
-        return;
-
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-
-    drawCollisionModel(vparams);
-
-    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
-        getPrevious()->draw(vparams);
+    {
+        const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+        drawCollisionModel(vparams);
+    }
 }
 
 /// Return the first (i.e. root) CollisionModel in the hierarchy.
