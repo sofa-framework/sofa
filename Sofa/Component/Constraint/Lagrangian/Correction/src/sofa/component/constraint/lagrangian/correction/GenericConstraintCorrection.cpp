@@ -126,22 +126,22 @@ void GenericConstraintCorrection::cleanup()
     BaseConstraintCorrection::cleanup();
 }
 
-void GenericConstraintCorrection::addConstraintSolver(ConstraintSolver *s)
+void GenericConstraintCorrection::doAddConstraintSolver(ConstraintSolver *s)
 {
     constraintsolvers.push_back(s);
 }
 
-void GenericConstraintCorrection::removeConstraintSolver(ConstraintSolver *s)
+void GenericConstraintCorrection::doRemoveConstraintSolver(ConstraintSolver *s)
 {
     constraintsolvers.remove(s);
 }
 
-void GenericConstraintCorrection::rebuildSystem(SReal massFactor, SReal forceFactor)
+void GenericConstraintCorrection::doRebuildSystem(SReal massFactor, SReal forceFactor)
 {
     l_linearSolver.get()->rebuildSystem(massFactor, forceFactor);
 }
 
-void GenericConstraintCorrection::addComplianceInConstraintSpace(const ConstraintParams *cparams, BaseMatrix* W)
+void GenericConstraintCorrection::doAddComplianceInConstraintSpace(const ConstraintParams *cparams, BaseMatrix* W)
 {
     if (!l_ODESolver.get()) return;
     const SReal complianceFactor = d_complianceFactor.getValue();
@@ -171,7 +171,7 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
 
 }
 
-void GenericConstraintCorrection::computeMotionCorrectionFromLambda(const ConstraintParams* cparams, MultiVecDerivId dx, const linearalgebra::BaseVector * lambda)
+void GenericConstraintCorrection::doComputeMotionCorrectionFromLambda(const ConstraintParams* cparams, MultiVecDerivId dx, const linearalgebra::BaseVector * lambda)
 {
     l_linearSolver.get()->applyConstraintForce(cparams, dx, lambda);
 }
@@ -188,7 +188,7 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* 
     l_linearSolver.get()->getContext()->executeVisitor(&v);
 }
 
-void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams * cparams,
+void GenericConstraintCorrection::doApplyMotionCorrection(const ConstraintParams * cparams,
                                                         MultiVecCoordId xId,
                                                         MultiVecDerivId vId,
                                                         MultiVecDerivId dxId,
@@ -203,7 +203,7 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams *
     applyMotionCorrection(cparams, xId, vId, dxId, correction, positionFactor, velocityFactor);
 }
 
-void GenericConstraintCorrection::applyPositionCorrection(const ConstraintParams * cparams,
+void GenericConstraintCorrection::doApplyPositionCorrection(const ConstraintParams * cparams,
                                                           MultiVecCoordId xId,
                                                           MultiVecDerivId dxId,
                                                           ConstMultiVecDerivId correctionId)
@@ -216,7 +216,7 @@ void GenericConstraintCorrection::applyPositionCorrection(const ConstraintParams
     applyMotionCorrection(cparams, xId, VecDerivId::null(), dxId, correctionId, positionFactor, 0);
 }
 
-void GenericConstraintCorrection::applyVelocityCorrection(const ConstraintParams * cparams,
+void GenericConstraintCorrection::doApplyVelocityCorrection(const ConstraintParams * cparams,
                                                           MultiVecDerivId vId,
                                                           MultiVecDerivId dvId,
                                                           ConstMultiVecDerivId correctionId)
@@ -228,7 +228,7 @@ void GenericConstraintCorrection::applyVelocityCorrection(const ConstraintParams
     applyMotionCorrection(cparams, VecCoordId::null(), vId, dvId, correctionId, 0, velocityFactor);
 }
 
-void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
+void GenericConstraintCorrection::doApplyContactForce(const BaseVector *f)
 {
     if (!l_ODESolver.get()) return;
 
@@ -236,16 +236,16 @@ void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
 
 
     computeMotionCorrectionFromLambda(&cparams, cparams.dx(), f);
-    applyMotionCorrection(&cparams, core::vec_id::write_access::position, core::vec_id::write_access::velocity, cparams.dx(), cparams.lambda());
+    BaseConstraintCorrection::applyMotionCorrection(&cparams, core::vec_id::write_access::position, core::vec_id::write_access::velocity, cparams.dx(), cparams.lambda());
 }
 
-void GenericConstraintCorrection::computeResidual(const ExecParams* params, linearalgebra::BaseVector *lambda)
+void GenericConstraintCorrection::doComputeResidual(const ExecParams* params, linearalgebra::BaseVector *lambda)
 {
     l_linearSolver.get()->computeResidual(params, lambda);
 }
 
 
-void GenericConstraintCorrection::getComplianceMatrix(linearalgebra::BaseMatrix* Minv) const
+void GenericConstraintCorrection::doGetComplianceMatrix(linearalgebra::BaseMatrix* Minv) const
 {
     if (!l_ODESolver.get())
         return;
@@ -254,7 +254,7 @@ void GenericConstraintCorrection::getComplianceMatrix(linearalgebra::BaseMatrix*
     const_cast<GenericConstraintCorrection*>(this)->addComplianceInConstraintSpace(&cparams, Minv);
 }
 
-void GenericConstraintCorrection::applyPredictiveConstraintForce(const ConstraintParams * cparams,
+void GenericConstraintCorrection::doApplyPredictiveConstraintForce(const ConstraintParams * cparams,
                                                                  MultiVecDerivId f,
                                                                  const BaseVector * lambda)
 {
@@ -263,7 +263,7 @@ void GenericConstraintCorrection::applyPredictiveConstraintForce(const Constrain
     SOFA_UNUSED(lambda);
 }
 
-void GenericConstraintCorrection::resetContactForce(){}
+void GenericConstraintCorrection::doResetContactForce(){}
 
 void registerGenericConstraintCorrection(sofa::core::ObjectFactory* factory)
 {
