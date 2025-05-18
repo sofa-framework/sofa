@@ -66,25 +66,19 @@ public:
 
 public:
     /// Load a distance grid
-    static DistanceGrid* load(const std::string& filename,
+    static std::unique_ptr<DistanceGrid> load(const std::string& filename,
                               double scale=1.0, double sampling=0.0,
                               int m_nx=64, int m_ny=64, int m_nz=64,
                               Coord m_pmin = Coord(), Coord m_pmax = Coord());
 
-    static DistanceGrid* loadVTKFile(const std::string& filename,
+    static std::unique_ptr<DistanceGrid> loadVTKFile(const std::string& filename,
                                      double scale=1.0, double sampling=0.0);
 
     /// Load or reuse a distance grid
-    static DistanceGrid* loadShared(const std::string& filename,
+    static std::shared_ptr<DistanceGrid> loadShared(const std::string& filename,
                                     double scale=1.0, double sampling=0.0,
                                     int m_nx=64, int m_ny=64, int m_nz=64,
                                     Coord m_pmin = Coord(), Coord m_pmax = Coord());
-
-    /// Add one reference to this grid. Note that loadShared already does this.
-    DistanceGrid* addRef();
-
-    /// Release one reference, deleting this grid if this is the last
-    bool release();
 
     /// Save current grid
     bool save(const std::string& filename);
@@ -222,7 +216,6 @@ public:
     VecCoord meshPts;
 
 protected:
-    int m_nbRef;
     const int m_nx,m_ny,m_nz;
     const int m_nxny, m_nxnynz;
     VecSReal m_dists;
@@ -255,7 +248,7 @@ protected:
         bool operator>(const DistanceGridParams& v) const ;
     };
 
-    static std::map<DistanceGridParams, DistanceGrid*>& getShared();
+    static std::map<DistanceGridParams, std::weak_ptr<DistanceGrid> > instances;
 };
 
 } // namespace _distancegrid
