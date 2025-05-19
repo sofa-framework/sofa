@@ -28,13 +28,18 @@
 namespace volumetricrendering
 {
 
+namespace cuda
+{
+
 void registerCudaOglTetrahedralModel(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(sofa::core::ObjectRegistrationData("Tetrahedral model for OpenGL display.")
     .add< OglTetrahedralModel<sofa::gpu::cuda::CudaVec3fTypes> >());
 }
 
-template class OglTetrahedralModel<sofa::gpu::cuda::CudaVec3fTypes>;
+}
+
+template class SOFA_VOLUMETRICRENDERING_CUDA_API OglTetrahedralModel<sofa::gpu::cuda::CudaVec3fTypes>;
 
 } // namespace volumetricrendering
 

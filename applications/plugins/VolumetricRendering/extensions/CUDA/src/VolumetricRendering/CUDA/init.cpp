@@ -25,7 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
 
-namespace volumetricrendering
+namespace volumetricrendering::cuda
 {
 
 extern void registerCudaOglTetrahedralModel(sofa::core::ObjectFactory* factory);
