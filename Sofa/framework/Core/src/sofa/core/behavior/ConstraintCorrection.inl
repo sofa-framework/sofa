@@ -157,9 +157,13 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const co
     auto force = sofa::helper::getWriteAccessor(f);
 
     const size_t numDOFs = mstate->getSize();
+    const size_t fPrevSize = force.size();
+
     if (numDOFs > force.size())
     {
-        force.resize(numDOFs, Deriv());
+        force.resize(numDOFs);
+        for (size_t i = fPrevSize; i < numDOFs; ++i)
+            force[i] = Deriv();
     }
 
     const MatrixDeriv& c = j.getValue();
