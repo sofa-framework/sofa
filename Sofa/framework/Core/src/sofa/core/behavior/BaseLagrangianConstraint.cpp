@@ -40,9 +40,10 @@ void BaseLagrangianConstraint::getConstraintInfo(const ConstraintParams* cParams
     SOFA_UNUSED(blocks);
     SOFA_UNUSED(ids);
 }
-void BaseConstraint::getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
+
+void BaseLagrangianConstraint::getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
 {
-    msg_warning()<<"BaseConstraint::getConstraintInfo signature has changed. Positions, directions and areas are not used anymore. This method is deprecated since v25.06 and will be deleted in v25.12.";
+    msg_warning()<<"BaseLagrangianConstraint::getConstraintInfo signature has changed. Positions, directions and areas are not used anymore. This method is deprecated since v25.06 and will be deleted in v25.12.";
     this->getConstraintInfo(cParams, blocks, ids);
     SOFA_UNUSED(positions);
     SOFA_UNUSED(directions);

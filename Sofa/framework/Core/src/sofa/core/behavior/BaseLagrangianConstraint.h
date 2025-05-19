@@ -62,12 +62,6 @@ public:
 
     typedef long long PersistentID;
     typedef type::vector<PersistentID> VecPersistentID;
-    typedef type::Vec<3,int> ConstCoord;
-    typedef type::vector<ConstCoord> VecConstCoord;
-    typedef type::Vec<3,double> ConstDeriv;
-    typedef type::vector<ConstDeriv> VecConstDeriv;
-    typedef double ConstArea;
-    typedef type::vector<ConstArea> VecConstArea;
 
     class ConstraintBlockInfo
     {
@@ -77,21 +71,23 @@ public:
         int nbLines; ///< how many dofs (i.e. lines in the matrix) are used by each constraint
         int nbGroups; ///< how many groups of constraints are active
         bool hasId; ///< true if this constraint has persistent ID information
-        bool hasPosition; ///< true if this constraint has coordinates information
-        bool hasDirection; ///< true if this constraint has direction information
-        bool hasArea; ///< true if this constraint has area information
         int offsetId; ///< index of first constraint group info in vector of persistent ids and coordinates
-        int offsetPosition; ///< index of first constraint group info in vector of coordinates
-        int offsetDirection; ///< index of first constraint info in vector of directions
-        int offsetArea; ///< index of first constraint group info in vector of areas
-        ConstraintBlockInfo() : parent(nullptr), const0(0), nbLines(1), nbGroups(0), hasId(false), hasPosition(false), hasDirection(false), hasArea(false), offsetId(0), offsetPosition(0), offsetDirection(0), offsetArea(0)
+        ConstraintBlockInfo() : parent(nullptr), const0(0), nbLines(1), nbGroups(0), hasId(false), offsetId(0)
         {}
     };
     typedef type::vector<ConstraintBlockInfo> VecConstraintBlockInfo;
 
     /// Get information for each constraint: pointer to parent BaseConstraint, unique persistent ID, 3D position
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC) and resolution parameters (smoothness, ...)
-    virtual void getConstraintInfo(const ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas);
+    virtual void getConstraintInfo(const ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids);
+
+
+    //DEPRECATED(v25.06, v25.12)
+    typedef sofa::type::vector<type::Vec<3,double>> VecConstCoord;
+    typedef sofa::type::vector<type::Vec<3,double>> VecConstDeriv;
+    typedef sofa::type::vector<double> VecConstArea;
+    SOFA_ATTRIBUTE_DEPRECATED__DELETED_ARGUMENTS()
+    virtual void getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas) final;
 
     /// Add the corresponding ConstraintResolution using the offset parameter
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC) and resolution parameters (smoothness, ...)
