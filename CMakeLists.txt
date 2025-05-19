@@ -85,7 +85,6 @@ file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/etc/sofa/python.d)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Sofa/framework/Config/cmake")
-list(APPEND CMAKE_IGNORE_PATH "${CMAKE_INSTALL_PREFIX}") # ignore install directory for findXXX commands
 include(SofaMacros)
 
 install(FILES
@@ -193,11 +192,8 @@ sofa_add_subdirectory(plugin applications/plugins/SceneCreator SceneCreator OFF
     WHEN_TO_SHOW "NOT SOFA_BUILD_SCENECREATOR AND NOT SOFA_BUILD_TESTS AND NOT SOFA_BUILD_RELEASE_PACKAGE"
     VALUE_IF_HIDDEN "ON")
 
-## Plugins
-add_subdirectory(applications/plugins)
-
-## Applications
-add_subdirectory(applications/projects)
+## add SofaPython3, guis, plugins, projects
+add_subdirectory(applications)
 
 ## SimpleAPI examples
 option(SOFA_BUILD_SIMPLEAPI_EXAMPLES "Build SOFA scenes based on SimpleAPI." OFF)

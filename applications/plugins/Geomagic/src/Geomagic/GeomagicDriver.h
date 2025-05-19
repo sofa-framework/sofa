@@ -34,12 +34,13 @@
 #include <HD/hd.h>
 #endif
 
-namespace sofa::component::controller
+namespace geomagic
 {
 
 
 class GeomagicVisualModel;
 
+using namespace sofa::component::controller;
 
 /**
 * Class providing a driver API to handle Geomagic haptic device and the servo loop scheduler.
@@ -152,4 +153,4 @@ public:
     std::vector< SHDSchedulerHandle > m_hStateHandles; ///< List of ref to the workers scheduled
 };
 
-} // namespace sofa::component::controller
+} // namespace geomagic

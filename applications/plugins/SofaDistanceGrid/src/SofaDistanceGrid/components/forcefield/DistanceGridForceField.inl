@@ -50,7 +50,7 @@ void DistanceGridForceField<DataTypes>::init()
 
     if (fileDistanceGrid.getValue().empty())
     {
-        if (grid==NULL)
+        if (grid == nullptr)
             msg_error() << "DistanceGridForceField requires an input filename." ;
         /// the grid has already been set
         return;

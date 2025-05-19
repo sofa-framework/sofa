@@ -77,7 +77,7 @@ NewtonRaphsonSolver::NewtonRaphsonSolver()
           "Newton iterations will stop when the difference between two successive "
           "estimates is smaller than this threshold."))
     , d_maxNbIterationsLineSearch(initData(
-          &d_maxNbIterationsLineSearch, 5u, "maxNbIterationsLineSearch",
+          &d_maxNbIterationsLineSearch, 1u, "maxNbIterationsLineSearch",
           "Maximum number of iterations of the line search method if it has not converged."))
     , d_lineSearchCoefficient(initData(&d_lineSearchCoefficient, 0.5_sreal, "lineSearchCoefficient",
                                        "Line search coefficient"))
@@ -231,14 +231,14 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
     const auto absoluteStoppingThreshold = d_absoluteResidualStoppingThreshold.getValue();
     const auto squaredAbsoluteStoppingThreshold = std::pow(absoluteStoppingThreshold, 2);
 
+    unsigned int newtonIterationCount = 0;
+
     if (absoluteStoppingThreshold > 0 && squaredResidualNorm <= squaredAbsoluteStoppingThreshold)
     {
         initialConvergence(squaredResidualNorm, squaredAbsoluteStoppingThreshold);
     }
     else
     {
-        SCOPED_TIMER("NewtonsIterations");
-
         msg_info() << "Initial squared residual norm: " << squaredResidualNorm;
 
         const auto relativeSuccessiveStoppingThreshold = d_relativeSuccessiveStoppingThreshold.getValue();
@@ -255,9 +255,9 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
         bool hasConverged = false;
         const auto lineSearchCoefficient = d_lineSearchCoefficient.getValue();
 
-        unsigned int newtonIterationCount = 0;
         for (; newtonIterationCount < maxNbIterationsNewton; ++newtonIterationCount)
         {
+            SCOPED_TIMER_VARNAME(step_timer, "NewtonStep");
             NewtonIterationRAII newtonIteration(function);
 
             msg_info() << "Newton iteration #" << newtonIterationCount;
@@ -394,6 +394,9 @@ void NewtonRaphsonSolver::solve(newton_raphson::BaseNonLinearFunction& function)
             d_status.setValue(divergedMaxIterations);
         }
     }
+
+    sofa::helper::AdvancedTimer::valSet("nb_iterations", newtonIterationCount);
+    sofa::helper::AdvancedTimer::valSet("residual", std::sqrt(squaredResidualNorm));
 }
 
 void NewtonRaphsonSolver::start()

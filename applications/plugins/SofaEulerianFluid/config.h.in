@@ -19,47 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/behavior/BaseConstraint.h>
+#pragma once
 
-namespace sofa::core::behavior
-{
-int BaseConstraint::getGroup() const
-{
-    return group.getValue();
-}
+#include <sofa/config.h>
 
-void BaseConstraint::setGroup(int g)
-{
-    group.setValue(g);
-}
+#ifdef SOFA_BUILD_SOFAEULERIANFLUID
+#  define SOFA_TARGET SofaEulerianFluid
+#  define SOFA_EULERIAN_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_EULERIAN_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-void BaseConstraint::getConstraintInfo(const ConstraintParams* cParams, VecConstraintBlockInfo& blocks,
-    VecPersistentID& ids)
+namespace sofaeulerianfluid
 {
-    SOFA_UNUSED(cParams);
-    SOFA_UNUSED(blocks);
-    SOFA_UNUSED(ids);
-}
-void BaseConstraint::getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
-{
-    msg_warning()<<"BaseConstraint::getConstraintInfo signature has changed. Positions, directions and areas are not used anymore. This method is deprecated since v25.06 and will be deleted in v25.12.";
-    this->getConstraintInfo(cParams, blocks, ids);
-    SOFA_UNUSED(positions);
-    SOFA_UNUSED(directions);
-    SOFA_UNUSED(areas);
-}
+    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+} // namespace sofaeulerianfluid
 
-void BaseConstraint::getConstraintResolution(const ConstraintParams* cParams,
-    std::vector<ConstraintResolution*>& resTab, unsigned& offset)
-{
-    getConstraintResolution(resTab, offset);
-    SOFA_UNUSED(cParams);
-}
-
-void BaseConstraint::getConstraintResolution(std::vector<ConstraintResolution*>& resTab, unsigned& offset)
-{
-    SOFA_UNUSED(resTab);
-    SOFA_UNUSED(offset);
-}
-
-} // namespace sofa::core::behavior

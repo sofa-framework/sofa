@@ -61,11 +61,11 @@ public:
     typedef typename Coord::value_type Real;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
-    typedef core::behavior::BaseConstraint::ConstraintBlockInfo ConstraintBlockInfo;
-    typedef core::behavior::BaseConstraint::PersistentID PersistentID;
+    typedef core::behavior::BaseLagrangianConstraint::ConstraintBlockInfo ConstraintBlockInfo;
+    typedef core::behavior::BaseLagrangianConstraint::PersistentID PersistentID;
 
-    typedef core::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
-    typedef core::behavior::BaseConstraint::VecPersistentID VecPersistentID;
+    typedef core::behavior::BaseLagrangianConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
+    typedef core::behavior::BaseLagrangianConstraint::VecPersistentID VecPersistentID;
 
     typedef core::objectmodel::Data<VecCoord>		DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv>		DataVecDeriv;

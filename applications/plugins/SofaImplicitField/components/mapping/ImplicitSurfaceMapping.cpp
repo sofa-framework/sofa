@@ -24,36 +24,20 @@
 #include <sofa/core/ObjectFactory.h>
 #include "ImplicitSurfaceMapping.inl"
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace sofa::defaulttype;
 
 // Register in the Factory
-int ImplicitSurfaceMappingClass = core::RegisterObject("Compute an iso-surface from a set of particles")
-        .add< ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes > >()
-
-
-
-
-        ;
-
+void registerImplicitSurfaceMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Compute an iso-surface from a set of particles.")
+    .add< ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes > >());
+}
 
 template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes >;
 
 
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::mapping
 

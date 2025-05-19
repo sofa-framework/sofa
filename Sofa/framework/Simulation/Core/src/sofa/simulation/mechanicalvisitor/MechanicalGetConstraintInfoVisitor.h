@@ -22,15 +22,15 @@
 #pragma once
 
 #include <sofa/simulation/BaseMechanicalVisitor.h>
-#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseLagrangianConstraint.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 class SOFA_SIMULATION_CORE_API MechanicalGetConstraintInfoVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
-    typedef core::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
-    typedef core::behavior::BaseConstraint::VecPersistentID VecPersistentID;
+    typedef core::behavior::BaseLagrangianConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
+    typedef core::behavior::BaseLagrangianConstraint::VecPersistentID VecPersistentID;
 
     MechanicalGetConstraintInfoVisitor(const core::ConstraintParams* params, VecConstraintBlockInfo& blocks, VecPersistentID& ids);
 

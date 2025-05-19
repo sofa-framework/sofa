@@ -43,7 +43,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/behavior/BaseConstraint.h> ///< ConstraintResolution.
+#include <sofa/core/behavior/BaseLagrangianConstraint.h> ///< ConstraintResolution.
 
 #include <sofa/helper/AdvancedTimer.h>
 

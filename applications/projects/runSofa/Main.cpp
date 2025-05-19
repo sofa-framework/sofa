@@ -372,8 +372,8 @@ int main(int argc, char** argv)
     msg_info(appName) << "runSofaDataRepository paths = " << runSofaDataRepository.getPathsJoined();
 
     // Initialise paths
-    BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
-    BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
+    BaseGUI::setConfigDirectoryPath(FileSystem::append(Utils::getSofaUserLocalDirectory(), "config"), true);
+    BaseGUI::setScreenshotDirectoryPath(FileSystem::append(Utils::getSofaDataDirectory(), "screenshots"), true);
 
     // Add Batch GUI (runSofa without any GUIs won't be useful)
     sofa::gui::batch::init();

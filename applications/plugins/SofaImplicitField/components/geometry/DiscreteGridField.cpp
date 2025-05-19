@@ -27,17 +27,9 @@ using sofa::core::RegisterObject ;
 #include "DiscreteGridField.h"
 
 
-namespace sofa
+namespace sofa::component::geometry::_discretegrid_
 {
 
-namespace component
-{
-
-namespace geometry
-{
-
-namespace _discretegrid_
-{
 /**
 DiscreteGridField::DiscreteGridField()
     : in_filename(initData(&in_filename,"filename","filename"))
@@ -363,14 +355,11 @@ double DiscreteGridField::getValue( Vec3d &transformedPos )
     return getValue( transformedPos, domain );
 }
 
-///factory register
-int DiscreteGridFieldClass = RegisterObject("A discrete scalar field from a regular grid storing field value with interpolation.")
-        .add< DiscreteGridField >() ;
+// Register in the Factory
+void registerDiscreteGridField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("A discrete scalar field from a regular grid storing field value with interpolation.")
+    .add< DiscreteGridField >());
+}
 
-} ///namespace _discretegrid_
-
-} ///namespace geometry
-
-} ///namespace core
-
-} ///namespace sofa
+} ///namespace sofa::component::geometry::_discretegrid_

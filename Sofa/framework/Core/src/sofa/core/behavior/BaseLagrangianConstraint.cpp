@@ -19,22 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_EULERIAN_FLUID_INIT_H
-#define SOFA_COMPONENT_EULERIAN_FLUID_INIT_H
-#include "config.h"
+#include <sofa/core/behavior/BaseLagrangianConstraint.h>
 
-namespace sofa
+namespace sofa::core::behavior
 {
-
-namespace component
+int BaseLagrangianConstraint::getGroup() const
 {
+    return group.getValue();
+}
 
+void BaseLagrangianConstraint::setGroup(int g)
+{
+    group.setValue(g);
+}
 
-void SOFA_EULERIAN_FLUID_API initEulerianFluid();
+void BaseLagrangianConstraint::getConstraintInfo(const ConstraintParams* cParams, VecConstraintBlockInfo& blocks,
+    VecPersistentID& ids)
+{
+    SOFA_UNUSED(cParams);
+    SOFA_UNUSED(blocks);
+    SOFA_UNUSED(ids);
+}
+void BaseConstraint::getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
+{
+    msg_warning()<<"BaseConstraint::getConstraintInfo signature has changed. Positions, directions and areas are not used anymore. This method is deprecated since v25.06 and will be deleted in v25.12.";
+    this->getConstraintInfo(cParams, blocks, ids);
+    SOFA_UNUSED(positions);
+    SOFA_UNUSED(directions);
+    SOFA_UNUSED(areas);
+}
 
-} // namespace component
+void BaseLagrangianConstraint::getConstraintResolution(const ConstraintParams* cParams,
+    std::vector<ConstraintResolution*>& resTab, unsigned& offset)
+{
+    getConstraintResolution(resTab, offset);
+    SOFA_UNUSED(cParams);
+}
 
-} // namespace sofa
+void BaseLagrangianConstraint::getConstraintResolution(std::vector<ConstraintResolution*>& resTab, unsigned& offset)
+{
+    SOFA_UNUSED(resTab);
+    SOFA_UNUSED(offset);
+}
 
-#endif
-
+} // namespace sofa::core::behavior
