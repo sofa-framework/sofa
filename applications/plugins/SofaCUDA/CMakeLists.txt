@@ -5,6 +5,13 @@ set(SOFACUDA_MAJOR_VERSION 0)
 set(SOFACUDA_MINOR_VERSION 1)
 set(SOFACUDA_VERSION ${SOFACUDA_MAJOR_VERSION}.${SOFACUDA_MINOR_VERSION})
 
+if(DEFINED CUDA_ARCH_LIST)
+    message(WARNING "CUDA_ARCH_LIST variable is deprecated ; use cmake built-in variable CMAKE_CUDA_ARCHITECTURES instead (see https://cmake.org/cmake/help/latest/variable/CMAKE_CUDA_ARCHITECTURES.html)")
+    string(REPLACE "." "" CUDA_ARCH_LIST_REFORMATED ${CUDA_ARCH_LIST})
+    message(WARNING "${CUDA_ARCH_LIST_REFORMATED} will be set in CMAKE_CUDA_ARCHITECTURES.")
+    set(CMAKE_CUDA_ARCHITECTURES ${CUDA_ARCH_LIST_REFORMATED})
+endif()
+
 if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0") 
     option(SOFACUDA_ENABLE_NATIVE_ARCHITECTURE "Set native as for CUDA_ARCHITECTURES (which will compile compatible architectures for the current system)")
     if(SOFACUDA_ENABLE_NATIVE_ARCHITECTURE)
