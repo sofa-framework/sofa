@@ -37,6 +37,7 @@ extern "C" {
     SOFA_VOLUMETRICRENDERING_API const char* getModuleVersion();
     SOFA_VOLUMETRICRENDERING_API const char* getModuleLicense();
     SOFA_VOLUMETRICRENDERING_API const char* getModuleDescription();
+    SOFA_VOLUMETRICRENDERING_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void init()
