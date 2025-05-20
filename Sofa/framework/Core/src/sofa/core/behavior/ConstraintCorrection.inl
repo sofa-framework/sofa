@@ -159,7 +159,7 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const co
     const size_t numDOFs = mstate->getSize();
     const size_t fPrevSize = force.size();
 
-    if (numDOFs > force.size())
+    if (numDOFs > fPrevSize)
     {
         force.resize(numDOFs);
         for (size_t i = fPrevSize; i < numDOFs; ++i)
