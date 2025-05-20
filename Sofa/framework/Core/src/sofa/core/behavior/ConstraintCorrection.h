@@ -24,7 +24,7 @@
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Link.h>
-
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
 namespace sofa::core::behavior
 {
@@ -33,10 +33,12 @@ namespace sofa::core::behavior
  * Component computing constraint forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
-class ConstraintCorrection : public BaseConstraintCorrection
+class ConstraintCorrection : public BaseConstraintCorrection, public SingleStateAccessor<TDataTypes>
 {
 public:
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(ConstraintCorrection, TDataTypes), BaseConstraintCorrection);
+    SOFA_ABSTRACT_CLASS2(SOFA_TEMPLATE(ConstraintCorrection, TDataTypes),
+        BaseConstraintCorrection,
+        SOFA_TEMPLATE(SingleStateAccessor, TDataTypes))
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real Real;
@@ -50,12 +52,13 @@ public:
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
 
+    using SingleStateAccessor<TDataTypes>::mstate;
+
 protected:
     /// Default Constructor
     explicit ConstraintCorrection(MechanicalState< DataTypes > *ms = nullptr)
-        : Inherit1()
+        : Inherit1(), Inherit2(ms)
         , l_constraintsolvers(initLink("constraintSolvers", "Constraint solvers using this constraint correction"))
-        , mstate(ms)
     {}
 
     /// Default Destructor
@@ -150,18 +153,10 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    MechanicalState<DataTypes> *getMState() const
-    {
-        return mstate;
-    }
-
     void setMState(MechanicalState<DataTypes> *_mstate)
     {
         mstate = _mstate;
     }
-
-protected:
-    MechanicalState<DataTypes> *mstate;
 
 private:
     /// Converts constraint force from the constraints space to the motion space and accumulates it in f vector
