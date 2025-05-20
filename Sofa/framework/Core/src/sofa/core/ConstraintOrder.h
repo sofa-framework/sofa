@@ -24,12 +24,16 @@
 namespace sofa::core
 {
 
-/// Description of the order of the constraint
+/// Description of the constraint order.
+///
+/// The order corresponds to the derivative order of the constraint function. This information
+/// tells which derivative is solved by the constraint solver. For example, solving only the
+/// velocity-level will authorize constraint violation but will prevent further violation.
 enum class ConstraintOrder
 {
-    POS = 0,
-    VEL,
-    ACC,
+    POS = 0, //corresponds to the constraint function itself
+    VEL, //corresponds to the first derivative of the constraint function
+    ACC, //corresponds to the second derivative of the constraint function
     POS_AND_VEL
 };
 
