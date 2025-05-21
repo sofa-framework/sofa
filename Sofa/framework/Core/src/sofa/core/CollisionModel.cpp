@@ -144,7 +144,7 @@ void CollisionModel::setPrevious(CollisionModel::SPtr val)
 void CollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     // don't draw if the component is not in valid state
-    if( d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid )
+    if (isComponentStateInvalid())
         return;
 
     // don't draw if the component is not active
