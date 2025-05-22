@@ -154,7 +154,7 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const co
 template< class DataTypes >
 void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const core::ConstraintParams*, Data< VecDeriv > &f, const Data< MatrixDeriv>& j, const linearalgebra::BaseVector *lambda)
 {
-    VecDeriv& force = *f.beginEdit();
+    auto force = sofa::helper::getWriteAccessor(f);
 
     const size_t numDOFs = mstate->getSize();
     const size_t fPrevSize = force.size();
@@ -162,30 +162,14 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const co
     if (numDOFs > fPrevSize)
     {
         force.resize(numDOFs);
-        for (size_t i = fPrevSize; i < numDOFs; i++)
+        for (size_t i = fPrevSize; i < numDOFs; ++i)
             force[i] = Deriv();
     }
 
     const MatrixDeriv& c = j.getValue();
 
-    MatrixDerivRowConstIterator rowItEnd = c.end();
-
-    for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
-    {
-        const double lambdaC1 = lambda->element(rowIt.index());
-
-        if (lambdaC1 != 0.0)
-        {
-            MatrixDerivColConstIterator colItEnd = rowIt.end();
-
-            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
-            {
-                force[colIt.index()] += colIt.val() * lambdaC1;
-            }
-        }
-    }
-
-    f.endEdit();
+    // force += J^T * lambda
+    c.multTransposeBaseVector(force, lambda);
 }
 
 } // namespace sofa::core::behavior

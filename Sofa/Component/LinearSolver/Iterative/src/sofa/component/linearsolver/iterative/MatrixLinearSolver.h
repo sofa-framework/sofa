@@ -87,16 +87,9 @@ public:
     typedef sofa::linearalgebra::SparseMatrix<Real> JMatrixType;
     typedef linearalgebra::BaseMatrix ResMatrixType;
 
-    void projectForceInConstraintSpace(linearalgebra::BaseVector* r,const linearalgebra::BaseVector* f) {
-        for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = J_local.begin(), jitend = J_local.end(); jit != jitend; ++jit) {
-            auto row = jit->first;
-            auto force = f->element(row);
-            for (typename linearalgebra::SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2) {
-                auto col = i2->first;
-                auto val = i2->second;
-                r->add(col,val * force);
-            }
-        }
+    void projectForceInConstraintSpace(linearalgebra::BaseVector* r,const linearalgebra::BaseVector* f)
+    {
+        J_local.addMulTranspose(r, f);
     }
 
     JMatrixType * getLocalJ() {
