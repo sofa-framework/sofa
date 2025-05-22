@@ -133,7 +133,7 @@ void ConstraintCorrection< DataTypes >::applyPredictiveConstraintForce(const cor
     if (mstate)
     {
         addConstraintForceInMotionSpace(cparams, f, cparams->j(), lambda);
-        }
+    }
 }
 
 template< class DataTypes >

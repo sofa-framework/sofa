@@ -125,7 +125,7 @@ using namespace sofa::defaulttype;
 
 void registerPrecomputedConstraintCorrection(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Component precomputing constraint forces within a simulated body using the compliance method.")
+    factory->registerObjects(core::ObjectRegistrationData("Component precomputing constraint forces within a simulated body using the compliance method. It approximates the compliance matrix by a precomputed matrix inverse. The approximation can be updated based on the rotation of elements.")
         .add< PrecomputedConstraintCorrection<Vec3Types> >()
         .add< PrecomputedConstraintCorrection<Vec1Types> >()
         .add< PrecomputedConstraintCorrection<Rigid3Types> >());

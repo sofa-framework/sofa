@@ -197,6 +197,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     // suppress the constraints that are on DOFS currently concerned by projective constraint
     applyProjectiveConstraintOnConstraintMatrix(cParams);
 
+    //clear and/or resize based on the number of constraints
     current_cp->clear(numConstraints);
 
     getConstraintViolation(cParams, &current_cp->dFree);

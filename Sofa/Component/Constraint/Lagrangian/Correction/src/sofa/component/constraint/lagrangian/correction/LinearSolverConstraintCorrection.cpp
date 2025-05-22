@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerLinearSolverConstraintCorrection(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Constraint Correction for Linear Solvers.")
+    factory->registerObjects(core::ObjectRegistrationData("Component computing constraint forces within a simulated body using the compliance method.")
         .add< LinearSolverConstraintCorrection<Vec3Types> >()
         .add< LinearSolverConstraintCorrection<Vec2Types> >()
         .add< LinearSolverConstraintCorrection<Vec1Types> >()
