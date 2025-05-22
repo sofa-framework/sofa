@@ -256,13 +256,13 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(sofa::linearalgebra
 }
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void HexahedronFEMForceFieldAndMass<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
-    HexahedronFEMForceFieldT::buildStiffnessMatrix(matrix);
+    HexahedronFEMForceFieldT::doBuildStiffnessMatrix(matrix);
 }
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
+void HexahedronFEMForceFieldAndMass<DataTypes>::doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     int e = 0;
     for(auto it = this->getIndexedElements()->begin(); it != this->getIndexedElements()->end() ; ++it, ++e)
@@ -337,7 +337,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(const core::Mechanical
 
 
 template<class DataTypes>
-SReal HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(sofa::Index /*index*/) const
+SReal HexahedronFEMForceFieldAndMass<DataTypes>::doGetElementMass(sofa::Index /*index*/) const
 {
     msg_warning()<<"HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented"<<msgendl; return 0.0;
 }

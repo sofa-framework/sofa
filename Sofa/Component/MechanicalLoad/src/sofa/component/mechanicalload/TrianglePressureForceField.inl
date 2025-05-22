@@ -229,7 +229,7 @@ void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParam
 }
 
 template <class DataTypes>
-void TrianglePressureForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void TrianglePressureForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

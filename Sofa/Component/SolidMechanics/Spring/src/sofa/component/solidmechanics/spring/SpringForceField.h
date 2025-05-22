@@ -93,9 +93,9 @@ public:
 
     // Make other overloaded version of getPotentialEnergy() to show up in subclass.
     SReal getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const override;
-    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
-    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) override;
+    virtual void doAddKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void doBuildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) override;
 
 
     void draw(const core::visual::VisualParams* vparams) override;

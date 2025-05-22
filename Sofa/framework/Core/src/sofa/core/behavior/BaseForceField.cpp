@@ -36,14 +36,40 @@ BaseForceField::BaseForceField()
 {
 }
 
+void BaseForceField::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doAddForce(mparams, fId);
+}
+
+void BaseForceField::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doAddDForce(mparams, dfId);
+}
+
+SReal BaseForceField::getPotentialEnergy( const MechanicalParams* mparams ) const
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    return doGetPotentialEnergy(mparams);
+}
+
+void BaseForceField::addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doAddKToMatrix(mparams, matrix);
+}
+
+void BaseForceField::addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doAddBToMatrix(mparams, matrix);
+}
+
 void BaseForceField::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId)
 {
     if (sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,rayleighStiffness.getValue()) != 0.0 || sofa::core::mechanicalparams::bFactor(mparams) != 0.0)
         addDForce(mparams, dfId);
-}
-
-void BaseForceField::addBToMatrix(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
-{
 }
 
 void BaseForceField::addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
@@ -55,6 +81,12 @@ void BaseForceField::addMBKToMatrix(const MechanicalParams* mparams, const sofa:
 }
 
 void BaseForceField::buildStiffnessMatrix(StiffnessMatrix* matrix)
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doBuildStiffnessMatrix(matrix);
+}
+
+void BaseForceField::doBuildStiffnessMatrix(StiffnessMatrix* matrix)
 {
     static std::set<BaseForceField*> hasEmittedWarning;
     if (hasEmittedWarning.insert(this).second)
@@ -96,10 +128,16 @@ void BaseForceField::buildStiffnessMatrix(StiffnessMatrix* matrix)
     params.setKFactor(1.);
     params.setMFactor(1.);
 
-    addKToMatrix(&params, &accessor);
+    doAddKToMatrix(&params, &accessor);
 }
 
 void BaseForceField::buildDampingMatrix(DampingMatrix* matrix)
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doBuildDampingMatrix(matrix);
+}
+
+void BaseForceField::doBuildDampingMatrix(DampingMatrix* matrix)
 {
     static std::set<BaseForceField*> hasEmittedWarning;
     if (hasEmittedWarning.insert(this).second)
@@ -141,7 +179,7 @@ void BaseForceField::buildDampingMatrix(DampingMatrix* matrix)
     params.setKFactor(1.);
     params.setMFactor(1.);
 
-    addBToMatrix(&params, &accessor);
+    doAddBToMatrix(&params, &accessor);
 }
 
 bool BaseForceField::insertInNode( objectmodel::BaseNode* node )
