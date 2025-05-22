@@ -43,6 +43,10 @@ public:
     /// @name Compliance Matrix API
     /// @{
 
+    /// Compute the compliance matrix projected in the constraint space and accumulate it into \p W
+    ///
+    /// The computation is W += J A^-1 J^T where J is the constraint Jacobian matrix and A is the
+    /// mechanical matrix
     virtual void addComplianceInConstraintSpace(const ConstraintParams *, linearalgebra::BaseMatrix* W) = 0;
 
     /// Fill the matrix m with the full Compliance Matrix
@@ -117,6 +121,8 @@ public:
 
     /// @name Unbuilt constraint system during resolution
     /// @{
+
+    /// Is the constraint managed by this constraint correction?
     virtual bool hasConstraintNumber(int /*index*/);
     virtual void resetForUnbuiltResolution(SReal* /*f*/, std::list<unsigned int>& /*renumbering*/);
     virtual void addConstraintDisplacement(SReal* /*d*/, int /*begin*/, int /*end*/);

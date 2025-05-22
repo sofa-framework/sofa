@@ -53,7 +53,7 @@ namespace sofa::component::constraint::lagrangian::correction
 template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
     : Inherit(mm)
-    , d_rotations(initData(&d_rotations, false, "rotations", ""))
+    , d_rotations(initData(&d_rotations, false, "rotations", "Project the precomputed matrix with a rotation matrix"))
     , d_restRotations(initData(&d_restRotations, false, "restDeformations", ""))
     , d_recompute(initData(&d_recompute, false, "recompute", "if true, always recompute the compliance"))
     , d_regularizationTerm(initData(&d_regularizationTerm, 0.0_sreal, "regularizationTerm", "Add regularization factor times the identity matrix to the compliance W when solving constraints"))

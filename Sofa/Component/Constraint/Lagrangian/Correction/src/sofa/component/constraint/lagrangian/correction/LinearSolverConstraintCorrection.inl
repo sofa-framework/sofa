@@ -211,13 +211,14 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
         break;
     }
 
+    // J is read from the mechanical state and converted to m_constraintJacobian
     {
         helper::ReadAccessor inputConstraintMatrix ( *cparams->readJ(this->mstate) );
         const sofa::SignedIndex numberOfConstraints = W->rowSize();
         convertConstraintMatrix(numberOfConstraints, inputConstraintMatrix.ref());
     }
 
-    // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
+    // use the Linear solver to compute J*A^-1*J^T, where A is the mechanical linear system matrix
     l_linearSolver->setSystemLHVector(sofa::core::MultiVecDerivId::null());
     l_linearSolver->addJMInvJt(W, &m_constraintJacobian, factor);
 
