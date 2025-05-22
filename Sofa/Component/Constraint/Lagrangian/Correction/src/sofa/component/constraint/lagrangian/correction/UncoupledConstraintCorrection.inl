@@ -363,22 +363,9 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
     const bool verbose = d_verbose.getValue();
     const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
     // use the OdeSolver to get the position integration factor
-    SReal factor = 1.0;
-    switch (cparams->constOrder())
-    {
-    case core::ConstraintOrder::POS_AND_VEL :
-    case core::ConstraintOrder::POS :
-        factor = useOdeIntegrationFactors ? m_pOdeSolver->getPositionIntegrationFactor() : 1.0;
-        break;
-
-    case core::ConstraintOrder::ACC :
-    case core::ConstraintOrder::VEL :
-        factor = useOdeIntegrationFactors ? m_pOdeSolver->getVelocityIntegrationFactor() : 1.0;
-        break;
-
-    default :
-        break;
-    }
+    const SReal factor = useOdeIntegrationFactors ?
+        core::behavior::BaseConstraintCorrection::correctionFactor(m_pOdeSolver, cparams->constOrder())
+        : 1.0;
 
     comp0 *= Real(factor);
     for(Size i=0;i<comp.size(); ++i)
