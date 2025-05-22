@@ -34,30 +34,6 @@ public:
 
     void bwdInit() override;
     void cleanup() override;
-    void addConstraintSolver(core::behavior::ConstraintSolver *s) override;
-    void removeConstraintSolver(core::behavior::ConstraintSolver *s) override;
-
-    void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const linearalgebra::BaseVector * lambda) override;
-
-    void addComplianceInConstraintSpace(const core::ConstraintParams *cparams, linearalgebra::BaseMatrix* W) override;
-
-    void getComplianceMatrix(linearalgebra::BaseMatrix* ) const override;
-
-    void applyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
-
-    void applyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
-
-    void applyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction) override;
-
-    void applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda) override;
-
-    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
-
-    void applyContactForce(const linearalgebra::BaseVector *f) override;
-
-    void resetContactForce() override;
-
-    void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector *lambda) override;
 
     SingleLink<GenericConstraintCorrection, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used to compute the compliance matrix, requiring the inverse of the linear system matrix
     SingleLink<GenericConstraintCorrection, sofa::core::behavior::OdeSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_ODESolver; ///< Link towards the ODE solver used to recover the integration factors
@@ -72,6 +48,33 @@ protected:
 
     void applyMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId dxId,
                                core::ConstMultiVecDerivId correction, SReal positionFactor, SReal velocityFactor);
+
+    void doAddConstraintSolver(core::behavior::ConstraintSolver *s) override;
+
+    void doRemoveConstraintSolver(core::behavior::ConstraintSolver *s) override;
+
+    void doComputeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const linearalgebra::BaseVector * lambda) override;
+
+    void doAddComplianceInConstraintSpace(const core::ConstraintParams *cparams, linearalgebra::BaseMatrix* W) override;
+
+    void doGetComplianceMatrix(linearalgebra::BaseMatrix* ) const override;
+
+    void doApplyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
+
+    void doApplyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
+
+    void doApplyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction) override;
+
+    void doApplyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda) override;
+
+    void doRebuildSystem(SReal massFactor, SReal forceFactor) override;
+
+    void doApplyContactForce(const linearalgebra::BaseVector *f) override;
+
+    void doResetContactForce() override;
+
+    void doComputeResidual(const core::ExecParams* params, linearalgebra::BaseVector *lambda) override;
+
 };
 
 } //namespace sofa::component::constraint::lagrangian::correction
