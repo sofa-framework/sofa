@@ -24,6 +24,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/core/ConstraintOrder.h>
 
 namespace sofa::core::behavior
 {
@@ -127,6 +128,8 @@ public:
 protected:
     BaseConstraintCorrection();
     ~BaseConstraintCorrection() override;
+
+    static SReal correctionFactor(const sofa::core::behavior::OdeSolver* solver, const ConstraintOrder& constraintOrder);
 
 private:
     BaseConstraintCorrection(const BaseConstraintCorrection& n) = delete ;
