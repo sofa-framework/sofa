@@ -305,14 +305,14 @@ void CudaVisualModel< TDataTypes >::doDrawVisual(const core::visual::VisualParam
 }
 
 template<class TDataTypes>
-void CudaVisualModel< TDataTypes >::drawTransparent(const core::visual::VisualParams* vparams)
+void CudaVisualModel< TDataTypes >::doDrawTransparent(const core::visual::VisualParams* vparams)
 {
     const bool transparent = (matDiffuse.getValue()[3] < 1.0);
     if (transparent) internalDraw(vparams);
 }
 
 template<class TDataTypes>
-void CudaVisualModel< TDataTypes >::drawShadow(const core::visual::VisualParams* vparams)
+void CudaVisualModel< TDataTypes >::doDrawShadow(const core::visual::VisualParams* vparams)
 {
     const bool transparent = (matDiffuse.getValue()[3] < 1.0);
     if (!transparent /* && getCastShadow() */ ) internalDraw(vparams);

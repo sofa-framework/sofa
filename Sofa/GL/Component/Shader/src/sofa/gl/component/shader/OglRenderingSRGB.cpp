@@ -34,14 +34,14 @@ void registerOglRenderingSRGB(sofa::core::ObjectFactory* factory)
         .add< OglRenderingSRGB >());
 }
 
-void OglRenderingSRGB::fwdDraw(core::visual::VisualParams* /*vp*/)
+void OglRenderingSRGB::doFwdDraw(core::visual::VisualParams* /*vp*/)
 {
 #if defined(GL_FRAMEBUFFER_SRGB)
     glEnable(GL_FRAMEBUFFER_SRGB);
 #endif
 }
 
-void OglRenderingSRGB::bwdDraw(core::visual::VisualParams* /*vp*/)
+void OglRenderingSRGB::doBwdDraw(core::visual::VisualParams* /*vp*/)
 {
 #if defined(GL_FRAMEBUFFER_SRGB)
     glDisable(GL_FRAMEBUFFER_SRGB);
