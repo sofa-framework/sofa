@@ -52,7 +52,7 @@ public:
 
     /// Rebuild the system using a mass and force factor
     /// Experimental API used to investigate convergence issues.
-    virtual void rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/){}
+    SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM() virtual void rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/){}
 
     /// Indicate if the solver update the system in parallel
     virtual bool isAsyncSolver() { return false; }
