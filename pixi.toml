@@ -35,237 +35,326 @@ scripts = ["development/scripts/pixi/activation.sh"]
 [target.win-64.activation]
 scripts = ["development/scripts/pixi/activation.bat"]
 
-# TODO : APPLICATION_GETDEPRECATEDCOMPONENTS ?
-# TODO : SOFA_BUILD_APP_BUNDLE ?
-# TODO : SOFA_WITH_DEPRECATED_COMPONENTS ?
-# TODO : SOFA_GUI_QT_ENABLE_QDOCBROWSER ?
-# TODO : SOFAGUIQT_ENABLE_NODEGRAPH ?
-# TODO : PLUGIN_EXTERNALBEHAVIORMODEL ?
-
 [tasks]
-configure = { cmd = [
-  "cmake",
-  "-G",
-  "Ninja",
-  "-B",
-  "build",
-  "-S",
-  ".",
-  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
-  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
-  "-DSOFA_BUILD_APP_BUNDLE=OFF",
-  "-DSOFA_ENABLE_LEGACY_HEADERS=ON",
-  "-DSOFA_ALLOW_FETCH_DEPENDENCIES=ON",
-  "-DSOFA_BUILD_TESTS=ON",
-  "-DSOFA_FLOATING_POINT_TYPE=double",
-  "-DSOFA_USE_DEPENDENCY_PACK=OFF",
-  "-DPLUGIN_SOFAMATRIX=$SOFA_PLUGIN_SOFAMATRIX",
-  "-DAPPLICATION_SOFAPHYSICSAPI=$SOFA_APPLICATION_SOFAPHYSICSAPI",
-  "-DAPPLICATION_SOFAINFO=$SOFA_APPLICATION_SOFAINFO",
-  "-DSOFA_BUILD_SCENECREATOR=$SOFA_BUILD_SCENECREATOR",
-  "-DSOFA_BUILD_TUTORIALS=$SOFA_BUILD_TUTORIALS",
-  "-DSOFA_DUMP_VISITOR_INFO=$SOFA_DUMP_VISITOR_INFO",
-  "-DPLUGIN_SOFA_GUI_QT=$SOFA_PLUGIN_SOFA_GUI_QT",
-  "-DSOFA_NO_OPENGL=$SOFA_NO_OPENGL",
-  "-DSOFA_WITH_OPENGL=$SOFA_WITH_OPENGL",
-  "-DSOFA_WITH_DEVTOOLS=$SOFA_WITH_DEVTOOLS",
-  "-DSOFA_BUILD_RELEASE_PACKAGE=$SOFA_BUILD_RELEASE_PACKAGE",
-  "-DPLUGIN_CIMGPLUGIN=$SOFA_PLUGIN_CIMG",
-  "-DPLUGIN_DIFFUSIONSOLVER=$SOFA_PLUGIN_DIFFUSIONSOLVER",
-  "-DPLUGIN_GEOMAGIC=$SOFA_PLUGIN_GEOMAGIC",
-  "-DPLUGIN_IMAGE=$SOFA_PLUGIN_IMAGE",
-  "-DPLUGIN_MULTITHREADING=$SOFA_PLUGIN_MULTITHREADING",
-  "-DPLUGIN_SOFACARVING=$SOFA_PLUGIN_CARVING",
-  "-DPLUGIN_SOFADISTANCEGRID=$SOFA_PLUGIN_DISTANCEGRID",
-  "-DPLUGIN_SOFAEULERIANFLUID=$SOFA_PLUGIN_EULERIANFLUID",
-  "-DPLUGIN_SOFAIMPLICITFIELD=$SOFA_PLUGIN_IMPLICITFIELD",
-  "-DPLUGIN_COLLISIONOBBCAPSULE=$SOFA_PLUGIN_COLLISIONOBBCAPSULE",
-  "-DPLUGIN_VOLUMETRICRENDERING=$SOFA_PLUGIN_VOLUMETRICRENDERING",
-  "$SOFA_PLUGIN_BEAMADAPTER_ARGS",
-  "$SOFA_PLUGIN_STLIB_ARGS",
-  "$SOFA_PLUGIN_SOFTROBOTS_ARGS",
-  "$SOFA_PLUGIN_SHAPEMATCHING_ARGS",
-  "$SOFA_PLUGIN_CSPARSESOLVERS_ARGS",
-  "$SOFA_PLUGIN_MODELORDERREDUCTION_ARGS",
-  "$SOFA_PLUGIN_METIS_ARGS",
-  "$SOFA_PLUGIN_MANIFOLDTOPOLOGIES_ARGS",
-  "$SOFA_PLUGIN_EXAMPLE_ARGS",
-  "$SOFA_PLUGIN_REGISTRATION_ARGS",
-  "$SOFA_PLUGIN_SPHFLUID_ARGS",
-  "$SOFA_PLUGIN_CUDA_ARGS",
-  "$SOFA_PLUGIN_PYTHON3_ARGS"
-] }
-build = { cmd = "cmake --build build --target all --parallel 8", depends-on = ["configure"] }
-clean = { cmd = "rm -rf build" }
-test = { cmd = "ctest --test-dir build --output-on-failure", depends-on = [
-  "build",
-] }
+# configure = { cmd = [
+#   "cmake",
+#   "-G",
+#   "Ninja",
+#   "-B",
+#   "build",
+#   "-S",
+#   ".",
+#   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+#   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+#   "-DSOFA_BUILD_APP_BUNDLE=OFF",
+#   "-DSOFA_ENABLE_LEGACY_HEADERS=ON",
+#   "-DSOFA_ALLOW_FETCH_DEPENDENCIES=ON",
+#   "-DSOFA_BUILD_TESTS=ON",
+#   "-DSOFA_FLOATING_POINT_TYPE=double",
+#   "-DSOFA_USE_DEPENDENCY_PACK=OFF",
+#   "-DPLUGIN_SOFAMATRIX=$SOFA_PLUGIN_SOFAMATRIX",
+#   "-DAPPLICATION_SOFAPHYSICSAPI=$SOFA_APPLICATION_SOFAPHYSICSAPI",
+#   "-DAPPLICATION_SOFAINFO=$SOFA_APPLICATION_SOFAINFO",
+#   "-DSOFA_BUILD_SCENECREATOR=$SOFA_BUILD_SCENECREATOR",
+#   "-DSOFA_BUILD_TUTORIALS=$SOFA_BUILD_TUTORIALS",
+#   "-DSOFA_DUMP_VISITOR_INFO=$SOFA_DUMP_VISITOR_INFO",
+#   "-DPLUGIN_SOFA_GUI_QT=$SOFA_PLUGIN_SOFA_GUI_QT",
+#   "-DSOFA_NO_OPENGL=$SOFA_NO_OPENGL",
+#   "-DSOFA_WITH_OPENGL=$SOFA_WITH_OPENGL",
+#   "-DSOFA_WITH_DEVTOOLS=$SOFA_WITH_DEVTOOLS",
+#   "-DSOFA_BUILD_RELEASE_PACKAGE=$SOFA_BUILD_RELEASE_PACKAGE",
+#   "-DPLUGIN_CIMGPLUGIN=$SOFA_PLUGIN_CIMG",
+#   "-DPLUGIN_DIFFUSIONSOLVER=$SOFA_PLUGIN_DIFFUSIONSOLVER",
+#   "-DPLUGIN_GEOMAGIC=$SOFA_PLUGIN_GEOMAGIC",
+#   "-DPLUGIN_IMAGE=$SOFA_PLUGIN_IMAGE",
+#   "-DPLUGIN_MULTITHREADING=$SOFA_PLUGIN_MULTITHREADING",
+#   "-DPLUGIN_SOFACARVING=$SOFA_PLUGIN_CARVING",
+#   "-DPLUGIN_SOFADISTANCEGRID=$SOFA_PLUGIN_DISTANCEGRID",
+#   "-DPLUGIN_SOFAEULERIANFLUID=$SOFA_PLUGIN_EULERIANFLUID",
+#   "-DPLUGIN_SOFAIMPLICITFIELD=$SOFA_PLUGIN_IMPLICITFIELD",
+#   "-DPLUGIN_COLLISIONOBBCAPSULE=$SOFA_PLUGIN_COLLISIONOBBCAPSULE",
+#   "-DPLUGIN_VOLUMETRICRENDERING=$SOFA_PLUGIN_VOLUMETRICRENDERING",
+#   "$SOFA_PLUGIN_BEAMADAPTER_ARGS",
+#   "$SOFA_PLUGIN_STLIB_ARGS",
+#   "$SOFA_PLUGIN_SOFTROBOTS_ARGS",
+#   "$SOFA_PLUGIN_SHAPEMATCHING_ARGS",
+#   "$SOFA_PLUGIN_CSPARSESOLVERS_ARGS",
+#   "$SOFA_PLUGIN_MODELORDERREDUCTION_ARGS",
+#   "$SOFA_PLUGIN_METIS_ARGS",
+#   "$SOFA_PLUGIN_MANIFOLDTOPOLOGIES_ARGS",
+#   "$SOFA_PLUGIN_EXAMPLE_ARGS",
+#   "$SOFA_PLUGIN_REGISTRATION_ARGS",
+#   "$SOFA_PLUGIN_SPHFLUID_ARGS",
+#   "$SOFA_PLUGIN_CUDA_ARGS",
+#   "$SOFA_PLUGIN_PYTHON3_ARGS"
+# ] }
+build = { cmd = "cmake --build $SOFA_BUILD_DIR --target all --parallel 8", depends-on = ["configure"] }
+clean = { cmd = "rm -rf $SOFA_BUILD_DIR" }
+test = { cmd = "ctest --test-dir $SOFA_BUILD_DIR --output-on-failure", depends-on = ["build"] }
 
-[feature.plugin-sofamatrix]
-activation = { env = { SOFA_PLUGIN_SOFAMATRIX = "ON" } }
+# [feature.plugin-sofamatrix]
+# activation = { env = { SOFA_PLUGIN_SOFAMATRIX = "ON" } }
 
-[feature.app-sofaphysics-api]
-activation = { env = { SOFA_APPLICATION_SOFAPHYSICSAPI = "ON" } }
+# [feature.app-sofaphysics-api]
+# activation = { env = { SOFA_APPLICATION_SOFAPHYSICSAPI = "ON" } }
 
-[feature.app-sofainfo]
-activation = { env = { SOFA_APPLICATION_SOFAINFO = "ON" } }
+# [feature.app-sofainfo]
+# activation = { env = { SOFA_APPLICATION_SOFAINFO = "ON" } }
 
-[feature.plugin-scenecreator]
-activation = { env = { SOFA_BUILD_SCENECREATOR = "ON" } }
+# [feature.plugin-scenecreator]
+# activation = { env = { SOFA_BUILD_SCENECREATOR = "ON" } }
 
-[feature.gl]
-activation = { env = { SOFA_NO_OPENGL = "OFF", SOFA_WITH_OPENGL = "ON" } }
-dependencies = { glew = "*" }
+# [feature.gl]
+# activation = { env = { SOFA_NO_OPENGL = "OFF", SOFA_WITH_OPENGL = "ON" } }
+# dependencies = { glew = "*" }
 
-[feature.gl.target.linux]
-dependencies = { libglu = "*" }
+# [feature.gl.target.linux]
+# dependencies = { libglu = "*" }
 
-[feature.gl.target.linux-64.dependencies]
-mesa-libgl-devel-cos7-x86_64 = "*"
+# [feature.gl.target.linux-64.dependencies]
+# mesa-libgl-devel-cos7-x86_64 = "*"
 
-[feature.qt-gui]
-activation = { env = { SOFA_PLUGIN_SOFA_GUI_QT = "ON", Qt5_DIR = "$CONDA_PREFIX/lib/cmake" } }
-[feature.qt-gui.dependencies]
-qt-main = ">=5.15.0"
-ffmpeg = "*"
-libqglviewer = "*"
+# [feature.qt-gui]
+# activation = { env = { SOFA_PLUGIN_SOFA_GUI_QT = "ON", Qt5_DIR = "$CONDA_PREFIX/lib/cmake" } }
+# [feature.qt-gui.dependencies]
+# qt-main = ">=5.15.0"
+# ffmpeg = "*"
+# libqglviewer = "*"
 
-[feature.tutorials]
-activation = { env = { SOFA_BUILD_TUTORIALS = "ON" } }
+# [feature.tutorials]
+# activation = { env = { SOFA_BUILD_TUTORIALS = "ON" } }
 
-[feature.dump-visitor-info]
-activation = { env = { SOFA_DUMP_VISITOR_INFO = "ON" } }
+# [feature.dump-visitor-info]
+# activation = { env = { SOFA_DUMP_VISITOR_INFO = "ON" } }
 
-[feature.dev-tools]
-activation = { env = { SOFA_WITH_DEVTOOLS = "ON" } }
+# [feature.dev-tools]
+# activation = { env = { SOFA_WITH_DEVTOOLS = "ON" } }
 
-[feature.build-release-package]
-activation = { env = { SOFA_BUILD_RELEASE_PACKAGE = "ON" } }
+# [feature.build-release-package]
+# activation = { env = { SOFA_BUILD_RELEASE_PACKAGE = "ON" } }
 
-# TODO: probably specialize python env vars on windows here
-[feature.plugin-sofa-python3]
-activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOFA_FETCH_SOFAPYTHON3=ON -DPython_EXECUTABLE=$CONDA_PREFIX/bin/python" , pybind11_DIR = "$CONDA_PREFIX/share/cmake" } }
-dependencies = { numpy = ">=1.22.0", python = ">=3.9.0", pybind11 = ">=2.3.0" }
+# # TODO : DPLUGIN_MANUALMAPPING -> deprecated ?
 
-# TODO : DPLUGIN_MANUALMAPPING -> deprecated ?
+# [feature.plugin-cimg]
+# activation = { env = { SOFA_PLUGIN_CIMG = "ON" } }
 
-[feature.plugin-cimg]
-activation = { env = { SOFA_PLUGIN_CIMG = "ON" } }
+# [feature.plugin-beamadapter]
+# activation = { env = { SOFA_PLUGIN_BEAMADAPTER_ARGS = "-DPLUGIN_BEAMADAPTER=ON -DSOFA_FETCH_BEAMADAPTER=ON" } }
 
-[feature.plugin-beamadapter]
-activation = { env = { SOFA_PLUGIN_BEAMADAPTER_ARGS = "-DPLUGIN_BEAMADAPTER=ON -DSOFA_FETCH_BEAMADAPTER=ON" } }
+# [feature.plugin-softrobots]
+# activation = { env = { SOFA_PLUGIN_SOFTROBOTS_ARGS = "-DPLUGIN_SOFTROBOTS=ON -DSOFA_FETCH_SOFTROBOTS=ON" } }
 
-[feature.plugin-stlib]
-activation = { env = { SOFA_PLUGIN_STLIB_ARGS = "-DPLUGIN_STLIB=ON -DSOFA_FETCH_STLIB=ON" } }
+# [feature.plugin-shapematching]
+# activation = { env = { SOFA_PLUGIN_SHAPEMATCHING_ARGS = "-DPLUGIN_SHAPEMATCHINGPLUGIN=ON -DSOFA_FETCH_SHAPEMATCHINGPLUGIN=ON" } }
 
-[feature.plugin-softrobots]
-activation = { env = { SOFA_PLUGIN_SOFTROBOTS_ARGS = "-DPLUGIN_SOFTROBOTS=ON -DSOFA_FETCH_SOFTROBOTS=ON" } }
+# [feature.plugin-csparsesolvers]
+# activation = { env = { SOFA_PLUGIN_CSPARSESOLVERS_ARGS = "-DPLUGIN_CSPARSESOLVERS=ON -DSOFA_FETCH_CSPARSESOLVERS=ON" } }
 
-[feature.plugin-shapematching]
-activation = { env = { SOFA_PLUGIN_SHAPEMATCHING_ARGS = "-DPLUGIN_SHAPEMATCHINGPLUGIN=ON -DSOFA_FETCH_SHAPEMATCHINGPLUGIN=ON" } }
+# [feature.plugin-modelorderreduction]
+# activation = { env = { SOFA_PLUGIN_MODELORDERREDUCTION_ARGS = "-DPLUGIN_MODELORDERREDUCTION=ON -DSOFA_FETCH_MODELORDERREDUCTION=ON" } }
 
-[feature.plugin-csparsesolvers]
-activation = { env = { SOFA_PLUGIN_CSPARSESOLVERS_ARGS = "-DPLUGIN_CSPARSESOLVERS=ON -DSOFA_FETCH_CSPARSESOLVERS=ON" } }
+# [feature.plugin-metis]
+# activation = { env = { SOFA_PLUGIN_METIS_ARGS = "-DPLUGIN_SOFA_METIS=ON -DSOFA_FETCH_SOFA.METIS=ON" } }
 
-[feature.plugin-modelorderreduction]
-activation = { env = { SOFA_PLUGIN_MODELORDERREDUCTION_ARGS = "-DPLUGIN_MODELORDERREDUCTION=ON -DSOFA_FETCH_MODELORDERREDUCTION=ON" } }
+# [feature.plugin-diffusionsolver]
+# activation = { env = { SOFA_PLUGIN_DIFFUSIONSOLVER = "ON" } }
 
-[feature.plugin-metis]
-activation = { env = { SOFA_PLUGIN_METIS_ARGS = "-DPLUGIN_SOFA_METIS=ON -DSOFA_FETCH_SOFA.METIS=ON" } }
+# [feature.plugin-geomagic]
+# activation = { env = { SOFA_PLUGIN_GEOMAGIC = "ON" } }
 
-[feature.plugin-diffusionsolver]
-activation = { env = { SOFA_PLUGIN_DIFFUSIONSOLVER = "ON" } }
+# [feature.plugin-image]
+# activation = { env = { SOFA_PLUGIN_IMAGE = "ON" } }
 
-[feature.plugin-geomagic]
-activation = { env = { SOFA_PLUGIN_GEOMAGIC = "ON" } }
+# [feature.plugin-manifoldtopologies]
+# activation = { env = { SOFA_PLUGIN_MANIFOLDTOPOLOGIES_ARGS = "-DPLUGIN_MANIFOLDTOPOLOGIES=ON -DSOFA_FETCH_MANIFOLDTOPOLOGIES=ON" } }
 
-[feature.plugin-image]
-activation = { env = { SOFA_PLUGIN_IMAGE = "ON" } }
+# [feature.plugin-multithreading]
+# activation = { env = { SOFA_PLUGIN_MULTITHREADING = "ON" } }
 
-[feature.plugin-manifoldtopologies]
-activation = { env = { SOFA_PLUGIN_MANIFOLDTOPOLOGIES_ARGS = "-DPLUGIN_MANIFOLDTOPOLOGIES=ON -DSOFA_FETCH_MANIFOLDTOPOLOGIES=ON" } }
+# [feature.plugin-example]
+# activation = { env = { SOFA_PLUGIN_EXAMPLE_ARGS = "-DPLUGIN_PLUGINEXAMPLE=ON -DSOFA_FETCH_PLUGINEXAMPLE=ON" } }
 
-[feature.plugin-multithreading]
-activation = { env = { SOFA_PLUGIN_MULTITHREADING = "ON" } }
+# [feature.plugin-registration]
+# activation = { env = { SOFA_PLUGIN_REGISTRATION_ARGS = "-DPLUGIN_REGISTRATION=ON -DSOFA_FETCH_REGISTRATION=ON" } }
 
-[feature.plugin-example]
-activation = { env = { SOFA_PLUGIN_EXAMPLE_ARGS = "-DPLUGIN_PLUGINEXAMPLE=ON -DSOFA_FETCH_PLUGINEXAMPLE=ON" } }
+# [feature.plugin-carving]
+# activation = { env = { SOFA_PLUGIN_CARVING = "ON" } }
 
-[feature.plugin-registration]
-activation = { env = { SOFA_PLUGIN_REGISTRATION_ARGS = "-DPLUGIN_REGISTRATION=ON -DSOFA_FETCH_REGISTRATION=ON" } }
+# [feature.plugin-distancegrid]
+# activation = { env = { SOFA_PLUGIN_DISTANCEGRID = "ON" } }
 
-[feature.plugin-carving]
-activation = { env = { SOFA_PLUGIN_CARVING = "ON" } }
+# [feature.plugin-eulerianfuild]
+# activation = { env = { SOFA_PLUGIN_EULERIANFLUID = "ON" } }
 
-[feature.plugin-distancegrid]
-activation = { env = { SOFA_PLUGIN_DISTANCEGRID = "ON" } }
+# [feature.plugin-implicitfield]
+# activation = { env = { SOFA_PLUGIN_IMPLICITFIELD = "ON" } }
 
-[feature.plugin-eulerianfuild]
-activation = { env = { SOFA_PLUGIN_EULERIANFLUID = "ON" } }
+# [feature.plugin-sphfluid]
+# activation = { env = { SOFA_PLUGIN_SPHFLUID_ARGS = "-DPLUGIN_SOFASPHFLUID=ON -DSOFA_FETCH_SOFASPHFLUID=ON" } }
 
-[feature.plugin-implicitfield]
-activation = { env = { SOFA_PLUGIN_IMPLICITFIELD = "ON" } }
+# [feature.plugin-collisionobbcapsule]
+# activation = { env = { SOFA_PLUGIN_COLLISIONOBBCAPSULE = "ON" } }
 
-[feature.plugin-sphfluid]
-activation = { env = { SOFA_PLUGIN_SPHFLUID_ARGS = "-DPLUGIN_SOFASPHFLUID=ON -DSOFA_FETCH_SOFASPHFLUID=ON" } }
-
-[feature.plugin-collisionobbcapsule]
-activation = { env = { SOFA_PLUGIN_COLLISIONOBBCAPSULE = "ON" } }
-
-[feature.plugin-volumetricrendering]
-activation = { env = { SOFA_PLUGIN_VOLUMETRICRENDERING = "ON" } }
+# [feature.plugin-volumetricrendering]
+# activation = { env = { SOFA_PLUGIN_VOLUMETRICRENDERING = "ON" } }
 
 # TODO: add run-regression-tests feature
 
 # TODO: add build-release-package feature
 
+# --------------------------------
+
+# --------------------------------
+
+# TODO: probably specialize python env vars on windows here
+[feature.plugin-sofa-python3]
+dependencies = { numpy = ">=1.22.0", python = ">=3.9.0", pybind11 = ">=2.3.0" }
+activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOFA_FETCH_SOFAPYTHON3=ON -DPython_EXECUTABLE=$CONDA_PREFIX/bin/python" } }
+
+# [feature.plugin-stlib]
+# activation = { env = { SOFA_PLUGIN_STLIB_ARGS = "-DPLUGIN_STLIB=ON -DSOFA_FETCH_STLIB=ON" } }
+
+# [feature.plugin-softrobots]
+# activation = { env = { SOFA_PLUGIN_SOFTROBOTS_ARGS = "-DPLUGIN_SOFTROBOTS=ON -DSOFA_FETCH_SOFTROBOTS=ON" } }
+
+[feature.plugin-cgal]
+dependencies = { cgal-cpp = "*" }
+activation = { env = { SOFA_PLUGIN_CGAL_ARGS = "-DPLUGIN_CGALPLUGIN=ON -DSOFA_FETCH_CGALPLUGIN=ON" } }
+
+[feature.presets-defaultGUI]
+dependencies = { glew = "*", glfw = "*", nativefiledialog-extended = "*"}
+
+[feature.presets-defaultGUI.target.linux]
+dependencies = { libglu = "*" }
+
+[feature.presets-defaultGUI.target.linux-64]
+dependencies = { mesa-libgl-devel-cos7-x86_64 = "*" }
+
+[feature.presets-conda-core.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_PREFIX_PATH=$CONDA_PREFIX",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "conda-core"] }
+
+[feature.presets-minimal.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_PREFIX_PATH=$CONDA_PREFIX",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "minimal"] }
+
+[feature.presets-standard.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_PREFIX_PATH=$CONDA_PREFIX",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "standard",
+  "$SOFA_PLUGIN_PYTHON3_ARGS"
+  ]}  
+
+[feature.presets-supported-plugins.tasks]
+configure-cgal = { cmd = [ "cmake", "--debug-find-pkg=CGAL",
+  "-G",
+  "Ninja",
+  "-B",
+  "$CONDA_PREFIX/build-cgal-plugin",
+  "-S",
+  "applications/plugins/CGALPlugin",
+  "-DCMAKE_PREFIX_PATH=$CONDA_PREFIX",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "$SOFA_PLUGIN_CGAL_ARGS",
+  "$SOFA_PLUGIN_PYTHON3_ARGS"
+  ]}
+configure = { cmd = [ "cmake", "--debug-find-pkg=CGAL",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_PREFIX_PATH=$CONDA_PREFIX",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "supported-plugins",
+  "$SOFA_PLUGIN_CGAL_ARGS",
+  "$SOFA_PLUGIN_PYTHON3_ARGS"
+  ]}  
+  
 [environments]
-minimal-scope = { features = ["dev-tools"], solve-group = "minimal-scope" }
-standard-scope = { features = [
-  "dev-tools",
-  "plugin-sofamatrix",
-  "app-sofaphysics-api",
-  "tutorials",
-  "gl",
-  "qt-gui",
-  "dump-visitor-info",
-  "plugin-sofa-python3"
-  ], solve-group = "minimal-scope" }
+conda-core = { features = ["presets-conda-core"] }
+minimal = { features = ["presets-minimal"] }
+standard = { features = ["presets-standard", "plugin-sofa-python3", "presets-defaultGUI"] }
+supported-plugins = { features = ["presets-supported-plugins", "plugin-sofa-python3", "plugin-cgal", "presets-defaultGUI"]}
+# minimal-scope = { features = ["dev-tools"], solve-group = "minimal-scope" }
+# standard-scope = { features = [
+#   "dev-tools",
+#   "plugin-sofamatrix",
+#   "app-sofaphysics-api",
+#   "tutorials",
+#   "gl",
+#   "qt-gui",
+#   "dump-visitor-info",
+#   "plugin-sofa-python3"
+#   ], solve-group = "minimal-scope" }
 
-# TODO : PLUGIN_CGALPLUGIN
-# TODO : Assimp
-# TODO : DPLUGIN_SOFAGLFW
-# TODO : DPLUGIN_SOFAIMGUI
+# # TODO : PLUGIN_CGALPLUGIN
+# # TODO : Assimp
+# # TODO : DPLUGIN_SOFAGLFW
+# # TODO : DPLUGIN_SOFAIMGUI
 
-full-scope = { features = [
-  "dev-tools",
-  "plugin-sofamatrix",
-  "app-sofaphysics-api",
-  "tutorials",
-  "gl",
-  "qt-gui",
-  "dump-visitor-info",
-  "plugin-sofa-python3",
-  "plugin-cimg",
-  "plugin-beamadapter",
-  "plugin-stlib",
-  "plugin-softrobots",
-  "plugin-shapematching",
-  "plugin-csparsesolvers",
-  "plugin-modelorderreduction",
-  "plugin-metis",
-  "plugin-diffusionsolver",
-  "plugin-geomagic",
-  "plugin-image",
-  "plugin-manifoldtopologies",
-  "plugin-multithreading",
-  "plugin-example",
-  "plugin-registration",
-  "plugin-carving",
-  "plugin-distancegrid",
-  "plugin-eulerianfuild",
-  "plugin-implicitfield",
-  "plugin-sphfluid",
-  "plugin-collisionobbcapsule",
-  "plugin-volumetricrendering"
-  ], solve-group = "minimal-scope" }
+# full-scope = { features = [
+#   "dev-tools",
+#   "plugin-sofamatrix",
+#   "app-sofaphysics-api",
+#   "tutorials",
+#   "gl",
+#   "qt-gui",
+#   "dump-visitor-info",
+#   "plugin-sofa-python3",
+#   "plugin-cimg",
+#   "plugin-beamadapter",
+#   "plugin-stlib",
+#   "plugin-softrobots",
+#   "plugin-shapematching",
+#   "plugin-csparsesolvers",
+#   "plugin-modelorderreduction",
+#   "plugin-metis",
+#   "plugin-diffusionsolver",
+#   "plugin-geomagic",
+#   "plugin-image",
+#   "plugin-manifoldtopologies",
+#   "plugin-multithreading",
+#   "plugin-example",
+#   "plugin-registration",
+#   "plugin-carving",
+#   "plugin-distancegrid",
+#   "plugin-eulerianfuild",
+#   "plugin-implicitfield",
+#   "plugin-sphfluid",
+#   "plugin-collisionobbcapsule",
+#   "plugin-volumetricrendering"
+#   ], solve-group = "minimal-scope" }
