@@ -164,9 +164,10 @@ void MatrixLinearSolver<Matrix, Vector, NoThreadManager>::doCheckLinearSystem()
             }
             else
             {
+                auto* firstCandidate = *notAlreadyAssociated.begin();
                 if (notAlreadyAssociated.size() == 1)
                 {
-                    msg_info() << "Linear system found: " << l_linearSystem->getPathName();
+                    msg_info() << "Linear system found: " << firstCandidate->getPathName();
                 }
                 else
                 {
@@ -174,7 +175,7 @@ void MatrixLinearSolver<Matrix, Vector, NoThreadManager>::doCheckLinearSystem()
                         << "to this linear solver. The first one in the list is selected. Set the link " << l_linearSystem.getLinkedPath()
                         << " properly to remove this warning.";
                 }
-                l_linearSystem.set(*notAlreadyAssociated.begin());
+                l_linearSystem.set(firstCandidate);
             }
         }
     }

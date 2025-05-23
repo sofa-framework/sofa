@@ -49,7 +49,6 @@ StickContactConstraint<TCollisionModel1,TCollisionModel2>::StickContactConstrain
     mapper1.setCollisionModel(model1);
     mapper2.setCollisionModel(model2);
     this->f_printLog.setValue(true);
-    f_keepAlive.setOriginalData(&d_keepAlive);
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >

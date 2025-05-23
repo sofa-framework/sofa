@@ -28,13 +28,13 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaMemoryManager.h
     sofa/gpu/cuda/CudaScan.h
     sofa/gpu/cuda/CudaSort.h
-    sofa/gpu/cuda/CudaTexture.h
     sofa/gpu/cuda/CudaTypes.h
     sofa/gpu/cuda/mycuda.h
 
     ### Mechanical
     ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.h
     ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.inl
+    sofa/gpu/cuda/CudaSingleStateAccessor.h
 
     ### Mappings
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.h
@@ -112,6 +112,7 @@ set(SOURCE_FILES
     ### Mechanical
     ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.cpp
     sofa/gpu/cuda/CudaSetTopology.cpp
+    sofa/gpu/cuda/CudaSingleStateAccessor.cpp
 
     ### Mappings
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f.cpp
@@ -272,35 +273,6 @@ if(Sofa.GUI.Qt_FOUND)
     list(APPEND SOURCE_FILES sofa/gpu/gui/CudaDataWidget.cpp)
 endif()
 
-find_package(SofaSphFluid QUIET)
-if(SofaSphFluid_FOUND)
-    list(APPEND HEADER_FILES
-        sofa/gpu/cuda/CudaParticleSource.h
-        sofa/gpu/cuda/CudaParticleSource.inl
-        sofa/gpu/cuda/CudaSPHFluidForceField.h
-        sofa/gpu/cuda/CudaSPHFluidForceField.inl
-        sofa/gpu/cuda/CudaParticlesRepulsionForceField.h
-        sofa/gpu/cuda/CudaParticlesRepulsionForceField.inl
-        sofa/gpu/cuda/CudaSpatialGridContainer.h
-        sofa/gpu/cuda/CudaSpatialGridContainer.inl
-        )
-    list(APPEND SOURCE_FILES
-    sofa/gpu/cuda/CudaParticleSource.cpp
-    sofa/gpu/cuda/CudaSPHFluidForceField.cpp
-    sofa/gpu/cuda/CudaParticlesRepulsionForceField.cpp
-    sofa/gpu/cuda/CudaSpatialGridContainer.cpp
-    )
-    list(APPEND CUDA_SOURCES
-    sofa/gpu/cuda/CudaParticleSource.cu
-    sofa/gpu/cuda/CudaSPHFluidForceField.cu
-    sofa/gpu/cuda/CudaParticlesRepulsionForceField.cu
-    sofa/gpu/cuda/CudaSpatialGridContainer.cu
-    )
-    message(STATUS "SofaCUDA: optional dependency to SofaSphFluid found. ")
-else()
-    message(STATUS "SofaCUDA: optional dependency SofaSphFluid not found. ")
-endif()
-
 sofa_find_package(SofaValidation QUIET)
 if(SofaValidation_FOUND)
     list(APPEND SOURCE_FILES
@@ -413,10 +385,6 @@ endif()
 
 if(SofaValidation_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaValidation)
-endif()
-
-if(SofaSphFluid_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaSphFluid)
 endif()
 
 if(SOFACUDA_CUBLAS)

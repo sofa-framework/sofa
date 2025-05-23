@@ -60,10 +60,6 @@ Tetra2TriangleTopologicalMapping::Tetra2TriangleTopologicalMapping()
 {
     m_inputType = geometry::ElementType::TETRAHEDRON;
     m_outputType = geometry::ElementType::TRIANGLE;
-
-    flipNormals.setOriginalData(&d_flipNormals);
-    noNewTriangles.setOriginalData(&d_noNewTriangles);
-    noInitialTriangles.setOriginalData(&d_noInitialTriangles);
 }
 
 void Tetra2TriangleTopologicalMapping::init()

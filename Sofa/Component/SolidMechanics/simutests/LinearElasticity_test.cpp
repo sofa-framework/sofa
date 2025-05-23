@@ -39,6 +39,7 @@
 #include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/component/mass/MeshMatrixMass.h>
 #include <sofa/component/odesolver/backward/StaticSolver.h>
+#include <sofa/component/odesolver/backward/NewtonRaphsonSolver.h>
 #include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 #include <sofa/component/constraint/projective/FixedPlaneProjectiveConstraint.h>
 #include <sofa/component/constraint/projective/LineProjectiveConstraint.h>
@@ -50,14 +51,9 @@ using namespace component;
 using namespace defaulttype;
 using namespace modeling;
 
-const double pressureArray[] = {0.6, 0.2, -0.2, -0.6};
-const size_t sizePressureArray = sizeof(pressureArray)/sizeof(pressureArray[0]);
-
-const double youngModulusArray[] = {1.0,2.0};
-const size_t sizeYoungModulusArray = sizeof(youngModulusArray)/sizeof(youngModulusArray[0]);
-
-const double poissonRatioArray[] = {0.0,0.3,0.49};
-const size_t sizePoissonRatioArray = sizeof(poissonRatioArray)/sizeof(poissonRatioArray[0]);
+constexpr auto youngModulusArray = sofa::type::make_array(1.0, 2.0);
+constexpr auto poissonRatioArray = sofa::type::make_array(0.0, 0.3, 0.49);
+constexpr auto pressureArray = sofa::type::make_array(0.6, 0.2, -0.2, -0.6);
 
 /// Structure which contains the nodes and the pointers useful for the cylindertraction test
 template<class T>
@@ -115,7 +111,13 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
     cgLinearSolver->d_tolerance.setValue(1e-9);
     cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-9);
     // StaticSolver
-    typename component::odesolver::backward::StaticSolver::SPtr solver = modeling::addNew<component::odesolver::backward::StaticSolver>(root,"StaticSolver");
+    auto staticSolver = modeling::addNew<component::odesolver::backward::StaticSolver>(root,"StaticSolver");
+    staticSolver->f_printLog.setValue(true);
+    auto newtonSolver = modeling::addNew<component::odesolver::backward::NewtonRaphsonSolver>(root,"NewtonRaphsonSolver");
+    newtonSolver->d_maxNbIterationsNewton.setValue(1);
+    newtonSolver->d_maxNbIterationsLineSearch.setValue(1);
+    newtonSolver->d_warnWhenDiverge.setValue(false);
+    newtonSolver->d_warnWhenLineSearchFails.setValue(false);
     // mechanicalObject object
     typename MechanicalObject::SPtr meca1= sofa::modeling::addNew<MechanicalObject>(root);
     sofa::modeling::setDataLink(&eng->f_outputTetrahedraPositions,&meca1->x);
@@ -227,23 +229,21 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
         ff->setMethod(0); // small method
         return (ForceFieldSPtr )ff;
     }
+
     bool testLinearElasticityInTraction(LinearElasticityFF createForceField){
 
         sofa::simulation::node::initRoot(tractionStruct.root.get());
 
-        size_t i,j,k;
-        for (k=0;k<sizeYoungModulusArray;++k) {
-            Real youngModulus=youngModulusArray[k];
-            for (j=0;j<sizePoissonRatioArray;++j) {
-                Real poissonRatio=poissonRatioArray[j];
+        for (const auto youngModulus : youngModulusArray)
+        {
+            for (const auto poissonRatio : poissonRatioArray)
+            {
                 // create the linear elasticity force field
                 ForceFieldSPtr ff=(this->*createForceField)(tractionStruct.root,youngModulus,poissonRatio);
                 ff->init();
 
-                for (i=0;i<sizePressureArray;++i) {
-                    // set the pressure on the top part
-                    Real pressure= pressureArray[i];
-
+                for (const auto pressure : pressureArray)
+                {
                     tractionStruct.forceField.get()->setPressure(Coord(0, 0, pressure));
                     sofa::simulation::node::reset(tractionStruct.root.get());
                     

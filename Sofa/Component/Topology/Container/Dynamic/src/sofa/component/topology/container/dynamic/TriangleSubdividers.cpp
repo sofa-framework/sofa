@@ -83,25 +83,44 @@ bool TriangleSubdivider::subdivide(const sofa::type::fixed_array<sofa::type::Vec
         }
     }
 
-    msg_warning("TriangleSubdivider") << "subdivide with " << nbrPE << " points on Edge and " << nbrPT << " inside Triangle is not supported";
+    if (!m_snappedPoints.empty())
+    {
+        // Backup data of current triangle as new triangle will be created with vertex renumbered due to snapping
+        type::vector<TriangleID> ancestors = { m_triangleId };
+        type::vector<SReal> coefs = { 1_sreal };
+        auto TTA = new TriangleToAdd(1000000 * m_triangleId, m_triangle, ancestors, coefs);
+        TTA->m_triCoords = triCoords;
+        m_trianglesToAdd.push_back(TTA);
+        return true;
+    }
+
+    msg_warning("TriangleSubdivider") << "subdivide with " << nbrPE << " points on Edge and " << nbrPT << " inside Triangle is not supported.";
     return false;
 }
 
 
 void TriangleSubdivider::addPoint(std::shared_ptr<PointToAdd> pTA)
 {
-    bool found = false;
-    for (auto ptAIt : m_points)
+    if (pTA->m_isSnapped)
     {
-        if (ptAIt->m_uniqueID == pTA->m_uniqueID)
-        {
-            found = true;
-            break;
-        }
+        m_snappedPoints.push_back(pTA);
     }
+    else
+    {
+        bool found = false;
+        for (auto ptAIt : m_points)
+        {
+            if (ptAIt->m_uniqueID == pTA->m_uniqueID)
+            {
+                found = true;
+                msg_warning("TriangleSubdivider") << "PointToAdd with uniqId: " << pTA->m_uniqueID << " already added.";
+                break;
+            }
+        }
 
-    if (!found)
-        m_points.push_back(pTA);
+        if (!found)
+            m_points.push_back(pTA);
+    }
 }
 
 
@@ -272,7 +291,6 @@ bool TriangleSubdivider::subdivide_2Edge(const sofa::type::fixed_array<sofa::typ
     }
 
     PointID nextID = m_triangle[(communLocalID + 1) % 3];
-    PointID otherEdgeId0 = (theEdge0[0] == communID) ? theEdge0[1] : theEdge0[0];
     PointID otherEdgeId1 = (theEdge1[0] == communID) ? theEdge1[1] : theEdge1[0];
 
     bool directOriented = (otherEdgeId1 == nextID) ? true : false;

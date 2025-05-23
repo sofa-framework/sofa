@@ -74,7 +74,7 @@ public:
     Data< sofa::type::vector<sofa::topology::Edge> > d_edges; ///< List of edge indices
     Data< type::vector<unsigned> > d_indexPairs; ///< list of couples (parent index + index in the parent)
     Data< type::vector<Real> > d_distances; ///< List of distances between pairs of points
-    Data<bool> d_drawPairs;
+    Data<bool> d_drawPairs; ///< Option to draw the positions pairs computed
     ///@}
 
     explicit NearestPointROI(core::behavior::MechanicalState<DataTypes> * = nullptr, core::behavior::MechanicalState<DataTypes> *mm2 = nullptr);

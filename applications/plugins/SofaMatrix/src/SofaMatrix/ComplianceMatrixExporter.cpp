@@ -27,8 +27,11 @@
 namespace sofa::component::constraintset
 {
 
-int ComplianceMatrixExporterClass = core::RegisterObject("Export the compliance matrix from a constraint solver.")
-        .add<ComplianceMatrixExporter>();
+void registerComplianceMatrixExporter(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Export the compliance matrix from a constraint solver.")
+    .add< ComplianceMatrixExporter >());
+}
 
 ComplianceMatrixExporter::ComplianceMatrixExporter()
 : Inherit1()

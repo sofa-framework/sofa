@@ -25,14 +25,12 @@
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
-#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseLagrangianConstraint.h>
 #include <sofa/helper/map.h>
 
 #include <sofa/simulation/CpuTask.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/component/constraint/lagrangian/solver/visitors/MechanicalGetConstraintResolutionVisitor.h>
-
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 #include <sofa/helper/SelectableItem.h>
 
 
@@ -71,51 +69,6 @@ public:
 
     Data< ResolutionMethod > d_resolutionMethod; ///< Method used to solve the constraint problem, among: "ProjectedGaussSeidel", "UnbuiltGaussSeidel" or "for NonsmoothNonlinearConjugateGradient"
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::lifecycle::RenamedData<int> maxIt;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::lifecycle::RenamedData<SReal> tolerance;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::lifecycle::RenamedData<SReal> sor;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> scaleTolerance;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> allVerified;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> computeGraphs;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::map < std::string, sofa::type::vector<SReal> > >  graphErrors;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::map < std::string, sofa::type::vector<SReal> > >  graphConstraints;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::map < std::string, sofa::type::vector<SReal> > > graphForces;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::lifecycle::RenamedData<std::map < std::string, sofa::type::vector<SReal> > > graphViolations;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::lifecycle::RenamedData<int> currentNumConstraints;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::lifecycle::RenamedData<int> currentNumConstraintGroups;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::lifecycle::RenamedData<int> currentIterations;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::lifecycle::RenamedData<SReal> currentError;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_SOLVER()
-    sofa::core::objectmodel::lifecycle::RenamedData<bool> reverseAccumulateOrder;
-
     Data<int> d_maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
     Data<SReal> d_tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
     Data<SReal> d_sor; ///< Successive Over Relaxation parameter (0-2)
@@ -149,7 +102,6 @@ protected:
     sofa::type::fixed_array<GenericConstraintProblem, CP_BUFFER_SIZE> m_cpBuffer;
     sofa::type::fixed_array<bool, CP_BUFFER_SIZE> m_cpIsLocked;
     GenericConstraintProblem *current_cp, *last_cp;
-    SOFA_ATTRIBUTE_DISABLED__GENERICCONSTRAINTSOLVER_CONSTRAINTCORRECTIONS() DeprecatedAndRemoved constraintCorrections; //use ConstraintSolverImpl::l_constraintCorrections instead
 
     sofa::core::MultiVecDerivId m_lambdaId;
     sofa::core::MultiVecDerivId m_dxId;

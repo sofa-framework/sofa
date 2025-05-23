@@ -112,6 +112,7 @@ public:
         SOFA_UNUSED(cparams);
         SOFA_UNUSED(result);
         SOFA_UNUSED(fact);
+        SOFA_UNUSED(regularizationTerm);
         msg_error() << "buildComplianceMatrix has not been implemented.";
         return false;
     }

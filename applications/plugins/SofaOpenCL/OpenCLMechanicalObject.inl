@@ -821,7 +821,7 @@ template<class TCoord, class TDeriv, class TReal>
 void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::resetForce(Main* m)
 {
     DEBUG_TEXT("*MechanicalObjectInternalData::resetForce ");
-    Data<VecDeriv>* d_f = m->write(core::VecDerivId::force());
+    Data<VecDeriv>* d_f = m->write(core::vec_id::write_access::force);
     VecDeriv& f = *d_f->beginEdit();
     if (f.size() > 0)
         Kernels::vClear(f.size(), f.deviceWrite());
@@ -832,7 +832,7 @@ void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
 // I know using macros is bad design but this is the only way not to repeat the code for all OpenCL types
 #define OpenCLMechanicalObject_ImplMethods(T) \
 template<> void MechanicalObject< T >::accumulateForce(const core::ExecParams* params, core::VecDerivId fid) \
-{ if( fid==core::VecDerivId::force() ) data.accumulateForce(this); else core::behavior::BaseMechanicalState::accumulateForce(params,fid); } \
+{ if( fid==core::vec_id::write_access::force ) data.accumulateForce(this); else core::behavior::BaseMechanicalState::accumulateForce(params,fid); } \
 template<> void MechanicalObject< T >::vOp(const core::ExecParams* /* params */ /* PARAMS FIRST */, core::VecId v, core::ConstVecId a, core::ConstVecId b, SReal f) \
 { data.vOp(this, v, a, b, f); }		\
 template<> void MechanicalObject< T >::vMultiOp(const core::ExecParams* params /* PARAMS FIRST */, const VMultiOp& ops) \

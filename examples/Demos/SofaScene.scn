@@ -2,16 +2,36 @@
 
 <Node name="root" dt="0.01" gravity="0 0 9.81" >
     <!-- Loading the dynamic libraries required for this scene -->
-    <RequiredPlugin name="PluginManager"
-        pluginName="Sofa.Component.IO.Mesh Sofa.Component.LinearSolver.Direct Sofa.Component.LinearSolver.Iterative
-        Sofa.Component.Mapping.Linear Sofa.Component.Mass Sofa.Component.ODESolver.Backward Sofa.Component.Setting
-        Sofa.Component.SolidMechanics.FEM.Elastic Sofa.Component.StateContainer Sofa.Component.Topology.Container.Dynamic
-        Sofa.Component.Visual Sofa.GL.Component.Rendering3D Sofa.Component.AnimationLoop Sofa.Component.Collision.Detection.Algorithm
-        Sofa.Component.Collision.Detection.Intersection Sofa.Component.Collision.Geometry Sofa.Component.Collision.Response.Contact
-        Sofa.Component.Constraint.Lagrangian.Solver Sofa.Component.Constraint.Lagrangian.Correction Sofa.Component.LinearSystem
-        Sofa.Component.MechanicalLoad MultiThreading Sofa.Component.SolidMechanics.Spring Sofa.Component.Constraint.Lagrangian.Model
-        Sofa.Component.Mapping.NonLinear Sofa.Component.Topology.Container.Constant Sofa.Component.Topology.Mapping BeamAdapter Sofa.GUI.Component
-        Sofa.Component.Topology.Container.Grid Sofa.Component.Engine.Select" />
+    <Node name="pluginLoading">
+        <RequiredPlugin name="BeamAdapter"/> <!-- Needed to use components [AdaptiveBeamForceFieldAndMass BeamInterpolation] -->
+        <RequiredPlugin name="MultiThreading"/> <!-- Needed to use components [ParallelBVHNarrowPhase ParallelBruteForceBroadPhase] -->
+        <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+        <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [CollisionPipeline] -->
+        <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
+        <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel SphereCollisionModel TriangleCollisionModel] -->
+        <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [LinearSolverConstraintCorrection UncoupledConstraintCorrection] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [BilateralLagrangianConstraint] -->
+        <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
+        <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader MeshVTKLoader SphereLoader] -->
+        <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [EigenSimplicialLDLT EigenSparseLU] -->
+        <RequiredPlugin name="Sofa.Component.LinearSystem"/> <!-- Needed to use components [ConstantSparsityPatternSystem] -->
+        <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping IdentityMapping] -->
+        <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+        <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass UniformMass] -->
+        <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [ConstantForceField] -->
+        <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin name="Sofa.Component.Setting"/> <!-- Needed to use components [BackgroundSetting] -->
+        <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField TetrahedronFEMForceField] -->
+        <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetTopologyContainer EdgeSetTopologyModifier HexahedronSetTopologyContainer TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridRamificationTopology] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Tetra2TriangleTopologicalMapping] -->
+        <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+        <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+        <RequiredPlugin name="Sofa.GUI.Component"/> <!-- Needed to use components [ConstraintAttachButtonSetting] -->
+    </Node>
 
     <!-- Rendering settings -->
     <VisualStyle name="RenderingOptions" displayFlags="showVisualModels" />
@@ -73,10 +93,10 @@
         <EulerImplicitSolver name="EulerImplicitScheme"  printLog="false" />
         <EigenSparseLU name="LULinearSolver" template="CompressedRowSparseMatrixd" />
 
-        <MechanicalObject template="Rigid3d" name="BeamDOF" position="12 0 -9  0.707 0 0.707 0 
-                                                                   12 0 -8  0.707 0 0.707 0 
-                                                                   12 0 -7  0.707 0 0.707 0 
-                                                                   12 0 -6  0.707 0 0.707 0 
+        <MechanicalObject template="Rigid3d" name="BeamDOF" position="12 0 -9  0.707 0 0.707 0
+                                                                   12 0 -8  0.707 0 0.707 0
+                                                                   12 0 -7  0.707 0 0.707 0
+                                                                   12 0 -6  0.707 0 0.707 0
                                                                    12 0 -5.5  0.707 0 0.707 0" />
         <MeshTopology name="LineTopology" position="@BeamDOF.position" lines="0 1 1 2 2 3 3 4 " drawEdges="1"/>
         <BeamInterpolation name="BeamInterpolation" radius="0.1" defaultYoungModulus="10000 10000 10000" defaultPoissonRatio="0.4"/>
@@ -144,7 +164,7 @@
         <EulerImplicitSolver name="EulerImplicitScheme" />
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
         <EigenSimplicialLDLT name="precond" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true"  linearSystem="@A"/>
-        
+
         <MechanicalObject name="ODOF" position="@HexaTopology.position"  />
         <UniformMass name="Mass" totalMass="0.1" />
         <HexahedronFEMForceField name="LinearElasticityFEM" youngModulus="20" poissonRatio="0.49" method="large" updateStiffnessMatrix="false" printLog="0" />
@@ -173,8 +193,8 @@
 
         <Node name="Collision">
             <MeshOBJLoader name="SkeletonLoader" filename="mesh/SofaScene/FSkel.obj"/>
-            <TriangleSetTopologyContainer name="Container" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles"/>
-            <TriangleSetTopologyModifier name="Modifier"/>
+            <EdgeSetTopologyContainer name="Container" position="@SkeletonLoader.position" edges="@SkeletonLoader.edges"/>
+            <EdgeSetTopologyModifier name="Modifier"/>
 
             <MechanicalObject name="CollisionDOF" src="@SkeletonLoader" template="Vec3d"  />
             <LineCollisionModel name="CenterLineCollisionModel" proximity="0.5" />

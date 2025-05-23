@@ -176,8 +176,8 @@ public:
     virtual void parseFields ( const std::map<std::string,std::string*>& str );
 
     /// Write the current field values to the given map of name -> value pairs
-    SOFA_ATTRIBUTE_DEPRECATED__BASEWRITEDATAS()
-    void writeDatas (std::map<std::string,std::string*>& str);
+    SOFA_ATTRIBUTE_DISABLED__BASEWRITEDATAS()
+    void writeDatas (std::map<std::string,std::string*>& str) = delete;
 
     /// Write the current field values to the given output stream
     /// separated with the given separator (" " used by default for XML)
@@ -355,6 +355,7 @@ public:
 
     ComponentState getComponentState() const { return d_componentState.getValue() ; }
     bool isComponentStateValid() const { return d_componentState.getValue() == ComponentState::Valid; }
+    bool isComponentStateInvalid() const { return d_componentState.getValue() == ComponentState::Invalid; }
 
     ///@}
 
@@ -425,7 +426,7 @@ public:
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseProjectiveConstraintSet            )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseInteractionProjectiveConstraintSet )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraintSet                      )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraint                         )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseLagrangianConstraint               )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualModel                            )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualManager                          )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualLoop                             )
@@ -441,6 +442,9 @@ public:
     SOFA_BASE_CAST_DEFINITION( loader,      BaseLoader                             )
 
 #undef SOFA_BASE_CAST_DEFINITION
+
+    SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() virtual const behavior::BaseLagrangianConstraint* toBaseConstraint() const { return toBaseLagrangianConstraint(); } \
+    SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() virtual       behavior::BaseLagrangianConstraint* toBaseConstraint()       { return toBaseLagrangianConstraint(); }
 
     /// @}
 };

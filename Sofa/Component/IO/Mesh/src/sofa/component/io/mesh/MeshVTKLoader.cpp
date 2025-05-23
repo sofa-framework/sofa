@@ -24,6 +24,7 @@
 #include <iostream>
 #include <cstdio>
 #include <sstream>
+#include <regex>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -119,6 +120,21 @@ MeshVTKLoader::VTKFileType MeshVTKLoader::detectFileType(const char* filename)
     }
     else if (line.find("# vtk DataFile") != string::npos)
     {
+        std::regex pattern(R"(# vtk DataFile Version (\d+)\.\d+)");
+        std::smatch match;
+
+        if (std::regex_search(line, match, pattern) && match.size() == 2)
+        {
+            std::string version = match[1].str();
+            if(stod(version) >= 5)
+                msg_warning() << "VTK5.+ format might not be well supported, see issue https://github.com/sofa-framework/sofa/issues/3405";
+            else
+                msg_info() << "Extracted version: " << version;
+        }
+        else
+        {
+            msg_warning() << "Could not read the version of VTK";
+        }
         return MeshVTKLoader::LEGACY;
     }
     else //default behavior if the first line is not correct ?

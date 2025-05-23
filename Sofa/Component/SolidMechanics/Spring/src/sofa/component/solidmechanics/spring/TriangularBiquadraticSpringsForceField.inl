@@ -141,16 +141,6 @@ template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::Tr
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
 {
-    triangleInfo.setOriginalData(&d_triangleInfo);
-    edgeInfo.setOriginalData(&d_edgeInfo);
-    _initialPoints.setOriginalData(&d_initialPoints);
-    f_poissonRatio.setOriginalData(&d_poissonRatio);
-    f_youngModulus.setOriginalData(&d_youngModulus);
-    f_dampingRatio.setOriginalData(&d_dampingRatio);
-    f_useAngularSprings.setOriginalData(&d_useAngularSprings);
-    f_compressible.setOriginalData(&d_compressible);
-    f_stiffnessMatrixRegularizationWeight.setOriginalData(&d_stiffnessMatrixRegularizationWeight);
-
 }
 
 template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::~TriangularBiquadraticSpringsForceField()

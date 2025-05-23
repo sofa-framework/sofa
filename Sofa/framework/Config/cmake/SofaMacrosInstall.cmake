@@ -416,17 +416,6 @@ macro(sofa_auto_set_target_compile_definitions)
         string(REPLACE "." "_" sofa_target_name_upper "${sofa_target_name_upper}")
         set(${sofa_target_name_upper}_TARGET "${sofa_target_name_upper}")
 
-        if(target MATCHES "^Sofa")
-            # TODO: Deprecate this backward compatibility and replace all the macros
-            # with old style: SofaModuleName -> SOFA_BUILD_MODULE_NAME + SOFA_MODULE_NAME_API
-            # by new style: SofaModuleName -> SOFA_BUILD_SOFAMODULENAME + SOFA_SOFAMODULENAME_API
-            string(REGEX REPLACE "([^A-Z])([A-Z])" "\\1_\\2" sofa_target_oldname "${target}")
-            string(REPLACE "Sofa" "" sofa_target_oldname "${sofa_target_oldname}")
-            string(TOUPPER "${sofa_target_oldname}" sofa_target_oldname_upper)
-            string(REPLACE "." "_" sofa_target_oldname_upper "${sofa_target_oldname_upper}")
-
-            target_compile_definitions(${target} ${TARGET_VISIBILITY} "-DSOFA_BUILD${sofa_target_oldname_upper}")
-        endif()
         target_compile_definitions(${target} ${TARGET_VISIBILITY} "-DSOFA_BUILD_${sofa_target_name_upper}")
     endforeach()
 endmacro()

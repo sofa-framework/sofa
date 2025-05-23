@@ -81,26 +81,6 @@ LCPConstraintSolver::LCPConstraintSolver()
 
     d_tol.setRequired(true);
     d_maxIt.setRequired(true);
-
-    displayDebug.setOriginalData(&d_displayDebug);
-    initial_guess.setOriginalData(&d_initial_guess);
-    build_lcp.setOriginalData(&d_build_lcp);
-    tol.setOriginalData(&d_tol);
-    maxIt.setOriginalData(&d_maxIt);
-    mu.setOriginalData(&d_mu);
-    minW.setOriginalData(&d_minW);
-    maxF.setOriginalData(&d_maxF);
-    multi_grid.setOriginalData(&d_multi_grid);
-    multi_grid_levels.setOriginalData(&d_multi_grid_levels);
-    merge_method.setOriginalData(&d_merge_method);
-    merge_spatial_step.setOriginalData(&d_merge_spatial_step);
-    merge_local_levels.setOriginalData(&d_merge_local_levels);
-    constraintGroups.setOriginalData(&d_constraintGroups);
-    f_graph.setOriginalData(&d_graph);
-    showLevels.setOriginalData(&d_showLevels);
-    showCellWidth.setOriginalData(&d_showCellWidth);
-    showTranslation.setOriginalData(&d_showTranslation);
-    showLevelTranslation.setOriginalData(&d_showLevelTranslation);
 }
 
 LCPConstraintSolver::~LCPConstraintSolver()
@@ -696,7 +676,7 @@ void LCPConstraintSolver::computeInitialGuess()
     for (const ConstraintBlockInfo& info : constraintBlockInfo)
     {
         if (!info.hasId) continue;
-        std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf>::const_iterator previt = _previousConstraints.find(info.parent);
+        std::map<core::behavior::BaseLagrangianConstraint*, ConstraintBlockBuf>::const_iterator previt = _previousConstraints.find(info.parent);
         if (previt == _previousConstraints.end()) continue;
         const ConstraintBlockBuf& buf = previt->second;
         const int c0 = info.const0;

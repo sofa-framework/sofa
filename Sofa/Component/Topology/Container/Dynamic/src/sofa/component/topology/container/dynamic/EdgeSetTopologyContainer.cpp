@@ -49,12 +49,13 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer()
     , d_edge(initData(&d_edge, "edges", "List of edge indices"))
     , d_checkConnexity(initData(&d_checkConnexity, false, "checkConnexity", "It true, will check the connexity of the mesh."))
 {
-    m_checkConnexity.setOriginalData(&d_checkConnexity);
 }
 
 
 void EdgeSetTopologyContainer::init()
 {
+    core::topology::TopologyContainer::init();
+
     const helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
     
     if (d_initPoints.isSet())
@@ -72,8 +73,6 @@ void EdgeSetTopologyContainer::init()
             }
         }
     }
-
-    PointSetTopologyContainer::init();
 
     // only init if edges are present at init.
     if (!m_edge.empty())
