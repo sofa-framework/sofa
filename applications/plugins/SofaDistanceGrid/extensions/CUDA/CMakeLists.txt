@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(SofaDistanceGrid.CUDA CUDA CXX)
+project(SofaDistanceGrid.CUDA LANGUAGES CUDA CXX)
 
 set(HEADER_FILES
     src/SofaDistanceGrid/CUDA/init.h
@@ -30,6 +30,8 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCE
 
 target_link_libraries(${PROJECT_NAME} SofaDistanceGrid)
 target_link_libraries(${PROJECT_NAME} SofaCUDA)
+get_property(SOFACUDA_CUDA_ARCHITECTURES TARGET SofaCUDA PROPERTY CUDA_ARCHITECTURES)
+set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_ARCHITECTURES "${SOFACUDA_CUDA_ARCHITECTURES}" )
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
