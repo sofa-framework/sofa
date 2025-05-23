@@ -246,27 +246,21 @@ void RigidDistanceGridCollisionModel::updateGrid()
 {
 }
 
-void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams)
+void RigidDistanceGridCollisionModel::drawCollisionModel(const core::visual::VisualParams* vparams)
 {
 #if SOFADISTANCEGRID_HAVE_SOFA_GL == 1
-    if (!isActive()) return;
-    if (vparams->displayFlags().getShowCollisionModels())
+    if (vparams->displayFlags().getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glDisable(GL_LIGHTING);
+    glColor4fv(getColor4f());
+    glPointSize(3);
+    for (unsigned int i = 0; i < elems.size(); i++)
     {
-        if (vparams->displayFlags().getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDisable(GL_LIGHTING);
-        glColor4fv(getColor4f());
-        glPointSize(3);
-        for (unsigned int i=0; i<elems.size(); i++)
-        {
-            draw(vparams,i);
-        }
-        glPointSize(1);
-        if (vparams->displayFlags().getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        draw(vparams, i);
     }
-    if (getPrevious()!=nullptr)
-        getPrevious()->draw(vparams);
+    glPointSize(1);
+    if (vparams->displayFlags().getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 #endif // SOFADISTANCEGRID_HAVE_SOFA_GL == 1
 }
 
@@ -685,25 +679,23 @@ FFDDistanceGridCollisionModel::DeformedCube::Plane FFDDistanceGridCollisionModel
     return Plane(N,N*C4*(-0.25f));
 }
 
-void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams)
+void FFDDistanceGridCollisionModel::drawCollisionModel(const core::visual::VisualParams* vparams)
 {
 #if SOFADISTANCEGRID_HAVE_SOFA_GL == 1
-    if (!isActive()) return;
-    if (vparams->displayFlags().getShowCollisionModels())
+    if (vparams->displayFlags().getShowWireFrame())
     {
-        if (vparams->displayFlags().getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDisable(GL_LIGHTING);
-        glColor4fv(getColor4f());
-        for (unsigned int i=0; i<elems.size(); i++)
-        {
-            draw(vparams,i);
-        }
-        if (vparams->displayFlags().getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
-    if (getPrevious()!=nullptr)
-        getPrevious()->draw(vparams);
+    glDisable(GL_LIGHTING);
+    glColor4fv(getColor4f());
+    for (unsigned int i = 0; i < elems.size(); i++)
+    {
+        draw(vparams, i);
+    }
+    if (vparams->displayFlags().getShowWireFrame())
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
 #endif // SOFADISTANCEGRID_HAVE_SOFA_GL == 1
 }
 

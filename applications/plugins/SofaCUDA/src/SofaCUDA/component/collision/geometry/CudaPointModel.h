@@ -76,12 +76,11 @@ public:
 
     void draw(const core::visual::VisualParams*,Index index) override;
 
-    void draw(const core::visual::VisualParams*) override;
-
     core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return mstate; }
 
 protected:
 
+    void drawCollisionModel(const core::visual::VisualParams*) override;
     core::behavior::MechanicalState<InDataTypes>* mstate;
 };
 
