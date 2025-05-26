@@ -565,7 +565,7 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
 {
     SOFA_UNUSED(params);
 
-    if( !onlyVisible ) return;
+    if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels()) return;
 
     static constexpr Real max_real = std::numeric_limits<Real>::max();
     static constexpr Real min_real = std::numeric_limits<Real>::lowest();
