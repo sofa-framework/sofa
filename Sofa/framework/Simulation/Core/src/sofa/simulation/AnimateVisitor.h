@@ -21,6 +21,9 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/config.h>
+SOFA_HEADER_DEPRECATED_NOT_REPLACED("v25.12", "v26.06")
+
 #include <sofa/simulation/config.h>
 #include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Visitor.h>
@@ -31,7 +34,7 @@
 namespace sofa::simulation
 {
 
-class SOFA_SIMULATION_CORE_API AnimateVisitor : public Visitor
+class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED_ANIMATEVISITOR() AnimateVisitor : public Visitor
 {
 
 protected :
