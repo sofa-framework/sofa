@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaMatrix.imgui VERSION 1.0 LANGUAGES CXX)
 
 find_package(Sofa.Core REQUIRED)
+sofa_find_package(SofaMatrix REQUIRED)
+sofa_find_package(SofaImGui REQUIRED)
 
 set(HEADER_FILES
     src/SofaMatrix/imgui/config.h.in
@@ -11,10 +13,12 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     src/SofaMatrix/imgui/init.cpp
+
+    src/SofaMatrix/imgui/BaseMatrixImageProxyWidget.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core SofaMatrix SofaImGui)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
