@@ -51,7 +51,6 @@
 #include <sofa/simulation/Node.inl>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
-#include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/simulation/DeactivatedNodeVisitor.h>
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
