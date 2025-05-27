@@ -26,7 +26,7 @@
 #include <sofa/qt/SimpleDataWidget.h>
 #include <sofa/qt/TableDataWidget.h>
 
-namespace sofa::gui::qt
+namespace sofa::qt
 {
 using sofa::helper::Creator;
 using namespace sofa::type;
