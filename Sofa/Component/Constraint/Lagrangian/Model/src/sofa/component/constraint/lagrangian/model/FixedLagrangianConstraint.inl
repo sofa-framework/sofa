@@ -67,7 +67,6 @@ template<class DataTypes>
 void FixedLagrangianConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* cParams, linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v)
 {
     SOFA_UNUSED(cParams);
-    SOFA_UNUSED(x);
     SOFA_UNUSED(v);
     const DataVecCoord * restPos = this->getMState()->read(sofa::core::vec_id::read_access::restPosition);
 
