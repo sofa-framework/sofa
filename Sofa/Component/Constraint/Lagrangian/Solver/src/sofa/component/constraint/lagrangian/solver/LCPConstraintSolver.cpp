@@ -150,6 +150,8 @@ void LCPConstraintSolver::buildSystem()
         _Wdiag.resize(_numConstraints,_numConstraints);
     }
 
+    m_constraintBlockInfo.clear();
+    m_constraintIds.clear();
 
     getConstraintInfo(cparams);
 
