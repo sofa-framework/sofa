@@ -386,7 +386,7 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(const core::Mechanical
 }
 
 template <class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void TriangularTensorMassForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

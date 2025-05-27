@@ -678,7 +678,7 @@ void SpringForceField<DataTypes>::addToMatrix(Matrix* globalMatrix,
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void SpringForceField<DataTypes>::doAddKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     const Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
     if (this->mstate1 == this->mstate2)
@@ -733,7 +733,7 @@ void SpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpa
 }
 
 template <class DataTypes>
-void SpringForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void SpringForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     const sofa::type::vector<Spring >& ss = this->d_springs.getValue();
     const auto n = std::min(ss.size(), this->dfdx.size());
@@ -795,7 +795,7 @@ void SpringForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffness
 }
 
 template <class DataTypes>
-void SpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void SpringForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }
