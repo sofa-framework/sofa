@@ -20,35 +20,53 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMatrix/Qt/config.h>
+#include <SofaMatrix/config.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <SofaMatrix/Qt/BaseMatrixImageProxy.h>
-
-#include <sofa/core/behavior/BaseMatrixLinearSystem.h>
-
-namespace sofa::component::linearsolver
+namespace sofa::type
 {
 
-/**
- * Component to convert a BaseMatrix from the linear solver into an image that can be visualized in the GUI.
- * Use GlobalSystemMatrixExporter in order to save an image on the disk.
- */
-class SOFA_SOFAMATRIX_QT_API GlobalSystemMatrixImage : public core::objectmodel::BaseObject
+/// A simple proxy of a BaseMatrix, compatible with a Data that can be visualized in the GUI, as a bitmap, with a BaseMatrixImageViewerWidget
+struct BaseMatrixImageProxy
 {
-public:
-    SOFA_CLASS(GlobalSystemMatrixImage, core::objectmodel::BaseObject);
+    typedef SReal Real;
+
+    BaseMatrixImageProxy()
+    {}
+
+    static const char* Name() { return "SimpleBitmap"; }
+
+    friend std::istream& operator >> ( std::istream& in, BaseMatrixImageProxy& /*p*/ )
+    {
+        return in;
+    }
+
+    friend std::ostream& operator << ( std::ostream& out, const BaseMatrixImageProxy& p )
+    {
+        if (!p.m_matrix)
+        {
+            out << "invalid matrix";
+        }
+        else
+        {
+            out << std::to_string(p.m_matrix->rows()) << "x" << std::to_string(p.m_matrix->cols());
+        }
+        return out;
+    }
+
+    [[nodiscard]] linearalgebra::BaseMatrix* getMatrix() const
+    {
+        return m_matrix;
+    }
+
+    void setMatrix(linearalgebra::BaseMatrix* m_matrix)
+    {
+        this->m_matrix = m_matrix;
+    }
 
 protected:
 
-    GlobalSystemMatrixImage();
-    ~GlobalSystemMatrixImage() override;
-
-    void init() override;
-    void handleEvent(core::objectmodel::Event *event) override;
-
-    Data< type::BaseMatrixImageProxy > d_bitmap; ///< Visualization of the representation of the matrix as a binary image. White pixels are zeros, black pixels are non-zeros.
-    SingleLink<GlobalSystemMatrixImage, sofa::core::behavior::BaseMatrixLinearSystem, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_linearSystem;
+    linearalgebra::BaseMatrix* m_matrix { nullptr };
 };
 
-} //namespace sofa::component::linearsolver
+} //namespace sofa::type
