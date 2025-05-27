@@ -415,7 +415,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 {
     m_activeDofs.clear();
 
-	const MatrixDeriv& c = cparams->readJ(this->mstate)->getValue();
+    const MatrixDeriv& c = cparams->readJ(this->mstate.get())->getValue();
 
     SReal factor = 1.0_sreal;
 
@@ -615,8 +615,8 @@ void PrecomputedConstraintCorrection<DataTypes>::applyMotionCorrection(const sof
 
     auto dx = sofa::helper::getWriteAccessor(dx_d);
 
-    const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
-    const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
+    const VecCoord& x_free = cparams->readX(this->mstate.get())->getValue();
+    const VecDeriv& v_free = cparams->readV(this->mstate.get())->getValue();
 
     const SReal invDt = 1.0_sreal / this->getContext()->getDt();
 
@@ -648,7 +648,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyPositionCorrection(const s
 
     auto dx = sofa::helper::getWriteAccessor(dx_d);
 
-    const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
+    const VecCoord& x_free = cparams->readX(this->mstate.get())->getValue();
 
     if (d_rotations.getValue())
         rotateResponse();
@@ -672,7 +672,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyVelocityCorrection(const s
     VecDeriv& v = *v_d.beginEdit();
 
     const VecDeriv& dx = this->mstate->read(core::vec_id::write_access::dx)->getValue();
-    const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
+    const VecDeriv& v_free = cparams->readV(this->mstate.get())->getValue();
 
     const SReal invDt = 1.0_sreal / this->getContext()->getDt();
 

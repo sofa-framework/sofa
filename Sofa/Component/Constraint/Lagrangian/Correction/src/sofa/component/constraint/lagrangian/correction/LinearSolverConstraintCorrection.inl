@@ -213,7 +213,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
 
     // J is read from the mechanical state and converted to m_constraintJacobian
     {
-        helper::ReadAccessor inputConstraintMatrix ( *cparams->readJ(this->mstate) );
+        helper::ReadAccessor inputConstraintMatrix ( *cparams->readJ(this->mstate.get()) );
         const sofa::SignedIndex numberOfConstraints = W->rowSize();
         convertConstraintMatrix(numberOfConstraints, inputConstraintMatrix.ref());
     }
@@ -280,8 +280,8 @@ void LinearSolverConstraintCorrection< DataTypes >::applyMotionCorrection(const 
         auto dx = sofa::helper::getWriteAccessor(dx_d);
 
         const VecDeriv& correction = correction_d.getValue();
-        const VecCoord& x_free = cparams->readX(mstate)->getValue();
-        const VecDeriv& v_free = cparams->readV(mstate)->getValue();
+        const VecCoord& x_free = cparams->readX(mstate.get())->getValue();
+        const VecDeriv& v_free = cparams->readV(mstate.get())->getValue();
 
         const SReal positionFactor = l_ODESolver.get()->getPositionIntegrationFactor();
         const SReal velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
@@ -308,7 +308,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyPositionCorrection(cons
         auto dx = sofa::helper::getWriteAccessor(dx_d);
 
         const VecDeriv& correction = correction_d.getValue();
-        const VecCoord& x_free = cparams->readX(mstate)->getValue();
+        const VecCoord& x_free = cparams->readX(mstate.get())->getValue();
 
         const SReal positionFactor = l_ODESolver.get()->getPositionIntegrationFactor();
         for (unsigned int i = 0; i < numDOFs; i++)
@@ -332,7 +332,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyVelocityCorrection(cons
         auto dv = sofa::helper::getWriteAccessor(dv_d);
 
         const VecDeriv& correction = correction_d.getValue();
-        const VecDeriv& v_free = cparams->readV(mstate)->getValue();
+        const VecDeriv& v_free = cparams->readV(mstate.get())->getValue();
 
         const SReal velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
 
