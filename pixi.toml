@@ -1,6 +1,6 @@
 [project]
 authors = ["Olivier Roussel <olivier.roussel@inria.fr>"]
-channels = ["conda-forge"]
+channels = ["https://prefix.dev/conda-forge"]
 description = "Open-source framework for interactive mechanical simulation, with emphasis on biomechanics and robotics"
 name = "sofa"
 platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
@@ -217,9 +217,20 @@ activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOF
 # [feature.plugin-softrobots]
 # activation = { env = { SOFA_PLUGIN_SOFTROBOTS_ARGS = "-DPLUGIN_SOFTROBOTS=ON -DSOFA_FETCH_SOFTROBOTS=ON" } }
 
+[feature.qt-gui]
+activation = { env = { SOFA_PLUGIN_SOFA_GUI_QT = "ON", Qt5_DIR = "$CONDA_PREFIX/lib/cmake" } }
+dependencies = { qt-main = ">=5.15.0", ffmpeg = "*", libqglviewer = "*" }
+
+[feature.plugin-cuda]
+# XXX Adding nvvm/bin to PATH was required to compile, may be related to
+# https://github.com/conda-forge/cuda-nvcc-impl-feedstock/issues/9
+activation = { env = { PATH = "$CONDA_PREFIX/nvvm/bin:$PATH"}}
+platforms = ["win-64", "linux-64"]
+system-requirements = { cuda = "12" }
+dependencies = { cuda-version = "*", cuda-compiler = "*" }
+
 [feature.plugin-cgal]
 dependencies = { cgal-cpp = "*" }
-activation = { env = { SOFA_PLUGIN_CGAL_ARGS = "-DPLUGIN_CGALPLUGIN=ON -DSOFA_FETCH_CGALPLUGIN=ON" } }
 
 [feature.presets-defaultGUI]
 dependencies = { glew = "*", glfw = "*", nativefiledialog-extended = "*"}
@@ -238,7 +249,6 @@ configure = { cmd = [ "cmake",
   "$SOFA_BUILD_DIR",
   "-S",
   ".",
-  "-DCMAKE_PREFIX_PATH=$CONDA_PREFIX",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
   "--preset",
@@ -252,7 +262,6 @@ configure = { cmd = [ "cmake",
   "$SOFA_BUILD_DIR",
   "-S",
   ".",
-  "-DCMAKE_PREFIX_PATH=$CONDA_PREFIX",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
   "--preset",
@@ -266,62 +275,129 @@ configure = { cmd = [ "cmake",
   "$SOFA_BUILD_DIR",
   "-S",
   ".",
-  "-DCMAKE_PREFIX_PATH=$CONDA_PREFIX",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
   "--preset",
   "standard",
-  "$SOFA_PLUGIN_PYTHON3_ARGS"
-  ]}  
+  "$SOFA_PLUGIN_PYTHON3_ARGS"] }
 
 [feature.presets-supported-plugins.tasks]
-configure-cgal = { cmd = [ "cmake", "--debug-find-pkg=CGAL",
-  "-G",
-  "Ninja",
-  "-B",
-  "$CONDA_PREFIX/build-cgal-plugin",
-  "-S",
-  "applications/plugins/CGALPlugin",
-  "-DCMAKE_PREFIX_PATH=$CONDA_PREFIX",
-  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
-  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
-  "$SOFA_PLUGIN_CGAL_ARGS",
-  "$SOFA_PLUGIN_PYTHON3_ARGS"
-  ]}
-configure = { cmd = [ "cmake", "--debug-find-pkg=CGAL",
+configure = { cmd = [ "cmake",
   "-G",
   "Ninja",
   "-B",
   "$SOFA_BUILD_DIR",
   "-S",
   ".",
-  "-DCMAKE_PREFIX_PATH=$CONDA_PREFIX",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
   "--preset",
   "supported-plugins",
-  "$SOFA_PLUGIN_CGAL_ARGS",
-  "$SOFA_PLUGIN_PYTHON3_ARGS"
-  ]}  
-  
+  "$SOFA_PLUGIN_PYTHON3_ARGS"] }
+
+[feature.presets-full.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "full",
+  "$SOFA_PLUGIN_PYTHON3_ARGS"] }
+
+[feature.presets-minimal-dev.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "minimal-dev"] }
+
+[feature.presets-standard-dev.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "standard-dev",
+  "$SOFA_PLUGIN_PYTHON3_ARGS"] }
+
+[feature.presets-supported-plugins-dev.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "supported-plugins-dev",
+  "$SOFA_PLUGIN_PYTHON3_ARGS"] }
+
+[feature.presets-full-dev.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "full-dev",
+  "$SOFA_PLUGIN_PYTHON3_ARGS"] }  
+
 [environments]
 conda-core = { features = ["presets-conda-core"] }
 minimal = { features = ["presets-minimal"] }
+minimal-dev = { features = ["presets-minimal-dev"] }
 standard = { features = ["presets-standard", "plugin-sofa-python3", "presets-defaultGUI"] }
-supported-plugins = { features = ["presets-supported-plugins", "plugin-sofa-python3", "plugin-cgal", "presets-defaultGUI"]}
-# minimal-scope = { features = ["dev-tools"], solve-group = "minimal-scope" }
-# standard-scope = { features = [
-#   "dev-tools",
-#   "plugin-sofamatrix",
-#   "app-sofaphysics-api",
-#   "tutorials",
-#   "gl",
-#   "qt-gui",
-#   "dump-visitor-info",
-#   "plugin-sofa-python3"
-#   ], solve-group = "minimal-scope" }
-
-# # TODO : PLUGIN_CGALPLUGIN
+standard-dev = { features = ["presets-standard-dev", "plugin-sofa-python3", "presets-defaultGUI"] }
+supported-plugins = { features = [
+  "presets-supported-plugins",
+  "plugin-sofa-python3",
+  "plugin-cgal",
+  "plugin-cuda",
+  "presets-defaultGUI",
+  "qt-gui"]}
+supported-plugins-dev = { features = [
+  "presets-supported-plugins-dev",
+  "plugin-sofa-python3",
+  "plugin-cgal",
+  "plugin-cuda",
+  "presets-defaultGUI",
+  "qt-gui"]}  
+full = { features = [
+  "presets-full",
+  "plugin-sofa-python3",
+  "plugin-cgal",
+  "plugin-cuda",
+  "presets-defaultGUI",
+  "qt-gui"]}
+full-dev = { features = [
+  "presets-full-dev",
+  "plugin-sofa-python3",
+  "plugin-cgal",
+  "plugin-cuda",
+  "presets-defaultGUI",
+  "qt-gui"]}
 # # TODO : Assimp
 # # TODO : DPLUGIN_SOFAGLFW
 # # TODO : DPLUGIN_SOFAIMGUI
