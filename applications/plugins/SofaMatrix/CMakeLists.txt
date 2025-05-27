@@ -75,6 +75,7 @@ sofa_create_package_with_targets(
     )
 
 sofa_add_subdirectory(plugin extensions/Qt SofaMatrix.Qt)
+sofa_add_subdirectory(plugin extensions/imgui SofaMatrix.imgui)
 
 
 # Tests
