@@ -168,6 +168,7 @@ protected:
 
     virtual void updateFromTopology();
     virtual void updateNormals();
+    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
 
 public:
     void init() override;
@@ -181,8 +182,6 @@ public:
     void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
-
-    void draw(const core::visual::VisualParams* vparams) override;
 
     bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
