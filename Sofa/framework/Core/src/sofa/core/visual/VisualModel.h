@@ -53,7 +53,7 @@ public:
     /**
      *  \brief Display the VisualModel object.
      */
-    virtual void drawVisual(const VisualParams* /*vparams*/) final;;
+    virtual void drawVisual(const VisualParams* /*vparams*/) final;
     
     /**
      *  \brief Initialize the textures, or other graphical resources.
