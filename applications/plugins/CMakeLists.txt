@@ -7,6 +7,9 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     sofa_add_subdirectory(plugin SofaTest SofaTest)
 endif()
 
+#Should be first to enable all CUDA based modules in plugins
+sofa_add_subdirectory(plugin SofaCUDA SofaCUDA)
+
 sofa_add_subdirectory(plugin CollisionOBBCapsule CollisionOBBCapsule)
 sofa_add_subdirectory(plugin HeadlessRecorder HeadlessRecorder)
 
@@ -59,7 +62,6 @@ if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "
     sofa_add_subdirectory(plugin SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc
 endif()
 
-sofa_add_subdirectory(plugin SofaCUDA SofaCUDA)
 
 sofa_find_package(Sofa.GL QUIET)
 if(Sofa.GL_FOUND)

@@ -22,11 +22,11 @@
 #include <sofa/gpu/gui/CudaDataWidget.h>
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/helper/Factory.inl>
-#include <sofa/gui/qt/DataWidget.h>
-#include <sofa/gui/qt/SimpleDataWidget.h>
-#include <sofa/gui/qt/TableDataWidget.h>
+#include <sofa/qt/DataWidget.h>
+#include <sofa/qt/SimpleDataWidget.h>
+#include <sofa/qt/TableDataWidget.h>
 
-namespace sofa::gui::qt
+namespace sofa::qt
 {
 using sofa::helper::Creator;
 using namespace sofa::type;
