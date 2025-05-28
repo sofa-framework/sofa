@@ -26,7 +26,6 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
-/** Compute the size of a mechanical matrix (mass or stiffness) of the whole scene */
 class SOFA_SIMULATION_CORE_API MechanicalGetConstraintJacobianVisitor : public BaseMechanicalVisitor
 {
 public:
