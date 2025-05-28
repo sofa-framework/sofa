@@ -31,9 +31,12 @@ namespace sofa::core::behavior
 template< class DataTypes >
 void ConstraintCorrection< DataTypes >::init()
 {
-    Inherit1::init();
+    Inherit2::init();
 
-    mstate = dynamic_cast< behavior::MechanicalState< DataTypes >* >(getContext()->getMechanicalState());
+    if (!mstate)
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
 }
 
 template< class DataTypes >
@@ -80,10 +83,10 @@ void ConstraintCorrection< DataTypes >::applyMotionCorrection(const core::Constr
 {
     if (mstate)
     {
-        Data< VecCoord > *x_d  = x[mstate].write();
-        Data< VecDeriv > *v_d  = v[mstate].write();
-        Data< VecDeriv > *dx_d = dx[mstate].write();
-        const Data< VecDeriv > *correction_d = correction[mstate].read();
+        Data< VecCoord > *x_d  = x[mstate.get()].write();
+        Data< VecDeriv > *v_d  = v[mstate.get()].write();
+        Data< VecDeriv > *dx_d = dx[mstate.get()].write();
+        const Data< VecDeriv > *correction_d = correction[mstate.get()].read();
 
         if (x_d && v_d && dx_d && correction_d)
         {
@@ -98,9 +101,9 @@ void ConstraintCorrection< DataTypes >::applyPositionCorrection(const core::Cons
 {
     if (mstate)
     {
-        Data< VecCoord > *x_d  = x[mstate].write();
-        Data< VecDeriv > *dx_d = dx[mstate].write();
-        const Data< VecDeriv > *correction_d = correction[mstate].read();
+        Data< VecCoord > *x_d  = x[mstate.get()].write();
+        Data< VecDeriv > *dx_d = dx[mstate.get()].write();
+        const Data< VecDeriv > *correction_d = correction[mstate.get()].read();
 
         if (x_d && dx_d && correction_d)
         {
@@ -115,9 +118,9 @@ void ConstraintCorrection< DataTypes >::applyVelocityCorrection(const core::Cons
 {
     if (mstate)
     {
-        Data< VecDeriv >* v_d  = v[mstate].write();
-        Data< VecDeriv >* dv_d = dv[mstate].write();
-        const Data< VecDeriv >* correction_d = correction[mstate].read();
+        Data< VecDeriv >* v_d  = v[mstate.get()].write();
+        Data< VecDeriv >* dv_d = dv[mstate.get()].write();
+        const Data< VecDeriv >* correction_d = correction[mstate.get()].read();
 
         if (v_d && dv_d && correction_d)
         {
@@ -133,7 +136,7 @@ void ConstraintCorrection< DataTypes >::applyPredictiveConstraintForce(const cor
     if (mstate)
     {
         addConstraintForceInMotionSpace(cparams, f, cparams->j(), lambda);
-        }
+    }
 }
 
 template< class DataTypes >
@@ -141,8 +144,8 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const co
 {
     if (mstate)
     {
-        Data< VecDeriv > *f_d = f[mstate].write();
-        const Data< MatrixDeriv > * j_d = j[mstate].read();
+        Data< VecDeriv > *f_d = f[mstate.get()].write();
+        const Data< MatrixDeriv > * j_d = j[mstate.get()].read();
         if (f_d && j_d)
         {
             addConstraintForceInMotionSpace(cparams,*f_d, *j_d, lambda);
