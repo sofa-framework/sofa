@@ -101,6 +101,8 @@ protected:
 
     LineCollisionModel();
 
+    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
+
 public:
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
@@ -122,12 +124,6 @@ public:
     void computeBoundingTree(int maxDepth=0) override;
 
     void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
-
-    /// Import the draw(param, index) method from the parent scope, this is needed to make it accessible
-    /// in the current and child class. Otherwise the draw(param) will prevent name resolution
-    /// to locate it.
-    using Inherit1::draw;
-    void draw(const core::visual::VisualParams* vparams) override;
 
     void handleTopologyChange() override;
 
