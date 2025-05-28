@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, macos-13, windows-latest]
-        environment: [full-scope]
+        environment: [full]
         build_type: [Release]
 
     steps:
@@ -34,7 +34,4 @@ jobs:
         env:
           SOFA_BUILD_TYPE: ${{ matrix.build_type }}
         run: |
-          pixi run -e ${{ matrix.environment }} configure
-          pixi run -e ${{ matrix.environment }} cmake --build build --target all
-          pixi run -e ${{ matrix.environment }} ctest --test-dir build --output-on-failure
-          pixi run -e ${{ matrix.environment }} cmake --install build
+          pixi run -e ${{ matrix.environment }} build
