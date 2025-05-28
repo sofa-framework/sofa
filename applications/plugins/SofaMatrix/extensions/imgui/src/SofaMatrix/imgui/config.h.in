@@ -19,63 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMatrix/Qt/config.h>
+#pragma once
+#include <sofa/config.h>
 
-#include <SofaMatrix/MatrixImageExporter.h>
+#ifdef SOFA_BUILD_SOFAMATRIX_IMGUI
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFAMATRIX_IMGUI_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFAMATRIX_IMGUI_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-#include <sofa/helper/system/PluginManager.h>
-
-namespace sofamatrix::qt
+namespace sofamatriximgui
 {
-
-extern "C" {
-    SOFA_SOFAMATRIX_API void initExternalModule();
-    SOFA_SOFAMATRIX_API const char* getModuleName();
-    SOFA_SOFAMATRIX_API const char* getModuleVersion();
-    SOFA_SOFAMATRIX_API const char* getModuleLicense();
-    SOFA_SOFAMATRIX_API const char* getModuleDescription();
-    SOFA_SOFAMATRIX_API void registerObjects(sofa::core::ObjectFactory* factory);
+    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 }
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
-        first = false;
-
-        sofa::component::initializeMatrixExporterComponents();
-    }
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "SOFA plugin gathering components related to linear system matrices.";
-}
-
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-}
-
-}
-

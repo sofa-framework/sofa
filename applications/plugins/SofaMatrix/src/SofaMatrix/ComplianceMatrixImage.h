@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,53 +20,36 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMatrix/Qt/config.h>
-#include <sofa/linearalgebra/BaseMatrix.h>
+#include <SofaMatrix/config.h>
 
-namespace sofa::type
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <SofaMatrix/BaseMatrixImageProxy.h>
+#include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
+
+namespace sofa::component::constraintset
 {
 
-/// A simple proxy of a BaseMatrix, compatible with a Data that can be visualized in the GUI, as a bitmap, with a BaseMatrixImageViewerWidget
-struct BaseMatrixImageProxy
+/**
+ * Component to convert a BaseMatrix from the constraint solver into an image that can be visualized in the GUI.
+ * Use ComplianceMatrixExporter in order to save an image on the disk.
+ *
+ * Note that the compliance matrix is dense. It means all the entries will probably be non-zero
+ */
+class SOFA_SOFAMATRIX_API ComplianceMatrixImage : public core::objectmodel::BaseObject
 {
-    typedef SReal Real;
-
-    BaseMatrixImageProxy()
-    {}
-
-    static const char* Name() { return "SimpleBitmap"; }
-
-    friend std::istream& operator >> ( std::istream& in, BaseMatrixImageProxy& /*p*/ )
-    {
-        return in;
-    }
-
-    friend std::ostream& operator << ( std::ostream& out, const BaseMatrixImageProxy& p )
-    {
-        if (!p.m_matrix)
-        {
-            out << "invalid matrix";
-        }
-        else
-        {
-            out << std::to_string(p.m_matrix->rows()) << "x" << std::to_string(p.m_matrix->cols());
-        }
-        return out;
-    }
-
-    [[nodiscard]] linearalgebra::BaseMatrix* getMatrix() const
-    {
-        return m_matrix;
-    }
-
-    void setMatrix(linearalgebra::BaseMatrix* m_matrix)
-    {
-        this->m_matrix = m_matrix;
-    }
+public:
+    SOFA_CLASS(ComplianceMatrixImage, core::objectmodel::BaseObject);
 
 protected:
 
-    linearalgebra::BaseMatrix* m_matrix { nullptr };
+    ComplianceMatrixImage();
+    ~ComplianceMatrixImage() override;
+
+    void init() override;
+    void handleEvent(core::objectmodel::Event *event) override;
+
+    Data< type::BaseMatrixImageProxy > d_bitmap; ///< Visualization of the representation of the matrix as a binary image. White pixels are zeros, black pixels are non-zeros.
+    SingleLink<ComplianceMatrixImage, sofa::component::constraint::lagrangian::solver::ConstraintSolverImpl, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
 };
 
-} //namespace sofa::type
+} //namespace sofa::component::constraintset
