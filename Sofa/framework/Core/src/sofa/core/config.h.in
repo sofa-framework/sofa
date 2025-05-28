@@ -133,3 +133,10 @@
 #define SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() \
     SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "Use toBaseLagrangianConstraint instead.")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM() \
+    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "It was an experimental function no longer used.")
+#endif
