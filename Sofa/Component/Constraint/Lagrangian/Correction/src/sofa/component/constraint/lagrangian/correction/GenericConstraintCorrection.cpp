@@ -149,9 +149,10 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
     // use the OdeSolver to get the integration factor
     SReal factor = BaseConstraintCorrection::correctionFactor(l_ODESolver.get(), cparams->constOrder());
     factor *= complianceFactor;
-    // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    l_linearSolver.get()->buildComplianceMatrix(cparams, W, factor, d_regularizationTerm.getValue());
 
+    // use the Linear solver to compute J*A^-1*J^T, where A is the mechanical linear system matrix
+    // the linear solver will also be in charge to assemble J
+    l_linearSolver.get()->buildComplianceMatrix(cparams, W, factor, d_regularizationTerm.getValue());
 }
 
 void GenericConstraintCorrection::computeMotionCorrectionFromLambda(const ConstraintParams* cparams, MultiVecDerivId dx, const linearalgebra::BaseVector * lambda)
@@ -172,9 +173,9 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* 
 }
 
 void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams * cparams,
-                                                        MultiVecCoordId xId,
-                                                        MultiVecDerivId vId,
-                                                        MultiVecDerivId dxId,
+                                                        MultiVecCoordId x,
+                                                        MultiVecDerivId v,
+                                                        MultiVecDerivId dx,
                                                         ConstMultiVecDerivId correction)
 {
     if (!l_ODESolver.get()) return;
@@ -183,7 +184,7 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams *
     const SReal positionFactor = l_ODESolver.get()->getPositionIntegrationFactor() * complianceFactor;
     const SReal velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor() * complianceFactor;
 
-    applyMotionCorrection(cparams, xId, vId, dxId, correction, positionFactor, velocityFactor);
+    applyMotionCorrection(cparams, x, v, dx, correction, positionFactor, velocityFactor);
 }
 
 void GenericConstraintCorrection::applyPositionCorrection(const ConstraintParams * cparams,
@@ -217,9 +218,19 @@ void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
 
     ConstraintParams cparams(*sofa::core::execparams::defaultInstance());
 
+    MultiVecDerivId dx = cparams.dx();
 
-    computeMotionCorrectionFromLambda(&cparams, cparams.dx(), f);
-    applyMotionCorrection(&cparams, core::vec_id::write_access::position, core::vec_id::write_access::velocity, cparams.dx(), cparams.lambda());
+    // force = J^T * f
+    // dx = A^-1 * force
+    computeMotionCorrectionFromLambda(&cparams, dx, f);
+
+    //cparams.lambda() is an implicit output of computeMotionCorrectionFromLambda
+    const MultiVecDerivId& force = cparams.lambda();
+
+    // x = x_free + force * positionFactor
+    // v = v_free + force * velocityFactor
+    // dx *= correctionFactor
+    applyMotionCorrection(&cparams, core::vec_id::write_access::position, core::vec_id::write_access::velocity, dx, force);
 }
 
 void GenericConstraintCorrection::computeResidual(const ExecParams* params, linearalgebra::BaseVector *lambda)
@@ -250,7 +261,7 @@ void GenericConstraintCorrection::resetContactForce(){}
 
 void registerGenericConstraintCorrection(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Generic Constraint Correction.")
+    factory->registerObjects(core::ObjectRegistrationData("Component computing constraint forces within a simulated body using the compliance method.")
         .add< GenericConstraintCorrection >());
 }
 
