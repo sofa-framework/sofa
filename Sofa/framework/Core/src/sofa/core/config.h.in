@@ -138,5 +138,5 @@
 #define SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM()
 #else
 #define SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM() \
-    SOFA_ATTRIBUTE_DISABLED("v25.12", "v26.06", "It was an experimental function no longer used.")
+    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "It was an experimental function no longer used.")
 #endif
