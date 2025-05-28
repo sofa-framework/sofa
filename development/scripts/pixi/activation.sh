@@ -12,3 +12,4 @@ export CMAKE_PREFIX_PATH=$CONDA_PREFIX
 # Each environment have its dedicated build dir
 export SOFA_BUILD_DIR=$CONDA_PREFIX/sofa-build
 export SOFA_BUILD_TYPE=${SOFA_BUILD_TYPE:=Release}
+export SOFA_PYTHON_EXECUTABLE=${SOFA_BUILD_TYPE:=$CONDA_PREFIX/bin/python}
