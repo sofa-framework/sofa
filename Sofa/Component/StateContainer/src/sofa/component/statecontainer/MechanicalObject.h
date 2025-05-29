@@ -141,7 +141,7 @@ public:
     void initGnuplot(const std::string path) override;
     void exportGnuplot(SReal time) override;
 
-    void resize( Size vsize) override;
+    void doResize( Size vsize) override;
     virtual void reserve(Size vsize);
 
     Size getSize() const override { return d_size.getValue(); }
