@@ -256,6 +256,10 @@
       "hidden": false,
       "inherits": ["supported-plugins","allGUI"],
       "cacheVariables": {
+        "PLUGIN_SOFAMATRIX_QT": {
+          "type": "BOOL",
+          "value": "ON"
+        },
         "PLUGIN_DIFFUSIONSOLVER": {
           "type": "BOOL",
           "value": "ON"
