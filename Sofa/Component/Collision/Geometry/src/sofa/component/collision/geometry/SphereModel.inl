@@ -257,7 +257,7 @@ void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    if( !onlyVisible )
+    if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels()) return;
         return;
 
     static constexpr Real max_real = std::numeric_limits<Real>::max();
