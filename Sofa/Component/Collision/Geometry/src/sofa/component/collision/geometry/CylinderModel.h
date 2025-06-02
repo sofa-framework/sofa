@@ -111,9 +111,6 @@ public:
 
     void draw(const core::visual::VisualParams* vparams,sofa::Index index) override;
 
-    void draw(const core::visual::VisualParams* vparams) override;
-
-
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return m_mstate; }
 
     Real radius(sofa::Index index) const;

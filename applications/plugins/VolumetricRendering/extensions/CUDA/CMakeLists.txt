@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(VolumetricRendering.CUDA)
+project(VolumetricRendering.CUDA LANGUAGES CUDA CXX)
 
 set(HEADER_FILES
     src/VolumetricRendering/CUDA/init.h
