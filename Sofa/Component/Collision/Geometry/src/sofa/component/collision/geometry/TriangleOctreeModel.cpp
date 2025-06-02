@@ -44,30 +44,24 @@ TriangleOctreeModel::TriangleOctreeModel ()
 {
 }
 
-void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
+void TriangleOctreeModel::drawCollisionModel (const core::visual::VisualParams* vparams)
 {
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>::drawCollisionModel(vparams);
 
-    TriangleCollisionModel<sofa::defaulttype::Vec3Types>::draw(vparams);
-    if (isActive () && vparams->displayFlags().getShowCollisionModels ())
+    if (vparams->displayFlags().getShowWireFrame())
     {
-        if (vparams->displayFlags().getShowWireFrame ())
-            vparams->drawTool()->setPolygonMode(0, true);
-
-        vparams->drawTool()->enableLighting();
-        const float* getCol = getColor4f();
-        const auto color = sofa::type::RGBAColor(getCol[0], getCol[1], getCol[2], getCol[3]);
-        vparams->drawTool()->setMaterial(color);
-
-        if(octreeRoot)
-            octreeRoot->draw(vparams->drawTool());
-
-        vparams->drawTool()->disableLighting();
-        if (vparams->displayFlags().getShowWireFrame ())
-            vparams->drawTool()->setPolygonMode(0, false);
+        vparams->drawTool()->setPolygonMode(0, true);
     }
 
+    vparams->drawTool()->enableLighting();
+    const float* getCol = getColor4f();
+    const auto color = sofa::type::RGBAColor(getCol[0], getCol[1], getCol[2], getCol[3]);
+    vparams->drawTool()->setMaterial(color);
 
+    if (octreeRoot) octreeRoot->draw(vparams->drawTool());
+
+    vparams->drawTool()->disableLighting();
+    if (vparams->displayFlags().getShowWireFrame()) vparams->drawTool()->setPolygonMode(0, false);
 }
 
 void TriangleOctreeModel::computeBoundingTree(int maxDepth)

@@ -273,7 +273,7 @@ public:
     virtual void draw(const core::visual::VisualParams* /*vparams*/, Index /*index*/) {}
 
     /// Render the whole collision model.
-    void draw(const core::visual::VisualParams* ) override {}
+    void draw(const core::visual::VisualParams* vparams) final;
 
     /// Return the first (i.e. root) CollisionModel in the hierarchy.
     CollisionModel* getFirst();
@@ -428,6 +428,9 @@ protected:
 
     /// Pointer to the  Controller component heritating from CollisionElementActiver
     SingleLink<CollisionModel, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_collElemActiver;
+
+    /// Render the whole collision model.
+    virtual void drawCollisionModel(const core::visual::VisualParams* vparams);
 
 public:
     CollisionElementActiver *myCollElemActiver; ///< CollisionElementActiver that activate or deactivate collision element during execution

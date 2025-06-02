@@ -146,25 +146,8 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
     if (!l_ODESolver.get()) return;
     const SReal complianceFactor = d_complianceFactor.getValue();
 
-    // use the OdeSolver to get the position integration factor
-    SReal factor = 1.0;
-
-    switch (cparams->constOrder())
-    {
-        case sofa::core::ConstraintOrder::POS_AND_VEL :
-        case sofa::core::ConstraintOrder::POS :
-            factor = l_ODESolver.get()->getPositionIntegrationFactor();
-            break;
-
-        case sofa::core::ConstraintOrder::ACC :
-        case sofa::core::ConstraintOrder::VEL :
-            factor = l_ODESolver.get()->getVelocityIntegrationFactor();
-            break;
-
-        default :
-            break;
-    }
-
+    // use the OdeSolver to get the integration factor
+    SReal factor = BaseConstraintCorrection::correctionFactor(l_ODESolver.get(), cparams->constOrder());
     factor *= complianceFactor;
 
     // use the Linear solver to compute J*A^-1*J^T, where A is the mechanical linear system matrix
