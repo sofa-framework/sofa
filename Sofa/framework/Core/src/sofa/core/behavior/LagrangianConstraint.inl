@@ -69,7 +69,7 @@ void LagrangianConstraint<DataTypes>::buildConstraintMatrix(const ConstraintPara
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams, *cId[this->mstate.get()].write(), cIndex, *cParams->readX(this->mstate.get()));
+        buildConstraintMatrix(cParams, *cId[this->mstate.get()].write(), cIndex, this->mstate->readPositions().ref());
     }
 }
 
