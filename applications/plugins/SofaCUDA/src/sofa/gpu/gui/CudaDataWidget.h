@@ -21,9 +21,9 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/gui/qt/QModelViewTableDataContainer.h>
+#include <sofa/qt/QModelViewTableDataContainer.h>
 
-namespace sofa::gui::qt
+namespace sofa::qt
 {
 ////////////////////////////////////////////////////////////////
 /// variable-sized vectors support

@@ -283,10 +283,10 @@ if(Sofa.GUI_FOUND)
     list(APPEND SOURCE_FILES ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/gui/CudaMouseInteraction.cpp)
 endif()
 
-sofa_find_package(Sofa.GUI.Qt QUIET)
-if(Sofa.GUI.Qt_FOUND)
+sofa_find_package(Sofa.Qt QUIET)
+if(Sofa.Qt_FOUND)
     list(APPEND HEADER_FILES ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/gui/CudaDataWidget.h)
-    list(APPEND SOURCE_FILES${SOFACUDACORE_SOURCE_DIR}/ sofa/gpu/gui/CudaDataWidget.cpp)
+    list(APPEND SOURCE_FILES ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/gui/CudaDataWidget.cpp)
 endif()
 
 sofa_find_package(SofaValidation QUIET)
@@ -388,8 +388,8 @@ if(Sofa.GUI_FOUND)
 endif()
 
 
-if(Sofa.GUI.Qt_FOUND)
-    target_link_libraries(${PROJECT_NAME} Sofa.GUI.Qt)
+if(Sofa.Qt_FOUND)
+    target_link_libraries(${PROJECT_NAME} Sofa.Qt)
 endif()
 
 if(SofaValidation_FOUND)
