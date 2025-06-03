@@ -39,7 +39,7 @@
             filename="mesh/liver-smooth.obj"
             scale="1.0" 
             usePoints="0" 
-            proximity="0.1" 
+            contactDistance="0.1"
         />
         <Node name="Visu">
             <OglModel name="VisualModel" src="@../meshLoader_0" color="white" />
