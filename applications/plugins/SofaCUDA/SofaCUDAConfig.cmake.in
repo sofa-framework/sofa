@@ -23,7 +23,6 @@ find_package(Sofa.Component.Mapping.NonLinear QUIET REQUIRED)
 find_package(Sofa.Component.Engine.Select QUIET REQUIRED)
 find_package(Sofa.Component.Engine.Transform QUIET REQUIRED)
 find_package(Sofa.Component.MechanicalLoad QUIET REQUIRED)
-find_package(CUDA QUIET REQUIRED)
 
 
 set(SOFACUDA_HAVE_SOFA_GL @SOFACUDA_HAVE_SOFA_GL@)
