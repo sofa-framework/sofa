@@ -53,7 +53,7 @@
             <TriangleSetTopologyModifier name="Modifier"/>
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="false"/>
             <MechanicalObject name="dofs" rest_position="@../mstate.rest_position"/>
-            <TriangleCollisionModel name="Torus8CMT" proximity="0.001" contactStiffness="20" color="0.94117647058824 0.93725490196078 0.89411764705882" />
+            <TriangleCollisionModel name="Torus8CMT" contactDistance="0.001" contactStiffness="20" color="0.94117647058824 0.93725490196078 0.89411764705882" />
             <Node name="Visual" activated="1">
                 <TriangleSetTopologyContainer name="Container" src="@../Container"/>
                 <OglModel color="1.0 0.1 0.2 1.0" name="visualModel"/>
