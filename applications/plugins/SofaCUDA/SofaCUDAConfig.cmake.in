@@ -8,7 +8,7 @@ if(HAS_SOFACUDA_CMAKE_MODULE_PATH EQUAL -1)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
 endif()
 
-set(SOFACUDA_ARCH @SOFACUDA_ARCH@)
+set(CMAKE_CUDA_ARCHITECTURES @CMAKE_CUDA_ARCHITECTURES@)
 
 find_package(Sofa.Component.Mass QUIET REQUIRED)
 find_package(Sofa.Component.SolidMechanics.FEM.Elastic QUIET REQUIRED)
@@ -23,7 +23,6 @@ find_package(Sofa.Component.Mapping.NonLinear QUIET REQUIRED)
 find_package(Sofa.Component.Engine.Select QUIET REQUIRED)
 find_package(Sofa.Component.Engine.Transform QUIET REQUIRED)
 find_package(Sofa.Component.MechanicalLoad QUIET REQUIRED)
-find_package(CUDA QUIET REQUIRED)
 
 
 set(SOFACUDA_HAVE_SOFA_GL @SOFACUDA_HAVE_SOFA_GL@)
@@ -55,5 +54,3 @@ if(NOT TARGET SofaCUDA)
 endif()
 
 check_required_components(SofaCUDA)
-
-include(SofaCUDANvccFlags)
