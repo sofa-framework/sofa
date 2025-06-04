@@ -55,11 +55,13 @@ activation = { env = { SOFA_PLUGIN_SOFA_GUI_QT = "ON", Qt5_DIR = "$CONDA_PREFIX/
 dependencies = { qt-main = ">=5.15.0", ffmpeg = "*", libqglviewer = "*" }
 
 [feature.plugin-cuda]
+system-requirements = { cuda = "12" }
+[feature.plugin-cuda.target.linux]
 # XXX Adding nvvm/bin to PATH was required to compile, may be related to
 # https://github.com/conda-forge/cuda-nvcc-impl-feedstock/issues/9
 activation = { env = { PATH = "$CONDA_PREFIX/nvvm/bin:$PATH"}}
-platforms = ["win-64", "linux-64"]
-system-requirements = { cuda = "12" }
+dependencies = { cuda-version = "*", cuda-compiler = "*" }
+[feature.plugin-cuda.target.win]
 dependencies = { cuda-version = "*", cuda-compiler = "*" }
 
 [feature.plugin-cgal]
@@ -207,27 +209,27 @@ supported-plugins = { features = [
   "presets-supported-plugins",
   "plugin-sofa-python3",
   "plugin-cgal",
-  # "plugin-cuda",
+  "plugin-cuda",
   "presets-defaultGUI",
   "qt-gui"]}
 supported-plugins-dev = { features = [
   "presets-supported-plugins-dev",
   "plugin-sofa-python3",
   "plugin-cgal",
-  # "plugin-cuda",
+  "plugin-cuda",
   "presets-defaultGUI",
   "qt-gui"]}  
 full = { features = [
   "presets-full",
   "plugin-sofa-python3",
   "plugin-cgal",
-  # "plugin-cuda",
+  "plugin-cuda",
   "presets-defaultGUI",
   "qt-gui"]}
 full-dev = { features = [
   "presets-full-dev",
   "plugin-sofa-python3",
   "plugin-cgal",
-  # "plugin-cuda",
+  "plugin-cuda",
   "presets-defaultGUI",
   "qt-gui"]}
