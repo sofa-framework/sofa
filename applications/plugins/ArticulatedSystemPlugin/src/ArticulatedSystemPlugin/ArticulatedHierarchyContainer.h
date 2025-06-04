@@ -29,7 +29,7 @@
 #include <sofa/type/Transform.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/simulation/fwd.h>
-namespace sofa::component::container
+namespace articulatedsystemplugin
 {
 
 class ArticulationCenter;
@@ -247,4 +247,5 @@ public:
     ArticulatedHierarchyContainer::Transform H_pLc_a;
 };
 
-} // namespace sofa::component::container
+} // namespace articulatedsystemplugin
+

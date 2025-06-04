@@ -22,20 +22,17 @@
 #pragma once
 
 #include <sofa/simulation/BaseMechanicalVisitor.h>
-#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseLagrangianConstraint.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 class SOFA_SIMULATION_CORE_API MechanicalGetConstraintInfoVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
-    typedef core::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
-    typedef core::behavior::BaseConstraint::VecPersistentID VecPersistentID;
-    typedef core::behavior::BaseConstraint::VecConstCoord VecConstCoord;
-    typedef core::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
-    typedef core::behavior::BaseConstraint::VecConstArea VecConstArea;
+    typedef core::behavior::BaseLagrangianConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
+    typedef core::behavior::BaseLagrangianConstraint::VecPersistentID VecPersistentID;
 
-    MechanicalGetConstraintInfoVisitor(const core::ConstraintParams* params, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas);
+    MechanicalGetConstraintInfoVisitor(const core::ConstraintParams* params, VecConstraintBlockInfo& blocks, VecPersistentID& ids);
 
     Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
 
@@ -49,9 +46,6 @@ public:
 private:
     VecConstraintBlockInfo& _blocks;
     VecPersistentID& _ids;
-    VecConstCoord& _positions;
-    VecConstDeriv& _directions;
-    VecConstArea& _areas;
     const core::ConstraintParams* _cparams;
 };
 

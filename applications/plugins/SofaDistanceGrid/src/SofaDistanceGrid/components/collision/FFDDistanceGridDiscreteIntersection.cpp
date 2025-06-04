@@ -62,8 +62,8 @@ bool FFDDistanceGridDiscreteIntersection::testIntersection(FFDDistanceGridCollis
 int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, RigidDistanceGridCollisionElement& e2, OutputVector* contacts, const core::collision::Intersection* intersection)
 {
     int nc = 0;
-    DistanceGrid* grid1 = e1.getGrid();
-    DistanceGrid* grid2 = e2.getGrid();
+    const std::shared_ptr<DistanceGrid> grid1 = e1.getGrid();
+    const std::shared_ptr<DistanceGrid> grid2 = e2.getGrid();
     FFDDistanceGridCollisionModel::DeformedCube& c1 = e1.getCollisionModel()->getDeformCube(e1.getIndex());
     bool useXForm = e2.isTransformed();
     //const type::Vec3& t1 = e1.getTranslation();
@@ -238,8 +238,8 @@ bool FFDDistanceGridDiscreteIntersection::testIntersection(FFDDistanceGridCollis
 int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, FFDDistanceGridCollisionElement& e2, OutputVector* contacts, const core::collision::Intersection* intersection)
 {
     int nc = 0;
-    DistanceGrid* grid1 = e1.getGrid();
-    DistanceGrid* grid2 = e2.getGrid();
+    const std::shared_ptr<DistanceGrid> grid1 = e1.getGrid();
+    const std::shared_ptr<DistanceGrid> grid2 = e2.getGrid();
     FFDDistanceGridCollisionModel::DeformedCube& c1 = e1.getCollisionModel()->getDeformCube(e1.getIndex());
     FFDDistanceGridCollisionModel::DeformedCube& c2 = e2.getCollisionModel()->getDeformCube(e2.getIndex());
     const bool usePoints1 = e1.getCollisionModel()->usePoints.getValue();
@@ -435,7 +435,7 @@ bool FFDDistanceGridDiscreteIntersection::testIntersection(FFDDistanceGridCollis
 int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, Point& e2, OutputVector* contacts, const core::collision::Intersection* intersection)
 {
 
-    DistanceGrid* grid1 = e1.getGrid();
+    const std::shared_ptr<DistanceGrid> grid1 = e1.getGrid();
     FFDDistanceGridCollisionModel::DeformedCube& c1 = e1.getCollisionModel()->getDeformCube(e1.getIndex());
 
     const double d0 = e1.getProximity() + e2.getProximity() + intersection->getContactDistance();
@@ -526,7 +526,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
     const int f2 = e2.flags();
     if (!(f2&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS)) return 0; // no points associated with this triangle
 
-    DistanceGrid* grid1 = e1.getGrid();
+    const std::shared_ptr<DistanceGrid> grid1 = e1.getGrid();
     FFDDistanceGridCollisionModel::DeformedCube& c1 = e1.getCollisionModel()->getDeformCube(e1.getIndex());
 
     const double d0 = e1.getProximity() + e2.getProximity() + intersection->getContactDistance();
@@ -621,7 +621,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(Ray& e2, FFDDistanc
     type::Vec3 rayDirection(e2.direction());
     const double rayLength = e2.l();
 
-    DistanceGrid* grid1 = e1.getGrid();
+    const std::shared_ptr<DistanceGrid> grid1 = e1.getGrid();
     FFDDistanceGridCollisionModel::DeformedCube& c1 = e1.getCollisionModel()->getDeformCube(e1.getIndex());
 
     // Center of the sphere

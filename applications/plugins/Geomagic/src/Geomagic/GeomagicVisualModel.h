@@ -37,13 +37,7 @@
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa 
-{
-
-namespace component 
-{
-
-namespace controller
+namespace geomagic
 {
 
 using namespace sofa::defaulttype;
@@ -113,10 +107,6 @@ private:
     double m_scale;
 };
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
+} // namespace geomagic
 
 #endif // SOFA_GEOMAGIC_VISUALMODEL_H

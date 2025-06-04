@@ -61,21 +61,18 @@ void FixedLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::Con
 
         doBuildConstraintLine(c,i);
     }
-    c_d.endEdit();
 }
 
 template<class DataTypes>
 void FixedLagrangianConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* cParams, linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v)
 {
     SOFA_UNUSED(cParams);
-    SOFA_UNUSED(x);
     SOFA_UNUSED(v);
-    const DataVecCoord * freePos = this->getMState()->read(sofa::core::vec_id::read_access::freePosition);
     const DataVecCoord * restPos = this->getMState()->read(sofa::core::vec_id::read_access::restPosition);
 
     for(unsigned i=0; i<m_cid.size(); ++i)
     {
-        doGetSingleConstraintViolation(resV,freePos, restPos, i);
+        doGetSingleConstraintViolation(resV, &x, restPos, i);
     }
 }
 

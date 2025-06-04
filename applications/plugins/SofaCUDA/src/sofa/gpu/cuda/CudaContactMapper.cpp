@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,43 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/behavior/BaseConstraint.h>
+#define SOFACUDA_CUDACONTACTMAPPER_CPP
 
-namespace sofa::core::behavior
-{
-int BaseConstraint::getGroup() const
-{
-    return group.getValue();
-}
+#include <sofa/gpu/cuda/CudaContactMapper.h>
 
-void BaseConstraint::setGroup(int g)
+namespace sofa::component::collision
 {
-    group.setValue(g);
-}
 
-void BaseConstraint::getConstraintInfo(const ConstraintParams* cParams, VecConstraintBlockInfo& blocks,
-    VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
-{
-    SOFA_UNUSED(cParams);
-    SOFA_UNUSED(blocks);
-    SOFA_UNUSED(ids);
-    SOFA_UNUSED(positions);
-    SOFA_UNUSED(directions);
-    SOFA_UNUSED(areas);
+template class SOFA_GPU_CUDA_API response::mapper::ContactMapper<sofa::gpu::cuda::CudaPointCollisionModel, CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API response::mapper::ContactMapper<sofa::gpu::cuda::CudaSphereCollisionModel, CudaVec3fTypes>;
 
 }
-
-void BaseConstraint::getConstraintResolution(const ConstraintParams* cParams,
-    std::vector<ConstraintResolution*>& resTab, unsigned& offset)
-{
-    getConstraintResolution(resTab, offset);
-    SOFA_UNUSED(cParams);
-}
-
-void BaseConstraint::getConstraintResolution(std::vector<ConstraintResolution*>& resTab, unsigned& offset)
-{
-    SOFA_UNUSED(resTab);
-    SOFA_UNUSED(offset);
-}
-
-} // namespace sofa::core::behavior

@@ -19,44 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/gui/qt/QModelViewTableDataContainer.h>
+#include <sofa/core/behavior/BaseLagrangianConstraint.h>
 
-namespace sofa::gui::qt
+namespace sofa::core::behavior
 {
-////////////////////////////////////////////////////////////////
-/// variable-sized vectors support
-////////////////////////////////////////////////////////////////
-
-template<class T>
-class vector_data_trait < sofa::gpu::cuda::CudaVector<T> >
+int BaseLagrangianConstraint::getGroup() const
 {
-public:
-    typedef sofa::gpu::cuda::CudaVector<T> data_type;
-    typedef T value_type;
-    enum { NDIM = 1 };
-    static int size(const data_type& d) {
-        return d.size();
-    }
-    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
-    {
-        return nullptr;
-    }
-    static const value_type* get(const data_type& d, int i = 0)
-    {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
-    }
-    static void set(const value_type& v, data_type& d, int i = 0)
-    {
-        if ((unsigned)i < (unsigned)size(d))
-            d[i] = v;
-    }
-    static void resize(int s, data_type& d)
-    {
-        d.resize(s);
-    }
-};
+    return group.getValue();
+}
 
+void BaseLagrangianConstraint::setGroup(int g)
+{
+    group.setValue(g);
+}
 
-} // namespace sofa::gui::qt
+void BaseLagrangianConstraint::getConstraintInfo(const ConstraintParams* cParams, VecConstraintBlockInfo& blocks,
+    VecPersistentID& ids)
+{
+    SOFA_UNUSED(cParams);
+    SOFA_UNUSED(blocks);
+    SOFA_UNUSED(ids);
+}
+
+void BaseLagrangianConstraint::getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
+{
+    msg_warning()<<"BaseLagrangianConstraint::getConstraintInfo signature has changed. Positions, directions and areas are not used anymore. This method is deprecated since v25.06 and will be deleted in v25.12.";
+    this->getConstraintInfo(cParams, blocks, ids);
+    SOFA_UNUSED(positions);
+    SOFA_UNUSED(directions);
+    SOFA_UNUSED(areas);
+}
+
+void BaseLagrangianConstraint::getConstraintResolution(const ConstraintParams* cParams,
+    std::vector<ConstraintResolution*>& resTab, unsigned& offset)
+{
+    getConstraintResolution(resTab, offset);
+    SOFA_UNUSED(cParams);
+}
+
+void BaseLagrangianConstraint::getConstraintResolution(std::vector<ConstraintResolution*>& resTab, unsigned& offset)
+{
+    SOFA_UNUSED(resTab);
+    SOFA_UNUSED(offset);
+}
+
+} // namespace sofa::core::behavior

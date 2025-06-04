@@ -25,7 +25,7 @@
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
-#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseLagrangianConstraint.h>
 #include <sofa/helper/map.h>
 
 #include <sofa/simulation/CpuTask.h>
@@ -138,6 +138,9 @@ private:
         const core::ConstraintParams* cParams,
         MultiVecId res1, MultiVecId res2,
         core::behavior::BaseConstraintCorrection* constraintCorrection) const;
+
+    // Accumulate the lambda values projected in the motion space in the states
+    // f += J^T * lambda
     void storeConstraintLambdas(const core::ConstraintParams* cParams);
 
 };

@@ -41,7 +41,7 @@ namespace sofa::component::constraint::lagrangian::model
 
 /// These 'using' are in a per-file namespace so they will not leak
 /// and polluate the standard namespace.
-using sofa::core::behavior::BaseConstraint ;
+using sofa::core::behavior::BaseLagrangianConstraint ;
 using sofa::core::behavior::ConstraintResolution ;
 using sofa::core::behavior::PairInteractionConstraint ;
 using sofa::core::ConstraintParams ;
@@ -81,7 +81,7 @@ public:
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef BaseConstraint::PersistentID PersistentID;
+    typedef BaseLagrangianConstraint::PersistentID PersistentID;
 
     typedef Data<VecCoord>		DataVecCoord;
     typedef Data<VecDeriv>		DataVecDeriv;

@@ -19,25 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_FLUID3D_H
-#define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_FLUID3D_H
-#include "config.h"
+#ifndef SOFAEULERIANFLUID_FLUID3D_H
+#define SOFAEULERIANFLUID_FLUID3D_H
+
+#include <SofaEulerianFluid/config.h>
 
 #include <SofaEulerianFluid/Grid3D.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/MarchingCubeUtility.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace behaviormodel
-{
-
-namespace eulerianfluid
+namespace sofaeulerianfluid
 {
 
 class SOFA_EULERIAN_FLUID_API Fluid3D : public sofa::core::BehaviorModel
@@ -82,14 +74,14 @@ public:
 
     void updatePosition(SReal dt) override;
 
-    void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const sofa::core::visual::VisualParams* vparams) override;
 
     virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex);
 
 
     virtual void updateVisual();
 
-    void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override;
+    void computeBBox(const sofa::core::ExecParams*  params, bool onlyVisible=false ) override;
 
 protected:
     // marching cube
@@ -153,12 +145,6 @@ protected:
 
 };
 
-} // namespace eulerianfluid
-
-} // namespace behaviormodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofaeulerianfluid
 
 #endif

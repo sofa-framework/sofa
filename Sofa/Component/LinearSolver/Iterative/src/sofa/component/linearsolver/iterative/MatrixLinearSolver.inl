@@ -164,9 +164,10 @@ void MatrixLinearSolver<Matrix, Vector, NoThreadManager>::doCheckLinearSystem()
             }
             else
             {
+                auto* firstCandidate = *notAlreadyAssociated.begin();
                 if (notAlreadyAssociated.size() == 1)
                 {
-                    msg_info() << "Linear system found: " << l_linearSystem->getPathName();
+                    msg_info() << "Linear system found: " << firstCandidate->getPathName();
                 }
                 else
                 {
@@ -174,7 +175,7 @@ void MatrixLinearSolver<Matrix, Vector, NoThreadManager>::doCheckLinearSystem()
                         << "to this linear solver. The first one in the list is selected. Set the link " << l_linearSystem.getLinkedPath()
                         << " properly to remove this warning.";
                 }
-                l_linearSystem.set(*notAlreadyAssociated.begin());
+                l_linearSystem.set(firstCandidate);
             }
         }
     }
@@ -621,15 +622,18 @@ void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::C
 }
 
 template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* params,linearalgebra::BaseVector* f) {
+void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* params,linearalgebra::BaseVector* f)
+{
     getSystemRHVector()->clear();
     getSystemRHVector()->resize(getSystemMatrix()->colSize());
 
+    /// rhs = J^t * f
     internalData.projectForceInConstraintSpace(getSystemRHVector(), f);
 
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::core::behavior::MultiVecDeriv force(&vop, core::vec_id::write_access::force );
 
+    // force += rhs
     executeVisitor( MechanicalMultiVectorPeqBaseVectorVisitor(core::execparams::defaultInstance(), force, getSystemRHVector(), &(linearSystem.matrixAccessor)) );
 }
 

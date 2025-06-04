@@ -48,7 +48,7 @@ bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCo
 template<class T>
 int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, geometry::TSphere<T>& e2, OutputVector* contacts, const core::collision::Intersection* intersection)
 {
-    DistanceGrid* grid1 = e1.getGrid();
+    const std::shared_ptr<DistanceGrid> grid1 = e1.getGrid();
     bool useXForm = e1.isTransformed();
     const type::Vec3& t1 = e1.getTranslation();
     const sofa::type::Matrix3& r1 = e1.getRotation();

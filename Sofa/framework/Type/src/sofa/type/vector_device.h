@@ -79,7 +79,7 @@ protected:
 #endif
     mutable Size      clearSize;  ///< when initializing missing device data, up to where entries should be set to zero ?
     T* hostPointer;    ///< Pointer to the data on the CPU side
-    mutable int   deviceIsValid;  ///< True if the data on the GPU is currently valid (up to the given deviceVectorSize of each device, i.e. additional space may need to be allocated and/or initialized)
+    mutable unsigned   deviceIsValid;  ///< True if the data on the GPU is currently valid (up to the given deviceVectorSize of each device, i.e. additional space may need to be allocated and/or initialized)
     mutable bool  hostIsValid;    ///< True if the data on the CPU is currently valid
     mutable bool  bufferIsRegistered;  ///< True if the buffer is registered with CUDA
     buffer_id_type  bufferObject;   ///< Optional associated buffer ID

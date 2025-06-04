@@ -36,7 +36,7 @@ namespace sofa::core::behavior
  *
  *  This class only contains the data of the body and not any of its
  *  <i>active</i> computations, which are handled by the Mass, ForceField, and
- *  Constraint components.
+ *  LagrangianConstraint components.
  *
  *  Two types of vectors are used :
  *  \li \code VecCoord \endcode : containing positions.

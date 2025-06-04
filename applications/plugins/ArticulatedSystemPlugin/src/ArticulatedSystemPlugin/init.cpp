@@ -24,13 +24,24 @@
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
+
+namespace articulatedsystemplugin
+{
+    extern void registerArticulatedHierarchyBVHController(sofa::core::ObjectFactory* factory);
+    extern void registerArticulatedHierarchyController(sofa::core::ObjectFactory* factory);
+    extern void registerArticulatedSystemMapping(sofa::core::ObjectFactory* factory);
+    extern void registerArticulatedHierarchyContainer(sofa::core::ObjectFactory* factory);
+    extern void registerArticulationCenter(sofa::core::ObjectFactory* factory);
+    extern void registerArticulation(sofa::core::ObjectFactory* factory);
+
+
 extern "C" {
     SOFA_ARTICULATEDSYSTEMPLUGIN_API void initExternalModule();
     SOFA_ARTICULATEDSYSTEMPLUGIN_API const char* getModuleName();
     SOFA_ARTICULATEDSYSTEMPLUGIN_API const char* getModuleVersion();
     SOFA_ARTICULATEDSYSTEMPLUGIN_API const char* getModuleLicense();
     SOFA_ARTICULATEDSYSTEMPLUGIN_API const char* getModuleDescription();
-    SOFA_ARTICULATEDSYSTEMPLUGIN_API const char* getModuleComponentList();
+    SOFA_ARTICULATEDSYSTEMPLUGIN_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -44,12 +55,12 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return sofa_tostring(SOFA_TARGET);
+    return MODULE_NAME;
 }
 
 const char* getModuleVersion()
 {
-    return sofa_tostring(ARTICULATEDSYSTEMPLUGIN_VERSION);
+    return MODULE_VERSION;
 }
 
 const char* getModuleLicense()
@@ -62,18 +73,19 @@ const char* getModuleDescription()
     return "SOFA Plugin to handle articulated systems.";
 }
 
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-namespace sofa::articulatedsystem
-{
-
 void initArticulatedSystemPlugin()
 {
     initExternalModule();
+}
+
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    registerArticulatedHierarchyBVHController(factory);
+    registerArticulatedHierarchyController(factory);
+    registerArticulatedSystemMapping(factory);
+    registerArticulatedHierarchyContainer(factory);
+    registerArticulationCenter(factory);
+    registerArticulation(factory);
 }
 
 } // namespace sofa::articulatedsystem

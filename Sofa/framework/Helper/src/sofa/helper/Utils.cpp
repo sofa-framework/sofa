@@ -210,13 +210,72 @@ std::map<std::string, std::string> Utils::readBasicIniFile(const std::string& pa
 }
 
 // no standard/portable way
-const std::string& Utils::getUserLocalDirectory()
+const std::string& Utils::getUserHomeDirectory()
 {
-
     auto computeUserHomeDirectory = []()
     {
-// Windows: "LocalAppData" directory i.e ${HOME}\AppData\Local
-#ifdef WIN32
+#ifdef WIN32 // Windows: ${HOME}
+        const char* homeDir = std::getenv("USERPROFILE");
+        return std::string(homeDir);
+#elif defined(__APPLE__) // macOS : ${HOME} (usually /Users/username)
+        glob_t globbuf;
+        if (glob("~", GLOB_TILDE, nullptr, &globbuf) == 0)
+        {
+            std::string result(globbuf.gl_pathv[0]);
+            globfree(&globbuf);
+            return result;
+        }
+        else // Unable to expand tilde, fallback to env method
+        {
+            const char* homeDir;
+
+            // if HOME is defined
+            if ((homeDir = std::getenv("HOME")) != nullptr)
+            {
+                return std::string(homeDir);
+            }
+            else
+            {
+                return std::string("");
+            }
+        }
+#else // Linux: ${HOME}
+    const char* homeDir;
+
+    // if HOME is defined
+    if ((homeDir = std::getenv("HOME")) == nullptr)
+    {
+        // else system calls are used
+        homeDir = getpwuid(getuid())->pw_dir;
+    }
+
+    return std::string(homeDir);
+
+#endif
+    };
+
+    static std::string homeDir = FileSystem::cleanPath(computeUserHomeDirectory());
+    return homeDir;
+}
+
+const std::string& Utils::getSofaDataDirectory()
+{
+    constexpr std::string_view sofaDataDirSuffix = "SOFAData";
+
+    static std::string sofaDataDirectory = FileSystem::append(getUserHomeDirectory(), sofaDataDirSuffix);
+    FileSystem::cleanPath(sofaDataDirectory);
+    FileSystem::ensureFolderExists(sofaDataDirectory);
+
+    return sofaDataDirectory;
+}
+
+
+// no standard/portable way
+const std::string& Utils::getUserLocalDirectory()
+{
+    auto computeUserLocalDirectory = []()
+    {
+#ifdef WIN32 // Windows: "LocalAppData" directory i.e ${HOME}\AppData\Local
         std::wstring wresult;
         wchar_t* path = nullptr;
         const auto hr = SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &path);
@@ -230,61 +289,49 @@ const std::string& Utils::getUserLocalDirectory()
         }
 
         return sofa::helper::narrowString(wresult);
-
 #elif defined(__APPLE__) // macOS : ${HOME}/Library/Application Support
         // https://stackoverflow.com/questions/5123361/finding-library-application-support-from-c
-        
-        char path[PATH_MAX];
-        auto state = sysdir_start_search_path_enumeration(SYSDIR_DIRECTORY_APPLICATION_SUPPORT,
-                                                          SYSDIR_DOMAIN_MASK_USER);
-        if ((state = sysdir_get_next_search_path_enumeration(state, path)))
-        {
-            glob_t globbuf;
-            if (glob(path, GLOB_TILDE, nullptr, &globbuf) == 0) 
-            {
-                std::string result(globbuf.gl_pathv[0]);
-                globfree(&globbuf);
-                return result;
-            } 
-            else
-            {
-                // "Unable to expand tilde"
-                return std::string("");
-            }
-        }
-        else
-        {
-            // "Failed to get settings folder"
-            return std::string("");
-        }
-        
+
+         char path[PATH_MAX];
+         auto state = sysdir_start_search_path_enumeration(SYSDIR_DIRECTORY_APPLICATION_SUPPORT,
+                                                           SYSDIR_DOMAIN_MASK_USER);
+         if ((state = sysdir_get_next_search_path_enumeration(state, path)))
+         {
+             glob_t globbuf;
+             if (glob(path, GLOB_TILDE, nullptr, &globbuf) == 0)
+             {
+                 std::string result(globbuf.gl_pathv[0]);
+                 globfree(&globbuf);
+                 return result;
+             }
+             else
+             {
+                 // "Unable to expand tilde"
+                 return std::string("");
+             }
+         }
+         else
+         {
+             // "Failed to get settings folder"
+             return std::string("");
+         }
 #else // Linux: either ${XDG_CONFIG_HOME} if defined, or ${HOME}/.config (should be equivalent)
         const char* configDir;
 
         // if env.var XDG_CONFIG_HOME is defined
         if ((configDir = std::getenv("XDG_CONFIG_HOME")) == nullptr)
         {
-            const char* homeDir;
-
-            // else if HOME is defined
-            if ((homeDir = std::getenv("HOME")) == nullptr)
-            {
-                // else system calls are used
-                homeDir = getpwuid(getuid())->pw_dir;
-            }
-
-            return std::string(homeDir) + std::string("/.config");
+            return FileSystem::append(getUserHomeDirectory(), ".config");
         }
         else
         {
             return std::string(configDir);
         }
-
 #endif
     };
 
-    static std::string homeDir = FileSystem::cleanPath(computeUserHomeDirectory());
-    return homeDir;
+    static std::string userLocalDir = FileSystem::cleanPath(computeUserLocalDirectory());
+    return userLocalDir;
 }
 
 const std::string& Utils::getSofaUserLocalDirectory()

@@ -24,6 +24,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/core/ConstraintOrder.h>
 
 namespace sofa::core::behavior
 {
@@ -43,6 +44,10 @@ public:
     /// @name Compliance Matrix API
     /// @{
 
+    /// Compute the compliance matrix projected in the constraint space and accumulate it into \p W
+    ///
+    /// The computation is W += J A^-1 J^T where J is the constraint Jacobian matrix and A is the
+    /// mechanical matrix
     virtual void addComplianceInConstraintSpace(const ConstraintParams *, linearalgebra::BaseMatrix* W) = 0;
 
     /// Fill the matrix m with the full Compliance Matrix
@@ -105,7 +110,7 @@ public:
 
     /// Rebuild the system using a mass and force factor
     /// Experimental API used to investigate convergence issues.
-    virtual void rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/);
+    SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM() virtual void rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/);
 
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute Vecid::force() += J^t lambda
@@ -117,6 +122,8 @@ public:
 
     /// @name Unbuilt constraint system during resolution
     /// @{
+
+    /// Is the constraint managed by this constraint correction?
     virtual bool hasConstraintNumber(int /*index*/);
     virtual void resetForUnbuiltResolution(SReal* /*f*/, std::list<unsigned int>& /*renumbering*/);
     virtual void addConstraintDisplacement(SReal* /*d*/, int /*begin*/, int /*end*/);
@@ -127,6 +134,8 @@ public:
 protected:
     BaseConstraintCorrection();
     ~BaseConstraintCorrection() override;
+
+    static SReal correctionFactor(const sofa::core::behavior::OdeSolver* solver, const ConstraintOrder& constraintOrder);
 
 private:
     BaseConstraintCorrection(const BaseConstraintCorrection& n) = delete ;
