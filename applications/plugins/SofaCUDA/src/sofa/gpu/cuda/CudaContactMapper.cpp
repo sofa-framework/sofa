@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,44 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/gui/qt/QModelViewTableDataContainer.h>
+#define SOFACUDA_CUDACONTACTMAPPER_CPP
 
-namespace sofa::gui::qt
+#include <sofa/gpu/cuda/CudaContactMapper.h>
+
+namespace sofa::component::collision
 {
-////////////////////////////////////////////////////////////////
-/// variable-sized vectors support
-////////////////////////////////////////////////////////////////
 
-template<class T>
-class vector_data_trait < sofa::gpu::cuda::CudaVector<T> >
-{
-public:
-    typedef sofa::gpu::cuda::CudaVector<T> data_type;
-    typedef T value_type;
-    enum { NDIM = 1 };
-    static int size(const data_type& d) {
-        return d.size();
-    }
-    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
-    {
-        return nullptr;
-    }
-    static const value_type* get(const data_type& d, int i = 0)
-    {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
-    }
-    static void set(const value_type& v, data_type& d, int i = 0)
-    {
-        if ((unsigned)i < (unsigned)size(d))
-            d[i] = v;
-    }
-    static void resize(int s, data_type& d)
-    {
-        d.resize(s);
-    }
-};
+template class SOFA_GPU_CUDA_API response::mapper::ContactMapper<sofa::gpu::cuda::CudaPointCollisionModel, CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API response::mapper::ContactMapper<sofa::gpu::cuda::CudaSphereCollisionModel, CudaVec3fTypes>;
 
-
-} // namespace sofa::gui::qt
+}
