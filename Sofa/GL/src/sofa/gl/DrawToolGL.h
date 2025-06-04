@@ -81,7 +81,7 @@ public:
     virtual void drawTriangles(const std::vector<type::Vec3> &points,
             const std::vector< type::Vec3i > &index,
             const std::vector<type::Vec3>  &normal,
-            const std::vector<type::RGBAColor>& color) override;
+            const std::vector<type::RGBAColor>& colors) override;
     virtual void drawTriangles(const std::vector<type::Vec3> &points,
             const std::vector<type::Vec3>  &normal,
             const std::vector< type::RGBAColor > &color) override;
