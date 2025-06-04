@@ -56,4 +56,3 @@ endif()
 
 check_required_components(SofaCUDA)
 
-include(SofaCUDANvccFlags)
