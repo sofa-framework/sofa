@@ -176,7 +176,7 @@ void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
-        const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->proximity.getValue();
+        const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
             TSphere<DataTypes> p(this,i);
@@ -218,7 +218,7 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
     cubeModel->resize(size);
     if (!empty())
     {
-        const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->proximity.getValue();
+        const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
             TSphere<DataTypes> p(this,i);
