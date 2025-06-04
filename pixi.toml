@@ -63,16 +63,16 @@ activation = { env = { PATH = "$CONDA_PREFIX/nvvm/bin:$PATH"}}
 dependencies = { cuda-version = "*", cuda-compiler = "*" }
 [feature.plugin-cuda.target.win]
 dependencies = { cuda-version = "*", cuda-compiler = "*" }
+[feature.plugin-cuda.target.osx]
+activation = { env = { SOFA_PLUGIN_SOFACUDA = "OFF" } }
 
 [feature.plugin-cgal]
 dependencies = { cgal-cpp = "*" }
 
 [feature.presets-defaultGUI]
 dependencies = { glew = "*", glfw = "*", nativefiledialog-extended = "*"}
-
 [feature.presets-defaultGUI.target.linux]
 dependencies = { libglu = "*" }
-
 [feature.presets-defaultGUI.target.linux-64]
 dependencies = { mesa-libgl-devel-cos7-x86_64 = "*" }
 
@@ -126,6 +126,7 @@ configure = { cmd = [ "cmake",
   ".",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "-DPLUGIN_SOFACUDA=$SOFA_PLUGIN_SOFACUDA",
   "--preset",
   "supported-plugins",
   "$SOFA_PLUGIN_PYTHON3_ARGS"] }
@@ -140,6 +141,7 @@ configure = { cmd = [ "cmake",
   ".",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "-DPLUGIN_SOFACUDA=$SOFA_PLUGIN_SOFACUDA",
   "--preset",
   "full",
   "$SOFA_PLUGIN_PYTHON3_ARGS"] }
@@ -181,6 +183,7 @@ configure = { cmd = [ "cmake",
   ".",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "-DPLUGIN_SOFACUDA=$SOFA_PLUGIN_SOFACUDA",
   "--preset",
   "supported-plugins-dev",
   "$SOFA_PLUGIN_PYTHON3_ARGS"] }
@@ -195,6 +198,7 @@ configure = { cmd = [ "cmake",
   ".",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "-DPLUGIN_SOFACUDA=$SOFA_PLUGIN_SOFACUDA",
   "--preset",
   "full-dev",
   "$SOFA_PLUGIN_PYTHON3_ARGS"] }  
