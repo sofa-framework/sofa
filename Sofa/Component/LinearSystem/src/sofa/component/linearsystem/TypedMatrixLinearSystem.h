@@ -70,7 +70,6 @@ public:
     /// Return the solution of the linear system
     virtual TVector* getSolutionVector() const;
 
-    linearalgebra::BaseMatrix* getSystemBaseMatrix() const override;
 
     /// Set the size of the matrix to n x n, and the size of RHS and solution to n
     virtual void resizeSystem(sofa::Size n);
@@ -92,6 +91,7 @@ public:
     core::objectmodel::BaseContext* getSolveContext();
 
 protected:
+    linearalgebra::BaseMatrix* doGetSystemBaseMatrix() const override;
 
     LinearSystemData<TMatrix, TVector> m_linearSystem;
 
