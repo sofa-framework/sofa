@@ -143,7 +143,7 @@ MeshVTKLoader::VTKFileType MeshVTKLoader::detectFileType(const char* filename)
     }
 }
 
-bool MeshVTKLoader::doLoad()
+bool MeshVTKLoader::doLoadMesh()
 {
     msg_info() << "Loading VTK file: " << d_filename ;
 
