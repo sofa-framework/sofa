@@ -67,7 +67,7 @@ dependencies = { cuda-version = "*", cuda-compiler = "*" }
 activation = { env = { SOFA_PLUGIN_SOFACUDA = "OFF" } }
 
 [feature.plugin-cgal]
-dependencies = { cgal-cpp = "*" }
+dependencies = { cgal-cpp = "*", gmp = "*" }
 
 [feature.presets-defaultGUI]
 dependencies = { glew = "*", glfw = "*", nativefiledialog-extended = "*"}
