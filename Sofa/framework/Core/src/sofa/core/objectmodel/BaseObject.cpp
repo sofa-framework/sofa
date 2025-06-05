@@ -27,6 +27,7 @@
 #include <sofa/core/topology/Topology.h>
 #include <sofa/helper/TagFactory.h>
 #include <iostream>
+#include <ranges>
 
 
 namespace sofa::core::objectmodel
@@ -276,9 +277,9 @@ void BaseObject::reinit()
 void BaseObject::updateInternal()
 {
     const auto& mapTrackedData = m_internalDataTracker.getMapTrackedData();
-    for( auto const& it : mapTrackedData )
+    for(const auto* data : mapTrackedData | std::views::keys)
     {
-        it.first->updateIfDirty();
+        data->updateIfDirty();
     }
 
     if(m_internalDataTracker.hasChanged())
@@ -300,19 +301,15 @@ void BaseObject::cleanTracker()
 
 bool BaseObject::hasDataChanged(const objectmodel::BaseData& data)
 {
-    bool dataFoundinTracker = false;
     const auto& mapTrackedData = m_internalDataTracker.getMapTrackedData();
     const std::string & dataName = data.getName();
 
-    for( auto const& it : mapTrackedData )
-    {
-        if(it.first->getName()==dataName)
+    auto trackedData = mapTrackedData | std::views::keys;
+    if (std::ranges::find_if(trackedData,
+        [&dataName](const BaseData* d)
         {
-            dataFoundinTracker=true;
-            break;
-        }
-    }
-    if(!dataFoundinTracker)
+            return d->getName() == dataName;
+        }) == trackedData.end())
     {
         msg_error()<< "Data " << dataName << " is not tracked";
         return false;
