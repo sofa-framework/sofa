@@ -41,7 +41,7 @@
         <Node name="constraintSpace">
             <MechanicalObject template="Vec1" name="volumeDoFs"/>
             <VolumeMapping name="volumeMapping" topology="@../topo" geometricStiffness="Exact" applyRestPosition="true"/>
-            <RestShapeSpringsForceField template="Vec1" stiffness="15000"/>
+            <FixedWeakConstraint template="Vec1" stiffness="15000" fixAll="true"/>
         </Node>
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
             <OglModel name="VisualModel" src="@../../LiverSurface"/>

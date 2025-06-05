@@ -25,7 +25,7 @@ using sofa::testing::BaseTest;
 #include <sofa/simpleapi/SimpleApi.h>
 using namespace sofa::simpleapi;
 
-#include <sofa/component/solidmechanics/spring/RestShapeSpringsForceField.h>
+#include <sofa/component/solidmechanics/spring/FixedWeakConstraint.h>
 #include <sofa/simulation/Node.h>
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
@@ -37,28 +37,27 @@ using sofa::helper::ReadAccessor;
 using sofa::Data;
 
 /// Test suite for RestShapeSpringsForceField
-class RestSpringsForceField_test : public BaseTest
+class FixedWeakConstraint_test : public BaseTest
 {
 public:
-    ~RestSpringsForceField_test() override;
+    ~FixedWeakConstraint_test() override;
     sofa::simulation::Node::SPtr createScene(const std::string& type);
 
     template<class Type>
     void testDefaultBehavior(sofa::simulation::Node::SPtr root);
 
     template<class Type>
-    void checkDifference(MechanicalObject<Type>& mo, bool isFixed);
+    void checkDifference(MechanicalObject<Type>& mo);
 };
 
-RestSpringsForceField_test::~RestSpringsForceField_test()
+FixedWeakConstraint_test::~FixedWeakConstraint_test()
 {
 }
 
-sofa::simulation::Node::SPtr RestSpringsForceField_test::createScene(const std::string& type)
+sofa::simulation::Node::SPtr FixedWeakConstraint_test::createScene(const std::string& type)
 {
     const auto theSimulation = createSimulation();
     auto theRoot = createRootNode(theSimulation, "root");
-
     this->loadPlugins({
         Sofa.Component.ODESolver.Backward,
         Sofa.Component.LinearSolver.Iterative,
@@ -66,7 +65,7 @@ sofa::simulation::Node::SPtr RestSpringsForceField_test::createScene(const std::
         Sofa.Component.Mass,
         Sofa.Component.SolidMechanics.Spring
     });
-    
+
     createObject(theRoot, "DefaultAnimationLoop");
     createObject(theRoot, "EulerImplicitSolver");
     createObject(theRoot, "CGLinearSolver", {{ "iterations", "25" }, { "tolerance", "1e-5" }, {"threshold", "1e-5"}});
@@ -79,10 +78,10 @@ sofa::simulation::Node::SPtr RestSpringsForceField_test::createScene(const std::
                                                                            {"template",type}});
     createObject(fixedObject, "UniformMass", {{"totalMass", "1"}});
 
-    createObject(fixedObject, "RestShapeSpringsForceField", {{"stiffness","1000"}});
+    createObject(fixedObject, "FixedWeakConstraint", {{"stiffness","1000"},{"fixAll","true"}});
 
     const auto movingObject = createChild(theRoot, "movingObject");
-    auto movingObject_dofs =createObject(movingObject, "MechanicalObject", {{"name","dofs"},
+    auto movingObject_dofs = createObject(movingObject, "MechanicalObject", {{"name","dofs"},
                                                                             {"size","10"},
                                                                             {"template",type}});
     createObject(movingObject, "UniformMass", {{"totalMass", "1"}});
@@ -96,7 +95,7 @@ sofa::simulation::Node::SPtr RestSpringsForceField_test::createScene(const std::
 }
 
 template<class Type>
-void RestSpringsForceField_test::checkDifference(MechanicalObject<Type>& mo, bool isFixed)
+void FixedWeakConstraint_test::checkDifference(MechanicalObject<Type>& mo)
 {
     ReadAccessor< Data<typename Type::VecCoord> > positions = mo.x;
     ReadAccessor< Data<typename Type::VecCoord> > rest_positions = mo.x0;
@@ -105,23 +104,14 @@ void RestSpringsForceField_test::checkDifference(MechanicalObject<Type>& mo, boo
         sofa::type::Vec3 pos = Type::getCPos(positions[i]) ;
         sofa::type::Vec3 rpos = Type::getCPos(rest_positions[i]) ;
 
-        if(isFixed)
-        {
-            ASSERT_NEAR( pos.x(), rpos.x(), 0.1 );
-            ASSERT_NEAR( pos.y(), rpos.y(), 0.1 );
-            ASSERT_NEAR( pos.z(), rpos.z(), 0.1 );
-        }
-        else
-        {
-            ASSERT_LT( fabs(pos.x()-rpos.x()), 1 );
-            ASSERT_LT( fabs(pos.y()-rpos.y()), 1 );
-            ASSERT_LT( fabs(pos.z()-rpos.z()), 1 );
-        }
+        ASSERT_NEAR( pos.x(), rpos.x(), 0.1 );
+        ASSERT_NEAR( pos.y(), rpos.y(), 0.1 );
+        ASSERT_NEAR( pos.z(), rpos.z(), 0.1 );
     }
 }
 
 template<class Type>
-void RestSpringsForceField_test::testDefaultBehavior(sofa::simulation::Node::SPtr root)
+void FixedWeakConstraint_test::testDefaultBehavior(sofa::simulation::Node::SPtr root)
 {
     auto fixedDofs = dynamic_cast<MechanicalObject<Type>*>(root->getChild("fixedObject")->getObject("dofs"));
     ASSERT_TRUE( fixedDofs != nullptr );
@@ -129,17 +119,16 @@ void RestSpringsForceField_test::testDefaultBehavior(sofa::simulation::Node::SPt
     auto movingDofs = dynamic_cast<MechanicalObject<Type>*>(root->getChild("movingObject")->getObject("dofs"));
     ASSERT_TRUE( movingDofs != nullptr );
 
-    checkDifference(*fixedDofs, true);
-    checkDifference(*movingDofs, false);
+    checkDifference(*fixedDofs);
 }
 
 
-TEST_F(RestSpringsForceField_test, defaultBehaviorVec3)
+TEST_F(FixedWeakConstraint_test, defaultBehaviorVec3)
 {
     this->testDefaultBehavior<Vec3Types>(this->createScene("Vec3"));
 }
 
-TEST_F(RestSpringsForceField_test, defaultBehaviorRigid3)
+TEST_F(FixedWeakConstraint_test, defaultBehaviorRigid3)
 {
     this->testDefaultBehavior<sofa::defaulttype::Rigid3Types>(this->createScene("Rigid3"));
 }
