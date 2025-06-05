@@ -20,14 +20,9 @@ set(SOFAMATRIX_SRC_DIR src/SofaMatrix/Qt)
 
 set(HEADER_FILES
     ${SOFAMATRIX_SRC_DIR}/config.h.in
-    ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixImage.h
-    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.h
-    ${SOFAMATRIX_SRC_DIR}/BaseMatrixImageProxy.h
 )
 
 set(SOURCE_FILES
-    ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixImage.cpp
-    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.cpp
     ${SOFAMATRIX_SRC_DIR}/BaseMatrixImageViewerWidget.cpp
     ${SOFAMATRIX_SRC_DIR}/initSofaMatrixQt.cpp
 )

@@ -34,10 +34,12 @@ namespace sofa::component::linearsystem
 namespace sofa::component::linearsolver
 {
     extern void registerFillReducingOrdering(sofa::core::ObjectFactory* factory);
+    extern void registerGlobalSystemMatrixImage(sofa::core::ObjectFactory* factory);
 }
 namespace sofa::component::constraintset
 {
     extern void registerComplianceMatrixExporter(sofa::core::ObjectFactory* factory);
+    extern void registerComplianceMatrixImage(sofa::core::ObjectFactory* factory);
 }
 
 
@@ -89,9 +91,11 @@ const char* getModuleDescription()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    sofa::component::linearsystem::registerGlobalSystemMatrixExporter(factory);
-    sofa::component::linearsolver::registerFillReducingOrdering(factory);
     sofa::component::constraintset::registerComplianceMatrixExporter(factory);
+    sofa::component::constraintset::registerComplianceMatrixImage(factory);
+    sofa::component::linearsolver::registerFillReducingOrdering(factory);
+    sofa::component::linearsolver::registerGlobalSystemMatrixImage(factory);
+    sofa::component::linearsystem::registerGlobalSystemMatrixExporter(factory);
 }
 
 } // namespace sofamatrix

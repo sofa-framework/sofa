@@ -279,6 +279,10 @@
         "PLUGIN_SOFACARVING": {
           "type": "BOOL",
           "value": "ON"
+        },
+        "PLUGIN_SOFAMATRIX_IMGUI": {
+          "type": "BOOL",
+          "value": "ON"
         }
       }
     },

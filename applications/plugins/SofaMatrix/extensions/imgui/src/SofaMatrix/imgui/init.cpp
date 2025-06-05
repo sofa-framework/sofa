@@ -19,63 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMatrix/Qt/config.h>
-
-#include <SofaMatrix/MatrixImageExporter.h>
-
+#include <SofaMatrix/imgui/init.h>
 #include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-#include <sofa/helper/system/PluginManager.h>
 
-namespace sofamatrix::qt
+namespace sofamatriximgui
 {
 
-extern "C" {
-    SOFA_SOFAMATRIX_API void initExternalModule();
-    SOFA_SOFAMATRIX_API const char* getModuleName();
-    SOFA_SOFAMATRIX_API const char* getModuleVersion();
-    SOFA_SOFAMATRIX_API const char* getModuleLicense();
-    SOFA_SOFAMATRIX_API const char* getModuleDescription();
-    SOFA_SOFAMATRIX_API void registerObjects(sofa::core::ObjectFactory* factory);
-}
-
-void initExternalModule()
+void initializePlugin() 
 {
     static bool first = true;
-    if (first)
-    {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
+    if (first) {
         first = false;
-
-        sofa::component::initializeMatrixExporterComponents();
+        // Register components here
     }
 }
 
-const char* getModuleName()
+}
+
+extern "C" 
 {
-    return MODULE_NAME;
-}
+    SOFAMATRIX_IMGUI_API void initExternalModule() 
+    {
+        sofamatriximgui::initializePlugin();
+    }
 
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
+    SOFAMATRIX_IMGUI_API const char* getModuleName() 
+    {
+        return sofamatriximgui::MODULE_NAME;
+    }
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+    SOFAMATRIX_IMGUI_API const char* getModuleVersion() 
+    {
+        return sofamatriximgui::MODULE_VERSION;
+    }
 
-const char* getModuleDescription()
-{
-    return "SOFA plugin gathering components related to linear system matrices.";
-}
+    SOFAMATRIX_IMGUI_API const char* getModuleLicense() 
+    {
+        return "LGPL";
+    }
 
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
+    SOFAMATRIX_IMGUI_API const char* getModuleDescription() 
+    {
+        return "SOFA plugin for SofaMatrix.imgui";
+    }
 }
-
-}
-
