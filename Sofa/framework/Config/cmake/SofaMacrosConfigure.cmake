@@ -226,13 +226,15 @@ function(sofa_add_generic_external name type)
     set(fetched_dir "${CMAKE_BINARY_DIR}/external_directories/fetched/${name}" )
     file(RELATIVE_PATH relative_path "${CMAKE_SOURCE_DIR}" "${directory}")
 
+    set(${upper_name}_LOCAL_DIRECTORY "" CACHE STRING "Absolute path to a local folder containing the cloned repository")
+
     # Fetch
     if(${fetch_enabled})
         set(${upper_name}_GIT_REPOSITORY "${ARG_GIT_REPOSITORY}" CACHE STRING "Repository address" )
         set(${upper_name}_GIT_TAG "${ARG_GIT_REF}" CACHE STRING "Branch or commit SHA to checkout" )
 
-        message("Fetching ${type_lower} ${name} in ${fetched_dir}")
-        message(STATUS "Checkout reference ${${upper_name}_GIT_TAG} from repository ${${upper_name}_GIT_REPOSITORY} ")
+        message("${name}: Fetching ${type_lower} in ${fetched_dir}")
+        message(STATUS "${name}: Checkout reference ${${upper_name}_GIT_TAG} from repository ${${upper_name}_GIT_REPOSITORY} ")
 
         #Generate temporary folder to store project that will fetch the sources
         if(NOT EXISTS ${fetched_dir}-temp)
@@ -271,7 +273,15 @@ function(sofa_add_generic_external name type)
         if(NOT generate_exitcode EQUAL 0 OR NOT build_exitcode EQUAL 0)
             message(SEND_ERROR "Failed to fetch external repository ${name}." "\nSee logs in ${fetched_dir}/logs.txt")
         endif()
+    elseif (NOT ${upper_name}_LOCAL_DIRECTORY STREQUAL "")
+        if(EXISTS ${${upper_name}_LOCAL_DIRECTORY})
+            message("${name}: Using local directory ${${upper_name}_LOCAL_DIRECTORY}.")
+            set(fetched_dir "${${upper_name}_LOCAL_DIRECTORY}")
 
+        else ()
+            message(SEND_ERROR "${name}: Specified directory ${${upper_name}_LOCAL_DIRECTORY} doesn't exist." "\nPlease provide a directory containing the fetched project, or use option ${fetch_enabled} to automatically fetch it.")
+
+        endif ()
     endif()
 
     # Add
