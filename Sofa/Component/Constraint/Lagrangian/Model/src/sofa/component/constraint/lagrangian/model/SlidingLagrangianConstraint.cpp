@@ -34,7 +34,8 @@ using namespace sofa::defaulttype;
 void registerSlidingLagrangianConstraint(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Lagrangian-based partial fixation of DOFs of the model, along an axis.")
-        .add< SlidingLagrangianConstraint<Vec3Types> >());
+        .add< SlidingLagrangianConstraint<Vec3Types> >()
+        .add< SlidingLagrangianConstraint<Rigid3Types> >());
 }
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API SlidingLagrangianConstraint<Vec3Types>;
