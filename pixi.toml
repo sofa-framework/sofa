@@ -2,7 +2,7 @@
 authors = ["Olivier Roussel <olivier.roussel@inria.fr>"]
 channels = ["https://prefix.dev/conda-forge"]
 description = "Open-source framework for interactive mechanical simulation, with emphasis on biomechanics and robotics"
-name = "sofa"
+name = "SOFA"
 platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
 version = "25.06.99"
 license = "LGPL-2.1-or-later"
@@ -45,13 +45,12 @@ test = { cmd = "ctest --test-dir $SOFA_BUILD_DIR --output-on-failure", depends-o
 
 # --------------------------------
 
-# TODO: probably specialize python env vars on windows here
 [feature.plugin-sofa-python3]
 dependencies = { numpy = ">=1.22.0", python = ">=3.9.0", pybind11 = ">=2.3.0" }
 activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOFA_FETCH_SOFAPYTHON3=ON -DPython_EXECUTABLE=$SOFA_PYTHON_EXECUTABLE" } }
 
 [feature.qt-gui]
-activation = { env = { SOFA_PLUGIN_SOFA_GUI_QT = "ON", Qt5_DIR = "$CONDA_PREFIX/lib/cmake" } }
+activation = { env = { Qt5_DIR = "$CONDA_PREFIX/lib/cmake" } }
 dependencies = { qt-main = ">=5.15.0", ffmpeg = "*", libqglviewer = "*" }
 
 [feature.plugin-cuda]
@@ -59,12 +58,13 @@ system-requirements = { cuda = "12" }
 [feature.plugin-cuda.target.linux]
 # XXX Adding nvvm/bin to PATH was required to compile, may be related to
 # https://github.com/conda-forge/cuda-nvcc-impl-feedstock/issues/9
-activation = { env = { PATH = "$CONDA_PREFIX/nvvm/bin:$PATH"}}
+activation = { env = { PATH = "$CONDA_PREFIX/nvvm/bin:$PATH", SOFA_PLUGIN_SOFACUDA_ARGS = "-DSOFA_PLUGIN_SOFACUDA=ON -DSOFACUDA_ENABLE_NATIVE_ARCHITECTURE=ON" } }
 dependencies = { cuda-version = "*", cuda-compiler = "*" }
 [feature.plugin-cuda.target.win]
+activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DSOFA_PLUGIN_SOFACUDA=ON -DSOFACUDA_ENABLE_NATIVE_ARCHITECTURE=ON" } }
 dependencies = { cuda-version = "*", cuda-compiler = "*" }
 [feature.plugin-cuda.target.osx]
-activation = { env = { SOFA_PLUGIN_SOFACUDA = "OFF" } }
+activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DSOFA_PLUGIN_SOFACUDA=OFF" } }
 
 [feature.plugin-cgal]
 dependencies = { cgal-cpp = "*", gmp = "*" }
@@ -124,12 +124,13 @@ configure = { cmd = [ "cmake",
   "$SOFA_BUILD_DIR",
   "-S",
   ".",
+  "-DCMAKE_VERBOSE_MAKEFILE=ON",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
-  "-DPLUGIN_SOFACUDA=$SOFA_PLUGIN_SOFACUDA",
   "--preset",
   "supported-plugins",
-  "$SOFA_PLUGIN_PYTHON3_ARGS"] }
+  "$SOFA_PLUGIN_PYTHON3_ARGS",
+  "$SOFA_PLUGIN_SOFACUDA_ARGS"] }
 
 [feature.presets-full.tasks]
 configure = { cmd = [ "cmake",
@@ -139,12 +140,15 @@ configure = { cmd = [ "cmake",
   "$SOFA_BUILD_DIR",
   "-S",
   ".",
+  "-DCMAKE_VERBOSE_MAKEFILE=ON",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
   "-DPLUGIN_SOFACUDA=$SOFA_PLUGIN_SOFACUDA",
+  "-DSOFACUDA_ENABLE_NATIVE_ARCHITECTURE=ON",
   "--preset",
   "full",
-  "$SOFA_PLUGIN_PYTHON3_ARGS"] }
+  "$SOFA_PLUGIN_PYTHON3_ARGS",
+  "$SOFA_PLUGIN_SOFACUDA_ARGS"] }
 
 [feature.presets-minimal-dev.tasks]
 configure = { cmd = [ "cmake",
@@ -183,10 +187,10 @@ configure = { cmd = [ "cmake",
   ".",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
-  "-DPLUGIN_SOFACUDA=$SOFA_PLUGIN_SOFACUDA",
   "--preset",
   "supported-plugins-dev",
-  "$SOFA_PLUGIN_PYTHON3_ARGS"] }
+  "$SOFA_PLUGIN_PYTHON3_ARGS",
+  "$SOFA_PLUGIN_SOFACUDA_ARGS"] }
 
 [feature.presets-full-dev.tasks]
 configure = { cmd = [ "cmake",
@@ -198,10 +202,10 @@ configure = { cmd = [ "cmake",
   ".",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
-  "-DPLUGIN_SOFACUDA=$SOFA_PLUGIN_SOFACUDA",
   "--preset",
   "full-dev",
-  "$SOFA_PLUGIN_PYTHON3_ARGS"] }  
+  "$SOFA_PLUGIN_PYTHON3_ARGS",
+  "$SOFA_PLUGIN_SOFACUDA_ARGS"] }  
 
 [environments]
 conda-core = { features = ["presets-conda-core"] }
