@@ -33,6 +33,7 @@ extern void registerLineAxis(sofa::core::ObjectFactory* factory);
 extern void registerRecordedCamera(sofa::core::ObjectFactory* factory);
 extern void registerTrailRenderer(sofa::core::ObjectFactory* factory);
 extern void registerVisual3DText(sofa::core::ObjectFactory* factory);
+extern void registerVisualBoundingBox(sofa::core::ObjectFactory* factory);
 extern void registerVisualGrid(sofa::core::ObjectFactory* factory);
 extern void registerVisualModelImpl(sofa::core::ObjectFactory* factory);
 extern void registerVisualStyle(sofa::core::ObjectFactory* factory);
@@ -69,6 +70,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerRecordedCamera(factory);
     registerTrailRenderer(factory);
     registerVisual3DText(factory);
+    registerVisualBoundingBox(factory);
     registerVisualGrid(factory);
     registerVisualModelImpl(factory);
     registerVisualStyle(factory);
