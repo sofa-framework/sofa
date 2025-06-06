@@ -33,7 +33,7 @@ class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API GenericConstraintCorre
 public:
     SOFA_CLASS(GenericConstraintCorrection, core::behavior::BaseConstraintCorrection);
 
-    void bwdInit() override;
+    void init() override;
     void cleanup() override;
     void addConstraintSolver(core::behavior::ConstraintSolver *s) override;
     void removeConstraintSolver(core::behavior::ConstraintSolver *s) override;

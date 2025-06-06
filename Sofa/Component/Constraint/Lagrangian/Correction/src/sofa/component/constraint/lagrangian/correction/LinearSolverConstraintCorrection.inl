@@ -193,23 +193,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
         return ;
 
     // use the OdeSolver to get the position integration factor
-    SReal factor = 1.0_sreal;
-
-    switch (cparams->constOrder())
-    {
-    case core::ConstraintOrder::POS_AND_VEL :
-    case core::ConstraintOrder::POS :
-        factor = l_ODESolver->getPositionIntegrationFactor();
-        break;
-
-    case core::ConstraintOrder::ACC :
-    case core::ConstraintOrder::VEL :
-        factor = l_ODESolver->getVelocityIntegrationFactor();
-        break;
-
-    default :
-        break;
-    }
+    const SReal factor = core::behavior::BaseConstraintCorrection::correctionFactor(l_ODESolver.get(), cparams->constOrder());
 
     // J is read from the mechanical state and converted to m_constraintJacobian
     {
