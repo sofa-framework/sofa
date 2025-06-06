@@ -1026,12 +1026,12 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/cuda-compiler-12.9.0-h63438b5_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/cuda-crt-dev_win-64-12.9.41-h57928b3_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-crt-tools-12.9.41-h57928b3_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-dev-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-dev_win-64-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-static-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-static_win-64-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart_win-64-12.9.37-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-dev-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-dev_win-64-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-static-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-static_win-64-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart_win-64-12.9.79-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-cuobjdump-12.9.26-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-cuxxfilt-12.9.19-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc-12.9.41-h8f04d04_0.conda
@@ -1039,7 +1039,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc-impl-12.9.41-h53cbb54_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc-tools-12.9.41-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc_win-64-12.9.41-hd70436c_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-nvdisasm-12.9.19-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-nvdisasm-12.9.88-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvprune-12.9.19-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/cuda-nvvm-dev_win-64-12.9.41-h57928b3_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvvm-impl-12.9.41-he0c23c2_0.conda
@@ -1747,12 +1747,12 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/cuda-compiler-12.9.0-h63438b5_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/cuda-crt-dev_win-64-12.9.41-h57928b3_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-crt-tools-12.9.41-h57928b3_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-dev-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-dev_win-64-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-static-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-static_win-64-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart_win-64-12.9.37-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-dev-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-dev_win-64-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-static-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-static_win-64-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart_win-64-12.9.79-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-cuobjdump-12.9.26-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-cuxxfilt-12.9.19-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc-12.9.41-h8f04d04_0.conda
@@ -1760,7 +1760,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc-impl-12.9.41-h53cbb54_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc-tools-12.9.41-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc_win-64-12.9.41-hd70436c_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-nvdisasm-12.9.19-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-nvdisasm-12.9.88-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvprune-12.9.19-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/cuda-nvvm-dev_win-64-12.9.41-h57928b3_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvvm-impl-12.9.41-he0c23c2_0.conda
@@ -3626,12 +3626,12 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/cuda-compiler-12.9.0-h63438b5_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/cuda-crt-dev_win-64-12.9.41-h57928b3_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-crt-tools-12.9.41-h57928b3_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-dev-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-dev_win-64-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-static-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-static_win-64-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart_win-64-12.9.37-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-dev-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-dev_win-64-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-static-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-static_win-64-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart_win-64-12.9.79-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-cuobjdump-12.9.26-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-cuxxfilt-12.9.19-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc-12.9.41-h8f04d04_0.conda
@@ -3639,7 +3639,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc-impl-12.9.41-h53cbb54_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc-tools-12.9.41-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc_win-64-12.9.41-hd70436c_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-nvdisasm-12.9.19-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-nvdisasm-12.9.88-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvprune-12.9.19-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/cuda-nvvm-dev_win-64-12.9.41-h57928b3_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvvm-impl-12.9.41-he0c23c2_0.conda
@@ -4347,12 +4347,12 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/cuda-compiler-12.9.0-h63438b5_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/cuda-crt-dev_win-64-12.9.41-h57928b3_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-crt-tools-12.9.41-h57928b3_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-dev-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-dev_win-64-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-static-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-static_win-64-12.9.37-he0c23c2_0.conda
-      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart_win-64-12.9.37-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-dev-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-dev_win-64-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-static-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-static_win-64-12.9.79-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart_win-64-12.9.79-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-cuobjdump-12.9.26-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-cuxxfilt-12.9.19-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc-12.9.41-h8f04d04_0.conda
@@ -4360,7 +4360,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc-impl-12.9.41-h53cbb54_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc-tools-12.9.41-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvcc_win-64-12.9.41-hd70436c_0.conda
-      - conda: https://prefix.dev/conda-forge/win-64/cuda-nvdisasm-12.9.19-he0c23c2_0.conda
+      - conda: https://prefix.dev/conda-forge/win-64/cuda-nvdisasm-12.9.88-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvprune-12.9.19-he0c23c2_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/cuda-nvvm-dev_win-64-12.9.41-h57928b3_0.conda
       - conda: https://prefix.dev/conda-forge/win-64/cuda-nvvm-impl-12.9.41-he0c23c2_0.conda
@@ -5323,18 +5323,18 @@ packages:
   license: LicenseRef-NVIDIA-End-User-License-Agreement
   size: 23165
   timestamp: 1746194366557
-- conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-12.9.37-he0c23c2_0.conda
-  sha256: acd1b2a93fe7882e791d0c559e8a08bf98f485541f82094b0951d716ce788fb5
-  md5: 8f6e143e039cf11351ea4959e24a7709
+- conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-12.9.79-he0c23c2_0.conda
+  sha256: a30cd9adf3a70d069d4d87c5728ec16778b77071629612ca5d8513cd92d89c09
+  md5: 0a243d4f000a0d2f51dd94ee9132b234
   depends:
-  - cuda-cudart_win-64 12.9.37 he0c23c2_0
+  - cuda-cudart_win-64 12.9.79 he0c23c2_0
   - cuda-version >=12.9,<12.10.0a0
   - ucrt >=10.0.20348.0
   - vc >=14.2,<15
   - vc14_runtime >=14.29.30139
   license: LicenseRef-NVIDIA-End-User-License-Agreement
-  size: 169984
-  timestamp: 1746194845751
+  size: 170799
+  timestamp: 1749218946117
 - conda: https://prefix.dev/conda-forge/linux-64/cuda-cudart-dev-12.9.37-h5888daf_0.conda
   sha256: 8c0a5b3c7788049f5e084b4c2985666f4a4551919367ddfccdc84851e6783f59
   md5: 9a3dd17658236483fbea7383efebe00e
@@ -5349,20 +5349,20 @@ packages:
   license: LicenseRef-NVIDIA-End-User-License-Agreement
   size: 23652
   timestamp: 1746194402801
-- conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-dev-12.9.37-he0c23c2_0.conda
-  sha256: a37f8de47f6339a602786e0c0c02f3dddd9259714c1a8a131f5f42e3f23052e1
-  md5: 3164e49d3677e90a0e2394461facbf7d
+- conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-dev-12.9.79-he0c23c2_0.conda
+  sha256: 1ee68f0ffd37889f0fc438d4da7124054b124632e1c3bc15950b9851b002473e
+  md5: e5bb074108bc2501f8374e80748aa181
   depends:
-  - cuda-cudart 12.9.37 he0c23c2_0
-  - cuda-cudart-dev_win-64 12.9.37 he0c23c2_0
-  - cuda-cudart-static 12.9.37 he0c23c2_0
+  - cuda-cudart 12.9.79 he0c23c2_0
+  - cuda-cudart-dev_win-64 12.9.79 he0c23c2_0
+  - cuda-cudart-static 12.9.79 he0c23c2_0
   - cuda-version >=12.9,<12.10.0a0
   - ucrt >=10.0.20348.0
   - vc >=14.2,<15
   - vc14_runtime >=14.29.30139
   license: LicenseRef-NVIDIA-End-User-License-Agreement
-  size: 23158
-  timestamp: 1746194895293
+  size: 23222
+  timestamp: 1749219022963
 - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-dev_linux-64-12.9.37-h3f2d84a_0.conda
   sha256: 369bf15b6ab428279620fa9a806db6e6adb7987c6137654054b07a192b8a8252
   md5: 9ae200ef917b953d39c60d45ba78bebb
@@ -5374,17 +5374,17 @@ packages:
   license: LicenseRef-NVIDIA-End-User-License-Agreement
   size: 388621
   timestamp: 1746194374721
-- conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-dev_win-64-12.9.37-he0c23c2_0.conda
-  sha256: 0a95913e231cc13a0bba0d92d409acb1a152b1776e2786c520029ca3ba692831
-  md5: 72ee3e25a338296c6950b218bed4f7e8
+- conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-dev_win-64-12.9.79-he0c23c2_0.conda
+  sha256: e022d36a333420130faf6473c49f8dab54bf976cf320577ffb06db0a0797b734
+  md5: 3c3e2f6b5455783fd332a072d632ea78
   depends:
   - cuda-cccl_win-64
   - cuda-cudart-static_win-64
   - cuda-cudart_win-64
   - cuda-version >=12.9,<12.10.0a0
   license: LicenseRef-NVIDIA-End-User-License-Agreement
-  size: 1189935
-  timestamp: 1746194862026
+  size: 1190184
+  timestamp: 1749218971019
 - conda: https://prefix.dev/conda-forge/linux-64/cuda-cudart-static-12.9.37-h5888daf_0.conda
   sha256: f8776dcead4ab43ac341fbe517560378b05d714e484b191d1362570c4f670d3b
   md5: 0a3c1550eb1381100ee5a6bbc2ca37b9
@@ -5397,18 +5397,18 @@ packages:
   license: LicenseRef-NVIDIA-End-User-License-Agreement
   size: 23253
   timestamp: 1746194386450
-- conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-static-12.9.37-he0c23c2_0.conda
-  sha256: ac0a97c0ca2aca7811b22d6858e694d45f1e4e03ed23e5ac3b3b04f2510f67f6
-  md5: 52cb6f7ca8f6f41f54b26b3171cbe3d2
+- conda: https://prefix.dev/conda-forge/win-64/cuda-cudart-static-12.9.79-he0c23c2_0.conda
+  sha256: 02d3ff9ec59c7f59132ffe9398746ad9422a75706e7cad19acc6c30a5c0fc763
+  md5: 718879691b8119c893f587f46c734fca
   depends:
-  - cuda-cudart-static_win-64 12.9.37 he0c23c2_0
+  - cuda-cudart-static_win-64 12.9.79 he0c23c2_0
   - cuda-version >=12.9,<12.10.0a0
   - ucrt >=10.0.20348.0
   - vc >=14.2,<15
   - vc14_runtime >=14.29.30139
   license: LicenseRef-NVIDIA-End-User-License-Agreement
-  size: 23058
-  timestamp: 1746194880192
+  size: 23249
+  timestamp: 1749218998822
 - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-static_linux-64-12.9.37-h3f2d84a_0.conda
   sha256: 47f9c7f8c946b9e6e2c7c616d9c59acf59ea96cf64f1e0a5c090f63b456ab1fc
   md5: bc0e5f61bfea338148d265fe9bbbacae
@@ -5417,14 +5417,14 @@ packages:
   license: LicenseRef-NVIDIA-End-User-License-Agreement
   size: 1148263
   timestamp: 1746194340428
-- conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-static_win-64-12.9.37-he0c23c2_0.conda
-  sha256: 2b2c0168971ef5b5df4b9a19b2651b4b7b3c481c652188c92df10e4effc3c2b6
-  md5: 690c41b0a951e9c309e9977e5d439e59
+- conda: https://prefix.dev/conda-forge/noarch/cuda-cudart-static_win-64-12.9.79-he0c23c2_0.conda
+  sha256: 6a3410cd7ce07955cb705801055ef129ebee1cd6390c6fe9e5f607b67c3dba36
+  md5: 0dd152a1493d90356037604a865f050f
   depends:
   - cuda-version >=12.9,<12.10.0a0
   license: LicenseRef-NVIDIA-End-User-License-Agreement
-  size: 354543
-  timestamp: 1746194418295
+  size: 354611
+  timestamp: 1749218544740
 - conda: https://prefix.dev/conda-forge/noarch/cuda-cudart_linux-64-12.9.37-h3f2d84a_0.conda
   sha256: 5d3da5b258785cb7aa593363518d11e7b5580373d612faba43a72c9c9db941f9
   md5: 05c9f71dede6cfae29dfc1141128e717
@@ -5433,14 +5433,14 @@ packages:
   license: LicenseRef-NVIDIA-End-User-License-Agreement
   size: 197833
   timestamp: 1746194349673
-- conda: https://prefix.dev/conda-forge/noarch/cuda-cudart_win-64-12.9.37-he0c23c2_0.conda
-  sha256: 8e13960315e60e8bb477ceb0ec0f49cc5416fac426921af9f7231641261be37e
-  md5: f6859fa854794d05f770a7497f04c15d
+- conda: https://prefix.dev/conda-forge/noarch/cuda-cudart_win-64-12.9.79-he0c23c2_0.conda
+  sha256: 6a89a53cdbcfafa0bb55abee1b58492c6a9a28e688abe04f48f0d01649c5f3e4
+  md5: 71c9c2ab52226f990f268164381d8494
   depends:
   - cuda-version >=12.9,<12.10.0a0
   license: LicenseRef-NVIDIA-End-User-License-Agreement
-  size: 23230
-  timestamp: 1746194434599
+  size: 23260
+  timestamp: 1749218569458
 - conda: https://prefix.dev/conda-forge/linux-64/cuda-cuobjdump-12.9.26-hbd13f7d_0.conda
   sha256: 873d7f722904b104cbc31402380c0749cecf83e8ee270e4277e97975c4170793
   md5: 9f83ac9b3dcc0401bb19a546af50bd47
@@ -5631,17 +5631,17 @@ packages:
   license: LicenseRef-NVIDIA-End-User-License-Agreement
   size: 5517513
   timestamp: 1746189877059
-- conda: https://prefix.dev/conda-forge/win-64/cuda-nvdisasm-12.9.19-he0c23c2_0.conda
-  sha256: a1e0d110f6bc71f80661686b0d797d2201d894cd8575b579a5077d2a3ddad20d
-  md5: 4ecb69068caa7801c513b88e6ea3e25e
+- conda: https://prefix.dev/conda-forge/win-64/cuda-nvdisasm-12.9.88-he0c23c2_0.conda
+  sha256: 4293cd0a2bff327298a66f54819529774604ddf6c999df966150209acbfc3557
+  md5: eb952f9bccc1c5e6052929c50b41e205
   depends:
   - cuda-version >=12.9,<12.10.0a0
   - ucrt >=10.0.20348.0
   - vc >=14.2,<15
   - vc14_runtime >=14.29.30139
   license: LicenseRef-NVIDIA-End-User-License-Agreement
-  size: 5684907
-  timestamp: 1746190397673
+  size: 5685872
+  timestamp: 1749221680715
 - conda: https://prefix.dev/conda-forge/linux-64/cuda-nvprune-12.9.19-hbd13f7d_0.conda
   sha256: f394c619ff90c1a949f40a9735704b9aecf31b3d46648e11a9f726307a12e399
   md5: 772db7405e2d98791dd5c92c965848d6
