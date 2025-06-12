@@ -31,19 +31,19 @@
 		<Node name="CollisionModel" >
 			<Node>
 				<MechanicalObject  template="Rigid3d"/>
-				<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" proximity="0.0" contactStiffness="50.0" contactFriction="0.0"/>
+				<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" contactDistance="0.0" contactStiffness="50.0" contactFriction="0.0"/>
 			</Node>
 			<Node>
 				<MechanicalObject  template="Rigid3d" dy="-0.3" dz="-2"/>
-				<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" proximity="0.0" contactStiffness="50.0" contactFriction="0.0"/>
+				<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" contactDistance="0.0" contactStiffness="50.0" contactFriction="0.0"/>
 			</Node>
 			<Node>
 				<MechanicalObject  template="Rigid3d" dy="-8" dz="0.5"/>
-				<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" proximity="0.0" contactStiffness="50.0" contactFriction="0.0"/>
+				<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" contactDistance="0.0" contactStiffness="50.0" contactFriction="0.0"/>
 			</Node>
 			<Node>
 				<MechanicalObject  template="Rigid3d" dy="-8" dz="-1.5"/>
-				<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" proximity="0.0" contactStiffness="50.0" contactFriction="0.0"/>
+				<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" contactDistance="0.0" contactStiffness="50.0" contactFriction="0.0"/>
 			</Node>
 		</Node>
 	</Node>
