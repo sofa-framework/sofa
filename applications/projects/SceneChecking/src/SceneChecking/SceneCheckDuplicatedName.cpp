@@ -86,7 +86,7 @@ void SceneCheckDuplicatedName::doPrintSummary()
 {
     if(m_hasDuplicates)
     {
-        msg_warning(this->getName()) << msgendl
+        msg_error(this->getName()) << msgendl
                                      << m_duplicatedMsg.str()
                                      << "Nodes with similar names at the same level in your scene can "
                                         "crash certain operations, please rename them";
