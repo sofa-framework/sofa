@@ -411,7 +411,7 @@ void PartialLinearMovementProjectiveConstraint<DataTypes>::findKeyTimes()
 
 // Matrix Integration interface
 template <class DataTypes>
-void PartialLinearMovementProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void PartialLinearMovementProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     const SetIndexArray & indices = d_indices.getValue();
@@ -436,7 +436,7 @@ void PartialLinearMovementProjectiveConstraint<DataTypes>::applyConstraint(const
 }
 
 template <class DataTypes>
-void PartialLinearMovementProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void PartialLinearMovementProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     const int o = matrix->getGlobalOffset(this->mstate.get());
@@ -459,7 +459,7 @@ void PartialLinearMovementProjectiveConstraint<DataTypes>::applyConstraint(const
 
 
 template <class DataTypes>
-void PartialLinearMovementProjectiveConstraint<DataTypes>::applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix)
+void PartialLinearMovementProjectiveConstraint<DataTypes>::doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix)
 {
     static constexpr unsigned int N = Deriv::size();
     const SetIndexArray& indices = d_indices.getValue();
