@@ -283,18 +283,11 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(Index i, Inde
 
     // divide by 36 times volumes of the element
     const VecCoord &initialPoints=d_initialPoints.getValue();
-    Coord A = initialPoints[b] - initialPoints[a];
-    Coord B = initialPoints[c] - initialPoints[a];
-    Coord C = initialPoints[d] - initialPoints[a];
-    Coord AB = cross(A, B);
-    Real volumes6 = fabs( dot( AB, C ) );
+    const auto tetrahedronVolume = geometry::Tetrahedron::volume(
+        initialPoints[a], initialPoints[b], initialPoints[c], initialPoints[d]);
 
-    m_restVolume += volumes6/6;
-    if (volumes6<0)
-    {
-        msg_error() << "Negative volume for tetra "<<i<<" <"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6 ;
-    }
-    materialsStiffnesses[i] /= (volumes6*6); // 36*Volume in the formula
+    m_restVolume += tetrahedronVolume;
+    materialsStiffnesses[i] /= tetrahedronVolume * 36;
 }
 
 template<class DataTypes>
