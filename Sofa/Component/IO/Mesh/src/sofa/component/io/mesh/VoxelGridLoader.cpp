@@ -231,14 +231,15 @@ void VoxelGridLoader::clear()
 }
 
 
-bool VoxelGridLoader::canLoad(  )
+bool VoxelGridLoader::doCanLoad(  )
 {
     const bool canLoad = d_filename.getValue().length() > 4 && ( d_filename.getValue().compare(
             d_filename.getValue().length()-4, 4, ".raw" ) ==0 );
 
-    return sofa::core::loader::VoxelLoader::canLoad() &&  canLoad;
+	// Calls default doCanLoad() implementation (provided in BaseLoader)
+    return sofa::core::loader::VoxelLoader::doCanLoad() &&  canLoad;
 }
-bool VoxelGridLoader::load ()
+bool VoxelGridLoader::doLoad ()
 {
     clear();
 
