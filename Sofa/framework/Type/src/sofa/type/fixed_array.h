@@ -49,19 +49,7 @@ template<class T>
 concept StdArray = is_std_array<T>::value;
 
 template<class T>
-using BaseStdArray = std::array<typename T::value_type, T{}.size()>;
-
-template<class T>
-concept FixedArray = StdArray<T> || requires(T t)
-{
-    requires std::derived_from<T, BaseStdArray<T> >;
-};
-
-template<class T>
-inline constexpr bool is_fixed_array_v = FixedArray<T>;
-
-template<class T>
-concept FixedArrayLike = FixedArray<T> || requires(std::remove_cv_t<T> t, const std::remove_cv_t<T> ct)
+concept FixedArrayLike = StdArray<T> || requires(std::remove_cv_t<T> t, const std::remove_cv_t<T> ct)
 {
     T::static_size;
 
@@ -83,8 +71,8 @@ concept HasStaticSize = requires { T::static_size; };
 template<HasStaticSize T>
 static constexpr sofa::Size staticSize<T> = T::static_size;
 
-template<sofa::type::trait::FixedArray T>
-static constexpr sofa::Size staticSize<T> = std::tuple_size_v<type::trait::BaseStdArray<T> >;
+template<sofa::type::trait::StdArray T>
+static constexpr sofa::Size staticSize<T> = std::tuple_size_v<T>;
 
 
 template<typename T>
