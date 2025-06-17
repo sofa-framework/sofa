@@ -133,8 +133,8 @@ struct Element
         return elems;
     }
 
-    friend std::ostream& operator << <GeometryElement>(std::ostream& out, const Element& a);
-    friend std::istream& operator >> <GeometryElement>(std::istream& in, Element& a);
+    friend std::ostream& operator << <GeometryElement>(std::ostream& out, const Element<GeometryElement>& a);
+    friend std::istream& operator >> <GeometryElement>(std::istream& in, Element<GeometryElement>& a);
 
 private:
     ArrayType elems{};
