@@ -36,7 +36,7 @@ TEST(fixed_array, operatorLess)
 
 TEST(fixed_array, structuredBindings)
 {
-    static constexpr sofa::type::fixed_array<std::size_t, 4> sofaArray { 8, -7, 4, -1};
+    static constexpr sofa::type::fixed_array sofaArray { 8, -7, 4, -1};
     const auto& [a, b, c, d] = sofaArray;
     EXPECT_EQ(a, 8);
     EXPECT_EQ(b,-7);
