@@ -133,23 +133,17 @@ struct Element
         return elems;
     }
 
-    friend std::ostream& operator << <GeometryElement>(std::ostream& out, const Element<GeometryElement>& a);
-    friend std::istream& operator >> <GeometryElement>(std::istream& in, Element<GeometryElement>& a);
+    friend std::ostream& operator<<(std::ostream& out, const Element<GeometryElement>& a)
+    {
+        return sofa::type::extraction(out, a.elems);
+    }
+    friend std::istream& operator>>(std::istream& in, Element<GeometryElement>& a)
+    {
+        return sofa::type::insertion(in, a.elems);
+    }
 
 private:
     ArrayType elems{};
 };
-
-template <typename GeometryElement>
-std::ostream& operator << (std::ostream& out, const Element<GeometryElement>& a)
-{
-    return sofa::type::extraction(out, a.elems);
-}
-
-template <typename GeometryElement>
-std::istream& operator >> (std::istream& in, Element<GeometryElement>& a)
-{
-    return sofa::type::insertion(in, a.elems);
-}
 
 } // namespace sofa::topology
