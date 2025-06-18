@@ -138,6 +138,9 @@ private:
         const core::ConstraintParams* cParams,
         MultiVecId res1, MultiVecId res2,
         core::behavior::BaseConstraintCorrection* constraintCorrection) const;
+
+    // Accumulate the lambda values projected in the motion space in the states
+    // f += J^T * lambda
     void storeConstraintLambdas(const core::ConstraintParams* cParams);
 
 };

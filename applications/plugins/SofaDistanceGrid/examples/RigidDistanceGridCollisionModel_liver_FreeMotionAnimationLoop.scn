@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.005" gravity="0.0 -9.81 0">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [DiscreteIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [PointCollisionModel TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TriangularFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [TriangularBendingSprings] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Quad2TriangleTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaDistanceGrid"/> <!-- Needed to use components [RigidDistanceGridCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->  
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->  
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [LCPConstraintSolver] -->  
+
+    <FreeMotionAnimationLoop/>
+    <LCPConstraintSolver tolerance="1e-3" maxIt="1000"/>
+
+    <CollisionPipeline name="pipeline" depth="6" verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <CollisionResponse name="response" response="FrictionContactConstraint" />
+
+    <LocalMinDistance name="proximity" alarmDistance="0.3" contactDistance="0.1"/>
+
+    <Node name="RigidLiver">
+        <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj"/>
+        <!-- The state should be defined using a Rigid template for this collision model -->
+        <MechanicalObject template="Rigid3d" name="dofs" position="0 0 0    0 0 0 1"/>
+        <RigidDistanceGridCollisionModel
+            filename="mesh/liver-smooth.obj"
+            scale="1.0" 
+            usePoints="0" 
+            proximity="0.1" 
+        />
+        <Node name="Visu">
+            <OglModel name="VisualModel" src="@../meshLoader_0" color="white" />
+        </Node>
+    </Node>
+    
+    <Node name="Cloth">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
+        
+        <RegularGridTopology 
+            name="Container" 
+            nx="50" ny="1" nz="50" 
+            xmin="-9" xmax="5" ymin="7" ymax="7" zmin="-7" zmax="7" 
+        />
+        <MechanicalObject name="dofs"/>
+        <UniformMass totalMass="500" />
+        <UncoupledConstraintCorrection defaultCompliance="0.1"/>
+        <Node name="T">
+            <include href="Objects/TriangleSetTopology.xml" />
+            <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
+            <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
+            <TriangularBendingSprings name="FEM-Bend" stiffness="600" damping="1.0" />
+            <TriangleCollisionModel/>
+            <PointCollisionModel/>
+            <Node name="Visu">
+                <OglModel 
+                    name="Visual" 
+                    material="mat1 
+                        Diffuse 1 0.5 1.0 0.75 0.8 
+                        Ambient 1 0.2 0.2 0.2 1 
+                        Specular 1 0.6 0.6 0.6 0.6  
+                        Emissive 0 0 0 0 0 
+                        Shininess 0 45
+                    "
+                />
+                <IdentityMapping input="@../../dofs" output="@Visual" />
+            </Node>
+        </Node>
+    </Node>
+</Node>

@@ -19,57 +19,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAPARTICLESREPULSIONFORCEFIELD_H
-#define SOFA_GPU_CUDA_CUDAPARTICLESREPULSIONFORCEFIELD_H
-
+#pragma once
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaSphFluid/ParticlesRepulsionForceField.h>
-#include <sofa/gpu/cuda/CudaSpatialGridContainer.h>
+#include <sofa/qt/QModelViewTableDataContainer.h>
 
-namespace sofa
+namespace sofa::qt
 {
+////////////////////////////////////////////////////////////////
+/// variable-sized vectors support
+////////////////////////////////////////////////////////////////
 
-
-namespace gpu::cuda
+template<class T>
+class vector_data_trait < sofa::gpu::cuda::CudaVector<T> >
 {
-
-template<class real>
-struct GPURepulsion
-{
-    real d;
-    real d2;
-    real stiffness;
-    real damping;
+public:
+    typedef sofa::gpu::cuda::CudaVector<T> data_type;
+    typedef T value_type;
+    enum { NDIM = 1 };
+    static int size(const data_type& d) {
+        return d.size();
+    }
+    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
+    {
+        return nullptr;
+    }
+    static const value_type* get(const data_type& d, int i = 0)
+    {
+        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
+    }
+    static void set(const value_type& v, data_type& d, int i = 0)
+    {
+        if ((unsigned)i < (unsigned)size(d))
+            d[i] = v;
+    }
+    static void resize(int s, data_type& d)
+    {
+        d.resize(s);
+    }
 };
 
-typedef GPURepulsion<float> GPURepulsion3f;
-typedef GPURepulsion<double> GPURepulsion3d;
 
-} // namespace gpu::cuda
-
-
-namespace component::forcefield
-{
-
-template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-
-template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-
-template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-
-template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-} // namespace component::forcefield
-
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gui::qt

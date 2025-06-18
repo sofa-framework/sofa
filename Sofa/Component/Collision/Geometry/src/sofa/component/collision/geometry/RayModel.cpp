@@ -110,21 +110,6 @@ void RayCollisionModel::draw(const core::visual::VisualParams* vparams, sofa::In
 
 }
 
-void RayCollisionModel::draw(const core::visual::VisualParams* vparams)
-{
-    if (vparams->displayFlags().getShowCollisionModels())
-    {       
-        for (sofa::Index i=0; i<size; i++)
-        {
-            draw(vparams,i);
-        }
-    }
-    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
-    {
-        getPrevious()->draw(vparams);
-    }
-}
-
 void RayCollisionModel::computeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();

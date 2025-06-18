@@ -19,25 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gpu/cuda/CudaTypes.h>
-#include "CudaParticlesRepulsionForceField.inl"
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/ForceField.inl>
-#include <SofaSphFluid/ParticlesRepulsionForceField.inl>
+#define SOFA_CORE_BEHAVIOR_CONSTRAINT_CPP
+#include <sofa/core/behavior/Constraint.inl>
 
-
-namespace sofa::gpu::cuda
+namespace sofa::core::behavior
 {
 
-int ParticlesRepulsionForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::forcefield::ParticlesRepulsionForceField<CudaVec3fTypes> >()
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::forcefield::ParticlesRepulsionForceField<CudaVec3dTypes> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        ;
-
-} // namespace sofa::gpu::cuda
-
+using namespace sofa::defaulttype;
+template class SOFA_CORE_API LagrangianConstraint<Vec6Types>;
+template class SOFA_CORE_API LagrangianConstraint<Vec3Types>;
+template class SOFA_CORE_API LagrangianConstraint<Vec2Types>;
+template class SOFA_CORE_API LagrangianConstraint<Vec1Types>;
+template class SOFA_CORE_API LagrangianConstraint<Rigid3Types>;
+template class SOFA_CORE_API LagrangianConstraint<Rigid2Types>;
 
 
-
+} // namespace sofa::core::behavior

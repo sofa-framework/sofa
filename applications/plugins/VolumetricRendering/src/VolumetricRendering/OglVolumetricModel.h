@@ -34,7 +34,7 @@
 #include <sofa/gl/component/shader/OglAttribute.h>
 
 
-namespace sofa::component::visualmodel
+namespace volumetricrendering
 {
 
 /**
@@ -109,7 +109,7 @@ public:
 
 };
 
-} // namespace sofa::component::visualmodel
+} // namespace volumetricrendering
 
 
 #endif // OGLVOLUMETRICMODEL_H_

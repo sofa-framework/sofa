@@ -157,7 +157,7 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
 
 void registerUncoupledConstraintCorrection(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Component computing constraint forces within a simulated body using the compliance method.")
+    factory->registerObjects(core::ObjectRegistrationData("Component computing constraint forces within a simulated body using the compliance method, approximating the compliance matrix by a diagonal matrix.")
         .add< UncoupledConstraintCorrection< Vec1Types > >()
         .add< UncoupledConstraintCorrection< Vec2Types > >()
         .add< UncoupledConstraintCorrection< Vec3Types > >()

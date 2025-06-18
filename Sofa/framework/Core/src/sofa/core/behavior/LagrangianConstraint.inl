@@ -21,49 +21,75 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/behavior/MixedInteractionConstraint.h>
+#include <sofa/core/behavior/LagrangianConstraint.h>
 #include <sofa/core/ConstraintParams.h>
 
 namespace sofa::core::behavior
 {
 
-template<class DataTypes1, class DataTypes2>
-MixedInteractionConstraint<DataTypes1, DataTypes2>::MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1, MechanicalState<DataTypes2> *mm2)
-    : Inherit1(), Inherit2(mm1, mm2)
-    , endTime( initData(&endTime,(SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
+template<class DataTypes>
+LagrangianConstraint<DataTypes>::LagrangianConstraint(MechanicalState<DataTypes> *mm)
+    : Inherit1(), Inherit2(mm)
+    , endTime( initData(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
 {
 }
 
-template<class DataTypes1, class DataTypes2>
-MixedInteractionConstraint<DataTypes1, DataTypes2>::~MixedInteractionConstraint()
+template<class DataTypes>
+LagrangianConstraint<DataTypes>::~LagrangianConstraint()
 {
 }
 
-template<class DataTypes1, class DataTypes2>
-bool MixedInteractionConstraint<DataTypes1, DataTypes2>::isActive() const
+
+template <class DataTypes>
+bool LagrangianConstraint<DataTypes>::isActive() const
 {
     if( endTime.getValue()<0 ) return true;
     return endTime.getValue()>getContext()->getTime();
 }
 
-template<class DataTypes1, class DataTypes2>
-void MixedInteractionConstraint<DataTypes1, DataTypes2>::getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
+template <class DataTypes>
+void LagrangianConstraint<DataTypes>::init()
+{
+    Inherit1::init();
+    Inherit2::init();
+}
+
+template<class DataTypes>
+void LagrangianConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
 {
     if (cParams)
     {
-        getConstraintViolation(cParams, v, *cParams->readX(this->mstate1.get()), *cParams->readX(this->mstate2.get()), 
-                                           *cParams->readV(this->mstate1.get()), *cParams->readV(this->mstate2.get()));
+        getConstraintViolation(cParams, v, *cParams->readX(this->mstate.get()), *cParams->readV(this->mstate.get()));
     }
 }
 
-template<class DataTypes1, class DataTypes2>
-void MixedInteractionConstraint<DataTypes1, DataTypes2>::buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
+
+template<class DataTypes>
+void LagrangianConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams, *cId[this->mstate1.get()].write(), *cId[this->mstate2.get()].write(), cIndex, 
-                                        this->mstate1->readPositions().ref(), this->mstate2->readPositions().ref());
+        buildConstraintMatrix(cParams, *cId[this->mstate.get()].write(), cIndex, this->mstate->readPositions().ref());
     }
 }
+
+
+template<class DataTypes>
+void LagrangianConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda)
+{
+    if (cParams)
+    {
+        storeLambda(cParams, *res[this->mstate.get()].write(), *cParams->readJ(this->mstate.get()), lambda);
+    }
+}
+
+template<class DataTypes>
+void LagrangianConstraint<DataTypes>::storeLambda(const ConstraintParams*, Data<VecDeriv>& result, const Data<MatrixDeriv>& jacobian, const sofa::linearalgebra::BaseVector* lambda)
+{
+    auto res = sofa::helper::getWriteAccessor(result);
+    const MatrixDeriv& j = jacobian.getValue();
+    j.multTransposeBaseVector(res, lambda ); // lambda is a vector of scalar value so block size is one.
+}
+
 
 } // namespace sofa::core::behavior
