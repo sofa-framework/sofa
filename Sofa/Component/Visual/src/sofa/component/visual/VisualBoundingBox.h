@@ -28,7 +28,7 @@
 namespace sofa::component::visual
 {
 /*
- * Display a Axis Orientated Bounding Box.
+ * Display an Axis Orientated Bounding Box.
  */
 class SOFA_COMPONENT_VISUAL_API VisualBoundingBox : public core::visual::VisualModel
 {
@@ -37,11 +37,13 @@ public:
 
     VisualBoundingBox();
     ~VisualBoundingBox() override = default;
-    
-    void doDrawVisual(const core::visual::VisualParams*) override;
 
     Data<sofa::type::RGBAColor> d_color; ///< Color of the lines in the grid. default=yellow
     Data<float> d_thickness; ///< Thickness of the lines in the grid
+
+private:
+    void doDrawVisual(const core::visual::VisualParams*) override;
+    
 };
 
 } // namespace sofa::component::visual
