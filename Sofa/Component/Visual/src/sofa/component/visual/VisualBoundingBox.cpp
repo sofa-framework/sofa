@@ -43,7 +43,6 @@ VisualBoundingBox::VisualBoundingBox()
 
 void VisualBoundingBox::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    [[maybe_unused]] auto state = vparams->drawTool()->makeStateLifeCycle();
     
     const auto& bbox = f_bbox.getValue();
     vparams->drawTool()->disableLighting();
