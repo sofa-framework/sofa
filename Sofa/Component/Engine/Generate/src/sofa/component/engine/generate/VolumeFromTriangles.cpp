@@ -36,7 +36,7 @@ using namespace sofa::helper;
 
 void registerVolumeFromTriangles(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("This class computes the volume of a given closed surfacic mesh.")
+    factory->registerObjects(sofa::core::ObjectRegistrationData("This component computes the volume of a given closed surfacic mesh.")
                             .add<  VolumeFromTriangles<Vec3Types> >(true)
                             .add<  VolumeFromTriangles<Rigid3Types> >());
 }
