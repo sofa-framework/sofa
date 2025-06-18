@@ -38,7 +38,7 @@ using namespace sofa::helper;
 
 void registerVolumeFromTetrahedrons(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("This class computes the volume of a given volumetric mesh.")
+    factory->registerObjects(sofa::core::ObjectRegistrationData("This component computes the volume of a given volumetric mesh.")
     .add<  VolumeFromTetrahedrons<Vec3Types> >(true));
 }
 
