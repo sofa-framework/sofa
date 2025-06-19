@@ -523,7 +523,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
 
     ////////////////////////////////////// STEP 2  : creation des "mappedContacts" + corrections associées par rapport à la ddc
 
-    const double d0 = this->intersectionMethod->getContactDistance() + this->model1->getProximity() + this->model2->getProximity(); // - 0.001;
+    const double d0 = this->intersectionMethod->getContactDistance() + this->model1->getContactDistance() + this->model2->getContactDistance(); // - 0.001;
 
     for (std::vector<DetectionOutput*>::const_iterator it = this->contacts.begin(); it!=this->contacts.end(); it++)
     {
@@ -562,12 +562,12 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
             }
             else
             {
-                Vector3 thickness = o->normal * this->model1->getProximity();
+                Vector3 thickness = o->normal * this->model1->getContactDistance();
                 Vector3 posColpoint = o->point[0] + thickness;
                 index1 = this->mapThePersistentContact(o->baryCoords[0], index1, posColpoint, true);
             }
 
-            distance -= this->model1->getProximity();
+            distance -= this->model1->getContactDistance();
             m1 = false;
         }
 
@@ -586,12 +586,12 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
             }
             else
             {
-                Vector3 thickness = o->normal * this->model2->getProximity();
+                Vector3 thickness = o->normal * this->model2->getContactDistance();
                 Vector3 posColpoint = o->point[1] - thickness;
                 index2 = this->mapThePersistentContact(o->baryCoords[1], index2, posColpoint, false);
             }
 
-            distance -= this->model2->getProximity();
+            distance -= this->model2->getContactDistance();
             m2 = false;
         }
 
