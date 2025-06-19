@@ -320,6 +320,8 @@ public:
 
     /// @name Experimental methods
     /// @{
+    SOFA_ATTRIBUTE_DEPRECATED__NAME_CHANGED()
+    [[nodiscard]] SReal getProximity() const { return getContactDistance(); }
 
     /// Get distance to the actual (visual) surface
     [[nodiscard]] SReal getContactDistance() const { return d_contactDistance.getValue(); }
@@ -364,7 +366,10 @@ public:
     void setColor4f(const float *c);
 
     /// Set of differents parameters
-    void getContactDistance (const SReal a)        { d_contactDistance.setValue(a); }
+    void setContactDistance (const SReal a)        { d_contactDistance.setValue(a); }
+    SOFA_ATTRIBUTE_DEPRECATED__NAME_CHANGED()
+    void setProximity (const SReal a)  { setContactDistance(a); }
+
     void setContactResponse (const std::string &a) { contactResponse.setValue(a); }
 
     /// Returns an int corresponding to the type of this.
