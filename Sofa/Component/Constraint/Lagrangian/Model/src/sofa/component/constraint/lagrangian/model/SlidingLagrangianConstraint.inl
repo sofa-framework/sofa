@@ -83,7 +83,7 @@ void SlidingLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::C
 
     m_constraintDirections.clear();
 
-    Real m_bary=0; //Coef to point B -> proj = bary*B + (1-bary)*A
+    m_projectionBarycentricCoordinate=0; //Coef to point B -> proj = bary*B + (1-bary)*A
 
     if ( ab < std::numeric_limits<Real>::epsilon() ) // If A and B are at the same position, then a full dof constraint must be applied totally linking position of P and A
     {
@@ -105,8 +105,8 @@ void SlidingLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::C
         Real r2 = r / ab;
 
         // Compute bary coef of normalized distance (if proj is outside of edge, it is forced to be applied on one side, either A (bary==0) or B (bary==1)
-        m_bary = r2 < 0 ?  0 : r2;
-        m_bary = m_bary > 1.0 ?  1.0 : m_bary;
+        m_projectionBarycentricCoordinate = r2 < 0 ?  0 : r2;
+        m_projectionBarycentricCoordinate = m_projectionBarycentricCoordinate > 1.0 ?  1.0 : m_projectionBarycentricCoordinate;
 
         // This is the coordinates of the projected point
         Coord_t<DataTypes> proj;
@@ -130,13 +130,13 @@ void SlidingLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::C
 
         // Compute second normal that complete the set of constraint required to pull the point on the edge (only when dimension is supérior to 2)
         Deriv_t<DataTypes> dirOrtho;
-        if ( Deriv_t<DataTypes>::spatial_dimensions > 2 )
+        if constexpr ( Deriv_t<DataTypes>::spatial_dimensions > 2 )
         {
             DataTypes::setDPos(dirOrtho, cross(DataTypes::getDPos(dirProj), DataTypes::getDPos(dirAxe)).normalized());
         }
 
         m_constraintDirections.push_back(dirProj);
-        if ( Deriv_t<DataTypes>::spatial_dimensions > 2 )
+        if constexpr ( Deriv_t<DataTypes>::spatial_dimensions > 2 )
             m_constraintDirections.push_back(dirOrtho);
         m_constraintDirections.push_back(dirAxe);
         m_constraintDirections.push_back(-dirAxe);
@@ -170,8 +170,8 @@ void SlidingLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::C
             c1_it.addCol(tm1, m_constraintDirections[i]);
 
             auto c2_it = c2->writeLine(cIndex);
-            c2_it.addCol(tm2a, -m_constraintDirections[i] * (1-m_bary));
-            c2_it.addCol(tm2b, -m_constraintDirections[i] * m_bary);
+            c2_it.addCol(tm2a, -m_constraintDirections[i] * (1-m_projectionBarycentricCoordinate));
+            c2_it.addCol(tm2b, -m_constraintDirections[i] * m_projectionBarycentricCoordinate);
 
             ++cIndex;
         }
@@ -213,7 +213,7 @@ void SlidingLagrangianConstraint<DataTypes>::getConstraintViolation(const core::
     }
     else
     {
-        typename DataTypes::CPos newProj = DataTypes::getCPos(B)*m_bary + DataTypes::getCPos(A)*(1-m_bary);
+        typename DataTypes::CPos newProj = DataTypes::getCPos(B)*m_projectionBarycentricCoordinate + DataTypes::getCPos(A)*(1-m_projectionBarycentricCoordinate);
         typename DataTypes::DPos PtoProj = DataTypes::getCPos(P) - newProj;
         typename DataTypes::DPos PtoA = DataTypes::getCPos(P) - DataTypes::getCPos(A);
         typename DataTypes::DPos PtoB = DataTypes::getCPos(P) - DataTypes::getCPos(B);
