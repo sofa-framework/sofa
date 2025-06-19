@@ -95,7 +95,7 @@ public:
 private:
     // storage of force
     std::vector<Deriv>  m_constraintDirections;
-    Real m_bary;
+    Real m_projectionBarycentricCoordinate;
 
 
 
