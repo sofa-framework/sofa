@@ -322,7 +322,7 @@ public:
     /// @{
 
     /// Get distance to the actual (visual) surface
-    [[nodiscard]] SReal getProximity() const { return d_contactDistance.getValue(); }
+    [[nodiscard]] SReal getContactDistance() const { return d_contactDistance.getValue(); }
 
     /// Get contact stiffness
     [[nodiscard]] SReal getContactStiffness(Index /*index*/) const { return contactStiffness.getValue(); }
@@ -364,7 +364,7 @@ public:
     void setColor4f(const float *c);
 
     /// Set of differents parameters
-    void setProximity       (const SReal a)        { d_contactDistance.setValue(a); }
+    void getContactDistance (const SReal a)        { d_contactDistance.setValue(a); }
     void setContactResponse (const std::string &a) { contactResponse.setValue(a); }
 
     /// Returns an int corresponding to the type of this.

@@ -73,9 +73,9 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     const type::Vec3& t2 = e2.getTranslation();
     const Matrix3& r2 = e2.getRotation();
 
-    const double d0 = e1.getProximity() + e2.getProximity() + (intersection->getContactDistance() == 0.0 ? 0.001 : intersection->getContactDistance());
+    const double d0 = e1.getContactDistance() + e2.getContactDistance() + (intersection->getContactDistance() == 0.0 ? 0.001 : intersection->getContactDistance());
     //const SReal margin = 0.001f + (SReal)d0;
-    const SReal margin = (SReal)((e1.getProximity() + e2.getProximity() + (intersection->getAlarmDistance() == 0.0 ? 0.001 : intersection->getAlarmDistance()))/2);
+    const SReal margin = (SReal)((e1.getContactDistance() + e2.getContactDistance() + (intersection->getAlarmDistance() == 0.0 ? 0.001 : intersection->getAlarmDistance()))/2);
 
     // transform from grid1 to grid2
     Vec3f translation;
@@ -562,7 +562,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     const Matrix3& r1 = e1.getRotation();
     const bool flipped = e1.isFlipped();
 
-    const double d0 = e1.getProximity() + e2.getProximity() + intersection->getContactDistance();
+    const double d0 = e1.getContactDistance() + e2.getContactDistance() + intersection->getContactDistance();
     const SReal margin = 0.001f + (SReal)d0;
 
 
@@ -626,7 +626,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     const type::Vec3& t1 = e1.getTranslation();
     const Matrix3& r1 = e1.getRotation();
 
-    const double d0 = e1.getProximity() + e2.getProximity() + intersection->getContactDistance();
+    const double d0 = e1.getContactDistance() + e2.getContactDistance() + intersection->getContactDistance();
     const SReal margin = 0.001f + (SReal)d0;
     int nc = 0;
     for (unsigned int iP = 0; iP < 3; ++iP)
@@ -735,7 +735,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     const type::Vec3& t1 = e1.getTranslation();
     const Matrix3& r1 = e1.getRotation();
 
-    const double d0 = e1.getProximity() + e2.getProximity() + intersection->getContactDistance();
+    const double d0 = e1.getContactDistance() + e2.getContactDistance() + intersection->getContactDistance();
     const SReal margin = 0.001f + (SReal)d0;
     int nresult = 0;
     for (unsigned int iP = 0; iP < 2; ++iP)
