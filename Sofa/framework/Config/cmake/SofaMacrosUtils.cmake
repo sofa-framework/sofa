@@ -121,15 +121,3 @@ macro(sofa_fetch_dependency name)
     endif()
 endmacro()
 
-
-function(sofa_find_or_fetch name)
-    set(oneValueArgs GIT_REF GIT_REPOSITORY)
-    cmake_parse_arguments("ARG"  "${oneValueArgs}" ${ARGN})
-
-    sofa_find_package(name)
-
-    if(NOT ${name}_FOUND)
-        sofa_fetch_dependency(name GIT_REF ${ARG_GIT_REF} GIT_REPOSITORY ${ARG_GIT_REPOSITORY} ${ARGN})
-    endif ()
-
-endfunction()
