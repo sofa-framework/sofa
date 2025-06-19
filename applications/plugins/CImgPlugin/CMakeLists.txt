@@ -31,7 +31,7 @@ if(NOT CImg_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
             DONT_BUILD
     )
 
-    set(CIMG_H_DIR ${CImg_SOURCE_DIR})
+    set(CIMG_DIR ${CImg_SOURCE_DIR})
     sofa_find_package(CImg REQUIRED)
 elseif (NOT CImg_FOUND)
     message(FATAL_ERROR "CImgPlugin: DEPENDENCY CImg NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install cimg-dev, or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
