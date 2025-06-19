@@ -51,3 +51,85 @@ function(sofa_get_all_targets var)
     __get_all_targets_recursive(targets ${source_dir})
     set(${var} ${targets} PARENT_SCOPE)
 endfunction()
+
+
+macro(sofa_fetch_dependency name)
+    set(oneValueArgs GIT_TAG GIT_REPOSITORY)
+    set(multiValueArgs "")
+    set(options DONT_BUILD)
+    cmake_parse_arguments("ARG" "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
+
+    # Setup fetch directory
+    set(fetched_dir "${CMAKE_BINARY_DIR}/external_directories/fetched/${name}" )
+    set(build_directory "${CMAKE_BINARY_DIR}/external_directories/fetched/${name}-build")
+
+    # Create option
+    string(REPLACE "\." "_"  fixed_name ${name})
+    string(TOUPPER ${fixed_name} upper_name)
+    set(${upper_name}_GIT_REPOSITORY "${ARG_GIT_REPOSITORY}" CACHE STRING "Repository address" )
+    set(${upper_name}_GIT_TAG "${ARG_GIT_TAG}" CACHE STRING "Branch or commit SHA to checkout" )
+
+    set(${name}_SOURCE_DIR "${fetched_dir}" CACHE STRING "" FORCE )
+
+    # Fetch
+    message("Fetching dependency ${name} in ${fetched_dir}")
+    message(STATUS "Checkout reference ${${upper_name}_GIT_TAG} from repository ${${upper_name}_GIT_REPOSITORY} ")
+
+    #Generate temporary folder to store project that will fetch the sources
+    if(NOT EXISTS ${fetched_dir}-temp)
+        file(MAKE_DIRECTORY "${fetched_dir}-temp/")
+    endif()
+
+
+    file(WRITE ${fetched_dir}-temp/CMakeLists.txt "
+    cmake_minimum_required(VERSION 3.22)
+    include(ExternalProject)
+    ExternalProject_Add(
+        ${name}
+        GIT_REPOSITORY ${${upper_name}_GIT_REPOSITORY}
+        GIT_TAG ${${upper_name}_GIT_TAG}
+        SOURCE_DIR ${fetched_dir}
+        BINARY_DIR \"\"
+        CONFIGURE_COMMAND \"\"
+        BUILD_COMMAND \"\"
+        INSTALL_COMMAND \"\"
+        TEST_COMMAND \"\"
+        GIT_CONFIG \"remote.origin.fetch=+refs/pull/*:refs/remotes/origin/pr/*\"
+        )"
+    )
+
+    execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM} -G "${CMAKE_GENERATOR}" .
+            WORKING_DIRECTORY "${fetched_dir}-temp"
+            RESULT_VARIABLE generate_exitcode
+            OUTPUT_VARIABLE generate_logs ERROR_VARIABLE generate_logs)
+    file(APPEND "${fetched_dir}-temp/logs.txt" "${generate_logs}")
+    execute_process(COMMAND "${CMAKE_COMMAND}" --build .
+            WORKING_DIRECTORY "${fetched_dir}-temp"
+            RESULT_VARIABLE build_exitcode
+            OUTPUT_VARIABLE build_logs ERROR_VARIABLE build_logs)
+    file(APPEND "${fetched_dir}-temp/logs.txt" "${build_logs}")
+
+    if(NOT generate_exitcode EQUAL 0 OR NOT build_exitcode EQUAL 0)
+        message(SEND_ERROR "Failed to fetch external repository ${name}." "\nSee logs in ${fetched_dir}/logs.txt")
+    endif()
+
+
+    # Add
+    if(NOT ARG_DONT_BUILD AND  EXISTS "${fetched_dir}/.git" AND IS_DIRECTORY "${fetched_dir}/.git")
+        set(${name}_BUILD_DIR "${build_directory}" CACHE STRING "" FORCE)
+        add_subdirectory("${fetched_dir}" "${build_directory}")
+    endif()
+endmacro()
+
+
+function(sofa_find_or_fetch name)
+    set(oneValueArgs GIT_REF GIT_REPOSITORY)
+    cmake_parse_arguments("ARG"  "${oneValueArgs}" ${ARGN})
+
+    sofa_find_package(name)
+
+    if(NOT ${name}_FOUND)
+        sofa_fetch_dependency(name GIT_REF ${ARG_GIT_REF} GIT_REPOSITORY ${ARG_GIT_REPOSITORY} ${ARGN})
+    endif ()
+
+endfunction()
