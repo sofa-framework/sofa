@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,35 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMatrix/Qt/config.h>
+#include <SofaMatrix/imgui/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <SofaMatrix/Qt/BaseMatrixImageProxy.h>
-
-#include <sofa/core/behavior/BaseMatrixLinearSystem.h>
-
-namespace sofa::component::linearsolver
+namespace sofamatriximgui
 {
 
-/**
- * Component to convert a BaseMatrix from the linear solver into an image that can be visualized in the GUI.
- * Use GlobalSystemMatrixExporter in order to save an image on the disk.
- */
-class SOFA_SOFAMATRIX_QT_API GlobalSystemMatrixImage : public core::objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS(GlobalSystemMatrixImage, core::objectmodel::BaseObject);
+/** Initialize the SofaMatrix.imgui plugin */
+void SOFAMATRIX_IMGUI_API initializePlugin();
 
-protected:
-
-    GlobalSystemMatrixImage();
-    ~GlobalSystemMatrixImage() override;
-
-    void init() override;
-    void handleEvent(core::objectmodel::Event *event) override;
-
-    Data< type::BaseMatrixImageProxy > d_bitmap; ///< Visualization of the representation of the matrix as a binary image. White pixels are zeros, black pixels are non-zeros.
-    SingleLink<GlobalSystemMatrixImage, sofa::core::behavior::BaseMatrixLinearSystem, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_linearSystem;
-};
-
-} //namespace sofa::component::linearsolver
+}
