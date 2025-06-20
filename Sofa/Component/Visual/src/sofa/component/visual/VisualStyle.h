@@ -66,8 +66,8 @@ public:
 protected:
     VisualStyle();
 public:
-    void updateVisualFlags(VisualParams* ) override;
-    void applyBackupFlags(VisualParams* ) override;
+    void doUpdateVisualFlags(VisualParams* ) override;
+    void doApplyBackupFlags(VisualParams* ) override;
 
     bool insertInNode(sofa::core::objectmodel::BaseNode* node) override;
     bool removeInNode(sofa::core::objectmodel::BaseNode* node) override;
