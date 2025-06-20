@@ -47,7 +47,7 @@ test = { cmd = "ctest --test-dir $SOFA_BUILD_DIR --output-on-failure", depends-o
 
 [feature.plugin-sofa-python3]
 dependencies = { numpy = ">=1.22.0", python = ">=3.9.0", pybind11 = ">=2.3.0" }
-activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOFA_FETCH_SOFAPYTHON3=ON -DPython_EXECUTABLE=$SOFA_PYTHON_EXECUTABLE" } }
+activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOFA_FETCH_SOFAPYTHON3=ON -DPython_EXECUTABLE=$SOFA_PYTHON_EXECUTABLE -DPython_FIND_STRATEGY=LOCATION" } }
 
 [feature.qt-gui]
 activation = { env = { Qt5_DIR = "$CONDA_PREFIX/lib/cmake" } }
