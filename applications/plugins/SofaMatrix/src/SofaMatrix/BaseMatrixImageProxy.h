@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,63 +19,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMatrix/Qt/config.h>
+#pragma once
+#include <SofaMatrix/config.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 
-#include <SofaMatrix/MatrixImageExporter.h>
-
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-#include <sofa/helper/system/PluginManager.h>
-
-namespace sofamatrix::qt
+namespace sofa::type
 {
 
-extern "C" {
-    SOFA_SOFAMATRIX_API void initExternalModule();
-    SOFA_SOFAMATRIX_API const char* getModuleName();
-    SOFA_SOFAMATRIX_API const char* getModuleVersion();
-    SOFA_SOFAMATRIX_API const char* getModuleLicense();
-    SOFA_SOFAMATRIX_API const char* getModuleDescription();
-    SOFA_SOFAMATRIX_API void registerObjects(sofa::core::ObjectFactory* factory);
-}
-
-void initExternalModule()
+/// A simple proxy of a BaseMatrix, compatible with a Data that can be visualized in the GUI, as a bitmap, with a BaseMatrixImageViewerWidget
+struct BaseMatrixImageProxy
 {
-    static bool first = true;
-    if (first)
+    typedef SReal Real;
+
+    BaseMatrixImageProxy()
+    {}
+
+    static const char* Name() { return "SimpleBitmap"; }
+
+    friend std::istream& operator >> ( std::istream& in, BaseMatrixImageProxy& /*p*/ )
     {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
-        first = false;
-
-        sofa::component::initializeMatrixExporterComponents();
+        return in;
     }
-}
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+    friend std::ostream& operator << ( std::ostream& out, const BaseMatrixImageProxy& p )
+    {
+        if (!p.m_matrix)
+        {
+            out << "invalid matrix";
+        }
+        else
+        {
+            out << std::to_string(p.m_matrix->rows()) << "x" << std::to_string(p.m_matrix->cols());
+        }
+        return out;
+    }
 
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
+    [[nodiscard]] linearalgebra::BaseMatrix* getMatrix() const
+    {
+        return m_matrix;
+    }
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+    void setMatrix(linearalgebra::BaseMatrix* m_matrix)
+    {
+        this->m_matrix = m_matrix;
+    }
 
-const char* getModuleDescription()
-{
-    return "SOFA plugin gathering components related to linear system matrices.";
-}
+protected:
 
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-}
+    linearalgebra::BaseMatrix* m_matrix { nullptr };
+};
 
-}
-
+} //namespace sofa::type

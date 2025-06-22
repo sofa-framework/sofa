@@ -389,7 +389,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(i
     materialMatrix *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
 
     // divide by 36 times volumes of the element
-    const VecCoord X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
+    const VecCoord& X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
     const auto tetrahedronVolume = geometry::Tetrahedron::volume(
             X0[a], X0[b], X0[c], X0[d]);
 
