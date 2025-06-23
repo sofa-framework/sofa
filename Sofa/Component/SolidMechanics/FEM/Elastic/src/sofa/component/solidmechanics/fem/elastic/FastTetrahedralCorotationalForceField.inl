@@ -64,8 +64,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
     for(j=0; j<4; ++j)
         point[j]=(restPosition)[t[j]];
 
-    const auto tetrahedronVolume = geometry::Tetrahedron::signedVolume(point[0],point[1],point[2],point[3]);
-
+    const auto tetrahedronVolume = -geometry::Tetrahedron::signedVolume(point[0],point[1],point[2],point[3]);
     /// store the rest volume
     my_tinfo.restVolume = tetrahedronVolume;
     mu *= fabs(tetrahedronVolume);
@@ -75,9 +74,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
     for(j=0; j<4; ++j)
     {
         if ((j%2)==0)
-            my_tinfo.shapeVector[j]= static_cast<Real>(6) * cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/tetrahedronVolume;
+            my_tinfo.shapeVector[j] = cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/(tetrahedronVolume * 6);
         else
-            my_tinfo.shapeVector[j]= -static_cast<Real>(6) * cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/tetrahedronVolume;
+            my_tinfo.shapeVector[j] = -cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/(tetrahedronVolume * 6);
     }
 
     /// compute the vertex stiffness of the linear elastic material, needed for addKToMatrix
