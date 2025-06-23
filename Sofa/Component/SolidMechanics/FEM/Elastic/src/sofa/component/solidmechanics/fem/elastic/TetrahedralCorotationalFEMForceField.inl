@@ -389,7 +389,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(i
     materialMatrix *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
 
     // divide by 36 times volumes of the element
-    const VecCoord X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
+    const VecCoord& X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
     Coord A = (X0)[b] - (X0)[a];
     Coord B = (X0)[c] - (X0)[a];
