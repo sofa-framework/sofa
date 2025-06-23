@@ -280,6 +280,10 @@
           "type": "BOOL",
           "value": "ON"
         },
+        "PLUGIN_SOFASPHFLUID_CUDA": {
+          "type": "BOOL",
+          "value": "ON"
+        },
         "PLUGIN_SOFASPHFLUID": {
           "type": "BOOL",
           "value": "ON"
