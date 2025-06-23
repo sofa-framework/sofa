@@ -171,6 +171,10 @@
           "type": "BOOL",
           "value": "ON"
         },
+        "PLUGIN_SOFADISTANCEGRID_CUDA": {
+          "type": "BOOL",
+          "value": "ON"
+        },
         "PLUGIN_GEOMAGIC": {
           "type": "BOOL",
           "value": "ON"
