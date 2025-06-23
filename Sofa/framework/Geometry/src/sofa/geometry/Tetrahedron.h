@@ -45,7 +45,7 @@ struct Tetrahedron
     * @tparam   Node a container of the type sofa::type::Vec3 (needed for cross(), dot(), operator-)
     * @tparam   T scalar
     * @param	n0,n1,n2,n3 nodes of the tetrahedron
-    * @return	Volume of the hexahedron (a T scalar)
+    * @return	Volume of the tetrahedron (a T scalar)
     */
     template<typename Node,
              typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
@@ -63,7 +63,7 @@ struct Tetrahedron
     * @tparam   Node a container of the type sofa::type::Vec3 (needed for cross(), dot(), operator-)
     * @tparam   T scalar
     * @param	n0,n1,n2,n3 nodes of the tetrahedron
-    * @return	Signed volume of the hexahedron (a T scalar)
+    * @return	Signed volume of the tetrahedron (a T scalar)
     */
     template<typename Node,
              typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
