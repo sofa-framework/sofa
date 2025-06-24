@@ -125,9 +125,9 @@ endmacro()
 #   - ${CMAKE_BINARY_DIR}/cmake/FooConfig.cmake
 #   - ${CMAKE_BINARY_DIR}/cmake/FooConfigVersion.cmake
 # - In the install tree:
-#   - lib/cmake/Foo/FooConfigVersion.cmake
-#   - lib/cmake/Foo/FooConfig.cmake
-#   - lib/cmake/Foo/FooTargets.cmake
+#   - ${ARCHIVE_OUTPUT_DIRECTORY}/cmake/Foo/FooConfigVersion.cmake
+#   - ${ARCHIVE_OUTPUT_DIRECTORY}/cmake/Foo/FooConfig.cmake
+#   - ${ARCHIVE_OUTPUT_DIRECTORY}/cmake/Foo/FooTargets.cmake
 #
 # This macro factorizes boilerplate CMake code for the different
 # packages in Sofa.  It assumes that there is a FooConfig.cmake.in
@@ -172,7 +172,7 @@ macro(sofa_create_package)
         #   by sofa_create_package_with_targets
         #   or sofa_create_component_in_package_with_targets
         install(EXPORT ${ARG_PACKAGE_NAME}Targets
-            DESTINATION "lib/cmake/${package_install_dir}"
+            DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}/cmake/${package_install_dir}"
             NAMESPACE "${package_namespace}"
             COMPONENT headers)
     endif()
@@ -186,23 +186,23 @@ macro(sofa_create_package)
         )
     if(ARG_RELOCATABLE)
         string(CONCAT PACKAGE_GUARD ${PACKAGE_GUARD}
-            "list(APPEND CMAKE_LIBRARY_PATH \"\${CMAKE_CURRENT_LIST_DIR}/../../../bin\")" "\n"
-            "list(APPEND CMAKE_LIBRARY_PATH \"\${CMAKE_CURRENT_LIST_DIR}/../../../lib\")" "\n"
+            "list(APPEND CMAKE_LIBRARY_PATH \"\${CMAKE_CURRENT_LIST_DIR}/../../../${RUNTIME_OUTPUT_DIRECTORY}\")" "\n"
+            "list(APPEND CMAKE_LIBRARY_PATH \"\${CMAKE_CURRENT_LIST_DIR}/../../../${ARCHIVE_OUTPUT_DIRECTORY}\")" "\n"
             )
     endif()
     string(CONCAT PACKAGE_GUARD ${PACKAGE_GUARD}
         "################################################################"
         )
-    configure_file("${CMAKE_CURRENT_BINARY_DIR}/${filename}" "${CMAKE_BINARY_DIR}/lib/cmake/${filename}" COPYONLY)
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${filename}" DESTINATION "lib/cmake/${package_install_dir}" COMPONENT headers)
+    configure_file("${CMAKE_CURRENT_BINARY_DIR}/${filename}" "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/cmake/${filename}" COPYONLY)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${filename}" DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}/cmake/${package_install_dir}" COMPONENT headers)
 
     # <package_name>Config.cmake
     configure_package_config_file(
         ${ARG_PACKAGE_NAME}Config.cmake.in
-        "${CMAKE_BINARY_DIR}/lib/cmake/${ARG_PACKAGE_NAME}Config.cmake"
-        INSTALL_DESTINATION "lib/cmake/${package_install_dir}"
+        "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/cmake/${ARG_PACKAGE_NAME}Config.cmake"
+        INSTALL_DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}/cmake/${package_install_dir}"
         )
-    install(FILES "${CMAKE_BINARY_DIR}/lib/cmake/${ARG_PACKAGE_NAME}Config.cmake" DESTINATION "lib/cmake/${package_install_dir}" COMPONENT headers)
+    install(FILES "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/cmake/${ARG_PACKAGE_NAME}Config.cmake" DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}/cmake/${package_install_dir}" COMPONENT headers)
 
     if(ARG_RELOCATABLE)
         sofa_set_project_install_relocatable(${package_install_dir} ${CMAKE_CURRENT_BINARY_DIR} ${ARG_RELOCATABLE})
@@ -542,18 +542,18 @@ macro(sofa_auto_set_target_rpath)
                     if(ARG_RELOCATABLE)
                         # current target is relocatable
                         list(APPEND target_rpath
-                            "$ORIGIN/../../../${dep_reloc_install_dir}/lib"
-                            "$$ORIGIN/../../../${dep_reloc_install_dir}/lib"
-                            "@loader_path/../../../${dep_reloc_install_dir}/lib"
-                            "@executable_path/../../../${dep_reloc_install_dir}/lib"
+                            "$ORIGIN/../../../${dep_reloc_install_dir}/${ARCHIVE_OUTPUT_DIRECTORY}"
+                            "$$ORIGIN/../../../${dep_reloc_install_dir}/${ARCHIVE_OUTPUT_DIRECTORY}"
+                            "@loader_path/../../../${dep_reloc_install_dir}/${ARCHIVE_OUTPUT_DIRECTORY}"
+                            "@executable_path/../../../${dep_reloc_install_dir}/${ARCHIVE_OUTPUT_DIRECTORY}"
                             )
                     else()
                         # current target is NOT relocatable
                         list(APPEND target_rpath
-                            "$ORIGIN/../${dep_reloc_install_dir}/lib"
-                            "$$ORIGIN/../${dep_reloc_install_dir}/lib"
-                            "@loader_path/../${dep_reloc_install_dir}/lib"
-                            "@executable_path/../${dep_reloc_install_dir}/lib"
+                            "$ORIGIN/../${dep_reloc_install_dir}/${ARCHIVE_OUTPUT_DIRECTORY}"
+                            "$$ORIGIN/../${dep_reloc_install_dir}/${ARCHIVE_OUTPUT_DIRECTORY}"
+                            "@loader_path/../${dep_reloc_install_dir}/${ARCHIVE_OUTPUT_DIRECTORY}"
+                            "@executable_path/../${dep_reloc_install_dir}/${ARCHIVE_OUTPUT_DIRECTORY}"
                             )
                     endif()
                 else()
@@ -561,10 +561,10 @@ macro(sofa_auto_set_target_rpath)
                     if(ARG_RELOCATABLE)
                         # current target is relocatable
                         list(APPEND target_rpath
-                            "$ORIGIN/../../../lib"
-                            "$$ORIGIN/../../../lib"
-                            "@loader_path/../../../lib"
-                            "@executable_path/../../../lib"
+                            "$ORIGIN/../../../${ARCHIVE_OUTPUT_DIRECTORY}"
+                            "$$ORIGIN/../../../${ARCHIVE_OUTPUT_DIRECTORY}"
+                            "@loader_path/../../../${ARCHIVE_OUTPUT_DIRECTORY}"
+                            "@executable_path/../../../${ARCHIVE_OUTPUT_DIRECTORY}"
                             )
                     endif()
                 endif()
@@ -601,9 +601,9 @@ macro(sofa_install_targets_in_package)
 
     install(TARGETS ${ARG_TARGETS}
             EXPORT ${ARG_PACKAGE_NAME}Targets
-            RUNTIME DESTINATION "bin" COMPONENT applications
-            LIBRARY DESTINATION "lib" COMPONENT libraries
-            ARCHIVE DESTINATION "lib" COMPONENT libraries
+            RUNTIME DESTINATION "${RUNTIME_OUTPUT_DIRECTORY}" COMPONENT applications
+            LIBRARY DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}" COMPONENT libraries
+            ARCHIVE DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}" COMPONENT libraries
             PUBLIC_HEADER DESTINATION "include/${ARG_INCLUDE_INSTALL_DIR}" COMPONENT headers
 
             # [MacOS] install runSofa above the already populated runSofa.app (see CMAKE_INSTALL_PREFIX)
@@ -850,7 +850,7 @@ function(sofa_install_libraries)
             get_target_property(is_framework ${target} FRAMEWORK)
             if(APPLE AND is_framework)
                 get_filename_component(target_location ${target_location} DIRECTORY) # parent dir
-                install(DIRECTORY ${target_location} DESTINATION "lib" COMPONENT applications)
+                install(DIRECTORY ${target_location} DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}" COMPONENT applications)
             else()
                 list(APPEND lib_paths "${target_location}")
             endif()
@@ -903,12 +903,9 @@ function(sofa_install_libraries)
                 )
 
             # Install the libs
-            if(WIN32)
-                install(FILES ${SHARED_LIBS} DESTINATION "bin" COMPONENT applications)
-            else()
-                install(FILES ${SHARED_LIBS} DESTINATION "lib" COMPONENT applications)
-            endif()
-            install(FILES ${STATIC_LIBS} DESTINATION "lib" COMPONENT libraries)
+
+            install(FILES ${SHARED_LIBS} DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}" COMPONENT applications)
+            install(FILES ${STATIC_LIBS} DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}" COMPONENT libraries)
 
             # Copy the libs (Windows only)
             if(WIN32 AND NOT no_copy)
@@ -1107,9 +1104,9 @@ endfunction()
 #   - ${CMAKE_BINARY_DIR}/cmake/FooConfig.cmake
 #   - ${CMAKE_BINARY_DIR}/cmake/FooConfigVersion.cmake
 # - In the install tree:
-#   - lib/cmake/Foo/FooConfigVersion.cmake
-#   - lib/cmake/Foo/FooConfig.cmake
-#   - lib/cmake/Foo/FooTargets.cmake
+#   - ${ARCHIVE_OUTPUT_DIRECTORY}/cmake/Foo/FooConfigVersion.cmake
+#   - ${ARCHIVE_OUTPUT_DIRECTORY}/cmake/Foo/FooConfig.cmake
+#   - ${ARCHIVE_OUTPUT_DIRECTORY}/cmake/Foo/FooTargets.cmake
 #
 # This macro factorizes boilerplate CMake code for the different
 # packages in Sofa.  It assumes that there is a FooConfig.cmake.in

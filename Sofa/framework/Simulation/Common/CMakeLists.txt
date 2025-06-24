@@ -42,6 +42,7 @@ sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(TinyXML2 REQUIRED)
 
 if(UNIX AND NOT APPLE)
+    message("here ${TinyXML2_LIBRARY}")
     sofa_install_libraries(PATHS ${TinyXML2_LIBRARY})
 else()
     sofa_install_libraries(TARGETS tinyxml2::tinyxml2)

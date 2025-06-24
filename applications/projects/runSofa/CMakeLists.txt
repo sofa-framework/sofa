@@ -11,13 +11,10 @@ endif()
 ###################################
 # Generate plugin_list.conf.default
 include(cmake/GeneratePluginConfig.cmake)
-if(MSVC)
-    # plugins are located in bin/
-    set(_pluginLocation "bin")
-else()
-    # plugins are located in lib/
-    set(_pluginLocation "lib")
-endif()
+
+# plugins are located in bin/
+set(_pluginLocation "${LIBRARY_OUTPUT_DIRECTORY}")
+
 
 set(_configPluginFileName plugin_list.conf)
 set(_defaultConfigPluginFileName "${_configPluginFileName}.default")
