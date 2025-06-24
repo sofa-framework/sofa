@@ -278,7 +278,17 @@ void MechanicalOperations::computeDf(core::MultiVecDerivId df, bool clear, bool 
         executeVisitor( MechanicalResetForceVisitor(&mparams, df, false) );
         //	finish();
     }
-    executeVisitor( MechanicalComputeDfVisitor( &mparams, df,  accumulate) );
+    executeVisitor( MechanicalComputeDfVisitor( &mparams, df,  false) );
+
+    if (accumulate)
+    {
+        mappingGraphBreadthFirstTraversal(ctx, [&mparams = mparams, &df](BaseMapping* mapping)
+        {
+            mapping->applyJT(&mparams, df, df); // apply material stiffness: variation of force below the mapping
+            if( mparams.kFactor() )
+                mapping->applyDJT(&mparams, df, df); // apply geometric stiffness: variation due to a change of mapping, with a constant force below the mapping
+        }, true, MappingGraphDirection::BOTTOM_UP);
+    }
 }
 
 /// Compute the current force delta (given the latest propagated velocity)
@@ -292,7 +302,18 @@ void MechanicalOperations::computeDfV(core::MultiVecDerivId df, bool clear, bool
         executeVisitor( MechanicalResetForceVisitor(&mparams, df, false) );
         //finish();
     }
-    executeVisitor( MechanicalComputeDfVisitor(&mparams, df, accumulate) );
+    executeVisitor( MechanicalComputeDfVisitor(&mparams, df, false) );
+
+    if (accumulate)
+    {
+        mappingGraphBreadthFirstTraversal(ctx, [&mparams = mparams, &df](BaseMapping* mapping)
+        {
+            mapping->applyJT(&mparams, df, df); // apply material stiffness: variation of force below the mapping
+            if( mparams.kFactor() != 0_sreal)
+                mapping->applyDJT(&mparams, df, df); // apply geometric stiffness: variation due to a change of mapping, with a constant force below the mapping
+        }, true, MappingGraphDirection::BOTTOM_UP);
+    }
+
     mparams.setDx(dx);
 }
 
@@ -312,7 +333,17 @@ void MechanicalOperations::addMBKdx(core::MultiVecDerivId df,
     mparams.setBFactor(b.get());
     mparams.setKFactor(k.get());
     mparams.setMFactor(m.get());
-    executeVisitor( MechanicalAddMBKdxVisitor(&mparams, df, accumulate) );
+    executeVisitor( MechanicalAddMBKdxVisitor(&mparams, df, false) );
+
+    if (accumulate)
+    {
+        mappingGraphBreadthFirstTraversal(ctx, [&mparams = mparams, &df](BaseMapping* mapping)
+        {
+            mapping->applyJT(&mparams, df, df);
+            if( mparams.kFactor() != 0_sreal)
+                mapping->applyDJT(&mparams, df, df);
+        }, true, MappingGraphDirection::BOTTOM_UP);
+    }
 }
 
 /// accumulate $ df += (m M + b B + k K) velocity $
@@ -334,7 +365,18 @@ void MechanicalOperations::addMBKv(core::MultiVecDerivId df,
     mparams.setKFactor(k.get());
     mparams.setMFactor(m.get());
     /* useV = true */
-    executeVisitor( MechanicalAddMBKdxVisitor(&mparams, df, accumulate) );
+    executeVisitor( MechanicalAddMBKdxVisitor(&mparams, df, false) );
+
+    if (accumulate)
+    {
+        mappingGraphBreadthFirstTraversal(ctx, [&mparams = mparams, &df](BaseMapping* mapping)
+        {
+            mapping->applyJT(&mparams, df, df);
+            if( mparams.kFactor() != 0_sreal)
+                mapping->applyDJT(&mparams, df, df);
+        }, true, MappingGraphDirection::BOTTOM_UP);
+    }
+
     mparams.setDx(dx);
 }
 
