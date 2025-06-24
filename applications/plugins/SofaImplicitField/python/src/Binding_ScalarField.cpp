@@ -1,11 +1,3 @@
-#include <pybind11/pybind11.h>
-
-#include <SofaPython3/PythonFactory.h>
-#include <SofaPython3/PythonEnvironment.h>
-#include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaImplicitField/components/geometry/ScalarField.h>
-
-#include "Binding_ScalarField.h"
 /******************************************************************************
 *                           SofaImplicitField plugin                          *
 *                  (c) 2024 CNRS, University of Lille, INRIA                  *
@@ -25,6 +17,14 @@
 *******************************************************************************
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <pybind11/pybind11.h>
+
+#include <SofaPython3/PythonFactory.h>
+#include <SofaPython3/PythonEnvironment.h>
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaImplicitField/components/geometry/ScalarField.h>
+
+#include "Binding_ScalarField.h"
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
