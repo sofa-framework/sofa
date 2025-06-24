@@ -51,7 +51,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
 
     auto [lambda, mu] = Inherited::toLameParameters(_3DMat, youngModulusElement, poissonRatioElement);
 
-    typename DataTypes::Real volume,val;
+    typename DataTypes::Real val;
     typename DataTypes::Coord point[4]; //shapeVector[4];
     const typename DataTypes::VecCoord restPosition=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
@@ -63,20 +63,20 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
     // store the point position
     for(j=0; j<4; ++j)
         point[j]=(restPosition)[t[j]];
-    /// compute 6 times the rest volume
-    volume=dot(cross(point[1]-point[0],point[2]-point[0]),point[0]-point[3]);
+
+    const auto tetrahedronVolume = -geometry::Tetrahedron::signedVolume(point[0],point[1],point[2],point[3]);
     /// store the rest volume
-    my_tinfo.restVolume=volume/6;
-    mu*=fabs(volume)/6;
-    lambda*=fabs(volume)/6;
+    my_tinfo.restVolume = tetrahedronVolume;
+    mu *= fabs(tetrahedronVolume);
+    lambda *= fabs(tetrahedronVolume);
 
     // store shape vectors at the rest configuration
     for(j=0; j<4; ++j)
     {
         if ((j%2)==0)
-            my_tinfo.shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
+            my_tinfo.shapeVector[j] = cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/(tetrahedronVolume * 6);
         else
-            my_tinfo.shapeVector[j]= -cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
+            my_tinfo.shapeVector[j] = -cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/(tetrahedronVolume * 6);
     }
 
     /// compute the vertex stiffness of the linear elastic material, needed for addKToMatrix
