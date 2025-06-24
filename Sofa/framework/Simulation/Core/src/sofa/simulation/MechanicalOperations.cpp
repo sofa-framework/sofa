@@ -55,6 +55,7 @@
 #include <sofa/core/behavior/ConstraintSolver.h>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/MappingGraph.h>
 
 #include <numeric>
 
@@ -256,7 +257,15 @@ void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear
         executeVisitor( MechanicalResetForceVisitor(&mparams, result, false) );
         //finish();
     }
-    executeVisitor( MechanicalComputeForceVisitor(&mparams, result, accumulate) );
+    executeVisitor( MechanicalComputeForceVisitor(&mparams, result, false) );
+
+    if (accumulate)
+    {
+        mappingGraphBreadthFirstTraversal(ctx, [&mparams = mparams, &result](BaseMapping* mapping)
+        {
+            mapping->applyJT(&mparams, result, result);
+        }, true, MappingGraphDirection::BOTTOM_UP);
+    }
 }
 
 
