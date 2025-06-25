@@ -215,13 +215,13 @@ public:
     typedef sofa::type::Vec<3,Real> Inherit;
     typedef Real real;
     enum { N=3 };
-    Vec3r1() : dummy((Real) 0.0) {}
+    constexpr Vec3r1() : dummy((Real) 0.0) {}
     template<class real2>
-    Vec3r1(const Vec<N,real2>& v): Inherit(v), dummy((Real) 0.0) {}
-    Vec3r1(real x, real y, real z) : Inherit(x,y,z), dummy((Real) 0.0) {}
+    constexpr Vec3r1(const Vec<N,real2>& v): Inherit(v), dummy((Real) 0.0) {}
+    constexpr Vec3r1(real x, real y, real z) : Inherit(x,y,z), dummy((Real) 0.0) {}
 
     /// Fast constructor: no initialization
-    explicit Vec3r1(NoInit n) : Inherit(n), dummy((Real) 0.0)
+    explicit constexpr Vec3r1(NoInit n) : Inherit(n), dummy((Real) 0.0)
     {
     }
 

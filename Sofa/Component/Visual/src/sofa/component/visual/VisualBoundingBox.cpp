@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,54 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaMatrix/Qt/config.h>
-#include <sofa/linearalgebra/BaseMatrix.h>
 
-namespace sofa::type
+#include <sofa/component/visual/VisualBoundingBox.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa::component::visual
 {
 
-/// A simple proxy of a BaseMatrix, compatible with a Data that can be visualized in the GUI, as a bitmap, with a BaseMatrixImageViewerWidget
-struct BaseMatrixImageProxy
+void registerVisualBoundingBox(sofa::core::ObjectFactory* factory)
 {
-    typedef SReal Real;
+    factory->registerObjects(core::ObjectRegistrationData("Display an Axis Aligned Bounding Box (AABB).")
+        .add< VisualBoundingBox >());
+}
 
-    BaseMatrixImageProxy()
-    {}
+VisualBoundingBox::VisualBoundingBox()
+    : d_color(initData(&d_color, sofa::type::RGBAColor::yellow(),  "color", "Color of the lines of the box."))
+    , d_thickness(initData(&d_thickness, 1.0f,  "thickness", "Thickness of the lines of the box."))
+{
 
-    static const char* Name() { return "SimpleBitmap"; }
+}
 
-    friend std::istream& operator >> ( std::istream& in, BaseMatrixImageProxy& /*p*/ )
-    {
-        return in;
-    }
+void VisualBoundingBox::doDrawVisual(const core::visual::VisualParams* vparams)
+{
+    
+    const auto& bbox = f_bbox.getValue();
+    vparams->drawTool()->disableLighting();
+    vparams->drawTool()->setMaterial(d_color.getValue());
+    vparams->drawTool()->drawBoundingBox(bbox.minBBox(), bbox.maxBBox(), d_thickness.getValue());
+}
 
-    friend std::ostream& operator << ( std::ostream& out, const BaseMatrixImageProxy& p )
-    {
-        if (!p.m_matrix)
-        {
-            out << "invalid matrix";
-        }
-        else
-        {
-            out << std::to_string(p.m_matrix->rows()) << "x" << std::to_string(p.m_matrix->cols());
-        }
-        return out;
-    }
-
-    [[nodiscard]] linearalgebra::BaseMatrix* getMatrix() const
-    {
-        return m_matrix;
-    }
-
-    void setMatrix(linearalgebra::BaseMatrix* m_matrix)
-    {
-        this->m_matrix = m_matrix;
-    }
-
-protected:
-
-    linearalgebra::BaseMatrix* m_matrix { nullptr };
-};
-
-} //namespace sofa::type
+} // namespace sofa::component::visual

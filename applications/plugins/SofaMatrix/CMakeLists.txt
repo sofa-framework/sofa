@@ -32,18 +32,23 @@ set(SOFAMATRIX_SRC_DIR src/${PROJECT_NAME})
 
 set(HEADER_FILES
     ${SOFAMATRIX_SRC_DIR}/config.h.in
+    ${SOFAMATRIX_SRC_DIR}/BaseMatrixImageProxy.h
     ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixExporter.h
-    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixExporter.h
-    ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.h
+    ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixImage.h
     ${SOFAMATRIX_SRC_DIR}/FillReducingOrdering.h
     ${SOFAMATRIX_SRC_DIR}/FillReducingOrdering.inl
+    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixExporter.h
+    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.h
+    ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.h
 )
 set(SOURCE_FILES
-    ${SOFAMATRIX_SRC_DIR}/initSofaMatrix.cpp
     ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixExporter.cpp
-    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixExporter.cpp
-    ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.cpp
+    ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixImage.cpp
     ${SOFAMATRIX_SRC_DIR}/FillReducingOrdering.cpp
+    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixExporter.cpp
+    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.cpp
+    ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.cpp
+    ${SOFAMATRIX_SRC_DIR}/initSofaMatrix.cpp
 )
 set(README_FILES
     SofaMatrix.md
@@ -70,6 +75,7 @@ sofa_create_package_with_targets(
     )
 
 sofa_add_subdirectory(plugin extensions/Qt SofaMatrix.Qt)
+sofa_add_subdirectory(plugin extensions/imgui SofaMatrix.imgui)
 
 
 # Tests

@@ -474,7 +474,7 @@ public:
     /// Euclidean norm.
     ValueType norm() const noexcept
     {
-        return ValueType(std::sqrt(norm2()));
+        return ValueType(sqrt(norm2()));
     }
 
     /// l-norm of the vector

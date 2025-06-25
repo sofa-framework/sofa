@@ -19,63 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMatrix/Qt/config.h>
+#pragma once
+#include <sofa/component/visual/config.h>
 
-#include <SofaMatrix/MatrixImageExporter.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/type/RGBAColor.h>
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-#include <sofa/helper/system/PluginManager.h>
-
-namespace sofamatrix::qt
+namespace sofa::component::visual
 {
-
-extern "C" {
-    SOFA_SOFAMATRIX_API void initExternalModule();
-    SOFA_SOFAMATRIX_API const char* getModuleName();
-    SOFA_SOFAMATRIX_API const char* getModuleVersion();
-    SOFA_SOFAMATRIX_API const char* getModuleLicense();
-    SOFA_SOFAMATRIX_API const char* getModuleDescription();
-    SOFA_SOFAMATRIX_API void registerObjects(sofa::core::ObjectFactory* factory);
-}
-
-void initExternalModule()
+/*
+ * Display an Axis Orientated Bounding Box.
+ */
+class SOFA_COMPONENT_VISUAL_API VisualBoundingBox : public core::visual::VisualModel
 {
-    static bool first = true;
-    if (first)
-    {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+public:
+    SOFA_CLASS(VisualBoundingBox, core::visual::VisualModel);
 
-        first = false;
+    VisualBoundingBox();
+    ~VisualBoundingBox() override = default;
 
-        sofa::component::initializeMatrixExporterComponents();
-    }
-}
+    Data<sofa::type::RGBAColor> d_color; ///< Color of the lines in the grid. default=yellow
+    Data<float> d_thickness; ///< Thickness of the lines in the grid
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+private:
+    void doDrawVisual(const core::visual::VisualParams*) override;
+    
+};
 
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "SOFA plugin gathering components related to linear system matrices.";
-}
-
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-}
-
-}
-
+} // namespace sofa::component::visual
