@@ -25,12 +25,7 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeEnergyVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateDxVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateDxAndResetForceVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndResetForceVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalApplyConstraintsVisitor.h>
@@ -73,8 +68,10 @@ MechanicalOperations::MechanicalOperations(const sofa::core::MechanicalParams* m
 {
 }
 
-MechanicalOperations::MechanicalOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::BaseContext* ctx, bool precomputedTraversalOrder)
-    :mparams(*params),ctx(ctx),executeVisitor(*ctx,precomputedTraversalOrder)
+MechanicalOperations::MechanicalOperations(const sofa::core::ExecParams* params,
+                                           sofa::core::objectmodel::BaseContext* ctx,
+                                           bool precomputedTraversalOrder)
+    : mparams(*params), ctx(ctx), executeVisitor(*ctx, precomputedTraversalOrder)
 {
 }
 
@@ -138,12 +135,46 @@ void MechanicalOperations::setDf(core::ConstMultiVecDerivId& v)
     mparams.setDf(v);
 }
 
+void MechanicalOperations::apply(core::MultiVecCoordId out, core::ConstMultiVecCoordId in)
+{
+    mappingGraphBreadthFirstTraversal(ctx,
+        [params = &mparams, &out, &in](BaseMapping* mapping)
+        {
+            mapping->apply(params, out, in);
+        }, true, MappingGraphDirection::TOP_DOWN);
+}
+
+void MechanicalOperations::applyJ(core::MultiVecDerivId out, core::ConstMultiVecDerivId in)
+{
+    mappingGraphBreadthFirstTraversal(ctx,
+        [params = &mparams, &out, &in](BaseMapping* mapping)
+        {
+            mapping->applyJ(params, out, in);
+        },
+        true, MappingGraphDirection::TOP_DOWN);
+}
+
+void MechanicalOperations::applyJT(core::MultiVecDerivId in, core::ConstMultiVecDerivId out)
+{
+    mappingGraphBreadthFirstTraversal(ctx,
+        [params = &mparams, &out, &in](core::BaseMapping* mapping)
+        {
+            mapping->applyJT(params, in, out);
+        }, true, MappingGraphDirection::BOTTOM_UP);
+}
 
 /// Propagate the given displacement through all mappings
 void MechanicalOperations::propagateDx(core::MultiVecDerivId dx, bool ignore_flag)
 {
     setDx(dx);
-    executeVisitor( MechanicalPropagateDxVisitor(&mparams, dx, ignore_flag) );
+
+    mappingGraphBreadthFirstTraversal(ctx, [&params = mparams, &dx, ignore_flag](BaseMapping* mapping)
+    {
+        if (ignore_flag || !mapping->areForcesMapped())
+        {
+            mapping->applyJ(&params, dx, dx);
+        }
+    }, true, MappingGraphDirection::TOP_DOWN);
 }
 
 /// Propagate the given displacement through all mappings and reset the current force delta
@@ -151,32 +182,34 @@ void MechanicalOperations::propagateDxAndResetDf(core::MultiVecDerivId dx, core:
 {
     setDx(dx);
     setDf(df);
-    executeVisitor( MechanicalPropagateDxAndResetForceVisitor(&mparams, dx, df) );
+
+    executeVisitor( MechanicalResetForceVisitor(&mparams, df) );
+
+    mappingGraphBreadthFirstTraversal(ctx, [&params = mparams, &dx](BaseMapping* mapping)
+    {
+        mapping->applyJ(&params, dx, dx);
+    }, true, MappingGraphDirection::TOP_DOWN);
 }
 
 /// Propagate the given position through all mappings
 void MechanicalOperations::propagateX(core::MultiVecCoordId x)
 {
     setX(x);
-    const MechanicalPropagateOnlyPositionVisitor visitor(&mparams, 0.0, x);
-    executeVisitor( visitor );
+    apply(x, x);
 }
 
 /// Propagate the given velocity through all mappings
 void MechanicalOperations::propagateV(core::MultiVecDerivId v)
 {
     setV(v);
-    const MechanicalPropagateOnlyVelocityVisitor visitor(&mparams, 0.0, v);
-    executeVisitor( visitor );
+    applyJ(v, v);
 }
 
 /// Propagate the given position and velocity through all mappings
 void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
-    setX(x);
-    setV(v);
-    const MechanicalPropagateOnlyPositionAndVelocityVisitor visitor(&mparams, 0.0, x, v);
-    executeVisitor( visitor );
+    propagateX(x);
+    propagateV(v);
 }
 
 /// Propagate the given position through all mappings and reset the current force delta
@@ -184,8 +217,8 @@ void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::Mu
 {
     setX(x);
     setF(f);
-    const MechanicalPropagateOnlyPositionAndResetForceVisitor visitor(&mparams, x, f);
-    executeVisitor( visitor );
+    executeVisitor( MechanicalResetForceVisitor(&mparams, f) );
+    propagateX(x);
 }
 
 /// Apply projective constraints to the given position vector
@@ -205,6 +238,7 @@ void MechanicalOperations::computeEnergy(SReal &kineticEnergy, SReal &potentialE
     kineticEnergy = energyVisitor.getKineticEnergy();
     potentialEnergy = energyVisitor.getPotentialEnergy();
 }
+
 /// Apply projective constraints to the given velocity vector
 void MechanicalOperations::projectVelocity(core::MultiVecDerivId v, SReal time)
 {
@@ -261,10 +295,7 @@ void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear
 
     if (accumulate)
     {
-        mappingGraphBreadthFirstTraversal(ctx, [&mparams = mparams, &result](BaseMapping* mapping)
-        {
-            mapping->applyJT(&mparams, result, result);
-        }, true, MappingGraphDirection::BOTTOM_UP);
+        applyJT(result, result);
     }
 }
 
