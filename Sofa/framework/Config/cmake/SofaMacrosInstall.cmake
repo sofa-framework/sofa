@@ -252,7 +252,6 @@ macro(sofa_create_package)
     install(FILES "${CMAKE_BINARY_DIR}/lib/cmake/${ARG_PACKAGE_NAME}Config.cmake" DESTINATION "lib/cmake/${package_install_dir}" COMPONENT headers)
 
     if(ARG_RELOCATABLE_PATH)
-        message("!!!! RELOCATING ${ARG_PACKAGE_NAME} into ${ARG_RELOCATABLE_PATH}")
         sofa_set_project_install_relocatable(${package_install_dir} ${CMAKE_CURRENT_BINARY_DIR} ${ARG_RELOCATABLE_PATH})
     endif()
 
