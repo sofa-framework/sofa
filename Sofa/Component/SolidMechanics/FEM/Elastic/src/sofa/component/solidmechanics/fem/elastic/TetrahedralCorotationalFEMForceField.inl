@@ -390,21 +390,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(i
 
     // divide by 36 times volumes of the element
     const VecCoord& X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
+    const auto tetrahedronVolume = geometry::Tetrahedron::volume(
+            X0[a], X0[b], X0[c], X0[d]);
 
-    Coord A = (X0)[b] - (X0)[a];
-    Coord B = (X0)[c] - (X0)[a];
-    Coord C = (X0)[d] - (X0)[a];
-    Coord AB = cross(A, B);
-    Real volumes6 = fabs( dot( AB, C ) );
-    if (volumes6<0)
-    {
-        msg_error() << "Negative volume for tetra " << a << ',' << b << ',' << c << ',' << d << "> = " << volumes6 / 6;
-    }
-    //	materialMatrix  /= (volumes6);//*6 christian
-    // @TODO: in TetrahedronFEMForceField, the stiffness matrix is divided by 6 compared to the code in TetrahedralCorotationalFEMForceField. Check which is the correct one...
-    // FF:  there is normally  a factor 1/6v in the strain-displacement matrix. Times transpose makes 1/36v². Integrating across the volume multiplies by v, so the factor is 1/36v
-    materialMatrix  /= (volumes6*6);
-
+   materialMatrix /= tetrahedronVolume * 36;
 }
 
 template<class DataTypes>

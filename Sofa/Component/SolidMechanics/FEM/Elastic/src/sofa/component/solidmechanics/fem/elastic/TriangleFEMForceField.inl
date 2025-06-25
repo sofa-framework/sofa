@@ -204,7 +204,8 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
         const Real Estrain = this->getYoungModulusInElement(i) / ((1 + _p) * (1 - 2 * _p));
         const Real Estress = this->getYoungModulusInElement(i) / (1 - _p * _p);
 
-        const Real triangleVolume = (Real)0.5 * d_thickness.getValue() * cross(p[b] - p[a], p[c] - p[a]).norm();
+        const Real triangleArea = sofa::geometry::Triangle::area(p[a], p[b], p[c]);
+        const Real triangleVolume = d_thickness.getValue() * triangleArea;
 
         if (d_planeStrain.getValue() == true)
         {
