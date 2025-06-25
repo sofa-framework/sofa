@@ -135,36 +135,36 @@ void MechanicalOperations::setDf(core::ConstMultiVecDerivId& v)
     mparams.setDf(v);
 }
 
-void MechanicalOperations::apply(core::MultiVecCoordId out, core::ConstMultiVecCoordId in)
+void MechanicalOperations::apply(core::MultiVecCoordId out, core::ConstMultiVecCoordId in, bool filterNonMechanical)
 {
     mappingGraphBreadthFirstTraversal(ctx,
         [params = &mparams, &out, &in](BaseMapping* mapping)
         {
             mapping->apply(params, out, in);
-        }, true, MappingGraphDirection::TOP_DOWN);
+        }, filterNonMechanical, MappingGraphDirection::TOP_DOWN);
 }
 
-void MechanicalOperations::applyJ(core::MultiVecDerivId out, core::ConstMultiVecDerivId in)
+void MechanicalOperations::applyJ(core::MultiVecDerivId out, core::ConstMultiVecDerivId in, bool filterNonMechanical)
 {
     mappingGraphBreadthFirstTraversal(ctx,
         [params = &mparams, &out, &in](BaseMapping* mapping)
         {
             mapping->applyJ(params, out, in);
         },
-        true, MappingGraphDirection::TOP_DOWN);
+        filterNonMechanical, MappingGraphDirection::TOP_DOWN);
 }
 
-void MechanicalOperations::applyJT(core::MultiVecDerivId in, core::ConstMultiVecDerivId out)
+void MechanicalOperations::applyJT(core::MultiVecDerivId in, core::ConstMultiVecDerivId out, bool filterNonMechanical)
 {
     mappingGraphBreadthFirstTraversal(ctx,
         [params = &mparams, &out, &in](core::BaseMapping* mapping)
         {
             mapping->applyJT(params, in, out);
-        }, true, MappingGraphDirection::BOTTOM_UP);
+        }, filterNonMechanical, MappingGraphDirection::BOTTOM_UP);
 }
 
 /// Propagate the given displacement through all mappings
-void MechanicalOperations::propagateDx(core::MultiVecDerivId dx, bool ignore_flag)
+void MechanicalOperations::propagateDx(core::MultiVecDerivId dx, bool ignore_flag, bool filterNonMechanical)
 {
     setDx(dx);
 
@@ -178,38 +178,35 @@ void MechanicalOperations::propagateDx(core::MultiVecDerivId dx, bool ignore_fla
 }
 
 /// Propagate the given displacement through all mappings and reset the current force delta
-void MechanicalOperations::propagateDxAndResetDf(core::MultiVecDerivId dx, core::MultiVecDerivId df)
+void MechanicalOperations::propagateDxAndResetDf(core::MultiVecDerivId dx, core::MultiVecDerivId df, bool filterNonMechanical)
 {
     setDx(dx);
     setDf(df);
 
     executeVisitor( MechanicalResetForceVisitor(&mparams, df) );
 
-    mappingGraphBreadthFirstTraversal(ctx, [&params = mparams, &dx](BaseMapping* mapping)
-    {
-        mapping->applyJ(&params, dx, dx);
-    }, true, MappingGraphDirection::TOP_DOWN);
+    applyJ(dx, dx, filterNonMechanical);
 }
 
 /// Propagate the given position through all mappings
-void MechanicalOperations::propagateX(core::MultiVecCoordId x)
+void MechanicalOperations::propagateX(core::MultiVecCoordId x, bool filterNonMechanical)
 {
     setX(x);
-    apply(x, x);
+    apply(x, x, filterNonMechanical);
 }
 
 /// Propagate the given velocity through all mappings
-void MechanicalOperations::propagateV(core::MultiVecDerivId v)
+void MechanicalOperations::propagateV(core::MultiVecDerivId v, bool filterNonMechanical)
 {
     setV(v);
-    applyJ(v, v);
+    applyJ(v, v, filterNonMechanical);
 }
 
 /// Propagate the given position and velocity through all mappings
-void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v)
+void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v, bool filterNonMechanical)
 {
-    propagateX(x);
-    propagateV(v);
+    propagateX(x, filterNonMechanical);
+    propagateV(v, filterNonMechanical);
 }
 
 /// Propagate the given position through all mappings and reset the current force delta

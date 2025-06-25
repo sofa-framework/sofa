@@ -304,7 +304,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     {
         SCOPED_TIMER("UpdateMapping");
         //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
-        node->execute<UpdateMappingVisitor>(params);
+        mop.propagateXAndV(core::vec_id::write_access::position, core::vec_id::write_access::velocity, false);
         {
             UpdateMappingEndEvent ev ( dt );
             PropagateEventVisitor act ( params , &ev );
