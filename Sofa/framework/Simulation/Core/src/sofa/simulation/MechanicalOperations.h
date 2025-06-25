@@ -51,6 +51,10 @@ public:
     /// @name Mechanical Vector operations
 /// @{
 
+    void apply(core::MultiVecCoordId out, core::ConstMultiVecCoordId in);
+    void applyJ(core::MultiVecDerivId out, core::ConstMultiVecDerivId in);
+    void applyJT(core::MultiVecDerivId in, core::ConstMultiVecDerivId out);
+
     /// Propagate the given displacement through all mappings
     void propagateDx(core::MultiVecDerivId dx, bool ignore_flag = false);
     /// Propagate the given displacement through all mappings and reset the current force delta

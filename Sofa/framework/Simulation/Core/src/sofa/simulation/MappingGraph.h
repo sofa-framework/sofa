@@ -31,7 +31,7 @@
 namespace sofa::simulation
 {
 
-enum class SOFA_SIMULATION_CORE_API MappingGraphDirection
+enum class SOFA_SIMULATION_CORE_API MappingGraphDirection : std::uint8_t
 {
     TOP_DOWN,
     BOTTOM_UP
@@ -65,7 +65,7 @@ void mappingGraphBreadthFirstTraversal(
 
         if (mappingsToProcess.empty())
         {
-            msg_warning("MappingGraph") << "Cannot find next mappings to process. Abort.";
+            msg_error("MappingGraph") << "Cannot find next mappings to process. Abort.";
             break;
         }
 
