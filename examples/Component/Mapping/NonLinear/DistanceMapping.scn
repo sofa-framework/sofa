@@ -31,7 +31,7 @@
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1" name="extensionsDOF" />
         <DistanceMapping name="distanceMapping" topology="@../topology" input="@../defoDOF" output="@extensionsDOF" geometricStiffness="Stabilized" applyRestPosition="true" computeDistance="true" showObjectScale="0.01"/>
-        <RestShapeSpringsForceField template="Vec1" stiffness="10000"/>
+        <FixedWeakConstraint template="Vec1" stiffness="10000" fixAll="true"/>
     </Node>
 
 </Node>
