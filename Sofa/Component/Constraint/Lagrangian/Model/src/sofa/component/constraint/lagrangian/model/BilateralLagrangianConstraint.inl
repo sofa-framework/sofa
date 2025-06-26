@@ -277,6 +277,8 @@ void BilateralLagrangianConstraint<DataTypes>::getConstraintResolution(const Con
                                                                         std::vector<ConstraintResolution*>& resTab,
                                                                         unsigned int& offset)
 {
+    if (!d_activate.getValue()) return;
+    
     SOFA_UNUSED(cParams);
     const unsigned minp=std::min(d_m1.getValue().size(), d_m2.getValue().size());
 
