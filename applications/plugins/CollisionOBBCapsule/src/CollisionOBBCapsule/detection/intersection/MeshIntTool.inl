@@ -62,7 +62,7 @@ int MeshIntTool::doCapPointInt(geometry::TCapsule<DataTypes>& cap, const type::V
     if (pq.norm2() >= enough_to_touch * enough_to_touch)
         return 0;
 
-    //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    //const SReal contactDist = getContactDistance() + e1.getContactDistance() + e2.getContactDistance();
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 

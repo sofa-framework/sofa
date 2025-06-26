@@ -71,9 +71,9 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
     const type::Vec3& t2 = e2.getTranslation();
     const type::Mat3x3& r2 = e2.getRotation();
 
-    const double d0 = e1.getProximity() + e2.getProximity() + (intersection->getContactDistance() == 0.0 ? 0.001 : intersection->getContactDistance());
+    const double d0 = e1.getContactDistance() + e2.getContactDistance() + (intersection->getContactDistance() == 0.0 ? 0.001 : intersection->getContactDistance());
     //const SReal margin = 0.001f + (SReal)d0;
-    const SReal margin = (SReal)((e1.getProximity() + e2.getProximity() + (intersection->getAlarmDistance() == 0.0 ? 0.001 : intersection->getAlarmDistance()))/2);
+    const SReal margin = (SReal)((e1.getContactDistance() + e2.getContactDistance() + (intersection->getAlarmDistance() == 0.0 ? 0.001 : intersection->getAlarmDistance()))/2);
     const bool singleContact = e1.getCollisionModel()->singleContact.getValue();
 
     // transform from grid1 to grid2
@@ -248,9 +248,9 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
 
     if (!usePoints1 && !usePoints2) return 0; // no tests possible
 
-    const double d0 = e1.getProximity() + e2.getProximity() + (intersection->getContactDistance() == 0.0 ? 0.001 : intersection->getContactDistance());
+    const double d0 = e1.getContactDistance() + e2.getContactDistance() + (intersection->getContactDistance() == 0.0 ? 0.001 : intersection->getContactDistance());
     //const SReal margin = 0.001f + (SReal)d0;
-    const SReal margin = (SReal)((e1.getProximity() + e2.getProximity() + (intersection->getAlarmDistance() == 0.0 ? 0.001 : intersection->getAlarmDistance()))/2);
+    const SReal margin = (SReal)((e1.getContactDistance() + e2.getContactDistance() + (intersection->getAlarmDistance() == 0.0 ? 0.001 : intersection->getAlarmDistance()))/2);
 
     if ((c2.center - c1.center).norm2() > (c1.radius+c2.radius)*(c1.radius+c2.radius))
         return 0; // the two enclosing spheres are not colliding
@@ -438,7 +438,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
     const std::shared_ptr<DistanceGrid> grid1 = e1.getGrid();
     FFDDistanceGridCollisionModel::DeformedCube& c1 = e1.getCollisionModel()->getDeformCube(e1.getIndex());
 
-    const double d0 = e1.getProximity() + e2.getProximity() + intersection->getContactDistance();
+    const double d0 = e1.getContactDistance() + e2.getContactDistance() + intersection->getContactDistance();
     const SReal margin = 0.001f + (SReal)d0;
 
     c1.updateFaces();
@@ -529,7 +529,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
     const std::shared_ptr<DistanceGrid> grid1 = e1.getGrid();
     FFDDistanceGridCollisionModel::DeformedCube& c1 = e1.getCollisionModel()->getDeformCube(e1.getIndex());
 
-    const double d0 = e1.getProximity() + e2.getProximity() + intersection->getContactDistance();
+    const double d0 = e1.getContactDistance() + e2.getContactDistance() + intersection->getContactDistance();
     const SReal margin = 0.001f + (SReal)d0;
 
     c1.updateFaces();
