@@ -1,16 +1,5 @@
 import Sofa
-from SofaImplicitField import ScalarField
-import numpy
-
-class Sphere(ScalarField):
-    def __init__(self, *args, **kwargs):
-        ScalarField.__init__(self, *args, **kwargs)
-        
-        self.addData("center", type="Vec3d",value=kwargs.get("center", [0.0,0.0,0.0]), default=[0.0,0.0,0.0], help="center of the sphere", group="Geometry")
-        self.addData("radius", type="double",value=kwargs.get("radius", 1.0), default=1, help="radius of the sphere", group="Geometry")
-
-    def getValue(self, x, y, z):
-        return numpy.sqrt( numpy.sum((self.center.value - numpy.array([x,y,z]))**2) ) - self.radius.value 
+from Shapes import Sphere 
 
 class FieldController(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
@@ -23,6 +12,16 @@ class FieldController(Sofa.Core.Controller):
         print("Field value at 1,0,0 is: ", self.field.getValue(1.0,0.0,0.0) ) 
         print("Field value at 2,0,0 is: ", self.field.getValue(2.0,0.0,0.0) ) 
 
+        print("Field gradient at 1.0,0.0,0.0 is: ", self.field.getGradient([2.0,0.0,0.0]) ) 
+        print("Field hessian at 1.0,0.0,0.0 is: ", self.field.getHessian([2.0,0.0,0.0]) ) 
+
 def createScene(root):
     root.addObject(Sphere("field"))  
     root.addObject(FieldController(target=root.field))
+
+    root.addChild("Visual")
+    root.Visual.addObject("OglModel", name="renderer")
+    root.Visual.addObject("ImplicitSurfaceMapping", name="polygonizer",
+                          input=root., output=root.Visual.renderer.linkpath,
+                          isoValue="0.5", radius="0.75", step="0.25")
+    
