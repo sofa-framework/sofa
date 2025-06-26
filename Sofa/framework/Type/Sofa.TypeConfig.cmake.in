@@ -5,7 +5,7 @@
 
 set(SOFA_TYPE_HAVE_SOFA_COMPAT "@SOFA_TYPE_HAVE_SOFA_COMPAT@")
 
-find_package(Boost QUIET REQUIRED)
+find_package(Boost QUIET REQUIRED NO_MODULE)
 find_package(Sofa.Config QUIET REQUIRED)
 
 if(SOFA_TYPE_HAVE_SOFA_COMPAT)
