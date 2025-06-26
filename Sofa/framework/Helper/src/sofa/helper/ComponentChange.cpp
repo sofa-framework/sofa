@@ -25,14 +25,14 @@
 namespace sofa::helper::lifecycle
 {
 
-const std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
+std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
     {"RayTraceDetection", Deprecated("v21.06", "v21.12")},
     {"BruteForceDetection", Deprecated("v21.06", "v21.12")},
     {"DirectSAP", Deprecated("v21.06", "v21.12")},
     {"RigidRigidMapping", Deprecated("v23.06", "v23.12", "You can use the component RigidMapping with template='Rigid3,Rigid3' instead.")},
 };
 
-const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
+std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     // SofaValidation was pluginized in #1302
     {"CompareState", Pluginized("v20.06", "SofaValidation")},
     {"CompareTopology", Pluginized("v20.06", "SofaValidation")},
@@ -619,7 +619,7 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     { "OglCylinderModel", Moved("v24.12", "Sofa.GL.Component.Rendering3D", "Sofa.Component.Visual")}
 };
 
-const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
+std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
 
     /***********************/
     // REMOVED SINCE v25.06
@@ -723,7 +723,7 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
 };
 
 
-const std::map< std::string, Renamed, std::less<> > renamedComponents = {
+std::map< std::string, Renamed, std::less<> > renamedComponents = {
     // Change Constraint naming #4302
     {"AffineMovementConstraint", Renamed("v24.06","v25.06","AffineMovementProjectiveConstraint")},
     {"AttachConstraint", Renamed("v24.06","v25.06","AttachProjectiveConstraint")},
@@ -757,7 +757,7 @@ const std::map< std::string, Renamed, std::less<> > renamedComponents = {
 };
 
 
-const std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
+std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"MasterConstraintSolver", Dealiased("v24.12","ConstraintAnimationLoop")},
     {"FreeMotionMasterSolver", Dealiased("v24.12","FreeMotionAnimationLoop")},
     {"MultiStepMasterSolver", Dealiased("v24.12","MultiStepAnimationLoop")},
