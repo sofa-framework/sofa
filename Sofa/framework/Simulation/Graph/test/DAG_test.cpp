@@ -377,29 +377,29 @@ TEST_F( DAG_test, traverse )
     traverse_morecomplex2();
 }
 
-TEST(DAGNodeTest, objectDestruction_singleObject)
+TEST(NodeTest, objectDestruction_singleObject)
 {
     EXPECT_MSG_NOEMIT(Error) ;
 
-    Node_test_objectDestruction_singleObject<DAGNode>();
+    Node_test_objectDestruction_singleObject<Node>();
 }
 
-TEST(DAGNodeTest, objectDestruction_multipleObjects)
+TEST(NodeTest, objectDestruction_multipleObjects)
 {
     EXPECT_MSG_NOEMIT(Error) ;
-    Node_test_objectDestruction_multipleObjects<DAGNode>();
+    Node_test_objectDestruction_multipleObjects<Node>();
 }
 
-TEST(DAGNodeTest, objectDestruction_childNode_singleObject)
+TEST(NodeTest, objectDestruction_childNode_singleObject)
 {
     EXPECT_MSG_NOEMIT(Error) ;
-    Node_test_objectDestruction_childNode_singleObject<DAGNode>();
+    Node_test_objectDestruction_childNode_singleObject<Node>();
 }
 
-TEST(DAGNodeTest, objectDestruction_childNode_complexChild)
+TEST(NodeTest, objectDestruction_childNode_complexChild)
 {
     EXPECT_MSG_NOEMIT(Error) ;
-    Node_test_objectDestruction_childNode_complexChild<DAGNode>();
+    Node_test_objectDestruction_childNode_complexChild<Node>();
 }
 
 

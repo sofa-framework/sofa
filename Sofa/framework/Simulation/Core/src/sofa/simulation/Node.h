@@ -290,6 +290,7 @@ public:
     /// Generic object access, given a set of required tags, possibly searching up or down from the current context
     ///
 
+
     /// Note that the template wrapper method should generally be used to have the correct return type,
     void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir = SearchUp) const override
     {
@@ -303,6 +304,9 @@ public:
     {
         getObjects(class_info, container, sofa::core::objectmodel::TagSet(), dir);
     }
+
+    /// get node's local objects respecting specified class_info and tags
+    void getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_info, Node::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags ) const ;
 
     /// List all objects of this node deriving from a given class
     template<class Object, class Container>
@@ -486,97 +490,10 @@ public:
     /// override context setSleeping to add notification.
     void setSleeping(bool val) override;
 
-protected:
-    bool debug_;
-    bool initialized;
-
-    virtual bool doAddObject(sofa::core::objectmodel::BaseObject::SPtr obj,  sofa::core::objectmodel::TypeOfInsertion insertionLocation= sofa::core::objectmodel::TypeOfInsertion::AtEnd);
-    virtual bool doRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void doMoveObject(sofa::core::objectmodel::BaseObject::SPtr sobj, Node* prev_parent);
-
-    std::stack<Visitor*> actionStack;
-private:    
-    virtual void notifyBeginAddChild(Node::SPtr parent, Node::SPtr child) const;
-    virtual void notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr child) const;
-
-    virtual void notifyBeginAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
-    virtual void notifyBeginRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
-
-    virtual void notifyEndAddChild(Node::SPtr parent, Node::SPtr child) const;
-    virtual void notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child) const;
-
-    virtual void notifyEndAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
-    virtual void notifyEndRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
-
-    virtual void notifySleepChanged(Node* node) const;
-
-    virtual void notifyBeginAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
-    virtual void notifyBeginRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
-
-    virtual void notifyEndAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
-    virtual void notifyEndRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
-
-
-protected:
-    BaseContext* _context;
-
-    type::vector<MutationListener*> listener;
-
-
 public:
     virtual void addListener(MutationListener* obj);
     virtual void removeListener(MutationListener* obj);
 
-    /// @name virtual functions to add/remove some special components directly in the right Sequence
-    /// @{
-
-#define NODE_DECLARE_SEQUENCE_ACCESSOR( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
-    void add##FUNCTIONNAME( CLASSNAME* obj ) override ; \
-    void remove##FUNCTIONNAME( CLASSNAME* obj ) override ;
-
-    /// WARNINGS subtilities:
-    /// an InteractioFF is NOT in the FF Sequence
-    /// a MechanicalMapping is NOT in the Mapping Sequence
-    /// a Mass is in the FF Sequence
-    /// a MeshTopology is in the topology Sequence
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, Mapping, mapping )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::OdeSolver, OdeSolver, solver )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::topology::Topology, Topology, topology )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::topology::BaseMeshTopology, MeshTopology, meshTopology )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::topology::BaseTopologyObject, TopologyObject, topologyObject )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BaseState, State, state )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseMechanicalState,MechanicalState, mechanicalState )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, MechanicalMapping, mechanicalMapping )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseMass, Mass, mass )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseForceField, ForceField, forceField )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseInteractionForceField, InteractionForceField, interactionForceField )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseProjectiveConstraintSet, ProjectiveConstraintSet, projectiveConstraintSet )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseConstraintSet, ConstraintSet, constraintSet )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ContextObject, ContextObject, contextObject )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::Shader, Shader, shaders )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualModel, VisualModel, visualModel )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::BaseVisualStyle, VisualStyle, visualStyle )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualManager, VisualManager, visualManager )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::CollisionModel, CollisionModel, collisionModel )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )
-
-#undef NODE_DECLARE_SEQUENCE_ACCESSOR
-
-    /// @}
-
-
-    /// FROM DAG NODE
-
-    typedef MultiLink<Node,Node,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DOUBLELINK> LinkParents;
-    typedef LinkParents::const_iterator ParentIterator;
-
-public:
     static const std::string GetCustomClassName(){ return "Node"; }
 
     Node::SPtr createChild(const std::string& nodeName);
@@ -643,6 +560,92 @@ public:
     Node* findCommonParent( simulation::Node* node2 );
 
 protected:
+    bool debug_;
+    bool initialized;
+
+    virtual bool doAddObject(sofa::core::objectmodel::BaseObject::SPtr obj,  sofa::core::objectmodel::TypeOfInsertion insertionLocation= sofa::core::objectmodel::TypeOfInsertion::AtEnd);
+    virtual bool doRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual void doMoveObject(sofa::core::objectmodel::BaseObject::SPtr sobj, Node* prev_parent);
+
+    std::stack<Visitor*> actionStack;
+
+private:    
+    virtual void notifyBeginAddChild(Node::SPtr parent, Node::SPtr child) const;
+    virtual void notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr child) const;
+
+    virtual void notifyBeginAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
+    virtual void notifyBeginRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
+
+    virtual void notifyEndAddChild(Node::SPtr parent, Node::SPtr child) const;
+    virtual void notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child) const;
+
+    virtual void notifyEndAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
+    virtual void notifyEndRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
+
+    virtual void notifySleepChanged(Node* node) const;
+
+    virtual void notifyBeginAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
+    virtual void notifyBeginRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
+
+    virtual void notifyEndAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
+    virtual void notifyEndRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
+
+
+protected:
+    BaseContext* _context;
+
+    type::vector<MutationListener*> listener;
+
+    /// @name virtual functions to add/remove some special components directly in the right Sequence
+    /// @{
+
+#define NODE_DECLARE_SEQUENCE_ACCESSOR( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
+    void add##FUNCTIONNAME( CLASSNAME* obj ) override ; \
+    void remove##FUNCTIONNAME( CLASSNAME* obj ) override ;
+
+    /// WARNINGS subtilities:
+    /// an InteractioFF is NOT in the FF Sequence
+    /// a MechanicalMapping is NOT in the Mapping Sequence
+    /// a Mass is in the FF Sequence
+    /// a MeshTopology is in the topology Sequence
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, Mapping, mapping )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::OdeSolver, OdeSolver, solver )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::topology::Topology, Topology, topology )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::topology::BaseMeshTopology, MeshTopology, meshTopology )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::topology::BaseTopologyObject, TopologyObject, topologyObject )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BaseState, State, state )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseMechanicalState,MechanicalState, mechanicalState )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, MechanicalMapping, mechanicalMapping )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseMass, Mass, mass )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseForceField, ForceField, forceField )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseInteractionForceField, InteractionForceField, interactionForceField )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseProjectiveConstraintSet, ProjectiveConstraintSet, projectiveConstraintSet )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseConstraintSet, ConstraintSet, constraintSet )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ContextObject, ContextObject, contextObject )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::Shader, Shader, shaders )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualModel, VisualModel, visualModel )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::BaseVisualStyle, VisualStyle, visualStyle )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualManager, VisualManager, visualManager )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::CollisionModel, CollisionModel, collisionModel )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )
+
+#undef NODE_DECLARE_SEQUENCE_ACCESSOR
+
+    /// @}
+
+
+    /// FROM DAG NODE
+
+    typedef MultiLink<Node,Node,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DOUBLELINK> LinkParents;
+    typedef LinkParents::const_iterator ParentIterator;
+
+private:
     /// bottom-up traversal, returning the first node which have a descendancy containing both node1 & node2
     Node* findCommonParent( Node* node1, Node* node2 );
 
@@ -655,10 +658,8 @@ protected:
     /// Execute a recursive action starting from this node.
     void doExecuteVisitor(simulation::Visitor* action, bool precomputedOrder=false);
 
-
     /// @name @internal stuff related to the DAG traversal
     /// @{
-
 
     /// all child nodes (unordered)
     std::set<Node*> _descendancy;
@@ -676,8 +677,6 @@ protected:
         VISITED,
         PRUNED
     } VisitedStatus;
-
-
 
     /// wrapper to use VisitedStatus in a std::map (to ensure the default map insertion will give NOT_VISITED)
     struct StatusStruct
@@ -714,10 +713,6 @@ protected:
 
     /// @name @internal stuff related to getObjects
     /// @{
-
-    /// get node's local objects respecting specified class_info and tags
-    void getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_info, Node::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags ) const ;
-
     friend class GetDownObjectsVisitor ;
     friend class GetUpObjectsVisitor ;
     /// @}

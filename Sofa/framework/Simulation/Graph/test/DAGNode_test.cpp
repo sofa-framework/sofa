@@ -22,24 +22,24 @@
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
-#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/graph/Node.h>
 
 using namespace sofa;
 using namespace simulation::graph;
 
-struct DAGNode_test : public BaseTest
+struct Node_test : public BaseTest
 {
-    DAGNode_test() {}
+    Node_test() {}
 
     void test_findCommonParent()
     {
-        const DAGNode::SPtr root = core::objectmodel::New<DAGNode>("root");
-        const DAGNode::SPtr node1 = core::objectmodel::New<DAGNode>("node1");
-        const DAGNode::SPtr node2 = core::objectmodel::New<DAGNode>("node2");
-        const DAGNode::SPtr node3 = core::objectmodel::New<DAGNode>("node3");
-        const DAGNode::SPtr node11 = core::objectmodel::New<DAGNode>("node11");
-        const DAGNode::SPtr node12 = core::objectmodel::New<DAGNode>("node12");
-        const DAGNode::SPtr node31 = core::objectmodel::New<DAGNode>("node31");
+        const Node::SPtr root = core::objectmodel::New<Node>("root");
+        const Node::SPtr node1 = core::objectmodel::New<Node>("node1");
+        const Node::SPtr node2 = core::objectmodel::New<Node>("node2");
+        const Node::SPtr node3 = core::objectmodel::New<Node>("node3");
+        const Node::SPtr node11 = core::objectmodel::New<Node>("node11");
+        const Node::SPtr node12 = core::objectmodel::New<Node>("node12");
+        const Node::SPtr node31 = core::objectmodel::New<Node>("node31");
 
         root->addChild(node1);
         root->addChild(node2);
@@ -62,12 +62,12 @@ struct DAGNode_test : public BaseTest
 
     void test_findCommonParent_MultipleParents()
     {
-        const DAGNode::SPtr root = core::objectmodel::New<DAGNode>("root");
-        const DAGNode::SPtr node1 = core::objectmodel::New<DAGNode>("node1");
-        const DAGNode::SPtr node2 = core::objectmodel::New<DAGNode>("node2");
-        const DAGNode::SPtr node11 = core::objectmodel::New<DAGNode>("node11");
-        const DAGNode::SPtr node22 = core::objectmodel::New<DAGNode>("node22");
-        const DAGNode::SPtr node23 = core::objectmodel::New<DAGNode>("node23");
+        const Node::SPtr root = core::objectmodel::New<Node>("root");
+        const Node::SPtr node1 = core::objectmodel::New<Node>("node1");
+        const Node::SPtr node2 = core::objectmodel::New<Node>("node2");
+        const Node::SPtr node11 = core::objectmodel::New<Node>("node11");
+        const Node::SPtr node22 = core::objectmodel::New<Node>("node22");
+        const Node::SPtr node23 = core::objectmodel::New<Node>("node23");
 
         root->addChild(node1);
         root->addChild(node2);
@@ -93,5 +93,5 @@ struct DAGNode_test : public BaseTest
     }
 };
 
-TEST_F(DAGNode_test, test_findCommonParent) { test_findCommonParent(); }
-TEST_F(DAGNode_test, test_findCommonParent_MultipleParents) { test_findCommonParent_MultipleParents(); }
+TEST_F(Node_test, test_findCommonParent) { test_findCommonParent(); }
+TEST_F(Node_test, test_findCommonParent_MultipleParents) { test_findCommonParent_MultipleParents(); }
