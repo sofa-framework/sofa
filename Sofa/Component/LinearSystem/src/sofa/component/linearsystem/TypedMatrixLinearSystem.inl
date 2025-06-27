@@ -102,7 +102,7 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::copyLocalVectorToGlobalVector(co
         for (const auto& state : m_mappingGraph.getMainMechanicalStates())
         {
             auto pos = m_mappingGraph.getPositionInGlobalMatrix(state);
-            state->copyFromBaseVector(v.getId(state), globalVector, pos[0]);
+            state->copyToBaseVector(v.getId(state), globalVector, pos[0]);
         }
     }
 }
