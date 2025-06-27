@@ -136,20 +136,21 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node *node, VisitorC
     {
         if (node->mechanicalMapping != nullptr)
         {
-            if (!stopAtMechanicalMapping(node, node->mechanicalMapping))
-            {
-                if (testTags(node->mechanicalState))
-                {
-                    runVisitorTask(this, ctx, &BaseMechanicalVisitor::bwdMappedMechanicalState, &*node->mechanicalState, bwdVisitorType);
-                    runVisitorTask(this, ctx, &BaseMechanicalVisitor::bwdMechanicalMapping, &*node->mechanicalMapping, bwdVisitorType);
-                }
-            }
+            runVisitorTask(this, ctx, &BaseMechanicalVisitor::bwdMappedMechanicalState, &*node->mechanicalState, bwdVisitorType);
         }
         else
         {
             runVisitorTask(this, ctx, &BaseMechanicalVisitor::bwdMechanicalState, &*node->mechanicalState, bwdVisitorType);
         }
+    }
 
+    if (node->mechanicalMapping != nullptr)
+    {
+        if (!stopAtMechanicalMapping(node, node->mechanicalMapping))
+        {
+            runVisitorTask(this, ctx, &BaseMechanicalVisitor::bwdMechanicalMapping,
+                           &*node->mechanicalMapping, bwdVisitorType);
+        }
     }
 
     for_each(this, ctx, node->solver, &BaseMechanicalVisitor::bwdOdeSolver, bwdVisitorType);
