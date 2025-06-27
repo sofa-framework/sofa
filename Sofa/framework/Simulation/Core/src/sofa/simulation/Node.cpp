@@ -71,7 +71,7 @@ namespace sofa::simulation
 using core::objectmodel::BaseNode;
 using core::objectmodel::BaseObject;
 
-Node::Node(const std::string& name)
+Node::Node(const std::string& name, Node* parent)
     : core::objectmodel::BaseNode()
     , sofa::core::objectmodel::Context()
     , child(initLink("child", "Child nodes"))
@@ -109,7 +109,11 @@ Node::Node(const std::string& name)
 
     , debug_(false)
     , initialized(false)
+    , l_parents(initLink("parents", "Parents nodes in the graph"))
 {
+    if( parent )
+        parent->addChild(dynamic_cast<Node*>(this));
+
     _context = this;
     setName(name);
     f_printLog.setValue(DEBUG_LINK);
@@ -118,7 +122,13 @@ Node::Node(const std::string& name)
 
 Node::~Node()
 {
+    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+    {
+        const Node::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<Node>(*it);
+        dagnode->l_parents.remove(this);
+    }
 }
+
 
 void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
@@ -643,7 +653,7 @@ core::topology::Topology* Node::getTopology() const
 }
 
 /// Mesh Topology (unified interface for both static and dynamic topologies)
-core::topology::BaseMeshTopology* Node::getMeshTopologyLink(SearchDirection dir) const
+core::topology::BaseMeshTopology* Node::NODEgetMeshTopologyLink(SearchDirection dir) const
 {
     SOFA_UNUSED(dir);
     if (this->meshTopology)
