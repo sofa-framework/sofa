@@ -38,9 +38,6 @@ namespace sofa::helper::system
 namespace sofa::core
 {
 
-template<class T>
-void registerToFactory(sofa::core::ObjectFactory* factory);
-
 /**
  *  \brief Main class used to register and dynamically create objects
  *
@@ -414,5 +411,8 @@ public:
 
     int commitTo(ObjectFactory* factory) const;
 };
+
+template<class T>
+void registerToFactory(sofa::core::ObjectFactory* factory);
 
 } // namespace sofa::core
