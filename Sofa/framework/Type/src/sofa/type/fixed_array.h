@@ -25,6 +25,7 @@
 
 #include <iostream>
 #include <array>
+#include <tuple>
 
 namespace sofa::type
 {
