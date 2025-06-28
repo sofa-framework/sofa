@@ -361,10 +361,10 @@ void left(cimg_library::CImg<unsigned int>& v, cimg_library::CImg<real>& d, cons
             {
                 sofa::type::fixed_array< sofa::type::fixed_array<int, 3>, 10 > c;
                 sofa::type::fixed_array< sofa::type::fixed_array<real, 3>, 10 > o;
-                c[0] = sofa::type::fixed_array<int, 3>(i,j,k); o[0] = sofa::type::fixed_array<real, 3>(0,0,0); int count=1;
+                c[0] = sofa::type::fixed_array<int, 3>({i,j,k}); o[0] = sofa::type::fixed_array<real, 3>(0,0,0); int count=1;
                 for(int y=-1;y<=1; ++y) for(int z=-1; z<=1; z++)
                 {
-                    c[count] = sofa::type::fixed_array<int, 3>(i+1,j+y,k+z);
+                    c[count] = sofa::type::fixed_array<int, 3>({i+1,j+y,k+z});
                     o[count] = sofa::type::fixed_array<real, 3>(1,std::abs(y),std::abs(z)); count++;
                 }
                 update(d,v,c,o,vx, bias);
@@ -388,10 +388,10 @@ void right(cimg_library::CImg<unsigned int>& v, cimg_library::CImg<real>& d, con
             {
                 sofa::type::fixed_array< sofa::type::fixed_array<int, 3>, 10 > c;
                 sofa::type::fixed_array< sofa::type::fixed_array<real, 3>, 10 > o;
-                c[0] = sofa::type::fixed_array<int, 3>(i,j,k); o[0] = sofa::type::fixed_array<real, 3>(0,0,0); int count=1;
+                c[0] = sofa::type::fixed_array<int, 3>({i,j,k}); o[0] = sofa::type::fixed_array<real, 3>(0,0,0); int count=1;
                 for(int y=-1;y<=1; ++y) for(int z=-1; z<=1; z++)
                 {
-                    c[count] = sofa::type::fixed_array<int, 3>(i-1,j+y,k+z);
+                    c[count] = sofa::type::fixed_array<int, 3>({i-1,j+y,k+z});
                     o[count] = sofa::type::fixed_array<real, 3>(1,std::abs(y),std::abs(z)); count++;
                 }
                 update(d,v,c,o,vx, bias);
@@ -415,10 +415,10 @@ void down(cimg_library::CImg<unsigned int>& v, cimg_library::CImg<real>& d, cons
             {
                 sofa::type::fixed_array< sofa::type::fixed_array<int, 3>, 10 > c;
                 sofa::type::fixed_array< sofa::type::fixed_array<real, 3>, 10 > o;
-                c[0] = sofa::type::fixed_array<int, 3>(i,j,k); o[0] = sofa::type::fixed_array<real, 3>(0,0,0); int count=1;
+                c[0] = sofa::type::fixed_array<int, 3>({i,j,k}); o[0] = sofa::type::fixed_array<real, 3>(0,0,0); int count=1;
                 for(int x=-1;x<=1; ++x) for(int z=-1; z<=1; z++)
                 {
-                    c[count] = sofa::type::fixed_array<int, 3>(i+x,j+1,k+z);
+                    c[count] = sofa::type::fixed_array<int, 3>({i+x,j+1,k+z});
                     o[count] = sofa::type::fixed_array<real, 3>(std::abs(x),1,std::abs(z)); count++;
                 }
                 update(d,v,c,o,vx, bias);
@@ -442,10 +442,10 @@ void up(cimg_library::CImg<unsigned int>& v, cimg_library::CImg<real>& d, const 
             {
                 sofa::type::fixed_array< sofa::type::fixed_array<int, 3>, 10 > c;
                 sofa::type::fixed_array< sofa::type::fixed_array<real, 3>, 10 > o;
-                c[0] = sofa::type::fixed_array<int, 3>(i,j,k); o[0] = sofa::type::fixed_array<real, 3>(0,0,0); int count=1;
+                c[0] = sofa::type::fixed_array<int, 3>({i,j,k}); o[0] = sofa::type::fixed_array<real, 3>(0,0,0); int count=1;
                 for(int x=-1;x<=1; ++x) for(int z=-1; z<=1; z++)
                 {
-                    c[count] = sofa::type::fixed_array<int, 3>(i+x,j-1,k+z);
+                    c[count] = sofa::type::fixed_array<int, 3>({i+x,j-1,k+z});
                     o[count] = sofa::type::fixed_array<real, 3>(std::abs(x),1,std::abs(z)); count++;
                 }
                 update(d,v,c,o,vx, bias);
@@ -469,10 +469,10 @@ void backward(cimg_library::CImg<unsigned int>& v, cimg_library::CImg<real>& d, 
             {
                 sofa::type::fixed_array< sofa::type::fixed_array<int, 3>, 10 > c;
                 sofa::type::fixed_array< sofa::type::fixed_array<real, 3>, 10 > o;
-                c[0] = sofa::type::fixed_array<int, 3>(i,j,k); o[0] = sofa::type::fixed_array<real, 3>(0,0,0); int count=1;
+                c[0] = sofa::type::fixed_array<int, 3>({i,j,k}); o[0] = sofa::type::fixed_array<real, 3>(0,0,0); int count=1;
                 for(int x=-1;x<=1; ++x) for(int y=-1; y<=1; y++)
                 {
-                    c[count] = sofa::type::fixed_array<int, 3>(i+x,j+y,k+1);
+                    c[count] = sofa::type::fixed_array<int, 3>({i+x,j+y,k+1});
                     o[count] = sofa::type::fixed_array<real, 3>(std::abs(x),std::abs(y),1); count++;
                 }
                 update(d,v,c,o,vx,bias);
@@ -496,10 +496,10 @@ void forward(cimg_library::CImg<unsigned int>& v, cimg_library::CImg<real>& d, c
             {
                 sofa::type::fixed_array< sofa::type::fixed_array<int, 3>, 10 > c;
                 sofa::type::fixed_array< sofa::type::fixed_array<real, 3>, 10 > o;
-                c[0] = sofa::type::fixed_array<int, 3>(i,j,k); o[0] = sofa::type::fixed_array<real, 3>(0,0,0); int count=1;
+                c[0] = sofa::type::fixed_array<int, 3>({i,j,k}); o[0] = sofa::type::fixed_array<real, 3>(0,0,0); int count=1;
                 for(int x=-1;x<=1; ++x) for(int y=-1; y<=1; y++)
                 {
-                    c[count] = sofa::type::fixed_array<int, 3>(i+x,j+y,k-1);
+                    c[count] = sofa::type::fixed_array<int, 3>({i+x,j+y,k-1});
                     o[count] = sofa::type::fixed_array<real, 3>(std::abs(x),std::abs(y),1); count++;
                 }
                 update(d,v,c,o,vx,bias);
