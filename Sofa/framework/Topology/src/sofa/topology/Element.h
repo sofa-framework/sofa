@@ -73,6 +73,16 @@ struct Element
         return elems[i];
     }
 
+    constexpr reference at(size_type i)
+    {
+        return elems.at(i);
+    }
+
+    constexpr const_reference at(size_type i) const
+    {
+        return elems.at(i);
+    }
+
     template< std::size_t I >
     [[nodiscard]] constexpr reference get() & noexcept requires( I < static_size )
     {
