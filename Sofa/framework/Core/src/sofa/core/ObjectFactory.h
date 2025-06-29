@@ -412,4 +412,7 @@ public:
     int commitTo(ObjectFactory* factory) const;
 };
 
+template<class T>
+void registerToFactory(sofa::core::ObjectFactory* factory);
+
 } // namespace sofa::core
