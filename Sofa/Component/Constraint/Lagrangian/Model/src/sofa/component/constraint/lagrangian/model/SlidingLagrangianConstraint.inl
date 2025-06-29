@@ -124,7 +124,6 @@ void SlidingLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::C
                 xVec[1] = 1;
 
             DataTypes::setDPos(dirProj, cross(xVec, DataTypes::getDPos(dirAxe)));
-
         }
         DataTypes::setDPos(dirProj,DataTypes::getDPos(dirProj).normalized()); // direction of the constraint
 
@@ -137,7 +136,9 @@ void SlidingLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::C
 
         m_constraintDirections.push_back(dirProj);
         if constexpr ( Deriv_t<DataTypes>::spatial_dimensions > 2 )
+        {
             m_constraintDirections.push_back(dirOrtho);
+        }
         m_constraintDirections.push_back(dirAxe);
         m_constraintDirections.push_back(-dirAxe);
     }
@@ -279,7 +280,7 @@ void SlidingLagrangianConstraint<DataTypes>::draw(const core::visual::VisualPara
 
     sofa::type::RGBAColor color;
 
-    if(m_constraintDirections.size()==Deriv_t<DataTypes>::spatial_dimensions)
+    if(m_constraintDirections.size() == Deriv_t<DataTypes>::spatial_dimensions)
         color = sofa::type::RGBAColor::yellow();
     else
         color = sofa::type::RGBAColor::green();
