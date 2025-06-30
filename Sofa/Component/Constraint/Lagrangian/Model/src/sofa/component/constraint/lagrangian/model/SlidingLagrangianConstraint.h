@@ -58,10 +58,6 @@ protected:
     Data<int> d_m2b; ///< index of the other end of the sliding axis
     Data<Deriv> d_force; ///< force (impulse) used to solve the constraint
 
-    Real m_dist;	// constraint violation
-    Real m_thirdConstraint; // 0 if A<proj<B, -1 if proj<A, 1 if B<proj
-
-
     SlidingLagrangianConstraint();
     SlidingLagrangianConstraint(MechanicalState* object);
     SlidingLagrangianConstraint(MechanicalState* object1, MechanicalState* object2);
@@ -98,7 +94,8 @@ public:
 
 private:
     // storage of force
-    Deriv  m_dirAxe, m_dirProj, m_dirOrtho;
+    std::vector<Deriv>  m_constraintDirections;
+    Real m_projectionBarycentricCoordinate;
 
 
 
