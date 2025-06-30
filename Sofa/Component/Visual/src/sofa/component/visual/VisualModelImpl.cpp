@@ -166,10 +166,15 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     // add one identity matrix
     xforms.resize(1);
 
+    addUpdateCallback("updateGeometry", {&d_triangles},
+                      [&](const core::DataTracker&) -> sofa::core::objectmodel::ComponentState {
+        modified=true;
+        return sofa::core::objectmodel::ComponentState::Loading;
+    }, {&d_componentState});
+
     addUpdateCallback("updateTextures", { &d_texturename },
-        [&](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
+        [&](const core::DataTracker&) -> sofa::core::objectmodel::ComponentState
     {
-        SOFA_UNUSED(tracker);
         m_textureChanged = true;
         return sofa::core::objectmodel::ComponentState::Loading;
     }, { &d_componentState });
