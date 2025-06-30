@@ -155,6 +155,10 @@
           "type": "BOOL",
           "value": "ON"
         },
+        "PLUGIN_BEAMADAPTER_CUDA": {
+          "type": "BOOL",
+          "value": "ON"
+        },
         "PLUGIN_SOFAMATRIX": {
           "type": "BOOL",
           "value": "ON"
@@ -168,6 +172,10 @@
           "value": "ON"
         },
         "PLUGIN_CSPARSESOLVERS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_SOFADISTANCEGRID_CUDA": {
           "type": "BOOL",
           "value": "ON"
         },
@@ -269,6 +277,10 @@
           "value": "ON"
         },
         "SOFA_FETCH_SOFASPHFLUID": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_SOFASPHFLUID_CUDA": {
           "type": "BOOL",
           "value": "ON"
         },
