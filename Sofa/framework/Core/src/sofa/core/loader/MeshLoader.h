@@ -22,10 +22,17 @@
 #pragma once
 
 #include <sofa/core/config.h>
-#include <sofa/type/Quat.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/type/PrimitiveGroup.h>
-#include <sofa/core/topology/Topology.h>
+
+#include <sofa/topology/Point.h>
+#include <sofa/topology/Edge.h>
+#include <sofa/topology/Triangle.h>
+#include <sofa/topology/Quad.h>
+#include <sofa/topology/Pentahedron.h>
+#include <sofa/topology/Tetrahedron.h>
+#include <sofa/topology/Pyramid.h>
+#include <sofa/topology/Hexahedron.h>
 
 
 namespace sofa::helper::io {
@@ -38,6 +45,14 @@ namespace sofa::core::loader
 using sofa::type::PrimitiveGroup;
 using topology::Topology;
 
+using sofa::topology::Edge;
+using sofa::topology::Triangle;
+using sofa::topology::Quad;
+using sofa::topology::Tetrahedron;
+using sofa::topology::Hexahedron;
+using sofa::topology::Pentahedron;
+using sofa::topology::Pyramid;
+
 class SOFA_CORE_API MeshLoader : public BaseLoader
 {
 public:
@@ -45,14 +60,8 @@ public:
 
     SOFA_ABSTRACT_CLASS(MeshLoader, BaseLoader);
 
-    typedef topology::Topology::Edge Edge;
-    typedef topology::Topology::Triangle Triangle;
-    typedef topology::Topology::Quad Quad;
-    typedef topology::Topology::Tetrahedron Tetrahedron;
-    typedef topology::Topology::Hexahedron Hexahedron;
-    typedef topology::Topology::Pentahedron Pentahedron;
-    typedef topology::Topology::Pyramid Pyramid;
-    typedef topology::Topology::PointID PointID;
+    typedef sofa::Index PointID;
+
     /* specify for each control point lying on an edge : the control point index, the index of the  edge,
      the 2 integers specifying the position within this edge (i.e. 11 for a quadratic edge, 13 within a quartic edge).. */
     typedef sofa::type::fixed_array<PointID, 4> HighOrderEdgePosition;
@@ -145,7 +154,7 @@ public:
     Data< type::vector< Edge > > d_edges; ///< Edges of the mesh loaded
     Data< type::vector< Triangle > > d_triangles; ///< Triangles of the mesh loaded
     Data< type::vector< Quad > > d_quads; ///< Quads of the mesh loaded
-    Data< type::vector< type::vector<Topology::ElemID> > > d_polygons; ///< Polygons of the mesh loaded
+    Data< type::vector< type::vector<sofa::Index> > > d_polygons; ///< Polygons of the mesh loaded
     Data< type::vector< HighOrderEdgePosition > > d_highOrderEdgePositions; ///< High order edge points of the mesh loaded
     Data< type::vector< HighOrderTrianglePosition > > d_highOrderTrianglePositions; ///< High order triangle points of the mesh loaded
     Data< type::vector< HighOrderQuadPosition > > d_highOrderQuadPositions; ///< High order quad points of the mesh loaded
@@ -201,32 +210,32 @@ protected:
     void addPolyline(type::vector<Polyline>& pPolylines, Polyline p);
 
     void addEdge(type::vector<Edge>& pEdges, const Edge& p);
-    void addEdge(type::vector<Edge>& pEdges, Topology::EdgeID p0, Topology::EdgeID p1);
+    void addEdge(type::vector<Edge>& pEdges, sofa::Index p0, sofa::Index p1);
 
     void addTriangle(type::vector<Triangle>& pTriangles, const Triangle& p);
-    void addTriangle(type::vector<Triangle>& pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2);
+    void addTriangle(type::vector<Triangle>& pTriangles, sofa::Index p0, sofa::Index p1, sofa::Index p2);
 
     void addQuad(type::vector<Quad>& pQuads, const Quad& p);
-    void addQuad(type::vector<Quad>& pQuads, Topology::QuadID p0, Topology::QuadID p1, Topology::QuadID p2, Topology::QuadID p3);
+    void addQuad(type::vector<Quad>& pQuads, sofa::Index p0, sofa::Index p1, sofa::Index p2, sofa::Index p3);
 
-    void addPolygon(type::vector< type::vector<Topology::ElemID> >& pPolygons, const type::vector<Topology::ElemID>& p);
+    void addPolygon(type::vector< type::vector<sofa::Index> >& pPolygons, const type::vector<sofa::Index>& p);
 
     void addTetrahedron(type::vector<Tetrahedron>& pTetrahedra, const Tetrahedron& p);
-    void addTetrahedron(type::vector<Tetrahedron>& pTetrahedra, Topology::TetrahedronID p0, Topology::TetrahedronID p1, Topology::TetrahedronID p2, Topology::TetrahedronID p3);
+    void addTetrahedron(type::vector<Tetrahedron>& pTetrahedra, sofa::Index p0, sofa::Index p1, sofa::Index p2, sofa::Index p3);
 
     void addHexahedron(type::vector< Hexahedron>& pHexahedra, const Hexahedron& p);
     void addHexahedron(type::vector< Hexahedron>& pHexahedra,
-                       Topology::HexahedronID p0, Topology::HexahedronID p1, Topology::HexahedronID p2, Topology::HexahedronID p3,
-                       Topology::HexahedronID p4, Topology::HexahedronID p5, Topology::HexahedronID p6, Topology::HexahedronID p7);
+                       sofa::Index p0, sofa::Index p1, sofa::Index p2, sofa::Index p3,
+                       sofa::Index p4, sofa::Index p5, sofa::Index p6, sofa::Index p7);
 
     void addPentahedron(type::vector< Pentahedron>& pPentahedra, const Pentahedron& p);
     void addPentahedron(type::vector< Pentahedron>& pPentahedra,
-                        Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3,
-                        Topology::ElemID p4, Topology::ElemID p5);
+                        sofa::Index p0, sofa::Index p1, sofa::Index p2, sofa::Index p3,
+                        sofa::Index p4, sofa::Index p5);
 
     void addPyramid(type::vector< Pyramid>& pPyramids, const Pyramid& p);
     void addPyramid(type::vector< Pyramid>& pPyramids,
-                    Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3, Topology::ElemID p4);
+                    sofa::Index p0, sofa::Index p1, sofa::Index p2, sofa::Index p3, sofa::Index p4);
 
     /// Temporary method that will copy all buffers from a io::Mesh into the corresponding Data. Will be removed as soon as work on unifying meshloader is finished
     void copyMeshToData(helper::io::Mesh& _mesh);

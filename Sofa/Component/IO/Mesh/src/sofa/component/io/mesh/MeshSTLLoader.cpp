@@ -129,8 +129,8 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     auto my_normals = getWriteOnlyAccessor(d_normals);
     auto my_triangles = getWriteOnlyAccessor(this->d_triangles);
 
-    std::map< sofa::type::Vec3f, core::topology::Topology::Index > my_map;
-    core::topology::Topology::Index positionCounter = 0;
+    std::map< sofa::type::Vec3f, sofa::Index > my_map;
+    sofa::Index positionCounter = 0;
     const bool useMap = d_mergePositionUsingMap.getValue();
 
     std::ifstream dataFile(filename, std::ios::in | std::ifstream::binary);
@@ -171,7 +171,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     // Parsing d_facets
     for (uint32_t i = 0; i<nbrFacet; ++i)
     {
-        Triangle the_tri;
+        topology::Triangle the_tri;
 
         // Normal:
         dataFile.read((char*)&normal[0], 4);
@@ -208,7 +208,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
                     if ( (vertex[0] == my_positions[k][0]) && (vertex[1] == my_positions[k][1])  && (vertex[2] == my_positions[k][2]))
                     {
                         find = true;
-                        the_tri[j] = static_cast<core::topology::Topology::PointID>(k);
+                        the_tri[j] = static_cast<sofa::Index>(k);
                         break;
                     }
 
@@ -257,11 +257,11 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
     auto my_normals = getWriteOnlyAccessor(d_normals);
     auto my_triangles = getWriteOnlyAccessor(d_triangles);
 
-    std::map< sofa::type::Vec3f, core::topology::Topology::Index > my_map;
-    core::topology::Topology::Index positionCounter = 0, vertexCounter = 0;
+    std::map< sofa::type::Vec3f, sofa::Index > my_map;
+    sofa::Index positionCounter = 0, vertexCounter = 0;
     const bool useMap = d_mergePositionUsingMap.getValue();
 
-    Triangle the_tri;
+    topology::Triangle the_tri;
 
     while (std::getline(dataFile, line))
     {
@@ -304,14 +304,14 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
                     if ( (result[0] == my_positions[i][0]) && (result[1] == my_positions[i][1])  && (result[2] == my_positions[i][2]))
                     {
                         find = true;
-                        the_tri[vertexCounter] = static_cast<core::topology::Topology::PointID>(i);
+                        the_tri[vertexCounter] = static_cast<sofa::Index>(i);
                         break;
                     }
 
                 if (!find)
                 {
                     my_positions.push_back(result);
-                    the_tri[vertexCounter] = static_cast<core::topology::Topology::PointID>(my_positions.size()-1);
+                    the_tri[vertexCounter] = static_cast<sofa::Index>(my_positions.size()-1);
                 }
             }
             vertexCounter++;
