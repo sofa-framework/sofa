@@ -186,10 +186,10 @@ void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::Visual
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->setLightingEnabled(false);
 
-	if (showIndices.getValue())
-	{
+    if (showIndices.getValue())
+    {
         drawIndices(vparams);
-	}
+    }
 
     if (showVectors.getValue())
     {
@@ -210,33 +210,13 @@ void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::Visual
             vparams->drawTool()->multMatrix( glTransform );
             vparams->drawTool()->scale ( scale );
 
-			if (getContext()->isSleeping())
-			{
-				vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ), sofa::type::RGBAColor::gray());
-			}
-			else switch( drawMode.getValue() )
+            type::RGBAColor color = d_color.getValue();
+            if (getContext()->isSleeping())
             {
-                case 1:
-                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ), sofa::type::RGBAColor::green());
-                    break;
-                case 2:
-                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ), sofa::type::RGBAColor::red());
-                    break;
-                case 3:
-                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ), sofa::type::RGBAColor::blue());
-                    break;
-                case 4:
-                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ), sofa::type::RGBAColor::yellow());
-                    break;
-                case 5:
-                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ), sofa::type::RGBAColor::magenta());
-                    break;
-                case 6:
-                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ), sofa::type::RGBAColor::cyan());
-                    break;
-                default:
-                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ) );
+                color = sofa::type::RGBAColor::gray();
             }
+
+            vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ), color);
 
             vparams->drawTool()->popMatrix();
         }

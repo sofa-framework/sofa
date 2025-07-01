@@ -193,7 +193,7 @@ public:
 
     virtual void setPolygonMode(int _mode, bool _wireframe) = 0 ;
 
-    virtual void setLightingEnabled(bool _isAnabled) = 0 ;
+    virtual void setLightingEnabled(bool _isEnabled) = 0 ;
     /// @}
 
     virtual void enableBlending() = 0;

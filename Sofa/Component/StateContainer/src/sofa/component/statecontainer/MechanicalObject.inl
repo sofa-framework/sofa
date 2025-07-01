@@ -133,7 +133,10 @@ namespace sofa::component::statecontainer
 {
 
 template <class DataTypes>
-static constexpr typename MechanicalObject<DataTypes>::DrawMode defaultDrawMode("Line");
+static constexpr typename MechanicalObject<DataTypes>::DerivDrawMode defaultDerivDrawMode("Line");
+
+template <class DataTypes>
+static constexpr typename MechanicalObject<DataTypes>::CoordDrawMode defaultCoordDrawMode("Point");
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
@@ -157,7 +160,8 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , showIndicesScale(initData(&showIndicesScale, 0.02f, "showIndicesScale", "Scale for indices display. (default=0.02)"))
     , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity. (default=false)"))
     , showVectorsScale(initData(&showVectorsScale, 0.0001f, "showVectorsScale", "Scale for vectors display. (default=0.0001)"))
-    , drawMode(initData(&drawMode, defaultDrawMode<DataTypes>, "drawMode",("The way vectors will be drawn\n" + DrawMode::dataDescription()).c_str()))
+    , d_derivDrawMode(initData(&d_derivDrawMode, defaultDerivDrawMode<DataTypes>, "derivDrawMode",("The way derivative vectors will be drawn\n" + DerivDrawMode::dataDescription()).c_str()))
+    , d_coordDrawMode(initData(&d_coordDrawMode, defaultCoordDrawMode<DataTypes>, "coordDrawMode",("The way coordinates will be drawn\n" + CoordDrawMode::dataDescription()).c_str()))
     , d_color(initData(&d_color, type::RGBAColor::white(), "showColor", "Color for object display. (default=[1 1 1 1])"))
     , translation(initData(&translation, type::Vec3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, type::Vec3(), "rotation", "Rotation of the DOFs"))
@@ -2666,8 +2670,8 @@ void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualParams* 
         return std::make_pair(p1, p2);
     };
 
-    const auto mode = drawMode.getValue();
-    if (mode == DrawMode::SelectableItem("Line"))
+    const auto mode = d_derivDrawMode.getValue();
+    if (mode == DerivDrawMode("Line"))
     {
         type::vector<type::Vec3> points;
         points.reserve(2 * v_rA.size());
@@ -2679,7 +2683,7 @@ void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualParams* 
         }
         vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor::white());
     }
-    else if (mode == DrawMode::SelectableItem("Cylinder"))
+    else if (mode == DerivDrawMode("Cylinder"))
     {
         for (Size i = 0; i < v_rA.size(); ++i)
         {
@@ -2688,7 +2692,7 @@ void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualParams* 
             vparams->drawTool()->drawCylinder(p1, p2, rad, sofa::type::RGBAColor::white());
         }
     }
-    else if (mode == DrawMode::SelectableItem("Arrow"))
+    else if (mode == DerivDrawMode("Arrow"))
     {
         for (Size i = 0; i < v_rA.size(); ++i)
         {
@@ -2717,36 +2721,24 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
 
     if (showObject.getValue())
     {
-        const float& scale = showObjectScale.getValue();
+        const float& objectScale = showObjectScale.getValue();
         type::vector<type::Vec3> positions(d_size.getValue());
         const auto x_rA = sofa::helper::getReadAccessor(*this->read(core::vec_id::read_access::position));
         for (sofa::Index i = 0; i < Size(d_size.getValue()); ++i)
             positions[i] = type::Vec3(DataTypes::getCPos(x_rA[i]));
 
-        switch (drawMode.getValue())
+        if (d_coordDrawMode.getValue() == CoordDrawMode("Point"))
         {
-        case 0:
-            vparams->drawTool()->drawPoints(positions,scale, d_color.getValue());
-            break;
-        case 1:
+            vparams->drawTool()->drawPoints(positions, objectScale, d_color.getValue());
+        }
+        else if (d_coordDrawMode.getValue() == CoordDrawMode("Sphere"))
+        {
             vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale, d_color.getValue());
-            break;
-        case 2:
-            vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale, sofa::type::RGBAColor::red());
-            break;
-        case 3:
-            vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale, sofa::type::RGBAColor::green());
-            break;
-        case 4:
-            vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale, sofa::type::RGBAColor::blue());
-            break;
-        default:
+            vparams->drawTool()->drawSpheres(positions, objectScale, d_color.getValue());
+        }
+        else
+        {
             msg_error() << "No proper drawing mode found!";
-            break;
         }
     }
 

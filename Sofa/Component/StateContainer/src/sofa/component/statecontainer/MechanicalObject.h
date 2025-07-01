@@ -109,13 +109,21 @@ public:
     Data< bool >  showVectors; ///< Show velocity. (default=false)
     Data< float > showVectorsScale; ///< Scale for vectors display. (default=0.0001)
 
-    MAKE_SELECTABLE_ITEMS(DrawMode,
+    MAKE_SELECTABLE_ITEMS(DerivDrawMode,
         sofa::helper::Item{"Line", "Velocity vectors are displayed with simple lines"},
         sofa::helper::Item{"Cylinder", "Velocity vectors are displayed using cylinders"},
         sofa::helper::Item{"Arrow", "Velocity vectors are displayed using arrows"}
     );
 
-    Data< DrawMode > drawMode; ///< The way vectors will be drawn
+    Data< DerivDrawMode > d_derivDrawMode; ///< The way derivative vectors will be drawn
+
+    MAKE_SELECTABLE_ITEMS(CoordDrawMode,
+        sofa::helper::Item{"Point", "Coordinates are displayed with simple points"},
+        sofa::helper::Item{"Cylinder", "Coordinates are displayed using spheres"},
+    );
+
+    Data< CoordDrawMode > d_coordDrawMode; ///< The way coordinates will be drawn
+
     Data< type::RGBAColor > d_color; ///< Color for object display. (default=[1 1 1 1])
 
     void init() override;
