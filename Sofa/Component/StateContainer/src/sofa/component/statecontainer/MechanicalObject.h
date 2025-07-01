@@ -108,7 +108,14 @@ public:
     Data< float > showIndicesScale; ///< Scale for indices display. (default=0.02)
     Data< bool >  showVectors; ///< Show velocity. (default=false)
     Data< float > showVectorsScale; ///< Scale for vectors display. (default=0.0001)
-    Data< int > drawMode; ///< The way vectors will be drawn: - 0: Line - 1:Cylinder - 2: Arrow.  The DOFS will be drawn: - 0: point - >1: sphere. (default=0)
+
+    MAKE_SELECTABLE_ITEMS(DrawMode,
+        sofa::helper::Item{"Line", "Velocity vectors are displayed with simple lines"},
+        sofa::helper::Item{"Cylinder", "Velocity vectors are displayed using cylinders"},
+        sofa::helper::Item{"Arrow", "Velocity vectors are displayed using arrows"}
+    );
+
+    Data< DrawMode > drawMode; ///< The way vectors will be drawn
     Data< type::RGBAColor > d_color; ///< Color for object display. (default=[1 1 1 1])
 
     void init() override;
