@@ -41,8 +41,8 @@ public:
     SOFA_CLASS(VTKExporter,sofa::simulation::BaseSimulationExporter);
 
 protected:
-    sofa::core::topology::BaseMeshTopology* m_topology;
-    sofa::core::behavior::BaseMechanicalState* m_mstate;
+    SingleLink<VTKExporter, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STRONGLINK> m_topology;
+    SingleLink<VTKExporter, sofa::core::behavior::BaseMechanicalState, BaseLink::FLAG_STRONGLINK> m_mstate;
 
     std::unique_ptr<std::ofstream> m_outfile;
 
