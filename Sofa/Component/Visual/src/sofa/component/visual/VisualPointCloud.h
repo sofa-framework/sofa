@@ -75,6 +75,10 @@ public:
     Data<VecFloat> d_sphereRadius;
     Data<type::RGBAColor> d_color;
 
+    Data<bool> d_showIndices;
+    Data<float> d_indicesScale;
+    Data<type::RGBAColor> d_indicesColor;
+
     void computeBBox(const core::ExecParams*, bool) override;
 
 private:
@@ -84,8 +88,11 @@ private:
 
     void drawFrames(
         const core::visual::VisualParams* vparams,
-        helper::visual::DrawTool* drawTool,
         type::RGBAColor color) requires hasWriteOpenGlMatrix<DataTypes>;
+
+    void drawIndices(const core::visual::VisualParams* vparams) const;
+
+    type::vector<type::Vec3> convertCoord() const;
 };
 
 
