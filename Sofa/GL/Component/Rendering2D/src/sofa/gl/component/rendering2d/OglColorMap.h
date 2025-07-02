@@ -31,7 +31,7 @@
 #include <sofa/gl/template.h>
 #include <sofa/type/Vec.h>
 #include <string>
-
+#include <sofa/core/objectmodel/DataCallback.h>
 
 namespace sofa::gl::component::rendering2d
 {
@@ -52,6 +52,7 @@ protected:
 public:
     Data<unsigned int> d_paletteSize; ///< How many colors to use
     Data<sofa::helper::OptionsGroup> d_colorScheme; ///< Color scheme to use
+    core::objectmodel::DataCallback c_colorSchemeCallback;
 
     Data<bool> d_showLegend; ///< Activate rendering of color scale legend on the side
     Data<type::Vec2f> d_legendOffset; ///< Draw the legend on screen with an x,y offset
@@ -83,7 +84,7 @@ public:
         return m_colorMap.getColor(i);
     }
 
-    static OglColorMap* getDefault();
+    static SOFA_ATTRIBUTE_DEPRECATED__OGLCOLORMAPGETDEFAULT() OglColorMap* getDefault();
 
     template<class Real>
     helper::ColorMap::evaluator<Real> getEvaluator(Real vmin, Real vmax)
@@ -109,6 +110,10 @@ public:
         in >> m.m_colorMap;
         return in;
     }
+
+private:
+
+    void deleteTexture();
 };
 
 } // namespace sofa::gl::component::rendering2d
