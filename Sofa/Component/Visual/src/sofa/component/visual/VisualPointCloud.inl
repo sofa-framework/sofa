@@ -33,6 +33,9 @@ VisualPointCloud<DataTypes>::VisualPointCloud()
     , d_pointSize(initData(&d_pointSize, 1.f, "pointSize", "The size of the points and frames"))
     , d_sphereRadius(initData(&d_sphereRadius, "sphereRadius", "The radius list of the spheres"))
     , d_color(initData(&d_color, "color", "The color of the points"))
+    , d_showIndices(initData(&d_showIndices, false, "showIndices", "Show the indices of the points"))
+    , d_indicesScale(initData(&d_indicesScale, 1.f, "indicesScale", "The scale of the indices"))
+    , d_indicesColor(initData(&d_indicesColor, "indicesColor", "The color of the indices"))
 {
 }
 
@@ -65,6 +68,21 @@ void VisualPointCloud<DataTypes>::computeBBox(const core::ExecParams* exec_param
 }
 
 template <class DataTypes>
+type::vector<type::Vec3> VisualPointCloud<DataTypes>::convertCoord() const
+{
+    const auto position = sofa::helper::getReadAccessor(d_position);
+
+    type::vector<type::Vec3> displayedPoints;
+    displayedPoints.reserve(position.size());
+    for (const auto& point : position)
+    {
+        displayedPoints.push_back(DataTypes::getCPos(point));
+    }
+
+    return displayedPoints;
+}
+
+template <class DataTypes>
 void VisualPointCloud<DataTypes>::doDrawVisual(const core::visual::VisualParams* vparams)
 {
     const auto drawMode = d_drawMode.getValue();
@@ -74,23 +92,15 @@ void VisualPointCloud<DataTypes>::doDrawVisual(const core::visual::VisualParams*
 
     if (drawMode == DrawMode("Point") || drawMode == DrawMode("Sphere"))
     {
-        const auto position = sofa::helper::getReadAccessor(d_position);
-
-        type::vector<type::Vec3> displayedPoints;
-        displayedPoints.reserve(position.size());
-        for (const auto& point : position)
-        {
-            displayedPoints.push_back(DataTypes::getCPos(point));
-        }
-
         if (drawMode == DrawMode("Point"))
         {
             drawTool->setLightingEnabled(false);
-            drawTool->drawPoints(displayedPoints, d_pointSize.getValue(), color);
+            drawTool->drawPoints(convertCoord(), d_pointSize.getValue(), color);
         }
         else if (drawMode == DrawMode("Sphere"))
         {
             auto radius = sofa::helper::getWriteAccessor(d_sphereRadius);
+            const auto displayedPoints = convertCoord();
 
             float defaultRadius = 1.f;
             if (!radius.empty())
@@ -109,17 +119,31 @@ void VisualPointCloud<DataTypes>::doDrawVisual(const core::visual::VisualParams*
         {
             if (drawMode == DrawMode("Frame"))
             {
-                drawFrames(vparams, drawTool, color);
+                drawFrames(vparams, color);
             }
         }
+    }
+
+    if (d_showIndices.getValue())
+    {
+        drawIndices(vparams);
     }
 }
 
 template <class DataTypes>
+void VisualPointCloud<DataTypes>::drawIndices(const core::visual::VisualParams* vparams) const
+{
+    const float scale = static_cast<float>(
+        (vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() *
+        d_indicesScale.getValue());
+    vparams->drawTool()->draw3DText_Indices(convertCoord(), scale, d_indicesColor.getValue());
+}
+
+template <class DataTypes>
 void VisualPointCloud<DataTypes>::drawFrames(const core::visual::VisualParams* vparams,
-                                             helper::visual::DrawTool* drawTool,
                                              type::RGBAColor color) requires hasWriteOpenGlMatrix<DataTypes>
 {
+    auto* drawTool = vparams->drawTool();
     const auto position = sofa::helper::getReadAccessor(d_position);
 
     const auto pointSize = d_pointSize.getValue();
@@ -127,13 +151,13 @@ void VisualPointCloud<DataTypes>::drawFrames(const core::visual::VisualParams* v
 
     for (const auto& point : position)
     {
-        vparams->drawTool()->pushMatrix();
+        drawTool->pushMatrix();
 
         float glTransform[16];
         point.writeOpenGlMatrix(glTransform);
 
-        vparams->drawTool()->multMatrix(glTransform);
-        vparams->drawTool()->scale(pointSize);
+        drawTool->multMatrix(glTransform);
+        drawTool->scale(pointSize);
 
         if (isColorSet)
         {
@@ -145,7 +169,7 @@ void VisualPointCloud<DataTypes>::drawFrames(const core::visual::VisualParams* v
             drawTool->drawFrame(type::Vec3(), type::Quat<SReal>(),
                                 type::Vec3(1_sreal, 1_sreal, 1_sreal));
         }
-        vparams->drawTool()->popMatrix();
+        drawTool->popMatrix();
     }
 }
 
