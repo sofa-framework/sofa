@@ -88,7 +88,7 @@ void SceneCheckMapping::doPrintSummary()
         std::stringstream ss;
         ss << "The following Nodes contain a mapping but no state: " << msgendl;
         showNodes(ss, m_nodesWithMappingNoState);
-        msg_warning(getName()) << ss.str();
+        msg_error(getName()) << ss.str();
     }
 
     if (!m_nodesWithMappingWrongState.empty())
@@ -96,7 +96,7 @@ void SceneCheckMapping::doPrintSummary()
         std::stringstream ss;
         ss << "The following Nodes contain a mapping and a state, and the state is not an output of the mapping: " << msgendl;
         showNodes(ss, m_nodesWithMappingWrongState);
-        msg_warning(getName()) << ss.str();
+        msg_error(getName()) << ss.str();
     }
 }
 
