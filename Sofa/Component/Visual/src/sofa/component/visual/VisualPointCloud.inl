@@ -1,0 +1,152 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#pragma once
+#include <sofa/component/visual/VisualPointCloud.h>
+#include <sofa/core/visual/VisualParams.h>
+
+namespace sofa::component::visual
+{
+
+template <class DataTypes>
+VisualPointCloud<DataTypes>::VisualPointCloud()
+    : d_position(initData(&d_position, "position", "The position of the points to display"))
+    , d_drawMode(initData(&d_drawMode, "drawMode", ("The draw mode:\n" + DrawMode::dataDescription()).c_str()))
+    , d_pointSize(initData(&d_pointSize, 1.f, "pointSize", "The size of the points and frames"))
+    , d_sphereRadius(initData(&d_sphereRadius, "sphereRadius", "The radius list of the spheres"))
+    , d_color(initData(&d_color, "color", "The color of the points"))
+{
+}
+
+template <class DataTypes>
+void VisualPointCloud<DataTypes>::computeBBox(const core::ExecParams* exec_params, bool cond)
+{
+    const auto position = sofa::helper::getReadAccessor(d_position);
+    const size_t positionSize = position.size();
+
+    if (positionSize <= 0) return;
+
+    Real p[3];
+    DataTypes::get(p[0], p[1], p[2], position[0]);
+    Real maxBBox[3] = {p[0], p[1], p[2]};
+    Real minBBox[3] = {p[0], p[1], p[2]};
+
+    for (size_t i = 1; i < positionSize; i++)
+    {
+        DataTypes::get(p[0], p[1], p[2], position[i]);
+        for (int c = 0; c < 3; c++)
+        {
+            if (p[c] > maxBBox[c])
+                maxBBox[c] = p[c];
+
+            else if (p[c] < minBBox[c])
+                minBBox[c] = p[c];
+        }
+    }
+    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox, maxBBox));
+}
+
+template <class DataTypes>
+void VisualPointCloud<DataTypes>::doDrawVisual(const core::visual::VisualParams* vparams)
+{
+    const auto drawMode = d_drawMode.getValue();
+    auto* drawTool = vparams->drawTool();
+
+    const auto color = d_color.getValue();
+
+    if (drawMode == DrawMode("Point") || drawMode == DrawMode("Sphere"))
+    {
+        const auto position = sofa::helper::getReadAccessor(d_position);
+
+        type::vector<type::Vec3> displayedPoints;
+        displayedPoints.reserve(position.size());
+        for (const auto& point : position)
+        {
+            displayedPoints.push_back(DataTypes::getCPos(point));
+        }
+
+        if (drawMode == DrawMode("Point"))
+        {
+            drawTool->setLightingEnabled(false);
+            drawTool->drawPoints(displayedPoints, d_pointSize.getValue(), color);
+        }
+        else if (drawMode == DrawMode("Sphere"))
+        {
+            auto radius = sofa::helper::getWriteAccessor(d_sphereRadius);
+
+            float defaultRadius = 1.f;
+            if (!radius.empty())
+            {
+                defaultRadius = radius.back();
+            }
+            radius.resize(displayedPoints.size(), defaultRadius);
+
+            drawTool->setLightingEnabled(true);
+            drawTool->drawSpheres(displayedPoints, radius.ref(), color);
+        }
+    }
+    else
+    {
+        if constexpr (hasWriteOpenGlMatrix<DataTypes>)
+        {
+            if (drawMode == DrawMode("Frame"))
+            {
+                drawFrames(vparams, drawTool, color);
+            }
+        }
+    }
+}
+
+template <class DataTypes>
+void VisualPointCloud<DataTypes>::drawFrames(const core::visual::VisualParams* vparams,
+                                             helper::visual::DrawTool* drawTool,
+                                             type::RGBAColor color) requires hasWriteOpenGlMatrix<DataTypes>
+{
+    const auto position = sofa::helper::getReadAccessor(d_position);
+
+    const auto pointSize = d_pointSize.getValue();
+    const bool isColorSet = d_color.isSet();
+
+    for (const auto& point : position)
+    {
+        vparams->drawTool()->pushMatrix();
+
+        float glTransform[16];
+        point.writeOpenGlMatrix(glTransform);
+
+        vparams->drawTool()->multMatrix(glTransform);
+        vparams->drawTool()->scale(pointSize);
+
+        if (isColorSet)
+        {
+            drawTool->drawFrame(type::Vec3(), type::Quat<SReal>(),
+                                type::Vec3(1_sreal, 1_sreal, 1_sreal), color);
+        }
+        else
+        {
+            drawTool->drawFrame(type::Vec3(), type::Quat<SReal>(),
+                                type::Vec3(1_sreal, 1_sreal, 1_sreal));
+        }
+        vparams->drawTool()->popMatrix();
+    }
+}
+
+}  // namespace sofa::component::visual
