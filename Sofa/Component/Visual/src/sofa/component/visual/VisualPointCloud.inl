@@ -40,6 +40,16 @@ VisualPointCloud<DataTypes>::VisualPointCloud()
 }
 
 template <class DataTypes>
+typename VisualPointCloud<DataTypes>::DrawMode VisualPointCloud<DataTypes>::defaultDrawMode()
+{
+    if constexpr (hasWriteOpenGlMatrix<DataTypes>)
+        return DrawMode("Frame");
+    else
+        return DrawMode("Point");
+}
+
+
+template <class DataTypes>
 void VisualPointCloud<DataTypes>::computeBBox(const core::ExecParams* exec_params, bool cond)
 {
     const auto position = sofa::helper::getReadAccessor(d_position);
