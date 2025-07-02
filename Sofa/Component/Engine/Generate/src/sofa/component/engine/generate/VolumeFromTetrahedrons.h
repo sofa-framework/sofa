@@ -60,6 +60,7 @@ public:
     ////////////////////////// Inherited from BaseObject ///////////////////
     void init() override;
     void reinit() override;
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
     ////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from DataEngine////////////////////
@@ -86,9 +87,6 @@ private:
 
     void initTopology();
     void checkTopology();
-
-    SReal getElementVolume(const Tetra& tetra);
-    SReal getElementVolume(const Hexa& hexa);
 };
 
 #if !defined(SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_CPP)

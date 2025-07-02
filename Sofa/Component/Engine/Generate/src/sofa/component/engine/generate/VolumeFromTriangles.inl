@@ -36,7 +36,7 @@ using sofa::core::objectmodel::BaseData ;
 
 template <class DataTypes>
 VolumeFromTriangles<DataTypes>::VolumeFromTriangles()
-    : d_positions(initData(&d_positions,"positions","If not set by user, find the context mechanical."))
+    : d_positions(initData(&d_positions,"position","If not set by user, find the context mechanical."))
     , d_triangles(initData(&d_triangles,"triangles","If not set by user, find the context topology."))
     , d_quads(initData(&d_quads,"quads","If not set by user, find the context topology."))
     , d_volume(initData(&d_volume,Real(0.0),"volume","The volume is only relevant if the surface is closed."))
@@ -51,10 +51,23 @@ VolumeFromTriangles<DataTypes>::~VolumeFromTriangles()
 {
 }
 
+template <class DataTypes>
+void VolumeFromTriangles<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    Inherit1::parse(arg);
+
+    // to be backward compatible with previous data structure
+    const char* positionsChar = arg->getAttribute("positions");
+    if( positionsChar )
+        msg_deprecated() << "You are using a deprecated Data 'positions', please use 'position' instead.";
+}
+
 
 template <class DataTypes>
 void VolumeFromTriangles<DataTypes>::init()
 {
+    Inherit1::init();
+
     d_componentState.setValue(ComponentState::Valid);
 
     addInput(&d_positions);
