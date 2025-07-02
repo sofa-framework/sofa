@@ -68,6 +68,8 @@ private:
     using VecColor = sofa::type::vector<type::RGBAColor>;
     using DrawMode = CoordDrawMode<DataTypes>;
 
+    static DrawMode defaultDrawMode();
+
 public:
     Data<VecCoord> d_position;
     Data<DrawMode> d_drawMode;
