@@ -31,6 +31,7 @@ VisualVectorField<DataTypes>::VisualVectorField()
     : d_position(initData(&d_position, "position", "Starting position of the rendered vectors"))
     , d_vector(initData(&d_vector, "vector", "List of vectors to render"))
     , d_vectorScale(initData(&d_vectorScale, 1.0_sreal, "vectorScale", "Scaling factor applied on vectors for rendering"))
+    , d_drawMode(initData(&d_drawMode, VectorFieldDrawMode("Line"), "drawMode", "Draw mode for the vectors"))
 {
 }
 
@@ -44,14 +45,27 @@ void VisualVectorField<DataTypes>::doDrawVisual(const core::visual::VisualParams
     const auto vectorScale = d_vectorScale.getValue();
 
     auto* drawTool = vparams->drawTool();
-
+    const auto drawMode = d_drawMode.getValue();
 
     for (std::size_t i = 0; i < minSize; ++i)
     {
         const auto& start = position[i];
         const auto end = start + vectorScale * vector[i];
 
-        drawTool->drawLines(std::vector<type::Vec3>{{start, end}}, 1, sofa::type::RGBAColor::white());
+        if (drawMode == VectorFieldDrawMode("Line"))
+        {
+            drawTool->drawLines(std::vector<type::Vec3>{{start, end}}, 1, sofa::type::RGBAColor::white());
+        }
+        else if (drawMode == VectorFieldDrawMode("Cylinder"))
+        {
+            const float radius = static_cast<float>(vectorScale * vector[i].norm() / 20.f);
+            drawTool->drawCylinder(start, end, radius, sofa::type::RGBAColor::white());
+        }
+        else if (drawMode == VectorFieldDrawMode("Arrow"))
+        {
+            const float radius = static_cast<float>(vectorScale * vector[i].norm() / 20.f);
+            drawTool->drawArrow(start, end, radius, sofa::type::RGBAColor::white());
+        }
     }
 }
 
