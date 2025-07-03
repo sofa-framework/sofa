@@ -120,7 +120,7 @@ void VisualPointCloud<DataTypes>::doDrawVisual(const core::visual::VisualParams*
             radius.resize(displayedPoints.size(), defaultRadius);
 
             drawTool->setLightingEnabled(true);
-            drawTool->drawSpheres(displayedPoints, radius.ref(), color);
+            drawTool->drawFakeSpheres(displayedPoints, radius.ref(), color);
         }
     }
     else
