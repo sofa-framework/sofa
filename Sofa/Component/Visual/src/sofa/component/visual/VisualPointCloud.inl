@@ -153,33 +153,36 @@ template <class DataTypes>
 void VisualPointCloud<DataTypes>::drawFrames(const core::visual::VisualParams* vparams,
                                              type::RGBAColor color) requires hasWriteOpenGlMatrix<DataTypes>
 {
-    auto* drawTool = vparams->drawTool();
-    const auto position = sofa::helper::getReadAccessor(d_position);
-
-    const auto pointSize = d_pointSize.getValue();
-    const bool isColorSet = d_color.isSet();
-
-    for (const auto& point : position)
+    if constexpr (hasWriteOpenGlMatrix<DataTypes>)
     {
-        drawTool->pushMatrix();
+        auto* drawTool = vparams->drawTool();
+        const auto position = sofa::helper::getReadAccessor(d_position);
 
-        float glTransform[16];
-        point.writeOpenGlMatrix(glTransform);
+        const auto pointSize = d_pointSize.getValue();
+        const bool isColorSet = d_color.isSet();
 
-        drawTool->multMatrix(glTransform);
-        drawTool->scale(pointSize);
-
-        if (isColorSet)
+        for (const auto& point : position)
         {
-            drawTool->drawFrame(type::Vec3(), type::Quat<SReal>(),
-                                type::Vec3(1_sreal, 1_sreal, 1_sreal), color);
+            drawTool->pushMatrix();
+
+            float glTransform[16];
+            point.writeOpenGlMatrix(glTransform);
+
+            drawTool->multMatrix(glTransform);
+            drawTool->scale(pointSize);
+
+            if (isColorSet)
+            {
+                drawTool->drawFrame(type::Vec3(), type::Quat<SReal>(),
+                                    type::Vec3(1_sreal, 1_sreal, 1_sreal), color);
+            }
+            else
+            {
+                drawTool->drawFrame(type::Vec3(), type::Quat<SReal>(),
+                                    type::Vec3(1_sreal, 1_sreal, 1_sreal));
+            }
+            drawTool->popMatrix();
         }
-        else
-        {
-            drawTool->drawFrame(type::Vec3(), type::Quat<SReal>(),
-                                type::Vec3(1_sreal, 1_sreal, 1_sreal));
-        }
-        drawTool->popMatrix();
     }
 }
 
