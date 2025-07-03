@@ -132,7 +132,6 @@ IncrSAP::IncrSAP()
     :d_box(initData(&d_box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored")),
       _nothing_added(true)
 {
-    box.setOriginalData ( &d_box);
 }
 
 
@@ -184,7 +183,7 @@ void IncrSAP::reinit()
 
 inline bool IncrSAP::added(core::CollisionModel *cm) const
 {
-    return collisionModels.count(cm->getLast()) >= 1;
+    return collisionModels.contains(cm->getLast());
 }
 
 

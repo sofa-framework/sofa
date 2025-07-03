@@ -34,22 +34,21 @@
 #include <deque>
 
 #include <sofa/component/constraint/lagrangian/model/BilateralConstraintResolution.h>
-
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/DataCallback.h>
 
 namespace sofa::component::constraint::lagrangian::model
 {
 
 /// These 'using' are in a per-file namespace so they will not leak
 /// and polluate the standard namespace.
-using sofa::core::behavior::BaseConstraint ;
+using sofa::core::behavior::BaseLagrangianConstraint ;
 using sofa::core::behavior::ConstraintResolution ;
 using sofa::core::behavior::PairInteractionConstraint ;
 using sofa::core::ConstraintParams ;
 using sofa::core::ConstVecCoordId;
 
 using sofa::linearalgebra::BaseVector ;
-using sofa::type::Vec3d;
+using sofa::type::Vec3;
 using sofa::type::Quat ;
 
 using sofa::defaulttype::Rigid3Types ;
@@ -82,7 +81,7 @@ public:
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef BaseConstraint::PersistentID PersistentID;
+    typedef BaseLagrangianConstraint::PersistentID PersistentID;
 
     typedef Data<VecCoord>		DataVecCoord;
     typedef Data<VecDeriv>		DataVecDeriv;
@@ -97,18 +96,6 @@ protected:
 
     std::vector<unsigned int> cid;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::RenamedData<type::vector<Index> > m1;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::RenamedData<type::vector<Index> > m2;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::RenamedData<VecDeriv> restVector;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::RenamedData<bool> keepOrientDiff;
-
     DataSubsetIndices d_m1; ///< index of the constraint on the first model
     DataSubsetIndices d_m2; ///< index of the constraint on the second model
     Data<VecDeriv> d_restVector; ///< Relative position to maintain between attached points (optional)
@@ -118,12 +105,15 @@ protected:
 
     Data<bool> d_activate; ///< control constraint activation (true by default)
     Data<bool> d_keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
+    Data<SReal> d_load; ///< Apply this factor to the constraint force to enable incremental loading. This value should be in the interval [0.0, 1.0].
+    core::objectmodel::DataCallback c_loadCallback;
+
 
 
     SingleLink<BilateralLagrangianConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology1; ///< Link to be set to the first topology container in order to support topological changes
     SingleLink<BilateralLagrangianConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology2; ///< Link to be set to the second topology container in order to support topological changes
 
-    std::vector<Vec3d> prevForces;
+    std::vector<Vec3> prevForces;
 
     BilateralLagrangianConstraint(MechanicalState* object1, MechanicalState* object2) ;
     BilateralLagrangianConstraint(MechanicalState* object) ;

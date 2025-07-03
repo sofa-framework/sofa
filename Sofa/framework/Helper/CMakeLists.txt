@@ -82,7 +82,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/map.h
     ${SRC_ROOT}/map_ptr_stable_compare.h
     ${SRC_ROOT}/pair.h
-    ${SRC_ROOT}/proximity.h
     ${SRC_ROOT}/random.h
     ${SRC_ROOT}/rmath.h
     ${SRC_ROOT}/set.h
@@ -216,11 +215,6 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 if((CMAKE_SYSTEM_NAME STREQUAL Windows) AND SOFA_USE_DEPENDENCY_PACK)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
 endif()
-# The default binary suffix for libraries/plugins is "_d" when using a debug build.
-# since this is configuration specific it is a bit more convenient to put it as a debug compile definition for
-# PluginManager.cpp, at the expense of being much less visible compare to having it in the generated
-# SofaFramework/config.h
-set_property(SOURCE ${SRC_ROOT}/system/PluginManager.cpp APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d" )
 
 # DEPENDENCY LINKS AND INCLUDE DIRS
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config )

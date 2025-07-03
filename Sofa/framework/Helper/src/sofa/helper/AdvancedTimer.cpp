@@ -595,7 +595,7 @@ void TimerData::process()
         {
             AdvancedTimer::IdStep id;
             if (r.type != Record::RBEGIN) id = AdvancedTimer::IdStep(r.id);
-            if (stepData.find(id) == stepData.end())
+            if (!stepData.contains(id))
                 steps.push_back(id);
             StepData& data = stepData[id];
             data.level = level;
@@ -631,7 +631,7 @@ void TimerData::process()
         case Record::RVAL_ADD:
         {
             AdvancedTimer::IdVal id = AdvancedTimer::IdVal(r.id);
-            if (valData.find(id) == valData.end())
+            if (!valData.contains(id))
                 vals.push_back(id);
             ValData& data = valData[id];
             if (r.type == Record::RVAL_SET || (data.lastIt != nbIter))
@@ -1457,12 +1457,12 @@ std::string AdvancedTimer::getTimeAnalysis(IdTimer id, double time, double delta
     if (curTimer.empty())
     {
         msg_error("AdvancedTimer::end") << "timer[" << id << "] called while begin was not" ;
-        return nullptr;
+        return "";
     }
     if (id != curTimer.top())
     {
         msg_error("AdvancedTimer::end") << "timer[" << id << "] does not correspond to last call to begin(" << curTimer.top() << ")" ;
-        return nullptr;
+        return "";
     }
     type::vector<Record>* curRecords = getCurRecords();
     if (curRecords)

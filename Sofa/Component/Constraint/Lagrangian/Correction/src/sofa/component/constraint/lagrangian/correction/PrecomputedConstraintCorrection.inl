@@ -53,9 +53,10 @@ namespace sofa::component::constraint::lagrangian::correction
 template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
     : Inherit(mm)
-    , d_rotations(initData(&d_rotations, false, "rotations", ""))
+    , d_rotations(initData(&d_rotations, false, "rotations", "Project the precomputed matrix with a rotation matrix"))
     , d_restRotations(initData(&d_restRotations, false, "restDeformations", ""))
     , d_recompute(initData(&d_recompute, false, "recompute", "if true, always recompute the compliance"))
+    , d_regularizationTerm(initData(&d_regularizationTerm, 0.0_sreal, "regularizationTerm", "Add regularization factor times the identity matrix to the compliance W when solving constraints"))
     , d_debugViewFrameScale(initData(&d_debugViewFrameScale, 1.0_sreal, "debugViewFrameScale", "Scale on computed node's frame"))
     , d_fileCompliance(initData(&d_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
     , d_fileDir(initData(&d_fileDir, "fileDir", "If not empty, the compliance will be saved in this repertory"))
@@ -64,13 +65,6 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa
     , nbRows(0), nbCols(0), dof_on_node(0), nbNodes(0)
 {
     this->addAlias(&d_fileCompliance, "filePrefix");
-
-    m_rotations.setOriginalData(&d_rotations);
-    m_restRotations.setOriginalData(&d_restRotations);
-    recompute.setOriginalData(&d_recompute);
-    debugViewFrameScale.setOriginalData(&d_debugViewFrameScale);
-    f_fileCompliance.setOriginalData(&d_fileCompliance);
-    fileDir.setOriginalData(&d_fileDir);
 }
 
 template<class DataTypes>
@@ -421,7 +415,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 {
     m_activeDofs.clear();
 
-	const MatrixDeriv& c = cparams->readJ(this->mstate)->getValue();
+    const MatrixDeriv& c = cparams->readJ(this->mstate.get())->getValue();
 
     SReal factor = 1.0_sreal;
 
@@ -524,6 +518,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     }
 
     unsigned int curConstraint = 0;
+    const SReal regularization = d_regularizationTerm.getValue();
 
     for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
@@ -548,12 +543,16 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 
                 if (indexCurRowConst != indexCurColConst)
                     W->add(indexCurColConst, indexCurRowConst, w);
+                else
+                    W->add(indexCurColConst, indexCurRowConst,regularization);
+
 
                 curColConst++;
             }
         }
         curConstraint++;
     }
+
 }
 
 template<class DataTypes>
@@ -616,8 +615,8 @@ void PrecomputedConstraintCorrection<DataTypes>::applyMotionCorrection(const sof
 
     auto dx = sofa::helper::getWriteAccessor(dx_d);
 
-    const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
-    const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
+    const VecCoord& x_free = cparams->readX(this->mstate.get())->getValue();
+    const VecDeriv& v_free = cparams->readV(this->mstate.get())->getValue();
 
     const SReal invDt = 1.0_sreal / this->getContext()->getDt();
 
@@ -649,7 +648,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyPositionCorrection(const s
 
     auto dx = sofa::helper::getWriteAccessor(dx_d);
 
-    const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
+    const VecCoord& x_free = cparams->readX(this->mstate.get())->getValue();
 
     if (d_rotations.getValue())
         rotateResponse();
@@ -673,7 +672,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyVelocityCorrection(const s
     VecDeriv& v = *v_d.beginEdit();
 
     const VecDeriv& dx = this->mstate->read(core::vec_id::write_access::dx)->getValue();
-    const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
+    const VecDeriv& v_free = cparams->readV(this->mstate.get())->getValue();
 
     const SReal invDt = 1.0_sreal / this->getContext()->getDt();
 
@@ -1371,6 +1370,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(line
 
 #else
 
+    const SReal regularizationTerm = d_regularizationTerm.getValue();
     for (int id1 = begin; id1<=end; id1++)
     {
         int c1 = id_to_localIndex[id1];
@@ -1382,6 +1382,8 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(line
             W->add(id1, id2, w);
             if (id1 != id2)
                 W->add(id2, id1, w);
+            else
+                W->add(id2, id1, regularizationTerm);
         }
     }
 

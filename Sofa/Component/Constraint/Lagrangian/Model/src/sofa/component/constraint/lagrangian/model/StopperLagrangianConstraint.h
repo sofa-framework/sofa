@@ -22,12 +22,10 @@
 #pragma once
 #include <sofa/component/constraint/lagrangian/model/config.h>
 
-#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/LagrangianConstraint.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/OdeSolver.h>
-
-#include <sofa/core/objectmodel/RenamedData.h>
 
 namespace sofa::component::constraint::lagrangian::model
 {
@@ -67,10 +65,10 @@ public:
 };
 
 template< class DataTypes >
-class StopperLagrangianConstraint : public core::behavior::Constraint<DataTypes>
+class StopperLagrangianConstraint : public core::behavior::LagrangianConstraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(StopperLagrangianConstraint,DataTypes), SOFA_TEMPLATE(core::behavior::Constraint,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(StopperLagrangianConstraint,DataTypes), SOFA_TEMPLATE(core::behavior::LagrangianConstraint,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -79,7 +77,7 @@ public:
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename Coord::value_type Real;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef typename core::behavior::Constraint<DataTypes> Inherit;
+    typedef typename core::behavior::LagrangianConstraint<DataTypes> Inherit;
 
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef core::objectmodel::Data<VecCoord>		DataVecCoord;
@@ -87,17 +85,6 @@ public:
     typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
 
 protected:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::RenamedData<int> index;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::RenamedData<SReal> min;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_MODEL()
-    sofa::core::objectmodel::RenamedData<SReal> max;
-
-
     Data<int> d_index; ///< index of the stop constraint
     Data<SReal> d_min; ///< minimum value accepted
     Data<SReal> d_max; ///< maximum value accepted

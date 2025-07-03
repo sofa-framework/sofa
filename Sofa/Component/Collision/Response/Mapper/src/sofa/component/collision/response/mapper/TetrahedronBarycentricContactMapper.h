@@ -34,7 +34,6 @@ template<class DataTypes>
 class ContactMapper<collision::geometry::TetrahedronCollisionModel, DataTypes> : public BarycentricContactMapper<collision::geometry::TetrahedronCollisionModel, DataTypes>
 {
 public:
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     sofa::Index addPoint(const Coord& P, sofa::Index index, Real&)

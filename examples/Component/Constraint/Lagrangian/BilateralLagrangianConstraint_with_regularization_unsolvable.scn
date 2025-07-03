@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<!-- BilateralLagrangianConstraint example -->
+<Node name="root" dt="0.001" gravity="0 0 -9.81">
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [LinearSolverConstraintCorrection] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [BilateralLagrangianConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    
+    <VisualStyle displayFlags="showForceFields" />
+    <DefaultVisualManagerLoop />
+    <FreeMotionAnimationLoop />
+    <GenericConstraintSolver tolerance="0.0001" maxIterations="1000" resolutionMethod="ProjectedGaussSeidel" regularizationTerm="0.0"/>
+
+
+    <Node name="TargetCube00">
+        <RegularGridTopology name="grid" nx="4" ny="4" nz="1" xmin="-1" xmax="1" ymin="-1" ymax="1" zmin="-0.5" zmax="-0.5" />
+        <MechanicalObject name="mstate" template="Vec3" showObject="true" showObjectScale="0.05" drawMode="1" showColor="1 0.2 0.5 1"/>
+        <BoxROI name="bottom" box="-1.1 -1.1 -1.1  1.1 1.1 -0.4" />
+    </Node>
+    <Node name="TargetCube10">
+        <RegularGridTopology name="grid" nx="4" ny="4" nz="1" xmin="-1" xmax="1" ymin="-1" ymax="1" zmin="-1" zmax="-1" />
+        <MechanicalObject name="mstate" template="Vec3" showObject="true" showObjectScale="0.05" drawMode="1" showColor="0.2 1 0.5 1"/>
+        <BoxROI name="bottom" box="-1.1 -1.1 -1.1  1.1 1.1 -0.4" />
+    </Node>
+
+    <Node name="DeformableCube0">
+
+        <VisualStyle displayFlags="showForceFields" />
+        <EulerImplicitSolver name="odesolver" printLog="false" />
+        <SparseLDLSolver name="linearSolver" template="CompressedRowSparseMatrixMat3x3d" />
+
+        <RegularGridTopology name="grid" nx="4" ny="4" nz="4" xmin="-1" xmax="1" ymin="-1" ymax="1" zmin="-1" zmax="1" />
+        <MechanicalObject name="mstate" template="Vec3" />
+        <HexahedronFEMForceField poissonRatio="0.49" youngModulus="700000"/>
+        <UniformMass totalMass="10" />
+        <BoxROI name="bottom" box="-1.1 -1.1 -1.1  1.1 1.1 -0.9" />
+        <BoxROI name="top" box="-1.1 -1.1 0.9  1.1 1.1 1.1" />
+        <LinearSolverConstraintCorrection linearSolver="@linearSolver"/>
+    </Node>
+
+    <BilateralLagrangianConstraint template="Vec3"
+                                   object1="@DeformableCube0/mstate" first_point="@DeformableCube0/bottom.indices"
+                                   object2="@TargetCube00/mstate" second_point="@TargetCube00/bottom.indices" />
+
+    <BilateralLagrangianConstraint template="Vec3"
+                                   object1="@DeformableCube0/mstate" first_point="@DeformableCube0/bottom.indices"
+                                   object2="@TargetCube10/mstate" second_point="@TargetCube10/bottom.indices" />
+
+
+    <Node name="TargetCube01">
+        <RegularGridTopology name="grid" nx="4" ny="4" nz="1" xmin="2" xmax="4" ymin="-1" ymax="1" zmin="-0.5" zmax="-0.5" />
+        <MechanicalObject name="mstate" template="Vec3" showObject="true" showObjectScale="0.05" drawMode="1" showColor="1 0.2 0.5 1"/>
+        <BoxROI name="bottom" box="1.9 -1.1 -1.1  4.1 1.1 -0.4" />
+    </Node>
+    <Node name="TargetCube11">
+        <RegularGridTopology name="grid" nx="4" ny="4" nz="1" xmin="2" xmax="4" ymin="-1" ymax="1" zmin="-1" zmax="-1" />
+        <MechanicalObject name="mstate" template="Vec3" showObject="true" showObjectScale="0.05" drawMode="1" showColor="0.2 1 0.5 1"/>
+        <BoxROI name="bottom" box="1.9 -1.1 -1.1  4.1 1.1 -0.4" />
+    </Node>
+
+    <Node name="DeformableCube1">
+
+        <VisualStyle displayFlags="showForceFields" />
+        <EulerImplicitSolver name="odesolver" printLog="false" />
+        <SparseLDLSolver name="linearSolver" template="CompressedRowSparseMatrixMat3x3d" />
+
+        <RegularGridTopology name="grid" nx="4" ny="4" nz="4" xmin="2" xmax="4" ymin="-1" ymax="1" zmin="-1" zmax="1" />
+        <MechanicalObject name="mstate" template="Vec3" />
+        <HexahedronFEMForceField poissonRatio="0.49" youngModulus="700000"/>
+        <UniformMass totalMass="10" />
+        <BoxROI name="bottom" box="1.9 -1.1 -1.1  4.1 1.1 -0.9" />
+        <BoxROI name="top" box="1.9 -1.1 0.9  4.1 1.1 1.1" />
+        <LinearSolverConstraintCorrection linearSolver="@linearSolver" regularizationTerm="0.01"/>
+    </Node>
+
+    <BilateralLagrangianConstraint template="Vec3"
+                                   object1="@DeformableCube1/mstate" first_point="@DeformableCube1/bottom.indices"
+                                   object2="@TargetCube01/mstate" second_point="@TargetCube01/bottom.indices" />
+
+    <BilateralLagrangianConstraint template="Vec3"
+                                   object1="@DeformableCube1/mstate" first_point="@DeformableCube1/bottom.indices"
+                                   object2="@TargetCube11/mstate" second_point="@TargetCube11/bottom.indices" />
+
+
+</Node>

@@ -57,10 +57,6 @@ OffSequenceLoader::OffSequenceLoader()
     d_polygonsGroups.setDisplayed(false);
     d_tetrahedraGroups.setDisplayed(false);
     d_hexahedraGroups.setDisplayed(false);
-
-    nbFiles.setOriginalData(&d_nbFiles);
-    stepDuration.setOriginalData(&d_stepDuration);
-
 }
 
 

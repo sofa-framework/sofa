@@ -25,16 +25,7 @@ using sofa::core::RegisterObject ;
 
 #include "SphericalField.h"
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace geometry
-{
-
-namespace _sphericalfield_
+namespace sofa::component::geometry::_sphericalfield_
 {
 
 SphericalField::SphericalField()
@@ -112,11 +103,10 @@ void SphericalField::getValueAndGradient(Vec3d& Pos, double &value, Vec3d& /*gra
 
 
 // Register in the Factory
-int SphericalFieldClass = core::RegisterObject("A spherical implicit field.")
-        .add< SphericalField >()
-        ;
+void registerSphericalField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("A spherical implicit field.")
+    .add< SphericalField >());
+}
 
-} /// _sphericalfield_
-} /// implicit
-} /// component
-} /// sofa
+} /// sofa::component::geometry::_sphericalfield_

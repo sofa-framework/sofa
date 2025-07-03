@@ -48,9 +48,6 @@ GridMeshCreator::GridMeshCreator(): MeshLoader()
     d_filename.setDirtyValue();
 
     d_filename.setReadOnly(true);
-
-    resolution.setOriginalData(&d_resolution);
-    trianglePattern.setOriginalData(&d_trianglePattern);
 }
 
 void GridMeshCreator::doClearBuffers()
@@ -61,7 +58,7 @@ void GridMeshCreator::doClearBuffers()
 
 void GridMeshCreator::insertUniqueEdge( unsigned a, unsigned b )
 {
-    if( uniqueEdges.find(Edge(b,a))==uniqueEdges.end() ) // symmetric not found
+    if(!uniqueEdges.contains(Edge(b,a)) ) // symmetric not found
         uniqueEdges.insert(Edge(a,b));                   // redundant elements are automatically pruned
 }
 

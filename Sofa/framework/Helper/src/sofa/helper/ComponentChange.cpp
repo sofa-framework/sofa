@@ -127,8 +127,6 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
 
     // SofaBaseUtils was deprecated in #2605
     { "AddResourceRepository", Moved("v22.06", "SofaBaseUtils", Sofa.Component.SceneUtility) },
-    { "MakeAliasComponent", Moved("v22.06", "SofaBaseUtils", Sofa.Component.SceneUtility) },
-    { "MakeDataAliasComponent", Moved("v22.06", "SofaBaseUtils", Sofa.Component.SceneUtility) },
     { "MessageHandlerComponent", Moved("v22.06", "SofaBaseUtils", Sofa.Component.SceneUtility) },
     { "FileMessageHandlerComponent", Moved("v22.06", "SofaBaseUtils", Sofa.Component.SceneUtility) },
     { "InfoComponent", Moved("v22.06", "SofaBaseUtils", Sofa.Component.SceneUtility) },
@@ -147,27 +145,21 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
 
     // SofaBaseTopology was deprecated in #2612
     { "EdgeSetGeometryAlgorithms", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
-    { "EdgeSetTopologyAlgorithms", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "EdgeSetTopologyContainer", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "EdgeSetTopologyModifier", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "HexahedronSetGeometryAlgorithms", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
-    { "HexahedronSetTopologyAlgorithms", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "HexahedronSetTopologyContainer", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "HexahedronSetTopologyModifier", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "PointSetGeometryAlgorithms", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
-    { "PointSetTopologyAlgorithms", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "PointSetTopologyContainer", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "PointSetTopologyModifier", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "QuadSetGeometryAlgorithms", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
-    { "QuadSetTopologyAlgorithms", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "QuadSetTopologyContainer", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "QuadSetTopologyModifier", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "TetrahedronSetGeometryAlgorithms", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
-    { "TetrahedronSetTopologyAlgorithms", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "TetrahedronSetTopologyContainer", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "TetrahedronSetTopologyModifier", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "TriangleSetGeometryAlgorithms", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
-    { "TriangleSetTopologyAlgorithms", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "TriangleSetTopologyContainer", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "TriangleSetTopologyModifier", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Dynamic) },
     { "MeshTopology", Moved("v22.06", "SofaBaseTopology", Sofa.Component.Topology.Container.Constant) },
@@ -614,8 +606,8 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     { "CompareTopology", Moved("v22.06", "SofaValidation", Sofa.Component.Playback) },
 
     // Removed in #4040, deprecated in #2777
-    { "MechanicalMatrixMapper", Removed("v23.06", "v23.12") },
-    { "MappingGeometricStiffnessForceField", Removed("v23.06", "v23.12") },
+    { "MechanicalMatrixMapper", RemovedIn("v23.12").afterDeprecationIn("v23.06") },
+    { "MappingGeometricStiffnessForceField", RemovedIn("v23.12").afterDeprecationIn("v23.06") },
 
     // Moved to CSparseSolvers
     { "SparseCholeskySolver", Moved("v23.12", Sofa.Component.LinearSolver.Direct, "CSparseSolvers") },
@@ -630,105 +622,103 @@ const std::map<std::string, ComponentChange, std::less<> > movedComponents = {
 const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
 
     /***********************/
+    // REMOVED SINCE v25.06
+
+    { "MakeAliasComponent", RemovedIn("v25.06").afterDeprecationIn("v24.12")},
+    { "MakeDataAliasComponent", RemovedIn("v25.06").afterDeprecationIn("v24.12")},
+
+    /***********************/
     // REMOVED SINCE v23.06
 
-    { "OglGrid", Removed("v22.12", "v23.06")},
-    { "OglLineAxis", Removed("v22.12", "v23.06")},
+    { "OglGrid", RemovedIn("v23.06").afterDeprecationIn("v22.12")},
+    { "OglLineAxis", RemovedIn("v23.06").afterDeprecationIn("v22.12")},
 
     /***********************/
     // REMOVED SINCE v22.06
 
-    {"PointConstraint", Removed("v21.12", "v22.06")},
+    {"PointConstraint", RemovedIn("v22.06").afterDeprecationIn("v21.12")},
 
     /***********************/
     // REMOVED SINCE v21.12
 
-    { "LMDNewProximityIntersection", Removed("v21.12", "v21.12") },
-    { "LocalMinDistanceFilter", Removed("v21.12", "v21.12") },
-    { "LineLocalMinDistanceFilter", Removed("v21.12", "v21.12") },
-    { "PointLocalMinDistanceFilter", Removed("v21.12", "v21.12") },
-    { "TriangleLocalMinDistanceFilter", Removed("v21.12", "v21.12") },
-
-    /***********************/
-    // REMOVED SINCE v21.06
-
-    {"LengthContainer", Removed("v21.06", "v21.06")},
-    {"PoissonContainer", Removed("v21.06", "v21.06")},
-    {"RadiusContainer", Removed("v21.06", "v21.06")},
-    {"StiffnessContainer", Removed("v21.06", "v21.06")},
+    { "LMDNewProximityIntersection", RemovedIn("v21.12").afterDeprecationIn("v21.12") },
+    { "LocalMinDistanceFilter", RemovedIn("v21.12").afterDeprecationIn("v21.12") },
+    { "LineLocalMinDistanceFilter", RemovedIn("v21.12").afterDeprecationIn("v21.12") },
+    { "PointLocalMinDistanceFilter", RemovedIn("v21.12").afterDeprecationIn("v21.12") },
+    { "TriangleLocalMinDistanceFilter", RemovedIn("v21.12").afterDeprecationIn("v21.12") },
 
     /***********************/
     // REMOVED SINCE v20.12
 
-    { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
-    { "HexahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
-    { "TetrahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
-    { "QuadSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
-    { "TriangleSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
-    { "EdgeSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
-    { "PointSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "DynamicSparseGridTopologyAlgorithms", RemovedIn("v20.12").withoutAnyDeprecation() },
+    { "HexahedronSetTopologyAlgorithms", RemovedIn("v20.12").withoutAnyDeprecation() },
+    { "TetrahedronSetTopologyAlgorithms", RemovedIn("v20.12").withoutAnyDeprecation() },
+    { "QuadSetTopologyAlgorithms", RemovedIn("v20.12").withoutAnyDeprecation() },
+    { "TriangleSetTopologyAlgorithms", RemovedIn("v20.12").withoutAnyDeprecation() },
+    { "EdgeSetTopologyAlgorithms", RemovedIn("v20.12").withoutAnyDeprecation() },
+    { "PointSetTopologyAlgorithms", RemovedIn("v20.12").withoutAnyDeprecation() },
 
     /***********************/
     // REMOVED SINCE v20.06
 
-    {"Euler", Removed("v19.12", "v20.06")},
-    {"EulerExplicit", Removed("v19.12", "v20.06")},
-    {"ExplicitEuler", Removed("v19.12", "v20.06")},
-    {"EulerSolver", Removed("v19.12", "v20.06")},
-    {"ExplicitEulerSolver", Removed("v19.12", "v20.06")},
+    {"Euler", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"EulerExplicit", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"ExplicitEuler", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"EulerSolver", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"ExplicitEulerSolver", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
 
-    {"Capsule", Removed("v19.12", "v20.06")},
-    {"CapsuleModel", Removed("v19.12", "v20.06")},
-    {"TCapsuleModel", Removed("v19.12", "v20.06")},
+    {"Capsule", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"CapsuleModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"TCapsuleModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
 
-    {"Cube", Removed("v19.12", "v20.06")},
-    {"CubeModel", Removed("v19.12", "v20.06")},
+    {"Cube", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"CubeModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
 
-    {"CudaPoint", Removed("v19.12", "v20.06")},
-    {"CudaPointModel", Removed("v19.12", "v20.06")},
+    {"CudaPoint", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"CudaPointModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
 
-    {"Cylinder", Removed("v19.12", "v20.06")},
-    {"CylinderModel", Removed("v19.12", "v20.06")},
+    {"Cylinder", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"CylinderModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
 
-    {"Line", Removed("v19.12", "v20.06")},
-    {"TLineModel", Removed("v19.12", "v20.06")},
-    {"LineMeshModel", Removed("v19.12", "v20.06")},
-    {"LineSetModel", Removed("v19.12", "v20.06")},
-    {"LineMesh", Removed("v19.12", "v20.06")},
-    {"LineSet", Removed("v19.12", "v20.06")},
-    {"LineModel", Removed("v19.12", "v20.06")},
+    {"Line", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"TLineModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"LineMeshModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"LineSetModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"LineMesh", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"LineSet", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"LineModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
 
-    {"OBB", Removed("v19.12", "v20.06")},
-    {"OBBModel", Removed("v19.12", "v20.06")},
-    {"TOBBModel", Removed("v19.12", "v20.06")},
+    {"OBB", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"OBBModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"TOBBModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
 
-    {"Point", Removed("v19.12", "v20.06")},
-    {"TPointModel", Removed("v19.12", "v20.06")},
-    {"PointModel", Removed("v19.12", "v20.06")},
-    {"PointMesh", Removed("v19.12", "v20.06")},
-    {"PointSet", Removed("v19.12", "v20.06")},
+    {"Point", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"TPointModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"PointModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"PointMesh", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"PointSet", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
 
-    {"Ray", Removed("v19.12", "v20.06")},
-    {"RayModel", Removed("v19.12", "v20.06")},
+    {"Ray", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"RayModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
 
-    {"RigidCapsule", Removed("v19.12", "v20.06")},
-    {"RigidCapsuleModel", Removed("v19.12", "v20.06")},
-    {"RigidCapsuleCollisionModel", Removed("v19.12", "v20.06")},
+    {"RigidCapsule", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"RigidCapsuleModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"RigidCapsuleCollisionModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
 
-    {"Sphere", Removed("v19.12", "v20.06")},
-    {"SphereModel", Removed("v19.12", "v20.06")},
-    {"TSphereModel", Removed("v19.12", "v20.06")},
+    {"Sphere", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"SphereModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"TSphereModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
 
-    {"Tetrahedron", Removed("v19.12", "v20.06")},
-    {"TetrahedronModel", Removed("v19.12", "v20.06")},
+    {"Tetrahedron", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"TetrahedronModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
 
-    {"Triangle", Removed("v19.12", "v20.06")},
-    {"TriangleSet", Removed("v19.12", "v20.06")},
-    {"TriangleMesh", Removed("v19.12", "v20.06")},
-    {"TriangleSetModel", Removed("v19.12", "v20.06")},
-    {"TriangleMeshModel", Removed("v19.12", "v20.06")},
-    {"TriangleModel", Removed("v19.12", "v20.06")},
-    {"TTriangleModel", Removed("v19.12", "v20.06")},
+    {"Triangle", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"TriangleSet", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"TriangleMesh", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"TriangleSetModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"TriangleMeshModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"TriangleModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
+    {"TTriangleModel", RemovedIn("v20.06").afterDeprecationIn("v19.12")},
 
 };
 

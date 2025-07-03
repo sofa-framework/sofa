@@ -29,8 +29,6 @@
 
 #include <sofa/core/BaseMapping.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::topology::mapping
 {
 
@@ -51,61 +49,6 @@ protected:
     SubsetTopologicalMapping();
     ~SubsetTopologicalMapping() override;
 public:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<bool> samePoints;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<bool> handleEdges;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<bool> handleTriangles;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<bool> handleQuads;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<bool> handleTetrahedra;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<bool> handleHexahedra;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<SetIndex> pointS2D;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<SetIndex> pointD2S;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<SetIndex> edgeS2D;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<SetIndex> edgeD2S;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<SetIndex> triangleS2D;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<SetIndex> triangleD2S;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<SetIndex> quadS2D;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<SetIndex> quadD2S;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<SetIndex> tetrahedronS2D;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<SetIndex> tetrahedronD2S;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<SetIndex> hexahedronS2D;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA()
-    sofa::core::objectmodel::RenamedData<SetIndex> hexahedronD2S;
-
     Data<bool> d_samePoints; ///< True if the same set of points is used in both topologies
     Data<bool> d_handleEdges; ///< True if edges events and mapping should be handled
     Data<bool> d_handleTriangles; ///< True if triangles events and mapping should be handled

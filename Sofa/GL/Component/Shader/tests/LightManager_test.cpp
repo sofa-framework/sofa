@@ -53,10 +53,12 @@ namespace sofa {
 
 struct TestLightManager : public BaseTest 
 {
-    void SetUp() override
+    void doSetUp() override
     {
-        sofa::simpleapi::importPlugin(Sofa.GL.Component.Shader);
-        sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+        this->loadPlugins({
+            Sofa.GL.Component.Shader,
+            Sofa.Component.StateContainer
+        });
     }
 };
 
@@ -94,7 +96,9 @@ void checkAttributes()
 
 TEST_F(TestLightManager, checkAttributes)
 {
-    sofa::simpleapi::importPlugin(Sofa.GL.Component.Shader);
+    this->loadPlugins({
+        Sofa.GL.Component.Shader
+    });
     checkAttributes();
 }
 

@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.repository_owner == 'sofa-framework' }}
     env:
-      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_MAIN_WEBHOOK_URL }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_GITHUB_ACTIVITY_WEBHOOK_URL }}
 
     steps:
       - name: Check out code

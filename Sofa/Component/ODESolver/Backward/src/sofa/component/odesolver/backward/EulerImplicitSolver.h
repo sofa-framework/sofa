@@ -25,8 +25,10 @@
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
+namespace sofa::simulation::common
+{
+class VectorOperations;
+}
 namespace sofa::component::odesolver::backward
 {
 
@@ -103,24 +105,6 @@ class SOFA_COMPONENT_ODESOLVER_BACKWARD_API EulerImplicitSolver :
 public:
     SOFA_CLASS2(EulerImplicitSolver, sofa::core::behavior::OdeSolver, sofa::core::behavior::LinearSolverAccessor);
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_rayleighStiffness;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_rayleighMass;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<SReal> f_velocityDamping;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<bool> f_firstOrder;
-
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ODESOLVER_BACKWARD()
-    sofa::core::objectmodel::RenamedData<bool> f_solveConstraint;
-
-
-
     Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
     Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
     Data<SReal> d_velocityDamping; ///< Velocity decay coefficient (no decay if null)
@@ -128,6 +112,9 @@ public:
     Data<bool> d_trapezoidalScheme; ///< Boolean to use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time (false by default)
     Data<bool> d_solveConstraint; ///< Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
+
+    Data<bool> d_computeResidual; ///< If true, the residual is computed at the end of the solving
+    Data<SReal> d_residual; ///< Residual norm at the end of the free-motion solving
 
 protected:
     EulerImplicitSolver();
@@ -182,6 +169,15 @@ protected:
     /// the solution vector is stored for warm-start
     core::behavior::MultiVecDeriv x;
 
+    /// Right-hand side vector
+    core::behavior::MultiVecDeriv b;
+
+    /// Residual vector (optionally computed)
+    core::behavior::MultiVecDeriv m_residual;
+
+    void reallocSolutionVector(sofa::simulation::common::VectorOperations* vop);
+    void reallocRightHandSideVector(sofa::simulation::common::VectorOperations* vop);
+    void reallocResidualVector(sofa::simulation::common::VectorOperations* vop);
 };
 
 } // namespace sofa::component::odesolver::backward

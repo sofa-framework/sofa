@@ -33,11 +33,6 @@ class SOFA_GL_API DrawToolGL : public helper::visual::DrawTool
 {
 
 public:
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(RGBAColor, sofa::type::RGBAColor);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3f, sofa::type::Vec3f);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3i, sofa::type::Vec3i);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec2i, sofa::type::Vec2i);
     typedef sofa::type::Quat<SReal> Quaternion;
 
     DrawToolGL();
@@ -52,7 +47,9 @@ public:
     virtual void drawPoints(const std::vector<type::Vec3> &points, float size, const std::vector<type::RGBAColor>& color) override;
 
     void drawLine(const type::Vec3 &p1, const type::Vec3 &p2, const type::RGBAColor& color) override;
-    void drawInfiniteLine(const type::Vec3 &point, const type::Vec3 &direction, const type::RGBAColor& color) override;
+    void drawInfiniteLine(const type::Vec3 &point, const type::Vec3 &direction, const type::RGBAColor& color, const bool& vanishing=false) override;
+    void drawInfiniteLine(const Vec3 &point, const Vec3 &direction, const float& size, const type::RGBAColor& color, const bool& vanishing=false) override;
+
     virtual void drawLines(const std::vector<type::Vec3> &points, float size, const type::RGBAColor& color) override;
     virtual void drawLines(const std::vector<type::Vec3> &points, float size, const std::vector<type::RGBAColor>& colors) override;
     virtual void drawLines(const std::vector<type::Vec3> &points, const std::vector< type::Vec2i > &index, float size, const type::RGBAColor& color) override;
@@ -84,7 +81,7 @@ public:
     virtual void drawTriangles(const std::vector<type::Vec3> &points,
             const std::vector< type::Vec3i > &index,
             const std::vector<type::Vec3>  &normal,
-            const std::vector<type::RGBAColor>& color) override;
+            const std::vector<type::RGBAColor>& colors) override;
     virtual void drawTriangles(const std::vector<type::Vec3> &points,
             const std::vector<type::Vec3>  &normal,
             const std::vector< type::RGBAColor > &color) override;

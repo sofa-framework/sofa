@@ -330,7 +330,7 @@ void addCollisionModels(Node::SPtr parent, const std::vector<std::string> &eleme
 
     for (auto& element : elements)
     {
-        if( alias.find(element) == alias.end() )
+        if(!alias.contains(element))
         {
             msg_error(parent.get()) << "Unable to create collision model from '"<< element << "'" ;
             continue;

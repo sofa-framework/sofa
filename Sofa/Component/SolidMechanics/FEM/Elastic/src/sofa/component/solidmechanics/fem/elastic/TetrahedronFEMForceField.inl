@@ -124,31 +124,6 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
 
         return sofa::core::objectmodel::ComponentState::Valid;
     }, {});
-
-    _initialPoints.setOriginalData(&d_initialPoints);
-    f_method.setOriginalData(&d_method);
-    _youngModulus.setOriginalData(&this->d_youngModulus);
-    _localStiffnessFactor.setOriginalData(&d_localStiffnessFactor);
-    _updateStiffnessMatrix.setOriginalData(&d_updateStiffnessMatrix);
-    _assembling.setOriginalData(&d_assembling);
-    _plasticMaxThreshold.setOriginalData(&d_plasticMaxThreshold);
-    _plasticYieldThreshold.setOriginalData(&d_plasticYieldThreshold);
-    _plasticCreep.setOriginalData(&d_plasticCreep);
-    _gatherPt.setOriginalData(&d_gatherPt);
-    _gatherBsize.setOriginalData(&d_gatherBsize);
-    drawHeterogeneousTetra.setOriginalData(&d_drawHeterogeneousTetra);
-    _computeVonMisesStress.setOriginalData(&d_computeVonMisesStress);
-    _vonMisesPerElement.setOriginalData(&d_vonMisesPerElement);
-    _vonMisesPerNode.setOriginalData(&d_vonMisesPerNode);
-    _vonMisesStressColors.setOriginalData(&d_vonMisesStressColors);
-    _showStressColorMap.setOriginalData(&d_showStressColorMap);
-    _showStressAlpha.setOriginalData(&d_showStressAlpha);
-    _showVonMisesStressPerNode.setOriginalData(&d_showVonMisesStressPerNode);
-    _showVonMisesStressPerNodeColorMap.setOriginalData(&d_showVonMisesStressPerNodeColorMap);
-    _showVonMisesStressPerElement.setOriginalData(&d_showVonMisesStressPerElement);
-    _updateStiffness.setOriginalData(&d_updateStiffness);
-
-
 }
 
 
@@ -308,18 +283,11 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(Index i, Inde
 
     // divide by 36 times volumes of the element
     const VecCoord &initialPoints=d_initialPoints.getValue();
-    Coord A = initialPoints[b] - initialPoints[a];
-    Coord B = initialPoints[c] - initialPoints[a];
-    Coord C = initialPoints[d] - initialPoints[a];
-    Coord AB = cross(A, B);
-    Real volumes6 = fabs( dot( AB, C ) );
+    const auto tetrahedronVolume = geometry::Tetrahedron::volume(
+        initialPoints[a], initialPoints[b], initialPoints[c], initialPoints[d]);
 
-    m_restVolume += volumes6/6;
-    if (volumes6<0)
-    {
-        msg_error() << "Negative volume for tetra "<<i<<" <"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6 ;
-    }
-    materialsStiffnesses[i] /= (volumes6*6); // 36*Volume in the formula
+    m_restVolume += tetrahedronVolume;
+    materialsStiffnesses[i] /= tetrahedronVolume * 36;
 }
 
 template<class DataTypes>

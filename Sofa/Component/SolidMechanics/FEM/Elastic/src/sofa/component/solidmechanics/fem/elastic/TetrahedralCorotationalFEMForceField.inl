@@ -84,19 +84,6 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , m_vonMisesColorMap(nullptr)
 {
     this->addAlias(&d_assembling, "assembling");
-
-    tetrahedronInfo.setOriginalData(&d_tetrahedronInfo);
-    f_method.setOriginalData(&d_method);
-    _localStiffnessFactor.setOriginalData(&d_localStiffnessFactor);
-    _updateStiffnessMatrix.setOriginalData(&d_updateStiffnessMatrix);
-    _assembling.setOriginalData(&d_assembling);
-    f_drawing.setOriginalData(&d_drawing);
-    drawColor1.setOriginalData(&d_drawColor1);
-    drawColor2.setOriginalData(&d_drawColor2);
-    drawColor3.setOriginalData(&d_drawColor3);
-    drawColor4.setOriginalData(&d_drawColor4);
-
-
 }
 
 
@@ -402,22 +389,11 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(i
     materialMatrix *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
 
     // divide by 36 times volumes of the element
-    const VecCoord X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
+    const VecCoord& X0=this->mstate->read(core::vec_id::read_access::restPosition)->getValue();
+    const auto tetrahedronVolume = geometry::Tetrahedron::volume(
+            X0[a], X0[b], X0[c], X0[d]);
 
-    Coord A = (X0)[b] - (X0)[a];
-    Coord B = (X0)[c] - (X0)[a];
-    Coord C = (X0)[d] - (X0)[a];
-    Coord AB = cross(A, B);
-    Real volumes6 = fabs( dot( AB, C ) );
-    if (volumes6<0)
-    {
-        msg_error() << "Negative volume for tetra " << a << ',' << b << ',' << c << ',' << d << "> = " << volumes6 / 6;
-    }
-    //	materialMatrix  /= (volumes6);//*6 christian
-    // @TODO: in TetrahedronFEMForceField, the stiffness matrix is divided by 6 compared to the code in TetrahedralCorotationalFEMForceField. Check which is the correct one...
-    // FF:  there is normally  a factor 1/6v in the strain-displacement matrix. Times transpose makes 1/36v². Integrating across the volume multiplies by v, so the factor is 1/36v
-    materialMatrix  /= (volumes6*6);
-
+   materialMatrix /= tetrahedronVolume * 36;
 }
 
 template<class DataTypes>
@@ -900,7 +876,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initLarge(int i, Index&a, 
 
     [[maybe_unused]] const bool canInvert = type::invertMatrix(tetrahedronInf[i].elemShapeFun, matVert);
 
-    tetrahedronInfo.endEdit();
+    d_tetrahedronInfo.endEdit();
 }
 
 template<class DataTypes>
@@ -1228,10 +1204,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
 {
     typename core::behavior::MechanicalState<DataTypes>* mechanicalObject;
     this->getContext()->get(mechanicalObject);
-    const VecCoord& X = mechanicalObject->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& X = mechanicalObject->read(core::vec_id::read_access::position)->getValue();
 
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetras = this->l_topology->getTetrahedra();
-    const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
+    const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = d_tetrahedronInfo.getValue();
 
     helper::WriteAccessor<Data<type::vector<Real> > > vME = d_vonMisesPerElement;
     vME.resize(tetras.size());

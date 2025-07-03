@@ -27,9 +27,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
-
 namespace sofa::component::collision::geometry
 {
 
@@ -104,6 +101,8 @@ protected:
 
     LineCollisionModel();
 
+    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
+
 public:
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
@@ -126,12 +125,6 @@ public:
 
     void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
 
-    /// Import the draw(param, index) method from the parent scope, this is needed to make it accessible
-    /// in the current and child class. Otherwise the draw(param) will prevent name resolution
-    /// to locate it.
-    using Inherit1::draw;
-    void draw(const core::visual::VisualParams* vparams) override;
-
     void handleTopologyChange() override;
 
     bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
@@ -143,10 +136,6 @@ public:
     virtual sofa::Index getElemEdgeIndex(sofa::Index index) const { return index; }
 
     int getLineFlags(sofa::Index i);
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::RenamedData<bool> bothSide;
-
 
     Data<bool> d_bothSide; ///< activate collision on both side of the line model (when surface normals are defined on these lines)
 
@@ -170,10 +159,6 @@ public:
     }
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::RenamedData<bool> m_displayFreePosition;
-
 
     Data<bool> d_displayFreePosition; ///< Display Collision Model Points free position(in green)
 

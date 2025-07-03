@@ -298,10 +298,7 @@ public:
     }
 
     template<class T>
-    SOFA_ATTRIBUTE_DEPRECATED__UNNECESSARY_PARAMETER_IN_TYPENAME() static std::string typeName(const T*)
-    {
-        return typeName<T>();
-    }
+    SOFA_ATTRIBUTE_DISABLED__UNNECESSARY_PARAMETER_IN_TYPENAME() static std::string typeName(const T*) = delete;
 
 protected:
     /// Try to update this Data from the value of its parent in "fast mode";

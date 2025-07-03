@@ -39,9 +39,11 @@ extern "C"
     void CudaCollisionDetection_runTests(unsigned int nbTests, unsigned int maxPoints, const void* tests, void* nresults);
 }
 
-int CudaCollisionDetectionClass = core::RegisterObject("GPU-based collision detection using CUDA")
-        .add< CudaCollisionDetection >()
-        ;
+void registerCudaCollisionDetection(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("GPU-based collision detection using CUDA.")
+    .add< CudaCollisionDetection >());
+}
 
 void CudaCollisionDetection::beginNarrowPhase()
 {
@@ -266,7 +268,7 @@ int CudaCollisionDetection::SphereRigidTest::init()
 
     results.clear();
     if (!model1->isActive() || !model2->isActive()) return 0;
-    const CudaVector<Vec3f>& p1 = model1->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+    const CudaVector<Vec3f>& p1 = model1->getMechanicalState()->read(sofa::core::vec_id::read_access::position)->getValue();
     if (p1.empty()) return 0;
 
     for (CudaRigidDistanceGridCollisionElement e2 = CudaRigidDistanceGridCollisionElement(model2->begin()); e2!=model2->end(); ++e2)
@@ -286,7 +288,7 @@ void CudaCollisionDetection::SphereRigidTest::fillInfo(GPUTest* tests)
     GPUContact* gresults = (GPUContact*)results.results.deviceWrite();
     GPUContactPoint* gresults1 = (GPUContactPoint*)results.results1.deviceWrite();
     GPUContactPoint* gresults2 = (GPUContactPoint*)results.results2.deviceWrite();
-    const CudaVector<Vec3f>& p1 = model1->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+    const CudaVector<Vec3f>& p1 = model1->getMechanicalState()->read(sofa::core::vec_id::read_access::position)->getValue();
 
     for (unsigned int i=0; i<results.nbTests(); i++)
     {
@@ -350,7 +352,7 @@ void CudaCollisionDetection::PointRigidTest::fillInfo(GPUTest* tests)
         GPUTest& test = tests[i];
         CudaPoint elem1(model1, e.elems.first);
         CudaRigidDistanceGridCollisionElement elem2(model2,e.elems.second);
-        const CudaVector<Vec3f>& p1 = model1->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+        const CudaVector<Vec3f>& p1 = model1->getMechanicalState()->read(sofa::core::vec_id::read_access::position)->getValue();
         CudaDistanceGrid& g2 = *elem2.getGrid();
         test.nbPoints = elem1.getSize();
         test.result = gresults + e.firstIndex;

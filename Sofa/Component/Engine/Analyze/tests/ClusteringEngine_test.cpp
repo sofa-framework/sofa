@@ -57,7 +57,7 @@ struct ClusteringEngine_test : public BaseSimulationTest,
     typename MechanicalObject<DataTypes>::SPtr m_mecaobject;
 
 
-    void SetUp() override
+    void doSetUp() override
     {
         m_simu = sofa::simulation::getSimulation();
         ASSERT_NE(m_simu, nullptr);

@@ -30,7 +30,7 @@
 #include <sofa/component/collision/response/contact/BaseUnilateralContactResponse.h>
 #include <sofa/component/collision/response/contact/ContactIdentifier.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::collision::response::contact
 {
@@ -49,12 +49,12 @@ class FrictionContact : public BaseUnilateralContactResponse<TCollisionModel1,  
     typedef core::behavior::MechanicalState<DataTypes1> MechanicalState1;
     typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
 
-    Data<double> d_mu; ///< friction parameter
+    Data<SReal> d_mu; ///< friction parameter
 
     FrictionContact();
     FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
 
-    virtual ~FrictionContact() = default;
+    ~FrictionContact() override = default;
 
     virtual constraint::lagrangian::model::UnilateralLagrangianContactParameters getParameterFromDatas() const override;
     virtual void setupConstraint(MechanicalState1 *,MechanicalState2 *) override;

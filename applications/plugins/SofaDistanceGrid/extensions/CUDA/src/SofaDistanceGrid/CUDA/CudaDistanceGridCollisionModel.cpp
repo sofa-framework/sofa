@@ -41,12 +41,11 @@ namespace gpu
 namespace cuda
 {
 
-int CudaRigidDistanceGridCollisionModelClass = core::RegisterObject("GPU-based grid distance field using CUDA")
-        .add< CudaRigidDistanceGridCollisionModel >()
-        .addAlias("CudaDistanceGridCollisionModel")
-        .addAlias("CudaRigidDistanceGrid")
-        .addAlias("CudaDistanceGrid")
-        ;
+void registerCudaRigidDistanceGridCollisionModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("GPU-based grid distance field using CUDA.")
+    .add< CudaRigidDistanceGridCollisionModel >());
+}
 
 using namespace defaulttype;
 
@@ -615,7 +614,7 @@ void CudaRigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
         type::Vec3 emin, emax;
         if (rigid)
         {
-            const RigidTypes::Coord& xform = rigid->read(core::ConstVecCoordId::position())->getValue()[i];
+            const RigidTypes::Coord& xform = rigid->read(sofa::core::vec_id::read_access::position)->getValue()[i];
             elems[i].translation = xform.getCenter();
             xform.getOrientation().toMatrix(elems[i].rotation);
             elems[i].isTransformed = true;
@@ -650,26 +649,20 @@ void CudaRigidDistanceGridCollisionModel::updateGrid()
 {
 }
 
-void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams)
+void CudaRigidDistanceGridCollisionModel::drawCollisionModel(const core::visual::VisualParams* vparams)
 {
-    if (!isActive()) return;
-    if (vparams->displayFlags().getShowCollisionModels())
+    if (vparams->displayFlags().getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glDisable(GL_LIGHTING);
+    glColor4fv(getColor4f());
+    glPointSize(3);
+    for (unsigned int i = 0; i < elems.size(); i++)
     {
-        if (vparams->displayFlags().getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDisable(GL_LIGHTING);
-        glColor4fv(getColor4f());
-        glPointSize(3);
-        for (unsigned int i=0; i<elems.size(); i++)
-        {
-            draw(vparams,i);
-        }
-        glPointSize(1);
-        if (vparams->displayFlags().getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        draw(vparams, i);
     }
-    if (getPrevious()!=NULL)
-        getPrevious()->draw(vparams);
+    glPointSize(1);
+    if (vparams->displayFlags().getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* , Index index)

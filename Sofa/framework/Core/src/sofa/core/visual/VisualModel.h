@@ -52,9 +52,6 @@ public:
 
     /**
      *  \brief Display the VisualModel object.
-     *
-     *  TODO(dmarchal, 2023-06-09): Deprecate VI and use NVI design pattern: In one year, remove the virtual keyword so that everyone
-     *  will have to override doDrawVisual;
      */
     virtual void drawVisual(const VisualParams* /*vparams*/) final;
     
@@ -68,8 +65,8 @@ public:
 
     // Deprecate the usage of initVisual()
     // But the final keyword will break the compilation if one does override initVisual anyway.
-    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use initVisual(const VisualParams*) instead")
-    virtual void initVisual() final;
+    SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use initVisual(const VisualParams*) instead")
+    virtual void initVisual() = delete;
 
     /**
      *  \brief used to update the model if necessary.
@@ -78,8 +75,8 @@ public:
     void updateVisual(const VisualParams* /*vparams*/);
     // Deprecate the usage of updateVisual()
     // But the final keyword will break the compilation if one does override updateVisual() anyway.
-    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.06", "Use updateVisual(const VisualParams*) instead")
-    virtual void updateVisual() final;
+    SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use updateVisual(const VisualParams*) instead")
+    virtual void updateVisual() = delete;
 
 protected:
     VisualModel();

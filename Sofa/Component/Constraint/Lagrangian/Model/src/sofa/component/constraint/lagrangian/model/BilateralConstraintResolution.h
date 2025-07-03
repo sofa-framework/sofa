@@ -23,7 +23,7 @@
 #include <sofa/component/constraint/lagrangian/model/config.h>
 
 #include <sofa/type/Mat.h>
-#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseLagrangianConstraint.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
@@ -68,9 +68,10 @@ class BilateralConstraintResolution3Dof : public ConstraintResolution
 {
 public:
 
-    BilateralConstraintResolution3Dof(sofa::type::Vec3d* vec = nullptr)
+    BilateralConstraintResolution3Dof(sofa::type::Vec3* vec = nullptr, SReal load = 1.0_sreal)
         : ConstraintResolution(3)
         , _f(vec)
+        , m_load(load)
     {
     }
     void init(int line, SReal** w, SReal *force) override
@@ -115,7 +116,7 @@ public:
         for(int i=0; i<3; i++)
         {
             for(int j=0; j<3; j++)
-                force[line+i] -= d[line+j] * invW[i][j];
+                force[line+i] -= d[line+j] * invW[i][j] * m_load;
         }
     }
 
@@ -130,7 +131,8 @@ public:
 
 protected:
     sofa::type::Mat<3,3,SReal> invW;
-    sofa::type::Vec3d* _f;
+    sofa::type::Vec3* _f;
+    SReal m_load;
 };
 
 class BilateralConstraintResolutionNDof : public ConstraintResolution

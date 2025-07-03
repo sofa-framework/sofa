@@ -27,8 +27,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::collision::geometry
 {
 
@@ -100,6 +98,9 @@ protected:
     SphereCollisionModel();
 
     SphereCollisionModel(core::behavior::MechanicalState<TDataTypes>* _mstate );
+
+    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
+
 public:
     void init() override;
 
@@ -112,9 +113,6 @@ public:
     void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
-
-    void draw(const core::visual::VisualParams* vparams) override;
-
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
@@ -163,12 +161,6 @@ public:
 
         return obj;
     }
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::RenamedData< VecReal > radius;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::RenamedData<SReal> defaultRadius;
 
     Data< VecReal > d_radius; ///< Radius of each sphere
     Data< SReal > d_defaultRadius; ///< Default radius

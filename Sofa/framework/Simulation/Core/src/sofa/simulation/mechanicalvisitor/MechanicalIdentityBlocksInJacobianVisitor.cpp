@@ -51,7 +51,7 @@ void MechanicalIdentityBlocksInJacobianVisitor::bwdMappedMechanicalState(simulat
     sofa::core::behavior::BaseMechanicalState* mm)
 {
     SOFA_UNUSED(node);
-    if (listParentMStates.find(mm) == listParentMStates.end())
+    if (!listParentMStates.contains(mm))
     {
         //this mechanical state does not have any children
 

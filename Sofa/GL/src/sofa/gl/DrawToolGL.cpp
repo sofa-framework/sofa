@@ -110,13 +110,24 @@ void DrawToolGL::drawLine(const Vec3 &p1, const Vec3 &p2, const type::RGBAColor&
     glEnd();
 }
 
-void DrawToolGL::drawInfiniteLine(const Vec3 &point, const Vec3 &direction, const type::RGBAColor& color)
+void DrawToolGL::drawInfiniteLine(const Vec3 &point, const Vec3 &direction, const type::RGBAColor& color, const bool& vanishing)
 {
     glBegin(GL_LINES);
-    glColor4f(color[0],color[1],color[2],color[3]);
+
+    glColor4f(color[0], color[1], color[2], color[3]);
     glVertex4d(point[0], point[1], point[2], 1.0);
+    if(vanishing)
+        glColor4f(color[0], color[1], color[2], 0.0f);
     glVertex4d(direction[0], direction[1], direction[2], 0.0);
+
     glEnd();
+}
+
+void DrawToolGL::drawInfiniteLine(const Vec3 &point, const Vec3 &direction, const float& size, const type::RGBAColor& color, const bool &vanishing)
+{
+    glLineWidth(size);
+    drawInfiniteLine(point, direction, color, vanishing);
+    glLineWidth(1);
 }
 
 void DrawToolGL::drawLines(const std::vector<Vec3> &points, float size, const type::RGBAColor& color)
@@ -340,16 +351,23 @@ void DrawToolGL::drawTriangles(const std::vector<Vec3> &points, const std::vecto
 void DrawToolGL::drawTriangles(const std::vector<Vec3> &points,
     const std::vector< type::Vec3i > &index,
     const std::vector<Vec3> &normal,
-    const std::vector<type::RGBAColor>& colour)
+    const std::vector<type::RGBAColor>& colors)
 {
-    //todo !
-    SOFA_UNUSED(points);
-    SOFA_UNUSED(index);
-    SOFA_UNUSED(normal);
-    SOFA_UNUSED(colour);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_COLOR_MATERIAL);
+    setMaterial(colors[0]);
+    glBegin(GL_TRIANGLES);
+    {
+        for (std::size_t i=0; i<index.size(); ++i)
+        {
+            internalDrawTriangle(points[ index[i][0] ],points[ index[i][1] ],points[ index[i][2] ],
+                normal[i],
+                colors[3*i+0],colors[3*i+1],colors[3*i+2]);
+        }
+    } glEnd();
+    glDisable(GL_COLOR_MATERIAL);
+    resetMaterial(colors[0]);
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawToolGL::drawTriangles(const std::vector<Vec3> &points,
         const std::vector<Vec3> &normal, const std::vector< type::RGBAColor > &color)

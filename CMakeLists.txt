@@ -6,8 +6,8 @@ project(Sofa
 include(CMakeDependentOption)
 
 # Manually define VERSION
-set(Sofa_VERSION_MAJOR 24)
-set(Sofa_VERSION_MINOR 12)
+set(Sofa_VERSION_MAJOR 25)
+set(Sofa_VERSION_MINOR 06)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
@@ -85,7 +85,6 @@ file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/etc/sofa/python.d)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Sofa/framework/Config/cmake")
-list(APPEND CMAKE_IGNORE_PATH "${CMAKE_INSTALL_PREFIX}") # ignore install directory for findXXX commands
 include(SofaMacros)
 
 install(FILES
@@ -148,7 +147,7 @@ if(MSVC)
 endif()
 
 ### Testing
-option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
+option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." OFF)
 
 ## Active or not the use of ccache
 option(SOFA_USE_CCACHE "Compile using ccache optimization" OFF)
@@ -187,25 +186,21 @@ add_subdirectory(extlibs)
 ### SOFA (framework and components)
 add_subdirectory(Sofa)
 
-## Tutorials option
-option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
-
 # SceneCreator plugin
-# Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
+# Library used by SOFA_BUILD_TESTS
 sofa_add_subdirectory(plugin applications/plugins/SceneCreator SceneCreator OFF
-    WHEN_TO_SHOW "NOT SOFA_BUILD_SCENECREATOR AND NOT SOFA_BUILD_TESTS AND NOT SOFA_BUILD_TUTORIALS AND NOT SOFA_BUILD_RELEASE_PACKAGE"
+    WHEN_TO_SHOW "NOT SOFA_BUILD_SCENECREATOR AND NOT SOFA_BUILD_TESTS AND NOT SOFA_BUILD_RELEASE_PACKAGE"
     VALUE_IF_HIDDEN "ON")
 
-## Plugins
-add_subdirectory(applications/plugins)
+## add SofaPython3, guis, plugins, projects
+add_subdirectory(applications)
 
-## Applications
-add_subdirectory(applications/projects)
-
-# Tutorial add subdirectory
-if(SOFA_BUILD_TUTORIALS)
-    add_subdirectory(applications/tutorials)
+## SimpleAPI examples
+option(SOFA_BUILD_SIMPLEAPI_EXAMPLES "Build SOFA scenes based on SimpleAPI." OFF)
+if(SOFA_BUILD_SIMPLEAPI_EXAMPLES)
+    add_subdirectory(examples/SimpleAPI)
 endif()
+
 
 ## SOFA scenes
 option(SOFA_BUILD_ADD_SCENES "Add SOFA scenes as a project of the build." OFF)
@@ -229,11 +224,6 @@ if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
     endforeach()
 endif()
 
-## Custom
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
-    message("Adding custom file")
-    include( "custom.cmake" )
-endif()
 
 ## IDE directories
 # Sofa.Component
@@ -261,12 +251,11 @@ install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION . COMPONENT applica
 install(FILES "${CMAKE_SOURCE_DIR}/LICENSE-LGPL.md" DESTINATION . COMPONENT applications)
 install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applications)
 
-option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/, tools/sofa-launcher/) when installing" ON)
+option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (share/, examples/) when installing" ON)
 ## Install resource files
 if(SOFA_INSTALL_RESOURCES_FILES)
     install(DIRECTORY share/ DESTINATION share/sofa COMPONENT resources)
     install(DIRECTORY examples/ DESTINATION share/sofa/examples COMPONENT resources)
-    install(DIRECTORY tools/sofa-launcher/ DESTINATION share/sofa/sofa-launcher COMPONENT resources)
 endif()
 
 file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt"

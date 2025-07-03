@@ -60,15 +60,6 @@ SphereForceField<DataTypes>::SphereForceField()
     , d_localRange(initData(&d_localRange, type::Vec<2,int>(-1, -1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitioning)" ) )
     , d_bilateral(initData(&d_bilateral, false, "bilateral", "if true the sphere force field is applied on both sides"))
 {
-    contacts.setOriginalData(&d_contacts);
-    sphereCenter.setOriginalData(&d_sphereCenter);
-    sphereRadius.setOriginalData(&d_sphereRadius);
-    stiffness.setOriginalData(&d_stiffness);
-    damping.setOriginalData(&d_damping);
-    color.setOriginalData(&d_color);
-    localRange.setOriginalData(&d_localRange);
-    bilateral.setOriginalData(&d_bilateral);
-
 }
 
 template<class DataTypes>
@@ -222,6 +213,10 @@ void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     if (!vparams->displayFlags().getShowForceFields()) return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
+    if (vparams->displayFlags().getShowWireFrame())
+        vparams->drawTool()->setPolygonMode(0, true);
+
 
     type::Vec3d center;
     DataTypes::get(center[0], center[1], center[2], d_sphereCenter.getValue());

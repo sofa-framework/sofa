@@ -59,6 +59,8 @@ void TetrahedronSetTopologyContainer::addTetra(Index a, Index b, Index c, Index 
 
 void TetrahedronSetTopologyContainer::init()
 {
+    core::topology::TopologyContainer::init();
+
     const helper::ReadAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
 
     if (d_initPoints.isSet())
@@ -133,7 +135,7 @@ void TetrahedronSetTopologyContainer::createEdgeSetArray()
             // sort vertices in lexicographic order
             const Edge e((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
 
-            if (edgeMap.find(e)==edgeMap.end())
+            if (!edgeMap.contains(e))
             {
                 // edge not in edgeMap so create a new one
                 const size_t edgeIndex = edgeMap.size();
@@ -222,7 +224,7 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
                 // sort vertices in lexicographic order
                 const Edge e((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
 
-                if (edgeMap.find(e)==edgeMap.end())
+                if (!edgeMap.contains(e))
                 {
                     // edge not in edgeMap so create a new one
                     const size_t edgeIndex = edgeMap.size();
@@ -277,11 +279,11 @@ void TetrahedronSetTopologyContainer::createTriangleSetArray()
             // check if a triangle with an opposite orientation already exists
             Triangle tr = Triangle(v[0], v[2], v[1]);
 
-            if (triangleMap.find(tr) == triangleMap.end())
+            if (!triangleMap.contains(tr))
             {
                 // triangle not in triangleMap so create a new one
                 tr = Triangle(v[0], v[1], v[2]);
-                if (triangleMap.find(tr) == triangleMap.end())
+                if (!triangleMap.contains(tr))
                 {
                     triangleMap[tr] = (TriangleID)m_triangle.size();
                     m_triangle.push_back(tr);

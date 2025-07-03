@@ -25,8 +25,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/testing/BaseSimulationTest.h>
 
+using namespace sofacarving;
 using namespace sofa::testing;
-using namespace sofa::component::collision;
 using namespace sofa::simpleapi;
 
 /// <summary>
@@ -61,9 +61,10 @@ public:
     void doCarvingWithPenetration();
 
     /// Unload the scene
-    void TearDown() override
+    void doTearDown() override
     {
-        if (m_simu != nullptr && m_root != nullptr) {
+        if (m_root != nullptr)
+        {
             sofa::simulation::node::unload(m_root);
         }
     }
@@ -83,6 +84,7 @@ private:
 bool SofaCarving_test::createScene(const std::string& carvingDistance)
 {
     sofa::simpleapi::importPlugin("Sofa.Component");
+    sofa::simpleapi::importPlugin("SofaCarving");
 
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
@@ -243,6 +245,7 @@ void SofaCarving_test::ManagerEmpty()
 void SofaCarving_test::ManagerInit()
 {
     sofa::simpleapi::importPlugin("Sofa.Component");
+    sofa::simpleapi::importPlugin("SofaCarving");
 
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
@@ -299,6 +302,7 @@ void SofaCarving_test::ManagerInit()
 void SofaCarving_test::ManagerInitWithLinks()
 {
     sofa::simpleapi::importPlugin("Sofa.Component");
+    sofa::simpleapi::importPlugin("SofaCarving");
 
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
@@ -356,6 +360,7 @@ void SofaCarving_test::ManagerInitWithLinks()
 void SofaCarving_test::ManagerWrongInit()
 {
     sofa::simpleapi::importPlugin("Sofa.Component");
+    sofa::simpleapi::importPlugin("SofaCarving");
 
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");

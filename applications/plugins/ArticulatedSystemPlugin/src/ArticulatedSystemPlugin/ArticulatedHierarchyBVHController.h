@@ -36,7 +36,7 @@
 #include <ArticulatedSystemPlugin/ArticulatedHierarchyController.h>
 #include <ArticulatedSystemPlugin/bvh/BVHLoader.h>
 
-namespace sofa::component::controller
+namespace articulatedsystemplugin
 {
 
 /**
@@ -90,4 +90,4 @@ protected:
     int n;
 };
 
-} // namespace sofa::component::controller
+} // namespace articulatedsystemplugin

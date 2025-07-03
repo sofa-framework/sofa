@@ -30,6 +30,8 @@
 #include <ostream>
 #include <algorithm>
 #include <memory>
+#include <sofa/type/isRigidType.h>
+
 
 namespace sofa:: defaulttype
 {
@@ -234,6 +236,17 @@ typedef StdVectorTypes<type::Vec3, type::Vec3, type::Vec3::value_type> Vec3Types
 typedef StdVectorTypes<type::Vec2, type::Vec2, type::Vec2::value_type> Vec2Types;
 /// 1D DOFs, double precision (default)
 typedef StdVectorTypes<type::Vec1, type::Vec1, type::Vec1::value_type> Vec1Types;
+
+
+static_assert(!type::isRigidType<Vec6dTypes>);
+static_assert(!type::isRigidType<Vec3dTypes>);
+static_assert(!type::isRigidType<Vec2dTypes>);
+static_assert(!type::isRigidType<Vec1dTypes>);
+
+static_assert(!type::isRigidType<Vec6fTypes>);
+static_assert(!type::isRigidType<Vec3fTypes>);
+static_assert(!type::isRigidType<Vec2fTypes>);
+static_assert(!type::isRigidType<Vec1fTypes>);
 
 
 } // namespace sofa:: defaulttype

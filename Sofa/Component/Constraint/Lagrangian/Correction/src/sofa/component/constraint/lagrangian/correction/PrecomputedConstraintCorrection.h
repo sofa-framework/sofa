@@ -30,8 +30,6 @@
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::constraint::lagrangian::correction
 {
 
@@ -60,28 +58,11 @@ public:
     typedef typename Coord::value_type Real;
     typedef sofa::type::MatNoInit<3, 3, Real> Transformation;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    sofa::core::objectmodel::RenamedData<bool> m_rotations;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    sofa::core::objectmodel::RenamedData<bool> m_restRotations;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    sofa::core::objectmodel::RenamedData<bool> recompute;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    sofa::core::objectmodel::RenamedData<SReal> debugViewFrameScale;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    sofa::core::objectmodel::RenamedData<std::string> f_fileCompliance;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_CONSTRAINT_LAGRANGIAN_CORRECTION()
-    sofa::core::objectmodel::RenamedData<std::string> fileDir;
-
     Data<bool> d_rotations;
     Data<bool> d_restRotations;
 
     Data<bool> d_recompute; ///< if true, always recompute the compliance
+    Data<SReal> d_regularizationTerm; ///< add regularization*Id to W when solving for constraints
     Data<SReal> d_debugViewFrameScale; ///< Scale on computed node's frame
     sofa::core::objectmodel::DataFileName d_fileCompliance; ///< Precomputed compliance matrix data file
     Data<std::string> d_fileDir; ///< If not empty, the compliance will be saved in this repertory

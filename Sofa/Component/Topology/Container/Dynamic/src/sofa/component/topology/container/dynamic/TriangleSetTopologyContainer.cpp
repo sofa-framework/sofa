@@ -52,6 +52,8 @@ void TriangleSetTopologyContainer::addTriangle(Index a, Index b, Index c )
 
 void TriangleSetTopologyContainer::init()
 {
+    core::topology::TopologyContainer::init();
+
     const helper::ReadAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
 
     if (d_initPoints.isSet())
@@ -222,7 +224,7 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
             // sort vertices in lexicographic order
             const Edge e = ((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
 
-            if(edgeMap.find(e) == edgeMap.end())
+            if(!edgeMap.contains(e))
             {
                 // edge not in edgeMap so create a new one
                 const size_t edgeIndex = edgeMap.size();
@@ -326,7 +328,7 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
                 // sort vertices in lexicographic order
                 const Edge e = ((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
 
-                if(edgeMap.find(e) == edgeMap.end())
+                if(!edgeMap.contains(e))
                 {
                     // edge not in edgeMap so create a new one
                     const size_t edgeIndex = edgeMap.size();

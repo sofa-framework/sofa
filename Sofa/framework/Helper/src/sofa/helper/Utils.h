@@ -39,22 +39,22 @@ public:
 /// @brief Convert a string to a wstring.
 ///
 /// @return The converted string on success, or a empty string on failure.
-SOFA_HELPER_UTILS_IN_STRINGUTILS_DEPRECATED()
-static std::wstring widenString(const std::string& s);
+SOFA_HELPER_UTILS_IN_STRINGUTILS_DISABLED()
+static std::wstring widenString(const std::string& s) = delete;
 
 /// @brief Convert a wstring to a string.
 ///
 /// @return The converted string on success, or a empty string on failure.
-SOFA_HELPER_UTILS_IN_STRINGUTILS_DEPRECATED()
-static std::string narrowString(const std::wstring& ws);
+SOFA_HELPER_UTILS_IN_STRINGUTILS_DISABLED()
+static std::string narrowString(const std::wstring& ws) = delete;
 
 /// @brief Convert a string to lower case.
-SOFA_HELPER_UTILS_IN_STRINGUTILS_DEPRECATED()
-static std::string downcaseString(const std::string& s);
+SOFA_HELPER_UTILS_IN_STRINGUTILS_DISABLED()
+static std::string downcaseString(const std::string& s) = delete;
 
 /// @brief Convert a string to upper case.
-SOFA_HELPER_UTILS_IN_STRINGUTILS_DEPRECATED()
-static std::string upcaseString(const std::string& s);
+SOFA_HELPER_UTILS_IN_STRINGUTILS_DISABLED()
+static std::string upcaseString(const std::string& s) = delete;
 
 #if defined WIN32
 
@@ -74,6 +74,12 @@ static const std::string& getExecutablePath();
 
 /// @brief Get the path to the directory of the executable that is currently running.
 static const std::string& getExecutableDirectory();
+
+/// @brief Get the path to the current user home directory.
+static const std::string& getUserHomeDirectory();
+
+/// @brief Get the path to the SOFA data directory into the current user home directory.
+static const std::string& getSofaDataDirectory();
 
 /// @brief Get the path to the current user local config directory.
 static const std::string& getUserLocalDirectory();

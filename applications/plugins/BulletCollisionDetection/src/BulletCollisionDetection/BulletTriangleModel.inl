@@ -46,7 +46,7 @@ void TBulletTriangleModel<DataTypes>::initBullet(){
     _bt_mesh = new btTriangleMesh();
 
     const SeqTriangles & tri = m_topology->getTriangles();
-    const VecCoord & pos = m_mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord & pos = m_mstate->read(core::vec_id::read_access::position)->getValue();
     int npoints = m_mstate->getSize();
     int nTri = m_topology->getNbTriangles();
 
@@ -67,7 +67,7 @@ void TBulletTriangleModel<DataTypes>::initBullet(){
 
     //_bt_gmesh = new btBvhTriangleMeshShape(_bt_mesh,true,true);
     _bt_gmesh = new BtDynamicMesh(_bt_mesh);//new btGImpactMeshShape(_bt_mesh);//
-    //_bt_gmesh->setMargin(this->getProximity());
+    //_bt_gmesh->setMargin(this->getContactDistance());
     //double margin = 0.5;//0.5;
     _bt_gmesh->setMargin(margin.getValue());
 
@@ -124,7 +124,7 @@ void TBulletTriangleModel<DataTypes>::reinit(){
 
 //    _bt_mesh->getLockedVertexIndexBase(&vertexbase,numverts,type,vertexStride,&indexbase,indexstride,numfaces,indicestype);
 
-//    const VecCoord & pos = mstate->read(core::ConstVecCoordId::position())->getValue();
+//    const VecCoord & pos = mstate->read(core::vec_id::read_access::position)->getValue();
 //    assert(mstate->getSize() == numverts);
 
 //    if(type == PHY_FLOAT){
@@ -171,7 +171,7 @@ void TBulletTriangleModel<DataTypes>::updateBullet(){
 
     _bt_mesh->getLockedVertexIndexBase(&vertexbase,numverts,type,vertexStride,&indexbase,indexstride,numfaces,indicestype);
 
-    const VecCoord & pos = m_mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord & pos = m_mstate->read(core::vec_id::read_access::position)->getValue();
     assert(m_mstate->getSize() == (size_t)numverts);
 
     if(type == PHY_FLOAT){

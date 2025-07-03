@@ -27,7 +27,7 @@ namespace sofa::helper
 {
 
 /// WriteAccessor implementation class for vector types
-template<class T>
+template<sofa::type::trait::is_vector T>
 class WriteAccessorVector
 {
 public:
@@ -72,6 +72,7 @@ public:
     ////// Modifiers //////    
     void clear() { vref->clear(); }
     void resize(Size s) { vref->resize(s); }
+    void resize(Size s, const value_type& value) { vref->resize(s, value); }
     
     iterator insert(const_iterator pos, const T& value) { return vref->insert(pos, value); }
     iterator erase(iterator pos) { return vref->erase(pos); }

@@ -22,8 +22,6 @@
 #pragma once
 #include <sofa/component/topology/container/constant/CubeTopology.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::topology::container::constant
 {
 
@@ -31,7 +29,6 @@ class SOFA_COMPONENT_TOPOLOGY_CONTAINER_CONSTANT_API SphereQuadTopology : public
 {
 public:
     SOFA_CLASS(SphereQuadTopology,CubeTopology);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
 
 protected:
     SphereQuadTopology(int nx, int ny, int nz);
@@ -40,14 +37,6 @@ public:
     Vec3 getPoint(int x, int y, int z) const override;
 
 protected:
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData< Vec3 > center;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_TOPOLOGY_CONTAINER_CONSTANT()
-    sofa::core::objectmodel::RenamedData< SReal > radius;
-
-
     Data< Vec3 > d_center; ///< Center of the sphere
     Data< SReal > d_radius; ///< Radius of the sphere
 };

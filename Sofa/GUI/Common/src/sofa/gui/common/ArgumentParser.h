@@ -103,7 +103,7 @@ public:
         auto result = this->getMap();
         try
         {
-            if (result.count(key))
+            if (result.contains(key))
             {
                 cxxopts::values::parse_value(result[key], value);
                 ret = true;

@@ -52,7 +52,7 @@ public:
 
     /// Rebuild the system using a mass and force factor
     /// Experimental API used to investigate convergence issues.
-    virtual void rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/){}
+    SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM() virtual void rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/){}
 
     /// Indicate if the solver update the system in parallel
     virtual bool isAsyncSolver() { return false; }
@@ -105,12 +105,14 @@ public:
     ///        each mechanical object. 
     /// @param result the variable where the result will be added
     /// @param fact integrator parameter
+    /// @param regularizationTerm term used to regularize the matrix
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, linearalgebra::BaseMatrix* result, SReal fact)
+    virtual bool buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, linearalgebra::BaseMatrix* result, SReal fact, SReal regularizationTerm)
     {
         SOFA_UNUSED(cparams);
         SOFA_UNUSED(result);
         SOFA_UNUSED(fact);
+        SOFA_UNUSED(regularizationTerm);
         msg_error() << "buildComplianceMatrix has not been implemented.";
         return false;
     }

@@ -42,7 +42,6 @@ RayCollisionModel::RayCollisionModel(SReal length)
     : d_defaultLength(initData(&d_defaultLength, length, "defaultLength", "The default length for all rays in this collision model"))
 {
     this->contactResponse.setValue("RayContact"); // use RayContact response class
-    defaultLength.setOriginalData(&d_defaultLength);
 }
 
 void RayCollisionModel::resize(sofa::Size size)
@@ -109,21 +108,6 @@ void RayCollisionModel::draw(const core::visual::VisualParams* vparams, sofa::In
     constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::magenta();
     vparams->drawTool()->drawLine(p1,p2,color);
 
-}
-
-void RayCollisionModel::draw(const core::visual::VisualParams* vparams)
-{
-    if (vparams->displayFlags().getShowCollisionModels())
-    {       
-        for (sofa::Index i=0; i<size; i++)
-        {
-            draw(vparams,i);
-        }
-    }
-    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
-    {
-        getPrevious()->draw(vparams);
-    }
 }
 
 void RayCollisionModel::computeBoundingTree(int maxDepth)

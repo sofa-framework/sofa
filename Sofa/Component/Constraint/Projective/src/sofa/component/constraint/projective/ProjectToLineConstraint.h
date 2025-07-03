@@ -23,10 +23,4 @@
 
 #include <sofa/component/constraint/projective/LineProjectiveConstraint.h>
 
-SOFA_HEADER_DEPRECATED("v24.06", "v25.06", "sofa/component/constraint/projective/LineProjectiveConstraint.h")
-
-namespace sofa::component::constraint::projective
-{
-template <class T>
-using ProjectToLineConstraint SOFA_ATTRIBUTE_DEPRECATED("v24.06 ", "v25.06", "ProjectToLineConstraint has been renamed to LineProjectiveConstraint") = LineProjectiveConstraint<T>;
-}
+SOFA_HEADER_DISABLED("v24.06", "v25.06", "sofa/component/constraint/projective/LineProjectiveConstraint.h")

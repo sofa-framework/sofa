@@ -34,7 +34,7 @@ void DataTracker::trackData( const objectmodel::BaseData& data )
 
 bool DataTracker::hasChanged( const objectmodel::BaseData& data ) const
 {
-    if (m_dataTrackers.find(&data) != m_dataTrackers.end())
+    if (m_dataTrackers.contains(&data))
         return m_dataTrackers.at(&data) != data.getCounter();
     return false;
 }

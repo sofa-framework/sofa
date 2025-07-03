@@ -83,18 +83,16 @@ public:
     constexpr fixed_array() {}
 
     /// Specific constructor for 1-element vectors.
-    template<size_type NN = N, typename std::enable_if<NN == 1, int>::type = 0>
     explicit constexpr fixed_array(value_type r1) noexcept
+    requires (N == 1)
     {
         elems[0] = r1;
     }
 
-    template<typename... ArgsT,
-        typename = std::enable_if_t< (std::is_convertible_v<ArgsT, value_type> && ...) >,
-        typename = std::enable_if_t< (sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1) >
-    >
+    template<typename... ArgsT>
     constexpr fixed_array(ArgsT&&... r) noexcept
-        : elems{static_cast<value_type>(std::forward< ArgsT >(r))...}
+        requires ((std::convertible_to<ArgsT, value_type> && ...) && sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1)
+        : elems{static_cast<value_type>(std::forward<ArgsT>(r))...}
     {}
 
     // iterator support
@@ -287,6 +285,9 @@ constexpr auto make_array(Ts&&... ts) -> fixed_array<std::common_type_t<Ts...>, 
 {
     return { std::forward<Ts>(ts)... };
 }
+
+template <class First, class... Rest>
+fixed_array(First, Rest...) -> fixed_array<std::common_type_t<First, Rest...>, 1 + sizeof...(Rest)>;
 
 /// Builds a fixed_array in which all elements have the same value
 template<typename T, sofa::Size N>

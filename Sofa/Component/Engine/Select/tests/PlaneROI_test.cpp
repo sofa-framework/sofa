@@ -61,7 +61,7 @@ struct PlaneROI_test : public BaseSimulationTest,
     Node::SPtr m_node1, m_node2;
     typename ThisClass::SPtr m_thisObject;
 
-    void SetUp() override
+    void doSetUp() override
     {
         // SetUp1
         m_simu = sofa::simulation::getSimulation();
@@ -70,6 +70,8 @@ struct PlaneROI_test : public BaseSimulationTest,
         m_thisObject = New<ThisClass >();
         m_node1 = m_simu->createNewGraph("root");
         m_node1->addObject(m_thisObject);
+
+        this->loadPlugins({Sofa.Component.Engine.Select});
 
 
         // SetUp2

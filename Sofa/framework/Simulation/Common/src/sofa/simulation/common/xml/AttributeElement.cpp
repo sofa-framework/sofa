@@ -50,7 +50,7 @@ bool AttributeElement::initNode()
 {
     const std::string name = getAttribute( "type", "");
 
-    if (this->replaceAttribute.find(name) != this->replaceAttribute.end())
+    if (this->replaceAttribute.contains(name))
     {
         value=replaceAttribute[name];
     }

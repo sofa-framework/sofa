@@ -32,9 +32,6 @@ BaseProximityIntersection::BaseProximityIntersection()
 {
     d_alarmDistance.setRequired(true);
     d_contactDistance.setRequired(true);
-
-    alarmDistance.setOriginalData(&d_alarmDistance);
-    contactDistance.setOriginalData(&d_contactDistance);
 }
 
 
@@ -45,7 +42,7 @@ bool BaseProximityIntersection::testIntersection(Cube& cube1, Cube& cube2, const
     const auto& maxVect1 = cube1.maxVect();
     const auto& maxVect2 = cube2.maxVect();
 
-    const auto alarmDist = currentIntersection->getAlarmDistance() + cube1.getProximity() + cube2.getProximity();
+    const auto alarmDist = currentIntersection->getAlarmDistance() + cube1.getContactDistance() + cube2.getContactDistance();
 
     for (int i = 0; i < 3; i++)
     {

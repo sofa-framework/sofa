@@ -33,7 +33,7 @@ namespace sofa::component::constraintset
  * Component to convert a BaseMatrix from the constraint solver into an image that can be visualized in the GUI.
  * Use ComplianceMatrixExporter in order to save an image on the disk.
  *
- * Note that the compliance matrix is dense. It means all the entries will proably be non-zero
+ * Note that the compliance matrix is dense. It means all the entries will probably be non-zero
  */
 class SOFA_SOFAMATRIX_API ComplianceMatrixImage : public core::objectmodel::BaseObject
 {

@@ -327,20 +327,20 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                 if (d_writeX.getValue())
                 {
                     str << "  X= ";
-                    mmodel->writeVec(core::VecId::position(), str);
+                    mmodel->writeVec(sofa::core::vec_id::read_access::position, str);
                     str << "\n";
                 }
                 if (d_writeX0.getValue())
                 {
                     str << "  X0= ";
-                    mmodel->writeVec(core::VecId::restPosition(), str);
+                    mmodel->writeVec(sofa::core::vec_id::read_access::restPosition, str);
                     str << "\n";
                 }
                 //write the V state
                 if (d_writeV.getValue())
                 {
                     str << "  V= ";
-                    mmodel->writeVec(core::VecId::velocity(), str);
+                    mmodel->writeVec(sofa::core::vec_id::read_access::velocity, str);
                     str << "\n";
                 }
                 gzputs(gzfile, str.str().c_str());
@@ -355,27 +355,27 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                     if (d_writeX.getValue())
                     {
                         (*outfile) << "  X= ";
-                        mmodel->writeVec(core::VecId::position(), *outfile);
+                        mmodel->writeVec(sofa::core::vec_id::read_access::position, *outfile);
                         (*outfile) << "\n";
                     }
                     if (d_writeX0.getValue())
                     {
                         (*outfile) << "  X0= ";
-                        mmodel->writeVec(core::VecId::restPosition(), *outfile);
+                        mmodel->writeVec(sofa::core::vec_id::read_access::restPosition, *outfile);
                         (*outfile) << "\n";
                     }
                     //write the V state
                     if (d_writeV.getValue())
                     {
                         (*outfile) << "  V= ";
-                        mmodel->writeVec(core::VecId::velocity(), *outfile);
+                        mmodel->writeVec(sofa::core::vec_id::read_access::velocity, *outfile);
                         (*outfile) << "\n";
                     }
                     //write the F state
                     if (d_writeF.getValue())
                     {
                         (*outfile) << "  F= ";
-                        mmodel->writeVec(core::VecId::force(), *outfile);
+                        mmodel->writeVec(sofa::core::vec_id::read_access::force, *outfile);
                         (*outfile) << "\n";
                     }
                     outfile->flush();

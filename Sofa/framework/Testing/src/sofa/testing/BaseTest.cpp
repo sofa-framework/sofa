@@ -101,12 +101,22 @@ void BaseTest::loadPlugins(
 
 void BaseTest::SetUp()
 {
-    onSetUp();
+    doSetUp();
 }
 
 void BaseTest::TearDown()
 {
     m_loadedPlugins.clear();
+    doTearDown();
+}
+
+void BaseTest::doSetUp()
+{
+    onSetUp();
+}
+
+void BaseTest::doTearDown()
+{
     onTearDown();
 }
 

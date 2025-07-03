@@ -22,6 +22,7 @@
 #include <sofa/testing/config.h>
 
 #include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/Utils.h>
 #include <gtest/gtest.h>
 #include <sofa/helper/logging/MessageDispatcher.h>
 #include <exception>
@@ -358,4 +359,70 @@ TEST(FileSystemTest, append)
     EXPECT_EQ(FileSystem::append("a/b/c/d/", "e", "/f", "g"), "a/b/c/d/e/f/g");
     EXPECT_EQ(FileSystem::append("a/b/c/d/", "e", "/f", "/g"), "a/b/c/d/e/f/g");
     EXPECT_EQ(FileSystem::append("a/b/c/d/", "/e", "/f", "/g"), "a/b/c/d/e/f/g");
+}
+
+TEST(FileSystemTest, ensureFolderExists)
+{
+    ASSERT_TRUE(FileSystem::isDirectory(sofa::helper::Utils::getSofaPathPrefix()));
+
+    const auto parentDir = FileSystem::append(sofa::helper::Utils::getSofaPathPrefix(), "test_folder");
+    const auto dir = FileSystem::append(parentDir, "another_layer");
+
+    //the folders don't exist yet
+    EXPECT_FALSE(FileSystem::isDirectory(parentDir));
+    EXPECT_FALSE(FileSystem::isDirectory(dir));
+
+    FileSystem::ensureFolderExists(dir);
+
+    EXPECT_TRUE(FileSystem::isDirectory(parentDir));
+    EXPECT_TRUE(FileSystem::isDirectory(dir));
+
+    //cleanup
+    EXPECT_FALSE(FileSystem::removeDirectory(dir));
+    EXPECT_FALSE(FileSystem::removeDirectory(parentDir));
+}
+
+TEST(FileSystemTest, ensureFolderForFileExists_fileAndFolderDontExist)
+{
+    ASSERT_TRUE(FileSystem::isDirectory(sofa::helper::Utils::getSofaPathPrefix()));
+
+    const auto parentDir = FileSystem::append(sofa::helper::Utils::getSofaPathPrefix(), "test_folder");
+    const auto dir = FileSystem::append(parentDir, "another_layer");
+
+    //the folder does not exist yet
+    EXPECT_FALSE(FileSystem::isDirectory(dir));
+
+    const auto file = FileSystem::append(dir, "file.txt");
+    FileSystem::ensureFolderForFileExists(file);
+
+    EXPECT_TRUE(FileSystem::isDirectory(dir));
+    EXPECT_FALSE(FileSystem::isDirectory(file));
+
+    EXPECT_FALSE(FileSystem::exists(file));
+
+    //cleanup
+    EXPECT_FALSE(FileSystem::removeDirectory(dir));
+    EXPECT_FALSE(FileSystem::removeDirectory(parentDir));
+}
+
+TEST(FileSystemTest, ensureFolderForFileExists_fileExist)
+{
+    ASSERT_TRUE(FileSystem::isDirectory(sofa::helper::Utils::getSofaPathPrefix()));
+
+    const auto file = FileSystem::append(sofa::helper::Utils::getSofaPathPrefix(), "file.txt");
+    EXPECT_FALSE(FileSystem::exists(file));
+
+    std::ofstream fileStream;
+    fileStream.open(file);
+    fileStream << "Hello";
+    fileStream.close();
+
+    EXPECT_TRUE(FileSystem::exists(file));
+
+    FileSystem::ensureFolderForFileExists(file);
+
+    EXPECT_TRUE(FileSystem::exists(file));
+
+    //cleanup
+    EXPECT_TRUE(FileSystem::removeFile(file));
 }

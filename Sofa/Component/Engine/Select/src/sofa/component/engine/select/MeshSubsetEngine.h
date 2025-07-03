@@ -24,7 +24,6 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/RenamedData.h>
 #include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -70,25 +69,6 @@ public:
     Data< SeqQuads > d_quads; ///< Quads of mesh subset
     Data< SeqTetrahedra > d_tetrahedra; ///< Tetrahedra of mesh subset
     Data< SeqHexahedra > d_hexahedra; ///< Hexahedra of mesh subset
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqPositions> inputPosition;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqEdges> inputEdges;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqTriangles> inputTriangles;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqQuads> inputQuads;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SetIndices> indices;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqPositions> position;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqEdges> edges;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqTriangles> triangles;
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_ENGINE_SELECT()
-    core::objectmodel::RenamedData<SeqQuads> quads;
 
 protected:
     MeshSubsetEngine();

@@ -29,9 +29,11 @@ namespace collisionobbcapsule::geometry
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-int RigidCapsuleCollisionModelClass = core::RegisterObject("Collision model which represents a set of rigid capsules")
-        .add<  CapsuleCollisionModel<defaulttype::Rigid3Types> >()
-        ;
+void registerRigidCapsuleCollisionModel(sofa::core::ObjectFactory* factory)
+{
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Collision model which represents a set of rigid capsules.")
+        .add<  CapsuleCollisionModel<defaulttype::Rigid3Types> >());
+}
 
 template class COLLISIONOBBCAPSULE_API geometry::TCapsule<defaulttype::Rigid3Types>;
 template class COLLISIONOBBCAPSULE_API CapsuleCollisionModel<defaulttype::Rigid3Types>;

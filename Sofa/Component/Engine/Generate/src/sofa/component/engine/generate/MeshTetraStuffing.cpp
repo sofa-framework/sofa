@@ -64,23 +64,6 @@ MeshTetraStuffing::MeshTetraStuffing()
     addInput(&d_alphaShort);
     addInput(&d_bSnapPoints);
     addInput(&d_bSplitTetrahedra);
-
-    //addOutput(&outputPoints);
-    //addOutput(&outputTetrahedra);
-
-    vbbox.setOriginalData(&d_vbbox);
-    size.setOriginalData(&d_size);
-    inputPoints.setOriginalData(&d_inputPoints);
-    inputTriangles.setOriginalData(&d_inputTriangles);
-    inputQuads.setOriginalData(&d_inputQuads);
-    outputPoints.setOriginalData(&d_outputPoints);
-    outputTetrahedra.setOriginalData(&d_outputTetrahedra);
-    alphaLong.setOriginalData(&d_alphaLong);
-    alphaShort.setOriginalData(&d_alphaShort);
-    bSnapPoints.setOriginalData(&d_bSnapPoints);
-    bSplitTetrahedra.setOriginalData(&d_bSplitTetrahedra);
-    bDraw.setOriginalData(&d_bDraw);
-
 }
 
 MeshTetraStuffing::~MeshTetraStuffing()
@@ -227,7 +210,7 @@ void MeshTetraStuffing::doUpdate()
                 std::set< int > tris;
                 for (unsigned int i=0; i<results.size(); ++i)
                 {
-                    if (tris.find(results[i].tid) != tris.end())
+                    if (tris.contains(results[i].tid))
                     {
                         if (i < results.size()-1)
                             results[i] = results[results.size()-1];

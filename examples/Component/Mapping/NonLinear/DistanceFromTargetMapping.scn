@@ -15,7 +15,7 @@
     <StringMeshCreator name="loader" resolution="20" scale3d="1 1 1" />
 
     <EulerImplicitSolver />
-    <EigenSimplicialLLT />
+    <EigenSimplicialLLT template="CompressedRowSparseMatrixMat3x3d"/>
 
     <EdgeSetTopologyContainer name="topology" position="@loader.position" edges="@loader.edges"/>
     <MechanicalObject name="dofs" template="Vec3" />

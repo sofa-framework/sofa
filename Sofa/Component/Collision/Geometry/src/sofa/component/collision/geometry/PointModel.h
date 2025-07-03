@@ -27,8 +27,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/core/objectmodel/RenamedData.h>
-
 namespace sofa::component::collision::geometry
 {
 
@@ -81,6 +79,9 @@ public:
     friend class TPoint<DataTypes>;
 protected:
     PointCollisionModel();
+
+    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
+
 public:
     void init() override;
 
@@ -93,7 +94,6 @@ public:
     void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
-    void draw(const core::visual::VisualParams* vparams) override;
 
     bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
@@ -102,10 +102,6 @@ public:
     Deriv getNormal(sofa::Index index){ return (normals.size()) ? normals[index] : Deriv();}
 
     const Deriv& velocity(sofa::Index index) const;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::RenamedData<bool> bothSide;
-
 
     Data<bool> d_bothSide; ///< activate collision on both side of the point model (when surface normals are defined on these points)
 
@@ -135,18 +131,11 @@ protected:
 
     core::behavior::MechanicalState<DataTypes>* mstate;
 
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::RenamedData<bool> computeNormals;
-
-    SOFA_ATTRIBUTE_DEPRECATED__RENAME_DATA_IN_COLLISION_GEOMETRY()
-    sofa::core::objectmodel::RenamedData<bool> m_displayFreePosition;
-
     Data<bool> d_computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)
+    Data<bool> d_displayFreePosition; ///< Display Collision Model Points free position(in green)
 
     VecDeriv normals;
 
-    Data<bool> d_displayFreePosition; ///< Display Collision Model Points free position(in green)
-                                      
     /// Link to be set to the topology container in the component graph.
     SingleLink<PointCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 

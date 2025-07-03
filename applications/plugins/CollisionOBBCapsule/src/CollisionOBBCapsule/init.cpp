@@ -23,15 +23,26 @@
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
+#include <sofa/helper/system/PluginManager.h>
 
 namespace collisionobbcapsule
 {
+
+namespace geometry
+{
+    extern void registerCapsuleCollisionModel(sofa::core::ObjectFactory* factory);
+    extern void registerOBBCollisionModel(sofa::core::ObjectFactory* factory);
+    extern void registerRigidCapsuleCollisionModel(sofa::core::ObjectFactory* factory);
+}
 
 void init()
 {
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
         first = false;
     }
 }
@@ -42,7 +53,7 @@ COLLISIONOBBCAPSULE_API const char* getModuleName();
 COLLISIONOBBCAPSULE_API const char* getModuleVersion();
 COLLISIONOBBCAPSULE_API const char* getModuleLicense();
 COLLISIONOBBCAPSULE_API const char* getModuleDescription();
-COLLISIONOBBCAPSULE_API const char* getModuleComponentList();
+COLLISIONOBBCAPSULE_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -52,12 +63,12 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return sofa_tostring(SOFA_TARGET);
+    return MODULE_NAME;
 }
 
 const char* getModuleVersion()
 {
-    return sofa_tostring(COLLISIONOBBCAPSULE_VERSION);
+    return MODULE_VERSION;
 }
 
 const char* getModuleLicense()
@@ -70,11 +81,11 @@ const char* getModuleDescription()
     return "This plugin contains OBB and capsule collision components.";
 }
 
-const char* getModuleComponentList()
+void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
+    geometry::registerCapsuleCollisionModel(factory);
+    geometry::registerOBBCollisionModel(factory);
+    geometry::registerRigidCapsuleCollisionModel(factory);
 }
 
 } // namespace collisionobbcapsule

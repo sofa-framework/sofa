@@ -49,7 +49,6 @@ StickContactConstraint<TCollisionModel1,TCollisionModel2>::StickContactConstrain
     mapper1.setCollisionModel(model1);
     mapper2.setCollisionModel(model2);
     this->f_printLog.setValue(true);
-    f_keepAlive.setOriginalData(&d_keepAlive);
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
@@ -141,7 +140,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
     mapper2.resize(size);
 
     int i = 0;
-    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
+    const double d0 = intersectionMethod->getContactDistance() + model1->getContactDistance() + model2->getContactDistance(); // - 0.001;
 
     mappedContacts.resize(contacts.size());
     for (auto it = contacts.begin(); it!=contacts.end(); it++, i++)

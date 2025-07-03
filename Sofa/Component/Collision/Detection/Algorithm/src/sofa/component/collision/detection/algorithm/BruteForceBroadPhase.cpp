@@ -37,9 +37,6 @@ void registerBruteForceBroadPhase(sofa::core::ObjectFactory* factory)
 BruteForceBroadPhase::BruteForceBroadPhase()
         : d_box(initData(&d_box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))
 {
-
-    box.setOriginalData (&d_box);
-
 }
 
 void BruteForceBroadPhase::init()

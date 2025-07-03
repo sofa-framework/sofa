@@ -164,9 +164,10 @@ void MatrixLinearSolver<Matrix, Vector, NoThreadManager>::doCheckLinearSystem()
             }
             else
             {
+                auto* firstCandidate = *notAlreadyAssociated.begin();
                 if (notAlreadyAssociated.size() == 1)
                 {
-                    msg_info() << "Linear system found: " << l_linearSystem->getPathName();
+                    msg_info() << "Linear system found: " << firstCandidate->getPathName();
                 }
                 else
                 {
@@ -174,7 +175,7 @@ void MatrixLinearSolver<Matrix, Vector, NoThreadManager>::doCheckLinearSystem()
                         << "to this linear solver. The first one in the list is selected. Set the link " << l_linearSystem.getLinkedPath()
                         << " properly to remove this warning.";
                 }
-                l_linearSystem.set(*notAlreadyAssociated.begin());
+                l_linearSystem.set(firstCandidate);
             }
         }
     }
@@ -577,7 +578,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJt(linearalgebra::BaseMatrix* res
 }
 
 template<class Matrix, class Vector>
-bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, linearalgebra::BaseMatrix* result, SReal fact)
+bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, linearalgebra::BaseMatrix* result, SReal fact, SReal regularizationTerm)
 {
     JMatrixType * j_local = internalData.getLocalJ();
     j_local->clear();
@@ -590,7 +591,20 @@ bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::
 
     executeVisitor(MechanicalGetConstraintJacobianVisitor(cparams, j_local));
 
-    return addJMInvJt(result, j_local, fact);
+    bool boolRes = addJMInvJt(result, j_local, fact);
+
+    if (boolRes && regularizationTerm > std::numeric_limits<SReal>::epsilon())
+    {
+        for (auto rowIt = j_local->begin(); rowIt != j_local->end(); ++rowIt)
+        {
+            if (rowIt->second.size() != 0)
+            {
+                result->add(rowIt->first,rowIt->first,regularizationTerm);
+            }
+        }
+    }
+
+    return boolRes;
 }
 
 template<class Matrix, class Vector>
@@ -608,15 +622,18 @@ void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::C
 }
 
 template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* params,linearalgebra::BaseVector* f) {
+void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* params,linearalgebra::BaseVector* f)
+{
     getSystemRHVector()->clear();
     getSystemRHVector()->resize(getSystemMatrix()->colSize());
 
+    /// rhs = J^t * f
     internalData.projectForceInConstraintSpace(getSystemRHVector(), f);
 
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::core::behavior::MultiVecDeriv force(&vop, core::vec_id::write_access::force );
 
+    // force += rhs
     executeVisitor( MechanicalMultiVectorPeqBaseVectorVisitor(core::execparams::defaultInstance(), force, getSystemRHVector(), &(linearSystem.matrixAccessor)) );
 }
 
