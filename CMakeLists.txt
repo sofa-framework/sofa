@@ -448,7 +448,8 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
         set(CPACK_INSTALL_PREFIX "/runSofa.app/Contents/MacOS")
     endif()
 
-    set(CPACK_PRE_BUILD_SCRIPTS ${CMAKE_SOURCE_DIR}/tools/postinstall-fixup/generate-stubfiles.cmake)
+    configure_file(${CMAKE_SOURCE_DIR}/tools/postinstall-fixup/generate-stubfiles.cmake postinstall-scripts/generate-stubfiles.cmake @ONLY)
+    set(CPACK_PRE_BUILD_SCRIPTS ${CMAKE_BINARY_DIR}/postinstall-scripts/generate-stubfiles.cmake)
 
     include(CPack)
 endif()
