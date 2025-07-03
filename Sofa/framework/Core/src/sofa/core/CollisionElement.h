@@ -261,7 +261,7 @@ public:
     }
 
     /// Distance to the actual (visual) surface
-    [[nodiscard]] SReal getProximity() const { return model->getProximity(); }
+    [[nodiscard]] SReal getContactDistance() const { return model->getContactDistance(); }
 
     /// Contact stiffness
     [[nodiscard]] SReal getContactStiffness() const { return model->getContactStiffness(index); }

@@ -56,7 +56,7 @@ RayNewProximityIntersection::RayNewProximityIntersection(NewProximityIntersectio
 bool RayNewProximityIntersection::testIntersection(Ray &t1,Triangle &t2, const core::collision::Intersection* currentIntersection)
 {
     Vec3 P,Q,PQ;
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + t1.getProximity() + t2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + t1.getContactDistance() + t2.getContactDistance();
 
     if (fabs(t2.n() * t1.direction()) < 0.000001)
         return false; // no intersection for edges parallel to the triangle
@@ -81,7 +81,7 @@ bool RayNewProximityIntersection::testIntersection(Ray &t1,Triangle &t2, const c
 
 int RayNewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + t1.getProximity() + t2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + t1.getContactDistance() + t2.getContactDistance();
 
     if (fabs(t2.n() * t1.direction()) < 0.000001)
         return false; // no intersection for edges parallel to the triangle

@@ -239,7 +239,7 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);  // size = number of triangles
     if (!empty())
     {
-        const SReal distance = (SReal)this->proximity.getValue();
+        const SReal distance = (SReal)this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
             Element t(this,i);
@@ -293,7 +293,7 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, 
     cubeModel->resize(size);
     if (!empty())
     {
-        const SReal distance = (SReal)this->proximity.getValue();
+        const SReal distance = (SReal)this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
             Element t(this,i);

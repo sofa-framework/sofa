@@ -131,7 +131,7 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (!empty())
     {
         //VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
-        const SReal distance = this->proximity.getValue();
+        const SReal distance = this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
@@ -164,7 +164,7 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int
     {
         //VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
         //VecDeriv& v = mstate->read(core::vec_id::read_access::velocity)->getValue();
-        const SReal distance = (SReal)this->proximity.getValue();
+        const SReal distance = (SReal)this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
