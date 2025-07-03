@@ -22,6 +22,8 @@ set(HEADER_FILES
     ${SOFACOMPONENTVISUAL_SOURCE_DIR}/VisualPointCloud.inl
     ${SOFACOMPONENTVISUAL_SOURCE_DIR}/VisualStyle.h
     ${SOFACOMPONENTVISUAL_SOURCE_DIR}/VisualTransform.h
+    ${SOFACOMPONENTVISUAL_SOURCE_DIR}/VisualVectorField.h
+    ${SOFACOMPONENTVISUAL_SOURCE_DIR}/VisualVectorField.inl
 )
 
 set(SOURCE_FILES
@@ -40,6 +42,7 @@ set(SOURCE_FILES
     ${SOFACOMPONENTVISUAL_SOURCE_DIR}/VisualPointCloud.cpp
     ${SOFACOMPONENTVISUAL_SOURCE_DIR}/VisualStyle.cpp
     ${SOFACOMPONENTVISUAL_SOURCE_DIR}/VisualTransform.cpp
+    ${SOFACOMPONENTVISUAL_SOURCE_DIR}/VisualVectorField.cpp
 )
 
 sofa_find_package(Sofa.Simulation.Core REQUIRED)

@@ -1,0 +1,58 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#pragma once
+#include <sofa/component/visual/VisualVectorField.h>
+#include <sofa/core/visual/VisualParams.h>
+
+namespace sofa::component::visual
+{
+
+template <class DataTypes>
+VisualVectorField<DataTypes>::VisualVectorField()
+    : d_position(initData(&d_position, "position", "Starting position of the rendered vectors"))
+    , d_vector(initData(&d_vector, "vector", "List of vectors to render"))
+    , d_vectorScale(initData(&d_vectorScale, 1.0_sreal, "vectorScale", "Scaling factor applied on vectors for rendering"))
+{
+}
+
+template <class DataTypes>
+void VisualVectorField<DataTypes>::doDrawVisual(const core::visual::VisualParams* vparams)
+{
+    const auto position = sofa::helper::getReadAccessor(d_position);
+    const auto vector = sofa::helper::getReadAccessor(d_vector);
+
+    const auto minSize = std::min(position.size(), vector.size());
+    const auto vectorScale = d_vectorScale.getValue();
+
+    auto* drawTool = vparams->drawTool();
+
+
+    for (std::size_t i = 0; i < minSize; ++i)
+    {
+        auto start = position[i];
+        auto end = start + vectorScale * vector[i];
+
+        drawTool->drawLines(std::vector<type::Vec3>{{start, end}}, 1, sofa::type::RGBAColor::white());
+    }
+}
+
+}  // namespace sofa::component::visual
