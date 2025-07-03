@@ -31,7 +31,8 @@ VisualVectorField<DataTypes>::VisualVectorField()
     : d_position(initData(&d_position, "position", "Starting position of the rendered vectors"))
     , d_vector(initData(&d_vector, "vector", "List of vectors to render"))
     , d_vectorScale(initData(&d_vectorScale, 1.0_sreal, "vectorScale", "Scaling factor applied on vectors for rendering"))
-    , d_drawMode(initData(&d_drawMode, VectorFieldDrawMode("Line"), "drawMode", "Draw mode for the vectors"))
+    , d_drawMode(initData(&d_drawMode, VectorFieldDrawMode("Line"), "drawMode", ("Draw mode for the vectors" + VectorFieldDrawMode::dataDescription()).c_str()))
+    , d_color(initData(&d_color, sofa::type::RGBAColor::white(), "color", "Color of the vectors"))
 {
 }
 
@@ -46,6 +47,7 @@ void VisualVectorField<DataTypes>::doDrawVisual(const core::visual::VisualParams
 
     auto* drawTool = vparams->drawTool();
     const auto drawMode = d_drawMode.getValue();
+    const auto color = d_color.getValue();
 
     for (std::size_t i = 0; i < minSize; ++i)
     {
@@ -54,17 +56,17 @@ void VisualVectorField<DataTypes>::doDrawVisual(const core::visual::VisualParams
 
         if (drawMode == VectorFieldDrawMode("Line"))
         {
-            drawTool->drawLines(std::vector<type::Vec3>{{start, end}}, 1, sofa::type::RGBAColor::white());
+            drawTool->drawLines(std::vector<type::Vec3>{{start, end}}, 1, color);
         }
         else if (drawMode == VectorFieldDrawMode("Cylinder"))
         {
             const float radius = static_cast<float>(vectorScale * vector[i].norm() / 20.f);
-            drawTool->drawCylinder(start, end, radius, sofa::type::RGBAColor::white());
+            drawTool->drawCylinder(start, end, radius, color);
         }
         else if (drawMode == VectorFieldDrawMode("Arrow"))
         {
             const float radius = static_cast<float>(vectorScale * vector[i].norm() / 20.f);
-            drawTool->drawArrow(start, end, radius, sofa::type::RGBAColor::white());
+            drawTool->drawArrow(start, end, radius, color);
         }
     }
 }
