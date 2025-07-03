@@ -27,6 +27,12 @@
 namespace sofa::component::visual
 {
 
+MAKE_SELECTABLE_ITEMS(VectorFieldDrawMode,
+    sofa::helper::Item{.key = "Line", .description = "Coordinates are displayed using lines"},
+    sofa::helper::Item{.key = "Cylinder", .description = "Coordinates are displayed using cylinders"},
+    sofa::helper::Item{.key = "Arrow", .description = "Coordinates are displayed using arrows"},
+);
+
 template <class DataTypes>
 class VisualVectorField : public core::visual::VisualModel
 {
@@ -41,6 +47,7 @@ public:
     Data<VecCoord> d_position;
     Data<VecDeriv> d_vector;
     Data<SReal> d_vectorScale;
+    Data<VectorFieldDrawMode> d_drawMode;
 
     void computeBBox(const core::ExecParams*, bool) override;
 
