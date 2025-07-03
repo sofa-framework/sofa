@@ -42,6 +42,8 @@ public:
     Data<VecDeriv> d_vector;
     Data<SReal> d_vectorScale;
 
+    void computeBBox(const core::ExecParams*, bool) override;
+
 private:
     VisualVectorField();
 

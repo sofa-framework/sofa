@@ -48,11 +48,50 @@ void VisualVectorField<DataTypes>::doDrawVisual(const core::visual::VisualParams
 
     for (std::size_t i = 0; i < minSize; ++i)
     {
-        auto start = position[i];
-        auto end = start + vectorScale * vector[i];
+        const auto& start = position[i];
+        const auto end = start + vectorScale * vector[i];
 
         drawTool->drawLines(std::vector<type::Vec3>{{start, end}}, 1, sofa::type::RGBAColor::white());
     }
+}
+
+template <class DataTypes>
+void VisualVectorField<DataTypes>::computeBBox(const core::ExecParams* exec_params, bool cond)
+{
+    const auto position = sofa::helper::getReadAccessor(d_position);
+    const auto vector = sofa::helper::getReadAccessor(d_vector);
+
+    const auto minSize = std::min(position.size(), vector.size());
+    if (minSize <= 0) return;
+
+    const auto vectorScale = d_vectorScale.getValue();
+
+    SReal p[3];
+    DataTypes::get(p[0], p[1], p[2], position[0]);
+    SReal maxBBox[3] = {p[0], p[1], p[2]};
+    SReal minBBox[3] = {p[0], p[1], p[2]};
+
+    for (size_t i = 0; i < minSize; i++)
+    {
+        const auto& start = position[i];
+        const auto end = start + vectorScale * vector[i];
+
+        for (int c = 0; c < 3; c++)
+        {
+            if (start[c] > maxBBox[c])
+                maxBBox[c] = p[c];
+
+            else if (start[c] < minBBox[c])
+                minBBox[c] = p[c];
+
+            if (end[c] > maxBBox[c])
+                maxBBox[c] = p[c];
+
+            else if (end[c] < minBBox[c])
+                minBBox[c] = p[c];
+        }
+    }
+    this->f_bbox.setValue(sofa::type::TBoundingBox(minBBox, maxBBox));
 }
 
 }  // namespace sofa::component::visual
