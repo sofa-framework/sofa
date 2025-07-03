@@ -293,7 +293,8 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
 {
     SOFA_UNUSED(params);
 
-    if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels()) return;
+    if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels())
+        return;
 
     const auto npoints = mstate->getSize();
     if (npoints != size)
