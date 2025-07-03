@@ -1,17 +1,17 @@
 echo "Generate stubfiles..."
 
 if [ "$#" -ge 3 ]; then
-    SRC_DIR="$(cd $1 && pwd)"
+    BUILD_DIR="$(cd $1 && pwd)"
     INSTALL_DIR="$(cd $2 && pwd)"
     SYSTEM_NAME=$3
 
 
   echo "Inputs are"
-  echo "- SRC_DIR       :${SRC_DIR}"
+  echo "- BUILD_DIR     :${BUILD_DIR}"
   echo "- INSTALL_DIR   :${INSTALL_DIR}"
   echo "- SYSTEM_NAME   :${SYSTEM_NAME}"
 else
-    echo "Usage: generate_stubfiles <SRC_DIR> <INSTALL_DIR> [SYSTEM_NAME = 0]"; exit 1
+    echo "Usage: generate_stubfiles <BUILD_DIR> <INSTALL_DIR> [SYSTEM_NAME = 0]"; exit 1
 fi
 
 if [ -e "$VM_PYTHON3_EXECUTABLE" ]; then
@@ -19,7 +19,7 @@ if [ -e "$VM_PYTHON3_EXECUTABLE" ]; then
         pythonroot="$(dirname $VM_PYTHON3_EXECUTABLE)"
         pythonroot="$(cd "$pythonroot" && pwd)"
         export PATH="$pythonroot:$pythonroot/DLLs:$pythonroot/Lib:$PATH"
-        PYTHON_SCRIPT=$(cd "$SRC_DIR/applications/plugins/SofaPython3/scripts" && pwd )/generate_stubs.py
+        PYTHON_SCRIPT=$(cd "${BUILD_DIR}/external_directories/fetched/SofaPython3/scripts" && pwd )/generate_stubs.py
 
         if [[ $SYSTEM_NAME = "Windows:NSIS" ]]; then
           PYTHON_INSTALL_SITE_PACKAGE_DIR=$(cd "$INSTALL_DIR/applications/plugins/SofaPython3/lib/python3/site-packages" && pwd )
@@ -40,7 +40,7 @@ if [ -e "$VM_PYTHON3_EXECUTABLE" ]; then
         fi
         echo "PATH=$PATH"
     else
-        PYTHON_SCRIPT=$(cd "$SRC_DIR/applications/plugins/SofaPython3/scripts" && pwd )/generate_stubs.py
+        PYTHON_SCRIPT=$(cd "${BUILD_DIR}/external_directories/fetched/SofaPython3/scripts" && pwd )/generate_stubs.py
         if [[ $SYSTEM_NAME = *"IFW" ]]; then
           INSTALL_DIR="$INSTALL_DIR/packages/Runtime/data/"
         fi
