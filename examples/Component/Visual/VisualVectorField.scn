@@ -1,7 +1,7 @@
 <Node name="root" gravity="0 -9.81 0" dt="0.01">
     <DefaultAnimationLoop parallelODESolving="true"/>
     <DefaultVisualManagerLoop name="visualLoop"/>
-    <VisualStyle displayFlags="showVisual" />
+    <VisualStyle displayFlags="showVisual showWireframe showForceFields" />
     <VisualGrid name="grid"/>
     <LineAxis size="@grid.size"/>
 
@@ -16,6 +16,9 @@
         <FixedProjectiveConstraint indices="@box.indices" />
         <HexahedronFEMForceField name="FEM" youngModulus="40000" poissonRatio="0.3" method="large" />
 
-        <VisualVectorField position="@DoFs.position" vector="@DoFs.velocity"/>
+        <Node name="vectors">
+            <VisualStyle displayFlags="showVisual hideWireframe" />
+            <VisualVectorField position="@DoFs.position" vector="@DoFs.velocity" drawMode="Arrow" vectorScale="0.2" color="orange"/>
+        </Node>
     </Node>
 </Node>

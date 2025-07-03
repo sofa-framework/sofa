@@ -48,6 +48,7 @@ public:
     Data<VecDeriv> d_vector;
     Data<SReal> d_vectorScale;
     Data<VectorFieldDrawMode> d_drawMode;
+    Data<type::RGBAColor> d_color;
 
     void computeBBox(const core::ExecParams*, bool) override;
 
