@@ -5,7 +5,7 @@
     <VisualGrid name="grid"/>
     <LineAxis size="@grid.size"/>
 
-    <Node name="3d_point">
+    <Node name="beam">
         <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixd"/>
@@ -19,6 +19,7 @@
         <Node name="vectors">
             <VisualStyle displayFlags="showVisual hideWireframe" />
             <VisualVectorField position="@DoFs.position" vector="@DoFs.velocity" drawMode="Arrow" vectorScale="0.2" color="orange"/>
+            <VisualVectorField position="@DoFs.position" vector="@DoFs.force" drawMode="Arrow" vectorScale="0.0005" color="navy"/>
         </Node>
     </Node>
 </Node>
