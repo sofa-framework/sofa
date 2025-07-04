@@ -23,5 +23,6 @@
 
 namespace sofa::topology
 {
-
+static_assert(sofa::type::trait::Streamable<sofa::topology::Hexahedron>);
+static_assert(sofa::type::trait::InputStreamable<sofa::topology::Hexahedron>);
 } // namespace sofa::topology
