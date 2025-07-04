@@ -29,6 +29,8 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/SceneCheckMainRegistry.h>
 
+#include <ranges>
+
 namespace sofa::_scenechecking_
 {
 
@@ -71,11 +73,11 @@ void SceneCheckMissingRequiredPlugin::doCheckOn(sofa::simulation::Node* node)
     }
 
     //sort and remove duplicates
-    for (auto& plugins : m_requiredPlugins)
+    for (auto& objects : m_requiredPlugins | std::views::values)
     {
-        auto& v = plugins.second;
-        std::sort(v.begin(), v.end());
-        v.erase(std::unique(v.begin(), v.end()), v.end());
+        std::ranges::sort(objects);
+        const auto ret = std::ranges::unique(objects);
+        objects.erase(ret.begin(), ret.end());
     }
 }
 

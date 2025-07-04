@@ -37,6 +37,8 @@ using sofa::simulation::mechanicalvisitor::MechanicalGetConstraintInfoVisitor;
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
 
+#include <ranges>
+
 using sofa::core::VecId;
 
 namespace sofa::component::constraint::lagrangian::solver
@@ -365,12 +367,12 @@ void LCPConstraintSolver::keepContactForcesValue()
     for (unsigned int c=0; c<_numConstraints; ++c)
         _previousForces[c] = (*_result)[c];
     // clear previous history
-    for (auto& previousConstraint : _previousConstraints)
+    for (auto& buf : _previousConstraints | std::views::values)
     {
-        ConstraintBlockBuf& buf = previousConstraint.second;
-        for (auto& it2 : buf.persistentToConstraintIdMap)
-            it2.second = -1;
+        for (auto& constraintId : buf.persistentToConstraintIdMap | std::views::values)
+            constraintId = -1;
     }
+    
     // fill info from current ids
     for (const ConstraintBlockInfo& info : constraintBlockInfo)
     {
