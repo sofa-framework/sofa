@@ -45,7 +45,7 @@
         <Node name="constraintSpace">
             <MechanicalObject template="Vec1" name="areaDoFs"/>
             <AreaMapping name="areaMapping" topology="@../topology" geometricStiffness="Exact" applyRestPosition="true"/>
-            <RestShapeSpringsForceField template="Vec1" stiffness="15000"/>
+            <FixedWeakConstraint template="Vec1" stiffness="15000" fixAll="true"/>
         </Node>
 
         <Node name="Visu">
