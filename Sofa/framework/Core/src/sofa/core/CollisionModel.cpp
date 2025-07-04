@@ -105,7 +105,7 @@ CollisionModel::CollisionModel()
     , bMoving(initData(&bMoving, true, "moving", "flag indicating if this object is changing position between iterations"))
     , bSimulated(initData(&bSimulated, true, "simulated", "flag indicating if this object is controlled by a simulation"))
     , bSelfCollision(initData(&bSelfCollision, false, "selfCollision", "flag indication if the object can self collide"))
-    , proximity(initData(&proximity, 0.0_sreal, "proximity", "Distance to the actual (visual) surface"))
+    , d_contactDistance(initData(&d_contactDistance, 0.0_sreal, "contactDistance", "This distance is added along the normal of the collision element to apply 'skinning' effect for collision. The contact arise at this distance of the element."))
     , contactStiffness(initData(&contactStiffness, 10.0_sreal, "contactStiffness", "Contact stiffness"))
     , contactFriction(initData(&contactFriction, 0.0_sreal, "contactFriction", "Contact friction coefficient (dry or viscous or unused depending on the contact method)"))
     , contactRestitution(initData(&contactRestitution, 0.0_sreal, "contactRestitution", "Contact coefficient of restitution"))
@@ -119,6 +119,10 @@ CollisionModel::CollisionModel()
     , userData(nullptr)
     , l_collElemActiver(initLink("collisionElementActiver", "CollisionElementActiver component that activates or deactivates collision element(s) during execution"))
 {
+
+    proximity.setOriginalData(&d_contactDistance);
+    addAlias(&d_contactDistance, "proximity");
+
     d_numberOfContacts.setReadOnly(true);
 }
 
