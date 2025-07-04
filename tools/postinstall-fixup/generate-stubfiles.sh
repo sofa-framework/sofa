@@ -24,7 +24,7 @@ if [ -e "$VM_PYTHON3_EXECUTABLE" ]; then
         if [[ $SYSTEM_NAME = "Windows:NSIS" ]]; then
           PYTHON_INSTALL_SITE_PACKAGE_DIR=$(cd "$INSTALL_DIR/applications/plugins/SofaPython3/lib/python3/site-packages" && pwd )
           PYTHON_INSTALL_SITE_PACKAGE_DIR_LIB=$(cd "$INSTALL_DIR/libraries/plugins/SofaPython3/lib/python3/site-packages" && pwd )
-          export PYTHONPATH="$PYTHON_INSTALL_SITE_PACKAGE_DIR:$PYTHON_INSTALL_SITE_PACKAGE_DIR_LIB:$PYTHONPATH"
+          export PYTHONPATH="$PYTHON_INSTALL_SITE_PACKAGE_DIR:$PYTHON_INSTALL_SITE_PACKAGE_DIR_LIB"
 
           export PATH="$INSTALL_DIR/applications/lib:$INSTALL_DIR/applications/bin:$INSTALL_DIR/applications/plugins/SofaPython3/lib:$INSTALL_DIR/applications/plugins/SofaPython3/bin:$pythonroot/Lib:$PATH"
           export PATH="$INSTALL_DIR/libraries/lib:$INSTALL_DIR/libraries/bin:$INSTALL_DIR/libraries/plugins/SofaPython3/lib:$INSTALL_DIR/libraries/plugins/SofaPython3/bin:$pythonroot/Lib:$PATH"
@@ -33,7 +33,7 @@ if [ -e "$VM_PYTHON3_EXECUTABLE" ]; then
 
         else
           PYTHON_INSTALL_SITE_PACKAGE_DIR=$(cd "$INSTALL_DIR/plugins/SofaPython3/lib/python3/site-packages" && pwd )
-          export PYTHONPATH="$PYTHON_INSTALL_SITE_PACKAGE_DIR:$PYTHONPATH"
+          export PYTHONPATH="$PYTHON_INSTALL_SITE_PACKAGE_DIR"
           export PATH="$INSTALL_DIR/lib:$INSTALL_DIR/bin:$INSTALL_DIR/plugins/SofaPython3/lib:$INSTALL_DIR/plugins/SofaPython3/bin:$pythonroot/Lib:$PATH"
           export SOFA_ROOT="$INSTALL_DIR"
 
@@ -51,7 +51,7 @@ if [ -e "$VM_PYTHON3_EXECUTABLE" ]; then
     fi
 
     echo "SOFA_ROOT=$SOFA_ROOT"
-    echo "PYTHONPATH=$PYTHONPATH"
+    $python_exe -c "import sys; print(f'PYTHONPATH={sys.path}')"
 
     #Create folder if not already created
 
