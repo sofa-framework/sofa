@@ -62,7 +62,6 @@ void VolumeFromTriangles<DataTypes>::parse(core::objectmodel::BaseObjectDescript
         msg_deprecated() << "You are using a deprecated Data 'positions', please use 'position' instead.";
 }
 
-
 template <class DataTypes>
 void VolumeFromTriangles<DataTypes>::init()
 {

@@ -58,7 +58,6 @@ void VolumeFromTetrahedrons<DataTypes>::parse(core::objectmodel::BaseObjectDescr
         msg_deprecated() << "You are using a deprecated Data 'positions', please use 'position' instead.";
 }
 
-
 template <class DataTypes>
 VolumeFromTetrahedrons<DataTypes>::~VolumeFromTetrahedrons()
 {
@@ -211,5 +210,6 @@ void VolumeFromTetrahedrons<DataTypes>::updateVolume()
     if(volume<0) volume = -volume;
     d_volume.setValue(volume);
 }
+
 
 } // namespace
