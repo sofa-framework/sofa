@@ -24,7 +24,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
-#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
@@ -319,7 +319,7 @@ TEST_F(PluginManager_test, failingPlugin)
     EXPECT_TRUE(sofa::core::ObjectFactory::getInstance()->hasCreator("ComponentFailingPlugin"));
 
     sofa::core::objectmodel::BaseObjectDescription description("ComponentFailingPlugin", "ComponentFailingPlugin");
-    const auto tmpNode = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>("tmp");
+    const auto tmpNode = sofa::core::objectmodel::New<sofa::simulation::Node>("tmp");
     EXPECT_EQ(sofa::core::ObjectFactory::getInstance()->createObject(tmpNode.get(), &description), nullptr);
 
     EXPECT_FALSE(description.getErrors().empty());
