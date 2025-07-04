@@ -20,18 +20,24 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/visual/VisualTransform.h>
-
 #include <sofa/core/visual/VisualParams.h>
+
+////////////////////////////////////////// Factory registration ////////////////////////////////////////
 #include <sofa/core/ObjectFactory.h>
+namespace sofa::core{
+using namespace sofa::component::visual;
 
-namespace sofa::component::visual
-{
-
-void registerVisualTransform(sofa::core::ObjectFactory* factory)
+template<>
+void registerToFactory<VisualTransform>(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Visually apply a (translation,rotation) transformation to visual elements rendering within a node or a sub-graph.")
         .add< VisualTransform >());
 }
+
+}
+
+namespace sofa::component::visual
+{
 
 VisualTransform::VisualTransform()
     : d_transform(initData(&d_transform, "transform", "Transformation to apply"))
