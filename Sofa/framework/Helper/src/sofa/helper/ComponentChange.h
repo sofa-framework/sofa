@@ -189,10 +189,10 @@ private:
     std::string m_originalName;
 };
 
-extern SOFA_HELPER_API const std::map< std::string, Deprecated, std::less<> > deprecatedComponents;
-extern SOFA_HELPER_API const std::map< std::string, ComponentChange, std::less<> > movedComponents;
-extern SOFA_HELPER_API const std::map< std::string, Renamed, std::less<> > renamedComponents;
-extern SOFA_HELPER_API const std::map< std::string, ComponentChange, std::less<> > uncreatableComponents;
-extern SOFA_HELPER_API const std::map< std::string, Dealiased, std::less<> > dealiasedComponents;
+extern SOFA_HELPER_API std::map< std::string, Deprecated, std::less<> > deprecatedComponents;
+extern SOFA_HELPER_API std::map< std::string, ComponentChange, std::less<> > movedComponents;
+extern SOFA_HELPER_API std::map< std::string, Renamed, std::less<> > renamedComponents;
+extern SOFA_HELPER_API std::map< std::string, ComponentChange, std::less<> > uncreatableComponents;
+extern SOFA_HELPER_API std::map< std::string, Dealiased, std::less<> > dealiasedComponents;
 
 } // namespace sofa::helper::lifecycle
