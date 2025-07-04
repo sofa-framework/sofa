@@ -55,7 +55,7 @@ protected:
                           TMatrix* matrixToProject,
                           linearalgebra::BaseMatrix* globalMatrix);
 
-    virtual void projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
+    virtual void doProjectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
                                      const MappingGraph& mappingGraph,
                                      TMatrix* matrixToProject,
                                      linearalgebra::BaseMatrix* globalMatrix) override;
