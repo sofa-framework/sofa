@@ -352,7 +352,7 @@ public:
     /// @name componentstate
     ///   Methods related to component state
     /// @{
-
+    int getRevisionCounter() const { return d_componentState.getCounter(); }
     ComponentState getComponentState() const { return d_componentState.getValue() ; }
     bool isComponentStateValid() const { return d_componentState.getValue() == ComponentState::Valid; }
     bool isComponentStateInvalid() const { return d_componentState.getValue() == ComponentState::Invalid; }
