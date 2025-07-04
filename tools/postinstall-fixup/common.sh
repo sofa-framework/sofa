@@ -9,19 +9,18 @@ function clean_default_plugins()
           ArticulatedSystemPlugin   \
           Geomagic                  \
           BeamAdapter               \
+          Cosserat                  \
           CGALPlugin                \
           CImgPlugin                \
           CollisionOBBCapsule       \
           CSparseSolvers            \
           DiffusionSolver           \
           image                     \
-          InvertibleFVM             \
           ManifoldTopologies        \
           ModelOrderReduction       \
           PluginExample             \
           Registration              \
           SceneCreator              \
-          SensableEmulation         \
           ShapeMatchingPlugin       \
           SofaAssimp                \
           SofaCarving               \
@@ -31,7 +30,6 @@ function clean_default_plugins()
           SofaImplicitField         \
           SofaMatrix                \
           SoftRobots                \
-          SofaSimpleGUI             \
           SofaSphFluid              \
           SofaValidation            \
           STLIB                     \
