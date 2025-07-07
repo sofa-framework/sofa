@@ -239,7 +239,7 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);  // size = number of triangles
     if (!empty())
     {
-        const SReal distance = (SReal)this->proximity.getValue();
+        const SReal distance = (SReal)this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
             Element t(this,i);
@@ -293,7 +293,7 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, 
     cubeModel->resize(size);
     if (!empty())
     {
-        const SReal distance = (SReal)this->proximity.getValue();
+        const SReal distance = (SReal)this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
             Element t(this,i);
@@ -377,7 +377,8 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
 {
     SOFA_UNUSED(params);
 
-    if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels()) return;
+    if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels())
+        return;
 
     // check first that topology didn't changed
     if (m_topology->getRevision() != m_topologyRevision)

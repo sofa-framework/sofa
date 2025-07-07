@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,35 +20,36 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMatrix/Qt/config.h>
+#include <SofaMatrix/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <SofaMatrix/Qt/BaseMatrixImageProxy.h>
+#include <SofaMatrix/BaseMatrixImageProxy.h>
+#include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 
-#include <sofa/core/behavior/BaseMatrixLinearSystem.h>
-
-namespace sofa::component::linearsolver
+namespace sofa::component::constraintset
 {
 
 /**
- * Component to convert a BaseMatrix from the linear solver into an image that can be visualized in the GUI.
- * Use GlobalSystemMatrixExporter in order to save an image on the disk.
+ * Component to convert a BaseMatrix from the constraint solver into an image that can be visualized in the GUI.
+ * Use ComplianceMatrixExporter in order to save an image on the disk.
+ *
+ * Note that the compliance matrix is dense. It means all the entries will probably be non-zero
  */
-class SOFA_SOFAMATRIX_QT_API GlobalSystemMatrixImage : public core::objectmodel::BaseObject
+class SOFA_SOFAMATRIX_API ComplianceMatrixImage : public core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(GlobalSystemMatrixImage, core::objectmodel::BaseObject);
+    SOFA_CLASS(ComplianceMatrixImage, core::objectmodel::BaseObject);
 
 protected:
 
-    GlobalSystemMatrixImage();
-    ~GlobalSystemMatrixImage() override;
+    ComplianceMatrixImage();
+    ~ComplianceMatrixImage() override;
 
     void init() override;
     void handleEvent(core::objectmodel::Event *event) override;
 
     Data< type::BaseMatrixImageProxy > d_bitmap; ///< Visualization of the representation of the matrix as a binary image. White pixels are zeros, black pixels are non-zeros.
-    SingleLink<GlobalSystemMatrixImage, sofa::core::behavior::BaseMatrixLinearSystem, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_linearSystem;
+    SingleLink<ComplianceMatrixImage, sofa::component::constraint::lagrangian::solver::ConstraintSolverImpl, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
 };
 
-} //namespace sofa::component::linearsolver
+} //namespace sofa::component::constraintset

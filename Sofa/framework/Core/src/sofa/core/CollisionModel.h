@@ -25,6 +25,8 @@
 #include <sofa/core/CollisionElement.h>
 #include <sofa/helper/set.h>
 
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
+
 //todo(dmarchal 2018-06-19) I really wonder why a collision model has a dependency to a RGBAColors.
 #include <sofa/type/RGBAColor.h>
 
@@ -304,7 +306,7 @@ public:
             root->addSlave(pmodel); 
             pmodel->setMoving(isMoving());
             pmodel->setSimulated(isSimulated());
-            pmodel->proximity.setParent(&proximity);
+            pmodel->d_contactDistance.setParent(&d_contactDistance);
 			
             pmodel->group.beginEdit()->insert(group.getValue().begin(), group.getValue().end());
             pmodel->group.endEdit();
@@ -318,9 +320,11 @@ public:
 
     /// @name Experimental methods
     /// @{
+    SOFA_ATTRIBUTE_DEPRECATED__NAME_CHANGED()
+    [[nodiscard]] SReal getProximity() const { return getContactDistance(); }
 
     /// Get distance to the actual (visual) surface
-    [[nodiscard]] SReal getProximity() const { return proximity.getValue(); }
+    [[nodiscard]] SReal getContactDistance() const { return d_contactDistance.getValue(); }
 
     /// Get contact stiffness
     [[nodiscard]] SReal getContactStiffness(Index /*index*/) const { return contactStiffness.getValue(); }
@@ -362,7 +366,10 @@ public:
     void setColor4f(const float *c);
 
     /// Set of differents parameters
-    void setProximity       (const SReal a)        { proximity.setValue(a); }
+    void setContactDistance (const SReal a)        { d_contactDistance.setValue(a); }
+    SOFA_ATTRIBUTE_DEPRECATED__NAME_CHANGED()
+    void setProximity (const SReal a)  { setContactDistance(a); }
+
     void setContactResponse (const std::string &a) { contactResponse.setValue(a); }
 
     /// Returns an int corresponding to the type of this.
@@ -388,8 +395,15 @@ protected:
     Data<bool> bSimulated;
     /// flag indication if the object can self collide
     Data<bool> bSelfCollision;
+    
+    
+    SOFA_ATTRIBUTE_RENAMED__COLLISIONMODEL_PROXIMITY()
+    objectmodel::lifecycle::RenamedData<SReal>  proximity;
+
     /// Distance to the actual (visual) surface
-    Data<SReal> proximity;
+    Data<SReal> d_contactDistance;
+
+    
     /// Default contact stiffness
     Data<SReal> contactStiffness;
     /// Default contact friction (damping) coefficient

@@ -54,7 +54,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
     const std::shared_ptr<DistanceGrid> grid1 = e1.getGrid();
     FFDDistanceGridCollisionModel::DeformedCube& c1 = e1.getCollisionModel()->getDeformCube(e1.getIndex());
 
-    const double d0 = e1.getProximity() + e2.getProximity() + intersection->getContactDistance() + e2.r();
+    const double d0 = e1.getContactDistance() + e2.getContactDistance() + intersection->getContactDistance() + e2.r();
     const SReal margin = 0.001f + (SReal)d0;
 
     c1.updateFaces();

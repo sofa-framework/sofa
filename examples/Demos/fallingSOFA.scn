@@ -95,7 +95,7 @@
 
             <!-- This uses triangles as colliding element. These triangular primitives are the triangles present in the topology
             For more information on collision models see : https://sofa-framework.github.io/doc/components/collision/geometry/collisionmodels/ -->
-            <TriangleCollisionModel name="Collision" proximity="0.001" color="0.94117647058824 0.93725490196078 0.89411764705882" />
+            <TriangleCollisionModel name="Collision" contactDistance="0.001" color="0.94117647058824 0.93725490196078 0.89411764705882" />
 
             <!-- This is a mapping: it relates the position of this node to the one of the simulated node.
             The position of this node (the output of the mapping) is totally defined by the position of the input node
@@ -157,6 +157,6 @@
                                                  4 5 6  4 6 7" />
         <MechanicalObject template="Vec3"/>
         <!-- Because it is neither simulated nor moving, we can speed the solver and collision detection by setting parameters moving="0" simulated="0" -->
-        <TriangleCollisionModel name="CubeCM" proximity="0.001" moving="0" simulated="0" />
+        <TriangleCollisionModel name="CubeCM" contactDistance="0.001" moving="0" simulated="0" />
     </Node>
 </Node>
