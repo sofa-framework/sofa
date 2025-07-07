@@ -58,13 +58,13 @@ system-requirements = { cuda = "12" }
 [feature.plugin-cuda.target.linux]
 # XXX Adding nvvm/bin to PATH was required to compile, may be related to
 # https://github.com/conda-forge/cuda-nvcc-impl-feedstock/issues/9
-activation = { env = { PATH = "$CONDA_PREFIX/nvvm/bin:$PATH", SOFA_PLUGIN_SOFACUDA_ARGS = "-DSOFA_PLUGIN_SOFACUDA=ON -DSOFACUDA_ENABLE_NATIVE_ARCHITECTURE=ON" } }
+activation = { env = { PATH = "$CONDA_PREFIX/nvvm/bin:$PATH", SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=ON -DSOFACUDA_ENABLE_NATIVE_ARCHITECTURE=ON" } }
 dependencies = { cuda-version = "*", cuda-compiler = "*" }
 [feature.plugin-cuda.target.win]
-activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DSOFA_PLUGIN_SOFACUDA=ON -DSOFACUDA_ENABLE_NATIVE_ARCHITECTURE=ON" } }
+activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=ON -DSOFACUDA_ENABLE_NATIVE_ARCHITECTURE=ON" } }
 dependencies = { cuda-version = "*", cuda-compiler = "*" }
 [feature.plugin-cuda.target.osx]
-activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DSOFA_PLUGIN_SOFACUDA=OFF" } }
+activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=OFF" } }
 
 [feature.plugin-cgal]
 dependencies = { cgal-cpp = "*", gmp = "*" }
