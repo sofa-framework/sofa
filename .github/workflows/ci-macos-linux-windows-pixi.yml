@@ -26,7 +26,7 @@ jobs:
 
       - uses: prefix-dev/setup-pixi@v0.8.10
         with:
-          cache: true
+          cache: false
           environments: ${{ matrix.environment }}
 
       - name: Build SOFA [MacOS/Linux/Windows]
