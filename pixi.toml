@@ -64,7 +64,7 @@ dependencies = { cuda-version = "*", cuda-compiler = "*" }
 activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=ON -DSOFACUDA_ENABLE_NATIVE_ARCHITECTURE=ON" } }
 dependencies = { cuda-version = "*", cuda-compiler = "*" }
 [feature.plugin-cuda.target.osx]
-activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=OFF" } }
+activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=OFF -DPLUGIN_BEAMADAPTER_CUDA=OFF -DPLUGIN_SOFADISTANCEGRID_CUDA=OFF -DPLUGIN_SOFASPHFLUID_CUDA=OFF -DPLUGIN_SOFTROBOTS_CUDA=OFF" } }
 
 [feature.plugin-cgal]
 dependencies = { cgal-cpp = "*", gmp = "*" }
