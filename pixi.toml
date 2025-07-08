@@ -34,7 +34,6 @@ scripts = ["development/scripts/pixi/activation.sh"]
 scripts = ["development/scripts/pixi/activation.bat"]
 
 [tasks]
-
 build = { cmd = "cmake --build $SOFA_BUILD_DIR --target all --parallel 8", depends-on = ["configure"] }
 clean = { cmd = "rm -rf $SOFA_BUILD_DIR" }
 test = { cmd = "ctest --test-dir $SOFA_BUILD_DIR --output-on-failure", depends-on = ["build"] }
@@ -42,8 +41,6 @@ test = { cmd = "ctest --test-dir $SOFA_BUILD_DIR --output-on-failure", depends-o
 # TODO: add run-regression-tests feature
 
 # TODO: add build-release-package feature
-
-# --------------------------------
 
 [feature.plugin-sofa-python3]
 dependencies = { numpy = ">=1.22.0", python = ">=3.9.0", pybind11 = ">=2.3.0" }
