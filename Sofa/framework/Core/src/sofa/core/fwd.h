@@ -30,7 +30,7 @@ namespace sofa::helper::visual { class DrawTool; }
 namespace sofa::core
 {
 
-
+class ObjectFactory;
 class BaseState;
 class BaseMapping;
 class BehaviorModel;

@@ -20,11 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaImplicitField/config.h>
+#include <SofaImplicitField/fwd.h>
 #include <SofaImplicitField/initSofaImplicitField.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
+
+using namespace sofa::component::geometry;
 
 namespace sofa::component::geometry::_BottleField_
 {
@@ -106,6 +109,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     sofa::component::mapping::registerImplicitSurfaceMapping(factory);
     sofa::component::container::registerInterpolatedImplicitSurface(factory);
     sofa::component::geometry::_discretegrid_::registerDiscreteGridField(factory);
+    sofa::component::geometry::registerToFactory<FieldToSurfaceMesh>(factory);
 }
 
 } /// sofaimplicitfield
