@@ -112,7 +112,6 @@ protected:
     /// The number of contacts corresponds to the number of collision models
     /// currently in contact with a collision model.
     void setNumberOfContacts() const;
-
 };
 
 
