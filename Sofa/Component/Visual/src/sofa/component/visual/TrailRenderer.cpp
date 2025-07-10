@@ -34,7 +34,4 @@ void registerTrailRenderer(sofa::core::ObjectFactory* factory)
     );
 }
 
-template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Vec3Types>;
-template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Rigid3Types>;
-
 }
