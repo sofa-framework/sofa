@@ -87,7 +87,11 @@ void CollisionResponse::init()
         sofa::helper::OptionsGroup responseOptions = initializeResponseOptions(getContext());
         if(!responseOptions.isInOptionsList(d_response.getValue().getSelectedItem()))
         {
-            msg_error() << "response \"" << d_response.getValue().getSelectedItem() << "\" is not a valid response method. Response can be among the list: " << responseOptions;
+            msg_error() << "response method is not a valid response method. Response can be among the list: " << responseOptions.getItemNames();
+        }
+        else
+        {
+            msg_info() << "Valid response method: " << d_response.getValue().getSelectedItem();
         }
     }
 }

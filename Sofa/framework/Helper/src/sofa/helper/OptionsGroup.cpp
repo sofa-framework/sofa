@@ -31,7 +31,6 @@ class OptionsGroup;
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 OptionsGroup::OptionsGroup() : textItems()
 {
-    selectedItem=0;
 }
 ///////////////////////////////////////
 OptionsGroup::OptionsGroup(const OptionsGroup & m_radiotrick) : textItems(m_radiotrick.textItems)
@@ -42,12 +41,15 @@ OptionsGroup::OptionsGroup(const OptionsGroup & m_radiotrick) : textItems(m_radi
 void OptionsGroup::setNbItems(const size_type nbofRadioButton )
 {
     textItems.resize( nbofRadioButton );
-    selectedItem = 0;
 }
 ///////////////////////////////////////
 void OptionsGroup::setItemName(const unsigned int id_item, const std::string& name )
 {
     textItems[id_item] = name;
+}///////////////////////////////////////
+type::vector<std::string> OptionsGroup::getItemNames()
+{
+    return textItems;
 }
 ///////////////////////////////////////
 int OptionsGroup::isInOptionsList(const std::string & tempostring) const
