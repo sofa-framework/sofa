@@ -63,8 +63,11 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_VISUAL_TRAILRENDERER_CPP)
-extern template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Rigid3Types>;
+    #define SOFA_COMPONENT_VISUAL_TRAILRENDERER_INSTANCIATION extern template class SOFA_COMPONENT_VISUAL_API
+#else
+    #define SOFA_COMPONENT_VISUAL_TRAILRENDERER_INSTANCIATION template class
 #endif
+
+SOFA_COMPONENT_VISUAL_TRAILRENDERER_INSTANCIATION TrailRenderer<defaulttype::Rigid3Types>;
 
 }

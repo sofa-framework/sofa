@@ -473,13 +473,16 @@ void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::Visual
 
 
 #if !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
-extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec2Types>;
-extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec1Types>;
-extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec6Types>;
-extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Rigid3Types>;
-extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Rigid2Types>;
-
+    #define SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_TEMPLATE extern template class SOFA_COMPONENT_STATECONTAINER_API
+#else
+    #define SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_TEMPLATE template class SOFA_COMPONENT_STATECONTAINER_API
 #endif
+
+SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_TEMPLATE MechanicalObject<defaulttype::Vec3Types>;
+SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_TEMPLATE MechanicalObject<defaulttype::Vec2Types>;
+SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_TEMPLATE MechanicalObject<defaulttype::Vec1Types>;
+SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_TEMPLATE MechanicalObject<defaulttype::Vec6Types>;
+SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_TEMPLATE MechanicalObject<defaulttype::Rigid3Types>;
+SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_TEMPLATE MechanicalObject<defaulttype::Rigid2Types>;
 
 } // namespace sofa::component::statecontainer
