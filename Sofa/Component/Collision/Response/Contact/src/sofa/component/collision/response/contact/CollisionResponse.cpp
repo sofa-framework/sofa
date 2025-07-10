@@ -72,8 +72,7 @@ void CollisionResponse::init()
 
     if(!d_response.isSet())
     {
-        msg_error() << "No response method has been set. Default response=\"PenalityContactForceField\"";
-        setDefaultResponseType("PenalityContactForceField");
+        msg_error() << "No response method has been set";
         return;
     }
 
