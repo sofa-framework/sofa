@@ -31,13 +31,6 @@ BaseMatrixLinearSystem::BaseMatrixLinearSystem()
     d_matrixSize.setReadOnly(true);
 }
 
-void BaseMatrixLinearSystem::buildSystemMatrix(const core::MechanicalParams* mparams)
-{
-    preAssembleSystem(mparams);
-    assembleSystem(mparams);
-    postAssembleSystem(mparams);
-}
-
 void BaseMatrixLinearSystem::preAssembleSystem(const core::MechanicalParams* mparams)
 {
     SOFA_UNUSED(mparams);
