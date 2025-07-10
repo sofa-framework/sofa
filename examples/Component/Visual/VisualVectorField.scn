@@ -1,0 +1,25 @@
+<Node name="root" gravity="0 -9.81 0" dt="0.01">
+    <DefaultAnimationLoop parallelODESolving="true"/>
+    <DefaultVisualManagerLoop name="visualLoop"/>
+    <VisualStyle displayFlags="showVisual showWireframe showForceFields" />
+    <VisualGrid name="grid"/>
+    <LineAxis size="@grid.size"/>
+
+    <Node name="beam">
+        <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A"/>
+        <EigenSimplicialLDLT template="CompressedRowSparseMatrixd"/>
+        <MechanicalObject name="DoFs" template="Vec3" />
+        <UniformMass name="mass" totalMass="320" />
+        <RegularGridTopology name="grid" nx="4" ny="4" nz="10" xmin="-1" xmax="1" ymin="-1" ymax="1" zmin="0" zmax="9" />
+        <BoxROI name="box" box="-2 -2 -0.0001  2 2 0.0001"/>
+        <FixedProjectiveConstraint indices="@box.indices" />
+        <HexahedronFEMForceField name="FEM" youngModulus="40000" poissonRatio="0.3" method="large" />
+
+        <Node name="vectors">
+            <VisualStyle displayFlags="showVisual hideWireframe" />
+            <VisualVectorField position="@DoFs.position" vector="@DoFs.velocity" drawMode="Arrow" vectorScale="0.2" color="orange"/>
+            <VisualVectorField position="@DoFs.position" vector="@DoFs.force" drawMode="Arrow" vectorScale="0.0005" color="navy"/>
+        </Node>
+    </Node>
+</Node>
