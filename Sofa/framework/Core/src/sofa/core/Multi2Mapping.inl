@@ -139,7 +139,7 @@ type::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMech
 }
 
 template < class In1, class In2,class Out>
-void Multi2Mapping<In1,In2,Out>::apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos )
+void Multi2Mapping<In1,In2,Out>::doApply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos )
 {
     type::vector<DataVecCoord_t<Out>*> vecOutPos;
     getVecOutCoord(outPos, vecOutPos);
@@ -152,7 +152,7 @@ void Multi2Mapping<In1,In2,Out>::apply (const MechanicalParams* mparams, MultiVe
 }
 
 template < class In1, class In2,class Out>
-void Multi2Mapping<In1,In2,Out>::applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel )
+void Multi2Mapping<In1,In2,Out>::doApplyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel )
 {
     type::vector<DataVecDeriv_t<Out>*> vecOutVel;
     getVecOutDeriv(outVel, vecOutVel);
@@ -164,7 +164,7 @@ void Multi2Mapping<In1,In2,Out>::applyJ (const MechanicalParams* mparams, MultiV
 }
 
 template < class In1, class In2,class Out>
-void Multi2Mapping<In1,In2,Out>::applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce )
+void Multi2Mapping<In1,In2,Out>::doApplyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce )
 {
     type::vector<DataVecDeriv_t<In1>*> vecOut1Force;
     getVecIn1Deriv(inForce, vecOut1Force);
@@ -177,7 +177,7 @@ void Multi2Mapping<In1,In2,Out>::applyJT (const MechanicalParams* mparams, Multi
 }
 
 template < class In1, class In2,class Out>
-void Multi2Mapping<In1,In2,Out>::applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
+void Multi2Mapping<In1,In2,Out>::doApplyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
 {
     type::vector<DataMatrixDeriv_t<In1>*> matOut1Const;
     getMatIn1Deriv(inConst, matOut1Const);
@@ -190,7 +190,7 @@ void Multi2Mapping<In1,In2,Out>::applyJT(const ConstraintParams* cparams, MultiM
 }
 
 template < class In1, class In2,class Out>
-void Multi2Mapping<In1,In2,Out>::computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
+void Multi2Mapping<In1,In2,Out>::doComputeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
 {
     type::vector<DataVecDeriv_t<Out>*> vecOutAcc;
     getVecOutDeriv(outAcc, vecOutAcc);
@@ -221,14 +221,14 @@ void Multi2Mapping<In1, In2, Out>::init()
         }
     }
 
-    apply(mechanicalparams::defaultInstance() , vec_id::write_access::position, vec_id::read_access::position);
-    applyJ(mechanicalparams::defaultInstance() , vec_id::write_access::velocity, vec_id::read_access::velocity);
+    BaseMapping::apply(mechanicalparams::defaultInstance() , vec_id::write_access::position, vec_id::read_access::position);
+    BaseMapping::applyJ(mechanicalparams::defaultInstance() , vec_id::write_access::velocity, vec_id::read_access::velocity);
     if (f_applyRestPosition.getValue())
-        apply(mechanicalparams::defaultInstance(), vec_id::write_access::restPosition, vec_id::read_access::restPosition);
+        BaseMapping::apply(mechanicalparams::defaultInstance(), vec_id::write_access::restPosition, vec_id::read_access::restPosition);
 }
 
 template < class In1, class In2, class Out >
-void Multi2Mapping<In1,In2,Out>::disable()
+void Multi2Mapping<In1,In2,Out>::doDisable()
 {
 }
 } // namespace sofa
