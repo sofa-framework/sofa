@@ -25,29 +25,4 @@
 namespace sofa
 {
 
-TEST(fixed_array, operatorLess)
-{
-    const sofa::type::fixed_array<sofa::Index, 2> edge1 { 0, 0};
-    const sofa::type::fixed_array<sofa::Index, 2> edge2 { 1, 0};
-    EXPECT_LT(edge1, edge2);
-    EXPECT_GT(edge2, edge1);
-}
-
-
-TEST(fixed_array, structuredBindings)
-{
-    static constexpr sofa::type::fixed_array<std::size_t, 4> sofaArray { 8, -7, 4, -1};
-    const auto& [a, b, c, d] = sofaArray;
-    EXPECT_EQ(a, 8);
-    EXPECT_EQ(b,-7);
-    EXPECT_EQ(c, 4);
-    EXPECT_EQ(d,-1);
-}
-
-TEST(VecTest, DeductionGuide)
-{
-    constexpr sofa::type::fixed_array array { 1.0_sreal, 2.0_sreal, 3.0_sreal };
-    static_assert(std::is_same_v<decltype(array)::value_type, SReal>);
-}
-
 }

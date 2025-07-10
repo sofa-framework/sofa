@@ -92,8 +92,8 @@ bool QuadSetTopology_test::testQuadBuffers()
     EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     // The first 2 elements in this file should be :
-    sofa::type::fixed_array<QuadSetTopologyContainer::PointID, 4> elemTruth0(3, 11, 5, 4);
-    sofa::type::fixed_array<QuadSetTopologyContainer::PointID, 4> elemTruth1(11, 8, 6, 5);
+    sofa::type::fixed_array<QuadSetTopologyContainer::PointID, 4> elemTruth0({3, 11, 5, 4});
+    sofa::type::fixed_array<QuadSetTopologyContainer::PointID, 4> elemTruth1({11, 8, 6, 5});
 
 
     // check topology element buffer
@@ -185,7 +185,7 @@ bool QuadSetTopology_test::testEdgeBuffers()
     for (size_t i = 0; i < edgeInElem.size(); i++)
         EXPECT_EQ(edgeInElem[i], edgeInElemM[i]);
 
-    sofa::type::fixed_array<int, 4> edgeInElemTruth(7, 8, 4, 9);
+    sofa::type::fixed_array<int, 4> edgeInElemTruth({7, 8, 4, 9});
     for (int i = 0; i<4; ++i)
         EXPECT_EQ(edgeInElem[i], edgeInElemTruth[i]);
     
