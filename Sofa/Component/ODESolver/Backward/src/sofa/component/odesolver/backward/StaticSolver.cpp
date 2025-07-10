@@ -68,6 +68,12 @@ StaticSolver::StaticSolver()
             false,
             "should_diverge_when_residual_is_growing",
             "Boolean stopping Newton iterations when the residual is greater than the one from the previous iteration"))
+    , d_converged(initData(&d_converged,
+        false,
+        "converged",
+        "Whether or not the last call to solve converged",
+        true /*is_displayed_in_gui*/,
+        true /*is_read_only*/))
 {}
 
 void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
@@ -184,6 +190,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
     if (absolute_residual_tolerance_threshold > 0 && R_squared_norm <= absolute_squared_residual_threshold)
     {
         converged = true;
+        d_converged.setValue(converged);
         if (print_log)
         {
             info << "The ODE has already reached an equilibrium state."
@@ -386,6 +393,11 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
         R_previous_squared_norm = R_squared_norm;
     }
 
+    if (converged && !diverged)
+        d_converged.setValue(true);
+    if (!converged && diverged)
+        d_converged.setValue(false);
+
     n_it--; // Reset to the actual index of the last iteration completed
 
     if (! converged && ! diverged && n_it == (max_number_of_newton_iterations-1))
@@ -394,6 +406,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::c
         {
             info << "[DIVERGED] The number of Newton iterations reached the maximum of " << max_number_of_newton_iterations << " iterations" << ".\n";
         }
+        d_converged.setValue(false);
     }
 
     sofa::helper::AdvancedTimer::valSet("nb_iterations", n_it+1);

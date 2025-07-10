@@ -155,6 +155,7 @@ protected:
     Data<SReal> d_absolute_residual_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the norm of the residual |R| is smaller than this threshold. Use a negative value to disable this criterion.
     Data<SReal> d_relative_residual_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the ratio |R|/|R0| is smaller than this threshold. Use a negative value to disable this criterion.
     Data<bool> d_should_diverge_when_residual_is_growing; ///< Divergence criterion: The newton iterations will stop when the residual is greater than the one from the previous iteration.
+    Data<bool> d_converged; ///< Convergence flag: makes it possible to know if the algorithm has converged or not from outside the solver.
 
 private:
     /// Sum of displacement increments since the beginning of the time step
