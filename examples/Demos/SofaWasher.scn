@@ -89,7 +89,7 @@
         <Node name="Collision">
             <TriangleSetTopologyContainer name="FloorTopology" position="-200 -200 15    200 -200 15   200 200 15   -200 200 15   -200 -200 -15   200 -200 -15   200 200 -15   -200 200 -15" triangles="0 2 1  0 3 2   4 6 5  4 7 6   0 1 4  5 4 1   3 6 2  3 7 6   1 2 6  1 6 5  0 4 3  3 4 7"/>
             <MechanicalObject name="CollisionDOF" template="Vec3"/>
-            <TriangleCollisionModel  selfCollision="0" topology="@FloorTopology" simulated="0" group="1 2" proximity="3" />
+            <TriangleCollisionModel  selfCollision="0" topology="@FloorTopology" simulated="0" group="1 2" contactDistance="3" />
             <RigidMapping name="MappingCollision" input="@../mstate" output="@CollisionDOF" globalToLocalCoords="true"/>
 
         </Node>
