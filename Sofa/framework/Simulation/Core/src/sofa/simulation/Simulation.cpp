@@ -472,20 +472,14 @@ void unload(NodeSPtr root)
 }
 }
 
-Simulation::Simulation()
-{
-    // Safety check; it could be elsewhere, but here is a good place, I guess.
-    if (!sofa::simulation::core::isInitialized())
-        sofa::helper::printUninitializedLibraryWarning("Sofa.Simulation.Core", "sofa::simulation::common::init()");
-}
-
-Simulation::~Simulation()
-{}
-
+Simulation theSimulation;
 Simulation* getSimulation()
 {
-    return Simulation::theSimulation.get();
+    return &theSimulation;
 }
+
+Simulation::Simulation(){}
+Simulation::~Simulation(){}
 
 /// create a new graph(or tree) and return its root node.
 NodeSPtr Simulation::createNewGraph(const std::string& name)
@@ -499,8 +493,5 @@ NodeSPtr Simulation::createNewNode(const std::string& name)
 }
 
 bool Simulation::isDirectedAcyclicGraph() { return true; }
-
-
-sofa::simulation::Simulation::SPtr sofa::simulation::Simulation::theSimulation = std::make_shared<Simulation>();
 
 } // namespace sofa::simulation

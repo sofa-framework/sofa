@@ -60,7 +60,7 @@ void dumpScene(Node::SPtr root)
     p.execute(root.get()) ;
 }
 
-Simulation::SPtr createSimulation(const std::string& type)
+SimulationSPtr createSimulation(const std::string& type)
 {
     if(type!="DAG")
     {
@@ -68,7 +68,7 @@ Simulation::SPtr createSimulation(const std::string& type)
         return nullptr ;
     }
 
-    return std::make_shared<simulation::graph::DAGSimulation>();
+    return std::make_shared<simulation::Simulation>();
 }
 
 
