@@ -78,7 +78,7 @@ void VisualVectorField<DataTypes>::computeBBox(const core::ExecParams* exec_para
     const auto vector = sofa::helper::getReadAccessor(d_vector);
 
     const auto minSize = std::min(position.size(), vector.size());
-    if (minSize <= 0) return;
+    if (minSize == 0) return;
 
     const auto vectorScale = d_vectorScale.getValue();
 
