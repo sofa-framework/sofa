@@ -103,13 +103,13 @@ public:
     Simulation& operator=(const Simulation& n) = delete;
 
     /// create a new graph(or tree) and return its root node.
-    virtual NodeSPtr createNewGraph(const std::string& name)=0;//Todo replace newNode method
+    virtual NodeSPtr createNewGraph(const std::string& name);//Todo replace newNode method
 
     /// creates and returns a new node.
-    virtual NodeSPtr createNewNode(const std::string& name)=0;
+    virtual NodeSPtr createNewNode(const std::string& name);
 
     /// Can the simulation handle a directed acyclic graph?
-    virtual bool isDirectedAcyclicGraph() = 0;
+    virtual bool isDirectedAcyclicGraph();
 
     inline static Simulation::SPtr theSimulation { nullptr };
 };
