@@ -461,14 +461,11 @@ void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const type::Quat
 template<> SOFA_COMPONENT_STATECONTAINER_API
 void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset );
 
-
 template<> SOFA_COMPONENT_STATECONTAINER_API
 void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorDifferentSize(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset );
 
-
 template<> SOFA_COMPONENT_STATECONTAINER_API
 void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::VisualParams* vparams);
-
 
 #if !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
     #define SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP extern
