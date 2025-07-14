@@ -1782,7 +1782,7 @@ void Node::updateContext()
         }
         // TODO
         // ahem.... not sure here... which parent should I copy my context from exactly ?
-        copyContext(*static_cast<Context*>(static_cast<Node*>(firstParent)));
+        copyContext(*(firstParent->getContext()));
     }
 
     updateSimulationContext();
@@ -1803,7 +1803,7 @@ void Node::updateSimulationContext()
         }
         // TODO
         // ahem.... not sure here... which parent should I copy my simulation context from exactly ?
-        copySimulationContext(*static_cast<Context*>(static_cast<Node*>(firstParent)));
+        copySimulationContext(*firstParent->getContext());
     }
 
     for ( unsigned i=0; i<contextObject.size(); ++i )

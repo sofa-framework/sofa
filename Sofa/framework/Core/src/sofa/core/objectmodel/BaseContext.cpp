@@ -33,7 +33,19 @@ namespace sofa::core::objectmodel
 {
 
 BaseContext::BaseContext()
-{}
+    : is_activated(initData(&is_activated, true, "activated", "To Activate a node"))
+    , worldGravity_(initData(&worldGravity_, Vec3(SReal(0),SReal(-9.81),SReal(0)),"gravity","Gravity in the world coordinate system"))
+    , dt_(initData(&dt_,SReal(0.01),"dt","Time step"))
+    , time_(initData(&time_,SReal(0.),"time","Current time"))
+    , animate_(initData(&animate_,false,"animate","Animate the Simulation(applied at initialization only)"))
+    , d_isSleeping(initData(&d_isSleeping, false, "sleeping", "The node is sleeping, and thus ignored by visitors."))
+    , d_canChangeSleepingState(initData(&d_canChangeSleepingState, false, "canChangeSleepingState", "The node can change its sleeping state."))
+{
+    animate_.setReadOnly(true);
+    dt_.setReadOnly(true);
+    time_.setReadOnly(true);
+}
+
 
 BaseContext::~BaseContext()
 {}
@@ -44,52 +56,108 @@ BaseContext* BaseContext::getDefault()
     return &defaultContext;
 }
 
-
-
 ////////////////
 // Parameters //
 ////////////////
 
+/// State of the context
+void BaseContext::setActive(bool val) { is_activated.setValue(val); }
+
 /// The Context is active
-bool BaseContext::isActive() const { return true; }
+bool BaseContext::isActive() const { return is_activated.getValue(); }
+
+
+/// Sleeping state of the context
+void BaseContext::setSleeping(bool val){ d_isSleeping.setValue(val); }
 
 /// The Context is not sleeping by default
-bool BaseContext::isSleeping() const { return false; }
+bool BaseContext::isSleeping() const { return d_isSleeping.getValue(); }
 
 /// The Context can not change its sleeping state by default
-bool BaseContext::canChangeSleepingState() const { return false; }
+bool BaseContext::canChangeSleepingState() const { return d_canChangeSleepingState.getValue(); }
 
+/// Sleeping state change of the context
+void BaseContext::setChangeSleepingState(bool val)
+{
+    d_canChangeSleepingState.setValue(val);
+}
+
+/// Gravity vector
+void BaseContext::setGravity(const Vec3& g)
+{
+    worldGravity_ .setValue(g);
+}
 
 /// Gravity in the world coordinate system
 const BaseContext::Vec3& BaseContext::getGravity() const
 {
-    static const Vec3 G(SReal(0),SReal(-9.81), SReal(0));
-    return G;
+    return worldGravity_.getValue();
+}
+
+/// Simulation timestep
+void BaseContext::setDt(SReal dt)
+{
+    dt_.setValue(dt);
 }
 
 /// Simulation timestep
 SReal BaseContext::getDt() const
 {
-    return 0.01;
+    return dt_.getValue();
+}
+
+/// Simulation time
+void BaseContext::setTime(SReal t)
+{
+    time_.setValue(t);
 }
 
 /// Simulation time
 SReal BaseContext::getTime() const
 {
-    return 0.0;
+    return time_.getValue();
+}
+
+/// Animation flag
+void BaseContext::setAnimate(const bool val)
+{
+    animate_.setValue(val);
 }
 
 /// Animation flag
 bool BaseContext::getAnimate() const
 {
-    return true;
+    return animate_.getValue();
 }
 
+/// Display flags: Gravity
+void BaseContext::setDisplayWorldGravity(bool val)
+{
+    worldGravity_.setDisplayed(val);
+}
 
 BaseContext* BaseContext::getRootContext() const
 {
     return const_cast<BaseContext*>(this);
 }
+
+//======================
+void BaseContext::copyContext(const BaseContext& c)
+{
+    // BUGFIX 12/01/06 (Jeremie A.): Can't use operator= on the class as it will copy other data in the BaseContext class (such as name)...
+    // *this = c;
+    copySimulationContext(c);
+}
+
+
+void BaseContext::copySimulationContext(const BaseContext& c)
+{
+    worldGravity_.setValue(c.getGravity());  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+    setDt(c.getDt());
+    setTime(c.getTime());
+    setAnimate(c.getAnimate());
+}
+
 
 ////////////////
 // Containers //

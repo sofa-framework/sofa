@@ -25,6 +25,11 @@
 
 namespace sofa::core::objectmodel
 {
+    using Context = BaseContext;
+}
+
+namespace sofa::core::objectmodel::deprecated
+{
 
 /**
  *  \brief Implementation of BaseContext, storing all shared parameters in Datas.
