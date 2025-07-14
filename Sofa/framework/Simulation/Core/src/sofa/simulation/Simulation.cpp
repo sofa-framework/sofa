@@ -487,4 +487,18 @@ Simulation* getSimulation()
     return Simulation::theSimulation.get();
 }
 
+/// create a new graph(or tree) and return its root node.
+NodeSPtr Simulation::createNewGraph(const std::string& name)
+{
+   return createNewNode( name );
+}
+
+NodeSPtr Simulation::createNewNode(const std::string& name)
+{
+    return sofa::core::objectmodel::New<Node>(name);
+}
+
+bool Simulation::isDirectedAcyclicGraph() { return true; }
+
+
 } // namespace sofa::simulation
