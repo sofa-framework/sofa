@@ -34,7 +34,7 @@ namespace sofa::simulation
     typedef sofa::core::sptr<Node> NodeSPtr;
 
     class Simulation;
-    typedef sofa::core::sptr<Simulation> SimulationSPtr;
+    using SimulationSPtr = std::shared_ptr<Simulation>;
 
     /** Get the (unique) simulation which controls the scene.
         Automatically creates one if no Simulation has been set.

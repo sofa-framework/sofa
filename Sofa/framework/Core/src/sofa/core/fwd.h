@@ -73,6 +73,7 @@ namespace sofa::core::objectmodel
 {
 class Base;
 class BaseObject;
+class BaseObjectDescription;
 class BaseNode;
 class BaseContext;
 class BaseData;

@@ -22,14 +22,8 @@
 #pragma once
 
 #include <sofa/simulation/config.h>
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/fwd.h>
-
-namespace sofa::simulation
-{
-    class Node;
-    typedef sofa::core::sptr<Node> NodeSPtr;
-}
+#include <sofa/simulation/fwd.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa::simulation
 {
@@ -110,8 +104,6 @@ public:
 
     /// Can the simulation handle a directed acyclic graph?
     virtual bool isDirectedAcyclicGraph();
-
-    static Simulation::SPtr theSimulation;
 };
 } // namespace sofa::simulation
 
