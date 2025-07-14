@@ -29,8 +29,7 @@ using std::string;
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation ;
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Node ;
 
 #include <sofa/simulation/common/SceneLoaderXML.h>

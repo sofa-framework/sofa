@@ -29,7 +29,5 @@
 
 namespace sofa::simulation::graph
 {
-
-using DAGSimulation = Simulation;
-
+    using DAGSimulation = Simulation;
 } // namespace sofa::simulation::graph

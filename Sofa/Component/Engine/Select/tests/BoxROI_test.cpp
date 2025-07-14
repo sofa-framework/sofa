@@ -37,9 +37,8 @@ using sofa::core::objectmodel::ComponentState;
 #include <sofa/component/engine/select/BoxROI.inl>
 using sofa::component::engine::select::BoxROI;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation;
-using sofa::simulation::graph::DAGSimulation;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 using sofa::core::objectmodel::BaseObject;

@@ -78,6 +78,10 @@ using namespace sofa;
 namespace node
 {
 
+NodeSPtr createNewNode(const std::string& name){
+    return sofa::core::objectmodel::New<Node>(name);
+}
+
 void initRoot(Node* root)
 {
     SCOPED_TIMER("Simulation::init");
