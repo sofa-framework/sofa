@@ -1469,7 +1469,7 @@ sofa::core::topology::BaseMeshTopology* Node::getMeshTopologyLink(SearchDirectio
         return this->meshTopology;
 
     if (dir != Local)
-        return Node::getMeshTopologyLink(dir);
+        return NODEgetMeshTopologyLink(dir);
 
     //local case similar to getActiveMeshTopology ...
 
