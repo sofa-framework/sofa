@@ -501,4 +501,6 @@ NodeSPtr Simulation::createNewNode(const std::string& name)
 bool Simulation::isDirectedAcyclicGraph() { return true; }
 
 
+sofa::simulation::Simulation::SPtr sofa::simulation::Simulation::theSimulation = std::make_shared<Simulation>();
+
 } // namespace sofa::simulation

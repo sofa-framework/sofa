@@ -111,7 +111,7 @@ public:
     /// Can the simulation handle a directed acyclic graph?
     virtual bool isDirectedAcyclicGraph();
 
-    inline static Simulation::SPtr theSimulation { nullptr };
+    static Simulation::SPtr theSimulation;
 };
 } // namespace sofa::simulation
 
