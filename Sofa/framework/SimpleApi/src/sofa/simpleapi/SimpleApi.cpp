@@ -26,9 +26,6 @@
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory ;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation ;
-
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 using sofa::core::objectmodel::BaseObjectDescription ;
