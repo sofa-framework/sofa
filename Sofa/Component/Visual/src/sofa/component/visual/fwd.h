@@ -19,63 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/visual/init.h>
-#include <sofa/component/visual/fwd.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
+#pragma once
+
+#include <sofa/component/visual/config.h>
 
 namespace sofa::component::visual
 {
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
-}
-
-void initExternalModule()
-{
-    init();
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-    registerToFactory<Camera>(factory);
-    registerToFactory<CylinderVisualModel>(factory);
-    registerToFactory<InteractiveCamera>(factory);
-    registerToFactory<LineAxis>(factory);
-    registerToFactory<RecordedCamera>(factory);
-    registerToFactory<TrailRenderer>(factory);
-    registerToFactory<Visual3DText>(factory);
-    registerToFactory<VisualBoundingBox>(factory);
-    registerToFactory<VisualGrid>(factory);
-    registerToFactory<VisualPointCloud>(factory);
-    registerToFactory<VisualModelImpl>(factory);
-    registerToFactory<VisualStyle>(factory);
-    registerToFactory<VisualTransform>(factory);
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
-        first = false;
-    }
-}
-
+    class Camera;
+    class CylinderVisualModel;
+    class InteractiveCamera;
+    class LineAxis;
+    class RecordedCamera;
+    class TrailRenderer;
+    class Visual3DText;
+    class VisualBoundingBox;
+    class VisualGrid;
+    class VisualPointCloud;
+    class VisualModelImpl;
+    class VisualStyle;
+    class VisualTransform;
 } // namespace sofa::component::visual
