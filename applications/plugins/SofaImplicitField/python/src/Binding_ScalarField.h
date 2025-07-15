@@ -1,6 +1,6 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                              SofaImplicitField plugin                       *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -15,31 +15,15 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
 #pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <pybind11/pybind11.h>
 
-#ifdef SOFA_BUILD_SOFA_GL_COMPONENT_RENDERING2D
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_GL_COMPONENT_RENDERING2D_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_GL_COMPONENT_RENDERING2D_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofaimplicitfield {
 
-namespace sofa::gl::component::rendering2d
-{
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::gl::component::rendering2d
+void moduleAddScalarField(pybind11::module &m);
 
-#ifdef SOFA_BUILD_SOFA_GL_COMPONENT_RENDERING2D
-#define SOFA_ATTRIBUTE_DEPRECATED__OGLCOLORMAPGETDEFAULT()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__OGLCOLORMAPGETDEFAULT() \
-    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "")
-#endif
+}

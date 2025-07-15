@@ -377,7 +377,8 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
 {
     SOFA_UNUSED(params);
 
-    if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels()) return;
+    if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels())
+        return;
 
     // check first that topology didn't changed
     if (m_topology->getRevision() != m_topologyRevision)
