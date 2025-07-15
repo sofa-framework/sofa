@@ -83,28 +83,16 @@ void VisualVectorField<DataTypes>::computeBBox(const core::ExecParams* exec_para
         return;
     }
 
-    const auto vectorScale = d_vectorScale.getValue();
+    const auto& vectorScale = d_vectorScale.getValue();
 
-    std::array<SReal, 3> maxBBox;
-    DataTypes::get(maxBBox[0], maxBBox[1], maxBBox[2], position[0]);
-    std::array minBBox(maxBBox);
-
+    auto bbox = sofa::helper::getWriteOnlyAccessor(this->f_bbox);
     for (size_t i = 0; i < minSize; i++)
     {
         const auto& start = position[i];
         const auto end = start + vectorScale * vector[i];
 
-        for (int c = 0; c < 3; c++)
-        {
-            for (const auto& p : {start, end})
-            {
-                if (p[c] > maxBBox[c])
-                    maxBBox[c] = p[c];
-
-                else if (start[c] < minBBox[c])
-                    minBBox[c] = p[c];
-            }
-        }
+       bbox.include(start);
+       bbox.include(end);
     }
     this->f_bbox.setValue(sofa::type::TBoundingBox(minBBox.data(), maxBBox.data()));
 }
