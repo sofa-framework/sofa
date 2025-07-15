@@ -91,8 +91,8 @@ void VisualVectorField<DataTypes>::computeBBox(const core::ExecParams* exec_para
         const auto& start = position[i];
         const auto end = start + vectorScale * vector[i];
 
-       bbox.include(start);
-       bbox.include(end);
+       bbox.wref().include(start);
+       bbox.wref().include(end);
     }
     this->f_bbox.setValue(sofa::type::TBoundingBox(minBBox.data(), maxBBox.data()));
 }
