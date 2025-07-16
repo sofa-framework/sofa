@@ -19,27 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/component/visual/VisualVectorField.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
-
-#ifdef SOFA_BUILD_SOFA_GL_COMPONENT_RENDERING2D
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_GL_COMPONENT_RENDERING2D_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_GL_COMPONENT_RENDERING2D_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofa::gl::component::rendering2d
+namespace sofa::component::visual
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::gl::component::rendering2d
 
-#ifdef SOFA_BUILD_SOFA_GL_COMPONENT_RENDERING2D
-#define SOFA_ATTRIBUTE_DEPRECATED__OGLCOLORMAPGETDEFAULT()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__OGLCOLORMAPGETDEFAULT() \
-    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "")
-#endif
+void registerVisualVectorField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Render a vector field.")
+        .add<VisualVectorField<defaulttype::Vec3Types>>(true)
+    );
+}
+
+template class SOFA_COMPONENT_VISUAL_API VisualVectorField<defaulttype::Vec3Types>;
+
+}

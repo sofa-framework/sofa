@@ -21,25 +21,42 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/component/visual/config.h>
+#include <sofa/core/visual/VisualModel.h>
 
-#ifdef SOFA_BUILD_SOFA_GL_COMPONENT_RENDERING2D
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_GL_COMPONENT_RENDERING2D_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_GL_COMPONENT_RENDERING2D_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofa::gl::component::rendering2d
+namespace sofa::component::visual
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::gl::component::rendering2d
 
-#ifdef SOFA_BUILD_SOFA_GL_COMPONENT_RENDERING2D
-#define SOFA_ATTRIBUTE_DEPRECATED__OGLCOLORMAPGETDEFAULT()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__OGLCOLORMAPGETDEFAULT() \
-    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "")
-#endif
+MAKE_SELECTABLE_ITEMS(VectorFieldDrawMode,
+    sofa::helper::Item{.key = "Line", .description = "Coordinates are displayed using lines"},
+    sofa::helper::Item{.key = "Cylinder", .description = "Coordinates are displayed using cylinders"},
+    sofa::helper::Item{.key = "Arrow", .description = "Coordinates are displayed using arrows"},
+);
+
+template <class DataTypes>
+class VisualVectorField : public core::visual::VisualModel
+{
+public:
+    SOFA_CLASS(VisualVectorField, core::visual::VisualModel);
+
+private:
+    using VecCoord = VecCoord_t<DataTypes>;
+    using VecDeriv = VecDeriv_t<DataTypes>;
+
+public:
+    Data<VecCoord> d_position;
+    Data<VecDeriv> d_vector;
+    Data<SReal> d_vectorScale;
+    Data<VectorFieldDrawMode> d_drawMode;
+    Data<type::RGBAColor> d_color;
+
+    void computeBBox(const core::ExecParams*, bool) override;
+
+private:
+    VisualVectorField();
+
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
+};
+
+
+}  // namespace sofa::component::visual
