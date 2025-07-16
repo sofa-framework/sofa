@@ -470,7 +470,7 @@ void LineCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
-        const SReal distance = this->proximity.getValue();
+        const SReal distance = this->d_contactDistance.getValue();
         const auto& positions = this->mstate->read(core::vec_id::read_access::position)->getValue();
         for (sofa::Size i=0; i<size; i++)
         {
@@ -508,7 +508,7 @@ void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int 
     cubeModel->resize(size);
     if (!empty())
     {
-        const SReal distance = (SReal)this->proximity.getValue();
+        const SReal distance = (SReal)this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
             TLine<DataTypes> t(this,i);
@@ -565,7 +565,8 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
 {
     SOFA_UNUSED(params);
 
-    if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels()) return;
+    if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels())
+        return;
 
     static constexpr Real max_real = std::numeric_limits<Real>::max();
     static constexpr Real min_real = std::numeric_limits<Real>::lowest();

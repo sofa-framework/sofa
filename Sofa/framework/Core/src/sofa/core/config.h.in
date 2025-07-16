@@ -93,6 +93,13 @@
 
 
 #ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__NAME_CHANGED()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__NAME_CHANGED() \
+SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "Use getContactDistance or setContactDistance instead.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
 
     #define SOFA_ATTRIBUTE_DISABLED__POSITION()
     #define SOFA_ATTRIBUTE_DISABLED__REST_POSITION()
@@ -145,4 +152,12 @@
 #else
 #define SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM() \
     SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "It was an experimental function no longer used.")
+#endif
+
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_RENAMED__COLLISIONMODEL_PROXIMITY()
+#else
+#define SOFA_ATTRIBUTE_RENAMED__COLLISIONMODEL_PROXIMITY() \
+    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "Data 'proximity' has been renamed to 'contactDistance'")
 #endif
