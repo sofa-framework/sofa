@@ -411,9 +411,6 @@ public:
     /// Topology
     sofa::core::topology::Topology* getTopology() const override;
 
-    /// Mesh Topology (unified interface for both static and dynamic topologies)
-    sofa::core::topology::BaseMeshTopology* getMeshTopologyLink(SearchDirection dir = SearchUp) const override;
-
     /// Degrees-of-Freedom
     sofa::core::BaseState* getState() const override;
 
@@ -545,7 +542,7 @@ public:
 
     /// Mesh Topology that is relevant for this context
     /// (within it or its parents until a mapping is reached that does not preserve topologies).
-    sofa::core::topology::BaseMeshTopology* NODEgetMeshTopologyLink(SearchDirection dir = SearchUp) const;
+    sofa::core::topology::BaseMeshTopology* getMeshTopologyLink(SearchDirection dir = SearchUp) const override;
 
     static Node::SPtr create(Node*, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
@@ -590,7 +587,8 @@ private:
     virtual void notifyEndAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
     virtual void notifyEndRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
 
-
+    // init all contextObject.
+    void initializeContexts();
 protected:
     BaseContext* _context;
 

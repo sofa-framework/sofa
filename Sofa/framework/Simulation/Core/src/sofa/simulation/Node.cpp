@@ -112,7 +112,7 @@ Node::Node(const std::string& name, Node* parent)
     , l_parents(initLink("parents", "Parents nodes in the graph"))
 {
     if( parent )
-        parent->addChild(dynamic_cast<Node*>(this));
+        parent->addChild(this);
 
     _context = this;
     setName(name);
@@ -122,11 +122,8 @@ Node::Node(const std::string& name, Node* parent)
 
 Node::~Node()
 {
-    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
-    {
-        const Node::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<Node>(*it);
-        dagnode->l_parents.remove(this);
-    }
+    for (auto& aChild : child )
+        aChild->l_parents.remove(this);
 }
 
 
@@ -652,16 +649,6 @@ core::topology::Topology* Node::getTopology() const
         return get<core::topology::Topology>(SearchParents);
 }
 
-/// Mesh Topology (unified interface for both static and dynamic topologies)
-core::topology::BaseMeshTopology* Node::NODEgetMeshTopologyLink(SearchDirection dir) const
-{
-    SOFA_UNUSED(dir);
-    if (this->meshTopology)
-        return this->meshTopology;
-    else
-        return get<core::topology::BaseMeshTopology>(SearchParents);
-}
-
 /// Degrees-of-Freedom
 core::BaseState* Node::getState() const
 {
@@ -823,7 +810,6 @@ const core::objectmodel::BaseContext* Node::getContext() const
     return _context;
 }
 
-
 void Node::setDefaultVisualContextValue()
 {
     //TODO(dmarchal 2017-07-20) please say who have to do that and when it will be done.
@@ -852,15 +838,9 @@ void Node::initialize()
 
 void Node::updateVisualContext()
 {
-    // Apply local modifications to the context
-    for ( unsigned i=0; i<contextObject.size(); ++i )
-    {
-        contextObject[i]->init();
-        contextObject[i]->apply();
-    }
+    initializeContexts();
 
-    if ( debug_ )
-        msg_info()<<"Node::updateVisualContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) ;
+    dmsg_info_when(debug_)<<"Node::updateVisualContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) ;
 }
 
 /// Execute a recursive action starting from this node
@@ -1465,26 +1445,37 @@ bool Node::hasAncestor(const BaseContext* context) const
 /// (within it or its parents until a mapping is reached that does not preserve topologies).
 sofa::core::topology::BaseMeshTopology* Node::getMeshTopologyLink(SearchDirection dir) const
 {
+    // If there is a topology in the current node
     if (this->meshTopology)
         return this->meshTopology;
 
+    // If we are not forcing on local resolution, search in the parents
     if (dir != Local)
-        return NODEgetMeshTopologyLink(dir);
+        return get<core::topology::BaseMeshTopology>(SearchParents);
 
-    //local case similar to getActiveMeshTopology ...
+    // At that step there is no local topology or we are doing a non local search (so searching in the parents).
 
-    // Check if a local mapping stops the search
-    if (this->mechanicalMapping && !this->mechanicalMapping->sameTopology())
-    {
+    // TODO(dmarchal, 2025-07-16): Why a mapping interfere with the search for a topology ?
+    //                             This is the kind of "implicit" hard coded behavior that generates troubles
+    //                             Investigate if this could be removed without too much breaks
+
+    // Check if there is a local mapping and this mapping does not have the same topology so it step the search
+    if ( mechanicalMapping && ! mechanicalMapping->sameTopology())
         return nullptr;
-    }
-    for ( Sequence<sofa::core::BaseMapping>::iterator i=this->mapping.begin(), iend=this->mapping.end(); i!=iend; ++i )
+
+    // TODO(dmarchal, 2025-07-16): This tests seems to do exactly the same as the one on MechanicalMapping.
+    //                             The test before can probably be removed
+    // Check if any of the other mapping does not have the same
+    for ( auto& aMapping : mapping)
     {
-        if (!(*i)->sameTopology())
-        {
+        if (!aMapping->sameTopology())
             return nullptr;
-        }
     }
+
+    // TODO(dmarchal, 2025-07-16): The following code is probably ill-defined, what it does it probably going to search
+    // in parents... for a topology, priorizing the "first" parent that returns one. It is kind of strange to search in parent
+    // while because at that step the search is: dir == Local ... so searching in parent is just "weird".
+
     // No mapping with a different topology, continue on to the parents
     const LinkParents::Container &parents = l_parents.getValue();
     for ( unsigned int i = 0; i < parents.size() ; i++ )
@@ -1516,7 +1507,7 @@ void Node::precomputeTraversalOrder( const sofa::core::ExecParams* params )
 
         Result processNodeTopDown(Node* node) override
         {
-            _orderList.push_back( static_cast<Node*>(node) );
+            _orderList.push_back(node);
             return RESULT_CONTINUE;
         }
 
@@ -1654,10 +1645,10 @@ void Node::executeVisitorTopDown(simulation::Visitor* action, NodeList& executed
         // ... but continue the recursion anyway!
         if( action->childOrderReversed(this) )
             for(unsigned int i = unsigned(child.size()); i>0;)
-                static_cast<Node*>(child[--i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
+                child[--i].get()->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
         else
             for(unsigned int i = 0; i<child.size(); ++i)
-                static_cast<Node*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
+                child[i].get()->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
     }
     else
     {
@@ -1672,10 +1663,10 @@ void Node::executeVisitorTopDown(simulation::Visitor* action, NodeList& executed
         // ... and continue the recursion
         if( action->childOrderReversed(this) )
             for(unsigned int i = unsigned(child.size()); i>0;)
-                static_cast<Node*>(child[--i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
+                child[--i].get()->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
         else
             for(unsigned int i = 0; i<child.size(); ++i)
-                static_cast<Node*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
+                child[i].get()->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
 
     }
 }
@@ -1710,10 +1701,10 @@ void Node::updateDescendancy()
     {
         for(unsigned int i = 0; i<child.size(); ++i)
         {
-            Node* dagnode = static_cast<Node*>(child[i].get());
-            dagnode->updateDescendancy();
-            _descendancy.insert( dagnode->_descendancy.begin(), dagnode->_descendancy.end() );
-            _descendancy.insert( dagnode );
+            Node* node = child[i].get();
+            node->updateDescendancy();
+            _descendancy.insert( node->_descendancy.begin(), node->_descendancy.end() );
+            _descendancy.insert( node );
         }
     }
 }
@@ -1748,10 +1739,10 @@ void Node::executeVisitorTreeTraversal( simulation::Visitor* action, StatusMap& 
         statusMap[this] = VISITED;
         if( action->childOrderReversed(this) )
             for(unsigned int i = unsigned(child.size()); i>0;)
-                static_cast<Node*>(child[--i].get())->executeVisitorTreeTraversal(action,statusMap,repeat,alreadyRepeated);
+                child[--i].get()->executeVisitorTreeTraversal(action,statusMap,repeat,alreadyRepeated);
         else
             for(unsigned int i = 0; i<child.size(); ++i)
-                static_cast<Node*>(child[i].get())->executeVisitorTreeTraversal(action,statusMap,repeat,alreadyRepeated);
+                child[i].get()->executeVisitorTreeTraversal(action,statusMap,repeat,alreadyRepeated);
     }
     else
     {
@@ -1761,7 +1752,6 @@ void Node::executeVisitorTreeTraversal( simulation::Visitor* action, StatusMap& 
     action->processNodeBottomUp(this);
 }
 
-
 void Node::initVisualContext()
 {
     if (getNbParents())
@@ -1770,52 +1760,61 @@ void Node::initVisualContext()
     }
 }
 
+void Node::initializeContexts()
+{
+    for ( unsigned i=0; i<contextObject.size(); ++i )
+    {
+        contextObject[i]->init();  // Call init of a ContextObject (a component in the scene)
+        contextObject[i]->apply(); // The component copy its internal state in the node's (that is inheriting from Contexte)
+    }
+}
+
 void Node::updateContext()
 {
+    // if there is a parent
     sofa::core::objectmodel::BaseNode* firstParent = getFirstParent();
-
     if ( firstParent )
     {
-        if( debug_ )
-        {
-            msg_info()<<"Node::updateContext, node = "<<getName()<<", incoming context = "<< firstParent->getContext() ;
-        }
-        // TODO
-        // ahem.... not sure here... which parent should I copy my context from exactly ?
+        dmsg_info_when(debug_)<<"Node::updateContext, node = "<<getName()<<", incoming context = "<< firstParent->getContext() ;
+
+        // TODO (dmarchal, 16-07-2025): There is underlying assumption here that the firstParent is
+        //                              the one we want copy the context from. This is an implict behavior
+        //                              if one day we refactor that part, maybe it would be better to have
+        //                              an an explicit context-relationship and trigger a warning in case like the following one
+        //                              saying there is an ambiguity and query scene designer to deambiguiate it.
         copyContext(*static_cast<Context*>(static_cast<Node*>(firstParent)));
     }
 
     updateSimulationContext();
     updateVisualContext();
-    if ( debug_ )
-        msg_info()<<"Node::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) ;
+
+    dmsg_info_when(debug_)<<"Node::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) ;
 }
 
 void Node::updateSimulationContext()
 {
+    // if there is a parent
     sofa::core::objectmodel::BaseNode* firstParent = getFirstParent();
-
     if ( firstParent )
     {
-        if( debug_ )
-        {
-            msg_info()<<"Node::updateContext, node = "<<getName()<<", incoming context = "<< firstParent->getContext() ;
-        }
-        // TODO
-        // ahem.... not sure here... which parent should I copy my simulation context from exactly ?
+        dmsg_info_when(debug_)<<"Node::updateSimulationContext, node = "<<getName()<<", incoming context = "<< firstParent->getContext() ;
+
+        // TODO (dmarchal, 16-07-2025): There is underlying assumption here that the firstParent is
+        //                              the one we want copy the context from. This is an implict behavior
+        //                              if one day we refactor that part, maybe it would be better to have
+        //                              an an explicit context-relationship and trigger a warning in case like the following one
+        //                              saying there is an ambiguity and query scene designer to deambiguiate it.
         copySimulationContext(*static_cast<Context*>(static_cast<Node*>(firstParent)));
     }
 
-    for ( unsigned i=0; i<contextObject.size(); ++i )
-    {
-        contextObject[i]->init();
-        contextObject[i]->apply();
-    }
+    // if there is no parent... initialize all the context objects.
+    // TODO (dmarchal, 16-07-2025): It is weird to actually initialize something at update. A carfull investigation is probably worth
+    initializeContexts();
 }
 
 Node* Node::findCommonParent( simulation::Node* node2 )
 {
-    return static_cast<Node*>(getRoot())->findCommonParent(this, static_cast<Node*>(node2));
+    return static_cast<Node*>(getRoot())->findCommonParent(this, node2);
 }
 
 Node* Node::findCommonParent(Node* node1, Node* node2)
@@ -1829,7 +1828,7 @@ Node* Node::findCommonParent(Node* node1, Node* node2)
     for (unsigned int i = 0; i<child.size(); ++i)
     {
         // look for closer parents
-        Node* childcommon = static_cast<Node*>(child[i].get())->findCommonParent(node1, node2);
+        Node* childcommon = child[i].get()->findCommonParent(node1, node2);
 
         if (childcommon != nullptr)
             return childcommon;
