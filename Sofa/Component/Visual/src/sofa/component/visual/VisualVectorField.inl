@@ -94,7 +94,6 @@ void VisualVectorField<DataTypes>::computeBBox(const core::ExecParams* exec_para
        bbox.wref().include(start);
        bbox.wref().include(end);
     }
-    this->f_bbox.setValue(sofa::type::TBoundingBox(minBBox.data(), maxBBox.data()));
 }
 
 }  // namespace sofa::component::visual
