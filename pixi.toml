@@ -73,6 +73,52 @@ dependencies = { libglu = "*" }
 [feature.presets-defaultGUI.target.linux-64]
 dependencies = { mesa-libgl-devel-cos7-x86_64 = "*" }
 
+[feature.build-release-package.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DSOFA_WITH_DEVTOOLS=OFF",
+  "-DSOFA_DUMP_VISITOR_INFO=OFF",
+  "-DSOFA_BUILD_RELEASE_PACKAGE=ON",
+  "-DCMAKE_BUILD_TYPE=MinSizeRel",
+  "-DCPACK_BINARY_IFW=OFF",
+  "-DCPACK_BINARY_NSIS=OFF",
+  "-DCPACK_BINARY_ZIP=OFF",
+  "-DCPACK_BINARY_BUNDLE=OFF",
+  "-DCPACK_BINARY_DEB=OFF",
+  "-DCPACK_BINARY_DRAGNDROP=OFF",
+  "-DCPACK_BINARY_FREEBSD=OFF",
+  "-DCPACK_BINARY_OSXX11=OFF",
+  "-DCPACK_BINARY_PACKAGEMAKER=OFF",
+  "-DCPACK_BINARY_PRODUCTBUILD=OFF",
+  "-DCPACK_BINARY_RPM=OFF",
+  "-DCPACK_BINARY_STGZ=OFF",
+  "-DCPACK_BINARY_TBZ2=OFF",
+  "-DCPACK_BINARY_TGZ=OFF",
+  "-DCPACK_BINARY_TXZ=OFF",
+  "-DCPACK_SOURCE_RPM=OFF",
+  "-DCPACK_SOURCE_TBZ2=OFF",
+  "-DCPACK_SOURCE_TGZ=OFF",
+  "-DCPACK_SOURCE_TXZ=OFF",
+  "-DCPACK_SOURCE_TZ=OFF",
+  "-DCPACK_GENERATOR=\"ZIP;NSIS\"",
+  "-DCPACK_BINARY_ZIP=ON",
+  "-DCPACK_BINARY_NSIS=ON",
+  "-DCMAKE_OSX_DEPLOYMENT_TARGET=10.15",
+  "-DCPACK_GENERATOR=ZIP",
+  "-DSOFA_BUILD_RELEASE_PACKAGE=ON",
+  "-DSOFA_DEPENDENCY_PACK_DIR=$CONDA_PREFIX/Library",
+  "--preset",
+  "full",
+  "$SOFA_PLUGIN_PYTHON3_ARGS",
+  "$SOFA_PLUGIN_SOFACUDA_ARGS" ] }
+
+package = { cmd = "cmake --build $SOFA_BUILD_DIR --target package", depends-on = ["build"] }
+
 [feature.presets-conda-core.tasks]
 configure = { cmd = [ "cmake",
   "-G",
@@ -210,6 +256,13 @@ minimal = { features = ["presets-minimal"] }
 minimal-dev = { features = ["presets-minimal-dev"] }
 standard = { features = ["presets-standard", "plugin-sofa-python3", "presets-defaultGUI"] }
 standard-dev = { features = ["presets-standard-dev", "plugin-sofa-python3", "presets-defaultGUI"] }
+release-package = { features = [
+  "build-release-package",
+  "plugin-sofa-python3",
+  "plugin-cgal",
+  "plugin-cuda",
+  "presets-defaultGUI",
+  "qt-gui"] }
 supported-plugins = { features = [
   "presets-supported-plugins",
   "plugin-sofa-python3",

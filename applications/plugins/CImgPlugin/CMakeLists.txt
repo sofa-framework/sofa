@@ -87,8 +87,12 @@ else()
     message(STATUS "CImgPlugin: PNG Image Format disabled")
 endif()
 if(ZLIB_FOUND)
+    message("========== ZLIB FOUND")
     list(APPEND DEP_TARGETS ZLIB::ZLIB)
+else()
+    message("========== ZLIB NOT FOUND")
 endif()
+message("========== DEP_TARGETS=${DEP_TARGETS}")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
