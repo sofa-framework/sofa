@@ -42,6 +42,7 @@ jobs:
               'pr: fix',
               'pr: new feature',
               'pr: test',
+              'pr: revert(ed)',
               'pr: project-ci-infrastructure'
             ];
 
