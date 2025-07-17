@@ -188,17 +188,9 @@ struct ElemAncestorElem
 };
 
 template<int NV>
-std::ostream& operator << (std::ostream& out, const ElemAncestorElem<NV>& d)
-{
-    out << d.pointSrcElems << " " << d.srcElems.size() << " " << d.srcElems << "\n";
-    return out;
-}
-
+SOFA_CORE_API std::ostream& operator << (std::ostream& out, const ElemAncestorElem<NV>& d);
 template<int NV>
-std::istream& operator >> (std::istream& in, ElemAncestorElem<NV>& d)
-{
-    return in;
-}
+SOFA_CORE_API std::istream& operator >> (std::istream& in, ElemAncestorElem<NV>& d);
 
 typedef ElemAncestorElem<2> EdgeAncestorElem;
 typedef ElemAncestorElem<3> TriangleAncestorElem;

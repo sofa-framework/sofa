@@ -382,7 +382,7 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
         {
             for(unsigned p=0; p<8; ++p)
             {
-                hexahedraConnectedToThePoint[hexahedra[c][p]].emplace_back(type::fixed_array<unsigned,3>{c, p, i});
+                hexahedraConnectedToThePoint[hexahedra[c][p]].push_back( type::fixed_array<unsigned,3>  (c, p, i) );
             }
             c++;
         }
@@ -721,7 +721,7 @@ void SparseGridRamificationTopology::buildFromFiner()
         {
             for(unsigned p=0; p<8; ++p)
             {
-                hexahedraConnectedToThePoint[hexahedra[c][p]].emplace_back( type::fixed_array<unsigned,3>({c, p, i}) );
+                hexahedraConnectedToThePoint[hexahedra[c][p]].push_back( type::fixed_array<unsigned,3>  (c, p, i) );
             }
             c++;
         }

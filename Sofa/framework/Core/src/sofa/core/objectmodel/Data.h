@@ -28,7 +28,6 @@
 #include <istream>
 #include <sofa/core/objectmodel/DataContentValue.h>
 #include <sofa/core/trait/DataTypes.h>
-#include <sofa/type/fixed_array.h>
 namespace sofa
 {
 namespace core::objectmodel
