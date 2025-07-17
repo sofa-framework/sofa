@@ -286,7 +286,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             nodes.resize(nnodes);
             const unsigned int edgesInQuadraticTriangle[3][2] = { {0,1}, {1,2}, {2,0} };
             const unsigned int edgesInQuadraticTetrahedron[6][2] = { {0,1}, {1,2}, {0,2},{0,3},{2,3},{1,3} };
-            std::set<topology::Edge> edgeSet;
+            std::set<Edge> edgeSet;
             size_t j;
             for (int n = 0; n < nnodes; ++n)
             {
@@ -299,26 +299,26 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             {
             case 1: // Line
                 addInGroup(my_edgesGroups.wref(), tag, my_edges.size());
-                addEdge(my_edges.wref(), topology::Edge(nodes[0], nodes[1]));
+                addEdge(my_edges.wref(), Edge(nodes[0], nodes[1]));
                 break;
             case 2: // Triangle
                 addInGroup(my_trianglesGroups.wref(), tag, my_triangles.size());
-                addTriangle(my_triangles.wref(), topology::Triangle(nodes[0], nodes[1], nodes[2]));
+                addTriangle(my_triangles.wref(), Triangle(nodes[0], nodes[1], nodes[2]));
                 break;
             case 3: // Quad
-                addQuad(my_quads.wref(), topology::Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
+                addQuad(my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
                 break;
             case 4: // Tetra
                 addInGroup(my_tetrahedraGroups.wref(), tag, my_tetrahedra.size());
-                addTetrahedron(my_tetrahedra.wref(), topology::Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
+                addTetrahedron(my_tetrahedra.wref(), Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
                 break;
             case 5: // Hexa
                 addInGroup(my_hexahedraGroups.wref(), tag, my_hexahedra.size());
-                addHexahedron(my_hexahedra.wref(), topology::Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], nodes[5], nodes[6], nodes[7]));
+                addHexahedron(my_hexahedra.wref(), Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], nodes[5], nodes[6], nodes[7]));
                 break;
             case 8: // quadratic edge
                 addInGroup(my_edgesGroups.wref(), tag, my_edges.size());
-                addEdge(my_edges.wref(), topology::Edge(nodes[0], nodes[1]));
+                addEdge(my_edges.wref(), Edge(nodes[0], nodes[1]));
                 {
                     HighOrderEdgePosition hoep;
                     hoep[0] = nodes[2];
@@ -330,7 +330,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                 break;
             case 9: // quadratic triangle
                 addInGroup(my_trianglesGroups.wref(), tag, my_triangles.size());
-                addTriangle(my_triangles.wref(), topology::Triangle(nodes[0], nodes[1], nodes[2]));
+                addTriangle(my_triangles.wref(), Triangle(nodes[0], nodes[1], nodes[2]));
                 {
                     HighOrderEdgePosition hoep;
                     for (j = 0; j < 3; ++j) {
@@ -338,7 +338,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                             nodes[edgesInQuadraticTriangle[j][1]]);
                         size_t v1 = std::max(nodes[edgesInQuadraticTriangle[j][0]],
                             nodes[edgesInQuadraticTriangle[j][1]]);
-                        topology::Edge e(v0, v1);
+                        Edge e(v0, v1);
                         if (!edgeSet.contains(e)) {
                             edgeSet.insert(e);
                             addEdge(my_edges.wref(), v0, v1);
@@ -353,7 +353,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                 break;
             case 11: // quadratic tetrahedron
                 addInGroup(my_tetrahedraGroups.wref(), tag, my_tetrahedra.size());
-                addTetrahedron(my_tetrahedra.wref(), topology::Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
+                addTetrahedron(my_tetrahedra.wref(), Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
                 {
                     HighOrderEdgePosition hoep;
                     for (j = 0; j < 6; ++j) {
@@ -361,7 +361,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                             nodes[edgesInQuadraticTetrahedron[j][1]]);
                         size_t v1 = std::max(nodes[edgesInQuadraticTetrahedron[j][0]],
                             nodes[edgesInQuadraticTetrahedron[j][1]]);
-                        topology::Edge e(v0, v1);
+                        Edge e(v0, v1);
                         if (!edgeSet.contains(e)) {
                             edgeSet.insert(e);
                             addEdge(my_edges.wref(), v0, v1);
@@ -434,7 +434,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
         // Common information to add second order triangles (elementType = 9) and tetrahedra (elementType = 11)
         const unsigned int edgesInQuadraticTriangle[3][2] = { {0,1}, {1,2}, {2,0} };
         const unsigned int edgesInQuadraticTetrahedron[6][2] = { {0,1}, {1,2}, {0,2},{0,3},{2,3},{1,3} };
-        std::set<topology::Edge> edgeSet;
+        std::set<Edge> edgeSet;
 
         for (unsigned int entityIndex = 0; entityIndex < nbEntityBlocks; entityIndex++) // looping over the entity blocks
         {
@@ -502,26 +502,26 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                 {
                 case 1: // Line
                     addInGroup(my_edgesGroups.wref(), elementTag, my_edges.size());
-                    addEdge(my_edges.wref(), topology::Edge(nodes[0], nodes[1]));
+                    addEdge(my_edges.wref(), Edge(nodes[0], nodes[1]));
                     break;
                 case 2: // Triangle
                     addInGroup(my_trianglesGroups.wref(), elementTag, my_triangles.size());
-                    addTriangle(my_triangles.wref(), topology::Triangle(nodes[0], nodes[1], nodes[2]));
+                    addTriangle(my_triangles.wref(), Triangle(nodes[0], nodes[1], nodes[2]));
                     break;
                 case 3: // Quadrangle
-                    addQuad(my_quads.wref(), topology::Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
+                    addQuad(my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
                     break;
                 case 4: // Tetrahedron
                     addInGroup(my_tetrahedraGroups.wref(), elementTag, my_tetrahedra.size());
-                    addTetrahedron(my_tetrahedra.wref(), topology::Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
+                    addTetrahedron(my_tetrahedra.wref(), Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
                     break;
                 case 5: // Hexahedron
                     addInGroup(my_hexahedraGroups.wref(), elementTag, my_hexahedra.size());
-                    addHexahedron(my_hexahedra.wref(), topology::Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], nodes[5], nodes[6], nodes[7]));
+                    addHexahedron(my_hexahedra.wref(), Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], nodes[5], nodes[6], nodes[7]));
                     break;
                 case 8: // Second order line
                     addInGroup(my_edgesGroups.wref(), elementTag, my_edges.size());
-                    addEdge(my_edges.wref(), topology::Edge(nodes[0], nodes[1]));
+                    addEdge(my_edges.wref(), Edge(nodes[0], nodes[1]));
                     {
                         HighOrderEdgePosition hoep;
                         hoep[0] = nodes[2];
@@ -533,7 +533,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                     break;
                 case 9: // Second order triangle
                     addInGroup(my_trianglesGroups.wref(), elementTag, my_triangles.size());
-                    addTriangle(my_triangles.wref(), topology::Triangle(nodes[0], nodes[1], nodes[2]));
+                    addTriangle(my_triangles.wref(), Triangle(nodes[0], nodes[1], nodes[2]));
                     {
                         HighOrderEdgePosition hoep;
                         for (size_t j = 0; j < 3; ++j)
@@ -542,7 +542,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                                 nodes[edgesInQuadraticTriangle[j][1]]);
                             size_t v1 = std::max(nodes[edgesInQuadraticTriangle[j][0]],
                                 nodes[edgesInQuadraticTriangle[j][1]]);
-                            topology::Edge e(v0, v1);
+                            Edge e(v0, v1);
                             if (!edgeSet.contains(e))
                             {
                                 edgeSet.insert(e);
@@ -558,7 +558,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                     break;
                 case 11: // Second order tetrahedron
                     addInGroup(my_tetrahedraGroups.wref(), elementTag, my_tetrahedra.size());
-                    addTetrahedron(my_tetrahedra.wref(), topology::Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
+                    addTetrahedron(my_tetrahedra.wref(), Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
                     {
                         HighOrderEdgePosition hoep;
                         for (size_t j = 0; j < 6; ++j)
@@ -567,7 +567,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                                 nodes[edgesInQuadraticTetrahedron[j][1]]);
                             size_t v1 = std::max(nodes[edgesInQuadraticTetrahedron[j][0]],
                                 nodes[edgesInQuadraticTetrahedron[j][1]]);
-                            topology::Edge e(v0, v1);
+                            Edge e(v0, v1);
                             if (!edgeSet.contains(e))
                             {
                                 edgeSet.insert(e);

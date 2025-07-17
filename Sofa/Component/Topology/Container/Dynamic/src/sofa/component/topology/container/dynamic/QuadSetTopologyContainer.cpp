@@ -358,7 +358,7 @@ const QuadSetTopologyContainer::EdgesInQuad &QuadSetTopologyContainer::getEdgesI
     if (id < m_edgesInQuad.size())
         return m_edgesInQuad[id];
 
-    return InvalidEdgesInQuad;
+    return InvalidQuad;
 }
 
 int QuadSetTopologyContainer::getVertexIndexInQuad(const Quad &t, PointID vertexIndex) const
