@@ -235,35 +235,6 @@ SOFA_CORE_API std::istream& operator >> (std::istream& in, PointAncestorElem& /*
     return in;
 }
 
-template<int NV>
-SOFA_CORE_API std::ostream& operator << (std::ostream& out, const ElemAncestorElem<NV>& d)
-{
-    out << d.pointSrcElems << " " << d.srcElems.size() << " " << d.srcElems << "\n";
-    return out;
-}
-
-template<int NV>
-SOFA_CORE_API std::istream& operator >> (std::istream& in, ElemAncestorElem<NV>& /*d*/)
-{
-    /*
-    in >> d.pointSrcElems;
-    int nsrc = 0;
-    in >> nsrc;
-    if (nsrc > 0)
-    {
-        d.srcElems.resize(nsrc);
-        for (unsigned int i = 0; i < nsrc; ++i)
-            in >> d.srcElems[i];
-    }
-    */
-    return in;
-}
-
-template SOFA_CORE_API std::ostream& operator<< (std::ostream& out, const ElemAncestorElem<2>& d);
-template SOFA_CORE_API std::ostream& operator<< (std::ostream& out, const ElemAncestorElem<3>& d);
-template SOFA_CORE_API std::ostream& operator<< (std::ostream& out, const ElemAncestorElem<4>& d);
-template SOFA_CORE_API std::ostream& operator<< (std::ostream& out, const ElemAncestorElem<8>& d);
-
 TopologyChange::~TopologyChange()
 {
 }

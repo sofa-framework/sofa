@@ -31,6 +31,7 @@
 #include <sofa/type/fwd.h>
 #include <cmath>
 #include <array>
+#include <cassert>
 
 #define EQUALITY_THRESHOLD 1e-6
 
