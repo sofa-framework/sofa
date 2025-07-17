@@ -18,7 +18,7 @@
 			<MeshOBJLoader name="loader"  filename="mesh/dragon.obj" />
 			<MeshTopology name="meshTopology1"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 			<MechanicalObject template="Vec3d" name="mObject1"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 0"  rotation="33 0 0" />
-			<TBulletTriangleModel template="Vec3d" name="tBulletTriangleModel2" proximity="0" margin="5"/>
+			<TBulletTriangleModel template="Vec3d" name="tBulletTriangleModel2" contactDistance="0" margin="5"/>
 			<RigidMapping template="Rigid,Vec3d" name="rigidMap1"  input="@../"  output="@./" />
 			<UniformMass template="Vec3d" name="uniformMass0"  totalMass="10" />
 		</Node>
@@ -33,7 +33,7 @@
 				<MechanicalObject template="Vec3d" name="fix"  position="-2 -2 0 2 -2 0 0 2 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  scale3d="50 50 50" reserve="0" />
 				<UniformMass template="Vec3d" name="Mass"  vertexMass="0.33333" />
 				<RigidMapping template="Rigid,Vec3d" name="rigidMap1"  input="@../rigidDOF"  output="@fix" />
-				<TBulletTriangleModel template="Vec3d" name="tBulletTriangleModel2" proximity="0" margin="2"/>
+				<TBulletTriangleModel template="Vec3d" name="tBulletTriangleModel2" contactDistance="0" margin="2"/>
 			</Node>
 	</Node>
 </Node>

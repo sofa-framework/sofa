@@ -100,7 +100,7 @@ public :
 
 protected:
 
-    type::vector<std::string> textItems    ;
+    type::vector<std::string>   textItems    ;
     unsigned int                selectedItem ;
 
     template <std::ranges::range T> void buildFromContainer(const T& list);

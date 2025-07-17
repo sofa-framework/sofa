@@ -48,8 +48,8 @@ public:
     int computeIntersection(Elem1& e1, Elem2& e2, OutputVector* contacts, const core::collision::Intersection* intersection) {
         return BaseIntTool::computeIntersection(e1,
             e2,
-            e1.getProximity() + e2.getProximity() + intersection->getAlarmDistance(),
-            e1.getProximity() + e2.getProximity() + intersection->getContactDistance(),
+            e1.getContactDistance() + e2.getContactDistance() + intersection->getAlarmDistance(),
+            e1.getContactDistance() + e2.getContactDistance() + intersection->getContactDistance(),
             contacts);
     }
 
@@ -74,8 +74,8 @@ public:
     int computeIntersection(Elem1& e1, Elem2& e2, OutputVector* contacts, const core::collision::Intersection* intersection) {
         return MeshIntTool::computeIntersection(e1,
             e2,
-            e1.getProximity() + e2.getProximity() + intersection->getAlarmDistance(),
-            e1.getProximity() + e2.getProximity() + intersection->getContactDistance(),
+            e1.getContactDistance() + e2.getContactDistance() + intersection->getAlarmDistance(),
+            e1.getContactDistance() + e2.getContactDistance() + intersection->getContactDistance(),
             contacts);
     }
 

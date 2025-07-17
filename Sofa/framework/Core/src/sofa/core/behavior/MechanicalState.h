@@ -32,13 +32,12 @@ namespace sofa::core::behavior
 
 /**
  *  \brief Component storing all state vectors of a simulated body (position,
- *  velocity, etc), using the datatype specified in the templace.
+ *  velocity, etc), using the datatype specified in the template.
  *
  *  The given DataTypes class should define the following internal types:
  *  \li \code Real \endcode : scalar values (float or double).
  *  \li \code Coord \endcode : position values.
  *  \li \code Deriv \endcode : derivative values (velocity, forces, displacements).
- *  \li \code VecReal \endcode : container of scalar values with the same API as sofa::type::vector.
  *  \li \code VecCoord \endcode : container of Coord values with the same API as sofa::type::vector.
  *  \li \code VecDeriv \endcode : container of Deriv values with the same API as sofa::type::vector.
  *  \li \code MatrixDeriv \endcode : vector of constraints.
@@ -64,8 +63,6 @@ public:
     typedef typename DataTypes::Coord Coord;
     /// Derivative values (velocity, forces, displacements).
     typedef typename DataTypes::Deriv Deriv;
-    /// Container of scalar values with the same API as sofa::type::vector.
-    typedef typename DataTypes::VecReal VecReal;
     /// Container of Coord values with the same API as sofa::type::vector.
     typedef typename DataTypes::VecCoord VecCoord;
     /// Container of Deriv values with the same API as sofa::type::vector.

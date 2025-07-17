@@ -59,8 +59,7 @@ public:
     Data<float> d_shininess; ///< Shininess for rendering point-based data [0,128].  <0 means no specularity
     Data<Real> d_transparency; ///< Add transparency when we draw triangles (this allows to see inside the volume).
 
-    gl::component::rendering2d::OglColorMap *colorMap;
-    core::State<DataTypes> *state;
+    SingleLink <DataDisplay, gl::component::rendering2d::OglColorMap, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_colorMap;
     core::topology::BaseMeshTopology* m_topology;
 
     /// Link to be set to the topology container in the component graph.

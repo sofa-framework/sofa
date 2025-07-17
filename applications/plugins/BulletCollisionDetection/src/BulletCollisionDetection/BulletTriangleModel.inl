@@ -67,7 +67,7 @@ void TBulletTriangleModel<DataTypes>::initBullet(){
 
     //_bt_gmesh = new btBvhTriangleMeshShape(_bt_mesh,true,true);
     _bt_gmesh = new BtDynamicMesh(_bt_mesh);//new btGImpactMeshShape(_bt_mesh);//
-    //_bt_gmesh->setMargin(this->getProximity());
+    //_bt_gmesh->setMargin(this->getContactDistance());
     //double margin = 0.5;//0.5;
     _bt_gmesh->setMargin(margin.getValue());
 

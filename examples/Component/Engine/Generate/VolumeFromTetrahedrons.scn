@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [VolumeFromTetrahedrons] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshVTKLoader] -->
+    <RequiredPlugin name="Sofa.Component.Setting"/> <!-- Needed to use components [BackgroundSetting] -->
+
+    <DefaultAnimationLoop/>
+    <BackgroundSetting color="1 1 1" />
+    <Node name="Volume" >
+        <MeshVTKLoader name="mesh" filename="mesh/Bunny.vtk"/>
+        <MeshTopology src="@mesh" name="topology" drawTetrahedra="1"/>
+        <MechanicalObject />
+        <VolumeFromTetrahedrons/>
+    </Node>
+</Node>

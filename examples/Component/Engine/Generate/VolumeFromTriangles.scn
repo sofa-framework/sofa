@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [VolumeFromTriangles] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshVTKLoader] -->
+    <RequiredPlugin name="Sofa.Component.Setting"/> <!-- Needed to use components [BackgroundSetting] -->
+
+    <DefaultAnimationLoop/>
+    <BackgroundSetting color="1 1 1" />
+    <Node name="Volume" >
+        <MeshSTLLoader name="mesh" filename="mesh/Bunny.stl"/>
+        <MeshTopology src="@mesh" name="topology" drawTriangles="1"/>
+        <MechanicalObject />
+        <VolumeFromTriangles/>
+    </Node>
+</Node>

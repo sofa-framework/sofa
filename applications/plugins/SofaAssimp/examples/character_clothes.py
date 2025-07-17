@@ -91,9 +91,9 @@ def createChlothes(parent):
     parent.createObject('UniformMass')
     parent.createObject('MeshTopology', name='mesh', position='@loader.position', edges='@loader.edges', triangles='@loader.triangles', quads='@loader.quads', tetrahedra='@loader.tetras', hexahedra='@loader.hexas')
     
-    parent.createObject('TriangleCollisionModel', template='Vec3d', name='models', proximity='0', selfCollision=clothSelfCollision)
-    parent.createObject('LineCollisionModel', template='Vec3d', name='models', proximity='0', selfCollision=clothSelfCollision)
-    parent.createObject('PointCollisionModel', template='Vec3d', name='models', proximity='0', selfCollision=clothSelfCollision)
+    parent.createObject('TriangleCollisionModel', template='Vec3d', name='models', contactDistance='0', selfCollision=clothSelfCollision)
+    parent.createObject('LineCollisionModel', template='Vec3d', name='models', contactDistance='0', selfCollision=clothSelfCollision)
+    parent.createObject('PointCollisionModel', template='Vec3d', name='models', contactDistance='0', selfCollision=clothSelfCollision)
     
     #parent.createObject('ConstantForceField', force='9.81 -9.81 9.81', points='0') #0 24 599 623
     #parent.createObject('ConstantForceField', force='-9.81 -9.81 9.81', points='24')

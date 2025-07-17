@@ -76,14 +76,14 @@ public:
     template<typename SphereType1, typename SphereType2>
     bool testIntersection(SphereType1& sph1, SphereType2& sph2, const core::collision::Intersection* currentIntersection)
     {
-        const auto alarmDist = currentIntersection->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
+        const auto alarmDist = currentIntersection->getAlarmDistance() + sph1.getContactDistance() + sph2.getContactDistance();
         return DiscreteIntersection::testIntersectionSphere(sph1, sph2, alarmDist);
     }
     template<typename SphereType1, typename SphereType2>
     int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
     {
-        const auto alarmDist = currentIntersection->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
-        const auto contactDist = currentIntersection->getContactDistance() + sph1.getProximity() + sph2.getProximity();
+        const auto alarmDist = currentIntersection->getAlarmDistance() + sph1.getContactDistance() + sph2.getContactDistance();
+        const auto contactDist = currentIntersection->getContactDistance() + sph1.getContactDistance() + sph2.getContactDistance();
         return DiscreteIntersection::computeIntersectionSphere(sph1, sph2, contacts, alarmDist, contactDist);
     }
 
