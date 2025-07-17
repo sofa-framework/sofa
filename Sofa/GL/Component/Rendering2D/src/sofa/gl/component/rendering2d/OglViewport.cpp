@@ -29,7 +29,6 @@
 #include <sofa/type/fixed_array.h>
 #include <sofa/gl/glu.h>
 #include <sofa/component/visual/VisualStyle.h>
-#include <sofa/helper/narrow_cast.h>
 
 namespace sofa::gl::component::rendering2d
 {
@@ -354,7 +353,7 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
     vp->getModelViewMatrix(lastModelViewMatrix);
     vp->setProjectionMatrix(projectionMatrix);
     vp->setModelViewMatrix(modelViewMatrix);
-    vp->viewport() = Viewport({x0, y0, helper::narrow_cast<int>(screenSize[0]), helper::narrow_cast<int>(screenSize[1])});
+    vp->viewport() = Viewport(x0,y0,screenSize[0],screenSize[1]);
     vp->pass() = core::visual::VisualParams::Std;
     simulation::VisualDrawVisitor vdv( vp );
     vdv.setTags(this->getTags());

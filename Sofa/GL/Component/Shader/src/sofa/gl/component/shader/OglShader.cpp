@@ -267,9 +267,9 @@ void OglShader::start()
         if (shaderVector[indexActiveShader.getValue()]->GetTessellationEvaluationShaderID() && !shaderVector[indexActiveShader.getValue()]->GetTessellationControlShaderID() && GLEW_ARB_tessellation_shader)
         {
             type::fixed_array<GLfloat,4> levels;
-            levels.fill(tessellationOuterLevel.getValue());
+            levels.assign(tessellationOuterLevel.getValue());
             glPatchParameterfv(GL_PATCH_DEFAULT_OUTER_LEVEL, levels.data());
-            levels.fill(tessellationInnerLevel.getValue());
+            levels.assign(tessellationInnerLevel.getValue());
             glPatchParameterfv(GL_PATCH_DEFAULT_INNER_LEVEL, levels.data());
         }
 #endif
