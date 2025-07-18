@@ -73,6 +73,7 @@ namespace sofa::core::objectmodel
 {
 class Base;
 class BaseObject;
+class BaseObjectDescription;
 class BaseNode;
 class BaseContext;
 class BaseData;
@@ -110,6 +111,7 @@ class BaseInteractionForceField;
 class BaseProjectiveConstraintSet;
 class BaseInteractionProjectiveConstraintSet;
 class BaseInteractionConstraint;
+class BaseMechanicalState;
 class LinearSolver;
 class MultiMatrixAccessor;
 
