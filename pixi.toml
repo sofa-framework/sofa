@@ -66,6 +66,9 @@ activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=OFF -DPLUG
 [feature.plugin-cgal]
 dependencies = { cgal-cpp = "*", gmp = "*" }
 
+[feature.plugin-cimg]
+dependencies = { zstd = "*", libtiff = "*", libjpeg-turbo = "*", libpng = "*" }
+
 [feature.presets-defaultGUI]
 dependencies = { glew = "*", glfw = "*", nativefiledialog-extended = "*"}
 [feature.presets-defaultGUI.target.linux]
@@ -81,13 +84,13 @@ configure = { cmd = [ "cmake",
   "$SOFA_BUILD_DIR",
   "-S",
   ".",
-  "-DSOFA_WITH_DEVTOOLS=OFF",
-  "-DSOFA_DUMP_VISITOR_INFO=OFF",
+  "-DSOFA_WITH_DEVTOOLS=OFF", # REMOVEME
+  "-DSOFA_DUMP_VISITOR_INFO=OFF", # REMOVEME
   "-DSOFA_BUILD_RELEASE_PACKAGE=ON",
   "-DCMAKE_BUILD_TYPE=MinSizeRel",
   "-DCPACK_BINARY_IFW=OFF",
-  "-DCPACK_BINARY_NSIS=OFF",
-  "-DCPACK_BINARY_ZIP=OFF",
+  "-DCPACK_BINARY_NSIS=OFF", # REMOVEME
+  "-DCPACK_BINARY_ZIP=OFF", # REMOVEME
   "-DCPACK_BINARY_BUNDLE=OFF",
   "-DCPACK_BINARY_DEB=OFF",
   "-DCPACK_BINARY_DRAGNDROP=OFF",
@@ -111,7 +114,7 @@ configure = { cmd = [ "cmake",
   "-DCMAKE_OSX_DEPLOYMENT_TARGET=10.15",
   "-DCPACK_GENERATOR=ZIP",
   "-DSOFA_BUILD_RELEASE_PACKAGE=ON",
-  "-DSOFA_DEPENDENCY_PACK_DIR=$CONDA_PREFIX/Library",
+  "-DSOFA_USE_DEPENDENCY_PACK=OFF",
   "--preset",
   "full",
   "$SOFA_PLUGIN_PYTHON3_ARGS",
@@ -261,6 +264,7 @@ release-package = { features = [
   "plugin-sofa-python3",
   "plugin-cgal",
   "plugin-cuda",
+  "plugin-cimg",
   "presets-defaultGUI",
   "qt-gui"] }
 supported-plugins = { features = [
@@ -268,6 +272,7 @@ supported-plugins = { features = [
   "plugin-sofa-python3",
   "plugin-cgal",
   "plugin-cuda",
+  "plugin-cimg",
   "presets-defaultGUI",
   "qt-gui"]}
 supported-plugins-dev = { features = [
@@ -275,6 +280,7 @@ supported-plugins-dev = { features = [
   "plugin-sofa-python3",
   "plugin-cgal",
   "plugin-cuda",
+  "plugin-cimg",
   "presets-defaultGUI",
   "qt-gui"]}  
 full = { features = [
@@ -282,6 +288,7 @@ full = { features = [
   "plugin-sofa-python3",
   "plugin-cgal",
   "plugin-cuda",
+  "plugin-cimg",
   "presets-defaultGUI",
   "qt-gui"]}
 full-dev = { features = [
@@ -289,5 +296,6 @@ full-dev = { features = [
   "plugin-sofa-python3",
   "plugin-cgal",
   "plugin-cuda",
+  "plugin-cimg",
   "presets-defaultGUI",
   "qt-gui"]}
