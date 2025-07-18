@@ -1,8 +1,8 @@
 #ifndef SOFA_IMAGE_VECTORVISWIDGET_H
 #define SOFA_IMAGE_VECTORVISWIDGET_H
 
-#include <sofa/gui/qt/SimpleDataWidget.h>
-#include <sofa/gui/qt/DataWidget.h>
+#include <sofa/qt/SimpleDataWidget.h>
+#include <sofa/qt/DataWidget.h>
 #include <image_gui/config.h>
 #include <image/VectorVis.h>
 

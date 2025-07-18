@@ -33,7 +33,7 @@ Q_OBJECT
     QString currentVal;
     
     typedef sofa::component::engine::LabelImageToolBox Label;
-    typedef sofa::gui::qt::LabelImageToolBoxAction LabelAction;
+    typedef sofa::qt::LabelImageToolBoxAction LabelAction;
     typedef type::vector<Label*> VecLabel;
     typedef type::vector<LabelAction*> VecLabelAction;
     
