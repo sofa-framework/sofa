@@ -167,6 +167,14 @@
           "type": "BOOL",
           "value": "ON"
         },
+        "SOFA_FETCH_COSSERAT": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_COSSERAT": {
+          "type": "BOOL",
+          "value": "ON"
+        },
         "SOFA_FETCH_CSPARSESOLVERS": {
           "type": "BOOL",
           "value": "ON"
@@ -257,10 +265,6 @@
           "value": "ON"
         },
         "PLUGIN_MANIFOLDTOPOLOGIES": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_SENSABLEEMULATION": {
           "type": "BOOL",
           "value": "ON"
         },
