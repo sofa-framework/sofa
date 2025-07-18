@@ -42,8 +42,6 @@
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -381,8 +379,6 @@ public:
         return b;
     }
 };
-
-}
 
 }
 

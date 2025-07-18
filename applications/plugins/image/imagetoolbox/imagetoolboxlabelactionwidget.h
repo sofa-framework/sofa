@@ -13,8 +13,6 @@
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -244,7 +242,6 @@ signals:
     //void updateImage();
 };
 
-}
 }
 }
 

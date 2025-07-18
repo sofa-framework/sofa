@@ -43,12 +43,9 @@
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 class SOFA_IMAGE_GUI_API LabelImageToolBoxAction;
-}
 }
 }
 

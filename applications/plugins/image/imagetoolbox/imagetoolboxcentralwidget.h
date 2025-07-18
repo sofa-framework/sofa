@@ -45,8 +45,6 @@
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -420,7 +418,7 @@ public:
     }
 };
 
-}}}
+}}
 
 
 #endif // IMAGETOOLBOXCENTRALWIDGET_H

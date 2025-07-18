@@ -46,8 +46,6 @@
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -87,8 +85,6 @@ protected:
 
 };
 
-
-}
 
 }
 
