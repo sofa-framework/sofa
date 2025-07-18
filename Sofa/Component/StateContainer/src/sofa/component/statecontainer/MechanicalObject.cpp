@@ -32,15 +32,6 @@ namespace sofa::component::statecontainer
 using namespace core::behavior;
 using namespace defaulttype;
 
-// template specialization must be in the same namespace as original namespace for GCC 4.1
-// g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
-template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Vec3Types>;
-template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Vec2Types>;
-template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Vec1Types>;
-template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Vec6Types>;
-template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Rigid3Types>;
-template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Rigid2Types>;
-
 void registerMechanicalObject(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("mechanical state vectors")

@@ -461,25 +461,21 @@ void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const type::Quat
 template<> SOFA_COMPONENT_STATECONTAINER_API
 void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset );
 
-
 template<> SOFA_COMPONENT_STATECONTAINER_API
 void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorDifferentSize(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset );
-
 
 template<> SOFA_COMPONENT_STATECONTAINER_API
 void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::VisualParams* vparams);
 
-
-
-
 #if !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
-extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec2Types>;
-extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec1Types>;
-extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec6Types>;
-extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Rigid3Types>;
-extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Rigid2Types>;
-
+    #define SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP extern
 #endif
+
+SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec1Types>;
+SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec2Types>;
+SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec3Types>;
+SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec6Types>;
+SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Rigid2Types>;
+SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Rigid3Types>;
 
 } // namespace sofa::component::statecontainer
