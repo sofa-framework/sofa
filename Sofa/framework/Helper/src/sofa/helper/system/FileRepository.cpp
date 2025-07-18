@@ -93,8 +93,8 @@ FileRepository PluginRepository(
 FileRepository PluginRepository(
     "SOFA_PLUGIN_PATH",
     {
-        Utils::getSofaPathTo("lib"),
-        Utils::getSofaPathTo("plugins"),
+        Utils::getSofaPathTo(SOFARuntimeDir),
+        Utils::getSofaPathTo(SOFAArchiveDir),
     }
 );
 #endif
