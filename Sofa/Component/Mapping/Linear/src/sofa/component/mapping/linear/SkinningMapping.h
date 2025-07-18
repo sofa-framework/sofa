@@ -97,7 +97,11 @@ public:
 protected:
     SkinningMapping ();
     virtual ~SkinningMapping();
-    
+
+    // additional Compliant methods
+    const type::vector<sofa::linearalgebra::BaseMatrix*>* doGetJs() override;
+    const sofa::linearalgebra::BaseMatrix* doGetJ() override;
+
 public:
     void init() override;
     void reinit() override;
@@ -114,9 +118,6 @@ public:
     void applyJT( const sofa::core::ConstraintParams* cparams, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in) override;
     //void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
-    // additional Compliant methods
-    const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
-    const sofa::linearalgebra::BaseMatrix* getJ() override;
 
     SeqTriangles triangles; // Topology of toModel (used for weight display)
     void draw(const core::visual::VisualParams* vparams) override;
