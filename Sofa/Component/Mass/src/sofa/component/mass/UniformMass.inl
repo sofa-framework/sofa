@@ -82,31 +82,35 @@ UniformMass<DataTypes>::UniformMass()
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromTotalMass", {&d_totalMass}, [this](const core::DataTracker& )
     {
-        if(m_isTotalMassUsed)
+        if(m_initMethod == InitMethod::TOTALMASS)
         {
             msg_info() << "dataInternalUpdate: data totalMass has changed";
             return updateFromTotalMass();
         }
-        else
+        else if(m_initMethod == InitMethod::VERTEXMASS)
         {
             msg_info() << "vertexMass data is initially used, the callback associated with the totalMass is skipped";
             return updateFromVertexMass();
         }
+        else
+            return sofa::core::objectmodel::ComponentState::Invalid;
     }, {});
 
 
     sofa::core::objectmodel::Base::addUpdateCallback("updateFromVertexMass", {&d_vertexMass}, [this](const core::DataTracker& )
     {
-        if(!m_isTotalMassUsed)
+        if(m_initMethod == InitMethod::VERTEXMASS)
         {
             msg_info() << "dataInternalUpdate: data vertexMass has changed";
             return updateFromVertexMass();
         }
-        else
+        else if(m_initMethod == InitMethod::TOTALMASS)
         {
             msg_info() << "totalMass data is initially used, the callback associated with the vertexMass is skipped";
             return updateFromTotalMass();
         }
+        else
+            return sofa::core::objectmodel::ComponentState::Invalid;
     }, {});
 }
 
@@ -162,17 +166,14 @@ void UniformMass<DataTypes>::initDefaultImpl()
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 
-
     /// SingleStateAccessor checks the mstate pointer to a MechanicalObject
     Mass<DataTypes>::init();
 
-        
     /// Check filename
     if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" )
     {
         loadRigidMass(d_filenameMass.getFullPath()) ;
     }
-
 
     /// Check indices
     WriteAccessor<Data<SetIndexArray > > indices = d_indices;
@@ -194,7 +195,6 @@ void UniformMass<DataTypes>::initDefaultImpl()
         for(int i=0; i<int(mstate->getSize()); i++)
             indices.push_back(i);
     }
-
 
     /// Check link to topology
     if (l_topology.empty())
@@ -231,7 +231,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
     }
 
 
-    /// Check on data isSet()
+    /// Check which input data isSet() to define mass initialization
     if (d_vertexMass.isSet())
     {
         if(d_totalMass.isSet())
@@ -240,12 +240,12 @@ void UniformMass<DataTypes>::initDefaultImpl()
                                  "vertexMass = totalMass / nb_dofs. \n"
                                  "To remove this warning you need to set either totalMass or vertexMass data field, but not both.";
 
-            m_isTotalMassUsed = true;
+            m_initMethod = InitMethod::TOTALMASS;
             d_vertexMass.setReadOnly(true);
         }
         else
         {
-            m_isTotalMassUsed = false;
+            m_initMethod = InitMethod::VERTEXMASS;
             d_totalMass.setReadOnly(true);
 
             msg_info() << "Input vertexMass is used for initialization";
@@ -253,7 +253,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
     }
     else if (d_totalMass.isSet())
     {
-        m_isTotalMassUsed = true;
+        m_initMethod = InitMethod::TOTALMASS;
         d_vertexMass.setReadOnly(true);
 
         msg_info() << "Input totalForce is used for initialization";
@@ -274,6 +274,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
     /// Trigger callbacks to update data (see constructor)
     if(!this->isComponentStateValid())
         msg_error() << "Initialization process is invalid";
+
 
     /// Info post-init
     msg_info() << "totalMass  = " << d_totalMass.getValue() << " | "
@@ -576,9 +577,7 @@ template <class DataTypes>
 void UniformMass<DataTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     if (!this->isComponentStateValid())
-    {
         return;
-    }
 
     const MassType& m = d_vertexMass.getValue();
     static constexpr auto N = Deriv::total_size;
