@@ -71,9 +71,9 @@ public:
         addOutput(&d_vecPixCoord);*/
     }
 
-    sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=nullptr) override
+    sofa::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=nullptr) override
     {
-        return new sofa::gui::qt::ZoneGeneratorImageToolBoxAction(this,parent);
+        return new sofa::qt::ZoneGeneratorImageToolBoxAction(this,parent);
     }
 
 

@@ -8,8 +8,6 @@
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -385,6 +383,5 @@ void ZoneGeneratorImageToolBoxAction::optionChangeSection(sofa::type::Vec3i /*v*
 
 
 
-}
 }
 }

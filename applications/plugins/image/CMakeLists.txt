@@ -9,7 +9,7 @@ sofa_find_package(Sofa.Component.Visual REQUIRED)
 sofa_find_package(CImgPlugin REQUIRED)
 
 sofa_find_package(Sofa.GL QUIET)
-sofa_find_package(Sofa.GUI.Qt QUIET)
+sofa_find_package(Sofa.Qt QUIET)
 sofa_find_package(SofaPython QUIET)
 sofa_find_package(MultiThreading QUIET)
 sofa_find_package(ZLIB)
@@ -150,7 +150,7 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(image_test)
 endif()
 
-if(Sofa.GUI.Qt_FOUND)
+if(Sofa.Qt_FOUND)
     add_subdirectory(image_gui)
 endif()
 

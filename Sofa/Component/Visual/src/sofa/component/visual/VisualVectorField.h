@@ -22,21 +22,41 @@
 #pragma once
 
 #include <sofa/component/visual/config.h>
+#include <sofa/core/visual/VisualModel.h>
 
 namespace sofa::component::visual
 {
-    class Camera;
-    class CylinderVisualModel;
-    class InteractiveCamera;
-    class LineAxis;
-    class RecordedCamera;
-    class TrailRenderer;
-    class Visual3DText;
-    class VisualBoundingBox;
-    class VisualGrid;
-    class VisualPointCloud;
-    class VisualModelImpl;
-    class VisualStyle;
-    class VisualTransform;
-    class VisualVectorField;
-} // namespace sofa::component::visual
+
+MAKE_SELECTABLE_ITEMS(VectorFieldDrawMode,
+    sofa::helper::Item{.key = "Line", .description = "Coordinates are displayed using lines"},
+    sofa::helper::Item{.key = "Cylinder", .description = "Coordinates are displayed using cylinders"},
+    sofa::helper::Item{.key = "Arrow", .description = "Coordinates are displayed using arrows"},
+);
+
+template <class DataTypes>
+class VisualVectorField : public core::visual::VisualModel
+{
+public:
+    SOFA_CLASS(VisualVectorField, core::visual::VisualModel);
+
+private:
+    using VecCoord = VecCoord_t<DataTypes>;
+    using VecDeriv = VecDeriv_t<DataTypes>;
+
+public:
+    Data<VecCoord> d_position;
+    Data<VecDeriv> d_vector;
+    Data<SReal> d_vectorScale;
+    Data<VectorFieldDrawMode> d_drawMode;
+    Data<type::RGBAColor> d_color;
+
+    void computeBBox(const core::ExecParams*, bool) override;
+
+private:
+    VisualVectorField();
+
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
+};
+
+
+}  // namespace sofa::component::visual

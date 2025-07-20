@@ -21,8 +21,6 @@ class SOFA_IMAGE_GUI_API LabelImageToolBox;
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -112,7 +110,6 @@ private slots:
 
 
 
-}
 }
 }
 

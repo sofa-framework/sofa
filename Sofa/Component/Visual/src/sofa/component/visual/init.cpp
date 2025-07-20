@@ -64,6 +64,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerToFactory<VisualModelImpl>(factory);
     registerToFactory<VisualStyle>(factory);
     registerToFactory<VisualTransform>(factory);
+    registerToFactory<VisualVectorField>(factory);
 }
 
 void init()
