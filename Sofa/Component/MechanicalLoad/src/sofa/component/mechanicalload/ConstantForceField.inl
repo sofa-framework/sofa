@@ -66,7 +66,7 @@ ConstantForceField<DataTypes>::ConstantForceField()
                 msg_info() << "dataInternalUpdate: update from forces  indices";
                 return updateFromForcesVector();
             }
-            msg_info() << "force data is initially used, the callback associated with the totalForces vector is skipped";
+            msg_warning() << "force data is initially used, the callback associated with the totalForces vector is skipped";
         case InitMethod::TOTALFORCE:
             if(tracker.hasChanged(d_totalForce) || tracker.hasChanged(d_indices))
             {
