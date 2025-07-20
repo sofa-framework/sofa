@@ -73,7 +73,7 @@ ConstantForceField<DataTypes>::ConstantForceField()
                 msg_info() << "dataInternalUpdate: update from totalForce and indices";
                 return updateFromTotalForce();
             }
-            msg_info() << "totalForce data is initially used, the callback associated with the forces vector is skipped";
+            msg_warning() << "totalForce data is initially used, the callback associated with the forces vector is skipped";
         }
         return this->getComponentState();
     }, {});
