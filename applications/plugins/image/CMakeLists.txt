@@ -151,7 +151,10 @@ if(SOFA_BUILD_TESTS)
 endif()
 
 if(Sofa.Qt_FOUND)
-    add_subdirectory(image_gui)
+    option(PLUGIN_IMAGE_COMPILE_GUI "Build Qt-based image GUI" OFF)
+    if(PLUGIN_IMAGE_COMPILE_GUI)
+        add_subdirectory(image_gui)
+    endif ()
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
