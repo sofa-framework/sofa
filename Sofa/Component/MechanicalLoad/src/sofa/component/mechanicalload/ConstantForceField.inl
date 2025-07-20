@@ -56,7 +56,7 @@ ConstantForceField<DataTypes>::ConstantForceField()
         return updateFromIndices();
     }, {});
 
-    sofa::core::objectmodel::Base::addUpdateCallback("updateFromForcesVector", {&d_forces, &d_totalForce, &d_indices}, [this](const core::DataTracker& tracker)
+    sofa::core::objectmodel::Base::addUpdateCallback("updateForce", {&d_forces, &d_totalForce, &d_indices}, [this](const core::DataTracker& tracker)
     {
         switch(m_initMethod){
         case InitMethod::FORCESVECTOR:
