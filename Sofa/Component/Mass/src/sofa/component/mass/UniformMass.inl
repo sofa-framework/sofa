@@ -89,7 +89,7 @@ UniformMass<DataTypes>::UniformMass()
                 msg_info() << "dataInternalUpdate: data totalMass has changed";
                 return updateFromTotalMass();
             }
-            msg_info() << "totalMass data is initially used, updating from a vertexMass change is disabled";
+            msg_warning() << "totalMass data is initially used, updating from a vertexMass change is disabled";
         case InitMethod::VERTEXMASS:
             if(tracker.hasChanged(d_vertexMass))
             {
