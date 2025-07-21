@@ -62,7 +62,7 @@ protected:
     ~BarycentricMapperEdgeSetTopology() override = default;
 
     virtual type::vector<Edge> getElements() override;
-    virtual std::array<SReal, Edge::NumberOfNodes> getBarycentricCoefficients(const Real* barycentricCoordinates) override;
+    virtual std::array<Real, Edge::NumberOfNodes> getBarycentricCoefficients(const Real* barycentricCoordinates) override;
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Edge& element) override;
     void computeCenter(Vec3& center, const typename In::VecCoord& in, const Edge& element) override;
     void computeDistance(SReal& d, const Vec3& v) override;
