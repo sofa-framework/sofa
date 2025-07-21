@@ -71,8 +71,8 @@ public:
 
 protected:
 
-    MechanicalState*   m_state;
-    BaseMeshTopology*  m_topology;
+    SingleLink<VolumeFromTetrahedrons<DataTypes>, BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    SingleLink<VolumeFromTetrahedrons<DataTypes>, MechanicalState, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_state;
 
     sofa::Data<VecCoord>     d_positions;
     sofa::Data<VecTetras>    d_tetras;

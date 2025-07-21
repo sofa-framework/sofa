@@ -38,7 +38,10 @@ using sofa::core::objectmodel::BaseData;
 
 template <class DataTypes>
 VolumeFromTetrahedrons<DataTypes>::VolumeFromTetrahedrons()
-    : d_positions(initData(&d_positions,"position","If not set by user, find the context mechanical."))
+    :
+      l_topology(initLink("topology", "link to the topology"))
+    , l_state(initLink("mechanical", "link to the mechanical"))
+    , d_positions(initData(&d_positions,"position","If not set by user, find the context mechanical."))
     , d_tetras(initData(&d_tetras,"tetras","If not set by user, find the context topology."))
     , d_hexas(initData(&d_hexas,"hexas","If not set by user, find the context topology."))
     , d_volume(initData(&d_volume,Real(0.0),"volume","The computed volume."))
@@ -80,16 +83,20 @@ void VolumeFromTetrahedrons<DataTypes>::init()
 
     if(!d_positions.isSet())
     {
-        m_state = dynamic_cast<MechanicalState*>(getContext()->getMechanicalState());
+        if(!l_state.get())
+        {
+            msg_info() << "Link to the mechanical state should be set to ensure right behavior. First mechanical state found in current context will be used.";
+            l_state.set(dynamic_cast<MechanicalState*>(this->getContext()->getMechanicalState()));
+        }
 
-        if(m_state == nullptr)
+        if(!l_state.get())
         {
             msg_error() << "No positions given by the user and no mechanical state found in the context. The component cannot work.";
             d_componentState.setValue(ComponentState::Invalid);
             return;
         }
 
-        d_positions.setParent(m_state->findData("position")); // Links d_positions to m_state.position
+        d_positions.setParent(l_state.get()->findData("position")); // Links d_positions to m_state.position
     }
 
     initTopology();
@@ -111,20 +118,29 @@ void VolumeFromTetrahedrons<DataTypes>::reinit()
 
 template <class DataTypes>
 void VolumeFromTetrahedrons<DataTypes>::initTopology()
-{
-    m_topology = getContext()->getMeshTopology();
-
-    if(!d_tetras.isSet() && m_topology)
-        d_tetras.setValue(m_topology->getTetras());
-
-    if(!d_hexas.isSet() && m_topology)
-        d_hexas.setValue(m_topology->getHexas());
-
-    if(!d_hexas.isSet() && !d_tetras.isSet() && !m_topology)
+{   
+    if (!l_topology.get())
     {
-        msg_error() << "No tetras or hexas given by the user and no topology context. The component cannot work.";
-        d_componentState.setValue(ComponentState::Invalid);
+        msg_info() << "Link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
     }
+
+    const auto& topology = l_topology.get();
+    const bool hasTetras = d_tetras.isSet();
+    const bool hasHexas = d_hexas.isSet();
+
+    if(!hasTetras && !hasHexas && !topology)
+    {
+        msg_error() << "No quads or triangles given by the user and no topology context. The component cannot work";
+        d_componentState.setValue(ComponentState::Invalid);
+        return;
+    }
+
+    if(!hasTetras && topology)
+        d_tetras.setValue(topology->getTetras());
+
+    if(!hasHexas && topology)
+        d_hexas.setValue(topology->getHexas());
 }
 
 
@@ -183,9 +199,10 @@ void VolumeFromTetrahedrons<DataTypes>::doUpdate()
     if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
-    if(m_state && d_doUpdate.getValue())
+    const auto& state = l_state.get();
+    if(state && d_doUpdate.getValue())
     {
-        ReadAccessor<sofa::Data<VecCoord> > positions = m_state->readPositions();
+        ReadAccessor<sofa::Data<VecCoord> > positions = state->readPositions();
         d_positions.setValue(positions.ref());
         updateVolume();
     }
