@@ -56,6 +56,7 @@ void VolumeFromTriangles<DataTypes>::parse(core::objectmodel::BaseObjectDescript
 {
     Inherit1::parse(arg);
 
+    // SOFA_ATTRIBUTE_DISABLED("v25.06", "v26.06", "data positions renamed as position")
     // to be backward compatible with previous data structure
     const char* positionsChar = arg->getAttribute("positions");
     if( positionsChar )
