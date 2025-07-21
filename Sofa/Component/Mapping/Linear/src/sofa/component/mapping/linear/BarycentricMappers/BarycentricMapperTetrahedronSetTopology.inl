@@ -53,19 +53,6 @@ type::vector<Tetrahedron> BarycentricMapperTetrahedronSetTopology<In,Out>::getEl
 }
 
 template <class In, class Out>
-type::vector<SReal> BarycentricMapperTetrahedronSetTopology<In,Out>::getBaryCoef(const Real* f)
-{
-    return getBaryCoef(f[0],f[1],f[2]);
-}
-
-template <class In, class Out>
-type::vector<SReal> BarycentricMapperTetrahedronSetTopology<In,Out>::getBaryCoef(const Real fx, const Real fy, const Real fz)
-{
-    type::vector<SReal> tetrahedronCoef{(1-fx-fy-fz),fx,fy,fz};
-    return tetrahedronCoef;
-}
-
-template <class In, class Out>
 auto BarycentricMapperTetrahedronSetTopology<In,Out>::getBarycentricCoefficients(const Real* f) -> std::array<SReal, Tetrahedron::NumberOfNodes>
 {
     return {(1-f[0]-f[1]-f[2]),f[0],f[1],f[2]};
