@@ -114,6 +114,19 @@ type::vector<SReal> BarycentricMapperHexahedronSetTopology<In,Out>::getBaryCoef(
     return hexahedronCoef;
 }
 
+template <class In, class Out>
+auto BarycentricMapperHexahedronSetTopology<In,Out>::getBarycentricCoefficients(const Real* f) -> std::array<SReal, Hexahedron::NumberOfNodes>
+{
+    return {(1-f[0])*(1-f[1])*(1-f[2]),
+        (f[0])*(1-f[1])*(1-f[2]),
+        (f[0])*(f[1])*(1 - f[2]),
+        (1 - f[0])*(f[1])*(1 - f[2]),
+        (1-f[0])*(1-f[1])*(f[2]),
+        (f[0])*(1-f[1])*(f[2]),
+        (f[0])*(f[1])*(f[2]),
+        (1 - f[0])*(f[1])*(f[2])
+    };
+}
 
 template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Hexahedron& element)

@@ -74,6 +74,12 @@ type::vector<SReal> BarycentricMapperEdgeSetTopology<In,Out>::getBaryCoef(const 
 }
 
 template <class In, class Out>
+auto BarycentricMapperEdgeSetTopology<In,Out>::getBarycentricCoefficients(const Real* f) -> std::array<SReal, Edge::NumberOfNodes>
+{
+    return {1-f[0],f[0]};
+}
+
+template <class In, class Out>
 void BarycentricMapperEdgeSetTopology<In,Out>::computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Edge& element)
 {
     //Not implemented for Edge

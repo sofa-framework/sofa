@@ -53,6 +53,7 @@ protected:
     virtual type::vector<Tetrahedron> getElements() override;
     virtual type::vector<SReal> getBaryCoef(const Real* f) override;
     type::vector<SReal> getBaryCoef(const Real fx, const Real fy, const Real fz);
+    virtual std::array<SReal, Tetrahedron::NumberOfNodes> getBarycentricCoefficients(const Real* f) override;
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Tetrahedron& element) override;
     void computeCenter(Vec3& center, const typename In::VecCoord& in, const Tetrahedron& element) override;
     void computeDistance(SReal& d, const Vec3& v) override;
