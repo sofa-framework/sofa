@@ -53,8 +53,6 @@ protected:
         core::topology::BaseMeshTopology* toTopology);
 
     virtual type::vector<Quad> getElements() override;
-    virtual type::vector<SReal> getBaryCoef(const Real* f) override;
-    type::vector<SReal> getBaryCoef(const Real fx, const Real fy);
     virtual std::array<SReal, Quad::NumberOfNodes> getBarycentricCoefficients(const Real* f) override;
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Quad& element) override;
     void computeCenter(Vec3& center, const typename In::VecCoord& in, const Quad& element) override;
