@@ -54,7 +54,7 @@ protected:
         core::topology::BaseMeshTopology* toTopology);
 
     virtual type::vector<Triangle> getElements() override;
-    virtual std::array<SReal, Triangle::NumberOfNodes> getBarycentricCoefficients(const Real* barycentricCoordinates) override;
+    virtual std::array<Real, Triangle::NumberOfNodes> getBarycentricCoefficients(const Real* barycentricCoordinates) override;
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Triangle& element) override;
     void computeCenter(Vec3& center, const typename In::VecCoord& in, const Triangle& element) override;
     void computeDistance(SReal& d, const Vec3& v) override;
