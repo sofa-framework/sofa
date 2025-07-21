@@ -78,9 +78,9 @@ type::vector<Triangle> BarycentricMapperTriangleSetTopology<In,Out>::getElements
 }
 
 template <class In, class Out>
-auto BarycentricMapperTriangleSetTopology<In,Out>::getBarycentricCoefficients(const Real* f) -> std::array<SReal, Triangle::NumberOfNodes>
+auto BarycentricMapperTriangleSetTopology<In,Out>::getBarycentricCoefficients(const Real* barycentricCoordinates) -> std::array<SReal, Triangle::NumberOfNodes>
 {
-    return {1-f[0]-f[1], f[0], f[1]};
+    return {1-barycentricCoordinates[0]-barycentricCoordinates[1], barycentricCoordinates[0], barycentricCoordinates[1]};
 }
 
 template <class In, class Out>
