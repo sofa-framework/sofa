@@ -91,6 +91,12 @@ type::vector<SReal> BarycentricMapperTriangleSetTopology<In,Out>::getBaryCoef(co
 }
 
 template <class In, class Out>
+auto BarycentricMapperTriangleSetTopology<In,Out>::getBarycentricCoefficients(const Real* f) -> std::array<SReal, Triangle::NumberOfNodes>
+{
+    return {1-f[0]-f[1], f[0], f[1]};
+}
+
+template <class In, class Out>
 void BarycentricMapperTriangleSetTopology<In,Out>::computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Triangle& element)
 {
     Mat3x3d mt;

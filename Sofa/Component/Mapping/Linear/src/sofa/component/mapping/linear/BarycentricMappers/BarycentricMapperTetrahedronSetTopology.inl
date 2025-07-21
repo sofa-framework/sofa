@@ -66,6 +66,12 @@ type::vector<SReal> BarycentricMapperTetrahedronSetTopology<In,Out>::getBaryCoef
 }
 
 template <class In, class Out>
+auto BarycentricMapperTetrahedronSetTopology<In,Out>::getBarycentricCoefficients(const Real* f) -> std::array<SReal, Tetrahedron::NumberOfNodes>
+{
+    return {(1-f[0]-f[1]-f[2]),f[0],f[1],f[2]};
+}
+
+template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopology<In,Out>::computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Tetrahedron& element)
 {
     Mat3x3d matrixTranspose;
