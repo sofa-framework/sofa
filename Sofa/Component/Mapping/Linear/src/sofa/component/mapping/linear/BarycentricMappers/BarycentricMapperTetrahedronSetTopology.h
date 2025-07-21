@@ -51,7 +51,7 @@ protected:
     ~BarycentricMapperTetrahedronSetTopology() override = default;
 
     virtual type::vector<Tetrahedron> getElements() override;
-    virtual std::array<Real, Tetrahedron::NumberOfNodes> getBarycentricCoefficients(const Real* barycentricCoordinates) override;
+    virtual std::array<Real, Tetrahedron::NumberOfNodes>getBarycentricCoefficients(const std::array<Real, MappingData::NumberOfCoordinates>& barycentricCoordinates) override;
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Tetrahedron& element) override;
     void computeCenter(Vec3& center, const typename In::VecCoord& in, const Tetrahedron& element) override;
     void computeDistance(SReal& d, const Vec3& v) override;
