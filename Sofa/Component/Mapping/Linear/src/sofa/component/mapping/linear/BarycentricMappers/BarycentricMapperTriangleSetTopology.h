@@ -56,6 +56,7 @@ protected:
     virtual type::vector<Triangle> getElements() override;
     virtual type::vector<SReal> getBaryCoef(const Real* f) override;
     type::vector<SReal> getBaryCoef(const Real fx, const Real fy);
+    virtual std::array<SReal, Triangle::NumberOfNodes> getBarycentricCoefficients(const Real* f) override;
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Triangle& element) override;
     void computeCenter(Vec3& center, const typename In::VecCoord& in, const Triangle& element) override;
     void computeDistance(SReal& d, const Vec3& v) override;

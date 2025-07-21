@@ -93,6 +93,12 @@ type::vector<SReal> BarycentricMapperQuadSetTopology<In,Out>::getBaryCoef(const 
 }
 
 template <class In, class Out>
+auto BarycentricMapperQuadSetTopology<In,Out>::getBarycentricCoefficients(const Real* f) -> std::array<SReal, Quad::NumberOfNodes>
+{
+    return { (1-f[0])*(1-f[1]), (f[0])*(1-f[1]), (f[0])*(f[1]), (1 - f[0])*(f[1]) };
+}
+
+template <class In, class Out>
 void BarycentricMapperQuadSetTopology<In,Out>::computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Quad& element)
 {
     Mat3x3d matrixTranspose;
