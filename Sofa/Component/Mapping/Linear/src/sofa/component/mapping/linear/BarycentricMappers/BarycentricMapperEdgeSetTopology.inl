@@ -61,19 +61,6 @@ type::vector<Edge> BarycentricMapperEdgeSetTopology<In,Out>::getElements()
 }
 
 template <class In, class Out>
-type::vector<SReal> BarycentricMapperEdgeSetTopology<In,Out>::getBaryCoef(const Real* f)
-{
-    return getBaryCoef(f[0]);
-}
-
-template <class In, class Out>
-type::vector<SReal> BarycentricMapperEdgeSetTopology<In,Out>::getBaryCoef(const Real fx)
-{
-    type::vector<SReal> edgeCoef{1-fx,fx};
-    return edgeCoef;
-}
-
-template <class In, class Out>
 auto BarycentricMapperEdgeSetTopology<In,Out>::getBarycentricCoefficients(const Real* f) -> std::array<SReal, Edge::NumberOfNodes>
 {
     return {1-f[0],f[0]};
