@@ -80,24 +80,26 @@ public:
 protected:
     void addMatrixContrib(MatrixType* m, int row, int col, Real value);
 
-    template< int NC,  int NP>
+    template< std::size_t NC, std::size_t NP>
     class MappingData
     {
     public:
+        static constexpr std::size_t NumberOfCoordinates = NC;
+        
         Index in_index;
-        Real baryCoords[NC];
+        std::array<Real, NC> baryCoords;
 
         inline friend std::istream& operator >> ( std::istream& in, MappingData< NC, NP> &m )
         {
             in>>m.in_index;
-            for (int i=0; i<NC; i++) in >> m.baryCoords[i];
+            for (std::size_t i=0; i<NC; i++) in >> m.baryCoords[i];
             return in;
         }
 
         inline friend std::ostream& operator << ( std::ostream& out, const MappingData< NC , NP > & m )
         {
             out << m.in_index;
-            for (int i=0; i<NC; i++)
+            for (std::size_t i=0; i<NC; i++)
                 out << " " << m.baryCoords[i];
             out << "\n";
             return out;

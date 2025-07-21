@@ -92,9 +92,9 @@ type::vector<Hexahedron> BarycentricMapperHexahedronSetTopology<In,Out>::getElem
 }
 
 template <class In, class Out>
-auto BarycentricMapperHexahedronSetTopology<In,Out>::getBarycentricCoefficients(const Real* barycentricCoordinates) -> std::array<Real, Hexahedron::NumberOfNodes>
+auto BarycentricMapperHexahedronSetTopology<In,Out>::getBarycentricCoefficients(const std::array<Real, MappingData::NumberOfCoordinates>& barycentricCoordinates) -> std::array<Real, Hexahedron::NumberOfNodes>
 {
-    const Real* f = barycentricCoordinates; // for better readability
+    const auto& f = barycentricCoordinates; // for better readability
     
     return {(1-f[0])*(1-f[1])*(1-f[2]),
         (f[0])*(1-f[1])*(1-f[2]),

@@ -61,7 +61,7 @@ type::vector<Edge> BarycentricMapperEdgeSetTopology<In,Out>::getElements()
 }
 
 template <class In, class Out>
-auto BarycentricMapperEdgeSetTopology<In,Out>::getBarycentricCoefficients(const Real* barycentricCoordinates) -> std::array<Real, Edge::NumberOfNodes>
+auto BarycentricMapperEdgeSetTopology<In,Out>::getBarycentricCoefficients(const std::array<Real, MappingData::NumberOfCoordinates>& barycentricCoordinates) -> std::array<Real, Edge::NumberOfNodes>
 {
     return {1-barycentricCoordinates[0], barycentricCoordinates[0]};
 }
