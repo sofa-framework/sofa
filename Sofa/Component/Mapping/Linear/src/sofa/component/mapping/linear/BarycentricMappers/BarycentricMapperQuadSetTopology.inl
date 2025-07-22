@@ -71,7 +71,7 @@ BarycentricMapperQuadSetTopology<In,Out>::createPointInQuad ( const typename Out
 }
 
 template <class In, class Out>
-type::vector<Quad> BarycentricMapperQuadSetTopology<In,Out>::getElements()
+auto BarycentricMapperQuadSetTopology<In,Out>::getElements() -> type::vector<Quad>
 {
     return this->m_fromTopology->getQuads();
 }
@@ -84,9 +84,9 @@ auto BarycentricMapperQuadSetTopology<In,Out>::getBarycentricCoefficients(const 
 }
 
 template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Quad& element)
+void BarycentricMapperQuadSetTopology<In,Out>::computeBase(Mat3x3& base, const typename In::VecCoord& in, const Quad& element)
 {
-    Mat3x3d matrixTranspose;
+    Mat3x3 matrixTranspose;
     base[0] = in[element[1]]-in[element[0]];
     base[1] = in[element[3]]-in[element[0]];
     base[2] = cross(base[0],base[1]);

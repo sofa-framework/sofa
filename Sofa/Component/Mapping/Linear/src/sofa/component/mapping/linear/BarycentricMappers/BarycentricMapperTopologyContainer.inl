@@ -203,11 +203,11 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::compute
     {
         Element element = elements[e];
 
-        Mat3x3d base;
+        Mat3x3 base;
         computeBase(base,in,element);
         m_bases[e] = base;
 
-        Vec3 center;
+        sofa::type::VecNoInit<3, SReal> center;
         computeCenter(center,in,element);
         m_centers[e] = center;
     }
