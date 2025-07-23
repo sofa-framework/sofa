@@ -21,14 +21,14 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/fixed_array.h>
+#include <sofa/type/trait/is_fixed_array.h>
 #include <iosfwd>
 
 namespace sofa::helper
 {
 ////////////////////////// ReadAccessor for wrapping around fixed array like object //////////////////////
 /// ReadAccessor implementation class for fixed array types
-template<type::trait::FixedArrayLike T>
+template<type::trait::is_fixed_array T>
 class ReadAccessorFixedArray
 {
 public:
@@ -48,7 +48,7 @@ public:
     ReadAccessorFixedArray(const container_type& container) : vref(&container) {}
     
     bool empty() const { return false; }
-    size_type size() const { return sofa::type::trait::staticSize<T>; }
+    size_type size() const { return T::static_size; }
     const_reference operator[](size_type i) const { return (*vref)[i]; }
     
     const_iterator begin() const { return vref->begin(); }

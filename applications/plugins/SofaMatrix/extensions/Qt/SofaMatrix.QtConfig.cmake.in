@@ -12,7 +12,7 @@ find_package(Sofa.Core QUIET REQUIRED)
 find_package(Sofa.Component.Constraint.Lagrangian.Solver QUIET REQUIRED)
 find_package(Sofa.Component.LinearSolver.Direct QUIET REQUIRED)
 find_package(Eigen3 QUIET REQUIRED)
-find_package(Sofa.GUI.Qt QUIET REQUIRED)
+find_package(Sofa.Qt QUIET REQUIRED)
 find_package(SofaMatrix QUIET REQUIRED)
 
 if(SOFAMATRIX_QT_HAVE_QT5)

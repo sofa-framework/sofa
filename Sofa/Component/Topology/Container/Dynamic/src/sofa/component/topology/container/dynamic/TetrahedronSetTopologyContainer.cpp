@@ -566,13 +566,12 @@ const TetrahedronSetTopologyContainer::EdgesInTetrahedron &TetrahedronSetTopolog
     return InvalidEdgesInTetrahedron;
 }
 
-const TetrahedronSetTopologyContainer::TrianglesInTetrahedron&
-TetrahedronSetTopologyContainer::getTrianglesInTetrahedron(const TriangleID id)
+const TetrahedronSetTopologyContainer::TrianglesInTetrahedron &TetrahedronSetTopologyContainer::getTrianglesInTetrahedron(const TriangleID id)
 {
     if (id < m_trianglesInTetrahedron.size())
         return m_trianglesInTetrahedron[id];
 
-    return InvalidTrianglesInTetrahedron;
+    return InvalidTetrahedron;
 }
 
 int TetrahedronSetTopologyContainer::getVertexIndexInTetrahedron(const Tetrahedron &t,

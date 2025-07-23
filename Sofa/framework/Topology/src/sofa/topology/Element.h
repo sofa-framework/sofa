@@ -32,128 +32,30 @@ namespace sofa::topology
 {
 
 template <typename GeometryElement>
-struct Element
+struct Element : public sofa::type::fixed_array<sofa::Index, GeometryElement::NumberOfNodes>
 {
     static constexpr auto NumberOfNodes = GeometryElement::NumberOfNodes;
+
     static constexpr sofa::geometry::ElementType Element_type = GeometryElement::Element_type;
-
-    using ArrayType = sofa::type::fixed_array<sofa::Index, GeometryElement::NumberOfNodes>;
-    using Size = sofa::Size;
-    using value_type = sofa::Index;
-    using iterator = typename ArrayType::iterator;
-    using const_iterator = typename ArrayType::const_iterator;
-    using reference = typename ArrayType::reference;
-    using const_reference = typename ArrayType::const_reference;
-    using size_type = sofa::Size;
-    using difference_type = std::ptrdiff_t;
-
-    static constexpr sofa::Size static_size = GeometryElement::NumberOfNodes;
-    static constexpr sofa::Size size() { return static_size; }
-
     constexpr Element() noexcept
     {
-        elems.fill(sofa::InvalidID);
+        for (auto it = this->begin() ; it != this->end() ; it++)
+        {
+            *it = sofa::InvalidID;
+        }
+        // constexpr std::fill only in c++20
+        // std::fill(this->begin(), this->end(), sofa::InvalidID);
     }
 
-    template< typename... ArgsT>
-    constexpr Element(ArgsT&&... args) noexcept
-    requires((std::is_convertible_v<ArgsT, sofa::Index> && ...))
-    : elems
-    {{ static_cast<sofa::Index>(std::forward< ArgsT >(args))... }}
+    template< typename... ArgsT
+        , typename = std::enable_if_t < (std::is_convertible_v<ArgsT, sofa::Index> && ...)>
+    >
+        constexpr Element(ArgsT&&... args) noexcept
+        : sofa::type::fixed_array< sofa::Index, GeometryElement::NumberOfNodes >
+    { static_cast<sofa::Index>(std::forward< ArgsT >(args))... }
     {
         static_assert(GeometryElement::NumberOfNodes == sizeof...(ArgsT), "Trying to construct the element with an incorrect number of nodes.");
     }
-
-    constexpr reference operator[](size_type i)
-    {
-        return elems[i];
-    }
-    constexpr const_reference operator[](size_type i) const
-    {
-        return elems[i];
-    }
-
-    constexpr reference at(size_type i)
-    {
-        return elems.at(i);
-    }
-
-    constexpr const_reference at(size_type i) const
-    {
-        return elems.at(i);
-    }
-
-    template< std::size_t I >
-    [[nodiscard]] constexpr reference get() & noexcept requires( I < static_size )
-    {
-        return elems[I];
-    }
-
-    template< std::size_t I >
-    [[nodiscard]] constexpr const_reference get() const& noexcept requires( I < static_size )
-    {
-        return elems[I];
-    }
-
-    template< std::size_t I >
-    [[nodiscard]] constexpr value_type&& get() && noexcept requires( I < static_size )
-    {
-        return std::move(elems[I]);
-    }
-
-    template< std::size_t I >
-    [[nodiscard]] constexpr const value_type&& get() const&& noexcept requires( I < static_size )
-    {
-        return std::move(elems[I]);
-    }
-
-    constexpr iterator begin() noexcept
-    {
-        return elems.begin();
-    }
-    constexpr const_iterator begin() const noexcept
-    {
-        return elems.begin();
-    }
-    constexpr const_iterator cbegin() const noexcept
-    {
-        return elems.cbegin();
-    }
-
-    constexpr iterator end() noexcept
-    {
-        return elems.end();
-    }
-    constexpr const_iterator end() const noexcept
-    {
-        return elems.end();
-    }
-    constexpr const_iterator cend() const noexcept
-    {
-        return elems.cend();
-    }
-
-    bool operator<(const Element& other) const
-    {
-        return elems < other.elems;
-    }
-
-    const ArrayType& array() const
-    {
-        return elems;
-    }
-
-    friend std::ostream& operator<<(std::ostream& out, const Element<GeometryElement>& a)
-    {
-        return sofa::type::extraction(out, a.elems);
-    }
-    friend std::istream& operator>>(std::istream& in, Element<GeometryElement>& a)
-    {
-        return sofa::type::insertion(in, a.elems);
-    }
-
-private:
-    ArrayType elems{};
 };
 
-} // namespace sofa::topology
+} // namespace sofa::geometry
