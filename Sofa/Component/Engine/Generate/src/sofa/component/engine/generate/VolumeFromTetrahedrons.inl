@@ -131,7 +131,7 @@ void VolumeFromTetrahedrons<DataTypes>::initTopology()
 
     if(!hasTetras && !hasHexas && !topology)
     {
-        msg_error() << "No quads or triangles given by the user and no topology context. The component cannot work";
+        msg_error() << "No tetras or hexas given by the user and no topology context. The component cannot work";
         d_componentState.setValue(ComponentState::Invalid);
         return;
     }
@@ -218,10 +218,10 @@ void VolumeFromTetrahedrons<DataTypes>::updateVolume()
     ReadAccessor<sofa::Data<VecHexas>>  hexas  = d_hexas;
     ReadAccessor<sofa::Data<VecCoord> > positions = d_positions;
 
-    for (auto t: tetras)
+    for (const auto& t: tetras)
         volume += sofa::geometry::Tetrahedron::volume(positions[t[0]], positions[t[1]], positions[t[2]], positions[t[3]]);
 
-    for (auto h: hexas)
+    for (const auto& h: hexas)
         volume += sofa::geometry::Hexahedron::volume(positions[h[0]], positions[h[1]], positions[h[2]], positions[h[3]],
                                                      positions[h[4]], positions[h[5]], positions[h[6]], positions[h[7]]);
 
