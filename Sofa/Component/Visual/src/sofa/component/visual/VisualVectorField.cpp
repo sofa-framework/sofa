@@ -19,44 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/qt/QModelViewTableDataContainer.h>
+#include <sofa/component/visual/VisualVectorField.inl>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::qt
+namespace sofa::component::visual
 {
-////////////////////////////////////////////////////////////////
-/// variable-sized vectors support
-////////////////////////////////////////////////////////////////
 
-template<class T>
-class vector_data_trait < sofa::gpu::cuda::CudaVector<T> >
+void registerVisualVectorField(sofa::core::ObjectFactory* factory)
 {
-public:
-    typedef sofa::gpu::cuda::CudaVector<T> data_type;
-    typedef T value_type;
-    enum { NDIM = 1 };
-    static int size(const data_type& d) {
-        return d.size();
-    }
-    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
-    {
-        return nullptr;
-    }
-    static const value_type* get(const data_type& d, int i = 0)
-    {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
-    }
-    static void set(const value_type& v, data_type& d, int i = 0)
-    {
-        if ((unsigned)i < (unsigned)size(d))
-            d[i] = v;
-    }
-    static void resize(int s, data_type& d)
-    {
-        d.resize(s);
-    }
-};
+    factory->registerObjects(core::ObjectRegistrationData("Render a vector field.")
+        .add<VisualVectorField<defaulttype::Vec3Types>>(true)
+    );
+}
 
+template class SOFA_COMPONENT_VISUAL_API VisualVectorField<defaulttype::Vec3Types>;
 
-} // namespace sofa::qt
+}

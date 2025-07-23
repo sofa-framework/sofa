@@ -20,43 +20,43 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/qt/QModelViewTableDataContainer.h>
 
-namespace sofa::qt
+#include <sofa/component/visual/config.h>
+#include <sofa/core/visual/VisualModel.h>
+
+namespace sofa::component::visual
 {
-////////////////////////////////////////////////////////////////
-/// variable-sized vectors support
-////////////////////////////////////////////////////////////////
 
-template<class T>
-class vector_data_trait < sofa::gpu::cuda::CudaVector<T> >
+MAKE_SELECTABLE_ITEMS(VectorFieldDrawMode,
+    sofa::helper::Item{.key = "Line", .description = "Coordinates are displayed using lines"},
+    sofa::helper::Item{.key = "Cylinder", .description = "Coordinates are displayed using cylinders"},
+    sofa::helper::Item{.key = "Arrow", .description = "Coordinates are displayed using arrows"},
+);
+
+template <class DataTypes>
+class VisualVectorField : public core::visual::VisualModel
 {
 public:
-    typedef sofa::gpu::cuda::CudaVector<T> data_type;
-    typedef T value_type;
-    enum { NDIM = 1 };
-    static int size(const data_type& d) {
-        return d.size();
-    }
-    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
-    {
-        return nullptr;
-    }
-    static const value_type* get(const data_type& d, int i = 0)
-    {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
-    }
-    static void set(const value_type& v, data_type& d, int i = 0)
-    {
-        if ((unsigned)i < (unsigned)size(d))
-            d[i] = v;
-    }
-    static void resize(int s, data_type& d)
-    {
-        d.resize(s);
-    }
+    SOFA_CLASS(VisualVectorField, core::visual::VisualModel);
+
+private:
+    using VecCoord = VecCoord_t<DataTypes>;
+    using VecDeriv = VecDeriv_t<DataTypes>;
+
+public:
+    Data<VecCoord> d_position;
+    Data<VecDeriv> d_vector;
+    Data<SReal> d_vectorScale;
+    Data<VectorFieldDrawMode> d_drawMode;
+    Data<type::RGBAColor> d_color;
+
+    void computeBBox(const core::ExecParams*, bool) override;
+
+private:
+    VisualVectorField();
+
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
 };
 
 
-} // namespace sofa::qt
+}  // namespace sofa::component::visual
