@@ -4,10 +4,10 @@
 @PACKAGE_INIT@
 
 find_package(Sofa.Config QUIET REQUIRED)
-find_package(Sofa.Type QUIET REQUIRED)
-find_package(Sofa.Topology QUIET REQUIRED)
+sofa_find_package(Sofa.Type QUIET REQUIRED)
+sofa_find_package(Sofa.Topology QUIET REQUIRED)
 
-find_package(Eigen3 QUIET REQUIRED)
+sofa_find_package(Eigen3 QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
