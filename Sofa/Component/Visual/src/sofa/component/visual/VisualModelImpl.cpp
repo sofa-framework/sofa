@@ -865,7 +865,7 @@ void VisualModelImpl::initFromTopology()
                 SOFA_UNUSED(elemID);
                 SOFA_UNUSED(ancestors);
                 SOFA_UNUSED(coefs);
-                visuQuad = topoQuad.array(); // simple copy from topology Data
+                visuQuad = topoQuad; // simple copy from topology Data
             });
         }
 
@@ -881,7 +881,7 @@ void VisualModelImpl::initFromTopology()
                 SOFA_UNUSED(elemID);
                 SOFA_UNUSED(ancestors);
                 SOFA_UNUSED(coefs);
-                visuTri = topoTri.array(); // simple copy from topology Data
+                visuTri = topoTri; // simple copy from topology Data
             });
         }
 
@@ -896,7 +896,7 @@ void VisualModelImpl::initFromTopology()
                 SOFA_UNUSED(elemID);
                 SOFA_UNUSED(ancestors);
                 SOFA_UNUSED(coefs);
-                visuEdge = topoEdge.array(); // simple copy from topology Data
+                visuEdge = topoEdge; // simple copy from topology Data
             });
         }
 
@@ -1303,7 +1303,7 @@ void VisualModelImpl::doUpdateVisual(const core::visual::VisualParams* vparams)
 
                 for (const auto idTri : m_dirtyTriangles)
                 {
-                    triangles[idTri] = inputTriangles[idTri].array();
+                    triangles[idTri] = inputTriangles[idTri];
                 }
                 m_dirtyTriangles.clear();
             }
@@ -1315,7 +1315,7 @@ void VisualModelImpl::doUpdateVisual(const core::visual::VisualParams* vparams)
 
                 for (const auto idQuad : m_dirtyQuads)
                 {
-                    quads[idQuad] = inputQuads[idQuad].array();
+                    quads[idQuad] = inputQuads[idQuad];
                 }
                 m_dirtyQuads.clear();
             }

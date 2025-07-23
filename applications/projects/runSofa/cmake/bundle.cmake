@@ -24,7 +24,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/share/ DESTINATION runSofa.app/Contents/Ma
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/examples/ DESTINATION runSofa.app/Contents/MacOS/share/sofa/examples COMPONENT BundlePack )
 install(FILES "${_defaultConfigPluginFilePath}" DESTINATION runSofa.app/Contents/MacOS/ COMPONENT BundlePack)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/applications/projects/runSofa/resources/ DESTINATION runSofa.app/Contents/MacOS/share/sofa/gui/runSofa COMPONENT BundlePack)
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/applications/sofa/gui/qt/resources/ DESTINATION runSofa.app/Contents/MacOS/share/sofa/gui/qt COMPONENT BundlePack)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/applications/sofa/qt/resources/ DESTINATION runSofa.app/Contents/MacOS/share/sofa/qt COMPONENT BundlePack)
 install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION runSofa.app/Contents/MacOS/etc RENAME sofa.ini COMPONENT BundlePack)
 install(FILES "${CMAKE_BINARY_DIR}/etc/installedrunSofa.ini" DESTINATION runSofa.app/Contents/MacOS/etc RENAME runSofa.ini COMPONENT BundlePack)
 install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofaGuiQt.ini" DESTINATION runSofa.app/Contents/MacOS/etc RENAME SofaGuiQt.ini COMPONENT BundlePack)

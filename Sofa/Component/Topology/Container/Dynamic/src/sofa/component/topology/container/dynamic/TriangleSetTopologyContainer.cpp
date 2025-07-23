@@ -546,7 +546,7 @@ const TriangleSetTopologyContainer::EdgesInTriangle &TriangleSetTopologyContaine
     if (id < m_edgesInTriangle.size())
         return m_edgesInTriangle[id];
 
-    return InvalidEdgesInTriangles;
+    return InvalidTriangle;
 }
 
 int TriangleSetTopologyContainer::getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const

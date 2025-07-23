@@ -21,6 +21,12 @@
 ******************************************************************************/
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/accessor.h>
+#include <fstream>
+
+#include <cstdlib>
+
 
 namespace sofa::core::loader
 {
@@ -558,7 +564,7 @@ void MeshLoader::updatePoints()
 {
     if (d_onlyAttachedPoints.getValue())
     {
-        std::set<sofa::Index> attachedPoints;
+        std::set<Topology::ElemID> attachedPoints;
         {
             const helper::ReadAccessor<Data< type::vector< Edge > > > elems = d_edges;
             for (Size i = 0; i < elems.size(); ++i)
@@ -621,12 +627,12 @@ void MeshLoader::updatePoints()
             return;    // all points are attached
         }
         helper::WriteAccessor<Data<type::vector<sofa::type::Vec3 > > > waPositions = d_positions;
-        type::vector<sofa::Index> old2new;
+        type::vector<Topology::ElemID> old2new;
         old2new.resize(waPositions.size());
-        sofa::Index p = 0;
-        for (std::set<sofa::Index>::const_iterator it = attachedPoints.begin(), itend = attachedPoints.end(); it != itend; ++it)
+        Topology::ElemID p = 0;
+        for (std::set<Topology::ElemID>::const_iterator it = attachedPoints.begin(), itend = attachedPoints.end(); it != itend; ++it)
         {
-            const sofa::Index newp = *it;
+            const Topology::ElemID newp = *it;
             old2new[newp] = p;
             if (p != newp)
             {
@@ -784,7 +790,7 @@ void MeshLoader::addEdge(type::vector<Edge >& pEdges, const Edge& p)
     pEdges.push_back(p);
 }
 
-void MeshLoader::addEdge(type::vector<Edge >& pEdges, sofa::Index p0, sofa::Index p1)
+void MeshLoader::addEdge(type::vector<Edge >& pEdges, Topology::EdgeID p0, Topology::EdgeID p1)
 {
     addEdge(pEdges, Edge(p0, p1));
 }
@@ -803,7 +809,7 @@ void MeshLoader::addTriangle(type::vector<Triangle >& pTriangles, const Triangle
     }
 }
 
-void MeshLoader::addTriangle(type::vector<Triangle >& pTriangles, sofa::Index p0, sofa::Index p1, sofa::Index p2)
+void MeshLoader::addTriangle(type::vector<Triangle >& pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2)
 {
     addTriangle(pTriangles, Triangle(p0, p1, p2));
 }
@@ -823,16 +829,16 @@ void MeshLoader::addQuad(type::vector<Quad >& pQuads, const Quad& p)
     }
 }
 
-void MeshLoader::addQuad(type::vector<Quad >& pQuads, sofa::Index p0, sofa::Index p1, sofa::Index p2, sofa::Index p3)
+void MeshLoader::addQuad(type::vector<Quad >& pQuads, Topology::QuadID p0, Topology::QuadID p1, Topology::QuadID p2, Topology::QuadID p3)
 {
     addQuad(pQuads, Quad(p0, p1, p2, p3));
 }
 
-void MeshLoader::addPolygon(type::vector< type::vector<sofa::Index> >& pPolygons, const type::vector<sofa::Index>& p)
+void MeshLoader::addPolygon(type::vector< type::vector<Topology::ElemID> >& pPolygons, const type::vector<Topology::ElemID>& p)
 {
     if (d_flipNormals.getValue())
     {
-        type::vector<sofa::Index> revertP(p.size());
+        type::vector<Topology::ElemID> revertP(p.size());
         std::reverse_copy(p.begin(), p.end(), revertP.begin());
 
         pPolygons.push_back(revertP);
@@ -849,14 +855,14 @@ void MeshLoader::addTetrahedron(type::vector< Tetrahedron >& pTetrahedra, const 
     pTetrahedra.push_back(p);
 }
 
-void MeshLoader::addTetrahedron(type::vector< Tetrahedron >& pTetrahedra, sofa::Index p0, sofa::Index p1, sofa::Index p2, sofa::Index p3)
+void MeshLoader::addTetrahedron(type::vector< Tetrahedron >& pTetrahedra, Topology::TetrahedronID p0, Topology::TetrahedronID p1, Topology::TetrahedronID p2, Topology::TetrahedronID p3)
 {
     addTetrahedron(pTetrahedra, Tetrahedron(p0, p1, p2, p3));
 }
 
 void MeshLoader::addHexahedron(type::vector< Hexahedron >& pHexahedra,
-                               sofa::Index p0, sofa::Index p1, sofa::Index p2, sofa::Index p3,
-                               sofa::Index p4, sofa::Index p5, sofa::Index p6, sofa::Index p7)
+                               Topology::HexahedronID p0, Topology::HexahedronID p1, Topology::HexahedronID p2, Topology::HexahedronID p3,
+                               Topology::HexahedronID p4, Topology::HexahedronID p5, Topology::HexahedronID p6, Topology::HexahedronID p7)
 {
     addHexahedron(pHexahedra, Hexahedron(p0, p1, p2, p3, p4, p5, p6, p7));
 }
@@ -867,8 +873,8 @@ void MeshLoader::addHexahedron(type::vector< Hexahedron >& pHexahedra, const Hex
 }
 
 void MeshLoader::addPentahedron(type::vector< Pentahedron >& pPentahedra,
-                                sofa::Index p0, sofa::Index p1, sofa::Index p2, sofa::Index p3,
-                                sofa::Index p4, sofa::Index p5)
+                                Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3,
+                                Topology::ElemID p4, Topology::ElemID p5)
 {
     addPentahedron(pPentahedra, Pentahedron(p0, p1, p2, p3, p4, p5));
 }
@@ -879,7 +885,7 @@ void MeshLoader::addPentahedron(type::vector< Pentahedron >& pPentahedra, const 
 }
 
 void MeshLoader::addPyramid(type::vector< Pyramid >& pPyramids,
-                            sofa::Index p0, sofa::Index p1, sofa::Index p2, sofa::Index p3, sofa::Index p4)
+                            Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3, Topology::ElemID p4)
 {
     addPyramid(pPyramids, Pyramid(p0, p1, p2, p3, p4));
 }

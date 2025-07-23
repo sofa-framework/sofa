@@ -23,8 +23,6 @@ class SOFA_IMAGE_GUI_API LabelGridImageToolBoxNoTemplated;
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -69,7 +67,6 @@ private:
     
 };
 
-}
 }
 }
 

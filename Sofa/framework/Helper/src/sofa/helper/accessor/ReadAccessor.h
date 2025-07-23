@@ -72,7 +72,7 @@ public:
     const_reference operator* () const { return  *vref; }
 };
 
-template<sofa::type::trait::FixedArrayLike FixedArrayLikeType>
+template<sofa::type::trait::is_fixed_array FixedArrayLikeType>
 class ReadAccessor<FixedArrayLikeType>
     : public ReadAccessorFixedArray< FixedArrayLikeType >
 {

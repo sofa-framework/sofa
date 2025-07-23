@@ -132,7 +132,7 @@ void SparseGridTopology::init()
 
     _nodeAdjacency.resize(d_seqPoints.getValue().size() );
     for(unsigned i=0; i < d_seqPoints.getValue().size(); ++i)
-        _nodeAdjacency[i].fill(InvalidID);
+        _nodeAdjacency[i].assign(InvalidID);
 
     if (_nodeAdjacency.empty())
     {

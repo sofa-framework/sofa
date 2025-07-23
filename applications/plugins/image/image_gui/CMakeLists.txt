@@ -22,7 +22,7 @@ set(SOURCE_FILES
 
 include(../imagetoolbox/imagetoolbox.cmake)
 
-find_package(Sofa.GUI.Qt REQUIRED QUIET)
+find_package(Sofa.Qt REQUIRED QUIET)
 find_package(Qt5 COMPONENTS Core QUIET)
 if (NOT Qt5Core_FOUND)
     if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.16")
@@ -30,7 +30,7 @@ if (NOT Qt5Core_FOUND)
         if (Qt6Core_FOUND)
             qt6_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
         endif()
-        # else() should never happened as it would already break in Sofa.GUI.Qt
+        # else() should never happened as it would already break in Sofa.Qt
     endif()
 else()
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
@@ -40,7 +40,7 @@ set(MOC_FILES_GROUP "Generated")
 
 add_definitions("-DSOFA_BUILD_IMAGE_GUI")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} image ${OPENGL_LIBRARIES} Sofa.GUI.Qt)
+target_link_libraries(${PROJECT_NAME} image ${OPENGL_LIBRARIES} Sofa.Qt)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

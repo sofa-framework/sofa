@@ -129,7 +129,7 @@ void drawWireSphere(const V& center, const float& rad, const int subd1=8, const 
 
 template <typename V>
 void drawTorus(const float* coordinateMatrix, const float& bodyRad=0.0,  const float& rad=1.0, const int precision=20,
-               const V& color=sofa::type::fixed_array<int,3>({255,215,180}))
+               const V& color=sofa::type::fixed_array<int,3>(255,215,180))
 {
     glColor3ub(color.x(), color.y(), color.z());
 //    gluQuadricDrawStyle(quadric, GLU_FILL);

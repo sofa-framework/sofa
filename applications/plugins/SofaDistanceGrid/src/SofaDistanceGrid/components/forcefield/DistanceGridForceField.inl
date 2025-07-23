@@ -245,7 +245,7 @@ void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
                     Coord fA = -(fB+fC);                   f1[t[0]] += fA;
 
                     TContact c;
-                    c.index = t.array();
+                    c.index = t;
                     c.fact = minA-area;
                     c.normal = sN;
                     c.B = B;
@@ -296,7 +296,7 @@ void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
                     Coord f0 = -(fA+fB+fC);               f1[t[0]] += f0;
 
                     VContact c;
-                    c.index = t.array();
+                    c.index = t;
                     c.fact = minV-volume;
                     c.A = A;
                     c.B = B;

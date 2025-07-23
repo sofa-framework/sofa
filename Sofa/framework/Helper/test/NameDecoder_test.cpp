@@ -123,10 +123,10 @@ TEST(NameDecoder_test, templateClass)
 
     //template type itself templated with 2 template parameters, including one composed of two words. Template parameter is an alias
     using D = sofa::type::fixed_array<unsigned int, 4>;
-    EXPECT_NE(getDecodeTypeName<TemplateClass<D> >().find("TemplateClass<array<unsigned int"), std::string::npos);
+    EXPECT_NE(getDecodeTypeName<TemplateClass<D> >().find("TemplateClass<fixed_array<unsigned int"), std::string::npos);
     EXPECT_EQ(getDecodeClassName<TemplateClass<D> >(), "TemplateClass");
     EXPECT_EQ(getDecodeNamespaceName<TemplateClass<D> >(), "");
-    EXPECT_NE(getDecodeTemplateName<TemplateClass<D> >().find("array<unsigned int,4"), std::string::npos);
+    EXPECT_NE(getDecodeTemplateName<TemplateClass<D> >().find("fixed_array<unsigned int,4"), std::string::npos);
 
     using E = _UnderscoreClass;
     EXPECT_EQ(getDecodeTypeName<TemplateClass<E> >(), "TemplateClass<_UnderscoreClass>");

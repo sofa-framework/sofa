@@ -5,8 +5,6 @@
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -100,7 +98,6 @@ void LabelImageToolBoxAction::setGraphScene(QGraphicsScene *XY,QGraphicsScene *X
 
 
 
-}
 }
 }
 

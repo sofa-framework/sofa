@@ -7,8 +7,6 @@
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -350,6 +348,5 @@ void LabelGridImageToolBoxAction::sectionButtonClick()
 
 
 
-}
 }
 }

@@ -38,9 +38,9 @@ class SOFA_IMAGE_GUI_API LabelPointsBySectionImageToolBox: public LabelImageTool
 public:
     SOFA_CLASS(LabelPointsBySectionImageToolBox,LabelImageToolBox);
     
-    typedef sofa::gui::qt::LabelPointsBySectionImageToolBoxAction::Point Point;
-    typedef sofa::gui::qt::LabelPointsBySectionImageToolBoxAction::VecPointSection VecPointSection;
-    typedef sofa::gui::qt::LabelPointsBySectionImageToolBoxAction::MapSection MapSection;
+    typedef sofa::qt::LabelPointsBySectionImageToolBoxAction::Point Point;
+    typedef sofa::qt::LabelPointsBySectionImageToolBoxAction::VecPointSection VecPointSection;
+    typedef sofa::qt::LabelPointsBySectionImageToolBoxAction::MapSection MapSection;
     typedef sofa::core::objectmodel::DataFileName DataFileName;
 
     LabelPointsBySectionImageToolBox():LabelImageToolBox()
@@ -62,9 +62,9 @@ public:
         
     }
     
-    sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=nullptr) override
+    sofa::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=nullptr) override
     {
-        sofa::gui::qt::LabelPointsBySectionImageToolBoxAction * t = new sofa::gui::qt::LabelPointsBySectionImageToolBoxAction(this,parent);
+        sofa::qt::LabelPointsBySectionImageToolBoxAction * t = new sofa::qt::LabelPointsBySectionImageToolBoxAction(this,parent);
 
         return t;
     }

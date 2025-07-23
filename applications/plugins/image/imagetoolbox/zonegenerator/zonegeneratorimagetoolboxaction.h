@@ -26,8 +26,6 @@ class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBoxNoTemplated;
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -78,7 +76,6 @@ private:
     
 };
 
-}
 }
 }
 

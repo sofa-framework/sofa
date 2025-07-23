@@ -27,7 +27,7 @@ namespace sofa::helper
 {
 
 /// WriteAccessor implementation class for fixed array types
-template<type::trait::FixedArrayLike T>
+template<type::trait::is_fixed_array T>
 class WriteAccessorFixedArray
 {
 public:
@@ -48,7 +48,7 @@ public:
 
     ////// Capacity //////
     bool empty() const { return false; }
-    size_type size() const { return sofa::type::trait::staticSize<T>; }
+    size_type size() const { return T::static_size; }
 
     ////// Element access //////
     reference operator[](size_type pos) { return (*vref)[pos]; }
