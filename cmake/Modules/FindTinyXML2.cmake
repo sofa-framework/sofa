@@ -27,6 +27,14 @@ else()
   )
   endif()
 
+  if(WIN32)
+    # possibly also add lib/{win32,win64} to path_suffixes for compat with the windeppack
+    find_file(TinyXML2_DLL
+      NAMES tinyxml2.dll
+      PATH_SUFFIXES bin
+    )
+  endif()
+
   if(TinyXML2_INCLUDE_DIR AND TinyXML2_LIBRARY)
     set(TinyXML2_FOUND TRUE)
   else()
@@ -41,13 +49,18 @@ else()
 
     if(NOT TARGET tinyxml2::tinyxml2)
       add_library(tinyxml2::tinyxml2 SHARED IMPORTED)
-      set_property(TARGET tinyxml2::tinyxml2 PROPERTY IMPORTED_LOCATION "${TinyXML2_LIBRARIES}")
       if(WIN32)
+        set_property(TARGET tinyxml2::tinyxml2 PROPERTY IMPORTED_LOCATION "${TinyXML2_DLL}")
         set_property(TARGET tinyxml2::tinyxml2 PROPERTY IMPORTED_IMPLIB "${TinyXML2_LIBRARIES}")
+      else()
+        set_property(TARGET tinyxml2::tinyxml2 PROPERTY IMPORTED_LOCATION "${TinyXML2_LIBRARIES}")
       endif()
       set_property(TARGET tinyxml2::tinyxml2 PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${TinyXML2_INCLUDE_DIR}")
     endif()
   else()
   endif()
   mark_as_advanced(TinyXML2_INCLUDE_DIR TinyXML2_LIBRARY)
+  if(WIN32)
+    mark_as_advanced(TinyXML2_DLL)
+  endif()
 endif()
