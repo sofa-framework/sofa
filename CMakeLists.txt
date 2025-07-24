@@ -5,9 +5,15 @@ project(Sofa
 
 include(CMakeDependentOption)
 
+
+if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0") 
+    set(CMAKE_FIND_PACKAGE_TARGETS_GLOBAL ON)
+    # https://cmake.org/cmake/help/latest/variable/CMAKE_FIND_PACKAGE_TARGETS_GLOBAL.html
+endif()
+
 # Manually define VERSION
 set(Sofa_VERSION_MAJOR 25)
-set(Sofa_VERSION_MINOR 06)
+set(Sofa_VERSION_MINOR 12)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
