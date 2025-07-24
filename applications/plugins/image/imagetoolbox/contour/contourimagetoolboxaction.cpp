@@ -6,8 +6,6 @@
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -385,6 +383,5 @@ void ContourImageToolBoxAction::optionChangeSection(sofa::type::Vec3i v)
 
 
 
-}
 }
 }

@@ -64,7 +64,7 @@ void SceneCheckCollisionResponse::doCheckOn(Node* node)
     {
         if( nbContactManager!= 1 )
         {
-            m_message << "Only one CollisionResponse is needed."<< msgendl;
+            m_message << "Only one CollisionResponse is allowed in the scene."<< msgendl;
         }
         else
         {
@@ -101,6 +101,11 @@ void SceneCheckCollisionResponse::doCheckOn(Node* node)
                     checkIfContactStiffnessIsSet(root);
                 }
             }
+            /// If PenalityContactForceField make sure that contactStiffness is defined
+            else if ( response == "PenalityContactForceField")
+            {
+                checkIfContactStiffnessIsNotSet(root);
+            }
         }
     }
 }
@@ -113,9 +118,24 @@ void SceneCheckCollisionResponse::checkIfContactStiffnessIsSet(const sofa::core:
     {
         if(model->isContactStiffnessSet())
         {
-            m_message <<"The data \"contactStiffness\" is set in the component " << model->getClassName() <<" named " << model->getName() << msgendl;
+            m_message <<"The data \"contactStiffness\" is set in the component " << model->getClassName() <<", named \"" << model->getName() << "\"";
             m_message <<"This data is not used when using a FrictionContactConstraint collision response." << msgendl;
             m_message <<"Remove the data \"contactStiffness\" to remove this warning" << msgendl;
+            break;
+        }
+    }
+}
+
+void SceneCheckCollisionResponse::checkIfContactStiffnessIsNotSet(const sofa::core::objectmodel::BaseContext* root)
+{
+    type::vector<core::CollisionModel*> colModels;
+    root->get<core::CollisionModel>(&colModels, core::objectmodel::BaseContext::SearchDown);
+    for (const auto model : colModels)
+    {
+        if(!model->isContactStiffnessSet())
+        {
+            m_message <<"Using PenalityContactForceField, the contactStiffness should be defined for each CollisionModel" << msgendl;
+            break;
         }
     }
 }

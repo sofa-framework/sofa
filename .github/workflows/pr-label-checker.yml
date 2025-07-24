@@ -41,7 +41,9 @@ jobs:
               'pr: clean',
               'pr: fix',
               'pr: new feature',
-              'pr: test'
+              'pr: test',
+              'pr: revert(ed)',
+              'pr: project-ci-infrastructure'
             ];
 
             // Check if any descriptive label is included in the 'labels' array
