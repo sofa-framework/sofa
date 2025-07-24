@@ -3,14 +3,15 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(Sofa.Type QUIET REQUIRED)
-find_package(Sofa.Helper QUIET REQUIRED)
-find_package(Eigen3 QUIET REQUIRED)
+find_package(Sofa.Config QUIET REQUIRED)
+sofa_find_package(Sofa.Type QUIET REQUIRED)
+sofa_find_package(Sofa.Helper QUIET REQUIRED)
+sofa_find_package(Eigen3 QUIET REQUIRED)
 
 set(SOFA_LINEARALGEBRA_HAVE_OPENMP @SOFA_LINEARALGEBRA_HAVE_OPENMP@)
 
 if (SOFA_LINEARALGEBRA_HAVE_OPENMP)
-    find_package(OpenMP QUIET REQUIRED)
+    sofa_find_package(OpenMP QUIET REQUIRED)
 endif()
 
 if(NOT TARGET @PROJECT_NAME@)
