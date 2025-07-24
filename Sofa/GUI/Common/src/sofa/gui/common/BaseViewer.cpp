@@ -300,7 +300,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
         if(node){
             auto box = node->f_bbox.getValue();
             dt->drawBoundingBox(box.minBBox(), box.maxBBox(), 2.0);
-            return;
+            continue;
         }
 
         auto object = castTo<sofa::core::objectmodel::BaseObject*>(current.get());
