@@ -288,6 +288,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
 
     dt->setPolygonMode(0, false);
     float screenHeight = vparams->viewport()[4];
+
     for(auto current : currentSelection)
     {
         using sofa::type::Vec3;
@@ -352,20 +353,19 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
                     dt->drawLines(tripoints, 1.5, RGBAColor::fromFloat(1.0,1.0,1.0,0.7));
                 }
             }
-
-            return;
         }
 
+        continue;
         assert(false && "Only node and object can be selected, if you see this line please report to sofa-developement team");
     }
 }
 
-void BaseViewer::setCurrentSelection(const std::vector<sofa::core::objectmodel::Base::SPtr>& selection)
+void BaseViewer::setCurrentSelection(const std::set<sofa::core::objectmodel::Base::SPtr>& selection)
 {
     currentSelection = selection;
 }
 
-const std::vector<sofa::core::objectmodel::Base::SPtr>& BaseViewer::getCurrentSelection() const
+const std::set<core::objectmodel::Base::SPtr> &BaseViewer::getCurrentSelection() const
 {
     return currentSelection;
 }

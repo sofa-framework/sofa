@@ -123,8 +123,8 @@ public:
 
     void drawSelection(sofa::core::visual::VisualParams* vparams);
 
-    void setCurrentSelection(const std::vector<sofa::core::objectmodel::Base::SPtr>& selection);
-    const std::vector<sofa::core::objectmodel::Base::SPtr>& getCurrentSelection() const;
+    void setCurrentSelection(const std::set<core::objectmodel::Base::SPtr> &selection);
+    const std::set<sofa::core::objectmodel::Base::SPtr>& getCurrentSelection() const;
 
 protected:
     /// internally called while the actual viewer needs a redraw (ie the camera changed)
@@ -159,7 +159,7 @@ protected:
 
     std::string _screenshotDirectory;
 
-    std::vector<sofa::core::objectmodel::Base::SPtr> currentSelection;
+    std::set<sofa::core::objectmodel::Base::SPtr> currentSelection;
 };
 
 } // namespace sofa::gui::common
