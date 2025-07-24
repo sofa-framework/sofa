@@ -54,10 +54,9 @@ endfunction()
 
 
 macro(sofa_fetch_dependency name)
-    #TODO: add local dir mechanism
     #TODO: use this for plugins
 
-    set(oneValueArgs GIT_TAG GIT_REPOSITORY)
+    set(oneValueArgs GIT_TAG GIT_REPOSITORY FETCH_ENABLED )
     set(multiValueArgs "")
     set(options DONT_BUILD)
     cmake_parse_arguments("ARG" "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
@@ -71,10 +70,12 @@ macro(sofa_fetch_dependency name)
     string(TOUPPER ${fixed_name} upper_name)
     set(${upper_name}_GIT_REPOSITORY "${ARG_GIT_REPOSITORY}" CACHE STRING "Repository address" )
     set(${upper_name}_GIT_TAG "${ARG_GIT_TAG}" CACHE STRING "Branch or commit SHA to checkout" )
+    set(${upper_name}_LOCAL_DIRECTORY "" CACHE STRING "Absolute path to a local folder containing the cloned repository")
+
 
     set(${name}_SOURCE_DIR "${fetched_dir}" CACHE STRING "" FORCE )
 
-    if(NOT FETCHCONTENT_FULLY_DISCONNECTED AND NOT FETCHCONTENT_UPDATES_DISCONNECTED)
+    if( "${${upper_name}_LOCAL_DIRECTORY}" STREQUAL "" AND NOT FETCHCONTENT_FULLY_DISCONNECTED AND NOT FETCHCONTENT_UPDATES_DISCONNECTED AND NOT "${ARG_FETCH_ENABLED}" STREQUAL "OFF")
         # Fetch
         message("Fetching dependency ${name} in ${fetched_dir}")
         message(STATUS "Checkout reference ${${upper_name}_GIT_TAG} from repository ${${upper_name}_GIT_REPOSITORY} ")
@@ -116,15 +117,23 @@ macro(sofa_fetch_dependency name)
         if(NOT generate_exitcode EQUAL 0 OR NOT build_exitcode EQUAL 0)
             message(SEND_ERROR "Failed to fetch external repository ${name}." "\nSee logs in ${fetched_dir}-temp/logs.txt")
         endif()
-    endif ()
-
+    elseif (NOT ${upper_name}_LOCAL_DIRECTORY STREQUAL "")
+        if(EXISTS ${${upper_name}_LOCAL_DIRECTORY})
+            message("${name}: Using local directory ${${upper_name}_LOCAL_DIRECTORY}.")
+            set(fetched_dir "${${upper_name}_LOCAL_DIRECTORY}")
+        else ()
+            message(SEND_ERROR "${name}: Specified directory ${${upper_name}_LOCAL_DIRECTORY} doesn't exist." "\nPlease provide a directory containing the fetched project, or use option ${fetch_enabled} to automatically fetch it.")
+        endif ()
+    endif()
 
 
     # Add
     if(NOT ARG_DONT_BUILD AND  EXISTS "${fetched_dir}/.git" AND IS_DIRECTORY "${fetched_dir}/.git")
         set(${name}_BUILD_DIR "${build_directory}" CACHE STRING "" FORCE)
         add_subdirectory("${fetched_dir}" "${build_directory}")
-    elseif (FETCHCONTENT_FULLY_DISCONNECTED OR FETCHCONTENT_UPDATES_DISCONNECTED)
+    elseif(NOT ARG_DONT_BUILD AND NOT ${upper_name}_LOCAL_DIRECTORY STREQUAL "")
+        message(SEND_ERROR "Directory ${${upper_name}_LOCAL_DIRECTORY} given in ${upper_name}_LOCAL_DIRECTORY doesn't seem to be a right github repository.")
+    elseif (NOT ARG_DONT_BUILD AND FETCHCONTENT_FULLY_DISCONNECTED OR FETCHCONTENT_UPDATES_DISCONNECTED)
         message(SEND_ERROR "FETCHCONTENT_FULLY_DISCONNECTED or FETCHCONTENT_UPDATES_DISCONNECTED is ON but the dependency hasn't been fetched correctly before. Please reconnect fetching mechanism.")
     endif()
 endmacro()
