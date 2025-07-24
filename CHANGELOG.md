@@ -46,6 +46,7 @@
 - [Topology.Container] Add new method computeSegmentTriangleIntersectionInPlane in TriangleSetGeometryAlgorithm [#5188](https://github.com/sofa-framework/sofa/pull/5188) 
 - [Type] Support structured binding for tuple-like types [#5208](https://github.com/sofa-framework/sofa/pull/5208) 
 - [Simulation] Trigger warning when Node already contains component [#5212](https://github.com/sofa-framework/sofa/pull/5212) 
+- [tools] generate stubfiles during packaging [#5222](https://github.com/sofa-framework/sofa/pull/5222) 
 - [Helper] WriteAccessorVector: add resize method with default filler value [#5228](https://github.com/sofa-framework/sofa/pull/5228) 
 - [CMake] Add possibility to remove auto installing of resource files [#5230](https://github.com/sofa-framework/sofa/pull/5230) 
 - [StateContainer] Extend the possible vector operations in vOp [#5237](https://github.com/sofa-framework/sofa/pull/5237) 
@@ -66,6 +67,7 @@
 - [Lagrangian] Add loading capability for bilateral constraints [#5315](https://github.com/sofa-framework/sofa/pull/5315) 
 - [Type] Template deduction guide for fixed_array and Vec [#5385](https://github.com/sofa-framework/sofa/pull/5385) 
 - [Visual] Add a new component drawing an AABB [#5527](https://github.com/sofa-framework/sofa/pull/5527) 
+- [CHANGELOG] Update for v25.06 [#5617](https://github.com/sofa-framework/sofa/pull/5617) 
 
 
 ### Bug Fixes
@@ -79,7 +81,6 @@
 - [Sofa.GL] Fix OglModel crash when texture file is not found [#5182](https://github.com/sofa-framework/sofa/pull/5182) 
 - [GUI.Qt] Fix invalid color of the warning sign on object [#5190](https://github.com/sofa-framework/sofa/pull/5190) 
 - [Base] Fix a minor bug related to the printing of info message while parsing & minor upgrade to c++11 [#5191](https://github.com/sofa-framework/sofa/pull/5191) 
-- [tools] Update post-install fixup to fix rpath [#5197](https://github.com/sofa-framework/sofa/pull/5197) 
 - [Mapping] Fix draw in RigidMapping [#5204](https://github.com/sofa-framework/sofa/pull/5204) 
 - [Engine] Fix drawLines from ValuesFromPositions [#5206](https://github.com/sofa-framework/sofa/pull/5206) 
 - [GL] OglSceneFrame: fix background [#5224](https://github.com/sofa-framework/sofa/pull/5224) 
@@ -108,6 +109,7 @@
 - [Defaulttype, Helper] Return empty string instead of zero [#5388](https://github.com/sofa-framework/sofa/pull/5388) 
 - [CI] Nix: Fix CI [#5401](https://github.com/sofa-framework/sofa/pull/5401) 
 - [Core] Fix DisplayFlags with showCollision [#5598](https://github.com/sofa-framework/sofa/pull/5598) 
+- [Plugins] Fix compilation regarding qt code now activated [#5623](https://github.com/sofa-framework/sofa/pull/5623) 
 
 
 ### Cleaning
@@ -171,11 +173,20 @@
 - [examples] Remove examples using Monitor [#5418](https://github.com/sofa-framework/sofa/pull/5418) 
 - [SofaImplicitField] A bit of cleaning in the plugin [#5419](https://github.com/sofa-framework/sofa/pull/5419) 
 - [Lagrangian.Model] Remove extra endEdit [#5421](https://github.com/sofa-framework/sofa/pull/5421) 
+- [CMake] Bump SOFA version v25.06.00 [#5613](https://github.com/sofa-framework/sofa/pull/5613) 
+- [All] Fix last use of Sofa.GUI.Qt [#5621](https://github.com/sofa-framework/sofa/pull/5621) 
 
 
 ### Refactoring
 
 - [Core] Isolate the intrusive reference counting [#5149](https://github.com/sofa-framework/sofa/pull/5149) 
+
+
+### Project / CI / Infrastructure
+
+- [tools] Update post-install fixup to fix rpath [#5197](https://github.com/sofa-framework/sofa/pull/5197) 
+- [Helper] Add path to icons to fix release error not finding icons [#5622](https://github.com/sofa-framework/sofa/pull/5622) 
+
 
 
 
