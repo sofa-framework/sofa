@@ -54,6 +54,9 @@ endfunction()
 
 
 macro(sofa_fetch_dependency name)
+    #TODO: add local dir mechanism
+    #TODO: use this for plugins
+
     set(oneValueArgs GIT_TAG GIT_REPOSITORY)
     set(multiValueArgs "")
     set(options DONT_BUILD)
@@ -71,53 +74,58 @@ macro(sofa_fetch_dependency name)
 
     set(${name}_SOURCE_DIR "${fetched_dir}" CACHE STRING "" FORCE )
 
-    # Fetch
-    message("Fetching dependency ${name} in ${fetched_dir}")
-    message(STATUS "Checkout reference ${${upper_name}_GIT_TAG} from repository ${${upper_name}_GIT_REPOSITORY} ")
+    if(NOT FETCHCONTENT_FULLY_DISCONNECTED AND NOT FETCHCONTENT_UPDATES_DISCONNECTED)
+        # Fetch
+        message("Fetching dependency ${name} in ${fetched_dir}")
+        message(STATUS "Checkout reference ${${upper_name}_GIT_TAG} from repository ${${upper_name}_GIT_REPOSITORY} ")
 
-    #Generate temporary folder to store project that will fetch the sources
-    if(NOT EXISTS ${fetched_dir}-temp)
-        file(MAKE_DIRECTORY "${fetched_dir}-temp/")
-    endif()
+        #Generate temporary folder to store project that will fetch the sources
+        if(NOT EXISTS ${fetched_dir}-temp)
+            file(MAKE_DIRECTORY "${fetched_dir}-temp/")
+        endif()
 
 
-    file(WRITE ${fetched_dir}-temp/CMakeLists.txt "
-    cmake_minimum_required(VERSION 3.22)
-    include(ExternalProject)
-    ExternalProject_Add(
-        ${name}
-        GIT_REPOSITORY ${${upper_name}_GIT_REPOSITORY}
-        GIT_TAG ${${upper_name}_GIT_TAG}
-        SOURCE_DIR ${fetched_dir}
-        BINARY_DIR \"\"
-        CONFIGURE_COMMAND \"\"
-        BUILD_COMMAND \"\"
-        INSTALL_COMMAND \"\"
-        TEST_COMMAND \"\"
-        GIT_CONFIG \"remote.origin.fetch=+refs/pull/*:refs/remotes/origin/pr/*\"
-        )"
-    )
+        file(WRITE ${fetched_dir}-temp/CMakeLists.txt "
+        cmake_minimum_required(VERSION 3.22)
+        include(ExternalProject)
+        ExternalProject_Add(
+            ${name}
+            GIT_REPOSITORY ${${upper_name}_GIT_REPOSITORY}
+            GIT_TAG ${${upper_name}_GIT_TAG}
+            SOURCE_DIR ${fetched_dir}
+            BINARY_DIR \"\"
+            CONFIGURE_COMMAND \"\"
+            BUILD_COMMAND \"\"
+            INSTALL_COMMAND \"\"
+            TEST_COMMAND \"\"
+            GIT_CONFIG \"remote.origin.fetch=+refs/pull/*:refs/remotes/origin/pr/*\"
+            )"
+        )
 
-    execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM} -G "${CMAKE_GENERATOR}" .
-            WORKING_DIRECTORY "${fetched_dir}-temp"
-            RESULT_VARIABLE generate_exitcode
-            OUTPUT_VARIABLE generate_logs ERROR_VARIABLE generate_logs)
-    file(APPEND "${fetched_dir}-temp/logs.txt" "${generate_logs}")
-    execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-            WORKING_DIRECTORY "${fetched_dir}-temp"
-            RESULT_VARIABLE build_exitcode
-            OUTPUT_VARIABLE build_logs ERROR_VARIABLE build_logs)
-    file(APPEND "${fetched_dir}-temp/logs.txt" "${build_logs}")
+        execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM} -G "${CMAKE_GENERATOR}" .
+                WORKING_DIRECTORY "${fetched_dir}-temp"
+                RESULT_VARIABLE generate_exitcode
+                OUTPUT_VARIABLE generate_logs ERROR_VARIABLE generate_logs)
+        file(APPEND "${fetched_dir}-temp/logs.txt" "${generate_logs}")
+        execute_process(COMMAND "${CMAKE_COMMAND}" --build .
+                WORKING_DIRECTORY "${fetched_dir}-temp"
+                RESULT_VARIABLE build_exitcode
+                OUTPUT_VARIABLE build_logs ERROR_VARIABLE build_logs)
+        file(APPEND "${fetched_dir}-temp/logs.txt" "${build_logs}")
 
-    if(NOT generate_exitcode EQUAL 0 OR NOT build_exitcode EQUAL 0)
-        message(SEND_ERROR "Failed to fetch external repository ${name}." "\nSee logs in ${fetched_dir}/logs.txt")
-    endif()
+        if(NOT generate_exitcode EQUAL 0 OR NOT build_exitcode EQUAL 0)
+            message(SEND_ERROR "Failed to fetch external repository ${name}." "\nSee logs in ${fetched_dir}-temp/logs.txt")
+        endif()
+    endif ()
+
 
 
     # Add
     if(NOT ARG_DONT_BUILD AND  EXISTS "${fetched_dir}/.git" AND IS_DIRECTORY "${fetched_dir}/.git")
         set(${name}_BUILD_DIR "${build_directory}" CACHE STRING "" FORCE)
         add_subdirectory("${fetched_dir}" "${build_directory}")
+    elseif (FETCHCONTENT_FULLY_DISCONNECTED OR FETCHCONTENT_UPDATES_DISCONNECTED)
+        message(SEND_ERROR "FETCHCONTENT_FULLY_DISCONNECTED or FETCHCONTENT_UPDATES_DISCONNECTED is ON but the dependency hasn't been fetched correctly before. Please reconnect fetching mechanism.")
     endif()
 endmacro()
 
