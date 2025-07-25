@@ -126,7 +126,18 @@ public:
     void setCurrentSelection(const std::set<core::objectmodel::Base::SPtr> &selection);
     const std::set<sofa::core::objectmodel::Base::SPtr>& getCurrentSelection() const;
 
+public:
+    bool m_showSelectedNodeBoundingBox {true};
+    bool m_showSelectedObjectBoundingBox {true};
+    bool m_showSelectedObjectPositions {true};
+    bool m_showSelectedObjectSurfaces {true};
+    bool m_showSelectedObjectVolumes {true};
+    bool m_showSelectedObjectIndices {true};
+    float m_visualScaling {0.2};
+
 protected:
+    void drawIndices(const sofa::type::BoundingBox& bbox, const std::vector<sofa::type::Vec3>& positions);
+
     /// internally called while the actual viewer needs a redraw (ie the camera changed)
     virtual void redraw() = 0;
 
@@ -140,6 +151,7 @@ protected:
     bool _video;
     bool m_isVideoButtonPressed;
     bool m_bShowAxis;
+
     bool _fullScreen;
     int _background;
     bool initTexturesDone;
