@@ -77,7 +77,7 @@ public:
     virtual bool isActive() const;
 
     /// State of the context
-    virtual void setActive(bool) {}
+    virtual void setActive(bool);
 
     /// Sleeping state of the context
     virtual bool isSleeping() const;
@@ -95,12 +95,14 @@ public:
     virtual bool getAnimate() const;
     /// @}
 
-
     /// Gravity in local coordinates
     virtual const Vec3& getGravity() const;
+
     /// Gravity in local coordinates
-    virtual void setGravity( const Vec3& )
-    { }
+    virtual void setGravity( const Vec3& );
+
+    /// Display flags: Gravity
+    void setDisplayWorldGravity(bool val);
 
     /// Get the root context of the graph
     virtual BaseContext* getRootContext() const;
@@ -318,20 +320,18 @@ public:
 
 
     /// Simulation timestep
-    virtual void setDt( SReal /*dt*/ )
-    { }
+    virtual void setDt( SReal /*dt*/ );
+
+    void setTime(SReal t);
 
     /// Animation flag
-    virtual void setAnimate(bool /*val*/)
-    { }
+    virtual void setAnimate(bool /*val*/);
 
     /// Sleeping state of the context
-    virtual void setSleeping(bool /*val*/)
-    { }
+    virtual void setSleeping(bool /*val*/);
 
     /// Sleeping state change of the context
-    virtual void setChangeSleepingState(bool /*val*/)
-    { }
+    virtual void setChangeSleepingState(bool /*val*/);
     /// @}
 
     /// @name Variables Setters
@@ -389,6 +389,8 @@ public:
 
     /// @}
 
+    void copyContext(const BaseContext& c);
+    void copySimulationContext(const BaseContext& c);
 
     /// @name Notifications for graph change listeners
     /// @{
@@ -403,6 +405,14 @@ public:
 
 protected:
     ComponentNameHelper m_nameHelper;
+
+    Data<bool> is_activated; ///< To Activate a node
+    Data<Vec3> worldGravity_; ///< Gravity in the world coordinate system
+    Data<SReal> dt_; ///< Time step
+    Data<SReal> time_; ///< Current time
+    Data<bool> animate_; ///< Animate the Simulation(applied at initialization only)
+    Data<bool> d_isSleeping; ///< The node is sleeping, and thus ignored by visitors.
+    Data<bool> d_canChangeSleepingState; ///< The node can change its sleeping state.
 };
 
 template<class T, class Container>
