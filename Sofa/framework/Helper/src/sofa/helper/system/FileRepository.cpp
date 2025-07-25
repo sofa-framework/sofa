@@ -102,7 +102,8 @@ FileRepository DataRepository(
     "SOFA_DATA_PATH",
     {
         Utils::getSofaPathTo("share/sofa"),
-        Utils::getSofaPathTo("share/sofa/examples")
+        Utils::getSofaPathTo("share/sofa/examples"),
+        Utils::getSofaPathTo("share/sofa/icons")
     },
     {
         { Utils::getSofaPathTo("etc/sofa.ini"), {"SHARE_DIR", "EXAMPLES_DIR"} }
