@@ -108,13 +108,6 @@ public:
 
     /// get the set of response available with the current collision pipeline
     virtual std::set< std::string > getResponseList() const=0;
-protected:
-    /// Remove collision response from last step
-    virtual void doCollisionReset() = 0;
-    /// Detect new collisions. Note that this step must not modify the simulation graph
-    virtual void doCollisionDetection(const sofa::type::vector<core::CollisionModel*>& collisionModels) = 0;
-    /// Add collision response in the simulation graph
-    virtual void doCollisionResponse() = 0;
 
 public:
 
