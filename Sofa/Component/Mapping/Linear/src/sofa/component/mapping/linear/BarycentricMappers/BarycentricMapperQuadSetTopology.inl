@@ -77,19 +77,10 @@ type::vector<Quad> BarycentricMapperQuadSetTopology<In,Out>::getElements()
 }
 
 template <class In, class Out>
-type::vector<SReal> BarycentricMapperQuadSetTopology<In,Out>::getBaryCoef(const Real* f)
+auto BarycentricMapperQuadSetTopology<In,Out>::getBarycentricCoefficients(const Real* barycentricCoordinates) -> std::array<Real, Quad::NumberOfNodes>
 {
-    return getBaryCoef(f[0],f[1]);
-}
-
-template <class In, class Out>
-type::vector<SReal> BarycentricMapperQuadSetTopology<In,Out>::getBaryCoef(const Real fx, const Real fy)
-{
-    type::vector<SReal> quadCoef{(1-fx)*(1-fy),
-                (fx)*(1-fy),
-                (fx)*(fy),
-                (1 - fx)*(fy)};
-    return quadCoef;
+    const Real* f = barycentricCoordinates; // for better readability
+    return { (1-f[0])*(1-f[1]), (f[0])*(1-f[1]), (f[0])*(f[1]), (1 - f[0])*(f[1]) };
 }
 
 template <class In, class Out>
