@@ -55,26 +55,19 @@ typename BarycentricMapperEdgeSetTopology<In, Out>::Index BarycentricMapperEdgeS
 }
 
 template <class In, class Out>
-type::vector<Edge> BarycentricMapperEdgeSetTopology<In,Out>::getElements()
+auto BarycentricMapperEdgeSetTopology<In,Out>::getElements() -> type::vector<Edge>
 {
     return this->m_fromTopology->getEdges();
 }
 
 template <class In, class Out>
-type::vector<SReal> BarycentricMapperEdgeSetTopology<In,Out>::getBaryCoef(const Real* f)
+auto BarycentricMapperEdgeSetTopology<In,Out>::getBarycentricCoefficients(const std::array<Real, MappingData::NumberOfCoordinates>& barycentricCoordinates) -> std::array<Real, Edge::NumberOfNodes>
 {
-    return getBaryCoef(f[0]);
+    return {1-barycentricCoordinates[0], barycentricCoordinates[0]};
 }
 
 template <class In, class Out>
-type::vector<SReal> BarycentricMapperEdgeSetTopology<In,Out>::getBaryCoef(const Real fx)
-{
-    type::vector<SReal> edgeCoef{1-fx,fx};
-    return edgeCoef;
-}
-
-template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Edge& element)
+void BarycentricMapperEdgeSetTopology<In,Out>::computeBase(Mat3x3& base, const typename In::VecCoord& in, const Edge& element)
 {
     //Not implemented for Edge
     SOFA_UNUSED(base);

@@ -86,39 +86,31 @@ BarycentricMapperHexahedronSetTopology<In,Out>::setPointInCube ( const Index poi
 
 
 template <class In, class Out>
-type::vector<Hexahedron> BarycentricMapperHexahedronSetTopology<In,Out>::getElements()
+auto BarycentricMapperHexahedronSetTopology<In,Out>::getElements() -> type::vector<Hexahedron>
 {
     return this->m_fromTopology->getHexahedra();
 }
 
-
 template <class In, class Out>
-type::vector<SReal> BarycentricMapperHexahedronSetTopology<In,Out>::getBaryCoef(const Real* f)
+auto BarycentricMapperHexahedronSetTopology<In,Out>::getBarycentricCoefficients(const std::array<Real, MappingData::NumberOfCoordinates>& barycentricCoordinates) -> std::array<Real, Hexahedron::NumberOfNodes>
 {
-    return getBaryCoef(f[0],f[1],f[2]);
-}
-
-
-template <class In, class Out>
-type::vector<SReal> BarycentricMapperHexahedronSetTopology<In,Out>::getBaryCoef(const Real fx, const Real fy, const Real fz)
-{
-    type::vector<SReal> hexahedronCoef{(1-fx)*(1-fy)*(1-fz),
-                (fx)*(1-fy)*(1-fz),
-                (fx)*(fy)*(1 - fz),
-                (1 - fx)*(fy)*(1 - fz),
-                (1-fx)*(1-fy)*(fz),
-                (fx)*(1-fy)*(fz),
-                (fx)*(fy)*(fz),
-                (1 - fx)*(fy)*(fz)
+    const auto& f = barycentricCoordinates; // for better readability
+    
+    return {(1-f[0])*(1-f[1])*(1-f[2]),
+        (f[0])*(1-f[1])*(1-f[2]),
+        (f[0])*(f[1])*(1 - f[2]),
+        (1 - f[0])*(f[1])*(1 - f[2]),
+        (1-f[0])*(1-f[1])*(f[2]),
+        (f[0])*(1-f[1])*(f[2]),
+        (f[0])*(f[1])*(f[2]),
+        (1 - f[0])*(f[1])*(f[2])
     };
-    return hexahedronCoef;
 }
 
-
 template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Hexahedron& element)
+void BarycentricMapperHexahedronSetTopology<In,Out>::computeBase(Mat3x3& base, const typename In::VecCoord& in, const Hexahedron& element)
 {
-    Mat3x3d matrixTranspose;
+    Mat3x3 matrixTranspose;
     base[0] = in[element[1]]-in[element[0]];
     base[1] = in[element[3]]-in[element[0]];
     base[2] = in[element[4]]-in[element[0]];
