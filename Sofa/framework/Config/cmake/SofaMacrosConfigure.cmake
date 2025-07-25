@@ -192,7 +192,7 @@ macro(sofa_fetch_dependency name)
     set(${upper_name}_GIT_TAG "${ARG_GIT_TAG}" CACHE STRING "Branch or commit SHA to checkout" )
     set(${upper_name}_LOCAL_DIRECTORY "" CACHE STRING "Absolute path to a local folder containing the cloned repository")
 
-    set(${name}_SOURCE_DIR "${fetched_dir}" CACHE STRING "" FORCE )
+    set(${fixed_name}_SOURCE_DIR "${fetched_dir}" CACHE STRING "" FORCE )
 
     if( "${${upper_name}_LOCAL_DIRECTORY}" STREQUAL "" AND NOT FETCHCONTENT_FULLY_DISCONNECTED AND NOT FETCHCONTENT_UPDATES_DISCONNECTED AND NOT "${ARG_FETCH_ENABLED}" STREQUAL "OFF")
         # Fetch
@@ -248,12 +248,13 @@ macro(sofa_fetch_dependency name)
 
     # Add
     if(NOT ARG_DONT_BUILD AND  EXISTS "${fetched_dir}/.git" AND IS_DIRECTORY "${fetched_dir}/.git")
-        set(${name}_BUILD_DIR "${build_directory}" CACHE STRING "" FORCE)
+        set(${fixed_name}_BUILD_DIR "${build_directory}" CACHE STRING "" FORCE)
         add_subdirectory("${fetched_dir}" "${build_directory}")
+        message(STATUS "Adding subproject ${name} from sources at ${${fixed_name}_SOURCE_DIR}")
     elseif(NOT ARG_DONT_BUILD AND NOT ${upper_name}_LOCAL_DIRECTORY STREQUAL "")
         message(SEND_ERROR "Directory ${${upper_name}_LOCAL_DIRECTORY} given in ${upper_name}_LOCAL_DIRECTORY doesn't seem to be a right github repository.")
     elseif (NOT ARG_DONT_BUILD AND FETCHCONTENT_FULLY_DISCONNECTED OR FETCHCONTENT_UPDATES_DISCONNECTED)
-        message(SEND_ERROR "FETCHCONTENT_FULLY_DISCONNECTED or FETCHCONTENT_UPDATES_DISCONNECTED is ON but the dependency hasn't been fetched correctly before. Please reconnect fetching mechanism.")
+        message(SEND_ERROR "FETCHCONTENT_FULLY_DISCONNECTED or FETCHCONTENT_UPDATES_DISCONNECTED is ON but the dependency hasn't been fetched correctly before. Please reconnect fetching mechanism or provide a local directory by setting ${upper_name}_LOCAL_DIRECTORY.")
     endif()
 endmacro()
 
@@ -312,9 +313,6 @@ function(sofa_add_generic_external name type)
     set(directory "${CMAKE_CURRENT_LIST_DIR}/${name}")
     file(RELATIVE_PATH relative_path "${CMAKE_SOURCE_DIR}" "${directory}")
 
-    message("${upper_name}_LOCAL_DIRECTORY = ${${${upper_name}_LOCAL_DIRECTORY}}")
-    message("fetched_dir = ${fetched_dir}")
-    message("CMAKE_BINARY_DIR/relative_path = ${CMAKE_BINARY_DIR}/${relative_path}")
     # Add
     if(EXISTS "${fetched_dir}/.git" AND IS_DIRECTORY "${fetched_dir}/.git")
         if(NOT ARG_FETCH_ONLY AND "${type}" MATCHES ".*directory.*")
