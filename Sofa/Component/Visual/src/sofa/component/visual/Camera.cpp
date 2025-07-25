@@ -20,17 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/visual/Camera.h>
-
-#include <sofa/core/ObjectFactory.h>
-
 namespace sofa::component::visual
 {
-
-void registerCamera(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("A Camera that render the scene from a given location & orientation.")
-        .add< Camera >());
-}
 
 Camera::Camera()
 {
@@ -42,3 +33,18 @@ Camera::~Camera()
 }
 
 } // namespace sofa::component::visual
+
+
+////////////////////////////////////////// Factory registration ////////////////////////////////////////
+#include <sofa/core/ObjectFactory.h>
+namespace sofa::core{
+using sofa::component::visual::Camera;
+
+template<>
+void registerToFactory<sofa::component::visual::Camera>(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A Camera that render the scene from a given location & orientation.")
+        .add< Camera >());
+}
+
+}

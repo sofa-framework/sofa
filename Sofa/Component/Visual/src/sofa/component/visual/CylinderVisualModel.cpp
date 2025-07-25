@@ -20,9 +20,21 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/visual/CylinderVisualModel.h>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
+
+////////////////////////////////////////// Factory registration ////////////////////////////////////////
 #include <sofa/core/ObjectFactory.h>
+namespace sofa::core{
+using namespace sofa::component::visual;
+
+template<>
+void registerToFactory<CylinderVisualModel>(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A Camera that render the scene from a given location & orientation.")
+        .add< CylinderVisualModel >());
+}
+
+}
 
 namespace sofa::component::visual
 {
