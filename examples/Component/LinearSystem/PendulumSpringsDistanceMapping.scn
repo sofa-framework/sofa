@@ -41,7 +41,7 @@
         <Node name="extensionsNode" >
             <MechanicalObject template="Vec1" name="extensionsDOF" />
             <DistanceMapping name="distanceMapping" topology="@../topology" input="@../defoDOF" output="@extensionsDOF" geometricStiffness="1"/>
-            <RestShapeSpringsForceField template="Vec1" stiffness="1000"/>
+            <FixedWeakConstraint template="Vec1" stiffness="1000"/>
         </Node>
 
         <Node name="visual">
@@ -65,7 +65,7 @@
         <Node name="extensionsNode" >
             <MechanicalObject template="Vec1" name="extensionsDOF" />
             <DistanceMapping name="distanceMapping" topology="@../topology" input="@../defoDOF" output="@extensionsDOF" geometricStiffness="0"/>
-            <RestShapeSpringsForceField template="Vec1" stiffness="1000"/>
+            <FixedWeakConstraint template="Vec1" stiffness="1000" fixAll="true"/>
         </Node>
 
         <Node name="visual">
