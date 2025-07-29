@@ -7,7 +7,8 @@
 #   ZSTD_FOUND : True if ZSTD is found
 #
 # Provides target ZSTD::ZSTD.
-find_package(zstd NO_MODULE QUIET)
+# TODO: keep CONFIG mode ?
+#find_package(zstd NO_MODULE QUIET)
 
 if(TARGET ZSTD::ZSTD)
   set(ZSTD_FOUND TRUE) # only ZSTD_FOUND has been set
@@ -27,7 +28,14 @@ else()
   )
   endif()
 
-  if(ZSTD_INCLUDE_DIR AND ZSTD_LIBRARY)
+  if(WIN32)
+    find_file(ZSTD_DLL
+      NAMES zstd.dll
+      PATH_SUFFIXES bin
+    )
+  endif()
+
+  if(ZSTD_INCLUDE_DIR AND ZSTD_LIBRARY AND (NOT WIN32 OR ZSTD_DLL))
     set(ZSTD_FOUND TRUE)
   else()
     if(ZSTD_FIND_REQUIRED)
@@ -41,9 +49,11 @@ else()
 
     if(NOT TARGET ZSTD::ZSTD)
       add_library(ZSTD::ZSTD SHARED IMPORTED)
-      set_property(TARGET ZSTD::ZSTD PROPERTY IMPORTED_LOCATION "${ZSTD_LIBRARIES}")
       if(WIN32)
+        set_property(TARGET ZSTD::ZSTD PROPERTY IMPORTED_LOCATION "${ZSTD_DLL}")
         set_property(TARGET ZSTD::ZSTD PROPERTY IMPORTED_IMPLIB "${ZSTD_LIBRARIES}")
+      else()
+        set_property(TARGET ZSTD::ZSTD PROPERTY IMPORTED_LOCATION "${ZSTD_LIBRARIES}")
       endif()
       set_property(TARGET ZSTD::ZSTD PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${ZSTD_INCLUDE_DIR}")
     endif()

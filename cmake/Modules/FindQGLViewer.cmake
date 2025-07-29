@@ -26,7 +26,14 @@ if(NOT TARGET QGLViewer)
   )
   endif()
 
-  if(QGLViewer_INCLUDE_DIR AND QGLViewer_LIBRARY)
+  if(WIN32)
+    find_file(QGLViewer_DLL
+      NAMES QGLViewer.dll QGLViewer2.dll
+      PATH_SUFFIXES bin
+    )
+  endif()
+
+  if(QGLViewer_INCLUDE_DIR AND QGLViewer_LIBRARY AND (NOT WIN32 OR QGLViewer_DLL))
     set(QGLViewer_FOUND TRUE)
   else()
     if(QGLViewer_FIND_REQUIRED)
@@ -34,7 +41,7 @@ if(NOT TARGET QGLViewer)
     endif()
   endif()
 
-  # Same checks as Sofa.GUI.Qt
+  # Same checks as Sofa.Qt
   # i.e find Qt6, then if not, Qt5, then if not error
   find_package(Qt6 COMPONENTS Core CoreTools QUIET)
   if (NOT Qt6Core_FOUND)
@@ -58,9 +65,14 @@ if(NOT TARGET QGLViewer)
     endif(NOT QGLViewer_FIND_QUIETLY)
 
     if(NOT TARGET QGLViewer)
-      add_library(QGLViewer INTERFACE IMPORTED)
-      set_property(TARGET QGLViewer PROPERTY INTERFACE_LINK_LIBRARIES "${QGLViewer_LIBRARIES}" ${QT_TARGETS})
+      add_library(QGLViewer SHARED IMPORTED)
       set_property(TARGET QGLViewer PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${QGLViewer_INCLUDE_DIR}")
+      if(WIN32)
+        set_property(TARGET QGLViewer PROPERTY IMPORTED_LOCATION "${QGLViewer_DLL}")
+        set_property(TARGET QGLViewer PROPERTY IMPORTED_IMPLIB "${QGLViewer_LIBRARIES}")
+      else()
+        set_property(TARGET QGLViewer PROPERTY IMPORTED_LOCATION "${QGLViewer_LIBRARIES}")
+      endif()
     endif()
   endif()
   mark_as_advanced(QGLViewer_INCLUDE_DIR QGLViewer_LIBRARY)

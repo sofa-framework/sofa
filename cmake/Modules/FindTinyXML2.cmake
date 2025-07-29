@@ -7,6 +7,7 @@
 #   TinyXML2_FOUND : True if tinyxml2 is found
 #
 # Provides target tinyxml2::tinyxml2.
+# TODO: keep CONFIG mode ?
 find_package(tinyxml2 NO_MODULE QUIET)
 
 if(TARGET tinyxml2::tinyxml2)
@@ -35,7 +36,7 @@ else()
     )
   endif()
 
-  if(TinyXML2_INCLUDE_DIR AND TinyXML2_LIBRARY)
+  if(TinyXML2_INCLUDE_DIR AND TinyXML2_LIBRARY AND (NOT WIN32 OR TinyXML2_DLL))
     set(TinyXML2_FOUND TRUE)
   else()
     if(TinyXML2_FIND_REQUIRED)

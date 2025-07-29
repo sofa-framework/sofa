@@ -3,8 +3,8 @@
 #  - look for DLL binary files on Windows and 
 # set the target properties correctly to allow installation to copy them for 
 # our packaging needs. 
-#  - disable look for static zlib (as add_library must be set to SHARED instead of UNKNOWN)
-#  - discard specific build configurations zlib (Debug, Release) 
+#  - disable look for static lib (as add_library must be set to SHARED instead of UNKNOWN)
+#  - discard specific build configurations (Debug, Release)
 #
 # --------
 #
@@ -245,8 +245,7 @@ if(ZLIB_FOUND)
         INTERFACE_INCLUDE_DIRECTORIES "${ZLIB_INCLUDE_DIRS}")
       if(WIN32)
         set_target_properties(ZLIB::ZLIB PROPERTIES
-          IMPORTED_LOCATION "${ZLIB_DLL}")
-        set_target_properties(ZLIB::ZLIB PROPERTIES
+          IMPORTED_LOCATION "${ZLIB_DLL}"
           IMPORTED_IMPLIB "${ZLIB_LIBRARY}")
       else()
         set_target_properties(ZLIB::ZLIB PROPERTIES
