@@ -19,53 +19,67 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_CORE_VISITOREXECUTE_H
-#define SOFA_SIMULATION_CORE_VISITOREXECUTE_H
+#pragma once
 
-
+#include <sofa/simulation/config.h>
+#include <sofa/core/BaseMapping.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 
-namespace sofa::simulation::common
+#include <queue>
+#include <unordered_set>
+
+namespace sofa::simulation
 {
 
-struct VisitorExecuteFunc
+enum class SOFA_SIMULATION_CORE_API MappingGraphDirection : std::uint8_t
 {
-protected:
-    sofa::core::objectmodel::BaseContext& ctx;
-
-public:
-
-    bool precomputedTraversalOrder;
-
-    VisitorExecuteFunc(sofa::core::objectmodel::BaseContext& ctx, bool precomputedTraversalOrder=false)
-        : ctx(ctx)
-        , precomputedTraversalOrder(precomputedTraversalOrder)
-    {}
-
-    template< class Visitor >
-    void operator()(Visitor* pv)
-    {
-        prepareVisitor(pv);
-        pv->execute(&ctx,precomputedTraversalOrder);
-    }
-    template< class Visitor >
-    void operator()(Visitor v)
-    {
-        prepareVisitor(&v);
-        v.execute(&ctx,precomputedTraversalOrder);
-    }
-protected:
-    void prepareVisitor( sofa::simulation::Visitor* v)
-    {
-        v->setTags( ctx.getTags() );
-    }
-    void prepareVisitor( sofa::simulation::BaseMechanicalVisitor* mv)
-    {
-        prepareVisitor( (sofa::simulation::Visitor*)mv );
-    }
+    TOP_DOWN,
+    BOTTOM_UP
 };
+
+SOFA_SIMULATION_CORE_API
+void findNextMappingsToProcess(const std::vector<sofa::core::BaseMapping*>& mappingList,
+                               std::queue<sofa::core::BaseMapping*>& mappings,
+                               MappingGraphDirection direction = MappingGraphDirection::TOP_DOWN);
+
+template <class Callable>
+void mappingGraphBreadthFirstTraversal(
+    sofa::core::objectmodel::BaseContext* context,
+    Callable f,
+    bool filterNonMechanicalMappings = true,
+    MappingGraphDirection direction = MappingGraphDirection::TOP_DOWN)
+{
+    auto mappingList =
+    context->getObjects<sofa::core::BaseMapping>(sofa::core::objectmodel::BaseContext::SearchDirection::SearchDown);
+
+    if (filterNonMechanicalMappings)
+    {
+        std::erase_if(mappingList, [](const sofa::core::BaseMapping* mapping){return !mapping->isMechanical();});
+    }
+
+    std::queue<sofa::core::BaseMapping*> mappingsToProcess;
+
+    while (!mappingList.empty())
+    {
+        findNextMappingsToProcess(mappingList, mappingsToProcess, direction);
+
+        if (mappingsToProcess.empty())
+        {
+            msg_error("MappingGraph") << "Cannot find next mappings to process. Abort.";
+            break;
+        }
+
+        while (!mappingsToProcess.empty())
+        {
+            auto* mapping = mappingsToProcess.front();
+            mappingsToProcess.pop();
+
+            f(mapping);
+
+            std::erase(mappingList, mapping);
+        }
+
+    }
 }
 
-#endif // SOFA_SIMULATION_CORE_VISITOREXECUTE_H
+}
