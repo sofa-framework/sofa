@@ -277,4 +277,19 @@ void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseObject * object)
     redraw();
 }
 
+const std::vector<sofa::core::objectmodel::Base*>& BaseViewer::getCurrentSelection()
+{
+    return currentSelection;
+}
+
+void BaseViewer::setCurrentSelection(const std::vector<sofa::core::objectmodel::Base*>& selection)
+{
+    currentSelection=selection;
+}
+
+void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
+{
+
+}
+
 } // namespace sofa::gui::common
