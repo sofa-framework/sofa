@@ -37,7 +37,7 @@ void registerMeshOffLoader(sofa::core::ObjectFactory* factory)
         .add< MeshOffLoader >());
 }
 
-bool MeshOffLoader::doLoad()
+bool MeshOffLoader::doLoadMesh()
 {
     msg_info() << "Loading OFF file: " << d_filename;
 
