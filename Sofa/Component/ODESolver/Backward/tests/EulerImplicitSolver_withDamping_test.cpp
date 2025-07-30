@@ -91,8 +91,9 @@ struct EulerImplicit_with_damping_forcefield : public BaseSimulationTest, Numeri
         simpleapi::createObject(dampedParticule, "UniformMass", {
             { "totalMass", simpleapi::str(1.0)},
             });
-        simpleapi::createObject(dampedParticule, "UniformVelocityDampingForceField", {
+        simpleapi::createObject(dampedParticule, "NodalLinearDampingForceField", {
             { "template", simpleapi::str("Vec3")},
+            { "dampingCoefficient", simpleapi::str(0.1)},
             });
 
         // end create scene

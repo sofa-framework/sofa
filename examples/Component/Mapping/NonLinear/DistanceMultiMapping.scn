@@ -8,7 +8,7 @@
         <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
         <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [DistanceMapping DistanceMultiMapping] -->
         <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
-        <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [UniformVelocityDampingForceField] -->
+        <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [NodalLinearDampingForceField] -->
         <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
         <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RestShapeSpringsForceField] -->
         <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
@@ -33,7 +33,7 @@
         <EdgeSetGeometryAlgorithms drawEdges="true" />
         <FixedProjectiveConstraint indices="0" />
         <DiagonalMass  name="mass" totalMass="1e-2"/>
-        <UniformVelocityDampingForceField template="Vec3" name="uniformVelocityDampingFF0" implicit="true" dampingCoefficient="0.005"/>
+        <NodalLinearDampingForceField template="Vec3" name="uniformVelocityDampingFF0" dampingCoefficient="0.005"/>
         <Node name="extensionsNode" >
             <MechanicalObject template="Vec1" name="extensionsDOF" />
             <DistanceMapping name="distanceMapping" topology="@../topology" input="@../defoDOF" output="@extensionsDOF" geometricStiffness="0" applyRestPosition="true" computeDistance="true"/>
@@ -49,7 +49,7 @@
         <EdgeSetGeometryAlgorithms drawEdges="true" />
         <FixedProjectiveConstraint indices="19" />
         <DiagonalMass  name="mass" totalMass="1e-2"/>
-        <UniformVelocityDampingForceField template="Vec3" name="uniformVelocityDampingFF0" implicit="true" dampingCoefficient="0.005"/>
+        <NodalLinearDampingForceField template="Vec3" name="uniformVelocityDampingFF0" dampingCoefficient="0.005"/>
         <Node name="extensionsNode" >
             <MechanicalObject template="Vec1" name="extensionsDOF" />
             <DistanceMapping name="distanceMapping" topology="@../topology" input="@../defoDOF" output="@extensionsDOF" geometricStiffness="0" applyRestPosition="true" computeDistance="true"/>
