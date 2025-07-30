@@ -31,12 +31,20 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(ZLIB REQUIRED)
+if(ZLIB_FOUND)
+    message("==========Playback:  ZLIB FOUND")
+else()
+    message("==========Playback:  ZLIB NOT FOUND")
+endif()
 sofa_find_package(Sofa.Simulation.Common REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Common)
 target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+    message("==========Playback:  ZLIB_LIBRARIES = ${ZLIB_LIBRARIES}")
+
+    message("==========Playback:  installing ZLIB")
     sofa_install_libraries(TARGETS ZLIB::ZLIB)
 endif()
 
