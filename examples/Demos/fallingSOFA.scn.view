@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Camera version="1.0">
     <!--Vector of 3 reals (x, y, z)-->
-    <position value="0.25 -1.1 -0.20"/>
+    <position value="0 -1.1 0.30"/>
     <!--Quaternion (x, y, z, w)-->
     <orientation value="0.707 0 0 0.707"/>
     <!--Real-->
