@@ -28,7 +28,7 @@
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/graph/init.h>
-#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/graph/init.h>
 

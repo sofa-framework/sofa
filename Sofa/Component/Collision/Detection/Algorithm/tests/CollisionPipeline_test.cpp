@@ -34,9 +34,6 @@ using sofa::core::objectmodel::BaseObject ;
 #include <sofa/component/collision/detection/algorithm/CollisionPipeline.h>
 using sofa::component::collision::detection::algorithm::CollisionPipeline ;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation ;
-
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
