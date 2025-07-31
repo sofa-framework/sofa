@@ -43,19 +43,27 @@ void SceneCheckMapping::doInit(sofa::simulation::Node* node)
 
 void SceneCheckMapping::doCheckOn(sofa::simulation::Node* node)
 {
-    if (node->mechanicalMapping != nullptr && node->mechanicalMapping->isMechanical())
+    if (node->mechanicalMapping != nullptr)
     {
-        if (node->mechanicalState == nullptr)
+        const auto mappingOutput = node->mechanicalMapping->getTo();
+
+        if (node->mechanicalState != nullptr)
         {
-            m_nodesWithMappingNoState.push_back(node);
-        }
-        else
-        {
-            const auto mappingOutput = node->mechanicalMapping->getMechTo();
             if (std::ranges::find(mappingOutput, node->mechanicalState) == mappingOutput.end())
             {
                 m_nodesWithMappingWrongState.push_back(node);
             }
+        }
+        else if (node->state != nullptr)
+        {
+            if (std::ranges::find(mappingOutput, node->state) == mappingOutput.end())
+            {
+                m_nodesWithMappingWrongState.push_back(node);
+            }
+        }
+        else
+        {
+            m_nodesWithMappingNoState.push_back(node);
         }
     }
 }
@@ -86,7 +94,7 @@ void SceneCheckMapping::doPrintSummary()
     if (!m_nodesWithMappingNoState.empty())
     {
         std::stringstream ss;
-        ss << "The following Nodes contain a mapping but no state: " << msgendl;
+        ss << "The following Node(s) contain a mapping but no state: " << msgendl;
         showNodes(ss, m_nodesWithMappingNoState);
         msg_error(getName()) << ss.str();
     }
@@ -94,7 +102,7 @@ void SceneCheckMapping::doPrintSummary()
     if (!m_nodesWithMappingWrongState.empty())
     {
         std::stringstream ss;
-        ss << "The following Nodes contain a mapping and a state, and the state is not an output of the mapping: " << msgendl;
+        ss << "The following Node(s) contain a mapping and a state, and the state is not an output of the mapping: " << msgendl;
         showNodes(ss, m_nodesWithMappingWrongState);
         msg_error(getName()) << ss.str();
     }
