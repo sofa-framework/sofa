@@ -48,6 +48,7 @@ public:
 private:
     sofa::type::vector<sofa::simulation::Node*> m_nodesWithMappingNoState;
     sofa::type::vector<sofa::simulation::Node*> m_nodesWithMappingWrongState;
+    sofa::type::vector<sofa::simulation::Node*> m_nodesWithMappingAndTwoStates;
 };
 
 }
