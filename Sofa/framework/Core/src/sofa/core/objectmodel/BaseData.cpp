@@ -116,7 +116,17 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
         if (m_owner)
         {
             msg_error(m_owner) << "Invalid Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName();
-            msg_error_when(!this->getValueTypeInfo()->ValidInfo(), m_owner) << "Possible reason: destination Data " << getName() << " has an unknown type";
+            msg_error_when(!this->getValueTypeInfo()->ValidInfo(), m_owner) << "Possible reason: destination Data " << getName() << " has an unknown type ("
+                << "name: " << this->getValueTypeInfo()->name()
+                << ", type name: " << this->getValueTypeInfo()->getTypeName()
+                << ", size: " << this->getValueTypeInfo()->size()
+                << ", container: " << this->getValueTypeInfo()->Container()
+                << ", fixed size: " << this->getValueTypeInfo()->FixedSize()
+                << ", integer: " << this->getValueTypeInfo()->Integer()
+                << ", scalar: " << this->getValueTypeInfo()->Scalar()
+                << ", text: " << this->getValueTypeInfo()->Text()
+                << ", valid: " << this->getValueTypeInfo()->ValidInfo()
+                << ")";
             msg_error_when(!parent->getValueTypeInfo()->ValidInfo(), m_owner) << "Possible reason: source Data " << parent->getName() << " has an unknown type";
         }
         return false;
