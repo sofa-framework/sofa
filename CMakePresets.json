@@ -205,11 +205,11 @@
         },
         "SOFA_FETCH_CGALPLUGIN": {
           "type": "BOOL",
-          "value": "ON"
+          "value": "OFF"
         },
         "PLUGIN_CGALPLUGIN": {
           "type": "BOOL",
-          "value": "ON"
+          "value": "OFF"
         },
         "SOFA_FETCH_SOFA_METIS": {
           "type": "BOOL",
@@ -250,7 +250,7 @@
         },
         "PLUGIN_IMAGE": {
           "type": "BOOL",
-          "value": "ON"
+          "value": "OFF"
         },
         "SOFA_FETCH_MANIFOLDTOPOLOGIES": {
           "type": "BOOL",

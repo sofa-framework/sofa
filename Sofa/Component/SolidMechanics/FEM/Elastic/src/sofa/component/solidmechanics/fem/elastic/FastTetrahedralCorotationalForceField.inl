@@ -496,7 +496,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::buildStiffnessMatrix(
             TetrahedronRestInformation& tetinfo = tetrahedronInf[i];
             const core::topology::BaseMeshTopology::EdgesInTetrahedron &tea = this->l_topology->getEdgesInTetrahedron(i);
 
-            for (sofa::Size j=0; j < EdgesInTetrahedron::size(); ++j)
+            for (sofa::Size j=0; j < tea.size(); ++j)
             {
                 unsigned int edgeID = tea[j];
 
