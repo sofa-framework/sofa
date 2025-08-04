@@ -80,6 +80,11 @@ TEST_F(Data_test, validInfo)
     EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Quad> >::ValidInfo);
     EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Tetrahedron> >::ValidInfo);
     EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Triangle> >::ValidInfo);
+
+
+    using array3i = sofa::type::fixed_array<int, 3>;
+    EXPECT_TRUE(defaulttype::DataTypeInfo<array3i>::ValidInfo);
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::type::vector<array3i>>::ValidInfo);
 }
 
 TEST_F(Data_test, dataTypeName)
