@@ -444,7 +444,7 @@ public:
             {
                 for (Size j=i+1; j<C; j++)
                 {
-                    std::swap(this->elems(i,j), this->elems(j,i));
+                    std::swap(this->elems[i][j], this->elems[j][i]);
                 }
             }
         }
@@ -452,7 +452,7 @@ public:
         {
             for (Size i=0; i<L; i++)
                 for (Size j=0; j<C; j++)
-                    this->elems(i,j)=m(j,i);
+                    this->elems[i][j]=m(j,i);
         }
     }
 
@@ -462,7 +462,7 @@ public:
         Mat<C,L,real> m(NOINIT);
         for (Size i=0; i<L; i++)
             for (Size j=0; j<C; j++)
-                m(j,i)=this->elems[i][j];
+                m(j,i)=(*this)(i,j);
         return m;
     }
 
@@ -474,7 +474,7 @@ public:
         {
             for (Size j=i+1; j<C; j++)
             {
-                std::swap(this->elems[i][j], this->elems[j][i]);
+                std::swap((*this)(i,j), (*this)(j,i));
             }
         }
     }
@@ -485,14 +485,14 @@ public:
     constexpr bool operator==(const Mat<L,C,real>& b) const noexcept
     {
         for (Size i=0; i<L; i++)
-            if (this->elems[i] != b[i]) return false;
+            if ((*this)(i) != b[i]) return false;
         return true;
     }
 
     constexpr bool operator!=(const Mat<L,C,real>& b) const noexcept
     {
         for (Size i=0; i<L; i++)
-            if (this->elems[i]!=b[i]) return true;
+            if ((*this)(i)!=b[i]) return true;
         return false;
     }
 
@@ -534,7 +534,7 @@ public:
     {
         Mat<L,C,real> r(NOINIT);
         for(Size i = 0; i < L; i++)
-            r[i] = (*this)[i] + m[i];
+            r(i) = (*this)(i) + m(i);
         return r;
     }
 
@@ -543,7 +543,7 @@ public:
     {
         Mat<L,C,real> r(NOINIT);
         for(Size i = 0; i < L; i++)
-            r[i] = (*this)[i] - m[i];
+            r(i) = (*this)(i) - m(i);
         return r;
     }
 
@@ -552,7 +552,7 @@ public:
     {
         Mat<L,C,real> r(NOINIT);
         for(Size i = 0; i < L; i++)
-            r[i] = -(*this)[i];
+            r(i) = -(*this)(i);
         return r;
     }
 
@@ -562,9 +562,9 @@ public:
         Col r(NOINIT);
         for(Size i=0; i<L; i++)
         {
-            r[i]=(*this)(i,0) * v[0];
+            r(i)=(*this)(i,0) * v[0];
             for(Size j=1; j<C; j++)
-                r[i] += (*this)(i,j) * v[j];
+                r(i) += (*this)(i,j) * v[j];
         }
         return r;
     }
@@ -1022,20 +1022,20 @@ template<sofa::Size S, class real>
         }
 
         row[r[k]] = col[c[k]] = 1;
-        pivot = m1[r[k]][c[k]];
+        pivot = m1(r[k], c[k]);
 
         // Normalization
-        m1[r[k]] /= pivot; m1[r[k]][c[k]] = 1;
-        m2[r[k]] /= pivot;
+        m1(r[k]) /= pivot; m1(r[k], c[k]) = 1;
+        m2(r[k]) /= pivot;
 
         // Reduction
         for (i = 0; i < S; i++)
         {
             if (i != r[k])
             {
-                real f = m1[i][c[k]];
-                m1[i] -= m1[r[k]]*f; m1[i][c[k]] = 0;
-                m2[i] -= m2[r[k]]*f;
+                real f = m1(i, c[k]);
+                m1(i) -= m1(r[k])*f; m1(i, c[k]) = 0;
+                m2(i) -= m2(r[k])*f;
             }
         }
     }
@@ -1043,10 +1043,10 @@ template<sofa::Size S, class real>
     for (i = 0; i < S; i++)
         for (j = 0; j < S; j++)
             if (c[j] == i)
-                row[i] = r[j];
+                row(i) = r(j);
 
     for ( i = 0; i < S; i++ )
-        dest[i] = m2[row[i]];
+        dest(i) = m2(row[i]);
 
     return true;
 }
