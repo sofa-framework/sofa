@@ -32,6 +32,8 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/type/vector.h>
 
+#include <ranges>
+
 
 namespace sofa::component::linearsolver::direct
 {
@@ -195,13 +197,8 @@ public:
     [[nodiscard]]
     sofa::type::vector<OrderingMethodName> registeredObjects() const
     {
-        sofa::type::vector<OrderingMethodName> list;
-        list.reserve(m_registeredTypes.size());
-        for(const auto& [key, _] : m_registeredTypes)
-        {
-            list.push_back(key);
-        }
-        return list;
+        auto list = m_registeredTypes | std::views::keys;
+        return {list.begin(), list.end()};
     }
 
 private:
