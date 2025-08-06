@@ -336,9 +336,9 @@ template <typename T>
 inline sofa::type::Mat<3,3,T> matCross( const sofa::type::Vec<3,T>& u )
 {
     sofa::type::Mat<3,3,T> res(sofa::type::NOINIT);
-    res[0][0] =  0   ; res[0][1] = -u[2]; res[0][2] =  u[1];
-    res[1][0] =  u[2]; res[1][1] =  0   ; res[1][2] = -u[0];
-    res[2][0] = -u[1]; res[2][1] =  u[0]; res[2][2] =  0   ;
+    res(0,0) =  0   ; res(0,1) = -u[2]; res(0,2) =  u[1];
+    res(1,0) =  u[2]; res(1,1) =  0   ; res(1,2) = -u[0];
+    res(2,0) = -u[1]; res(2,1) =  u[0]; res(2,2) =  0   ;
     return res;
 }
 

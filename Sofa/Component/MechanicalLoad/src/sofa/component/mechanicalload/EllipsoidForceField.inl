@@ -135,8 +135,8 @@ void EllipsoidForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
             for (unsigned int ci = 0; ci < N; ++ci)
             {
                 for (unsigned int cj = 0; cj < N; ++cj)
-                    c.m[ci][cj] = grad[ci]*grad[cj] * (fact1 + fact3*inv_r2[cj]);
-                c.m[ci][ci] += fact2*inv_r2[ci];
+                    c.m(ci,cj) = grad[ci]*grad[cj] * (fact1 + fact3*inv_r2[cj]);
+                c.m(ci,ci) += fact2*inv_r2[ci];
             }
             contacts->push_back(c);
         }
