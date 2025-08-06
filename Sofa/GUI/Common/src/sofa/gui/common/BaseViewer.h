@@ -121,6 +121,12 @@ public:
     /// the rendering pass is done here (have to be called in a loop)
     virtual void drawScene(void) = 0;
 
+    // render overlays when the object is selected.
+    void drawSelection(sofa::core::visual::VisualParams* vparams);
+
+    void setCurrentSelection(const std::vector<sofa::core::objectmodel::Base*>&selection);
+    const std::vector<sofa::core::objectmodel::Base*>& getCurrentSelection();
+
 protected:
     /// internally called while the actual viewer needs a redraw (ie the camera changed)
     virtual void redraw() = 0;
@@ -153,6 +159,8 @@ protected:
     int _mouseInteractorSavedPosY;
 
     std::string _screenshotDirectory;
+
+    std::vector<sofa::core::objectmodel::Base*> currentSelection;
 };
 
 } // namespace sofa::gui::common

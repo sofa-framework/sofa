@@ -41,14 +41,6 @@ void RigidMapping<Rigid3Types, Rigid3Types>::updateOmega(typename InDeriv::Rot& 
     omega += getVOrientation(out) + (typename InDeriv::Rot)cross(Out::getCPos(rotatedpoint), Out::getDPos(out));
 }
 
-void registerRigidMapping(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Set the positions and velocities of points attached to a rigid parent.")
-        .add< RigidMapping< Rigid3Types, Vec3Types > >(true)
-        .add< RigidMapping< Rigid3Types, Rigid3Types > >()
-        .add< RigidMapping< Rigid2Types, Vec2Types > >());
-}
-
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidMapping< Rigid3Types, Vec3Types >;
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidMapping< Rigid3Types, Rigid3Types >;
 template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidMapping< Rigid2Types, Vec2Types >;
@@ -65,3 +57,18 @@ const linearalgebra::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, s
 }
 
 } // namespace sofa::component::mapping::nonlinear
+
+namespace sofa::core
+{
+using namespace sofa::component::mapping::nonlinear;
+
+template<>
+void registerToFactory<RigidMapping>(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Set the positions and velocities of points attached to a rigid parent.")
+        .add< RigidMapping< Rigid3Types, Vec3Types > >(true)
+        .add< RigidMapping< Rigid3Types, Rigid3Types > >()
+        .add< RigidMapping< Rigid2Types, Vec2Types > >());
+}
+
+}
