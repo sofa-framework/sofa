@@ -243,7 +243,7 @@ public:
     {
         for (Size i=0; i<L2; i++)
             for (Size j=0; j<C2; j++)
-                m(i,j) = this->elems(i+L0,j+C0);
+                m(i,j) = (*this)(i+L0,j+C0);
     }
 
     template <Size C2>
@@ -251,13 +251,13 @@ public:
     {
         for (Size j = 0; j < C2; j++)
         {
-            m[j] = this->elems(L0,j + C0);
+            m[j] = (*this)(L0,j + C0);
         }
     }
 
     constexpr void getsub(Size L0, Size C0, real& m) const noexcept
     {
-        m = this->elems(L0,C0);
+        m = (*this)(L0,C0);
     }
 
     template<Size L2, Size C2> 
@@ -265,7 +265,7 @@ public:
     {
         for (Size i=0; i<L2; i++)
             for (Size j=0; j<C2; j++)
-                this->elems(i+L0,j+C0) = m(i,j);
+                (*this)(i+L0,j+C0) = m(i,j);
     }
 
     template<Size L2> 
@@ -274,7 +274,7 @@ public:
         assert( C0<C );
         assert( L0+L2-1<L );
         for (Size i=0; i<L2; i++)
-            this->elems(i+L0,C0) = v[i];
+            (*this)(i+L0,C0) = v[i];
     }
 
 
@@ -683,7 +683,7 @@ public:
     constexpr void operator +=(const Mat<L,C,real>& m) noexcept
     {
         for(Size i=0; i<L; i++)
-            this->elems[i]+=m[i];
+            (*this)(i)+=m(i);
     }
 
     /// Addition of the transposed of m
@@ -1131,9 +1131,9 @@ template<sofa::Size S, class real>
 template <sofa::Size L, sofa::Size C, typename real>
 std::ostream& operator<<(std::ostream& o, const Mat<L,C,real>& m)
 {
-    o << '[' << m[0];
+    o << '[' << m(0);
     for (sofa::Size i=1; i<L; i++)
-        o << ',' << m[i];
+        o << ',' << m(i);
     o << ']';
     return o;
 }
@@ -1149,7 +1149,7 @@ std::istream& operator>>(std::istream& in, Mat<L,C,real>& m)
         if( c=='[' ) break;
         c = in.peek();
     }
-    in >> m[0];
+    in >> m(0);
     for (sofa::Size i=1; i<L; i++)
     {
         c = in.peek();
@@ -1158,7 +1158,7 @@ std::istream& operator>>(std::istream& in, Mat<L,C,real>& m)
             in.get();
             c = in.peek();
         }
-        in >> m[i];
+        in >> m(i);
     }
     if(in.eof()) return in;
     c = in.peek();
