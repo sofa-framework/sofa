@@ -118,93 +118,24 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit()
 
 template<class TMatrix, class TVector,class ThreadManager>
 typename  WarpPreconditioner<TMatrix, TVector, ThreadManager >::Index
-WarpPreconditioner<TMatrix,TVector,ThreadManager >::getSystemDimention(const sofa::core::MechanicalParams* mparams) {
+WarpPreconditioner<TMatrix,TVector,ThreadManager >::getSystemDimention(const sofa::core::MechanicalParams* mparams)
+{
     simulation::common::MechanicalOperations mops(mparams, this->getContext());
 
-    this->linearSystem.matrixAccessor.setGlobalMatrix(this->getSystemMatrix());
-    this->linearSystem.matrixAccessor.clear();
-    mops.getMatrixDimension(&(this->linearSystem.matrixAccessor));
-    this->linearSystem.matrixAccessor.setupMatrices();
-    return this->linearSystem.matrixAccessor.getGlobalDimension();
-}
-
-template<class TMatrix, class TVector,class ThreadManager>
-void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
-{
-    this->currentMFactor = mparams->mFactor();
-    this->currentBFactor = sofa::core::mechanicalparams::bFactor(mparams);
-    this->currentKFactor = mparams->kFactor();
-    if (!this->frozen)
-    {
-        simulation::common::MechanicalOperations mops(mparams, this->getContext());
-        if (!this->l_linearSystem)
-        {
-            msg_error() << "No linear system associated to this component. Cannot assemble the matrix.";
-            return;
-        }
-    }
-
-    if (first || ( d_updateStep.getValue() > 0 && nextRefreshStep >= d_updateStep.getValue()) || (d_updateStep.getValue() == 0))
-    {
-        l_linearSolver.get()->setSystemMBKMatrix(mparams);
-        nextRefreshStep = 1;
-    }
-
-    if (first)
-    {
-        updateSystemSize = getSystemDimention(mparams);
-        this->resizeSystem(updateSystemSize);
-
-        first = false;
-
-        if (!rotationWork[indexwork]) rotationWork[indexwork] = new TRotationMatrix();
-
-        rotationWork[indexwork]->resize(updateSystemSize,updateSystemSize);
-        rotationFinders[d_useRotationFinder.getValue()]->getRotations(rotationWork[indexwork]);
-
-        if (l_linearSolver.get()->isAsyncSolver()) indexwork = (indexwork==0) ? 1 : 0;
-
-        if (!rotationWork[indexwork]) rotationWork[indexwork] = new TRotationMatrix();
-
-        rotationWork[indexwork]->resize(updateSystemSize,updateSystemSize);
-        rotationFinders[d_useRotationFinder.getValue()]->getRotations(rotationWork[indexwork]);
-
-        this->l_linearSystem->resizeSystem(updateSystemSize);
-        this->l_linearSystem->getSystemMatrix()->setIdentity(); // identity rotationa after update
-
-    }
-    else if (l_linearSolver.get()->hasUpdatedMatrix())
-    {
-        updateSystemSize = getSystemDimention(mparams);
-        this->resizeSystem(updateSystemSize);
-
-        if (!rotationWork[indexwork]) rotationWork[indexwork] = new TRotationMatrix();
-
-        rotationWork[indexwork]->resize(updateSystemSize,updateSystemSize);
-        rotationFinders[d_useRotationFinder.getValue()]->getRotations(rotationWork[indexwork]);
-
-        if (l_linearSolver.get()->isAsyncSolver()) indexwork = (indexwork==0) ? 1 : 0;
-
-        this->l_linearSystem->getSystemMatrix()->setIdentity(); // identity rotationa after update
-    }
-    else
-    {
-        currentSystemSize = getSystemDimention(sofa::core::mechanicalparams::defaultInstance());
-
-        this->l_linearSystem->resizeSystem(currentSystemSize);
-        this->l_linearSystem->getSystemMatrix()->clear();
-
-        rotationFinders[d_useRotationFinder.getValue()]->getRotations(this->l_linearSystem->getSystemMatrix());
-
-        this->l_linearSystem->getSystemMatrix()->opMulTM(this->l_linearSystem->getSystemMatrix(),rotationWork[indexwork]);
-    }
+    // this->linearSystem.matrixAccessor.setGlobalMatrix(this->l_linearSystem->getSystemMatrix());
+    // this->linearSystem.matrixAccessor.clear();
+    // mops.getMatrixDimension(&(this->linearSystem.matrixAccessor));
+    // this->linearSystem.matrixAccessor.setupMatrices();
+    // return this->linearSystem.matrixAccessor.getGlobalDimension();
+    return 0;
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
 void WarpPreconditioner<TMatrix,TVector,ThreadManager >::invert(Matrix& /*Rcur*/) {}
 
 template<class TMatrix, class TVector,class ThreadManager>
-void WarpPreconditioner<TMatrix,TVector,ThreadManager >::updateSystemMatrix() {
+void WarpPreconditioner<TMatrix,TVector,ThreadManager >::updateSystemMatrix()
+{
     ++nextRefreshStep;
     l_linearSolver.get()->updateSystemMatrix();
 }
@@ -225,33 +156,37 @@ void WarpPreconditioner<TMatrix, TVector, ThreadManager>::checkLinearSystem()
 
 /// Solve the system as constructed using the previous methods
 template<class TMatrix, class TVector,class ThreadManager>
-void WarpPreconditioner<TMatrix,TVector,ThreadManager >::solve(Matrix& Rcur, Vector& solution, Vector& rh) {
-    Rcur.opMulTV(l_linearSolver.get()->getSystemRHBaseVector(),&rh);
+void WarpPreconditioner<TMatrix,TVector,ThreadManager >::solve(Matrix& Rcur, Vector& solution, Vector& rh)
+{
+    Rcur.opMulTV(l_linearSolver->getLinearSystem()->getSystemRHSBaseVector(),&rh);
 
-    l_linearSolver.get()->solveSystem();
+    l_linearSolver->solveSystem();
 
-    Rcur.opMulV(&solution,l_linearSolver.get()->getSystemLHBaseVector());
+    Rcur.opMulV(&solution, l_linearSolver->getLinearSystem()->getSystemSolutionBaseVector());
 }
 
 /// Solve the system as constructed using the previous methods
 template<class TMatrix, class TVector,class ThreadManager>
-bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) {
+bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact)
+{
     if (J->rowSize()==0 || !l_linearSolver.get()) return true;
 
     this->l_linearSystem->getSystemMatrix()->rotateMatrix(&j_local,J);
 
-    return l_linearSolver.get()->addJMInvJt(result,&j_local,fact);
+    return l_linearSolver->addJMInvJt(result,&j_local,fact);
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
-bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) {
+bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact)
+{
     this->l_linearSystem->getSystemMatrix()->rotateMatrix(&j_local,J);
-    return l_linearSolver.get()->addMInvJt(result,&j_local,fact);
+    return l_linearSolver->addMInvJt(result,&j_local,fact);
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
-void WarpPreconditioner<TMatrix,TVector,ThreadManager >::computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* f) {
-    l_linearSolver.get()->computeResidual(params,f);
+void WarpPreconditioner<TMatrix,TVector,ThreadManager >::computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* f)
+{
+    l_linearSolver->computeResidual(params,f);
 }
 
 } // namespace sofa::component::linearsolver::preconditioner

@@ -28,9 +28,9 @@ namespace sofa::component::linearsystem
 {
 
 /**
- * Component acting like a linear system, but delegates the linear system functionalities to a list of real linear systems.
+ * Component acting like a linear system, but delegating the linear system functionalities to a list of real linear systems.
  *
- * Using this component allows to assemble more than one global matrix. It is useful when only a partial assembly is
+ * Using this component allows assembling more than one global matrix. It is useful when only a partial assembly is
  * necessary. For example, the first linear system is the global one, and the second one could be only the stiffness
  * matrix.
  */

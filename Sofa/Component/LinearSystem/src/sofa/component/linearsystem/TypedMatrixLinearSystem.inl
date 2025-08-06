@@ -136,6 +136,30 @@ linearalgebra::BaseMatrix* TypedMatrixLinearSystem<TMatrix, TVector>::getSystemB
         return nullptr;
     }
 }
+template <class TMatrix, class TVector>
+linearalgebra::BaseVector* TypedMatrixLinearSystem<TMatrix, TVector>::getSystemRHSBaseVector() const
+{
+    if constexpr (std::is_base_of_v<sofa::linearalgebra::BaseVector, TVector>)
+    {
+        return getRHSVector();
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+template <class TMatrix, class TVector>
+linearalgebra::BaseVector* TypedMatrixLinearSystem<TMatrix, TVector>::getSystemSolutionBaseVector() const
+{
+    if constexpr (std::is_base_of_v<sofa::linearalgebra::BaseVector, TVector>)
+    {
+        return getSolutionVector();
+    }
+    else
+    {
+        return nullptr;
+    }
+}
 
 template <class TMatrix, class TVector>
 void TypedMatrixLinearSystem<TMatrix, TVector>::resizeSystem(sofa::Size n)

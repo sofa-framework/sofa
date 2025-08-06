@@ -87,7 +87,6 @@ public:
     PrecomputedLinearSolver();
     void solve (TMatrix& M, TVector& x, TVector& b) override;
     void invert(TMatrix& M) override;
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     void loadMatrix(TMatrix& M);
     void loadMatrixWithCholeskyDecomposition(TMatrix& M);
     bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;

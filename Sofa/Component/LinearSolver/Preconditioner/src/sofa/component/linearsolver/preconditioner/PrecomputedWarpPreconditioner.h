@@ -122,7 +122,6 @@ protected:
 public:
     void solve (TMatrix& M, TVector& x, TVector& b) override;
     void invert(TMatrix& M) override;
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
     void draw(const core::visual::VisualParams* vparams) override;
     void init() override;

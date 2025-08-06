@@ -52,18 +52,6 @@ PrecomputedLinearSolver<TMatrix,TVector>::PrecomputedLinearSolver()
     first = true;
 }
 
-template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
-{
-    // Update the matrix only the first time
-    if (first)
-    {
-        first = false;
-        Inherit::setSystemMBKMatrix(mparams);
-        loadMatrix(*this->getSystemMatrix());
-    }
-}
-
 //Solve x = R * M^-1 * R^t * b
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& , TVector& z, TVector& r)
@@ -74,7 +62,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& , TVector& z, TVe
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 {
-    systemSize = this->getSystemMatrix()->rowSize();
+    systemSize = this->l_linearSystem->getSystemMatrix()->rowSize();
     internalData.Minv.resize(systemSize,systemSize);
     dt = this->getContext()->getDt();
 
@@ -194,7 +182,6 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(linearalgebra::BaseMat
 
         msg_error() << "The construction of the matrix when the solver is used only as cvonstraint "
                        "correction is not implemented. You first need to save the matrix into a file. " ;
-        setSystemMBKMatrix(&mparams);
     }
 
     if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
