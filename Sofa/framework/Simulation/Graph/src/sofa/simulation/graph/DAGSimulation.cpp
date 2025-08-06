@@ -54,7 +54,7 @@ Node::SPtr DAGSimulation::createNewGraph(const std::string& name)
 
 Node::SPtr DAGSimulation::createNewNode(const std::string& name)
 {
-    return sofa::core::objectmodel::New<DAGNode>(name);
+    return sofa::core::objectmodel::New<Node>(name);
 }
 
 } // namespace sofa::simulation::graph
