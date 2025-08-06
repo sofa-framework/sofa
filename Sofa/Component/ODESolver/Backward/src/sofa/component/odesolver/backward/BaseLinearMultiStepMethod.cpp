@@ -194,9 +194,10 @@ struct ResidualFunction : newton_raphson::BaseNonLinearFunction
     {
         vop.v_clear(dv);
 
-        linearSolver->setSystemLHVector(dv);
-        linearSolver->setSystemRHVector(rhs);
+        linearSolver->getLinearSystem()->setSystemSolution(dv);
+        linearSolver->getLinearSystem()->setRHS(rhs);
         linearSolver->solveSystem();
+        linearSolver->getLinearSystem()->dispatchSystemSolution(dv);
     }
 
     void computeDxFromDv()

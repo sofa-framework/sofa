@@ -88,46 +88,6 @@ void PCGLinearSolver<TMatrix,TVector>::init()
     sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
-template<class TMatrix, class TVector>
-void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
-{
-    sofa::helper::AdvancedTimer::valSet("PCG::buildMBK", 1);
-
-    {
-        SCOPED_TIMER("PCG::setSystemMBKMatrix");
-        Inherit::setSystemMBKMatrix(mparams);
-    }
-
-    if (l_preconditioner.get()==nullptr) return;
-
-    if (first) //We initialize all the preconditioners for the first step
-    {
-        l_preconditioner.get()->setSystemMBKMatrix(mparams);
-        first = false;
-        next_refresh_step = 1;
-    }
-    else if (d_build_precond.getValue())
-    {
-        sofa::helper::AdvancedTimer::valSet("PCG::PrecondBuildMBK", 1);
-        SCOPED_TIMER_VARNAME(mbkTimer, "PCG::PrecondSetSystemMBKMatrix");
-
-        if (d_update_step.getValue() > 0)
-        {
-            if (next_refresh_step >= d_update_step.getValue())
-            {
-                l_preconditioner.get()->setSystemMBKMatrix(mparams);
-                next_refresh_step=1;
-            }
-            else
-            {
-                next_refresh_step++;
-            }
-        }
-    }
-
-    l_preconditioner.get()->updateSystemMatrix();
-}
-
 template<>
 inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta)
 {
@@ -182,9 +142,10 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     if (apply_precond)
     {
         SCOPED_TIMER_VARNAME(applyPrecondTimer, "PCGLinearSolver::apply Precond");
-        l_preconditioner.get()->setSystemLHVector(w);
-        l_preconditioner.get()->setSystemRHVector(r);
-        l_preconditioner.get()->solveSystem();
+        l_preconditioner->getLinearSystem()->setSystemSolution(w);
+        l_preconditioner->getLinearSystem()->setRHS(r);
+        l_preconditioner->solveSystem();
+        l_preconditioner->getLinearSystem()->dispatchSystemSolution(w);
     }
     else
     {
@@ -207,9 +168,10 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         if (apply_precond)
         {
             SCOPED_TIMER_VARNAME(applyPrecondTimer, "PCGLinearSolver::apply Precond");
-            l_preconditioner.get()->setSystemLHVector(s);
-            l_preconditioner.get()->setSystemRHVector(r);
-            l_preconditioner.get()->solveSystem();
+            l_preconditioner->getLinearSystem()->setSystemSolution(s);
+            l_preconditioner->getLinearSystem()->setRHS(r);
+            l_preconditioner->solveSystem();
+            l_preconditioner->getLinearSystem()->dispatchSystemSolution(s);
         }
         else
         {
