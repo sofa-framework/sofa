@@ -65,15 +65,15 @@ constexpr void TriangleFEMUtils<DataTypes>::computeRotationLarge(Transformation&
     const Coord edgez = cross(edgex, edgey).normalized();
     edgey = cross(edgez, edgex); //edgey is unit vector because edgez and edgex are orthogonal unit vectors
 
-    r[0][0] = edgex[0];
-    r[0][1] = edgex[1];
-    r[0][2] = edgex[2];
-    r[1][0] = edgey[0];
-    r[1][1] = edgey[1];
-    r[1][2] = edgey[2];
-    r[2][0] = edgez[0];
-    r[2][1] = edgez[1];
-    r[2][2] = edgez[2];
+    r(0,0) = edgex[0];
+    r(0,1) = edgex[1];
+    r(0,2) = edgex[2];
+    r(1,0) = edgey[0];
+    r(1,1) = edgey[1]; 
+    r(1,2) = edgey[2];
+    r(2,0) = edgez[0];
+    r(2,1) = edgez[1];
+    r(2,2) = edgez[2];
 }
 
 
@@ -104,22 +104,22 @@ constexpr void TriangleFEMUtils<DataTypes>::computeDisplacementLarge(Displacemen
 // ---	Compute force as: F = J * stress
 // Notes: Optimisations: The following values are 0 (per computeStrainDisplacement )
 // \       0        1        2
-// 0   J[0][0]      0      J[0][2]
-// 1       0     J[1][1]   J[1][2]
-// 2   J[2][0]      0      J[2][2]
-// 3       0     J[3][1]   J[3][2]
-// 4       0        0      J[4][2]
-// 5       0     J[5][1]     0
+// 0   J(0,0)      0      J(0,2)
+// 1       0     J(1,1)   J(1,2)
+// 2   J(2,0)      0      J(2,2)
+// 3       0     J(3,1)   J(3,2)
+// 4       0        0      J(4,2)
+// 5       0     J(5,1)     0
 // --------------------------------------------------------------------------------------
 template<class DataTypes>
 constexpr void TriangleFEMUtils<DataTypes>::computeForceLarge(Displacement& F, const StrainDisplacement& J, const type::Vec<3, Real>& stress) const
 {
-    F[0] = J[0][0] * stress[0] + J[0][2] * stress[2];
-    F[1] = J[1][1] * stress[1] + J[1][2] * stress[2];
-    F[2] = J[2][0] * stress[0] + J[2][2] * stress[2];
-    F[3] = J[3][1] * stress[1] + J[3][2] * stress[2];
-    F[4] = J[4][2] * stress[2];
-    F[5] = J[5][1] * stress[1];
+    F[0] = J(0,0) * stress[0] + J(0,2) * stress[2];
+    F[1] = J(1,1) * stress[1] + J(1,2) * stress[2];
+    F[2] = J(2,0) * stress[0] + J(2,2) * stress[2];
+    F[3] = J(3,1) * stress[1] + J(3,2) * stress[2];
+    F[4] = J(4,2) * stress[2];
+    F[5] = J(5,1) * stress[1];
 }
 
 
@@ -148,29 +148,29 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementGlobal(Stra
     const Real y23 = (pB[1] - pC[1]) * invDet;
     const Real y31 = (pC[1] - pA[1]) * invDet;
 
-    J[0][0] = y23;
-    J[0][1] = 0;
-    J[0][2] = x32;
+    J(0,0) = y23;
+    J(0,1) = 0;
+    J(0,2) = x32;
 
-    J[1][0] = 0;
-    J[1][1] = x32;
-    J[1][2] = y23;
+    J(1,0) = 0;
+    J(1,1) = x32;
+    J(1,2) = y23;
 
-    J[2][0] = y31;
-    J[2][1] = 0;
-    J[2][2] = x13;
+    J(2,0) = y31;
+    J(2,1) = 0;
+    J(2,2) = x13;
 
-    J[3][0] = 0;
-    J[3][1] = x13;
-    J[3][2] = y31;
+    J(3,0) = 0;
+    J(3,1) = x13;
+    J(3,2) = y31;
 
-    J[4][0] = y12;
-    J[4][1] = 0;
-    J[4][2] = x21;
+    J(4,0) = y12;
+    J(4,1) = 0;
+    J(4,2) = x21;
 
-    J[5][0] = 0;
-    J[5][1] = x21;
-    J[5][2] = y12;
+    J(5,0) = 0;
+    J(5,1) = x21;
+    J(5,2) = y12;
 }
 
 
@@ -207,17 +207,17 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementGlobal(Stra
 //  Real gamma3 = 1/c[1]
 //
 // The transpose of the strain-displacement matrix is thus:
-//  J[0][0] = J[1][2] = beta1
-//  J[0][1] = J[1][0] = 0
-//  J[0][2] = J[1][1] = gamma1
+//  J(0,0) = J(1,2) = beta1
+//  J(0,1) = J(1,0) = 0
+//  J(0,2) = J(1,1) = gamma1
 //
-//  J[2][0] = J[3][2] = beta2
-//  J[2][1] = J[3][0] = 0
-//  J[2][2] = J[3][1] = gamma2
+//  J(2,0) = J(3,2) = beta2
+//  J(2,1) = J(3,0) = 0
+//  J(2,2) = J(3,1) = gamma2
 //
-//  J[4][0] = J[5][2] = 0
-//  J[4][1] = J[5][0] = 0
-//  J[4][2] = J[5][1] = gamma3
+//  J(4,0) = J(5,2) = 0
+//  J(4,1) = J(5,0) = 0
+//  J(4,2) = J(5,1) = gamma3
 // --------------------------------------------------------------------------------------------------------------------------
 template<class DataTypes>
 constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(StrainDisplacement& J, const Coord& pB, const Coord& pC) const
@@ -232,13 +232,13 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(Strai
     }
     const Real invDet = 1 / determinant;
 
-    J[0][0] = J[1][2] = -pC[1] * invDet;
-    J[0][2] = J[1][1] = (pC[0] - pB[0]) * invDet;
-    J[2][0] = J[3][2] = pC[1] * invDet;
-    J[2][2] = J[3][1] = -pC[0] * invDet;
-    J[4][0] = J[5][2] = 0;
-    J[4][2] = J[5][1] = pB[0] * invDet;
-    J[1][0] = J[3][0] = J[5][0] = J[0][1] = J[2][1] = J[4][1] = 0;
+    J(0,0) = J(1,2) = -pC[1] * invDet;
+    J(0,2) = J(1,1) = (pC[0] - pB[0]) * invDet;
+    J(2,0) = J(3,2) = pC[1] * invDet;
+    J(2,2) = J(3,1) = -pC[0] * invDet;
+    J(4,0) = J(5,2) = 0;
+    J(4,2) = J(5,1) = pB[0] * invDet;
+    J(1,0) = J(3,0) = J(5,0) = J(0,1) = J(2,1) = J(4,1) = 0;
 }
 
 
@@ -247,9 +247,9 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(Strai
 // --- Strain = StrainDisplacement (Jt) * Displacement (D) = JtD = Bd
 // Notes: Optimisations (@param fullMethod = false): The following values are 0 (per StrainDisplacement )
 // | \        0        1        2        3        4        5      |
-// | 0    Jt[0][0]     0    Jt[0][2]     0        0        0      |
-// | 1        0    Jt[1][1]     0     Jt[1][3]    0     Jt[1][5]  |
-// | 2    Jt[2][0] Jt[2][1] Jt[2][2]  Jt[2][3]  Jt[2][4]   0      |
+// | 0    Jt(0,0)     0    Jt(0,2)     0        0        0      |
+// | 1        0    Jt(1,1)     0     Jt(1,3)    0     Jt(1,5)  |
+// | 2    Jt(2,0) Jt(2,1) Jt(2,2)  Jt(2,3)  Jt(2,4)   0      |
 // --------------------------------------------------------------------------------------------------------
 template<class DataTypes>
 constexpr void TriangleFEMUtils<DataTypes>::computeStrain(type::Vec<3, Real>& strain, const StrainDisplacement& J, const Displacement& D, bool fullMethod) const
@@ -261,9 +261,9 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStrain(type::Vec<3, Real>& st
     else
     {
         // Use directly J to avoid computing Jt
-        strain[0] = J[0][0] * D[0] + J[2][0] * D[2];
-        strain[1] = J[1][1] * D[1] + J[3][1] * D[3] + J[5][1] * D[5];
-        strain[2] = J[0][2] * D[0] + J[1][2] * D[1] + J[2][2] * D[2] + J[3][2] * D[3] + J[4][2] * D[4];
+        strain[0] = J(0,0) * D[0] + J(2,0) * D[2];
+        strain[1] = J(1,1) * D[1] + J(3,1) * D[3] + J(5,1) * D[5];
+        strain[2] = J(0,2) * D[0] + J(1,2) * D[1] + J(2,2) * D[2] + J(3,2) * D[3] + J(4,2) * D[4];
     }
 }
 
@@ -273,9 +273,9 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStrain(type::Vec<3, Real>& st
 // --- Stress = MaterialStiffnesses (K) * Strain = KJtD = KBd
 // Notes: Optimisations (@param fullMethod = false): The following values are 0 (per MaterialStiffnesses )
 // | \       0        1        2     |
-// | 0   K[0][0]    K[0][1]    0     |
-// | 1   K[1][0]    K[1][1]    0     |
-// | 2       0        0      K[2][2] |
+// | 0   K(0,0)    K(0,1)    0     |
+// | 1   K(1,0)    K(1,1)    0     |
+// | 2       0        0      K(2,2) |
 // --------------------------------------------------------------------------------------------------------
 template <class DataTypes>
 constexpr void TriangleFEMUtils<DataTypes>::computeStress(type::Vec<3, Real>& stress, const MaterialStiffness& K, const type::Vec<3, Real>& strain, bool fullMethod) const
@@ -286,9 +286,9 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStress(type::Vec<3, Real>& st
     }
     else
     {
-        stress[0] = K[0][0] * strain[0] + K[0][1] * strain[1];
-        stress[1] = K[1][0] * strain[0] + K[1][1] * strain[1];
-        stress[2] = K[2][2] * strain[2];
+        stress[0] = K(0,0) * strain[0] + K(0,1) * strain[1];
+        stress[1] = K(1,0) * strain[0] + K(1,1) * strain[1];
+        stress[2] = K(2,2) * strain[2];
     }
 }
 
