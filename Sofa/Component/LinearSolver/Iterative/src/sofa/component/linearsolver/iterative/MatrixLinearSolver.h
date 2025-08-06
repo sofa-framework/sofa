@@ -196,30 +196,6 @@ public:
     /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
     void invertSystem() override;
 
-    void prepareVisitor(simulation::Visitor* v)
-    {
-        v->setTags(this->getTags());
-    }
-
-    void prepareVisitor(simulation::BaseMechanicalVisitor* v)
-    {
-        prepareVisitor(static_cast<simulation::Visitor*>(v));
-    }
-
-    template<class T>
-    void executeVisitor(T v)
-    {
-        prepareVisitor(&v);
-        v.execute( this->getContext() );
-    }
-
-    template<class T>
-    void executeVisitor(T* v)
-    {
-        prepareVisitor(v);
-        v->execute( this->getContext() );
-    }
-
     /// Implementing the GetCustomTemplateName is mandatory to have a custom template name parameters
     /// instead of the default one generated automatically by the SOFA_CLASS() macro.
     static std::string GetCustomTemplateName()
@@ -263,6 +239,31 @@ public:
     MatrixInvertData * getMatrixInvertData(linearalgebra::BaseMatrix * m);
 
 protected:
+
+    void prepareVisitor(simulation::Visitor* v)
+    {
+        v->setTags(this->getTags());
+    }
+
+    void prepareVisitor(simulation::BaseMechanicalVisitor* v)
+    {
+        prepareVisitor(static_cast<simulation::Visitor*>(v));
+    }
+
+    template<class T>
+    void executeVisitor(T v)
+    {
+        prepareVisitor(&v);
+        v.execute( this->getContext() );
+    }
+
+    template<class T>
+    void executeVisitor(T* v)
+    {
+        prepareVisitor(v);
+        v->execute( this->getContext() );
+    }
+
 
     virtual void checkLinearSystem();
 
