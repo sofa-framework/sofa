@@ -827,7 +827,7 @@ public:
     {
         for(Size l=0; l<L; l++)
             for(Size c=l+1; c<C; c++)
-                this->elems(l,c) = this->elems(c,l) = ( this->elems(l,c) + this->elems(c,l) ) * 0.5f;
+                (*this)(l,c) = (*this)(c,l) = ( (*this)(l,c) + (*this)(c,l) ) * 0.5f;
     }
 
 

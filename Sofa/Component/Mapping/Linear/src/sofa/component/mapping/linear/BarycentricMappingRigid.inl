@@ -87,7 +87,7 @@ BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointOrientationInTetra
         // IPTR_BARCPP_ADDOR("baryCoords of vector["<<dir<<"]: ");
         for (unsigned int coor = 0; coor < 3; coor++)
         {
-            data[dir].baryCoords[coor] = ( Real ) baryCoorsOrient[coor][dir];
+            data[dir].baryCoords[coor] = ( Real ) baryCoorsOrient(coor,dir);
             //IPNTR_BARCPP_ADDOR(data[dir].baryCoords[coor] << " ");
         }
         //IPNTR_BARCPP_ADDOR(endl);
@@ -113,9 +113,9 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename O
     for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
     {
         sofa::type::Mat3x3d m,mt;
-        m[0] = in[tetrahedra[t][1]]-in[tetrahedra[t][0]];
-        m[1] = in[tetrahedra[t][2]]-in[tetrahedra[t][0]];
-        m[2] = in[tetrahedra[t][3]]-in[tetrahedra[t][0]];
+        m(0) = in[tetrahedra[t][1]]-in[tetrahedra[t][0]];
+        m(1) = in[tetrahedra[t][2]]-in[tetrahedra[t][0]];
+        m(2) = in[tetrahedra[t][3]]-in[tetrahedra[t][0]];
         mt.transpose ( m );
         const bool canInvert = bases[t].invert ( mt );
         assert(canInvert);
@@ -151,8 +151,8 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename O
         orientationMatrix.transpose(); //to simplify the multiplication below
         for (unsigned c=0; c < 3; c++)
         {
-            orientationMatrixBary[c]=bases[index]*orientationMatrix[c];
-            orientationMatrixBary[c].normalize();
+            orientationMatrixBary(c)=bases[index]*orientationMatrix(c);
+            orientationMatrixBary(c).normalize();
         }
         orientationMatrixBary.transpose();  //to get the directions as columns
 
@@ -205,9 +205,9 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
         //compute the rotation of the rigid point using the "basis" approach
         sofa::type::Matrix3 orientationMatrix, polarMatrixQ; // orthogMatrix
         sofa::type::Matrix3 m,basis;
-        m[0] = in[tetra[1]]-in[tetra[0]];
-        m[1] = in[tetra[2]]-in[tetra[0]];
-        m[2] = in[tetra[3]]-in[tetra[0]];
+        m(0) = in[tetra[1]]-in[tetra[0]];
+        m(1) = in[tetra[2]]-in[tetra[0]];
+        m(2) = in[tetra[3]]-in[tetra[0]];
         basis.transpose ( m );
 
         for (unsigned int dir = 0; dir < 3; dir++)   //go through the three maps
@@ -217,7 +217,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
             inGlobal[1] = mapOrient[point][dir].baryCoords[1];
             inGlobal[2] = mapOrient[point][dir].baryCoords[2];
 
-            orientationMatrix[dir]= basis*inGlobal;
+            orientationMatrix(dir)= basis*inGlobal;
         }
 
         orientationMatrix.transpose();
