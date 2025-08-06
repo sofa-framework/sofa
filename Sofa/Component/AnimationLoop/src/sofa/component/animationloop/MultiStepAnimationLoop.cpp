@@ -20,21 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/animationloop/MultiStepAnimationLoop.h>
-
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/simulation/UpdateMappingEndEvent.h>
-#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/UpdateInternalDataVisitor.h>
+#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/PropagateEventVisitor.h>
+#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
+#include <sofa/simulation/UpdateInternalDataVisitor.h>
+#include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
-#include <sofa/helper/ScopedAdvancedTimer.h>
-
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
 
@@ -124,7 +123,8 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
     {
         SCOPED_TIMER_VARNAME(updateMappingTimer, "UpdateMapping");
-        node->execute<UpdateMappingVisitor>(params);
+        simulation::common::MechanicalOperations mop(params, getContext());
+        mop.propagateXAndV(core::vec_id::write_access::position, core::vec_id::write_access::velocity, false);
     }
     {
         UpdateMappingEndEvent ev ( dt );
