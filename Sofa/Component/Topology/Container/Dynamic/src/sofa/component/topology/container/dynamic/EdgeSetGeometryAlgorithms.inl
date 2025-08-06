@@ -622,7 +622,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
             // each edge vector adds e.et to the matrix
             for(unsigned j=0; j<3; j++)
                 for(unsigned k=0; k<3; k++)
-                    EEt[j][k] += edgeVec[e][k]*edgeVec[e][j];
+                    EEt(j,k) += edgeVec[e][k]*edgeVec[e][j];
         }
 
         // decompose E.Et for system solution
