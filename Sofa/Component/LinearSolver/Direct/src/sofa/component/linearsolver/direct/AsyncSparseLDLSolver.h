@@ -63,7 +63,6 @@ public:
 
     void init() override;
 
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     void solveSystem() override;
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(TMatrix& M) override;

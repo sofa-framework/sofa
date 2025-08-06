@@ -56,7 +56,6 @@ protected:
 public:
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void init() override;
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
 
 private :
     unsigned next_refresh_step;
