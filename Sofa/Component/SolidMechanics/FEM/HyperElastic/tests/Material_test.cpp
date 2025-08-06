@@ -205,7 +205,7 @@ void testElasticityTensorFromSecondPiolaKirchhoff(
         // for (sofa::Size j = 0; j < Matrix6::size(); ++j)
         for (sofa::Size j : {0, 2, 5}) //only the diagonal terms
         {
-            EXPECT_NEAR(elasticityTensor[i][j], elasticityTensorApprox[j], 1e-7) << "i = " << i << ", j = " << j;
+            EXPECT_NEAR(elasticityTensor(i,j), elasticityTensorApprox[j], 1e-7) << "i = " << i << ", j = " << j;
         }
     }
 }

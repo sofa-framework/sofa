@@ -120,12 +120,12 @@ public:
         IDHID.identity();
 
         Matrix6 trIDHID;
-        trIDHID[0] = ID[0] * ID;
-        trIDHID[1] = ID[1] * ID;
-        trIDHID[2] = ID[2] * ID;
-        trIDHID[3] = ID[3] * ID;
-        trIDHID[4] = ID[4] * ID;
-        trIDHID[5] = ID[5] * ID;
+        trIDHID(0) = ID[0] * ID;
+        trIDHID(1) = ID[1] * ID;
+        trIDHID(2) = ID[2] * ID;
+        trIDHID(3) = ID[3] * ID;
+        trIDHID(4) = ID[4] * ID;
+        trIDHID(5) = ID[5] * ID;
 
         outputTensor = lambda * trIDHID + (2 * mu) * IDHID;
     }

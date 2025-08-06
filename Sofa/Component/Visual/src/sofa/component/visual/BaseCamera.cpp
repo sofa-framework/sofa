@@ -374,7 +374,7 @@ void BaseCamera::getModelViewMatrix(double mat[16])
     //rotation
     for (unsigned int i = 0; i < 3; i++)
         for (unsigned int j = 0; j < 3; j++)
-            mat[i * 4 + j] = rot[i][j];
+            mat[i * 4 + j] = rot(i,j);
 
     //translation
     type::Vec3 t = world_H_cam.inversed().getOrigin();

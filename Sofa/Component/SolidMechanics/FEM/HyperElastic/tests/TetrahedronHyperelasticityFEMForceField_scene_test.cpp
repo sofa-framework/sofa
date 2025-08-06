@@ -135,7 +135,7 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
         typename DOF::ReadVecCoord sofaX= this->dof->readPositions();
         SReal value_SOFA = 0.0;
         if(sofaX.size() > tipPoint)
-            value_SOFA = sofaX[tipPoint][1]; // should be close to -0.109578
+            value_SOFA = sofaX(tipPoint,1); // should be close to -0.109578
 
         if( fabs(value_SOFA - refY[0]) > epsilon)
             ADD_FAILURE()<<"Wrong computation for hyperelastic material" << std::endl;

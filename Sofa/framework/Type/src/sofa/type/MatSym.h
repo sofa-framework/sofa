@@ -220,10 +220,10 @@ public:
         {
             for (sofa::Size j = 0; j < D; j++)
             {
-                r[i][j] = (*this)(i, 0) * m(0, j);
+                r(i,j) = (*this)(i, 0) * m(0, j);
                 for (sofa::Size k = 1; k < D; k++)
                 {
-                    r[i][j] += (*this)(i, k) * m(k, j);
+                    r(i,j) += (*this)(i, k) * m(k, j);
                 }
             }
         }
@@ -244,10 +244,10 @@ public:
         {
             for (sofa::Size j = 0; j < D; j++)
             {
-                r[i][j] = (*this)(i, 0) * m[0][j];
+                r(i,j) = (*this)(i, 0) * m(0,j);
                 for (sofa::Size k = 1; k < D; k++)
                 {
-                    r[i][j] += (*this)(i, k) * m[k][j];
+                    r(i,j) += (*this)(i, k) * m(k,j);
                 }
             }
         }
@@ -268,10 +268,10 @@ public:
         {
             for (sofa::Size j = 0; j < D; j++)
             {
-                r[i][j] = m(i, 0) * (*this)(0, j);
+                r(i,j) = m(i, 0) * (*this)(0, j);
                 for (sofa::Size k = 1; k < D; k++)
                 {
-                    r[i][j] += m(i, k) * (*this)(k, j);
+                    r(i,j) += m(i, k) * (*this)(k, j);
                 }
             }
         }
@@ -298,7 +298,7 @@ public:
         {
             for (sofa::Size j = 0; j < D; j++)
             {
-                r[i][j] = (*this)(i, j) + m[i][j];
+                r(i,j) = (*this)(i, j) + m(i,j);
             }
         }
         return r;
@@ -323,7 +323,7 @@ public:
         {
             for (sofa::Size j = 0; j < D; j++)
             {
-                r[i][j] = (*this)(i, j) - m[i][j];
+                r(i,j) = (*this)(i, j) - m(i,j);
             }
         }
         return r;
