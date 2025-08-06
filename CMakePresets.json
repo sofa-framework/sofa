@@ -159,6 +159,14 @@
           "type": "BOOL",
           "value": "ON"
         },
+        "SOFA_FETCH_SOFAVISCOELASTIC": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_SOFAVISCOELASTIC": {
+          "type": "BOOL",
+          "value": "ON"
+        },
         "PLUGIN_SOFAMATRIX": {
           "type": "BOOL",
           "value": "ON"
