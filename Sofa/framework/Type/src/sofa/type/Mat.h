@@ -303,7 +303,7 @@ public:
     {
         Col c;
         for (Size i=0; i<L; i++)
-            c[i]=this->elems(i,j);
+            c[i]=(*this)(i,j);
         return c;
     }
 

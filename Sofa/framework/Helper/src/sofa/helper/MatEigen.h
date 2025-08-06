@@ -38,7 +38,7 @@ Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const type::Mat< NumRows, NumCol
     Eigen::Matrix<Real, NumRows, NumCols> emat;
     for(Size i=0; i<NumRows; i++)
         for(Size j=0; j<NumCols; j++)
-            emat(i,j) = mat[i][j];
+            emat(i,j) = mat(i,j);
     return emat;
 }
 
@@ -48,7 +48,7 @@ type::Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, NumRows, N
     type::Mat<NumRows, NumCols, Real> mat;
     for(Size i=0; i<NumRows; i++)
         for(Size j=0; j<NumCols; j++)
-            mat[i][j] = emat(i,j);
+            mat(i,j) = emat(i,j);
     return mat;
 }
 
