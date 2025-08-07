@@ -55,7 +55,7 @@ public:
     virtual linearalgebra::BaseVector* getSystemSolutionBaseVector() const { return nullptr; }
 
     /// Construct and assemble the linear system matrix
-    void buildSystemMatrix(const core::MechanicalParams* mparams);
+    virtual void buildSystemMatrix(const core::MechanicalParams* mparams);
 
     sofa::type::Vec2u getMatrixSize() const { return d_matrixSize.getValue(); }
 
