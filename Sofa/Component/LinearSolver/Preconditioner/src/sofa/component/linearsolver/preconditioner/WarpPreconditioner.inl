@@ -133,13 +133,6 @@ WarpPreconditioner<TMatrix,TVector,ThreadManager >::getSystemDimention(const sof
 template<class TMatrix, class TVector,class ThreadManager>
 void WarpPreconditioner<TMatrix,TVector,ThreadManager >::invert(Matrix& /*Rcur*/) {}
 
-template<class TMatrix, class TVector,class ThreadManager>
-void WarpPreconditioner<TMatrix,TVector,ThreadManager >::updateSystemMatrix()
-{
-    ++nextRefreshStep;
-    l_linearSolver.get()->updateSystemMatrix();
-}
-
 template <class TMatrix, class TVector, class ThreadManager>
 void WarpPreconditioner<TMatrix, TVector, ThreadManager>::checkLinearSystem()
 {
