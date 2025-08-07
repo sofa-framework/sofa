@@ -2,12 +2,8 @@
 
     <include href="../FEMBAR-common.xml"/>
 
-    <MatrixLinearSystem template="DiagonalMatrix" name="jacobiMatrix"/>
-    <MatrixFreeSystem name="matrixFree"/>
-    <CompositeLinearSystem template="GraphScattered" name="solverMatrix" linearSystems="@matrixFree @jacobiMatrix" solverLinearSystem="@matrixFree"/>
-
-    <PCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner" linearSystem="@solverMatrix"/>
-    <JacobiPreconditioner name="preconditioner" template="DiagonalMatrix" linearSystem="@jacobiMatrix"/>
+    <PCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner"/>
+    <JacobiPreconditioner name="preconditioner" template="DiagonalMatrix"/>
 
     <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
 
