@@ -140,7 +140,7 @@ public:
             sofa::Size colId {};
             for (auto scalar : row)
             {
-                this->elems(rowId,colId++) = scalar;
+                (*this)(rowId,colId++) = scalar;
             }
             ++rowId;
         }
@@ -307,6 +307,7 @@ public:
         return c;
     }
 
+#ifndef SOFA_BUILD_SOFA_TYPE
     /// Write access to line i.
     constexpr LineNoInit& operator[](Size i) noexcept
     {
@@ -320,6 +321,19 @@ public:
         static_assert(false);
         return this->elems[i];
     }
+#else
+    /// Write access to line i.
+    constexpr LineNoInit& operator[](Size i) noexcept
+    {
+        return this->elems[i];
+    }
+
+    /// Read-only access to line i.
+    constexpr const LineNoInit& operator[](Size i) const noexcept
+    {
+        return this->elems[i];
+    }
+#endif
 
     /// Write access to line i.
     constexpr LineNoInit& operator()(Size i) noexcept
@@ -503,7 +517,7 @@ public:
         {
             for (Size i=0; i<L; i++)
                 for (Size j=i+1; j<C; j++)
-                    if( rabs( this->elems(i,j) - this->elems(j,i) ) > EQUALITY_THRESHOLD ) return false;
+                    if( rabs( (*this)(i,j) - (*this)(j,i) ) > EQUALITY_THRESHOLD ) return false;
             return true;
         }
         else
@@ -517,9 +531,9 @@ public:
         for (Size i=0; i<L; i++)
         {
             for (Size j=0; j<i-1; j++)
-                if( rabs( this->elems(i,j) ) > EQUALITY_THRESHOLD ) return false;
+                if( rabs( (*this)(i,j) ) > EQUALITY_THRESHOLD ) return false;
             for (Size j=i+1; j<C; j++)
-                if( rabs( this->elems(i,j) ) > EQUALITY_THRESHOLD ) return false;
+                if( rabs( (*this)(i,j) ) > EQUALITY_THRESHOLD ) return false;
         }
         return true;
     }
