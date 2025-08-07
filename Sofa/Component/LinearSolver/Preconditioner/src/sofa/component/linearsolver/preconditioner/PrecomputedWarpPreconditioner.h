@@ -127,8 +127,6 @@ public:
     void init() override;
     void loadMatrix(TMatrix& M);
 
-    bool hasUpdatedMatrix() override {return false;}
-
     TBaseMatrix * getSystemMatrixInv()
     {
         return internalData.MinvPtr;

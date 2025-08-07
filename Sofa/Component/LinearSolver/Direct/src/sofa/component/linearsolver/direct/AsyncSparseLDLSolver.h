@@ -68,9 +68,6 @@ public:
     void invert(TMatrix& M) override;
     bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, SReal fact) override;
 
-    bool hasUpdatedMatrix() override;
-    void updateSystemMatrix() override;
-
     ~AsyncSparseLDLSolver() override;
 
 protected:

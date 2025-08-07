@@ -78,8 +78,6 @@ public:
 
     void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* /*f*/) override;
 
-    void updateSystemMatrix() override;
-
 protected:
 
     void checkLinearSystem() override;
