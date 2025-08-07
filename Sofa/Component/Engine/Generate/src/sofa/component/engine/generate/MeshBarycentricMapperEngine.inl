@@ -172,9 +172,9 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
             for ( unsigned int t = 0; t < triangles.size(); t++ )
             {
                 Mat3x3 m,mt;
-                m[0] = (in)[triangles[t][1]]-(in)[triangles[t][0]];
-                m[1] = (in)[triangles[t][2]]-(in)[triangles[t][0]];
-                m[2] = cross ( m[0],m[1] );
+                m(0) = (in)[triangles[t][1]]-(in)[triangles[t][0]];
+                m(1) = (in)[triangles[t][2]]-(in)[triangles[t][0]];
+                m(2) = cross ( m(0),m(1) );
                 mt.transpose ( m );
                 const bool canInvert = bases[t].invert ( mt );
                 assert(canInvert);
@@ -184,9 +184,9 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
             for ( unsigned int c = 0; c < quads.size(); c++ )
             {
                 Mat3x3 m,mt;
-                m[0] = (in)[quads[c][1]]-(in)[quads[c][0]];
-                m[1] = (in)[quads[c][3]]-(in)[quads[c][0]];
-                m[2] = cross ( m[0],m[1] );
+                m(0) = (in)[quads[c][1]]-(in)[quads[c][0]];
+                m(1) = (in)[quads[c][3]]-(in)[quads[c][0]];
+                m(2) = cross ( m(0),m(1) );
                 mt.transpose ( m );
                 const bool canInvert = bases[c0+c].invert ( mt );
                 assert(canInvert);
@@ -232,9 +232,9 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
         for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
         {
             Mat3x3 m,mt;
-            m[0] = (in)[tetrahedra[t][1]]-(in)[tetrahedra[t][0]];
-            m[1] = (in)[tetrahedra[t][2]]-(in)[tetrahedra[t][0]];
-            m[2] = (in)[tetrahedra[t][3]]-(in)[tetrahedra[t][0]];
+            m(0) = (in)[tetrahedra[t][1]]-(in)[tetrahedra[t][0]];
+            m(1) = (in)[tetrahedra[t][2]]-(in)[tetrahedra[t][0]];
+            m(2) = (in)[tetrahedra[t][3]]-(in)[tetrahedra[t][0]];
             mt.transpose ( m );
             const bool canInvert = bases[t].invert ( mt );
             assert(canInvert);
@@ -244,9 +244,9 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
         for ( unsigned int c = 0; c < cubes.size(); c++ )
         {
             Mat3x3 m,mt;
-            m[0] = (in)[cubes[c][1]]-(in)[cubes[c][0]];
-            m[1] = (in)[cubes[c][3]]-(in)[cubes[c][0]];
-            m[2] = (in)[cubes[c][4]]-(in)[cubes[c][0]];
+            m(0) = (in)[cubes[c][1]]-(in)[cubes[c][0]];
+            m(1) = (in)[cubes[c][3]]-(in)[cubes[c][0]];
+            m(2) = (in)[cubes[c][4]]-(in)[cubes[c][0]];
             mt.transpose ( m );
             const bool canInvert = bases[c0+c].invert ( mt );
             assert(canInvert);
