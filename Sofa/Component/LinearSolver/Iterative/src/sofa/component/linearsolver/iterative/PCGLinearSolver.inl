@@ -20,16 +20,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/linearsolver/iterative/PCGLinearSolver.h>
-
-#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/helper/map.h>
+#include <sofa/component/linearsolver/iterative/PCGLinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
- 
+#include <sofa/helper/map.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+
 #include <cmath>
+
+#include "PreconditionedMatrixFreeSystem.h"
 
 namespace sofa::component::linearsolver::iterative
 {
@@ -40,8 +41,6 @@ PCGLinearSolver<TMatrix,TVector>::PCGLinearSolver()
     , d_tolerance(initData(&d_tolerance, 1e-5, "tolerance", "Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)") )
     , d_use_precond(initData(&d_use_precond, true, "use_precond", "Use a preconditioner") )
     , l_preconditioner(initLink("preconditioner", "Link towards the linear solver used to precondition the conjugate gradient"))
-    , d_update_step(initData(&d_update_step, (unsigned)1, "update_step", "Number of steps before the next refresh of preconditioners") )
-    , d_build_precond(initData(&d_build_precond, true, "build_precond", "Build the preconditioners, if false build the preconditioner only at the initial step") )
     , d_graph(initData(&d_graph, "graph", "Graph of residuals at each iteration") )
     , next_refresh_step(0)
     , newton_iter(0)
@@ -51,30 +50,35 @@ PCGLinearSolver<TMatrix,TVector>::PCGLinearSolver()
     this->f_listening.setValue(true);
 }
 
-template<class TMatrix, class TVector>
-void PCGLinearSolver<TMatrix,TVector>::init()
+template <class TMatrix, class TVector>
+void PCGLinearSolver<TMatrix, TVector>::init()
 {
     Inherit1::init();
 
     // Find linear solvers
     if (l_preconditioner.empty())
     {
-        msg_info() << "Link \"preconditioner\" to the desired linear solver should be set to precondition the conjugate gradient.";
+        msg_error() << "Link \"preconditioner\" to the desired linear solver should be set to "
+                       "precondition the conjugate gradient.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
     else
     {
         if (l_preconditioner.get() == nullptr)
         {
             msg_error() << "No preconditioner found at path: " << l_preconditioner.getLinkedPath();
-            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            this->d_componentState.setValue( sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
         else
         {
             if (l_preconditioner.get()->getTemplateName() == "GraphScattered")
             {
-                msg_error() << "Can not use the preconditioner " << l_preconditioner.get()->getName() << " because it is templated on GraphScatteredType";
-                sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+                msg_error() << "Can not use the preconditioner "
+                            << l_preconditioner.get()->getName()
+                            << " because it is templated on GraphScatteredType";
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
                 return;
             }
             else
@@ -85,10 +89,25 @@ void PCGLinearSolver<TMatrix,TVector>::init()
     }
 
     first = true;
-    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    this->d_componentState.setValue( sofa::core::objectmodel::ComponentState::Valid);
 }
 
-template<>
+template <class TMatrix, class TVector>
+void PCGLinearSolver<TMatrix, TVector>::bwdInit()
+{
+    if (l_preconditioner && this->l_linearSystem)
+    {
+        if (auto* preconditionerLinearSystem = l_preconditioner->getLinearSystem())
+        {
+            if (auto* preconditionedMatrix = dynamic_cast<PreconditionedMatrixFreeSystem<TMatrix,TVector>*>(this->l_linearSystem.get()))
+            {
+                preconditionedMatrix->l_preconditionerSystem.set(preconditionerLinearSystem);
+            }
+        }
+    }
+}
+
+template <>
 inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta)
 {
     p.eq(r,p,beta); // p = p*beta + r
@@ -100,19 +119,25 @@ inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,compon
     x.peq(p,alpha);                 // x = x + alpha p
 }
 
-template<class Matrix, class Vector>
-void PCGLinearSolver<Matrix,Vector>::handleEvent(sofa::core::objectmodel::Event* event) {
+template <class Matrix, class Vector>
+void PCGLinearSolver<Matrix, Vector>::handleEvent(sofa::core::objectmodel::Event* event)
+{
     /// this event shoul be launch before the addKToMatrix
     if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
     {
         newton_iter = 0;
-        std::map < std::string, sofa::type::vector<double> >& graph = * d_graph.beginEdit();
+        std::map<std::string, sofa::type::vector<double> >& graph = *d_graph.beginEdit();
         graph.clear();
     }
 }
 
+template <class TMatrix, class TVector>
+void PCGLinearSolver<TMatrix, TVector>::checkLinearSystem()
+{
+    this->template doCheckLinearSystem<PreconditionedMatrixFreeSystem<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> >();
+}
 
-template<class TMatrix, class TVector>
+template <class TMatrix, class TVector>
 void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 {
     SCOPED_TIMER_VARNAME(solveTimer, "PCGLinearSolver::solve");

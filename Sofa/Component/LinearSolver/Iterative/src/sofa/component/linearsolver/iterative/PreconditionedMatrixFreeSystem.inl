@@ -19,64 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/linearsolver/iterative/init.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
-
-namespace sofa::component::linearsystem
-{
-    extern void registerMatrixFreeSystemGraphScattered(sofa::core::ObjectFactory* factory);
-}
+#pragma once
+#include <sofa/component/linearsolver/iterative/PreconditionedMatrixFreeSystem.h>
 
 namespace sofa::component::linearsolver::iterative
 {
 
-extern void registerCGLinearSolver(sofa::core::ObjectFactory* factory);
-extern void registerMinResLinearSolver(sofa::core::ObjectFactory* factory);
-extern void registerPCGLinearSolver(sofa::core::ObjectFactory* factory);
-extern void registerPreconditionedMatrixFreeSystem(sofa::core::ObjectFactory* factory);
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
+template <class TMatrix, class TVector>
+PreconditionedMatrixFreeSystem<TMatrix, TVector>::PreconditionedMatrixFreeSystem()
+    : l_preconditionerSystem(initLink("preconditionerSystem", "Link toward the linear system of the preconditioner"))
+{
 }
 
-void initExternalModule()
+template <class TMatrix, class TVector>
+void PreconditionedMatrixFreeSystem<TMatrix, TVector>::buildSystemMatrix(
+    const core::MechanicalParams* mparams)
 {
-    init();
-}
+    linearsystem::MatrixFreeSystem<TMatrix, TVector>::buildSystemMatrix(mparams);
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-    registerCGLinearSolver(factory);
-    linearsystem::registerMatrixFreeSystemGraphScattered(factory);
-    registerMinResLinearSolver(factory);
-    registerPCGLinearSolver(factory);
-    registerPreconditionedMatrixFreeSystem(factory);
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
+    if (l_preconditionerSystem)
     {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
-        first = false;
+        l_preconditionerSystem->buildSystemMatrix(mparams);
     }
 }
 
-} // namespace sofa::component::linearsolver::iterative
+template <class TMatrix, class TVector>
+void PreconditionedMatrixFreeSystem<TMatrix, TVector>::resizeSystem(sofa::Size n)
+{
+    linearsystem::MatrixFreeSystem<TMatrix, TVector>::resizeSystem(n);
+
+    if (l_preconditionerSystem)
+    {
+        l_preconditionerSystem->resizeSystem(n);
+    }
+}
+
+template <class TMatrix, class TVector>
+void PreconditionedMatrixFreeSystem<TMatrix, TVector>::clearSystem()
+{
+    linearsystem::MatrixFreeSystem<TMatrix, TVector>::clearSystem();
+
+    if (l_preconditionerSystem)
+    {
+        l_preconditionerSystem->clearSystem();
+    }
+}
+
+}  // namespace sofa::component::linearsolver::iterative
