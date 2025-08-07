@@ -46,8 +46,6 @@ public:
     Data<double> d_tolerance; ///< Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)
     Data<bool> d_use_precond; ///< Use a preconditioner
     SingleLink<PCGLinearSolver, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_preconditioner; ///< Link towards the linear solver used to precondition the conjugate gradient
-    Data<unsigned> d_update_step; ///< Number of steps before the next refresh of preconditioners
-    Data<bool> d_build_precond; ///< Build the preconditioners, if false build the preconditioner only at the initial step
     Data<std::map < std::string, sofa::type::vector<double> > > d_graph; ///< Graph of residuals at each iteration
 
 protected:
@@ -56,6 +54,7 @@ protected:
 public:
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void init() override;
+    void bwdInit() override;
 
 private :
     unsigned next_refresh_step;
@@ -72,7 +71,7 @@ protected:
 
     void handleEvent(sofa::core::objectmodel::Event* event) override;
 
-
+    void checkLinearSystem();
 };
 
 template<class TMatrix, class TVector>
