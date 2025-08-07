@@ -186,7 +186,7 @@ void ParallelTetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgeb
                         {
                             for (sofa::Index j=0; j < S; j++)
                             {
-                                tmpBlock[n1][n2][i][j] = - tmp[n1*S+i][n2*S+j]* kFactor;
+                                tmpBlock[n1][n2](i,j) = - tmp(n1*S+i,n2*S+j)* kFactor;
                             }
                         }
                     }
