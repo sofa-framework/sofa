@@ -34,6 +34,14 @@
 namespace sofa::component::linearsystem
 {
 
+template <class TMatrix, class TVector>
+TypedMatrixLinearSystem<TMatrix, TVector>::TypedMatrixLinearSystem()
+    : d_matrixChanged(initData(&d_matrixChanged, false, "factorizationInvalidation", "Internal Data indicating a change in the matrix"))
+{
+    d_matrixChanged.setReadOnly(true);
+    d_matrixChanged.setDisplayed(false);
+}
+
 template<class TMatrix, class TVector>
 void TypedMatrixLinearSystem<TMatrix, TVector>::preAssembleSystem(const core::MechanicalParams* mparams)
 {
@@ -69,6 +77,8 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::preAssembleSystem(const core::Me
     }
 
     associateLocalMatrixToComponents(mparams);
+
+    d_matrixChanged.setValue(true);
 }
 
 template <class TMatrix, class TVector>
@@ -165,12 +175,14 @@ template <class TMatrix, class TVector>
 void TypedMatrixLinearSystem<TMatrix, TVector>::resizeSystem(sofa::Size n)
 {
     m_linearSystem.resizeSystem(n);
+    d_matrixChanged.setValue(true);
 }
 
 template <class TMatrix, class TVector>
 void TypedMatrixLinearSystem<TMatrix, TVector>::clearSystem()
 {
     m_linearSystem.clearSystem();
+    d_matrixChanged.setValue(true);
 }
 
 template <class TMatrix, class TVector>
@@ -221,12 +233,14 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::dispatchSystemRHS(core::MultiVec
 template <class TMatrix, class TVector>
 core::objectmodel::BaseContext* TypedMatrixLinearSystem<TMatrix, TVector>::getSolveContext()
 {
-    auto* linearSolver = this->getContext()->template get<sofa::core::behavior::LinearSolver>(core::objectmodel::BaseContext::Local);
+    auto* linearSolver = this->getContext()->template get<sofa::core::behavior::LinearSolver>(
+        core::objectmodel::BaseContext::Local);
     if (linearSolver)
     {
         return linearSolver->getContext();
     }
-    linearSolver = this->getContext()->template get<sofa::core::behavior::LinearSolver>(core::objectmodel::BaseContext::SearchUp);
+    linearSolver = this->getContext()->template get<sofa::core::behavior::LinearSolver>(
+        core::objectmodel::BaseContext::SearchUp);
     if (linearSolver)
     {
         return linearSolver->getContext();
@@ -235,4 +249,4 @@ core::objectmodel::BaseContext* TypedMatrixLinearSystem<TMatrix, TVector>::getSo
     return this->getContext();
 }
 
-}
+}  // namespace sofa::component::linearsystem
