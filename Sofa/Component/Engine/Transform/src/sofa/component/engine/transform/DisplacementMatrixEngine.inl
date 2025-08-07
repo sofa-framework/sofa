@@ -142,10 +142,10 @@ void DisplacementMatrixEngine< DataTypes >::reinit()
     for( unsigned int i = 0; i < size0; ++i )
     {
         Matrix4x4 S;
-        S[0][0] = (float)scales[i][0];
-        S[1][1] = (float)scales[i][1];
-        S[2][2] = (float)scales[i][2];
-        S[3][3] = (float)1;
+        S(0,0) = (float)scales[i][0];
+        S(1,1) = (float)scales[i][1];
+        S(2,2) = (float)scales[i][2];
+        S(3,3) = (float)1;
 
         this->SxInverses[i] =  S * this->inverses[i];
     }
