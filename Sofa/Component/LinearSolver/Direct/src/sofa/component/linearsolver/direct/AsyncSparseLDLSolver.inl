@@ -47,12 +47,16 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::solveSystem()
         swapInvertData();
     }
 
-    if (this->invertData == nullptr)
+    if (this->d_factorizationInvalidation.getValue())
     {
-        this->getMatrixInvertData(this->l_linearSystem->getSystemMatrix());
-        m_mainThreadInvertData = static_cast<InvertData*>(this->invertData.get());
+        if (this->invertData == nullptr)
+        {
+            this->getMatrixInvertData(this->l_linearSystem->getSystemMatrix());
+            m_mainThreadInvertData = static_cast<InvertData*>(this->invertData.get());
+        }
+        launchAsyncFactorization();
+        this->d_factorizationInvalidation.setValue(false);
     }
-    launchAsyncFactorization();
 
     if (waitForAsyncTask)
     {
@@ -95,18 +99,6 @@ bool AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::addJMInvJtLocal(TMa
         swapInvertData();
     }
     return Inherit1::doAddJMInvJtLocal(result, J, fact, m_mainThreadInvertData);
-}
-
-template <class TMatrix, class TVector, class TThreadManager>
-bool AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::hasUpdatedMatrix()
-{
-    return m_hasUpdatedMatrix;
-}
-
-template <class TMatrix, class TVector, class TThreadManager>
-void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::updateSystemMatrix()
-{
-    m_hasUpdatedMatrix = false;
 }
 
 template <class TMatrix, class TVector, class TThreadManager>

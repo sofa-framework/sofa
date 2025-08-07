@@ -48,12 +48,6 @@ public:
     /// Returns true if the solver supports non-symmetric systems
     virtual bool supportNonSymmetricSystem() const { return false; }
 
-    /// Indicate if the solver updated the system after the last call of setSystemMBKMatrix (should return true if isParallelSolver return false)
-    virtual bool hasUpdatedMatrix() { return true; }
-
-    /// This function is use for the preconditioner it must be called at each time step event if setSystemMBKMatrix is not called
-    virtual void updateSystemMatrix() {}
-
     /// Solve the system as constructed using the previous methods
     virtual void solveSystem() = 0;
 
