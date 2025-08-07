@@ -50,6 +50,7 @@ public:
     TVector* getRHSVector() const override;
     TVector* getSolutionVector() const override;
     [[nodiscard]] sofa::linearalgebra::BaseMatrix* getSystemBaseMatrix() const override;
+    void buildSystemMatrix(const core::MechanicalParams* mparams) override;
     void resizeSystem(sofa::Size n) override;
     void clearSystem() override;
     void setRHS(core::MultiVecDerivId v) override;
@@ -58,15 +59,8 @@ public:
     void dispatchSystemRHS(core::MultiVecDerivId v) override;
 
 protected:
-    void allocateSystem() override;
-    void resizeVectors(sofa::Size n) override;
-
-    void preAssembleSystem(const core::MechanicalParams* /*mparams*/) override;
-    void assembleSystem(const core::MechanicalParams* /*mparams*/) override;
-    void postAssembleSystem(const core::MechanicalParams* /*mparams*/) override;
-
     ///< List of linear systems to assemble
-    MultiLink < MyType, TypedMatrixLinearSystem<TMatrix, TVector>, BaseLink::FLAG_DUPLICATE > l_linearSystems;
+    MultiLink < MyType, sofa::core::behavior::BaseMatrixLinearSystem, BaseLink::FLAG_DUPLICATE > l_linearSystems;
 
     ///< Among the list of linear systems, which one is to be used by the linear solver
     SingleLink < MyType, TypedMatrixLinearSystem<TMatrix, TVector>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > l_solverLinearSystem;
