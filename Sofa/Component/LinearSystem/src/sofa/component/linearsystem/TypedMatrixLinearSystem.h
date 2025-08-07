@@ -93,7 +93,15 @@ public:
 
     core::objectmodel::BaseContext* getSolveContext();
 
+    /**
+     * This Data is used only to notify other components that the system matrix changed (resize,
+     * clear)
+     */
+    Data<bool> d_matrixChanged;
+
 protected:
+
+    TypedMatrixLinearSystem();
 
     LinearSystemData<TMatrix, TVector> m_linearSystem;
 

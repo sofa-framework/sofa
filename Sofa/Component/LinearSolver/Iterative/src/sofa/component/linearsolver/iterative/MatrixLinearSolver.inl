@@ -51,7 +51,11 @@ MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
                                                                   "matrix with compatible dimensions"))
     , invertData()
     , l_linearSystem(initLink("linearSystem", "The linear system to solve"))
+    , d_factorizationInvalidation(initData(&d_factorizationInvalidation, false, "factorizationInvalidation", "Internal data for the detection of cache invalidation of the matrix factorization"))
 {
+    d_factorizationInvalidation.setReadOnly(true);
+    d_factorizationInvalidation.setDisplayed(false);
+
     this->addUpdateCallback("parallelInverseProduct", {&d_parallelInverseProduct},
     [this](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
     {
@@ -177,17 +181,24 @@ void MatrixLinearSolver<Matrix, Vector, NoThreadManager>::doCheckLinearSystem()
             }
         }
     }
+
+    // this serves as an observer on the matrix to detect when the matrix is re-initialized or cleared
+    if (l_linearSystem)
+    {
+        d_factorizationInvalidation.setParent(&l_linearSystem->d_matrixChanged);
+    }
 }
 
 
-template<class Matrix, class Vector>
-template<class TLinearSystemType>
-void MatrixLinearSolver<Matrix,Vector>::createDefaultLinearSystem()
+template <class Matrix, class Vector>
+template <class TLinearSystemType>
+void MatrixLinearSolver<Matrix, Vector>::createDefaultLinearSystem()
 {
     if (auto system = sofa::core::objectmodel::New<TLinearSystemType>())
     {
         this->addSlave(system);
-        system->setName( this->getContext()->getNameHelper().resolveName(system->getClassName(), {}));
+        system->setName(
+            this->getContext()->getNameHelper().resolveName(system->getClassName(), {}));
         system->f_printLog.setValue(this->f_printLog.getValue());
         l_linearSystem.set(system);
     }
@@ -226,7 +237,7 @@ void MatrixLinearSolver<Matrix,Vector>::solveSystem()
     }
 
     // Step 1: Invert the system, e.g. factorization of the matrix
-    this->invert(*systemMatrix);
+    this->invertIfInvalidated(*systemMatrix);
 
     // Step 2: Solve the system based on the system inversion
     this->solve(*systemMatrix, *l_linearSystem->getSolutionVector(), *this->l_linearSystem->getRHSVector());
@@ -256,16 +267,27 @@ void MatrixLinearSolver<Matrix,Vector>::deleteMatrix(Matrix* v)
     delete v;
 }
 
-template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::invertSystem()
+template <class Matrix, class Vector>
+void MatrixLinearSolver<Matrix, Vector>::invertSystem()
 {
     if (l_linearSystem)
     {
-        this->invert(*l_linearSystem->getSystemMatrix());
+        this->invertIfInvalidated(*l_linearSystem->getSystemMatrix());
     }
 }
 
-template<class Matrix, class Vector>
+template <class Matrix, class Vector>
+void MatrixLinearSolver<Matrix, Vector, NoThreadManager>::invertIfInvalidated(Matrix& M)
+{
+    // since this Data is linked to the linear system, the linear system may have modified this value
+    if (d_factorizationInvalidation.getValue())
+    {
+        invert(M);
+        d_factorizationInvalidation.setValue(false);
+    }
+}
+
+template <class Matrix, class Vector>
 bool MatrixLinearSolver<Matrix, Vector>::addJMInvJtLocal(Matrix* M, ResMatrixType* result, const JMatrixType* J, const SReal fact)
 {
     if (!this->isComponentStateValid())
@@ -287,7 +309,7 @@ bool MatrixLinearSolver<Matrix, Vector>::addJMInvJtLocal(Matrix* M, ResMatrixTyp
         return false;
     }
 
-    this->invert(*systemMatrix);
+    this->invertIfInvalidated(*systemMatrix);
 
     simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler);
@@ -355,7 +377,7 @@ bool MatrixLinearSolver<Matrix, Vector>::singleThreadAddJMInvJtLocal(Matrix* M, 
     auto* rhsVector = l_linearSystem->getRHSVector();
     auto* lhsVector = l_linearSystem->getSolutionVector();
 
-    this->invert(*systemMatrix);
+    this->invertIfInvalidated(*systemMatrix);
 
     for (typename JMatrixType::Index row = 0; row < J->rowSize(); ++row)
     {

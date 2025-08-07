@@ -208,6 +208,8 @@ public:
         return ThreadManager::isAsyncSolver();
     }
 
+    virtual void invertIfInvalidated(Matrix& M) final;
+
     void invert(Matrix& /*M*/) override {}
 
     void solve(Matrix& M, Vector& solution, Vector& rh) override = 0;
@@ -310,6 +312,8 @@ protected:
     virtual MatrixInvertData * createInvertData();
 
     bool singleThreadAddJMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, SReal fact);
+
+    Data<bool> d_factorizationInvalidation;
 };
 
 //////////////////////////////////////////////////////////////
