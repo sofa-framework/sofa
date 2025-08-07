@@ -307,33 +307,33 @@ public:
         return c;
     }
 
-#ifndef SOFA_BUILD_SOFA_TYPE
+//#ifndef SOFA_BUILD_SOFA_TYPE
+//    /// Write access to line i.
+//    constexpr LineNoInit& operator[](Size i) noexcept
+//    {
+//        static_assert(false);
+//        return this->elems[i];
+//    }
+//
+//    /// Read-only access to line i.
+//    constexpr const LineNoInit& operator[](Size i) const noexcept
+//    {
+//        static_assert(false);
+//        return this->elems[i];
+//    }
+//#else
     /// Write access to line i.
     constexpr LineNoInit& operator[](Size i) noexcept
     {
-        static_assert(false);
         return this->elems[i];
     }
 
     /// Read-only access to line i.
     constexpr const LineNoInit& operator[](Size i) const noexcept
     {
-        static_assert(false);
         return this->elems[i];
     }
-#else
-    /// Write access to line i.
-    constexpr LineNoInit& operator[](Size i) noexcept
-    {
-        return this->elems[i];
-    }
-
-    /// Read-only access to line i.
-    constexpr const LineNoInit& operator[](Size i) const noexcept
-    {
-        return this->elems[i];
-    }
-#endif
+//#endif
 
     /// Write access to line i.
     constexpr LineNoInit& operator()(Size i) noexcept
