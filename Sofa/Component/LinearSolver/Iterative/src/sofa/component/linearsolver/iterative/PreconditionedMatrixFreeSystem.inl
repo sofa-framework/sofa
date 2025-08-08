@@ -58,8 +58,10 @@ template <class TMatrix, class TVector>
 void PreconditionedMatrixFreeSystem<TMatrix, TVector>::buildSystemMatrix(
     const core::MechanicalParams* mparams)
 {
+    //this component builds its own matrix...
     linearsystem::MatrixFreeSystem<TMatrix, TVector>::buildSystemMatrix(mparams);
 
+    //... and also the one from the preconditioner
     if (l_preconditionerSystem)
     {
         if (++m_assemblyCounter >= d_assemblingRate.getValue())
