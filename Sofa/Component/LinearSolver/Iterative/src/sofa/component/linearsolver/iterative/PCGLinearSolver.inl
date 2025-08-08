@@ -107,13 +107,13 @@ void PCGLinearSolver<TMatrix, TVector>::bwdInit()
 }
 
 template <>
-inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta)
+inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, Real beta)
 {
     p.eq(r,p,beta); // p = p*beta + r
 }
 
 template<>
-inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& p, double alpha)
+inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& p, Real alpha)
 {
     x.peq(p,alpha);                 // x = x + alpha p
 }
@@ -125,7 +125,7 @@ void PCGLinearSolver<Matrix, Vector>::handleEvent(sofa::core::objectmodel::Event
     if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
     {
         newton_iter = 0;
-        std::map<std::string, sofa::type::vector<double> >& graph = *d_graph.beginEdit();
+        std::map<std::string, sofa::type::vector<Real> >& graph = *d_graph.beginEdit();
         graph.clear();
     }
 }
@@ -142,13 +142,13 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 {
     SCOPED_TIMER_VARNAME(solveTimer, "PCGLinearSolver::solve");
 
-    std::map < std::string, sofa::type::vector<double> >& graph = * d_graph.beginEdit();
-//    sofa::type::vector<double>& graph_error = graph["Error"];
+    std::map < std::string, sofa::type::vector<Real> >& graph = * d_graph.beginEdit();
+//    sofa::type::vector<Real>& graph_error = graph["Error"];
 
     newton_iter++;
     char name[256];
     sprintf(name,"Error %d",newton_iter);
-    sofa::type::vector<double>& graph_error = graph[std::string(name)];
+    sofa::type::vector<Real>& graph_error = graph[std::string(name)];
 
     const core::ExecParams* params = core::execparams::defaultInstance();
     typename Inherit::TempVectorContainer vtmp(this, params, M, x, b);
@@ -158,8 +158,8 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 
     const bool apply_precond = l_preconditioner.get()!=nullptr && d_use_precond.getValue();
 
-    const double b_norm = b.dot(b);
-    const double tol = d_tolerance.getValue() * b_norm;
+    const Real b_norm = b.dot(b);
+    const Real tol = d_tolerance.getValue() * b_norm;
 
     r = M * x;
     cgstep_beta(r,b,-1);// r = -1 * r + b  =   b - (M * x)
@@ -177,15 +177,15 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         w = r;
     }
 
-    double r_norm = r.dot(w);
+    Real r_norm = r.dot(w);
     graph_error.push_back(r_norm/b_norm);
 
     unsigned iter=1;
     while ((iter <= d_maxIter.getValue()) && (r_norm > tol))
     {
         s = M * w;
-        const double dtq = w.dot(s);
-        double alpha = r_norm / dtq;
+        const Real dtq = w.dot(s);
+        Real alpha = r_norm / dtq;
 
         cgstep_alpha(x,w,alpha);//for(int i=0; i<n; i++) x[i] += alpha * d[i];
         cgstep_alpha(r,s,-alpha);//for (int i=0; i<n; i++) r[i] = r[i] - alpha * q[i];
@@ -203,11 +203,11 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
             s = r;
         }
 
-        const double deltaOld = r_norm;
+        const Real deltaOld = r_norm;
         r_norm = r.dot(s);
         graph_error.push_back(r_norm/b_norm);
 
-        double beta = r_norm / deltaOld;
+        Real beta = r_norm / deltaOld;
 
         cgstep_beta(w,s,beta);//for (int i=0; i<n; i++) d[i] = r[i] + beta * d[i];
 
