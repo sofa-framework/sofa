@@ -93,6 +93,9 @@ void PCGLinearSolver<TMatrix, TVector>::init()
 template <class TMatrix, class TVector>
 void PCGLinearSolver<TMatrix, TVector>::bwdInit()
 {
+    if (this->isComponentStateInvalid())
+        return;
+
     //link the linear systems of both the preconditioner and the PCG
     if (l_preconditioner && this->l_linearSystem)
     {
@@ -100,7 +103,15 @@ void PCGLinearSolver<TMatrix, TVector>::bwdInit()
         {
             if (auto* preconditionedMatrix = dynamic_cast<PreconditionedMatrixFreeSystem<TMatrix,TVector>*>(this->l_linearSystem.get()))
             {
+                msg_info() << "Linking the preconditioner linear system (" << preconditionerLinearSystem->getPathName() << ") to the PCG linear system (" << preconditionedMatrix->getPathName() << ")";
+                //this link is essential to ensure that the preconditioner matrix is assembled
                 preconditionedMatrix->l_preconditionerSystem.set(preconditionerLinearSystem);
+            }
+            else
+            {
+                msg_error() << "The preconditioned linear system (" << preconditionedMatrix->getPathName() << ") is not a PreconditionedMatrixFreeSystem";
+                this->d_componentState.setValue( sofa::core::objectmodel::ComponentState::Invalid);
+                return;
             }
         }
     }
