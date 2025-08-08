@@ -41,6 +41,8 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(PreconditionedMatrixFreeSystem, TMatrix, TVector),
                SOFA_TEMPLATE2(sofa::component::linearsystem::MatrixFreeSystem, TMatrix, TVector));
 
+    void init() override;
+    void reset() override;
     void buildSystemMatrix(const core::MechanicalParams* mparams) override;
     void resizeSystem(sofa::Size n) override;
     void clearSystem() override;
@@ -48,8 +50,12 @@ public:
     ///< The matrix system of the preconditioner
     SingleLink<MyType, sofa::core::behavior::BaseMatrixLinearSystem, BaseLink::FLAG_DUPLICATE> l_preconditionerSystem;
 
+    Data<unsigned int> d_assemblingRate;
+
 protected:
     PreconditionedMatrixFreeSystem();
+
+    unsigned int m_assemblyCounter {};
 };
 
 
