@@ -26,6 +26,13 @@
 namespace sofa::component::linearsolver::iterative
 {
 
+/**
+ * A matrix-free linear system that must be used with a preconditioned matrix-free solver
+ *
+ * This component is like a @MatrixFreeSystem (its base class), but also has a link to another
+ * linear system that assembles a matrix. This other linear system is used by a preconditioner
+ * in the context of a preconditioned solver.
+ */
 template <class TMatrix, class TVector>
 class PreconditionedMatrixFreeSystem
     : public sofa::component::linearsystem::MatrixFreeSystem<TMatrix, TVector>
