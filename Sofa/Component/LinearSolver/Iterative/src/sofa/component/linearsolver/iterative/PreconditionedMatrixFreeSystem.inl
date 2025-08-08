@@ -28,7 +28,24 @@ namespace sofa::component::linearsolver::iterative
 template <class TMatrix, class TVector>
 PreconditionedMatrixFreeSystem<TMatrix, TVector>::PreconditionedMatrixFreeSystem()
     : l_preconditionerSystem(initLink("preconditionerSystem", "Link toward the linear system of the preconditioner"))
+    , d_assemblingRate(initData(&d_assemblingRate, 1u, "assemblingRate",
+        "Rate of update of the preconditioner matrix, in number of time steps or Newton iterations"))
 {
+    this->addAlias(&d_assemblingRate, "update_step");
+}
+
+template <class TMatrix, class TVector>
+void PreconditionedMatrixFreeSystem<TMatrix, TVector>::init()
+{
+    linearsystem::MatrixFreeSystem<TMatrix, TVector>::init();
+
+    m_assemblyCounter = d_assemblingRate.getValue();  // to assemble the first time
+}
+
+template <class TMatrix, class TVector>
+void PreconditionedMatrixFreeSystem<TMatrix, TVector>::reset()
+{
+    m_assemblyCounter = d_assemblingRate.getValue();  // to assemble the first time
 }
 
 template <class TMatrix, class TVector>
@@ -39,7 +56,11 @@ void PreconditionedMatrixFreeSystem<TMatrix, TVector>::buildSystemMatrix(
 
     if (l_preconditionerSystem)
     {
-        l_preconditionerSystem->buildSystemMatrix(mparams);
+        if (++m_assemblyCounter >= d_assemblingRate.getValue())
+        {
+            l_preconditionerSystem->buildSystemMatrix(mparams);
+            m_assemblyCounter = 0;
+        }
     }
 }
 
@@ -51,6 +72,7 @@ void PreconditionedMatrixFreeSystem<TMatrix, TVector>::resizeSystem(sofa::Size n
     if (l_preconditionerSystem)
     {
         l_preconditionerSystem->resizeSystem(n);
+        m_assemblyCounter = 0;
     }
 }
 
@@ -62,6 +84,7 @@ void PreconditionedMatrixFreeSystem<TMatrix, TVector>::clearSystem()
     if (l_preconditionerSystem)
     {
         l_preconditionerSystem->clearSystem();
+        m_assemblyCounter = 0;
     }
 }
 
