@@ -66,8 +66,6 @@ public:
     void init() override;
     void bwdInit() override;
 
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
-
     void invert(Matrix& M) override;
 
     void solve(Matrix& M, Vector& solution, Vector& rh) override;
@@ -79,8 +77,6 @@ public:
     Index getSystemDimention(const sofa::core::MechanicalParams* mparams);
 
     void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* /*f*/) override;
-
-    void updateSystemMatrix() override;
 
 protected:
 
