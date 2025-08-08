@@ -52,6 +52,8 @@ public:
 
     Data<unsigned int> d_assemblingRate;
 
+    void reinitAssemblyCounter();
+
 protected:
     PreconditionedMatrixFreeSystem();
 
