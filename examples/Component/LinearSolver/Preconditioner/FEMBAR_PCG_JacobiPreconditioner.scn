@@ -2,6 +2,7 @@
 
     <include href="../FEMBAR-common.xml"/>
 
+    <PreconditionedMatrixFreeSystem assemblingRate="30"/>
     <PCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner"/>
     <JacobiPreconditioner name="preconditioner" template="DiagonalMatrix"/>
 
