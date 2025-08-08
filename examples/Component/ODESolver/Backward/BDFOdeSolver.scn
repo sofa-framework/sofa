@@ -30,8 +30,8 @@
                              absoluteEstimateDifferenceThreshold="1e-5"
                              relativeEstimateDifferenceThreshold="1e-5"/>
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrix" name="A" checkIndices="false"/>
-        <PCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner"/>
-        <AsyncSparseLDLSolver name="preconditioner"/>
+        <PCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner" printLog="true"/>
+        <AsyncSparseLDLSolver name="preconditioner" template="CompressedRowSparseMatrix"/>
 
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
         <TetrahedronSetTopologyContainer src="@loader" name="topologyContainer"/>
