@@ -39,13 +39,19 @@ void PreconditionedMatrixFreeSystem<TMatrix, TVector>::init()
 {
     linearsystem::MatrixFreeSystem<TMatrix, TVector>::init();
 
+    reinitAssemblyCounter();
+}
+
+template <class TMatrix, class TVector>
+void PreconditionedMatrixFreeSystem<TMatrix, TVector>::reinitAssemblyCounter()
+{
     m_assemblyCounter = d_assemblingRate.getValue();  // to assemble the first time
 }
 
 template <class TMatrix, class TVector>
 void PreconditionedMatrixFreeSystem<TMatrix, TVector>::reset()
 {
-    m_assemblyCounter = d_assemblingRate.getValue();  // to assemble the first time
+    reinitAssemblyCounter();
 }
 
 template <class TMatrix, class TVector>
