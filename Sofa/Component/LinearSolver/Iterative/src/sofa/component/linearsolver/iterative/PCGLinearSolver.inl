@@ -58,10 +58,9 @@ void PCGLinearSolver<TMatrix, TVector>::init()
     // Find linear solvers
     if (l_preconditioner.empty())
     {
-        msg_error() << "Link \"preconditioner\" to the desired linear solver should be set to "
-                       "precondition the conjugate gradient.";
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
+        msg_info() << "Link '" << l_preconditioner.getName() << "' to the desired linear solver "
+            "should be set to precondition the conjugate gradient. Without preconditioner, the "
+            "solver will act as a regular conjugate gradient solver.";
     }
     else
     {
@@ -73,10 +72,9 @@ void PCGLinearSolver<TMatrix, TVector>::init()
         }
         else
         {
-            if (l_preconditioner.get()->getTemplateName() == "GraphScattered")
+            if (l_preconditioner->getTemplateName() == "GraphScattered")
             {
-                msg_error() << "Can not use the preconditioner "
-                            << l_preconditioner.get()->getName()
+                msg_error() << "Can not use the preconditioner " << l_preconditioner->getName()
                             << " because it is templated on GraphScatteredType";
                 this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
                 return;
@@ -95,6 +93,7 @@ void PCGLinearSolver<TMatrix, TVector>::init()
 template <class TMatrix, class TVector>
 void PCGLinearSolver<TMatrix, TVector>::bwdInit()
 {
+    //link the linear systems of both the preconditioner and the PCG
     if (l_preconditioner && this->l_linearSystem)
     {
         if (auto* preconditionerLinearSystem = l_preconditioner->getLinearSystem())
@@ -134,6 +133,7 @@ void PCGLinearSolver<Matrix, Vector>::handleEvent(sofa::core::objectmodel::Event
 template <class TMatrix, class TVector>
 void PCGLinearSolver<TMatrix, TVector>::checkLinearSystem()
 {
+    // a PreconditionedMatrixFreeSystem component is created in the absence of a linear system
     this->template doCheckLinearSystem<PreconditionedMatrixFreeSystem<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> >();
 }
 

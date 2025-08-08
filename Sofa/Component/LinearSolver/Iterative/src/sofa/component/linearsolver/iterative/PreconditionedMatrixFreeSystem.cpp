@@ -28,7 +28,7 @@ namespace sofa::component::linearsolver::iterative
 
 void registerPreconditionedMatrixFreeSystem(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Matrix-free (unbuilt) linear system used in conjunction with built linear system serving in a preconditioner.")
+    factory->registerObjects(core::ObjectRegistrationData("A matrix-free linear system that must be used with a preconditioned matrix-free solver")
         .add< PreconditionedMatrixFreeSystem<GraphScatteredMatrix, GraphScatteredVector> >());
 }
 
