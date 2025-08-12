@@ -120,9 +120,9 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
             for ( std::size_t t = 0; t < triangles.size(); t++ )
             {
                 Mat3x3 m,mt;
-                m(0) = in[triangles[t][1]]-in[triangles[t][0]];
-                m(1) = in[triangles[t][2]]-in[triangles[t][0]];
-                m(2) = cross ( m(0),m(1) );
+                m[0] = in[triangles[t][1]]-in[triangles[t][0]];
+                m[1] = in[triangles[t][2]]-in[triangles[t][0]];
+                m[2] = cross ( m[0],m[1] );
                 mt.transpose ( m );
                 const bool canInvert = bases[t].invert ( mt );
                 assert(canInvert);
@@ -132,9 +132,9 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
             for ( std::size_t q = 0; q < quads.size(); q++ )
             {
                 Mat3x3 m,mt;
-                m(0) = in[quads[q][1]]-in[quads[q][0]];
-                m(1) = in[quads[q][3]]-in[quads[q][0]];
-                m(2) = cross ( m(0), m(1) );
+                m[0] = in[quads[q][1]]-in[quads[q][0]];
+                m[1] = in[quads[q][3]]-in[quads[q][0]];
+                m[2] = cross ( m[0],m[1] );
                 mt.transpose ( m );
                 const bool canInvert = bases[nbTriangles+q].invert ( mt );
                 assert(canInvert);
@@ -177,9 +177,9 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
         for ( std::size_t t = 0; t < tetras.size(); t++ )
         {
             Mat3x3 m,mt;
-            m(0) = in[tetras[t][1]]-in[tetras[t][0]];
-            m(1) = in[tetras[t][2]]-in[tetras[t][0]];
-            m(2) = in[tetras[t][3]]-in[tetras[t][0]];
+            m[0] = in[tetras[t][1]]-in[tetras[t][0]];
+            m[1] = in[tetras[t][2]]-in[tetras[t][0]];
+            m[2] = in[tetras[t][3]]-in[tetras[t][0]];
             mt.transpose ( m );
             const bool canInvert = bases[t].invert ( mt );
             assert(canInvert);
@@ -189,9 +189,9 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
         for ( std::size_t h = 0; h < hexas.size(); h++ )
         {
             Mat3x3 m,mt;
-            m(0) = in[hexas[h][1]]-in[hexas[h][0]];
-            m(1) = in[hexas[h][3]]-in[hexas[h][0]];
-            m(2) = in[hexas[h][4]]-in[hexas[h][0]];
+            m[0] = in[hexas[h][1]]-in[hexas[h][0]];
+            m[1] = in[hexas[h][3]]-in[hexas[h][0]];
+            m[2] = in[hexas[h][4]]-in[hexas[h][0]];
             mt.transpose ( m );
             const bool canInvert = bases[nbTetras+h].invert ( mt );
             assert(canInvert);
@@ -443,15 +443,15 @@ BarycentricMapperMeshTopology<In,Out>::createPointInQuad ( const typename Out::C
     const typename In::Coord pB = ( *points ) [elem[3]] - p0;
     typename In::Coord pos = Out::getCPos(p) - p0;
     sofa::type::Mat<3,3,typename In::Real> m,mt,base;
-    m(0) = pA;
-    m(1) = pB;
-    m(2) = cross ( pA, pB );
+    m[0] = pA;
+    m[1] = pB;
+    m[2] = cross ( pA, pB );
     mt.transpose ( m );
     const bool canInvert = base.invert ( mt );
     assert(canInvert);
     SOFA_UNUSED(canInvert);
-    const typename In::Coord base0 = base(0);
-    const typename In::Coord base1 = base(1);
+    const typename In::Coord base0 = base[0];
+    const typename In::Coord base1 = base[1];
     baryCoords[0] = base0 * pos;
     baryCoords[1] = base1 * pos;
     return this->addPointInQuad ( quadIndex, baryCoords );

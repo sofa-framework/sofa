@@ -686,12 +686,12 @@ Real Decompose<Real>::polarDecomposition( const type::Mat<3,3,Real>& M, type::Ma
   {
     type::Mat<3,3,Real> MadjTk;
 
-      // row 2 x row 3
-      MadjTk(0) = cross( Mk(1), Mk(2) );
-      // row 3 x row 1
-      MadjTk(1) = cross( Mk(2), Mk(0) );
-      // row 1 x row 2
-      MadjTk(2) = cross( Mk(0), Mk(1) );
+    // row 2 x row 3
+    MadjTk[0] = cross( Mk[1], Mk[2] );
+    // row 3 x row 1
+    MadjTk[1] = cross( Mk[2], Mk[0] );
+    // row 1 x row 2
+    MadjTk[2] = cross( Mk[0], Mk[1] );
 
     det = Mk(0,0) * MadjTk(0,0) + Mk(0,1) * MadjTk(0,1) + Mk(0,2) * MadjTk(0,2);
     if (det == 0.0)
@@ -1181,7 +1181,7 @@ bool Decompose<Real>::PositiveRank(Mat<3,3,Real>& M, Real& maxEntry, Vec<3,Real>
 
     // Return the row containing the maximum, to be used for eigenvector
     // construction.
-    maxRow = M(maxRowIndex);
+    maxRow = M[maxRowIndex];
 
     return maxEntry >= zeroTolerance();
 }
@@ -1252,25 +1252,25 @@ void Decompose<Real>::ComputeVectors(const Mat<3,3,Real>& A, Vec<3,Real>& U2, in
             invLength = (Real)1 / helper::rsqrt(p00*p00 + p01*p01);
             p00 *= invLength;
             p01 *= invLength;
-            V(i2) = U0*p01 + U1*p00;
+            V[i2] = U0*p01 + U1*p00;
         }
         else
         {
             invLength = (Real)1 / helper::rsqrt(p11*p11 + p01*p01);
             p11 *= invLength;
             p01 *= invLength;
-            V(i2) = U0*p11 + U1*p01;
+            V[i2] = U0*p11 + U1*p01;
         }
     }
     else
     {
         if (row == 0)
         {
-            V(i2) = U1;
+            V[i2] = U1;
         }
         else
         {
-            V(i2) = U0;
+            V[i2] = U0;
         }
     }
 
@@ -1278,7 +1278,7 @@ void Decompose<Real>::ComputeVectors(const Mat<3,3,Real>& A, Vec<3,Real>& U2, in
     // e0*V[i0] = c0*A*R + c1*A*S
     // e0*c0 = c0*R.Dot(A*R) + c1*R.Dot(A*S) = d00*c0 + d01*c1
     // e0*c1 = c0*S.Dot(A*R) + c1*S.Dot(A*S) = d01*c0 + d11*c1
-    Vec<3,Real> S = cross( U2, V(i2) );
+    Vec<3,Real> S = cross( U2, V[i2] );
     tmp = A*U2;
     p00 = diag[i0] - U2 * tmp;
     p01 = S * tmp;
@@ -1304,29 +1304,29 @@ void Decompose<Real>::ComputeVectors(const Mat<3,3,Real>& A, Vec<3,Real>& U2, in
             invLength = (Real)1 / helper::rsqrt(p00*p00 + p01*p01);
             p00 *= invLength;
             p01 *= invLength;
-            V(i0) = p01*U2 + S*p00;
+            V[i0] = p01*U2 + S*p00;
         }
         else
         {
             invLength = (Real)1 / helper::rsqrt(p11*p11 + p01*p01);
             p11 *= invLength;
             p01 *= invLength;
-            V(i0) = U2*p11 + S*p01;
+            V[i0] = U2*p11 + S*p01;
         }
     }
     else
     {
         if (row == 0)
         {
-            V(i0) = S;
+            V[i0] = S;
         }
         else
         {
-            V(i0) = U2;
+            V[i0] = U2;
         }
     }
 
-    V(i1) = cross( V(i2), V(i0) );
+    V[i1] = cross( V[i2], V[i0] );
 }
 
 
@@ -1466,8 +1466,8 @@ void Decompose<Real>::eigenDecomposition( const type::Mat<2,2,Real> &A, type::Ma
         }
         else
         {
-            V(0).set( A(0,1), diag[0] - A(0,0) ); V(0).normalize();
-            V(1).set( A(0,1), diag[1] - A(0,0) ); V(1).normalize();
+            V[0].set( A(0,1), diag[0] - A(0,0) ); V[0].normalize();
+            V[1].set( A(0,1), diag[1] - A(0,0) ); V[1].normalize();
         }
     }
     else
@@ -1476,8 +1476,8 @@ void Decompose<Real>::eigenDecomposition( const type::Mat<2,2,Real> &A, type::Ma
         V(0,1) = diag[1] - A(1,1);
         V(1,0) = V(1,1) = A(1,0);
 
-        V(0).set( diag[0] - A(1,1), A(1,0) ); V(0).normalize();
-        V(1).set( diag[1] - A(1,1), A(1,0) ); V(1).normalize();
+        V[0].set( diag[0] - A(1,1), A(1,0) ); V[0].normalize();
+        V[1].set( diag[1] - A(1,1), A(1,0) ); V[1].normalize();
     }
 
     V.transpose();

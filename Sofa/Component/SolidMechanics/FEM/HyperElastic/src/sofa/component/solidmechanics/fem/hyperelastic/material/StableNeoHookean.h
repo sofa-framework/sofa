@@ -181,12 +181,12 @@ public:
         C_H_C(5,4) = 2 * C_H_C(4,5);
 
         Matrix6 trC_HC_;
-        trC_HC_(0) = inverse_C[0] * CC;
-        trC_HC_(1) = inverse_C[1] * CC;
-        trC_HC_(2) = inverse_C[2] * CC;
-        trC_HC_(3) = inverse_C[3] * CC;
-        trC_HC_(4) = inverse_C[4] * CC;
-        trC_HC_(5) = inverse_C[5] * CC;
+        trC_HC_[0] = inverse_C[0] * CC;
+        trC_HC_[1] = inverse_C[1] * CC;
+        trC_HC_[2] = inverse_C[2] * CC;
+        trC_HC_[3] = inverse_C[3] * CC;
+        trC_HC_[4] = inverse_C[4] * CC;
+        trC_HC_[5] = inverse_C[5] * CC;
 
         //Relative volume change -> J = det(F)
         const Real J = sinfo->J;

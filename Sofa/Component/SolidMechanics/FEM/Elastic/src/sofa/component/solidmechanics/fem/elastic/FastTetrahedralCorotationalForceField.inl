@@ -131,9 +131,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
         computeQRRotation(my_tinfo.restRotation,my_tinfo.restEdgeVector);
     } else 	if (m_decompositionMethod ==POLAR_DECOMPOSITION_MODIFIED) {
         Mat3x3NoInit Transformation;
-        Transformation(0)=point[1]-point[0];
-        Transformation(1)=point[2]-point[0];
-        Transformation(2)=point[3]-point[0];
+        Transformation[0]=point[1]-point[0];
+        Transformation[1]=point[2]-point[0];
+        Transformation[2]=point[3]-point[0];
         helper::Decompose<Real>::polarDecomposition( Transformation, my_tinfo.restRotation );
     }
 }
@@ -356,9 +356,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
         } 
         else if (m_decompositionMethod == POLAR_DECOMPOSITION_MODIFIED) 
         {
-            S(0)= displ[0];
-            S(1)= displ[1];
-            S(2)= displ[2];
+            S[0]= displ[0];
+            S[1]= displ[1];
+            S[2]= displ[2];
             helper::Decompose<Real>::polarDecomposition( S, R );
             R=R.transposed()*tetraInfo.restRotation;
         }  
