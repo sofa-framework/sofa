@@ -212,22 +212,22 @@ public:
         Calpha_H_Calpha(4,3)=Calpha_H_Calpha(3,4)=Calpha_2[3]*Calpha_2[4]+Calpha_2[5]*Calpha_2[1];
         Calpha_H_Calpha(4,5)=Calpha_2[4]*Calpha_2[5]; Calpha_H_Calpha(5,4)=2*Calpha_H_Calpha(4,5);
         Matrix6 trCalpha_HC_;
-        trCalpha_HC_(0)=Calpha_1[0]*CC;
-        trCalpha_HC_(1)=Calpha_1[1]*CC;
-        trCalpha_HC_(2)=Calpha_1[2]*CC;
-        trCalpha_HC_(3)=Calpha_1[3]*CC;
-        trCalpha_HC_(4)=Calpha_1[4]*CC;
-        trCalpha_HC_(5)=Calpha_1[5]*CC;
+        trCalpha_HC_[0]=Calpha_1[0]*CC;
+        trCalpha_HC_[1]=Calpha_1[1]*CC;
+        trCalpha_HC_[2]=Calpha_1[2]*CC;
+        trCalpha_HC_[3]=Calpha_1[3]*CC;
+        trCalpha_HC_[4]=Calpha_1[4]*CC;
+        trCalpha_HC_[5]=Calpha_1[5]*CC;
         MatrixSym CCalpha_1;
         CCalpha_1=Calpha_1;
         CCalpha_1[1]+=Calpha_1[1]; CCalpha_1[3]+=Calpha_1[3]; CCalpha_1[4]+=Calpha_1[4];
         Matrix6 trC_HCalpha;
-        trC_HCalpha(0)=_C[0]*CCalpha_1;
-        trC_HCalpha(1)=_C[1]*CCalpha_1;
-        trC_HCalpha(2)=_C[2]*CCalpha_1;
-        trC_HCalpha(3)=_C[3]*CCalpha_1;
-        trC_HCalpha(4)=_C[4]*CCalpha_1;
-        trC_HCalpha(5)=_C[5]*CCalpha_1;
+        trC_HCalpha[0]=_C[0]*CCalpha_1;
+        trC_HCalpha[1]=_C[1]*CCalpha_1;
+        trC_HCalpha[2]=_C[2]*CCalpha_1;
+        trC_HCalpha[3]=_C[3]*CCalpha_1;
+        trC_HCalpha[4]=_C[4]*CCalpha_1;
+        trC_HCalpha[5]=_C[5]*CCalpha_1;
 
         outputTensor=(Real)2.0*(mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0)*((-alpha1/(Real)6.0)*(-(Real)1.0/(Real)3.0*trC_HC_*trCalpha+trCalpha_HC_)+(Real)1.0/(Real)3.0*C_H_C*trCalpha-(Real)1.0/(Real)3.0*trC_HCalpha*alpha1/(Real)2.0
                 +(alpha1/(Real)2.0-(Real)1)*Calpha_H_Calpha)+k0/(Real)2.0*trC_HC_-(Real)(k0*log(sinfo->J))*C_H_C);

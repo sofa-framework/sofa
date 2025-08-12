@@ -180,11 +180,11 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     Q22 = young2Array[index]/(1-elementPoissonRatio*poisson2Array[index]);
     Q66 = (Real)(elementYoungModulus / (2.0*(1 + elementPoissonRatio)));
 
-    T(0) = (initialPoints)[v2]-(initialPoints)[v1];
-    T(1) = (initialPoints)[v3]-(initialPoints)[v1];
-    T(2) = cross(T(0), T(1));
+    T[0] = (initialPoints)[v2]-(initialPoints)[v1];
+    T[1] = (initialPoints)[v3]-(initialPoints)[v1];
+    T[2] = cross(T[0], T[1]);
 
-    if (T(2) == Coord())
+    if (T[2] == Coord())
     {
         msg_error() << "Cannot compute material stiffness for a flat triangle. Abort computation. ";
         return;
@@ -194,7 +194,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     {
         Coord tcenter = ((initialPoints)[v1]+(initialPoints)[v2]+(initialPoints)[v3])*(Real)(1.0/3.0);
         Coord fcenter = d_fiberCenter.getValue()[0];
-        fiberDirGlobal = cross(T(2), fcenter-tcenter);  // was fiberDir
+        fiberDirGlobal = cross(T[2], fcenter-tcenter);  // was fiberDir
     }
     else // for unidirectional fibers
     {
@@ -230,13 +230,13 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
         fiberDirLocal.normalize();
     }
 
-    T(0) = (initialPoints)[v2]-(initialPoints)[v1];
-    T(1) = (initialPoints)[v3]-(initialPoints)[v1];
-    T(2) = cross(T(0), T(1));
-    T(1) = cross(T(2), T(0));
-    T(0).normalize();
-    T(1).normalize();
-    T(2).normalize();
+    T[0] = (initialPoints)[v2]-(initialPoints)[v1];
+    T[1] = (initialPoints)[v3]-(initialPoints)[v1];
+    T[2] = cross(T[0], T[1]);
+    T[1] = cross(T[2], T[0]);
+    T[0].normalize();
+    T[1].normalize();
+    T[2].normalize();
     T.transpose();
     const bool canInvert = Tinv.invert(T);
     assert(canInvert);
@@ -272,7 +272,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     Real K16 = s * c3 * (Q11-Q12-2*Q66) + s3 * c * (Q12-Q22+2*Q66);
     Real K26 = s3 * c * (Q11-Q12-2*Q66) + s * c3 * (Q12-Q22+2*Q66);
     Real K66 = c2 * s2 * (Q11+Q22-2*Q12-2*Q66) + (c4+s4) * Q66;
-
+    
     tinfo->materialMatrix(0,0) = K11;
     tinfo->materialMatrix(0,1) = K12;
     tinfo->materialMatrix(0,2) = K16;

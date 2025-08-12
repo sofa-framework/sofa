@@ -117,11 +117,11 @@ void TriangularFEMForceFieldOptim<DataTypes>::parse( sofa::core::objectmodel::Ba
 template<class DataTypes>
 inline void TriangularFEMForceFieldOptim<DataTypes>::computeTriangleRotation(Transformation& result, Coord eab, Coord eac)
 {
-    result(0) = eab;
+    result[0] = eab;
     Coord n = eab.cross(eac);
-    result(1) = n.cross(eab);
-    result(0).normalize();
-    result(1).normalize();
+    result[1] = n.cross(eab);
+    result[0].normalize();
+    result[1].normalize();
 }
 template <class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(Index i, TriangleInfo& ti, const Triangle t, const VecCoord& x0)
@@ -147,9 +147,9 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(Index i, Triangle
     computeTriangleRotation(ti.init_frame, ab, ac);
 
     // compute initial position in local space A[0, 0] B[x, 0] C[x, y]
-    ti.bx = ti.init_frame(0) * ab;
-    ti.cx = ti.init_frame(0) * ac;
-    ti.cy = ti.init_frame(1) * ac;
+    ti.bx = ti.init_frame[0] * ab;
+    ti.cx = ti.init_frame[0] * ac;
+    ti.cy = ti.init_frame[1] * ac;
     ti.ss_factor = ((Real)0.5)/(ti.bx*ti.cy);
 }
 
@@ -256,9 +256,9 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
         computeTriangleRotation(ts.frame, ab, ac);
 
         // Displacement in local space (rest pos - current pos), dby == 0
-        Real dbx = ti.bx - ts.frame(0) * ab;
-        Real dcx = ti.cx - ts.frame(0) * ac;
-        Real dcy = ti.cy - ts.frame(1) * ac;
+        Real dbx = ti.bx - ts.frame[0] * ab;
+        Real dcx = ti.cx - ts.frame[0] * ac;
+        Real dcy = ti.cy - ts.frame[1] * ac;
 
         /// Full StrainDisplacement matrix.
         // | beta1  0       beta2  0        beta3  0      |
@@ -299,10 +299,10 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
 
         stress *= ti.ss_factor;
 
-        Deriv fb = ts.frame(0) * (ti.cy * stress[0] - ti.cx * stress[2])  // (cy,   0, -cx) * stress
-                + ts.frame(1) * (ti.cy * stress[2] - ti.cx * stress[1]);  // ( 0, -cx,  cy) * stress
-        Deriv fc = ts.frame(0) * (ti.bx * stress[2])                      // ( 0,   0,  bx) * stress
-                + ts.frame(1) * (ti.bx * stress[1]);                      // ( 0,  bx,   0) * stress
+        Deriv fb = ts.frame[0] * (ti.cy * stress[0] - ti.cx * stress[2])  // (cy,   0, -cx) * stress
+                + ts.frame[1] * (ti.cy * stress[2] - ti.cx * stress[1]);  // ( 0, -cx,  cy) * stress
+        Deriv fc = ts.frame[0] * (ti.bx * stress[2])                      // ( 0,   0,  bx) * stress
+                + ts.frame[1] * (ti.bx * stress[1]);                      // ( 0,  bx,   0) * stress
         Deriv fa = -fb-fc;
 
         f[t[0]] += fa;
@@ -348,10 +348,10 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
         Deriv dab = dx[t[1]]-da;
         Deriv dac = dx[t[2]]-da;
 
-        Real dbx = ts.frame(0)*dab;
-        Real dby = ts.frame(1)*dab;
-        Real dcx = ts.frame(0)*dac;
-        Real dcy = ts.frame(1)*dac;
+        Real dbx = ts.frame[0]*dab;
+        Real dby = ts.frame[1]*dab;
+        Real dcx = ts.frame[0]*dac;
+        Real dcy = ts.frame[1]*dac;
 
         // Strain = StrainDisplacement * Displacement
         type::Vec<3, Real> dstrain(
@@ -368,10 +368,10 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
             (Real)(0.5)*mu*dstrain[2]);     // (       0,        0, mu/2) * dstrain
 
         dstress *= ti.ss_factor * kFactor;
-        Deriv dfb = ts.frame(0) * (ti.cy * dstress[0] - ti.cx * dstress[2])  // (cy,   0, -cx) * stress
-            + ts.frame(1) * (ti.cy * dstress[2] - ti.cx * dstress[1]);       // ( 0, -cx,  cy) * stress
-        Deriv dfc = ts.frame(0) * (ti.bx * dstress[2])                       // ( 0,   0,  bx) * stress
-            + ts.frame(1) * (ti.bx * dstress[1]);                            // ( 0,  bx,   0) * stress
+        Deriv dfb = ts.frame[0] * (ti.cy * dstress[0] - ti.cx * dstress[2])  // (cy,   0, -cx) * stress
+            + ts.frame[1] * (ti.cy * dstress[2] - ti.cx * dstress[1]);       // ( 0, -cx,  cy) * stress
+        Deriv dfc = ts.frame[0] * (ti.bx * dstress[2])                       // ( 0,   0,  bx) * stress
+            + ts.frame[1] * (ti.bx * dstress[1]);                            // ( 0,  bx,   0) * stress
         Deriv dfa = -dfb - dfc;
 
         df[t[0]] -= dfa;
@@ -832,14 +832,14 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
             Coord a = x[t[0]];
             Coord b = x[t[1]];
             Coord c = x[t[2]];
-            Coord fx = ts.frame(0);
-            Coord fy = ts.frame(1);
+            Coord fx = ts.frame[0];
+            Coord fy = ts.frame[1];
             Vec3 center = (a+b+c)*(1.0_sreal/3.0_sreal);
             Real scale = (Real)(sqrt((b-a).cross(c-a).norm()*0.25f));
             points[0].push_back(center);
-            points[0].push_back(center + ts.frame(0) * scale);
+            points[0].push_back(center + ts.frame[0] * scale);
             points[1].push_back(center);
-            points[1].push_back(center + ts.frame(1) * scale);
+            points[1].push_back(center + ts.frame[1] * scale);
             Coord a0 = center - fx * (ti.bx/3 + ti.cx/3) - fy * (ti.cy/3);
             Coord b0 = a0 + fx * ti.bx;
             Coord c0 = a0 + fx * ti.cx + fy * ti.cy;
