@@ -91,8 +91,8 @@ SpatialVector<TReal> SpatialVector<TReal>::operator* (const Mat66& m) const
         result.freeVec[i] = 0;
         for (int j = 0; j < 3; j++)
         {
-            result.lineVec[i] += lineVec[j] * m[i][j] + freeVec[j] * m[i][j + 3];
-            result.freeVec[i] += lineVec[j] * m[i + 3][j] + freeVec[j] * m[i + 3][j + 3];
+            result.lineVec[i] += lineVec[j] * m(i,j) + freeVec[j] * m(i,j + 3);
+            result.freeVec[i] += lineVec[j] * m(i + 3,j) + freeVec[j] * m(i + 3,j + 3);
         }
     }
     return result;

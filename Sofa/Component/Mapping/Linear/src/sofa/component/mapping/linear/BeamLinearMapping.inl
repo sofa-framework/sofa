@@ -37,9 +37,9 @@ struct RigidMappingMatrixHelper<2, Real>
     template <class Matrix, class Vector>
     static void setMatrix(Matrix& mat, const Vector& vec)
     {
-        mat[0][0] = (Real) 1     ;    mat[1][0] = (Real) 0     ;
-        mat[0][1] = (Real) 0     ;    mat[1][1] = (Real) 1     ;
-        mat[0][2] = (Real)-vec[1];    mat[1][2] = (Real) vec[0];
+        mat(0,0) = (Real) 1     ;    mat(1,0) = (Real) 0     ;
+        mat(0,1) = (Real) 0     ;    mat(1,1) = (Real) 1     ;
+        mat(0,2) = (Real)-vec[1];    mat(1,2) = (Real) vec[0];
     }
 };
 
@@ -51,12 +51,12 @@ struct RigidMappingMatrixHelper<3, Real>
     {
         // out = J in
         // J = [ I -OM^ ]
-        mat[0][0] = (Real) 1     ;    mat[1][0] = (Real) 0     ;    mat[2][0] = (Real) 0     ;
-        mat[0][1] = (Real) 0     ;    mat[1][1] = (Real) 1     ;    mat[2][1] = (Real) 0     ;
-        mat[0][2] = (Real) 0     ;    mat[1][2] = (Real) 0     ;    mat[2][2] = (Real) 1     ;
-        mat[0][3] = (Real) 0     ;    mat[1][3] = (Real)-vec[2];    mat[2][3] = (Real) vec[1];
-        mat[0][4] = (Real) vec[2];    mat[1][4] = (Real) 0     ;    mat[2][4] = (Real)-vec[0];
-        mat[0][5] = (Real)-vec[1];    mat[1][5] = (Real) vec[0];    mat[2][5] = (Real) 0     ;
+        mat(0,0) = (Real) 1     ;    mat(1,0) = (Real) 0     ;    mat(2,0) = (Real) 0     ;
+        mat(0,1) = (Real) 0     ;    mat(1,1) = (Real) 1     ;    mat(2,1) = (Real) 0     ;
+        mat(0,2) = (Real) 0     ;    mat(1,2) = (Real) 0     ;    mat(2,2) = (Real) 1     ;
+        mat(0,3) = (Real) 0     ;    mat(1,3) = (Real)-vec[2];    mat(2,3) = (Real) vec[1];
+        mat(0,4) = (Real) vec[2];    mat(1,4) = (Real) 0     ;    mat(2,4) = (Real)-vec[0];
+        mat(0,5) = (Real)-vec[1];    mat(1,5) = (Real) vec[0];    mat(2,5) = (Real) 0     ;
     }
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -32,7 +32,7 @@ void BarycentricMapper<In,Out>::addMatrixContrib(CompressedRowSparseMatrix<MBloc
 {
     MBloc* b = m->wblock(row, col, true); // get write access to a matrix block, creating it if not found
     for (int i=0; i < ((int)NIn < (int)NOut ? (int)NIn : (int)NOut); ++i)
-        (*b)[i][i] += value;
+        (*b)(i,i) += value;
 }
 
 

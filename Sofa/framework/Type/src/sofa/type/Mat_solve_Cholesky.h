@@ -33,23 +33,23 @@ namespace sofa::type
 template<Size n, class real>
 bool cholDcmp(Mat<n,n,real>& L, const Mat<n,n,real>& M)
 {
-    if( M[0][0] <= 0 ) return false;
-    real d = 1.0 / sqrt(M[0][0]);
+    if( M(0,0) <= 0 ) return false;
+    real d = 1.0 / sqrt(M(0,0));
     for (Size i=0; i<n; i++)
-        L[0][i] = M[i][0] * d;
+        L(0,i) = M(i,0) * d;
     for (Size j=1; j<n; j++)
     {
         real ss=0;
         for (Size k=0; k<j; k++)
-            ss+=L[k][j]*L[k][j];
-        if( M[j][j]-ss <= 0 ) return false;
-        d = 1.0 / sqrt(M[j][j]-ss);
-        L[j][j] = (M[j][j]-ss) * d;
+            ss+=L(k,j)*L(k,j);
+        if( M(j,j)-ss <= 0 ) return false;
+        d = 1.0 / sqrt(M(j,j)-ss);
+        L(j,j) = (M(j,j)-ss) * d;
         for (Size i=j+1; i<n; i++)
         {
             ss=0;
-            for (Size k=0; k<j; k++) ss+=L[k][i]*L[k][j];
-            L[j][i] = (M[i][j]-ss) * d;
+            for (Size k=0; k<j; k++) ss+=L(k,i)*L(k,j);
+            L(j,i) = (M(i,j)-ss) * d;
         }
     }
     return true;
@@ -65,9 +65,9 @@ void cholBksb(Vec<n,real>& x, const Mat<n,n,real>& L, const Vec<n,real>& b)
     for (Size j=0; j<n; j++)
     {
         double temp = 0.0;
-        double d = 1.0 / L[j][j];
+        double d = 1.0 / L(j,j);
         for (Size i=0; i<j; i++)
-            temp += x[i] * L[i][j];
+            temp += x[i] * L(i,j);
         x[j] = (b[j] - temp) * d ;
     }
 
@@ -75,10 +75,10 @@ void cholBksb(Vec<n,real>& x, const Mat<n,n,real>& L, const Vec<n,real>& b)
     for (int j=n-1; j>=0; j--)
     {
         double temp = 0.0;
-        double d = 1.0 / L[j][j];
+        double d = 1.0 / L(j,j);
         for (Size i=j+1; i<n; i++)
         {
-            temp += x[i] * L[j][i];
+            temp += x[i] * L(j,i);
         }
         x[j] = (x[j] - temp) * d;
     }
