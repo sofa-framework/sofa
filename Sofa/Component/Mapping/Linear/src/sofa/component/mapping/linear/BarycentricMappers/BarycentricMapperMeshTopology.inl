@@ -369,7 +369,7 @@ BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Ou
     sofa::type::Vec<2,typename In::Real> b;
     A(0,0) = AB*AB;
     A(1,1) = AC*AC;
-    A(0,1) = A(0,1) = AB*AC;
+    A(0,1) = A(1,0) = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
     const typename In::Real det = sofa::type::determinant(A);
