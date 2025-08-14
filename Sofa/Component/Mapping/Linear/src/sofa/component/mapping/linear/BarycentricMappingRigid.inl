@@ -87,7 +87,7 @@ BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointOrientationInTetra
         // IPTR_BARCPP_ADDOR("baryCoords of vector["<<dir<<"]: ");
         for (unsigned int coor = 0; coor < 3; coor++)
         {
-            data[dir].baryCoords[coor] = ( Real ) baryCoorsOrient[coor][dir];
+            data[dir].baryCoords[coor] = ( Real ) baryCoorsOrient(coor,dir);
             //IPNTR_BARCPP_ADDOR(data[dir].baryCoords[coor] << " ");
         }
         //IPNTR_BARCPP_ADDOR(endl);
