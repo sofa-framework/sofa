@@ -116,7 +116,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
         {
             for(n=0; n<3; ++n)
             {
-                my_tinfo.linearDfDx[j](m,n)=lambda*my_tinfo.shapeVector[k][n]*my_tinfo.shapeVector[j][m]+
+                my_tinfo.linearDfDx[j](m,n)=lambda*my_tinfo.shapeVector[k][n]*my_tinfo.shapeVector[l][m]+
                         mu*my_tinfo.shapeVector[l][n]*my_tinfo.shapeVector[k][m];
 
                 if (m==n)

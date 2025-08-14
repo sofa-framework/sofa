@@ -111,7 +111,7 @@ public:
             sofa::Size colId {};
             for (auto scalar : scalars)
             {
-                this->elems(0,colId++) = scalar;
+                (*this)(0,colId++) = scalar;
             }
         }
         else
@@ -120,7 +120,7 @@ public:
             sofa::Size rowId {};
             for (auto scalar : scalars)
             {
-                this->elems(rowId++,0) = scalar;
+                (*this)(rowId++,0) = scalar;
             }
         }
     }
@@ -201,7 +201,7 @@ public:
         {
             for (Size l = 0; l < L; ++l)
                 for (Size c = 0; c < C; ++c)
-                    this->elems(l,c) = static_cast<real>(p[l*C + c]);
+                    (*this)(l,c) = static_cast<real>(p[l*C + c]);
         }
     }
 
@@ -410,7 +410,7 @@ public:
     constexpr const Line& w() const noexcept { return this->elems[3]; }
 
     template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == 1 && NbColumn == 1>>
-    constexpr real toReal() const { return this->elems(0,0); }
+    constexpr real toReal() const { return  (*this)(0,0); }
 
     template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == 1 && NbColumn == 1>>
     constexpr operator real() const { return toReal(); }

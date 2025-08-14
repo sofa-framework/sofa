@@ -53,7 +53,7 @@ TEST(MatTypesTest, initializerListConstructors)
         EXPECT_EQ(B(0, j), j + 1);
     }
 
-    static constexpr sofa::type::Mat<1, 3, int> C {1, 2, 3};
+    static const sofa::type::Mat<1, 3, int> C {1, 2, 3};
     for (sofa::Size j = 0; j<3; ++j)
     {
         EXPECT_EQ(C(0, j), j + 1);
