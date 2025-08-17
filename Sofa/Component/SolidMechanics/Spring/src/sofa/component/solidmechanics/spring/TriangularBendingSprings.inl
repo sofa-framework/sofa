@@ -41,7 +41,7 @@ void TriangularBendingSprings<DataTypes>::applyEdgeCreation(Index , EdgeInformat
     {
         for (auto v=0; v<N; ++v)
         {
-            ei.DfDx[u][v] = Real(0);
+            ei.DfDx(u,v) = Real(0);
         }
     }
 
@@ -89,7 +89,7 @@ void TriangularBendingSprings<DataTypes>::applyTriangleCreation(const sofa::type
                 {
                     for (auto v=0; v<N; ++v)
                     {
-                        ei.DfDx[u][v] = Real(0);
+                        ei.DfDx(u,v) = Real(0);
                     }
                 }
 
@@ -477,9 +477,9 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
             {
                 for( int k=0; k<N; ++k )
                 {
-                    m[j][k] = ((Real)einfo.ks-tgt) * u[j] * u[k];
+                    m(j,k) = ((Real)einfo.ks-tgt) * u[j] * u[k];
                 }
-                m[j][j] += tgt;
+                m(j,j) += tgt;
             }
         }
         else // null length, no force and no stiffness
@@ -489,7 +489,7 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
             {
                 for( int k=0; k<N; ++k )
                 {
-                    m[j][k] = 0;
+                    m(j,k) = 0;
                 }
             }
         }

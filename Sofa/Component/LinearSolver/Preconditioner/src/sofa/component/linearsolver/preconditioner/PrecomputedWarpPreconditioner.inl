@@ -493,7 +493,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
             {
                 for (int i=0; i<3; i++)
                 {
-                    R[k*9+j*3+i] = (Real)Rotation[j][i];
+                    R[k*9+j*3+i] = (Real)Rotation(j,i);
                 }
             }
         }
@@ -673,7 +673,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
         {
             for (int b=0; b<3; b++)
             {
-                RotMat[a][b] = R[i*9+a*3+b];
+                RotMat(a,b) = R[i*9+a*3+b];
             }
         }
 

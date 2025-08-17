@@ -282,9 +282,9 @@ public:
     template<class Mat>
     void fromMatrix(const Mat& m)
     {
-        center[0] = m[0][3];
-        center[1] = m[1][3];
-        center[2] = m[2][3];
+        center[0] = m(0,3);
+        center[1] = m(1,3);
+        center[2] = m(2,3);
         sofa::type::Mat<3, 3, Real> rot; rot = m;
         orientation.fromMatrix(rot);
     }
@@ -306,9 +306,9 @@ public:
     {
         m.identity();
         orientation.toHomogeneousMatrix(m);
-        m[0][3] = center[0];
-        m[1][3] = center[1];
-        m[2][3] = center[2];
+        m(0,3) = center[0];
+        m(1,3) = center[1];
+        m(2,3) = center[2];
     }
 
     /// create a homogeneous vector from a 3d vector
@@ -637,17 +637,17 @@ public:
     template<class Mat>
     void writeRotationMatrix(Mat& m) const
     {
-        m[0][0] = (typename Mat::Real)cos(orientation); m[0][1] = (typename Mat::Real) - sin(orientation);
-        m[1][0] = (typename Mat::Real)sin(orientation); m[1][1] = (typename Mat::Real) cos(orientation);
+        m(0,0) = (typename Mat::Real)cos(orientation); m(0,1) = (typename Mat::Real) - sin(orientation);
+        m(1,0) = (typename Mat::Real)sin(orientation); m(1,1) = (typename Mat::Real) cos(orientation);
     }
 
     /// Set from the given matrix
     template<class Mat>
     void fromMatrix(const Mat& m)
     {
-        center[0] = m[0][2];
-        center[1] = m[1][2];
-        orientation = atan2(m[1][0], m[0][0]);
+        center[0] = m(0,2);
+        center[1] = m(1,2);
+        orientation = atan2(m(1,0), m(0,0));
     }
 
     /// Write to the given matrix
@@ -656,8 +656,8 @@ public:
     {
         m.identity();
         writeRotationMatrix(m);
-        m[0][2] = center[0];
-        m[1][2] = center[1];
+        m(0,2) = center[0];
+        m(1,2) = center[1];
     }
 
 

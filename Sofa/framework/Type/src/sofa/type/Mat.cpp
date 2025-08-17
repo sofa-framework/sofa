@@ -19,57 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_MatEigen_H
-#define SOFA_DEFAULTTYPE_MatEigen_H
-
-/** Helpers to apply Eigen matrix methods to the Mat sofa type */
+#define SOFA_TYPE_MAT_CPP
 
 #include <sofa/type/Mat.h>
-#include <Eigen/Dense>
-#include <iostream>
 
-
-namespace sofa::helper
+namespace sofa::type
 {
 
-template <Size NumRows, Size NumCols, class Real>
-Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const type::Mat< NumRows, NumCols, Real>& mat )
-{
-    Eigen::Matrix<Real, NumRows, NumCols> emat;
-    for(Size i=0; i<NumRows; i++)
-        for(Size j=0; j<NumCols; j++)
-            emat(i,j) = mat(i,j);
-    return emat;
-}
+template class SOFA_TYPE_API Mat<2,2,float>;
+template class SOFA_TYPE_API Mat<2,2,double>;
 
-template <Size NumRows, Size NumCols, class Real>
-type::Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, NumRows, NumCols>& emat )
-{
-    type::Mat<NumRows, NumCols, Real> mat;
-    for(Size i=0; i<NumRows; i++)
-        for(Size j=0; j<NumCols; j++)
-            mat(i,j) = emat(i,j);
-    return mat;
-}
+template class SOFA_TYPE_API Mat<3,3,float>;
+template class SOFA_TYPE_API Mat<3,3,double>;
 
-template <Size NumRows, class Real>
-type::Vec<NumRows, Real>  sofaVec( const Eigen::Matrix<Real, NumRows, 1>& evec )
-{
-    type::Vec<NumRows, Real> vec;
-    for(Size i=0; i<NumRows; i++)
-        vec[i] = evec(i);
-    return vec;
-}
+template class SOFA_TYPE_API Mat<4,4,float>;
+template class SOFA_TYPE_API Mat<4,4,double>;
 
-template <Size NumRows, class Real>
-Eigen::Matrix<Real, NumRows, 1>  eigenVec( const type::Vec<NumRows, Real>& vec )
-{
-    Eigen::Matrix<Real, NumRows, 1> evec;
-    for(Size i=0; i<NumRows; i++)
-        evec(i)  = vec[i];
-    return evec;
-}
+template class SOFA_TYPE_API Mat<6,6,float>;
+template class SOFA_TYPE_API Mat<6,6,double>;
 
-}
+template class SOFA_TYPE_API Mat<12,12,float>;
+template class SOFA_TYPE_API Mat<12,12,double>;
 
-#endif
+
+} // namespace sofa::type

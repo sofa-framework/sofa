@@ -85,9 +85,9 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::drawRigid3dImpl(const VisualPar
         // So to get lx,ly,lz back we need to do
         //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
         // Note that RigidMass inertiaMatrix is already divided by M
-        const double m00 = masses[i].inertiaMatrix[0][0];
-        const double m11 = masses[i].inertiaMatrix[1][1];
-        const double m22 = masses[i].inertiaMatrix[2][2];
+        const double m00 = masses[i].inertiaMatrix(0,0);
+        const double m11 = masses[i].inertiaMatrix(1,1);
+        const double m22 = masses[i].inertiaMatrix(2,2);
         len[0] = sqrt(m11+m22-m00);
         len[1] = sqrt(m00+m22-m11);
         len[2] = sqrt(m00+m11-m22);
@@ -255,10 +255,10 @@ type::Vec6 DiagonalMass<Vec3Types, GeometricalTypes>::getMomentumVec3Impl( const
     for ( unsigned int i=0 ; i<v.size() ; i++ )
     {
         Deriv linearMomentum = v[i] * masses[i];
-        for( int j=0 ; j<3 ; ++j ) momentum[j] += linearMomentum[j];
+        for( int j=0 ; j<3 ; ++j ) momentum(j) += linearMomentum[j];
 
         Deriv angularMomentum = cross( x[i], linearMomentum );
-        for( int j=0 ; j<3 ; ++j ) momentum[3+j] += angularMomentum[j];
+        for( int j=0 ; j<3 ; ++j ) momentum(3+j) += angularMomentum[j];
     }
 
     return momentum;

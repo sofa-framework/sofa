@@ -241,7 +241,7 @@ void QuadBendingFEMForceField<DataTypes>::computeDisplacementSmall(Displacement 
     Coord deform_t0 = p[idx0]-centroid;  // translation in x direction of node 0
     Coord deform_t1 = p[idx1]-centroid;  // translation in x direction of node 1
     Coord deform_t2 = p[idx2]-centroid;  // translation in x direction of node 2
-    Coord deform_t3 = p[idx3]-centroid;  // translation in x direction of node 3  
+    Coord deform_t3 = p[idx3]-centroid;  // translation in x direction of node 3
   
   
     D[0] = quadInf[elementIndex].InitialPosElements[0][0] - deform_t0[0];
@@ -253,18 +253,18 @@ void QuadBendingFEMForceField<DataTypes>::computeDisplacementSmall(Displacement 
     D[5] = quadInf[elementIndex].InitialPosElements[1][0] - deform_t1[0];
     D[6] = quadInf[elementIndex].InitialPosElements[1][1] - deform_t1[1];
     D[7] = quadInf[elementIndex].InitialPosElements[1][2] - deform_t1[2];
-    D[8] = 0;  
+    D[8] = 0;
     D[9] = 0;
 
     D[10] = quadInf[elementIndex].InitialPosElements[2][0] - deform_t2[0];
     D[11] = quadInf[elementIndex].InitialPosElements[2][1] - deform_t2[1];
     D[12] = quadInf[elementIndex].InitialPosElements[2][2] - deform_t2[2];
-    D[13] = 0; 
+    D[13] = 0;
     D[14] = 0;
     D[15] = quadInf[elementIndex].InitialPosElements[3][0] - deform_t3[0];
     D[16] = quadInf[elementIndex].InitialPosElements[3][1] - deform_t3[1];
     D[17] = quadInf[elementIndex].InitialPosElements[3][2] - deform_t3[2];
-    D[18] = 0;  
+    D[18] = 0;
     D[19] = 0;
 
     d_quadInfo.endEdit();
@@ -283,29 +283,29 @@ void QuadBendingFEMForceField<DataTypes>::computeBendingStrainDisplacement(Strai
             const Real m = -1;
             const Real n = -1;
             // Bmi : membrance stiffness matrices (Gauss integration 2x2)
-            Jb[0][0] = Jb[2][1] = m * (1 + n * gauss2) / (4 * l); // J[idx0][0][0] = (1*(-1)*(1+(-1)*gauss2))/(4*l)
-            Jb[1][1] = Jb[2][0] = n * (1 + m * gauss1) / (4 * h); // J[idx0][1][1] = (1*(-1)*(1+(-1)*gauss1))/(4*h)
+            Jb(0,0) = Jb(2,1) = m * (1 + n * gauss2) / (4 * l); // J(idx0,0,0) = (1*(-1)*(1+(-1)*gauss2))/(4*l)
+            Jb(1,1) = Jb(2,0) = n * (1 + m * gauss1) / (4 * h); // J(idx0,1,1) = (1*(-1)*(1+(-1)*gauss1))/(4*h)
         }
         else if (idx == 1)
         {
             const Real m = 1;
             const Real n = -1;
-            Jb[8][5] = Jb[10][6] = m * (1 + n * gauss2) / (4 * l); // Ni/x : J[idx0][0][0] = (1*(-1)*(1+(-1)*gauss2))/(4*l)
-            Jb[9][6] = Jb[10][5] = n * (1 + m * gauss1) / (4 * h); // Ni/y : J[idx0][1][1] = (1*(-1)*(1+(-1)*gauss1))/(4*h)
+            Jb(8,5) = Jb(10,6) = m * (1 + n * gauss2) / (4 * l); // Ni/x : J(idx0,0,0) = (1*(-1)*(1+(-1)*gauss2))/(4*l)
+            Jb(9,6) = Jb(10,5) = n * (1 + m * gauss1) / (4 * h); // Ni/y : J(idx0,1,1) = (1*(-1)*(1+(-1)*gauss1))/(4*h)
         }
         else if (idx == 2)
         {
             const Real m = 1;
             const Real n = 1;
-            Jb[16][10] = Jb[18][11] = m * (1 + n * gauss2) / (4 * l); // Ni/x : J[idx0][0][0] = (1*(-1)*(1+(-1)*gauss2))/(4*l)
-            Jb[17][11] = Jb[18][10] = n * (1 + m * gauss1) / (4 * h); // Ni/y : J[idx0][1][1] = (1*(-1)*(1+(-1)*gauss1))/(4*h)
+            Jb(16,10) = Jb(18,11) = m * (1 + n * gauss2) / (4 * l); // Ni/x : J(idx0,0,0) = (1*(-1)*(1+(-1)*gauss2))/(4*l)
+            Jb(17,11) = Jb(18,10) = n * (1 + m * gauss1) / (4 * h); // Ni/y : J(idx0,1,1) = (1*(-1)*(1+(-1)*gauss1))/(4*h)
         }
         else if (idx == 3)
         {
             const Real m = -1;
             const Real n = 1;
-            Jb[24][15] = Jb[26][16] = m * (1 + n * gauss2) / (4 * l); // Ni/x : J[idx0][0][0] = (1*(-1)*(1+(-1)*gauss2))/(4*l)
-            Jb[25][16] = Jb[26][15] = n * (1 + m * gauss1) / (4 * h); // Ni/y : J[idx0][1][1] = (1*(-1)*(1+(-1)*gauss1))/(4*h)
+            Jb(24,15) = Jb(26,16) = m * (1 + n * gauss2) / (4 * l); // Ni/x : J(idx0,0,0) = (1*(-1)*(1+(-1)*gauss2))/(4*l)
+            Jb(25,16) = Jb(26,15) = n * (1 + m * gauss1) / (4 * h); // Ni/y : J(idx0,1,1) = (1*(-1)*(1+(-1)*gauss1))/(4*h)
         }
 
 
@@ -324,45 +324,45 @@ void QuadBendingFEMForceField<DataTypes>::computeShearStrainDisplacement(StrainD
         {
             const Real m = -1, n = -1;
             // Bbi : bending stiffness matrices (Gauss integration 1x1)
-            Js[3][3] = Js[5][4] = m / (4 * l); //gauss2 = 0
-            Js[4][4] = Js[5][3] = n / (4 * h); //gauss1 = 0
+            Js(3,3) = Js(5,4) = m / (4 * l); //gauss2 = 0
+            Js(4,4) = Js(5,3) = n / (4 * h); //gauss1 = 0
             // Bsi : shear stiffness matrices (Gauss integration 1x1)
-            Js[6][2] = m / (4 * l); //gauss2 = 0
-            Js[7][2] = n / (4 * h); //gauss1 = 0
-            Js[6][3] = Js[7][4] = -static_cast<Real>(1) / static_cast<Real>(4); // -Ni : gauss1 = 0 va gauss2 = 0
+            Js(6,2) = m / (4 * l); //gauss2 = 0
+            Js(7,2) = n / (4 * h); //gauss1 = 0
+            Js(6,3) = Js(7,4) = -static_cast<Real>(1) / static_cast<Real>(4); // -Ni : gauss1 = 0 va gauss2 = 0
         }
         else if (idx == 1)
         {
             const Real m = 1, n = -1;
             // Bbi : bending stiffness matrices (Gauss integration 1x1)
-            Js[11][8] = Js[13][9] = m / (4 * l); //gauss2 = 0
-            Js[12][9] = Js[13][8] = n / (4 * h); //gauss1 = 0
+            Js(11,8) = Js(13,9) = m / (4 * l); //gauss2 = 0
+            Js(12,9) = Js(13,8) = n / (4 * h); //gauss1 = 0
             // Bsi : shear stiffness matrices (Gauss integration 1x1)
-            Js[14][7] = m / (4 * l); //gauss2 = 0
-            Js[15][7] = n / (4 * h); //gauss1 = 0
-            Js[14][8] = Js[15][9] = -static_cast<Real>(1) / static_cast<Real>(4); // -Ni : gauss1 = 0 va gauss2 = 0
+            Js(14,7) = m / (4 * l); //gauss2 = 0
+            Js(15,7) = n / (4 * h); //gauss1 = 0
+            Js(14,8) = Js(15,9) = -static_cast<Real>(1) / static_cast<Real>(4); // -Ni : gauss1 = 0 va gauss2 = 0
         }
         else if (idx == 2)
         {
             const Real m = 1, n = 1;
             // Bbi : bending stiffness matrices (Gauss integration 1x1)
-            Js[19][13] = Js[21][14] = m / (4 * l); //gauss2 = 0
-            Js[20][14] = Js[21][13] = n / (4 * h); //gauss1 = 0
+            Js(19,13) = Js(21,14) = m / (4 * l); //gauss2 = 0
+            Js(20,14) = Js(21,13) = n / (4 * h); //gauss1 = 0
             // Bsi : shear stiffness matrices (Gauss integration 1x1)
-            Js[22][12] = m / (4 * l); //gauss2 = 0
-            Js[23][12] = n / (4 * h); //gauss1 = 0
-            Js[22][13] = Js[23][14] = -static_cast<Real>(1) / static_cast<Real>(4); // -Ni : gauss1 = 0 va gauss2 = 0
+            Js(22,12) = m / (4 * l); //gauss2 = 0
+            Js(23,12) = n / (4 * h); //gauss1 = 0
+            Js(22,13) = Js(23,14) = -static_cast<Real>(1) / static_cast<Real>(4); // -Ni : gauss1 = 0 va gauss2 = 0
         }
         else if (idx == 3)
         {
             const Real m = -1, n = 1;
             // Bbi : bending stiffness matrices (Gauss integration 1x1)
-            Js[27][18] = Js[29][19] = m / (4 * l); //gauss2 = 0
-            Js[28][19] = Js[29][18] = n / (4 * h); //gauss1 = 0
+            Js(27,18) = Js(29,19) = m / (4 * l); //gauss2 = 0
+            Js(28,19) = Js(29,18) = n / (4 * h); //gauss1 = 0
             // Bsi : shear stiffness matrices (Gauss integration 1x1)
-            Js[30][17] = m / (4 * l); //gauss2 = 0
-            Js[31][17] = n / (4 * h); //gauss1 = 0
-            Js[30][18] = Js[31][19] = -static_cast<Real>(1) / static_cast<Real>(4); // -Ni : gauss1 = 0 va gauss2 = 0
+            Js(30,17) = m / (4 * l); //gauss2 = 0
+            Js(31,17) = n / (4 * h); //gauss1 = 0
+            Js(30,18) = Js(31,19) = -static_cast<Real>(1) / static_cast<Real>(4); // -Ni : gauss1 = 0 va gauss2 = 0
         }
     }
 }
@@ -386,11 +386,11 @@ void QuadBendingFEMForceField<DataTypes>::computeBendingMaterialStiffness(int i,
   Real  thickness = d_thickness.getValue();
   
   // Membrance material stiffness Cm
-  qinfo->BendingmaterialMatrix[0][0] = y * thickness / (1 - p * p);
-  qinfo->BendingmaterialMatrix[0][1] = p * y * thickness / (1 - p * p);
-  qinfo->BendingmaterialMatrix[1][0] = p * y * thickness / (1 - p * p);
-  qinfo->BendingmaterialMatrix[1][1] = y * thickness / (1 - p * p);
-  qinfo->BendingmaterialMatrix[2][2] = y * thickness * (1 - p) / (2 - 2 * p * p);
+  qinfo->BendingmaterialMatrix(0,0) = y * thickness / (1 - p * p);
+  qinfo->BendingmaterialMatrix(0,1) = p * y * thickness / (1 - p * p);
+  qinfo->BendingmaterialMatrix(1,0) = p * y * thickness / (1 - p * p);
+  qinfo->BendingmaterialMatrix(1,1) = y * thickness / (1 - p * p);
+  qinfo->BendingmaterialMatrix(2,2) = y * thickness * (1 - p) / (2 - 2 * p * p);
 
   d_quadInfo.endEdit();
 }
@@ -414,14 +414,14 @@ void QuadBendingFEMForceField<DataTypes>::computeShearMaterialStiffness(int i, I
   constexpr Real k = static_cast<Real>(5) / static_cast<Real>(6);
 
   // Bending material stiffness Cb
-  qinfo->ShearmaterialMatrix[3][3] = y * thickness * thickness * thickness / (12 - 12 * p * p);
-  qinfo->ShearmaterialMatrix[3][4] = p * y * thickness * thickness * thickness / (12 - 12 * p * p);
-  qinfo->ShearmaterialMatrix[4][3] = p * y * thickness * thickness * thickness / (12 - 12 * p * p);
-  qinfo->ShearmaterialMatrix[4][4] = y * thickness * thickness * thickness / (12 - 12 * p * p);
-  qinfo->ShearmaterialMatrix[5][5] = (p * y * thickness * thickness * thickness) * (1 - p) / (24 - 24 * p * p);
+  qinfo->ShearmaterialMatrix(3,3) = y * thickness * thickness * thickness / (12 - 12 * p * p);
+  qinfo->ShearmaterialMatrix(3,4) = p * y * thickness * thickness * thickness / (12 - 12 * p * p);
+  qinfo->ShearmaterialMatrix(4,3) = p * y * thickness * thickness * thickness / (12 - 12 * p * p);
+  qinfo->ShearmaterialMatrix(4,4) = y * thickness * thickness * thickness / (12 - 12 * p * p);
+  qinfo->ShearmaterialMatrix(5,5) = (p * y * thickness * thickness * thickness) * (1 - p) / (24 - 24 * p * p);
   // Shear material stiffness Cs
-  qinfo->ShearmaterialMatrix[6][6] = k * y * thickness / (2 + 2 * p);
-  qinfo->ShearmaterialMatrix[7][7] = k * y * thickness / (2 + 2 * p);
+  qinfo->ShearmaterialMatrix(6,6) = k * y * thickness / (2 + 2 * p);
+  qinfo->ShearmaterialMatrix(7,7) = k * y * thickness / (2 + 2 * p);
   d_quadInfo.endEdit();
 
 }
@@ -481,30 +481,30 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
   {
     for (int j = 0; j < 4; j++)
     {
-      Kb0[5*i][5*j]=length*height*(Jb0_t[5*i][8*i]*Cb[0][0]*Jb0[8*j][5*j]+Jb0_t[5*i][8*i+2]*Cb[2][2]*Jb0[8*j+2][5*j])*wb;
-      Kb0[5*i][5*j+1]=length*height*(Jb0_t[5*i][8*i]*Cb[0][1]*Jb0[8*j+1][5*j+1]+Jb0_t[5*i][8*i+2]*Cb[2][2]*Jb0[8*j+2][5*j+1])*wb;
-      Kb0[5*i+1][5*j]=length*height*(Jb0_t[5*i+1][8*i+1]*Cb[1][0]*Jb0[8*j][5*j]+Jb0_t[5*i+1][8*i+2]*Cb[2][2]*Jb0[8*j+2][5*j])*wb;
-      Kb0[5*i+1][5*j+1]=length*height*(Jb0_t[5*i+1][8*i+1]*Cb[1][1]*Jb0[8*j+1][5*j+1]+Jb0_t[5*i+1][8*i+2]*Cb[2][2]*Jb0[8*j+2][5*j+1])*wb;
+      Kb0(5*i,5*j)=length*height*(Jb0_t(5*i,8*i)*Cb(0,0)*Jb0(8*j,5*j)+Jb0_t(5*i,8*i+2)*Cb(2,2)*Jb0(8*j+2,5*j))*wb;
+      Kb0(5*i,5*j+1)=length*height*(Jb0_t(5*i,8*i)*Cb(0,1)*Jb0(8*j+1,5*j+1)+Jb0_t(5*i,8*i+2)*Cb(2,2)*Jb0(8*j+2,5*j+1))*wb;
+      Kb0(5*i+1,5*j)=length*height*(Jb0_t(5*i+1,8*i+1)*Cb(1,0)*Jb0(8*j,5*j)+Jb0_t(5*i+1,8*i+2)*Cb(2,2)*Jb0(8*j+2,5*j))*wb;
+      Kb0(5*i+1,5*j+1)=length*height*(Jb0_t(5*i+1,8*i+1)*Cb(1,1)*Jb0(8*j+1,5*j+1)+Jb0_t(5*i+1,8*i+2)*Cb(2,2)*Jb0(8*j+2,5*j+1))*wb;
 
-      Kb1[5*i][5*j]=length*height*(Jb1_t[5*i][8*i]*Cb[0][0]*Jb1[8*j][5*j]+Jb1_t[5*i][8*i+2]*Cb[2][2]*Jb1[8*j+2][5*j])*wb;
-      Kb1[5*i][5*j+1]=length*height*(Jb1_t[5*i][8*i]*Cb[0][1]*Jb1[8*j+1][5*j+1]+Jb1_t[5*i][8*i+2]*Cb[2][2]*Jb1[8*j+2][5*j+1])*wb;
-      Kb1[5*i+1][5*j]=length*height*(Jb1_t[5*i+1][8*i+1]*Cb[1][0]*Jb1[8*j][5*j]+Jb1_t[5*i+1][8*i+2]*Cb[2][2]*Jb1[8*j+2][5*j])*wb;
-      Kb1[5*i+1][5*j+1]=length*height*(Jb1_t[5*i+1][8*i+1]*Cb[1][1]*Jb1[8*j+1][5*j+1]+Jb1_t[5*i+1][8*i+2]*Cb[2][2]*Jb1[8*j+2][5*j+1])*wb;
+      Kb1(5*i,5*j)=length*height*(Jb1_t(5*i,8*i)*Cb(0,0)*Jb1(8*j,5*j)+Jb1_t(5*i,8*i+2)*Cb(2,2)*Jb1(8*j+2,5*j))*wb;
+      Kb1(5*i,5*j+1)=length*height*(Jb1_t(5*i,8*i)*Cb(0,1)*Jb1(8*j+1,5*j+1)+Jb1_t(5*i,8*i+2)*Cb(2,2)*Jb1(8*j+2,5*j+1))*wb;
+      Kb1(5*i+1,5*j)=length*height*(Jb1_t(5*i+1,8*i+1)*Cb(1,0)*Jb1(8*j,5*j)+Jb1_t(5*i+1,8*i+2)*Cb(2,2)*Jb1(8*j+2,5*j))*wb;
+      Kb1(5*i+1,5*j+1)=length*height*(Jb1_t(5*i+1,8*i+1)*Cb(1,1)*Jb1(8*j+1,5*j+1)+Jb1_t(5*i+1,8*i+2)*Cb(2,2)*Jb1(8*j+2,5*j+1))*wb;
 
-      Kb2[5*i][5*j]=length*height*(Jb2_t[5*i][8*i]*Cb[0][0]*Jb2[8*j][5*j]+Jb2_t[5*i][8*i+2]*Cb[2][2]*Jb2[8*j+2][5*j])*wb;
-      Kb2[5*i][5*j+1]=length*height*(Jb2_t[5*i][8*i]*Cb[0][1]*Jb2[8*j+1][5*j+1]+Jb2_t[5*i][8*i+2]*Cb[2][2]*Jb2[8*j+2][5*j+1])*wb;
-      Kb2[5*i+1][5*j]=length*height*(Jb2_t[5*i+1][8*i+1]*Cb[1][0]*Jb2[8*j][5*j]+Jb2_t[5*i+1][8*i+2]*Cb[2][2]*Jb2[8*j+2][5*j])*wb;
-      Kb2[5*i+1][5*j+1]=length*height*(Jb2_t[5*i+1][8*i+1]*Cb[1][1]*Jb2[8*j+1][5*j+1]+Jb2_t[5*i+1][8*i+2]*Cb[2][2]*Jb2[8*j+2][5*j+1])*wb;
+      Kb2(5*i,5*j)=length*height*(Jb2_t(5*i,8*i)*Cb(0,0)*Jb2(8*j,5*j)+Jb2_t(5*i,8*i+2)*Cb(2,2)*Jb2(8*j+2,5*j))*wb;
+      Kb2(5*i,5*j+1)=length*height*(Jb2_t(5*i,8*i)*Cb(0,1)*Jb2(8*j+1,5*j+1)+Jb2_t(5*i,8*i+2)*Cb(2,2)*Jb2(8*j+2,5*j+1))*wb;
+      Kb2(5*i+1,5*j)=length*height*(Jb2_t(5*i+1,8*i+1)*Cb(1,0)*Jb2(8*j,5*j)+Jb2_t(5*i+1,8*i+2)*Cb(2,2)*Jb2(8*j+2,5*j))*wb;
+      Kb2(5*i+1,5*j+1)=length*height*(Jb2_t(5*i+1,8*i+1)*Cb(1,1)*Jb2(8*j+1,5*j+1)+Jb2_t(5*i+1,8*i+2)*Cb(2,2)*Jb2(8*j+2,5*j+1))*wb;
 
-      Kb3[5*i][5*j]=length*height*(Jb3_t[5*i][8*i]*Cb[0][0]*Jb3[8*j][5*j]+Jb3_t[5*i][8*i+2]*Cb[2][2]*Jb3[8*j+2][5*j])*wb;
-      Kb3[5*i][5*j+1]=length*height*(Jb3_t[5*i][8*i]*Cb[0][1]*Jb3[8*j+1][5*j+1]+Jb3_t[5*i][8*i+2]*Cb[2][2]*Jb3[8*j+2][5*j+1])*wb;
-      Kb3[5*i+1][5*j]=length*height*(Jb3_t[5*i+1][8*i+1]*Cb[1][0]*Jb3[8*j][5*j]+Jb3_t[5*i+1][8*i+2]*Cb[2][2]*Jb3[8*j+2][5*j])*wb;
-      Kb3[5*i+1][5*j+1]=length*height*(Jb3_t[5*i+1][8*i+1]*Cb[1][1]*Jb3[8*j+1][5*j+1]+Jb3_t[5*i+1][8*i+2]*Cb[2][2]*Jb3[8*j+2][5*j+1])*wb;
+      Kb3(5*i,5*j)=length*height*(Jb3_t(5*i,8*i)*Cb(0,0)*Jb3(8*j,5*j)+Jb3_t(5*i,8*i+2)*Cb(2,2)*Jb3(8*j+2,5*j))*wb;
+      Kb3(5*i,5*j+1)=length*height*(Jb3_t(5*i,8*i)*Cb(0,1)*Jb3(8*j+1,5*j+1)+Jb3_t(5*i,8*i+2)*Cb(2,2)*Jb3(8*j+2,5*j+1))*wb;
+      Kb3(5*i+1,5*j)=length*height*(Jb3_t(5*i+1,8*i+1)*Cb(1,0)*Jb3(8*j,5*j)+Jb3_t(5*i+1,8*i+2)*Cb(2,2)*Jb3(8*j+2,5*j))*wb;
+      Kb3(5*i+1,5*j+1)=length*height*(Jb3_t(5*i+1,8*i+1)*Cb(1,1)*Jb3(8*j+1,5*j+1)+Jb3_t(5*i+1,8*i+2)*Cb(2,2)*Jb3(8*j+2,5*j+1))*wb;
 
-      Kb[5*i][5*j] = Kb0[5*i][5*j]+Kb1[5*i][5*j]+Kb2[5*i][5*j]+Kb3[5*i][5*j];
-      Kb[5*i][5*j+1] = Kb0[5*i][5*j+1]+Kb1[5*i][5*j+1]+Kb2[5*i][5*j+1]+Kb3[5*i][5*j+1];
-      Kb[5*i+1][5*j] = Kb0[5*i+1][5*j]+Kb1[5*i+1][5*j]+Kb2[5*i+1][5*j]+Kb3[5*i+1][5*j];
-      Kb[5*i+1][5*j+1] = Kb0[5*i+1][5*j+1]+Kb1[5*i+1][5*j+1]+Kb2[5*i+1][5*j+1]+Kb3[5*i+1][5*j+1];
+      Kb(5*i,5*j) = Kb0(5*i,5*j)+Kb1(5*i,5*j)+Kb2(5*i,5*j)+Kb3(5*i,5*j);
+      Kb(5*i,5*j+1) = Kb0(5*i,5*j+1)+Kb1(5*i,5*j+1)+Kb2(5*i,5*j+1)+Kb3(5*i,5*j+1);
+      Kb(5*i+1,5*j) = Kb0(5*i+1,5*j)+Kb1(5*i+1,5*j)+Kb2(5*i+1,5*j)+Kb3(5*i+1,5*j);
+      Kb(5*i+1,5*j+1) = Kb0(5*i+1,5*j+1)+Kb1(5*i+1,5*j+1)+Kb2(5*i+1,5*j+1)+Kb3(5*i+1,5*j+1);
     }
   }
 
@@ -525,15 +525,15 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
   {
     for (int j = 0; j < 4; j++)
     {
-      Ks[5*i+2][5*j+2] = length*height*(Js_t[5*i+2][8*i+6]*Cs[6][6]*Js[8*j+6][5*j+2]+Js_t[5*i+2][8*i+7]*Cs[7][7]*Js[8*j+7][5*j+2])*ws*ws;
-      Ks[5*i+2][5*j+3] = length*height*(Js_t[5*i+2][8*i+6]*Cs[6][6]*Js[8*j+6][5*j+3])*ws*ws;
-      Ks[5*i+2][5*j+4] = length*height*(Js_t[5*i+2][8*i+7]*Cs[7][7]*Js[8*j+7][5*j+4])*ws*ws;
-      Ks[5*i+3][5*j+2] = length*height*(Js_t[5*i+3][8*i+6]*Cs[6][6]*Js[8*j+6][5*j+2])*ws*ws;
-      Ks[5*i+3][5*j+3] = length*height*(Js_t[5*i+3][8*i+3]*Cs[3][3]*Js[8*j+3][5*j+3]+Js_t[5*i+3][8*i+5]*Cs[5][5]*Js[8*j+5][5*j+3]+Js_t[5*i+3][8*i+6]*Cs[6][6]*Js[8*j+6][5*j+3])*ws*ws;
-      Ks[5*i+3][5*j+4] = length*height*(Js_t[5*i+3][8*i+3]*Cs[3][4]*Js[8*j+4][5*j+4]+Js_t[5*i+3][8*i+5]*Cs[5][5]*Js[8*j+5][5*j+4])*ws*ws;
-      Ks[5*i+4][5*j+2] = length*height*(Js_t[5*i+4][8*i+7]*Cs[7][7]*Js[8*j+7][5*j+2])*ws*ws;
-      Ks[5*i+4][5*j+3] = length*height*(Js_t[5*i+4][8*i+4]*Cs[4][3]*Js[8*j+3][5*j+3]+Js_t[5*i+4][8*i+5]*Cs[5][5]*Js[8*j+5][5*j+3])*ws*ws;
-      Ks[5*i+4][5*j+4] = length*height*(Js_t[5*i+4][8*i+4]*Cs[4][4]*Js[8*j+4][5*j+4]+Js_t[5*i+4][8*i+5]*Cs[5][5]*Js[8*j+5][5*j+4]+Js_t[5*i+4][8*i+7]*Cs[7][7]*Js[8*j+7][5*j+4])*ws*ws;
+      Ks(5*i+2,5*j+2) = length*height*(Js_t(5*i+2,8*i+6)*Cs(6,6)*Js(8*j+6,5*j+2)+Js_t(5*i+2,8*i+7)*Cs(7,7)*Js(8*j+7,5*j+2))*ws*ws;
+      Ks(5*i+2,5*j+3) = length*height*(Js_t(5*i+2,8*i+6)*Cs(6,6)*Js(8*j+6,5*j+3))*ws*ws;
+      Ks(5*i+2,5*j+4) = length*height*(Js_t(5*i+2,8*i+7)*Cs(7,7)*Js(8*j+7,5*j+4))*ws*ws;
+      Ks(5*i+3,5*j+2) = length*height*(Js_t(5*i+3,8*i+6)*Cs(6,6)*Js(8*j+6,5*j+2))*ws*ws;
+      Ks(5*i+3,5*j+3) = length*height*(Js_t(5*i+3,8*i+3)*Cs(3,3)*Js(8*j+3,5*j+3)+Js_t(5*i+3,8*i+5)*Cs(5,5)*Js(8*j+5,5*j+3)+Js_t(5*i+3,8*i+6)*Cs(6,6)*Js(8*j+6,5*j+3))*ws*ws;
+      Ks(5*i+3,5*j+4) = length*height*(Js_t(5*i+3,8*i+3)*Cs(3,4)*Js(8*j+4,5*j+4)+Js_t(5*i+3,8*i+5)*Cs(5,5)*Js(8*j+5,5*j+4))*ws*ws;
+      Ks(5*i+4,5*j+2) = length*height*(Js_t(5*i+4,8*i+7)*Cs(7,7)*Js(8*j+7,5*j+2))*ws*ws;
+      Ks(5*i+4,5*j+3) = length*height*(Js_t(5*i+4,8*i+4)*Cs(4,3)*Js(8*j+3,5*j+3)+Js_t(5*i+4,8*i+5)*Cs(5,5)*Js(8*j+5,5*j+3))*ws*ws;
+      Ks(5*i+4,5*j+4) = length*height*(Js_t(5*i+4,8*i+4)*Cs(4,4)*Js(8*j+4,5*j+4)+Js_t(5*i+4,8*i+5)*Cs(5,5)*Js(8*j+5,5*j+4)+Js_t(5*i+4,8*i+7)*Cs(7,7)*Js(8*j+7,5*j+4))*ws*ws;
     }
   }
   
@@ -558,26 +558,26 @@ void QuadBendingFEMForceField<DataTypes>::computeForce(Displacement &F, Index el
     computeElementStiffness(K, elementIndex);
     //F = K * D;
     // Only calculate translational deformation corresponding to Forces F[0](Fx) F[1](Fy) F[2](Fz)
-    F[0]=K[0][0]*D[0]+K[0][1]*D[1]+K[0][5]*D[5]+K[0][6]*D[6]+K[0][10]*D[10]+K[0][11]*D[11]+K[0][15]*D[15]+K[0][16]*D[16];
-    F[1]=K[1][0]*D[0]+K[1][1]*D[1]+K[1][5]*D[5]+K[1][6]*D[6]+K[1][10]*D[10]+K[1][11]*D[11]+K[1][15]*D[15]+K[1][16]*D[16];
-    F[2]=K[2][2]*D[2]+K[2][7]*D[7]+K[2][12]*D[12]+K[2][17]*D[17];   //Assume: D[3]=D[4]=D[8]=D[9]=D[13]=D[14]=D[18]=D[19]=0
+    F[0]=K(0,0)*D[0]+K(0,1)*D[1]+K(0,5)*D[5]+K(0,6)*D[6]+K(0,10)*D[10]+K(0,11)*D[11]+K(0,15)*D[15]+K(0,16)*D[16];
+    F[1]=K(1,0)*D[0]+K(1,1)*D[1]+K(1,5)*D[5]+K(1,6)*D[6]+K(1,10)*D[10]+K(1,11)*D[11]+K(1,15)*D[15]+K(1,16)*D[16];
+    F[2]=K(2,2)*D[2]+K(2,7)*D[7]+K(2,12)*D[12]+K(2,17)*D[17];   //Assume: D[3]=D[4]=D[8]=D[9]=D[13]=D[14]=D[18]=D[19]=0
     F[3]=0; 
     F[4]=0;
-    F[5]=K[5][0]*D[0]+K[5][1]*D[1]+K[5][5]*D[5]+K[5][6]*D[6]+K[5][10]*D[10]+K[5][11]*D[11]+K[5][15]*D[15]+K[5][16]*D[16];
-    F[6]=K[6][0]*D[0]+K[6][1]*D[1]+K[6][5]*D[5]+K[6][6]*D[6]+K[6][10]*D[10]+K[6][11]*D[11]+K[6][15]*D[15]+K[6][16]*D[16];
-    F[7]=K[7][2]*D[2]+K[7][7]*D[7]+K[7][12]*D[12]+K[7][17]*D[17];   //Assume: D[3]=D[4]=D[8]=D[9]=D[13]=D[14]=D[18]=D[19]=0
+    F[5]=K(5,0)*D[0]+K(5,1)*D[1]+K(5,5)*D[5]+K(5,6)*D[6]+K(5,10)*D[10]+K(5,11)*D[11]+K(5,15)*D[15]+K(5,16)*D[16];
+    F[6]=K(6,0)*D[0]+K(6,1)*D[1]+K(6,5)*D[5]+K(6,6)*D[6]+K(6,10)*D[10]+K(6,11)*D[11]+K(6,15)*D[15]+K(6,16)*D[16];
+    F[7]=K(7,2)*D[2]+K(7,7)*D[7]+K(7,12)*D[12]+K(7,17)*D[17];   //Assume: D[3]=D[4]=D[8]=D[9]=D[13]=D[14]=D[18]=D[19]=0
     F[8]=0;
     F[9]=0;
-    F[10]=K[10][0]*D[0]+K[10][1]*D[1]+K[10][5]*D[5]+K[10][6]*D[6]+K[10][10]*D[10]+K[10][11]*D[11]+K[10][15]*D[15]+K[10][16]*D[16];
-    F[11]=K[11][0]*D[0]+K[11][1]*D[1]+K[11][5]*D[5]+K[11][6]*D[6]+K[11][10]*D[10]+K[11][11]*D[11]+K[11][15]*D[15]+K[11][16]*D[16];
-    F[12]=K[12][2]*D[2]+K[12][7]*D[7]+K[12][12]*D[12]+K[12][17]*D[17];   //Assume: D[3]=D[4]=D[8]=D[9]=D[13]=D[14]=D[18]=D[19]=0
+    F[10]=K(10,0)*D[0]+K(10,1)*D[1]+K(10,5)*D[5]+K(10,6)*D[6]+K(10,10)*D[10]+K(10,11)*D[11]+K(10,15)*D[15]+K(10,16)*D[16];
+    F[11]=K(11,0)*D[0]+K(11,1)*D[1]+K(11,5)*D[5]+K(11,6)*D[6]+K(11,10)*D[10]+K(11,11)*D[11]+K(11,15)*D[15]+K(11,16)*D[16];
+    F[12]=K(12,2)*D[2]+K(12,7)*D[7]+K(12,12)*D[12]+K(12,17)*D[17];   //Assume: D[3]=D[4]=D[8]=D[9]=D[13]=D[14]=D[18]=D[19]=0
     F[13]=0;
     F[14]=0;
-    F[15]=K[15][0]*D[0]+K[15][1]*D[1]+K[15][5]*D[5]+K[15][6]*D[6]+K[15][10]*D[10]+K[15][11]*D[11]+K[15][15]*D[15]+K[15][16]*D[16];
-    F[16]=K[16][0]*D[0]+K[16][1]*D[1]+K[16][5]*D[5]+K[16][6]*D[6]+K[16][10]*D[10]+K[16][11]*D[11]+K[16][15]*D[15]+K[16][16]*D[16];
-    F[17]=K[17][2]*D[2]+K[17][7]*D[7]+K[17][12]*D[12]+K[17][17]*D[17];   //Assume: D[3]=D[4]=D[8]=D[9]=D[13]=D[14]=D[18]=D[19]=0
+    F[15]=K(15,0)*D[0]+K(15,1)*D[1]+K(15,5)*D[5]+K(15,6)*D[6]+K(15,10)*D[10]+K(15,11)*D[11]+K(15,15)*D[15]+K(15,16)*D[16];
+    F[16]=K(16,0)*D[0]+K(16,1)*D[1]+K(16,5)*D[5]+K(16,6)*D[6]+K(16,10)*D[10]+K(16,11)*D[11]+K(16,15)*D[15]+K(16,16)*D[16];
+    F[17]=K(17,2)*D[2]+K(17,7)*D[7]+K(17,12)*D[12]+K(17,17)*D[17];   //Assume: D[3]=D[4]=D[8]=D[9]=D[13]=D[14]=D[18]=D[19]=0
     F[18]=0;
-    F[19]=0; //F[19]=K[19][2]*D[2]+K[19][7]*D[7]+K[19][12]*D[12]+K[19][17]*D[17];   //Assume: D[3]=D[4]=D[8]=D[9]=D[13]=D[14]=D[18]=D[19]=0
+    F[19]=0; //F[19]=K(19,2)*D[2]+K(19,7)*D[7]+K(19,12)*D[12]+K(19,17)*D[17];   //Assume: D[3]=D[4]=D[8]=D[9]=D[13]=D[14]=D[18]=D[19]=0
     quadInf[elementIndex].stiffness = K; 
 
     d_quadInfo.endEdit();

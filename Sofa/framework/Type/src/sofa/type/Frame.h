@@ -103,9 +103,9 @@ public:
     V projectVector( const V& v ) const
     {
         return V(
-                basis_[0][0]*v[0]+basis_[0][1]*v[1]+basis_[0][2]*v[2],
-                basis_[1][0]*v[0]+basis_[1][1]*v[1]+basis_[1][2]*v[2],
-                basis_[2][0]*v[0]+basis_[2][1]*v[1]+basis_[2][2]*v[2]
+                basis_(0,0)*v[0]+basis_(0,1)*v[1]+basis_(0,2)*v[2],
+                basis_(1,0)*v[0]+basis_(1,1)*v[1]+basis_(1,2)*v[2],
+                basis_(2,0)*v[0]+basis_(2,1)*v[1]+basis_(2,2)*v[2]
                 );
     }
 

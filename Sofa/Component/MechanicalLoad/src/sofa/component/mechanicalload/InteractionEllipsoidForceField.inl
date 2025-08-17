@@ -158,8 +158,8 @@ bool InteractionEllipsoidForceField<DataTypes1, DataTypes2>::calcF(const Coord1&
         for (int ci = 0; ci < N; ++ci)
         {
             for (int cj = 0; cj < N; ++cj)
-                dfdx[ci][cj] = grad[ci]*grad[cj] * (fact1 + fact3*vars.vinv_r2[e][cj]);
-            dfdx[ci][ci] += fact2*vars.vinv_r2[e][ci];
+                dfdx(ci,cj) = grad[ci]*grad[cj] * (fact1 + fact3*vars.vinv_r2[e][cj]);
+            dfdx(ci,ci) += fact2*vars.vinv_r2[e][ci];
         }
         return true;
     }
