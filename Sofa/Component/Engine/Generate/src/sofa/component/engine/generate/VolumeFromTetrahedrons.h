@@ -60,6 +60,7 @@ public:
     ////////////////////////// Inherited from BaseObject ///////////////////
     void init() override;
     void reinit() override;
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
     ////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from DataEngine////////////////////
@@ -70,8 +71,8 @@ public:
 
 protected:
 
-    MechanicalState*   m_state;
-    BaseMeshTopology*  m_topology;
+    SingleLink<VolumeFromTetrahedrons<DataTypes>, BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    SingleLink<VolumeFromTetrahedrons<DataTypes>, MechanicalState, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_state;
 
     sofa::Data<VecCoord>     d_positions;
     sofa::Data<VecTetras>    d_tetras;
@@ -86,9 +87,6 @@ private:
 
     void initTopology();
     void checkTopology();
-
-    SReal getElementVolume(const Tetra& tetra);
-    SReal getElementVolume(const Hexa& hexa);
 };
 
 #if !defined(SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_CPP)
