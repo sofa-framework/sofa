@@ -544,7 +544,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
         toModel->getContext()->get(toPointMod, sofa::core::objectmodel::BaseContext::Local);
         bool check = false;
         type::fixed_array <size_t, NB_ELEMENTS > nbInputRemoved;
-        nbInputRemoved.assign(0);
+        nbInputRemoved.fill(0);
         std::string laststep = "";
         while( changeIt != itEnd )
         {

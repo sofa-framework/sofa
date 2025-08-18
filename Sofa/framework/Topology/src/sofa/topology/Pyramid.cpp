@@ -23,5 +23,6 @@
 
 namespace sofa::topology
 {
-
+static_assert(sofa::type::trait::Streamable<sofa::topology::Pyramid>);
+static_assert(sofa::type::trait::InputStreamable<sofa::topology::Pyramid>);
 } // namespace sofa::topology
