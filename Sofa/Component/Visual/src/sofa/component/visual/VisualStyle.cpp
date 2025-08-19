@@ -23,16 +23,15 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/objectmodel/Context.h>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/Node.h>
-namespace sofa::component::visual
-{
 
-using namespace sofa::core::visual;
-using namespace sofa::core::objectmodel;
-using namespace sofa::simulation;
+////////////////////////////////////////// Factory registration ////////////////////////////////////////
+#include <sofa/core/ObjectFactory.h>
+namespace sofa::core{
+using namespace sofa::component::visual;
 
-void registerVisualStyle(sofa::core::ObjectFactory* factory)
+template<>
+void registerToFactory<VisualStyle>(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Edit the visual style.\n Allowed values for displayFlags data are a combination of the following:\n\
 showAll, hideAll,\n\
@@ -53,6 +52,15 @@ showAll, hideAll,\n\
         showNormals hideNormals\n\
         showWireframe hideWireframe").add<VisualStyle>());
 }
+
+}
+
+namespace sofa::component::visual
+{
+
+using namespace sofa::core::visual;
+using namespace sofa::core::objectmodel;
+using namespace sofa::simulation;
 
 VisualStyle::VisualStyle()
     : d_displayFlags(initData(&d_displayFlags, "displayFlags", "Display Flags"))

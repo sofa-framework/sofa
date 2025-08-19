@@ -19,24 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <sofa/component/visual/LineAxis.h>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/narrow_cast.h>
 
+////////////////////////////////////////// Factory registration ////////////////////////////////////////
+#include <sofa/core/ObjectFactory.h>
+namespace sofa::core{
+using namespace sofa::component::visual;
 
-namespace sofa::component::visual
-{
-
-using helper::visual::DrawTool;
-
-void registerLineAxis(sofa::core::ObjectFactory* factory)
+template<>
+void registerToFactory<LineAxis>(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Display scene axis")
         .add< LineAxis >());
 }
 
+}
+
+namespace sofa::component::visual
+{
+using helper::visual::DrawTool;
 using namespace sofa::defaulttype;
 
 LineAxis::LineAxis()

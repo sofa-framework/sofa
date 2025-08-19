@@ -19,23 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/visual/VisualVectorField.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
-namespace sofa::core
-{
-
-template<>
-void registerToFactory<sofa::component::visual::VisualVectorField>(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Render a vector field.")
-        .add<sofa::component::visual::VisualVectorField<defaulttype::Vec3Types>>(true)
-    );
-}
-
-}
+#include <sofa/component/visual/config.h>
 
 namespace sofa::component::visual
 {
-    template class SOFA_COMPONENT_VISUAL_API sofa::component::visual::VisualVectorField<defaulttype::Vec3Types>;
-}
+    class Camera;
+    class CylinderVisualModel;
+    class InteractiveCamera;
+    class LineAxis;
+    class RecordedCamera;
+    class TrailRenderer;
+    class Visual3DText;
+    class VisualBoundingBox;
+    class VisualGrid;
+    class VisualPointCloud;
+    class VisualModelImpl;
+    class VisualStyle;
+    class VisualTransform;
+    class VisualVectorField;
+} // namespace sofa::component::visual

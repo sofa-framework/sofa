@@ -19,23 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/visual/VisualVectorField.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
-namespace sofa::core
+#include <sofa/component/mapping/nonlinear/config.h>
+
+namespace sofa::component::mapping::nonlinear
 {
-
-template<>
-void registerToFactory<sofa::component::visual::VisualVectorField>(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Render a vector field.")
-        .add<sofa::component::visual::VisualVectorField<defaulttype::Vec3Types>>(true)
-    );
-}
-
-}
-
-namespace sofa::component::visual
-{
-    template class SOFA_COMPONENT_VISUAL_API sofa::component::visual::VisualVectorField<defaulttype::Vec3Types>;
-}
+    template<class In, class Out> class RigidMapping;
+} // namespace sofa::component::mapping::nonlinear

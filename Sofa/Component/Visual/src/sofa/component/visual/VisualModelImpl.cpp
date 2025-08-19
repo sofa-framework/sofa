@@ -41,6 +41,22 @@
 #include <map>
 #include <memory>
 
+////////////////////////////////////////// Factory registration ////////////////////////////////////////
+#include <sofa/core/ObjectFactory.h>
+namespace sofa::core{
+using namespace sofa::component::visual;
+
+template<>
+void registerToFactory<VisualModelImpl>(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Generic visual model. If a viewer is active it will replace the VisualModel alias, otherwise nothing will be displayed.")
+        .add< VisualModelImpl >()
+        .addAlias("VisualModel"));
+}
+
+}
+
+
 namespace sofa::component::visual
 {
 using sofa::type::RGBAColor;
@@ -99,13 +115,6 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
                                   (Real)arg->getAttributeAsFloat("sy",1.0),
                                   (Real)arg->getAttributeAsFloat("sz",1.0)));
     }
-}
-
-void registerVisualModelImpl(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Generic visual model. If a viewer is active it will replace the VisualModel alias, otherwise nothing will be displayed.")
-        .add< VisualModelImpl >()
-        .addAlias("VisualModel"));
 }
 
 VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filename, std::string loader, std::string textureName)

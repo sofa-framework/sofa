@@ -25,14 +25,23 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::visual
-{
+////////////////////////////////////////// Factory registration ////////////////////////////////////////
+#include <sofa/core/ObjectFactory.h>
+namespace sofa::core{
+using namespace sofa::component::visual;
 
-void registerVisualBoundingBox(sofa::core::ObjectFactory* factory)
+template<>
+void registerToFactory<VisualBoundingBox>(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Display an Axis Aligned Bounding Box (AABB).")
-        .add< VisualBoundingBox >());
+        .add<VisualBoundingBox>());
 }
+
+}
+
+
+namespace sofa::component::visual
+{
 
 VisualBoundingBox::VisualBoundingBox()
     : d_color(initData(&d_color, sofa::type::RGBAColor::yellow(),  "color", "Color of the lines of the box."))

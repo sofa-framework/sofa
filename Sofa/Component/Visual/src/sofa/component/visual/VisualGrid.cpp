@@ -22,17 +22,24 @@
 
 #include <sofa/component/visual/VisualGrid.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
+
+////////////////////////////////////////// Factory registration ////////////////////////////////////////
+#include <sofa/core/ObjectFactory.h>
+namespace sofa::core{
+using namespace sofa::component::visual;
+
+template<>
+void registerToFactory<VisualGrid>(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Display a simple grid.")
+        .add<VisualGrid>());
+}
+
+}
 
 namespace sofa::component::visual
 {
-
-void registerVisualGrid(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Display a simple grid.")
-        .add< VisualGrid >());
-}
 
 using namespace sofa::defaulttype;
 

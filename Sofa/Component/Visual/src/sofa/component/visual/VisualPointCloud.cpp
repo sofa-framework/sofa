@@ -21,12 +21,14 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_VISUAL_VISUALPOINTCLOUD_CPP
 #include <sofa/component/visual/VisualPointCloud.inl>
+
+////////////////////////////////////////// Factory registration ////////////////////////////////////////
 #include <sofa/core/ObjectFactory.h>
+namespace sofa::core{
+using namespace sofa::component::visual;
 
-namespace sofa::component::visual
-{
-
-void registerVisualPointCloud(sofa::core::ObjectFactory* factory)
+template<>
+void registerToFactory<VisualPointCloud>(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Render a point cloud.")
         .add<VisualPointCloud<defaulttype::Vec3Types>>(true)
@@ -34,8 +36,11 @@ void registerVisualPointCloud(sofa::core::ObjectFactory* factory)
     );
 }
 
+}
+
+namespace sofa::component::visual{
+
 template class SOFA_COMPONENT_VISUAL_API VisualPointCloud<defaulttype::Vec3Types>;
 template class SOFA_COMPONENT_VISUAL_API VisualPointCloud<defaulttype::Rigid3Types>;
-
 
 }

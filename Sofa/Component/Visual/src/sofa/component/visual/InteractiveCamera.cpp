@@ -20,20 +20,26 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/visual/InteractiveCamera.h>
-
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 
-namespace sofa::component::visual
-{
+////////////////////////////////////////// Factory registration ////////////////////////////////////////
+#include <sofa/core/ObjectFactory.h>
+namespace sofa::core{
+using namespace sofa::component::visual;
 
-void registerInteractiveCamera(sofa::core::ObjectFactory* factory)
+template<>
+void registerToFactory<InteractiveCamera>(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Camera with mouse and keyboard controls.")
+    factory->registerObjects(core::ObjectRegistrationData("A Camera that render the scene from a given location & orientation.")
         .add< InteractiveCamera >());
 }
+
+}
+
+namespace sofa::component::visual
+{
 
 InteractiveCamera::InteractiveCamera()
     : d_zoomSpeed(initData(&d_zoomSpeed, (double) 250.0 , "zoomSpeed", "Zoom Speed"))

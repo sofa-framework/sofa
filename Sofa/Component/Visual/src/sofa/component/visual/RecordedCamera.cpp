@@ -20,21 +20,27 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/visual/RecordedCamera.h>
-
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
-namespace sofa::component::visual
-{
+////////////////////////////////////////// Factory registration ////////////////////////////////////////
+#include <sofa/core/ObjectFactory.h>
+namespace sofa::core{
+using namespace sofa::component::visual;
 
-void registerRecordedCamera(sofa::core::ObjectFactory* factory)
+template<>
+void registerToFactory<RecordedCamera>(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("A camera that is moving along a predetermined path.")
         .add< RecordedCamera >());
 }
+
+}
+
+namespace sofa::component::visual
+{
 
 RecordedCamera::RecordedCamera()
     : d_zoomSpeed(initData(&d_zoomSpeed, (double) 250.0 , "zoomSpeed", "Zoom Speed"))

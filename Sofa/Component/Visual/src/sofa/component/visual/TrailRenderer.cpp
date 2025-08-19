@@ -21,18 +21,24 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_VISUAL_TRAILRENDERER_CPP
 #include <sofa/component/visual/TrailRenderer.inl>
+
+////////////////////////////////////////// Factory registration ////////////////////////////////////////
 #include <sofa/core/ObjectFactory.h>
+namespace sofa::core{
+using namespace sofa::component::visual;
 
-namespace sofa::component::visual
-{
-
-void registerTrailRenderer(sofa::core::ObjectFactory* factory)
+template<>
+void registerToFactory<TrailRenderer>(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Render a trail behind particles.")
         .add<TrailRenderer<defaulttype::Vec3Types>>()
-        .add<TrailRenderer<defaulttype::Rigid3Types>>()
-    );
+        .add<TrailRenderer<defaulttype::Rigid3Types>>());
 }
+
+}
+
+namespace sofa::component::visual
+{
 
 template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Vec3Types>;
 template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Rigid3Types>;

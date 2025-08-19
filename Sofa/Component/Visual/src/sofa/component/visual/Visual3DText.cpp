@@ -21,19 +21,24 @@
 ******************************************************************************/
 
 #include <sofa/component/visual/Visual3DText.h>
-
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 
+////////////////////////////////////////// Factory registration ////////////////////////////////////////
+#include <sofa/core/ObjectFactory.h>
+namespace sofa::core{
+using namespace sofa::component::visual;
+
+template<>
+void registerToFactory<Visual3DText>(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Display 3D camera-oriented text.")
+        .add<Visual3DText>());
+}
+
+}
 
 namespace sofa::component::visual
 {
-
-void registerVisual3DText(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Display 3D camera-oriented text.")
-        .add< Visual3DText >());
-}
 
 Visual3DText::Visual3DText()
     : d_text(initData(&d_text, "text", "Test to display"))
