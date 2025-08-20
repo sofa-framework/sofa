@@ -34,6 +34,7 @@ using namespace sofapython3;
 using sofa::component::geometry::ScalarField;
 using sofa::core::objectmodel::BaseObject;
 using sofa::type::Vec3d;
+using sofa::type::Mat3x3;
 
 class ScalarField_Trampoline : public ScalarField {
 public:
@@ -42,9 +43,21 @@ public:
     double getValue(Vec3d& pos, int& domain) override{
         SOFA_UNUSED(domain);
         PythonEnvironment::gil acquire;
-
         PYBIND11_OVERLOAD_PURE(double, ScalarField, getValue, pos.x(), pos.y(), pos.z());
     }
+
+    Vec3d getGradient(Vec3d& pos, int& domain) override {
+        PythonEnvironment::gil acquire;
+
+        PYBIND11_OVERLOAD(Vec3d, ScalarField, getGradient, pos);
+    }
+
+    void getHessian(Vec3d &pos, Mat3x3& h) override {
+        PythonEnvironment::gil acquire;
+
+        PYBIND11_OVERLOAD(void, ScalarField, getHessian, pos, h);
+    }
+
 };
 
 void moduleAddScalarField(py::module &m) {
@@ -75,6 +88,8 @@ void moduleAddScalarField(py::module &m) {
     }));
 
     m.def("getValue", &ScalarField_Trampoline::getValue);
+    m.def("getGradient", &ScalarField_Trampoline::getGradient);
+    m.def("getHessian", &ScalarField_Trampoline::getHessian);
 }
 
 }
