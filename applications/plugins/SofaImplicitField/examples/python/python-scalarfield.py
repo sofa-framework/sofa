@@ -24,6 +24,12 @@ class SphereWithCustomHessianAndGradient(Sphere):
     def getHessian(self, position):
         return Mat3x3([[1,1,1],[2,1,1],[3,1,1]])
 
+    def getValues(self, positions, out_values):
+        """This version of the overrides get numpy array as input and output"""
+        print("Type ", type(positions), type(out_values))
+        print(positions)
+        out_values[:] = positions[:,0] * 4 
+
 class FieldController(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
@@ -48,3 +54,6 @@ def createScene(root):
 
     root.addObject(SphereWithCustomHessianAndGradient("field2"))
     root.addObject(FieldController(name="controller2", target=root.field2))
+
+    root.field1.test()
+    root.field2.test()

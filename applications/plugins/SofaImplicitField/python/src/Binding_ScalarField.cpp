@@ -23,7 +23,7 @@
 #include <SofaPython3/PythonEnvironment.h>
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaImplicitField/components/geometry/ScalarField.h>
-
+#include "pybind11/stl.h"
 #include "Binding_ScalarField.h"
 
 /// Makes an alias for the pybind11 namespace to increase readability.
@@ -35,6 +35,59 @@ using sofa::component::geometry::ScalarField;
 using sofa::core::objectmodel::BaseObject;
 using sofa::type::Vec3;
 using sofa::type::Mat3x3;
+
+py::array_t<double> vector_to_numpy(const std::vector<Vec3>& vec) {
+    // Pybind11 gère la mémoire en créant un capsule pour que numpy sache comment libérer
+    // On transfère la propriété du vecteur à numpy, donc pas de copie
+    const double* data_ptr = (const double*)vec.data();
+    size_t size = vec.size();
+
+    // capsule: mémoire gérée par le vector, sera libérée quand python détruit l'objet numpy
+    py::capsule free_when_done(vec.data(), [](void *) {
+        // On ne fait rien ici car vector gère sa mémoire.
+        // Si on voulait transférer la propriété, on ferait delete ici.
+    });
+
+    // Dimensions du tableau numpy
+    std::vector<size_t> shape = { size, 3 };
+
+    // Strides en bytes (ici, contiguous : 3 colonnes, chaque double 8 octets)
+    std::vector<size_t> strides = { 3 * sizeof(double), sizeof(double) };
+
+    return py::array_t<double>(
+        shape,
+        strides,
+        data_ptr,      // data pointer
+        free_when_done // capsule pour gérer la vie mémoire
+    );
+}
+
+py::array_t<double> vector_to_numpy(const std::vector<double>& vec) {
+    // Pybind11 gère la mémoire en créant un capsule pour que numpy sache comment libérer
+    // On transfère la propriété du vecteur à numpy, donc pas de copie
+    const double* data_ptr = (const double*)vec.data();
+    size_t size = vec.size();
+
+    // capsule: mémoire gérée par le vector, sera libérée quand python détruit l'objet numpy
+    py::capsule free_when_done(vec.data(), [](void *) {
+        // On ne fait rien ici car vector gère sa mémoire.
+        // Si on voulait transférer la propriété, on ferait delete ici.
+    });
+
+    // Dimensions du tableau numpy
+    std::vector<size_t> shape = { size };
+
+    // Strides en bytes (ici, contiguous : 3 colonnes, chaque double 8 octets)
+    std::vector<size_t> strides = { sizeof(double) };
+
+    return py::array_t<double>(
+        shape,
+        strides,
+        data_ptr,      // data pointer
+        free_when_done // capsule pour gérer la vie mémoire
+    );
+}
+
 
 class ScalarField_Trampoline : public ScalarField {
 public:
@@ -56,6 +109,24 @@ public:
         PythonEnvironment::gil acquire;
 
         PYBIND11_OVERLOAD_PURE(double, ScalarField, getValue, pos);
+    }
+
+    void getValues(const std::vector<Vec3>& positions, std::vector<double>& results) override
+    {
+        PythonEnvironment::gil acquire;
+
+        // Search if there is a python override,
+        pybind11::function override = pybind11::get_override(static_cast<const ScalarField*>(this),"getValues");
+        if(!override){
+            return ScalarField::getValues(positions, results);
+        }
+
+        // Be sure there is enough space to hold the results
+        results.resize(positions.size());
+
+        // as there is one override, we call it, passing the "pos" argument and storing the return of the
+        // value in the "o" variable.
+        auto o = override(vector_to_numpy(positions), vector_to_numpy(results));
     }
 
     Vec3 getGradient(Vec3& pos, int& domain) override
@@ -126,6 +197,8 @@ void moduleAddScalarField(py::module &m) {
         return self->getValue(pos, domain);
     });
 
+    f.def("getValues", &ScalarField::getValues);
+
     f.def("getGradient", [](ScalarField* self, Vec3 pos){
         int domain=-1;
         return self->ScalarField::getGradient(pos, domain);
@@ -135,6 +208,16 @@ void moduleAddScalarField(py::module &m) {
         Mat3x3 result;
         self->getHessian(pos, result);
         return result;
+    });
+
+    f.def("test", [](ScalarField* self){
+        std::vector<double> outputs;
+        std::vector<Vec3> inputs(100);
+        for (int i = 0; i < 100; ++i) inputs[i] = {i * 0.1,0,0};
+        std::cout << "INPUTS " << inputs.size() << std::endl;
+        self->getValues(inputs, outputs);
+        std::cout << "OUTPUTS " << outputs.size() << std::endl;
+        return outputs;
     });
 }
 
