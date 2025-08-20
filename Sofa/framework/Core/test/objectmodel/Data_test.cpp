@@ -46,6 +46,9 @@ public:
     Data<sofa::type::Vec3> dataVec3;
     Data<sofa::type::vector<sofa::type::Vec3>> dataVectorVec3;
 
+    Data<std::array<int, 3>> dataArray3i;
+    Data<sofa::type::vector<std::array<int, 3>>> dataVecArray3i;
+
     Data<sofa::topology::Element<sofa::geometry::Edge> > dataEdge;
     Data<sofa::topology::Element<sofa::geometry::Hexahedron> > dataHexahedron;
     Data<sofa::topology::Element<sofa::geometry::Pentahedron> > dataPentahedron;
@@ -77,6 +80,11 @@ TEST_F(Data_test, validInfo)
     EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Quad> >::ValidInfo);
     EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Tetrahedron> >::ValidInfo);
     EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Triangle> >::ValidInfo);
+
+
+    using array3i = sofa::type::fixed_array<int, 3>;
+    EXPECT_TRUE(defaulttype::DataTypeInfo<array3i>::ValidInfo);
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::type::vector<array3i>>::ValidInfo);
 }
 
 TEST_F(Data_test, dataTypeName)
@@ -122,6 +130,9 @@ TEST_F(Data_test, getValueTypeString)
         EXPECT_EQ(dataVectorVec3.getValueTypeString(), "vector<Vec3f>");
     }
 
+    EXPECT_EQ(dataArray3i.getValueTypeString(), "fixed_array<i,3>");
+    EXPECT_EQ(dataVecArray3i.getValueTypeString(), "vector<fixed_array<i,3>>");
+
     EXPECT_EQ(dataEdge.getValueTypeString(), "Edge");
     EXPECT_EQ(dataHexahedron.getValueTypeString(), "Hexahedron");
     EXPECT_EQ(dataPentahedron.getValueTypeString(), "Pentahedron");
@@ -161,5 +172,27 @@ TEST_F(Data_test, getNameWithValueTypeInfo)
         EXPECT_EQ(dataVec3.getValueTypeInfo()->name(), "Vec3f");
         EXPECT_EQ(dataVectorVec3.getValueTypeInfo()->name(), "vector<Vec3f>");
     }
+
+    EXPECT_EQ(dataArray3i.getValueTypeInfo()->name(), "fixed_array<i,3>");
+    EXPECT_EQ(dataVecArray3i.getValueTypeInfo()->name(), "vector<fixed_array<i,3>>");
+
+
+    EXPECT_EQ(dataEdge.getValueTypeInfo()->name(), "Edge");
+    EXPECT_EQ(dataHexahedron.getValueTypeInfo()->name(), "Hexahedron");
+    EXPECT_EQ(dataPentahedron.getValueTypeInfo()->name(), "Pentahedron");
+    // EXPECT_EQ(dataPoint.getValueTypeInfo()->name(), "Point");
+    EXPECT_EQ(dataPyramid.getValueTypeInfo()->name(), "Pyramid");
+    EXPECT_EQ(dataQuad.getValueTypeInfo()->name(), "Quad");
+    EXPECT_EQ(dataTetrahedron.getValueTypeInfo()->name(), "Tetrahedron");
+    EXPECT_EQ(dataTriangle.getValueTypeInfo()->name(), "Triangle");
+
+    EXPECT_EQ(dataVecEdge.getValueTypeInfo()->name(), "vector<Edge>");
+    EXPECT_EQ(dataVecHexahedron.getValueTypeInfo()->name(), "vector<Hexahedron>");
+    EXPECT_EQ(dataVecPentahedron.getValueTypeInfo()->name(), "vector<Pentahedron>");
+    // EXPECT_EQ(dataVecPoint.getValueTypeInfo()->name(), "vector<Point>");
+    EXPECT_EQ(dataVecPyramid.getValueTypeInfo()->name(), "vector<Pyramid>");
+    EXPECT_EQ(dataVecQuad.getValueTypeInfo()->name(), "vector<Quad>");
+    EXPECT_EQ(dataVecTetrahedron.getValueTypeInfo()->name(), "vector<Tetrahedron>");
+    EXPECT_EQ(dataVecTriangle.getValueTypeInfo()->name(), "vector<Triangle>");
 }
 }// namespace sofa

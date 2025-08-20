@@ -237,14 +237,14 @@ public:
        e.ii[i] = indices[6] - vertex0;
        e.ij[i] = indices[7] - vertex0;
 
-       e.ax[i] = rotateds->elems[0][0]; e.ay[i] = rotateds->elems[0][1]; e.az[i] = rotateds->elems[0][2];
-       e.bx[i] = rotateds->elems[1][0]; e.by[i] = rotateds->elems[1][1]; e.bz[i] = rotateds->elems[1][2];
-       e.cx[i] = rotateds->elems[2][0]; e.cy[i] = rotateds->elems[2][1]; e.cz[i] = rotateds->elems[2][2];
-       e.dx[i] = rotateds->elems[3][0]; e.dy[i] = rotateds->elems[3][1]; e.dz[i] = rotateds->elems[3][2];
-       e.gx[i] = rotateds->elems[4][0]; e.gy[i] = rotateds->elems[4][1]; e.gz[i] = rotateds->elems[4][2];
-       e.hx[i] = rotateds->elems[5][0]; e.hy[i] = rotateds->elems[5][1]; e.hz[i] = rotateds->elems[5][2];
-       e.ix[i] = rotateds->elems[6][0]; e.iy[i] = rotateds->elems[6][1]; e.iz[i] = rotateds->elems[6][2];
-       e.jx[i] = rotateds->elems[7][0]; e.jy[i] = rotateds->elems[7][1]; e.jz[i] = rotateds->elems[7][2];
+       e.ax[i] = (*rotateds)[0][0]; e.ay[i] = (*rotateds)[0][1]; e.az[i] = (*rotateds)[0][2];
+       e.bx[i] = (*rotateds)[1][0]; e.by[i] = (*rotateds)[1][1]; e.bz[i] = (*rotateds)[1][2];
+       e.cx[i] = (*rotateds)[2][0]; e.cy[i] = (*rotateds)[2][1]; e.cz[i] = (*rotateds)[2][2];
+       e.dx[i] = (*rotateds)[3][0]; e.dy[i] = (*rotateds)[3][1]; e.dz[i] = (*rotateds)[3][2];
+       e.gx[i] = (*rotateds)[4][0]; e.gy[i] = (*rotateds)[4][1]; e.gz[i] = (*rotateds)[4][2];
+       e.hx[i] = (*rotateds)[5][0]; e.hy[i] = (*rotateds)[5][1]; e.hz[i] = (*rotateds)[5][2];
+       e.ix[i] = (*rotateds)[6][0]; e.iy[i] = (*rotateds)[6][1]; e.iz[i] = (*rotateds)[6][2];
+       e.jx[i] = (*rotateds)[7][0]; e.jy[i] = (*rotateds)[7][1]; e.jz[i] = (*rotateds)[7][2];
 
     }
 

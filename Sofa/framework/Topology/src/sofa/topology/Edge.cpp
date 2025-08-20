@@ -23,5 +23,6 @@
 
 namespace sofa::topology
 {
-
+static_assert(sofa::type::trait::Streamable<sofa::topology::Edge>);
+static_assert(sofa::type::trait::InputStreamable<sofa::topology::Edge>);
 } // namespace sofa::topology
