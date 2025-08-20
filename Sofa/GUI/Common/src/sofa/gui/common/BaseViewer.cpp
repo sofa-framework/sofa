@@ -277,41 +277,6 @@ void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseObject * object)
     redraw();
 }
 
-//template <class DataTypes>
-//inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualParams* vparams)
-//{
-//    float scale = showVectorsScale.getValue();
-//    sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::vec_id::read_access::velocity);
-//    type::vector<type::Vec3> points;
-//    points.resize(2);
-//    for(Size i=0; i<v_rA.size(); ++i )
-//    {
-//        Real vx=0.0,vy=0.0,vz=0.0;
-//        DataTypes::get(vx,vy,vz,v_rA[i]);
-//        type::Vec3 p1 = type::Vec3(getPX(i), getPY(i), getPZ(i));
-//        type::Vec3 p2 = type::Vec3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
-
-//        const float rad = (float)( (p1-p2).norm()/20.0 );
-//        switch (drawMode.getValue())
-//        {
-//        case 0:
-//            points[0] = p1;
-//            points[1] = p2;
-//            vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor::white());
-//            break;
-//        case 1:
-//            vparams->drawTool()->drawCylinder(p1, p2, rad, sofa::type::RGBAColor::white());
-//            break;
-//        case 2:
-//            vparams->drawTool()->drawArrow(p1, p2, rad, sofa::type::RGBAColor::white());
-//            break;
-//        default:
-//            msg_error() << "No proper drawing mode found!";
-//            break;
-//        }
-//    }
-//}
-
 void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
 {
     assert(vparams && "call of drawSelection without a valid visual param is not allowed");
