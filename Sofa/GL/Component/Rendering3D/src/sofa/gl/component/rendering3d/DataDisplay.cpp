@@ -55,7 +55,7 @@ DataDisplay::DataDisplay()
     , d_shininess(initData(&d_shininess, -1.f, "shininess", "Shininess for rendering point-based data [0,128].  <0 means no specularity"))
     , d_transparency(initData(&d_transparency, Real(1.0), "transparency", "transparency draw objects with transparency, the value varies between 0. and 1. "
                                                                           "Where 1. means no transparency and 0 full transparency"))
-    , state(nullptr)
+    , l_colorMap(initLink("colorMap", "link to the color map"))
     , m_topology(nullptr)
     , l_topology(initLink("topology", "link to the topology container"))
     , m_oldMin(std::numeric_limits<Real>::max())
@@ -80,10 +80,30 @@ void DataDisplay::init()
     if (!m_topology)
         msg_info() << "No topology information, drawing just points.";
 
-    this->getContext()->get(colorMap);
-    if (!colorMap) {
-        msg_error() << "No ColorMap found, using default.";
-        colorMap = OglColorMap::getDefault();
+    if (!l_colorMap)
+    {
+        l_colorMap.set(getContext()->get<gl::component::rendering2d::OglColorMap>());
+
+        if (!l_colorMap)
+        {
+            if (const auto colorMap = sofa::core::objectmodel::New<gl::component::rendering2d::OglColorMap>())
+            {
+                getContext()->addObject(colorMap);
+                colorMap->setName( this->getContext()->getNameHelper().resolveName(colorMap->getClassName(), {}));
+                colorMap->f_printLog.setValue(this->f_printLog.getValue());
+                l_colorMap.set(colorMap);
+
+                msg_warning() << "A " << l_colorMap->getClassName() << " is required by " << this->getClassName()
+                    << " but has not been found: a default " << l_colorMap->getClassName()
+                    << " is automatically added in the scene for you. To remove this warning, add a " << l_colorMap->getClassName() << " in the scene.";
+            }
+            else
+            {
+                msg_fatal() << "A " << l_colorMap->getClassName() << " is required by " << this->getClassName()
+                    << " but has not been found: a default " << l_colorMap->getClassName()
+                    << " could not be automatically added in the scene. To remove this error, add a " << l_colorMap->getClassName() << " in the scene.";
+            }
+        }
     }
 }
 
@@ -104,9 +124,10 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
     typedef sofa::type::RGBAColor RGBAColor;
     const float& transparency = d_transparency.getValue();
 
-    glEnable ( GL_LIGHTING );
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    auto* drawTool = vparams->drawTool();
+
+    drawTool->enableLighting();
+    drawTool->enableBlending();
 
     bool bDrawPointData = false;
     bool bDrawCellData = false;
@@ -242,8 +263,8 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
 
     if (bDrawCellData) {
 
-        glDisable( GL_LIGHTING );
-        auto eval = colorMap->getEvaluator(min, max);
+        drawTool->disableLighting();
+        auto eval = l_colorMap->getEvaluator(min, max);
 
         if( !triData.empty() )
         {
@@ -256,7 +277,7 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
                     : eval(triData[i]);
                 color[3] = transparency;
                 const Triangle& t = m_topology->getTriangle(i);
-                vparams->drawTool()->drawTriangle(
+                drawTool->drawTriangle(
                     x[ t[0] ], x[ t[1] ], x[ t[2] ],
                     m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ],
                     color, color, color);
@@ -264,8 +285,7 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
         }
         else if( !pointTriData.empty() )
         {
-            glEnable( GL_LIGHTING );
-            // Triangles
+            std::vector<RGBAColor> colors;
 
             size_t nbTriangles = m_topology->getNbTriangles();
             glBegin(GL_TRIANGLES);
@@ -303,7 +323,8 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
 
         if( !quadData.empty() )
         {
-            glDisable( GL_LIGHTING );
+            drawTool->disableLighting();
+
             size_t nbQuads = m_topology->getNbQuads();
             for (unsigned int i=0; i<nbQuads; i++)
             {
@@ -312,7 +333,7 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
                     : eval(quadData[i]);
                 color[3] = transparency;
                 const Quad& t = m_topology->getQuad(i);
-                vparams->drawTool()->drawQuad(
+                drawTool->drawQuad(
                     x[ t[0] ], x[ t[1] ], x[ t[2] ], x[ t[3] ],
                     m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ], m_normals[ t[3] ],
                     color, color, color, color);
@@ -320,7 +341,7 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
         }
         else if( !pointQuadData.empty() )
         {
-            glEnable( GL_LIGHTING );
+            drawTool->enableLighting();
             size_t nbQuads = m_topology->getNbQuads();
             glBegin(GL_QUADS);
             for (unsigned int i=0; i<nbQuads; i++)
@@ -364,7 +385,7 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
     }
 
     if ((bDrawCellData || !m_topology) && bDrawPointData) {
-        helper::ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
+        helper::ColorMap::evaluator<Real> eval = l_colorMap->getEvaluator(min, max);
         // Just the points
         glPointSize(10);
         for (unsigned int i=0; i<x.size(); ++i)
@@ -373,11 +394,11 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
                 ? f_colorNaN.getValue()
                 : eval(ptData[i]);
             color[3] = transparency;
-            vparams->drawTool()->drawPoint(x[i], color);
+            drawTool->drawPoint(x[i], color);
         }
 
     } else if (bDrawPointData) {
-        helper::ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
+        helper::ColorMap::evaluator<Real> eval = l_colorMap->getEvaluator(min, max);
 
 
         // Triangles
@@ -454,11 +475,7 @@ void DataDisplay::computeNormals()
     for (sofa::core::topology::Topology::TriangleID i=0; i<m_topology->getNbTriangles(); ++i)
     {
         const Triangle &t = m_topology->getTriangle(i);
-
-        const Coord& v1 = x[t[0]];
-        const Coord& v2 = x[t[1]];
-        const Coord& v3 = x[t[2]];
-        const Coord n = cross(v2-v1, v3-v1);
+        const Coord n = sofa::geometry::Triangle::normal(x[t[0]], x[t[1]], x[t[2]]);
 
         m_normals[t[0]] += n;
         m_normals[t[1]] += n;
@@ -473,20 +490,15 @@ void DataDisplay::computeNormals()
         const Coord & v2 = x[q[1]];
         const Coord & v3 = x[q[2]];
         const Coord & v4 = x[q[3]];
-        const Coord n1 = cross(v2-v1, v4-v1);
-        const Coord n2 = cross(v3-v2, v1-v2);
-        const Coord n3 = cross(v4-v3, v2-v3);
-        const Coord n4 = cross(v1-v4, v3-v4);
-
-        m_normals[q[0]] += n1;
-        m_normals[q[1]] += n2;
-        m_normals[q[2]] += n3;
-        m_normals[q[3]] += n4;
+        m_normals[q[0]] += sofa::geometry::Triangle::normal(v1, v2, v4);
+        m_normals[q[1]] += sofa::geometry::Triangle::normal(v2, v3, v1);
+        m_normals[q[2]] += sofa::geometry::Triangle::normal(v3, v4, v2);
+        m_normals[q[3]] += sofa::geometry::Triangle::normal(v4, v1, v3);
     }
 
     // normalization
-    for (size_t i=0; i<x.size(); ++i)
-        m_normals[i].normalize();
+    for (auto& n : m_normals)
+        n.normalize();
 }
 
 } // namespace sofa::gl::component::rendering3d

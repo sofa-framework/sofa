@@ -7,8 +7,6 @@
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -341,7 +339,6 @@ void LabelBoxImageToolBoxAction::validView()
 
 
 
-}
 }
 }
 

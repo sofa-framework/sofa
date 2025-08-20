@@ -46,9 +46,11 @@ template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b )
 {
     const VecCoord& x =this->mstate1->read(core::vec_id::read_access::position)->getValue();
-    Real s = (Real)this->d_ks.getValue()[0];
-    Real d = (Real)this->d_kd.getValue()[0];
-    Real l = (x[a]-x[b]).norm();
+    const auto& ks = this->d_ks.getValue();
+    const auto& kd = this->d_kd.getValue();
+    const Real s = (ks.empty()) ? defaultSpringStiffness : ks[0];
+    const Real d = (kd.empty()) ? defaultSpringDamping : kd[0];
+    const Real l = (x[a]-x[b]).norm();
     this->SpringForceField<DataTypes>::addSpring(a,b, s, d, l );
 }
 
@@ -106,7 +108,6 @@ template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::init()
 {
     this->mstate1 = this->mstate2 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>( this->getContext()->getMechanicalState() );
-    SpringForceField<DataTypes>::clear();
 
     // Set the bending springs
 
@@ -127,24 +128,26 @@ void TriangleBendingSprings<DataTypes>::init()
     }
 
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
-    for( unsigned i= 0; i<triangles.size(); ++i )
-    {
-        const sofa::core::topology::BaseMeshTopology::Triangle& face = triangles[i];
-        {
-            registerTriangle( face[0], face[1], face[2], edgeMap );
-        }
 
+    const auto& ks = this->d_ks.getValue();
+    const auto& kd = this->d_kd.getValue();
+    const auto stiffness = (ks.empty()) ? defaultSpringStiffness : ks[0];
+    const auto damping = (kd.empty()) ? defaultSpringDamping : kd[0];
+
+    SpringForceField<DataTypes>::clear(triangles.size());
+    this->d_ks.setValue({stiffness});
+    this->d_kd.setValue({damping});
+
+    for (const auto& face : triangles)
+    {
+        registerTriangle(face[0], face[1], face[2], edgeMap);
     }
 
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = topology->getQuads();
-    for( unsigned i= 0; i<quads.size(); ++i )
+    for (const auto& face : quads)
     {
-        const sofa::core::topology::BaseMeshTopology::Quad& face = quads[i];
-        {
-            registerTriangle( face[0], face[1], face[2], edgeMap );
-            registerTriangle( face[0], face[2], face[3], edgeMap );
-        }
-
+        registerTriangle(face[0], face[1], face[2], edgeMap);
+        registerTriangle(face[0], face[2], face[3], edgeMap);
     }
 
     // init the parent class

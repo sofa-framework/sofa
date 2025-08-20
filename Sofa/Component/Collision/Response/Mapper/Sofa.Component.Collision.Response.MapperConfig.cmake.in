@@ -3,11 +3,12 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(Sofa.Simulation.Core QUIET REQUIRED)
-find_package(Sofa.Component.Collision.Geometry QUIET REQUIRED)
-find_package(Sofa.Component.Mapping.Linear QUIET REQUIRED)
-find_package(Sofa.Component.Mapping.NonLinear QUIET REQUIRED)
-find_package(Sofa.Component.StateContainer QUIET REQUIRED) # BarycentricMapper needs MechanicalObject
+find_package(Sofa.Config QUIET REQUIRED)
+sofa_find_package(Sofa.Simulation.Core QUIET REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Geometry QUIET REQUIRED)
+sofa_find_package(Sofa.Component.Mapping.Linear QUIET REQUIRED)
+sofa_find_package(Sofa.Component.Mapping.NonLinear QUIET REQUIRED)
+sofa_find_package(Sofa.Component.StateContainer QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

@@ -62,7 +62,7 @@
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
-        <TriangleCollisionModel name="Torus0CMT" proximity="0.2" color="0.18039215686275 0.12156862745098 0.086274509803922" />
+        <TriangleCollisionModel name="Torus0CMT" contactDistance="0.2" color="0.18039215686275 0.12156862745098 0.086274509803922" />
       </Node>
       <Node name="Visual">
         <OglModel name="Torus0VM" position="@/Mesh/MeshTorus1V.position" restPosition="@/Mesh/MeshTorus1V.position" triangles="@/Mesh/MeshTorus1V.triangles" material="mat Ambient 1 0.036078431372549 0.024313725490196 0.017254901960784 1.0 Diffuse 1 0.18039215686275 0.12156862745098 0.086274509803922 1.0 Specular 1 1.0 1.0 1.0 1.0 Emissive 0 0.18039215686275 0.12156862745098 0.086274509803922 1.0 Shininess 1 40" handleDynamicTopology="false" />
@@ -84,7 +84,7 @@
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
-        <TriangleCollisionModel name="Torus1CMT" proximity="0.2" color="0.18039215686275 0.12156862745098 0.086274509803922" />
+        <TriangleCollisionModel name="Torus1CMT" contactDistance="0.2" color="0.18039215686275 0.12156862745098 0.086274509803922" />
       </Node>
       <Node name="Visual">
         <OglModel name="Torus1VM" position="@/Mesh/MeshTorus1V.position" restPosition="@/Mesh/MeshTorus1V.position" triangles="@/Mesh/MeshTorus1V.triangles" material="mat Ambient 1 0.036078431372549 0.024313725490196 0.017254901960784 1.0 Diffuse 1 0.18039215686275 0.12156862745098 0.086274509803922 1.0 Specular 1 1.0 1.0 1.0 1.0 Emissive 0 0.18039215686275 0.12156862745098 0.086274509803922 1.0 Shininess 1 40" handleDynamicTopology="false" />
@@ -106,7 +106,7 @@
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
-        <TriangleCollisionModel name="Torus2CMT" proximity="0.2" color="0.7921568627451 0.50196078431373 0.2156862745098" />
+        <TriangleCollisionModel name="Torus2CMT" contactDistance="0.2" color="0.7921568627451 0.50196078431373 0.2156862745098" />
       </Node>
       <Node name="Visual">
         <OglModel name="Torus2VM" position="@/Mesh/MeshTorus1V.position" restPosition="@/Mesh/MeshTorus1V.position" triangles="@/Mesh/MeshTorus1V.triangles" material="mat Ambient 1 0.15843137254902 0.10039215686275 0.043137254901961 1.0 Diffuse 1 0.7921568627451 0.50196078431373 0.2156862745098 1.0 Specular 1 1.0 1.0 1.0 1.0 Emissive 0 0.7921568627451 0.50196078431373 0.2156862745098 1.0 Shininess 1 40" handleDynamicTopology="false" />
@@ -128,7 +128,7 @@
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
-        <TriangleCollisionModel name="Torus3CMT" proximity="0.2" color="0.7921568627451 0.50196078431373 0.2156862745098" />
+        <TriangleCollisionModel name="Torus3CMT" contactDistance="0.2" color="0.7921568627451 0.50196078431373 0.2156862745098" />
       </Node>
       <Node name="Visual">
         <OglModel name="Torus3VM" position="@/Mesh/MeshTorus1V.position" restPosition="@/Mesh/MeshTorus1V.position" triangles="@/Mesh/MeshTorus1V.triangles" material="mat Ambient 1 0.15843137254902 0.10039215686275 0.043137254901961 1.0 Diffuse 1 0.7921568627451 0.50196078431373 0.2156862745098 1.0 Specular 1 1.0 1.0 1.0 1.0 Emissive 0 0.7921568627451 0.50196078431373 0.2156862745098 1.0 Shininess 1 40" handleDynamicTopology="false" />
@@ -150,7 +150,7 @@
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
-        <TriangleCollisionModel name="Torus4CMT" proximity="0.2" color="0.7921568627451 0.50196078431373 0.2156862745098" />
+        <TriangleCollisionModel name="Torus4CMT" contactDistance="0.2" color="0.7921568627451 0.50196078431373 0.2156862745098" />
       </Node>
       <Node name="Visual">
         <OglModel name="Torus4VM" position="@/Mesh/MeshTorus1V.position" restPosition="@/Mesh/MeshTorus1V.position" triangles="@/Mesh/MeshTorus1V.triangles" material="mat Ambient 1 0.15843137254902 0.10039215686275 0.043137254901961 1.0 Diffuse 1 0.7921568627451 0.50196078431373 0.2156862745098 1.0 Specular 1 1.0 1.0 1.0 1.0 Emissive 0 0.7921568627451 0.50196078431373 0.2156862745098 1.0 Shininess 1 40" handleDynamicTopology="false" />
@@ -172,7 +172,7 @@
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
-        <TriangleCollisionModel name="Torus5CMT" proximity="0.2" color="0.7921568627451 0.50196078431373 0.2156862745098" />
+        <TriangleCollisionModel name="Torus5CMT" contactDistance="0.2" color="0.7921568627451 0.50196078431373 0.2156862745098" />
       </Node>
       <Node name="Visual">
         <OglModel name="Torus5VM" position="@/Mesh/MeshTorus1V.position" restPosition="@/Mesh/MeshTorus1V.position" triangles="@/Mesh/MeshTorus1V.triangles" material="mat Ambient 1 0.15843137254902 0.10039215686275 0.043137254901961 1.0 Diffuse 1 0.7921568627451 0.50196078431373 0.2156862745098 1.0 Specular 1 1.0 1.0 1.0 1.0 Emissive 0 0.7921568627451 0.50196078431373 0.2156862745098 1.0 Shininess 1 40" handleDynamicTopology="false" />
@@ -194,7 +194,7 @@
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
-        <TriangleCollisionModel name="Torus6CMT" proximity="0.2" color="0.94117647058824 0.93725490196078 0.89411764705882" />
+        <TriangleCollisionModel name="Torus6CMT" contactDistance="0.2" color="0.94117647058824 0.93725490196078 0.89411764705882" />
       </Node>
       <Node name="Visual">
         <OglModel name="Torus6VM" position="@/Mesh/MeshTorus1V.position" restPosition="@/Mesh/MeshTorus1V.position" triangles="@/Mesh/MeshTorus1V.triangles" material="mat Ambient 1 0.18823529411765 0.18745098039216 0.17882352941176 1.0 Diffuse 1 0.94117647058824 0.93725490196078 0.89411764705882 1.0 Specular 1 1.0 1.0 1.0 1.0 Emissive 0 0.94117647058824 0.93725490196078 0.89411764705882 1.0 Shininess 1 40" handleDynamicTopology="false" />
@@ -216,7 +216,7 @@
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
-        <TriangleCollisionModel name="Torus7CMT" proximity="0.2" color="0.94117647058824 0.93725490196078 0.89411764705882" />
+        <TriangleCollisionModel name="Torus7CMT" contactDistance="0.2" color="0.94117647058824 0.93725490196078 0.89411764705882" />
       </Node>
       <Node name="Visual">
         <OglModel name="Torus7VM" position="@/Mesh/MeshTorus1V.position" restPosition="@/Mesh/MeshTorus1V.position" triangles="@/Mesh/MeshTorus1V.triangles" material="mat Ambient 1 0.18823529411765 0.18745098039216 0.17882352941176 1.0 Diffuse 1 0.94117647058824 0.93725490196078 0.89411764705882 1.0 Specular 1 1.0 1.0 1.0 1.0 Emissive 0 0.94117647058824 0.93725490196078 0.89411764705882 1.0 Shininess 1 40" handleDynamicTopology="false" />
@@ -238,7 +238,7 @@
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
-        <TriangleCollisionModel name="Torus8CMT" proximity="0.2" color="0.94117647058824 0.93725490196078 0.89411764705882" />
+        <TriangleCollisionModel name="Torus8CMT" contactDistance="0.2" color="0.94117647058824 0.93725490196078 0.89411764705882" />
       </Node>
       <Node name="Visual">
         <OglModel name="Torus8VM" position="@/Mesh/MeshTorus1V.position" restPosition="@/Mesh/MeshTorus1V.position" triangles="@/Mesh/MeshTorus1V.triangles" material="mat Ambient 1 0.18823529411765 0.18745098039216 0.17882352941176 1.0 Diffuse 1 0.94117647058824 0.93725490196078 0.89411764705882 1.0 Specular 1 1.0 1.0 1.0 1.0 Emissive 0 0.94117647058824 0.93725490196078 0.89411764705882 1.0 Shininess 1 40" handleDynamicTopology="false" />
@@ -260,7 +260,7 @@
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
-        <TriangleCollisionModel name="Torus9CMT" proximity="0.2" color="0.94117647058824 0.93725490196078 0.89411764705882" />
+        <TriangleCollisionModel name="Torus9CMT" contactDistance="0.2" color="0.94117647058824 0.93725490196078 0.89411764705882" />
       </Node>
       <Node name="Visual">
         <OglModel name="Torus9VM" position="@/Mesh/MeshTorus1V.position" restPosition="@/Mesh/MeshTorus1V.position" triangles="@/Mesh/MeshTorus1V.triangles" material="mat Ambient 1 0.18823529411765 0.18745098039216 0.17882352941176 1.0 Diffuse 1 0.94117647058824 0.93725490196078 0.89411764705882 1.0 Specular 1 1.0 1.0 1.0 1.0 Emissive 0 0.94117647058824 0.93725490196078 0.89411764705882 1.0 Shininess 1 40" handleDynamicTopology="false" />
@@ -273,7 +273,7 @@
       <EdgeSetTopologyContainer name="Cyl0LineTopo" position="100 0 0  100 61.75 0" edges="0 1" />
       <MechanicalObject name="Cyl0LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl0LineAlgo" />
-      <LineCollisionModel name="Cyl0CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl0CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl0SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="100 0 0" />
         <OglModel name="Cyl0VM" position="@Cyl0SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -283,7 +283,7 @@
       <EdgeSetTopologyContainer name="Cyl1LineTopo" position="92.387953251129 0 38.268343236509  92.387953251129 61.75 38.268343236509" edges="0 1" />
       <MechanicalObject name="Cyl1LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl1LineAlgo" />
-      <LineCollisionModel name="Cyl1CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl1CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl1SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="92.387953251129 0 38.268343236509" />
         <OglModel name="Cyl1VM" position="@Cyl1SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -293,7 +293,7 @@
       <EdgeSetTopologyContainer name="Cyl2LineTopo" position="70.710678118655 0 70.710678118655  70.710678118655 61.75 70.710678118655" edges="0 1" />
       <MechanicalObject name="Cyl2LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl2LineAlgo" />
-      <LineCollisionModel name="Cyl2CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl2CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl2SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="70.710678118655 0 70.710678118655" />
         <OglModel name="Cyl2VM" position="@Cyl2SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -303,7 +303,7 @@
       <EdgeSetTopologyContainer name="Cyl3LineTopo" position="38.268343236509 0 92.387953251129  38.268343236509 61.75 92.387953251129" edges="0 1" />
       <MechanicalObject name="Cyl3LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl3LineAlgo" />
-      <LineCollisionModel name="Cyl3CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl3CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl3SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="38.268343236509 0 92.387953251129" />
         <OglModel name="Cyl3VM" position="@Cyl3SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -313,7 +313,7 @@
       <EdgeSetTopologyContainer name="Cyl4LineTopo" position="6.1232339957368E-15 0 100  6.1232339957368E-15 61.75 100" edges="0 1" />
       <MechanicalObject name="Cyl4LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl4LineAlgo" />
-      <LineCollisionModel name="Cyl4CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl4CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl4SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="6.1232339957368E-15 0 100" />
         <OglModel name="Cyl4VM" position="@Cyl4SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -323,7 +323,7 @@
       <EdgeSetTopologyContainer name="Cyl5LineTopo" position="-38.268343236509 0 92.387953251129  -38.268343236509 61.75 92.387953251129" edges="0 1" />
       <MechanicalObject name="Cyl5LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl5LineAlgo" />
-      <LineCollisionModel name="Cyl5CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl5CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl5SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="-38.268343236509 0 92.387953251129" />
         <OglModel name="Cyl5VM" position="@Cyl5SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -333,7 +333,7 @@
       <EdgeSetTopologyContainer name="Cyl6LineTopo" position="-70.710678118655 0 70.710678118655  -70.710678118655 61.75 70.710678118655" edges="0 1" />
       <MechanicalObject name="Cyl6LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl6LineAlgo" />
-      <LineCollisionModel name="Cyl6CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl6CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl6SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="-70.710678118655 0 70.710678118655" />
         <OglModel name="Cyl6VM" position="@Cyl6SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -343,7 +343,7 @@
       <EdgeSetTopologyContainer name="Cyl7LineTopo" position="-92.387953251129 0 38.268343236509  -92.387953251129 61.75 38.268343236509" edges="0 1" />
       <MechanicalObject name="Cyl7LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl7LineAlgo" />
-      <LineCollisionModel name="Cyl7CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl7CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl7SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="-92.387953251129 0 38.268343236509" />
         <OglModel name="Cyl7VM" position="@Cyl7SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -353,7 +353,7 @@
       <EdgeSetTopologyContainer name="Cyl8LineTopo" position="-100 0 1.2246467991474E-14  -100 61.75 1.2246467991474E-14" edges="0 1" />
       <MechanicalObject name="Cyl8LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl8LineAlgo" />
-      <LineCollisionModel name="Cyl8CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl8CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl8SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="-100 0 1.2246467991474E-14" />
         <OglModel name="Cyl8VM" position="@Cyl8SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -363,7 +363,7 @@
       <EdgeSetTopologyContainer name="Cyl9LineTopo" position="-92.387953251129 0 -38.268343236509  -92.387953251129 61.75 -38.268343236509" edges="0 1" />
       <MechanicalObject name="Cyl9LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl9LineAlgo" />
-      <LineCollisionModel name="Cyl9CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl9CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl9SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="-92.387953251129 0 -38.268343236509" />
         <OglModel name="Cyl9VM" position="@Cyl9SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -373,7 +373,7 @@
       <EdgeSetTopologyContainer name="Cyl10LineTopo" position="-70.710678118655 0 -70.710678118655  -70.710678118655 61.75 -70.710678118655" edges="0 1" />
       <MechanicalObject name="Cyl10LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl10LineAlgo" />
-      <LineCollisionModel name="Cyl10CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl10CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl10SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="-70.710678118655 0 -70.710678118655" />
         <OglModel name="Cyl10VM" position="@Cyl10SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -383,7 +383,7 @@
       <EdgeSetTopologyContainer name="Cyl11LineTopo" position="-38.268343236509 0 -92.387953251129  -38.268343236509 61.75 -92.387953251129" edges="0 1" />
       <MechanicalObject name="Cyl11LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl11LineAlgo" />
-      <LineCollisionModel name="Cyl11CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl11CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl11SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="-38.268343236509 0 -92.387953251129" />
         <OglModel name="Cyl11VM" position="@Cyl11SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -393,7 +393,7 @@
       <EdgeSetTopologyContainer name="Cyl12LineTopo" position="-1.836970198721E-14 0 -100  -1.836970198721E-14 61.75 -100" edges="0 1" />
       <MechanicalObject name="Cyl12LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl12LineAlgo" />
-      <LineCollisionModel name="Cyl12CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl12CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl12SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="-1.836970198721E-14 0 -100" />
         <OglModel name="Cyl12VM" position="@Cyl12SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -403,7 +403,7 @@
       <EdgeSetTopologyContainer name="Cyl13LineTopo" position="38.268343236509 0 -92.387953251129  38.268343236509 61.75 -92.387953251129" edges="0 1" />
       <MechanicalObject name="Cyl13LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl13LineAlgo" />
-      <LineCollisionModel name="Cyl13CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl13CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl13SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="38.268343236509 0 -92.387953251129" />
         <OglModel name="Cyl13VM" position="@Cyl13SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -413,7 +413,7 @@
       <EdgeSetTopologyContainer name="Cyl14LineTopo" position="70.710678118655 0 -70.710678118655  70.710678118655 61.75 -70.710678118655" edges="0 1" />
       <MechanicalObject name="Cyl14LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl14LineAlgo" />
-      <LineCollisionModel name="Cyl14CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl14CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl14SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="70.710678118655 0 -70.710678118655" />
         <OglModel name="Cyl14VM" position="@Cyl14SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -423,7 +423,7 @@
       <EdgeSetTopologyContainer name="Cyl15LineTopo" position="92.387953251129 0 -38.268343236509  92.387953251129 61.75 -38.268343236509" edges="0 1" />
       <MechanicalObject name="Cyl15LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl15LineAlgo" />
-      <LineCollisionModel name="Cyl15CML" proximity="6.5" moving="0" simulated="0" />
+      <LineCollisionModel name="Cyl15CML" contactDistance="6.5" moving="0" simulated="0" />
       <Node name="Visual">
         <TransformEngine name="Cyl15SurfXForm" input_position="@/Mesh/MeshCylinder.position" translation="92.387953251129 0 -38.268343236509" />
         <OglModel name="Cyl15VM" position="@Cyl15SurfXForm.output_position" triangles="@/Mesh/MeshCylinder.triangles" color="0.23 0.25 0.42"/>
@@ -433,7 +433,7 @@
     <Node name="Floor" tags="NoBBox" >
       <TriangleSetTopologyContainer name="FloorTopo" position="-1000 -5 -1000  1000 -5 -1000  1000 -5 1000  -1000 -5 1000" triangles="0 2 1  3 2 0" />
       <MechanicalObject template="Vec3"/>
-      <TriangleCollisionModel name="FloorCM" proximity="5" moving="0" simulated="0" />
+      <TriangleCollisionModel name="FloorCM" contactDistance="5" moving="0" simulated="0" />
       <Node name="Visu">
         <RegularGridTopology name="FloorTopo" nx="20" ny="1" nz="20" min="1000 0 -1000" max="-1000 0 1000" />
         <OglModel name="Visual" color="0.52 0.46 0.4" material="floor Ambient 1 0.01 0.01 0.01 0.0 Diffuse 1 0.52 0.46 0.4 1.0 Specular 0 1.0 1.0 1.0 1.0 Emissive 0 0.05 0.05 0.05 0.0 Shininess 0 20" />

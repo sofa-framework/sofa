@@ -102,7 +102,7 @@ void OBBCollisionModel<DataTypes>::computeBoundingTree(int maxDepth){
     cubeModel->resize(size);
     if (!empty())
     {
-        const typename OBBCollisionModel<DataTypes>::Real distance = (typename OBBCollisionModel<DataTypes>::Real)this->proximity.getValue();
+        const typename OBBCollisionModel<DataTypes>::Real distance = (typename OBBCollisionModel<DataTypes>::Real)this->d_contactDistance.getValue();
 
         std::vector<Coord> vs;
         vs.reserve(8);

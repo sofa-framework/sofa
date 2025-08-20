@@ -45,7 +45,7 @@
 
       <MechanicalObject src="@loader" template="Vec3d" tags="box" name="planeState" />
       
-      <DistanceGrid fileRigidDistanceGrid="data/mesh/box_inside.obj" scale="10" usePoints="0" proximity="0.3" contactStiffness="2"  />
+      <DistanceGrid fileRigidDistanceGrid="data/mesh/box_inside.obj" scale="10" usePoints="0" contactDistance="0.3" contactStiffness="2"  />
 
 
     </Node>

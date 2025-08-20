@@ -40,9 +40,9 @@
 #include "GraphModeler.h"
 #include "FilterLibrary.h"
 #include "SofaTutorialManager.h"
-#include <sofa/gui/qt/QDisplayPropertyWidget.h>
-#include <sofa/gui/qt/QMenuFilesRecentlyOpened.h>
-#include <sofa/gui/qt/SofaPluginManager.h>
+#include <sofa/qt/QDisplayPropertyWidget.h>
+#include <sofa/qt/QMenuFilesRecentlyOpened.h>
+#include <sofa/qt/SofaPluginManager.h>
 #include <sofa/helper/Factory.h>
 
 #include "QSofaTreeLibrary.h"

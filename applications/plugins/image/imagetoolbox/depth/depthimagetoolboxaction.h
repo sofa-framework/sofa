@@ -24,8 +24,6 @@ class DepthImageToolBox;
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -237,7 +235,6 @@ private:
     
 };
 
-}
 }
 }
 

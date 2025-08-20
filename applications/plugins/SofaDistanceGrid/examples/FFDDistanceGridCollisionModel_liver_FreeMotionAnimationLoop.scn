@@ -50,7 +50,7 @@
             filename="mesh/liver-smooth.obj" 
             scale="1.0" 
             usePoints="0" 
-            proximity="0.1" 
+            contactDistance="0.1"
             contactFriction="0.0" 
             topology="@grid"
         />
