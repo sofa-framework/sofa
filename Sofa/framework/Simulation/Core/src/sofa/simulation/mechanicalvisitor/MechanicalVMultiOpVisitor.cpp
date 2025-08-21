@@ -34,6 +34,7 @@ Visitor::Result MechanicalVMultiOpVisitor::fwdMechanicalState(VisitorContext* /*
 
 Visitor::Result MechanicalVMultiOpVisitor::fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
 {
+    SOFA_UNUSED(ctx);
     if (mapped)
     {
         mm->vMultiOp(this->params, ops );
