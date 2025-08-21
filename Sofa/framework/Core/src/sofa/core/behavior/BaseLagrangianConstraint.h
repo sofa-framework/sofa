@@ -86,8 +86,8 @@ public:
     typedef sofa::type::vector<type::Vec<3,double>> VecConstCoord;
     typedef sofa::type::vector<type::Vec<3,double>> VecConstDeriv;
     typedef sofa::type::vector<double> VecConstArea;
-    SOFA_ATTRIBUTE_DEPRECATED__DELETED_ARGUMENTS()
-    virtual void getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas) final;
+    SOFA_ATTRIBUTE_DISABLED__DELETED_ARGUMENTS()
+    virtual void getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas) final = delete;
 
     /// Add the corresponding ConstraintResolution using the offset parameter
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC) and resolution parameters (smoothness, ...)
