@@ -32,9 +32,6 @@ class SOFA_SIMULATION_CORE_API MechanicalGetNonDiagonalMassesCountVisitor : publ
 public:
     sofa::Size* const m_nbNonDiagonalMassesPtr { nullptr };
 
-    // SOFA_ATTRIBUTE_DISABLED("v24.06", "v24.12", "given result is not a Real anymore since https://github.com/sofa-framework/sofa/pull/4328")
-    MechanicalGetNonDiagonalMassesCountVisitor(const sofa::core::MechanicalParams* mparams, SReal* result) = delete;
-
     MechanicalGetNonDiagonalMassesCountVisitor(const sofa::core::MechanicalParams* mparams, sofa::Size* result)
         : MechanicalVisitor(mparams), m_nbNonDiagonalMassesPtr(result)
     {
