@@ -41,15 +41,6 @@ void BaseLagrangianConstraint::getConstraintInfo(const ConstraintParams* cParams
     SOFA_UNUSED(ids);
 }
 
-void BaseLagrangianConstraint::getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
-{
-    msg_warning()<<"BaseLagrangianConstraint::getConstraintInfo signature has changed. Positions, directions and areas are not used anymore. This method is deprecated since v25.06 and will be deleted in v25.12.";
-    this->getConstraintInfo(cParams, blocks, ids);
-    SOFA_UNUSED(positions);
-    SOFA_UNUSED(directions);
-    SOFA_UNUSED(areas);
-}
-
 void BaseLagrangianConstraint::getConstraintResolution(const ConstraintParams* cParams,
     std::vector<ConstraintResolution*>& resTab, unsigned& offset)
 {
