@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaImplicitField/fwd.h>
-
 #include <sofa/core/visual/VisualParams.h>
 using sofa::core::visual::VisualParams ;
 
@@ -33,7 +31,7 @@ using sofa::core::RegisterObject ;
 
 #include <future>
 
-namespace sofa::component::geometry
+namespace sofa::component::engine
 {
 
 FieldToSurfaceMesh::FieldToSurfaceMesh()
@@ -98,6 +96,8 @@ void FieldToSurfaceMesh::updateMeshIfNeeded(){
         (l_field->getRevisionCounter() != lastGenerationFieldCounter || getRevisionCounter() != lastGenerationCounter) )
     {
         std::cout << "START A NEW PROCESSING " << std::endl;
+        startTime = std::chrono::high_resolution_clock::now();
+
         // Cleans the two buffers.
         sofa::helper::getWriteOnlyAccessor(d_out_points).clear();
         sofa::helper::getWriteOnlyAccessor(d_out_triangles).clear();
@@ -129,12 +129,20 @@ void FieldToSurfaceMesh::updateMeshIfNeeded(){
         d_out_points.setValue(tmpPoints);
         d_out_triangles.setValue(tmpTriangles);
 
-        tmpPoints.clear();
-        tmpTriangles.clear();
-
         lastGenerationFieldCounter = l_field->getRevisionCounter();
         lastGenerationCounter = getRevisionCounter();
         workFinished.store(false);
+
+        auto endTime = std::chrono::high_resolution_clock::now();
+        auto durationTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+
+        msg_info() << "Benchmark: " << msgendl
+                   << "   duration: " << durationTime.count() << " milliseconds" << msgendl
+                   << "   samples per seconds: " << tmpPoints.size() / (1.0*durationTime.count()/1000.0) ;
+
+        tmpPoints.clear();
+        tmpTriangles.clear();
+
         return;
     }
 }
@@ -215,38 +223,61 @@ void FieldToSurfaceMesh::generateSurfaceMesh(double isoval, double mstep, double
     z = 0;
     newPlane();
 
-    i = 0 ;
     cz = gridmin.z()  ;
+    std::vector<type::Vec3> positions;
+    std::vector<double> output;
+
+    // Generates all the positions...
     for (int y = 0 ; y < ny ; ++y)
     {
         cy = gridmin.y() + mstep * y ;
-        for (int x = 0 ; x < nx ; ++x, ++i)
+        for (int x = 0 ; x < nx ; ++x)
         {
             cx = gridmin.x() + mstep * x ;
-
-            Vec3d pos { cx, cy, cz }  ;
-            double res = field->getValue(pos) ;
-            (P1+i)->data = res ;
+            positions.emplace_back(type::Vec3{ cx, cy, cz });
         }
     }
 
+    field->getValues(positions, output) ;
+
+    // Copy back the data into planes.
+    auto it = P1;
+    for(auto res : output){
+        it->data = res;
+        it++;
+    }
+
+    ///
     for (z=1; z<=nz; ++z)
     {
         newPlane();
 
         i = 0 ;
         cz = gridmin.z() + mstep * z ;
+
+        positions.clear();
+        output.clear();
+        positions.reserve(nx*ny);
+        output.reserve(nx*ny);
+
+        // Generates all the positions...
         for (int y = 0 ; y < ny ; ++y)
         {
             cy = gridmin.y() + mstep * y ;
-            for (int x = 0 ; x < nx ; ++x, ++i)
+            for (int x = 0 ; x < nx ; ++x)
             {
                 cx = gridmin.x() + mstep * x ;
-
-                Vec3d pos { cx, cy, cz }  ;
-                double res = field->getValue(pos) ;
-                (P1+i)->data = res ;
+                positions.emplace_back(type::Vec3{ cx, cy, cz });
             }
+        }
+
+        field->getValues(positions, output) ;
+
+        // Copy back the data into planes.
+        auto it = P1;
+        for(auto res : output){
+            it->data = res;
+            it++;
         }
 
         unsigned int i=0;
@@ -349,8 +380,7 @@ void FieldToSurfaceMesh::newPlane()
 }
 
 // Register in the Factory
-template<>
-void registerToFactory<FieldToSurfaceMesh>(sofa::core::ObjectFactory* factory)
+void registerFieldToSurfaceMesh(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(sofa::core::ObjectRegistrationData("Generates a surface mesh from a field function.")
                              .add< FieldToSurfaceMesh >());

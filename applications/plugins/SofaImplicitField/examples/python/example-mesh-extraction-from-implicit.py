@@ -11,13 +11,13 @@ def createScene(root : Sofa.Core.Node):
  
     root.Visual.addObject("FieldToSurfaceMesh", name="polygonizer1",
                           field=field1.linkpath, min=[-1,-1,-1], max=[1,1,1],
-                          isoValue="0.0", step="0.1",doAsync=True)    
+                          isoValue="0.0", step="0.05", printLog=True)    
  
     root.Visual.addObject("FieldToSurfaceMesh", name="polygonizer2",
                           field=field2.linkpath, min=[1,-1,-1], max=[3,1,1],
-                          isoValue="0.0", step="0.05",doAsync=True)    
+                          isoValue="0.0", step="0.05", printLog=True)    
     
-    root.Visual.addObject("OglModel", name="renderer", 
-                        position=root.Visual.polygonizer2.outputPoints.linkpath, 
-                        triangles=root.Visual.polygonizer2.outputTriangles.linkpath)
+    #root.Visual.addObject("OglModel", name="renderer", 
+    #                    position=root.Visual.polygonizer2.outputPoints.linkpath, 
+    #                    triangles=root.Visual.polygonizer2.outputTriangles.linkpath)
     

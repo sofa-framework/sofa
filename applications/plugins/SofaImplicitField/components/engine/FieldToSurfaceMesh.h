@@ -27,13 +27,14 @@
 #include <future>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace sofa::component::geometry
+namespace sofa::component::engine
 {
 
 typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
 typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
 typedef sofa::type::vector<sofa::type::Vec3d> VecCoord;
 
+using sofa::component::geometry::ScalarField;
 using sofa::core::visual::VisualParams ;
 using sofa::core::objectmodel::BaseObject ;
 using sofa::type::Vec3d ;
@@ -128,6 +129,7 @@ private:
     std::atomic<bool> workInProgress;
     std::atomic<bool> workFinished;
     std::future<bool> results;
+    std::chrono::time_point<std::chrono::high_resolution_clock> startTime;
     VecCoord tmpPoints;
     SeqTriangles tmpTriangles;
 };

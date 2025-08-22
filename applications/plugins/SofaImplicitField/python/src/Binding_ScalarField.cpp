@@ -184,6 +184,8 @@ void moduleAddScalarField(py::module &m) {
                                         "named argument='" + py::cast<std::string>(value) + "' and as a"
                                                                                             "positional argument='" +
                                         py::cast<std::string>(args[0]) + "'.");
+                }else{
+                    py::cast<ScalarField*>(cc)->setName(py::cast<std::string>(value));
                 }
             }
         }
