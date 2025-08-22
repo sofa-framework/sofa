@@ -19,6 +19,6 @@
     <Node name="visual">
         <MeshOBJLoader name="meshLoader_0" filename="data/pelvis_f.obj" handleSeams="1"/>
         <OglModel name="Visual" src="@meshLoader_0" color="1 .4 0.5 1"/>
-        <RigidMapping template="Rigid,Vec3d" input='@.' output='@Visual'/>
+        <RigidMapping template="Rigid,Vec3d" input='@../DOFs' output='@Visual'/>
     </Node>
 </Node>
