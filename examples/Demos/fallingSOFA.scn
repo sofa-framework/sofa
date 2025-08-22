@@ -30,7 +30,7 @@
     <VisualStyle displayFlags="showVisual"/>
 
     <!-- Define Mouse left click as a Bilateral Lagrangian constraint -->
-    <ConstraintAttachButtonSetting />
+    <ConstraintAttachButtonSetting/>
 
     <!-- Header of the simulation -->
     <!-- This animation loop will add steps in the time intyegration to enable Lagrangian-based constraint solving
@@ -54,7 +54,7 @@
     <!-- Non-simulated node used to create underlying deformable topology -->
     <Node name="BeamDomainFromGridTopology">
         <!-- Computes a hexahedral topology based on a parametric grid -->
-        <RegularGridTopology name="HexaTop" n="15 3 6" min="0 0.02 0" max="0.5 0.08 0.22"/>
+        <RegularGridTopology name="HexaTop" n="15 3 6" min="-0.25 0.02 0.5" max="0.25 0.08 0.72"/>
 
         <Node name="TetraTopology">
             <!-- Transform the hexahedral topology into a tetrahedral topology
@@ -106,32 +106,32 @@
 
         <!-- Visual model is made up of all the parts of the logo, mapped using barycentric mapping -->
         <Node name="VisuLogo">
-            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/LogoVisu.obj" scale3d="0.015 0.015 0.015" translation="0 0.05 0" rotation="180 0 0"/>
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/LogoVisu.obj" scale3d="0.015 0.015 0.015" translation="-0.25 0.05 0.5" rotation="180 0 0"/>
             <!-- This replaces MechanicalObject for nodes that are only there for visualization -->
             <OglModel name="VisualModel" color="0.7 .35 0 1.0" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
             <BarycentricMapping name="MappingVisu" input="@../mstate" output="@VisualModel" isMechanical="false" />
         </Node>
 
         <Node name="VisuS">
-            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/SVisu.obj" scale3d="0.015 0.015 0.015" translation="0 0.05 0" rotation="180 0 0"/>
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/SVisu.obj" scale3d="0.015 0.015 0.015" translation="-0.25 0.05 0.5" rotation="180 0 0"/>
             <OglModel name="VisualModel" color="0.7 0.7 0.7 1" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
             <BarycentricMapping name="MappingVisu" input="@../mstate" output="@VisualModel" isMechanical="false" />
         </Node>
 
         <Node name="VisuO">
-            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/O.obj" scale3d="0.015 0.015 0.015"  translation="0 0.05 0" rotation="180 0 0"/>
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/O.obj" scale3d="0.015 0.015 0.015"  translation="-0.25 0.05 0.5" rotation="180 0 0"/>
             <OglModel name="VisualModel" color="0.7 0.7 0.7 1" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
             <BarycentricMapping name="MappingVisu" input="@../mstate" output="@VisualModel" isMechanical="false" />
         </Node>
 
         <Node name="VisuF">
-            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/FVisu.obj" scale3d="0.015 0.015 0.015" translation="0 0.05 0" rotation="180 0 0"/>
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/FVisu.obj" scale3d="0.015 0.015 0.015" translation="-0.25 0.05 0.5" rotation="180 0 0"/>
             <OglModel name="VisualModel" color="0.7 0.7 0.7 1" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
             <BarycentricMapping name="MappingVisu" input="@../mstate" output="@VisualModel" isMechanical="false" />
         </Node>
 
         <Node name="VisuA">
-            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/AVisu.obj" scale3d="0.015 0.015 0.015" translation="0 0.05 0" rotation="180 0 0"/>
+            <MeshOBJLoader name="SurfaceLoader" filename="mesh/SofaScene/AVisu.obj" scale3d="0.015 0.015 0.015" translation="-0.25 0.05 0.5" rotation="180 0 0"/>
             <OglModel name="VisualModel" color="0.7 0.7 0.7 1" position="@SurfaceLoader.position" triangles="@SurfaceLoader.triangles" />
             <BarycentricMapping name="MappingVisu" input="@../mstate" output="@VisualModel" isMechanical="false" />
         </Node>
@@ -147,8 +147,8 @@
         <VisualStyle displayFlags="showCollisionModels"/>
         <!-- Surface triangles are defined by hand -->
         <TriangleSetTopologyContainer name="CubeTopo"
-                                      position="0.2 0 -0.5   0.2 0.1 -0.5  0.3 0.1 -0.5   0.3 0 -0.5
-                                                0.2 0 -0.6   0.2 0.1 -0.6  0.3 0.1 -0.6   0.3 0 -0.6"
+                                      position="-0.05 0 0   -0.05 0.1 0  0.05 0.1 0   0.05 0 0
+                                                -0.05 0 -0.1   -0.05 0.1 -0.1  0.05 0.1 -0.1   0.05 0 -0.1"
                                       triangles="0 2 1  0 3 2
                                                  0 1 5  0 5 4
                                                  0 4 7  0 7 3
