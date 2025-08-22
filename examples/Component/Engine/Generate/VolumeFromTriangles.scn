@@ -3,13 +3,20 @@
     <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [VolumeFromTriangles] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshVTKLoader] -->
     <RequiredPlugin name="Sofa.Component.Setting"/> <!-- Needed to use components [BackgroundSetting] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->  
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->  
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->  
+
 
     <DefaultAnimationLoop/>
     <BackgroundSetting color="1 1 1" />
     <Node name="Volume" >
         <MeshSTLLoader name="mesh" filename="mesh/Bunny.stl"/>
-        <MeshTopology src="@mesh" name="topology" drawTriangles="1"/>
+        <MeshTopology src="@mesh" name="topology"/>
         <MechanicalObject />
         <VolumeFromTriangles/>
+        <Node name="Visual" >
+            <OglModel src="@../topology" color="0.5 0.5 0.5 0.3"/>
+        </Node>
     </Node>
 </Node>
