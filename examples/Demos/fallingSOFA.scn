@@ -32,9 +32,6 @@
     <!-- Define Mouse left click as a Bilateral Lagrangian constraint -->
     <ConstraintAttachButtonSetting/>
 
-    <!-- Drawing the world coordinate axis -->
-    <LineAxis  infinite="true" vanishing="true" thickness="1"/>
-
     <!-- Header of the simulation -->
     <!-- This animation loop will add steps in the time intyegration to enable Lagrangian-based constraint solving
      For more information see : https://sofa-framework.github.io/doc/components/animationloop/freemotionanimationloop/ -->
