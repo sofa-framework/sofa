@@ -16,8 +16,8 @@
     <EulerImplicitSolver name="cg_odesolver" printLog="0" rayleighStiffness="0.5" rayleighMass="0.5"/>
     <CGLinearSolver name="linear solver" iterations="50" tolerance="1e-009" threshold="1e-009"/>
     <MechanicalObject template="Rigid3d" name="DOFs" rest_position="	0 0 0 0 0 0 1"/>
-    <MeshOBJLoader name="meshLoader_0" filename="data/pelvis_f.obj" handleSeams="1"/>
     <Node name="visual">
+        <MeshOBJLoader name="meshLoader_0" filename="data/pelvis_f.obj" handleSeams="1"/>
         <OglModel name="Visual" src="@meshLoader_0" color="1 .4 0.5 1"/>
         <RigidMapping template="Rigid,Vec3d" input='@.' output='@Visual'/>
     </Node>
