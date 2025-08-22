@@ -62,18 +62,32 @@ sofa::helper::OptionsGroup CollisionResponse::initializeResponseOptions(sofa::co
     }
 
     sofa::helper::OptionsGroup responseOptions(listResponse);
-    if (listResponse.contains("PenalityContactForceField"))
-        responseOptions.setSelectedItem("PenalityContactForceField");
-
     return responseOptions;
 }
 
 void CollisionResponse::init()
 {
+
     Inherit1::init();
+
+    if(!d_response.isSet())
+    {
+        msg_error() << "No response method has been set";
+        return;
+    }
+
     if (d_response.getValue().size() == 0)
     {
+        msg_error() << "Response method is empty and may have been wrongly set. Option list is: " << initializeResponseOptions(getContext());
         d_response.setValue(initializeResponseOptions(getContext()));
+    }
+    else
+    {
+        sofa::helper::OptionsGroup responseOptions = initializeResponseOptions(getContext());
+        if(responseOptions.isInOptionsList(d_response.getValue().getSelectedItem()) < 0)
+        {
+            msg_error() << "response \"" << d_response.getValue().getSelectedItem() << "\" is not a valid response method. Response can be among the list: " << responseOptions;
+        }
     }
 }
 
@@ -110,7 +124,6 @@ void CollisionResponse::setDefaultResponseType(const std::string &responseT)
         d_response.endEdit();
     }
 }
-
 
 void CollisionResponse::changeInstance(Instance inst)
 {
