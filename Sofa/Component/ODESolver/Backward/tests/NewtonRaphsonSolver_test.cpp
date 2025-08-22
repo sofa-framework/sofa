@@ -30,7 +30,7 @@ namespace sofa
 
 struct NewtonRaphsonSquareRootTest : public testing::NumericTest<SReal>
 {
-    void onSetUp() override
+    void doSetUp() override
     {
         root = simulation::getSimulation()->createNewNode("root");
 
@@ -224,7 +224,7 @@ struct NewtonRaphsonTest : public testing::BaseSimulationTest
     component::odesolver::backward::NewtonRaphsonSolver* m_solver { nullptr };
     component::statecontainer::MechanicalObject<defaulttype::Vec1Types>* m_state { nullptr };
 
-    void onSetUp() override
+    void doSetUp() override
     {
         sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Direct");
         sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
