@@ -35,8 +35,8 @@
 #endif
 
 #ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_DEPRECATED__TYPO()
+#define SOFA_ATTRIBUTE_DISABLED__TYPO()
 #else
-#define SOFA_ATTRIBUTE_DEPRECATED__TYPO() \
-    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Use function Instantiate instead.")
+#define SOFA_ATTRIBUTE_DISABLED__TYPO() \
+    SOFA_ATTRIBUTE_DISABLED("v25.06", "v25.12", "Use function Instantiate instead.")
 #endif
