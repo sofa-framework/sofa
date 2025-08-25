@@ -66,12 +66,12 @@ public:
     static std::vector<std::string> ListSupportedGUI();
     static std::string ListSupportedGUI(char separator);
     static void RegisterParameters(ArgumentParser* parser);
-    static int createGUI(sofa::simulation::NodeSPtr groot = nullptr, const char* filename = nullptr);
+    static int createGUI(sofa::simulation::NodeSPtr groot = sofa::simulation::NodeSPtr{}, const char* filename = nullptr);
     static void closeGUI();
 
     /// @name Static methods for direct access to GUI
     /// @{
-    static int MainLoop(sofa::simulation::NodeSPtr groot = nullptr, const char* filename = nullptr);
+    static int MainLoop(sofa::simulation::NodeSPtr groot = sofa::simulation::NodeSPtr{}, const char* filename = nullptr);
 
     static void Redraw();
 
