@@ -40,6 +40,12 @@ using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectJacobianMatrixVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalProjectJacobianMatrixVisitor;
 
+
+#include <sofa/component/constraint/lagrangian/solver/ProjectedGaussSeidelConstraintProblem.h>
+#include <sofa/component/constraint/lagrangian/solver/UnbuiltGaussSeidelConstraintProblem.h>
+#include <sofa/component/constraint/lagrangian/solver/NNCGConstraintProblem.h>
+
+
 namespace sofa::component::constraint::lagrangian::solver
 {
 
@@ -63,14 +69,12 @@ void clearMultiVecId(sofa::core::objectmodel::BaseContext* ctx, const sofa::core
 static constexpr GenericConstraintSolver::ResolutionMethod defaultResolutionMethod("ProjectedGaussSeidel");
 
 GenericConstraintSolver::GenericConstraintSolver()
-    : d_resolutionMethod( initData(&d_resolutionMethod, defaultResolutionMethod, "resolutionMethod", ("Method used to solve the constraint problem\n" + ResolutionMethod::dataDescription()).c_str()))
-    , d_maxIt(initData(&d_maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
+    : d_maxIt(initData(&d_maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
     , d_tolerance(initData(&d_tolerance, 0.001_sreal, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , d_sor(initData(&d_sor, 1.0_sreal, "sor", "Successive Over Relaxation parameter (0-2)"))
     , d_regularizationTerm(initData(&d_regularizationTerm, 0.0_sreal, "regularizationTerm", "Add regularization factor times the identity matrix to the compliance W when solving constraints"))
     , d_scaleTolerance(initData(&d_scaleTolerance, true, "scaleTolerance", "Scale the error tolerance with the number of constraints"))
     , d_allVerified(initData(&d_allVerified, false, "allVerified", "All constraints must be verified (each constraint's error < tolerance)"))
-    , d_newtonIterations(initData(&d_newtonIterations, 100, "newtonIterations", "Maximum iteration number of Newton (for the NonsmoothNonlinearConjugateGradient solver only)"))
     , d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
     , d_computeGraphs(initData(&d_computeGraphs, false, "computeGraphs", "Compute graphs of errors and forces during resolution"))
     , d_graphErrors(initData(&d_graphErrors, "graphErrors", "Sum of the constraints' errors at each iteration"))
@@ -86,7 +90,6 @@ GenericConstraintSolver::GenericConstraintSolver()
     , d_computeConstraintForces(initData(&d_computeConstraintForces,false,
                                         "computeConstraintForces",
                                         "enable the storage of the constraintForces."))
-    , current_cp(&m_cpBuffer[0])
     , last_cp(nullptr)
 {
     addAlias(&d_maxIt, "maxIt");
@@ -114,12 +117,35 @@ GenericConstraintSolver::GenericConstraintSolver()
 
     d_maxIt.setRequired(true);
     d_tolerance.setRequired(true);
+
+
+    for (unsigned i=0; i< CP_BUFFER_SIZE; ++i)
+    {
+        switch ( d_resolutionMethod.getValue())
+        {
+            case ResolutionMethod("ProjectedGaussSeidel"): {
+                m_cpBuffer[i] = new ProjectedGaussSeidelConstraintProblem;
+                break;
+            }
+            case ResolutionMethod("UnbuiltGaussSeidel"): {
+                m_cpBuffer[i] = new UnbuiltGaussSeidelConstraintProblem;
+                break;
+            }
+            case ResolutionMethod("NonsmoothNonlinearConjugateGradient"): {
+                m_cpBuffer[i] = new NNCGConstraintProblem;
+                break;
+            }
+        }
+    }
+    current_cp = m_cpBuffer[0];
+
+
 }
 
 GenericConstraintSolver::~GenericConstraintSolver()
 {}
 
-void GenericConstraintSolver::init()
+void GenericConstraintSolver::  init()
 {
     ConstraintSolverImpl::init();
 
@@ -140,14 +166,6 @@ void GenericConstraintSolver::init()
         simulation::MainTaskSchedulerFactory::createInRegistry()->init();
     }
 
-    if(d_newtonIterations.isSet())
-    {
-        static constexpr ResolutionMethod NonsmoothNonlinearConjugateGradient("NonsmoothNonlinearConjugateGradient");
-        if (d_resolutionMethod.getValue() != NonsmoothNonlinearConjugateGradient)
-        {
-            msg_warning() << "data \"newtonIterations\" is not only taken into account when using the NonsmoothNonlinearConjugateGradient solver";
-        }
-    }
 }
 
 void GenericConstraintSolver::cleanup()
@@ -209,170 +227,12 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
         MechanicalGetConstraintResolutionVisitor(cParams, current_cp->constraintsResolutions).execute(getContext());
     }
 
-    // Resolution depending on the method selected
-    switch ( d_resolutionMethod.getValue() )
-    {
-        case ResolutionMethod("ProjectedGaussSeidel"):
-        case ResolutionMethod("NonsmoothNonlinearConjugateGradient"):
-        {
-            buildSystem_matrixAssembly(cParams);
-            break;
-        }
-        case ResolutionMethod("UnbuiltGaussSeidel"):
-        {
-            buildSystem_matrixFree(numConstraints);
-            break;
-        }
-        default:
-            msg_error() << "Wrong \"resolutionMethod\" given";
-    }
+
+    current_cp->buildSystem(cParams, numConstraints, this);
 
     return true;
 }
 
-void GenericConstraintSolver::addRegularization(linearalgebra::BaseMatrix& W)
-{
-    const SReal regularization =  d_regularizationTerm.getValue();
-    if (regularization>std::numeric_limits<SReal>::epsilon())
-    {
-        for (int i=0; i<W.rowSize(); ++i)
-        {
-            W.add(i,i,regularization);
-        }
-    }
-}
-
-void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints)
-{
-    for (const auto& cc : l_constraintCorrections)
-    {
-        if (!cc->isActive()) continue;
-
-        current_cp->constraints_sequence.resize(numConstraints);
-        std::iota(current_cp->constraints_sequence.begin(), current_cp->constraints_sequence.end(), 0);
-
-        // some constraint corrections (e.g LinearSolverConstraintCorrection)
-        // can change the order of the constraints, to optimize later computations
-        cc->resetForUnbuiltResolution(current_cp->getF(), current_cp->constraints_sequence);
-    }
-
-    sofa::linearalgebra::SparseMatrix<SReal>* Wdiag = &current_cp->Wdiag;
-    Wdiag->resize(numConstraints, numConstraints);
-
-    // for each contact, the constraint corrections that are involved with the contact are memorized
-    current_cp->cclist_elems.clear();
-    current_cp->cclist_elems.resize(numConstraints);
-    const int nbCC = l_constraintCorrections.size();
-    for (unsigned int i = 0; i < numConstraints; i++)
-        current_cp->cclist_elems[i].resize(nbCC, nullptr);
-
-    unsigned int nbObjects = 0;
-    for (unsigned int c_id = 0; c_id < numConstraints;)
-    {
-        bool foundCC = false;
-        nbObjects++;
-        const unsigned int l = current_cp->constraintsResolutions[c_id]->getNbLines();
-
-        for (unsigned int j = 0; j < l_constraintCorrections.size(); j++)
-        {
-            core::behavior::BaseConstraintCorrection* cc = l_constraintCorrections[j];
-            if (!cc->isActive()) continue;
-            if (cc->hasConstraintNumber(c_id))
-            {
-                current_cp->cclist_elems[c_id][j] = cc;
-                cc->getBlockDiagonalCompliance(Wdiag, c_id, c_id + l - 1);
-                foundCC = true;
-            }
-        }
-
-        msg_error_when(!foundCC) << "No constraintCorrection found for constraint" << c_id ;
-
-        SReal** w =  current_cp->getW();
-        for(unsigned int m = c_id; m < c_id + l; m++)
-            for(unsigned int n = c_id; n < c_id + l; n++)
-                w[m][n] = Wdiag->element(m, n);
-
-        c_id += l;
-    }
-
-    current_cp->change_sequence = false;
-    if(current_cp->constraints_sequence.size() == nbObjects)
-        current_cp->change_sequence=true;
-
-    addRegularization(current_cp->W);
-    addRegularization(current_cp->Wdiag);
-
-}
-
-GenericConstraintSolver::ComplianceWrapper::ComplianceMatrixType& GenericConstraintSolver::
-ComplianceWrapper::matrix()
-{
-    if (m_isMultiThreaded)
-    {
-        if (!m_threadMatrix)
-        {
-            m_threadMatrix = std::make_unique<ComplianceMatrixType>();
-            m_threadMatrix->resize(m_complianceMatrix.rowSize(), m_complianceMatrix.colSize());
-        }
-        return *m_threadMatrix;
-    }
-    return m_complianceMatrix;
-}
-
-void GenericConstraintSolver::ComplianceWrapper::assembleMatrix() const
-{
-    if (m_threadMatrix)
-    {
-        for (linearalgebra::BaseMatrix::Index j = 0; j < m_threadMatrix->rowSize(); ++j)
-        {
-            for (linearalgebra::BaseMatrix::Index l = 0; l < m_threadMatrix->colSize(); ++l)
-            {
-                m_complianceMatrix.add(j, l, m_threadMatrix->element(j,l));
-            }
-        }
-    }
-}
-
-void GenericConstraintSolver::buildSystem_matrixAssembly(const core::ConstraintParams *cParams)
-{
-    SCOPED_TIMER_VARNAME(getComplianceTimer, "Get Compliance");
-    dmsg_info() <<" computeCompliance in "  << l_constraintCorrections.size()<< " constraintCorrections" ;
-
-    const bool multithreading = d_multithreading.getValue();
-
-    const simulation::ForEachExecutionPolicy execution = multithreading ?
-        simulation::ForEachExecutionPolicy::PARALLEL :
-        simulation::ForEachExecutionPolicy::SEQUENTIAL;
-
-    simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
-    assert(taskScheduler);
-
-    //Used to prevent simultaneous accesses to the main compliance matrix
-    std::mutex mutex;
-
-    //Visits all constraint corrections to compute the compliance matrix projected
-    //in the constraint space.
-    simulation::forEachRange(execution, *taskScheduler, l_constraintCorrections.begin(), l_constraintCorrections.end(),
-        [&cParams, this, &multithreading, &mutex](const auto& range)
-        {
-            ComplianceWrapper compliance(current_cp->W, multithreading);
-
-            for (auto it = range.start; it != range.end; ++it)
-            {
-                core::behavior::BaseConstraintCorrection* cc = *it;
-                if (cc->isActive())
-                {
-                    cc->addComplianceInConstraintSpace(cParams, &compliance.matrix());
-                }
-            }
-
-            std::lock_guard guard(mutex);
-            compliance.assembleMatrix();
-        });
-
-    addRegularization(current_cp->W);
-    dmsg_info() << " computeCompliance_done "  ;
-}
 
 void GenericConstraintSolver::rebuildSystem(const SReal massFactor, const SReal forceFactor)
 {
@@ -429,35 +289,16 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
     current_cp->allVerified = d_allVerified.getValue();
     current_cp->sor = d_sor.getValue();
 
-
-    // Resolution depending on the method selected
-    switch ( d_resolutionMethod.getValue())
+    if (notMuted())
     {
-        case ResolutionMethod("ProjectedGaussSeidel"): {
-            if (notMuted())
-            {
-                std::stringstream tmp;
-                tmp << "---> Before Resolution" << msgendl  ;
-                printLCP(tmp, current_cp->getDfree(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), true);
+        std::stringstream tmp;
+        tmp << "---> Before Resolution" << msgendl  ;
+        printLCP(tmp, current_cp->getDfree(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), true);
 
-                msg_info() << tmp.str() ;
-            }
-            SCOPED_TIMER_VARNAME(gaussSeidelTimer, "ConstraintsGaussSeidel");
-            current_cp->gaussSeidel(0, this);
-            break;
-        }
-        case ResolutionMethod("UnbuiltGaussSeidel"): {
-            SCOPED_TIMER_VARNAME(unbuiltGaussSeidelTimer, "ConstraintsUnbuiltGaussSeidel");
-            current_cp->unbuiltGaussSeidel(0, this);
-            break;
-        }
-        case ResolutionMethod("NonsmoothNonlinearConjugateGradient"): {
-            current_cp->NNCG(this, d_newtonIterations.getValue());
-            break;
-        }
-        default:
-            msg_error() << "Wrong \"resolutionMethod\" given";
+        msg_info() << tmp.str() ;
     }
+
+    current_cp->solve(0, this);
 
 
     this->d_currentError.setValue(current_cp->currentError);
@@ -591,7 +432,7 @@ void GenericConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::Bas
 
     for (unsigned int i = 0; i < CP_BUFFER_SIZE; ++i)
     {
-        GenericConstraintProblem* p = &m_cpBuffer[i];
+        GenericConstraintProblem* p = m_cpBuffer[i];
         if (p == p1 || p == p2)
         {
             m_cpIsLocked[i] = true;
