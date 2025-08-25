@@ -53,20 +53,19 @@ public:
 
     bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
-    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
-    void addRegularization(linearalgebra::BaseMatrix & W);
+    void rebuildSystem(const SReal massFactor, const SReal forceFactor) override;
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void computeResidual(const core::ExecParams* /*params*/) override;
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
 
+
     MAKE_SELECTABLE_ITEMS(ResolutionMethod,
         sofa::helper::Item{"ProjectedGaussSeidel", "Projected Gauss-Seidel"},
         sofa::helper::Item{"UnbuiltGaussSeidel", "Gauss-Seidel where the matrix is not assembled"},
         sofa::helper::Item{"NonsmoothNonlinearConjugateGradient", "Non-smooth non-linear conjugate gradient"}
     );
-
     Data< ResolutionMethod > d_resolutionMethod; ///< Method used to solve the constraint problem, among: "ProjectedGaussSeidel", "UnbuiltGaussSeidel" or "for NonsmoothNonlinearConjugateGradient"
 
     Data<int> d_maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
@@ -75,7 +74,6 @@ public:
     Data< SReal > d_regularizationTerm; ///< add regularization*Id to W when solving for constraints
     Data<bool> d_scaleTolerance; ///< Scale the error tolerance with the number of constraints
     Data<bool> d_allVerified; ///< All constraints must be verified (each constraint's error < tolerance)
-    Data<int> d_newtonIterations; ///< Maximum iteration number of Newton (for the NonsmoothNonlinearConjugateGradient solver only)
     Data<bool> d_multithreading; ///< Build compliances concurrently
     Data<bool> d_computeGraphs; ///< Compute graphs of errors and forces during resolution
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphErrors; ///< Sum of the constraints' errors at each iteration
@@ -99,7 +97,7 @@ protected:
     void clearConstraintProblemLocks();
 
     static constexpr auto CP_BUFFER_SIZE = 10;
-    sofa::type::fixed_array<GenericConstraintProblem, CP_BUFFER_SIZE> m_cpBuffer;
+    sofa::type::fixed_array<GenericConstraintProblem * , CP_BUFFER_SIZE> m_cpBuffer;
     sofa::type::fixed_array<bool, CP_BUFFER_SIZE> m_cpIsLocked;
     GenericConstraintProblem *current_cp, *last_cp;
 
@@ -112,24 +110,6 @@ protected:
     void buildSystem_matrixAssembly(const core::ConstraintParams *cParams);
 
 private:
-
-    struct ComplianceWrapper
-    {
-        using ComplianceMatrixType = sofa::linearalgebra::LPtrFullMatrix<SReal>;
-
-        ComplianceWrapper(ComplianceMatrixType& complianceMatrix, bool isMultiThreaded)
-        : m_isMultiThreaded(isMultiThreaded), m_complianceMatrix(complianceMatrix) {}
-
-        ComplianceMatrixType& matrix();
-
-        void assembleMatrix() const;
-
-    private:
-        bool m_isMultiThreaded { false };
-        ComplianceMatrixType& m_complianceMatrix;
-        std::unique_ptr<ComplianceMatrixType> m_threadMatrix;
-    };
-
 
     sofa::type::vector<core::behavior::BaseConstraintCorrection*> filteredConstraintCorrections() const;
 
