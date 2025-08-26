@@ -158,7 +158,15 @@ void NNCGConstraintSolver::doSolve( SReal timeout)
                 current_cp->m_p[j] = beta*current_cp->m_p[j] -current_cp-> m_deltaF[j];
             }
         }
+
+        //Stopping condition based on constraint evolution rate
+        if (current_cp->m_deltaF_new.norm() < tol)
+        {
+            break;
+        }
     }
+
+
 
     current_cp->result_output(this, force, error, iterCount, convergence);
 }
