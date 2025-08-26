@@ -17,7 +17,7 @@
     <VisualStyle displayFlags="showForceFields" />
     <DefaultVisualManagerLoop />
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver tolerance="0.0001" maxIterations="1000" resolutionMethod="ProjectedGaussSeidel" regularizationTerm="0.0"/>
+    <ProjectedGaussSeidelConstraintSolver tolerance="0.0001" maxIterations="1000" regularizationTerm="0.0"/>
 
 
     <Node name="TargetCube0">

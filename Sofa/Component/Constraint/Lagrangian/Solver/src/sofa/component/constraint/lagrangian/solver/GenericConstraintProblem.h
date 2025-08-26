@@ -59,12 +59,12 @@ public:
 
     void setSolver(GenericConstraintSolver* solver);
 
-    sofa::linearalgebra::FullVector<SReal> _d; //
-    std::vector<core::behavior::ConstraintResolution*> constraintsResolutions; //
-    bool scaleTolerance, allVerified; //
-    SReal sor; /** GAUSS-SEIDEL **/
-    SReal currentError; //
-    int currentIterations; //
+    sofa::linearalgebra::FullVector<SReal> _d;
+    std::vector<core::behavior::ConstraintResolution*> constraintsResolutions;
+    bool scaleTolerance, allVerified;
+    SReal sor;
+    SReal currentError;
+    int currentIterations;
 
     sofa::linearalgebra::FullVector<SReal> m_lam;
     sofa::linearalgebra::FullVector<SReal> m_deltaF;

@@ -27,7 +27,7 @@
     <VisualStyle displayFlags="showForceFields"/>
     <ConstraintAttachButtonSetting /> <!-- The presence of this component sets the mouse interaction to Lagrangian-based constraints at the GUI launch -->
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver maxIterations="200" tolerance="1.0e-8"/>
+    <ProjectedGaussSeidelConstraintSolver maxIterations="200" tolerance="1.0e-8"/>
     <CollisionPipeline name="Pipeline" />
     <BruteForceBroadPhase name="BroadPhase" />
     <BVHNarrowPhase name="NarrowPhase" />

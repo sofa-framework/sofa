@@ -69,7 +69,7 @@ using namespace core::behavior;
 using namespace sofa::simulation;
 using sofa::helper::ScopedAdvancedTimer;
 
-using DefaultConstraintSolver = sofa::component::constraint::lagrangian::solver::GenericConstraintSolver;
+using DefaultConstraintSolver = sofa::component::constraint::lagrangian::solver::ProjectedGaussSeidelConstraintSolver;
 
 FreeMotionAnimationLoop::FreeMotionAnimationLoop() :
     d_solveVelocityConstraintFirst(initData(&d_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
