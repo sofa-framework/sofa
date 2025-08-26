@@ -20,8 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/constraint/lagrangian/solver/BuiltConstraintProblem.h>
-#include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
+#include <sofa/component/constraint/lagrangian/solver/BuiltConstraintSolver.h>
 
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
@@ -30,13 +29,13 @@
 namespace sofa::component::constraint::lagrangian::solver
 {
 
-    void BuiltConstraintProblem::buildSystem( const core::ConstraintParams *cParams, unsigned int numConstraints, GenericConstraintSolver* solver )
+    void BuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cParams, unsigned int numConstraints)
     {
         SOFA_UNUSED(numConstraints);
         SCOPED_TIMER_VARNAME(getComplianceTimer, "Get Compliance");
-        dmsg_info() <<" computeCompliance in "  << solver->l_constraintCorrections.size()<< " constraintCorrections" ;
+        dmsg_info() <<" computeCompliance in "  << l_constraintCorrections.size()<< " constraintCorrections" ;
 
-        const bool multithreading = solver->d_multithreading.getValue();
+        const bool multithreading = d_multithreading.getValue();
 
         const simulation::ForEachExecutionPolicy execution = multithreading ?
             simulation::ForEachExecutionPolicy::PARALLEL :
@@ -50,10 +49,10 @@ namespace sofa::component::constraint::lagrangian::solver
 
         //Visits all constraint corrections to compute the compliance matrix projected
         //in the constraint space.
-        simulation::forEachRange(execution, *taskScheduler,  solver->l_constraintCorrections.begin(),  solver->l_constraintCorrections.end(),
+        simulation::forEachRange(execution, *taskScheduler,  l_constraintCorrections.begin(),  l_constraintCorrections.end(),
             [&cParams, this, &multithreading, &mutex](const auto& range)
             {
-                ComplianceWrapper compliance(W, multithreading);
+                ComplianceWrapper compliance(current_cp->W, multithreading);
 
                 for (auto it = range.start; it != range.end; ++it)
                 {
@@ -68,12 +67,12 @@ namespace sofa::component::constraint::lagrangian::solver
                 compliance.assembleMatrix();
             });
 
-        addRegularization(W,  solver->d_regularizationTerm.getValue());
+        addRegularization(current_cp->W,  d_regularizationTerm.getValue());
         dmsg_info() << " computeCompliance_done "  ;
     }
 
 
-    BuiltConstraintProblem::ComplianceWrapper::ComplianceMatrixType& BuiltConstraintProblem::ComplianceWrapper::matrix()
+    BuiltConstraintSolver::ComplianceWrapper::ComplianceMatrixType& BuiltConstraintSolver::ComplianceWrapper::matrix()
     {
         if (m_isMultiThreaded)
         {
@@ -87,7 +86,7 @@ namespace sofa::component::constraint::lagrangian::solver
         return m_complianceMatrix;
     }
 
-    void BuiltConstraintProblem::ComplianceWrapper::assembleMatrix() const
+    void BuiltConstraintSolver::ComplianceWrapper::assembleMatrix() const
     {
         if (m_threadMatrix)
         {

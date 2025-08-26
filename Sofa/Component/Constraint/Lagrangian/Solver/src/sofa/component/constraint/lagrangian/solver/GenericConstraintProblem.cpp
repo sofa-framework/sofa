@@ -74,12 +74,16 @@ void GenericConstraintProblem::solveTimed(SReal tol, int maxIt, SReal timeout)
     tolerance = tol;
     maxIterations = maxIt;
 
-    solve(timeout);
+    m_solver->doSolve(timeout);
 
     tolerance = tempTol;
     maxIterations = tempMaxIt;
 }
 
+void GenericConstraintProblem::setSolver(GenericConstraintSolver* solver)
+{
+    m_solver = solver;
+}
 
 void GenericConstraintProblem::result_output(GenericConstraintSolver *solver, SReal *force, SReal error, int iterCount, bool convergence)
 {
@@ -104,16 +108,6 @@ void GenericConstraintProblem::result_output(GenericConstraintSolver *solver, SR
 }
 
 
-void GenericConstraintProblem::addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization)
-{
-    if (regularization>std::numeric_limits<SReal>::epsilon())
-    {
-        for (int i=0; i<W.rowSize(); ++i)
-        {
-            W.add(i,i,regularization);
-        }
-    }
-}
 
 
 }

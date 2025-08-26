@@ -40,7 +40,7 @@ namespace sofa::component::constraint::lagrangian::solver
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintSolver : public ConstraintSolverImpl
 {
     typedef sofa::core::MultiVecId MultiVecId;
-
+    friend GenericConstraintProblem;
 public:
     SOFA_CLASS(GenericConstraintSolver, ConstraintSolverImpl);
 protected:
@@ -104,10 +104,13 @@ protected:
     sofa::core::MultiVecDerivId m_lambdaId;
     sofa::core::MultiVecDerivId m_dxId;
 
-    void buildSystem_matrixFree(unsigned int numConstraints);
+    virtual void initializeConstraintProblems();
+    virtual void doBuildSystem( const core::ConstraintParams *cParams, unsigned int numConstraints) = 0;
+    virtual void doSolve( SReal timeout = 0.0) = 0;
 
-    // Explicitly compute the compliance matrix projected in the constraint space
-    void buildSystem_matrixAssembly(const core::ConstraintParams *cParams);
+
+    static void addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization);
+
 
 private:
 

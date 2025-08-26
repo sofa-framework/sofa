@@ -20,38 +20,45 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/constraint/lagrangian/solver/UnbuiltGaussSeidelConstraintProblem.h>
+#include <sofa/component/constraint/lagrangian/solver/UnbuiltGaussSeidelConstraintSolver.h>
 #include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
+#include <sofa/component/constraint/lagrangian/solver/UnbuiltConstraintProblem.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/core/ObjectFactory.h>
 
 
 namespace sofa::component::constraint::lagrangian::solver
 {
 
-void UnbuiltGaussSeidelConstraintProblem::solve( SReal timeout, GenericConstraintSolver* solver)
+void UnbuiltGaussSeidelConstraintSolver::doSolve( SReal timeout)
 {
+    UnbuiltConstraintProblem* c_current_cp = dynamic_cast<UnbuiltConstraintProblem*>(current_cp);
+    if (c_current_cp == nullptr)
+    {
+        msg_error()<<"Constraint problem must derive from UnbuiltConstraintProblem";
+        return;
+    }
+
     SCOPED_TIMER_VARNAME(unbuiltGaussSeidelTimer, "ConstraintsUnbuiltGaussSeidel");
 
-    if(!solver)
-        return;
 
-    if(!this->dimension)
+    if(!c_current_cp->getDimension())
     {
-        this->currentError = 0.0;
-        this->currentIterations = 0;
+        c_current_cp->currentError = 0.0;
+        c_current_cp->currentIterations = 0;
         return;
     }
 
     SReal t0 = (SReal)sofa::helper::system::thread::CTime::getTime();
     SReal timeScale = 1.0 / (SReal)sofa::helper::system::thread::CTime::getTicksPerSec();
 
-    SReal *dfree = getDfree();
-    SReal *force = getF();
-    SReal **w = getW();
-    SReal tol = tolerance;
+    SReal *dfree = c_current_cp->getDfree();
+    SReal *force = c_current_cp->getF();
+    SReal **w = c_current_cp->getW();
+    SReal tol = c_current_cp->tolerance;
 
-    SReal *d = _d.ptr();
+    SReal *d = c_current_cp->_d.ptr();
 
     unsigned int iter = 0, nb = 0;
 
@@ -59,24 +66,24 @@ void UnbuiltGaussSeidelConstraintProblem::solve( SReal timeout, GenericConstrain
 
     bool convergence = false;
     sofa::type::vector<SReal> tempForces;
-    if(sor != 1.0) tempForces.resize(dimension);
+    if(c_current_cp->sor != 1.0) tempForces.resize(c_current_cp->getDimension());
 
-    if(scaleTolerance && !allVerified)
-        tol *= dimension;
+    if(c_current_cp->scaleTolerance && !c_current_cp->allVerified)
+        tol *= c_current_cp->getDimension();
 
 
-    for(int i=0; i<dimension; )
+    for(int i=0; i<c_current_cp->getDimension(); )
     {
-        if(!constraintsResolutions[i])
+        if(!c_current_cp->constraintsResolutions[i])
         {
-            msg_warning(solver) << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
-            dimension = i;
+            msg_warning() << "Bad size of constraintsResolutions in GenericConstraintSolver" ;
+            c_current_cp->setDimension(i);
             break;
         }
-        constraintsResolutions[i]->init(i, w, force);
-        i += constraintsResolutions[i]->getNbLines();
+        c_current_cp->constraintsResolutions[i]->init(i, w, force);
+        i += c_current_cp->constraintsResolutions[i]->getNbLines();
     }
-    memset(force, 0, dimension * sizeof(SReal));	// Erase previous forces for the time being
+    memset(force, 0, c_current_cp->getDimension() * sizeof(SReal));	// Erase previous forces for the time being
 
 
     bool showGraphs = false;
@@ -85,40 +92,40 @@ void UnbuiltGaussSeidelConstraintProblem::solve( SReal timeout, GenericConstrain
     sofa::type::vector<SReal> tabErrors;
 
 
-    showGraphs = solver->d_computeGraphs.getValue();
+    showGraphs = d_computeGraphs.getValue();
 
     if(showGraphs)
     {
-        graph_forces = solver->d_graphForces.beginEdit();
+        graph_forces = d_graphForces.beginEdit();
         graph_forces->clear();
 
-        graph_violations = solver->d_graphViolations.beginEdit();
+        graph_violations = d_graphViolations.beginEdit();
         graph_violations->clear();
 
-        graph_residuals = &(*solver->d_graphErrors.beginEdit())["Error"];
+        graph_residuals = &(*d_graphErrors.beginEdit())["Error"];
         graph_residuals->clear();
     }
 
-    tabErrors.resize(dimension);
+    tabErrors.resize(c_current_cp->getDimension());
 
     // temporary buffers
     std::vector<SReal> errF;
     std::vector<SReal> tempF;
 
-    for(iter=0; iter < static_cast<unsigned int>(maxIterations); iter++)
+    for(iter=0; iter < static_cast<unsigned int>(c_current_cp->maxIterations); iter++)
     {
         bool constraintsAreVerified = true;
-        if(sor != 1.0)
+        if(c_current_cp->sor != 1.0)
         {
-            std::copy_n(force, dimension, tempForces.begin());
+            std::copy_n(force, c_current_cp->getDimension(), tempForces.begin());
         }
 
         error=0.0;
-        for (auto it_c = this->constraints_sequence.begin(); it_c != constraints_sequence.end(); )  // increment of it_c realized at the end of the loop
+        for (auto it_c = c_current_cp->constraints_sequence.begin(); it_c != c_current_cp->constraints_sequence.end(); )  // increment of it_c realized at the end of the loop
         {
             const auto j = *it_c;
             //1. nbLines provide the dimension of the constraint
-            nb = constraintsResolutions[j]->getNbLines();
+            nb = c_current_cp->constraintsResolutions[j]->getNbLines();
 
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
@@ -130,14 +137,14 @@ void UnbuiltGaussSeidelConstraintProblem::solve( SReal timeout, GenericConstrain
             std::copy_n(&dfree[j], nb, &d[j]);
 
             //   (b) contribution of forces are added to d
-            for (auto* el : cclist_elems[j])
+            for (auto* el : c_current_cp->cclist_elems[j])
             {
                 if (el)
                     el->addConstraintDisplacement(d, j, j+nb-1);
             }
 
             //3. the specific resolution of the constraint(s) is called
-            constraintsResolutions[j]->resolution(j, w, d, force, dfree);
+            c_current_cp->constraintsResolutions[j]->resolution(j, w, d, force, dfree);
 
             //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
             SReal contraintError = 0.0;
@@ -165,11 +172,11 @@ void UnbuiltGaussSeidelConstraintProblem::solve( SReal timeout, GenericConstrain
                     constraintsAreVerified = false;
             }
 
-            if(constraintsResolutions[j]->getTolerance())
+            if(c_current_cp->constraintsResolutions[j]->getTolerance())
             {
-                if(contraintError > constraintsResolutions[j]->getTolerance())
+                if(contraintError > c_current_cp->constraintsResolutions[j]->getTolerance())
                     constraintsAreVerified = false;
-                contraintError *= tol / constraintsResolutions[j]->getTolerance();
+                contraintError *= tol / c_current_cp->constraintsResolutions[j]->getTolerance();
             }
 
             error += contraintError;
@@ -192,7 +199,7 @@ void UnbuiltGaussSeidelConstraintProblem::solve( SReal timeout, GenericConstrain
                     force[j+l] -= errF[l]; // DForce
                 }
 
-                for (auto* el : cclist_elems[j])
+                for (auto* el : c_current_cp->cclist_elems[j])
                 {
                     if (el)
                         el->setConstraintDForce(force, j, j+nb-1, update);
@@ -205,7 +212,7 @@ void UnbuiltGaussSeidelConstraintProblem::solve( SReal timeout, GenericConstrain
 
         if(showGraphs)
         {
-            for(int j=0; j<dimension; j++)
+            for(int j=0; j<c_current_cp->getDimension(); j++)
             {
                 std::ostringstream oss;
                 oss << "f" << j;
@@ -220,10 +227,10 @@ void UnbuiltGaussSeidelConstraintProblem::solve( SReal timeout, GenericConstrain
             graph_residuals->push_back(error);
         }
 
-        if(sor != 1.0)
+        if(c_current_cp->sor != 1.0)
         {
-            for(int j=0; j<dimension; j++)
-                force[j] = sor * force[j] + (1-sor) * tempForces[j];
+            for(int j=0; j<c_current_cp->getDimension(); j++)
+                force[j] = c_current_cp->sor * force[j] + (1-c_current_cp->sor) * tempForces[j];
         }
         if(timeout)
         {
@@ -232,12 +239,12 @@ void UnbuiltGaussSeidelConstraintProblem::solve( SReal timeout, GenericConstrain
 
             if(dt > timeout)
             {
-                currentError = error;
-                currentIterations = iter+1;
+                c_current_cp->currentError = error;
+                c_current_cp->currentIterations = iter+1;
                 return;
             }
         }
-        else if(allVerified)
+        else if(c_current_cp->allVerified)
         {
             if(constraintsAreVerified)
             {
@@ -254,34 +261,40 @@ void UnbuiltGaussSeidelConstraintProblem::solve( SReal timeout, GenericConstrain
 
 
 
-    sofa::helper::AdvancedTimer::valSet("GS iterations", currentIterations);
+    sofa::helper::AdvancedTimer::valSet("GS iterations", c_current_cp->currentIterations);
 
-    result_output(solver, force, error, iter, convergence);
+    c_current_cp->result_output(this, force, error, iter, convergence);
 
     if(showGraphs)
     {
-        solver->d_graphErrors.endEdit();
+        d_graphErrors.endEdit();
 
-        sofa::type::vector<SReal>& graph_constraints = (*solver->d_graphConstraints.beginEdit())["Constraints"];
+        sofa::type::vector<SReal>& graph_constraints = (*d_graphConstraints.beginEdit())["Constraints"];
         graph_constraints.clear();
 
-        for(int j=0; j<dimension; )
+        for(int j=0; j<c_current_cp->getDimension(); )
         {
-            nb = constraintsResolutions[j]->getNbLines();
+            nb = c_current_cp->constraintsResolutions[j]->getNbLines();
 
             if(tabErrors[j])
                 graph_constraints.push_back(tabErrors[j]);
-            else if(constraintsResolutions[j]->getTolerance())
-                graph_constraints.push_back(constraintsResolutions[j]->getTolerance());
+            else if(c_current_cp->constraintsResolutions[j]->getTolerance())
+                graph_constraints.push_back(c_current_cp->constraintsResolutions[j]->getTolerance());
             else
                 graph_constraints.push_back(tol);
 
             j += nb;
         }
-        solver->d_graphConstraints.endEdit();
+        d_graphConstraints.endEdit();
 
-        solver->d_graphForces.endEdit();
+        d_graphForces.endEdit();
     }
+}
+
+void registerUnbuiltGaussSeidelConstraintSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components using an Unbuilt version of the Gauss-Seidel iterative method")
+        .add< UnbuiltGaussSeidelConstraintSolver >());
 }
 
 }

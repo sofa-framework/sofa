@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,22 +20,28 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/constraint/lagrangian/solver/config.h>
 
 #include <sofa/component/constraint/lagrangian/solver/GenericConstraintProblem.h>
-#include <sofa/core/behavior/ConstraintResolution.h>
+#include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
+
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API UnbuiltConstraintProblem : public GenericConstraintProblem
 {
 public:
-    SOFA_CLASS(UnbuiltConstraintProblem, GenericConstraintProblem);
+    typedef std::vector< core::behavior::BaseConstraintCorrection* > ConstraintCorrections;
 
-    virtual void buildSystem( const core::ConstraintParams *cParams, unsigned int numConstraints, GenericConstraintSolver* solver = nullptr) override;
+    UnbuiltConstraintProblem(GenericConstraintSolver* solver)
+    : GenericConstraintProblem(solver)
+    {}
 
-protected:
     linearalgebra::SparseMatrix<SReal> Wdiag; /** UNBUILT **/
     std::list<unsigned int> constraints_sequence; /** UNBUILT **/
     std::vector< ConstraintCorrections > cclist_elems; /** UNBUILT **/
+
+
 };
 }
