@@ -21,19 +21,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/solver/BuiltConstraintProblem.h>
+#include <sofa/component/constraint/lagrangian/solver/UnbuiltConstraintSolver.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ProjectedGaussSeidelConstraintProblem : public BuiltConstraintProblem
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API UnbuiltGaussSeidelConstraintSolver : public UnbuiltConstraintSolver
 {
 public:
-    SOFA_CLASS(ProjectedGaussSeidelConstraintProblem, BuiltConstraintProblem);
+    SOFA_CLASS(UnbuiltGaussSeidelConstraintSolver, UnbuiltConstraintSolver);
 
-    virtual void solve( SReal timeout = 0.0, GenericConstraintSolver* solver = nullptr);
-
-    void gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool& constraintsAreVerified, SReal& error, sofa::type::vector<SReal>& tabErrors) const;
-
+    virtual void doSolve( SReal timeout = 0.0) override;
 };
 }

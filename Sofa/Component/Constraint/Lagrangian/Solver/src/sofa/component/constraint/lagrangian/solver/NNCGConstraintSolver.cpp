@@ -20,71 +20,70 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/constraint/lagrangian/solver/NNCGConstraintProblem.h>
+#include <sofa/component/constraint/lagrangian/solver/NNCGConstraintSolver.h>
 #include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/core/ObjectFactory.h>
 
 
 namespace sofa::component::constraint::lagrangian::solver
 {
 
-void NNCGConstraintProblem::solve( SReal timeout, GenericConstraintSolver* solver)
+void NNCGConstraintSolver::doSolve( SReal timeout)
 {
     SCOPED_TIMER_VARNAME(unbuiltGaussSeidelTimer, "NonsmoothNonlinearConjugateGradient");
 
-    if(!solver)
-        return;
 
-    const int dimension = getDimension();
+    const int dimension = current_cp->getDimension();
 
     if(!dimension)
     {
-        currentError = 0.0;
-        currentIterations = 0;
+        current_cp->currentError = 0.0;
+        current_cp->currentIterations = 0;
         return;
     }
 
-    m_lam.clear();
-    m_lam.resize(dimension);
-    m_deltaF.clear();
-    m_deltaF.resize(dimension);
-    m_deltaF_new.clear();
-    m_deltaF_new.resize(dimension);
-    m_p.clear();
-    m_p.resize(dimension);
+    current_cp->m_lam.clear();
+    current_cp->m_lam.resize(dimension);
+    current_cp->m_deltaF.clear();
+    current_cp->m_deltaF.resize(dimension);
+    current_cp->m_deltaF_new.clear();
+    current_cp->m_deltaF_new.resize(dimension);
+    current_cp->m_p.clear();
+    current_cp->m_p.resize(dimension);
 
 
-    SReal *dfree = getDfree();
-    SReal *force = getF();
-    SReal **w = getW();
-    SReal tol = tolerance;
+    SReal *dfree = current_cp->getDfree();
+    SReal *force = current_cp->getF();
+    SReal **w = current_cp->getW();
+    SReal tol = current_cp->tolerance;
 
-    SReal *d = _d.ptr();
+    SReal *d = current_cp->_d.ptr();
 
 
     SReal error = 0.0;
     bool convergence = false;
     sofa::type::vector<SReal> tempForces;
 
-    if(sor != 1.0)
+    if(current_cp->sor != 1.0)
     {
         tempForces.resize(dimension);
     }
 
-    if(scaleTolerance && !allVerified)
+    if(current_cp->scaleTolerance && !current_cp->allVerified)
     {
         tol *= dimension;
     }
 
     for(int i=0; i<dimension; )
     {
-        if(!constraintsResolutions[i])
+        if(!current_cp->constraintsResolutions[i])
         {
-            msg_error(solver) << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
+            msg_error() << "Bad size of constraintsResolutions in GenericConstraintSolver" ;
             break;
         }
-        constraintsResolutions[i]->init(i, w, force);
-        i += constraintsResolutions[i]->getNbLines();
+        current_cp->constraintsResolutions[i]->init(i, w, force);
+        i += current_cp->constraintsResolutions[i]->getNbLines();
     }
 
     sofa::type::vector<SReal> tabErrors(dimension);
@@ -92,14 +91,14 @@ void NNCGConstraintProblem::solve( SReal timeout, GenericConstraintSolver* solve
     {
         // perform one iteration of ProjectedGaussSeidel
         bool constraintsAreVerified = true;
-        std::copy_n(force, dimension, std::begin(m_lam));
+        std::copy_n(force, dimension, std::begin(current_cp->m_lam));
 
         gaussSeidel_increment(false, dfree, force, w, tol, d, dimension, constraintsAreVerified, error, tabErrors);
 
         for(int j=0; j<dimension; j++)
         {
-            m_deltaF[j] = -(force[j] - m_lam[j]);
-            m_p[j] = - m_deltaF[j];
+            current_cp->m_deltaF[j] = -(force[j] - current_cp->m_lam[j]);
+            current_cp->m_p[j] = - current_cp->m_deltaF[j];
         }
     }
 
@@ -107,14 +106,14 @@ void NNCGConstraintProblem::solve( SReal timeout, GenericConstraintSolver* solve
 
     int iterCount = 0;
 
-    for(int i=1; i<solver->d_maxIt.getValue(); i++)
+    for(int i=1; i<d_maxIt.getValue(); i++)
     {
         iterCount ++;
         bool constraintsAreVerified = true;
 
         for(int j=0; j<dimension; j++)
         {
-            m_lam[j] = force[j];
+            current_cp->m_lam[j] = force[j];
         }
 
 
@@ -122,7 +121,7 @@ void NNCGConstraintProblem::solve( SReal timeout, GenericConstraintSolver* solve
         gaussSeidel_increment(true, dfree, force, w, tol, d, dimension, constraintsAreVerified, error, tabErrors);
 
 
-        if(allVerified)
+        if(current_cp->allVerified)
         {
             if(constraintsAreVerified)
             {
@@ -140,28 +139,34 @@ void NNCGConstraintProblem::solve( SReal timeout, GenericConstraintSolver* solve
         // NNCG update with the correction p
         for(int j=0; j<dimension; j++)
         {
-            m_deltaF_new[j] = -(force[j] - m_lam[j]);
+            current_cp->m_deltaF_new[j] = -(force[j] - current_cp->m_lam[j]);
         }
 
-        const SReal beta = m_deltaF_new.dot(m_deltaF_new) / m_deltaF.dot(m_deltaF);
-        m_deltaF.eq(m_deltaF_new, 1);
+        const SReal beta = current_cp->m_deltaF_new.dot(current_cp->m_deltaF_new) / current_cp->m_deltaF.dot(current_cp->m_deltaF);
+        current_cp->m_deltaF.eq(current_cp->m_deltaF_new, 1);
 
         if(beta > 1)
         {
-            m_p.clear();
-            m_p.resize(dimension);
+            current_cp->m_p.clear();
+            current_cp->m_p.resize(dimension);
         }
         else
         {
             for(int j=0; j<dimension; j++)
             {
-                force[j] += beta*m_p[j];
-                m_p[j] = beta*m_p[j] - m_deltaF[j];
+                force[j] += beta*current_cp->m_p[j];
+                current_cp->m_p[j] = beta*current_cp->m_p[j] -current_cp-> m_deltaF[j];
             }
         }
     }
 
-    result_output(solver, force, error, iterCount, convergence);
+    current_cp->result_output(this, force, error, iterCount, convergence);
+}
+
+void registerNNCGConstraintSolver(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("A Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components using the Non-smooth Non-linear Conjugate Gradient method")
+        .add< NNCGConstraintSolver >());
 }
 
 }

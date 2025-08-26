@@ -35,7 +35,7 @@ namespace sofa::component::constraint::lagrangian::solver
 {
 
 
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintProblem
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API   ConstraintProblem
 {
 public:
     // The compliance matrix projected in the constraint space
@@ -59,6 +59,7 @@ public:
 
     // Returns the number of scalar constraints, or equivalently the number of Lagrange multipliers
     int getDimension() const { return dimension; }
+    void setDimension(int dim) { dimension = dim; }
 
     SReal** getW() { return W.lptr(); }
     SReal* getDfree() { return dFree.ptr(); }

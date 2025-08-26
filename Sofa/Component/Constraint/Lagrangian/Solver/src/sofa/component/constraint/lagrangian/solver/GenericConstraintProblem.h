@@ -30,19 +30,19 @@ namespace sofa::component::constraint::lagrangian::solver
 
 class GenericConstraintSolver;
 
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintProblem : public ConstraintProblem, public sofa::core::objectmodel::BaseObject
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintProblem : public ConstraintProblem
 {
 public:
-    SOFA_CLASS(GenericConstraintProblem, BaseObject);
 
     typedef std::vector< core::behavior::BaseConstraintCorrection* > ConstraintCorrections;
 
-    GenericConstraintProblem()
+    GenericConstraintProblem(GenericConstraintSolver* solver)
     : scaleTolerance(true)
     , allVerified(false)
     , sor(1.0)
     , currentError(0.0)
     , currentIterations(0)
+    , m_solver(solver)
     {}
 
     ~GenericConstraintProblem() override
@@ -57,10 +57,7 @@ public:
     void result_output(GenericConstraintSolver* solver, SReal *force, SReal error, int iterCount, bool convergence);
     void solveTimed(SReal tol, int maxIt, SReal timeout) override;
 
-    virtual void buildSystem( const core::ConstraintParams *cParams, unsigned int numConstraints, GenericConstraintSolver* solver = nullptr) = 0;
-    virtual void solve( SReal timeout = 0.0, GenericConstraintSolver* solver = nullptr) = 0;
-
-    static void addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization);
+    void setSolver(GenericConstraintSolver* solver);
 
     sofa::linearalgebra::FullVector<SReal> _d; //
     std::vector<core::behavior::ConstraintResolution*> constraintsResolutions; //
@@ -69,11 +66,13 @@ public:
     SReal currentError; //
     int currentIterations; //
 
-protected:
     sofa::linearalgebra::FullVector<SReal> m_lam;
     sofa::linearalgebra::FullVector<SReal> m_deltaF;
     sofa::linearalgebra::FullVector<SReal> m_deltaF_new;
     sofa::linearalgebra::FullVector<SReal> m_p;
+protected:
+
+    GenericConstraintSolver* m_solver;
 
 };
 }

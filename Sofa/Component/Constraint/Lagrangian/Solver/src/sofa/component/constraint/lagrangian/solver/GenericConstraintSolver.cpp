@@ -25,7 +25,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/helper/AdvancedTimer.h>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/component/constraint/lagrangian/solver/visitors/ConstraintStoreLambdaVisitor.h>
 #include <sofa/core/behavior/MultiVec.h>
@@ -41,9 +40,6 @@ using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
 using sofa::simulation::mechanicalvisitor::MechanicalProjectJacobianMatrixVisitor;
 
 
-#include <sofa/component/constraint/lagrangian/solver/ProjectedGaussSeidelConstraintProblem.h>
-#include <sofa/component/constraint/lagrangian/solver/UnbuiltGaussSeidelConstraintProblem.h>
-#include <sofa/component/constraint/lagrangian/solver/NNCGConstraintProblem.h>
 
 
 namespace sofa::component::constraint::lagrangian::solver
@@ -117,36 +113,16 @@ GenericConstraintSolver::GenericConstraintSolver()
 
     d_maxIt.setRequired(true);
     d_tolerance.setRequired(true);
-
-
-    for (unsigned i=0; i< CP_BUFFER_SIZE; ++i)
-    {
-        switch ( d_resolutionMethod.getValue())
-        {
-            case ResolutionMethod("ProjectedGaussSeidel"): {
-                m_cpBuffer[i] = new ProjectedGaussSeidelConstraintProblem;
-                break;
-            }
-            case ResolutionMethod("UnbuiltGaussSeidel"): {
-                m_cpBuffer[i] = new UnbuiltGaussSeidelConstraintProblem;
-                break;
-            }
-            case ResolutionMethod("NonsmoothNonlinearConjugateGradient"): {
-                m_cpBuffer[i] = new NNCGConstraintProblem;
-                break;
-            }
-        }
-    }
-    current_cp = m_cpBuffer[0];
-
-
 }
 
 GenericConstraintSolver::~GenericConstraintSolver()
 {}
 
+
+
 void GenericConstraintSolver::  init()
 {
+    this->initializeConstraintProblems();
     ConstraintSolverImpl::init();
 
     simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
@@ -166,6 +142,16 @@ void GenericConstraintSolver::  init()
         simulation::MainTaskSchedulerFactory::createInRegistry()->init();
     }
 
+
+}
+
+void GenericConstraintSolver::initializeConstraintProblems()
+{
+    for (unsigned i=0; i< CP_BUFFER_SIZE; ++i)
+    {
+        m_cpBuffer[i] = new GenericConstraintProblem(this);
+    }
+    current_cp = m_cpBuffer[0];
 }
 
 void GenericConstraintSolver::cleanup()
@@ -228,7 +214,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     }
 
 
-    current_cp->buildSystem(cParams, numConstraints, this);
+    this->doBuildSystem(cParams, numConstraints);
 
     return true;
 }
@@ -298,7 +284,7 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
         msg_info() << tmp.str() ;
     }
 
-    current_cp->solve(0, this);
+    this->doSolve(0.0);
 
 
     this->d_currentError.setValue(current_cp->currentError);
@@ -457,10 +443,18 @@ sofa::core::MultiVecDerivId GenericConstraintSolver::getDx() const
     return m_dxId;
 }
 
-void registerGenericConstraintSolver(sofa::core::ObjectFactory* factory)
+void GenericConstraintSolver::addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization)
 {
-    factory->registerObjects(core::ObjectRegistrationData("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
-        .add< GenericConstraintSolver >());
+    if (regularization>std::numeric_limits<SReal>::epsilon())
+    {
+        for (int i=0; i<W.rowSize(); ++i)
+        {
+            W.add(i,i,regularization);
+        }
+    }
 }
+
+
+
 
 } //namespace sofa::component::constraint::lagrangian::solver

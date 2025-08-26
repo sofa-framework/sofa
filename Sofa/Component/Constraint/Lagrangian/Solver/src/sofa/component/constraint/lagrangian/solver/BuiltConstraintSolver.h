@@ -21,16 +21,35 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/solver/UnbuiltConstraintProblem.h>
-#include <sofa/core/behavior/ConstraintResolution.h>
+#include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API UnbuiltGaussSeidelConstraintProblem : public UnbuiltConstraintProblem
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API BuiltConstraintSolver : public GenericConstraintSolver
 {
 public:
-    SOFA_CLASS(UnbuiltGaussSeidelConstraintProblem, UnbuiltConstraintProblem);
+    SOFA_CLASS(BuiltConstraintSolver, GenericConstraintSolver);
 
-    virtual void solve( SReal timeout = 0.0, GenericConstraintSolver* solver = nullptr);
+
+    virtual void doBuildSystem( const core::ConstraintParams *cParams, unsigned int numConstraints) override;
+
+private:
+
+    struct ComplianceWrapper
+    {
+        using ComplianceMatrixType = sofa::linearalgebra::LPtrFullMatrix<SReal>;
+
+        ComplianceWrapper(ComplianceMatrixType& complianceMatrix, bool isMultiThreaded)
+        : m_isMultiThreaded(isMultiThreaded), m_complianceMatrix(complianceMatrix) {}
+
+        ComplianceMatrixType& matrix();
+
+        void assembleMatrix() const;
+
+    private:
+        bool m_isMultiThreaded { false };
+        ComplianceMatrixType& m_complianceMatrix;
+        std::unique_ptr<ComplianceMatrixType> m_threadMatrix;
+    };
 };
 }
