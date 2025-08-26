@@ -234,6 +234,7 @@ public:
 
     /// Assignment operator from an array of values.
     template<typename real2>
+    [[deprecated("Assignement with unsafe pointer is deprecated.")]]
     constexpr void operator=(const real2* p) noexcept
     {
         for(Size i=0; i<N; i++)
@@ -242,6 +243,7 @@ public:
 
     /// Assignment from a vector with different dimensions.
     template<Size M, typename real2>
+    [[deprecated("Assignement with a different type of Vector is deprecated.")]]
     constexpr void operator=(const Vec<M,real2>& v) noexcept
     {
         for(Size i=0; i<(N>M?M:N); i++)
