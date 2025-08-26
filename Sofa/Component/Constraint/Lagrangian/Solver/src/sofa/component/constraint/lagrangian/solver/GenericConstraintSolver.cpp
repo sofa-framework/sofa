@@ -62,7 +62,6 @@ void clearMultiVecId(sofa::core::objectmodel::BaseContext* ctx, const sofa::core
 
 }
 
-static constexpr GenericConstraintSolver::ResolutionMethod defaultResolutionMethod("ProjectedGaussSeidel");
 
 GenericConstraintSolver::GenericConstraintSolver()
     : d_maxIt(initData(&d_maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
@@ -81,7 +80,6 @@ GenericConstraintSolver::GenericConstraintSolver()
     , d_currentNumConstraintGroups(initData(&d_currentNumConstraintGroups, 0, "currentNumConstraintGroups", "OUTPUT: current number of constraints"))
     , d_currentIterations(initData(&d_currentIterations, 0, "currentIterations", "OUTPUT: current number of constraint groups"))
     , d_currentError(initData(&d_currentError, 0.0_sreal, "currentError", "OUTPUT: current error"))
-    , d_reverseAccumulateOrder(initData(&d_reverseAccumulateOrder, false, "reverseAccumulateOrder", "True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)"))
     , d_constraintForces(initData(&d_constraintForces,"constraintForces","OUTPUT: constraint forces (stored only if computeConstraintForces=True)"))
     , d_computeConstraintForces(initData(&d_computeConstraintForces,false,
                                         "computeConstraintForces",

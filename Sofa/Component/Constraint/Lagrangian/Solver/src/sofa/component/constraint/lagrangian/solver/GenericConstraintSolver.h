@@ -60,14 +60,6 @@ public:
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
 
-
-    MAKE_SELECTABLE_ITEMS(ResolutionMethod,
-        sofa::helper::Item{"ProjectedGaussSeidel", "Projected Gauss-Seidel"},
-        sofa::helper::Item{"UnbuiltGaussSeidel", "Gauss-Seidel where the matrix is not assembled"},
-        sofa::helper::Item{"NonsmoothNonlinearConjugateGradient", "Non-smooth non-linear conjugate gradient"}
-    );
-    Data< ResolutionMethod > d_resolutionMethod; ///< Method used to solve the constraint problem, among: "ProjectedGaussSeidel", "UnbuiltGaussSeidel" or "for NonsmoothNonlinearConjugateGradient"
-
     Data<int> d_maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
     Data<SReal> d_tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
     Data<SReal> d_sor; ///< Successive Over Relaxation parameter (0-2)
@@ -85,7 +77,6 @@ public:
     Data<int> d_currentNumConstraintGroups; ///< OUTPUT: current number of constraints
     Data<int> d_currentIterations; ///< OUTPUT: current number of constraint groups
     Data<SReal> d_currentError; ///< OUTPUT: current error
-    Data<bool> d_reverseAccumulateOrder; ///< True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)
     Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: constraint forces (stored only if computeConstraintForces=True)
     Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field.
 

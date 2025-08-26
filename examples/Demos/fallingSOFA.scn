@@ -38,7 +38,7 @@
     <FreeMotionAnimationLoop computeBoundingBox="false"/>
     <!-- This solver will perform the different constraint solving stages a.k.a. the constraint system building, the constraint solving and the motion correction
      For more information see : https://sofa-framework.github.io/doc/simulation-principles/constraint/lagrange-constraint/ -->
-    <GenericConstraintSolver maxIterations="50" tolerance="1.0e-6"/>
+    <ProjectedGaussSeidelConstraintSolver maxIterations="50" tolerance="1.0e-6"/>
 
     <!-- Definition of the collision pipeline -->
     <CollisionPipeline name="Pipeline" />
