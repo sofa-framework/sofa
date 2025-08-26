@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/gui/common/config.h>
 
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/fwd.h>
 
 #include <vector>
