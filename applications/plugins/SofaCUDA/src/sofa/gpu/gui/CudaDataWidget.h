@@ -59,4 +59,4 @@ public:
 };
 
 
-} // namespace sofa::gui::qt
+} // namespace sofa::qt

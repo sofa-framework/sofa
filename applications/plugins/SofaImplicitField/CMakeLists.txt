@@ -47,6 +47,10 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PRIVATE Sofa.Component.Topology.Container.Constant)
 
+find_package(SofaPython3 REQUIRED)
+if (SofaPython3_FOUND)
+  add_subdirectory(python)
+endif()
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package_with_targets(

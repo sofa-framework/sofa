@@ -100,6 +100,15 @@ void DistanceFromTargetMapping<TIn, TOut>::clear()
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::init()
 {
+    auto indices = sofa::helper::getWriteAccessor(d_indices);
+    auto targetPositions = sofa::helper::getReadAccessor(d_targetPositions);
+    if (indices.size() < targetPositions.size())
+    {
+        for (std::size_t i = indices.size(); i < targetPositions.size(); ++i)
+        {
+            indices.push_back(i);
+        }
+    }
     assert(d_indices.getValue().size() == d_targetPositions.getValue().size()) ;
 
     // unset distances are set to 0

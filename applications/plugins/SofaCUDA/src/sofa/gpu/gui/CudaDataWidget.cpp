@@ -76,4 +76,4 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::gpu::cuda::CudaVector<Vec3d> >
 Creator<DataWidgetFactory, TableDataWidget< sofa::gpu::cuda::CudaVector<Vec4d> > > DWClass_cudaVectorVec4d("default", true);
 
 
-} // namespace sofa::gui::qt
+} // namespace sofa::qt

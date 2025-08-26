@@ -3,13 +3,20 @@
     <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [VolumeFromTetrahedrons] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshVTKLoader] -->
     <RequiredPlugin name="Sofa.Component.Setting"/> <!-- Needed to use components [BackgroundSetting] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->  
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->  
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->  
+
 
     <DefaultAnimationLoop/>
     <BackgroundSetting color="1 1 1" />
     <Node name="Volume" >
         <MeshVTKLoader name="mesh" filename="mesh/Bunny.vtk"/>
-        <MeshTopology src="@mesh" name="topology" drawTetrahedra="1"/>
+        <MeshTopology src="@mesh" name="topology"/>
         <MechanicalObject />
         <VolumeFromTetrahedrons/>
+        <Node name="Visual" >
+            <OglModel src="@../topology" color="0.5 0.5 0.5 0.1"/>
+        </Node>
     </Node>
 </Node>

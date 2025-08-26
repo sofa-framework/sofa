@@ -258,7 +258,7 @@ inline auto generatePairs(const sofa::type::vector<core::behavior::BaseMechanica
     {
         for (auto* b : mstates)
         {
-            pairs.emplace_back(a, b);
+            pairs.emplace_back(sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2>({a, b}));
         }
     }
     return pairs;
