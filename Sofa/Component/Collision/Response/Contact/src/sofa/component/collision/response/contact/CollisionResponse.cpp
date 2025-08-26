@@ -67,7 +67,6 @@ sofa::helper::OptionsGroup CollisionResponse::initializeResponseOptions(sofa::co
 
 void CollisionResponse::init()
 {
-
     Inherit1::init();
 
     if(!d_response.isSet())
@@ -78,16 +77,13 @@ void CollisionResponse::init()
 
     if (d_response.getValue().size() == 0)
     {
-        msg_error() << "Response method is empty and may have been wrongly set. Option list is: " << initializeResponseOptions(getContext());
-        d_response.setValue(initializeResponseOptions(getContext()));
+        sofa::helper::OptionsGroup responseOptions = initializeResponseOptions(getContext());
+        msg_error() << "Response method is wrongly set. Option list is: " << responseOptions.getItemNames();
+        d_response.setValue(responseOptions);
     }
     else
     {
-        sofa::helper::OptionsGroup responseOptions = initializeResponseOptions(getContext());
-        if(responseOptions.isInOptionsList(d_response.getValue().getSelectedItem()) < 0)
-        {
-            msg_error() << "response \"" << d_response.getValue().getSelectedItem() << "\" is not a valid response method. Response can be among the list: " << responseOptions;
-        }
+        msg_info() << "Valid response method: " << d_response.getValue().getSelectedItem();
     }
 }
 
