@@ -814,6 +814,15 @@ constexpr void toVecN(const sofa::type::Vec<InSize, InReal>& in, sofa::type::Vec
     }
 }
 
+template <sofa::Size InSize, typename InReal>
+requires (std::is_convertible_v<InReal, SReal>)
+constexpr auto toVec3(const sofa::type::Vec<InSize, InReal>& in) -> sofa::type::Vec<3, SReal>
+{
+    sofa::type::Vec<3, SReal> vec3(type::NOINIT);
+    toVecN(in, vec3);
+    return vec3;
+}
+
 } // namespace sofa::type
 
 // Specialization of the std comparison function, to use Vec as std::map key

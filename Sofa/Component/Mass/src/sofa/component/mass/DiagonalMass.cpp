@@ -122,7 +122,7 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::drawRigid2dImpl(const VisualPar
         len[2] = 0;
 
         Quatd orient(Vec3d(0,0,1), x[i].getOrientation());
-        Vec3d center; center = x[i].getCenter();
+        const type::Vec3 center = type::toVec3(x[i].getCenter());
         vparams->drawTool()->drawFrame(center, orient, len*d_showAxisSize.getValue() );
     }
 }

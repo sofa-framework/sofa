@@ -385,7 +385,6 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     if (d_localRange.getValue()[1] >= 0 && (unsigned int)d_localRange.getValue()[1]+1 < iend)
         iend = d_localRange.getValue()[1]+1;
 
-    type::Vec3 point1,point2;
     for (unsigned int i=ibegin; i<iend; i++)
     {
         Real d = DataTypes::getCPos(p1[i])*d_planeNormal.getValue()-d_planeD.getValue();
@@ -393,8 +392,8 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
         p2 += d_planeNormal.getValue()*(-d);
         if (d<0)
         {
-            point1 = DataTypes::getCPos(p1[i]);
-            point2 = p2;
+            const type::Vec3 point1 = type::toVec3(DataTypes::getCPos(p1[i]));
+            const type::Vec3 point2 = type::toVec3(p2);
             pointsLine.push_back(point1);
             pointsLine.push_back(point2);
         }
