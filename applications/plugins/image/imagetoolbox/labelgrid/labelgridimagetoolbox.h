@@ -140,9 +140,9 @@ public:
 
     }
     
-    sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=nullptr) override
+    sofa::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=nullptr) override
     {
-        return new sofa::gui::qt::LabelGridImageToolBoxAction(this,parent);
+        return new sofa::qt::LabelGridImageToolBoxAction(this,parent);
     }
 
     type::vector<int> parseVector()

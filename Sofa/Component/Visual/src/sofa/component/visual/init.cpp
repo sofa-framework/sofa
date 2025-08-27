@@ -36,8 +36,10 @@ extern void registerVisual3DText(sofa::core::ObjectFactory* factory);
 extern void registerVisualBoundingBox(sofa::core::ObjectFactory* factory);
 extern void registerVisualGrid(sofa::core::ObjectFactory* factory);
 extern void registerVisualModelImpl(sofa::core::ObjectFactory* factory);
+extern void registerVisualPointCloud(sofa::core::ObjectFactory* factory);
 extern void registerVisualStyle(sofa::core::ObjectFactory* factory);
 extern void registerVisualTransform(sofa::core::ObjectFactory* factory);
+extern void registerVisualVectorField(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -64,8 +66,8 @@ const char* getModuleVersion()
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
     registerCamera(factory);
-    registerInteractiveCamera(factory);
     registerCylinderVisualModel(factory);
+    registerInteractiveCamera(factory);
     registerLineAxis(factory);
     registerRecordedCamera(factory);
     registerTrailRenderer(factory);
@@ -73,8 +75,10 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerVisualBoundingBox(factory);
     registerVisualGrid(factory);
     registerVisualModelImpl(factory);
+    registerVisualPointCloud(factory);
     registerVisualStyle(factory);
     registerVisualTransform(factory);
+    registerVisualVectorField(factory);
 }
 
 void init()

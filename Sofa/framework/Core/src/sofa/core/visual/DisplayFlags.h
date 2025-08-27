@@ -89,7 +89,7 @@ public:
     DisplayFlags& setShowBehaviorModels(tristate v=true)  { m_showBehaviorModels.setValue(v); return (*this); }
     DisplayFlags& setShowForceFields(tristate v=true)  { m_showForceFields.setValue(v); return (*this); }
     DisplayFlags& setShowInteractionForceFields(tristate v=true) { m_showInteractionForceFields.setValue(v); return (*this); }
-    DisplayFlags& setShowCollision(tristate v=true ) { m_showCollisionModels.setValue(v); return (*this); }
+    DisplayFlags& setShowCollision(tristate v=true ) { m_showCollision.setValue(v); return (*this); }
     DisplayFlags& setShowCollisionModels(tristate v=true) { m_showCollisionModels.setValue(v); return (*this); }
     DisplayFlags& setShowBoundingCollisionModels(tristate v=true) { m_showBoundingCollisionModels.setValue(v); return (*this); }
     DisplayFlags& setShowDetectionOutputs(tristate v=true) { m_showDetectionOutputs.setValue(v); return (*this); }

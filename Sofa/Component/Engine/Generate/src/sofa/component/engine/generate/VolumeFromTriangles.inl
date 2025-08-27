@@ -36,7 +36,10 @@ using sofa::core::objectmodel::BaseData ;
 
 template <class DataTypes>
 VolumeFromTriangles<DataTypes>::VolumeFromTriangles()
-    : d_positions(initData(&d_positions,"positions","If not set by user, find the context mechanical."))
+    :
+      l_topology(initLink("topology", "link to the topology"))
+    , l_state(initLink("mechanical", "link to the mechanical"))
+    , d_positions(initData(&d_positions,"position","If not set by user, find the context mechanical."))
     , d_triangles(initData(&d_triangles,"triangles","If not set by user, find the context topology."))
     , d_quads(initData(&d_quads,"quads","If not set by user, find the context topology."))
     , d_volume(initData(&d_volume,Real(0.0),"volume","The volume is only relevant if the surface is closed."))
@@ -51,10 +54,23 @@ VolumeFromTriangles<DataTypes>::~VolumeFromTriangles()
 {
 }
 
+template <class DataTypes>
+void VolumeFromTriangles<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    Inherit1::parse(arg);
+
+    // SOFA_ATTRIBUTE_DISABLED("v25.06", "v26.06", "data positions renamed as position")
+    // to be backward compatible with previous data structure
+    const char* positionsChar = arg->getAttribute("positions");
+    if( positionsChar )
+        msg_deprecated() << "You are using a deprecated Data 'positions', please use 'position' instead.";
+}
 
 template <class DataTypes>
 void VolumeFromTriangles<DataTypes>::init()
 {
+    Inherit1::init();
+
     d_componentState.setValue(ComponentState::Valid);
 
     addInput(&d_positions);
@@ -65,16 +81,20 @@ void VolumeFromTriangles<DataTypes>::init()
 
     if(!d_positions.isSet())
     {
-        m_state = dynamic_cast<MechanicalState*>(getContext()->getMechanicalState());
+        if(!l_state.get())
+        {
+            msg_info() << "Link to the mechanical state should be set to ensure right behavior. First mechanical state found in current context will be used.";
+            l_state.set(dynamic_cast<MechanicalState*>(this->getContext()->getMechanicalState()));
+        }
 
-        if(m_state == nullptr)
+        if(!l_state.get())
         {
             msg_error() << "No positions given by the user and no mechanical state found in the context. The component cannot work.";
             d_componentState.setValue(ComponentState::Invalid);
             return;
         }
 
-        d_positions.setParent(m_state->findData("position")); // Links d_positions to m_state.position
+        d_positions.setParent(l_state.get()->findData("position")); // Links d_positions to m_state.position
     }
 
     initTopology();
@@ -96,19 +116,29 @@ void VolumeFromTriangles<DataTypes>::reinit()
 template <class DataTypes>
 void VolumeFromTriangles<DataTypes>::initTopology()
 {
-    m_topology = getContext()->getMeshTopology();
+    if (!l_topology.get())
+    {
+        msg_info() << "Link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    if(!d_triangles.isSet() && m_topology)
-        d_triangles.setValue(m_topology->getTriangles());
+    const auto& topology = l_topology.get();
+    const bool hasTriangles = d_triangles.isSet();
+    const bool hasQuads = d_quads.isSet();
 
-    if(!d_quads.isSet() && m_topology)
-        d_quads.setValue(m_topology->getQuads());
-
-    if(!d_quads.isSet() && !d_triangles.isSet() && !m_topology)
+    if(!hasQuads && !hasTriangles && !topology)
     {
         msg_error() << "No quads or triangles given by the user and no topology context. The component cannot work";
         d_componentState.setValue(ComponentState::Invalid);
+        return;
     }
+
+    if(!hasTriangles && topology)
+        d_triangles.setValue(topology->getTriangles());
+
+    if(!hasQuads && topology)
+        d_quads.setValue(topology->getQuads());
+
 }
 
 
@@ -160,9 +190,10 @@ void VolumeFromTriangles<DataTypes>::doUpdate()
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    if(m_state && d_doUpdate.getValue())
+    const auto& state = l_state.get();
+    if(state && d_doUpdate.getValue())
     {
-        ReadAccessor<sofa::Data<VecCoord> > positions = m_state->readPositions();
+        ReadAccessor<sofa::Data<VecCoord> > positions = state->readPositions();
         d_positions.setValue(positions.ref());
         updateVolume();
     }
