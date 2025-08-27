@@ -23,6 +23,7 @@
 
 #include <sofa/gui/batch/config.h>
 #include <sofa/gui/common/BaseGUI.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/fwd.h>
 #include <string>
 #include <sstream>
