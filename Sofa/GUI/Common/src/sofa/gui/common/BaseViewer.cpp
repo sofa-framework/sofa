@@ -325,7 +325,8 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
 
             std::vector<Vec3> positions;
             auto position = object->findData("position");
-            if(position){
+            if(position)
+            {
                 auto positionsData = dynamic_cast<Data<sofa::type::vector<Vec3>>*>(position);
                 if(positionsData)
                 {
