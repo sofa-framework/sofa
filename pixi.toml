@@ -40,10 +40,17 @@ test = { cmd = "ctest --test-dir $SOFA_BUILD_DIR --output-on-failure", depends-o
 
 # TODO: add run-regression-tests feature
 
-# TODO: add build-release-package feature
+# Unused: Python 3.12 is the one supported by default
+# You can uncomment this (or create a new feature for your python version)*
+# and edit environments section to enable it
+#[feature.python310.dependencies]
+#python = "~=3.10.0"
+
+[feature.python312.dependencies]
+python = "~=3.12.0"
 
 [feature.plugin-sofa-python3]
-dependencies = { numpy = ">=1.22.0", python = ">=3.9.0", pybind11 = ">=2.3.0" }
+dependencies = { numpy = ">=1.22.0", pybind11 = ">=2.3.0" }
 activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOFA_FETCH_SOFAPYTHON3=ON -DPython_EXECUTABLE=$SOFA_PYTHON_EXECUTABLE -DPython_FIND_STRATEGY=LOCATION" } }
 
 [feature.qt-gui]
@@ -257,8 +264,8 @@ configure = { cmd = [ "cmake",
 conda-core = { features = ["presets-conda-core"] }
 minimal = { features = ["presets-minimal"] }
 minimal-dev = { features = ["presets-minimal-dev"] }
-standard = { features = ["presets-standard", "plugin-sofa-python3", "presets-defaultGUI"] }
-standard-dev = { features = ["presets-standard-dev", "plugin-sofa-python3", "presets-defaultGUI"] }
+standard = { features = ["presets-standard", "plugin-sofa-python3", "presets-defaultGUI", "python312"] }
+standard-dev = { features = ["presets-standard-dev", "plugin-sofa-python3", "presets-defaultGUI", "python312"] }
 release-package = { features = [
   "build-release-package",
   "plugin-sofa-python3",
@@ -266,7 +273,8 @@ release-package = { features = [
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "qt-gui"] }
+  "qt-gui",
+  "python312"] }
 supported-plugins = { features = [
   "presets-supported-plugins",
   "plugin-sofa-python3",
@@ -274,7 +282,8 @@ supported-plugins = { features = [
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "qt-gui"]}
+  "qt-gui",
+  "python312"]}
 supported-plugins-dev = { features = [
   "presets-supported-plugins-dev",
   "plugin-sofa-python3",
@@ -282,7 +291,8 @@ supported-plugins-dev = { features = [
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "qt-gui"]}  
+  "qt-gui",
+  "python312"]}
 full = { features = [
   "presets-full",
   "plugin-sofa-python3",
@@ -290,7 +300,8 @@ full = { features = [
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "qt-gui"]}
+  "qt-gui",
+  "python312"]}
 full-dev = { features = [
   "presets-full-dev",
   "plugin-sofa-python3",
@@ -298,4 +309,5 @@ full-dev = { features = [
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "qt-gui"]}
+  "qt-gui",
+  "python312"]}
