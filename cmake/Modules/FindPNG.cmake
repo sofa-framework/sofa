@@ -85,11 +85,14 @@ will be defined unless ZLib can be found.
 cmake_policy(PUSH)
 cmake_policy(SET CMP0159 NEW) # file(STRINGS) with REGEX updates CMAKE_MATCH_<n>
 
-if(NOT TARGET ZLIB::ZLIB)
+if(TARGET ZLIB::ZLIB)
+  # Target might have been already set globally, but ZLIB_FOUND could have been cleared
+  set(ZLIB_FOUND TRUE)
+else()
   if(PNG_FIND_QUIETLY)
     set(_FIND_ZLIB_ARG QUIET)
   endif()
-  find_package(ZLIB ${_FIND_ZLIB_ARG})
+  find_package(ZLIB ${_FIND_ZLIB_ARG} REQUIRED)
 endif()
 
 if(ZLIB_FOUND)
