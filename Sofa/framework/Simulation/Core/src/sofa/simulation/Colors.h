@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/simulation/config.h>
 #include <cstring>
 #include <vector>
 #include <string>
@@ -52,13 +53,13 @@ enum COLORID
     ALLCOLORS
 };
 
-size_t registerColor(const std::string& hexColor);
-void registerColor(const std::string& classname, const std::string& hexColor);
-const char* getColor(const std::string& classname);
-const char* getColor(const COLORID classType);
+SOFA_SIMULATION_CORE_API size_t registerColor(const std::string& hexColor);
+SOFA_SIMULATION_CORE_API void registerColor(const std::string& classname, const std::string& hexColor);
+SOFA_SIMULATION_CORE_API const char* getColor(const std::string& classname);
+SOFA_SIMULATION_CORE_API const char* getColor(const COLORID classType);
 
 // This is to allow old code to still work,
-class DeprecatedColor
+SOFA_SIMULATION_CORE_API class DeprecatedColor
 {
 public:
     const char* operator[](size_t);
