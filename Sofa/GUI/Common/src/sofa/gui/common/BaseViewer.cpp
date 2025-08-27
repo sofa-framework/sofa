@@ -388,7 +388,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
 
             continue;
         }
-        msg_error() << "Only node and object can be selected, if you see this line please report to sofa-developement team";
+        msg_error("BaseViewer") << "Only node and object can be selected, if you see this line please report to sofa-developement team";
     }
 }
 
