@@ -68,9 +68,7 @@ public:
 
     void getHessian(Vec3 &pos, Mat3x3& h) override
     {
-        /// The implementation for the getHessian is a bit complex as we change de signature between
-        /// the c++ part of the code and python one.
-        // In python, the results is return by the function while in c++ it is part of the function.
+        /// The implementation is a bit more complex compared to getGradient. This is because we change de signature between the c++ API and the python one.
         PythonEnvironment::gil acquire;
 
         // Search if there is a python override,
