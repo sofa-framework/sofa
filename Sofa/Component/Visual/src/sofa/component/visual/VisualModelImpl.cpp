@@ -398,7 +398,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             if (d_useNormals.getValue() && n < normalsImport.size())
                 vnormals[j] = normalsImport[n];
             if (t < texCoordsImport.size())
-                vtexcoords[j] = texCoordsImport[t];
+                type::toVecN(texCoordsImport[t], vtexcoords[j]); // vec3 to vec2f
 
             if (vsplit)
             {

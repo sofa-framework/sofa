@@ -313,14 +313,14 @@ void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
     if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    const type::Vec3d axe3d { DataTypes::getDPos(axe) };
-    type::Vec3d normal3d { d_planeNormal.getValue() };
-    type::Vec3d v = normal3d.cross(axe3d);
+    const auto axe3d = type::toVec3(DataTypes::getDPos(axe));
+    const auto normal3d = type::toVec3(d_planeNormal.getValue()) ;
+    auto v = normal3d.cross(axe3d);
     if (v.norm2() < 1.0e-10) return;
     v.normalize();
     v = normal3d * cos ( angle ) + v * sin ( angle );
-    *d_planeNormal.beginEdit() = v;
-    d_planeNormal.endEdit();
+    auto planeNormalWrite = sofa::helper::getWriteOnlyAccessor(d_planeNormal);
+    type::toVecN(v, planeNormalWrite.wref());
 }
 
 

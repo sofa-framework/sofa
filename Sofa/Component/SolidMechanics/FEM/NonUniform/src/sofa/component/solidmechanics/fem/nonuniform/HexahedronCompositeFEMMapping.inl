@@ -147,7 +147,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 
         for(int w=0; w<8; ++w)
         {
-            Weight W;
+            Weight W(type::NOINIT);
             W[0] = _forcefield->_finalWeights[i].second[ w*3   ];
             W[1] = _forcefield->_finalWeights[i].second[ w*3+1 ];
             W[2] = _forcefield->_finalWeights[i].second[ w*3+2 ];
