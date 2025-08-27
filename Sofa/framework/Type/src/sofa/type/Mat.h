@@ -28,6 +28,7 @@
 #include <sofa/type/Vec.h>
 
 #include <iostream>
+#include <algorithm>
 
 namespace // anonymous
 {
