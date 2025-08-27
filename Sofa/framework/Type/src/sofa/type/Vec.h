@@ -800,6 +800,18 @@ constexpr bool operator<(const Vec<N, T>& v1, const Vec<N, T>& v2) noexcept
     return false;
 }
 
+template <sofa::Size InSize, typename InReal, sofa::Size OutSize, typename OutReal>
+requires (std::is_convertible_v<InReal, OutReal>)
+constexpr void toVecN(const sofa::type::Vec<InSize, InReal>& in, sofa::type::Vec<OutSize, OutReal>& out )
+{
+    std::copy(in.begin(), in.begin() + std::min(InSize, OutSize), out.begin());
+
+    if constexpr(OutSize > InSize)
+    {
+        std::fill_n(out.begin() + InSize, OutSize-InSize, 0);
+    }
+}
+
 } // namespace sofa::type
 
 // Specialization of the std comparison function, to use Vec as std::map key
