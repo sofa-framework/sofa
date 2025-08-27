@@ -552,8 +552,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             Edge the_edge = edgeArray[i];
             Coord vertex1 = coords[the_edge[0]];
             Coord vertex2 = coords[the_edge[1]];
-            type::Vec3 center;
-            center = (DataTypes::getCPos(vertex1) + DataTypes::getCPos(vertex2)) / 2;
+            const type::Vec3 center = type::toVec3((DataTypes::getCPos(vertex1) + DataTypes::getCPos(vertex2)) / 2);
 
             positions.push_back(center);
         }
