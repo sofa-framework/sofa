@@ -281,12 +281,12 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
 {
     assert(vparams && "call of drawSelection without a valid visual param is not allowed");
 
-    auto dt = vparams->drawTool();
+    auto drawTool = vparams->drawTool();
 
     if(currentSelection.empty())
         return;
 
-    dt->setPolygonMode(0, false);
+    drawTool->setPolygonMode(0, false);
     float screenHeight = vparams->viewport()[4];
 
     for(auto current : currentSelection)
@@ -301,7 +301,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
         if(node && m_showSelectedNodeBoundingBox)
         {
             auto box = node->f_bbox.getValue();
-            dt->drawBoundingBox(box.minBBox(), box.maxBBox(), 2.0);
+            drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), 2.0);
 
             // If it is a node... it is not a BaseObject, so we can continue.
             continue;
@@ -320,7 +320,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
 
             if(m_showSelectedObjectBoundingBox)
             {
-                dt->drawBoundingBox(box.minBBox(), box.maxBBox(), 2.0);
+                drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), 2.0);
             }
 
             std::vector<Vec3> positions;
@@ -331,7 +331,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
                 {
                     positions = positionsData->getValue();
                     if(m_showSelectedObjectBoundingBox){
-                        dt->drawPoints(positions, 2.0, RGBAColor::yellow());
+                        drawTool->drawPoints(positions, 2.0, RGBAColor::yellow());
                     }
                 }
                 else
@@ -344,7 +344,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
                             float targetScreenSize = 50.0;
                             float distance = (currentCamera->getPosition() - Rigid3Types::getCPos(frame)).norm();
                             SReal scale = distance * tan(currentCamera->getFieldOfView() / 2.0f) * targetScreenSize / screenHeight;
-                            dt->drawFrame(Rigid3Types::getCPos(frame), Rigid3Types::getCRot(frame), {scale, scale,scale});
+                            drawTool->drawFrame(Rigid3Types::getCPos(frame), Rigid3Types::getCRot(frame), {scale, scale,scale});
                             positions.push_back(Rigid3Types::getCPos(frame));
                         }
                     }
@@ -374,7 +374,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
                                 tripoints.push_back(positions[indices[0]]);
                             }
                         }
-                        dt->drawLines(tripoints, 1.5, RGBAColor::fromFloat(1.0,1.0,1.0,0.7));
+                        drawTool->drawLines(tripoints, 1.5, RGBAColor::fromFloat(1.0,1.0,1.0,0.7));
                     }
                 }
             }
@@ -382,12 +382,12 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
             if(!positions.empty() && m_showSelectedObjectIndices)
             {
                 const float scale = (box.maxBBox() - box.minBBox()).norm() * m_visualScaling;
-                dt->draw3DText_Indices(positions, scale, RGBAColor::white());
+                drawTool->draw3DText_Indices(positions, scale, RGBAColor::white());
             }
 
             continue;
         }
-        assert(false && "Only node and object can be selected, if you see this line please report to sofa-developement team");
+        msg_error() << "Only node and object can be selected, if you see this line please report to sofa-developement team";
     }
 }
 
