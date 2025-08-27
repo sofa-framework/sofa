@@ -218,7 +218,7 @@ void UniformMass<RigidTypes>::drawRigid2DImpl(const VisualParams* vparams)
     for (const unsigned int index : indices)
     {
         Quatd orient(Vec3d(0,0,1), x[index].getOrientation());
-        Vec3d center; center = x[index].getCenter();
+        const Vec3 center = toVec3(x[index].getCenter());
 
         vparams->drawTool()->drawFrame(center, orient, len*d_showAxisSize.getValue() );
     }
@@ -302,8 +302,8 @@ void UniformMass<Vec6Types>::drawVec6Impl(const core::visual::VisualParams* vpar
         type::Vec3d len(1,1,1);
         int a = (i<indices.size()-1)?i : i-1;
         int b = a+1;
-        type::Vec3d dp; dp = x0[b]-x0[a];
-        type::Vec3d p; p = x[indices[i]];
+        const type::Vec3 dp = toVec3(x0[b]-x0[a]);
+        const type::Vec3 p = toVec3(x[indices[i]]);
         len[0] = dp.norm();
         len[1] = len[0];
         len[2] = len[0];
