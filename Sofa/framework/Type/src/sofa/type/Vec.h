@@ -161,6 +161,7 @@ public:
     }
 
     template<typename real2>
+    [[deprecated("Contructor with a different type of Vec is deprecated.")]]
     constexpr Vec(const Vec<N, real2>& p) noexcept
     {
         for(Size i=0; i<N; i++)
@@ -169,6 +170,7 @@ public:
 
     /// Constructor from an array of values.
     template<typename real2>
+    [[deprecated("Contructor with unsafe pointer is deprecated.")]]
     explicit constexpr Vec(const real2* p) noexcept
     {
         for(Size i=0; i<N; i++)
@@ -244,7 +246,7 @@ public:
 
     /// Assignment from a vector with different dimensions.
     template<Size M, typename real2>
-    [[deprecated("Assignement with a different type of Vector is deprecated.")]]
+    [[deprecated("Assignement with a different type of Vec is deprecated.")]]
     constexpr void operator=(const Vec<M,real2>& v) noexcept
     {
         //static_assert(false);
