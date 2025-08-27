@@ -833,8 +833,8 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(
     for(const auto edgeId : edgesInTetra)
     {
         const Edge& edge = edges[edgeId];
-        p1 = vect_c[edge[0]];
-        p2 = vect_c[edge[1]];
+        toVecN(vect_c[edge[0]], p1);
+        toVecN(vect_c[edge[1]], p2);
 
         if(computeIntersectionEdgeWithPlane(p1, p2, planP0, normal, intersection))
         {
@@ -880,7 +880,7 @@ bool TetrahedronSetGeometryAlgorithms<DataTypes>::checkNodeSequence(const Tetrah
     sofa::type::Vec<3,Real> vec[3];
     for(int i=1; i<4; i++)
     {
-        vec[i-1]=vect_c[tetra[i]]-vect_c[tetra[0]];
+        vec[i-1]=type::toVec3(vect_c[tetra[i]]-vect_c[tetra[0]]);
         vec[i-1].normalize();
     }
     Real dotProduct=(vec[1].cross(vec[0]))*vec[2];
