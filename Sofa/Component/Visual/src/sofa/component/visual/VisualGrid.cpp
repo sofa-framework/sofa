@@ -83,8 +83,8 @@ void VisualGrid::updateGrid()
 
     //bounding box for the camera
     auto s = d_size.getValue() * 0.5f;
-    sofa::type::Vec3f min(-s, -s, -s);
-    sofa::type::Vec3f max( s,  s,  s);
+    sofa::type::Vec3 min(-s, -s, -s);
+    sofa::type::Vec3 max( s,  s,  s);
     const auto& plane = d_plane.getValue();
     min[static_cast<unsigned int>(plane)] = -s * 0.2f;
     max[static_cast<unsigned int>(plane)] =  s * 0.2f;
