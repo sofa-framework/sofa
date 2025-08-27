@@ -237,6 +237,7 @@ public:
     [[deprecated("Assignement with unsafe pointer is deprecated.")]]
     constexpr void operator=(const real2* p) noexcept
     {
+        //static_assert(false);
         for(Size i=0; i<N; i++)
             this->elems[i] = (ValueType)p[i];
     }
@@ -246,6 +247,7 @@ public:
     [[deprecated("Assignement with a different type of Vector is deprecated.")]]
     constexpr void operator=(const Vec<M,real2>& v) noexcept
     {
+        //static_assert(false);
         for(Size i=0; i<(N>M?M:N); i++)
             this->elems[i] = (ValueType)v(i);
     }

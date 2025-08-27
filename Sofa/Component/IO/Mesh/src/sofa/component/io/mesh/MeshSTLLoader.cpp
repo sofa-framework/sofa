@@ -161,7 +161,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 #endif
 
     // temporaries
-    sofa::type::Vec3f vertex, normal;
+    sofa::type::Vec3 vertex, normal;
 
     // reserve vector before filling it
     my_triangles.reserve( nbrFacet );
