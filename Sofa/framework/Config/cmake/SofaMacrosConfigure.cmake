@@ -173,68 +173,31 @@ macro(sofa_add_generic directory name type)
     endif()
 endmacro()
 
-### Macro to help external projects management
-# It produces the correct naming for cmake flag generation and the actual name of the project
-macro(get_name_from_source_dir)
-    get_filename_component(ProjectId ${CMAKE_CURRENT_LIST_DIR} NAME)
-    string(REPLACE "\." "_"  fixed_name ${ProjectId})
-    string(TOUPPER ${fixed_name} fixed_name)
 
-    set(inner-project-name ${ProjectId})
-    set(inner-project-name-upper ${fixed_name})
-endmacro()
+macro(sofa_fetch_dependency name)
 
-### External projects management
-# Thanks to http://crascit.com/2015/07/25/cmake-gtest/
-#
-# Use this macro (subdirectory or plugin version) to add out-of-repository projects.
-# Usage:
-# 1. Add repository configuration in MyProjectDir/ExternalProjectConfig.cmake.in
-# 2. Call sofa_add_subdirectory_external(MyProjectDir MyProjectName [ON,OFF] [FETCH_ONLY])
-#      or sofa_add_plugin_external(MyProjectDir MyProjectName [ON,OFF] [FETCH_ONLY])
-# ON,OFF = execute the fetch by default + enable the fetched plugin (if calling sofa_add_plugin_external)
-# FETCH_ONLY = do not "add_subdirectory" the fetched repository
-# See plugins/SofaHighOrder for example
-#
-function(sofa_add_generic_external name type)
-    set(optionArgs FETCH_ONLY)
-    set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN GIT_REF GIT_REPOSITORY)
-    set(multiValueArgs)
-    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-
-    string(TOLOWER ${type} type_lower)
-
-    # Default value for fetch activation and for plugin activation (if adding a plugin)
-    set(active OFF)
-    if(${ARG_DEFAULT_VALUE})
-        set(active ON)
-    endif()
-
-    set(directory "${CMAKE_CURRENT_LIST_DIR}/${name}")
-
-    # Create option
-    string(REPLACE "\." "_"  fixed_name ${name})
-    string(TOUPPER ${PROJECT_NAME}_FETCH_${fixed_name} fetch_enabled)
-    string(TOUPPER ${fixed_name} upper_name)
-    if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
-        cmake_dependent_option(${fetch_enabled} "Fetch/update ${name} repository." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
-    else()
-        option(${fetch_enabled} "Fetch/update ${name} repository." ${active})
-    endif()
+    set(oneValueArgs GIT_TAG GIT_REPOSITORY FETCH_ENABLED )
+    set(multiValueArgs "")
+    set(options DONT_BUILD)
+    cmake_parse_arguments("ARG" "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
 
     # Setup fetch directory
     set(fetched_dir "${CMAKE_BINARY_DIR}/external_directories/fetched/${name}" )
-    file(RELATIVE_PATH relative_path "${CMAKE_SOURCE_DIR}" "${directory}")
+    set(build_directory "${CMAKE_BINARY_DIR}/external_directories/fetched/${name}-build")
 
+    # Create option
+    string(REPLACE "\." "_"  fixed_name ${name})
+    string(TOUPPER ${fixed_name} upper_name)
+    set(${upper_name}_GIT_REPOSITORY "${ARG_GIT_REPOSITORY}" CACHE STRING "Repository address" )
+    set(${upper_name}_GIT_TAG "${ARG_GIT_TAG}" CACHE STRING "Branch or commit SHA to checkout" )
     set(${upper_name}_LOCAL_DIRECTORY "" CACHE STRING "Absolute path to a local folder containing the cloned repository")
 
-    # Fetch
-    if(${fetch_enabled})
-        set(${upper_name}_GIT_REPOSITORY "${ARG_GIT_REPOSITORY}" CACHE STRING "Repository address" )
-        set(${upper_name}_GIT_TAG "${ARG_GIT_REF}" CACHE STRING "Branch or commit SHA to checkout" )
+    set(${fixed_name}_SOURCE_DIR "${fetched_dir}" CACHE STRING "" FORCE )
 
-        message("${name}: Fetching ${type_lower} in ${fetched_dir}")
-        message(STATUS "${name}: Checkout reference ${${upper_name}_GIT_TAG} from repository ${${upper_name}_GIT_REPOSITORY} ")
+    if( "${${upper_name}_LOCAL_DIRECTORY}" STREQUAL "" AND NOT FETCHCONTENT_FULLY_DISCONNECTED AND NOT FETCHCONTENT_UPDATES_DISCONNECTED AND NOT "${ARG_FETCH_ENABLED}" STREQUAL "OFF")
+        # Fetch
+        message("Fetching dependency ${name} in ${fetched_dir}")
+        message(STATUS "Checkout reference ${${upper_name}_GIT_TAG} from repository ${${upper_name}_GIT_REPOSITORY} ")
 
         #Generate temporary folder to store project that will fetch the sources
         if(NOT EXISTS ${fetched_dir}-temp)
@@ -271,18 +234,84 @@ function(sofa_add_generic_external name type)
         file(APPEND "${fetched_dir}-temp/logs.txt" "${build_logs}")
 
         if(NOT generate_exitcode EQUAL 0 OR NOT build_exitcode EQUAL 0)
-            message(SEND_ERROR "Failed to fetch external repository ${name}." "\nSee logs in ${fetched_dir}/logs.txt")
+            message(SEND_ERROR "Failed to fetch external repository ${name}." "\nSee logs in ${fetched_dir}-temp/logs.txt")
         endif()
     elseif (NOT ${upper_name}_LOCAL_DIRECTORY STREQUAL "")
         if(EXISTS ${${upper_name}_LOCAL_DIRECTORY})
             message("${name}: Using local directory ${${upper_name}_LOCAL_DIRECTORY}.")
             set(fetched_dir "${${upper_name}_LOCAL_DIRECTORY}")
-
         else ()
             message(SEND_ERROR "${name}: Specified directory ${${upper_name}_LOCAL_DIRECTORY} doesn't exist." "\nPlease provide a directory containing the fetched project, or use option ${fetch_enabled} to automatically fetch it.")
-
         endif ()
     endif()
+
+
+    # Add
+    if(NOT ARG_DONT_BUILD AND  EXISTS "${fetched_dir}/.git" AND IS_DIRECTORY "${fetched_dir}/.git")
+        set(${fixed_name}_BUILD_DIR "${build_directory}" CACHE STRING "" FORCE)
+        add_subdirectory("${fetched_dir}" "${build_directory}")
+        message(STATUS "Adding subproject ${name} from sources at ${${fixed_name}_SOURCE_DIR}")
+    elseif(NOT ARG_DONT_BUILD AND NOT ${upper_name}_LOCAL_DIRECTORY STREQUAL "")
+        message(SEND_ERROR "Directory ${${upper_name}_LOCAL_DIRECTORY} given in ${upper_name}_LOCAL_DIRECTORY doesn't seem to be a right github repository.")
+    elseif (NOT ARG_DONT_BUILD AND FETCHCONTENT_FULLY_DISCONNECTED OR FETCHCONTENT_UPDATES_DISCONNECTED)
+        message(SEND_ERROR "FETCHCONTENT_FULLY_DISCONNECTED or FETCHCONTENT_UPDATES_DISCONNECTED is ON but the dependency hasn't been fetched correctly before. Please reconnect fetching mechanism or provide a local directory by setting ${upper_name}_LOCAL_DIRECTORY.")
+    endif()
+endmacro()
+
+
+
+### External projects management
+# Thanks to http://crascit.com/2015/07/25/cmake-gtest/
+#
+# Use this macro (subdirectory or plugin version) to add out-of-repository projects.
+# Usage:
+# 1. Add repository configuration in MyProjectDir/ExternalProjectConfig.cmake.in
+# 2. Call sofa_add_subdirectory_external(MyProjectDir MyProjectName [ON,OFF] [FETCH_ONLY])
+#      or sofa_add_plugin_external(MyProjectDir MyProjectName [ON,OFF] [FETCH_ONLY])
+# ON,OFF = execute the fetch by default + enable the fetched plugin (if calling sofa_add_plugin_external)
+# FETCH_ONLY = do not "add_subdirectory" the fetched repository
+# See plugins/SofaHighOrder for example
+#
+function(sofa_add_generic_external name type)
+    set(optionArgs FETCH_ONLY)
+    set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN GIT_REF GIT_REPOSITORY)
+    set(multiValueArgs)
+    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    string(TOLOWER ${type} type_lower)
+
+    # Default value for fetch activation and for plugin activation (if adding a plugin)
+    set(active OFF)
+    if(${ARG_DEFAULT_VALUE})
+        set(active ON)
+    endif()
+
+    # Create option
+    string(REPLACE "\." "_"  fixed_name ${name})
+    string(TOUPPER ${fixed_name} upper_name)
+    string(TOUPPER ${PROJECT_NAME}_FETCH_${fixed_name} fetch_enabled)
+
+    if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
+        cmake_dependent_option(${fetch_enabled} "Fetch/update ${name} repository." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
+    else()
+        option(${fetch_enabled} "Fetch/update ${name} repository." ${active})
+    endif()
+
+    sofa_fetch_dependency("${name}"
+            GIT_TAG "${ARG_GIT_REF}"
+            GIT_REPOSITORY "${ARG_GIT_REPOSITORY}"
+            FETCH_ENABLED "${${fetch_enabled}}"
+            DONT_BUILD
+    )
+
+    # Setup fetch directory
+    if(NOT "${${upper_name}_LOCAL_DIRECTORY}" STREQUAL "")
+        set(fetched_dir "${${upper_name}_LOCAL_DIRECTORY}" )
+    else ()
+        set(fetched_dir "${CMAKE_BINARY_DIR}/external_directories/fetched/${name}" )
+    endif ()
+    set(directory "${CMAKE_CURRENT_LIST_DIR}/${name}")
+    file(RELATIVE_PATH relative_path "${CMAKE_SOURCE_DIR}" "${directory}")
 
     # Add
     if(EXISTS "${fetched_dir}/.git" AND IS_DIRECTORY "${fetched_dir}/.git")
