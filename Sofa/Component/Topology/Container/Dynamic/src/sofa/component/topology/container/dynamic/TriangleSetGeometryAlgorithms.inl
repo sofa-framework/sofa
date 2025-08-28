@@ -1988,7 +1988,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangulationInte
             sofa::type::vector<Real> tmp_baryCoefs;
 
             const typename DataTypes::Coord cG = computeTriangleCenter(ind_ta);
-            const sofa::type::Vec<3, Real> pG{ cG[0], cG[1], cG[2] };
+            const sofa::type::Vec<3, Real> pG = type::toVec3(cG);
 
             computeSegmentTriangleIntersectionInPlane(pG, ptB, current_triID, tmp_intersectedEdges, tmp_baryCoefs);
             if (tmp_intersectedEdges.size() != 1) // only one edge should be intersected to find the next edge in cut direction
