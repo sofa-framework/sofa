@@ -370,12 +370,15 @@ void FixedProjectiveConstraint<DataTypes>::computeBBoxForIndices(const type::vec
     const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     type::BoundingBox bbox;
-    const type::Vec3 drawSizes {drawSize, drawSize, drawSize};
-
     for (const auto index : indices )
     {
-        bbox.include(type::toVec3(DataTypes::getCPos(x[index])) + drawSizes);
-        bbox.include(type::toVec3(DataTypes::getCPos(x[index])) - drawSizes);
+        const auto x3d = DataTypes::getCPos(x[index]);
+
+        for (unsigned int i = 0; i < DataTypes::Coord::size() && i<3; ++i)
+        {
+            bbox.maxBBox()[i] = std::max(x3d[i] + drawSize, bbox.maxBBox()[i]);
+            bbox.maxBBox()[i] = std::min(x3d[i] - drawSize, bbox.maxBBox()[i]);
+        }
     }
 
     this->f_bbox.setValue(bbox);
