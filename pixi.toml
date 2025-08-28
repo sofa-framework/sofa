@@ -3,6 +3,7 @@ authors = ["Olivier Roussel <olivier.roussel@inria.fr>"]
 channels = ["https://prefix.dev/conda-forge"]
 description = "Open-source framework for interactive mechanical simulation, with emphasis on biomechanics and robotics"
 name = "SOFA"
+# Update PIXI_CURRENT_PLATFORM environment variable definition below if you modify platforms
 platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
 version = "25.06.99"
 license = "LGPL-2.1-or-later"
@@ -32,6 +33,19 @@ scripts = ["development/scripts/pixi/activation.sh"]
 
 [target.win-64.activation]
 scripts = ["development/scripts/pixi/activation.bat"]
+
+# There is no environment variable set by Pixi that store
+# current platform when running a Pixi task, so we have
+# to set it manually to PIXI_CURRENT_PLATFORM
+[target.linux-64.activation.env]
+PIXI_CURRENT_PLATFORM = "linux-64"
+[target.osx-64.activation.env]
+PIXI_CURRENT_PLATFORM = "osx-64"
+[target.osx-arm64.activation.env]
+PIXI_CURRENT_PLATFORM = "osx-arm64"
+[target.win-64.activation.env]
+PIXI_CURRENT_PLATFORM = "win-64"
+
 
 [tasks]
 build = { cmd = "cmake --build $SOFA_BUILD_DIR --target all --parallel 8", depends-on = ["configure"] }
@@ -83,6 +97,11 @@ dependencies = { libglu = "*" }
 [feature.presets-defaultGUI.target.linux-64]
 dependencies = { mesa-libgl-devel-cos7-x86_64 = "*" }
 
+# conda-deny is a tool that will be used to bundle licenses of conda installed packages
+[feature.build-release-package.dependencies]
+conda-deny = "*"
+[feature.build-release-package.activation]
+env = { SOFA_BUILD_RELEASE_PACKAGE_WITH_PIXI = "1" }
 [feature.build-release-package.tasks]
 configure = { cmd = [ "cmake",
   "-G",
