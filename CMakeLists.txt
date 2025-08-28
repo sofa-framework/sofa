@@ -285,6 +285,14 @@ sofa_install_git_infos(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(tools/postinstall-fixup)
 
 if(SOFA_BUILD_RELEASE_PACKAGE)
+    # if building release package using Pixi, build a bundle of licence files of all 
+    # dependencies that will be embedded in the package
+    if($ENV{SOFA_BUILD_RELEASE_PACKAGE_WITH_PIXI})
+        message("Build SOFA release package using Pixi, bunding licenses...")
+        execute_process(COMMAND conda-deny bundle -e $ENV{PIXI_ENVIRONMENT_NAME} -p $ENV{PIXI_CURRENT_PLATFORM} -d ${CMAKE_BINARY_DIR}/licenses)
+        install(DIRECTORY ${CMAKE_BINARY_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
+    endif()
+
     #######################
     # CPack configuration #
     #######################
