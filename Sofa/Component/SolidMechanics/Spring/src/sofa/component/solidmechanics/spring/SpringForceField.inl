@@ -918,20 +918,11 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
     const VecCoord& p1 = this->mstate1->read(core::vec_id::read_access::position)->getValue();
     const VecCoord& p2 = this->mstate2->read(core::vec_id::read_access::position)->getValue();
 
-    constexpr Real max_real = std::numeric_limits<Real>::max();
-    constexpr Real min_real = std::numeric_limits<Real>::lowest();
-
-    Real maxBBox[DataTypes::spatial_dimensions];
-    Real minBBox[DataTypes::spatial_dimensions];
-
-    for (sofa::Index c = 0; c < DataTypes::spatial_dimensions; ++c)
-    {
-        maxBBox[c] = min_real;
-        minBBox[c] = max_real;
-    }
+    type::BoundingBox bbox;
 
     bool foundSpring = false;
 
+    type::Vec3 a,b;
     for (const auto& spring : springsValue)
     {
         if (spring.enabled)
@@ -940,25 +931,18 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
             {
                 foundSpring = true;
 
-                const auto& a = p1[spring.m1];
-                const auto& b = p2[spring.m2];
-                for (const auto& p : {a, b})
-                {
-                    for (sofa::Index c = 0; c < DataTypes::spatial_dimensions; ++c)
-                    {
-                        if (p[c] > maxBBox[c])
-                            maxBBox[c] = p[c];
-                        else if (p[c] < minBBox[c])
-                            minBBox[c] = p[c];
-                    }
-                }
+                DataTypes::get(a[0], a[1], a[2], p1[spring.m1]);
+                DataTypes::get(b[0], b[1], b[2], p2[spring.m2]);
+
+                bbox.include(a);
+                bbox.include(b);
             }
         }
     }
 
     if (foundSpring)
     {
-        this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+        this->f_bbox.setValue(bbox);
     }
 }
 
