@@ -161,7 +161,7 @@ public:
     }
 
     template<typename real2>
-    [[deprecated("Contructor with a different type of Vec is deprecated.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_DIFFERENT_VEC()
     constexpr Vec(const Vec<N, real2>& p) noexcept
     {
         for(Size i=0; i<N; i++)
@@ -170,7 +170,7 @@ public:
 
     /// Constructor from an array of values.
     template<typename real2>
-    [[deprecated("Contructor with unsafe pointer is deprecated.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_POINTER()
     explicit constexpr Vec(const real2* p) noexcept
     {
         for(Size i=0; i<N; i++)
@@ -236,7 +236,7 @@ public:
 
     /// Assignment operator from an array of values.
     template<typename real2>
-    [[deprecated("Assignement with unsafe pointer is deprecated.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_POINTER()
     constexpr void operator=(const real2* p) noexcept
     {
         //static_assert(false);
@@ -246,7 +246,7 @@ public:
 
     /// Assignment from a vector with different dimensions.
     template<Size M, typename real2>
-    [[deprecated("Assignement with a different type of Vec is deprecated.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_DIFFERENT_VEC()
     constexpr void operator=(const Vec<M,real2>& v) noexcept
     {
         //static_assert(false);
