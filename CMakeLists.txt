@@ -41,6 +41,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTOR
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
 
+set(SOFA_APPLICATIONS_RELOCATABLE_PATH "applications" CACHE STRING "Relocatable path that will be used ot install applications")
+set(SOFA_PLUGINS_RELOCATABLE_PATH "plugins" CACHE STRING "Relocatable path that will be used ot install plugins")
+set(SOFA_PROJECTS_RELOCATABLE_PATH "projects" CACHE STRING "Relocatable path that will be used ot install projects")
+
+
+
 # Option for packaging
 option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 
