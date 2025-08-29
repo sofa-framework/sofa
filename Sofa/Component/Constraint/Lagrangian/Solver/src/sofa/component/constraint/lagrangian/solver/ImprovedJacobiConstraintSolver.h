@@ -31,6 +31,12 @@ class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ImprovedJacobiConstraintSo
 public:
     SOFA_CLASS(ImprovedJacobiConstraintSolver, BuiltConstraintSolver);
 
+
+    /**
+     * Based on paper
+     * Francu, Mihai & Moldoveanu, Florica. An Improved Jacobi Solver for Particle Simulation.
+     * VRPHYS 2014
+     **/
     virtual void doSolve( SReal timeout = 0.0) override;
 
 };
