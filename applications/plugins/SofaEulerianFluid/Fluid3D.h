@@ -72,7 +72,7 @@ public:
 
     void reset() override;
 
-    void updatePosition(SReal dt) override;
+    void doUpdatePosition(SReal dt) override;
 
     void draw(const sofa::core::visual::VisualParams* vparams) override;
 
