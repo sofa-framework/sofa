@@ -67,51 +67,6 @@ public:
     static inline int doIntersectionLinePoint(SReal dist2, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& q, OutputVector* contacts, int id, bool swapElems = false);
     static inline int doIntersectionTrianglePoint(SReal dist2, int flags, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& p3, const type::Vec3& n, const type::Vec3& q, OutputVector* contacts, int id, bool swapElems = false, bool useNormal=false);
     static inline int doIntersectionTrianglePoint2(SReal dist2, int flags, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& p3, const type::Vec3& n, const type::Vec3& q, OutputVector* contacts, int id, bool swapElems = false);
-
-
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Point&, collision::geometry::Point&) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Line&, collision::geometry::Point&) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Line&, collision::geometry::Point&, OutputVector*) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Line&, collision::geometry::Line&) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Line&, collision::geometry::Line&, OutputVector*) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Point&) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Point&, OutputVector*) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Line&) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Line&, OutputVector*) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Triangle&) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Triangle&, OutputVector*) = delete;
-    
-    template <class T>
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Point& pt) = delete;
-    template <class T>
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Point& pt, OutputVector*) = delete;
-    template <class T>
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Line&, collision::geometry::TSphere<T>&) = delete;
-    template <class T>
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Line& line, collision::geometry::TSphere<T>& sph, OutputVector*) = delete;
-    template <class T>
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&) = delete;
-    template <class T>
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Triangle& tri, collision::geometry::TSphere<T>& sph, OutputVector*) = delete;
 };
 
 } // namespace sofa::component::collision::detection::intersection
