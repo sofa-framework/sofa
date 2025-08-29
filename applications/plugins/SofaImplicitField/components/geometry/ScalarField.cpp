@@ -104,10 +104,20 @@ void ScalarField::getHessianByCentralFiniteDifference(const Vec3d& x, const doub
     }
 }
 
-
 void ScalarField::getHessian(Vec3d &Pos, Mat3x3& h)
 {
     getHessianByCentralFiniteDifference(Pos, d_epsilon.getValue(), h);
+}
+
+void ScalarField::getValues(const std::vector<Vec3d>& positions, std::vector<double>& results)
+{
+    results.clear();
+    results.reserve(positions.size());
+    for(auto position : positions)
+    {
+        results.emplace_back(getValue(position));
+    }
+    return;
 }
 
 bool ScalarField::computeSegIntersection(Vec3d& posInside, Vec3d& posOutside, Vec3d& intersecPos, int i)
