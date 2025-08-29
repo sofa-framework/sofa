@@ -24,7 +24,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <CollisionResponse name="Response" />
+    <CollisionResponse name="Response" response="PenalityContactForceField"/>
     <DefaultAnimationLoop/>
     
     <Node name="Quads Mesh">
