@@ -104,6 +104,11 @@ install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/macdeployqt.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/windeployqt.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindTinyXML2.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindPNG.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindPCRE2.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindZSTD.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindZLIB.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindQGLViewer.cmake"
     DESTINATION lib/cmake/Modules
     COMPONENT headers
     )
