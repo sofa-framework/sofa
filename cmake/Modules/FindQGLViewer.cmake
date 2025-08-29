@@ -8,8 +8,6 @@
 #
 # Provides target QGLViewer.
 
-find_package(QGLViewer NO_MODULE QUIET)
-
 if(NOT TARGET QGLViewer)
 
   if(NOT QGLViewer_INCLUDE_DIR)
