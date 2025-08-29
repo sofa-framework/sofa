@@ -77,15 +77,15 @@ public:
     void init(int line, SReal** w, SReal *force) override
     {
         sofa::type::Mat<3,3,SReal> temp;
-        temp[0][0] = w[line][line];
-        temp[0][1] = w[line][line+1];
-        temp[0][2] = w[line][line+2];
-        temp[1][0] = w[line+1][line];
-        temp[1][1] = w[line+1][line+1];
-        temp[1][2] = w[line+1][line+2];
-        temp[2][0] = w[line+2][line];
-        temp[2][1] = w[line+2][line+1];
-        temp[2][2] = w[line+2][line+2];
+        temp(0,0) = w[line][line];
+        temp(0,1) = w[line][line+1];
+        temp(0,2) = w[line][line+2];
+        temp(1,0) = w[line+1][line];
+        temp(1,1) = w[line+1][line+1];
+        temp(1,2) = w[line+1][line+2];
+        temp(2,0) = w[line+2][line];
+        temp(2,1) = w[line+2][line+1];
+        temp(2,2) = w[line+2][line+2];
 
         const bool canInvert = sofa::type::invertMatrix(invW, temp);
         assert(canInvert);
@@ -116,7 +116,7 @@ public:
         for(int i=0; i<3; i++)
         {
             for(int j=0; j<3; j++)
-                force[line+i] -= d[line+j] * invW[i][j] * m_load;
+                force[line+i] -= d[line+j] * invW(i,j) * m_load;
         }
     }
 

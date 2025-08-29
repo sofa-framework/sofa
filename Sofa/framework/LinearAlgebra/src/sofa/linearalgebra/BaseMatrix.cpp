@@ -92,7 +92,7 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
                     type::Vec<NL,Real> resi;
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
-                            resi[bi] += bdata[bi][bj] * vj[bj];
+                            resi[bi] += bdata(bi,bj) * vj[bj];
                     for (int bi = 0; bi < NL; ++bi)
                         opVadd(result, i+bi, resi[bi]);
                 }
@@ -104,7 +104,7 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
                     type::Vec<NC,Real> resj;
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
-                            resj[bj] += bdata[bi][bj] * vi[bi];
+                            resj[bj] += bdata(bi,bj) * vi[bi];
                     for (int bj = 0; bj < NC; ++bj)
                         opVadd(result, j+bj, resj[bj]);
                 }
@@ -120,7 +120,7 @@ void matrixAdd(BaseMatrix* self, const Index row, const Index col, const sofa::t
     {
         for (unsigned int c = 0; c < C; ++c)
         {
-            self->add(row + r, col + c, M[r][c]);
+            self->add(row + r, col + c, M(r,c));
         }
     }
 }
@@ -232,7 +232,7 @@ struct BaseMatrixLinearOpMV_BlockSparse
                         vtmpj[bj] = (Real)opVget(v, j+bj);
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
-                            vtmpi[bi] += bdata[bi][bj] * vtmpj[bj];
+                            vtmpi[bi] += bdata(bi,bj) * vtmpj[bj];
                 }
                 else
                 {
@@ -240,7 +240,7 @@ struct BaseMatrixLinearOpMV_BlockSparse
                         vtmpj[bj] = (Real)0;
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
-                            vtmpj[bj] += bdata[bi][bj] * vtmpi[bi];
+                            vtmpj[bj] += bdata(bi,bj) * vtmpi[bi];
                     for (int bj = 0; bj < NC; ++bj)
                         opVadd(result, j+bj, vtmpj[bj]);
                 }
@@ -551,13 +551,13 @@ struct BaseMatrixLinearOpAM_BlockSparse
                 {
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
-                            m2->add(i+bi,j+bj,bdata[bi][bj] * fact);
+                            m2->add(i+bi,j+bj,bdata(bi,bj) * fact);
                 }
                 else
                 {
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
-                            m2->add(j+bj,i+bi,bdata[bi][bj] * fact);
+                            m2->add(j+bj,i+bi,bdata(bi,bj) * fact);
                 }
             }
         }
@@ -591,13 +591,13 @@ struct BaseMatrixLinearOpAMS_BlockSparse
                 {
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
-                            m2->add(i+bi,j+bj,bdata[bi][bj] * fact);
+                            m2->add(i+bi,j+bj,bdata(bi,bj) * fact);
                 }
                 else
                 {
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
-                            m2->add(j+bj,i+bi,bdata[bi][bj] * fact);
+                            m2->add(j+bj,i+bi,bdata(bi,bj) * fact);
                 }
             }
         }

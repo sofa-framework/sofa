@@ -443,9 +443,9 @@ auto Quat<Real>::createQuaterFromFrame(const Vec3 &lox, const Vec3 &loy,const Ve
 
     for (unsigned int i=0 ; i<3 ; i++)
     {
-        m[i][0] = lox[i];
-        m[i][1] = loy[i];
-        m[i][2] = loz[i];
+        m(i,0) = lox[i];
+        m(i,1) = loy[i];
+        m(i,2) = loz[i];
     }
     q.fromMatrix(m);
     return q;

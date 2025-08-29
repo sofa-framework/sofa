@@ -108,7 +108,7 @@ SReal BTDMatrix<N, T>::element(Index i, Index j) const
     const Index bj = j / BSIZE; j = j % BSIZE;
     const Index bindex = bj - bi + 1;
     if (bindex >= 3) return (SReal)0;
-    return data[bi*3+bindex][i][j];
+    return data[bi*3+bindex](i,j);
 }
 
 template<std::size_t N, typename T>
@@ -176,7 +176,7 @@ void BTDMatrix<N, T>:: set(Index i, Index j, double v)
     const Index bj = j / BSIZE; j = j % BSIZE;
     const Index bindex = bj - bi + 1;
     if (bindex >= 3) return;
-    data[bi*3+bindex][i][j] = (Real)v;
+    data[bi*3+bindex](i,j) = (Real)v;
 }
 
 template<std::size_t N, typename T>
@@ -186,7 +186,7 @@ void BTDMatrix<N, T>::add(Index i, Index j, double v)
     const Index bj = j / BSIZE; j = j % BSIZE;
     const Index bindex = bj - bi + 1;
     if (bindex >= 3) return;
-    data[bi*3+bindex][i][j] += (Real)v;
+    data[bi*3+bindex](i,j) += (Real)v;
 }
 
 template<std::size_t N, typename T>
@@ -196,7 +196,7 @@ void BTDMatrix<N, T>::clear(Index i, Index j)
     const Index bj = j / BSIZE; j = j % BSIZE;
     const Index bindex = bj - bi + 1;
     if (bindex >= 3) return;
-    data[bi*3+bindex][i][j] = (Real)0;
+    data[bi*3+bindex](i,j) = (Real)0;
 }
 
 template<std::size_t N, typename T>
@@ -205,7 +205,7 @@ void BTDMatrix<N, T>::clearRow(Index i)
     const Index bi = i / BSIZE; i = i % BSIZE;
     for (Index bj = 0; bj < 3; ++bj)
         for (Index j=0; j<BSIZE; ++j)
-            data[bi*3+bj][i][j] = (Real)0;
+            data[bi*3+bj](i,j) = (Real)0;
 }
 
 template<std::size_t N, typename T>
@@ -214,12 +214,12 @@ void BTDMatrix<N, T>::clearCol(Index j)
     const Index bj = j / BSIZE; j = j % BSIZE;
     if (bj > 0)
         for (Index i=0; i<BSIZE; ++i)
-            data[(bj-1)*3+2][i][j] = (Real)0;
+            data[(bj-1)*3+2](i,j) = (Real)0;
     for (Index i=0; i<BSIZE; ++i)
-        data[bj*3+1][i][j] = (Real)0;
+        data[bj*3+1](i,j) = (Real)0;
     if (bj < nBRow-1)
         for (Index i=0; i<BSIZE; ++i)
-            data[(bj+1)*3+0][i][j] = (Real)0;
+            data[(bj+1)*3+0](i,j) = (Real)0;
 }
 
 template<std::size_t N, typename T>

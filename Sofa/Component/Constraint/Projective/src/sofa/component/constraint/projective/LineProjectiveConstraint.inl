@@ -136,7 +136,7 @@ void  LineProjectiveConstraint<DataTypes>::updateJacobian()
     for(unsigned i=0; i<bsize; i++)
         for(unsigned j=0; j<bsize; j++)
         {
-            bProjection[i][j] = n[i]*n[j];
+            bProjection(i,j) = n[i]*n[j];
         }
 
     // get the indices sorted

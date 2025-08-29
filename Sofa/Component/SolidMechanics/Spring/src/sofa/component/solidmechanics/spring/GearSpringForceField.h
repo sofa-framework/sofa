@@ -258,10 +258,10 @@ public:
         Real angle = 0.0;
         unsigned int count = 0;
         Vector W,w;
-        for(unsigned int i=0; i<u.size(); ++i) W[i]=M1[i][axis]; // ref axis
+        for(unsigned int i=0; i<u.size(); ++i) W[i]=M1(i,axis); // ref axis
         for(unsigned int j=0; j<u.size(); ++j) if(j!=axis)
             {
-                for(unsigned int i=0; i<u.size(); ++i)  {u[i]=M1[i][j]; v[i]=M2[i][j];}
+                for(unsigned int i=0; i<u.size(); ++i)  {u[i]=M1(i,j); v[i]=M2(i,j);}
                 count++;  getVectorAngle(u,v,w); if(dot(w,W)<0) angle -= w.norm(); else angle += w.norm();
             }
         angle /= (Real)count;
@@ -282,7 +282,7 @@ public:
         p1.writeRotationMatrix(M1);
         p2.writeRotationMatrix(M2);
         Vector u,v;
-        for(unsigned int i=0; i<u.size(); ++i) { u[i]=M1[i][axis]; v[i]=M2[i][axis]; }
+        for(unsigned int i=0; i<u.size(); ++i) { u[i]=M1(i,axis); v[i]=M2(i,axis); }
         getVectorAngle(u,v,w);
     }
 

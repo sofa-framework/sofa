@@ -70,9 +70,9 @@ int RayDiscreteIntersection::computeIntersection(Ray& e1, Triangle& e2, OutputVe
     Vec3 right;
     for (int i=0; i<3; i++)
     {
-        M[i][0] = AB[i];
-        M[i][1] = AC[i];
-        M[i][2] = -PQ[i];
+        M(i,0) = AB[i];
+        M(i,1) = AC[i];
+        M(i,2) = -PQ[i];
         right[i] = P[i]-A[i];
     }
     if (!Minv.invert(M))
