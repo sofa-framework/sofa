@@ -374,10 +374,10 @@ void FixedProjectiveConstraint<DataTypes>::computeBBoxForIndices(const type::vec
     {
         const auto x3d = DataTypes::getCPos(x[index]);
 
-        for (unsigned int i = 0; i < DataTypes::Coord::size() && i<3; ++i)
+        for (unsigned int i = 0; i < DataTypes::Coord::spatial_dimensions && i<3; ++i)
         {
-            bbox.maxBBox()[i] = std::max(x3d[i] + drawSize, bbox.maxBBox()[i]);
-            bbox.maxBBox()[i] = std::min(x3d[i] - drawSize, bbox.maxBBox()[i]);
+            bbox.maxBBox()[i] = std::max(static_cast<SReal>(x3d[i] + drawSize), bbox.maxBBox()[i]);
+            bbox.minBBox()[i] = std::min(static_cast<SReal>(x3d[i] - drawSize), bbox.minBBox()[i]);
         }
     }
 
