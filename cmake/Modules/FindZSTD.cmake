@@ -7,8 +7,6 @@
 #   ZSTD_FOUND : True if ZSTD is found
 #
 # Provides target ZSTD::ZSTD.
-# TODO: keep CONFIG mode ?
-#find_package(zstd NO_MODULE QUIET)
 
 if(TARGET ZSTD::ZSTD)
   set(ZSTD_FOUND TRUE) # only ZSTD_FOUND has been set

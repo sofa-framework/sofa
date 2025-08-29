@@ -7,8 +7,6 @@
 #   TinyXML2_FOUND : True if tinyxml2 is found
 #
 # Provides target tinyxml2::tinyxml2.
-# TODO: keep CONFIG mode ?
-find_package(tinyxml2 NO_MODULE QUIET)
 
 if(TARGET tinyxml2::tinyxml2)
   set(TinyXML2_FOUND TRUE) # only tinyxml2_FOUND has been set
