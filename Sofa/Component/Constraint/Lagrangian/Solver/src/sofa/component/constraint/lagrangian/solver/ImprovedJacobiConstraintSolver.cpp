@@ -44,14 +44,13 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
         return;
     }
 
-    const SReal t0 = (SReal)sofa::helper::system::thread::CTime::getTime() ;
-    const SReal timeScale = 1.0 / (SReal)sofa::helper::system::thread::CTime::getTicksPerSec();
-
     SReal *dfree = current_cp->getDfree();
     SReal *force = current_cp->getF();
     SReal **w = current_cp->getW();
     SReal tol = current_cp->tolerance;
     SReal *d = current_cp->_d.ptr();
+
+    std::copy_n(dfree, dimension, d);
 
     for(unsigned i=0; i< dimension; ++i)
     {
@@ -87,38 +86,17 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
         i += current_cp->constraintsResolutions[i]->getNbLines();
     }
 
-    bool showGraphs = false;
-    sofa::type::vector<SReal>* graph_residuals = nullptr;
-    std::map < std::string, sofa::type::vector<SReal> > *graph_forces = nullptr, *graph_violations = nullptr;
-
-    showGraphs = d_computeGraphs.getValue();
-
-    if(showGraphs)
-    {
-        graph_forces = d_graphForces.beginEdit();
-        graph_forces->clear();
-
-        graph_violations = d_graphViolations.beginEdit();
-        graph_violations->clear();
-
-        graph_residuals = &(*d_graphErrors.beginEdit())["Error"];
-        graph_residuals->clear();
-    }
-
     sofa::type::vector<SReal> tabErrors(dimension);
 
     int iterCount = 0;
 
     Eigen::Map<Eigen::MatrixX<SReal>> EigenW(w[0],dimension, dimension) ;
-
     SReal eigenRadius = 0;
     for(auto s : EigenW.eigenvalues())
     {
         eigenRadius=std::max(eigenRadius,norm(s));
     }
-    const SReal rho = 0.9 * 2/eigenRadius;
-
-//    std::cout<<"rho = "<<rho<<std::endl;
+    const SReal rho = std::min(1.0, 0.9 * 2/eigenRadius);
 
     for(int i=0; i<current_cp->maxIterations; i++)
     {
@@ -126,9 +104,7 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
         bool constraintsAreVerified = true;
 
         error=0.0;
-
         SReal beta = std::min(1.0, pow( ((float)i)/current_cp->maxIterations,0.6));
-
 
         for(int j=0; j<dimension; ) // increment of j realized at the end of the loop
         {
@@ -137,68 +113,34 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
 
             for(unsigned l=j; l<j+nb; ++l )
             {
-                deltaF[l] = force[l] - lastF[l];
+                for(unsigned k=0; k<dimension; ++k)
+                {
+                    d[l] +=  w[l][k] * deltaF[k];
+                }
+                correctedD[l] = rho * d[l]  ;
             }
-
+            current_cp->constraintsResolutions[j]->resolution(j,w,correctedD.data(), force, dfree);
             for(unsigned l=j; l<j+nb; ++l )
             {
+                force[l] += beta * deltaF[l] ;
+                deltaF[l] = force[l] - lastF[l];
                 lastF[l] = force[l];
             }
 
+            double cstError = 0.0;
             for(unsigned l=j; l<j+nb; ++l )
             {
                 for(unsigned k=0; k<dimension; ++k)
                 {
-                    d[l] -=  w[l][k] * deltaF[l];
+                    cstError += pow(w[l][k] * deltaF[k],2);
                 }
-                correctedD[l] = rho * d[l] +(1 - beta) * deltaF[l] ;
-                force[l] = correctedD[l]/w[l][l];
             }
-            current_cp->constraintsResolutions[j]->resolution(j,w,correctedD.data(), force, dfree);
-
+            error += sqrt(cstError);
             j+= nb;
+
         }
 
-
-
-        if(showGraphs)
-        {
-            for(int j=0; j<dimension; j++)
-            {
-                std::ostringstream oss;
-                oss << "f" << j;
-
-                sofa::type::vector<SReal>& graph_force = (*graph_forces)[oss.str()];
-                graph_force.push_back(force[j]);
-
-                sofa::type::vector<SReal>& graph_violation = (*graph_violations)[oss.str()];
-                graph_violation.push_back(d[j]);
-            }
-
-            graph_residuals->push_back(error);
-        }
-
-        const SReal t1 = (SReal)sofa::helper::system::thread::CTime::getTime();
-        const SReal dt = (t1 - t0)*timeScale;
-
-        if(timeout && dt > timeout)
-        {
-
-            msg_info() <<  "TimeOut" ;
-
-            current_cp->currentError = error;
-            current_cp->currentIterations = i+1;
-            return;
-        }
-        else if(current_cp->allVerified)
-        {
-            if(constraintsAreVerified)
-            {
-                convergence = true;
-                break;
-            }
-        }
-        else if(error < tol) // do not stop at the first iteration (that is used for initial guess computation)
+        if(error < tol && i > 0) // do not stop at the first iteration (that is used for initial guess computation)
         {
             convergence = true;
             break;
@@ -209,30 +151,6 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
 
     current_cp->result_output(this, force, error, iterCount, convergence);
 
-    if(showGraphs)
-    {
-        d_graphErrors.endEdit();
-
-        sofa::type::vector<SReal>& graph_constraints = (*d_graphConstraints.beginEdit())["Constraints"];
-        graph_constraints.clear();
-
-        for(int j=0; j<dimension; )
-        {
-            const unsigned int nbDofs = current_cp->constraintsResolutions[j]->getNbLines();
-
-            if(tabErrors[j])
-                graph_constraints.push_back(tabErrors[j]);
-            else if(current_cp->constraintsResolutions[j]->getTolerance())
-                graph_constraints.push_back(current_cp->constraintsResolutions[j]->getTolerance());
-            else
-                graph_constraints.push_back(tol);
-
-            j += nbDofs;
-        }
-        d_graphConstraints.endEdit();
-
-        d_graphForces.endEdit();
-    }
 }
 
 
