@@ -27,7 +27,7 @@
     <VisualStyle displayFlags="showForceFields"/>
     <ConstraintAttachButtonSetting /> <!-- The presence of this component sets the mouse interaction to Lagrangian-based constraints at the GUI launch -->
     <FreeMotionAnimationLoop />
-    <ImprovedJacobiConstraintSolver maxIterations="100" tolerance="1.0e-8"/>
+    <ImprovedJacobiConstraintSolver maxIterations="3000" tolerance="1.0e-8"/>
     <CollisionPipeline name="Pipeline" />
     <BruteForceBroadPhase name="BroadPhase" />
     <BVHNarrowPhase name="NarrowPhase" />
@@ -35,7 +35,7 @@
     <NewProximityIntersection name="Intersection" alarmDistance="0.02" contactDistance="0.001" />
 
     <Node name="BEAMVOLUME">
-        <RegularGridTopology name="HexaTop" n="25 5 5" min="0 0 0" max="0.5 0.1 0.1"/>
+        <RegularGridTopology name="HexaTop" n="6 6 6" min="0.2 0 0" max="0.3 0.1 0.1"/>
         <TetrahedronSetTopologyContainer name="Container" position="@HexaTop.position"/>
         <TetrahedronSetTopologyModifier name="Modifier"/>
         <Hexa2TetraTopologicalMapping input="@HexaTop" output="@Container" swapping="true"/>
@@ -51,8 +51,8 @@
         <TetrahedronSetTopologyModifier name="Modifier"/>
 
         <MechanicalObject name="mstate" template="Vec3d" src="@Container"/>
-        <TetrahedronFEMForceField name="forceField" listening="true" youngModulus="6e4" poissonRatio="0.40" />
-        <UniformMass totalMass="1"/>
+        <TetrahedronFEMForceField name="forceField" listening="true" youngModulus="6e4" poissonRatio="0.30" />
+        <MeshMatrixMass totalMass="0.1"/>
 
         <Node name="Surface">
             <TriangleSetTopologyContainer name="Container"/>
@@ -71,6 +71,46 @@
         <LinearSolverConstraintCorrection linearSolver="@precond"/>
 
     </Node>
+
+    <Node name="BEAMVOLUME2">
+        <RegularGridTopology name="HexaTop" n="6 6 6" min="0.2 0 0.15" max="0.3 0.1 0.25"/>
+        <TetrahedronSetTopologyContainer name="Container" position="@HexaTop.position"/>
+        <TetrahedronSetTopologyModifier name="Modifier"/>
+        <Hexa2TetraTopologicalMapping input="@HexaTop" output="@Container" swapping="true"/>
+    </Node>
+
+
+    <Node name="FEM2">
+        <EulerImplicitSolver firstOrder="false" rayleighMass="0.1" rayleighStiffness="0.1"/>
+        <PCGLinearSolver preconditioner="@precond"/>
+        <SparseLDLSolver name="precond" template="CompressedRowSparseMatrixMat3x3" parallelInverseProduct="true" />
+
+        <TetrahedronSetTopologyContainer name="Container" position="@../BEAMVOLUME2/HexaTop.position"
+                                         tetrahedra="@../BEAMVOLUME2/Container.tetrahedra"/>
+        <TetrahedronSetTopologyModifier name="Modifier"/>
+
+        <MechanicalObject name="mstate" template="Vec3d" src="@Container"/>
+        <TetrahedronFEMForceField name="forceField" listening="true" youngModulus="2e4" poissonRatio="0.30" />
+        <MeshMatrixMass totalMass="0.02"/>
+
+        <Node name="Surface">
+            <TriangleSetTopologyContainer name="Container"/>
+            <TriangleSetTopologyModifier name="Modifier"/>
+            <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="false"/>
+            <MechanicalObject name="dofs" rest_position="@../mstate.rest_position"/>
+            <TriangleCollisionModel name="Torus8CMT" contactDistance="0.001" color="0.94117647058824 0.93725490196078 0.89411764705882" />
+            <Node name="Visual" activated="1">
+                <TriangleSetTopologyContainer name="Container" src="@../Container"/>
+                <OglModel color="0.1 0.2 1.0 1.0" name="visualModel"/>
+                <IdentityMapping name="VisualMapping"/>
+            </Node>
+            <IdentityMapping name="SurfaceMapping"/>
+        </Node>
+
+        <LinearSolverConstraintCorrection linearSolver="@precond"/>
+
+    </Node>
+
 
 
     <Node name="Floor" tags="NoBBox" >

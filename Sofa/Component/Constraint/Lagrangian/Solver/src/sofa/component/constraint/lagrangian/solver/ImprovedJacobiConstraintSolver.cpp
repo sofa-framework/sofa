@@ -134,10 +134,17 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
                 {
                     cstError += pow(w[l][k] * deltaF[k],2);
                 }
+                constraintsAreVerified = constraintsAreVerified && cstError < pow(tol,2);
             }
             error += sqrt(cstError);
             j+= nb;
 
+        }
+
+        if (current_cp->allVerified && constraintsAreVerified)
+        {
+            convergence = true;
+            return;
         }
 
         if(error < tol && i > 0) // do not stop at the first iteration (that is used for initial guess computation)
