@@ -50,7 +50,10 @@ namespace sofa::component::geometry::_discretegrid_
 {
     extern void registerDiscreteGridField(sofa::core::ObjectFactory* factory);
 }
-
+namespace sofaimplicitfield::component::engine
+{
+extern void registerFieldToSurfaceMesh(sofa::core::ObjectFactory* factory);
+}
 
 namespace sofaimplicitfield
 {
@@ -100,12 +103,14 @@ const char* getModuleDescription()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
+    std::cout << "===================================================================" << std::endl;
     sofa::component::geometry::_BottleField_::registerBottleField(factory);
     sofa::component::geometry::_sphericalfield_::registerSphericalField(factory);
     sofa::component::geometry::_StarShapedField_::registerStarShapedField(factory);
     sofa::component::mapping::registerImplicitSurfaceMapping(factory);
     sofa::component::container::registerInterpolatedImplicitSurface(factory);
     sofa::component::geometry::_discretegrid_::registerDiscreteGridField(factory);
+    sofaimplicitfield::component::engine::registerFieldToSurfaceMesh(factory);
 }
 
 } /// sofaimplicitfield
