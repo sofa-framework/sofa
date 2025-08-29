@@ -56,7 +56,7 @@ void VTKExporter::doInit()
 
     if (!m_mstate.get())
     {
-        m_mstate.set(getContext()->getMechanicalState());
+        m_mstate.set(context->getMechanicalState());
     }
 
     if (m_mstate && !d_position.isSet())
@@ -70,7 +70,7 @@ void VTKExporter::doInit()
 
     if (!m_topology.get())
     {
-        m_topology.set(getContext()->getMeshTopology());
+        m_topology.set(context->getMeshTopology());
     }
 
     if (!m_topology)

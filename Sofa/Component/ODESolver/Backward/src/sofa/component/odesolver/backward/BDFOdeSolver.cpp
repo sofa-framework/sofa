@@ -111,6 +111,10 @@ void BDFOdeSolver::computeLinearMultiStepCoefficients(const std::deque<SReal>& s
 void BDFOdeSolver::recomputeCoefficients(std::size_t order, SReal dt)
 {
     assert(m_timeList.size() == order + 1);
+
+    SOFA_UNUSED(order);
+    SOFA_UNUSED(dt);
+    
     computeLinearMultiStepCoefficients(m_timeList, m_a_coef, m_b_coef);
 }
 
