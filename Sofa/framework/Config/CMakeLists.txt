@@ -3,7 +3,7 @@ project(Sofa.Config LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/lib/cmake")
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/cmake")
 
 include(SofaMacros)
 
@@ -320,14 +320,14 @@ set_target_properties(${PROJECT_NAME} PROPERTIES SOFA_VERSION "${SOFA_VERSION}")
 set_target_properties(${PROJECT_NAME} PROPERTIES SOFA_URL "${SOFA_URL}")
 
 # CMakeParseLibraryList.cmake
-configure_file(cmake/CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/lib/cmake/CMakeParseLibraryList.cmake COPYONLY)
-install(FILES cmake/CMakeParseLibraryList.cmake DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
+configure_file(cmake/CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/cmake/CMakeParseLibraryList.cmake COPYONLY)
+install(FILES cmake/CMakeParseLibraryList.cmake DESTINATION ${ARCHIVE_OUTPUT_DIRECTORY}/cmake/${PROJECT_NAME} COMPONENT headers)
 
 # SofaMacros*.cmake
 set(macro_files SofaMacros.cmake SofaMacrosConfigure.cmake SofaMacrosInstall.cmake SofaMacrosPython.cmake SofaMacrosUtils.cmake)
 foreach(macro_file ${macro_files})
-    configure_file(cmake/${macro_file} ${CMAKE_BINARY_DIR}/lib/cmake/${macro_file} COPYONLY)
-    install(FILES cmake/${macro_file} DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
+    configure_file(cmake/${macro_file} ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/cmake/${macro_file} COPYONLY)
+    install(FILES cmake/${macro_file} DESTINATION ${ARCHIVE_OUTPUT_DIRECTORY}/cmake/${PROJECT_NAME} COMPONENT headers)
 endforeach()
 
 sofa_create_package_with_targets(
