@@ -413,7 +413,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             // to senting to 0 the rotation axis components along x, y
             // and/or z, depending on the rotations we want to take into
             // account.
-            for (sofa::Size entryId = spatial_dimensions; entryId < coord_total_size; ++entryId)
+            for (sofa::Size entryId = spatial_dimensions; entryId < Deriv::total_size; ++entryId)
             {
                 if (!activeDirections[entryId])
                     dir[entryId-spatial_dimensions] = 0;
@@ -472,7 +472,7 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mp
             // to senting to 0 the rotation axis components along x, y
             // and/or z, depending on the rotations we want to take into
             // account.
-            for (sofa::Size entryId = spatial_dimensions; entryId < coord_total_size; ++entryId)
+            for (sofa::Size entryId = spatial_dimensions; entryId < Deriv::total_size; ++entryId)
             {
                 if (!activeDirections[entryId])
                     currentSpringRotationalDx[entryId-spatial_dimensions] = 0;
