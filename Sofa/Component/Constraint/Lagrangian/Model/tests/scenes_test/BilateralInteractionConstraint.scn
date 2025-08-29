@@ -2,7 +2,7 @@
 <Node name="root" dt="0.001" gravity="0 -981 0">
     <VisualStyle displayFlags="showForceFields" />
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver maxIterations="100" tolerance="1e-3" />
+    <ProjectedGaussSeidelConstraintSolver maxIterations="100" tolerance="1e-3" />
     <CollisionPipeline  depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
