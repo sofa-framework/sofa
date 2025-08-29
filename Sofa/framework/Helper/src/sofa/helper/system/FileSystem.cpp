@@ -376,18 +376,6 @@ std::string FileSystem::removeExtraBackSlashes(const std::string& path)
     return str;
 }
 
-
-std::string FileSystem::findOrCreateAValidPath(const std::string path)
-{
-    if( FileSystem::exists(path) )
-        return path ;
-
-    const std::string parentPath = FileSystem::getParentDirectory(path) ;
-    const std::string currentFile = FileSystem::stripDirectory(path) ;
-    FileSystem::createDirectory(append(findOrCreateAValidPath( parentPath ), currentFile)) ;
-    return path ;
-}
-
 void FileSystem::ensureFolderExists(const std::string& pathToFolder)
 {
     if (!FileSystem::exists(pathToFolder))

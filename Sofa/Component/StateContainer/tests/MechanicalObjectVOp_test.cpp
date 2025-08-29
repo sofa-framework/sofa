@@ -39,7 +39,7 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
     static constexpr Real_t<DataTypes> forceCoefficient = 63;
     static constexpr Real_t<DataTypes> freeVelocityCoefficient = 78;
     
-    void onSetUp() override
+    void doSetUp() override
     {
         m_mechanicalObject = core::objectmodel::New<MO>();
 
