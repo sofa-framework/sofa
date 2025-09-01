@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,13 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_TYPE_MAT_CPP
 
-#include <sofa/config.h>
-SOFA_HEADER_DISABLED_NOT_REPLACED("v24.06", "v24.12")
+#include <sofa/type/Mat.h>
 
-namespace sofa::component::linearsolver::direct
+namespace sofa::type
 {
-    template<class Real>
-    using SparseLUTraits = DeprecatedAndRemoved;
-}
+
+template class SOFA_TYPE_API Mat<2,2,float>;
+template class SOFA_TYPE_API Mat<2,2,double>;
+
+template class SOFA_TYPE_API Mat<3,3,float>;
+template class SOFA_TYPE_API Mat<3,3,double>;
+
+template class SOFA_TYPE_API Mat<4,4,float>;
+template class SOFA_TYPE_API Mat<4,4,double>;
+
+template class SOFA_TYPE_API Mat<6,6,float>;
+template class SOFA_TYPE_API Mat<6,6,double>;
+
+template class SOFA_TYPE_API Mat<12,12,float>;
+template class SOFA_TYPE_API Mat<12,12,double>;
+
+
+} // namespace sofa::type

@@ -22,7 +22,6 @@
         <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
         <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
         <RequiredPlugin name="Sofa.GUI.Component"/> <!-- Needed to use components [ConstraintAttachButtonSetting] -->
-    Container,TriangleSetTopologyModifier] -->
     </Node>
 
     <VisualStyle displayFlags="showForceFields"/>
@@ -32,7 +31,7 @@
     <CollisionPipeline name="Pipeline" />
     <BruteForceBroadPhase name="BroadPhase" />
     <BVHNarrowPhase name="NarrowPhase" />
-    <CollisionResponse name="ContactManager" response="AugmentedLagrangian" responseParams="mu=0.5&epsilon=10" />
+    <CollisionResponse name="ContactManager" response="AugmentedLagrangianResponseConstraint" responseParams="mu=0.5&epsilon=10" />
     <NewProximityIntersection name="Intersection" alarmDistance="0.02" contactDistance="0.001" />
 
     <Node name="BEAMVOLUME">
@@ -88,5 +87,3 @@
     </Node>
 
 </Node>
-
-

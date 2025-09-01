@@ -36,11 +36,3 @@ namespace sofa::component::linearsolver::direct
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::linearsolver::direct
-
-
-#ifdef SOFA_BUILD_SOFA_COMPONENT_LINEARSOLVER_DIRECT
-#define SOFA_ATTRIBUTE_DISABLED__SPARSECOMMON()
-#else
-#define SOFA_ATTRIBUTE_DISABLED__SPARSECOMMON() \
-    SOFA_ATTRIBUTE_DISABLED("v24.06", "v24.12", "This function is no longer used")
-#endif // SOFA_BUILD_SOFA_COMPONENT_LINEARSOLVER_DIRECT
