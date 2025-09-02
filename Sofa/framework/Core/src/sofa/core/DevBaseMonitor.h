@@ -24,4 +24,4 @@
 #include <sofa/config.h>
 
 //header moved in the plugin SofaValidation
-SOFA_HEADER_DEPRECATED("v24.12", "v25.12", "SofaValidation/DevBaseMonitor.h")
+SOFA_HEADER_DISABLED("v24.12", "v25.12", "SofaValidation/DevBaseMonitor.h")

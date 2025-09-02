@@ -21,6 +21,34 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaCUDA/component/constraint/projective/CudaFixedProjectiveConstraint.h>
+#include <SceneChecking/config.h>
+#include <sofa/simulation/SceneCheck.h>
+#include <sofa/type/vector.h>
 
-SOFA_HEADER_DISABLED("v23.12", "v24.12", "SofaCUDA/component/constraint/projective/CudaFixedProjectiveConstraint.h")
+namespace sofa::scenechecking
+{
+
+/**
+ * This SceneCheck is motivated by the visitor mechanism that assumes:
+ * If both a mechanical state and a mapping are present in a Node, the state is considered mapped,
+ * no matter if they are related or not.
+ */
+class SOFA_SCENECHECKING_API SceneCheckMapping : public sofa::simulation::SceneCheck
+{
+public:
+    ~SceneCheckMapping() override;
+    typedef std::shared_ptr<SceneCheckMapping> SPtr;
+    static SPtr newSPtr() { return std::make_shared<SceneCheckMapping>(); }
+    const std::string getName() override;
+    const std::string getDesc() override;
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
+    void doPrintSummary() override;
+
+private:
+    sofa::type::vector<sofa::simulation::Node*> m_nodesWithMappingNoState;
+    sofa::type::vector<sofa::simulation::Node*> m_nodesWithMappingWrongState;
+    sofa::type::vector<sofa::simulation::Node*> m_nodesWithMappingAndTwoStates;
+};
+
+}
