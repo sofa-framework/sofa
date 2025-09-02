@@ -18,7 +18,7 @@
     <CollisionPipeline />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <CollisionResponse />
+    <CollisionResponse response="PenalityContactForceField"/>
     <DefaultAnimationLoop/>
 
     <MinProximityIntersection alarmDistance="1" contactDistance="0.5"/>
