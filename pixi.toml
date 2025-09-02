@@ -84,8 +84,12 @@ dependencies = { cuda-version = "*", cuda-compiler = "*" }
 [feature.plugin-cuda.target.osx]
 activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=OFF -DPLUGIN_BEAMADAPTER_CUDA=OFF -DPLUGIN_SOFADISTANCEGRID_CUDA=OFF -DPLUGIN_SOFASPHFLUID_CUDA=OFF -DPLUGIN_SOFTROBOTS_CUDA=OFF" } }
 
-[feature.plugin-cgal]
+# We still build CGAL plugin excepted on windows (linking is failing)
+# but support should be disabled soon
+[feature.plugin-cgal.target.unix]
 dependencies = { cgal-cpp = "*", gmp = "*" }
+[feature.plugin-cgal.target.win]
+activation = { env = { SOFA_PLUGIN_SOFACGAL_ARGS = "-DPLUGIN_CGALPLUGIN=OFF" } }
 
 [feature.plugin-cimg]
 dependencies = { zstd = "*", libtiff = "*", libjpeg-turbo = "*", libpng = "*" }
@@ -144,7 +148,8 @@ configure = { cmd = [ "cmake",
   "--preset",
   "full",
   "$SOFA_PLUGIN_PYTHON3_ARGS",
-  "$SOFA_PLUGIN_SOFACUDA_ARGS" ] }
+  "$SOFA_PLUGIN_SOFACUDA_ARGS",
+  "$SOFA_PLUGIN_SOFACGAL_ARGS" ] }
 
 package = { cmd = "cmake --build $SOFA_BUILD_DIR --target package", depends-on = ["build"] }
 
@@ -202,6 +207,7 @@ configure = { cmd = [ "cmake",
   "--preset",
   "supported-plugins",
   "$SOFA_PLUGIN_PYTHON3_ARGS",
+  "$SOFA_PLUGIN_SOFACGAL_ARGS",
   "$SOFA_PLUGIN_SOFACUDA_ARGS"] }
 
 [feature.presets-full.tasks]
@@ -220,6 +226,7 @@ configure = { cmd = [ "cmake",
   "--preset",
   "full",
   "$SOFA_PLUGIN_PYTHON3_ARGS",
+  "$SOFA_PLUGIN_SOFACGAL_ARGS",
   "$SOFA_PLUGIN_SOFACUDA_ARGS"] }
 
 [feature.presets-minimal-dev.tasks]
@@ -262,6 +269,7 @@ configure = { cmd = [ "cmake",
   "--preset",
   "supported-plugins-dev",
   "$SOFA_PLUGIN_PYTHON3_ARGS",
+  "$SOFA_PLUGIN_SOFACGAL_ARGS",
   "$SOFA_PLUGIN_SOFACUDA_ARGS"] }
 
 [feature.presets-full-dev.tasks]
@@ -277,6 +285,7 @@ configure = { cmd = [ "cmake",
   "--preset",
   "full-dev",
   "$SOFA_PLUGIN_PYTHON3_ARGS",
+  "$SOFA_PLUGIN_SOFACGAL_ARGS",
   "$SOFA_PLUGIN_SOFACUDA_ARGS"] }  
 
 [environments]
