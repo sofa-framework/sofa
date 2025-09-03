@@ -8,9 +8,9 @@ class FieldController(Sofa.Core.Controller):
 
     def onAnimateEndEvent(self, event):
         print("Animation end event")
-        print("Field value at 0,0,0 is: ", self.field.getValue(0.0,0.0,0.0) ) 
-        print("Field value at 1,0,0 is: ", self.field.getValue(1.0,0.0,0.0) ) 
-        print("Field value at 2,0,0 is: ", self.field.getValue(2.0,0.0,0.0) ) 
+        print("Field value at 0,0,0 is: ", self.field.getValue([0.0,0.0,0.0]) )
+        print("Field value at 1,0,0 is: ", self.field.getValue([1.0,0.0,0.0]) )
+        print("Field value at 2,0,0 is: ", self.field.getValue([2.0,0.0,0.0]) )
 
 def createScene(root):
     root.addObject(Sphere("field"))
