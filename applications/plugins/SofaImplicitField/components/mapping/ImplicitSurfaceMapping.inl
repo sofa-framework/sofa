@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_INL
+#pragma once
 
 #include "ImplicitSurfaceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
@@ -28,22 +27,14 @@
 #include <map>
 #include <list>
 
-
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofaimplicitfield::mapping
 {
 
 template <class In, class Out>
 void ImplicitSurfaceMapping<In,Out>::init()
 {
     core::Mapping<In,Out>::init();
-    topology::container::constant::MeshTopology::init();
+    MeshTopology::init();
 }
 
 template <class In, class Out>
@@ -135,149 +126,62 @@ void ImplicitSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
     OutReal r2 = (OutReal)sqr(r);
     // First plane is all zero
     z = 0;
-    newPlane();
-    for (z=1; z<nz; z++)
-    {
-        newPlane();
+    //newPlane();
+//    for (z=1; z<nz; z++)
+//    {
+//        //newPlane();
 
-        // Compute the data
-        const std::list<InCoord>& particles = sortParticles[z0+z];
-        for (typename std::list<InCoord>::const_iterator it = particles.begin(); it != particles.end(); ++it)
-        {
-            InCoord c = *it;
-            int cx0 = helper::rceil(c[0]-r);
-            int cx1 = helper::rfloor(c[0]+r);
-            int cy0 = helper::rceil(c[1]-r);
-            int cy1 = helper::rfloor(c[1]+r);
-            OutCoord dp2;
-            dp2[2] = (OutReal)sqr(z0+z-c[2]);
-            i = (cx0-x0)+(cy0-y0)*nx;
-            for (int y = cy0 ; y <= cy1 ; y++)
-            {
-                dp2[1] = (OutReal)sqr(y-c[1]);
-                int ix = i;
-                for (int x = cx0 ; x <= cx1 ; x++, ix++)
-                {
-                    dp2[0] = (OutReal)sqr(x-c[0]);
-                    OutReal d2 = dp2[0]+dp2[1]+dp2[2];
-                    if (d2 < r2)
-                    {
-                        // Soft object field function from the Wyvill brothers
-                        // See http://astronomy.swin.edu.au/~pbourke/modelling/implicitsurf/
-                        d2 /= r2;
-                        (P1+ix)->data += (1 + (-4*d2*d2*d2 + 17*d2*d2 - 22*d2)/9);
-                    }
-                }
-                i += nx;
-            }
-        }
+//        // Compute the data
+//        const std::list<InCoord>& particles = sortParticles[z0+z];
+//        for (typename std::list<InCoord>::const_iterator it = particles.begin(); it != particles.end(); ++it)
+//        {
+//            InCoord c = *it;
+//            int cx0 = helper::rceil(c[0]-r);
+//            int cx1 = helper::rfloor(c[0]+r);
+//            int cy0 = helper::rceil(c[1]-r);
+//            int cy1 = helper::rfloor(c[1]+r);
+//            OutCoord dp2;
+//            dp2[2] = (OutReal)sqr(z0+z-c[2]);
+//            i = (cx0-x0)+(cy0-y0)*nx;
+//            for (int y = cy0 ; y <= cy1 ; y++)
+//            {
+//                dp2[1] = (OutReal)sqr(y-c[1]);
+//                int ix = i;
+//                for (int x = cx0 ; x <= cx1 ; x++, ix++)
+//                {
+//                    dp2[0] = (OutReal)sqr(x-c[0]);
+//                    OutReal d2 = dp2[0]+dp2[1]+dp2[2];
+//                    if (d2 < r2)
+//                    {
+//                        // Soft object field function from the Wyvill brothers
+//                        // See http://astronomy.swin.edu.au/~pbourke/modelling/implicitsurf/
+//                        d2 /= r2;
+//                        (P1+ix)->data += (1 + (-4*d2*d2*d2 + 17*d2*d2 - 22*d2)/9);
+//                    }
+//                }
+//                i += nx;
+//            }
+//        }
+//    }
 
-        i=0;
-        int edgecube[12];
-        const int edgepts[12] = {0,1,0,1,0,1,0,1,2,2,2,2};
-        typename std::vector<CubeData>::iterator base = (*planes.beginEdit()).begin();
-        int ip0 = P0-base;
-        int ip1 = P1-base;
-        edgecube[0]  = (ip0   -dy);
-        edgecube[1]  = (ip0      );
-        edgecube[2]  = (ip0      );
-        edgecube[3]  = (ip0-dx   );
-        edgecube[4]  = (ip1   -dy);
-        edgecube[5]  = (ip1      );
-        edgecube[6]  = (ip1      );
-        edgecube[7]  = (ip1-dx   );
-        edgecube[8]  = (ip1-dx-dy);
-        edgecube[9]  = (ip1-dy   );
-        edgecube[10] = (ip1      );
-        edgecube[11] = (ip1-dx   );
+    auto fieldFunction = [](Vec3d& pos) -> double {
+        return 0.5;
+    };
 
-        // First line is all zero
-        {
-            y=0;
-            x=0;
-            i+=nx;
-        }
-        for(y=1; y<ny; y++)
-        {
-            // First column is all zero
-            x=0;
-            ++i;
+    SeqTriangles triangles = helper::getWriteOnlyAccessor(d_seqTriangles);
+    SeqPoints points = helper::getWriteOnlyAccessor(dOut);
 
-            for(x=1; x<nx; x++)
-            {
-                if (((P1+i)->data>isoval)^((P1+i-dx)->data>isoval))
-                {
-                    (P1+i)->p[0] = addPoint<0>(out, x0+x,y0+y,z0+z,(P1+i)->data,(P1+i-dx)->data,isoval);
-                }
-                if (((P1+i)->data>isoval)^((P1+i-dy)->data>isoval))
-                {
-                    (P1+i)->p[1] = addPoint<1>(out, x0+x,y0+y,z0+z,(P1+i)->data,(P1+i-dy)->data,isoval);
-                }
-                if (((P1+i)->data>isoval)^((P0+i)->data>isoval))
-                {
-                    (P1+i)->p[2] = addPoint<2>(out, x0+x,y0+y,z0+z,(P1+i)->data,(P0+i)->data,isoval);
-                }
+    points.clear();
+    triangles.clear();
 
-                // All points should now be created
-
-                if ((P0+i-dx-dy)->data > isoval) mk = 1; else mk=0;
-                if ((P0+i   -dy)->data > isoval) mk|= 2;
-                if ((P0+i      )->data > isoval) mk|= 4;
-                if ((P0+i-dx   )->data > isoval) mk|= 8;
-                if ((P1+i-dx-dy)->data > isoval) mk|= 16;
-                if ((P1+i   -dy)->data > isoval) mk|= 32;
-                if ((P1+i      )->data > isoval) mk|= 64;
-                if ((P1+i-dx   )->data > isoval) mk|= 128;
-
-                tri=sofa::helper::MarchingCubeTriTable[mk];
-                while (*tri>=0)
-                {
-                    typename std::vector<CubeData>::iterator b = base+i;
-                    if (addFace((b+edgecube[tri[0]])->p[edgepts[tri[0]]],
-                            (b+edgecube[tri[1]])->p[edgepts[tri[1]]],
-                            (b+edgecube[tri[2]])->p[edgepts[tri[2]]], out.size())<0)
-                    {
-                        msg_error() << "  mk=0x"<<std::hex<<mk<<std::dec<<" p1="<<tri[0]<<" p2="<<tri[1]<<" p3="<<tri[2]<<msgendl;
-                        for (int e=0; e<12; e++) msg_error() << "  e"<<e<<"="<<(b+edgecube[e])->p[edgepts[e]];
-                    }
-                    tri+=3;
-                }
-                ++i;
-            }
-        }
-    }
-
-    dOut.endEdit();
+    marchingCube.generateSurfaceMesh(mIsoValue.getValue(), mStep.getValue(),
+                                     invStep, mGridMin.getValue(), mGridMax.getValue(),
+                                     fieldFunction, points, triangles);
 }
-
-template <class In, class Out>
-void ImplicitSurfaceMapping<In,Out>::newPlane()
-{
-    CubeData c;
-    c.p[0] = -1;
-    c.p[1] = -1;
-    c.p[2] = -1;
-    c.data = 0;
-    typename std::vector<CubeData>::iterator P = P0;
-    P0 = P1;
-    P1 = P;
-    int n = planes.getValue().size()/2;
-    for (int i=0; i<n; ++i,++P)
-        *P = c;
-    //plane0.swap(plane1);
-    //plane1.fill(c);
-}
-
 
 template <class In, class Out>
 void ImplicitSurfaceMapping<In,Out>::applyJ(const core::MechanicalParams * /*mparams*/, Data<OutVecDeriv>& /*dOut*/, const Data<InVecDeriv>& /*dIn*/)
 {
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+}
