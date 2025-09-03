@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaImplicitField/config.h>
 #include <SofaImplicitField/components/geometry/ScalarField.h>
-
+#include <SofaImplicitField/MarchingCube.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <future>
 
@@ -48,67 +48,34 @@ public:
     virtual void init() override ;
     virtual void draw(const VisualParams*params) override ;
 
-    double getStep() const { return mStep.getValue(); }
-    void setStep(double val) { mStep.setValue(val); }
+    double getStep() const { return d_step.getValue(); }
+    void setStep(double val) { d_step.setValue(val); }
 
-    double getIsoValue() const { return mIsoValue.getValue(); }
-    void setIsoValue(double val) { mIsoValue.setValue(val); }
+    double getIsoValue() const { return d_IsoValue.getValue(); }
+    void setIsoValue(double val) { d_IsoValue.setValue(val); }
 
-    const Vec3d& getGridMin() const { return mGridMin.getValue(); }
-    void setGridMin(const Vec3d& val) { mGridMin.setValue(val); }
-    void setGridMin(double x, double y, double z) { mGridMin.setValue( Vec3d(x,y,z)); }
+    const Vec3d& getGridMin() const { return d_gridMin.getValue(); }
+    void setGridMin(const Vec3d& val) { d_gridMin.setValue(val); }
+    void setGridMin(double x, double y, double z) { d_gridMin.setValue( Vec3d(x,y,z)); }
 
-    const Vec3d& getGridMax() const { return mGridMax.getValue(); }
-    void setGridMax(const Vec3d& val) { mGridMax.setValue(val); }
-    void setGridMax(double x, double y, double z) { mGridMax.setValue( Vec3d(x,y,z)); }
+    const Vec3d& getGridMax() const { return d_dridMax.getValue(); }
+    void setGridMax(const Vec3d& val) { d_dridMax.setValue(val); }
+    void setGridMax(double x, double y, double z) { d_dridMax.setValue( Vec3d(x,y,z)); }
 
 protected:
     SingleLink<FieldToSurfaceMesh, ScalarField,
                BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_field ;
 
-    Data <double > mStep;
-    Data <double > mIsoValue;
+    Data <double > d_step;
+    Data <double > d_IsoValue;
 
-    Data< Vec3d > mGridMin;
-    Data< Vec3d > mGridMax;
-
-    /// For each cube, store the vertex indices on each 3 first edges, and the data value
-    struct CubeData
-    {
-        int p[3];
-        double data;
-    };
-
-    int addPoint(VecCoord& v, int i, Vec3d pos, const Vec3d& gridmin, double v0, double v1, double step, double iso)
-    {
-        pos[i] -= (iso-v0)/(v1-v0);
-        v.push_back( (pos * step)+gridmin ) ;
-        return v.size()-1;
-    }
-
-    int addFace(SeqTriangles& triangles, int p1, int p2, int p3, int nbp)
-    {
-        if ((unsigned)p1<(unsigned)nbp &&
-            (unsigned)p2<(unsigned)nbp &&
-            (unsigned)p3<(unsigned)nbp)
-        {
-            triangles.push_back(Triangle(p1, p3, p2));
-            return triangles.size()-1;
-        }
-        else
-        {
-            return -1;
-        }
-    }
+    Data< Vec3d > d_gridMin;
+    Data< Vec3d > d_dridMax;
 
     /// Output
     Data<VecCoord>      d_outPoints;
     Data<SeqTriangles>  d_outTriangles;
     Data<bool>          d_debugDraw;
-
-    sofa::type::vector<CubeData> planes;
-    typename sofa::type::vector<CubeData>::iterator P0; /// Pointer to first plane
-    typename sofa::type::vector<CubeData>::iterator P1; /// Pointer to second plane
 
 protected:
     FieldToSurfaceMesh() ;
@@ -116,7 +83,7 @@ protected:
 
 private:
     void checkInputs();
-    void newPlane();
+
     void generateSurfaceMesh(double isoval, double mstep, double invStep,
                              Vec3d gridmin, Vec3d gridmax,
                              sofa::component::geometry::ScalarField*);
@@ -125,6 +92,8 @@ private:
     bool hasChanged {true} ;
     VecCoord tmpPoints;
     SeqTriangles tmpTriangles;
+
+    MarchingCube marchingCube;
 };
 
 }
