@@ -40,7 +40,7 @@ class MarchingCube
 public:
     void generateSurfaceMesh(const double isoval, const double mstep, const double invStep,
                              const Vec3d& gridmin, const Vec3d& gridmax,
-                             sofa::component::geometry::ScalarField* field,
+                             std::function<double (Vec3d &)> field,
                              SeqCoord& tmpPoints, SeqTriangles& tmpTriangles);
 
 private:

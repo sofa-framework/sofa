@@ -47,15 +47,9 @@ void MarchingCube::newPlane()
 
 void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, const double invStep,
                                        const Vec3d& gridmin, const Vec3d& gridmax,
-                                       sofa::component::geometry::ScalarField* field,
+                                       std::function<double(Vec3d&)> getFieldValueAt,
                                        SeqCoord& tmpPoints, SeqTriangles& tmpTriangles)
 {    
-    if(!field)
-        return;
-
-    tmpPoints.clear();
-    tmpTriangles.clear();
-
     int nx = floor((gridmax.x() - gridmin.x()) * invStep) + 1 ;
     int ny = floor((gridmax.y() - gridmin.y()) * invStep) + 1 ;
     int nz = floor((gridmax.z() - gridmin.z()) * invStep) + 1 ;
@@ -84,7 +78,7 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
             cx = gridmin.x() + mstep * x ;
 
             Vec3d pos { cx, cy, cz }  ;
-            double res = field->getValue(pos) ;
+            double res = getFieldValueAt(pos) ;
             (P1+i)->data = res ;
         }
     }
@@ -103,7 +97,7 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
                 cx = gridmin.x() + mstep * x ;
 
                 Vec3d pos { cx, cy, cz }  ;
-                double res = field->getValue(pos) ;
+                double res = getFieldValueAt(pos) ;
                 (P1+i)->data = res ;
             }
         }

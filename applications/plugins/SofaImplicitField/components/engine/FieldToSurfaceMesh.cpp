@@ -106,7 +106,9 @@ void FieldToSurfaceMesh::updateMeshIfNeeded()
     tmpPoints.clear();
     tmpTriangles.clear();
 
-    marchingCube.generateSurfaceMesh(isoval, mstep, invStep, gridmin, gridmax, field, tmpPoints, tmpTriangles);
+    marchingCube.generateSurfaceMesh(isoval, mstep, invStep, gridmin, gridmax,
+                                     [field](Vec3d& pos){return field->getValue(pos);},
+                                     tmpPoints, tmpTriangles);
 
     /// Copy the surface to Sofa topology
     d_outPoints.setValue(tmpPoints);
