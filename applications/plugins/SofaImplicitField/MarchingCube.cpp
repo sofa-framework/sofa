@@ -83,11 +83,8 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
         }
     }
 
-    std::cout << "FIRST PLANE DONE " << std::endl;
-
     for (z=1; z<=nz; ++z)
     {
-        std::cout << " PLANE DONE " << z << std::endl;
         newPlane();
 
         i = 0 ;

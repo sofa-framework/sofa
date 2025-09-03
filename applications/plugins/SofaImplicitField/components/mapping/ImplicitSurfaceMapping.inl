@@ -101,82 +101,40 @@ void ImplicitSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
             sortParticles[z].push_back(c);
     }
 
-    const int z0 = sortParticles.begin()->first - 1;
-    const int nz = sortParticles.rbegin()->first - z0 + 2;
-    const int y0 = helper::rceil(ymin-r) - 1;
-    const int ny = helper::rfloor(ymax+r) - y0 + 2;
-    const int x0 = helper::rceil(xmin-r) - 1;
-    const int nx = helper::rfloor(xmax+r) - x0 + 2;
-
-    (*planes.beginEdit()).resize(2*nx*ny);
-    P0 = (*planes.beginEdit()).begin()+0;
-    P1 = (*planes.beginEdit()).begin()+nx*ny;
-
-    //////// MARCHING CUBE ////////
-
-    const OutReal isoval = (OutReal) getIsoValue();
-
-    const int dx = 1;
-    const int dy = nx;
-    //const int dz = nx*ny;
-
-    int x,y,z,i,mk;
-    const int *tri;
-
     OutReal r2 = (OutReal)sqr(r);
-    // First plane is all zero
-    z = 0;
-    //newPlane();
-//    for (z=1; z<nz; z++)
-//    {
-//        //newPlane();
+    type::BoundingBox bigBox {mGridMin.getValue(), mGridMax.getValue()};
+    type::BoundingBox box;
+    for(auto& [_, z_plane] : sortParticles)
+    {
+        for(auto& particle : z_plane)
+            box.include(particle);
+    }
+    box.intersection(bigBox);
 
-//        // Compute the data
-//        const std::list<InCoord>& particles = sortParticles[z0+z];
-//        for (typename std::list<InCoord>::const_iterator it = particles.begin(); it != particles.end(); ++it)
-//        {
-//            InCoord c = *it;
-//            int cx0 = helper::rceil(c[0]-r);
-//            int cx1 = helper::rfloor(c[0]+r);
-//            int cy0 = helper::rceil(c[1]-r);
-//            int cy1 = helper::rfloor(c[1]+r);
-//            OutCoord dp2;
-//            dp2[2] = (OutReal)sqr(z0+z-c[2]);
-//            i = (cx0-x0)+(cy0-y0)*nx;
-//            for (int y = cy0 ; y <= cy1 ; y++)
-//            {
-//                dp2[1] = (OutReal)sqr(y-c[1]);
-//                int ix = i;
-//                for (int x = cx0 ; x <= cx1 ; x++, ix++)
-//                {
-//                    dp2[0] = (OutReal)sqr(x-c[0]);
-//                    OutReal d2 = dp2[0]+dp2[1]+dp2[2];
-//                    if (d2 < r2)
-//                    {
-//                        // Soft object field function from the Wyvill brothers
-//                        // See http://astronomy.swin.edu.au/~pbourke/modelling/implicitsurf/
-//                        d2 /= r2;
-//                        (P1+ix)->data += (1 + (-4*d2*d2*d2 + 17*d2*d2 - 22*d2)/9);
-//                    }
-//                }
-//                i += nx;
-//            }
-//        }
-//    }
+    auto fieldFunction = [&sortParticles, &r, &r2](Vec3d& pos) -> double {
+        int index = helper::rceil(pos.z());
 
-    auto fieldFunction = [](Vec3d& pos) -> double {
-        return 0.5;
+        double sumd = 0.0;
+        for(auto& particle : sortParticles[index]){
+            double d2 = (pos - particle).norm2();
+            if(d2 < r2){
+                d2 /= r2;
+                sumd += (1 + (-4*d2*d2*d2 + 17*d2*d2 - 22*d2)/9);
+            }
+        }
+        return sumd;
     };
 
-    SeqTriangles triangles = helper::getWriteOnlyAccessor(d_seqTriangles);
-    SeqPoints points = helper::getWriteOnlyAccessor(dOut);
+    auto triangles = helper::getWriteOnlyAccessor(d_seqTriangles);
+    auto points = helper::getWriteOnlyAccessor(dOut);
 
     points.clear();
     triangles.clear();
-
     marchingCube.generateSurfaceMesh(mIsoValue.getValue(), mStep.getValue(),
-                                     invStep, mGridMin.getValue(), mGridMax.getValue(),
-                                     fieldFunction, points, triangles);
+                                     invStep, box.minBBox(), box.maxBBox(),
+                                     fieldFunction, points.wref(), triangles.wref());
+
+
 }
 
 template <class In, class Out>
