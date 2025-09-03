@@ -6,6 +6,7 @@ sofa_find_package(Sofa.Component.Topology.Container.Constant REQUIRED)
 set(HEADER_FILES
     config.h.in
     initSofaImplicitField.h
+    MarchingCube.h
 
     # This is backward compatibility
     deprecated/SphereSurface.h
@@ -24,6 +25,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     initSofaImplicitField.cpp
+    MarchingCube.cpp
 
     ## This is a backward compatibility..
     deprecated/SphereSurface.cpp
