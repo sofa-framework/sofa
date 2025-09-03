@@ -54,6 +54,9 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
     int ny = floor((gridmax.y() - gridmin.y()) * invStep) + 1 ;
     int nz = floor((gridmax.z() - gridmin.z()) * invStep) + 1 ;
 
+    if( nz <= 0 || ny <= 0 || nx <= 0 )
+        return;
+
     double cx,cy,cz;
     int x,y,z,i,mk;
     const int *tri;

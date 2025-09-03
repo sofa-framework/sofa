@@ -110,6 +110,8 @@ public:
         msg_error() << "applyJT(constraint) is not implemented";
     }
 
+    void draw(const core::visual::VisualParams* params) override;
+
 protected:
     Data <double > mStep; ///< Step
     Data <double > mRadius; ///< Radius
@@ -117,6 +119,10 @@ protected:
 
     Data< InCoord > mGridMin; ///< Grid Min
     Data< InCoord > mGridMax; ///< Grid Max
+
+    Vec3d mLocalGridMin; ///< Grid Min
+    Vec3d mLocalGridMax; ///< Grid Max
+
 
     // Marching cube data
 

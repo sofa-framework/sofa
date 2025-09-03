@@ -58,64 +58,75 @@ Real sqr(Real r)
 }
 
 template <class In, class Out>
+void ImplicitSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* params)
+{
+    auto dt = params->drawTool();
+
+    dt->drawBoundingBox(mGridMin.getValue(), mGridMax.getValue());
+    dt->drawBoundingBox(mLocalGridMin, mLocalGridMax);
+}
+
+template <class In, class Out>
 void ImplicitSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mparams*/, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
-    OutVecCoord &out = *dOut.beginEdit();
     const InVecCoord& in = dIn.getValue();
 
-    InReal invStep = (InReal)(1/mStep.getValue());
-    out.resize(0);
     clear();
 
     if (in.size()==0)
     {
+        OutVecCoord &out = *dOut.beginEdit();
         dOut.endEdit();
         return;
     }
 
-    InReal xmin, xmax;
-    InReal ymin, ymax;
-    xmin = xmax = in[0][0]*invStep;
-    ymin = ymax = in[0][1]*invStep;
-    const InReal r = (InReal)(getRadius() / mStep.getValue());
-    std::map<int, std::list< InCoord > > sortParticles;
+    auto minGrid = mGridMin.getValue();
+    auto maxGrid = mGridMax.getValue();
+
+    InReal invStep = (InReal)(1/mStep.getValue());
+    const InReal r = getRadius();
+
+    std::unordered_map<int, std::list< InCoord > > sortParticles;
     for (unsigned int ip=0; ip<in.size(); ip++)
     {
         InCoord c0 = in[ip];
-        if (c0[0] < (*mGridMin.beginEdit())[0] || c0[0] > (*mGridMax.beginEdit())[0] ||
-            c0[1] < (*mGridMin.beginEdit())[1] || c0[1] > (*mGridMax.beginEdit())[1] ||
-            c0[2] < (*mGridMin.beginEdit())[2] || c0[2] > (*mGridMax.beginEdit())[2])
+        if (c0[0] < minGrid[0] || c0[0] > maxGrid[0] ||
+            c0[1] < minGrid[1] || c0[1] > maxGrid[1] ||
+            c0[2] < minGrid[2] || c0[2] > maxGrid[2])
             continue;
-        InCoord c = c0 * invStep;
-        if (c[0] < xmin)
-            xmin = c[0];
-        else if (c[0] > xmax)
-            xmax = c[0];
-        if (c[1] < ymin)
-            ymin = c[1];
-        else if (c[1] > ymax)
-            ymax = c[1];
-        int z0 = helper::rceil(c[2]-r);
-        int z1 = helper::rfloor(c[2]+r);
-        for (int z = z0; z < z1; ++z)
+
+        InCoord c = c0 ;
+        int z0 = helper::rfloor((c[2]-r)*invStep);
+        int z1 = helper::rceil((c[2]+r)*invStep);
+        for (int z = z0; z <= z1; ++z)
             sortParticles[z].push_back(c);
     }
 
     OutReal r2 = (OutReal)sqr(r);
-    type::BoundingBox bigBox {mGridMin.getValue(), mGridMax.getValue()};
-    type::BoundingBox box;
-    for(auto& [_, z_plane] : sortParticles)
+
+    double rr = getRadius();
+    type::BoundingBox box{};
+    for(auto& particle : in)
     {
-        for(auto& particle : z_plane)
-            box.include(particle);
+        box.include(particle);
     }
+    box.include(box.minBBox()+Vec3d{-rr,-rr,-rr});
+    box.include(box.maxBBox()+Vec3d{+rr,+rr,+rr});
+
+    mLocalGridMin = box.minBBox();
+    mLocalGridMax = box.maxBBox();
+
+    type::BoundingBox bigBox {mGridMin.getValue(), mGridMax.getValue()};
     box.intersection(bigBox);
 
-    auto fieldFunction = [&sortParticles, &r, &r2](Vec3d& pos) -> double {
-        int index = helper::rceil(pos.z());
+    auto fieldFunction = [&sortParticles, &r, &r2, &invStep](Vec3d& pos) -> double {
+        int index = helper::rfloor(pos.z()*invStep);
+        auto particlesIt = sortParticles.find(index);
+        if(particlesIt==sortParticles.end())
+            return 0.0;
 
         double sumd = 0.0;
-        for(auto& particle : sortParticles[index]){
+        for(auto& particle : (particlesIt->second)){
             double d2 = (pos - particle).norm2();
             if(d2 < r2){
                 d2 /= r2;
