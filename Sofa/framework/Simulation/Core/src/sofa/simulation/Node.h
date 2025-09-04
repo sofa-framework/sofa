@@ -26,6 +26,7 @@
 
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/Context.h>
+#include <sofa/simulation/Visitor.h>
 
 #include <type_traits>
 #include <string>
@@ -149,15 +150,10 @@ class SOFA_SIMULATION_CORE_API Node : public sofa::core::objectmodel::BaseNode, 
 
 public:
     SOFA_ABSTRACT_CLASS2(Node, BaseNode, Context);
-
     typedef sofa::core::visual::DisplayFlags DisplayFlags;
-protected:
-    Node(const std::string& name="");
 
+    Node(const std::string& name="", Node* parent=nullptr);
     virtual ~Node() override;
-public:
-    /// Create, add, then return the new child of this Node
-    virtual Node::SPtr createChild(const std::string& nodeName)=0;
 
     /// @name High-level interface
     /// @{
@@ -178,9 +174,6 @@ public:
     /// @param precomputedOrder is not used by default but could allow optimization on certain Node specializations
     /// @warning when calling with precomputedOrder=true, the function "precomputeTraversalOrder" must be called before executing the visitor and the user must ensure by himself that the simulation graph has done been modified since the last call to "precomputeTraversalOrder"
     /// @{
-
-    /// Execute a recursive action starting from this node.
-    virtual void doExecuteVisitor(Visitor* action, bool precomputedOrder=false)=0;
 
     /// Execute a recursive action starting from this node
     void executeVisitor(Visitor* action, bool precomputedOrder=false) override;
@@ -217,7 +210,7 @@ public:
     }
 
     /// Possible optimization with traversal precomputation, not mandatory and does nothing by default
-    virtual void precomputeTraversalOrder( const sofa::core::ExecParams* ) {}
+    void precomputeTraversalOrder( const sofa::core::ExecParams* );
 
     /// @}
 
@@ -276,19 +269,6 @@ public:
     virtual void removeChild(BaseNode::SPtr node) final;
     /// Move a node in this from another node
     virtual void moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent) final;
-    /// Move a node in this from another node
-    virtual void moveChild(BaseNode::SPtr node) override = 0;
-
-    /// Delegate methods overridden in child classes
-    /// Add a child node
-    virtual void doAddChild(BaseNode::SPtr node) = 0;
-    /// Remove a child node
-    virtual void doRemoveChild(BaseNode::SPtr node) = 0;
-    /// Move a node from another node
-    virtual void doMoveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent) = 0;
-
-    /// @}
-
 
     /// @name Set/get objects
     /// @{
@@ -309,26 +289,13 @@ public:
 
     /// Generic object access, given a set of required tags, possibly searching up or down from the current context
     ///
-    /// Note that the template wrapper method should generally be used to have the correct return type,
-    void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override = 0;
 
-    /// Generic object access, possibly searching up or down from the current context
-    ///
+
     /// Note that the template wrapper method should generally be used to have the correct return type,
     void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir = SearchUp) const override
     {
         return getObject(class_info, sofa::core::objectmodel::TagSet(), dir);
     }
-
-    /// Generic object access, given a path from the current context
-    ///
-    /// Note that the template wrapper method should generally be used to have the correct return type,
-    void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const override = 0;
-
-    /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
-    ///
-    /// Note that the template wrapper method should generally be used to have the correct return type,
-    void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const  override = 0;
 
     /// Generic list of objects access, possibly searching up or down from the current context
     ///
@@ -337,6 +304,9 @@ public:
     {
         getObjects(class_info, container, sofa::core::objectmodel::TagSet(), dir);
     }
+
+    /// get node's local objects respecting specified class_info and tags
+    void getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_info, Node::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags ) const ;
 
     /// List all objects of this node deriving from a given class
     template<class Object, class Container>
@@ -441,9 +411,6 @@ public:
     /// Topology
     sofa::core::topology::Topology* getTopology() const override;
 
-    /// Mesh Topology (unified interface for both static and dynamic topologies)
-    sofa::core::topology::BaseMeshTopology* getMeshTopologyLink(SearchDirection dir = SearchUp) const override;
-
     /// Degrees-of-Freedom
     sofa::core::BaseState* getState() const override;
 
@@ -497,7 +464,7 @@ public:
     virtual void updateSimulationContext();
 
     /// Called during initialization to correctly propagate the visual context to the children
-    virtual void initVisualContext() {}
+    virtual void initVisualContext();
 
     /// Propagate an event
     void propagateEvent(const sofa::core::ExecParams* params, sofa::core::objectmodel::Event* event) override;
@@ -517,11 +484,77 @@ public:
     template <class RealObject>
     static Node::SPtr create(RealObject*, sofa::core::objectmodel::BaseObjectDescription* arg);
 
-    /// return the smallest common parent between this and node2 (returns nullptr if separated sub-graphes)
-    virtual Node* findCommonParent( simulation::Node* node2 ) = 0;
-
     /// override context setSleeping to add notification.
     void setSleeping(bool val) override;
+
+public:
+    virtual void addListener(MutationListener* obj);
+    virtual void removeListener(MutationListener* obj);
+
+    static const std::string GetCustomClassName(){ return "Node"; }
+
+    Node::SPtr createChild(const std::string& nodeName);
+
+    /// Remove the current node from the graph: consists in removing the link to its parent
+    void detachFromGraph() override;
+
+    /// Get a list of parent node
+    Parents getParents() const override;
+
+    /// returns number of parents
+    size_t getNbParents() const override;
+
+    /// return the first parent (returns nullptr if no parent)
+    BaseNode* getFirstParent() const override;
+
+    /// Test if the given node is a parent of this node.
+    bool hasParent(const BaseNode* node) const override;
+
+    /// Test if the given context is a parent of this context.
+    bool hasParent(const BaseContext* context) const;
+
+    /// Test if the given context is an ancestor of this context.
+    /// An ancestor is a parent or (recursively) the parent of an ancestor.
+    bool hasAncestor(const BaseNode* node) const override
+    {
+        return hasAncestor(node->getContext());
+    }
+
+    /// Test if the given context is an ancestor of this context.
+    /// An ancestor is a parent or (recursively) the parent of an ancestor.
+    bool hasAncestor(const BaseContext* context) const override;
+
+
+    /// Generic object access, given a set of required tags, possibly searching up or down from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override;
+
+    /// Generic object access, given a path from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const override;
+
+    /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override;
+
+    /// Mesh Topology that is relevant for this context
+    /// (within it or its parents until a mapping is reached that does not preserve topologies).
+    sofa::core::topology::BaseMeshTopology* getMeshTopologyLink(SearchDirection dir = SearchUp) const override;
+
+    static Node::SPtr create(Node*, sofa::core::objectmodel::BaseObjectDescription* arg)
+    {
+        Node::SPtr obj = Node::SPtr(new Node());
+        obj->parse(arg);
+        return obj;
+    }
+
+    void moveChild(BaseNode::SPtr node) override;
+
+    /// return the smallest common parent between this and node2 (returns nullptr if separated sub-graphes)
+    Node* findCommonParent( simulation::Node* node2 );
 
 protected:
     bool debug_;
@@ -532,6 +565,7 @@ protected:
     virtual void doMoveObject(sofa::core::objectmodel::BaseObject::SPtr sobj, Node* prev_parent);
 
     std::stack<Visitor*> actionStack;
+
 private:    
     virtual void notifyBeginAddChild(Node::SPtr parent, Node::SPtr child) const;
     virtual void notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr child) const;
@@ -553,16 +587,12 @@ private:
     virtual void notifyEndAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
     virtual void notifyEndRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
 
-
+    // init all contextObject.
+    void initializeContexts();
 protected:
     BaseContext* _context;
 
     type::vector<MutationListener*> listener;
-
-
-public:
-    virtual void addListener(MutationListener* obj);
-    virtual void removeListener(MutationListener* obj);
 
     /// @name virtual functions to add/remove some special components directly in the right Sequence
     /// @{
@@ -607,6 +637,83 @@ public:
 
     /// @}
 
+
+    /// FROM DAG NODE
+
+    typedef MultiLink<Node,Node,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DOUBLELINK> LinkParents;
+    typedef LinkParents::const_iterator ParentIterator;
+
+private:
+    /// bottom-up traversal, returning the first node which have a descendancy containing both node1 & node2
+    Node* findCommonParent( Node* node1, Node* node2 );
+
+    LinkParents l_parents;
+
+    void doAddChild(BaseNode::SPtr node);
+    void doRemoveChild(BaseNode::SPtr node);
+    void doMoveChild(BaseNode::SPtr node, BaseNode::SPtr previous_parent);
+
+    /// Execute a recursive action starting from this node.
+    void doExecuteVisitor(simulation::Visitor* action, bool precomputedOrder=false);
+
+    /// @name @internal stuff related to the DAG traversal
+    /// @{
+
+    /// all child nodes (unordered)
+    std::set<Node*> _descendancy;
+
+    /// bottom-up traversal removing descendancy
+    void setDirtyDescendancy();
+
+    /// traversal updating the descendancy
+    void updateDescendancy();
+
+    /// traversal flags
+    typedef enum
+    {
+        NOT_VISITED=0,
+        VISITED,
+        PRUNED
+    } VisitedStatus;
+
+    /// wrapper to use VisitedStatus in a std::map (to ensure the default map insertion will give NOT_VISITED)
+    struct StatusStruct
+    {
+        StatusStruct() : status(NOT_VISITED) {}
+        StatusStruct( const VisitedStatus& s ) : status(s) {}
+        inline void operator=( const VisitedStatus& s ) { status=s; }
+        inline bool operator==( const VisitedStatus& s ) const { return status==s; }
+        inline bool operator==( const StatusStruct& s ) const { return status==s.status; }
+        inline bool operator!=( const VisitedStatus& s ) const { return status!=s; }
+        inline bool operator!=( const StatusStruct& s ) const { return status!=s.status; }
+        VisitedStatus status;
+    };
+
+    /// map structure to store a traversal flag for each Node
+    typedef std::map<Node*,StatusStruct> StatusMap;
+
+    /// list of Node*
+    typedef std::list<Node*> NodeList;
+
+    /// the ordered list of Node to traverse from this Node
+    NodeList _precomputedTraversalOrder;
+
+    /// @internal performing only the top-down traversal on a DAG
+    /// @executedNodes will be fill with the Nodes where the top-down action is processed
+    /// @statusMap the visitor's flag map
+    /// @visitorRoot node from where the visitor has been run
+    void executeVisitorTopDown(simulation::Visitor* action, NodeList& executedNodes, StatusMap& statusMap, Node* visitorRoot );
+    void executeVisitorBottomUp(simulation::Visitor* action, NodeList& executedNodes );
+    /// @}
+
+    /// @internal tree traversal implementation
+    void executeVisitorTreeTraversal( Visitor* action, StatusMap& statusMap, Visitor::TreeTraversalRepetition repeat, bool alreadyRepeated=false );
+
+    /// @name @internal stuff related to getObjects
+    /// @{
+    friend class GetDownObjectsVisitor ;
+    friend class GetUpObjectsVisitor ;
+    /// @}
 };
 
 }
