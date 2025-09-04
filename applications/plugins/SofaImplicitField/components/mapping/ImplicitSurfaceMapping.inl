@@ -119,21 +119,30 @@ void ImplicitSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
     type::BoundingBox bigBox {mGridMin.getValue(), mGridMax.getValue()};
     box.intersection(bigBox);
 
-    auto fieldFunction = [&sortParticles, &r, &r2, &invStep](Vec3d& pos) -> double {
-        int index = helper::rfloor(pos.z()*invStep);
+    auto fieldFunction = [&sortParticles, &r, &r2, &invStep](
+                         std::vector<Vec3d>& pos, std::vector<double>& res) -> void {
+
+        auto z = pos[0].z();
+        int index = helper::rfloor(z*invStep);
         auto particlesIt = sortParticles.find(index);
         if(particlesIt==sortParticles.end())
-            return 0.0;
+            return;
 
-        double sumd = 0.0;
-        for(auto& particle : (particlesIt->second)){
-            double d2 = (pos - particle).norm2();
-            if(d2 < r2){
-                d2 /= r2;
-                sumd += (1 + (-4*d2*d2*d2 + 17*d2*d2 - 22*d2)/9);
+        int i = 0;
+        for(auto& position : pos )
+        {
+            double sumd = 0.0;
+            for(auto& particle : (particlesIt->second)){
+                position.z() = z;
+                double d2 = (position - particle).norm2();
+                if(d2 < r2){
+                    d2 /= r2;
+                    sumd += (1 + (-4*d2*d2*d2 + 17*d2*d2 - 22*d2)/9);
+                }
             }
+            res[i++] = sumd;
         }
-        return sumd;
+        return;
     };
 
     auto triangles = helper::getWriteOnlyAccessor(d_seqTriangles);
@@ -144,7 +153,6 @@ void ImplicitSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
     marchingCube.generateSurfaceMesh(mIsoValue.getValue(), mStep.getValue(),
                                      invStep, box.minBBox(), box.maxBBox(),
                                      fieldFunction, points.wref(), triangles.wref());
-
 
 }
 

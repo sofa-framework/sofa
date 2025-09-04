@@ -107,7 +107,13 @@ void FieldToSurfaceMesh::updateMeshIfNeeded()
     tmpTriangles.clear();
 
     marchingCube.generateSurfaceMesh(isoval, mstep, invStep, gridmin, gridmax,
-                                     [field](Vec3d& pos){return field->getValue(pos);},
+                                     [field](std::vector<Vec3d>& positions, std::vector<double>& res){
+                                        res.reserve(positions.size());
+                                        for(auto& position : positions)
+                                        {
+                                            res.emplace_back(field->getValue(position));
+                                        }
+                                      },
                                      tmpPoints, tmpTriangles);
 
     /// Copy the surface to Sofa topology

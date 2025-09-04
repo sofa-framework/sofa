@@ -47,7 +47,7 @@ void MarchingCube::newPlane()
 
 void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, const double invStep,
                                        const Vec3d& gridmin, const Vec3d& gridmax,
-                                       std::function<double(Vec3d&)> getFieldValueAt,
+                                       std::function<void(std::vector<Vec3d>&, std::vector<double>&)> getFieldValueAt,
                                        SeqCoord& tmpPoints, SeqTriangles& tmpTriangles)
 {    
     int nx = floor((gridmax.x() - gridmin.x()) * invStep) + 1 ;
@@ -73,36 +73,55 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
 
     i = 0 ;
     cz = gridmin.z()  ;
+
+    std::vector<Vec3d> positions;
+    std::vector<double> output;
+    positions.resize(ny*nx);
+    output.resize(nx*ny);
     for (int y = 0 ; y < ny ; ++y)
     {
         cy = gridmin.y() + mstep * y ;
         for (int x = 0 ; x < nx ; ++x, ++i)
         {
             cx = gridmin.x() + mstep * x ;
-
-            Vec3d pos { cx, cy, cz }  ;
-            double res = getFieldValueAt(pos) ;
-            (P1+i)->data = res ;
+            positions[i].set(cx, cy, cz );
         }
+    }
+    getFieldValueAt(positions, output) ;
+
+    // Copy back the data into planes.
+    auto it = P1;
+    for(auto res : output){
+        it->data = res;
+        it++;
     }
 
     for (z=1; z<=nz; ++z)
     {
         newPlane();
 
-        i = 0 ;
+//        i = 0 ;
         cz = gridmin.z() + mstep * z ;
-        for (int y = 0 ; y < ny ; ++y)
-        {
-            cy = gridmin.y() + mstep * y ;
-            for (int x = 0 ; x < nx ; ++x, ++i)
-            {
-                cx = gridmin.x() + mstep * x ;
+        //positions.clear();
+//        for (int y = 0 ; y < ny ; ++y)
+//        {
+//            cy = gridmin.y() + mstep * y ;
+//            for (int x = 0 ; x < nx ; ++x, ++i)
+//            {
+//                cx = gridmin.x() + mstep * x ;
+//                //positions[i].set(cx, cy, cz);
+//            }
+//        }
 
-                Vec3d pos { cx, cy, cz }  ;
-                double res = getFieldValueAt(pos) ;
-                (P1+i)->data = res ;
-            }
+        positions[0].z() = cz;
+        getFieldValueAt(positions, output) ;
+
+        // Copy back the data into planes.
+        auto it = P1;
+        for(auto res : output)
+        {
+            it->data = res;
+            it++;
         }
 
         unsigned int i=0;
