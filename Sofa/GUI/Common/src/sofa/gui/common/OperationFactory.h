@@ -69,10 +69,8 @@ public:
 
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__TYPO() static Operation* Instanciate(const std::string &name)
-    {
-        return Instantiate(name);
-    }
+    SOFA_ATTRIBUTE_DISABLED__TYPO()
+    static Operation* Instanciate(const std::string &name) = delete;
 
     static Operation* Instantiate(const std::string &name)
     {
