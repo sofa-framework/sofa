@@ -148,7 +148,8 @@ protected:
     ~BarycentricMapperTopologyContainer() override = default;
 
     virtual type::vector<Element> getElements()=0;
-    virtual type::vector<SReal> getBaryCoef(const Real* f)=0;
+    virtual std::array<Real, Element::NumberOfNodes> getBarycentricCoefficients(const Real* barycentricCoordinates)=0;
+    
     virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element)=0;
     virtual void computeCenter(Vec3& center, const typename In::VecCoord& in, const Element& element)=0;
     virtual void addPointInElement(const Index elementIndex, const SReal* baryCoords)=0;
