@@ -47,7 +47,7 @@ using sofa::helper::logging::MessageDispatcher;
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
-#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 
 #include <sofa/component/collision/testing/MeshPrimitiveCreator.h>
 #include <sofa/component/collision/testing/SpherePrimitiveCreator.h>
@@ -82,7 +82,7 @@ bool TestTriangle::rigidTriangle(sofa::component::collision::detection::intersec
     angles[1] = 0;
     angles[2] = 0;
 
-    Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
+    Node::SPtr scn = New<sofa::simulation::Node>();
     //the center of this OBB is (0,0,-1) and its extent is 1
 
 //we construct the falling sphere
@@ -121,7 +121,7 @@ bool TestTriangle::rigidTriangle(sofa::component::collision::detection::intersec
 
 template <class Intersector>
 bool TestTriangle::softTriangle(sofa::component::collision::detection::intersection::BaseProximityIntersection::SPtr intersectionMethod, Intersector& bi) {
-    Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
+    Node::SPtr scn = New<sofa::simulation::Node>();
     //the center of this OBB is (0,0,-1) and its extent is 1
 
 //we construct the falling sphere

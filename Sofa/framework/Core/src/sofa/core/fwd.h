@@ -110,6 +110,7 @@ class BaseInteractionForceField;
 class BaseProjectiveConstraintSet;
 class BaseInteractionProjectiveConstraintSet;
 class BaseInteractionConstraint;
+class BaseMechanicalState;
 class LinearSolver;
 class MultiMatrixAccessor;
 
