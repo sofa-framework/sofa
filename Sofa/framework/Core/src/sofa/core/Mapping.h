@@ -232,40 +232,6 @@ public:
         return BaseMapping::canCreate(obj, context, arg);
     }
 
-    /// Construction method called by ObjectFactory.
-    ///
-    /// This implementation read the input and output attributes to
-    /// find the input and output models of this mapping.
-    template<class T>
-    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-
-        if (context)
-            context->addObject(obj);
-
-        if (arg)
-        {
-            std::string inPath, outPath;
-            if (arg->getAttribute("input"))
-                inPath = arg->getAttribute("input");
-            else
-                inPath = "@../";
-
-            if (arg->getAttribute("output"))
-                outPath = arg->getAttribute("output");
-            else
-                outPath = "@./";
-
-            obj->fromModel.setPath( inPath );
-            obj->toModel.setPath( outPath );
-
-            obj->parse(arg);
-        }
-
-        return obj;
-    }
-
     template<class T>
     static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
     {

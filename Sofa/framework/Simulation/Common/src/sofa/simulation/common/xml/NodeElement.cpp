@@ -33,6 +33,12 @@ using namespace sofa::defaulttype;
 NodeElement::NodeElement(const std::string& name, const std::string& type, BaseElement* parent)
     : Element<core::objectmodel::BaseNode>(name, type, parent)
 {
+    if (name.empty())
+    {
+        const std::string nodeName = "node";
+        msg_warning("XML") << "Node name cannot be empty. An arbitrary name '" << nodeName << "' has been provided";
+        attributes["name"] = nodeName;
+    }
 }
 
 NodeElement::~NodeElement()
