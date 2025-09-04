@@ -68,7 +68,7 @@ bool solveLCP(const Vec<dim,real> &q, const Mat<dim,dim,real> &M, Vec<dim * 2, r
 
         // colonnes correspondantes a z
         for (; jj < dim_mult2; jj++)
-            mat[ii][jj] = -(M[ii][jj - dim]);
+            mat[ii][jj] = -(M(ii,jj - dim));
 
         // colonne correspondante a q
         mat[ii][jj] = q[ii];

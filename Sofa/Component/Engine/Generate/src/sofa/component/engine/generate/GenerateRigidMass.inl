@@ -209,26 +209,26 @@ void GenerateRigidMass<DataTypes, MassType>::generateRigid()
     type::Vec3 center(afIntegral[1]/afIntegral[0],afIntegral[2]/afIntegral[0],afIntegral[3]/afIntegral[0]);
 
     // inertia relative to world origin
-    rigidmass->inertiaMatrix[0][0] = static_cast<Real>(  afIntegral[5] + afIntegral[6] );
-    rigidmass->inertiaMatrix[0][1] = static_cast<Real>( -afIntegral[7] );
-    rigidmass->inertiaMatrix[0][2] = static_cast<Real>( -afIntegral[9] );
-    rigidmass->inertiaMatrix[1][0] = static_cast<Real>( rigidmass->inertiaMatrix[0][1] );
-    rigidmass->inertiaMatrix[1][1] = static_cast<Real>( afIntegral[4] + afIntegral[6] );
-    rigidmass->inertiaMatrix[1][2] = static_cast<Real>( -afIntegral[8] );
-    rigidmass->inertiaMatrix[2][0] = static_cast<Real>( rigidmass->inertiaMatrix[0][2] );
-    rigidmass->inertiaMatrix[2][1] = static_cast<Real>( rigidmass->inertiaMatrix[1][2] );
-    rigidmass->inertiaMatrix[2][2] = static_cast<Real>( afIntegral[4] + afIntegral[5] );
+    rigidmass->inertiaMatrix(0,0) = static_cast<Real>(  afIntegral[5] + afIntegral[6] );
+    rigidmass->inertiaMatrix(0,1) = static_cast<Real>( -afIntegral[7] );
+    rigidmass->inertiaMatrix(0,2) = static_cast<Real>( -afIntegral[9] );
+    rigidmass->inertiaMatrix(1,0) = static_cast<Real>( rigidmass->inertiaMatrix(0,1) );
+    rigidmass->inertiaMatrix(1,1) = static_cast<Real>( afIntegral[4] + afIntegral[6] );
+    rigidmass->inertiaMatrix(1,2) = static_cast<Real>( -afIntegral[8] );
+    rigidmass->inertiaMatrix(2,0) = static_cast<Real>( rigidmass->inertiaMatrix(0,2) );
+    rigidmass->inertiaMatrix(2,1) = static_cast<Real>( rigidmass->inertiaMatrix(1,2) );
+    rigidmass->inertiaMatrix(2,2) = static_cast<Real>( afIntegral[4] + afIntegral[5] );
 
     // inertia relative to center of mass
-    rigidmass->inertiaMatrix[0][0] -= static_cast<Real>( volume*(center[1]*center[1] + center[2]*center[2]) );
-    rigidmass->inertiaMatrix[0][1] += static_cast<Real>( volume*center[0]*center[1] );
-    rigidmass->inertiaMatrix[0][2] += static_cast<Real>( volume*center[2]*center[0] );
-    rigidmass->inertiaMatrix[1][0] =  static_cast<Real>( rigidmass->inertiaMatrix[0][1] );
-    rigidmass->inertiaMatrix[1][1] -= static_cast<Real>( volume*(center[2]*center[2] + center[0]*center[0]) );
-    rigidmass->inertiaMatrix[1][2] += static_cast<Real>( volume*center[1]*center[2] );
-    rigidmass->inertiaMatrix[2][0] =  static_cast<Real>( rigidmass->inertiaMatrix[0][2] );
-    rigidmass->inertiaMatrix[2][1] =  static_cast<Real>( rigidmass->inertiaMatrix[1][2] );
-    rigidmass->inertiaMatrix[2][2] -= static_cast<Real>( volume*(center[0]*center[0] + center[1]*center[1]) );
+    rigidmass->inertiaMatrix(0,0) -= static_cast<Real>( volume*(center[1]*center[1] + center[2]*center[2]) );
+    rigidmass->inertiaMatrix(0,1) += static_cast<Real>( volume*center[0]*center[1] );
+    rigidmass->inertiaMatrix(0,2) += static_cast<Real>( volume*center[2]*center[0] );
+    rigidmass->inertiaMatrix(1,0) =  static_cast<Real>( rigidmass->inertiaMatrix(0,1) );
+    rigidmass->inertiaMatrix(1,1) -= static_cast<Real>( volume*(center[2]*center[2] + center[0]*center[0]) );
+    rigidmass->inertiaMatrix(1,2) += static_cast<Real>( volume*center[1]*center[2] );
+    rigidmass->inertiaMatrix(2,0) =  static_cast<Real>( rigidmass->inertiaMatrix(0,2) );
+    rigidmass->inertiaMatrix(2,1) =  static_cast<Real>( rigidmass->inertiaMatrix(1,2) );
+    rigidmass->inertiaMatrix(2,2) -= static_cast<Real>( volume*(center[0]*center[0] + center[1]*center[1]) );
 
     rigidmass->inertiaMatrix /= static_cast<Real>( volume );
     rigidmass->recalc();

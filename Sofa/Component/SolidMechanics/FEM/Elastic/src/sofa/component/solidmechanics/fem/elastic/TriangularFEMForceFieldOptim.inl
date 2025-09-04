@@ -407,25 +407,25 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrix(sofa::linearalgebra::
         const Real fG = factor * gamma;
         const Real fGM = factor * (gamma+mu);
         const Real fM_2 = factor * (0.5f*mu);
-        KJt[0][0] = fGM  *  ti.cy ;    KJt[0][1] = fG   *(-ti.cx);    KJt[0][2] = 0;    KJt[0][3] = fG   *ti.bx;
-        KJt[1][0] = fG   *  ti.cy ;    KJt[1][1] = fGM  *(-ti.cx);    KJt[1][2] = 0;    KJt[1][3] = fGM  *ti.bx;
-        KJt[2][0] = fM_2 *(-ti.cx);    KJt[2][1] = fM_2 *( ti.cy);    KJt[2][2] = fM_2 *ti.bx;    KJt[2][3] = 0;
+        KJt(0,0) = fGM  *  ti.cy ;    KJt(0,1) = fG   *(-ti.cx);    KJt(0,2) = 0;    KJt(0,3) = fG   *ti.bx;
+        KJt(1,0) = fG   *  ti.cy ;    KJt(1,1) = fGM  *(-ti.cx);    KJt(1,2) = 0;    KJt(1,3) = fGM  *ti.bx;
+        KJt(2,0) = fM_2 *(-ti.cx);    KJt(2,1) = fM_2 *( ti.cy);    KJt(2,2) = fM_2 *ti.bx;    KJt(2,3) = 0;
 
         sofa::type::MatNoInit<2,2,Real> JKJt11, JKJt12, JKJt22;
-        JKJt11[0][0] = ti.cy*KJt[0][0] - ti.cx*KJt[2][0];
-        JKJt11[0][1] = ti.cy*KJt[0][1] - ti.cx*KJt[2][1];
-        JKJt11[1][0] = JKJt11[0][1]; //ti.cy*KJt[2][0] - ti.cx*KJt[1][0];
-        JKJt11[1][1] = ti.cy*KJt[2][1] - ti.cx*KJt[1][1];
+        JKJt11(0,0) = ti.cy*KJt(0,0) - ti.cx*KJt(2,0);
+        JKJt11(0,1) = ti.cy*KJt(0,1) - ti.cx*KJt(2,1);
+        JKJt11(1,0) = JKJt11(0,1); //ti.cy*KJt(2,0) - ti.cx*KJt(1,0);
+        JKJt11(1,1) = ti.cy*KJt(2,1) - ti.cx*KJt(1,1);
 
-        JKJt12[0][0] = -ti.cx*KJt[2][2];
-        JKJt12[0][1] =  ti.cy*KJt[0][3];
-        JKJt12[1][0] =  ti.cy*KJt[2][2];
-        JKJt12[1][1] = -ti.cx*KJt[1][3];
+        JKJt12(0,0) = -ti.cx*KJt(2,2);
+        JKJt12(0,1) =  ti.cy*KJt(0,3);
+        JKJt12(1,0) =  ti.cy*KJt(2,2);
+        JKJt12(1,1) = -ti.cx*KJt(1,3);
 
-        JKJt22[0][0] = ti.bx*KJt[2][2];
-        JKJt22[0][1] = 0; //ti.bx*KJt[2][3];
-        JKJt22[1][0] = 0; //ti.bx*KJt[1][2];
-        JKJt22[1][1] = ti.bx*KJt[1][3];
+        JKJt22(0,0) = ti.bx*KJt(2,2);
+        JKJt22(0,1) = 0; //ti.bx*KJt(2,3);
+        JKJt22(1,0) = 0; //ti.bx*KJt(1,2);
+        JKJt22(1,1) = ti.bx*KJt(1,3);
 
         sofa::type::MatNoInit<2,2,Real> JKJt00, JKJt01, JKJt02;
         // fA = -fB-fC, dxB/dxA = -1, dxC/dxA = -1
@@ -483,25 +483,25 @@ void TriangularFEMForceFieldOptim<DataTypes>::buildStiffnessMatrix(core::behavio
         const Real fG = factor * gamma;
         const Real fGM = factor * (gamma + mu);
         const Real fM_2 = factor * mu / 2;
-        KJt[0][0] = fGM  *  ti.cy ;    KJt[0][1] = fG   *(-ti.cx);    KJt[0][2] = 0;    KJt[0][3] = fG   *ti.bx;
-        KJt[1][0] = fG   *  ti.cy ;    KJt[1][1] = fGM  *(-ti.cx);    KJt[1][2] = 0;    KJt[1][3] = fGM  *ti.bx;
-        KJt[2][0] = fM_2 *(-ti.cx);    KJt[2][1] = fM_2 *( ti.cy);    KJt[2][2] = fM_2 *ti.bx;    KJt[2][3] = 0;
+        KJt(0,0) = fGM  *  ti.cy ;    KJt(0,1) = fG   *(-ti.cx);    KJt(0,2) = 0;    KJt(0,3) = fG   *ti.bx;
+        KJt(1,0) = fG   *  ti.cy ;    KJt(1,1) = fGM  *(-ti.cx);    KJt(1,2) = 0;    KJt(1,3) = fGM  *ti.bx;
+        KJt(2,0) = fM_2 *(-ti.cx);    KJt(2,1) = fM_2 *( ti.cy);    KJt(2,2) = fM_2 *ti.bx;    KJt(2,3) = 0;
 
         sofa::type::MatNoInit<2, 2, Real> JKJt11, JKJt12, JKJt22;
-        JKJt11[0][0] = ti.cy * KJt[0][0] - ti.cx * KJt[2][0];
-        JKJt11[0][1] = ti.cy * KJt[0][1] - ti.cx * KJt[2][1];
-        JKJt11[1][0] = JKJt11[0][1]; //ti.cy*KJt[2][0] - ti.cx*KJt[1][0];
-        JKJt11[1][1] = ti.cy * KJt[2][1] - ti.cx * KJt[1][1];
+        JKJt11(0,0) = ti.cy * KJt(0,0) - ti.cx * KJt(2,0);
+        JKJt11(0,1) = ti.cy * KJt(0,1) - ti.cx * KJt(2,1);
+        JKJt11(1,0) = JKJt11(0,1); //ti.cy*KJt(2,0) - ti.cx*KJt(1,0);
+        JKJt11(1,1) = ti.cy * KJt(2,1) - ti.cx * KJt(1,1);
 
-        JKJt12[0][0] = -ti.cx * KJt[2][2];
-        JKJt12[0][1] = ti.cy * KJt[0][3];
-        JKJt12[1][0] = ti.cy * KJt[2][2];
-        JKJt12[1][1] = -ti.cx * KJt[1][3];
+        JKJt12(0,0) = -ti.cx * KJt(2,2);
+        JKJt12(0,1) = ti.cy * KJt(0,3);
+        JKJt12(1,0) = ti.cy * KJt(2,2);
+        JKJt12(1,1) = -ti.cx * KJt(1,3);
 
-        JKJt22[0][0] = ti.bx * KJt[2][2];
-        JKJt22[0][1] = 0; //ti.bx*KJt[2][3];
-        JKJt22[1][0] = 0; //ti.bx*KJt[1][2];
-        JKJt22[1][1] = ti.bx * KJt[1][3];
+        JKJt22(0,0) = ti.bx * KJt(2,2);
+        JKJt22(0,1) = 0; //ti.bx*KJt(2,3);
+        JKJt22(1,0) = 0; //ti.bx*KJt(1,2);
+        JKJt22(1,1) = ti.bx * KJt(1,3);
 
         sofa::type::MatNoInit<2,2,Real> JKJt00, JKJt01, JKJt02;
         // fA = -fB-fC, dxB/dxA = -1, dxC/dxA = -1
@@ -706,9 +706,9 @@ typename TriangularFEMForceFieldOptim<DataTypes>::MaterialStiffness TriangularFE
     const auto [mu, gamma] = computeMuGamma(this->getYoungModulusInElement(elemId), this->getPoissonRatioInElement(elemId));
 
     MaterialStiffness mat;
-    mat[0][0] = mat[1][1] = gamma + mu;
-    mat[0][1] = mat[1][0] = gamma;
-    mat[2][2] = (Real)(0.5) * mu;
+    mat(0,0) = mat(1,1) = gamma + mu;
+    mat(0,1) = mat(1,0) = gamma;
+    mat(2,2) = (Real)(0.5) * mu;
 
     return mat;
 }

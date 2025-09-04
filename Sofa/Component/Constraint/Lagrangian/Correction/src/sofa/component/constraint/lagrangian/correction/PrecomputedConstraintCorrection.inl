@@ -838,7 +838,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
         {
             for (unsigned int b=0; b<3; b++)
             {
-                RotMat[a][b] = rotations[i](a,b);
+                RotMat(a,b) = rotations[i](a,b);
             }
         }
 
@@ -1229,7 +1229,7 @@ void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(SReal * /*d
                             DXbuf += appCompliance[ offset2 + k ] * Fbuf[k];
                         }
 
-                        constraint_D[dof2][j] += DXbuf;
+                        constraint_D(dof2,j) += DXbuf;
                     }
                 }
             }

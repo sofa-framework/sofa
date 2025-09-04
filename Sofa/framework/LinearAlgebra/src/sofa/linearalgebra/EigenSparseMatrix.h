@@ -125,7 +125,7 @@ public:
     {
         for( unsigned r=0; r<Nout; r++ )
             for( unsigned c=0; c<Nin; c++ )
-                this->add( r + row*Nout, c + col*Nin, b[r][c] );
+                this->add( r + row*Nout, c + col*Nin, b(r,c) );
     }
 
     /// Insert ASAP in the compressed matrix. There must be no value at this place already.
@@ -137,7 +137,7 @@ public:
         {
             this->beginRow( r + row*Nout );
             for( unsigned c=0; c<Nin; c++ )
-                this->insertBack( r + row*Nout, c + col*Nin, b[r][c] );
+                this->insertBack( r + row*Nout, c + col*Nin, b(r,c) );
         }
     }
 
@@ -193,7 +193,7 @@ public:
                 const Block& b = blocks[p[i]];
                 for( unsigned c=0; c<Nin; c++ )
                 {
-                    this->insertBack( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
+                    this->insertBack( r + bRow*Nout, c + bColumns[p[i]] * Nin, b(r,c));
                 }
             }
         }
@@ -215,7 +215,7 @@ public:
                 const Block& b = blocks[i];
                 for( unsigned c=0; c<Nin; c++ )
                 {
-                    this->insertBack( r + bRow*Nout, c + bColumns[i] * Nin, b[r][c]);
+                    this->insertBack( r + bRow*Nout, c + bColumns[i] * Nin, b(r,c));
                 }
             }
         }
@@ -253,8 +253,8 @@ public:
                     const Block& b = crs.colsValue[xj]; // block value
                     for( unsigned c=0; c<Nin; c++ ) if( c+ blCol*Nin < (unsigned)this->colSize() )
                         {
-                        this->add(r + blRow*Nout, c + blCol*Nin, b[r][c]);
-//                        this->compressedMatrix.insertBack(r + blRow*Nout, c + blCol*Nin) = b[r][c];
+                        this->add(r + blRow*Nout, c + blCol*Nin, b(r,c));
+//                        this->compressedMatrix.insertBack(r + blRow*Nout, c + blCol*Nin) = b(r,c);
                         }
 
                 }
@@ -351,7 +351,7 @@ protected:
         VectorEigenOut aux1(this->colSize()),aux2(this->rowSize());
         for(unsigned i = 0, n = data.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nin; ++j) {
-				aux1[Nin * i + j] = data[i][j];
+                aux1[Nin * i + j] = data[i][j];
 			}
 		}
         
@@ -365,7 +365,7 @@ protected:
         // convert the result back to the Sofa type
         for(unsigned i = 0, n = result.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nout; ++j) {
-				result[i][j] += aux2[Nout * i + j] * fact;
+                result[i][j] += aux2[Nout * i + j] * fact;
 			}
 		}
 	}
@@ -403,7 +403,7 @@ protected:
 
         for(size_t i = 0, n = data.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nout; ++j) {
-				aux1[Nout * i + j] = data[i][j];
+                aux1[Nout * i + j] = data[i][j];
 			}
 		}
 		
@@ -487,7 +487,7 @@ private:
 		// is it contiguous ?
 		typedef typename T::value_type value_type;
 		typedef typename value_type::value_type scalar_type;
-		return  (v.size() - 1) * sizeof(value_type) == (&v[v.size() - 1][0] - &v[0][0]) * sizeof(scalar_type); 
+        return  (v.size() - 1) * sizeof(value_type) == (&v[v.size() - 1][0] - &v[0][0]) * sizeof(scalar_type); 
 	}
 };
 
