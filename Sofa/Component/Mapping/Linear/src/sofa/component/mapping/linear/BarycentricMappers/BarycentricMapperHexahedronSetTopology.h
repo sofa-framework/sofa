@@ -48,8 +48,7 @@ public:
 
     ~BarycentricMapperHexahedronSetTopology() override = default;
     virtual type::vector<Hexahedron> getElements() override;
-    virtual type::vector<SReal> getBaryCoef(const Real* f) override;
-    type::vector<SReal> getBaryCoef(const Real fx, const Real fy, const Real fz);
+    virtual std::array<Real, Hexahedron::NumberOfNodes> getBarycentricCoefficients(const Real* barycentricCoordinates) override;
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Hexahedron& element) override;
     void computeCenter(Vec3& center, const typename In::VecCoord& in, const Hexahedron& element) override;
     void computeDistance(SReal& d, const Vec3& v) override;
