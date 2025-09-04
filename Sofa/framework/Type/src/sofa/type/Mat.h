@@ -28,6 +28,7 @@
 #include <sofa/type/Vec.h>
 
 #include <iostream>
+#include <algorithm>
 
 namespace // anonymous
 {
@@ -345,13 +346,13 @@ public:
     /// Cast into a standard C array of lines (read-only).
     constexpr const Line* lptr() const noexcept
     {
-        return this->elems;
+        return this->elems.data();
     }
 
     /// Cast into a standard C array of lines.
     constexpr Line* lptr() noexcept
     {
-        return this->elems;
+        return this->elems.data();
     }
 
     /// Cast into a standard C array of elements (stored per line) (read-only).
@@ -831,7 +832,7 @@ public:
     // direct access to data
     constexpr const real* data() const noexcept
     {
-        return elems.data();
+        return elems.data()->data();
     }
 
     constexpr typename ArrayLineType::iterator begin() noexcept
@@ -862,11 +863,11 @@ public:
     }
     constexpr reference back()
     {
-        return elems[N - 1];
+        return elems[L - 1];
     }
     constexpr const_reference back() const
     {
-        return elems[N - 1];
+        return elems[L - 1];
     }
 
 };
@@ -1383,5 +1384,24 @@ constexpr Mat<3,3,real> multTranspose(const Mat<3,3,real>& m1, const Mat<3,3,rea
 
     return r;
 }
+
+#if not defined(SOFA_TYPE_MAT_CPP)
+
+extern template class SOFA_TYPE_API Mat<2,2,float>;
+extern template class SOFA_TYPE_API Mat<2,2,double>;
+
+extern template class SOFA_TYPE_API Mat<3,3,float>;
+extern template class SOFA_TYPE_API Mat<3,3,double>;
+
+extern template class SOFA_TYPE_API Mat<4,4,float>;
+extern template class SOFA_TYPE_API Mat<4,4,double>;
+
+extern template class SOFA_TYPE_API Mat<6,6,float>;
+extern template class SOFA_TYPE_API Mat<6,6,double>;
+
+extern template class SOFA_TYPE_API Mat<12,12,float>;
+extern template class SOFA_TYPE_API Mat<12,12,double>;
+
+#endif
 
 } // namespace sofa::type

@@ -242,7 +242,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
 
         for ( int i=0; i<8; ++i) //for 8 virtual finer element
         {
-            if (finerChildren[i] != -1)
+            if (finerChildren[i] != sofa::InvalidID)
             {
                 ElementStiffness finerK;
                 ElementMass finerM;
