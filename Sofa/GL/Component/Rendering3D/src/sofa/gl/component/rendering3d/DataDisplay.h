@@ -74,7 +74,7 @@ public:
 
 protected:
     void computeNormals();
-    type::vector<type::Vec3f> m_normals;
+    type::vector<type::Vec3> m_normals;
 
     DataDisplay();
 
