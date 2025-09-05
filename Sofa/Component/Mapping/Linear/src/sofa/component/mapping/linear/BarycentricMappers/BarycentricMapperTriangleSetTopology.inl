@@ -72,21 +72,21 @@ BarycentricMapperTriangleSetTopology<In,Out>::createPointInTriangle ( const type
 
 
 template <class In, class Out>
-type::vector<Triangle> BarycentricMapperTriangleSetTopology<In,Out>::getElements()
+auto BarycentricMapperTriangleSetTopology<In,Out>::getElements() -> type::vector<Triangle>
 {
     return this->m_fromTopology->getTriangles();
 }
 
 template <class In, class Out>
-auto BarycentricMapperTriangleSetTopology<In,Out>::getBarycentricCoefficients(const Real* barycentricCoordinates) -> std::array<Real, Triangle::NumberOfNodes>
+auto BarycentricMapperTriangleSetTopology<In,Out>::getBarycentricCoefficients(const std::array<Real, MappingData::NumberOfCoordinates>& barycentricCoordinates) -> std::array<Real, Triangle::NumberOfNodes>
 {
     return {1-barycentricCoordinates[0]-barycentricCoordinates[1], barycentricCoordinates[0], barycentricCoordinates[1]};
 }
 
 template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Triangle& element)
+void BarycentricMapperTriangleSetTopology<In,Out>::computeBase(Mat3x3& base, const typename In::VecCoord& in, const Triangle& element)
 {
-    Mat3x3d mt;
+    Mat3x3 mt;
     base[0] = in[element[1]]-in[element[0]];
     base[1] = in[element[2]]-in[element[0]];
     base[2] = cross(base[0],base[1]);
