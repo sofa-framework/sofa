@@ -4,9 +4,9 @@ project(Sofa.Component.SolidMechanics.Spring_test)
 
 set(SOURCE_FILES
     PolynomialRestShapeSpringsForceField_test.cpp
-    RestShapeSpringsForceField_test.cpp
     SpringForceField_test.cpp
     TriangularBendingSprings_test.cpp
+    FixedWeakConstraint_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
