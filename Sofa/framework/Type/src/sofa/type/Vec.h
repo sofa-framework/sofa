@@ -589,16 +589,28 @@ public:
 
     constexpr bool operator==(const Vec& b) const noexcept
     {
-        for (Size i=0; i<N; i++)
-            if ( fabs( (float)(this->elems[i] - b[i]) ) > EQUALITY_THRESHOLD ) return false;
-        return true;
+        if constexpr (std::is_floating_point_v<ValueType>)
+        {
+            return std::equal(this->elems.begin(), this->elems.end(), b.elems.begin(),
+                                   [](auto x, auto y) { return std::abs(x - y) < EQUALITY_THRESHOLD; });
+        }
+        else
+        {
+            return this->elems == b.elems;
+        }
     }
 
     constexpr bool operator!=(const Vec& b) const noexcept
     {
-        for (Size i=0; i<N; i++)
-            if ( fabs( (float)(this->elems[i] - b[i]) ) > EQUALITY_THRESHOLD ) return true;
-        return false;
+        if constexpr (std::is_floating_point_v<ValueType>)
+        {
+            return !std::equal(this->elems.begin(), this->elems.end(), b.elems.begin(),
+                                   [](auto x, auto y) { return std::abs(x - y) < EQUALITY_THRESHOLD; });
+        }
+        else
+        {
+            return this->elems != b.elems;
+        }
     }
 
 
