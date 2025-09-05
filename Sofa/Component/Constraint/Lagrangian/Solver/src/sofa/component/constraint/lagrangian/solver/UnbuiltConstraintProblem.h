@@ -22,57 +22,26 @@
 #pragma once
 #include <sofa/component/constraint/lagrangian/solver/config.h>
 
-#include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
+#include <sofa/component/constraint/lagrangian/solver/GenericConstraintProblem.h>
+#include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
 
-class GenericConstraintSolver;
-
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintProblem : public ConstraintProblem
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API UnbuiltConstraintProblem : public GenericConstraintProblem
 {
 public:
-
     typedef std::vector< core::behavior::BaseConstraintCorrection* > ConstraintCorrections;
 
-    GenericConstraintProblem(GenericConstraintSolver* solver)
-    : scaleTolerance(true)
-    , allVerified(false)
-    , sor(1.0)
-    , currentError(0.0)
-    , currentIterations(0)
-    , m_solver(solver)
+    UnbuiltConstraintProblem(GenericConstraintSolver* solver)
+    : GenericConstraintProblem(solver)
     {}
 
-    ~GenericConstraintProblem() override
-    {
-        freeConstraintResolutions();
-    }
+    linearalgebra::SparseMatrix<SReal> Wdiag; /** UNBUILT **/
+    std::list<unsigned int> constraints_sequence; /** UNBUILT **/
+    std::vector< ConstraintCorrections > cclist_elems; /** UNBUILT **/
 
-    void clear(int nbConstraints) override;
-    void freeConstraintResolutions();
-    int getNumConstraints();
-    int getNumConstraintGroups();
-    void result_output(GenericConstraintSolver* solver, SReal *force, SReal error, int iterCount, bool convergence);
-    void solveTimed(SReal tol, int maxIt, SReal timeout) override;
-
-    void setSolver(GenericConstraintSolver* solver);
-
-    sofa::linearalgebra::FullVector<SReal> _d;
-    std::vector<core::behavior::ConstraintResolution*> constraintsResolutions;
-    bool scaleTolerance, allVerified;
-    SReal sor;
-    SReal currentError;
-    int currentIterations;
-
-    sofa::linearalgebra::FullVector<SReal> m_lam;
-    sofa::linearalgebra::FullVector<SReal> m_deltaF;
-    sofa::linearalgebra::FullVector<SReal> m_deltaF_new;
-    sofa::linearalgebra::FullVector<SReal> m_p;
-protected:
-
-    GenericConstraintSolver* m_solver;
 
 };
 }
