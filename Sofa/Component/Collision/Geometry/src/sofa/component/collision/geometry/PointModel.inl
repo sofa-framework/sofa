@@ -300,24 +300,17 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
     if (npoints != size)
         return;
 
-    static constexpr Real max_real = std::numeric_limits<Real>::max();
-    static constexpr Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
+    type::BoundingBox bbox;
 
     for (sofa::Size i=0; i<size; i++)
     {
-        Element e(this,i);
+        const Element e(this,i);
         const Coord& p = e.p();
 
-        for (int c=0; c<3; c++)
-        {
-            if (p[c] > maxBBox[c]) maxBBox[c] = (Real)p[c];
-            else if (p[c] < minBBox[c]) minBBox[c] = (Real)p[c];
-        }
+        bbox.include(p);
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(bbox);
 }
 
 
@@ -326,7 +319,6 @@ template<class DataTypes>
 void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams*, sofa::Index index)
 {
     SOFA_UNUSED(index);
-    //TODO(fred roy 2018-06-21)...please implement.
 }
 
 
