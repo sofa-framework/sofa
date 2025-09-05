@@ -80,7 +80,7 @@ void EulerImplicitSolver::cleanup()
     vop.v_free(m_residual.id(), !d_threadSafeVisitor.getValue(), true);
 }
 
-void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void EulerImplicitSolver::doSolve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SolverVectorAllocation");
