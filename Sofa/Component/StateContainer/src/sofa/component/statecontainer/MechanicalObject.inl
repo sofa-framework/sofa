@@ -42,6 +42,8 @@
 #include <cassert>
 #include <sofa/linearalgebra/CompressedRowSparseMatrixMechanical.h>
 
+#include <ranges>
+
 
 namespace
 {
@@ -1003,8 +1005,8 @@ void MechanicalObject<DataTypes>::init()
 
         // Print a warning if one or more vector don't match the maximum size
         bool allSizeAreEqual = true;
-        for (const std::pair<const std::string, const Size>& vector_size : vector_sizes) {
-            const Size& size = vector_size.second;
+        for (const auto& size : vector_sizes | std::views::values)
+        {
             if (size > 1 && size != maxSize) {
                 allSizeAreEqual = false;
                 break;
