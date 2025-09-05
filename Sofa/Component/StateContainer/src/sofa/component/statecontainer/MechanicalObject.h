@@ -101,14 +101,20 @@ public:
 
     Data< bool >  d_useTopology; ///< Shall this object rely on any active topology to initialize its size and positions
 
-    Data< bool >  showObject; ///< Show objects. (default=false)
-    Data< float > showObjectScale; ///< Scale for object display. (default=0.1)
-    Data< bool >  showIndices; ///< Show indices. (default=false)
-    Data< float > showIndicesScale; ///< Scale for indices display. (default=0.02)
-    Data< bool >  showVectors; ///< Show velocity. (default=false)
-    Data< float > showVectorsScale; ///< Scale for vectors display. (default=0.0001)
-    Data< int > drawMode; ///< The way vectors will be drawn: - 0: Line - 1:Cylinder - 2: Arrow.  The DOFS will be drawn: - 0: point - >1: sphere. (default=0)
-    Data< type::RGBAColor > d_color; ///< Color for object display. (default=[1 1 1 1])
+    struct DeprecatedVisualizationData : core::objectmodel::lifecycle::DeprecatedData
+    {
+        DeprecatedVisualizationData(core::Base* b, std::string name)
+        : core::objectmodel::lifecycle::DeprecatedData(b, "v25.12", "v26.06", name, "The visualization features are now available in dedicated components VisualPointCloud and VisualVectorField") {}
+    };
+
+    DeprecatedVisualizationData showObject;
+    DeprecatedVisualizationData showObjectScale;
+    DeprecatedVisualizationData showIndices;
+    DeprecatedVisualizationData showIndicesScale;
+    DeprecatedVisualizationData showVectors;
+    DeprecatedVisualizationData showVectorsScale;
+    DeprecatedVisualizationData drawMode;
+    DeprecatedVisualizationData d_color;
 
     void init() override;
     void reinit() override;
@@ -327,8 +333,6 @@ public:
     void printDOF(core::ConstVecId, std::ostream& =std::cerr, int firstIndex=0, int range=-1 ) const override;
     unsigned printDOFWithElapsedTime(core::ConstVecId, unsigned =0, unsigned =0, std::ostream& =std::cerr ) override;
 
-    void draw(const core::visual::VisualParams* vparams) override;
-
     /// @}
 
     // handle state changes
@@ -430,16 +434,6 @@ protected :
     helper::ReadAccessor<core::objectmodel::Data<core::StateVecType_t<DataTypes, vtype> > >
         getReadAccessor(core::ConstVecId v);
 
-    /**
-    * @brief Internal function : Draw indices in 3d coordinates.
-    */
-    void drawIndices(const core::visual::VisualParams* vparams);
-
-    /**
-    * @brief Internal function : Draw vectors
-    */
-    void drawVectors(const core::visual::VisualParams* vparams);
-
     /// Given the number of a constraint Equation, find the index in the MatrixDeriv C, where the constraint is actually stored
     // unsigned int getIdxConstraintFromId(unsigned int id) const;
 
@@ -464,12 +458,6 @@ void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core:
 
 template<> SOFA_COMPONENT_STATECONTAINER_API
 void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorDifferentSize(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset );
-
-
-template<> SOFA_COMPONENT_STATECONTAINER_API
-void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::VisualParams* vparams);
-
-
 
 
 #if !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
