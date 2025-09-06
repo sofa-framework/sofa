@@ -76,28 +76,48 @@ std::map<const std::string, int> colors = {
 };
 }
 
-const char* getColor(const char* className)
+bool hasColor(const std::string& className)
+{
+    return colors.find(className) != colors.end();
+}
+
+bool hasColor(const sofa::Index& id)
+{
+    return id < DEFAULTCOLORS.size();
+}
+
+const char* getColor(const std::string& className)
 {
     if (auto it = colors.find(className); it != colors.end()) {
         return DEFAULTCOLORS[it->second].c_str();
     }
-    return "";
+    throw std::runtime_error("No Color for this name");
 }
 
-const char* getColor(COLORID id)
+const char* getColor(const sofa::Index id)
 {
+    if(id >= DEFAULTCOLORS.size())
+        throw std::runtime_error("Color indice too large");
     return DEFAULTCOLORS[id].c_str();
 }
 
-size_t registerColor(const std::string& hexColor)
+sofa::Index registerColor(const std::string& hexColor)
 {
     DEFAULTCOLORS.emplace_back(hexColor);
     return DEFAULTCOLORS.size()-1;
 }
 
-void registerColor(const std::string& className, const std::string& hexColor)
+sofa::Index registerColor(const std::string& className, const std::string& hexColor)
 {
-    colors[className] = registerColor(hexColor);
+    // Reuse an existing color or create a new one
+    if(auto it = colors.find(className); it != colors.end())
+    {
+        DEFAULTCOLORS[it->second] = hexColor;
+        return it->second;
+    }
+    auto id = registerColor(hexColor);
+    colors[className] = id;
+    return id;
 }
 
 const char* DeprecatedColor::operator[](size_t id)
@@ -108,6 +128,5 @@ const char* DeprecatedColor::operator[](size_t id)
     return DEFAULTCOLORS[id].c_str();
 }
 DeprecatedColor COLOR {};
-
 
 }

@@ -53,10 +53,23 @@ enum COLORID
     ALLCOLORS
 };
 
-SOFA_SIMULATION_CORE_API size_t registerColor(const std::string& hexColor);
-SOFA_SIMULATION_CORE_API void registerColor(const std::string& classname, const std::string& hexColor);
+// Register a new color, without a name
+SOFA_SIMULATION_CORE_API sofa::Index registerColor(const std::string& hexColor);
+
+// Register a new color, if the name already exists, the old color is overriden
+SOFA_SIMULATION_CORE_API sofa::Index registerColor(const std::string& classname, const std::string& hexColor);
+
+// Returns the color associated with the given classname. Throw std::runtime_exception otherwise
 SOFA_SIMULATION_CORE_API const char* getColor(const std::string& classname);
-SOFA_SIMULATION_CORE_API const char* getColor(const COLORID classType);
+
+// Returns the color associated with the given COLORID. Throw std::runtime_exception otherwise
+SOFA_SIMULATION_CORE_API const char* getColor(const sofa::Index userID);
+
+// Returns wether or not there is a color associated with this name
+bool hasColor(const std::string& className);
+
+// Returns wether or not there is a color associated with this name
+bool hasColor(const sofa::Index& id);
 
 // This is to allow old code to still work,
 SOFA_SIMULATION_CORE_API class DeprecatedColor
