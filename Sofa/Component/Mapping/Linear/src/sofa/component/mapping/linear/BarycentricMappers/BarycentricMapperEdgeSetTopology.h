@@ -25,19 +25,16 @@
 namespace sofa::component::mapping::linear
 {
 
-using sofa::type::Mat3x3d;
-using sofa::type::Vec3;
-using sofa::defaulttype::Vec3Types;
-
-typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
-
 /////// Class allowing barycentric mapping computation on a BaseMeshTopology with edges
 template<class In, class Out>
-class BarycentricMapperEdgeSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData1D,Edge>
+class BarycentricMapperEdgeSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData1D, sofa::core::topology::BaseMeshTopology::Edge>
 {
     typedef typename BarycentricMapper<In,Out>::MappingData1D MappingData;
-
+    using Edge = sofa::core::topology::BaseMeshTopology::Edge;
+    
     using Index = sofa::Index;
+    using Mat3x3 = sofa::type::Mat3x3;
+    using Vec3 = sofa::type::Vec3;
 
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperEdgeSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Edge));
@@ -62,9 +59,8 @@ protected:
     ~BarycentricMapperEdgeSetTopology() override = default;
 
     virtual type::vector<Edge> getElements() override;
-    virtual type::vector<SReal> getBaryCoef(const Real* f) override;
-    type::vector<SReal> getBaryCoef(const Real fx);
-    void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Edge& element) override;
+    virtual std::array<Real, Edge::NumberOfNodes>getBarycentricCoefficients(const std::array<Real, MappingData::NumberOfCoordinates>& barycentricCoordinates) override;
+    void computeBase(Mat3x3& base, const typename In::VecCoord& in, const Edge& element) override;
     void computeCenter(Vec3& center, const typename In::VecCoord& in, const Edge& element) override;
     void computeDistance(SReal& d, const Vec3& v) override;
     void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
@@ -76,7 +72,7 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPEREDGESETTOPOLOGY_CPP)
-extern template class SOFA_COMPONENT_MAPPING_LINEAR_API BarycentricMapperEdgeSetTopology< Vec3Types, Vec3Types>;
+extern template class SOFA_COMPONENT_MAPPING_LINEAR_API BarycentricMapperEdgeSetTopology< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types>;
 
 #endif
 

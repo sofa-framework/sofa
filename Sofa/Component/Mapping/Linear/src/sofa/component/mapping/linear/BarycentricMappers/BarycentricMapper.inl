@@ -28,10 +28,10 @@ namespace sofa::component::mapping::linear::_barycentricmapper_
 using sofa::linearalgebra::CompressedRowSparseMatrix;
 
 template<class In, class Out>
-void BarycentricMapper<In,Out>::addMatrixContrib(CompressedRowSparseMatrix<MBloc>* m, int row, int col, Real value)
+void BarycentricMapper<In,Out>::addMatrixContrib(CompressedRowSparseMatrix<MBloc>* m, sofa::Index row, sofa::Index col, Real value)
 {
     MBloc* b = m->wblock(row, col, true); // get write access to a matrix block, creating it if not found
-    for (int i=0; i < ((int)NIn < (int)NOut ? (int)NIn : (int)NOut); ++i)
+    for (sofa::Index i=0; i < (NIn < NOut ? NIn : NOut); ++i)
         (*b)[i][i] += value;
 }
 
