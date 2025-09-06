@@ -47,13 +47,6 @@
 
 
 #ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_DISABLED__CORE_INTERSECTION_AS_PARAMETER()
-#else
-#define SOFA_ATTRIBUTE_DISABLED__CORE_INTERSECTION_AS_PARAMETER() \
-    SOFA_ATTRIBUTE_DISABLED("v24.06", "v24.12", "Intersection detection methods now needs the Intersection method as a parameter.")
-#endif
-
-#ifdef SOFA_BUILD_SOFA_CORE
 #define SOFA_ATTRIBUTE_DISABLED__COMPLIANT()
 #else
 #define SOFA_ATTRIBUTE_DISABLED__COMPLIANT() \
@@ -85,10 +78,10 @@
 
 
 #ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_DEPRECATED__DELETED_ARGUMENTS()
+#define SOFA_ATTRIBUTE_DISABLED__DELETED_ARGUMENTS()
 #else
-#define SOFA_ATTRIBUTE_DEPRECATED__DELETED_ARGUMENTS() \
-    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Signature has changed, use 'getConstraintResolution(const ConstraintParams* cParams, std::vector<ConstraintResolution*> &resTab, unsigned int &offset)' instead")
+#define SOFA_ATTRIBUTE_DISABLED__DELETED_ARGUMENTS() \
+    SOFA_ATTRIBUTE_DISABLED("v25.06", "v25.12", "Signature has changed, use 'getConstraintResolution(const ConstraintParams* cParams, std::vector<ConstraintResolution*> &resTab, unsigned int &offset)' instead")
 #endif
 
 

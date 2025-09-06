@@ -108,14 +108,6 @@ public:
     void setSystemLHVector(core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver);
     void solveSystem(core::behavior::LinearSolver* linearSolver);
     void print( std::ostream& out, core::behavior::LinearSolver* linearSolver);
-
-    SOFA_ATTRIBUTE_DISABLED_MECHANICALOPERATIONS_RESETSYSTEM() void m_resetSystem() = delete;
-    SOFA_ATTRIBUTE_DISABLED_MECHANICALOPERATIONS_SETSYSTEMMBKMATRIX() void m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal kFact) = delete;
-    SOFA_ATTRIBUTE_DISABLED_MECHANICALOPERATIONS_SETSYSTEMRHVECTOR() void m_setSystemRHVector(core::MultiVecDerivId v) = delete;
-    SOFA_ATTRIBUTE_DISABLED_MECHANICALOPERATIONS_SETSYSTEMLHVECTOR() void m_setSystemLHVector(core::MultiVecDerivId v) = delete;
-    SOFA_ATTRIBUTE_DISABLED_MECHANICALOPERATIONS_SOLVESYSTEM() void m_solveSystem() = delete;
-    SOFA_ATTRIBUTE_DISABLED_MECHANICALOPERATIONS_PRINT() void m_print( std::ostream& out ) = delete;
-
     /// @}
 
     /** Find all the Constraint present in the scene graph, build the constraint equation system, solve and apply the correction

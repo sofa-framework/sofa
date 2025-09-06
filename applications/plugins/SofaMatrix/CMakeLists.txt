@@ -9,15 +9,13 @@ sofa_find_package(Eigen3 REQUIRED)
 
 find_package(metis 5.1.0 EXACT QUIET)
 if(NOT metis_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
-    message("SofaMatrix: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching metis...")
-    include(FetchContent)
-    FetchContent_Declare(metis
+    message("${PROJECT_NAME}: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching metis...")
+    sofa_fetch_dependency(metis
             GIT_REPOSITORY https://github.com/sofa-framework/METIS
             GIT_TAG v5.1.0-ModernInstall
     )
-    FetchContent_MakeAvailable(metis)
 elseif (NOT metis_FOUND)
-    message(FATAL_ERROR "SofaMatrix: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install metis (version=5.1.0), or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
+    message(FATAL_ERROR "Sofa.Metis: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install metis (version=5.1.0), or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
 endif()
 
 
