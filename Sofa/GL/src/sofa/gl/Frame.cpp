@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gl/NewAxis.h>
+#include <sofa/gl/Frame.h>
 
 #include <sofa/gl/gl.h>
 
