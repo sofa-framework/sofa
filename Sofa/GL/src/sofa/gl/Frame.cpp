@@ -71,7 +71,7 @@ constexpr SReal sin_fast(SReal x)
     return P * (y * constexpr_abs(y) - y) + y;
 }
 
-constexpr SReal sin_cos(SReal x) 
+constexpr SReal cos_fast(SReal x) 
 {
     return sin_fast(x + PI_2);
 }
@@ -106,7 +106,7 @@ struct CylinderMesh
             up = type::Vec3(1, 0, 0);
         }
 
-        type::Vec3 right = up.cross(direction).normalized();
+        const type::Vec3 right = up.cross(direction).normalized();
         up = direction.cross(right).normalized();
 
         // Generate vertices around the cylinder
@@ -115,11 +115,11 @@ struct CylinderMesh
         // Side vertices (bottom and top circles)
         for (int i = 0; i < Segments; ++i)
         {
-            double angle = (static_cast<double>(i) / Segments) * 2.0 * std::numbers::pi_v<double>;
-            double cos_a = std::cos(angle);
-            double sin_a = std::sin(angle);
+            const double angle = (static_cast<double>(i) / Segments) * 2.0 * std::numbers::pi_v<double>;
+            const double cos_a = cos_fast(angle);
+            const double sin_a = sin_fast(angle);
 
-            type::Vec3 offset = right * (cos_a * radius) + up * (sin_a * radius);
+            const type::Vec3 offset = right * (cos_a * radius) + up * (sin_a * radius);
 
             // Bottom circle
             vertices[vertex_idx++] = start + offset;
@@ -168,10 +168,10 @@ struct CylinderMesh
         for (int i = 0; i < triangle_count; ++i)
         {
             const auto& tri = triangles[i];
-            type::Vec3 v0 = vertices[tri.v0];
-            type::Vec3 v1 = vertices[tri.v1];
-            type::Vec3 v2 = vertices[tri.v2];
-            type::Vec3 normal = (v1 - v0).cross(v2 - v0) * -1;
+            const type::Vec3 v0 = vertices[tri.v0];
+            const type::Vec3 v1 = vertices[tri.v1];
+            const type::Vec3 v2 = vertices[tri.v2];
+            const type::Vec3 normal = (v1 - v0).cross(v2 - v0) * -1;
             normals[tri.v0] += normal;
             normals[tri.v1] += normal;
             normals[tri.v2] += normal;
@@ -220,8 +220,8 @@ struct ConeMesh
         for (int i = 0; i < Segments; ++i)
         {
             const double angle = (static_cast<double>(i) / Segments) * 2.0 * std::numbers::pi_v<double>;
-            const double cos_a = std::cos(angle);
-            const double sin_a = std::sin(angle);
+            const double cos_a = cos_fast(angle);
+            const double sin_a = sin_fast(angle);
 
             const type::Vec3 offset = right * (cos_a * base_radius) + up * (sin_a * base_radius);
             vertices[vertex_idx++] = base + offset;
@@ -252,10 +252,10 @@ struct ConeMesh
         for (int i = 0; i < triangle_count; ++i)
         {
             const auto& tri = triangles[i];
-            type::Vec3 v0 = vertices[tri.v0];
-            type::Vec3 v1 = vertices[tri.v1];
-            type::Vec3 v2 = vertices[tri.v2];
-            type::Vec3 normal = (v1 - v0).cross(v2 - v0) * -1;
+            const type::Vec3 v0 = vertices[tri.v0];
+            const type::Vec3 v1 = vertices[tri.v1];
+            const type::Vec3 v2 = vertices[tri.v2];
+            const type::Vec3 normal = (v1 - v0).cross(v2 - v0) * -1;
             normals[tri.v0] += normal;
             normals[tri.v1] += normal;
             normals[tri.v2] += normal;
@@ -347,11 +347,11 @@ void render_coordinate_frame(const CoordinateFrame& frame, const type::Vec3& cen
     // Colors for each axis: Red, Red, Green, Green, Blue, Blue
     const sofa::type::RGBAColor colors[6] = {
         colorX, // X-cylinder (red)
-        colorX, // X-arrowhead (bright red)
+        colorX, // X-arrowhead (red)
         colorY, // Y-cylinder (green)
-        colorY, // Y-arrowhead (bright green)
+        colorY, // Y-arrowhead (green)
         colorZ, // Z-cylinder (blue)
-        colorZ  // Z-arrowhead (bright blue)
+        colorZ  // Z-arrowhead (blue)
     };
 
     sofa::type::Vec3 rotAxis;
