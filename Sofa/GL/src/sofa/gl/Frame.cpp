@@ -143,8 +143,8 @@ struct CylinderMesh
             const int top_next = ((i + 1) % Segments) * 2 + 1;
 
             // Two triangles per side segment
-            triangles[triangle_idx++] = Triangle(bottom_curr, top_curr, bottom_next);
-            triangles[triangle_idx++] = Triangle(top_curr, top_next, bottom_next);
+            triangles[triangle_idx++] = Triangle{bottom_curr, top_curr, bottom_next};
+            triangles[triangle_idx++] = Triangle{top_curr, top_next, bottom_next};
         }
 
         // Cap triangles
@@ -159,9 +159,9 @@ struct CylinderMesh
             const int top_next = ((i + 1) % Segments) * 2 + 1;
 
             // Bottom cap (clockwise from below)
-            triangles[triangle_idx++] = Triangle(bottom_center, bottom_next, bottom_curr);
+            triangles[triangle_idx++] = Triangle{bottom_center, bottom_next, bottom_curr};
             // Top cap (counter-clockwise from above)
-            triangles[triangle_idx++] = Triangle(top_center, top_curr, top_next);
+            triangles[triangle_idx++] = Triangle{top_center, top_curr, top_next};
         }
 
         // compute normals per vertex
@@ -242,10 +242,10 @@ struct ConeMesh
             const int next = (i + 1) % Segments + 1;
 
             // Side triangle (tip to base edge)
-            triangles[triangle_idx++] = Triangle(tip_idx, next, curr);
+            triangles[triangle_idx++] = Triangle{tip_idx, next, curr};
 
             // Base triangle (base center to edge)
-            triangles[triangle_idx++] = Triangle(base_center_idx, curr, next);
+            triangles[triangle_idx++] = Triangle{base_center_idx, curr, next};
         }
 
         // compute normals per vertex
@@ -335,7 +335,7 @@ struct CoordinateFrame
 };
 
 // Render the complete coordinate frame
-void render_coordinate_frame(const CoordinateFrame& frame, const type::Vec3& center, const type::Quat<SReal>& orient, const type::Vec3& len, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ)
+void render_coordinate_frame(const CoordinateFrame& frame, const type::Vec3& center, const type::Quat<SReal>& orient, const type::Vec3&, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ)
 {
     glPushAttrib(GL_LIGHTING_BIT);
     glEnable(GL_LIGHTING);
