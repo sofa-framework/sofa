@@ -25,19 +25,15 @@
 namespace sofa::component::mapping::linear
 {
 
-
-using sofa::type::Mat3x3d;
-using sofa::type::Vec3;
-using sofa::defaulttype::Vec3Types;
-
-typedef typename sofa::core::topology::BaseMeshTopology::Hexahedron Hexahedron;
-
 /// Class allowing barycentric mapping computation on a HexahedronSetTopology
 template<class In, class Out>
-class BarycentricMapperHexahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In, Out>::MappingData3D,Hexahedron>
+class BarycentricMapperHexahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In, Out>::MappingData3D, sofa::core::topology::BaseMeshTopology::Hexahedron>
 {
     typedef typename BarycentricMapper<In, Out>::MappingData3D MappingData;
+    using Hexahedron = sofa::core::topology::BaseMeshTopology::Hexahedron;
 
+    using Mat3x3 = sofa::type::Mat3x3;
+    using Vec3 = sofa::type::Vec3;
     using Index = sofa::Index;
 
 public:
@@ -48,9 +44,8 @@ public:
 
     ~BarycentricMapperHexahedronSetTopology() override = default;
     virtual type::vector<Hexahedron> getElements() override;
-    virtual type::vector<SReal> getBaryCoef(const Real* f) override;
-    type::vector<SReal> getBaryCoef(const Real fx, const Real fy, const Real fz);
-    void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Hexahedron& element) override;
+    virtual std::array<Real, Hexahedron::NumberOfNodes>getBarycentricCoefficients(const std::array<Real, MappingData::NumberOfCoordinates>& barycentricCoordinates) override;
+    void computeBase(Mat3x3& base, const typename In::VecCoord& in, const Hexahedron& element) override;
     void computeCenter(Vec3& center, const typename In::VecCoord& in, const Hexahedron& element) override;
     void computeDistance(SReal& d, const Vec3& v) override;
     void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
@@ -76,7 +71,7 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERHEXAHEDRONSETTOPOLOGY_CPP)
-extern template class SOFA_COMPONENT_MAPPING_LINEAR_API BarycentricMapperHexahedronSetTopology< Vec3Types, Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_LINEAR_API BarycentricMapperHexahedronSetTopology< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types >;
 
 
 #endif

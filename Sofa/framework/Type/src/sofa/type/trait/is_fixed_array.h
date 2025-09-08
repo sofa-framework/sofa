@@ -20,24 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <type_traits>
+#include <sofa/type/fixed_array.h>
 
-namespace sofa::type::trait
+namespace sofa::type
 {
 
-/// Detect if a type T has iterator/const iterator function, operator[](size_t) and defines a static size
-template<typename T>
-concept is_fixed_array = requires(std::remove_cv_t<T> t, const std::remove_cv_t<T> ct)
-{
-    T::static_size;
-
-    {t.begin()} -> std::convertible_to<typename T::iterator>;
-    {t.end()} -> std::convertible_to<typename T::iterator>;
-
-    {ct.begin()} -> std::convertible_to<typename T::const_iterator>;
-    {ct.end()} -> std::convertible_to<typename T::const_iterator>;
-
-    { t[0] } -> std::convertible_to<typename T::value_type>;
-};
 
 }

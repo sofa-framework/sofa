@@ -119,14 +119,11 @@ void BaseObject::parse( BaseObjectDescription* arg )
 
 void BaseObject::setSrc(const std::string &valueString, std::vector< std::string > *attributeList)
 {
-    const BaseObject* loader = nullptr;
-
     std::size_t posAt = valueString.rfind('@');
     if (posAt == std::string::npos) posAt = 0;
-    std::string objectName;
 
-    objectName = valueString.substr(posAt+1);
-    loader = getContext()->get<BaseObject>(objectName);
+    const std::string objectName = valueString.substr(posAt + 1);
+    const BaseObject* loader = getContext()->get<BaseObject>(objectName);
     if (!loader)
     {
         msg_error() << "Source object \"" << valueString << "\" NOT FOUND.";
@@ -137,16 +134,13 @@ void BaseObject::setSrc(const std::string &valueString, std::vector< std::string
 
 void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader, std::vector< std::string > *attributeList)
 {
-    const BaseObject* obj = this;
-
     BaseObject::MapData dataLoaderMap = loader->m_aliasData;
-    BaseObject::MapData::iterator it_map;
 
     if (attributeList != nullptr)
     {
-        for (std::size_t j = 0; j<attributeList->size(); ++j)
+        for (const auto& attribute : *attributeList)
         {
-            it_map = dataLoaderMap.find ((*attributeList)[j]);
+            const auto it_map = dataLoaderMap.find (attribute);
             if (it_map != dataLoaderMap.end())
                 dataLoaderMap.erase (it_map);
         }
@@ -154,29 +148,28 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
 
     // -- Temporary patch, using exceptions. TODO: use a flag to set Data not to be automatically linked. --
     //{
-    it_map = dataLoaderMap.find ("type");
-    if (it_map != dataLoaderMap.end())
-        dataLoaderMap.erase (it_map);
-
-    it_map = dataLoaderMap.find ("filename");
-    if (it_map != dataLoaderMap.end())
-        dataLoaderMap.erase (it_map);
+    for (const auto& specialString : {"type", "filename"})
+    {
+        if (const auto it_map = dataLoaderMap.find (specialString); it_map != dataLoaderMap.end())
+        {
+            dataLoaderMap.erase (it_map);
+        }
+    }
     //}
 
-
-    for (it_map = dataLoaderMap.begin(); it_map != dataLoaderMap.end(); ++it_map)
+    for (auto& [loaderDataStr, loaderData] : dataLoaderMap)
     {
-        BaseData* data = obj->findData( (*it_map).first );
+        BaseData* data = this->findData(loaderDataStr);
         if (data != nullptr)
         {
-            if (!(*it_map).second->isAutoLink())
+            if (!loaderData->isAutoLink())
             {
                 msg_info() << "Disabling autolink for Data '" << data->getName() << "'";
             }
             else
             {
-                std::string linkPath = valueString+"."+(*it_map).first;
-                data->setParent( (*it_map).second, linkPath);
+                const std::string linkPath = valueString + "." + loaderDataStr;
+                data->setParent(loaderData, linkPath);
             }
         }
     }

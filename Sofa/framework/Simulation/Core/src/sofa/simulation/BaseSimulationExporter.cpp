@@ -57,10 +57,7 @@ const std::string BaseSimulationExporter::getOrCreateTargetPath(const std::strin
     }
 
     /// If the path does not exists on the FS...we create It
-    const std::string parentPath = FileSystem::getParentDirectory(path) ;
-    if( !FileSystem::exists(parentPath) ){
-        FileSystem::findOrCreateAValidPath(parentPath) ;
-    }
+    FileSystem::ensureFolderForFileExists(path);
 
     /// At this point we have a valid path. We can now add a number indicating the frame save.
     if (autonumbering)

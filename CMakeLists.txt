@@ -41,6 +41,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTOR
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
 
+set(SOFA_APPLICATIONS_RELOCATABLE_PATH "applications" CACHE STRING "Relocatable path that will be used ot install applications")
+set(SOFA_PLUGINS_RELOCATABLE_PATH "plugins" CACHE STRING "Relocatable path that will be used ot install plugins")
+set(SOFA_PROJECTS_RELOCATABLE_PATH "projects" CACHE STRING "Relocatable path that will be used ot install projects")
+
+
+
 # Option for packaging
 option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 
@@ -136,19 +142,14 @@ if(MSVC)
     option(SOFA_USE_DEPENDENCY_PACK "Enable the use of the Windows Dependency Pack" ON)
     # WinDepPack
     if(SOFA_USE_DEPENDENCY_PACK)
-        set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack")
-        if(NOT EXISTS ${SOFA_DEPENDENCY_PACK_DIR})
-            # force back to default value
-            set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack" FORCE)
+        set(SOFA_DEPENDENCY_PACK_DIR "" CACHE PATH "Directory containing Windows Dependency Pack")
+        if(SOFA_DEPENDENCY_PACK_DIR AND EXISTS ${SOFA_DEPENDENCY_PACK_DIR})
+            add_subdirectory(${SOFA_DEPENDENCY_PACK_DIR} ${CMAKE_BINARY_DIR}/extlibs/SofaDependencyPack)
+        else ()
+            message(INFO "Fetching WinDepPack")
+            sofa_fetch_dependency(WinDepPack GIT_REPOSITORY "https://github.com/sofa-framework/WinDepPack.git" GIT_TAG "master" DONT_BUILD)
+            add_subdirectory("${CMAKE_BINARY_DIR}/external_directories/fetched/WinDepPack" "${CMAKE_BINARY_DIR}/extlibs/WinDepPack")
         endif()
-        list(APPEND CMAKE_INCLUDE_PATH ${SOFA_DEPENDENCY_PACK_DIR}/include)
-        if(CMAKE_CL_64)
-            list(APPEND CMAKE_LIBRARY_PATH ${SOFA_DEPENDENCY_PACK_DIR}/lib/win64)
-        else()
-            list(APPEND CMAKE_LIBRARY_PATH ${SOFA_DEPENDENCY_PACK_DIR}/lib/win32)
-        endif()
-        install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/include/ DESTINATION include/extlibs/WinDepPack COMPONENT headers)
-        install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
     endif ()
 endif()
 

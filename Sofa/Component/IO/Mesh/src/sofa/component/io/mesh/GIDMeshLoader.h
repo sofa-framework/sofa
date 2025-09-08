@@ -31,13 +31,13 @@ namespace sofa::component::io::mesh
 class SOFA_COMPONENT_IO_MESH_API GIDMeshLoader : public sofa::core::loader::MeshLoader
 {
 public :
-	SOFA_CLASS(GIDMeshLoader, sofa::core::loader::MeshLoader);
+    SOFA_CLASS(GIDMeshLoader, sofa::core::loader::MeshLoader);
 
-    typedef sofa::core::topology::Topology::Edge Edge;
-    typedef sofa::core::topology::Topology::Triangle Triangle;
-    typedef sofa::core::topology::Topology::Quad Quad;
-    typedef sofa::core::topology::Topology::Tetrahedron Tetrahedron;
-    typedef sofa::core::topology::Topology::Hexahedron Hexahedron;
+    typedef sofa::topology::Edge Edge;
+    typedef sofa::topology::Triangle Triangle;
+    typedef sofa::topology::Quad Quad;
+    typedef sofa::topology::Tetrahedron Tetrahedron;
+    typedef sofa::topology::Hexahedron Hexahedron;
     typedef sofa::type::Vec3 Coord;
 
 
@@ -45,27 +45,26 @@ public :
     bool doLoad() override;
 
 protected :
-	enum ElementType{ LINEAR, TRIANGLE, QUADRILATERAL, TETRAHEDRA, HEXAHEDRA, PRISM, PYRAMID, SPHERE, CIRCLE };
+    enum ElementType{ LINEAR, TRIANGLE, QUADRILATERAL, TETRAHEDRA, HEXAHEDRA, PRISM, PYRAMID, SPHERE, CIRCLE };
 
-	GIDMeshLoader();
-	~GIDMeshLoader() override;
+    GIDMeshLoader();
+    ~GIDMeshLoader() override;
 
-	bool readGID(std::ifstream& file);
+    bool readGID(std::ifstream& file);
 
     void doClearBuffers() override;
 
 private :
 
-	bool readLinearElements(std::ifstream& file);
-	bool readTriangleElements(std::ifstream& file);
-	bool readQuadrilateralElements(std::ifstream& file);
-	bool readTetrahedralElements(std::ifstream& file);
-	bool readHexahedralElements(std::ifstream& file);
+    bool readLinearElements(std::ifstream& file);
+    bool readTriangleElements(std::ifstream& file);
+    bool readQuadrilateralElements(std::ifstream& file);
+    bool readTetrahedralElements(std::ifstream& file);
+    bool readHexahedralElements(std::ifstream& file);
 
-private :
-	unsigned short m_dimensions;
-	ElementType m_eltType;
-	unsigned short m_nNode;
+    unsigned short m_dimensions;
+    ElementType m_eltType;
+    unsigned short m_nNode;
 
 };
 

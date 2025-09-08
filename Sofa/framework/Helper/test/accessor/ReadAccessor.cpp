@@ -62,15 +62,17 @@ public:
 };
 
 using FixedArrayTypes = ::testing::Types <
-    sofa::type::fixed_array<double, 5>, sofa::type::Vec < 2, float >, sofa::type::Mat<3, 3>>;
+    sofa::type::fixed_array<double, 5>,
+    sofa::type::Vec < 2, float >,
+    sofa::type::Mat<3, 3>
+>;
 
 TYPED_TEST_SUITE(ReadAccessorFixedArray_test, FixedArrayTypes);
 
 TYPED_TEST(ReadAccessorFixedArray_test, tests )
 {
     sofa::helper::ReadAccessor accessor(this->m_array);
-    
-    EXPECT_EQ(TypeParam::static_size, accessor.size());
+
     EXPECT_EQ(this->m_array.size(), accessor.size());
     EXPECT_EQ(accessor.begin(), this->m_array.begin());
     EXPECT_EQ(accessor.end(), this->m_array.end());

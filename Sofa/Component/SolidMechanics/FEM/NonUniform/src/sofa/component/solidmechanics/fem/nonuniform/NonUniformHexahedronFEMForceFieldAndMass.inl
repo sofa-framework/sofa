@@ -230,7 +230,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
         computeClassicalMechanicalMatrices(K,M,elementIndice,this->_sparseGrid->getNbVirtualFinerLevels()-level);
     else
     {
-        type::fixed_array<int,8> finerChildren;
+        type::fixed_array<Index, 8> finerChildren;
         if (level == 0)
         {
             finerChildren = this->_sparseGrid->_hierarchicalCubeMap[elementIndice];
@@ -242,7 +242,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
 
         for ( int i=0; i<8; ++i) //for 8 virtual finer element
         {
-            if (finerChildren[i] != -1)
+            if (finerChildren[i] != sofa::InvalidID)
             {
                 ElementStiffness finerK;
                 ElementMass finerM;

@@ -46,15 +46,6 @@ public:
     // why rigidsphere has a different collision detection compared to RayDiscreteIntersection?
     bool testIntersection(collision::geometry::Ray& rRay, collision::geometry::RigidSphere& rSphere, const core::collision::Intersection* currentIntersection);
     int computeIntersection(collision::geometry::Ray& rRay, collision::geometry::RigidSphere& rSphere, OutputVector*, const core::collision::Intersection* currentIntersection);
-
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Ray& t1, collision::geometry::Triangle& t2) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Ray& t1, collision::geometry::Triangle& t2, OutputVector*) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Ray& rRay, collision::geometry::RigidSphere& rSphere) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Ray& rRay, collision::geometry::RigidSphere& rSphere, OutputVector*) = delete;
 };
 
 } //namespace sofa::component::collision::detection::intersection

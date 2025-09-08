@@ -55,9 +55,9 @@ public:
     //Indices must be unsigned int for drawing
     using visual_index_type = unsigned int;
 
-    typedef type::fixed_array<visual_index_type, 2> VisualEdge;
-    typedef type::fixed_array<visual_index_type, 3> VisualTriangle;
-    typedef type::fixed_array<visual_index_type, 4> VisualQuad;
+    typedef sofa::topology::Element<sofa::geometry::Edge> VisualEdge;
+    typedef sofa::topology::Element<sofa::geometry::Triangle> VisualTriangle;
+    typedef sofa::topology::Element<sofa::geometry::Quad> VisualQuad;
     typedef type::vector<VisualEdge> VecVisualEdge;
     typedef type::vector<VisualTriangle> VecVisualTriangle;
     typedef type::vector<VisualQuad> VecVisualQuad;

@@ -47,19 +47,6 @@ public:
 
     template<class T> int computeIntersection(collision::geometry::Ray&, collision::geometry::TSphere<T>&, OutputVector*, const core::collision::Intersection* currentIntersection);
     int computeIntersection(collision::geometry::Ray&, collision::geometry::Triangle&, OutputVector*, const core::collision::Intersection* currentIntersection);
-
-
-    template<class T> 
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Ray&, collision::geometry::TSphere<T>&) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Ray&, collision::geometry::Triangle&) = delete;
-
-    template<class T> 
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Ray&, collision::geometry::TSphere<T>&, OutputVector*) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-        int computeIntersection(collision::geometry::Ray&, collision::geometry::Triangle&, OutputVector*) = delete;
 };
 
 } //namespace sofa::component::collision::detection::intersection
