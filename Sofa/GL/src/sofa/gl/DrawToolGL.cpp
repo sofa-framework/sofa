@@ -27,7 +27,7 @@
 #include <sofa/gl/BasicShapes.h>
 #include <sofa/gl/BasicShapesGL.inl>
 #include <sofa/gl/Axis.h>
-#include <sofa/gl/NewAxis.h>
+#include <sofa/gl/Frame.h>
 #include <sofa/gl/Cylinder.h>
 #include <sofa/gl/template.h>
 #include <sofa/gl/glText.inl>
