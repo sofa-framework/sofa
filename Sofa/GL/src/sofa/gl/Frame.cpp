@@ -295,19 +295,19 @@ struct CoordinateFrame
     ConMesh z_arrowhead;
 
     struct FrameAxisParameters {
-        double axisLength{};
+        double cylinderLength{};
         double arrowHeadLength{};
         double cylinderRadius{};
         double arrowHeadRadius{};
     };
 
     constexpr CoordinateFrame(const FrameAxisParameters& axisX, const FrameAxisParameters& axisY, const FrameAxisParameters& axisZ)
-        : x_cylinder(type::Vec3(0, 0, 0), type::Vec3(axisX.axisLength - axisX.arrowHeadLength, 0, 0), axisX.cylinderRadius)
-        , x_arrowhead(type::Vec3(axisX.axisLength - axisX.arrowHeadLength, 0, 0), type::Vec3(axisX.axisLength, 0, 0), axisX.arrowHeadRadius)
-        , y_cylinder(type::Vec3(0, 0, 0), type::Vec3(0, axisY.axisLength - axisY.arrowHeadLength, 0), axisY.cylinderRadius)
-        , y_arrowhead(type::Vec3(0, axisY.axisLength - axisY.arrowHeadLength, 0), type::Vec3(0, axisY.axisLength, 0), axisY.arrowHeadRadius)
-        , z_cylinder(type::Vec3(0, 0, 0), type::Vec3(0, 0, axisZ.axisLength - axisZ.arrowHeadLength), axisZ.cylinderRadius)
-        , z_arrowhead(type::Vec3(0, 0, axisZ.axisLength - axisZ.arrowHeadLength), type::Vec3(0, 0, axisZ.axisLength), axisZ.arrowHeadRadius)
+        : x_cylinder(type::Vec3(0, 0, 0), type::Vec3(axisX.cylinderLength, 0, 0), axisX.cylinderRadius)
+        , x_arrowhead(type::Vec3(axisX.cylinderLength, 0, 0), type::Vec3(axisX.cylinderLength + axisX.arrowHeadLength, 0, 0), axisX.arrowHeadRadius)
+        , y_cylinder(type::Vec3(0, 0, 0), type::Vec3(0, axisY.cylinderLength, 0), axisY.cylinderRadius)
+        , y_arrowhead(type::Vec3(0, axisY.cylinderLength, 0), type::Vec3(0, axisY.cylinderLength + axisY.arrowHeadLength, 0), axisY.arrowHeadRadius)
+        , z_cylinder(type::Vec3(0, 0, 0), type::Vec3(0, 0, axisZ.cylinderLength), axisZ.cylinderRadius)
+        , z_arrowhead(type::Vec3(0, 0, axisZ.cylinderLength), type::Vec3(0, 0, axisZ.cylinderLength +  axisZ.arrowHeadLength), axisZ.arrowHeadRadius)
     {
 
     }
