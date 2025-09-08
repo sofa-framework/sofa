@@ -63,9 +63,9 @@ constexpr SReal sin_fast(SReal x)
     while (x < -PI) x += PI2;
 
     // Quick approximation using polynomial
-    const float B = 4.0f / PI;
-    const float C = -4.0f / (PI * PI);
-    const float P = 0.225f;
+    constexpr float B = 4.0f / PI;
+    constexpr float C = -4.0f / (PI * PI);
+    constexpr float P = 0.225f;
 
     float y = B * x + C * x * constexpr_abs(x);
     return P * (y * constexpr_abs(y) - y) + y;
@@ -97,7 +97,7 @@ struct CylinderMesh
 
     constexpr CylinderMesh(const type::Vec3& start, const type::Vec3& end, double radius)
     {
-        type::Vec3 direction = (end - start).normalized();
+        const type::Vec3 direction = (end - start).normalized();
 
         // Create perpendicular vectors
         type::Vec3 up = type::Vec3(0, 1, 0);
@@ -137,10 +137,10 @@ struct CylinderMesh
         // Side triangles
         for (int i = 0; i < Segments; ++i)
         {
-            int bottom_curr = i * 2;
-            int top_curr = i * 2 + 1;
-            int bottom_next = ((i + 1) % Segments) * 2;
-            int top_next = ((i + 1) % Segments) * 2 + 1;
+            const int bottom_curr = i * 2;
+            const int top_curr = i * 2 + 1;
+            const int bottom_next = ((i + 1) % Segments) * 2;
+            const int top_next = ((i + 1) % Segments) * 2 + 1;
 
             // Two triangles per side segment
             triangles[triangle_idx++] = Triangle(bottom_curr, top_curr, bottom_next);
@@ -148,15 +148,15 @@ struct CylinderMesh
         }
 
         // Cap triangles
-        int bottom_center = vertex_count - 2;
-        int top_center = vertex_count - 1;
+        const int bottom_center = vertex_count - 2;
+        const int top_center = vertex_count - 1;
 
         for (int i = 0; i < Segments; ++i)
         {
-            int bottom_curr = i * 2;
-            int top_curr = i * 2 + 1;
-            int bottom_next = ((i + 1) % Segments) * 2;
-            int top_next = ((i + 1) % Segments) * 2 + 1;
+            const int bottom_curr = i * 2;
+            const int top_curr = i * 2 + 1;
+            const int bottom_next = ((i + 1) % Segments) * 2;
+            const int top_next = ((i + 1) % Segments) * 2 + 1;
 
             // Bottom cap (clockwise from below)
             triangles[triangle_idx++] = Triangle(bottom_center, bottom_next, bottom_curr);
@@ -199,7 +199,7 @@ struct ConeMesh
 
     constexpr ConeMesh(const type::Vec3& base, const type::Vec3& tip, double base_radius)
     {
-        type::Vec3 direction = (tip - base).normalized();
+        const type::Vec3 direction = (tip - base).normalized();
 
         // Create perpendicular vectors
         type::Vec3 up = type::Vec3(0, 1, 0);
@@ -219,11 +219,11 @@ struct ConeMesh
         // Base circle vertices
         for (int i = 0; i < Segments; ++i)
         {
-            double angle = (static_cast<double>(i) / Segments) * 2.0 * std::numbers::pi_v<double>;
-            double cos_a = std::cos(angle);
-            double sin_a = std::sin(angle);
+            const double angle = (static_cast<double>(i) / Segments) * 2.0 * std::numbers::pi_v<double>;
+            const double cos_a = std::cos(angle);
+            const double sin_a = std::sin(angle);
 
-            type::Vec3 offset = right * (cos_a * base_radius) + up * (sin_a * base_radius);
+            const type::Vec3 offset = right * (cos_a * base_radius) + up * (sin_a * base_radius);
             vertices[vertex_idx++] = base + offset;
         }
 
@@ -238,8 +238,8 @@ struct ConeMesh
         // Side triangles
         for (int i = 0; i < Segments; ++i)
         {
-            int curr = i + 1;
-            int next = (i + 1) % Segments + 1;
+            const int curr = i + 1;
+            const int next = (i + 1) % Segments + 1;
 
             // Side triangle (tip to base edge)
             triangles[triangle_idx++] = Triangle(tip_idx, next, curr);
@@ -406,9 +406,9 @@ void Frame::draw(const type::Vec3& center, const Quaternion& orient, const type:
         if (Lmax > Lmin * 2)
             Lmin = Lmax / 1.414_sreal;
 
-        type::Vec3 l(Lmin / 10_sreal, Lmin / 10_sreal, Lmin / 10_sreal);
-        type::Vec3 lc(Lmax / 5_sreal, Lmax / 5_sreal, Lmax / 5_sreal); // = L / 5;
-        type::Vec3 Lc = lc;
+        const type::Vec3 l(Lmin / 10_sreal, Lmin / 10_sreal, Lmin / 10_sreal);
+        const type::Vec3 lc(Lmax / 5_sreal, Lmax / 5_sreal, Lmax / 5_sreal); // = L / 5;
+        const type::Vec3 Lc = lc;
 
         cacheCoordinateFrame.emplace(len, CoordinateFrame ({ L[0], Lc[0], l[0], lc[0] }, { L[1], Lc[1], l[1], lc[1] }, { L[2], Lc[2], l[2], lc[2] }));
     }
@@ -419,7 +419,7 @@ void Frame::draw(const type::Vec3& center, const Quaternion& orient, const type:
 
 void Frame::draw(const type::Vec3& center, const double orient[4][4], const type::Vec3& len, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ)
 {
-    sofa::type::Matrix3 matOrient{ 
+    const sofa::type::Matrix3 matOrient{ 
         {orient[0][0], orient[0][1] , orient[0][2] },
         {orient[1][0], orient[1][1] , orient[1][2] },
         {orient[2][0], orient[2][1] , orient[2][2] } 
@@ -436,7 +436,7 @@ void Frame::draw(const type::Vec3& center, const Quaternion& orient, SReal len, 
 
 void Frame::draw(const type::Vec3& center, const double orient[4][4], SReal len, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ)
 {
-    sofa::type::Matrix3 matOrient{
+    const sofa::type::Matrix3 matOrient{
         {orient[0][0], orient[0][1] , orient[0][2] },
         {orient[1][0], orient[1][1] , orient[1][2] },
         {orient[2][0], orient[2][1] , orient[2][2] }
