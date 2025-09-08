@@ -43,7 +43,7 @@
             <PointCollisionModel name="FloorPoint" />
         </Node>
     </Node>
-
+<!-- 
     <Node name="beam-withTriangulatedCubeCollision">
         <EulerImplicitSolver rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
         <BTDLinearSolver template="BTDMatrix6d" printLog="false" verbose="false" />
@@ -87,5 +87,5 @@
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader"  dy="-1"/>
         <TriangleCollisionModel name="FloorTriangle" simulated="0" moving="0" contactStiffness="100" />
-    </Node>
+    </Node> -->
 </Node>
