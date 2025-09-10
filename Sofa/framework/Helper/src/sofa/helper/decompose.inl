@@ -1802,9 +1802,9 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,3,Real> &F, type::Mat<3,3,Re
         U(1,Sorder[0]) = edge0[1];
         U(2,Sorder[0]) = edge0[2];
 
-        U(0,Sorder[0]) = edge1[0];
-        U(1,Sorder[0]) = edge1[1];
-        U(2,Sorder[0]) = edge1[2];
+        U(0,Sorder[1]) = edge1[0];
+        U(1,Sorder[1]) = edge1[1];
+        U(2,Sorder[1]) = edge1[2];
 
         break;
     }
@@ -1819,8 +1819,8 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,3,Real> &F, type::Mat<3,3,Re
     if( inverted )
     {
         U(0,Sorder[0]) *= (Real)-1;
-        U(1,Sorder[1]) *= (Real)-1;
-        U(2,Sorder[2]) *= (Real)-1;
+        U(1,Sorder[0]) *= (Real)-1;
+        U(2,Sorder[0]) *= (Real)-1;
 
         S[Sorder[0]] *= (Real)-1;
     }
