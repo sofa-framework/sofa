@@ -23,7 +23,7 @@
 #include <SofaPython3/PythonEnvironment.h>
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaImplicitField/components/geometry/ScalarField.h>
-
+#include "pybind11/stl.h"
 #include "Binding_ScalarField.h"
 
 /// Makes an alias for the pybind11 namespace to increase readability.
@@ -33,22 +33,138 @@ namespace sofaimplicitfield {
 using namespace sofapython3;
 using sofa::component::geometry::ScalarField;
 using sofa::core::objectmodel::BaseObject;
-using sofa::type::Vec3d;
+using sofa::type::Vec3;
+using sofa::type::Mat3x3;
+
+py::array_t<double> vector_to_numpy(const std::vector<Vec3>& vec) {
+    // Pybind11 gère la mémoire en créant un capsule pour que numpy sache comment libérer
+    // On transfère la propriété du vecteur à numpy, donc pas de copie
+    const double* data_ptr = (const double*)vec.data();
+    size_t size = vec.size();
+
+    // capsule: mémoire gérée par le vector, sera libérée quand python détruit l'objet numpy
+    py::capsule free_when_done(vec.data(), [](void *) {
+        // On ne fait rien ici car vector gère sa mémoire.
+        // Si on voulait transférer la propriété, on ferait delete ici.
+    });
+
+    // Dimensions du tableau numpy
+    std::vector<size_t> shape = { size, 3 };
+
+    // Strides en bytes (ici, contiguous : 3 colonnes, chaque double 8 octets)
+    std::vector<size_t> strides = { 3 * sizeof(double), sizeof(double) };
+
+    return py::array_t<double>(
+        shape,
+        strides,
+        data_ptr,      // data pointer
+        free_when_done // capsule pour gérer la vie mémoire
+    );
+}
+
+py::array_t<double> vector_to_numpy(const std::vector<double>& vec) {
+    // Pybind11 gère la mémoire en créant un capsule pour que numpy sache comment libérer
+    // On transfère la propriété du vecteur à numpy, donc pas de copie
+    const double* data_ptr = (const double*)vec.data();
+    size_t size = vec.size();
+
+    // capsule: mémoire gérée par le vector, sera libérée quand python détruit l'objet numpy
+    py::capsule free_when_done(vec.data(), [](void *) {
+        // On ne fait rien ici car vector gère sa mémoire.
+        // Si on voulait transférer la propriété, on ferait delete ici.
+    });
+
+    // Dimensions du tableau numpy
+    std::vector<size_t> shape = { size };
+
+    // Strides en bytes (ici, contiguous : 3 colonnes, chaque double 8 octets)
+    std::vector<size_t> strides = { sizeof(double) };
+
+    return py::array_t<double>(
+        shape,
+        strides,
+        data_ptr,      // data pointer
+        free_when_done // capsule pour gérer la vie mémoire
+    );
+}
+
 
 class ScalarField_Trampoline : public ScalarField {
 public:
     SOFA_CLASS(ScalarField_Trampoline, ScalarField);
 
-    double getValue(Vec3d& pos, int& domain) override{
+    // Override this function so that it returns the actual python class name instead of
+    // "ScalarField_Trampoline" which correspond to this utility class.
+    std::string getClassName() const override
+    {
+        PythonEnvironment::gil acquire;
+
+        // Get the actual class name from python.
+        return py::str(py::cast(this).get_type().attr("__name__"));
+    }
+
+    double getValue(Vec3& pos, int& domain) override
+    {
         SOFA_UNUSED(domain);
         PythonEnvironment::gil acquire;
 
-        PYBIND11_OVERLOAD_PURE(double, ScalarField, getValue, pos.x(), pos.y(), pos.z());
+        PYBIND11_OVERLOAD_PURE(double, ScalarField, getValue, pos);
+    }
+
+    void getValues(const std::vector<Vec3>& positions, std::vector<double>& results) override
+    {
+        PythonEnvironment::gil acquire;
+
+        // Search if there is a python override,
+        pybind11::function override = pybind11::get_override(static_cast<const ScalarField*>(this),"getValues");
+        if(!override){
+            return ScalarField::getValues(positions, results);
+        }
+
+        // Be sure there is enough space to hold the results
+        results.resize(positions.size());
+
+        // as there is one override, we call it, passing the "pos" argument and storing the return of the
+        // value in the "o" variable.
+        auto o = override(vector_to_numpy(positions), vector_to_numpy(results));
+    }
+
+    Vec3 getGradient(Vec3& pos, int& domain) override
+    {
+        SOFA_UNUSED(domain);
+        PythonEnvironment::gil acquire;
+
+        PYBIND11_OVERLOAD(Vec3, ScalarField, getGradient, pos);
+    }
+
+    void getHessian(Vec3 &pos, Mat3x3& h) override
+    {
+        /// The implementation for the getHessian is a bit complex as we change de signature between
+        /// the c++ part of the code and python one.
+        // In python, the results is return by the function while in c++ it is part of the function.
+        PythonEnvironment::gil acquire;
+
+        // Search if there is a python override,
+        pybind11::function override = pybind11::get_override(static_cast<const ScalarField*>(this),"getHessian");
+        if(!override){
+            return ScalarField::getHessian(pos, h);
+        }
+        // as there is one override, we call it, passing the "pos" argument and storing the return of the
+        // value in the "o" variable.
+        auto o = override(pos);
+
+        // then we check that the function correctly returned a Mat3x3 object and copy its value
+        // in case there is no Mat3x3 returned values, rise an error
+        if(py::isinstance<Mat3x3>(o))
+            h = py::cast<Mat3x3>(o);
+        else
+            throw py::type_error("The function getHessian must return a Mat3x3");
+        return;
     }
 };
 
 void moduleAddScalarField(py::module &m) {
-    py::class_<ScalarField, BaseObject, ScalarField_Trampoline,
+    py::class_<ScalarField, ScalarField_Trampoline, BaseObject,
                py_shared_ptr<ScalarField>> f(m, "ScalarField", py::dynamic_attr(), "");
 
     f.def(py::init([](py::args &args, py::kwargs &kwargs) {
@@ -68,13 +184,43 @@ void moduleAddScalarField(py::module &m) {
                                         "named argument='" + py::cast<std::string>(value) + "' and as a"
                                                                                             "positional argument='" +
                                         py::cast<std::string>(args[0]) + "'.");
+                }else{
+                    py::cast<ScalarField*>(cc)->setName(py::cast<std::string>(value));
                 }
             }
         }
         return ff;
     }));
 
-    m.def("getValue", &ScalarField_Trampoline::getValue);
+    f.def("getValue", [](ScalarField* self, Vec3 pos){
+        int domain=-1;
+        // This shouldn't be self->ScalarField::getValue because it is a pure function
+        // so there is not ScalarField::getValue emitted.
+        return self->getValue(pos, domain);
+    });
+
+    f.def("getValues", &ScalarField::getValues);
+
+    f.def("getGradient", [](ScalarField* self, Vec3 pos){
+        int domain=-1;
+        return self->ScalarField::getGradient(pos, domain);
+    });
+
+    f.def("getHessian", [](ScalarField* self, Vec3 pos){
+        Mat3x3 result;
+        self->getHessian(pos, result);
+        return result;
+    });
+
+    f.def("test", [](ScalarField* self){
+        std::vector<double> outputs;
+        std::vector<Vec3> inputs(100);
+        for (int i = 0; i < 100; ++i) inputs[i] = {i * 0.1,0,0};
+        std::cout << "INPUTS " << inputs.size() << std::endl;
+        self->getValues(inputs, outputs);
+        std::cout << "OUTPUTS " << outputs.size() << std::endl;
+        return outputs;
+    });
 }
 
 }
