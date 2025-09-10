@@ -43,7 +43,7 @@ public:
         SOFA_UNUSED(domain);
         PythonEnvironment::gil acquire;
 
-        PYBIND11_OVERLOAD_PURE(double, ScalarField, getValue, pos.x(), pos.y(), pos.z());
+        PYBIND11_OVERLOAD_PURE(double, ScalarField, getValue, pos);
     }
 };
 
