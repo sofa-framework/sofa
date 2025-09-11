@@ -277,4 +277,132 @@ void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseObject * object)
     redraw();
 }
 
+void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
+{
+    assert(vparams && "call of drawSelection without a valid visual param is not allowed");
+
+    auto drawTool = vparams->drawTool();
+
+    if(currentSelection.empty())
+        return;
+
+    drawTool->setPolygonMode(0, false);
+    float screenHeight = vparams->viewport()[4];
+
+    for(auto current : currentSelection)
+    {
+        using sofa::type::Vec3;
+        using sofa::type::RGBAColor;
+        using sofa::defaulttype::RigidCoord;
+        using sofa::defaulttype::Rigid3Types;
+
+        ////////////////////// Render when the selection is a Node ///////////////////////////////
+        auto node = castTo<sofa::simulation::Node*>(current.get());
+        if(node)
+        {
+            if(m_showSelectedNodeBoundingBox)
+            {
+                auto box = node->f_bbox.getValue();
+                drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), 2.0);
+            }
+
+            // If it is a node then it is not a BaseObject, so we can continue.
+            continue;
+        }
+
+        ////////////////////// Render when the selection is a BaseObject //////////////////////////
+        auto object = castTo<sofa::core::objectmodel::BaseObject*>(current.get());
+        if(object)
+        {
+            sofa::type::BoundingBox box;
+            auto ownerNode = dynamic_cast<sofa::simulation::Node*>(object->getContext());
+            if(ownerNode)
+            {
+                box = ownerNode->f_bbox.getValue();
+            }
+
+            if(m_showSelectedObjectBoundingBox)
+            {
+                drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), 2.0);
+            }
+
+            std::vector<Vec3> positions;
+            auto position = object->findData("position");
+            if(position)
+            {
+                auto positionsData = dynamic_cast<Data<sofa::type::vector<Vec3>>*>(position);
+                if(positionsData)
+                {
+                    positions = positionsData->getValue();
+                    if(m_showSelectedObjectBoundingBox){
+                        drawTool->drawPoints(positions, 2.0, RGBAColor::yellow());
+                    }
+                }
+                else
+                {
+                    auto rigidPositions = dynamic_cast<Data<sofa::type::vector<RigidCoord<3, SReal>>>*>(position);
+                    if(rigidPositions)
+                    {
+                        for(auto frame : rigidPositions->getValue())
+                        {
+                            float targetScreenSize = 50.0;
+                            float distance = (currentCamera->getPosition() - Rigid3Types::getCPos(frame)).norm();
+                            SReal scale = distance * tan(currentCamera->getFieldOfView() / 2.0f) * targetScreenSize / screenHeight;
+                            drawTool->drawFrame(Rigid3Types::getCPos(frame), Rigid3Types::getCRot(frame), {scale, scale,scale});
+                            positions.push_back(Rigid3Types::getCPos(frame));
+                        }
+                    }
+                }
+            }
+
+            if(m_showSelectedObjectSurfaces && !positions.empty())
+            {
+                auto triangles = object->findData("triangles");
+                if(triangles)
+                {
+                    auto d_triangles = dynamic_cast<Data<sofa::type::vector<core::topology::Topology::Triangle>>*>(triangles);
+                    if(d_triangles)
+                    {
+                        std::vector<Vec3> tripoints;
+                        for(auto indices : d_triangles->getValue())
+                        {
+                            if(indices[0] < positions.size() &&
+                               indices[1] < positions.size() &&
+                               indices[2] < positions.size())
+                            {
+                                tripoints.push_back(positions[indices[0]]);
+                                tripoints.push_back(positions[indices[1]]);
+                                tripoints.push_back(positions[indices[1]]);
+                                tripoints.push_back(positions[indices[2]]);
+                                tripoints.push_back(positions[indices[2]]);
+                                tripoints.push_back(positions[indices[0]]);
+                            }
+                        }
+                        drawTool->drawLines(tripoints, 1.5, RGBAColor::fromFloat(1.0,1.0,1.0,0.7));
+                    }
+                }
+            }
+
+            if(!positions.empty() && m_showSelectedObjectIndices)
+            {
+                const float scale = (box.maxBBox() - box.minBBox()).norm() * m_visualScaling;
+                drawTool->draw3DText_Indices(positions, scale, RGBAColor::white());
+            }
+
+            continue;
+        }
+        msg_error("BaseViewer") << "Only node and object can be selected, if you see this line please report to sofa-developement team";
+    }
+}
+
+void BaseViewer::setCurrentSelection(const std::set<sofa::core::objectmodel::Base::SPtr>& selection)
+{
+    currentSelection = selection;
+}
+
+const std::set<core::objectmodel::Base::SPtr> &BaseViewer::getCurrentSelection() const
+{
+    return currentSelection;
+}
+
 } // namespace sofa::gui::common
