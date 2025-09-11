@@ -141,13 +141,15 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
 
         }
 
-        if (current_cp->allVerified && constraintsAreVerified)
+        if (current_cp->allVerified)
         {
-            convergence = true;
-            return;
+            if (constraintsAreVerified)
+            {
+                convergence = true;
+                break;
+            }
         }
-
-        if(error < tol && i > 0) // do not stop at the first iteration (that is used for initial guess computation)
+        else if(error < tol && i > 0) // do not stop at the first iteration (that is used for initial guess computation)
         {
             convergence = true;
             break;
