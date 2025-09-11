@@ -38,15 +38,15 @@ public:
     using Real = sofa::type::Vec3::value_type;
 
     constexpr BoundingBox()
-        : BoundingBox(neutral_bbox().bbox)
+        : BoundingBox(neutral_bbox().m_bbox)
     {}
 
     /// Define using the endpoints of the main diagonal
     constexpr BoundingBox(const sofa::type::Vec3& minBBox, const sofa::type::Vec3& maxBBox)
-        : bbox({minBBox, maxBBox}) {}
+        : m_bbox({minBBox, maxBBox}) {}
 
     constexpr explicit BoundingBox(const bbox_t& bbox)
-        : bbox(bbox)
+        : m_bbox(bbox)
     {}
 
     /// Define using xMin, xMax, yMin, yMax, zMin, zMax in this order
@@ -123,7 +123,7 @@ public:
 
 
 protected:
-    bbox_t bbox;
+    bbox_t m_bbox;
 };
 
 
@@ -208,7 +208,7 @@ public:
 
 
 protected:
-    bbox_t bbox;
+    bbox_t m_bbox;
 };
 
 
@@ -274,7 +274,7 @@ public:
 
 
 protected:
-    bbox_t bbox;
+    bbox_t m_bbox;
 };
 
 } // namespace sofa::type

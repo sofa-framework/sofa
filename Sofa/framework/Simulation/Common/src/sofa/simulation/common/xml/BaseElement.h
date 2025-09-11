@@ -179,8 +179,8 @@ public:
         BaseElement* parent;
         ChildList::iterator it;
         Node* current;
-        child_iterator(BaseElement* parent, ChildList::iterator it)
-            : parent(parent), it(it), current(nullptr)
+        child_iterator(BaseElement* eparent, ChildList::iterator cit)
+            : parent(eparent), it(cit), current(nullptr)
         {
             checkIt();
         }
