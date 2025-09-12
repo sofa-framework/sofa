@@ -27,6 +27,7 @@
 #include <sofa/gl/BasicShapes.h>
 #include <sofa/gl/BasicShapesGL.inl>
 #include <sofa/gl/Axis.h>
+#include <sofa/gl/Frame.h>
 #include <sofa/gl/Cylinder.h>
 #include <sofa/gl/template.h>
 #include <sofa/gl/glText.inl>
@@ -455,12 +456,12 @@ void DrawToolGL::drawTriangleFan(const std::vector<Vec3> &points,
 void DrawToolGL::drawFrame(const Vec3& position, const Quaternion &orientation, const Vec<3,float> &size)
 {
     setPolygonMode(0,false);
-    gl::Axis::draw(position, orientation, size, type::RGBAColor::red(), type::RGBAColor::green(), type::RGBAColor::blue());
+    gl::Frame::draw(position, orientation, size, type::RGBAColor::red(), type::RGBAColor::green(), type::RGBAColor::blue());
 }
 void DrawToolGL::drawFrame(const Vec3& position, const Quaternion &orientation, const Vec<3,float> &size, const type::RGBAColor &color)
 {
     setPolygonMode(0,false);
-    gl::Axis::draw(position, orientation, size, color, color, color);
+    gl::Frame::draw(position, orientation, size, color, color, color);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

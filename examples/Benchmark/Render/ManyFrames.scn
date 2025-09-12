@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01">
+    
+    <RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [Vertex2Frame] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.SceneUtility"/> <!-- Needed to use components [InfoComponent] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+
+    <DefaultAnimationLoop/>
+    <VisualStyle displayFlags="showBehaviorModels hideForceFields showCollisionModels hideVisual showInteractionForceFields" />
+
+    <Node name="grid_vec3" bbox="-10 -10 -10 10 10 10">
+        <RegularGridTopology name="grid" min="-10 -10 -10" max="10 10 10" n="10 10 10"/>
+        <MechanicalObject name="vec3container" />
+        <Node name="grid_rigid">
+            <Vertex2Frame name="vertex2frame" template="Rigid3" src="@../grid" useNormals="false" />
+            <MechanicalObject name="dofs" template="Rigid3" position="@vertex2frame.frames" />
+            <UniformMass totalMass="0.1" />
+        </Node>
+    </Node>
+
+</Node>
