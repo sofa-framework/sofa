@@ -128,7 +128,7 @@ protected:
 
 
 template <typename TReal>
-class TBoundingBox : public BoundingBox
+class SOFA_ATTRIBUTE_DEPRECATED__TBOUNDINGBOX() TBoundingBox : public BoundingBox
 {
 public:
     TBoundingBox(const TReal* minBBoxPtr, const TReal* maxBBoxPtr)
