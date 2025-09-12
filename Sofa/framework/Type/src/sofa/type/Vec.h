@@ -161,6 +161,7 @@ public:
     }
 
     template<typename real2>
+    SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_DIFFERENT_VEC()
     constexpr Vec(const Vec<N, real2>& p) noexcept
     {
         for(Size i=0; i<N; i++)
@@ -169,6 +170,7 @@ public:
 
     /// Constructor from an array of values.
     template<typename real2>
+    SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_POINTER()
     explicit constexpr Vec(const real2* p) noexcept
     {
         for(Size i=0; i<N; i++)
@@ -234,16 +236,20 @@ public:
 
     /// Assignment operator from an array of values.
     template<typename real2>
+    SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_POINTER()
     constexpr void operator=(const real2* p) noexcept
     {
+        //static_assert(false);
         for(Size i=0; i<N; i++)
             this->elems[i] = (ValueType)p[i];
     }
 
     /// Assignment from a vector with different dimensions.
     template<Size M, typename real2>
+    SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_DIFFERENT_VEC()
     constexpr void operator=(const Vec<M,real2>& v) noexcept
     {
+        //static_assert(false);
         for(Size i=0; i<(N>M?M:N); i++)
             this->elems[i] = (ValueType)v(i);
     }
@@ -796,6 +802,27 @@ constexpr bool operator<(const Vec<N, T>& v1, const Vec<N, T>& v2) noexcept
             return false;
     }
     return false;
+}
+
+template <sofa::Size InSize, typename InReal, sofa::Size OutSize, typename OutReal>
+requires (std::is_convertible_v<InReal, OutReal>)
+constexpr void toVecN(const sofa::type::Vec<InSize, InReal>& in, sofa::type::Vec<OutSize, OutReal>& out )
+{
+    std::copy(in.begin(), in.begin() + std::min(InSize, OutSize), out.begin());
+
+    if constexpr(OutSize > InSize)
+    {
+        std::fill_n(out.begin() + InSize, OutSize-InSize, 0);
+    }
+}
+
+template <sofa::Size InSize, typename InReal>
+requires (std::is_convertible_v<InReal, SReal>)
+constexpr auto toVec3(const sofa::type::Vec<InSize, InReal>& in) -> sofa::type::Vec<3, SReal>
+{
+    sofa::type::Vec<3, SReal> vec3(type::NOINIT);
+    toVecN(in, vec3);
+    return vec3;
 }
 
 } // namespace sofa::type

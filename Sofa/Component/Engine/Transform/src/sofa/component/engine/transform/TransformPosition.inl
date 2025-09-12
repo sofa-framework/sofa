@@ -455,7 +455,7 @@ void TransformPosition<DataTypes>::doUpdate()
         {
             Vec4 coord = affineMatrix.ref()*Vec4(in[i], 1);
             if ( fabs(coord[3]) > 1e-10)
-                out[i]=coord/coord[3];
+                out[i]=type::toVec3(coord/coord[3]);
         }
         break;
     }
