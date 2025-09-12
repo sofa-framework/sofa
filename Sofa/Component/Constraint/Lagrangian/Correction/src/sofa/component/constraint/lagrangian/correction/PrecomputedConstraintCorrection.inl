@@ -355,9 +355,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                     fact *= eulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
 
                     eulerSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
-
-                    if (linearSolver)
-                        linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
                 }
 
                 for (unsigned int v = 0; v < nbNodes; v++)
@@ -373,10 +370,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             force[f] = unitary_force;
             msg_info() << tmpStr.str();
         }        
-
-        // Do not recompute the matrix for the rest of the precomputation
-        if (linearSolver)
-            linearSolver->freezeSystemMatrix();
 
         saveCompliance(invName);
 

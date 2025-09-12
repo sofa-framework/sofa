@@ -107,6 +107,7 @@ public:
     void setSystemRHVector(core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver);
     void setSystemLHVector(core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver);
     void solveSystem(core::behavior::LinearSolver* linearSolver);
+    void solveSystem(core::behavior::LinearSolver* linearSolver, core::MultiVecDerivId v);
     void print( std::ostream& out, core::behavior::LinearSolver* linearSolver);
     /// @}
 

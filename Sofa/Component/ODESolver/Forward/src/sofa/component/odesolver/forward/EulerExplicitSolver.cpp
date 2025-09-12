@@ -337,9 +337,10 @@ void EulerExplicitSolver::assembleSystemMatrix(sofa::simulation::common::Mechani
 void EulerExplicitSolver::solveSystem(core::MultiVecDerivId solution, core::MultiVecDerivId rhs) const
 {
     SCOPED_TIMER("MBKSolve");
-    l_linearSolver->setSystemLHVector(solution);
-    l_linearSolver->setSystemRHVector(rhs);
+    l_linearSolver->getLinearSystem()->setSystemSolution(solution);
+    l_linearSolver->getLinearSystem()->setRHS(rhs);
     l_linearSolver->solveSystem();
+    l_linearSolver->getLinearSystem()->dispatchSystemSolution(solution);
 }
 
 } // namespace sofa::component::odesolver::forward
