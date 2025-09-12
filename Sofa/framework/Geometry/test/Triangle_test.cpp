@@ -134,10 +134,12 @@ TYPED_TEST(Geometry3DTriangle_test, normal)
 
 TYPED_TEST(GeometryVec2DTriangle_test, isPointInTriangle)
 {
+    using Scalar = typename TypeParam::value_type;
+
     const TypeParam a{ 0., 0. };
     const TypeParam b{ 2., 0. };
     const TypeParam c{ 2., 2. };
-    sofa::type::Vec3 bary;
+    sofa::type::Vec<3, Scalar> bary;
 
     //// point inside
     TypeParam p0{ 1.5, 0.5 };
@@ -203,11 +205,13 @@ TYPED_TEST(GeometryVec2DTriangle_test, isPointInTriangle)
 
 TYPED_TEST(GeometryVec3DTriangle_test, isPointInTriangle)
 {
+    using Scalar = typename TypeParam::value_type;
+
     const TypeParam a{ 0., 0., 0. };
     const TypeParam b{ 2., 0., 2. };
     const TypeParam c{ 0., 2., 0. };
-    
-    sofa::type::Vec3 bary;
+
+    sofa::type::Vec<3, Scalar> bary;
 
     // point inside
     TypeParam p0{ 0.5, 0.5, 0.5 };
