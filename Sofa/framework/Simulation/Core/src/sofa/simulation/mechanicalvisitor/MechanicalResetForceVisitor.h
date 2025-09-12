@@ -35,9 +35,9 @@ public:
     sofa::core::MultiVecDerivId res;
     bool onlyMapped;
 
-    MechanicalResetForceVisitor(const sofa::core::ExecParams* mparams,
-                                sofa::core::MultiVecDerivId res, bool onlyMapped = false )
-            : BaseMechanicalVisitor(mparams) , res(res), onlyMapped(onlyMapped)
+    MechanicalResetForceVisitor(const sofa::core::ExecParams* mechaparams,
+                                sofa::core::MultiVecDerivId resvecid, bool bOnlyMapped = false )
+            : BaseMechanicalVisitor(mechaparams) , res(resvecid), onlyMapped(bOnlyMapped)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

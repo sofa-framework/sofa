@@ -181,8 +181,8 @@ public:
     typedef ObjectPtr Fn(RealObject* obj, Argument arg);
     Fn* constructor;
 
-    CreatorFn(Key key, Fn* constructor, bool multi=false)
-        : Key(key), constructor(constructor)
+    CreatorFn(Key key, Fn* ctor, bool multi=false)
+        : Key(key), constructor(ctor)
     {
         Factory::getInstance()->registerCreator(key, this, multi);
     }

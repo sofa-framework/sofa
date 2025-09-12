@@ -36,8 +36,8 @@ public:
     bool interactionForceField;
     bool propagate;
 
-    MechanicalVFreeVisitor( const sofa::core::ExecParams* params, MyMultiVecId v, bool interactionForceField=false, bool propagate=false)
-            : BaseMechanicalVisitor(params) , v(v), interactionForceField(interactionForceField), propagate(propagate)
+    MechanicalVFreeVisitor( const sofa::core::ExecParams* eparams, MyMultiVecId mvecid, bool bInteractionForceField=false, bool bPropagate=false)
+            : BaseMechanicalVisitor(eparams) , v(mvecid), interactionForceField(bInteractionForceField), propagate(bPropagate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

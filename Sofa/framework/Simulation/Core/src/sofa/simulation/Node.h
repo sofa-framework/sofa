@@ -152,7 +152,7 @@ public:
     SOFA_ABSTRACT_CLASS2(Node, BaseNode, Context);
     typedef sofa::core::visual::DisplayFlags DisplayFlags;
 
-    Node(const std::string& name="", Node* parent=nullptr);
+    Node(const std::string& nodename="", Node* parent=nullptr);
     virtual ~Node() override;
 
     /// @name High-level interface

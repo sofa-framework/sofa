@@ -34,8 +34,8 @@ public:
     sofa::core::ConstMultiVecId b;
     SReal* const m_total { nullptr };
 
-    MechanicalVDotVisitor(const sofa::core::ExecParams* params, sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b, SReal* t)
-            : BaseMechanicalVisitor(params) , a(a), b(b), m_total(t)
+    MechanicalVDotVisitor(const sofa::core::ExecParams* eparams, sofa::core::ConstMultiVecId avecid, sofa::core::ConstMultiVecId bvecid, SReal* t)
+            : BaseMechanicalVisitor(eparams) , a(avecid), b(bvecid), m_total(t)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

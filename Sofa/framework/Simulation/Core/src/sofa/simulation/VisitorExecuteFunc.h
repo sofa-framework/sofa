@@ -39,9 +39,9 @@ public:
 
     bool precomputedTraversalOrder;
 
-    VisitorExecuteFunc(core::objectmodel::BaseContext& ctx, bool precomputedTraversalOrder=false)
-        : ctx(ctx)
-        , precomputedTraversalOrder(precomputedTraversalOrder)
+    VisitorExecuteFunc(core::objectmodel::BaseContext& context, bool bPrecomputedTraversalOrder=false)
+        : ctx(context)
+        , precomputedTraversalOrder(bPrecomputedTraversalOrder)
     {}
 
     template< class Visitor >

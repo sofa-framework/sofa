@@ -33,9 +33,9 @@ namespace sofa::simulation
 class SOFA_SIMULATION_CORE_API VisualVisitor : public Visitor
 {
 public:
-    VisualVisitor(core::visual::VisualParams* params)
-        : Visitor(sofa::core::visual::visualparams::castToExecParams(params))
-        ,vparams(params)
+    VisualVisitor(core::visual::VisualParams* visuparams)
+        : Visitor(sofa::core::visual::visualparams::castToExecParams(visuparams))
+        ,vparams(visuparams)
     {}
 
     virtual void processVisualModel(simulation::Node* node, core::visual::VisualModel* vm) = 0;
@@ -62,8 +62,8 @@ class SOFA_SIMULATION_CORE_API VisualDrawVisitor : public VisualVisitor
 {
 public:
     bool hasShader;
-    VisualDrawVisitor(core::visual::VisualParams* params)
-    : VisualVisitor(params)
+    VisualDrawVisitor(core::visual::VisualParams* visuparams)
+    : VisualVisitor(visuparams)
     {};
     Result processNodeTopDown(simulation::Node* node) override;
     void processNodeBottomUp(simulation::Node* node) override;
@@ -80,8 +80,8 @@ public:
 class SOFA_SIMULATION_CORE_API VisualUpdateVisitor : public VisualVisitor
 {
 public:
-    VisualUpdateVisitor(core::visual::VisualParams* params)
-        : VisualVisitor(params)
+    VisualUpdateVisitor(core::visual::VisualParams* visuparams)
+        : VisualVisitor(visuparams)
     {}
 
     virtual void processVisualModel(simulation::Node*, core::visual::VisualModel* vm) override;
@@ -95,8 +95,8 @@ public:
 class SOFA_SIMULATION_CORE_API VisualInitVisitor : public VisualVisitor
 {
 public:
-    VisualInitVisitor(core::visual::VisualParams* params)
-        : VisualVisitor(params)
+    VisualInitVisitor(core::visual::VisualParams* visuparams)
+        : VisualVisitor(visuparams)
     {}
     
     virtual void processVisualModel(simulation::Node*, core::visual::VisualModel* vm) override;
@@ -111,7 +111,7 @@ class SOFA_SIMULATION_CORE_API VisualComputeBBoxVisitor : public Visitor
 public:
     SReal minBBox[3];
     SReal maxBBox[3];
-    VisualComputeBBoxVisitor(const core::ExecParams* params);
+    VisualComputeBBoxVisitor(const core::ExecParams* eparams);
 
     virtual void processBehaviorModel(simulation::Node*, core::BehaviorModel* vm);
     virtual void processMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* vm);
@@ -125,7 +125,7 @@ public:
 class SOFA_SIMULATION_CORE_API VisualClearVisitor : public VisualVisitor
 {
 public:
-    VisualClearVisitor(core::visual::VisualParams* params) : VisualVisitor(params)
+    VisualClearVisitor(core::visual::VisualParams* visuparams) : VisualVisitor(visuparams)
     {}
 
     void processVisualModel(simulation::Node*, core::visual::VisualModel* vm) override
