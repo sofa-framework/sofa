@@ -24,7 +24,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver resolutionMethod="false" tolerance="1e-3" maxIt="200" printLog="0" multithreading="true"/>
+    <ProjectedGaussSeidelConstraintSolver tolerance="1e-3" maxIt="200" printLog="0" multithreading="true"/>
     <CollisionPipeline verbose="0" depth="10" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
