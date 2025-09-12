@@ -20,7 +20,7 @@
     
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <FreeMotionAnimationLoop />
-	<GenericConstraintSolver maxIterations="1000" tolerance="0.001"/>
+	<ProjectedGaussSeidelConstraintSolver maxIterations="1000" tolerance="0.001"/>
     <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
