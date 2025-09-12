@@ -50,7 +50,7 @@ void SceneCheckEmptyNodeName::doCheckOn(sofa::simulation::Node* node)
 
 void SceneCheckEmptyNodeName::doPrintSummary()
 {
-    msg_warning_when(m_nbNodesWithEmptyName > 0, getName()) << "Nodes with empty name are found in"
+    msg_error_when(m_nbNodesWithEmptyName > 0, getName()) << "Nodes with empty name are found in"
         " the scene. This can lead to undefined behaviors. It is recommended to give a name to all Nodes.";
 }
 
