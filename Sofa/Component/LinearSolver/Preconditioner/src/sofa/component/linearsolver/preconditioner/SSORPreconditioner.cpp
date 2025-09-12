@@ -111,7 +111,7 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3
                 for (Index i1=0; i1<static_cast<Index>(BlocSize); ++i1)
                 {
                     const Index i = i0+i1;
-                    temp[j1] += z[i] * b[j1][i1];
+                    temp[j1] += z[i] * b(j1,i1);
                 }
             }
         }
@@ -124,7 +124,7 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3
                 for (Index i1=j1+1; i1<static_cast<Index>(BlocSize); ++i1)
                 {
                     const Index i = j0+i1;
-                    temp[j1]+= z[i] * b[j1][i1];
+                    temp[j1]+= z[i] * b(j1,i1);
                 }
                 z[j] = (r[j] - temp[j1]) * w * data->inv_diag[j];
             }
@@ -148,7 +148,7 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3
                 for (Index i1=0; i1<static_cast<Index>(BlocSize); ++i1)
                 {
                     const Index i = i0+i1;
-                    temp[j1] += z[i] * b[j1][i1];
+                    temp[j1] += z[i] * b(j1,i1);
                 }
             }
         }
@@ -161,7 +161,7 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3
                 for (Index i1=0; i1<j1; ++i1)
                 {
                     const Index i = j0+i1;
-                    temp[j1] += z[i] * b[j1][i1];
+                    temp[j1] += z[i] * b(j1,i1);
                 }
                 // we can reuse z because all values that we read are updated
                 z[j] -= temp[j1] * w * data->inv_diag[j];

@@ -140,17 +140,17 @@ template<class TReal>
 auto Transform<TReal>::getRotationMatrix() const -> Transform<TReal>::Mat3x3
 {
     Mat3x3 m;
-    m[0][0] = (1.0f - 2.0f * (orientation_[1] * orientation_[1] + orientation_[2] * orientation_[2]));
-    m[0][1] = (2.0f * (orientation_[0] * orientation_[1] - orientation_[2] * orientation_[3]));
-    m[0][2] = (2.0f * (orientation_[2] * orientation_[0] + orientation_[1] * orientation_[3]));
+    m(0,0) = (1.0f - 2.0f * (orientation_[1] * orientation_[1] + orientation_[2] * orientation_[2]));
+    m(0,1) = (2.0f * (orientation_[0] * orientation_[1] - orientation_[2] * orientation_[3]));
+    m(0,2) = (2.0f * (orientation_[2] * orientation_[0] + orientation_[1] * orientation_[3]));
 
-    m[1][0] = (2.0f * (orientation_[0] * orientation_[1] + orientation_[2] * orientation_[3]));
-    m[1][1] = (1.0f - 2.0f * (orientation_[2] * orientation_[2] + orientation_[0] * orientation_[0]));
-    m[1][2] = (2.0f * (orientation_[1] * orientation_[2] - orientation_[0] * orientation_[3]));
+    m(1,0) = (2.0f * (orientation_[0] * orientation_[1] + orientation_[2] * orientation_[3]));
+    m(1,1) = (1.0f - 2.0f * (orientation_[2] * orientation_[2] + orientation_[0] * orientation_[0]));
+    m(1,2) = (2.0f * (orientation_[1] * orientation_[2] - orientation_[0] * orientation_[3]));
 
-    m[2][0] = (2.0f * (orientation_[2] * orientation_[0] - orientation_[1] * orientation_[3]));
-    m[2][1] = (2.0f * (orientation_[1] * orientation_[2] + orientation_[0] * orientation_[3]));
-    m[2][2] = (1.0f - 2.0f * (orientation_[1] * orientation_[1] + orientation_[0] * orientation_[0]));
+    m(2,0) = (2.0f * (orientation_[2] * orientation_[0] - orientation_[1] * orientation_[3]));
+    m(2,1) = (2.0f * (orientation_[1] * orientation_[2] + orientation_[0] * orientation_[3]));
+    m(2,2) = (1.0f - 2.0f * (orientation_[1] * orientation_[1] + orientation_[0] * orientation_[0]));
     return m;
 }
 
@@ -163,9 +163,9 @@ auto Transform<TReal>::getAdjointMatrix() const -> Transform<TReal>::Mat6x6
     Rot = this->getRotationMatrix();
     // correspond au produit vectoriel v^origin
     Mat3x3 Origin;
-    Origin[0][0]=(Real)0.0;         Origin[0][1]=origin_[2];    Origin[0][2]=-origin_[1];
-    Origin[1][0]=-origin_[2];       Origin[1][1]=(Real)0.0;     Origin[1][2]=origin_[0];
-    Origin[2][0]=origin_[1];        Origin[2][1]=-origin_[0];   Origin[2][2]=(Real)0.0;
+    Origin(0,0)=(Real)0.0;         Origin(0,1)=origin_[2];    Origin(0,2)=-origin_[1];
+    Origin(1,0)=-origin_[2];       Origin(1,1)=(Real)0.0;     Origin(1,2)=origin_[0];
+    Origin(2,0)=origin_[1];        Origin(2,1)=-origin_[0];   Origin(2,2)=(Real)0.0;
 
     Mat3x3 R_Origin = Rot*Origin;
 
@@ -173,10 +173,10 @@ auto Transform<TReal>::getAdjointMatrix() const -> Transform<TReal>::Mat6x6
     {
         for(int j=0; j<3; j++)
         {
-            Adj[i][j]     = Rot[i][j];
-            Adj[i+3][j+3] = Rot[i][j];
-            Adj[i][j+3] =   R_Origin[i][j];
-            Adj[i+3][j] = 0.0;
+            Adj(i,j)     = Rot(i,j);
+            Adj(i+3,j+3) = Rot(i,j);
+            Adj(i,j+3) =   R_Origin(i,j);
+            Adj(i+3,j) = 0.0;
         }
     }
 

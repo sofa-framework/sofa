@@ -70,9 +70,9 @@ bool MeshMinProximityIntersection::testIntersection(collision::geometry::Triangl
     const type::Vec3 x03 = e2.p1()-e1.center();
     type::Matrix2 A;
     type::Vec2 b;
-    A[0][0] = x13*x13;
-    A[1][1] = x23*x23;
-    A[0][1] = A[1][0] = x13*x23;
+    A(0,0) = x13*x13;
+    A(1,1) = x23*x23;
+    A(0,1) = A(1,0) = x13*x23;
     b[0] = x13*x03;
     b[1] = x23*x03;
     const SReal det = type::determinant(A);
@@ -82,8 +82,8 @@ bool MeshMinProximityIntersection::testIntersection(collision::geometry::Triangl
 
     //if (det < -0.000001 || det > 0.000001)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+        alpha = (b[0]*A(1,1) - b[1]*A(0,1))/det;
+        beta  = (b[1]*A(0,0) - b[0]*A(1,0))/det;
         if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)
@@ -113,9 +113,9 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Trian
     const type::Vec3 x03 = e2.p1()-e1.center();
     type::Matrix2 A;
     type::Vec2 b;
-    A[0][0] = x13*x13;
-    A[1][1] = x23*x23;
-    A[0][1] = A[1][0] = x13*x23;
+    A(0,0) = x13*x13;
+    A(1,1) = x23*x23;
+    A(0,1) = A(1,0) = x13*x23;
     b[0] = x13*x03;
     b[1] = x23*x03;
     const SReal det = type::determinant(A);
@@ -125,8 +125,8 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Trian
 
     //if (det < -0.000001 || det > 0.000001)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+        alpha = (b[0]*A(1,1) - b[1]*A(0,1))/det;
+        beta  = (b[1]*A(0,0) - b[0]*A(1,0))/det;
         if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)

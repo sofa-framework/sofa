@@ -91,9 +91,9 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
             {
                 for(int j=0; j<8*3; ++j)
                 {
-                    _lumpedMasses[ (*it)[w] ][0] += mass[w*3  ][j];
-                    _lumpedMasses[ (*it)[w] ][1] += mass[w*3+1][j];
-                    _lumpedMasses[ (*it)[w] ][2] += mass[w*3+2][j];
+                    _lumpedMasses[ (*it)[w] ][0] += mass(w*3  ,j);
+                    _lumpedMasses[ (*it)[w] ][1] += mass(w*3+1,j);
+                    _lumpedMasses[ (*it)[w] ][2] += mass(w*3+2,j);
                 }
             }
         }
@@ -141,28 +141,28 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass 
 
     for(int i=0; i<8; ++i)
     {
-        Real mass = vol * integrateMass(this->_coef[i][0], this->_coef[i][1],this->_coef[i][2], 2.0f/l[0], 2.0f/l[1], 2.0f/l[2]);
+        Real mass = vol * integrateMass(this->_coef(i,0), this->_coef(i,1),this->_coef(i,2), 2.0f/l[0], 2.0f/l[1], 2.0f/l[2]);
 
-        Mass[i*3][i*3] += mass;
-        Mass[i*3+1][i*3+1] += mass;
-        Mass[i*3+2][i*3+2] += mass;
+        Mass(i*3,i*3) += mass;
+        Mass(i*3+1,i*3+1) += mass;
+        Mass(i*3+2,i*3+2) += mass;
 
 
 
         for(int j=i+1; j<8; ++j)
         {
-            Real mass = vol * integrateMass(this->_coef[i][0], this->_coef[i][1],this->_coef[i][2], 2.0f/l[0], 2.0f/l[1], 2.0f/l[2]);
+            Real mass = vol * integrateMass(this->_coef(i,0), this->_coef(i,1),this->_coef(i,2), 2.0f/l[0], 2.0f/l[1], 2.0f/l[2]);
 
-            Mass[i*3][j*3] += mass;
-            Mass[i*3+1][j*3+1] += mass;
-            Mass[i*3+2][j*3+2] += mass;
+            Mass(i*3,j*3) += mass;
+            Mass(i*3+1,j*3+1) += mass;
+            Mass(i*3+2,j*3+2) += mass;
         }
     }
 
     for(int i=0; i<24; ++i)
         for(int j=i+1; j<24; ++j)
         {
-            Mass[j][i] = Mass[i][j];
+            Mass(j,i) = Mass(i,j);
         }
 
     Mass *= (Real)stiffnessFactor;
@@ -244,12 +244,12 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(sofa::linearalgebra
             {
                 node2 = (*it)[n2];
 
-                Mat33 tmp = Mat33(Coord(Me[3*n1+0][3*n2+0],Me[3*n1+0][3*n2+1],Me[3*n1+0][3*n2+2]),
-                        Coord(Me[3*n1+1][3*n2+0],Me[3*n1+1][3*n2+1],Me[3*n1+1][3*n2+2]),
-                        Coord(Me[3*n1+2][3*n2+0],Me[3*n1+2][3*n2+1],Me[3*n1+2][3*n2+2]));
+                Mat33 tmp = Mat33(Coord(Me(3*n1+0,3*n2+0),Me(3*n1+0,3*n2+1),Me(3*n1+0,3*n2+2)),
+                        Coord(Me(3*n1+1,3*n2+0),Me(3*n1+1,3*n2+1),Me(3*n1+1,3*n2+2)),
+                        Coord(Me(3*n1+2,3*n2+0),Me(3*n1+2,3*n2+1),Me(3*n1+2,3*n2+2)));
                 for(i=0; i<3; i++)
                     for (j=0; j<3; j++)
-                        mat->add(offset+3*node1+i, offset+3*node2+j, tmp[i][j]*mFact);
+                        mat->add(offset+3*node1+i, offset+3*node2+j, tmp(i,j)*mFact);
             }
         }
     }
@@ -279,9 +279,9 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::buildMassMatrix(sofa::core::beha
             {
                 const int node2 = (*it)[n2];
 
-                const Mat33 tmp = Mat33(Coord(Me[3*n1+0][3*n2+0],Me[3*n1+0][3*n2+1],Me[3*n1+0][3*n2+2]),
-                        Coord(Me[3*n1+1][3*n2+0],Me[3*n1+1][3*n2+1],Me[3*n1+1][3*n2+2]),
-                        Coord(Me[3*n1+2][3*n2+0],Me[3*n1+2][3*n2+1],Me[3*n1+2][3*n2+2]));
+                const Mat33 tmp = Mat33(Coord(Me(3*n1+0,3*n2+0),Me(3*n1+0,3*n2+1),Me(3*n1+0,3*n2+2)),
+                        Coord(Me(3*n1+1,3*n2+0),Me(3*n1+1,3*n2+1),Me(3*n1+1,3*n2+2)),
+                        Coord(Me(3*n1+2,3*n2+0),Me(3*n1+2,3*n2+1),Me(3*n1+2,3*n2+2)));
                 matrices->add(3 * node1, 3 * node2, tmp);
             }
         }

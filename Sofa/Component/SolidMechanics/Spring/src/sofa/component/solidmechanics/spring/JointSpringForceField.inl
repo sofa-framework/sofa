@@ -204,30 +204,30 @@ void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*
     {
         Mat M;
         Mp1p2.writeRotationMatrix(M);
-        Real crossnorm=sqrt(M[1][0]*M[1][0]+M[2][0]*M[2][0]);
-        Real thet=atan2(crossnorm,M[0][0]);
+        Real crossnorm=sqrt(M(1,0)*M(1,0)+M(2,0)*M(2,0));
+        Real thet=atan2(crossnorm,M(0,0));
         fR0[0]=spring.torsion[0]*spring.KR[0]; // soft constraint
-        fR0[1]=-M[2][0]*thet*spring.KR[1];
-        fR0[2]=M[1][0]*thet*spring.KR[2];
+        fR0[1]=-M(2,0)*thet*spring.KR[1];
+        fR0[2]=M(1,0)*thet*spring.KR[2];
     }
     else if(!spring.freeMovements[3] && spring.freeMovements[4] && !spring.freeMovements[5] && spring.torsion[1]>spring.limitAngles[2] && spring.torsion[1]<spring.limitAngles[3]) // pivot /y
     {
         Mat M;
         Mp1p2.writeRotationMatrix(M);
-        Real crossnorm=sqrt(M[0][1]*M[0][1]+M[2][1]*M[2][1]);
-        Real thet=atan2(crossnorm,M[1][1]);
-        fR0[0]=M[2][1]*thet*spring.KR[0];
+        Real crossnorm=sqrt(M(0,1)*M(0,1)+M(2,1)*M(2,1));
+        Real thet=atan2(crossnorm,M(1,1));
+        fR0[0]=M(2,1)*thet*spring.KR[0];
         fR0[1]=spring.torsion[1]*spring.KR[1]; // soft constraint
-        fR0[2]=-M[0][1]*thet*spring.KR[2];
+        fR0[2]=-M(0,1)*thet*spring.KR[2];
     }
     else if(!spring.freeMovements[3] && !spring.freeMovements[4] && spring.freeMovements[5] && spring.torsion[2]>spring.limitAngles[4] && spring.torsion[2]<spring.limitAngles[5]) // pivot /z
     {
         Mat M;
         Mp1p2.writeRotationMatrix(M);
-        Real crossnorm=sqrt(M[1][2]*M[1][2]+M[0][2]*M[0][2]);
-        Real thet=atan2(crossnorm,M[2][2]);
-        fR0[0]=-M[1][2]*thet*spring.KR[0];
-        fR0[1]=M[0][2]*thet*spring.KR[1];
+        Real crossnorm=sqrt(M(1,2)*M(1,2)+M(0,2)*M(0,2));
+        Real thet=atan2(crossnorm,M(2,2));
+        fR0[0]=-M(1,2)*thet*spring.KR[0];
+        fR0[1]=M(0,2)*thet*spring.KR[1];
         fR0[2]=spring.torsion[2]*spring.KR[2]; // soft constraint
     }
     else // general case

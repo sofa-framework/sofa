@@ -27,13 +27,13 @@ namespace sofa::core
 void MatrixAccumulatorInterface::add(sofa::SignedIndex row, sofa::SignedIndex col,
     const sofa::type::Mat<1, 1, float>& value)
 {
-    add(row, col, value[0][0]);
+    add(row, col, value(0,0));
 }
 
 void MatrixAccumulatorInterface::add(sofa::SignedIndex row, sofa::SignedIndex col,
     const sofa::type::Mat<1, 1, double>& value)
 {
-    add(row, col, value[0][0]);
+    add(row, col, value(0,0));
 }
 
 void MatrixAccumulatorInterface::add(sofa::SignedIndex row, sofa::SignedIndex col,
