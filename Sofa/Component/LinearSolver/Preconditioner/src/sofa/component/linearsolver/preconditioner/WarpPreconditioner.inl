@@ -84,15 +84,15 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit()
     if (l_linearSolver.get() == nullptr)
     {
         msg_error() << "No LinearSolver component found at path: " << l_linearSolver.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
     else
     {
-        if (l_linearSolver.get()->getTemplateName() == "GraphScattered")
+        if (l_linearSolver->getTemplateName() == "GraphScattered")
         {
-            msg_error() << "Can not use the solver " << l_linearSolver.get()->getName() << " because it is templated on GraphScatteredType";
-            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            msg_error() << "Cannot use the solver " << l_linearSolver->getName() << " because it is templated on GraphScatteredType";
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
         else
