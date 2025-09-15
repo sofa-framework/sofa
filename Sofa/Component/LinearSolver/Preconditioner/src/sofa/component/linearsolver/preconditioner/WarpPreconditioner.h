@@ -61,7 +61,7 @@ protected:
     WarpPreconditioner();
 
 public:
-    ~WarpPreconditioner();
+    ~WarpPreconditioner() override;
 
     void init() override;
     void bwdInit() override;
