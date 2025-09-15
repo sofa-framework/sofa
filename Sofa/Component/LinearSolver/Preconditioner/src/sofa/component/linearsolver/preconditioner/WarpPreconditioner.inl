@@ -136,14 +136,8 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::invert(Matrix& /*Rcur*/
 template <class TMatrix, class TVector, class ThreadManager>
 void WarpPreconditioner<TMatrix, TVector, ThreadManager>::checkLinearSystem()
 {
-    if (!this->l_linearSystem)
-    {
-        auto* matrixLinearSystem = this->getContext()->template get<RotationMatrixSystem<Matrix, Vector> >();
-        if (!matrixLinearSystem)
-        {
-            this->template createDefaultLinearSystem<RotationMatrixSystem<Matrix, Vector> >();
-        }
-    }
+    // a RotationMatrixSystem component is created in the absence of a linear system
+    this->template doCheckLinearSystem<RotationMatrixSystem<Matrix, Vector>>();
 }
 
 
