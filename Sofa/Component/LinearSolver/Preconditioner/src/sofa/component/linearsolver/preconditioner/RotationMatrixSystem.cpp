@@ -33,7 +33,7 @@ template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API RotationMatrixSyst
 
 void registerRotationMatrixSystem(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Rotation matrix warpping the main linear system.")
+    factory->registerObjects(core::ObjectRegistrationData("Rotation matrix warping the main linear system.")
         .add<RotationMatrixSystem< RotationMatrix<SReal>, FullVector<SReal> > >());
 }
 
