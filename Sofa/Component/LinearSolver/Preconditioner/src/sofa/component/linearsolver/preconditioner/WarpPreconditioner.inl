@@ -44,32 +44,7 @@ namespace sofa::component::linearsolver::preconditioner
 template<class TMatrix, class TVector,class ThreadManager>
 WarpPreconditioner<TMatrix,TVector,ThreadManager >::WarpPreconditioner()
     : l_linearSolver(initLink("linearSolver", "Link towards the linear solver used to build the warp conditioner"))
-    , d_useRotationFinder(initData(&d_useRotationFinder, (unsigned)0, "useRotationFinder", "Which rotation Finder to use" ) )
-    , d_updateStep(initData(&d_updateStep, 1u, "update_step", "Number of steps before the next refresh of the system matrix in the main solver" ) )
-{
-    rotationWork[0] = nullptr;
-    rotationWork[1] = nullptr;
-
-    first = true;
-    indexwork = 0;
-}
-
-template<class TMatrix, class TVector,class ThreadManager>
-WarpPreconditioner<TMatrix,TVector,ThreadManager >::~WarpPreconditioner()
-{
-    if (rotationWork[0]) delete rotationWork[0];
-    if (rotationWork[1]) delete rotationWork[1];
-
-    rotationWork[0] = nullptr;
-    rotationWork[1] = nullptr;
-}
-
-template <class TMatrix, class TVector, class ThreadManager>
-void WarpPreconditioner<TMatrix, TVector, ThreadManager>::init()
-{
-    Inherit1::init();
-    first = true;
-}
+{}
 
 template<class TMatrix, class TVector,class ThreadManager>
 void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit()
@@ -101,33 +76,10 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit()
         }
     }
 
-    const sofa::core::objectmodel::BaseContext * c = this->getContext();
-    c->get<sofa::core::behavior::BaseRotationFinder >(&rotationFinders, sofa::core::objectmodel::BaseContext::Local);
-
-    std::stringstream tmpStr;
-    tmpStr << "Found " << rotationFinders.size() << " Rotation finders" << msgendl;
-    for (unsigned i=0; i<rotationFinders.size(); i++) {
-        tmpStr << i << " : " << rotationFinders[i]->getName() << msgendl;
+    if (!this->isComponentStateInvalid())
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
     }
-    msg_info() << tmpStr.str();
-
-    first = true;
-    indexwork = 0;
-    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-}
-
-template<class TMatrix, class TVector,class ThreadManager>
-typename  WarpPreconditioner<TMatrix, TVector, ThreadManager >::Index
-WarpPreconditioner<TMatrix,TVector,ThreadManager >::getSystemDimention(const sofa::core::MechanicalParams* mparams)
-{
-    simulation::common::MechanicalOperations mops(mparams, this->getContext());
-
-    // this->linearSystem.matrixAccessor.setGlobalMatrix(this->l_linearSystem->getSystemMatrix());
-    // this->linearSystem.matrixAccessor.clear();
-    // mops.getMatrixDimension(&(this->linearSystem.matrixAccessor));
-    // this->linearSystem.matrixAccessor.setupMatrices();
-    // return this->linearSystem.matrixAccessor.getGlobalDimension();
-    return 0;
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
@@ -145,10 +97,12 @@ void WarpPreconditioner<TMatrix, TVector, ThreadManager>::checkLinearSystem()
 template<class TMatrix, class TVector,class ThreadManager>
 void WarpPreconditioner<TMatrix,TVector,ThreadManager >::solve(Matrix& Rcur, Vector& solution, Vector& rh)
 {
-    Rcur.opMulTV(l_linearSolver->getLinearSystem()->getSystemRHSBaseVector(),&rh);
+    // rh = Rcur^T * rhs
+    Rcur.opMulTV(l_linearSolver->getLinearSystem()->getSystemRHSBaseVector(), &rh);
 
     l_linearSolver->solveSystem();
 
+    // solution = Rcur * solution
     Rcur.opMulV(&solution, l_linearSolver->getLinearSystem()->getSystemSolutionBaseVector());
 }
 
