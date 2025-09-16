@@ -22,6 +22,8 @@
 #pragma once
 #include <sofa/component/linearsolver/preconditioner/config.h>
 #include <sofa/component/linearsystem/TypedMatrixLinearSystem.h>
+#include <sofa/core/behavior/BaseRotationFinder.h>
+
 namespace sofa::component::linearsolver::preconditioner
 {
 
@@ -30,5 +32,34 @@ class RotationMatrixSystem : public linearsystem::TypedMatrixLinearSystem<TMatri
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(RotationMatrixSystem, TMatrix, TVector), SOFA_TEMPLATE2(linearsystem::TypedMatrixLinearSystem, TMatrix, TVector));
+
+    Data<unsigned int> d_assemblingRate;
+
+    SingleLink<MyType, sofa::core::behavior::BaseMatrixLinearSystem, BaseLink::FLAG_DUPLICATE> l_mainAssembledSystem;
+    SingleLink<MyType, sofa::core::behavior::BaseRotationFinder, BaseLink::FLAG_DUPLICATE> l_rotationFinder;
+
+    void init() override;
+    void reset() override;
+
+    void buildSystemMatrix(const core::MechanicalParams* mparams) override;
+
+
+
+protected:
+    RotationMatrixSystem();
+
+    unsigned int m_assemblyCounter {};
+
+    std::array<std::unique_ptr<TMatrix>, 2> rotationWork;
+    std::size_t indexwork {};
+
+    void reinitAssemblyCounter();
+    void updateMatrixWithRotations();
+    void ensureValidRotationWork();
 };
-}
+
+#if !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_ROTATIONMATRIXSYSTEM_CPP)
+extern template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API RotationMatrixSystem< RotationMatrix<SReal>, FullVector<SReal> >;
+#endif
+
+}  // namespace sofa::component::linearsolver::preconditioner

@@ -19,7 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/linearsolver/preconditioner/RotationMatrixSystem.h>
+#define SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_ROTATIONMATRIXSYSTEM_CPP
+#include <sofa/component/linearsolver/preconditioner/RotationMatrixSystem.inl>
 #include <sofa/linearalgebra/RotationMatrix.h>
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/core/ObjectFactory.h>
