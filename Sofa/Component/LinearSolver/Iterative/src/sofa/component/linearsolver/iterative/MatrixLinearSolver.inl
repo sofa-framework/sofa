@@ -127,7 +127,7 @@ void MatrixLinearSolver<Matrix, Vector, NoThreadManager>::doCheckLinearSystem()
             }
             else
             {
-                msg_warning() << "A linear system has been found, but not the expected type."
+                msg_warning() << "A linear system has been found, but not the expected type. "
                     << "Add a linear system with a compatible type to your scene to remove this warning.\n"
                     << "A component of type " << TLinearSystemType::GetClass()->className << " (template "
                     << TLinearSystemType::GetClass()->templateName << ") will be automatically added for you in Node "
