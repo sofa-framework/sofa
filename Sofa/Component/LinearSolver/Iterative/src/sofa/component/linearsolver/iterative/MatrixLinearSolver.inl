@@ -196,7 +196,7 @@ void MatrixLinearSolver<Matrix, Vector>::createDefaultLinearSystem()
 {
     if (auto system = sofa::core::objectmodel::New<TLinearSystemType>())
     {
-        this->addSlave(system);
+        this->getContext()->addObject(system);
         system->setName(
             this->getContext()->getNameHelper().resolveName(system->getClassName(), {}));
         system->f_printLog.setValue(this->f_printLog.getValue());
