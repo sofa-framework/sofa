@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/component/linearsolver/iterative/PCGLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/PreconditionedMatrixFreeSystem.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
@@ -30,18 +31,16 @@
 
 #include <cmath>
 
-#include "PreconditionedMatrixFreeSystem.h"
-
 namespace sofa::component::linearsolver::iterative
 {
 
 template<class TMatrix, class TVector>
 PCGLinearSolver<TMatrix,TVector>::PCGLinearSolver()
-    : d_maxIter(initData(&d_maxIter, (unsigned)25, "iterations", "Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop") )
+    : d_maxIter(initData(&d_maxIter, 25u, "iterations", "Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop") )
     , d_tolerance(initData(&d_tolerance, 1e-5, "tolerance", "Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)") )
     , d_use_precond(initData(&d_use_precond, true, "use_precond", "Use a preconditioner") )
     , l_preconditioner(initLink("preconditioner", "Link towards the linear solver used to precondition the conjugate gradient"))
-    , d_update_step(initData(&d_update_step, (unsigned)1, "update_step", "Number of steps before the next refresh of preconditioners") )
+    , d_update_step(initData(&d_update_step, 1u, "update_step", "Number of steps before the next refresh of preconditioners") )
     , d_graph(initData(&d_graph, "graph", "Graph of residuals at each iteration") )
     , next_refresh_step(0)
     , newton_iter(0)
