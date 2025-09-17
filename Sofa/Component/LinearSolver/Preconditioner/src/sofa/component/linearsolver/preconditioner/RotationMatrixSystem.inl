@@ -63,7 +63,7 @@ void RotationMatrixSystem<TMatrix, TVector>::init()
         const auto listSystems = this->getContext()->getObjects<sofa::core::behavior::BaseMatrixLinearSystem>(sofa::core::objectmodel::BaseContext::Local);
         for (const auto& system : listSystems)
         {
-            if (system->getTemplateName() != "GraphScattered")
+            if (system->getTemplateName() != "GraphScattered" && system != this)
             {
                 l_mainAssembledSystem.set(system);
                 break;
