@@ -96,8 +96,34 @@ void PCGLinearSolver<TMatrix, TVector>::init()
         }
     }
 
+    ensureRequiredLinearSystemType();
+    if (this->isComponentStateInvalid())
+        return;
+
     first = true;
-    this->d_componentState.setValue( sofa::core::objectmodel::ComponentState::Valid);
+
+    if (!this->isComponentStateInvalid())
+    {
+        this->d_componentState.setValue( sofa::core::objectmodel::ComponentState::Valid);
+    }
+}
+
+template <class TMatrix, class TVector>
+void PCGLinearSolver<TMatrix, TVector>::ensureRequiredLinearSystemType()
+{
+    if (this->l_linearSystem)
+    {
+        auto* preconditionedMatrix =
+            dynamic_cast<PreconditionedMatrixFreeSystem<TMatrix, TVector>*>(this->l_linearSystem.get());
+        if (!preconditionedMatrix)
+        {
+            msg_error() << "This linear solver is designed to work with a "
+                        << PreconditionedMatrixFreeSystem<TMatrix, TVector>::GetClass()->className
+                        << " linear system, but a " << this->l_linearSystem->getClassName()
+                        << " was found";
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        }
+    }
 }
 
 template <class TMatrix, class TVector>
