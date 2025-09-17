@@ -64,7 +64,7 @@ public:
 
     void invert(Matrix& M) override;
 
-    void solve(Matrix& M, Vector& solution, Vector& rh) override;
+    void solve(Matrix& M, Vector& solution, Vector& rhs) override;
 
     bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
 
