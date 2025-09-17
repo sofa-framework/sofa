@@ -50,12 +50,8 @@ protected:
 
     unsigned int m_assemblyCounter {};
 
-    std::array<std::unique_ptr<TMatrix>, 2> rotationWork;
-    std::size_t indexwork {};
-
     void reinitAssemblyCounter();
     void updateMatrixWithRotations();
-    void ensureValidRotationWork();
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_ROTATIONMATRIXSYSTEM_CPP)

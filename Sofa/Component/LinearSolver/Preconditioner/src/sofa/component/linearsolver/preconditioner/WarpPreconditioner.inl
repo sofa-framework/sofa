@@ -78,7 +78,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit()
 {
     if (l_linearSolver.empty())
     {
-        msg_info() << "Link \"linearSolver\" to the desired linear solver should be set to ensure right behavior." << msgendl
+        msg_info() << "Link \"" << l_linearSolver.getName() << "\" to the desired linear solver should be set to ensure right behavior." << msgendl
                    << "First LinearSolver found in current context will be used.";
         l_linearSolver.set( this->getContext()->template get<sofa::core::behavior::LinearSolver>(sofa::core::objectmodel::BaseContext::Local) );
     }
@@ -89,19 +89,16 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit()
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    else
+
+    if (l_linearSolver->getTemplateName() == "GraphScattered")
     {
-        if (l_linearSolver->getTemplateName() == "GraphScattered")
-        {
-            msg_error() << "Cannot use the solver " << l_linearSolver->getName() << " because it is templated on GraphScatteredType";
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-            return;
-        }
-        else
-        {
-            msg_info() << "LinearSolver path used: '" << l_linearSolver.getLinkedPath() << "'";
-        }
+        msg_error() << "Cannot use the solver " << l_linearSolver->getName()
+                    << " because it is templated on GraphScatteredType";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
+
+    msg_info() << "LinearSolver path used: '" << l_linearSolver.getLinkedPath() << "'";
 
     if (!this->isComponentStateInvalid())
     {
@@ -119,18 +116,26 @@ void WarpPreconditioner<TMatrix, TVector, ThreadManager>::checkLinearSystem()
     this->template doCheckLinearSystem<RotationMatrixSystem<Matrix, Vector>>();
 }
 
-
-/// Solve the system as constructed using the previous methods
 template<class TMatrix, class TVector,class ThreadManager>
-void WarpPreconditioner<TMatrix,TVector,ThreadManager >::solve(Matrix& Rcur, Vector& solution, Vector& rh)
+void WarpPreconditioner<TMatrix,TVector,ThreadManager >::solve(Matrix& M, Vector& solution, Vector& rhs)
 {
-    // rh = Rcur^T * rhs
-    Rcur.opMulTV(l_linearSolver->getLinearSystem()->getSystemRHSBaseVector(), &rh);
+    // The matrix A in l_linearSolver is rotated such as R * A * R^T
+    // The new linear system to solve is then R * A * R^T * x = b
+    // This is solved in 3 steps:
 
+    // Step 1:
+    //   R * A * R^T * x = b <=> A * R^T * x = R^T * b
+    //   R^T * b is computed:
+    M.opMulTV(l_linearSolver->getLinearSystem()->getSystemRHSBaseVector(), &rhs);
+
+    // Step 2:
+    //   Solve A * R^T * x = R^T * b using the linear solver. The solution stored in the linear
+    //   solver is then y = R^T * x
     l_linearSolver->solveSystem();
 
-    // solution = Rcur * solution
-    Rcur.opMulV(&solution, l_linearSolver->getLinearSystem()->getSystemSolutionBaseVector());
+    // Step 3:
+    //   y = R^T * x <=> x = R * y
+    M.opMulV(&solution, l_linearSolver->getLinearSystem()->getSystemSolutionBaseVector());
 }
 
 /// Solve the system as constructed using the previous methods

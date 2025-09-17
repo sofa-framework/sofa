@@ -106,7 +106,7 @@ template <class TMatrix, class TVector>
 void RotationMatrixSystem<TMatrix, TVector>::buildSystemMatrix(
     const core::MechanicalParams* mparams)
 {
-    bool isAssembled = false;
+    bool isMainSystemAssembled = false;
 
     if (l_mainAssembledSystem)
     {
@@ -114,12 +114,14 @@ void RotationMatrixSystem<TMatrix, TVector>::buildSystemMatrix(
         {
             l_mainAssembledSystem->buildSystemMatrix(mparams);
             m_assemblyCounter = 0;
-            isAssembled = true;
+            isMainSystemAssembled = true;
         }
     }
 
-    if (isAssembled)
+    if (isMainSystemAssembled)
     {
+        const auto matrixSize = l_mainAssembledSystem->getMatrixSize();
+        this->resizeSystem(matrixSize[0]);
         this->getSystemMatrix()->setIdentity();
     }
     else
@@ -139,26 +141,7 @@ void RotationMatrixSystem<TMatrix, TVector>::updateMatrixWithRotations()
 {
     if (l_rotationFinder)
     {
-        ensureValidRotationWork();
-        const auto matrixSize = l_mainAssembledSystem->getMatrixSize();
-        rotationWork[indexwork]->resize(matrixSize[0], matrixSize[1]);
-        l_rotationFinder->getRotations(rotationWork[indexwork].get());
-    }
-}
-
-template <class TMatrix, class TVector>
-void RotationMatrixSystem<TMatrix, TVector>::ensureValidRotationWork()
-{
-    if (indexwork < rotationWork.size())
-    {
-        if (auto& matrix = rotationWork[indexwork]; matrix == nullptr)
-        {
-            matrix = std::make_unique<TMatrix>();
-        }
-    }
-    else
-    {
-        msg_error() << "Wrong index";
+        l_rotationFinder->getRotations(this->getSystemBaseMatrix());
     }
 }
 
