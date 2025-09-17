@@ -44,9 +44,36 @@ namespace sofa::component::linearsolver::preconditioner
 template<class TMatrix, class TVector,class ThreadManager>
 WarpPreconditioner<TMatrix,TVector,ThreadManager >::WarpPreconditioner()
     : l_linearSolver(initLink("linearSolver", "Link towards the linear solver used to build the warp conditioner"))
-{}
+{
+}
 
-template<class TMatrix, class TVector,class ThreadManager>
+template <class TMatrix, class TVector, class ThreadManager>
+void WarpPreconditioner<TMatrix, TVector, ThreadManager>::init()
+{
+    Inherit1::init();
+
+    ensureRequiredLinearSystemType();
+}
+
+template <class TMatrix, class TVector, class ThreadManager>
+void WarpPreconditioner<TMatrix, TVector, ThreadManager>::ensureRequiredLinearSystemType()
+{
+    if (this->l_linearSystem)
+    {
+        auto* preconditionedMatrix =
+            dynamic_cast<RotationMatrixSystem<TMatrix, TVector>*>(this->l_linearSystem.get());
+        if (!preconditionedMatrix)
+        {
+            msg_error() << "This linear solver is designed to work with a "
+                        << RotationMatrixSystem<TMatrix, TVector>::GetClass()->className
+                        << " linear system, but a " << this->l_linearSystem->getClassName()
+                        << " was found";
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        }
+    }
+}
+
+template <class TMatrix, class TVector,class ThreadManager>
 void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit()
 {
     if (l_linearSolver.empty())
