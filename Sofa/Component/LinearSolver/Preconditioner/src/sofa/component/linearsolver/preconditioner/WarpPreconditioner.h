@@ -59,6 +59,7 @@ protected:
 
 public:
 
+    void init() override;
     void bwdInit() override;
 
     void invert(Matrix& M) override;
@@ -74,13 +75,13 @@ public:
 protected:
 
     void checkLinearSystem() override;
+    void ensureRequiredLinearSystemType();
 
 private :
 
     int updateSystemSize,currentSystemSize;
 
     unsigned nextRefreshStep {};
-
 
     JMatrixType j_local;
 };
