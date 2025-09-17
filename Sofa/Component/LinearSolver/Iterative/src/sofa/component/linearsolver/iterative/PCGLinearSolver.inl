@@ -84,7 +84,7 @@ void PCGLinearSolver<TMatrix, TVector>::init()
         {
             if (l_preconditioner->getTemplateName() == "GraphScattered")
             {
-                msg_error() << "Can not use the preconditioner " << l_preconditioner->getName()
+                msg_error() << "Cannot use the preconditioner " << l_preconditioner->getName()
                             << " because it is templated on GraphScatteredType";
                 this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
                 return;
