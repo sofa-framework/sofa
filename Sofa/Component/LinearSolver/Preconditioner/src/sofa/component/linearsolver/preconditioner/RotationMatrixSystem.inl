@@ -55,6 +55,39 @@ void RotationMatrixSystem<TMatrix, TVector>::init()
         }
     }
 
+    if (l_mainAssembledSystem.empty())
+    {
+        msg_info() << "Link \"" << l_mainAssembledSystem.getName() << "\" to the desired linear system should be set to ensure right behavior." << msgendl
+                   << "First assembled linear system found in current context will be used (if any).";
+
+        const auto listSystems = this->getContext()->getObjects<sofa::core::behavior::BaseMatrixLinearSystem>(sofa::core::objectmodel::BaseContext::Local);
+        for (const auto& system : listSystems)
+        {
+            if (system->getTemplateName() != "GraphScattered")
+            {
+                l_mainAssembledSystem.set(system);
+                break;
+            }
+        }
+    }
+
+    if (l_mainAssembledSystem.get() == nullptr)
+    {
+        msg_error() << "No linear system component found at path: " << l_mainAssembledSystem.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    if (l_mainAssembledSystem->getTemplateName() == "GraphScattered")
+    {
+        msg_error() << "Cannot use the solver " << l_mainAssembledSystem->getName()
+                    << " because it is templated on GraphScatteredType";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    msg_info() << "Linear system path used: '" << l_mainAssembledSystem->getPathName() << "'";
+
     reinitAssemblyCounter();
 
     if (!this->isComponentStateInvalid())
@@ -107,6 +140,8 @@ void RotationMatrixSystem<TMatrix, TVector>::updateMatrixWithRotations()
     if (l_rotationFinder)
     {
         ensureValidRotationWork();
+        const auto matrixSize = l_mainAssembledSystem->getMatrixSize();
+        rotationWork[indexwork]->resize(matrixSize[0], matrixSize[1]);
         l_rotationFinder->getRotations(rotationWork[indexwork].get());
     }
 }
@@ -116,7 +151,10 @@ void RotationMatrixSystem<TMatrix, TVector>::ensureValidRotationWork()
 {
     if (indexwork < rotationWork.size())
     {
-        rotationWork[indexwork] = std::make_unique<TMatrix>();
+        if (auto& matrix = rotationWork[indexwork]; matrix == nullptr)
+        {
+            matrix = std::make_unique<TMatrix>();
+        }
     }
     else
     {
