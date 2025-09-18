@@ -44,6 +44,8 @@ namespace sofa::component::linearsolver::preconditioner
 template<class TMatrix, class TVector,class ThreadManager>
 WarpPreconditioner<TMatrix,TVector,ThreadManager >::WarpPreconditioner()
     : l_linearSolver(initLink("linearSolver", "Link towards the linear solver used to build the warp conditioner"))
+    , d_useRotationFinder(this, "v25.12", "v26.06", "useRotationFinder", "This Data has been replaced with the Link 'rotationFinder' in RotationMatrixSystem")
+    , d_updateStep(this, "v25.12", "v26.06", "update_step", "Instead, use the Data 'assemblingRate' in the RotationMatrixSystem" )
 {
 }
 
