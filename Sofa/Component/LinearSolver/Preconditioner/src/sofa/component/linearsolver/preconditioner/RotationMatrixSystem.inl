@@ -40,7 +40,7 @@ void RotationMatrixSystem<TMatrix, TVector>::init()
 
     if (!l_rotationFinder)
     {
-        if (auto* rotationFinder = this->getContext()->get<sofa::core::behavior::BaseRotationFinder>())
+        if (auto* rotationFinder = this->getContext()->template get<sofa::core::behavior::BaseRotationFinder>())
         {
             l_rotationFinder.set(rotationFinder);
             msg_info() << "Rotation finder found: '" << l_rotationFinder->getPathName() << "'";
@@ -60,7 +60,7 @@ void RotationMatrixSystem<TMatrix, TVector>::init()
         msg_info() << "Link \"" << l_mainAssembledSystem.getName() << "\" to the desired linear system should be set to ensure right behavior." << msgendl
                    << "First assembled linear system found in current context will be used (if any).";
 
-        const auto listSystems = this->getContext()->getObjects<sofa::core::behavior::BaseMatrixLinearSystem>(sofa::core::objectmodel::BaseContext::Local);
+        const auto listSystems = this->getContext()->template getObjects<sofa::core::behavior::BaseMatrixLinearSystem>(sofa::core::objectmodel::BaseContext::Local);
         for (const auto& system : listSystems)
         {
             if (system->getTemplateName() != "GraphScattered" && system != this)
