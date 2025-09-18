@@ -53,6 +53,8 @@ public:
     using Index = typename TMatrix::Index;
 
     SingleLink<WarpPreconditioner, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used to build the warp conditioner
+    core::objectmodel::lifecycle::DeprecatedData d_useRotationFinder;
+    core::objectmodel::lifecycle::DeprecatedData d_updateStep;
 
 protected:
     WarpPreconditioner();

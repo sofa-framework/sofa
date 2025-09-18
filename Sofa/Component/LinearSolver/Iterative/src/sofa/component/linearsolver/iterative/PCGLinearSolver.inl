@@ -40,7 +40,7 @@ PCGLinearSolver<TMatrix,TVector>::PCGLinearSolver()
     , d_tolerance(initData(&d_tolerance, 1e-5, "tolerance", "Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)") )
     , d_use_precond(initData(&d_use_precond, true, "use_precond", "Use a preconditioner") )
     , l_preconditioner(initLink("preconditioner", "Link towards the linear solver used to precondition the conjugate gradient"))
-    , d_update_step(initData(&d_update_step, 1u, "update_step", "Number of steps before the next refresh of preconditioners") )
+    , d_update_step(this, "v25.12", "v26.06", "update_step", "Instead, use the Data 'assemblingRate' in the associated PreconditionedMatrixFreeSystem")
     , d_graph(initData(&d_graph, "graph", "Graph of residuals at each iteration") )
     , next_refresh_step(0)
     , newton_iter(0)
@@ -54,16 +54,6 @@ template <class TMatrix, class TVector>
 void PCGLinearSolver<TMatrix, TVector>::init()
 {
     Inherit1::init();
-
-    if (d_update_step.isSet())
-    {
-        if (auto* preconditionedMatrix = dynamic_cast<PreconditionedMatrixFreeSystem<TMatrix,TVector>*>(this->l_linearSystem.get()))
-        {
-            msg_deprecated() << "The Data '" << d_update_step.getName() << "' is deprecated. Instead use the Data '" << preconditionedMatrix->d_assemblingRate.getName() << "' in " << preconditionedMatrix->getPathName() << ".";
-            preconditionedMatrix->d_assemblingRate.setValue(d_update_step.getValue());
-            preconditionedMatrix->reinitAssemblyCounter();
-        }
-    }
 
     // Find linear solvers
     if (l_preconditioner.empty())
