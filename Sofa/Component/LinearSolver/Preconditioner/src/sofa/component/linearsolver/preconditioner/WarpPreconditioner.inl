@@ -119,7 +119,7 @@ void WarpPreconditioner<TMatrix, TVector, ThreadManager>::checkLinearSystem()
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
-void WarpPreconditioner<TMatrix,TVector,ThreadManager >::solve(Matrix& M, Vector& solution, Vector& rhs)
+void WarpPreconditioner<TMatrix,TVector,ThreadManager >::solve(Matrix& R, Vector& solution, Vector& rhs)
 {
     // The matrix A in l_linearSolver is rotated such as R * A * R^T
     // The new linear system to solve is then R * A * R^T * x = b
@@ -127,17 +127,17 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::solve(Matrix& M, Vector
 
     // Step 1:
     //   R * A * R^T * x = b <=> A * R^T * x = R^T * b
-    //   R^T * b is computed:
-    M.opMulTV(l_linearSolver->getLinearSystem()->getSystemRHSBaseVector(), &rhs);
+    //   R^T * b is computed in this step:
+    R.opMulTV(l_linearSolver->getLinearSystem()->getSystemRHSBaseVector(), &rhs);
 
     // Step 2:
-    //   Solve A * R^T * x = R^T * b using the linear solver. The solution stored in the linear
-    //   solver is then y = R^T * x
+    //   Let's define y = R^T * x, then the linear system is A * y = R^T * b.
+    //   This step solves A * y = R^T * b using the linear solver where y is the unknown.
     l_linearSolver->solveSystem();
 
     // Step 3:
-    //   y = R^T * x <=> x = R * y
-    M.opMulV(&solution, l_linearSolver->getLinearSystem()->getSystemSolutionBaseVector());
+    //   Since y = R^T * x, x is deduced: x = R * y
+    R.opMulV(&solution, l_linearSolver->getLinearSystem()->getSystemSolutionBaseVector());
 }
 
 /// Solve the system as constructed using the previous methods
