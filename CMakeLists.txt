@@ -28,18 +28,30 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type" FORCE)
 endif()
 
-# Output Directories definition
-set(ARCHIVE_OUTPUT_DIRECTORY lib)
-set(RUNTIME_OUTPUT_DIRECTORY bin)
-if(WIN32)
-    set(LIBRARY_OUTPUT_DIRECTORY ${RUNTIME_OUTPUT_DIRECTORY})
-else()
-    set(LIBRARY_OUTPUT_DIRECTORY ${ARCHIVE_OUTPUT_DIRECTORY})
-endif()
+
 ## Set the output directories globally
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
+if(NOT DEFINED CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+endif()
+
+if(NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+endif()
+
+string(REGEX REPLACE "^${CMAKE_BINARY_DIR}/" "" ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
+string(REGEX REPLACE "^${CMAKE_BINARY_DIR}/" "" RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
+
+if(NOT DEFINED CMAKE_LIBRARY_OUTPUT_DIRECTORY)
+    if(WIN32)
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    else()
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
+    endif()
+endif()
+
+string(REGEX REPLACE "^${CMAKE_BINARY_DIR}/" "" LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} )
+
+
 
 set(SOFA_APPLICATIONS_RELOCATABLE_PATH "applications" CACHE STRING "Relocatable path that will be used ot install applications")
 set(SOFA_PLUGINS_RELOCATABLE_PATH "plugins" CACHE STRING "Relocatable path that will be used ot install plugins")
@@ -88,7 +100,7 @@ message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 # Remove generated CMake files, this prevents CMake from finding packages that
 # were disabled (like, unchecked in cmake-gui) after being built once.
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/cmake)
-file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/lib/cmake)
+file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/cmake)
 # Remove generated SofaPython configuration files, to prevent SofaPython from
 # adding paths to disabled plugins.
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/etc/sofa/python.d)
@@ -104,7 +116,7 @@ install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/macdeployqt.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/windeployqt.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindTinyXML2.cmake"
-    DESTINATION lib/cmake/Modules
+    DESTINATION ${ARCHIVE_OUTPUT_DIRECTORY}/cmake/Modules
     COMPONENT headers
     )
 
@@ -120,15 +132,15 @@ if(UNIX)
 
     # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
     set(CMAKE_INSTALL_RPATH
-        "$ORIGIN/../lib"
-        "$$ORIGIN/../lib"
+        "$ORIGIN/../${ARCHIVE_OUTPUT_DIRECTORY}"
+        "$$ORIGIN/../${ARCHIVE_OUTPUT_DIRECTORY}"
         )
 
     if(APPLE)
         set(CMAKE_MACOSX_RPATH ON)
         list(APPEND CMAKE_INSTALL_RPATH
-            "@loader_path/../lib"
-            "@executable_path/../lib"
+            "@loader_path/../${ARCHIVE_OUTPUT_DIRECTORY}"
+            "@executable_path/../${ARCHIVE_OUTPUT_DIRECTORY}"
             "@loader_path/../../Frameworks"
             "@executable_path/../../Frameworks"
             )
