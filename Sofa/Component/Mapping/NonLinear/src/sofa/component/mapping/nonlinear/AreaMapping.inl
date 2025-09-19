@@ -55,7 +55,7 @@ auto AreaMapping<TIn, TOut>::computeSecondDerivativeArea(
     {
         for (unsigned int j = 0; j < 3; ++j)
         {
-            auto& entry = d2A[i][j];
+            auto& entry = d2A(i,j);
 
             const auto i1 = (i + 1) % 3;
             const auto j1 = (j + 1) % 3;
@@ -73,9 +73,9 @@ auto AreaMapping<TIn, TOut>::computeSecondDerivativeArea(
 
             entry = - outer_a + n2 * (dot_product * id - outer_b);
 
-            if (i != j) // diagonal blocks are skipped because skewSign[i][j] == 0
+            if (i != j) // diagonal blocks are skipped because skewSign(i,j) == 0
             {
-                const auto sign = skewSign[i][j];
+                const auto sign = skewSign(i,j);
                 entry += sign * n2 * type::crossProductMatrix(N);
             }
 
@@ -227,7 +227,7 @@ void AreaMapping<TIn, TOut>::matrixFreeApplyDJT(
                 {
                     parentForceAccessor[triangle[i]] +=
                         kFactor
-                        * d2Area_d2x[i][j]
+                        * d2Area_d2x(i,j)
                         * parentDisplacementAccessor[triangle[j]]
                         * childForceTri[0];
                 }
@@ -267,7 +267,7 @@ void AreaMapping<TIn, TOut>::doUpdateK(const core::MechanicalParams* mparams,
             {
                 for (unsigned int j = 0; j < 3; ++j)
                 {
-                    matrix.addBlock(triangle[i], triangle[j], d2Area_d2x[i][j] * childForceTri[0]);
+                    matrix.addBlock(triangle[i], triangle[j], d2Area_d2x(i,j) * childForceTri[0]);
                 }
             }
         }
@@ -309,7 +309,7 @@ void AreaMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
             {
                 for (unsigned int j = 0; j < 3; ++j)
                 {
-                    dJdx(triangle[i] * Nin, triangle[j] * Nin) += d2Area_d2x[i][j] * childForceTri[0];
+                    dJdx(triangle[i] * Nin, triangle[j] * Nin) += d2Area_d2x(i,j) * childForceTri[0];
                 }
             }
         }

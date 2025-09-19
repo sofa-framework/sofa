@@ -352,7 +352,7 @@ void TriangularFEMForceField<DataTypes>::computeElementStiffnessMatrix(type::Mat
             // copy the block in the expanded matrix
             for (unsigned k = 0; k < 2; k++)
                 for (unsigned l = 0; l < 2; l++)
-                    Ke[3 * i + k][3 * j + l] = JKJt[2 * i + k][2 * j + l];
+                    Ke(3 * i + k,3 * j + l) = JKJt(2 * i + k,2 * j + l);
         }
     }
 
@@ -361,8 +361,8 @@ void TriangularFEMForceField<DataTypes>::computeElementStiffnessMatrix(type::Mat
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j)
         {
-            RR[i][j] = RR[i + 3][j + 3] = RR[i + 6][j + 6] = Rot[i][j];
-            RRt[i][j] = RRt[i + 3][j + 3] = RRt[i + 6][j + 6] = Rot[j][i];
+            RR(i,j) = RR(i + 3,j + 3) = RR(i + 6,j + 6) = Rot(i,j);
+            RRt(i,j) = RRt(i + 3,j + 3) = RRt(i + 6,j + 6) = Rot(j,i);
         }
 
     S = RR * Ke;
@@ -471,8 +471,8 @@ void TriangularFEMForceField<DataTypes>::getRotation(Transformation& R, Index no
     Coord ex, ey, ez;
     for (int i = 0; i < 3; i++)
     {
-        ex[i] = R[0][i];
-        ey[i] = R[1][i];
+        ex[i] = R(0,i);
+        ey[i] = R(1,i);
     }
     ex.normalize();
     ey.normalize();
@@ -485,9 +485,9 @@ void TriangularFEMForceField<DataTypes>::getRotation(Transformation& R, Index no
 
     for (int i = 0; i < 3; i++)
     {
-        R[0][i] = ex[i];
-        R[1][i] = ey[i];
-        R[2][i] = ez[i];
+        R(0,i) = ex[i];
+        R(1,i) = ey[i];
+        R(2,i) = ez[i];
     }
     d_triangleInfo.endEdit();
 }
@@ -537,8 +537,8 @@ void TriangularFEMForceField<DataTypes>::getRotations()
         Coord ex, ey, ez;
         for (int i = 0; i < 3; i++)
         {
-            ex[i] = vinfo->rotation[0][i];
-            ey[i] = vinfo->rotation[1][i];
+            ex[i] = vinfo->rotation(0,i);
+            ey[i] = vinfo->rotation(1,i);
         }
         ex.normalize();
         ey.normalize();
@@ -551,9 +551,9 @@ void TriangularFEMForceField<DataTypes>::getRotations()
 
         for (int i = 0; i < 3; i++)
         {
-            vinfo->rotation[0][i] = ex[i];
-            vinfo->rotation[1][i] = ey[i];
-            vinfo->rotation[2][i] = ez[i];
+            vinfo->rotation(0,i) = ex[i];
+            vinfo->rotation(1,i) = ey[i];
+            vinfo->rotation(2,i) = ez[i];
         }
     }
     d_triangleInfo.endEdit();
@@ -720,15 +720,15 @@ void TriangularFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&/
     const Real y = this->getYoungModulusInElement(i);
     const Real p = this->getPoissonRatioInElement(i);
 
-    tinfo->materialMatrix[0][0] = 1;
-    tinfo->materialMatrix[0][1] = p;
-    tinfo->materialMatrix[0][2] = 0;
-    tinfo->materialMatrix[1][0] = p;
-    tinfo->materialMatrix[1][1] = 1;
-    tinfo->materialMatrix[1][2] = 0;
-    tinfo->materialMatrix[2][0] = 0;
-    tinfo->materialMatrix[2][1] = 0;
-    tinfo->materialMatrix[2][2] = (1.0f - p) * 0.5f;
+    tinfo->materialMatrix(0,0) = 1;
+    tinfo->materialMatrix(0,1) = p;
+    tinfo->materialMatrix(0,2) = 0;
+    tinfo->materialMatrix(1,0) = p;
+    tinfo->materialMatrix(1,1) = 1;
+    tinfo->materialMatrix(1,2) = 0;
+    tinfo->materialMatrix(2,0) = 0;
+    tinfo->materialMatrix(2,1) = 0;
+    tinfo->materialMatrix(2,2) = (1.0f - p) * 0.5f;
 
     tinfo->materialMatrix *= (y / (1.0f - p * p)) * tinfo->area;
 

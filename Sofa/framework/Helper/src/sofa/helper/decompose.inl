@@ -43,17 +43,17 @@ void Decompose<Real>::getRotation( Mat<3,3,Real>& r, Vec<3,Real>& edgex, Vec<3,R
     edgez.normalize();
     edgey = cross( edgez, edgex );
 
-    r[0][0] = edgex[0]; r[0][1] = edgey[0]; r[0][2] = edgez[0];
-    r[1][0] = edgex[1]; r[1][1] = edgey[1]; r[1][2] = edgez[1];
-    r[2][0] = edgex[2]; r[2][1] = edgey[2]; r[2][2] = edgez[2];
+    r(0,0) = edgex[0]; r(0,1) = edgey[0]; r(0,2) = edgez[0];
+    r(1,0) = edgex[1]; r(1,1) = edgey[1]; r(1,2) = edgez[1];
+    r(2,0) = edgex[2]; r(2,1) = edgey[2]; r(2,2) = edgez[2];
 }
 
 
 template<class Real>
 void Decompose<Real>::QRDecomposition( const type::Mat<3,3,Real> &M, type::Mat<3,3,Real> &R )
 {
-    Vec<3,Real> edgex( M[0][0], M[1][0], M[2][0] );
-    Vec<3,Real> edgey( M[0][1], M[1][1], M[2][1] );
+    Vec<3,Real> edgex( M(0,0), M(1,0), M(2,0) );
+    Vec<3,Real> edgey( M(0,1), M(1,1), M(2,1) );
 
     getRotation( R, edgex, edgey );
 }
@@ -61,25 +61,25 @@ void Decompose<Real>::QRDecomposition( const type::Mat<3,3,Real> &M, type::Mat<3
 template<class Real>
 void Decompose<Real>::QRDecomposition( const type::Mat<3,2,Real> &M, type::Mat<3,2,Real> &r )
 {
-    Vec<3,Real> edgex( M[0][0], M[1][0], M[2][0] );
-    Vec<3,Real> edgey( M[0][1], M[1][1], M[2][1] );
+    Vec<3,Real> edgex( M(0,0), M(1,0), M(2,0) );
+    Vec<3,Real> edgey( M(0,1), M(1,1), M(2,1) );
 
     edgex.normalize();
     Vec<3,Real> edgez = cross( edgex, edgey );
     edgez.normalize();
     edgey = cross( edgez, edgex );
 
-    r[0][0] = edgex[0]; r[0][1] = edgey[0];
-    r[1][0] = edgex[1]; r[1][1] = edgey[1];
-    r[2][0] = edgex[2]; r[2][1] = edgey[2];
+    r(0,0) = edgex[0]; r(0,1) = edgey[0];
+    r(1,0) = edgex[1]; r(1,1) = edgey[1];
+    r(2,0) = edgex[2]; r(2,1) = edgey[2];
 }
 
 template<class Real>
 void Decompose<Real>::QRDecomposition( const type::Mat<2,2,Real> &M, type::Mat<2,2,Real> &r )
 {
-    Vec<2,Real> edgex( M[0][0], M[1][0] ); edgex.normalize();
-    r[0][0] = edgex[0];  r[1][0] = edgex[1];
-    r[0][1] = -edgex[1]; r[1][1] = edgex[0];
+    Vec<2,Real> edgex( M(0,0), M(1,0) ); edgex.normalize();
+    r(0,0) = edgex[0];  r(1,0) = edgex[1];
+    r(0,1) = -edgex[1]; r(1,1) = edgex[0];
 }
 
 template<class Real>
@@ -87,8 +87,8 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,3,Real> &M, type
 {
     bool degenerated;
 
-    Vec<3,Real> edgex( M[0][0], M[1][0], M[2][0] );
-    Vec<3,Real> edgey( M[0][1], M[1][1], M[2][1] );
+    Vec<3,Real> edgex( M(0,0), M(1,0), M(2,0) );
+    Vec<3,Real> edgey( M(0,1), M(1,1), M(2,1) );
     Vec<3,Real> edgez;
 
     Real nx = edgex.norm2();
@@ -99,7 +99,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,3,Real> &M, type
         degenerated = true;
         if( ny < zeroTolerance() )
         {
-            edgez.set( M[0][2], M[1][2], M[2][2] );
+            edgez.set( M(0,2), M(1,2), M(2,2) );
             Real nz = edgez.norm2();
 
             if( nz < zeroTolerance() ) // edgex, edgey, edgez are null -> collapsed to a point
@@ -150,7 +150,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,3,Real> &M, type
         {
             edgey.normalizeWithNorm( helper::rsqrt(ny) );
 
-            edgez.set( M[0][2], M[1][2], M[2][2] );
+            edgez.set( M(0,2), M(1,2), M(2,2) );
             Real nz = edgez.norm2();
 
             if( nz < zeroTolerance() ) // collapsed to edgey
@@ -206,7 +206,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,3,Real> &M, type
         {
             degenerated = true;
 
-            edgez.set( M[0][2], M[1][2], M[2][2] );
+            edgez.set( M(0,2), M(1,2), M(2,2) );
             Real nz = edgez.norm2();
 
             if( nz < zeroTolerance() ) // collapsed to edgex
@@ -263,9 +263,9 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,3,Real> &M, type
         }
     }
 
-    R[0][0] = edgex[0]; R[0][1] = edgey[0]; R[0][2] = edgez[0];
-    R[1][0] = edgex[1]; R[1][1] = edgey[1]; R[1][2] = edgez[1];
-    R[2][0] = edgex[2]; R[2][1] = edgey[2]; R[2][2] = edgez[2];
+    R(0,0) = edgex[0]; R(0,1) = edgey[0]; R(0,2) = edgez[0];
+    R(1,0) = edgex[1]; R(1,1) = edgey[1]; R(1,2) = edgez[1];
+    R(2,0) = edgex[2]; R(2,1) = edgey[2]; R(2,2) = edgez[2];
 
     return degenerated;
 }
@@ -276,8 +276,8 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,2,Real> &M, type
 {
     bool degenerated;
 
-    Vec<3,Real> edgex( M[0][0], M[1][0], M[2][0] );
-    Vec<3,Real> edgey( M[0][1], M[1][1], M[2][1] );
+    Vec<3,Real> edgex( M(0,0), M(1,0), M(2,0) );
+    Vec<3,Real> edgey( M(0,1), M(1,1), M(2,1) );
 
     Real nx = edgex.norm2();
     Real ny = edgey.norm2();
@@ -286,9 +286,9 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,2,Real> &M, type
     {
         if( ny < zeroTolerance() ) // edgex, edgey are null -> collapsed to a point
         {
-            r[0][0] = 1; r[0][1] = 0;
-            r[1][0] = 0; r[1][1] = 1;
-            r[2][0] = 0; r[2][1] = 0;
+            r(0,0) = 1; r(0,1) = 0;
+            r(1,0) = 0; r(1,1) = 1;
+            r(2,0) = 0; r(2,1) = 0;
             return true;
         }
         else // collapsed to edgey
@@ -379,9 +379,9 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,2,Real> &M, type
         }
     }
 
-    r[0][0] = edgex[0]; r[0][1] = edgey[0];
-    r[1][0] = edgex[1]; r[1][1] = edgey[1];
-    r[2][0] = edgex[2]; r[2][1] = edgey[2];
+    r(0,0) = edgex[0]; r(0,1) = edgey[0];
+    r(1,0) = edgex[1]; r(1,1) = edgey[1];
+    r(2,0) = edgex[2]; r(2,1) = edgey[2];
 
     return degenerated;
 }
@@ -392,18 +392,18 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
 {
     bool degenerated;
 
-    Vec<2,Real> edge( M[0][0], M[1][0] );
+    Vec<2,Real> edge( M(0,0), M(1,0) );
     Real n = edge.norm2();
 
     if( n < zeroTolerance() )
     {
-        edge.set( M[0][1], M[1][1] );
+        edge.set( M(0,1), M(1,1) );
         n = edge.norm2();
         if( n < zeroTolerance() )
         {
             // collapsed to a point
-            r[0][0] = 1; r[1][0] = 0;
-            r[0][1] = 0; r[1][1] = 1;
+            r(0,0) = 1; r(1,0) = 0;
+            r(0,1) = 0; r(1,1) = 1;
 
             degenerated = true;
         }
@@ -411,8 +411,8 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
         {
             // edgex collapsed but edgey not collapsed
             edge /= helper::rsqrt(n);
-            r[0][0] = edge[1]; r[1][0] = -edge[0];
-            r[0][1] = edge[0]; r[1][1] =  edge[1];
+            r(0,0) = edge[1]; r(1,0) = -edge[0];
+            r(0,1) = edge[0]; r(1,1) =  edge[1];
 
             degenerated = true;
         }
@@ -421,8 +421,8 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
     {
         // edgex not collapsed
         edge /= helper::rsqrt(n);
-        r[0][0] =  edge[0]; r[1][0] = edge[1];
-        r[0][1] = -edge[1]; r[1][1] = edge[0];
+        r(0,0) =  edge[0]; r(1,0) = edge[1];
+        r(0,1) = -edge[1]; r(1,1) = edge[0];
 
         degenerated = false; // todo test edgey?
     }
@@ -451,7 +451,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
 //    Real sum, max = 0;
 //    for (int i=0; i<3; i++)
 //    {
-//        sum = (Real)(fabs(M[i][0])+fabs(M[i][1])+fabs(M[i][2]));
+//        sum = (Real)(fabs(M(i,0))+fabs(M(i,1))+fabs(M(i,2)));
 //        if (max<sum) max = sum;
 //    }
 //    return max;
@@ -463,7 +463,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
 //    Real sum, max = 0;
 //    for (int i=0; i<3; i++)
 //    {
-//        sum = (Real)(fabs(M[0][i])+fabs(M[1][i])+fabs(M[2][i]));
+//        sum = (Real)(fabs(M(0,i))+fabs(M(1,i))+fabs(M(2,i)));
 //        if (max<sum) max = sum;
 //    }
 //    return max;
@@ -478,7 +478,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
 //    for (int i=0; i<3; i++)
 //        for (int j=0; j<3; j++)
 //        {
-//            abs = M[i][j]; if (abs<0.0) abs = -abs;
+//            abs = M(i,j); if (abs<0.0) abs = -abs;
 //            if (abs>max) {max = abs; col = j;}
 //        }
 //    return col;
@@ -500,9 +500,9 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
 //{
 //    for (int i=0; i<3; i++)
 //    {
-//        Real s = u[0]*M[0][i] + u[1]*M[1][i] + u[2]*M[2][i];
+//        Real s = u[0]*M(0,i) + u[1]*M(1,i) + u[2]*M(2,i);
 //        for (int j=0; j<3; j++)
-//            M[j][i] -= u[j]*s;
+//            M(j,i) -= u[j]*s;
 //    }
 //}
 
@@ -513,7 +513,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
 //    {
 //        Real s = dot(u, M[i]);
 //        for (int j=0; j<3; j++)
-//            M[i][j] -= u[j]*s;
+//            M(i,j) -= u[j]*s;
 //    }
 //}
 
@@ -527,12 +527,12 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
 //    /* If rank(M) is 1, we should find a non-zero column in M */
 //    col = find_max_col(M);
 //    if (col<0) return; /* Rank is 0 */
-//    v1[0] = M[0][col]; v1[1] = M[1][col]; v1[2] = M[2][col];
+//    v1[0] = M(0,col); v1[1] = M(1,col); v1[2] = M(2,col);
 //    make_reflector(v1, v1); reflect_cols(M, v1);
-//    v2[0] = M[2][0]; v2[1] = M[2][1]; v2[2] = M[2][2];
+//    v2[0] = M(2,0); v2[1] = M(2,1); v2[2] = M(2,2);
 //    make_reflector(v2, v2); reflect_rows(M, v2);
-//    s = M[2][2];
-//    if (s<0.0) Q[2][2] = -1.0;
+//    s = M(2,2);
+//    if (s<0.0) Q(2,2) = -1.0;
 //    reflect_cols(Q, v1); reflect_rows(Q, v2);
 //}
 
@@ -546,22 +546,22 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
 //    /* If rank(M) is 2, we should find a non-zero column in MadjT */
 //    col = find_max_col(MadjT);
 //    if (col<0) {do_rank1(M, Q); return;} /* Rank<2 */
-//    v1[0] = MadjT[0][col]; v1[1] = MadjT[1][col]; v1[2] = MadjT[2][col];
+//    v1[0] = MadjT(0,col); v1[1] = MadjT(1,col); v1[2] = MadjT(2,col);
 //    make_reflector(v1, v1); reflect_cols(M, v1);
 //    v2 = cross(M[0], M[1]);
 //    make_reflector(v2, v2); reflect_rows(M, v2);
-//    w = M[0][0]; x = M[0][1]; y = M[1][0]; z = M[1][1];
+//    w = M(0,0); x = M(0,1); y = M(1,0); z = M(1,1);
 //    if (w*z>x*y)
 //    {
 //        c = z+w; s = y-x; d = sqrt(c*c+s*s); c = c/d; s = s/d;
-//        Q[0][0] = Q[1][1] = c; Q[0][1] = -(Q[1][0] = s);
+//        Q(0,0) = Q(1,1) = c; Q(0,1) = -(Q(1,0) = s);
 //    }
 //    else
 //    {
 //        c = z-w; s = y+x; d = sqrt(c*c+s*s); c = c/d; s = s/d;
-//        Q[0][0] = -(Q[1][1] = c); Q[0][1] = Q[1][0] = s;
+//        Q(0,0) = -(Q(1,1) = c); Q(0,1) = Q(1,0) = s;
 //    }
-//    Q[0][2] = Q[2][0] = Q[1][2] = Q[2][1] = 0.0; Q[2][2] = 1.0;
+//    Q(0,2) = Q(2,0) = Q(1,2) = Q(2,1) = 0.0; Q(2,2) = 1.0;
 //    reflect_cols(Q, v1); reflect_rows(Q, v2);
 //}
 
@@ -597,7 +597,7 @@ bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type
 //    S = Mk*M;
 //    for (int i=0; i<3; i++)
 //        for (int j=i+1; j<3; j++)
-//            S[i][j] = S[j][i] = ((Real)0.5)*(S[i][j]+S[j][i]);
+//            S(i,j) = S(j,i) = ((Real)0.5)*(S(i,j)+S(j,i));
 //    return (det);
 
 //}
@@ -624,11 +624,11 @@ Real Decompose<Real>::polarDecomposition( const type::Mat<3,3,Real>& M, type::Ma
     type::Mat<3,3,Real> MadjTk;
 
     // row 2 x row 3
-    MadjTk[0] = cross( Mk[1], Mk[2] );
+    MadjTk(0) = cross( Mk(1), Mk(2) );
     // row 3 x row 1
-    MadjTk[1] = cross( Mk[2], Mk[0] );
+    MadjTk(1) = cross( Mk(2), Mk(0) );
     // row 1 x row 2
-    MadjTk[2] = cross( Mk[0], Mk[1] );
+    MadjTk(2) = cross( Mk(0), Mk(1) );
 
     det = Mk(0,0) * MadjTk(0,0) + Mk(0,1) * MadjTk(0,1) + Mk(0,2) * MadjTk(0,2);
     if (det == 0.0)
@@ -726,17 +726,17 @@ Real Decompose<Real>::polarDecomposition( const type::Mat<3,3,Real>& M, type::Ma
 template<class Real>
 void Decompose<Real>::polarDecomposition( const type::Mat<2,2,Real>& M, type::Mat<2,2,Real>& Q )
 {
-    Q[0][0] =  M[1][1];
-    Q[0][1] = -M[1][0];
-    Q[1][0] = -M[0][1];
-    Q[1][1] =  M[0][0];
+    Q(0,0) =  M(1,1);
+    Q(0,1) = -M(1,0);
+    Q(1,0) = -M(0,1);
+    Q(1,1) =  M(0,0);
     Q = M + ( determinant( M ) < 0 ? (Real)-1.0 : (Real)1.0 ) * Q;
 
     for (unsigned int i=0; i<2; i++)
     {
-        Real normColi = sqrt(Q[0][i]*Q[0][i] +  Q[1][i] * Q[1][i] );
-        Q[0][i] *= (1/normColi);
-        Q[1][i] *= (1/normColi);
+        Real normColi = sqrt(Q(0,i)*Q(0,i) +  Q(1,i) * Q(1,i) );
+        Q(0,i) *= (1/normColi);
+        Q(1,i) *= (1/normColi);
     }
 }
 
@@ -805,9 +805,9 @@ template<class Real>
 type::Mat<3,3,Real> Decompose<Real>::skewMat( const type::Vec<3,Real>& v )
 {
     type::Mat<3,3,Real> M;
-    M[0][1] = -v[2]; M[1][0] = -M[0][1];
-    M[0][2] =  v[1]; M[2][0] = -M[0][2];
-    M[1][2] = -v[0]; M[2][1] = -M[1][2];
+    M(0,1) = -v[2]; M(1,0) = -M(0,1);
+    M(0,2) =  v[1]; M(2,0) = -M(0,2);
+    M(1,2) = -v[0]; M(2,1) = -M(1,2);
     return M;
 }
 
@@ -815,9 +815,9 @@ template<class Real>
 type::Vec<3,Real> Decompose<Real>::skewVec( const type::Mat<3,3,Real>& M )
 {
     type::Vec<3,Real> v;
-    v[0] = (Real)0.5 * ( M[2][1] - M[1][2] );
-    v[1] = (Real)0.5 * ( M[0][2] - M[2][0] );
-    v[2] = (Real)0.5 * ( M[1][0] - M[0][1] );
+    v[0] = (Real)0.5 * ( M(2,1) - M(1,2) );
+    v[1] = (Real)0.5 * ( M(0,2) - M(2,0) );
+    v[2] = (Real)0.5 * ( M(1,0) - M(0,1) );
     return v;
 }
 
@@ -828,9 +828,9 @@ void Decompose<Real>::polarDecompositionGradient_G( const type::Mat<3,3,Real>& Q
 
     type::Mat<3,3,Real> G = -S;
     Real trace = type::trace( S );
-    G[0][0] += trace;
-    G[1][1] += trace;
-    G[2][2] += trace;
+    G(0,0) += trace;
+    G(1,1) += trace;
+    G(2,2) += trace;
 
     G = G.multTransposed( Q );
 
@@ -852,15 +852,15 @@ void Decompose<Real>::polarDecompositionGradient_dQ( const type::Mat<3,3,Real>& 
 template<class Real>
 void Decompose<Real>::polarDecompositionGradient_dQOverdM(const type::Mat<3,3,Real> &Q, const type::Mat<3,3,Real> &invG,  type::Mat<9,9,Real>& J)
 {
-J[0][0]=(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*Q[1][0]+(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*Q[2][0]; J[0][1]=(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*Q[1][1]+(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*Q[2][1]; J[0][2]=(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*Q[1][2]+(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*Q[2][2]; J[0][3]=(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*Q[0][0]+(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*Q[2][0]; J[0][4]=(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*Q[0][1]+(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*Q[2][1]; J[0][5]=(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*Q[0][2]+(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*Q[2][2]; J[0][6]=(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*Q[0][0]+(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*Q[1][0]; J[0][7]=(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*Q[0][1]+(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*Q[1][1]; J[0][8]=(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*Q[0][2]+(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*Q[1][2];
-J[1][0]=(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*Q[1][0]+(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*Q[2][0]; J[1][1]=(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*Q[1][1]+(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*Q[2][1]; J[1][2]=(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*Q[1][2]+(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*Q[2][2]; J[1][3]=(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*Q[0][0]+(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*Q[2][0]; J[1][4]=(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*Q[0][1]+(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*Q[2][1]; J[1][5]=(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*Q[0][2]+(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*Q[2][2]; J[1][6]=(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*Q[0][0]+(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*Q[1][0]; J[1][7]=(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*Q[0][1]+(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*Q[1][1]; J[1][8]=(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*Q[0][2]+(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*Q[1][2];
-J[2][0]=(invG[2][0]*Q[0][1]-invG[2][1]*Q[0][0])*Q[1][0]+(-invG[1][0]*Q[0][1]+invG[1][1]*Q[0][0])*Q[2][0]; J[2][1]=(invG[2][0]*Q[0][1]-invG[2][1]*Q[0][0])*Q[1][1]+(-invG[1][0]*Q[0][1]+invG[1][1]*Q[0][0])*Q[2][1]; J[2][2]=(invG[2][0]*Q[0][1]-invG[2][1]*Q[0][0])*Q[1][2]+(-invG[1][0]*Q[0][1]+invG[1][1]*Q[0][0])*Q[2][2]; J[2][3]=(-invG[2][0]*Q[0][1]+invG[2][1]*Q[0][0])*Q[0][0]+(invG[0][0]*Q[0][1]-invG[0][1]*Q[0][0])*Q[2][0]; J[2][4]=(-invG[2][0]*Q[0][1]+invG[2][1]*Q[0][0])*Q[0][1]+(invG[0][0]*Q[0][1]-invG[0][1]*Q[0][0])*Q[2][1]; J[2][5]=(-invG[2][0]*Q[0][1]+invG[2][1]*Q[0][0])*Q[0][2]+(invG[0][0]*Q[0][1]-invG[0][1]*Q[0][0])*Q[2][2]; J[2][6]=(invG[1][0]*Q[0][1]-invG[1][1]*Q[0][0])*Q[0][0]+(-invG[0][0]*Q[0][1]+invG[0][1]*Q[0][0])*Q[1][0]; J[2][7]=(invG[1][0]*Q[0][1]-invG[1][1]*Q[0][0])*Q[0][1]+(-invG[0][0]*Q[0][1]+invG[0][1]*Q[0][0])*Q[1][1]; J[2][8]=(invG[1][0]*Q[0][1]-invG[1][1]*Q[0][0])*Q[0][2]+(-invG[0][0]*Q[0][1]+invG[0][1]*Q[0][0])*Q[1][2];
-J[3][0]=(invG[2][1]*Q[1][2]-invG[2][2]*Q[1][1])*Q[1][0]+(-invG[1][1]*Q[1][2]+invG[1][2]*Q[1][1])*Q[2][0]; J[3][1]=(invG[2][1]*Q[1][2]-invG[2][2]*Q[1][1])*Q[1][1]+(-invG[1][1]*Q[1][2]+invG[1][2]*Q[1][1])*Q[2][1]; J[3][2]=(invG[2][1]*Q[1][2]-invG[2][2]*Q[1][1])*Q[1][2]+(-invG[1][1]*Q[1][2]+invG[1][2]*Q[1][1])*Q[2][2]; J[3][3]=(-invG[2][1]*Q[1][2]+invG[2][2]*Q[1][1])*Q[0][0]+(invG[0][1]*Q[1][2]-invG[0][2]*Q[1][1])*Q[2][0]; J[3][4]=(-invG[2][1]*Q[1][2]+invG[2][2]*Q[1][1])*Q[0][1]+(invG[0][1]*Q[1][2]-invG[0][2]*Q[1][1])*Q[2][1]; J[3][5]=(-invG[2][1]*Q[1][2]+invG[2][2]*Q[1][1])*Q[0][2]+(invG[0][1]*Q[1][2]-invG[0][2]*Q[1][1])*Q[2][2]; J[3][6]=(invG[1][1]*Q[1][2]-invG[1][2]*Q[1][1])*Q[0][0]+(-invG[0][1]*Q[1][2]+invG[0][2]*Q[1][1])*Q[1][0]; J[3][7]=(invG[1][1]*Q[1][2]-invG[1][2]*Q[1][1])*Q[0][1]+(-invG[0][1]*Q[1][2]+invG[0][2]*Q[1][1])*Q[1][1]; J[3][8]=(invG[1][1]*Q[1][2]-invG[1][2]*Q[1][1])*Q[0][2]+(-invG[0][1]*Q[1][2]+invG[0][2]*Q[1][1])*Q[1][2];
-J[4][0]=(-invG[2][0]*Q[1][2]+invG[2][2]*Q[1][0])*Q[1][0]+(invG[1][0]*Q[1][2]-invG[1][2]*Q[1][0])*Q[2][0]; J[4][1]=(-invG[2][0]*Q[1][2]+invG[2][2]*Q[1][0])*Q[1][1]+(invG[1][0]*Q[1][2]-invG[1][2]*Q[1][0])*Q[2][1]; J[4][2]=(-invG[2][0]*Q[1][2]+invG[2][2]*Q[1][0])*Q[1][2]+(invG[1][0]*Q[1][2]-invG[1][2]*Q[1][0])*Q[2][2]; J[4][3]=(invG[2][0]*Q[1][2]-invG[2][2]*Q[1][0])*Q[0][0]+(-invG[0][0]*Q[1][2]+invG[0][2]*Q[1][0])*Q[2][0]; J[4][4]=(invG[2][0]*Q[1][2]-invG[2][2]*Q[1][0])*Q[0][1]+(-invG[0][0]*Q[1][2]+invG[0][2]*Q[1][0])*Q[2][1]; J[4][5]=(invG[2][0]*Q[1][2]-invG[2][2]*Q[1][0])*Q[0][2]+(-invG[0][0]*Q[1][2]+invG[0][2]*Q[1][0])*Q[2][2]; J[4][6]=(-invG[1][0]*Q[1][2]+invG[1][2]*Q[1][0])*Q[0][0]+(invG[0][0]*Q[1][2]-invG[0][2]*Q[1][0])*Q[1][0]; J[4][7]=(-invG[1][0]*Q[1][2]+invG[1][2]*Q[1][0])*Q[0][1]+(invG[0][0]*Q[1][2]-invG[0][2]*Q[1][0])*Q[1][1]; J[4][8]=(-invG[1][0]*Q[1][2]+invG[1][2]*Q[1][0])*Q[0][2]+(invG[0][0]*Q[1][2]-invG[0][2]*Q[1][0])*Q[1][2];
-J[5][0]=(invG[2][0]*Q[1][1]-invG[2][1]*Q[1][0])*Q[1][0]+(-invG[1][0]*Q[1][1]+invG[1][1]*Q[1][0])*Q[2][0]; J[5][1]=(invG[2][0]*Q[1][1]-invG[2][1]*Q[1][0])*Q[1][1]+(-invG[1][0]*Q[1][1]+invG[1][1]*Q[1][0])*Q[2][1]; J[5][2]=(invG[2][0]*Q[1][1]-invG[2][1]*Q[1][0])*Q[1][2]+(-invG[1][0]*Q[1][1]+invG[1][1]*Q[1][0])*Q[2][2]; J[5][3]=(-invG[2][0]*Q[1][1]+invG[2][1]*Q[1][0])*Q[0][0]+(invG[0][0]*Q[1][1]-invG[0][1]*Q[1][0])*Q[2][0]; J[5][4]=(-invG[2][0]*Q[1][1]+invG[2][1]*Q[1][0])*Q[0][1]+(invG[0][0]*Q[1][1]-invG[0][1]*Q[1][0])*Q[2][1]; J[5][5]=(-invG[2][0]*Q[1][1]+invG[2][1]*Q[1][0])*Q[0][2]+(invG[0][0]*Q[1][1]-invG[0][1]*Q[1][0])*Q[2][2]; J[5][6]=(invG[1][0]*Q[1][1]-invG[1][1]*Q[1][0])*Q[0][0]+(-invG[0][0]*Q[1][1]+invG[0][1]*Q[1][0])*Q[1][0]; J[5][7]=(invG[1][0]*Q[1][1]-invG[1][1]*Q[1][0])*Q[0][1]+(-invG[0][0]*Q[1][1]+invG[0][1]*Q[1][0])*Q[1][1]; J[5][8]=(invG[1][0]*Q[1][1]-invG[1][1]*Q[1][0])*Q[0][2]+(-invG[0][0]*Q[1][1]+invG[0][1]*Q[1][0])*Q[1][2];
-J[6][0]=(invG[2][1]*Q[2][2]-invG[2][2]*Q[2][1])*Q[1][0]+(-invG[1][1]*Q[2][2]+invG[1][2]*Q[2][1])*Q[2][0]; J[6][1]=(invG[2][1]*Q[2][2]-invG[2][2]*Q[2][1])*Q[1][1]+(-invG[1][1]*Q[2][2]+invG[1][2]*Q[2][1])*Q[2][1]; J[6][2]=(invG[2][1]*Q[2][2]-invG[2][2]*Q[2][1])*Q[1][2]+(-invG[1][1]*Q[2][2]+invG[1][2]*Q[2][1])*Q[2][2]; J[6][3]=(-invG[2][1]*Q[2][2]+invG[2][2]*Q[2][1])*Q[0][0]+(invG[0][1]*Q[2][2]-invG[0][2]*Q[2][1])*Q[2][0]; J[6][4]=(-invG[2][1]*Q[2][2]+invG[2][2]*Q[2][1])*Q[0][1]+(invG[0][1]*Q[2][2]-invG[0][2]*Q[2][1])*Q[2][1]; J[6][5]=(-invG[2][1]*Q[2][2]+invG[2][2]*Q[2][1])*Q[0][2]+(invG[0][1]*Q[2][2]-invG[0][2]*Q[2][1])*Q[2][2]; J[6][6]=(invG[1][1]*Q[2][2]-invG[1][2]*Q[2][1])*Q[0][0]+(-invG[0][1]*Q[2][2]+invG[0][2]*Q[2][1])*Q[1][0]; J[6][7]=(invG[1][1]*Q[2][2]-invG[1][2]*Q[2][1])*Q[0][1]+(-invG[0][1]*Q[2][2]+invG[0][2]*Q[2][1])*Q[1][1]; J[6][8]=(invG[1][1]*Q[2][2]-invG[1][2]*Q[2][1])*Q[0][2]+(-invG[0][1]*Q[2][2]+invG[0][2]*Q[2][1])*Q[1][2];
-J[7][0]=(-invG[2][0]*Q[2][2]+invG[2][2]*Q[2][0])*Q[1][0]+(invG[1][0]*Q[2][2]-invG[1][2]*Q[2][0])*Q[2][0]; J[7][1]=(-invG[2][0]*Q[2][2]+invG[2][2]*Q[2][0])*Q[1][1]+(invG[1][0]*Q[2][2]-invG[1][2]*Q[2][0])*Q[2][1]; J[7][2]=(-invG[2][0]*Q[2][2]+invG[2][2]*Q[2][0])*Q[1][2]+(invG[1][0]*Q[2][2]-invG[1][2]*Q[2][0])*Q[2][2]; J[7][3]=(invG[2][0]*Q[2][2]-invG[2][2]*Q[2][0])*Q[0][0]+(-invG[0][0]*Q[2][2]+invG[0][2]*Q[2][0])*Q[2][0]; J[7][4]=(invG[2][0]*Q[2][2]-invG[2][2]*Q[2][0])*Q[0][1]+(-invG[0][0]*Q[2][2]+invG[0][2]*Q[2][0])*Q[2][1]; J[7][5]=(invG[2][0]*Q[2][2]-invG[2][2]*Q[2][0])*Q[0][2]+(-invG[0][0]*Q[2][2]+invG[0][2]*Q[2][0])*Q[2][2]; J[7][6]=(-invG[1][0]*Q[2][2]+invG[1][2]*Q[2][0])*Q[0][0]+(invG[0][0]*Q[2][2]-invG[0][2]*Q[2][0])*Q[1][0]; J[7][7]=(-invG[1][0]*Q[2][2]+invG[1][2]*Q[2][0])*Q[0][1]+(invG[0][0]*Q[2][2]-invG[0][2]*Q[2][0])*Q[1][1]; J[7][8]=(-invG[1][0]*Q[2][2]+invG[1][2]*Q[2][0])*Q[0][2]+(invG[0][0]*Q[2][2]-invG[0][2]*Q[2][0])*Q[1][2];
-J[8][0]=(invG[2][0]*Q[2][1]-invG[2][1]*Q[2][0])*Q[1][0]+(-invG[1][0]*Q[2][1]+invG[1][1]*Q[2][0])*Q[2][0]; J[8][1]=(invG[2][0]*Q[2][1]-invG[2][1]*Q[2][0])*Q[1][1]+(-invG[1][0]*Q[2][1]+invG[1][1]*Q[2][0])*Q[2][1]; J[8][2]=(invG[2][0]*Q[2][1]-invG[2][1]*Q[2][0])*Q[1][2]+(-invG[1][0]*Q[2][1]+invG[1][1]*Q[2][0])*Q[2][2]; J[8][3]=(-invG[2][0]*Q[2][1]+invG[2][1]*Q[2][0])*Q[0][0]+(invG[0][0]*Q[2][1]-invG[0][1]*Q[2][0])*Q[2][0]; J[8][4]=(-invG[2][0]*Q[2][1]+invG[2][1]*Q[2][0])*Q[0][1]+(invG[0][0]*Q[2][1]-invG[0][1]*Q[2][0])*Q[2][1]; J[8][5]=(-invG[2][0]*Q[2][1]+invG[2][1]*Q[2][0])*Q[0][2]+(invG[0][0]*Q[2][1]-invG[0][1]*Q[2][0])*Q[2][2]; J[8][6]=(invG[1][0]*Q[2][1]-invG[1][1]*Q[2][0])*Q[0][0]+(-invG[0][0]*Q[2][1]+invG[0][1]*Q[2][0])*Q[1][0]; J[8][7]=(invG[1][0]*Q[2][1]-invG[1][1]*Q[2][0])*Q[0][1]+(-invG[0][0]*Q[2][1]+invG[0][1]*Q[2][0])*Q[1][1]; J[8][8]=(invG[1][0]*Q[2][1]-invG[1][1]*Q[2][0])*Q[0][2]+(-invG[0][0]*Q[2][1]+invG[0][1]*Q[2][0])*Q[1][2];
+J(0,0)=(invG(2,1)*Q(0,2)-invG(2,2)*Q(0,1))*Q(1,0)+(-invG(1,1)*Q(0,2)+invG(1,2)*Q(0,1))*Q(2,0); J(0,1)=(invG(2,1)*Q(0,2)-invG(2,2)*Q(0,1))*Q(1,1)+(-invG(1,1)*Q(0,2)+invG(1,2)*Q(0,1))*Q(2,1); J(0,2)=(invG(2,1)*Q(0,2)-invG(2,2)*Q(0,1))*Q(1,2)+(-invG(1,1)*Q(0,2)+invG(1,2)*Q(0,1))*Q(2,2); J(0,3)=(-invG(2,1)*Q(0,2)+invG(2,2)*Q(0,1))*Q(0,0)+(invG(0,1)*Q(0,2)-invG(0,2)*Q(0,1))*Q(2,0); J(0,4)=(-invG(2,1)*Q(0,2)+invG(2,2)*Q(0,1))*Q(0,1)+(invG(0,1)*Q(0,2)-invG(0,2)*Q(0,1))*Q(2,1); J(0,5)=(-invG(2,1)*Q(0,2)+invG(2,2)*Q(0,1))*Q(0,2)+(invG(0,1)*Q(0,2)-invG(0,2)*Q(0,1))*Q(2,2); J(0,6)=(invG(1,1)*Q(0,2)-invG(1,2)*Q(0,1))*Q(0,0)+(-invG(0,1)*Q(0,2)+invG(0,2)*Q(0,1))*Q(1,0); J(0,7)=(invG(1,1)*Q(0,2)-invG(1,2)*Q(0,1))*Q(0,1)+(-invG(0,1)*Q(0,2)+invG(0,2)*Q(0,1))*Q(1,1); J(0,8)=(invG(1,1)*Q(0,2)-invG(1,2)*Q(0,1))*Q(0,2)+(-invG(0,1)*Q(0,2)+invG(0,2)*Q(0,1))*Q(1,2);
+J(1,0)=(-invG(2,0)*Q(0,2)+invG(2,2)*Q(0,0))*Q(1,0)+(invG(1,0)*Q(0,2)-invG(1,2)*Q(0,0))*Q(2,0); J(1,1)=(-invG(2,0)*Q(0,2)+invG(2,2)*Q(0,0))*Q(1,1)+(invG(1,0)*Q(0,2)-invG(1,2)*Q(0,0))*Q(2,1); J(1,2)=(-invG(2,0)*Q(0,2)+invG(2,2)*Q(0,0))*Q(1,2)+(invG(1,0)*Q(0,2)-invG(1,2)*Q(0,0))*Q(2,2); J(1,3)=(invG(2,0)*Q(0,2)-invG(2,2)*Q(0,0))*Q(0,0)+(-invG(0,0)*Q(0,2)+invG(0,2)*Q(0,0))*Q(2,0); J(1,4)=(invG(2,0)*Q(0,2)-invG(2,2)*Q(0,0))*Q(0,1)+(-invG(0,0)*Q(0,2)+invG(0,2)*Q(0,0))*Q(2,1); J(1,5)=(invG(2,0)*Q(0,2)-invG(2,2)*Q(0,0))*Q(0,2)+(-invG(0,0)*Q(0,2)+invG(0,2)*Q(0,0))*Q(2,2); J(1,6)=(-invG(1,0)*Q(0,2)+invG(1,2)*Q(0,0))*Q(0,0)+(invG(0,0)*Q(0,2)-invG(0,2)*Q(0,0))*Q(1,0); J(1,7)=(-invG(1,0)*Q(0,2)+invG(1,2)*Q(0,0))*Q(0,1)+(invG(0,0)*Q(0,2)-invG(0,2)*Q(0,0))*Q(1,1); J(1,8)=(-invG(1,0)*Q(0,2)+invG(1,2)*Q(0,0))*Q(0,2)+(invG(0,0)*Q(0,2)-invG(0,2)*Q(0,0))*Q(1,2);
+J(2,0)=(invG(2,0)*Q(0,1)-invG(2,1)*Q(0,0))*Q(1,0)+(-invG(1,0)*Q(0,1)+invG(1,1)*Q(0,0))*Q(2,0); J(2,1)=(invG(2,0)*Q(0,1)-invG(2,1)*Q(0,0))*Q(1,1)+(-invG(1,0)*Q(0,1)+invG(1,1)*Q(0,0))*Q(2,1); J(2,2)=(invG(2,0)*Q(0,1)-invG(2,1)*Q(0,0))*Q(1,2)+(-invG(1,0)*Q(0,1)+invG(1,1)*Q(0,0))*Q(2,2); J(2,3)=(-invG(2,0)*Q(0,1)+invG(2,1)*Q(0,0))*Q(0,0)+(invG(0,0)*Q(0,1)-invG(0,1)*Q(0,0))*Q(2,0); J(2,4)=(-invG(2,0)*Q(0,1)+invG(2,1)*Q(0,0))*Q(0,1)+(invG(0,0)*Q(0,1)-invG(0,1)*Q(0,0))*Q(2,1); J(2,5)=(-invG(2,0)*Q(0,1)+invG(2,1)*Q(0,0))*Q(0,2)+(invG(0,0)*Q(0,1)-invG(0,1)*Q(0,0))*Q(2,2); J(2,6)=(invG(1,0)*Q(0,1)-invG(1,1)*Q(0,0))*Q(0,0)+(-invG(0,0)*Q(0,1)+invG(0,1)*Q(0,0))*Q(1,0); J(2,7)=(invG(1,0)*Q(0,1)-invG(1,1)*Q(0,0))*Q(0,1)+(-invG(0,0)*Q(0,1)+invG(0,1)*Q(0,0))*Q(1,1); J(2,8)=(invG(1,0)*Q(0,1)-invG(1,1)*Q(0,0))*Q(0,2)+(-invG(0,0)*Q(0,1)+invG(0,1)*Q(0,0))*Q(1,2);
+J(3,0)=(invG(2,1)*Q(1,2)-invG(2,2)*Q(1,1))*Q(1,0)+(-invG(1,1)*Q(1,2)+invG(1,2)*Q(1,1))*Q(2,0); J(3,1)=(invG(2,1)*Q(1,2)-invG(2,2)*Q(1,1))*Q(1,1)+(-invG(1,1)*Q(1,2)+invG(1,2)*Q(1,1))*Q(2,1); J(3,2)=(invG(2,1)*Q(1,2)-invG(2,2)*Q(1,1))*Q(1,2)+(-invG(1,1)*Q(1,2)+invG(1,2)*Q(1,1))*Q(2,2); J(3,3)=(-invG(2,1)*Q(1,2)+invG(2,2)*Q(1,1))*Q(0,0)+(invG(0,1)*Q(1,2)-invG(0,2)*Q(1,1))*Q(2,0); J(3,4)=(-invG(2,1)*Q(1,2)+invG(2,2)*Q(1,1))*Q(0,1)+(invG(0,1)*Q(1,2)-invG(0,2)*Q(1,1))*Q(2,1); J(3,5)=(-invG(2,1)*Q(1,2)+invG(2,2)*Q(1,1))*Q(0,2)+(invG(0,1)*Q(1,2)-invG(0,2)*Q(1,1))*Q(2,2); J(3,6)=(invG(1,1)*Q(1,2)-invG(1,2)*Q(1,1))*Q(0,0)+(-invG(0,1)*Q(1,2)+invG(0,2)*Q(1,1))*Q(1,0); J(3,7)=(invG(1,1)*Q(1,2)-invG(1,2)*Q(1,1))*Q(0,1)+(-invG(0,1)*Q(1,2)+invG(0,2)*Q(1,1))*Q(1,1); J(3,8)=(invG(1,1)*Q(1,2)-invG(1,2)*Q(1,1))*Q(0,2)+(-invG(0,1)*Q(1,2)+invG(0,2)*Q(1,1))*Q(1,2);
+J(4,0)=(-invG(2,0)*Q(1,2)+invG(2,2)*Q(1,0))*Q(1,0)+(invG(1,0)*Q(1,2)-invG(1,2)*Q(1,0))*Q(2,0); J(4,1)=(-invG(2,0)*Q(1,2)+invG(2,2)*Q(1,0))*Q(1,1)+(invG(1,0)*Q(1,2)-invG(1,2)*Q(1,0))*Q(2,1); J(4,2)=(-invG(2,0)*Q(1,2)+invG(2,2)*Q(1,0))*Q(1,2)+(invG(1,0)*Q(1,2)-invG(1,2)*Q(1,0))*Q(2,2); J(4,3)=(invG(2,0)*Q(1,2)-invG(2,2)*Q(1,0))*Q(0,0)+(-invG(0,0)*Q(1,2)+invG(0,2)*Q(1,0))*Q(2,0); J(4,4)=(invG(2,0)*Q(1,2)-invG(2,2)*Q(1,0))*Q(0,1)+(-invG(0,0)*Q(1,2)+invG(0,2)*Q(1,0))*Q(2,1); J(4,5)=(invG(2,0)*Q(1,2)-invG(2,2)*Q(1,0))*Q(0,2)+(-invG(0,0)*Q(1,2)+invG(0,2)*Q(1,0))*Q(2,2); J(4,6)=(-invG(1,0)*Q(1,2)+invG(1,2)*Q(1,0))*Q(0,0)+(invG(0,0)*Q(1,2)-invG(0,2)*Q(1,0))*Q(1,0); J(4,7)=(-invG(1,0)*Q(1,2)+invG(1,2)*Q(1,0))*Q(0,1)+(invG(0,0)*Q(1,2)-invG(0,2)*Q(1,0))*Q(1,1); J(4,8)=(-invG(1,0)*Q(1,2)+invG(1,2)*Q(1,0))*Q(0,2)+(invG(0,0)*Q(1,2)-invG(0,2)*Q(1,0))*Q(1,2);
+J(5,0)=(invG(2,0)*Q(1,1)-invG(2,1)*Q(1,0))*Q(1,0)+(-invG(1,0)*Q(1,1)+invG(1,1)*Q(1,0))*Q(2,0); J(5,1)=(invG(2,0)*Q(1,1)-invG(2,1)*Q(1,0))*Q(1,1)+(-invG(1,0)*Q(1,1)+invG(1,1)*Q(1,0))*Q(2,1); J(5,2)=(invG(2,0)*Q(1,1)-invG(2,1)*Q(1,0))*Q(1,2)+(-invG(1,0)*Q(1,1)+invG(1,1)*Q(1,0))*Q(2,2); J(5,3)=(-invG(2,0)*Q(1,1)+invG(2,1)*Q(1,0))*Q(0,0)+(invG(0,0)*Q(1,1)-invG(0,1)*Q(1,0))*Q(2,0); J(5,4)=(-invG(2,0)*Q(1,1)+invG(2,1)*Q(1,0))*Q(0,1)+(invG(0,0)*Q(1,1)-invG(0,1)*Q(1,0))*Q(2,1); J(5,5)=(-invG(2,0)*Q(1,1)+invG(2,1)*Q(1,0))*Q(0,2)+(invG(0,0)*Q(1,1)-invG(0,1)*Q(1,0))*Q(2,2); J(5,6)=(invG(1,0)*Q(1,1)-invG(1,1)*Q(1,0))*Q(0,0)+(-invG(0,0)*Q(1,1)+invG(0,1)*Q(1,0))*Q(1,0); J(5,7)=(invG(1,0)*Q(1,1)-invG(1,1)*Q(1,0))*Q(0,1)+(-invG(0,0)*Q(1,1)+invG(0,1)*Q(1,0))*Q(1,1); J(5,8)=(invG(1,0)*Q(1,1)-invG(1,1)*Q(1,0))*Q(0,2)+(-invG(0,0)*Q(1,1)+invG(0,1)*Q(1,0))*Q(1,2);
+J(6,0)=(invG(2,1)*Q(2,2)-invG(2,2)*Q(2,1))*Q(1,0)+(-invG(1,1)*Q(2,2)+invG(1,2)*Q(2,1))*Q(2,0); J(6,1)=(invG(2,1)*Q(2,2)-invG(2,2)*Q(2,1))*Q(1,1)+(-invG(1,1)*Q(2,2)+invG(1,2)*Q(2,1))*Q(2,1); J(6,2)=(invG(2,1)*Q(2,2)-invG(2,2)*Q(2,1))*Q(1,2)+(-invG(1,1)*Q(2,2)+invG(1,2)*Q(2,1))*Q(2,2); J(6,3)=(-invG(2,1)*Q(2,2)+invG(2,2)*Q(2,1))*Q(0,0)+(invG(0,1)*Q(2,2)-invG(0,2)*Q(2,1))*Q(2,0); J(6,4)=(-invG(2,1)*Q(2,2)+invG(2,2)*Q(2,1))*Q(0,1)+(invG(0,1)*Q(2,2)-invG(0,2)*Q(2,1))*Q(2,1); J(6,5)=(-invG(2,1)*Q(2,2)+invG(2,2)*Q(2,1))*Q(0,2)+(invG(0,1)*Q(2,2)-invG(0,2)*Q(2,1))*Q(2,2); J(6,6)=(invG(1,1)*Q(2,2)-invG(1,2)*Q(2,1))*Q(0,0)+(-invG(0,1)*Q(2,2)+invG(0,2)*Q(2,1))*Q(1,0); J(6,7)=(invG(1,1)*Q(2,2)-invG(1,2)*Q(2,1))*Q(0,1)+(-invG(0,1)*Q(2,2)+invG(0,2)*Q(2,1))*Q(1,1); J(6,8)=(invG(1,1)*Q(2,2)-invG(1,2)*Q(2,1))*Q(0,2)+(-invG(0,1)*Q(2,2)+invG(0,2)*Q(2,1))*Q(1,2);
+J(7,0)=(-invG(2,0)*Q(2,2)+invG(2,2)*Q(2,0))*Q(1,0)+(invG(1,0)*Q(2,2)-invG(1,2)*Q(2,0))*Q(2,0); J(7,1)=(-invG(2,0)*Q(2,2)+invG(2,2)*Q(2,0))*Q(1,1)+(invG(1,0)*Q(2,2)-invG(1,2)*Q(2,0))*Q(2,1); J(7,2)=(-invG(2,0)*Q(2,2)+invG(2,2)*Q(2,0))*Q(1,2)+(invG(1,0)*Q(2,2)-invG(1,2)*Q(2,0))*Q(2,2); J(7,3)=(invG(2,0)*Q(2,2)-invG(2,2)*Q(2,0))*Q(0,0)+(-invG(0,0)*Q(2,2)+invG(0,2)*Q(2,0))*Q(2,0); J(7,4)=(invG(2,0)*Q(2,2)-invG(2,2)*Q(2,0))*Q(0,1)+(-invG(0,0)*Q(2,2)+invG(0,2)*Q(2,0))*Q(2,1); J(7,5)=(invG(2,0)*Q(2,2)-invG(2,2)*Q(2,0))*Q(0,2)+(-invG(0,0)*Q(2,2)+invG(0,2)*Q(2,0))*Q(2,2); J(7,6)=(-invG(1,0)*Q(2,2)+invG(1,2)*Q(2,0))*Q(0,0)+(invG(0,0)*Q(2,2)-invG(0,2)*Q(2,0))*Q(1,0); J(7,7)=(-invG(1,0)*Q(2,2)+invG(1,2)*Q(2,0))*Q(0,1)+(invG(0,0)*Q(2,2)-invG(0,2)*Q(2,0))*Q(1,1); J(7,8)=(-invG(1,0)*Q(2,2)+invG(1,2)*Q(2,0))*Q(0,2)+(invG(0,0)*Q(2,2)-invG(0,2)*Q(2,0))*Q(1,2);
+J(8,0)=(invG(2,0)*Q(2,1)-invG(2,1)*Q(2,0))*Q(1,0)+(-invG(1,0)*Q(2,1)+invG(1,1)*Q(2,0))*Q(2,0); J(8,1)=(invG(2,0)*Q(2,1)-invG(2,1)*Q(2,0))*Q(1,1)+(-invG(1,0)*Q(2,1)+invG(1,1)*Q(2,0))*Q(2,1); J(8,2)=(invG(2,0)*Q(2,1)-invG(2,1)*Q(2,0))*Q(1,2)+(-invG(1,0)*Q(2,1)+invG(1,1)*Q(2,0))*Q(2,2); J(8,3)=(-invG(2,0)*Q(2,1)+invG(2,1)*Q(2,0))*Q(0,0)+(invG(0,0)*Q(2,1)-invG(0,1)*Q(2,0))*Q(2,0); J(8,4)=(-invG(2,0)*Q(2,1)+invG(2,1)*Q(2,0))*Q(0,1)+(invG(0,0)*Q(2,1)-invG(0,1)*Q(2,0))*Q(2,1); J(8,5)=(-invG(2,0)*Q(2,1)+invG(2,1)*Q(2,0))*Q(0,2)+(invG(0,0)*Q(2,1)-invG(0,1)*Q(2,0))*Q(2,2); J(8,6)=(invG(1,0)*Q(2,1)-invG(1,1)*Q(2,0))*Q(0,0)+(-invG(0,0)*Q(2,1)+invG(0,1)*Q(2,0))*Q(1,0); J(8,7)=(invG(1,0)*Q(2,1)-invG(1,1)*Q(2,0))*Q(0,1)+(-invG(0,0)*Q(2,1)+invG(0,1)*Q(2,0))*Q(1,1); J(8,8)=(invG(1,0)*Q(2,1)-invG(1,1)*Q(2,0))*Q(0,2)+(-invG(0,0)*Q(2,1)+invG(0,1)*Q(2,0))*Q(1,2);
 }
 
 // another method based on the relation : M=QS -> dQ = (dM - Q dS)S^-1  ->  dQ = (dM - dSOverdM.dM)S^-1  -> dQ = JdM
@@ -893,15 +893,15 @@ void Decompose<Real>::polarDecompositionGradient_dS( const type::Mat<3,3,Real>& 
 template<class Real>
 void Decompose<Real>::polarDecompositionGradient_dSOverdM(const type::Mat<3,3,Real> &Q, const type::Mat<3,3,Real> &M, const  type::Mat<3,3,Real>& invG,  type::Mat<9,9,Real>& J)
 {
-J[0][0]=Q[0][0]*(1-(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*M[1][0]-(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*M[2][0])+Q[1][0]*(-(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*M[0][0]-(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*M[2][0])+Q[2][0]*(-(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*M[0][0]-(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*M[1][0]); J[0][1]=Q[0][0]*(-(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*M[1][0]-(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*M[2][0])+Q[1][0]*(-(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*M[0][0]-(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*M[2][0])+Q[2][0]*(-(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*M[0][0]-(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*M[1][0]); J[0][2]=Q[0][0]*(-(invG[2][0]*Q[0][1]-invG[2][1]*Q[0][0])*M[1][0]-(-invG[1][0]*Q[0][1]+invG[1][1]*Q[0][0])*M[2][0])+Q[1][0]*(-(-invG[2][0]*Q[0][1]+invG[2][1]*Q[0][0])*M[0][0]-(invG[0][0]*Q[0][1]-invG[0][1]*Q[0][0])*M[2][0])+Q[2][0]*(-(invG[1][0]*Q[0][1]-invG[1][1]*Q[0][0])*M[0][0]-(-invG[0][0]*Q[0][1]+invG[0][1]*Q[0][0])*M[1][0]); J[0][3]=Q[0][0]*(-(invG[2][1]*Q[1][2]-invG[2][2]*Q[1][1])*M[1][0]-(-invG[1][1]*Q[1][2]+invG[1][2]*Q[1][1])*M[2][0])+Q[1][0]*(1-(-invG[2][1]*Q[1][2]+invG[2][2]*Q[1][1])*M[0][0]-(invG[0][1]*Q[1][2]-invG[0][2]*Q[1][1])*M[2][0])+Q[2][0]*(-(invG[1][1]*Q[1][2]-invG[1][2]*Q[1][1])*M[0][0]-(-invG[0][1]*Q[1][2]+invG[0][2]*Q[1][1])*M[1][0]); J[0][4]=Q[0][0]*(-(-invG[2][0]*Q[1][2]+invG[2][2]*Q[1][0])*M[1][0]-(invG[1][0]*Q[1][2]-invG[1][2]*Q[1][0])*M[2][0])+Q[1][0]*(-(invG[2][0]*Q[1][2]-invG[2][2]*Q[1][0])*M[0][0]-(-invG[0][0]*Q[1][2]+invG[0][2]*Q[1][0])*M[2][0])+Q[2][0]*(-(-invG[1][0]*Q[1][2]+invG[1][2]*Q[1][0])*M[0][0]-(invG[0][0]*Q[1][2]-invG[0][2]*Q[1][0])*M[1][0]); J[0][5]=Q[0][0]*(-(invG[2][0]*Q[1][1]-invG[2][1]*Q[1][0])*M[1][0]-(-invG[1][0]*Q[1][1]+invG[1][1]*Q[1][0])*M[2][0])+Q[1][0]*(-(-invG[2][0]*Q[1][1]+invG[2][1]*Q[1][0])*M[0][0]-(invG[0][0]*Q[1][1]-invG[0][1]*Q[1][0])*M[2][0])+Q[2][0]*(-(invG[1][0]*Q[1][1]-invG[1][1]*Q[1][0])*M[0][0]-(-invG[0][0]*Q[1][1]+invG[0][1]*Q[1][0])*M[1][0]); J[0][6]=Q[0][0]*(-(invG[2][1]*Q[2][2]-invG[2][2]*Q[2][1])*M[1][0]-(-invG[1][1]*Q[2][2]+invG[1][2]*Q[2][1])*M[2][0])+Q[1][0]*(-(-invG[2][1]*Q[2][2]+invG[2][2]*Q[2][1])*M[0][0]-(invG[0][1]*Q[2][2]-invG[0][2]*Q[2][1])*M[2][0])+Q[2][0]*(1-(invG[1][1]*Q[2][2]-invG[1][2]*Q[2][1])*M[0][0]-(-invG[0][1]*Q[2][2]+invG[0][2]*Q[2][1])*M[1][0]); J[0][7]=Q[0][0]*(-(-invG[2][0]*Q[2][2]+invG[2][2]*Q[2][0])*M[1][0]-(invG[1][0]*Q[2][2]-invG[1][2]*Q[2][0])*M[2][0])+Q[1][0]*(-(invG[2][0]*Q[2][2]-invG[2][2]*Q[2][0])*M[0][0]-(-invG[0][0]*Q[2][2]+invG[0][2]*Q[2][0])*M[2][0])+Q[2][0]*(-(-invG[1][0]*Q[2][2]+invG[1][2]*Q[2][0])*M[0][0]-(invG[0][0]*Q[2][2]-invG[0][2]*Q[2][0])*M[1][0]); J[0][8]=Q[0][0]*(-(invG[2][0]*Q[2][1]-invG[2][1]*Q[2][0])*M[1][0]-(-invG[1][0]*Q[2][1]+invG[1][1]*Q[2][0])*M[2][0])+Q[1][0]*(-(-invG[2][0]*Q[2][1]+invG[2][1]*Q[2][0])*M[0][0]-(invG[0][0]*Q[2][1]-invG[0][1]*Q[2][0])*M[2][0])+Q[2][0]*(-(invG[1][0]*Q[2][1]-invG[1][1]*Q[2][0])*M[0][0]-(-invG[0][0]*Q[2][1]+invG[0][1]*Q[2][0])*M[1][0]);
-J[1][0]=Q[0][0]*(-(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*M[1][1]-(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*M[2][1])+Q[1][0]*(-(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*M[0][1]-(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*M[2][1])+Q[2][0]*(-(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*M[0][1]-(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*M[1][1]); J[1][1]=Q[0][0]*(1-(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*M[1][1]-(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*M[2][1])+Q[1][0]*(-(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*M[0][1]-(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*M[2][1])+Q[2][0]*(-(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*M[0][1]-(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*M[1][1]); J[1][2]=Q[0][0]*(-(invG[2][0]*Q[0][1]-invG[2][1]*Q[0][0])*M[1][1]-(-invG[1][0]*Q[0][1]+invG[1][1]*Q[0][0])*M[2][1])+Q[1][0]*(-(-invG[2][0]*Q[0][1]+invG[2][1]*Q[0][0])*M[0][1]-(invG[0][0]*Q[0][1]-invG[0][1]*Q[0][0])*M[2][1])+Q[2][0]*(-(invG[1][0]*Q[0][1]-invG[1][1]*Q[0][0])*M[0][1]-(-invG[0][0]*Q[0][1]+invG[0][1]*Q[0][0])*M[1][1]); J[1][3]=Q[0][0]*(-(invG[2][1]*Q[1][2]-invG[2][2]*Q[1][1])*M[1][1]-(-invG[1][1]*Q[1][2]+invG[1][2]*Q[1][1])*M[2][1])+Q[1][0]*(-(-invG[2][1]*Q[1][2]+invG[2][2]*Q[1][1])*M[0][1]-(invG[0][1]*Q[1][2]-invG[0][2]*Q[1][1])*M[2][1])+Q[2][0]*(-(invG[1][1]*Q[1][2]-invG[1][2]*Q[1][1])*M[0][1]-(-invG[0][1]*Q[1][2]+invG[0][2]*Q[1][1])*M[1][1]); J[1][4]=Q[0][0]*(-(-invG[2][0]*Q[1][2]+invG[2][2]*Q[1][0])*M[1][1]-(invG[1][0]*Q[1][2]-invG[1][2]*Q[1][0])*M[2][1])+Q[1][0]*(1-(invG[2][0]*Q[1][2]-invG[2][2]*Q[1][0])*M[0][1]-(-invG[0][0]*Q[1][2]+invG[0][2]*Q[1][0])*M[2][1])+Q[2][0]*(-(-invG[1][0]*Q[1][2]+invG[1][2]*Q[1][0])*M[0][1]-(invG[0][0]*Q[1][2]-invG[0][2]*Q[1][0])*M[1][1]); J[1][5]=Q[0][0]*(-(invG[2][0]*Q[1][1]-invG[2][1]*Q[1][0])*M[1][1]-(-invG[1][0]*Q[1][1]+invG[1][1]*Q[1][0])*M[2][1])+Q[1][0]*(-(-invG[2][0]*Q[1][1]+invG[2][1]*Q[1][0])*M[0][1]-(invG[0][0]*Q[1][1]-invG[0][1]*Q[1][0])*M[2][1])+Q[2][0]*(-(invG[1][0]*Q[1][1]-invG[1][1]*Q[1][0])*M[0][1]-(-invG[0][0]*Q[1][1]+invG[0][1]*Q[1][0])*M[1][1]); J[1][6]=Q[0][0]*(-(invG[2][1]*Q[2][2]-invG[2][2]*Q[2][1])*M[1][1]-(-invG[1][1]*Q[2][2]+invG[1][2]*Q[2][1])*M[2][1])+Q[1][0]*(-(-invG[2][1]*Q[2][2]+invG[2][2]*Q[2][1])*M[0][1]-(invG[0][1]*Q[2][2]-invG[0][2]*Q[2][1])*M[2][1])+Q[2][0]*(-(invG[1][1]*Q[2][2]-invG[1][2]*Q[2][1])*M[0][1]-(-invG[0][1]*Q[2][2]+invG[0][2]*Q[2][1])*M[1][1]); J[1][7]=Q[0][0]*(-(-invG[2][0]*Q[2][2]+invG[2][2]*Q[2][0])*M[1][1]-(invG[1][0]*Q[2][2]-invG[1][2]*Q[2][0])*M[2][1])+Q[1][0]*(-(invG[2][0]*Q[2][2]-invG[2][2]*Q[2][0])*M[0][1]-(-invG[0][0]*Q[2][2]+invG[0][2]*Q[2][0])*M[2][1])+Q[2][0]*(1-(-invG[1][0]*Q[2][2]+invG[1][2]*Q[2][0])*M[0][1]-(invG[0][0]*Q[2][2]-invG[0][2]*Q[2][0])*M[1][1]); J[1][8]=Q[0][0]*(-(invG[2][0]*Q[2][1]-invG[2][1]*Q[2][0])*M[1][1]-(-invG[1][0]*Q[2][1]+invG[1][1]*Q[2][0])*M[2][1])+Q[1][0]*(-(-invG[2][0]*Q[2][1]+invG[2][1]*Q[2][0])*M[0][1]-(invG[0][0]*Q[2][1]-invG[0][1]*Q[2][0])*M[2][1])+Q[2][0]*(-(invG[1][0]*Q[2][1]-invG[1][1]*Q[2][0])*M[0][1]-(-invG[0][0]*Q[2][1]+invG[0][1]*Q[2][0])*M[1][1]);
-J[2][0]=Q[0][0]*(-(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*M[1][2]-(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*M[2][2])+Q[1][0]*(-(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*M[0][2]-(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*M[2][2])+Q[2][0]*(-(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*M[0][2]-(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*M[1][2]); J[2][1]=Q[0][0]*(-(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*M[1][2]-(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*M[2][2])+Q[1][0]*(-(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*M[0][2]-(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*M[2][2])+Q[2][0]*(-(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*M[0][2]-(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*M[1][2]); J[2][2]=Q[0][0]*(1-(invG[2][0]*Q[0][1]-invG[2][1]*Q[0][0])*M[1][2]-(-invG[1][0]*Q[0][1]+invG[1][1]*Q[0][0])*M[2][2])+Q[1][0]*(-(-invG[2][0]*Q[0][1]+invG[2][1]*Q[0][0])*M[0][2]-(invG[0][0]*Q[0][1]-invG[0][1]*Q[0][0])*M[2][2])+Q[2][0]*(-(invG[1][0]*Q[0][1]-invG[1][1]*Q[0][0])*M[0][2]-(-invG[0][0]*Q[0][1]+invG[0][1]*Q[0][0])*M[1][2]); J[2][3]=Q[0][0]*(-(invG[2][1]*Q[1][2]-invG[2][2]*Q[1][1])*M[1][2]-(-invG[1][1]*Q[1][2]+invG[1][2]*Q[1][1])*M[2][2])+Q[1][0]*(-(-invG[2][1]*Q[1][2]+invG[2][2]*Q[1][1])*M[0][2]-(invG[0][1]*Q[1][2]-invG[0][2]*Q[1][1])*M[2][2])+Q[2][0]*(-(invG[1][1]*Q[1][2]-invG[1][2]*Q[1][1])*M[0][2]-(-invG[0][1]*Q[1][2]+invG[0][2]*Q[1][1])*M[1][2]); J[2][4]=Q[0][0]*(-(-invG[2][0]*Q[1][2]+invG[2][2]*Q[1][0])*M[1][2]-(invG[1][0]*Q[1][2]-invG[1][2]*Q[1][0])*M[2][2])+Q[1][0]*(-(invG[2][0]*Q[1][2]-invG[2][2]*Q[1][0])*M[0][2]-(-invG[0][0]*Q[1][2]+invG[0][2]*Q[1][0])*M[2][2])+Q[2][0]*(-(-invG[1][0]*Q[1][2]+invG[1][2]*Q[1][0])*M[0][2]-(invG[0][0]*Q[1][2]-invG[0][2]*Q[1][0])*M[1][2]); J[2][5]=Q[0][0]*(-(invG[2][0]*Q[1][1]-invG[2][1]*Q[1][0])*M[1][2]-(-invG[1][0]*Q[1][1]+invG[1][1]*Q[1][0])*M[2][2])+Q[1][0]*(1-(-invG[2][0]*Q[1][1]+invG[2][1]*Q[1][0])*M[0][2]-(invG[0][0]*Q[1][1]-invG[0][1]*Q[1][0])*M[2][2])+Q[2][0]*(-(invG[1][0]*Q[1][1]-invG[1][1]*Q[1][0])*M[0][2]-(-invG[0][0]*Q[1][1]+invG[0][1]*Q[1][0])*M[1][2]); J[2][6]=Q[0][0]*(-(invG[2][1]*Q[2][2]-invG[2][2]*Q[2][1])*M[1][2]-(-invG[1][1]*Q[2][2]+invG[1][2]*Q[2][1])*M[2][2])+Q[1][0]*(-(-invG[2][1]*Q[2][2]+invG[2][2]*Q[2][1])*M[0][2]-(invG[0][1]*Q[2][2]-invG[0][2]*Q[2][1])*M[2][2])+Q[2][0]*(-(invG[1][1]*Q[2][2]-invG[1][2]*Q[2][1])*M[0][2]-(-invG[0][1]*Q[2][2]+invG[0][2]*Q[2][1])*M[1][2]); J[2][7]=Q[0][0]*(-(-invG[2][0]*Q[2][2]+invG[2][2]*Q[2][0])*M[1][2]-(invG[1][0]*Q[2][2]-invG[1][2]*Q[2][0])*M[2][2])+Q[1][0]*(-(invG[2][0]*Q[2][2]-invG[2][2]*Q[2][0])*M[0][2]-(-invG[0][0]*Q[2][2]+invG[0][2]*Q[2][0])*M[2][2])+Q[2][0]*(-(-invG[1][0]*Q[2][2]+invG[1][2]*Q[2][0])*M[0][2]-(invG[0][0]*Q[2][2]-invG[0][2]*Q[2][0])*M[1][2]); J[2][8]=Q[0][0]*(-(invG[2][0]*Q[2][1]-invG[2][1]*Q[2][0])*M[1][2]-(-invG[1][0]*Q[2][1]+invG[1][1]*Q[2][0])*M[2][2])+Q[1][0]*(-(-invG[2][0]*Q[2][1]+invG[2][1]*Q[2][0])*M[0][2]-(invG[0][0]*Q[2][1]-invG[0][1]*Q[2][0])*M[2][2])+Q[2][0]*(1-(invG[1][0]*Q[2][1]-invG[1][1]*Q[2][0])*M[0][2]-(-invG[0][0]*Q[2][1]+invG[0][1]*Q[2][0])*M[1][2]);
-J(3)=J(1); //J[3][0]=Q[0][1]*(1-(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*M[1][0]-(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*M[2][0])+Q[1][1]*(-(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*M[0][0]-(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*M[2][0])+Q[2][1]*(-(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*M[0][0]-(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*M[1][0]); J[3][1]=Q[0][1]*(-(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*M[1][0]-(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*M[2][0])+Q[1][1]*(-(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*M[0][0]-(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*M[2][0])+Q[2][1]*(-(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*M[0][0]-(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*M[1][0]); J[3][2]=Q[0][1]*(-(invG[2][0]*Q[0][1]-invG[2][1]*Q[0][0])*M[1][0]-(-invG[1][0]*Q[0][1]+invG[1][1]*Q[0][0])*M[2][0])+Q[1][1]*(-(-invG[2][0]*Q[0][1]+invG[2][1]*Q[0][0])*M[0][0]-(invG[0][0]*Q[0][1]-invG[0][1]*Q[0][0])*M[2][0])+Q[2][1]*(-(invG[1][0]*Q[0][1]-invG[1][1]*Q[0][0])*M[0][0]-(-invG[0][0]*Q[0][1]+invG[0][1]*Q[0][0])*M[1][0]); J[3][3]=Q[0][1]*(-(invG[2][1]*Q[1][2]-invG[2][2]*Q[1][1])*M[1][0]-(-invG[1][1]*Q[1][2]+invG[1][2]*Q[1][1])*M[2][0])+Q[1][1]*(1-(-invG[2][1]*Q[1][2]+invG[2][2]*Q[1][1])*M[0][0]-(invG[0][1]*Q[1][2]-invG[0][2]*Q[1][1])*M[2][0])+Q[2][1]*(-(invG[1][1]*Q[1][2]-invG[1][2]*Q[1][1])*M[0][0]-(-invG[0][1]*Q[1][2]+invG[0][2]*Q[1][1])*M[1][0]); J[3][4]=Q[0][1]*(-(-invG[2][0]*Q[1][2]+invG[2][2]*Q[1][0])*M[1][0]-(invG[1][0]*Q[1][2]-invG[1][2]*Q[1][0])*M[2][0])+Q[1][1]*(-(invG[2][0]*Q[1][2]-invG[2][2]*Q[1][0])*M[0][0]-(-invG[0][0]*Q[1][2]+invG[0][2]*Q[1][0])*M[2][0])+Q[2][1]*(-(-invG[1][0]*Q[1][2]+invG[1][2]*Q[1][0])*M[0][0]-(invG[0][0]*Q[1][2]-invG[0][2]*Q[1][0])*M[1][0]); J[3][5]=Q[0][1]*(-(invG[2][0]*Q[1][1]-invG[2][1]*Q[1][0])*M[1][0]-(-invG[1][0]*Q[1][1]+invG[1][1]*Q[1][0])*M[2][0])+Q[1][1]*(-(-invG[2][0]*Q[1][1]+invG[2][1]*Q[1][0])*M[0][0]-(invG[0][0]*Q[1][1]-invG[0][1]*Q[1][0])*M[2][0])+Q[2][1]*(-(invG[1][0]*Q[1][1]-invG[1][1]*Q[1][0])*M[0][0]-(-invG[0][0]*Q[1][1]+invG[0][1]*Q[1][0])*M[1][0]); J[3][6]=Q[0][1]*(-(invG[2][1]*Q[2][2]-invG[2][2]*Q[2][1])*M[1][0]-(-invG[1][1]*Q[2][2]+invG[1][2]*Q[2][1])*M[2][0])+Q[1][1]*(-(-invG[2][1]*Q[2][2]+invG[2][2]*Q[2][1])*M[0][0]-(invG[0][1]*Q[2][2]-invG[0][2]*Q[2][1])*M[2][0])+Q[2][1]*(1-(invG[1][1]*Q[2][2]-invG[1][2]*Q[2][1])*M[0][0]-(-invG[0][1]*Q[2][2]+invG[0][2]*Q[2][1])*M[1][0]); J[3][7]=Q[0][1]*(-(-invG[2][0]*Q[2][2]+invG[2][2]*Q[2][0])*M[1][0]-(invG[1][0]*Q[2][2]-invG[1][2]*Q[2][0])*M[2][0])+Q[1][1]*(-(invG[2][0]*Q[2][2]-invG[2][2]*Q[2][0])*M[0][0]-(-invG[0][0]*Q[2][2]+invG[0][2]*Q[2][0])*M[2][0])+Q[2][1]*(-(-invG[1][0]*Q[2][2]+invG[1][2]*Q[2][0])*M[0][0]-(invG[0][0]*Q[2][2]-invG[0][2]*Q[2][0])*M[1][0]); J[3][8]=Q[0][1]*(-(invG[2][0]*Q[2][1]-invG[2][1]*Q[2][0])*M[1][0]-(-invG[1][0]*Q[2][1]+invG[1][1]*Q[2][0])*M[2][0])+Q[1][1]*(-(-invG[2][0]*Q[2][1]+invG[2][1]*Q[2][0])*M[0][0]-(invG[0][0]*Q[2][1]-invG[0][1]*Q[2][0])*M[2][0])+Q[2][1]*(-(invG[1][0]*Q[2][1]-invG[1][1]*Q[2][0])*M[0][0]-(-invG[0][0]*Q[2][1]+invG[0][1]*Q[2][0])*M[1][0]);
-J[4][0]=Q[0][1]*(-(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*M[1][1]-(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*M[2][1])+Q[1][1]*(-(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*M[0][1]-(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*M[2][1])+Q[2][1]*(-(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*M[0][1]-(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*M[1][1]); J[4][1]=Q[0][1]*(1-(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*M[1][1]-(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*M[2][1])+Q[1][1]*(-(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*M[0][1]-(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*M[2][1])+Q[2][1]*(-(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*M[0][1]-(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*M[1][1]); J[4][2]=Q[0][1]*(-(invG[2][0]*Q[0][1]-invG[2][1]*Q[0][0])*M[1][1]-(-invG[1][0]*Q[0][1]+invG[1][1]*Q[0][0])*M[2][1])+Q[1][1]*(-(-invG[2][0]*Q[0][1]+invG[2][1]*Q[0][0])*M[0][1]-(invG[0][0]*Q[0][1]-invG[0][1]*Q[0][0])*M[2][1])+Q[2][1]*(-(invG[1][0]*Q[0][1]-invG[1][1]*Q[0][0])*M[0][1]-(-invG[0][0]*Q[0][1]+invG[0][1]*Q[0][0])*M[1][1]); J[4][3]=Q[0][1]*(-(invG[2][1]*Q[1][2]-invG[2][2]*Q[1][1])*M[1][1]-(-invG[1][1]*Q[1][2]+invG[1][2]*Q[1][1])*M[2][1])+Q[1][1]*(-(-invG[2][1]*Q[1][2]+invG[2][2]*Q[1][1])*M[0][1]-(invG[0][1]*Q[1][2]-invG[0][2]*Q[1][1])*M[2][1])+Q[2][1]*(-(invG[1][1]*Q[1][2]-invG[1][2]*Q[1][1])*M[0][1]-(-invG[0][1]*Q[1][2]+invG[0][2]*Q[1][1])*M[1][1]); J[4][4]=Q[0][1]*(-(-invG[2][0]*Q[1][2]+invG[2][2]*Q[1][0])*M[1][1]-(invG[1][0]*Q[1][2]-invG[1][2]*Q[1][0])*M[2][1])+Q[1][1]*(1-(invG[2][0]*Q[1][2]-invG[2][2]*Q[1][0])*M[0][1]-(-invG[0][0]*Q[1][2]+invG[0][2]*Q[1][0])*M[2][1])+Q[2][1]*(-(-invG[1][0]*Q[1][2]+invG[1][2]*Q[1][0])*M[0][1]-(invG[0][0]*Q[1][2]-invG[0][2]*Q[1][0])*M[1][1]); J[4][5]=Q[0][1]*(-(invG[2][0]*Q[1][1]-invG[2][1]*Q[1][0])*M[1][1]-(-invG[1][0]*Q[1][1]+invG[1][1]*Q[1][0])*M[2][1])+Q[1][1]*(-(-invG[2][0]*Q[1][1]+invG[2][1]*Q[1][0])*M[0][1]-(invG[0][0]*Q[1][1]-invG[0][1]*Q[1][0])*M[2][1])+Q[2][1]*(-(invG[1][0]*Q[1][1]-invG[1][1]*Q[1][0])*M[0][1]-(-invG[0][0]*Q[1][1]+invG[0][1]*Q[1][0])*M[1][1]); J[4][6]=Q[0][1]*(-(invG[2][1]*Q[2][2]-invG[2][2]*Q[2][1])*M[1][1]-(-invG[1][1]*Q[2][2]+invG[1][2]*Q[2][1])*M[2][1])+Q[1][1]*(-(-invG[2][1]*Q[2][2]+invG[2][2]*Q[2][1])*M[0][1]-(invG[0][1]*Q[2][2]-invG[0][2]*Q[2][1])*M[2][1])+Q[2][1]*(-(invG[1][1]*Q[2][2]-invG[1][2]*Q[2][1])*M[0][1]-(-invG[0][1]*Q[2][2]+invG[0][2]*Q[2][1])*M[1][1]); J[4][7]=Q[0][1]*(-(-invG[2][0]*Q[2][2]+invG[2][2]*Q[2][0])*M[1][1]-(invG[1][0]*Q[2][2]-invG[1][2]*Q[2][0])*M[2][1])+Q[1][1]*(-(invG[2][0]*Q[2][2]-invG[2][2]*Q[2][0])*M[0][1]-(-invG[0][0]*Q[2][2]+invG[0][2]*Q[2][0])*M[2][1])+Q[2][1]*(1-(-invG[1][0]*Q[2][2]+invG[1][2]*Q[2][0])*M[0][1]-(invG[0][0]*Q[2][2]-invG[0][2]*Q[2][0])*M[1][1]); J[4][8]=Q[0][1]*(-(invG[2][0]*Q[2][1]-invG[2][1]*Q[2][0])*M[1][1]-(-invG[1][0]*Q[2][1]+invG[1][1]*Q[2][0])*M[2][1])+Q[1][1]*(-(-invG[2][0]*Q[2][1]+invG[2][1]*Q[2][0])*M[0][1]-(invG[0][0]*Q[2][1]-invG[0][1]*Q[2][0])*M[2][1])+Q[2][1]*(-(invG[1][0]*Q[2][1]-invG[1][1]*Q[2][0])*M[0][1]-(-invG[0][0]*Q[2][1]+invG[0][1]*Q[2][0])*M[1][1]);
-J[5][0]=Q[0][1]*(-(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*M[1][2]-(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*M[2][2])+Q[1][1]*(-(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*M[0][2]-(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*M[2][2])+Q[2][1]*(-(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*M[0][2]-(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*M[1][2]); J[5][1]=Q[0][1]*(-(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*M[1][2]-(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*M[2][2])+Q[1][1]*(-(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*M[0][2]-(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*M[2][2])+Q[2][1]*(-(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*M[0][2]-(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*M[1][2]); J[5][2]=Q[0][1]*(1-(invG[2][0]*Q[0][1]-invG[2][1]*Q[0][0])*M[1][2]-(-invG[1][0]*Q[0][1]+invG[1][1]*Q[0][0])*M[2][2])+Q[1][1]*(-(-invG[2][0]*Q[0][1]+invG[2][1]*Q[0][0])*M[0][2]-(invG[0][0]*Q[0][1]-invG[0][1]*Q[0][0])*M[2][2])+Q[2][1]*(-(invG[1][0]*Q[0][1]-invG[1][1]*Q[0][0])*M[0][2]-(-invG[0][0]*Q[0][1]+invG[0][1]*Q[0][0])*M[1][2]); J[5][3]=Q[0][1]*(-(invG[2][1]*Q[1][2]-invG[2][2]*Q[1][1])*M[1][2]-(-invG[1][1]*Q[1][2]+invG[1][2]*Q[1][1])*M[2][2])+Q[1][1]*(-(-invG[2][1]*Q[1][2]+invG[2][2]*Q[1][1])*M[0][2]-(invG[0][1]*Q[1][2]-invG[0][2]*Q[1][1])*M[2][2])+Q[2][1]*(-(invG[1][1]*Q[1][2]-invG[1][2]*Q[1][1])*M[0][2]-(-invG[0][1]*Q[1][2]+invG[0][2]*Q[1][1])*M[1][2]); J[5][4]=Q[0][1]*(-(-invG[2][0]*Q[1][2]+invG[2][2]*Q[1][0])*M[1][2]-(invG[1][0]*Q[1][2]-invG[1][2]*Q[1][0])*M[2][2])+Q[1][1]*(-(invG[2][0]*Q[1][2]-invG[2][2]*Q[1][0])*M[0][2]-(-invG[0][0]*Q[1][2]+invG[0][2]*Q[1][0])*M[2][2])+Q[2][1]*(-(-invG[1][0]*Q[1][2]+invG[1][2]*Q[1][0])*M[0][2]-(invG[0][0]*Q[1][2]-invG[0][2]*Q[1][0])*M[1][2]); J[5][5]=Q[0][1]*(-(invG[2][0]*Q[1][1]-invG[2][1]*Q[1][0])*M[1][2]-(-invG[1][0]*Q[1][1]+invG[1][1]*Q[1][0])*M[2][2])+Q[1][1]*(1-(-invG[2][0]*Q[1][1]+invG[2][1]*Q[1][0])*M[0][2]-(invG[0][0]*Q[1][1]-invG[0][1]*Q[1][0])*M[2][2])+Q[2][1]*(-(invG[1][0]*Q[1][1]-invG[1][1]*Q[1][0])*M[0][2]-(-invG[0][0]*Q[1][1]+invG[0][1]*Q[1][0])*M[1][2]); J[5][6]=Q[0][1]*(-(invG[2][1]*Q[2][2]-invG[2][2]*Q[2][1])*M[1][2]-(-invG[1][1]*Q[2][2]+invG[1][2]*Q[2][1])*M[2][2])+Q[1][1]*(-(-invG[2][1]*Q[2][2]+invG[2][2]*Q[2][1])*M[0][2]-(invG[0][1]*Q[2][2]-invG[0][2]*Q[2][1])*M[2][2])+Q[2][1]*(-(invG[1][1]*Q[2][2]-invG[1][2]*Q[2][1])*M[0][2]-(-invG[0][1]*Q[2][2]+invG[0][2]*Q[2][1])*M[1][2]); J[5][7]=Q[0][1]*(-(-invG[2][0]*Q[2][2]+invG[2][2]*Q[2][0])*M[1][2]-(invG[1][0]*Q[2][2]-invG[1][2]*Q[2][0])*M[2][2])+Q[1][1]*(-(invG[2][0]*Q[2][2]-invG[2][2]*Q[2][0])*M[0][2]-(-invG[0][0]*Q[2][2]+invG[0][2]*Q[2][0])*M[2][2])+Q[2][1]*(-(-invG[1][0]*Q[2][2]+invG[1][2]*Q[2][0])*M[0][2]-(invG[0][0]*Q[2][2]-invG[0][2]*Q[2][0])*M[1][2]); J[5][8]=Q[0][1]*(-(invG[2][0]*Q[2][1]-invG[2][1]*Q[2][0])*M[1][2]-(-invG[1][0]*Q[2][1]+invG[1][1]*Q[2][0])*M[2][2])+Q[1][1]*(-(-invG[2][0]*Q[2][1]+invG[2][1]*Q[2][0])*M[0][2]-(invG[0][0]*Q[2][1]-invG[0][1]*Q[2][0])*M[2][2])+Q[2][1]*(1-(invG[1][0]*Q[2][1]-invG[1][1]*Q[2][0])*M[0][2]-(-invG[0][0]*Q[2][1]+invG[0][1]*Q[2][0])*M[1][2]);
-J(6)=J(2); //J[6][0]=Q[0][2]*(1-(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*M[1][0]-(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*M[2][0])+Q[1][2]*(-(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*M[0][0]-(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*M[2][0])+Q[2][2]*(-(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*M[0][0]-(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*M[1][0]); J[6][1]=Q[0][2]*(-(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*M[1][0]-(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*M[2][0])+Q[1][2]*(-(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*M[0][0]-(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*M[2][0])+Q[2][2]*(-(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*M[0][0]-(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*M[1][0]); J[6][2]=Q[0][2]*(-(invG[2][0]*Q[0][1]-invG[2][1]*Q[0][0])*M[1][0]-(-invG[1][0]*Q[0][1]+invG[1][1]*Q[0][0])*M[2][0])+Q[1][2]*(-(-invG[2][0]*Q[0][1]+invG[2][1]*Q[0][0])*M[0][0]-(invG[0][0]*Q[0][1]-invG[0][1]*Q[0][0])*M[2][0])+Q[2][2]*(-(invG[1][0]*Q[0][1]-invG[1][1]*Q[0][0])*M[0][0]-(-invG[0][0]*Q[0][1]+invG[0][1]*Q[0][0])*M[1][0]); J[6][3]=Q[0][2]*(-(invG[2][1]*Q[1][2]-invG[2][2]*Q[1][1])*M[1][0]-(-invG[1][1]*Q[1][2]+invG[1][2]*Q[1][1])*M[2][0])+Q[1][2]*(1-(-invG[2][1]*Q[1][2]+invG[2][2]*Q[1][1])*M[0][0]-(invG[0][1]*Q[1][2]-invG[0][2]*Q[1][1])*M[2][0])+Q[2][2]*(-(invG[1][1]*Q[1][2]-invG[1][2]*Q[1][1])*M[0][0]-(-invG[0][1]*Q[1][2]+invG[0][2]*Q[1][1])*M[1][0]); J[6][4]=Q[0][2]*(-(-invG[2][0]*Q[1][2]+invG[2][2]*Q[1][0])*M[1][0]-(invG[1][0]*Q[1][2]-invG[1][2]*Q[1][0])*M[2][0])+Q[1][2]*(-(invG[2][0]*Q[1][2]-invG[2][2]*Q[1][0])*M[0][0]-(-invG[0][0]*Q[1][2]+invG[0][2]*Q[1][0])*M[2][0])+Q[2][2]*(-(-invG[1][0]*Q[1][2]+invG[1][2]*Q[1][0])*M[0][0]-(invG[0][0]*Q[1][2]-invG[0][2]*Q[1][0])*M[1][0]); J[6][5]=Q[0][2]*(-(invG[2][0]*Q[1][1]-invG[2][1]*Q[1][0])*M[1][0]-(-invG[1][0]*Q[1][1]+invG[1][1]*Q[1][0])*M[2][0])+Q[1][2]*(-(-invG[2][0]*Q[1][1]+invG[2][1]*Q[1][0])*M[0][0]-(invG[0][0]*Q[1][1]-invG[0][1]*Q[1][0])*M[2][0])+Q[2][2]*(-(invG[1][0]*Q[1][1]-invG[1][1]*Q[1][0])*M[0][0]-(-invG[0][0]*Q[1][1]+invG[0][1]*Q[1][0])*M[1][0]); J[6][6]=Q[0][2]*(-(invG[2][1]*Q[2][2]-invG[2][2]*Q[2][1])*M[1][0]-(-invG[1][1]*Q[2][2]+invG[1][2]*Q[2][1])*M[2][0])+Q[1][2]*(-(-invG[2][1]*Q[2][2]+invG[2][2]*Q[2][1])*M[0][0]-(invG[0][1]*Q[2][2]-invG[0][2]*Q[2][1])*M[2][0])+Q[2][2]*(1-(invG[1][1]*Q[2][2]-invG[1][2]*Q[2][1])*M[0][0]-(-invG[0][1]*Q[2][2]+invG[0][2]*Q[2][1])*M[1][0]); J[6][7]=Q[0][2]*(-(-invG[2][0]*Q[2][2]+invG[2][2]*Q[2][0])*M[1][0]-(invG[1][0]*Q[2][2]-invG[1][2]*Q[2][0])*M[2][0])+Q[1][2]*(-(invG[2][0]*Q[2][2]-invG[2][2]*Q[2][0])*M[0][0]-(-invG[0][0]*Q[2][2]+invG[0][2]*Q[2][0])*M[2][0])+Q[2][2]*(-(-invG[1][0]*Q[2][2]+invG[1][2]*Q[2][0])*M[0][0]-(invG[0][0]*Q[2][2]-invG[0][2]*Q[2][0])*M[1][0]); J[6][8]=Q[0][2]*(-(invG[2][0]*Q[2][1]-invG[2][1]*Q[2][0])*M[1][0]-(-invG[1][0]*Q[2][1]+invG[1][1]*Q[2][0])*M[2][0])+Q[1][2]*(-(-invG[2][0]*Q[2][1]+invG[2][1]*Q[2][0])*M[0][0]-(invG[0][0]*Q[2][1]-invG[0][1]*Q[2][0])*M[2][0])+Q[2][2]*(-(invG[1][0]*Q[2][1]-invG[1][1]*Q[2][0])*M[0][0]-(-invG[0][0]*Q[2][1]+invG[0][1]*Q[2][0])*M[1][0]);
-J(7)=J(5); //J[7][0]=Q[0][2]*(-(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*M[1][1]-(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*M[2][1])+Q[1][2]*(-(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*M[0][1]-(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*M[2][1])+Q[2][2]*(-(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*M[0][1]-(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*M[1][1]); J[7][1]=Q[0][2]*(1-(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*M[1][1]-(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*M[2][1])+Q[1][2]*(-(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*M[0][1]-(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*M[2][1])+Q[2][2]*(-(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*M[0][1]-(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*M[1][1]); J[7][2]=Q[0][2]*(-(invG[2][0]*Q[0][1]-invG[2][1]*Q[0][0])*M[1][1]-(-invG[1][0]*Q[0][1]+invG[1][1]*Q[0][0])*M[2][1])+Q[1][2]*(-(-invG[2][0]*Q[0][1]+invG[2][1]*Q[0][0])*M[0][1]-(invG[0][0]*Q[0][1]-invG[0][1]*Q[0][0])*M[2][1])+Q[2][2]*(-(invG[1][0]*Q[0][1]-invG[1][1]*Q[0][0])*M[0][1]-(-invG[0][0]*Q[0][1]+invG[0][1]*Q[0][0])*M[1][1]); J[7][3]=Q[0][2]*(-(invG[2][1]*Q[1][2]-invG[2][2]*Q[1][1])*M[1][1]-(-invG[1][1]*Q[1][2]+invG[1][2]*Q[1][1])*M[2][1])+Q[1][2]*(-(-invG[2][1]*Q[1][2]+invG[2][2]*Q[1][1])*M[0][1]-(invG[0][1]*Q[1][2]-invG[0][2]*Q[1][1])*M[2][1])+Q[2][2]*(-(invG[1][1]*Q[1][2]-invG[1][2]*Q[1][1])*M[0][1]-(-invG[0][1]*Q[1][2]+invG[0][2]*Q[1][1])*M[1][1]); J[7][4]=Q[0][2]*(-(-invG[2][0]*Q[1][2]+invG[2][2]*Q[1][0])*M[1][1]-(invG[1][0]*Q[1][2]-invG[1][2]*Q[1][0])*M[2][1])+Q[1][2]*(1-(invG[2][0]*Q[1][2]-invG[2][2]*Q[1][0])*M[0][1]-(-invG[0][0]*Q[1][2]+invG[0][2]*Q[1][0])*M[2][1])+Q[2][2]*(-(-invG[1][0]*Q[1][2]+invG[1][2]*Q[1][0])*M[0][1]-(invG[0][0]*Q[1][2]-invG[0][2]*Q[1][0])*M[1][1]); J[7][5]=Q[0][2]*(-(invG[2][0]*Q[1][1]-invG[2][1]*Q[1][0])*M[1][1]-(-invG[1][0]*Q[1][1]+invG[1][1]*Q[1][0])*M[2][1])+Q[1][2]*(-(-invG[2][0]*Q[1][1]+invG[2][1]*Q[1][0])*M[0][1]-(invG[0][0]*Q[1][1]-invG[0][1]*Q[1][0])*M[2][1])+Q[2][2]*(-(invG[1][0]*Q[1][1]-invG[1][1]*Q[1][0])*M[0][1]-(-invG[0][0]*Q[1][1]+invG[0][1]*Q[1][0])*M[1][1]); J[7][6]=Q[0][2]*(-(invG[2][1]*Q[2][2]-invG[2][2]*Q[2][1])*M[1][1]-(-invG[1][1]*Q[2][2]+invG[1][2]*Q[2][1])*M[2][1])+Q[1][2]*(-(-invG[2][1]*Q[2][2]+invG[2][2]*Q[2][1])*M[0][1]-(invG[0][1]*Q[2][2]-invG[0][2]*Q[2][1])*M[2][1])+Q[2][2]*(-(invG[1][1]*Q[2][2]-invG[1][2]*Q[2][1])*M[0][1]-(-invG[0][1]*Q[2][2]+invG[0][2]*Q[2][1])*M[1][1]); J[7][7]=Q[0][2]*(-(-invG[2][0]*Q[2][2]+invG[2][2]*Q[2][0])*M[1][1]-(invG[1][0]*Q[2][2]-invG[1][2]*Q[2][0])*M[2][1])+Q[1][2]*(-(invG[2][0]*Q[2][2]-invG[2][2]*Q[2][0])*M[0][1]-(-invG[0][0]*Q[2][2]+invG[0][2]*Q[2][0])*M[2][1])+Q[2][2]*(1-(-invG[1][0]*Q[2][2]+invG[1][2]*Q[2][0])*M[0][1]-(invG[0][0]*Q[2][2]-invG[0][2]*Q[2][0])*M[1][1]); J[7][8]=Q[0][2]*(-(invG[2][0]*Q[2][1]-invG[2][1]*Q[2][0])*M[1][1]-(-invG[1][0]*Q[2][1]+invG[1][1]*Q[2][0])*M[2][1])+Q[1][2]*(-(-invG[2][0]*Q[2][1]+invG[2][1]*Q[2][0])*M[0][1]-(invG[0][0]*Q[2][1]-invG[0][1]*Q[2][0])*M[2][1])+Q[2][2]*(-(invG[1][0]*Q[2][1]-invG[1][1]*Q[2][0])*M[0][1]-(-invG[0][0]*Q[2][1]+invG[0][1]*Q[2][0])*M[1][1]);
-J[8][0]=Q[0][2]*(-(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*M[1][2]-(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*M[2][2])+Q[1][2]*(-(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*M[0][2]-(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*M[2][2])+Q[2][2]*(-(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*M[0][2]-(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*M[1][2]); J[8][1]=Q[0][2]*(-(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*M[1][2]-(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*M[2][2])+Q[1][2]*(-(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*M[0][2]-(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*M[2][2])+Q[2][2]*(-(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*M[0][2]-(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*M[1][2]); J[8][2]=Q[0][2]*(1-(invG[2][0]*Q[0][1]-invG[2][1]*Q[0][0])*M[1][2]-(-invG[1][0]*Q[0][1]+invG[1][1]*Q[0][0])*M[2][2])+Q[1][2]*(-(-invG[2][0]*Q[0][1]+invG[2][1]*Q[0][0])*M[0][2]-(invG[0][0]*Q[0][1]-invG[0][1]*Q[0][0])*M[2][2])+Q[2][2]*(-(invG[1][0]*Q[0][1]-invG[1][1]*Q[0][0])*M[0][2]-(-invG[0][0]*Q[0][1]+invG[0][1]*Q[0][0])*M[1][2]); J[8][3]=Q[0][2]*(-(invG[2][1]*Q[1][2]-invG[2][2]*Q[1][1])*M[1][2]-(-invG[1][1]*Q[1][2]+invG[1][2]*Q[1][1])*M[2][2])+Q[1][2]*(-(-invG[2][1]*Q[1][2]+invG[2][2]*Q[1][1])*M[0][2]-(invG[0][1]*Q[1][2]-invG[0][2]*Q[1][1])*M[2][2])+Q[2][2]*(-(invG[1][1]*Q[1][2]-invG[1][2]*Q[1][1])*M[0][2]-(-invG[0][1]*Q[1][2]+invG[0][2]*Q[1][1])*M[1][2]); J[8][4]=Q[0][2]*(-(-invG[2][0]*Q[1][2]+invG[2][2]*Q[1][0])*M[1][2]-(invG[1][0]*Q[1][2]-invG[1][2]*Q[1][0])*M[2][2])+Q[1][2]*(-(invG[2][0]*Q[1][2]-invG[2][2]*Q[1][0])*M[0][2]-(-invG[0][0]*Q[1][2]+invG[0][2]*Q[1][0])*M[2][2])+Q[2][2]*(-(-invG[1][0]*Q[1][2]+invG[1][2]*Q[1][0])*M[0][2]-(invG[0][0]*Q[1][2]-invG[0][2]*Q[1][0])*M[1][2]); J[8][5]=Q[0][2]*(-(invG[2][0]*Q[1][1]-invG[2][1]*Q[1][0])*M[1][2]-(-invG[1][0]*Q[1][1]+invG[1][1]*Q[1][0])*M[2][2])+Q[1][2]*(1-(-invG[2][0]*Q[1][1]+invG[2][1]*Q[1][0])*M[0][2]-(invG[0][0]*Q[1][1]-invG[0][1]*Q[1][0])*M[2][2])+Q[2][2]*(-(invG[1][0]*Q[1][1]-invG[1][1]*Q[1][0])*M[0][2]-(-invG[0][0]*Q[1][1]+invG[0][1]*Q[1][0])*M[1][2]); J[8][6]=Q[0][2]*(-(invG[2][1]*Q[2][2]-invG[2][2]*Q[2][1])*M[1][2]-(-invG[1][1]*Q[2][2]+invG[1][2]*Q[2][1])*M[2][2])+Q[1][2]*(-(-invG[2][1]*Q[2][2]+invG[2][2]*Q[2][1])*M[0][2]-(invG[0][1]*Q[2][2]-invG[0][2]*Q[2][1])*M[2][2])+Q[2][2]*(-(invG[1][1]*Q[2][2]-invG[1][2]*Q[2][1])*M[0][2]-(-invG[0][1]*Q[2][2]+invG[0][2]*Q[2][1])*M[1][2]); J[8][7]=Q[0][2]*(-(-invG[2][0]*Q[2][2]+invG[2][2]*Q[2][0])*M[1][2]-(invG[1][0]*Q[2][2]-invG[1][2]*Q[2][0])*M[2][2])+Q[1][2]*(-(invG[2][0]*Q[2][2]-invG[2][2]*Q[2][0])*M[0][2]-(-invG[0][0]*Q[2][2]+invG[0][2]*Q[2][0])*M[2][2])+Q[2][2]*(-(-invG[1][0]*Q[2][2]+invG[1][2]*Q[2][0])*M[0][2]-(invG[0][0]*Q[2][2]-invG[0][2]*Q[2][0])*M[1][2]); J[8][8]=Q[0][2]*(-(invG[2][0]*Q[2][1]-invG[2][1]*Q[2][0])*M[1][2]-(-invG[1][0]*Q[2][1]+invG[1][1]*Q[2][0])*M[2][2])+Q[1][2]*(-(-invG[2][0]*Q[2][1]+invG[2][1]*Q[2][0])*M[0][2]-(invG[0][0]*Q[2][1]-invG[0][1]*Q[2][0])*M[2][2])+Q[2][2]*(1-(invG[1][0]*Q[2][1]-invG[1][1]*Q[2][0])*M[0][2]-(-invG[0][0]*Q[2][1]+invG[0][1]*Q[2][0])*M[1][2]);
+J(0,0)=Q(0,0)*(1-(invG(2,1)*Q(0,2)-invG(2,2)*Q(0,1))*M(1,0)-(-invG(1,1)*Q(0,2)+invG(1,2)*Q(0,1))*M(2,0))+Q(1,0)*(-(-invG(2,1)*Q(0,2)+invG(2,2)*Q(0,1))*M(0,0)-(invG(0,1)*Q(0,2)-invG(0,2)*Q(0,1))*M(2,0))+Q(2,0)*(-(invG(1,1)*Q(0,2)-invG(1,2)*Q(0,1))*M(0,0)-(-invG(0,1)*Q(0,2)+invG(0,2)*Q(0,1))*M(1,0)); J(0,1)=Q(0,0)*(-(-invG(2,0)*Q(0,2)+invG(2,2)*Q(0,0))*M(1,0)-(invG(1,0)*Q(0,2)-invG(1,2)*Q(0,0))*M(2,0))+Q(1,0)*(-(invG(2,0)*Q(0,2)-invG(2,2)*Q(0,0))*M(0,0)-(-invG(0,0)*Q(0,2)+invG(0,2)*Q(0,0))*M(2,0))+Q(2,0)*(-(-invG(1,0)*Q(0,2)+invG(1,2)*Q(0,0))*M(0,0)-(invG(0,0)*Q(0,2)-invG(0,2)*Q(0,0))*M(1,0)); J(0,2)=Q(0,0)*(-(invG(2,0)*Q(0,1)-invG(2,1)*Q(0,0))*M(1,0)-(-invG(1,0)*Q(0,1)+invG(1,1)*Q(0,0))*M(2,0))+Q(1,0)*(-(-invG(2,0)*Q(0,1)+invG(2,1)*Q(0,0))*M(0,0)-(invG(0,0)*Q(0,1)-invG(0,1)*Q(0,0))*M(2,0))+Q(2,0)*(-(invG(1,0)*Q(0,1)-invG(1,1)*Q(0,0))*M(0,0)-(-invG(0,0)*Q(0,1)+invG(0,1)*Q(0,0))*M(1,0)); J(0,3)=Q(0,0)*(-(invG(2,1)*Q(1,2)-invG(2,2)*Q(1,1))*M(1,0)-(-invG(1,1)*Q(1,2)+invG(1,2)*Q(1,1))*M(2,0))+Q(1,0)*(1-(-invG(2,1)*Q(1,2)+invG(2,2)*Q(1,1))*M(0,0)-(invG(0,1)*Q(1,2)-invG(0,2)*Q(1,1))*M(2,0))+Q(2,0)*(-(invG(1,1)*Q(1,2)-invG(1,2)*Q(1,1))*M(0,0)-(-invG(0,1)*Q(1,2)+invG(0,2)*Q(1,1))*M(1,0)); J(0,4)=Q(0,0)*(-(-invG(2,0)*Q(1,2)+invG(2,2)*Q(1,0))*M(1,0)-(invG(1,0)*Q(1,2)-invG(1,2)*Q(1,0))*M(2,0))+Q(1,0)*(-(invG(2,0)*Q(1,2)-invG(2,2)*Q(1,0))*M(0,0)-(-invG(0,0)*Q(1,2)+invG(0,2)*Q(1,0))*M(2,0))+Q(2,0)*(-(-invG(1,0)*Q(1,2)+invG(1,2)*Q(1,0))*M(0,0)-(invG(0,0)*Q(1,2)-invG(0,2)*Q(1,0))*M(1,0)); J(0,5)=Q(0,0)*(-(invG(2,0)*Q(1,1)-invG(2,1)*Q(1,0))*M(1,0)-(-invG(1,0)*Q(1,1)+invG(1,1)*Q(1,0))*M(2,0))+Q(1,0)*(-(-invG(2,0)*Q(1,1)+invG(2,1)*Q(1,0))*M(0,0)-(invG(0,0)*Q(1,1)-invG(0,1)*Q(1,0))*M(2,0))+Q(2,0)*(-(invG(1,0)*Q(1,1)-invG(1,1)*Q(1,0))*M(0,0)-(-invG(0,0)*Q(1,1)+invG(0,1)*Q(1,0))*M(1,0)); J(0,6)=Q(0,0)*(-(invG(2,1)*Q(2,2)-invG(2,2)*Q(2,1))*M(1,0)-(-invG(1,1)*Q(2,2)+invG(1,2)*Q(2,1))*M(2,0))+Q(1,0)*(-(-invG(2,1)*Q(2,2)+invG(2,2)*Q(2,1))*M(0,0)-(invG(0,1)*Q(2,2)-invG(0,2)*Q(2,1))*M(2,0))+Q(2,0)*(1-(invG(1,1)*Q(2,2)-invG(1,2)*Q(2,1))*M(0,0)-(-invG(0,1)*Q(2,2)+invG(0,2)*Q(2,1))*M(1,0)); J(0,7)=Q(0,0)*(-(-invG(2,0)*Q(2,2)+invG(2,2)*Q(2,0))*M(1,0)-(invG(1,0)*Q(2,2)-invG(1,2)*Q(2,0))*M(2,0))+Q(1,0)*(-(invG(2,0)*Q(2,2)-invG(2,2)*Q(2,0))*M(0,0)-(-invG(0,0)*Q(2,2)+invG(0,2)*Q(2,0))*M(2,0))+Q(2,0)*(-(-invG(1,0)*Q(2,2)+invG(1,2)*Q(2,0))*M(0,0)-(invG(0,0)*Q(2,2)-invG(0,2)*Q(2,0))*M(1,0)); J(0,8)=Q(0,0)*(-(invG(2,0)*Q(2,1)-invG(2,1)*Q(2,0))*M(1,0)-(-invG(1,0)*Q(2,1)+invG(1,1)*Q(2,0))*M(2,0))+Q(1,0)*(-(-invG(2,0)*Q(2,1)+invG(2,1)*Q(2,0))*M(0,0)-(invG(0,0)*Q(2,1)-invG(0,1)*Q(2,0))*M(2,0))+Q(2,0)*(-(invG(1,0)*Q(2,1)-invG(1,1)*Q(2,0))*M(0,0)-(-invG(0,0)*Q(2,1)+invG(0,1)*Q(2,0))*M(1,0));
+J(1,0)=Q(0,0)*(-(invG(2,1)*Q(0,2)-invG(2,2)*Q(0,1))*M(1,1)-(-invG(1,1)*Q(0,2)+invG(1,2)*Q(0,1))*M(2,1))+Q(1,0)*(-(-invG(2,1)*Q(0,2)+invG(2,2)*Q(0,1))*M(0,1)-(invG(0,1)*Q(0,2)-invG(0,2)*Q(0,1))*M(2,1))+Q(2,0)*(-(invG(1,1)*Q(0,2)-invG(1,2)*Q(0,1))*M(0,1)-(-invG(0,1)*Q(0,2)+invG(0,2)*Q(0,1))*M(1,1)); J(1,1)=Q(0,0)*(1-(-invG(2,0)*Q(0,2)+invG(2,2)*Q(0,0))*M(1,1)-(invG(1,0)*Q(0,2)-invG(1,2)*Q(0,0))*M(2,1))+Q(1,0)*(-(invG(2,0)*Q(0,2)-invG(2,2)*Q(0,0))*M(0,1)-(-invG(0,0)*Q(0,2)+invG(0,2)*Q(0,0))*M(2,1))+Q(2,0)*(-(-invG(1,0)*Q(0,2)+invG(1,2)*Q(0,0))*M(0,1)-(invG(0,0)*Q(0,2)-invG(0,2)*Q(0,0))*M(1,1)); J(1,2)=Q(0,0)*(-(invG(2,0)*Q(0,1)-invG(2,1)*Q(0,0))*M(1,1)-(-invG(1,0)*Q(0,1)+invG(1,1)*Q(0,0))*M(2,1))+Q(1,0)*(-(-invG(2,0)*Q(0,1)+invG(2,1)*Q(0,0))*M(0,1)-(invG(0,0)*Q(0,1)-invG(0,1)*Q(0,0))*M(2,1))+Q(2,0)*(-(invG(1,0)*Q(0,1)-invG(1,1)*Q(0,0))*M(0,1)-(-invG(0,0)*Q(0,1)+invG(0,1)*Q(0,0))*M(1,1)); J(1,3)=Q(0,0)*(-(invG(2,1)*Q(1,2)-invG(2,2)*Q(1,1))*M(1,1)-(-invG(1,1)*Q(1,2)+invG(1,2)*Q(1,1))*M(2,1))+Q(1,0)*(-(-invG(2,1)*Q(1,2)+invG(2,2)*Q(1,1))*M(0,1)-(invG(0,1)*Q(1,2)-invG(0,2)*Q(1,1))*M(2,1))+Q(2,0)*(-(invG(1,1)*Q(1,2)-invG(1,2)*Q(1,1))*M(0,1)-(-invG(0,1)*Q(1,2)+invG(0,2)*Q(1,1))*M(1,1)); J(1,4)=Q(0,0)*(-(-invG(2,0)*Q(1,2)+invG(2,2)*Q(1,0))*M(1,1)-(invG(1,0)*Q(1,2)-invG(1,2)*Q(1,0))*M(2,1))+Q(1,0)*(1-(invG(2,0)*Q(1,2)-invG(2,2)*Q(1,0))*M(0,1)-(-invG(0,0)*Q(1,2)+invG(0,2)*Q(1,0))*M(2,1))+Q(2,0)*(-(-invG(1,0)*Q(1,2)+invG(1,2)*Q(1,0))*M(0,1)-(invG(0,0)*Q(1,2)-invG(0,2)*Q(1,0))*M(1,1)); J(1,5)=Q(0,0)*(-(invG(2,0)*Q(1,1)-invG(2,1)*Q(1,0))*M(1,1)-(-invG(1,0)*Q(1,1)+invG(1,1)*Q(1,0))*M(2,1))+Q(1,0)*(-(-invG(2,0)*Q(1,1)+invG(2,1)*Q(1,0))*M(0,1)-(invG(0,0)*Q(1,1)-invG(0,1)*Q(1,0))*M(2,1))+Q(2,0)*(-(invG(1,0)*Q(1,1)-invG(1,1)*Q(1,0))*M(0,1)-(-invG(0,0)*Q(1,1)+invG(0,1)*Q(1,0))*M(1,1)); J(1,6)=Q(0,0)*(-(invG(2,1)*Q(2,2)-invG(2,2)*Q(2,1))*M(1,1)-(-invG(1,1)*Q(2,2)+invG(1,2)*Q(2,1))*M(2,1))+Q(1,0)*(-(-invG(2,1)*Q(2,2)+invG(2,2)*Q(2,1))*M(0,1)-(invG(0,1)*Q(2,2)-invG(0,2)*Q(2,1))*M(2,1))+Q(2,0)*(-(invG(1,1)*Q(2,2)-invG(1,2)*Q(2,1))*M(0,1)-(-invG(0,1)*Q(2,2)+invG(0,2)*Q(2,1))*M(1,1)); J(1,7)=Q(0,0)*(-(-invG(2,0)*Q(2,2)+invG(2,2)*Q(2,0))*M(1,1)-(invG(1,0)*Q(2,2)-invG(1,2)*Q(2,0))*M(2,1))+Q(1,0)*(-(invG(2,0)*Q(2,2)-invG(2,2)*Q(2,0))*M(0,1)-(-invG(0,0)*Q(2,2)+invG(0,2)*Q(2,0))*M(2,1))+Q(2,0)*(1-(-invG(1,0)*Q(2,2)+invG(1,2)*Q(2,0))*M(0,1)-(invG(0,0)*Q(2,2)-invG(0,2)*Q(2,0))*M(1,1)); J(1,8)=Q(0,0)*(-(invG(2,0)*Q(2,1)-invG(2,1)*Q(2,0))*M(1,1)-(-invG(1,0)*Q(2,1)+invG(1,1)*Q(2,0))*M(2,1))+Q(1,0)*(-(-invG(2,0)*Q(2,1)+invG(2,1)*Q(2,0))*M(0,1)-(invG(0,0)*Q(2,1)-invG(0,1)*Q(2,0))*M(2,1))+Q(2,0)*(-(invG(1,0)*Q(2,1)-invG(1,1)*Q(2,0))*M(0,1)-(-invG(0,0)*Q(2,1)+invG(0,1)*Q(2,0))*M(1,1));
+J(2,0)=Q(0,0)*(-(invG(2,1)*Q(0,2)-invG(2,2)*Q(0,1))*M(1,2)-(-invG(1,1)*Q(0,2)+invG(1,2)*Q(0,1))*M(2,2))+Q(1,0)*(-(-invG(2,1)*Q(0,2)+invG(2,2)*Q(0,1))*M(0,2)-(invG(0,1)*Q(0,2)-invG(0,2)*Q(0,1))*M(2,2))+Q(2,0)*(-(invG(1,1)*Q(0,2)-invG(1,2)*Q(0,1))*M(0,2)-(-invG(0,1)*Q(0,2)+invG(0,2)*Q(0,1))*M(1,2)); J(2,1)=Q(0,0)*(-(-invG(2,0)*Q(0,2)+invG(2,2)*Q(0,0))*M(1,2)-(invG(1,0)*Q(0,2)-invG(1,2)*Q(0,0))*M(2,2))+Q(1,0)*(-(invG(2,0)*Q(0,2)-invG(2,2)*Q(0,0))*M(0,2)-(-invG(0,0)*Q(0,2)+invG(0,2)*Q(0,0))*M(2,2))+Q(2,0)*(-(-invG(1,0)*Q(0,2)+invG(1,2)*Q(0,0))*M(0,2)-(invG(0,0)*Q(0,2)-invG(0,2)*Q(0,0))*M(1,2)); J(2,2)=Q(0,0)*(1-(invG(2,0)*Q(0,1)-invG(2,1)*Q(0,0))*M(1,2)-(-invG(1,0)*Q(0,1)+invG(1,1)*Q(0,0))*M(2,2))+Q(1,0)*(-(-invG(2,0)*Q(0,1)+invG(2,1)*Q(0,0))*M(0,2)-(invG(0,0)*Q(0,1)-invG(0,1)*Q(0,0))*M(2,2))+Q(2,0)*(-(invG(1,0)*Q(0,1)-invG(1,1)*Q(0,0))*M(0,2)-(-invG(0,0)*Q(0,1)+invG(0,1)*Q(0,0))*M(1,2)); J(2,3)=Q(0,0)*(-(invG(2,1)*Q(1,2)-invG(2,2)*Q(1,1))*M(1,2)-(-invG(1,1)*Q(1,2)+invG(1,2)*Q(1,1))*M(2,2))+Q(1,0)*(-(-invG(2,1)*Q(1,2)+invG(2,2)*Q(1,1))*M(0,2)-(invG(0,1)*Q(1,2)-invG(0,2)*Q(1,1))*M(2,2))+Q(2,0)*(-(invG(1,1)*Q(1,2)-invG(1,2)*Q(1,1))*M(0,2)-(-invG(0,1)*Q(1,2)+invG(0,2)*Q(1,1))*M(1,2)); J(2,4)=Q(0,0)*(-(-invG(2,0)*Q(1,2)+invG(2,2)*Q(1,0))*M(1,2)-(invG(1,0)*Q(1,2)-invG(1,2)*Q(1,0))*M(2,2))+Q(1,0)*(-(invG(2,0)*Q(1,2)-invG(2,2)*Q(1,0))*M(0,2)-(-invG(0,0)*Q(1,2)+invG(0,2)*Q(1,0))*M(2,2))+Q(2,0)*(-(-invG(1,0)*Q(1,2)+invG(1,2)*Q(1,0))*M(0,2)-(invG(0,0)*Q(1,2)-invG(0,2)*Q(1,0))*M(1,2)); J(2,5)=Q(0,0)*(-(invG(2,0)*Q(1,1)-invG(2,1)*Q(1,0))*M(1,2)-(-invG(1,0)*Q(1,1)+invG(1,1)*Q(1,0))*M(2,2))+Q(1,0)*(1-(-invG(2,0)*Q(1,1)+invG(2,1)*Q(1,0))*M(0,2)-(invG(0,0)*Q(1,1)-invG(0,1)*Q(1,0))*M(2,2))+Q(2,0)*(-(invG(1,0)*Q(1,1)-invG(1,1)*Q(1,0))*M(0,2)-(-invG(0,0)*Q(1,1)+invG(0,1)*Q(1,0))*M(1,2)); J(2,6)=Q(0,0)*(-(invG(2,1)*Q(2,2)-invG(2,2)*Q(2,1))*M(1,2)-(-invG(1,1)*Q(2,2)+invG(1,2)*Q(2,1))*M(2,2))+Q(1,0)*(-(-invG(2,1)*Q(2,2)+invG(2,2)*Q(2,1))*M(0,2)-(invG(0,1)*Q(2,2)-invG(0,2)*Q(2,1))*M(2,2))+Q(2,0)*(-(invG(1,1)*Q(2,2)-invG(1,2)*Q(2,1))*M(0,2)-(-invG(0,1)*Q(2,2)+invG(0,2)*Q(2,1))*M(1,2)); J(2,7)=Q(0,0)*(-(-invG(2,0)*Q(2,2)+invG(2,2)*Q(2,0))*M(1,2)-(invG(1,0)*Q(2,2)-invG(1,2)*Q(2,0))*M(2,2))+Q(1,0)*(-(invG(2,0)*Q(2,2)-invG(2,2)*Q(2,0))*M(0,2)-(-invG(0,0)*Q(2,2)+invG(0,2)*Q(2,0))*M(2,2))+Q(2,0)*(-(-invG(1,0)*Q(2,2)+invG(1,2)*Q(2,0))*M(0,2)-(invG(0,0)*Q(2,2)-invG(0,2)*Q(2,0))*M(1,2)); J(2,8)=Q(0,0)*(-(invG(2,0)*Q(2,1)-invG(2,1)*Q(2,0))*M(1,2)-(-invG(1,0)*Q(2,1)+invG(1,1)*Q(2,0))*M(2,2))+Q(1,0)*(-(-invG(2,0)*Q(2,1)+invG(2,1)*Q(2,0))*M(0,2)-(invG(0,0)*Q(2,1)-invG(0,1)*Q(2,0))*M(2,2))+Q(2,0)*(1-(invG(1,0)*Q(2,1)-invG(1,1)*Q(2,0))*M(0,2)-(-invG(0,0)*Q(2,1)+invG(0,1)*Q(2,0))*M(1,2));
+J(3)=J(1); //J(3,0)=Q(0,1)*(1-(invG(2,1)*Q(0,2)-invG(2,2)*Q(0,1))*M(1,0)-(-invG(1,1)*Q(0,2)+invG(1,2)*Q(0,1))*M(2,0))+Q(1,1)*(-(-invG(2,1)*Q(0,2)+invG(2,2)*Q(0,1))*M(0,0)-(invG(0,1)*Q(0,2)-invG(0,2)*Q(0,1))*M(2,0))+Q(2,1)*(-(invG(1,1)*Q(0,2)-invG(1,2)*Q(0,1))*M(0,0)-(-invG(0,1)*Q(0,2)+invG(0,2)*Q(0,1))*M(1,0)); J(3,1)=Q(0,1)*(-(-invG(2,0)*Q(0,2)+invG(2,2)*Q(0,0))*M(1,0)-(invG(1,0)*Q(0,2)-invG(1,2)*Q(0,0))*M(2,0))+Q(1,1)*(-(invG(2,0)*Q(0,2)-invG(2,2)*Q(0,0))*M(0,0)-(-invG(0,0)*Q(0,2)+invG(0,2)*Q(0,0))*M(2,0))+Q(2,1)*(-(-invG(1,0)*Q(0,2)+invG(1,2)*Q(0,0))*M(0,0)-(invG(0,0)*Q(0,2)-invG(0,2)*Q(0,0))*M(1,0)); J(3,2)=Q(0,1)*(-(invG(2,0)*Q(0,1)-invG(2,1)*Q(0,0))*M(1,0)-(-invG(1,0)*Q(0,1)+invG(1,1)*Q(0,0))*M(2,0))+Q(1,1)*(-(-invG(2,0)*Q(0,1)+invG(2,1)*Q(0,0))*M(0,0)-(invG(0,0)*Q(0,1)-invG(0,1)*Q(0,0))*M(2,0))+Q(2,1)*(-(invG(1,0)*Q(0,1)-invG(1,1)*Q(0,0))*M(0,0)-(-invG(0,0)*Q(0,1)+invG(0,1)*Q(0,0))*M(1,0)); J(3,3)=Q(0,1)*(-(invG(2,1)*Q(1,2)-invG(2,2)*Q(1,1))*M(1,0)-(-invG(1,1)*Q(1,2)+invG(1,2)*Q(1,1))*M(2,0))+Q(1,1)*(1-(-invG(2,1)*Q(1,2)+invG(2,2)*Q(1,1))*M(0,0)-(invG(0,1)*Q(1,2)-invG(0,2)*Q(1,1))*M(2,0))+Q(2,1)*(-(invG(1,1)*Q(1,2)-invG(1,2)*Q(1,1))*M(0,0)-(-invG(0,1)*Q(1,2)+invG(0,2)*Q(1,1))*M(1,0)); J(3,4)=Q(0,1)*(-(-invG(2,0)*Q(1,2)+invG(2,2)*Q(1,0))*M(1,0)-(invG(1,0)*Q(1,2)-invG(1,2)*Q(1,0))*M(2,0))+Q(1,1)*(-(invG(2,0)*Q(1,2)-invG(2,2)*Q(1,0))*M(0,0)-(-invG(0,0)*Q(1,2)+invG(0,2)*Q(1,0))*M(2,0))+Q(2,1)*(-(-invG(1,0)*Q(1,2)+invG(1,2)*Q(1,0))*M(0,0)-(invG(0,0)*Q(1,2)-invG(0,2)*Q(1,0))*M(1,0)); J(3,5)=Q(0,1)*(-(invG(2,0)*Q(1,1)-invG(2,1)*Q(1,0))*M(1,0)-(-invG(1,0)*Q(1,1)+invG(1,1)*Q(1,0))*M(2,0))+Q(1,1)*(-(-invG(2,0)*Q(1,1)+invG(2,1)*Q(1,0))*M(0,0)-(invG(0,0)*Q(1,1)-invG(0,1)*Q(1,0))*M(2,0))+Q(2,1)*(-(invG(1,0)*Q(1,1)-invG(1,1)*Q(1,0))*M(0,0)-(-invG(0,0)*Q(1,1)+invG(0,1)*Q(1,0))*M(1,0)); J(3,6)=Q(0,1)*(-(invG(2,1)*Q(2,2)-invG(2,2)*Q(2,1))*M(1,0)-(-invG(1,1)*Q(2,2)+invG(1,2)*Q(2,1))*M(2,0))+Q(1,1)*(-(-invG(2,1)*Q(2,2)+invG(2,2)*Q(2,1))*M(0,0)-(invG(0,1)*Q(2,2)-invG(0,2)*Q(2,1))*M(2,0))+Q(2,1)*(1-(invG(1,1)*Q(2,2)-invG(1,2)*Q(2,1))*M(0,0)-(-invG(0,1)*Q(2,2)+invG(0,2)*Q(2,1))*M(1,0)); J(3,7)=Q(0,1)*(-(-invG(2,0)*Q(2,2)+invG(2,2)*Q(2,0))*M(1,0)-(invG(1,0)*Q(2,2)-invG(1,2)*Q(2,0))*M(2,0))+Q(1,1)*(-(invG(2,0)*Q(2,2)-invG(2,2)*Q(2,0))*M(0,0)-(-invG(0,0)*Q(2,2)+invG(0,2)*Q(2,0))*M(2,0))+Q(2,1)*(-(-invG(1,0)*Q(2,2)+invG(1,2)*Q(2,0))*M(0,0)-(invG(0,0)*Q(2,2)-invG(0,2)*Q(2,0))*M(1,0)); J(3,8)=Q(0,1)*(-(invG(2,0)*Q(2,1)-invG(2,1)*Q(2,0))*M(1,0)-(-invG(1,0)*Q(2,1)+invG(1,1)*Q(2,0))*M(2,0))+Q(1,1)*(-(-invG(2,0)*Q(2,1)+invG(2,1)*Q(2,0))*M(0,0)-(invG(0,0)*Q(2,1)-invG(0,1)*Q(2,0))*M(2,0))+Q(2,1)*(-(invG(1,0)*Q(2,1)-invG(1,1)*Q(2,0))*M(0,0)-(-invG(0,0)*Q(2,1)+invG(0,1)*Q(2,0))*M(1,0));
+J(4,0)=Q(0,1)*(-(invG(2,1)*Q(0,2)-invG(2,2)*Q(0,1))*M(1,1)-(-invG(1,1)*Q(0,2)+invG(1,2)*Q(0,1))*M(2,1))+Q(1,1)*(-(-invG(2,1)*Q(0,2)+invG(2,2)*Q(0,1))*M(0,1)-(invG(0,1)*Q(0,2)-invG(0,2)*Q(0,1))*M(2,1))+Q(2,1)*(-(invG(1,1)*Q(0,2)-invG(1,2)*Q(0,1))*M(0,1)-(-invG(0,1)*Q(0,2)+invG(0,2)*Q(0,1))*M(1,1)); J(4,1)=Q(0,1)*(1-(-invG(2,0)*Q(0,2)+invG(2,2)*Q(0,0))*M(1,1)-(invG(1,0)*Q(0,2)-invG(1,2)*Q(0,0))*M(2,1))+Q(1,1)*(-(invG(2,0)*Q(0,2)-invG(2,2)*Q(0,0))*M(0,1)-(-invG(0,0)*Q(0,2)+invG(0,2)*Q(0,0))*M(2,1))+Q(2,1)*(-(-invG(1,0)*Q(0,2)+invG(1,2)*Q(0,0))*M(0,1)-(invG(0,0)*Q(0,2)-invG(0,2)*Q(0,0))*M(1,1)); J(4,2)=Q(0,1)*(-(invG(2,0)*Q(0,1)-invG(2,1)*Q(0,0))*M(1,1)-(-invG(1,0)*Q(0,1)+invG(1,1)*Q(0,0))*M(2,1))+Q(1,1)*(-(-invG(2,0)*Q(0,1)+invG(2,1)*Q(0,0))*M(0,1)-(invG(0,0)*Q(0,1)-invG(0,1)*Q(0,0))*M(2,1))+Q(2,1)*(-(invG(1,0)*Q(0,1)-invG(1,1)*Q(0,0))*M(0,1)-(-invG(0,0)*Q(0,1)+invG(0,1)*Q(0,0))*M(1,1)); J(4,3)=Q(0,1)*(-(invG(2,1)*Q(1,2)-invG(2,2)*Q(1,1))*M(1,1)-(-invG(1,1)*Q(1,2)+invG(1,2)*Q(1,1))*M(2,1))+Q(1,1)*(-(-invG(2,1)*Q(1,2)+invG(2,2)*Q(1,1))*M(0,1)-(invG(0,1)*Q(1,2)-invG(0,2)*Q(1,1))*M(2,1))+Q(2,1)*(-(invG(1,1)*Q(1,2)-invG(1,2)*Q(1,1))*M(0,1)-(-invG(0,1)*Q(1,2)+invG(0,2)*Q(1,1))*M(1,1)); J(4,4)=Q(0,1)*(-(-invG(2,0)*Q(1,2)+invG(2,2)*Q(1,0))*M(1,1)-(invG(1,0)*Q(1,2)-invG(1,2)*Q(1,0))*M(2,1))+Q(1,1)*(1-(invG(2,0)*Q(1,2)-invG(2,2)*Q(1,0))*M(0,1)-(-invG(0,0)*Q(1,2)+invG(0,2)*Q(1,0))*M(2,1))+Q(2,1)*(-(-invG(1,0)*Q(1,2)+invG(1,2)*Q(1,0))*M(0,1)-(invG(0,0)*Q(1,2)-invG(0,2)*Q(1,0))*M(1,1)); J(4,5)=Q(0,1)*(-(invG(2,0)*Q(1,1)-invG(2,1)*Q(1,0))*M(1,1)-(-invG(1,0)*Q(1,1)+invG(1,1)*Q(1,0))*M(2,1))+Q(1,1)*(-(-invG(2,0)*Q(1,1)+invG(2,1)*Q(1,0))*M(0,1)-(invG(0,0)*Q(1,1)-invG(0,1)*Q(1,0))*M(2,1))+Q(2,1)*(-(invG(1,0)*Q(1,1)-invG(1,1)*Q(1,0))*M(0,1)-(-invG(0,0)*Q(1,1)+invG(0,1)*Q(1,0))*M(1,1)); J(4,6)=Q(0,1)*(-(invG(2,1)*Q(2,2)-invG(2,2)*Q(2,1))*M(1,1)-(-invG(1,1)*Q(2,2)+invG(1,2)*Q(2,1))*M(2,1))+Q(1,1)*(-(-invG(2,1)*Q(2,2)+invG(2,2)*Q(2,1))*M(0,1)-(invG(0,1)*Q(2,2)-invG(0,2)*Q(2,1))*M(2,1))+Q(2,1)*(-(invG(1,1)*Q(2,2)-invG(1,2)*Q(2,1))*M(0,1)-(-invG(0,1)*Q(2,2)+invG(0,2)*Q(2,1))*M(1,1)); J(4,7)=Q(0,1)*(-(-invG(2,0)*Q(2,2)+invG(2,2)*Q(2,0))*M(1,1)-(invG(1,0)*Q(2,2)-invG(1,2)*Q(2,0))*M(2,1))+Q(1,1)*(-(invG(2,0)*Q(2,2)-invG(2,2)*Q(2,0))*M(0,1)-(-invG(0,0)*Q(2,2)+invG(0,2)*Q(2,0))*M(2,1))+Q(2,1)*(1-(-invG(1,0)*Q(2,2)+invG(1,2)*Q(2,0))*M(0,1)-(invG(0,0)*Q(2,2)-invG(0,2)*Q(2,0))*M(1,1)); J(4,8)=Q(0,1)*(-(invG(2,0)*Q(2,1)-invG(2,1)*Q(2,0))*M(1,1)-(-invG(1,0)*Q(2,1)+invG(1,1)*Q(2,0))*M(2,1))+Q(1,1)*(-(-invG(2,0)*Q(2,1)+invG(2,1)*Q(2,0))*M(0,1)-(invG(0,0)*Q(2,1)-invG(0,1)*Q(2,0))*M(2,1))+Q(2,1)*(-(invG(1,0)*Q(2,1)-invG(1,1)*Q(2,0))*M(0,1)-(-invG(0,0)*Q(2,1)+invG(0,1)*Q(2,0))*M(1,1));
+J(5,0)=Q(0,1)*(-(invG(2,1)*Q(0,2)-invG(2,2)*Q(0,1))*M(1,2)-(-invG(1,1)*Q(0,2)+invG(1,2)*Q(0,1))*M(2,2))+Q(1,1)*(-(-invG(2,1)*Q(0,2)+invG(2,2)*Q(0,1))*M(0,2)-(invG(0,1)*Q(0,2)-invG(0,2)*Q(0,1))*M(2,2))+Q(2,1)*(-(invG(1,1)*Q(0,2)-invG(1,2)*Q(0,1))*M(0,2)-(-invG(0,1)*Q(0,2)+invG(0,2)*Q(0,1))*M(1,2)); J(5,1)=Q(0,1)*(-(-invG(2,0)*Q(0,2)+invG(2,2)*Q(0,0))*M(1,2)-(invG(1,0)*Q(0,2)-invG(1,2)*Q(0,0))*M(2,2))+Q(1,1)*(-(invG(2,0)*Q(0,2)-invG(2,2)*Q(0,0))*M(0,2)-(-invG(0,0)*Q(0,2)+invG(0,2)*Q(0,0))*M(2,2))+Q(2,1)*(-(-invG(1,0)*Q(0,2)+invG(1,2)*Q(0,0))*M(0,2)-(invG(0,0)*Q(0,2)-invG(0,2)*Q(0,0))*M(1,2)); J(5,2)=Q(0,1)*(1-(invG(2,0)*Q(0,1)-invG(2,1)*Q(0,0))*M(1,2)-(-invG(1,0)*Q(0,1)+invG(1,1)*Q(0,0))*M(2,2))+Q(1,1)*(-(-invG(2,0)*Q(0,1)+invG(2,1)*Q(0,0))*M(0,2)-(invG(0,0)*Q(0,1)-invG(0,1)*Q(0,0))*M(2,2))+Q(2,1)*(-(invG(1,0)*Q(0,1)-invG(1,1)*Q(0,0))*M(0,2)-(-invG(0,0)*Q(0,1)+invG(0,1)*Q(0,0))*M(1,2)); J(5,3)=Q(0,1)*(-(invG(2,1)*Q(1,2)-invG(2,2)*Q(1,1))*M(1,2)-(-invG(1,1)*Q(1,2)+invG(1,2)*Q(1,1))*M(2,2))+Q(1,1)*(-(-invG(2,1)*Q(1,2)+invG(2,2)*Q(1,1))*M(0,2)-(invG(0,1)*Q(1,2)-invG(0,2)*Q(1,1))*M(2,2))+Q(2,1)*(-(invG(1,1)*Q(1,2)-invG(1,2)*Q(1,1))*M(0,2)-(-invG(0,1)*Q(1,2)+invG(0,2)*Q(1,1))*M(1,2)); J(5,4)=Q(0,1)*(-(-invG(2,0)*Q(1,2)+invG(2,2)*Q(1,0))*M(1,2)-(invG(1,0)*Q(1,2)-invG(1,2)*Q(1,0))*M(2,2))+Q(1,1)*(-(invG(2,0)*Q(1,2)-invG(2,2)*Q(1,0))*M(0,2)-(-invG(0,0)*Q(1,2)+invG(0,2)*Q(1,0))*M(2,2))+Q(2,1)*(-(-invG(1,0)*Q(1,2)+invG(1,2)*Q(1,0))*M(0,2)-(invG(0,0)*Q(1,2)-invG(0,2)*Q(1,0))*M(1,2)); J(5,5)=Q(0,1)*(-(invG(2,0)*Q(1,1)-invG(2,1)*Q(1,0))*M(1,2)-(-invG(1,0)*Q(1,1)+invG(1,1)*Q(1,0))*M(2,2))+Q(1,1)*(1-(-invG(2,0)*Q(1,1)+invG(2,1)*Q(1,0))*M(0,2)-(invG(0,0)*Q(1,1)-invG(0,1)*Q(1,0))*M(2,2))+Q(2,1)*(-(invG(1,0)*Q(1,1)-invG(1,1)*Q(1,0))*M(0,2)-(-invG(0,0)*Q(1,1)+invG(0,1)*Q(1,0))*M(1,2)); J(5,6)=Q(0,1)*(-(invG(2,1)*Q(2,2)-invG(2,2)*Q(2,1))*M(1,2)-(-invG(1,1)*Q(2,2)+invG(1,2)*Q(2,1))*M(2,2))+Q(1,1)*(-(-invG(2,1)*Q(2,2)+invG(2,2)*Q(2,1))*M(0,2)-(invG(0,1)*Q(2,2)-invG(0,2)*Q(2,1))*M(2,2))+Q(2,1)*(-(invG(1,1)*Q(2,2)-invG(1,2)*Q(2,1))*M(0,2)-(-invG(0,1)*Q(2,2)+invG(0,2)*Q(2,1))*M(1,2)); J(5,7)=Q(0,1)*(-(-invG(2,0)*Q(2,2)+invG(2,2)*Q(2,0))*M(1,2)-(invG(1,0)*Q(2,2)-invG(1,2)*Q(2,0))*M(2,2))+Q(1,1)*(-(invG(2,0)*Q(2,2)-invG(2,2)*Q(2,0))*M(0,2)-(-invG(0,0)*Q(2,2)+invG(0,2)*Q(2,0))*M(2,2))+Q(2,1)*(-(-invG(1,0)*Q(2,2)+invG(1,2)*Q(2,0))*M(0,2)-(invG(0,0)*Q(2,2)-invG(0,2)*Q(2,0))*M(1,2)); J(5,8)=Q(0,1)*(-(invG(2,0)*Q(2,1)-invG(2,1)*Q(2,0))*M(1,2)-(-invG(1,0)*Q(2,1)+invG(1,1)*Q(2,0))*M(2,2))+Q(1,1)*(-(-invG(2,0)*Q(2,1)+invG(2,1)*Q(2,0))*M(0,2)-(invG(0,0)*Q(2,1)-invG(0,1)*Q(2,0))*M(2,2))+Q(2,1)*(1-(invG(1,0)*Q(2,1)-invG(1,1)*Q(2,0))*M(0,2)-(-invG(0,0)*Q(2,1)+invG(0,1)*Q(2,0))*M(1,2));
+J(6)=J(2); //J(6,0)=Q(0,2)*(1-(invG(2,1)*Q(0,2)-invG(2,2)*Q(0,1))*M(1,0)-(-invG(1,1)*Q(0,2)+invG(1,2)*Q(0,1))*M(2,0))+Q(1,2)*(-(-invG(2,1)*Q(0,2)+invG(2,2)*Q(0,1))*M(0,0)-(invG(0,1)*Q(0,2)-invG(0,2)*Q(0,1))*M(2,0))+Q(2,2)*(-(invG(1,1)*Q(0,2)-invG(1,2)*Q(0,1))*M(0,0)-(-invG(0,1)*Q(0,2)+invG(0,2)*Q(0,1))*M(1,0)); J(6,1)=Q(0,2)*(-(-invG(2,0)*Q(0,2)+invG(2,2)*Q(0,0))*M(1,0)-(invG(1,0)*Q(0,2)-invG(1,2)*Q(0,0))*M(2,0))+Q(1,2)*(-(invG(2,0)*Q(0,2)-invG(2,2)*Q(0,0))*M(0,0)-(-invG(0,0)*Q(0,2)+invG(0,2)*Q(0,0))*M(2,0))+Q(2,2)*(-(-invG(1,0)*Q(0,2)+invG(1,2)*Q(0,0))*M(0,0)-(invG(0,0)*Q(0,2)-invG(0,2)*Q(0,0))*M(1,0)); J(6,2)=Q(0,2)*(-(invG(2,0)*Q(0,1)-invG(2,1)*Q(0,0))*M(1,0)-(-invG(1,0)*Q(0,1)+invG(1,1)*Q(0,0))*M(2,0))+Q(1,2)*(-(-invG(2,0)*Q(0,1)+invG(2,1)*Q(0,0))*M(0,0)-(invG(0,0)*Q(0,1)-invG(0,1)*Q(0,0))*M(2,0))+Q(2,2)*(-(invG(1,0)*Q(0,1)-invG(1,1)*Q(0,0))*M(0,0)-(-invG(0,0)*Q(0,1)+invG(0,1)*Q(0,0))*M(1,0)); J(6,3)=Q(0,2)*(-(invG(2,1)*Q(1,2)-invG(2,2)*Q(1,1))*M(1,0)-(-invG(1,1)*Q(1,2)+invG(1,2)*Q(1,1))*M(2,0))+Q(1,2)*(1-(-invG(2,1)*Q(1,2)+invG(2,2)*Q(1,1))*M(0,0)-(invG(0,1)*Q(1,2)-invG(0,2)*Q(1,1))*M(2,0))+Q(2,2)*(-(invG(1,1)*Q(1,2)-invG(1,2)*Q(1,1))*M(0,0)-(-invG(0,1)*Q(1,2)+invG(0,2)*Q(1,1))*M(1,0)); J(6,4)=Q(0,2)*(-(-invG(2,0)*Q(1,2)+invG(2,2)*Q(1,0))*M(1,0)-(invG(1,0)*Q(1,2)-invG(1,2)*Q(1,0))*M(2,0))+Q(1,2)*(-(invG(2,0)*Q(1,2)-invG(2,2)*Q(1,0))*M(0,0)-(-invG(0,0)*Q(1,2)+invG(0,2)*Q(1,0))*M(2,0))+Q(2,2)*(-(-invG(1,0)*Q(1,2)+invG(1,2)*Q(1,0))*M(0,0)-(invG(0,0)*Q(1,2)-invG(0,2)*Q(1,0))*M(1,0)); J(6,5)=Q(0,2)*(-(invG(2,0)*Q(1,1)-invG(2,1)*Q(1,0))*M(1,0)-(-invG(1,0)*Q(1,1)+invG(1,1)*Q(1,0))*M(2,0))+Q(1,2)*(-(-invG(2,0)*Q(1,1)+invG(2,1)*Q(1,0))*M(0,0)-(invG(0,0)*Q(1,1)-invG(0,1)*Q(1,0))*M(2,0))+Q(2,2)*(-(invG(1,0)*Q(1,1)-invG(1,1)*Q(1,0))*M(0,0)-(-invG(0,0)*Q(1,1)+invG(0,1)*Q(1,0))*M(1,0)); J(6,6)=Q(0,2)*(-(invG(2,1)*Q(2,2)-invG(2,2)*Q(2,1))*M(1,0)-(-invG(1,1)*Q(2,2)+invG(1,2)*Q(2,1))*M(2,0))+Q(1,2)*(-(-invG(2,1)*Q(2,2)+invG(2,2)*Q(2,1))*M(0,0)-(invG(0,1)*Q(2,2)-invG(0,2)*Q(2,1))*M(2,0))+Q(2,2)*(1-(invG(1,1)*Q(2,2)-invG(1,2)*Q(2,1))*M(0,0)-(-invG(0,1)*Q(2,2)+invG(0,2)*Q(2,1))*M(1,0)); J(6,7)=Q(0,2)*(-(-invG(2,0)*Q(2,2)+invG(2,2)*Q(2,0))*M(1,0)-(invG(1,0)*Q(2,2)-invG(1,2)*Q(2,0))*M(2,0))+Q(1,2)*(-(invG(2,0)*Q(2,2)-invG(2,2)*Q(2,0))*M(0,0)-(-invG(0,0)*Q(2,2)+invG(0,2)*Q(2,0))*M(2,0))+Q(2,2)*(-(-invG(1,0)*Q(2,2)+invG(1,2)*Q(2,0))*M(0,0)-(invG(0,0)*Q(2,2)-invG(0,2)*Q(2,0))*M(1,0)); J(6,8)=Q(0,2)*(-(invG(2,0)*Q(2,1)-invG(2,1)*Q(2,0))*M(1,0)-(-invG(1,0)*Q(2,1)+invG(1,1)*Q(2,0))*M(2,0))+Q(1,2)*(-(-invG(2,0)*Q(2,1)+invG(2,1)*Q(2,0))*M(0,0)-(invG(0,0)*Q(2,1)-invG(0,1)*Q(2,0))*M(2,0))+Q(2,2)*(-(invG(1,0)*Q(2,1)-invG(1,1)*Q(2,0))*M(0,0)-(-invG(0,0)*Q(2,1)+invG(0,1)*Q(2,0))*M(1,0));
+J(7)=J(5); //J(7,0)=Q(0,2)*(-(invG(2,1)*Q(0,2)-invG(2,2)*Q(0,1))*M(1,1)-(-invG(1,1)*Q(0,2)+invG(1,2)*Q(0,1))*M(2,1))+Q(1,2)*(-(-invG(2,1)*Q(0,2)+invG(2,2)*Q(0,1))*M(0,1)-(invG(0,1)*Q(0,2)-invG(0,2)*Q(0,1))*M(2,1))+Q(2,2)*(-(invG(1,1)*Q(0,2)-invG(1,2)*Q(0,1))*M(0,1)-(-invG(0,1)*Q(0,2)+invG(0,2)*Q(0,1))*M(1,1)); J(7,1)=Q(0,2)*(1-(-invG(2,0)*Q(0,2)+invG(2,2)*Q(0,0))*M(1,1)-(invG(1,0)*Q(0,2)-invG(1,2)*Q(0,0))*M(2,1))+Q(1,2)*(-(invG(2,0)*Q(0,2)-invG(2,2)*Q(0,0))*M(0,1)-(-invG(0,0)*Q(0,2)+invG(0,2)*Q(0,0))*M(2,1))+Q(2,2)*(-(-invG(1,0)*Q(0,2)+invG(1,2)*Q(0,0))*M(0,1)-(invG(0,0)*Q(0,2)-invG(0,2)*Q(0,0))*M(1,1)); J(7,2)=Q(0,2)*(-(invG(2,0)*Q(0,1)-invG(2,1)*Q(0,0))*M(1,1)-(-invG(1,0)*Q(0,1)+invG(1,1)*Q(0,0))*M(2,1))+Q(1,2)*(-(-invG(2,0)*Q(0,1)+invG(2,1)*Q(0,0))*M(0,1)-(invG(0,0)*Q(0,1)-invG(0,1)*Q(0,0))*M(2,1))+Q(2,2)*(-(invG(1,0)*Q(0,1)-invG(1,1)*Q(0,0))*M(0,1)-(-invG(0,0)*Q(0,1)+invG(0,1)*Q(0,0))*M(1,1)); J(7,3)=Q(0,2)*(-(invG(2,1)*Q(1,2)-invG(2,2)*Q(1,1))*M(1,1)-(-invG(1,1)*Q(1,2)+invG(1,2)*Q(1,1))*M(2,1))+Q(1,2)*(-(-invG(2,1)*Q(1,2)+invG(2,2)*Q(1,1))*M(0,1)-(invG(0,1)*Q(1,2)-invG(0,2)*Q(1,1))*M(2,1))+Q(2,2)*(-(invG(1,1)*Q(1,2)-invG(1,2)*Q(1,1))*M(0,1)-(-invG(0,1)*Q(1,2)+invG(0,2)*Q(1,1))*M(1,1)); J(7,4)=Q(0,2)*(-(-invG(2,0)*Q(1,2)+invG(2,2)*Q(1,0))*M(1,1)-(invG(1,0)*Q(1,2)-invG(1,2)*Q(1,0))*M(2,1))+Q(1,2)*(1-(invG(2,0)*Q(1,2)-invG(2,2)*Q(1,0))*M(0,1)-(-invG(0,0)*Q(1,2)+invG(0,2)*Q(1,0))*M(2,1))+Q(2,2)*(-(-invG(1,0)*Q(1,2)+invG(1,2)*Q(1,0))*M(0,1)-(invG(0,0)*Q(1,2)-invG(0,2)*Q(1,0))*M(1,1)); J(7,5)=Q(0,2)*(-(invG(2,0)*Q(1,1)-invG(2,1)*Q(1,0))*M(1,1)-(-invG(1,0)*Q(1,1)+invG(1,1)*Q(1,0))*M(2,1))+Q(1,2)*(-(-invG(2,0)*Q(1,1)+invG(2,1)*Q(1,0))*M(0,1)-(invG(0,0)*Q(1,1)-invG(0,1)*Q(1,0))*M(2,1))+Q(2,2)*(-(invG(1,0)*Q(1,1)-invG(1,1)*Q(1,0))*M(0,1)-(-invG(0,0)*Q(1,1)+invG(0,1)*Q(1,0))*M(1,1)); J(7,6)=Q(0,2)*(-(invG(2,1)*Q(2,2)-invG(2,2)*Q(2,1))*M(1,1)-(-invG(1,1)*Q(2,2)+invG(1,2)*Q(2,1))*M(2,1))+Q(1,2)*(-(-invG(2,1)*Q(2,2)+invG(2,2)*Q(2,1))*M(0,1)-(invG(0,1)*Q(2,2)-invG(0,2)*Q(2,1))*M(2,1))+Q(2,2)*(-(invG(1,1)*Q(2,2)-invG(1,2)*Q(2,1))*M(0,1)-(-invG(0,1)*Q(2,2)+invG(0,2)*Q(2,1))*M(1,1)); J(7,7)=Q(0,2)*(-(-invG(2,0)*Q(2,2)+invG(2,2)*Q(2,0))*M(1,1)-(invG(1,0)*Q(2,2)-invG(1,2)*Q(2,0))*M(2,1))+Q(1,2)*(-(invG(2,0)*Q(2,2)-invG(2,2)*Q(2,0))*M(0,1)-(-invG(0,0)*Q(2,2)+invG(0,2)*Q(2,0))*M(2,1))+Q(2,2)*(1-(-invG(1,0)*Q(2,2)+invG(1,2)*Q(2,0))*M(0,1)-(invG(0,0)*Q(2,2)-invG(0,2)*Q(2,0))*M(1,1)); J(7,8)=Q(0,2)*(-(invG(2,0)*Q(2,1)-invG(2,1)*Q(2,0))*M(1,1)-(-invG(1,0)*Q(2,1)+invG(1,1)*Q(2,0))*M(2,1))+Q(1,2)*(-(-invG(2,0)*Q(2,1)+invG(2,1)*Q(2,0))*M(0,1)-(invG(0,0)*Q(2,1)-invG(0,1)*Q(2,0))*M(2,1))+Q(2,2)*(-(invG(1,0)*Q(2,1)-invG(1,1)*Q(2,0))*M(0,1)-(-invG(0,0)*Q(2,1)+invG(0,1)*Q(2,0))*M(1,1));
+J(8,0)=Q(0,2)*(-(invG(2,1)*Q(0,2)-invG(2,2)*Q(0,1))*M(1,2)-(-invG(1,1)*Q(0,2)+invG(1,2)*Q(0,1))*M(2,2))+Q(1,2)*(-(-invG(2,1)*Q(0,2)+invG(2,2)*Q(0,1))*M(0,2)-(invG(0,1)*Q(0,2)-invG(0,2)*Q(0,1))*M(2,2))+Q(2,2)*(-(invG(1,1)*Q(0,2)-invG(1,2)*Q(0,1))*M(0,2)-(-invG(0,1)*Q(0,2)+invG(0,2)*Q(0,1))*M(1,2)); J(8,1)=Q(0,2)*(-(-invG(2,0)*Q(0,2)+invG(2,2)*Q(0,0))*M(1,2)-(invG(1,0)*Q(0,2)-invG(1,2)*Q(0,0))*M(2,2))+Q(1,2)*(-(invG(2,0)*Q(0,2)-invG(2,2)*Q(0,0))*M(0,2)-(-invG(0,0)*Q(0,2)+invG(0,2)*Q(0,0))*M(2,2))+Q(2,2)*(-(-invG(1,0)*Q(0,2)+invG(1,2)*Q(0,0))*M(0,2)-(invG(0,0)*Q(0,2)-invG(0,2)*Q(0,0))*M(1,2)); J(8,2)=Q(0,2)*(1-(invG(2,0)*Q(0,1)-invG(2,1)*Q(0,0))*M(1,2)-(-invG(1,0)*Q(0,1)+invG(1,1)*Q(0,0))*M(2,2))+Q(1,2)*(-(-invG(2,0)*Q(0,1)+invG(2,1)*Q(0,0))*M(0,2)-(invG(0,0)*Q(0,1)-invG(0,1)*Q(0,0))*M(2,2))+Q(2,2)*(-(invG(1,0)*Q(0,1)-invG(1,1)*Q(0,0))*M(0,2)-(-invG(0,0)*Q(0,1)+invG(0,1)*Q(0,0))*M(1,2)); J(8,3)=Q(0,2)*(-(invG(2,1)*Q(1,2)-invG(2,2)*Q(1,1))*M(1,2)-(-invG(1,1)*Q(1,2)+invG(1,2)*Q(1,1))*M(2,2))+Q(1,2)*(-(-invG(2,1)*Q(1,2)+invG(2,2)*Q(1,1))*M(0,2)-(invG(0,1)*Q(1,2)-invG(0,2)*Q(1,1))*M(2,2))+Q(2,2)*(-(invG(1,1)*Q(1,2)-invG(1,2)*Q(1,1))*M(0,2)-(-invG(0,1)*Q(1,2)+invG(0,2)*Q(1,1))*M(1,2)); J(8,4)=Q(0,2)*(-(-invG(2,0)*Q(1,2)+invG(2,2)*Q(1,0))*M(1,2)-(invG(1,0)*Q(1,2)-invG(1,2)*Q(1,0))*M(2,2))+Q(1,2)*(-(invG(2,0)*Q(1,2)-invG(2,2)*Q(1,0))*M(0,2)-(-invG(0,0)*Q(1,2)+invG(0,2)*Q(1,0))*M(2,2))+Q(2,2)*(-(-invG(1,0)*Q(1,2)+invG(1,2)*Q(1,0))*M(0,2)-(invG(0,0)*Q(1,2)-invG(0,2)*Q(1,0))*M(1,2)); J(8,5)=Q(0,2)*(-(invG(2,0)*Q(1,1)-invG(2,1)*Q(1,0))*M(1,2)-(-invG(1,0)*Q(1,1)+invG(1,1)*Q(1,0))*M(2,2))+Q(1,2)*(1-(-invG(2,0)*Q(1,1)+invG(2,1)*Q(1,0))*M(0,2)-(invG(0,0)*Q(1,1)-invG(0,1)*Q(1,0))*M(2,2))+Q(2,2)*(-(invG(1,0)*Q(1,1)-invG(1,1)*Q(1,0))*M(0,2)-(-invG(0,0)*Q(1,1)+invG(0,1)*Q(1,0))*M(1,2)); J(8,6)=Q(0,2)*(-(invG(2,1)*Q(2,2)-invG(2,2)*Q(2,1))*M(1,2)-(-invG(1,1)*Q(2,2)+invG(1,2)*Q(2,1))*M(2,2))+Q(1,2)*(-(-invG(2,1)*Q(2,2)+invG(2,2)*Q(2,1))*M(0,2)-(invG(0,1)*Q(2,2)-invG(0,2)*Q(2,1))*M(2,2))+Q(2,2)*(-(invG(1,1)*Q(2,2)-invG(1,2)*Q(2,1))*M(0,2)-(-invG(0,1)*Q(2,2)+invG(0,2)*Q(2,1))*M(1,2)); J(8,7)=Q(0,2)*(-(-invG(2,0)*Q(2,2)+invG(2,2)*Q(2,0))*M(1,2)-(invG(1,0)*Q(2,2)-invG(1,2)*Q(2,0))*M(2,2))+Q(1,2)*(-(invG(2,0)*Q(2,2)-invG(2,2)*Q(2,0))*M(0,2)-(-invG(0,0)*Q(2,2)+invG(0,2)*Q(2,0))*M(2,2))+Q(2,2)*(-(-invG(1,0)*Q(2,2)+invG(1,2)*Q(2,0))*M(0,2)-(invG(0,0)*Q(2,2)-invG(0,2)*Q(2,0))*M(1,2)); J(8,8)=Q(0,2)*(-(invG(2,0)*Q(2,1)-invG(2,1)*Q(2,0))*M(1,2)-(-invG(1,0)*Q(2,1)+invG(1,1)*Q(2,0))*M(2,2))+Q(1,2)*(-(-invG(2,0)*Q(2,1)+invG(2,1)*Q(2,0))*M(0,2)-(invG(0,0)*Q(2,1)-invG(0,1)*Q(2,0))*M(2,2))+Q(2,2)*(1-(invG(1,0)*Q(2,1)-invG(1,1)*Q(2,0))*M(0,2)-(-invG(0,0)*Q(2,1)+invG(0,1)*Q(2,0))*M(1,2));
 }
 
 
@@ -954,14 +954,14 @@ bool Decompose<Real>::polarDecomposition_stable_Gradient_dQ( const type::Mat<3,3
         Real A = Sdiag[i] + Sdiag[j];
         if( /*helper::rabs*/( A ) < zeroTolerance() ) // only the smallest eigen-value should be negative so abs should not be necessary
         {
-            //omega[i][j] = (Real)0;
+            //omega(i,j) = (Real)0;
             return false;
         }
         else
         {
-            omega[i][j] = ( UtdMV[i][j] - UtdMV[j][i] ) / A;
+            omega(i,j) = ( UtdMV(i,j) - UtdMV(j,i) ) / A;
         }
-        omega[j][i] = -omega[i][j];
+        omega(j,i) = -omega(i,j);
     }
 
     dQ = U * omega * V;
@@ -979,8 +979,8 @@ bool Decompose<Real>::polarDecompositionGradient_dQ( const type::Mat<3,2,Real>& 
 
     if( /*helper::rabs*/( A ) < zeroTolerance() ) return false;
 
-    omega[0][1] = ( UtdMV[0][1] - UtdMV[1][0] ) / A;
-    omega[1][0] = -omega[0][1];
+    omega(0,1) = ( UtdMV(0,1) - UtdMV(1,0) ) / A;
+    omega(1,0) = -omega(0,1);
 
     dQ = U * omega * V;
 
@@ -998,7 +998,7 @@ bool Decompose<Real>::polarDecomposition_stable_Gradient_dQOverdM( const type::M
     for( int i=0 ; i<3 ; ++i ) // line of dM
         for( int j=0 ; j<3 ; ++j ) // col of dM
         {
-            for( int k=0 ; k<3 ; ++k ) // resolve 3 2x2 systems to find omegaU[i][j] & omegaV[i][j]
+            for( int k=0 ; k<3 ; ++k ) // resolve 3 2x2 systems to find omegaU(i,j) & omegaV(i,j)
             {
                 int l=(k+1)%3;
 
@@ -1010,12 +1010,12 @@ bool Decompose<Real>::polarDecomposition_stable_Gradient_dQOverdM( const type::M
                 }
                 else
                 {
-                    omega[i][j][k][l] = ( U[i][k]*V[l][j] - U[i][l]*V[k][j] ) / A;
+                    omega(i,j)(k,l) = ( U(i,k)*V(l,j) - U(i,l)*V(k,j) ) / A;
                 }
 
-                omega[i][j][l][k] = -omega[i][j][k][l]; // skew-symmetric (antisymmetric)
+                omega(i,j)(l,k) = -omega(i,j)(k,l); // skew-symmetric (antisymmetric)
             }
-            omega[i][j] = U * omega[i][j] * V;
+            omega(i,j) = U * omega(i,j) * V;
         }
 
 
@@ -1025,7 +1025,7 @@ bool Decompose<Real>::polarDecomposition_stable_Gradient_dQOverdM( const type::M
             for( int k=0 ; k<3 ; ++k )
                 for( int l=0 ; l<3 ; ++l )
                 {
-                    dQOverdM[i*3+j][k*3+l] = omega[k][l][i][j];
+                    dQOverdM(i*3+j,k*3+l) = omega(k,l)(i,j);
                 }
 
     return true;
@@ -1046,10 +1046,10 @@ bool Decompose<Real>::polarDecompositionGradient_dQOverdM( const type::Mat<3,2,R
 
             Mat<2,2,Real> omega;
 
-            omega[0][1] = ( U[i][0]*V[1][j] - U[i][1]*V[0][j] ) / A;
-            omega[1][0] = -omega[0][1]; // skew-symmetric (antisymmetric)
+            omega(0,1) = ( U(i,0)*V(1,j) - U(i,1)*V(0,j) ) / A;
+            omega(1,0) = -omega(0,1); // skew-symmetric (antisymmetric)
 
-            dQdMij[i][j] = U * omega * V;
+            dQdMij(i,j) = U * omega * V;
         }
 
     // transposed and reformatted in plain matrice
@@ -1057,7 +1057,7 @@ bool Decompose<Real>::polarDecompositionGradient_dQOverdM( const type::Mat<3,2,R
         for( int l=0 ; l<2 ; ++l )
             for( int j=0 ; j<2 ; ++j )
                 for( int i=0 ; i<3 ; ++i )
-                    dQOverdM[i*2+j][k*2+l] = dQdMij[k][l][i][j];
+                    dQOverdM(i*2+j,k*2+l) = dQdMij(k,l)(i,j);
 
     return true;
 }
@@ -1073,12 +1073,12 @@ void Decompose<Real>::ComputeRoots(const Mat<3,3,Real>& A, double root[3])
     static const Real msRoot3 = helper::rsqrt((Real)3.0);
 
     // Convert the unique matrix entries to double precision.
-    const double a00 = (double)A[0][0];
-    const double a01 = (double)A[0][1];
-    const double a02 = (double)A[0][2];
-    const double a11 = (double)A[1][1];
-    const double a12 = (double)A[1][2];
-    const double a22 = (double)A[2][2];
+    const double a00 = (double)A(0,0);
+    const double a01 = (double)A(0,1);
+    const double a02 = (double)A(0,2);
+    const double a11 = (double)A(1,1);
+    const double a12 = (double)A(1,2);
+    const double a22 = (double)A(2,2);
 
     // The characteristic equation is x^3 - c2*x^2 + c1*x - c0 = 0.  The
     // eigenvalues are the roots to this equation, all guaranteed to be
@@ -1170,7 +1170,7 @@ bool Decompose<Real>::PositiveRank(Mat<3,3,Real>& M, Real& maxEntry, Vec<3,Real>
     {
         for (int col = row; col < 3; ++col)
         {
-            Real absValue = helper::rabs(M[row][col]);
+            Real absValue = helper::rabs(M(row,col));
             if (absValue > maxEntry)
             {
                 maxEntry = absValue;
@@ -1337,28 +1337,28 @@ void Decompose<Real>::eigenDecomposition( const type::Mat<3,3,Real> &A, type::Ma
     // Scale the matrix so its entries are in [-1,1].  The scaling is applied
     // only when at least one matrix entry has magnitude larger than 1.
     Mat<3,3,Real> AScaled = A;
-    Real maxValue = helper::rabs( AScaled[0][0] );
-    Real absValue = helper::rabs( AScaled[0][1] );
+    Real maxValue = helper::rabs( AScaled(0,0) );
+    Real absValue = helper::rabs( AScaled(0,1) );
     if( absValue > maxValue )
     {
         maxValue = absValue;
     }
-    absValue = helper::rabs( AScaled[0][2] );
+    absValue = helper::rabs( AScaled(0,2) );
     if( absValue > maxValue )
     {
         maxValue = absValue;
     }
-    absValue = helper::rabs( AScaled[1][1] );
+    absValue = helper::rabs( AScaled(1,1) );
     if( absValue > maxValue )
     {
         maxValue = absValue;
     }
-    absValue = helper::rabs( AScaled[1][2] );
+    absValue = helper::rabs( AScaled(1,2) );
     if( absValue > maxValue )
     {
         maxValue = absValue;
     }
-    absValue = helper::rabs(AScaled[2][2]);
+    absValue = helper::rabs(AScaled(2,2));
     if( absValue > maxValue )
     {
         maxValue = absValue;
@@ -1371,7 +1371,7 @@ void Decompose<Real>::eigenDecomposition( const type::Mat<3,3,Real> &A, type::Ma
         for( i = 0; i < 3; ++i )
             for( j = 0; j < 3; ++j )
             {
-                AScaled[i][j] *= invMaxValue;
+                AScaled(i,j) *= invMaxValue;
             }
     }
 
@@ -1387,9 +1387,9 @@ void Decompose<Real>::eigenDecomposition( const type::Mat<3,3,Real> &A, type::Ma
     for( i = 0; i < 3; ++i )
     {
         Mat<3,3,Real> M = AScaled;
-        M[0][0] -= diag[i];
-        M[1][1] -= diag[i];
-        M[2][2] -= diag[i];
+        M(0,0) -= diag[i];
+        M(1,1) -= diag[i];
+        M(2,2) -= diag[i];
         if( !PositiveRank( M, maxEntry[i], maxRow[i] ) )
         {
             // Rescale back to the original size.
@@ -1450,34 +1450,34 @@ void Decompose<Real>::eigenDecomposition( const type::Mat<3,3,Real> &A, type::Ma
 template <typename Real>
 void Decompose<Real>::eigenDecomposition( const type::Mat<2,2,Real> &A, type::Mat<2,2,Real> &V, type::Vec<2,Real> &diag )
 {
-    Real inv2 = A[0][0] + A[1][1]; // trace(A)
+    Real inv2 = A(0,0) + A(1,1); // trace(A)
     Real inv1 = inv2 * (Real)0.5; // trace(A) / 2
     inv2 = helper::rsqrt( inv2*inv2*(Real)0.25 - determinant( A ) ); // sqrt( tr(A)*tr(A) / 4 - det(A) )
 
     diag[0] = inv1 + inv2;
     diag[1] = inv1 - inv2;
 
-    if( helper::rabs( A[1][0] ) < zeroTolerance() ) // c == 0
+    if( helper::rabs( A(1,0) ) < zeroTolerance() ) // c == 0
     {
-        if( helper::rabs( A[0][1] ) < zeroTolerance() ) // b == 0
+        if( helper::rabs( A(0,1) ) < zeroTolerance() ) // b == 0
         {
             V.identity();
             return;
         }
         else
         {
-            V[0].set( A[0][1], diag[0] - A[0][0] ); V[0].normalize();
-            V[1].set( A[0][1], diag[1] - A[0][0] ); V[1].normalize();
+            V[0].set( A(0,1), diag[0] - A(0,0) ); V[0].normalize();
+            V[1].set( A(0,1), diag[1] - A(0,0) ); V[1].normalize();
         }
     }
     else
     {
-        V[0][0] = diag[0] - A[1][1];
-        V[0][1] = diag[1] - A[1][1];
-        V[1][0] = V[1][1] = A[1][0];
+        V(0,0) = diag[0] - A(1,1);
+        V(0,1) = diag[1] - A(1,1);
+        V(1,0) = V(1,1) = A(1,0);
 
-        V[0].set( diag[0] - A[1][1], A[1][0] ); V[0].normalize();
-        V[1].set( diag[1] - A[1][1], A[1][0] ); V[1].normalize();
+        V[0].set( diag[0] - A(1,1), A(1,0) ); V[0].normalize();
+        V[1].set( diag[1] - A(1,1), A(1,0) ); V[1].normalize();
     }
 
     V.transpose();
@@ -1544,9 +1544,9 @@ void Decompose<Real>::QLAlgorithm( type::Vec<iSize,Real> &diag, type::Vec<iSize,
                 fG = fCos*fR-fB;
                 for (sofa::Index i4 = 0; i4 < iSize; ++i4)
                 {
-                    fF = V[i4][i3+1];
-                    V[i4][i3+1] = fSin*V[i4][i3]+fCos*fF;
-                    V[i4][i3]   = fCos*V[i4][i3]-fSin*fF;
+                    fF = V(i4,i3+1);
+                    V(i4,i3+1) = fSin*V(i4,i3)+fCos*fF;
+                    V(i4,i3)   = fCos*V(i4,i3)-fSin*fF;
                 }
             }
             diag[i0] -= fP;
@@ -1568,12 +1568,12 @@ void Decompose<Real>::eigenDecomposition_iterative( const type::Mat<3,3,Real> &M
     ///// Tridiagonalize
     //////////////////////
 
-    const Real &fM00 = M[0][0];
-    Real fM01 = M[0][1];
-    Real fM02 = M[0][2];
-    const Real &fM11 = M[1][1];
-    const Real &fM12 = M[1][2];
-    const Real &fM22 = M[2][2];
+    const Real &fM00 = M(0,0);
+    Real fM01 = M(0,1);
+    Real fM02 = M(0,2);
+    const Real &fM11 = M(1,1);
+    const Real &fM12 = M(1,2);
+    const Real &fM22 = M(2,2);
 
     diag[0] = fM00;
     subDiag[2] = (Real)0.0;
@@ -1588,9 +1588,9 @@ void Decompose<Real>::eigenDecomposition_iterative( const type::Mat<3,3,Real> &M
         diag[2] = fM22-fM02*fQ;
         subDiag[0] = fLength;
         subDiag[1] = fM12-fM01*fQ;
-        V[0][0] = (Real)1.0; V[0][1] = (Real)0.0; V[0][2] = (Real)0.0;
-        V[1][0] = (Real)0.0; V[1][1] = fM01;      V[1][2] = fM02;
-        V[2][0] = (Real)0.0; V[2][1] = fM02;      V[2][2] = -fM01;
+        V(0,0) = (Real)1.0; V(0,1) = (Real)0.0; V(0,2) = (Real)0.0;
+        V(1,0) = (Real)0.0; V(1,1) = fM01;      V(1,2) = fM02;
+        V(2,0) = (Real)0.0; V(2,1) = fM02;      V(2,2) = -fM01;
     }
     else
     {
@@ -1618,9 +1618,9 @@ void Decompose<Real>::eigenDecomposition_iterative( const type::Mat<2,2,Real> &M
     Vec<2,Real> subDiag;
 
     // matrix is already tridiagonal
-    diag[0] = M[0][0];
-    diag[1] = M[1][1];
-    subDiag[0] = M[0][1];
+    diag[0] = M(0,0);
+    diag[1] = M(1,1);
+    subDiag[0] = M(0,1);
     subDiag[1] = 0.0;
     V.identity();
 
@@ -1671,7 +1671,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,3,Real> &F, type::Mat<3,3,Re
     // if V is a reflexion -> made it a rotation by negating a column
     if( determinant(V) < (Real)0 )
         for( int i=0 ; i<3; ++i )
-            V[i][0] = -V[i][0];
+            V(i,0) = -V(i,0);
 
     // the numbers of strain values too close to 0 indicates the kind of degenerescence
     int degenerated = 0;
@@ -1753,10 +1753,10 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,3,Real> &F, type::Mat<3,3,Re
     {
         U = F * V.multDiagonal( S_1 );
 
-        Vec<3,Real> c = cross( Vec<3,Real>(U[0][Sorder[1]],U[1][Sorder[1]],U[2][Sorder[1]]), Vec<3,Real>(U[0][Sorder[2]],U[1][Sorder[2]],U[2][Sorder[2]]) );
-        U[0][Sorder[0]] = c[0];
-        U[1][Sorder[0]] = c[1];
-        U[2][Sorder[0]] = c[2];
+        Vec<3,Real> c = cross( Vec<3,Real>(U(0, Sorder[1]),U(1, Sorder[1]),U(2, Sorder[1])), Vec<3,Real>(U(0, Sorder[2]),U(1, Sorder[2]),U(2,Sorder[2])) );
+        U(0,Sorder[0]) = c[0];
+        U(1,Sorder[0]) = c[1];
+        U(2,Sorder[0]) = c[2];
         break;
     }
     case 2: // 2 null values -> collapsed to an edge -> keeps the valid edge and build 2 orthogonal vectors
@@ -1765,7 +1765,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,3,Real> &F, type::Mat<3,3,Re
 
         // TODO: check if there is a more efficient way to do this
 
-        Vec<3,Real> edge0, edge1, edge2( U[0][Sorder[2]], U[1][Sorder[2]], U[2][Sorder[2]] );
+        Vec<3,Real> edge0, edge1, edge2( U(0,Sorder[2]), U(1,Sorder[0]), U(2,Sorder[0]) );
 
         // check the main direction of edge2 to try to take a not too close arbitrary vector
         Real abs0 = helper::rabs( edge2[0] );
@@ -1798,13 +1798,13 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,3,Real> &F, type::Mat<3,3,Re
         edge1.normalize();
         edge0 = cross( edge1, edge2 );
 
-        U[0][Sorder[0]] = edge0[0];
-        U[1][Sorder[0]] = edge0[1];
-        U[2][Sorder[0]] = edge0[2];
+        U(0,Sorder[0]) = edge0[0];
+        U(1,Sorder[0]) = edge0[1];
+        U(2,Sorder[0]) = edge0[2];
 
-        U[0][Sorder[1]] = edge1[0];
-        U[1][Sorder[1]] = edge1[1];
-        U[2][Sorder[1]] = edge1[2];
+        U(0,Sorder[1]) = edge1[0];
+        U(1,Sorder[1]) = edge1[1];
+        U(2,Sorder[1]) = edge1[2];
 
         break;
     }
@@ -1818,9 +1818,9 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,3,Real> &F, type::Mat<3,3,Re
     // un-inverting the element -> made U a rotation by negating a column
     if( inverted )
     {
-        U[0][Sorder[0]] *= (Real)-1;
-        U[1][Sorder[0]] *= (Real)-1;
-        U[2][Sorder[0]] *= (Real)-1;
+        U(0,Sorder[0]) *= (Real)-1;
+        U(1,Sorder[0]) *= (Real)-1;
+        U(2,Sorder[0]) *= (Real)-1;
 
         S[Sorder[0]] *= (Real)-1;
     }
@@ -1839,7 +1839,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<2,2,Real> &F, type::Mat<2,2,Re
     // if V is a reflexion -> made it a rotation by negating a column
     if( determinant(V) < (Real)0 )
         for( int i=0 ; i<2; ++i )
-            V[i][0] = -V[i][0];
+            V(i,0) = -V(i,0);
 
     // the numbers of strain values too close to 0 indicates the kind of degenerescence
     int degenerated = 0;
@@ -1872,7 +1872,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<2,2,Real> &F, type::Mat<2,2,Re
         int min, max; if( S[0] > S[1] ) { min=1; max=0; }
         else { min=0; max=1; }   // eigen values order
 
-        Vec<3,Real> edge0, edge1( U[0][max], U[1][max], U[2][max] ), edge2;
+        Vec<3,Real> edge0, edge1( U(0,max), U(1,max), U(2,max) ), edge2;
 
         // check the main direction of edge2 to try to take a not too close arbitrary vector
         Real abs0 = helper::rabs( edge1[0] );
@@ -1905,9 +1905,9 @@ bool Decompose<Real>::SVD_stable( const type::Mat<2,2,Real> &F, type::Mat<2,2,Re
         edge2.normalize();
         edge0 = cross( edge1, edge2 );
 
-        U[0][min] = edge0[0];
-        U[1][min] = edge0[1];
-        U[2][min] = edge0[2];
+        U(0,min) = edge0[0];
+        U(1,min) = edge0[1];
+        U(2,min) = edge0[2];
 
         break;
     }
@@ -1915,10 +1915,10 @@ bool Decompose<Real>::SVD_stable( const type::Mat<2,2,Real> &F, type::Mat<2,2,Re
     {
         int min, max; if( S[0] > S[1] ) { min=1; max=0; }
         else { min=0; max=1; }   // eigen values order
-        U[0][min] = 1;
-        U[1][min] = 0;
-        U[0][max] = 0;
-        U[1][max] = 1;
+        U(0,min) = 1;
+        U(1,min) = 0;
+        U(0,max) = 0;
+        U(1,max) = 1;
         break;
     }
     }
@@ -1930,8 +1930,8 @@ bool Decompose<Real>::SVD_stable( const type::Mat<2,2,Real> &F, type::Mat<2,2,Re
     {
         int min = S[0] > S[1] ? 1 : 0;   // min eigen value index
 
-        U[0][min] *= (Real)-1;
-        U[1][min] *= (Real)-1;
+        U(0,min) *= (Real)-1;
+        U(1,min) *= (Real)-1;
 
         S[min] *= (Real)-1;
     }
@@ -1977,7 +1977,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,2,Real> &F, type::Mat<3,2,Re
     // if V is a reflexion -> made it a rotation by negating a column
     if( determinant(V) < (Real)0 )
         for( int i=0 ; i<2; ++i )
-            V[i][0] = -V[i][0];
+            V(i,0) = -V(i,0);
 
     // the numbers of strain values too close to 0 indicates the kind of degenerescence
     int degenerated = 0;
@@ -2012,7 +2012,7 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,2,Real> &F, type::Mat<3,2,Re
         int min, max; if( S[0] > S[1] ) { min=1; max=0; }
         else { min=0; max=1; }   // eigen values order
 
-        Vec<3,Real> edge0, edge1( U[0][max], U[1][max], U[2][max] ), edge2;
+        Vec<3,Real> edge0, edge1( U(0,max), U(1,max), U(2,max) ), edge2;
 
         // check the main direction of edge2 to try to take a not too close arbitrary vector
         Real abs0 = helper::rabs( edge1[0] );
@@ -2045,9 +2045,9 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,2,Real> &F, type::Mat<3,2,Re
         edge2.normalize();
         edge0 = cross( edge1, edge2 );
 
-        U[0][min] = edge0[0];
-        U[1][min] = edge0[1];
-        U[2][min] = edge0[2];
+        U(0,min) = edge0[0];
+        U(1,min) = edge0[1];
+        U(2,min) = edge0[2];
 
         break;
     }
@@ -2055,12 +2055,12 @@ bool Decompose<Real>::SVD_stable( const type::Mat<3,2,Real> &F, type::Mat<3,2,Re
     {
         int min, max; if( S[0] > S[1] ) { min=1; max=0; }
         else { min=0; max=1; }   // eigen values order
-        U[0][min] = 1;
-        U[1][min] = 0;
-        U[2][min] = 0;
-        U[0][max] = 0;
-        U[1][max] = 1;
-        U[2][max] = 0;
+        U(0,min) = 1;
+        U(1,min) = 0;
+        U(2,min) = 0;
+        U(0,max) = 0;
+        U(1,max) = 1;
+        U(2,max) = 0;
         break;
     }
     }
@@ -2079,13 +2079,13 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,3,Real> &U, cons
     for( int i=0 ; i<3 ; ++i ) // line of dM
         for( int j=0 ; j<3 ; ++j ) // col of dM
         {
-            for( int k=0 ; k<3 ; ++k ) // resolve 3 2x2 systems to find omegaU[i][j] & omegaV[i][j]
+            for( int k=0 ; k<3 ; ++k ) // resolve 3 2x2 systems to find omegaU(i,j) & omegaV(i,j)
             {
                 int l=(k+1)%3;
                 type::Mat<2,2,Real> A, invA;
-                A[0][0] = A[1][1] = S[l];
-                A[0][1] = A[1][0] = S[k];
-                type::Vec<2,Real> v( U[i][k]*V[l][j], -U[i][l]*V[k][j] ), w;
+                A(0,0) = A(1,1) = S[l];
+                A(0,1) = A(1,0) = S[k];
+                type::Vec<2,Real> v( U(i,k)*V(l,j), -U(i,l)*V(k,j) ), w;
 
                 if( helper::rabs( S[k]-S[l] ) > zeroTolerance() )
                 {
@@ -2101,8 +2101,8 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,3,Real> &U, cons
 #else
                     // Tikhonov regularization w = (AtA + I)^-1 At v (suggested in "Invertible Isotropic Hyperelasticity using SVD Gradients", F Sin, Y Zhu, Y Li, D Schroeder, J Barbič, Poster SCA 2011)
                     type::Mat<2,2,Real> AtA = A.multTranspose( A );
-                    AtA[0][0] += (Real)1;
-                    AtA[1][1] += (Real)1;
+                    AtA(0,0) += (Real)1;
+                    AtA(1,1) += (Real)1;
                     const bool canInvert = invA.invert( AtA );
                     assert(canInvert);
                     SOFA_UNUSED(canInvert);
@@ -2110,14 +2110,14 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,3,Real> &U, cons
 #endif
                 }
 
-                //dU[k*3+l][i*3+j] = w[0]; dU[l*3+k][i*3+j] = -w[0];
-                //dV[k*3+l][i*3+j] = w[1]; dV[l*3+k][i*3+j] = -w[1];
+                //dU(k*3+l,i*3+j) = w[0]; dU(l*3+k,i*3+j) = -w[0];
+                //dV(k*3+l,i*3+j) = w[1]; dV(l*3+k,i*3+j) = -w[1];
 
-                omegaU[i][j][k][l] = w[0]; omegaU[i][j][l][k] = -w[0];
-                omegaV[i][j][k][l] = w[1]; omegaV[i][j][l][k] = -w[1];
+                omegaU(i,j)(k,l) = w[0]; omegaU(i,j)(l,k) = -w[0];
+                omegaV(i,j)(k,l) = w[1]; omegaV(i,j)(l,k) = -w[1];
             }
-            omegaU[i][j] = U * omegaU[i][j];
-            omegaV[i][j] = omegaV[i][j] * V;
+            omegaU(i,j) = U * omegaU(i,j);
+            omegaV(i,j) = omegaV(i,j) * V;
         }
 
 
@@ -2126,8 +2126,8 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,3,Real> &U, cons
 //        for( int k=0 ; k<3 ; ++k )
 //        for( int l=0 ; l<3 ; ++l )
 //    {
-//        dU[i][j] += omegaU[i*3+j][k*3+l] * dM[k][l];
-//        dV[i][j] += omegaV[i*3+j][k*3+l] * dM[k][l];
+//        dU(i,j) += omegaU(i*3+j,k*3+l) * dM(k,l);
+//        dV(i,j) += omegaV(i*3+j,k*3+l) * dM(k,l);
 //    }
 
     // transposed and reformatted in 9x9 matrices
@@ -2136,13 +2136,13 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,3,Real> &U, cons
             for( int k=0 ; k<3 ; ++k )
                 for( int l=0 ; l<3 ; ++l )
                 {
-                    //dU[i][j] += omegaU[k][l][i][j] * dM[k][l];
-                    //dV[i][j] += omegaV[k][l][i][j] * dM[k][l];
+                    //dU(i,j) += omegaU(k,l,i,j) * dM(k,l);
+                    //dV(i,j) += omegaV(k,l,i,j) * dM(k,l);
 
-                    //dUOverdM[i][j][k][l] = omegaU[k][l][i][j];
+                    //dUOverdM(i,j,k,l) = omegaU(k,l,i,j);
 
-                    dUOverdM[i*3+j][k*3+l] = omegaU[k][l][i][j];
-                    dVOverdM[i*3+j][k*3+l] = omegaV[k][l][i][j];
+                    dUOverdM(i*3+j,k*3+l) = omegaU(k,l)(i,j);
+                    dVOverdM(i*3+j,k*3+l) = omegaV(k,l)(i,j);
                 }
 
 //            for( int i=0 ; i<3 ; ++i )
@@ -2150,8 +2150,8 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,3,Real> &U, cons
 //                for( int k=0 ; k<3 ; ++k )
 //                for( int l=0 ; l<3 ; ++l )
 //            {
-//                //dU[i][j] += dUOverdM[i][j][k][l] * dM[k][l];
-//                    dU[i][j] += dUOverdM[i*3+j][k*3+l] * dM[k][l];
+//                //dU(i,j) += dUOverdM(i,j,k,l) * dM(k,l);
+//                    dU(i,j) += dUOverdM(i*3+j,k*3+l) * dM(k,l);
 //            }
 
     return true;
@@ -2171,9 +2171,9 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,2,Real> &U, cons
         {
             Mat<2,2,Real> omegaU, omegaV;
             type::Mat<2,2,Real> A, invA;
-            A[0][0] = A[1][1] = S[1];
-            A[0][1] = A[1][0] = S[0];
-            type::Vec<2,Real> v( U[i][0]*V[1][j], -U[i][1]*V[0][j] ), w;
+            A(0,0) = A(1,1) = S[1];
+            A(0,1) = A(1,0) = S[0];
+            type::Vec<2,Real> v( U(i,0)*V(1,j), -U(i,1)*V(0,j) ), w;
 
             if( helper::rabs( S[0]-S[1] ) > zeroTolerance() )
             {
@@ -2189,8 +2189,8 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,2,Real> &U, cons
 #else
                 // Tikhonov regularization w = (AtA + I)^-1 At v (suggested in "Invertible Isotropic Hyperelasticity using SVD Gradients", F Sin, Y Zhu, Y Li, D Schroeder, J Barbič, Poster SCA 2011)
                 type::Mat<2,2,Real> AtA = A.multTranspose( A );
-                AtA[0][0] += (Real)1;
-                AtA[1][1] += (Real)1;
+                AtA(0,0) += (Real)1;
+                AtA(1,1) += (Real)1;
                 const bool canInvert = invA.invert( AtA );
                 assert(canInvert);
                 SOFA_UNUSED(canInvert);
@@ -2198,11 +2198,11 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,2,Real> &U, cons
 #endif
             }
 
-            omegaU[0][1] = w[0]; omegaU[1][0] = -w[0];
-            omegaV[0][1] = w[1]; omegaV[1][0] = -w[1];
+            omegaU(0,1) = w[0]; omegaU(1,0) = -w[0];
+            omegaV(0,1) = w[1]; omegaV(1,0) = -w[1];
 
-            dUdMij[i][j] = U * omegaU;
-            dVdMij[i][j] = omegaV * V;
+            dUdMij(i,j) = U * omegaU;
+            dVdMij(i,j) = omegaV * V;
         }
 
     // transposed and reformatted in plain matrices
@@ -2211,10 +2211,10 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,2,Real> &U, cons
             for( int j=0 ; j<2 ; ++j )
             {
                 for( int i=0 ; i<3 ; ++i )
-                    dUOverdM[i*2+j][k*2+l] = dUdMij[k][l][i][j];
+                    dUOverdM(i*2+j,k*2+l) = dUdMij(k,l)(i,j);
 
                 for( int i=0 ; i<2 ; ++i )
-                    dVOverdM[i*2+j][k*2+l] = dVdMij[k][l][i][j];
+                    dVOverdM(i*2+j,k*2+l) = dVdMij(k,l)(i,j);
             }
 
     return true;
@@ -2231,9 +2231,9 @@ bool Decompose<Real>::SVDGradient_dUdV( const type::Mat<3,3,Real> &U, const type
     {
         int j=(i+1)%3;
         type::Mat<2,2,Real> A, invA;
-        A[0][0] = A[1][1] = S[j];
-        A[0][1] = A[1][0] = S[i];
-        type::Vec<2,Real> v( UtdMV[i][j], -UtdMV[j][i] ), w;
+        A(0,0) = A(1,1) = S[j];
+        A(0,1) = A(1,0) = S[i];
+        type::Vec<2,Real> v( UtdMV(i,j), -UtdMV(j,i) ), w;
 
         if( helper::rabs( S[i]-S[j] ) > zeroTolerance() )
         {
@@ -2249,8 +2249,8 @@ bool Decompose<Real>::SVDGradient_dUdV( const type::Mat<3,3,Real> &U, const type
 #else
             // Tikhonov regularization w = (AtA + I)^-1 At v (suggested in "Invertible Isotropic Hyperelasticity using SVD Gradients", F Sin, Y Zhu, Y Li, D Schroeder, J Barbič, Poster SCA 2011)
             type::Mat<2,2,Real> AtA = A.multTranspose( A );
-            AtA[0][0] += (Real)1;
-            AtA[1][1] += (Real)1;
+            AtA(0,0) += (Real)1;
+            AtA(1,1) += (Real)1;
             const bool canInvert = invA.invert( AtA );
             assert(canInvert);
             SOFA_UNUSED(canInvert);
@@ -2258,8 +2258,8 @@ bool Decompose<Real>::SVDGradient_dUdV( const type::Mat<3,3,Real> &U, const type
 #endif
         }
 
-        omegaU[i][j] = w[0]; omegaU[j][i] = -w[0];
-        omegaV[i][j] = w[1]; omegaV[j][i] = -w[1];
+        omegaU(i,j) = w[0]; omegaU(j,i) = -w[0];
+        omegaV(i,j) = w[1]; omegaV(j,i) = -w[1];
     }
 
     dU = U * omegaU;
@@ -2277,9 +2277,9 @@ bool Decompose<Real>::SVDGradient_dUdV( const type::Mat<3,2,Real> &U, const type
     type::Mat<2,2,Real> omegaV;
 
     type::Mat<2,2,Real> A, invA;
-    A[0][0] = A[1][1] = S[1];
-    A[0][1] = A[1][0] = S[0];
-    type::Vec<2,Real> v( UtdMV[0][1], -UtdMV[1][0] ), w;
+    A(0,0) = A(1,1) = S[1];
+    A(0,1) = A(1,0) = S[0];
+    type::Vec<2,Real> v( UtdMV(0,1), -UtdMV(1,0) ), w;
 
     if( helper::rabs( S[0]-S[1] ) > zeroTolerance() )
     {
@@ -2295,8 +2295,8 @@ bool Decompose<Real>::SVDGradient_dUdV( const type::Mat<3,2,Real> &U, const type
 #else
         // Tikhonov regularization w = (AtA + I)^-1 At v (suggested in "Invertible Isotropic Hyperelasticity using SVD Gradients", F Sin, Y Zhu, Y Li, D Schroeder, J Barbič, Poster SCA 2011)
         type::Mat<2,2,Real> AtA = A.multTranspose( A );
-        AtA[0][0] += (Real)1;
-        AtA[1][1] += (Real)1;
+        AtA(0,0) += (Real)1;
+        AtA(1,1) += (Real)1;
         const bool canInvert = invA.invert( AtA );
         assert(canInvert);
         SOFA_UNUSED(canInvert);
@@ -2304,8 +2304,8 @@ bool Decompose<Real>::SVDGradient_dUdV( const type::Mat<3,2,Real> &U, const type
 #endif
     }
 
-    omegaU[0][1] = w[0]; omegaU[1][0] = -w[0];
-    omegaV[0][1] = w[1]; omegaV[1][0] = -w[1];
+    omegaU(0,1) = w[0]; omegaU(1,0) = -w[0];
+    omegaV(0,1) = w[1]; omegaV(1,0) = -w[1];
 
     dU = U * omegaU;
     dV = omegaV * V;
@@ -2348,15 +2348,15 @@ int dsyevc3( const type::Mat<3,3,Real> &A, type::Vec<3,Real> &w)
   //       | a   d   f  |
   //  A =  | d*  b   e  |
   //       | f*  e*  c  |
-  Real de = A[0][1] * A[1][2];                                    // d * e
-  Real dd = helper::SQR(A[0][1]);                                         // d^2
-  Real ee = helper::SQR(A[1][2]);                                         // e^2
-  Real ff = helper::SQR(A[0][2]);                                         // f^2
-  m  = A[0][0] + A[1][1] + A[2][2];
-  c1 = (A[0][0]*A[1][1] + A[0][0]*A[2][2] + A[1][1]*A[2][2])        // a*b + a*c + b*c - d^2 - e^2 - f^2
+  Real de = A(0,1) * A(1,2);                                    // d * e
+  Real dd = helper::SQR(A(0,1));                                         // d^2
+  Real ee = helper::SQR(A(1,2));                                         // e^2
+  Real ff = helper::SQR(A(0,2));                                         // f^2
+  m  = A(0,0) + A(1,1) + A(2,2);
+  c1 = (A(0,0)*A(1,1) + A(0,0)*A(2,2) + A(1,1)*A(2,2))        // a*b + a*c + b*c - d^2 - e^2 - f^2
           - (dd + ee + ff);
-  c0 = A[2][2]*dd + A[0][0]*ee + A[1][1]*ff - A[0][0]*A[1][1]*A[2][2]
-            - static_cast<Real>(2.0) * A[0][2]*de;                                     // c*d^2 + a*e^2 + b*f^2 - a*b*c - 2*f*d*e)
+  c0 = A(2,2)*dd + A(0,0)*ee + A(1,1)*ff - A(0,0)*A(1,1)*A(2,2)
+            - static_cast<Real>(2.0) * A(0,2)*de;                                     // c*d^2 + a*e^2 + b*f^2 - a*b*c - 2*f*d*e)
 
   Real p, sqrt_p, q, c, s, phi;
   p = helper::SQR(m) - static_cast<Real>(3.0) * c1;
@@ -2402,22 +2402,22 @@ inline void dsytrd3(const type::Mat<3,3,Real> &A, type::Mat<3,3,Real> &Q, type::
 #ifndef EVALS_ONLY
   for (int i=0; i < n; i++)
   {
-    Q[i][i] = 1.0;
+    Q(i,i) = 1.0;
     for (int j=0; j < i; j++)
-      Q[i][j] = Q[j][i] = 0.0;
+      Q(i,j) = Q(j,i) = 0.0;
   }
 #endif
 
   // Bring first row and column to the desired form
-  h = helper::SQR(A[0][1]) + helper::SQR(A[0][2]);
-  if (A[0][1] > 0)
+  h = helper::SQR(A(0,1)) + helper::SQR(A(0,2));
+  if (A(0,1) > 0)
     g = -sqrt(h);
   else
     g = sqrt(h);
   e[0] = g;
-  f    = g * A[0][1];
-  u[1] = A[0][1] - g;
-  u[2] = A[0][2];
+  f    = g * A(0,1);
+  u[1] = A(0,1) - g;
+  u[2] = A(0,2);
 
   omega = h - f;
   if (omega > 0.0)
@@ -2426,7 +2426,7 @@ inline void dsytrd3(const type::Mat<3,3,Real> &A, type::Mat<3,3,Real> &Q, type::
     K     = 0.0;
     for (int i=1; i < n; i++)
     {
-      f    = A[1][i] * u[1] + A[i][2] * u[2];
+      f    = A(1,i) * u[1] + A(i,2) * u[2];
       q[i] = omega * f;                  // p
       K   += u[i] * f;                   // u* A u
     }
@@ -2435,9 +2435,9 @@ inline void dsytrd3(const type::Mat<3,3,Real> &A, type::Mat<3,3,Real> &Q, type::
     for (int i=1; i < n; i++)
       q[i] = q[i] - K * u[i];
 
-    d[0] = A[0][0];
-    d[1] = A[1][1] - static_cast<Real>(2.0)*q[1]*u[1];
-    d[2] = A[2][2] - static_cast<Real>(2.0)*q[2]*u[2];
+    d[0] = A(0,0);
+    d[1] = A(1,1) - static_cast<Real>(2.0)*q[1]*u[1];
+    d[2] = A(2,2) - static_cast<Real>(2.0)*q[2]*u[2];
 
     // Store inverse Householder transformation in Q
 #ifndef EVALS_ONLY
@@ -2445,18 +2445,18 @@ inline void dsytrd3(const type::Mat<3,3,Real> &A, type::Mat<3,3,Real> &Q, type::
     {
       f = omega * u[j];
       for (int i=1; i < n; i++)
-        Q[i][j] = Q[i][j] - f*u[i];
+        Q(i,j) = Q(i,j) - f*u[i];
     }
 #endif
 
-    // Calculate updated A[1][2] and store it in e[1]
-    e[1] = A[1][2] - q[1]*u[2] - u[1]*q[2];
+    // Calculate updated A(1,2) and store it in e[1]
+    e[1] = A(1,2) - q[1]*u[2] - u[1]*q[2];
   }
   else
   {
     for (int i=0; i < n; i++)
-      d[i] = A[i][i];
-    e[1] = A[1][2];
+      d[i] = A(i,i);
+    e[1] = A(1,2);
   }
 }
 
@@ -2549,9 +2549,9 @@ int dsyevq3(const type::Mat<3,3,Real> &A, type::Mat<3,3,Real> &Q, type::Vec<3,Re
 #ifndef EVALS_ONLY
         for (int k=0; k < n; k++)
         {
-          t = Q[k][i+1];
-          Q[k][i+1] = s*Q[k][i] + c*t;
-          Q[k][i]   = c*Q[k][i] - s*t;
+          t = Q(k,i+1);
+          Q(k,i+1) = s*Q(k,i) + c*t;
+          Q(k,i)   = c*Q(k,i) - s*t;
         }
 #endif
       }
@@ -2609,8 +2609,8 @@ int Decompose<Real>::symmetricDiagonalization( const type::Mat<3,3,Real> &A, typ
   dsyevc3(A, w);
 
 #ifndef EVALS_ONLY
-//  n0 = SQR(A[0][0]) + SQR(A[0][1]) + SQR(A[0][2]);
-//  n1 = SQR(A[0][1]) + SQR(A[1][1]) + SQR(A[1][2]);
+//  n0 = SQR(A(0,0)) + SQR(A(0,1)) + SQR(A(0,2));
+//  n1 = SQR(A(0,1)) + SQR(A(1,1)) + SQR(A(1,2));
 
   t = fabs(w[0]);
   if ((u=fabs(w[1])) > t)
@@ -2624,19 +2624,19 @@ int Decompose<Real>::symmetricDiagonalization( const type::Mat<3,3,Real> &A, typ
   error = static_cast<Real>(256.0) * std::numeric_limits<Real>::epsilon() * helper::SQR(u);
 //  error = 256.0 * std::numeric_limits<Real>::epsilon() * (n0 + u) * (n1 + u);
 
-  Q[0][1] = A[0][1]*A[1][2] - A[0][2]*A[1][1];
-  Q[1][1] = A[0][2]*A[0][1] - A[1][2]*A[0][0];
-  Q[2][1] = SQR(A[0][1]);
+  Q(0,1) = A(0,1)*A(1,2) - A(0,2)*A(1,1);
+  Q(1,1) = A(0,2)*A(0,1) - A(1,2)*A(0,0);
+  Q(2,1) = SQR(A(0,1));
 
   // Calculate first eigenvector by the formula
   //   v[0] = (A - w[0]).e1 x (A - w[0]).e2
-  Q[0][0] = Q[0][1] + A[0][2]*w[0];
-  Q[1][0] = Q[1][1] + A[1][2]*w[0];
-  Q[2][0] = (A[0][0] - w[0]) * (A[1][1] - w[0]) - Q[2][1];
-  norm    = helper::SQR(Q[0][0]) + helper::SQR(Q[1][0]) + helper::SQR(Q[2][0]);
+  Q(0,0) = Q(0,1) + A(0,2)*w[0];
+  Q(1,0) = Q(1,1) + A(1,2)*w[0];
+  Q(2,0) = (A(0,0) - w[0]) * (A(1,1) - w[0]) - Q(2,1);
+  norm    = helper::SQR(Q(0,0)) + helper::SQR(Q(1,0)) + helper::SQR(Q(2,0));
 
   // If vectors are nearly linearly dependent, or if there might have
-  // been large cancellations in the calculation of A[i][i] - w[0], fall
+  // been large cancellations in the calculation of A(i,i) - w[0], fall
   // back to QL algorithm
   // Note that this simultaneously ensures that multiple eigenvalues do
   // not cause problems: If w[0] = w[1], then A - w[0] * I has rank 1,
@@ -2647,29 +2647,29 @@ int Decompose<Real>::symmetricDiagonalization( const type::Mat<3,3,Real> &A, typ
   {
     norm = sqrt(static_cast<Real>(1.0) / norm);
     for (j=0; j < 3; j++)
-      Q[j][0] = Q[j][0] * norm;
+      Q(j,0) = Q(j,0) * norm;
   }
 
   // Calculate second eigenvector by the formula
   //   v[1] = (A - w[1]).e1 x (A - w[1]).e2
-  Q[0][1]  = Q[0][1] + A[0][2]*w[1];
-  Q[1][1]  = Q[1][1] + A[1][2]*w[1];
-  Q[2][1]  = (A[0][0] - w[1]) * (A[1][1] - w[1]) - Q[2][1];
-  norm     = helper::SQR(Q[0][1]) + helper::SQR(Q[1][1]) + helper::SQR(Q[2][1]);
+  Q(0,1)  = Q(0,1) + A(0,2)*w[1];
+  Q(1,1)  = Q(1,1) + A(1,2)*w[1];
+  Q(2,1)  = (A(0,0) - w[1]) * (A(1,1) - w[1]) - Q(2,1);
+  norm     = helper::SQR(Q(0,1)) + helper::SQR(Q(1,1)) + helper::SQR(Q(2,1));
   if (norm <= error)
     return dsyevq3(A, Q, w);
   else
   {
     norm = sqrt(static_cast<Real>(1.0) / norm);
     for (j=0; j < 3; j++)
-      Q[j][1] = Q[j][1] * norm;
+      Q(j,1) = Q(j,1) * norm;
   }
 
   // Calculate third eigenvector according to
   //   v[2] = v[0] x v[1]
-  Q[0][2] = Q[1][0]*Q[2][1] - Q[2][0]*Q[1][1];
-  Q[1][2] = Q[2][0]*Q[0][1] - Q[0][0]*Q[2][1];
-  Q[2][2] = Q[0][0]*Q[1][1] - Q[1][0]*Q[0][1];
+  Q(0,2) = Q(1,0)*Q(2,1) - Q(2,0)*Q(1,1);
+  Q(1,2) = Q(2,0)*Q(0,1) - Q(0,0)*Q(2,1);
+  Q(2,2) = Q(0,0)*Q(1,1) - Q(1,0)*Q(0,1);
 #endif
 
   return 0;
@@ -2775,7 +2775,7 @@ void Decompose<Real>::PSDProjection( type::Mat<2,2,Real> &A )
 {
     type::Mat<2,2,Real> Q;
     type::Vec<2,Real> w;
-    dsyev2( (Real)A[0][0], (Real)A[0][1], (Real)A[1][1], w[0], w[1], Q[0][0], Q[1][0] );
+    dsyev2( (Real)A(0,0), (Real)A(0,1), (Real)A(1,1), w[0], w[1], Q(0,0), Q(1,0) );
 
     bool modified = false;
     for( int i=0 ; i<2 ; ++i )
@@ -2783,8 +2783,8 @@ void Decompose<Real>::PSDProjection( type::Mat<2,2,Real> &A )
 
     if( modified )
     {
-        Q[1][1] = Q[0][0];
-        Q[0][1] = -Q[1][0];
+        Q(1,1) = Q(0,0);
+        Q(0,1) = -Q(1,0);
 
         A = Q.multDiagonal( w ).multTransposed( Q ); // A = Q*wId*Q^T
     }
@@ -2797,7 +2797,7 @@ void Decompose<Real>::PSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 
 {
     type::Mat<2,2,Real> Q;
     type::Vec<2,Real> w;
-    dsyev2( A00, A01, A11, w[0], w[1], Q[0][0], Q[1][0] );
+    dsyev2( A00, A01, A11, w[0], w[1], Q(0,0), Q(1,0) );
 
     bool modified = false;
     for( int i=0 ; i<2 ; ++i )
@@ -2805,16 +2805,16 @@ void Decompose<Real>::PSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 
 
     if( modified )
     {
-        Q[1][1] = Q[0][0];
-        Q[0][1] = -Q[1][0];
+        Q(1,1) = Q(0,0);
+        Q(0,1) = -Q(1,0);
 
         type::Mat<2,2,Real> tmp = Q.multDiagonal( w );
 
         // A = Q*wId*Q^T
 
-        A00 = Q[0][0]*tmp[0][0] + Q[0][1]*tmp[0][1];
-        A01 = A10 = Q[1][0]*tmp[0][0] + Q[1][1]*tmp[1][1];
-        A11 = Q[1][0]*tmp[1][0] + Q[1][1]*tmp[1][1];
+        A00 = Q(0,0)*tmp(0,0) + Q(0,1)*tmp(0,1);
+        A01 = A10 = Q(1,0)*tmp(0,0) + Q(1,1)*tmp(1,1);
+        A11 = Q(1,0)*tmp(1,0) + Q(1,1)*tmp(1,1);
     }
 }
 
@@ -2850,7 +2850,7 @@ void Decompose<Real>::NSDProjection( type::Mat<2,2,Real> &A )
 {
     type::Mat<2,2,Real> Q;
     type::Vec<2,Real> w;
-    dsyev2( (Real)A[0][0], (Real)A[0][1], (Real)A[1][1], w[0], w[1], Q[0][0], Q[1][0] );
+    dsyev2( (Real)A(0,0), (Real)A(0,1), (Real)A(1,1), w[0], w[1], Q(0,0), Q(1,0) );
 
     bool modified = false;
     for( int i=0 ; i<2 ; ++i )
@@ -2858,8 +2858,8 @@ void Decompose<Real>::NSDProjection( type::Mat<2,2,Real> &A )
 
     if( modified )
     {
-        Q[1][1] = Q[0][0];
-        Q[0][1] = -Q[1][0];
+        Q(1,1) = Q(0,0);
+        Q(0,1) = -Q(1,0);
 
         A = Q.multDiagonal( w ).multTransposed( Q ); // A = Q*wId*Q^T
     }
@@ -2872,7 +2872,7 @@ void Decompose<Real>::NSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 
 {
     type::Mat<2,2,Real> Q;
     type::Vec<2,Real> w;
-    dsyev2( A00, A01, A11, w[0], w[1], Q[0][0], Q[1][0] );
+    dsyev2( A00, A01, A11, w[0], w[1], Q(0,0), Q(1,0) );
 
     bool modified = false;
     for( int i=0 ; i<2 ; ++i )
@@ -2880,16 +2880,16 @@ void Decompose<Real>::NSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 
 
     if( modified )
     {
-        Q[1][1] = Q[0][0];
-        Q[0][1] = -Q[1][0];
+        Q(1,1) = Q(0,0);
+        Q(0,1) = -Q(1,0);
 
         type::Mat<2,2,Real> tmp = Q.multDiagonal( w );
 
         // A = Q*wId*Q^T
 
-        A00 = Q[0][0]*tmp[0][0] + Q[0][1]*tmp[0][1];
-        A01 = A10 = Q[1][0]*tmp[0][0] + Q[1][1]*tmp[1][1];
-        A11 = Q[1][0]*tmp[1][0] + Q[1][1]*tmp[1][1];
+        A00 = Q(0,0)*tmp(0,0) + Q(0,1)*tmp(0,1);
+        A01 = A10 = Q(1,0)*tmp(0,0) + Q(1,1)*tmp(1,1);
+        A11 = Q(1,0)*tmp(1,0) + Q(1,1)*tmp(1,1);
     }
 }
 

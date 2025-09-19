@@ -190,7 +190,7 @@ void DistanceMapping<TIn, TOut>::matrixFreeApplyDJT(
             {
                 for(unsigned k=0; k<In::spatial_dimensions; k++)
                 {
-                    b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
+                    b(j,k) = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
                 }
             }
             // (I - uu^T)*f/l*kfactor  --  do not forget kfactor !
@@ -204,7 +204,7 @@ void DistanceMapping<TIn, TOut>::matrixFreeApplyDJT(
             {
                 for(unsigned k=0; k<Nin; k++)
                 {
-                    df[j]+=b[j][k]*dx[k];
+                    df[j]+=b(j,k)*dx[k];
                 }
             }
             parentForceAccessor[links[i][0]] -= df;
@@ -238,7 +238,7 @@ void DistanceMapping<TIn, TOut>::doUpdateK(
             {
                 for(unsigned k=0; k<In::spatial_dimensions; k++)
                 {
-                    b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
+                    b(j,k) = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
                 }
             }
             b *= childForceAccessor[i][0] * invlengths[i];  // (I - uu^T)*f/l
@@ -283,7 +283,7 @@ void DistanceMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
             {
                 for(unsigned k=0; k<In::spatial_dimensions; k++)
                 {
-                    b[j][k] = static_cast<Real>(1) * ( j==k ) - dir[j] * dir[k];
+                    b(j,k) = static_cast<Real>(1) * ( j==k ) - dir[j] * dir[k];
                 }
             }
             b *= force_i[0] * invlengths[i];  // (I - uu^T)*f/l

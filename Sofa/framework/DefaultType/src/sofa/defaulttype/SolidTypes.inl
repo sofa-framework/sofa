@@ -88,20 +88,20 @@ typename SolidTypes<R>::ArticulatedInertia SolidTypes<R>::ArticulatedInertia::op
 template<class R>
 typename SolidTypes<R>::ArticulatedInertia& SolidTypes<R>::ArticulatedInertia::operator = (const RigidInertia& Ri )
 {
-    //                         H[0][0]=0;
-    //                         H[0][1]=-Ri.h[2];
-    //                         H[0][2]= Ri.h[1];
-    //                         H[1][0]= Ri.h[2];
-    //                         H[1][1]=0;
-    //                         H[1][2]=-Ri.h[0];
-    //                         H[2][0]=-Ri.h[1];
-    //                         H[2][1]= Ri.h[0];
-    //                         H[2][2]=0;
+    //                         H(0,0)=0;
+    //                         H(0,1)=-Ri.h[2];
+    //                         H(0,2)= Ri.h[1];
+    //                         H(1,0)= Ri.h[2];
+    //                         H(1,1)=0;
+    //                         H(1,2)=-Ri.h[0];
+    //                         H(2,0)=-Ri.h[1];
+    //                         H(2,1)= Ri.h[0];
+    //                         H(2,2)=0;
     H = crossM( Ri.h );
 
     for( int i=0; i<3; i++ )
         for( int j=0; j<3; j++ )
-            M[i][j]= i==j ? Ri.m : 0;
+            M(i,j)= i==j ? Ri.m : 0;
 
     I=Ri.I;
     return *this;
@@ -135,10 +135,10 @@ void SolidTypes<R>::ArticulatedInertia::copyTo( Mat66& m ) const
     {
         for( int j=0; j<3; j++ )
         {
-            m[i][j] = H[j][i];
-            m[i][j+3] = M[i][j];
-            m[i+3][j] = I[i][j];
-            m[i+3][j+3] = H[i][j];
+            m(i,j) = H(j,i);
+            m(i,j+3) = M(i,j);
+            m(i+3,j) = I(i,j);
+            m(i+3,j+3) = H(i,j);
         }
     }
 }
@@ -155,7 +155,7 @@ typename SolidTypes<R>::Vec SolidTypes<R>::mult( const typename SolidTypes<R>::M
     {
         r[i]=0;
         for( int j=0; j<3; ++j )
-            r[i]+=m[i][j] * v[j];
+            r[i]+=m(i,j) * v[j];
     }
     return r;
 }
@@ -168,7 +168,7 @@ typename SolidTypes<R>::Vec SolidTypes<R>::multTrans( const typename SolidTypes<
     {
         r[i]=0;
         for( int j=0; j<3; ++j )
-            r[i]+=m[j][i] * v[j];
+            r[i]+=m(j,i) * v[j];
     }
     return r;
 }
@@ -178,15 +178,15 @@ template<class R>
 typename SolidTypes<R>::Mat3x3 SolidTypes<R>::crossM( const typename SolidTypes<R>::Vec& v )
 {
     typename SolidTypes<R>::Mat3x3 m;
-    m[0][0]=0;
-    m[0][1]=-v[2];
-    m[0][2]= v[1];
-    m[1][0]= v[2];
-    m[1][1]=0;
-    m[1][2]=-v[0];
-    m[2][0]=-v[1];
-    m[2][1]= v[0];
-    m[2][2]=0;
+    m(0,0)=0;
+    m(0,1)=-v[2];
+    m(0,2)= v[1];
+    m(1,0)= v[2];
+    m(1,1)=0;
+    m(1,2)=-v[0];
+    m(2,0)=-v[1];
+    m(2,1)= v[0];
+    m(2,2)=0;
     return m;
 }
 
@@ -203,7 +203,7 @@ typename SolidTypes<R>::Mat3x3 SolidTypes<R>::dyad( const Vec& u, const Vec& v )
     Mat3x3 m;
     for( int i=0; i<3; i++ )
         for( int j=0; j<3; j++ )
-            m[i][j] = u[i]*v[j];
+            m(i,j) = u[i]*v[j];
     return m;
 }
 

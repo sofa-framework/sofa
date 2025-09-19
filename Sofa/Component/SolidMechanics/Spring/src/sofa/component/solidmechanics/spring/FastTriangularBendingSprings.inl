@@ -549,7 +549,7 @@ void FastTriangularBendingSprings<_DataTypes>::EdgeSpring::getStiffness( Stiffne
     for( unsigned j=0; j<4; j++ )
         for( unsigned k=0; k<4; k++ )
         {
-            K[j*3][k*3] = K[j*3+1][k*3+1] = K[j*3+2][k*3+2] = -lambda * alpha[j] * alpha[k];
+            K(j*3,k*3) = K(j*3+1,k*3+1) = K(j*3+2,k*3+2) = -lambda * alpha[j] * alpha[k];
         }
 }
 

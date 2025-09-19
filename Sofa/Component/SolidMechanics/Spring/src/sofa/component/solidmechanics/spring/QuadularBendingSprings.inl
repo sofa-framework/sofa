@@ -471,7 +471,7 @@ auto QuadularBendingSprings<DataTypes>::computeLocalJacobian(EdgeInformation& ei
     Mat jacobian = (einfo.ks - tgt) * sofa::type::dyad(direction, direction);
     for (int j = 0; j < N; ++j)
     {
-        jacobian[j][j] += tgt;
+        jacobian(j,j) += tgt;
     }
     return jacobian;
 }
