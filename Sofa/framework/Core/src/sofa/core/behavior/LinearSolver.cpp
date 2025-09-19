@@ -24,12 +24,28 @@
 namespace sofa::core::behavior
 {
 
-LinearSolver::LinearSolver()
-    : frozen(false)
-{}
+void LinearSolver::init_partial_solve()
+{
+    msg_warning() << "partial_solve is not implemented yet.";
+}
 
-LinearSolver::~LinearSolver()
-{}
+void LinearSolver::partial_solve(std::list<linearalgebra::BaseMatrix::Index>&,
+                                 std::list<linearalgebra::BaseMatrix::Index>&, bool)
+{
+    msg_warning() << "partial_solve is not implemented yet";
+}
+
+void LinearSolver::applyConstraintForce(const sofa::core::ConstraintParams*,
+                                        sofa::core::MultiVecDerivId,
+                                        const linearalgebra::BaseVector*)
+{
+    msg_error() << "applyConstraintForce has not been implemented.";
+}
+
+void LinearSolver::computeResidual(const core::ExecParams*, linearalgebra::BaseVector*)
+{
+    msg_error() << "computeResidual has not been implemented.";
+}
 
 } // namespace sofa::core::behavior
 

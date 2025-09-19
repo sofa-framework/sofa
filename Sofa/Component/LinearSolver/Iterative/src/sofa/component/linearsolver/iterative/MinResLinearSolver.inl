@@ -49,23 +49,6 @@ MinResLinearSolver<TMatrix,TVector>::MinResLinearSolver()
 	f_tolerance.setRequired(true);
 }
 
-template<class TMatrix, class TVector>
-void MinResLinearSolver<TMatrix,TVector>::resetSystem()
-{
-    f_graph.beginEdit()->clear();
-    f_graph.endEdit();
-
-    Inherit::resetSystem();
-}
-
-template<class TMatrix, class TVector>
-void MinResLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
-{
-    Inherit::setSystemMBKMatrix(mparams);
-}
-
-
-
 /// Solve Ax=b
 /// code issued (and modified) from tminres (https://code.google.com/p/tminres/)
 // - Umberto Villa, Emory University - uvilla@emory.edu

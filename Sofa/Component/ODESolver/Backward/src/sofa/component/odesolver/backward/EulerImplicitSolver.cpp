@@ -178,9 +178,10 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     {
         SCOPED_TIMER("MBKSolve");
 
-        l_linearSolver->setSystemLHVector(x);
-        l_linearSolver->setSystemRHVector(b);
+        l_linearSolver->getLinearSystem()->setSystemSolution(x);
+        l_linearSolver->getLinearSystem()->setRHS(b);
         l_linearSolver->solveSystem();
+        l_linearSolver->getLinearSystem()->dispatchSystemSolution(x);
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("SystemSolution");

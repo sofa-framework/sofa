@@ -224,9 +224,10 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
             {
 			    SCOPED_TIMER("MBKSolve");
                 // resolution of matrix*res=b
-			    l_linearSolver->setSystemLHVector(res);
-			    l_linearSolver->setSystemRHVector(b);
+			    l_linearSolver->getLinearSystem()->setSystemSolution(res);
+			    l_linearSolver->getLinearSystem()->setRHS(b);
 			    l_linearSolver->solveSystem();
+			    l_linearSolver->getLinearSystem()->dispatchSystemSolution(res);
             }
 
 			/// Updates of q(k,i) ///
@@ -307,9 +308,10 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
             mop.setSystemMBKMatrix(core::MatricesFactors::M(1), core::MatricesFactors::B(0), core::MatricesFactors::K(0), l_linearSolver.get());
 
             // resolution of matrix*b=newp
-            l_linearSolver->setSystemLHVector(b);
-            l_linearSolver->setSystemRHVector(newp);
+            l_linearSolver->getLinearSystem()->setSystemSolution(b);
+            l_linearSolver->getLinearSystem()->setRHS(newp);
             l_linearSolver->solveSystem(); // b = inv(matrix)*newp = Minv*newp
+            l_linearSolver->getLinearSystem()->dispatchSystemSolution(b);
 
             const auto hamiltonianKineticEnergy = 0.5*(newp.dot(b));
 
