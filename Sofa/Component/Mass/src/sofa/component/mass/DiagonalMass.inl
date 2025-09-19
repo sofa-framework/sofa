@@ -1444,8 +1444,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::draw(const core::visual::VisualP
 
     for (unsigned int i = 0; i < x.size(); i++)
     {
-        sofa::type::Vec3 p;
-        p = GeometricalTypes::getCPos(x[i]);
+        const sofa::type::Vec3 p = toVec3(GeometricalTypes::getCPos(x[i]));
 
         points.push_back(p);
         gravityCenter += p * masses[i];
