@@ -49,7 +49,7 @@ sofa::simulation::Node::SPtr createScene(const sofa::simpleapi::Simulation::SPtr
     sofa::simpleapi::createObject(root, "VisualStyle", {{"displayFlags", "showVisual"}});
     sofa::simpleapi::createObject(root, "ConstraintAttachButtonSetting");
     sofa::simpleapi::createObject(root, "FreeMotionAnimationLoop");
-    sofa::simpleapi::createObject(root, "GenericConstraintSolver",{{"maxIterations","50"}, {"tolerance","1.0e-6"}});
+    sofa::simpleapi::createObject(root, "ProjectedGaussSeidelConstraintSolver",{{"maxIterations","50"}, {"tolerance","1.0e-6"}});
 
     sofa::simpleapi::createObject(root, "CollisionPipeline",{{"name","Pipeline"}});
     sofa::simpleapi::createObject(root, "ParallelBruteForceBroadPhase",{{"name","BroadPhase"}});

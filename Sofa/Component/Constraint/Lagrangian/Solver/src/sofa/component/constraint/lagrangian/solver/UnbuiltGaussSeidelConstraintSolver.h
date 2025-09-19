@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,59 +20,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/constraint/lagrangian/solver/config.h>
 
-#include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
-#include <sofa/linearalgebra/SparseMatrix.h>
+#include <sofa/component/constraint/lagrangian/solver/UnbuiltConstraintSolver.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
-
-class GenericConstraintSolver;
-
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintProblem : public ConstraintProblem
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API UnbuiltGaussSeidelConstraintSolver : public UnbuiltConstraintSolver
 {
 public:
+    SOFA_CLASS(UnbuiltGaussSeidelConstraintSolver, UnbuiltConstraintSolver);
 
-    typedef std::vector< core::behavior::BaseConstraintCorrection* > ConstraintCorrections;
-
-    GenericConstraintProblem(GenericConstraintSolver* solver)
-    : scaleTolerance(true)
-    , allVerified(false)
-    , sor(1.0)
-    , currentError(0.0)
-    , currentIterations(0)
-    , m_solver(solver)
-    {}
-
-    ~GenericConstraintProblem() override
-    {
-        freeConstraintResolutions();
-    }
-
-    void clear(int nbConstraints) override;
-    void freeConstraintResolutions();
-    int getNumConstraints();
-    int getNumConstraintGroups();
-    void result_output(GenericConstraintSolver* solver, SReal *force, SReal error, int iterCount, bool convergence);
-    void solveTimed(SReal tol, int maxIt, SReal timeout) override;
-
-    void setSolver(GenericConstraintSolver* solver);
-
-    sofa::linearalgebra::FullVector<SReal> _d;
-    std::vector<core::behavior::ConstraintResolution*> constraintsResolutions;
-    bool scaleTolerance, allVerified;
-    SReal sor;
-    SReal currentError;
-    int currentIterations;
-
-    sofa::linearalgebra::FullVector<SReal> m_lam;
-    sofa::linearalgebra::FullVector<SReal> m_deltaF;
-    sofa::linearalgebra::FullVector<SReal> m_deltaF_new;
-    sofa::linearalgebra::FullVector<SReal> m_p;
-protected:
-
-    GenericConstraintSolver* m_solver;
-
+    virtual void doSolve( SReal timeout = 0.0) override;
 };
 }
