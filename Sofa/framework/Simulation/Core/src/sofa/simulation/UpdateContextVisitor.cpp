@@ -46,8 +46,8 @@ Visitor::Result UpdateSimulationContextVisitor::processNodeTopDown(simulation::N
 }
 
 
-UpdateVisualContextVisitor::UpdateVisualContextVisitor(const sofa::core::visual::VisualParams* vparams)
-    : UpdateContextVisitor(sofa::core::visual::visualparams::castToExecParams(vparams))
+UpdateVisualContextVisitor::UpdateVisualContextVisitor(const sofa::core::visual::VisualParams* visuparams)
+    : UpdateContextVisitor(sofa::core::visual::visualparams::castToExecParams(visuparams))
 {
 
 }

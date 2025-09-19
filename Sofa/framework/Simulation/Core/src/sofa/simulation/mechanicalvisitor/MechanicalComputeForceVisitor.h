@@ -35,9 +35,9 @@ public:
     sofa::core::MultiVecDerivId res;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
 
-    MechanicalComputeForceVisitor(const sofa::core::MechanicalParams* mparams,
-                                  sofa::core::MultiVecDerivId res, bool accumulate = true )
-            : MechanicalVisitor(mparams) , res(res), accumulate(accumulate)
+    MechanicalComputeForceVisitor(const sofa::core::MechanicalParams* mechaparams,
+                                  sofa::core::MultiVecDerivId resvecid, bool bAccumulate = true )
+            : MechanicalVisitor(mechaparams) , res(resvecid), accumulate(bAccumulate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
