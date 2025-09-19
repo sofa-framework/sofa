@@ -20,8 +20,8 @@
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PRECONDITIONEDMATRIXFREESYSTEM_CPP
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/component/linearsolver/iterative/PreconditionedMatrixFreeSystem.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsolver::iterative
 {
