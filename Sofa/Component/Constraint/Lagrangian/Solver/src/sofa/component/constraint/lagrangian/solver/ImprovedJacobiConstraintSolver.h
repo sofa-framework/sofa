@@ -31,6 +31,12 @@ class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ImprovedJacobiConstraintSo
 public:
     SOFA_CLASS(ImprovedJacobiConstraintSolver, BuiltConstraintSolver);
 
+    Data<bool>  d_useSpectralCorrection;
+    Data<SReal> d_spectralCorrectionFactor;
+    Data<bool>  d_useConjugateResidue;
+    Data<SReal> d_conjugateResidueSpeedFactor;
+
+    ImprovedJacobiConstraintSolver();
 
     /**
      * Based on paper
