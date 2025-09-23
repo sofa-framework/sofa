@@ -70,7 +70,6 @@ GenericConstraintSolver::GenericConstraintSolver()
     , d_regularizationTerm(initData(&d_regularizationTerm, 0.0_sreal, "regularizationTerm", "Add regularization factor times the identity matrix to the compliance W when solving constraints"))
     , d_scaleTolerance(initData(&d_scaleTolerance, true, "scaleTolerance", "Scale the error tolerance with the number of constraints"))
     , d_allVerified(initData(&d_allVerified, false, "allVerified", "All constraints must be verified (each constraint's error < tolerance)"))
-    , d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
     , d_computeGraphs(initData(&d_computeGraphs, false, "computeGraphs", "Compute graphs of errors and forces during resolution"))
     , d_graphErrors(initData(&d_graphErrors, "graphErrors", "Sum of the constraints' errors at each iteration"))
     , d_graphConstraints(initData(&d_graphConstraints, "graphConstraints", "Graph of each constraint's error at the end of the resolution"))
@@ -139,13 +138,6 @@ void GenericConstraintSolver::  init()
         dx.realloc(&vop,false,true, core::VecIdProperties{"constraint_dx", GetClass()->className});
         m_dxId = dx.id();
     }
-
-    if(d_multithreading.getValue())
-    {
-        simulation::MainTaskSchedulerFactory::createInRegistry()->init();
-    }
-
-
 }
 
 void GenericConstraintSolver::initializeConstraintProblems()

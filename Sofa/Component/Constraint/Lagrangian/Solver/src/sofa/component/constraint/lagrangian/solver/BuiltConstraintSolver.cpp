@@ -28,6 +28,18 @@
 
 namespace sofa::component::constraint::lagrangian::solver
 {
+BuiltConstraintSolver::BuiltConstraintSolver()
+: d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
+{}
+
+void BuiltConstraintSolver::init()
+{
+    Inherit1::init();
+    if(d_multithreading.getValue())
+    {
+        simulation::MainTaskSchedulerFactory::createInRegistry()->init();
+    }
+}
 
 void BuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cParams, unsigned int numConstraints)
 {
