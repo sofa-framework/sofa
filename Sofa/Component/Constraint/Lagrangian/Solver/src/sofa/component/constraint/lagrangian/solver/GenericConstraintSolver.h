@@ -60,7 +60,7 @@ public:
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
 
-    Data<int> d_maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
+    Data<int> d_maxIt; ///< maximal number of iterations of iterative algorithm
     Data<SReal> d_tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
     Data<SReal> d_sor; ///< Successive Over Relaxation parameter (0-2)
     Data< SReal > d_regularizationTerm; ///< add regularization*Id to W when solving for constraints

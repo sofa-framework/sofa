@@ -28,6 +28,13 @@
 
 namespace sofa::component::constraint::lagrangian::solver
 {
+/**
+ *  \brief This component implements a generic way of preparing system for solvers that doesn't need
+ *  a build version of the constraint matrix. Any solver that are based on an unbuilt system should
+ *  inherit from this.
+ *  This component is purely virtual because doSolve is not defined and needs to be defined in the
+ *  inherited class
+ */
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API UnbuiltConstraintSolver : public GenericConstraintSolver
 {
 public:

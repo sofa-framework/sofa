@@ -35,7 +35,7 @@ namespace sofa::component::constraint::lagrangian::solver
 {
 
 
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API   ConstraintProblem
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintProblem
 {
 public:
     // The compliance matrix projected in the constraint space
@@ -67,11 +67,11 @@ public:
 
     virtual void solveTimed(SReal tolerance, int maxIt, SReal timeout) = 0;
 
-    unsigned int getProblemId();
+    unsigned getProblemId() const;
 
 protected:
     int dimension;
-    unsigned int problemId;
+    unsigned problemId;
 };
 
 

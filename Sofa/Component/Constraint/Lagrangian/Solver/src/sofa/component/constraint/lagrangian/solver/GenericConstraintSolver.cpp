@@ -64,7 +64,7 @@ void clearMultiVecId(sofa::core::objectmodel::BaseContext* ctx, const sofa::core
 
 
 GenericConstraintSolver::GenericConstraintSolver()
-    : d_maxIt(initData(&d_maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
+    : d_maxIt(initData(&d_maxIt, 1000, "maxIterations", "maximal number of iterations of iterative algorithm"))
     , d_tolerance(initData(&d_tolerance, 0.001_sreal, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , d_sor(initData(&d_sor, 1.0_sreal, "sor", "Successive Over Relaxation parameter (0-2)"))
     , d_regularizationTerm(initData(&d_regularizationTerm, 0.0_sreal, "regularizationTerm", "Add regularization factor times the identity matrix to the compliance W when solving constraints"))
@@ -114,7 +114,12 @@ GenericConstraintSolver::GenericConstraintSolver()
 }
 
 GenericConstraintSolver::~GenericConstraintSolver()
-{}
+{
+    for (unsigned i=0; i< CP_BUFFER_SIZE; ++i)
+    {
+        delete m_cpBuffer[i];
+    }
+}
 
 
 

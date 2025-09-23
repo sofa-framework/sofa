@@ -25,8 +25,16 @@
 
 namespace sofa::component::constraint::lagrangian::solver
 {
+/**
+ *  \brief This component implements a generic way of building system for solvers that use a built
+ *  version of the constraint matrix. Any solver that uses a build matrix should inherit from this.
+ *  This component is purely virtual because doSolve is not defined and needs to be defined in the
+ *  inherited class
+ */
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API BuiltConstraintSolver : public GenericConstraintSolver
 {
+
+
 public:
     SOFA_CLASS(BuiltConstraintSolver, GenericConstraintSolver);
 
