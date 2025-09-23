@@ -32,7 +32,7 @@ namespace sofa::component::constraint::lagrangian::solver
 
 void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
 {
-    SCOPED_TIMER_VARNAME(gaussSeidelTimer, "ConstraintsGaussSeidel");
+    SCOPED_TIMER_VARNAME(gaussSeidelTimer, "ImprovedJacobiConstraintSolver");
 
 
     const int dimension = current_cp->getDimension();
@@ -119,6 +119,14 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
                 }
                 correctedD[l] = rho * d[l]  ;
             }
+            j += nb;
+        }
+
+        for(int j=0; j<dimension; ) // increment of j realized at the end of the loop
+        {
+            // 1. nbLines provide the dimension of the constraint
+            const unsigned int nb = current_cp->constraintsResolutions[j]->getNbLines();
+
             current_cp->constraintsResolutions[j]->resolution(j,w,correctedD.data(), force, dfree);
             for(unsigned l=j; l<j+nb; ++l )
             {
@@ -127,7 +135,7 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
                 lastF[l] = force[l];
             }
 
-            double cstError = 0.0;
+            SReal cstError = 0.0;
             for(unsigned l=j; l<j+nb; ++l )
             {
                 for(unsigned k=0; k<dimension; ++k)
@@ -166,7 +174,7 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
 
 void registerImprovedJacobiConstraintSolver(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("A Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components using a Projected Gauss-Seidel iterative method")
+    factory->registerObjects(core::ObjectRegistrationData("A Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components using a Projected Jacobi iterative method")
         .add< ImprovedJacobiConstraintSolver >());
 }
 
