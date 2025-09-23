@@ -74,3 +74,24 @@ TEST(VecTest, DeductionGuide)
     constexpr sofa::type::VecNoInit vec2 { 1.0_sreal, 2.0_sreal, 3.0_sreal };
     static_assert(std::is_same_v<decltype(vec2)::value_type, SReal>);
 }
+
+TEST(VecTest, Equality)
+{
+    constexpr sofa::type::Vec<3,SReal> vecf1 { 1.0_sreal, 2.0_sreal, 3.0_sreal };
+    constexpr sofa::type::Vec<3,SReal> vecf2 { 1.0_sreal, 2.0_sreal, 3.0_sreal };
+    constexpr sofa::type::Vec<3,SReal> vecf3 { 1.0_sreal, 2.00001_sreal, 3.0_sreal };
+    
+    constexpr sofa::type::Vec<3,int> veci1 { 2, 4, 7 };
+    constexpr sofa::type::Vec<3,int> veci2 { 2, 4, 7 };
+    constexpr sofa::type::Vec<3,int> veci3 { 2, 4, 6 };
+    
+    EXPECT_TRUE(vecf1 == vecf2);
+    EXPECT_FALSE(vecf1 != vecf2);
+    EXPECT_FALSE(vecf1 == vecf3);
+    EXPECT_TRUE(vecf1 != vecf3);
+    
+    EXPECT_TRUE(veci1 == veci2);
+    EXPECT_FALSE(veci1 != veci2);
+    EXPECT_FALSE(veci1 == veci3);
+    EXPECT_TRUE(veci1 != veci3);
+}

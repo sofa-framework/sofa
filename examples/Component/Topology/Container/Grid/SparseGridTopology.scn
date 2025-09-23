@@ -23,7 +23,7 @@
     <CollisionPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <CollisionResponse name="Response"/>
+    <CollisionResponse name="Response" response="PenalityContactForceField"/>
     <DiscreteIntersection/>
     
     <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />

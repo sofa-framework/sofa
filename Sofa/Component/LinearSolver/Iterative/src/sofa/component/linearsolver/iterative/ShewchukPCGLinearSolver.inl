@@ -23,4 +23,4 @@
 
 #include <sofa/component/linearsolver/iterative/PCGLinearSolver.inl>
 
-SOFA_HEADER_DEPRECATED("v24.12", "v25.12", "sofa/component/linearsolver/iterative/PCGLinearSolver.inl")
+SOFA_HEADER_DISABLED("v24.12", "v25.12", "sofa/component/linearsolver/iterative/PCGLinearSolver.inl")

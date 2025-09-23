@@ -28,7 +28,7 @@
 namespace sofa::component::mapping::linear::_barycentricmappertopologycontainer_
 {
 
-using sofa::type::Mat3x3d;
+using sofa::type::Mat3x3;
 using sofa::type::Vec3;
 using sofa::type::Vec3i;
 using sofa::defaulttype::Vec3Types;
@@ -133,7 +133,7 @@ protected:
     MatrixType* m_matrixJ {nullptr};
     bool m_updateJ {false};
 
-    type::vector<Mat3x3d> m_bases;
+    type::vector<Mat3x3> m_bases;
     type::vector<Vec3> m_centers;
 
     // Spacial hashing utils
@@ -148,8 +148,9 @@ protected:
     ~BarycentricMapperTopologyContainer() override = default;
 
     virtual type::vector<Element> getElements()=0;
-    virtual type::vector<SReal> getBaryCoef(const Real* f)=0;
-    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element)=0;
+    virtual std::array<Real, Element::NumberOfNodes>getBarycentricCoefficients(const std::array<Real, MappingDataType::NumberOfCoordinates>& barycentricCoordinates)=0;
+    
+    virtual void computeBase(Mat3x3& base, const typename In::VecCoord& in, const Element& element)=0;
     virtual void computeCenter(Vec3& center, const typename In::VecCoord& in, const Element& element)=0;
     virtual void addPointInElement(const Index elementIndex, const SReal* baryCoords)=0;
     virtual void computeDistance(SReal& d, const Vec3& v)=0;

@@ -102,7 +102,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithNoAttributes()
              "  <CollisionPipeline name='pipeline'/>                                         \n"
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <BVHNarrowPhase/>                                                            \n"
-             "  <CollisionResponse/>                                                         \n"
+             "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
@@ -126,7 +126,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingIntersection()
              "  <CollisionPipeline name='pipeline'/>                                         \n"
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <BVHNarrowPhase/>                                                            \n"
-             "  <CollisionResponse/>                                                         \n"
+             "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
              "</Node>                                                                        \n" ;
 
     root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
@@ -147,7 +147,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingBroadPhase()
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
              "  <CollisionPipeline name='pipeline'/>                                         \n"
              "  <BVHNarrowPhase/>                                                            \n"
-             "  <CollisionResponse/>                                                         \n"
+             "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
@@ -168,7 +168,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingNarrowPhase()
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
              "  <CollisionPipeline name='pipeline'/>                                         \n"
              "  <BruteForceBroadPhase/>                                                      \n"
-             "  <CollisionResponse/>                                                         \n"
+             "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
@@ -210,7 +210,7 @@ int TestCollisionPipeline::checkCollisionPipelineWithMonkeyValueForDepth(int dva
              "  <CollisionPipeline name='pipeline' depth='"<< dvalue <<"'/>                  \n"
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <BVHNarrowPhase/>                                                            \n"
-             "  <CollisionResponse/>                                                         \n"
+             "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 

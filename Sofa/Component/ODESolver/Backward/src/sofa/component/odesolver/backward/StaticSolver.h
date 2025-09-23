@@ -141,12 +141,12 @@ protected:
         std::optional<T> value;
     };
 
-    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<int> d_newton_iterations;
-    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<SReal> d_absolute_correction_tolerance_threshold;
-    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<SReal> d_relative_correction_tolerance_threshold;
-    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<SReal> d_absolute_residual_tolerance_threshold;
-    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<SReal> d_relative_residual_tolerance_threshold;
-    SOFA_ATTRIBUTE_DEPRECATED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<SReal> d_should_diverge_when_residual_is_growing;
+    SOFA_ATTRIBUTE_DISABLED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<int> d_newton_iterations;
+    SOFA_ATTRIBUTE_DISABLED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<SReal> d_absolute_correction_tolerance_threshold;
+    SOFA_ATTRIBUTE_DISABLED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<SReal> d_relative_correction_tolerance_threshold;
+    SOFA_ATTRIBUTE_DISABLED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<SReal> d_absolute_residual_tolerance_threshold;
+    SOFA_ATTRIBUTE_DISABLED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<SReal> d_relative_residual_tolerance_threshold;
+    SOFA_ATTRIBUTE_DISABLED__NEWTONRAPHSON_IN_STATICSOLVER() NewtonRaphsonDeprecatedData<SReal> d_should_diverge_when_residual_is_growing;
 };
 
 }

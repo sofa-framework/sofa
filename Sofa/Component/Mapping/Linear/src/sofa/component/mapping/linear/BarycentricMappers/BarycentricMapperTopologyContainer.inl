@@ -203,11 +203,11 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::compute
     {
         Element element = elements[e];
 
-        Mat3x3d base;
+        Mat3x3 base;
         computeBase(base,in,element);
         m_bases[e] = base;
 
-        Vec3 center;
+        sofa::type::VecNoInit<3, SReal> center;
         computeCenter(center,in,element);
         m_centers[e] = center;
     }
@@ -237,6 +237,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::checkDi
 template <class In, class Out, class MappingDataType, class Element>
 void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
+    const auto& map = d_map.getValue();
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
     const type::vector< Element >& elements = getElements();
 
@@ -254,10 +255,10 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJT
                 unsigned indexIn = colIt.index();
                 InDeriv data = InDeriv(Out::getDPos(colIt.val()));
 
-                const Element& element = elements[d_map.getValue()[indexIn].in_index];
-
-                type::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[indexIn].baryCoords);
-                for (unsigned int j=0; j<element.size(); j++)
+                const Element& element = elements[map[indexIn].in_index];
+                
+                const auto baryCoef = getBarycentricCoefficients(map[indexIn].baryCoords);
+                for (unsigned int j=0; j<Element::NumberOfNodes; j++)
                     o.addCol(element[j], data*baryCoef[j]);
             }
         }
@@ -284,9 +285,9 @@ const linearalgebra::BaseMatrix* BarycentricMapperTopologyContainer<In,Out,Mappi
     for( size_t outId=0 ; outId< map.size() ; ++outId)
     {
         const Element& element = elements[map[outId].in_index];
-
-        type::vector<SReal> baryCoef = getBaryCoef(map[outId].baryCoords);
-        for (unsigned int j=0; j<element.size(); j++)
+        
+        const auto baryCoef = getBarycentricCoefficients(map[outId].baryCoords);
+        for (unsigned int j=0; j<Element::NumberOfNodes; j++)
             this->addMatrixContrib(m_matrixJ, int(outId), element[j], baryCoef[j]);
     }
 
@@ -299,16 +300,17 @@ const linearalgebra::BaseMatrix* BarycentricMapperTopologyContainer<In,Out,Mappi
 template <class In, class Out, class MappingDataType, class Element>
 void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
+    const auto& map = d_map.getValue();
     const type::vector<Element>& elements = getElements();
 
     for( size_t i=0 ; i<in.size() ; ++i)
     {
-        Index index = d_map.getValue()[i].in_index;
+        const Index index = map[i].in_index;
         const Element& element = elements[index];
 
         const typename Out::DPos inPos = Out::getDPos(in[i]);
-        type::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
-        for (unsigned int j=0; j<element.size(); j++)
+        const auto baryCoef = getBarycentricCoefficients(map[i].baryCoords);
+        for (unsigned int j=0; j<Element::NumberOfNodes; j++)
         {
             out[element[j]] += inPos * baryCoef[j];
         }
@@ -318,18 +320,19 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJT
 template <class In, class Out, class MappingDataType, class Element>
 void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( d_map.getValue().size() );
+    const auto& map = d_map.getValue();
+    out.resize( map.size() );
 
     const type::vector<Element>& elements = getElements();
 
     for( size_t i=0 ; i<out.size() ; ++i)
     {
-        Index index = d_map.getValue()[i].in_index;
+        const Index index = map[i].in_index;
         const Element& element = elements[index];
 
-        type::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        const auto baryCoef = getBarycentricCoefficients(map[i].baryCoords);
         InDeriv inPos{0.,0.,0.};
-        for (unsigned int j=0; j<element.size(); j++)
+        for (unsigned int j=0; j<Element::NumberOfNodes; j++)
             inPos += in[element[j]] * baryCoef[j];
 
         Out::setDPos(out[i] , inPos);
@@ -354,17 +357,18 @@ bool BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::isEmpty
 template <class In, class Out, class MappingDataType, class Element>
 void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    out.resize( d_map.getValue().size() );
+    const auto& map = d_map.getValue();
+    out.resize( map.size() );
 
     const type::vector<Element>& elements = getElements();
-    for ( unsigned int i=0; i<d_map.getValue().size(); i++ )
+    for ( unsigned int i=0; i<map.size(); i++ )
     {
-        Index index = d_map.getValue()[i].in_index;
+        const Index index = map[i].in_index;
         const Element& element = elements[index];
 
-        type::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        const auto baryCoef = getBarycentricCoefficients(map[i].baryCoords);
         InDeriv inPos{0.,0.,0.};
-        for (unsigned int j=0; j<element.size(); j++)
+        for (unsigned int j=0; j< Element::NumberOfNodes; j++)
             inPos += in[element[j]] * baryCoef[j];
 
         Out::setCPos(out[i] , inPos);
@@ -377,17 +381,19 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::draw  (
                                                                                 const typename Out::VecCoord& out,
                                                                                 const typename In::VecCoord& in )
 {
+    const auto& map = d_map.getValue();
     // Draw line between mapped node (out) and nodes of nearest element (in)
     const type::vector<Element>& elements = getElements();
 
     std::vector< Vec3 > points;
     {
-        for ( unsigned int i=0; i<d_map.getValue().size(); i++ )
+        points.reserve(map.size() * Element::NumberOfNodes);
+        for ( unsigned int i=0; i<map.size(); i++ )
         {
-            Index index = d_map.getValue()[i].in_index;
+            const Index index = map[i].in_index;
             const Element& element = elements[index];
-            type::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
-            for ( unsigned int j=0; j<element.size(); j++ )
+            const auto baryCoef = getBarycentricCoefficients(map[i].baryCoords);
+            for ( unsigned int j=0; j<Element::NumberOfNodes; j++ )
             {
                 if ( baryCoef[j]<=-0.0001 || baryCoef[j]>=0.0001 )
                 {
