@@ -44,11 +44,11 @@
 #include <sofa/simulation/CollisionVisitor.h>
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/component/constraint/lagrangian/solver/ProjectedGaussSeidelConstraintSolver.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVInitVisitor.h>
-
-#include "sofa/component/constraint/lagrangian/solver/ProjectedGaussSeidelConstraintSolver.h"
 using sofa::simulation::mechanicalvisitor::MechanicalVInitVisitor;
+
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalBeginIntegrationVisitor;
@@ -102,7 +102,7 @@ void FreeMotionAnimationLoop::init()
         l_constraintSolver.set(this->getContext()->get<sofa::core::behavior::ConstraintSolver>(core::objectmodel::BaseContext::SearchDown));
         if (!l_constraintSolver)
         {
-            if (const auto constraintSolver = sofa::core::objectmodel::New<constraint::lagrangian::solver::ProjectedGaussSeidelConstraintSolver>())
+            if (const auto constraintSolver = sofa::core::objectmodel::New<DefaultConstraintSolver>())
             {
                 getContext()->addObject(constraintSolver);
                 constraintSolver->setName( this->getContext()->getNameHelper().resolveName(constraintSolver->getClassName(), {}));

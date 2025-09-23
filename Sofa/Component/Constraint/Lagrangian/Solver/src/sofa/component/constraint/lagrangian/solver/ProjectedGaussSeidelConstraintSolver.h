@@ -33,6 +33,7 @@ public:
 
     virtual void doSolve( SReal timeout = 0.0) override;
 
+protected:
     void gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool& constraintsAreVerified, SReal& error, sofa::type::vector<SReal>& tabErrors) const;
 
 };
