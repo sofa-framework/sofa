@@ -30,6 +30,17 @@
 namespace sofa::component::constraint::lagrangian::solver
 {
 
+ImprovedJacobiConstraintSolver::ImprovedJacobiConstraintSolver()
+    : BuiltConstraintSolver()
+    , d_useSpectralCorrection(initData(&d_useSpectralCorrection,false,"useSpectralCorrection","If set to true, the solution found after each iteration will be multiplied by spectralCorrectionFactor*2/spr(W), with spr() denoting the spectral radius."))
+    , d_spectralCorrectionFactor(initData(&d_spectralCorrectionFactor,1.0,"spectralCorrectionFactor","Factor used to modulate the spectral correction"))
+    , d_useConjugateResidue(initData(&d_useConjugateResidue,false,"useConjugateResidue","If set to true, the solution found after each iteration will be corrected along the solution direction using `\\lambda^{i+1} -= beta^{i} * (\\lambda^{i} - \\lambda^{i-1})` with beta following the formula beta^{i} = min(1, (i/maxIterations)^{conjugateResidueSpeedFactor}) "))
+    , d_conjugateResidueSpeedFactor(initData(&d_conjugateResidueSpeedFactor,10.0,"conjugateResidueSpeedFactor","FActor used to modulate the speed in which beta used in the conjugate residue part reaches 1.0. The higher the value, the slower the reach. "))
+{
+
+}
+
+
 void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
 {
     SCOPED_TIMER_VARNAME(gaussSeidelTimer, "ImprovedJacobiConstraintSolver");
@@ -90,13 +101,18 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
 
     int iterCount = 0;
 
-    Eigen::Map<Eigen::MatrixX<SReal>> EigenW(w[0],dimension, dimension) ;
-    SReal eigenRadius = 0;
-    for(auto s : EigenW.eigenvalues())
+    SReal rho = 1.0;
+
+    if (d_useSpectralCorrection.getValue())
     {
-        eigenRadius=std::max(eigenRadius,norm(s));
+        Eigen::Map<Eigen::MatrixX<SReal>> EigenW(w[0],dimension, dimension) ;
+        SReal eigenRadius = 0;
+        for(auto s : EigenW.eigenvalues())
+        {
+            eigenRadius=std::max(eigenRadius,norm(s));
+        }
+        rho = d_spectralCorrectionFactor.getValue()*std::min(1.0, 0.9 * 2/eigenRadius);
     }
-    const SReal rho = std::min(1.0, 0.9 * 2/eigenRadius);
 
     for(int i=0; i<current_cp->maxIterations; i++)
     {
@@ -104,7 +120,7 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
         bool constraintsAreVerified = true;
 
         error=0.0;
-        SReal beta = std::min(1.0, pow( ((float)i)/current_cp->maxIterations,0.6));
+        SReal beta = d_useConjugateResidue.getValue() * std::min(1.0, pow( ((float)i)/current_cp->maxIterations,d_conjugateResidueSpeedFactor.getValue()));
 
         for(int j=0; j<dimension; ) // increment of j realized at the end of the loop
         {
