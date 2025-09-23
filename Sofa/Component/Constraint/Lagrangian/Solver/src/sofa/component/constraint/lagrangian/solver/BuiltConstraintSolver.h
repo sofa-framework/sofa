@@ -37,10 +37,12 @@ class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API BuiltConstraintSolver : pu
 
 public:
     SOFA_CLASS(BuiltConstraintSolver, GenericConstraintSolver);
+    Data<bool> d_multithreading; ///< Build compliances concurrently
 
-
+    BuiltConstraintSolver();
     virtual void doBuildSystem( const core::ConstraintParams *cParams, unsigned int numConstraints) override;
 
+    virtual void init() override;
 private:
 
     struct ComplianceWrapper

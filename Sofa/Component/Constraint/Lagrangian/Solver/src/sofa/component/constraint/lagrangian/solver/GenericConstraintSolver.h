@@ -66,7 +66,6 @@ public:
     Data< SReal > d_regularizationTerm; ///< add regularization*Id to W when solving for constraints
     Data<bool> d_scaleTolerance; ///< Scale the error tolerance with the number of constraints
     Data<bool> d_allVerified; ///< All constraints must be verified (each constraint's error < tolerance)
-    Data<bool> d_multithreading; ///< Build compliances concurrently
     Data<bool> d_computeGraphs; ///< Compute graphs of errors and forces during resolution
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphErrors; ///< Sum of the constraints' errors at each iteration
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphConstraints; ///< Graph of each constraint's error at the end of the resolution
