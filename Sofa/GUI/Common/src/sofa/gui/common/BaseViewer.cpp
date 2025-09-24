@@ -287,7 +287,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
         return;
 
     drawTool->setPolygonMode(0, false);
-    float screenHeight = vparams->viewport()[4];
+    float screenHeight = vparams->viewport()[3];
 
     for(auto current : currentSelection)
     {
