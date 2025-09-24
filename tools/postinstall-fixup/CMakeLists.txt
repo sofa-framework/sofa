@@ -3,7 +3,7 @@ if(NOT SOFA_BUILD_RELEASE_PACKAGE)
     return()
 endif()
 
-if(TARGET Sofa.GUI.Qt)
+if(TARGET Sofa.Qt)
     find_package(Qt5 COMPONENTS Gui REQUIRED)
     get_target_property(qt5gui_loc Qt5::Gui LOCATION_RELEASE)
     get_filename_component(QT_LIB_DIR "${qt5gui_loc}" DIRECTORY)
@@ -36,7 +36,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
         COMPONENT resources)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
     if(SOFA_BUILD_APP_BUNDLE)
-        if(TARGET Sofa.GUI.Qt)
+        if(TARGET Sofa.Qt)
             include(macdeployqt) # set MACDEPLOYQT_EXECUTABLE
         endif()
         install(CODE "execute_process(COMMAND /bin/bash

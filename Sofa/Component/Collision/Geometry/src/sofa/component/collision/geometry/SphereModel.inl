@@ -114,51 +114,44 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
 
 
 template<class DataTypes>
-void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void SphereCollisionModel<DataTypes>::drawCollisionModel(const core::visual::VisualParams* vparams)
 {
-    if(d_componentState.getValue() != ComponentState::Valid)
-        return ;
-
     using namespace sofa::type;
     using namespace sofa::defaulttype;
 
-    if (!this->isActive()) return;
-    //if (!vparams->isSupported(core::visual::API_OpenGL)) return;
-    if (vparams->displayFlags().getShowCollisionModels())
+    //  Force no wireframe mode to draw sphere collision
+    vparams->drawTool()->setPolygonMode(0, false);
+
+    // Check topological modifications
+    const auto npoints = mstate->getSize();
+
+    std::vector<Vec3> points;
+    std::vector<float> radius;
+    for (sofa::Size i = 0; i < npoints; i++)
     {
-        // Force no wireframe mode to draw sphere collision
-        vparams->drawTool()->setPolygonMode(0,false);
-
-        // Check topological modifications
-        const auto npoints = mstate->getSize();
-
-        std::vector<Vec3> points;
-        std::vector<float> radius;
-        for (sofa::Size i=0; i<npoints; i++)
+        TSphere<DataTypes> t(this, i);
+        if (t.isActive())
         {
-            TSphere<DataTypes> t(this,i);
-            if (t.isActive())
-            {
-                Vec3 p = t.p();
-                points.push_back(p);
-                radius.push_back((float)t.r());
-            }
+            Vec3 p = t.p();
+            points.push_back(p);
+            radius.push_back((float)t.r());
         }
-
-        vparams->drawTool()->setLightingEnabled(true); //Enable lightning
-        if(d_showImpostors.getValue())
-            vparams->drawTool()->drawFakeSpheres(points, radius, sofa::type::RGBAColor(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]));
-        else
-            vparams->drawTool()->drawSpheres(points, radius, sofa::type::RGBAColor(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]));
-        vparams->drawTool()->setLightingEnabled(false); //Disable lightning
-
     }
+
+    vparams->drawTool()->setLightingEnabled(true);  // Enable lightning
+    if (d_showImpostors.getValue())
+        vparams->drawTool()->drawFakeSpheres(
+            points, radius,
+            sofa::type::RGBAColor(getColor4f()[0], getColor4f()[1], getColor4f()[2],
+                                  getColor4f()[3]));
+    else
+        vparams->drawTool()->drawSpheres(points, radius,
+                                         sofa::type::RGBAColor(getColor4f()[0], getColor4f()[1],
+                                                               getColor4f()[2], getColor4f()[3]));
+    vparams->drawTool()->setLightingEnabled(false);  // Disable lightning
 
     // restore current polygon mode
     vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
-
-    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
-        getPrevious()->draw(vparams);
 }
 
 template <class DataTypes>
@@ -183,7 +176,7 @@ void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
-        const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->proximity.getValue();
+        const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
             TSphere<DataTypes> p(this,i);
@@ -225,7 +218,7 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
     cubeModel->resize(size);
     if (!empty())
     {
-        const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->proximity.getValue();
+        const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
             TSphere<DataTypes> p(this,i);
@@ -264,7 +257,7 @@ void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    if( !onlyVisible )
+    if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels())
         return;
 
     static constexpr Real max_real = std::numeric_limits<Real>::max();

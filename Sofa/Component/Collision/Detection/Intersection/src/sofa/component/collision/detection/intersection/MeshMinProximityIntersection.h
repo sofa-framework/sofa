@@ -55,44 +55,6 @@ public:
     int computeIntersection(collision::geometry::Line&, collision::geometry::Line&, OutputVector*, const core::collision::Intersection* currentIntersection);
     int computeIntersection(collision::geometry::Triangle&, collision::geometry::Point&, OutputVector*, const core::collision::Intersection* currentIntersection);
     template<class T> int computeIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&, OutputVector*, const core::collision::Intersection* currentIntersection);
-
-
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Point&, collision::geometry::Point&) = delete;
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::TSphere<T>&, collision::geometry::Point&) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Line&, collision::geometry::Point&) = delete;
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Line&, collision::geometry::TSphere<T>&) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Line&, collision::geometry::Line&) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Point&) = delete;
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*) = delete;
-    template<class T> 
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::TSphere<T>&, collision::geometry::Point&, OutputVector*) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Line&, collision::geometry::Point&, OutputVector*) = delete;
-    template<class T> 
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Line&, collision::geometry::TSphere<T>&, OutputVector*) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Line&, collision::geometry::Line&, OutputVector*) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Point&, OutputVector*) = delete;
-    template<class T> 
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&, OutputVector*) = delete;
 };
 
 
@@ -101,16 +63,16 @@ public:
 template <class T>
 bool MeshMinProximityIntersection::testIntersection(collision::geometry::Triangle& e2, collision::geometry::TSphere<T>& e1, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getContactDistance() + e2.getContactDistance();
 
     const type::Vec3 x13 = e2.p1()-e2.p2();
     const type::Vec3 x23 = e2.p1()-e2.p3();
     const type::Vec3 x03 = e2.p1()-e1.center();
     type::Matrix2 A;
     type::Vec2 b;
-    A[0][0] = x13*x13;
-    A[1][1] = x23*x23;
-    A[0][1] = A[1][0] = x13*x23;
+    A(0,0) = x13*x13;
+    A(1,1) = x23*x23;
+    A(0,1) = A(1,0) = x13*x23;
     b[0] = x13*x03;
     b[1] = x23*x03;
     const SReal det = type::determinant(A);
@@ -120,8 +82,8 @@ bool MeshMinProximityIntersection::testIntersection(collision::geometry::Triangl
 
     //if (det < -0.000001 || det > 0.000001)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+        alpha = (b[0]*A(1,1) - b[1]*A(0,1))/det;
+        beta  = (b[1]*A(0,0) - b[0]*A(1,0))/det;
         if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)
@@ -144,16 +106,16 @@ bool MeshMinProximityIntersection::testIntersection(collision::geometry::Triangl
 template <class T>
 int MeshMinProximityIntersection::computeIntersection(collision::geometry::Triangle& e2, collision::geometry::TSphere<T>& e1, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getContactDistance() + e2.getContactDistance();
 
     const type::Vec3 x13 = e2.p1()-e2.p2();
     const type::Vec3 x23 = e2.p1()-e2.p3();
     const type::Vec3 x03 = e2.p1()-e1.center();
     type::Matrix2 A;
     type::Vec2 b;
-    A[0][0] = x13*x13;
-    A[1][1] = x23*x23;
-    A[0][1] = A[1][0] = x13*x23;
+    A(0,0) = x13*x13;
+    A(1,1) = x23*x23;
+    A(0,1) = A(1,0) = x13*x23;
     b[0] = x13*x03;
     b[1] = x23*x03;
     const SReal det = type::determinant(A);
@@ -163,8 +125,8 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Trian
 
     //if (det < -0.000001 || det > 0.000001)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+        alpha = (b[0]*A(1,1) - b[1]*A(0,1))/det;
+        beta  = (b[1]*A(0,0) - b[0]*A(1,0))/det;
         if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)
@@ -178,7 +140,7 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Trian
     if (QP.norm2() >= alarmDist*alarmDist)
         return 0;
 
-    const SReal contactDist = currentIntersection->getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal contactDist = currentIntersection->getContactDistance() + e1.r() + e1.getContactDistance() + e2.getContactDistance();
 
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
@@ -205,7 +167,7 @@ template <class T>
 bool MeshMinProximityIntersection::testIntersection(collision::geometry::Line& e2, collision::geometry::TSphere<T>& e1, const core::collision::Intersection* currentIntersection)
 {
     static_assert(std::is_same_v<collision::geometry::Line::Coord, typename collision::geometry::TSphere<T>::Coord>, "Data mismatch");
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getContactDistance() + e2.getContactDistance();
 
     const geometry::Line::Coord x32 = e2.p1()-e2.p2();
     const auto x31 = e1.center()-e2.p2();
@@ -240,7 +202,7 @@ template <class T>
 int MeshMinProximityIntersection::computeIntersection(collision::geometry::Line& e2, collision::geometry::TSphere<T>& e1, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
     static_assert(std::is_same_v<collision::geometry::Line::Coord, typename collision::geometry::TSphere<T>::Coord>, "Data mismatch");
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getContactDistance() + e2.getContactDistance();
 
     const geometry::Line::Coord x32 = e2.p1()-e2.p2();
     const auto x31 = e1.center()-e2.p2();
@@ -263,7 +225,7 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Line&
     if (QP.norm2() >= alarmDist*alarmDist)
         return 0;
 
-    const SReal contactDist = currentIntersection->getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal contactDist = currentIntersection->getContactDistance() + e1.r() + e1.getContactDistance() + e2.getContactDistance();
 
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
@@ -289,7 +251,7 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Line&
 template <class T>
 bool MeshMinProximityIntersection::testIntersection(collision::geometry::TSphere<T>& e1, collision::geometry::Point& e2, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getContactDistance() + e2.getContactDistance();
 
     type::Vec3 P,Q,PQ;
     P = e1.center();
@@ -307,7 +269,7 @@ bool MeshMinProximityIntersection::testIntersection(collision::geometry::TSphere
 template <class T>
 int MeshMinProximityIntersection::computeIntersection(collision::geometry::TSphere<T>& e1, collision::geometry::Point& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.r() + e1.getContactDistance() + e2.getContactDistance();
 
     type::Vec3 P,Q,PQ;
     P = e1.center();
@@ -316,7 +278,7 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::TSphe
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 
-    const SReal contactDist = currentIntersection->getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal contactDist = currentIntersection->getContactDistance() + e1.r() + e1.getContactDistance() + e2.getContactDistance();
 
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);

@@ -239,7 +239,7 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);  // size = number of triangles
     if (!empty())
     {
-        const SReal distance = (SReal)this->proximity.getValue();
+        const SReal distance = (SReal)this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
             Element t(this,i);
@@ -293,7 +293,7 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, 
     cubeModel->resize(size);
     if (!empty())
     {
-        const SReal distance = (SReal)this->proximity.getValue();
+        const SReal distance = (SReal)this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
             Element t(this,i);
@@ -377,7 +377,8 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
 {
     SOFA_UNUSED(params);
 
-    if( !onlyVisible ) return;
+    if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels())
+        return;
 
     // check first that topology didn't changed
     if (m_topology->getRevision() != m_topologyRevision)
@@ -426,60 +427,54 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
 
 
 template<class DataTypes>
-void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void TriangleCollisionModel<DataTypes>::drawCollisionModel(const core::visual::VisualParams* vparams)
 {
-    if (vparams->displayFlags().getShowCollisionModels())
+    // In case topology has changed but drawing is called before the updateFromTopology has been
+    // computed, just exit to avoid computation in drawing thread.
+    if (m_topology->getRevision() != m_topologyRevision) return;
+
+    if (d_bothSide.getValue() || vparams->displayFlags().getShowWireFrame())
+        vparams->drawTool()->setPolygonMode(0, vparams->displayFlags().getShowWireFrame());
+    else
     {
-        // In case topology has changed but drawing is called before the updateFromTopology has been computed, just exit to avoid computation in drawing thread.
-        if (m_topology->getRevision() != m_topologyRevision)
-            return;
-
-        if (d_bothSide.getValue() || vparams->displayFlags().getShowWireFrame())
-            vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
-        else
-        {
-            vparams->drawTool()->setPolygonMode(2,true);
-            vparams->drawTool()->setPolygonMode(1,false);
-        }
-
-        std::vector< type::Vec3 > points;
-        std::vector< type::Vec<3,int> > indices;
-        std::vector< type::Vec3 > normals;
-        int index=0;
-        for (sofa::Size i=0; i<size; i++)
-        {
-            Element t(this,i);
-            normals.push_back(t.n());
-            points.push_back(t.p1());
-            points.push_back(t.p2());
-            points.push_back(t.p3());
-            indices.push_back(type::Vec<3,int>(index,index+1,index+2));
-            index+=3;
-        }
-
-        vparams->drawTool()->setLightingEnabled(true);
-        const auto c = getColor4f();
-        vparams->drawTool()->drawTriangles(points, indices, normals, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
-        vparams->drawTool()->setLightingEnabled(false);
-        vparams->drawTool()->setPolygonMode(0,false);
-
-
-        if (vparams->displayFlags().getShowNormals())
-        {
-            std::vector< type::Vec3 > points;
-            for (sofa::Size i=0; i<size; i++)
-            {
-                Element t(this,i);
-                points.push_back((t.p1()+t.p2()+t.p3())/3.0);
-                points.push_back(points.back()+t.n());
-            }
-
-            vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor::white());
-
-        }
+        vparams->drawTool()->setPolygonMode(2, true);
+        vparams->drawTool()->setPolygonMode(1, false);
     }
-    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
-        getPrevious()->draw(vparams);
+
+    std::vector<type::Vec3> points;
+    std::vector<type::Vec<3, int> > indices;
+    std::vector<type::Vec3> normals;
+    int index = 0;
+    for (sofa::Size i = 0; i < size; i++)
+    {
+        Element t(this, i);
+        normals.push_back(t.n());
+        points.push_back(t.p1());
+        points.push_back(t.p2());
+        points.push_back(t.p3());
+        indices.push_back(type::Vec<3, int>(index, index + 1, index + 2));
+        index += 3;
+    }
+
+    vparams->drawTool()->setLightingEnabled(true);
+    const auto c = getColor4f();
+    vparams->drawTool()->drawTriangles(points, indices, normals,
+                                       sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
+    vparams->drawTool()->setLightingEnabled(false);
+    vparams->drawTool()->setPolygonMode(0, false);
+
+    if (vparams->displayFlags().getShowNormals())
+    {
+        std::vector<type::Vec3> points;
+        for (sofa::Size i = 0; i < size; i++)
+        {
+            Element t(this, i);
+            points.push_back((t.p1() + t.p2() + t.p3()) / 3.0);
+            points.push_back(points.back() + t.n());
+        }
+
+        vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor::white());
+    }
 }
 
 template<class DataTypes>

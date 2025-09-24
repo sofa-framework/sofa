@@ -100,7 +100,7 @@ class BaseForceField;
 class BaseMass;
 class BaseMechanicalState;
 class BaseAnimationLoop;
-class BaseConstraint;
+class BaseLagrangianConstraint;
 class BaseConstraintSet;
 class ConstraintSolver;
 class ConstraintResolution;
@@ -110,6 +110,7 @@ class BaseInteractionForceField;
 class BaseProjectiveConstraintSet;
 class BaseInteractionProjectiveConstraintSet;
 class BaseInteractionConstraint;
+class BaseMechanicalState;
 class LinearSolver;
 class MultiMatrixAccessor;
 

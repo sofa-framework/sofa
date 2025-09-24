@@ -9,15 +9,13 @@ sofa_find_package(Eigen3 REQUIRED)
 
 find_package(metis 5.1.0 EXACT QUIET)
 if(NOT metis_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
-    message("SofaMatrix: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching metis...")
-    include(FetchContent)
-    FetchContent_Declare(metis
+    message("${PROJECT_NAME}: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching metis...")
+    sofa_fetch_dependency(metis
             GIT_REPOSITORY https://github.com/sofa-framework/METIS
             GIT_TAG v5.1.0-ModernInstall
     )
-    FetchContent_MakeAvailable(metis)
 elseif (NOT metis_FOUND)
-    message(FATAL_ERROR "SofaMatrix: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install metis (version=5.1.0), or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
+    message(FATAL_ERROR "Sofa.Metis: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install metis (version=5.1.0), or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
 endif()
 
 
@@ -32,18 +30,23 @@ set(SOFAMATRIX_SRC_DIR src/${PROJECT_NAME})
 
 set(HEADER_FILES
     ${SOFAMATRIX_SRC_DIR}/config.h.in
+    ${SOFAMATRIX_SRC_DIR}/BaseMatrixImageProxy.h
     ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixExporter.h
-    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixExporter.h
-    ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.h
+    ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixImage.h
     ${SOFAMATRIX_SRC_DIR}/FillReducingOrdering.h
     ${SOFAMATRIX_SRC_DIR}/FillReducingOrdering.inl
+    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixExporter.h
+    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.h
+    ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.h
 )
 set(SOURCE_FILES
-    ${SOFAMATRIX_SRC_DIR}/initSofaMatrix.cpp
     ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixExporter.cpp
-    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixExporter.cpp
-    ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.cpp
+    ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixImage.cpp
     ${SOFAMATRIX_SRC_DIR}/FillReducingOrdering.cpp
+    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixExporter.cpp
+    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.cpp
+    ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.cpp
+    ${SOFAMATRIX_SRC_DIR}/initSofaMatrix.cpp
 )
 set(README_FILES
     SofaMatrix.md
@@ -70,6 +73,7 @@ sofa_create_package_with_targets(
     )
 
 sofa_add_subdirectory(plugin extensions/Qt SofaMatrix.Qt)
+sofa_add_subdirectory(plugin extensions/imgui SofaMatrix.imgui)
 
 
 # Tests

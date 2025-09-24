@@ -53,7 +53,7 @@ namespace sofa::component::constraint::lagrangian::correction
 template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
     : Inherit(mm)
-    , d_rotations(initData(&d_rotations, false, "rotations", ""))
+    , d_rotations(initData(&d_rotations, false, "rotations", "Project the precomputed matrix with a rotation matrix"))
     , d_restRotations(initData(&d_restRotations, false, "restDeformations", ""))
     , d_recompute(initData(&d_recompute, false, "recompute", "if true, always recompute the compliance"))
     , d_regularizationTerm(initData(&d_regularizationTerm, 0.0_sreal, "regularizationTerm", "Add regularization factor times the identity matrix to the compliance W when solving constraints"))
@@ -415,7 +415,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 {
     m_activeDofs.clear();
 
-	const MatrixDeriv& c = cparams->readJ(this->mstate)->getValue();
+    const MatrixDeriv& c = cparams->readJ(this->mstate.get())->getValue();
 
     SReal factor = 1.0_sreal;
 
@@ -615,8 +615,8 @@ void PrecomputedConstraintCorrection<DataTypes>::applyMotionCorrection(const sof
 
     auto dx = sofa::helper::getWriteAccessor(dx_d);
 
-    const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
-    const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
+    const VecCoord& x_free = cparams->readX(this->mstate.get())->getValue();
+    const VecDeriv& v_free = cparams->readV(this->mstate.get())->getValue();
 
     const SReal invDt = 1.0_sreal / this->getContext()->getDt();
 
@@ -648,7 +648,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyPositionCorrection(const s
 
     auto dx = sofa::helper::getWriteAccessor(dx_d);
 
-    const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
+    const VecCoord& x_free = cparams->readX(this->mstate.get())->getValue();
 
     if (d_rotations.getValue())
         rotateResponse();
@@ -672,7 +672,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyVelocityCorrection(const s
     VecDeriv& v = *v_d.beginEdit();
 
     const VecDeriv& dx = this->mstate->read(core::vec_id::write_access::dx)->getValue();
-    const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
+    const VecDeriv& v_free = cparams->readV(this->mstate.get())->getValue();
 
     const SReal invDt = 1.0_sreal / this->getContext()->getDt();
 
@@ -838,7 +838,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
         {
             for (unsigned int b=0; b<3; b++)
             {
-                RotMat[a][b] = rotations[i](a,b);
+                RotMat(a,b) = rotations[i](a,b);
             }
         }
 
@@ -1229,7 +1229,7 @@ void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(SReal * /*d
                             DXbuf += appCompliance[ offset2 + k ] * Fbuf[k];
                         }
 
-                        constraint_D[dof2][j] += DXbuf;
+                        constraint_D(dof2,j) += DXbuf;
                     }
                 }
             }

@@ -58,6 +58,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseInteractionConstraint.h
     ${SRC_ROOT}/behavior/BaseInteractionForceField.h
     ${SRC_ROOT}/behavior/BaseInteractionProjectiveConstraintSet.h
+    ${SRC_ROOT}/behavior/BaseLagrangianConstraint.h
     ${SRC_ROOT}/behavior/BaseLinearSolver.h
     ${SRC_ROOT}/behavior/BaseLocalForceFieldMatrix.h
     ${SRC_ROOT}/behavior/BaseLocalMassMatrix.h
@@ -68,8 +69,8 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/BaseRotationFinder.h
     ${SRC_ROOT}/behavior/BaseVectorOperations.h
-    ${SRC_ROOT}/behavior/BlockType.h
     ${SRC_ROOT}/behavior/BlocMatrixWriter.h
+    ${SRC_ROOT}/behavior/BlockType.h
     ${SRC_ROOT}/behavior/Constraint.h
     ${SRC_ROOT}/behavior/Constraint.inl
     ${SRC_ROOT}/behavior/ConstraintCorrection.h
@@ -79,11 +80,13 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/DefaultMultiMatrixAccessor.h
     ${SRC_ROOT}/behavior/ForceField.h
     ${SRC_ROOT}/behavior/ForceField.inl
+    ${SRC_ROOT}/behavior/LagrangianConstraint.h
+    ${SRC_ROOT}/behavior/LagrangianConstraint.inl
     ${SRC_ROOT}/behavior/LinearSolver.h
     ${SRC_ROOT}/behavior/LinearSolverAccessor.h
-    ${SRC_ROOT}/behavior/MatrixAPICompatibility.h
     ${SRC_ROOT}/behavior/Mass.h
     ${SRC_ROOT}/behavior/Mass.inl
+    ${SRC_ROOT}/behavior/MatrixAPICompatibility.h
     ${SRC_ROOT}/behavior/MechanicalMatrix.h
     ${SRC_ROOT}/behavior/MechanicalState.h
     ${SRC_ROOT}/behavior/MechanicalState.inl
@@ -105,10 +108,10 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.inl
     ${SRC_ROOT}/behavior/RotationFinder.h
-    ${SRC_ROOT}/behavior/StateAccessor.h
     ${SRC_ROOT}/behavior/SingleMatrixAccessor.h
     ${SRC_ROOT}/behavior/SingleStateAccessor.h
     ${SRC_ROOT}/behavior/SingleStateAccessor.inl
+    ${SRC_ROOT}/behavior/StateAccessor.h
     ${SRC_ROOT}/behavior/fwd.h
     ${SRC_ROOT}/collision/BroadPhaseDetection.h
     ${SRC_ROOT}/collision/CollisionAlgorithm.h
@@ -234,23 +237,23 @@ set(SOURCE_FILES
     ${SRC_ROOT}/State.cpp
     ${SRC_ROOT}/VecId.cpp
     ${SRC_ROOT}/behavior/BaseAnimationLoop.cpp
-    ${SRC_ROOT}/behavior/BaseConstraint.cpp
     ${SRC_ROOT}/behavior/BaseConstraintCorrection.cpp
     ${SRC_ROOT}/behavior/BaseConstraintSet.cpp
     ${SRC_ROOT}/behavior/BaseForceField.cpp
     ${SRC_ROOT}/behavior/BaseInteractionForceField.cpp
+    ${SRC_ROOT}/behavior/BaseLagrangianConstraint.cpp
     ${SRC_ROOT}/behavior/BaseLinearSolver.cpp
     ${SRC_ROOT}/behavior/BaseMass.cpp
     ${SRC_ROOT}/behavior/BaseMatrixLinearSystem.cpp
     ${SRC_ROOT}/behavior/BaseMechanicalState.cpp
     ${SRC_ROOT}/behavior/BaseOrderingMethod.cpp
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.cpp
-    ${SRC_ROOT}/behavior/Constraint.cpp
     ${SRC_ROOT}/behavior/ConstraintCorrection.cpp
     ${SRC_ROOT}/behavior/ConstraintResolution.cpp
     ${SRC_ROOT}/behavior/ConstraintSolver.cpp
     ${SRC_ROOT}/behavior/DefaultMultiMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/ForceField.cpp
+    ${SRC_ROOT}/behavior/LagrangianConstraint.cpp
     ${SRC_ROOT}/behavior/LinearSolver.cpp
     ${SRC_ROOT}/behavior/LinearSolverAccessor.cpp
     ${SRC_ROOT}/behavior/Mass.cpp

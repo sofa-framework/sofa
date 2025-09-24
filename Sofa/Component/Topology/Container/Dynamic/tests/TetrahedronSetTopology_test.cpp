@@ -105,8 +105,8 @@ bool TetrahedronSetTopology_test::testTetrahedronBuffers()
     EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     // The first 2 elements in this file should be :
-    sofa::type::fixed_array<TetrahedronSetTopologyContainer::PointID, 4> elemTruth0(22, 2, 11, 25);
-    sofa::type::fixed_array<TetrahedronSetTopologyContainer::PointID, 4> elemTruth1(22, 2, 24, 11);
+    sofa::type::fixed_array<TetrahedronSetTopologyContainer::PointID, 4> elemTruth0({22, 2, 11, 25});
+    sofa::type::fixed_array<TetrahedronSetTopologyContainer::PointID, 4> elemTruth1({22, 2, 24, 11});
 
 
     // check topology element buffer
@@ -199,7 +199,7 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
     for (size_t i = 0; i < triangleInElem.size(); i++)
         EXPECT_EQ(triangleInElem[i], triangleInElemM[i]);
 
-    sofa::type::fixed_array<int, 4> triangleInElemTruth(3, 2, 1, 0);
+    sofa::type::fixed_array<int, 4> triangleInElemTruth({3, 2, 1, 0});
     for (size_t i = 0; i<triangleInElemTruth.size(); ++i)
         EXPECT_EQ(triangleInElem[i], triangleInElemTruth[i]);
 
@@ -296,7 +296,7 @@ bool TetrahedronSetTopology_test::testEdgeBuffers()
     for (size_t i = 0; i < edgeInElem.size(); i++)
         EXPECT_EQ(edgeInElem[i], edgeInElemM[i]);
     
-    sofa::type::fixed_array<int, 6> edgeInElemTruth(6, 10, 8, 9, 0, 11);
+    sofa::type::fixed_array<int, 6> edgeInElemTruth({6, 10, 8, 9, 0, 11});
     for (size_t i = 0; i<edgeInElemTruth.size(); ++i)
         EXPECT_EQ(edgeInElem[i], edgeInElemTruth[i]);
     

@@ -193,31 +193,16 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
         return ;
 
     // use the OdeSolver to get the position integration factor
-    SReal factor = 1.0_sreal;
+    const SReal factor = core::behavior::BaseConstraintCorrection::correctionFactor(l_ODESolver.get(), cparams->constOrder());
 
-    switch (cparams->constOrder())
+    // J is read from the mechanical state and converted to m_constraintJacobian
     {
-    case core::ConstraintOrder::POS_AND_VEL :
-    case core::ConstraintOrder::POS :
-        factor = l_ODESolver->getPositionIntegrationFactor();
-        break;
-
-    case core::ConstraintOrder::ACC :
-    case core::ConstraintOrder::VEL :
-        factor = l_ODESolver->getVelocityIntegrationFactor();
-        break;
-
-    default :
-        break;
-    }
-
-    {
-        helper::ReadAccessor inputConstraintMatrix ( *cparams->readJ(this->mstate) );
+        helper::ReadAccessor inputConstraintMatrix ( *cparams->readJ(this->mstate.get()) );
         const sofa::SignedIndex numberOfConstraints = W->rowSize();
         convertConstraintMatrix(numberOfConstraints, inputConstraintMatrix.ref());
     }
 
-    // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
+    // use the Linear solver to compute J*A^-1*J^T, where A is the mechanical linear system matrix
     l_linearSolver->setSystemLHVector(sofa::core::MultiVecDerivId::null());
     l_linearSolver->addJMInvJt(W, &m_constraintJacobian, factor);
 
@@ -228,7 +213,8 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::rebuildSystem(SReal massFactor, SReal forceFactor)
 {
-    l_linearSolver->rebuildSystem(massFactor, forceFactor);
+    SOFA_UNUSED(massFactor);
+    SOFA_UNUSED(forceFactor);
 }
 
 template<class DataTypes>
@@ -279,8 +265,8 @@ void LinearSolverConstraintCorrection< DataTypes >::applyMotionCorrection(const 
         auto dx = sofa::helper::getWriteAccessor(dx_d);
 
         const VecDeriv& correction = correction_d.getValue();
-        const VecCoord& x_free = cparams->readX(mstate)->getValue();
-        const VecDeriv& v_free = cparams->readV(mstate)->getValue();
+        const VecCoord& x_free = cparams->readX(mstate.get())->getValue();
+        const VecDeriv& v_free = cparams->readV(mstate.get())->getValue();
 
         const SReal positionFactor = l_ODESolver.get()->getPositionIntegrationFactor();
         const SReal velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
@@ -307,7 +293,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyPositionCorrection(cons
         auto dx = sofa::helper::getWriteAccessor(dx_d);
 
         const VecDeriv& correction = correction_d.getValue();
-        const VecCoord& x_free = cparams->readX(mstate)->getValue();
+        const VecCoord& x_free = cparams->readX(mstate.get())->getValue();
 
         const SReal positionFactor = l_ODESolver.get()->getPositionIntegrationFactor();
         for (unsigned int i = 0; i < numDOFs; i++)
@@ -331,7 +317,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyVelocityCorrection(cons
         auto dv = sofa::helper::getWriteAccessor(dv_d);
 
         const VecDeriv& correction = correction_d.getValue();
-        const VecDeriv& v_free = cparams->readV(mstate)->getValue();
+        const VecDeriv& v_free = cparams->readV(mstate.get())->getValue();
 
         const SReal velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
 

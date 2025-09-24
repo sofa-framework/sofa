@@ -28,6 +28,7 @@
 #include <sofa/type/Vec.h>
 
 #include <iostream>
+#include <algorithm>
 
 namespace // anonymous
 {
@@ -110,7 +111,7 @@ public:
             sofa::Size colId {};
             for (auto scalar : scalars)
             {
-                this->elems[0][colId++] = scalar;
+                (*this)(0,colId++) = scalar;
             }
         }
         else
@@ -119,7 +120,7 @@ public:
             sofa::Size rowId {};
             for (auto scalar : scalars)
             {
-                this->elems[rowId++][0] = scalar;
+                (*this)(rowId++,0) = scalar;
             }
         }
     }
@@ -139,7 +140,7 @@ public:
             sofa::Size colId {};
             for (auto scalar : row)
             {
-                this->elems[rowId][colId++] = scalar;
+                (*this)(rowId,colId++) = scalar;
             }
             ++rowId;
         }
@@ -158,7 +159,7 @@ public:
     {
         for( Size i=0; i<L; i++ )
             for( Size j=0; j<C; j++ )
-                this->elems[i][j] = v;
+                (*this)(i,j) = v;
     }
 
     /// Constructor from another matrix
@@ -178,21 +179,30 @@ public:
         for( Size l=0 ; l<minL ; ++l )
         {
             for( Size c=0 ; c< minC; ++c )
-                this->elems[l][c] = static_cast<real>(m[l][c]);
+                this->elems(l,c) = static_cast<real>(m(l,c));
             for( Size c= minC; c<C ; ++c )
-                this->elems[l][c] = 0;
+                this->elems(l,c) = 0;
         }
 
         for( Size l= minL; l<L ; ++l )
             for( Size c=0 ; c<C ; ++c )
-                this->elems[l][c] = 0;
+                this->elems(l,c) = 0;
     }
 
     /// Constructor from an array of elements (stored per line).
     template<typename real2>
     explicit constexpr Mat(const real2* p) noexcept
     {
-        std::copy(p, p+N, this->begin()->begin());
+        if constexpr (sizeof(real2) == sizeof(real))
+        {
+            std::copy_n(p, N, this->ptr());
+        }
+        else
+        {
+            for (Size l = 0; l < L; ++l)
+                for (Size c = 0; c < C; ++c)
+                    (*this)(l,c) = static_cast<real>(p[l*C + c]);
+        }
     }
 
     /// number of lines
@@ -211,7 +221,7 @@ public:
     /// Assignment from an array of elements (stored per line).
     constexpr void operator=(const real* p) noexcept
     {
-        std::copy(p, p+N, this->begin()->begin());
+        std::copy_n(p, N, this->ptr());
     }
 
     /// Assignment from another matrix
@@ -233,7 +243,7 @@ public:
     {
         for (Size i=0; i<L2; i++)
             for (Size j=0; j<C2; j++)
-                m[i][j] = this->elems[i+L0][j+C0];
+                m(i,j) = (*this)(i+L0,j+C0);
     }
 
     template <Size C2>
@@ -241,13 +251,13 @@ public:
     {
         for (Size j = 0; j < C2; j++)
         {
-            m[j] = this->elems[L0][j + C0];
+            m[j] = (*this)(L0,j + C0);
         }
     }
 
     constexpr void getsub(Size L0, Size C0, real& m) const noexcept
     {
-        m = this->elems[L0][C0];
+        m = (*this)(L0,C0);
     }
 
     template<Size L2, Size C2> 
@@ -255,7 +265,7 @@ public:
     {
         for (Size i=0; i<L2; i++)
             for (Size j=0; j<C2; j++)
-                this->elems[i+L0][j+C0] = m[i][j];
+                (*this)(i+L0,j+C0) = m(i,j);
     }
 
     template<Size L2> 
@@ -264,7 +274,7 @@ public:
         assert( C0<C );
         assert( L0+L2-1<L );
         for (Size i=0; i<L2; i++)
-            this->elems[i+L0][C0] = v[i];
+            (*this)(i+L0,C0) = v[i];
     }
 
 
@@ -293,10 +303,25 @@ public:
     {
         Col c;
         for (Size i=0; i<L; i++)
-            c[i]=this->elems[i][j];
+            c[i]=(*this)(i,j);
         return c;
     }
 
+//#ifndef SOFA_BUILD_SOFA_TYPE
+//    /// Write access to line i.
+//    constexpr LineNoInit& operator[](Size i) noexcept
+//    {
+//        static_assert(false);
+//        return this->elems[i];
+//    }
+//
+//    /// Read-only access to line i.
+//    constexpr const LineNoInit& operator[](Size i) const noexcept
+//    {
+//        static_assert(false);
+//        return this->elems[i];
+//    }
+//#else
     /// Write access to line i.
     constexpr LineNoInit& operator[](Size i) noexcept
     {
@@ -308,6 +333,7 @@ public:
     {
         return this->elems[i];
     }
+//#endif
 
     /// Write access to line i.
     constexpr LineNoInit& operator()(Size i) noexcept
@@ -336,13 +362,13 @@ public:
     /// Cast into a standard C array of lines (read-only).
     constexpr const Line* lptr() const noexcept
     {
-        return this->elems;
+        return this->elems.data();
     }
 
     /// Cast into a standard C array of lines.
     constexpr Line* lptr() noexcept
     {
-        return this->elems;
+        return this->elems.data();
     }
 
     /// Cast into a standard C array of elements (stored per line) (read-only).
@@ -384,7 +410,7 @@ public:
     constexpr const Line& w() const noexcept { return this->elems[3]; }
 
     template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == 1 && NbColumn == 1>>
-    constexpr real toReal() const { return this->elems[0][0]; }
+    constexpr real toReal() const { return  (*this)(0,0); }
 
     template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == 1 && NbColumn == 1>>
     constexpr operator real() const { return toReal(); }
@@ -440,7 +466,7 @@ public:
         {
             for (Size i=0; i<L; i++)
                 for (Size j=0; j<C; j++)
-                    this->elems[i][j]=m[j][i];
+                    this->elems[i][j]=m(j,i);
         }
     }
 
@@ -450,7 +476,7 @@ public:
         Mat<C,L,real> m(NOINIT);
         for (Size i=0; i<L; i++)
             for (Size j=0; j<C; j++)
-                m[j][i]=this->elems[i][j];
+                m(j,i)=(*this)(i,j);
         return m;
     }
 
@@ -462,7 +488,7 @@ public:
         {
             for (Size j=i+1; j<C; j++)
             {
-                std::swap(this->elems[i][j], this->elems[j][i]);
+                std::swap((*this)(i,j), (*this)(j,i));
             }
         }
     }
@@ -473,14 +499,14 @@ public:
     constexpr bool operator==(const Mat<L,C,real>& b) const noexcept
     {
         for (Size i=0; i<L; i++)
-            if (this->elems[i] != b[i]) return false;
+            if ((*this)(i) != b(i)) return false;
         return true;
     }
 
     constexpr bool operator!=(const Mat<L,C,real>& b) const noexcept
     {
         for (Size i=0; i<L; i++)
-            if (this->elems[i]!=b[i]) return true;
+            if ((*this)(i) != b(i)) return true;
         return false;
     }
 
@@ -491,7 +517,7 @@ public:
         {
             for (Size i=0; i<L; i++)
                 for (Size j=i+1; j<C; j++)
-                    if( rabs( this->elems[i][j] - this->elems[j][i] ) > EQUALITY_THRESHOLD ) return false;
+                    if( rabs( (*this)(i,j) - (*this)(j,i) ) > EQUALITY_THRESHOLD ) return false;
             return true;
         }
         else
@@ -505,9 +531,9 @@ public:
         for (Size i=0; i<L; i++)
         {
             for (Size j=0; j<i-1; j++)
-                if( rabs( this->elems[i][j] ) > EQUALITY_THRESHOLD ) return false;
+                if( rabs( (*this)(i,j) ) > EQUALITY_THRESHOLD ) return false;
             for (Size j=i+1; j<C; j++)
-                if( rabs( this->elems[i][j] ) > EQUALITY_THRESHOLD ) return false;
+                if( rabs( (*this)(i,j) ) > EQUALITY_THRESHOLD ) return false;
         }
         return true;
     }
@@ -522,7 +548,7 @@ public:
     {
         Mat<L,C,real> r(NOINIT);
         for(Size i = 0; i < L; i++)
-            r[i] = (*this)[i] + m[i];
+            r(i) = (*this)(i) + m(i);
         return r;
     }
 
@@ -531,7 +557,7 @@ public:
     {
         Mat<L,C,real> r(NOINIT);
         for(Size i = 0; i < L; i++)
-            r[i] = (*this)[i] - m[i];
+            r(i) = (*this)(i) - m(i);
         return r;
     }
 
@@ -540,7 +566,7 @@ public:
     {
         Mat<L,C,real> r(NOINIT);
         for(Size i = 0; i < L; i++)
-            r[i] = -(*this)[i];
+            r(i) = -(*this)(i);
         return r;
     }
 
@@ -550,9 +576,9 @@ public:
         Col r(NOINIT);
         for(Size i=0; i<L; i++)
         {
-            r[i]=(*this)[i][0] * v[0];
+            r(i)=(*this)(i,0) * v[0];
             for(Size j=1; j<C; j++)
-                r[i] += (*this)[i][j] * v[j];
+                r(i) += (*this)(i,j) * v[j];
         }
         return r;
     }
@@ -564,7 +590,7 @@ public:
         Mat<L,C,real> r(NOINIT);
         for(Size i=0; i<L; i++)
             for(Size j=0; j<C; j++)
-                r[i][j]=(*this)[i][j] * d[j];
+                r(i,j)=(*this)(i,j) * d[j];
         return r;
     }
 
@@ -574,9 +600,9 @@ public:
         Line r(NOINIT);
         for(Size i=0; i<C; i++)
         {
-            r[i]=(*this)[0][i] * v[0];
+            r[i]=(*this)(0,i) * v[0];
             for(Size j=1; j<L; j++)
-                r[i] += (*this)[j][i] * v[j];
+                r[i] += (*this)(j,i) * v[j];
         }
         return r;
     }
@@ -599,9 +625,9 @@ public:
         for(Size i=0; i<L; i++)
             for(Size j=0; j<P; j++)
             {
-                r[i][j]=(*this)[i][0] * m[j][0];
+                r(i,j)=(*this)(i,0) * m(j,0);
                 for(Size k=1; k<C; k++)
-                    r[i][j] += (*this)[i][k] * m[j][k];
+                    r(i,j) += (*this)(i,k) * m(j,k);
             }
         return r;
     }
@@ -612,7 +638,7 @@ public:
         Mat<L,C,real> r(NOINIT);
         for(Size i=0; i<L; i++)
             for(Size j=0; j<C; j++)
-                r[i][j] = (*this)[i][j] + m[j][i];
+                r(i,j) = (*this)(i,j) + m(j,i);
         return r;
     }
 
@@ -622,7 +648,7 @@ public:
         Mat<L,C,real> r(NOINIT);
         for(Size i=0; i<L; i++)
             for(Size j=0; j<C; j++)
-                r[i][j] = (*this)[i][j] - m[j][i];
+                r(i,j) = (*this)(i,j) - m(j,i);
         return r;
     }
 
@@ -633,7 +659,7 @@ public:
         Mat<L,C,real> r(NOINIT);
         for(Size i=0; i<L; i++)
             for(Size j=0; j<C; j++)
-                r[i][j] = (*this)[i][j] * f;
+                r(i,j) = (*this)(i,j) * f;
         return r;
     }
 
@@ -649,7 +675,7 @@ public:
         Mat<L,C,real> r(NOINIT);
         for(Size i=0; i<L; i++)
             for(Size j=0; j<C; j++)
-                r[i][j] = (*this)[i][j] / f;
+                r(i,j) = (*this)(i,j) / f;
         return r;
     }
 
@@ -671,7 +697,7 @@ public:
     constexpr void operator +=(const Mat<L,C,real>& m) noexcept
     {
         for(Size i=0; i<L; i++)
-            this->elems[i]+=m[i];
+            (*this)(i)+=m(i);
     }
 
     /// Addition of the transposed of m
@@ -679,7 +705,7 @@ public:
     {
         for(Size i=0; i<L; i++)
             for(Size j=0; j<C; j++)
-                (*this)[i][j] += m[j][i];
+                (*this)(i,j) += m(j,i);
     }
 
     /// Subtraction of the transposed of m
@@ -687,14 +713,14 @@ public:
     {
         for(Size i=0; i<L; i++)
             for(Size j=0; j<C; j++)
-                (*this)[i][j] -= m[j][i];
+                (*this)(i,j) -= m(j,i);
     }
 
     /// Subtraction assignment operator.
     constexpr void operator -=(const Mat<L,C,real>& m) noexcept
     {
         for(Size i=0; i<L; i++)
-            this->elems[i]-=m[i];
+            (*this)(i)-=m(i);
     }
 
 
@@ -731,7 +757,7 @@ public:
         Mat<L,C,real> m;
         m.identity();
         for (Size i=0; i<C-1; ++i)
-            m.elems[i][C-1] = t[i];
+            m(i,C-1) = t[i];
         return m;
     }
 
@@ -741,7 +767,7 @@ public:
         Mat<L,C,real> m;
         m.identity();
         for (Size i=0; i<C-1; ++i)
-            m.elems[i][i] = s;
+            m(i,i) = s;
         return m;
     }
 
@@ -751,7 +777,7 @@ public:
         Mat<L,C,real> m;
         m.identity();
         for (Size i=0; i<C-1; ++i)
-            m.elems[i][i] = s[i];
+            m(i,i) = s[i];
         return m;
     }
 
@@ -792,10 +818,10 @@ public:
         Vec<C-1,real> r(NOINIT);
         for(Size i=0; i<C-1; i++)
         {
-            r[i]=(*this)[i][0] * v[0];
+            r[i]=(*this)(i,0) * v[0];
             for(Size j=1; j<C-1; j++)
-                r[i] += (*this)[i][j] * v[j];
-            r[i] += (*this)[i][C-1];
+                r[i] += (*this)(i,j) * v[j];
+            r[i] += (*this)(i,C-1);
         }
         return r;
     }
@@ -815,14 +841,14 @@ public:
     {
         for(Size l=0; l<L; l++)
             for(Size c=l+1; c<C; c++)
-                this->elems[l][c] = this->elems[c][l] = ( this->elems[l][c] + this->elems[c][l] ) * 0.5f;
+                (*this)(l,c) = (*this)(c,l) = ( (*this)(l,c) + (*this)(c,l) ) * 0.5f;
     }
 
 
     // direct access to data
     constexpr const real* data() const noexcept
     {
-        return elems.data();
+        return elems.data()->data();
     }
 
     constexpr typename ArrayLineType::iterator begin() noexcept
@@ -853,11 +879,11 @@ public:
     }
     constexpr reference back()
     {
-        return elems[N - 1];
+        return elems[L - 1];
     }
     constexpr const_reference back() const
     {
-        return elems[N - 1];
+        return elems[L - 1];
     }
 
 };
@@ -955,9 +981,9 @@ real infNorm(const Mat<3,3,real>& A)
 template<sofa::Size N, class real>
 constexpr real trace(const Mat<N,N,real>& m) noexcept
 {
-    real t = m[0][0];
+    real t = m(0,0);
     for(sofa::Size i=1 ; i<N ; ++i ) 
-        t += m[i][i];
+        t += m(i,i);
     return t;
 }
 
@@ -967,7 +993,7 @@ constexpr Vec<N,real> diagonal(const Mat<N,N,real>& m)
 {
     Vec<N,real> v(NOINIT);
     for(sofa::Size i=0 ; i<N ; ++i ) 
-        v[i] = m[i][i];
+        v[i] = m(i,i);
     return v;
 }
 
@@ -994,7 +1020,7 @@ template<sofa::Size S, class real>
             {
                 if (col[j])
                     continue;
-                real t = m1[i][j]; if (t<0) t=-t;
+                real t = m1(i,j); if (t<0) t=-t;
                 if ( t > pivot)
                 {
                     pivot = t;
@@ -1010,20 +1036,20 @@ template<sofa::Size S, class real>
         }
 
         row[r[k]] = col[c[k]] = 1;
-        pivot = m1[r[k]][c[k]];
+        pivot = m1(r[k], c[k]);
 
         // Normalization
-        m1[r[k]] /= pivot; m1[r[k]][c[k]] = 1;
-        m2[r[k]] /= pivot;
+        m1(r[k]) /= pivot; m1(r[k], c[k]) = 1;
+        m2(r[k]) /= pivot;
 
         // Reduction
         for (i = 0; i < S; i++)
         {
             if (i != r[k])
             {
-                real f = m1[i][c[k]];
-                m1[i] -= m1[r[k]]*f; m1[i][c[k]] = 0;
-                m2[i] -= m2[r[k]]*f;
+                real f = m1(i, c[k]);
+                m1(i) -= m1(r[k])*f; m1(i, c[k]) = 0;
+                m2(i) -= m2(r[k])*f;
             }
         }
     }
@@ -1031,10 +1057,10 @@ template<sofa::Size S, class real>
     for (i = 0; i < S; i++)
         for (j = 0; j < S; j++)
             if (c[j] == i)
-                row[i] = r[j];
+                row(i) = r(j);
 
     for ( i = 0; i < S; i++ )
-        dest[i] = m2[row[i]];
+        dest(i) = m2(row[i]);
 
     return true;
 }
@@ -1086,12 +1112,12 @@ template<class real>
 template<class real>
 [[nodiscard]] constexpr bool invertMatrix(Mat<1,1,real>& dest, const Mat<1,1,real>& from)
 {
-    if (equalsZero(from[0][0]))
+    if (equalsZero(from(0,0)))
     {
         return false;
     }
 
-    dest[0][0] = static_cast<real>(1.) / from[0][0];
+    dest(0,0) = static_cast<real>(1.) / from(0,0);
     return true;
 }
 
@@ -1119,9 +1145,9 @@ template<sofa::Size S, class real>
 template <sofa::Size L, sofa::Size C, typename real>
 std::ostream& operator<<(std::ostream& o, const Mat<L,C,real>& m)
 {
-    o << '[' << m[0];
+    o << '[' << m(0);
     for (sofa::Size i=1; i<L; i++)
-        o << ',' << m[i];
+        o << ',' << m(i);
     o << ']';
     return o;
 }
@@ -1137,7 +1163,7 @@ std::istream& operator>>(std::istream& in, Mat<L,C,real>& m)
         if( c=='[' ) break;
         c = in.peek();
     }
-    in >> m[0];
+    in >> m(0);
     for (sofa::Size i=1; i<L; i++)
     {
         c = in.peek();
@@ -1146,7 +1172,7 @@ std::istream& operator>>(std::istream& in, Mat<L,C,real>& m)
             in.get();
             c = in.peek();
         }
-        in >> m[i];
+        in >> m(i);
     }
     if(in.eof()) return in;
     c = in.peek();
@@ -1170,7 +1196,7 @@ void printMatlab(std::ostream& o, const Mat<L,C,real>& m)
     {
         for(sofa::Size c=0; c<C; ++c)
         {
-            o<<m[l][c];
+            o<<m(l,c);
             if( c!=C-1 ) o<<",\t";
         }
         if( l!=L-1 ) o<<";"<<std::endl;
@@ -1187,7 +1213,7 @@ void printMaple(std::ostream& o, const Mat<L,C,real>& m)
     {
         for(sofa::Size c=0; c<C; ++c)
         {
-            o<<m[l][c];
+            o<<m(l,c);
             o<<",\t";
         }
         if( l!=L-1 ) o<<std::endl;
@@ -1208,7 +1234,7 @@ dyad(const Tu& u, const Tv& v) noexcept
     {
         for (sofa::Size j = 0; j < Tv::size(); ++j)
         {
-            res[i][j] = u[i] * v[j];
+            res(i,j) = u[i] * v[j];
         }
     }
     return res;
@@ -1232,15 +1258,15 @@ template<class Real>
 constexpr Mat<3, 3, Real> crossProductMatrix(const Vec<3, Real>& v) noexcept
 {
     type::Mat<3, 3, Real> res(NOINIT);
-    res[0][0]=0;
-    res[0][1]=-v[2];
-    res[0][2]=v[1];
-    res[1][0]=v[2];
-    res[1][1]=0;
-    res[1][2]=-v[0];
-    res[2][0]=-v[1];
-    res[2][1]=v[0];
-    res[2][2]=0;
+    res(0,0)=0;
+    res(0,1)=-v[2];
+    res(0,2)=v[1];
+    res(1,0)=v[2];
+    res(1,1)=0;
+    res(1,2)=-v[0];
+    res(2,0)=-v[1];
+    res(2,1)=v[0];
+    res(2,2)=0;
     return res;
 }
 
@@ -1254,7 +1280,7 @@ constexpr Mat<L,L,Real> tensorProduct(const Vec<L,Real>& a, const Vec<L,Real>& b
 
     for( typename Mat::Size i=0 ; i<L ; ++i )
         for( typename Mat::Size j=0 ; j<L ; ++j )
-            m[i][j] = a[i]*b[j];
+            m(i,j) = a[i]*b[j];
 
     return m;
 }
@@ -1267,10 +1293,10 @@ constexpr Mat<L,P,real> operator*(const Mat<L,C,real>& m1, const Mat<C,P,real>& 
     {
         for (Size j = 0; j<P; j++)
         {
-            r[i][j] = m1[i][0] * m2[0][j];
+            r(i,j) = m1(i,0) * m2(0,j);
             for (Size k = 1; k<C; k++)
             {
-                r[i][j] += m1[i][k] * m2[k][j];
+                r(i,j) += m1(i,k) * m2(k,j);
             }
         }
     }
@@ -1282,37 +1308,37 @@ constexpr Mat<3,3,real> operator*(const Mat<3,3,real>& m1, const Mat<3,3,real>& 
 {
     Mat<3,3,real> r(NOINIT);
 
-    const auto A00 = m1[0][0];
-    const auto A01 = m1[0][1];
-    const auto A02 = m1[0][2];
-    const auto A10 = m1[1][0];
-    const auto A11 = m1[1][1];
-    const auto A12 = m1[1][2];
-    const auto A20 = m1[2][0];
-    const auto A21 = m1[2][1];
-    const auto A22 = m1[2][2];
+    const auto A00 = m1(0,0);
+    const auto A01 = m1(0,1);
+    const auto A02 = m1(0,2);
+    const auto A10 = m1(1,0);
+    const auto A11 = m1(1,1);
+    const auto A12 = m1(1,2);
+    const auto A20 = m1(2,0);
+    const auto A21 = m1(2,1);
+    const auto A22 = m1(2,2);
 
-    const auto B00 = m2[0][0];
-    const auto B01 = m2[0][1];
-    const auto B02 = m2[0][2];
-    const auto B10 = m2[1][0];
-    const auto B11 = m2[1][1];
-    const auto B12 = m2[1][2];
-    const auto B20 = m2[2][0];
-    const auto B21 = m2[2][1];
-    const auto B22 = m2[2][2];
+    const auto B00 = m2(0,0);
+    const auto B01 = m2(0,1);
+    const auto B02 = m2(0,2);
+    const auto B10 = m2(1,0);
+    const auto B11 = m2(1,1);
+    const auto B12 = m2(1,2);
+    const auto B20 = m2(2,0);
+    const auto B21 = m2(2,1);
+    const auto B22 = m2(2,2);
 
-    r[0][0] = A00 * B00 + A01 * B10 + A02 * B20;
-    r[0][1] = A00 * B01 + A01 * B11 + A02 * B21;
-    r[0][2] = A00 * B02 + A01 * B12 + A02 * B22;
+    r(0,0) = A00 * B00 + A01 * B10 + A02 * B20;
+    r(0,1) = A00 * B01 + A01 * B11 + A02 * B21;
+    r(0,2) = A00 * B02 + A01 * B12 + A02 * B22;
 
-    r[1][0] = A10 * B00 + A11 * B10 + A12 * B20;
-    r[1][1] = A10 * B01 + A11 * B11 + A12 * B21;
-    r[1][2] = A10 * B02 + A11 * B12 + A12 * B22;
+    r(1,0) = A10 * B00 + A11 * B10 + A12 * B20;
+    r(1,1) = A10 * B01 + A11 * B11 + A12 * B21;
+    r(1,2) = A10 * B02 + A11 * B12 + A12 * B22;
 
-    r[2][0] = A20 * B00 + A21 * B10 + A22 * B20;
-    r[2][1] = A20 * B01 + A21 * B11 + A22 * B21;
-    r[2][2] = A20 * B02 + A21 * B12 + A22 * B22;
+    r(2,0) = A20 * B00 + A21 * B10 + A22 * B20;
+    r(2,1) = A20 * B01 + A21 * B11 + A22 * B21;
+    r(2,2) = A20 * B02 + A21 * B12 + A22 * B22;
 
     return r;
 }
@@ -1325,10 +1351,10 @@ constexpr Mat<C,P,real> multTranspose(const Mat<L,C,real>& m1, const Mat<L,P,rea
     {
         for (Size j = 0; j<P; j++)
         {
-            r[i][j] = m1[0][i] * m2[0][j];
+            r(i,j) = m1(0,i) * m2(0,j);
             for (Size k = 1; k<L; k++)
             {
-                r[i][j] += m1[k][i] * m2[k][j];
+                r(i,j) += m1(k,i) * m2(k,j);
             }
         }
     }
@@ -1340,39 +1366,58 @@ constexpr Mat<3,3,real> multTranspose(const Mat<3,3,real>& m1, const Mat<3,3,rea
 {
     Mat<3,3,real> r(NOINIT);
 
-    const auto A00 = m1[0][0];
-    const auto A01 = m1[0][1];
-    const auto A02 = m1[0][2];
-    const auto A10 = m1[1][0];
-    const auto A11 = m1[1][1];
-    const auto A12 = m1[1][2];
-    const auto A20 = m1[2][0];
-    const auto A21 = m1[2][1];
-    const auto A22 = m1[2][2];
+    const auto A00 = m1(0,0);
+    const auto A01 = m1(0,1);
+    const auto A02 = m1(0,2);
+    const auto A10 = m1(1,0);
+    const auto A11 = m1(1,1);
+    const auto A12 = m1(1,2);
+    const auto A20 = m1(2,0);
+    const auto A21 = m1(2,1);
+    const auto A22 = m1(2,2);
 
-    const auto B00 = m2[0][0];
-    const auto B01 = m2[0][1];
-    const auto B02 = m2[0][2];
-    const auto B10 = m2[1][0];
-    const auto B11 = m2[1][1];
-    const auto B12 = m2[1][2];
-    const auto B20 = m2[2][0];
-    const auto B21 = m2[2][1];
-    const auto B22 = m2[2][2];
+    const auto B00 = m2(0,0);
+    const auto B01 = m2(0,1);
+    const auto B02 = m2(0,2);
+    const auto B10 = m2(1,0);
+    const auto B11 = m2(1,1);
+    const auto B12 = m2(1,2);
+    const auto B20 = m2(2,0);
+    const auto B21 = m2(2,1);
+    const auto B22 = m2(2,2);
 
-    r[0][0] = A00 * B00 + A10 * B10 + A20 * B20;
-    r[0][1] = A00 * B01 + A10 * B11 + A20 * B21;
-    r[0][2] = A00 * B02 + A10 * B12 + A20 * B22;
+    r(0,0) = A00 * B00 + A10 * B10 + A20 * B20;
+    r(0,1) = A00 * B01 + A10 * B11 + A20 * B21;
+    r(0,2) = A00 * B02 + A10 * B12 + A20 * B22;
 
-    r[1][0] = A01 * B00 + A11 * B10 + A21 * B20;
-    r[1][1] = A01 * B01 + A11 * B11 + A21 * B21;
-    r[1][2] = A01 * B02 + A11 * B12 + A21 * B22;
+    r(1,0) = A01 * B00 + A11 * B10 + A21 * B20;
+    r(1,1) = A01 * B01 + A11 * B11 + A21 * B21;
+    r(1,2) = A01 * B02 + A11 * B12 + A21 * B22;
 
-    r[2][0] = A02 * B00 + A12 * B10 + A22 * B20;
-    r[2][1] = A02 * B01 + A12 * B11 + A22 * B21;
-    r[2][2] = A02 * B02 + A12 * B12 + A22 * B22;
+    r(2,0) = A02 * B00 + A12 * B10 + A22 * B20;
+    r(2,1) = A02 * B01 + A12 * B11 + A22 * B21;
+    r(2,2) = A02 * B02 + A12 * B12 + A22 * B22;
 
     return r;
 }
+
+#if not defined(SOFA_TYPE_MAT_CPP)
+
+extern template class SOFA_TYPE_API Mat<2,2,float>;
+extern template class SOFA_TYPE_API Mat<2,2,double>;
+
+extern template class SOFA_TYPE_API Mat<3,3,float>;
+extern template class SOFA_TYPE_API Mat<3,3,double>;
+
+extern template class SOFA_TYPE_API Mat<4,4,float>;
+extern template class SOFA_TYPE_API Mat<4,4,double>;
+
+extern template class SOFA_TYPE_API Mat<6,6,float>;
+extern template class SOFA_TYPE_API Mat<6,6,double>;
+
+extern template class SOFA_TYPE_API Mat<12,12,float>;
+extern template class SOFA_TYPE_API Mat<12,12,double>;
+
+#endif
 
 } // namespace sofa::type

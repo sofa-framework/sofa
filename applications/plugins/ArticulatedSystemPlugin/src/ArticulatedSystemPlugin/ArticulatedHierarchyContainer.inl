@@ -28,7 +28,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::container
+namespace articulatedsystemplugin
 {
 
 Articulation::Articulation():
@@ -258,4 +258,5 @@ void ArticulatedHierarchyContainer::init ()
 }
 
 
-} // namespace sofa::component::container
+} // namespace articulatedsystemplugin
+

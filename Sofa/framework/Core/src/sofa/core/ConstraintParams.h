@@ -41,8 +41,8 @@ public:
 
     ConstraintParams& setOrder(ConstraintOrder o) { m_constOrder = o;   return *this; }
 
-	/// Smooth contribution factor (for smooth constraints resolution)
-    double smoothFactor() const { return m_smoothFactor; }
+    /// Smooth contribution factor (for smooth constraints resolution)
+    SReal smoothFactor() const { return m_smoothFactor; }
 
     /// @}
 
@@ -92,8 +92,8 @@ public:
 
     /// @{
 
-	/// Set smooth contribution factor (for smooth constraints resolution)
-    ConstraintParams& setSmoothFactor(double v) { m_smoothFactor = v; return *this; }
+    /// Set smooth contribution factor (for smooth constraints resolution)
+    ConstraintParams& setSmoothFactor(SReal v) { m_smoothFactor = v; return *this; }
 
     /// Returns ids of the position vectors
     const ConstMultiVecCoordId& x() const { return m_x; }
@@ -180,8 +180,8 @@ protected:
     /// Description of the order of the constraint
     ConstraintOrder m_constOrder;
 
-	/// Smooth contribution factor (for smooth constraints resolution)
-    double m_smoothFactor;
+    /// Smooth contribution factor (for smooth constraints resolution)
+    SReal m_smoothFactor;
 };
 
 } // namespace sofa::core

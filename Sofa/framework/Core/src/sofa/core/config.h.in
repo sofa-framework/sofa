@@ -47,13 +47,6 @@
 
 
 #ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_DISABLED__CORE_INTERSECTION_AS_PARAMETER()
-#else
-#define SOFA_ATTRIBUTE_DISABLED__CORE_INTERSECTION_AS_PARAMETER() \
-    SOFA_ATTRIBUTE_DISABLED("v24.06", "v24.12", "Intersection detection methods now needs the Intersection method as a parameter.")
-#endif
-
-#ifdef SOFA_BUILD_SOFA_CORE
 #define SOFA_ATTRIBUTE_DISABLED__COMPLIANT()
 #else
 #define SOFA_ATTRIBUTE_DISABLED__COMPLIANT() \
@@ -84,7 +77,20 @@
 #endif
 
 
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DISABLED__DELETED_ARGUMENTS()
+#else
+#define SOFA_ATTRIBUTE_DISABLED__DELETED_ARGUMENTS() \
+    SOFA_ATTRIBUTE_DISABLED("v25.06", "v25.12", "Signature has changed, use 'getConstraintResolution(const ConstraintParams* cParams, std::vector<ConstraintResolution*> &resTab, unsigned int &offset)' instead")
+#endif
 
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__NAME_CHANGED()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__NAME_CHANGED() \
+SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "Use getContactDistance or setContactDistance instead.")
+#endif
 
 #ifdef SOFA_BUILD_SOFA_CORE
 
@@ -124,4 +130,27 @@
     #define SOFA_ATTRIBUTE_DISABLED__CONSTRAINT_JACOBIAN() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::constraintJacobian  or sofa::core::vec_id::write_access::constraintJacobian instead")
     #define SOFA_ATTRIBUTE_DISABLED__MAPPING_JACOBIAN() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::mappingJacobian  or sofa::core::vec_id::write_access::mappingJacobian instead")
 
+#endif
+
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() \
+    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "Use toBaseLagrangianConstraint instead.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM() \
+    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "It was an experimental function no longer used.")
+#endif
+
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_RENAMED__COLLISIONMODEL_PROXIMITY()
+#else
+#define SOFA_ATTRIBUTE_RENAMED__COLLISIONMODEL_PROXIMITY() \
+    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "Data 'proximity' has been renamed to 'contactDistance'")
 #endif

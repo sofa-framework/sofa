@@ -134,11 +134,11 @@ void  PlaneProjectiveConstraint<DataTypes>::reinit()
         {
             if(i==j)
             {
-                bProjection[i][j] = 1 - n[i]*n[j];
+                bProjection(i,j) = 1 - n[i]*n[j];
             }
             else
             {
-                bProjection[i][j] =    - n[i]*n[j];
+                bProjection(i,j) =    - n[i]*n[j];
             }
         }
 

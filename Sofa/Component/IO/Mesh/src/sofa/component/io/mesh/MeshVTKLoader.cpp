@@ -24,6 +24,7 @@
 #include <iostream>
 #include <cstdio>
 #include <sstream>
+#include <regex>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -119,6 +120,21 @@ MeshVTKLoader::VTKFileType MeshVTKLoader::detectFileType(const char* filename)
     }
     else if (line.find("# vtk DataFile") != string::npos)
     {
+        std::regex pattern(R"(# vtk DataFile Version (\d+)\.\d+)");
+        std::smatch match;
+
+        if (std::regex_search(line, match, pattern) && match.size() == 2)
+        {
+            std::string version = match[1].str();
+            if(stod(version) >= 5)
+                msg_warning() << "VTK5.+ format might not be well supported, see issue https://github.com/sofa-framework/sofa/issues/3405";
+            else
+                msg_info() << "Extracted version: " << version;
+        }
+        else
+        {
+            msg_warning() << "Could not read the version of VTK";
+        }
         return MeshVTKLoader::LEGACY;
     }
     else //default behavior if the first line is not correct ?
@@ -333,7 +349,7 @@ bool MeshVTKLoader::setInputsMesh()
 
         const unsigned int edgesInQuadraticTriangle[3][2] = {{0, 1}, {1, 2}, {2, 0}};
         const unsigned int edgesInQuadraticTetrahedron[6][2] = {{0, 1}, {1, 2}, {0, 2}, {0, 3}, {1, 3}, {2, 3}};
-        std::set<Edge> edgeSet;
+        std::set<topology::Edge> edgeSet;
         size_t j;
         int nbf = reader->numberOfCells;
         int i = 0;
@@ -432,7 +448,7 @@ bool MeshVTKLoader::setInputsMesh()
                             inFP[i + edgesInQuadraticTriangle[j][1]]);
                     sofa::Index v1 = std::max( inFP[i + edgesInQuadraticTriangle[j][0]],
                             inFP[i + edgesInQuadraticTriangle[j][1]]);
-                    Edge e(v0, v1);
+                    topology::Edge e(v0, v1);
                     if (!edgeSet.contains(e))
                     {
                         edgeSet.insert(e);
@@ -456,7 +472,7 @@ bool MeshVTKLoader::setInputsMesh()
                             inFP[i + edgesInQuadraticTetrahedron[j][1]]);
                     sofa::Index v1 = std::max( inFP[i + edgesInQuadraticTetrahedron[j][0]],
                             inFP[i + edgesInQuadraticTetrahedron[j][1]]);
-                    Edge e(v0, v1);
+                    topology::Edge e(v0, v1);
                     if (!edgeSet.contains(e))
                     {
                         edgeSet.insert(e);

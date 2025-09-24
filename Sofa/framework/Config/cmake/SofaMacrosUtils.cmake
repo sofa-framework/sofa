@@ -51,3 +51,4 @@ function(sofa_get_all_targets var)
     __get_all_targets_recursive(targets ${source_dir})
     set(${var} ${targets} PARENT_SCOPE)
 endfunction()
+
