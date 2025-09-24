@@ -100,9 +100,9 @@ bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2, const co
     MatNoInit<2, 2, Real> A;
     VecNoInit<2, Real> b;
 
-    A[0][0] = AB * AB;
-    A[1][1] = CD * CD;
-    A[0][1] = A[1][0] = -CD*AB;
+    A(0,0) = AB * AB;
+    A(1,1) = CD * CD;
+    A(0,1) = A(1,0) = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
 
@@ -113,8 +113,8 @@ bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2, const co
 
     if (det < -1.0e-18 || det > 1.0e-18)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+        alpha = (b[0]*A(1,1) - b[1]*A(0,1))/det;
+        beta  = (b[1]*A(0,0) - b[0]*A(1,0))/det;
         if (alpha < 0.000001 || alpha > 0.999999 ||
             beta  < 0.000001 || beta  > 0.999999 )
             return false;
@@ -143,9 +143,9 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     MatNoInit<2, 2, Real> A;
     VecNoInit<2, Real> b;
 
-    A[0][0] = AB*AB;
-    A[1][1] = CD*CD;
-    A[0][1] = A[1][0] = -CD*AB;
+    A(0,0) = AB*AB;
+    A(1,1) = CD*CD;
+    A(0,1) = A(1,0) = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
     const Real det = type::determinant(A);
@@ -155,8 +155,8 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
 
     if (det < -1.0e-15 || det > 1.0e-15)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+        alpha = (b[0]*A(1,1) - b[1]*A(0,1))/det;
+        beta  = (b[1]*A(0,0) - b[0]*A(1,0))/det;
         if (alpha < 0.000001 || alpha > 0.999999 ||
             beta  < 0.000001 || beta  > 0.999999 )
             return 0;
@@ -243,15 +243,15 @@ bool MeshMinProximityIntersection::testIntersection(Triangle& e2, Point& e1, con
     // AB.AC*alpha + AC.AC*beta = AP.AC
     //
     // A . [alpha beta] = b
-    A[0][0] = AB*AB;
-    A[1][1] = AC*AC;
-    A[0][1] = A[1][0] = AB*AC;
+    A(0,0) = AB*AB;
+    A(1,1) = AC*AC;
+    A(0,1) = A(1,0) = AB*AC;
     b[0] = AP*AB;
     b[1] = AP*AC;
     const Real det = type::determinant(A);
 
-    const Real alpha=(b[0]*A[1][1]-b[1]*A[0][1])/det;
-    const Real beta=(b[1]*A[0][0]-b[0]*A[1][0])/det;
+    const Real alpha=(b[0]*A(1,1)-b[1]*A(0,1))/det;
+    const Real beta=(b[1]*A(0,0)-b[0]*A(1,0))/det;
     if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)
@@ -287,16 +287,16 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     MatNoInit<2, 2, Real> A;
     VecNoInit<2, Real> b;
 
-    A[0][0] = AB*AB;
-    A[1][1] = AC*AC;
-    A[0][1] = A[1][0] = AB*AC;
+    A(0,0) = AB*AB;
+    A(1,1) = AC*AC;
+    A(0,1) = A(1,0) = AB*AC;
     b[0] = AP*AB;
     b[1] = AP*AC;
 
     const Real det = type::determinant(A);
 
-    const Real alpha=(b[0]*A[1][1]-b[1]*A[0][1])/det;
-    const Real beta=(b[1]*A[0][0]-b[0]*A[1][0])/det;
+    const Real alpha=(b[0]*A(1,1)-b[1]*A(0,1))/det;
+    const Real beta=(b[1]*A(0,0)-b[0]*A(1,0))/det;
     if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)

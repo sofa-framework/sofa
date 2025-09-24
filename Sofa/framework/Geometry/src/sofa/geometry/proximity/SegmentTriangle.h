@@ -52,15 +52,15 @@ constexpr bool computeClosestPointsSegmentAndTriangle(
     constexpr T zero = static_cast<T>(0);
     constexpr T one = static_cast<T>(1);
 
-    A[0][3] = one; A[0][4] = zero;
-    A[1][3] = one; A[1][4] = zero;
-    A[2][3] = zero; A[2][4] = one;
-    A[3][0] = -one; A[3][1] = -one; A[3][2] = zero; A[3][3] = zero; A[3][4] = zero;
-    A[4][0] = zero; A[4][1] = zero; A[4][2] = -one; A[4][3] = zero; A[4][4] = zero;
+    A(0,3) = one; A(0,4) = zero;
+    A(1,3) = one; A(1,4) = zero;
+    A(2,3) = zero; A(2,4) = one;
+    A(3,0) = -one; A(3,1) = -one; A(3,2) = zero; A(3,3) = zero; A(3,4) = zero;
+    A(4,0) = zero; A(4,1) = zero; A(4,2) = -one; A(4,3) = zero; A(4,4) = zero;
 
-    A[0][0] =  dot(P0P1,P0P1);  A[0][1] =  dot(P0P2,P0P1);  A[0][2] = -dot(Q0Q1,P0P1);
-    A[1][0] =  dot(P0P1,P0P2);  A[1][1] =  dot(P0P2,P0P2);  A[1][2] = -dot(Q0Q1,P0P2);
-    A[2][0] = -dot(P0P1,Q0Q1);  A[2][1] = -dot(P0P2,Q0Q1);  A[2][2] =  dot(Q0Q1,Q0Q1);
+    A(0,0) =  dot(P0P1,P0P1);  A(0,1) =  dot(P0P2,P0P1);  A(0,2) = -dot(Q0Q1,P0P1);
+    A(1,0) =  dot(P0P1,P0P2);  A(1,1) =  dot(P0P2,P0P2);  A(1,2) = -dot(Q0Q1,P0P2);
+    A(2,0) = -dot(P0P1,Q0Q1);  A(2,1) = -dot(P0P2,Q0Q1);  A(2,2) =  dot(Q0Q1,Q0Q1);
 
     b[3] = one;
     b[4] = one;

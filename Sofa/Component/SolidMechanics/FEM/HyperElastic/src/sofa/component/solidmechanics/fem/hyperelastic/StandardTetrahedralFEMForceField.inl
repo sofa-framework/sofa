@@ -311,7 +311,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
         sv=tetInfo->shapeVector[1];
         for (k=0;k<3;++k) {
             for (l=0;l<3;++l) {
-                deformationGradient[k][l]=dp[0][k]*sv[l];
+                deformationGradient(k,l)=dp[0][k]*sv[l];
             }
         }
         for (j=1;j<3;++j) {
@@ -319,7 +319,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
             sv=tetInfo->shapeVector[j+1];
             for (k=0;k<3;++k) {
                 for (l=0;l<3;++l) {
-                    deformationGradient[k][l]+=dp[j][k]*sv[l];
+                    deformationGradient(k,l)+=dp[j][k]*sv[l];
                 }
             }
         }
@@ -328,29 +328,29 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
         for (int alpha=0; alpha<4; ++alpha){
             Coord sva=tetInfo->shapeVector[alpha];
             Matrix63 matBa;
-            matBa[0][0]=deformationGradient[0][0]*sva[0];
-            matBa[0][1]=deformationGradient[1][0]*sva[0];
-            matBa[0][2]=deformationGradient[2][0]*sva[0];
+            matBa(0,0)=deformationGradient(0,0)*sva[0];
+            matBa(0,1)=deformationGradient(1,0)*sva[0];
+            matBa(0,2)=deformationGradient(2,0)*sva[0];
 
-            matBa[2][0]=deformationGradient[0][1]*sva[1];
-            matBa[2][1]=deformationGradient[1][1]*sva[1];
-            matBa[2][2]=deformationGradient[2][1]*sva[1];
+            matBa(2,0)=deformationGradient(0,1)*sva[1];
+            matBa(2,1)=deformationGradient(1,1)*sva[1];
+            matBa(2,2)=deformationGradient(2,1)*sva[1];
 
-            matBa[5][0]=deformationGradient[0][2]*sva[2];
-            matBa[5][1]=deformationGradient[1][2]*sva[2];
-            matBa[5][2]=deformationGradient[2][2]*sva[2];
+            matBa(5,0)=deformationGradient(0,2)*sva[2];
+            matBa(5,1)=deformationGradient(1,2)*sva[2];
+            matBa(5,2)=deformationGradient(2,2)*sva[2];
 
-            matBa[1][0]=(deformationGradient[0][0]*sva[1]+deformationGradient[0][1]*sva[0]);
-            matBa[1][1]=(deformationGradient[1][0]*sva[1]+deformationGradient[1][1]*sva[0]);
-            matBa[1][2]=(deformationGradient[2][0]*sva[1]+deformationGradient[2][1]*sva[0]);
+            matBa(1,0)=(deformationGradient(0,0)*sva[1]+deformationGradient(0,1)*sva[0]);
+            matBa(1,1)=(deformationGradient(1,0)*sva[1]+deformationGradient(1,1)*sva[0]);
+            matBa(1,2)=(deformationGradient(2,0)*sva[1]+deformationGradient(2,1)*sva[0]);
 
-            matBa[3][0]=(deformationGradient[0][2]*sva[0]+deformationGradient[0][0]*sva[2]);
-            matBa[3][1]=(deformationGradient[1][2]*sva[0]+deformationGradient[1][0]*sva[2]);
-            matBa[3][2]=(deformationGradient[2][2]*sva[0]+deformationGradient[2][0]*sva[2]);
+            matBa(3,0)=(deformationGradient(0,2)*sva[0]+deformationGradient(0,0)*sva[2]);
+            matBa(3,1)=(deformationGradient(1,2)*sva[0]+deformationGradient(1,0)*sva[2]);
+            matBa(3,2)=(deformationGradient(2,2)*sva[0]+deformationGradient(2,0)*sva[2]);
 
-            matBa[4][0]=(deformationGradient[0][1]*sva[2]+deformationGradient[0][2]*sva[1]);
-            matBa[4][1]=(deformationGradient[1][1]*sva[2]+deformationGradient[1][2]*sva[1]);
-            matBa[4][2]=(deformationGradient[2][1]*sva[2]+deformationGradient[2][2]*sva[1]);
+            matBa(4,0)=(deformationGradient(0,1)*sva[2]+deformationGradient(0,2)*sva[1]);
+            matBa(4,1)=(deformationGradient(1,1)*sva[2]+deformationGradient(1,2)*sva[1]);
+            matBa(4,2)=(deformationGradient(2,1)*sva[2]+deformationGradient(2,2)*sva[1]);
 
             matB[alpha]=matBa;
         }
@@ -418,7 +418,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
                 // Calculates the dS/dC tensor 6*6
                 myMaterial->ElasticityTensor(tetInfo,globalParameters,outputTensor);
                 Matrix63 mBl=matB[l];
-                mBl[1][0]/=2;mBl[1][1]/=2;mBl[1][2]/=2;mBl[3][0]/=2;mBl[3][1]/=2;mBl[3][2]/=2;mBl[4][0]/=2;mBl[4][1]/=2;mBl[4][2]/=2;
+                mBl(1,0)/=2;mBl(1,1)/=2;mBl(1,2)/=2;mBl(3,0)/=2;mBl(3,1)/=2;mBl(3,2)/=2;mBl(4,0)/=2;mBl(4,1)/=2;mBl(4,2)/=2;
 
                 N=(matB[k].transposed()*outputTensor*mBl);
 
@@ -427,8 +427,8 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
 
                 Coord vectSD=SPK*svk;
                 productSD=dot(vectSD,svl);
-                M[0][1]=M[0][2]=M[1][0]=M[1][2]=M[2][0]=M[2][1]=0;
-                M[0][0]=M[1][1]=M[2][2]=(Real)productSD;
+                M(0,1)=M(0,2)=M(1,0)=M(1,2)=M(2,0)=M(2,1)=0;
+                M(0,0)=M(1,1)=M(2,2)=(Real)productSD;
 
                 edgeDfDx += (M+N.transposed())*tetInfo->restVolume;
 
@@ -524,9 +524,10 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
         deltax= dx[v0] - dx[v1];
         dv0 = einfo->DfDx * deltax;
         // do the transpose multiply:
-        dv1[0] = (Real)(deltax[0]*einfo->DfDx[0][0] + deltax[1]*einfo->DfDx[1][0] + deltax[2]*einfo->DfDx[2][0]);
-        dv1[1] = (Real)(deltax[0]*einfo->DfDx[0][1] + deltax[1]*einfo->DfDx[1][1] + deltax[2]*einfo->DfDx[2][1]);
-        dv1[2] = (Real)(deltax[0]*einfo->DfDx[0][2] + deltax[1]*einfo->DfDx[1][2] + deltax[2]*einfo->DfDx[2][2]);
+        dv1[0] = (Real)(deltax[0]*einfo->DfDx(0,0) + deltax[1]*einfo->DfDx(1,0) + deltax[2]*einfo->DfDx(2,0));
+        dv1[1] = (Real)(deltax[0]*einfo->DfDx(0,1) + deltax[1]*einfo->DfDx(1,1) + deltax[2]*einfo->DfDx(2,1));
+        dv1[2] = (Real)(deltax[0]*einfo->DfDx(0,2) + deltax[1]*einfo->DfDx(1,2) + deltax[2]*einfo->DfDx(2,2));
+
         // add forces
         df[v0] += dv1 * kFactor;
         df[v1] -= dv0 * kFactor;
