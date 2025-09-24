@@ -169,7 +169,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 //
 //
 // 		for(int j=0;j<8;++j)
-// 			if( fabs( (*it).second[0][j*3] ) > 1.0e-5 || fabs( (*it).second[1][j*3+1] ) > 1.0e-5 || fabs( (*it).second[2][j*3+2] ) > 1.0e-5 )
+// 			if( fabs( (*it).second(0,j*3) ) > 1.0e-5 || fabs( (*it).second(1,j*3+1) ) > 1.0e-5 || fabs( (*it).second(2,j*3+2) ) > 1.0e-5 )
 //
 //
 // 	}
@@ -226,7 +226,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply( const sofa::core::Mecha
 // 		type::Quat<Real> meanRotation;
         for(std::map< int, Weight >::iterator it = _finestWeights[i].begin(); it!=_finestWeights[i].end(); ++it)
         {
-// 			meanRotation += _rotations[ _finestWeights[i][j].first ];
+// 			meanRotation += _rotations[ _finestWeights(i,j).first ];
             Transformation& rotation = _rotations[(*it).first ];
 
             _qFine[i] += rotation.multTranspose( _qFine0[i] + (*it).second * coarseDisplacements[ (*it).first ] );
