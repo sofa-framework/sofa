@@ -691,7 +691,7 @@ void OglMatrix4VectorVariable::pushValue()
     const std::string& idstr = id.getValue();
     const type::vector<type::Mat4x4f>& v = value.getValue();
 
-    const float* vptr = v.empty() ? nullptr : &(v[0][0][0]);
+    const float* vptr = v.empty() ? nullptr : v[0].data();
     const bool transp = transpose.getValue();
     const int count = int(v.size());
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)

@@ -287,7 +287,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
         return;
 
     drawTool->setPolygonMode(0, false);
-    float screenHeight = vparams->viewport()[4];
+    float screenHeight = vparams->viewport()[3];
 
     for(auto current : currentSelection)
     {
@@ -298,12 +298,15 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
 
         ////////////////////// Render when the selection is a Node ///////////////////////////////
         auto node = castTo<sofa::simulation::Node*>(current.get());
-        if(node && m_showSelectedNodeBoundingBox)
+        if(node)
         {
-            auto box = node->f_bbox.getValue();
-            drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), 2.0);
+            if(m_showSelectedNodeBoundingBox)
+            {
+                auto box = node->f_bbox.getValue();
+                drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), 2.0);
+            }
 
-            // If it is a node... it is not a BaseObject, so we can continue.
+            // If it is a node then it is not a BaseObject, so we can continue.
             continue;
         }
 
