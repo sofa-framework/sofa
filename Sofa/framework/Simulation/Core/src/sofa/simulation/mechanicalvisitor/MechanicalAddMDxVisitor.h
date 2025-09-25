@@ -36,9 +36,9 @@ public:
     sofa::core::MultiVecDerivId res;
     sofa::core::MultiVecDerivId dx;
     SReal factor;
-    MechanicalAddMDxVisitor(const sofa::core::MechanicalParams* mparams,
-                            sofa::core::MultiVecDerivId res, sofa::core::MultiVecDerivId dx, SReal factor)
-            : MechanicalVisitor(mparams), res(res), dx(dx), factor(factor)
+    MechanicalAddMDxVisitor(const sofa::core::MechanicalParams* mechaparams,
+                            sofa::core::MultiVecDerivId resvecid, sofa::core::MultiVecDerivId dxvecid, SReal f)
+            : MechanicalVisitor(mechaparams), res(resvecid), dx(dxvecid), factor(f)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

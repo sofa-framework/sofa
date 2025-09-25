@@ -41,7 +41,7 @@ class SOFA_SIMULATION_CORE_API InitVisitor : public Visitor
 {
 
 public:
-    InitVisitor(const core::ExecParams* params):Visitor(params),rootNode(nullptr) {}
+    InitVisitor(const core::ExecParams* eparams):Visitor(eparams),rootNode(nullptr) {}
 
 
     Result processNodeTopDown(simulation::Node* node) override;

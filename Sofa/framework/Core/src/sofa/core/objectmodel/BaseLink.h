@@ -56,7 +56,7 @@ public:
     class BaseInitLink
     {
     public:
-        BaseInitLink(const std::string& name, const std::string& help) : name(name), help(help) {}
+        BaseInitLink(const std::string& n, const std::string& h) : name(n), help(h) {}
         std::string name;
         std::string help;
     };

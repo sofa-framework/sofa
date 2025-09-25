@@ -56,7 +56,7 @@ private:
 public:
 
     /// Refers to a state vector with the given ID (VecId::position(), VecId::velocity(), etc).
-    TMultiVec( BaseVectorOperations* vop, MyMultiVecId v) : vop(vop), v(v), dynamic(false)
+    TMultiVec( BaseVectorOperations* bvop, MyMultiVecId mvecid) : vop(bvop), v(mvecid), dynamic(false)
     {}
 
     /// Refers to a not yet allocated state vector
@@ -64,7 +64,7 @@ public:
     {}
 
     /// Allocate a new temporary vector with the given type (sofa::core::V_COORD or sofa::core::V_DERIV).
-    TMultiVec( BaseVectorOperations* vop, bool dynamic=true, const VecIdProperties& properties = {}) : vop(vop), v(MyMultiVecId::null()), dynamic(dynamic)
+    TMultiVec( BaseVectorOperations* bvop, bool bdynamic=true, const VecIdProperties& properties = {}) : vop(bvop), v(MyMultiVecId::null()), dynamic(bdynamic)
     {
         static_assert(vtype == V_COORD || vtype == V_DERIV, "");
         vop->v_alloc( v, properties);
