@@ -64,10 +64,6 @@ public:
     void init() override;
     void reinit() override {};
 
-    void resetSystem() override;
-
-    void setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams) override;
-
     /// Solve iteratively the linear system Ax=b following a conjugate gradient descent
     void solve (Matrix& A, Vector& x, Vector& b) override;
 };

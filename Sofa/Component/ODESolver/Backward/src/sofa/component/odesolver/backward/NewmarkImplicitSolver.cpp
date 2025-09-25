@@ -135,9 +135,10 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     const core::MatricesFactors::K kFact ( -h * h * beta - h * rK * gamma);
 
     mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
-    l_linearSolver->setSystemLHVector(aResult);
-    l_linearSolver->setSystemRHVector(b);
+    l_linearSolver->getLinearSystem()->setSystemSolution(aResult);
+    l_linearSolver->getLinearSystem()->setRHS(b);
     l_linearSolver->solveSystem();
+    l_linearSolver->getLinearSystem()->dispatchSystemSolution(aResult);
     msg_info() << "a1 = " << aResult;
 
 

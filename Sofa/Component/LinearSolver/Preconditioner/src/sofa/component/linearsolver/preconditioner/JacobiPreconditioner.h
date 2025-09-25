@@ -46,7 +46,6 @@ public:
 protected:
     JacobiPreconditioner();
 public:
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
 
