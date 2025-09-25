@@ -33,22 +33,65 @@ namespace sofaimplicitfield {
 using namespace sofapython3;
 using sofa::component::geometry::ScalarField;
 using sofa::core::objectmodel::BaseObject;
-using sofa::type::Vec3d;
+using sofa::type::Vec3;
+using sofa::type::Mat3x3;
 
 class ScalarField_Trampoline : public ScalarField {
 public:
     SOFA_CLASS(ScalarField_Trampoline, ScalarField);
 
-    double getValue(Vec3d& pos, int& domain) override{
+    // Override this function so that it returns the actual python class name instead of
+    // "ScalarField_Trampoline" which correspond to this utility class.
+    std::string getClassName() const override
+    {
+        PythonEnvironment::gil acquire;
+
+        // Get the actual class name from python.
+        return py::str(py::cast(this).get_type().attr("__name__"));
+    }
+
+    double getValue(Vec3& pos, int& domain) override
+    {
         SOFA_UNUSED(domain);
         PythonEnvironment::gil acquire;
 
-        PYBIND11_OVERLOAD_PURE(double, ScalarField, getValue, pos.x(), pos.y(), pos.z());
+        PYBIND11_OVERLOAD_PURE(double, ScalarField, getValue, pos);
+    }
+
+    Vec3 getGradient(Vec3& pos, int& domain) override
+    {
+        SOFA_UNUSED(domain);
+        PythonEnvironment::gil acquire;
+
+        PYBIND11_OVERLOAD(Vec3, ScalarField, getGradient, pos);
+    }
+
+    void getHessian(Vec3 &pos, Mat3x3& h) override
+    {
+        /// The implementation is a bit more complex compared to getGradient. This is because we change de signature between the c++ API and the python one.
+        PythonEnvironment::gil acquire;
+
+        // Search if there is a python override,
+        pybind11::function override = pybind11::get_override(static_cast<const ScalarField*>(this),"getHessian");
+        if(!override){
+            return ScalarField::getHessian(pos, h);
+        }
+        // as there is one override, we call it, passing the "pos" argument and storing the return of the
+        // value in the "o" variable.
+        auto o = override(pos);
+
+        // then we check that the function correctly returned a Mat3x3 object and copy its value
+        // in case there is no Mat3x3 returned values, rise an error
+        if(py::isinstance<Mat3x3>(o))
+            h = py::cast<Mat3x3>(o);
+        else
+            throw py::type_error("The function getHessian must return a Mat3x3");
+        return;
     }
 };
 
 void moduleAddScalarField(py::module &m) {
-    py::class_<ScalarField, BaseObject, ScalarField_Trampoline,
+    py::class_<ScalarField, ScalarField_Trampoline, BaseObject,
                py_shared_ptr<ScalarField>> f(m, "ScalarField", py::dynamic_attr(), "");
 
     f.def(py::init([](py::args &args, py::kwargs &kwargs) {
@@ -74,7 +117,23 @@ void moduleAddScalarField(py::module &m) {
         return ff;
     }));
 
-    m.def("getValue", &ScalarField_Trampoline::getValue);
+    f.def("getValue", [](ScalarField* self, Vec3 pos){
+        int domain=-1;
+        // This shouldn't be self->ScalarField::getValue because it is a pure function
+        // so there is not ScalarField::getValue emitted.
+        return self->getValue(pos, domain);
+    });
+
+    f.def("getGradient", [](ScalarField* self, Vec3 pos){
+        int domain=-1;
+        return self->ScalarField::getGradient(pos, domain);
+    });
+
+    f.def("getHessian", [](ScalarField* self, Vec3 pos){
+        Mat3x3 result;
+        self->getHessian(pos, result);
+        return result;
+    });
 }
 
 }

@@ -86,20 +86,6 @@ public:
         const auto contactDist = currentIntersection->getContactDistance() + sph1.getContactDistance() + sph2.getContactDistance();
         return DiscreteIntersection::computeIntersectionSphere(sph1, sph2, contacts, alarmDist, contactDist);
     }
-
-
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts) = delete;
-
-    template<typename SphereType1, typename SphereType2>
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(SphereType1& sph1, SphereType2& sph2) = delete;
-    template<typename SphereType1, typename SphereType2>
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts) = delete;
-
 };
 
 } // namespace sofa::component::collision::detection::intersection
