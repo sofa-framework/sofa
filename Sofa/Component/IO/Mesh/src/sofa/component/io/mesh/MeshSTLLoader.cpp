@@ -129,7 +129,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     auto my_normals = getWriteOnlyAccessor(d_normals);
     auto my_triangles = getWriteOnlyAccessor(this->d_triangles);
 
-    std::map< sofa::type::Vec3f, sofa::Index > my_map;
+    std::map< sofa::type::Vec3, sofa::Index > my_map;
     sofa::Index positionCounter = 0;
     const bool useMap = d_mergePositionUsingMap.getValue();
 
@@ -161,7 +161,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 #endif
 
     // temporaries
-    sofa::type::Vec3f vertex, normal;
+    sofa::type::Vec3f vertexf, normalf;
 
     // reserve vector before filling it
     my_triangles.reserve( nbrFacet );
@@ -174,17 +174,18 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
         topology::Triangle the_tri;
 
         // Normal:
-        dataFile.read((char*)&normal[0], 4);
-        dataFile.read((char*)&normal[1], 4);
-        dataFile.read((char*)&normal[2], 4);
-        my_normals[i] = normal;
+        dataFile.read((char*)&normalf[0], 4);
+        dataFile.read((char*)&normalf[1], 4);
+        dataFile.read((char*)&normalf[2], 4);
+        my_normals[i] = type::toVec3(normalf);
 
         // Vertices:
         for (size_t j = 0; j<3; ++j)
         {
-            dataFile.read((char*)&vertex[0], 4);
-            dataFile.read((char*)&vertex[1], 4);
-            dataFile.read((char*)&vertex[2], 4);
+            dataFile.read((char*)&vertexf[0], 4);
+            dataFile.read((char*)&vertexf[1], 4);
+            dataFile.read((char*)&vertexf[2], 4);
+            const auto vertex = type::toVec3(vertexf);
 
 
             if( useMap )
@@ -250,14 +251,14 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
 bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
 {
-    Vec3f result;
+    Vec3 result;
     std::string line;
 
     auto my_positions = getWriteOnlyAccessor(d_positions);
     auto my_normals = getWriteOnlyAccessor(d_normals);
     auto my_triangles = getWriteOnlyAccessor(d_triangles);
 
-    std::map< sofa::type::Vec3f, sofa::Index > my_map;
+    std::map< sofa::type::Vec3, sofa::Index > my_map;
     sofa::Index positionCounter = 0, vertexCounter = 0;
     const bool useMap = d_mergePositionUsingMap.getValue();
 

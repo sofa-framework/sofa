@@ -823,9 +823,9 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
         assert(springs[i].m2 < p2.size());
         assert(springs[i].m1 < p1.size());
         Real d = (p2[springs[i].m2] - p1[springs[i].m1]).norm();
-        Vec3 point2, point1;
-        point1 = DataTypes::getCPos(p1[springs[i].m1]);
-        point2 = DataTypes::getCPos(p2[springs[i].m2]);
+
+        const Vec3 point1 = toVec3(DataTypes::getCPos(p1[springs[i].m1]));
+        const Vec3 point2 = toVec3(DataTypes::getCPos(p2[springs[i].m2]));
 
         if (external)
         {
