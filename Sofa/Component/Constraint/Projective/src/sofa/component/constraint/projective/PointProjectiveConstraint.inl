@@ -129,7 +129,7 @@ void  PointProjectiveConstraint<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void PointProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
+void PointProjectiveConstraint<DataTypes>::doProjectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     const unsigned blockSize = DataTypes::deriv_total_size;
 
@@ -225,7 +225,7 @@ void PointProjectiveConstraint<DataTypes>::projectPosition(const core::Mechanica
 }
 
 template <class DataTypes>
-void PointProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void PointProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     if(const core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get()))
@@ -246,7 +246,7 @@ void PointProjectiveConstraint<DataTypes>::applyConstraint(const core::Mechanica
 }
 
 template <class DataTypes>
-void PointProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void PointProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     const int o = matrix->getGlobalOffset(this->mstate.get());
@@ -265,7 +265,7 @@ void PointProjectiveConstraint<DataTypes>::applyConstraint(const core::Mechanica
 }
 
 template <class DataTypes>
-void PointProjectiveConstraint<DataTypes>::applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix)
+void PointProjectiveConstraint<DataTypes>::doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix)
 {
     static constexpr unsigned int N = Deriv::size();
     const SetIndexArray& indices = d_indices.getValue();
