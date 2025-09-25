@@ -29,6 +29,7 @@
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
+#include <ranges>
 #include <fstream>
 
 using sofa::helper::system::PluginManager;
@@ -93,9 +94,9 @@ struct PluginManager_test: public BaseTest
         PluginManager&pm = PluginManager::getInstance();
         //empty loaded plugin(s)
         std::vector<std::string> toDelete;
-        for (const auto& it : pm.getPluginMap())
+        for (const auto& pluginName : pm.getPluginMap() | std::views::keys)
         {
-            toDelete.push_back(it.first);
+            toDelete.push_back(pluginName);
         }
 
         for(const std::string& p : toDelete)
