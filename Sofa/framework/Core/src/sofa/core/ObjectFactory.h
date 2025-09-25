@@ -362,7 +362,7 @@ public:
                 entry.documentationURL = std::string(sofa::SOFA_DOCUMENTATION_URL) + std::string("components/");
                 entry.documentationURL += sofa::helper::join(modulePaths.begin() + 2, modulePaths.end(),
                     [](const std::string& m){ return sofa::helper::downcaseString(m);}, "/");
-                entry.documentationURL += "/" + sofa::helper::downcaseString(classname);
+                entry.documentationURL += std::string("/") + sofa::helper::downcaseString(classname);
             }
         }
 
@@ -377,7 +377,7 @@ public:
 
     /// This is the final operation that will actually commit the additions to the ObjectFactory.
     bool commitTo(sofa::core::ObjectFactory* objectFactory) const;
-    
+
     friend class RegisterObject;
 };
 
