@@ -49,7 +49,7 @@ protected:
     ViewerSetting();
 public:
     Data<sofa::type::Vec<2,int> > d_resolution; ///< resolution of the Viewer
-    Data<bool> d_fullscreen; ///< Fullscreen mode
+    Data<bool> d_fullscreen;                    ///< Fullscreen mode
     Data<sofa::helper::OptionsGroup> d_cameraMode; ///< Camera mode
                                                             /**<    \arg Perspective.
                                                              *      \arg Orthographic.
@@ -58,6 +58,14 @@ public:
                                                             /**<    \arg Ray casting.
                                                              *      \arg Selection Buffer.
                                                              */
+
+    Data<bool> d_showSelectedNodeBoundingBox;
+    Data<bool> d_showSelectedObjectBoundingBox;
+    Data<bool> d_showSelectedObjectPositions;
+    Data<bool> d_showSelectedObjectSurfaces;
+    Data<bool> d_showSelectedObjectVolumes;
+    Data<bool> d_showSelectedObjectIndices;
+    Data<SReal> d_selectedVisualScaling;
 };
 
 } // namespace sofa::component::setting
