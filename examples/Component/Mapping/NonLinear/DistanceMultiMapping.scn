@@ -37,7 +37,7 @@
         <Node name="extensionsNode" >
             <MechanicalObject template="Vec1" name="extensionsDOF" />
             <DistanceMapping name="distanceMapping" topology="@../topology" input="@../defoDOF" output="@extensionsDOF" geometricStiffness="0" applyRestPosition="true" computeDistance="true"/>
-            <RestShapeSpringsForceField template="Vec1" stiffness="1000"/>
+            <FixedWeakConstraint template="Vec1" stiffness="1000" fixAll="true"/>
         </Node>
     </Node>
 
@@ -53,7 +53,7 @@
         <Node name="extensionsNode" >
             <MechanicalObject template="Vec1" name="extensionsDOF" />
             <DistanceMapping name="distanceMapping" topology="@../topology" input="@../defoDOF" output="@extensionsDOF" geometricStiffness="0" applyRestPosition="true" computeDistance="true"/>
-            <RestShapeSpringsForceField template="Vec1" stiffness="1000"/>
+            <FixedWeakConstraint template="Vec1" stiffness="1000" fixAll="true"/>
         </Node>
     </Node>
 
@@ -61,7 +61,7 @@
         <MechanicalObject template="Vec1" name="connectionDOF" />
         <EdgeSetTopologyContainer name="edgeTopo" edges="0 1"/>
         <DistanceMultiMapping template="Vec3,Vec1" topology="@edgeTopo" input="@../springs0 @../springs1" output="@connectionDOF" indexPairs="0 19 1 0" restLengths="1" geometricStiffness="0" applyRestPosition="true" computeDistance="true"/>
-        <RestShapeSpringsForceField template="Vec1" stiffness="1"/>
+        <FixedWeakConstraint template="Vec1" stiffness="1" fixAll="true"/>
     </Node>
 
 </Node>

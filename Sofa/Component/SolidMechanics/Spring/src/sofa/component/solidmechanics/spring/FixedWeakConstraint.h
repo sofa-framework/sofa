@@ -29,8 +29,7 @@
 #include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/type/vector.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
-#include <sofa/component/solidmechanics/spring/FixedWeakConstraint.h>
-#include <sofa/core/objectmodel/DataCallback.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 
 namespace sofa::core::behavior
@@ -48,14 +47,14 @@ namespace sofa::component::solidmechanics::spring
 *
 * Springs are applied to given degrees of freedom between their current positions and their rest shape positions.
 * An external MechanicalState reference can also be passed to the ForceField as rest shape position.
-*/
+ */
 template<class DataTypes>
-class RestShapeSpringsForceField : public FixedWeakConstraint<DataTypes>
+class FixedWeakConstraint : public core::behavior::ForceField<DataTypes>
 {
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(RestShapeSpringsForceField, DataTypes), SOFA_TEMPLATE(FixedWeakConstraint, DataTypes));
+   public:
+    SOFA_CLASS(SOFA_TEMPLATE(FixedWeakConstraint, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    typedef FixedWeakConstraint<DataTypes> Inherit;
+    typedef core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -72,36 +71,56 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data< type::fixed_array<bool, coord_total_size> > d_activeDirections; ///< directions (translation, and rotation in case of Rigids) in which the spring is active
-    Data< VecIndex > d_externalIndices; ///< points from the external Mechanical State that define the rest shape springs
-    core::objectmodel::lifecycle::RemovedData d_external_points{this,"v24.12","v25.06","external_points","This data has been replaced by \'externalIndices\'. Please update your scene."};
-    core::objectmodel::DataCallback c_fixAllCallback;
+    DataSubsetIndex d_indices; ///< points controlled by the rest shape springs
+    core::objectmodel::lifecycle::RemovedData d_points{this,"v24.12","v25.06","points","This data has been replaced by \'indices\'. Please update your scene."};
 
-    SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_restMState;
+    Data<bool> d_fixAll; ///< points controlled by the rest shape springs
+    Data< VecReal > d_stiffness; ///< stiffness values between the actual position and the rest shape position
+    Data< VecReal > d_angularStiffness; ///< angularStiffness assigned when controlling the rotation of the points
+    Data< bool > d_drawSpring; ///< draw Spring
+    Data< sofa::type::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<FixedWeakConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 
     /// BaseObject initialization method.
     void bwdInit() override ;
+    void reinit() override ;
+
+    /// Add the forces.
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
+
+    /// Brings ForceField contribution to the global system stiffness matrix.
+    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* matrix) override;
+
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
+   protected :
+    FixedWeakConstraint();
+    static constexpr type::fixed_array<bool, FixedWeakConstraint<DataTypes>::coord_total_size> s_defaultActiveDirections = sofa::type::makeHomogeneousArray<bool, FixedWeakConstraint<DataTypes>::coord_total_size>(true);
 
-protected :
-    RestShapeSpringsForceField();
-
-    virtual const DataVecCoord* getExtPosition() const override;
-    virtual const VecIndex& getExtIndices() const override;
-    virtual const type::fixed_array<bool, DataTypes::Coord::total_size>& getActiveDirections() const override;
+    virtual const DataVecCoord* getExtPosition() const;
+    virtual const VecIndex& getIndices() const;
+    virtual const VecIndex& getExtIndices() const;
+    virtual const type::fixed_array<bool, FixedWeakConstraint<DataTypes>::coord_total_size>& getActiveDirections() const;
+    virtual const bool checkState();
 
     virtual bool checkOutOfBoundsIndices();
 
-private :
-
-    bool m_useRestMState; /// An external MechanicalState is used as rest reference.
+    bool checkOutOfBoundsIndices(const VecIndex &indices, const sofa::Size dimension);
 };
 
-#if !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGSFORCEFIELD_CPP)
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API RestShapeSpringsForceField<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API RestShapeSpringsForceField<sofa::defaulttype::Vec1Types>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API RestShapeSpringsForceField<sofa::defaulttype::Rigid3Types>;
+#if !defined(SOFA_COMPONENT_FORCEFIELD_FixedWeakConstraint_CPP)
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API FixedWeakConstraint<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API FixedWeakConstraint<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API FixedWeakConstraint<sofa::defaulttype::Rigid3Types>;
 #endif
 
 } // namespace sofa::component::solidmechanics::spring

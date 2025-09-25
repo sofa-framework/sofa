@@ -76,7 +76,7 @@
 		<MechanicalObject name="instrumentState" template="Rigid3" tags="GeomagicDevice" />
 		<UniformMass name="mass" totalMass="1" />
 		
-		<RestShapeSpringsForceField stiffness='1000000' angularStiffness='1000000' external_rest_shape='@../Omni/DOFs' points='0' external_points='0'/>
+		<RestShapeSpringsForceField stiffness='1000000' angularStiffness='1000000' external_rest_shape='@../Omni/DOFs' indices='0' externalIndices='0'/>
         <LCPForceFeedback name="LCPFF1" activate="true" forceCoef="0.0001"/> 
         <LinearSolverConstraintCorrection />
 		
