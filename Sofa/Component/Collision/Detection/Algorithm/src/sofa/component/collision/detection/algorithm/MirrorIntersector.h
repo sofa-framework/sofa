@@ -66,11 +66,6 @@ public:
         assert(intersector != nullptr);
         return intersector->name() + std::string("<SWAP>");
     }
-
-    SOFA_ATTRIBUTE_DISABLED__CORE_INTERSECTION_AS_PARAMETER()
-    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) override = delete;
-    SOFA_ATTRIBUTE_DISABLED__CORE_INTERSECTION_AS_PARAMETER()
-    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, core::collision::DetectionOutputVector* contacts) override = delete;
 };
 
 } // namespace sofa::component::collision::detection::algorithm

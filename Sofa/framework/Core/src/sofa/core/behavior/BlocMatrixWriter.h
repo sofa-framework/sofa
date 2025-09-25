@@ -55,7 +55,7 @@ public:
             const unsigned int j0 = offsetC + bj*NC;
             for (unsigned int i=0; i<NL; ++i)
                 for (unsigned int j=0; j<NC; ++j)
-                    m->add(i0+i,j0+j,b[i][j]);
+                    m->add(i0+i,j0+j,b(i,j));
         }
     };
 
@@ -102,7 +102,7 @@ public:
             const unsigned int j0 = offsetC + bj*NC;
             for (unsigned int i=0; i<NL; ++i)
                 for (unsigned int j=0; j<NC; ++j)
-                    *m->wblock(i0+i,j0+j,true) += (MReal)b[i][j];
+                    *m->wblock(i0+i,j0+j,true) += (MReal)b(i,j);
         }
     };
 

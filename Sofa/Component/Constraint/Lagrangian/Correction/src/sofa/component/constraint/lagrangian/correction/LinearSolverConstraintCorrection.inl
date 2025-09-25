@@ -213,7 +213,8 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::rebuildSystem(SReal massFactor, SReal forceFactor)
 {
-    l_linearSolver->rebuildSystem(massFactor, forceFactor);
+    SOFA_UNUSED(massFactor);
+    SOFA_UNUSED(forceFactor);
 }
 
 template<class DataTypes>
