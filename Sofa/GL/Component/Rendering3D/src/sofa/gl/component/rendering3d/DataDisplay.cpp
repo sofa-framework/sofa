@@ -305,15 +305,15 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
                 color2[3] = transparency;
                 const Triangle& t = m_topology->getTriangle(i);
 
-                glNormal3fv(m_normals[t[0]].ptr());
+                glNormalT(m_normals[t[0]]);
                 glMaterialfv(GL_FRONT,GL_DIFFUSE,color0.data());
                 sofa::gl::glVertexNv<3>(x[t[0]].ptr());
 
-                glNormal3fv(m_normals[t[1]].ptr());
+                glNormalT(m_normals[t[1]]);
                 glMaterialfv(GL_FRONT,GL_DIFFUSE,color1.data());
                 sofa::gl::glVertexNv<3>(x[t[1]].ptr());
 
-                glNormal3fv(m_normals[t[2]].ptr());
+                glNormalT(m_normals[t[2]]);
                 glMaterialfv(GL_FRONT,GL_DIFFUSE,color2.data());
                 sofa::gl::glVertexNv<3>(x[t[2]].ptr());
 
@@ -363,19 +363,19 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
                 color1[3] = transparency;
                 const Quad& q = m_topology->getQuad(i);
 
-                glNormal3fv(m_normals[q[0]].ptr());
+                glNormalT(m_normals[q[0]]);
                 glMaterialfv(GL_FRONT,GL_DIFFUSE,color0.data());
                 sofa::gl::glVertexNv<3>(x[q[0]].ptr());
 
-                glNormal3fv(m_normals[q[1]].ptr());
+                glNormalT(m_normals[q[1]]);
                 glMaterialfv(GL_FRONT,GL_DIFFUSE,color1.data());
                 sofa::gl::glVertexNv<3>(x[q[1]].ptr());
 
-                glNormal3fv(m_normals[q[2]].ptr());
+                glNormalT(m_normals[q[2]]);
                 glMaterialfv(GL_FRONT,GL_DIFFUSE,color2.data());
                 sofa::gl::glVertexNv<3>(x[q[2]].ptr());
 
-                glNormal3fv(m_normals[q[3]].ptr());
+                glNormalT(m_normals[q[3]]);
                 glMaterialfv(GL_FRONT,GL_DIFFUSE,color3.data());
                 sofa::gl::glVertexNv<3>(x[q[3]].ptr());
 
@@ -413,15 +413,15 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
                         : eval(ptData[t[j]]);
                 color[j][3] = transparency;
             }
-            glNormal3fv(m_normals[t[0]].ptr());
+            glNormalT(m_normals[t[0]]);
             glMaterialfv(GL_FRONT,GL_DIFFUSE,color[0].data());
             sofa::gl::glVertexNv<3>(x[t[0]].ptr());
 
-            glNormal3fv(m_normals[t[1]].ptr());
+            glNormalT(m_normals[t[1]]);
             glMaterialfv(GL_FRONT,GL_DIFFUSE,color[1].data());
             sofa::gl::glVertexNv<3>(x[t[1]].ptr());
 
-            glNormal3fv(m_normals[t[2]].ptr());
+            glNormalT(m_normals[t[2]]);
             glMaterialfv(GL_FRONT,GL_DIFFUSE,color[2].data());
             sofa::gl::glVertexNv<3>(x[t[2]].ptr());
 
@@ -442,19 +442,19 @@ void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
                 color[j][3] = transparency;
             }
 
-            glNormal3fv(m_normals[q[0]].ptr());
+            glNormalT(m_normals[q[0]]);
             glMaterialfv(GL_FRONT,GL_DIFFUSE,color[0].data());
             sofa::gl::glVertexNv<3>(x[q[0]].ptr());
 
-            glNormal3fv(m_normals[q[1]].ptr());
+            glNormalT(m_normals[q[1]]);
             glMaterialfv(GL_FRONT,GL_DIFFUSE,color[1].data());
             sofa::gl::glVertexNv<3>(x[q[1]].ptr());
 
-            glNormal3fv(m_normals[q[2]].ptr());
+            glNormalT(m_normals[q[2]]);
             glMaterialfv(GL_FRONT,GL_DIFFUSE,color[2].data());
             sofa::gl::glVertexNv<3>(x[q[2]].ptr());
 
-            glNormal3fv(m_normals[q[3]].ptr());
+            glNormalT(m_normals[q[3]]);
             glMaterialfv(GL_FRONT,GL_DIFFUSE,color[3].data());
             sofa::gl::glVertexNv<3>(x[q[3]].ptr());
 
@@ -470,7 +470,7 @@ void DataDisplay::computeNormals()
     if( !m_topology ) return;
     const VecCoord& x = this->read(sofa::core::vec_id::read_access::position)->getValue();
 
-    m_normals.resize(x.size(),Vec3f(0,0,0));
+    m_normals.resize(x.size(),Vec3(0,0,0));
 
     for (sofa::core::topology::Topology::TriangleID i=0; i<m_topology->getNbTriangles(); ++i)
     {
