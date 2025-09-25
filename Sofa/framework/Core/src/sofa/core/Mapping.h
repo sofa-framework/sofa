@@ -191,41 +191,48 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        State<In>* stin = nullptr;
-        State<Out>* stout = nullptr;
-
-        std::string inPath, outPath;
-
-        if (arg->getAttribute("input"))
-            inPath = arg->getAttribute("input");
-        else
-            inPath = "@../";
-
-        context->findLinkDest(stin, inPath, nullptr);
-
-        if (arg->getAttribute("output"))
-            outPath = arg->getAttribute("output");
-        else
-            outPath = "@./";
-
-        context->findLinkDest(stout, outPath, nullptr);
-
-        if (stin == nullptr)
+        const auto checkLink = [&arg, context]<class StateType>(
+            const std::string& linkName, State<StateType>*& state)
         {
-            arg->logError("Data attribute 'input' does not point to a mechanical state of data type '"+std::string(In::Name())+"' and none can be found in the parent node context.");
-            return false;
-        }
+            const std::string path = arg->getAttribute(linkName, "");
 
-        if (stout == nullptr)
-        {
-            arg->logError("Data attribute 'output' does not point to a mechanical state of data type '"+std::string(Out::Name())+"' and none can be found in the parent node context.");
-            return false;
-        }
+            if (path.empty())
+            {
+                arg->logError(
+                    "The '" + linkName +
+                    "' data attribute is empty. It should contain a valid path "
+                    "to a mechanical state of type '" + std::string(StateType::Name()) + "'.");
+                return false;
+            }
 
-        if (dynamic_cast<BaseObject*>(stin) == dynamic_cast<BaseObject*>(stout))
+            context->findLinkDest(state, path, nullptr);
+
+            if (state == nullptr)
+            {
+                arg->logError(
+                    "Data attribute '" + linkName +
+                    "' does not point to a mechanical state of data type '" +
+                    std::string(StateType::Name()) + "'.");
+                return false;
+            }
+
+            return true;
+        };
+
+        State<In>* stateIn = nullptr;
+        if (!checkLink("input", stateIn))
+            return false;
+
+        State<In>* stateOut = nullptr;
+        if (!checkLink("output", stateOut))
+            return false;
+
+        if (dynamic_cast<BaseObject*>(stateIn) == dynamic_cast<BaseObject*>(stateOut))
         {
             // we should refuse to create mappings with the same input and output model, which may happen if a State object is missing in the child node
-            arg->logError("Both the input and the output point to the same mechanical state ('"+stin->getName()+"').");
+            arg->logError(
+                "Both the input and the output point to the same mechanical state ('"
+                + stateIn->getName() + "').");
             return false;
         }
 
