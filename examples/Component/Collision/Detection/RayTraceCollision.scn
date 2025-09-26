@@ -1,4 +1,4 @@
-<Node name="root" dt="0.03333">
+<Node name="root" dt="0.01">
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BruteForceBroadPhase CollisionPipeline RayTraceNarrowPhase] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleOctreeModel] -->
@@ -22,7 +22,7 @@
     <CollisionResponse name="Response" response="PenalityContactForceField" />
     <Node name="Torus1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="250" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-11" />
         <UniformMass totalMass="30" />
         <RegularGridTopology nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
@@ -42,7 +42,7 @@
     </Node>
     <Node name="Torus2">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="250" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-13" />
         <UniformMass totalMass="30" />
         <RegularGridTopology nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
@@ -62,7 +62,7 @@
     </Node>
     <Node name="Torus3">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="250" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-15" />
         <UniformMass totalMass="30" />
         <RegularGridTopology nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
@@ -82,7 +82,7 @@
     </Node>
     <Node name="Torus4">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="250" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-17" />
         <UniformMass totalMass="30" />
         <RegularGridTopology nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
@@ -102,7 +102,7 @@
     </Node>
     <Node name="Torus5">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="250" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-19" />
         <UniformMass totalMass="30" />
         <RegularGridTopology nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
@@ -122,7 +122,7 @@
     </Node>
     <Node name="Torus6">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="250" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-23" />
         <UniformMass totalMass="30" />
         <RegularGridTopology nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
@@ -142,7 +142,7 @@
     </Node>
     <Node name="Torus7">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="250" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-21" />
         <UniformMass totalMass="30" />
         <RegularGridTopology nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
@@ -162,7 +162,7 @@
     </Node>
     <Node name="Torus8">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="250" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-29" />
         <UniformMass totalMass="30" />
         <RegularGridTopology nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
@@ -182,7 +182,7 @@
     </Node>
     <Node name="Torus9">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="250" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-27" />
         <UniformMass totalMass="30" />
         <RegularGridTopology nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
@@ -202,7 +202,7 @@
     </Node>
     <Node name="Torus10">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="250" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-25" />
         <UniformMass totalMass="30" />
         <RegularGridTopology nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
