@@ -1,0 +1,48 @@
+name: Trigger build and tests
+
+# ===============================================================
+# ===============================================================
+
+
+on:
+  # On-demand binary generation
+  workflow_dispatch:
+    inputs:
+      builder-os:
+        type: choice
+        description: On which OS run the binaries generation
+        options: 
+        - '["sofa-ci-dev-ubuntu2204-0"]'
+        - '["sofa-ci-dev-ubuntu2204-1"]'
+        - '["sofa-ci-dev-ubuntu2204-2"]'
+        - '["sofa-ci-dev-ubuntu2204-3"]'
+        - '["sofa-ci-dev-ubuntu2204-4"]'
+        - '["consortium-macos-2"]'
+        - '["consortium-macos-3"]'
+        - '["sofa-ci-dev-ubuntu2204-0","sofa-ci-dev-ubuntu2204-1","sofa-ci-dev-ubuntu2204-2","sofa-ci-dev-ubuntu2204-3","sofa-ci-dev-ubuntu2204-4","consortium-macos-2","consortium-macos-3"]'
+        default: '["sofa-ci-dev-ubuntu2204-0","sofa-ci-dev-ubuntu2204-1","sofa-ci-dev-ubuntu2204-2","sofa-ci-dev-ubuntu2204-3","sofa-ci-dev-ubuntu2204-4","consortium-macos-2","consortium-macos-3"]'
+
+
+
+  # Nightly build
+  schedule:
+    - cron: '0 1 * * *'   # Evevery night @1:00 a.m.
+    
+# ===============================================================
+# ===============================================================
+
+
+jobs:
+  # Filter build handling : push in master, commits in PR, comments in PR and dispatch
+  reboot_builders:
+    strategy:
+      matrix:
+        os: ${{ fromJson(inputs.builder-os) }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Configure builder
+        shell: bash
+        run: |
+            # WARNING: this command needs to add in /etc/sudoers this line:
+            # ALL ALL=NOPASSWD: /usr/sbin/reboot, /usr/sbin/shutdown, /sbin/reboot, /sbin/shutdown
+            echo '' | sudo -S /sbin/shutdown -r +1 &
