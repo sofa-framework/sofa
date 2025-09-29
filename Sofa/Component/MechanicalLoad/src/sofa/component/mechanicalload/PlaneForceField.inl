@@ -320,7 +320,7 @@ void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
     v.normalize();
     v = normal3d * cos ( angle ) + v * sin ( angle );
     auto planeNormalWrite = sofa::helper::getWriteOnlyAccessor(d_planeNormal);
-    type::toVecN(v, planeNormalWrite.wref());
+    planeNormalWrite.wref() = type::toVecN<DPos>(v);
 }
 
 

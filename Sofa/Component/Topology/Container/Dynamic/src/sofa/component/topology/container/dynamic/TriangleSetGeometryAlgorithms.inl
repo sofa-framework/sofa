@@ -413,10 +413,8 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::computeBaryEdgePoint(PointID p0
 {
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::vec_id::read_access::position)->getValue());
 
-    sofa::type::Vec<3,Real> c0(type::NOINIT);
-    type::toVecN(vect_c[p0], c0);
-    sofa::type::Vec<3,Real> c1(type::NOINIT);
-    type::toVecN(vect_c[p1], c1);
+    const sofa::type::Vec<3,Real> c0 = type::toVecN<3, Real>(vect_c[p0]);
+    const sofa::type::Vec<3,Real> c1 = type::toVecN<3, Real>(vect_c[p1]);
     return c0*(1-coord_p) + c1*coord_p;
 }
 
@@ -425,9 +423,9 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::computeBaryTrianglePoint(PointI
 {
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::vec_id::read_access::position)->getValue());
 
-    sofa::type::Vec<3,Real> c0 = type::toVec3(vect_c[p0]);
-    sofa::type::Vec<3,Real> c1 = type::toVec3(vect_c[p1]);
-    sofa::type::Vec<3,Real> c2 = type::toVec3(vect_c[p2]);
+    sofa::type::Vec<3,Real> c0 = type::toVecN<3, Real>(vect_c[p0]);
+    sofa::type::Vec<3,Real> c1 = type::toVecN<3, Real>(vect_c[p1]);
+    sofa::type::Vec<3,Real> c2 = type::toVecN<3, Real>(vect_c[p2]);
     return c0*coord_p[0] + c1*coord_p[1] + c2*coord_p[2];
 }
 

@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -833,8 +833,8 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(
     for(const auto edgeId : edgesInTetra)
     {
         const Edge& edge = edges[edgeId];
-        toVecN(vect_c[edge[0]], p1);
-        toVecN(vect_c[edge[1]], p2);
+        p1 = toVecN<3,Real>(vect_c[edge[0]]);
+        p2 = toVecN<3,Real>(vect_c[edge[1]]);
 
         if(computeIntersectionEdgeWithPlane(p1, p2, planP0, normal, intersection))
         {

@@ -617,7 +617,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
             vertexEdges.push_back(edge);              // concatenate
             const CPos& p0 = DataTypes::getCPos(pos[edge[0]]);
             const CPos& p1 = DataTypes::getCPos(pos[edge[1]]);
-            toVecN(p1 - p0, edgeVec[e]);
+            edgeVec[e] = toVecN<3, Real>(p1 - p0);
             // each edge vector adds e.et to the matrix
             for(unsigned j=0; j<3; j++)
                 for(unsigned k=0; k<3; k++)

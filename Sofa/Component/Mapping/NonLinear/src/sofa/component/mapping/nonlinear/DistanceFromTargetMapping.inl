@@ -129,7 +129,7 @@ void DistanceFromTargetMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b )
 {
-    type::toVecN(TIn::getCPos(b)-TIn::getCPos(a), r);
+    r = type::toVecN<Direction>(TIn::getCPos(b)-TIn::getCPos(a));
 }
 
 template <class TIn, class TOut>

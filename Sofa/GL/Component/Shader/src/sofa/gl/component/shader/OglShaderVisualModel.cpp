@@ -164,7 +164,7 @@ void OglShaderVisualModel::computeRestPositions()
     vrestpos.resize ( restpositions.size() );
     for ( unsigned int i = 0; i < restpositions.size(); i++ )
     {
-         toVecN(restpositions[i], vrestpos[i]); // vec3 to vec3f
+        vrestpos[i] = toVecN<3, float>(restpositions[i]); // vec3 to vec3f
     }
     vrestpositions->endEdit();
     computeRestNormals();

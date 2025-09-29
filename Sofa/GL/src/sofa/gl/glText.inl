@@ -88,7 +88,7 @@ void GlText::draw(const T& text, const type::Vec3& position, const double& scale
     modelviewM.transpose();
 
     type::Vec3f temp(position[0], position[1], position[2]);
-    type::toVecN(modelviewM.transform(temp), temp);
+    temp = type::toVecN<3, float>(modelviewM.transform(temp));
 
     glLoadIdentity();
     glTranslatef((float)temp[0], (float)temp[1], (float)temp[2]);
