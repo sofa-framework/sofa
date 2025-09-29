@@ -367,23 +367,23 @@ BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Ou
     const typename In::Coord AQ = to_be_projected -p1;
     sofa::type::Mat<2,2,typename In::Real> A;
     sofa::type::Vec<2,typename In::Real> b;
-    A[0][0] = AB*AB;
-    A[1][1] = AC*AC;
-    A[0][1] = A[1][0] = AB*AC;
+    A(0,0) = AB*AB;
+    A(1,1) = AC*AC;
+    A(0,1) = A(1,0) = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
     const typename In::Real det = sofa::type::determinant(A);
 
-    baryCoords[0] = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-    baryCoords[1]  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+    baryCoords[0] = (b[0]*A(1,1) - b[1]*A(0,1))/det;
+    baryCoords[1]  = (b[1]*A(0,0) - b[0]*A(1,0))/det;
 
     if (baryCoords[0] < 0 || baryCoords[1] < 0 || baryCoords[0] + baryCoords[1] > 1)
     {
         // nearest point is on an edge or corner
         // barycentric coordinate on AB
-        const SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
+        const SReal pAB = b[0] / A(0,0); // AQ*AB / AB*AB
         // barycentric coordinate on AC
-        const SReal pAC = b[1] / A[1][1]; // AQ*AC / AB*AB
+        const SReal pAC = b[1] / A(1,1); // AQ*AC / AB*AB
         if (pAB < 0 && pAC < 0)
         {
             // closest point is A
@@ -406,7 +406,7 @@ BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Ou
         {
             // barycentric coordinate on BC
             // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
-            const SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+            const SReal pBC = (b[1] - b[0] + A(0,0) - A(0,1)) / (A(0,0) + A(1,1) - 2*A(0,1)); // BQ*BC / BC*BC
             if (pBC < 0)
             {
                 // closest point is B
