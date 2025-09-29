@@ -147,7 +147,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 
         for(int w=0; w<8; ++w)
         {
-            Weight W;
+            Weight W(type::NOINIT);
             W[0] = _forcefield->_finalWeights[i].second[ w*3   ];
             W[1] = _forcefield->_finalWeights[i].second[ w*3+1 ];
             W[2] = _forcefield->_finalWeights[i].second[ w*3+2 ];
@@ -190,7 +190,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply( const sofa::core::Mecha
     const InVecCoord& in = inData.getValue();
 
     // les deplacements des noeuds grossiers
-    type::vector< sofa::type::Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
+    type::vector< sofa::type::Vec< 24, SReal >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
     for(sofa::Size i = 0; i<_sparseGrid->getNbHexahedra(); ++i)
     {
         const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron(i);
@@ -269,7 +269,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJ( const sofa::core::Mech
     const InVecDeriv& in = inData.getValue();
 
     // les deplacements des noeuds grossiers
-    type::vector< sofa::type::Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
+    type::vector< sofa::type::Vec< 24, SReal >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
     for(sofa::Size i=0; i<_sparseGrid->getNbHexahedra(); ++i)
     {
         const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron(i);
@@ -348,7 +348,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJT( const sofa::core::Mec
         {
             Transformation& rotation = _rotations[ (*it).first];
 
-            sofa::type::Vec< 24 > dfplat = (*it).second.multTranspose( rotation * fineForces[i] ) / _finestWeights[i].size();
+            const sofa::type::Vec< 24, SReal > dfplat = (*it).second.multTranspose( rotation * fineForces[i] ) / _finestWeights[i].size();
 
             const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron( (*it).first );
             for(int w=0; w<8; ++w)
