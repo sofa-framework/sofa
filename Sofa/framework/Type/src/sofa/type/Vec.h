@@ -806,7 +806,7 @@ constexpr bool operator<(const Vec<N, T>& v1, const Vec<N, T>& v2) noexcept
 
 // Convert a type::Vec<InSize, InReal> to a type::Vec<OutSize, OutReal>
 // e.g type::Vec<OutSize, OutReal> v2 = type::toVecN<OutSize, OutReal>(v1) where v1 is type::Vec<InSize, InReal>
-template <sofa::Size OutSize, typename OutReal, sofa::Size InSize, typename InReal>
+template <sofa::Size OutSize, typename OutReal, sofa::Size InSize, typename InReal, OutReal filler = static_cast<OutReal>(0)>
 requires (std::is_convertible_v<InReal, OutReal>)
 constexpr auto toVecN(const sofa::type::Vec<InSize, InReal>& in) -> sofa::type::Vec<OutSize, OutReal>
 {
@@ -815,7 +815,7 @@ constexpr auto toVecN(const sofa::type::Vec<InSize, InReal>& in) -> sofa::type::
 
     if constexpr(OutSize > InSize)
     {
-        std::fill_n(out.begin() + InSize, OutSize-InSize, 0);
+        std::fill_n(out.begin() + InSize, OutSize-InSize, filler);
     }
     
     return out;
@@ -823,11 +823,11 @@ constexpr auto toVecN(const sofa::type::Vec<InSize, InReal>& in) -> sofa::type::
 
 // Convenient function calling previous toVecN with OutVec directly
 // e.g OutVec v2 = type::toVecN<OutVec>(v1)
-template <typename OutVec, sofa::Size OutSize = OutVec::static_size, typename OutReal = OutVec::value_type, sofa::Size InSize, typename InReal>
+template <typename OutVec, sofa::Size OutSize = OutVec::static_size, typename OutReal = OutVec::value_type, sofa::Size InSize, typename InReal, OutReal filler = static_cast<OutReal>(0)>
 requires ((std::derived_from<OutVec, sofa::type::Vec<OutSize, OutReal>>) && (std::is_convertible_v<InReal, typename OutVec::value_type>))
 constexpr auto toVecN(const sofa::type::Vec<InSize, InReal>& in) -> OutVec
 {
-    return toVecN<OutSize, OutReal>(in);
+    return toVecN<OutSize, OutReal, InSize, InReal, filler>(in);
 }
 
 // Convenient function calling previous toVecN with Vec<3,Sreal> directly
