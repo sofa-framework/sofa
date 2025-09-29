@@ -132,7 +132,7 @@ TEST(VecTest, toVecN)
     
     
     // test toVecN<x,y> (to a bigger vec with filler)
-    constexpr sofa::type::Vec<9, long double> vec9ld = sofa::type::toVecN<9, long double, 5, int, 42.0L>(vec5i);
+    constexpr sofa::type::Vec<9, long double> vec9ld = sofa::type::toVecN<9, long double, 5, int>(vec5i, 42.0L);
     constexpr sofa::type::Vec<9, long double> vec9ld_ref {1.0L, 2.0L, 3.0L, 4.0L, 5.0L, 42.0L, 42.0L, 42.0L, 42.0L};
     EXPECT_TRUE(vec9ld == vec9ld_ref);
     

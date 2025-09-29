@@ -806,9 +806,9 @@ constexpr bool operator<(const Vec<N, T>& v1, const Vec<N, T>& v2) noexcept
 
 // Convert a type::Vec<InSize, InReal> to a type::Vec<OutSize, OutReal>
 // e.g type::Vec<OutSize, OutReal> v2 = type::toVecN<OutSize, OutReal>(v1) where v1 is type::Vec<InSize, InReal>
-template <sofa::Size OutSize, typename OutReal, sofa::Size InSize, typename InReal, OutReal filler = static_cast<OutReal>(0)>
+template <sofa::Size OutSize, typename OutReal, sofa::Size InSize, typename InReal>
 requires (std::is_convertible_v<InReal, OutReal>)
-constexpr auto toVecN(const sofa::type::Vec<InSize, InReal>& in) -> sofa::type::Vec<OutSize, OutReal>
+constexpr auto toVecN(const sofa::type::Vec<InSize, InReal>& in, const OutReal filler = static_cast<OutReal>(0)) -> sofa::type::Vec<OutSize, OutReal>
 {
     sofa::type::Vec<OutSize, OutReal> out(type::NOINIT);
     std::copy(in.begin(), in.begin() + std::min(InSize, OutSize), out.begin());
@@ -823,11 +823,11 @@ constexpr auto toVecN(const sofa::type::Vec<InSize, InReal>& in) -> sofa::type::
 
 // Convenient function calling previous toVecN with OutVec directly
 // e.g OutVec v2 = type::toVecN<OutVec>(v1)
-template <typename OutVec, sofa::Size OutSize = OutVec::static_size, typename OutReal = OutVec::value_type, sofa::Size InSize, typename InReal, OutReal filler = static_cast<OutReal>(0)>
+template <typename OutVec, sofa::Size OutSize = OutVec::static_size, typename OutReal = typename OutVec::value_type, sofa::Size InSize, typename InReal>
 requires ((std::derived_from<OutVec, sofa::type::Vec<OutSize, OutReal>>) && (std::is_convertible_v<InReal, typename OutVec::value_type>))
-constexpr auto toVecN(const sofa::type::Vec<InSize, InReal>& in) -> OutVec
+constexpr auto toVecN(const sofa::type::Vec<InSize, InReal>& in, const OutReal filler = static_cast<OutReal>(0)) -> OutVec
 {
-    return toVecN<OutSize, OutReal, InSize, InReal, filler>(in);
+    return toVecN<OutSize, OutReal, InSize, InReal>(in, filler);
 }
 
 // Convenient function calling previous toVecN with Vec<3,Sreal> directly
