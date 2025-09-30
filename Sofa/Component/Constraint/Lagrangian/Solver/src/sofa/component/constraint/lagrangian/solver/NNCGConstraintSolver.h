@@ -31,6 +31,6 @@ class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API NNCGConstraintSolver : pub
 public:
     SOFA_CLASS(NNCGConstraintSolver, ProjectedGaussSeidelConstraintSolver);
 
-    virtual void doSolve( SReal timeout = 0.0) override;
+    virtual void doSolve(GenericConstraintProblem * problem , SReal timeout = 0.0) override;
 };
 }

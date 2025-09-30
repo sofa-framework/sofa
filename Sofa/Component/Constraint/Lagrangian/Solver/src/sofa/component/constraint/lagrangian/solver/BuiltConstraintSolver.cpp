@@ -41,7 +41,7 @@ void BuiltConstraintSolver::init()
     }
 }
 
-void BuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cParams, unsigned int numConstraints)
+void BuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cParams, GenericConstraintProblem * problem ,unsigned int numConstraints)
 {
     SOFA_UNUSED(numConstraints);
     SCOPED_TIMER_VARNAME(getComplianceTimer, "Get Compliance");
@@ -62,9 +62,9 @@ void BuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cParams
     //Visits all constraint corrections to compute the compliance matrix projected
     //in the constraint space.
     simulation::forEachRange(execution, *taskScheduler,  l_constraintCorrections.begin(),  l_constraintCorrections.end(),
-        [&cParams, this, &multithreading, &mutex](const auto& range)
+        [&cParams, this, &multithreading, &mutex, problem](const auto& range)
         {
-            ComplianceWrapper compliance(current_cp->W, multithreading);
+            ComplianceWrapper compliance(problem->W, multithreading);
 
             for (auto it = range.start; it != range.end; ++it)
             {
@@ -79,7 +79,7 @@ void BuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cParams
             compliance.assembleMatrix();
         });
 
-    addRegularization(current_cp->W,  d_regularizationTerm.getValue());
+    addRegularization(problem->W,  d_regularizationTerm.getValue());
     dmsg_info() << " computeCompliance_done "  ;
 }
 

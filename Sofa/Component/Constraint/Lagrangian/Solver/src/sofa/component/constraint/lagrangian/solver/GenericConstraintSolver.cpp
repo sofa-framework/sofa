@@ -209,7 +209,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     }
 
 
-    this->doBuildSystem(cParams, numConstraints);
+    this->doBuildSystem(cParams, current_cp, numConstraints);
 
     return true;
 }
@@ -279,7 +279,7 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
         msg_info() << tmp.str() ;
     }
 
-    this->doSolve(0.0);
+    this->doSolve(current_cp, 0.0);
 
 
     this->d_currentError.setValue(current_cp->currentError);

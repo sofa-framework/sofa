@@ -31,9 +31,9 @@
 namespace sofa::component::constraint::lagrangian::solver
 {
 
-void UnbuiltGaussSeidelConstraintSolver::doSolve( SReal timeout)
+void UnbuiltGaussSeidelConstraintSolver::doSolve(GenericConstraintProblem * problem , SReal timeout)
 {
-    UnbuiltConstraintProblem* c_current_cp = dynamic_cast<UnbuiltConstraintProblem*>(current_cp);
+    UnbuiltConstraintProblem* c_current_cp = dynamic_cast<UnbuiltConstraintProblem*>(problem);
     if (c_current_cp == nullptr)
     {
         msg_error()<<"Constraint problem must derive from UnbuiltConstraintProblem";

@@ -40,7 +40,9 @@ class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API UnbuiltConstraintSolver : 
 public:
     SOFA_CLASS(UnbuiltConstraintSolver, GenericConstraintSolver);
 
-    virtual void doBuildSystem( const core::ConstraintParams *cParams, unsigned int numConstraints) override;
     virtual void initializeConstraintProblems() override;
+
+protected:
+    virtual void doBuildSystem( const core::ConstraintParams *cParams, GenericConstraintProblem * problem, unsigned int numConstraints) override;
 };
 }

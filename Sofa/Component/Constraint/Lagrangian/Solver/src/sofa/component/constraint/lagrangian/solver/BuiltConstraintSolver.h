@@ -40,9 +40,12 @@ public:
     Data<bool> d_multithreading; ///< Build compliances concurrently
 
     BuiltConstraintSolver();
-    virtual void doBuildSystem( const core::ConstraintParams *cParams, unsigned int numConstraints) override;
 
     virtual void init() override;
+
+protected:
+    virtual void doBuildSystem( const core::ConstraintParams *cParams, GenericConstraintProblem * problem ,unsigned int numConstraints) override;
+
 private:
 
     struct ComplianceWrapper
