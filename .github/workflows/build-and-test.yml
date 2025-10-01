@@ -77,6 +77,7 @@ jobs:
             echo "additionnal-cmake-flags : ${{ inputs.additionnal-cmake-flags }}"
             echo "builder-os : ${{ inputs.builder-os }}"
 
+            
   build:
     strategy:
       matrix:
@@ -114,6 +115,7 @@ jobs:
             fi
 
             ##TODO (if required) fix path too long for windows (see main.sh:201)
+
 
       - name: Clone SOFA and CI
         shell: bash
@@ -213,6 +215,7 @@ jobs:
           #TODO
           #Need more information. Might be good to
 
+
       - name: Build
         id: build-step
         continue-on-error: true
@@ -311,7 +314,9 @@ jobs:
         run: |
           #TODO
 
+
       - name: Launch tests
+        id: launch-tests-step
         continue-on-error: true
         if: steps.build-step.outcome == 'success'
         shell: bash
@@ -330,13 +335,14 @@ jobs:
 
               bash ${CI_DIR}/scripts/test.sh "${BUILD_DIR}" "${SRC_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}" "${{ inputs.with-all-tests }}"
           fi
-          
+
 
       - name: Publish artifacts
         if: steps.build-step.outcome == 'success' && inputs.generate-binaries == true
         shell: bash
         run: |
           #TODO
+      
       
       - name: Publish build logs
         if: always()
@@ -346,10 +352,25 @@ jobs:
           path: |
             ${{ env.BUILD_DIR }}/make-output.txt
 
+
       - name: Publish tests logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: tests-logs_${{ env.BUILDER_OS }}
           path: |
-             ${{ env.BUILD_DIR }}/tests_results/
+            ${{ env.BUILD_DIR }}/tests_results/
+
+      - name: Check build and test status
+        if: always()
+        shell: bash
+        run: |
+          if [[ "${{ steps.build-step.outcome }}" == "failure" ]]; then
+            echo "❌ Build step failed"
+            exit 1
+          elif [[ "${{ steps.launch-tests-step.outcome }}" == "failure" ]]; then
+            echo "❌ Launch tests step failed"
+            exit 1
+          else
+            echo "✅ Both build and test steps ran successfully."
+
