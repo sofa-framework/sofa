@@ -37,8 +37,8 @@ jobs:
   reboot_builders_by_hand:
     if: ${{ github.event_name != 'schedule'}}
     strategy:
+      fail-fast: false
       matrix:
-        fail-fast: false
         os: ${{ fromJson(inputs.builder-os) }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -52,8 +52,8 @@ jobs:
   rebot_builder_nightly:
     if: github.event.schedule == '0 2 * * *'
     strategy:
+      fail-fast: false
       matrix:
-        fail-fast: false
         os: ["sofa-ci-dev-ubuntu2204-0","sofa-ci-dev-ubuntu2204-1","sofa-ci-dev-ubuntu2204-2","sofa-ci-dev-ubuntu2204-3","sofa-ci-dev-ubuntu2204-4","consortium-macos-2","consortium-macos-3"]
     runs-on: ${{ matrix.os }}
     steps:
