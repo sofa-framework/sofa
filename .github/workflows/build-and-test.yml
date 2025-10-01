@@ -373,4 +373,8 @@ jobs:
             exit 1
           else
             echo "✅ Both build and test steps ran successfully."
+          fi
+
+          
+
 
