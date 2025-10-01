@@ -81,6 +81,7 @@ jobs:
   build:
     strategy:
       matrix:
+        fail-fast: false
         os: ${{ fromJson(inputs.builder-os) }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -375,6 +376,6 @@ jobs:
             echo "✅ Both build and test steps ran successfully."
           fi
 
-          
+
 
 
