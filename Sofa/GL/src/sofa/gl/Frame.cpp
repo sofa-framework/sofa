@@ -384,11 +384,11 @@ void render_coordinate_frame(const CoordinateFrame& frame, const type::Vec3& cen
     glPopAttrib();
 }
 
-std::unordered_map < type::Vec3f, CoordinateFrame > cacheCoordinateFrame;
+std::unordered_map < const type::Vec3*, CoordinateFrame > cacheCoordinateFrame;
 
 void Frame::draw(const type::Vec3& center, const Quaternion& orient, const type::Vec3& len, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ )
 {
-    if (cacheCoordinateFrame.find(len) == cacheCoordinateFrame.end())
+    if (cacheCoordinateFrame.find(&len) == cacheCoordinateFrame.end())
     {
         type::Vec3 L = len;
 
@@ -410,10 +410,9 @@ void Frame::draw(const type::Vec3& center, const Quaternion& orient, const type:
         const type::Vec3 lc(Lmax / 5_sreal, Lmax / 5_sreal, Lmax / 5_sreal); // = L / 5;
         const type::Vec3 Lc = lc;
 
-        cacheCoordinateFrame.emplace(len, CoordinateFrame ({ L[0], Lc[0], l[0], lc[0] }, { L[1], Lc[1], l[1], lc[1] }, { L[2], Lc[2], l[2], lc[2] }));
+        cacheCoordinateFrame.emplace(&len, CoordinateFrame ({ L[0], Lc[0], l[0], lc[0] }, { L[1], Lc[1], l[1], lc[1] }, { L[2], Lc[2], l[2], lc[2] }));
     }
-
-    const auto& frame = cacheCoordinateFrame.at(len);
+    const auto& frame = cacheCoordinateFrame.at(&len);
     render_coordinate_frame(frame, center, orient, len, colorX, colorY, colorZ);
 }
 
