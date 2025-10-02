@@ -410,32 +410,25 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     if (onlyVisible && !d_drawIsEnabled.getValue())
         return;
 
-    constexpr SReal max_real = std::numeric_limits<SReal>::max();
-    constexpr SReal min_real = std::numeric_limits<SReal>::lowest();
-    SReal maxBBox[3] = {min_real,min_real,min_real};
-    SReal minBBox[3] = {max_real,max_real,max_real};
-
     const SReal size = d_drawSize.getValue();
 
     type::Vec3 normal{}, v1{}, v2{};
     get3DFrameFromDPosNormal<DataTypes>(d_planeNormal.getValue(), v1, v2, normal);
 
     const type::Vec3& center = normal*d_planeD.getValue();
-    type::Vec3 corners[4];
+    std::array<type::Vec3, 4> corners;
     corners[0] = center-v1*size-v2*size;
     corners[1] = center+v1*size-v2*size;
     corners[2] = center+v1*size+v2*size;
     corners[3] = center-v1*size+v2*size;
 
-    for (unsigned int i=0; i<4; i++)
+    type::BoundingBox bbox;
+    for (const auto& c : corners )
     {
-        for (int c=0; c<3; c++)
-        {
-            if (corners[i][c] > maxBBox[c]) maxBBox[c] = corners[i][c];
-            if (corners[i][c] < minBBox[c]) minBBox[c] = corners[i][c];
-        }
+        bbox.include(c);
     }
-    this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox,maxBBox));
+
+    this->f_bbox.setValue(bbox);
 }
 
 } // namespace sofa::component::mechanicalload
