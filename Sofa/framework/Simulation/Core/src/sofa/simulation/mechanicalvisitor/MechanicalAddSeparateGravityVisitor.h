@@ -34,8 +34,8 @@ class SOFA_SIMULATION_CORE_API MechanicalAddSeparateGravityVisitor : public Mech
 public:
     sofa::core::MultiVecDerivId res;
     MechanicalAddSeparateGravityVisitor(const sofa::core::MechanicalParams* m_mparams,
-                                        sofa::core::MultiVecDerivId res )
-            : MechanicalVisitor(m_mparams) , res(res)
+                                        sofa::core::MultiVecDerivId resvecid )
+            : MechanicalVisitor(m_mparams) , res(resvecid)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

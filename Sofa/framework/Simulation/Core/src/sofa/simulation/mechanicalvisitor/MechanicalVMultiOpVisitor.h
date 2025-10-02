@@ -38,8 +38,8 @@ class SOFA_SIMULATION_CORE_API MechanicalVMultiOpVisitor : public BaseMechanical
 public:
     typedef sofa::core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
     bool mapped;
-    MechanicalVMultiOpVisitor(const sofa::core::ExecParams* params, const VMultiOp& o)
-            : BaseMechanicalVisitor(params), mapped(false), ops(o)
+    MechanicalVMultiOpVisitor(const sofa::core::ExecParams* eparams, const VMultiOp& o)
+            : BaseMechanicalVisitor(eparams), mapped(false), ops(o)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

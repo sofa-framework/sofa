@@ -37,10 +37,10 @@ public:
     SReal f;
     bool mapped;
     bool only_mapped;
-    MechanicalVOpVisitor(const sofa::core::ExecParams* params,
-                         sofa::core::MultiVecId v,sofa::core::ConstMultiVecId a = sofa::core::ConstMultiVecId::null(), sofa::core::ConstMultiVecId b = sofa::core::ConstMultiVecId::null(),
-                         SReal f=1.0 )
-            : BaseMechanicalVisitor(params) , v(v), a(a), b(b), f(f), mapped(false), only_mapped(false)
+    MechanicalVOpVisitor(const sofa::core::ExecParams* eparams,
+                         sofa::core::MultiVecId mvecid,sofa::core::ConstMultiVecId avecid = sofa::core::ConstMultiVecId::null(), sofa::core::ConstMultiVecId bvecid = sofa::core::ConstMultiVecId::null(),
+                         SReal fact=1.0 )
+            : BaseMechanicalVisitor(eparams) , v(mvecid), a(avecid), b(bvecid), f(fact), mapped(false), only_mapped(false)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

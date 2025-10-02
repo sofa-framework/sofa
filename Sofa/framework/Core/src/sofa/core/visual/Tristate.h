@@ -35,7 +35,7 @@ struct SOFA_CORE_API tristate
     tristate():state(true_value)
     {
     }
-    tristate(state_t state):state(state) {}
+    tristate(state_t s):state(s) {}
 
     operator bool() const
     {

@@ -40,9 +40,9 @@ public:
     sofa::core::MultiVecCoordId x;
     sofa::core::MultiVecDerivId f;
 
-    MechanicalPropagateOnlyPositionAndResetForceVisitor(const sofa::core::MechanicalParams* mparams,
-                                                        sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId f)
-            : MechanicalVisitor(mparams) , x(x), f(f)
+    MechanicalPropagateOnlyPositionAndResetForceVisitor(const sofa::core::MechanicalParams* mechaparams,
+                                                        sofa::core::MultiVecCoordId xvecid, sofa::core::MultiVecDerivId fvecid)
+            : MechanicalVisitor(mechaparams) , x(xvecid), f(fvecid)
     {
     }
     Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;

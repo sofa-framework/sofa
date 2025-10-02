@@ -30,8 +30,8 @@
 
 namespace sofa::simulation::xml
 {
-BaseMultiMappingElement::BaseMultiMappingElement(const std::string& name, const std::string& type, BaseElement* parent/* =nullptr */)
-    :ObjectElement(name,type,parent)
+BaseMultiMappingElement::BaseMultiMappingElement(const std::string& name, const std::string& type, BaseElement* eparent/* =nullptr */)
+    :ObjectElement(name,type,eparent)
 {
 
 }

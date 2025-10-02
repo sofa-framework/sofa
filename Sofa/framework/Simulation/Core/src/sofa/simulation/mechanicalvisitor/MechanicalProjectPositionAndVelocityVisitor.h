@@ -32,10 +32,10 @@ public:
     double t;
     sofa::core::MultiVecCoordId pos;
     sofa::core::MultiVecDerivId vel;
-    MechanicalProjectPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams , double time=0,
+    MechanicalProjectPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mechaparams , double time=0,
                                                 sofa::core::MultiVecCoordId x = sofa::core::vec_id::write_access::position,
                                                 sofa::core::MultiVecDerivId v = sofa::core::vec_id::write_access::velocity)
-            : MechanicalVisitor(mparams) , t(time), pos(x), vel(v)
+            : MechanicalVisitor(mechaparams) , t(time), pos(x), vel(v)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
