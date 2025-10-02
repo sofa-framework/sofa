@@ -66,10 +66,10 @@ SOFA_SIMULATION_CORE_API const char* getColor(const std::string& classname);
 SOFA_SIMULATION_CORE_API const char* getColor(const sofa::Index userID);
 
 // Returns wether or not there is a color associated with this name
-bool hasColor(const std::string& className);
+SOFA_SIMULATION_CORE_API bool hasColor(const std::string& className);
 
 // Returns wether or not there is a color associated with this name
-bool hasColor(const sofa::Index& id);
+SOFA_SIMULATION_CORE_API bool hasColor(const sofa::Index& id);
 
 // This is to allow old code to still work,
 SOFA_SIMULATION_CORE_API class DeprecatedColor
@@ -77,7 +77,7 @@ SOFA_SIMULATION_CORE_API class DeprecatedColor
 public:
     const char* operator[](size_t);
 };
-extern DeprecatedColor COLOR;
+SOFA_SIMULATION_CORE_API extern DeprecatedColor COLOR;
 
 
 }
