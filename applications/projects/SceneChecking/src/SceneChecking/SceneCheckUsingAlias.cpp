@@ -40,7 +40,7 @@ using sofa::core::ObjectFactory;
 SceneCheckUsingAlias::SceneCheckUsingAlias()
 {
     /// Add a callback to be n
-    ObjectFactory::getInstance()->setCallback([this](Base* o, BaseObjectDescription *arg) {
+    ObjectFactory::getInstance()->setOnCreateCallback([this](Base* o, BaseObjectDescription *arg) {
         const std::string typeNameInScene = arg->getAttribute("type", "");
         if ( typeNameInScene != o->getClassName() )
         {
