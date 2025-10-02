@@ -34,9 +34,9 @@ jobs:
 
             // Define an array of descriptive labels
             const descriptiveLabels = [
-              'enhancement',
               'deprecated',
               'refactoring',
+              'pr: enhancement',
               'pr: breaking',
               'pr: clean',
               'pr: fix',
@@ -52,7 +52,7 @@ jobs:
             // If no descriptive label is set, add a comment in the PR and make the action check fail
             if (!hasDescriptiveLabel) {
               const comment = ':warning: :warning: :warning:<br>@' + context.payload.pull_request.user.login + ' your PR does not include any **descriptive** label :label:<br> Make sure to add an appropriate [PR label](https://github.com/sofa-framework/sofa/labels) before merge.<br>:warning: :warning: :warning:';
-              github.issues.createComment({
+              github.rest.issues.createComment({
                 issue_number: prNumber,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -77,7 +77,7 @@ jobs:
             // If no descriptive label is set, add a comment in the PR and make the action check fail
             if (matchingLabelsCount === 0) {
               const comment = ':warning: :warning: :warning:<br>@'+context.repo.owner+' your PR does not include any **status** label :label:<br> Make sure to add one (wip, to review or ready).<br>:warning: :warning: :warning:';
-              github.issues.createComment({
+              github.rest.issues.createComment({
                 issue_number: prNumber,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -86,7 +86,7 @@ jobs:
               core.setFailed('Missing status PR label')
             } else if (matchingLabelsCount > 1) {
               const comment = ':warning: :warning: :warning:<br>@'+context.repo.owner+' your PR does includes **too many status labels** :label:<br> Make sure to keep only one (wip, to review or ready).<br>:warning: :warning: :warning:';
-              github.issues.createComment({
+              github.rest.issues.createComment({
                 issue_number: prNumber,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
