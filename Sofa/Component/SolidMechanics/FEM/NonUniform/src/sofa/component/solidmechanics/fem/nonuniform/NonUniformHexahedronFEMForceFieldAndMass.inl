@@ -179,9 +179,9 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
                 {
                     for(int j=0; j<8*3; ++j)
                     {
-                        this->_lumpedMasses[ (*it)[w] ][0] += mass[w*3  ][j];
-                        this->_lumpedMasses[ (*it)[w] ][1] += mass[w*3+1][j];
-                        this->_lumpedMasses[ (*it)[w] ][2] += mass[w*3+2][j];
+                        this->_lumpedMasses[ (*it)[w] ][0] += mass(w*3  ,j);
+                        this->_lumpedMasses[ (*it)[w] ][1] += mass(w*3+1,j);
+                        this->_lumpedMasses[ (*it)[w] ][2] += mass(w*3+2,j);
                     }
                 }
             }
@@ -292,15 +292,15 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addFineToCoarse( ElementStiffn
     for(int i=0; i<24; i++)
         for(int j=0; j<24; j++)
         {
-            A[i][j] = j%3==0 ? fine[i][0] *(Real) FINE_TO_COARSE[indice][0][j/3] : Real(0.0);
+            A(i,j) = j%3==0 ? fine(i,0) *(Real) FINE_TO_COARSE[indice][0][j/3] : Real(0.0);
             for(int k=1; k<24; k++)
-                A[i][j] += j%3==k%3  ? fine[i][k] * (Real)FINE_TO_COARSE[indice][k/3][j/3] : Real(0.0);
+                A(i,j) += j%3==k%3  ? fine(i,k) * (Real)FINE_TO_COARSE[indice][k/3][j/3] : Real(0.0);
         }
 
     for(int i=0; i<24; i++)
         for(int j=0; j<24; j++)
             for(int k=0; k<24; k++)
-                coarse[i][j] += i%3==k%3  ? (Real)FINE_TO_COARSE[indice][k/3][i/3] * A[k][j] : Real(0.0);   // FINE_TO_COARSE[indice] transposed
+                coarse(i,j) += i%3==k%3  ? (Real)FINE_TO_COARSE[indice][k/3][i/3] * A(k,j) : Real(0.0);   // FINE_TO_COARSE[indice] transposed
 }
 
 
@@ -401,15 +401,15 @@ const float NonUniformHexahedronFEMForceFieldAndMass<T>::FINE_TO_COARSE[8][8][8]
 template<class T>
 void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMaterialStiffness(MaterialStiffness &m, double youngModulus, double poissonRatio)
 {
-    m[0][0] = m[1][1] = m[2][2] = 1;
-    m[0][1] = m[0][2] = m[1][0]= m[1][2] = m[2][0] =  m[2][1] = (Real)(poissonRatio/(1-poissonRatio));
-    m[0][3] = m[0][4] =	m[0][5] = 0;
-    m[1][3] = m[1][4] =	m[1][5] = 0;
-    m[2][3] = m[2][4] =	m[2][5] = 0;
-    m[3][0] = m[3][1] = m[3][2] = m[3][4] =	m[3][5] = 0;
-    m[4][0] = m[4][1] = m[4][2] = m[4][3] =	m[4][5] = 0;
-    m[5][0] = m[5][1] = m[5][2] = m[5][3] =	m[5][4] = 0;
-    m[3][3] = m[4][4] = m[5][5] = (Real)((1-2*poissonRatio)/(2*(1-poissonRatio)));
+    m(0,0) = m(1,1) = m(2,2) = 1;
+    m(0,1) = m(0,2) = m(1,0)= m(1,2) = m(2,0) =  m(2,1) = (Real)(poissonRatio/(1-poissonRatio));
+    m(0,3) = m(0,4) =	m(0,5) = 0;
+    m(1,3) = m(1,4) =	m(1,5) = 0;
+    m(2,3) = m(2,4) =	m(2,5) = 0;
+    m(3,0) = m(3,1) = m(3,2) = m(3,4) =	m(3,5) = 0;
+    m(4,0) = m(4,1) = m(4,2) = m(4,3) =	m(4,5) = 0;
+    m(5,0) = m(5,1) = m(5,2) = m(5,3) =	m(5,4) = 0;
+    m(3,3) = m(4,4) = m(5,5) = (Real)((1-2*poissonRatio)/(2*(1-poissonRatio)));
     m *= (Real)((youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio)));
 }
 
