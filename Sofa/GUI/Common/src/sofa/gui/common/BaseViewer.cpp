@@ -279,6 +279,8 @@ void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseObject * object)
 
 void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
 {
+    if (!m_enableSelectionDraw)
+        return;
     assert(vparams && "call of drawSelection without a valid visual param is not allowed");
 
     auto drawTool = vparams->drawTool();
@@ -334,7 +336,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
                 if(positionsData)
                 {
                     positions = positionsData->getValue();
-                    if(m_showSelectedObjectBoundingBox){
+                    if(m_showSelectedObjectPositions){
                         drawTool->drawPoints(positions, 2.0, RGBAColor::yellow());
                     }
                 }
