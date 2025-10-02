@@ -9,7 +9,8 @@ sofa_find_package(Json 3.1.2 REQUIRED)
 sofa_find_package(STB REQUIRED)
 # DiffLib (header only)
 sofa_find_package(DiffLib REQUIRED)
-
+# taskflow (header only)
+sofa_find_package(taskflow REQUIRED)
 
 set(SRC_ROOT "src/sofa/helper")
 
@@ -46,6 +47,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/SortedPermutation.h
     ${SRC_ROOT}/StringUtils.h
     ${SRC_ROOT}/TagFactory.h
+    ${SRC_ROOT}/taskflow.h
     ${SRC_ROOT}/TriangleOctree.h
     ${SRC_ROOT}/Utils.h
     ${SRC_ROOT}/accessor.h
@@ -256,6 +258,10 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${ST
 
 # DiffLib (header only)
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${difflib_INCLUDE_DIR}>")
+
+# taskflow (header only)
+message(STATUS "Taskflow_INCLUDE_DIR = ${Taskflow_INCLUDE_DIR}")
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${Taskflow_INCLUDE_DIR}>")
 
 set(is_release "$<CONFIG:RELEASE>")
 set(is_debug "$<CONFIG:DEBUG>")
