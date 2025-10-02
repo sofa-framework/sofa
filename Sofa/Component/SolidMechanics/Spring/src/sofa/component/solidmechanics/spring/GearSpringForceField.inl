@@ -178,8 +178,8 @@ void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/
     Vector axis1,axis2;
     for(unsigned int i=0; i<axis1.size(); ++i)
     {
-        axis1[i]=M1[i][spring.freeAxis[0]];
-        axis2[i]=M2[i][spring.freeAxis[1]];
+        axis1[i]=M1(i ,spring.freeAxis[0]);
+        axis2[i]=M2(i, spring.freeAxis[1]);
     }
 
     // compute 1D forces using updated angles around gear rotation axis

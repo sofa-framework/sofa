@@ -493,7 +493,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
             {
                 for (int i=0; i<3; i++)
                 {
-                    R[k*9+j*3+i] = (Real)Rotation[j][i];
+                    R[k*9+j*3+i] = (Real)Rotation(j,i);
                 }
             }
         }
@@ -663,7 +663,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& x = mstate->read(core::vec_id::read_access::position)->getValue();
-    const Real& scale = this->d_draw_rotations_scale.getValue();
+    const float scale = static_cast<float>(this->d_draw_rotations_scale.getValue());
 
     for (unsigned int i=0; i< nb_dofs; i++)
     {
@@ -673,7 +673,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
         {
             for (int b=0; b<3; b++)
             {
-                RotMat[a][b] = R[i*9+a*3+b];
+                RotMat(a,b) = R[i*9+a*3+b];
             }
         }
 
@@ -681,7 +681,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
 
         sofa::type::Quat<SReal> q;
         q.fromMatrix(RotMat);
-        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[pid]), q, sofa::type::Vec3(scale,scale,scale));
+        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[pid]), q, sofa::type::Vec3f(scale,scale,scale));
     }
 
 }
