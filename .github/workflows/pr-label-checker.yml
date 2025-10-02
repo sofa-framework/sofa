@@ -34,9 +34,9 @@ jobs:
 
             // Define an array of descriptive labels
             const descriptiveLabels = [
-              'pr: enhancement',
               'deprecated',
               'refactoring',
+              'pr: enhancement',
               'pr: breaking',
               'pr: clean',
               'pr: fix',
