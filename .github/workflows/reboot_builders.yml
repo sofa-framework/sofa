@@ -50,7 +50,7 @@ jobs:
             echo '' | sudo -S /sbin/shutdown -r +1 &
 
   rebot_builder_nightly:
-    if: github.event.schedule == '0 2 * * *'
+    if: ${{ github.event_name == 'schedule'}}
     strategy:
       fail-fast: false
       matrix:
