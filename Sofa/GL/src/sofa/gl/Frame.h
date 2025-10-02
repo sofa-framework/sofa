@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,48 +20,28 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/gl/config.h>
 
-#include <sofa/config.h>
-
-#define SOFATYPE_VERSION @PROJECT_VERSION@
-
-#ifdef SOFA_BUILD_SOFA_TYPE
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_TYPE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_TYPE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/type/fwd.h>
+#include <sofa/type/RGBAColor.h>
 
 
-#ifdef SOFA_BUILD_SOFA_TYPE
-#define SOFA_ATTRIBUTE_DISABLED__BOUNDINGBOX_TYPO()
-#else
-#define SOFA_ATTRIBUTE_DISABLED__BOUNDINGBOX_TYPO() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v24.12", "v25.06", \
-        "Use isNegligible instead.")
-#endif
+namespace sofa::gl
+{
 
-#ifdef SOFA_BUILD_SOFA_TYPE
-#define SOFA_ATTRIBUTE_DEPRECATED__IS_CONTAINER()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__IS_CONTAINER() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v25.06", "v25.12", \
-        "Use std::ranges::ranges concept instead.")
-#endif
+class SOFA_GL_API Frame
+{
+public:
+    using Quaternion = sofa::type::Quat<SReal>;
 
-#ifdef SOFA_BUILD_SOFA_TYPE
-#define SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_POINTER()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_POINTER() \
-    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "Assignment and construction from raw pointer is being phased out (PR 5675).")
-#endif
+    Frame() = delete;
+    ~Frame() = delete;
 
-#ifdef SOFA_BUILD_SOFA_TYPE
-#define SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_DIFFERENT_VEC()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_DIFFERENT_VEC() \
-    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "Assignment and construction from a different Vec is being phased out (PR 5675).")
-#endif
+    static void draw(const type::Vec3& center, const Quaternion& orient, const type::Vec3& length, const type::RGBAColor& colorX = type::RGBAColor::red(), const type::RGBAColor& colorY = type::RGBAColor::green(), const type::RGBAColor& colorZ = type::RGBAColor::red());
+    static void draw(const type::Vec3& center, const double orient[4][4], const type::Vec3& length, const type::RGBAColor& colorX = type::RGBAColor::red(), const type::RGBAColor& colorY = type::RGBAColor::green(), const type::RGBAColor& colorZ = type::RGBAColor::red());
+    static void draw(const type::Vec3& center, const Quaternion& orient, SReal length = 1.0_sreal, const type::RGBAColor& colorX = type::RGBAColor::red(), const type::RGBAColor& colorY = type::RGBAColor::green(), const type::RGBAColor& colorZ = type::RGBAColor::red());
+    static void draw(const type::Vec3& center, const double orient[4][4], SReal length = 1.0_sreal, const type::RGBAColor& colorX = type::RGBAColor::red(), const type::RGBAColor& colorY = type::RGBAColor::green(), const type::RGBAColor& colorZ = type::RGBAColor::red());
+   
+};
 
+} // namespace sofa::gl
