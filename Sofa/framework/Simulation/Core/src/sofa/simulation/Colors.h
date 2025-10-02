@@ -72,7 +72,7 @@ SOFA_SIMULATION_CORE_API bool hasColor(const std::string& className);
 SOFA_SIMULATION_CORE_API bool hasColor(const sofa::Index& id);
 
 // This is to allow old code to still work,
-SOFA_SIMULATION_CORE_API class DeprecatedColor
+class SOFA_SIMULATION_CORE_API DeprecatedColor
 {
 public:
     const char* operator[](size_t);
