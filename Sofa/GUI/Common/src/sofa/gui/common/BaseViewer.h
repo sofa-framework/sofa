@@ -127,12 +127,13 @@ public:
     const std::set<sofa::core::objectmodel::Base::SPtr>& getCurrentSelection() const;
 
 public:
+    bool m_enableSelectionDraw {true};
     bool m_showSelectedNodeBoundingBox {true};
     bool m_showSelectedObjectBoundingBox {true};
-    bool m_showSelectedObjectPositions {true};
-    bool m_showSelectedObjectSurfaces {true};
-    bool m_showSelectedObjectVolumes {true};
-    bool m_showSelectedObjectIndices {true};
+    bool m_showSelectedObjectPositions {false};
+    bool m_showSelectedObjectSurfaces {false};
+    bool m_showSelectedObjectVolumes {false};
+    bool m_showSelectedObjectIndices {false};
     float m_visualScaling {0.2};
 
 protected:
