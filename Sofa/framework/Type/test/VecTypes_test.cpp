@@ -95,3 +95,45 @@ TEST(VecTest, Equality)
     EXPECT_FALSE(veci1 == veci3);
     EXPECT_TRUE(veci1 != veci3);
 }
+
+TEST(VecTest, toVecN)
+{
+    // test toVecN<x,y> (to a smaller vec)
+    constexpr sofa::type::Vec<5,int> vec5i  {1, 2, 3, 4, 5};
+    constexpr sofa::type::Vec<2,float> vec2f = sofa::type::toVecN<2, float>(vec5i);
+    
+    // static_assert(vec2f == sofa::type::Vec<2, float>{1.0f, 2.0f}); // possible only in c++23 (needs std::abs to be constevaluable)
+    constexpr sofa::type::Vec<2,float> vec2f_ref {1.0f, 2.0f};
+    EXPECT_TRUE(vec2f == vec2f_ref);
+    
+    // test toVecN<x,y> (to a bigger vec)
+    constexpr sofa::type::Vec<6, unsigned long> vec6ul = sofa::type::toVecN<6, unsigned long>(vec5i);
+    constexpr sofa::type::Vec<6, unsigned long> vec6ul_ref {1ul, 2ul, 3ul, 4ul, 5ul, 0ul};
+    EXPECT_TRUE(vec6ul == vec6ul_ref);
+    
+    // test toVecN<OtherVec>
+    using WhateverVecItIs = sofa::type::Vec<4, double>;
+    constexpr WhateverVecItIs othervec = sofa::type::toVecN<WhateverVecItIs>(vec5i);
+    constexpr WhateverVecItIs othervec_ref {1.0, 2.0, 3.0, 4.0};
+    EXPECT_TRUE(othervec == othervec_ref);
+    
+    // test toVecN<OtherVec> without knowing what type is the incoming vec is
+    using IDontKnowWhatVecItIs = sofa::type::Vec<7, unsigned int>;
+    constexpr auto incomingvec = IDontKnowWhatVecItIs{1u, 2u, 3u, 4u, 5u, 6u, 7u};
+    constexpr auto autotypevec = sofa::type::toVecN<decltype(incomingvec)>(vec5i);
+    constexpr IDontKnowWhatVecItIs autotypevec_ref {1u, 2u, 3u, 4u, 5u, 0u, 0u};
+    
+    EXPECT_TRUE(autotypevec == autotypevec_ref);
+    
+    // test toVec3
+    constexpr sofa::type::Vec3 vec3r = sofa::type::toVec3(vec5i);
+    constexpr sofa::type::Vec3 vec3r_ref {1.0_sreal, 2.0_sreal, 3.0_sreal};
+    EXPECT_TRUE(vec3r == vec3r_ref);
+    
+    
+    // test toVecN<x,y> (to a bigger vec with filler)
+    constexpr sofa::type::Vec<9, long double> vec9ld = sofa::type::toVecN<9, long double, 5, int>(vec5i, 42.0L);
+    constexpr sofa::type::Vec<9, long double> vec9ld_ref {1.0L, 2.0L, 3.0L, 4.0L, 5.0L, 42.0L, 42.0L, 42.0L, 42.0L};
+    EXPECT_TRUE(vec9ld == vec9ld_ref);
+    
+}

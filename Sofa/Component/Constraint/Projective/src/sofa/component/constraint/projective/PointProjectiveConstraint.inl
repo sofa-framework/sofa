@@ -293,17 +293,16 @@ void PointProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams
     if(d_drawSize.getValue() == 0) // old classical drawing by points
     {
         std::vector< sofa::type::Vec3 > points;
-        sofa::type::Vec3 point;
         if( d_fixAll.getValue() )
             for (unsigned i=0; i<x.size(); i++ )
             {
-                point = DataTypes::getCPos(x[i]);
+                const type::Vec3 point = type::toVec3(DataTypes::getCPos(x[i]));
                 points.push_back(point);
             }
         else
             for (unsigned int index : indices)
             {
-                point = DataTypes::getCPos(x[index]);
+                const type::Vec3 point = type::toVec3(DataTypes::getCPos(x[index]));
                 points.push_back(point);
             }
         vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
@@ -311,17 +310,16 @@ void PointProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams
     else // new drawing by spheres
     {
         std::vector< sofa::type::Vec3 > points;
-        sofa::type::Vec3 point;
         if(d_fixAll.getValue())
             for (unsigned i=0; i<x.size(); i++ )
             {
-                point = DataTypes::getCPos(x[i]);
+                const type::Vec3 point = type::toVec3(DataTypes::getCPos(x[i]));
                 points.push_back(point);
             }
         else
             for (unsigned int index : indices)
             {
-                point = DataTypes::getCPos(x[index]);
+                const type::Vec3 point = type::toVec3(DataTypes::getCPos(x[index]));
                 points.push_back(point);
             }
         vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::type::RGBAColor(1.0f, 0.35f, 0.35f, 1.0f));
