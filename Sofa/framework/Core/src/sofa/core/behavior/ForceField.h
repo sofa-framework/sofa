@@ -174,7 +174,7 @@ public:
                     {
                         const unsigned COLUMN = offset + S*nodeIndex[n2] +j; // j-th column associated with node n2 in BaseMatrix
                         const unsigned column = S*n2+j;                      // j-th column associated with node n2 in the element matrix
-                        bm->add( ROW,COLUMN, em[row][column]* scale );
+                        bm->add( ROW,COLUMN, em(row, column)* scale );
                     }
                 }
             }

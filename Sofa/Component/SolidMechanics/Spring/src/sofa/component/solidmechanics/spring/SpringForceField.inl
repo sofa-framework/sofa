@@ -546,9 +546,9 @@ auto SpringForceField<DataTypes>::computeSpringForce(
         {
             for(sofa::Index k=0; k<N; ++k )
             {
-                m[j][k] = ((Real)spring.ks-tgt) * u[j] * u[k];
+                m(j,k) = ((Real)spring.ks-tgt) * u[j] * u[k];
             }
-            m[j][j] += tgt;
+            m(j,j) += tgt;
         }
 
         springForce->force = std::make_pair(force, -force);
@@ -670,7 +670,7 @@ void SpringForceField<DataTypes>::addToMatrix(Matrix* globalMatrix,
             {
                 for (sofa::Index j = 0; j < N; ++j)
                 {
-                    globalMatrix->add(offsetRow + i, offsetCol + j, (Real)localMatrix[i][j]);
+                    globalMatrix->add(offsetRow + i, offsetCol + j, (Real)localMatrix(i,j));
                 }
             }
         }
@@ -697,7 +697,7 @@ void SpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpa
             {
                 for (sofa::Index j=0; j<N; j++)
                 {
-                    Real k = (Real)(m[i][j]*kFact);
+                    Real k = (Real)(m(i,j)*kFact);
                     mat.matrix->add(p1+i,p1+j, -k);
                     mat.matrix->add(p1+i,p2+j,  k);
                     mat.matrix->add(p2+i,p1+j,  k);//or mat->add(p1+j,p2+i, k);
@@ -754,7 +754,7 @@ void SpringForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffness
             {
                 for (sofa::Index j = 0; j < N; ++j)
                 {
-                    const auto k = m[i][j];
+                    const auto k = m(i,j);
                     dfdx(p1+i, p1+j) += -k;
                     dfdx(p1+i, p2+j) +=  k;
                     dfdx(p2+i, p1+j) +=  k;
@@ -823,9 +823,9 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
         assert(springs[i].m2 < p2.size());
         assert(springs[i].m1 < p1.size());
         Real d = (p2[springs[i].m2] - p1[springs[i].m1]).norm();
-        Vec3 point2, point1;
-        point1 = DataTypes::getCPos(p1[springs[i].m1]);
-        point2 = DataTypes::getCPos(p2[springs[i].m2]);
+
+        const Vec3 point1 = toVec3(DataTypes::getCPos(p1[springs[i].m1]));
+        const Vec3 point2 = toVec3(DataTypes::getCPos(p2[springs[i].m2]));
 
         if (external)
         {

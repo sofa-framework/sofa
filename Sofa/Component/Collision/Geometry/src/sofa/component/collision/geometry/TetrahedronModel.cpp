@@ -212,9 +212,9 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
         const Vec3& pt3 = x[t.p3Index()];
         const Vec3& pt4 = x[t.p4Index()];
         Matrix3 m, minv;
-        m[0] = pt2-pt1;
-        m[1] = pt3-pt1;
-        m[2] = pt4-pt1;
+        m(0) = pt2-pt1;
+        m(1) = pt3-pt1;
+        m(2) = pt4-pt1;
         m.transpose();
         const bool canInvert = minv.invert(m);
         assert(canInvert);
