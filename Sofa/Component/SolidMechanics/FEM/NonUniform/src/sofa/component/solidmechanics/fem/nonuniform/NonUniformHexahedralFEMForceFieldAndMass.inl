@@ -113,16 +113,16 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     for(unsigned int u=0; u<8; ++u)
         for(unsigned int v=0; v<8; ++v)
         {
-            M[u][v] = (Real) (_material.mass/216.0);
+            M(u,v) = (Real) (_material.mass/216.0);
 
             const unsigned int q = u ^ v;
-            if ((q&1)==((q&2) >> 1)) M[u][v] *= (Real) 2.0;
-            if (!((q&2) >> 1))       M[u][v] *= (Real) 2.0;
-            if (!(q>>2))             M[u][v] *= (Real) 2.0;
+            if ((q&1)==((q&2) >> 1)) M(u,v) *= (Real) 2.0;
+            if (!((q&2) >> 1))       M(u,v) *= (Real) 2.0;
+            if (!(q>>2))             M(u,v) *= (Real) 2.0;
 
             for(unsigned int k=0; k<3; ++k)
                 for(unsigned int j=0; j<3; ++j)
-                    _material.M[3*u+k][3*v+j] = (Real)((k%3==j%3)?M[u][v]:0.0);
+                    _material.M(3*u+k,3*v+j) = (Real)((k%3==j%3)?M(u,v):0.0);
         }
 
     _H.resize(level+1);
@@ -146,14 +146,14 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
                         const float z = fineNodeSize * (k + (w>>2));
 
                         // entree dans la matrice pour le sommet w
-                        _H[currLevel][idx][w][0] = (1-x) * (1-y) * (1-z);
-                        _H[currLevel][idx][w][1] =   (x) * (1-y) * (1-z);
-                        _H[currLevel][idx][w][3] = (1-x) *   (y) * (1-z);
-                        _H[currLevel][idx][w][2] =   (x) *   (y) * (1-z);
-                        _H[currLevel][idx][w][4] = (1-x) * (1-y) *   (z);
-                        _H[currLevel][idx][w][5] =   (x) * (1-y) *   (z);
-                        _H[currLevel][idx][w][7] = (1-x) *   (y) *   (z);
-                        _H[currLevel][idx][w][6] =   (x) *   (y) *   (z);
+                        _H[currLevel][idx](w, 0) = (1-x) * (1-y) * (1-z);
+                        _H[currLevel][idx](w, 1) =   (x) * (1-y) * (1-z);
+                        _H[currLevel][idx](w, 3) = (1-x) *   (y) * (1-z);
+                        _H[currLevel][idx](w, 2) =   (x) *   (y) * (1-z);
+                        _H[currLevel][idx](w, 4) = (1-x) * (1-y) *   (z);
+                        _H[currLevel][idx](w, 5) =   (x) * (1-y) *   (z);
+                        _H[currLevel][idx](w, 7) = (1-x) *   (y) *   (z);
+                        _H[currLevel][idx](w, 6) =   (x) *   (y) *   (z);
                     }
                 }
     }
@@ -296,9 +296,9 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const core::to
             {
                 for(int j=0; j<8*3; ++j)
                 {
-                    lumpedMasses[ hexahedra[hexaId][w] ][0] += mass[w*3  ][j];
-                    lumpedMasses[ hexahedra[hexaId][w] ][1] += mass[w*3+1][j];
-                    lumpedMasses[ hexahedra[hexaId][w] ][2] += mass[w*3+2][j];
+                    lumpedMasses[ hexahedra[hexaId][w] ][0] += mass(w*3  ,j);
+                    lumpedMasses[ hexahedra[hexaId][w] ][1] += mass(w*3+1,j);
+                    lumpedMasses[ hexahedra[hexaId][w] ][2] += mass(w*3+2,j);
                 }
             }
         }
@@ -342,9 +342,9 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const core::
             {
                 for(int j=0; j<8*3; ++j)
                 {
-                    lumpedMasses[ hexahedra[hexaId][w] ][0] -= mass[w*3  ][j];
-                    lumpedMasses[ hexahedra[hexaId][w] ][1] -= mass[w*3+1][j];
-                    lumpedMasses[ hexahedra[hexaId][w] ][2] -= mass[w*3+2][j];
+                    lumpedMasses[ hexahedra[hexaId][w] ][0] -= mass(w*3  ,j);
+                    lumpedMasses[ hexahedra[hexaId][w] ][1] -= mass(w*3+1,j);
+                    lumpedMasses[ hexahedra[hexaId][w] ][2] -= mass(w*3+2,j);
                 }
             }
         }
@@ -409,9 +409,9 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const co
             {
                 for(int j=0; j<8*3; ++j)
                 {
-                    lumpedMasses[ hexahedra[hexaId][w] ][0] -= M[w*3  ][j];
-                    lumpedMasses[ hexahedra[hexaId][w] ][1] -= M[w*3+1][j];
-                    lumpedMasses[ hexahedra[hexaId][w] ][2] -= M[w*3+2][j];
+                    lumpedMasses[ hexahedra[hexaId][w] ][0] -= M(w*3  ,j);
+                    lumpedMasses[ hexahedra[hexaId][w] ][1] -= M(w*3+1,j);
+                    lumpedMasses[ hexahedra[hexaId][w] ][2] -= M(w*3+2,j);
                 }
             }
         }
@@ -801,7 +801,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::addHtfineHtoCoarse(
             for(int k=0; k<24; ++k)
             {
                 if(j%3==k%3)
-                    A[i][j] += fine[i][k] * H[k/3][j/3];		// A = fine * H
+                    A(i,j) += fine(i,k) * H(k/3,j/3);		// A = fine * H
             }
 
     for(int i=0; i<24; i++)
@@ -809,7 +809,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::addHtfineHtoCoarse(
             for(int k=0; k<24; ++k)
             {
                 if(i%3==k%3)
-                    coarse[i][j] += H[k/3][i/3] * A[k][j];		// HtfineH = Ht * A
+                    coarse(i,j) += H(k/3,i/3) * A(k,j);		// HtfineH = Ht * A
             }
 }
 
@@ -826,7 +826,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::subtractHtfineHfromCoarse(
             for(int k=0; k<24; ++k)
             {
                 if(j%3==k%3)
-                    A[i][j] += fine[i][k] * H[k/3][j/3];		// A = fine * H
+                    A(i,j) += fine(i,k) * H(k/3,j/3);		// A = fine * H
             }
 
     for(int i=0; i<24; i++)
@@ -834,7 +834,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::subtractHtfineHfromCoarse(
             for(int k=0; k<24; ++k)
             {
                 if(i%3==k%3)
-                    coarse[i][j] -= H[k/3][i/3] * A[k][j];		// HtfineH = Ht * A
+                    coarse(i,j) -= H(k/3,i/3) * A(k,j);		// HtfineH = Ht * A
             }
 }
 
@@ -852,7 +852,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeHtfineH(
             for(int k=0; k<24; ++k)
             {
                 if(j%3==k%3)
-                    A[i][j] += fine[i][k] * H[k/3][j/3];		// A = fine * H
+                    A(i,j) += fine(i,k) * H(k/3,j/3);		// A = fine * H
             }
 
     for(int i=0; i<24; i++)
@@ -860,7 +860,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeHtfineH(
             for(int k=0; k<24; ++k)
             {
                 if(i%3==k%3)
-                    HtfineH[i][j] += H[k/3][i/3] * A[k][j];		// HtfineH = Ht * A
+                    HtfineH(i,j) += H(k/3,i/3) * A(k,j);		// HtfineH = Ht * A
             }
 }
 
@@ -989,24 +989,24 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::M
                 for (unsigned n2=0; n2<8; n2++)
                 {
                     // add M to matrix
-                    Mat33 tmp( Deriv ( Me[3*n1+0][3*n2+0]*mFactor, Me[3*n1+0][3*n2+1]*mFactor, Me[3*n1+0][3*n2+2]*mFactor ),
-                            Deriv ( Me[3*n1+1][3*n2+0]*mFactor, Me[3*n1+1][3*n2+1]*mFactor, Me[3*n1+1][3*n2+2]*mFactor ),
-                            Deriv ( Me[3*n1+2][3*n2+0]*mFactor, Me[3*n1+2][3*n2+1]*mFactor, Me[3*n1+2][3*n2+2]*mFactor )
+                    Mat33 tmp( Deriv ( Me(3*n1+0,3*n2+0)*mFactor, Me(3*n1+0,3*n2+1)*mFactor, Me(3*n1+0,3*n2+2)*mFactor ),
+                            Deriv ( Me(3*n1+1,3*n2+0)*mFactor, Me(3*n1+1,3*n2+1)*mFactor, Me(3*n1+1,3*n2+2)*mFactor ),
+                            Deriv ( Me(3*n1+2,3*n2+0)*mFactor, Me(3*n1+2,3*n2+1)*mFactor, Me(3*n1+2,3*n2+2)*mFactor )
                              );
 
                     // sub K to matrix
                     tmp -= Mat33(
-                            Deriv ( Ke[3*n1+0][3*n2+0]*kFactor, Ke[3*n1+0][3*n2+1]*kFactor, Ke[3*n1+0][3*n2+2]*kFactor ),
-                            Deriv ( Ke[3*n1+1][3*n2+0]*kFactor, Ke[3*n1+1][3*n2+1]*kFactor, Ke[3*n1+1][3*n2+2]*kFactor ),
-                            Deriv ( Ke[3*n1+2][3*n2+0]*kFactor, Ke[3*n1+2][3*n2+1]*kFactor, Ke[3*n1+2][3*n2+2]*kFactor ) );
+                            Deriv ( Ke(3*n1+0,3*n2+0)*kFactor, Ke(3*n1+0,3*n2+1)*kFactor, Ke(3*n1+0,3*n2+2)*kFactor ),
+                            Deriv ( Ke(3*n1+1,3*n2+0)*kFactor, Ke(3*n1+1,3*n2+1)*kFactor, Ke(3*n1+1,3*n2+2)*kFactor ),
+                            Deriv ( Ke(3*n1+2,3*n2+0)*kFactor, Ke(3*n1+2,3*n2+1)*kFactor, Ke(3*n1+2,3*n2+2)*kFactor ) );
 
                     // rotate the matrix
                     tmp = Re * tmp * Ret;
 
                     // store the matrix
-                    MBKe[3*n1+0][3*n2+0] = tmp[0][0], MBKe[3*n1+0][3*n2+1] = tmp[0][1], MBKe[3*n1+0][3*n2+2] = tmp[0][2];
-                    MBKe[3*n1+1][3*n2+0] = tmp[1][0], MBKe[3*n1+1][3*n2+1] = tmp[1][1], MBKe[3*n1+1][3*n2+2] = tmp[1][2];
-                    MBKe[3*n1+2][3*n2+0] = tmp[2][0], MBKe[3*n1+2][3*n2+1] = tmp[2][1], MBKe[3*n1+2][3*n2+2] = tmp[2][2];
+                    MBKe(3*n1+0,3*n2+0) = tmp(0,0), MBKe(3*n1+0,3*n2+1) = tmp(0,1), MBKe(3*n1+0,3*n2+2) = tmp(0,2);
+                    MBKe(3*n1+1,3*n2+0) = tmp(1,0), MBKe(3*n1+1,3*n2+1) = tmp(1,1), MBKe(3*n1+1,3*n2+2) = tmp(1,2);
+                    MBKe(3*n1+2,3*n2+0) = tmp(2,0), MBKe(3*n1+2,3*n2+1) = tmp(2,1), MBKe(3*n1+2,3*n2+2) = tmp(2,2);
                 }
             }
 
