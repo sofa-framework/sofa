@@ -101,12 +101,12 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
             }
         }
 
-        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[0][0]);
-        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[0][1]);
-        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[0][2]);
-        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[1][1]);
-        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[1][2]);
-        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[2][2]);
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix(0,0));
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix(0,1));
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix(0,2));
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix(1,1));
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix(1,2));
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix(2,2));
         d_compliance.setValue(usedComp);
 
         msg_info() << "\'compliance\' equals: " << d_compliance.getValue();

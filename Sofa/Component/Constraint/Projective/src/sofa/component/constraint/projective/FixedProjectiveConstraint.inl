@@ -432,13 +432,12 @@ void FixedProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams
     if( d_drawSize.getValue() == 0) // old classical drawing by points
     {
         std::vector< sofa::type::Vec3 > points;
-        sofa::type::Vec3 point;
 
         if (d_fixAll.getValue())
         {
             for (unsigned i = 0; i < x.size(); i++)
             {
-                point = DataTypes::getCPos(x[i]);
+                const type::Vec3 point = type::toVec3(DataTypes::getCPos(x[i]));
                 points.push_back(point);
             }
         }
@@ -446,7 +445,7 @@ void FixedProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams
         {
             for (const auto index : indices)
             {
-                point = DataTypes::getCPos(x[index]);
+                const type::Vec3 point = type::toVec3(DataTypes::getCPos(x[index]));
                 points.push_back(point);
             }
         }
@@ -462,7 +461,7 @@ void FixedProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams
         {
             for (unsigned i=0; i<x.size(); i++ )
             {
-                point = DataTypes::getCPos(x[i]);
+                const type::Vec3 point = type::toVec3(DataTypes::getCPos(x[i]));
                 points.push_back(point);
             }
         }
@@ -470,7 +469,7 @@ void FixedProjectiveConstraint<DataTypes>::draw(const core::visual::VisualParams
         {
             for (const auto index : indices)
             {
-                point = DataTypes::getCPos(x[index]);
+                const type::Vec3 point = type::toVec3(DataTypes::getCPos(x[index]));
                 points.push_back(point);
             }
         }

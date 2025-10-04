@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,57 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_MatEigen_H
-#define SOFA_DEFAULTTYPE_MatEigen_H
+#pragma once
+#include <sofa/gl/config.h>
 
-/** Helpers to apply Eigen matrix methods to the Mat sofa type */
-
-#include <sofa/type/Mat.h>
-#include <Eigen/Dense>
-#include <iostream>
+#include <sofa/type/fwd.h>
+#include <sofa/type/RGBAColor.h>
 
 
-namespace sofa::helper
+namespace sofa::gl
 {
 
-template <Size NumRows, Size NumCols, class Real>
-Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const type::Mat< NumRows, NumCols, Real>& mat )
+class SOFA_GL_API Frame
 {
-    Eigen::Matrix<Real, NumRows, NumCols> emat;
-    for(Size i=0; i<NumRows; i++)
-        for(Size j=0; j<NumCols; j++)
-            emat(i,j) = mat(i,j);
-    return emat;
-}
+public:
+    using Quaternion = sofa::type::Quat<SReal>;
 
-template <Size NumRows, Size NumCols, class Real>
-type::Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, NumRows, NumCols>& emat )
-{
-    type::Mat<NumRows, NumCols, Real> mat;
-    for(Size i=0; i<NumRows; i++)
-        for(Size j=0; j<NumCols; j++)
-            mat(i,j) = emat(i,j);
-    return mat;
-}
+    Frame() = delete;
+    ~Frame() = delete;
 
-template <Size NumRows, class Real>
-type::Vec<NumRows, Real>  sofaVec( const Eigen::Matrix<Real, NumRows, 1>& evec )
-{
-    type::Vec<NumRows, Real> vec;
-    for(Size i=0; i<NumRows; i++)
-        vec[i] = evec(i);
-    return vec;
-}
+    static void draw(const type::Vec3& center, const Quaternion& orient, const type::Vec3& length, const type::RGBAColor& colorX = type::RGBAColor::red(), const type::RGBAColor& colorY = type::RGBAColor::green(), const type::RGBAColor& colorZ = type::RGBAColor::red());
+    static void draw(const type::Vec3& center, const double orient[4][4], const type::Vec3& length, const type::RGBAColor& colorX = type::RGBAColor::red(), const type::RGBAColor& colorY = type::RGBAColor::green(), const type::RGBAColor& colorZ = type::RGBAColor::red());
+    static void draw(const type::Vec3& center, const Quaternion& orient, SReal length = 1.0_sreal, const type::RGBAColor& colorX = type::RGBAColor::red(), const type::RGBAColor& colorY = type::RGBAColor::green(), const type::RGBAColor& colorZ = type::RGBAColor::red());
+    static void draw(const type::Vec3& center, const double orient[4][4], SReal length = 1.0_sreal, const type::RGBAColor& colorX = type::RGBAColor::red(), const type::RGBAColor& colorY = type::RGBAColor::green(), const type::RGBAColor& colorZ = type::RGBAColor::red());
+   
+};
 
-template <Size NumRows, class Real>
-Eigen::Matrix<Real, NumRows, 1>  eigenVec( const type::Vec<NumRows, Real>& vec )
-{
-    Eigen::Matrix<Real, NumRows, 1> evec;
-    for(Size i=0; i<NumRows; i++)
-        evec(i)  = vec[i];
-    return evec;
-}
-
-}
-
-#endif
+} // namespace sofa::gl
