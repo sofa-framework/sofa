@@ -261,9 +261,9 @@ TEST(NodeTest, objectDestruction_childNode_complexChild)
 }
 
 
-struct Node_test : public BaseTest
+struct Node_test_f : public BaseTest
 {
-    Node_test() {}
+    Node_test_f() {}
 
     void test_findCommonParent()
     {
@@ -327,8 +327,8 @@ struct Node_test : public BaseTest
     }
 };
 
-TEST_F(Node_test, test_findCommonParent) { test_findCommonParent(); }
-TEST_F(Node_test, test_findCommonParent_MultipleParents) { test_findCommonParent_MultipleParents(); }
+TEST_F(Node_test_f, test_findCommonParent) { test_findCommonParent(); }
+TEST_F(Node_test_f, test_findCommonParent_MultipleParents) { test_findCommonParent_MultipleParents(); }
 
 
 /** Check the traversal of a Directed Acyclic Graph.
