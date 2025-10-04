@@ -100,20 +100,16 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
     {
         newPlane();
 
-//        i = 0 ;
         cz = gridmin.z() + mstep * z ;
-        //positions.clear();
-//        for (int y = 0 ; y < ny ; ++y)
-//        {
-//            cy = gridmin.y() + mstep * y ;
-//            for (int x = 0 ; x < nx ; ++x, ++i)
-//            {
-//                cx = gridmin.x() + mstep * x ;
-//                //positions[i].set(cx, cy, cz);
-//            }
-//        }
-
-        positions[0].z() = cz;
+        for (int y = 0 ; y < ny ; ++y)
+        {
+            cy = gridmin.y() + mstep * y ;
+            for (int x = 0 ; x < nx ; ++x, ++i)
+            {
+                cx = gridmin.x() + mstep * x ;
+                positions[i].set(cx, cy, cz);
+            }
+        }
         getFieldValueAt(positions, output) ;
 
         // Copy back the data into planes.

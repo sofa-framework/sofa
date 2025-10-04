@@ -103,7 +103,6 @@ const char* getModuleDescription()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    std::cout << "===================================================================" << std::endl;
     sofa::component::geometry::_BottleField_::registerBottleField(factory);
     sofa::component::geometry::_sphericalfield_::registerSphericalField(factory);
     sofa::component::geometry::_StarShapedField_::registerStarShapedField(factory);
