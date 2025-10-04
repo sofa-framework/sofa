@@ -117,9 +117,9 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2, const core::collisio
     MatNoInit<2, 2, Line::Coord::value_type> A;
     VecNoInit<2, Line::Coord::value_type> b;
 
-    A[0][0] = AB*AB;
-    A[1][1] = CD*CD;
-    A[0][1] = A[1][0] = -CD*AB;
+    A(0,0) = AB*AB;
+    A(1,1) = CD*CD;
+    A(0,1) = A(1,0) = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
 
@@ -130,8 +130,8 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2, const core::collisio
 
     if (det < -1.0e-30 || det > 1.0e-30)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+        alpha = (b[0]*A(1,1) - b[1]*A(0,1))/det;
+        beta  = (b[1]*A(0,0) - b[0]*A(1,0))/det;
         if (alpha < 1e-15 || alpha > (1.0-1e-15) ||
             beta  < 1e-15  || beta  > (1.0-1e-15) )
             return false;
@@ -178,9 +178,9 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     Matrix2 A;
     Vec2 b;
 
-    A[0][0] = AB*AB;
-    A[1][1] = CD*CD;
-    A[0][1] = A[1][0] = -CD*AB;
+    A(0,0) = AB*AB;
+    A(1,1) = CD*CD;
+    A(0,1) = A(1,0) = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
     const double det = type::determinant(A);
@@ -192,8 +192,8 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     if (det < -1.0e-30 || det > 1.0e-30)
     {
         // compute the parametric coordinates along the line
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+        alpha = (b[0]*A(1,1) - b[1]*A(0,1))/det;
+        beta  = (b[1]*A(0,0) - b[0]*A(1,0))/det;
 
         // if parameters are outside of ]0,1[ then there is no intersection
         // the intersection is outside of the edge supporting point.
@@ -299,9 +299,9 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1, const core::col
     // AB.AC*alpha + AC.AC*beta = AP.AC
     //
     // A . [alpha beta] = b
-    A[0][0] = AB*AB;
-    A[1][1] = AC*AC;
-    A[0][1] = A[1][0] = AB*AC;
+    A(0,0) = AB*AB;
+    A(1,1) = AC*AC;
+    A(0,1) = A(1,0) = AB*AC;
     b[0] = AP*AB;
     b[1] = AP*AC;
     const double det = type::determinant(A);
@@ -310,8 +310,8 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1, const core::col
     double beta = 0.5;
 
 
-    alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-    beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+    alpha = (b[0]*A(1,1) - b[1]*A(0,1))/det;
+    beta  = (b[1]*A(0,0) - b[0]*A(1,0))/det;
     if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)
@@ -356,16 +356,16 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
     MatNoInit<2, 2, Real> A;
     VecNoInit<2, Real> b;
 
-    A[0][0] = AB*AB;
-    A[1][1] = AC*AC;
-    A[0][1] = A[1][0] = AB*AC;
+    A(0,0) = AB*AB;
+    A(1,1) = AC*AC;
+    A(0,1) = A(1,0) = AB*AC;
     b[0] = AP*AB;
     b[1] = AP*AC;
 
     const Real det = type::determinant(A);
 
-    const Real alpha=(b[0]*A[1][1]-b[1]*A[0][1])/det;
-    const Real beta=(b[1]*A[0][0]-b[0]*A[1][0])/det;
+    const Real alpha=(b[0]*A(1,1)-b[1]*A(0,1))/det;
+    const Real beta=(b[1]*A(0,0)-b[0]*A(1,0))/det;
 
     if (alpha < 0.000001 ||
             beta  < 0.000001 ||
@@ -454,15 +454,15 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Sphere& e1, const core::co
     // AB.AC*alpha + AC.AC*beta = AP.AC
     //
     // A . [alpha beta] = b
-    A[0][0] = AB*AB;
-    A[1][1] = AC*AC;
-    A[0][1] = A[1][0] = AB*AC;
+    A(0,0) = AB*AB;
+    A(1,1) = AC*AC;
+    A(0,1) = A(1,0) = AB*AC;
     b[0] = AP*AB;
     b[1] = AP*AC;
     const Real det = type::determinant(A);
 
-    const Real alpha=(b[0]*A[1][1]-b[1]*A[0][1])/det;
-    const Real beta=(b[1]*A[0][0]-b[0]*A[1][0])/det;
+    const Real alpha=(b[0]*A(1,1)-b[1]*A(0,1))/det;
+    const Real beta=(b[1]*A(0,0)-b[0]*A(1,0))/det;
     if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)
@@ -511,16 +511,16 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
     MatNoInit<2, 2, Real> A;
     VecNoInit<2, Real> b;
 
-    A[0][0] = AB*AB;
-    A[1][1] = AC*AC;
-    A[0][1] = A[1][0] = AB*AC;
+    A(0,0) = AB*AB;
+    A(1,1) = AC*AC;
+    A(0,1) = A(1,0) = AB*AC;
     b[0] = AP*AB;
     b[1] = AP*AC;
 
     const Real det = type::determinant(A);
 
-    const Real alpha=(b[0]*A[1][1]-b[1]*A[0][1])/det;
-    const Real beta=(b[1]*A[0][0]-b[0]*A[1][0])/det;
+    const Real alpha=(b[0]*A(1,1)-b[1]*A(0,1))/det;
+    const Real beta=(b[1]*A(0,0)-b[0]*A(1,0))/det;
     if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)

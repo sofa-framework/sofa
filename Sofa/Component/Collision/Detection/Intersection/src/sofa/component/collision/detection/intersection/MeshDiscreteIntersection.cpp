@@ -64,9 +64,9 @@ int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, Output
     Triangle::Coord right(NOINIT);
     for (int i=0; i<3; i++)
     {
-        M[i][0] = AB[i];
-        M[i][1] = AC[i];
-        M[i][2] = -PQ[i];
+        M(i,0) = AB[i];
+        M(i,1) = AC[i];
+        M(i,2) = -PQ[i];
         right[i] = P[i]-A[i];
     }
     if (!Minv.invert(M))

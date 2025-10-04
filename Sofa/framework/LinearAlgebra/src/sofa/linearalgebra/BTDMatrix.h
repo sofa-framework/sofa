@@ -53,7 +53,7 @@ public:
             type::Mat<BSIZE,BSIZE,Real> r;
             for (Index i=0; i<BSIZE; i++)
                 for (Index j=0; j<BSIZE; j++)
-                    r[i][j]=-m[j][i];
+                    r(i,j)=-m(j,i);
             return r;
         }
     };
@@ -67,9 +67,9 @@ public:
         {
             this->clear();
         }
-        const T& element(Index i, Index j) const { return (*this)[i][j]; }
-        void set(Index i, Index j, const T& v) { (*this)[i][j] = v; }
-        void add(Index i, Index j, const T& v) { (*this)[i][j] += v; }
+        const T& element(Index i, Index j) const { return (*this)(i,j); }
+        void set(Index i, Index j, const T& v) { (*this)(i,j) = v; }
+        void add(Index i, Index j, const T& v) { (*this)(i,j) += v; }
         void operator=(const type::Mat<BSIZE,BSIZE,Real>& v)
         {
             type::Mat<BSIZE,BSIZE,Real>::operator=(v);
@@ -79,7 +79,7 @@ public:
             type::Mat<BSIZE,BSIZE,Real> r;
             for (Index i=0; i<BSIZE; i++)
                 for (Index j=0; j<BSIZE; j++)
-                    r[i][j]=-(*this)[i][j];
+                    r(i,j)=-(*this)(i,j);
             return r;
         }
         type::Mat<BSIZE,BSIZE,Real> operator-(const type::Mat<BSIZE,BSIZE,Real>& m) const
@@ -210,7 +210,7 @@ public:
                 {
                     for (Index j=0; j<BSIZE; ++j)
                     {
-                        r += data[bi*3+bj][i][j] * v[(bi + bj - 1)*BSIZE + j];
+                        r += data(bi*3+bj,i,j) * v[(bi + bj - 1)*BSIZE + j];
                     }
                 }
                 res[bi*BSIZE + i] = r;
