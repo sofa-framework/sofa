@@ -9,8 +9,23 @@ sofa_find_package(Json 3.1.2 REQUIRED)
 sofa_find_package(STB REQUIRED)
 # DiffLib (header only)
 sofa_find_package(DiffLib REQUIRED)
-# taskflow (header only)
-sofa_find_package(taskflow REQUIRED)
+
+# taskflow
+sofa_find_package(taskflow)
+if(NOT taskflow_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
+    message("Sofa.Helper: DEPENDENCY taskflow NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching taskflow...")
+
+    sofa_fetch_dependency(taskflow
+        GIT_REPOSITORY https://github.com/taskflow/taskflow.git
+        GIT_TAG        v3.10.0
+        DONT_BUILD
+    )
+
+    set(TASKFLOW_ROOT ${taskflow_SOURCE_DIR})
+    sofa_find_package(taskflow REQUIRED)
+elseif (NOT taskflow_FOUND)
+    message(FATAL_ERROR "Sofa.Helper: DEPENDENCY taskflow NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install taskflow, or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
+endif()
 
 set(SRC_ROOT "src/sofa/helper")
 
