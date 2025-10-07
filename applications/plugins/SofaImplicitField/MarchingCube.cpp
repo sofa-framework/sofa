@@ -30,21 +30,6 @@
 namespace sofaimplicitfield
 {
 
-void MarchingCube::newPlane()
-{
-    CubeData c;
-    c.p[0] = -1;
-    c.p[1] = -1;
-    c.p[2] = -1;
-    c.data = 0;
-    typename std::vector<CubeData>::iterator P = P0;
-    P0 = P1;
-    P1 = P;
-    int n = planes.size()/2;
-    for (int i=0; i<n; ++i,++P)
-        *P = c;
-}
-
 void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, const double invStep,
                                        const Vec3d& gridmin, const Vec3d& gridmax,
                                        std::function<void(std::vector<Vec3d>&, std::vector<double>&)> getFieldValueAt,
@@ -54,39 +39,44 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
     int ny = floor((gridmax.y() - gridmin.y()) * invStep) + 1 ;
     int nz = floor((gridmax.z() - gridmin.z()) * invStep) + 1 ;
 
-    if( nz <= 0 || ny <= 0 || nx <= 0 )
+    // Marching cubes only works for a grid size larger than two
+    if( nz < 2 || ny < 2 || nx < 2 )
         return;
 
     double cx,cy,cz;
-    int x,y,z,i,mk;
+    int z,mk;
     const int *tri;
 
-    planes.resize(2*(nx)*(ny));
-    P0 = planes.begin()+0;
+    // Creates two planes
+    CubeData c{{-1,-1,-1},0};
+    planes.reserve(2*nx*ny);
+    for(size_t i=0;i<planes.size();++i)
+    {
+        planes.emplace_back(c);
+    }
+    // Keep two pointers for the first plane and the secons
+    P0 = planes.begin();
     P1 = planes.begin()+nx*ny;
 
     const int dx = 1;
     const int dy = nx;
 
     z = 0;
-    newPlane();
-
-    i = 0 ;
-    cz = gridmin.z()  ;
 
     std::vector<Vec3d> positions;
-    std::vector<double> output;
-    positions.resize(ny*nx);
-    output.resize(nx*ny);
-    for (int y = 0 ; y < ny ; ++y)
+    positions.resize(nx*ny);
+    cz = gridmin.z();
+    for (int i=0, y = 0 ; y < ny ; ++y)
     {
         cy = gridmin.y() + mstep * y ;
-        for (int x = 0 ; x < nx ; ++x, ++i)
+        for (int x = 0 ; x < nx ; ++x)
         {
             cx = gridmin.x() + mstep * x ;
-            positions[i].set(cx, cy, cz );
+            positions[i++].set(cx, cy, cz );
         }
     }
+
+    std::vector<double> output;
     getFieldValueAt(positions, output) ;
 
     // Copy back the data into planes.
@@ -98,18 +88,19 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
 
     for (z=1; z<=nz; ++z)
     {
-        newPlane();
+        std::swap(P0, P1);
 
         cz = gridmin.z() + mstep * z ;
-        for (int y = 0 ; y < ny ; ++y)
+        for (int i=0, y=0 ; y < ny ; ++y)
         {
             cy = gridmin.y() + mstep * y ;
-            for (int x = 0 ; x < nx ; ++x, ++i)
+            for (int x = 0 ; x < nx ; ++x)
             {
                 cx = gridmin.x() + mstep * x ;
-                positions[i].set(cx, cy, cz);
+                positions[i++].set(cx, cy, cz);
             }
         }
+        output.clear();
         getFieldValueAt(positions, output) ;
 
         // Copy back the data into planes.
@@ -120,7 +111,6 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
             it++;
         }
 
-        unsigned int i=0;
         int edgecube[12];
         const int edgepts[12] = {0,1,0,1,0,1,0,1,2,2,2,2};
         typename std::vector<CubeData>::iterator base = planes.begin();
@@ -139,56 +129,50 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
         edgecube[10] = (ip1      );
         edgecube[11] = (ip1-dx   );
 
-        // First line is all zero
-        {
-            y=0;
-            x=0;
-            i+=nx;
-        }
-        for(y=1; y<ny; y++)
+        unsigned int di = nx;
+        for(int y=1; y<ny; y++)
         {
             // First column is all zero
-            x=0;
-            ++i;
-
+            int x=0;
+            ++di;
             for(x=1; x<nx; x++)
             {
                 Vec3d pos(x, y, z);
-                if (((P1+i)->data>isoval)^((P1+i-dx)->data>isoval))
+                if (((P1+di)->data>isoval)^((P1+di-dx)->data>isoval))
                 {
-                    (P1+i)->p[0] = addPoint(tmpPoints, 0, pos,gridmin, (P1+i)->data,(P1+i-dx)->data, mstep, isoval);
+                    (P1+di)->p[0] = addPoint(tmpPoints, 0, pos,gridmin, (P1+di)->data,(P1+di-dx)->data, mstep, isoval);
                 }
-                if (((P1+i)->data>isoval)^((P1+i-dy)->data>isoval))
+                if (((P1+di)->data>isoval)^((P1+di-dy)->data>isoval))
                 {
-                    (P1+i)->p[1] = addPoint(tmpPoints, 1, pos,gridmin,(P1+i)->data,(P1+i-dy)->data, mstep, isoval);
+                    (P1+di)->p[1] = addPoint(tmpPoints, 1, pos,gridmin,(P1+di)->data,(P1+di-dy)->data, mstep, isoval);
                 }
-                if (((P1+i)->data>isoval)^((P0+i)->data>isoval))
+                if (((P1+di)->data>isoval)^((P0+di)->data>isoval))
                 {
-                    (P1+i)->p[2] = addPoint(tmpPoints, 2, pos,gridmin,(P1+i)->data,(P0+i)->data, mstep, isoval);
+                    (P1+di)->p[2] = addPoint(tmpPoints, 2, pos,gridmin,(P1+di)->data,(P0+di)->data, mstep, isoval);
                 }
 
                 // All points should now be created
-                if ((P0+i-dx-dy)->data > isoval) mk = 1;
+                if ((P0+di-dx-dy)->data > isoval) mk = 1;
                 else mk=0;
-                if ((P0+i   -dy)->data > isoval) mk|= 2;
-                if ((P0+i      )->data > isoval) mk|= 4;
-                if ((P0+i-dx   )->data > isoval) mk|= 8;
-                if ((P1+i-dx-dy)->data > isoval) mk|= 16;
-                if ((P1+i   -dy)->data > isoval) mk|= 32;
-                if ((P1+i      )->data > isoval) mk|= 64;
-                if ((P1+i-dx   )->data > isoval) mk|= 128;
+                if ((P0+di   -dy)->data > isoval) mk|= 2;
+                if ((P0+di      )->data > isoval) mk|= 4;
+                if ((P0+di-dx   )->data > isoval) mk|= 8;
+                if ((P1+di-dx-dy)->data > isoval) mk|= 16;
+                if ((P1+di   -dy)->data > isoval) mk|= 32;
+                if ((P1+di      )->data > isoval) mk|= 64;
+                if ((P1+di-dx   )->data > isoval) mk|= 128;
 
                 tri=sofa::helper::MarchingCubeTriTable[mk];
                 while (*tri>=0)
                 {
-                    typename std::vector<CubeData>::iterator b = base+i;
+                    typename std::vector<CubeData>::iterator b = base+di;
                     addFace(tmpTriangles,
                                 (b+edgecube[tri[0]])->p[edgepts[tri[0]]],
                                 (b+edgecube[tri[1]])->p[edgepts[tri[1]]],
                                 (b+edgecube[tri[2]])->p[edgepts[tri[2]]], tmpPoints.size());
                     tri+=3;
                 }
-                ++i;
+                ++di;
             }
         }
     }

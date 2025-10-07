@@ -44,8 +44,6 @@ public:
                              SeqCoord& tmpPoints, SeqTriangles& tmpTriangles);
 
 private:
-    void newPlane();
-
     /// For each cube, store the vertex indices on each 3 first edges, and the data value
     struct CubeData
     {
