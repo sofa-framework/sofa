@@ -64,7 +64,9 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
     z = 0;
 
     std::vector<Vec3d> positions;
+    std::vector<double> output;
     positions.resize(nx*ny);
+    output.resize(nx*ny);
     cz = gridmin.z();
     for (int i=0, y = 0 ; y < ny ; ++y)
     {
@@ -75,8 +77,6 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
             positions[i++].set(cx, cy, cz );
         }
     }
-
-    std::vector<double> output;
     getFieldValueAt(positions, output) ;
 
     // Copy back the data into planes.
@@ -100,7 +100,6 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
                 positions[i++].set(cx, cy, cz);
             }
         }
-        output.clear();
         getFieldValueAt(positions, output) ;
 
         // Copy back the data into planes.
