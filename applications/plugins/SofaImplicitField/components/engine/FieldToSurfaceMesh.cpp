@@ -39,17 +39,19 @@ FieldToSurfaceMesh::FieldToSurfaceMesh()
     , d_step(initData(&d_step,0.1,"step","Step"))
     , d_IsoValue(initData(&d_IsoValue,0.0,"isoValue","Iso Value"))
     , d_gridMin(initData(&d_gridMin, Vec3d(-1,-1,-1),"min","Grid Min"))
-    , d_dridMax(initData(&d_dridMax, Vec3d(1,1,1),"max","Grid Max"))
+    , d_gridMax(initData(&d_gridMax, Vec3d(1,1,1),"max","Grid Max"))
     , d_outPoints(initData(&d_outPoints, "points", "position of the tiangles vertex"))
     , d_outTriangles(initData(&d_outTriangles, "triangles", "list of triangles"))
     , d_debugDraw(initData(&d_debugDraw,false, "debugDraw","Display the extracted surface"))
 {
-    addUpdateCallback("updateMesh", {&d_step, &d_IsoValue, &d_gridMin, &d_dridMax}, [this](const sofa::core::DataTracker&)
+    addUpdateCallback("updateMesh", {&d_step, &d_IsoValue, &d_gridMin, &d_gridMax}, [this](const sofa::core::DataTracker&)
     {
         checkInputs();
-        hasChanged=true;
+        updateMeshIfNeeded();
         return core::objectmodel::ComponentState::Valid;
-    }, {});
+    }, {&d_outPoints, &d_outTriangles});
+    d_outPoints.setGroup("Output");
+    d_outTriangles.setGroup("Output");
 }
 
 FieldToSurfaceMesh::~FieldToSurfaceMesh()
@@ -64,14 +66,17 @@ void FieldToSurfaceMesh::init()
         d_componentState = core::objectmodel::ComponentState::Invalid;
     }
 
-    updateMeshIfNeeded();
-
     d_componentState = core::objectmodel::ComponentState::Valid;
+}
+
+void FieldToSurfaceMesh::computeBBox(const core::ExecParams* /* params */, bool /*onlyVisible*/)
+{
+    f_bbox.setValue({d_gridMin.getValue(), d_gridMax.getValue()});
 }
 
 void FieldToSurfaceMesh::checkInputs(){
 
-    auto length = d_dridMax.getValue()-d_gridMin.getValue() ;
+    auto length = d_gridMax.getValue()-d_gridMin.getValue() ;
     auto step = d_step.getValue();
 
     // clamp the mStep value to avoid too large grids
@@ -84,9 +89,6 @@ void FieldToSurfaceMesh::checkInputs(){
 
 void FieldToSurfaceMesh::updateMeshIfNeeded()
 {
-    if(!hasChanged)
-        return;
-
     sofa::helper::getWriteOnlyAccessor(d_outPoints).clear();
     sofa::helper::getWriteOnlyAccessor(d_outTriangles).clear();
 
@@ -95,7 +97,7 @@ void FieldToSurfaceMesh::updateMeshIfNeeded()
     double invStep = 1.0/d_step.getValue();
 
     Vec3d gridmin = d_gridMin.getValue() ;
-    Vec3d gridmax = d_dridMax.getValue() ;
+    Vec3d gridmax = d_gridMax.getValue() ;
 
     auto field = l_field.get();
 
@@ -108,10 +110,10 @@ void FieldToSurfaceMesh::updateMeshIfNeeded()
 
     marchingCube.generateSurfaceMesh(isoval, mstep, invStep, gridmin, gridmax,
                                      [field](std::vector<Vec3d>& positions, std::vector<double>& res){
-                                        res.reserve(positions.size());
+                                        int i=0;
                                         for(auto& position : positions)
                                         {
-                                            res.emplace_back(field->getValue(position));
+                                            res[i++]=field->getValue(position);
                                         }
                                       },
                                      tmpPoints, tmpTriangles);
@@ -135,11 +137,7 @@ void FieldToSurfaceMesh::draw(const VisualParams* vparams)
     if(!d_debugDraw.getValue())
         return;
 
-    updateMeshIfNeeded();
-
     auto drawTool = vparams->drawTool();
-
-    drawTool->drawBoundingBox(d_gridMin.getValue(), d_dridMax.getValue()) ;
 
     sofa::helper::ReadAccessor< Data<VecCoord> > x = d_outPoints;
     sofa::helper::ReadAccessor< Data<SeqTriangles> > triangles = d_outTriangles;

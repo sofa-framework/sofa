@@ -58,9 +58,9 @@ public:
     void setGridMin(const Vec3d& val) { d_gridMin.setValue(val); }
     void setGridMin(double x, double y, double z) { d_gridMin.setValue( Vec3d(x,y,z)); }
 
-    const Vec3d& getGridMax() const { return d_dridMax.getValue(); }
-    void setGridMax(const Vec3d& val) { d_dridMax.setValue(val); }
-    void setGridMax(double x, double y, double z) { d_dridMax.setValue( Vec3d(x,y,z)); }
+    const Vec3d& getGridMax() const { return d_gridMax.getValue(); }
+    void setGridMax(const Vec3d& val) { d_gridMax.setValue(val); }
+    void setGridMax(double x, double y, double z) { d_gridMax.setValue( Vec3d(x,y,z)); }
 
 protected:
     SingleLink<FieldToSurfaceMesh, ScalarField,
@@ -70,7 +70,7 @@ protected:
     Data <double > d_IsoValue;
 
     Data< Vec3d > d_gridMin;
-    Data< Vec3d > d_dridMax;
+    Data< Vec3d > d_gridMax;
 
     /// Output
     Data<VecCoord>      d_outPoints;
@@ -82,6 +82,8 @@ protected:
     virtual ~FieldToSurfaceMesh() ;
 
 private:
+    void computeBBox(const core::ExecParams* /* params */, bool /*onlyVisible*/=false) override;
+
     void checkInputs();
 
     void generateSurfaceMesh(double isoval, double mstep, double invStep,
