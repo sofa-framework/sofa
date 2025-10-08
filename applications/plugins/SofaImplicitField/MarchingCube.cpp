@@ -63,50 +63,36 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
 
     z = 0;
 
-    std::vector<Vec3d> positions;
-    std::vector<double> output;
-    positions.resize(nx*ny);
-    output.resize(nx*ny);
-    cz = gridmin.z();
-    for (int i=0, y = 0 ; y < ny ; ++y)
+    auto fillPlane = [getFieldValueAt](std::vector<Vec3d> &positions, std::vector<double>& output,
+                           double mstep, double gridmin_y, double gridmin_x, int ny, int nx, float cz,
+                           std::vector<CubeData>::iterator itDestPlane)
     {
-        cy = gridmin.y() + mstep * y ;
-        for (int x = 0 ; x < nx ; ++x)
+        for (int i=0, y = 0 ; y < ny ; ++y)
         {
-            cx = gridmin.x() + mstep * x ;
-            positions[i++].set(cx, cy, cz );
-        }
-    }
-    getFieldValueAt(positions, output) ;
-
-    // Copy back the data into planes.
-    auto it = P0;
-    for(auto res : output){
-        it->data = res;
-        it++;
-    }
-
-    for (z=1; z<=nz; ++z)
-    {
-        cz = gridmin.z() + mstep * z ;
-        for (int i=0, y=0 ; y < ny ; ++y)
-        {
-            cy = gridmin.y() + mstep * y ;
+            double cy = gridmin_y + mstep * y ;
             for (int x = 0 ; x < nx ; ++x)
             {
-                cx = gridmin.x() + mstep * x ;
-                positions[i++].set(cx, cy, cz);
+                double cx = gridmin_x + mstep * x ;
+                positions[i++].set(cx, cy, cz );
             }
         }
         getFieldValueAt(positions, output) ;
 
-        // Copy back the data into planes.
-        auto it = P1;
-        for(auto res : output)
-        {
-            it->data = res;
-            it++;
+        for(auto res : output){
+            itDestPlane->data = res;
+            itDestPlane++;
         }
+    };
+
+    std::vector<Vec3d> positions;
+    std::vector<double> output;
+    positions.resize(nx*ny);
+    output.resize(nx*ny);
+
+    fillPlane(positions, output, mstep, gridmin.y(), gridmin.x(), ny, nx, gridmin.z(), P0);
+    for (z=1; z<=nz; ++z)
+    {
+        fillPlane(positions, output, mstep, gridmin.y(), gridmin.x(), ny, nx, gridmin.z() + mstep * z, P1);
 
         int edgecube[12];
         const int edgepts[12] = {0,1,0,1,0,1,0,1,2,2,2,2};
