@@ -25,11 +25,13 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/ParallelForEach.h>
+#include <Eigen/Eigenvalues>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
 BuiltConstraintSolver::BuiltConstraintSolver()
 : d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
+, d_useSVDForRegularization(initData(&d_useSVDForRegularization, false, "useSVDForRegularization", "Use SVD decomposiiton of the compliance matrix to project singular values smaller than regularization to the regularization term. Only works with built"))
 {}
 
 void BuiltConstraintSolver::init()
@@ -40,6 +42,82 @@ void BuiltConstraintSolver::init()
         simulation::MainTaskSchedulerFactory::createInRegistry()->init();
     }
 }
+
+void BuiltConstraintSolver::addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization)
+{
+
+    if (d_useSVDForRegularization.getValue())
+    {
+        if (regularization>std::numeric_limits<SReal>::epsilon())
+        {
+            auto * FullW =  dynamic_cast<sofa::linearalgebra::LPtrFullMatrix<SReal> * >(&W);
+            const size_t problemSize = FullW->rowSize();
+
+            Eigen::Map<Eigen::MatrixX<SReal>> EigenW(FullW->ptr(),problemSize, problemSize) ;
+            Eigen::JacobiSVD<Eigen::MatrixXd> svd( EigenW, Eigen::ComputeFullV | Eigen::ComputeFullU );
+
+
+
+            //Given the SVD, loop over all singular values, and those that are smaller than 1% of the highest one are considered to be the null space
+            std::vector<bool> nullSpaceIndicator(problemSize, false);
+            int nullSpaceBegin = -1;
+            for(size_t i=0; i<problemSize; i++)
+            {
+                if (fabs(svd.singularValues()(i)) < fabs(svd.singularValues()(0))/100.0)
+                {
+                    nullSpaceBegin = i;
+                    break;
+                }
+            }
+
+            //Now for all vector of the null space basis, we look at the indices where the coefficient
+            //is greater than 1% of the highest value of the vector, this is the constraints that
+            //belong to the null space and thus have other one that are antagonists
+            for(int i=nullSpaceBegin; (i != -1) && (i<problemSize); ++i)
+            {
+                const SReal indic = std::max(svd.matrixV().col(i).maxCoeff(), fabs(svd.matrixV().col(i).minCoeff())) / 100.0;
+                for(size_t j=0; j<problemSize; j++)
+                    nullSpaceIndicator[j] = nullSpaceIndicator[j] ||  fabs(svd.matrixV().col(i)(j)) > indic;
+            }
+
+            if (f_printLog.getValue())
+            {
+                std::stringstream msg ;
+                msg <<"Unregularized diagonal : ";
+                for(size_t i=0; i<problemSize; i++)
+                    msg<<EigenW(i,i) << "  ";
+                msg_info()<< msg.str();
+            }
+
+            //Because the eigen matrix uses the buffer of W to store the matrix, this is sufficient to set the value.
+            //Now using the indicator vector, set the regularization for the constraints that belongs
+            //to the null space to the regularization term
+            for(size_t i=0; i<problemSize; i++)
+                EigenW(i,i) += nullSpaceIndicator[i]*d_regularizationTerm.getValue();
+
+            if (f_printLog.getValue())
+            {
+                std::stringstream msg ;
+                msg <<"Null space : ";
+                for(size_t i=0; i<problemSize; i++)
+                    msg<<nullSpaceIndicator[i] << "  ";
+                msg_info()<< msg.str();
+
+                msg.flush();
+                msg <<"Regularized diagonal : ";
+                for(size_t i=0; i<problemSize; i++)
+                    msg<<EigenW(i,i) << "  ";
+                msg_info()<< msg.str();
+            }
+
+        }
+    }
+    else
+    {
+        Inherit1::addRegularization(W, regularization);
+    }
+}
+
 
 void BuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cParams, GenericConstraintProblem * problem ,unsigned int numConstraints)
 {

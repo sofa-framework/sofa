@@ -123,7 +123,7 @@ protected:
     virtual void doSolve( GenericConstraintProblem * problem, SReal timeout = 0.0) = 0;
 
 
-    static void addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization);
+    virtual void addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization);
 
 
 private:
