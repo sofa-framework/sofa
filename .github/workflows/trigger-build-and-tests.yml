@@ -41,10 +41,9 @@ on:
         description: On which OS run the binaries generation
         options: 
         - '["sh-ubuntu_gcc_release"]'
-        - '["sh-windows_vs2022_release"]'
         - '["sh-macos_clang_release"]'
-        - '["sh-ubuntu_gcc_release","sh-windows_vs2022_release","sh-macos_clang_release"]'
-        default: '["sh-ubuntu_gcc_release","sh-windows_vs2022_release","sh-macos_clang_release"]'
+        - '["sh-ubuntu_gcc_release","sh-macos_clang_release"]'
+        default: '["sh-ubuntu_gcc_release","sh-macos_clang_release"]'
 
 
 
@@ -165,7 +164,7 @@ jobs:
           echo "SOFA_COMMIT_SHA=${{ github.sha }}">> $GITHUB_ENV
           echo "WITH_ALL_TESTS=true" >> $GITHUB_ENV
           echo "FORCE_FULL_BUILD=true" >> $GITHUB_ENV
-          echo 'BUILDER_OS=["sh-ubuntu_gcc_release","sh-ubuntu_clang_release","sh-ubuntu_clang_debug","sh-fedora_clang_release","sh-windows_vs2022_release","sh-macos_clang_release"]' >> $GITHUB_ENV
+          echo 'BUILDER_OS=["sh-ubuntu_gcc_release","sh-ubuntu_clang_release","sh-ubuntu_clang_debug","sh-fedora_clang_release","sh-macos_clang_release"]' >> $GITHUB_ENV
 
       - name: Run when PR is opened or a commit is pushed in a PR
         if: ${{ github.event_name == 'pull_request' }}
@@ -296,7 +295,7 @@ jobs:
           echo "PR_OWNER_URL=" >> $GITHUB_ENV              # PR_OWNER_URL: ""
           echo "PR_BRANCH_NAME=" >> $GITHUB_ENV            # PR_BRANCH_NAME: ""
           echo "PR_COMMIT_SHA=HEAD" >> $GITHUB_ENV         # PR_COMMIT_SHA: "HEAD"
-          echo 'BUILDER_OS=["sh-ubuntu_gcc_release"]' >> $GITHUB_ENV            # BUILDER_OS: ["sh-ubuntu_gcc_release"]
+          echo 'BUILDER_OS=["sh-ubuntu_gcc_release","sh-macos_clang_release"]' >> $GITHUB_ENV            # BUILDER_OS: ["sh-ubuntu_gcc_release","sh-macos_clang_release"]
           
       - name: Set up python
         uses: actions/setup-python@v5
@@ -318,7 +317,7 @@ jobs:
           echo "PRESET=standard-dev" >> $GITHUB_ENV
           echo "WITH_ALL_TESTS=true" >> $GITHUB_ENV
           echo "GENERATE_BINARIES=true" >> $GITHUB_ENV
-          echo 'BUILDER_OS=["sh-ubuntu_gcc_release","sh-windows_vs2022_release","sh-macos_clang_release"]' >> $GITHUB_ENV
+          echo 'BUILDER_OS=["sh-ubuntu_gcc_release","sh-macos_clang_release"]' >> $GITHUB_ENV
 
       - name: Export environment variables as outputs
         id: export-vars
@@ -363,3 +362,25 @@ jobs:
       pr-branch-name: ${{ needs.filter_build.outputs.PR_BRANCH_NAME }}
       pr-commit-sha: ${{ needs.filter_build.outputs.PR_COMMIT_SHA }}
       builder-os: ${{ needs.filter_build.outputs.BUILDER_OS }}
+
+
+  
+  # Trigger the build and sharing all parameters from nightly_build > outputs
+  call-workflow-passing-data:
+    needs: nightly_build
+    uses: bakpaul/sofa/.github/workflows/build-and-test.yml@master
+    with:
+      sofa-branch-name: ${{ needs.nightly_build.outputs.SOFA_BRANCH_NAME }}
+      sofa-commit-sha: ${{ needs.nightly_build.outputs.SOFA_COMMIT_SHA }}
+      preset: ${{ needs.nightly_build.outputs.PRESET }}
+      python-version: ${{ needs.nightly_build.outputs.PYTHON_VERSION }}
+      ci-depends-on: ${{ needs.nightly_build.outputs.CI_DEPENDS_ON }}
+      with-all-tests: ${{ needs.nightly_build.outputs.WITH_ALL_TESTS == 'true'}}
+      force-full-build: ${{ needs.nightly_build.outputs.FORCE_FULL_BUILD == 'true'}}
+      external-plugins: ${{ needs.nightly_build.outputs.EXTERNAL_PLUGINS }}
+      additionnal-cmake-flags: ${{ needs.nightly_build.outputs.ADDITIONNAL_CMAKE_FLAGS }}
+      generate-binaries: ${{ needs.nightly_build.outputs.GENERATE_BINARIES == 'true'}}
+      pr-owner-url: ${{ needs.nightly_build.outputs.PR_OWNER_URL }}
+      pr-branch-name: ${{ needs.nightly_build.outputs.PR_BRANCH_NAME }}
+      pr-commit-sha: ${{ needs.nightly_build.outputs.PR_COMMIT_SHA }}
+      builder-os: ${{ needs.nightly_build.outputs.BUILDER_OS }}
