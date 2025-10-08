@@ -778,12 +778,11 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     [[maybe_unused]] const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     std::vector<type::Vec3> points;
-    type::Vec3 point;
 
     const OutVecCoord& x =this->toModel->read(core::vec_id::read_access::position)->getValue();
     for (unsigned int i = 0; i < x.size(); i++)
     {
-        point = Out::getCPos(x[i]);
+        const type::Vec3 point = toVec3(Out::getCPos(x[i]));
         points.push_back(point);
     }
     vparams->drawTool()->drawPoints(points, 7, sofa::type::RGBAColor::yellow() );
