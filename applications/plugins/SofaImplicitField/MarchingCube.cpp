@@ -49,12 +49,12 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
 
     // Creates two planes
     CubeData c{{-1,-1,-1},0};
-    planes.reserve(2*nx*ny);
+    planes.resize(2*nx*ny);
     for(size_t i=0;i<planes.size();++i)
     {
-        planes.emplace_back(c);
+        planes[i] = c;
     }
-    // Keep two pointers for the first plane and the secons
+    // Keep two pointers for the first plane and the seconds
     P0 = planes.begin();
     P1 = planes.begin()+nx*ny;
 
@@ -80,7 +80,7 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
     getFieldValueAt(positions, output) ;
 
     // Copy back the data into planes.
-    auto it = P1;
+    auto it = P0;
     for(auto res : output){
         it->data = res;
         it++;
@@ -88,8 +88,6 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
 
     for (z=1; z<=nz; ++z)
     {
-        std::swap(P0, P1);
-
         cz = gridmin.z() + mstep * z ;
         for (int i=0, y=0 ; y < ny ; ++y)
         {
@@ -174,6 +172,7 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
                 ++di;
             }
         }
+        std::swap(P0, P1);
     }
 }
 
