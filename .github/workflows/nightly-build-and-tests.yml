@@ -1,0 +1,122 @@
+name: Nightly build and tests
+
+# ===============================================================
+# ===============================================================
+
+
+on:
+  # Nightly build
+  schedule:
+    - cron: '0 2 * * *'   # Evevery night
+
+# ===============================================================
+# ===============================================================
+
+
+jobs:
+  # Nightly build triggered once a day        
+  nightly_build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sofa_version: [master, v24.12]
+    ### if: ${{ github.repository_owner == 'sofa-framework' }}
+    outputs:
+      SOFA_BRANCH_NAME: ${{ steps.export-vars.outputs.SOFA_BRANCH_NAME }}
+      SOFA_COMMIT_SHA: ${{ steps.export-vars.outputs.SOFA_COMMIT_SHA }}
+      PRESET: ${{ steps.export-vars.outputs.PRESET }}
+      PYTHON_VERSION: ${{ steps.export-vars.outputs.PYTHON_VERSION }}
+      CI_DEPENDS_ON: ${{ steps.export-vars.outputs.CI_DEPENDS_ON }}
+      WITH_ALL_TESTS: ${{ steps.export-vars.outputs.WITH_ALL_TESTS }}
+      FORCE_FULL_BUILD: ${{ steps.export-vars.outputs.FORCE_FULL_BUILD }}
+      EXTERNAL_PLUGINS: ${{ steps.export-vars.outputs.EXTERNAL_PLUGINS }}
+      ADDITIONNAL_CMAKE_FLAGS: ${{ steps.export-vars.outputs.ADDITIONNAL_CMAKE_FLAGS }} 
+      GENERATE_BINARIES: ${{ steps.export-vars.outputs.GENERATE_BINARIES }}
+      PR_OWNER_URL: ${{ steps.export-vars.outputs.PR_OWNER_URL }}
+      PR_BRANCH_NAME: ${{ steps.export-vars.outputs.PR_BRANCH_NAME }}
+      PR_COMMIT_SHA: ${{ steps.export-vars.outputs.PR_COMMIT_SHA }}
+      BUILDER_OS: ${{ steps.export-vars.outputs.BUILDER_OS }}
+      
+    steps:
+      - name: Default values of environment variables
+        run: |
+          echo "SOFA_BRANCH_NAME=master" >> $GITHUB_ENV    # SOFA_BRANCH_NAME: "master"
+          echo "SOFA_COMMIT_SHA=HEAD" >> $GITHUB_ENV       # SOFA_COMMIT_SHA: "HEAD"
+          echo "PRESET=full" >> $GITHUB_ENV                # PRESET: "full"
+          echo "PYTHON_VERSION=3.12" >> $GITHUB_ENV        # PYTHON_VERSION: "3.12"
+          echo "CI_DEPENDS_ON=" >> $GITHUB_ENV             # CI_DEPENDS_ON: ""
+          echo "WITH_ALL_TESTS=false" >> $GITHUB_ENV       # WITH_ALL_TESTS: false
+          echo "FORCE_FULL_BUILD=false" >> $GITHUB_ENV     # FORCE_FULL_BUILD: false
+          echo "EXTERNAL_PLUGINS=" >> $GITHUB_ENV          # EXTERNAL_PLUGINS: "" 
+          echo "ADDITIONNAL_CMAKE_FLAGS=" >> $GITHUB_ENV   # ADDITIONNAL_CMAKE_FLAGS: "" 
+          echo "GENERATE_BINARIES=false" >> $GITHUB_ENV    # GENERATE_BINARIES: false
+          echo "PR_OWNER_URL=" >> $GITHUB_ENV              # PR_OWNER_URL: ""
+          echo "PR_BRANCH_NAME=" >> $GITHUB_ENV            # PR_BRANCH_NAME: ""
+          echo "PR_COMMIT_SHA=HEAD" >> $GITHUB_ENV         # PR_COMMIT_SHA: "HEAD"
+          echo 'BUILDER_OS=["sh-ubuntu_gcc_release","sh-macos_clang_release"]' >> $GITHUB_ENV            # BUILDER_OS: ["sh-ubuntu_gcc_release","sh-macos_clang_release"]
+          
+      - name: Set up python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install pip packages
+        run: |
+          pip install python-graphql-client
+          pip install requests
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Run when nightly
+        run: |
+          echo "This step runs only for nightly builds."
+          echo "SOFA_BRANCH_NAME=${{ matrix.sofa_version }}" >> $GITHUB_ENV
+          echo "PRESET=standard-dev" >> $GITHUB_ENV
+          echo "WITH_ALL_TESTS=true" >> $GITHUB_ENV
+          echo "GENERATE_BINARIES=true" >> $GITHUB_ENV
+          echo 'BUILDER_OS=["sh-ubuntu_gcc_release","sh-macos_clang_release"]' >> $GITHUB_ENV
+
+      - name: Export environment variables as outputs
+        id: export-vars
+        run: |
+          echo "SOFA_BRANCH_NAME=${SOFA_BRANCH_NAME}" >> $GITHUB_OUTPUT
+          echo "SOFA_COMMIT_SHA=${SOFA_COMMIT_SHA}" >> $GITHUB_OUTPUT
+          echo "PRESET=${PRESET}" >> $GITHUB_OUTPUT
+          echo "PYTHON_VERSION=${PYTHON_VERSION}" >> $GITHUB_OUTPUT
+          echo "CI_DEPENDS_ON=${CI_DEPENDS_ON}" >> $GITHUB_OUTPUT
+          echo "WITH_ALL_TESTS=${WITH_ALL_TESTS}" >> $GITHUB_OUTPUT
+          echo "FORCE_FULL_BUILD=${FORCE_FULL_BUILD}" >> $GITHUB_OUTPUT
+          echo "EXTERNAL_PLUGINS=${EXTERNAL_PLUGINS}" >> $GITHUB_OUTPUT 
+          echo "ADDITIONNAL_CMAKE_FLAGS=${ADDITIONNAL_CMAKE_FLAGS}" >> $GITHUB_OUTPUT 
+          echo "GENERATE_BINARIES=${GENERATE_BINARIES}" >> $GITHUB_OUTPUT
+          echo "PR_OWNER_URL=${PR_OWNER_URL}" >> $GITHUB_OUTPUT
+          echo "PR_BRANCH_NAME=${PR_BRANCH_NAME}" >> $GITHUB_OUTPUT
+          echo "PR_COMMIT_SHA=${PR_COMMIT_SHA}" >> $GITHUB_OUTPUT
+          echo "BUILDER_OS=${BUILDER_OS}" >> $GITHUB_OUTPUT
+
+
+
+
+  # ===============================================================
+  # ===============================================================
+  
+  # Trigger the build and sharing all parameters from nightly_build > outputs
+  call-workflow-passing-data-from-nightly:
+    needs: nightly_build
+    uses: bakpaul/sofa/.github/workflows/build-and-test.yml@master
+    with:
+      sofa-branch-name: ${{ needs.nightly_build.outputs.SOFA_BRANCH_NAME }}
+      sofa-commit-sha: ${{ needs.nightly_build.outputs.SOFA_COMMIT_SHA }}
+      preset: ${{ needs.nightly_build.outputs.PRESET }}
+      python-version: ${{ needs.nightly_build.outputs.PYTHON_VERSION }}
+      ci-depends-on: ${{ needs.nightly_build.outputs.CI_DEPENDS_ON }}
+      with-all-tests: ${{ needs.nightly_build.outputs.WITH_ALL_TESTS == 'true'}}
+      force-full-build: ${{ needs.nightly_build.outputs.FORCE_FULL_BUILD == 'true'}}
+      external-plugins: ${{ needs.nightly_build.outputs.EXTERNAL_PLUGINS }}
+      additionnal-cmake-flags: ${{ needs.nightly_build.outputs.ADDITIONNAL_CMAKE_FLAGS }}
+      generate-binaries: ${{ needs.nightly_build.outputs.GENERATE_BINARIES == 'true'}}
+      pr-owner-url: ${{ needs.nightly_build.outputs.PR_OWNER_URL }}
+      pr-branch-name: ${{ needs.nightly_build.outputs.PR_BRANCH_NAME }}
+      pr-commit-sha: ${{ needs.nightly_build.outputs.PR_COMMIT_SHA }}
+      builder-os: ${{ needs.nightly_build.outputs.BUILDER_OS }}
