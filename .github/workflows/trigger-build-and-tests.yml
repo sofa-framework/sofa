@@ -344,7 +344,7 @@ jobs:
   # ===============================================================
 
   # Trigger the build and sharing all parameters from filter_build > outputs
-  call-workflow-passing-data:
+  call-workflow-passing-data-from-commit-or-pr:
     needs: filter_build
     uses: bakpaul/sofa/.github/workflows/build-and-test.yml@master
     with:
@@ -366,7 +366,7 @@ jobs:
 
   
   # Trigger the build and sharing all parameters from nightly_build > outputs
-  call-workflow-passing-data:
+  call-workflow-passing-data-from-nightly:
     needs: nightly_build
     uses: bakpaul/sofa/.github/workflows/build-and-test.yml@master
     with:
