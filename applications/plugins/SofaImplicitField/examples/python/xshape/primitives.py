@@ -5,6 +5,7 @@ Sources:
 """
 from SofaImplicitField import ScalarField
 import numpy
+import numba
 
 class Sphere(ScalarField):
     def __init__(self, *args, **kwargs):
@@ -17,6 +18,14 @@ class Sphere(ScalarField):
         x,y,z = pos
         return numpy.linalg.norm(self.center.value - numpy.array([x,y,z])) - self.radius.value
 
+    def getValues(self, positions, out_values):
+        """This version of the overrides the getValues so that we fetch the data once"""        
+        center = self.center.value
+        radius = self.radius.value
+        for i in range(len(positions)):
+            r = numpy.linalg.norm(center - positions[i]) - radius
+            out_values[i] = r
+            
 class RoundedBox(ScalarField):
     def __init__(self, *args, **kwargs):
         ScalarField.__init__(self, *args, **kwargs)
