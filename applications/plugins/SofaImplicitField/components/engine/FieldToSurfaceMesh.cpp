@@ -153,11 +153,7 @@ void FieldToSurfaceMesh::draw(const VisualParams* vparams)
         Vec3d pb = (0.9*x[b]+0.1*center) ;
         Vec3d pc = (0.9*x[c]+0.1*center) ;
 
-        Vec3d a1 = x[c]-x[b] ;
-        Vec3d a2 = x[a]-x[b] ;
-
-        vparams->drawTool()->drawTriangles({pa,pb,pc},
-                                           a1.cross(a2),
+        vparams->drawTool()->drawTriangles({pb,pa,pc},
                                            type::RGBAColor(0.0,0.0,1.0,1.0));
     }
 
