@@ -71,13 +71,12 @@ void BuiltConstraintSolver::addRegularization(linearalgebra::BaseMatrix& W, cons
             }
 
             //Now for all vector of the null space basis, we look at the indices where the coefficient
-            //is greater than 1% of the highest value of the vector, this is the constraints that
+            //is greater than 1% of the norm of the vector, this is the constraints that
             //belong to the null space and thus have other one that are antagonists
             for(int i=nullSpaceBegin; (i != -1) && (i<problemSize); ++i)
             {
-                const SReal indic = std::max(svd.matrixV().col(i).maxCoeff(), fabs(svd.matrixV().col(i).minCoeff())) / 100.0;
                 for(size_t j=0; j<problemSize; j++)
-                    nullSpaceIndicator[j] = nullSpaceIndicator[j] ||  fabs(svd.matrixV().col(i)(j)) > indic;
+                    nullSpaceIndicator[j] = nullSpaceIndicator[j] ||  fabs(svd.matrixV().col(i)(j)) > 0.001;
             }
 
             if (f_printLog.getValue())
