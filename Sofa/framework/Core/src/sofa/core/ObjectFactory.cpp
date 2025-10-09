@@ -141,9 +141,6 @@ void findTemplatedCreator(
 
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
-    if (m_callbackBeforeCreate)
-        m_callbackBeforeCreate(context, arg);
-
     objectmodel::BaseObject::SPtr object = nullptr;
     std::vector< std::pair<std::string, Creator::SPtr> > creators;
     std::string classname = arg->getAttribute( "type", "");
