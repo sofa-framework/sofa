@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/core/config.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/behavior/BaseLinearSolver.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
@@ -36,9 +37,23 @@ namespace sofa::core::behavior
 class SOFA_CORE_API LinearSolver : public BaseLinearSolver
 {
 public:
-    SOFA_ABSTRACT_CLASS(LinearSolver, BaseLinearSolver);
+    SOFA_ABSTRACT_CLASS(LinearSolver, BaseLinearSolver)
     SOFA_BASE_CAST_IMPLEMENTATION(LinearSolver)
-public:
+
+    /// Reset the current linear system.
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual void resetSystem() final = delete;
+
+    /// Set the linear system matrix, combining the mechanical M,B,K matrices using the given coefficients
+    ///
+    /// @todo Should we put this method in a specialized class for mechanical systems, or express it using more general terms (i.e. coefficients of the second order ODE to solve)
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual void setSystemMBKMatrix(const MechanicalParams* mparams) final = delete;
+
+    /// Rebuild the system using a mass and force factor
+    /// Experimental API used to investigate convergence issues.
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual void rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/) final = delete;
 
     virtual sofa::core::behavior::BaseMatrixLinearSystem* getLinearSystem() const = 0;
 
@@ -47,6 +62,23 @@ public:
 
     /// Returns true if the solver supports non-symmetric systems
     virtual bool supportNonSymmetricSystem() const { return false; }
+
+    /// Indicate if the solver updated the system after the last call of setSystemMBKMatrix (should return true if isParallelSolver return false)
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual bool hasUpdatedMatrix() final = delete;
+
+    /// This function is use for the preconditioner it must be called at each time step event if setSystemMBKMatrix is not called
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual void updateSystemMatrix() final = delete;
+
+    /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual void setSystemRHVector(core::MultiVecDerivId v) final = delete;
+
+    /// Set the initial estimate of the linear system left-hand term vector, from the values contained in the (Mechanical/Physical)State objects
+    /// This vector will be replaced by the solution of the system once solveSystem is called
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual void setSystemLHVector(core::MultiVecDerivId v) final = delete;
 
     /// Solve the system as constructed using the previous methods
     virtual void solveSystem() = 0;
@@ -129,11 +161,36 @@ public:
         return false;
     }
 
+    /// Get the linear system matrix, or nullptr if this solver does not build it
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual linearalgebra::BaseMatrix* getSystemBaseMatrix() final = delete;
+
+    /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual linearalgebra::BaseVector* getSystemRHBaseVector() final = delete;
+
+    /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual linearalgebra::BaseVector* getSystemLHBaseVector() final = delete;
+
+    /// Get the linear system inverse matrix, or nullptr if this solver does not build it
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual linearalgebra::BaseMatrix* getSystemInverseBaseMatrix() final = delete;
+
     /// Read the Matrix solver from a file
     virtual bool readFile(std::istream& /*in*/) { return false;}
 
     /// Read the Matrix solver from a file
     virtual bool writeFile(std::ostream& /*out*/) {return false;}
+
+    /// Ask the solver to no longer update the system matrix
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual void freezeSystemMatrix() = delete;
+
+protected:
+
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    DeprecatedAndRemoved frozen;
 };
 
 } // namespace sofa::core::behavior
