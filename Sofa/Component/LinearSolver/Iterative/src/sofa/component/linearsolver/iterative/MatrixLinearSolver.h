@@ -62,6 +62,10 @@ public:
     virtual void invert(Matrix& M) = 0;
 
     virtual void solve(Matrix& M, Vector& solution, Vector& rh) = 0;
+
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual Matrix * getSystemMatrix() final = delete;
+
 };
 
 /// Empty class used for default solver implementation without multi-threading support
@@ -187,11 +191,27 @@ public:
 
     void init() override;
 
+    /// Reset the current linear system.
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    void resizeSystem(Size n) = delete;
+
+    /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_DEPRECATED_ASSEMBLY_API()
+    Vector* getSystemRHVector() { return l_linearSystem ? l_linearSystem->getRHSVector() : nullptr; }
+
+    /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_DEPRECATED_ASSEMBLY_API()
+    Vector* getSystemLHVector() { return l_linearSystem ? l_linearSystem->getSolutionVector() : nullptr; }
+
     /// Returns the linear system component associated to the linear solver
     sofa::component::linearsystem::TypedMatrixLinearSystem<Matrix, Vector>* getLinearSystem() const override { return l_linearSystem.get(); }
 
     /// Solve the system as constructed using the previous methods
     void solveSystem() override;
+
+    /// Apply the solution of the system to all the objects
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    void applySystemSolution() = delete;
 
     /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
     void invertSystem() override;
@@ -310,6 +330,12 @@ protected:
     std::unique_ptr<MatrixInvertData> invertData;
 
     virtual MatrixInvertData * createInvertData();
+
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    DeprecatedAndRemoved linearSystem;
+
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    DeprecatedAndRemoved currentMFactor, currentBFactor, currentKFactor;
 
     bool singleThreadAddJMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, SReal fact);
 
