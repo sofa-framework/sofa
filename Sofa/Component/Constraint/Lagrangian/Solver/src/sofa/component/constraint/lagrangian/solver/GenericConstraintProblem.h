@@ -33,54 +33,46 @@ class GenericConstraintSolver;
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintProblem : public ConstraintProblem
 {
 public:
+
+    typedef std::vector< core::behavior::BaseConstraintCorrection* > ConstraintCorrections;
+
+    GenericConstraintProblem(GenericConstraintSolver* solver)
+    : scaleTolerance(true)
+    , allVerified(false)
+    , sor(1.0)
+    , currentError(0.0)
+    , currentIterations(0)
+    , m_solver(solver)
+    {}
+
+    ~GenericConstraintProblem() override
+    {
+        freeConstraintResolutions();
+    }
+
+    void clear(int nbConstraints) override;
+    void freeConstraintResolutions();
+    int getNumConstraints();
+    int getNumConstraintGroups();
+    void result_output(GenericConstraintSolver* solver, SReal *force, SReal error, int iterCount, bool convergence);
+    void solveTimed(SReal tol, int maxIt, SReal timeout) override;
+
+    void setSolver(GenericConstraintSolver* solver);
+
     sofa::linearalgebra::FullVector<SReal> _d;
     std::vector<core::behavior::ConstraintResolution*> constraintsResolutions;
     bool scaleTolerance, allVerified;
     SReal sor;
-    SReal sceneTime;
     SReal currentError;
     int currentIterations;
 
-    // For unbuilt version :
-    linearalgebra::SparseMatrix<SReal> Wdiag;
-    std::list<unsigned int> constraints_sequence;
-    bool change_sequence;
-
-    typedef std::vector< core::behavior::BaseConstraintCorrection* > ConstraintCorrections;
-    typedef std::vector< core::behavior::BaseConstraintCorrection* >::iterator ConstraintCorrectionIterator;
-
-    std::vector< ConstraintCorrections > cclist_elems;
-
-
-    GenericConstraintProblem() : scaleTolerance(true), allVerified(false), sor(1.0)
-      , sceneTime(0.0), currentError(0.0), currentIterations(0)
-      , change_sequence(false) {}
-    ~GenericConstraintProblem() override { freeConstraintResolutions(); }
-
-    void clear(int nbConstraints) override;
-    void freeConstraintResolutions();
-    void solveTimed(SReal tol, int maxIt, SReal timeout) override;
-
-    /// Projective Gauss Seidel method building the compliance matrix
-    void gaussSeidel(SReal timeout=0, GenericConstraintSolver* solver = nullptr);
-    /// Projective Gauss Seidel unbuilt method
-    void unbuiltGaussSeidel(SReal timeout=0, GenericConstraintSolver* solver = nullptr);
-    /// Method from:
-    /// A nonsmooth nonlinear conjugate gradient method for interactive contact force problems
-    /// - 2010, Silcowitz, Morten and Niebe, Sarah and Erleben, Kenny
-    void NNCG(GenericConstraintSolver* solver = nullptr, int iterationNewton = 1);
-
-    void gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool& constraintsAreVerified, SReal& error, sofa::type::vector<SReal>& tabErrors) const;
-    void result_output(GenericConstraintSolver* solver, SReal *force, SReal error, int iterCount, bool convergence);
-
-    int getNumConstraints();
-    int getNumConstraintGroups();
-
-protected:
     sofa::linearalgebra::FullVector<SReal> m_lam;
     sofa::linearalgebra::FullVector<SReal> m_deltaF;
     sofa::linearalgebra::FullVector<SReal> m_deltaF_new;
     sofa::linearalgebra::FullVector<SReal> m_p;
+protected:
+
+    GenericConstraintSolver* m_solver;
 
 };
 }

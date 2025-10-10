@@ -82,9 +82,9 @@ void SceneCheckCollisionResponse::doCheckOn(Node* node)
 
                 sofa::core::behavior::ConstraintSolver* constraintSolver;
                 root->get(constraintSolver, sofa::core::objectmodel::BaseContext::SearchRoot);
-                if (!constraintSolver || ( constraintSolver && ( constraintSolver->getClassName() != "GenericConstraintSolver" )) )
+                if (!constraintSolver || ( constraintSolver && ( constraintSolver->getClassName() != "ProjectedGaussSeidelConstraintSolver" )) )
                 {
-                    m_message <<"A GenericConstraintSolver must be in the scene to solve StickContactConstraint" << msgendl;
+                    m_message <<"A ProjectedGaussSeidelConstraintSolver must be in the scene to solve StickContactConstraint" << msgendl;
                 }
             }
             /// If FrictionContactConstraint is chosen, make sure the scene includes a FreeMotionAnimationLoop
