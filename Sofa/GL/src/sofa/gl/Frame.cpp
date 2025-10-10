@@ -33,17 +33,17 @@
 #include <numbers>
 
 template <>
-struct std::hash<sofa::type::Vec3f>
+struct std::hash<sofa::type::Vec3>
 {
-    std::size_t operator()(const sofa::type::Vec3f& k) const
+    std::size_t operator()(const sofa::type::Vec3& k) const
     {
         using std::size_t;
         using std::hash;
         using std::string;
 
-        return ((hash<float>()(k[0])
-            ^ (hash<float>()(k[1]) << 1)) >> 1)
-            ^ (hash<float>()(k[2]) << 1);
+        return ((hash<SReal>()(k[0])
+            ^ (hash<SReal>()(k[1]) << 1)) >> 1)
+            ^ (hash<SReal>()(k[2]) << 1);
     }
 };
 
@@ -384,11 +384,11 @@ void render_coordinate_frame(const CoordinateFrame& frame, const type::Vec3& cen
     glPopAttrib();
 }
 
-std::unordered_map < type::Vec3f, CoordinateFrame > cacheCoordinateFrame;
-
+std::unordered_map < type::Vec3, CoordinateFrame > cacheCoordinateFrame;
 void Frame::draw(const type::Vec3& center, const Quaternion& orient, const type::Vec3& len, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ )
 {
-    if (cacheCoordinateFrame.find(len) == cacheCoordinateFrame.end())
+    auto frameIt = cacheCoordinateFrame.find(len);
+    if (frameIt == cacheCoordinateFrame.end())
     {
         type::Vec3 L = len;
 
@@ -410,11 +410,10 @@ void Frame::draw(const type::Vec3& center, const Quaternion& orient, const type:
         const type::Vec3 lc(Lmax / 5_sreal, Lmax / 5_sreal, Lmax / 5_sreal); // = L / 5;
         const type::Vec3 Lc = lc;
 
-        cacheCoordinateFrame.emplace(len, CoordinateFrame ({ L[0], Lc[0], l[0], lc[0] }, { L[1], Lc[1], l[1], lc[1] }, { L[2], Lc[2], l[2], lc[2] }));
+        frameIt = cacheCoordinateFrame.emplace(len, CoordinateFrame ({ L[0], Lc[0], l[0], lc[0] }, { L[1], Lc[1], l[1], lc[1] }, { L[2], Lc[2], l[2], lc[2] })).first;
     }
 
-    const auto& frame = cacheCoordinateFrame.at(len);
-    render_coordinate_frame(frame, center, orient, len, colorX, colorY, colorZ);
+    render_coordinate_frame(frameIt->second, center, orient, len, colorX, colorY, colorZ);
 }
 
 void Frame::draw(const type::Vec3& center, const double orient[4][4], const type::Vec3& len, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ)
