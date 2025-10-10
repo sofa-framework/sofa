@@ -19,30 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_H
-#define SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_H
+#pragma once
 #include <SofaImplicitField/config.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/component/topology/container/constant/MeshTopology.h>
 #include <sofa/helper/MarchingCubeUtility.h>
+#include <SofaImplicitField/MarchingCube.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-
-namespace sofa
+namespace sofaimplicitfield::mapping
 {
 
-namespace component
-{
-
-namespace mapping
-{
+using namespace sofa;
+using sofa::component::topology::container::constant::MeshTopology;
 
 template <class In, class Out>
-class ImplicitSurfaceMapping : public core::Mapping<In, Out>, public topology::container::constant::MeshTopology
+class ImplicitSurfaceMapping : public core::Mapping<In, Out>, public MeshTopology
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(ImplicitSurfaceMapping, In, Out), SOFA_TEMPLATE2(core::Mapping, In, Out),  topology::container::constant::MeshTopology);
+    SOFA_CLASS2(SOFA_TEMPLATE2(ImplicitSurfaceMapping, In, Out), SOFA_TEMPLATE2(core::Mapping, In, Out),  MeshTopology);
 
     typedef core::Mapping<In, Out> Inherit;
     typedef typename Out::VecCoord OutVecCoord;
@@ -114,6 +110,8 @@ public:
         msg_error() << "applyJT(constraint) is not implemented";
     }
 
+    void draw(const core::visual::VisualParams* params) override;
+
 protected:
     Data <double > mStep; ///< Step
     Data <double > mRadius; ///< Radius
@@ -121,6 +119,10 @@ protected:
 
     Data< InCoord > mGridMin; ///< Grid Min
     Data< InCoord > mGridMax; ///< Grid Max
+
+    Vec3d mLocalGridMin; ///< Grid Min
+    Vec3d mLocalGridMax; ///< Grid Max
+
 
     // Marching cube data
 
@@ -146,85 +148,17 @@ protected:
     Data < sofa::type::vector<CubeData> > planes;
     typename sofa::type::vector<CubeData>::iterator P0; /// Pointer to first plane
     typename sofa::type::vector<CubeData>::iterator P1; /// Pointer to second plane
-
-    void newPlane();
-
-    template<int C>
-    int addPoint(OutVecCoord& out, int x,int y,int z, OutReal v0, OutReal v1, OutReal iso)
-    {
-        int p = out.size();
-        OutCoord pos = OutCoord((OutReal)x,(OutReal)y,(OutReal)z);
-        pos[C] -= (iso-v0)/(v1-v0);
-        out.resize(p+1);
-        out[p] = pos * mStep.getValue();
-        return p;
-    }
-
-    int addFace(int p1, int p2, int p3, int nbp)
-    {
-        if ((unsigned)p1<(unsigned)nbp &&
-            (unsigned)p2<(unsigned)nbp &&
-            (unsigned)p3<(unsigned)nbp)
-        {
-            SeqTriangles& triangles = *d_seqTriangles.beginEdit();
-            int f = triangles.size();
-            triangles.push_back(Triangle(p1, p3, p2));
-            d_seqTriangles.endEdit();
-            return f;
-        }
-        else
-        {
-            msg_error() << "Invalid face "<<p1<<" "<<p2<<" "<<p3;
-            return -1;
-        }
-    }
-
 public:
     bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
     bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 
+private:
+    MarchingCube marchingCube;
 };
-
-// MARCHING CUBE TABLES
-// ( table copied from an article of Paul Bourke )
-// based on code by Cory Gene Bloyd
-
-/* Convention:
-
-       Z
-       ^
-       |
-       4----4----5
-      /|        /|
-     7 |       5 |
-    /  8      /  9
-   7---+6----6   |
-   |   |     |   |
-   |   0----0+---1--> X
-   11  /     10  /
-   | 3       | 1
-   |/        |/
-   3----2----2
-   /
-  /
-|_
-Y
-
-*/
-
 
 #if  !defined(SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_CPP)
 extern template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-
-
-
 #endif
 
+} // namespace
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
