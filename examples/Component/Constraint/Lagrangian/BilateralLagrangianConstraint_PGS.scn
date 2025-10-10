@@ -22,7 +22,7 @@
     <VisualStyle displayFlags="showForceFields" />
     <DefaultVisualManagerLoop />
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver tolerance="0.001" maxIterations="1000" resolutionMethod="ProjectedGaussSeidel"/>
+    <ProjectedGaussSeidelConstraintSolver tolerance="0.001" maxIterations="1000"/>
     <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
