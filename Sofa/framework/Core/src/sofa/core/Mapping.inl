@@ -105,14 +105,14 @@ void Mapping<In,Out>::init()
         setNonMechanical();
     }
 
-    apply(mechanicalparams::defaultInstance(), vec_id::write_access::position, vec_id::read_access::position);
-    applyJ(mechanicalparams::defaultInstance(), vec_id::write_access::velocity, vec_id::read_access::velocity);
+    BaseMapping::apply(mechanicalparams::defaultInstance(), vec_id::write_access::position, vec_id::read_access::position);
+    BaseMapping::applyJ(mechanicalparams::defaultInstance(), vec_id::write_access::velocity, vec_id::read_access::velocity);
     if (f_applyRestPosition.getValue())
-        apply(mechanicalparams::defaultInstance(), vec_id::write_access::restPosition, vec_id::read_access::restPosition);
+        BaseMapping::apply(mechanicalparams::defaultInstance(), vec_id::write_access::restPosition, vec_id::read_access::restPosition);
 }
 
 template <class In, class Out>
-sofa::linearalgebra::BaseMatrix* Mapping<In,Out>::createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix m_createMappedMatrix)
+sofa::linearalgebra::BaseMatrix* Mapping<In,Out>::doCreateMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix m_createMappedMatrix)
 {
     sofa::linearalgebra::BaseMatrix* result;
     if( !this->areMatricesMapped() )
@@ -133,7 +133,7 @@ sofa::linearalgebra::BaseMatrix* Mapping<In,Out>::createMappedMatrix(const behav
 
 
 template <class In, class Out>
-void Mapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos)
+void Mapping<In,Out>::doApply(const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos)
 {
     State<In>* fromModel = this->fromModel.get();
     State<Out>*  toModel = this->toModel.get();
@@ -149,7 +149,7 @@ void Mapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId out
 }// Mapping::apply
 
 template <class In, class Out>
-void Mapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel)
+void Mapping<In,Out>::doApplyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel)
 {
     State<In>* fromModel = this->fromModel.get();
     State<Out>*  toModel = this->toModel.get();
@@ -165,7 +165,7 @@ void Mapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDerivId ou
 }// Mapping::applyJ
 
 template <class In, class Out>
-void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)
+void Mapping<In,Out>::doApplyJT(const MechanicalParams *mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)
 {
     State<In>* fromModel = this->fromModel.get();
     State<Out>*  toModel = this->toModel.get();
@@ -182,7 +182,7 @@ void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId i
 
 /// ApplyJT (Constraint)///
 template <class In, class Out>
-void Mapping<In,Out>::applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
+void Mapping<In,Out>::doApplyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
 {
     State<In>* fromModel = this->fromModel.get();
     State<Out>*  toModel = this->toModel.get();
@@ -199,14 +199,14 @@ void Mapping<In,Out>::applyJT(const ConstraintParams* cparams, MultiMatrixDerivI
 
 
 template <class In, class Out>
-void Mapping<In,Out>::applyDJT(const MechanicalParams* /*mparams */ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ )
+void Mapping<In,Out>::doApplyDJT(const MechanicalParams* /*mparams */ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ )
 {
     //applyDJT
 }
 
 
 template <class In, class Out>
-void Mapping<In,Out>::computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
+void Mapping<In,Out>::doComputeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
 {
     State<In>* fromModel = this->fromModel.get();
     State<Out>*  toModel = this->toModel.get();
@@ -221,7 +221,7 @@ void Mapping<In,Out>::computeAccFromMapping(const MechanicalParams* mparams, Mul
 }// Mapping::computeAccFromMapping
 
 template <class In, class Out>
-void Mapping<In,Out>::disable()
+void Mapping<In,Out>::doDisable()
 {
 }
 
