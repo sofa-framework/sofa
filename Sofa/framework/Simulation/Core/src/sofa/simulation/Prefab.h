@@ -19,23 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_CPP
-#include <SofaImplicitField/config.h>
-#include <sofa/core/ObjectFactory.h>
-#include "ImplicitSurfaceMapping.inl"
+#pragma once
 
-namespace sofaimplicitfield::mapping
+#include <sofa/simulation/Node.h>
+
+namespace sofa::simulation
 {
 
-using namespace sofa::defaulttype;
-
-// Register in the Factory
-void registerImplicitSurfaceMapping(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Compute an iso-surface from a set of particles.")
-    .add< ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes > >());
-}
-
-template class SOFA_SOFAIMPLICITFIELD_API ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes >;
+class Prefab : Node
+{};
 
 }
+

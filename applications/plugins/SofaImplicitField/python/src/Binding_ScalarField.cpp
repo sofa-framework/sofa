@@ -112,6 +112,7 @@ void moduleAddScalarField(py::module &m) {
                                                                                             "positional argument='" +
                                         py::cast<std::string>(args[0]) + "'.");
                 }
+                ff->setName(py::cast<std::string>(value));
             }
         }
         return ff;
