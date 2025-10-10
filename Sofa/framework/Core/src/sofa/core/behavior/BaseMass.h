@@ -47,8 +47,20 @@ public:
 
 protected:
     BaseMass();
-
     ~BaseMass() override = default;
+
+    virtual void doAddMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) = 0;
+    virtual void doAccFromF(const MechanicalParams* mparams, MultiVecDerivId aid) = 0;
+    virtual void doAddGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid) = 0;
+    virtual SReal doGetKineticEnergy(const MechanicalParams* mparams) const = 0;
+    virtual SReal doGetPotentialEnergy(const MechanicalParams* mparams) const = 0;
+    virtual type::Vec6 doGetMomentum(const MechanicalParams* mparams) const = 0;
+    virtual void doAddMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) = 0;
+    virtual void doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices);
+    virtual void doInitGnuplot(const std::string path) = 0;
+    virtual void doExportGnuplot(const MechanicalParams* mparams, SReal time) = 0;
+    virtual SReal doGetElementMass(sofa::Index index) const = 0;
+    virtual void doGetElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const = 0;
 
 private:
     BaseMass(const BaseMass& n) = delete;
@@ -58,51 +70,161 @@ public:
     /// @name Vector operations
     /// @{
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doAddMDx", internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
     /// f += factor M dx
-    virtual void addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) =0;
+    virtual void addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) final;
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doAccFromF", internally,
+     * which is the method to override from now on.
+     * 
+     **/
 
     /// dx = M^-1 f
-    virtual void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) = 0;
+    virtual void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) final;
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doAddGravityToV", internally,
+     * which is the method to override from now on.
+     * 
+     **/
 
     /// \brief Perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
     ///
     /// \param mparams \a sofa::core::mechanicalparams::dt(mparams) is the time step of for temporal discretization.
-    virtual void addGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid) = 0;
+    virtual void addGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid) final;
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doGetKineticEnergy", internally,
+     * which is the method to override from now on.
+     * 
+     **/
 
     /// vMv/2
-    virtual SReal getKineticEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
+    virtual SReal getKineticEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final;
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doGetPotentialEnergy", internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
     /// Mgx
-    virtual SReal getPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final;
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doGetMomentum", internally,
+     * which is the method to override from now on.
+     * 
+     **/
 
     /// (Mv,xMv+Iw) (linear and angular momenta against world origin)
-    virtual type::Vec6 getMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
+    virtual type::Vec6 getMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final;
 
     /// @}
 
     /// @name Matrix operations
     /// @{
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doAddMToMatrix", internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
     /// \brief Add Mass contribution to global Matrix assembling.
     ///
     /// This method must be implemented by the component.
     /// \param matrix matrix to add the result to
     /// \param mparams \a mparams->mFactor() is the coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    virtual void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) = 0;
+    virtual void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) final;
 
-    virtual void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices);
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doBuildMassMatrix", internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
+    virtual void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) final;
 
     /// @}
 
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doInitGnuplot", internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
     /// initialization to export kinetic and potential energy to gnuplot files format
-    virtual void initGnuplot(const std::string path)=0;
+    virtual void initGnuplot(const std::string path) final;
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doExportGnuplot", internally,
+     * which is the method to override from now on.
+     * 
+     **/
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
-    virtual void exportGnuplot(const MechanicalParams* mparams, SReal time)=0;
+    virtual void exportGnuplot(const MechanicalParams* mparams, SReal time) final;
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doGetElementMass", internally,
+     * which is the method to override from now on.
+     * 
+     **/
 
     /// Get the mass relative to the DOF at \a index.
-    virtual SReal getElementMass(sofa::Index index) const =0;
+    virtual SReal getElementMass(sofa::Index index) const final;
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doGetElementMass", internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
     /// Get the matrix relative to the DOF at \a index.
-    virtual void getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const = 0;
+    virtual void getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const final;
 
     virtual bool isDiagonal() const = 0;
 
