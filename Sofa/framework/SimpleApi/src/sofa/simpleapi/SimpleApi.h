@@ -22,7 +22,6 @@
 #pragma once
 
 #include <sofa/simpleapi/config.h>
-
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/fwd.h>
 
@@ -36,15 +35,16 @@ namespace sofa::simpleapi
 using sofa::core::objectmodel::BaseObject;
 using sofa::core::objectmodel::BaseObjectDescription;
 
-using sofa::simulation::Simulation ;
+using sofa::simulation::Simulation;
+using sofa::simulation::SimulationSPtr ;
 using sofa::simulation::Node ;
 using sofa::simulation::NodeSPtr ;
 
 bool SOFA_SIMPLEAPI_API importPlugin(const std::string& name) ;
 
-Simulation::SPtr SOFA_SIMPLEAPI_API createSimulation(const std::string& type="DAG") ;
+SimulationSPtr SOFA_SIMPLEAPI_API createSimulation(const std::string& type="DAG") ;
 
-NodeSPtr SOFA_SIMPLEAPI_API createRootNode( Simulation::SPtr, const std::string& name,
+NodeSPtr SOFA_SIMPLEAPI_API createRootNode( SimulationSPtr, const std::string& name,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
 NodeSPtr SOFA_SIMPLEAPI_API createRootNode( Simulation* s, const std::string& name,
