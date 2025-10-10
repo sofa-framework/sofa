@@ -23,7 +23,7 @@
     <VisualStyle displayFlags="showVisualModels showBehaviorModels showMappings showForceFields" />
 
     <FreeMotionAnimationLoop solveVelocityConstraintFirst="true" computeBoundingBox="false"/>
-    <GenericConstraintSolver tolerance="1e-9" maxIterations="1000"/>
+    <ProjectedGaussSeidelConstraintSolver tolerance="1e-9" maxIterations="1000"/>
     <!-- resolution = number of particles (including the fixed one) -->
     <!-- scale = total length of the pendulum -->
     <!-- 1m long wire -->
