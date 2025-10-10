@@ -18,7 +18,7 @@
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver tolerance="0.001" maxIterations="1000"/>
+    <ProjectedGaussSeidelConstraintSolver tolerance="0.001" maxIterations="1000"/>
     <Node name="Beam1">
         <EulerImplicitSolver name="odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <BTDLinearSolver printLog="false" verbose="false" />
