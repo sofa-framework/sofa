@@ -45,7 +45,7 @@ jobs:
           // Add comment in the PR to warn the author
           if (!valid) {
             const comment = ':warning: :warning: :warning:<br>@' + context.payload.pull_request.user.login + ' your PR title is not following the required format :pencil2:<br>'+commentExplain+':warning: :warning: :warning:';
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: prNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
