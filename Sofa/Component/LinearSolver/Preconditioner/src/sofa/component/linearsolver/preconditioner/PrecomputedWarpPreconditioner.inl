@@ -67,14 +67,7 @@ PrecomputedWarpPreconditioner<TDataTypes>::PrecomputedWarpPreconditioner()
 template <class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::checkLinearSystem()
 {
-    if (!this->l_linearSystem)
-    {
-        auto* matrixLinearSystem=this->getContext()->template get<PrecomputedMatrixSystem<TMatrix, TVector> >();
-        if(!matrixLinearSystem)
-        {
-            this->template createDefaultLinearSystem<PrecomputedMatrixSystem<TMatrix, TVector> >();
-        }
-    }
+    this->template doCheckLinearSystem<PrecomputedMatrixSystem<TMatrix, TVector>>();
 }
 
 //Solve x = R * M^-1 * R^t * b
