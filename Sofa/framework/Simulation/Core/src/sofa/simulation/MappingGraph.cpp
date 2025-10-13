@@ -41,17 +41,17 @@ bool haveCommonElement(const std::vector<T>& a, const std::vector<T>& b)
 }
 }
 
-void findNextMappingsToProcess(
-    const std::vector<core::BaseMapping*>& mappingList,
-    std::queue<core::BaseMapping*>& mappings,
+void findIndependentMappings(
+    const std::vector<core::BaseMapping*>& allMappings,
+    std::queue<core::BaseMapping*>& independentMappings,
     MappingGraphDirection direction)
 {
-    for (auto* mapping1 : mappingList)
+    for (auto* mapping1 : allMappings)
     {
-        auto inputs1 = mapping1->getFrom();
-        auto outputs1 = mapping1->getTo();
-        bool isNext = true;
-        for (auto* mapping2 : mappingList)
+        type::vector<core::BaseState*> inputs1 = mapping1->getFrom();
+        type::vector<core::BaseState*> outputs1 = mapping1->getTo();
+        bool isIndependent = true;
+        for (auto* mapping2 : allMappings)
         {
             if (mapping1 != mapping2)
             {
@@ -63,7 +63,8 @@ void findNextMappingsToProcess(
                         haveCommonElement(outputs1, inputs2);
                 if (commonElement)
                 {
-                    isNext = false;
+                    // mapping1 is not an independent mapping because it shares common elements with mapping2
+                    isIndependent = false;
                     break;
                 }
                 if (haveCommonElement(outputs1, outputs2))
@@ -75,9 +76,9 @@ void findNextMappingsToProcess(
             }
         }
 
-        if (isNext)
+        if (isIndependent)
         {
-            mappings.push(mapping1);
+            independentMappings.push(mapping1);
         }
     }
 }

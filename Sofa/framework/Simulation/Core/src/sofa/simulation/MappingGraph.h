@@ -37,18 +37,28 @@ enum class SOFA_SIMULATION_CORE_API MappingGraphDirection : bool
     BACKWARD
 };
 
+/**
+ * Find independent mappings, i.e. mappings without dependencies.
+ */
 SOFA_SIMULATION_CORE_API
-void findNextMappingsToProcess(const std::vector<sofa::core::BaseMapping*>& mappingList,
-                               std::queue<sofa::core::BaseMapping*>& mappings,
-                               MappingGraphDirection direction = MappingGraphDirection::FORWARD);
+void findIndependentMappings(const std::vector<sofa::core::BaseMapping*>& allMappings,
+                             std::queue<sofa::core::BaseMapping*>& independentMappings,
+                             MappingGraphDirection direction = MappingGraphDirection::FORWARD);
 
+/**
+ * Invoke a callable on the mappings in the given context, according to a topological order of the
+ * mappings such that calls to mappings are made according to the dependencies of the mapping graph.
+ */
 template <class Callable>
 void mappingGraphBreadthFirstTraversal(
     sofa::core::objectmodel::BaseContext* context,
     Callable f,
     bool filterNonMechanicalMappings = true,
     MappingGraphDirection direction = MappingGraphDirection::FORWARD)
+requires std::is_invocable_v<Callable, sofa::core::BaseMapping*>
 {
+    assert(context);
+
     auto mappingList =
     context->getObjects<sofa::core::BaseMapping>(sofa::core::objectmodel::BaseContext::SearchDirection::SearchDown);
 
@@ -61,7 +71,8 @@ void mappingGraphBreadthFirstTraversal(
 
     while (!mappingList.empty())
     {
-        findNextMappingsToProcess(mappingList, mappingsToProcess, direction);
+        /// Among the current mapping list, find the mappings that are not the input of other mappings
+        findIndependentMappings(mappingList, mappingsToProcess, direction);
 
         if (mappingsToProcess.empty())
         {
@@ -69,12 +80,14 @@ void mappingGraphBreadthFirstTraversal(
             break;
         }
 
+        /// The callable can be invoked safely on the mappings in the queue because they don't
+        /// depend on other mappings
         while (!mappingsToProcess.empty())
         {
             auto* mapping = mappingsToProcess.front();
             mappingsToProcess.pop();
 
-            f(mapping);
+            std::invoke(f, mapping);
 
             std::erase(mappingList, mapping);
         }
