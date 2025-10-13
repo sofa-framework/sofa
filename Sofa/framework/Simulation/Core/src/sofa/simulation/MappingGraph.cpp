@@ -58,7 +58,7 @@ void findNextMappingsToProcess(
                 auto inputs2 = mapping2->getFrom();
                 auto outputs2 = mapping2->getTo();
                 const bool commonElement =
-                    (direction == MappingGraphDirection::TOP_DOWN) ?
+                    (direction == MappingGraphDirection::FORWARD) ?
                         haveCommonElement(inputs1, outputs2) :
                         haveCommonElement(outputs1, inputs2);
                 if (commonElement)

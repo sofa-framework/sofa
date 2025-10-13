@@ -136,7 +136,7 @@ auto chainedMappings(simulation::MappingGraphDirection direction)
 TEST(mappingGraphBreadthFirstTraversal, twoChainedMappingsTopDown)
 {
     const auto [orderedMappings, mapping1, mapping2] =
-        chainedMappings(simulation::MappingGraphDirection::TOP_DOWN);
+        chainedMappings(simulation::MappingGraphDirection::FORWARD);
 
     ASSERT_EQ(orderedMappings.size(), 2);
     EXPECT_EQ(orderedMappings[0], mapping1);
@@ -146,7 +146,7 @@ TEST(mappingGraphBreadthFirstTraversal, twoChainedMappingsTopDown)
 TEST(mappingGraphBreadthFirstTraversal, twoChainedMappingsBottomUp)
 {
     const auto [orderedMappings, mapping1, mapping2] =
-        chainedMappings(simulation::MappingGraphDirection::BOTTOM_UP);
+        chainedMappings(simulation::MappingGraphDirection::BACKWARD);
 
     ASSERT_EQ(orderedMappings.size(), 2);
     EXPECT_EQ(orderedMappings[0], mapping2);
