@@ -275,8 +275,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${ST
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${difflib_INCLUDE_DIR}>")
 
 # taskflow (header only)
-message(STATUS "Taskflow_INCLUDE_DIR = ${Taskflow_INCLUDE_DIR}")
-target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${Taskflow_INCLUDE_DIR}>")
+target_link_libraries(${PROJECT_NAME} PUBLIC Taskflow::Taskflow)
 
 set(is_release "$<CONFIG:RELEASE>")
 set(is_debug "$<CONFIG:DEBUG>")

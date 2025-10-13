@@ -34,6 +34,12 @@ if(Taskflow_INCLUDE_DIR)
     # Set the output variable
     set(Taskflow_VERSION "${formatted_version}")
 
+    if(NOT TARGET Taskflow::Taskflow)
+        add_library(Taskflow::Taskflow INTERFACE IMPORTED)
+        set_target_properties(Taskflow::Taskflow PROPERTIES
+                INTERFACE_INCLUDE_DIRECTORIES "${Taskflow_INCLUDE_DIR}")
+    endif ()
+
     # Handle REQUIRED and QUIET options
     include(FindPackageHandleStandardArgs)
     find_package_handle_standard_args(Taskflow
