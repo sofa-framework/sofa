@@ -141,7 +141,7 @@ void MechanicalOperations::apply(core::MultiVecCoordId out, core::ConstMultiVecC
         [params = &mparams, &out, &in](BaseMapping* mapping)
         {
             mapping->apply(params, out, in);
-        }, filterNonMechanical, MappingGraphDirection::TOP_DOWN);
+        }, filterNonMechanical, MappingGraphDirection::FORWARD);
 }
 
 void MechanicalOperations::applyJ(core::MultiVecDerivId out, core::ConstMultiVecDerivId in, bool filterNonMechanical)
@@ -151,7 +151,7 @@ void MechanicalOperations::applyJ(core::MultiVecDerivId out, core::ConstMultiVec
         {
             mapping->applyJ(params, out, in);
         },
-        filterNonMechanical, MappingGraphDirection::TOP_DOWN);
+        filterNonMechanical, MappingGraphDirection::FORWARD);
 }
 
 void MechanicalOperations::applyJT(core::MultiVecDerivId in, core::ConstMultiVecDerivId out, bool filterNonMechanical)
@@ -160,7 +160,7 @@ void MechanicalOperations::applyJT(core::MultiVecDerivId in, core::ConstMultiVec
         [params = &mparams, &out, &in](core::BaseMapping* mapping)
         {
             mapping->applyJT(params, in, out);
-        }, filterNonMechanical, MappingGraphDirection::BOTTOM_UP);
+        }, filterNonMechanical, MappingGraphDirection::BACKWARD);
 }
 
 /// Propagate the given displacement through all mappings
@@ -174,7 +174,7 @@ void MechanicalOperations::propagateDx(core::MultiVecDerivId dx, bool ignore_fla
         {
             mapping->applyJ(&params, dx, dx);
         }
-    }, true, MappingGraphDirection::TOP_DOWN);
+    }, true, MappingGraphDirection::FORWARD);
 }
 
 /// Propagate the given displacement through all mappings and reset the current force delta
@@ -315,7 +315,7 @@ void MechanicalOperations::computeDf(core::MultiVecDerivId df, bool clear, bool 
             mapping->applyJT(&mparams, df, df); // apply material stiffness: variation of force below the mapping
             if( mparams.kFactor() )
                 mapping->applyDJT(&mparams, df, df); // apply geometric stiffness: variation due to a change of mapping, with a constant force below the mapping
-        }, true, MappingGraphDirection::BOTTOM_UP);
+        }, true, MappingGraphDirection::BACKWARD);
     }
 }
 
@@ -339,7 +339,7 @@ void MechanicalOperations::computeDfV(core::MultiVecDerivId df, bool clear, bool
             mapping->applyJT(&mparams, df, df); // apply material stiffness: variation of force below the mapping
             if( mparams.kFactor() != 0_sreal)
                 mapping->applyDJT(&mparams, df, df); // apply geometric stiffness: variation due to a change of mapping, with a constant force below the mapping
-        }, true, MappingGraphDirection::BOTTOM_UP);
+        }, true, MappingGraphDirection::BACKWARD);
     }
 
     mparams.setDx(dx);
@@ -370,7 +370,7 @@ void MechanicalOperations::addMBKdx(core::MultiVecDerivId df,
             mapping->applyJT(&mparams, df, df);
             if( mparams.kFactor() != 0_sreal)
                 mapping->applyDJT(&mparams, df, df);
-        }, true, MappingGraphDirection::BOTTOM_UP);
+        }, true, MappingGraphDirection::BACKWARD);
     }
 }
 
@@ -402,7 +402,7 @@ void MechanicalOperations::addMBKv(core::MultiVecDerivId df,
             mapping->applyJT(&mparams, df, df);
             if( mparams.kFactor() != 0_sreal)
                 mapping->applyDJT(&mparams, df, df);
-        }, true, MappingGraphDirection::BOTTOM_UP);
+        }, true, MappingGraphDirection::BACKWARD);
     }
 
     mparams.setDx(dx);

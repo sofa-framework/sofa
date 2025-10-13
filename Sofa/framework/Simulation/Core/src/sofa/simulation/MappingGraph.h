@@ -31,23 +31,23 @@
 namespace sofa::simulation
 {
 
-enum class SOFA_SIMULATION_CORE_API MappingGraphDirection : std::uint8_t
+enum class SOFA_SIMULATION_CORE_API MappingGraphDirection : bool
 {
-    TOP_DOWN,
-    BOTTOM_UP
+    FORWARD,
+    BACKWARD
 };
 
 SOFA_SIMULATION_CORE_API
 void findNextMappingsToProcess(const std::vector<sofa::core::BaseMapping*>& mappingList,
                                std::queue<sofa::core::BaseMapping*>& mappings,
-                               MappingGraphDirection direction = MappingGraphDirection::TOP_DOWN);
+                               MappingGraphDirection direction = MappingGraphDirection::FORWARD);
 
 template <class Callable>
 void mappingGraphBreadthFirstTraversal(
     sofa::core::objectmodel::BaseContext* context,
     Callable f,
     bool filterNonMechanicalMappings = true,
-    MappingGraphDirection direction = MappingGraphDirection::TOP_DOWN)
+    MappingGraphDirection direction = MappingGraphDirection::FORWARD)
 {
     auto mappingList =
     context->getObjects<sofa::core::BaseMapping>(sofa::core::objectmodel::BaseContext::SearchDirection::SearchDown);
