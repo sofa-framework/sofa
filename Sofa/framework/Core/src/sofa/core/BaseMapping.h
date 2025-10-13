@@ -48,7 +48,7 @@ protected:
 
     /// Destructor
     ~BaseMapping() override;
-	
+
 private:
     BaseMapping(const BaseMapping& n) = delete;
     BaseMapping& operator=(const BaseMapping& n) = delete;
