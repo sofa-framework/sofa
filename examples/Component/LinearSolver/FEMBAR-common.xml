@@ -13,6 +13,7 @@
         <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->  
         <RequiredPlugin name="Sofa.Component.LinearSolver.Preconditioner"/> <!-- Needed to use components [BlockJacobiPreconditioner] -->
         <RequiredPlugin name="Sofa.Component.LinearSolver.Ordering"/>
+        <RequiredPlugin name="Sofa.Component.LinearSystem"/> <!-- Needed to use components [MatrixLinearSystem] -->
     </Node>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
