@@ -60,7 +60,7 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
 
-#include "MechanicalOperations.h"
+#include <sofa/simulation/MechanicalOperations.h>
 
 namespace sofa::simulation
 {
