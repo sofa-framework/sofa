@@ -1,7 +1,6 @@
 # Set Taskflow_FOUND to false initially
 set(Taskflow_FOUND FALSE)
 
-set(Taskflow_VERSION "3.10.0")
 
 # Specify the Taskflow include directory and library
 find_path(Taskflow_INCLUDE_DIR
