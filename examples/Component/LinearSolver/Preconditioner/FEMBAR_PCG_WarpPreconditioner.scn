@@ -7,7 +7,7 @@
     <PCGLinearSolver name="PCG" iterations="1000" linearSystem="@matrixFreeSystem" preconditioner="@preconditioner" printLog="true"/>
 
     <!-- The two following components are a preconditioner for the conjugate gradient and its associated linear system -->
-    <RotationMatrixSystem name="rotationMatrix" assemblingRate="50"/>
+    <RotationMatrixSystem name="rotationMatrix" assemblingRate="1"/>
     <WarpPreconditioner name="preconditioner" linearSystem="@rotationMatrix" linearSolver="@initSolver" printLog="true"/>
 
     <!-- The two following components are a direct linear solver used by the preconditioner, and its associated linear system -->
