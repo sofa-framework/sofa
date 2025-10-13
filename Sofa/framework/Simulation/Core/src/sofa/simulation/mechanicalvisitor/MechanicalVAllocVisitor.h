@@ -35,8 +35,8 @@ public:
     typedef sofa::core::TMultiVecId<vtype, sofa::core::V_WRITE> MyMultiVecId;
     MyMultiVecId v;
     const core::VecIdProperties& m_properties;
-    MechanicalVAllocVisitor( const sofa::core::ExecParams* params, MyMultiVecId v, const core::VecIdProperties& properties = {} )
-            : BaseMechanicalVisitor(params) , v(v), m_properties(properties)
+    MechanicalVAllocVisitor( const sofa::core::ExecParams* params, MyMultiVecId mvecid, const core::VecIdProperties& properties = {} )
+            : BaseMechanicalVisitor(params) , v(mvecid), m_properties(properties)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
