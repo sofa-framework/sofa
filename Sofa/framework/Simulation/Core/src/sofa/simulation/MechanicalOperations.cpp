@@ -205,8 +205,15 @@ void MechanicalOperations::propagateV(core::MultiVecDerivId v, bool filterNonMec
 /// Propagate the given position and velocity through all mappings
 void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v, bool filterNonMechanical)
 {
-    propagateX(x, filterNonMechanical);
-    propagateV(v, filterNonMechanical);
+    setX(x);
+    setV(v);
+
+    mappingGraphBreadthFirstTraversal(ctx,
+    [params = &mparams, &x, &v](BaseMapping* mapping)
+    {
+        mapping->apply(params, x, x);
+        mapping->applyJ(params, v, v);
+    }, filterNonMechanical, MappingGraphDirection::FORWARD);
 }
 
 /// Propagate the given position through all mappings and reset the current force delta
