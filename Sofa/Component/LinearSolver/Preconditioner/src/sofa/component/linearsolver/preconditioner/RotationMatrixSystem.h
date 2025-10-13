@@ -48,6 +48,7 @@ public:
 protected:
     RotationMatrixSystem();
 
+    // count the number of steps since the last assembly
     unsigned int m_assemblyCounter {};
 
     void reinitAssemblyCounter();
