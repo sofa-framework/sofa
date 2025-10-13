@@ -107,13 +107,13 @@ public:
     /// @name Matrix operations using LinearSolver components
 /// @{
 
-    void resetSystem(core::behavior::LinearSolver* linearSolver);
-    void setSystemMBKMatrix(core::MatricesFactors::M m, core::MatricesFactors::B b, core::MatricesFactors::K k, core::behavior::LinearSolver* linearSolver);
-    void setSystemRHVector(core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver);
-    void setSystemLHVector(core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver);
-    void solveSystem(core::behavior::LinearSolver* linearSolver);
+    void resetSystem(sofa::core::behavior::LinearSolver* linearSolver);
+    void setSystemMBKMatrix(sofa::core::MatricesFactors::M m, sofa::core::MatricesFactors::B b, sofa::core::MatricesFactors::K k, sofa::core::behavior::LinearSolver* linearSolver);
+    void setSystemRHVector(sofa::core::MultiVecDerivId v, sofa::core::behavior::LinearSolver* linearSolver);
+    void setSystemLHVector(sofa::core::MultiVecDerivId v, sofa::core::behavior::LinearSolver* linearSolver);
+    void solveSystem(sofa::core::behavior::LinearSolver* linearSolver);
     void solveSystem(core::behavior::LinearSolver* linearSolver, core::MultiVecDerivId v);
-    void print( std::ostream& out, core::behavior::LinearSolver* linearSolver);
+    void print( std::ostream& out, sofa::core::behavior::LinearSolver* linearSolver);
     /// @}
 
     /** Find all the Constraint present in the scene graph, build the constraint equation system, solve and apply the correction
