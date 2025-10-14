@@ -319,7 +319,7 @@ jobs:
       - name: Launch tests
         id: launch-tests-step
         continue-on-error: true
-        if: steps.build-step.outcome == 'success'
+        if: steps.build-step.outcome == 'success' && inputs.generate-binaries == false
         shell: bash
         run: |
           # If os has got docker then use it
@@ -340,9 +340,11 @@ jobs:
 
       - name: Publish artifacts
         if: steps.build-step.outcome == 'success' && inputs.generate-binaries == true
-        shell: bash
-        run: |
-          #TODO
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries_${{ env.BUILDER_OS }}
+          path: |
+            ${{ env.BUILD_DIR }}/SOFA_v*
       
       
       - name: Publish build logs
