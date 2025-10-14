@@ -210,15 +210,15 @@ public:
             data = 0;
         }
 
-        InternalBlockAccessor(Index row, Index col, void* internalPtr)
-            : row(row), col(col)
+        InternalBlockAccessor(Index r, Index c, void* internalPtr)
+            : row(r), col(c)
         {
             data = 0;
             ptr = internalPtr;
         }
 
-        InternalBlockAccessor(Index row, Index col, Index internalData)
-            : row(row), col(col)
+        InternalBlockAccessor(Index r, Index c, Index internalData)
+            : row(r), col(c)
         {
             ptr = nullptr;
             data = internalData;
@@ -242,15 +242,15 @@ public:
             data = 0;
         }
 
-        InternalColBlockIterator(Index row, void* internalPtr)
-            : row(row)
+        InternalColBlockIterator(Index r, void* internalPtr)
+            : row(r)
         {
             data = 0;
             ptr = internalPtr;
         }
 
-        InternalColBlockIterator(Index row, Index internalData)
-            : row(row)
+        InternalColBlockIterator(Index r, Index internalData)
+            : row(r)
         {
             ptr = nullptr;
             data = internalData;
@@ -309,13 +309,13 @@ public:
         {
         }
 
-        BlockAccessor(BaseMatrix* matrix, Index row, Index col, void* internalPtr)
-            : matrix(matrix), internal(row, col, internalPtr)
+        BlockAccessor(BaseMatrix* m, Index row, Index col, void* internalPtr)
+            : matrix(m), internal(row, col, internalPtr)
         {
         }
 
-        BlockAccessor(BaseMatrix* matrix, Index row, Index col, Index internalData)
-            : matrix(matrix), internal(row, col, internalData)
+        BlockAccessor(BaseMatrix* m, Index row, Index col, Index internalData)
+            : matrix(m), internal(row, col, internalData)
         {
         }
 
@@ -491,13 +491,13 @@ public:
         {
         }
 
-        BlockConstAccessor(const BaseMatrix* matrix, Index row, Index col, void* internalPtr)
-            : matrix(matrix), internal(row, col, internalPtr)
+        BlockConstAccessor(const BaseMatrix* m, Index row, Index col, void* internalPtr)
+            : matrix(m), internal(row, col, internalPtr)
         {
         }
 
-        BlockConstAccessor(const BaseMatrix* matrix, Index row, Index col, Index internalData)
-            : matrix(matrix), internal(row, col, internalData)
+        BlockConstAccessor(const BaseMatrix* m, Index row, Index col, Index internalData)
+            : matrix(m), internal(row, col, internalData)
         {
         }
 
@@ -777,13 +777,13 @@ public:
         InternalColBlockIterator internal;
         BlockConstAccessor b;
 
-        ColBlockConstIterator(const BaseMatrix* matrix, Index row, void* internalPtr)
-            : matrix(matrix), internal(row, internalPtr)
+        ColBlockConstIterator(const BaseMatrix* m, Index row, void* internalPtr)
+            : matrix(m), internal(row, internalPtr)
         {
         }
 
-        ColBlockConstIterator(const BaseMatrix* matrix, Index row, Index internalData)
-            : matrix(matrix), internal(row, internalData)
+        ColBlockConstIterator(const BaseMatrix* m, Index row, Index internalData)
+            : matrix(m), internal(row, internalData)
         {
         }
 
@@ -942,13 +942,13 @@ public:
         const BaseMatrix* matrix;
         InternalRowBlockIterator internal;
 
-        RowBlockConstIterator(const BaseMatrix* matrix, void* internalPtr)
-            : matrix(matrix), internal(internalPtr)
+        RowBlockConstIterator(const BaseMatrix* m, void* internalPtr)
+            : matrix(m), internal(internalPtr)
         {
         }
 
-        RowBlockConstIterator(const BaseMatrix* matrix, Index internalData0, Index internalData1)
-            : matrix(matrix), internal(internalData0, internalData1)
+        RowBlockConstIterator(const BaseMatrix* m, Index internalData0, Index internalData1)
+            : matrix(m), internal(internalData0, internalData1)
         {
         }
 

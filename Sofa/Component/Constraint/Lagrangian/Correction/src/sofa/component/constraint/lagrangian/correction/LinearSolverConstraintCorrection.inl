@@ -401,8 +401,6 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const linear
         x[i] = x_free[i] + dxi;
         v[i] = v_free[i] + dvi;
         dx[i] = dxi;
-
-        msg_info() << "dx[" << i << "] = " << dx[i] ;
     }
 
     dataDx.endEdit();
