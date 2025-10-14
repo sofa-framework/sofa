@@ -260,26 +260,20 @@ void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params
     if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels())
         return;
 
-    static constexpr Real max_real = std::numeric_limits<Real>::max();
-    Real maxBBox[3] = {-max_real,-max_real,-max_real}; //Warning: minimum of float/double is 0, not -inf
-    Real minBBox[3] = {max_real,max_real,max_real};
-
     const auto npoints = mstate->getSize();
+    type::BoundingBox bbox;
 
     for(sofa::Size i = 0 ; i < npoints ; ++i )
     {
-        TSphere<DataTypes> t(this,i);
+        const TSphere<DataTypes> t(this,i);
         const Coord& p = t.p();
-        Real r = t.r();
+        const Real r = t.r();
 
-        for (int c=0; c<3; c++)
-        {
-            if (p[c]+r > maxBBox[c]) maxBBox[c] = (Real)p[c]+r;
-            if (p[c]-r < minBBox[c]) minBBox[c] = (Real)p[c]-r;
-        }
+        bbox.include(p + type::Vec3{r,r,r});
+        bbox.include(p - type::Vec3{r,r,r});
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(bbox);
 }
 
 } // namespace sofa::component::collision::geometry
