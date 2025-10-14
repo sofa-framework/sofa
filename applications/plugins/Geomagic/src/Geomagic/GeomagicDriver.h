@@ -132,7 +132,7 @@ public:
 
 protected:
     // Pointer to the Geomagic visual model to draw device in scene
-    std::unique_ptr<GeomagicVisualModel> m_GeomagicVisualModel;
+    std::unique_ptr<GeomagicVisualModel> m_GeomagicVisualModel = nullptr;
    
 public:
     ///These data are written by the omni they cnnot be accessed in the simulation loop
