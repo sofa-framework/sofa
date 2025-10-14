@@ -33,8 +33,8 @@ class SOFA_SIMULATION_CORE_API MechanicalAccFromFVisitor : public MechanicalVisi
 public:
     sofa::core::MultiVecDerivId a;
     //ConstMultiVecDerivId f; // in MechanicalParams
-    MechanicalAccFromFVisitor(const sofa::core::MechanicalParams* mparams, sofa::core::MultiVecDerivId a)
-            : MechanicalVisitor(mparams), a(a) //, f(f)
+    MechanicalAccFromFVisitor(const sofa::core::MechanicalParams* mechaparams, sofa::core::MultiVecDerivId avecid)
+            : MechanicalVisitor(mechaparams), a(avecid) //, f(f)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

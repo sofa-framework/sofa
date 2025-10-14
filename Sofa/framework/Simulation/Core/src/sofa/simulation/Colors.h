@@ -19,17 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_COLORS_H
-#define SOFA_SIMULATION_COLORS_H
+#pragma once
 
-#include <cstdlib>
+#include <sofa/simulation/config.h>
 #include <cstring>
-
+#include <vector>
+#include <string>
 
 namespace sofa::simulation::Colors
 {
 
-enum
+enum COLORID
 {
     NODE,
     OBJECT,
@@ -48,63 +48,36 @@ enum
     MASS,
     TOPOLOGY,
     VMODEL,
-    LOADER ,
+    LOADER,
     CONFIGURATIONSETTING,
     ALLCOLORS
 };
 
-// See http://www.graphviz.org/doc/info/colors.html
-// The following is mostly the "set312" colors
+// Register a new color, without a name
+SOFA_SIMULATION_CORE_API sofa::Index registerColor(const std::string& hexColor);
 
-static const char* COLOR[ALLCOLORS]=
+// Register a new color, if the name already exists, the old color is overriden
+SOFA_SIMULATION_CORE_API sofa::Index registerColor(const std::string& classname, const std::string& hexColor);
+
+// Returns the color associated with the given classname. Throw std::runtime_exception otherwise
+SOFA_SIMULATION_CORE_API const char* getColor(const std::string& classname);
+
+// Returns the color associated with the given COLORID. Throw std::runtime_exception otherwise
+SOFA_SIMULATION_CORE_API const char* getColor(const sofa::Index userID);
+
+// Returns wether or not there is a color associated with this name
+SOFA_SIMULATION_CORE_API bool hasColor(const std::string& className);
+
+// Returns wether or not there is a color associated with this name
+SOFA_SIMULATION_CORE_API bool hasColor(const sofa::Index& id);
+
+// This is to allow old code to still work,
+class SOFA_SIMULATION_CORE_API DeprecatedColor
 {
-    /*Node                  =*/ "#dedede", // color 9
-    /*Object                =*/ "#ffffff", // white
-    /*Context               =*/ "#d7191c", // color spectral4/1
-    /*BehaviorModel         =*/ "#93ff49", // color 7 (brighter)
-    /*CollisionModel        =*/ "#fccde5", // color 8
-    /*MechanicalState       =*/ "#8dd3c7", // color 1
-    /*ProjectiveConstraintSet  =*/ "#fdb462", // color 6
-    /*ConstraintSet         =*/ "#f98912", // color 6
-    /*InteractionForceField =*/ "#fb8072", // color 4
-    /*ForceField            =*/ "#bebada", // color 3
-    /*Solver                =*/ "#b3de69", // color 7
-    /*CollisionPipeline     =*/ "#bc80bd", // color 10
-    /*MechanicalMapping     =*/ "#4ba3fa", // color spectral4/4 (brighter)
-    /*Mapping               =*/ "#80b1d3", // color 5
-    /*Mass                  =*/ "#ffffb3", // color 2
-    /*Topology              =*/ "#ffed6f", // color 12
-    /*VisualModel           =*/ "#eefdea", // color 11 (brighter)
-    /*Loader                =*/ "#00daff", // cyan
-    /*ConfigurationSetting  =*/ "#aaaaaa", // pale pink
+public:
+    const char* operator[](size_t);
 };
+SOFA_SIMULATION_CORE_API extern DeprecatedColor COLOR;
 
-inline const char* getColor(const char* classname)
-{
-    if (!strcmp(classname,"BaseNode")) return COLOR[NODE];
-    if (!strcmp(classname,"BaseObject")) return COLOR[OBJECT];
-    if (!strcmp(classname,"ContextObject")) return COLOR[CONTEXT];
-    if (!strcmp(classname,"BehaviorModel")) return COLOR[BMODEL];
-    if (!strcmp(classname,"CollisionModel")) return COLOR[CMODEL];
-    if (!strcmp(classname,"MechanicalState")) return COLOR[MMODEL];
-    if (!strcmp(classname,"ProjectiveConstraintSet")) return COLOR[PROJECTIVECONSTRAINTSET];
-    if (!strcmp(classname,"ConstraintSet")) return COLOR[CONSTRAINTSET];
-    if (!strcmp(classname,"InteractionForceField")) return COLOR[IFFIELD];
-    if (!strcmp(classname,"ForceField")) return COLOR[FFIELD];
-    if (!strcmp(classname,"BaseAnimationLoop")) return COLOR[SOLVER];
-    if (!strcmp(classname,"OdeSolver")) return COLOR[SOLVER];
-    if (!strcmp(classname,"CollisionPipeline")) return COLOR[COLLISION];
-    if (!strcmp(classname,"MechanicalMapping")) return COLOR[MMAPPING];
-    if (!strcmp(classname,"Mapping")) return COLOR[MAPPING];
-    if (!strcmp(classname,"Mass")) return COLOR[MASS];
-    if (!strcmp(classname,"Topology")) return COLOR[TOPOLOGY];
-    if (!strcmp(classname,"VisualModel")) return COLOR[VMODEL];
-    if (!strcmp(classname,"Loader")) return COLOR[LOADER];
-    if (!strcmp(classname,"ConfigurationSetting")) return COLOR[CONFIGURATIONSETTING];
-    return "";
 
 }
-
-}
-
-#endif
