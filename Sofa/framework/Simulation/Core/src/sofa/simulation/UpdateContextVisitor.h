@@ -40,8 +40,8 @@ namespace simulation
 class SOFA_SIMULATION_CORE_API UpdateContextVisitor : public Visitor
 {
 public:
-    UpdateContextVisitor(const core::ExecParams* params)
-        : Visitor(params), startingNode(nullptr)
+    UpdateContextVisitor(const core::ExecParams* eparams)
+        : Visitor(eparams), startingNode(nullptr)
     {
     }
 
@@ -61,8 +61,8 @@ protected:
 class SOFA_SIMULATION_CORE_API UpdateSimulationContextVisitor : public UpdateContextVisitor
 {
 public:
-    UpdateSimulationContextVisitor(const core::ExecParams* params)
-        : UpdateContextVisitor(params)
+    UpdateSimulationContextVisitor(const core::ExecParams* eparams)
+        : UpdateContextVisitor(eparams)
     {
     }
 
@@ -73,7 +73,7 @@ public:
 class SOFA_SIMULATION_CORE_API UpdateVisualContextVisitor : public UpdateContextVisitor
 {
 public:
-    UpdateVisualContextVisitor(const sofa::core::visual::VisualParams* vparams);
+    UpdateVisualContextVisitor(const sofa::core::visual::VisualParams* visuparams);
 
     Result processNodeTopDown(simulation::Node* node) override;
     const char* getClassName() const override { return "UpdateVisualContextVisitor"; }

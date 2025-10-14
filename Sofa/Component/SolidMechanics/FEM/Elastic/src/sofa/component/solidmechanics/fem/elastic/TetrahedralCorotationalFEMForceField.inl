@@ -1182,20 +1182,13 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeBBox(const core::Ex
 
     helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::vec_id::write_access::position);
 
-    static const Real max_real = std::numeric_limits<Real>::max();
-    static const Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
-    for (std::size_t i=0; i<x.size(); i++)
+    type::BoundingBox bbox;
+    for (const auto& p : x )
     {
-        for (int c=0; c<3; c++)
-        {
-            if (x[i][c] > maxBBox[c]) maxBBox[c] = (Real)x[i][c];
-            else if (x[i][c] < minBBox[c]) minBBox[c] = (Real)x[i][c];
-        }
+        bbox.include(p);
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(bbox);
 }
 
 

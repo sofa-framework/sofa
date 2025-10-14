@@ -41,7 +41,7 @@ public:
     Tag(const std::string& s);
 
     /// This constructor should be used only if really necessary
-    explicit Tag(int id) : id(id) {}
+    explicit Tag(int idtag) : id(idtag) {}
 
     /// Any operation requiring a string can be used on a tag using this conversion
     operator std::string() const;

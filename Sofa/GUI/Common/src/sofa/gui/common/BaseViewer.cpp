@@ -394,28 +394,29 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
 
             std::vector<Vec3> positions;
             auto position = object->findData("position");
-            if(position)
+            if(m_showSelectedObjectPositions)
             {
-                auto positionsData = dynamic_cast<Data<sofa::type::vector<Vec3>>*>(position);
-                if(positionsData)
+                if(position)
                 {
-                    positions = positionsData->getValue();
-                    if(m_showSelectedObjectPositions){
+                    auto positionsData = dynamic_cast<Data<sofa::type::vector<Vec3>>*>(position);
+                    if(positionsData)
+                    {
+                        positions = positionsData->getValue();
                         drawTool->drawPoints(positions, 2.0, RGBAColor::yellow());
                     }
-                }
-                else
-                {
-                    auto rigidPositions = dynamic_cast<Data<sofa::type::vector<RigidCoord<3, SReal>>>*>(position);
-                    if(rigidPositions)
+                    else
                     {
-                        for(auto frame : rigidPositions->getValue())
+                        auto rigidPositions = dynamic_cast<Data<sofa::type::vector<RigidCoord<3, SReal>>>*>(position);
+                        if(rigidPositions)
                         {
-                            float targetScreenSize = 50.0;
-                            float distance = (currentCamera->getPosition() - Rigid3Types::getCPos(frame)).norm();
-                            SReal scale = distance * tan(currentCamera->getFieldOfView() / 2.0f) * targetScreenSize / screenHeight;
-                            drawTool->drawFrame(Rigid3Types::getCPos(frame), Rigid3Types::getCRot(frame), {scale, scale,scale});
-                            positions.push_back(Rigid3Types::getCPos(frame));
+                            for(auto frame : rigidPositions->getValue())
+                            {
+                                float targetScreenSize = 50.0;
+                                float distance = (currentCamera->getPosition() - Rigid3Types::getCPos(frame)).norm();
+                                SReal scale = distance * tan(currentCamera->getFieldOfView() / 2.0f) * targetScreenSize / screenHeight;
+                                drawTool->drawFrame(Rigid3Types::getCPos(frame), Rigid3Types::getCRot(frame), {scale, scale,scale});
+                                positions.push_back(Rigid3Types::getCPos(frame));
+                            }
                         }
                     }
                 }
