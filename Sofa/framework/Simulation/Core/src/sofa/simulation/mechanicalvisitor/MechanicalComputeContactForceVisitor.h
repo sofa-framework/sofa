@@ -33,9 +33,9 @@ class SOFA_SIMULATION_CORE_API MechanicalComputeContactForceVisitor : public Mec
 {
 public:
     sofa::core::MultiVecDerivId res;
-    MechanicalComputeContactForceVisitor(const sofa::core::MechanicalParams* mparams,
-                                         sofa::core::MultiVecDerivId res )
-            : MechanicalVisitor(mparams) , res(res)
+    MechanicalComputeContactForceVisitor(const sofa::core::MechanicalParams* mechaparams,
+                                         sofa::core::MultiVecDerivId resvecid )
+            : MechanicalVisitor(mechaparams) , res(resvecid)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
