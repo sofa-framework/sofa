@@ -19,10 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/topology/Pentahedron.h>
+#pragma once
+
+#include <sofa/geometry/Prism.h>
+#include <sofa/topology/Element.h>
+#include <sofa/topology/Point.h>
 
 namespace sofa::topology
 {
-static_assert(sofa::type::trait::Streamable<sofa::topology::Pentahedron>);
-static_assert(sofa::type::trait::InputStreamable<sofa::topology::Pentahedron>);
-} // namespace sofa::topology
+    using Prism = sofa::topology::Element<sofa::geometry::Prism>;
+
+    using Pentahedron SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v25.06", "Pentahedron is renamed to Prism") = Prism;
+
+    static constexpr Prism InvalidPrism;
+}
