@@ -22,7 +22,7 @@ jobs:
   # Filter build handling : push in master, commits in PR, comments in PR and dispatch
   check_ci-depends-on:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' || github.event_name == 'issue_comment' && github.event.issue.pull_request }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'issue_comment' && github.event.issue.pull_request }}
     steps:
       - name: Set up python
         uses: actions/setup-python@v5
