@@ -149,6 +149,9 @@ jobs:
 
       - name: Check out code
         uses: actions/checkout@v2
+        with:
+          repository: sofa/ci
+          path: ./ci
 
       - name: Check push on master case (e.g. merge)
         if: ${{ github.event_name == 'push'}}
@@ -170,7 +173,7 @@ jobs:
           echo "This step runs only when a PR is opened or synchronized."
           
           # Trigger the Build action
-          python scripts/github_CI/checkPRInfoBeforeBuild.py
+          python ci/scripts/checkPRInfoBeforeBuild.py
       
       - name: Run when PR comment is created or edited > set up environment variables
         id: pr-comment-setup
@@ -218,7 +221,7 @@ jobs:
   
             # Trigger the Build action if [ci-build] is in the comment 
             if [[ "$COMMENT_BODY" == *"[ci-build]"* ]]; then  
-              python scripts/github_CI/checkPRInfoBeforeBuild.py
+              python ci/scripts/checkPRInfoBeforeBuild.py
             fi
   
       - name: Export environment variables as outputs
