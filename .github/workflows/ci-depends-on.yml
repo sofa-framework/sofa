@@ -34,10 +34,11 @@ jobs:
           pip install python-graphql-client
           pip install requests
 
-      - name: Check out ci code
-        uses: actions/checkout@v2
+      - name: Check out code
+        uses: actions/checkout@v5
         with:
-          repository: sofa/ci
+          repository: bakpaul/ci
+          ref: jenkins_gha_migration
           path: ./ci
 
       - name: Run check
