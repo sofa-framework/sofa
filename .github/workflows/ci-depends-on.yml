@@ -1,0 +1,47 @@
+name: Check ci-dpends-on
+
+# ===============================================================
+# ===============================================================
+
+
+on:
+  
+  # PR-related build (open, labels, push)
+  pull_request:
+    types: [opened, synchronize]
+    
+  # Comment on PR
+  issue_comment:
+    types: [created, edited]
+
+# ===============================================================
+# ===============================================================
+
+
+jobs:
+  # Filter build handling : push in master, commits in PR, comments in PR and dispatch
+  check_ci-depends-on:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' || github.event_name == 'issue_comment' && github.event.issue.pull_request }}
+    steps:
+      - name: Set up python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install pip packages
+        run: |
+          pip install python-graphql-client
+          pip install requests
+
+      - name: Check out ci code
+        uses: actions/checkout@v2
+        with:
+          repository: sofa/ci
+          path: ./ci
+
+      - name: Run check
+        run: |
+          cd ci/scripts
+          python3 -c "from checkPRInfoBeforeBuild import *; check_ci_depends_on();" 
+
