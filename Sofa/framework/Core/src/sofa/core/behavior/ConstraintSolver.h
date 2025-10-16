@@ -86,15 +86,6 @@ public:
      */
     virtual bool applyCorrection(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;
 
-
-    /// Compute the residual in the newton iterations due to the constraints forces
-    /// i.e. compute Vecid::force() += J^t lambda
-    /// the result is accumulated in Vecid::force()
-    virtual void computeResidual(const core::ExecParams* /*params*/)
-    {
-        dmsg_error() << "ComputeResidual is not implemented in " << this->getName() ;
-    }
-
     /// @name Resolution DOFs vectors API
     /// @{
     virtual MultiVecDerivId getLambda() const

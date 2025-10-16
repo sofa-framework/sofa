@@ -112,11 +112,6 @@ public:
     /// Experimental API used to investigate convergence issues.
     SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM() virtual void rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/);
 
-    /// Compute the residual in the newton iterations due to the constraints forces
-    /// i.e. compute Vecid::force() += J^t lambda
-    /// the result is accumulated in Vecid::force()
-    virtual void computeResidual(const core::ExecParams* /*params*/, linearalgebra::BaseVector * /*lambda*/) ;
-
     virtual void applyContactForce(const linearalgebra::BaseVector *f) = 0;
     virtual void resetContactForce() = 0;
 

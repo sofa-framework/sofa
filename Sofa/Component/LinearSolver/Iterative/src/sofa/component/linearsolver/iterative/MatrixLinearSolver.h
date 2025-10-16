@@ -295,8 +295,6 @@ public:
 
     void applyConstraintForce(const sofa::core::ConstraintParams* cparams, sofa::core::MultiVecDerivId dx, const linearalgebra::BaseVector* f) override;
 
-    void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* f) override;
-
     ///< Parallelize the computation of the product J*M^{-1}*J^T where M is the
     ///< matrix of the linear system and J is any matrix with compatible dimensions
     Data<bool> d_parallelInverseProduct;
@@ -446,9 +444,6 @@ linearalgebra::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScattere
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/, sofa::core::MultiVecDerivId /*dx*/, const linearalgebra::BaseVector* /*f*/);
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::computeResidual(const core::ExecParams* params,linearalgebra::BaseVector* f);
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::checkLinearSystem();

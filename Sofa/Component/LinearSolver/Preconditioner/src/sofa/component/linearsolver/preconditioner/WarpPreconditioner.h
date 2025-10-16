@@ -78,8 +78,6 @@ public:
 
     Index getSystemDimention(const sofa::core::MechanicalParams* mparams);
 
-    void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* /*f*/) override;
-
     void updateSystemMatrix() override;
 
 protected:
