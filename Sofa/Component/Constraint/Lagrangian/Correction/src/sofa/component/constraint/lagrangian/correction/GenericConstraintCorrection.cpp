@@ -229,12 +229,6 @@ void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
     applyMotionCorrection(&cparams, core::vec_id::write_access::position, core::vec_id::write_access::velocity, dx, force);
 }
 
-void GenericConstraintCorrection::computeResidual(const ExecParams* params, linearalgebra::BaseVector *lambda)
-{
-    l_linearSolver.get()->computeResidual(params, lambda);
-}
-
-
 void GenericConstraintCorrection::getComplianceMatrix(linearalgebra::BaseMatrix* Minv) const
 {
     if (!l_ODESolver.get())

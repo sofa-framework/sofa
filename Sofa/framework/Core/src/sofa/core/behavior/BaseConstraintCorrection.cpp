@@ -36,11 +36,6 @@ void BaseConstraintCorrection::getComplianceWithConstraintMerge(linearalgebra::B
     msg_warning() << "getComplianceWithConstraintMerge is not implemented yet " ;
 }
 
-void BaseConstraintCorrection::computeResidual(const core::ExecParams* /*params*/, linearalgebra::BaseVector * /*lambda*/)
-{
-    dmsg_warning() << "ComputeResidual is not implemented in " << this->getName() ;
-}
-
 void BaseConstraintCorrection::getBlockDiagonalCompliance(linearalgebra::BaseMatrix* /*W*/, int /*begin*/,int /*end*/)
 {
     dmsg_warning() << "getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W) is not implemented in " << this->getTypeName() ;
