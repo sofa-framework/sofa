@@ -30,7 +30,7 @@ namespace sofa::component::linearsolver::direct
 
 template <class TMatrix, class TVector, class TThreadManager>
 AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::AsyncSparseLDLSolver()
-    : d_authorizeAssembly(initData(&d_authorizeAssembly, true, "authorizeAssembly", "Allow assembly of the linear system"))
+    : d_enableAssembly(initData(&d_enableAssembly, true, "authorizeAssembly", "Allow assembly of the linear system"))
 {
 }
 
@@ -43,7 +43,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::init()
     {
         if (this->l_linearSystem)
         {
-            this->l_linearSystem->d_authorizeAssembly.setParent(&d_authorizeAssembly);
+            this->l_linearSystem->d_enableAssembly.setParent(&d_enableAssembly);
         }
 
         waitForAsyncTask = true;
@@ -55,7 +55,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::init()
 template <class TMatrix, class TVector, class TThreadManager>
 void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::reset()
 {
-    d_authorizeAssembly.setValue(true);
+    d_enableAssembly.setValue(true);
     waitForAsyncTask = true;
 }
 
@@ -80,7 +80,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::solveSystem()
         this->d_factorizationInvalidation.setValue(false);
 
         //matrix assembly is temporarily stopped until the next factorization
-        d_authorizeAssembly.setValue(false);
+        d_enableAssembly.setValue(false);
     }
 
     if (waitForAsyncTask)
@@ -159,7 +159,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::asyncFactorization(
     newInvertDataReady = true;
 
     //factorization is finished: matrix assembly is authorized once again
-    d_authorizeAssembly.setValue(true);
+    d_enableAssembly.setValue(true);
 }
 
 template <class TMatrix, class TVector, class TThreadManager>

@@ -146,7 +146,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::invert(TMatrix& /*M*/)
         if (this->l_linearSystem)
         {
             loadMatrix(*this->l_linearSystem->getSystemMatrix());
-            this->l_linearSystem->d_authorizeAssembly.setValue(false);
+            this->l_linearSystem->d_enableAssembly.setValue(false);
         }
         first = false;
     }
