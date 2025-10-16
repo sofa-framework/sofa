@@ -384,33 +384,18 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
     if (m_topology->getRevision() != m_topologyRevision)
         updateFromTopology();
 
-    static constexpr Real max_real = std::numeric_limits<Real>::max();
-    static constexpr Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
-
     const auto& positions = this->m_mstate->read(core::vec_id::read_access::position)->getValue();
+    type::BoundingBox bbox;
 
-    for (sofa::Size i=0; i<size; i++)
+    for(const auto& triangle : (*this->m_triangles))
     {
-        const type::Vec3& pt1 = positions[(*this->m_triangles)[i][0]];
-        const type::Vec3& pt2 = positions[(*this->m_triangles)[i][1]];
-        const type::Vec3& pt3 = positions[(*this->m_triangles)[i][2]];
-
-        for (int c=0; c<3; c++)
+        for(const auto ptindex : triangle)
         {
-            if (pt1[c] > maxBBox[c]) maxBBox[c] = (Real)pt1[c];
-            else if (pt1[c] < minBBox[c]) minBBox[c] = (Real)pt1[c];
-
-            if (pt2[c] > maxBBox[c]) maxBBox[c] = (Real)pt2[c];
-            else if (pt2[c] < minBBox[c]) minBBox[c] = (Real)pt2[c];
-
-            if (pt3[c] > maxBBox[c]) maxBBox[c] = (Real)pt3[c];
-            else if (pt3[c] < minBBox[c]) minBBox[c] = (Real)pt3[c];
+            bbox.include(positions[ptindex]);
         }
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(bbox);
 }
 
 

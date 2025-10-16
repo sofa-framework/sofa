@@ -38,7 +38,7 @@ class SOFA_SIMULATION_CORE_API BehaviorUpdatePositionVisitor : public Visitor
 {
 
 public:
-    BehaviorUpdatePositionVisitor(const core::ExecParams* params, SReal _dt): Visitor(params),dt(_dt) {}
+    BehaviorUpdatePositionVisitor(const core::ExecParams* eparams, SReal _dt): Visitor(eparams),dt(_dt) {}
     void processBehaviorModel(simulation::Node* node, core::BehaviorModel* b);
     Result processNodeTopDown(simulation::Node* node) override;
 
