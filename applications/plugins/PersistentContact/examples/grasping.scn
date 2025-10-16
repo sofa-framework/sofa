@@ -2,7 +2,7 @@
 
 	<VisualStyle displayFlags="hideVisual showCollisionModels" />
 	
-	<GenericConstraintSolver tolerance="1e-6" printLog="0" maxIterations="200"/>
+	<ProjectedGaussSeidelConstraintSolver tolerance="1e-6" printLog="0" maxIterations="200"/>
 	<FreeMotionAnimationLoop/>
 	
 	<CollisionPipeline depth="6" verbose="0" draw="0"/>
