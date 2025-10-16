@@ -519,7 +519,7 @@ void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* 
     sofa::core::behavior::MultiVecDeriv force(&vop, core::vec_id::write_access::force );
 
     // force += rhs
-    // executeVisitor( MechanicalMultiVectorPeqBaseVectorVisitor(core::execparams::defaultInstance(), force, rhsVector, &(linearSystem.matrixAccessor)) );
+    executeVisitor( MechanicalMultiVectorPeqBaseVectorVisitor(core::execparams::defaultInstance(), force, rhsVector, nullptr) );
 }
 
 
