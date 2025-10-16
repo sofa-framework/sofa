@@ -78,9 +78,12 @@ public:
         sinfo->Evalue = EigenProblemSolver.eigenvalues().real();
         sinfo->Evect = EigenProblemSolver.eigenvectors().real();
 
-        Real val=pow(sinfo->Evalue[0],alpha1/(Real)2)+pow(sinfo->Evalue[1],alpha1/(Real)2)+pow(sinfo->Evalue[2],alpha1/(Real)2);
+        //Real val=pow(sinfo->Evalue[0],alpha1/(Real)2)+pow(sinfo->Evalue[1],alpha1/(Real)2)+pow(sinfo->Evalue[2],alpha1/(Real)2);
         //return (Real)fj*val*mu1/(alpha1*alpha1)+k0*log(sinfo->J)*log(sinfo->J)/(Real)2.0-(Real)3.0*mu1/(alpha1*alpha1);
-        return fj * mu1 / (alpha1 * alpha1) * val
+        Real trCalpha2 = pow(sinfo->Evalue[0], alpha1 / 2_sreal) +
+                    pow(sinfo->Evalue[1], alpha1 / 2_sreal) +
+                    pow(sinfo->Evalue[2], alpha1 / 2_sreal);
+        return fj * mu1 / (alpha1 * alpha1) * trCalpha2
                - 3_sreal * mu1 / (alpha1 * alpha1);
     }
 
@@ -115,12 +118,10 @@ public:
         invertMatrix(inversematrix,sinfo->deformationTensor);
         //SPKTensorGeneral=(-(Real)1.0/(Real)3.0*trCalpha*inversematrix+Calpha_1)*(mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0))+inversematrix*k0*log(sinfo->J);
         Real fj= (Real)(pow(sinfo->J,(Real)(-alpha1/3.0)));
-        SPKTensorGeneral = fj * mu1 / alpha1 * (
-            // Simple term
-            Calpha_1 
-            // F(J) term
-            - trCalpha / 3. * inversematrix
-        );
+        // Contributions to S from derivatives of strain energy w.r.t. C from 
+        const MatrixSym partialLambda = 0.5 * Calpha_1; 
+        const MatrixSym partialFJ = -1 / 6. * trCalpha * inversematrix;
+        SPKTensorGeneral = 2. * fj * mu1 / alpha1 * (partialLambda + partialFJ);
     }
 
 
