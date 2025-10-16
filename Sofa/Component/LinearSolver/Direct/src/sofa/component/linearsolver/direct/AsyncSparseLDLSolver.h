@@ -97,7 +97,7 @@ protected:
 
     std::atomic<bool> newInvertDataReady { false };
 
-    Data< bool > d_authorizeAssembly;
+    Data< bool > d_enableAssembly;
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_ASYNCSPARSELDLSOLVER_CPP)

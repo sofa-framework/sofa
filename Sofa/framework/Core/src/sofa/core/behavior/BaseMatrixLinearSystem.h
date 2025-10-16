@@ -46,7 +46,7 @@ public:
     /// Size of the linear system
     Data< sofa::type::Vec2u > d_matrixSize;
 
-    Data< bool > d_authorizeAssembly;
+    Data< bool > d_enableAssembly;
 
     /// Returns the system matrix as a sofa::linearalgebra::BaseMatrix*
     virtual linearalgebra::BaseMatrix* getSystemBaseMatrix() const { return nullptr; }
