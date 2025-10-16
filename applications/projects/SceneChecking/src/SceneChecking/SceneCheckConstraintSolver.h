@@ -19,58 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/lagrangian/solver/init.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
+#pragma once
 
-namespace sofa::component::constraint::lagrangian::solver
+#include <SceneChecking/config.h>
+#include <sofa/simulation/SceneCheck.h>
+
+#include <map>
+#include <vector>
+
+namespace sofa::_scenechecking_
 {
-
-extern void registerNNCGConstraintSolver(sofa::core::ObjectFactory* factory);
-extern void registerProjectedGaussSeidelConstraintSolver(sofa::core::ObjectFactory* factory);
-extern void registerUnbuiltGaussSeidelConstraintSolver(sofa::core::ObjectFactory* factory);
-extern void registerLCPConstraintSolver(sofa::core::ObjectFactory* factory);
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
-}
-
-void initExternalModule()
+    
+class SOFA_SCENECHECKING_API SceneCheckConstraintSolver : public sofa::simulation::SceneCheck
 {
-    init();
-}
+public:
+    SceneCheckConstraintSolver();
+    virtual ~SceneCheckConstraintSolver();
 
-const char* getModuleName()
+    typedef std::shared_ptr<SceneCheckConstraintSolver> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckConstraintSolver()); }
+    virtual const std::string getName() override;
+    virtual const std::string getDesc() override;
+    void doInit(sofa::simulation::Node* node) override { SOFA_UNUSED(node); }
+    void doCheckOn(sofa::simulation::Node* node) override { SOFA_UNUSED(node); }
+    void doPrintSummary() override;
+
+private:
+    std::map<std::string, std::string> m_targetDescription;
+};
+
+} // namespace sofa::_scenechecking_
+
+namespace sofa::scenechecking
 {
-    return MODULE_NAME;
-}
+    using _scenechecking_::SceneCheckConstraintSolver;
+} // namespace sofa::scenechecking
 
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-    registerNNCGConstraintSolver(factory);
-    registerProjectedGaussSeidelConstraintSolver(factory);
-    registerUnbuiltGaussSeidelConstraintSolver(factory);
-    registerLCPConstraintSolver(factory);
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
-        first = false;
-    }
-}
-
-} // namespace sofa::component::constraint::lagrangian::solver
