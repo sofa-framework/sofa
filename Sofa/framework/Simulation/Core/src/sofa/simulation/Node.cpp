@@ -71,7 +71,7 @@ namespace sofa::simulation
 using core::objectmodel::BaseNode;
 using core::objectmodel::BaseObject;
 
-Node::Node(const std::string& name, Node* parent)
+Node::Node(const std::string& nodename, Node* parent)
     : core::objectmodel::BaseNode()
     , sofa::core::objectmodel::Context()
     , child(initLink("child", "Child nodes"))
@@ -115,7 +115,7 @@ Node::Node(const std::string& name, Node* parent)
         parent->addChild(this);
 
     _context = this;
-    setName(name);
+    setName(nodename);
     f_printLog.setValue(DEBUG_LINK);
 }
 
@@ -269,88 +269,88 @@ void Node::moveObject(BaseObject::SPtr obj)
 }
 
 
-void Node::notifyBeginAddChild(Node::SPtr parent, Node::SPtr child) const
+void Node::notifyBeginAddChild(Node::SPtr parent, Node::SPtr childPtr) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (const auto& listener : root->listener)
-        listener->onBeginAddChild(parent.get(), child.get());
+    for (const auto& rootListener : root->listener)
+        rootListener->onBeginAddChild(parent.get(), childPtr.get());
 }
 
-void Node::notifyEndAddChild(Node::SPtr parent, Node::SPtr child) const
+void Node::notifyEndAddChild(Node::SPtr parent, Node::SPtr childPtr) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (const auto& listener : root->listener)
-        listener->onEndAddChild(parent.get(), child.get());
+    for (const auto& rootListener : root->listener)
+        rootListener->onEndAddChild(parent.get(), childPtr.get());
 }
 
-void Node::notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr child) const
+void Node::notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr childPtr) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (const auto& listener : root->listener)
-        listener->onBeginRemoveChild(parent.get(), child.get());
+    for (const auto& rootListener : root->listener)
+        rootListener->onBeginRemoveChild(parent.get(), childPtr.get());
 }
 
-void Node::notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child) const
+void Node::notifyEndRemoveChild(Node::SPtr parent, Node::SPtr childPtr) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (const auto& listener : root->listener)
-        listener->onEndRemoveChild(parent.get(), child.get());
+    for (const auto& rootListener : root->listener)
+        rootListener->onEndRemoveChild(parent.get(), childPtr.get());
 }
 
-void Node::notifyBeginAddObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj) const
+void Node::notifyBeginAddObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr objPtr) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (const auto& listener : root->listener)
-        listener->onBeginAddObject(parent.get(), obj.get());
+    for (const auto& rootListener : root->listener)
+        rootListener->onBeginAddObject(parent.get(), objPtr.get());
 }
 
-void Node::notifyEndAddObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj) const
+void Node::notifyEndAddObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr objPtr) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (const auto& listener : root->listener)
-        listener->onEndAddObject(parent.get(), obj.get());
+    for (const auto& rootListener : root->listener)
+        rootListener->onEndAddObject(parent.get(), objPtr.get());
 }
 
-void Node::notifyBeginRemoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj) const
+void Node::notifyBeginRemoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr objPtr) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (const auto& listener : root->listener)
-        listener->onBeginRemoveObject(parent.get(), obj.get());
+    for (const auto& rootListener : root->listener)
+        rootListener->onBeginRemoveObject(parent.get(), objPtr.get());
 }
 
-void Node::notifyEndRemoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj) const
+void Node::notifyEndRemoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr objPtr) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (const auto& listener : root->listener)
-        listener->onEndRemoveObject(parent.get(), obj.get());
+    for (const auto& rootListener : root->listener)
+        rootListener->onEndRemoveObject(parent.get(), objPtr.get());
 }
 
 void Node::notifyBeginAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (const auto& listener : root->listener)
-        listener->onBeginAddSlave(master, slave);
+    for (const auto& rootListener : root->listener)
+        rootListener->onBeginAddSlave(master, slave);
 }
 
 void Node::notifyEndAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (const auto& listener : root->listener)
-        listener->onEndAddSlave(master, slave);
+    for (const auto& rootListener : root->listener)
+        rootListener->onEndAddSlave(master, slave);
 }
 
 void Node::notifyBeginRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (const auto& listener : root->listener)
-        listener->onBeginRemoveSlave(master, slave);
+    for (const auto& rootListener : root->listener)
+        rootListener->onBeginRemoveSlave(master, slave);
 }
 
 void Node::notifyEndRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (const auto& listener : root->listener)
-        listener->onEndRemoveSlave(master, slave);
+    for (const auto& rootListener : root->listener)
+        rootListener->onEndRemoveSlave(master, slave);
 }
 
 void Node::notifySleepChanged(Node* node) const
@@ -385,10 +385,10 @@ void Node::removeListener(MutationListener* obj)
 
 
 /// Find an object given its name
-core::objectmodel::BaseObject* Node::getObject(const std::string& name) const
+core::objectmodel::BaseObject* Node::getObject(const std::string& objectName) const
 {
     for (ObjectIterator it = object.begin(), itend = object.end(); it != itend; ++it)
-        if ((*it)->getName() == name)
+        if ((*it)->getName() == objectName)
             return it->get();
     return nullptr;
 }
@@ -510,33 +510,33 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
         {
             std::size_t p2pos = pathStr.find('/',ppos);
             if (p2pos == std::string::npos) p2pos = psize;
-            std::string name = pathStr.substr(ppos,p2pos-ppos);
+            std::string nameStr = pathStr.substr(ppos,p2pos-ppos);
             ppos = p2pos+1;
             if (master)
             {
                 if(DEBUG_LINK)
-                    dmsg_info() << "  to slave object " << name ;
-                master = master->getSlave(name);
+                    dmsg_info() << "  to slave object " << nameStr ;
+                master = master->getSlave(nameStr);
                 if (!master) return nullptr;
             }
             else
             {
                 for (;;)
                 {
-                    BaseObject* obj = node->getObject(name);
-                    Node* child = node->getChild(name);
-                    if (child)
+                    BaseObject* obj = node->getObject(nameStr);
+                    Node* childPtr = node->getChild(nameStr);
+                    if (childPtr)
                     {
-                        node = child;
+                        node = childPtr;
                         if(DEBUG_LINK)
-                            dmsg_info() << "  to child node " << name ;
+                            dmsg_info() << "  to child node " << nameStr ;
                         break;
                     }
                     else if (obj)
                     {
                         master = obj;
                         if(DEBUG_LINK)
-                            dmsg_info()  << "  to object " << name ;
+                            dmsg_info()  << "  to object " << nameStr ;
                         break;
                     }
                     if (based) return nullptr;
@@ -723,23 +723,23 @@ core::visual::VisualLoop* Node::getVisualLoop() const
 }
 
 /// Find a child node given its name
-Node* Node::getChild(const std::string& name) const
+Node* Node::getChild(const std::string& childName) const
 {
     for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
     {
-        if ((*it)->getName() == name)
+        if ((*it)->getName() == childName)
             return it->get();
     }
     return nullptr;
 }
 
 /// Get a descendant node given its name
-Node* Node::getTreeNode(const std::string& name) const
+Node* Node::getTreeNode(const std::string& nodeName) const
 {
     Node* result = nullptr;
-    result = getChild(name);
+    result = getChild(nodeName);
     for (ChildIterator it = child.begin(), itend = child.end(); result == nullptr && it != itend; ++it)
-        result = (*it)->getTreeNode(name);
+        result = (*it)->getTreeNode(nodeName);
     return result;
 }
 
@@ -1292,13 +1292,13 @@ void* Node::getObject(const sofa::core::objectmodel::ClassInfo& class_info, cons
     {
         std::string::size_type pend = path.find('/');
         if (pend == std::string::npos) pend = path.length();
-        const std::string name ( path, 0, pend );
-        const Node* child = getChild(name);
-        if (child)
+        const std::string childName ( path, 0, pend );
+        const Node* childPtr = getChild(childName);
+        if (childPtr)
         {
             while (pend < path.length() && path[pend] == '/')
                 ++pend;
-            return child->getObject(class_info, std::string(path, pend));
+            return childPtr->getObject(class_info, std::string(path, pend));
         }
         else if (pend < path.length())
         {
@@ -1306,7 +1306,7 @@ void* Node::getObject(const sofa::core::objectmodel::ClassInfo& class_info, cons
         }
         else
         {
-            sofa::core::objectmodel::BaseObject* obj = simulation::Node::getObject(name);
+            sofa::core::objectmodel::BaseObject* obj = simulation::Node::getObject(childName);
             if (obj == nullptr)
             {
                 return nullptr;
@@ -1316,7 +1316,7 @@ void* Node::getObject(const sofa::core::objectmodel::ClassInfo& class_info, cons
                 void* result = class_info.dynamicCast(obj);
                 if (result == nullptr)
                 {
-                    dmsg_error("Node") << "Object "<<name<<" in "<<getPathName()<<" does not implement class "<<class_info.name() ;
+                    dmsg_error("Node") << "Object "<<childName<<" in "<<getPathName()<<" does not implement class "<<class_info.name() ;
                     return nullptr;
                 }
                 else
@@ -1498,8 +1498,8 @@ void Node::precomputeTraversalOrder( const sofa::core::ExecParams* params )
     {
         NodeList& _orderList;
     public:
-        TraversalOrderVisitor(const sofa::core::ExecParams* params, NodeList& orderList )
-            : Visitor(params)
+        TraversalOrderVisitor(const sofa::core::ExecParams* eparams, NodeList& orderList )
+            : Visitor(eparams)
             , _orderList( orderList )
         {
             _orderList.clear();

@@ -6,8 +6,6 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    DAG_test.cpp
-    Node_test.cpp
     MutationListener_test.cpp
     Node_test.cpp
     Simulation_test.cpp
