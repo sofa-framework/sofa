@@ -330,10 +330,16 @@ public:
                     for (int jj = 0 ; jj < 3; jj++)
                     {
                         if (jj == ii) continue;
-                        const Real eigenTerm_jj = pow(Evalue[jj], alpha1/2. - 1.);
-                        const Real denom = 1./(Evalue[ii] - Evalue[jj]);
-                        const Real coefRot = (eigenTerm_ii - eigenTerm_jj)*denom/2.;
-                        elasticityTensor(n, m) += coefRot *
+
+                        Real coefRot{0};
+                        if (std::fabs(Evalue[ii] - Evalue[jj]) < std::numeric_limits<Real>::epsilon()) 
+                            coefRot = (alpha1 / 2. - 1.) * pow(Evalue[ii], alpha1 / 2. - 2.);
+                        else
+                        {
+                            const Real eigenTerm_jj = pow(Evalue[jj], alpha1/2. - 1.);
+                            coefRot = (eigenTerm_ii - eigenTerm_jj)/(Evalue[ii] - Evalue[jj]);
+                        }
+                        elasticityTensor(n, m) += coefRot * 0.5 *
                         (
                             Evect(i, ii) * Evect(j, jj) * Evect(k, jj) * Evect(l, ii) +
                             Evect(i, ii) * Evect(j, jj) * Evect(k, ii) * Evect(l, jj)
