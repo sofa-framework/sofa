@@ -84,7 +84,8 @@ public:
                     pow(sinfo->Evalue[1], alpha1 / 2_sreal) +
                     pow(sinfo->Evalue[2], alpha1 / 2_sreal);
         return fj * mu1 / (alpha1 * alpha1) * trCalpha2
-               - 3_sreal * mu1 / (alpha1 * alpha1);
+               - 3_sreal * mu1 / (alpha1 * alpha1)
+               + k0 * log(sinfo->J) * log(sinfo->J) / 2_sreal;
     }
 
     void deriveSPKTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,MatrixSym &SPKTensorGeneral) override
@@ -121,7 +122,8 @@ public:
         // Contributions to S from derivatives of strain energy w.r.t. C from 
         const MatrixSym partialLambda = 0.5 * Calpha_1; 
         const MatrixSym partialFJ = -1 / 6. * trCalpha * inversematrix;
-        SPKTensorGeneral = 2. * fj * mu1 / alpha1 * (partialLambda + partialFJ);
+        const MatrixSym partialLogJ = k0 * log(sinfo->J) * inversematrix;
+        SPKTensorGeneral = 2. * fj * mu1 / alpha1 * (partialLambda + partialFJ) + partialLogJ;
     }
 
 
@@ -288,10 +290,11 @@ public:
         invertMatrix(inversematrix,sinfo->deformationTensor);
 
         // build 4th-order tensor contribution in Voigt notation
-        Matrix6 Calpha_H_Calpha;
+        Matrix6 elasticityTensor;
 
         // diagonal entries
         const Real coef = 0.5 * alpha1 - 1.;
+        Real fj= (Real)(pow(sinfo->J,(Real)(-alpha1/3.0)));
         for (int n = 0; n < 6; n++)
         {
             int i, j;
@@ -320,7 +323,7 @@ public:
                 for (int ii = 0 ; ii < 3; ii++)
                 {
                     Real eigenTerm = pow(Evalue[ii], alpha1/2. - 2.);
-                    Calpha_H_Calpha(n, m) += coef * eigenTerm 
+                    elasticityTensor(n, m) += coef * eigenTerm 
                         * Evect(i, ii) * Evect(j, ii) * Evect(k, ii) * Evect(l, ii);
 
                     const Real eigenTerm_ii = pow(Evalue[ii], alpha1/2. - 1.);
@@ -330,7 +333,7 @@ public:
                         const Real eigenTerm_jj = pow(Evalue[jj], alpha1/2. - 1.);
                         const Real denom = 1./(Evalue[ii] - Evalue[jj]);
                         const Real coefRot = (eigenTerm_ii - eigenTerm_jj)*denom/2.;
-                        Calpha_H_Calpha(n, m) += coefRot *
+                        elasticityTensor(n, m) += coefRot *
                         (
                             Evect(i, ii) * Evect(j, jj) * Evect(k, jj) * Evect(l, ii) +
                             Evect(i, ii) * Evect(j, jj) * Evect(k, ii) * Evect(l, jj)
@@ -338,24 +341,29 @@ public:
                     }
                 }
                 // F(J) term
-                Calpha_H_Calpha(n, m) -= alpha1/6. * (inversematrix(i,j) * Calpha_1(k,l)
+                elasticityTensor(n, m) -= alpha1/6. * (inversematrix(i,j) * Calpha_1(k,l)
                     - trCalpha / 3. * inversematrix(i,j) * inversematrix(k,l));
 
                 // T22 term 1
-                Calpha_H_Calpha(n, m) -= alpha1/6. * Calpha_1(i,j) * inversematrix(k,l);
+                elasticityTensor(n, m) -= alpha1/6. * Calpha_1(i,j) * inversematrix(k,l);
                 
                 // T22 term 2
-                Calpha_H_Calpha(n, m) += alpha1/3. * trCalpha * 0.5 * (
+                elasticityTensor(n, m) += alpha1/3. * trCalpha * 0.5 * (
                     inversematrix(i,k) * inversematrix(j,l) 
                     + inversematrix(i,l) * inversematrix(j,k));
+
+                elasticityTensor(n, m) += 0.5 * alpha1 / mu1 / fj * 
+                    (
+                        k0 * inversematrix(i,j) * inversematrix(k,l)
+                        - k0*log(sinfo->J) *(inversematrix(i,k) * inversematrix(j,l) 
+                            + inversematrix(i,l) * inversematrix(j,k))
+                    ) ;
             }
         }
 
         // multiply by scalar factor
-        Real fj= (Real)(pow(sinfo->J,(Real)(-alpha1/3.0)));
-        outputTensor = 2.0 * fj * mu1 / alpha1 * Calpha_H_Calpha ;
+        outputTensor = 2.0 * fj * mu1 / alpha1 * elasticityTensor ;
     }
-
 };
 
 } // namespace sofa::component::solidmechanics::fem::hyperelastic::material
