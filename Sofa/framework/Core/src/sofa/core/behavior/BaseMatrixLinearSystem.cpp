@@ -27,7 +27,7 @@ namespace sofa::core::behavior
 BaseMatrixLinearSystem::BaseMatrixLinearSystem()
 : Inherit1()
 , d_matrixSize(initData(&d_matrixSize, "matrixSize", "Size of the global matrix"))
-, d_enableAssembly(initData(&d_enableAssembly, true, "authorizeAssembly", "Allows to assemble the system matrix"))
+, d_enableAssembly(initData(&d_enableAssembly, true, "enableAssembly", "Allows to assemble the system matrix"))
 {
     d_matrixSize.setReadOnly(true);
 

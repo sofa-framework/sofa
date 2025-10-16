@@ -30,7 +30,7 @@ namespace sofa::component::linearsolver::direct
 
 template <class TMatrix, class TVector, class TThreadManager>
 AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::AsyncSparseLDLSolver()
-    : d_enableAssembly(initData(&d_enableAssembly, true, "authorizeAssembly", "Allow assembly of the linear system"))
+    : d_enableAssembly(initData(&d_enableAssembly, true, "enableAssembly", "Allow assembly of the linear system"))
 {
 }
 
