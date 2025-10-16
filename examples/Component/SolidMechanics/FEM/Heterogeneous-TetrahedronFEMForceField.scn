@@ -25,7 +25,7 @@
 
 
     <FreeMotionAnimationLoop/>
-    <GenericConstraintSolver maxIt="500" tolerance="0.0002" scaleTolerance='false' printLog="false" computeConstraintForces="true"/>
+    <ProjectedGaussSeidelConstraintSolver maxIt="500" tolerance="0.0002" scaleTolerance='false' printLog="false" computeConstraintForces="true"/>
 
 
     <Node name="Topology">
