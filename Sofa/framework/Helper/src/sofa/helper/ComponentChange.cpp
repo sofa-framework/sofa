@@ -625,11 +625,11 @@ std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
     // REMOVED SINCE v25.12
 
     { "GenericConstraintSolver",
-        ComponentChange().withCustomMessage("GenericConstraintSolver has been replaced since v25.12 by new objects, which names relate to the method used:\n"
-             "    - ProjectedGaussSeidel (if you where using this component without setting 'resolutionMethod' or by setting it to 'ProjectedGaussSeidel')\n"
-             "    - UnbuiltGaussSeidel (if you where using this component without setting 'resolutionMethod=\"UnbuiltGaussSeidel\"')\n"
-             "    - NNCG (if you where using this component without setting 'resolutionMethod=\"NonsmoothNonlinearConjugateGradient\"')\n"
-             "      --> For NNCG, data 'newtonIterations' has been replaced by 'maxIterations'"
+        ComponentChange().withCustomMessage("GenericConstraintSolver has been replaced since v25.12 by a set of new components, whose names relate to the method used:\n"
+             "    - ProjectedGaussSeidelConstraintSolver (if you were using this component without setting 'resolutionMethod' or by setting it to 'ProjectedGaussSeidel')\n"
+             "    - UnbuiltGaussSeidelConstraintSolver (if you were using this component while setting 'resolutionMethod=\"UnbuiltGaussSeidel\"')\n"
+             "    - NNCGConstraintSolver (if you were using this component while setting 'resolutionMethod=\"NonsmoothNonlinearConjugateGradient\"')\n"
+             "      --> For NNCGConstraintSolver, data 'newtonIterations' has been replaced by 'maxIterations'"
              )},
 
 
