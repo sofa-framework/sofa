@@ -14,6 +14,7 @@ set(HEADER_FILES
     ${SOFATOPOLOGYSRC_ROOT}/Quad.h
     ${SOFATOPOLOGYSRC_ROOT}/Tetrahedron.h
     ${SOFATOPOLOGYSRC_ROOT}/Pentahedron.h
+    ${SOFATOPOLOGYSRC_ROOT}/Prism.h
     ${SOFATOPOLOGYSRC_ROOT}/Pyramid.h
     ${SOFATOPOLOGYSRC_ROOT}/Hexahedron.h
 )
@@ -27,7 +28,7 @@ set(SOURCE_FILES
     ${SOFATOPOLOGYSRC_ROOT}/Triangle.cpp
     ${SOFATOPOLOGYSRC_ROOT}/Quad.cpp
     ${SOFATOPOLOGYSRC_ROOT}/Tetrahedron.cpp
-    ${SOFATOPOLOGYSRC_ROOT}/Pentahedron.cpp
+    ${SOFATOPOLOGYSRC_ROOT}/Prism.cpp
     ${SOFATOPOLOGYSRC_ROOT}/Pyramid.cpp
     ${SOFATOPOLOGYSRC_ROOT}/Hexahedron.cpp
 )
