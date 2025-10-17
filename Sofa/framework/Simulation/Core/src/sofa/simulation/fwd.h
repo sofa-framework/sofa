@@ -54,7 +54,7 @@ SOFA_SIMULATION_CORE_API sofa::core::objectmodel::BaseContext* toBaseContext(Nod
 SOFA_SIMULATION_CORE_API Node* getNodeFrom(sofa::core::objectmodel::BaseContext*);
 
 // Create a new node;
-NodeSPtr createNewNode(const std::string& name);
+SOFA_SIMULATION_CORE_API NodeSPtr createNewNode(const std::string& name);
 
 /// Initialize the objects
 void SOFA_SIMULATION_CORE_API initRoot(Node* root);
