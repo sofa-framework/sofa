@@ -59,6 +59,7 @@ public:
 
     // Returns the number of scalar constraints, or equivalently the number of Lagrange multipliers
     int getDimension() const { return dimension; }
+    void setDimension(int dim) { dimension = dim; }
 
     SReal** getW() { return W.lptr(); }
     SReal* getDfree() { return dFree.ptr(); }
@@ -66,11 +67,11 @@ public:
 
     virtual void solveTimed(SReal tolerance, int maxIt, SReal timeout) = 0;
 
-    unsigned int getProblemId();
+    unsigned getProblemId() const;
 
 protected:
     int dimension;
-    unsigned int problemId;
+    unsigned problemId;
 };
 
 
@@ -93,6 +94,10 @@ public:
 
     void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
+    MultiLink< ConstraintSolverImpl,
+        core::behavior::BaseConstraintCorrection,
+        BaseLink::FLAG_STOREPATH> l_constraintCorrections;
+
 protected:
 
     void postBuildSystem(const core::ConstraintParams* cParams) override;
@@ -100,9 +105,6 @@ protected:
 
     void clearConstraintCorrections();
 
-    MultiLink< ConstraintSolverImpl,
-        core::behavior::BaseConstraintCorrection,
-        BaseLink::FLAG_STOREPATH> l_constraintCorrections;
 
     /// Calls the method resetConstraint on all the mechanical states and BaseConstraintSet
     /// In the case of a MechanicalObject, it clears the constraint jacobian matrix

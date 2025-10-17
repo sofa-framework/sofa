@@ -19,58 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/lagrangian/solver/init.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
+#pragma once
+
+#include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
+
+
 
 namespace sofa::component::constraint::lagrangian::solver
 {
-
-extern void registerNNCGConstraintSolver(sofa::core::ObjectFactory* factory);
-extern void registerProjectedGaussSeidelConstraintSolver(sofa::core::ObjectFactory* factory);
-extern void registerUnbuiltGaussSeidelConstraintSolver(sofa::core::ObjectFactory* factory);
-extern void registerLCPConstraintSolver(sofa::core::ObjectFactory* factory);
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
-}
-
-void initExternalModule()
+/**
+ *  \brief This component implements a generic way of preparing system for solvers that doesn't need
+ *  a build version of the constraint matrix. Any solver that are based on an unbuilt system should
+ *  inherit from this.
+ *  This component is purely virtual because doSolve is not defined and needs to be defined in the
+ *  inherited class
+ */
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API UnbuiltConstraintSolver : public GenericConstraintSolver
 {
-    init();
+public:
+    SOFA_CLASS(UnbuiltConstraintSolver, GenericConstraintSolver);
+
+    virtual void initializeConstraintProblems() override;
+
+protected:
+    virtual void doBuildSystem( const core::ConstraintParams *cParams, GenericConstraintProblem * problem, unsigned int numConstraints) override;
+};
 }
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-    registerNNCGConstraintSolver(factory);
-    registerProjectedGaussSeidelConstraintSolver(factory);
-    registerUnbuiltGaussSeidelConstraintSolver(factory);
-    registerLCPConstraintSolver(factory);
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
-        first = false;
-    }
-}
-
-} // namespace sofa::component::constraint::lagrangian::solver
