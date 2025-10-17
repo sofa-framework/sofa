@@ -19,7 +19,7 @@ if(NOT metis_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
             GIT_TAG v5.2.1-ModernInstall
     )
 elseif (NOT metis_FOUND)
-    message(FATAL_ERROR "Sofa.Metis: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install metis (version=5.2.1), or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
+    message(FATAL_ERROR "${PROJECT_NAME}: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install metis (version=5.2.1), or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
 endif()
 
 
