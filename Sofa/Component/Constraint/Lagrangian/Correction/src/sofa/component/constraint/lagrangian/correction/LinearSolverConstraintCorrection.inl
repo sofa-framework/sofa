@@ -203,7 +203,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
     }
 
     // use the Linear solver to compute J*A^-1*J^T, where A is the mechanical linear system matrix
-    l_linearSolver->setSystemLHVector(sofa::core::MultiVecDerivId::null());
+    l_linearSolver->getLinearSystem()->setSystemSolution(sofa::core::MultiVecDerivId::null());
     l_linearSolver->addJMInvJt(W, &m_constraintJacobian, factor);
 
     addRegularization(W);
@@ -247,9 +247,10 @@ void LinearSolverConstraintCorrection< DataTypes >::computeMotionCorrection(cons
 {
     if (mstate && l_linearSolver.get())
     {
-        l_linearSolver->setSystemRHVector(f);
-        l_linearSolver->setSystemLHVector(dx);
+        l_linearSolver->getLinearSystem()->setRHS(f);
+        l_linearSolver->getLinearSystem()->setSystemSolution(dx);
         l_linearSolver->solveSystem();
+        l_linearSolver->getLinearSystem()->dispatchSystemSolution(dx);
     }
 }
 
@@ -373,9 +374,10 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const linear
             }
         }
     }
-    l_linearSolver->setSystemRHVector(forceID);
-    l_linearSolver->setSystemLHVector(dxID);
+    l_linearSolver->getLinearSystem()->setRHS(forceID);
+    l_linearSolver->getLinearSystem()->setSystemSolution(dxID);
     l_linearSolver->solveSystem();
+    l_linearSolver->getLinearSystem()->dispatchSystemSolution(dxID);
 
     //TODO: tell the solver not to recompute the matrix
 
@@ -541,13 +543,13 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SRea
     core::VecDerivId forceID(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
     core::VecDerivId dxID = core::vec_id::write_access::dx;
 
-    l_linearSolver->setSystemRHVector(forceID);
-    l_linearSolver->setSystemLHVector(dxID);
+    l_linearSolver->getLinearSystem()->setRHS(forceID);
+    l_linearSolver->getLinearSystem()->setSystemSolution(dxID);
 
 
-    systemMatrix_buf   = l_linearSolver->getSystemBaseMatrix();
-    systemRHVector_buf = l_linearSolver->getSystemRHBaseVector();
-    systemLHVector_buf = l_linearSolver->getSystemLHBaseVector();
+    systemMatrix_buf   = l_linearSolver->getLinearSystem()->getSystemBaseMatrix();
+    systemRHVector_buf = l_linearSolver->getLinearSystem()->getSystemRHSBaseVector();
+    systemLHVector_buf = l_linearSolver->getLinearSystem()->getSystemSolutionBaseVector();
     systemLHVector_buf_fullvector = dynamic_cast<linearalgebra::FullVector<Real>*>(systemLHVector_buf); // Cast checking whether the LH vector is a FullVector to improve performances
 
     constexpr const auto derivDim = Deriv::total_size;

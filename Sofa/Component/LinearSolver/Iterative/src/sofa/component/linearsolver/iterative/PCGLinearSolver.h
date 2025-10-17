@@ -31,69 +31,74 @@
 namespace sofa::component::linearsolver::iterative
 {
 
-/// Linear system solver using the conjugate gradient iterative algorithm
+/// Linear system solver using the preconditioned conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
 class PCGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {
-public:
-    SOFA_CLASS(SOFA_TEMPLATE2(PCGLinearSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
 
-    typedef TMatrix Matrix;
-    typedef TVector Vector;
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
+public:
+
+    SOFA_CLASS(
+        SOFA_TEMPLATE2(PCGLinearSolver,TMatrix,TVector),
+        SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver, TMatrix, TVector));
+
+    using Matrix = TMatrix;
+    using Vector = TVector;
+    using Real = typename Matrix::Real;
+    using Inherit = sofa::component::linearsolver::MatrixLinearSolver<TMatrix, TVector>;
 
     Data<unsigned> d_maxIter; ///< Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop
-    Data<double> d_tolerance; ///< Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)
+    Data<Real> d_tolerance; ///< Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)
     Data<bool> d_use_precond; ///< Use a preconditioner
     SingleLink<PCGLinearSolver, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_preconditioner; ///< Link towards the linear solver used to precondition the conjugate gradient
-    Data<unsigned> d_update_step; ///< Number of steps before the next refresh of preconditioners
-    Data<bool> d_build_precond; ///< Build the preconditioners, if false build the preconditioner only at the initial step
-    Data<std::map < std::string, sofa::type::vector<double> > > d_graph; ///< Graph of residuals at each iteration
+    core::objectmodel::lifecycle::DeprecatedData d_update_step; ///< Number of steps before the next refresh of preconditioners
+    Data<std::map < std::string, sofa::type::vector<Real> > > d_graph; ///< Graph of residuals at each iteration
 
-protected:
-    PCGLinearSolver();
-
-public:
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void init() override;
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
+    void bwdInit() override;
 
-private :
+private:
     unsigned next_refresh_step;
     bool first;
     int newton_iter;
 
 protected:
-    /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
-    /// It computes: p = p*beta + r
-    inline void cgstep_beta(Vector& p, Vector& r, double beta);
+    PCGLinearSolver();
+
+    void ensureRequiredLinearSystemType();
+
+    /// This method is separated from the rest to be able to use custom/optimized versions depending on
+    /// the types of vectors. It computes: p = p*beta + r
+    inline void cgstep_beta(Vector& p, Vector& r, Real beta);
+
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
     /// It computes: x += p*alpha, r -= q*alpha
-    inline void cgstep_alpha(Vector& x,Vector& p,double alpha);
+    inline void cgstep_alpha(Vector& x,Vector& p, Real alpha);
 
     void handleEvent(sofa::core::objectmodel::Event* event) override;
 
-
+    void checkLinearSystem() override;
 };
 
 template<class TMatrix, class TVector>
-inline void PCGLinearSolver<TMatrix,TVector>::cgstep_beta(Vector& p, Vector& r, double beta)
+inline void PCGLinearSolver<TMatrix,TVector>::cgstep_beta(Vector& p, Vector& r, Real beta)
 {
     p *= beta;
     p += r; //z;
 }
 
 template<class TMatrix, class TVector>
-inline void PCGLinearSolver<TMatrix,TVector>::cgstep_alpha(Vector& x,Vector& p,double alpha)
+inline void PCGLinearSolver<TMatrix,TVector>::cgstep_alpha(Vector& x,Vector& p, Real alpha)
 {
     x.peq(p,alpha);                 // x = x + alpha p
 }
 
 template<>
-inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta);
+inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, Real beta);
 
 template<>
-inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x,Vector& p,double alpha);
+inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x,Vector& p, Real alpha);
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PCGLINEARSOLVER_CPP)
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector>;

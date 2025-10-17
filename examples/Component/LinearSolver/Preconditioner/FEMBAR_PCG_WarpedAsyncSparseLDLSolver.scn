@@ -2,9 +2,14 @@
 
     <include href="../FEMBAR-common.xml"/>
 
-    <PCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner" update_step="1"/>
-    <WarpPreconditioner name="preconditioner" linearSolver="@factorization" update_step="15"/>
+    <PreconditionedMatrixFreeSystem name="matrixFreeSystem" assemblingRate="1"/>
+    <PCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner"/>
+
     <AsyncSparseLDLSolver name="factorization" template="CompressedRowSparseMatrixMat3x3"/>
+
+    <RotationMatrixSystem name="rotationMatrix" assemblingRate="15" printLog="true"/>
+    <WarpPreconditioner name="preconditioner" linearSolver="@factorization"/>
+
     <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
 
 </Node>
