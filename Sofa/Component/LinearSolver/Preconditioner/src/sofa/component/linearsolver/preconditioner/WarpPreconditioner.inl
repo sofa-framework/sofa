@@ -249,4 +249,9 @@ bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addMInvJt(linearalgebra
     return l_linearSolver.get()->addMInvJt(result,&j_local,fact);
 }
 
+template<class TMatrix, class TVector,class ThreadManager>
+void WarpPreconditioner<TMatrix,TVector,ThreadManager >::computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* f) {
+    l_linearSolver.get()->computeResidual(params,f);
+}
+
 } // namespace sofa::component::linearsolver::preconditioner
