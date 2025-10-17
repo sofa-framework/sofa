@@ -44,8 +44,6 @@ void registerUnilateralLagrangianConstraint(sofa::core::ObjectFactory* factory)
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BaseContactLagrangianConstraint<Vec3Types,UnilateralLagrangianContactParameters>;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UnilateralLagrangianConstraint<Vec3Types>;
 
-
-
 void UnilateralConstraintResolutionWithFriction::init(int line, SReal** w, SReal* force)
 {
     _W[0]=w[line  ][line  ];
@@ -62,7 +60,6 @@ void UnilateralConstraintResolutionWithFriction::init(int line, SReal** w, SReal
         force[line+1] = _prev->popForce();
         force[line+2] = _prev->popForce();
     }
-
 }
 
 void UnilateralConstraintResolutionWithFriction::resolution(int line, SReal** /*w*/, SReal* d, SReal* force, SReal * /*dfree*/)
@@ -92,7 +89,10 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, SReal** /*
         const SReal factor = fN / normFt;
         force[line+1] *= factor;
         force[line+2] *= factor;
+        force[line+1] -= _drag*d[line+1];
+        force[line+2] -= _drag*d[line+2];
     }
+
 }
 
 void UnilateralConstraintResolutionWithFriction::store(int line, SReal* force, bool /*convergence*/)
