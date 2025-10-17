@@ -122,6 +122,14 @@ public:
         msg_error() << "applyConstraintForce has not been implemented.";
     }
 
+    /// Compute the residual in the newton iterations due to the constraints forces
+    /// i.e. compute mparams->dF() = J^t lambda
+    /// the result is written in mparams->dF()
+    virtual void computeResidual(const core::ExecParams* /*params*/, linearalgebra::BaseVector* /*f*/) {
+        msg_error() << "computeResidual has not been implemented.";
+    }
+
+
     /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
     ///
     /// This method can compute the Schur complement of the constrained system:
