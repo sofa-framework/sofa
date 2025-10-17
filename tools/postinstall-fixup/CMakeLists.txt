@@ -21,8 +21,8 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     install(CODE "file(WRITE
-        \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/qt.conf\"
-        \"[Paths]\\n  Prefix = ..\\n  Plugins = bin\\n  LibraryExecutables = bin\"
+        \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${RUNTIME_OUTPUT_DIRECTORY}/qt.conf\"
+        \"[Paths]\\n  Prefix = ..\\n  Plugins = ${RUNTIME_OUTPUT_DIRECTORY}\\n  LibraryExecutables = ${RUNTIME_OUTPUT_DIRECTORY}\"
         )"
         COMPONENT resources)
     install(CODE "execute_process(COMMAND /bin/bash
@@ -60,8 +60,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
     endif()
 elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     install(CODE "file(WRITE
-        \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/qt.conf\"
-        \"[Paths]\\n  Prefix = ..\\n  Plugins = bin\\n  LibraryExecutables = bin\"
+        \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${RUNTIME_OUTPUT_DIRECTORY}/qt.conf\"
+        \"[Paths]\\n  Prefix = ..\\n  Plugins = ${RUNTIME_OUTPUT_DIRECTORY}\\n  LibraryExecutables = ${RUNTIME_OUTPUT_DIRECTORY}\"
         )"
         COMPONENT resources)
     install(CODE "execute_process(COMMAND bash
