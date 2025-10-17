@@ -125,6 +125,7 @@ public:
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute mparams->dF() = J^t lambda
     /// the result is written in mparams->dF()
+    SOFA_ATTRIBUTE_DEPRECATED__COMPUTERESIDUAL()
     virtual void computeResidual(const core::ExecParams* /*params*/, linearalgebra::BaseVector* /*f*/) {
         msg_error() << "computeResidual has not been implemented.";
     }

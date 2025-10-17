@@ -154,3 +154,10 @@ SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "Use getContactDistance or setCont
 #define SOFA_ATTRIBUTE_RENAMED__COLLISIONMODEL_PROXIMITY() \
     SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "Data 'proximity' has been renamed to 'contactDistance'")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__COMPUTERESIDUAL()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__COMPUTERESIDUAL() \
+    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "The method computeResidual is not used")
+#endif
