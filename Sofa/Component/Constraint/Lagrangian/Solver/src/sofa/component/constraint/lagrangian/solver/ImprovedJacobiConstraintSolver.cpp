@@ -41,25 +41,25 @@ ImprovedJacobiConstraintSolver::ImprovedJacobiConstraintSolver()
 }
 
 
-void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
+void ImprovedJacobiConstraintSolver::doSolve(GenericConstraintProblem * problem , SReal timeout = 0.0) 
 {
     SCOPED_TIMER_VARNAME(gaussSeidelTimer, "ImprovedJacobiConstraintSolver");
 
 
-    const int dimension = current_cp->getDimension();
+    const int dimension = problem->getDimension();
 
     if(!dimension)
     {
-        current_cp->currentError = 0.0;
-        current_cp->currentIterations = 0;
+        problem->currentError = 0.0;
+        problem->currentIterations = 0;
         return;
     }
 
-    SReal *dfree = current_cp->getDfree();
-    SReal *force = current_cp->getF();
-    SReal **w = current_cp->getW();
-    SReal tol = current_cp->tolerance;
-    SReal *d = current_cp->_d.ptr();
+    SReal *dfree = problem->getDfree();
+    SReal *force = problem->getF();
+    SReal **w = problem->getW();
+    SReal tol = problem->tolerance;
+    SReal *d = problem->_d.ptr();
 
     std::copy_n(dfree, dimension, d);
 
@@ -69,32 +69,32 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
     }
 
     std::vector<SReal> lastF;
-    lastF.resize(current_cp->getDimension(), 0.0);
+    lastF.resize(problem->getDimension(), 0.0);
 
     std::vector<SReal> deltaF;
-    deltaF.resize(current_cp->getDimension(), 0.0);
+    deltaF.resize(problem->getDimension(), 0.0);
 
     std::vector<SReal> correctedD;
-    correctedD.resize(current_cp->getDimension(), 0.0);
+    correctedD.resize(problem->getDimension(), 0.0);
 
 //    std::cout<<"Initialized vectors"<<std::endl;
 
     SReal error=0.0;
     bool convergence = false;
-    if(current_cp->scaleTolerance && !current_cp->allVerified)
+    if(problem->scaleTolerance && !problem->allVerified)
     {
         tol *= dimension;
     }
 
     for(int i=0; i<dimension; )
     {
-        if(!current_cp->constraintsResolutions[i])
+        if(!problem->constraintsResolutions[i])
         {
             msg_error()<< "Bad size of constraintsResolutions in GenericConstraintSolver" ;
             break;
         }
-        current_cp->constraintsResolutions[i]->init(i, w, force);
-        i += current_cp->constraintsResolutions[i]->getNbLines();
+        problem->constraintsResolutions[i]->init(i, w, force);
+        i += problem->constraintsResolutions[i]->getNbLines();
     }
 
     sofa::type::vector<SReal> tabErrors(dimension);
@@ -114,18 +114,18 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
         rho = d_spectralCorrectionFactor.getValue()*std::min(1.0, 0.9 * 2/eigenRadius);
     }
 
-    for(int i=0; i<current_cp->maxIterations; i++)
+    for(int i=0; i<problem->maxIterations; i++)
     {
         iterCount ++;
         bool constraintsAreVerified = true;
 
         error=0.0;
-        SReal beta = d_useConjugateResidue.getValue() * std::min(1.0, pow( ((float)i)/current_cp->maxIterations,d_conjugateResidueSpeedFactor.getValue()));
+        SReal beta = d_useConjugateResidue.getValue() * std::min(1.0, pow( ((float)i)/problem->maxIterations,d_conjugateResidueSpeedFactor.getValue()));
 
         for(int j=0; j<dimension; ) // increment of j realized at the end of the loop
         {
             // 1. nbLines provide the dimension of the constraint
-            const unsigned int nb = current_cp->constraintsResolutions[j]->getNbLines();
+            const unsigned int nb = problem->constraintsResolutions[j]->getNbLines();
 
             for(unsigned l=j; l<j+nb; ++l )
             {
@@ -141,9 +141,9 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
         for(int j=0; j<dimension; ) // increment of j realized at the end of the loop
         {
             // 1. nbLines provide the dimension of the constraint
-            const unsigned int nb = current_cp->constraintsResolutions[j]->getNbLines();
+            const unsigned int nb = problem->constraintsResolutions[j]->getNbLines();
 
-            current_cp->constraintsResolutions[j]->resolution(j,w,correctedD.data(), force, dfree);
+            problem->constraintsResolutions[j]->resolution(j,w,correctedD.data(), force, dfree);
             for(unsigned l=j; l<j+nb; ++l )
             {
                 force[l] += beta * deltaF[l] ;
@@ -165,7 +165,7 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
 
         }
 
-        if (current_cp->allVerified)
+        if (problem->allVerified)
         {
             if (constraintsAreVerified)
             {
@@ -180,9 +180,9 @@ void ImprovedJacobiConstraintSolver::doSolve( SReal timeout)
         }
     }
 
-    sofa::helper::AdvancedTimer::valSet("GS iterations", current_cp->currentIterations);
+    sofa::helper::AdvancedTimer::valSet("GS iterations", problem->currentIterations);
 
-    current_cp->result_output(this, force, error, iterCount, convergence);
+    problem->result_output(this, force, error, iterCount, convergence);
 
 }
 

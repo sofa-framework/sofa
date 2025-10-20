@@ -38,12 +38,13 @@ public:
 
     ImprovedJacobiConstraintSolver();
 
+protected:
     /**
      * Based on paper
      * Francu, Mihai & Moldoveanu, Florica. An Improved Jacobi Solver for Particle Simulation.
      * VRPHYS 2014
      **/
-    virtual void doSolve( SReal timeout = 0.0) override;
+    virtual void doSolve(GenericConstraintProblem * problem , SReal timeout = 0.0) override;
 
 };
 }
