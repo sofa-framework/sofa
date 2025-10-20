@@ -67,11 +67,11 @@ public:
 
     virtual void solveTimed(SReal tolerance, int maxIt, SReal timeout) = 0;
 
-    unsigned int getProblemId();
+    unsigned getProblemId() const;
 
 protected:
     int dimension;
-    unsigned int problemId;
+    unsigned problemId;
 };
 
 

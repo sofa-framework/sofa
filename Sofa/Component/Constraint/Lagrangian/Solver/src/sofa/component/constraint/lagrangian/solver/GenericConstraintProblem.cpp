@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -74,7 +74,8 @@ void GenericConstraintProblem::solveTimed(SReal tol, int maxIt, SReal timeout)
     tolerance = tol;
     maxIterations = maxIt;
 
-    m_solver->doSolve(timeout);
+
+    m_solver->doSolve(this, timeout);
 
     tolerance = tempTol;
     maxIterations = tempMaxIt;

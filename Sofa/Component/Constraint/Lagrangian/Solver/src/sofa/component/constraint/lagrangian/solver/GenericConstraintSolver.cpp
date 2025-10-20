@@ -64,13 +64,20 @@ void clearMultiVecId(sofa::core::objectmodel::BaseContext* ctx, const sofa::core
 
 
 GenericConstraintSolver::GenericConstraintSolver()
+<<<<<<< HEAD
     : d_maxIt(initData(&d_maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
+=======
+    : d_maxIt(initData(&d_maxIt, 1000, "maxIterations", "maximal number of iterations of iterative algorithm"))
+>>>>>>> master
     , d_tolerance(initData(&d_tolerance, 0.001_sreal, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , d_sor(initData(&d_sor, 1.0_sreal, "sor", "Successive Over Relaxation parameter (0-2)"))
     , d_regularizationTerm(initData(&d_regularizationTerm, 0.0_sreal, "regularizationTerm", "Add regularization factor times the identity matrix to the compliance W when solving constraints"))
     , d_scaleTolerance(initData(&d_scaleTolerance, true, "scaleTolerance", "Scale the error tolerance with the number of constraints"))
     , d_allVerified(initData(&d_allVerified, false, "allVerified", "All constraints must be verified (each constraint's error < tolerance)"))
+<<<<<<< HEAD
     , d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
+=======
+>>>>>>> master
     , d_computeGraphs(initData(&d_computeGraphs, false, "computeGraphs", "Compute graphs of errors and forces during resolution"))
     , d_graphErrors(initData(&d_graphErrors, "graphErrors", "Sum of the constraints' errors at each iteration"))
     , d_graphConstraints(initData(&d_graphConstraints, "graphConstraints", "Graph of each constraint's error at the end of the resolution"))
@@ -114,12 +121,26 @@ GenericConstraintSolver::GenericConstraintSolver()
 }
 
 GenericConstraintSolver::~GenericConstraintSolver()
+<<<<<<< HEAD
 {}
 
 
 
 void GenericConstraintSolver::  init()
 {
+=======
+{
+    for (unsigned i=0; i< CP_BUFFER_SIZE; ++i)
+    {
+        delete m_cpBuffer[i];
+    }
+}
+
+
+
+void GenericConstraintSolver::  init()
+{
+>>>>>>> master
     this->initializeConstraintProblems();
     ConstraintSolverImpl::init();
 
@@ -134,9 +155,13 @@ void GenericConstraintSolver::  init()
         dx.realloc(&vop,false,true, core::VecIdProperties{"constraint_dx", GetClass()->className});
         m_dxId = dx.id();
     }
+}
 
-    if(d_multithreading.getValue())
+void GenericConstraintSolver::initializeConstraintProblems()
+{
+    for (unsigned i=0; i< CP_BUFFER_SIZE; ++i)
     {
+<<<<<<< HEAD
         simulation::MainTaskSchedulerFactory::createInRegistry()->init();
     }
 
@@ -147,6 +172,8 @@ void GenericConstraintSolver::initializeConstraintProblems()
 {
     for (unsigned i=0; i< CP_BUFFER_SIZE; ++i)
     {
+=======
+>>>>>>> master
         m_cpBuffer[i] = new GenericConstraintProblem(this);
     }
     current_cp = m_cpBuffer[0];
@@ -212,7 +239,11 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     }
 
 
+<<<<<<< HEAD
     this->doBuildSystem(cParams, numConstraints);
+=======
+    this->doBuildSystem(cParams, current_cp, numConstraints);
+>>>>>>> master
 
     return true;
 }
@@ -282,7 +313,11 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
         msg_info() << tmp.str() ;
     }
 
+<<<<<<< HEAD
     this->doSolve(0.0);
+=======
+    this->doSolve(current_cp, 0.0);
+>>>>>>> master
 
 
     this->d_currentError.setValue(current_cp->currentError);

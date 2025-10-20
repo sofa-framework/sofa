@@ -27,9 +27,10 @@
 namespace sofa::component::constraint::lagrangian::solver
 {
 
-void UnbuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cParams, unsigned int numConstraints)
+void UnbuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cParams, GenericConstraintProblem * problem, unsigned int numConstraints)
 {
-    UnbuiltConstraintProblem* c_current_cp = dynamic_cast<UnbuiltConstraintProblem*>(current_cp);
+    SOFA_UNUSED(cParams);
+    UnbuiltConstraintProblem* c_current_cp = dynamic_cast<UnbuiltConstraintProblem*>(problem);
     if (c_current_cp == nullptr)
     {
         msg_error()<<"Constraint problem must derive from UnbuiltConstraintProblem";

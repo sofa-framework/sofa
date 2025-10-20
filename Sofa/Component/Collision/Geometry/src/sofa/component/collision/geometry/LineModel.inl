@@ -568,30 +568,20 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
     if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels())
         return;
 
-    static constexpr Real max_real = std::numeric_limits<Real>::max();
-    static constexpr Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
-
     const auto& positions = this->mstate->read(core::vec_id::read_access::position)->getValue();
+    type::BoundingBox bbox;
 
     for (sofa::Size i=0; i<size; i++)
     {
-        Element e(this,i);
+        const Element e(this,i);
         const Coord& pt1 = positions[this->elems[i].p[0]];
         const Coord& pt2 = positions[this->elems[i].p[1]];
 
-        for (int c=0; c<3; c++)
-        {
-            if (pt1[c] > maxBBox[c]) maxBBox[c] = (Real)pt1[c];
-            else if (pt1[c] < minBBox[c]) minBBox[c] = (Real)pt1[c];
-
-            if (pt2[c] > maxBBox[c]) maxBBox[c] = (Real)pt2[c];
-            else if (pt2[c] < minBBox[c]) minBBox[c] = (Real)pt2[c];
-        }
+        bbox.include(pt1);
+        bbox.include(pt2);
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(bbox);
 }
 
 template<class DataTypes>

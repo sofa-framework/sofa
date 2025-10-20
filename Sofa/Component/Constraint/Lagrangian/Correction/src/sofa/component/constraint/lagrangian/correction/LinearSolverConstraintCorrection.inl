@@ -213,7 +213,8 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::rebuildSystem(SReal massFactor, SReal forceFactor)
 {
-    l_linearSolver->rebuildSystem(massFactor, forceFactor);
+    SOFA_UNUSED(massFactor);
+    SOFA_UNUSED(forceFactor);
 }
 
 template<class DataTypes>
@@ -400,8 +401,6 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const linear
         x[i] = x_free[i] + dxi;
         v[i] = v_free[i] + dvi;
         dx[i] = dxi;
-
-        msg_info() << "dx[" << i << "] = " << dx[i] ;
     }
 
     dataDx.endEdit();

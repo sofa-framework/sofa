@@ -44,22 +44,22 @@ public:
     /// In most cases it will be used by the CollisionModel to
     /// create interators to its elements (such as in the begin() and end()
     /// methods).
-    BaseCollisionElementIterator(Index index=0)
-        : index(index), it(emptyVector.begin()), itend(emptyVector.end())
+    BaseCollisionElementIterator(Index cindex=0)
+        : index(cindex), it(emptyVector.begin()), itend(emptyVector.end())
     {
     }
 
     /// Constructor.
     /// This constructor should be used in case a vector of indices is used.
-    BaseCollisionElementIterator(Index index, VIterator it, VIterator itend)
-        : index(index), it(it), itend(itend)
+    BaseCollisionElementIterator(Index cindex, VIterator vit, VIterator vitend)
+        : index(cindex), it(vit), itend(vitend)
     {
     }
 
     /// Constructor.
     /// This constructor should be used in case a vector of indices is used.
-    BaseCollisionElementIterator(VIterator it, VIterator itend)
-        : index(-1), it(it), itend(itend)
+    BaseCollisionElementIterator(VIterator vit, VIterator vitend)
+        : index(-1), it(vit), itend(vitend)
     {
         if (it != itend) index = *it;
     }
@@ -165,22 +165,22 @@ public:
     /// In most cases it will be used by the CollisionModel to
     /// create interators to its elements (such as in the begin() and end()
     /// methods).
-    TCollisionElementIterator(Model* model=nullptr, Index index=0)
-        : BaseCollisionElementIterator(index), model(model)
+    TCollisionElementIterator(Model* cmodel=nullptr, Index cindex=0)
+        : BaseCollisionElementIterator(cindex), model(cmodel)
     {
     }
 
     /// Constructor.
     /// This constructor should be used in case a vector of indices is used.
-    TCollisionElementIterator(Model* model, Index index, VIterator it, VIterator itend)
-        : BaseCollisionElementIterator(index, it, itend), model(model)
+    TCollisionElementIterator(Model* cmodel, Index cindex, VIterator vit, VIterator vitend)
+        : BaseCollisionElementIterator(cindex, vit, vitend), model(cmodel)
     {
     }
 
     /// Constructor.
     /// This constructor should be used in case a vector of indices is used.
-    TCollisionElementIterator(Model* model, VIterator it, VIterator itend)
-        : BaseCollisionElementIterator(it, itend), model(model)
+    TCollisionElementIterator(Model* cmodel, VIterator vit, VIterator vitend)
+        : BaseCollisionElementIterator(vit, vitend), model(cmodel)
     {
     }
 
@@ -310,22 +310,22 @@ public:
     /// In most cases it will be used by the CollisionModel to
     /// create interators to its elements (such as in the begin() and end()
     /// methods).
-    CollisionElementIterator(CollisionModel* model=nullptr, Index index=0)
-        : TCollisionElementIterator<CollisionModel>(model, index)
+    CollisionElementIterator(CollisionModel* cmodel=nullptr, Index cindex=0)
+        : TCollisionElementIterator<CollisionModel>(cmodel, cindex)
     {
     }
 
     /// Constructor.
     /// This constructor should be used in case a vector of indices is used.
-    CollisionElementIterator(CollisionModel* model, VIterator it, VIterator itend)
-        : TCollisionElementIterator<CollisionModel>(model, it, itend)
+    CollisionElementIterator(CollisionModel* cmodel, VIterator vit, VIterator vitend)
+        : TCollisionElementIterator<CollisionModel>(cmodel, vit, vitend)
     {
     }
 
     /// Constructor.
     /// This constructor should be used in case a vector of indices is used.
-    CollisionElementIterator(CollisionModel* model, Index index, VIterator it, VIterator itend)
-        : TCollisionElementIterator<CollisionModel>(model, index, it, itend)
+    CollisionElementIterator(CollisionModel* cmodel, Index cindex, VIterator vit, VIterator vitend)
+        : TCollisionElementIterator<CollisionModel>(cmodel, cindex, vit, vitend)
     {
     }
 

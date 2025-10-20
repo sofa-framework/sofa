@@ -50,31 +50,26 @@ typename VisualPointCloud<DataTypes>::DrawMode VisualPointCloud<DataTypes>::defa
 
 
 template <class DataTypes>
-void VisualPointCloud<DataTypes>::computeBBox(const core::ExecParams* exec_params, bool cond)
+void VisualPointCloud<DataTypes>::computeBBox(const core::ExecParams* exec_params, bool onlyVisible)
 {
+    SOFA_UNUSED(exec_params);
+    if(!onlyVisible)
+        return;
+
     const auto position = sofa::helper::getReadAccessor(d_position);
     const size_t positionSize = position.size();
 
     if (positionSize <= 0) return;
 
-    Real p[3];
-    DataTypes::get(p[0], p[1], p[2], position[0]);
-    Real maxBBox[3] = {p[0], p[1], p[2]};
-    Real minBBox[3] = {p[0], p[1], p[2]};
-
-    for (size_t i = 1; i < positionSize; i++)
+    type::Vec3 pvec3;
+    type::BoundingBox bbox;
+    for (const auto& p : position)
     {
-        DataTypes::get(p[0], p[1], p[2], position[i]);
-        for (int c = 0; c < 3; c++)
-        {
-            if (p[c] > maxBBox[c])
-                maxBBox[c] = p[c];
-
-            else if (p[c] < minBBox[c])
-                minBBox[c] = p[c];
-        }
+        DataTypes::get(pvec3[0], pvec3[1], pvec3[2], p);
+        bbox.include(pvec3);
     }
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox, maxBBox));
+
+    this->f_bbox.setValue(bbox);
 }
 
 template <class DataTypes>
@@ -160,6 +155,7 @@ void VisualPointCloud<DataTypes>::drawFrames(const core::visual::VisualParams* v
 
         const auto pointSize = d_pointSize.getValue();
         const bool isColorSet = d_color.isSet();
+        const type::Vec3f sizes(1.0f, 1.0f, 1.0f);
 
         for (const auto& point : position)
         {
@@ -173,13 +169,11 @@ void VisualPointCloud<DataTypes>::drawFrames(const core::visual::VisualParams* v
 
             if (isColorSet)
             {
-                drawTool->drawFrame(type::Vec3(), type::Quat<SReal>(),
-                                    type::Vec3(1_sreal, 1_sreal, 1_sreal), color);
+                drawTool->drawFrame(type::Vec3(), type::Quat<SReal>(), sizes);
             }
             else
             {
-                drawTool->drawFrame(type::Vec3(), type::Quat<SReal>(),
-                                    type::Vec3(1_sreal, 1_sreal, 1_sreal));
+                drawTool->drawFrame(type::Vec3(), type::Quat<SReal>(),sizes);
             }
             drawTool->popMatrix();
         }

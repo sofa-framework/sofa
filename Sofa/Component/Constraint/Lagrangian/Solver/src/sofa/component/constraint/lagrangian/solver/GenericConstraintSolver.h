@@ -60,13 +60,14 @@ public:
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
 
-    Data<int> d_maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
+
+    Data<int> d_maxIt; ///< maximal number of iterations of iterative algorithm
     Data<SReal> d_tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
     Data<SReal> d_sor; ///< Successive Over Relaxation parameter (0-2)
     Data< SReal > d_regularizationTerm; ///< add regularization*Id to W when solving for constraints
     Data<bool> d_scaleTolerance; ///< Scale the error tolerance with the number of constraints
     Data<bool> d_allVerified; ///< All constraints must be verified (each constraint's error < tolerance)
-    Data<bool> d_multithreading; ///< Build compliances concurrently
+
     Data<bool> d_computeGraphs; ///< Compute graphs of errors and forces during resolution
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphErrors; ///< Sum of the constraints' errors at each iteration
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphConstraints; ///< Graph of each constraint's error at the end of the resolution
@@ -96,8 +97,32 @@ protected:
     sofa::core::MultiVecDerivId m_dxId;
 
     virtual void initializeConstraintProblems();
-    virtual void doBuildSystem( const core::ConstraintParams *cParams, unsigned int numConstraints) = 0;
-    virtual void doSolve( SReal timeout = 0.0) = 0;
+
+    /*****
+     *
+     * @brief This internal method is used to build the system. It should use the list of constraint correction (l_constraintCorrections) to build the full constraint problem.
+     *
+     * @param cParams: Container providing quick access to all data related to the mechanics (position, velocity etc..) for all mstate
+     * @param problem: constraint problem containing data structures used for solving the constraint
+     *                 problem: the constraint matrix, the unknown vector, the free violation etc...
+     *                 The goal of this method is to fill parts of this structure to be then used to
+     *                 find the unknown vector.
+     * @param numConstraints: number of atomic constraint
+     *
+     */
+    virtual void doBuildSystem( const core::ConstraintParams *cParams, GenericConstraintProblem * problem ,unsigned int numConstraints) = 0;
+
+    /*****
+     *
+     * @brief This internal method is used to solve the constraint problem. It essentially uses the constraint problem structures.
+     *
+     * @param problem: constraint problem containing data structures used for solving the constraint
+     *                 problem: the constraint matrix, the unknown vector, the free violation etc...
+     *                 The goal of this method is to use the problem structures to compute the final solution.
+     * @param timeout: timeout to use this solving method in a haptic thread. If the timeout is reached then the solving must stops.
+     *
+     */
+    virtual void doSolve( GenericConstraintProblem * problem, SReal timeout = 0.0) = 0;
 
 
     static void addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization);

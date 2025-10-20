@@ -93,7 +93,7 @@ void UniformMass<RigidTypes>::loadFromFileRigidImpl(const string& filename)
                                     if( fscanf(file, "%lf", &(tmp)) < 1 ){
                                         msg_error(this) << "error while reading file '" << filename << "'.\n";
                                     }
-                                    m.inertiaMatrix[i][j]=tmp;
+                                    m.inertiaMatrix(i,j)=tmp;
                                 }
                             }
                         }
@@ -215,12 +215,15 @@ void UniformMass<RigidTypes>::drawRigid2DImpl(const VisualParams* vparams)
     len[0] = len[1] = sqrt(d_vertexMass.getValue().inertiaMatrix);
     len[2] = 0;
 
+    const float showAxisSize = static_cast<float>(d_showAxisSize.getValue());
+    const Vec3f sizes(showAxisSize * len[0], showAxisSize * len[1], showAxisSize* len[2]);
+
     for (const unsigned int index : indices)
     {
         Quatd orient(Vec3d(0,0,1), x[index].getOrientation());
-        Vec3d center; center = x[index].getCenter();
+        const Vec3 center = toVec3(x[index].getCenter());
 
-        vparams->drawTool()->drawFrame(center, orient, len*d_showAxisSize.getValue() );
+        vparams->drawTool()->drawFrame(center, orient, sizes );
     }
 }
 
@@ -234,7 +237,7 @@ void UniformMass<RigidTypes>::drawRigid3DImpl(const VisualParams* vparams)
     const VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
     const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
     typename RigidTypes::Vec3 gravityCenter;
-    type::Vec3d len;
+    type::Vec3f len;
 
     // The moment of inertia of a box is:
     //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);
@@ -243,19 +246,22 @@ void UniformMass<RigidTypes>::drawRigid3DImpl(const VisualParams* vparams)
     // So to get lx,ly,lz back we need to do
     //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
     // Note that RigidMass inertiaMatrix is already divided by M
-    const double m00 = d_vertexMass.getValue().inertiaMatrix[0][0];
-    const double m11 = d_vertexMass.getValue().inertiaMatrix[1][1];
-    const double m22 = d_vertexMass.getValue().inertiaMatrix[2][2];
+    const double m00 = d_vertexMass.getValue().inertiaMatrix(0,0);
+    const double m11 = d_vertexMass.getValue().inertiaMatrix(1,1);
+    const double m22 = d_vertexMass.getValue().inertiaMatrix(2,2);
     len[0] = sqrt(m11+m22-m00);
     len[1] = sqrt(m00+m22-m11);
     len[2] = sqrt(m00+m11-m22);
 
+    const float showAxisSize = static_cast<float>(d_showAxisSize.getValue());
+    const Vec3f sizes(showAxisSize * len[0], showAxisSize * len[1], showAxisSize* len[2]);
+
     for (const unsigned int index : indices)
     {
         if (getContext()->isSleeping())
-            vparams->drawTool()->drawFrame(x[index].getCenter(), x[index].getOrientation(), len*d_showAxisSize.getValue(), sofa::type::RGBAColor::gray());
+            vparams->drawTool()->drawFrame(x[index].getCenter(), x[index].getOrientation(), sizes, sofa::type::RGBAColor::gray());
         else
-            vparams->drawTool()->drawFrame(x[index].getCenter(), x[index].getOrientation(), len*d_showAxisSize.getValue() );
+            vparams->drawTool()->drawFrame(x[index].getCenter(), x[index].getOrientation(), sizes );
         gravityCenter += (x[index].getCenter());
     }
 
@@ -264,7 +270,7 @@ void UniformMass<RigidTypes>::drawRigid3DImpl(const VisualParams* vparams)
         const VecCoord& x0 = mstate->read(core::vec_id::read_access::restPosition)->getValue();
 
         for (const unsigned int index : indices)
-            vparams->drawTool()->drawFrame(x0[index].getCenter(), x0[index].getOrientation(), len*d_showAxisSize.getValue());
+            vparams->drawTool()->drawFrame(x0[index].getCenter(), x0[index].getOrientation(), sizes);
     }
 
     if(d_showCenterOfGravity.getValue())
@@ -302,8 +308,8 @@ void UniformMass<Vec6Types>::drawVec6Impl(const core::visual::VisualParams* vpar
         type::Vec3d len(1,1,1);
         int a = (i<indices.size()-1)?i : i-1;
         int b = a+1;
-        type::Vec3d dp; dp = x0[b]-x0[a];
-        type::Vec3d p; p = x[indices[i]];
+        const type::Vec3 dp = toVec3(x0[b]-x0[a]);
+        const type::Vec3 p = toVec3(x[indices[i]]);
         len[0] = dp.norm();
         len[1] = len[0];
         len[2] = len[0];

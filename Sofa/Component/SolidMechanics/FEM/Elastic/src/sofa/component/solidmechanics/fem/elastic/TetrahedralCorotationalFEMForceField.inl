@@ -247,76 +247,76 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeStrainDisplacement(
     // shape functions matrix
     type::Mat<2, 3, Real> M;
 
-    M[0][0] = b[1];
-    M[0][1] = c[1];
-    M[0][2] = d[1];
-    M[1][0] = b[2];
-    M[1][1] = c[2];
-    M[1][2] = d[2];
-    J[0][0] = J[1][3] = J[2][5]   = - peudo_determinant_for_coef( M );
-    M[0][0] = b[0];
-    M[0][1] = c[0];
-    M[0][2] = d[0];
-    J[0][3] = J[1][1] = J[2][4]   = peudo_determinant_for_coef( M );
-    M[1][0] = b[1];
-    M[1][1] = c[1];
-    M[1][2] = d[1];
-    J[0][5] = J[1][4] = J[2][2]   = - peudo_determinant_for_coef( M );
+    M(0,0) = b[1];
+    M(0,1) = c[1];
+    M(0,2) = d[1];
+    M(1,0) = b[2];
+    M(1,1) = c[2];
+    M(1,2) = d[2];
+    J(0,0) = J(1,3) = J(2,5)   = - peudo_determinant_for_coef( M );
+    M(0,0) = b[0];
+    M(0,1) = c[0];
+    M(0,2) = d[0];
+    J(0,3) = J(1,1) = J(2,4)   = peudo_determinant_for_coef( M );
+    M(1,0) = b[1];
+    M(1,1) = c[1];
+    M(1,2) = d[1];
+    J(0,5) = J(1,4) = J(2,2)   = - peudo_determinant_for_coef( M );
 
-    M[0][0] = c[1];
-    M[0][1] = d[1];
-    M[0][2] = a[1];
-    M[1][0] = c[2];
-    M[1][1] = d[2];
-    M[1][2] = a[2];
-    J[3][0] = J[4][3] = J[5][5]   = peudo_determinant_for_coef( M );
-    M[0][0] = c[0];
-    M[0][1] = d[0];
-    M[0][2] = a[0];
-    J[3][3] = J[4][1] = J[5][4]   = - peudo_determinant_for_coef( M );
-    M[1][0] = c[1];
-    M[1][1] = d[1];
-    M[1][2] = a[1];
-    J[3][5] = J[4][4] = J[5][2]   = peudo_determinant_for_coef( M );
+    M(0,0) = c[1];
+    M(0,1) = d[1];
+    M(0,2) = a[1];
+    M(1,0) = c[2];
+    M(1,1) = d[2];
+    M(1,2) = a[2];
+    J(3,0) = J(4,3) = J(5,5)   = peudo_determinant_for_coef( M );
+    M(0,0) = c[0];
+    M(0,1) = d[0];
+    M(0,2) = a[0];
+    J(3,3) = J(4,1) = J(5,4)   = - peudo_determinant_for_coef( M );
+    M(1,0) = c[1];
+    M(1,1) = d[1];
+    M(1,2) = a[1];
+    J(3,5) = J(4,4) = J(5,2)   = peudo_determinant_for_coef( M );
 
-    M[0][0] = d[1];
-    M[0][1] = a[1];
-    M[0][2] = b[1];
-    M[1][0] = d[2];
-    M[1][1] = a[2];
-    M[1][2] = b[2];
-    J[6][0] = J[7][3] = J[8][5]   = - peudo_determinant_for_coef( M );
-    M[0][0] = d[0];
-    M[0][1] = a[0];
-    M[0][2] = b[0];
-    J[6][3] = J[7][1] = J[8][4]   = peudo_determinant_for_coef( M );
-    M[1][0] = d[1];
-    M[1][1] = a[1];
-    M[1][2] = b[1];
-    J[6][5] = J[7][4] = J[8][2]   = - peudo_determinant_for_coef( M );
+    M(0,0) = d[1];
+    M(0,1) = a[1];
+    M(0,2) = b[1];
+    M(1,0) = d[2];
+    M(1,1) = a[2];
+    M(1,2) = b[2];
+    J(6,0) = J(7,3) = J(8,5)   = - peudo_determinant_for_coef( M );
+    M(0,0) = d[0];
+    M(0,1) = a[0];
+    M(0,2) = b[0];
+    J(6,3) = J(7,1) = J(8,4)   = peudo_determinant_for_coef( M );
+    M(1,0) = d[1];
+    M(1,1) = a[1];
+    M(1,2) = b[1];
+    J(6,5) = J(7,4) = J(8,2)   = - peudo_determinant_for_coef( M );
 
-    M[0][0] = a[1];
-    M[0][1] = b[1];
-    M[0][2] = c[1];
-    M[1][0] = a[2];
-    M[1][1] = b[2];
-    M[1][2] = c[2];
-    J[9][0] = J[10][3] = J[11][5]   = peudo_determinant_for_coef( M );
-    M[0][0] = a[0];
-    M[0][1] = b[0];
-    M[0][2] = c[0];
-    J[9][3] = J[10][1] = J[11][4]   = - peudo_determinant_for_coef( M );
-    M[1][0] = a[1];
-    M[1][1] = b[1];
-    M[1][2] = c[1];
-    J[9][5] = J[10][4] = J[11][2]   = peudo_determinant_for_coef( M );
+    M(0,0) = a[1];
+    M(0,1) = b[1];
+    M(0,2) = c[1];
+    M(1,0) = a[2];
+    M(1,1) = b[2];
+    M(1,2) = c[2];
+    J(9,0) = J(10,3) = J(11,5)   = peudo_determinant_for_coef( M );
+    M(0,0) = a[0];
+    M(0,1) = b[0];
+    M(0,2) = c[0];
+    J(9,3) = J(10,1) = J(11,4)   = - peudo_determinant_for_coef( M );
+    M(1,0) = a[1];
+    M(1,1) = b[1];
+    M(1,2) = c[1];
+    J(9,5) = J(10,4) = J(11,2)   = peudo_determinant_for_coef( M );
 
 
     // 0
-    J[0][1] = J[0][2] = J[0][4] = J[1][0] =  J[1][2] =  J[1][5] =  J[2][0] =  J[2][1] =  J[2][3]  = 0;
-    J[3][1] = J[3][2] = J[3][4] = J[4][0] =  J[4][2] =  J[4][5] =  J[5][0] =  J[5][1] =  J[5][3]  = 0;
-    J[6][1] = J[6][2] = J[6][4] = J[7][0] =  J[7][2] =  J[7][5] =  J[8][0] =  J[8][1] =  J[8][3]  = 0;
-    J[9][1] = J[9][2] = J[9][4] = J[10][0] = J[10][2] = J[10][5] = J[11][0] = J[11][1] = J[11][3] = 0;
+    J(0,1) = J(0,2) = J(0,4) = J(1,0) =  J(1,2) =  J(1,5) =  J(2,0) =  J(2,1) =  J(2,3)  = 0;
+    J(3,1) = J(3,2) = J(3,4) = J(4,0) =  J(4,2) =  J(4,5) =  J(5,0) =  J(5,1) =  J(5,3)  = 0;
+    J(6,1) = J(6,2) = J(6,4) = J(7,0) =  J(7,2) =  J(7,5) =  J(8,0) =  J(8,1) =  J(8,3)  = 0;
+    J(9,1) = J(9,2) = J(9,4) = J(10,0) = J(10,2) = J(10,5) = J(11,0) = J(11,1) = J(11,3) = 0;
 
     //m_deq( J, 1.2 ); //hack for stability ??
 }
@@ -324,7 +324,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeStrainDisplacement(
 template<class DataTypes>
 typename TetrahedralCorotationalFEMForceField<DataTypes>::Real TetrahedralCorotationalFEMForceField<DataTypes>::peudo_determinant_for_coef ( const type::Mat<2, 3, Real>&  M )
 {
-    return  M[0][1]*M[1][2] - M[1][1]*M[0][2] -  M[0][0]*M[1][2] + M[1][0]*M[0][2] + M[0][0]*M[1][1] - M[1][0]*M[0][1];
+    return  M(0,1)*M(1,2) - M(1,1)*M(0,2) -  M(0,0)*M(1,2) + M(1,0)*M(0,2) + M(0,0)*M(1,1) - M(1,0)*M(0,1);
 }
 
 template<class DataTypes>
@@ -343,8 +343,8 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeStiffnessMatrix( St
     {
         for (int j = 0; j < 3; ++j)
         {
-            RR[i][j] = RR[i + 3][j + 3] = RR[i + 6][j + 6] = RR[i + 9][j + 9] = Rot[i][j];
-            RRt[i][j] = RRt[i + 3][j + 3] = RRt[i + 6][j + 6] = RRt[i + 9][j + 9] = Rot[j][i];
+            RR(i,j) = RR(i + 3,j + 3) = RR(i + 6,j + 6) = RR(i + 9,j + 9) = Rot(i,j);
+            RRt(i,j) = RRt(i + 3,j + 3) = RRt(i + 6,j + 6) = RRt(i + 9,j + 9) = Rot(j,i);
         }
     }
 
@@ -372,19 +372,19 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(i
     const Real youngModulus = youngModulusElement*(Real)localStiffnessFactor;
     const Real poissonRatio = this->getPoissonRatioInElement(tetrahedronId);
 
-    materialMatrix[0][0] = materialMatrix[1][1] = materialMatrix[2][2] = 1;
-    materialMatrix[0][1] = materialMatrix[0][2] = materialMatrix[1][0] =
-            materialMatrix[1][2] = materialMatrix[2][0] = materialMatrix[2][1] = poissonRatio/(1-poissonRatio);
-    materialMatrix[0][3] = materialMatrix[0][4] = materialMatrix[0][5] = 0;
-    materialMatrix[1][3] = materialMatrix[1][4] = materialMatrix[1][5] = 0;
-    materialMatrix[2][3] = materialMatrix[2][4] = materialMatrix[2][5] = 0;
-    materialMatrix[3][0] = materialMatrix[3][1] = materialMatrix[3][2] =
-            materialMatrix[3][4] = materialMatrix[3][5] = 0;
-    materialMatrix[4][0] = materialMatrix[4][1] = materialMatrix[4][2] =
-            materialMatrix[4][3] = materialMatrix[4][5] = 0;
-    materialMatrix[5][0] = materialMatrix[5][1] = materialMatrix[5][2] =
-            materialMatrix[5][3] = materialMatrix[5][4] = 0;
-    materialMatrix[3][3] = materialMatrix[4][4] = materialMatrix[5][5] =
+    materialMatrix(0,0) = materialMatrix(1,1) = materialMatrix(2,2) = 1;
+    materialMatrix(0,1) = materialMatrix(0,2) = materialMatrix(1,0) =
+            materialMatrix(1,2) = materialMatrix(2,0) = materialMatrix(2,1) = poissonRatio/(1-poissonRatio);
+    materialMatrix(0,3) = materialMatrix(0,4) = materialMatrix(0,5) = 0;
+    materialMatrix(1,3) = materialMatrix(1,4) = materialMatrix(1,5) = 0;
+    materialMatrix(2,3) = materialMatrix(2,4) = materialMatrix(2,5) = 0;
+    materialMatrix(3,0) = materialMatrix(3,1) = materialMatrix(3,2) =
+            materialMatrix(3,4) = materialMatrix(3,5) = 0;
+    materialMatrix(4,0) = materialMatrix(4,1) = materialMatrix(4,2) =
+            materialMatrix(4,3) = materialMatrix(4,5) = 0;
+    materialMatrix(5,0) = materialMatrix(5,1) = materialMatrix(5,2) =
+            materialMatrix(5,3) = materialMatrix(5,4) = 0;
+    materialMatrix(3,3) = materialMatrix(4,4) = materialMatrix(5,5) =
             (1-2*poissonRatio)/(2*(1-poissonRatio));
     materialMatrix *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
 
@@ -406,92 +406,92 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displ
     // Unit of force = kg m s^-2
 
     /* We have these zeros
-                                  K[0][3]   K[0][4]   K[0][5]
-                                  K[1][3]   K[1][4]   K[1][5]
-                                  K[2][3]   K[2][4]   K[2][5]
-    K[3][0]   K[3][1]   K[3][2]             K[3][4]   K[3][5]
-    K[4][0]   K[4][1]   K[4][2]   K[4][3]             K[4][5]
-    K[5][0]   K[5][1]   K[5][2]   K[5][3]   K[5][4]
+                                  K(0,3)   K(0,4)   K(0,5)
+                                  K(1,3)   K(1,4)   K(1,5)
+                                  K(2,3)   K(2,4)   K(2,5)
+    K(3,0)   K(3,1)   K(3,2)             K(3,4)   K(3,5)
+    K(4,0)   K(4,1)   K(4,2)   K(4,3)             K(4,5)
+    K(5,0)   K(5,1)   K(5,2)   K(5,3)   K(5,4)
 
 
-              J[0][1]   J[0][2]             J[0][4]
-    J[1][0]             J[1][2]                       J[1][5]
-    J[2][0]   J[2][1]             J[2][3]
-              J[3][1]   J[3][2]             J[3][4]
-    J[4][0]             J[4][2]                       J[4][5]
-    J[5][0]   J[5][1]             J[5][3]
-              J[6][1]   J[6][2]             J[6][4]
-    J[7][0]             J[7][2]                       J[7][5]
-    J[8][0]   J[8][1]             J[8][3]
-              J[9][1]   J[9][2]             J[9][4]
-    J[10][0]            J[10][2]                      J[10][5]
-    J[11][0]  J[11][1]            J[11][3]
+              J(0,1)   J(0,2)             J(0,4)
+    J(1,0)             J(1,2)                       J(1,5)
+    J(2,0)   J(2,1)             J(2,3)
+              J(3,1)   J(3,2)             J(3,4)
+    J(4,0)             J(4,2)                       J(4,5)
+    J(5,0)   J(5,1)             J(5,3)
+              J(6,1)   J(6,2)             J(6,4)
+    J(7,0)             J(7,2)                       J(7,5)
+    J(8,0)   J(8,1)             J(8,3)
+              J(9,1)   J(9,2)             J(9,4)
+    J(10,0)            J(10,2)                      J(10,5)
+    J(11,0)  J(11,1)            J(11,3)
     */
 
     type::VecNoInit<6,Real> JtD;
-    JtD[0] =   J[ 0][0]*Depl[ 0]+/*J[ 1][0]*Depl[ 1]+  J[ 2][0]*Depl[ 2]+*/
-            J[ 3][0]*Depl[ 3]+/*J[ 4][0]*Depl[ 4]+  J[ 5][0]*Depl[ 5]+*/
-            J[ 6][0]*Depl[ 6]+/*J[ 7][0]*Depl[ 7]+  J[ 8][0]*Depl[ 8]+*/
-            J[ 9][0]*Depl[ 9] /*J[10][0]*Depl[10]+  J[11][0]*Depl[11]*/;
-    JtD[1] = /*J[ 0][1]*Depl[ 0]+*/J[ 1][1]*Depl[ 1]+/*J[ 2][1]*Depl[ 2]+*/
-            /*J[ 3][1]*Depl[ 3]+*/J[ 4][1]*Depl[ 4]+/*J[ 5][1]*Depl[ 5]+*/
-            /*J[ 6][1]*Depl[ 6]+*/J[ 7][1]*Depl[ 7]+/*J[ 8][1]*Depl[ 8]+*/
-            /*J[ 9][1]*Depl[ 9]+*/J[10][1]*Depl[10] /*J[11][1]*Depl[11]*/;
-    JtD[2] = /*J[ 0][2]*Depl[ 0]+  J[ 1][2]*Depl[ 1]+*/J[ 2][2]*Depl[ 2]+
-            /*J[ 3][2]*Depl[ 3]+  J[ 4][2]*Depl[ 4]+*/J[ 5][2]*Depl[ 5]+
-            /*J[ 6][2]*Depl[ 6]+  J[ 7][2]*Depl[ 7]+*/J[ 8][2]*Depl[ 8]+
-            /*J[ 9][2]*Depl[ 9]+  J[10][2]*Depl[10]+*/J[11][2]*Depl[11]  ;
-    JtD[3] =   J[ 0][3]*Depl[ 0]+  J[ 1][3]*Depl[ 1]+/*J[ 2][3]*Depl[ 2]+*/
-            J[ 3][3]*Depl[ 3]+  J[ 4][3]*Depl[ 4]+/*J[ 5][3]*Depl[ 5]+*/
-            J[ 6][3]*Depl[ 6]+  J[ 7][3]*Depl[ 7]+/*J[ 8][3]*Depl[ 8]+*/
-            J[ 9][3]*Depl[ 9]+  J[10][3]*Depl[10] /*J[11][3]*Depl[11]*/;
-    JtD[4] = /*J[ 0][4]*Depl[ 0]+*/J[ 1][4]*Depl[ 1]+  J[ 2][4]*Depl[ 2]+
-            /*J[ 3][4]*Depl[ 3]+*/J[ 4][4]*Depl[ 4]+  J[ 5][4]*Depl[ 5]+
-            /*J[ 6][4]*Depl[ 6]+*/J[ 7][4]*Depl[ 7]+  J[ 8][4]*Depl[ 8]+
-            /*J[ 9][4]*Depl[ 9]+*/J[10][4]*Depl[10]+  J[11][4]*Depl[11]  ;
-    JtD[5] =   J[ 0][5]*Depl[ 0]+/*J[ 1][5]*Depl[ 1]*/ J[ 2][5]*Depl[ 2]+
-            J[ 3][5]*Depl[ 3]+/*J[ 4][5]*Depl[ 4]*/ J[ 5][5]*Depl[ 5]+
-            J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
-            J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
+    JtD[0] =   J( 0,0)*Depl[ 0]+/*J( 1,0)*Depl[ 1]+  J( 2,0)*Depl[ 2]+*/
+            J( 3,0)*Depl[ 3]+/*J( 4,0)*Depl[ 4]+  J( 5,0)*Depl[ 5]+*/
+            J( 6,0)*Depl[ 6]+/*J( 7,0)*Depl[ 7]+  J( 8,0)*Depl[ 8]+*/
+            J( 9,0)*Depl[ 9] /*J(10,0)*Depl[10]+  J(11,0)*Depl[11]*/;
+    JtD[1] = /*J( 0,1)*Depl[ 0]+*/J( 1,1)*Depl[ 1]+/*J( 2,1)*Depl[ 2]+*/
+            /*J( 3,1)*Depl[ 3]+*/J( 4,1)*Depl[ 4]+/*J( 5,1)*Depl[ 5]+*/
+            /*J( 6,1)*Depl[ 6]+*/J( 7,1)*Depl[ 7]+/*J( 8,1)*Depl[ 8]+*/
+            /*J( 9,1)*Depl[ 9]+*/J(10,1)*Depl[10] /*J(11,1)*Depl[11]*/;
+    JtD[2] = /*J( 0,2)*Depl[ 0]+  J( 1,2)*Depl[ 1]+*/J( 2,2)*Depl[ 2]+
+            /*J( 3,2)*Depl[ 3]+  J( 4,2)*Depl[ 4]+*/J( 5,2)*Depl[ 5]+
+            /*J( 6,2)*Depl[ 6]+  J( 7,2)*Depl[ 7]+*/J( 8,2)*Depl[ 8]+
+            /*J( 9,2)*Depl[ 9]+  J(10,2)*Depl[10]+*/J(11,2)*Depl[11]  ;
+    JtD[3] =   J( 0,3)*Depl[ 0]+  J( 1,3)*Depl[ 1]+/*J( 2,3)*Depl[ 2]+*/
+            J( 3,3)*Depl[ 3]+  J( 4,3)*Depl[ 4]+/*J( 5,3)*Depl[ 5]+*/
+            J( 6,3)*Depl[ 6]+  J( 7,3)*Depl[ 7]+/*J( 8,3)*Depl[ 8]+*/
+            J( 9,3)*Depl[ 9]+  J(10,3)*Depl[10] /*J(11,3)*Depl[11]*/;
+    JtD[4] = /*J( 0,4)*Depl[ 0]+*/J( 1,4)*Depl[ 1]+  J( 2,4)*Depl[ 2]+
+            /*J( 3,4)*Depl[ 3]+*/J( 4,4)*Depl[ 4]+  J( 5,4)*Depl[ 5]+
+            /*J( 6,4)*Depl[ 6]+*/J( 7,4)*Depl[ 7]+  J( 8,4)*Depl[ 8]+
+            /*J( 9,4)*Depl[ 9]+*/J(10,4)*Depl[10]+  J(11,4)*Depl[11]  ;
+    JtD[5] =   J( 0,5)*Depl[ 0]+/*J( 1,5)*Depl[ 1]*/ J( 2,5)*Depl[ 2]+
+            J( 3,5)*Depl[ 3]+/*J( 4,5)*Depl[ 4]*/ J( 5,5)*Depl[ 5]+
+            J( 6,5)*Depl[ 6]+/*J( 7,5)*Depl[ 7]*/ J( 8,5)*Depl[ 8]+
+            J( 9,5)*Depl[ 9]+/*J(10,5)*Depl[10]*/ J(11,5)*Depl[11];
 
     type::VecNoInit<6,Real> KJtD;
-    KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
-            /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
-    KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
-            /*K[1][3]*JtD[3]+  K[1][4]*JtD[4]+  K[1][5]*JtD[5]*/;
-    KJtD[2] =   K[2][0]*JtD[0]+  K[2][1]*JtD[1]+  K[2][2]*JtD[2]
-            /*K[2][3]*JtD[3]+  K[2][4]*JtD[4]+  K[2][5]*JtD[5]*/;
-    KJtD[3] = /*K[3][0]*JtD[0]+  K[3][1]*JtD[1]+  K[3][2]*JtD[2]+*/
-        K[3][3]*JtD[3] /*K[3][4]*JtD[4]+  K[3][5]*JtD[5]*/;
-    KJtD[4] = /*K[4][0]*JtD[0]+  K[4][1]*JtD[1]+  K[4][2]*JtD[2]+*/
-        /*K[4][3]*JtD[3]+*/K[4][4]*JtD[4] /*K[4][5]*JtD[5]*/;
-    KJtD[5] = /*K[5][0]*JtD[0]+  K[5][1]*JtD[1]+  K[5][2]*JtD[2]+*/
-        /*K[5][3]*JtD[3]+  K[5][4]*JtD[4]+*/K[5][5]*JtD[5]  ;
+    KJtD[0] =   K(0,0)*JtD[0]+  K(0,1)*JtD[1]+  K(0,2)*JtD[2]
+            /*K(0,3)*JtD[3]+  K(0,4)*JtD[4]+  K(0,5)*JtD[5]*/;
+    KJtD[1] =   K(1,0)*JtD[0]+  K(1,1)*JtD[1]+  K(1,2)*JtD[2]
+            /*K(1,3)*JtD[3]+  K(1,4)*JtD[4]+  K(1,5)*JtD[5]*/;
+    KJtD[2] =   K(2,0)*JtD[0]+  K(2,1)*JtD[1]+  K(2,2)*JtD[2]
+            /*K(2,3)*JtD[3]+  K(2,4)*JtD[4]+  K(2,5)*JtD[5]*/;
+    KJtD[3] = /*K(3,0)*JtD[0]+  K(3,1)*JtD[1]+  K(3,2)*JtD[2]+*/
+        K(3,3)*JtD[3] /*K(3,4)*JtD[4]+  K(3,5)*JtD[5]*/;
+    KJtD[4] = /*K(4,0)*JtD[0]+  K(4,1)*JtD[1]+  K(4,2)*JtD[2]+*/
+        /*K(4,3)*JtD[3]+*/K(4,4)*JtD[4] /*K(4,5)*JtD[5]*/;
+    KJtD[5] = /*K(5,0)*JtD[0]+  K(5,1)*JtD[1]+  K(5,2)*JtD[2]+*/
+        /*K(5,3)*JtD[3]+  K(5,4)*JtD[4]+*/K(5,5)*JtD[5]  ;
 
-    F[ 0] =   J[ 0][0]*KJtD[0]+/*J[ 0][1]*KJtD[1]+  J[ 0][2]*KJtD[2]+*/
-            J[ 0][3]*KJtD[3]+/*J[ 0][4]*KJtD[4]+*/J[ 0][5]*KJtD[5]  ;
-    F[ 1] = /*J[ 1][0]*KJtD[0]+*/J[ 1][1]*KJtD[1]+/*J[ 1][2]*KJtD[2]+*/
-            J[ 1][3]*KJtD[3]+  J[ 1][4]*KJtD[4] /*J[ 1][5]*KJtD[5]*/;
-    F[ 2] = /*J[ 2][0]*KJtD[0]+  J[ 2][1]*KJtD[1]+*/J[ 2][2]*KJtD[2]+
-            /*J[ 2][3]*KJtD[3]+*/J[ 2][4]*KJtD[4]+  J[ 2][5]*KJtD[5]  ;
-    F[ 3] =   J[ 3][0]*KJtD[0]+/*J[ 3][1]*KJtD[1]+  J[ 3][2]*KJtD[2]+*/
-            J[ 3][3]*KJtD[3]+/*J[ 3][4]*KJtD[4]+*/J[ 3][5]*KJtD[5]  ;
-    F[ 4] = /*J[ 4][0]*KJtD[0]+*/J[ 4][1]*KJtD[1]+/*J[ 4][2]*KJtD[2]+*/
-            J[ 4][3]*KJtD[3]+  J[ 4][4]*KJtD[4] /*J[ 4][5]*KJtD[5]*/;
-    F[ 5] = /*J[ 5][0]*KJtD[0]+  J[ 5][1]*KJtD[1]+*/J[ 5][2]*KJtD[2]+
-            /*J[ 5][3]*KJtD[3]+*/J[ 5][4]*KJtD[4]+  J[ 5][5]*KJtD[5]  ;
-    F[ 6] =   J[ 6][0]*KJtD[0]+/*J[ 6][1]*KJtD[1]+  J[ 6][2]*KJtD[2]+*/
-            J[ 6][3]*KJtD[3]+/*J[ 6][4]*KJtD[4]+*/J[ 6][5]*KJtD[5]  ;
-    F[ 7] = /*J[ 7][0]*KJtD[0]+*/J[ 7][1]*KJtD[1]+/*J[ 7][2]*KJtD[2]+*/
-            J[ 7][3]*KJtD[3]+  J[ 7][4]*KJtD[4] /*J[ 7][5]*KJtD[5]*/;
-    F[ 8] = /*J[ 8][0]*KJtD[0]+  J[ 8][1]*KJtD[1]+*/J[ 8][2]*KJtD[2]+
-            /*J[ 8][3]*KJtD[3]+*/J[ 8][4]*KJtD[4]+  J[ 8][5]*KJtD[5]  ;
-    F[ 9] =   J[ 9][0]*KJtD[0]+/*J[ 9][1]*KJtD[1]+  J[ 9][2]*KJtD[2]+*/
-            J[ 9][3]*KJtD[3]+/*J[ 9][4]*KJtD[4]+*/J[ 9][5]*KJtD[5]  ;
-    F[10] = /*J[10][0]*KJtD[0]+*/J[10][1]*KJtD[1]+/*J[10][2]*KJtD[2]+*/
-            J[10][3]*KJtD[3]+  J[10][4]*KJtD[4] /*J[10][5]*KJtD[5]*/;
-    F[11] = /*J[11][0]*KJtD[0]+  J[11][1]*KJtD[1]+*/J[11][2]*KJtD[2]+
-            /*J[11][3]*KJtD[3]+*/J[11][4]*KJtD[4]+  J[11][5]*KJtD[5]  ;
+    F[ 0] =   J( 0,0)*KJtD[0]+/*J( 0,1)*KJtD[1]+  J( 0,2)*KJtD[2]+*/
+            J( 0,3)*KJtD[3]+/*J( 0,4)*KJtD[4]+*/J( 0,5)*KJtD[5]  ;
+    F[ 1] = /*J( 1,0)*KJtD[0]+*/J( 1,1)*KJtD[1]+/*J( 1,2)*KJtD[2]+*/
+            J( 1,3)*KJtD[3]+  J( 1,4)*KJtD[4] /*J( 1,5)*KJtD[5]*/;
+    F[ 2] = /*J( 2,0)*KJtD[0]+  J( 2,1)*KJtD[1]+*/J( 2,2)*KJtD[2]+
+            /*J( 2,3)*KJtD[3]+*/J( 2,4)*KJtD[4]+  J( 2,5)*KJtD[5]  ;
+    F[ 3] =   J( 3,0)*KJtD[0]+/*J( 3,1)*KJtD[1]+  J( 3,2)*KJtD[2]+*/
+            J( 3,3)*KJtD[3]+/*J( 3,4)*KJtD[4]+*/J( 3,5)*KJtD[5]  ;
+    F[ 4] = /*J( 4,0)*KJtD[0]+*/J( 4,1)*KJtD[1]+/*J( 4,2)*KJtD[2]+*/
+            J( 4,3)*KJtD[3]+  J( 4,4)*KJtD[4] /*J( 4,5)*KJtD[5]*/;
+    F[ 5] = /*J( 5,0)*KJtD[0]+  J( 5,1)*KJtD[1]+*/J( 5,2)*KJtD[2]+
+            /*J( 5,3)*KJtD[3]+*/J( 5,4)*KJtD[4]+  J( 5,5)*KJtD[5]  ;
+    F[ 6] =   J( 6,0)*KJtD[0]+/*J( 6,1)*KJtD[1]+  J( 6,2)*KJtD[2]+*/
+            J( 6,3)*KJtD[3]+/*J( 6,4)*KJtD[4]+*/J( 6,5)*KJtD[5]  ;
+    F[ 7] = /*J( 7,0)*KJtD[0]+*/J( 7,1)*KJtD[1]+/*J( 7,2)*KJtD[2]+*/
+            J( 7,3)*KJtD[3]+  J( 7,4)*KJtD[4] /*J( 7,5)*KJtD[5]*/;
+    F[ 8] = /*J( 8,0)*KJtD[0]+  J( 8,1)*KJtD[1]+*/J( 8,2)*KJtD[2]+
+            /*J( 8,3)*KJtD[3]+*/J( 8,4)*KJtD[4]+  J( 8,5)*KJtD[5]  ;
+    F[ 9] =   J( 9,0)*KJtD[0]+/*J( 9,1)*KJtD[1]+  J( 9,2)*KJtD[2]+*/
+            J( 9,3)*KJtD[3]+/*J( 9,4)*KJtD[4]+*/J( 9,5)*KJtD[5]  ;
+    F[10] = /*J(10,0)*KJtD[0]+*/J(10,1)*KJtD[1]+/*J(10,2)*KJtD[2]+*/
+            J(10,3)*KJtD[3]+  J(10,4)*KJtD[4] /*J(10,5)*KJtD[5]*/;
+    F[11] = /*J(11,0)*KJtD[0]+  J(11,1)*KJtD[1]+*/J(11,2)*KJtD[2]+
+            /*J(11,3)*KJtD[3]+*/J(11,4)*KJtD[4]+  J(11,5)*KJtD[5]  ;
 }
 
 template<class DataTypes>
@@ -505,95 +505,95 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displ
     // Unit of force = kg m s^-2
 
     /* We have these zeros
-                                  K[0][3]   K[0][4]   K[0][5]
-                                  K[1][3]   K[1][4]   K[1][5]
-                                  K[2][3]   K[2][4]   K[2][5]
-    K[3][0]   K[3][1]   K[3][2]             K[3][4]   K[3][5]
-    K[4][0]   K[4][1]   K[4][2]   K[4][3]             K[4][5]
-    K[5][0]   K[5][1]   K[5][2]   K[5][3]   K[5][4]
+                                  K(0,3)   K(0,4)   K(0,5)
+                                  K(1,3)   K(1,4)   K(1,5)
+                                  K(2,3)   K(2,4)   K(2,5)
+    K(3,0)   K(3,1)   K(3,2)             K(3,4)   K(3,5)
+    K(4,0)   K(4,1)   K(4,2)   K(4,3)             K(4,5)
+    K(5,0)   K(5,1)   K(5,2)   K(5,3)   K(5,4)
 
 
-              J[0][1]   J[0][2]             J[0][4]
-    J[1][0]             J[1][2]                       J[1][5]
-    J[2][0]   J[2][1]             J[2][3]
-              J[3][1]   J[3][2]             J[3][4]
-    J[4][0]             J[4][2]                       J[4][5]
-    J[5][0]   J[5][1]             J[5][3]
-              J[6][1]   J[6][2]             J[6][4]
-    J[7][0]             J[7][2]                       J[7][5]
-    J[8][0]   J[8][1]             J[8][3]
-              J[9][1]   J[9][2]             J[9][4]
-    J[10][0]            J[10][2]                      J[10][5]
-    J[11][0]  J[11][1]            J[11][3]
+              J(0,1)   J(0,2)             J(0,4)
+    J(1,0)             J(1,2)                       J(1,5)
+    J(2,0)   J(2,1)             J(2,3)
+              J(3,1)   J(3,2)             J(3,4)
+    J(4,0)             J(4,2)                       J(4,5)
+    J(5,0)   J(5,1)             J(5,3)
+              J(6,1)   J(6,2)             J(6,4)
+    J(7,0)             J(7,2)                       J(7,5)
+    J(8,0)   J(8,1)             J(8,3)
+              J(9,1)   J(9,2)             J(9,4)
+    J(10,0)            J(10,2)                      J(10,5)
+    J(11,0)  J(11,1)            J(11,3)
     */
 
     type::VecNoInit<6,Real> JtD;
-    JtD[0] =   J[ 0][0]*Depl[ 0]+/*J[ 1][0]*Depl[ 1]+  J[ 2][0]*Depl[ 2]+*/
-            J[ 3][0]*Depl[ 3]+/*J[ 4][0]*Depl[ 4]+  J[ 5][0]*Depl[ 5]+*/
-            J[ 6][0]*Depl[ 6]+/*J[ 7][0]*Depl[ 7]+  J[ 8][0]*Depl[ 8]+*/
-            J[ 9][0]*Depl[ 9] /*J[10][0]*Depl[10]+  J[11][0]*Depl[11]*/;
-    JtD[1] = /*J[ 0][1]*Depl[ 0]+*/J[ 1][1]*Depl[ 1]+/*J[ 2][1]*Depl[ 2]+*/
-            /*J[ 3][1]*Depl[ 3]+*/J[ 4][1]*Depl[ 4]+/*J[ 5][1]*Depl[ 5]+*/
-            /*J[ 6][1]*Depl[ 6]+*/J[ 7][1]*Depl[ 7]+/*J[ 8][1]*Depl[ 8]+*/
-            /*J[ 9][1]*Depl[ 9]+*/J[10][1]*Depl[10] /*J[11][1]*Depl[11]*/;
-    JtD[2] = /*J[ 0][2]*Depl[ 0]+  J[ 1][2]*Depl[ 1]+*/J[ 2][2]*Depl[ 2]+
-            /*J[ 3][2]*Depl[ 3]+  J[ 4][2]*Depl[ 4]+*/J[ 5][2]*Depl[ 5]+
-            /*J[ 6][2]*Depl[ 6]+  J[ 7][2]*Depl[ 7]+*/J[ 8][2]*Depl[ 8]+
-            /*J[ 9][2]*Depl[ 9]+  J[10][2]*Depl[10]+*/J[11][2]*Depl[11]  ;
-    JtD[3] =   J[ 0][3]*Depl[ 0]+  J[ 1][3]*Depl[ 1]+/*J[ 2][3]*Depl[ 2]+*/
-            J[ 3][3]*Depl[ 3]+  J[ 4][3]*Depl[ 4]+/*J[ 5][3]*Depl[ 5]+*/
-            J[ 6][3]*Depl[ 6]+  J[ 7][3]*Depl[ 7]+/*J[ 8][3]*Depl[ 8]+*/
-            J[ 9][3]*Depl[ 9]+  J[10][3]*Depl[10] /*J[11][3]*Depl[11]*/;
-    JtD[4] = /*J[ 0][4]*Depl[ 0]+*/J[ 1][4]*Depl[ 1]+  J[ 2][4]*Depl[ 2]+
-            /*J[ 3][4]*Depl[ 3]+*/J[ 4][4]*Depl[ 4]+  J[ 5][4]*Depl[ 5]+
-            /*J[ 6][4]*Depl[ 6]+*/J[ 7][4]*Depl[ 7]+  J[ 8][4]*Depl[ 8]+
-            /*J[ 9][4]*Depl[ 9]+*/J[10][4]*Depl[10]+  J[11][4]*Depl[11]  ;
-    JtD[5] =   J[ 0][5]*Depl[ 0]+/*J[ 1][5]*Depl[ 1]*/ J[ 2][5]*Depl[ 2]+
-            J[ 3][5]*Depl[ 3]+/*J[ 4][5]*Depl[ 4]*/ J[ 5][5]*Depl[ 5]+
-            J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
-            J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
+    JtD[0] =   J( 0,0)*Depl[ 0]+/*J( 1,0)*Depl[ 1]+  J( 2,0)*Depl[ 2]+*/
+            J( 3,0)*Depl[ 3]+/*J( 4,0)*Depl[ 4]+  J( 5,0)*Depl[ 5]+*/
+            J( 6,0)*Depl[ 6]+/*J( 7,0)*Depl[ 7]+  J( 8,0)*Depl[ 8]+*/
+            J( 9,0)*Depl[ 9] /*J(10,0)*Depl[10]+  J(11,0)*Depl[11]*/;
+    JtD[1] = /*J( 0,1)*Depl[ 0]+*/J( 1,1)*Depl[ 1]+/*J( 2,1)*Depl[ 2]+*/
+            /*J( 3,1)*Depl[ 3]+*/J( 4,1)*Depl[ 4]+/*J( 5,1)*Depl[ 5]+*/
+            /*J( 6,1)*Depl[ 6]+*/J( 7,1)*Depl[ 7]+/*J( 8,1)*Depl[ 8]+*/
+            /*J( 9,1)*Depl[ 9]+*/J(10,1)*Depl[10] /*J(11,1)*Depl[11]*/;
+    JtD[2] = /*J( 0,2)*Depl[ 0]+  J( 1,2)*Depl[ 1]+*/J( 2,2)*Depl[ 2]+
+            /*J( 3,2)*Depl[ 3]+  J( 4,2)*Depl[ 4]+*/J( 5,2)*Depl[ 5]+
+            /*J( 6,2)*Depl[ 6]+  J( 7,2)*Depl[ 7]+*/J( 8,2)*Depl[ 8]+
+            /*J( 9,2)*Depl[ 9]+  J(10,2)*Depl[10]+*/J(11,2)*Depl[11]  ;
+    JtD[3] =   J( 0,3)*Depl[ 0]+  J( 1,3)*Depl[ 1]+/*J( 2,3)*Depl[ 2]+*/
+            J( 3,3)*Depl[ 3]+  J( 4,3)*Depl[ 4]+/*J( 5,3)*Depl[ 5]+*/
+            J( 6,3)*Depl[ 6]+  J( 7,3)*Depl[ 7]+/*J( 8,3)*Depl[ 8]+*/
+            J( 9,3)*Depl[ 9]+  J(10,3)*Depl[10] /*J(11,3)*Depl[11]*/;
+    JtD[4] = /*J( 0,4)*Depl[ 0]+*/J( 1,4)*Depl[ 1]+  J( 2,4)*Depl[ 2]+
+            /*J( 3,4)*Depl[ 3]+*/J( 4,4)*Depl[ 4]+  J( 5,4)*Depl[ 5]+
+            /*J( 6,4)*Depl[ 6]+*/J( 7,4)*Depl[ 7]+  J( 8,4)*Depl[ 8]+
+            /*J( 9,4)*Depl[ 9]+*/J(10,4)*Depl[10]+  J(11,4)*Depl[11]  ;
+    JtD[5] =   J( 0,5)*Depl[ 0]+/*J( 1,5)*Depl[ 1]*/ J( 2,5)*Depl[ 2]+
+            J( 3,5)*Depl[ 3]+/*J( 4,5)*Depl[ 4]*/ J( 5,5)*Depl[ 5]+
+            J( 6,5)*Depl[ 6]+/*J( 7,5)*Depl[ 7]*/ J( 8,5)*Depl[ 8]+
+            J( 9,5)*Depl[ 9]+/*J(10,5)*Depl[10]*/ J(11,5)*Depl[11];
 
 
     type::VecNoInit<6,Real> KJtD;
-    KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
-            /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
-    KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
-            /*K[1][3]*JtD[3]+  K[1][4]*JtD[4]+  K[1][5]*JtD[5]*/;
-    KJtD[2] =   K[2][0]*JtD[0]+  K[2][1]*JtD[1]+  K[2][2]*JtD[2]
-            /*K[2][3]*JtD[3]+  K[2][4]*JtD[4]+  K[2][5]*JtD[5]*/;
-    KJtD[3] = /*K[3][0]*JtD[0]+  K[3][1]*JtD[1]+  K[3][2]*JtD[2]+*/
-        K[3][3]*JtD[3] /*K[3][4]*JtD[4]+  K[3][5]*JtD[5]*/;
-    KJtD[4] = /*K[4][0]*JtD[0]+  K[4][1]*JtD[1]+  K[4][2]*JtD[2]+*/
-        /*K[4][3]*JtD[3]+*/K[4][4]*JtD[4] /*K[4][5]*JtD[5]*/;
-    KJtD[5] = /*K[5][0]*JtD[0]+  K[5][1]*JtD[1]+  K[5][2]*JtD[2]+*/
-        /*K[5][3]*JtD[3]+  K[5][4]*JtD[4]+*/K[5][5]*JtD[5]  ;
+    KJtD[0] =   K(0,0)*JtD[0]+  K(0,1)*JtD[1]+  K(0,2)*JtD[2]
+            /*K(0,3)*JtD[3]+  K(0,4)*JtD[4]+  K(0,5)*JtD[5]*/;
+    KJtD[1] =   K(1,0)*JtD[0]+  K(1,1)*JtD[1]+  K(1,2)*JtD[2]
+            /*K(1,3)*JtD[3]+  K(1,4)*JtD[4]+  K(1,5)*JtD[5]*/;
+    KJtD[2] =   K(2,0)*JtD[0]+  K(2,1)*JtD[1]+  K(2,2)*JtD[2]
+            /*K(2,3)*JtD[3]+  K(2,4)*JtD[4]+  K(2,5)*JtD[5]*/;
+    KJtD[3] = /*K(3,0)*JtD[0]+  K(3,1)*JtD[1]+  K(3,2)*JtD[2]+*/
+        K(3,3)*JtD[3] /*K(3,4)*JtD[4]+  K(3,5)*JtD[5]*/;
+    KJtD[4] = /*K(4,0)*JtD[0]+  K(4,1)*JtD[1]+  K(4,2)*JtD[2]+*/
+        /*K(4,3)*JtD[3]+*/K(4,4)*JtD[4] /*K(4,5)*JtD[5]*/;
+    KJtD[5] = /*K(5,0)*JtD[0]+  K(5,1)*JtD[1]+  K(5,2)*JtD[2]+*/
+        /*K(5,3)*JtD[3]+  K(5,4)*JtD[4]+*/K(5,5)*JtD[5]  ;
 
     KJtD *= fact;
 
-    F[ 0] =   J[ 0][0]*KJtD[0]+/*J[ 0][1]*KJtD[1]+  J[ 0][2]*KJtD[2]+*/
-            J[ 0][3]*KJtD[3]+/*J[ 0][4]*KJtD[4]+*/J[ 0][5]*KJtD[5]  ;
-    F[ 1] = /*J[ 1][0]*KJtD[0]+*/J[ 1][1]*KJtD[1]+/*J[ 1][2]*KJtD[2]+*/
-            J[ 1][3]*KJtD[3]+  J[ 1][4]*KJtD[4] /*J[ 1][5]*KJtD[5]*/;
-    F[ 2] = /*J[ 2][0]*KJtD[0]+  J[ 2][1]*KJtD[1]+*/J[ 2][2]*KJtD[2]+
-            /*J[ 2][3]*KJtD[3]+*/J[ 2][4]*KJtD[4]+  J[ 2][5]*KJtD[5]  ;
-    F[ 3] =   J[ 3][0]*KJtD[0]+/*J[ 3][1]*KJtD[1]+  J[ 3][2]*KJtD[2]+*/
-            J[ 3][3]*KJtD[3]+/*J[ 3][4]*KJtD[4]+*/J[ 3][5]*KJtD[5]  ;
-    F[ 4] = /*J[ 4][0]*KJtD[0]+*/J[ 4][1]*KJtD[1]+/*J[ 4][2]*KJtD[2]+*/
-            J[ 4][3]*KJtD[3]+  J[ 4][4]*KJtD[4] /*J[ 4][5]*KJtD[5]*/;
-    F[ 5] = /*J[ 5][0]*KJtD[0]+  J[ 5][1]*KJtD[1]+*/J[ 5][2]*KJtD[2]+
-            /*J[ 5][3]*KJtD[3]+*/J[ 5][4]*KJtD[4]+  J[ 5][5]*KJtD[5]  ;
-    F[ 6] =   J[ 6][0]*KJtD[0]+/*J[ 6][1]*KJtD[1]+  J[ 6][2]*KJtD[2]+*/
-            J[ 6][3]*KJtD[3]+/*J[ 6][4]*KJtD[4]+*/J[ 6][5]*KJtD[5]  ;
-    F[ 7] = /*J[ 7][0]*KJtD[0]+*/J[ 7][1]*KJtD[1]+/*J[ 7][2]*KJtD[2]+*/
-            J[ 7][3]*KJtD[3]+  J[ 7][4]*KJtD[4] /*J[ 7][5]*KJtD[5]*/;
-    F[ 8] = /*J[ 8][0]*KJtD[0]+  J[ 8][1]*KJtD[1]+*/J[ 8][2]*KJtD[2]+
-            /*J[ 8][3]*KJtD[3]+*/J[ 8][4]*KJtD[4]+  J[ 8][5]*KJtD[5]  ;
-    F[ 9] =   J[ 9][0]*KJtD[0]+/*J[ 9][1]*KJtD[1]+  J[ 9][2]*KJtD[2]+*/
-            J[ 9][3]*KJtD[3]+/*J[ 9][4]*KJtD[4]+*/J[ 9][5]*KJtD[5]  ;
-    F[10] = /*J[10][0]*KJtD[0]+*/J[10][1]*KJtD[1]+/*J[10][2]*KJtD[2]+*/
-            J[10][3]*KJtD[3]+  J[10][4]*KJtD[4] /*J[10][5]*KJtD[5]*/;
-    F[11] = /*J[11][0]*KJtD[0]+  J[11][1]*KJtD[1]+*/J[11][2]*KJtD[2]+
-            /*J[11][3]*KJtD[3]+*/J[11][4]*KJtD[4]+  J[11][5]*KJtD[5]  ;
+    F[ 0] =   J( 0,0)*KJtD[0]+/*J( 0,1)*KJtD[1]+  J( 0,2)*KJtD[2]+*/
+            J( 0,3)*KJtD[3]+/*J( 0,4)*KJtD[4]+*/J( 0,5)*KJtD[5]  ;
+    F[ 1] = /*J( 1,0)*KJtD[0]+*/J( 1,1)*KJtD[1]+/*J( 1,2)*KJtD[2]+*/
+            J( 1,3)*KJtD[3]+  J( 1,4)*KJtD[4] /*J( 1,5)*KJtD[5]*/;
+    F[ 2] = /*J( 2,0)*KJtD[0]+  J( 2,1)*KJtD[1]+*/J( 2,2)*KJtD[2]+
+            /*J( 2,3)*KJtD[3]+*/J( 2,4)*KJtD[4]+  J( 2,5)*KJtD[5]  ;
+    F[ 3] =   J( 3,0)*KJtD[0]+/*J( 3,1)*KJtD[1]+  J( 3,2)*KJtD[2]+*/
+            J( 3,3)*KJtD[3]+/*J( 3,4)*KJtD[4]+*/J( 3,5)*KJtD[5]  ;
+    F[ 4] = /*J( 4,0)*KJtD[0]+*/J( 4,1)*KJtD[1]+/*J( 4,2)*KJtD[2]+*/
+            J( 4,3)*KJtD[3]+  J( 4,4)*KJtD[4] /*J( 4,5)*KJtD[5]*/;
+    F[ 5] = /*J( 5,0)*KJtD[0]+  J( 5,1)*KJtD[1]+*/J( 5,2)*KJtD[2]+
+            /*J( 5,3)*KJtD[3]+*/J( 5,4)*KJtD[4]+  J( 5,5)*KJtD[5]  ;
+    F[ 6] =   J( 6,0)*KJtD[0]+/*J( 6,1)*KJtD[1]+  J( 6,2)*KJtD[2]+*/
+            J( 6,3)*KJtD[3]+/*J( 6,4)*KJtD[4]+*/J( 6,5)*KJtD[5]  ;
+    F[ 7] = /*J( 7,0)*KJtD[0]+*/J( 7,1)*KJtD[1]+/*J( 7,2)*KJtD[2]+*/
+            J( 7,3)*KJtD[3]+  J( 7,4)*KJtD[4] /*J( 7,5)*KJtD[5]*/;
+    F[ 8] = /*J( 8,0)*KJtD[0]+  J( 8,1)*KJtD[1]+*/J( 8,2)*KJtD[2]+
+            /*J( 8,3)*KJtD[3]+*/J( 8,4)*KJtD[4]+  J( 8,5)*KJtD[5]  ;
+    F[ 9] =   J( 9,0)*KJtD[0]+/*J( 9,1)*KJtD[1]+  J( 9,2)*KJtD[2]+*/
+            J( 9,3)*KJtD[3]+/*J( 9,4)*KJtD[4]+*/J( 9,5)*KJtD[5]  ;
+    F[10] = /*J(10,0)*KJtD[0]+*/J(10,1)*KJtD[1]+/*J(10,2)*KJtD[2]+*/
+            J(10,3)*KJtD[3]+  J(10,4)*KJtD[4] /*J(10,5)*KJtD[5]*/;
+    F[11] = /*J(11,0)*KJtD[0]+  J(11,1)*KJtD[1]+*/J(11,2)*KJtD[2]+
+            /*J(11,3)*KJtD[3]+*/J(11,4)*KJtD[4]+  J(11,5)*KJtD[5]  ;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -650,10 +650,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
     else
     {
         Transformation Rot;
-        Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-        Rot[0][1]=Rot[0][2]=0;
-        Rot[1][0]=Rot[1][2]=0;
-        Rot[2][0]=Rot[2][1]=0;
+        Rot(0,0)=Rot(1,1)=Rot(2,2)=1;
+        Rot(0,1)=Rot(0,2)=0;
+        Rot(1,0)=Rot(1,2)=0;
+        Rot(2,0)=Rot(2,1)=0;
 
 
         StiffnessMatrix JKJt,tmp;
@@ -675,7 +675,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
 
             for(int j=0; j<12; ++j)
             {
-                if(JKJt[i][j]!=0)
+                if(JKJt(i,j)!=0)
                 {
 
                     int col = t[j/3]*3+j%3;
@@ -688,9 +688,9 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
                     }
 
                     if( result==_stiffnesses[row].end() )
-                        _stiffnesses[row].push_back( Col_Value(col,JKJt[i][j] )  );
+                        _stiffnesses[row].push_back( Col_Value(col,JKJt(i,j) )  );
                     else
-                        (*result).second += JKJt[i][j];
+                        (*result).second += JKJt(i,j);
                 }
             }
         }
@@ -753,15 +753,15 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeRotationLarg
     const Coord edgez = cross( edgex, edgey ).normalized();
                 edgey = cross( edgez, edgex ); //edgey is unit vector because edgez and edgex are orthogonal unit vectors
 
-    r[0][0] = edgex[0];
-    r[0][1] = edgex[1];
-    r[0][2] = edgex[2];
-    r[1][0] = edgey[0];
-    r[1][1] = edgey[1];
-    r[1][2] = edgey[2];
-    r[2][0] = edgez[0];
-    r[2][1] = edgez[1];
-    r[2][2] = edgez[2];
+    r(0,0) = edgex[0];
+    r(0,1) = edgex[1];
+    r(0,2) = edgex[2];
+    r(1,0) = edgey[0];
+    r(1,1) = edgey[1];
+    r(1,2) = edgey[2];
+    r(2,0) = edgez[0];
+    r(2,1) = edgez[1];
+    r(2,2) = edgez[2];
 }
 
 template <class DataTypes>
@@ -798,8 +798,8 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::getRotation(Transfo
     Coord ex,ey,ez;
     for(int i=0; i<3; i++)
     {
-        ex[i]=R[0][i];
-        ey[i]=R[1][i];
+        ex[i]=R(0,i);
+        ey[i]=R(1,i);
     }
     ex.normalize();
     ey.normalize();
@@ -812,9 +812,9 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::getRotation(Transfo
 
     for(int i=0; i<3; i++)
     {
-        R[0][i]=ex[i];
-        R[1][i]=ey[i];
-        R[2][i]=ez[i];
+        R(0,i)=ex[i];
+        R(1,i)=ey[i];
+        R(2,i)=ez[i];
     }
 }
 
@@ -824,10 +824,10 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::getElementStiffness
     const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetraInf = d_tetrahedronInfo.getValue();
     Transformation Rot;
     StiffnessMatrix JKJt,tmp;
-    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-    Rot[0][1]=Rot[0][2]=0;
-    Rot[1][0]=Rot[1][2]=0;
-    Rot[2][0]=Rot[2][1]=0;
+    Rot(0,0)=Rot(1,1)=Rot(2,2)=1;
+    Rot(0,1)=Rot(0,2)=0;
+    Rot(1,0)=Rot(1,2)=0;
+    Rot(2,0)=Rot(2,1)=0;
     computeStiffnessMatrix(JKJt,tmp,tetraInf[elementIndex].materialMatrix, tetraInf[elementIndex].strainDisplacementTransposedMatrix,Rot);
     for(int i=0; i<12; i++)
     {
@@ -869,9 +869,9 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initLarge(int i, Index&a, 
     const core::topology::BaseMeshTopology::Tetrahedron tetra = { a, b, c, d };
     for (Index k = 0; k < 4; k++) {
         Index ix = tetra[k];
-        matVert[k][0] = 1.0;
+        matVert(k,0) = 1.0;
         for (Index l = 1; l < 4; l++)
-            matVert[k][l] = X0[ix][l - 1];
+            matVert(k,l) = X0[ix][l - 1];
     }
 
     [[maybe_unused]] const bool canInvert = type::invertMatrix(tetrahedronInf[i].elemShapeFun, matVert);
@@ -920,18 +920,18 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceLarge( Vect
     if(d_updateStiffnessMatrix.getValue())
     {
         StrainDisplacementTransposed& J = tetrahedronInf[elementIndex].strainDisplacementTransposedMatrix;
-        J[0][0] = J[1][3] = J[2][5]   = ( - deforme[2][1]*deforme[3][2] );
-        J[1][1] = J[0][3] = J[2][4]   = ( deforme[2][0]*deforme[3][2] - deforme[1][0]*deforme[3][2] );
-        J[2][2] = J[0][5] = J[1][4]   = ( deforme[2][1]*deforme[3][0] - deforme[2][0]*deforme[3][1] + deforme[1][0]*deforme[3][1] - deforme[1][0]*deforme[2][1] );
+        J(0,0) = J(1,3) = J(2,5)   = ( - deforme[2][1]*deforme[3][2] );
+        J(1,1) = J(0,3) = J(2,4)   = ( deforme[2][0]*deforme[3][2] - deforme[1][0]*deforme[3][2] );
+        J(2,2) = J(0,5) = J(1,4)   = ( deforme[2][1]*deforme[3][0] - deforme[2][0]*deforme[3][1] + deforme[1][0]*deforme[3][1] - deforme[1][0]*deforme[2][1] );
 
-        J[3][0] = J[4][3] = J[5][5]   = ( deforme[2][1]*deforme[3][2] );
-        J[4][1] = J[3][3] = J[5][4]  = ( - deforme[2][0]*deforme[3][2] );
-        J[5][2] = J[3][5] = J[4][4]   = ( - deforme[2][1]*deforme[3][0] + deforme[2][0]*deforme[3][1] );
+        J(3,0) = J(4,3) = J(5,5)   = ( deforme[2][1]*deforme[3][2] );
+        J(4,1) = J(3,3) = J(5,4)  = ( - deforme[2][0]*deforme[3][2] );
+        J(5,2) = J(3,5) = J(4,4)   = ( - deforme[2][1]*deforme[3][0] + deforme[2][0]*deforme[3][1] );
 
-        J[7][1] = J[6][3] = J[8][4]  = ( deforme[1][0]*deforme[3][2] );
-        J[8][2] = J[6][5] = J[7][4]   = ( - deforme[1][0]*deforme[3][1] );
+        J(7,1) = J(6,3) = J(8,4)  = ( deforme[1][0]*deforme[3][2] );
+        J(8,2) = J(6,5) = J(7,4)   = ( - deforme[1][0]*deforme[3][1] );
 
-        J[11][2] = J[9][5] = J[10][4] = ( deforme[1][0]*deforme[2][1] );
+        J(11,2) = J(9,5) = J(10,4) = ( deforme[1][0]*deforme[2][1] );
     }
 
     if(!d_assembling.getValue())
@@ -943,9 +943,9 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceLarge( Vect
     }
     else
     {
-        tetrahedronInf[elementIndex].strainDisplacementTransposedMatrix[6][0] = 0;
-        tetrahedronInf[elementIndex].strainDisplacementTransposedMatrix[9][0] = 0;
-        tetrahedronInf[elementIndex].strainDisplacementTransposedMatrix[10][1] = 0;
+        tetrahedronInf[elementIndex].strainDisplacementTransposedMatrix(6,0) = 0;
+        tetrahedronInf[elementIndex].strainDisplacementTransposedMatrix(9,0) = 0;
+        tetrahedronInf[elementIndex].strainDisplacementTransposedMatrix(10,1) = 0;
 
         StiffnessMatrix RJKJt, RJKJtRt;
         computeStiffnessMatrix(RJKJt,RJKJtRt,tetrahedronInf[elementIndex].materialMatrix, tetrahedronInf[elementIndex].strainDisplacementTransposedMatrix,tetrahedronInf[elementIndex].rotation);
@@ -979,11 +979,11 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceLarge( Vect
 
                 if( result==_stiffnesses[row].end() )
                 {
-                    _stiffnesses[row].push_back( Col_Value(col,RJKJtRt[i][j] )  );
+                    _stiffnesses[row].push_back( Col_Value(col,RJKJtRt(i,j) )  );
                 }
                 else
                 {
-                    (*result).second += RJKJtRt[i][j];
+                    (*result).second += RJKJtRt(i,j);
                 }
             }
         }
@@ -1050,9 +1050,9 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initPolar(int i, Index& a,
     type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(d_tetrahedronInfo.beginEdit());
 
     Transformation A;
-    A[0] = (X0)[b]-(X0)[a];
-    A[1] = (X0)[c]-(X0)[a];
-    A[2] = (X0)[d]-(X0)[a];
+    A(0) = (X0)[b]-(X0)[a];
+    A(1) = (X0)[c]-(X0)[a];
+    A(2) = (X0)[d]-(X0)[a];
     tetrahedronInf[i].initialTransformation = A;
 
     Transformation R_0_1;
@@ -1074,9 +1074,9 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForcePolar( Vect
     const core::topology::BaseMeshTopology::Tetrahedron t=this->l_topology->getTetrahedron(elementIndex);
 
     Transformation A;
-    A[0] = p[t[1]]-p[t[0]];
-    A[1] = p[t[2]]-p[t[0]];
-    A[2] = p[t[3]]-p[t[0]];
+    A(0) = p[t[1]]-p[t[0]];
+    A(1) = p[t[2]]-p[t[0]];
+    A(2) = p[t[3]]-p[t[0]];
 
     Transformation R_0_2;
     helper::Decompose<Real>::polarDecomposition(A, R_0_2);
@@ -1178,24 +1178,17 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeBBox(const core::Ex
 {
     SOFA_UNUSED(params);
 
-	if( !onlyVisible ) return;
+    if( !onlyVisible ) return;
 
-	helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::vec_id::write_access::position);
+    helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::vec_id::write_access::position);
 
-	static const Real max_real = std::numeric_limits<Real>::max();
-	static const Real min_real = std::numeric_limits<Real>::lowest();
-	Real maxBBox[3] = {min_real,min_real,min_real};
-	Real minBBox[3] = {max_real,max_real,max_real};
-    for (std::size_t i=0; i<x.size(); i++)
-	{
-		for (int c=0; c<3; c++)
-		{
-			if (x[i][c] > maxBBox[c]) maxBBox[c] = (Real)x[i][c];
-			else if (x[i][c] < minBBox[c]) minBBox[c] = (Real)x[i][c];
-		}
-	}
+    type::BoundingBox bbox;
+    for (const auto& p : x )
+    {
+        bbox.include(p);
+    }
 
-	this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(bbox);
 }
 
 
@@ -1253,22 +1246,22 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
         /// compute gradU
         for (Index k = 0; k < 3; k++) {
             for (Index l = 0; l < 3; l++) {
-                gradU[k][l] = 0.0;
+                gradU(k,l) = 0.0;
                 for (Index m = 0; m < 4; m++)
-                    gradU[k][l] += shf[l + 1][m] * D[3 * m + k];
+                    gradU(k,l) += shf(l + 1,m) * D[3 * m + k];
             }
         }
 
         type::Mat<3, 3, Real> strain = Real(0.5) * (gradU + gradU.transposed());
 
         for (Index j = 0; j < 3; j++)
-            vStrain[j] = strain[j][j];
-        vStrain[3] = strain[1][2];
-        vStrain[4] = strain[0][2];
-        vStrain[5] = strain[0][1];
+            vStrain[j] = strain(j,j);
+        vStrain[3] = strain(1,2);
+        vStrain[4] = strain(0,2);
+        vStrain[5] = strain(0,1);
 
-        Real lambda = tetraInfo.materialMatrix[0][1];
-        Real mu = tetraInfo.materialMatrix[3][3];
+        Real lambda = tetraInfo.materialMatrix(0,1);
+        Real mu = tetraInfo.materialMatrix(3,3);
 
         /// stress
         type::VecNoInit<6, Real> s; // VoigtTensor
@@ -1415,10 +1408,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::lineara
 
     const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = d_tetrahedronInfo.getValue();
 
-    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-    Rot[0][1]=Rot[0][2]=0;
-    Rot[1][0]=Rot[1][2]=0;
-    Rot[2][0]=Rot[2][1]=0;
+    Rot(0,0)=Rot(1,1)=Rot(2,2)=1;
+    Rot(0,1)=Rot(0,2)=0;
+    Rot(1,0)=Rot(1,2)=0;
+    Rot(2,0)=Rot(2,1)=0;
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetras = this->l_topology->getTetrahedra();
     for(int IT=0 ; IT != (int)tetras.size() ; ++IT)
     {
@@ -1486,10 +1479,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::printStiffnessMatrix(int i
     Transformation Rot;
     StiffnessMatrix JKJt,tmp;
 
-    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-    Rot[0][1]=Rot[0][2]=0;
-    Rot[1][0]=Rot[1][2]=0;
-    Rot[2][0]=Rot[2][1]=0;
+    Rot(0,0)=Rot(1,1)=Rot(2,2)=1;
+    Rot(0,1)=Rot(0,2)=0;
+    Rot(1,0)=Rot(1,2)=0;
+    Rot(2,0)=Rot(2,1)=0;
 
     computeStiffnessMatrix(JKJt,tmp,tetrahedronInf[idTetra].materialMatrix,tetrahedronInf[idTetra].strainDisplacementTransposedMatrix,Rot);
 }

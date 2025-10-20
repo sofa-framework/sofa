@@ -152,6 +152,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/CollisionBeginEvent.cpp
     ${SRC_ROOT}/CollisionEndEvent.cpp
     ${SRC_ROOT}/CollisionVisitor.cpp
+    ${SRC_ROOT}/Colors.cpp
     ${SRC_ROOT}/CpuTask.cpp
     ${SRC_ROOT}/CpuTaskStatus.cpp
     ${SRC_ROOT}/DeactivatedNodeVisitor.cpp

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,68 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_ASSIMPLOADER_H
-#define SOFA_ASSIMPLOADER_H
+#pragma once
+#include <sofa/gl/config.h>
 
-#include <sofa/core/loader/MeshLoader.h>
-#include <SofaAssimp/config.h>
+#include <sofa/type/fwd.h>
+#include <sofa/type/RGBAColor.h>
 
-struct aiScene;
 
-namespace sofa
+namespace sofa::gl
 {
 
-namespace component
-{
-
-namespace loader
-{
-
-/**
- * AssimpLoader class interfaces Assimp library reader with SOFA loader components.
- * For more information about the class API see doc: http://assimp.sourceforge.net/lib_html/usage.html
- *
- *  Created on: February 28th 2018
- *      Author: epernod 
- */
-class SOFA_ASSIMP_API AssimpLoader : public sofa::core::loader::MeshLoader
+class SOFA_GL_API Frame
 {
 public:
-    SOFA_CLASS(AssimpLoader, sofa::core::loader::MeshLoader);
-protected:
-    /// Default constructor of the component
-    AssimpLoader();
-    virtual ~AssimpLoader();
+    using Quaternion = sofa::type::Quat<SReal>;
 
-public:
-    /// Main Load method inherites from \sa sofa::core::loader::MeshLoader::load()
-    virtual bool doLoad() override;
-    virtual void doClearBuffers() override {}
+    Frame() = delete;
+    ~Frame() = delete;
 
-
-    int getpPreprocessing() {
-        return pp_Loadsteps;
-    }
-    void  setpPreprocessing(int p) {
-        pp_Loadsteps = p;
-    }
-
-    aiScene* getScene() { return m_assimpScene; }
-  
-protected:
-    /// Main internal method, implement the loading of OpenCTM mesh file.
-    bool convertAssimpScene();
-    
-private:
-    aiScene* m_assimpScene;
-    unsigned int pp_Loadsteps;
+    static void draw(const type::Vec3& center, const Quaternion& orient, const type::Vec3& length, const type::RGBAColor& colorX = type::RGBAColor::red(), const type::RGBAColor& colorY = type::RGBAColor::green(), const type::RGBAColor& colorZ = type::RGBAColor::red());
+    static void draw(const type::Vec3& center, const double orient[4][4], const type::Vec3& length, const type::RGBAColor& colorX = type::RGBAColor::red(), const type::RGBAColor& colorY = type::RGBAColor::green(), const type::RGBAColor& colorZ = type::RGBAColor::red());
+    static void draw(const type::Vec3& center, const Quaternion& orient, SReal length = 1.0_sreal, const type::RGBAColor& colorX = type::RGBAColor::red(), const type::RGBAColor& colorY = type::RGBAColor::green(), const type::RGBAColor& colorZ = type::RGBAColor::red());
+    static void draw(const type::Vec3& center, const double orient[4][4], SReal length = 1.0_sreal, const type::RGBAColor& colorX = type::RGBAColor::red(), const type::RGBAColor& colorY = type::RGBAColor::green(), const type::RGBAColor& colorZ = type::RGBAColor::red());
+   
 };
 
-
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_ASSIMPLOADER_H
+} // namespace sofa::gl

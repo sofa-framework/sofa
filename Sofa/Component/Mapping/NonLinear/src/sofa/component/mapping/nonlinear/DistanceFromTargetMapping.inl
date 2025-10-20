@@ -129,7 +129,7 @@ void DistanceFromTargetMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b )
 {
-    r = TIn::getCPos(b)-TIn::getCPos(a);
+    r = type::toVecN<Direction>(TIn::getCPos(b)-TIn::getCPos(a));
 }
 
 template <class TIn, class TOut>
@@ -209,7 +209,7 @@ void DistanceFromTargetMapping<TIn, TOut>::matrixFreeApplyDJT(
             {
                 for(unsigned k=0; k<Nin; k++)
                 {
-                    b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
+                    b(j,k) = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
                 }
             }
             // (I - uu^T)*f/l*kfactor  --  do not forget kfactor !
@@ -223,7 +223,7 @@ void DistanceFromTargetMapping<TIn, TOut>::matrixFreeApplyDJT(
             {
                 for(unsigned k=0; k<Nin; k++)
                 {
-                    df[j]+=b[j][k]*dx[k];
+                    df[j]+=b(j,k)*dx[k];
                 }
             }
            // Deriv_t<In> df = b*dx;
@@ -262,7 +262,7 @@ void DistanceFromTargetMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
             {
                 for(unsigned k=0; k<Nin; k++)
                 {
-                    b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
+                    b(j,k) = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
                 }
             }
             b *= force_i[0] * invlengths[i];  // (I - uu^T)*f/l
@@ -297,7 +297,7 @@ void DistanceFromTargetMapping<TIn, TOut>::doUpdateK(
             {
                 for(unsigned k=0; k<Nin; k++)
                 {
-                    b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
+                    b(j,k) = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
                 }
             }
             b *= childForceAccessor[i][0] * invlengths[i];  // (I - uu^T)*f/l

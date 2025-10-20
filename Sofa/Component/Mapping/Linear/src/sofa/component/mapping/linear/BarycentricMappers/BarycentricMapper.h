@@ -50,8 +50,9 @@ public:
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Deriv OutDeriv;
 
-    enum { NIn = sofa::defaulttype::DataTypeInfo<InDeriv>::Size };
-    enum { NOut = sofa::defaulttype::DataTypeInfo<OutDeriv>::Size };
+    static constexpr sofa::Size NIn = sofa::defaulttype::DataTypeInfo<InDeriv>::Size;
+    static constexpr sofa::Size NOut = sofa::defaulttype::DataTypeInfo<OutDeriv>::Size;
+    
     typedef type::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
 
@@ -78,26 +79,28 @@ public:
 
 
 protected:
-    void addMatrixContrib(MatrixType* m, int row, int col, Real value);
+    void addMatrixContrib(MatrixType* m, sofa::Index row, sofa::Index col, Real value);
 
-    template< int NC,  int NP>
+    template< sofa::Size NC, sofa::Size NP>
     class MappingData
     {
     public:
+        static constexpr std::size_t NumberOfCoordinates = NC;
+        
         Index in_index;
-        Real baryCoords[NC];
+        std::array<Real, NC> baryCoords;
 
         inline friend std::istream& operator >> ( std::istream& in, MappingData< NC, NP> &m )
         {
             in>>m.in_index;
-            for (int i=0; i<NC; i++) in >> m.baryCoords[i];
+            for (sofa::Index i=0; i<NC; i++) in >> m.baryCoords[i];
             return in;
         }
 
         inline friend std::ostream& operator << ( std::ostream& out, const MappingData< NC , NP > & m )
         {
             out << m.in_index;
-            for (int i=0; i<NC; i++)
+            for (sofa::Index i=0; i<NC; i++)
                 out << " " << m.baryCoords[i];
             out << "\n";
             return out;

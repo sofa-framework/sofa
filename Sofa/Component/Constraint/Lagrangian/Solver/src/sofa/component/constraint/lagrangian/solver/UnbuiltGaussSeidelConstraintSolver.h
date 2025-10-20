@@ -31,6 +31,6 @@ class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API UnbuiltGaussSeidelConstrai
 public:
     SOFA_CLASS(UnbuiltGaussSeidelConstraintSolver, UnbuiltConstraintSolver);
 
-    virtual void doSolve( SReal timeout = 0.0) override;
+    virtual void doSolve(GenericConstraintProblem * problem , SReal timeout = 0.0) override;
 };
 }

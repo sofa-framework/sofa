@@ -44,11 +44,13 @@
 #include <sofa/simulation/CollisionVisitor.h>
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/component/constraint/lagrangian/solver/ProjectedGaussSeidelConstraintSolver.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVInitVisitor.h>
 
 #include "sofa/component/constraint/lagrangian/solver/ProjectedGaussSeidelConstraintSolver.h"
 using sofa::simulation::mechanicalvisitor::MechanicalVInitVisitor;
+
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalBeginIntegrationVisitor;

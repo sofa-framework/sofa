@@ -47,19 +47,19 @@ void  BlockFullMatrix<N, T>::Block::resize(Index, Index)
 template<std::size_t N, typename T>
 const T&  BlockFullMatrix<N, T>::Block::element(Index i, Index j) const
 {
-    return (*this)[i][j];
+    return (*this)(i,j);
 }
 
 template<std::size_t N, typename T>
 void  BlockFullMatrix<N, T>::Block::set(Index i, Index j, const T& v)
 {
-    (*this)[i][j] = v;
+    (*this)(i,j) = v;
 }
 
 template<std::size_t N, typename T>
 void  BlockFullMatrix<N, T>::Block::add(Index i, Index j, const T& v)
 {
-    (*this)[i][j] += v;
+    (*this)(i,j) += v;
 }
 
 template<std::size_t N, typename T>
@@ -157,7 +157,7 @@ SReal BlockFullMatrix<N, T>::element(Index i, Index j) const
 {
     const Index bi = i / BSIZE; i = i % BSIZE;
     const Index bj = j / BSIZE; j = j % BSIZE;
-    return bloc(bi,bj)[i][j];
+    return bloc(bi,bj)(i,j);
 }
 
 template<std::size_t N, typename T>
@@ -217,7 +217,7 @@ void BlockFullMatrix<N, T>::set(Index i, Index j, double v)
 {
     const Index bi = i / BSIZE; i = i % BSIZE;
     const Index bj = j / BSIZE; j = j % BSIZE;
-    bloc(bi,bj)[i][j] = (Real)v;
+    bloc(bi,bj)(i,j) = (Real)v;
 }
 
 template<std::size_t N, typename T>
@@ -225,7 +225,7 @@ void BlockFullMatrix<N, T>::add(Index i, Index j, double v)
 {
     const Index bi = i / BSIZE; i = i % BSIZE;
     const Index bj = j / BSIZE; j = j % BSIZE;
-    bloc(bi,bj)[i][j] += (Real)v;
+    bloc(bi,bj)(i,j) += (Real)v;
 }
 
 template<std::size_t N, typename T>
@@ -233,7 +233,7 @@ void BlockFullMatrix<N, T>::clear(Index i, Index j)
 {
     const Index bi = i / BSIZE; i = i % BSIZE;
     const Index bj = j / BSIZE; j = j % BSIZE;
-    bloc(bi,bj)[i][j] = (Real)0;
+    bloc(bi,bj)(i,j) = (Real)0;
 }
 
 template<std::size_t N, typename T>
@@ -242,7 +242,7 @@ void BlockFullMatrix<N, T>::clearRow(Index i)
     const Index bi = i / BSIZE; i = i % BSIZE;
     for (Index bj = 0; bj < nBCol; ++bj)
         for (Index j=0; j<BSIZE; ++j)
-            bloc(bi,bj)[i][j] = (Real)0;
+            bloc(bi,bj)(i,j) = (Real)0;
 }
 
 template<std::size_t N, typename T>
@@ -251,7 +251,7 @@ void BlockFullMatrix<N, T>::clearCol(Index j)
     const Index bj = j / BSIZE; j = j % BSIZE;
     for (Index bi = 0; bi < nBRow; ++bi)
         for (Index i=0; i<BSIZE; ++i)
-            bloc(bi,bj)[i][j] = (Real)0;
+            bloc(bi,bj)(i,j) = (Real)0;
 }
 
 template<std::size_t N, typename T>

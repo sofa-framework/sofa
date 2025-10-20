@@ -16,7 +16,7 @@
     <VisualStyle displayFlags="showVisual showForceFields showCollisionModels showMechanicalMappings showWireframe" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <CollisionResponse name="default1" />
+    <CollisionResponse name="default1" response="PenalityContactForceField"/>
     <CollisionPipeline name="default2" />
     <MinProximityIntersection name="default3" alarmDistance="1" contactDistance="0.5"/>
     <DefaultAnimationLoop/>
