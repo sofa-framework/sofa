@@ -174,7 +174,9 @@ jobs:
           echo "This step runs only when a PR is opened or synchronized."
           
           # Trigger the Build action
+          # Warning ! This script also changes ENV variables
           python ci/scripts/checkPRInfoBeforeBuild.py
+          
       
       - name: Run when PR comment is created or edited > set up environment variables
         id: pr-comment-setup
@@ -222,6 +224,7 @@ jobs:
   
             # Trigger the Build action if [ci-build] is in the comment 
             if [[ "$COMMENT_BODY" == *"[ci-build]"* ]]; then  
+              # Warning ! This script also changes ENV variables
               python ci/scripts/checkPRInfoBeforeBuild.py
             fi
   
