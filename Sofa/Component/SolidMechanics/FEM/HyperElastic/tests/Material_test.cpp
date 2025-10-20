@@ -203,6 +203,7 @@ void testElasticityTensorFromSecondPiolaKirchhoff(
         //compare the approximation of the elasticity tensor
         for (sofa::Size j = 0; j < Matrix6::size(); ++j)
         {
+            // Off-diagonal terms are stored doubled; the tensor approximation must be scaled accordingly
             if (j == 1 || j == 3 || j == 4) elasticityTensorApprox[j] *= 2.;
             EXPECT_NEAR(elasticityTensor(i,j), elasticityTensorApprox[j], 1e-7) << "i = " << i << ", j = " << j;
         }
