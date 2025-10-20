@@ -102,7 +102,7 @@ jobs:
   # ===============================================================
   
   # Trigger the build and sharing all parameters from nightly_build > outputs
-  call-workflow-passing-data-from-nightly:
+  build-on:
     needs: nightly_build
     uses: bakpaul/sofa/.github/workflows/build-and-test.yml@master
     with:

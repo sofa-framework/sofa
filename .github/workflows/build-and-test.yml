@@ -1,5 +1,4 @@
 name: Compile SOFA and run Tests
-run-name: Build
 on:
   workflow_call:
     inputs:

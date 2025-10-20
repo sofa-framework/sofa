@@ -255,7 +255,7 @@ jobs:
   # ===============================================================
 
   # Trigger the build and sharing all parameters from filter_build > outputs
-  call-workflow-passing-data-from-commit-or-pr:
+  build-on:
     needs: filter_build
     uses: bakpaul/sofa/.github/workflows/build-and-test.yml@master
     with:
