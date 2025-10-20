@@ -1,4 +1,5 @@
 name: Compile SOFA and run Tests
+run-name: Build
 on:
   workflow_call:
     inputs:
@@ -85,7 +86,6 @@ jobs:
         os: ${{ fromJson(inputs.builder-os) }}
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }}
-    run-name: ${{ matrix.os }}
     steps:
       - name: Configure builder
         id: configure
