@@ -394,7 +394,7 @@ jobs:
               echo "❌ Something whent wrong during the Launch tests step"
               echo -e "${bold}Please check this action logs, and download tests logs here: ${{ steps.publish-tests-logs.outputs.artifact-url }}${normal}"
               exit 1
-            elif [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/" && find . -maxdepth 1 -type f)" == "" ]]; then
+            elif [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/" && find . -maxdepth 1 -type f)" != "" ]]; then
               echo "❌ Tests have resulted in : "
               echo ""
               python3 ${{ env.CI_DIR }}/scripts/generate-tests-table.py "${{ env.BUILD_DIR }}/tests_results/"
