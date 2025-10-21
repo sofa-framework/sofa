@@ -283,7 +283,7 @@ jobs:
                 default_tag=master
               fi       
 
-              echo "dckr_pat_ohBds9gXTs9Iy91QPKJZXGdVS5s" | docker login -u sofaframework --password-stdin   
+              echo "${DOCKERHUB_TOKEN}" | docker login -u sofaframework --password-stdin   
 
               echo "Pulling Docker image sofaframework/sofabuilder_${builder_type}:${CI_BRANCH} ..."
               docker pull --quiet sofaframework/sofabuilder_${builder_type}:${CI_BRANCH} || true
