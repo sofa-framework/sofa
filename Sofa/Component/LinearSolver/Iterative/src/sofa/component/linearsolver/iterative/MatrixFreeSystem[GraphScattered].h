@@ -23,6 +23,7 @@
 #include <sofa/component/linearsystem/config.h>
 
 #include <sofa/component/linearsystem/MatrixFreeSystem.h>
+#include <sofa/component/linearsystem/CompositeLinearSystem.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSystem[GraphScattered].h>
 
 namespace sofa::component::linearsystem
@@ -32,7 +33,8 @@ using sofa::component::linearsolver::GraphScatteredMatrix;
 using sofa::component::linearsolver::GraphScatteredVector;
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_MATRIXFREESYSTEM_GRAPHSCATTERED_CPP)
-    extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixFreeSystem<GraphScatteredMatrix, GraphScatteredVector>;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixFreeSystem<GraphScatteredMatrix, GraphScatteredVector>;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CompositeLinearSystem<GraphScatteredMatrix, GraphScatteredVector>;
 #endif
 
 } //namespace sofa::component::linearsystem

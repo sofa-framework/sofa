@@ -2,8 +2,10 @@
 
     <include href="../FEMBAR-common.xml"/>
 
+    <PreconditionedMatrixFreeSystem assemblingRate="1"/>
     <PCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner"/>
-    <JacobiPreconditioner name="preconditioner"/>
+    <JacobiPreconditioner name="preconditioner" template="DiagonalMatrix"/>
+
     <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
 
 </Node>

@@ -56,23 +56,29 @@ void CompositeLinearSystem<TMatrix, TVector>::init()
     {
         if (l_solverLinearSystem)
         {
-            bool found = false;
-            for (unsigned int i = 0 ; i < l_linearSystems.size(); ++i)
-            {
-                if (l_solverLinearSystem == l_linearSystems[i])
-                {
-                    found = true;
-                }
-            }
-
-            if (!found)
+            if (std::none_of(l_linearSystems.begin(), l_linearSystems.end(), [&](auto linearSystem){return linearSystem == l_solverLinearSystem;}))
             {
                 l_linearSystems.add(l_solverLinearSystem);
             }
         }
         else
         {
-            l_solverLinearSystem.set(l_linearSystems[0]);
+            bool found = false;
+            for (const auto& linearSystem : l_linearSystems)
+            {
+                if (auto* typedLinearSystem = dynamic_cast<TypedMatrixLinearSystem<TMatrix, TVector>*>(linearSystem))
+                {
+                    l_solverLinearSystem.set(typedLinearSystem);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                msg_error() << "At least one linear system with a compatible type must be provided";
+                sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            }
         }
     }
 }
@@ -99,6 +105,19 @@ template <class TMatrix, class TVector>
 linearalgebra::BaseMatrix* CompositeLinearSystem<TMatrix, TVector>::getSystemBaseMatrix() const
 {
     return l_solverLinearSystem ? l_solverLinearSystem->getSystemBaseMatrix() : nullptr;
+}
+
+template <class TMatrix, class TVector>
+void CompositeLinearSystem<TMatrix, TVector>::buildSystemMatrix(
+    const core::MechanicalParams* mparams)
+{
+    for (unsigned int i = 0 ; i < l_linearSystems.size(); ++i)
+    {
+        if (l_linearSystems[i])
+        {
+            l_linearSystems[i]->buildSystemMatrix(mparams);
+        }
+    }
 }
 
 template <class TMatrix, class TVector>
@@ -164,66 +183,6 @@ void CompositeLinearSystem<TMatrix, TVector>::dispatchSystemRHS(core::MultiVecDe
     if (l_solverLinearSystem)
     {
         l_solverLinearSystem->dispatchSystemRHS(v);
-    }
-}
-
-template <class TMatrix, class TVector>
-void CompositeLinearSystem<TMatrix, TVector>::allocateSystem()
-{
-    for (unsigned int i = 0 ; i < l_linearSystems.size(); ++i)
-    {
-        if (l_linearSystems[i])
-        {
-            l_linearSystems[i]->allocateSystem();
-        }
-    }
-}
-
-template <class TMatrix, class TVector>
-void CompositeLinearSystem<TMatrix, TVector>::resizeVectors(sofa::Size n)
-{
-    for (unsigned int i = 0 ; i < l_linearSystems.size(); ++i)
-    {
-        if (l_linearSystems[i])
-        {
-            l_linearSystems[i]->resizeVectors(n);
-        }
-    }
-}
-
-template <class TMatrix, class TVector>
-void CompositeLinearSystem<TMatrix, TVector>::preAssembleSystem(const core::MechanicalParams* mechanical_params)
-{
-    for (unsigned int i = 0 ; i < l_linearSystems.size(); ++i)
-    {
-        if (l_linearSystems[i])
-        {
-            l_linearSystems[i]->preAssembleSystem(mechanical_params);
-        }
-    }
-}
-
-template <class TMatrix, class TVector>
-void CompositeLinearSystem<TMatrix, TVector>::assembleSystem(const core::MechanicalParams* mechanical_params)
-{
-    for (unsigned int i = 0 ; i < l_linearSystems.size(); ++i)
-    {
-        if (l_linearSystems[i])
-        {
-            l_linearSystems[i]->assembleSystem(mechanical_params);
-        }
-    }
-}
-
-template <class TMatrix, class TVector>
-void CompositeLinearSystem<TMatrix, TVector>::postAssembleSystem(const core::MechanicalParams* mechanical_params)
-{
-    for (unsigned int i = 0 ; i < l_linearSystems.size(); ++i)
-    {
-        if (l_linearSystems[i])
-        {
-            l_linearSystems[i]->postAssembleSystem(mechanical_params);
-        }
     }
 }
 

@@ -27,15 +27,22 @@ namespace sofa::core::behavior
 BaseMatrixLinearSystem::BaseMatrixLinearSystem()
 : Inherit1()
 , d_matrixSize(initData(&d_matrixSize, "matrixSize", "Size of the global matrix"))
+, d_enableAssembly(initData(&d_enableAssembly, true, "enableAssembly", "Allows to assemble the system matrix"))
 {
     d_matrixSize.setReadOnly(true);
+
+    d_enableAssembly.setReadOnly(true);
+    d_enableAssembly.setDisplayed(false);
 }
 
 void BaseMatrixLinearSystem::buildSystemMatrix(const core::MechanicalParams* mparams)
 {
-    preAssembleSystem(mparams);
-    assembleSystem(mparams);
-    postAssembleSystem(mparams);
+    if (d_enableAssembly.getValue())
+    {
+        preAssembleSystem(mparams);
+        assembleSystem(mparams);
+        postAssembleSystem(mparams);
+    }
 }
 
 void BaseMatrixLinearSystem::preAssembleSystem(const core::MechanicalParams* mparams)
