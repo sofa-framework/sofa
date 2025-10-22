@@ -61,15 +61,20 @@ public:
 
     Real getStrainEnergy(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param) override
     {
-        MatrixSym C=sinfo->deformationTensor;
-        Real k0=param.parameterArray[0];
-        Real mu1=param.parameterArray[1];
-        Real alpha1=param.parameterArray[2];
-        Real fj= (Real)(pow(sinfo->J,(Real)(-alpha1/3.0)));
-        Eigen::Matrix<Real,3,3> CEigen;
+        const MatrixSym& C = sinfo->deformationTensor;
+        const Real k0 = param.parameterArray[0];
+        const Real mu1 = param.parameterArray[1];
+        const Real alpha1 = param.parameterArray[2];
+        const Real fj = pow(sinfo->J, -alpha1/3_sreal);
+        const Real logJSqr = pow(log(sinfo->J), 2_sreal);
+
+        // Solve eigen problem for C
+        Eigen::Matrix<Real, 3, 3> CEigen;
         CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2];
         CEigen(1,2)=C[4]; CEigen(2,1)=C[4]; CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
-        /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen,true);
+
+        // Disable temporarilly until fixed /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
+        Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen, true);
         if (EigenProblemSolver.info() != Eigen::Success)
         {
             dmsg_warning("Ogden") << "EigenSolver iterations failed to converge";
@@ -78,14 +83,15 @@ public:
         sinfo->Evalue = EigenProblemSolver.eigenvalues().real();
         sinfo->Evect = EigenProblemSolver.eigenvectors().real();
 
-        //Real val=pow(sinfo->Evalue[0],alpha1/(Real)2)+pow(sinfo->Evalue[1],alpha1/(Real)2)+pow(sinfo->Evalue[2],alpha1/(Real)2);
-        //return (Real)fj*val*mu1/(alpha1*alpha1)+k0*log(sinfo->J)*log(sinfo->J)/(Real)2.0-(Real)3.0*mu1/(alpha1*alpha1);
-        Real trCalpha2 = pow(sinfo->Evalue[0], alpha1 / 2_sreal) +
-                    pow(sinfo->Evalue[1], alpha1 / 2_sreal) +
-                    pow(sinfo->Evalue[2], alpha1 / 2_sreal);
-        return fj * mu1 / (alpha1 * alpha1) * trCalpha2
-               - 3_sreal * mu1 / (alpha1 * alpha1)
-               + k0 * log(sinfo->J) * log(sinfo->J) / 2_sreal;
+        // trace of C^(alpha1/2)
+        const Real aBy2 = alpha1*0.5_sreal;
+        const Real trCaBy2 = pow(sinfo->Evalue[0], aBy2) +
+                    pow(sinfo->Evalue[1], aBy2) +
+                    pow(sinfo->Evalue[2], aBy2);
+
+        const Real muByAlphaSqr = mu1 / (alpha1*alpha1);
+
+        return fj*muByAlphaSqr*trCaBy2 - 3_sreal*muByAlphaSqr + k0*logJSqr/2_sreal;
     }
 
     void deriveSPKTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,MatrixSym &SPKTensorGeneral) override
@@ -98,7 +104,8 @@ public:
         CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
         CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
 
-        /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen,true);
+        /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
+        Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen,true);
         if (EigenProblemSolver.info() != Eigen::Success)
         {
             dmsg_warning("Ogden") << "SelfAdjointEigenSolver iterations failed to converge";
