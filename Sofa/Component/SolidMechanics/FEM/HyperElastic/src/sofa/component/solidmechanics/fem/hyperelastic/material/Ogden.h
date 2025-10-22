@@ -127,57 +127,47 @@ public:
     }
 
 
-    void applyElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,
-                               const MatrixSym& inputTensor, MatrixSym& outputTensor) override
+    void applyElasticityTensor_old(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,
+                               const MatrixSym& inputTensor, MatrixSym& outputTensor)
     {
-        //Real k0=param.parameterArray[0];
-        //Real mu1=param.parameterArray[1];
-        //Real alpha1=param.parameterArray[2];
-        //MatrixSym C=sinfo->deformationTensor;
-        //Eigen::Matrix<Real,3,3> CEigen;
-        //CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
-        //CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
-        ///*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen,true);
-        //if (EigenProblemSolver.info() != Eigen::Success)
-        //{
-        //    dmsg_warning("Ogden") << "SelfAdjointEigenSolver iterations failed to converge";
-        //    return;
-        //}
-        //EigenMatrix Evect=EigenProblemSolver.eigenvectors().real();
-        //CoordEigen Evalue=EigenProblemSolver.eigenvalues().real();
+        Real k0=param.parameterArray[0];
+        Real mu1=param.parameterArray[1];
+        Real alpha1=param.parameterArray[2];
+        MatrixSym C=sinfo->deformationTensor;
+        EigenMatrix CEigen;
+        CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
+        CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
+        Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
+        EigenMatrix Evect=Vect.eigenvectors();
+        CoordEigen Evalue=Vect.eigenvalues();
 
-        //Real trCalpha=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
-        //Matrix3 Pinverse;
-        //Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
-        //Pinverse(0,2)=Evect(2,0); Pinverse(2,1)=Evect(1,2); Pinverse(1,2)=Evect(2,1);
-        //MatrixSym Dalpha_1=MatrixSym(pow(Evalue[0],alpha1/(Real)2.0-(Real)1.0),0,pow(Evalue[1],alpha1/(Real)2.0-(Real)1.0),0,0,pow(Evalue[2],alpha1/(Real)2.0-(Real)1.0));
-        //MatrixSym Calpha_1; Matrix3 Ca;
-        //Ca=Pinverse.transposed()*Dalpha_1.SymMatMultiply(Pinverse);
-        //Calpha_1.Mat2Sym(Ca,Calpha_1);
-        //MatrixSym Dalpha_2=MatrixSym(pow(Evalue[0],alpha1/(Real)4.0-(Real)1.0),0,pow(Evalue[1],alpha1/(Real)4.0-(Real)1.0),0,0,pow(Evalue[2],alpha1/(Real)4.0-(Real)1.0));
-        //MatrixSym Calpha_2;
-        //Calpha_2.Mat2Sym(Pinverse.transposed()*Dalpha_2.SymMatMultiply(Pinverse),Calpha_2);
-        //MatrixSym inversematrix;
-        //invertMatrix(inversematrix,sinfo->deformationTensor);
-        //Real _trHCalpha_1=inputTensor[0]*Calpha_1[0]+inputTensor[2]*Calpha_1[2]+inputTensor[5]*Calpha_1[5]
-        //        +2*inputTensor[1]*Calpha_1[1]+2*inputTensor[3]*Calpha_1[3]+2*inputTensor[4]*Calpha_1[4];
-        //Real _trHC=inputTensor[0]*inversematrix[0]+inputTensor[2]*inversematrix[2]+inputTensor[5]*inversematrix[5]
-        //        +2*inputTensor[1]*inversematrix[1]+2*inputTensor[3]*inversematrix[3]+2*inputTensor[4]*inversematrix[4];
-        ////C-1HC-1 convert to sym matrix
-        //MatrixSym Firstmatrix;
-        //Firstmatrix.Mat2Sym(inversematrix.SymMatMultiply(inputTensor.SymSymMultiply(inversematrix)),Firstmatrix);
-        //MatrixSym Secondmatrix;
-        //Secondmatrix.Mat2Sym(Calpha_2.SymMatMultiply(inputTensor.SymSymMultiply(Calpha_2)),Secondmatrix);
-        //outputTensor =
-        //        (_trHC*(-alpha1/(Real)6.0)*(-(Real)1.0/(Real)3.0*inversematrix*trCalpha+Calpha_1)+(Real)1.0/(Real)3.0*Firstmatrix*trCalpha-(Real)1.0/(Real)3.0*inversematrix*_trHCalpha_1*alpha1/(Real)2.0
-        //        +(alpha1/(Real)2.0-(Real)1)*Secondmatrix) * (mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0))*/
-        //        +k0/(Real)2.0*_trHC*inversematrix-(Real)(k0*log(sinfo->J))*Firstmatrix*/;
+        Real trCalpha=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
+        Matrix3 Pinverse;
+        Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
+        Pinverse(0,2)=Evect(2,0); Pinverse(2,1)=Evect(1,2); Pinverse(1,2)=Evect(2,1);
+        MatrixSym Dalpha_1=MatrixSym(pow(Evalue[0],alpha1/(Real)2.0-(Real)1.0),0,pow(Evalue[1],alpha1/(Real)2.0-(Real)1.0),0,0,pow(Evalue[2],alpha1/(Real)2.0-(Real)1.0));
+        MatrixSym Calpha_1; Matrix3 Ca;
+        Ca=Pinverse.transposed()*Dalpha_1.SymMatMultiply(Pinverse);
+        Calpha_1.Mat2Sym(Ca,Calpha_1);
+        MatrixSym Dalpha_2=MatrixSym(pow(Evalue[0],alpha1/(Real)4.0-(Real)1.0),0,pow(Evalue[1],alpha1/(Real)4.0-(Real)1.0),0,0,pow(Evalue[2],alpha1/(Real)4.0-(Real)1.0));
+        MatrixSym Calpha_2;
+        Calpha_2.Mat2Sym(Pinverse.transposed()*Dalpha_2.SymMatMultiply(Pinverse),Calpha_2);
+        MatrixSym inversematrix;
+        invertMatrix(inversematrix,sinfo->deformationTensor);
+        Real _trHCalpha_1=inputTensor[0]*Calpha_1[0]+inputTensor[2]*Calpha_1[2]+inputTensor[5]*Calpha_1[5]
+                +2*inputTensor[1]*Calpha_1[1]+2*inputTensor[3]*Calpha_1[3]+2*inputTensor[4]*Calpha_1[4];
+        Real _trHC=inputTensor[0]*inversematrix[0]+inputTensor[2]*inversematrix[2]+inputTensor[5]*inversematrix[5]
+                +2*inputTensor[1]*inversematrix[1]+2*inputTensor[3]*inversematrix[3]+2*inputTensor[4]*inversematrix[4];
+        //C-1HC-1 convert to sym matrix
+        MatrixSym Firstmatrix;
+        Firstmatrix.Mat2Sym(inversematrix.SymMatMultiply(inputTensor.SymSymMultiply(inversematrix)),Firstmatrix);
+        MatrixSym Secondmatrix;
+        Secondmatrix.Mat2Sym(Calpha_2.SymMatMultiply(inputTensor.SymSymMultiply(Calpha_2)),Secondmatrix);
+        outputTensor =
+                (_trHC*(-alpha1/(Real)6.0)*(-(Real)1.0/(Real)3.0*inversematrix*trCalpha+Calpha_1)+(Real)1.0/(Real)3.0*Firstmatrix*trCalpha-(Real)1.0/(Real)3.0*inversematrix*_trHCalpha_1*alpha1/(Real)2.0
+                +(alpha1/(Real)2.0-(Real)1)*Secondmatrix) * (mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0))
+                +k0/(Real)2.0*_trHC*inversematrix-(Real)(k0*log(sinfo->J))*Firstmatrix;
 
-        // For now, let's just multiply matrices using the ElasticityTensor explicitely
-        Matrix6 elasticityTensor;
-        this->ElasticityTensor(sinfo, param, elasticityTensor);
-        auto temp = elasticityTensor * inputTensor;
-        for (size_t i = 0; i < 6; i++) outputTensor[i] = temp[i]/2.;
     }
 
     void ElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param, Matrix6& outputTensor) override
@@ -375,6 +365,16 @@ public:
             outputTensor(n,3) *= 2.;
             outputTensor(n,4) *= 2.;
         }
+    }
+
+    void applyElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,
+                               const MatrixSym& inputTensor, MatrixSym& outputTensor) override
+    {
+        // For now, let's just multiply matrices using the ElasticityTensor explicitely
+        Matrix6 elasticityTensor;
+        this->ElasticityTensor(sinfo, param, elasticityTensor);
+        auto temp = elasticityTensor * inputTensor;
+        for (size_t i = 0; i < 6; i++) outputTensor[i] = temp[i]/2.;
     }
 };
 
