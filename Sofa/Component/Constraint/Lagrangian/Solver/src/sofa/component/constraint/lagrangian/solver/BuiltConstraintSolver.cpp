@@ -51,6 +51,11 @@ void BuiltConstraintSolver::addRegularization(linearalgebra::BaseMatrix& W, cons
         if (regularization>std::numeric_limits<SReal>::epsilon())
         {
             auto * FullW =  dynamic_cast<sofa::linearalgebra::LPtrFullMatrix<SReal> * >(&W);
+            if (FullW == nullptr)
+            {
+                msg_error()<<"BuiltConstraintSolver expect a LPtrFullMatrix for W but didn't receive one. The constraint problem is wrong. Please fix the code or just deactivate SVD regularization.";
+                return;
+            }
             const size_t problemSize = FullW->rowSize();
 
             Eigen::Map<Eigen::MatrixX<SReal>> EigenW(FullW->ptr(),problemSize, problemSize) ;
