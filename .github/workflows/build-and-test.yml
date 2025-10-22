@@ -407,8 +407,9 @@ jobs:
                   for errorType in 'errors' 'crashes' 'failure';
                   do
                     if [ -f "${{ env.BUILD_DIR }}/tests_results/${testType}-tests_${errorType}" ]; then 
+                      capitalized="$(echo "${testType:0:1}" | tr '[:lower:]' '[:upper:]')${testType:1}"
                       echo ""
-                      echo -e "${bold}${testType^} ${errorType}:${normal}"
+                      echo -e "${bold}${capitalized} ${errorType}:${normal}"
                       echo ""
                       cat "${{ env.BUILD_DIR }}/tests_results/${testType}-tests_${errorType}"
                       echo ""
