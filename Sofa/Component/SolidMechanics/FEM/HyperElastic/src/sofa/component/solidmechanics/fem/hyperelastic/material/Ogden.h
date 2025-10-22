@@ -96,41 +96,48 @@ public:
 
     void deriveSPKTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,MatrixSym &SPKTensorGeneral) override
     {
-        Real k0=param.parameterArray[0];
-        Real mu1=param.parameterArray[1];
-        Real alpha1=param.parameterArray[2];
-        MatrixSym C=sinfo->deformationTensor;
+        const MatrixSym& C=sinfo->deformationTensor;
+        const Real k0 = param.parameterArray[0];
+        const Real mu1 = param.parameterArray[1];
+        const Real alpha1 = param.parameterArray[2];
+        const Real fj = pow(sinfo->J, -alpha1/3.0_sreal);
+
+        // Solve eigen problem for C
         Eigen::Matrix<Real,3,3> CEigen;
         CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
         CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
 
-        /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
-        Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen,true);
+        // Disable temporarilly until fixed /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
+        Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen, true);
         if (EigenProblemSolver.info() != Eigen::Success)
         {
             dmsg_warning("Ogden") << "SelfAdjointEigenSolver iterations failed to converge";
             return;
         }
-        EigenMatrix Evect=EigenProblemSolver.eigenvectors().real();
-        CoordEigen Evalue=EigenProblemSolver.eigenvalues().real();
+        const EigenMatrix Evect = EigenProblemSolver.eigenvectors().real(); // orthonormal eigenvectors
+        const CoordEigen Evalue = EigenProblemSolver.eigenvalues().real();
 
-        Real trCalpha=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
-        Matrix3 Pinverse;
-        Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
-        Pinverse(0,2)=Evect(2,0); Pinverse(2,1)=Evect(1,2); Pinverse(1,2)=Evect(2,1);
-        MatrixSym Dalpha_1=MatrixSym(pow(Evalue[0],alpha1/(Real)2.0-(Real)1.0),0,pow(Evalue[1],alpha1/(Real)2.0-(Real)1.0),0,0,pow(Evalue[2],alpha1/(Real)2.0-(Real)1.0));
-        MatrixSym Calpha_1; Matrix3 Ca;
-        Ca=Pinverse.transposed()*Dalpha_1.SymMatMultiply(Pinverse);
-        Calpha_1.Mat2Sym(Ca,Calpha_1);
-        MatrixSym inversematrix;
-        invertMatrix(inversematrix,sinfo->deformationTensor);
-        //SPKTensorGeneral=(-(Real)1.0/(Real)3.0*trCalpha*inversematrix+Calpha_1)*(mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0))+inversematrix*k0*log(sinfo->J);
-        Real fj= (Real)(pow(sinfo->J,(Real)(-alpha1/3.0)));
-        // Contributions to S from derivatives of strain energy w.r.t. C from 
-        const MatrixSym partialLambda = 0.5 * Calpha_1; 
-        const MatrixSym partialFJ = -1 / 6. * trCalpha * inversematrix;
-        const MatrixSym partialLogJ = k0 * log(sinfo->J) * inversematrix;
-        SPKTensorGeneral = 2. * fj * mu1 / alpha1 * (partialLambda + partialFJ) + partialLogJ;
+        // trace of C^(alpha1/2)
+        const Real aBy2 = alpha1*0.5_sreal;
+        const Real trCaBy2 = pow(Evalue[0], aBy2) + pow(Evalue[1], aBy2) + pow(Evalue[2], aBy2);
+
+        // Transpose (also inverse) of the eigenvector matrix
+        Matrix3 EigenBasis;
+        for (auto m = 0; m < Evect.rows(); ++m)
+            for (auto n = 0; n < Evect.cols(); ++n) EigenBasis(m, n) = Evect(m, n);
+        
+        // Construct C^(alpha1/2 - 1) from eigenbasis: V * D * V^T; D_i = lambda_i^(alpha1/2 - 1)
+        const Real aBy2Minus1 = aBy2 - 1_sreal;
+        const MatrixSym D = MatrixSym(pow(Evalue[0], aBy2Minus1), 0, pow(Evalue[1], aBy2Minus1), 0, 0, pow(Evalue[2], aBy2Minus1));
+        const Matrix3 Ca = EigenBasis*D.SymMatMultiply(EigenBasis.transposed());
+        MatrixSym CaBy2Minus1; 
+        sofa::type::MatSym<3>::Mat2Sym(Ca, CaBy2Minus1);
+
+        // Invert deformation tensor
+        MatrixSym invC;
+        invertMatrix(invC, C);
+
+        SPKTensorGeneral = fj * mu1 / alpha1 * (CaBy2Minus1 + -1_sreal/3_sreal * trCaBy2 * invC) + k0*log(sinfo->J)*invC;
     }
 
 
