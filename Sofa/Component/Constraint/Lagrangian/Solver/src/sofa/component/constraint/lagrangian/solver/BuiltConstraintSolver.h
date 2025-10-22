@@ -40,6 +40,7 @@ public:
     Data<bool> d_multithreading; ///< Build compliances concurrently
     Data<bool> d_useSVDForRegularization; ///< Use SVD decomposiiton of the compliance matrix to project singular values smaller than regularization to the regularization term. Only works with built
 
+
     BuiltConstraintSolver();
 
     virtual void init() override;
@@ -47,6 +48,7 @@ public:
 protected:
     virtual void doBuildSystem( const core::ConstraintParams *cParams, GenericConstraintProblem * problem ,unsigned int numConstraints) override;
     virtual void addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization) override;
+
 
 private:
 

@@ -47,6 +47,8 @@ public:
     std::string m_changeVersion;
     const std::string& getMessage() const { return m_message; }
     const std::string& getVersion() const { return m_changeVersion; }
+
+    ComponentChange& withCustomMessage(const std::string& message) { m_message = message; return *this; }
 };
 
 class SOFA_HELPER_API Deprecated : public ComponentChange

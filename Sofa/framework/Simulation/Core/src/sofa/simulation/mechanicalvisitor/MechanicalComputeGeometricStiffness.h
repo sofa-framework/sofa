@@ -33,8 +33,8 @@ class SOFA_SIMULATION_CORE_API MechanicalComputeGeometricStiffness : public Mech
 {
 public:
     sofa::core::ConstMultiVecDerivId childForce;
-    MechanicalComputeGeometricStiffness(const sofa::core::MechanicalParams* mparams, sofa::core::ConstMultiVecDerivId childForce)
-            : MechanicalVisitor(mparams) , childForce(childForce)
+    MechanicalComputeGeometricStiffness(const sofa::core::MechanicalParams* params, sofa::core::ConstMultiVecDerivId childForceId)
+            : MechanicalVisitor(params) , childForce(childForceId)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
