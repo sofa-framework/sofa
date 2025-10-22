@@ -31,7 +31,6 @@
 namespace sofa::component::constraint::lagrangian::solver
 {
 
-
 void UnbuiltGaussSeidelConstraintSolver::doSolve(GenericConstraintProblem * problem , SReal timeout)
 {
     UnbuiltConstraintProblem* c_current_cp = dynamic_cast<UnbuiltConstraintProblem*>(problem);

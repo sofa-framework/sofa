@@ -209,7 +209,6 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     }
 
 
-
     this->doBuildSystem(cParams, current_cp, numConstraints);
 
     return true;

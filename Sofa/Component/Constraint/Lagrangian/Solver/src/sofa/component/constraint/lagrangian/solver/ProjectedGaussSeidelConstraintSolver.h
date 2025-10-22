@@ -30,7 +30,6 @@ class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ProjectedGaussSeidelConstr
 {
 public:
     SOFA_CLASS(ProjectedGaussSeidelConstraintSolver, BuiltConstraintSolver);
-
 protected:
     virtual void doSolve(GenericConstraintProblem * problem , SReal timeout = 0.0) override;
 
