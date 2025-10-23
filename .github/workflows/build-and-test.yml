@@ -305,7 +305,7 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env ; cd /workspace; /bin/bash ./ci/scripts/configure-and-build.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ /workspace/ \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""             
+                  /bin/bash -c "env ; cd /workspace; /bin/bash ./ci/scripts/configure-and-build.sh /workspace/$(realpath --relative-to=$WORKSPACE $BUILD_DIR) /workspace/$(realpath --relative-to=$WORKSPACE $SRC_DIR) /workspace/(realpath --relative-to=$WORKSPACE $CI_DIR)/scripts/ /workspace/$(realpath --relative-to=$WORKSPACE ${{ env.LOG_DIR }}) \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""             
           else
               echo "Launching configuration and build"
 
