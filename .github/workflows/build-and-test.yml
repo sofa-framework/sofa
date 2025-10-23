@@ -255,24 +255,24 @@ jobs:
               echo "Adding the following cmake variable : $CMAKE_OPTIONS"
           fi
 
-          echo ""                                                       | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo "------ Before build (and docker) ------"                | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo "Main folders:"                                          | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo " - WORKSPACE = $WORKSPACE"                              | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo " - SRC_DIR = $SRC_DIR"                                  | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo " - CI_DIR = $CI_DIR"                                    | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo " - BUILD_DIR = $BUILD_DIR"                              | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo ""                                                       | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo "Configuration:"                                         | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo " - NODE_NAME = $NODE_NAME"                              | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo " - BUILD_TYPE = $BUILD_TYPE"                            | tee -a "${BUILD_DIR}/cmake-output.txt" 
-          echo " - CONFIG = $CONFIG"                                    | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo " - PYTHON_VERSION = ${{ inputs.python-version }}"       | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo " - PRESET = ${{ inputs.preset }}"                       | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo " - GENERATE_BINARIES = ${{ inputs.generate-binaries }}" | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo " - ADDITIONNAL_CMAKE_OPTIONS = $CMAKE_OPTIONS"          | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo "---------------------------------------"                | tee -a "${BUILD_DIR}/cmake-output.txt"
-          echo ""                                                       | tee -a "${BUILD_DIR}/cmake-output.txt"
+          echo ""                                                       | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo "------ Before build (and docker) ------"                | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo "Main folders:"                                          | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo " - WORKSPACE = $WORKSPACE"                              | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo " - SRC_DIR = $SRC_DIR"                                  | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo " - CI_DIR = $CI_DIR"                                    | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo " - BUILD_DIR = $BUILD_DIR"                              | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo ""                                                       | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo "Configuration:"                                         | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo " - NODE_NAME = $NODE_NAME"                              | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo " - BUILD_TYPE = $BUILD_TYPE"                            | tee -a "${WORKSPACE}/cmake-output.txt" 
+          echo " - CONFIG = $CONFIG"                                    | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo " - PYTHON_VERSION = ${{ inputs.python-version }}"       | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo " - PRESET = ${{ inputs.preset }}"                       | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo " - GENERATE_BINARIES = ${{ inputs.generate-binaries }}" | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo " - ADDITIONNAL_CMAKE_OPTIONS = $CMAKE_OPTIONS"          | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo "---------------------------------------"                | tee -a "${WORKSPACE}/cmake-output.txt"
+          echo ""                                                       | tee -a "${WORKSPACE}/cmake-output.txt"
 
           #If os has got docker then use it
           if [[ "${{ matrix.os }}" == *"ubuntu"* ]] || [[ "${{ matrix.os }}" == *"fedora"* ]]; then
@@ -356,7 +356,7 @@ jobs:
           name: build-logs_${{ env.BUILDER_OS }}
           path: |
             ${{ env.BUILD_DIR }}/make-output.txt
-            ${{ env.BUILD_DIR }}/cmake-output.txt
+            ${{ env.WORKSPACE }}/cmake-output.txt
 
       - name: Publish tests logs
         id: publish-tests-logs
