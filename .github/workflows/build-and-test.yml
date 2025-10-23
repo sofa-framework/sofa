@@ -229,7 +229,12 @@ jobs:
           # retrive build type and compiler
           BUILD_TYPE=$(echo ${{ matrix.os }} | awk -F '_' '{print $3}')
           CONFIG=$(echo ${{ matrix.os }} | awk -F '_' '{print $1"_"$2}')
-          NODE_NAME="${{ runner.name }}" # Needed by configure-and-build --> TODO: be able to get hostname multiplatform
+          # Needed by configure-and-build
+          if [[ "$RUNNER_OS" == "Linux" ]]; then
+              NODE_NAME="$(hostname)"
+          else
+              NODE_NAME="$(scutil --get LocalHostName)"
+          fi
           echo "NODE_NAME=$NODE_NAME" >> $GITHUB_ENV
 
           ## Deal with ci-depends-on
