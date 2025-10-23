@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sofa_version: [master, v24.12]
+        sofa_version: [master]
     ### if: ${{ github.repository_owner == 'sofa-framework' }}
     outputs:
       SOFA_BRANCH_NAME: ${{ steps.export-vars.outputs.SOFA_BRANCH_NAME }}
