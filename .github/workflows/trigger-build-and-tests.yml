@@ -49,10 +49,6 @@ on:
   pull_request:
     types: [opened, synchronize]
     
-  # Comment on PR
-  issue_comment:
-    types: [created, edited]
-    
   # CI for dashboard master
   push:
     branches:
@@ -176,57 +172,6 @@ jobs:
           # Trigger the Build action
           # Warning ! This script also changes ENV variables
           python ci/scripts/checkPRInfoBeforeBuild.py
-          
-      
-      - name: Run when PR comment is created or edited > set up environment variables
-        id: pr-comment-setup
-        if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-        run: |
-          echo "This step runs only when a PR comment is created or edited."
-          COMMENT_BODY=$(jq -r '.comment.body' < $GITHUB_EVENT_PATH)
-          echo "Comment: $COMMENT_BODY"
-
-          # Trigger the Build action if [ci-build] is in the comment 
-          if [[ "$COMMENT_BODY" == *"[ci-build]"* ]]; then
-            echo "Fetching PR #$PR_NUMBER information"
-
-            pr_data=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/bakpaul/sofa/pulls/$PR_NUMBER")
-
-            # Extract data
-            OWNER_NAME=$(echo "$pr_data" | jq -r '.user.login')
-            PR_COMMIT_SHA=$(echo "$pr_data" | jq -r '.head.sha')
-
-            echo "- PR number         : $PR_NUMBER"
-            echo "- PR owner name     : $OWNER_NAME"
-            echo "- PR commit SHA     : $PR_COMMIT_SHA"
-
-            # Save to environment variables for future steps
-            echo "OWNER_NAME=$OWNER_NAME" >> $GITHUB_ENV
-            echo "PR_COMMIT_SHA=$PR_COMMIT_SHA" >> $GITHUB_ENV
-
-            echo "Env: OWNER_NAME = $OWNER_NAME"
-            echo "Env: PR_COMMIT_SHA = $PR_COMMIT_SHA"
-          fi
-
-      - name: Run when PR comment is created or edited > trigger python script
-        if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request && steps.pr-comment-setup.outcome == 'success' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-        run: |
-            COMMENT_BODY=$(jq -r '.comment.body' < $GITHUB_EVENT_PATH)
-            echo "Comment: $COMMENT_BODY"
-  
-            # Trigger the Build action if [ci-build] is in the comment 
-            if [[ "$COMMENT_BODY" == *"[ci-build]"* ]]; then  
-              # Warning ! This script also changes ENV variables
-              python ci/scripts/checkPRInfoBeforeBuild.py
-            fi
   
       - name: Export environment variables as outputs
         id: export-vars
