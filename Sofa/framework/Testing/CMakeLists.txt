@@ -10,44 +10,37 @@ find_package(GTest QUIET)
 if(NOT GTest_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
     message("${PROJECT_NAME}: DEPENDENCY googletest NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching googletest...")
 
-    include(FetchContent)
-    FetchContent_Declare(googletest
+    set(BUILD_GMOCK OFF CACHE INTERNAL "")
+    set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
+    set(INSTALL_GTEST OFF CACHE BOOL "" FORCE) # rely on SOFA macros
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    set(gtest_disable_pthreads OFF CACHE BOOL "" FORCE)
+
+    message("${PROJECT_NAME}: adding subdirectory ${googletest_SOURCE_DIR}")
+
+    sofa_fetch_dependency(googletest
             GIT_REPOSITORY https://github.com/google/googletest
             GIT_TAG        v1.14.0
     )
 
-    FetchContent_GetProperties(googletest)
-    if(NOT googletest_POPULATED)
-        FetchContent_Populate(googletest)
+    target_compile_options(gtest_main PRIVATE "-DGTEST_LINKED_AS_SHARED_LIBRARY=0")
+    target_compile_options(gtest PRIVATE "-DGTEST_CREATE_SHARED_LIBRARY=1")
 
-        set(BUILD_GMOCK OFF CACHE INTERNAL "")
-        set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
-        set(INSTALL_GTEST OFF CACHE BOOL "" FORCE) # rely on SOFA macros
-        set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-        set(gtest_disable_pthreads OFF CACHE BOOL "" FORCE)
+    install(DIRECTORY ${googletest_SOURCE_DIR}/googletest/include/gtest DESTINATION include/extlibs/GTest/ COMPONENT headers)
+    target_include_directories(gtest PUBLIC "$<INSTALL_INTERFACE:include/extlibs/GTest/>")
 
-        message("${PROJECT_NAME}: adding subdirectory ${googletest_SOURCE_DIR}")
+    include(SofaMacros)
+    sofa_create_package_with_targets(
+        PACKAGE_NAME GTest
+        PACKAGE_VERSION 1.14.0
+        TARGETS gtest AUTO_SET_TARGET_PROPERTIES
+        INCLUDE_SOURCE_DIR "include"
+        INCLUDE_INSTALL_DIR "extlibs/GTest"
+        )
 
-        add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
+    set_target_properties(gtest PROPERTIES FOLDER Testing)
+    set_target_properties(gtest_main PROPERTIES FOLDER Testing)
 
-        target_compile_options(gtest_main PRIVATE "-DGTEST_LINKED_AS_SHARED_LIBRARY=0")
-        target_compile_options(gtest PRIVATE "-DGTEST_CREATE_SHARED_LIBRARY=1")
-
-        install(DIRECTORY ${googletest_SOURCE_DIR}/googletest/include/gtest DESTINATION include/extlibs/GTest/ COMPONENT headers)
-        target_include_directories(gtest PUBLIC "$<INSTALL_INTERFACE:include/extlibs/GTest/>")
-        
-        include(SofaMacros)
-        sofa_create_package_with_targets(
-            PACKAGE_NAME GTest
-            PACKAGE_VERSION 1.14.0
-            TARGETS gtest AUTO_SET_TARGET_PROPERTIES
-            INCLUDE_SOURCE_DIR "include"
-            INCLUDE_INSTALL_DIR "extlibs/GTest"
-            )
-
-        set_target_properties(gtest PROPERTIES FOLDER Testing)
-        set_target_properties(gtest_main PROPERTIES FOLDER Testing)
-    endif()
 elseif (NOT GTest_FOUND)
     message(FATAL_ERROR "${PROJECT_NAME}: DEPENDENCY googletest NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install googletest, or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
 endif()

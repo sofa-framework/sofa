@@ -32,8 +32,8 @@ using helper::Creator;
 
 //template class Factory< std::string, objectmodel::BaseObject, Node<objectmodel::BaseObject*>* >;
 
-ObjectElement::ObjectElement(const std::string& name, const std::string& type, BaseElement* parent)
-    : Element<core::objectmodel::BaseObject>(name, type, parent)
+ObjectElement::ObjectElement(const std::string& name, const std::string& type, BaseElement* eparent)
+    : Element<core::objectmodel::BaseObject>(name, type, eparent)
 {
 }
 
