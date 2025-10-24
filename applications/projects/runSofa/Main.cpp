@@ -36,7 +36,7 @@ using std::vector;
 #include <sofa/simulation/config.h>
 #include <sofa/simulation/common/init.h>
 #include <sofa/simulation/graph/init.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 #include <sofa/simulation/SceneLoaderFactory.h>
 #include <SceneChecking/SceneCheckerListener.h>
@@ -59,7 +59,6 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/system/console.h>
 using sofa::helper::Utils;
 
-using sofa::simulation::graph::DAGSimulation;
 using sofa::helper::system::SetDirectory;
 using sofa::core::objectmodel::BaseNode ;
 
@@ -471,7 +470,7 @@ int main(int argc, char** argv)
     const std::vector<std::string> sceneArgs = sofa::gui::common::ArgumentParser::extra_args();
     Node::SPtr groot = sofa::simulation::node::load(fileName, false, sceneArgs);
     if( !groot )
-        groot = sofa::simulation::getSimulation()->createNewGraph("");
+        groot = sofa::simulation::node::createNewNode("");
 
     if (!verif.empty())
     {
