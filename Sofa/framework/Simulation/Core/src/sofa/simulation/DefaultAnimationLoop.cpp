@@ -41,17 +41,26 @@
 #include <sofa/simulation/CollisionBeginEvent.h>
 #include <sofa/simulation/CollisionEndEvent.h>
 #include <sofa/simulation/CollisionVisitor.h>
+#include <sofa/simulation/DefaultAnimationLoop.h>
 #include <sofa/simulation/IntegrateBeginEvent.h>
 #include <sofa/simulation/IntegrateEndEvent.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
+#include <sofa/simulation/UpdateContextVisitor.h>
+#include <sofa/simulation/UpdateInternalDataVisitor.h>
+#include <sofa/simulation/UpdateMappingEndEvent.h>
+#include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
 
+#include <sofa/simulation/MechanicalOperations.h>
 
 namespace sofa::simulation
 {
@@ -149,7 +158,8 @@ void DefaultAnimationLoop::updateMapping(const core::ExecParams* params, const S
 {
     SCOPED_TIMER("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
-    m_node->execute<UpdateMappingVisitor>(params);
+    simulation::common::MechanicalOperations mop(params, m_node);
+    mop.propagateXAndV(core::vec_id::write_access::position, core::vec_id::write_access::velocity, false);
     {
         UpdateMappingEndEvent ev(dt);
         PropagateEventVisitor propagateEventVisitor(params, &ev);

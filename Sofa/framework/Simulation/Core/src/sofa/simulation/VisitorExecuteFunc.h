@@ -33,13 +33,13 @@ namespace sofa::simulation::common
 struct VisitorExecuteFunc
 {
 protected:
-    core::objectmodel::BaseContext& ctx;
+    sofa::core::objectmodel::BaseContext& ctx;
 
 public:
 
     bool precomputedTraversalOrder;
 
-    VisitorExecuteFunc(core::objectmodel::BaseContext& context, bool bPrecomputedTraversalOrder=false)
+    VisitorExecuteFunc(sofa::core::objectmodel::BaseContext& context, bool bPrecomputedTraversalOrder=false)
         : ctx(context)
         , precomputedTraversalOrder(bPrecomputedTraversalOrder)
     {}
