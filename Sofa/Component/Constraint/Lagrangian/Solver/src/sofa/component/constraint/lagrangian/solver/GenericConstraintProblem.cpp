@@ -74,6 +74,7 @@ void GenericConstraintProblem::solveTimed(SReal tol, int maxIt, SReal timeout)
     tolerance = tol;
     maxIterations = maxIt;
 
+
     m_solver->doSolve(this, timeout);
 
     tolerance = tempTol;

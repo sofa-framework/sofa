@@ -29,6 +29,7 @@
 namespace sofa::component::constraint::lagrangian::solver
 {
 
+
 /**
  *  \brief This class adds components needed for unbuilt solvers to the GenericConstraintProblem
  *  This needs to be used by unbuilt solvers.
@@ -41,7 +42,6 @@ public:
     UnbuiltConstraintProblem(GenericConstraintSolver* solver)
     : GenericConstraintProblem(solver)
     {}
-
 
     linearalgebra::SparseMatrix<SReal> Wdiag; /** UNBUILT **/
     std::list<unsigned int> constraints_sequence; /** UNBUILT **/

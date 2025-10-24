@@ -28,6 +28,7 @@
 
 namespace sofa::component::constraint::lagrangian::solver
 {
+    
 BuiltConstraintSolver::BuiltConstraintSolver()
 : d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
 {}
