@@ -158,6 +158,11 @@ void NNCGConstraintSolver::doSolve(GenericConstraintProblem * problem , SReal ti
                 problem->m_p[j] = beta*problem->m_p[j] -problem-> m_deltaF[j];
             }
         }
+        //Stopping condition based on constraint evolution rate
+        if (problem->m_deltaF_new.norm() < tol)
+        {
+            break;
+        }
     }
 
     problem->result_output(this, force, error, iterCount, convergence);
