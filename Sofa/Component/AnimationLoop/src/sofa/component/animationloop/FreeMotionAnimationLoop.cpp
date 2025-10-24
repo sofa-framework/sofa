@@ -48,7 +48,7 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVInitVisitor.h>
 
-#include "sofa/component/constraint/lagrangian/solver/ProjectedGaussSeidelConstraintSolver.h"
+#include <sofa/component/constraint/lagrangian/solver/ProjectedGaussSeidelConstraintSolver.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVInitVisitor;
 
 

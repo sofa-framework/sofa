@@ -35,7 +35,7 @@ namespace sofa::component::constraint::lagrangian::solver
 {
 
 
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API   ConstraintProblem
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintProblem
 {
 public:
     // The compliance matrix projected in the constraint space
