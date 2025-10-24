@@ -280,7 +280,7 @@ void VolumeMapping<TIn, TOut>::doUpdateK(const core::MechanicalParams* mparams,
 }
 
 template <class TIn, class TOut>
-void VolumeMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+void VolumeMapping<TIn, TOut>::doBuildGeometricStiffnessMatrix(
     sofa::core::GeometricStiffnessMatrix* matrices)
 {
     const unsigned& geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
