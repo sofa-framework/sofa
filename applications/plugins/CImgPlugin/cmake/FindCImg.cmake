@@ -37,6 +37,13 @@ The following cache variables may also be set:
 
 cmake_minimum_required(VERSION 3.9)
 
+if(NOT "${CIMG_H_DIR}" STREQUAL "" AND NOT EXISTS "${CIMG_H_DIR}/CImg.h")
+    unset(CIMG_H_DIR CACHE)
+endif()
+if(NOT "${CIMG_PLUGINS_H_DIR}" STREQUAL "" AND NOT EXISTS "${CIMG_H_DIR}/plugins/skeleton.h")
+    unset(CIMG_PLUGINS_H_DIR CACHE)
+endif()
+
 find_path(CIMG_H_DIR
     NAMES CImg.h
     HINTS ${CMAKE_INSTALL_PREFIX} ${CIMG_DIR}

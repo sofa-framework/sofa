@@ -55,44 +55,6 @@ public:
     int computeIntersection(collision::geometry::Line&, collision::geometry::Line&, OutputVector*, const core::collision::Intersection* currentIntersection);
     int computeIntersection(collision::geometry::Triangle&, collision::geometry::Point&, OutputVector*, const core::collision::Intersection* currentIntersection);
     template<class T> int computeIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&, OutputVector*, const core::collision::Intersection* currentIntersection);
-
-
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Point&, collision::geometry::Point&) = delete;
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::TSphere<T>&, collision::geometry::Point&) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Line&, collision::geometry::Point&) = delete;
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Line&, collision::geometry::TSphere<T>&) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Line&, collision::geometry::Line&) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Point&) = delete;
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*) = delete;
-    template<class T> 
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::TSphere<T>&, collision::geometry::Point&, OutputVector*) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Line&, collision::geometry::Point&, OutputVector*) = delete;
-    template<class T> 
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Line&, collision::geometry::TSphere<T>&, OutputVector*) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Line&, collision::geometry::Line&, OutputVector*) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Point&, OutputVector*) = delete;
-    template<class T> 
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&, OutputVector*) = delete;
 };
 
 
@@ -108,9 +70,9 @@ bool MeshMinProximityIntersection::testIntersection(collision::geometry::Triangl
     const type::Vec3 x03 = e2.p1()-e1.center();
     type::Matrix2 A;
     type::Vec2 b;
-    A[0][0] = x13*x13;
-    A[1][1] = x23*x23;
-    A[0][1] = A[1][0] = x13*x23;
+    A(0,0) = x13*x13;
+    A(1,1) = x23*x23;
+    A(0,1) = A(1,0) = x13*x23;
     b[0] = x13*x03;
     b[1] = x23*x03;
     const SReal det = type::determinant(A);
@@ -120,8 +82,8 @@ bool MeshMinProximityIntersection::testIntersection(collision::geometry::Triangl
 
     //if (det < -0.000001 || det > 0.000001)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+        alpha = (b[0]*A(1,1) - b[1]*A(0,1))/det;
+        beta  = (b[1]*A(0,0) - b[0]*A(1,0))/det;
         if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)
@@ -151,9 +113,9 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Trian
     const type::Vec3 x03 = e2.p1()-e1.center();
     type::Matrix2 A;
     type::Vec2 b;
-    A[0][0] = x13*x13;
-    A[1][1] = x23*x23;
-    A[0][1] = A[1][0] = x13*x23;
+    A(0,0) = x13*x13;
+    A(1,1) = x23*x23;
+    A(0,1) = A(1,0) = x13*x23;
     b[0] = x13*x03;
     b[1] = x23*x03;
     const SReal det = type::determinant(A);
@@ -163,8 +125,8 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Trian
 
     //if (det < -0.000001 || det > 0.000001)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+        alpha = (b[0]*A(1,1) - b[1]*A(0,1))/det;
+        beta  = (b[1]*A(0,0) - b[0]*A(1,0))/det;
         if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)

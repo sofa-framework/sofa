@@ -79,17 +79,17 @@ Base::~Base()
 
 
 
-void Base::addUpdateCallback(const std::string& name,
+void Base::addUpdateCallback(const std::string& n,
                              std::initializer_list<BaseData*> inputs,
                              std::function<sofa::core::objectmodel::ComponentState(const DataTracker&)> func,
                              std::initializer_list<BaseData*> outputs)
 {
     // But what if 2 callback functions return 2 different states?
     // won't the 2nd overwrite the state set by the second, potentially masking the invalidity of the component?
-    auto& engine = m_internalEngine[name];
+    auto& engine = m_internalEngine[n];
     engine.setOwner(this);
     engine.addInputs(inputs);
-    engine.setCallback([func, name](const DataTracker& tracker) {
+    engine.setCallback([func, n](const DataTracker& tracker) {
         return func(tracker);
     });
     engine.addOutputs(outputs);
@@ -110,38 +110,38 @@ void Base::addUpdateCallback(const std::string& name,
         o->cleanDirty();
 }
 
-void Base::addOutputsToCallback(const std::string& name, std::initializer_list<BaseData*> outputs)
+void Base::addOutputsToCallback(const std::string& n, std::initializer_list<BaseData*> outputs)
 {
-    if (m_internalEngine.contains(name))
-        m_internalEngine[name].addOutputs(outputs);
+    if (m_internalEngine.contains(n))
+        m_internalEngine[n].addOutputs(outputs);
 }
 
 
 /// Helper method used by initData()
-void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed, bool isReadOnly )
+void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* n, const char* help, bool isDisplayed, bool isReadOnly )
 {
     BaseData::DataFlags flags = BaseData::FLAG_DEFAULT;
     if(isDisplayed) flags |= BaseData::DataFlags(BaseData::FLAG_DISPLAYED); else flags &= ~BaseData::DataFlags(BaseData::FLAG_DISPLAYED);
     if(isReadOnly)  flags |= BaseData::DataFlags(BaseData::FLAG_READONLY); else flags &= ~BaseData::DataFlags(BaseData::FLAG_READONLY);
 
-    initData0(field, res, name, help, flags);
+    initData0(field, res, n, help, flags);
 }
 
 /// Helper method used by initData()
-void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, BaseData::DataFlags dataFlags )
+void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* n, const char* help, BaseData::DataFlags dataFlags )
 {
     static constexpr std::string_view draw_prefix = "draw";
     static constexpr std::string_view show_prefix = "show";
 
     res.owner = this;
     res.data = field;
-    res.name = name;
+    res.name = n;
     res.helpMsg = help;
     res.dataFlags = dataFlags;
 
-    if (strlen(name) >= 4)
+    if (strlen(n) >= 4)
     {
-        const std::string_view prefix = std::string_view(name).substr(0, 4);
+        const std::string_view prefix = std::string_view(n).substr(0, 4);
 
         if (prefix == draw_prefix || prefix == show_prefix)
             res.group = "Visualization";
@@ -157,18 +157,18 @@ void Base::addData(BaseData* f)
 
 /// Add a data field.
 /// Note that this method should only be called if the field was not initialized with the initData method
-void Base::addData(BaseData* f, const std::string& name)
+void Base::addData(BaseData* f, const std::string& n)
 {
-    if (!name.empty())
+    if (!n.empty())
     {
-        msg_warning_when(findData(name)) << "Data field name '" << name
+        msg_warning_when(findData(n)) << "Data field name '" << n
                                          << "' already used as a Data in this class or in a parent class";
 
-        msg_warning_when(findLink(name)) << "Data field name '" << name
+        msg_warning_when(findLink(n)) << "Data field name '" << n
                                          << "' already used as a Link in this class or in a parent class";
     }
     m_vecData.push_back(f);
-    m_aliasData.insert(std::make_pair(name, f));
+    m_aliasData.insert(std::make_pair(n, f));
     f->setOwner(this);
 }
 
@@ -182,17 +182,17 @@ void Base::addAlias( BaseData* field, const char* alias)
 /// Note that this method should only be called if the link was not initialized with the initLink method
 void Base::addLink(BaseLink* l)
 {
-    const std::string& name = l->getName();
-    if (!name.empty())
+    const std::string& n = l->getName();
+    if (!n.empty())
     {
-        msg_warning_when(findData(name)) << "Link name '" << name
+        msg_warning_when(findData(n)) << "Link name '" << n
                                          << "' already used as a Data in this class or in a parent class";
 
-        msg_warning_when(findLink(name)) << "Link name '" << name
+        msg_warning_when(findLink(n)) << "Link name '" << n
                                          << "' already used as a Link in this class or in a parent class";
     }
     m_vecLink.push_back(l);
-    m_aliasLink.insert(std::make_pair(name, l));
+    m_aliasLink.insert(std::make_pair(n, l));
 }
 
 /// Add an alias to a Link
@@ -311,12 +311,12 @@ void Base::removeData(BaseData* d)
 
 /// Find a data field given its name.
 /// Return nullptr if not found. If more than one field is found (due to aliases), only the first is returned.
-BaseData* Base::findData( const std::string &name ) const
+BaseData* Base::findData( const std::string &n ) const
 {
     //Search in the aliases
     if(m_aliasData.size())
     {
-        const auto range = m_aliasData.equal_range(name);
+        const auto range = m_aliasData.equal_range(n);
         if (range.first != range.second)
             return range.first->second;
         else
@@ -327,11 +327,11 @@ BaseData* Base::findData( const std::string &name ) const
 
 
 /// Find fields given a name: several can be found as we look into the alias map
-std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
+std::vector< BaseData* > Base::findGlobalField( const std::string &n ) const
 {
     std::vector<BaseData*> result;
     //Search in the aliases
-    const auto range = m_aliasData.equal_range(name);
+    const auto range = m_aliasData.equal_range(n);
     for (auto itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
@@ -340,10 +340,10 @@ std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
 
 /// Find a link given its name.
 /// Return nullptr if not found. If more than one link is found (due to aliases), only the first is returned.
-BaseLink* Base::findLink( const std::string &name ) const
+BaseLink* Base::findLink( const std::string &n ) const
 {
     //Search in the aliases
-    const auto range = m_aliasLink.equal_range(name);
+    const auto range = m_aliasLink.equal_range(n);
     if (range.first != range.second)
         return range.first->second;
     else
@@ -351,11 +351,11 @@ BaseLink* Base::findLink( const std::string &name ) const
 }
 
 /// Find links given a name: several can be found as we look into the alias map
-std::vector< BaseLink* > Base::findLinks( const std::string &name ) const
+std::vector< BaseLink* > Base::findLinks( const std::string &n ) const
 {
     std::vector<BaseLink*> result;
     //Search in the aliases
-    const auto range = m_aliasLink.equal_range(name);
+    const auto range = m_aliasLink.equal_range(n);
     for (auto itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
@@ -417,8 +417,8 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
         std::stringstream tmp;
         tmp << "Unknown Data field or Link for: " << attribute << msgendl;
         tmp << "   the closest existing entries are: " << msgendl;
-        for(auto& [name, score] : getClosestMatch(attribute, possibleNames))
-            tmp << "     - " + name + " ("+ std::to_string((int)(100*score))+"% match)" << msgendl;
+        for(auto& [n, score] : getClosestMatch(attribute, possibleNames))
+            tmp << "     - " + n + " ("+ std::to_string((int)(100*score))+"% match)" << msgendl;
 
         msg_warning() << tmp.str() ;
         return false; // no field found
@@ -497,18 +497,18 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
     return ok;
 }
 
-void  Base::parseFields ( const std::list<std::string>& str )
+void Base::parseFields ( const std::list<std::string>& str )
 {
-    string name,value;
+    string n,value;
     std::list<std::string>::const_iterator it = str.begin(), itend = str.end();
     while(it != itend)
     {
-        name = *it;
+        n = *it;
         ++it;
         if (it == itend) break;
         value = *it;
         ++it;
-        parseField(name, value);
+        parseField(n, value);
     }
 }
 
@@ -554,7 +554,7 @@ void  Base::parse ( BaseObjectDescription* arg )
     if(value)
         parseField("printLog", value);
 
-    for( auto& [key,value] : arg->getAttributeMap() )
+    for( auto& [key,v] : arg->getAttributeMap() )
     {
         // FIX: "type" is already used to define the type of object to instantiate, any Data with
         // the same name cannot be extracted from BaseObjectDescription
@@ -562,7 +562,7 @@ void  Base::parse ( BaseObjectDescription* arg )
             continue;
 
         if (hasField(key))
-            parseField(key, value);
+            parseField(key, v);
     }
     updateLinks(false);
 }

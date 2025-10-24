@@ -137,75 +137,75 @@ inline void TetrahedronFEMForceField<DataTypes>::computeStrainDisplacement( Stra
     // shape functions matrix
     type::Mat<2, 3, Real> M;
 
-    M[0][0] = b[1];
-    M[0][1] = c[1];
-    M[0][2] = d[1];
-    M[1][0] = b[2];
-    M[1][1] = c[2];
-    M[1][2] = d[2];
-    J[0][0] = J[1][3] = J[2][5]   = - peudo_determinant_for_coef( M );
-    M[0][0] = b[0];
-    M[0][1] = c[0];
-    M[0][2] = d[0];
-    J[0][3] = J[1][1] = J[2][4]   = peudo_determinant_for_coef( M );
-    M[1][0] = b[1];
-    M[1][1] = c[1];
-    M[1][2] = d[1];
-    J[0][5] = J[1][4] = J[2][2]   = - peudo_determinant_for_coef( M );
+    M(0,0) = b[1];
+    M(0,1) = c[1];
+    M(0,2) = d[1];
+    M(1,0) = b[2];
+    M(1,1) = c[2];
+    M(1,2) = d[2];
+    J(0,0) = J(1,3) = J(2,5)   = - peudo_determinant_for_coef( M );
+    M(0,0) = b[0];
+    M(0,1) = c[0];
+    M(0,2) = d[0];
+    J(0,3) = J(1,1) = J(2,4)   = peudo_determinant_for_coef( M );
+    M(1,0) = b[1];
+    M(1,1) = c[1];
+    M(1,2) = d[1];
+    J(0,5) = J(1,4) = J(2,2)   = - peudo_determinant_for_coef( M );
 
-    M[0][0] = c[1];
-    M[0][1] = d[1];
-    M[0][2] = a[1];
-    M[1][0] = c[2];
-    M[1][1] = d[2];
-    M[1][2] = a[2];
-    J[3][0] = J[4][3] = J[5][5]   = peudo_determinant_for_coef( M );
-    M[0][0] = c[0];
-    M[0][1] = d[0];
-    M[0][2] = a[0];
-    J[3][3] = J[4][1] = J[5][4]   = - peudo_determinant_for_coef( M );
-    M[1][0] = c[1];
-    M[1][1] = d[1];
-    M[1][2] = a[1];
-    J[3][5] = J[4][4] = J[5][2]   = peudo_determinant_for_coef( M );
+    M(0,0) = c[1];
+    M(0,1) = d[1];
+    M(0,2) = a[1];
+    M(1,0) = c[2];
+    M(1,1) = d[2];
+    M(1,2) = a[2];
+    J(3,0) = J(4,3) = J(5,5)   = peudo_determinant_for_coef( M );
+    M(0,0) = c[0];
+    M(0,1) = d[0];
+    M(0,2) = a[0];
+    J(3,3) = J(4,1) = J(5,4)   = - peudo_determinant_for_coef( M );
+    M(1,0) = c[1];
+    M(1,1) = d[1];
+    M(1,2) = a[1];
+    J(3,5) = J(4,4) = J(5,2)   = peudo_determinant_for_coef( M );
 
-    M[0][0] = d[1];
-    M[0][1] = a[1];
-    M[0][2] = b[1];
-    M[1][0] = d[2];
-    M[1][1] = a[2];
-    M[1][2] = b[2];
-    J[6][0] = J[7][3] = J[8][5]   = - peudo_determinant_for_coef( M );
-    M[0][0] = d[0];
-    M[0][1] = a[0];
-    M[0][2] = b[0];
-    J[6][3] = J[7][1] = J[8][4]   = peudo_determinant_for_coef( M );
-    M[1][0] = d[1];
-    M[1][1] = a[1];
-    M[1][2] = b[1];
-    J[6][5] = J[7][4] = J[8][2]   = - peudo_determinant_for_coef( M );
+    M(0,0) = d[1];
+    M(0,1) = a[1];
+    M(0,2) = b[1];
+    M(1,0) = d[2];
+    M(1,1) = a[2];
+    M(1,2) = b[2];
+    J(6,0) = J(7,3) = J(8,5)   = - peudo_determinant_for_coef( M );
+    M(0,0) = d[0];
+    M(0,1) = a[0];
+    M(0,2) = b[0];
+    J(6,3) = J(7,1) = J(8,4)   = peudo_determinant_for_coef( M );
+    M(1,0) = d[1];
+    M(1,1) = a[1];
+    M(1,2) = b[1];
+    J(6,5) = J(7,4) = J(8,2)   = - peudo_determinant_for_coef( M );
 
-    M[0][0] = a[1];
-    M[0][1] = b[1];
-    M[0][2] = c[1];
-    M[1][0] = a[2];
-    M[1][1] = b[2];
-    M[1][2] = c[2];
-    J[9][0] = J[10][3] = J[11][5]   = peudo_determinant_for_coef( M );
-    M[0][0] = a[0];
-    M[0][1] = b[0];
-    M[0][2] = c[0];
-    J[9][3] = J[10][1] = J[11][4]   = - peudo_determinant_for_coef( M );
-    M[1][0] = a[1];
-    M[1][1] = b[1];
-    M[1][2] = c[1];
-    J[9][5] = J[10][4] = J[11][2]   = peudo_determinant_for_coef( M );
+    M(0,0) = a[1];
+    M(0,1) = b[1];
+    M(0,2) = c[1];
+    M(1,0) = a[2];
+    M(1,1) = b[2];
+    M(1,2) = c[2];
+    J(9,0) = J(10,3) = J(11,5)   = peudo_determinant_for_coef( M );
+    M(0,0) = a[0];
+    M(0,1) = b[0];
+    M(0,2) = c[0];
+    J(9,3) = J(10,1) = J(11,4)   = - peudo_determinant_for_coef( M );
+    M(1,0) = a[1];
+    M(1,1) = b[1];
+    M(1,2) = c[1];
+    J(9,5) = J(10,4) = J(11,2)   = peudo_determinant_for_coef( M );
 }
 
 template<class DataTypes>
 typename TetrahedronFEMForceField<DataTypes>::Real TetrahedronFEMForceField<DataTypes>::peudo_determinant_for_coef ( const type::Mat<2, 3, Real>&  M )
 {
-    return  M[0][1]*M[1][2] - M[1][1]*M[0][2] -  M[0][0]*M[1][2] + M[1][0]*M[0][2] + M[0][0]*M[1][1] - M[1][0]*M[0][1];
+    return  M(0,1)*M(1,2) - M(1,1)*M(0,2) -  M(0,0)*M(1,2) + M(1,0)*M(0,2) + M(0,0)*M(1,1) - M(1,0)*M(0,1);
 }
 
 template<class DataTypes>
@@ -223,8 +223,8 @@ void TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix( StiffnessMatri
     for(int i=0; i<3; ++i)
         for(int j=0; j<3; ++j)
         {
-            RR[i][j]=RR[i+3][j+3]=RR[i+6][j+6]=RR[i+9][j+9]=Rot[i][j];
-            RRt[i][j]=RRt[i+3][j+3]=RRt[i+6][j+6]=RRt[i+9][j+9]=Rot[j][i];
+            RR(i,j)=RR(i+3,j+3)=RR(i+6,j+6)=RR(i+9,j+9)=Rot(i,j);
+            RRt(i,j)=RRt(i+3,j+3)=RRt(i+6,j+6)=RRt(i+9,j+9)=Rot(j,i);
         }
 
     S = RR*JKJt;
@@ -241,10 +241,10 @@ inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real*
     }
     Transformation Rot;
     StiffnessMatrix JKJt,tmp;
-    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-    Rot[0][1]=Rot[0][2]=0;
-    Rot[1][0]=Rot[1][2]=0;
-    Rot[2][0]=Rot[2][1]=0;
+    Rot(0,0)=Rot(1,1)=Rot(2,2)=1;
+    Rot(0,1)=Rot(0,2)=0;
+    Rot(1,0)=Rot(1,2)=0;
+    Rot(2,0)=Rot(2,1)=0;
     computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[elementIndex], strainDisplacements[elementIndex],_initialRotations[elementIndex]);
     for(int i=0; i<12; i++)
     {
@@ -261,24 +261,24 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(Index i, Inde
     const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_indexedElements->size()])*youngModulusElement;
     const Real poissonRatio = this->getPoissonRatioInElement(i);
 
-    materialsStiffnesses[i][0][0] = materialsStiffnesses[i][1][1] = materialsStiffnesses[i][2][2] = 1;
-    materialsStiffnesses[i][0][1] = materialsStiffnesses[i][0][2] = materialsStiffnesses[i][1][0]
-            = materialsStiffnesses[i][1][2] = materialsStiffnesses[i][2][0] =
-            materialsStiffnesses[i][2][1] = poissonRatio/(1-poissonRatio);
-    materialsStiffnesses[i][0][3] = materialsStiffnesses[i][0][4] = materialsStiffnesses[i][0][5] = 0;
-    materialsStiffnesses[i][1][3] = materialsStiffnesses[i][1][4] = materialsStiffnesses[i][1][5] = 0;
-    materialsStiffnesses[i][2][3] = materialsStiffnesses[i][2][4] = materialsStiffnesses[i][2][5] = 0;
-    materialsStiffnesses[i][3][0] = materialsStiffnesses[i][3][1] = materialsStiffnesses[i][3][2] = materialsStiffnesses[i][3][4] = materialsStiffnesses[i][3][5] = 0;
-    materialsStiffnesses[i][4][0] = materialsStiffnesses[i][4][1] = materialsStiffnesses[i][4][2] = materialsStiffnesses[i][4][3] = materialsStiffnesses[i][4][5] = 0;
-    materialsStiffnesses[i][5][0] = materialsStiffnesses[i][5][1] = materialsStiffnesses[i][5][2] = materialsStiffnesses[i][5][3] = materialsStiffnesses[i][5][4] = 0;
-    materialsStiffnesses[i][3][3] = materialsStiffnesses[i][4][4] = materialsStiffnesses[i][5][5] = (1-2*poissonRatio)/(2*(1-poissonRatio));
+    materialsStiffnesses[i](0,0) = materialsStiffnesses[i](1,1) = materialsStiffnesses[i](2,2) = 1;
+    materialsStiffnesses[i](0,1) = materialsStiffnesses[i](0,2) = materialsStiffnesses[i](1,0)
+            = materialsStiffnesses[i](1,2) = materialsStiffnesses[i](2,0) =
+            materialsStiffnesses[i](2,1) = poissonRatio/(1-poissonRatio);
+    materialsStiffnesses[i](0,3) = materialsStiffnesses[i](0,4) = materialsStiffnesses[i](0,5) = 0;
+    materialsStiffnesses[i](1,3) = materialsStiffnesses[i](1,4) = materialsStiffnesses[i](1,5) = 0;
+    materialsStiffnesses[i](2,3) = materialsStiffnesses[i](2,4) = materialsStiffnesses[i](2,5) = 0;
+    materialsStiffnesses[i](3,0) = materialsStiffnesses[i](3,1) = materialsStiffnesses[i](3,2) = materialsStiffnesses[i](3,4) = materialsStiffnesses[i](3,5) = 0;
+    materialsStiffnesses[i](4,0) = materialsStiffnesses[i](4,1) = materialsStiffnesses[i](4,2) = materialsStiffnesses[i](4,3) = materialsStiffnesses[i](4,5) = 0;
+    materialsStiffnesses[i](5,0) = materialsStiffnesses[i](5,1) = materialsStiffnesses[i](5,2) = materialsStiffnesses[i](5,3) = materialsStiffnesses[i](5,4) = 0;
+    materialsStiffnesses[i](3,3) = materialsStiffnesses[i](4,4) = materialsStiffnesses[i](5,5) = (1-2*poissonRatio)/(2*(1-poissonRatio));
     materialsStiffnesses[i] *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
 
 
     if ( isComputeVonMisesStressMethodSet() )
     {
-        elemLambda[i] = materialsStiffnesses[i][0][1];
-        elemMu[i] = materialsStiffnesses[i][3][3];
+        elemLambda[i] = materialsStiffnesses[i](0,1);
+        elemMu[i] = materialsStiffnesses[i](3,3);
     }
 
     // divide by 36 times volumes of the element
@@ -304,54 +304,54 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
     F = J*(K*(J.multTranspose(Depl)));
 #else
     /* We have these zeros
-                                  K[0][3]   K[0][4]   K[0][5]
-                                  K[1][3]   K[1][4]   K[1][5]
-                                  K[2][3]   K[2][4]   K[2][5]
-    K[3][0]   K[3][1]   K[3][2]             K[3][4]   K[3][5]
-    K[4][0]   K[4][1]   K[4][2]   K[4][3]             K[4][5]
-    K[5][0]   K[5][1]   K[5][2]   K[5][3]   K[5][4]
+                                  K(0,3)   K(0,4)   K(0,5)
+                                  K(1,3)   K(1,4)   K(1,5)
+                                  K(2,3)   K(2,4)   K(2,5)
+    K(3,0)   K(3,1)   K(3,2)             K(3,4)   K(3,5)
+    K(4,0)   K(4,1)   K(4,2)   K(4,3)             K(4,5)
+    K(5,0)   K(5,1)   K(5,2)   K(5,3)   K(5,4)
 
 
-              J[0][1]   J[0][2]             J[0][4]
-    J[1][0]             J[1][2]                       J[1][5]
-    J[2][0]   J[2][1]             J[2][3]
-              J[3][1]   J[3][2]             J[3][4]
-    J[4][0]             J[4][2]                       J[4][5]
-    J[5][0]   J[5][1]             J[5][3]
-              J[6][1]   J[6][2]             J[6][4]
-    J[7][0]             J[7][2]                       J[7][5]
-    J[8][0]   J[8][1]             J[8][3]
-              J[9][1]   J[9][2]             J[9][4]
-    J[10][0]            J[10][2]                      J[10][5]
-    J[11][0]  J[11][1]            J[11][3]
+              J(0,1)   J(0,2)             J(0,4)
+    J(1,0)             J(1,2)                       J(1,5)
+    J(2,0)   J(2,1)             J(2,3)
+              J(3,1)   J(3,2)             J(3,4)
+    J(4,0)             J(4,2)                       J(4,5)
+    J(5,0)   J(5,1)             J(5,3)
+              J(6,1)   J(6,2)             J(6,4)
+    J(7,0)             J(7,2)                       J(7,5)
+    J(8,0)   J(8,1)             J(8,3)
+              J(9,1)   J(9,2)             J(9,4)
+    J(10,0)            J(10,2)                      J(10,5)
+    J(11,0)  J(11,1)            J(11,3)
     */
 
 
     VoigtTensor JtD;
-    JtD[0] =   J[ 0][0]*Depl[ 0]+/*J[ 1][0]*Depl[ 1]+  J[ 2][0]*Depl[ 2]+*/
-            J[ 3][0]*Depl[ 3]+/*J[ 4][0]*Depl[ 4]+  J[ 5][0]*Depl[ 5]+*/
-            J[ 6][0]*Depl[ 6]+/*J[ 7][0]*Depl[ 7]+  J[ 8][0]*Depl[ 8]+*/
-            J[ 9][0]*Depl[ 9] /*J[10][0]*Depl[10]+  J[11][0]*Depl[11]*/;
-    JtD[1] = /*J[ 0][1]*Depl[ 0]+*/J[ 1][1]*Depl[ 1]+/*J[ 2][1]*Depl[ 2]+*/
-            /*J[ 3][1]*Depl[ 3]+*/J[ 4][1]*Depl[ 4]+/*J[ 5][1]*Depl[ 5]+*/
-            /*J[ 6][1]*Depl[ 6]+*/J[ 7][1]*Depl[ 7]+/*J[ 8][1]*Depl[ 8]+*/
-            /*J[ 9][1]*Depl[ 9]+*/J[10][1]*Depl[10] /*J[11][1]*Depl[11]*/;
-    JtD[2] = /*J[ 0][2]*Depl[ 0]+  J[ 1][2]*Depl[ 1]+*/J[ 2][2]*Depl[ 2]+
-            /*J[ 3][2]*Depl[ 3]+  J[ 4][2]*Depl[ 4]+*/J[ 5][2]*Depl[ 5]+
-            /*J[ 6][2]*Depl[ 6]+  J[ 7][2]*Depl[ 7]+*/J[ 8][2]*Depl[ 8]+
-            /*J[ 9][2]*Depl[ 9]+  J[10][2]*Depl[10]+*/J[11][2]*Depl[11]  ;
-    JtD[3] =   J[ 0][3]*Depl[ 0]+  J[ 1][3]*Depl[ 1]+/*J[ 2][3]*Depl[ 2]+*/
-            J[ 3][3]*Depl[ 3]+  J[ 4][3]*Depl[ 4]+/*J[ 5][3]*Depl[ 5]+*/
-            J[ 6][3]*Depl[ 6]+  J[ 7][3]*Depl[ 7]+/*J[ 8][3]*Depl[ 8]+*/
-            J[ 9][3]*Depl[ 9]+  J[10][3]*Depl[10] /*J[11][3]*Depl[11]*/;
-    JtD[4] = /*J[ 0][4]*Depl[ 0]+*/J[ 1][4]*Depl[ 1]+  J[ 2][4]*Depl[ 2]+
-            /*J[ 3][4]*Depl[ 3]+*/J[ 4][4]*Depl[ 4]+  J[ 5][4]*Depl[ 5]+
-            /*J[ 6][4]*Depl[ 6]+*/J[ 7][4]*Depl[ 7]+  J[ 8][4]*Depl[ 8]+
-            /*J[ 9][4]*Depl[ 9]+*/J[10][4]*Depl[10]+  J[11][4]*Depl[11]  ;
-    JtD[5] =   J[ 0][5]*Depl[ 0]+/*J[ 1][5]*Depl[ 1]*/ J[ 2][5]*Depl[ 2]+
-            J[ 3][5]*Depl[ 3]+/*J[ 4][5]*Depl[ 4]*/ J[ 5][5]*Depl[ 5]+
-            J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
-            J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
+    JtD[0] =   J( 0,0)*Depl[ 0]+/*J( 1,0)*Depl[ 1]+  J( 2,0)*Depl[ 2]+*/
+            J( 3,0)*Depl[ 3]+/*J( 4,0)*Depl[ 4]+  J( 5,0)*Depl[ 5]+*/
+            J( 6,0)*Depl[ 6]+/*J( 7,0)*Depl[ 7]+  J( 8,0)*Depl[ 8]+*/
+            J( 9,0)*Depl[ 9] /*J(10,0)*Depl[10]+  J(11,0)*Depl[11]*/;
+    JtD[1] = /*J( 0,1)*Depl[ 0]+*/J( 1,1)*Depl[ 1]+/*J( 2,1)*Depl[ 2]+*/
+            /*J( 3,1)*Depl[ 3]+*/J( 4,1)*Depl[ 4]+/*J( 5,1)*Depl[ 5]+*/
+            /*J( 6,1)*Depl[ 6]+*/J( 7,1)*Depl[ 7]+/*J( 8,1)*Depl[ 8]+*/
+            /*J( 9,1)*Depl[ 9]+*/J(10,1)*Depl[10] /*J(11,1)*Depl[11]*/;
+    JtD[2] = /*J( 0,2)*Depl[ 0]+  J( 1,2)*Depl[ 1]+*/J( 2,2)*Depl[ 2]+
+            /*J( 3,2)*Depl[ 3]+  J( 4,2)*Depl[ 4]+*/J( 5,2)*Depl[ 5]+
+            /*J( 6,2)*Depl[ 6]+  J( 7,2)*Depl[ 7]+*/J( 8,2)*Depl[ 8]+
+            /*J( 9,2)*Depl[ 9]+  J(10,2)*Depl[10]+*/J(11,2)*Depl[11]  ;
+    JtD[3] =   J( 0,3)*Depl[ 0]+  J( 1,3)*Depl[ 1]+/*J( 2,3)*Depl[ 2]+*/
+            J( 3,3)*Depl[ 3]+  J( 4,3)*Depl[ 4]+/*J( 5,3)*Depl[ 5]+*/
+            J( 6,3)*Depl[ 6]+  J( 7,3)*Depl[ 7]+/*J( 8,3)*Depl[ 8]+*/
+            J( 9,3)*Depl[ 9]+  J(10,3)*Depl[10] /*J(11,3)*Depl[11]*/;
+    JtD[4] = /*J( 0,4)*Depl[ 0]+*/J( 1,4)*Depl[ 1]+  J( 2,4)*Depl[ 2]+
+            /*J( 3,4)*Depl[ 3]+*/J( 4,4)*Depl[ 4]+  J( 5,4)*Depl[ 5]+
+            /*J( 6,4)*Depl[ 6]+*/J( 7,4)*Depl[ 7]+  J( 8,4)*Depl[ 8]+
+            /*J( 9,4)*Depl[ 9]+*/J(10,4)*Depl[10]+  J(11,4)*Depl[11]  ;
+    JtD[5] =   J( 0,5)*Depl[ 0]+/*J( 1,5)*Depl[ 1]*/ J( 2,5)*Depl[ 2]+
+            J( 3,5)*Depl[ 3]+/*J( 4,5)*Depl[ 4]*/ J( 5,5)*Depl[ 5]+
+            J( 6,5)*Depl[ 6]+/*J( 7,5)*Depl[ 7]*/ J( 8,5)*Depl[ 8]+
+            J( 9,5)*Depl[ 9]+/*J(10,5)*Depl[10]*/ J(11,5)*Depl[11];
 
     // eventually remove a part of the strain to simulate plasticity
     if(d_plasticMaxThreshold.getValue() > 0 )
@@ -373,43 +373,43 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
 
 
     VoigtTensor KJtD;
-    KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
-            /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
-    KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
-            /*K[1][3]*JtD[3]+  K[1][4]*JtD[4]+  K[1][5]*JtD[5]*/;
-    KJtD[2] =   K[2][0]*JtD[0]+  K[2][1]*JtD[1]+  K[2][2]*JtD[2]
-            /*K[2][3]*JtD[3]+  K[2][4]*JtD[4]+  K[2][5]*JtD[5]*/;
-    KJtD[3] = /*K[3][0]*JtD[0]+  K[3][1]*JtD[1]+  K[3][2]*JtD[2]+*/
-            K[3][3]*JtD[3] /*K[3][4]*JtD[4]+  K[3][5]*JtD[5]*/;
-    KJtD[4] = /*K[4][0]*JtD[0]+  K[4][1]*JtD[1]+  K[4][2]*JtD[2]+*/
-            /*K[4][3]*JtD[3]+*/K[4][4]*JtD[4] /*K[4][5]*JtD[5]*/;
-    KJtD[5] = /*K[5][0]*JtD[0]+  K[5][1]*JtD[1]+  K[5][2]*JtD[2]+*/
-            /*K[5][3]*JtD[3]+  K[5][4]*JtD[4]+*/K[5][5]*JtD[5]  ;
+    KJtD[0] =   K(0,0)*JtD[0]+  K(0,1)*JtD[1]+  K(0,2)*JtD[2]
+            /*K(0,3)*JtD[3]+  K(0,4)*JtD[4]+  K(0,5)*JtD[5]*/;
+    KJtD[1] =   K(1,0)*JtD[0]+  K(1,1)*JtD[1]+  K(1,2)*JtD[2]
+            /*K(1,3)*JtD[3]+  K(1,4)*JtD[4]+  K(1,5)*JtD[5]*/;
+    KJtD[2] =   K(2,0)*JtD[0]+  K(2,1)*JtD[1]+  K(2,2)*JtD[2]
+            /*K(2,3)*JtD[3]+  K(2,4)*JtD[4]+  K(2,5)*JtD[5]*/;
+    KJtD[3] = /*K(3,0)*JtD[0]+  K(3,1)*JtD[1]+  K(3,2)*JtD[2]+*/
+            K(3,3)*JtD[3] /*K(3,4)*JtD[4]+  K(3,5)*JtD[5]*/;
+    KJtD[4] = /*K(4,0)*JtD[0]+  K(4,1)*JtD[1]+  K(4,2)*JtD[2]+*/
+            /*K(4,3)*JtD[3]+*/K(4,4)*JtD[4] /*K(4,5)*JtD[5]*/;
+    KJtD[5] = /*K(5,0)*JtD[0]+  K(5,1)*JtD[1]+  K(5,2)*JtD[2]+*/
+            /*K(5,3)*JtD[3]+  K(5,4)*JtD[4]+*/K(5,5)*JtD[5]  ;
 
-    F[ 0] =   J[ 0][0]*KJtD[0]+/*J[ 0][1]*KJtD[1]+  J[ 0][2]*KJtD[2]+*/
-            J[ 0][3]*KJtD[3]+/*J[ 0][4]*KJtD[4]+*/J[ 0][5]*KJtD[5]  ;
-    F[ 1] = /*J[ 1][0]*KJtD[0]+*/J[ 1][1]*KJtD[1]+/*J[ 1][2]*KJtD[2]+*/
-            J[ 1][3]*KJtD[3]+  J[ 1][4]*KJtD[4] /*J[ 1][5]*KJtD[5]*/;
-    F[ 2] = /*J[ 2][0]*KJtD[0]+  J[ 2][1]*KJtD[1]+*/J[ 2][2]*KJtD[2]+
-            /*J[ 2][3]*KJtD[3]+*/J[ 2][4]*KJtD[4]+  J[ 2][5]*KJtD[5]  ;
-    F[ 3] =   J[ 3][0]*KJtD[0]+/*J[ 3][1]*KJtD[1]+  J[ 3][2]*KJtD[2]+*/
-            J[ 3][3]*KJtD[3]+/*J[ 3][4]*KJtD[4]+*/J[ 3][5]*KJtD[5]  ;
-    F[ 4] = /*J[ 4][0]*KJtD[0]+*/J[ 4][1]*KJtD[1]+/*J[ 4][2]*KJtD[2]+*/
-            J[ 4][3]*KJtD[3]+  J[ 4][4]*KJtD[4] /*J[ 4][5]*KJtD[5]*/;
-    F[ 5] = /*J[ 5][0]*KJtD[0]+  J[ 5][1]*KJtD[1]+*/J[ 5][2]*KJtD[2]+
-            /*J[ 5][3]*KJtD[3]+*/J[ 5][4]*KJtD[4]+  J[ 5][5]*KJtD[5]  ;
-    F[ 6] =   J[ 6][0]*KJtD[0]+/*J[ 6][1]*KJtD[1]+  J[ 6][2]*KJtD[2]+*/
-            J[ 6][3]*KJtD[3]+/*J[ 6][4]*KJtD[4]+*/J[ 6][5]*KJtD[5]  ;
-    F[ 7] = /*J[ 7][0]*KJtD[0]+*/J[ 7][1]*KJtD[1]+/*J[ 7][2]*KJtD[2]+*/
-            J[ 7][3]*KJtD[3]+  J[ 7][4]*KJtD[4] /*J[ 7][5]*KJtD[5]*/;
-    F[ 8] = /*J[ 8][0]*KJtD[0]+  J[ 8][1]*KJtD[1]+*/J[ 8][2]*KJtD[2]+
-            /*J[ 8][3]*KJtD[3]+*/J[ 8][4]*KJtD[4]+  J[ 8][5]*KJtD[5]  ;
-    F[ 9] =   J[ 9][0]*KJtD[0]+/*J[ 9][1]*KJtD[1]+  J[ 9][2]*KJtD[2]+*/
-            J[ 9][3]*KJtD[3]+/*J[ 9][4]*KJtD[4]+*/J[ 9][5]*KJtD[5]  ;
-    F[10] = /*J[10][0]*KJtD[0]+*/J[10][1]*KJtD[1]+/*J[10][2]*KJtD[2]+*/
-            J[10][3]*KJtD[3]+  J[10][4]*KJtD[4] /*J[10][5]*KJtD[5]*/;
-    F[11] = /*J[11][0]*KJtD[0]+  J[11][1]*KJtD[1]+*/J[11][2]*KJtD[2]+
-            /*J[11][3]*KJtD[3]+*/J[11][4]*KJtD[4]+  J[11][5]*KJtD[5]  ;
+    F[ 0] =   J( 0,0)*KJtD[0]+/*J( 0,1)*KJtD[1]+  J( 0,2)*KJtD[2]+*/
+            J( 0,3)*KJtD[3]+/*J( 0,4)*KJtD[4]+*/J( 0,5)*KJtD[5]  ;
+    F[ 1] = /*J( 1,0)*KJtD[0]+*/J( 1,1)*KJtD[1]+/*J( 1,2)*KJtD[2]+*/
+            J( 1,3)*KJtD[3]+  J( 1,4)*KJtD[4] /*J( 1,5)*KJtD[5]*/;
+    F[ 2] = /*J( 2,0)*KJtD[0]+  J( 2,1)*KJtD[1]+*/J( 2,2)*KJtD[2]+
+            /*J( 2,3)*KJtD[3]+*/J( 2,4)*KJtD[4]+  J( 2,5)*KJtD[5]  ;
+    F[ 3] =   J( 3,0)*KJtD[0]+/*J( 3,1)*KJtD[1]+  J( 3,2)*KJtD[2]+*/
+            J( 3,3)*KJtD[3]+/*J( 3,4)*KJtD[4]+*/J( 3,5)*KJtD[5]  ;
+    F[ 4] = /*J( 4,0)*KJtD[0]+*/J( 4,1)*KJtD[1]+/*J( 4,2)*KJtD[2]+*/
+            J( 4,3)*KJtD[3]+  J( 4,4)*KJtD[4] /*J( 4,5)*KJtD[5]*/;
+    F[ 5] = /*J( 5,0)*KJtD[0]+  J( 5,1)*KJtD[1]+*/J( 5,2)*KJtD[2]+
+            /*J( 5,3)*KJtD[3]+*/J( 5,4)*KJtD[4]+  J( 5,5)*KJtD[5]  ;
+    F[ 6] =   J( 6,0)*KJtD[0]+/*J( 6,1)*KJtD[1]+  J( 6,2)*KJtD[2]+*/
+            J( 6,3)*KJtD[3]+/*J( 6,4)*KJtD[4]+*/J( 6,5)*KJtD[5]  ;
+    F[ 7] = /*J( 7,0)*KJtD[0]+*/J( 7,1)*KJtD[1]+/*J( 7,2)*KJtD[2]+*/
+            J( 7,3)*KJtD[3]+  J( 7,4)*KJtD[4] /*J( 7,5)*KJtD[5]*/;
+    F[ 8] = /*J( 8,0)*KJtD[0]+  J( 8,1)*KJtD[1]+*/J( 8,2)*KJtD[2]+
+            /*J( 8,3)*KJtD[3]+*/J( 8,4)*KJtD[4]+  J( 8,5)*KJtD[5]  ;
+    F[ 9] =   J( 9,0)*KJtD[0]+/*J( 9,1)*KJtD[1]+  J( 9,2)*KJtD[2]+*/
+            J( 9,3)*KJtD[3]+/*J( 9,4)*KJtD[4]+*/J( 9,5)*KJtD[5]  ;
+    F[10] = /*J(10,0)*KJtD[0]+*/J(10,1)*KJtD[1]+/*J(10,2)*KJtD[2]+*/
+            J(10,3)*KJtD[3]+  J(10,4)*KJtD[4] /*J(10,5)*KJtD[5]*/;
+    F[11] = /*J(11,0)*KJtD[0]+  J(11,1)*KJtD[1]+*/J(11,2)*KJtD[2]+
+            /*J(11,3)*KJtD[3]+*/J(11,4)*KJtD[4]+  J(11,5)*KJtD[5]  ;
 
 #endif
 }
@@ -429,94 +429,94 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
     F *= fact;
 #else
     /* We have these zeros
-                                  K[0][3]   K[0][4]   K[0][5]
-                                  K[1][3]   K[1][4]   K[1][5]
-                                  K[2][3]   K[2][4]   K[2][5]
-    K[3][0]   K[3][1]   K[3][2]             K[3][4]   K[3][5]
-    K[4][0]   K[4][1]   K[4][2]   K[4][3]             K[4][5]
-    K[5][0]   K[5][1]   K[5][2]   K[5][3]   K[5][4]
+                                  K(0,3)   K(0,4)   K(0,5)
+                                  K(1,3)   K(1,4)   K(1,5)
+                                  K(2,3)   K(2,4)   K(2,5)
+    K(3,0)   K(3,1)   K(3,2)             K(3,4)   K(3,5)
+    K(4,0)   K(4,1)   K(4,2)   K(4,3)             K(4,5)
+    K(5,0)   K(5,1)   K(5,2)   K(5,3)   K(5,4)
 
 
-              J[0][1]   J[0][2]             J[0][4]
-    J[1][0]             J[1][2]                       J[1][5]
-    J[2][0]   J[2][1]             J[2][3]
-              J[3][1]   J[3][2]             J[3][4]
-    J[4][0]             J[4][2]                       J[4][5]
-    J[5][0]   J[5][1]             J[5][3]
-              J[6][1]   J[6][2]             J[6][4]
-    J[7][0]             J[7][2]                       J[7][5]
-    J[8][0]   J[8][1]             J[8][3]
-              J[9][1]   J[9][2]             J[9][4]
-    J[10][0]            J[10][2]                      J[10][5]
-    J[11][0]  J[11][1]            J[11][3]
+              J(0,1)   J(0,2)             J(0,4)
+    J(1,0)             J(1,2)                       J(1,5)
+    J(2,0)   J(2,1)             J(2,3)
+              J(3,1)   J(3,2)             J(3,4)
+    J(4,0)             J(4,2)                       J(4,5)
+    J(5,0)   J(5,1)             J(5,3)
+              J(6,1)   J(6,2)             J(6,4)
+    J(7,0)             J(7,2)                       J(7,5)
+    J(8,0)   J(8,1)             J(8,3)
+              J(9,1)   J(9,2)             J(9,4)
+    J(10,0)            J(10,2)                      J(10,5)
+    J(11,0)  J(11,1)            J(11,3)
     */
 
     type::VecNoInit<6,Real> JtD;
-    JtD[0] =   J[ 0][0]*Depl[ 0]+/*J[ 1][0]*Depl[ 1]+  J[ 2][0]*Depl[ 2]+*/
-            J[ 3][0]*Depl[ 3]+/*J[ 4][0]*Depl[ 4]+  J[ 5][0]*Depl[ 5]+*/
-            J[ 6][0]*Depl[ 6]+/*J[ 7][0]*Depl[ 7]+  J[ 8][0]*Depl[ 8]+*/
-            J[ 9][0]*Depl[ 9] /*J[10][0]*Depl[10]+  J[11][0]*Depl[11]*/;
-    JtD[1] = /*J[ 0][1]*Depl[ 0]+*/J[ 1][1]*Depl[ 1]+/*J[ 2][1]*Depl[ 2]+*/
-            /*J[ 3][1]*Depl[ 3]+*/J[ 4][1]*Depl[ 4]+/*J[ 5][1]*Depl[ 5]+*/
-            /*J[ 6][1]*Depl[ 6]+*/J[ 7][1]*Depl[ 7]+/*J[ 8][1]*Depl[ 8]+*/
-            /*J[ 9][1]*Depl[ 9]+*/J[10][1]*Depl[10] /*J[11][1]*Depl[11]*/;
-    JtD[2] = /*J[ 0][2]*Depl[ 0]+  J[ 1][2]*Depl[ 1]+*/J[ 2][2]*Depl[ 2]+
-            /*J[ 3][2]*Depl[ 3]+  J[ 4][2]*Depl[ 4]+*/J[ 5][2]*Depl[ 5]+
-            /*J[ 6][2]*Depl[ 6]+  J[ 7][2]*Depl[ 7]+*/J[ 8][2]*Depl[ 8]+
-            /*J[ 9][2]*Depl[ 9]+  J[10][2]*Depl[10]+*/J[11][2]*Depl[11]  ;
-    JtD[3] =   J[ 0][3]*Depl[ 0]+  J[ 1][3]*Depl[ 1]+/*J[ 2][3]*Depl[ 2]+*/
-            J[ 3][3]*Depl[ 3]+  J[ 4][3]*Depl[ 4]+/*J[ 5][3]*Depl[ 5]+*/
-            J[ 6][3]*Depl[ 6]+  J[ 7][3]*Depl[ 7]+/*J[ 8][3]*Depl[ 8]+*/
-            J[ 9][3]*Depl[ 9]+  J[10][3]*Depl[10] /*J[11][3]*Depl[11]*/;
-    JtD[4] = /*J[ 0][4]*Depl[ 0]+*/J[ 1][4]*Depl[ 1]+  J[ 2][4]*Depl[ 2]+
-            /*J[ 3][4]*Depl[ 3]+*/J[ 4][4]*Depl[ 4]+  J[ 5][4]*Depl[ 5]+
-            /*J[ 6][4]*Depl[ 6]+*/J[ 7][4]*Depl[ 7]+  J[ 8][4]*Depl[ 8]+
-            /*J[ 9][4]*Depl[ 9]+*/J[10][4]*Depl[10]+  J[11][4]*Depl[11]  ;
-    JtD[5] =   J[ 0][5]*Depl[ 0]+/*J[ 1][5]*Depl[ 1]*/ J[ 2][5]*Depl[ 2]+
-            J[ 3][5]*Depl[ 3]+/*J[ 4][5]*Depl[ 4]*/ J[ 5][5]*Depl[ 5]+
-            J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
-            J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
+    JtD[0] =   J( 0,0)*Depl[ 0]+/*J( 1,0)*Depl[ 1]+  J( 2,0)*Depl[ 2]+*/
+            J( 3,0)*Depl[ 3]+/*J( 4,0)*Depl[ 4]+  J( 5,0)*Depl[ 5]+*/
+            J( 6,0)*Depl[ 6]+/*J( 7,0)*Depl[ 7]+  J( 8,0)*Depl[ 8]+*/
+            J( 9,0)*Depl[ 9] /*J(10,0)*Depl[10]+  J(11,0)*Depl[11]*/;
+    JtD[1] = /*J( 0,1)*Depl[ 0]+*/J( 1,1)*Depl[ 1]+/*J( 2,1)*Depl[ 2]+*/
+            /*J( 3,1)*Depl[ 3]+*/J( 4,1)*Depl[ 4]+/*J( 5,1)*Depl[ 5]+*/
+            /*J( 6,1)*Depl[ 6]+*/J( 7,1)*Depl[ 7]+/*J( 8,1)*Depl[ 8]+*/
+            /*J( 9,1)*Depl[ 9]+*/J(10,1)*Depl[10] /*J(11,1)*Depl[11]*/;
+    JtD[2] = /*J( 0,2)*Depl[ 0]+  J( 1,2)*Depl[ 1]+*/J( 2,2)*Depl[ 2]+
+            /*J( 3,2)*Depl[ 3]+  J( 4,2)*Depl[ 4]+*/J( 5,2)*Depl[ 5]+
+            /*J( 6,2)*Depl[ 6]+  J( 7,2)*Depl[ 7]+*/J( 8,2)*Depl[ 8]+
+            /*J( 9,2)*Depl[ 9]+  J(10,2)*Depl[10]+*/J(11,2)*Depl[11]  ;
+    JtD[3] =   J( 0,3)*Depl[ 0]+  J( 1,3)*Depl[ 1]+/*J( 2,3)*Depl[ 2]+*/
+            J( 3,3)*Depl[ 3]+  J( 4,3)*Depl[ 4]+/*J( 5,3)*Depl[ 5]+*/
+            J( 6,3)*Depl[ 6]+  J( 7,3)*Depl[ 7]+/*J( 8,3)*Depl[ 8]+*/
+            J( 9,3)*Depl[ 9]+  J(10,3)*Depl[10] /*J(11,3)*Depl[11]*/;
+    JtD[4] = /*J( 0,4)*Depl[ 0]+*/J( 1,4)*Depl[ 1]+  J( 2,4)*Depl[ 2]+
+            /*J( 3,4)*Depl[ 3]+*/J( 4,4)*Depl[ 4]+  J( 5,4)*Depl[ 5]+
+            /*J( 6,4)*Depl[ 6]+*/J( 7,4)*Depl[ 7]+  J( 8,4)*Depl[ 8]+
+            /*J( 9,4)*Depl[ 9]+*/J(10,4)*Depl[10]+  J(11,4)*Depl[11]  ;
+    JtD[5] =   J( 0,5)*Depl[ 0]+/*J( 1,5)*Depl[ 1]*/ J( 2,5)*Depl[ 2]+
+            J( 3,5)*Depl[ 3]+/*J( 4,5)*Depl[ 4]*/ J( 5,5)*Depl[ 5]+
+            J( 6,5)*Depl[ 6]+/*J( 7,5)*Depl[ 7]*/ J( 8,5)*Depl[ 8]+
+            J( 9,5)*Depl[ 9]+/*J(10,5)*Depl[10]*/ J(11,5)*Depl[11];
 
     type::VecNoInit<6,Real> KJtD;
-    KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
-            /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
-    KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
-            /*K[1][3]*JtD[3]+  K[1][4]*JtD[4]+  K[1][5]*JtD[5]*/;
-    KJtD[2] =   K[2][0]*JtD[0]+  K[2][1]*JtD[1]+  K[2][2]*JtD[2]
-            /*K[2][3]*JtD[3]+  K[2][4]*JtD[4]+  K[2][5]*JtD[5]*/;
-    KJtD[3] = /*K[3][0]*JtD[0]+  K[3][1]*JtD[1]+  K[3][2]*JtD[2]+*/
-            K[3][3]*JtD[3] /*K[3][4]*JtD[4]+  K[3][5]*JtD[5]*/;
-    KJtD[4] = /*K[4][0]*JtD[0]+  K[4][1]*JtD[1]+  K[4][2]*JtD[2]+*/
-            /*K[4][3]*JtD[3]+*/K[4][4]*JtD[4] /*K[4][5]*JtD[5]*/;
-    KJtD[5] = /*K[5][0]*JtD[0]+  K[5][1]*JtD[1]+  K[5][2]*JtD[2]+*/
-            /*K[5][3]*JtD[3]+  K[5][4]*JtD[4]+*/K[5][5]*JtD[5]  ;
+    KJtD[0] =   K(0,0)*JtD[0]+  K(0,1)*JtD[1]+  K(0,2)*JtD[2]
+            /*K(0,3)*JtD[3]+  K(0,4)*JtD[4]+  K(0,5)*JtD[5]*/;
+    KJtD[1] =   K(1,0)*JtD[0]+  K(1,1)*JtD[1]+  K(1,2)*JtD[2]
+            /*K(1,3)*JtD[3]+  K(1,4)*JtD[4]+  K(1,5)*JtD[5]*/;
+    KJtD[2] =   K(2,0)*JtD[0]+  K(2,1)*JtD[1]+  K(2,2)*JtD[2]
+            /*K(2,3)*JtD[3]+  K(2,4)*JtD[4]+  K(2,5)*JtD[5]*/;
+    KJtD[3] = /*K(3,0)*JtD[0]+  K(3,1)*JtD[1]+  K(3,2)*JtD[2]+*/
+            K(3,3)*JtD[3] /*K(3,4)*JtD[4]+  K(3,5)*JtD[5]*/;
+    KJtD[4] = /*K(4,0)*JtD[0]+  K(4,1)*JtD[1]+  K(4,2)*JtD[2]+*/
+            /*K(4,3)*JtD[3]+*/K(4,4)*JtD[4] /*K(4,5)*JtD[5]*/;
+    KJtD[5] = /*K(5,0)*JtD[0]+  K(5,1)*JtD[1]+  K(5,2)*JtD[2]+*/
+            /*K(5,3)*JtD[3]+  K(5,4)*JtD[4]+*/K(5,5)*JtD[5]  ;
 
     KJtD *= fact;
 
-    F[ 0] =   J[ 0][0]*KJtD[0]+/*J[ 0][1]*KJtD[1]+  J[ 0][2]*KJtD[2]+*/
-            J[ 0][3]*KJtD[3]+/*J[ 0][4]*KJtD[4]+*/J[ 0][5]*KJtD[5]  ;
-    F[ 1] = /*J[ 1][0]*KJtD[0]+*/J[ 1][1]*KJtD[1]+/*J[ 1][2]*KJtD[2]+*/
-            J[ 1][3]*KJtD[3]+  J[ 1][4]*KJtD[4] /*J[ 1][5]*KJtD[5]*/;
-    F[ 2] = /*J[ 2][0]*KJtD[0]+  J[ 2][1]*KJtD[1]+*/J[ 2][2]*KJtD[2]+
-            /*J[ 2][3]*KJtD[3]+*/J[ 2][4]*KJtD[4]+  J[ 2][5]*KJtD[5]  ;
-    F[ 3] =   J[ 3][0]*KJtD[0]+/*J[ 3][1]*KJtD[1]+  J[ 3][2]*KJtD[2]+*/
-            J[ 3][3]*KJtD[3]+/*J[ 3][4]*KJtD[4]+*/J[ 3][5]*KJtD[5]  ;
-    F[ 4] = /*J[ 4][0]*KJtD[0]+*/J[ 4][1]*KJtD[1]+/*J[ 4][2]*KJtD[2]+*/
-            J[ 4][3]*KJtD[3]+  J[ 4][4]*KJtD[4] /*J[ 4][5]*KJtD[5]*/;
-    F[ 5] = /*J[ 5][0]*KJtD[0]+  J[ 5][1]*KJtD[1]+*/J[ 5][2]*KJtD[2]+
-            /*J[ 5][3]*KJtD[3]+*/J[ 5][4]*KJtD[4]+  J[ 5][5]*KJtD[5]  ;
-    F[ 6] =   J[ 6][0]*KJtD[0]+/*J[ 6][1]*KJtD[1]+  J[ 6][2]*KJtD[2]+*/
-            J[ 6][3]*KJtD[3]+/*J[ 6][4]*KJtD[4]+*/J[ 6][5]*KJtD[5]  ;
-    F[ 7] = /*J[ 7][0]*KJtD[0]+*/J[ 7][1]*KJtD[1]+/*J[ 7][2]*KJtD[2]+*/
-            J[ 7][3]*KJtD[3]+  J[ 7][4]*KJtD[4] /*J[ 7][5]*KJtD[5]*/;
-    F[ 8] = /*J[ 8][0]*KJtD[0]+  J[ 8][1]*KJtD[1]+*/J[ 8][2]*KJtD[2]+
-            /*J[ 8][3]*KJtD[3]+*/J[ 8][4]*KJtD[4]+  J[ 8][5]*KJtD[5]  ;
-    F[ 9] =   J[ 9][0]*KJtD[0]+/*J[ 9][1]*KJtD[1]+  J[ 9][2]*KJtD[2]+*/
-            J[ 9][3]*KJtD[3]+/*J[ 9][4]*KJtD[4]+*/J[ 9][5]*KJtD[5]  ;
-    F[10] = /*J[10][0]*KJtD[0]+*/J[10][1]*KJtD[1]+/*J[10][2]*KJtD[2]+*/
-            J[10][3]*KJtD[3]+  J[10][4]*KJtD[4] /*J[10][5]*KJtD[5]*/;
-    F[11] = /*J[11][0]*KJtD[0]+  J[11][1]*KJtD[1]+*/J[11][2]*KJtD[2]+
-            /*J[11][3]*KJtD[3]+*/J[11][4]*KJtD[4]+  J[11][5]*KJtD[5]  ;
+    F[ 0] =   J( 0,0)*KJtD[0]+/*J( 0,1)*KJtD[1]+  J( 0,2)*KJtD[2]+*/
+            J( 0,3)*KJtD[3]+/*J( 0,4)*KJtD[4]+*/J( 0,5)*KJtD[5]  ;
+    F[ 1] = /*J( 1,0)*KJtD[0]+*/J( 1,1)*KJtD[1]+/*J( 1,2)*KJtD[2]+*/
+            J( 1,3)*KJtD[3]+  J( 1,4)*KJtD[4] /*J( 1,5)*KJtD[5]*/;
+    F[ 2] = /*J( 2,0)*KJtD[0]+  J( 2,1)*KJtD[1]+*/J( 2,2)*KJtD[2]+
+            /*J( 2,3)*KJtD[3]+*/J( 2,4)*KJtD[4]+  J( 2,5)*KJtD[5]  ;
+    F[ 3] =   J( 3,0)*KJtD[0]+/*J( 3,1)*KJtD[1]+  J( 3,2)*KJtD[2]+*/
+            J( 3,3)*KJtD[3]+/*J( 3,4)*KJtD[4]+*/J( 3,5)*KJtD[5]  ;
+    F[ 4] = /*J( 4,0)*KJtD[0]+*/J( 4,1)*KJtD[1]+/*J( 4,2)*KJtD[2]+*/
+            J( 4,3)*KJtD[3]+  J( 4,4)*KJtD[4] /*J( 4,5)*KJtD[5]*/;
+    F[ 5] = /*J( 5,0)*KJtD[0]+  J( 5,1)*KJtD[1]+*/J( 5,2)*KJtD[2]+
+            /*J( 5,3)*KJtD[3]+*/J( 5,4)*KJtD[4]+  J( 5,5)*KJtD[5]  ;
+    F[ 6] =   J( 6,0)*KJtD[0]+/*J( 6,1)*KJtD[1]+  J( 6,2)*KJtD[2]+*/
+            J( 6,3)*KJtD[3]+/*J( 6,4)*KJtD[4]+*/J( 6,5)*KJtD[5]  ;
+    F[ 7] = /*J( 7,0)*KJtD[0]+*/J( 7,1)*KJtD[1]+/*J( 7,2)*KJtD[2]+*/
+            J( 7,3)*KJtD[3]+  J( 7,4)*KJtD[4] /*J( 7,5)*KJtD[5]*/;
+    F[ 8] = /*J( 8,0)*KJtD[0]+  J( 8,1)*KJtD[1]+*/J( 8,2)*KJtD[2]+
+            /*J( 8,3)*KJtD[3]+*/J( 8,4)*KJtD[4]+  J( 8,5)*KJtD[5]  ;
+    F[ 9] =   J( 9,0)*KJtD[0]+/*J( 9,1)*KJtD[1]+  J( 9,2)*KJtD[2]+*/
+            J( 9,3)*KJtD[3]+/*J( 9,4)*KJtD[4]+*/J( 9,5)*KJtD[5]  ;
+    F[10] = /*J(10,0)*KJtD[0]+*/J(10,1)*KJtD[1]+/*J(10,2)*KJtD[2]+*/
+            J(10,3)*KJtD[3]+  J(10,4)*KJtD[4] /*J(10,5)*KJtD[5]*/;
+    F[11] = /*J(11,0)*KJtD[0]+  J(11,1)*KJtD[1]+*/J(11,2)*KJtD[2]+
+            /*J(11,3)*KJtD[3]+*/J(11,4)*KJtD[4]+  J(11,5)*KJtD[5]  ;
 #endif
 }
 
@@ -564,10 +564,10 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
     else if(d_plasticMaxThreshold.getValue() <= 0 )
     {
         Transformation Rot;
-        Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-        Rot[0][1]=Rot[0][2]=0;
-        Rot[1][0]=Rot[1][2]=0;
-        Rot[2][0]=Rot[2][1]=0;
+        Rot(0,0)=Rot(1,1)=Rot(2,2)=1;
+        Rot(0,1)=Rot(0,2)=0;
+        Rot(1,0)=Rot(1,2)=0;
+        Rot(2,0)=Rot(2,1)=0;
 
 
         StiffnessMatrix JKJt,tmp;
@@ -588,7 +588,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
 
             for(int j=0; j<12; ++j)
             {
-                if(JKJt[i][j]!=0)
+                if(JKJt(i,j)!=0)
                 {
                     Index col = index[j/3]*3+j%3;
                     // search if the vertex is already take into account by another element
@@ -600,9 +600,9 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
                     }
 
                     if( result==_stiffnesses[row].end() )
-                        _stiffnesses[row].push_back( Col_Value(col,JKJt[i][j] )  );
+                        _stiffnesses[row].push_back( Col_Value(col,JKJt(i,j) )  );
                     else
-                        (*result).second += JKJt[i][j];
+                        (*result).second += JKJt(i,j);
                 }
             }
         }
@@ -670,38 +670,38 @@ inline SReal TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const core:
 
                 /// The following may be doing F = J*(K*(J.multTranspose(D))) ?
                 VoigtTensor JtD;
-                JtD[0] = J[ 0][0]*D[ 0]+ J[ 3][0]*D[ 3]+ J[ 6][0]*D[ 6]+ J[ 9][0]*D[ 9];
-                JtD[1] = J[ 1][1]*D[ 1]+ J[ 4][1]*D[ 4]+ J[ 7][1]*D[ 7]+ J[10][1]*D[10];
-                JtD[2] = J[ 2][2]*D[ 2]+ J[ 5][2]*D[ 5]+ J[ 8][2]*D[ 8]+ J[11][2]*D[11];
-                JtD[3] = J[ 0][3]*D[ 0]+ J[ 1][3]*D[ 1]+ J[ 3][3]*D[ 3]+ J[ 4][3]*D[ 4]+
-                        J[ 6][3]*D[ 6]+ J[ 7][3]*D[ 7]+ J[ 9][3]*D[ 9]+ J[10][3]*D[10];
-                JtD[4] = J[ 1][4]*D[ 1]+ J[ 2][4]*D[ 2]+ J[ 4][4]*D[ 4]+ J[ 5][4]*D[ 5]+
-                        J[ 7][4]*D[ 7]+ J[ 8][4]*D[ 8]+ J[10][4]*D[10]+ J[11][4]*D[11];
-                JtD[5] = J[ 0][5]*D[ 0]+ J[ 2][5]*D[ 2]+ J[ 3][5]*D[ 3]+ J[ 5][5]*D[ 5]+
-                        J[ 6][5]*D[ 6]+ J[ 8][5]*D[ 8]+ J[ 9][5]*D[ 9]+ J[11][5]*D[11];
+                JtD[0] = J( 0,0)*D[ 0]+ J( 3,0)*D[ 3]+ J( 6,0)*D[ 6]+ J( 9,0)*D[ 9];
+                JtD[1] = J( 1,1)*D[ 1]+ J( 4,1)*D[ 4]+ J( 7,1)*D[ 7]+ J(10,1)*D[10];
+                JtD[2] = J( 2,2)*D[ 2]+ J( 5,2)*D[ 5]+ J( 8,2)*D[ 8]+ J(11,2)*D[11];
+                JtD[3] = J( 0,3)*D[ 0]+ J( 1,3)*D[ 1]+ J( 3,3)*D[ 3]+ J( 4,3)*D[ 4]+
+                        J( 6,3)*D[ 6]+ J( 7,3)*D[ 7]+ J( 9,3)*D[ 9]+ J(10,3)*D[10];
+                JtD[4] = J( 1,4)*D[ 1]+ J( 2,4)*D[ 2]+ J( 4,4)*D[ 4]+ J( 5,4)*D[ 5]+
+                        J( 7,4)*D[ 7]+ J( 8,4)*D[ 8]+ J(10,4)*D[10]+ J(11,4)*D[11];
+                JtD[5] = J( 0,5)*D[ 0]+ J( 2,5)*D[ 2]+ J( 3,5)*D[ 3]+ J( 5,5)*D[ 5]+
+                        J( 6,5)*D[ 6]+ J( 8,5)*D[ 8]+ J( 9,5)*D[ 9]+ J(11,5)*D[11];
 
 
                 VoigtTensor KJtD;
-                KJtD[0] = K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2];
-                KJtD[1] = K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2];
-                KJtD[2] = K[2][0]*JtD[0]+  K[2][1]*JtD[1]+  K[2][2]*JtD[2];
-                KJtD[3] = K[3][3]*JtD[3] ;
-                KJtD[4] = K[4][4]*JtD[4];
-                KJtD[5] = K[5][5]*JtD[5]  ;
+                KJtD[0] = K(0,0)*JtD[0]+  K(0,1)*JtD[1]+  K(0,2)*JtD[2];
+                KJtD[1] = K(1,0)*JtD[0]+  K(1,1)*JtD[1]+  K(1,2)*JtD[2];
+                KJtD[2] = K(2,0)*JtD[0]+  K(2,1)*JtD[1]+  K(2,2)*JtD[2];
+                KJtD[3] = K(3,3)*JtD[3] ;
+                KJtD[4] = K(4,4)*JtD[4];
+                KJtD[5] = K(5,5)*JtD[5]  ;
 
-                F[ 0] = J[ 0][0]*KJtD[0]+ J[ 0][3]*KJtD[3]+ J[ 0][5]*KJtD[5];
-                F[ 1] = J[ 1][1]*KJtD[1]+ J[ 1][3]*KJtD[3]+ J[ 1][4]*KJtD[4];
-                F[ 2] = J[ 2][2]*KJtD[2]+ J[ 2][4]*KJtD[4]+ J[ 2][5]*KJtD[5];
-                F[ 3] = J[ 3][0]*KJtD[0]+ J[ 3][3]*KJtD[3]+ J[ 3][5]*KJtD[5];
-                F[ 4] = J[ 4][1]*KJtD[1]+ J[ 4][3]*KJtD[3]+ J[ 4][
-                        4]*KJtD[4];
-                F[ 5] = J[ 5][2]*KJtD[2]+ J[ 5][4]*KJtD[4]+ J[ 5][5]*KJtD[5];
-                F[ 6] = J[ 6][0]*KJtD[0]+ J[ 6][3]*KJtD[3]+ J[ 6][5]*KJtD[5];
-                F[ 7] = J[ 7][1]*KJtD[1]+ J[ 7][3]*KJtD[3]+ J[ 7][4]*KJtD[4];
-                F[ 8] = J[ 8][2]*KJtD[2]+ J[ 8][4]*KJtD[4]+ J[ 8][5]*KJtD[5];
-                F[ 9] = J[ 9][0]*KJtD[0]+ J[ 9][3]*KJtD[3]+ J[ 9][5]*KJtD[5];
-                F[10] = J[10][1]*KJtD[1]+ J[10][3]*KJtD[3]+ J[10][4]*KJtD[4];
-                F[11] = J[11][2]*KJtD[2]+ J[11][4]*KJtD[4]+ J[11][5]*KJtD[5];
+                F[ 0] = J( 0,0)*KJtD[0]+ J( 0,3)*KJtD[3]+ J( 0,5)*KJtD[5];
+                F[ 1] = J( 1,1)*KJtD[1]+ J( 1,3)*KJtD[3]+ J( 1,4)*KJtD[4];
+                F[ 2] = J( 2,2)*KJtD[2]+ J( 2,4)*KJtD[4]+ J( 2,5)*KJtD[5];
+                F[ 3] = J( 3,0)*KJtD[0]+ J( 3,3)*KJtD[3]+ J( 3,5)*KJtD[5];
+                F[ 4] = J( 4,1)*KJtD[1]+ J( 4,3)*KJtD[3]+ J( 4,
+                        4)*KJtD[4];
+                F[ 5] = J( 5,2)*KJtD[2]+ J( 5,4)*KJtD[4]+ J( 5,5)*KJtD[5];
+                F[ 6] = J( 6,0)*KJtD[0]+ J( 6,3)*KJtD[3]+ J( 6,5)*KJtD[5];
+                F[ 7] = J( 7,1)*KJtD[1]+ J( 7,3)*KJtD[3]+ J( 7,4)*KJtD[4];
+                F[ 8] = J( 8,2)*KJtD[2]+ J( 8,4)*KJtD[4]+ J( 8,5)*KJtD[5];
+                F[ 9] = J( 9,0)*KJtD[0]+ J( 9,3)*KJtD[3]+ J( 9,5)*KJtD[5];
+                F[10] = J(10,1)*KJtD[1]+ J(10,3)*KJtD[3]+ J(10,4)*KJtD[4];
+                F[11] = J(11,2)*KJtD[2]+ J(11,4)*KJtD[4]+ J(11,5)*KJtD[5];
 
                 // Compute potentialEnergy
                 energyPotential += dot(Deriv( F[0], F[1], F[2] ) ,-Deriv( D[0], D[1], D[2]));
@@ -764,15 +764,15 @@ inline void TetrahedronFEMForceField<DataTypes>::computeRotationLarge( Transform
     const Coord edgez = cross( edgex, edgey ).normalized();
                 edgey = cross( edgez, edgex ); //edgey is unit vector because edgez and edgex are orthogonal unit vectors
 
-    r[0][0] = edgex[0];
-    r[0][1] = edgex[1];
-    r[0][2] = edgex[2];
-    r[1][0] = edgey[0];
-    r[1][1] = edgey[1];
-    r[1][2] = edgey[2];
-    r[2][0] = edgez[0];
-    r[2][1] = edgez[1];
-    r[2][2] = edgez[2];
+    r(0,0) = edgex[0];
+    r(0,1) = edgex[1];
+    r(0,2) = edgex[2];
+    r(1,0) = edgey[0];
+    r(1,1) = edgey[1];
+    r(1,2) = edgey[2];
+    r(2,0) = edgez[0];
+    r(2,1) = edgez[1];
+    r(2,2) = edgez[2];
 
     // TODO handle degenerated cases like in the SVD method
 }
@@ -783,19 +783,19 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Mat33& R, unsigned 
 { 
     if(method == SMALL)
     {
-        R[0][0] = 1.0 ; R[1][1] = 1.0 ; R[2][2] = 1.0 ;
-        R[0][1] = 0.0 ; R[0][2] = 0.0 ;
-        R[1][0] = 0.0 ; R[1][2] = 0.0 ;
-        R[2][0] = 0.0 ; R[2][1] = 0.0 ;
+        R(0,0) = 1.0 ; R(1,1) = 1.0 ; R(2,2) = 1.0 ;
+        R(0,1) = 0.0 ; R(0,2) = 0.0 ;
+        R(1,0) = 0.0 ; R(1,2) = 0.0 ;
+        R(2,0) = 0.0 ; R(2,1) = 0.0 ;
         msg_warning() << "getRotation called but no rotation computed because case== SMALL";
         return;
     }
 
     core::topology::BaseMeshTopology::TetrahedraAroundVertex liste_tetra = this->l_topology->getTetrahedraAroundVertex(nodeIdx);
 
-    R[0][0] = 0.0 ; R[0][1] = 0.0 ; R[0][2] = 0.0 ;
-    R[1][0] = 0.0 ; R[1][1] = 0.0 ;  R[1][2] = 0.0 ;
-    R[2][0] = 0.0 ; R[2][1] = 0.0 ; R[2][2] = 0.0 ;
+    R(0,0) = 0.0 ; R(0,1) = 0.0 ; R(0,2) = 0.0 ;
+    R(1,0) = 0.0 ; R(1,1) = 0.0 ;  R(1,2) = 0.0 ;
+    R(2,0) = 0.0 ; R(2,1) = 0.0 ; R(2,2) = 0.0 ;
 
     std::size_t numTetra=liste_tetra.size();
     if (numTetra==0)
@@ -808,8 +808,8 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Mat33& R, unsigned 
         }
         else
         {
-            R[0][0] = R[1][1] = R[2][2] = 1.0 ;
-            R[0][1] = R[0][2] = R[1][0] = R[1][2] = R[2][0] = R[2][1] = 0.0 ;
+            R(0,0) = R(1,1) = R(2,2) = 1.0 ;
+            R(0,1) = R(0,2) = R(1,0) = R(1,2) = R(2,0) = R(2,1) = 0.0 ;
         }
         return;
     }
@@ -822,9 +822,9 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Mat33& R, unsigned 
     }
 
     // on "moyenne"
-    R[0][0] = R[0][0]/numTetra ; R[0][1] = R[0][1]/numTetra ; R[0][2] = R[0][2]/numTetra ;
-    R[1][0] = R[1][0]/numTetra ; R[1][1] = R[1][1]/numTetra ; R[1][2] = R[1][2]/numTetra ;
-    R[2][0] = R[2][0]/numTetra ; R[2][1] = R[2][1]/numTetra ; R[2][2] = R[2][2]/numTetra ;
+    R(0,0) = R(0,0)/numTetra ; R(0,1) = R(0,1)/numTetra ; R(0,2) = R(0,2)/numTetra ;
+    R(1,0) = R(1,0)/numTetra ; R(1,1) = R(1,1)/numTetra ; R(1,2) = R(1,2)/numTetra ;
+    R(2,0) = R(2,0)/numTetra ; R(2,1) = R(2,1)/numTetra ; R(2,2) = R(2,2)/numTetra ;
 
     type::Mat<3,3,Real> Rmoy;
     helper::Decompose<Real>::polarDecomposition( R, Rmoy );
@@ -907,18 +907,18 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
     Displacement F;
     if(d_updateStiffnessMatrix.getValue())
     {
-        strainDisplacements[elementIndex][0][0]   = ( - deforme[2][1]*deforme[3][2] );
-        strainDisplacements[elementIndex][1][1] = ( deforme[2][0]*deforme[3][2] - deforme[1][0]*deforme[3][2] );
-        strainDisplacements[elementIndex][2][2]   = ( deforme[2][1]*deforme[3][0] - deforme[2][0]*deforme[3][1] + deforme[1][0]*deforme[3][1] - deforme[1][0]*deforme[2][1] );
+        strainDisplacements[elementIndex](0,0)   = ( - deforme[2][1]*deforme[3][2] );
+        strainDisplacements[elementIndex](1,1) = ( deforme[2][0]*deforme[3][2] - deforme[1][0]*deforme[3][2] );
+        strainDisplacements[elementIndex](2,2)   = ( deforme[2][1]*deforme[3][0] - deforme[2][0]*deforme[3][1] + deforme[1][0]*deforme[3][1] - deforme[1][0]*deforme[2][1] );
 
-        strainDisplacements[elementIndex][3][0]   = ( deforme[2][1]*deforme[3][2] );
-        strainDisplacements[elementIndex][4][1]  = ( - deforme[2][0]*deforme[3][2] );
-        strainDisplacements[elementIndex][5][2]   = ( - deforme[2][1]*deforme[3][0] + deforme[2][0]*deforme[3][1] );
+        strainDisplacements[elementIndex](3,0)   = ( deforme[2][1]*deforme[3][2] );
+        strainDisplacements[elementIndex](4,1)  = ( - deforme[2][0]*deforme[3][2] );
+        strainDisplacements[elementIndex](5,2)   = ( - deforme[2][1]*deforme[3][0] + deforme[2][0]*deforme[3][1] );
 
-        strainDisplacements[elementIndex][7][1]  = ( deforme[1][0]*deforme[3][2] );
-        strainDisplacements[elementIndex][8][2]   = ( - deforme[1][0]*deforme[3][1] );
+        strainDisplacements[elementIndex](7,1)  = ( deforme[1][0]*deforme[3][2] );
+        strainDisplacements[elementIndex](8,2)   = ( - deforme[1][0]*deforme[3][1] );
 
-        strainDisplacements[elementIndex][11][2] = ( deforme[1][0]*deforme[2][1] );
+        strainDisplacements[elementIndex](11,2) = ( deforme[1][0]*deforme[2][1] );
     }
 
     if(!d_assembling.getValue())
@@ -930,9 +930,9 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
     }
     else if(d_plasticMaxThreshold.getValue() <= 0 )
     {
-        strainDisplacements[elementIndex][6][0] = 0;
-        strainDisplacements[elementIndex][9][0] = 0;
-        strainDisplacements[elementIndex][10][1] = 0;
+        strainDisplacements[elementIndex](6,0) = 0;
+        strainDisplacements[elementIndex](9,0) = 0;
+        strainDisplacements[elementIndex](10,1) = 0;
 
         StiffnessMatrix RJKJt, RJKJtRt;
         computeStiffnessMatrix(RJKJt,RJKJtRt,materialsStiffnesses[elementIndex], strainDisplacements[elementIndex],rotations[elementIndex]);
@@ -965,11 +965,11 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
 
                 if( result==_stiffnesses[row].end() )
                 {
-                    _stiffnesses[row].push_back( Col_Value(col,RJKJtRt[i][j] )  );
+                    _stiffnesses[row].push_back( Col_Value(col,RJKJtRt(i,j) )  );
                 }
                 else
                 {
-                    (*result).second += RJKJtRt[i][j];
+                    (*result).second += RJKJtRt(i,j);
                 }
             }
         }
@@ -995,9 +995,9 @@ void TetrahedronFEMForceField<DataTypes>::initPolar(Index i, Index& a, Index&b, 
 {
     const VecCoord &initialPoints=d_initialPoints.getValue();
     Transformation A;
-    A[0] = initialPoints[b]-initialPoints[a];
-    A[1] = initialPoints[c]-initialPoints[a];
-    A[2] = initialPoints[d]-initialPoints[a];
+    A(0) = initialPoints[b]-initialPoints[a];
+    A(1) = initialPoints[c]-initialPoints[a];
+    A(2) = initialPoints[d]-initialPoints[a];
     //_initialTransformation[i] = A;
 
     Transformation R_0_1;
@@ -1028,9 +1028,9 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f
     Element index = *elementIt;
 
     Transformation A;
-    A[0] = p[index[1]]-p[index[0]];
-    A[1] = p[index[2]]-p[index[0]];
-    A[2] = p[index[3]]-p[index[0]];
+    A(0) = p[index[1]]-p[index[0]];
+    A(1) = p[index[2]]-p[index[0]];
+    A(2) = p[index[3]]-p[index[0]];
 
     Transformation R_0_2;
     helper::Decompose<Real>::polarDecomposition( A, R_0_2 );
@@ -1089,9 +1089,9 @@ void TetrahedronFEMForceField<DataTypes>::initSVD(Index i, Index& a, Index&b, In
 {
     const VecCoord &initialPoints=d_initialPoints.getValue();
     Transformation A;
-    A[0] = initialPoints[b]-initialPoints[a];
-    A[1] = initialPoints[c]-initialPoints[a];
-    A[2] = initialPoints[d]-initialPoints[a];
+    A(0) = initialPoints[b]-initialPoints[a];
+    A(1) = initialPoints[c]-initialPoints[a];
+    A(2) = initialPoints[d]-initialPoints[a];
     const bool canInvert = _initialTransformation[i].invert( A );
     assert(canInvert);
     SOFA_UNUSED(canInvert);
@@ -1131,9 +1131,9 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
     Element index = *elementIt;
 
     Transformation A;
-    A[0] = p[index[1]]-p[index[0]];
-    A[1] = p[index[2]]-p[index[0]];
-    A[2] = p[index[3]]-p[index[0]];
+    A(0) = p[index[1]]-p[index[0]];
+    A(1) = p[index[2]]-p[index[0]];
+    A(2) = p[index[3]]-p[index[0]];
 
     type::Mat<3,3,Real> R_0_2;
 
@@ -1196,21 +1196,21 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessCorotational( Vec
     Displacement X;
 
     // rotate by rotations[i] transposed
-    X[0]  = rotations[i][0][0] * x[a][0] + rotations[i][1][0] * x[a][1] + rotations[i][2][0] * x[a][2];
-    X[1]  = rotations[i][0][1] * x[a][0] + rotations[i][1][1] * x[a][1] + rotations[i][2][1] * x[a][2];
-    X[2]  = rotations[i][0][2] * x[a][0] + rotations[i][1][2] * x[a][1] + rotations[i][2][2] * x[a][2];
+    X[0]  = rotations[i](0,0) * x[a][0] + rotations[i](1,0) * x[a][1] + rotations[i](2,0) * x[a][2];
+    X[1]  = rotations[i](0,1) * x[a][0] + rotations[i](1,1) * x[a][1] + rotations[i](2,1) * x[a][2];
+    X[2]  = rotations[i](0,2) * x[a][0] + rotations[i](1,2) * x[a][1] + rotations[i](2,2) * x[a][2];
 
-    X[3]  = rotations[i][0][0] * x[b][0] + rotations[i][1][0] * x[b][1] + rotations[i][2][0] * x[b][2];
-    X[4]  = rotations[i][0][1] * x[b][0] + rotations[i][1][1] * x[b][1] + rotations[i][2][1] * x[b][2];
-    X[5]  = rotations[i][0][2] * x[b][0] + rotations[i][1][2] * x[b][1] + rotations[i][2][2] * x[b][2];
+    X[3]  = rotations[i](0,0) * x[b][0] + rotations[i](1,0) * x[b][1] + rotations[i](2,0) * x[b][2];
+    X[4]  = rotations[i](0,1) * x[b][0] + rotations[i](1,1) * x[b][1] + rotations[i](2,1) * x[b][2];
+    X[5]  = rotations[i](0,2) * x[b][0] + rotations[i](1,2) * x[b][1] + rotations[i](2,2) * x[b][2];
 
-    X[6]  = rotations[i][0][0] * x[c][0] + rotations[i][1][0] * x[c][1] + rotations[i][2][0] * x[c][2];
-    X[7]  = rotations[i][0][1] * x[c][0] + rotations[i][1][1] * x[c][1] + rotations[i][2][1] * x[c][2];
-    X[8]  = rotations[i][0][2] * x[c][0] + rotations[i][1][2] * x[c][1] + rotations[i][2][2] * x[c][2];
+    X[6]  = rotations[i](0,0) * x[c][0] + rotations[i](1,0) * x[c][1] + rotations[i](2,0) * x[c][2];
+    X[7]  = rotations[i](0,1) * x[c][0] + rotations[i](1,1) * x[c][1] + rotations[i](2,1) * x[c][2];
+    X[8]  = rotations[i](0,2) * x[c][0] + rotations[i](1,2) * x[c][1] + rotations[i](2,2) * x[c][2];
 
-    X[9]  = rotations[i][0][0] * x[d][0] + rotations[i][1][0] * x[d][1] + rotations[i][2][0] * x[d][2];
-    X[10] = rotations[i][0][1] * x[d][0] + rotations[i][1][1] * x[d][1] + rotations[i][2][1] * x[d][2];
-    X[11] = rotations[i][0][2] * x[d][0] + rotations[i][1][2] * x[d][1] + rotations[i][2][2] * x[d][2];
+    X[9]  = rotations[i](0,0) * x[d][0] + rotations[i](1,0) * x[d][1] + rotations[i](2,0) * x[d][2];
+    X[10] = rotations[i](0,1) * x[d][0] + rotations[i](1,1) * x[d][1] + rotations[i](2,1) * x[d][2];
+    X[11] = rotations[i](0,2) * x[d][0] + rotations[i](1,2) * x[d][1] + rotations[i](2,2) * x[d][2];
 
     Displacement F;
 
@@ -1218,21 +1218,21 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessCorotational( Vec
 
 
     // rotate by rotations[i]
-    f[a][0] -= rotations[i][0][0] *  F[0] +  rotations[i][0][1] * F[1]  + rotations[i][0][2] * F[2];
-    f[a][1] -= rotations[i][1][0] *  F[0] +  rotations[i][1][1] * F[1]  + rotations[i][1][2] * F[2];
-    f[a][2] -= rotations[i][2][0] *  F[0] +  rotations[i][2][1] * F[1]  + rotations[i][2][2] * F[2];
+    f[a][0] -= rotations[i](0,0) *  F[0] +  rotations[i](0,1) * F[1]  + rotations[i](0,2) * F[2];
+    f[a][1] -= rotations[i](1,0) *  F[0] +  rotations[i](1,1) * F[1]  + rotations[i](1,2) * F[2];
+    f[a][2] -= rotations[i](2,0) *  F[0] +  rotations[i](2,1) * F[1]  + rotations[i](2,2) * F[2];
 
-    f[b][0] -= rotations[i][0][0] *  F[3] +  rotations[i][0][1] * F[4]  + rotations[i][0][2] * F[5];
-    f[b][1] -= rotations[i][1][0] *  F[3] +  rotations[i][1][1] * F[4]  + rotations[i][1][2] * F[5];
-    f[b][2] -= rotations[i][2][0] *  F[3] +  rotations[i][2][1] * F[4]  + rotations[i][2][2] * F[5];
+    f[b][0] -= rotations[i](0,0) *  F[3] +  rotations[i](0,1) * F[4]  + rotations[i](0,2) * F[5];
+    f[b][1] -= rotations[i](1,0) *  F[3] +  rotations[i](1,1) * F[4]  + rotations[i](1,2) * F[5];
+    f[b][2] -= rotations[i](2,0) *  F[3] +  rotations[i](2,1) * F[4]  + rotations[i](2,2) * F[5];
 
-    f[c][0] -= rotations[i][0][0] *  F[6] +  rotations[i][0][1] * F[7]  + rotations[i][0][2] * F[8];
-    f[c][1] -= rotations[i][1][0] *  F[6] +  rotations[i][1][1] * F[7]  + rotations[i][1][2] * F[8];
-    f[c][2] -= rotations[i][2][0] *  F[6] +  rotations[i][2][1] * F[7]  + rotations[i][2][2] * F[8];
+    f[c][0] -= rotations[i](0,0) *  F[6] +  rotations[i](0,1) * F[7]  + rotations[i](0,2) * F[8];
+    f[c][1] -= rotations[i](1,0) *  F[6] +  rotations[i](1,1) * F[7]  + rotations[i](1,2) * F[8];
+    f[c][2] -= rotations[i](2,0) *  F[6] +  rotations[i](2,1) * F[7]  + rotations[i](2,2) * F[8];
 
-    f[d][0] -= rotations[i][0][0] *  F[9] +  rotations[i][0][1] * F[10] + rotations[i][0][2] * F[11];
-    f[d][1]	-= rotations[i][1][0] *  F[9] +  rotations[i][1][1] * F[10] + rotations[i][1][2] * F[11];
-    f[d][2]	-= rotations[i][2][0] *  F[9] +  rotations[i][2][1] * F[10] + rotations[i][2][2] * F[11];
+    f[d][0] -= rotations[i](0,0) *  F[9] +  rotations[i](0,1) * F[10] + rotations[i](0,2) * F[11];
+    f[d][1]	-= rotations[i](1,0) *  F[9] +  rotations[i](1,1) * F[10] + rotations[i](1,2) * F[11];
+    f[d][2]	-= rotations[i](2,0) *  F[9] +  rotations[i](2,1) * F[10] + rotations[i](2,2) * F[11];
 
 }
 
@@ -1532,9 +1532,9 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
 
             for (Index k = 0; k < 4; k++) {
                 Index ix = (*it)[k];
-                matVert[k][0] = 1.0;
+                matVert(k,0) = 1.0;
                 for (Index l = 1; l < 4; l++)
-                    matVert[k][l] = X0[ix][l-1];
+                    matVert(k,l) = X0[ix][l-1];
             }
 
             const bool canInvert = type::invertMatrix(elemShapeFun[i], matVert);
@@ -1648,20 +1648,13 @@ void TetrahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams*, b
     if (!this->mstate) return;
     helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::vec_id::write_access::position);
 
-    static const Real max_real = std::numeric_limits<Real>::max();
-    static const Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
-    for (size_t i=0; i<x.size(); i++)
+    type::BoundingBox bbox;
+    for (const auto& p : x )
     {
-        for (int c=0; c<3; c++)
-        {
-            if (x[i][c] > maxBBox[c]) maxBBox[c] = (Real)x[i][c];
-            else if (x[i][c] < minBBox[c]) minBBox[c] = (Real)x[i][c];
-        }
+        bbox.include(p);
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(bbox);
 }
 
 template <class DataTypes>
@@ -1954,7 +1947,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::Base
                 {
                     for (sofa::Index j=0; j < S; j++)
                     {
-                        tmpBlock[n1][n2][i][j] = - tmp[n1*S+i][n2*S+j]*k;
+                        tmpBlock[n1][n2](i,j) = - tmp(n1*S+i,n2*S+j)*k;
                     }
                 }
             }
@@ -2065,7 +2058,7 @@ void TetrahedronFEMForceField<DataTypes>::getRotations(linearalgebra::BaseMatrix
                 for(int i=0; i<3; i++)
                 {
                     const Index ind = e * 9 + j * 3 + i;
-                    diag->getVector()[ind] = (float)R[j][i];
+                    diag->getVector()[ind] = (float)R(j,i);
                 }
             }
         }
@@ -2081,7 +2074,7 @@ void TetrahedronFEMForceField<DataTypes>::getRotations(linearalgebra::BaseMatrix
                 for(int i=0; i<3; i++)
                 {
                     const Index ind = e * 9 + j * 3 + i;
-                    diag->getVector()[ind] = R[j][i];
+                    diag->getVector()[ind] = R(j,i);
                 }
             }
         }
@@ -2093,9 +2086,9 @@ void TetrahedronFEMForceField<DataTypes>::getRotations(linearalgebra::BaseMatrix
             Transformation t;
             getRotation(t,i);
             const int e = offset+i*3;
-            rotations->set(e+0,e+0,t[0][0]); rotations->set(e+0,e+1,t[0][1]); rotations->set(e+0,e+2,t[0][2]);
-            rotations->set(e+1,e+0,t[1][0]); rotations->set(e+1,e+1,t[1][1]); rotations->set(e+1,e+2,t[1][2]);
-            rotations->set(e+2,e+0,t[2][0]); rotations->set(e+2,e+1,t[2][1]); rotations->set(e+2,e+2,t[2][2]);
+            rotations->set(e+0,e+0,t(0,0)); rotations->set(e+0,e+1,t(0,1)); rotations->set(e+0,e+2,t(0,2));
+            rotations->set(e+1,e+0,t(1,0)); rotations->set(e+1,e+1,t(1,1)); rotations->set(e+1,e+2,t(1,2));
+            rotations->set(e+2,e+0,t(2,0)); rotations->set(e+2,e+1,t(2,1)); rotations->set(e+2,e+2,t(2,2));
         }
     }
 }
@@ -2241,19 +2234,19 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             /// compute gradU
             for (Index k = 0; k < 3; k++) {
                 for (Index l = 0; l < 3; l++)  {
-                    gradU[k][l] = 0.0;
+                    gradU(k,l) = 0.0;
                     for (Index m = 0; m < 4; m++)
-                        gradU[k][l] += shf[l+1][m] * U[(*it)[m]][k];
+                        gradU(k,l) += shf(l+1,m) * U[(*it)[m]][k];
                 }
             }
 
             Mat33 strain = ((Real)0.5)*(gradU + gradU.transposed() + gradU.transposed()*gradU);
 
             for (Index i = 0; i < 3; i++)
-                vStrain[i] = strain[i][i];
-            vStrain[3] = strain[1][2];
-            vStrain[4] = strain[0][2];
-            vStrain[5] = strain[0][1];
+                vStrain[i] = strain(i,i);
+            vStrain[3] = strain(1,2);
+            vStrain[4] = strain(0,2);
+            vStrain[5] = strain(0,1);
         }
 
         if (d_computeVonMisesStress.getValue() == 1) {
@@ -2294,9 +2287,9 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             else // POLAR / SVD
             {
                 Transformation A;
-                A[0] = X[index[1]]-X[index[0]];
-                A[1] = X[index[2]]-X[index[0]];
-                A[2] = X[index[3]]-X[index[0]];
+                A(0) = X[index[1]]-X[index[0]];
+                A(1) = X[index[2]]-X[index[0]];
+                A(2) = X[index[3]]-X[index[0]];
 
                 helper::Decompose<Real>::polarDecomposition( A, R_0_2 );
 
@@ -2326,19 +2319,19 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             /// compute gradU
             for (Index k = 0; k < 3; k++) {
                 for (Index l = 0; l < 3; l++)  {
-                    gradU[k][l] = 0.0;
+                    gradU(k,l) = 0.0;
                     for (Index m = 0; m < 4; m++)
-                        gradU[k][l] += shf[l+1][m] * D[3*m+k];
+                        gradU(k,l) += shf(l+1,m) * D[3*m+k];
                 }
             }
 
             Mat33 strain = Real(0.5)*(gradU + gradU.transposed());
 
             for (Index i = 0; i < 3; i++)
-                vStrain[i] = strain[i][i];
-            vStrain[3] = strain[1][2];
-            vStrain[4] = strain[0][2];
-            vStrain[5] = strain[0][1];
+                vStrain[i] = strain(i,i);
+            vStrain[3] = strain(1,2);
+            vStrain[4] = strain(0,2);
+            vStrain[5] = strain(0,1);
         }
 
         Real lambda=elemLambda[el];

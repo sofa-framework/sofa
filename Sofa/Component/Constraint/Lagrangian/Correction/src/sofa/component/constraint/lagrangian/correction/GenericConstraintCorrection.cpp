@@ -135,7 +135,6 @@ void GenericConstraintCorrection::removeConstraintSolver(ConstraintSolver *s)
 
 void GenericConstraintCorrection::rebuildSystem(SReal massFactor, SReal forceFactor)
 {
-    l_linearSolver.get()->rebuildSystem(massFactor, forceFactor);
 }
 
 void GenericConstraintCorrection::addComplianceInConstraintSpace(const ConstraintParams *cparams, BaseMatrix* W)

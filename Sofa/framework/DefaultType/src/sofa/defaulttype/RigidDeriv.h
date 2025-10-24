@@ -79,7 +79,7 @@ public:
 
     template<typename real2>
     constexpr RigidDeriv(const type::Vec<6, real2>& v)
-        : vCenter(type::Vec<3, real2>(v.data())), vOrientation(type::Vec<3, real2>(v.data() + 3))
+        : vCenter(type::Vec<3, real2>(v[0], v[1], v[2])), vOrientation(type::Vec<3, real2>(v[3], v[4], v[5]))
     {}
 
     template<typename real2>

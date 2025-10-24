@@ -25,18 +25,14 @@ sofa_find_package(CImg QUIET)
 if(NOT CImg_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
     message("CImgPlugin: DEPENDENCY CImg NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching CImg...")
 
-    include(FetchContent)
-    FetchContent_Declare(CImg
+    sofa_fetch_dependency(CImg
             GIT_REPOSITORY https://github.com/GreycLab/CImg
             GIT_TAG        v.3.3.2
+            DONT_BUILD
     )
 
-    FetchContent_GetProperties(CImg)
-    if(NOT CImg_POPULATED)
-        FetchContent_Populate(CImg)
-        set(CIMG_DIR ${cimg_SOURCE_DIR})
-        sofa_find_package(CImg REQUIRED)
-    endif()
+    set(CIMG_DIR ${CImg_SOURCE_DIR})
+    sofa_find_package(CImg REQUIRED)
 elseif (NOT CImg_FOUND)
     message(FATAL_ERROR "CImgPlugin: DEPENDENCY CImg NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install cimg-dev, or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
 endif()
