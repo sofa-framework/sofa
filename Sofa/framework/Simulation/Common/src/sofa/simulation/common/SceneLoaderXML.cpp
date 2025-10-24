@@ -138,6 +138,8 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     }
 
     Node::SPtr root = down_cast<Node> ( baseroot );
+    root->setInstanciationSourceFileName(xml->getSrcFile());
+    root->setInstanciationSourceFilePos(xml->getSrcLine());
 
     return root;
 }
