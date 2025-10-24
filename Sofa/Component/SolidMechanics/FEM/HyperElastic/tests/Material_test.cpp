@@ -186,8 +186,7 @@ void testElasticityTensorFromSecondPiolaKirchhoff(
 
     static constexpr Real h = 1e-6;
 
-    // for (sofa::Size i = 0; i < Matrix6::size(); ++i)
-    for (sofa::Size i : {0, 2, 5}) //only the diagonal terms
+    for (sofa::Size i = 0; i < Matrix6::size(); ++i)
     {
         const MatrixSym pk2Plus =
                 perturbedPK2(material, materialParameters, strain, h, i);
@@ -199,12 +198,13 @@ void testElasticityTensorFromSecondPiolaKirchhoff(
         const MatrixSym centralDifference = (pk2Plus - pk2Minus) / (2 * h);
 
         //ElasticityTensor = 2 * dPK2/dC
-        const MatrixSym elasticityTensorApprox = 2 * centralDifference;
+        MatrixSym elasticityTensorApprox = 2 * centralDifference;
 
         //compare the approximation of the elasticity tensor
-        // for (sofa::Size j = 0; j < Matrix6::size(); ++j)
-        for (sofa::Size j : {0, 2, 5}) //only the diagonal terms
+        for (sofa::Size j = 0; j < Matrix6::size(); ++j)
         {
+            // Off-diagonal terms are stored doubled; the tensor approximation must be scaled accordingly
+            if (j == 1 || j == 3 || j == 4) elasticityTensorApprox[j] *= 2.;
             EXPECT_NEAR(elasticityTensor(i,j), elasticityTensorApprox[j], 1e-7) << "i = " << i << ", j = " << j;
         }
     }
