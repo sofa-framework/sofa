@@ -878,22 +878,14 @@ void SubsetTopology<DataTypes>::computeBBox(const core::ExecParams*  params , bo
     SOFA_UNUSED(onlyVisible);
 
     const type::vector<Vec6>& vb=boxes.getValue();
-    const Real max_real = std::numeric_limits<Real>::max();
-    const Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
-
-    for (unsigned int bi=0; bi<vb.size(); ++bi)
+    type::BoundingBox bbox;
+    for (const auto& b : vb)
     {
-        const Vec6& b=vb[bi];
-        if (b[0] < minBBox[0]) minBBox[0] = b[0];
-        if (b[1] < minBBox[1]) minBBox[1] = b[1];
-        if (b[2] < minBBox[2]) minBBox[2] = b[2];
-        if (b[3] > maxBBox[0]) maxBBox[0] = b[3];
-        if (b[4] > maxBBox[1]) maxBBox[1] = b[4];
-        if (b[5] > maxBBox[2]) maxBBox[2] = b[5];
+        bbox.include(type::Vec3{b[0], b[1], b[2]});
+        bbox.include(type::Vec3{b[3], b[4], b[5]});
     }
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+
+    this->f_bbox.setValue(bbox);
 }
 
 } //namespace sofa::component::engine::select

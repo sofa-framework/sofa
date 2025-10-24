@@ -238,7 +238,7 @@ public:
         }
 
         /// This constructor should be used only if really necessary
-        Id(unsigned int id) : id(id) {}
+        Id(unsigned int idTimer) : id(idTimer) {}
 
         /// Any operation requiring an int can be used on an id using this conversion
         operator unsigned int() const { return id; }
@@ -380,7 +380,7 @@ public:
     {
     public:
         IdTimer id;
-        TimerVar(IdTimer id) : id(id)
+        TimerVar(IdTimer idtimer) : id(idtimer)
         {
             begin(id);
         }
@@ -451,29 +451,29 @@ public:
         const char* idStr;
         const IdObj obj;
         const char* objStr;
-        StepVar(IdStep id) : id(id), idStr(nullptr), objStr(nullptr)
+        StepVar(IdStep idTimer) : id(idTimer), idStr(nullptr), objStr(nullptr)
         {
             stepBegin(id);
         }
-        StepVar(const char* idStr) : idStr(idStr), objStr(nullptr)
+        StepVar(const char* idTimerStr) : idStr(idTimerStr), objStr(nullptr)
         {
             stepBegin(idStr);
         }
-        StepVar(IdStep id, IdObj obj) : id(id), idStr(nullptr), obj(obj), objStr(nullptr)
+        StepVar(IdStep idTimer, IdObj objTimer) : id(idTimer), idStr(nullptr), obj(objTimer), objStr(nullptr)
         {
             stepBegin(id, obj);
         }
-        StepVar(const char* idStr, const char* objStr) : idStr(idStr), objStr(objStr)
+        StepVar(const char* idTimerStr, const char* objTimerStr) : idStr(idTimerStr), objStr(objTimerStr)
         {
             stepBegin(idStr, objStr);
         }
         template<class T>
-        StepVar(IdStep id, T* obj) : id(id), idStr(nullptr), obj(IdObj(obj->getName())), objStr(nullptr)
+        StepVar(IdStep idTimer, T* objTimer) : id(idTimer), idStr(nullptr), obj(IdObj(objTimer->getName())), objStr(nullptr)
         {
             stepBegin(id, obj);
         }
         template<class T>
-        StepVar(const char* idStr, T* obj) : idStr(idStr), objStr(obj->getName().c_str())
+        StepVar(const char* idTimerStr, T* objTimer) : idStr(idTimerStr), objStr(objTimer->getName().c_str())
         {
             stepBegin(idStr, objStr);
         }

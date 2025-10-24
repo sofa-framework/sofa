@@ -365,26 +365,23 @@ void FixedProjectiveConstraint<DataTypes>::computeBBoxForIndices(const type::vec
 {
     using Real = typename DataTypes::Real;
 
-    constexpr Real max_real = std::numeric_limits<Real>::max();
-    constexpr Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
-
     const auto drawSize = static_cast<Real>(d_drawSize.getValue());
 
     const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
-    for (const auto index : indices)
+    type::BoundingBox bbox;
+    for (const auto index : indices )
     {
         const auto x3d = DataTypes::getCPos(x[index]);
 
-        for (unsigned int i = 0; i < x3d.size(); ++i)
+        for (unsigned int i = 0; i < DataTypes::Coord::spatial_dimensions && i<3; ++i)
         {
-            maxBBox[i] = std::max(x3d[i] + drawSize, maxBBox[i]);
-            minBBox[i] = std::min(x3d[i] - drawSize, minBBox[i]);
+            bbox.maxBBox()[i] = std::max(static_cast<SReal>(x3d[i] + drawSize), bbox.maxBBox()[i]);
+            bbox.minBBox()[i] = std::min(static_cast<SReal>(x3d[i] - drawSize), bbox.minBBox()[i]);
         }
     }
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+
+    this->f_bbox.setValue(bbox);
 }
 
 template <class DataTypes>

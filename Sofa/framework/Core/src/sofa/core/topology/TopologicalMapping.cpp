@@ -94,16 +94,20 @@ bool TopologicalMapping::checkTopologyInputTypes()
         return false;
     }
 
+    assert(fromModel.get());
+    assert(toModel.get());
 
-    if (fromModel.get()->getTopologyType() != m_inputType)
+    const ElementType inputTopologyType = fromModel->getTopologyType();
+    if (inputTopologyType != m_inputType)
     {
-        msg_error() << "The type of the input topology '" << fromModel.getPath() << "' does not correspond to a valid '" << elementTypeToString(m_inputType) << "' topology.";
+        msg_error() << "The type of the input topology '" << fromModel.getPath() << "' (" << elementTypeToString(inputTopologyType) << ") does not correspond to a valid '" << elementTypeToString(m_inputType) << "' topology.";
         return false;
     }
 
-    if (toModel.get()->getTopologyType() != m_outputType)
+    const ElementType outputTopologyType = toModel->getTopologyType();
+    if (outputTopologyType != m_outputType)
     {
-        msg_error() << "The type of the output topology '" << toModel.getPath() << "' does not correspond to a valid '" << elementTypeToString(m_outputType) << "' topology.";
+        msg_error() << "The type of the output topology '" << toModel.getPath() << "' (" << elementTypeToString(outputTopologyType) << ") does not correspond to a valid '" << elementTypeToString(m_outputType) << "' topology.";
         return false;
     }
 

@@ -27,7 +27,7 @@
     <VisualStyle displayFlags="showForceFields"/>
     <ConstraintAttachButtonSetting /> <!-- The presence of this component sets the mouse interaction to Lagrangian-based constraints at the GUI launch -->
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver maxIterations="200" tolerance="1.0e-8"/>
+    <ProjectedGaussSeidelConstraintSolver maxIterations="200" tolerance="1.0e-8"/>
     <CollisionPipeline name="Pipeline" />
     <BruteForceBroadPhase name="BroadPhase" />
     <BVHNarrowPhase name="NarrowPhase" />
@@ -36,9 +36,11 @@
 
     <Node name="BEAMVOLUME">
         <RegularGridTopology name="HexaTop" n="25 5 5" min="0 0 0" max="0.5 0.1 0.1"/>
-        <TetrahedronSetTopologyContainer name="Container" position="@HexaTop.position"/>
-        <TetrahedronSetTopologyModifier name="Modifier"/>
-        <Hexa2TetraTopologicalMapping input="@HexaTop" output="@Container" swapping="true"/>
+        <Node name="tetraGrid">
+            <TetrahedronSetTopologyContainer name="Container" position="@HexaTop.position"/>
+            <TetrahedronSetTopologyModifier name="Modifier"/>
+            <Hexa2TetraTopologicalMapping input="@HexaTop" output="@Container" swapping="true"/>
+        </Node>
     </Node>
 
     <Node name="FEM">
@@ -47,7 +49,7 @@
         <SparseLDLSolver name="precond" template="CompressedRowSparseMatrixMat3x3" parallelInverseProduct="true" />
 
         <TetrahedronSetTopologyContainer name="Container" position="@../BEAMVOLUME/HexaTop.position"
-                                         tetrahedra="@../BEAMVOLUME/Container.tetrahedra"/>
+                                         tetrahedra="@../BEAMVOLUME/tetraGrid/Container.tetrahedra"/>
         <TetrahedronSetTopologyModifier name="Modifier"/>
 
         <MechanicalObject name="mstate" template="Vec3d" src="@Container"/>

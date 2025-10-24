@@ -214,8 +214,8 @@ void VisualInitVisitor::processVisualModel(simulation::Node*, core::visual::Visu
     vm->initVisual(vparams);
 }
 
-VisualComputeBBoxVisitor::VisualComputeBBoxVisitor(const core::ExecParams* params)
-    : Visitor(params)
+VisualComputeBBoxVisitor::VisualComputeBBoxVisitor(const core::ExecParams* eparams)
+    : Visitor(eparams)
 {
     minBBox[0] = minBBox[1] = minBBox[2] = 1e10;
     maxBBox[0] = maxBBox[1] = maxBBox[2] = -1e10;

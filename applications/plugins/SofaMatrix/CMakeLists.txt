@@ -7,15 +7,19 @@ sofa_find_package(Sofa.Component.Constraint.Lagrangian.Solver REQUIRED)
 sofa_find_package(Sofa.Component.LinearSolver.Direct REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)
 
-find_package(metis 5.1.0 EXACT QUIET)
+# Try to find metis with:
+# - >= 5.2.1
+# - EXACT 5.1.0
+# Versions newer than 5.1 and older than 5.2.1 are known to be broken
+find_package(metis 5.2.1 QUIET)
 if(NOT metis_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
     message("${PROJECT_NAME}: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching metis...")
     sofa_fetch_dependency(metis
             GIT_REPOSITORY https://github.com/sofa-framework/METIS
-            GIT_TAG v5.1.0-ModernInstall
+            GIT_TAG v5.2.1-ModernInstall
     )
 elseif (NOT metis_FOUND)
-    message(FATAL_ERROR "Sofa.Metis: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install metis (version=5.1.0), or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
+    message(FATAL_ERROR "${PROJECT_NAME}: DEPENDENCY metis NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install metis (version=5.2.1), or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
 endif()
 
 

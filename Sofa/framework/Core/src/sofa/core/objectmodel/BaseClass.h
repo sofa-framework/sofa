@@ -243,10 +243,10 @@ public:
 { return GetClass(); }                                              \
     static const char* HeaderFileLocation() { return __FILE__; }        \
     ::sofa::core::objectmodel::BaseLink::InitLink<MyType>               \
-    initLink(const char* name, const char* help)                        \
+    initLink(const char* n, const char* help)                        \
 {                                                                   \
     return ::sofa::core::objectmodel::BaseLink::InitLink<MyType>    \
-    (this, name, help);                                             \
+    (this, n, help);                                             \
 }
 
 // Do not use this macro directly, use SOFA_CLASS instead

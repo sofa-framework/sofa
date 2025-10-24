@@ -7,7 +7,7 @@
     <RequiredPlugin pluginName="Sensable" />
 
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver />
+    <ProjectedGaussSeidelConstraintSolver />
 
     <CollisionPipeline depth="8" />
     <BruteForceBroadPhase/>
