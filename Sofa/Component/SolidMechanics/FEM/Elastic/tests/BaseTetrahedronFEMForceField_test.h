@@ -137,7 +137,7 @@ public:
             Sofa.Component.Constraint.Projective
         });
 
-        simpleapi::createObject(m_root, "GenericConstraintSolver", { {"tolerance", "1e-3"}, {"maxIt", "1000"} });
+        simpleapi::createObject(m_root, "ProjectedGaussSeidelConstraintSolver", { {"tolerance", "1e-3"}, {"maxIt", "1000"} });
 
         simpleapi::createObject(m_root, "RegularGridTopology", { {"name", "grid"},
                     {"n", sofa::simpleapi::str(nbrGrid)}, {"min", "0 0 20"}, {"max", "10 40 30"} });

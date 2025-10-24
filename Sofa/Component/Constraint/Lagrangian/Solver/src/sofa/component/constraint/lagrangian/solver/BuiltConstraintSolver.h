@@ -19,58 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/lagrangian/solver/init.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
+#pragma once
+
+#include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
-
-extern void registerNNCGConstraintSolver(sofa::core::ObjectFactory* factory);
-extern void registerProjectedGaussSeidelConstraintSolver(sofa::core::ObjectFactory* factory);
-extern void registerUnbuiltGaussSeidelConstraintSolver(sofa::core::ObjectFactory* factory);
-extern void registerLCPConstraintSolver(sofa::core::ObjectFactory* factory);
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
-}
-
-void initExternalModule()
+/**
+ *  \brief This component implements a generic way of building system for solvers that use a built
+ *  version of the constraint matrix. Any solver that uses a build matrix should inherit from this.
+ *  This component is purely virtual because doSolve is not defined and needs to be defined in the
+ *  inherited class
+ */
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API BuiltConstraintSolver : public GenericConstraintSolver
 {
-    init();
-}
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
 
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
+public:
+    SOFA_CLASS(BuiltConstraintSolver, GenericConstraintSolver);
+    Data<bool> d_multithreading; ///< Build compliances concurrently
 
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-    registerNNCGConstraintSolver(factory);
-    registerProjectedGaussSeidelConstraintSolver(factory);
-    registerUnbuiltGaussSeidelConstraintSolver(factory);
-    registerLCPConstraintSolver(factory);
-}
+    BuiltConstraintSolver();
 
-void init()
-{
-    static bool first = true;
-    if (first)
+    virtual void init() override;
+
+protected:
+    virtual void doBuildSystem( const core::ConstraintParams *cParams, GenericConstraintProblem * problem ,unsigned int numConstraints) override;
+
+private:
+
+    struct ComplianceWrapper
     {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+        using ComplianceMatrixType = sofa::linearalgebra::LPtrFullMatrix<SReal>;
 
-        first = false;
-    }
+        ComplianceWrapper(ComplianceMatrixType& complianceMatrix, bool isMultiThreaded)
+        : m_isMultiThreaded(isMultiThreaded), m_complianceMatrix(complianceMatrix) {}
+
+        ComplianceMatrixType& matrix();
+
+        void assembleMatrix() const;
+
+    private:
+        bool m_isMultiThreaded { false };
+        ComplianceMatrixType& m_complianceMatrix;
+        std::unique_ptr<ComplianceMatrixType> m_threadMatrix;
+    };
+};
 }
-
-} // namespace sofa::component::constraint::lagrangian::solver
