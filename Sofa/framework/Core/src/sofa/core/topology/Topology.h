@@ -84,13 +84,13 @@ public:
     using SetIndex = sofa::topology::SetIndex;
     using SetIndices = sofa::topology::SetIndices;
 
-    using Edge = sofa::topology::Element<sofa::geometry::Edge>;
-    using Triangle = sofa::topology::Element<sofa::geometry::Triangle>;
-    using Quad = sofa::topology::Element<sofa::geometry::Quad>;
-    using Tetrahedron = sofa::topology::Element<sofa::geometry::Tetrahedron>;
-    using Pentahedron = sofa::topology::Element<sofa::geometry::Pentahedron>;
-    using Pyramid = sofa::topology::Element<sofa::geometry::Pyramid>;
-    using Hexahedron = sofa::topology::Element<sofa::geometry::Hexahedron>;
+    using Edge = sofa::topology::Edge;
+    using Triangle = sofa::topology::Triangle;
+    using Quad = sofa::topology::Quad;
+    using Tetrahedron = sofa::topology::Tetrahedron;
+    using Pentahedron = sofa::topology::Pentahedron;
+    using Pyramid = sofa::topology::Pyramid;
+    using Hexahedron = sofa::topology::Hexahedron;
 
     SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("Tetra alias has been deprecated, please use Tetrahedron instead")
     typedef Tetrahedron Tetra;

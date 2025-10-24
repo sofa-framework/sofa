@@ -34,27 +34,28 @@ public:
     SOFA_ABSTRACT_CLASS(BaseMeshTopology, core::topology::Topology);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseMeshTopology)
 
-    typedef sofa::type::vector<Edge> 		        SeqEdges;
-    typedef sofa::type::vector<Triangle>		    SeqTriangles;
-    typedef sofa::type::vector<Quad>		        SeqQuads;
-    typedef sofa::type::vector<Tetra>		        SeqTetrahedra;
-    typedef sofa::type::vector<Hexa>		        SeqHexahedra;
+    typedef sofa::type::vector<Edge>        SeqEdges;
+    typedef sofa::type::vector<Triangle>    SeqTriangles;
+    typedef sofa::type::vector<Quad>        SeqQuads;
+    typedef sofa::type::vector<Tetrahedron> SeqTetrahedra;
+    typedef sofa::type::vector<Hexahedron>  SeqHexahedra;
+
 
     /// @name Deprecated types, for backward-compatibility
     /// @{
-    typedef EdgeID		                LineID;
-    typedef Edge		                Line;
-    typedef SeqEdges	                SeqLines;
+    typedef EdgeID   LineID;
+    typedef Edge     Line;
+    typedef SeqEdges SeqLines;
     /// @}
 
     /// fixed-size neighbors arrays
     /// @{
-    typedef sofa::type::fixed_array<EdgeID,3>		EdgesInTriangle;
-    typedef sofa::type::fixed_array<EdgeID,4>		EdgesInQuad;
-    typedef sofa::type::fixed_array<TriangleID,4>	TrianglesInTetrahedron;
-    typedef sofa::type::fixed_array<EdgeID,6>		EdgesInTetrahedron;
-    typedef sofa::type::fixed_array<QuadID,6>		QuadsInHexahedron;
-    typedef sofa::type::fixed_array<EdgeID,12>    EdgesInHexahedron;
+    typedef sofa::type::fixed_array<sofa::Index, 3>  EdgesInTriangle;
+    typedef sofa::type::fixed_array<sofa::Index, 4>  EdgesInQuad;
+    typedef sofa::type::fixed_array<sofa::Index, 4>  TrianglesInTetrahedron;
+    typedef sofa::type::fixed_array<sofa::Index, 6>  EdgesInTetrahedron;
+    typedef sofa::type::fixed_array<sofa::Index, 6>  QuadsInHexahedron;
+    typedef sofa::type::fixed_array<sofa::Index, 12> EdgesInHexahedron;
 
     static constexpr EdgesInTriangle        InvalidEdgesInTriangles       = type::makeHomogeneousArray<EdgesInTriangle>(sofa::InvalidID);
     static constexpr EdgesInQuad            InvalidEdgesInQuad            = type::makeHomogeneousArray<EdgesInQuad>(sofa::InvalidID);
@@ -67,21 +68,21 @@ public:
 
     /// dynamic-size neighbors arrays
     /// @{
-    typedef sofa::type::vector<PointID>		    VerticesAroundVertex;
-    typedef sofa::type::vector<EdgeID>			EdgesAroundVertex;
-    typedef sofa::type::vector<TriangleID>	    TrianglesAroundVertex;
-    typedef sofa::type::vector<QuadID>			QuadsAroundVertex;
-    typedef sofa::type::vector<TetraID>		    TetrahedraAroundVertex;
-    typedef sofa::type::vector<HexaID>			HexahedraAroundVertex;
-    typedef sofa::type::vector<TriangleID>	    TrianglesAroundEdge;
-    typedef sofa::type::vector<QuadID>			QuadsAroundEdge;
-    typedef sofa::type::vector<TetraID>		    TetrahedraAroundEdge;
-    typedef sofa::type::vector<HexaID>			HexahedraAroundEdge;
-    typedef sofa::type::vector<TetraID>		    TetrahedraAroundTriangle;
-    typedef sofa::type::vector<HexaID>			HexahedraAroundQuad;
+    typedef sofa::type::vector<sofa::Index> VerticesAroundVertex;
+    typedef sofa::type::vector<sofa::Index> EdgesAroundVertex;
+    typedef sofa::type::vector<sofa::Index> TrianglesAroundVertex;
+    typedef sofa::type::vector<sofa::Index> QuadsAroundVertex;
+    typedef sofa::type::vector<sofa::Index> TetrahedraAroundVertex;
+    typedef sofa::type::vector<sofa::Index> HexahedraAroundVertex;
+    typedef sofa::type::vector<sofa::Index> TrianglesAroundEdge;
+    typedef sofa::type::vector<sofa::Index> QuadsAroundEdge;
+    typedef sofa::type::vector<sofa::Index> TetrahedraAroundEdge;
+    typedef sofa::type::vector<sofa::Index> HexahedraAroundEdge;
+    typedef sofa::type::vector<sofa::Index> TetrahedraAroundTriangle;
+    typedef sofa::type::vector<sofa::Index> HexahedraAroundQuad;
     /// @}
 protected:
-    BaseMeshTopology()	;
+    BaseMeshTopology();
 public:
     void init() override;
 
@@ -109,18 +110,18 @@ public:
     /// Random accessors
     /// @{
 
-    virtual Size getNbEdges()                   { return Size(getEdges().size()); }
-    virtual Size getNbTriangles()               { return Size(getTriangles().size()); }
-    virtual Size getNbQuads()                   { return Size(getQuads().size()); }
-    virtual Size getNbTetrahedra()              { return Size(getTetrahedra().size()); }
-    virtual Size getNbHexahedra()	              { return Size(getHexahedra().size()); }
+    virtual Size getNbEdges()                   { return static_cast<Size>(getEdges().size()); }
+    virtual Size getNbTriangles()               { return static_cast<Size>(getTriangles().size()); }
+    virtual Size getNbQuads()                   { return static_cast<Size>(getQuads().size()); }
+    virtual Size getNbTetrahedra()              { return static_cast<Size>(getTetrahedra().size()); }
+    virtual Size getNbHexahedra()               { return static_cast<Size>(getHexahedra().size()); }
 
-    virtual const Edge getEdge(EdgeID i)             { return getEdges()[i]; }
-    virtual const Triangle getTriangle(TriangleID i) { return getTriangles()[i]; }
-    virtual const Quad getQuad(QuadID i)             { return getQuads()[i]; }
-    virtual const Tetra getTetrahedron(TetraID i)    { return getTetrahedra()[i]; }
-    virtual const Hexa getHexahedron(HexaID i)       { return getHexahedra()[i]; }   
-	   
+    virtual const Edge getEdge(EdgeID i)              { return getEdges()[i]; }
+    virtual const Triangle getTriangle(sofa::Index i) { return getTriangles()[i]; }
+    virtual const Quad getQuad(sofa::Index i)         { return getQuads()[i]; }
+    virtual const Tetra getTetrahedron(TetraID i)     { return getTetrahedra()[i]; }
+    virtual const Hexa getHexahedron(HexaID i)        { return getHexahedra()[i]; }
+
     /// Type of higher topology element contains in this container @see ElementType
     virtual sofa::geometry::ElementType getTopologyType() const = 0;
     /// @}
@@ -140,42 +141,42 @@ public:
     /// @name neighbors queries
     /// @{
     /// Returns the set of edges adjacent to a given vertex.
-    virtual const EdgesAroundVertex& getEdgesAroundVertex(PointID i);
+    virtual const EdgesAroundVertex& getEdgesAroundVertex(sofa::Index i);
     /// Returns the set of edges adjacent to a given triangle.
-    virtual const EdgesInTriangle& getEdgesInTriangle(TriangleID i);
+    virtual const EdgesInTriangle& getEdgesInTriangle(sofa::Index i);
     /// Returns the set of edges adjacent to a given quad.
-    virtual const EdgesInQuad& getEdgesInQuad(QuadID i);
+    virtual const EdgesInQuad& getEdgesInQuad(sofa::Index i);
     /// Returns the set of edges adjacent to a given tetrahedron.
-    virtual const EdgesInTetrahedron& getEdgesInTetrahedron(TetraID i);
+    virtual const EdgesInTetrahedron& getEdgesInTetrahedron(sofa::Index i);
     /// Returns the set of edges adjacent to a given hexahedron.
-    virtual const EdgesInHexahedron& getEdgesInHexahedron(HexaID i);
+    virtual const EdgesInHexahedron& getEdgesInHexahedron(sofa::Index i);
     /// Returns the set of triangles adjacent to a given vertex.
-    virtual const TrianglesAroundVertex& getTrianglesAroundVertex(PointID i);
+    virtual const TrianglesAroundVertex& getTrianglesAroundVertex(sofa::Index i);
     /// Returns the set of triangles adjacent to a given edge.
-    virtual const TrianglesAroundEdge& getTrianglesAroundEdge(EdgeID i);
+    virtual const TrianglesAroundEdge& getTrianglesAroundEdge(sofa::Index i);
     /// Returns the set of triangles adjacent to a given tetrahedron.
-    virtual const TrianglesInTetrahedron& getTrianglesInTetrahedron(TetraID i);
+    virtual const TrianglesInTetrahedron& getTrianglesInTetrahedron(sofa::Index i);
     /// Returns the set of quads adjacent to a given vertex.
-    virtual const QuadsAroundVertex& getQuadsAroundVertex(PointID i);
+    virtual const QuadsAroundVertex& getQuadsAroundVertex(sofa::Index i);
     /// Returns the set of quads adjacent to a given edge.
-    virtual const QuadsAroundEdge& getQuadsAroundEdge(EdgeID i);
+    virtual const QuadsAroundEdge& getQuadsAroundEdge(sofa::Index i);
     /// Returns the set of quads adjacent to a given hexahedron.
-    virtual const QuadsInHexahedron& getQuadsInHexahedron(HexaID i);
+    virtual const QuadsInHexahedron& getQuadsInHexahedron(sofa::Index i);
     /// Returns the set of tetrahedra adjacent to a given vertex.
-    virtual const TetrahedraAroundVertex& getTetrahedraAroundVertex(PointID i);
+    virtual const TetrahedraAroundVertex& getTetrahedraAroundVertex(sofa::Index i);
     /// Returns the set of tetrahedra adjacent to a given edge.
-    virtual const TetrahedraAroundEdge& getTetrahedraAroundEdge(EdgeID i);
+    virtual const TetrahedraAroundEdge& getTetrahedraAroundEdge(sofa::Index i);
     /// Returns the set of tetrahedra adjacent to a given triangle.
-    virtual const TetrahedraAroundTriangle& getTetrahedraAroundTriangle(TriangleID i);
+    virtual const TetrahedraAroundTriangle& getTetrahedraAroundTriangle(sofa::Index i);
     /// Returns the set of hexahedra adjacent to a given vertex.
-    virtual const HexahedraAroundVertex& getHexahedraAroundVertex(PointID i);
+    virtual const HexahedraAroundVertex& getHexahedraAroundVertex(sofa::Index i);
     /// Returns the set of hexahedra adjacent to a given edge.
-    virtual const HexahedraAroundEdge& getHexahedraAroundEdge(EdgeID i);
+    virtual const HexahedraAroundEdge& getHexahedraAroundEdge(sofa::Index i);
     /// Returns the set of hexahedra adjacent to a given quad.
-    virtual const HexahedraAroundQuad& getHexahedraAroundQuad(QuadID i);
+    virtual const HexahedraAroundQuad& getHexahedraAroundQuad(sofa::Index i);
 
     /// Returns the set of vertices adjacent to a given vertex (i.e. sharing an edge)
-    virtual const VerticesAroundVertex getVerticesAroundVertex(PointID i);
+    virtual const VerticesAroundVertex getVerticesAroundVertex(sofa::Index i);
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
     virtual const sofa::type::vector<Index> getElementAroundElement(Index elem);
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
@@ -184,50 +185,50 @@ public:
 
 
     /// Returns the index of the edge joining vertex v1 and vertex v2; returns InvalidID if no edge exists
-    virtual EdgeID getEdgeIndex(PointID v1, PointID v2);
+    virtual EdgeID getEdgeIndex(sofa::Index v1, sofa::Index v2);
     /// Returns the index of the triangle given three vertex indices; returns InvalidID if no triangle exists
-    virtual TriangleID getTriangleIndex(PointID v1, PointID v2, PointID v3);
+    virtual sofa::Index getTriangleIndex(sofa::Index v1, sofa::Index v2, sofa::Index v3);
     /// Returns the index of the quad given four vertex indices; returns InvalidID if no quad exists
-    virtual QuadID getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4);
+    virtual sofa::Index getQuadIndex(sofa::Index v1, sofa::Index v2, sofa::Index v3, sofa::Index v4);
     /// Returns the index of the tetrahedron given four vertex indices; returns InvalidID if no tetrahedron exists
-    virtual TetrahedronID getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4);
+    virtual TetrahedronID getTetrahedronIndex(sofa::Index v1, sofa::Index v2, sofa::Index v3, sofa::Index v4);
     /// Returns the index of the hexahedron given eight vertex indices; returns InvalidID if no hexahedron exists
-    virtual HexahedronID getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8);
+    virtual HexahedronID getHexahedronIndex(sofa::Index v1, sofa::Index v2, sofa::Index v3, sofa::Index v4, sofa::Index v5, sofa::Index v6, sofa::Index v7, sofa::Index v8);
 
 
     /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
-    virtual int getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const;
+    virtual int getVertexIndexInTriangle(const Triangle &t, sofa::Index vertexIndex) const;
     /** returns the index (either 0, 1 ,2) of the edge whose global index is edgeIndex. Returns -1 if none */
     virtual int getEdgeIndexInTriangle(const EdgesInTriangle &t, EdgeID edgeIndex) const;
 
     /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
-    virtual int getVertexIndexInQuad(const Quad &t, PointID vertexIndex) const;
+    virtual int getVertexIndexInQuad(const Quad &t, sofa::Index vertexIndex) const;
     /** returns the index (either 0, 1 ,2, 3) of the edge whose global index is edgeIndex. Returns -1 if none */
     virtual int getEdgeIndexInQuad(const EdgesInQuad &t, EdgeID edgeIndex) const;
 
     /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
-    virtual int getVertexIndexInTetrahedron(const Tetra &t, PointID vertexIndex) const;
+    virtual int getVertexIndexInTetrahedron(const Tetrahedron &t, sofa::Index vertexIndex) const;
     /** returns the index (either 0, 1 ,2 ,3, 4, 5) of the edge whose global index is edgeIndex. Returns -1 if none */
     virtual int getEdgeIndexInTetrahedron(const EdgesInTetrahedron &t, EdgeID edgeIndex) const;
     /** returns the index (either 0, 1 ,2 ,3) of the triangle whose global index is triangleIndex. Returns -1 if none */
-    virtual int getTriangleIndexInTetrahedron(const TrianglesInTetrahedron &t, TriangleID triangleIndex) const;
+    virtual int getTriangleIndexInTetrahedron(const TrianglesInTetrahedron &t, sofa::Index triangleIndex) const;
 
     /** returns the index (either 0, 1 ,2, 3, 4, 5, 6, or 7) of the vertex whose global index is vertexIndex. Returns -1 if none */
-    virtual int getVertexIndexInHexahedron(const Hexa &t, PointID vertexIndex) const;
+    virtual int getVertexIndexInHexahedron(const Hexa &t, sofa::Index vertexIndex) const;
     /** returns the index (either 0, 1 ,2 ,3, 4, 5, 6, 7, 8, 9, 10, 11) of the edge whose global index is edgeIndex. Returns -1 if none */
     virtual int getEdgeIndexInHexahedron(const EdgesInHexahedron &t, EdgeID edgeIndex) const;
     /** returns the index (either 0, 1 ,2 ,3, 4, 5) of the quad whose global index is quadIndex. Returns -1 if none */
-    virtual int getQuadIndexInHexahedron(const QuadsInHexahedron &t, QuadID quadIndex) const;
+    virtual int getQuadIndexInHexahedron(const QuadsInHexahedron &t, sofa::Index quadIndex) const;
 
     /** \brief Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge */
-    virtual Edge getLocalEdgesInTetrahedron (const PointID i) const;
+    virtual Edge getLocalEdgesInTetrahedron (const sofa::Index i) const;
     /** \brief Returns for each index (between 0 and 3) the three local vertices indices that are adjacent to that triangle */
-    virtual Triangle getLocalTrianglesInTetrahedron (const PointID i) const;
+    virtual Triangle getLocalTrianglesInTetrahedron (const sofa::Index i) const;
 
     /** \brief Returns for each index (between 0 and 12) the two vertex indices that are adjacent to that edge */
-    virtual Edge getLocalEdgesInHexahedron (const PointID i) const;
+    virtual Edge getLocalEdgesInHexahedron (const sofa::Index i) const;
     /** \brief Returns for each index (between 0 and 6) the four vertices indices that are adjacent to that quad */
-    virtual Quad getLocalQuadsInHexahedron (const PointID i) const;
+    virtual Quad getLocalQuadsInHexahedron (const sofa::Index i) const;
 
     /// @name Deprecated names, for backward-compatibility
     /// @{
@@ -240,9 +241,9 @@ public:
     /// Note that this data is only used for initialization and is not maintained afterwards (i.e. topological changes may not be applied)
     /// @{
     bool hasPos() const override { return false; }
-    SReal getPX(Index) const override { return 0.0; }
-    SReal getPY(Index) const override { return 0.0; }
-    SReal getPZ(Index) const override { return 0.0; }
+    SReal getPX(Index) const override { return 0.0_sreal; }
+    SReal getPY(Index) const override { return 0.0_sreal; }
+    SReal getPZ(Index) const override { return 0.0_sreal; }
     /// @}
 
     /// Procedural creation methods
@@ -265,18 +266,18 @@ public:
     /// Checks if the topology is coherent. @return true if so. Should be override by child class.
     virtual bool checkTopology() const { return true; }
 
-    /// Returns the number of connected component.
+    /// Returns the number of connected components.
     virtual Size getNumberOfConnectedComponent() {return 0;}
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     virtual const sofa::type::vector<Index> getConnectedElement(Index elem);
     /// @}
 
     /// Get the current revision of this mesh.
-    /// This can be used to detect changes, however topological changes event should be used whenever possible.
+    /// This can be used to detect changes. However, topological changes event should be used whenever possible.
     virtual int getRevision() const { return 0; }
 
-    /// Will change order of vertices in triangle: t[1] <=> t[2]
-    virtual void reOrientateTriangle(TriangleID id);
+    /// Will change the order of vertices in triangle: t[1] <=> t[2]
+    virtual void reOrientateTriangle(sofa::Index id);
 
     /// Management of topological changes and state changes
     /// @{
@@ -300,11 +301,11 @@ public:
     /// @}
 
     // functions returning border elements. To be moved in a mapping.
-    virtual const sofa::type::vector<TriangleID>& getTrianglesOnBorder();
+    virtual const sofa::type::vector<sofa::Index>& getTrianglesOnBorder();
 
     virtual const sofa::type::vector<EdgeID>& getEdgesOnBorder();
 
-    virtual const sofa::type::vector<PointID>& getPointsOnBorder();
+    virtual const sofa::type::vector<sofa::Index>& getPointsOnBorder();
 
 protected:
 

@@ -37,28 +37,28 @@ BaseMeshTopology::BaseMeshTopology()
 }
 
 /// Returns the set of edges adjacent to a given vertex.
-const BaseMeshTopology::EdgesAroundVertex& BaseMeshTopology::getEdgesAroundVertex(PointID)
+const BaseMeshTopology::EdgesAroundVertex& BaseMeshTopology::getEdgesAroundVertex(sofa::Index)
 {
     if (getNbEdges()) msg_error() << "getEdgesAroundVertex unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of edges adjacent to a given triangle.
-const BaseMeshTopology::EdgesInTriangle& BaseMeshTopology::getEdgesInTriangle(TriangleID)
+const BaseMeshTopology::EdgesInTriangle& BaseMeshTopology::getEdgesInTriangle(sofa::Index)
 {
     if (getNbEdges()) msg_error() << "getEdgesInTriangle unsupported.";    
     return InvalidEdgesInTriangles;
 }
 
 /// Returns the set of edges adjacent to a given quad.
-const BaseMeshTopology::EdgesInQuad& BaseMeshTopology::getEdgesInQuad(QuadID)
+const BaseMeshTopology::EdgesInQuad& BaseMeshTopology::getEdgesInQuad(sofa::Index)
 {
     if (getNbEdges()) msg_error() << "getEdgesInQuad unsupported.";
     return InvalidEdgesInQuad;
 }
 
 /// Returns the set of edges adjacent to a given tetrahedron.
-const BaseMeshTopology::EdgesInTetrahedron& BaseMeshTopology::getEdgesInTetrahedron(TetraID)
+const BaseMeshTopology::EdgesInTetrahedron& BaseMeshTopology::getEdgesInTetrahedron(sofa::Index)
 {
     if (getNbEdges()) msg_error() << "getEdgesInTetrahedron unsupported.";
     return InvalidEdgesInTetrahedron;
@@ -66,91 +66,91 @@ const BaseMeshTopology::EdgesInTetrahedron& BaseMeshTopology::getEdgesInTetrahed
 
 
 /// Returns the set of edges adjacent to a given hexahedron.
-const BaseMeshTopology::EdgesInHexahedron& BaseMeshTopology::getEdgesInHexahedron(HexaID)
+const BaseMeshTopology::EdgesInHexahedron& BaseMeshTopology::getEdgesInHexahedron(sofa::Index)
 {
     if (getNbEdges()) msg_error() << "getEdgesInHexahedron unsupported.";
     return InvalidEdgesInHexahedron;
 }
 
 /// Returns the set of triangle adjacent to a given vertex.
-const BaseMeshTopology::TrianglesAroundVertex& BaseMeshTopology::getTrianglesAroundVertex(PointID)
+const BaseMeshTopology::TrianglesAroundVertex& BaseMeshTopology::getTrianglesAroundVertex(sofa::Index)
 {
     if (getNbTriangles()) msg_error() << "getTrianglesAroundVertex unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of triangle adjacent to a given edge.
-const BaseMeshTopology::TrianglesAroundEdge& BaseMeshTopology::getTrianglesAroundEdge(EdgeID)
+const BaseMeshTopology::TrianglesAroundEdge& BaseMeshTopology::getTrianglesAroundEdge(sofa::Index)
 {
     if (getNbTriangles()) msg_error() << "getEdgesAroundVertex unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of triangle adjacent to a given tetrahedron.
-const BaseMeshTopology::TrianglesInTetrahedron& BaseMeshTopology::getTrianglesInTetrahedron(TetraID)
+const BaseMeshTopology::TrianglesInTetrahedron& BaseMeshTopology::getTrianglesInTetrahedron(sofa::Index)
 {
     if (getNbTriangles()) msg_error() << "getTrianglesInTetrahedron unsupported.";
     return InvalidTrianglesInTetrahedron;
 }
 
 /// Returns the set of quad adjacent to a given vertex.
-const BaseMeshTopology::QuadsAroundVertex& BaseMeshTopology::getQuadsAroundVertex(PointID)
+const BaseMeshTopology::QuadsAroundVertex& BaseMeshTopology::getQuadsAroundVertex(sofa::Index)
 {
     if (getNbQuads()) msg_error() << "getQuadsAroundVertex unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of quad adjacent to a given edge.
-const BaseMeshTopology::QuadsAroundEdge& BaseMeshTopology::getQuadsAroundEdge(EdgeID)
+const BaseMeshTopology::QuadsAroundEdge& BaseMeshTopology::getQuadsAroundEdge(sofa::Index)
 {
     if (getNbQuads()) msg_error() << "getQuadsAroundEdge unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of quad adjacent to a given hexahedron.
-const BaseMeshTopology::QuadsInHexahedron& BaseMeshTopology::getQuadsInHexahedron(HexaID)
+const BaseMeshTopology::QuadsInHexahedron& BaseMeshTopology::getQuadsInHexahedron(sofa::Index)
 {
     if (getNbQuads()) msg_error() << "getQuadsInHexahedron unsupported.";
     return InvalidQuadsInHexahedron;
 }
 
 /// Returns the set of tetrahedra adjacent to a given vertex.
-const BaseMeshTopology::TetrahedraAroundVertex& BaseMeshTopology::getTetrahedraAroundVertex(PointID)
+const BaseMeshTopology::TetrahedraAroundVertex& BaseMeshTopology::getTetrahedraAroundVertex(sofa::Index)
 {
     if (getNbTetrahedra()) msg_error() << "getTetrahedraAroundVertex unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of tetrahedra adjacent to a given edge.
-const BaseMeshTopology::TetrahedraAroundEdge& BaseMeshTopology::getTetrahedraAroundEdge(EdgeID)
+const BaseMeshTopology::TetrahedraAroundEdge& BaseMeshTopology::getTetrahedraAroundEdge(sofa::Index)
 {
     if (getNbTetrahedra()) msg_error() << "getTetrahedraAroundEdge unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of tetrahedra adjacent to a given triangle.
-const BaseMeshTopology::TetrahedraAroundTriangle& BaseMeshTopology::getTetrahedraAroundTriangle(TriangleID)
+const BaseMeshTopology::TetrahedraAroundTriangle& BaseMeshTopology::getTetrahedraAroundTriangle(sofa::Index)
 {
     if (getNbTetrahedra()) msg_error() << "getTetrahedraAroundTriangle unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of hexahedra adjacent to a given vertex.
-const BaseMeshTopology::HexahedraAroundVertex& BaseMeshTopology::getHexahedraAroundVertex(PointID)
+const BaseMeshTopology::HexahedraAroundVertex& BaseMeshTopology::getHexahedraAroundVertex(sofa::Index)
 {
     if (getNbHexahedra()) msg_error() << "getHexahedraAroundVertex unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of hexahedra adjacent to a given edge.
-const BaseMeshTopology::HexahedraAroundEdge& BaseMeshTopology::getHexahedraAroundEdge(EdgeID)
+const BaseMeshTopology::HexahedraAroundEdge& BaseMeshTopology::getHexahedraAroundEdge(sofa::Index)
 {
     if (getNbHexahedra()) msg_error() << "getHexahedraAroundEdge unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of hexahedra adjacent to a given quad.
-const BaseMeshTopology::HexahedraAroundQuad& BaseMeshTopology::getHexahedraAroundQuad(QuadID)
+const BaseMeshTopology::HexahedraAroundQuad& BaseMeshTopology::getHexahedraAroundQuad(sofa::Index)
 {
     if (getNbHexahedra()) msg_error() << "getHexahedraAroundQuad unsupported.";
     return InvalidSet;
@@ -158,7 +158,7 @@ const BaseMeshTopology::HexahedraAroundQuad& BaseMeshTopology::getHexahedraAroun
 
 
 /// Returns the set of vertices adjacent to a given vertex (i.e. sharing an edge)
-const BaseMeshTopology::VerticesAroundVertex BaseMeshTopology::getVerticesAroundVertex(PointID i)
+const BaseMeshTopology::VerticesAroundVertex BaseMeshTopology::getVerticesAroundVertex(sofa::Index i)
 {
     const SeqEdges& edges = getEdges();
     const EdgesAroundVertex& shell = getEdgesAroundVertex(i);
@@ -178,41 +178,41 @@ const BaseMeshTopology::VerticesAroundVertex BaseMeshTopology::getVerticesAround
 
 
 /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-const vector<BaseMeshTopology::Index> BaseMeshTopology::getElementAroundElement(Index)
+const vector<sofa::Index> BaseMeshTopology::getElementAroundElement(Index)
 {
     return InvalidSet;
 }
 
 
 /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-const vector<BaseMeshTopology::Index> BaseMeshTopology::getElementAroundElements(vector<Index>)
+const vector<sofa::Index> BaseMeshTopology::getElementAroundElements(vector<Index>)
 {
     return InvalidSet;
 }
 
 /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-const vector<BaseMeshTopology::Index> BaseMeshTopology::getConnectedElement(Index)
+const vector<sofa::Index> BaseMeshTopology::getConnectedElement(Index)
 {
     return InvalidSet;
 }
 
 
 /// Returns the set of triangles on the border of the triangulation
-const sofa::type::vector<BaseMeshTopology::TriangleID>& BaseMeshTopology::getTrianglesOnBorder()
+const sofa::type::vector<sofa::Index>& BaseMeshTopology::getTrianglesOnBorder()
 {
     msg_error() << "getTrianglesOnBorder unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of edges on the border of the triangulation
-const sofa::type::vector<BaseMeshTopology::EdgeID>& BaseMeshTopology::getEdgesOnBorder()
+const sofa::type::vector<sofa::Index>& BaseMeshTopology::getEdgesOnBorder()
 {
     msg_error() << "getEdgesOnBorder unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of points on the border of the triangulation
-const sofa::type::vector<BaseMeshTopology::PointID>& BaseMeshTopology::getPointsOnBorder()
+const sofa::type::vector<sofa::Index>& BaseMeshTopology::getPointsOnBorder()
 {
     msg_error() << "getPointsOnBorder unsupported.";
     return InvalidSet;
@@ -313,7 +313,7 @@ void BaseMeshTopology::addHexa(Index, Index, Index, Index, Index, Index, Index, 
     msg_error() << "addHexa() not supported.";
 }
 
-void BaseMeshTopology::reOrientateTriangle(TriangleID /*id*/)
+void BaseMeshTopology::reOrientateTriangle(sofa::Index /*id*/)
 {
     msg_error() << "reOrientateTriangle() not supported.";
 }
@@ -347,7 +347,7 @@ std::list<const TopologyChange *>::const_iterator BaseMeshTopology::endStateChan
 }
 
 
-Topology::EdgeID BaseMeshTopology::getEdgeIndex(PointID, PointID)
+Topology::EdgeID BaseMeshTopology::getEdgeIndex(sofa::Index, sofa::Index)
 {
     msg_error() << "getEdgeIndex() not supported.";
     return InvalidID;
@@ -365,19 +365,19 @@ Topology::QuadID BaseMeshTopology::getQuadIndex(PointID, PointID, PointID, Point
     return InvalidID;
 }
 
-Topology::TetrahedronID BaseMeshTopology::getTetrahedronIndex(PointID, PointID, PointID, PointID)
+Topology::TetrahedronID BaseMeshTopology::getTetrahedronIndex(sofa::Index, sofa::Index, sofa::Index, sofa::Index)
 {
     msg_error() << "getTetrahedronIndex() not supported.";
     return InvalidID;
 }
 
-Topology::HexahedronID BaseMeshTopology::getHexahedronIndex(PointID, PointID, PointID, PointID, PointID, PointID, PointID, PointID)
+Topology::HexahedronID BaseMeshTopology::getHexahedronIndex(sofa::Index, sofa::Index, sofa::Index, sofa::Index, sofa::Index, sofa::Index, sofa::Index, sofa::Index)
 {
     msg_error() << "getHexahedronIndex() not supported.";
     return InvalidID;
 }
 
-int BaseMeshTopology::getVertexIndexInTriangle(const Triangle &, PointID) const
+int BaseMeshTopology::getVertexIndexInTriangle(const Triangle &, sofa::Index) const
 {
     msg_error() << "getVertexIndexInTriangle() not supported.";
     return 0;
@@ -389,7 +389,7 @@ int BaseMeshTopology::getEdgeIndexInTriangle(const EdgesInTriangle &, EdgeID) co
     return 0;
 }
 
-int BaseMeshTopology::getVertexIndexInQuad(const Quad &, PointID) const
+int BaseMeshTopology::getVertexIndexInQuad(const Quad &, sofa::Index) const
 {
     msg_error() << "getVertexIndexInQuad() not supported.";
     return 0;
@@ -401,7 +401,7 @@ int BaseMeshTopology::getEdgeIndexInQuad(const EdgesInQuad &, EdgeID) const
     return 0;
 }
 
-int BaseMeshTopology::getVertexIndexInTetrahedron(const Tetra &, PointID) const
+int BaseMeshTopology::getVertexIndexInTetrahedron(const Tetra &, sofa::Index) const
 {
     msg_error() << "getVertexIndexInTetrahedron() not supported.";
     return 0;
@@ -413,13 +413,13 @@ int BaseMeshTopology::getEdgeIndexInTetrahedron(const EdgesInTetrahedron &, Edge
     return 0;
 }
 
-int BaseMeshTopology::getTriangleIndexInTetrahedron(const TrianglesInTetrahedron &, TriangleID) const
+int BaseMeshTopology::getTriangleIndexInTetrahedron(const TrianglesInTetrahedron &, sofa::Index) const
 {
     msg_error() << "getTriangleIndexInTetrahedron() not supported.";
     return 0;
 }
 
-int BaseMeshTopology::getVertexIndexInHexahedron(const Hexa &, PointID) const
+int BaseMeshTopology::getVertexIndexInHexahedron(const Hexa &, sofa::Index) const
 {
     msg_error() << "getVertexIndexInHexahedron() not supported.";
     return 0;
@@ -431,31 +431,31 @@ int BaseMeshTopology::getEdgeIndexInHexahedron(const EdgesInHexahedron &, EdgeID
     return 0;
 }
 
-int BaseMeshTopology::getQuadIndexInHexahedron(const QuadsInHexahedron &, QuadID) const
+int BaseMeshTopology::getQuadIndexInHexahedron(const QuadsInHexahedron &, sofa::Index) const
 {
     msg_error() << "getQuadIndexInHexahedron() not supported.";
     return 0;
 }
 
-BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInTetrahedron (const PointID) const
+BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInTetrahedron (const sofa::Index) const
 {
     msg_error() << "getLocalEdgesInTetrahedron() not supported.";
     return InvalidEdge;
 }
 
-BaseMeshTopology::Triangle BaseMeshTopology::getLocalTrianglesInTetrahedron (const PointID) const
+BaseMeshTopology::Triangle BaseMeshTopology::getLocalTrianglesInTetrahedron (const sofa::Index) const
 {
     msg_error() << "getLocalTrianglesInTetrahedron() not supported.";
     return InvalidTriangle;
 }
 
-BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInHexahedron (const PointID) const
+BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInHexahedron (const sofa::Index) const
 {
     msg_error() << "getLocalEdgesInHexahedron() not supported.";
     return InvalidEdge;
 }
 
-BaseMeshTopology::Quad BaseMeshTopology::getLocalQuadsInHexahedron (const PointID)  const
+BaseMeshTopology::Quad BaseMeshTopology::getLocalQuadsInHexahedron (const sofa::Index)  const
 {
     msg_error() << "getLocalQuadsInHexahedron() not supported.";
     return InvalidQuad;
@@ -470,7 +470,7 @@ bool BaseMeshTopology::insertInNode( objectmodel::BaseNode* node )
 
 bool BaseMeshTopology::removeInNode( objectmodel::BaseNode* node )
 {
-    node->removeMeshTopology(this);    
+    node->removeMeshTopology(this);
     Inherit1::removeInNode(node);
     return true;
 }
