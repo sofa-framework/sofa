@@ -23,17 +23,16 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/loader/BaseLoader.h>
-#include <sofa/type/PrimitiveGroup.h>
-
-#include <sofa/topology/Point.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 #include <sofa/topology/Edge.h>
-#include <sofa/topology/Triangle.h>
-#include <sofa/topology/Quad.h>
-#include <sofa/topology/Pentahedron.h>
-#include <sofa/topology/Tetrahedron.h>
-#include <sofa/topology/Pyramid.h>
 #include <sofa/topology/Hexahedron.h>
-
+#include <sofa/topology/Point.h>
+#include <sofa/topology/Prism.h>
+#include <sofa/topology/Pyramid.h>
+#include <sofa/topology/Quad.h>
+#include <sofa/topology/Tetrahedron.h>
+#include <sofa/topology/Triangle.h>
+#include <sofa/type/PrimitiveGroup.h>
 
 namespace sofa::helper::io {
     class Mesh;
@@ -50,7 +49,7 @@ using sofa::topology::Triangle;
 using sofa::topology::Quad;
 using sofa::topology::Tetrahedron;
 using sofa::topology::Hexahedron;
-using sofa::topology::Pentahedron;
+using sofa::topology::Prism;
 using sofa::topology::Pyramid;
 
 class SOFA_CORE_API MeshLoader : public BaseLoader
@@ -162,7 +161,9 @@ public:
     // Tab of 3D elements composition
     Data< type::vector< Tetrahedron > > d_tetrahedra; ///< Tetrahedra of the mesh loaded
     Data< type::vector< Hexahedron > > d_hexahedra; ///< Hexahedra of the mesh loaded
-    Data< type::vector< Pentahedron > > d_pentahedra; ///< Pentahedra of the mesh loaded
+    Data< type::vector< Prism > > d_prisms;
+    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "Pentahedron is renamed to Prism")
+    objectmodel::lifecycle::RenamedData<type::vector< Prism >> d_pentahedra; ///< Pentahedra of the mesh loaded
     Data< type::vector< HighOrderTetrahedronPosition > > d_highOrderTetrahedronPositions; ///< High order tetrahedron points of the mesh loaded
     Data< type::vector< HighOrderHexahedronPosition > > d_highOrderHexahedronPositions; ///< High order hexahedron points of the mesh loaded
     Data< type::vector< Pyramid > > d_pyramids; ///< Pyramids of the mesh loaded
@@ -179,8 +180,10 @@ public:
     Data< type::vector< PrimitiveGroup > > d_polygonsGroups; ///< Groups of Polygons
     Data< type::vector< PrimitiveGroup > > d_tetrahedraGroups; ///< Groups of Tetrahedra
     Data< type::vector< PrimitiveGroup > > d_hexahedraGroups; ///< Groups of Hexahedra
-    Data< type::vector< PrimitiveGroup > > d_pentahedraGroups; ///< Groups of Pentahedra
+    Data< type::vector< PrimitiveGroup > > d_prismsGroups; ///< Groups of Prisms
     Data< type::vector< PrimitiveGroup > > d_pyramidsGroups; ///< Groups of Pyramids
+
+    objectmodel::lifecycle::RenamedData<type::vector< PrimitiveGroup >> d_pentahedraGroups;
 
     Data< bool > d_flipNormals; ///< Flip Normals
     Data< bool > d_triangulate; ///< Divide all polygons into triangles
@@ -228,8 +231,8 @@ protected:
                        sofa::Index p0, sofa::Index p1, sofa::Index p2, sofa::Index p3,
                        sofa::Index p4, sofa::Index p5, sofa::Index p6, sofa::Index p7);
 
-    void addPentahedron(type::vector< Pentahedron>& pPentahedra, const Pentahedron& p);
-    void addPentahedron(type::vector< Pentahedron>& pPentahedra,
+    void addPrism(type::vector< Prism>& pPrism, const Prism& p);
+    void addPrism(type::vector< Prism>& pPrism,
                         sofa::Index p0, sofa::Index p1, sofa::Index p2, sofa::Index p3,
                         sofa::Index p4, sofa::Index p5);
 

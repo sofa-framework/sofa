@@ -21,14 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/Point.h>
+#include <sofa/topology/config.h>
+#include <sofa/topology/Prism.h>
 
-#include <sofa/topology/Element.h>
-#include <sofa/geometry/Pentahedron.h>
-
-namespace sofa::topology
-{
-    using Pentahedron = sofa::topology::Element<sofa::geometry::Pentahedron>;
-
-    static constexpr Pentahedron InvalidPentahedron;
-}
+SOFA_HEADER_DEPRECATED("v25.12", "v26.06", "sofa/topology/Prism.h")
