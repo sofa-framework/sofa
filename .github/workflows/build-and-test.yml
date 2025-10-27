@@ -210,17 +210,6 @@ jobs:
               done
           fi
 
-      - name: Notify dashboard
-        shell: bash
-        run: |
-          . ${CI_DIR}/scripts/utils.sh
-          . ${CI_DIR}/scripts/dashboard.sh
-
-          #Really necessary ? 
-          #TODO
-          #Need more information. Might be good to
-
-
       - name: Build
         id: build-step
         shell: bash
@@ -305,12 +294,22 @@ jobs:
 
               echo "DOCKER_IMAGE=$DOCKER_IMAGE" >> $GITHUB_ENV
 
+              DOCKER_SRC_DIR="/workspace/$(realpath --relative-to=$WORKSPACE $SRC_DIR)"
+              DOCKER_BUILD_DIR="/workspace/$(realpath --relative-to=$WORKSPACE $BUILD_DIR)"
+              DOCKER_CI_DIR="/workspace/$(realpath --relative-to=$WORKSPACE $CI_DIR)"
+              DOCKER_LOG_DIR="/workspace/$(realpath --relative-to=$WORKSPACE ${{ env.LOG_DIR }})"
+
+              echo "DOCKER_SRC_DIR=$DOCKER_SRC_DIR" >> $GITHUB_ENV
+              echo "DOCKER_BUILD_DIR=$DOCKER_BUILD_DIR" >> $GITHUB_ENV
+              echo "DOCKER_CI_DIR=$DOCKER_CI_DIR" >> $GITHUB_ENV
+              echo "DOCKER_LOG_DIR=$DOCKER_LOG_DIR" >> $GITHUB_ENV
+
 
               echo "Launching configuration and build through docker using image ${DOCKER_IMAGE}. Running ./ci/scripts/configure-and-build.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env ; cd /workspace; /bin/bash ./$(realpath --relative-to=$WORKSPACE $CI_DIR)/scripts/configure-and-build.sh /workspace/$(realpath --relative-to=$WORKSPACE $BUILD_DIR) /workspace/$(realpath --relative-to=$WORKSPACE $SRC_DIR) /workspace/$(realpath --relative-to=$WORKSPACE $CI_DIR)/scripts/ /workspace/$(realpath --relative-to=$WORKSPACE ${{ env.LOG_DIR }}) \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""             
+                  /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/configure-and-build.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ $DOCKER_LOG_DIR \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""             
           else
               echo "Launching configuration and build"
 
@@ -318,15 +317,8 @@ jobs:
           fi
         
 
-      - name: Notify dashboard
-        if: always()
-        shell: bash
-        run: |
-          #TODO
-
-
-      - name: Launch tests
-        id: launch-tests-step
+      - name: Unit tests
+        id: unit-tests-step
         if: steps.build-step.outcome == 'success' && inputs.generate-binaries == false
         shell: bash
         run: |
@@ -334,15 +326,67 @@ jobs:
           # Here no need to fetch it because it has already been taken care of in the build step
           if [[ "${{ matrix.os }}" == *"ubuntu"* ]] || [[ "${{ matrix.os }}" == *"fedora"* ]]; then
 
-              echo "Launching test suite through docker using image ${DOCKER_IMAGE}. Running ./ci/scripts/test.sh /workspace/build/ /workspace/sofa/ /workspace/ci/ ${NODE_NAME} ${{ inputs.python-version }}"
+              echo "Launching unit test suite through docker using image ${DOCKER_IMAGE}."
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env ; cd /workspace; /bin/bash ./ci/scripts/test.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ ${NODE_NAME} ${{ inputs.python-version }} ${{ inputs.with-all-tests }}"             
+                  /bin/bash -c "env ; cd /workspace; /bin/bash ./ci/scripts/test.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ ${NODE_NAME} ${{ inputs.python-version }} UNIT"             
           else
-              echo "Launching test suite"
+              echo "Launching unit test suite."
 
-              bash ${CI_DIR}/scripts/test.sh "${BUILD_DIR}" "${SRC_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}" "${{ inputs.with-all-tests }}"
+              bash ${CI_DIR}/scripts/test.sh "${BUILD_DIR}" "${SRC_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}" "UNIT"
+          fi
+
+          if [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/" && find . -maxdepth 1 -type f)" == *"unit-tests_"* ]]; then
+            exit 1
+          fi
+
+      - name: Scene tests
+        id: scene-tests-step
+        if: steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
+        shell: bash
+        run: |
+          # If os has got docker then use it
+          # Here no need to fetch it because it has already been taken care of in the build step
+          if [[ "${{ matrix.os }}" == *"ubuntu"* ]] || [[ "${{ matrix.os }}" == *"fedora"* ]]; then
+
+              echo "Launching scene test suite through docker using image ${DOCKER_IMAGE}."
+              docker run --rm \
+                  --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
+                  ${DOCKER_IMAGE} \
+                  /bin/bash -c "env ; cd /workspace; /bin/bash ./ci/scripts/test.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ ${NODE_NAME} ${{ inputs.python-version }} SCENE"             
+          else
+              echo "Launching scene test suite."
+
+              bash ${CI_DIR}/scripts/test.sh "${BUILD_DIR}" "${SRC_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}" "SCENE"
+          fi
+
+          if [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/" && find . -maxdepth 1 -type f)" == *"scene-tests_"* ]]; then
+            exit 1
+          fi
+
+      - name: Regression tests
+        id: regression-tests-step
+        if: steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
+        shell: bash
+        run: |
+          # If os has got docker then use it
+          # Here no need to fetch it because it has already been taken care of in the build step
+          if [[ "${{ matrix.os }}" == *"ubuntu"* ]] || [[ "${{ matrix.os }}" == *"fedora"* ]]; then
+
+              echo "Launching regression test suite through docker using image ${DOCKER_IMAGE}."
+              docker run --rm \
+                  --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
+                  ${DOCKER_IMAGE} \
+                  /bin/bash -c "env ; cd /workspace; /bin/bash ./ci/scripts/test.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ ${NODE_NAME} ${{ inputs.python-version }} REGRESSION"             
+          else
+              echo "Launching regression test suite"
+
+              bash ${CI_DIR}/scripts/test.sh "${BUILD_DIR}" "${SRC_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}" "REGRESSION"
+          fi
+
+          if [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/" && find . -maxdepth 1 -type f)" == *"regression-tests_"* ]]; then
+            exit 1
           fi
 
 
@@ -365,6 +409,7 @@ jobs:
             ${{ env.LOG_DIR }}/make-output.txt
             ${{ env.LOG_DIR }}/cmake-output.txt
 
+
       - name: Publish tests logs
         id: publish-tests-logs
         if: always()
@@ -373,6 +418,7 @@ jobs:
           name: tests-logs_${{ env.BUILDER_OS }}
           path: |
             ${{ env.BUILD_DIR }}/tests_results/
+
 
       - name: Summarize results
         if: always()
@@ -397,11 +443,7 @@ jobs:
           fi
           
           if [[ "${{ inputs.generate-binaries }}" == "false" ]]; then
-            if [[ "${{ steps.launch-tests-step.outcome }}" == "failure" ]]; then
-              echo "❌ Something whent wrong during the Launch tests step"
-              echo -e "${bold}Please check this action logs, and download tests logs here: ${{ steps.publish-tests-logs.outputs.artifact-url }}${normal}"
-              exit 1
-            elif [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/" && find . -maxdepth 1 -type f)" != "" ]]; then
+            if [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/" && find . -maxdepth 1 -type f)" != "" ]]; then
               echo "❌ Tests have resulted in : "
               echo ""
               python3 ${{ env.CI_DIR }}/scripts/generate-tests-table.py "${{ env.BUILD_DIR }}/tests_results/"
@@ -425,6 +467,10 @@ jobs:
                   done
                 done
               echo -e "${bold}You can download all logs here : ${{ steps.publish-tests-logs.outputs.artifact-url }}${normal}"
+              exit 1
+            elif [[ "${{ steps.unit-tests-step.outcome }}" == "failure" || "${{ steps.scene-tests-step.outcome }}" == "failure" || "${{ steps.regression-tests-step.outcome }}" == "failure" ]]; then
+              echo "❌ Something whent wrong during one of the tests steps"
+              echo -e "${bold}Please check this action logs, and download tests logs here: ${{ steps.publish-tests-logs.outputs.artifact-url }}${normal}"
               exit 1
             else
               echo "✅ Tests where successful : "
