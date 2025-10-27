@@ -319,7 +319,7 @@ jobs:
 
       - name: Unit tests
         id: unit-tests-step
-        if: steps.build-step.outcome == 'success' && inputs.generate-binaries == false
+        if: always() && steps.build-step.outcome == 'success' && inputs.generate-binaries == false
         shell: bash
         run: |
           # If os has got docker then use it
@@ -343,7 +343,7 @@ jobs:
 
       - name: Scene tests
         id: scene-tests-step
-        if: steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
+        if: always() && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
         shell: bash
         run: |
           # If os has got docker then use it
@@ -367,7 +367,7 @@ jobs:
 
       - name: Regression tests
         id: regression-tests-step
-        if: steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
+        if: always() && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
         shell: bash
         run: |
           # If os has got docker then use it
