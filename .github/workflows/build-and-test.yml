@@ -330,7 +330,7 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env ; cd /workspace; /bin/bash ./ci/scripts/test.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ ${NODE_NAME} ${{ inputs.python-version }} UNIT"             
+                  /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} UNIT"             
           else
               echo "Launching unit test suite."
 
@@ -354,7 +354,7 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env ; cd /workspace; /bin/bash ./ci/scripts/test.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ ${NODE_NAME} ${{ inputs.python-version }} SCENE"             
+                  /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} SCENE"             
           else
               echo "Launching scene test suite."
 
@@ -378,7 +378,7 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env ; cd /workspace; /bin/bash ./ci/scripts/test.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ ${NODE_NAME} ${{ inputs.python-version }} REGRESSION"             
+                  /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} REGRESSION"             
           else
               echo "Launching regression test suite"
 
