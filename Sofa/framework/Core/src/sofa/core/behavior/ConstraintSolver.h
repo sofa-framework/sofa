@@ -90,6 +90,7 @@ public:
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute Vecid::force() += J^t lambda
     /// the result is accumulated in Vecid::force()
+    SOFA_ATTRIBUTE_DEPRECATED__COMPUTERESIDUAL()
     virtual void computeResidual(const core::ExecParams* /*params*/)
     {
         dmsg_error() << "ComputeResidual is not implemented in " << this->getName() ;
