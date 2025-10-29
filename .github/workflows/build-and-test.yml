@@ -304,9 +304,10 @@ jobs:
               echo "DOCKER_CI_DIR=$DOCKER_CI_DIR" >> $GITHUB_ENV
               echo "DOCKER_LOG_DIR=$DOCKER_LOG_DIR" >> $GITHUB_ENV
 
+              export XDG_CACHE_HOME="/cache"
 
               echo "Launching configuration and build through docker using image ${DOCKER_IMAGE}. Running ./ci/scripts/configure-and-build.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""
-              docker run --rm \
+              docker run --rm --env XDG_CACHE_HOME -v $BUILDER_CACHE_DIR:/cache\
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
                   /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/configure-and-build.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ $DOCKER_LOG_DIR \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""             
