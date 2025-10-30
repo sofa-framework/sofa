@@ -456,12 +456,12 @@ void DrawToolGL::drawTriangleFan(const std::vector<Vec3> &points,
 void DrawToolGL::drawFrame(const Vec3& position, const Quaternion &orientation, const Vec<3,float> &size)
 {
     setPolygonMode(0,false);
-    gl::Frame::draw(position, orientation, size, type::RGBAColor::red(), type::RGBAColor::green(), type::RGBAColor::blue());
+    gl::Axis::draw(position, orientation, size, type::RGBAColor::red(), type::RGBAColor::green(), type::RGBAColor::blue());
 }
 void DrawToolGL::drawFrame(const Vec3& position, const Quaternion &orientation, const Vec<3,float> &size, const type::RGBAColor &color)
 {
     setPolygonMode(0,false);
-    gl::Frame::draw(position, orientation, size, color, color, color);
+    gl::Axis::draw(position, orientation, size, color, color, color);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
