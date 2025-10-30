@@ -26,7 +26,7 @@ on:
 
   # Nightly build
   schedule:
-    - cron: '0 1 * * *'   # Evevery night @1:00 a.m.
+    - cron: '30 1 * * *'   # Evevery night @1:30 a.m.
     
 # ===============================================================
 # ===============================================================
@@ -42,7 +42,15 @@ jobs:
         os: ${{ fromJson(inputs.builder-os) }}
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Configure builder
+      - name: Clear ccache 
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+            if [[ -n "$BUILDER_CACHE_DIR" ]]; then
+                rm -rf $BUILDER_CACHE_DIR/*
+            fi     
+                 
+      - name: Reboot builder
         shell: bash
         run: |
             # WARNING: this command needs to add in /etc/sudoers this line:
@@ -57,7 +65,15 @@ jobs:
         os: ["sofa-ci-dev-ubuntu2204-0","sofa-ci-dev-ubuntu2204-1","sofa-ci-dev-ubuntu2204-2","sofa-ci-dev-ubuntu2204-3","sofa-ci-dev-ubuntu2204-4","consortium-macos-2","consortium-macos-3"]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Configure builder
+      - name: Clear ccache 
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+            if [[ -n "$BUILDER_CACHE_DIR" ]]; then
+                rm -rf $BUILDER_CACHE_DIR/*
+            fi     
+
+      - name: Reboot builder
         shell: bash
         run: |
             # WARNING: this command needs to add in /etc/sudoers this line:
