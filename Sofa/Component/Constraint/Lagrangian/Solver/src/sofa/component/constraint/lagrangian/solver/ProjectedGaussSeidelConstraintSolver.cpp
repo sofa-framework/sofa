@@ -29,9 +29,11 @@
 namespace sofa::component::constraint::lagrangian::solver
 {
 
+
 void ProjectedGaussSeidelConstraintSolver::doSolve( GenericConstraintProblem * problem ,SReal timeout)
 {
     SCOPED_TIMER_VARNAME(gaussSeidelTimer, "ConstraintsGaussSeidel");
+
 
 
     const int dimension = problem->getDimension();
@@ -45,6 +47,7 @@ void ProjectedGaussSeidelConstraintSolver::doSolve( GenericConstraintProblem * p
 
     const SReal t0 = (SReal)sofa::helper::system::thread::CTime::getTime() ;
     const SReal timeScale = 1.0 / (SReal)sofa::helper::system::thread::CTime::getTicksPerSec();
+
 
     SReal *dfree = problem->getDfree();
     SReal *force = problem->getF();
@@ -99,10 +102,12 @@ void ProjectedGaussSeidelConstraintSolver::doSolve( GenericConstraintProblem * p
 
     int iterCount = 0;
 
+
     for(int i=0; i<problem->maxIterations; i++)
     {
         iterCount ++;
         bool constraintsAreVerified = true;
+
 
         if(problem->sor != 1.0)
         {
@@ -110,6 +115,7 @@ void ProjectedGaussSeidelConstraintSolver::doSolve( GenericConstraintProblem * p
         }
 
         error=0.0;
+
         gaussSeidel_increment(true, dfree, force, w, tol, d, dimension, constraintsAreVerified, error, problem->constraintsResolutions, tabErrors);
 
         if(showGraphs)
@@ -193,6 +199,7 @@ void ProjectedGaussSeidelConstraintSolver::doSolve( GenericConstraintProblem * p
         d_graphForces.endEdit();
     }
 }
+
 void ProjectedGaussSeidelConstraintSolver::gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool& constraintsAreVerified, SReal& error, std::vector<core::behavior::ConstraintResolution*>& constraintCorrections, sofa::type::vector<SReal>& tabErrors) const
 {
     for(int j=0; j<dim; ) // increment of j realized at the end of the loop
