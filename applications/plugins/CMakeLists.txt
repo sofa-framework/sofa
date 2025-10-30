@@ -45,6 +45,7 @@ sofa_add_subdirectory(plugin SofaMatrix SofaMatrix) # Depends on image, CImgPlug
 sofa_add_external(plugin BeamAdapter GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/BeamAdapter.git)
 sofa_add_external(plugin STLIB GIT_REF master GIT_REPOSITORY https://www.github.com/SofaDefrost/STLIB.git)
 sofa_add_external(plugin SoftRobots GIT_REF master GIT_REPOSITORY https://www.github.com/SofaDefrost/SoftRobots.git)
+sofa_add_external(plugin SoftRobots.Inverse GIT_REF main GIT_REPOSITORY https://www.github.com/SofaDefrost/SoftRobots.Inverse.git)
 sofa_add_external(plugin Cosserat GIT_REF master GIT_REPOSITORY https://www.github.com/SofaDefrost/Cosserat.git) # Cosserat has an optional dependency on SoftRobots
 sofa_add_external(plugin SofaViscoElastic GIT_REF main GIT_REPOSITORY https://www.github.com/SofaDefrost/SofaViscoElastic.git)
 sofa_add_external(plugin CollisionAlgorithm GIT_REF master GIT_REPOSITORY https://forge.icube.unistra.fr/sofa/CollisionAlgorithm.git)
