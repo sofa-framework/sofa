@@ -30,7 +30,7 @@ namespace
 
 /** Test the UncoupledConstraintCorrection class
 */
-struct GenericConstraintSolver_test : BaseSimulationTest
+struct ProjectedGaussSeidelConstraintSolver_test : BaseSimulationTest
 {
     void SetUp() override
     {
@@ -49,7 +49,7 @@ struct GenericConstraintSolver_test : BaseSimulationTest
                     "   <RequiredPlugin name='Sofa.Component.Collision.Detection.Intersection'/>"
                     "   <RequiredPlugin name='Sofa.Component.Collision.Response.Contact'/>"
                     "   <FreeMotionAnimationLoop />\n"
-                    "   <GenericConstraintSolver name='solver' constraintForces='-1 -1 -1' computeConstraintForces='True' maxIt='1000' tolerance='0.001' />\n"
+                    "   <ProjectedGaussSeidelConstraintSolver name='solver' constraintForces='-1 -1 -1' computeConstraintForces='True' maxIt='1000' tolerance='0.001' />\n"
                     "   <Node name='collision'>\n"
                     "         <MechanicalObject />\n"
                     "         <UncoupledConstraintCorrection useOdeSolverIntegrationFactors='0' />\n"
@@ -66,7 +66,7 @@ struct GenericConstraintSolver_test : BaseSimulationTest
 };
 
 /// run the tests
-TEST_F(GenericConstraintSolver_test, checkConstraintForce)
+TEST_F(ProjectedGaussSeidelConstraintSolver_test, checkConstraintForce)
 {
     EXPECT_MSG_NOEMIT(Error);
     enableConstraintForce();

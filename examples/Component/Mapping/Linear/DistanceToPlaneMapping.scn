@@ -14,7 +14,7 @@
 
     <FreeMotionAnimationLoop/>
     <VisualStyle displayFlags="showBehaviorModels showMappings" />
-    <GenericConstraintSolver/>
+    <ProjectedGaussSeidelConstraintSolver/>
 
 
     <Node name="Langrangian-Bileateral">
