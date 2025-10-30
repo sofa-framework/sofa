@@ -28,7 +28,6 @@
 #include <numeric>
 #include <sofa/helper/Utils.h>
 #include <sofa/url.h>
-#include <ranges>
 
 
 namespace sofa::helper::system
@@ -224,7 +223,7 @@ void ObjectFactory::getEntriesDerivedFrom(std::vector<ClassEntry::SPtr>& result)
         // Push the entry only if it is not an alias
         if (entry->className == r.first)
         {
-            for (const auto& creator : entry->creatorMap | std::views::values)
+            for (const auto& [name, creator] : entry->creatorMap)
             {
                 const auto* baseClass = creator->getClass();
                 if (baseClass && baseClass->hasParent(BaseClass::GetClass()))
