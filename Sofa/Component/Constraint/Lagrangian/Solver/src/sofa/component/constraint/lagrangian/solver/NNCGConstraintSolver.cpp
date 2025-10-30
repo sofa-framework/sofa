@@ -33,7 +33,6 @@ void NNCGConstraintSolver::doSolve(GenericConstraintProblem * problem , SReal ti
 {
     SCOPED_TIMER_VARNAME(unbuiltGaussSeidelTimer, "NonsmoothNonlinearConjugateGradient");
 
-
     const int dimension = problem->getDimension();
 
     if(!dimension)
@@ -70,6 +69,7 @@ void NNCGConstraintSolver::doSolve(GenericConstraintProblem * problem , SReal ti
         tempForces.resize(dimension);
     }
 
+
     if(problem->scaleTolerance && !problem->allVerified)
     {
         tol *= dimension;
@@ -77,11 +77,13 @@ void NNCGConstraintSolver::doSolve(GenericConstraintProblem * problem , SReal ti
 
     for(int i=0; i<dimension; )
     {
+
         if(!problem->constraintsResolutions[i])
         {
             msg_error() << "Bad size of constraintsResolutions in GenericConstraintSolver" ;
             break;
         }
+
         problem->constraintsResolutions[i]->init(i, w, force);
         i += problem->constraintsResolutions[i]->getNbLines();
     }
@@ -91,6 +93,7 @@ void NNCGConstraintSolver::doSolve(GenericConstraintProblem * problem , SReal ti
     {
         // perform one iteration of ProjectedGaussSeidel
         bool constraintsAreVerified = true;
+
         std::copy_n(force, dimension, std::begin(problem->m_lam));
 
         gaussSeidel_increment(false, dfree, force, w, tol, d, dimension, constraintsAreVerified, error, problem->constraintsResolutions,  tabErrors);
@@ -118,6 +121,7 @@ void NNCGConstraintSolver::doSolve(GenericConstraintProblem * problem , SReal ti
 
 
         error=0.0;
+
         gaussSeidel_increment(true, dfree, force, w, tol, d, dimension, constraintsAreVerified, error, problem->constraintsResolutions, tabErrors);
 
 
@@ -157,6 +161,11 @@ void NNCGConstraintSolver::doSolve(GenericConstraintProblem * problem , SReal ti
                 force[j] += beta*problem->m_p[j];
                 problem->m_p[j] = beta*problem->m_p[j] -problem-> m_deltaF[j];
             }
+        }
+        //Stopping condition based on constraint evolution rate
+        if (problem->m_deltaF_new.norm() < tol)
+        {
+            break;
         }
     }
 
