@@ -369,6 +369,12 @@ public:
 
         // multiply by scalar factor
         outputTensor = 2.0 * fj * mu1 / alpha1 * elasticityTensor ;
+        for (int n = 0; n < 6; n++)
+        {
+            outputTensor(n,1) *= 2.;
+            outputTensor(n,3) *= 2.;
+            outputTensor(n,4) *= 2.;
+        }
     }
 };
 
