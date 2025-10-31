@@ -23,9 +23,6 @@ tinyxml2 = ">=9.0.0"
 cxxopts = ">=3.1.1"
 gtest = "*"
 
-[target.win-64.dependencies]
-vs2022_win-64 = ">=19.42.0"
-
 [activation]
 scripts = ["development/scripts/pixi/activation.sh"]
 
