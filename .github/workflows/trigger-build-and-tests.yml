@@ -63,6 +63,7 @@ jobs:
   # Filter build handling : push in master, commits in PR, comments in PR and dispatch
   filter_build:
     runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'sofa-framework' }}
     outputs:
       SOFA_BRANCH_NAME: ${{ steps.export-vars.outputs.SOFA_BRANCH_NAME }}
       SOFA_COMMIT_SHA: ${{ steps.export-vars.outputs.SOFA_COMMIT_SHA }}
@@ -147,8 +148,8 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v5
         with:
-          repository: bakpaul/ci
-          ref: jenkins_gha_migration
+          repository: sofa-framework/ci
+          ref: master
           path: ./ci
 
       - name: Check push on master case (e.g. merge)
@@ -206,7 +207,8 @@ jobs:
   # Trigger the build and sharing all parameters from filter_build > outputs
   build-on:
     needs: filter_build
-    uses: bakpaul/sofa/.github/workflows/build-and-test.yml@master
+    if: ${{ github.repository_owner == 'sofa-framework' }}
+    uses: sofa-framework/sofa/.github/workflows/build-and-test.yml@master
     with:
       sofa-branch-name: ${{ needs.filter_build.outputs.SOFA_BRANCH_NAME }}
       sofa-commit-sha: ${{ needs.filter_build.outputs.SOFA_COMMIT_SHA }}

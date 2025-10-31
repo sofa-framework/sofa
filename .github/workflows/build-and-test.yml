@@ -149,7 +149,7 @@ jobs:
               fi
           else
               echo "This is not a PR: checking out sha ${{ inputs.sofa-commit-sha }} from branch ${{ inputs.sofa-branch-name }}"
-              git clone -b ${{ inputs.sofa-branch-name }} --single-branch https://www.github.com/bakpaul/sofa ## TODO : REMOVE THIS WITH SOFA_FRAMEWORK @@@@@@@@@@@@@
+              git clone -b ${{ inputs.sofa-branch-name }} --single-branch https://www.github.com/sofa-framework/sofa 
               cd sofa
               git checkout ${{ inputs.sofa-commit-sha }}
           fi
@@ -157,12 +157,8 @@ jobs:
           cd $WORKSPACE
  
           ## Clone CI and use ci-depends-on structure
-          ### TODO: UNCOMMENT THIS WHEN PUSHIN TO REAL SOFA
-          # ci_branch=${{ inputs.sofa-branch-name }}
-          # ci_repo_url="https://www.github.com/sofa-framework/ci"
-          ### AND REMOVE THOSE
-          ci_branch=jenkins_gha_migration
-          ci_repo_url="https://www.github.com/bakpaul/ci"
+          ci_branch=${{ inputs.sofa-branch-name }}
+          ci_repo_url="https://www.github.com/sofa-framework/ci"
            
 
           # check if ci has a ci-depends-on 
@@ -273,7 +269,7 @@ jobs:
           #If os has got docker then use it
           if [[ "${{ matrix.os }}" == *"ubuntu"* ]] || [[ "${{ matrix.os }}" == *"fedora"* ]]; then
               builder_type=$(echo "${{ matrix.os }}" | awk -F '_' '{print $1}' | awk -F '-' '{print $2}')
-              if [[ "${{ inputs.sofa-branch-name }}" == "master" ]] || [[ "${{ inputs.sofa-branch-name }}" =~ ^v[0-9]{2}\.[0-9]{2}$ ]]; then
+              if [[ "${{ inputs.sofa-branch-name }}" =~ ^v[0-9]{2}\.[0-9]{2}$ ]]; then
                 default_tag=${{ inputs.sofa-branch-name }}
               else
                 default_tag=master

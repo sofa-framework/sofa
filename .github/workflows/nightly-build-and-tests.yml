@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         sofa_version: [master]
-    ### if: ${{ github.repository_owner == 'sofa-framework' }}
+    if: ${{ github.repository_owner == 'sofa-framework' }}
     outputs:
       SOFA_BRANCH_NAME: ${{ steps.export-vars.outputs.SOFA_BRANCH_NAME }}
       SOFA_COMMIT_SHA: ${{ steps.export-vars.outputs.SOFA_COMMIT_SHA }}
@@ -104,7 +104,8 @@ jobs:
   # Trigger the build and sharing all parameters from nightly_build > outputs
   build-on:
     needs: nightly_build
-    uses: bakpaul/sofa/.github/workflows/build-and-test.yml@master
+    if: ${{ github.repository_owner == 'sofa-framework' }}
+    uses: sofa-framework/sofa/.github/workflows/build-and-test.yml@master
     with:
       sofa-branch-name: ${{ needs.nightly_build.outputs.SOFA_BRANCH_NAME }}
       sofa-commit-sha: ${{ needs.nightly_build.outputs.SOFA_COMMIT_SHA }}
