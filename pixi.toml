@@ -1,4 +1,4 @@
-[project]
+[workspace]
 authors = ["Olivier Roussel <olivier.roussel@inria.fr>"]
 channels = ["https://prefix.dev/conda-forge"]
 description = "Open-source framework for interactive mechanical simulation, with emphasis on biomechanics and robotics"
@@ -10,23 +10,21 @@ license = "LGPL-2.1-or-later"
 license-file = "LICENSE-LGPL.md"
 
 # TODO: add ccache support
-[build-dependencies]
+[dependencies]
 cxx-compiler = ">=1.7.0"
 cmake = ">=3.22"
 ninja = ">=1.11"
 pkg-config = "*"
 git = ">=2.47.0"
-
-[target.win-64.build-dependencies]
-vs2022_win-64 = ">=19.42.0"
-
-[dependencies]
 libboost-headers = ">=1.76.0"
 zlib = ">=1.2.11"
 eigen = ">=3.4.0"
 tinyxml2 = ">=9.0.0"
 cxxopts = ">=3.1.1"
 gtest = "*"
+
+[target.win-64.dependencies]
+vs2022_win-64 = ">=19.42.0"
 
 [activation]
 scripts = ["development/scripts/pixi/activation.sh"]
@@ -58,10 +56,10 @@ test = { cmd = "ctest --test-dir $SOFA_BUILD_DIR --output-on-failure", depends-o
 # You can uncomment this (or create a new feature for your python version)*
 # and edit environments section to enable it
 #[feature.python310.dependencies]
-#python = "~=3.10.0"
+#python = "3.10.*"
 
 [feature.python312.dependencies]
-python = "~=3.12.0"
+python = "3.12.*"
 
 [feature.plugin-sofa-python3]
 dependencies = { numpy = ">=1.22.0", pybind11 = ">=2.3.0" }
@@ -107,7 +105,7 @@ conda-deny = "*"
 [feature.build-release-package.activation]
 env = { SOFA_BUILD_RELEASE_PACKAGE_WITH_PIXI = "1" }
 [feature.build-release-package.tasks]
-configure = { cmd = [ "cmake",
+configure-package = { cmd = [ "cmake",
   "-G",
   "Ninja",
   "-B",
@@ -151,7 +149,7 @@ configure = { cmd = [ "cmake",
   "$SOFA_PLUGIN_SOFACUDA_ARGS",
   "$SOFA_PLUGIN_SOFACGAL_ARGS" ] }
 
-package = { cmd = "cmake --build $SOFA_BUILD_DIR --target package", depends-on = ["build"] }
+build-package = { cmd = "cmake --build $SOFA_BUILD_DIR --target package", depends-on = ["configure-package"] }
 
 [feature.presets-conda-core.tasks]
 configure = { cmd = [ "cmake",
