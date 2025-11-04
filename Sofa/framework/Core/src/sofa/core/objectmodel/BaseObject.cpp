@@ -346,7 +346,7 @@ std::string BaseObject::getPathName() const
 {
     auto node = dynamic_cast<const BaseNode*>(getContext());
     if(!node)
-        return "";
+        return getName();
 
     auto pathname = node->getPathName();
     std::stringstream tmp;
