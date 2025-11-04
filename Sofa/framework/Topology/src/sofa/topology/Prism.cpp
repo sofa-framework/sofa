@@ -19,15 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <sofa/geometry/ElementType.h>
-#include <sofa/topology/Edge.h>
-#include <sofa/topology/Hexahedron.h>
-#include <sofa/topology/Point.h>
 #include <sofa/topology/Prism.h>
-#include <sofa/topology/Pyramid.h>
-#include <sofa/topology/Quad.h>
-#include <sofa/topology/Tetrahedron.h>
-#include <sofa/topology/Triangle.h>
-#include <sofa/topology/config.h>
+
+namespace sofa::topology
+{
+static_assert(sofa::type::trait::Streamable<sofa::topology::Prism>);
+static_assert(sofa::type::trait::InputStreamable<sofa::topology::Prism>);
+} // namespace sofa::topology

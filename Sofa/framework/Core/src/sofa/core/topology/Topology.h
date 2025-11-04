@@ -77,7 +77,7 @@ public:
     static constexpr auto InvalidTriangle = sofa::topology::InvalidTriangle;
     static constexpr auto InvalidQuad = sofa::topology::InvalidQuad;
     static constexpr auto InvalidTetrahedron = sofa::topology::InvalidTetrahedron;
-    static constexpr auto InvalidPentahedron = sofa::topology::InvalidPentahedron;
+    static constexpr auto InvalidPrism = sofa::topology::InvalidPrism;
     static constexpr auto InvalidHexahedron = sofa::topology::InvalidHexahedron;
     static constexpr auto InvalidPyramid = sofa::topology::InvalidPyramid;
 
@@ -88,14 +88,14 @@ public:
     using Triangle = sofa::topology::Element<sofa::geometry::Triangle>;
     using Quad = sofa::topology::Element<sofa::geometry::Quad>;
     using Tetrahedron = sofa::topology::Element<sofa::geometry::Tetrahedron>;
-    using Pentahedron = sofa::topology::Element<sofa::geometry::Pentahedron>;
+    using Prism = sofa::topology::Element<sofa::geometry::Prism>;
     using Pyramid = sofa::topology::Element<sofa::geometry::Pyramid>;
     using Hexahedron = sofa::topology::Element<sofa::geometry::Hexahedron>;
 
     SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("Tetra alias has been deprecated, please use Tetrahedron instead")
     typedef Tetrahedron Tetra;
-    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("Penta alias has been deprecated, please use Pentahedron instead")
-    typedef Pentahedron Penta;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("Penta alias has been deprecated, please use Prism instead")
+    typedef Prism Penta;
     SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("Hexa alias has been deprecated, please use Hexahedron instead")
     typedef Hexahedron Hexa;
 

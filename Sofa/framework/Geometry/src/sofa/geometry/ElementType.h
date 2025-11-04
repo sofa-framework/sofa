@@ -36,7 +36,7 @@ enum class ElementType : sofa::Size
     QUAD,
     TETRAHEDRON,
     HEXAHEDRON,
-    PENTAHEDRON,
+    PRISM,
     PYRAMID,
     SIZE
 };
@@ -53,7 +53,7 @@ constexpr const char* elementTypeToString(ElementType type)
     case ElementType::QUAD: { return "Quad"; }
     case ElementType::TETRAHEDRON: { return "Tetrahedron"; }
     case ElementType::HEXAHEDRON: { return "Hexahedron"; }
-    case ElementType::PENTAHEDRON: { return "Pentahedron"; }
+    case ElementType::PRISM: { return "Prism"; }
     case ElementType::PYRAMID: { return "Pyramid"; }
     default: 
         return "Unknown";
