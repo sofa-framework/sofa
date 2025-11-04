@@ -144,7 +144,7 @@ std::string BaseData::getPathName() const
 {
     if(m_owner)
         return m_owner->getPathName()+"."+getName();
-    return "";
+    return getName();
 }
 
 std::string BaseData::getLinkPath() const
