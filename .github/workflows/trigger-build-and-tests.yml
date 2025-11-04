@@ -35,7 +35,7 @@ on:
         - standard-dev
         - supported-plugins-dev
         - full-dev
-        default: 'full'
+        default: 'full-dev'
       builder-os:
         type: choice
         description: On which OS run the binaries generation
