@@ -1,4 +1,4 @@
-name: Nightly build and tests
+name: Nightly generate binaries
 
 # ===============================================================
 # ===============================================================
@@ -72,8 +72,8 @@ jobs:
         run: |
           echo "This step runs only for nightly builds."
           echo "SOFA_BRANCH_NAME=${{ matrix.sofa_version }}" >> $GITHUB_ENV
-          echo "PRESET=standard-dev" >> $GITHUB_ENV
-          echo "WITH_ALL_TESTS=true" >> $GITHUB_ENV
+          echo "PRESET=standard" >> $GITHUB_ENV
+          echo "WITH_ALL_TESTS=false" >> $GITHUB_ENV
           echo "GENERATE_BINARIES=true" >> $GITHUB_ENV
           echo 'BUILDER_OS=["sh-ubuntu_gcc_release","sh-macos_clang_release"]' >> $GITHUB_ENV
 
