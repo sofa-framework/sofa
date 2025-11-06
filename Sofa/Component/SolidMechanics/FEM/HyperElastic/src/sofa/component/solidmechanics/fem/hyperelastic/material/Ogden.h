@@ -145,13 +145,13 @@ public:
         const MatrixSym D = MatrixSym(pow(Evalue[0], aBy2Minus1), 0, pow(Evalue[1], aBy2Minus1), 0, 0, pow(Evalue[2], aBy2Minus1));
         const Matrix3 Ca = EigenBasis*D.SymMatMultiply(EigenBasis.transposed());
         MatrixSym CaBy2Minus1; 
-        sofa::type::MatSym<3>::Mat2Sym(Ca, CaBy2Minus1);
+        sofa::type::MatSym<3, Real>::Mat2Sym(Ca, CaBy2Minus1);
 
         // Invert deformation tensor
         MatrixSym invC;
         invertMatrix(invC, C);
 
-        SPKTensorGeneral = fj * mu1 / alpha1 * (CaBy2Minus1 + -1./3. * trCaBy2 * invC) + k0*log(sinfo->J)*invC;
+        SPKTensorGeneral = fj * mu1 / alpha1 * (CaBy2Minus1 - invC * trCaBy2 * 1./3.) + invC * k0 * log(sinfo->J);
     }
 
     void ElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param, Matrix6& outputTensor) override
@@ -190,7 +190,7 @@ public:
         const Real aBy2Minus1 = aBy2 - 1.;
         MatrixSym D(pow(Evalue[0], aBy2Minus1), 0, pow(Evalue[1], aBy2Minus1), 0, 0, pow(Evalue[2], aBy2Minus1));
         MatrixSym CaBy2Minus1;
-        sofa::type::MatSym<3>::Mat2Sym(EigenBasis*D.SymMatMultiply(EigenBasis.transposed()), CaBy2Minus1);
+        sofa::type::MatSym<3, Real>::Mat2Sym(EigenBasis*D.SymMatMultiply(EigenBasis.transposed()), CaBy2Minus1);
 
         // Invert deformation tensor
         MatrixSym invC;
