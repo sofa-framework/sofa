@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,10 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/topology/Pentahedron.h>
+#pragma once
+#include <sofa/component/constraint/lagrangian/solver/config.h>
 
-namespace sofa::topology
+#include <sofa/component/constraint/lagrangian/solver/GenericConstraintProblem.h>
+#include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
+
+namespace sofa::component::constraint::lagrangian::solver
 {
-static_assert(sofa::type::trait::Streamable<sofa::topology::Pentahedron>);
-static_assert(sofa::type::trait::InputStreamable<sofa::topology::Pentahedron>);
-} // namespace sofa::topology
+
+
+/**
+ *  \brief This class adds components needed for unbuilt solvers to the GenericConstraintProblem
+ *  This needs to be used by unbuilt solvers.
+ */
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API UnbuiltConstraintProblem : public GenericConstraintProblem
+{
+public:
+    typedef std::vector< core::behavior::BaseConstraintCorrection* > ConstraintCorrections;
+
+    UnbuiltConstraintProblem(GenericConstraintSolver* solver)
+    : GenericConstraintProblem(solver)
+    {}
+
+    linearalgebra::SparseMatrix<SReal> Wdiag; /** UNBUILT **/
+    std::list<unsigned int> constraints_sequence; /** UNBUILT **/
+    std::vector< ConstraintCorrections > cclist_elems; /** UNBUILT **/
+
+
+};
+}

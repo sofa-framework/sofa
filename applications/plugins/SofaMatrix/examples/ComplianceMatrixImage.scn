@@ -17,7 +17,7 @@
 
     <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
     <FreeMotionAnimationLoop solveVelocityConstraintFirst="true" />
-    <GenericConstraintSolver tolerance="1e-9" maxIterations="1000"/>
+    <ProjectedGaussSeidelConstraintSolver tolerance="1e-9" maxIterations="1000"/>
     <ComplianceMatrixImage/>
 
     <StringMeshCreator name="loader" resolution="20" scale3d="1 1 1" />

@@ -21,13 +21,48 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/geometry/ElementType.h>
-#include <sofa/topology/Edge.h>
-#include <sofa/topology/Hexahedron.h>
-#include <sofa/topology/Point.h>
-#include <sofa/topology/Prism.h>
-#include <sofa/topology/Pyramid.h>
-#include <sofa/topology/Quad.h>
-#include <sofa/topology/Tetrahedron.h>
-#include <sofa/topology/Triangle.h>
-#include <sofa/topology/config.h>
+#include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
+
+namespace sofa::component::constraint::lagrangian::solver
+{
+
+/**
+ *  \brief This component implements a generic way of building system for solvers that use a built
+ *  version of the constraint matrix. Any solver that uses a build matrix should inherit from this.
+ *  This component is purely virtual because doSolve is not defined and needs to be defined in the
+ *  inherited class
+ */
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API BuiltConstraintSolver : public GenericConstraintSolver
+{
+
+public:
+    SOFA_CLASS(BuiltConstraintSolver, GenericConstraintSolver);
+    Data<bool> d_multithreading; ///< Build compliances concurrently
+
+    BuiltConstraintSolver();
+
+    virtual void init() override;
+
+protected:
+    virtual void doBuildSystem( const core::ConstraintParams *cParams, GenericConstraintProblem * problem ,unsigned int numConstraints) override;
+
+private:
+
+    struct ComplianceWrapper
+    {
+        using ComplianceMatrixType = sofa::linearalgebra::LPtrFullMatrix<SReal>;
+
+        ComplianceWrapper(ComplianceMatrixType& complianceMatrix, bool isMultiThreaded)
+        : m_isMultiThreaded(isMultiThreaded), m_complianceMatrix(complianceMatrix) {}
+
+        ComplianceMatrixType& matrix();
+
+        void assembleMatrix() const;
+
+    private:
+        bool m_isMultiThreaded { false };
+        ComplianceMatrixType& m_complianceMatrix;
+        std::unique_ptr<ComplianceMatrixType> m_threadMatrix;
+    };
+};
+}

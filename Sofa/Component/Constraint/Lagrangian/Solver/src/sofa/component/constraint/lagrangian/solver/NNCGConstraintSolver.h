@@ -21,13 +21,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/geometry/ElementType.h>
-#include <sofa/topology/Edge.h>
-#include <sofa/topology/Hexahedron.h>
-#include <sofa/topology/Point.h>
-#include <sofa/topology/Prism.h>
-#include <sofa/topology/Pyramid.h>
-#include <sofa/topology/Quad.h>
-#include <sofa/topology/Tetrahedron.h>
-#include <sofa/topology/Triangle.h>
-#include <sofa/topology/config.h>
+#include <sofa/component/constraint/lagrangian/solver/ProjectedGaussSeidelConstraintSolver.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
+
+namespace sofa::component::constraint::lagrangian::solver
+{
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API NNCGConstraintSolver : public ProjectedGaussSeidelConstraintSolver
+{
+public:
+    SOFA_CLASS(NNCGConstraintSolver, ProjectedGaussSeidelConstraintSolver);
+
+    virtual void doSolve(GenericConstraintProblem * problem , SReal timeout = 0.0) override;
+};
+}

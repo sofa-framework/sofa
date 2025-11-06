@@ -21,13 +21,15 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/geometry/ElementType.h>
-#include <sofa/topology/Edge.h>
-#include <sofa/topology/Hexahedron.h>
+#include <sofa/geometry/Prism.h>
+#include <sofa/topology/Element.h>
 #include <sofa/topology/Point.h>
-#include <sofa/topology/Prism.h>
-#include <sofa/topology/Pyramid.h>
-#include <sofa/topology/Quad.h>
-#include <sofa/topology/Tetrahedron.h>
-#include <sofa/topology/Triangle.h>
-#include <sofa/topology/config.h>
+
+namespace sofa::topology
+{
+    using Prism = sofa::topology::Element<sofa::geometry::Prism>;
+
+    using Pentahedron SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v25.06", "Pentahedron is renamed to Prism") = Prism;
+
+    static constexpr Prism InvalidPrism;
+}
