@@ -79,8 +79,8 @@ public:
         const Real k0 = param.parameterArray[0];
         const Real mu1 = param.parameterArray[1];
         const Real alpha1 = param.parameterArray[2];
-        const Real fj = pow(sinfo->J, -alpha1/3_sreal);
-        const Real logJSqr = pow(log(sinfo->J), 2_sreal);
+        const Real fj = pow(sinfo->J, -alpha1/3.);
+        const Real logJSqr = pow(log(sinfo->J), 2.);
 
         // Solve eigen problem for C
         Eigen::Matrix<Real, 3, 3> CEigen;
@@ -98,14 +98,14 @@ public:
         sinfo->Evect = EigenProblemSolver.eigenvectors().real();
 
         // trace of C^(alpha1/2)
-        const Real aBy2 = alpha1*0.5_sreal;
+        const Real aBy2 = alpha1*0.5;
         const Real trCaBy2 = pow(sinfo->Evalue[0], aBy2) +
                     pow(sinfo->Evalue[1], aBy2) +
                     pow(sinfo->Evalue[2], aBy2);
 
         const Real muByAlphaSqr = mu1 / (alpha1*alpha1);
 
-        return fj*muByAlphaSqr*trCaBy2 - 3_sreal*muByAlphaSqr + k0*logJSqr/2_sreal;
+        return fj*muByAlphaSqr*trCaBy2 - 3.*muByAlphaSqr + k0*logJSqr/2.;
     }
 
     void deriveSPKTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,MatrixSym &SPKTensorGeneral) override
@@ -114,7 +114,7 @@ public:
         const Real k0 = param.parameterArray[0];
         const Real mu1 = param.parameterArray[1];
         const Real alpha1 = param.parameterArray[2];
-        const Real fj = pow(sinfo->J, -alpha1/3.0_sreal);
+        const Real fj = pow(sinfo->J, -alpha1/3.0);
 
         // Solve eigen problem for C
         Eigen::Matrix<Real, 3, 3> CEigen;
@@ -132,7 +132,7 @@ public:
         const CoordEigen Evalue = EigenProblemSolver.eigenvalues().real();
 
         // trace of C^(alpha1/2)
-        const Real aBy2 = alpha1*0.5_sreal;
+        const Real aBy2 = alpha1*0.5;
         const Real trCaBy2 = pow(Evalue[0], aBy2) + pow(Evalue[1], aBy2) + pow(Evalue[2], aBy2);
 
         // Transpose (also inverse) of the eigenvector matrix
@@ -141,7 +141,7 @@ public:
             for (auto n = 0; n < Evect.cols(); ++n) EigenBasis(m, n) = Evect(m, n);
         
         // Construct C^(alpha1/2 - 1) from eigenbasis: V * D * V^T; D_i = lambda_i^(alpha1/2 - 1)
-        const Real aBy2Minus1 = aBy2 - 1_sreal;
+        const Real aBy2Minus1 = aBy2 - 1.;
         const MatrixSym D = MatrixSym(pow(Evalue[0], aBy2Minus1), 0, pow(Evalue[1], aBy2Minus1), 0, 0, pow(Evalue[2], aBy2Minus1));
         const Matrix3 Ca = EigenBasis*D.SymMatMultiply(EigenBasis.transposed());
         MatrixSym CaBy2Minus1; 
@@ -151,7 +151,7 @@ public:
         MatrixSym invC;
         invertMatrix(invC, C);
 
-        SPKTensorGeneral = fj * mu1 / alpha1 * (CaBy2Minus1 + -1_sreal/3_sreal * trCaBy2 * invC) + k0*log(sinfo->J)*invC;
+        SPKTensorGeneral = fj * mu1 / alpha1 * (CaBy2Minus1 + -1./3. * trCaBy2 * invC) + k0*log(sinfo->J)*invC;
     }
 
     void ElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param, Matrix6& outputTensor) override
@@ -160,7 +160,7 @@ public:
         const Real k0 = param.parameterArray[0];
         const Real mu1 = param.parameterArray[1];
         const Real alpha1 = param.parameterArray[2];
-        const Real fj = pow(sinfo->J, -alpha1/3.0_sreal);
+        const Real fj = pow(sinfo->J, -alpha1/3.0);
 
         // Solve eigen problem for C
         Eigen::Matrix<Real, 3, 3> CEigen;
@@ -178,7 +178,7 @@ public:
         const CoordEigen Evalue = EigenProblemSolver.eigenvalues().real();
 
         // trace of C^(alpha1/2)
-        const Real aBy2 = alpha1*0.5_sreal;
+        const Real aBy2 = alpha1*0.5;
         const Real trCaBy2 = pow(Evalue[0], aBy2) + pow(Evalue[1], aBy2) + pow(Evalue[2], aBy2);
 
         // Transpose (also inverse) of the eigenvector matrix
@@ -187,7 +187,7 @@ public:
             for (auto n = 0; n < Evect.cols(); ++n) EigenBasis(m, n) = Evect(m, n);
 
         // Construct C^(alpha1/2 - 1) from eigenbasis: V * D * V^T; D_i = lambda_i^(alpha1/2 - 1)
-        const Real aBy2Minus1 = aBy2 - 1_sreal;
+        const Real aBy2Minus1 = aBy2 - 1.;
         MatrixSym D(pow(Evalue[0], aBy2Minus1), 0, pow(Evalue[1], aBy2Minus1), 0, 0, pow(Evalue[2], aBy2Minus1));
         MatrixSym CaBy2Minus1;
         sofa::type::MatSym<3>::Mat2Sym(EigenBasis*D.SymMatMultiply(EigenBasis.transposed()), CaBy2Minus1);
@@ -199,7 +199,7 @@ public:
         // Build the 4th-order tensor contribution in Voigt notation
         Matrix6 elasticityTensor;
 
-        const Real aBy2Minus2 = aBy2 - 2_sreal;
+        const Real aBy2Minus2 = aBy2 - 2.;
         for (sofa::Index m = 0; m < 6; m++)
         {
             sofa::Index i, j;
@@ -234,7 +234,7 @@ public:
                             coefRot = (evalPowI - evalPowJ)/(Evalue[eI] - Evalue[eJ]);
                         }
 
-                        elasticityTensor(m, n) += coefRot * 0.5_sreal *
+                        elasticityTensor(m, n) += coefRot * 0.5 *
                         (
                             Evect(i, eI) * Evect(j, eJ) * Evect(k, eJ) * Evect(l, eI) +
                             Evect(i, eI) * Evect(j, eJ) * Evect(k, eI) * Evect(l, eJ)
@@ -244,19 +244,19 @@ public:
 
                 // SPK derivative contributions from isochoric part; product rule applies
                 // Factor 1 - Directly differentiate F(J)
-                elasticityTensor(m, n) -= alpha1/6_sreal * (invC(i,j) * CaBy2Minus1(k,l)
-                    - trCaBy2 / 3_sreal * invC(i,j) * invC(k,l));
+                elasticityTensor(m, n) -= alpha1/6. * (invC(i,j) * CaBy2Minus1(k,l)
+                    - trCaBy2 / 3. * invC(i,j) * invC(k,l));
 
                 // Factor 2 - 1st term - trace(C^(alpha1/2)) contribution
-                elasticityTensor(m, n) -= alpha1/6_sreal * CaBy2Minus1(i,j) * invC(k,l);
+                elasticityTensor(m, n) -= alpha1/6. * CaBy2Minus1(i,j) * invC(k,l);
                 
                 // Factor 2 - 2nd term - C inverse contribution
-                elasticityTensor(m, n) += alpha1/3_sreal * trCaBy2 * 0.5_sreal * (
+                elasticityTensor(m, n) += alpha1/3. * trCaBy2 * 0.5 * (
                     invC(i,k) * invC(j,l) 
                     + invC(i,l) * invC(j,k));
 
                 // SPK derivative contribution from the volumetric part
-                elasticityTensor(m, n) += 0.5_sreal * alpha1 / mu1 / fj * 
+                elasticityTensor(m, n) += 0.5 * alpha1 / mu1 / fj * 
                     (
                         k0 * invC(i,j) * invC(k,l)
                         - k0*log(sinfo->J) *(invC(i,k) * invC(j,l) 
@@ -265,14 +265,14 @@ public:
             }
         }
 
-        outputTensor = 2_sreal * fj * mu1 / alpha1 * elasticityTensor ;
+        outputTensor = 2. * fj * mu1 / alpha1 * elasticityTensor ;
 
         // Adjust for Voigt notation using 2x factor on the off-diagonal
         for (sofa::Index m = 0; m < 6; m++)
         {
-            outputTensor(m,1) *= 2_sreal;
-            outputTensor(m,3) *= 2_sreal;
-            outputTensor(m,4) *= 2_sreal;
+            outputTensor(m,1) *= 2.;
+            outputTensor(m,3) *= 2.;
+            outputTensor(m,4) *= 2.;
         }
     }
 
