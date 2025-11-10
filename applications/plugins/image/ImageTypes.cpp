@@ -17,21 +17,26 @@ static RegisterTemplateAlias ImageRAlias("ImageR", "ImageD");
 
 
 #if IMAGE_HAVE_MULTITHREADING
-// Register in the Factory
 using sofa::core::DataExchange;
-int DataExchangeClass = core::RegisterObject("DataExchange")
-.add< DataExchange<sofa::defaulttype::ImageB>>()
-.add< DataExchange<sofa::defaulttype::ImageC>>()
-.add< DataExchange<sofa::defaulttype::ImageUC>>()
-.add< DataExchange<sofa::defaulttype::ImageI>>()
-.add< DataExchange<sofa::defaulttype::ImageUI>>()
-.add< DataExchange<sofa::defaulttype::ImageS>>()
-.add< DataExchange<sofa::defaulttype::ImageUS>>()
-.add< DataExchange<sofa::defaulttype::ImageL>>()
-.add< DataExchange<sofa::defaulttype::ImageUL>>()
-.add< DataExchange<sofa::defaulttype::ImageF>>()
-.add< DataExchange<sofa::defaulttype::ImageD>>()
-;
+
+// Register in the Factory
+void registerDataExchange(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("DataExchange")
+    .add< DataExchange<sofa::defaulttype::ImageB>>()
+    .add< DataExchange<sofa::defaulttype::ImageC>>()
+    .add< DataExchange<sofa::defaulttype::ImageUC>>()
+    .add< DataExchange<sofa::defaulttype::ImageI>>()
+    .add< DataExchange<sofa::defaulttype::ImageUI>>()
+    .add< DataExchange<sofa::defaulttype::ImageS>>()
+    .add< DataExchange<sofa::defaulttype::ImageUS>>()
+    .add< DataExchange<sofa::defaulttype::ImageL>>()
+    .add< DataExchange<sofa::defaulttype::ImageUL>>()
+    .add< DataExchange<sofa::defaulttype::ImageF>>()
+    .add< DataExchange<sofa::defaulttype::ImageD>>()
+    );
+}
+
 }  // namespace defaulttype
 
 namespace core

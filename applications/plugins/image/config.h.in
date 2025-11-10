@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef IMAGE_CONFIG_H
-#define IMAGE_CONFIG_H
+#pragma once
 
 #include <sofa/config.h>
 
@@ -54,4 +53,3 @@ namespace image
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace image
 
-#endif
