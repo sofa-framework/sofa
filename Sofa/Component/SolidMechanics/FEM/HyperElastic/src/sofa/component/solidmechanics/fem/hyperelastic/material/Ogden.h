@@ -76,9 +76,9 @@ public:
     Real getStrainEnergy(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param) override
     {
         const MatrixSym& C = sinfo->deformationTensor;
-        const Real k0 = param.parameterArray[0];
-        const Real mu1 = param.parameterArray[1];
-        const Real alpha1 = param.parameterArray[2];
+        const Real mu1 = param.parameterArray[0];
+        const Real alpha1 = param.parameterArray[1];
+        const Real k0 = param.parameterArray[2];
         const Real fj = pow(sinfo->J, -alpha1/3.);
         const Real logJSqr = pow(log(sinfo->J), 2.);
 
@@ -111,9 +111,9 @@ public:
     void deriveSPKTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,MatrixSym &SPKTensorGeneral) override
     {
         const MatrixSym& C=sinfo->deformationTensor;
-        const Real k0 = param.parameterArray[0];
-        const Real mu1 = param.parameterArray[1];
-        const Real alpha1 = param.parameterArray[2];
+        const Real mu1 = param.parameterArray[0];
+        const Real alpha1 = param.parameterArray[1];
+        const Real k0 = param.parameterArray[2];
         const Real fj = pow(sinfo->J, -alpha1/3.0);
 
         // Solve eigen problem for C
@@ -157,9 +157,9 @@ public:
     void ElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param, Matrix6& outputTensor) override
     {
         const MatrixSym& C = sinfo->deformationTensor;
-        const Real k0 = param.parameterArray[0];
-        const Real mu1 = param.parameterArray[1];
-        const Real alpha1 = param.parameterArray[2];
+        const Real mu1 = param.parameterArray[0];
+        const Real alpha1 = param.parameterArray[1];
+        const Real k0 = param.parameterArray[2];
         const Real fj = pow(sinfo->J, -alpha1/3.0);
 
         // Solve eigen problem for C

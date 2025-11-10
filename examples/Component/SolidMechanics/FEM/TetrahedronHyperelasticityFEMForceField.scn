@@ -154,7 +154,7 @@
                         <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
                         <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
 
-                        <TetrahedronHyperelasticityFEMForceField name="FEM" ParameterSet="5000 1500 500" materialName="Ogden"/>
+                        <TetrahedronHyperelasticityFEMForceField name="FEM" ParameterSet="1500 500 5000" materialName="Ogden"/>
                 </Node>
 
                 <BoxROI drawBoxes="1" box="10 0 0 11 1 0.05" name="box"/>
