@@ -19,33 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
+#pragma once
+#include <sofa/component/linearsystem/MatrixFreeSystem.h>
+#include <sofa/component/linearsolver/iterative/GraphScatteredTypes.h>
 
-namespace sofa::simulation::mechanicalvisitor
+namespace sofa::component::linearsolver::iterative
 {
 
-MechanicalMultiVectorPeqBaseVectorVisitor::MechanicalMultiVectorPeqBaseVectorVisitor(
-        const core::ExecParams* params, sofa::core::MultiVecDerivId _dest, const linearalgebra::BaseVector * _src,
-        const sofa::core::behavior::MultiMatrixAccessor* _matrix)
-    : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)
+/**
+ * A matrix-free linear system that must be used with a preconditioned matrix-free solver
+ *
+ * This component is like a @MatrixFreeSystem (its base class), but also has a link to another
+ * linear system that assembles a matrix. This other linear system is used by a preconditioner
+ * in the context of a preconditioned solver.
+ */
+template <class TMatrix, class TVector>
+class PreconditionedMatrixFreeSystem
+    : public sofa::component::linearsystem::MatrixFreeSystem<TMatrix, TVector>
 {
+public:
+    SOFA_CLASS(SOFA_TEMPLATE2(PreconditionedMatrixFreeSystem, TMatrix, TVector),
+               SOFA_TEMPLATE2(sofa::component::linearsystem::MatrixFreeSystem, TMatrix, TVector));
+
+    void init() override;
+    void reset() override;
+    void buildSystemMatrix(const core::MechanicalParams* mparams) override;
+    void resizeSystem(sofa::Size n) override;
+    void clearSystem() override;
+
+    ///< The matrix system of the preconditioner
+    SingleLink<MyType, sofa::core::behavior::BaseMatrixLinearSystem, BaseLink::FLAG_DUPLICATE> l_preconditionerSystem;
+
+    Data<unsigned int> d_assemblingRate;
+
+    void reinitAssemblyCounter();
+
+protected:
+    PreconditionedMatrixFreeSystem();
+
+    unsigned int m_assemblyCounter {};
+};
+
+
+#if !defined(SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PRECONDITIONEDMATRIXFREESYSTEM_CPP)
+    extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PreconditionedMatrixFreeSystem<GraphScatteredMatrix, GraphScatteredVector>;
+#endif
+
 }
-
-MechanicalMultiVectorPeqBaseVectorVisitor::Result MechanicalMultiVectorPeqBaseVectorVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-{
-    if (matrix) offset = matrix->getGlobalOffset(mm);
-    if (src!= nullptr && offset >= 0)
-    {
-        unsigned int o = (unsigned int)offset;
-        mm->addFromBaseVectorSameSize(dest.getId(mm), src, o);
-        offset = (int)o;
-    }
-    if (!matrix) offset += mm->getMatrixSize();
-
-    return RESULT_CONTINUE;
-}
-
-} // namespace sofa::simulation::mechanicalvisitor
-

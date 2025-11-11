@@ -2,9 +2,19 @@
 
     <include href="../FEMBAR-common.xml"/>
 
-    <PCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner"/>
-    <PrecomputedWarpPreconditioner name="preconditioner" linearSolver="@initSolver" printLog="true"/>
-    <SparseLDLSolver name="initSolver" template="CompressedRowSparseMatrix" />
+    <!-- The two following components are the main linear solver and its associated linear system -->
+    <PreconditionedMatrixFreeSystem name="matrixFreeSystem" assemblingRate="1"/>
+    <PCGLinearSolver name="PCG" iterations="1000" linearSystem="@matrixFreeSystem" preconditioner="@preconditioner" printLog="true"/>
+
+    <!-- The two following components are a preconditioner for the conjugate gradient and its associated linear system -->
+    <PrecomputedMatrixSystem name="preconditionerSystem"/>
+    <PrecomputedWarpPreconditioner name="preconditioner" linearSystem="@preconditionerSystem" linearSolver="@initSolver" printLog="true"/>
+
+    <!-- The 3 following components are a direct linear solver used by the preconditioner, its associated linear system and a reordering method-->
+    <MatrixLinearSystem template="CompressedRowSparseMatrixMat3x3" name="system"/>
+    <NaturalOrderingMethod/>
+    <SparseLDLSolver name="initSolver" template="CompressedRowSparseMatrixMat3x3" linearSystem="@system" printLog="true"/>
+
     <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
 
 </Node>
