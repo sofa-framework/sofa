@@ -37,3 +37,16 @@ namespace sofa::component::linearsolver::iterative
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::linearsolver::iterative
 
+#ifdef SOFA_BUILD_SOFA_COMPONENT_LINEARSOLVER_ITERATIVE
+#define SOFA_ITERATIVE_SOLVER_ATTRIBUTE_DEPRECATED_ASSEMBLY_API()
+#else
+#define SOFA_ITERATIVE_SOLVER_ATTRIBUTE_DEPRECATED_ASSEMBLY_API() \
+    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "The assembly of the linear system is no longer the responsibility of the solver. Instead, a linear system component lives along with the linear solver. This component is in charge of the assembly.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_LINEARSOLVER_ITERATIVE
+#define SOFA_ITERATIVE_SOLVER_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+#else
+#define SOFA_ITERATIVE_SOLVER_ATTRIBUTE_REMOVE_ASSEMBLY_API() \
+    SOFA_ATTRIBUTE_DISABLED("v25.12", "v25.12", "The assembly of the linear system is no longer the responsibility of the solver. Instead, a linear system component lives along with the linear solver. This component is in charge of the assembly.")
+#endif

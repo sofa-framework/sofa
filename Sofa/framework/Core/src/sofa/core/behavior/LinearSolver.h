@@ -21,9 +21,11 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/core/config.h>
+#include <sofa/core/MultiVecId.h>
 #include <sofa/core/behavior/BaseLinearSolver.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
-#include <sofa/core/MultiVecId.h>
+#include <sofa/core/behavior/BaseMatrixLinearSystem.h>
 
 namespace sofa::core::behavior
 {
@@ -35,54 +37,62 @@ namespace sofa::core::behavior
 class SOFA_CORE_API LinearSolver : public BaseLinearSolver
 {
 public:
-    SOFA_ABSTRACT_CLASS(LinearSolver, BaseLinearSolver);
+    SOFA_ABSTRACT_CLASS(LinearSolver, BaseLinearSolver)
     SOFA_BASE_CAST_IMPLEMENTATION(LinearSolver)
-protected:
-    LinearSolver();
 
-    ~LinearSolver() override;
-public:
     /// Reset the current linear system.
-    virtual void resetSystem() = 0;
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual void resetSystem() final = delete;
 
     /// Set the linear system matrix, combining the mechanical M,B,K matrices using the given coefficients
     ///
     /// @todo Should we put this method in a specialized class for mechanical systems, or express it using more general terms (i.e. coefficients of the second order ODE to solve)
-    virtual void setSystemMBKMatrix(const MechanicalParams* mparams) = 0;
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual void setSystemMBKMatrix(const MechanicalParams* mparams) final = delete;
 
     /// Rebuild the system using a mass and force factor
     /// Experimental API used to investigate convergence issues.
-    SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM() virtual void rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/){}
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual void rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/) final = delete;
 
-    /// Indicate if the solver update the system in parallel
+    virtual sofa::core::behavior::BaseMatrixLinearSystem* getLinearSystem() const = 0;
+
+    /// Indicate if the solver updates the system in parallel
     virtual bool isAsyncSolver() { return false; }
 
     /// Returns true if the solver supports non-symmetric systems
     virtual bool supportNonSymmetricSystem() const { return false; }
 
     /// Indicate if the solver updated the system after the last call of setSystemMBKMatrix (should return true if isParallelSolver return false)
-    virtual bool hasUpdatedMatrix() { return true; }
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual bool hasUpdatedMatrix() final = delete;
 
     /// This function is use for the preconditioner it must be called at each time step event if setSystemMBKMatrix is not called
-    virtual void updateSystemMatrix() {}
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual void updateSystemMatrix() final = delete;
 
     /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
-    virtual void setSystemRHVector(core::MultiVecDerivId v) = 0;
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual void setSystemRHVector(core::MultiVecDerivId v) final = delete;
 
     /// Set the initial estimate of the linear system left-hand term vector, from the values contained in the (Mechanical/Physical)State objects
     /// This vector will be replaced by the solution of the system once solveSystem is called
-    virtual void setSystemLHVector(core::MultiVecDerivId v) = 0;
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual void setSystemLHVector(core::MultiVecDerivId v) final = delete;
 
     /// Solve the system as constructed using the previous methods
     virtual void solveSystem() = 0;
 
     ///
-    virtual void init_partial_solve() { msg_warning() << "partial_solve is not implemented yet."; }
+    virtual void init_partial_solve();
 
     ///
-    virtual void partial_solve(std::list<linearalgebra::BaseMatrix::Index>& /*I_last_Disp*/, std::list<linearalgebra::BaseMatrix::Index>& /*I_last_Dforce*/, bool /*NewIn*/) { msg_warning() << "partial_solve is not implemented yet"; }
+    virtual void partial_solve(std::list<linearalgebra::BaseMatrix::Index>& /*I_last_Disp*/,
+                               std::list<linearalgebra::BaseMatrix::Index>& /*I_last_Dforce*/,
+                               bool /*NewIn*/);
 
-    /// Invert the system, this method is optional because it's called when solveSystem() is called for the first time
+    /// Invert the system, this method is optional because it's called when solveSystem() is called
+    /// for the first time
     virtual void invertSystem() {}
 
     /// Multiply the inverse of the system matrix by the transpose of the given matrix J
@@ -118,20 +128,19 @@ public:
     }
 
     /// Apply the contactforce dx = Minv * J^t * f and store the result in dx VecId
-    virtual void applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/,sofa::core::MultiVecDerivId /*dx*/, const linearalgebra::BaseVector* /*f*/) {
-        msg_error() << "applyConstraintForce has not been implemented.";
-    }
+    virtual void applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/,
+                                      sofa::core::MultiVecDerivId /*dx*/,
+                                      const linearalgebra::BaseVector* /*f*/);
 
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute mparams->dF() = J^t lambda
     /// the result is written in mparams->dF()
     SOFA_ATTRIBUTE_DEPRECATED__COMPUTERESIDUAL()
-    virtual void computeResidual(const core::ExecParams* /*params*/, linearalgebra::BaseVector* /*f*/) {
-        msg_error() << "computeResidual has not been implemented.";
-    }
+    virtual void computeResidual(const core::ExecParams* /*params*/,
+                                 linearalgebra::BaseVector* /*f*/);
 
-
-    /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
+    /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply
+    /// the result with the given matrix J
     ///
     /// This method can compute the Schur complement of the constrained system:
     /// W = H A^{-1} H^T, where:
@@ -142,7 +151,8 @@ public:
     /// @param result the variable where the result will be added
     /// @param J the matrix J to use
     /// @param fact integrator parameter
-    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
+    /// @return false if the solver does not support this operation, of it the system matrix is not
+    /// invertible
     virtual bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact)
     {
         SOFA_UNUSED(result);
@@ -152,16 +162,20 @@ public:
     }
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
-    virtual linearalgebra::BaseMatrix* getSystemBaseMatrix() { return nullptr; }
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual linearalgebra::BaseMatrix* getSystemBaseMatrix() final = delete;
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
-    virtual linearalgebra::BaseVector* getSystemRHBaseVector() { return nullptr; }
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual linearalgebra::BaseVector* getSystemRHBaseVector() final = delete;
 
     /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
-    virtual linearalgebra::BaseVector* getSystemLHBaseVector() { return nullptr; }
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual linearalgebra::BaseVector* getSystemLHBaseVector() final = delete;
 
     /// Get the linear system inverse matrix, or nullptr if this solver does not build it
-    virtual linearalgebra::BaseMatrix* getSystemInverseBaseMatrix() { return nullptr; }
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual linearalgebra::BaseMatrix* getSystemInverseBaseMatrix() final = delete;
 
     /// Read the Matrix solver from a file
     virtual bool readFile(std::istream& /*in*/) { return false;}
@@ -170,13 +184,13 @@ public:
     virtual bool writeFile(std::ostream& /*out*/) {return false;}
 
     /// Ask the solver to no longer update the system matrix
-    virtual void freezeSystemMatrix() { frozen = true; }
-
-
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual void freezeSystemMatrix() = delete;
 
 protected:
 
-    bool frozen;
+    SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    DeprecatedAndRemoved frozen;
 };
 
 } // namespace sofa::core::behavior
