@@ -61,6 +61,24 @@ namespace engine
     extern void registerGenerateImage(sofa::core::ObjectFactory* factory);
     extern void registerDepthMapToMeshEngine(sofa::core::ObjectFactory* factory);
     extern void registerCollisionToCarvingEngine(sofa::core::ObjectFactory* factory);
+
+#if SOFA_BUILD_TESTS
+    extern void registerTestImageEngine(sofa::core::ObjectFactory* factory);
+#endif
+
+#if PLUGIN_IMAGE_COMPILE_GUI
+    extern void registerContourImageToolBox(sofa::core::ObjectFactory* factory);
+    extern void registerAverageCatchAllVector(sofa::core::ObjectFactory* factory);
+    extern void registerCatchAllVector(sofa::core::ObjectFactory* factory);
+    extern void registerDepthImageToolBox(sofa::core::ObjectFactory* factory);
+    extern void registerMergedCatchAllVector(sofa::core::ObjectFactory* factory);
+    extern void registerLabelBoxImageToolBox(sofa::core::ObjectFactory* factory);
+    extern void registerLabelGridImageToolBox(sofa::core::ObjectFactory* factory);
+    extern void registerLabelPointImageToolBox(sofa::core::ObjectFactory* factory);
+    extern void registerLabelPointsBySectionImageToolBox(sofa::core::ObjectFactory* factory);
+    extern void registerDistanceZoneImageToolBox(sofa::core::ObjectFactory* factory);
+    extern void registerZoneGeneratorImageToolBox(sofa::core::ObjectFactory* factory);
+#endif
 }
 
 //Here are just several convenient functions to help user to know what contains the plugin
@@ -158,6 +176,13 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     sofa::component::engine::registerGenerateImage(factory);
     sofa::component::engine::registerDepthMapToMeshEngine(factory);
     sofa::component::engine::registerCollisionToCarvingEngine(factory);
+
+#if SOFA_BUILD_TESTS
+    sofa::component::engine::registerTestImageEngine(factory);
+#endif
+
+#if PLUGIN_IMAGE_COMPILE_GUI
+#endif
 }
 
 } // namespace sofa::component

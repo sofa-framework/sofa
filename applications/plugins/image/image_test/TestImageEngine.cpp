@@ -33,8 +33,9 @@ namespace engine
 {
 using namespace sofa::defaulttype;
 
-int TestImageEngineClass = core::RegisterObject("TestImageEngine to test engine with data image")
-
+void registerTestImageEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("TestImageEngine to test engine with data image")
         .add<TestImageEngine<ImageUC> >(true)
         .add<TestImageEngine<ImageD> >()
 #ifdef BUILD_ALL_IMAGE_TYPES
@@ -48,7 +49,9 @@ int TestImageEngineClass = core::RegisterObject("TestImageEngine to test engine 
         .add<TestImageEngine<ImageF> >()
         .add<TestImageEngine<ImageB> >()
 #endif
-        ;
+    );
+}
+
 
 template class TestImageEngine<ImageUC>;
 template class TestImageEngine<ImageD>;

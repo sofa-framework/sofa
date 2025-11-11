@@ -19,22 +19,26 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-int LabelGridImageToolBox_Class = core::RegisterObject("LabelGridImageToolBox")
-        .add<LabelGridImageToolBox<ImageUC> >()
-        .add<LabelGridImageToolBox<ImageD> >(true)
+void registerLabelGridImageToolBox(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("LabelGridImageToolBox")
+    .add<LabelGridImageToolBox<ImageUC> >()
+    .add<LabelGridImageToolBox<ImageD> >(true)
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-        .add<LabelGridImageToolBox<ImageC> >()
-        .add<LabelGridImageToolBox<ImageI> >()
-        .add<LabelGridImageToolBox<ImageUI> >()
-        .add<LabelGridImageToolBox<ImageS> >()
-        .add<LabelGridImageToolBox<ImageUS> >()
-        .add<LabelGridImageToolBox<ImageL> >()
-        .add<LabelGridImageToolBox<ImageUL> >()
-        .add<LabelGridImageToolBox<ImageF> >()
-        .add<LabelGridImageToolBox<ImageB> >()
+    .add<LabelGridImageToolBox<ImageC> >()
+    .add<LabelGridImageToolBox<ImageI> >()
+    .add<LabelGridImageToolBox<ImageUI> >()
+    .add<LabelGridImageToolBox<ImageS> >()
+    .add<LabelGridImageToolBox<ImageUS> >()
+    .add<LabelGridImageToolBox<ImageL> >()
+    .add<LabelGridImageToolBox<ImageUL> >()
+    .add<LabelGridImageToolBox<ImageF> >()
+    .add<LabelGridImageToolBox<ImageB> >()
 #endif
         .addLicense("LGPL")
-        .addAuthor("Vincent Majorczyk");
+        .addAuthor("Vincent Majorczyk")
+    );
+}
 
 template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageUC>;
 template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageD>;
