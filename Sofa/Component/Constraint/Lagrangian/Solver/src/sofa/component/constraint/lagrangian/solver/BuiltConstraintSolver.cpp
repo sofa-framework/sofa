@@ -29,6 +29,7 @@
 
 namespace sofa::component::constraint::lagrangian::solver
 {
+    
 BuiltConstraintSolver::BuiltConstraintSolver()
 : d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
 , d_useSVDForRegularization(initData(&d_useSVDForRegularization, false, "useSVDForRegularization", "Use SVD decomposiiton of the compliance matrix to project singular values smaller than regularization to the regularization term. Only works with built"))
