@@ -397,7 +397,7 @@ if(SofaValidation_FOUND)
 endif()
 
 if(SOFACUDA_CUBLAS)
-    target_link_libraries(${PROJECT_NAME} ${CUDA_SPARSE_LIBRARY} CUDA::cublas)
+    target_link_libraries(${PROJECT_NAME} ${CUDA_cusparse_LIBRARY} CUDA::cublas)
 
 endif()
 if(SOFACUDA_CUDPP)
