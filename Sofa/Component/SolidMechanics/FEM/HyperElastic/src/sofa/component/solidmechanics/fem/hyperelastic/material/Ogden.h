@@ -79,7 +79,7 @@ public:
         const Real mu1 = param.parameterArray[0];
         const Real alpha1 = param.parameterArray[1];
         const Real k0 = param.parameterArray[2];
-        const Real fj = pow(sinfo->J, -alpha1/3.);
+        const Real Fj = pow(sinfo->J, -alpha1/3.);
         const Real logJSqr = pow(log(sinfo->J), 2.);
 
         // Solve eigen problem for C
@@ -106,7 +106,11 @@ public:
 
         const Real muByAlphaSqr = mu1 / (alpha1*alpha1);
 
-        return fj*muByAlphaSqr*trCaBy2 - 3.*muByAlphaSqr + k0*logJSqr/2.;
+        // Isochoric and volumetric parts 
+        const Real Wiso = Fj*muByAlphaSqr*trCaBy2 - 3.*muByAlphaSqr;
+        const Real Wvol = k0 * logJSqr / 2.;
+
+        return Wiso + Wvol;
     }
 
     void deriveSPKTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,MatrixSym &SPKTensorGeneral) override
@@ -115,7 +119,7 @@ public:
         const Real mu1 = param.parameterArray[0];
         const Real alpha1 = param.parameterArray[1];
         const Real k0 = param.parameterArray[2];
-        const Real fj = pow(sinfo->J, -alpha1/3.0);
+        const Real Fj = pow(sinfo->J, -alpha1/3.0);
 
         // Solve eigen problem for C
         Eigen::Matrix<Real, 3, 3> CEigen;
@@ -154,7 +158,13 @@ public:
         MatrixSym invC;
         invertMatrix(invC, C);
 
-        SPKTensorGeneral = fj * mu1 / alpha1 * (CaBy2Minus1 - invC * trCaBy2 * 1./3.) + invC * k0 * log(sinfo->J);
+        // Siso = dWiso/dF*dF/dC_{ij} + dWiso/dlambda*dlambda/dC
+        const MatrixSym S_isochoric = Fj * mu1 / alpha1 * CaBy2Minus1
+                                     -Fj * mu1 / alpha1 / 3. * invC * trCaBy2;
+        // Svol = dWvol/dC_{ij}
+        const MatrixSym S_volumetric = invC * k0 * log(sinfo->J);
+
+        SPKTensorGeneral = S_isochoric + S_volumetric;
     }
 
     void ElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param, Matrix6& outputTensor) override
@@ -163,7 +173,7 @@ public:
         const Real mu1 = param.parameterArray[0];
         const Real alpha1 = param.parameterArray[1];
         const Real k0 = param.parameterArray[2];
-        const Real fj = pow(sinfo->J, -alpha1/3.0);
+        const Real Fj = pow(sinfo->J, -alpha1/3.0);
 
         // Solve eigen problem for C
         Eigen::Matrix<Real, 3, 3> CEigen;
@@ -261,7 +271,7 @@ public:
                     + invC(i,l) * invC(j,k));
 
                 // SPK derivative contribution from the volumetric part
-                elasticityTensor(m, n) += 0.5 * alpha1 / mu1 / fj * 
+                elasticityTensor(m, n) += 0.5 * alpha1 / mu1 / Fj * 
                     (
                         k0 * invC(i,j) * invC(k,l)
                         - k0*log(sinfo->J) *(invC(i,k) * invC(j,l) 
@@ -270,7 +280,7 @@ public:
             }
         }
 
-        outputTensor = 2. * fj * mu1 / alpha1 * elasticityTensor ;
+        outputTensor = 2. * Fj * mu1 / alpha1 * elasticityTensor ;
 
         // Adjust for Voigt notation using 2x factor on the off-diagonal
         for (sofa::Index m = 0; m < 6; m++)
