@@ -148,7 +148,7 @@ TEST(FileSystemTest, createDirectory_alreadyExists)
     EXPECT_FALSE(FileSystem::createDirectory("createDirectoryTestDir"));
     EXPECT_TRUE(FileSystem::exists("createDirectoryTestDir"));
     EXPECT_TRUE(FileSystem::isDirectory("createDirectoryTestDir"));
-    EXPECT_TRUE(FileSystem::createDirectory("createDirectoryTestDir"));
+    EXPECT_FALSE(FileSystem::createDirectory("createDirectoryTestDir"));
 
     // Cleanup
     FileSystem::removeDirectory("createDirectoryTestDir");

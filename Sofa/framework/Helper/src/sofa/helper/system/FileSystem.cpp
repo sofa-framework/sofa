@@ -163,6 +163,10 @@ bool FileSystem::createDirectory(const std::string& path)
                     msg_error(error) << path << ": File exists and is not a directoy";
                     return true;
                 }
+                else
+                {
+                    return false;
+                }
             }
 
         }
