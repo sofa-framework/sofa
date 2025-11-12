@@ -271,7 +271,7 @@ TEST(HyperelasticMaterial, PK2_NeoHookean)
 TEST(HyperelasticMaterial, PK2_Ogden)
 {
     MaterialParameters<defaulttype::Vec3Types> materialParameters;
-    materialParameters.parameterArray = { 1., 1., 1.};
+    materialParameters.parameterArray = { 1., 1.1, 1.2};
 
     Ogden<defaulttype::Vec3Types> material{};
     testSecondPiolaKirchhoffFromStrainEnergyDensityFunction(material, materialParameters);
@@ -336,7 +336,7 @@ TEST(HyperelasticMaterial, ElasticityTensor_NeoHookean)
 TEST(HyperelasticMaterial, ElasticityTensor_Ogden)
 {
     MaterialParameters<defaulttype::Vec3Types> materialParameters;
-    materialParameters.parameterArray = { 1., 1., 1.};
+    materialParameters.parameterArray = { 1., 1.1, 1.2};
 
     Ogden<defaulttype::Vec3Types> material{};
     testElasticityTensorFromSecondPiolaKirchhoff(material, materialParameters);
@@ -394,7 +394,7 @@ TEST(HyperelasticMaterial, applyElasticityTensor_NeoHookean)
 TEST(HyperelasticMaterial, applyElasticityTensor_Ogden)
 {
     MaterialParameters<defaulttype::Vec3Types> materialParameters;
-    materialParameters.parameterArray = { 1., 1., 1.};
+    materialParameters.parameterArray = { 1., 1.1, 1.2};
 
     Ogden<defaulttype::Vec3Types> material{};
     testApplyElasticityTensor(material, materialParameters);

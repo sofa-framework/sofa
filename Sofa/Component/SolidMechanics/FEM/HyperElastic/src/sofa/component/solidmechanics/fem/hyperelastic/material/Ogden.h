@@ -158,7 +158,7 @@ public:
         MatrixSym invC;
         invertMatrix(invC, C);
 
-        // Siso = dWiso/dF*dF/dC_{ij} + dWiso/dlambda*dlambda/dC
+        // Siso = dWiso/dlambda*dlambda/dC + dWiso/dF*dF/dC
         const MatrixSym S_isochoric = Fj * mu1 / alpha1 * CaBy2Minus1
                                      -Fj * mu1 / alpha1 / 3. * invC * trCaBy2;
         // Svol = dWvol/dC_{ij}
@@ -191,8 +191,12 @@ public:
         const EigenMatrix Evect = EigenProblemSolver.eigenvectors().real();
         const CoordEigen Evalue = EigenProblemSolver.eigenvalues().real();
 
-        // trace of C^(alpha1/2)
+        // Coefficient terms
         const Real aBy2 = alpha1*0.5;
+        const Real aBy2Minus1 = aBy2 - 1.;
+        const Real aBy2Minus2 = aBy2 - 2.;
+
+        // Trace of C^(alpha1/2)
         const Real trCaBy2 = pow(Evalue[0], aBy2) + pow(Evalue[1], aBy2) + pow(Evalue[2], aBy2);
 
         // Transpose (also inverse) of the eigenvector matrix
@@ -202,7 +206,6 @@ public:
                  EigenBasis(m, n) = Evect(m, n);
 
         // Construct C^(alpha1/2 - 1) from eigenbasis: V * D * V^T; D_i = lambda_i^(alpha1/2 - 1)
-        const Real aBy2Minus1 = aBy2 - 1.;
         MatrixSym D(pow(Evalue[0], aBy2Minus1), 0, pow(Evalue[1], aBy2Minus1), 0, 0, pow(Evalue[2], aBy2Minus1));
         MatrixSym CaBy2Minus1;
         sofa::type::MatSym<3, Real>::Mat2Sym(EigenBasis*D.SymMatMultiply(EigenBasis.transposed()), CaBy2Minus1);
@@ -214,7 +217,8 @@ public:
         // Build the 4th-order tensor contribution in Voigt notation
         Matrix6 elasticityTensor;
 
-        const Real aBy2Minus2 = aBy2 - 2.;
+        // Loop over Voigt indices. Sum contributions from derivatives of SPK tensor w.r.t. C_{kl}
+        // T1, T2, T3: Derivatives of S1, S2, S3 w.r.t. C_{kl}, respectively
         for (sofa::Index m = 0; m < 6; m++)
         {
             sofa::Index i, j;
@@ -225,31 +229,27 @@ public:
                 sofa::Index k, l;
                 std::tie(k, l) = fromVoigt[n];
 
-                // SPK derivative contribution from spectral part
+                // Derivative of S_isochoric; terms contributing from spectral decomposition
                 for (sofa::Index eI = 0 ; eI < 3; eI++)
                 {
-                    // Distortion term from differenting of eigenvalues
+                    // Variation of eigenvalues
                     const Real evalPowI2 = pow(Evalue[eI], aBy2Minus2);
-                    elasticityTensor(m, n) += aBy2Minus1 * evalPowI2 
+                    elasticityTensor(m, n) += Fj * mu1 / alpha1 * aBy2Minus1 * evalPowI2 
                         * Evect(i, eI) * Evect(j, eI) * Evect(k, eI) * Evect(l, eI);
 
-                    // Rotational part from differenting of eigenvectors
+                    // Variation of eigenvectors
                     const Real evalPowI = pow(Evalue[eI], aBy2Minus1);
                     for (sofa::Index eJ = 0 ; eJ < 3; eJ++)
                     {
                         if (eJ == eI) continue;
 
-                        Real coefRot{0};
+                        const bool isDegenerate = std::fabs(Evalue[eI] - Evalue[eJ]) <
+                                                   std::numeric_limits<Real>::epsilon();
+                        const Real coefRot = isDegenerate 
+                            ? aBy2Minus1 * evalPowI2
+                            : (evalPowI - pow(Evalue[eJ], aBy2Minus1))/(Evalue[eI] - Evalue[eJ]);
 
-                        if (std::fabs(Evalue[eI] - Evalue[eJ]) < std::numeric_limits<Real>::epsilon()) 
-                            coefRot = aBy2Minus1 * evalPowI2;
-                        else
-                        {
-                            const Real evalPowJ = pow(Evalue[eJ], aBy2Minus1);
-                            coefRot = (evalPowI - evalPowJ)/(Evalue[eI] - Evalue[eJ]);
-                        }
-
-                        elasticityTensor(m, n) += coefRot * 0.5 *
+                        elasticityTensor(m, n) += 0.5 * Fj * mu1 / alpha1 * coefRot *
                         (
                             Evect(i, eI) * Evect(j, eJ) * Evect(k, eJ) * Evect(l, eI) +
                             Evect(i, eI) * Evect(j, eJ) * Evect(k, eI) * Evect(l, eJ)
@@ -257,30 +257,23 @@ public:
                     }
                 }
 
-                // SPK derivative contributions from isochoric part; product rule applies
-                // Factor 1 - Directly differentiate F(J)
-                elasticityTensor(m, n) -= alpha1/6. * (invC(i,j) * CaBy2Minus1(k,l)
-                    - trCaBy2 / 3. * invC(i,j) * invC(k,l));
+                // Remaining terms from S_isochoric
+                elasticityTensor(m, n) += 
+                    // Lumped contributions from trace of C^(alpha1/2) and FJ in dWiso/dlambda*dlambda/dC
+                    - Fj * mu1 / 6. * (CaBy2Minus1(i,j) * invC(l,k) + CaBy2Minus1(k,l) * invC(j,i))
+                    // Contributions from FJ in dWiso/dF*dF/dC
+                    + Fj * mu1 * trCaBy2 / 18. * invC(j,i) * invC(l,k)
+                    // Contributions from inverse of C
+                    + Fj * mu1 / (6. * alpha1) * trCaBy2 * (invC(k,i) * invC(l,j) + invC(l,i) * invC(k,j));
 
-                // Factor 2 - 1st term - trace(C^(alpha1/2)) contribution
-                elasticityTensor(m, n) -= alpha1/6. * CaBy2Minus1(i,j) * invC(k,l);
-                
-                // Factor 2 - 2nd term - C inverse contribution
-                elasticityTensor(m, n) += alpha1/3. * trCaBy2 * 0.5 * (
-                    invC(i,k) * invC(j,l) 
-                    + invC(i,l) * invC(j,k));
-
-                // SPK derivative contribution from the volumetric part
-                elasticityTensor(m, n) += 0.5 * alpha1 / mu1 / Fj * 
-                    (
-                        k0 * invC(i,j) * invC(k,l)
-                        - k0*log(sinfo->J) *(invC(i,k) * invC(j,l) 
-                            + invC(i,l) * invC(j,k))
-                    ) ;
+                // Derivative of S_volumetric; dependence on lnJ and C^{-1}
+                elasticityTensor(m, n) += 0.5 * k0 * invC(j,i) * invC(l,k)
+                                - 0.5 * k0 * log(sinfo->J) * 
+                    (invC(j,k) * invC(l,i) + invC(j,l) * invC(k,i));
             }
         }
 
-        outputTensor = 2. * Fj * mu1 / alpha1 * elasticityTensor ;
+        outputTensor = 2. * elasticityTensor ;
 
         // Adjust for Voigt notation using 2x factor on the off-diagonal
         for (sofa::Index m = 0; m < 6; m++)
