@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,33 +20,31 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/constraint/lagrangian/solver/config.h>
 
-#include <sofa/component/constraint/lagrangian/solver/GenericConstraintProblem.h>
-#include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
-#include <sofa/linearalgebra/SparseMatrix.h>
+#include <sofa/component/constraint/lagrangian/solver/BuiltConstraintSolver.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
-
-
-/**
- *  \brief This class adds components needed for unbuilt solvers to the GenericConstraintProblem
- *  This needs to be used by unbuilt solvers.
- */
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API UnbuiltConstraintProblem : public GenericConstraintProblem
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ImprovedJacobiConstraintSolver : public BuiltConstraintSolver
 {
 public:
-    typedef std::vector< core::behavior::BaseConstraintCorrection* > ConstraintCorrections;
+    SOFA_CLASS(ImprovedJacobiConstraintSolver, BuiltConstraintSolver);
 
-    UnbuiltConstraintProblem(GenericConstraintSolver* solver)
-    : GenericConstraintProblem(solver)
-    {}
+    Data<bool>  d_useSpectralCorrection;
+    Data<SReal> d_spectralCorrectionFactor;
+    Data<bool>  d_useConjugateResidue;
+    Data<SReal> d_conjugateResidueSpeedFactor;
 
-    linearalgebra::SparseMatrix<SReal> Wdiag; /** UNBUILT **/
-    std::list<unsigned int> constraints_sequence; /** UNBUILT **/
-    std::vector< ConstraintCorrections > cclist_elems; /** UNBUILT **/
+    ImprovedJacobiConstraintSolver();
 
+protected:
+    /**
+     * Based on paper
+     * Francu, Mihai & Moldoveanu, Florica. An Improved Jacobi Solver for Particle Simulation.
+     * VRPHYS 2014
+     **/
+    virtual void doSolve(GenericConstraintProblem * problem , SReal timeout = 0.0) override;
 
 };
 }

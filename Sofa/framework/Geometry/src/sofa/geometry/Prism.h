@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,33 +20,21 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/constraint/lagrangian/solver/config.h>
 
-#include <sofa/component/constraint/lagrangian/solver/GenericConstraintProblem.h>
-#include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
-#include <sofa/linearalgebra/SparseMatrix.h>
+#include <sofa/geometry/config.h>
+#include <sofa/geometry/ElementType.h>
 
-namespace sofa::component::constraint::lagrangian::solver
+namespace sofa::geometry
 {
 
-
-/**
- *  \brief This class adds components needed for unbuilt solvers to the GenericConstraintProblem
- *  This needs to be used by unbuilt solvers.
- */
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API UnbuiltConstraintProblem : public GenericConstraintProblem
+struct Prism
 {
-public:
-    typedef std::vector< core::behavior::BaseConstraintCorrection* > ConstraintCorrections;
+    static constexpr sofa::Size NumberOfNodes = 6;
+    static constexpr ElementType Element_type = ElementType::PRISM;
 
-    UnbuiltConstraintProblem(GenericConstraintSolver* solver)
-    : GenericConstraintProblem(solver)
-    {}
-
-    linearalgebra::SparseMatrix<SReal> Wdiag; /** UNBUILT **/
-    std::list<unsigned int> constraints_sequence; /** UNBUILT **/
-    std::vector< ConstraintCorrections > cclist_elems; /** UNBUILT **/
-
-
+    Prism() = delete;
 };
-}
+
+using Pentahedron SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v25.06", "Pentahedron is renamed to Prism") = Prism;
+
+} // namespace sofa::geometry
