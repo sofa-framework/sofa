@@ -49,6 +49,8 @@ public:
     SOFA_CLASS(ScalarField, BaseObject);
 
 public:
+    void init() override;
+
     /// Compute the gradient using a first order finite-difference scheme.
     /// This is of lower precision compared to analytical gradient computed by derivating
     /// the equations.
@@ -63,6 +65,9 @@ public:
 
     virtual double getValue(Vec3d& pos, int& domain) = 0;
     inline double getValue(Vec3d& pos) { int domain=-1; return getValue(pos,domain); }
+
+    // Compute the field for a range or input values
+    virtual void getValues(const std::vector<Vec3d>& positions, std::vector<double>& results);
 
     /// By default compute the gradient using a first order finite difference approache
     /// If you have analytical derivative don't hesitate to override this function.
