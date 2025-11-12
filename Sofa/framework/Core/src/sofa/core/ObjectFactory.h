@@ -54,8 +54,6 @@ namespace sofa::core
 class ObjectRegistrationData;
 
 typedef std::function<void(sofa::core::objectmodel::Base*, sofa::core::objectmodel::BaseObjectDescription*)> OnCreateCallback ;
-typedef std::function<void(sofa::core::objectmodel::BaseContext*, sofa::core::objectmodel::BaseObjectDescription*)> BeforeCreateCallback ;
-
 class SOFA_CORE_API ObjectFactory
 {
 public:
@@ -111,7 +109,6 @@ public:
 protected:
     /// Main class registry
     ClassEntryMap registry;
-    BeforeCreateCallback m_callbackBeforeCreate ;
     OnCreateCallback m_callbackOnCreate ;
 
     /// Keep track of plugins who already registered
@@ -209,8 +206,7 @@ public:
     /// Dump the content of the factory to a HTML stream.
     void dumpHTML(std::ostream& out = std::cout);
 
-    void setOnCreateCallback(OnCreateCallback cb) { m_callbackOnCreate = cb ; }
-    void setBeforeCreateCallback(BeforeCreateCallback cb) { m_callbackBeforeCreate = cb ; }
+    void setCallback(OnCreateCallback cb) { m_callbackOnCreate = cb ; }
 
     bool registerObjectsFromPlugin(const std::string& pluginName);
     bool registerObjects(ObjectRegistrationData& ro);
