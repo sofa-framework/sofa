@@ -568,9 +568,8 @@ void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const type::Vec3 &point,
 
 void BaseCamera::rotateWorldAroundPoint(Quat& rotation, const type::Vec3& point, Quat orientationCam)
 {
-    type::Vec3& positionCam = *d_position.beginEdit();
+    auto positionCam = sofa::helper::getWriteAccessor(d_position);
     rotateWorldAroundPoint(rotation, point, orientationCam, positionCam);
-    d_position.endEdit();
 }
 
 
