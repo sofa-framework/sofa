@@ -1,6 +1,21 @@
 cmake_minimum_required(VERSION 3.22)
 project(Sofa.Core LANGUAGES CXX)
 
+find_package(nlohmann_json QUIET)
+
+if(NOT TARGET nlohmann_json AND SOFA_ALLOW_FETCH_DEPENDENCIES)
+    message("Sofa.Core: DEPENDENCY nlohmann_json NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching nlohmann_json...")
+
+    set(JSON_BuildTests OFF CACHE INTERNAL "")
+
+    sofa_fetch_dependency(nlohmann_json
+            GIT_REPOSITORY https://github.com/nlohmann/json.git
+            GIT_TAG        v3.12.0
+    )
+elseif(NOT TARGET nlohmann_json)
+    message(FATAL_ERROR "Sofa.Core: DEPENDENCY nlohmann_json NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install nlohmann_json (version>=3.9.1), or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
+endif()
+
 set(SRC_ROOT "src/sofa/core")
 
 set(HEADER_FILES
@@ -351,6 +366,8 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.Topology Sofa.DefaultType)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
 
 if(SOFA_BUILD_WITH_PCH_ENABLED)
     message("Adding precompiled header for Sofa.Core")
