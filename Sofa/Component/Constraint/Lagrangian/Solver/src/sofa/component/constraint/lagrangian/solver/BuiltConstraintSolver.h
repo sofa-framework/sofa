@@ -39,6 +39,8 @@ public:
     SOFA_CLASS(BuiltConstraintSolver, GenericConstraintSolver);
     Data<bool> d_multithreading; ///< Build compliances concurrently
     Data<bool> d_useSVDForRegularization; ///< Use SVD decomposiiton of the compliance matrix to project singular values smaller than regularization to the regularization term. Only works with built
+    Data<SReal> d_svdSingularValueNullSpaceCriteriaFactor; ///< Fraction of the highest singular value bellow which a singular value will be supposed to belong to the nullspace
+    Data<SReal> d_svdSingularVectorNullSpaceCriteriaFactor; ///< Absolute value bellow which a component of a normalized base vector will be considered null
 
 
     BuiltConstraintSolver();
