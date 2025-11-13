@@ -102,7 +102,7 @@ void initExternalModule()
 
         first = false;
 
-#ifdef IMAGE_HAVE_SOFAPYTHON
+#if IMAGE_HAVE_SOFAPYTHON
         if( PythonFactory::s_sofaPythonModule ) // add the module only if the Sofa module exists (SofaPython is loaded)
         {
             simulation::PythonEnvironment::gil lock(__func__);
