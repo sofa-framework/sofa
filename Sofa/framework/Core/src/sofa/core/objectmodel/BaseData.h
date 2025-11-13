@@ -194,6 +194,7 @@ public:
 
     /// If we use the Data as a link and not as value directly
     virtual std::string getLinkPath() const;
+    std::string getPathName()const;
 
     /// Return whether this %Data can be used as a linkPath.
     ///
