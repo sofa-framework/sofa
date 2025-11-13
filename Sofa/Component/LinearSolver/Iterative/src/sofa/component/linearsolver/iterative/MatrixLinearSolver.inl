@@ -492,6 +492,7 @@ template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::ConstraintParams* cparams, sofa::core::MultiVecDerivId dx, const linearalgebra::BaseVector* f)
 {
     auto* systemMatrix = l_linearSystem->getSystemMatrix();
+    auto* lhsVector = l_linearSystem->getSolutionVector();
     auto* rhsVector = l_linearSystem->getRHSVector();
 
     rhsVector->clear();
@@ -499,7 +500,7 @@ void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::C
     /// rhs = J^t * f
     internalData.projectForceInConstraintSpace(rhsVector, f);
     /// lhs = M^-1 * rhs
-    this->solve(*systemMatrix, *rhsVector, *rhsVector);
+    this->solve(*systemMatrix, *lhsVector, *rhsVector);
 
     l_linearSystem->dispatchSystemSolution(dx);
     l_linearSystem->dispatchSystemRHS(cparams->lambda());

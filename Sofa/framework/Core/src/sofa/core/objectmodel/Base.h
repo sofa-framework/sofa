@@ -97,6 +97,7 @@ public:
     void addOutputsToCallback(const std::string& name, std::initializer_list<BaseData*> outputs);
 
 
+    /// Returns the path to the Base. it is possible to use different character as separator.
     virtual std::string getPathName() const { return ""; }
 
     /// Accessor to the object name
