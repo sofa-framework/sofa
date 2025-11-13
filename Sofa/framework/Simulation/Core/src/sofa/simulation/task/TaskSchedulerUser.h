@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <MultiThreading/config.h>
+#include <sofa/simulation/config.h>
 
 #include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/core/objectmodel/Base.h>
@@ -29,7 +29,7 @@
 namespace multithreading
 {
 
-class SOFA_MULTITHREADING_PLUGIN_API TaskSchedulerUser : virtual public sofa::core::Base
+class SOFA_SIMULATION_CORE_API TaskSchedulerUser : virtual public sofa::core::Base
 {
 public:
     sofa::Data<int> d_nbThreads;

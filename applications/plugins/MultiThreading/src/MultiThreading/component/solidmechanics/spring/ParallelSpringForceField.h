@@ -22,7 +22,7 @@
 #pragma once
 
 #include <MultiThreading/config.h>
-#include <MultiThreading/TaskSchedulerUser.h>
+#include <sofa/simulation/task/TaskSchedulerUser.h>
 #include <sofa/component/solidmechanics/spring/SpringForceField.h>
 
 namespace sofa::simulation

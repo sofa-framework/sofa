@@ -29,7 +29,6 @@ set(HEADER_FILES
     src/MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.inl
     src/MultiThreading/SceneCheckMultithreading.h
     src/MultiThreading/ParallelImplementationsRegistry.h
-    src/MultiThreading/TaskSchedulerUser.h
     )
 
 set(SOURCE_FILES
@@ -47,7 +46,6 @@ set(SOURCE_FILES
     src/MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.cpp
     src/MultiThreading/SceneCheckMultithreading.cpp
     src/MultiThreading/ParallelImplementationsRegistry.cpp
-    src/MultiThreading/TaskSchedulerUser.cpp
     )
 
 find_package(Sofa.Config REQUIRED)

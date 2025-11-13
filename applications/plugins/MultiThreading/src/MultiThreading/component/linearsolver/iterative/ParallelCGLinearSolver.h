@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <MultiThreading/TaskSchedulerUser.h>
+#include <sofa/simulation/task/TaskSchedulerUser.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 
 namespace multithreading::component::linearsolver::iterative

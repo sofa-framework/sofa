@@ -141,6 +141,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/task/TaskScheduler.h
     ${SRC_ROOT}/task/TaskSchedulerFactory.h
     ${SRC_ROOT}/task/TaskSchedulerRegistry.h
+    ${SRC_ROOT}/task/TaskSchedulerUser.h
     ${SRC_ROOT}/task/WorkerThread.h
 )
 
@@ -275,6 +276,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/task/TaskScheduler.cpp
     ${SRC_ROOT}/task/TaskSchedulerFactory.cpp
     ${SRC_ROOT}/task/TaskSchedulerRegistry.cpp
+    ${SRC_ROOT}/task/TaskSchedulerUser.cpp
     ${SRC_ROOT}/task/WorkerThread.cpp
 )
 

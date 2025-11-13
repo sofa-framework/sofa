@@ -22,7 +22,7 @@
 #pragma once
 
 #include <MultiThreading/config.h>
-#include <MultiThreading/TaskSchedulerUser.h>
+#include <sofa/simulation/task/TaskSchedulerUser.h>
 
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
 #include <sofa/simulation/task/CpuTask.h>

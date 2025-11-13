@@ -22,7 +22,7 @@
 #pragma once
 
 #include <MultiThreading/config.h>
-#include <MultiThreading/TaskSchedulerUser.h>
+#include <sofa/simulation/task/TaskSchedulerUser.h>
 
 #include <sofa/component/collision/detection/algorithm/BVHNarrowPhase.h>
 #include <sofa/simulation/task/CpuTask.h>
