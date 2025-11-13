@@ -19,33 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
+#pragma once
 
-namespace sofa::simulation::mechanicalvisitor
-{
+#include <sofa/component/constraint/lagrangian/solver/BuiltConstraintSolver.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 
-MechanicalMultiVectorPeqBaseVectorVisitor::MechanicalMultiVectorPeqBaseVectorVisitor(
-        const core::ExecParams* params, sofa::core::MultiVecDerivId _dest, const linearalgebra::BaseVector * _src,
-        const sofa::core::behavior::MultiMatrixAccessor* _matrix)
-    : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)
+namespace sofa::component::constraint::lagrangian::solver
 {
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ImprovedJacobiConstraintSolver : public BuiltConstraintSolver
+{
+public:
+    SOFA_CLASS(ImprovedJacobiConstraintSolver, BuiltConstraintSolver);
+
+    Data<bool>  d_useSpectralCorrection;
+    Data<SReal> d_spectralCorrectionFactor;
+    Data<bool>  d_useConjugateResidue;
+    Data<SReal> d_conjugateResidueSpeedFactor;
+
+    ImprovedJacobiConstraintSolver();
+
+protected:
+    /**
+     * Based on paper
+     * Francu, Mihai & Moldoveanu, Florica. An Improved Jacobi Solver for Particle Simulation.
+     * VRPHYS 2014
+     **/
+    virtual void doSolve(GenericConstraintProblem * problem , SReal timeout = 0.0) override;
+
+};
 }
-
-MechanicalMultiVectorPeqBaseVectorVisitor::Result MechanicalMultiVectorPeqBaseVectorVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-{
-    if (matrix) offset = matrix->getGlobalOffset(mm);
-    if (src!= nullptr && offset >= 0)
-    {
-        unsigned int o = (unsigned int)offset;
-        mm->addFromBaseVectorSameSize(dest.getId(mm), src, o);
-        offset = (int)o;
-    }
-    if (!matrix) offset += mm->getMatrixSize();
-
-    return RESULT_CONTINUE;
-}
-
-} // namespace sofa::simulation::mechanicalvisitor
-

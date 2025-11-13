@@ -33,7 +33,10 @@ class SOFA_COMPONENT_LINEARSYSTEM_API MatrixFreeSystem : public TypedMatrixLinea
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(MatrixFreeSystem, TMatrix, TVector), SOFA_TEMPLATE2(TypedMatrixLinearSystem, TMatrix, TVector));
 
-    void assembleSystem(const core::MechanicalParams* /* mparams */) override {}
+    void assembleSystem(const core::MechanicalParams* mparams) override
+    {
+        this->getSystemMatrix()->setMBKFacts(mparams);
+    }
     void associateLocalMatrixToComponents(const core::MechanicalParams* /* mparams */) override {}
 };
 
