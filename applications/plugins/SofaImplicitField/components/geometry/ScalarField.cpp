@@ -40,6 +40,11 @@ namespace geometry
 namespace _scalarfield_
 {
 
+void ScalarField::init()
+{
+    d_componentState.setValue(core::objectmodel::ComponentState::Valid);
+}
+
 Vec3d ScalarField::getGradientByFinitDifference(Vec3d& pos, int& i)
 {
     Vec3d Result;
