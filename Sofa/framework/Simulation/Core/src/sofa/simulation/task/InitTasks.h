@@ -19,63 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/TaskSchedulerRegistry.h>
-#include <sofa/helper/logging/Messaging.h>
-#include <sofa/simulation/TaskScheduler.h>
+#pragma once
+
+#include <sofa/simulation/task/CpuTask.h>
+
+#include <atomic>
+#include <mutex>
 
 namespace sofa::simulation
+{            
+class SOFA_SIMULATION_CORE_API InitPerThreadDataTask : public CpuTask
 {
+            
+public:
 
-bool TaskSchedulerRegistry::addTaskSchedulerToRegistry(TaskScheduler* taskScheduler, const std::string& taskSchedulerName)
-{
-    const auto [fst, snd] = m_schedulers.insert({taskSchedulerName, taskScheduler});
-    msg_error_when(!snd, "TaskSchedulerRegistry") << "Cannot insert task scheduler '" << taskSchedulerName
-            << "' in the registry: a task scheduler with this name already exists";
+    InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status);
+            
+    ~InitPerThreadDataTask() override = default;
+            
+    MemoryAlloc run() override;
+            
+private:
+            
+    std::mutex*	 IdFactorygetIDMutex;
+    std::atomic<int>* _atomicCounter;
+};
 
-    if (snd)
-    {
-        m_lastInserted = std::make_pair(taskSchedulerName, taskScheduler);
-    }
-    else
-    {
-        m_lastInserted.reset();
-    }
-
-    return snd;
-}
-
-TaskScheduler* TaskSchedulerRegistry::getTaskScheduler(const std::string& taskSchedulerName) const
-{
-    const auto it = m_schedulers.find(taskSchedulerName);
-    if (it != m_schedulers.end())
-    {
-        return it->second;
-    }
-    return nullptr;
-}
-
-bool TaskSchedulerRegistry::hasScheduler(const std::string& taskSchedulerName) const
-{
-    return m_schedulers.contains(taskSchedulerName);
-}
-
-const std::optional<std::pair<std::string, TaskScheduler*>>& TaskSchedulerRegistry::getLastInserted() const
-{
-    return m_lastInserted;
-}
-
-void TaskSchedulerRegistry::clear()
-{
-    for (const auto& p : m_schedulers)
-    {
-        delete p.second;
-    }
-    m_schedulers.clear();
-}
-
-TaskSchedulerRegistry::~TaskSchedulerRegistry()
-{
-    clear();
-}
-
-}
+// thread storage initialization
+SOFA_SIMULATION_CORE_API void initThreadLocalData();
+ 
+} // namespace sofa::simulation

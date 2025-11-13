@@ -19,59 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <sofa/config.h>
-
-#include <sofa/simulation/Task.h>
-
-#include <string> 
-#include <functional>
+#include <sofa/simulation/task/TaskSchedulerFactory.h>
+#include <sofa/simulation/task/TaskScheduler.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa::simulation
 {
 
-/**
- * Base class for a task scheduler
- *
- * The API allows to:
- * - initialize the scheduler with a number of dedicated threads
- * - add a task to the scheduler
- * - wait until all tasks are done etc.
- */
-class SOFA_SIMULATION_CORE_API TaskScheduler
+bool TaskSchedulerFactory::registerScheduler(const std::string& name,
+                                             const std::function<TaskScheduler*()>& creatorFunc)
 {
-public:
-    virtual ~TaskScheduler() = default;
+    const bool isInserted = m_schedulerCreationFunctions.insert({name, creatorFunc}).second;
+    msg_error_when(!isInserted, "TaskSchedulerFactory") << "Cannot register task scheduler '" << name
+            << "' into the factory: a task scheduler with this name already exists";
+    return isInserted;
+}
 
-    /**
-    * Assuming 2 concurrent threads by CPU core, return the number of CPU core on the system
-    */
-    static unsigned GetHardwareThreadsCount();
+TaskScheduler* TaskSchedulerFactory::instantiate(const std::string& name)
+{
+    TaskScheduler* scheduler { nullptr };
+    const auto creationIt = m_schedulerCreationFunctions.find(name);
+    if (creationIt != m_schedulerCreationFunctions.end())
+    {
+        scheduler = creationIt->second();
+    }
+    else
+    {
+        msg_error("TaskSchedulerFactory") << "Cannot instantiate task scheduler '" << name
+            << "': it has not been registered into the factory";
+    }
+    return scheduler;
+}
 
-    // interface
-    virtual void init(const unsigned int nbThread = 0) = 0;
-            
-    virtual void stop(void) = 0;
-            
-    virtual unsigned int getThreadCount(void) const = 0;
+std::set<std::string> TaskSchedulerFactory::getAvailableSchedulers()
+{
+    std::set<std::string> schedulers;
+    for (const auto& [name, _] : m_schedulerCreationFunctions)
+    {
+        schedulers.insert(name);
+    }
+    return schedulers;
+}
 
-    virtual const char* getCurrentThreadName() = 0;
-
-    virtual int getCurrentThreadType() = 0;
-
-    // queue task if there is space, and run it otherwise
-    virtual bool addTask(Task* task) = 0;
-
-    virtual bool addTask(Task::Status& status, const std::function<void()>& task);
-
-    virtual void workUntilDone(Task::Status* status) = 0;
-
-    virtual Task::Allocator* getTaskAllocator() = 0;
-
-protected:
-
-    friend class Task;
-};
-
-} // namespace sofa::simulation
+}

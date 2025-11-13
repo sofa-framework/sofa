@@ -25,8 +25,8 @@
 #include <MultiThreading/TaskSchedulerUser.h>
 
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
-#include <sofa/simulation/CpuTask.h>
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/CpuTask.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 
 #include <thread>
 

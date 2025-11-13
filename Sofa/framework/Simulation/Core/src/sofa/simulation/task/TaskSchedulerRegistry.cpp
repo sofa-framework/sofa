@@ -19,48 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/TaskScheduler.h>
-
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/MainTaskSchedulerRegistry.h>
-
-#include <thread>
+#include <sofa/simulation/task/TaskSchedulerRegistry.h>
+#include <sofa/helper/logging/Messaging.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 
 namespace sofa::simulation
 {
-unsigned TaskScheduler::GetHardwareThreadsCount()
-{
-    return std::thread::hardware_concurrency() / 2;
-}
 
-bool TaskScheduler::addTask(Task::Status& status, const std::function<void()>& task)
+bool TaskSchedulerRegistry::addTaskSchedulerToRegistry(TaskScheduler* taskScheduler, const std::string& taskSchedulerName)
 {
-    class CallableTask final : public Task
+    const auto [fst, snd] = m_schedulers.insert({taskSchedulerName, taskScheduler});
+    msg_error_when(!snd, "TaskSchedulerRegistry") << "Cannot insert task scheduler '" << taskSchedulerName
+            << "' in the registry: a task scheduler with this name already exists";
+
+    if (snd)
     {
-    public:
-        CallableTask(int scheduledThread, Task::Status& status, std::function<void()> task)
-            : Task(scheduledThread)
-            , m_status(status)
-            , m_task(std::move(task))
-        {}
-        ~CallableTask() override = default;
-        sofa::simulation::Task::MemoryAlloc run() final
-        {
-            m_task();
-            return MemoryAlloc::Dynamic;
-        }
+        m_lastInserted = std::make_pair(taskSchedulerName, taskScheduler);
+    }
+    else
+    {
+        m_lastInserted.reset();
+    }
 
-        Task::Status* getStatus() const override
-        {
-            return &m_status;
-        }
-
-    private:
-        Task::Status& m_status;
-        std::function<void()> m_task;
-    };
-
-    return addTask(new CallableTask(-1, status, task)); //destructor should be called after run() because it returns MemoryAlloc::Dynamic
+    return snd;
 }
 
-} // namespace sofa::simulation
+TaskScheduler* TaskSchedulerRegistry::getTaskScheduler(const std::string& taskSchedulerName) const
+{
+    const auto it = m_schedulers.find(taskSchedulerName);
+    if (it != m_schedulers.end())
+    {
+        return it->second;
+    }
+    return nullptr;
+}
+
+bool TaskSchedulerRegistry::hasScheduler(const std::string& taskSchedulerName) const
+{
+    return m_schedulers.contains(taskSchedulerName);
+}
+
+const std::optional<std::pair<std::string, TaskScheduler*>>& TaskSchedulerRegistry::getLastInserted() const
+{
+    return m_lastInserted;
+}
+
+void TaskSchedulerRegistry::clear()
+{
+    for (const auto& p : m_schedulers)
+    {
+        delete p.second;
+    }
+    m_schedulers.clear();
+}
+
+TaskSchedulerRegistry::~TaskSchedulerRegistry()
+{
+    clear();
+}
+
+}

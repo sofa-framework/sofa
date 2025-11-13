@@ -22,8 +22,8 @@
 #pragma once
 
 #include <sofa/helper/logging/Messaging.h>
-#include <sofa/simulation/TaskScheduler.h>
-#include <sofa/simulation/CpuTaskStatus.h>
+#include <sofa/simulation/task/TaskScheduler.h>
+#include <sofa/simulation/task/CpuTaskStatus.h>
 #include <sofa/type/vector_T.h>
 
 namespace sofa::simulation

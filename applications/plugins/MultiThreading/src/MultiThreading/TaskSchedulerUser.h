@@ -23,7 +23,7 @@
 
 #include <MultiThreading/config.h>
 
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/core/objectmodel/Base.h>
 
 namespace multithreading

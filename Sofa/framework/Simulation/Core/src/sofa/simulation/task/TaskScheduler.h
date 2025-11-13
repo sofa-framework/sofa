@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -21,40 +21,57 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/simulation/TaskSchedulerFactory.h>
-#include <mutex>
+#include <sofa/config.h>
+
+#include <sofa/simulation/task/Task.h>
+
+#include <string> 
+#include <functional>
 
 namespace sofa::simulation
 {
 
 /**
- * A set of static function with the same interface than @TaskSchedulerFactory, working on a single
- * instance of @TaskSchedulerFactory.
+ * Base class for a task scheduler
  *
- * The static functions @createInRegistry use the factory to instantiate a task scheduler
- * and store it in @MainTaskSchedulerRegistry
+ * The API allows to:
+ * - initialize the scheduler with a number of dedicated threads
+ * - add a task to the scheduler
+ * - wait until all tasks are done etc.
  */
-class SOFA_SIMULATION_CORE_API MainTaskSchedulerFactory
+class SOFA_SIMULATION_CORE_API TaskScheduler
 {
 public:
+    virtual ~TaskScheduler() = default;
 
-    static bool registerScheduler(const std::string& name,
-                                  const std::function<TaskScheduler* ()>& creatorFunc);
+    /**
+    * Assuming 2 concurrent threads by CPU core, return the number of CPU core on the system
+    */
+    static unsigned GetHardwareThreadsCount();
 
-    static TaskScheduler* instantiate(const std::string& name);
+    // interface
+    virtual void init(const unsigned int nbThread = 0) = 0;
+            
+    virtual void stop(void) = 0;
+            
+    virtual unsigned int getThreadCount(void) const = 0;
 
-    static std::set<std::string> getAvailableSchedulers();
+    virtual const char* getCurrentThreadName() = 0;
 
+    virtual int getCurrentThreadType() = 0;
 
-    static TaskScheduler* createInRegistry(const std::string& name);
-    static TaskScheduler* createInRegistry();
+    // queue task if there is space, and run it otherwise
+    virtual bool addTask(Task* task) = 0;
 
-    static std::string defaultTaskSchedulerType();
+    virtual bool addTask(Task::Status& status, const std::function<void()>& task);
 
-private:
-    static std::mutex s_mutex;
+    virtual void workUntilDone(Task::Status* status) = 0;
 
-    static TaskSchedulerFactory& getFactory();
+    virtual Task::Allocator* getTaskAllocator() = 0;
+
+protected:
+
+    friend class Task;
 };
 
-}
+} // namespace sofa::simulation

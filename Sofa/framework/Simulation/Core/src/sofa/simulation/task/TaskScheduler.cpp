@@ -19,26 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/simulation/task/TaskScheduler.h>
 
-#include <sofa/simulation/config.h>
-#include <sofa/simulation/Task.h>
-#include <atomic>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/MainTaskSchedulerRegistry.h>
+
+#include <thread>
 
 namespace sofa::simulation
 {
-
-class SOFA_SIMULATION_CORE_API CpuTaskStatus : public Task::Status
+unsigned TaskScheduler::GetHardwareThreadsCount()
 {
-public:
-    CpuTaskStatus();
-
-    bool isBusy() const override final;
-
-    int setBusy(bool busy) override final;
-
-private:
-    std::atomic<int> m_busy;
-};
-
+    return std::thread::hardware_concurrency() / 2;
 }
+
+bool TaskScheduler::addTask(Task::Status& status, const std::function<void()>& task)
+{
+    class CallableTask final : public Task
+    {
+    public:
+        CallableTask(int scheduledThread, Task::Status& status, std::function<void()> task)
+            : Task(scheduledThread)
+            , m_status(status)
+            , m_task(std::move(task))
+        {}
+        ~CallableTask() override = default;
+        sofa::simulation::Task::MemoryAlloc run() final
+        {
+            m_task();
+            return MemoryAlloc::Dynamic;
+        }
+
+        Task::Status* getStatus() const override
+        {
+            return &m_status;
+        }
+
+    private:
+        Task::Status& m_status;
+        std::function<void()> m_task;
+    };
+
+    return addTask(new CallableTask(-1, status, task)); //destructor should be called after run() because it returns MemoryAlloc::Dynamic
+}
+
+} // namespace sofa::simulation

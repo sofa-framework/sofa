@@ -19,33 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <sofa/simulation/CpuTask.h>
-
-#include <atomic>
-#include <mutex>
+#include <sofa/simulation/task/CpuTaskStatus.h>
 
 namespace sofa::simulation
-{            
-class SOFA_SIMULATION_CORE_API InitPerThreadDataTask : public CpuTask
 {
-            
-public:
+CpuTaskStatus::CpuTaskStatus(): m_busy(0)
+{}
 
-    InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status);
-            
-    ~InitPerThreadDataTask() override = default;
-            
-    MemoryAlloc run() override;
-            
-private:
-            
-    std::mutex*	 IdFactorygetIDMutex;
-    std::atomic<int>* _atomicCounter;
-};
+bool CpuTaskStatus::isBusy() const
+{
+    return (m_busy.load(std::memory_order_relaxed) > 0);
+}
 
-// thread storage initialization
-SOFA_SIMULATION_CORE_API void initThreadLocalData();
- 
-} // namespace sofa::simulation
+int CpuTaskStatus::setBusy(bool busy)
+{
+    if (busy)
+    {
+        return m_busy.fetch_add(1, std::memory_order_relaxed);
+    }
+    else
+    {
+        return m_busy.fetch_sub(1, std::memory_order_relaxed);
+    }
+}
+}

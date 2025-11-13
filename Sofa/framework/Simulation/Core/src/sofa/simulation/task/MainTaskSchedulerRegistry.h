@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -21,31 +21,35 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/simulation/config.h>
-
-#include <sofa/simulation/CpuTaskStatus.h>
-
+#include <sofa/simulation/task/TaskSchedulerRegistry.h>
+#include <mutex>
 
 namespace sofa::simulation
 {
-/**  Base class to implement a CPU task
- *   all the tasks running on the CPU should inherits from this class
+
+/**
+ * A set of static functions with the same interface than a @TaskSchedulerRegistry, working on a
+ * single instance of a @TaskSchedulerRegistry.
+ * All functions are thread-safe.
  */
-class SOFA_SIMULATION_CORE_API CpuTask : public Task
+class SOFA_SIMULATION_CORE_API MainTaskSchedulerRegistry
 {
 public:
 
-    using Status = CpuTaskStatus;
+    static bool addTaskSchedulerToRegistry(TaskScheduler* taskScheduler, const std::string& taskSchedulerName);
 
-    Status* getStatus(void) const override final;
+    static TaskScheduler* getTaskScheduler(const std::string& taskSchedulerName);
 
+    static bool hasScheduler(const std::string& taskSchedulerName);
 
-    CpuTask(Status* status, int scheduledThread = -1);
+    static const std::optional<std::pair<std::string, TaskScheduler*> >& getLastInserted();
 
-    virtual ~CpuTask() = default;
+    static void clear();
 
 private:
-    Status* m_status { nullptr };
+    static std::mutex s_mutex;
+
+    static TaskSchedulerRegistry& getInstance();
 };
 
-} // namespace sofa::simulation
+}

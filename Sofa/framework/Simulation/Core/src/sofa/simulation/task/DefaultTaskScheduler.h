@@ -23,7 +23,7 @@
 
 #include <sofa/config.h>
 
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 
 // default
 #include <thread>

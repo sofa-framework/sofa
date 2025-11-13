@@ -23,7 +23,7 @@
 
 #include <sofa/simulation/config.h>
 
-#include <sofa/simulation/Task.h>
+#include <sofa/simulation/task/Task.h>
 #include <sofa/simulation/Locks.h>
 
 #include <thread>

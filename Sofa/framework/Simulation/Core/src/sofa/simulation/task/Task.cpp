@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,50 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/MainTaskSchedulerRegistry.h>
+#include <sofa/simulation/task/Task.h>
 
 namespace sofa::simulation
 {
-std::mutex MainTaskSchedulerRegistry::s_mutex;
+Task::Allocator* Task::_allocator = nullptr;
 
-bool MainTaskSchedulerRegistry::addTaskSchedulerToRegistry(TaskScheduler* taskScheduler,
-    const std::string& taskSchedulerName)
+Task::Task(int scheduledThread)
+: m_scheduledThread(scheduledThread)
+, m_id(0)
 {
-    std::lock_guard lock(s_mutex);
-    return getInstance().addTaskSchedulerToRegistry(taskScheduler, taskSchedulerName);
 }
 
-TaskScheduler* MainTaskSchedulerRegistry::getTaskScheduler(const std::string& taskSchedulerName)
+void *Task::operator new(std::size_t sz)
 {
-    std::lock_guard lock(s_mutex);
-    return getInstance().getTaskScheduler(taskSchedulerName);
+    return _allocator->allocate(sz);
 }
 
-bool MainTaskSchedulerRegistry::hasScheduler(const std::string& taskSchedulerName)
+void Task::operator delete(void *ptr)
 {
-    std::lock_guard lock(s_mutex);
-    return getInstance().hasScheduler(taskSchedulerName);
+    _allocator->free(ptr, 0);
 }
 
-const std::optional<std::pair<std::string, TaskScheduler*>>& MainTaskSchedulerRegistry::
-getLastInserted()
+void Task::operator delete(void *ptr, std::size_t sz)
 {
-    std::lock_guard lock(s_mutex);
-    return getInstance().getLastInserted();
+    _allocator->free(ptr, sz);
 }
 
-void MainTaskSchedulerRegistry::clear()
+int Task::getScheduledThread() const
 {
-    std::lock_guard lock(s_mutex);
-    getInstance().clear();
+    return m_scheduledThread;
 }
 
-TaskSchedulerRegistry& MainTaskSchedulerRegistry::getInstance()
+Task::Allocator *Task::getAllocator()
 {
-    static TaskSchedulerRegistry r;
-    return r;
+    return _allocator;
 }
 
-
+void Task::setAllocator(Task::Allocator *allocator)
+{
+    _allocator = allocator;
 }
 
+} // namespace sofa

@@ -19,46 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/Task.h>
+#include <sofa/simulation/task/CpuTask.h>
+
+#include <thread>
+
 
 namespace sofa::simulation
 {
-Task::Allocator* Task::_allocator = nullptr;
 
-Task::Task(int scheduledThread)
-: m_scheduledThread(scheduledThread)
-, m_id(0)
+CpuTask::CpuTask(CpuTask::Status* status, int scheduledThread)
+: Task(scheduledThread)
+, m_status(status)
 {
 }
 
-void *Task::operator new(std::size_t sz)
+CpuTask::Status *CpuTask::getStatus(void) const
 {
-    return _allocator->allocate(sz);
+    return m_status;
 }
 
-void Task::operator delete(void *ptr)
-{
-    _allocator->free(ptr, 0);
-}
 
-void Task::operator delete(void *ptr, std::size_t sz)
-{
-    _allocator->free(ptr, sz);
-}
-
-int Task::getScheduledThread() const
-{
-    return m_scheduledThread;
-}
-
-Task::Allocator *Task::getAllocator()
-{
-    return _allocator;
-}
-
-void Task::setAllocator(Task::Allocator *allocator)
-{
-    _allocator = allocator;
-}
-
-} // namespace sofa
+} // namespace sofa::simulation

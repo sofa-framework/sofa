@@ -25,7 +25,7 @@
 #include <MultiThreading/TaskSchedulerUser.h>
 
 #include <sofa/component/collision/detection/algorithm/BruteForceBroadPhase.h>
-#include <sofa/simulation/CpuTask.h>
+#include <sofa/simulation/task/CpuTask.h>
 
 namespace sofa::core::collision
 {
