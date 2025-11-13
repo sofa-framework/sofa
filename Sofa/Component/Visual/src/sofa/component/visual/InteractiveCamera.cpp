@@ -88,7 +88,7 @@ void InteractiveCamera::moveCamera(int x, int y)
                 pivot = sceneCenter;
                 break;
             }
-            rotateWorldAroundPoint(newQuat, pivot, startingCameraOrientation, startingCameraPosition);
+            rotateWorldAroundPoint(newQuat, pivot, m_startingCameraOrientation, m_startingCameraPosition);
         }
         else if (currentMode == ZOOM_MODE)
         {
@@ -191,8 +191,8 @@ void InteractiveCamera::processMouseEvent(core::objectmodel::MouseEvent* me)
         isMoving = true;
         currentMode = TRACKBALL_MODE;
         
-        startingCameraOrientation = this->getOrientation();
-        startingCameraPosition = this->getPosition();
+        m_startingCameraOrientation = this->getOrientation();
+        m_startingCameraPosition = this->getPosition();
         lastMousePosX = posX;
         lastMousePosY = posY;
     }

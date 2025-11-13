@@ -56,8 +56,8 @@ private:
     bool isMoving;
     int lastMousePosX, lastMousePosY;
     helper::visual::Trackball currentTrackball;
-    sofa::type::Quatd startingCameraOrientation;
-    sofa::type::Vec3 startingCameraPosition;
+    sofa::type::Quatd m_startingCameraOrientation;
+    sofa::type::Vec3 m_startingCameraPosition;
 
     void internalUpdate() override;
 protected:
