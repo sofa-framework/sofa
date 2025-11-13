@@ -236,13 +236,14 @@ public:
     }
 
     //Multiplication by a non symmetric matrix on the right
-    [[nodiscard]] Mat<D,D,real> SymMatMultiply(const Mat<D,D,real>& m) const
+    template<sofa::Size C>
+    [[nodiscard]] Mat<D,C,real> SymMatMultiply(const Mat<D,C,real>& m) const
     {
-        Mat<D,D,real> r(NOINIT);
+        Mat<D,C,real> r(NOINIT);
 
         for (sofa::Size i = 0; i < D; i++)
         {
-            for (sofa::Size j = 0; j < D; j++)
+            for (sofa::Size j = 0; j < C; j++)
             {
                 r(i,j) = (*this)(i, 0) * m(0,j);
                 for (sofa::Size k = 1; k < D; k++)
@@ -254,17 +255,19 @@ public:
         return r;
     }
 
-    Mat<D,D,real> operator*(const Mat<D,D,real>& m) const
+    template<sofa::Size C>
+    Mat<D,C,real> operator*(const Mat<D,C,real>& m) const
     {
         return SymMatMultiply(m);
     }
 
     //Multiplication by a non symmetric matrix on the left
-    Mat<D, D, real> MatSymMultiply(const Mat<D, D, real>& m) const
+    template<sofa::Size L>
+    Mat<L, D, real> MatSymMultiply(const Mat<L, D, real>& m) const
     {
-        Mat<D, D, real> r(NOINIT);
+        Mat<L, D, real> r(NOINIT);
 
-        for (sofa::Size i = 0; i < D; i++)
+        for (sofa::Size i = 0; i < L; i++)
         {
             for (sofa::Size j = 0; j < D; j++)
             {
@@ -415,8 +418,8 @@ public:
     }
 };
 
-template <sofa::Size D, class real>
-Mat<D, D, real> operator*(const Mat<D, D, real>& a, const MatSym<D, real>& b)
+template <sofa::Size L, sofa::Size D, class real>
+Mat<L, D, real> operator*(const Mat<L, D, real>& a, const MatSym<D, real>& b)
 {
     return b.MatSymMultiply(a);
 }

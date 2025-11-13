@@ -38,8 +38,13 @@ BaseForceField::BaseForceField()
 
 void BaseForceField::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId)
 {
-    if (sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,rayleighStiffness.getValue()) != 0.0 || sofa::core::mechanicalparams::bFactor(mparams) != 0.0)
+    const auto kFactor = sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,rayleighStiffness.getValue());
+    const auto bFactor = sofa::core::mechanicalparams::bFactor(mparams);
+
+    if (kFactor != 0.0 || bFactor != 0.0)
+    {
         addDForce(mparams, dfId);
+    }
 }
 
 void BaseForceField::addBToMatrix(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)

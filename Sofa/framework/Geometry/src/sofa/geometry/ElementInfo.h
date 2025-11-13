@@ -21,12 +21,11 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/geometry/ElementType.h>
-
 #include <sofa/geometry/Edge.h>
+#include <sofa/geometry/ElementType.h>
 #include <sofa/geometry/Hexahedron.h>
-#include <sofa/geometry/Pentahedron.h>
 #include <sofa/geometry/Point.h>
+#include <sofa/geometry/Prism.h>
 #include <sofa/geometry/Pyramid.h>
 #include <sofa/geometry/Quad.h>
 #include <sofa/geometry/Tetrahedron.h>
@@ -53,7 +52,7 @@ struct ElementInfo
 #if !defined(SOFA_GEOMETRY_ELEMENTINFO_DEFINITION)
 extern template struct SOFA_GEOMETRY_API ElementInfo<Edge>;
 extern template struct SOFA_GEOMETRY_API ElementInfo<Hexahedron>;
-extern template struct SOFA_GEOMETRY_API ElementInfo<Pentahedron>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Prism>;
 extern template struct SOFA_GEOMETRY_API ElementInfo<Point>;
 extern template struct SOFA_GEOMETRY_API ElementInfo<Pyramid>;
 extern template struct SOFA_GEOMETRY_API ElementInfo<Quad>;
