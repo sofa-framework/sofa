@@ -62,11 +62,11 @@ namespace engine
     extern void registerDepthMapToMeshEngine(sofa::core::ObjectFactory* factory);
     extern void registerCollisionToCarvingEngine(sofa::core::ObjectFactory* factory);
 
-#if SOFA_BUILD_TESTS
+#ifdef SOFA_BUILD_TESTS
     extern void registerTestImageEngine(sofa::core::ObjectFactory* factory);
 #endif
 
-#if PLUGIN_IMAGE_COMPILE_GUI
+#ifdef PLUGIN_IMAGE_COMPILE_GUI
     extern void registerContourImageToolBox(sofa::core::ObjectFactory* factory);
     extern void registerAverageCatchAllVector(sofa::core::ObjectFactory* factory);
     extern void registerCatchAllVector(sofa::core::ObjectFactory* factory);
@@ -102,7 +102,7 @@ void initExternalModule()
 
         first = false;
 
-#if IMAGE_HAVE_SOFAPYTHON
+#ifdef IMAGE_HAVE_SOFAPYTHON
         if( PythonFactory::s_sofaPythonModule ) // add the module only if the Sofa module exists (SofaPython is loaded)
         {
             simulation::PythonEnvironment::gil lock(__func__);
@@ -177,11 +177,11 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     sofa::component::engine::registerDepthMapToMeshEngine(factory);
     sofa::component::engine::registerCollisionToCarvingEngine(factory);
 
-#if SOFA_BUILD_TESTS
+#ifdef SOFA_BUILD_TESTS
     sofa::component::engine::registerTestImageEngine(factory);
 #endif
 
-#if PLUGIN_IMAGE_COMPILE_GUI
+#ifdef PLUGIN_IMAGE_COMPILE_GUI
 #endif
 }
 
