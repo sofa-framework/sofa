@@ -48,7 +48,7 @@ namespace multithreading::component::forcefield::solidmechanics::fem::elastic
 template<class DataTypes>
 class SOFA_MULTITHREADING_PLUGIN_API ParallelHexahedronFEMForceField :
     virtual public sofa::component::solidmechanics::fem::elastic::HexahedronFEMForceField<DataTypes>,
-    public TaskSchedulerUser
+    public sofa::simulation::TaskSchedulerUser
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ParallelHexahedronFEMForceField, DataTypes), SOFA_TEMPLATE(sofa::component::solidmechanics::fem::elastic::HexahedronFEMForceField, DataTypes));

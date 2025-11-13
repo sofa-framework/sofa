@@ -35,7 +35,7 @@ class ParallelBVHNarrowPhasePairTask;
 
 class SOFA_MULTITHREADING_PLUGIN_API ParallelBVHNarrowPhase :
     public sofa::component::collision::detection::algorithm::BVHNarrowPhase,
-    public TaskSchedulerUser
+    public sofa::simulation::TaskSchedulerUser
 {
 public:
     SOFA_CLASS(ParallelBVHNarrowPhase, sofa::component::collision::detection::algorithm::BVHNarrowPhase);

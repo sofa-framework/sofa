@@ -46,7 +46,7 @@ class BruteForcePairTest;
  */
 class SOFA_MULTITHREADING_PLUGIN_API ParallelBruteForceBroadPhase :
     public sofa::component::collision::detection::algorithm::BruteForceBroadPhase,
-    public TaskSchedulerUser
+    public sofa::simulation::TaskSchedulerUser
 {
 public:
     SOFA_CLASS(ParallelBruteForceBroadPhase, sofa::component::collision::detection::algorithm::BruteForceBroadPhase);

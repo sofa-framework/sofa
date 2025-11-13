@@ -37,7 +37,7 @@ template <class DataTypes>
 using SpringForceField = sofa::component::solidmechanics::spring::SpringForceField<DataTypes>;
 
 template <class DataTypes>
-class ParallelSpringForceField : public virtual SpringForceField<DataTypes>, public TaskSchedulerUser
+class ParallelSpringForceField : public virtual SpringForceField<DataTypes>, public sofa::simulation::TaskSchedulerUser
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ParallelSpringForceField, DataTypes),

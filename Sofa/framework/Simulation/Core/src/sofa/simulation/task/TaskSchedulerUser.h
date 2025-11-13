@@ -26,7 +26,7 @@
 #include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/core/objectmodel/Base.h>
 
-namespace multithreading
+namespace sofa::simulation
 {
 
 class SOFA_SIMULATION_CORE_API TaskSchedulerUser : virtual public sofa::core::Base

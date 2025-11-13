@@ -23,7 +23,7 @@
 #include <sofa/simulation/task/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/task/InitTasks.h>
 
-namespace multithreading
+namespace sofa::simulation
 {
 
 void TaskSchedulerUser::initTaskScheduler()

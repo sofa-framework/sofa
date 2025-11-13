@@ -41,7 +41,7 @@ namespace multithreading::component::animationloop
 
 class SOFA_MULTITHREADING_PLUGIN_API AnimationLoopParallelScheduler :
         public sofa::core::behavior::BaseAnimationLoop,
-        public TaskSchedulerUser
+        public sofa::simulation::TaskSchedulerUser
 {
 public:
 
