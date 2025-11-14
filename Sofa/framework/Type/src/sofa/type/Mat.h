@@ -813,6 +813,7 @@ public:
     }
 
     /// Multiplication operator Matrix * Vector considering the matrix as a transformation.
+    template<sofa::Size NbColumn = C, typename = std::enable_if_t<(C > 1)>>
     constexpr Vec<C-1,real> transform(const Vec<C-1,real>& v) const noexcept
     {
         Vec<C-1,real> r(NOINIT);
