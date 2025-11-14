@@ -1403,6 +1403,9 @@ constexpr Mat<3,3,real> multTranspose(const Mat<3,3,real>& m1, const Mat<3,3,rea
 
 #if not defined(SOFA_TYPE_MAT_CPP)
 
+extern template class SOFA_TYPE_API Mat<1,1,float>;
+extern template class SOFA_TYPE_API Mat<1,1,double>;
+
 extern template class SOFA_TYPE_API Mat<2,2,float>;
 extern template class SOFA_TYPE_API Mat<2,2,double>;
 
