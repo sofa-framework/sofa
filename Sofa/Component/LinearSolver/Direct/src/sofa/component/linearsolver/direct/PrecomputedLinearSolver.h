@@ -82,12 +82,11 @@ public:
 
     Data<bool> d_jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
     Data<bool> d_use_file; ///< Dump system matrix in a file
-    Data<double> init_Tolerance;
+    Data<Real> init_Tolerance;
 
     PrecomputedLinearSolver();
-    void solve (TMatrix& M, TVector& x, TVector& b) override;
+    void solve (TMatrix& M, TVector& solution, TVector& rh) override;
     void invert(TMatrix& M) override;
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     void loadMatrix(TMatrix& M);
     void loadMatrixWithCholeskyDecomposition(TMatrix& M);
     bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
@@ -120,8 +119,8 @@ protected :
 private :
     bool first;
     unsigned systemSize;
-    double dt;
-    double factInt;
+    Real dt;
+    Real factInt;
     std::vector<bool> isActiveDofs;
 };
 
