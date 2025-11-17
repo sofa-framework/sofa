@@ -85,7 +85,8 @@ public:
         // Solve eigen problem for C
         Eigen::Matrix<Real, 3, 3> CEigen;
         for (sofa::Index i = 0; i < 3; ++i)
-            for (sofa::Index j = 0; j < 3; ++j) CEigen(i, j) = C[vId(i, j)];
+            for (sofa::Index j = 0; j < 3; ++j) 
+                CEigen(i, j) = C[vId(i, j)];
 
         // Disable temporarilly until fixed /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
         Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen, true);
@@ -119,7 +120,8 @@ public:
         // Solve eigen problem for C
         Eigen::Matrix<Real, 3, 3> CEigen;
         for (sofa::Index i = 0; i < 3; ++i)
-            for (sofa::Index j = 0; j < 3; ++j) CEigen(i, j) = C[vId(i, j)];
+            for (sofa::Index j = 0; j < 3; ++j) 
+                CEigen(i, j) = C[vId(i, j)];
 
         // Disable temporarilly until fixed /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
         Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen, true);
@@ -138,7 +140,8 @@ public:
         // Transpose (also inverse) of the eigenvector matrix
         Matrix3 EigenBasis;
         for (auto m = 0; m < Evect.rows(); ++m)
-            for (auto n = 0; n < Evect.cols(); ++n) EigenBasis(m, n) = Evect(m, n);
+            for (auto n = 0; n < Evect.cols(); ++n) 
+                EigenBasis(m, n) = Evect(m, n);
         
         // Construct C^(alpha1/2 - 1) from eigenbasis: V * D * V^T; D_i = lambda_i^(alpha1/2 - 1)
         const Real aBy2Minus1 = aBy2 - 1.;
@@ -165,7 +168,8 @@ public:
         // Solve eigen problem for C
         Eigen::Matrix<Real, 3, 3> CEigen;
         for (sofa::Index i = 0; i < 3; ++i)
-            for (sofa::Index j = 0; j < 3; ++j) CEigen(i, j) = C[vId(i, j)];
+            for (sofa::Index j = 0; j < 3; ++j) 
+                CEigen(i, j) = C[vId(i, j)];
 
         // Disable temporarilly until fixed /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
         Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen, true);
@@ -283,7 +287,8 @@ public:
         Matrix6 elasticityTensor;
         this->ElasticityTensor(sinfo, param, elasticityTensor);
         auto temp = elasticityTensor * inputTensor;
-        for (size_t i = 0; i < 6; i++) outputTensor[i] = temp[i]/2.;
+        for (size_t i = 0; i < 6; i++) 
+            outputTensor[i] = temp[i]/2.;
     }
 };
 
