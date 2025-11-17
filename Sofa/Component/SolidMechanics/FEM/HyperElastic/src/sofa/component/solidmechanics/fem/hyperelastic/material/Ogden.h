@@ -48,20 +48,6 @@ the determinant of the deformation gradient J and the right Cauchy Green deforma
 template<class DataTypes>
 class Ogden: public HyperelasticMaterial<DataTypes>
 {
-private:
-    // In SOFA Voigt order for 3D symmetric tensors is non-standard: xx, xy, yy, xz, yz, zz
-    const std::array<sofa::Index, 3*3> toVoigt = {0, 1, 3, 1, 2, 4, 3, 4, 5};
-    inline sofa::Index vId(sofa::Index i, sofa::Index j) {return toVoigt[i * 3 + j];}
-    const std::array<std::tuple<sofa::Index, sofa::Index>, 6> fromVoigt =
-    {
-        std::make_tuple(0,0),
-        std::make_tuple(0,1),
-        std::make_tuple(1,1),
-        std::make_tuple(0,2),
-        std::make_tuple(1,2),
-        std::make_tuple(2,2)
-    };
-
 public:
     static constexpr std::string_view Name = "Ogden";
 
@@ -86,7 +72,7 @@ public:
         Eigen::Matrix<Real, 3, 3> CEigen;
         for (sofa::Index i = 0; i < 3; ++i)
             for (sofa::Index j = 0; j < 3; ++j) 
-                CEigen(i, j) = C[vId(i, j)];
+                CEigen(i, j) = C[MatrixSym::voigtID(i, j)];
 
         // Disable temporarilly until fixed /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
         Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen, true);
@@ -125,7 +111,7 @@ public:
         Eigen::Matrix<Real, 3, 3> CEigen;
         for (sofa::Index i = 0; i < 3; ++i)
             for (sofa::Index j = 0; j < 3; ++j) 
-                CEigen(i, j) = C[vId(i, j)];
+                CEigen(i, j) = C[MatrixSym::voigtID(i, j)];
 
         // Disable temporarilly until fixed /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
         Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen, true);
@@ -179,7 +165,7 @@ public:
         Eigen::Matrix<Real, 3, 3> CEigen;
         for (sofa::Index i = 0; i < 3; ++i)
             for (sofa::Index j = 0; j < 3; ++j) 
-                CEigen(i, j) = C[vId(i, j)];
+                CEigen(i, j) = C[MatrixSym::voigtID(i, j)];
 
         // Disable temporarilly until fixed /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
         Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen, true);
@@ -222,12 +208,12 @@ public:
         for (sofa::Index m = 0; m < 6; m++)
         {
             sofa::Index i, j;
-            std::tie(i, j) = fromVoigt[m];
+            std::tie(i, j) = MatrixSym::fromVoigt[m];
 
             for (sofa::Index n = 0; n < 6; n++) 
             {
                 sofa::Index k, l;
-                std::tie(k, l) = fromVoigt[n];
+                std::tie(k, l) = MatrixSym::fromVoigt[n];
 
                 // Derivative of S_isochoric; terms contributing from spectral decomposition
                 for (sofa::Index eI = 0 ; eI < 3; eI++)
