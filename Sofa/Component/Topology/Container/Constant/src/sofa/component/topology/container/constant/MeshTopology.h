@@ -99,20 +99,6 @@ public:
     const SeqTetrahedra& getTetrahedra() override;
     const SeqHexahedra& getHexahedra() override;
 
-    // Random accessors
-
-    Size getNbEdges() override;
-    Size getNbTriangles() override;
-    Size getNbQuads() override;
-    Size getNbTetrahedra() override;
-    Size getNbHexahedra() override;
-
-    const Edge getEdge(EdgeID i) override;
-    const Triangle getTriangle(TriangleID i) override;
-    const Quad getQuad(QuadID i) override;
-    const Tetra getTetrahedron(TetraID i) override;
-    const Hexa getHexahedron(HexaID i) override;
-
     // If using STEP loader, include also uv coordinates
     typedef Index					UVID;
     typedef type::Vec2						UV;
