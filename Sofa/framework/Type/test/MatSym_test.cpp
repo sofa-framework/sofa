@@ -98,6 +98,17 @@ public:
             testing::NumericTest<Real>::epsilon());
     }
 
+    void access() const
+    {
+        for (sofa::Size i = 0; i < Size; ++i)
+        {
+            for (sofa::Size j = 0; j < Size; ++j)
+            {
+                EXPECT_EQ(m_symmetricMatrix(i, j), m_symmetricMatrix(j, i));
+            }
+        }
+    }
+
 protected:
     sofa::type::MatSym<Size, Real> m_symmetricMatrix;
 
@@ -160,6 +171,11 @@ TYPED_TEST(MatSymTest, leftProduct)
 TYPED_TEST(MatSymTest, trace)
 {
     ASSERT_NO_THROW (this->trace());
+}
+
+TYPED_TEST(MatSymTest, access)
+{
+    ASSERT_NO_THROW (this->access());
 }
 
 
