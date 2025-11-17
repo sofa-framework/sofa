@@ -79,7 +79,8 @@ public:
             for (sofa::Index j = 0; j < 3; ++j) 
                 CEigen(i, j) = C[MatrixSym::voigtID(i, j)];
 
-        // Disable temporarilly until fixed /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
+        // 17/11/2025: Disable /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
+        // due to incorrect eigenvector computation for 3x3 matrices.
         Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen, true);
         if (EigenProblemSolver.info() != Eigen::Success)
         {
