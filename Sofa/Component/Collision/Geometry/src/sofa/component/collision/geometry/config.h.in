@@ -44,5 +44,5 @@ namespace sofa::component::collision::geometry
 #define SOFA_ATTRIBUTE_DEPRECATED__RENAMED_TRIANGLEOCTREEMODEL() \
     SOFA_ATTRIBUTE_DEPRECATED( \
         "v25.12", "v26.06", \
-        "TriangleOctreeModel has been renamed to TriangleOctreeCollisionModel in PRXXXX")
+        "TriangleOctreeModel has been renamed to TriangleOctreeCollisionModel in PR5766")
 #endif
