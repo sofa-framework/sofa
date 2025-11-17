@@ -46,6 +46,7 @@ protected:
 
     VisualMesh();
 
+    void drawTriangles(helper::visual::DrawTool* drawTool);
     void drawTetrahedra(helper::visual::DrawTool* drawTool);
     void drawHexahedra(helper::visual::DrawTool* drawTool);
     void doDrawVisual(const core::visual::VisualParams* vparams) override;
@@ -69,7 +70,7 @@ protected:
 
     template<std::size_t NumberFacetsInElement, class FacetType>
     void setPointsAndColors(
-        const sofa::type::fixed_array<sofa::Index, NumberFacetsInElement> facetsInElement,
+        const std::array<sofa::Index, NumberFacetsInElement> facetsInElement,
         const sofa::type::vector<FacetType>& facets,
         const type::vector<type::Vec3>& position,
         const type::Vec3& elementCenter,
