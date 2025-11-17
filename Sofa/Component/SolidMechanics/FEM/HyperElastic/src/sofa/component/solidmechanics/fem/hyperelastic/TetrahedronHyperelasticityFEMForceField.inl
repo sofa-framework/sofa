@@ -411,8 +411,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::updateTangentMatrix()
             Matrix3  M, N;
             MatrixSym outputTensor;
             N.clear();
-            type::vector<MatrixSym> inputTensor;
-            inputTensor.resize(3);
+            std::array<MatrixSym,3> inputTensor;
             //	MatrixSym input1,input2,input3,outputTensor;
             for (int m = 0; m < 3; m++)
             {

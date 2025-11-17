@@ -143,6 +143,14 @@
           "type": "BOOL",
           "value": "ON"
         },
+        "SOFA_FETCH_SOFTROBOTS_INVERSE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_SOFTROBOTS_INVERSE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
         "PLUGIN_SOFTROBOTS_CUDA": {
           "type": "BOOL",
           "value": "ON"
@@ -156,6 +164,14 @@
           "value": "ON"
         },
         "PLUGIN_BEAMADAPTER_CUDA": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "SOFA_FETCH_SOFAVISCOELASTIC": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_SOFAVISCOELASTIC": {
           "type": "BOOL",
           "value": "ON"
         },

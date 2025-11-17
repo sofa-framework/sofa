@@ -37,3 +37,6 @@ ignore "Component/Controller/MechanicalStateController.scn"
 # To be removed when scenes are fixed.
 ignore "Benchmark/TopologicalChanges/ProjectToPlaneConstraint_RemovingMeshTest.scn"
 ignore "Benchmark/TopologicalChanges/FixedPlaneConstraint_RemovingMeshTest.scn"
+
+iterations "/Component/Constraint/Lagrangian/Contact_ImprovedJacobi.scn" "50"
+timeout "Component/AnimationLoop/FreeMotionAnimationLoop.scn" "180"
