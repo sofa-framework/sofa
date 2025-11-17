@@ -80,12 +80,7 @@ void VisualMesh::drawTetrahedra(helper::visual::DrawTool* drawTool)
         const auto& facetsInElement = l_topology->getTrianglesInTetrahedron(i);
         assert(facetsInElement.size() == NumberTrianglesInTetrahedron);
 
-        sofa::type::Vec3 center{};
-        for (sofa::Size vId = 0; vId < sofa::geometry::Tetrahedron::NumberOfNodes; ++vId)
-        {
-            center += positionAccessor[element[vId]];
-        }
-        center /= sofa::geometry::Tetrahedron::NumberOfNodes;
+        const sofa::type::Vec3 center = elementCenter(positionAccessor.ref(), element);
 
         static constexpr std::array colors{
             sofa::type::RGBAColor::blue(),
@@ -134,12 +129,7 @@ void VisualMesh::drawHexahedra(helper::visual::DrawTool* drawTool)
         const auto& facetsInElement = l_topology->getQuadsInHexahedron(i);
         assert(facetsInElement.size() == NumberQuadsInHexahedron);
 
-        sofa::type::Vec3 center{};
-        for (sofa::Size vId = 0; vId < sofa::geometry::Hexahedron::NumberOfNodes; ++vId)
-        {
-            center += positionAccessor[element[vId]];
-        }
-        center /= sofa::geometry::Hexahedron::NumberOfNodes;
+        const sofa::type::Vec3 center = elementCenter(positionAccessor.ref(), element);
 
         static constexpr std::array colors {
             sofa::type::RGBAColor(0.7f,0.7f,0.1f,1.f),
