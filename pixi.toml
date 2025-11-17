@@ -49,14 +49,17 @@ test = { cmd = "ctest --test-dir $SOFA_BUILD_DIR --output-on-failure", depends-o
 
 # TODO: add run-regression-tests feature
 
-# Unused: Python 3.12 is the one supported by default
-# You can uncomment this (or create a new feature for your python version)*
-# and edit environments section to enable it
-#[feature.python310.dependencies]
-#python = "3.10.*"
-
-[feature.python312.dependencies]
+# Python 3.12 is the one supported by default
+[feature.python-supported.dependencies]
 python = "3.12.*"
+
+# Remark: one can add these features to add support for lower/upper bounds of python
+# versions support in the CI
+# [feature.python-oldest.dependencies]
+# python = "3.10.*"
+
+# [feature.python-newest.dependencies]
+# python = "3.14.*"
 
 [feature.plugin-sofa-python3]
 dependencies = { numpy = ">=1.22.0", pybind11 = ">=2.3.0" }
@@ -287,8 +290,16 @@ configure = { cmd = [ "cmake",
 conda-core = { features = ["presets-conda-core"] }
 minimal = { features = ["presets-minimal"] }
 minimal-dev = { features = ["presets-minimal-dev"] }
-standard = { features = ["presets-standard", "plugin-sofa-python3", "presets-defaultGUI", "python312"] }
-standard-dev = { features = ["presets-standard-dev", "plugin-sofa-python3", "presets-defaultGUI", "python312"] }
+standard = { features = [
+  "presets-standard",
+  "plugin-sofa-python3",
+  "presets-defaultGUI",
+  "python-supported"] }
+standard-dev = { features = [
+  "presets-standard-dev",
+  "plugin-sofa-python3",
+  "presets-defaultGUI",
+  "python-supported"] }
 release-package = { features = [
   "build-release-package",
   "plugin-sofa-python3",
@@ -297,7 +308,7 @@ release-package = { features = [
   "plugin-cimg",
   "presets-defaultGUI",
   "qt-gui",
-  "python312"] }
+  "python-supported"] }
 supported-plugins = { features = [
   "presets-supported-plugins",
   "plugin-sofa-python3",
@@ -306,7 +317,7 @@ supported-plugins = { features = [
   "plugin-cimg",
   "presets-defaultGUI",
   "qt-gui",
-  "python312"]}
+  "python-supported"]}
 supported-plugins-dev = { features = [
   "presets-supported-plugins-dev",
   "plugin-sofa-python3",
@@ -315,7 +326,7 @@ supported-plugins-dev = { features = [
   "plugin-cimg",
   "presets-defaultGUI",
   "qt-gui",
-  "python312"]}
+  "python-supported"]}
 full = { features = [
   "presets-full",
   "plugin-sofa-python3",
@@ -324,7 +335,7 @@ full = { features = [
   "plugin-cimg",
   "presets-defaultGUI",
   "qt-gui",
-  "python312"]}
+  "python-supported"]}
 full-dev = { features = [
   "presets-full-dev",
   "plugin-sofa-python3",
@@ -333,4 +344,4 @@ full-dev = { features = [
   "plugin-cimg",
   "presets-defaultGUI",
   "qt-gui",
-  "python312"]}
+  "python-supported"]}
