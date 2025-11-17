@@ -47,6 +47,7 @@ protected:
     VisualMesh();
 
     void drawTetrahedra(helper::visual::DrawTool* drawTool);
+    void drawHexahedra(helper::visual::DrawTool* drawTool);
     void doDrawVisual(const core::visual::VisualParams* vparams) override;
 
     void validateTopology();
