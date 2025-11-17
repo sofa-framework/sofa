@@ -26,8 +26,8 @@
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
-        <RegularGridTopology name="grid" min="-5 -5 0" max="5 5 40" n="5 5 20"/>
-        <MechanicalObject template="Vec3" name="state" translation="15 0 0"/>
+        <RegularGridTopology name="grid" min="10 -5 0" max="20 5 40" n="5 5 20"/>
+        <MechanicalObject template="Vec3" name="state"/>
 
         <DiagonalMass massDensity="0.2" />
         <HexahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" method="large"/>
@@ -35,6 +35,18 @@
         <BoxROI template="Vec3" name="box_roi" box="-6 -6 -1 50 6 0.1" drawBoxes="1" />
         <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />
 
+        <VisualMesh position="@state.position" topology="@grid"/>
+    </Node>
+
+    <Node name="triangles">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject name="state"/>
+        <MeshMatrixMass totalMass="1000" />
+        <RegularGridTopology name="grid" nx="5" ny="5" nz="1" min="25 -5 0" max="35 5 0"/>
+        <BoxROI box="24 4.99 -0.1 36 5.01 0.1" name="box"/>
+        <FixedProjectiveConstraint indices="@box.indices" />
+        <TriangleFEMForceField name="FEM1" youngModulus="5000" poissonRatio="0.3" method="large" />
         <VisualMesh position="@state.position" topology="@grid"/>
     </Node>
 </Node>
