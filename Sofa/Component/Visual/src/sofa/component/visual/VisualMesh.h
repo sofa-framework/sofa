@@ -66,6 +66,31 @@ protected:
         center /= element.size();
         return center;
     }
+
+    template<std::size_t NumberFacetsInElement, class FacetType>
+    void setPointsAndColors(
+        const sofa::type::fixed_array<sofa::Index, NumberFacetsInElement> facetsInElement,
+        const sofa::type::vector<FacetType>& facets,
+        const type::vector<type::Vec3>& position,
+        const type::Vec3& elementCenter,
+        SReal elementSpace,
+        sofa::type::vector< sofa::type::Vec3 >::iterator& pointsIt,
+        sofa::type::vector< sofa::type::RGBAColor >::iterator& colorIt,
+        const std::array<sofa::type::RGBAColor, NumberFacetsInElement>& colors
+        )
+    {
+        std::size_t j{};
+        for (const auto& facetId : facetsInElement)
+        {
+            const auto& facet = facets[facetId];
+            for (const auto vId : facet)
+            {
+                *pointsIt++ = (position[vId] - elementCenter) * (1._sreal - elementSpace) + elementCenter;
+                *colorIt++ = colors[j];
+            }
+            ++j;
+        }
+    }
 };
 
 }
