@@ -42,8 +42,23 @@ sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Geometry REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
+
+sofa_find_package(tight_inclusion QUIET)
+
+if(NOT tight_inclusion_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
+
+    sofa_fetch_dependency(tight_inclusion
+            GIT_REPOSITORY https://github.com/sofa-framework/Tight-Inclusion
+            GIT_TAG        v1.0.6-export-target
+    )
+
+elseif(NOT tight_inclusion_FOUND )
+    message(FATAL_ERROR "Sofa.Component.Collision.Detection.Intersection: tight_inclusion is not found. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Provide a tight_inclusion library installation, or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
+endif ()
+
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Geometry)
+target_link_libraries(${PROJECT_NAME} PRIVATE tight_inclusion)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
