@@ -89,17 +89,7 @@ void VisualMesh::drawTetrahedra(helper::visual::DrawTool* drawTool)
             sofa::type::RGBAColor::cyan(),
         };
 
-        std::size_t j{};
-        for (const auto& facetId : facetsInElement)
-        {
-            const auto& facet = facets[facetId];
-            for (const auto vId : facet)
-            {
-                *pointsIt++ = (positionAccessor[vId] - center) * (1._sreal - elementSpace) + center;
-                *colorIt++ = colors[j];
-            }
-            ++j;
-        }
+        setPointsAndColors(facetsInElement, facets, positionAccessor.ref(), center, elementSpace, pointsIt, colorIt, colors);
     }
     drawTool->drawTriangles(m_renderedPoints, m_renderedColors);
 }
@@ -140,17 +130,7 @@ void VisualMesh::drawHexahedra(helper::visual::DrawTool* drawTool)
             sofa::type::RGBAColor(0.7f,0.1f,0.7f,1.f)
         };
 
-        std::size_t j{};
-        for (const auto& facetId : facetsInElement)
-        {
-            const auto& facet = facets[facetId];
-            for (const auto vId : facet)
-            {
-                *pointsIt++ = (positionAccessor[vId] - center) * (1._sreal - elementSpace) + center;
-                *colorIt++ = colors[j];
-            }
-            ++j;
-        }
+        setPointsAndColors(facetsInElement, facets, positionAccessor.ref(), center, elementSpace, pointsIt, colorIt, colors);
     }
     drawTool->drawQuads(m_renderedPoints, m_renderedColors);
 }
