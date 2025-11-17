@@ -62,8 +62,10 @@ namespace engine
     extern void registerDepthMapToMeshEngine(sofa::core::ObjectFactory* factory);
     extern void registerCollisionToCarvingEngine(sofa::core::ObjectFactory* factory);
 
-#if SOFA_BUILD_TESTS == 1
+#ifdef SOFA_BUILD_TESTS
+    #if SOFA_BUILD_TESTS == 1
     extern void registerTestImageEngine(sofa::core::ObjectFactory* factory);
+    #endif
 #endif
 
 #ifdef PLUGIN_IMAGE_COMPILE_GUI
@@ -177,8 +179,10 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     sofa::component::engine::registerDepthMapToMeshEngine(factory);
     sofa::component::engine::registerCollisionToCarvingEngine(factory);
 
-#if SOFA_BUILD_TESTS == 1
-    sofa::component::engine::registerTestImageEngine(factory);
+#ifdef SOFA_BUILD_TESTS
+    #if SOFA_BUILD_TESTS == 1
+        sofa::component::engine::registerTestImageEngine(factory);
+    #endif
 #endif
 
 #ifdef PLUGIN_IMAGE_COMPILE_GUI
