@@ -59,16 +59,21 @@ public:
     typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::MatrixType EigenMatrix;
     typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::RealVectorType CoordEigen;
 
-    Real getStrainEnergy(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param) override
+    MatrixSym m_CaBy2Minus1, m_invC; 
+    Real m_trCaBy2{0.}, m_FJ{0.}, m_logJ{0.};
+
+    virtual void updateVariables(StrainInformation<DataTypes>* sinfo,
+                                const MaterialParameters<DataTypes>& param) override
     {
         const MatrixSym& C = sinfo->deformationTensor;
         const Real mu1 = param.parameterArray[0];
         const Real alpha1 = param.parameterArray[1];
         const Real k0 = param.parameterArray[2];
-        const Real Fj = pow(sinfo->J, -alpha1/3.);
-        const Real logJSqr = pow(log(sinfo->J), 2.);
 
-        // Solve eigen problem for C
+        m_FJ = pow(sinfo->J, -alpha1/3.);
+        m_logJ = log(sinfo->J);
+
+        // Solve eigen problem for C and store eigenvalues/vectors
         Eigen::Matrix<Real, 3, 3> CEigen;
         for (sofa::Index i = 0; i < 3; ++i)
             for (sofa::Index j = 0; j < 3; ++j) 
@@ -79,76 +84,61 @@ public:
         if (EigenProblemSolver.info() != Eigen::Success)
         {
             dmsg_warning("Ogden") << "EigenSolver iterations failed to converge";
-            return 0.;
+            return;
         }
-        sinfo->Evalue = EigenProblemSolver.eigenvalues().real();
-        sinfo->Evect = EigenProblemSolver.eigenvectors().real();
 
-        // trace of C^(alpha1/2)
-        const Real aBy2 = alpha1*0.5;
-        const Real trCaBy2 = pow(sinfo->Evalue[0], aBy2) +
-                    pow(sinfo->Evalue[1], aBy2) +
-                    pow(sinfo->Evalue[2], aBy2);
+        sinfo->Evalue = EigenProblemSolver.eigenvalues().real().eval();
+        sinfo->Evect = EigenProblemSolver.eigenvectors().real().eval();
 
-        const Real muByAlphaSqr = mu1 / (alpha1*alpha1);
+        const Real aBy2{alpha1*0.5};
+        m_trCaBy2 = 0.;
+        for (sofa::Index n = 0; n < sinfo->Evalue.rows(); ++n)
+            m_trCaBy2 += pow(sinfo->Evalue[n], aBy2);
+
+        // Transpose (also inverse) of the eigenvector matrix
+        Matrix3 EigenBasis;
+        for (auto m = 0; m < sinfo->Evect.rows(); ++m)
+            for (auto n = 0; n < sinfo->Evect.cols(); ++n) 
+                EigenBasis(m, n) = sinfo->Evect(m, n);
+        
+        // Construct C^(alpha1/2 - 1) from eigenbasis: V * D * V^T; D_i = lambda_i^(alpha1/2 - 1)
+        const Real aBy2Minus1 = aBy2 - 1.;
+        const MatrixSym D = MatrixSym(pow(sinfo->Evalue[0], aBy2Minus1), 0, pow(sinfo->Evalue[1], aBy2Minus1), 0, 0, pow(sinfo->Evalue[2], aBy2Minus1));
+        const Matrix3 Ca = EigenBasis*D.SymMatMultiply(EigenBasis.transposed());
+        sofa::type::MatSym<3, Real>::Mat2Sym(Ca, m_CaBy2Minus1);
+
+        // Invert deformation tensor
+        invertMatrix(m_invC, C);
+    }
+
+    Real getStrainEnergy(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param) override
+    {
+        const Real mu1 = param.parameterArray[0];
+        const Real alpha1 = param.parameterArray[1];
+        const Real k0 = param.parameterArray[2];
+        const Real muByAlphaSqr = mu1 / pow(alpha1,2.);
 
         // Isochoric and volumetric parts 
-        const Real Wiso = Fj*muByAlphaSqr*trCaBy2 - 3.*muByAlphaSqr;
-        const Real Wvol = k0 * logJSqr / 2.;
+        const Real Wiso = m_FJ * muByAlphaSqr * m_trCaBy2 - 3. * muByAlphaSqr;
+        const Real Wvol = k0 * m_logJ * m_logJ / 2.;
 
         return Wiso + Wvol;
     }
 
     void deriveSPKTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,MatrixSym &SPKTensorGeneral) override
     {
-        const MatrixSym& C=sinfo->deformationTensor;
         const Real mu1 = param.parameterArray[0];
         const Real alpha1 = param.parameterArray[1];
         const Real k0 = param.parameterArray[2];
-        const Real Fj = pow(sinfo->J, -alpha1/3.0);
-
-        // Solve eigen problem for C
-        Eigen::Matrix<Real, 3, 3> CEigen;
-        for (sofa::Index i = 0; i < 3; ++i)
-            for (sofa::Index j = 0; j < 3; ++j) 
-                CEigen(i, j) = C[MatrixSym::voigtID(i, j)];
-
-        // Disable temporarilly until fixed /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
-        Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen, true);
-        if (EigenProblemSolver.info() != Eigen::Success)
-        {
-            dmsg_warning("Ogden") << "SelfAdjointEigenSolver iterations failed to converge";
-            return;
-        }
-        const EigenMatrix Evect = EigenProblemSolver.eigenvectors().real(); // orthonormal eigenvectors
-        const CoordEigen Evalue = EigenProblemSolver.eigenvalues().real();
 
         // trace of C^(alpha1/2)
         const Real aBy2 = alpha1*0.5;
-        const Real trCaBy2 = pow(Evalue[0], aBy2) + pow(Evalue[1], aBy2) + pow(Evalue[2], aBy2);
-
-        // Transpose (also inverse) of the eigenvector matrix
-        Matrix3 EigenBasis;
-        for (auto m = 0; m < Evect.rows(); ++m)
-            for (auto n = 0; n < Evect.cols(); ++n) 
-                EigenBasis(m, n) = Evect(m, n);
-        
-        // Construct C^(alpha1/2 - 1) from eigenbasis: V * D * V^T; D_i = lambda_i^(alpha1/2 - 1)
-        const Real aBy2Minus1 = aBy2 - 1.;
-        const MatrixSym D = MatrixSym(pow(Evalue[0], aBy2Minus1), 0, pow(Evalue[1], aBy2Minus1), 0, 0, pow(Evalue[2], aBy2Minus1));
-        const Matrix3 Ca = EigenBasis*D.SymMatMultiply(EigenBasis.transposed());
-        MatrixSym CaBy2Minus1; 
-        sofa::type::MatSym<3, Real>::Mat2Sym(Ca, CaBy2Minus1);
-
-        // Invert deformation tensor
-        MatrixSym invC;
-        invertMatrix(invC, C);
 
         // Siso = dWiso/dlambda*dlambda/dC + dWiso/dF*dF/dC
-        const MatrixSym S_isochoric = Fj * mu1 / alpha1 * CaBy2Minus1
-                                     -Fj * mu1 / alpha1 / 3. * invC * trCaBy2;
+        const MatrixSym S_isochoric = m_FJ * mu1 / alpha1 * m_CaBy2Minus1
+                                     -m_FJ * mu1 / alpha1 / 3. * m_invC * m_trCaBy2;
         // Svol = dWvol/dC_{ij}
-        const MatrixSym S_volumetric = invC * k0 * log(sinfo->J);
+        const MatrixSym S_volumetric = m_invC * k0 * m_logJ;
 
         SPKTensorGeneral = S_isochoric + S_volumetric;
     }
@@ -159,46 +149,14 @@ public:
         const Real mu1 = param.parameterArray[0];
         const Real alpha1 = param.parameterArray[1];
         const Real k0 = param.parameterArray[2];
-        const Real Fj = pow(sinfo->J, -alpha1/3.0);
-
-        // Solve eigen problem for C
-        Eigen::Matrix<Real, 3, 3> CEigen;
-        for (sofa::Index i = 0; i < 3; ++i)
-            for (sofa::Index j = 0; j < 3; ++j) 
-                CEigen(i, j) = C[MatrixSym::voigtID(i, j)];
-
-        // Disable temporarilly until fixed /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
-        Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen, true);
-        if (EigenProblemSolver.info() != Eigen::Success)
-        {
-            dmsg_warning("Ogden") << "SelfAdjointEigenSolver iterations failed to converge";
-            return;
-        }
-        const EigenMatrix Evect = EigenProblemSolver.eigenvectors().real();
-        const CoordEigen Evalue = EigenProblemSolver.eigenvalues().real();
 
         // Coefficient terms
         const Real aBy2 = alpha1*0.5;
         const Real aBy2Minus1 = aBy2 - 1.;
         const Real aBy2Minus2 = aBy2 - 2.;
 
-        // Trace of C^(alpha1/2)
-        const Real trCaBy2 = pow(Evalue[0], aBy2) + pow(Evalue[1], aBy2) + pow(Evalue[2], aBy2);
-
-        // Transpose (also inverse) of the eigenvector matrix
-        Matrix3 EigenBasis;
-        for (auto m = 0; m < Evect.rows(); ++m)
-            for (auto n = 0; n < Evect.cols(); ++n) 
-                 EigenBasis(m, n) = Evect(m, n);
-
-        // Construct C^(alpha1/2 - 1) from eigenbasis: V * D * V^T; D_i = lambda_i^(alpha1/2 - 1)
-        MatrixSym D(pow(Evalue[0], aBy2Minus1), 0, pow(Evalue[1], aBy2Minus1), 0, 0, pow(Evalue[2], aBy2Minus1));
-        MatrixSym CaBy2Minus1;
-        sofa::type::MatSym<3, Real>::Mat2Sym(EigenBasis*D.SymMatMultiply(EigenBasis.transposed()), CaBy2Minus1);
-
-        // Invert deformation tensor
-        MatrixSym invC;
-        invertMatrix(invC, C);
+        const CoordEigen& Evalue = sinfo->Evalue;
+        const EigenMatrix& Evect = sinfo->Evect;
 
         // Build the 4th-order tensor contribution in Voigt notation
         Matrix6 elasticityTensor;
@@ -220,7 +178,7 @@ public:
                 {
                     // Variation of eigenvalues
                     const Real evalPowI2 = pow(Evalue[eI], aBy2Minus2);
-                    elasticityTensor(m, n) += Fj * mu1 / alpha1 * aBy2Minus1 * evalPowI2 
+                    elasticityTensor(m, n) += m_FJ * mu1 / alpha1 * aBy2Minus1 * evalPowI2 
                         * Evect(i, eI) * Evect(j, eI) * Evect(k, eI) * Evect(l, eI);
 
                     // Variation of eigenvectors
@@ -235,7 +193,7 @@ public:
                             ? aBy2Minus1 * evalPowI2
                             : (evalPowI - pow(Evalue[eJ], aBy2Minus1))/(Evalue[eI] - Evalue[eJ]);
 
-                        elasticityTensor(m, n) += 0.5 * Fj * mu1 / alpha1 * coefRot *
+                        elasticityTensor(m, n) += 0.5 * m_FJ * mu1 / alpha1 * coefRot *
                         (
                             Evect(i, eI) * Evect(j, eJ) * Evect(k, eJ) * Evect(l, eI) +
                             Evect(i, eI) * Evect(j, eJ) * Evect(k, eI) * Evect(l, eJ)
@@ -246,16 +204,16 @@ public:
                 // Remaining terms from S_isochoric
                 elasticityTensor(m, n) += 
                     // Lumped contributions from trace of C^(alpha1/2) and FJ in dWiso/dlambda*dlambda/dC
-                    - Fj * mu1 / 6. * (CaBy2Minus1(i,j) * invC(l,k) + CaBy2Minus1(k,l) * invC(j,i))
+                    - m_FJ * mu1 / 6. * (m_CaBy2Minus1(i,j) * m_invC(l,k) + m_CaBy2Minus1(k,l) * m_invC(j,i))
                     // Contributions from FJ in dWiso/dF*dF/dC
-                    + Fj * mu1 * trCaBy2 / 18. * invC(j,i) * invC(l,k)
+                    + m_FJ * mu1 * m_trCaBy2 / 18. * m_invC(j,i) * m_invC(l,k)
                     // Contributions from inverse of C
-                    + Fj * mu1 / (6. * alpha1) * trCaBy2 * (invC(k,i) * invC(l,j) + invC(l,i) * invC(k,j));
+                    + m_FJ * mu1 / (6. * alpha1) * m_trCaBy2 * (m_invC(k,i) * m_invC(l,j) + m_invC(l,i) * m_invC(k,j));
 
                 // Derivative of S_volumetric; dependence on lnJ and C^{-1}
-                elasticityTensor(m, n) += 0.5 * k0 * invC(j,i) * invC(l,k)
-                                - 0.5 * k0 * log(sinfo->J) * 
-                    (invC(j,k) * invC(l,i) + invC(j,l) * invC(k,i));
+                elasticityTensor(m, n) += 0.5 * k0 * m_invC(j,i) * m_invC(l,k)
+                                - 0.5 * k0 * m_logJ * 
+                    (m_invC(j,k) * m_invC(l,i) + m_invC(j,l) * m_invC(k,i));
             }
         }
 

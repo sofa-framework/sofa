@@ -382,6 +382,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
 
         tetInfo->J = dot( areaVec, dp[0] ) * tetInfo->volScale;
         tetInfo->trC = (Real)( tetInfo->deformationTensor(0,0) + tetInfo->deformationTensor(1,1) + tetInfo->deformationTensor(2,2));
+        myMaterial->updateVariables(tetInfo, globalParameters);
         //tetInfo->strainEnergy=myMaterial->getStrainEnergy(tetInfo,globalParameters); // to uncomment for test derivatives
     //	tetInfo->SPKTensorGeneral.clear();
         SPK.clear();
