@@ -71,7 +71,7 @@ void BuiltConstraintSolver::addRegularization(linearalgebra::BaseMatrix& W, cons
             int nullSpaceBegin = -1;
             for(size_t i=0; i<problemSize; i++)
             {
-                if (fabs(svd.singularValues()(i)) < fabs(svd.singularValues()(0))/100.0)
+                if (fabs(svd.singularValues()(i)) < fabs(svd.singularValues()(0)) * d_svdSingularValueNullSpaceCriteriaFactor.getValue())
                 {
                     nullSpaceBegin = i;
                     break;
@@ -84,7 +84,7 @@ void BuiltConstraintSolver::addRegularization(linearalgebra::BaseMatrix& W, cons
             for(int i=nullSpaceBegin; (i != -1) && (i<problemSize); ++i)
             {
                 for(size_t j=0; j<problemSize; j++)
-                    nullSpaceIndicator[j] = nullSpaceIndicator[j] ||  fabs(svd.matrixV().col(i)(j)) > 0.001;
+                    nullSpaceIndicator[j] = nullSpaceIndicator[j] ||  fabs(svd.matrixV().col(i)(j)) > d_svdSingularVectorNullSpaceCriteriaFactor.getValue();
             }
 
             if (f_printLog.getValue())
