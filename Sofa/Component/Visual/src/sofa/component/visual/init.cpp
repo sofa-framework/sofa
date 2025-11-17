@@ -40,6 +40,7 @@ extern void registerVisualPointCloud(sofa::core::ObjectFactory* factory);
 extern void registerVisualStyle(sofa::core::ObjectFactory* factory);
 extern void registerVisualTransform(sofa::core::ObjectFactory* factory);
 extern void registerVisualVectorField(sofa::core::ObjectFactory* factory);
+extern void registerVisualMesh(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -79,6 +80,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerVisualStyle(factory);
     registerVisualTransform(factory);
     registerVisualVectorField(factory);
+    registerVisualMesh(factory);
 }
 
 void init()
