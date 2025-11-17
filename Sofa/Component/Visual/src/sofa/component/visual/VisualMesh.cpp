@@ -35,10 +35,12 @@ void registerVisualMesh(sofa::core::ObjectFactory* factory)
 
 VisualMesh::VisualMesh()
     : d_position(initData(&d_position, "position", "The position of the vertices of mesh"))
-    , d_elementSpace(initData(&d_elementSpace, 0.333_sreal, "elementSpace",
+    , d_elementSpace(initData(&d_elementSpace, 0.15_sreal, "elementSpace",
                               "The space between element (scalar between 0 and 1)"))
     , l_topology(initLink("topology", "Link to a topology containing elements"))
-{}
+{
+}
+
 
 void VisualMesh::init()
 {
@@ -53,6 +55,41 @@ void VisualMesh::init()
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
     }
+}
+
+void VisualMesh::drawTriangles(helper::visual::DrawTool* drawTool)
+{
+    if (!l_topology)
+        return;
+
+    const auto& elements = l_topology->getTriangles();
+
+    static constexpr std::size_t NumberVerticesInTriangle = 3;
+    m_renderedPoints.resize(elements.size() * NumberVerticesInTriangle);
+    m_renderedColors.resize(elements.size() * NumberVerticesInTriangle);
+
+    const auto elementSpace = d_elementSpace.getValue();
+    const auto& positionAccessor = sofa::helper::getReadAccessor(d_position);
+
+    auto pointsIt = m_renderedPoints.begin();
+    auto colorIt = m_renderedColors.begin();
+
+    for (sofa::Size i = 0; i < elements.size(); ++i)
+    {
+        const auto& element = elements[i];
+
+        const sofa::type::Vec3 center = elementCenter(positionAccessor.ref(), element);
+
+        static constexpr std::array colors{
+            sofa::type::RGBAColor::green(),
+            sofa::type::RGBAColor(0, 0.5, 0.5, 1),
+            sofa::type::RGBAColor::blue(),
+        };
+
+        std::array facetsInElement{i};
+        setPointsAndColors(facetsInElement, elements, positionAccessor.ref(), center, elementSpace, pointsIt, colorIt, {colors[i%NumberVerticesInTriangle]});
+    }
+    drawTool->drawTriangles(m_renderedPoints, m_renderedColors);
 }
 
 void VisualMesh::drawTetrahedra(helper::visual::DrawTool* drawTool)
@@ -141,6 +178,13 @@ void VisualMesh::doDrawVisual(const core::visual::VisualParams* vparams)
 
     vparams->drawTool()->disableLighting();
 
+    const auto hasTetra = l_topology && !l_topology->getTetrahedra().empty();
+    const auto hasHexa = l_topology && !l_topology->getHexahedra().empty();
+
+    if (!hasTetra && !hasHexa)
+    {
+        drawTriangles(drawTool);
+    }
     drawTetrahedra(drawTool);
     drawHexahedra(drawTool);
 }
