@@ -37,8 +37,8 @@ class SOFA_SIMULATION_CORE_API MechanicalVNormVisitor : public BaseMechanicalVis
 public:
     sofa::core::ConstMultiVecId a;
     unsigned l; ///< Type of norm:  for l>0, \f$ \|v\|_l = ( \sum_{i<dim(v)} \|v[i]\|^{l} )^{1/l} \f$, while we use l=0 for the infinite norm: \f$ \|v\|_\infinite = \max_{i<dim(v)} \|v[i]\| \f$
-    MechanicalVNormVisitor(const sofa::core::ExecParams* params, sofa::core::ConstMultiVecId a, unsigned l)
-            : BaseMechanicalVisitor(params), accum(0), a(a), l(l)
+    MechanicalVNormVisitor(const sofa::core::ExecParams* eparams, sofa::core::ConstMultiVecId avecid, unsigned lnorm)
+            : BaseMechanicalVisitor(eparams), accum(0), a(avecid), l(lnorm)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

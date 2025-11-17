@@ -63,7 +63,8 @@ public:
 
     virtual void solve(Matrix& M, Vector& solution, Vector& rh) = 0;
 
-    virtual Matrix * getSystemMatrix() = 0;
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    virtual Matrix * getSystemMatrix() final = delete;
 
 };
 
@@ -191,57 +192,75 @@ public:
     void init() override;
 
     /// Reset the current linear system.
-    void resetSystem() override;
-
-    /// Reset the current linear system.
-    void resizeSystem(Size n);
-
-    /// Set the linear system matrix, combining the mechanical M,B,K matrices using the given coefficients
-    ///
-    /// Note that this automatically resizes the linear system to the number of active degrees of freedoms
-    ///
-    /// @todo Should we put this method in a specialized class for mechanical systems, or express it using more general terms (i.e. coefficients of the second order ODE to solve)
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
-
-    /// Rebuild the system using a mass and force factor
-    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
-
-    /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
-    void setSystemRHVector(core::MultiVecDerivId v) override;
-
-    /// Set the initial estimate of the linear system left-hand term vector, from the values contained in the (Mechanical/Physical)State objects
-    /// This vector will be replaced by the solution of the system once solveSystem is called
-    void setSystemLHVector(core::MultiVecDerivId v) override;
-
-    /// Get the linear system matrix, or nullptr if this solver does not build it
-    Matrix* getSystemMatrix() override;
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    void resizeSystem(Size n) = delete;
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_DEPRECATED_ASSEMBLY_API()
     Vector* getSystemRHVector() { return l_linearSystem ? l_linearSystem->getRHSVector() : nullptr; }
 
     /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_DEPRECATED_ASSEMBLY_API()
     Vector* getSystemLHVector() { return l_linearSystem ? l_linearSystem->getSolutionVector() : nullptr; }
 
-    /// Get the linear system matrix, or nullptr if this solver does not build it
-    linearalgebra::BaseMatrix* getSystemBaseMatrix() override;
-
-    /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
-    linearalgebra::BaseVector* getSystemRHBaseVector() override { return l_linearSystem ? l_linearSystem->getRHSVector() : nullptr; }
-
-    /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
-    linearalgebra::BaseVector* getSystemLHBaseVector() override { return l_linearSystem ? l_linearSystem->getSolutionVector() : nullptr; }
-
     /// Returns the linear system component associated to the linear solver
-    sofa::component::linearsystem::TypedMatrixLinearSystem<Matrix, Vector>* getLinearSystem() const { return l_linearSystem.get(); }
+    sofa::component::linearsystem::TypedMatrixLinearSystem<Matrix, Vector>* getLinearSystem() const override { return l_linearSystem.get(); }
 
     /// Solve the system as constructed using the previous methods
     void solveSystem() override;
 
     /// Apply the solution of the system to all the objects
-    void applySystemSolution();
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    void applySystemSolution() = delete;
 
     /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
     void invertSystem() override;
+
+    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name parameters
+    /// instead of the default one generated automatically by the SOFA_CLASS() macro.
+    static std::string GetCustomTemplateName()
+    {
+        return ThreadManager::Name()+Matrix::Name();
+    }
+
+    bool isAsyncSolver() override
+    {
+        return ThreadManager::isAsyncSolver();
+    }
+
+    virtual void invertIfInvalidated(Matrix& M) final;
+
+    void invert(Matrix& /*M*/) override {}
+
+    void solve(Matrix& M, Vector& solution, Vector& rh) override = 0;
+
+    virtual bool addJMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, SReal fact);
+
+    virtual bool addMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const  JMatrixType * J, SReal fact);
+
+    bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
+
+    bool addMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
+
+    bool buildComplianceMatrix(const core::ConstraintParams* cparams, linearalgebra::BaseMatrix* result, SReal fact, SReal regularizationTerm) override;
+
+    void applyConstraintForce(const sofa::core::ConstraintParams* cparams, sofa::core::MultiVecDerivId dx, const linearalgebra::BaseVector* f) override;
+
+    void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* f) override;
+
+    ///< Parallelize the computation of the product J*M^{-1}*J^T where M is the
+    ///< matrix of the linear system and J is any matrix with compatible dimensions
+    Data<bool> d_parallelInverseProduct;
+
+    SingleLink<
+        MatrixLinearSolver<Matrix,Vector,NoThreadManager>,
+        sofa::component::linearsystem::TypedMatrixLinearSystem<Matrix, Vector>,
+        BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK
+    > l_linearSystem;
+
+    MatrixInvertData * getMatrixInvertData(linearalgebra::BaseMatrix * m);
+
+protected:
 
     void prepareVisitor(simulation::Visitor* v)
     {
@@ -267,45 +286,6 @@ public:
         v->execute( this->getContext() );
     }
 
-    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name parameters
-    /// instead of the default one generated automatically by the SOFA_CLASS() macro.
-    static std::string GetCustomTemplateName()
-    {
-        return ThreadManager::Name()+Matrix::Name();
-    }
-
-    bool isAsyncSolver() override
-    {
-        return ThreadManager::isAsyncSolver();
-    }
-
-    void invert(Matrix& /*M*/) override {}
-
-    void solve(Matrix& M, Vector& solution, Vector& rh) override = 0;
-
-    virtual bool addJMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, SReal fact);
-
-    virtual bool addMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const  JMatrixType * J, SReal fact);
-
-    bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
-
-    bool addMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
-
-    bool buildComplianceMatrix(const core::ConstraintParams* cparams, linearalgebra::BaseMatrix* result, SReal fact, SReal regularizationTerm) override;
-
-    void applyConstraintForce(const sofa::core::ConstraintParams* cparams, sofa::core::MultiVecDerivId dx, const linearalgebra::BaseVector* f) override;
-
-    void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* f) override;
-
-    ///< Parallelize the computation of the product J*M^{-1}*J^T where M is the
-    ///< matrix of the linear system and J is any matrix with compatible dimensions
-    Data<bool> d_parallelInverseProduct;
-
-public:
-
-    MatrixInvertData * getMatrixInvertData(linearalgebra::BaseMatrix * m);
-
-protected:
 
     virtual void checkLinearSystem();
 
@@ -351,45 +331,15 @@ protected:
 
     virtual MatrixInvertData * createInvertData();
 
-    struct LinearSystemData
-    {
-        bool needInvert;
-        Matrix* systemMatrix;
-        Vector* systemRHVector;
-        Vector* systemLHVector;
-        core::MultiVecDerivId solutionVecId;
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    DeprecatedAndRemoved linearSystem;
 
-#if SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR
-        core::behavior::CRSMultiMatrixAccessor matrixAccessor;
-#else
-        core::behavior::DefaultMultiMatrixAccessor matrixAccessor;
-#endif // SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR
-
-        LinearSystemData()
-                : needInvert(true), systemMatrix(nullptr), systemRHVector(nullptr), systemLHVector(nullptr),
-                  solutionVecId(core::MultiVecDerivId::null())
-        {}
-        ~LinearSystemData()
-        {
-            if (systemMatrix) deleteMatrix(systemMatrix);
-            if (systemRHVector) deletePersistentVector(systemRHVector);
-            if (systemLHVector) deletePersistentVector(systemLHVector);
-        }
-    };
-
-    LinearSystemData linearSystem;
-
-    SReal currentMFactor, currentBFactor, currentKFactor;
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+    DeprecatedAndRemoved currentMFactor, currentBFactor, currentKFactor;
 
     bool singleThreadAddJMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, SReal fact);
 
-protected:
-    SingleLink<
-        MatrixLinearSolver<Matrix,Vector,NoThreadManager>,
-        sofa::component::linearsystem::TypedMatrixLinearSystem<Matrix, Vector>,
-        BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK
-    > l_linearSystem;
-
+    Data<bool> d_factorizationInvalidation;
 };
 
 //////////////////////////////////////////////////////////////
@@ -415,34 +365,7 @@ public:
 };
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resetSystem();
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resizeSystem(Size);
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemMBKMatrix(const core::MechanicalParams* mparams);
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::rebuildSystem(SReal massFactor, SReal forceFactor);
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemLHVector(core::MultiVecDerivId v);
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::applySystemSolution();
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 GraphScatteredVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createPersistentVector();
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-linearalgebra::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemBaseMatrix();
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-linearalgebra::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemRHBaseVector();
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-linearalgebra::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemLHBaseVector();
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/, sofa::core::MultiVecDerivId /*dx*/, const linearalgebra::BaseVector* /*f*/);

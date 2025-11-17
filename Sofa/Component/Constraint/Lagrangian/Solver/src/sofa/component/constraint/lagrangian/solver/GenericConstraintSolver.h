@@ -40,7 +40,7 @@ namespace sofa::component::constraint::lagrangian::solver
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintSolver : public ConstraintSolverImpl
 {
     typedef sofa::core::MultiVecId MultiVecId;
-
+    friend GenericConstraintProblem;
 public:
     SOFA_CLASS(GenericConstraintSolver, ConstraintSolverImpl);
 protected:
@@ -53,30 +53,21 @@ public:
 
     bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
-    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
-    void addRegularization(linearalgebra::BaseMatrix & W);
+    void rebuildSystem(const SReal massFactor, const SReal forceFactor) override;
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void computeResidual(const core::ExecParams* /*params*/) override;
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
 
-    MAKE_SELECTABLE_ITEMS(ResolutionMethod,
-        sofa::helper::Item{"ProjectedGaussSeidel", "Projected Gauss-Seidel"},
-        sofa::helper::Item{"UnbuiltGaussSeidel", "Gauss-Seidel where the matrix is not assembled"},
-        sofa::helper::Item{"NonsmoothNonlinearConjugateGradient", "Non-smooth non-linear conjugate gradient"}
-    );
 
-    Data< ResolutionMethod > d_resolutionMethod; ///< Method used to solve the constraint problem, among: "ProjectedGaussSeidel", "UnbuiltGaussSeidel" or "for NonsmoothNonlinearConjugateGradient"
-
-    Data<int> d_maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
+    Data<int> d_maxIt; ///< maximal number of iterations of iterative algorithm
     Data<SReal> d_tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
     Data<SReal> d_sor; ///< Successive Over Relaxation parameter (0-2)
     Data< SReal > d_regularizationTerm; ///< add regularization*Id to W when solving for constraints
     Data<bool> d_scaleTolerance; ///< Scale the error tolerance with the number of constraints
     Data<bool> d_allVerified; ///< All constraints must be verified (each constraint's error < tolerance)
-    Data<int> d_newtonIterations; ///< Maximum iteration number of Newton (for the NonsmoothNonlinearConjugateGradient solver only)
-    Data<bool> d_multithreading; ///< Build compliances concurrently
+
     Data<bool> d_computeGraphs; ///< Compute graphs of errors and forces during resolution
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphErrors; ///< Sum of the constraints' errors at each iteration
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphConstraints; ///< Graph of each constraint's error at the end of the resolution
@@ -87,7 +78,6 @@ public:
     Data<int> d_currentNumConstraintGroups; ///< OUTPUT: current number of constraints
     Data<int> d_currentIterations; ///< OUTPUT: current number of constraint groups
     Data<SReal> d_currentError; ///< OUTPUT: current error
-    Data<bool> d_reverseAccumulateOrder; ///< True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)
     Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: constraint forces (stored only if computeConstraintForces=True)
     Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field.
 
@@ -99,37 +89,46 @@ protected:
     void clearConstraintProblemLocks();
 
     static constexpr auto CP_BUFFER_SIZE = 10;
-    sofa::type::fixed_array<GenericConstraintProblem, CP_BUFFER_SIZE> m_cpBuffer;
+    sofa::type::fixed_array<GenericConstraintProblem * , CP_BUFFER_SIZE> m_cpBuffer;
     sofa::type::fixed_array<bool, CP_BUFFER_SIZE> m_cpIsLocked;
     GenericConstraintProblem *current_cp, *last_cp;
 
     sofa::core::MultiVecDerivId m_lambdaId;
     sofa::core::MultiVecDerivId m_dxId;
 
-    void buildSystem_matrixFree(unsigned int numConstraints);
+    virtual void initializeConstraintProblems();
 
-    // Explicitly compute the compliance matrix projected in the constraint space
-    void buildSystem_matrixAssembly(const core::ConstraintParams *cParams);
+    /*****
+     *
+     * @brief This internal method is used to build the system. It should use the list of constraint correction (l_constraintCorrections) to build the full constraint problem.
+     *
+     * @param cParams: Container providing quick access to all data related to the mechanics (position, velocity etc..) for all mstate
+     * @param problem: constraint problem containing data structures used for solving the constraint
+     *                 problem: the constraint matrix, the unknown vector, the free violation etc...
+     *                 The goal of this method is to fill parts of this structure to be then used to
+     *                 find the unknown vector.
+     * @param numConstraints: number of atomic constraint
+     *
+     */
+    virtual void doBuildSystem( const core::ConstraintParams *cParams, GenericConstraintProblem * problem ,unsigned int numConstraints) = 0;
+
+    /*****
+     *
+     * @brief This internal method is used to solve the constraint problem. It essentially uses the constraint problem structures.
+     *
+     * @param problem: constraint problem containing data structures used for solving the constraint
+     *                 problem: the constraint matrix, the unknown vector, the free violation etc...
+     *                 The goal of this method is to use the problem structures to compute the final solution.
+     * @param timeout: timeout to use this solving method in a haptic thread. If the timeout is reached then the solving must stops.
+     *
+     */
+    virtual void doSolve( GenericConstraintProblem * problem, SReal timeout = 0.0) = 0;
+
+
+    static void addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization);
+
 
 private:
-
-    struct ComplianceWrapper
-    {
-        using ComplianceMatrixType = sofa::linearalgebra::LPtrFullMatrix<SReal>;
-
-        ComplianceWrapper(ComplianceMatrixType& complianceMatrix, bool isMultiThreaded)
-        : m_isMultiThreaded(isMultiThreaded), m_complianceMatrix(complianceMatrix) {}
-
-        ComplianceMatrixType& matrix();
-
-        void assembleMatrix() const;
-
-    private:
-        bool m_isMultiThreaded { false };
-        ComplianceMatrixType& m_complianceMatrix;
-        std::unique_ptr<ComplianceMatrixType> m_threadMatrix;
-    };
-
 
     sofa::type::vector<core::behavior::BaseConstraintCorrection*> filteredConstraintCorrections() const;
 

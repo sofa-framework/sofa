@@ -67,31 +67,7 @@ PrecomputedWarpPreconditioner<TDataTypes>::PrecomputedWarpPreconditioner()
 template <class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::checkLinearSystem()
 {
-    if (!this->l_linearSystem)
-    {
-        auto* matrixLinearSystem=this->getContext()->template get<PrecomputedMatrixSystem<TMatrix, TVector> >();
-        if(!matrixLinearSystem)
-        {
-            this->template createDefaultLinearSystem<PrecomputedMatrixSystem<TMatrix, TVector> >();
-        }
-    }
-}
-
-template<class TDataTypes>
-void PrecomputedWarpPreconditioner<TDataTypes>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
-{
-    // Update the matrix only the first time
-    if (first)
-    {
-        first = false;
-        init_mFact = mparams->mFactor();
-        init_bFact = sofa::core::mechanicalparams::bFactor(mparams);
-        init_kFact = mparams->kFactor();
-        Inherit::setSystemMBKMatrix(mparams);
-        loadMatrix(*this->getSystemMatrix());
-    }
-
-    this->linearSystem.needInvert = usePrecond;
+    this->template doCheckLinearSystem<PrecomputedMatrixSystem<TMatrix, TVector>>();
 }
 
 //Solve x = R * M^-1 * R^t * b
@@ -337,7 +313,6 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
         mparams.setMFactor(init_mFact);
         mparams.setBFactor(init_bFact);
         mparams.setKFactor(init_kFact);
-        linearSolver->setSystemMBKMatrix(&mparams);
     }
 
     helper::WriteAccessor<Data<VecDeriv> > dataForce = *mstate->write(core::vec_id::write_access::externalForce);
@@ -397,12 +372,11 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 
             if (linearSolver)
             {
-                linearSolver->setSystemRHVector(rhId);
-                linearSolver->setSystemLHVector(lhId);
+                linearSolver->getLinearSystem()->setRHS(rhId);
+                linearSolver->getLinearSystem()->setSystemSolution(lhId);
                 linearSolver->solveSystem();
+                linearSolver->getLinearSystem()->dispatchSystemSolution(lhId);
             }
-
-            if (linearSolver && pid_j*dof_on_node+d == 0) linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
 
             if(pid_j*dof_on_node+d < 2)
             {
@@ -428,8 +402,6 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     }
     msg_info() << "Precomputing constraint correction : " << std::fixed << 100.0f << " %" ;
     ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    if (linearSolver) linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
 
     ///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
     // gravity is reset at its previous value
@@ -663,7 +635,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& x = mstate->read(core::vec_id::read_access::position)->getValue();
-    const Real& scale = this->d_draw_rotations_scale.getValue();
+    const float scale = static_cast<float>(this->d_draw_rotations_scale.getValue());
 
     for (unsigned int i=0; i< nb_dofs; i++)
     {
@@ -681,7 +653,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
 
         sofa::type::Quat<SReal> q;
         q.fromMatrix(RotMat);
-        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[pid]), q, sofa::type::Vec3(scale,scale,scale));
+        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[pid]), q, sofa::type::Vec3f(scale,scale,scale));
     }
 
 }

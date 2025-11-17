@@ -42,7 +42,7 @@
 
     <!-- Header of the simulation -->
     <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" parallelODESolving="true" parallelCollisionDetectionAndFreeMotion="true"/>
-    <GenericConstraintSolver maxIterations="20" multithreading='true' tolerance="1.0e-4"/>
+    <ProjectedGaussSeidelConstraintSolver maxIterations="20" multithreading='true' tolerance="1.0e-4"/>
 
     <!-- Definition of the collision pipeline -->
     <CollisionPipeline name="CollisionPipeline" />
@@ -247,7 +247,9 @@
         <TriangleSetTopologyContainer name="FloorTopology" position="-20 -15 1  50 -15 1  50 15 1  -20 15 1" triangles="0 2 1  0 3 2" />
         <MechanicalObject name="FloorDOF" template="Vec3d"/>
         <TriangleCollisionModel name="FloorCM" contactDistance="0.02" moving="0" simulated="0"  color="0.3 0.3 0.3 0.1"/>
-        <OglModel name="VisualModel" src="@FloorTopology"/>
+        <Node name="Visu">
+            <OglModel name="VisualModel" src="@../FloorTopology"/>
+        </Node>
     </Node>
 
 
@@ -256,7 +258,9 @@
         <TriangleSetTopologyContainer name="CeilTopology" position="-20 -15 -20   50 -15 -20    50 15 -20    -20 15 -20" triangles="0 1 2  3 0 2" />
         <MechanicalObject name="CeilDOF" template="Vec3d"/>
         <TriangleCollisionModel name="CeilCM" contactDistance="0.02" moving="0" simulated="0" color="0.3 0.3 0.3 0.1"/>
-        <OglModel name="VisualModel" src="@CeilTopology"/>
+        <Node name="Visu">
+            <OglModel name="VisualModel" src="@../CeilTopology"/>
+        </Node>
     </Node>
 </Node >
 

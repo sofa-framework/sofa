@@ -21,7 +21,7 @@
     <VisualStyle displayFlags="showBehaviorModels showForceFields showInteractionForceFields" />
 
     <FreeMotionAnimationLoop parallelODESolving="true"/>
-    <GenericConstraintSolver tolerance="0.001" maxIterations="1000" resolutionMethod="UnbuildGaussSeidel" multithreading="true"/>
+    <UnbuiltGaussSeidelConstraintSolver tolerance="0.001" maxIterations="1000" multithreading="true"/>
 
     <!--
         This Node shows how NearestPointROI is used to create constraints to link close vertices

@@ -150,7 +150,7 @@ public:
     /// @}
 
     /// Compute the bounding box independently from the visibility parameters
-    sofa::type::TBoundingBox<Real> computeBBox() const;
+    sofa::type::BoundingBox computeBBox() const;
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 };

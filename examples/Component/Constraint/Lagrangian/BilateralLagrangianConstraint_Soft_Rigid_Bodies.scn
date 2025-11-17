@@ -28,7 +28,7 @@
 
 
     <FreeMotionAnimationLoop computeBoundingBox="0"/>
-    <GenericConstraintSolver maxIterations="1000" tolerance="1e-3"/>
+    <ProjectedGaussSeidelConstraintSolver maxIterations="1000" tolerance="1e-3"/>
     
     <VisualStyle displayFlags="showBehaviorModels showVisual showForceFields" />
     <CollisionPipeline name="CollisionLoop" verbose="0" />

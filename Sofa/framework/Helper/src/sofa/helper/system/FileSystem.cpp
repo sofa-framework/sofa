@@ -146,10 +146,30 @@ bool FileSystem::createDirectory(const std::string& path)
         return true;
     }
 #else
-    if (mkdir(path.c_str(), 0755))
+    int status = mkdir(path.c_str(), 0755);
+    if(status)
     {
-        msg_error(error) << path << ": " << strerror(errno);
-        return true;
+        if (errno != EEXIST)
+        {
+            msg_error(error) << path << ": " << strerror(errno);
+            return true;
+        }
+        else
+        {
+            struct stat st_buf;
+            if (stat(path.c_str(), &st_buf) == 0)
+            {
+                if ((st_buf.st_mode & S_IFMT) != S_IFDIR) {
+                    msg_error(error) << path << ": File exists and is not a directoy";
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+        }
     }
 #endif
     else

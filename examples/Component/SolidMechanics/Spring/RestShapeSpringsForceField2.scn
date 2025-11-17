@@ -14,7 +14,7 @@
     <VisualStyle displayFlags=" showCollisionModels showForceFields" />
 
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver maxIt="1000" tolerance="1e-10" printLog="false" />
+    <ProjectedGaussSeidelConstraintSolver maxIt="1000" tolerance="1e-10" printLog="false" />
 
     <Node name="Object1">
         <MechanicalObject name="ms" template="Rigid3" position="0 0 0 0 0 0 0 1" showObject="false"/>
