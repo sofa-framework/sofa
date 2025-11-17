@@ -54,6 +54,18 @@ protected:
 
     sofa::type::vector< sofa::type::Vec3 > m_renderedPoints;
     sofa::type::vector< sofa::type::RGBAColor > m_renderedColors;
+
+    template<class ElementType>
+    sofa::type::Vec3 elementCenter(const type::vector<type::Vec3>& position, const ElementType& element)
+    {
+        sofa::type::Vec3 center{};
+        for (sofa::Size vId = 0; vId < element.size(); ++vId)
+        {
+            center += position[element[vId]];
+        }
+        center /= element.size();
+        return center;
+    }
 };
 
 }
