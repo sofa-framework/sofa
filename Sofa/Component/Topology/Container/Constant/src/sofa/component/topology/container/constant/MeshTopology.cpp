@@ -491,6 +491,8 @@ MeshTopology::MeshTopology()
     , d_seqQuads(initData(&d_seqQuads, "quads", "List of quad indices"))
     , d_seqTetrahedra(initData(&d_seqTetrahedra, "tetrahedra", "List of tetrahedron indices"))
     , d_seqHexahedra(initData(&d_seqHexahedra, "hexahedra", "List of hexahedron indices"))
+    , d_seqPrisms(initData(&d_seqPrisms, "prisms", "List of prisms indices"))
+    , d_seqPyramids(initData(&d_seqPyramids, "pyramids", "List of pyramids indices"))
     , d_seqUVs(initData(&d_seqUVs, "uv", "List of uv coordinates"))
     , d_computeAllBuffers(initData(&d_computeAllBuffers, false, "computeAllBuffers", "Option to compute all crossed topology buffers at init. False by default"))
     , nbPoints(0)
@@ -763,7 +765,6 @@ const MeshTopology::SeqTriangles& MeshTopology::getTriangles()
 
 const MeshTopology::SeqQuads& MeshTopology::getQuads()
 {
-
     return d_seqQuads.getValue();
 }
 
@@ -785,6 +786,16 @@ const MeshTopology::SeqHexahedra& MeshTopology::getHexahedra()
         validHexahedra = true;
     }
     return d_seqHexahedra.getValue();
+}
+
+const BaseMeshTopology::SeqPrisms& MeshTopology::getPrisms()
+{
+    return d_seqPrisms.getValue();
+}
+
+const BaseMeshTopology::SeqPyramids& MeshTopology::getPyramids()
+{
+    return d_seqPyramids.getValue();
 }
 
 const MeshTopology::SeqUV& MeshTopology::getUVs()
