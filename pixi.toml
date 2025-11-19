@@ -69,8 +69,8 @@ activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOF
 activation = { env = { Qt5_DIR = "$CONDA_PREFIX/lib/cmake" } }
 dependencies = { qt-main = ">=5.15.0", ffmpeg = "*", libqglviewer = "*" }
 
-[feature.plugin-cuda]
-system-requirements = { cuda = "12" }
+[feature.plugin-cuda.system-requirements]
+cuda = "12"
 [feature.plugin-cuda.target.linux]
 # XXX Adding nvvm/bin to PATH was required to compile, may be related to
 # https://github.com/conda-forge/cuda-nvcc-impl-feedstock/issues/9
@@ -95,9 +95,7 @@ dependencies = { zstd = "*", libtiff = "*", libjpeg-turbo = "*", libpng = "*" }
 [feature.presets-defaultGUI]
 dependencies = { glew = "*", glfw = "*", nativefiledialog-extended = "*"}
 [feature.presets-defaultGUI.target.linux]
-dependencies = { libglu = "*" }
-[feature.presets-defaultGUI.target.linux-64]
-dependencies = { mesa-libgl-devel-cos7-x86_64 = "*" }
+dependencies = { libglu = "*", libgl-devel = "*" }
 
 # conda-deny is a tool that will be used to bundle licenses of conda installed packages
 [feature.build-release-package.dependencies]
