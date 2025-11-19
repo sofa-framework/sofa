@@ -20,7 +20,39 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/collision/geometry/config.h>
-#include <sofa/component/collision/geometry/LineCollisionModel.inl>
 
-SOFA_HEADER_DEPRECATED("v25.12", "v26.06", "sofa/component/collision/geometry/LineCollisionModel.inl")
+#include <sofa/component/collision/geometry/config.h>
+
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/TriangleOctree.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
+
+
+namespace sofa::component::collision::geometry
+{
+
+class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleOctreeCollisionModel : public  TriangleCollisionModel<sofa::defaulttype::Vec3Types>, public helper::TriangleOctreeRoot
+{
+public:
+    SOFA_CLASS(TriangleOctreeCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
+protected:
+    TriangleOctreeCollisionModel();
+    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
+public:
+    Data<bool> d_drawOctree;  ///< draw the octree
+
+    /// the normals for each point
+    type::vector<type::Vec3> pNorms;
+    void computeBoundingTree(int maxDepth=0) override;
+    void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
+    /// init the octree creation
+    void buildOctree ();
+};
+
+
+using TriangleOctreeModel SOFA_ATTRIBUTE_DEPRECATED__RENAMED_TRIANGLEOCTREEMODEL() = TriangleOctreeCollisionModel;
+
+
+} // namespace sofa::component::collision::geometry
