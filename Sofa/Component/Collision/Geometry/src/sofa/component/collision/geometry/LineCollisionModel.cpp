@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_CPP
-#include <sofa/component/collision/geometry/LineModel.inl>
+#include <sofa/component/collision/geometry/LineCollisionModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::collision::geometry

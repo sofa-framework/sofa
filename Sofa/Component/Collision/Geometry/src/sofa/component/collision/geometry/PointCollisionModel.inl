@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/collision/geometry/PointModel.h>
+#include <sofa/component/collision/geometry/PointCollisionModel.h>
 
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeCollisionModel.h>
 
 namespace sofa::component::collision::geometry
 {

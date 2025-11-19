@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/geometry/TriangleModel.inl>
-#include <sofa/component/collision/geometry/TriangleOctreeModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.inl>
+#include <sofa/component/collision/geometry/TriangleOctreeCollisionModel.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeCollisionModel.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::topology

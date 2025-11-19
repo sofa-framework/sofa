@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/collision/geometry/CubeModel.h>
-#include <sofa/component/collision/geometry/CylinderModel.h>
+#include <sofa/component/collision/geometry/CubeCollisionModel.h>
+#include <sofa/component/collision/geometry/CylinderCollisionModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/core/visual/VisualParams.h>
