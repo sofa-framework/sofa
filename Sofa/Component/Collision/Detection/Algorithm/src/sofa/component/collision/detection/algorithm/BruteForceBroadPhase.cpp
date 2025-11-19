@@ -54,7 +54,7 @@ void BruteForceBroadPhase::reinit()
     {
         if (!boxModel) boxModel = sofa::core::objectmodel::New<collision::geometry::CubeCollisionModel>();
         boxModel->resize(1);
-        boxModel->setParentOf(0, d_box.getValue()[0], d_box.getValue()[1]);
+        boxModel->setParentOf(0, d_box.getValue()[0], d_box.getValue()[1], d_box.getValue()[0], d_box.getValue()[1]);
     }
 }
 
