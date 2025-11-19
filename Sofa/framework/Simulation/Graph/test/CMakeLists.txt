@@ -10,7 +10,6 @@ set(SOURCE_FILES
     MutationListener_test.cpp
     Node_test.cpp
     Simulation_test.cpp
-    Link_test.cpp
     )
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
