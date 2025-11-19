@@ -43,7 +43,7 @@ PIXI_CURRENT_PLATFORM = "win-64"
 
 
 [tasks]
-build = { cmd = "cmake --build $SOFA_BUILD_DIR --target all --parallel 8", depends-on = ["configure"] }
+build = { cmd = "cmake --build $SOFA_BUILD_DIR --target all --parallel 4", depends-on = ["configure"] }
 clean = { cmd = "rm -rf $SOFA_BUILD_DIR" }
 test = { cmd = "ctest --test-dir $SOFA_BUILD_DIR --output-on-failure", depends-on = ["build"] }
 
