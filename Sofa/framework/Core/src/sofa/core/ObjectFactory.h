@@ -107,7 +107,7 @@ public:
     typedef std::map<std::string, ClassEntry::SPtr> ClassEntryMap;
 
 protected:
-    /// Main class registry
+    /// Main registry of all classes, using a map <string className, ClassEntry>. Where key className can also be an alias. Otherwise ClassEntry.className == className
     ClassEntryMap registry;
     OnCreateCallback m_callbackOnCreate ;
 
