@@ -38,33 +38,34 @@ namespace sofa::helper::system
 namespace sofa::core
 {
 
-/**
- *  \brief Main class used to register and dynamically create objects
- *
- *  It uses the Factory design pattern, where each class is registered in a map,
- *  and dynamically retrieved given the type name.
- *
- *  It also stores metainformation on each classes, such as description,
- *  authors, license, and available template types.
- *
- *  \see RegisterObject for how new classes should be registered.
- *
- */
-
 class ObjectRegistrationData;
 
 typedef std::function<void(sofa::core::objectmodel::Base*, sofa::core::objectmodel::BaseObjectDescription*)> OnCreateCallback ;
+
+/**
+ *  \brief Main class used to register and dynamically create objects
+ *
+ *  It uses the Factory design pattern, where each class is registered in a map
+ *  and dynamically retrieved given the type name.
+ *
+ *  It also stores metainformation on each class, such as description,
+ *  authors, license, and available template types.
+ */
 class SOFA_CORE_API ObjectFactory
 {
 public:
 
-    /// Abstract interface of objects used to create instances of a given type
-    class Creator
+    /**
+     * Abstract interface used to create instances (object) of a given type
+     * See the derived class @ref ObjectCreator.
+     */
+    class BaseObjectCreator
     {
     public:
-        typedef std::shared_ptr<Creator> SPtr;
+        using SPtr = std::shared_ptr<BaseObjectCreator>;
 
-        virtual ~Creator() { }
+        virtual ~BaseObjectCreator() = default;
+
         /// Pre-construction check.
         ///
         /// \return true if the object can be created successfully.
@@ -75,10 +76,10 @@ public:
         /// \pre canCreate(context, arg) == true.
         virtual objectmodel::BaseObject::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) = 0;
 
-        /// type_info structure associated with the type of intanciated objects.
+        /// type_info structure associated with the type of instantiated objects.
         virtual const std::type_info& type() = 0;
 
-        /// BaseClass structure associated with the type of intanciated objects.
+        /// BaseClass structure associated with the type of instantiated objects.
         virtual const objectmodel::BaseClass* getClass() = 0;
 
         /// The name of the library or executable containing the binary code for this component
@@ -86,14 +87,20 @@ public:
 
         virtual const char* getHeaderFileLocation() = 0;
     };
-    /// Map to store all creators for a given class, key is the templated className 
-    typedef std::map<std::string, Creator::SPtr> CreatorMap;
+    using Creator SOFA_CORE_DEPRECATED_RENAME_CREATOR_BASEOBJECTCREATOR() = BaseObjectCreator;
+
+    using TemplateName = std::string;
+
+    /// For a given templated class, the map stores all creators and the key is the template name.
+    using ObjectTemplateCreatorMap = std::map<TemplateName, BaseObjectCreator::SPtr>;
+
+    using CreatorMap SOFA_CORE_DEPRECATED_RENAME_CREATORMAP_OBJECTTEMPLATECREATORMAP() = ObjectTemplateCreatorMap;
 
     /// Record storing information about a class
     class ClassEntry
     {
     public:
-        typedef std::shared_ptr<ClassEntry> SPtr;
+        using SPtr = std::shared_ptr<ClassEntry>;
 
         std::string className;
         std::set<std::string> aliases;
@@ -102,15 +109,20 @@ public:
         std::string license;
         std::string documentationURL;
         std::string defaultTemplate;
-        CreatorMap creatorMap;
+        ObjectTemplateCreatorMap creatorMap; // to create instances of the class for different templates
         std::map<std::string, std::vector<std::string>> m_dataAlias ;
     };
-    /// Map to store all class entries, key is the className. ClassEntry.className != className if the key className is an alias.
-    typedef std::map<std::string, ClassEntry::SPtr> ClassEntryMap;
+
+    using ClassName = std::string;
+
+    /// Map to store all class entries, key is the class name.
+    using ClassEntryMap = std::map<ClassName, ClassEntry::SPtr>;
 
 protected:
-    /// Main registry of all classes, using a map <string className, ClassEntry>. Where key className can also be an alias. Otherwise ClassEntry.className == className
+
+    /// Main registry of all classes
     ClassEntryMap registry;
+
     OnCreateCallback m_callbackOnCreate ;
 
     /// Keep track of plugins who already registered
@@ -219,20 +231,24 @@ template<class BaseClass>
 void ObjectFactory::getEntriesDerivedFrom(std::vector<ClassEntry::SPtr>& result) const
 {
     result.clear();
-    for (const auto& r : registry)
+    for (const auto& [mapKeyClassName, entryInRegistry] : registry)
     {
-        ClassEntry::SPtr entry = r.second;
-        // Push the entry only if it is not an alias
-        if (entry->className == r.first)
+        // Discard the entry if its class name is not consistent with its key in the map.
+        // Differences happen for class aliases.
+        if (entryInRegistry->className == mapKeyClassName)
         {
-            for (const auto& [name, creator] : entry->creatorMap)
-            {
-                const auto* baseClass = creator->getClass();
-                if (baseClass && baseClass->hasParent(BaseClass::GetClass()))
+            const auto& templateCreators = entryInRegistry->creatorMap;
+            const auto isAnyInstantiationDerived = std::any_of(templateCreators.begin(), templateCreators.end(),
+                [](const auto& it)
                 {
-                    result.push_back(entry);
-                    break;
-                }
+                    const auto& templateInstantiation = it.second;
+                    const auto* instantiationClass = templateInstantiation->getClass();
+                    return instantiationClass
+                        && instantiationClass->hasParent(BaseClass::GetClass());
+                });
+            if (isAnyInstantiationDerived) //at least one template instantiation of the class is derived from BaseClass
+            {
+                result.push_back(entryInRegistry);
             }
         }
     }
@@ -243,21 +259,16 @@ std::string ObjectFactory::listClassesDerivedFrom(const std::string& separator) 
 {
     std::vector<ClassEntry::SPtr> entries;
     getEntriesDerivedFrom<BaseClass>(entries);
-    if (entries.empty()) return std::string();
 
-    const auto join = [&separator](std::string a, ClassEntry::SPtr b)
-    {
-        return std::move(a) + separator + b->className;
-    };
-    return std::accumulate(std::next(entries.begin()), entries.end(),
-                           entries.front()->className, join);
+    return sofa::helper::join(entries.begin(), entries.end(),
+        [](const ClassEntry::SPtr& entry){ return entry->className;}, separator);
 }
 
 /**
  *  \brief Typed Creator class used to create instances of object type RealObject
  */
 template<class RealObject>
-class ObjectCreator : public ObjectFactory::Creator
+class ObjectCreator : public ObjectFactory::BaseObjectCreator
 {
 public:
     bool canCreate(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override
@@ -341,7 +352,7 @@ public:
     ///
     /// See the add<RealObject>() method for an easy way to add a Creator.
     ObjectRegistrationData& addCreator(std::string classname, std::string templatename,
-                               ObjectFactory::Creator::SPtr creator);
+                               ObjectFactory::BaseObjectCreator::SPtr creator);
 
     /// Add a template instantiation of this class.
     ///
@@ -400,7 +411,7 @@ public:
     RegisterObject& addLicense(std::string val);
     RegisterObject& addDocumentationURL(std::string url);
     RegisterObject& addCreator(std::string classname, std::string templatename,
-        ObjectFactory::Creator::SPtr creator);
+        ObjectFactory::BaseObjectCreator::SPtr creator);
 
     template<class RealObject>
     RegisterObject& add(bool defaultTemplate = false)
