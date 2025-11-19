@@ -124,7 +124,7 @@ bool CCDIntersection::testIntersection(Line& e1, Line& e2, const core::collision
 
 
     const Eigen::Vector3d err {-1.0, -1.0, -1.0};
-    const auto maxSeparation = currentIntersection->getContactDistance() + e1.getContactDistance() + e2.getContactDistance(); // 0.00001
+    const double maxSeparation = currentIntersection->getContactDistance() + e1.getContactDistance() + e2.getContactDistance(); // 0.00001
     SReal toi = 2.0;
     const SReal tolerance = 1e-10;
     const SReal tmax = 1.0;
@@ -175,10 +175,10 @@ int CCDIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* conta
         err,maxSeparation, toi,tolerance, tmax, maxIterations, outputTolerance);
 
 
-    const auto Line1AToi = (1-toi) * e1.p1() + e1.p1Free() * toi;
-    const auto Line1BToi = (1-toi) * e1.p2() + e1.p2Free() * toi;
-    const auto Line2AToi = (1-toi) * e2.p1() + e2.p1Free() * toi;
-    const auto Line2BToi = (1-toi) * e2.p2() + e2.p2Free() * toi;
+    const Vec3 Line1AToi = (1-toi) * e1.p1() + e1.p1Free() * toi;
+    const Vec3 Line1BToi = (1-toi) * e1.p2() + e1.p2Free() * toi;
+    const Vec3 Line2AToi = (1-toi) * e2.p1() + e2.p1Free() * toi;
+    const Vec3 Line2BToi = (1-toi) * e2.p2() + e2.p2Free() * toi;
     type::Vec2 baryCoords(type::NOINIT);
     sofa::geometry::Edge::closestPointWithEdge(Line1AToi, Line1BToi, Line2AToi, Line2BToi, baryCoords);
 
@@ -186,8 +186,8 @@ int CCDIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* conta
     auto * detection = &contacts->back();
      detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
      detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
-     detection->point[0] = (1-baryCoords[0]) * e1.p1() + e1.p2();
-     detection->point[1] = (1-baryCoords[1]) * e2.p1() + e2.p2();
+     detection->point[0] = (1-baryCoords[0]) * Line1AToi + Line1BToi;
+     detection->point[1] = (1-baryCoords[1]) * Line2AToi + Line2BToi;
      detection->normal = detection->point[1] - detection->point[0];
      detection->value = detection->normal.norm();
      detection->normal /= detection->value;
@@ -216,7 +216,7 @@ bool CCDIntersection::testIntersection(Triangle& triangle, Point& point, const c
 
 
     const Eigen::Vector3d err {-1.0, -1.0, -1.0};
-    const auto maxSeparation = currentIntersection->getContactDistance() + triangle.getContactDistance() + point.getContactDistance(); // 0.00001
+    const double maxSeparation = currentIntersection->getContactDistance() + triangle.getContactDistance() + point.getContactDistance(); // 0.00001
     SReal toi = 2.0;
     const SReal tolerance = 1e-10;
     const SReal tmax = 1.0;
@@ -253,7 +253,7 @@ int CCDIntersection::computeIntersection(Triangle& triangle, Point& point, Outpu
 
 
     const Eigen::Vector3d err {-1.0, -1.0, -1.0};
-    const auto maxSeparation = currentIntersection->getContactDistance() + triangle.getContactDistance() + point.getContactDistance(); // 0.00001
+    const double maxSeparation = currentIntersection->getContactDistance() + triangle.getContactDistance() + point.getContactDistance(); // 0.00001
     SReal toi = 2.0;
     const SReal tolerance = 1e-10;
     const SReal tmax = 1.0;
@@ -261,32 +261,34 @@ int CCDIntersection::computeIntersection(Triangle& triangle, Point& point, Outpu
     SReal outputTolerance = 0.0;
 
 
-    return ticcd::vertexFaceCCD(
+    const bool result = ticcd::vertexFaceCCD(
         PointBegin, TriangleABegin, TriangleBBegin, TriangleCBegin,
         PointEnd,   TriangleAEnd,   TriangleBEnd,   TriangleCEnd,
         err,maxSeparation, toi,tolerance, tmax, maxIterations, outputTolerance);
 
-    //
-    const auto TriangleAToi = (1-toi) * triangle.p1() + triangle.p1Free() * toi;
-    const auto TriangleBToi = (1-toi) * triangle.p2() + triangle.p2Free() * toi;
-    const auto TriangleCToi = (1-toi) * triangle.p3() + triangle.p3Free() * toi;
-    const auto PointToi = (1-toi) * point.p() + point.pFree() * toi;
+    if (!result)
+        return 0;
 
-    const auto TriangleBaryToi = (TriangleAToi + TriangleBToi + TriangleCToi) /3.0;
-    const auto TriangleNormalBaryToi = (TriangleBToi - TriangleAToi).cross(TriangleCToi - TriangleAToi).normalized();
-    const auto ProjOnTriangleToi = TriangleBaryToi + (PointToi - TriangleBaryToi) - TriangleBaryToi * dot(PointToi - TriangleBaryToi,TriangleBaryToi) ;
+    const Vec3 TriangleAToi = (1-toi) * triangle.p1() + triangle.p1Free() * toi;
+    const Vec3 TriangleBToi = (1-toi) * triangle.p2() + triangle.p2Free() * toi;
+    const Vec3 TriangleCToi = (1-toi) * triangle.p3() + triangle.p3Free() * toi;
+    const Vec3 PointToi = (1-toi) * point.p() + point.pFree() * toi;
+
+    const Vec3 TriangleBaryToi = (TriangleAToi + TriangleBToi + TriangleCToi) /3.0;
+    const Vec3 TriangleNormalBaryToi = (TriangleBToi - TriangleAToi).cross(TriangleCToi - TriangleAToi).normalized();
+    const Vec3 ProjOnTriangleToi = TriangleBaryToi + (PointToi - TriangleBaryToi) - TriangleNormalBaryToi * dot(PointToi - TriangleBaryToi,TriangleNormalBaryToi) ;
 
 
     type::Vec3 baryCoords = sofa::geometry::Triangle::getBarycentricCoordinates(ProjOnTriangleToi, TriangleAToi, TriangleBToi, TriangleCToi);
 
-    //
+
     contacts->resize(contacts->size() +1 );
     auto * detection = &contacts->back();
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(triangle, point);
     detection->id = (triangle.getCollisionModel()->getSize() > point.getCollisionModel()->getSize()) ? triangle.getIndex() : point.getIndex();
-    detection->point[0] = triangle.p1() * baryCoords[0] + triangle.p2() * baryCoords[1] + triangle.p3() * baryCoords[2];
-    detection->point[1] = point.p();
-    detection->normal = triangle.n();
+    detection->point[0] = TriangleAToi * baryCoords[0] + TriangleBToi * baryCoords[1] + TriangleCToi * baryCoords[2] ;
+    detection->point[1] = PointToi;
+    detection->normal = TriangleNormalBaryToi;
     detection->value = dot(detection->point[1] - detection->point[0] , detection->normal) ;
     detection->value -= maxSeparation;
 
