@@ -24,21 +24,22 @@ set(HEADER_FILES
     ${SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR}/TriangleOctreeCollisionModel.h
 )
 
+set(DEPRECATED_DIR "compat/sofa/component/collision/geometry")
 set(DEPRECATED_HEADER_FILES
-    ${SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR}/CubeModel.h
-    ${SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR}/CylinderModel.h
-    ${SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR}/CylinderModel.inl
-    ${SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR}/LineModel.h
-    ${SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR}/LineModel.inl
-    ${SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR}/PointModel.h
-    ${SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR}/PointModel.inl
-    ${SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR}/RayModel.h
-    ${SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR}/SphereModel.h
-    ${SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR}/SphereModel.inl
-    ${SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR}/TetrahedronModel.h
-    ${SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR}/TriangleModel.h
-    ${SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR}/TriangleModel.inl
-    ${SOFACOMPONENTCOLLISIONGEOMETRY_SOURCE_DIR}/TriangleOctreeModel.h
+    ${DEPRECATED_DIR}/CubeModel.h
+    ${DEPRECATED_DIR}/CylinderModel.h
+    ${DEPRECATED_DIR}/CylinderModel.inl
+    ${DEPRECATED_DIR}/LineModel.h
+    ${DEPRECATED_DIR}/LineModel.inl
+    ${DEPRECATED_DIR}/PointModel.h
+    ${DEPRECATED_DIR}/PointModel.inl
+    ${DEPRECATED_DIR}/RayModel.h
+    ${DEPRECATED_DIR}/SphereModel.h
+    ${DEPRECATED_DIR}/SphereModel.inl
+    ${DEPRECATED_DIR}/TetrahedronModel.h
+    ${DEPRECATED_DIR}/TriangleModel.h
+    ${DEPRECATED_DIR}/TriangleModel.inl
+    ${DEPRECATED_DIR}/TriangleOctreeModel.h
 )
 
 set(SOURCE_FILES
@@ -57,8 +58,12 @@ set(SOURCE_FILES
 
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${DEPRECATED_HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
+target_include_directories(${PROJECT_NAME} PUBLIC 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>
+    $<INSTALL_INTERFACE:include/${PROJECT_NAME}_compat>
+)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
@@ -67,6 +72,8 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
+
+install(DIRECTORY compat/ DESTINATION include/${PROJECT_NAME}_compat)
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
