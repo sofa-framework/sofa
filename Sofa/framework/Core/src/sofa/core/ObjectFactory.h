@@ -86,6 +86,7 @@ public:
 
         virtual const char* getHeaderFileLocation() = 0;
     };
+    /// Map to store all creators for a given class, key is the templated className 
     typedef std::map<std::string, Creator::SPtr> CreatorMap;
 
     /// Record storing information about a class
@@ -104,6 +105,7 @@ public:
         CreatorMap creatorMap;
         std::map<std::string, std::vector<std::string>> m_dataAlias ;
     };
+    /// Map to store all class entries, key is the className. ClassEntry.className != className if the key className is an alias.
     typedef std::map<std::string, ClassEntry::SPtr> ClassEntryMap;
 
 protected:
