@@ -30,6 +30,7 @@ extern void registerNNCGConstraintSolver(sofa::core::ObjectFactory* factory);
 extern void registerProjectedGaussSeidelConstraintSolver(sofa::core::ObjectFactory* factory);
 extern void registerUnbuiltGaussSeidelConstraintSolver(sofa::core::ObjectFactory* factory);
 extern void registerLCPConstraintSolver(sofa::core::ObjectFactory* factory);
+extern void registerImprovedJacobiConstraintSolver(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -59,6 +60,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerProjectedGaussSeidelConstraintSolver(factory);
     registerUnbuiltGaussSeidelConstraintSolver(factory);
     registerLCPConstraintSolver(factory);
+    registerImprovedJacobiConstraintSolver(factory);
 }
 
 void init()
