@@ -50,10 +50,12 @@ MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
                                                                   "where M is the matrix of the linear system and J is any "
                                                                   "matrix with compatible dimensions"))
     , invertData()
-    , linearSystem()
-    , currentMFactor(), currentBFactor(), currentKFactor()
     , l_linearSystem(initLink("linearSystem", "The linear system to solve"))
+    , d_factorizationInvalidation(initData(&d_factorizationInvalidation, false, "factorizationInvalidation", "Internal data for the detection of cache invalidation of the matrix factorization"))
 {
+    d_factorizationInvalidation.setReadOnly(true);
+    d_factorizationInvalidation.setDisplayed(false);
+
     this->addUpdateCallback("parallelInverseProduct", {&d_parallelInverseProduct},
     [this](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
     {
@@ -125,7 +127,7 @@ void MatrixLinearSolver<Matrix, Vector, NoThreadManager>::doCheckLinearSystem()
             }
             else
             {
-                msg_warning() << "A linear system has been found, but not the expected type."
+                msg_warning() << "A linear system has been found, but not the expected type. "
                     << "Add a linear system with a compatible type to your scene to remove this warning.\n"
                     << "A component of type " << TLinearSystemType::GetClass()->className << " (template "
                     << TLinearSystemType::GetClass()->templateName << ") will be automatically added for you in Node "
@@ -179,17 +181,24 @@ void MatrixLinearSolver<Matrix, Vector, NoThreadManager>::doCheckLinearSystem()
             }
         }
     }
+
+    // this serves as an observer on the matrix to detect when the matrix is re-initialized or cleared
+    if (l_linearSystem)
+    {
+        d_factorizationInvalidation.setParent(&l_linearSystem->d_matrixChanged);
+    }
 }
 
 
-template<class Matrix, class Vector>
-template<class TLinearSystemType>
-void MatrixLinearSolver<Matrix,Vector>::createDefaultLinearSystem()
+template <class Matrix, class Vector>
+template <class TLinearSystemType>
+void MatrixLinearSolver<Matrix, Vector>::createDefaultLinearSystem()
 {
     if (auto system = sofa::core::objectmodel::New<TLinearSystemType>())
     {
-        this->addSlave(system);
-        system->setName( this->getContext()->getNameHelper().resolveName(system->getClassName(), {}));
+        this->getContext()->addObject(system);
+        system->setName(
+            this->getContext()->getNameHelper().resolveName(system->getClassName(), {}));
         system->f_printLog.setValue(this->f_printLog.getValue());
         l_linearSystem.set(system);
     }
@@ -218,124 +227,9 @@ MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::createInvertData()
 }
 
 template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::resetSystem()
-{
-    if (!this->frozen)
-    {
-        if (auto* systemMatrix = this->getSystemMatrix())
-        {
-            systemMatrix->clear();
-        }
-        linearSystem.needInvert = true;
-    }
-    if (auto* rhs = this->getSystemRHVector())
-    {
-        rhs->clear();
-    }
-    if (auto* solution = this->getSystemLHVector())
-    {
-        solution->clear();
-    }
-    linearSystem.solutionVecId = core::MultiVecDerivId::null();
-}
-
-template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::resizeSystem(Size n)
-{
-    if (this->getSystemRHVector())
-    {
-        this->getSystemRHVector()->resize(n);
-    }
-
-    if (this->getSystemLHVector())
-    {
-        this->getSystemLHVector()->resize(n);
-    }
-
-    linearSystem.needInvert = true;
-}
-
-template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
-{
-    this->currentMFactor = mparams->mFactor();
-    this->currentBFactor = sofa::core::mechanicalparams::bFactor(mparams);
-    this->currentKFactor = mparams->kFactor();
-
-    if (!this->frozen)
-    {
-        if (l_linearSystem)
-        {
-            l_linearSystem->buildSystemMatrix(mparams);
-            resizeSystem(l_linearSystem->getMatrixSize()[0]);
-        }
-    }
-
-}
-
-template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::rebuildSystem(SReal massFactor, SReal forceFactor)
-{
-    sofa::core::MechanicalParams mparams;
-    mparams.setMFactor(this->currentMFactor*massFactor);
-    mparams.setBFactor(this->currentBFactor*forceFactor);
-    mparams.setKFactor(this->currentKFactor*forceFactor);
-    if (!this->frozen)
-    {
-        simulation::common::MechanicalOperations mops(&mparams, this->getContext());
-        if (!linearSystem.systemMatrix) linearSystem.systemMatrix = createMatrix();
-        linearSystem.matrixAccessor.setGlobalMatrix(linearSystem.systemMatrix);
-        linearSystem.matrixAccessor.clear();
-        mops.getMatrixDimension(&(linearSystem.matrixAccessor));
-        linearSystem.matrixAccessor.setupMatrices();
-        resizeSystem(linearSystem.matrixAccessor.getGlobalDimension());
-        linearSystem.systemMatrix->clear();
-        mops.addMBK_ToMatrix(&(linearSystem.matrixAccessor), mparams.mFactor(), mparams.bFactor(), mparams.kFactor());
-        linearSystem.matrixAccessor.computeGlobalMatrix();
-    }
-
-    this->invertSystem();
-}
-
-template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::setSystemRHVector(core::MultiVecDerivId v)
-{
-    if (l_linearSystem)
-    {
-        l_linearSystem->setRHS(v);
-    }
-}
-
-template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::setSystemLHVector(core::MultiVecDerivId v)
-{
-    linearSystem.solutionVecId = v;
-    if (l_linearSystem)
-    {
-        l_linearSystem->setSystemSolution(v);
-    }
-}
-
-template <class Matrix, class Vector>
-Matrix* MatrixLinearSolver<Matrix, Vector, NoThreadManager>::getSystemMatrix()
-{
-    return l_linearSystem ? l_linearSystem->getSystemMatrix() : nullptr;
-}
-
-template <class Matrix, class Vector>
-linearalgebra::BaseMatrix* MatrixLinearSolver<Matrix, Vector, NoThreadManager>::getSystemBaseMatrix()
-{
-    if (!l_linearSystem)
-    {
-        return nullptr;
-    }
-    return l_linearSystem->getSystemMatrix();
-}
-
-template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::solveSystem()
 {
-    auto* systemMatrix = getSystemMatrix();
+    auto* systemMatrix = l_linearSystem->getSystemMatrix();
     if (!systemMatrix)
     {
         msg_error() << "System matrix is not setup properly";
@@ -343,29 +237,10 @@ void MatrixLinearSolver<Matrix,Vector>::solveSystem()
     }
 
     // Step 1: Invert the system, e.g. factorization of the matrix
-    if (linearSystem.needInvert)
-    {
-        this->invert(*systemMatrix);
-        linearSystem.needInvert = false;
-    }
+    this->invertIfInvalidated(*systemMatrix);
 
     // Step 2: Solve the system based on the system inversion
-    this->solve(*systemMatrix, *this->getSystemLHVector(), *this->getSystemRHVector());
-
-    // Step 3: Apply the solution
-    applySystemSolution();
-}
-
-template <class Matrix, class Vector>
-void MatrixLinearSolver<Matrix, Vector, NoThreadManager>::applySystemSolution()
-{
-    if (!linearSystem.solutionVecId.isNull())
-    {
-        if (l_linearSystem)
-        {
-            l_linearSystem->dispatchSystemSolution(linearSystem.solutionVecId);
-        }
-    }
+    this->solve(*systemMatrix, *l_linearSystem->getSolutionVector(), *this->l_linearSystem->getRHSVector());
 }
 
 template<class Matrix, class Vector>
@@ -392,17 +267,27 @@ void MatrixLinearSolver<Matrix,Vector>::deleteMatrix(Matrix* v)
     delete v;
 }
 
-template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::invertSystem()
+template <class Matrix, class Vector>
+void MatrixLinearSolver<Matrix, Vector>::invertSystem()
 {
-    if (linearSystem.needInvert && l_linearSystem)
+    if (l_linearSystem)
     {
-        this->invert(*l_linearSystem->getSystemMatrix());
-        linearSystem.needInvert = false;
+        this->invertIfInvalidated(*l_linearSystem->getSystemMatrix());
     }
 }
 
-template<class Matrix, class Vector>
+template <class Matrix, class Vector>
+void MatrixLinearSolver<Matrix, Vector, NoThreadManager>::invertIfInvalidated(Matrix& M)
+{
+    // since this Data is linked to the linear system, the linear system may have modified this value
+    if (d_factorizationInvalidation.getValue())
+    {
+        invert(M);
+        d_factorizationInvalidation.setValue(false);
+    }
+}
+
+template <class Matrix, class Vector>
 bool MatrixLinearSolver<Matrix, Vector>::addJMInvJtLocal(Matrix* M, ResMatrixType* result, const JMatrixType* J, const SReal fact)
 {
     if (!this->isComponentStateValid())
@@ -417,18 +302,14 @@ bool MatrixLinearSolver<Matrix, Vector>::addJMInvJtLocal(Matrix* M, ResMatrixTyp
 
     static_assert(std::is_same_v<JMatrixType, linearalgebra::SparseMatrix<Real>>, "This function supposes a SparseMatrix");
 
-    auto* systemMatrix = getSystemMatrix();
+    auto* systemMatrix = l_linearSystem->getSystemMatrix();
     if (!systemMatrix)
     {
         msg_error() << "System matrix is not setup properly";
         return false;
     }
 
-    if (linearSystem.needInvert)
-    {
-        this->invert(*systemMatrix);
-        linearSystem.needInvert = false;
-    }
+    this->invertIfInvalidated(*systemMatrix);
 
     simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler);
@@ -486,29 +367,28 @@ bool MatrixLinearSolver<Matrix, Vector>::singleThreadAddJMInvJtLocal(Matrix* M, 
     SOFA_UNUSED(M);
     static_assert(std::is_same_v<JMatrixType, linearalgebra::SparseMatrix<Real>>, "This function supposes a SparseMatrix");
 
-    auto* systemMatrix = getSystemMatrix();
+    auto* systemMatrix = l_linearSystem->getSystemMatrix();
     if (!systemMatrix)
     {
         msg_error() << "System matrix is not setup properly";
         return false;
     }
 
-    if (linearSystem.needInvert)
-    {
-        this->invert(*systemMatrix);
-        linearSystem.needInvert = false;
-    }
+    auto* rhsVector = l_linearSystem->getRHSVector();
+    auto* lhsVector = l_linearSystem->getSolutionVector();
+
+    this->invertIfInvalidated(*systemMatrix);
 
     for (typename JMatrixType::Index row = 0; row < J->rowSize(); ++row)
     {
         // STEP 1 : put each line of matrix Jt in the right hand term of the system
         for (typename JMatrixType::Index i = 0; i < J->colSize(); ++i)
         {
-            this->getSystemRHVector()->set(i, J->element(row, i)); // linearSystem.systemMatrix->rowSize()
+            rhsVector->set(i, J->element(row, i)); // linearSystem.systemMatrix->rowSize()
         }
 
         // STEP 2 : solve the system :
-        this->solve(*systemMatrix, *this->getSystemLHVector(), *this->getSystemRHVector());
+        this->solve(*systemMatrix, *lhsVector, *rhsVector);
 
         // STEP 3 : project the result using matrix J
         for (const auto& [row2, line] : *J)
@@ -516,7 +396,7 @@ bool MatrixLinearSolver<Matrix, Vector>::singleThreadAddJMInvJtLocal(Matrix* M, 
             Real acc = 0;
             for (const auto& [col2, val2] : line)
             {
-                acc += val2 * getSystemLHVector()->element(col2);
+                acc += val2 * lhsVector->element(col2);
             }
             acc *= fact;
             result->add(row2, row, acc);
@@ -529,12 +409,13 @@ bool MatrixLinearSolver<Matrix, Vector>::singleThreadAddJMInvJtLocal(Matrix* M, 
 template<class Matrix, class Vector>
 bool MatrixLinearSolver<Matrix,Vector>::addMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, SReal fact)
 {
+    auto* rhsVector = l_linearSystem->getRHSVector();
     for (typename JMatrixType::Index row = 0; row < J->rowSize(); ++row)
     {
         // STEP 1 : put each line of matrix Jt in the right hand term of the system
         for (typename JMatrixType::Index i = 0; i < J->colSize(); ++i)
         {
-            getSystemRHVector()->set(i, J->element(row, i)); // linearSystem.systemMatrix->rowSize()
+            rhsVector->set(i, J->element(row, i)); // linearSystem.systemMatrix->rowSize()
         }
 
         // STEP 2 : solve the system :
@@ -543,7 +424,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJtLocal(Matrix * /*M*/,ResMatrixT
         // STEP 3 : project the result using matrix J
         for (typename JMatrixType::Index i = 0; i < J->colSize(); ++i)
         {
-            result->add(row, i, getSystemRHVector()->element(i) * fact);
+            result->add(row, i, rhsVector->element(i) * fact);
         }
     }
 
@@ -560,7 +441,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJt(linearalgebra::BaseMatrix* re
 
     const JMatrixType * j_local = internalData.getLocalJ(J);
     ResMatrixType * res_local = internalData.getLocalRes(result);
-    const bool res = addJMInvJtLocal(getSystemMatrix(), res_local, j_local, fact);
+    const bool res = addJMInvJtLocal(l_linearSystem->getSystemMatrix(), res_local, j_local, fact);
     internalData.addLocalRes(result);
     return res;
 }
@@ -572,7 +453,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJt(linearalgebra::BaseMatrix* res
 
     const JMatrixType * j_local = internalData.getLocalJ(J);
     ResMatrixType * res_local = internalData.getLocalRes(result);
-    const bool res = addMInvJtLocal(getSystemMatrix(), res_local, j_local, fact);
+    const bool res = addMInvJtLocal(l_linearSystem->getSystemMatrix(), res_local, j_local, fact);
     internalData.addLocalRes(result);
     return res;
 }
@@ -582,7 +463,7 @@ bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::
 {
     JMatrixType * j_local = internalData.getLocalJ();
     j_local->clear();
-    j_local->resize(result->rowSize(), getSystemMatrix()->colSize());
+    j_local->resize(result->rowSize(), l_linearSystem->getSystemMatrix()->colSize());
 
     if (result->rowSize() == 0)
     {
@@ -610,12 +491,16 @@ bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::ConstraintParams* cparams, sofa::core::MultiVecDerivId dx, const linearalgebra::BaseVector* f)
 {
-    getSystemRHVector()->clear();
-    getSystemRHVector()->resize(getSystemMatrix()->colSize());
+    auto* systemMatrix = l_linearSystem->getSystemMatrix();
+    auto* lhsVector = l_linearSystem->getSolutionVector();
+    auto* rhsVector = l_linearSystem->getRHSVector();
+
+    rhsVector->clear();
+    rhsVector->resize(systemMatrix->colSize());
     /// rhs = J^t * f
-    internalData.projectForceInConstraintSpace(getSystemRHVector(), f);
+    internalData.projectForceInConstraintSpace(rhsVector, f);
     /// lhs = M^-1 * rhs
-    this->solve(*getSystemMatrix(), *getSystemLHVector(), *getSystemRHVector());
+    this->solve(*systemMatrix, *lhsVector, *rhsVector);
 
     l_linearSystem->dispatchSystemSolution(dx);
     l_linearSystem->dispatchSystemRHS(cparams->lambda());
@@ -624,17 +509,18 @@ void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::C
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* params,linearalgebra::BaseVector* f)
 {
-    getSystemRHVector()->clear();
-    getSystemRHVector()->resize(getSystemMatrix()->colSize());
+    auto* rhsVector = l_linearSystem->getRHSVector();
+    rhsVector->clear();
+    rhsVector->resize(l_linearSystem->getSystemBaseMatrix()->colSize());
 
     /// rhs = J^t * f
-    internalData.projectForceInConstraintSpace(getSystemRHVector(), f);
+    internalData.projectForceInConstraintSpace(rhsVector, f);
 
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::core::behavior::MultiVecDeriv force(&vop, core::vec_id::write_access::force );
 
     // force += rhs
-    executeVisitor( MechanicalMultiVectorPeqBaseVectorVisitor(core::execparams::defaultInstance(), force, getSystemRHVector(), &(linearSystem.matrixAccessor)) );
+    executeVisitor( MechanicalMultiVectorPeqBaseVectorVisitor(core::execparams::defaultInstance(), force, rhsVector, nullptr) );
 }
 
 

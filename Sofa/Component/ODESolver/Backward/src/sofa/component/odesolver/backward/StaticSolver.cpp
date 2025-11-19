@@ -150,9 +150,10 @@ struct StaticResidualFunction : newton_raphson::BaseNonLinearFunction
     {
         SCOPED_TIMER("MBKSolve");
 
-        linearSolver->setSystemLHVector(dx);
-        linearSolver->setSystemRHVector(force);
+        linearSolver->getLinearSystem()->setSystemSolution(dx);
+        linearSolver->getLinearSystem()->setRHS(force);
         linearSolver->solveSystem();
+        linearSolver->getLinearSystem()->dispatchSystemSolution(dx);
     }
 
     SReal squaredNormDx() override
