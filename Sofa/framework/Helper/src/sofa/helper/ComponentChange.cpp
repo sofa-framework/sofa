@@ -765,7 +765,8 @@ std::map< std::string, Renamed, std::less<> > renamedComponents = {
     {"StiffSpringForceField", Renamed("v24.06","v25.06","SpringForceField")},
     {"ParallelStiffSpringForceField", Renamed("v24.06","v25.06","ParallelSpringForceField")},
     {"ShewchukPCGLinearSolver", Renamed("v24.12","v25.12","PCGLinearSolver")},
-    {"OglCylinderModel", Renamed("v24.12", "v25.06", "CylinderVisualModel")}
+    {"OglCylinderModel", Renamed("v24.12", "v25.06", "CylinderVisualModel")},
+    {"TriangleOctreeModel", Renamed("v25.12", "v26.06", "TriangleOctreeCollisionModel") }
 };
 
 
