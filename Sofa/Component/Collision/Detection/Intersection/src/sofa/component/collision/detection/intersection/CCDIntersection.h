@@ -118,5 +118,7 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API CCDIntersection
 
 
     Data<sofa::helper::OptionsGroup> d_continuousCollisionType;
+    Data<SReal> d_tolerance;
+    Data<long> d_maxIterations;
 };
 } // namespace sofa::component::collision::detection::intersection

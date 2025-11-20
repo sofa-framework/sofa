@@ -62,6 +62,8 @@ CCDIntersection::CCDIntersection()
 : BaseProximityIntersection()
 , d_continuousCollisionType(initData(&d_continuousCollisionType, helper::OptionsGroup({"None", "Inertia", "FreeMotion"}).setSelectedItem(0), "continuousCollisionType",
     "Data used for continuous collision detection taken into {'None','Inertia','FreeMotion'}. If 'None' then no CCD is used, if 'Inertia' then only inertia will be used to compute the collision detection and if 'FreeMotion' then the free motion will be used. Note that if 'FreeMotion' is selected, you cannot use the option 'parallelCollisionDetectionAndFreeMotion' in the FreeMotionAnimationLoop"))
+, d_tolerance(initData(&d_tolerance,1e-10,"tolerance","tolerance used by the tight inclusion CCD algorithm"))
+, d_maxIterations(initData(&d_maxIterations,(long) 1000,"maxIterations","maxIterations used by the tight inclusion CCD algorithm"))
 {
 
 }
@@ -124,6 +126,8 @@ int CCDIntersection::computeIntersection(Cube&, Cube&, OutputVector* /*contacts*
 
 bool CCDIntersection::testIntersection(Line& e1, Line& e2, const core::collision::Intersection* currentIntersection)
 {
+    std::cout<<"testIntersection Line Line"<<std::endl;
+
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
     {
         return false;
@@ -144,21 +148,20 @@ bool CCDIntersection::testIntersection(Line& e1, Line& e2, const core::collision
     const Eigen::Vector3d err {-1.0, -1.0, -1.0};
     const double maxSeparation = currentIntersection->getContactDistance() + e1.getContactDistance() + e2.getContactDistance(); // 0.00001
     SReal toi = 2.0;
-    const SReal tolerance = 1e-10;
     const SReal tmax = 1.0;
-    const SReal maxIterations = 1e7;
     SReal outputTolerance = 0.0;
 
 
     return ticcd::edgeEdgeCCD(
         Line1ABegin, Line2ABegin, Line1BBegin, Line2BBegin,
         Line1AEnd,   Line2AEnd,   Line1BEnd,   Line2BEnd,
-        err,maxSeparation, toi,tolerance, tmax, maxIterations, outputTolerance);
+        err,maxSeparation, toi,d_tolerance.getValue(), tmax, d_maxIterations.getValue(), outputTolerance);
 
 }
 
 int CCDIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
+    std::cout<<"computeIntersection Line Line"<<std::endl;
 
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
     {
@@ -181,16 +184,14 @@ int CCDIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* conta
     const Eigen::Vector3d err {-1.0, -1.0, -1.0};
     const auto maxSeparation = currentIntersection->getContactDistance() + e1.getContactDistance() + e2.getContactDistance(); // 0.00001
     SReal toi = 2.0;
-    const SReal tolerance = 1e-10;
     const SReal tmax = 1.0;
-    const SReal maxIterations = 1e7;
     SReal outputTolerance = 0.0;
 
 
     const auto result =  ticcd::edgeEdgeCCD(
         Line1ABegin, Line2ABegin, Line1BBegin, Line2BBegin,
         Line1AEnd,   Line2AEnd,   Line1BEnd,   Line2BEnd,
-        err,maxSeparation, toi,tolerance, tmax, maxIterations, outputTolerance);
+        err,maxSeparation, toi,d_tolerance.getValue(), tmax, d_maxIterations.getValue(), outputTolerance);
 
 
     const Vec3 Line1AToi = (1-toi) * e1.p1() + e1.p1Free() * toi;
@@ -217,6 +218,8 @@ int CCDIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* conta
 
 bool CCDIntersection::testIntersection(Triangle& triangle, Point& point, const core::collision::Intersection* currentIntersection)
 {
+    std::cout<<"testIntersection Triangle Point"<<std::endl;
+
     if(!triangle.isActive(point.getCollisionModel()) || !point.isActive(triangle.getCollisionModel()))
     {
         return false;
@@ -237,16 +240,14 @@ bool CCDIntersection::testIntersection(Triangle& triangle, Point& point, const c
     const Eigen::Vector3d err {-1.0, -1.0, -1.0};
     const double maxSeparation = currentIntersection->getContactDistance() + triangle.getContactDistance() + point.getContactDistance(); // 0.00001
     SReal toi = 2.0;
-    const SReal tolerance = 1e-10;
     const SReal tmax = 1.0;
-    const SReal maxIterations = 1e7;
     SReal outputTolerance = 0.0;
 
 
     return ticcd::vertexFaceCCD(
         PointBegin, TriangleABegin, TriangleBBegin, TriangleCBegin,
         PointEnd,   TriangleAEnd,   TriangleBEnd,   TriangleCEnd,
-        err,maxSeparation, toi,tolerance, tmax, maxIterations, outputTolerance);
+        err,maxSeparation, toi,d_tolerance.getValue(), tmax, d_maxIterations.getValue(), outputTolerance);
 
 }
 
@@ -259,7 +260,6 @@ int CCDIntersection::computeIntersection(Triangle& triangle, Point& point, Outpu
             <<" not activated" ;
         return 0;
     }
-
     const Eigen::Map<Eigen::Vector3<SReal>> TriangleABegin(const_cast<double*>(triangle.p1().elems.data()));
     const Eigen::Map<Eigen::Vector3<SReal>> TriangleAEnd(const_cast<double*>(triangle.p1Free().elems.data()));
     const Eigen::Map<Eigen::Vector3<SReal>> TriangleBBegin(const_cast<double*>(triangle.p2().elems.data()));
@@ -270,20 +270,16 @@ int CCDIntersection::computeIntersection(Triangle& triangle, Point& point, Outpu
     const Eigen::Map<Eigen::Vector3<SReal>> PointBegin(const_cast<double*>(point.p().elems.data()));
     const Eigen::Map<Eigen::Vector3<SReal>> PointEnd(const_cast<double*>(point.pFree().elems.data()));
 
-
     const Eigen::Vector3d err {-1.0, -1.0, -1.0};
     const double maxSeparation = currentIntersection->getContactDistance() + triangle.getContactDistance() + point.getContactDistance(); // 0.00001
-    SReal toi = 2.0;
-    const SReal tolerance = 1e-10;
+    SReal toi = std::numeric_limits<SReal>::infinity();
     const SReal tmax = 1.0;
-    const SReal maxIterations = 1e7;
     SReal outputTolerance = 0.0;
-
 
     const bool result = ticcd::vertexFaceCCD(
         PointBegin, TriangleABegin, TriangleBBegin, TriangleCBegin,
         PointEnd,   TriangleAEnd,   TriangleBEnd,   TriangleCEnd,
-        err,maxSeparation, toi,tolerance, tmax, maxIterations, outputTolerance);
+        err,maxSeparation, toi,d_tolerance.getValue(), tmax, d_maxIterations.getValue(), outputTolerance);
 
     if (!result)
         return 0;
@@ -297,16 +293,14 @@ int CCDIntersection::computeIntersection(Triangle& triangle, Point& point, Outpu
     const Vec3 TriangleNormalBaryToi = (TriangleBToi - TriangleAToi).cross(TriangleCToi - TriangleAToi).normalized();
     const Vec3 ProjOnTriangleToi = TriangleBaryToi + (PointToi - TriangleBaryToi) - TriangleNormalBaryToi * dot(PointToi - TriangleBaryToi,TriangleNormalBaryToi) ;
 
-
     type::Vec3 baryCoords = sofa::geometry::Triangle::getBarycentricCoordinates(ProjOnTriangleToi, TriangleAToi, TriangleBToi, TriangleCToi);
-
 
     contacts->resize(contacts->size() +1 );
     auto * detection = &contacts->back();
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(triangle, point);
     detection->id = (triangle.getCollisionModel()->getSize() > point.getCollisionModel()->getSize()) ? triangle.getIndex() : point.getIndex();
-    detection->point[0] = TriangleAToi * baryCoords[0] + TriangleBToi * baryCoords[1] + TriangleCToi * baryCoords[2] ;
-    detection->point[1] = PointToi;
+    detection->point[0] = triangle.p1() * baryCoords[0] + triangle.p2() * baryCoords[1] + triangle.p3() * baryCoords[2] ;
+    detection->point[1] = point.p();
     detection->normal = TriangleNormalBaryToi;
     detection->value = dot(detection->point[1] - detection->point[0] , detection->normal) ;
     detection->value -= maxSeparation;
