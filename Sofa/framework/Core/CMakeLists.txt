@@ -195,6 +195,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/visual/BaseVisualStyle.h
     ${SRC_ROOT}/visual/Data[DisplayFlags].h
     ${SRC_ROOT}/visual/DisplayFlags.h
+    ${SRC_ROOT}/visual/DrawMesh.h
     ${SRC_ROOT}/visual/FlagTreeItem.h
     ${SRC_ROOT}/visual/Shader.h
     ${SRC_ROOT}/visual/Tristate.h
@@ -327,6 +328,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/TopologySubsetIndices.cpp
     ${SRC_ROOT}/visual/Data[DisplayFlags].cpp
     ${SRC_ROOT}/visual/DisplayFlags.cpp
+    ${SRC_ROOT}/visual/DrawMesh.cpp
     ${SRC_ROOT}/visual/FlagTreeItem.cpp
     ${SRC_ROOT}/visual/Shader.cpp
     ${SRC_ROOT}/visual/VisualLoop.cpp
