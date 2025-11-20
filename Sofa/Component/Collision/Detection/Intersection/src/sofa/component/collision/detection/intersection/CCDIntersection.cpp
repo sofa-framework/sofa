@@ -59,8 +59,11 @@ void registerCCDIntersection(sofa::core::ObjectFactory* factory)
 }
 
 CCDIntersection::CCDIntersection()
-    : BaseProximityIntersection()
+: BaseProximityIntersection()
+, d_continuousCollisionType(initData(&d_continuousCollisionType, helper::OptionsGroup({"None", "Inertia", "FreeMotion"}).setSelectedItem(0), "continuousCollisionType",
+    "Data used for continuous collision detection taken into {'None','Inertia','FreeMotion'}. If 'None' then no CCD is used, if 'Inertia' then only inertia will be used to compute the collision detection and if 'FreeMotion' then the free motion will be used. Note that if 'FreeMotion' is selected, you cannot use the option 'parallelCollisionDetectionAndFreeMotion' in the FreeMotionAnimationLoop"))
 {
+
 }
 
 void CCDIntersection::init()
@@ -93,6 +96,21 @@ void CCDIntersection::init()
 
     BaseProximityIntersection::init();
 }
+
+bool CCDIntersection::useContinuous() const
+{
+    return d_continuousCollisionType.getValue().getSelectedId();
+}
+
+core::CollisionModel::ContinuousIntersectionTypeFlag CCDIntersection::continuousIntersectionType() const
+{
+    if (d_continuousCollisionType.getValue().getSelectedId()<= 3 )
+        return static_cast<core::CollisionModel::ContinuousIntersectionTypeFlag>(d_continuousCollisionType.getValue().getSelectedId());
+    else
+        return core::CollisionModel::ContinuousIntersectionTypeFlag::None;
+}
+
+
 
 bool CCDIntersection::testIntersection(Cube &cube1, Cube &cube2, const core::collision::Intersection* currentIntersection)
 {
@@ -183,15 +201,16 @@ int CCDIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* conta
     sofa::geometry::Edge::closestPointWithEdge(Line1AToi, Line1BToi, Line2AToi, Line2BToi, baryCoords);
 
     contacts->resize(contacts->size() +1 );
-    auto * detection = &contacts->back();
-     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
-     detection->point[0] = (1-baryCoords[0]) * Line1AToi + Line1BToi;
-     detection->point[1] = (1-baryCoords[1]) * Line2AToi + Line2BToi;
-     detection->normal = detection->point[1] - detection->point[0];
-     detection->value = detection->normal.norm();
-     detection->normal /= detection->value;
-     detection->value -= maxSeparation;
+    sofa::core::collision::DetectionOutput detection ;
+    detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection.id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
+    detection.point[0] = (1-baryCoords[0]) * Line1AToi + Line1BToi;
+    detection.point[1] = (1-baryCoords[1]) * Line2AToi + Line2BToi;
+    detection.normal = detection.point[1] - detection.point[0];
+    detection.value = detection.normal.norm();
+    detection.normal /= detection.value;
+    detection.value -= maxSeparation;
+    contacts->push_back(detection);
 
      return 1;
 }

@@ -495,7 +495,7 @@ void LineCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 }
 
 template<class DataTypes>
-void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
+void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag, int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     updateFromTopology();
@@ -514,8 +514,8 @@ void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int 
             TLine<DataTypes> t(this,i);
             const type::Vec3& pt1 = t.p1();
             const type::Vec3& pt2 = t.p2();
-            const type::Vec3 pt1v = pt1 + t.v1()*dt;
-            const type::Vec3 pt2v = pt2 + t.v2()*dt;
+            const type::Vec3 pt1v = pt1 + (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia ? t.v1()*dt : t.p1Free());
+            const type::Vec3 pt2v = pt2 + (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia ? t.v2()*dt : t.p2Free());
 
             for (int c = 0; c < 3; c++)
             {

@@ -68,6 +68,10 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API CCDIntersection
    public:
     void init() override;
 
+    virtual bool useContinuous() const override;
+    virtual core::CollisionModel::ContinuousIntersectionTypeFlag continuousIntersectionType() const;
+
+
     bool testIntersection(collision::geometry::Cube&, collision::geometry::Cube&,
                           const core::collision::Intersection* currentIntersection) override;
 
@@ -111,5 +115,8 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API CCDIntersection
     // const core::collision::Intersection* currentIntersection); int
     // computeIntersection(collision::geometry::Ray&, collision::geometry::Triangle&, OutputVector*,
     // const core::collision::Intersection* currentIntersection);
+
+
+    Data<sofa::helper::OptionsGroup> d_continuousCollisionType;
 };
 } // namespace sofa::component::collision::detection::intersection
