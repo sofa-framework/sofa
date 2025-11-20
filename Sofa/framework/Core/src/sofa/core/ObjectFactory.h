@@ -59,7 +59,7 @@ public:
      * Abstract interface used to create instances (object) of a given type
      * See the derived class @ref ObjectCreator.
      */
-    class BaseObjectCreator
+    class SOFA_CORE_API BaseObjectCreator
     {
     public:
         using SPtr = std::shared_ptr<BaseObjectCreator>;
