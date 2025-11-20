@@ -64,15 +64,12 @@ void VisualMesh::drawTriangles(helper::visual::DrawTool* drawTool)
 
     const auto& elements = l_topology->getTriangles();
 
-    static constexpr std::size_t NumberVerticesInTriangle = 3;
-    m_renderedPoints.resize(elements.size() * NumberVerticesInTriangle);
-    m_renderedColors.resize(elements.size() * NumberVerticesInTriangle);
+    m_renderedPoints.resize(elements.size() * sofa::geometry::Triangle::NumberOfNodes);
 
     const auto elementSpace = d_elementSpace.getValue();
     const auto& positionAccessor = sofa::helper::getReadAccessor(d_position);
 
     auto pointsIt = m_renderedPoints.begin();
-    auto colorIt = m_renderedColors.begin();
 
     for (sofa::Size i = 0; i < elements.size(); ++i)
     {
@@ -80,16 +77,44 @@ void VisualMesh::drawTriangles(helper::visual::DrawTool* drawTool)
 
         const sofa::type::Vec3 center = elementCenter(positionAccessor.ref(), element);
 
+        std::array facetsInElement{i};
+        setPoints(facetsInElement, elements, positionAccessor.ref(), center, elementSpace, pointsIt);
+    }
+
+    while (m_renderedColors.size() < elements.size() * sofa::geometry::Triangle::NumberOfNodes)
+    {
         static constexpr std::array colors{
-            sofa::type::RGBAColor::green(),
-            sofa::type::RGBAColor(0, 0.5, 0.5, 1),
-            sofa::type::RGBAColor::blue(),
+            type::makeHomogeneousArray<sofa::type::RGBAColor, sofa::geometry::Triangle::NumberOfNodes>( sofa::type::RGBAColor::green()),
+            type::makeHomogeneousArray<sofa::type::RGBAColor, sofa::geometry::Triangle::NumberOfNodes>(sofa::type::RGBAColor::teal()),
+            type::makeHomogeneousArray<sofa::type::RGBAColor, sofa::geometry::Triangle::NumberOfNodes>(sofa::type::RGBAColor::blue()),
         };
 
-        std::array facetsInElement{i};
-        setPointsAndColors(facetsInElement, elements, positionAccessor.ref(), center, elementSpace, pointsIt, colorIt, {colors[i%NumberVerticesInTriangle]});
+        const auto elementId = m_renderedColors.size() / sofa::geometry::Triangle::NumberOfNodes;
+        const auto triangleColor = colors[elementId % colors.size()];
+
+        m_renderedColors.insert(m_renderedColors.end(), triangleColor.begin(), triangleColor.end());
     }
+
     drawTool->drawTriangles(m_renderedPoints, m_renderedColors);
+}
+
+namespace
+{
+template<std::size_t NumberFacetsInElement, std::size_t NumberVerticesInFacet>
+std::array<sofa::type::RGBAColor, NumberFacetsInElement * NumberVerticesInFacet>
+constexpr generateElementColors(const std::array<sofa::type::RGBAColor, NumberFacetsInElement>& facetColors)
+{
+    std::array<sofa::type::RGBAColor, NumberFacetsInElement * NumberVerticesInFacet> verticeColors;
+    auto verticeColorsIt = verticeColors.begin();
+    for (const auto& c : facetColors)
+    {
+        for (std::size_t i = 0; i < NumberVerticesInFacet; ++i)
+        {
+            *verticeColorsIt++ = c;
+        }
+    }
+    return verticeColors;
+}
 }
 
 void VisualMesh::drawTetrahedra(helper::visual::DrawTool* drawTool)
@@ -101,15 +126,12 @@ void VisualMesh::drawTetrahedra(helper::visual::DrawTool* drawTool)
     const auto& facets = l_topology->getTriangles();
 
     static constexpr std::size_t NumberTrianglesInTetrahedron = 4;
-    static constexpr std::size_t NumberVerticesInTriangle = 3;
-    m_renderedPoints.resize(elements.size() * NumberTrianglesInTetrahedron * NumberVerticesInTriangle);
-    m_renderedColors.resize(elements.size() * NumberTrianglesInTetrahedron * NumberVerticesInTriangle);
+    m_renderedPoints.resize(elements.size() * NumberTrianglesInTetrahedron * sofa::geometry::Triangle::NumberOfNodes);
 
     const auto elementSpace = d_elementSpace.getValue();
     const auto& positionAccessor = sofa::helper::getReadAccessor(d_position);
 
     auto pointsIt = m_renderedPoints.begin();
-    auto colorIt = m_renderedColors.begin();
 
     for (sofa::Size i = 0; i < elements.size(); ++i)
     {
@@ -119,15 +141,20 @@ void VisualMesh::drawTetrahedra(helper::visual::DrawTool* drawTool)
 
         const sofa::type::Vec3 center = elementCenter(positionAccessor.ref(), element);
 
-        static constexpr std::array colors{
+        setPoints(facetsInElement, facets, positionAccessor.ref(), center, elementSpace, pointsIt);
+    }
+
+    while (m_renderedColors.size() < elements.size() * NumberTrianglesInTetrahedron * sofa::geometry::Triangle::NumberOfNodes)
+    {
+        static constexpr std::array colors = generateElementColors<NumberTrianglesInTetrahedron, sofa::geometry::Triangle::NumberOfNodes>({
             sofa::type::RGBAColor::blue(),
             sofa::type::RGBAColor::black(),
-            sofa::type::RGBAColor(0.0f, 0.5f, 1.0f, 1.0f),
-            sofa::type::RGBAColor::cyan(),
-        };
+            sofa::type::RGBAColor::azure(),
+            sofa::type::RGBAColor::cyan()});
 
-        setPointsAndColors(facetsInElement, facets, positionAccessor.ref(), center, elementSpace, pointsIt, colorIt, colors);
+        m_renderedColors.insert(m_renderedColors.end(), colors.begin(), colors.end());
     }
+
     drawTool->drawTriangles(m_renderedPoints, m_renderedColors);
 }
 
@@ -140,15 +167,12 @@ void VisualMesh::drawHexahedra(helper::visual::DrawTool* drawTool)
     const auto& facets = l_topology->getQuads();
 
     static constexpr std::size_t NumberQuadsInHexahedron = 6;
-    static constexpr std::size_t NumberVerticesInQuad = 4;
-    m_renderedPoints.resize(elements.size() * NumberQuadsInHexahedron * NumberVerticesInQuad);
-    m_renderedColors.resize(elements.size() * NumberQuadsInHexahedron * NumberVerticesInQuad);
+    m_renderedPoints.resize(elements.size() * NumberQuadsInHexahedron * sofa::geometry::Quad::NumberOfNodes);
 
     const auto elementSpace = d_elementSpace.getValue();
     const auto& positionAccessor = sofa::helper::getReadAccessor(d_position);
 
     auto pointsIt = m_renderedPoints.begin();
-    auto colorIt = m_renderedColors.begin();
 
     for (sofa::Size i = 0; i < elements.size(); ++i)
     {
@@ -158,17 +182,22 @@ void VisualMesh::drawHexahedra(helper::visual::DrawTool* drawTool)
 
         const sofa::type::Vec3 center = elementCenter(positionAccessor.ref(), element);
 
-        static constexpr std::array colors {
+        setPoints(facetsInElement, facets, positionAccessor.ref(), center, elementSpace, pointsIt);
+    }
+
+    while (m_renderedColors.size() < elements.size() * NumberQuadsInHexahedron * sofa::geometry::Quad::NumberOfNodes)
+    {
+        static constexpr std::array colors = generateElementColors<NumberQuadsInHexahedron, sofa::geometry::Quad::NumberOfNodes>({
             sofa::type::RGBAColor(0.7f,0.7f,0.1f,1.f),
             sofa::type::RGBAColor(0.7f,0.0f,0.0f,1.f),
             sofa::type::RGBAColor(0.0f,0.7f,0.0f,1.f),
             sofa::type::RGBAColor(0.0f,0.0f,0.7f,1.f),
             sofa::type::RGBAColor(0.1f,0.7f,0.7f,1.f),
-            sofa::type::RGBAColor(0.7f,0.1f,0.7f,1.f)
-        };
+            sofa::type::RGBAColor(0.7f,0.1f,0.7f,1.f)});
 
-        setPointsAndColors(facetsInElement, facets, positionAccessor.ref(), center, elementSpace, pointsIt, colorIt, colors);
+        m_renderedColors.insert(m_renderedColors.end(), colors.begin(), colors.end());
     }
+
     drawTool->drawQuads(m_renderedPoints, m_renderedColors);
 }
 
