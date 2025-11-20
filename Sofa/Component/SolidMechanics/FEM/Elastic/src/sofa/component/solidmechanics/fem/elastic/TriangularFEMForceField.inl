@@ -609,8 +609,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
 {
     SOFA_UNUSED(elementIndex);
 
-    Eigen::Matrix<Real, -1, -1> e;
-    e.resize(2, 2);
+    Eigen::Matrix<Real, 2, 2> e;
 
     e(0,0) = triangleInfo.strain[0];
     e(0,1) = triangleInfo.strain[2];
@@ -618,7 +617,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
     e(1,1) = triangleInfo.strain[1];
     
     //compute eigenvalues and eigenvectors
-    Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
+    Eigen::JacobiSVD<Eigen::Matrix<Real, 2, 2>> svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
 
     const auto& S = svd.singularValues();
     const auto& V = svd.matrixV();
@@ -640,8 +639,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
 {
     SOFA_UNUSED(elementIndex);
 
-    Eigen::Matrix<Real, -1, -1> e;
-    e.resize(2, 2);
+    Eigen::Matrix<Real, 2, 2> e;
 
     //voigt notation to symmetric matrix
     e(0,0) = triangleInfo.stress[0];
@@ -650,7 +648,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
     e(1,1) = triangleInfo.stress[1];
 
     //compute eigenvalues and eigenvectors
-    Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
+    Eigen::JacobiSVD<Eigen::Matrix<Real, 2, 2>> svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
 
     const auto& S = svd.singularValues();
     const auto& V = svd.matrixV();

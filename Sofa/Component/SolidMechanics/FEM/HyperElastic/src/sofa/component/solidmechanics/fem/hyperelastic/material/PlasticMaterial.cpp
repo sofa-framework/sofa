@@ -89,8 +89,7 @@ void PlasticMaterial::computeDStress(Vec3& dStress, Vec3& dStrain)
 
 SReal PlasticMaterial::computeVonMisesStrain(Vec3 &strain)
 {
-	Eigen::Matrix<SReal, -1, -1> e;
-	e.resize(2, 2);
+	Eigen::Matrix<SReal, 2, 2> e;
 
 	e(0,0) = strain[0];
 	e(0,1) = strain[2];
@@ -98,7 +97,7 @@ SReal PlasticMaterial::computeVonMisesStrain(Vec3 &strain)
 	e(1,1) = strain[1];
 
 	//compute eigenvalues and eigenvectors
-	const Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
+	const Eigen::JacobiSVD<Eigen::Matrix<SReal, 2, 2>> svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
 
 	const auto& S = svd.singularValues();
 
