@@ -341,7 +341,7 @@ void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseObject * object)
     redraw();
 }
 
-void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
+void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams) const
 {
     if (!m_enableSelectionDraw)
         return;
