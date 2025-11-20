@@ -280,11 +280,32 @@ set(SOURCE_FILES
     ${SRC_ROOT}/task/WorkerThread.cpp
 )
 
+set(DEPRECATED_DIR "compat/sofa/simulation")
+set(DEPRECATED_HEADER_FILES
+    ${DEPRECATED_DIR}/CpuTask.h
+    ${DEPRECATED_DIR}/CpuTaskStatus.h
+    ${DEPRECATED_DIR}/DefaultTaskScheduler.h
+    ${DEPRECATED_DIR}/InitTasks.h
+    ${DEPRECATED_DIR}/MainTaskSchedulerFactory.h
+    ${DEPRECATED_DIR}/MainTaskSchedulerRegistry.h
+    ${DEPRECATED_DIR}/ParallelForEach.h
+    ${DEPRECATED_DIR}/Task.h
+    ${DEPRECATED_DIR}/TaskScheduler.h
+    ${DEPRECATED_DIR}/TaskSchedulerFactory.h
+    ${DEPRECATED_DIR}/TaskSchedulerRegistry.h
+    ${DEPRECATED_DIR}/WorkerThread.h
+)
+
 sofa_find_package(Sofa.Core REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core)
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>
+    $<INSTALL_INTERFACE:include/${PROJECT_NAME}_compat>
+)
 
 # is this a compiler/linker version specific problem?
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
@@ -302,6 +323,8 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
+
+install(DIRECTORY compat/ DESTINATION include/${PROJECT_NAME}_compat COMPONENT headers)
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
