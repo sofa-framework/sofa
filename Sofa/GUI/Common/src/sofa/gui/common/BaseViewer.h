@@ -121,7 +121,7 @@ public:
     /// the rendering pass is done here (have to be called in a loop)
     virtual void drawScene(void) = 0;
 
-    void drawSelection(sofa::core::visual::VisualParams* vparams);
+    void drawSelection(sofa::core::visual::VisualParams* vparams) const;
 
     void setCurrentSelection(const std::set<core::objectmodel::Base::SPtr> &selection);
     const std::set<sofa::core::objectmodel::Base::SPtr>& getCurrentSelection() const;
