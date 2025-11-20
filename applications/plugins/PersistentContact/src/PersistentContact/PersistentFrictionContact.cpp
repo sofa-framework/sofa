@@ -107,8 +107,6 @@ int PersistentFrictionContact<geometry::LineCollisionModel<sofa::defaulttype::Ve
 template<>
 int PersistentFrictionContact<geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>>::mapThePersistentContact(type::Vec3 & baryCoord, int index, type::Vec3 &pos, bool case1)
 {
-    std::vector<std::pair<int, double> > barycentricData;
-
     if (case1)
     {
         geometry::Triangle t(this->model1, index);
