@@ -66,23 +66,19 @@ void CubeCollisionModel::resize(sofa::Size size)
     }
 }
 
-void CubeCollisionModel::setParentOf(sofa::Index childIndex, const Vec3& min, const Vec3& max, const Vec3& continuousMin, const Vec3& continuousMax)
+void CubeCollisionModel::setParentOf(sofa::Index childIndex, const Vec3& min, const Vec3& max)
 {
     const sofa::Index i = parentOf[childIndex];
     elems[i].minBBox = min;
     elems[i].maxBBox = max;
-    elems[i].continuousMinBBox = continuousMin;
-    elems[i].continuousMaxBBox = continuousMax;
     elems[i].coneAngle = 2*M_PI;
 }
 
-void CubeCollisionModel::setParentOf(sofa::Index childIndex, const Vec3& min, const Vec3& max, const Vec3& continuousMin, const Vec3& continuousMax, const Vec3& normal, const SReal angle)
+void CubeCollisionModel::setParentOf(sofa::Index childIndex, const Vec3& min, const Vec3& max, const Vec3& normal, const SReal angle)
 {
     const sofa::Index i = parentOf[childIndex];
     elems[i].minBBox = min;
     elems[i].maxBBox = max;
-    elems[i].continuousMinBBox = continuousMin;
-    elems[i].continuousMaxBBox = continuousMax;
 
     elems[i].coneAxis = normal;
     elems[i].coneAngle = angle;
@@ -97,12 +93,10 @@ void CubeCollisionModel::setLeafCube(sofa::Index cubeIndex, sofa::Index childInd
     //elems[cubeIndex].maxBBox = max;
 }
 
-void CubeCollisionModel::setLeafCube(sofa::Index cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const Vec3& min, const Vec3& max, const Vec3& continuousMin, const Vec3& continuousMax)
+void CubeCollisionModel::setLeafCube(sofa::Index cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const Vec3& min, const Vec3& max)
 {
     elems[cubeIndex].minBBox = min;
     elems[cubeIndex].maxBBox = max;
-    elems[cubeIndex].continuousMinBBox = continuousMin;
-    elems[cubeIndex].continuousMaxBBox = continuousMax;
     elems[cubeIndex].children = children;
 }
 
@@ -129,8 +123,6 @@ void CubeCollisionModel::updateCube(sofa::Index index)
         Cube c = subcells.first;
         Vec3 minBBox = c.minVect();
         Vec3 maxBBox = c.maxVect();
-        Vec3 continuousMinBBox = c.continuousMinVect();
-        Vec3 continuousMaxBBox = c.continuousMaxVect();
 
         elems[index].coneAxis = c.getConeAxis();
         elems[index].coneAngle = c.getConeAngle();
@@ -140,8 +132,6 @@ void CubeCollisionModel::updateCube(sofa::Index index)
         {
             const Vec3& cmin = c.minVect();
             const Vec3& cmax = c.maxVect();
-            const Vec3& ccontinuousMin = c.continuousMinVect();
-            const Vec3& ccontinuousMax = c.continuousMaxVect();
 
             const SReal alpha = std::max<SReal>(elems[index].coneAngle, c.getConeAngle());
             if(alpha <= M_PI/2)
@@ -157,15 +147,11 @@ void CubeCollisionModel::updateCube(sofa::Index index)
             {
                 if (cmax[j] > maxBBox[j]) maxBBox[j] = cmax[j];
                 if (cmin[j] < minBBox[j]) minBBox[j] = cmin[j];
-                if (ccontinuousMax[j] > continuousMaxBBox[j]) continuousMaxBBox[j] = ccontinuousMax[j];
-                if (ccontinuousMin[j] < continuousMinBBox[j]) continuousMinBBox[j] = ccontinuousMin[j];
             }
             ++c;
         }
         elems[index].minBBox = minBBox;
         elems[index].maxBBox = maxBBox;
-        elems[index].continuousMinBBox = continuousMinBBox;
-        elems[index].continuousMaxBBox = continuousMaxBBox;
     }
 }
 

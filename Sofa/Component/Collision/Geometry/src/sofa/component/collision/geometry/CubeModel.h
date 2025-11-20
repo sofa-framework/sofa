@@ -41,10 +41,6 @@ public:
 
     const sofa::type::Vec3& maxVect() const;
 
-    const sofa::type::Vec3& continuousMinVect() const;
-
-    const sofa::type::Vec3& continuousMaxVect() const;
-
     const std::pair<Cube,Cube>& subcells() const;
 
     SReal getConeAngle() const;
@@ -60,7 +56,6 @@ public:
     struct CubeData
     {
         sofa::type::Vec3 minBBox, maxBBox;
-        sofa::type::Vec3 continuousMinBBox, continuousMaxBBox;
         std::pair<Cube,Cube> subcells;
         std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children; ///< Note that children is only meaningful if subcells in empty
 
@@ -72,23 +67,13 @@ public:
     class CubeSortPredicate
     {
         int axis;
-        bool useContinuous;
     public:
-        CubeSortPredicate(int axis, bool useContinuous = false) : axis(axis), useContinuous(useContinuous) {}
+        CubeSortPredicate(int axis) : axis(axis) {}
         bool operator()(const CubeData& c1,const CubeData& c2) const
         {
-            if (useContinuous)
-            {
-                const SReal v1 = std::min(c1.minBBox[axis], c1.continuousMinBBox[axis])+std::max(c1.maxBBox[axis], c1.continuousMaxBBox[axis]);
-                const SReal v2 = std::min(c2.minBBox[axis], c2.continuousMinBBox[axis])+std::max(c2.maxBBox[axis], c2.continuousMaxBBox[axis]);
-                return v1 < v2;
-            }
-            else
-            {
-                const SReal v1 = c1.minBBox[axis]+c1.maxBBox[axis];
-                const SReal v2 = c2.minBBox[axis]+c2.maxBBox[axis];
-                return v1 < v2;
-            }
+            const SReal v1 = c1.minBBox[axis]+c1.maxBBox[axis];
+            const SReal v2 = c2.minBBox[axis]+c2.maxBBox[axis];
+            return v1 < v2;
         }
     };
 
@@ -108,22 +93,19 @@ protected:
 public:
     void resize(sofa::Size size) override;
 
-    void setParentOf(sofa::Index childIndex, const sofa::type::Vec3& min, const sofa::type::Vec3& max, const sofa::type::Vec3& continuousMin, const sofa::type::Vec3& continuousMax);
-    void setParentOf(sofa::Index childIndex, const sofa::type::Vec3& min, const sofa::type::Vec3& max, const sofa::type::Vec3& continuousMin, const sofa::type::Vec3& continuousMax, const sofa::type::Vec3& normal, const SReal angle=0);
+    void setParentOf(sofa::Index childIndex, const sofa::type::Vec3& min, const sofa::type::Vec3& max);
+    void setParentOf(sofa::Index childIndex, const sofa::type::Vec3& min, const sofa::type::Vec3& max, const sofa::type::Vec3& normal, const SReal angle=0);
     void setLeafCube(sofa::Index cubeIndex, sofa::Index childIndex);
-    void setLeafCube(sofa::Index cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const sofa::type::Vec3& min, const sofa::type::Vec3& max, const sofa::type::Vec3& continuousMin, const sofa::type::Vec3& continuousMax);
+    void setLeafCube(sofa::Index cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const sofa::type::Vec3& min, const sofa::type::Vec3& max);
 
     sofa::Size getNumberCells() const { return sofa::Size(elems.size());}
 
-    void getBoundingTree ( sofa::type::vector< std::pair< sofa::type::Vec3, sofa::type::Vec3> > &bounding, bool useContinuous = false )
+    void getBoundingTree ( sofa::type::vector< std::pair< sofa::type::Vec3, sofa::type::Vec3> > &bounding )
     {
         bounding.resize(elems.size());
         for (sofa::Size index=0; index<elems.size(); index++)
         {
-            if (useContinuous)
-                bounding[index] = std::make_pair( std::min(elems[index].minBBox,elems[index].continuousMinBBox), std::max(elems[index].maxBBox,elems[index].continuousMaxBBox));
-            else
-                bounding[index] = std::make_pair( elems[index].minBBox, elems[index].maxBBox);
+            bounding[index] = std::make_pair( elems[index].minBBox, elems[index].maxBBox);
         }
     }
 
@@ -180,16 +162,6 @@ inline const sofa::type::Vec3& Cube::minVect() const
 inline const sofa::type::Vec3& Cube::maxVect() const
 {
     return model->elems[index].maxBBox;
-}
-
-inline const sofa::type::Vec3& Cube::continuousMinVect() const
-{
-    return model->elems[index].continuousMinBBox;
-}
-
-inline const sofa::type::Vec3& Cube::continuousMaxVect() const
-{
-    return model->elems[index].continuousMaxBBox;
 }
 
 
