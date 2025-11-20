@@ -101,7 +101,56 @@ void DrawMesh::setElementSpace(SReal elementSpace)
     m_drawHexahedronMesh.elementSpace = elementSpace;
 }
 
-void DrawElementMesh<sofa::geometry::Triangle>::draw(
+void DrawMesh::drawSurface(sofa::helper::visual::DrawTool* drawTool,
+                           const type::vector<type::Vec3>& position,
+                           sofa::core::topology::BaseMeshTopology* topology)
+{
+    drawTriangles(drawTool, position, topology);
+}
+
+void DrawMesh::drawVolume(sofa::helper::visual::DrawTool* drawTool,
+                          const type::vector<type::Vec3>& position,
+                          sofa::core::topology::BaseMeshTopology* topology)
+{
+    drawTetrahedra(drawTool, position, topology);
+    drawHexahedra(drawTool, position, topology);
+}
+
+void DrawMesh::draw(sofa::helper::visual::DrawTool* drawTool,
+                    const type::vector<type::Vec3>& position,
+                    sofa::core::topology::BaseMeshTopology* topology)
+{
+    if (!topology)
+    {
+        return;
+    }
+
+    const auto hasTetra = topology && !topology->getTetrahedra().empty();
+    const auto hasHexa = topology && !topology->getHexahedra().empty();
+
+    if (!hasTetra && !hasHexa)
+    {
+        drawSurface(drawTool, position, topology);
+    }
+    drawVolume(drawTool, position, topology);
+}
+
+void BaseDrawMesh::draw(sofa::helper::visual::DrawTool* drawTool,
+                        const type::vector<type::Vec3>& position,
+                        sofa::core::topology::BaseMeshTopology* topology)
+{
+    if (!drawTool)
+        return;
+    if (!topology)
+        return;
+
+    const auto stateLifeCycle = drawTool->makeStateLifeCycle();
+    drawTool->disableLighting();
+
+    doDraw(drawTool, position, topology);
+}
+
+void DrawElementMesh<sofa::geometry::Triangle>::doDraw(
     sofa::helper::visual::DrawTool* drawTool,
     const type::vector<type::Vec3>& position,
     sofa::core::topology::BaseMeshTopology* topology)
@@ -142,7 +191,7 @@ void DrawElementMesh<sofa::geometry::Triangle>::draw(
     drawTool->drawTriangles(renderedPoints, renderedColors);
 }
 
-void DrawElementMesh<geometry::Tetrahedron>::draw(sofa::helper::visual::DrawTool* drawTool,
+void DrawElementMesh<geometry::Tetrahedron>::doDraw(sofa::helper::visual::DrawTool* drawTool,
                                                   const type::vector<type::Vec3>& position,
                                                   sofa::core::topology::BaseMeshTopology* topology)
 {
@@ -181,7 +230,7 @@ void DrawElementMesh<geometry::Tetrahedron>::draw(sofa::helper::visual::DrawTool
 
     drawTool->drawTriangles(renderedPoints, renderedColors);
 }
-void DrawElementMesh<geometry::Hexahedron>::draw(sofa::helper::visual::DrawTool* drawTool,
+void DrawElementMesh<geometry::Hexahedron>::doDraw(sofa::helper::visual::DrawTool* drawTool,
                                                  const type::vector<type::Vec3>& position,
                                                  sofa::core::topology::BaseMeshTopology* topology)
 {
