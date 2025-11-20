@@ -60,7 +60,7 @@ public:
     typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::RealVectorType CoordEigen;
 
     MatrixSym m_CaBy2Minus1, m_invC; 
-    Real m_trCaBy2{0.}, m_FJ{0.}, m_logJ{0.};
+    Real m_trCaBy2{static_cast<Real>(0)}, m_FJ{static_cast<Real>(0)}, m_logJ{static_cast<Real>(0)};
 
     virtual void updateVariables(StrainInformation<DataTypes>* sinfo,
                                 const MaterialParameters<DataTypes>& param) override
@@ -70,7 +70,7 @@ public:
         const Real alpha1 = param.parameterArray[1];
         const Real k0 = param.parameterArray[2];
 
-        m_FJ = pow(sinfo->J, -alpha1/3.);
+        m_FJ = pow(sinfo->J, -alpha1/static_cast<Real>(3));
         m_logJ = log(sinfo->J);
 
         // Solve eigen problem for C and store eigenvalues/vectors
@@ -91,8 +91,8 @@ public:
         sinfo->Evalue = EigenProblemSolver.eigenvalues().real().eval();
         sinfo->Evect = EigenProblemSolver.eigenvectors().real().eval();
 
-        const Real aBy2{alpha1*0.5};
-        m_trCaBy2 = 0.;
+        const Real aBy2{alpha1/static_cast<Real>(2)};
+        m_trCaBy2 = static_cast<Real>(0);
         for (sofa::Index n = 0; n < sinfo->Evalue.rows(); ++n)
             m_trCaBy2 += pow(sinfo->Evalue[n], aBy2);
 
@@ -103,7 +103,7 @@ public:
                 EigenBasis(m, n) = sinfo->Evect(m, n);
         
         // Construct C^(alpha1/2 - 1) from eigenbasis: V * D * V^T; D_i = lambda_i^(alpha1/2 - 1)
-        const Real aBy2Minus1 = aBy2 - 1.;
+        const Real aBy2Minus1 = aBy2 - static_cast<Real>(1);
         const MatrixSym D = MatrixSym(pow(sinfo->Evalue[0], aBy2Minus1), 0, pow(sinfo->Evalue[1], aBy2Minus1), 0, 0, pow(sinfo->Evalue[2], aBy2Minus1));
         const Matrix3 Ca = EigenBasis*D.SymMatMultiply(EigenBasis.transposed());
         sofa::type::MatSym<3, Real>::Mat2Sym(Ca, m_CaBy2Minus1);
@@ -117,11 +117,11 @@ public:
         const Real mu1 = param.parameterArray[0];
         const Real alpha1 = param.parameterArray[1];
         const Real k0 = param.parameterArray[2];
-        const Real muByAlphaSqr = mu1 / pow(alpha1,2.);
+        const Real muByAlphaSqr = mu1 / pow(alpha1, static_cast<Real>(2));
 
         // Isochoric and volumetric parts 
-        const Real Wiso = m_FJ * muByAlphaSqr * m_trCaBy2 - 3. * muByAlphaSqr;
-        const Real Wvol = k0 * m_logJ * m_logJ / 2.;
+        const Real Wiso = m_FJ * muByAlphaSqr * m_trCaBy2 - static_cast<Real>(3) * muByAlphaSqr;
+        const Real Wvol = k0 * m_logJ * m_logJ / static_cast<Real>(2);
 
         return Wiso + Wvol;
     }
@@ -133,11 +133,11 @@ public:
         const Real k0 = param.parameterArray[2];
 
         // trace of C^(alpha1/2)
-        const Real aBy2 = alpha1*0.5;
+        const Real aBy2 = alpha1/static_cast<Real>(2);
 
         // Siso = dWiso/dlambda*dlambda/dC + dWiso/dF*dF/dC
-        const MatrixSym S_isochoric = m_FJ * mu1 / alpha1 * m_CaBy2Minus1
-                                     -m_FJ * mu1 / alpha1 / 3. * m_invC * m_trCaBy2;
+        const MatrixSym S_isochoric = m_CaBy2Minus1 * m_FJ * mu1 / alpha1
+                                     -m_invC * m_FJ * mu1 / (static_cast<Real>(3)*alpha1) * m_trCaBy2;
         // Svol = dWvol/dC_{ij}
         const MatrixSym S_volumetric = m_invC * k0 * m_logJ;
 
@@ -152,9 +152,9 @@ public:
         const Real k0 = param.parameterArray[2];
 
         // Coefficient terms
-        const Real aBy2 = alpha1*0.5;
-        const Real aBy2Minus1 = aBy2 - 1.;
-        const Real aBy2Minus2 = aBy2 - 2.;
+        const Real aBy2 = alpha1/static_cast<Real>(2);
+        const Real aBy2Minus1 = aBy2 - static_cast<Real>(1);
+        const Real aBy2Minus2 = aBy2 - static_cast<Real>(2);
 
         const CoordEigen& Evalue = sinfo->Evalue;
         const EigenMatrix& Evect = sinfo->Evect;
@@ -194,7 +194,7 @@ public:
                             ? aBy2Minus1 * evalPowI2
                             : (evalPowI - pow(Evalue[eJ], aBy2Minus1))/(Evalue[eI] - Evalue[eJ]);
 
-                        elasticityTensor(m, n) += 0.5 * m_FJ * mu1 / alpha1 * coefRot *
+                        elasticityTensor(m, n) += static_cast<Real>(0.5) * m_FJ * mu1 / alpha1 * coefRot *
                         (
                             Evect(i, eI) * Evect(j, eJ) * Evect(k, eJ) * Evect(l, eI) +
                             Evect(i, eI) * Evect(j, eJ) * Evect(k, eI) * Evect(l, eJ)
@@ -205,27 +205,27 @@ public:
                 // Remaining terms from S_isochoric
                 elasticityTensor(m, n) += 
                     // Lumped contributions from trace of C^(alpha1/2) and FJ in dWiso/dlambda*dlambda/dC
-                    - m_FJ * mu1 / 6. * (m_CaBy2Minus1(i,j) * m_invC(l,k) + m_CaBy2Minus1(k,l) * m_invC(j,i))
+                    - m_FJ * mu1 / static_cast<Real>(6) * (m_CaBy2Minus1(i,j) * m_invC(l,k) + m_CaBy2Minus1(k,l) * m_invC(j,i))
                     // Contributions from FJ in dWiso/dF*dF/dC
-                    + m_FJ * mu1 * m_trCaBy2 / 18. * m_invC(j,i) * m_invC(l,k)
+                    + m_FJ * mu1 * m_trCaBy2 / static_cast<Real>(18) * m_invC(j,i) * m_invC(l,k)
                     // Contributions from inverse of C
-                    + m_FJ * mu1 / (6. * alpha1) * m_trCaBy2 * (m_invC(k,i) * m_invC(l,j) + m_invC(l,i) * m_invC(k,j));
+                    + m_FJ * mu1 / (static_cast<Real>(6) * alpha1) * m_trCaBy2 * (m_invC(k,i) * m_invC(l,j) + m_invC(l,i) * m_invC(k,j));
 
                 // Derivative of S_volumetric; dependence on lnJ and C^{-1}
-                elasticityTensor(m, n) += 0.5 * k0 * m_invC(j,i) * m_invC(l,k)
-                                - 0.5 * k0 * m_logJ * 
+                elasticityTensor(m, n) += static_cast<Real>(0.5) * k0 * m_invC(j,i) * m_invC(l,k)
+                                - static_cast<Real>(0.5) * k0 * m_logJ * 
                     (m_invC(j,k) * m_invC(l,i) + m_invC(j,l) * m_invC(k,i));
             }
         }
 
-        outputTensor = 2. * elasticityTensor ;
+        outputTensor = static_cast<Real>(2) * elasticityTensor ;
 
         // Adjust for Voigt notation using 2x factor on the off-diagonal
         for (sofa::Index m = 0; m < 6; m++)
         {
-            outputTensor(m,1) *= 2.;
-            outputTensor(m,3) *= 2.;
-            outputTensor(m,4) *= 2.;
+            outputTensor(m,1) *= static_cast<Real>(2);
+            outputTensor(m,3) *= static_cast<Real>(2);
+            outputTensor(m,4) *= static_cast<Real>(2);
         }
     }
 
@@ -237,7 +237,7 @@ public:
         this->ElasticityTensor(sinfo, param, elasticityTensor);
         auto temp = elasticityTensor * inputTensor;
         for (size_t i = 0; i < 6; i++) 
-            outputTensor[i] = temp[i]/2.;
+            outputTensor[i] = temp[i]/static_cast<Real>(2);
     }
 };
 
