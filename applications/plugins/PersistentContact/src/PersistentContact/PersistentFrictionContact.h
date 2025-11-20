@@ -22,8 +22,8 @@
 #ifndef SOFA_COMPONENT_COLLISION_PERSISTENTFRICTIONCONTACT_H
 #define SOFA_COMPONENT_COLLISION_PERSISTENTFRICTIONCONTACT_H
 
-#include <SofaConstraint/FrictionContact.h>
-
+#include <sofa/component/collision/response/contact/FrictionContact.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/collision/DetectionOutput.h>
 
 #include "PersistentContactMapping.h"
@@ -35,8 +35,6 @@ namespace sofa
 
 namespace component
 {
-
-namespace container { template< class T > class MechanicalObject; }
 
 namespace collision
 {
@@ -52,12 +50,12 @@ struct ContactInfo
         , m_mapper1(false)
         , m_mapper2(false)
         , m_distance(0.0)
-        , m_initForce(Vec3d())
+        , m_initForce(sofa::type::Vec3d())
         , m_contactId(-1)
     {
     }
 
-    ContactInfo(int id1, int id2, bool map1, bool map2, double dist, Vec3d f)
+    ContactInfo(int id1, int id2, bool map1, bool map2, double dist, sofa::type::Vec3d f)
         : m_index1(id1)
         , m_index2(id2)
         , m_mapper1(map1)
@@ -74,7 +72,7 @@ struct ContactInfo
     bool m_mapper1;
     bool m_mapper2;
     double m_distance;
-    Vec3d m_initForce;
+    sofa::type::Vec3d m_initForce;
 
     // DetectionOutput data
     std::pair< core::CollisionElementIterator, core::CollisionElementIterator > m_elem;
@@ -104,10 +102,10 @@ struct ContactInfo
 
 
 template <class TCollisionModel1, class TCollisionModel2>
-class PersistentFrictionContact : public FrictionContact<TCollisionModel1, TCollisionModel2>
+class PersistentFrictionContact : public response::contact::FrictionContact<TCollisionModel1, TCollisionModel2>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(PersistentFrictionContact, TCollisionModel1, TCollisionModel2), SOFA_TEMPLATE2(FrictionContact, TCollisionModel1, TCollisionModel2));
+    SOFA_CLASS(SOFA_TEMPLATE2(PersistentFrictionContact, TCollisionModel1, TCollisionModel2), SOFA_TEMPLATE2(response::contact::FrictionContact, TCollisionModel1, TCollisionModel2));
 
     typedef TCollisionModel1 CollisionModel1;
     typedef TCollisionModel2 CollisionModel2;
@@ -119,11 +117,11 @@ public:
     typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
-    typedef typename FrictionContact<TCollisionModel1, TCollisionModel2>::TOutputVector TOutputVector;
+    typedef typename response::contact::FrictionContact<TCollisionModel1, TCollisionModel2>::TOutputVector TOutputVector;
     typedef std::vector< sofa::core::collision::DetectionOutput* > DetectionOutputVector;
     typedef std::map< const sofa::core::collision::DetectionOutput*, ContactInfo > MappedContactsMap;
 
-    typedef FrictionContact<TCollisionModel1, TCollisionModel2> Inherit;
+    typedef response::contact::FrictionContact<TCollisionModel1, TCollisionModel2> Inherit;
 
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(this->model1,this->model2); }
 
@@ -153,15 +151,15 @@ protected:
     std::pair<bool,bool> findMappingOrUseMapper();
 
     template< class T >
-    bool findMappingOrUseMapper(core::behavior::MechanicalState<T> *mState, container::MechanicalObject<T> *&constraintModel, component::mapping::PersistentContactMapping *&map);
+    bool findMappingOrUseMapper(core::behavior::MechanicalState<T> *mState, statecontainer::MechanicalObject<T> *&constraintModel, component::mapping::PersistentContactMapping *&map);
 
     void activateConstraint();
 
     void resetPersistentContactMappings();
 
-    int mapThePersistentContact(Vector3 &, int, Vector3 &, bool)
+    int mapThePersistentContact(sofa::type::Vec3 &, int, sofa::type::Vec3 &, bool)
     {
-        serr << "Warning: mapThePersistentContact is not defined for these collision elements" << sendl;
+        msg_error() << "Warning: mapThePersistentContact is not defined for these collision elements";
         return 0;
     }
 
@@ -193,14 +191,14 @@ protected:
     MechanicalState1 *mstate1;
     MechanicalState2 *mstate2;
 
-    component::container::MechanicalObject< DataTypes1 >* constraintModel1;
-    component::container::MechanicalObject< DataTypes2 >* constraintModel2;
+    sofa::component::statecontainer::MechanicalObject< DataTypes1 >* constraintModel1;
+    sofa::component::statecontainer::MechanicalObject< DataTypes2 >* constraintModel2;
 
     sofa::component::mapping::PersistentContactMapping *map1;
     sofa::component::mapping::PersistentContactMapping *map2;
 
-    std::vector< Vector3 > barycentricValues1;
-    std::vector< Vector3 > barycentricValues2;
+    std::vector< type::Vec3 > barycentricValues1;
+    std::vector< type::Vec3 > barycentricValues2;
 
     MappedContactsMap m_generatedContacts;
     MappedContactsMap m_stickedContacts;

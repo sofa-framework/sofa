@@ -33,14 +33,14 @@ namespace collision
 using namespace defaulttype;
 using namespace sofa::helper;
 
-Creator<Contact::Factory, PersistentFrictionContact<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointPointPersistentFrictionContactClass("PersistentFrictionContact",true);
-Creator<Contact::Factory, PersistentFrictionContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > LinePointPersistentFrictionContactClass("PersistentFrictionContact",true);
-Creator<Contact::Factory, PersistentFrictionContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > LineLinePersistentFrictionContactClass("PersistentFrictionContact",true);
-Creator<Contact::Factory, PersistentFrictionContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > TrianglePointPersistentFrictionContactContactClass("PersistentFrictionContact",true);
+Creator<Contact::Factory, PersistentFrictionContact<geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>, geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointPointPersistentFrictionContactClass("PersistentFrictionContact",true);
+Creator<Contact::Factory, PersistentFrictionContact<geometry::LineCollisionModel<sofa::defaulttype::Vec3Types>, geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>> > LinePointPersistentFrictionContactClass("PersistentFrictionContact",true);
+Creator<Contact::Factory, PersistentFrictionContact<geometry::LineCollisionModel<sofa::defaulttype::Vec3Types>, geometry::LineCollisionModel<sofa::defaulttype::Vec3Types>> > LineLinePersistentFrictionContactClass("PersistentFrictionContact",true);
+Creator<Contact::Factory, PersistentFrictionContact<geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>> > TrianglePointPersistentFrictionContactContactClass("PersistentFrictionContact",true);
 
 
 template<>
-int PersistentFrictionContact<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>::mapThePersistentContact(Vector3 &/*baryCoord*/, int index, Vector3 &pos, bool case1)
+int PersistentFrictionContact<geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>, geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>>::mapThePersistentContact(type::Vec3 &/*baryCoord*/, int index, type::Vec3 &pos, bool case1)
 {
     std::vector< std::pair<int, double> > barycentricData(1);
 
@@ -59,11 +59,11 @@ int PersistentFrictionContact<PointCollisionModel<sofa::defaulttype::Vec3Types>,
 }
 
 template<>
-int PersistentFrictionContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>::mapThePersistentContact(Vector3 &baryCoord, int index, Vector3 &pos, bool case1)
+int PersistentFrictionContact<geometry::LineCollisionModel<sofa::defaulttype::Vec3Types>, geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>>::mapThePersistentContact(type::Vec3 &baryCoord, int index, type::Vec3 &pos, bool case1)
 {
     if (case1)
     {
-        Line l(this->model1, index);
+        geometry::Line l(this->model1, index);
 
         std::vector< std::pair<int, double> > barycentricData(2);
         barycentricData[0] = std::pair<int, double> (l.i1(), 1.0 - baryCoord[0]);
@@ -81,13 +81,13 @@ int PersistentFrictionContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, 
 }
 
 template<>
-int PersistentFrictionContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>::mapThePersistentContact(Vector3 & baryCoord, int index, Vector3 &pos, bool case1)
+int PersistentFrictionContact<geometry::LineCollisionModel<sofa::defaulttype::Vec3Types>, geometry::LineCollisionModel<sofa::defaulttype::Vec3Types>>::mapThePersistentContact(type::Vec3 & baryCoord, int index, type::Vec3 &pos, bool case1)
 {
     std::vector< std::pair<int, double> > barycentricData(2);
 
     if (case1)
     {
-        Line l(this->model1, index);
+        geometry::Line l(this->model1, index);
 
         barycentricData[0] = std::pair<int, double> (l.i1(), 1.0 - baryCoord[0]);
         barycentricData[1] = std::pair<int, double> (l.i2(), baryCoord[0]);
@@ -96,7 +96,7 @@ int PersistentFrictionContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, 
     }
     else
     {
-        Line l(this->model2, index);
+        geometry::Line l(this->model2, index);
         barycentricData[0] = std::pair<int, double> (l.i1(), 1.0 - baryCoord[0]);
         barycentricData[1] = std::pair<int, double> (l.i2(), baryCoord[0]);
 
@@ -105,13 +105,13 @@ int PersistentFrictionContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, 
 }
 
 template<>
-int PersistentFrictionContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>::mapThePersistentContact(Vector3 & baryCoord, int index, Vector3 &pos, bool case1)
+int PersistentFrictionContact<geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>>::mapThePersistentContact(type::Vec3 & baryCoord, int index, type::Vec3 &pos, bool case1)
 {
     std::vector<std::pair<int, double> > barycentricData;
 
     if (case1)
     {
-        Triangle t(this->model1, index);
+        geometry::Triangle t(this->model1, index);
 
         std::vector<std::pair<int, double> > barycentricData(3);
         barycentricData[0] = std::pair<int, double> (t.p1Index(), 1.0 - baryCoord[0] - baryCoord[1]);
