@@ -120,6 +120,9 @@ void Hexa2TetraTopologicalMapping::init()
         }
     }
 
+    static constexpr int numberTetraInHexa = 6;
+    Loc2GlobVec.reserve(nbcubes*numberTetraInHexa);
+
     const bool swapping = d_swapping.getValue();
 
     // Tessellation of each cube into 6 tetrahedra
@@ -178,7 +181,6 @@ void Hexa2TetraTopologicalMapping::init()
             to_tstc->addTetra(c[6],c[7],c[5],c[0]);
             to_tstc->addTetra(c[7],c[5],c[0],c[4]);
         }
-        static constexpr int numberTetraInHexa = 6;
         for (int j = 0; j < numberTetraInHexa; j++)
         {
             Loc2GlobVec.push_back(i);
