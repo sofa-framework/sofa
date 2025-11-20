@@ -21,8 +21,9 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/visual/config.h>
-#include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/visual/DrawMesh.h>
+#include <sofa/core/visual/VisualModel.h>
 
 namespace sofa::component::visual
 {
@@ -39,54 +40,17 @@ public:
     sofa::SingleLink<VisualMesh, sofa::core::topology::BaseMeshTopology,
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_topology;
 
-
     void init() override;
 
 protected:
 
     VisualMesh();
 
-    void drawTriangles(helper::visual::DrawTool* drawTool);
-    void drawTetrahedra(helper::visual::DrawTool* drawTool);
-    void drawHexahedra(helper::visual::DrawTool* drawTool);
     void doDrawVisual(const core::visual::VisualParams* vparams) override;
 
+    core::visual::DrawMesh m_drawMesh;
+
     void validateTopology();
-
-    sofa::type::vector< sofa::type::Vec3 > m_renderedPoints;
-    sofa::type::vector< sofa::type::RGBAColor > m_renderedColors;
-
-    template<class ElementType>
-    sofa::type::Vec3 elementCenter(const type::vector<type::Vec3>& position, const ElementType& element)
-    {
-        sofa::type::Vec3 center{};
-        for (sofa::Size vId = 0; vId < element.size(); ++vId)
-        {
-            center += position[element[vId]];
-        }
-        center /= element.size();
-        return center;
-    }
-
-    template<std::size_t NumberFacetsInElement, class FacetType>
-    void setPoints(
-        const std::array<sofa::Index, NumberFacetsInElement> facetsInElement,
-        const sofa::type::vector<FacetType>& facets,
-        const type::vector<type::Vec3>& position,
-        const type::Vec3& elementCenter,
-        SReal elementSpace,
-        sofa::type::vector< sofa::type::Vec3 >::iterator& pointsIt
-        )
-    {
-        for (const auto& facetId : facetsInElement)
-        {
-            const auto& facet = facets[facetId];
-            for (const auto vId : facet)
-            {
-                *pointsIt++ = (position[vId] - elementCenter) * (1._sreal - elementSpace) + elementCenter;
-            }
-        }
-    }
 };
 
 }
