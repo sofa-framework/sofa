@@ -38,7 +38,14 @@ struct SOFA_CORE_API BaseDrawMesh
 
     SReal elementSpace { 0.125_sreal };
 
-    virtual void draw(
+    void draw(
+        sofa::helper::visual::DrawTool* drawTool,
+        const type::vector<type::Vec3>& position,
+        sofa::core::topology::BaseMeshTopology* topology);
+
+protected:
+
+    virtual void doDraw(
         sofa::helper::visual::DrawTool* drawTool,
         const type::vector<type::Vec3>& position,
         sofa::core::topology::BaseMeshTopology* topology) = 0;
@@ -50,7 +57,7 @@ struct DrawElementMesh{};
 template<>
 struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Triangle> : BaseDrawMesh
 {
-    void draw(
+    void doDraw(
         sofa::helper::visual::DrawTool* drawTool,
         const type::vector<type::Vec3>& position,
         sofa::core::topology::BaseMeshTopology* topology) override;
@@ -59,7 +66,7 @@ struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Triangle> : BaseDrawMesh
 template<>
 struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Tetrahedron> : BaseDrawMesh
 {
-    void draw(
+    void doDraw(
         sofa::helper::visual::DrawTool* drawTool,
         const type::vector<type::Vec3>& position,
         sofa::core::topology::BaseMeshTopology* topology) override;
@@ -68,7 +75,7 @@ struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Tetrahedron> : BaseDrawMesh
 template<>
 struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Hexahedron> : BaseDrawMesh
 {
-    void draw(
+    void doDraw(
         sofa::helper::visual::DrawTool* drawTool,
         const type::vector<type::Vec3>& position,
         sofa::core::topology::BaseMeshTopology* topology) override;
@@ -83,6 +90,11 @@ public:
     void drawHexahedra(sofa::helper::visual::DrawTool* drawTool, const type::vector<type::Vec3>& position, sofa::core::topology::BaseMeshTopology* topology);
 
     void setElementSpace(SReal elementSpace);
+
+    void drawSurface(sofa::helper::visual::DrawTool* drawTool, const type::vector<type::Vec3>& position, sofa::core::topology::BaseMeshTopology* topology);
+    void drawVolume(sofa::helper::visual::DrawTool* drawTool, const type::vector<type::Vec3>& position, sofa::core::topology::BaseMeshTopology* topology);
+
+    void draw(sofa::helper::visual::DrawTool* drawTool, const type::vector<type::Vec3>& position, sofa::core::topology::BaseMeshTopology* topology);
 
    private:
 
