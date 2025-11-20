@@ -41,7 +41,6 @@ VisualMesh::VisualMesh()
 {
 }
 
-
 void VisualMesh::init()
 {
     VisualModel::init();
@@ -57,150 +56,6 @@ void VisualMesh::init()
     }
 }
 
-void VisualMesh::drawTriangles(helper::visual::DrawTool* drawTool)
-{
-    if (!l_topology)
-        return;
-
-    const auto& elements = l_topology->getTriangles();
-
-    m_renderedPoints.resize(elements.size() * sofa::geometry::Triangle::NumberOfNodes);
-
-    const auto elementSpace = d_elementSpace.getValue();
-    const auto& positionAccessor = sofa::helper::getReadAccessor(d_position);
-
-    auto pointsIt = m_renderedPoints.begin();
-
-    for (sofa::Size i = 0; i < elements.size(); ++i)
-    {
-        const auto& element = elements[i];
-
-        const sofa::type::Vec3 center = elementCenter(positionAccessor.ref(), element);
-
-        std::array facetsInElement{i};
-        setPoints(facetsInElement, elements, positionAccessor.ref(), center, elementSpace, pointsIt);
-    }
-
-    while (m_renderedColors.size() < elements.size() * sofa::geometry::Triangle::NumberOfNodes)
-    {
-        static constexpr std::array colors{
-            type::makeHomogeneousArray<sofa::type::RGBAColor, sofa::geometry::Triangle::NumberOfNodes>( sofa::type::RGBAColor::green()),
-            type::makeHomogeneousArray<sofa::type::RGBAColor, sofa::geometry::Triangle::NumberOfNodes>(sofa::type::RGBAColor::teal()),
-            type::makeHomogeneousArray<sofa::type::RGBAColor, sofa::geometry::Triangle::NumberOfNodes>(sofa::type::RGBAColor::blue()),
-        };
-
-        const auto elementId = m_renderedColors.size() / sofa::geometry::Triangle::NumberOfNodes;
-        const auto triangleColor = colors[elementId % colors.size()];
-
-        m_renderedColors.insert(m_renderedColors.end(), triangleColor.begin(), triangleColor.end());
-    }
-
-    drawTool->drawTriangles(m_renderedPoints, m_renderedColors);
-}
-
-namespace
-{
-template<std::size_t NumberFacetsInElement, std::size_t NumberVerticesInFacet>
-std::array<sofa::type::RGBAColor, NumberFacetsInElement * NumberVerticesInFacet>
-constexpr generateElementColors(const std::array<sofa::type::RGBAColor, NumberFacetsInElement>& facetColors)
-{
-    std::array<sofa::type::RGBAColor, NumberFacetsInElement * NumberVerticesInFacet> verticeColors;
-    auto verticeColorsIt = verticeColors.begin();
-    for (const auto& c : facetColors)
-    {
-        for (std::size_t i = 0; i < NumberVerticesInFacet; ++i)
-        {
-            *verticeColorsIt++ = c;
-        }
-    }
-    return verticeColors;
-}
-}
-
-void VisualMesh::drawTetrahedra(helper::visual::DrawTool* drawTool)
-{
-    if (!l_topology)
-        return;
-
-    const auto& elements = l_topology->getTetrahedra();
-    const auto& facets = l_topology->getTriangles();
-
-    static constexpr std::size_t NumberTrianglesInTetrahedron = 4;
-    m_renderedPoints.resize(elements.size() * NumberTrianglesInTetrahedron * sofa::geometry::Triangle::NumberOfNodes);
-
-    const auto elementSpace = d_elementSpace.getValue();
-    const auto& positionAccessor = sofa::helper::getReadAccessor(d_position);
-
-    auto pointsIt = m_renderedPoints.begin();
-
-    for (sofa::Size i = 0; i < elements.size(); ++i)
-    {
-        const auto& element = elements[i];
-        const auto& facetsInElement = l_topology->getTrianglesInTetrahedron(i);
-        assert(facetsInElement.size() == NumberTrianglesInTetrahedron);
-
-        const sofa::type::Vec3 center = elementCenter(positionAccessor.ref(), element);
-
-        setPoints(facetsInElement, facets, positionAccessor.ref(), center, elementSpace, pointsIt);
-    }
-
-    while (m_renderedColors.size() < elements.size() * NumberTrianglesInTetrahedron * sofa::geometry::Triangle::NumberOfNodes)
-    {
-        static constexpr std::array colors = generateElementColors<NumberTrianglesInTetrahedron, sofa::geometry::Triangle::NumberOfNodes>({
-            sofa::type::RGBAColor::blue(),
-            sofa::type::RGBAColor::black(),
-            sofa::type::RGBAColor::azure(),
-            sofa::type::RGBAColor::cyan()});
-
-        m_renderedColors.insert(m_renderedColors.end(), colors.begin(), colors.end());
-    }
-
-    drawTool->drawTriangles(m_renderedPoints, m_renderedColors);
-}
-
-void VisualMesh::drawHexahedra(helper::visual::DrawTool* drawTool)
-{
-    if (!l_topology)
-        return;
-
-    const auto& elements = l_topology->getHexahedra();
-    const auto& facets = l_topology->getQuads();
-
-    static constexpr std::size_t NumberQuadsInHexahedron = 6;
-    m_renderedPoints.resize(elements.size() * NumberQuadsInHexahedron * sofa::geometry::Quad::NumberOfNodes);
-
-    const auto elementSpace = d_elementSpace.getValue();
-    const auto& positionAccessor = sofa::helper::getReadAccessor(d_position);
-
-    auto pointsIt = m_renderedPoints.begin();
-
-    for (sofa::Size i = 0; i < elements.size(); ++i)
-    {
-        const auto& element = elements[i];
-        const auto& facetsInElement = l_topology->getQuadsInHexahedron(i);
-        assert(facetsInElement.size() == NumberQuadsInHexahedron);
-
-        const sofa::type::Vec3 center = elementCenter(positionAccessor.ref(), element);
-
-        setPoints(facetsInElement, facets, positionAccessor.ref(), center, elementSpace, pointsIt);
-    }
-
-    while (m_renderedColors.size() < elements.size() * NumberQuadsInHexahedron * sofa::geometry::Quad::NumberOfNodes)
-    {
-        static constexpr std::array colors = generateElementColors<NumberQuadsInHexahedron, sofa::geometry::Quad::NumberOfNodes>({
-            sofa::type::RGBAColor(0.7f,0.7f,0.1f,1.f),
-            sofa::type::RGBAColor(0.7f,0.0f,0.0f,1.f),
-            sofa::type::RGBAColor(0.0f,0.7f,0.0f,1.f),
-            sofa::type::RGBAColor(0.0f,0.0f,0.7f,1.f),
-            sofa::type::RGBAColor(0.1f,0.7f,0.7f,1.f),
-            sofa::type::RGBAColor(0.7f,0.1f,0.7f,1.f)});
-
-        m_renderedColors.insert(m_renderedColors.end(), colors.begin(), colors.end());
-    }
-
-    drawTool->drawQuads(m_renderedPoints, m_renderedColors);
-}
-
 void VisualMesh::doDrawVisual(const core::visual::VisualParams* vparams)
 {
     auto* drawTool = vparams->drawTool();
@@ -210,12 +65,16 @@ void VisualMesh::doDrawVisual(const core::visual::VisualParams* vparams)
     const auto hasTetra = l_topology && !l_topology->getTetrahedra().empty();
     const auto hasHexa = l_topology && !l_topology->getHexahedra().empty();
 
+    const auto& positionAccessor = sofa::helper::getReadAccessor(d_position);
+
+    m_drawMesh.setElementSpace(d_elementSpace.getValue());
+
     if (!hasTetra && !hasHexa)
     {
-        drawTriangles(drawTool);
+        m_drawMesh.drawTriangles(drawTool, positionAccessor.ref(), l_topology.get());
     }
-    drawTetrahedra(drawTool);
-    drawHexahedra(drawTool);
+    m_drawMesh.drawTetrahedra(drawTool, positionAccessor.ref(), l_topology.get());
+    m_drawMesh.drawHexahedra(drawTool, positionAccessor.ref(), l_topology.get());
 }
 
 void VisualMesh::validateTopology()
