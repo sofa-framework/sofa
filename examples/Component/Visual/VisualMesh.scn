@@ -8,7 +8,7 @@
         <RegularGridTopology name="grid" min="-5 -5 0" max="5 5 40" n="5 5 20"/>
         <MechanicalObject template="Vec3" name="state"/>
 
-        <TetrahedronSetTopologyContainer name="Tetra_topo"/>
+        <TetrahedronSetTopologyContainer name="Tetra_topo" position="@grid.position"/>
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
         <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
