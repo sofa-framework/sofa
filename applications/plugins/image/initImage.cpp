@@ -62,10 +62,6 @@ namespace engine
     extern void registerDepthMapToMeshEngine(sofa::core::ObjectFactory* factory);
     extern void registerCollisionToCarvingEngine(sofa::core::ObjectFactory* factory);
 
-#ifdef SOFA_BUILD_TESTS
-    extern void registerTestImageEngine(sofa::core::ObjectFactory* factory);
-#endif
-
 #ifdef PLUGIN_IMAGE_COMPILE_GUI
     extern void registerContourImageToolBox(sofa::core::ObjectFactory* factory);
     extern void registerAverageCatchAllVector(sofa::core::ObjectFactory* factory);
@@ -176,13 +172,6 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     sofa::component::engine::registerGenerateImage(factory);
     sofa::component::engine::registerDepthMapToMeshEngine(factory);
     sofa::component::engine::registerCollisionToCarvingEngine(factory);
-
-#ifdef SOFA_BUILD_TESTS
-    sofa::component::engine::registerTestImageEngine(factory);
-#endif
-
-#ifdef PLUGIN_IMAGE_COMPILE_GUI
-#endif
 }
 
 } // namespace sofa::component
