@@ -62,8 +62,8 @@ public:
     MatrixSym m_CaBy2Minus1, m_invC; 
     Real m_trCaBy2{static_cast<Real>(0)}, m_FJ{static_cast<Real>(0)}, m_logJ{static_cast<Real>(0)};
 
-    virtual void updateVariables(StrainInformation<DataTypes>* sinfo,
-                                const MaterialParameters<DataTypes>& param) override
+    virtual void precomputeVariables(StrainInformation<DataTypes>* sinfo,
+                                const MaterialParameters<DataTypes>& param)
     {
         const MatrixSym& C = sinfo->deformationTensor;
         const Real mu1 = param.parameterArray[0];
@@ -114,6 +114,8 @@ public:
 
     Real getStrainEnergy(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param) override
     {
+        this->precomputeVariables(sinfo, param);
+
         const Real mu1 = param.parameterArray[0];
         const Real alpha1 = param.parameterArray[1];
         const Real k0 = param.parameterArray[2];
@@ -128,6 +130,8 @@ public:
 
     void deriveSPKTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,MatrixSym &SPKTensorGeneral) override
     {
+        this->precomputeVariables(sinfo, param);
+
         const Real mu1 = param.parameterArray[0];
         const Real alpha1 = param.parameterArray[1];
         const Real k0 = param.parameterArray[2];
@@ -146,6 +150,8 @@ public:
 
     void ElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param, Matrix6& outputTensor) override
     {
+        this->precomputeVariables(sinfo, param);
+
         const MatrixSym& C = sinfo->deformationTensor;
         const Real mu1 = param.parameterArray[0];
         const Real alpha1 = param.parameterArray[1];

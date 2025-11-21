@@ -98,7 +98,6 @@ SReal perturbedStrainEnergy(
 
     strain.deformationTensor[i] += h;
     computeStrainInformation(strain);
-    material.updateVariables(&strain, materialParameters);
 
     return material.getStrainEnergy(&strain, materialParameters);
 }
@@ -121,7 +120,6 @@ StrainInformation<defaulttype::Vec3Types>::MatrixSym perturbedPK2(
 
     strain.deformationTensor[i] += h;
     computeStrainInformation(strain);
-    material.updateVariables(&strain, materialParameters);
 
     StrainInformation<defaulttype::Vec3Types>::MatrixSym PK2;
     material.deriveSPKTensor(&strain, materialParameters, PK2);
@@ -141,7 +139,6 @@ void testSecondPiolaKirchhoffFromStrainEnergyDensityFunction(
     strain.deformationTensor = generatePositiveDefiniteMatrix(lcg);
 
     computeStrainInformation(strain);
-    material.updateVariables(&strain, materialParameters);
 
     StrainInformation<defaulttype::Vec3Types>::MatrixSym PK2;
     material.deriveSPKTensor(&strain, materialParameters, PK2);
@@ -183,7 +180,6 @@ void testElasticityTensorFromSecondPiolaKirchhoff(
     strain.deformationTensor = generatePositiveDefiniteMatrix(lcg);
 
     computeStrainInformation(strain);
-    material.updateVariables(&strain, materialParameters);
 
     Matrix6 elasticityTensor;
     material.ElasticityTensor(&strain, materialParameters, elasticityTensor);
@@ -237,7 +233,6 @@ void testApplyElasticityTensor(
     }
 
     computeStrainInformation(strain);
-    material.updateVariables(&strain, materialParameters);
 
     //first method to obtain the application of the elasticity tensor: matrix-vector product
     Matrix6 elasticityTensor;

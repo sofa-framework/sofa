@@ -62,11 +62,6 @@ public:
 
    virtual ~HyperelasticMaterial(){}
 
-  /** updates parameters that are specific to a material model before computations */
-  virtual void updateVariables(StrainInformation<DataTypes>*, const MaterialParameters<DataTypes>&) 
-  {};
-
-
   /** returns the strain energy of the current configuration */
   virtual Real getStrainEnergy(StrainInformation<DataTypes>*, const MaterialParameters<DataTypes>&)
   {

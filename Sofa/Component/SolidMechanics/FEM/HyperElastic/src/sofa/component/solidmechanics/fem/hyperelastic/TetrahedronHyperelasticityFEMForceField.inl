@@ -351,7 +351,6 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addForce(const core::Me
         tetInfo->trC = (Real)(tetInfo->deformationTensor(0, 0) + tetInfo->deformationTensor(1, 1) +
                               tetInfo->deformationTensor(2, 2));
         tetInfo->m_SPKTensorGeneral.clear();
-        m_myMaterial->updateVariables(tetInfo, globalParameters);
         m_myMaterial->deriveSPKTensor(tetInfo, globalParameters, tetInfo->m_SPKTensorGeneral);
         for (l = 0; l < 4; ++l)
         {
