@@ -204,6 +204,9 @@ void ProjectedGaussSeidelConstraintSolver::gaussSeidel_increment(bool measureErr
 {
     for(int j=0; j<dim; ) // increment of j realized at the end of the loop
     {
+        assert(j < constraintCorrections.size());
+        assert(constraintCorrections[j] != nullptr);
+
         //1. nbLines provide the dimension of the constraint
         const unsigned int nb = constraintCorrections[j]->getNbLines();
 
