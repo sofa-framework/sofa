@@ -62,19 +62,10 @@ void VisualMesh::doDrawVisual(const core::visual::VisualParams* vparams)
 
     vparams->drawTool()->disableLighting();
 
-    const auto hasTetra = l_topology && !l_topology->getTetrahedra().empty();
-    const auto hasHexa = l_topology && !l_topology->getHexahedra().empty();
-
     const auto& positionAccessor = sofa::helper::getReadAccessor(d_position);
 
     m_drawMesh.setElementSpace(d_elementSpace.getValue());
-
-    if (!hasTetra && !hasHexa)
-    {
-        m_drawMesh.drawTriangles(drawTool, positionAccessor.ref(), l_topology.get());
-    }
-    m_drawMesh.drawTetrahedra(drawTool, positionAccessor.ref(), l_topology.get());
-    m_drawMesh.drawHexahedra(drawTool, positionAccessor.ref(), l_topology.get());
+    m_drawMesh.draw(drawTool, positionAccessor.ref(), l_topology.get());
 }
 
 void VisualMesh::validateTopology()

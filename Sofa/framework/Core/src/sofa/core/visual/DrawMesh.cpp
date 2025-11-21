@@ -41,52 +41,24 @@ sofa::type::Vec3 elementCenter(const type::vector<type::Vec3>& position, const E
 
 }  // namespace
 
-
-
-void DrawMesh::drawTriangles(
-    sofa::helper::visual::DrawTool* drawTool,
-    const type::vector<type::Vec3>& position,
-    sofa::core::topology::BaseMeshTopology* topology)
-{
-    m_drawTriangleMesh.draw(drawTool, position, topology);
-}
-
-void DrawMesh::drawTetrahedra(
-    sofa::helper::visual::DrawTool* drawTool,
-    const type::vector<type::Vec3>& position,
-    sofa::core::topology::BaseMeshTopology* topology)
-{
-    m_drawTetrahedronMesh.draw(drawTool, position, topology);
-}
-
-void DrawMesh::drawHexahedra(
-    sofa::helper::visual::DrawTool* drawTool,
-    const type::vector<type::Vec3>& position,
-    sofa::core::topology::BaseMeshTopology* topology)
-{
-    m_drawHexahedronMesh.draw(drawTool, position, topology);
-}
-
 void DrawMesh::setElementSpace(SReal elementSpace)
 {
-    m_drawTriangleMesh.elementSpace =
-    m_drawTetrahedronMesh.elementSpace =
-    m_drawHexahedronMesh.elementSpace = elementSpace;
+    std::apply([elementSpace](auto&&... mesh){ ((mesh.elementSpace = elementSpace), ...); }, m_meshes);
 }
 
 void DrawMesh::drawSurface(sofa::helper::visual::DrawTool* drawTool,
                            const type::vector<type::Vec3>& position,
                            sofa::core::topology::BaseMeshTopology* topology)
 {
-    drawTriangles(drawTool, position, topology);
+    drawElements<sofa::geometry::Triangle>(drawTool, position, topology);
 }
 
 void DrawMesh::drawVolume(sofa::helper::visual::DrawTool* drawTool,
                           const type::vector<type::Vec3>& position,
                           sofa::core::topology::BaseMeshTopology* topology)
 {
-    drawTetrahedra(drawTool, position, topology);
-    drawHexahedra(drawTool, position, topology);
+    drawElements<sofa::geometry::Tetrahedron>(drawTool, position, topology);
+    drawElements<sofa::geometry::Hexahedron>(drawTool, position, topology);
 }
 
 void DrawMesh::draw(sofa::helper::visual::DrawTool* drawTool,
@@ -119,12 +91,13 @@ void DrawElementMesh<geometry::Triangle>::doDraw(
 
     const auto& elements = topology->getTriangles();
 
-    const auto size = (elements.size() / NumberColors) * sofa::geometry::Triangle::NumberOfNodes;
+    const auto size = (elements.size() / NumberColors + 1) * sofa::geometry::Triangle::NumberOfNodes;
     for ( auto& p : renderedPoints)
     {
         p.resize(size);
     }
 
+    std::array<std::size_t, NumberColors> renderedPointId {};
     for (sofa::Size i = 0; i < elements.size(); ++i)
     {
         const auto& element = elements[i];
@@ -133,7 +106,7 @@ void DrawElementMesh<geometry::Triangle>::doDraw(
 
         for (std::size_t j = 0; j < sofa::geometry::Triangle::NumberOfNodes; ++j)
         {
-            renderedPoints[i % NumberColors][i / NumberColors + j] = applyElementSpace(position[element[j]], center);
+            renderedPoints[i % NumberColors][renderedPointId[i%NumberColors]++] = applyElementSpace(position[element[j]], center);
         }
     }
 
@@ -172,9 +145,11 @@ void DrawElementMesh<geometry::Tetrahedron>::doDraw(
         for (std::size_t j = 0; j < NumberTrianglesInTetrahedron; ++j)
         {
             const auto faceId = facetsInElement[j];
+            std::size_t k {};
             for (const auto vertexId : facets[faceId])
             {
-                renderedPoints[j][renderedPointId++] = applyElementSpace(position[vertexId], center);
+                renderedPoints[j][i * sofa::geometry::Triangle::NumberOfNodes + k] = applyElementSpace(position[vertexId], center);
+                ++k;
             }
         }
     }
@@ -213,16 +188,18 @@ void DrawElementMesh<geometry::Hexahedron>::doDraw(sofa::helper::visual::DrawToo
         for (std::size_t j = 0; j < NumberQuadsInHexahedron; ++j)
         {
             const auto faceId = facetsInElement[j];
+            std::size_t k {};
             for (const auto vertexId : facets[faceId])
             {
-                renderedPoints[j][renderedPointId++] = applyElementSpace(position[vertexId], center);
+                renderedPoints[j][i * sofa::geometry::Quad::NumberOfNodes + k] = applyElementSpace(position[vertexId], center);
+                ++k;
             }
         }
     }
 
     for (std::size_t j = 0; j < NumberQuadsInHexahedron; ++j)
     {
-        drawTool->drawTriangles(renderedPoints[j], colors[j]);
+        drawTool->drawQuads(renderedPoints[j], colors[j]);
     }
 }
 
