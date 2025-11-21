@@ -29,10 +29,11 @@
 namespace sofa::core::visual
 {
 
-template<class Derived>
+template<class Derived, std::size_t NumberColors_>
 struct BaseDrawMesh
 {
-    using ColorContainer = std::array<sofa::type::RGBAColor, Derived::NumberColors>;
+    static constexpr std::size_t NumberColors { NumberColors_ };
+    using ColorContainer = std::array<sofa::type::RGBAColor, NumberColors>;
 
     SReal elementSpace { 0.125_sreal };
 
@@ -50,7 +51,7 @@ struct BaseDrawMesh
         const auto stateLifeCycle = drawTool->makeStateLifeCycle();
         drawTool->disableLighting();
 
-        static_cast<Derived&>(*this)->doDraw(drawTool, position, topology, colors);
+        static_cast<Derived&>(*this).doDraw(drawTool, position, topology, colors);
     }
 
     sofa::type::Vec3 applyElementSpace(const sofa::type::Vec3& position, const sofa::type::Vec3& elementCenter) const
@@ -59,18 +60,17 @@ struct BaseDrawMesh
     }
 
 protected:
-    std::array<sofa::type::vector< sofa::type::Vec3 >, Derived::NumberColors> renderedPoints;
+    std::array<sofa::type::vector< sofa::type::Vec3 >, NumberColors> renderedPoints;
 };
 
 template<class ElementType>
-struct DrawElementMesh{};
+class DrawElementMesh{};
 
 template<>
-struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Triangle>
-    : BaseDrawMesh<DrawElementMesh<sofa::geometry::Triangle>>
+class SOFA_CORE_API DrawElementMesh<sofa::geometry::Triangle>
+    : public BaseDrawMesh<DrawElementMesh<sofa::geometry::Triangle>, 3>
 {
-    static constexpr std::size_t NumberColors = 3;
-
+    friend BaseDrawMesh;
     static constexpr ColorContainer defaultColors {
         sofa::type::RGBAColor::green(),
         sofa::type::RGBAColor::teal(),
@@ -85,11 +85,11 @@ struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Triangle>
 };
 
 template<>
-struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Tetrahedron>
-    : BaseDrawMesh<DrawElementMesh<sofa::geometry::Tetrahedron>>
+class SOFA_CORE_API DrawElementMesh<sofa::geometry::Tetrahedron>
+    : public BaseDrawMesh<DrawElementMesh<sofa::geometry::Tetrahedron>, 4>
 {
+    friend BaseDrawMesh;
     static constexpr std::size_t NumberTrianglesInTetrahedron = 4;
-    static constexpr std::size_t NumberColors = NumberTrianglesInTetrahedron;
 
     static constexpr ColorContainer defaultColors {
         sofa::type::RGBAColor::blue(),
@@ -98,8 +98,6 @@ struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Tetrahedron>
         sofa::type::RGBAColor::cyan()
     };
 
-private:
-
     void doDraw(sofa::helper::visual::DrawTool* drawTool,
         const type::vector<type::Vec3>& position,
         sofa::core::topology::BaseMeshTopology* topology,
@@ -107,11 +105,12 @@ private:
 };
 
 template<>
-struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Hexahedron>
-    : BaseDrawMesh<DrawElementMesh<sofa::geometry::Hexahedron>>
+class SOFA_CORE_API DrawElementMesh<sofa::geometry::Hexahedron>
+    : public BaseDrawMesh<DrawElementMesh<sofa::geometry::Hexahedron>, 6>
 {
+    friend BaseDrawMesh;
     static constexpr std::size_t NumberQuadsInHexahedron = 6;
-    static constexpr std::size_t NumberColors = NumberQuadsInHexahedron;
+
     static constexpr ColorContainer defaultColors {
         sofa::type::RGBAColor(0.7f,0.7f,0.1f,1.f),
         sofa::type::RGBAColor(0.7f,0.0f,0.0f,1.f),
