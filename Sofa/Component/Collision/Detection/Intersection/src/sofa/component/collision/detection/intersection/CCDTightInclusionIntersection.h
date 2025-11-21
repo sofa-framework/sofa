@@ -54,16 +54,16 @@ namespace sofa::component::collision::detection::intersection
  * - Ray/Point
  * - Ray/Line
  */
-class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API CCDIntersection
+class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API CCDTightInclusionIntersection
     : public BaseProximityIntersection
 {
    public:
-    SOFA_CLASS(CCDIntersection, BaseProximityIntersection);
+    SOFA_CLASS(CCDTightInclusionIntersection, BaseProximityIntersection);
 
-    typedef core::collision::IntersectorFactory<CCDIntersection> IntersectorFactory;
+    typedef core::collision::IntersectorFactory<CCDTightInclusionIntersection> IntersectorFactory;
 
    protected:
-    CCDIntersection();
+    CCDTightInclusionIntersection();
 
    public:
     void init() override;

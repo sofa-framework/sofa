@@ -60,7 +60,7 @@ PointSetTopologyContainer::PointSetTopologyContainer(Size npoints)
     , d_checkTopology (initData(&d_checkTopology, false, "checkTopology", "Parameter to activate internal topology checks (might slow down the simulation)"))
     , d_nbPoints (initData(&d_nbPoints, npoints, "nbPoints", "Number of points"))
 {
-    addAlias(&d_initPoints,"points");
+    addAlias(&d_initPoints,"");
 }
 
 void PointSetTopologyContainer::setNbPoints(Size n)

@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_CCDIntersection_CPP
-#include <sofa/component/collision/detection/intersection/CCDIntersection.h>
+#define SOFA_COMPONENT_COLLISION_CCDTightInclusionIntersection_CPP
+#include <sofa/component/collision/detection/intersection/CCDTightInclusionIntersection.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/geometry/proximity/SegmentTriangle.h>
@@ -38,7 +38,7 @@
 
 namespace sofa::core::collision
 {
-    template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::detection::intersection::CCDIntersection>;
+    template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::detection::intersection::CCDTightInclusionIntersection>;
 
 } // namespace sofa::core::collision
 
@@ -52,13 +52,13 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::collision::geometry;
 using core::topology::BaseMeshTopology;
 
-void registerCCDIntersection(sofa::core::ObjectFactory* factory)
+void registerCCDTightInclusionIntersection(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("A set of methods to compute (for constraint methods) if two primitives are close enough to consider they collide")
-        .add< CCDIntersection >());
+        .add< CCDTightInclusionIntersection >());
 }
 
-CCDIntersection::CCDIntersection()
+CCDTightInclusionIntersection::CCDTightInclusionIntersection()
 : BaseProximityIntersection()
 , d_continuousCollisionType(initData(&d_continuousCollisionType, helper::OptionsGroup({"None", "Inertia", "FreeMotion"}).setSelectedItem(0), "continuousCollisionType",
     "Data used for continuous collision detection taken into {'None','Inertia','FreeMotion'}. If 'None' then no CCD is used, if 'Inertia' then only inertia will be used to compute the collision detection and if 'FreeMotion' then the free motion will be used. Note that if 'FreeMotion' is selected, you cannot use the option 'parallelCollisionDetectionAndFreeMotion' in the FreeMotionAnimationLoop"))
@@ -68,11 +68,11 @@ CCDIntersection::CCDIntersection()
 
 }
 
-void CCDIntersection::init()
+void CCDTightInclusionIntersection::init()
 {
-    intersectors.add<CubeCollisionModel, CubeCollisionModel, CCDIntersection>(this);
-    intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, CCDIntersection>(this);
-    intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, CCDIntersection>(this);
+    intersectors.add<CubeCollisionModel, CubeCollisionModel, CCDTightInclusionIntersection>(this);
+    intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, CCDTightInclusionIntersection>(this);
+    intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, CCDTightInclusionIntersection>(this);
 
     intersectors.ignore<SphereCollisionModel<sofa::defaulttype::Vec3Types>,     SphereCollisionModel<sofa::defaulttype::Vec3Types>>();
     intersectors.ignore<SphereCollisionModel<sofa::defaulttype::Vec3Types>,     PointCollisionModel<sofa::defaulttype::Vec3Types>>();
@@ -92,19 +92,19 @@ void CCDIntersection::init()
     //By default, all th previous pairs of collision models are supported,
     //but other C++ components are able to add a list of pairs to be supported.
     //In the following function, all the C++ components that registered to
-    //CCDIntersection are created. In their constructors, they add
+    //CCDTightInclusionIntersection are created. In their constructors, they add
     //new supported pairs of collision models.
     IntersectorFactory::getInstance()->addIntersectors(this);
 
     BaseProximityIntersection::init();
 }
 
-bool CCDIntersection::useContinuous() const
+bool CCDTightInclusionIntersection::useContinuous() const
 {
     return d_continuousCollisionType.getValue().getSelectedId();
 }
 
-core::CollisionModel::ContinuousIntersectionTypeFlag CCDIntersection::continuousIntersectionType() const
+core::CollisionModel::ContinuousIntersectionTypeFlag CCDTightInclusionIntersection::continuousIntersectionType() const
 {
     if (d_continuousCollisionType.getValue().getSelectedId()<= 3 )
         return static_cast<core::CollisionModel::ContinuousIntersectionTypeFlag>(d_continuousCollisionType.getValue().getSelectedId());
@@ -114,17 +114,17 @@ core::CollisionModel::ContinuousIntersectionTypeFlag CCDIntersection::continuous
 
 
 
-bool CCDIntersection::testIntersection(Cube &cube1, Cube &cube2, const core::collision::Intersection* currentIntersection)
+bool CCDTightInclusionIntersection::testIntersection(Cube &cube1, Cube &cube2, const core::collision::Intersection* currentIntersection)
 {
     return Inherit1::testIntersection(cube1, cube2, currentIntersection);
 }
 
-int CCDIntersection::computeIntersection(Cube&, Cube&, OutputVector* /*contacts*/, const core::collision::Intersection* )
+int CCDTightInclusionIntersection::computeIntersection(Cube&, Cube&, OutputVector* /*contacts*/, const core::collision::Intersection* )
 {
     return 0; /// \todo
 }
 
-bool CCDIntersection::testIntersection(Line& e1, Line& e2, const core::collision::Intersection* currentIntersection)
+bool CCDTightInclusionIntersection::testIntersection(Line& e1, Line& e2, const core::collision::Intersection* currentIntersection)
 {
     std::cout<<"testIntersection Line Line"<<std::endl;
 
@@ -159,7 +159,7 @@ bool CCDIntersection::testIntersection(Line& e1, Line& e2, const core::collision
 
 }
 
-int CCDIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
+int CCDTightInclusionIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
     std::cout<<"computeIntersection Line Line"<<std::endl;
 
@@ -205,9 +205,9 @@ int CCDIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* conta
     sofa::core::collision::DetectionOutput detection ;
     detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection.id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
-    detection.point[0] = (1-baryCoords[0]) * Line1AToi + Line1BToi;
-    detection.point[1] = (1-baryCoords[1]) * Line2AToi + Line2BToi;
-    detection.normal = detection.point[1] - detection.point[0];
+    detection.point[0] = (1-baryCoords[0]) * e1.p1() + e1.p2();
+    detection.point[1] = (1-baryCoords[1]) * e2.p1() + e2.p2();
+    detection.normal = (1-baryCoords[1]) * Line2AToi + Line2BToi - ((1-baryCoords[0]) * Line1AToi + Line1BToi);
     detection.value = detection.normal.norm();
     detection.normal /= detection.value;
     detection.value -= maxSeparation;
@@ -216,7 +216,7 @@ int CCDIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* conta
      return 1;
 }
 
-bool CCDIntersection::testIntersection(Triangle& triangle, Point& point, const core::collision::Intersection* currentIntersection)
+bool CCDTightInclusionIntersection::testIntersection(Triangle& triangle, Point& point, const core::collision::Intersection* currentIntersection)
 {
     std::cout<<"testIntersection Triangle Point"<<std::endl;
 
@@ -251,7 +251,7 @@ bool CCDIntersection::testIntersection(Triangle& triangle, Point& point, const c
 
 }
 
-int CCDIntersection::computeIntersection(Triangle& triangle, Point& point, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
+int CCDTightInclusionIntersection::computeIntersection(Triangle& triangle, Point& point, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
 
     if(!triangle.isActive(point.getCollisionModel()) || !point.isActive(triangle.getCollisionModel()))
