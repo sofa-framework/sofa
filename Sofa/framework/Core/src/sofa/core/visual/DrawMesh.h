@@ -54,20 +54,19 @@ struct BaseDrawMesh
         static_cast<Derived&>(*this).doDraw(drawTool, position, topology, colors);
     }
 
+protected:
     sofa::type::Vec3 applyElementSpace(const sofa::type::Vec3& position, const sofa::type::Vec3& elementCenter) const
     {
         return (position - elementCenter) * (1._sreal - elementSpace) + elementCenter;
     }
-
-protected:
     std::array<sofa::type::vector< sofa::type::Vec3 >, NumberColors> renderedPoints;
 };
 
 template<class ElementType>
-class DrawElementMesh{};
+struct DrawElementMesh{};
 
 template<>
-class SOFA_CORE_API DrawElementMesh<sofa::geometry::Triangle>
+struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Triangle>
     : public BaseDrawMesh<DrawElementMesh<sofa::geometry::Triangle>, 3>
 {
     friend BaseDrawMesh;
@@ -77,6 +76,7 @@ class SOFA_CORE_API DrawElementMesh<sofa::geometry::Triangle>
         sofa::type::RGBAColor::blue()
     };
 
+private:
     void doDraw(
         sofa::helper::visual::DrawTool* drawTool,
         const type::vector<type::Vec3>& position,
@@ -85,7 +85,7 @@ class SOFA_CORE_API DrawElementMesh<sofa::geometry::Triangle>
 };
 
 template<>
-class SOFA_CORE_API DrawElementMesh<sofa::geometry::Tetrahedron>
+struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Tetrahedron>
     : public BaseDrawMesh<DrawElementMesh<sofa::geometry::Tetrahedron>, 4>
 {
     friend BaseDrawMesh;
@@ -98,6 +98,7 @@ class SOFA_CORE_API DrawElementMesh<sofa::geometry::Tetrahedron>
         sofa::type::RGBAColor::cyan()
     };
 
+private:
     void doDraw(sofa::helper::visual::DrawTool* drawTool,
         const type::vector<type::Vec3>& position,
         sofa::core::topology::BaseMeshTopology* topology,
@@ -105,7 +106,7 @@ class SOFA_CORE_API DrawElementMesh<sofa::geometry::Tetrahedron>
 };
 
 template<>
-class SOFA_CORE_API DrawElementMesh<sofa::geometry::Hexahedron>
+struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Hexahedron>
     : public BaseDrawMesh<DrawElementMesh<sofa::geometry::Hexahedron>, 6>
 {
     friend BaseDrawMesh;
@@ -120,6 +121,7 @@ class SOFA_CORE_API DrawElementMesh<sofa::geometry::Hexahedron>
         sofa::type::RGBAColor(0.7f,0.1f,0.7f,1.f)
     };
 
+private:
     void doDraw(
         sofa::helper::visual::DrawTool* drawTool,
         const type::vector<type::Vec3>& position,
@@ -131,9 +133,15 @@ class SOFA_CORE_API DrawMesh
 {
 public:
 
-    void drawTriangles(sofa::helper::visual::DrawTool* drawTool, const type::vector<type::Vec3>& position, sofa::core::topology::BaseMeshTopology* topology);
-    void drawTetrahedra(sofa::helper::visual::DrawTool* drawTool, const type::vector<type::Vec3>& position, sofa::core::topology::BaseMeshTopology* topology);
-    void drawHexahedra(sofa::helper::visual::DrawTool* drawTool, const type::vector<type::Vec3>& position, sofa::core::topology::BaseMeshTopology* topology);
+    template<class ElementType>
+    void drawElements(
+        sofa::helper::visual::DrawTool* drawTool,
+        const type::vector<type::Vec3>& position,
+        sofa::core::topology::BaseMeshTopology* topology,
+        const DrawElementMesh<ElementType>::ColorContainer& colors = DrawElementMesh<ElementType>::defaultColors)
+    {
+        std::get<DrawElementMesh<ElementType>>(m_meshes).draw(drawTool, position, topology, colors);
+    }
 
     void setElementSpace(SReal elementSpace);
 
@@ -143,10 +151,11 @@ public:
     void draw(sofa::helper::visual::DrawTool* drawTool, const type::vector<type::Vec3>& position, sofa::core::topology::BaseMeshTopology* topology);
 
 private:
-
-    DrawElementMesh<sofa::geometry::Triangle> m_drawTriangleMesh;
-    DrawElementMesh<sofa::geometry::Tetrahedron> m_drawTetrahedronMesh;
-    DrawElementMesh<sofa::geometry::Hexahedron> m_drawHexahedronMesh;
+    std::tuple<
+        DrawElementMesh<sofa::geometry::Triangle>,
+        DrawElementMesh<sofa::geometry::Tetrahedron>,
+        DrawElementMesh<sofa::geometry::Hexahedron>
+    > m_meshes;
 };
 
 }  // namespace sofa::core::visual
