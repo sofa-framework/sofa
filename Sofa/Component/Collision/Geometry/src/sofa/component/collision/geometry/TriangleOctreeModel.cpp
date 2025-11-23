@@ -37,34 +37,41 @@ namespace sofa::component::collision::geometry
 void registerTriangleOctreeModel(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Collision model using a triangular mesh mapped to an Octree.")
-        .add <	TriangleOctreeModel >());
+        .add <	TriangleOctreeCollisionModel >()
+        .addAlias("TriangleOctreeModel")); // SOFA_ATTRIBUTE_DEPRECATED__RENAMED_TRIANGLEOCTREEMODEL()
 }
 
-TriangleOctreeModel::TriangleOctreeModel ()
+TriangleOctreeCollisionModel::TriangleOctreeCollisionModel ()
+    : Inherit1()
+    , helper::TriangleOctreeRoot()
+    , d_drawOctree(initData(&d_drawOctree, false, "drawOctree", "draw the octree structure"))
 {
 }
 
-void TriangleOctreeModel::drawCollisionModel (const core::visual::VisualParams* vparams)
+void TriangleOctreeCollisionModel::drawCollisionModel (const core::visual::VisualParams* vparams)
 {
     TriangleCollisionModel<sofa::defaulttype::Vec3Types>::drawCollisionModel(vparams);
 
-    if (vparams->displayFlags().getShowWireFrame())
+    if (d_drawOctree.getValue())
     {
-        vparams->drawTool()->setPolygonMode(0, true);
+        if (vparams->displayFlags().getShowWireFrame())
+        {
+            vparams->drawTool()->setPolygonMode(0, true);
+        }
+
+        vparams->drawTool()->enableLighting();
+        const float* getCol = getColor4f();
+        const auto color = sofa::type::RGBAColor(getCol[0], getCol[1], getCol[2], getCol[3]);
+        vparams->drawTool()->setMaterial(color);
+
+        if (octreeRoot) octreeRoot->draw(vparams->drawTool());
+
+        vparams->drawTool()->disableLighting();
+        if (vparams->displayFlags().getShowWireFrame()) vparams->drawTool()->setPolygonMode(0, false);
     }
-
-    vparams->drawTool()->enableLighting();
-    const float* getCol = getColor4f();
-    const auto color = sofa::type::RGBAColor(getCol[0], getCol[1], getCol[2], getCol[3]);
-    vparams->drawTool()->setMaterial(color);
-
-    if (octreeRoot) octreeRoot->draw(vparams->drawTool());
-
-    vparams->drawTool()->disableLighting();
-    if (vparams->displayFlags().getShowWireFrame()) vparams->drawTool()->setPolygonMode(0, false);
 }
 
-void TriangleOctreeModel::computeBoundingTree(int maxDepth)
+void TriangleOctreeCollisionModel::computeBoundingTree(int maxDepth)
 {
     const type::vector<topology::Triangle>& tri = *m_triangles;
     if(octreeRoot)
@@ -124,12 +131,12 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
     }
 }
 
-void TriangleOctreeModel::computeContinuousBoundingTree(SReal/* dt*/, int maxDepth)
+void TriangleOctreeCollisionModel::computeContinuousBoundingTree(SReal/* dt*/, int maxDepth)
 {
     computeBoundingTree(maxDepth);
 }
 
-void TriangleOctreeModel::buildOctree()
+void TriangleOctreeCollisionModel::buildOctree()
 {
     this->octreeTriangles = &this->getTriangles();
     this->octreePos = &this->getX();

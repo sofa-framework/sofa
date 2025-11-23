@@ -93,7 +93,7 @@ inline void to_json(nlohmann::json& json,
 }
 
 inline void to_json(nlohmann::json& json,
-                    const sofa::core::ObjectFactory::Creator::SPtr& creator)
+                    const sofa::core::ObjectFactory::BaseObjectCreator::SPtr& creator)
 {
     if (creator)
     {

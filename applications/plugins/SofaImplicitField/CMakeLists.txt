@@ -6,12 +6,14 @@ sofa_find_package(Sofa.Component.Topology.Container.Constant REQUIRED)
 set(HEADER_FILES
     config.h.in
     initSofaImplicitField.h
+    MarchingCube.h
 
     # This is backward compatibility
     deprecated/SphereSurface.h
     deprecated/ImplicitSurfaceContainer.h    # This is a backward compatibility file toward ScalarField
     deprecated/InterpolatedImplicitSurface.h # This is a backward compatibility file toward DiscreteGridField
 
+    components/engine/FieldToSurfaceMesh.h
     components/geometry/BottleField.h
     components/geometry/DiscreteGridField.h
     components/geometry/SphericalField.h
@@ -23,11 +25,13 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     initSofaImplicitField.cpp
+    MarchingCube.cpp
 
     ## This is a backward compatibility..
     deprecated/SphereSurface.cpp
     deprecated/InterpolatedImplicitSurface.cpp
 
+    components/engine/FieldToSurfaceMesh.cpp
     components/geometry/BottleField.cpp
     components/geometry/ScalarField.cpp
     components/geometry/DiscreteGridField.cpp
