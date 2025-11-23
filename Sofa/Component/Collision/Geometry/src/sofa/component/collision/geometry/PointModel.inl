@@ -169,7 +169,7 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, Con
         {
             TPoint<DataTypes> p(this,i);
             const type::Vec3& pt = p.p();
-            const type::Vec3 ptv = pt + (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia ? p.v()*dt : p.pFree());
+            const type::Vec3 ptv = (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia ? pt + p.v()*dt : p.pFree());
 
 
             for (int c = 0; c < 3; c++)

@@ -223,7 +223,7 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, Co
         {
             TSphere<DataTypes> p(this,i);
             const Vec3& pt = p.p();
-            const Vec3 ptv = pt + (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia ? p.v()*dt : p.pFree());
+            const Vec3 ptv = (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia ? pt + p.v()*dt : p.pFree());
 
             for (int c = 0; c < 3; c++)
             {
