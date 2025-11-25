@@ -22,15 +22,15 @@
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/visual/VisualParams.h>
 
+#include <ranges>
+
 namespace sofa::core::collision
 {
 
 NarrowPhaseDetection::~NarrowPhaseDetection()
 {
-    for (const auto& it : m_outputsMap)
+    for (DetectionOutputVector* do_vec : m_outputsMap | std::views::values)
     {
-        DetectionOutputVector* do_vec = it.second;
-
         if (do_vec != nullptr)
         {
             do_vec->clear();

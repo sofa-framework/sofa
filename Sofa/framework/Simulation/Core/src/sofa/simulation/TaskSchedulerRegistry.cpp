@@ -23,6 +23,8 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/simulation/TaskScheduler.h>
 
+#include <ranges>
+
 namespace sofa::simulation
 {
 
@@ -66,9 +68,9 @@ const std::optional<std::pair<std::string, TaskScheduler*>>& TaskSchedulerRegist
 
 void TaskSchedulerRegistry::clear()
 {
-    for (const auto& p : m_schedulers)
+    for (const auto& scheduler : m_schedulers | std::views::values)
     {
-        delete p.second;
+        delete scheduler;
     }
     m_schedulers.clear();
 }

@@ -23,6 +23,8 @@
 #include <sofa/simulation/TaskScheduler.h>
 #include <sofa/helper/logging/Messaging.h>
 
+#include <ranges>
+
 namespace sofa::simulation
 {
 
@@ -54,7 +56,7 @@ TaskScheduler* TaskSchedulerFactory::instantiate(const std::string& name)
 std::set<std::string> TaskSchedulerFactory::getAvailableSchedulers()
 {
     std::set<std::string> schedulers;
-    for (const auto& [name, _] : m_schedulerCreationFunctions)
+    for (const auto& name : m_schedulerCreationFunctions | std::views::keys)
     {
         schedulers.insert(name);
     }
