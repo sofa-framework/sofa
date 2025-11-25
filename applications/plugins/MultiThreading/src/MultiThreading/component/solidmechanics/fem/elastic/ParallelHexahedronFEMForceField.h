@@ -66,6 +66,7 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::SeqHexahedra VecElement;
     typedef sofa::type::Mat<24, 24, Real> ElementStiffness;
     typedef sofa::helper::vector<ElementStiffness> VecElementStiffness;
+    using Inherit1::Mat33;
 
     void init() override;
 
@@ -80,6 +81,8 @@ public:
      */
     void addDForce (const sofa::core::MechanicalParams* mparams, DataVecDeriv& df,
                     const DataVecDeriv& dx) override;
+
+    void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
 
 protected:
 

@@ -22,6 +22,8 @@
 #pragma once
 
 #include <MultiThreading/component/solidmechanics/fem/elastic/ParallelHexahedronFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.inl>
+#include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/TaskScheduler.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/ParallelForEach.h>
@@ -265,6 +267,74 @@ void ParallelHexahedronFEMForceField<DataTypes>::addDForce (const sofa::core::Me
                 }
             }
         });
+}
+
+template <class DataTypes>
+void ParallelHexahedronFEMForceField<DataTypes>::buildStiffnessMatrix(
+    sofa::core::behavior::StiffnessMatrix* matrix)
+{
+    const auto& stiffnesses = this->_elementStiffnesses.getValue();
+    const auto* indexedElements = this->getIndexedElements();
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    std::mutex mutex;
+    const auto threadId = std::this_thread::get_id();
+
+    sofa::simulation::parallelForEachRange(*m_taskScheduler, indexedElements->begin(), indexedElements->end(),
+        [&indexedElements, this, &stiffnesses, &dfdx, &mutex, threadId](const auto& range)
+        {
+            auto elementId = std::distance(indexedElements->begin(), range.start);
+
+            sofa::type::vector<Mat33> contributions;
+            contributions.reserve(std::distance(range.start, range.end) * Element::size() * Element::size());
+
+            for (auto it = range.start; it != range.end; ++it)
+            {
+                const ElementStiffness &Ke = stiffnesses[elementId];
+                const auto& Rot = this->getElementRotation(elementId);
+
+                for (Element::size_type n1 = 0; n1 < Element::size(); n1++)
+                {
+                    for (Element::size_type n2 = 0; n2 < Element::size(); n2++)
+                    {
+                        const Mat33 tmp = Rot.multTranspose( Mat33(
+                                Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
+                                Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
+                                Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * Rot;
+                        contributions.emplace_back(-tmp);
+                    }
+                }
+
+                ++elementId;
+            }
+
+            std::lock_guard guard(mutex);
+
+            if (threadId == std::this_thread::get_id())
+            {
+                sofa::helper::AdvancedTimer::stepBegin("accumulation");
+            }
+
+            auto contributionIt = contributions.begin();
+            for (auto it = range.start; it != range.end; ++it)
+            {
+                const auto& element = *it;
+                for (Element::size_type n1 = 0; n1 < Element::size(); n1++)
+                {
+                    const auto node1 = element[n1];
+                    for (Element::size_type n2 = 0; n2 < Element::size(); n2++)
+                    {
+                        const auto node2 = element[n2];
+                        dfdx(3 * node1, 3 * node2) += *contributionIt++;
+                    }
+                }
+            }
+        });
+
+    sofa::helper::AdvancedTimer::stepEnd("accumulation");
+
 }
 
 } //namespace sofa::component::forcefield
