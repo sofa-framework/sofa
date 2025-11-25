@@ -25,12 +25,7 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeEnergyVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateDxVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateDxAndResetForceVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndResetForceVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalApplyConstraintsVisitor.h>
@@ -55,6 +50,7 @@
 #include <sofa/core/behavior/ConstraintSolver.h>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/MappingGraph.h>
 
 #include <numeric>
 
@@ -72,8 +68,10 @@ MechanicalOperations::MechanicalOperations(const sofa::core::MechanicalParams* m
 {
 }
 
-MechanicalOperations::MechanicalOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::BaseContext* ctx, bool precomputedTraversalOrder)
-    :mparams(*params),ctx(ctx),executeVisitor(*ctx,precomputedTraversalOrder)
+MechanicalOperations::MechanicalOperations(const sofa::core::ExecParams* params,
+                                           sofa::core::objectmodel::BaseContext* ctx,
+                                           bool precomputedTraversalOrder)
+    : mparams(*params), ctx(ctx), executeVisitor(*ctx, precomputedTraversalOrder)
 {
 }
 
@@ -137,45 +135,85 @@ void MechanicalOperations::setDf(core::ConstMultiVecDerivId& v)
     mparams.setDf(v);
 }
 
+void MechanicalOperations::apply(core::MultiVecCoordId out, core::ConstMultiVecCoordId in, bool filterNonMechanical)
+{
+    mappingGraphBreadthFirstTraversal(ctx,
+        [params = &mparams, &out, &in](BaseMapping* mapping)
+        {
+            mapping->apply(params, out, in);
+        }, filterNonMechanical, MappingGraphDirection::FORWARD);
+}
+
+void MechanicalOperations::applyJ(core::MultiVecDerivId out, core::ConstMultiVecDerivId in, bool filterNonMechanical)
+{
+    mappingGraphBreadthFirstTraversal(ctx,
+        [params = &mparams, &out, &in](BaseMapping* mapping)
+        {
+            mapping->applyJ(params, out, in);
+        },
+        filterNonMechanical, MappingGraphDirection::FORWARD);
+}
+
+void MechanicalOperations::applyJT(core::MultiVecDerivId in, core::ConstMultiVecDerivId out, bool filterNonMechanical)
+{
+    mappingGraphBreadthFirstTraversal(ctx,
+        [params = &mparams, &out, &in](core::BaseMapping* mapping)
+        {
+            mapping->applyJT(params, in, out);
+        }, filterNonMechanical, MappingGraphDirection::BACKWARD);
+}
 
 /// Propagate the given displacement through all mappings
-void MechanicalOperations::propagateDx(core::MultiVecDerivId dx, bool ignore_flag)
+void MechanicalOperations::propagateDx(core::MultiVecDerivId dx, bool ignore_flag, bool filterNonMechanical)
 {
     setDx(dx);
-    executeVisitor( MechanicalPropagateDxVisitor(&mparams, dx, ignore_flag) );
+
+    mappingGraphBreadthFirstTraversal(ctx, [&params = mparams, &dx, ignore_flag](BaseMapping* mapping)
+    {
+        if (ignore_flag || !mapping->areForcesMapped())
+        {
+            mapping->applyJ(&params, dx, dx);
+        }
+    }, true, MappingGraphDirection::FORWARD);
 }
 
 /// Propagate the given displacement through all mappings and reset the current force delta
-void MechanicalOperations::propagateDxAndResetDf(core::MultiVecDerivId dx, core::MultiVecDerivId df)
+void MechanicalOperations::propagateDxAndResetDf(core::MultiVecDerivId dx, core::MultiVecDerivId df, bool filterNonMechanical)
 {
     setDx(dx);
     setDf(df);
-    executeVisitor( MechanicalPropagateDxAndResetForceVisitor(&mparams, dx, df) );
+
+    executeVisitor( MechanicalResetForceVisitor(&mparams, df) );
+
+    applyJ(dx, dx, filterNonMechanical);
 }
 
 /// Propagate the given position through all mappings
-void MechanicalOperations::propagateX(core::MultiVecCoordId x)
+void MechanicalOperations::propagateX(core::MultiVecCoordId x, bool filterNonMechanical)
 {
     setX(x);
-    const MechanicalPropagateOnlyPositionVisitor visitor(&mparams, 0.0, x);
-    executeVisitor( visitor );
+    apply(x, x, filterNonMechanical);
 }
 
 /// Propagate the given velocity through all mappings
-void MechanicalOperations::propagateV(core::MultiVecDerivId v)
+void MechanicalOperations::propagateV(core::MultiVecDerivId v, bool filterNonMechanical)
 {
     setV(v);
-    const MechanicalPropagateOnlyVelocityVisitor visitor(&mparams, 0.0, v);
-    executeVisitor( visitor );
+    applyJ(v, v, filterNonMechanical);
 }
 
 /// Propagate the given position and velocity through all mappings
-void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v)
+void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v, bool filterNonMechanical)
 {
     setX(x);
     setV(v);
-    const MechanicalPropagateOnlyPositionAndVelocityVisitor visitor(&mparams, 0.0, x, v);
-    executeVisitor( visitor );
+
+    mappingGraphBreadthFirstTraversal(ctx,
+    [params = &mparams, &x, &v](BaseMapping* mapping)
+    {
+        mapping->apply(params, x, x);
+        mapping->applyJ(params, v, v);
+    }, filterNonMechanical, MappingGraphDirection::FORWARD);
 }
 
 /// Propagate the given position through all mappings and reset the current force delta
@@ -183,8 +221,8 @@ void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::Mu
 {
     setX(x);
     setF(f);
-    const MechanicalPropagateOnlyPositionAndResetForceVisitor visitor(&mparams, x, f);
-    executeVisitor( visitor );
+    executeVisitor( MechanicalResetForceVisitor(&mparams, f) );
+    propagateX(x);
 }
 
 /// Apply projective constraints to the given position vector
@@ -204,6 +242,7 @@ void MechanicalOperations::computeEnergy(SReal &kineticEnergy, SReal &potentialE
     kineticEnergy = energyVisitor.getKineticEnergy();
     potentialEnergy = energyVisitor.getPotentialEnergy();
 }
+
 /// Apply projective constraints to the given velocity vector
 void MechanicalOperations::projectVelocity(core::MultiVecDerivId v, SReal time)
 {
@@ -256,7 +295,12 @@ void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear
         executeVisitor( MechanicalResetForceVisitor(&mparams, result, false) );
         //finish();
     }
-    executeVisitor( MechanicalComputeForceVisitor(&mparams, result, accumulate) );
+    executeVisitor( MechanicalComputeForceVisitor(&mparams, result, false) );
+
+    if (accumulate)
+    {
+        applyJT(result, result);
+    }
 }
 
 
@@ -269,7 +313,17 @@ void MechanicalOperations::computeDf(core::MultiVecDerivId df, bool clear, bool 
         executeVisitor( MechanicalResetForceVisitor(&mparams, df, false) );
         //	finish();
     }
-    executeVisitor( MechanicalComputeDfVisitor( &mparams, df,  accumulate) );
+    executeVisitor( MechanicalComputeDfVisitor( &mparams, df,  false) );
+
+    if (accumulate)
+    {
+        mappingGraphBreadthFirstTraversal(ctx, [&mparams = mparams, &df](BaseMapping* mapping)
+        {
+            mapping->applyJT(&mparams, df, df); // apply material stiffness: variation of force below the mapping
+            if( mparams.kFactor() )
+                mapping->applyDJT(&mparams, df, df); // apply geometric stiffness: variation due to a change of mapping, with a constant force below the mapping
+        }, true, MappingGraphDirection::BACKWARD);
+    }
 }
 
 /// Compute the current force delta (given the latest propagated velocity)
@@ -283,7 +337,18 @@ void MechanicalOperations::computeDfV(core::MultiVecDerivId df, bool clear, bool
         executeVisitor( MechanicalResetForceVisitor(&mparams, df, false) );
         //finish();
     }
-    executeVisitor( MechanicalComputeDfVisitor(&mparams, df, accumulate) );
+    executeVisitor( MechanicalComputeDfVisitor(&mparams, df, false) );
+
+    if (accumulate)
+    {
+        mappingGraphBreadthFirstTraversal(ctx, [&mparams = mparams, &df](BaseMapping* mapping)
+        {
+            mapping->applyJT(&mparams, df, df); // apply material stiffness: variation of force below the mapping
+            if( mparams.kFactor() != 0_sreal)
+                mapping->applyDJT(&mparams, df, df); // apply geometric stiffness: variation due to a change of mapping, with a constant force below the mapping
+        }, true, MappingGraphDirection::BACKWARD);
+    }
+
     mparams.setDx(dx);
 }
 
@@ -303,7 +368,17 @@ void MechanicalOperations::addMBKdx(core::MultiVecDerivId df,
     mparams.setBFactor(b.get());
     mparams.setKFactor(k.get());
     mparams.setMFactor(m.get());
-    executeVisitor( MechanicalAddMBKdxVisitor(&mparams, df, accumulate) );
+    executeVisitor( MechanicalAddMBKdxVisitor(&mparams, df, false) );
+
+    if (accumulate)
+    {
+        mappingGraphBreadthFirstTraversal(ctx, [&mparams = mparams, &df](BaseMapping* mapping)
+        {
+            mapping->applyJT(&mparams, df, df);
+            if( mparams.kFactor() != 0_sreal)
+                mapping->applyDJT(&mparams, df, df);
+        }, true, MappingGraphDirection::BACKWARD);
+    }
 }
 
 /// accumulate $ df += (m M + b B + k K) velocity $
@@ -325,7 +400,18 @@ void MechanicalOperations::addMBKv(core::MultiVecDerivId df,
     mparams.setKFactor(k.get());
     mparams.setMFactor(m.get());
     /* useV = true */
-    executeVisitor( MechanicalAddMBKdxVisitor(&mparams, df, accumulate) );
+    executeVisitor( MechanicalAddMBKdxVisitor(&mparams, df, false) );
+
+    if (accumulate)
+    {
+        mappingGraphBreadthFirstTraversal(ctx, [&mparams = mparams, &df](BaseMapping* mapping)
+        {
+            mapping->applyJT(&mparams, df, df);
+            if( mparams.kFactor() != 0_sreal)
+                mapping->applyDJT(&mparams, df, df);
+        }, true, MappingGraphDirection::BACKWARD);
+    }
+
     mparams.setDx(dx);
 }
 

@@ -6,10 +6,10 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
+    Link_test.cpp
     MutationListener_test.cpp
     Node_test.cpp
     Simulation_test.cpp
-    Link_test.cpp
     )
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})

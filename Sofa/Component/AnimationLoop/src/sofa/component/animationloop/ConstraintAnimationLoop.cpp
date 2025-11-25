@@ -680,7 +680,8 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     {
         SCOPED_TIMER_VARNAME(updateMappingTimer, "UpdateMapping");
 
-        node->execute<UpdateMappingVisitor>(params);
+        simulation::common::MechanicalOperations mop(params, getContext());
+        mop.propagateXAndV(core::vec_id::write_access::position, core::vec_id::write_access::velocity, false);
         sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
         {
             UpdateMappingEndEvent ev ( dt );

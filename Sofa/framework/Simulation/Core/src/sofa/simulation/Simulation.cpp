@@ -69,6 +69,8 @@ using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityV
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
 
+#include <sofa/simulation/MechanicalOperations.h>
+
 namespace sofa::simulation
 {
 
@@ -270,7 +272,9 @@ void reset(Node* root)
     const sofa::core::MechanicalParams mparams(*params);
     root->execute<MechanicalProjectPositionAndVelocityVisitor>(&mparams);
     root->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(&mparams);
-    root->execute<UpdateMappingVisitor>(params);
+
+    simulation::common::MechanicalOperations mop(params, root);
+    mop.propagateXAndV(sofa::core::vec_id::write_access::position, sofa::core::vec_id::write_access::velocity, false);
 }
 
 void initTextures(Node* root)
