@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/ObjectFactoryJson.h>
 #include <sofa/core/ObjectFactory.h>
-#include <json.h>
+#include <nlohmann/json.hpp>
 #include <sofa/core/CategoryLibrary.h>
 
 
