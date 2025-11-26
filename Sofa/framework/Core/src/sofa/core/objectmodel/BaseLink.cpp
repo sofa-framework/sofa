@@ -209,8 +209,8 @@ std::string BaseLink::CreateString(const std::string& path, const std::string& d
 std::string BaseLink::CreateStringPath(Base* dest, Base* from)
 {
     if (!dest || dest == from) return std::string("[]");
-    BaseObject* o = dest->toBaseObject();
-    BaseObject* f = from->toBaseObject();
+    BaseObject* o = dest->toBaseComponent();
+    BaseObject* f = from->toBaseComponent();
     const BaseContext* ctx = from->toBaseContext();
     if (!ctx && f) ctx = f->getContext();
     if (o)

@@ -410,7 +410,7 @@ public:
     SOFA_BASE_CAST_DEFINITION( core,        CollisionModel                         )
     SOFA_BASE_CAST_DEFINITION( core,        DataEngine                             )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseContext                            )
-    SOFA_BASE_CAST_DEFINITION( objectmodel, BaseObject                             )
+    SOFA_BASE_CAST_DEFINITION( objectmodel, BaseComponent                          )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseNode                               )
     SOFA_BASE_CAST_DEFINITION( objectmodel, ContextObject                          )
     SOFA_BASE_CAST_DEFINITION( objectmodel, ConfigurationSetting                   )
