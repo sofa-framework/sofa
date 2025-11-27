@@ -273,7 +273,7 @@ bool BaseViewer::load()
             currentCamera->setName(groot->getNameHelper().resolveName(currentCamera->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
             groot->addObject(currentCamera);
             currentCamera->bwdInit();
-            msg_warning("BaseViewer") << "There is no camera in this scene, I created one. To remove this error message, add a camera in your scene.";
+            msg_info("BaseViewer") << "There is no camera in this scene, I created one. To remove this error message, add a camera in your scene.";
         }
         sofa::component::visual::VisualStyle::SPtr visualStyle = nullptr;
         groot->get(visualStyle);
