@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/ObjectFactoryJson.h>
 #include <sofa/core/ObjectFactory.h>
-#include <json.h>
+#include <nlohmann/json.hpp>
 #include <sofa/core/CategoryLibrary.h>
 
 
@@ -93,7 +93,7 @@ inline void to_json(nlohmann::json& json,
 }
 
 inline void to_json(nlohmann::json& json,
-                    const sofa::core::ObjectFactory::Creator::SPtr& creator)
+                    const sofa::core::ObjectFactory::BaseObjectCreator::SPtr& creator)
 {
     if (creator)
     {
