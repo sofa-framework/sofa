@@ -418,3 +418,10 @@ TEST(MatTypesTest, assignFromPtr)
     EXPECT_TRUE(comp);
 }
 
+TEST(MatTypesTest, determinant1x1)
+{
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<1,1,SReal>::Identity()), 1_sreal);
+
+    sofa::type::Mat<1,1,SReal> a{{{4.}}};
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(a), 4_sreal);
+}
