@@ -497,6 +497,37 @@ std::string FileSystem::append(const std::string_view& existingPath, const std::
     return std::string(existingPath) + "/" + std::string(toAppend);
 }
 
+void FileSystem::openFileWithDefaultApplication(const std::string& filename)
+{
+    if (!filename.empty())
+    {
+        if (!FileSystem::exists(filename))
+        {
+            msg_error("FileSystem::openFileWithDefaultApplication()") << "File does not exist: " << filename;
+            return;
+        }
+
+        bool success = true;
+
+#ifdef WIN32
+        // According to documentation, values greater than 32 indicate success
+        if (ShellExecuteA(nullptr, "start", filename.c_str(), nullptr, nullptr, SW_SHOWNORMAL) <= 32)
+            success = false;
+#elif defined(__APPLE__)
+        const std::string command = "open \"" + filename + "\"";
+        if (std::system(command.c_str()) == -1)
+            success = false;
+#else
+        const std::string command = "xdg-open \"" + filename + "\"";
+        if (std::system(command.c_str()) == -1)
+            success = false;
+#endif
+        if (!success)
+        {
+            msg_error("FileSystem::openFileWithDefaultApplication()") << "Could not open file: " << filename;
+        }
+    }
+}
 
 } // namespace system
 } // namespace helper
