@@ -34,37 +34,35 @@ namespace engine
 
 using namespace defaulttype;
 
-int CatchAllVectorClass = core::RegisterObject("CatchAllVector")
+void registerCatchAllVector(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("CatchAllVector")
         .add<CatchAllVector<float > >(true)
-        //.add<CatchAllVector<unsigned float> >()
         .add<CatchAllVector<short > >()
         .add<CatchAllVector<unsigned short > >()
         .add<CatchAllVector<int > >()
         .add<CatchAllVector<unsigned int > >()
         .add<CatchAllVector<double > >()
-        //.add<CatchAllVector<unsigned double> >()
         .add<CatchAllVector<long > >()
         .add<CatchAllVector<unsigned long > >()
         .add<CatchAllVector<bool > >()
         .add<CatchAllVector<sofa::type::Vec3f> >()
         .add<CatchAllVector<sofa::type::Vec3d> >()
-        ;
+        );
+}
+
 
 template class SOFA_IMAGE_GUI_API CatchAllVector<float >;
-//template class SOFA_IMAGE_GUI_API CatchAllVector<unsigned float >;
 template class SOFA_IMAGE_GUI_API CatchAllVector<short >;
 template class SOFA_IMAGE_GUI_API CatchAllVector<unsigned short >;
 template class SOFA_IMAGE_GUI_API CatchAllVector<int >;
 template class SOFA_IMAGE_GUI_API CatchAllVector<unsigned int >;
 template class SOFA_IMAGE_GUI_API CatchAllVector<double >;
-//template class SOFA_IMAGE_GUI_API CatchAllVector<unsigned double >;
 template class SOFA_IMAGE_GUI_API CatchAllVector<long >;
 template class SOFA_IMAGE_GUI_API CatchAllVector<unsigned long >;
 template class SOFA_IMAGE_GUI_API CatchAllVector<bool >;
 template class SOFA_IMAGE_GUI_API CatchAllVector<sofa::type::Vec3f >;
 template class SOFA_IMAGE_GUI_API CatchAllVector<sofa::type::Vec3d >;
-
-
 
 
 } //

@@ -33,14 +33,15 @@
 namespace sofa::component::collision::geometry
 {
 
-class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleOctreeModel : public  TriangleCollisionModel<sofa::defaulttype::Vec3Types>, public helper::TriangleOctreeRoot
+class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleOctreeCollisionModel : public  TriangleCollisionModel<sofa::defaulttype::Vec3Types>, public helper::TriangleOctreeRoot
 {
 public:
-    SOFA_CLASS(TriangleOctreeModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
+    SOFA_CLASS(TriangleOctreeCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
 protected:
-    TriangleOctreeModel();
+    TriangleOctreeCollisionModel();
     void drawCollisionModel(const core::visual::VisualParams* vparams) override;
 public:
+    Data<bool> d_drawOctree;  ///< draw the octree
 
     /// the normals for each point
     type::vector<type::Vec3> pNorms;
@@ -49,5 +50,9 @@ public:
     /// init the octree creation
     void buildOctree ();
 };
+
+
+using TriangleOctreeModel SOFA_ATTRIBUTE_DEPRECATED__RENAMED_TRIANGLEOCTREEMODEL() = TriangleOctreeCollisionModel;
+
 
 } // namespace sofa::component::collision::geometry

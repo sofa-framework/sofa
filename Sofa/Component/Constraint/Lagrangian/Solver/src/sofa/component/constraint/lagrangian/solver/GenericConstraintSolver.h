@@ -124,8 +124,8 @@ protected:
      */
     virtual void doSolve( GenericConstraintProblem * problem, SReal timeout = 0.0) = 0;
 
+    virtual void addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization);
 
-    static void addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization);
 
 
 private:

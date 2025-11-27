@@ -344,12 +344,12 @@ SReal BaseObject::getTime() const
 
 std::string BaseObject::getPathName() const
 {
-    auto node = sofa::core::castTo<const BaseNode*>(getContext());
+    auto node = dynamic_cast<const BaseNode*>(getContext());
     if(!node)
-        return "";
+        return getName();
 
-    std::stringstream tmp;
     auto pathname = node->getPathName();
+    std::stringstream tmp;
     tmp << pathname;
     if (pathname != "/")
         tmp << "/";
