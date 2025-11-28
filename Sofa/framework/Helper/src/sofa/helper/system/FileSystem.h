@@ -173,7 +173,7 @@ static std::string append(const std::string_view& existingPath, const std::strin
 }
 
 /// Open a file with the default application associated to its type by the OS
-static void openFileWithDefaultApplication(const std::string& filename);
+static bool openFileWithDefaultApplication(const std::string& filename);
 
 };
 

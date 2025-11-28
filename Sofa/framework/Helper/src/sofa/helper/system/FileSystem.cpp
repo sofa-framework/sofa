@@ -497,36 +497,34 @@ std::string FileSystem::append(const std::string_view& existingPath, const std::
     return std::string(existingPath) + "/" + std::string(toAppend);
 }
 
-void FileSystem::openFileWithDefaultApplication(const std::string& filename)
+bool FileSystem::openFileWithDefaultApplication(const std::string& filename)
 {
+    bool success = false;
+
     if (!filename.empty())
     {
         if (!FileSystem::exists(filename))
         {
             msg_error("FileSystem::openFileWithDefaultApplication()") << "File does not exist: " << filename;
-            return;
+            return success;
         }
-
-        bool success = true;
 
 #ifdef WIN32
         // According to documentation, values greater than 32 indicate success
-        if (ShellExecuteA(nullptr, "start", filename.c_str(), nullptr, nullptr, SW_SHOWNORMAL) <= 32)
-            success = false;
+        if (ShellExecuteA(nullptr, "start", filename.c_str(), nullptr, nullptr, SW_SHOWNORMAL) > 32)
+            success = true;
 #elif defined(__APPLE__)
         const std::string command = "open \"" + filename + "\"";
-        if (std::system(command.c_str()) == -1)
-            success = false;
+        if (std::system(command.c_str()) == 0)
+            success = true;
 #else
-        const std::string command = "xdg-open \"" + filename + "\"";
-        if (std::system(command.c_str()) == -1)
-            success = false;
+        const std::string command = "xdg-open \"" + filename +  "\"";
+        if (std::system(command.c_str()) == 0)
+            success = true;
 #endif
-        if (!success)
-        {
-            msg_error("FileSystem::openFileWithDefaultApplication()") << "Could not open file: " << filename;
-        }
     }
+
+    return success;
 }
 
 } // namespace system
