@@ -41,6 +41,7 @@
 # include <winerror.h>
 # include <strsafe.h>
 # include "Shlwapi.h"           // for PathFileExists()
+#include <shellapi.h>
 #else
 # include <dirent.h>
 # include <sys/stat.h>
@@ -510,8 +511,7 @@ bool FileSystem::openFileWithDefaultApplication(const std::string& filename)
         }
 
 #ifdef WIN32
-        // According to documentation, values greater than 32 indicate success
-        if (ShellExecuteA(nullptr, "start", filename.c_str(), nullptr, nullptr, SW_SHOWNORMAL) > 32)
+        if ((INT_PTR)ShellExecuteA(nullptr, "open", filename.c_str(), nullptr, nullptr, SW_SHOWNORMAL) > 32)
             success = true;
 #elif defined(__APPLE__)
         const std::string command = "open \"" + filename + "\"";
