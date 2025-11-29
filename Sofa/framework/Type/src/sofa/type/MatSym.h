@@ -144,6 +144,18 @@ public:
         }
     }
 
+    template<Size L2, Size C2>
+    constexpr void getsub(Size L0, Size C0, Mat<L2, C2, real>& m) const
+    {
+        for (Size i = 0; i < L2; i++)
+        {
+            for (Size j = 0; j < C2; j++)
+            {
+                m(i, j) = this->operator()(i + L0, j + C0);
+            }
+        }
+    }
+
     /// convert to Voigt notation (supported only for D == 2 and D == 3)
     template<sofa::Size TD = D, typename = std::enable_if_t<TD == 3 || TD == 2> >
     inline Vec<NumberStoredValues, real> getVoigt() const
