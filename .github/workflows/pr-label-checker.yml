@@ -83,7 +83,7 @@ jobs:
             const matchingStatusLabels = labels.filter(label => statusLabels.includes(label));
 
             // Count the number of entries in 'matchingLabels'
-            const matchingLabelsCount = matchingStatusLabels.length;''
+            const matchingLabelsCount = matchingStatusLabels.length;
 
             // If no descriptive label is set, add a comment in the PR and make the action check fail
             if (matchingLabelsCount === 0) {
