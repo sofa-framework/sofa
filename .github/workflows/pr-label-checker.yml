@@ -15,6 +15,9 @@ jobs:
   check_labels:
     name: Check labels
     runs-on: ubuntu-latest
+    permissions:
+      pull_request: write
+    
     if: ${{ github.repository_owner == 'sofa-framework' }}
 
     steps:
@@ -22,8 +25,8 @@ jobs:
         run: |
           echo "Waiting for 10 seconds in case other labels get changed"
           sleep 10
-      - name: Check Labels and Add Comment
-        id: check_labels_and_comment
+      - name: Check descriptive labels
+        id: check_descriptive_labels
         uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -60,6 +63,16 @@ jobs:
               });
               core.setFailed('Invalid PR label');
             }
+      - name: Check status labels
+        if: ${{ always() }}
+        id: check_status_labels
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Get PR info: id and labels
+            const prNumber = context.payload.pull_request.number;
+            const labels = context.payload.pull_request.labels.map(label => label.name);
 
             // Array of possible labels defining the status of the PR
             const statusLabels = [
@@ -72,7 +85,7 @@ jobs:
             const matchingStatusLabels = labels.filter(label => statusLabels.includes(label));
 
             // Count the number of entries in 'matchingLabels'
-            const matchingLabelsCount = matchingStatusLabels.length;
+            const matchingLabelsCount = matchingStatusLabels.length;''
 
             // If no descriptive label is set, add a comment in the PR and make the action check fail
             if (matchingLabelsCount === 0) {
@@ -84,25 +97,8 @@ jobs:
                 body: comment
               });
 
-              // Add by default the flag to-review
-              const octokit = new Octokit({
-                auth: ${{ secrets.GITHUB_TOKEN }}
-              })
-
-              await octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/labels', {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                labels: [
-                  'pr: status to review'
-                ],
-                headers: {
-                  'X-GitHub-Api-Version': '2022-11-28'
-                }
-              })
-
-              // Action warning
-              core.setFailed('Missing status PR label, \"pr: status to review\" automatically added')
+              // Set flag to TRUE
+              echo "no_status_label=true" >> $GITHUB_OUTPUT
             }
             else if (matchingLabelsCount > 1) {
               const comment = ':warning: :warning: :warning:<br>@'+context.repo.owner+' your PR does includes **too many status labels** :label:<br> Make sure to keep only one (wip, to review or ready).<br>:warning: :warning: :warning:';
@@ -115,5 +111,15 @@ jobs:
               core.setFailed('Too many status PR labels')
             }
 
-            // Add all PR labels in log
+            // Print all PR labels in log
             console.log('Labels:', labels.join(', '));
+
+
+      - name: Add status label if none given
+        if: ${{ always() }} && ${{ steps.check_status_labels.outputs.no_status_label == 'true' }}
+        run: gh pr edit "$NUMBER" --add-label "$LABELS"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          LABELS: pr: status to review
