@@ -83,8 +83,28 @@ jobs:
                 repo: context.repo.repo,
                 body: comment
               });
-              core.setFailed('Missing status PR label')
-            } else if (matchingLabelsCount > 1) {
+
+              // Add by default the flag to-review
+              const octokit = new Octokit({
+                auth: ${{ secrets.GITHUB_TOKEN }}
+              })
+
+              await octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/labels', {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                labels: [
+                  'pr: status to review'
+                ],
+                headers: {
+                  'X-GitHub-Api-Version': '2022-11-28'
+                }
+              })
+
+              // Action warning
+              core.setFailed('Missing status PR label, \"pr: status to review\" automatically added')
+            }
+            else if (matchingLabelsCount > 1) {
               const comment = ':warning: :warning: :warning:<br>@'+context.repo.owner+' your PR does includes **too many status labels** :label:<br> Make sure to keep only one (wip, to review or ready).<br>:warning: :warning: :warning:';
               github.rest.issues.createComment({
                 issue_number: prNumber,
