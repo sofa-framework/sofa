@@ -18,8 +18,6 @@ jobs:
     permissions:
       pull_request: write
     
-    if: ${{ github.repository_owner == 'sofa-framework' }}
-
     steps:
       - name: Delay for 10 Seconds
         run: |
