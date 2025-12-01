@@ -53,7 +53,7 @@ option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 # Option to allow some dependencies such as cxxopts to be fetched by cmake if
 # the package is not found
 option(SOFA_ALLOW_FETCH_DEPENDENCIES "Allow compatible dependencies to be fetched if the package is not found by cmake.
-  List of dependencies that can be fetched: cxxopts, gtest, metis, CImg" ON)
+  List of dependencies that can be fetched: cxxopts, gtest, metis, CImg, nlohmann json" ON)
 
 # Option to accelerate the compilation
 # see https://cmake.org/cmake/help/v3.16/command/target_precompile_headers.html

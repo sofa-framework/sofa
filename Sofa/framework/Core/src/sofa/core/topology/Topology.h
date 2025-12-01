@@ -71,6 +71,8 @@ public:
     typedef sofa::Index HexahedronID;
     SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
     typedef sofa::Index HexaID;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    typedef sofa::Index PrismID;
 
     inline static const auto InvalidSet = sofa::topology::InvalidSet;
     static constexpr auto InvalidEdge = sofa::topology::InvalidEdge;

@@ -33,23 +33,6 @@ namespace engine
 {
 using namespace sofa::defaulttype;
 
-int TestImageEngineClass = core::RegisterObject("TestImageEngine to test engine with data image")
-
-        .add<TestImageEngine<ImageUC> >(true)
-        .add<TestImageEngine<ImageD> >()
-#ifdef BUILD_ALL_IMAGE_TYPES
-        .add<TestImageEngine<ImageC> >()
-        .add<TestImageEngine<ImageI> >()
-        .add<TestImageEngine<ImageUI> >()
-        .add<TestImageEngine<ImageS> >()
-        .add<TestImageEngine<ImageUS> >()
-        .add<TestImageEngine<ImageL> >()
-        .add<TestImageEngine<ImageUL> >()
-        .add<TestImageEngine<ImageF> >()
-        .add<TestImageEngine<ImageB> >()
-#endif
-        ;
-
 template class TestImageEngine<ImageUC>;
 template class TestImageEngine<ImageD>;
 #ifdef BUILD_ALL_IMAGE_TYPES
@@ -63,6 +46,26 @@ template class TestImageEngine<ImageUL>;
 template class TestImageEngine<ImageF>;
 template class TestImageEngine<ImageB>;
 #endif
+
+// register effectively TestImageEngine in the registry
+// it is done statically as it will be executed into the image_test executable
+bool res = sofa::core::ObjectFactory::getInstance()->registerObjects(sofa::core::ObjectRegistrationData("TestImageEngine to test engine with data image")
+        .add<TestImageEngine<ImageUC> >(true)
+        .add<TestImageEngine<ImageD> >()
+#ifdef BUILD_ALL_IMAGE_TYPES
+        .add<TestImageEngine<ImageC> >()
+        .add<TestImageEngine<ImageI> >()
+        .add<TestImageEngine<ImageUI> >()
+        .add<TestImageEngine<ImageS> >()
+        .add<TestImageEngine<ImageUS> >()
+        .add<TestImageEngine<ImageL> >()
+        .add<TestImageEngine<ImageUL> >()
+        .add<TestImageEngine<ImageF> >()
+        .add<TestImageEngine<ImageB> >()
+#endif
+    );
+
+
 } // namespace constraint
 
 } // namespace component
