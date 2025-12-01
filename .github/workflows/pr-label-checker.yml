@@ -111,8 +111,6 @@ jobs:
 
             // Print all PR labels in log
             console.log('Labels:', labels.join(', '));
-
-
       - name: Add status label if none given
         if: ${{ always() }} && ${{ steps.check_status_labels.outputs.no_status_label == 'true' }}
         run: gh pr edit "$NUMBER" --add-label "$LABELS"
