@@ -3,7 +3,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
 	<VisualStyle displayFlags="showVisualModels hideBehaviorModels showCollisionModels hideMappings hideForceFields" />
 	<FreeMotionAnimationLoop />
-	<ProjectedGaussSeidelConstraintSolver/>
+	<BlockGaussSeidelConstraintSolver/>
 	<CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
