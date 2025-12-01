@@ -23,6 +23,24 @@ tinyxml2 = ">=9.0.0"
 cxxopts = ">=3.1.1"
 gtest = "*"
 
+[tasks]
+build = { cmd = "cmake --build $SOFA_BUILD_DIR --target all", depends-on = ["configure"] }
+runSofa = { cmd = "$SOFA_BUILD_DIR/bin/runSofa", depends-on = ["build"] }
+clean = { cmd = "rm -rf $SOFA_BUILD_DIR" }
+test = { cmd = "ctest --test-dir $SOFA_BUILD_DIR --output-on-failure", depends-on = ["build"] }
+
+# Python 3.12 is the one supported by default
+[feature.python-supported.dependencies]
+python = "3.12.*"
+
+# Remark: one can add these features to add support for lower/upper bounds of python
+# versions support in the CI
+# [feature.python-oldest.dependencies]
+# python = "3.10.*"
+
+# [feature.python-newest.dependencies]
+# python = "3.14.*"
+
 [activation]
 scripts = ["development/scripts/pixi/activation.sh"]
 
@@ -41,30 +59,11 @@ PIXI_CURRENT_PLATFORM = "osx-arm64"
 [target.win-64.activation.env]
 PIXI_CURRENT_PLATFORM = "win-64"
 
-
-[tasks]
-build = { cmd = "cmake --build $SOFA_BUILD_DIR --target all", depends-on = ["configure"] }
-clean = { cmd = "rm -rf $SOFA_BUILD_DIR" }
-test = { cmd = "ctest --test-dir $SOFA_BUILD_DIR --output-on-failure", depends-on = ["build"] }
-
-# TODO: add run-regression-tests feature
-
-# Python 3.12 is the one supported by default
-[feature.python-supported.dependencies]
-python = "3.12.*"
-
-# Remark: one can add these features to add support for lower/upper bounds of python
-# versions support in the CI
-# [feature.python-oldest.dependencies]
-# python = "3.10.*"
-
-# [feature.python-newest.dependencies]
-# python = "3.14.*"
-
 [feature.plugin-sofa-python3]
 dependencies = { numpy = ">=1.22.0", pybind11 = ">=2.3.0" }
 activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOFA_FETCH_SOFAPYTHON3=ON -DPython_EXECUTABLE=$SOFA_PYTHON_EXECUTABLE -DPython_FIND_STRATEGY=LOCATION" } }
 
+# TODO : remove me
 [feature.qt-gui]
 activation = { env = { Qt5_DIR = "$CONDA_PREFIX/lib/cmake" } }
 dependencies = { qt-main = ">=5.15.0", ffmpeg = "*", libqglviewer = "*" }
@@ -83,7 +82,6 @@ dependencies = { cuda-version = "*", cuda-compiler = "*" }
 activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=OFF -DPLUGIN_BEAMADAPTER_CUDA=OFF -DPLUGIN_SOFADISTANCEGRID_CUDA=OFF -DPLUGIN_SOFASPHFLUID_CUDA=OFF -DPLUGIN_SOFTROBOTS_CUDA=OFF" } }
 
 # We still build CGAL plugin excepted on windows (linking is failing)
-# but support should be disabled soon
 [feature.plugin-cgal.target.unix]
 dependencies = { cgal-cpp = "*", gmp = "*" }
 [feature.plugin-cgal.target.win]
@@ -145,6 +143,7 @@ configure-package = { cmd = [ "cmake",
 build-package = { cmd = "cmake --build $SOFA_BUILD_DIR --target package", depends-on = ["configure-package"] }
 
 [feature.presets-conda-core.tasks]
+# XXX we should probably do not allow fetch dependencies for this preset
 configure = { cmd = [ "cmake",
   "-G",
   "Ninja",
@@ -280,6 +279,15 @@ configure = { cmd = [ "cmake",
   "$SOFA_PLUGIN_SOFACUDA_ARGS"] }  
 
 [environments]
+default = { features = [
+  "presets-supported-plugins",
+  "plugin-sofa-python3",
+  "plugin-cgal",
+  "plugin-cuda",
+  "plugin-cimg",
+  "presets-defaultGUI",
+  "qt-gui",
+  "python-supported"] }
 conda-core = { features = ["presets-conda-core"] }
 minimal = { features = ["presets-minimal"] }
 minimal-dev = { features = ["presets-minimal-dev"] }
