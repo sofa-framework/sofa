@@ -839,6 +839,28 @@ constexpr auto toVec3(const sofa::type::Vec<InSize, InReal>& in) -> sofa::type::
     return toVecN<3, SReal>(in);
 }
 
+#if !defined(SOFA_TYPE_VEC_CPP)
+extern template class SOFA_TYPE_API Vec<2,float>;
+extern template class SOFA_TYPE_API Vec<2,int>;
+extern template class SOFA_TYPE_API Vec<2,double>;
+extern template class SOFA_TYPE_API Vec<2,unsigned>;
+
+extern template class SOFA_TYPE_API Vec<3,float>;
+extern template class SOFA_TYPE_API Vec<3,int>;
+extern template class SOFA_TYPE_API Vec<3,double>;
+extern template class SOFA_TYPE_API Vec<3,unsigned>;
+
+extern template class SOFA_TYPE_API Vec<4,float>;
+extern template class SOFA_TYPE_API Vec<4,int>;
+extern template class SOFA_TYPE_API Vec<4,double>;
+extern template class SOFA_TYPE_API Vec<4,unsigned>;
+
+extern template class SOFA_TYPE_API Vec<6,float>;
+extern template class SOFA_TYPE_API Vec<6,int>;
+extern template class SOFA_TYPE_API Vec<6,double>;
+extern template class SOFA_TYPE_API Vec<6,unsigned>;
+#endif
+
 } // namespace sofa::type
 
 // Specialization of the std comparison function, to use Vec as std::map key
