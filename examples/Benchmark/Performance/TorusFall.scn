@@ -30,7 +30,7 @@
   <VisualStyle displayFlags="showVisual showCollisionModels hideBehaviorModels showForceFields hideInteractionForceFields hideWireframe" />
 
   <FreeMotionAnimationLoop name="animationLoop" solveVelocityConstraintFirst="true" parallelCollisionDetectionAndFreeMotion="true" parallelODESolving="true"/>
-  <ProjectedGaussSeidelConstraintSolver name="constraintSolver" maxIterations="100" tolerance="1.0e-9" multithreading="true"/>
+  <BlockGaussSeidelConstraintSolver name="constraintSolver" maxIterations="100" tolerance="1.0e-9" multithreading="true"/>
   <CollisionPipeline name="Pipeline" />
   <BruteForceBroadPhase name="BroadPhase" />
   <BVHNarrowPhase name="NarrowPhase" />
