@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,30 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/simulation/task/Task.h>
 
-#include <MultiThreading/config.h>
-
-#include <sofa/simulation/TaskScheduler.h>
-#include <sofa/core/objectmodel/Base.h>
-
-namespace multithreading
+namespace sofa::simulation
 {
+Task::Allocator* Task::_allocator = nullptr;
 
-class SOFA_MULTITHREADING_PLUGIN_API TaskSchedulerUser : virtual public sofa::core::Base
+Task::Task(int scheduledThread)
+: m_scheduledThread(scheduledThread)
+, m_id(0)
 {
-public:
-    sofa::Data<int> d_nbThreads;
-    sofa::Data<std::string> d_taskSchedulerType; ///< Type of task scheduler to use.
-
-protected:
-    sofa::simulation::TaskScheduler* m_taskScheduler { nullptr };
-
-    TaskSchedulerUser();
-    void initTaskScheduler();
-
-    void reinitTaskScheduler();
-    void stopTaskSchduler();
-};
-
 }
+
+void *Task::operator new(std::size_t sz)
+{
+    return _allocator->allocate(sz);
+}
+
+void Task::operator delete(void *ptr)
+{
+    _allocator->free(ptr, 0);
+}
+
+void Task::operator delete(void *ptr, std::size_t sz)
+{
+    _allocator->free(ptr, sz);
+}
+
+int Task::getScheduledThread() const
+{
+    return m_scheduledThread;
+}
+
+Task::Allocator *Task::getAllocator()
+{
+    return _allocator;
+}
+
+void Task::setAllocator(Task::Allocator *allocator)
+{
+    _allocator = allocator;
+}
+
+} // namespace sofa

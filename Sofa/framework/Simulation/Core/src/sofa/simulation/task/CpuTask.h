@@ -19,27 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/CpuTaskStatus.h>
+#pragma once
+
+#include <sofa/simulation/config.h>
+
+#include <sofa/simulation/task/CpuTaskStatus.h>
+
 
 namespace sofa::simulation
 {
-CpuTaskStatus::CpuTaskStatus(): m_busy(0)
-{}
-
-bool CpuTaskStatus::isBusy() const
+/**  Base class to implement a CPU task
+ *   all the tasks running on the CPU should inherits from this class
+ */
+class SOFA_SIMULATION_CORE_API CpuTask : public Task
 {
-    return (m_busy.load(std::memory_order_relaxed) > 0);
-}
+public:
 
-int CpuTaskStatus::setBusy(bool busy)
-{
-    if (busy)
-    {
-        return m_busy.fetch_add(1, std::memory_order_relaxed);
-    }
-    else
-    {
-        return m_busy.fetch_sub(1, std::memory_order_relaxed);
-    }
-}
-}
+    using Status = CpuTaskStatus;
+
+    Status* getStatus(void) const override final;
+
+
+    CpuTask(Status* status, int scheduledThread = -1);
+
+    virtual ~CpuTask() = default;
+
+private:
+    Status* m_status { nullptr };
+};
+
+} // namespace sofa::simulation

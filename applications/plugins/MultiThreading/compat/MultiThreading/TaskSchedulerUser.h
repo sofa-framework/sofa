@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,50 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/MainTaskSchedulerRegistry.h>
+#pragma once
+#include <sofa/simulation/task/TaskSchedulerUser.h>
+SOFA_HEADER_DEPRECATED("v25.12", "v26.06", "sofa/simulation/task/TaskSchedulerUser.h")
 
-namespace sofa::simulation
+namespace multithreading
 {
-std::mutex MainTaskSchedulerRegistry::s_mutex;
-
-bool MainTaskSchedulerRegistry::addTaskSchedulerToRegistry(TaskScheduler* taskScheduler,
-    const std::string& taskSchedulerName)
-{
-    std::lock_guard lock(s_mutex);
-    return getInstance().addTaskSchedulerToRegistry(taskScheduler, taskSchedulerName);
+using TaskSchedulerUser = sofa::simulation::TaskSchedulerUser;
 }
-
-TaskScheduler* MainTaskSchedulerRegistry::getTaskScheduler(const std::string& taskSchedulerName)
-{
-    std::lock_guard lock(s_mutex);
-    return getInstance().getTaskScheduler(taskSchedulerName);
-}
-
-bool MainTaskSchedulerRegistry::hasScheduler(const std::string& taskSchedulerName)
-{
-    std::lock_guard lock(s_mutex);
-    return getInstance().hasScheduler(taskSchedulerName);
-}
-
-const std::optional<std::pair<std::string, TaskScheduler*>>& MainTaskSchedulerRegistry::
-getLastInserted()
-{
-    std::lock_guard lock(s_mutex);
-    return getInstance().getLastInserted();
-}
-
-void MainTaskSchedulerRegistry::clear()
-{
-    std::lock_guard lock(s_mutex);
-    getInstance().clear();
-}
-
-TaskSchedulerRegistry& MainTaskSchedulerRegistry::getInstance()
-{
-    static TaskSchedulerRegistry r;
-    return r;
-}
-
-
-}
-

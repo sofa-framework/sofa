@@ -28,10 +28,10 @@
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/component/constraint/lagrangian/solver/visitors/ConstraintStoreLambdaVisitor.h>
 #include <sofa/core/behavior/MultiVec.h>
-#include <sofa/simulation/DefaultTaskScheduler.h>
+#include <sofa/simulation/task/DefaultTaskScheduler.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/ParallelForEach.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/ParallelForEach.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;

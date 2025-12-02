@@ -20,32 +20,5 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
-#include <sofa/simulation/CpuTask.h>
-
-#include <atomic>
-#include <mutex>
-
-namespace sofa::simulation
-{            
-class SOFA_SIMULATION_CORE_API InitPerThreadDataTask : public CpuTask
-{
-            
-public:
-
-    InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status);
-            
-    ~InitPerThreadDataTask() override = default;
-            
-    MemoryAlloc run() override;
-            
-private:
-            
-    std::mutex*	 IdFactorygetIDMutex;
-    std::atomic<int>* _atomicCounter;
-};
-
-// thread storage initialization
-SOFA_SIMULATION_CORE_API void initThreadLocalData();
- 
-} // namespace sofa::simulation
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
+SOFA_HEADER_DEPRECATED("v25.12", "v26.06", "sofa/simulation/task/MainTaskSchedulerFactory.h")

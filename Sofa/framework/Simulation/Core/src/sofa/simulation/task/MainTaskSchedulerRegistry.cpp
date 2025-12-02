@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,24 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/CpuTask.h>
-
-#include <thread>
-
+#include <sofa/simulation/task/MainTaskSchedulerRegistry.h>
 
 namespace sofa::simulation
 {
+std::mutex MainTaskSchedulerRegistry::s_mutex;
 
-CpuTask::CpuTask(CpuTask::Status* status, int scheduledThread)
-: Task(scheduledThread)
-, m_status(status)
+bool MainTaskSchedulerRegistry::addTaskSchedulerToRegistry(TaskScheduler* taskScheduler,
+    const std::string& taskSchedulerName)
 {
+    std::lock_guard lock(s_mutex);
+    return getInstance().addTaskSchedulerToRegistry(taskScheduler, taskSchedulerName);
 }
 
-CpuTask::Status *CpuTask::getStatus(void) const
+TaskScheduler* MainTaskSchedulerRegistry::getTaskScheduler(const std::string& taskSchedulerName)
 {
-    return m_status;
+    std::lock_guard lock(s_mutex);
+    return getInstance().getTaskScheduler(taskSchedulerName);
+}
+
+bool MainTaskSchedulerRegistry::hasScheduler(const std::string& taskSchedulerName)
+{
+    std::lock_guard lock(s_mutex);
+    return getInstance().hasScheduler(taskSchedulerName);
+}
+
+const std::optional<std::pair<std::string, TaskScheduler*>>& MainTaskSchedulerRegistry::
+getLastInserted()
+{
+    std::lock_guard lock(s_mutex);
+    return getInstance().getLastInserted();
+}
+
+void MainTaskSchedulerRegistry::clear()
+{
+    std::lock_guard lock(s_mutex);
+    getInstance().clear();
+}
+
+TaskSchedulerRegistry& MainTaskSchedulerRegistry::getInstance()
+{
+    static TaskSchedulerRegistry r;
+    return r;
 }
 
 
-} // namespace sofa::simulation
+}
+

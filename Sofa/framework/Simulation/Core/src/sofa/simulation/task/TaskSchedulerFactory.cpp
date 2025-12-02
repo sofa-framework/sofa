@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/TaskSchedulerFactory.h>
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/TaskSchedulerFactory.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa::simulation
