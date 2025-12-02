@@ -56,7 +56,7 @@ void SceneCheckMissingRequiredPlugin::doCheckOn(sofa::simulation::Node* node)
         const ObjectFactory::ClassEntry entry = ObjectFactory::getInstance()->getEntry(object->getClassName());
         if(!entry.creatorMap.empty())
         {
-            ObjectFactory::CreatorMap::const_iterator it = entry.creatorMap.find(object->getTemplateName());
+            ObjectFactory::ObjectTemplateCreatorMap::const_iterator it = entry.creatorMap.find(object->getTemplateName());
             if(entry.creatorMap.end() != it && *it->second->getTarget())
             {
                 const std::string pluginName = it->second->getTarget();
