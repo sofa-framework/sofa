@@ -105,7 +105,7 @@ private:
 };
 
 #if  !defined(SOFA_MULTITHREADING_PARALLELHEXAHEDRONFEMFORCEFIELD_CPP)
-extern template class SOFA_MULTITHREADING_PLUGIN_API ParallelHexahedronFEMForceField<defaulttype::Vec3Types>;
+extern template class SOFA_MULTITHREADING_PLUGIN_API ParallelHexahedronFEMForceField<sofa::defaulttype::Vec3Types>;
 #endif
 
 } //namespace sofa::component::forcefield
