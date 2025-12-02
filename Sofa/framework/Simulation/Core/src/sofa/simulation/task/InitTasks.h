@@ -19,78 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/init.h>
+#pragma once
 
-#include <sofa/core/init.h>
-#include <sofa/helper/init.h>
+#include <sofa/simulation/task/CpuTask.h>
 
-#include <sofa/simulation/task/MainTaskSchedulerRegistry.h>
-
-#include <sofa/core/ObjectFactory.h>
+#include <atomic>
+#include <mutex>
 
 namespace sofa::simulation
+{            
+class SOFA_SIMULATION_CORE_API InitPerThreadDataTask : public CpuTask
 {
+            
+public:
 
-extern void registerRequiredPlugin(sofa::core::ObjectFactory* factory);
-extern void registerDefaultVisualManagerLoop(sofa::core::ObjectFactory* factory);
-extern void registerDefaultAnimationLoop(sofa::core::ObjectFactory* factory);
+    InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status);
+            
+    ~InitPerThreadDataTask() override = default;
+            
+    MemoryAlloc run() override;
+            
+private:
+            
+    std::mutex*	 IdFactorygetIDMutex;
+    std::atomic<int>* _atomicCounter;
+};
 
-namespace core
-{
-
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
-
-
-SOFA_SIMULATION_CORE_API void init()
-{
-    if (!s_initialized)
-    {
-        sofa::core::init();
-        s_initialized = true;
-
-        auto* factory = sofa::core::ObjectFactory::getInstance();
-        registerRequiredPlugin(factory);
-        registerDefaultVisualManagerLoop(factory);
-        registerDefaultAnimationLoop(factory);
-    }
-}
-
-SOFA_SIMULATION_CORE_API bool isInitialized()
-{
-    return s_initialized;
-}
-
-SOFA_SIMULATION_CORE_API void cleanup()
-{
-    if (!s_cleanedUp)
-    {
-        sofa::simulation::MainTaskSchedulerRegistry::clear();
-        sofa::core::cleanup();
-        s_cleanedUp = true;
-    }
-}
-
-SOFA_SIMULATION_CORE_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
-        if (simulation::core::isInitialized() && !simulation::core::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaSimulationCore", "sofa::simulation::core::cleanup()");
-    }
-} check;
-
-} // namespace core
-
+// thread storage initialization
+SOFA_SIMULATION_CORE_API void initThreadLocalData();
+ 
 } // namespace sofa::simulation
-
-
-
-

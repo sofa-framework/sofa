@@ -21,31 +21,57 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/simulation/config.h>
+#include <sofa/config.h>
 
-#include <sofa/simulation/CpuTaskStatus.h>
+#include <sofa/simulation/task/Task.h>
 
+#include <string> 
+#include <functional>
 
 namespace sofa::simulation
 {
-/**  Base class to implement a CPU task
- *   all the tasks running on the CPU should inherits from this class
+
+/**
+ * Base class for a task scheduler
+ *
+ * The API allows to:
+ * - initialize the scheduler with a number of dedicated threads
+ * - add a task to the scheduler
+ * - wait until all tasks are done etc.
  */
-class SOFA_SIMULATION_CORE_API CpuTask : public Task
+class SOFA_SIMULATION_CORE_API TaskScheduler
 {
 public:
+    virtual ~TaskScheduler() = default;
 
-    using Status = CpuTaskStatus;
+    /**
+    * Assuming 2 concurrent threads by CPU core, return the number of CPU core on the system
+    */
+    static unsigned GetHardwareThreadsCount();
 
-    Status* getStatus(void) const override final;
+    // interface
+    virtual void init(const unsigned int nbThread = 0) = 0;
+            
+    virtual void stop(void) = 0;
+            
+    virtual unsigned int getThreadCount(void) const = 0;
 
+    virtual const char* getCurrentThreadName() = 0;
 
-    CpuTask(Status* status, int scheduledThread = -1);
+    virtual int getCurrentThreadType() = 0;
 
-    virtual ~CpuTask() = default;
+    // queue task if there is space, and run it otherwise
+    virtual bool addTask(Task* task) = 0;
 
-private:
-    Status* m_status { nullptr };
+    virtual bool addTask(Task::Status& status, const std::function<void()>& task);
+
+    virtual void workUntilDone(Task::Status* status) = 0;
+
+    virtual Task::Allocator* getTaskAllocator() = 0;
+
+protected:
+
+    friend class Task;
 };
 
 } // namespace sofa::simulation

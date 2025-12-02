@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,41 +20,5 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
-#include <sofa/simulation/TaskSchedulerFactory.h>
-#include <mutex>
-
-namespace sofa::simulation
-{
-
-/**
- * A set of static function with the same interface than @TaskSchedulerFactory, working on a single
- * instance of @TaskSchedulerFactory.
- *
- * The static functions @createInRegistry use the factory to instantiate a task scheduler
- * and store it in @MainTaskSchedulerRegistry
- */
-class SOFA_SIMULATION_CORE_API MainTaskSchedulerFactory
-{
-public:
-
-    static bool registerScheduler(const std::string& name,
-                                  const std::function<TaskScheduler* ()>& creatorFunc);
-
-    static TaskScheduler* instantiate(const std::string& name);
-
-    static std::set<std::string> getAvailableSchedulers();
-
-
-    static TaskScheduler* createInRegistry(const std::string& name);
-    static TaskScheduler* createInRegistry();
-
-    static std::string defaultTaskSchedulerType();
-
-private:
-    static std::mutex s_mutex;
-
-    static TaskSchedulerFactory& getFactory();
-};
-
-}
+#include <sofa/simulation/task/TaskSchedulerFactory.h>
+SOFA_HEADER_DEPRECATED("v25.12", "v26.06", "sofa/simulation/task/TaskSchedulerFactory.h")

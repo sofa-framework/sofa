@@ -21,35 +21,28 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/simulation/TaskSchedulerRegistry.h>
-#include <mutex>
+#include <sofa/simulation/config.h>
+
+#include <sofa/simulation/task/TaskScheduler.h>
+#include <sofa/core/objectmodel/Base.h>
 
 namespace sofa::simulation
 {
 
-/**
- * A set of static functions with the same interface than a @TaskSchedulerRegistry, working on a
- * single instance of a @TaskSchedulerRegistry.
- * All functions are thread-safe.
- */
-class SOFA_SIMULATION_CORE_API MainTaskSchedulerRegistry
+class SOFA_SIMULATION_CORE_API TaskSchedulerUser : virtual public sofa::core::Base
 {
 public:
+    sofa::Data<int> d_nbThreads;
+    sofa::Data<std::string> d_taskSchedulerType; ///< Type of task scheduler to use.
 
-    static bool addTaskSchedulerToRegistry(TaskScheduler* taskScheduler, const std::string& taskSchedulerName);
+protected:
+    sofa::simulation::TaskScheduler* m_taskScheduler { nullptr };
 
-    static TaskScheduler* getTaskScheduler(const std::string& taskSchedulerName);
+    TaskSchedulerUser();
+    void initTaskScheduler();
 
-    static bool hasScheduler(const std::string& taskSchedulerName);
-
-    static const std::optional<std::pair<std::string, TaskScheduler*> >& getLastInserted();
-
-    static void clear();
-
-private:
-    static std::mutex s_mutex;
-
-    static TaskSchedulerRegistry& getInstance();
+    void reinitTaskScheduler();
+    void stopTaskSchduler();
 };
 
 }
