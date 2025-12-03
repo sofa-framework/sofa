@@ -17,49 +17,8 @@ jobs:
     if: ${{ github.repository_owner == 'sofa-framework' }}
 
     steps:
-      - name: Check descriptive labels
-        id: check_descriptive_labels
-        uses: actions/github-script@v5
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            // Get PR info: id and labels
-            const prNumber = context.payload.pull_request.number;
-            const labels = context.payload.pull_request.labels.map(label => label.name);
-
-            // Define an array of descriptive labels
-            const descriptiveLabels = [
-              'deprecated',
-              'refactoring',
-              'pr: enhancement',
-              'pr: breaking',
-              'pr: clean',
-              'pr: fix',
-              'pr: new feature',
-              'pr: test',
-              'pr: revert(ed)',
-              'pr: project-ci-infrastructure'
-            ];
-
-            // Check if any descriptive label is included in the 'labels' array
-            const hasDescriptiveLabel = labels.some(label => descriptiveLabels.includes(label));
-
-            // If no descriptive label is set, add a comment in the PR and make the action check fail
-            if (!hasDescriptiveLabel) {
-              const comment = ':warning: :warning: :warning:<br>@' + context.payload.pull_request.user.login + ' your PR does not include any **descriptive** label :label:<br> Make sure to add an appropriate [PR label](https://github.com/sofa-framework/sofa/labels) before merge.<br>:warning: :warning: :warning:';
-              github.rest.issues.createComment({
-                issue_number: prNumber,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: comment
-              });
-              
-              // Make the action step fail
-              core.setFailed('Invalid PR label');
-            }
       
       - name: Check status labels
-        if: ${{ always() }}
         id: check_status_labels
         uses: actions/github-script@v5
         with:
@@ -120,3 +79,46 @@ jobs:
           GH_REPO: ${{ github.repository }}
           NUMBER: ${{ github.event.pull_request.number }}
           LABELS: "pr: status to review"
+          
+      - name: Check descriptive labels
+        if: ${{ always() }}
+        id: check_descriptive_labels
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Get PR info: id and labels
+            const prNumber = context.payload.pull_request.number;
+            const labels = context.payload.pull_request.labels.map(label => label.name);
+
+            // Define an array of descriptive labels
+            const descriptiveLabels = [
+              'deprecated',
+              'refactoring',
+              'pr: enhancement',
+              'pr: breaking',
+              'pr: clean',
+              'pr: fix',
+              'pr: new feature',
+              'pr: test',
+              'pr: revert(ed)',
+              'pr: project-ci-infrastructure'
+            ];
+
+            // Check if any descriptive label is included in the 'labels' array
+            const hasDescriptiveLabel = labels.some(label => descriptiveLabels.includes(label));
+
+            // If no descriptive label is set, add a comment in the PR and make the action check fail
+            if (!hasDescriptiveLabel) {
+              const comment = ':warning: :warning: :warning:<br>@' + context.payload.pull_request.user.login + ' your PR does not include any **descriptive** label :label:<br> Make sure to add an appropriate [PR label](https://github.com/sofa-framework/sofa/labels) before merge.<br>:warning: :warning: :warning:';
+              github.rest.issues.createComment({
+                issue_number: prNumber,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+              
+              // Make the action step fail
+              core.setFailed('Invalid PR label');
+            }
+      
