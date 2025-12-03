@@ -52,7 +52,7 @@ jobs:
               });
 
               // Set flag to TRUE
-              echo "no_status_label=true" >> $GITHUB_OUTPUT
+              core.setOutput('no_status_label', 'true');
             }
             else if (matchingLabelsCount > 1) {
               const comment = ':warning: :warning: :warning:<br>@'+context.payload.pull_request.user.login+' your PR includes **too many status labels** :label:<br> Make sure to **select only one** (wip, to review or ready).<br>:warning: :warning: :warning:';
