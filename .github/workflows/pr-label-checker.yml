@@ -64,7 +64,7 @@ jobs:
               });
 
               // Make the action step fail
-              core.setFailed('Too many status PR labels')
+              core.setFailed('Too many status PR labels');
             }
 
             // Print all PR labels in log
