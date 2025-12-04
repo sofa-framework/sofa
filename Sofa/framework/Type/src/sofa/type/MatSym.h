@@ -144,6 +144,32 @@ public:
         }
     }
 
+    template<Size D2>
+    constexpr void getsub(Size a, MatSym<D2, real>& m) const requires (D2 <= D)
+    {
+        assert(a + D2 <= D);
+        for (sofa::Size i = 0; i < D2; i++)
+        {
+            for (sofa::Size j = i; j < D2; j++)
+            {
+                m(i, j) = this->operator()(i + a, j + a);
+            }
+        }
+    }
+
+    template<Size L2, Size C2>
+    constexpr void getsub(Size L0, Size C0, Mat<L2, C2, real>& m) const requires (L2 <= D && C2 <= D)
+    {
+        assert(L0 + L2 <= D && C0 + C2 <= D);
+        for (Size i = 0; i < L2; i++)
+        {
+            for (Size j = 0; j < C2; j++)
+            {
+                m(i, j) = this->operator()(i + L0, j + C0);
+            }
+        }
+    }
+
     /// convert to Voigt notation (supported only for D == 2 and D == 3)
     template<sofa::Size TD = D, typename = std::enable_if_t<TD == 3 || TD == 2> >
     inline Vec<NumberStoredValues, real> getVoigt() const
@@ -584,14 +610,15 @@ bool invertMatrix(MatSym<2,real>& dest, const MatSym<2,real>& from)
 template<sofa::Size D,class real>
 std::ostream& operator<<(std::ostream& o, const MatSym<D,real>& m)
 {
-    o << '[' ;
+    o << '[';
     for(sofa::Size i=0; i<D; i++)
     {
         for(sofa::Size j=0; j<D; j++)
         {
-            o<<" "<<m(i,j);
+            o << " " << m(i, j);
         }
-        o<<" ,";
+        if (i != D-1)
+            o<<" ,";
     }
     o << ']';
     return o;

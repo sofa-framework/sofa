@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <image/config.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/logging/Messaging.h>
 
@@ -28,12 +29,53 @@
     #include "python/Binding_ImageData.h"
 #endif
 
+namespace sofa::defaulttype
+{
+    extern void registerDataExchange(sofa::core::ObjectFactory* factory);
+}
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
+namespace misc
 {
+    extern void registerImageExporter(sofa::core::ObjectFactory* factory);
+}
+
+namespace engine
+{
+    extern void registerVoronoiToMeshEngine(sofa::core::ObjectFactory* factory);
+    extern void registerTransferFunction(sofa::core::ObjectFactory* factory);
+    extern void registerMeshToImageEngine(sofa::core::ObjectFactory* factory);
+    extern void registerMergeImages(sofa::core::ObjectFactory* factory);
+    extern void registerMarchingCubesEngine(sofa::core::ObjectFactory* factory);
+    extern void registerImageValuesFromPositions(sofa::core::ObjectFactory* factory);
+    extern void registerImageTransformEngine(sofa::core::ObjectFactory* factory);
+    extern void registerImageTransform(sofa::core::ObjectFactory* factory);
+    extern void registerImageToRigidMassEngine(sofa::core::ObjectFactory* factory);
+    extern void registerImageSampler(sofa::core::ObjectFactory* factory);
+    extern void registerImageOperation(sofa::core::ObjectFactory* factory);
+    extern void registerImageFilter(sofa::core::ObjectFactory* factory);
+    extern void registerImageDataDisplay(sofa::core::ObjectFactory* factory);
+    extern void registerImageCoordValuesFromPositions(sofa::core::ObjectFactory* factory);
+    extern void registerGenerateImage(sofa::core::ObjectFactory* factory);
+    extern void registerDepthMapToMeshEngine(sofa::core::ObjectFactory* factory);
+    extern void registerCollisionToCarvingEngine(sofa::core::ObjectFactory* factory);
+
+#ifdef PLUGIN_IMAGE_COMPILE_GUI
+    extern void registerContourImageToolBox(sofa::core::ObjectFactory* factory);
+    extern void registerAverageCatchAllVector(sofa::core::ObjectFactory* factory);
+    extern void registerCatchAllVector(sofa::core::ObjectFactory* factory);
+    extern void registerDepthImageToolBox(sofa::core::ObjectFactory* factory);
+    extern void registerMergedCatchAllVector(sofa::core::ObjectFactory* factory);
+    extern void registerLabelBoxImageToolBox(sofa::core::ObjectFactory* factory);
+    extern void registerLabelGridImageToolBox(sofa::core::ObjectFactory* factory);
+    extern void registerLabelPointImageToolBox(sofa::core::ObjectFactory* factory);
+    extern void registerLabelPointsBySectionImageToolBox(sofa::core::ObjectFactory* factory);
+    extern void registerDistanceZoneImageToolBox(sofa::core::ObjectFactory* factory);
+    extern void registerZoneGeneratorImageToolBox(sofa::core::ObjectFactory* factory);
+#endif
+}
 
 //Here are just several convenient functions to help user to know what contains the plugin
 
@@ -43,7 +85,7 @@ extern "C" {
     SOFA_IMAGE_API const char* getModuleVersion();
     SOFA_IMAGE_API const char* getModuleLicense();
     SOFA_IMAGE_API const char* getModuleDescription();
-    SOFA_IMAGE_API const char* getModuleComponentList();
+    SOFA_IMAGE_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -51,6 +93,9 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(image::MODULE_NAME);
+
         first = false;
 
 #if IMAGE_HAVE_SOFAPYTHON
@@ -106,12 +151,28 @@ const char* getModuleDescription()
     return "Image support in SOFA";
 }
 
-const char* getModuleComponentList()
+void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    return "ImageContainer,ImageExporter,ImageViewer,ImageFilter,ImageToMeshEngine";
+    sofa::defaulttype::registerDataExchange(factory);
+    sofa::component::misc::registerImageExporter(factory);
+    sofa::component::engine::registerVoronoiToMeshEngine(factory);
+    sofa::component::engine::registerTransferFunction(factory);
+    sofa::component::engine::registerMeshToImageEngine(factory);
+    sofa::component::engine::registerMergeImages(factory);
+    sofa::component::engine::registerMarchingCubesEngine(factory);
+    sofa::component::engine::registerImageValuesFromPositions(factory);
+    sofa::component::engine::registerImageTransformEngine(factory);
+    sofa::component::engine::registerImageTransform(factory);
+    sofa::component::engine::registerImageToRigidMassEngine(factory);
+    sofa::component::engine::registerImageSampler(factory);
+    sofa::component::engine::registerImageOperation(factory);
+    sofa::component::engine::registerImageFilter(factory);
+    sofa::component::engine::registerImageDataDisplay(factory);
+    sofa::component::engine::registerImageCoordValuesFromPositions(factory);
+    sofa::component::engine::registerGenerateImage(factory);
+    sofa::component::engine::registerDepthMapToMeshEngine(factory);
+    sofa::component::engine::registerCollisionToCarvingEngine(factory);
 }
 
-} // namespace image
-
-} // namespace sofa
+} // namespace sofa::component
 
