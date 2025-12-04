@@ -33,30 +33,29 @@ namespace engine
 
 using namespace defaulttype;
 
-int AverageCatchAllVectorClass = core::RegisterObject("AverageCatchAllVector")
+void registerAverageCatchAllVector(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("AverageCatchAllVector")
         .add<AverageCatchAllVector<float > >(true)
-        //.add<AverageCatchAllVector<unsigned float> >()
         .add<AverageCatchAllVector<short > >()
         .add<AverageCatchAllVector<unsigned short > >()
         .add<AverageCatchAllVector<int > >()
         .add<AverageCatchAllVector<unsigned int > >()
         .add<AverageCatchAllVector<double > >()
-        //.add<AverageCatchAllVector<unsigned double> >()
         .add<AverageCatchAllVector<long > >()
         .add<AverageCatchAllVector<unsigned long > >()
         .add<AverageCatchAllVector<bool > >()
         .add<AverageCatchAllVector<sofa::type::Vec3f> >()
         .add<AverageCatchAllVector<sofa::type::Vec3d> >()
-        ;
+        );
+}
 
 template class SOFA_IMAGE_GUI_API AverageCatchAllVector<float >;
-//template class SOFA_IMAGE_API AverageCatchAllVector<unsigned float >;
 template class SOFA_IMAGE_GUI_API AverageCatchAllVector<short >;
 template class SOFA_IMAGE_GUI_API AverageCatchAllVector<unsigned short >;
 template class SOFA_IMAGE_GUI_API AverageCatchAllVector<int >;
 template class SOFA_IMAGE_GUI_API AverageCatchAllVector<unsigned int >;
 template class SOFA_IMAGE_GUI_API AverageCatchAllVector<double >;
-//template class SOFA_IMAGE_API AverageCatchAllVector<unsigned double >;
 template class SOFA_IMAGE_GUI_API AverageCatchAllVector<long >;
 template class SOFA_IMAGE_GUI_API AverageCatchAllVector<unsigned long >;
 template class SOFA_IMAGE_GUI_API AverageCatchAllVector<bool >;

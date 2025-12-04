@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/BaseLagrangianConstraint.h>
 #include <sofa/helper/map.h>
 
-#include <sofa/simulation/CpuTask.h>
+#include <sofa/simulation/task/CpuTask.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/component/constraint/lagrangian/solver/visitors/MechanicalGetConstraintResolutionVisitor.h>
 #include <sofa/helper/SelectableItem.h>
@@ -124,8 +124,8 @@ protected:
      */
     virtual void doSolve( GenericConstraintProblem * problem, SReal timeout = 0.0) = 0;
 
+    virtual void addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization);
 
-    static void addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization);
 
 
 private:

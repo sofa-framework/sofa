@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef IMAGE_CONFIG_H
-#define IMAGE_CONFIG_H
+#pragma once
 
 #include <sofa/config.h>
 
@@ -32,6 +31,9 @@
 #cmakedefine01 IMAGE_HAVE_ZLIB
 #cmakedefine01 IMAGE_HAVE_FREENECT
 #cmakedefine01 IMAGE_HAVE_SOFA_GL
+
+#cmakedefine SOFA_BUILD_TESTS
+#cmakedefine PLUGIN_IMAGE_COMPILE_GUI
 
 #define PLUGIN_IMAGE_COMPILE_SET_NONE 0
 #define PLUGIN_IMAGE_COMPILE_SET_STANDARD 1
@@ -54,4 +56,3 @@ namespace image
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace image
 
-#endif

@@ -537,21 +537,18 @@ void BaseCamera::rotateCameraAroundPoint(Quat& rotation, const type::Vec3& point
     updateOutputData();
 }
 
-void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const type::Vec3 &point, Quat orientationCam)
+void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const type::Vec3 &point, Quat orientationCam, type::Vec3 positionCam)
 {
     type::Vec3 tempAxis;
     SReal tempAngle;
-    //Quat orientationCam = this->getOrientation();
-    type::Vec3& positionCam = *d_position.beginEdit();
 
     rotation.quatToAxis(tempAxis, tempAngle);
-    const Quat tempQuat (orientationCam.rotate(-tempAxis), tempAngle);
+    const Quat tempQuat(orientationCam.rotate(-tempAxis), tempAngle);
 
     const sofa::type::Transform<SReal> world_H_cam(positionCam, orientationCam);
     const sofa::type::Transform<SReal> world_H_pivot(point, Quat());
     const sofa::type::Transform<SReal> pivotBefore_R_pivotAfter(type::Vec3(0.0,0.0,0.0), tempQuat);
     const sofa::type::Transform<SReal> camera_H_WorldAfter = world_H_cam.inversed() * world_H_pivot * pivotBefore_R_pivotAfter * world_H_pivot.inversed();
-    //defaulttype::SolidTypes<double>::Transform camera_H_WorldAfter = worldBefore_H_cam.inversed()*worldBefore_R_worldAfter;
 
     positionCam = camera_H_WorldAfter.inversed().getOrigin();
     orientationCam = camera_H_WorldAfter.inversed().getOrientation();
@@ -563,13 +560,17 @@ void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const type::Vec3 &point,
     }
 
     d_orientation.setValue(orientationCam);
-    d_position.endEdit();
+    d_position.setValue(positionCam);
 
     updateOutputData();
 }
 
 
-
+void BaseCamera::rotateWorldAroundPoint(Quat& rotation, const type::Vec3& point, Quat orientationCam)
+{
+    auto positionCam = sofa::helper::getReadAccessor(d_position);
+    rotateWorldAroundPoint(rotation, point, orientationCam, positionCam);
+}
 
 
 type::Vec3 BaseCamera::screenToViewportPoint(const type::Vec3& p) const

@@ -491,6 +491,8 @@ MeshTopology::MeshTopology()
     , d_seqQuads(initData(&d_seqQuads, "quads", "List of quad indices"))
     , d_seqTetrahedra(initData(&d_seqTetrahedra, "tetrahedra", "List of tetrahedron indices"))
     , d_seqHexahedra(initData(&d_seqHexahedra, "hexahedra", "List of hexahedron indices"))
+    , d_seqPrisms(initData(&d_seqPrisms, "prisms", "List of prisms indices"))
+    , d_seqPyramids(initData(&d_seqPyramids, "pyramids", "List of pyramids indices"))
     , d_seqUVs(initData(&d_seqUVs, "uv", "List of uv coordinates"))
     , d_computeAllBuffers(initData(&d_computeAllBuffers, false, "computeAllBuffers", "Option to compute all crossed topology buffers at init. False by default"))
     , nbPoints(0)
@@ -763,7 +765,6 @@ const MeshTopology::SeqTriangles& MeshTopology::getTriangles()
 
 const MeshTopology::SeqQuads& MeshTopology::getQuads()
 {
-
     return d_seqQuads.getValue();
 }
 
@@ -787,6 +788,16 @@ const MeshTopology::SeqHexahedra& MeshTopology::getHexahedra()
     return d_seqHexahedra.getValue();
 }
 
+const BaseMeshTopology::SeqPrisms& MeshTopology::getPrisms()
+{
+    return d_seqPrisms.getValue();
+}
+
+const BaseMeshTopology::SeqPyramids& MeshTopology::getPyramids()
+{
+    return d_seqPyramids.getValue();
+}
+
 const MeshTopology::SeqUV& MeshTopology::getUVs()
 {
     return d_seqUVs.getValue();
@@ -802,59 +813,9 @@ void MeshTopology::setNbPoints(Size n)
     nbPoints = n;
 }
 
-Size MeshTopology::getNbEdges()
-{
-    return Size(getEdges().size());
-}
-
-Size MeshTopology::getNbTriangles()
-{
-    return Size(getTriangles().size());
-}
-
-Size MeshTopology::getNbQuads()
-{
-    return Size(getQuads().size());
-}
-
-Size MeshTopology::getNbTetrahedra()
-{
-    return Size(getTetrahedra().size());
-}
-
-Size MeshTopology::getNbHexahedra()
-{
-    return Size(getHexahedra().size());
-}
-
 Size MeshTopology::getNbUVs()
 {
     return Size(getUVs().size());
-}
-
-const MeshTopology::Edge MeshTopology::getEdge(Index i)
-{
-    return getEdges()[i];
-}
-
-const MeshTopology::Triangle MeshTopology::getTriangle(Index i)
-{
-    return getTriangles()[i];
-}
-
-const MeshTopology::Quad MeshTopology::getQuad(Index i)
-{
-    return getQuads()[i];
-}
-
-const MeshTopology::Tetra MeshTopology::getTetrahedron(Index i)
-{
-    return getTetrahedra()[i];
-}
-
-const MeshTopology::Hexa MeshTopology::getHexahedron(Index i)
-{
-    return getHexahedra()[i];
 }
 
 const MeshTopology::UV MeshTopology::getUV(Index i)
