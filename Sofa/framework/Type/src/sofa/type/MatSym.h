@@ -46,6 +46,20 @@ public:
     typedef Vec<D,Real> Coord;
     static constexpr auto NumberStoredValues = D * (D + 1) / 2;
 
+    // Voigt ordering map for symmetric 2D/3D tensors
+    // The order used in SOFA is non-standard: [xx, xy, yy, xz, yz, zz]
+    static constexpr fixed_array<sofa::Index, 3*3> toVoigt = {0, 1, 3, 1, 2, 4, 3, 4, 5};
+    static constexpr sofa::Index voigtID(sofa::Index i, sofa::Index j = 0) {return toVoigt[i * 3 + j];}
+    static constexpr fixed_array<std::tuple<sofa::Index, sofa::Index>, 6> fromVoigt =
+    {
+        std::make_tuple(0,0),
+        std::make_tuple(0,1),
+        std::make_tuple(1,1),
+        std::make_tuple(0,2),
+        std::make_tuple(1,2),
+        std::make_tuple(2,2)
+    };
+
     constexpr MatSym() noexcept
     {
         clear();
