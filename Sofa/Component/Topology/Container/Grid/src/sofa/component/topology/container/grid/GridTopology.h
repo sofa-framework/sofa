@@ -158,7 +158,7 @@ public:
     /// get Z from Point index @param i, will call @sa getPoint
     SReal getPZ(Index i) const override { return getPoint(i)[2]; }
 
-    /// Overload method from \sa BaseObject::parse . /// Parse the given description to assign values to this object's fields and potentially other parameters
+    /// Overload method from \sa BaseComponent::parse . /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse(core::objectmodel::BaseObjectDescription* arg) override ;
 
     /// Overload Method from @sa MeshTopology::getNbHexahedra

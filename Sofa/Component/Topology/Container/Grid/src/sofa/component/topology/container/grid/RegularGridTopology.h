@@ -59,7 +59,7 @@ public:
     /// BaseObject method should be overwritten by children
     void reinit() override;
 
-    /// Overload method from \sa BaseObject::parse . /// Parse the given description to assign values to this object's fields and potentially other parameters
+    /// Overload method from \sa BaseComponent::parse . /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     /** \brief Overload method of @sa GridTopology::getPointInGrid.

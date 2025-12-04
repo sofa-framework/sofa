@@ -86,7 +86,7 @@ public:
             }
         }
 
-        return BaseObject::canCreate(obj, context, arg);
+        return BaseComponent::canCreate(obj, context, arg);
     }
 
 protected:

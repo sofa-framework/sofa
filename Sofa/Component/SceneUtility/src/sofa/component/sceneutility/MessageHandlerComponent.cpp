@@ -65,7 +65,7 @@ MessageHandlerComponent::MessageHandlerComponent() :
 
 void MessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
 {
-    BaseObject::parse(arg) ;
+    BaseComponent::parse(arg) ;
 
     const char* type=arg->getAttribute("handler") ;
     if(type==nullptr){
@@ -123,7 +123,7 @@ FileMessageHandlerComponent::~FileMessageHandlerComponent()
 
 void FileMessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
 {
-    BaseObject::parse(arg) ;
+    BaseComponent::parse(arg) ;
 
     const char* type=arg->getAttribute("filename") ;
     if(type==nullptr){

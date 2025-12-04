@@ -21,17 +21,19 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
-#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
-#include <sofa/core/behavior/ForceField.inl>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/linearalgebra/RotationMatrix.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/container/grid/GridTopology.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/RotationMatrix.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
+
+#include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -293,6 +295,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(Index i, Inde
 template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, VoigtTensor &plasticStrain, const MaterialStiffness &K, const StrainDisplacement &J )
 {
+    SCOPED_TIMER_TR("computeForce");
 
     // Unit of K = unit of youngModulus / unit of volume = Pa / m^3 = kg m^-4 s^-2
     // Unit of J = m^2

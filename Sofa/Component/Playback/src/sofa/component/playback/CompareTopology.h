@@ -57,7 +57,7 @@ public:
             arg->logError("Cannot find a mesh topology in the current context");
             return false;
         }
-        return BaseObject::canCreate(obj, context, arg);
+        return BaseComponent::canCreate(obj, context, arg);
     }
 
     /// Return the total number of errors

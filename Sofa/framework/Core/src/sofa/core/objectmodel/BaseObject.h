@@ -236,5 +236,7 @@ public:
     virtual bool removeInNode( BaseNode* /*node*/ ) { return false; }
 };
 
+using BaseObject = BaseComponent;
+
 } // namespace sofa::core::objectmodel
 
