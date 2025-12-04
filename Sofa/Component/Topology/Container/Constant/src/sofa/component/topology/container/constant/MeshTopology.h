@@ -98,6 +98,8 @@ public:
     const SeqQuads& getQuads() override;
     const SeqTetrahedra& getTetrahedra() override;
     const SeqHexahedra& getHexahedra() override;
+    const SeqPrisms& getPrisms() override;
+    const SeqPyramids& getPyramids() override;
 
     // If using STEP loader, include also uv coordinates
     typedef Index					UVID;
@@ -298,6 +300,8 @@ public:
     Data<SeqQuads>       d_seqQuads; ///< List of quad indices
     Data<SeqTetrahedra>      d_seqTetrahedra; ///< List of tetrahedron indices
     Data<SeqHexahedra>	   d_seqHexahedra; ///< List of hexahedron indices
+    Data<SeqPrisms> d_seqPrisms;
+    Data<SeqPyramids> d_seqPyramids;
     Data<SeqUV>	d_seqUVs; ///< List of uv coordinates
     Data<bool> d_computeAllBuffers; ///< Option to call method computeCrossElementBuffers. False by default
 

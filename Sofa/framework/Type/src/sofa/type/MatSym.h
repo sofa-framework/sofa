@@ -46,6 +46,20 @@ public:
     typedef Vec<D,Real> Coord;
     static constexpr auto NumberStoredValues = D * (D + 1) / 2;
 
+    // Voigt ordering map for symmetric 2D/3D tensors
+    // The order used in SOFA is non-standard: [xx, xy, yy, xz, yz, zz]
+    static constexpr fixed_array<sofa::Index, 3*3> toVoigt = {0, 1, 3, 1, 2, 4, 3, 4, 5};
+    static constexpr sofa::Index voigtID(sofa::Index i, sofa::Index j = 0) {return toVoigt[i * 3 + j];}
+    static constexpr fixed_array<std::tuple<sofa::Index, sofa::Index>, 6> fromVoigt =
+    {
+        std::make_tuple(0,0),
+        std::make_tuple(0,1),
+        std::make_tuple(1,1),
+        std::make_tuple(0,2),
+        std::make_tuple(1,2),
+        std::make_tuple(2,2)
+    };
+
     constexpr MatSym() noexcept
     {
         clear();
@@ -140,6 +154,32 @@ public:
             for (sofa::Size i = 0; i <= j; i++)
             {
                 W(i, j) = (M(i, j) + M(j, i)) / 2;
+            }
+        }
+    }
+
+    template<Size D2>
+    constexpr void getsub(Size a, MatSym<D2, real>& m) const requires (D2 <= D)
+    {
+        assert(a + D2 <= D);
+        for (sofa::Size i = 0; i < D2; i++)
+        {
+            for (sofa::Size j = i; j < D2; j++)
+            {
+                m(i, j) = this->operator()(i + a, j + a);
+            }
+        }
+    }
+
+    template<Size L2, Size C2>
+    constexpr void getsub(Size L0, Size C0, Mat<L2, C2, real>& m) const requires (L2 <= D && C2 <= D)
+    {
+        assert(L0 + L2 <= D && C0 + C2 <= D);
+        for (Size i = 0; i < L2; i++)
+        {
+            for (Size j = 0; j < C2; j++)
+            {
+                m(i, j) = this->operator()(i + L0, j + C0);
             }
         }
     }
@@ -584,14 +624,15 @@ bool invertMatrix(MatSym<2,real>& dest, const MatSym<2,real>& from)
 template<sofa::Size D,class real>
 std::ostream& operator<<(std::ostream& o, const MatSym<D,real>& m)
 {
-    o << '[' ;
+    o << '[';
     for(sofa::Size i=0; i<D; i++)
     {
         for(sofa::Size j=0; j<D; j++)
         {
-            o<<" "<<m(i,j);
+            o << " " << m(i, j);
         }
-        o<<" ,";
+        if (i != D-1)
+            o<<" ,";
     }
     o << ']';
     return o;
