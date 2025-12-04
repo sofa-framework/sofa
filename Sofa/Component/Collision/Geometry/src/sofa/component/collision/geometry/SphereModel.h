@@ -110,7 +110,7 @@ public:
 
     void computeBoundingTree(int maxDepth=0) override;
 
-    void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
+    void computeContinuousBoundingTree(SReal dt,  ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia,  int maxDepth=0) override;
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
 
@@ -195,7 +195,7 @@ template<class DataTypes>
 inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::p() const { return DataTypes::getCPos(this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->index]);}
 
 template<class DataTypes>
-inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->mstate->read(core::vec_id::read_access::freePosition)).getValue()[this->index]; }
+inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::pFree() const { return DataTypes::getCPos((*this->model->mstate->read(core::vec_id::read_access::freePosition)).getValue()[this->index]); }
 
 template<class DataTypes>
 inline const typename SphereCollisionModel<DataTypes>::Coord& SphereCollisionModel<DataTypes>::velocity(sofa::Index index) const { return DataTypes::getDPos(mstate->read(core::vec_id::read_access::velocity)->getValue()[index]);}
