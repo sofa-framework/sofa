@@ -121,4 +121,15 @@ jobs:
               // Make the action step fail
               core.setFailed('Invalid PR label');
             }
-      
+
+      - name: Check label pr based on previous PR
+        if: ${{ always() }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = context.payload.pull_request.labels.map(label => label.name);
+            const found = labels.includes("pr: based on previous PR");
+
+            // Make the action step fail
+            core.setFailed("Merge blocked: PR has label 'pr: based on previous PR'");
+
