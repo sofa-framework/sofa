@@ -35,49 +35,47 @@ namespace engine
 
 using namespace defaulttype;
 
-int CollisionToCarvingEngineClass = core::RegisterObject("Filter an image")
-        .add<CollisionToCarvingEngine<ImageUC,ImageUC    > >(true)
-        .add<CollisionToCarvingEngine<ImageD ,ImageD     > >()
+void registerCollisionToCarvingEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Filter an image")
+    .add<CollisionToCarvingEngine<ImageUC,ImageUC    > >(true)
+    .add<CollisionToCarvingEngine<ImageD, ImageD     > >()
+    .add<CollisionToCarvingEngine<ImageUC,ImageD     > >()
+    .add<CollisionToCarvingEngine<ImageD, ImageUC    > >()
+    .add<CollisionToCarvingEngine<ImageD, ImageB     > >()
+    #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
+    .add<CollisionToCarvingEngine<ImageC ,ImageC     > >()
+    .add<CollisionToCarvingEngine<ImageI ,ImageI     > >()
+    .add<CollisionToCarvingEngine<ImageUI,ImageUI    > >()
+    .add<CollisionToCarvingEngine<ImageS ,ImageS     > >()
+    .add<CollisionToCarvingEngine<ImageUS,ImageUS    > >()
+    .add<CollisionToCarvingEngine<ImageL ,ImageL     > >()
+    .add<CollisionToCarvingEngine<ImageUL,ImageUL    > >()
+    .add<CollisionToCarvingEngine<ImageF ,ImageF     > >()
+    .add<CollisionToCarvingEngine<ImageB ,ImageB     > >()
 
-        .add<CollisionToCarvingEngine<ImageUC,ImageD    > >()
+    .add<CollisionToCarvingEngine<ImageC ,ImageD     > >()
+    .add<CollisionToCarvingEngine<ImageI ,ImageD     > >()
+    .add<CollisionToCarvingEngine<ImageUI,ImageD     > >()
+    .add<CollisionToCarvingEngine<ImageS ,ImageD     > >()
+    .add<CollisionToCarvingEngine<ImageUS,ImageD     > >()
+    .add<CollisionToCarvingEngine<ImageL ,ImageD     > >()
+    .add<CollisionToCarvingEngine<ImageUL,ImageD     > >()
+    .add<CollisionToCarvingEngine<ImageF ,ImageD     > >()
+    .add<CollisionToCarvingEngine<ImageB ,ImageD     > >()
 
-        .add<CollisionToCarvingEngine<ImageD,ImageUC    > >()
-        .add<CollisionToCarvingEngine<ImageD,ImageB    > >()
-#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-        .add<CollisionToCarvingEngine<ImageC ,ImageC     > >()
-        .add<CollisionToCarvingEngine<ImageI ,ImageI     > >()
-        .add<CollisionToCarvingEngine<ImageUI,ImageUI    > >()
-        .add<CollisionToCarvingEngine<ImageS ,ImageS     > >()
-        .add<CollisionToCarvingEngine<ImageUS,ImageUS    > >()
-        .add<CollisionToCarvingEngine<ImageL ,ImageL     > >()
-        .add<CollisionToCarvingEngine<ImageUL,ImageUL    > >()
-        .add<CollisionToCarvingEngine<ImageF ,ImageF     > >()
-        .add<CollisionToCarvingEngine<ImageB ,ImageB     > >()
-
-        .add<CollisionToCarvingEngine<ImageC ,ImageD     > >()
-        .add<CollisionToCarvingEngine<ImageI ,ImageD     > >()
-        .add<CollisionToCarvingEngine<ImageUI,ImageD    > >()
-        .add<CollisionToCarvingEngine<ImageS ,ImageD     > >()
-        .add<CollisionToCarvingEngine<ImageUS,ImageD    > >()
-        .add<CollisionToCarvingEngine<ImageL ,ImageD     > >()
-        .add<CollisionToCarvingEngine<ImageUL,ImageD    > >()
-        .add<CollisionToCarvingEngine<ImageF ,ImageD     > >()
-        .add<CollisionToCarvingEngine<ImageB ,ImageD     > >()
-
-        .add<CollisionToCarvingEngine<ImageUS,ImageUC    > >()
-        .add<CollisionToCarvingEngine<ImageUC,ImageUS    > >()
-        .add<CollisionToCarvingEngine<ImageUC,ImageB    > >()
-        .add<CollisionToCarvingEngine<ImageUS,ImageB    > >()
+    .add<CollisionToCarvingEngine<ImageUS,ImageUC    > >()
+    .add<CollisionToCarvingEngine<ImageUC,ImageUS    > >()
+    .add<CollisionToCarvingEngine<ImageUC,ImageB     > >()
+    .add<CollisionToCarvingEngine<ImageUS,ImageB     > >()
 #endif // PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-        ;
+    );
+}
 
-
-template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUC  ,ImageUC    >;
-template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageD   ,ImageD     >;
-
-template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUC  ,ImageD    >;
-
-template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageD  ,ImageUC    >;
+template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUC ,ImageUC   >;
+template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageD  ,ImageD    >;
+template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUC ,ImageD    >;
+template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageD  ,ImageUC   >;
 template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageD  ,ImageB    >;
 
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
@@ -93,18 +91,18 @@ template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageB   ,ImageB     >;
 
 template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageC   ,ImageD     >;
 template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageI   ,ImageD     >;
-template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUI  ,ImageD    >;
+template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUI  ,ImageD     >;
 template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageS   ,ImageD     >;
-template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUS  ,ImageD    >;
+template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUS  ,ImageD     >;
 template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageL   ,ImageD     >;
-template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUL  ,ImageD    >;
+template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUL  ,ImageD     >;
 template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageF   ,ImageD     >;
 template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageB   ,ImageD     >;
 
-template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUS   ,ImageUC     >;
-template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUC   ,ImageUS     >;
-template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUC   ,ImageB     >;
-template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUS   ,ImageB     >;
+template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUS  ,ImageUC    >;
+template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUC  ,ImageUS    >;
+template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUC  ,ImageB     >;
+template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUS  ,ImageB     >;
 #endif // PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 
 } //

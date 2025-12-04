@@ -35,21 +35,24 @@ namespace engine
 
 using namespace defaulttype;
 
-int ImageSamplerClass = core::RegisterObject("Samples an object represented by an image")
-        .add<ImageSampler<ImageB> >(true)
-        .add<ImageSampler<ImageUC> >()
-        .add<ImageSampler<ImageD> >()
+void registerImageSampler(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Samples an object represented by an image")
+    .add<ImageSampler<ImageB> >(true)
+    .add<ImageSampler<ImageUC> >()
+    .add<ImageSampler<ImageD> >()
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-.add<ImageSampler<ImageC> >()
-.add<ImageSampler<ImageI> >()
-.add<ImageSampler<ImageUI> >()
-.add<ImageSampler<ImageS> >()
-.add<ImageSampler<ImageUS> >()
-.add<ImageSampler<ImageL> >()
-.add<ImageSampler<ImageUL> >()
-.add<ImageSampler<ImageF> >()
+    .add<ImageSampler<ImageC> >()
+    .add<ImageSampler<ImageI> >()
+    .add<ImageSampler<ImageUI> >()
+    .add<ImageSampler<ImageS> >()
+    .add<ImageSampler<ImageUS> >()
+    .add<ImageSampler<ImageL> >()
+    .add<ImageSampler<ImageUL> >()
+    .add<ImageSampler<ImageF> >()
 #endif
-        ;
+    );
+}
 
 template class SOFA_IMAGE_API ImageSampler<ImageB>;
 template class SOFA_IMAGE_API ImageSampler<ImageUC>;
