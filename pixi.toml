@@ -25,9 +25,9 @@ gtest = "*"
 
 [tasks]
 build = { cmd = "cmake --build $SOFA_BUILD_DIR --target all", depends-on = ["configure"] }
-runSofa = { cmd = "$SOFA_BUILD_DIR/bin/runSofa", depends-on = ["build"] }
+install = { cmd = "cmake --build $SOFA_BUILD_DIR --target install", depends-on = ["build"] }
+runSofa-batch = { cmd = "runSofa -g batch", depends-on = ["install"] }
 clean = { cmd = "rm -rf $SOFA_BUILD_DIR" }
-test = { cmd = "ctest --test-dir $SOFA_BUILD_DIR --output-on-failure", depends-on = ["build"] }
 
 # Python 3.12 is the one supported by default
 [feature.python-supported.dependencies]
