@@ -66,7 +66,7 @@ function(windeployqt target build_dir install_dir)
         foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
             install(
                 DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/windeployqt/"
-                DESTINATION bin/${CONFIG}
+                DESTINATION ${LIBRARY_OUTPUT_DIRECTORY}/${CONFIG}
                 OPTIONAL
                 COMPONENT applications
                 PATTERN "resources" EXCLUDE
@@ -76,7 +76,7 @@ function(windeployqt target build_dir install_dir)
     else()
         install(
             DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/windeployqt/"
-            DESTINATION bin
+            DESTINATION ${LIBRARY_OUTPUT_DIRECTORY}
             COMPONENT applications
             PATTERN "resources" EXCLUDE
             PATTERN "translations" EXCLUDE
@@ -107,7 +107,7 @@ function(windeployqt target build_dir install_dir)
         foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
             install(
                 PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
-                DESTINATION bin/${CONFIG}
+                DESTINATION ${LIBRARY_OUTPUT_DIRECTORY}/${CONFIG}
                 OPTIONAL
                 COMPONENT applications
             )
@@ -115,7 +115,7 @@ function(windeployqt target build_dir install_dir)
     else()
         install(
             PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
-            DESTINATION bin
+            DESTINATION ${LIBRARY_OUTPUT_DIRECTORY}
             COMPONENT applications
         )
     endif()

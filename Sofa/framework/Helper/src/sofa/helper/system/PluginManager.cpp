@@ -505,8 +505,8 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
         const std::array<std::string, 4> paths = {
             FileSystem::append(prefix, libName),
             FileSystem::append(prefix, pluginName, libName),
-            FileSystem::append(prefix, pluginName, "bin", libName),
-            FileSystem::append(prefix, pluginName, "lib", libName)
+            FileSystem::append(prefix, pluginName, SOFAArchiveDir, libName),
+            FileSystem::append(prefix, pluginName, SOFARuntimeDir, libName)
         };
         for (const auto & path : paths) {
             if (FileSystem::isFile(path)) {

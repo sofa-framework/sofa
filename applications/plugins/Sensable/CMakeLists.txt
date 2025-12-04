@@ -32,8 +32,8 @@ target_link_libraries(${PROJECT_NAME} SofaHaptics SofaOpenglVisual ${OPENHAPTICS
 install(TARGETS ${PROJECT_NAME}
         COMPONENT Sensable_libraries
         EXPORT SensableTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+        RUNTIME DESTINATION ${RUNTIME_OUTPUT_DIRECTORY}
+        LIBRARY DESTINATION ${LIBRARY_OUTPUT_DIRECTORY}
+        ARCHIVE DESTINATION ${ARCHIVE_OUTPUT_DIRECTORY})
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
