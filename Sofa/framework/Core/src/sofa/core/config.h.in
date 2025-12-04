@@ -161,3 +161,25 @@ SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "Use getContactDistance or setCont
 #define SOFA_ATTRIBUTE_DEPRECATED__COMPUTERESIDUAL() \
     SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "The method computeResidual is not used")
 #endif
+
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
+#else
+#define SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API() \
+    SOFA_ATTRIBUTE_DISABLED("v25.12", "v25.12", "The assembly of the linear system is no longer the responsibility of the solver. Instead, a linear system component lives along with the linear solver. This component is in charge of the assembly.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_CORE_DEPRECATED_RENAME_CREATOR_BASEOBJECTCREATOR()
+#else
+#define SOFA_CORE_DEPRECATED_RENAME_CREATOR_BASEOBJECTCREATOR() \
+    SOFA_ATTRIBUTE_DISABLED("v25.12", "v26.06", "Type Creator has been renamed to BaseObjectCreator.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_CORE_DEPRECATED_RENAME_CREATORMAP_OBJECTTEMPLATECREATORMAP()
+#else
+#define SOFA_CORE_DEPRECATED_RENAME_CREATORMAP_OBJECTTEMPLATECREATORMAP() \
+    SOFA_ATTRIBUTE_DISABLED("v25.12", "v26.06", "Type CreatorMap has been renamed to ObjectTemplateCreatorMap.")
+#endif

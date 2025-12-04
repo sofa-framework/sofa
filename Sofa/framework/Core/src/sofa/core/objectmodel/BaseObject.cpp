@@ -342,22 +342,19 @@ SReal BaseObject::getTime() const
     return getContext()->getTime();
 }
 
-std::string BaseObject::getPathName() const {
+std::string BaseObject::getPathName() const
+{
+    auto node = dynamic_cast<const BaseNode*>(getContext());
+    if(!node)
+        return getName();
 
-    const BaseContext* context = this->getContext();
-    std::string result = "";
-    if( context )
-    {
-        const BaseNode* node = context->toBaseNode();
-        if( node ) {
-            result += node->getPathName();
-            if (node->getPathName() != "/")
-                result += "/";
-        }
-
-    }
-    result += getName();
-    return result;
+    auto pathname = node->getPathName();
+    std::stringstream tmp;
+    tmp << pathname;
+    if (pathname != "/")
+        tmp << "/";
+    tmp << getName();
+    return tmp.str();
 }
 
 } // namespace sofa::core::objectmodel

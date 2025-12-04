@@ -40,7 +40,7 @@ MeshLoader::MeshLoader() : BaseLoader()
   , d_highOrderQuadPositions(initData(&d_highOrderQuadPositions, "highOrderQuadPositions", "High order quad points of the mesh loaded"))
   , d_tetrahedra(initData(&d_tetrahedra, "tetrahedra", "Tetrahedra of the mesh loaded"))
   , d_hexahedra(initData(&d_hexahedra, "hexahedra", "Hexahedra of the mesh loaded"))
-  , d_pentahedra(initData(&d_pentahedra, "pentahedra", "Pentahedra of the mesh loaded"))
+  , d_prisms(initData(&d_prisms, "prisms", "Prisms of the mesh loaded"))
   , d_highOrderTetrahedronPositions(initData(&d_highOrderTetrahedronPositions, "highOrderTetrahedronPositions", "High order tetrahedron points of the mesh loaded"))
   , d_highOrderHexahedronPositions(initData(&d_highOrderHexahedronPositions, "highOrderHexahedronPositions", "High order hexahedron points of the mesh loaded"))
   , d_pyramids(initData(&d_pyramids, "pyramids", "Pyramids of the mesh loaded"))
@@ -51,7 +51,7 @@ MeshLoader::MeshLoader() : BaseLoader()
   , d_polygonsGroups(initData(&d_polygonsGroups, "polygonsGroups", "Groups of Polygons"))
   , d_tetrahedraGroups(initData(&d_tetrahedraGroups, "tetrahedraGroups", "Groups of Tetrahedra"))
   , d_hexahedraGroups(initData(&d_hexahedraGroups, "hexahedraGroups", "Groups of Hexahedra"))
-  , d_pentahedraGroups(initData(&d_pentahedraGroups, "pentahedraGroups", "Groups of Pentahedra"))
+  , d_prismsGroups(initData(&d_prismsGroups, "prismsGroups", "Groups of Prisms"))
   , d_pyramidsGroups(initData(&d_pyramidsGroups, "pyramidsGroups", "Groups of Pyramids"))
   , d_flipNormals(initData(&d_flipNormals, false, "flipNormals", "Flip Normals"))
   , d_triangulate(initData(&d_triangulate, false, "triangulate", "Divide all polygons into triangles"))
@@ -63,9 +63,14 @@ MeshLoader::MeshLoader() : BaseLoader()
   , d_transformation(initData(&d_transformation, type::Matrix4::Identity(), "transformation", "4x4 Homogeneous matrix to transform the DOFs (when present replace any)"))
   , d_previousTransformation(type::Matrix4::Identity() )
 {
+    d_pentahedra.setOriginalData(&d_prisms);
+    d_pentahedraGroups.setOriginalData(&d_prismsGroups);
+
     addAlias(&d_tetrahedra, "tetras");
     addAlias(&d_hexahedra, "hexas");
-    addAlias(&d_pentahedra, "pentas");
+    addAlias(&d_prisms, "pentas");
+    addAlias(&d_prisms, "pentahedra");
+    addAlias(&d_prismsGroups, "pentahedraGroups");
 
     d_flipNormals.setAutoLink(false);
     d_triangulate.setAutoLink(false);
@@ -85,7 +90,7 @@ MeshLoader::MeshLoader() : BaseLoader()
     d_polygons.setGroup("Vectors");
     d_tetrahedra.setGroup("Vectors");
     d_hexahedra.setGroup("Vectors");
-    d_pentahedra.setGroup("Vectors");
+    d_prisms.setGroup("Vectors");
     d_pyramids.setGroup("Vectors");
     d_normals.setGroup("Vectors");
     d_highOrderTetrahedronPositions.setGroup("Vectors");
@@ -100,7 +105,7 @@ MeshLoader::MeshLoader() : BaseLoader()
     d_pyramidsGroups.setGroup("Groups");
     d_hexahedraGroups.setGroup("Groups");
     d_trianglesGroups.setGroup("Groups");
-    d_pentahedraGroups.setGroup("Groups");
+    d_prismsGroups.setGroup("Groups");
     d_tetrahedraGroups.setGroup("Groups");
 
     d_positions.setReadOnly(true);
@@ -114,7 +119,7 @@ MeshLoader::MeshLoader() : BaseLoader()
     d_highOrderQuadPositions.setReadOnly(true);
     d_tetrahedra.setReadOnly(true);
     d_hexahedra.setReadOnly(true);
-    d_pentahedra.setReadOnly(true);
+    d_prisms.setReadOnly(true);
     d_highOrderTetrahedronPositions.setReadOnly(true);
     d_highOrderHexahedronPositions.setReadOnly(true);
     d_pyramids.setReadOnly(true);
@@ -130,10 +135,10 @@ MeshLoader::MeshLoader() : BaseLoader()
         }
         return sofa::core::objectmodel::ComponentState::Invalid;
     }, {&d_positions, &d_normals,
-        &d_edges, &d_triangles, &d_quads, &d_tetrahedra, &d_hexahedra, &d_pentahedra, &d_pyramids,
+        &d_edges, &d_triangles, &d_quads, &d_tetrahedra, &d_hexahedra, &d_prisms, &d_pyramids,
         &d_polylines, &d_polygons,
         &d_highOrderEdgePositions, &d_highOrderTrianglePositions, &d_highOrderQuadPositions, &d_highOrderHexahedronPositions, &d_highOrderTetrahedronPositions,
-        &d_edgesGroups, &d_quadsGroups, &d_polygonsGroups, &d_pyramidsGroups, &d_hexahedraGroups, &d_trianglesGroups, &d_pentahedraGroups, &d_tetrahedraGroups}
+        &d_edgesGroups, &d_quadsGroups, &d_polygonsGroups, &d_pyramidsGroups, &d_hexahedraGroups, &d_trianglesGroups, &d_prismsGroups, &d_tetrahedraGroups}
     );
 
     addUpdateCallback("updateTransformPosition", {&d_translation, &d_rotation, &d_scale, &d_transformation}, [this](const core::DataTracker& )
@@ -153,7 +158,7 @@ void MeshLoader::clearBuffers()
     getWriteOnlyAccessor(d_quads).clear();
     getWriteOnlyAccessor(d_tetrahedra).clear();
     getWriteOnlyAccessor(d_hexahedra).clear();
-    getWriteOnlyAccessor(d_pentahedra).clear();
+    getWriteOnlyAccessor(d_prisms).clear();
     getWriteOnlyAccessor(d_pyramids).clear();
     getWriteOnlyAccessor(d_polygons).clear();
     getWriteOnlyAccessor(d_polylines).clear();
@@ -169,7 +174,7 @@ void MeshLoader::clearBuffers()
     getWriteOnlyAccessor(d_quadsGroups).clear();
     getWriteOnlyAccessor(d_tetrahedraGroups).clear();
     getWriteOnlyAccessor(d_hexahedraGroups).clear();
-    getWriteOnlyAccessor(d_pentahedraGroups).clear();
+    getWriteOnlyAccessor(d_prismsGroups).clear();
     getWriteOnlyAccessor(d_pyramidsGroups).clear();
     getWriteOnlyAccessor(d_polygonsGroups).clear();
 
@@ -329,9 +334,9 @@ void MeshLoader::updateElements()
             msg_info() << nbnew << " quads were missing around the hexahedra";
         }
     }
-    if (d_pentahedra.getValue().size() > 0 && d_createSubelements.getValue())
+    if (d_prisms.getValue().size() > 0 && d_createSubelements.getValue())
     {
-        helper::ReadAccessor<Data<type::vector< Pentahedron > > > pentahedra = this->d_pentahedra;
+        helper::ReadAccessor<Data<type::vector< Prism > > > prisms = this->d_prisms;
         helper::WriteAccessor<Data<type::vector< Quad > > > quads = this->d_quads;
         helper::WriteAccessor<Data<type::vector< Triangle > > > triangles = this->d_triangles;
 
@@ -349,9 +354,9 @@ void MeshLoader::updateElements()
         }
         int nbnewTri = 0;
 
-        for (Size i = 0; i < pentahedra.size(); ++i)
+        for (Size i = 0; i < prisms.size(); ++i)
         {
-            Pentahedron p = pentahedra[i];
+            Prism p = prisms[i];
             //vtk ordering http://www.vtk.org/wp-content/uploads/2015/04/file-formats.pdf
             Quad quad1 = Quad(p[0], p[3], p[4], p[1]);
             Quad quad2 = Quad(p[0], p[2], p[5], p[3]);
@@ -388,7 +393,7 @@ void MeshLoader::updateElements()
         }
         if (nbnewQuad > 0 || nbnewTri > 0 )
         {
-            msg_info() << nbnewQuad << " quads, " << nbnewTri << " triangles were missing around the pentahedra";
+            msg_info() << nbnewQuad << " quads, " << nbnewTri << " triangles were missing around the prism";
         }
     }
     if (d_pyramids.getValue().size() > 0 && d_createSubelements.getValue())
@@ -592,7 +597,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            const helper::ReadAccessor<Data< type::vector< Pentahedron > > > elems = d_pentahedra;
+            const helper::ReadAccessor<Data< type::vector< Prism > > > elems = d_prisms;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -668,7 +673,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::WriteAccessor<Data< type::vector< Pentahedron > > > elems = d_pentahedra;
+            helper::WriteAccessor<Data< type::vector< Prism > > > elems = d_prisms;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -866,16 +871,16 @@ void MeshLoader::addHexahedron(type::vector< Hexahedron >& pHexahedra, const Hex
     pHexahedra.push_back(p);
 }
 
-void MeshLoader::addPentahedron(type::vector< Pentahedron >& pPentahedra,
+void MeshLoader::addPrism(type::vector< Prism >& pPrism,
                                 sofa::Index p0, sofa::Index p1, sofa::Index p2, sofa::Index p3,
                                 sofa::Index p4, sofa::Index p5)
 {
-    addPentahedron(pPentahedra, Pentahedron(p0, p1, p2, p3, p4, p5));
+    addPrism(pPrism, Prism(p0, p1, p2, p3, p4, p5));
 }
 
-void MeshLoader::addPentahedron(type::vector< Pentahedron >& pPentahedra, const Pentahedron& p)
+void MeshLoader::addPrism(type::vector< Prism >& pPrism, const Prism& p)
 {
-    pPentahedra.push_back(p);
+    pPrism.push_back(p);
 }
 
 void MeshLoader::addPyramid(type::vector< Pyramid >& pPyramids,
@@ -910,7 +915,7 @@ void MeshLoader::copyMeshToData(sofa::helper::io::Mesh& _mesh)
     d_polygonsGroups.setValue(_mesh.getPolygonsGroups());
     d_tetrahedraGroups.setValue(_mesh.getTetrahedraGroups());
     d_hexahedraGroups.setValue(_mesh.getHexahedraGroups());
-    d_pentahedraGroups.setValue(_mesh.getPentahedraGroups());
+    d_prismsGroups.setValue(_mesh.getPrismsGroups());
     d_pyramidsGroups.setValue(_mesh.getPyramidsGroups());
 
     // copy high order

@@ -25,6 +25,7 @@
 
 namespace sofa::component::constraint::lagrangian::solver
 {
+
 /**
  *  \brief This component implements a generic way of building system for solvers that use a built
  *  version of the constraint matrix. Any solver that uses a build matrix should inherit from this.
@@ -34,10 +35,13 @@ namespace sofa::component::constraint::lagrangian::solver
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API BuiltConstraintSolver : public GenericConstraintSolver
 {
 
-
 public:
     SOFA_CLASS(BuiltConstraintSolver, GenericConstraintSolver);
     Data<bool> d_multithreading; ///< Build compliances concurrently
+    Data<bool> d_useSVDForRegularization; ///< Use SVD decomposiiton of the compliance matrix to project singular values smaller than regularization to the regularization term. Only works with built
+    Data<SReal> d_svdSingularValueNullSpaceCriteriaFactor; ///< Fraction of the highest singular value bellow which a singular value will be supposed to belong to the nullspace
+    Data<SReal> d_svdSingularVectorNullSpaceCriteriaFactor; ///< Absolute value bellow which a component of a normalized base vector will be considered null
+
 
     BuiltConstraintSolver();
 
@@ -45,6 +49,8 @@ public:
 
 protected:
     virtual void doBuildSystem( const core::ConstraintParams *cParams, GenericConstraintProblem * problem ,unsigned int numConstraints) override;
+    virtual void addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization) override;
+
 
 private:
 
