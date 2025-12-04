@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTRIGIDMAPPING_H
 #define SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTRIGIDMAPPING_H
 
-#include <SofaRigid/RigidMapping.h>
+#include <sofa/component/mapping/nonlinear/RigidMapping.h>
 
 #include "PersistentContactMapping.h"
 #include <PersistentContact/config.h>
@@ -37,12 +37,12 @@ namespace mapping
 {
 
 template <class TIn, class TOut>
-class PersistentContactRigidMapping : public RigidMapping<TIn, TOut>, public PersistentContactMapping
+class PersistentContactRigidMapping : public nonlinear::RigidMapping<TIn, TOut>, public PersistentContactMapping
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(PersistentContactRigidMapping,TIn,TOut), SOFA_TEMPLATE2(RigidMapping,TIn,TOut), PersistentContactMapping);
+    SOFA_CLASS2(SOFA_TEMPLATE2(PersistentContactRigidMapping,TIn,TOut), SOFA_TEMPLATE2(nonlinear::RigidMapping,TIn,TOut), PersistentContactMapping);
 
-    typedef RigidMapping<TIn, TOut> Inherit;
+    typedef nonlinear::RigidMapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
     typedef Out OutDataTypes;
@@ -72,7 +72,7 @@ public:
     typedef type::Mat<N, N, Real> Mat;
     typedef type::Vec<N, Real> Vector;
     typedef type::Mat<NOut, NIn, Real> MBloc;
-    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
+    typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
 
     PersistentContactRigidMapping();
 

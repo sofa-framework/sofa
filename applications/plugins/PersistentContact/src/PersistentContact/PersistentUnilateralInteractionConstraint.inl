@@ -24,7 +24,7 @@
 
 #include "PersistentUnilateralInteractionConstraint.h"
 
-#include <SofaConstraint/UnilateralInteractionConstraint.inl>
+#include <sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.inl>
 
 #include <sofa/helper/rmath.h>
 
@@ -159,7 +159,7 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::addContact(double mu,
     c.s					= cross(norm, c.t);
     c.s					= c.s / c.s.norm();
     c.t					= cross((-norm), c.s);
-    c.mu				= mu;
+    c.parameters.mu				= mu;
     c.contactId			= id;
     c.localId			= localid;
     c.contactDistance	= cDist;
@@ -238,7 +238,7 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::getPositionViolation(
 
         c.dfree = dfree; // PJ : For isActive() method. Don't know if it's still useful.
 
-        if (c.mu > 0.0)
+        if (c.parameters.mu > 0.0)
         {
             v->set(c.id + 1, dfree_t);
             v->set(c.id + 2, dfree_s);
@@ -263,7 +263,7 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::getVelocityViolation(
 
         v->set(c.id, dot(QP_vfree, c.norm)); // dfree
 
-        if (c.mu > 0.0)
+        if (c.parameters.mu > 0.0)
         {
             v->set(c.id + 1, dot(QP_vfree, c.t)); // dfree_t
             v->set(c.id + 2, dot(QP_vfree, c.s)); // dfree_s
@@ -285,16 +285,16 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::getConstraintResoluti
     {
         Contact& c = this->contacts[i];
 
-        if (c.mu > 0.0)
+        if (c.parameters.mu > 0.0)
         {
-            PersistentUnilateralConstraintResolutionWithFriction<DataTypes> *cRes = new PersistentUnilateralConstraintResolutionWithFriction<DataTypes>(c.mu, &this->contactsStatus[i]);
+            PersistentUnilateralConstraintResolutionWithFriction<DataTypes> *cRes = new PersistentUnilateralConstraintResolutionWithFriction<DataTypes>(c.parameters.mu, &this->contactsStatus[i]);
             cRes->setConstraint(this);
             cRes->setInitForce(getInitForce(c.contactId));
             resTab[offset] = cRes;
             offset += 3;
         }
         else
-            resTab[offset++] = new UnilateralConstraintResolution();
+            resTab[offset++] = new constraint::lagrangian::model::UnilateralConstraintResolution();
     }
 }
 
@@ -484,34 +484,31 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::draw(const core::visu
     return;
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
-    glDisable(GL_LIGHTING);
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
+    vparams->drawTool()->disableLighting();
 
     for (unsigned int i=0; i< this->contacts.size(); i++)
     {
         const Contact& c = this->contacts[i];
-
-        glLineWidth(5);
-        glBegin(GL_LINES);
+        type::RGBAColor color{};
 
         switch (contactStates[c.id])
         {
         case PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::NONE :
-            glColor4f(1.f,1.f,1.f,1.f);
+            color = {1.f,1.f,1.f,1.f};
             break;
 
         case PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::SLIDING :
-            glColor4f(0.05f,0.05f,0.8f,1.f);
+            color = {0.05f,0.05f,0.8f,1.f};
             break;
 
         case PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::STICKY :
-            glColor4f(0.8f,0.05f,0.05f,1.f);
+            color = {0.8f,0.05f,0.05f,1.f};
             break;
         }
 
-        helper::gl::glVertexT(c.P);
-        helper::gl::glVertexT(c.Q);
-
-        glEnd();
+        vparams->drawTool()->drawLine(c.P, c.Q, color);
 
         /*glLineWidth(2);
         glBegin(GL_LINES);
@@ -521,8 +518,6 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::draw(const core::visu
         helper::gl::glVertexT(c.Qfree);
 
         glEnd();*/
-
-        glLineWidth(1);
     }
 }
 

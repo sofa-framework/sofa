@@ -22,10 +22,15 @@
 #ifndef SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_H
 #define SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_H
 
-#include <SofaBaseMechanics/BarycentricMapping.h>
+#include <PersistentContact/config.h>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperMeshTopology.h>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
+#include <sofa/component/mapping/linear/BarycentricMapping.h>
+#include <sofa/component/mapping/linear/BarycentricMappingRigid.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/grid/SparseGridTopology.h>
 
 #include "PersistentContactMapping.h"
-#include <PersistentContact/config.h>
 
 namespace sofa
 {
@@ -65,10 +70,10 @@ public:
 
 
 template<class TIn, class TOut>
-class PersistentContactBarycentricMapperMeshTopology : public BarycentricMapperMeshTopology< TIn , TOut>, public PersistentContactBarycentricMapper< TIn , TOut>
+class PersistentContactBarycentricMapperMeshTopology : public linear::BarycentricMapperMeshTopology<TIn, TOut>, public PersistentContactBarycentricMapper< TIn , TOut>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(PersistentContactBarycentricMapperMeshTopology, TIn, TOut), SOFA_TEMPLATE2(BarycentricMapperMeshTopology, TIn, TOut), SOFA_TEMPLATE2(PersistentContactBarycentricMapper, TIn, TOut));
+    SOFA_CLASS2(SOFA_TEMPLATE2(PersistentContactBarycentricMapperMeshTopology, TIn, TOut), SOFA_TEMPLATE2(linear::BarycentricMapperMeshTopology, TIn, TOut), SOFA_TEMPLATE2(PersistentContactBarycentricMapper, TIn, TOut));
 
     typedef TIn In;
     typedef TOut Out;
@@ -80,8 +85,8 @@ public:
     typedef typename InDataTypes::Real Real;
 
     PersistentContactBarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
-            topology::PointSetTopologyContainer* toTopology)
-        : BarycentricMapperMeshTopology<TIn, TOut>(fromTopology, toTopology)
+            sofa::component::topology::container::dynamic::PointSetTopologyContainer* toTopology)
+        : linear::BarycentricMapperMeshTopology<TIn, TOut>(fromTopology, toTopology)
     {
     }
 
@@ -95,10 +100,10 @@ public:
 
 
 template<class TIn, class TOut>
-class PersistentContactBarycentricMapperSparseGridTopology : public BarycentricMapperSparseGridTopology< TIn , TOut>, public PersistentContactBarycentricMapper< TIn , TOut>
+class PersistentContactBarycentricMapperSparseGridTopology : public linear::BarycentricMapperSparseGridTopology<TIn, TOut>, public PersistentContactBarycentricMapper< TIn , TOut>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(PersistentContactBarycentricMapperSparseGridTopology, TIn, TOut), SOFA_TEMPLATE2(BarycentricMapperSparseGridTopology, TIn, TOut), SOFA_TEMPLATE2(PersistentContactBarycentricMapper, TIn, TOut));
+    SOFA_CLASS2(SOFA_TEMPLATE2(PersistentContactBarycentricMapperSparseGridTopology, TIn, TOut), SOFA_TEMPLATE2(linear::BarycentricMapperSparseGridTopology, TIn, TOut), SOFA_TEMPLATE2(PersistentContactBarycentricMapper, TIn, TOut));
 
     typedef TIn In;
     typedef TOut Out;
@@ -109,12 +114,12 @@ public:
     typedef typename InDataTypes::Deriv InDeriv;
     typedef typename InDataTypes::Real Real;
 
-    typedef BarycentricMapperSparseGridTopology< TIn , TOut> Inherit;
+    typedef linear::BarycentricMapperSparseGridTopology< TIn , TOut> Inherit;
     typedef typename Inherit::CubeData CubeData;
 
-    PersistentContactBarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
-            topology::PointSetTopologyContainer* toTopology)
-        : BarycentricMapperSparseGridTopology<TIn, TOut>(fromTopology, toTopology)
+    PersistentContactBarycentricMapperSparseGridTopology(sofa::component::topology::container::grid::SparseGridTopology* fromTopology,
+        topology::container::dynamic::PointSetTopologyContainer* toTopology)
+        : linear::BarycentricMapperSparseGridTopology<TIn, TOut>(fromTopology, toTopology)
     {
     }
 
@@ -135,10 +140,10 @@ protected:
 
 
 template<class TIn, class TOut>
-class PersistentContactBarycentricMapperTetrahedronSetTopology : public BarycentricMapperTetrahedronSetTopology< TIn , TOut>, public PersistentContactBarycentricMapper< TIn , TOut>
+class PersistentContactBarycentricMapperTetrahedronSetTopology : public linear::BarycentricMapperTetrahedronSetTopology<TIn, TOut>, public PersistentContactBarycentricMapper< TIn , TOut>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(PersistentContactBarycentricMapperTetrahedronSetTopology, TIn, TOut), SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology, TIn, TOut), SOFA_TEMPLATE2(PersistentContactBarycentricMapper, TIn, TOut));
+    SOFA_CLASS2(SOFA_TEMPLATE2(PersistentContactBarycentricMapperTetrahedronSetTopology, TIn, TOut), SOFA_TEMPLATE2(linear::BarycentricMapperTetrahedronSetTopology, TIn, TOut), SOFA_TEMPLATE2(PersistentContactBarycentricMapper, TIn, TOut));
 
     typedef TIn In;
     typedef TOut Out;
@@ -149,12 +154,13 @@ public:
     typedef typename InDataTypes::Deriv InDeriv;
     typedef typename InDataTypes::Real Real;
 
-    typedef BarycentricMapperTetrahedronSetTopology<TIn, TOut> Inherit;
-    typedef typename Inherit::MappingData MappingData;
+    typedef linear::BarycentricMapperTetrahedronSetTopology<TIn, TOut> Inherit;
+    typedef typename linear::BarycentricMapper<TIn, TOut>::MappingData3D MappingData;
 
-    PersistentContactBarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology,
-            topology::PointSetTopologyContainer* toTopology)
-        : BarycentricMapperTetrahedronSetTopology<TIn, TOut>(fromTopology, toTopology)
+    PersistentContactBarycentricMapperTetrahedronSetTopology(
+        topology::container::dynamic::TetrahedronSetTopologyContainer* fromTopology,
+        topology::container::dynamic::PointSetTopologyContainer* toTopology)
+        : linear::BarycentricMapperTetrahedronSetTopology<TIn, TOut>(fromTopology, toTopology)
     {
     }
 
@@ -176,12 +182,12 @@ protected:
 
 
 template <class TIn, class TOut>
-class PersistentContactBarycentricMapping : public BarycentricMapping<TIn, TOut>, public PersistentContactMapping
+class PersistentContactBarycentricMapping : public linear::BarycentricMapping<TIn, TOut>, public PersistentContactMapping
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(PersistentContactBarycentricMapping,TIn,TOut), SOFA_TEMPLATE2(BarycentricMapping,TIn,TOut), PersistentContactMapping);
+    SOFA_CLASS2(SOFA_TEMPLATE2(PersistentContactBarycentricMapping,TIn,TOut), SOFA_TEMPLATE2(linear::BarycentricMapping,TIn,TOut), PersistentContactMapping);
 
-    typedef BarycentricMapping<TIn, TOut> Inherit;
+    typedef linear::BarycentricMapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
     typedef In InDataTypes;

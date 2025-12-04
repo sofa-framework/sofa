@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_PERSISTENTUNILATERALINTERACTIONCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINTSET_PERSISTENTUNILATERALINTERACTIONCONSTRAINT_H
 
-#include <SofaConstraint/UnilateralInteractionConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.h>
 
 #include <PersistentContact/config.h>
 
@@ -50,12 +50,11 @@ public:
     typedef typename Coord::value_type Real;
 
     PersistentUnilateralConstraintResolutionWithFriction(double mu, bool* active = NULL)
-        : _mu(mu)
+        : core::behavior::ConstraintResolution(3)
+        , _mu(mu)
         , _active(active)
         , m_constraint(0)
-    {
-        nbLines=3;
-    }
+    {}
 
     void init(int line, double** w, double* force) override;
     void resolution(int line, double** w, double* d, double* force, double *dFree) override;
@@ -85,12 +84,12 @@ protected:
 
 
 template<class DataTypes>
-class PersistentUnilateralInteractionConstraint : public UnilateralInteractionConstraint<DataTypes>
+class PersistentUnilateralInteractionConstraint : public constraint::lagrangian::model::UnilateralLagrangianConstraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PersistentUnilateralInteractionConstraint, DataTypes), SOFA_TEMPLATE(UnilateralInteractionConstraint, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(PersistentUnilateralInteractionConstraint, DataTypes), SOFA_TEMPLATE(constraint::lagrangian::model::UnilateralLagrangianConstraint, DataTypes));
 
-    typedef UnilateralInteractionConstraint<DataTypes> Inherited;
+    typedef constraint::lagrangian::model::UnilateralLagrangianConstraint<DataTypes> Inherited;
     typedef typename Inherited::VecCoord VecCoord;
     typedef typename Inherited::VecDeriv VecDeriv;
     typedef typename Inherited::Coord Coord;

@@ -24,9 +24,11 @@
 
 #include "PersistentContactBarycentricMapping.h"
 
-#include <SofaBaseMechanics/BarycentricMapping.inl>
+#include <sofa/component/mapping/linear/BarycentricMapping.inl>
 
 #include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/topology/Tetrahedron.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {
@@ -40,15 +42,15 @@ namespace mapping
 template <class In, class Out>
 int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::type::Vec3& _pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
-    this->updateJ = true;
+    this->m_updateJ = true;
     int retValue = 0;
 
-    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
-    const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
-    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
+    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->m_fromTopology->getTetrahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->m_fromTopology->getHexahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->m_fromTopology->getTriangles();
+    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->m_fromTopology->getQuads();
 
-    sofa::type::vector<defaulttype::Matrix3> bases;
+    sofa::type::vector<type::Matrix3> bases;
     sofa::type::vector<type::Vec3> centers;
 
     if ( tetrahedra.empty() && cubes.empty() )
@@ -57,7 +59,7 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
         {
             //no 3D elements, nor 2D elements -> map on 1D elements
 
-            const sofa::core::topology::BaseMeshTopology::SeqEdges& edges = this->fromTopology->getEdges();
+            const sofa::core::topology::BaseMeshTopology::SeqEdges& edges = this->m_fromTopology->getEdges();
             if ( edges.empty() )
                 return retValue;
 
@@ -100,7 +102,7 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
 
             for ( unsigned int t = 0; t < triangles.size(); t++ )
             {
-                defaulttype::Mat3x3d m,mt;
+                type::Mat3x3d m,mt;
                 m[0] = in[triangles[t][1]]-in[triangles[t][0]];
                 m[1] = in[triangles[t][2]]-in[triangles[t][0]];
                 m[2] = cross ( m[0],m[1] );
@@ -111,7 +113,7 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
 
             for ( unsigned int c = 0; c < quads.size(); c++ )
             {
-                defaulttype::Mat3x3d m,mt;
+                type::Mat3x3d m,mt;
                 m[0] = in[quads[c][1]]-in[quads[c][0]];
                 m[1] = in[quads[c][3]]-in[quads[c][0]];
                 m[2] = cross ( m[0],m[1] );
@@ -154,7 +156,7 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
 
         for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
         {
-            defaulttype::Mat3x3d m,mt;
+            type::Mat3x3d m,mt;
             m[0] = in[tetrahedra[t][1]]-in[tetrahedra[t][0]];
             m[1] = in[tetrahedra[t][2]]-in[tetrahedra[t][0]];
             m[2] = in[tetrahedra[t][3]]-in[tetrahedra[t][0]];
@@ -165,7 +167,7 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
 
         for ( unsigned int c = 0; c < cubes.size(); c++ )
         {
-            defaulttype::Mat3x3d m,mt;
+            type::Mat3x3d m,mt;
             m[0] = in[cubes[c][1]]-in[cubes[c][0]];
             m[1] = in[cubes[c][3]]-in[cubes[c][0]];
             m[2] = in[cubes[c][4]]-in[cubes[c][0]];
@@ -224,11 +226,11 @@ int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPoin
         std::cout << "addContactPointFromInputMapping " << pos << std::endl;
     }
 
-    this->updateJ = true;
+    this->m_updateJ = true;
 
-    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->m_fromTopology->getHexahedra();
 
-    sofa::type::vector<defaulttype::Matrix3> bases;
+    sofa::type::vector<type::Matrix3> bases;
     sofa::type::vector<type::Vec3> centers;
 
     bases.resize ( cubes.size() );
@@ -236,7 +238,7 @@ int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPoin
 
     for ( unsigned int c = 0; c < cubes.size(); c++ )
     {
-        defaulttype::Mat3x3d m,mt;
+        type::Mat3x3d m,mt;
         m[0] = in[cubes[c][1]]-in[cubes[c][0]];
         m[1] = in[cubes[c][3]]-in[cubes[c][0]];
         m[2] = in[cubes[c][4]]-in[cubes[c][0]];
@@ -283,7 +285,7 @@ int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::keepContactPoi
         return this->addPointInCube(c_data.in_index, baryCoords);
     }
 
-    serr << "Warning! PersistentContactBarycentricMapperSparseGridTopology keepContactPointFromInputMapping method refers to an unstored index" << sendl;
+    msg_error() << "Warning! PersistentContactBarycentricMapperSparseGridTopology keepContactPointFromInputMapping method refers to an unstored index";
     return 0;
 }
 
@@ -291,7 +293,7 @@ int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::keepContactPoi
 template <class In, class Out>
 void PersistentContactBarycentricMapperSparseGridTopology<In,Out>::storeBarycentricData()
 {
-    m_storedMap = this->map;
+    m_storedMap = this->m_map;
 }
 
 
@@ -304,16 +306,16 @@ int PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::addContact
         std::cout << "addContactPointFromInputMapping " << pos << std::endl;
     }
 
-    const sofa::type::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::type::vector<sofa::topology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
 
-    sofa::type::vector<defaulttype::Matrix3> bases;
+    sofa::type::vector<type::Matrix3> bases;
     sofa::type::vector<type::Vec3> centers;
 
     bases.resize ( tetrahedra.size() );
     centers.resize ( tetrahedra.size() );
     for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
     {
-        defaulttype::Mat3x3d m,mt;
+        type::Mat3x3d m,mt;
         m[0] = in[tetrahedra[t][1]]-in[tetrahedra[t][0]];
         m[1] = in[tetrahedra[t][2]]-in[tetrahedra[t][0]];
         m[2] = in[tetrahedra[t][3]]-in[tetrahedra[t][0]];
@@ -343,7 +345,7 @@ int PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::addContact
 
     this->addPointInTetra (index, coefs.ptr() );
 
-    return this->map.getValue().size() - 1;
+    return this->d_map.getValue().size() - 1;
 }
 
 
@@ -363,7 +365,7 @@ int PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::keepContac
         return this->addPointInTetra(t_data.in_index, baryCoords);
     }
 
-    serr << "Warning! PersistentContactBarycentricMapperTetrahedronSetTopology keepContactPointFromInputMapping method refers to an unstored index" << sendl;
+    msg_error() << "Warning! PersistentContactBarycentricMapperTetrahedronSetTopology keepContactPointFromInputMapping method refers to an unstored index";
     return 0;
 }
 
@@ -371,7 +373,7 @@ int PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::keepContac
 template <class In, class Out>
 void PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::storeBarycentricData()
 {
-    m_storedMap = this->map.getValue();
+    m_storedMap = this->d_map.getValue();
 }
 
 
@@ -381,11 +383,11 @@ void PersistentContactBarycentricMapping<TIn, TOut>::beginAddContactPoint()
 {
     if (!m_init)
     {
-        if (this->mapper)
+        if (this->d_mapper)
         {
-            this->mapper->clear(0);
+            this->d_mapper->clear(0);
 
-            this->mapper->f_printLog.setValue(this->f_printLog.getValue());
+            this->d_mapper->f_printLog.setValue(this->f_printLog.getValue());
         }
 
         this->toModel->resize(0);
@@ -421,7 +423,7 @@ int PersistentContactBarycentricMapping<TIn, TOut>::keepContactPointFromInputMap
         return index;
     }
 
-    serr << "PersistentContactBarycentricMapping::keepContactPointFromInputMapping : no persistent mapper found" << sendl;
+    msg_error() << "PersistentContactBarycentricMapping::keepContactPointFromInputMapping : no persistent mapper found";
     return 0;
 }
 
@@ -434,7 +436,7 @@ void PersistentContactBarycentricMapping<TIn, TOut>::init()
 
     BaseMeshTopology *topo_from = this->fromModel->getContext()->getMeshTopology();
 
-    if (this->mapper == NULL)
+    if (this->d_mapper == NULL)
     {
         if (topo_from != NULL)
         {
@@ -453,7 +455,7 @@ void PersistentContactBarycentricMapping<TIn, TOut>::createPersistentMapperFromT
 
     m_persistentMapper = NULL;
 
-    topology::PointSetTopologyContainer* toTopoCont;
+    topology::container::dynamic::PointSetTopologyContainer* toTopoCont;
     this->toModel->getContext()->get(toTopoCont);
 
     core::topology::TopologyContainer* fromTopoCont = NULL;
@@ -473,7 +475,7 @@ void PersistentContactBarycentricMapping<TIn, TOut>::createPersistentMapperFromT
 
     if (fromTopoCont != NULL)
     {
-        topology::TetrahedronSetTopologyContainer* t1 = dynamic_cast< topology::TetrahedronSetTopologyContainer* >(fromTopoCont);
+        topology::container::dynamic::TetrahedronSetTopologyContainer* t1 = dynamic_cast<topology::container::dynamic::TetrahedronSetTopologyContainer* >(fromTopoCont);
         if (t1 != NULL)
         {
             typedef PersistentContactBarycentricMapperTetrahedronSetTopology<InDataTypes, OutDataTypes> TetrahedronSetMapper;
@@ -482,7 +484,7 @@ void PersistentContactBarycentricMapping<TIn, TOut>::createPersistentMapperFromT
     }
     else
     {
-        using sofa::component::topology::SparseGridTopology;
+        using topology::container::grid::SparseGridTopology;
 
         SparseGridTopology* sgt = dynamic_cast< SparseGridTopology* >(topology);
         if (sgt != NULL && sgt->isVolume())
@@ -505,13 +507,13 @@ void PersistentContactBarycentricMapping<TIn, TOut>::createPersistentMapperFromT
         m_persistentMapper->setName("mapper");
         this->addSlave(m_persistentMapper.get());
 
-        TopologyBarycentricMapper<InDataTypes, OutDataTypes> *tmp = dynamic_cast< TopologyBarycentricMapper<InDataTypes, OutDataTypes> * >(m_persistentMapper.get());
-        this->mapper = tmp;
-        this->addSlave(this->mapper.get());
+        sofa::component::mapping::linear::TopologyBarycentricMapper<InDataTypes, OutDataTypes> *tmp = dynamic_cast< sofa::component::mapping::linear::TopologyBarycentricMapper<InDataTypes, OutDataTypes> * >(m_persistentMapper.get());
+        this->d_mapper = tmp;
+        this->addSlave(this->d_mapper.get());
     }
     else
     {
-        serr << "PersistentContactBarycentricMapping not yet compatible with its input topology" << sendl;
+        msg_error() << "PersistentContactBarycentricMapping not yet compatible with its input topology";
     }
 }
 

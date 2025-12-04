@@ -25,9 +25,7 @@
 #include "PersistentFrictionContact.h"
 #include "PersistentUnilateralInteractionConstraint.inl"
 
-#include <SofaConstraint/FrictionContact.inl>
-
-#include <sofa/gl/template.h>
+#include <sofa/component/collision/response/contact/FrictionContact.inl>
 
 
 namespace sofa
@@ -45,7 +43,7 @@ using namespace core::collision;
 
 template < class TCollisionModel1, class TCollisionModel2 >
 PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::PersistentFrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
-    : FrictionContact<TCollisionModel1, TCollisionModel2>(model1, model2, intersectionMethod)
+    : response::contact::FrictionContact<TCollisionModel1, TCollisionModel2>(model1, model2, intersectionMethod)
     , constraintModel1(NULL)
     , constraintModel2(NULL)
     , map1(NULL)
@@ -370,7 +368,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::resetPersiste
             map1->beginAddContactPoint();
         }
         else
-            serr << "map1 is not defined in setDetectionOutputs" << sendl;
+            msg_error() << "map1 is not defined in setDetectionOutputs";
     }
 
     if (!use_mapper_for_state2)
@@ -380,7 +378,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::resetPersiste
             map2->beginAddContactPoint();
         }
         else
-            serr << "map2 is not defined in setDetectionOutputs" << sendl;
+            msg_error() << "map2 is not defined in setDetectionOutputs";
     }
 }
 
@@ -388,7 +386,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::resetPersiste
 template< class TCollisionModel1, class TCollisionModel2 >
 template< class T >
 bool PersistentFrictionContact<TCollisionModel1, TCollisionModel2>::findMappingOrUseMapper(
-    core::behavior::MechanicalState<T> *mState, container::MechanicalObject<T> *&constraintModel, component::mapping::PersistentContactMapping *&map)
+    core::behavior::MechanicalState<T> *mState, statecontainer::MechanicalObject<T> *&constraintModel, component::mapping::PersistentContactMapping *&map)
 {
     using sofa::core::objectmodel::BaseContext;
     using sofa::simulation::Node;
@@ -411,7 +409,7 @@ bool PersistentFrictionContact<TCollisionModel1, TCollisionModel2>::findMappingO
 
         if (fromObjects.empty())
         {
-            serr << "PersistentFrictionContact::Problem with fromObjects size = " << fromObjects.size() << sendl;
+            msg_error() << "PersistentFrictionContact::Problem with fromObjects size = " << fromObjects.size();
             return false;
         }
 
@@ -426,7 +424,7 @@ bool PersistentFrictionContact<TCollisionModel1, TCollisionModel2>::findMappingO
 
     if (parentNode == NULL)
     {
-        serr << "PersistentFrictionContact::Error 1 in findMappingOrUseMapper" << sendl;
+        msg_error() << "PersistentFrictionContact::Error 1 in findMappingOrUseMapper";
         return false;
     }
 
@@ -444,7 +442,7 @@ bool PersistentFrictionContact<TCollisionModel1, TCollisionModel2>::findMappingO
         if ((*it)->m_nameOfInputMap.getValue() == baseMap->getName())
         {
             map = *it;
-            constraintModel = dynamic_cast< container::MechanicalObject<T >* > ((*it)->getContext()->getMechanicalState());
+            constraintModel = dynamic_cast< statecontainer::MechanicalObject<T >* > ((*it)->getContext()->getMechanicalState());
             return (constraintModel && map);
         }
 
@@ -489,7 +487,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
             if (this->selfCollision && use_mapper_for_state1 != use_mapper_for_state2)
             {
                 this->f_printLog.setValue(true);
-                serr << "Problem : selfColision but not same targeting state => constraint not created" << sendl;
+                msg_error() << "Problem : selfColision but not same targeting state => constraint not created";
                 return;
             }
 
@@ -536,7 +534,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
         bool m2 = false;
 
         double distance = d0;
-        Vec3d f;
+        type::Vec3d f;
 
         if (isSticked(o))
             f = m_stickedContacts[o].m_initForce;
@@ -562,9 +560,11 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
             }
             else
             {
-                Vector3 thickness = o->normal * this->model1->getContactDistance();
-                Vector3 posColpoint = o->point[0] + thickness;
-                index1 = this->mapThePersistentContact(o->baryCoords[0], index1, posColpoint, true);
+                type::Vec3 thickness = o->normal * this->model1->getContactDistance();
+                type::Vec3 posColpoint = o->point[0] + thickness;
+
+                //baryCoord was removed in https://github.com/sofa-framework/sofa/pull/1048
+                //index1 = this->mapThePersistentContact(o->baryCoords[0], index1, posColpoint, true);
             }
 
             distance -= this->model1->getContactDistance();
@@ -586,9 +586,10 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
             }
             else
             {
-                Vector3 thickness = o->normal * this->model2->getContactDistance();
-                Vector3 posColpoint = o->point[1] - thickness;
-                index2 = this->mapThePersistentContact(o->baryCoords[1], index2, posColpoint, false);
+                type::Vec3 thickness = o->normal * this->model2->getContactDistance();
+                type::Vec3 posColpoint = o->point[1] - thickness;
+                //baryCoord was removed in https://github.com/sofa-framework/sofa/pull/1048
+                // index2 = this->mapThePersistentContact(o->baryCoords[1], index2, posColpoint, false);
             }
 
             distance -= this->model2->getContactDistance();
@@ -638,7 +639,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::createRespons
 
     this->parent = group;
 
-    double mu_ = this->mu.getValue();
+    double mu_ = this->d_mu.getValue();
 
     if (this->m_constraint)
     {
@@ -655,10 +656,10 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::createRespons
                 int index1		= newContact.m_index1;
                 int index2		= newContact.m_index2;
                 double distance	= newContact.m_distance;
-                Vec3d initForce = newContact.m_initForce;
+                type::Vec3d initForce = newContact.m_initForce;
 
                 // Polynome de Cantor bijectif f(x,y)=((x+y)^2+3x+y)/2
-                long index = cantorPolynomia(o->id, this->id);
+                long index = sofa::component::collision::response::contact::cantorPolynomia(o->id, this->id);
 
                 // Add contact in PersistentUnilateralInteractionConstraint
                 typedef constraintset::PersistentUnilateralInteractionConstraint<Vec3Types> PersistentConstraint;
@@ -770,48 +771,26 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::draw(const co
 {
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
-    glDisable(GL_LIGHTING);
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
+    vparams->drawTool()->disableLighting();
 
     for (unsigned int i=0; i< this->m_inactiveContacts.size(); i++)
     {
-        glLineWidth(2);
-        glBegin(GL_LINES);
-        glColor4f(0.6f,0.2f,0.2f,1.f);
-
-        helper::gl::glVertexT(m_inactiveContacts[i]->point[0]);
-        helper::gl::glVertexT(m_inactiveContacts[i]->point[1]);
-
-        glEnd();
-
-        glLineWidth(1);
+        static constexpr sofa::type::RGBAColor color {0.6f,0.2f,0.2f,1.f};
+        vparams->drawTool()->drawLine(m_inactiveContacts[i]->point[0], m_inactiveContacts[i]->point[1], color);
     }
 
     for (MappedContactsMap::iterator it=m_stickedContacts.begin(); it!=m_stickedContacts.end(); ++it)
     {
-        glLineWidth(4);
-        glBegin(GL_LINES);
-        glColor4f(0.2f,0.6f,0.2f,1.f);
-
-        helper::gl::glVertexT(it->first->point[0]);
-        helper::gl::glVertexT(it->first->point[1]);
-
-        glEnd();
-
-        glLineWidth(1);
+        static constexpr sofa::type::RGBAColor color {0.2f,0.6f,0.2f,1.f};
+        vparams->drawTool()->drawLine(it->first->point[0], it->first->point[1], color);
     }
 
     for (MappedContactsMap::iterator it=m_slidingContacts.begin(); it!=m_slidingContacts.end(); ++it)
     {
-        glLineWidth(3);
-        glBegin(GL_LINES);
-        glColor4f(0.2f,0.2f,0.6f,1.f);
-
-        helper::gl::glVertexT(it->first->point[0]);
-        helper::gl::glVertexT(it->first->point[1]);
-
-        glEnd();
-
-        glLineWidth(1);
+        static constexpr sofa::type::RGBAColor color {0.2f,0.2f,0.6f,1.f};
+        vparams->drawTool()->drawLine(it->first->point[0], it->first->point[1], color);
     }
 }
 #endif

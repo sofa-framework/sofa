@@ -24,9 +24,10 @@
 
 #include "PersistentContactRigidMapping.h"
 
-#include <SofaRigid/RigidMapping.inl>
+#include <sofa/component/mapping/nonlinear/RigidMapping.inl>
 
 #include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/Node.h>
 
 
 namespace sofa
@@ -59,7 +60,7 @@ void PersistentContactRigidMapping<TIn, TOut>::beginAddContactPoint()
             std::cout << "BeginAddContactPoint : pos = " << this->toModel->read(core::vec_id::read_access::position)->getValue() << " before suppr the contact" << std::endl;
         }
 
-        m_previousPoints = this->points.getValue();
+        m_previousPoints = this->d_points.getValue();
         this->clear(0);
         this->toModel->resize(0);
         m_init = true;
@@ -83,15 +84,15 @@ int PersistentContactRigidMapping<TIn, TOut>::addContactPointFromInputMapping(co
     for (unsigned int i = 0; i < 3; i++)
         posContact[i] = (Real) pos[i];
 
-    unsigned int inputIdx = m_inputMapping->index.getValue();
+    unsigned int inputIdx = m_inputMapping->d_index.getValue();
 
-    this->index.setValue(inputIdx);
-    this->rigidIndexPerPoint.setValue(m_inputMapping->rigidIndexPerPoint.getValue());
+    this->d_index.setValue(inputIdx);
+    this->d_rigidIndexPerPoint.setValue(m_inputMapping->d_rigidIndexPerPoint.getValue());
     Coord x_local = xfrom[inputIdx].inverseRotate(posContact - xfrom[inputIdx].getCenter());
 
     this->addPoint(x_local, inputIdx);
 
-    int index = this->points.getValue().size() -1;
+    int index = this->d_points.getValue().size() -1;
     this->toModel->resize(index+1);
 
     return index;
@@ -106,10 +107,10 @@ int PersistentContactRigidMapping<TIn, TOut>::keepContactPointFromInputMapping(c
         std::cout << "keepContactPointFromInputMapping index = " << _index <<std::endl;
     }
 
-    unsigned int inputIdx = m_inputMapping->index.getValue();
+    unsigned int inputIdx = m_inputMapping->d_index.getValue();
 
-    this->index.setValue(inputIdx);
-    this->rigidIndexPerPoint.setValue(m_inputMapping->rigidIndexPerPoint.getValue());
+    this->d_index.setValue(inputIdx);
+    this->d_rigidIndexPerPoint.setValue(m_inputMapping->d_rigidIndexPerPoint.getValue());
 
     if (_index > (int)m_previousPoints.size())
     {
@@ -119,7 +120,7 @@ int PersistentContactRigidMapping<TIn, TOut>::keepContactPointFromInputMapping(c
 
     this->addPoint(m_previousPoints[_index], inputIdx);
 
-    int index = this->points.getValue().size() -1;
+    int index = this->d_points.getValue().size() -1;
     this->toModel->resize(index+1);
 
     return index;
@@ -240,7 +241,7 @@ void PersistentContactRigidMapping<TIn, TOut>::applyLinearizedPosition()
 
     this->applyJ(0, newDx, prevDx);
 
-    Data< VecCoord >* newPos_d = this->toModel->write(core::vec_id::read_access::position);
+    Data< VecCoord >* newPos_d = this->toModel->write(core::vec_id::write_access::position);
     VecCoord &newPos = *newPos_d->beginEdit();
 
     newPos = newXFree.getValue();
