@@ -309,7 +309,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::resetConstrai
 
 
 template < class TCollisionModel1, class TCollisionModel2 >
-void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(OutputVector* o)
+void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::doSetDetectionOutputs(OutputVector* o)
 {
     DetectionOutputVector filteredOutputs;
 
@@ -627,7 +627,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
 
 
 template < class TCollisionModel1, class TCollisionModel2 >
-void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::createResponse(core::objectmodel::BaseContext* group)
+void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::doCreateResponse(core::objectmodel::BaseContext* group)
 {
     use_mapper_for_state1 = !findMappingOrUseMapper(mstate1, constraintModel1, map1);
     use_mapper_for_state2 = !findMappingOrUseMapper(mstate2, constraintModel2, map2);
@@ -712,7 +712,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::createRespons
 
 
 template < class TCollisionModel1, class TCollisionModel2 >
-void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::removeResponse()
+void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::doRemoveResponse()
 {
     if (this->m_constraint)
     {
