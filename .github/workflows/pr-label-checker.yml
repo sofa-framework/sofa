@@ -20,7 +20,7 @@ jobs:
       
       - name: Check status labels
         id: check_status_labels
-        uses: actions/github-script@v5
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -83,7 +83,7 @@ jobs:
       - name: Check descriptive labels
         if: ${{ always() }}
         id: check_descriptive_labels
-        uses: actions/github-script@v5
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
