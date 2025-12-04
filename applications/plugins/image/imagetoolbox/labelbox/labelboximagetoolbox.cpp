@@ -13,10 +13,14 @@ namespace component
 namespace engine
 {
 
-int LabelBoxImageToolBox_Class = core::RegisterObject("LabelBoxImageToolBox")
-.add< LabelBoxImageToolBox >()
-.addLicense("LGPL")
-.addAuthor("Vincent Majorczyk");
+void registerLabelBoxImageToolBox(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("LabelBoxImageToolBox")
+    .add< LabelBoxImageToolBox >()
+    .addLicense("LGPL")
+    .addAuthor("Vincent Majorczyk")
+    );
+}
 
 }}}
 

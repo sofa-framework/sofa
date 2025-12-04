@@ -19,63 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/TaskSchedulerRegistry.h>
-#include <sofa/helper/logging/Messaging.h>
-#include <sofa/simulation/TaskScheduler.h>
-
-namespace sofa::simulation
-{
-
-bool TaskSchedulerRegistry::addTaskSchedulerToRegistry(TaskScheduler* taskScheduler, const std::string& taskSchedulerName)
-{
-    const auto [fst, snd] = m_schedulers.insert({taskSchedulerName, taskScheduler});
-    msg_error_when(!snd, "TaskSchedulerRegistry") << "Cannot insert task scheduler '" << taskSchedulerName
-            << "' in the registry: a task scheduler with this name already exists";
-
-    if (snd)
-    {
-        m_lastInserted = std::make_pair(taskSchedulerName, taskScheduler);
-    }
-    else
-    {
-        m_lastInserted.reset();
-    }
-
-    return snd;
-}
-
-TaskScheduler* TaskSchedulerRegistry::getTaskScheduler(const std::string& taskSchedulerName) const
-{
-    const auto it = m_schedulers.find(taskSchedulerName);
-    if (it != m_schedulers.end())
-    {
-        return it->second;
-    }
-    return nullptr;
-}
-
-bool TaskSchedulerRegistry::hasScheduler(const std::string& taskSchedulerName) const
-{
-    return m_schedulers.contains(taskSchedulerName);
-}
-
-const std::optional<std::pair<std::string, TaskScheduler*>>& TaskSchedulerRegistry::getLastInserted() const
-{
-    return m_lastInserted;
-}
-
-void TaskSchedulerRegistry::clear()
-{
-    for (const auto& p : m_schedulers)
-    {
-        delete p.second;
-    }
-    m_schedulers.clear();
-}
-
-TaskSchedulerRegistry::~TaskSchedulerRegistry()
-{
-    clear();
-}
-
-}
+#pragma once
+#include <sofa/simulation/task/Task.h>
+SOFA_HEADER_DEPRECATED("v25.12", "v26.06", "sofa/simulation/task/Task.h")
