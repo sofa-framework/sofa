@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/MainTaskSchedulerRegistry.h>
-#include <sofa/simulation/Task.h>
-#include <sofa/simulation/TaskScheduler.h>
-#include <sofa/simulation/DefaultTaskScheduler.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/MainTaskSchedulerRegistry.h>
+#include <sofa/simulation/task/Task.h>
+#include <sofa/simulation/task/TaskScheduler.h>
+#include <sofa/simulation/task/DefaultTaskScheduler.h>
 
 namespace sofa::simulation
 {

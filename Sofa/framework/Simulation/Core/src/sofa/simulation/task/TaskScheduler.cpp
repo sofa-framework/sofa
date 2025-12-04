@@ -19,78 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/init.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 
-#include <sofa/core/init.h>
-#include <sofa/helper/init.h>
-
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/task/MainTaskSchedulerRegistry.h>
 
-#include <sofa/core/ObjectFactory.h>
+#include <thread>
 
 namespace sofa::simulation
 {
-
-extern void registerRequiredPlugin(sofa::core::ObjectFactory* factory);
-extern void registerDefaultVisualManagerLoop(sofa::core::ObjectFactory* factory);
-extern void registerDefaultAnimationLoop(sofa::core::ObjectFactory* factory);
-
-namespace core
+unsigned TaskScheduler::GetHardwareThreadsCount()
 {
+    return std::thread::hardware_concurrency() / 2;
+}
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
-
-
-SOFA_SIMULATION_CORE_API void init()
+bool TaskScheduler::addTask(Task::Status& status, const std::function<void()>& task)
 {
-    if (!s_initialized)
+    class CallableTask final : public Task
     {
-        sofa::core::init();
-        s_initialized = true;
+    public:
+        CallableTask(int scheduledThread, Task::Status& status, std::function<void()> task)
+            : Task(scheduledThread)
+            , m_status(status)
+            , m_task(std::move(task))
+        {}
+        ~CallableTask() override = default;
+        sofa::simulation::Task::MemoryAlloc run() final
+        {
+            m_task();
+            return MemoryAlloc::Dynamic;
+        }
 
-        auto* factory = sofa::core::ObjectFactory::getInstance();
-        registerRequiredPlugin(factory);
-        registerDefaultVisualManagerLoop(factory);
-        registerDefaultAnimationLoop(factory);
-    }
+        Task::Status* getStatus() const override
+        {
+            return &m_status;
+        }
+
+    private:
+        Task::Status& m_status;
+        std::function<void()> m_task;
+    };
+
+    return addTask(new CallableTask(-1, status, task)); //destructor should be called after run() because it returns MemoryAlloc::Dynamic
 }
-
-SOFA_SIMULATION_CORE_API bool isInitialized()
-{
-    return s_initialized;
-}
-
-SOFA_SIMULATION_CORE_API void cleanup()
-{
-    if (!s_cleanedUp)
-    {
-        sofa::simulation::MainTaskSchedulerRegistry::clear();
-        sofa::core::cleanup();
-        s_cleanedUp = true;
-    }
-}
-
-SOFA_SIMULATION_CORE_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
-        if (simulation::core::isInitialized() && !simulation::core::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaSimulationCore", "sofa::simulation::core::cleanup()");
-    }
-} check;
-
-} // namespace core
 
 } // namespace sofa::simulation
-
-
-
-

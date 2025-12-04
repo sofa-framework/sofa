@@ -29,7 +29,6 @@ set(HEADER_FILES
     src/MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.inl
     src/MultiThreading/SceneCheckMultithreading.h
     src/MultiThreading/ParallelImplementationsRegistry.h
-    src/MultiThreading/TaskSchedulerUser.h
     )
 
 set(SOURCE_FILES
@@ -47,8 +46,12 @@ set(SOURCE_FILES
     src/MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.cpp
     src/MultiThreading/SceneCheckMultithreading.cpp
     src/MultiThreading/ParallelImplementationsRegistry.cpp
-    src/MultiThreading/TaskSchedulerUser.cpp
     )
+
+set(DEPRECATED_DIR "compat/MultiThreading")
+set(DEPRECATED_HEADER_FILES
+    ${DEPRECATED_DIR}/TaskSchedulerUser.h
+)
 
 find_package(Sofa.Config REQUIRED)
 sofa_find_package(Sofa.Simulation.Common REQUIRED)
@@ -68,6 +71,11 @@ target_link_libraries(${PROJECT_NAME} Sofa.Component.StateContainer)
 target_link_libraries(${PROJECT_NAME} Sofa.Component.SolidMechanics.Spring)
 target_link_libraries(${PROJECT_NAME} Sofa.Component.LinearSolver.Iterative)
 
+target_include_directories(${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>
+    $<INSTALL_INTERFACE:include/${PROJECT_NAME}_compat>
+)
+
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
@@ -76,6 +84,8 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     RELOCATABLE "plugins"
     )
+
+install(DIRECTORY compat/ DESTINATION include/${PROJECT_NAME}_compat COMPONENT headers)
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled

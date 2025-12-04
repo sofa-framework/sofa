@@ -19,78 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/init.h>
-
-#include <sofa/core/init.h>
-#include <sofa/helper/init.h>
-
-#include <sofa/simulation/task/MainTaskSchedulerRegistry.h>
-
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/task/CpuTaskStatus.h>
 
 namespace sofa::simulation
 {
+CpuTaskStatus::CpuTaskStatus(): m_busy(0)
+{}
 
-extern void registerRequiredPlugin(sofa::core::ObjectFactory* factory);
-extern void registerDefaultVisualManagerLoop(sofa::core::ObjectFactory* factory);
-extern void registerDefaultAnimationLoop(sofa::core::ObjectFactory* factory);
-
-namespace core
+bool CpuTaskStatus::isBusy() const
 {
+    return (m_busy.load(std::memory_order_relaxed) > 0);
+}
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
-
-
-SOFA_SIMULATION_CORE_API void init()
+int CpuTaskStatus::setBusy(bool busy)
 {
-    if (!s_initialized)
+    if (busy)
     {
-        sofa::core::init();
-        s_initialized = true;
-
-        auto* factory = sofa::core::ObjectFactory::getInstance();
-        registerRequiredPlugin(factory);
-        registerDefaultVisualManagerLoop(factory);
-        registerDefaultAnimationLoop(factory);
+        return m_busy.fetch_add(1, std::memory_order_relaxed);
+    }
+    else
+    {
+        return m_busy.fetch_sub(1, std::memory_order_relaxed);
     }
 }
-
-SOFA_SIMULATION_CORE_API bool isInitialized()
-{
-    return s_initialized;
 }
-
-SOFA_SIMULATION_CORE_API void cleanup()
-{
-    if (!s_cleanedUp)
-    {
-        sofa::simulation::MainTaskSchedulerRegistry::clear();
-        sofa::core::cleanup();
-        s_cleanedUp = true;
-    }
-}
-
-SOFA_SIMULATION_CORE_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
-        if (simulation::core::isInitialized() && !simulation::core::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaSimulationCore", "sofa::simulation::core::cleanup()");
-    }
-} check;
-
-} // namespace core
-
-} // namespace sofa::simulation
-
-
-
-

@@ -21,34 +21,35 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/simulation/task/TaskSchedulerUser.h>
-#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
+#include <sofa/simulation/task/TaskSchedulerRegistry.h>
+#include <mutex>
 
-namespace multithreading::component::linearsolver::iterative
+namespace sofa::simulation
 {
 
-template<class TMatrix, class TVector>
-class ParallelCGLinearSolver :
-    public sofa::component::linearsolver::iterative::CGLinearSolver<TMatrix, TVector>,
-    public sofa::simulation::TaskSchedulerUser
+/**
+ * A set of static functions with the same interface than a @TaskSchedulerRegistry, working on a
+ * single instance of a @TaskSchedulerRegistry.
+ * All functions are thread-safe.
+ */
+class SOFA_SIMULATION_CORE_API MainTaskSchedulerRegistry
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(ParallelCGLinearSolver,TMatrix,TVector),
-               SOFA_TEMPLATE2(sofa::component::linearsolver::iterative::CGLinearSolver,TMatrix,TVector),
-               sofa::simulation::TaskSchedulerUser);
 
-    using Matrix = TMatrix;
-    using Vector = TVector;
+    static bool addTaskSchedulerToRegistry(TaskScheduler* taskScheduler, const std::string& taskSchedulerName);
 
-    void init() override;
+    static TaskScheduler* getTaskScheduler(const std::string& taskSchedulerName);
 
-    void solve(Matrix& A, Vector& x, Vector& b) override;
+    static bool hasScheduler(const std::string& taskSchedulerName);
+
+    static const std::optional<std::pair<std::string, TaskScheduler*> >& getLastInserted();
+
+    static void clear();
+
+private:
+    static std::mutex s_mutex;
+
+    static TaskSchedulerRegistry& getInstance();
 };
-
-#if !defined(SOFA_MULTITHREADING_PARALLELCGLINEARSOLVER_CPP)
-extern template class SOFA_MULTITHREADING_PLUGIN_API
-ParallelCGLinearSolver< ParallelCompressedRowSparseMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >;
-ParallelCGLinearSolver< ParallelCompressedRowSparseMatrix<sofa::type::Mat<3, 3, Real> >, sofa::linearalgebra::FullVector<SReal> >;
-#endif
 
 }

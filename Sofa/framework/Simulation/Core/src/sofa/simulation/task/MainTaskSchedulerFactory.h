@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,46 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/Task.h>
+#pragma once
+
+#include <sofa/simulation/task/TaskSchedulerFactory.h>
+#include <mutex>
 
 namespace sofa::simulation
 {
-Task::Allocator* Task::_allocator = nullptr;
 
-Task::Task(int scheduledThread)
-: m_scheduledThread(scheduledThread)
-, m_id(0)
+/**
+ * A set of static function with the same interface than @TaskSchedulerFactory, working on a single
+ * instance of @TaskSchedulerFactory.
+ *
+ * The static functions @createInRegistry use the factory to instantiate a task scheduler
+ * and store it in @MainTaskSchedulerRegistry
+ */
+class SOFA_SIMULATION_CORE_API MainTaskSchedulerFactory
 {
-}
+public:
 
-void *Task::operator new(std::size_t sz)
-{
-    return _allocator->allocate(sz);
-}
+    static bool registerScheduler(const std::string& name,
+                                  const std::function<TaskScheduler* ()>& creatorFunc);
 
-void Task::operator delete(void *ptr)
-{
-    _allocator->free(ptr, 0);
-}
+    static TaskScheduler* instantiate(const std::string& name);
 
-void Task::operator delete(void *ptr, std::size_t sz)
-{
-    _allocator->free(ptr, sz);
-}
+    static std::set<std::string> getAvailableSchedulers();
 
-int Task::getScheduledThread() const
-{
-    return m_scheduledThread;
-}
 
-Task::Allocator *Task::getAllocator()
-{
-    return _allocator;
-}
+    static TaskScheduler* createInRegistry(const std::string& name);
+    static TaskScheduler* createInRegistry();
 
-void Task::setAllocator(Task::Allocator *allocator)
-{
-    _allocator = allocator;
-}
+    static std::string defaultTaskSchedulerType();
 
-} // namespace sofa
+private:
+    static std::mutex s_mutex;
+
+    static TaskSchedulerFactory& getFactory();
+};
+
+}
