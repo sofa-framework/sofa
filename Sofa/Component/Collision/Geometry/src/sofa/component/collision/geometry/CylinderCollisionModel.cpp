@@ -19,44 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_CPP
+#include <sofa/component/collision/geometry/CylinderCollisionModel.inl>
 
-#include <sofa/component/collision/detection/algorithm/config.h>
-
-#include <sofa/component/collision/geometry/CubeCollisionModel.h>
-
-namespace sofa::component::collision::detection::algorithm
+namespace sofa::component::collision::geometry
 {
 
-class EndPoint;
+using namespace sofa::defaulttype;
+using namespace sofa::core::collision;
+using namespace helper;
 
-/**
- * SAPBox is a simple bounding box. It contains a Cube which contains only one final
- * CollisionElement and pointers to min and max EndPoints. min and max end points
- * are respectively min and max coordinates of the cube on a coordinate axis.
- * min and max are updated with the method update(int i), so min and max have
- * min/max values on the i-th axis after the method update(int i).
- */
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API DSAPBox
+void registerCylinderCollisionModel(sofa::core::ObjectFactory* factory)
 {
-public:
-    explicit DSAPBox(const collision::geometry::Cube &c, EndPoint *mi = nullptr, EndPoint *ma = nullptr) : cube(c), min(mi), max(ma)
-    {}
-
-    void update(int axis, double alarmDist);
-
-    [[nodiscard]]
-    double squaredDistance(const DSAPBox &other) const;
-
-    /// Compute the squared distance from this to other on a specific axis
-    [[nodiscard]]
-    double squaredDistance(const DSAPBox &other, int axis) const;
-
-    void show() const;
-
-    collision::geometry::Cube cube;
-    EndPoint *min{nullptr};
-    EndPoint *max{nullptr};
-};
-
+    factory->registerObjects(core::ObjectRegistrationData("Collision model which represents a set of rigid cylinders.")
+        .add<  CylinderCollisionModel<defaulttype::Rigid3Types> >());
 }
+
+template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TCylinder<defaulttype::Rigid3Types>;
+template class SOFA_COMPONENT_COLLISION_GEOMETRY_API CylinderCollisionModel<defaulttype::Rigid3Types>;
+
+} // namespace sofa::component::collision::geometry

@@ -19,40 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_SPHERECOLLISIONMODEL_CPP
-#include <sofa/component/collision/geometry/SphereModel.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+#include <sofa/component/collision/geometry/config.h>
+#include <sofa/component/collision/geometry/LineCollisionModel.inl>
 
-namespace sofa::component::collision::geometry
-{
-
-using namespace sofa::type;
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace helper;
-
-
-
-template <> SOFA_COMPONENT_COLLISION_GEOMETRY_API
-Vec3 TSphere<defaulttype::Vec3Types >::getContactPointByNormal( const Vec3& )
-{
-    return center();
-}
-template <> SOFA_COMPONENT_COLLISION_GEOMETRY_API
-Vec3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const Vec3& )
-{
-    return center();
-}
-
-void registerSphereCollisionModel(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Collision model which represents a set of Spheres.")
-        .add<SphereCollisionModel<Vec3Types> >()
-        .add<SphereCollisionModel<Rigid3Types> >());
-}
-
-template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TSphere<defaulttype::Vec3Types>;
-template class SOFA_COMPONENT_COLLISION_GEOMETRY_API SphereCollisionModel<defaulttype::Vec3Types>;
-template class SOFA_COMPONENT_COLLISION_GEOMETRY_API SphereCollisionModel<defaulttype::Rigid3Types>;
-
-} // namespace sofa::component::collision::geometry
+SOFA_HEADER_DEPRECATED("v25.12", "v26.06", "sofa/component/collision/geometry/LineCollisionModel.inl")

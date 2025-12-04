@@ -21,42 +21,38 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/collision/detection/algorithm/config.h>
+#include <sofa/component/collision/geometry/config.h>
 
-#include <sofa/component/collision/geometry/CubeCollisionModel.h>
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/TriangleOctree.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
 
-namespace sofa::component::collision::detection::algorithm
+
+namespace sofa::component::collision::geometry
 {
 
-class EndPoint;
-
-/**
- * SAPBox is a simple bounding box. It contains a Cube which contains only one final
- * CollisionElement and pointers to min and max EndPoints. min and max end points
- * are respectively min and max coordinates of the cube on a coordinate axis.
- * min and max are updated with the method update(int i), so min and max have
- * min/max values on the i-th axis after the method update(int i).
- */
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API DSAPBox
+class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleOctreeCollisionModel : public  TriangleCollisionModel<sofa::defaulttype::Vec3Types>, public helper::TriangleOctreeRoot
 {
 public:
-    explicit DSAPBox(const collision::geometry::Cube &c, EndPoint *mi = nullptr, EndPoint *ma = nullptr) : cube(c), min(mi), max(ma)
-    {}
+    SOFA_CLASS(TriangleOctreeCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
+protected:
+    TriangleOctreeCollisionModel();
+    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
+public:
+    Data<bool> d_drawOctree;  ///< draw the octree
 
-    void update(int axis, double alarmDist);
-
-    [[nodiscard]]
-    double squaredDistance(const DSAPBox &other) const;
-
-    /// Compute the squared distance from this to other on a specific axis
-    [[nodiscard]]
-    double squaredDistance(const DSAPBox &other, int axis) const;
-
-    void show() const;
-
-    collision::geometry::Cube cube;
-    EndPoint *min{nullptr};
-    EndPoint *max{nullptr};
+    /// the normals for each point
+    type::vector<type::Vec3> pNorms;
+    void computeBoundingTree(int maxDepth=0) override;
+    void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
+    /// init the octree creation
+    void buildOctree ();
 };
 
-}
+
+using TriangleOctreeModel SOFA_ATTRIBUTE_DEPRECATED__RENAMED_TRIANGLEOCTREEMODEL() = TriangleOctreeCollisionModel;
+
+
+} // namespace sofa::component::collision::geometry

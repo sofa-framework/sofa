@@ -19,21 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_CPP
-#include <sofa/component/collision/geometry/TriangleModel.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+#include <sofa/component/collision/geometry/config.h>
+#include <sofa/component/collision/geometry/RayCollisionModel.h>
 
-namespace sofa::component::collision::geometry
-{
-
-void registerTriangleCollisionModel(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Collision model using a triangular mesh, as described in BaseMeshTopology.")
-        .add< TriangleCollisionModel<defaulttype::Vec3Types> >());
-}
-
-template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TTriangle<defaulttype::Vec3Types>;
-template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleCollisionModel<defaulttype::Vec3Types>;
-
-
-} //namespace sofa::component::collision::geometry
+SOFA_HEADER_DEPRECATED("v25.12", "v26.06", "sofa/component/collision/geometry/RayCollisionModel.h")

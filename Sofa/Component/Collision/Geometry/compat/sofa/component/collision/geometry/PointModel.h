@@ -19,20 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_CPP
-#include <sofa/component/collision/geometry/LineModel.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+#include <sofa/component/collision/geometry/config.h>
+#include <sofa/component/collision/geometry/PointCollisionModel.h>
 
-namespace sofa::component::collision::geometry
-{
-
-void registerLineCollisionModel(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Collision model using a linear mesh, as described in MeshTopology.")
-        .add< LineCollisionModel<sofa::defaulttype::Vec3Types> >());
-}
-
-template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TLine<sofa::defaulttype::Vec3Types>;
-template class SOFA_COMPONENT_COLLISION_GEOMETRY_API LineCollisionModel<defaulttype::Vec3Types>;
-
-} // namespace sofa::component::collision::geometry
+SOFA_HEADER_DEPRECATED("v25.12", "v26.06", "sofa/component/collision/geometry/PointCollisionModel.h")

@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_TETRAHEDRONCOLLISIONMODEL_CPP
-#include <sofa/component/collision/geometry/TetrahedronModel.h>
+#include <sofa/component/collision/geometry/TetrahedronCollisionModel.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeCollisionModel.h>
 #include <sofa/helper/Factory.inl>
 
 namespace sofa::component::collision::geometry

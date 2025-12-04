@@ -19,10 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/geometry/SphereModel.h>
+#pragma once
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeCollisionModel.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>

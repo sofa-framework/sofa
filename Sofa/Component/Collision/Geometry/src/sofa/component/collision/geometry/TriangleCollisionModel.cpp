@@ -19,40 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <sofa/component/collision/geometry/config.h>
-
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/TriangleOctree.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
-
+#define SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_CPP
+#include <sofa/component/collision/geometry/TriangleCollisionModel.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::collision::geometry
 {
 
-class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleOctreeCollisionModel : public  TriangleCollisionModel<sofa::defaulttype::Vec3Types>, public helper::TriangleOctreeRoot
+void registerTriangleCollisionModel(sofa::core::ObjectFactory* factory)
 {
-public:
-    SOFA_CLASS(TriangleOctreeCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
-protected:
-    TriangleOctreeCollisionModel();
-    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
-public:
-    Data<bool> d_drawOctree;  ///< draw the octree
+    factory->registerObjects(core::ObjectRegistrationData("Collision model using a triangular mesh, as described in BaseMeshTopology.")
+        .add< TriangleCollisionModel<defaulttype::Vec3Types> >());
+}
 
-    /// the normals for each point
-    type::vector<type::Vec3> pNorms;
-    void computeBoundingTree(int maxDepth=0) override;
-    void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
-    /// init the octree creation
-    void buildOctree ();
-};
+template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TTriangle<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleCollisionModel<defaulttype::Vec3Types>;
 
 
-using TriangleOctreeModel SOFA_ATTRIBUTE_DEPRECATED__RENAMED_TRIANGLEOCTREEMODEL() = TriangleOctreeCollisionModel;
-
-
-} // namespace sofa::component::collision::geometry
+} //namespace sofa::component::collision::geometry

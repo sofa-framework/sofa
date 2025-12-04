@@ -19,23 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_CPP
-#include <sofa/component/collision/geometry/CylinderModel.inl>
+#pragma once
+#include <sofa/component/collision/geometry/config.h>
+#include <sofa/component/collision/geometry/TriangleOctreeCollisionModel.h>
 
-namespace sofa::component::collision::geometry
-{
-
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace helper;
-
-void registerCylinderCollisionModel(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Collision model which represents a set of rigid cylinders.")
-        .add<  CylinderCollisionModel<defaulttype::Rigid3Types> >());
-}
-
-template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TCylinder<defaulttype::Rigid3Types>;
-template class SOFA_COMPONENT_COLLISION_GEOMETRY_API CylinderCollisionModel<defaulttype::Rigid3Types>;
-
-} // namespace sofa::component::collision::geometry
+SOFA_HEADER_DEPRECATED("v25.12", "v26.06", "sofa/component/collision/geometry/TriangleOctreeModel.h")

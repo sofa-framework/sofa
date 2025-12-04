@@ -19,44 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_CPP
+#include <sofa/component/collision/geometry/LineCollisionModel.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/collision/detection/algorithm/config.h>
-
-#include <sofa/component/collision/geometry/CubeCollisionModel.h>
-
-namespace sofa::component::collision::detection::algorithm
+namespace sofa::component::collision::geometry
 {
 
-class EndPoint;
-
-/**
- * SAPBox is a simple bounding box. It contains a Cube which contains only one final
- * CollisionElement and pointers to min and max EndPoints. min and max end points
- * are respectively min and max coordinates of the cube on a coordinate axis.
- * min and max are updated with the method update(int i), so min and max have
- * min/max values on the i-th axis after the method update(int i).
- */
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API DSAPBox
+void registerLineCollisionModel(sofa::core::ObjectFactory* factory)
 {
-public:
-    explicit DSAPBox(const collision::geometry::Cube &c, EndPoint *mi = nullptr, EndPoint *ma = nullptr) : cube(c), min(mi), max(ma)
-    {}
-
-    void update(int axis, double alarmDist);
-
-    [[nodiscard]]
-    double squaredDistance(const DSAPBox &other) const;
-
-    /// Compute the squared distance from this to other on a specific axis
-    [[nodiscard]]
-    double squaredDistance(const DSAPBox &other, int axis) const;
-
-    void show() const;
-
-    collision::geometry::Cube cube;
-    EndPoint *min{nullptr};
-    EndPoint *max{nullptr};
-};
-
+    factory->registerObjects(core::ObjectRegistrationData("Collision model using a linear mesh, as described in MeshTopology.")
+        .add< LineCollisionModel<sofa::defaulttype::Vec3Types> >());
 }
+
+template class SOFA_COMPONENT_COLLISION_GEOMETRY_API TLine<sofa::defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_COLLISION_GEOMETRY_API LineCollisionModel<defaulttype::Vec3Types>;
+
+} // namespace sofa::component::collision::geometry
