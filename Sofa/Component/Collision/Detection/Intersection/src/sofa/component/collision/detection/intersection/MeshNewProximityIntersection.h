@@ -23,9 +23,9 @@
 #include <sofa/component/collision/detection/intersection/config.h>
 
 #include <sofa/component/collision/detection/intersection/NewProximityIntersection.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
-#include <sofa/component/collision/geometry/LineModel.h>
-#include <sofa/component/collision/geometry/PointModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
+#include <sofa/component/collision/geometry/LineCollisionModel.h>
+#include <sofa/component/collision/geometry/PointCollisionModel.h>
 
 namespace sofa::component::collision::detection::intersection
 {

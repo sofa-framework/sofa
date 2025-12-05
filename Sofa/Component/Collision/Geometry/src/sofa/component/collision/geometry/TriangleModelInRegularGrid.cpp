@@ -28,8 +28,8 @@
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/component/collision/geometry/CubeModel.h>
-#include <sofa/component/collision/geometry/TriangleModel.inl>
+#include <sofa/component/collision/geometry/CubeCollisionModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.inl>
 
 namespace sofa::component::collision::geometry
 {

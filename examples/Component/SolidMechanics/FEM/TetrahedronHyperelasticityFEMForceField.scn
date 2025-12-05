@@ -137,4 +137,28 @@
                 <FixedProjectiveConstraint indices="@box.indices"/>
                 <Visual3DText text="MooneyRivlin" position="9 0 -0.5" scale="0.2" />
         </Node>
+
+        <Node name="Ogden">
+                <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+                <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
+                <RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="10 0 0"/>
+
+                <MechanicalObject name="mechObj"/>
+
+                <MeshMatrixMass totalMass="1.0"/>
+
+                <Node name="tetras">
+                        <TetrahedronSetTopologyContainer name="Container"/>
+                        <TetrahedronSetTopologyModifier name="Modifier" />
+                        <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+                        <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
+
+                        <TetrahedronHyperelasticityFEMForceField name="FEM" ParameterSet="1500 500 5000" materialName="Ogden"/>
+                </Node>
+
+                <BoxROI drawBoxes="1" box="10 0 0 11 1 0.05" name="box"/>
+                <FixedProjectiveConstraint indices="@box.indices"/>
+                <Visual3DText text="Ogden" position="11 0 -0.5" scale="0.2" />
+        </Node>
 </Node>

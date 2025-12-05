@@ -59,180 +59,192 @@ public:
     typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::MatrixType EigenMatrix;
     typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::RealVectorType CoordEigen;
 
+    MatrixSym m_CaBy2Minus1, m_invC; 
+    Real m_trCaBy2{static_cast<Real>(0)}, m_FJ{static_cast<Real>(0)}, m_logJ{static_cast<Real>(0)};
+
+    virtual void precomputeVariables(StrainInformation<DataTypes>* sinfo,
+                                const MaterialParameters<DataTypes>& param)
+    {
+        const MatrixSym& C = sinfo->deformationTensor;
+        const Real mu1 = param.parameterArray[0];
+        const Real alpha1 = param.parameterArray[1];
+        const Real k0 = param.parameterArray[2];
+
+        m_FJ = pow(sinfo->J, -alpha1/static_cast<Real>(3));
+        m_logJ = log(sinfo->J);
+
+        // Solve eigen problem for C and store eigenvalues/vectors
+        Eigen::Matrix<Real, 3, 3> CEigen;
+        for (sofa::Index i = 0; i < 3; ++i)
+            for (sofa::Index j = 0; j < 3; ++j) 
+                CEigen(i, j) = C[MatrixSym::voigtID(i, j)];
+
+        // 17/11/2025: Disable /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
+        // due to incorrect eigenvector computation for 3x3 matrices.
+        Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen, true);
+        if (EigenProblemSolver.info() != Eigen::Success)
+        {
+            dmsg_warning("Ogden") << "EigenSolver iterations failed to converge";
+            return;
+        }
+
+        sinfo->Evalue = EigenProblemSolver.eigenvalues().real().eval();
+        sinfo->Evect = EigenProblemSolver.eigenvectors().real().eval();
+
+        const Real aBy2{alpha1/static_cast<Real>(2)};
+        m_trCaBy2 = static_cast<Real>(0);
+        for (sofa::Index n = 0; n < sinfo->Evalue.rows(); ++n)
+            m_trCaBy2 += pow(sinfo->Evalue[n], aBy2);
+
+        // Transpose (also inverse) of the eigenvector matrix
+        Matrix3 EigenBasis;
+        for (auto m = 0; m < sinfo->Evect.rows(); ++m)
+            for (auto n = 0; n < sinfo->Evect.cols(); ++n) 
+                EigenBasis(m, n) = sinfo->Evect(m, n);
+        
+        // Construct C^(alpha1/2 - 1) from eigenbasis: V * D * V^T; D_i = lambda_i^(alpha1/2 - 1)
+        const Real aBy2Minus1 = aBy2 - static_cast<Real>(1);
+        const MatrixSym D = MatrixSym(pow(sinfo->Evalue[0], aBy2Minus1), 0, pow(sinfo->Evalue[1], aBy2Minus1), 0, 0, pow(sinfo->Evalue[2], aBy2Minus1));
+        const Matrix3 Ca = EigenBasis*D.SymMatMultiply(EigenBasis.transposed());
+        sofa::type::MatSym<3, Real>::Mat2Sym(Ca, m_CaBy2Minus1);
+
+        // Invert deformation tensor
+        invertMatrix(m_invC, C);
+    }
+
     Real getStrainEnergy(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param) override
     {
-        MatrixSym C=sinfo->deformationTensor;
-        Real k0=param.parameterArray[0];
-        Real mu1=param.parameterArray[1];
-        Real alpha1=param.parameterArray[2];
-        Real fj= (Real)(pow(sinfo->J,(Real)(-alpha1/3.0)));
-        EigenMatrix CEigen;
-        CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2];
-        CEigen(1,2)=C[4]; CEigen(2,1)=C[4]; CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
-        Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
-        sinfo->Evalue=Vect.eigenvalues();
-        sinfo->Evect=Vect.eigenvectors();
-        Real val=pow(sinfo->Evalue[0],alpha1/(Real)2)+pow(sinfo->Evalue[1],alpha1/(Real)2)+pow(sinfo->Evalue[2],alpha1/(Real)2);
-        return (Real)fj*val*mu1/(alpha1*alpha1)+k0*log(sinfo->J)*log(sinfo->J)/(Real)2.0-(Real)3.0*mu1/(alpha1*alpha1);
+        this->precomputeVariables(sinfo, param);
+
+        const Real mu1 = param.parameterArray[0];
+        const Real alpha1 = param.parameterArray[1];
+        const Real k0 = param.parameterArray[2];
+        const Real muByAlphaSqr = mu1 / pow(alpha1, static_cast<Real>(2));
+
+        // Isochoric and volumetric parts 
+        const Real Wiso = m_FJ * muByAlphaSqr * m_trCaBy2 - static_cast<Real>(3) * muByAlphaSqr;
+        const Real Wvol = k0 * m_logJ * m_logJ / static_cast<Real>(2);
+
+        return Wiso + Wvol;
     }
 
     void deriveSPKTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,MatrixSym &SPKTensorGeneral) override
     {
-        Real k0=param.parameterArray[0];
-        Real mu1=param.parameterArray[1];
-        Real alpha1=param.parameterArray[2];
-        MatrixSym C=sinfo->deformationTensor;
-        EigenMatrix CEigen;
-        CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
-        CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
+        this->precomputeVariables(sinfo, param);
 
-        Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
-        EigenMatrix Evect=Vect.eigenvectors();
-        CoordEigen Evalue=Vect.eigenvalues();
+        const Real mu1 = param.parameterArray[0];
+        const Real alpha1 = param.parameterArray[1];
+        const Real k0 = param.parameterArray[2];
 
-        Real trCalpha=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
-        Matrix3 Pinverse;
-        Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
-        Pinverse(0,2)=Evect(2,0); Pinverse(2,1)=Evect(1,2); Pinverse(1,2)=Evect(2,1);
-        MatrixSym Dalpha_1=MatrixSym(pow(Evalue[0],alpha1/(Real)2.0-(Real)1.0),0,pow(Evalue[1],alpha1/(Real)2.0-(Real)1.0),0,0,pow(Evalue[2],alpha1/(Real)2.0-(Real)1.0));
-        MatrixSym Calpha_1; Matrix3 Ca;
-        Ca=Pinverse.transposed()*Dalpha_1.SymMatMultiply(Pinverse);
-        Calpha_1.Mat2Sym(Ca,Calpha_1);
-        MatrixSym inversematrix;
-        invertMatrix(inversematrix,sinfo->deformationTensor);
-        SPKTensorGeneral=(-(Real)1.0/(Real)3.0*trCalpha*inversematrix+Calpha_1)*(mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0))+inversematrix*k0*log(sinfo->J);
-    }
+        // trace of C^(alpha1/2)
+        const Real aBy2 = alpha1/static_cast<Real>(2);
 
+        // Siso = dWiso/dlambda*dlambda/dC + dWiso/dF*dF/dC
+        const MatrixSym S_isochoric = m_CaBy2Minus1 * m_FJ * mu1 / alpha1
+                                     -m_invC * m_FJ * mu1 / (static_cast<Real>(3)*alpha1) * m_trCaBy2;
+        // Svol = dWvol/dC_{ij}
+        const MatrixSym S_volumetric = m_invC * k0 * m_logJ;
 
-    void applyElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,
-                               const MatrixSym& inputTensor, MatrixSym& outputTensor) override
-    {
-        Real k0=param.parameterArray[0];
-        Real mu1=param.parameterArray[1];
-        Real alpha1=param.parameterArray[2];
-        MatrixSym C=sinfo->deformationTensor;
-        EigenMatrix CEigen;
-        CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
-        CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
-        Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
-        EigenMatrix Evect=Vect.eigenvectors();
-        CoordEigen Evalue=Vect.eigenvalues();
-
-        Real trCalpha=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
-        Matrix3 Pinverse;
-        Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
-        Pinverse(0,2)=Evect(2,0); Pinverse(2,1)=Evect(1,2); Pinverse(1,2)=Evect(2,1);
-        MatrixSym Dalpha_1=MatrixSym(pow(Evalue[0],alpha1/(Real)2.0-(Real)1.0),0,pow(Evalue[1],alpha1/(Real)2.0-(Real)1.0),0,0,pow(Evalue[2],alpha1/(Real)2.0-(Real)1.0));
-        MatrixSym Calpha_1; Matrix3 Ca;
-        Ca=Pinverse.transposed()*Dalpha_1.SymMatMultiply(Pinverse);
-        Calpha_1.Mat2Sym(Ca,Calpha_1);
-        MatrixSym Dalpha_2=MatrixSym(pow(Evalue[0],alpha1/(Real)4.0-(Real)1.0),0,pow(Evalue[1],alpha1/(Real)4.0-(Real)1.0),0,0,pow(Evalue[2],alpha1/(Real)4.0-(Real)1.0));
-        MatrixSym Calpha_2;
-        Calpha_2.Mat2Sym(Pinverse.transposed()*Dalpha_2.SymMatMultiply(Pinverse),Calpha_2);
-        MatrixSym inversematrix;
-        invertMatrix(inversematrix,sinfo->deformationTensor);
-        Real _trHCalpha_1=inputTensor[0]*Calpha_1[0]+inputTensor[2]*Calpha_1[2]+inputTensor[5]*Calpha_1[5]
-                +2*inputTensor[1]*Calpha_1[1]+2*inputTensor[3]*Calpha_1[3]+2*inputTensor[4]*Calpha_1[4];
-        Real _trHC=inputTensor[0]*inversematrix[0]+inputTensor[2]*inversematrix[2]+inputTensor[5]*inversematrix[5]
-                +2*inputTensor[1]*inversematrix[1]+2*inputTensor[3]*inversematrix[3]+2*inputTensor[4]*inversematrix[4];
-        //C-1HC-1 convert to sym matrix
-        MatrixSym Firstmatrix;
-        Firstmatrix.Mat2Sym(inversematrix.SymMatMultiply(inputTensor.SymSymMultiply(inversematrix)),Firstmatrix);
-        MatrixSym Secondmatrix;
-        Secondmatrix.Mat2Sym(Calpha_2.SymMatMultiply(inputTensor.SymSymMultiply(Calpha_2)),Secondmatrix);
-        outputTensor =
-                (_trHC*(-alpha1/(Real)6.0)*(-(Real)1.0/(Real)3.0*inversematrix*trCalpha+Calpha_1)+(Real)1.0/(Real)3.0*Firstmatrix*trCalpha-(Real)1.0/(Real)3.0*inversematrix*_trHCalpha_1*alpha1/(Real)2.0
-                +(alpha1/(Real)2.0-(Real)1)*Secondmatrix) * (mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0))
-                +k0/(Real)2.0*_trHC*inversematrix-(Real)(k0*log(sinfo->J))*Firstmatrix;
-
+        SPKTensorGeneral = S_isochoric + S_volumetric;
     }
 
     void ElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param, Matrix6& outputTensor) override
     {
-        Real k0=param.parameterArray[0];
-        Real mu1=param.parameterArray[1];
-        Real alpha1=param.parameterArray[2];
-        MatrixSym C=sinfo->deformationTensor;
-        EigenMatrix CEigen;
-        CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
-        CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
+        this->precomputeVariables(sinfo, param);
 
-        Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
-        EigenMatrix Evect=Vect.eigenvectors();
-        CoordEigen Evalue=Vect.eigenvalues();
+        const MatrixSym& C = sinfo->deformationTensor;
+        const Real mu1 = param.parameterArray[0];
+        const Real alpha1 = param.parameterArray[1];
+        const Real k0 = param.parameterArray[2];
 
-        Real trCalpha=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
-        Matrix3 Pinverse;
-        Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
-        Pinverse(0,2)=Evect(2,0); Pinverse(2,1)=Evect(1,2); Pinverse(1,2)=Evect(2,1);
-        MatrixSym Dalpha_1=MatrixSym(pow(Evalue[0],alpha1/(Real)2.0-(Real)1.0),0,pow(Evalue[1],alpha1/(Real)2.0-(Real)1.0),0,0,pow(Evalue[2],alpha1/(Real)2.0-(Real)1.0));
-        MatrixSym Calpha_1; Matrix3 Ca;
-        Ca=Pinverse.transposed()*Dalpha_1.SymMatMultiply(Pinverse);
-        Calpha_1.Mat2Sym(Ca,Calpha_1);
-        MatrixSym Dalpha_2=MatrixSym(pow(Evalue[0],alpha1/(Real)4.0-(Real)1.0),0,pow(Evalue[1],alpha1/(Real)4.0-(Real)1.0),0,0,pow(Evalue[2],alpha1/(Real)4.0-(Real)1.0));
-        MatrixSym Calpha_2;
-        Calpha_2.Mat2Sym(Pinverse.transposed()*Dalpha_2.SymMatMultiply(Pinverse),Calpha_2);
-        MatrixSym _C;
-        invertMatrix(_C,sinfo->deformationTensor);
+        // Coefficient terms
+        const Real aBy2 = alpha1/static_cast<Real>(2);
+        const Real aBy2Minus1 = aBy2 - static_cast<Real>(1);
+        const Real aBy2Minus2 = aBy2 - static_cast<Real>(2);
 
-        MatrixSym CC;
-        CC=_C;
-        CC[1]+=_C[1]; CC[3]+=_C[3]; CC[4]+=_C[4];
-        Matrix6 C_H_C;
-        C_H_C(0,0)=_C[0]*_C[0]; C_H_C(1,1)=_C[1]*_C[1]+_C[0]*_C[2]; C_H_C(2,2)=_C[2]*_C[2]; C_H_C(3,3)=_C[3]*_C[3]+_C[0]*_C[5]; C_H_C(4,4)=_C[4]*_C[4]+_C[2]*_C[5];
-        C_H_C(5,5)=_C[5]*_C[5];
-        C_H_C(1,0)=_C[0]*_C[1]; C_H_C(0,1)=2*C_H_C(1,0);
-        C_H_C(2,0)=C_H_C(0,2)=_C[1]*_C[1]; C_H_C(5,0)=C_H_C(0,5)=_C[3]*_C[3];
-        C_H_C(3,0)=_C[0]*_C[3]; C_H_C(0,3)=2*C_H_C(3,0); C_H_C(4,0)=_C[1]*_C[3]; C_H_C(0,4)=2*C_H_C(4,0);
-        C_H_C(1,2)=_C[2]*_C[1]; C_H_C(2,1)=2*C_H_C(1,2); C_H_C(1,5)=_C[3]*_C[4]; C_H_C(5,1)=2*C_H_C(1,5);
-        C_H_C(3,1)=C_H_C(1,3)=_C[0]*_C[4]+_C[1]*_C[3]; C_H_C(1,4)=C_H_C(4,1)=_C[1]*_C[4]+_C[2]*_C[3];
-        C_H_C(3,2)=_C[4]*_C[1]; C_H_C(2,3)=2*C_H_C(3,2); C_H_C(4,2)=_C[4]*_C[2]; C_H_C(2,4)=2*C_H_C(4,2);
-        C_H_C(2,5)=C_H_C(5,2)=_C[4]*_C[4];
-        C_H_C(3,5)=_C[3]*_C[5]; C_H_C(5,3)=2*C_H_C(3,5);
-        C_H_C(4,3)=C_H_C(3,4)=_C[3]*_C[4]+_C[5]*_C[1];
-        C_H_C(4,5)=_C[4]*_C[5]; C_H_C(5,4)=2*C_H_C(4,5);
-        Matrix6 trC_HC_;
-        trC_HC_(0)=_C[0]*CC;
-        trC_HC_(1)=_C[1]*CC;
-        trC_HC_(2)=_C[2]*CC;
-        trC_HC_(3)=_C[3]*CC;
-        trC_HC_(4)=_C[4]*CC;
-        trC_HC_(5)=_C[5]*CC;
-        Matrix6 Calpha_H_Calpha;
-        Calpha_H_Calpha(0,0)=Calpha_2[0]*Calpha_2[0]; Calpha_H_Calpha(1,1)=Calpha_2[1]*Calpha_2[1]+Calpha_2[0]*Calpha_2[2]; Calpha_H_Calpha(2,2)=Calpha_2[2]*Calpha_2[2]; Calpha_H_Calpha(3,3)=Calpha_2[3]*Calpha_2[3]+Calpha_2[0]*Calpha_2[5]; Calpha_H_Calpha(4,4)=Calpha_2[4]*Calpha_2[4]+Calpha_2[2]*Calpha_2[5];
-        Calpha_H_Calpha(5,5)=Calpha_2[5]*Calpha_2[5];
-        Calpha_H_Calpha(1,0)=Calpha_2[0]*Calpha_2[1]; Calpha_H_Calpha(0,1)=2*Calpha_H_Calpha(1,0);
-        Calpha_H_Calpha(2,0)=Calpha_H_Calpha(0,2)=Calpha_2[1]*Calpha_2[1]; Calpha_H_Calpha(5,0)=Calpha_H_Calpha(0,5)=Calpha_2[3]*Calpha_2[3];
-        Calpha_H_Calpha(3,0)=Calpha_2[0]*Calpha_2[3]; Calpha_H_Calpha(0,3)=2*Calpha_H_Calpha(3,0); Calpha_H_Calpha(4,0)=Calpha_2[1]*Calpha_2[3]; Calpha_H_Calpha(0,4)=2*Calpha_H_Calpha(4,0);
-        Calpha_H_Calpha(1,2)=Calpha_2[2]*Calpha_2[1]; Calpha_H_Calpha(2,1)=2*Calpha_H_Calpha(1,2); Calpha_H_Calpha(1,5)=Calpha_2[3]*Calpha_2[4]; Calpha_H_Calpha(5,1)=2*Calpha_H_Calpha(1,5);
-        Calpha_H_Calpha(3,1)=Calpha_H_Calpha(1,3)=Calpha_2[0]*Calpha_2[4]+Calpha_2[1]*Calpha_2[3]; Calpha_H_Calpha(1,4)=Calpha_H_Calpha(4,1)=Calpha_2[1]*Calpha_2[4]+Calpha_2[2]*Calpha_2[3];
-        Calpha_H_Calpha(3,2)=Calpha_2[4]*Calpha_2[1]; Calpha_H_Calpha(2,3)=2*Calpha_H_Calpha(3,2); Calpha_H_Calpha(4,2)=Calpha_2[4]*Calpha_2[2]; Calpha_H_Calpha(2,4)=2*Calpha_H_Calpha(4,2);
-        Calpha_H_Calpha(2,5)=Calpha_H_Calpha(5,2)=Calpha_2[4]*Calpha_2[4];
-        Calpha_H_Calpha(3,5)=Calpha_2[3]*Calpha_2[5]; Calpha_H_Calpha(5,3)=2*Calpha_H_Calpha(3,5);
-        Calpha_H_Calpha(4,3)=Calpha_H_Calpha(3,4)=Calpha_2[3]*Calpha_2[4]+Calpha_2[5]*Calpha_2[1];
-        Calpha_H_Calpha(4,5)=Calpha_2[4]*Calpha_2[5]; Calpha_H_Calpha(5,4)=2*Calpha_H_Calpha(4,5);
-        Matrix6 trCalpha_HC_;
-        trCalpha_HC_[0]=Calpha_1[0]*CC;
-        trCalpha_HC_[1]=Calpha_1[1]*CC;
-        trCalpha_HC_[2]=Calpha_1[2]*CC;
-        trCalpha_HC_[3]=Calpha_1[3]*CC;
-        trCalpha_HC_[4]=Calpha_1[4]*CC;
-        trCalpha_HC_[5]=Calpha_1[5]*CC;
-        MatrixSym CCalpha_1;
-        CCalpha_1=Calpha_1;
-        CCalpha_1[1]+=Calpha_1[1]; CCalpha_1[3]+=Calpha_1[3]; CCalpha_1[4]+=Calpha_1[4];
-        Matrix6 trC_HCalpha;
-        trC_HCalpha[0]=_C[0]*CCalpha_1;
-        trC_HCalpha[1]=_C[1]*CCalpha_1;
-        trC_HCalpha[2]=_C[2]*CCalpha_1;
-        trC_HCalpha[3]=_C[3]*CCalpha_1;
-        trC_HCalpha[4]=_C[4]*CCalpha_1;
-        trC_HCalpha[5]=_C[5]*CCalpha_1;
+        const CoordEigen& Evalue = sinfo->Evalue;
+        const EigenMatrix& Evect = sinfo->Evect;
 
-        outputTensor=(Real)2.0*(mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0)*((-alpha1/(Real)6.0)*(-(Real)1.0/(Real)3.0*trC_HC_*trCalpha+trCalpha_HC_)+(Real)1.0/(Real)3.0*C_H_C*trCalpha-(Real)1.0/(Real)3.0*trC_HCalpha*alpha1/(Real)2.0
-                +(alpha1/(Real)2.0-(Real)1)*Calpha_H_Calpha)+k0/(Real)2.0*trC_HC_-(Real)(k0*log(sinfo->J))*C_H_C);
+        // Build the 4th-order tensor contribution in Voigt notation
+        Matrix6 elasticityTensor;
+
+        // Loop over Voigt indices. Sum contributions from derivatives of SPK tensor w.r.t. C_{kl}
+        // T1, T2, T3: Derivatives of S1, S2, S3 w.r.t. C_{kl}, respectively
+        for (sofa::Index m = 0; m < 6; m++)
+        {
+            sofa::Index i, j;
+            std::tie(i, j) = MatrixSym::fromVoigt[m];
+
+            for (sofa::Index n = 0; n < 6; n++) 
+            {
+                sofa::Index k, l;
+                std::tie(k, l) = MatrixSym::fromVoigt[n];
+
+                // Derivative of S_isochoric; terms contributing from spectral decomposition
+                for (sofa::Index eI = 0 ; eI < 3; eI++)
+                {
+                    // Variation of eigenvalues
+                    const Real evalPowI2 = pow(Evalue[eI], aBy2Minus2);
+                    elasticityTensor(m, n) += m_FJ * mu1 / alpha1 * aBy2Minus1 * evalPowI2 
+                        * Evect(i, eI) * Evect(j, eI) * Evect(k, eI) * Evect(l, eI);
+
+                    // Variation of eigenvectors
+                    const Real evalPowI = pow(Evalue[eI], aBy2Minus1);
+                    for (sofa::Index eJ = 0 ; eJ < 3; eJ++)
+                    {
+                        if (eJ == eI) continue;
+
+                        const bool isDegenerate = std::fabs(Evalue[eI] - Evalue[eJ]) <
+                                                   std::numeric_limits<Real>::epsilon();
+                        const Real coefRot = isDegenerate 
+                            ? aBy2Minus1 * evalPowI2
+                            : (evalPowI - pow(Evalue[eJ], aBy2Minus1))/(Evalue[eI] - Evalue[eJ]);
+
+                        elasticityTensor(m, n) += static_cast<Real>(0.5) * m_FJ * mu1 / alpha1 * coefRot *
+                        (
+                            Evect(i, eI) * Evect(j, eJ) * Evect(k, eJ) * Evect(l, eI) +
+                            Evect(i, eI) * Evect(j, eJ) * Evect(k, eI) * Evect(l, eJ)
+                        );
+                    }
+                }
+
+                // Remaining terms from S_isochoric
+                elasticityTensor(m, n) += 
+                    // Lumped contributions from trace of C^(alpha1/2) and FJ in dWiso/dlambda*dlambda/dC
+                    - m_FJ * mu1 / static_cast<Real>(6) * (m_CaBy2Minus1(i,j) * m_invC(l,k) + m_CaBy2Minus1(k,l) * m_invC(j,i))
+                    // Contributions from FJ in dWiso/dF*dF/dC
+                    + m_FJ * mu1 * m_trCaBy2 / static_cast<Real>(18) * m_invC(j,i) * m_invC(l,k)
+                    // Contributions from inverse of C
+                    + m_FJ * mu1 / (static_cast<Real>(6) * alpha1) * m_trCaBy2 * (m_invC(k,i) * m_invC(l,j) + m_invC(l,i) * m_invC(k,j));
+
+                // Derivative of S_volumetric; dependence on lnJ and C^{-1}
+                elasticityTensor(m, n) += static_cast<Real>(0.5) * k0 * m_invC(j,i) * m_invC(l,k)
+                                - static_cast<Real>(0.5) * k0 * m_logJ * 
+                    (m_invC(j,k) * m_invC(l,i) + m_invC(j,l) * m_invC(k,i));
+            }
+        }
+
+        outputTensor = static_cast<Real>(2) * elasticityTensor ;
+
+        // Adjust for Voigt notation using 2x factor on the off-diagonal
+        for (sofa::Index m = 0; m < 6; m++)
+        {
+            outputTensor(m,1) *= static_cast<Real>(2);
+            outputTensor(m,3) *= static_cast<Real>(2);
+            outputTensor(m,4) *= static_cast<Real>(2);
+        }
     }
 
+    void applyElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,
+                               const MatrixSym& inputTensor, MatrixSym& outputTensor) override
+    {
+        // For now, let's just multiply matrices using the ElasticityTensor explicitly
+        Matrix6 elasticityTensor;
+        this->ElasticityTensor(sinfo, param, elasticityTensor);
+        auto temp = elasticityTensor * inputTensor;
+        for (size_t i = 0; i < 6; i++) 
+            outputTensor[i] = temp[i]/static_cast<Real>(2);
+    }
 };
 
 } // namespace sofa::component::solidmechanics::fem::hyperelastic::material

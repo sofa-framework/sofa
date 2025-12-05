@@ -27,7 +27,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>
-#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeCollisionModel.h>
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
 #include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
 

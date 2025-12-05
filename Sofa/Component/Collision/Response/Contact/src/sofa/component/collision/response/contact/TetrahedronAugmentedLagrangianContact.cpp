@@ -23,7 +23,7 @@
 #include <sofa/component/collision/response/contact/AugmentedLagrangianResponse.inl>
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
 #include <sofa/component/collision/response/mapper/TetrahedronBarycentricContactMapper.h>
-#include <sofa/component/collision/geometry/TetrahedronModel.h>
+#include <sofa/component/collision/geometry/TetrahedronCollisionModel.h>
 #include <sofa/component/collision/response/contact/BaseUnilateralContactResponse.inl>
 
 using namespace sofa::core::collision;

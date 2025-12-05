@@ -62,7 +62,6 @@ public:
 
    virtual ~HyperelasticMaterial(){}
 
-
   /** returns the strain energy of the current configuration */
   virtual Real getStrainEnergy(StrainInformation<DataTypes>*, const MaterialParameters<DataTypes>&)
   {
