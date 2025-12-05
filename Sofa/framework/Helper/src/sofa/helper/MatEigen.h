@@ -43,12 +43,6 @@ Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const type::Mat< NumRows, NumCol
 }
 
 template <Size NumRows, Size NumCols, class Real>
-Eigen::Map<Eigen::Matrix<Real, NumRows, NumCols>> eigenMatMap(const type::Mat< NumRows, NumCols, Real>& mat)
-{
-    return { mat.data() };
-}
-
-template <Size NumRows, Size NumCols, class Real>
 type::Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, NumRows, NumCols>& emat )
 {
     type::Mat<NumRows, NumCols, Real> mat;
@@ -74,12 +68,6 @@ Eigen::Matrix<Real, NumRows, 1>  eigenVec( const type::Vec<NumRows, Real>& vec )
     for(Size i=0; i<NumRows; i++)
         evec(i)  = vec[i];
     return evec;
-}
-
-template <Size NumRows, class Real>
-Eigen::Map<Eigen::Matrix<Real, NumRows, 1>> eigenVecMap(const type::Vec<NumRows, Real>& vec)
-{
-    return { vec.data() };
 }
 
 }
