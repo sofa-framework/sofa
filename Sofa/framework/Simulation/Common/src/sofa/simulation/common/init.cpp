@@ -35,7 +35,8 @@ static bool s_initialized = false;
 static bool s_cleanedUp = false;
 
 //create method of Node called if the user wants the default node. The object created will depend on the simulation currently in use.
-SOFA_SIMULATION_COMMON_API sofa::helper::Creator<xml::NodeElement::Factory, Node> NodeClass("default");
+SOFA_SIMULATION_COMMON_API sofa::helper::Creator<xml::NodeElement::Factory, Node> defaultNodeClassRegistration("default");
+SOFA_SIMULATION_COMMON_API sofa::helper::Creator<xml::NodeElement::Factory, Node> nodeClassRegistration("Node");
 
 SOFA_SIMULATION_COMMON_API void init()
 {
