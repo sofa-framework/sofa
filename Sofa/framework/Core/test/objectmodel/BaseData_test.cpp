@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
@@ -50,10 +49,10 @@ public:
     void doEndEditVoidPtr() override { }
 };
 
-class MyObject : public BaseObject
+class MyObject : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(MyObject, BaseObject);
+    SOFA_CLASS(MyObject, sofa::core::objectmodel::BaseObject);
     MyData myData;
     MyObject() :
         myData()

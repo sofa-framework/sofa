@@ -95,7 +95,7 @@ void BaseSimulationExporter::handleEvent(Event *event){
         }
     }
 
-    BaseObject::handleEvent(event) ;
+    sofa::core::objectmodel::BaseObject::handleEvent(event) ;
 }
 
 

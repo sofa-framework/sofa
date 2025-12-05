@@ -28,7 +28,6 @@ using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
 #include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject;
 
 #include <sofa/defaulttype/RigidTypes.h>
 using sofa::defaulttype::Rigid3Types;
@@ -38,17 +37,17 @@ using sofa::defaulttype::Vec3Types;
 
 namespace customns
 {
-class CustomBaseObject : public BaseObject
+class CustomBaseObject : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(CustomBaseObject, BaseObject);
+    SOFA_CLASS(CustomBaseObject, sofa::core::objectmodel::BaseComponent);
 };
 
 template<class D>
-class CustomBaseObjectT : public BaseObject
+class CustomBaseObjectT : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(CustomBaseObjectT, D), BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(CustomBaseObjectT, D), sofa::core::objectmodel::BaseComponent);
 
     static const std::string GetCustomClassName() { return "MyFakeClassName"; }
 };

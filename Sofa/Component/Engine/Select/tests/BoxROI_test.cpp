@@ -42,7 +42,6 @@ using sofa::simulation::Simulation;
 using sofa::simulation::graph::DAGSimulation;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
-using sofa::core::objectmodel::BaseObject;
 using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::New;
 using sofa::defaulttype::Vec3Types;
@@ -133,7 +132,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
         EXPECT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
-        BaseObject* boxroi = root->getTreeNode("Level 1")->getObject("myBoxROI");
+        sofa::core::objectmodel::BaseComponent* boxroi = root->getTreeNode("Level 1")->getObject("myBoxROI");
         EXPECT_NE(boxroi, nullptr);
 
         EXPECT_EQ(boxroi->getComponentState(), ComponentState::Invalid ) << "The component cannot be initialized because it is missing a MechanicalObject. "
@@ -202,7 +201,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
         const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
         EXPECT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
-        BaseObject* boxroi = root->getTreeNode("Level 1")->getObject("myBoxROI");
+        sofa::core::objectmodel::BaseComponent* boxroi = root->getTreeNode("Level 1")->getObject("myBoxROI");
 
         EXPECT_NE(boxroi, nullptr);
         EXPECT_EQ(boxroi->getComponentState(), ComponentState::Valid ) << "The component should succeed in being initialized because there is a MeshLoader and a TopologyContainer in the current context. ";

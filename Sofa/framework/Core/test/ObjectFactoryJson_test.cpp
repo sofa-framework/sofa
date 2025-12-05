@@ -50,10 +50,10 @@ TEST(ObjectFactoryJson, oneObject)
 }
 
 template<class T>
-class DummyComponent : public core::objectmodel::BaseObject
+class DummyComponent : public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(DummyComponent<T>, BaseObject);
+    SOFA_CLASS(DummyComponent<T>, core::objectmodel::BaseComponent);
 };
 
 TEST(ObjectFactoryJson, oneTemplatedObject)

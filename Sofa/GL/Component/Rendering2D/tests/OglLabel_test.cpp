@@ -29,7 +29,6 @@ using std::string;
 using sofa::testing::BaseTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
@@ -76,7 +75,7 @@ public:
         root->init(sofa::core::execparams::defaultInstance()) ;
 
 
-        BaseObject* lm = root->getObject("label1") ;
+        sofa::core::objectmodel::BaseComponent* lm = root->getObject("label1") ;
         ASSERT_NE(nullptr, lm) ;
 
         OglLabel* ogllabel = dynamic_cast<OglLabel*>(lm);
@@ -106,7 +105,7 @@ public:
         ASSERT_NE(nullptr, root.get()) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
-        BaseObject* lm = root->getObject("label1") ;
+        sofa::core::objectmodel::BaseComponent* lm = root->getObject("label1") ;
         ASSERT_NE(nullptr, lm) ;
 
         OglLabel* ogllabel = dynamic_cast<OglLabel*>(lm);
@@ -133,7 +132,7 @@ public:
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
-        BaseObject* lm = root->getObject("label1") ;
+        sofa::core::objectmodel::BaseComponent* lm = root->getObject("label1") ;
         ASSERT_NE(lm, nullptr) ;
 
         /// List of the supported attributes the user expect to find

@@ -27,7 +27,6 @@ using sofa::testing::BaseSimulationTest;
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Node ;
-using sofa::core::objectmodel::BaseObject ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::New ;
 using sofa::core::execparams::defaultInstance; 
