@@ -120,10 +120,7 @@ public:
     /// Sets each element to r.
     void fill(real r)
     {
-        for (sofa::Size i = 0; i < NumberStoredValues; i++)
-        {
-            this->elems[i].fill(r);
-        }
+        std::fill(this->elems.begin(), this->elems.end(), r);
     }
 
     /// Write access to element (i,j).
@@ -707,5 +704,27 @@ inline real scalarProduct(const Mat<D,D,real>& left, const MatSym<D,real>& right
 {
     return scalarProduct(right, left);
 }
+
+#if !defined(SOFA_TYPE_MATSYM_CPP)
+
+extern template class SOFA_TYPE_API MatSym< 1, float>;
+extern template class SOFA_TYPE_API MatSym< 2, float>;
+extern template class SOFA_TYPE_API MatSym< 3, float>;
+extern template class SOFA_TYPE_API MatSym< 4, float>;
+extern template class SOFA_TYPE_API MatSym< 6, float>;
+extern template class SOFA_TYPE_API MatSym< 9, float>;
+extern template class SOFA_TYPE_API MatSym<12, float>;
+extern template class SOFA_TYPE_API MatSym<24, float>;
+
+extern template class SOFA_TYPE_API MatSym< 1, double>;
+extern template class SOFA_TYPE_API MatSym< 2, double>;
+extern template class SOFA_TYPE_API MatSym< 3, double>;
+extern template class SOFA_TYPE_API MatSym< 4, double>;
+extern template class SOFA_TYPE_API MatSym< 6, double>;
+extern template class SOFA_TYPE_API MatSym< 9, double>;
+extern template class SOFA_TYPE_API MatSym<12, double>;
+extern template class SOFA_TYPE_API MatSym<24, double>;
+
+#endif
 
 } // namespace sofa::type
