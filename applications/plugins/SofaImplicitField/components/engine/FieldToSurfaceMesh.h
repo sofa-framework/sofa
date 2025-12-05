@@ -37,7 +37,7 @@ typedef sofa::type::vector<sofa::type::Vec3d> VecCoord;
 
 using sofa::component::geometry::ScalarField;
 using sofa::core::visual::VisualParams ;
-using sofa::core::objectmodel::BaseObject ;
+using BaseObject [[deprecated("Use sofa::core::objectmodel::BaseObject instead.")]] = sofa::core::objectmodel::BaseObject;
 using sofa::type::Vec3d ;
 
 class FieldToSurfaceMesh : public BaseObject
