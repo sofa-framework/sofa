@@ -41,6 +41,7 @@
 # include <winerror.h>
 # include <strsafe.h>
 # include "Shlwapi.h"           // for PathFileExists()
+#include <shellapi.h>
 #else
 # include <dirent.h>
 # include <sys/stat.h>
@@ -497,6 +498,34 @@ std::string FileSystem::append(const std::string_view& existingPath, const std::
     return std::string(existingPath) + "/" + std::string(toAppend);
 }
 
+bool FileSystem::openFileWithDefaultApplication(const std::string& filename)
+{
+    bool success = false;
+
+    if (!filename.empty())
+    {
+        if (!FileSystem::exists(filename))
+        {
+            msg_error("FileSystem::openFileWithDefaultApplication()") << "File does not exist: " << filename;
+            return success;
+        }
+
+#ifdef WIN32
+        if ((INT_PTR)ShellExecuteA(nullptr, "open", filename.c_str(), nullptr, nullptr, SW_SHOWNORMAL) > 32)
+            success = true;
+#elif defined(__APPLE__)
+        const std::string command = "open \"" + filename + "\"";
+        if (std::system(command.c_str()) == 0)
+            success = true;
+#else
+        const std::string command = "xdg-open \"" + filename +  "\"";
+        if (std::system(command.c_str()) == 0)
+            success = true;
+#endif
+    }
+
+    return success;
+}
 
 } // namespace system
 } // namespace helper
