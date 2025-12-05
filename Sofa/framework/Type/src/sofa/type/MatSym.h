@@ -41,9 +41,15 @@ template <sofa::Size D, class real = SReal>
 class MatSym : public VecNoInit<D * (D + 1) / 2, real>
 {
 public:
-
+    static constexpr sofa::Size N = D * D;
     typedef real Real;
     typedef Vec<D,Real> Coord;
+    typedef sofa::Size Size;
+
+    static constexpr Size nbLines = D;
+    static constexpr Size nbCols  = D;
+
+
     static constexpr auto NumberStoredValues = D * (D + 1) / 2;
 
     // Voigt ordering map for symmetric 2D/3D tensors
