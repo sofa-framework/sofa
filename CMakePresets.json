@@ -35,6 +35,7 @@
       "displayName": "Minimal config",
       "description": "SOFA as a library, no OpenGL support, no GUI except for batch and no Python support",
       "hidden": false,
+      "generator": "Ninja",
       "cacheVariables": {
         "SOFA_FLOATING_POINT_TYPE": {
           "type": "STRING",
