@@ -227,7 +227,7 @@ void MatrixProjectionMethod<TMatrix>::computeMatrixProduct(const MappingGraph& m
 }
 
 template <class TMatrix>
-void MatrixProjectionMethod<TMatrix>::projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
+void MatrixProjectionMethod<TMatrix>::doProjectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
     const MappingGraph& mappingGraph,
     TMatrix* matrixToProject, linearalgebra::BaseMatrix* globalMatrix)
 {
