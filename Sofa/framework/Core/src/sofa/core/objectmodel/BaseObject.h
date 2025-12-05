@@ -37,16 +37,16 @@ namespace sofa::core::objectmodel
  *  It is able to process events, if listening enabled (default is false).
  *
  */
-class SOFA_CORE_API BaseObject : public virtual Base
+class SOFA_CORE_API BaseComponent : public virtual Base
 {
 public:
-    SOFA_CLASS(BaseObject, Base);
-    SOFA_BASE_CAST_IMPLEMENTATION(BaseObject)
+    SOFA_CLASS(BaseComponent, Base);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseComponent)
 
 protected:
-    BaseObject();
+    BaseComponent();
 
-    ~BaseObject() override;
+    ~BaseComponent() override;
 
 public:
 
@@ -126,21 +126,21 @@ public:
 
     BaseContext* getContext();
 
-    const BaseObject* getMaster() const;
+    const BaseComponent* getMaster() const;
 
-    BaseObject* getMaster();
+    BaseComponent* getMaster();
 
 
-    typedef sofa::core::objectmodel::MultiLink<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK> LinkSlaves;
+    typedef sofa::core::objectmodel::MultiLink<BaseComponent, BaseComponent, BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK> LinkSlaves;
     typedef LinkSlaves::Container VecSlaves;
 
     const VecSlaves& getSlaves() const;
 
-    BaseObject* getSlave(const std::string& name) const;
+    BaseComponent* getSlave(const std::string& name) const;
 
-    virtual void addSlave(BaseObject::SPtr s);
+    virtual void addSlave(BaseComponent::SPtr s);
 
-    virtual void removeSlave(BaseObject::SPtr s);
+    virtual void removeSlave(BaseComponent::SPtr s);
     /// @}
 
     /// @name data access
@@ -180,7 +180,7 @@ public:
 
     /// Sets a source Object and parses it to collect dependent Data
     /// Use it before scene graph insertion
-    void setSrc(const std::string &v, const BaseObject *loader, std::vector< std::string > *attributeList=nullptr);
+    void setSrc(const std::string &v, const BaseComponent *loader, std::vector< std::string > *attributeList=nullptr);
 
     Base* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override;
 
@@ -205,9 +205,9 @@ protected:
     ///@}
     ///
 
-    SingleLink<BaseObject, BaseContext, BaseLink::FLAG_DOUBLELINK> l_context;
+    SingleLink<BaseComponent, BaseContext, BaseLink::FLAG_DOUBLELINK> l_context;
     LinkSlaves l_slaves;
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK> l_master;
+    SingleLink<BaseComponent, BaseComponent, BaseLink::FLAG_DOUBLELINK> l_master;
 
     /// Implementation of the internal update
     virtual void doUpdateInternal();
@@ -217,7 +217,7 @@ protected:
     void changeContextLink(BaseContext* before, BaseContext*& after);
 
     /// This method insures that slaves objects have master and context links set correctly
-    void changeSlavesLink(BaseObject::SPtr ptr, std::size_t /*index*/, bool add);
+    void changeSlavesLink(BaseComponent::SPtr ptr, std::size_t /*index*/, bool add);
 
     /// BaseNode can set the context of its own objects
     friend class BaseNode;
@@ -235,6 +235,8 @@ public:
     /// \returns true if the component was removed
     virtual bool removeInNode( BaseNode* /*node*/ ) { return false; }
 };
+
+using BaseObject = BaseComponent;
 
 } // namespace sofa::core::objectmodel
 

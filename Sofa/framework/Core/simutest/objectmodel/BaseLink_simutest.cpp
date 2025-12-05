@@ -30,7 +30,6 @@ using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
 #include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject;
 
 #include <sofa/core/PathResolver.h>
 using sofa::core::PathResolver;
