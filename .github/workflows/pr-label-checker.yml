@@ -130,5 +130,7 @@ jobs:
             const found = labels.includes("pr: based on previous PR");
 
             // Make the action step fail
-            core.setFailed("Merge blocked: PR has label 'pr: based on previous PR'");
+            if (found) {
+              core.setFailed("Merge blocked: PR has label 'pr: based on previous PR'");
+            }
 
