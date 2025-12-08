@@ -354,8 +354,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
         return;
 
     const float size = 2.f;
-    const type::RGBAColor color = type::RGBAColor::orange();
-    drawTool->setMaterial(color);
+    drawTool->setMaterial(m_selectionColor);
     drawTool->setPolygonMode(0, false);
     float screenHeight = vparams->viewport()[3];
 
@@ -407,7 +406,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
                     if(positionsData)
                     {
                         positions = positionsData->getValue();
-                        drawTool->drawPoints(positions, size*2., color);
+                        drawTool->drawPoints(positions, size*2., m_selectionColor);
                     }
                     else
                     {
@@ -419,7 +418,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
                                 float targetScreenSize = 50.0;
                                 float distance = (currentCamera->getPosition() - Rigid3Types::getCPos(frame)).norm();
                                 SReal scale = distance * tan(currentCamera->getFieldOfView() / 2.0f) * targetScreenSize / screenHeight;
-                                drawTool->drawFrame(Rigid3Types::getCPos(frame), Rigid3Types::getCRot(frame), {scale, scale,scale}, color);
+                                drawTool->drawFrame(Rigid3Types::getCPos(frame), Rigid3Types::getCRot(frame), {scale, scale,scale}, m_selectionColor);
                                 positions.push_back(Rigid3Types::getCPos(frame));
                             }
                         }
@@ -450,7 +449,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
                                 tripoints.push_back(positions[indices[0]]);
                             }
                         }
-                        drawTool->drawLines(tripoints, size, color);
+                        drawTool->drawLines(tripoints, size, m_selectionColor);
                     }
                 }
             }
@@ -458,7 +457,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
             if(m_showSelectedObjectIndices && !positions.empty() && validBox)
             {
                 const float scale = (box.maxBBox() - box.minBBox()).norm() * m_visualScaling;
-                drawTool->draw3DText_Indices(positions, scale, color);
+                drawTool->draw3DText_Indices(positions, scale, m_selectionColor);
             }
 
             continue;
