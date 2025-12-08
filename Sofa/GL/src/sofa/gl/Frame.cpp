@@ -33,17 +33,17 @@
 #include <numbers>
 
 template <>
-struct std::hash<sofa::type::Vec3f>
+struct std::hash<sofa::type::Vec3>
 {
-    std::size_t operator()(const sofa::type::Vec3f& k) const
+    std::size_t operator()(const sofa::type::Vec3& k) const
     {
         using std::size_t;
         using std::hash;
         using std::string;
 
-        return ((hash<float>()(k[0])
-            ^ (hash<float>()(k[1]) << 1)) >> 1)
-            ^ (hash<float>()(k[2]) << 1);
+        return ((hash<SReal>()(k[0])
+            ^ (hash<SReal>()(k[1]) << 1)) >> 1)
+            ^ (hash<SReal>()(k[2]) << 1);
     }
 };
 
@@ -81,7 +81,7 @@ namespace sofa::gl
 
 // Triangle structure
 struct Triangle {
-    int v0{}, v1{}, v2{};
+    unsigned int v0{}, v1{}, v2{};
 };
 
 // Cylinder mesh generator
@@ -137,10 +137,10 @@ struct CylinderMesh
         // Side triangles
         for (int i = 0; i < Segments; ++i)
         {
-            const int bottom_curr = i * 2;
-            const int top_curr = i * 2 + 1;
-            const int bottom_next = ((i + 1) % Segments) * 2;
-            const int top_next = ((i + 1) % Segments) * 2 + 1;
+            const unsigned int bottom_curr = i * 2;
+            const unsigned int top_curr = i * 2 + 1;
+            const unsigned int bottom_next = ((i + 1) % Segments) * 2;
+            const unsigned int top_next = ((i + 1) % Segments) * 2 + 1;
 
             // Two triangles per side segment
             triangles[triangle_idx++] = Triangle{bottom_curr, top_curr, bottom_next};
@@ -153,10 +153,10 @@ struct CylinderMesh
 
         for (int i = 0; i < Segments; ++i)
         {
-            const int bottom_curr = i * 2;
-            const int top_curr = i * 2 + 1;
-            const int bottom_next = ((i + 1) % Segments) * 2;
-            const int top_next = ((i + 1) % Segments) * 2 + 1;
+            const unsigned int bottom_curr = i * 2;
+            const unsigned int top_curr = i * 2 + 1;
+            const unsigned int bottom_next = ((i + 1) % Segments) * 2;
+            const unsigned int top_next = ((i + 1) % Segments) * 2 + 1;
 
             // Bottom cap (clockwise from below)
             triangles[triangle_idx++] = Triangle{bottom_center, bottom_next, bottom_curr};
@@ -232,14 +232,14 @@ struct ConeMesh
 
         // Generate triangles
         int triangle_idx = 0;
-        int tip_idx = 0;
-        int base_center_idx = vertex_count - 1;
+        unsigned int tip_idx = 0;
+        unsigned int base_center_idx = vertex_count - 1;
 
         // Side triangles
         for (int i = 0; i < Segments; ++i)
         {
-            const int curr = i + 1;
-            const int next = (i + 1) % Segments + 1;
+            const unsigned int curr = i + 1;
+            const unsigned int next = (i + 1) % Segments + 1;
 
             // Side triangle (tip to base edge)
             triangles[triangle_idx++] = Triangle{tip_idx, next, curr};
@@ -366,29 +366,31 @@ void render_coordinate_frame(const CoordinateFrame& frame, const type::Vec3& cen
         rotAxis.y(),
         rotAxis.z());
 
+    glBindVertexArray(0);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
-        
+    constexpr auto gltype = (std::is_same<SReal, double>::value)?GL_DOUBLE:GL_FLOAT;
     for (int i = 0; i < 6; ++i)
     {
         const auto& comp = mesh_components[i];
         glColor4d(colors[i][0], colors[i][1], colors[i][2], colors[i][3]);
-        glVertexPointer(3, GL_DOUBLE, 0, comp.vertices);
-        glNormalPointer(GL_DOUBLE, 0, comp.normals);
-        glDrawElements(GL_TRIANGLES, comp.triangle_count * 3, GL_UNSIGNED_INT, comp.triangles);
+        glVertexPointer(3, gltype, 0, comp.vertices);
+        glNormalPointer(gltype, 0, comp.triangles);
 
-        //glDrawArrays(GL_POINTS, 0, comp.vertex_count);
+        glDrawElements(GL_TRIANGLES, comp.triangle_count*3, GL_UNSIGNED_INT, comp.triangles);
     }
+
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
 
     glPopMatrix();
     glPopAttrib();
 }
 
-std::unordered_map < type::Vec3f, CoordinateFrame > cacheCoordinateFrame;
-
+std::unordered_map < type::Vec3, CoordinateFrame > cacheFrame;
 void Frame::draw(const type::Vec3& center, const Quaternion& orient, const type::Vec3& len, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ )
 {
-    if (cacheCoordinateFrame.find(len) == cacheCoordinateFrame.end())
+    if (cacheFrame.find(len) == cacheFrame.end())
     {
         type::Vec3 L = len;
 
@@ -410,10 +412,10 @@ void Frame::draw(const type::Vec3& center, const Quaternion& orient, const type:
         const type::Vec3 lc(Lmax / 5_sreal, Lmax / 5_sreal, Lmax / 5_sreal); // = L / 5;
         const type::Vec3 Lc = lc;
 
-        cacheCoordinateFrame.emplace(len, CoordinateFrame ({ L[0], Lc[0], l[0], lc[0] }, { L[1], Lc[1], l[1], lc[1] }, { L[2], Lc[2], l[2], lc[2] }));
+        cacheFrame.emplace(len, CoordinateFrame ({ L[0], Lc[0], l[0], lc[0] }, { L[1], Lc[1], l[1], lc[1] }, { L[2], Lc[2], l[2], lc[2] }));
     }
 
-    const auto& frame = cacheCoordinateFrame.at(len);
+    const auto& frame = cacheFrame.at(len);
     render_coordinate_frame(frame, center, orient, len, colorX, colorY, colorZ);
 }
 
