@@ -1,0 +1,81 @@
+name: Reboot builders
+
+# ===============================================================
+# ===============================================================
+
+
+on:
+  # On-demand binary generation
+  workflow_dispatch:
+    inputs:
+      builder-os:
+        type: choice
+        description: On which OS run the binaries generation
+        options: 
+        - '["sofa-ci-dev-ubuntu2204-0"]'
+        - '["sofa-ci-dev-ubuntu2204-1"]'
+        - '["sofa-ci-dev-ubuntu2204-2"]'
+        - '["sofa-ci-dev-ubuntu2204-3"]'
+        - '["sofa-ci-dev-ubuntu2204-4"]'
+        - '["consortium-macos-2"]'
+        - '["consortium-macos-3"]'
+        - '["sofa-ci-dev-ubuntu2204-0","sofa-ci-dev-ubuntu2204-1","sofa-ci-dev-ubuntu2204-2","sofa-ci-dev-ubuntu2204-3","sofa-ci-dev-ubuntu2204-4","consortium-macos-2","consortium-macos-3"]'
+        default: '["sofa-ci-dev-ubuntu2204-0","sofa-ci-dev-ubuntu2204-1","sofa-ci-dev-ubuntu2204-2","sofa-ci-dev-ubuntu2204-3","sofa-ci-dev-ubuntu2204-4","consortium-macos-2","consortium-macos-3"]'
+
+
+
+  # Nightly build
+  schedule:
+    - cron: '30 1 * * *'   # Evevery night @1:30 a.m.
+    
+# ===============================================================
+# ===============================================================
+
+
+jobs:
+  # Filter build handling : push in master, commits in PR, comments in PR and dispatch
+  reboot_builders_by_hand:
+    if: ${{ github.event_name != 'schedule'}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJson(inputs.builder-os) }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Clear ccache 
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+            if [[ -n "$BUILDER_CACHE_DIR" ]]; then
+                rm -rf $BUILDER_CACHE_DIR/*
+            fi     
+                 
+      - name: Reboot builder
+        shell: bash
+        run: |
+            # WARNING: this command needs to add in /etc/sudoers this line:
+            # ALL ALL=NOPASSWD: /usr/sbin/reboot, /usr/sbin/shutdown, /sbin/reboot, /sbin/shutdown
+            echo '' | sudo -S /sbin/shutdown -r +1 &
+
+  rebot_builder_nightly:
+    if: ${{ github.event_name == 'schedule'}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["sofa-ci-dev-ubuntu2204-0","sofa-ci-dev-ubuntu2204-1","sofa-ci-dev-ubuntu2204-2","sofa-ci-dev-ubuntu2204-3","sofa-ci-dev-ubuntu2204-4","consortium-macos-2","consortium-macos-3"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Clear ccache 
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+            if [[ -n "$BUILDER_CACHE_DIR" ]]; then
+                rm -rf $BUILDER_CACHE_DIR/*
+            fi     
+
+      - name: Reboot builder
+        shell: bash
+        run: |
+            # WARNING: this command needs to add in /etc/sudoers this line:
+            # ALL ALL=NOPASSWD: /usr/sbin/reboot, /usr/sbin/shutdown, /sbin/reboot, /sbin/shutdown
+            echo '' | sudo -S /sbin/shutdown -r +1 &
