@@ -85,13 +85,13 @@ jobs:
         run: |
           echo "SOFA_BRANCH_NAME=master" >> $GITHUB_ENV    # SOFA_BRANCH_NAME: "master"
           echo "SOFA_COMMIT_SHA=HEAD" >> $GITHUB_ENV       # SOFA_COMMIT_SHA: "HEAD"
-          echo "PRESET=full" >> $GITHUB_ENV                # PRESET: "full"
+          echo "PRESET=full-dev" >> $GITHUB_ENV            # PRESET: "full-dev"
           echo "PYTHON_VERSION=3.12" >> $GITHUB_ENV        # PYTHON_VERSION: "3.12"
           echo "CI_DEPENDS_ON=" >> $GITHUB_ENV             # CI_DEPENDS_ON: ""
           echo "WITH_ALL_TESTS=false" >> $GITHUB_ENV       # WITH_ALL_TESTS: false
           echo "FORCE_FULL_BUILD=false" >> $GITHUB_ENV     # FORCE_FULL_BUILD: false
-          echo "EXTERNAL_PLUGINS=" >> $GITHUB_ENV         # EXTERNAL_PLUGINS: ""
-          echo "ADDITIONNAL_CMAKE_FLAGS=" >> $GITHUB_ENV         # ADDITIONNAL_CMAKE_FLAGS: ""
+          echo "EXTERNAL_PLUGINS=" >> $GITHUB_ENV          # EXTERNAL_PLUGINS: ""
+          echo "ADDITIONNAL_CMAKE_FLAGS=" >> $GITHUB_ENV   # ADDITIONNAL_CMAKE_FLAGS: ""
           echo "GENERATE_BINARIES=false" >> $GITHUB_ENV    # GENERATE_BINARIES: false
           echo "PR_OWNER_URL=" >> $GITHUB_ENV              # PR_OWNER_URL: ""
           echo "PR_BRANCH_NAME=" >> $GITHUB_ENV            # PR_BRANCH_NAME: ""
