@@ -154,13 +154,6 @@ void MultiCollisionPipeline::doCollisionReset()
             m_subCollisionPipelines.insert(subPipelineIt, subPipeline);
         }
     }
-//    
-//    for(const auto& subPipeline : m_subCollisionPipelines)
-//    {
-//        std::cout << subPipeline->l_intersectionMethod->getAlarmDistance() << " ";
-//    }
-//    std::cout << std::endl;
-
 }
 
 void MultiCollisionPipeline::doCollisionDetection(const type::vector<core::CollisionModel*>& collisionModels)
@@ -189,59 +182,6 @@ void MultiCollisionPipeline::doCollisionDetection(const type::vector<core::Colli
 
 void MultiCollisionPipeline::doCollisionResponse()
 {
-    // before doing collision response, filter identical contacts
-    std::map<int64_t, AbstractSubCollisionPipeline*> mapIdDistances;
-    std::map<int64_t, AbstractSubCollisionPipeline*> mapToRemove;
-    
-    
-//    for(auto& subCollisionPipeline : m_subCollisionPipelines)
-//    {
-//        const auto& subDetectionMap = subCollisionPipeline->l_narrowPhaseDetection->getDetectionOutputs();
-//        for(const auto& [pairCM, outputsT] : subDetectionMap)
-//        {
-//            const auto& outputs = outputsT->getDetectionOutput();
-//            
-//            for(const auto& output: outputs)
-//            {
-//                const auto currentAlarmDistance = subCollisionPipeline->l_intersectionMethod->getAlarmDistance();
-//                                
-//                if(mapIdDistances.find(output.id) == mapIdDistances.end())
-//                {
-//                    mapIdDistances[output.id] = subCollisionPipeline;
-//                }
-//                else
-//                {
-//                    auto* previousSubCollisionPipeline = mapIdDistances[output.id];
-//                    const auto previousAlarmDistance = previousSubCollisionPipeline->l_intersectionMethod->getAlarmDistance();
-//                    
-//                    if(currentAlarmDistance < previousAlarmDistance)
-//                    {
-//                        std::cout << "Find duplicate with a lower alarm" << std::endl;
-//                        // remove the contact in the other subCollisionPipeline
-//                        mapToRemove[output.id] = previousSubCollisionPipeline;
-//                    }
-//                    else
-//                    {
-//                        std::cout << "Find duplicate with a upper alarm" << std::endl;
-//                        // remove the contact in the current subCollisionPipeline
-//                        mapToRemove[output.id] = subCollisionPipeline;
-//                    }
-//                }
-//            }
-//        }
-//    }
-    
-//    // remove effectively the contacts
-//    for(auto& [id, subCollisionPipeline] : mapToRemove)
-//    {
-//        auto& subDetectionMap = subCollisionPipeline->l_narrowPhaseDetection->getDetectionOutputs();
-//        for(const auto& [pairCM, outputsT] : subDetectionMap)
-//        {
-//            outputsT->removeDetectionOutputFromID(id);
-//            std::cout << "Removed " << id << " from " << subCollisionPipeline->getName() << std::endl;
-//        }
-//    }
-    
     // disable parallel execution, as there is a potential race condition on Node
     // It arises when while cleaning inactive contact, BaryCcontactMapper will detach the node, which clears _descendency set
     // if two contact responses do the same in the same time, it will do a race condition on this particular node.
