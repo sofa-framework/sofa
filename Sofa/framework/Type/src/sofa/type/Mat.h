@@ -934,6 +934,13 @@ constexpr real determinant(const Mat<2,2,real>& m) noexcept
             - m(1,0)*m(0,1);
 }
 
+/// Determinant of a 1x1 matrix.
+template<class real>
+constexpr real determinant(const Mat<1,1,real>& m) noexcept
+{
+    return m(0, 0);
+}
+
 /// Generalized-determinant of a 2x3 matrix.
 /// Mirko Radi, "About a Determinant of Rectangular 2×n Matrix and its Geometric Interpretation"
 template<class real>

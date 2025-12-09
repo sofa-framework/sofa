@@ -26,8 +26,8 @@
 #include <sofa/component/mapping/linear/IdentityMapping.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
-#include <sofa/component/collision/geometry/SphereModel.h>
-#include <sofa/component/collision/geometry/PointModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
+#include <sofa/component/collision/geometry/PointCollisionModel.h>
 
 namespace sofa::component::collision::response::mapper
 {
