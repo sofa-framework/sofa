@@ -1,0 +1,314 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#include <sofa/component/collision/detection/algorithm/MultiCollisionPipeline.h>
+
+#include <sofa/component/collision/detection/algorithm/AbstractSubCollisionPipeline.h>
+
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/collision/BroadPhaseDetection.h>
+#include <sofa/core/collision/NarrowPhaseDetection.h>
+#include <sofa/core/collision/ContactManager.h>
+
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/ParallelForEach.h>
+
+#include <sofa/helper/ScopedAdvancedTimer.h>
+using sofa::helper::ScopedAdvancedTimer ;
+
+#include <sofa/helper/AdvancedTimer.h>
+
+
+namespace sofa::component::collision::detection::algorithm
+{
+
+using namespace sofa;
+using namespace sofa::core;
+using namespace sofa::core::collision;
+
+void registerMultiCollisionPipeline(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(core::ObjectRegistrationData("Multiple collision pipelines in one.")
+        .add< MultiCollisionPipeline >());
+}
+
+MultiCollisionPipeline::MultiCollisionPipeline()
+    : d_parallelDetection(initData(&d_parallelDetection, false, "parallelDetection", "Parallelize collision detection."))
+    , d_parallelResponse(initData(&d_parallelResponse, false, "parallelResponse", "(DISABLED) Parallelize collision response."))
+    , l_subCollisionPipelines(initLink("subCollisionPipelines", "List of sub collision pipelines to handle."))
+{
+}
+
+void MultiCollisionPipeline::init()
+{
+    Inherit1::init();
+
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+
+    if(l_subCollisionPipelines.size() == 0)
+    {
+        msg_warning() << "No SubCollisionPipeline defined in MultiCollisionPipeline. Nothing will be done." ;
+
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+    
+    if(d_parallelDetection.getValue() || d_parallelResponse.getValue())
+    {
+        m_taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
+        assert(m_taskScheduler);
+        
+        m_taskScheduler->init();
+    }
+
+    // UX: warn if there is any CollisionModel not handled by any SubCollisionPipeline
+    simulation::Node* root = dynamic_cast<simulation::Node*>(getContext()->getRootContext());
+    std::vector<CollisionModel*> sceneCollisionModels;
+    root->getTreeObjects<CollisionModel>(&sceneCollisionModels);
+
+    std::set<CollisionModel*> pipelineCollisionModels;
+    for(auto* subPipeline : l_subCollisionPipelines)
+    {
+        if(!subPipeline)
+        {
+            msg_error() << "One of the subCollisionPipeline is incorrect (nullptr or invalid) ";
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
+        }
+        
+        for (auto cm : subPipeline->l_collisionModels)
+        {
+            pipelineCollisionModels.insert(cm);
+        }
+    }
+
+    for (const auto& cm : sceneCollisionModels)
+    {
+        if (pipelineCollisionModels.find(cm) == pipelineCollisionModels.end())
+        {
+            msg_warning() << "CollisionModel " << cm->getName() << " is not handled by any SubCollisionPipeline.";
+        }
+    }
+    
+}
+
+void MultiCollisionPipeline::bwdInit()
+{
+    for(const auto& subPipeline : l_subCollisionPipelines)
+    {
+        subPipeline->doBwdInit();
+    }
+}
+
+void MultiCollisionPipeline::reset()
+{
+
+}
+
+void MultiCollisionPipeline::doCollisionReset()
+{
+    msg_info() << "MultiCollisionPipeline::doCollisionReset" ;
+
+    for(const auto& subPipeline : l_subCollisionPipelines)
+    {
+        subPipeline->computeCollisionReset();
+    }
+    
+    // re-order pipelines by order of distance
+    m_subCollisionPipelines.clear();
+    for(auto* subPipeline : l_subCollisionPipelines)
+    {
+        const auto alarmDistance = subPipeline->l_intersectionMethod->getAlarmDistance();
+        auto subPipelineIt = m_subCollisionPipelines.begin();
+        
+        if(subPipelineIt == m_subCollisionPipelines.end())
+        {
+            m_subCollisionPipelines.push_back(subPipeline);
+        }
+        else
+        {
+            while(subPipelineIt != m_subCollisionPipelines.end() && alarmDistance > (*subPipelineIt)->l_intersectionMethod->getAlarmDistance())
+            {
+                subPipelineIt++;
+            }
+            m_subCollisionPipelines.insert(subPipelineIt, subPipeline);
+        }
+    }
+//    
+//    for(const auto& subPipeline : m_subCollisionPipelines)
+//    {
+//        std::cout << subPipeline->l_intersectionMethod->getAlarmDistance() << " ";
+//    }
+//    std::cout << std::endl;
+
+}
+
+void MultiCollisionPipeline::doCollisionDetection(const type::vector<core::CollisionModel*>& collisionModels)
+{
+    SOFA_UNUSED(collisionModels);
+
+    SCOPED_TIMER_VARNAME(docollisiontimer, "doCollisionDetection");
+
+    msg_info()
+         << "doCollisionDetection, compute Bounding Trees" ;
+
+    const sofa::simulation::ForEachExecutionPolicy execution = m_taskScheduler != nullptr && d_parallelDetection.getValue() ?
+        sofa::simulation::ForEachExecutionPolicy::PARALLEL :
+        sofa::simulation::ForEachExecutionPolicy::SEQUENTIAL;
+   
+    auto computeCollisionDetection = [&](const auto& range)
+    {
+        for (auto it = range.start; it != range.end; ++it)
+        {
+            (*it)->computeCollisionDetection();
+        }
+    };
+    
+    sofa::simulation::forEachRange(execution, *m_taskScheduler, m_subCollisionPipelines.begin(), m_subCollisionPipelines.end(), computeCollisionDetection);
+}
+
+void MultiCollisionPipeline::doCollisionResponse()
+{
+    // before doing collision response, filter identical contacts
+    std::map<int64_t, AbstractSubCollisionPipeline*> mapIdDistances;
+    std::map<int64_t, AbstractSubCollisionPipeline*> mapToRemove;
+    
+    
+//    for(auto& subCollisionPipeline : m_subCollisionPipelines)
+//    {
+//        const auto& subDetectionMap = subCollisionPipeline->l_narrowPhaseDetection->getDetectionOutputs();
+//        for(const auto& [pairCM, outputsT] : subDetectionMap)
+//        {
+//            const auto& outputs = outputsT->getDetectionOutput();
+//            
+//            for(const auto& output: outputs)
+//            {
+//                const auto currentAlarmDistance = subCollisionPipeline->l_intersectionMethod->getAlarmDistance();
+//                                
+//                if(mapIdDistances.find(output.id) == mapIdDistances.end())
+//                {
+//                    mapIdDistances[output.id] = subCollisionPipeline;
+//                }
+//                else
+//                {
+//                    auto* previousSubCollisionPipeline = mapIdDistances[output.id];
+//                    const auto previousAlarmDistance = previousSubCollisionPipeline->l_intersectionMethod->getAlarmDistance();
+//                    
+//                    if(currentAlarmDistance < previousAlarmDistance)
+//                    {
+//                        std::cout << "Find duplicate with a lower alarm" << std::endl;
+//                        // remove the contact in the other subCollisionPipeline
+//                        mapToRemove[output.id] = previousSubCollisionPipeline;
+//                    }
+//                    else
+//                    {
+//                        std::cout << "Find duplicate with a upper alarm" << std::endl;
+//                        // remove the contact in the current subCollisionPipeline
+//                        mapToRemove[output.id] = subCollisionPipeline;
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
+//    // remove effectively the contacts
+//    for(auto& [id, subCollisionPipeline] : mapToRemove)
+//    {
+//        auto& subDetectionMap = subCollisionPipeline->l_narrowPhaseDetection->getDetectionOutputs();
+//        for(const auto& [pairCM, outputsT] : subDetectionMap)
+//        {
+//            outputsT->removeDetectionOutputFromID(id);
+//            std::cout << "Removed " << id << " from " << subCollisionPipeline->getName() << std::endl;
+//        }
+//    }
+    
+    // disable parallel execution, as there is a potential race condition on Node
+    // It arises when while cleaning inactive contact, BaryCcontactMapper will detach the node, which clears _descendency set
+    // if two contact responses do the same in the same time, it will do a race condition on this particular node.
+//    const sofa::simulation::ForEachExecutionPolicy execution = m_taskScheduler != nullptr && d_parallelResponse.getValue() ?
+//        sofa::simulation::ForEachExecutionPolicy::PARALLEL :
+//        sofa::simulation::ForEachExecutionPolicy::SEQUENTIAL;
+    const sofa::simulation::ForEachExecutionPolicy execution = sofa::simulation::ForEachExecutionPolicy::SEQUENTIAL;
+       
+    auto computeCollisionResponse = [&](const auto& range)
+    {
+        for (auto it = range.start; it != range.end; ++it)
+        {
+            (*it)->computeCollisionResponse();
+        }
+    };
+    
+    sofa::simulation::forEachRange(execution, *m_taskScheduler, l_subCollisionPipelines.begin(), l_subCollisionPipelines.end(), computeCollisionResponse);
+}
+
+std::set< std::string > MultiCollisionPipeline::getResponseList() const
+{
+    std::set< std::string > listResponse;
+    core::collision::Contact::Factory::iterator it;
+
+    for (const auto& subPipeline : m_subCollisionPipelines)
+    {
+        std::set< std::string > subListResponse = subPipeline->getResponseList();
+        listResponse.insert(subListResponse.begin(), subListResponse.end());
+    }
+
+    return listResponse;
+}
+
+void MultiCollisionPipeline::computeCollisionReset()
+{
+    if(!this->isComponentStateValid())
+        return;
+    
+    doCollisionReset();
+}
+
+void MultiCollisionPipeline::computeCollisionDetection()
+{
+    if(!this->isComponentStateValid())
+        return;
+    
+    //useless
+    std::vector<CollisionModel*> collisionModels;
+    
+    doCollisionDetection(collisionModels);
+}
+
+void MultiCollisionPipeline::computeCollisionResponse()
+{
+    if(!this->isComponentStateValid())
+        return;
+    
+    doCollisionResponse();
+}
+
+
+void MultiCollisionPipeline::draw(const core::visual::VisualParams* vparams)
+{
+    for (const auto& subPipeline : m_subCollisionPipelines)
+    {
+        subPipeline->draw(vparams);
+    }
+}
+
+} // namespace sofa::component::collision::detection::algorithm
