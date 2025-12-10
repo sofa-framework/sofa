@@ -138,7 +138,7 @@ public:
         sofa::helper::visual::DrawTool* drawTool,
         const type::vector<type::Vec3>& position,
         sofa::core::topology::BaseMeshTopology* topology,
-        const DrawElementMesh<ElementType>::ColorContainer& colors = DrawElementMesh<ElementType>::defaultColors)
+        const typename DrawElementMesh<ElementType>::ColorContainer& colors = DrawElementMesh<ElementType>::defaultColors)
     {
         std::get<DrawElementMesh<ElementType>>(m_meshes).draw(drawTool, position, topology, colors);
     }
