@@ -223,8 +223,13 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, Co
         for (sofa::Size i=0; i<size; i++)
         {
             TSphere<DataTypes> p(this,i);
-            const Vec3& pt = p.p();
-            const Vec3 ptv = (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia ? pt + p.v()*dt : p.pFree());
+            const auto& pt = p.p();
+            const auto ptv = (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia) ? pt + p.v()*dt : p.pFree();
+            // if(continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia)
+            //     ptv =  pt + p.v()*dt;
+            // else
+            //     ptv = p.pFree();
+            //
 
             for (int c = 0; c < 3; c++)
             {

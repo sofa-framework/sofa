@@ -512,10 +512,10 @@ void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, Cont
         for (sofa::Size i=0; i<size; i++)
         {
             TLine<DataTypes> t(this,i);
-            const type::Vec3& pt1 = t.p1();
-            const type::Vec3& pt2 = t.p2();
-            const type::Vec3 pt1v = (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia ? pt1 + t.v1()*dt : t.p1Free());
-            const type::Vec3 pt2v = (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia ? pt2 + t.v2()*dt : t.p2Free());
+            const auto& pt1 = t.p1();
+            const auto& pt2 = t.p2();
+            const auto pt1v = (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia ? pt1 + t.v1()*dt : t.p1Free());
+            const auto pt2v = (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia ? pt2 + t.v2()*dt : t.p2Free());
 
             for (int c = 0; c < 3; c++)
             {
