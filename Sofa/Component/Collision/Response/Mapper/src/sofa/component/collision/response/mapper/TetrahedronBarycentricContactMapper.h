@@ -23,7 +23,7 @@
 #include <sofa/component/collision/response/mapper/config.h>
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/collision/geometry/TetrahedronModel.h>
+#include <sofa/component/collision/geometry/TetrahedronCollisionModel.h>
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
 
 namespace sofa::component::collision::response::mapper
