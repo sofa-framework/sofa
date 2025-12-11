@@ -26,7 +26,7 @@ gtest = "*"
 [tasks]
 build = { cmd = "cmake --build $SOFA_BUILD_DIR --target all", depends-on = ["configure"] }
 install = { cmd = "cmake --build $SOFA_BUILD_DIR --target install", depends-on = ["build"] }
-runSofa-batch = { cmd = "runSofa -g batch", depends-on = ["install"] }
+runSofa = { cmd = "runSofa", depends-on = ["install"] }
 clean = { cmd = "rm -rf $SOFA_BUILD_DIR" }
 
 # Python 3.12 is the one supported by default
