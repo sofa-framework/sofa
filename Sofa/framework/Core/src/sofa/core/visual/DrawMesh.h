@@ -31,6 +31,10 @@
 namespace sofa::core::visual
 {
 
+/**
+ * @class BaseDrawMesh
+ * @brief Base class for mesh drawing using Curiously Recurring Template Pattern (CRTP)
+ */
 template<class Derived, std::size_t NumberColors_>
 struct BaseDrawMesh
 {
@@ -39,6 +43,21 @@ struct BaseDrawMesh
 
     SReal elementSpace { 0.125_sreal };
 
+    /**
+     * @brief Draws all elements of the mesh using provided colors.
+     *
+     * This function draws all elements of the mesh (from index 0 to the total number of elements)
+     * using the specified colors. It serves as a convenience wrapper that calls \ref
+     * drawSomeElements with all element indices.
+     *
+     * @tparam PositionContainer The type of the position container (e.g.,
+     * sofa::type::vector<sofa::type::Vec3>)
+     * @param drawTool The drawing tool to use for rendering
+     * @param position The container of vertex positions
+     * @param topology The mesh topology
+     * @param colors The colors to use for each element. If not specified, the default colors of the
+     * derived class are used.
+     */
     template<class PositionContainer>
     void drawAllElements(
         sofa::helper::visual::DrawTool* drawTool,
@@ -51,6 +70,23 @@ struct BaseDrawMesh
         drawSomeElements(drawTool, position, topology, elementsToDraw, colors);
     }
 
+    /**
+     * @brief Draws a subset of elements of the mesh using provided colors.
+     *
+     * This function draws a specific subset of elements (specified by element indices) using the
+     * provided colors.
+     *
+     * @tparam PositionContainer The type of the position container (e.g.,
+     * sofa::type::vector<sofa::type::Vec3>)
+     * @tparam IndicesContainer The type of container holding element indices (e.g.,
+     * sofa::type::vector<sofa::Index>)
+     * @param drawTool The drawing tool to use for rendering
+     * @param position The container of vertex positions
+     * @param topology The mesh topology
+     * @param elementIndices The indices of elements to draw
+     * @param colors The colors to use for each element. If not specified, the default colors of the
+     * derived class are used.
+     */
     template<class PositionContainer, class IndicesContainer>
     void drawSomeElements(
         sofa::helper::visual::DrawTool* drawTool,
@@ -89,6 +125,15 @@ protected:
         return center;
     }
 
+    /**
+     * @brief Pre-allocated point buffers for rendering different color channels
+     *
+     * This static array holds pre-allocated vertex position buffers for each color channel.
+     *
+     * Key characteristics:
+     * - Each buffer corresponds to one of the `NumberColors` color channels (e.g., 3 for triangles)
+     * - Designed for efficient reuse across multiple drawing calls without reallocation
+     */
     std::array<sofa::type::vector< sofa::type::Vec3 >, NumberColors> renderedPoints;
 };
 
