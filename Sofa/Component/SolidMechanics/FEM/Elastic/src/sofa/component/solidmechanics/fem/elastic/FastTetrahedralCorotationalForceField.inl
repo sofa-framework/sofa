@@ -672,7 +672,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
 
-    m_drawMesh.draw(vparams->drawTool(), x, this->l_topology.get());
+    m_drawMesh.drawAllElements(vparams->drawTool(), x, this->l_topology.get());
 }
 
 } // namespace sofa::component::solidmechanics::fem::elastic

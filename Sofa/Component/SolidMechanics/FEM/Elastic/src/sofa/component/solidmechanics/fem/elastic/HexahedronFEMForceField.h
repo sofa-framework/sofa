@@ -223,7 +223,7 @@ protected:
 
     bool _alreadyInit;
 
-    core::visual::DrawElementMesh<sofa::geometry::Hexahedron> drawMesh;
+    core::visual::DrawElementMesh<sofa::geometry::Hexahedron> m_drawMesh;
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_CPP)
