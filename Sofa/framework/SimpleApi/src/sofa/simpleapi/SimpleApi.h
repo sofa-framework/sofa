@@ -33,7 +33,7 @@
 namespace sofa::simpleapi
 {
 
-using sofa::core::objectmodel::BaseObject;
+
 using sofa::core::objectmodel::BaseObjectDescription;
 
 using sofa::simulation::Simulation ;

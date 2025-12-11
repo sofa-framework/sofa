@@ -42,7 +42,7 @@ using sofa::simulation::Simulation;
 using sofa::simulation::graph::DAGSimulation;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
-using sofa::core::objectmodel::BaseObject;
+
 using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::New;
 using sofa::defaulttype::Vec3Types;

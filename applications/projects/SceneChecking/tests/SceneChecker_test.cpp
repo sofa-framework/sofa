@@ -51,7 +51,7 @@ using sofa::core::execparams::defaultInstance;
 /// This component is only for testing the APIVersion system.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject;
+
 using sofa::core::objectmodel::Base;
 
 #include <sofa/core/ObjectFactory.h>

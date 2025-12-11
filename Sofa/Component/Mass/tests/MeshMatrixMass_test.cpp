@@ -65,7 +65,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology::container::dynamic;
 
 using sofa::core::objectmodel::New;
-using sofa::core::objectmodel::BaseObject;
+
 using sofa::component::mass::MeshMatrixMass;
 using sofa::component::statecontainer::MechanicalObject;
 

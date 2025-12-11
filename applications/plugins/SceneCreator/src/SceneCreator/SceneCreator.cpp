@@ -62,7 +62,7 @@ using sofa::helper::system::DataRepository ;
 
 static sofa::simulation::Node::SPtr root = nullptr;
 
-using sofa::core::objectmodel::BaseObject ;
+
 
 
 Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)

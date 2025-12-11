@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+
 using sofa::core::objectmodel::Base ;
 
 #include <sofa/helper/NameDecoder.h>

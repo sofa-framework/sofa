@@ -28,7 +28,7 @@ using namespace sofa::simpleapi ;
 #include "Node_test.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+
 #include <sofa/core/objectmodel/BaseNode.h>
 using sofa::core::objectmodel::BaseNode ;
 

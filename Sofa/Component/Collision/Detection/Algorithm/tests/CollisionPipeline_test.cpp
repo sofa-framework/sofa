@@ -29,7 +29,7 @@ using std::string;
 using sofa::core::execparams::defaultInstance;
 
 #include<sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+
 
 #include <sofa/component/collision/detection/algorithm/CollisionPipeline.h>
 using sofa::component::collision::detection::algorithm::CollisionPipeline ;

@@ -28,7 +28,7 @@ using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
 #include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject;
+
 
 #include <sofa/defaulttype/RigidTypes.h>
 using sofa::defaulttype::Rigid3Types;
@@ -55,7 +55,7 @@ public:
 
 }
 
-using customns::CustomBaseObject;
+
 using customns::CustomBaseObjectT;
 
 class Base_test: public BaseSimulationTest

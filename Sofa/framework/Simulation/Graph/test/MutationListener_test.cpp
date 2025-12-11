@@ -27,7 +27,7 @@ using sofa::testing::BaseTest;
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/MutationListener.h>
 using sofa::simulation::MutationListener;
-using sofa::core::objectmodel::BaseObject;
+
 using sofa::simulation::Simulation;
 using sofa::simulation::Node;
 

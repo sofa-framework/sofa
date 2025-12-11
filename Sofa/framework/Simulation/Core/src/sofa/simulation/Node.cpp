@@ -69,7 +69,7 @@
 namespace sofa::simulation
 {
 using core::objectmodel::BaseNode;
-using core::objectmodel::BaseObject;
+
 
 Node::Node(const std::string& nodename, Node* parent)
     : core::objectmodel::BaseNode()

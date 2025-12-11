@@ -30,7 +30,7 @@ using std::vector;
 using std::string;
 
 #include<sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+
 
 #include<sofa/simulation/Node.h>
 using sofa::simulation::Node ;
