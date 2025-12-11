@@ -37,9 +37,10 @@ struct BaseDrawMesh
 
     SReal elementSpace { 0.125_sreal };
 
+    template<class PositionContainer>
     void draw(
         sofa::helper::visual::DrawTool* drawTool,
-        const type::vector<type::Vec3>& position,
+        const PositionContainer& position,
         sofa::core::topology::BaseMeshTopology* topology,
         const ColorContainer& colors = Derived::defaultColors)
     {
@@ -55,10 +56,24 @@ struct BaseDrawMesh
     }
 
 protected:
-    sofa::type::Vec3 applyElementSpace(const sofa::type::Vec3& position, const sofa::type::Vec3& elementCenter) const
+    template<class PositionType>
+    PositionType applyElementSpace(const PositionType& position, const PositionType& elementCenter) const
     {
         return (position - elementCenter) * (1._sreal - elementSpace) + elementCenter;
     }
+
+    template<class PositionContainer, class ElementType>
+    static PositionContainer::value_type elementCenter(const PositionContainer& position, const ElementType& element)
+    {
+        typename PositionContainer::value_type center{};
+        for (sofa::Size vId = 0; vId < element.size(); ++vId)
+        {
+            center += position[element[vId]];
+        }
+        center /= element.size();
+        return center;
+    }
+
     std::array<sofa::type::vector< sofa::type::Vec3 >, NumberColors> renderedPoints;
 };
 
@@ -77,11 +92,43 @@ struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Triangle>
     };
 
 private:
+    template<class PositionContainer>
     void doDraw(
         sofa::helper::visual::DrawTool* drawTool,
-        const type::vector<type::Vec3>& position,
+        const PositionContainer& position,
         sofa::core::topology::BaseMeshTopology* topology,
-        const ColorContainer& colors);
+        const ColorContainer& colors)
+    {
+        if (!topology)
+            return;
+
+        const auto& elements = topology->getTriangles();
+
+        const auto size = (elements.size() / NumberColors + 1) * sofa::geometry::Triangle::NumberOfNodes;
+        for ( auto& p : renderedPoints)
+        {
+            p.resize(size);
+        }
+
+        std::array<std::size_t, NumberColors> renderedPointId {};
+        for (sofa::Size i = 0; i < elements.size(); ++i)
+        {
+            const auto& element = elements[i];
+
+            const auto center = this->elementCenter(position, element);
+
+            for (std::size_t j = 0; j < sofa::geometry::Triangle::NumberOfNodes; ++j)
+            {
+                const auto p = this->applyElementSpace(position[element[j]], center);
+                renderedPoints[i % NumberColors][renderedPointId[i%NumberColors]++] = sofa::type::toVec3(p);
+            }
+        }
+
+        for (std::size_t j = 0; j < NumberColors; ++j)
+        {
+            drawTool->drawTriangles(renderedPoints[j], colors[j]);
+        }
+    }
 };
 
 template<>
@@ -99,10 +146,50 @@ struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Tetrahedron>
     };
 
 private:
+    template<class PositionContainer>
     void doDraw(sofa::helper::visual::DrawTool* drawTool,
-        const type::vector<type::Vec3>& position,
+        const PositionContainer& position,
         sofa::core::topology::BaseMeshTopology* topology,
-        const ColorContainer& colors);
+        const ColorContainer& colors)
+    {
+        if (!topology)
+            return;
+
+        const auto& elements = topology->getTetrahedra();
+        const auto& facets = topology->getTriangles();
+
+        for ( auto& p : renderedPoints)
+        {
+            p.resize(elements.size() * sofa::geometry::Triangle::NumberOfNodes);
+        }
+
+        std::size_t renderedPointId {};
+        for (sofa::Size i = 0; i < elements.size(); ++i)
+        {
+            const auto& element = elements[i];
+            const auto& facetsInElement = topology->getTrianglesInTetrahedron(i);
+            assert(facetsInElement.size() == NumberTrianglesInTetrahedron);
+
+            const auto center = this->elementCenter(position, element);
+
+            for (std::size_t j = 0; j < NumberTrianglesInTetrahedron; ++j)
+            {
+                const auto faceId = facetsInElement[j];
+                std::size_t k {};
+                for (const auto vertexId : facets[faceId])
+                {
+                    const auto p = this->applyElementSpace(position[vertexId], center);
+                    renderedPoints[j][i * sofa::geometry::Triangle::NumberOfNodes + k] = sofa::type::toVec3(p);
+                    ++k;
+                }
+            }
+        }
+
+        for (std::size_t j = 0; j < NumberTrianglesInTetrahedron; ++j)
+        {
+            drawTool->drawTriangles(renderedPoints[j], colors[j]);
+        }
+    }
 };
 
 template<>
@@ -122,21 +209,61 @@ struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Hexahedron>
     };
 
 private:
+    template<class PositionContainer>
     void doDraw(
         sofa::helper::visual::DrawTool* drawTool,
-        const type::vector<type::Vec3>& position,
+        const PositionContainer& position,
         sofa::core::topology::BaseMeshTopology* topology,
-        const ColorContainer& colors);
+        const ColorContainer& colors)
+    {
+        if (!topology)
+            return;
+
+        const auto& elements = topology->getHexahedra();
+        const auto& facets = topology->getQuads();
+
+        for ( auto& p : renderedPoints)
+        {
+            p.resize(elements.size() * sofa::geometry::Quad::NumberOfNodes);
+        }
+
+        std::size_t renderedPointId {};
+        for (sofa::Size i = 0; i < elements.size(); ++i)
+        {
+            const auto& element = elements[i];
+            const auto& facetsInElement = topology->getQuadsInHexahedron(i);
+            assert(facetsInElement.size() == NumberTrianglesInTetrahedron);
+
+            const auto center = this->elementCenter(position, element);
+
+            for (std::size_t j = 0; j < NumberQuadsInHexahedron; ++j)
+            {
+                const auto faceId = facetsInElement[j];
+                std::size_t k {};
+                for (const auto vertexId : facets[faceId])
+                {
+                    const auto p = this->applyElementSpace(position[vertexId], center);
+                    renderedPoints[j][i * sofa::geometry::Quad::NumberOfNodes + k] = sofa::type::toVec3(p);
+                    ++k;
+                }
+            }
+        }
+
+        for (std::size_t j = 0; j < NumberQuadsInHexahedron; ++j)
+        {
+            drawTool->drawQuads(renderedPoints[j], colors[j]);
+        }
+    }
 };
 
 class SOFA_CORE_API DrawMesh
 {
 public:
 
-    template<class ElementType>
+    template<class ElementType, class PositionContainer>
     void drawElements(
         sofa::helper::visual::DrawTool* drawTool,
-        const type::vector<type::Vec3>& position,
+        const PositionContainer& position,
         sofa::core::topology::BaseMeshTopology* topology,
         const typename DrawElementMesh<ElementType>::ColorContainer& colors = DrawElementMesh<ElementType>::defaultColors)
     {
@@ -145,10 +272,36 @@ public:
 
     void setElementSpace(SReal elementSpace);
 
-    void drawSurface(sofa::helper::visual::DrawTool* drawTool, const type::vector<type::Vec3>& position, sofa::core::topology::BaseMeshTopology* topology);
-    void drawVolume(sofa::helper::visual::DrawTool* drawTool, const type::vector<type::Vec3>& position, sofa::core::topology::BaseMeshTopology* topology);
+    template<class PositionContainer>
+    void drawSurface(sofa::helper::visual::DrawTool* drawTool, const PositionContainer& position, sofa::core::topology::BaseMeshTopology* topology)
+    {
+        drawElements<sofa::geometry::Triangle>(drawTool, position, topology);
+    }
 
-    void draw(sofa::helper::visual::DrawTool* drawTool, const type::vector<type::Vec3>& position, sofa::core::topology::BaseMeshTopology* topology);
+    template<class PositionContainer>
+    void drawVolume(sofa::helper::visual::DrawTool* drawTool, const PositionContainer& position, sofa::core::topology::BaseMeshTopology* topology)
+    {
+        drawElements<sofa::geometry::Tetrahedron>(drawTool, position, topology);
+        drawElements<sofa::geometry::Hexahedron>(drawTool, position, topology);
+    }
+
+    template<class PositionContainer>
+    void draw(sofa::helper::visual::DrawTool* drawTool, const PositionContainer& position, sofa::core::topology::BaseMeshTopology* topology)
+    {
+        if (!topology)
+        {
+            return;
+        }
+
+        const auto hasTetra = topology && !topology->getTetrahedra().empty();
+        const auto hasHexa = topology && !topology->getHexahedra().empty();
+
+        if (!hasTetra && !hasHexa)
+        {
+            drawSurface(drawTool, position, topology);
+        }
+        drawVolume(drawTool, position, topology);
+    }
 
 private:
     std::tuple<
