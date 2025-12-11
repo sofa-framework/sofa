@@ -41,4 +41,4 @@ jobs:
         env:
           SOFA_BUILD_TYPE: ${{ matrix.build_type }}
         run: |
-          pixi run -e ${{ matrix.environment }} runSofa-batch
+          pixi run -e ${{ matrix.environment }} runSofa -g batch
