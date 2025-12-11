@@ -36,6 +36,48 @@ BaseMeshTopology::BaseMeshTopology()
     addAlias(&fileTopology,"fileTopology");
 }
 
+template <>
+Size BaseMeshTopology::getNbElements<geometry::Edge>()
+{
+    return getNbEdges();
+}
+
+template <>
+Size BaseMeshTopology::getNbElements<geometry::Triangle>()
+{
+    return getNbTriangles();
+}
+
+template <>
+Size BaseMeshTopology::getNbElements<geometry::Quad>()
+{
+    return getNbQuads();
+}
+
+template <>
+Size BaseMeshTopology::getNbElements<geometry::Tetrahedron>()
+{
+    return getNbTetrahedra();
+}
+
+template <>
+Size BaseMeshTopology::getNbElements<geometry::Hexahedron>()
+{
+    return getNbHexahedra();
+}
+
+template <>
+Size BaseMeshTopology::getNbElements<geometry::Prism>()
+{
+    return getNbPrisms();
+}
+
+template <>
+Size BaseMeshTopology::getNbElements<geometry::Pyramid>()
+{
+    return getNbPyramids();
+}
+
 /// Returns the set of edges adjacent to a given vertex.
 const BaseMeshTopology::EdgesAroundVertex& BaseMeshTopology::getEdgesAroundVertex(PointID)
 {
