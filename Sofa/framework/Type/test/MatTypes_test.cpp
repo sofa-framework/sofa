@@ -418,3 +418,28 @@ TEST(MatTypesTest, assignFromPtr)
     EXPECT_TRUE(comp);
 }
 
+TEST(MatTypesTest, determinant1x1)
+{
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<1,1,SReal>::Identity()), 1_sreal);
+
+    sofa::type::Mat<1,1,SReal> a{{{4.}}};
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(a), 4_sreal);
+}
+
+TEST(MatTypesTest, determinant2x2)
+{
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(Matrix2::Identity()), 1_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<2,2,SReal>{{1, 2}, {3, 4}}), -2_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<2,2,SReal>{{2, 0}, {0, 2}}), 4_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<2,2,SReal>{{0, 1}, {1, 0}}), -1_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<2,2,SReal>{{-1, 2}, {3, 4}}), -10_sreal);
+}
+
+TEST(MatTypesTest, determinant3x3)
+{
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(Matrix3::Identity()), 1_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<3,3,SReal>{{2, 0, 0}, {0, 3, 0}, {0, 0, 4}}), 24_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<3,3,SReal>{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}), 0_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<3,3,SReal>{{0, 1, 0}, {0, 0, 1}, {1, 0, 0}}), 1_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<3,3,SReal>{{1, 1, 0}, {1, 0, 1}, {0, 1, 1}}), -2_sreal);
+}

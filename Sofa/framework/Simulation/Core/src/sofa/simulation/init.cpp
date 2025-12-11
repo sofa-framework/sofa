@@ -24,7 +24,7 @@
 #include <sofa/core/init.h>
 #include <sofa/helper/init.h>
 
-#include <sofa/simulation/MainTaskSchedulerRegistry.h>
+#include <sofa/simulation/task/MainTaskSchedulerRegistry.h>
 
 #include <sofa/core/ObjectFactory.h>
 
