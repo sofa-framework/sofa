@@ -35,7 +35,7 @@
 
 //VERY IMPORTANT FOR GRAPHS
 #include <sofa/helper/map.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/TopologyAccessor.h>
 
 #include <type_traits>
 
@@ -62,10 +62,10 @@ template <class DataTypes, class TMassType>
 * @tparam   GeometricalTypes type of the geometry, i.e type of the state associated with the topology (if the topology and the mass relates to the same state, this will be the same as DataTypes)
 */
 template <class DataTypes, class GeometricalTypes = DataTypes>
-class MeshMatrixMass : public core::behavior::Mass<DataTypes>
+class MeshMatrixMass : public core::behavior::Mass<DataTypes>, public virtual core::behavior::TopologyAccessor
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(MeshMatrixMass,DataTypes, GeometricalTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE2(MeshMatrixMass,DataTypes, GeometricalTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes), core::behavior::TopologyAccessor);
 
     using TMassType = typename sofa::component::mass::MassType<DataTypes>::type;
 
@@ -109,8 +109,6 @@ public:
     Data< bool >         d_printMass; ///< Boolean to print the mass
     Data< std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of the controlled potential
 
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<MeshMatrixMass<DataTypes, GeometricalTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
     /// Link to be set to the MechanicalObject associated with the geometry
     SingleLink<MeshMatrixMass<DataTypes, GeometricalTypes>, sofa::core::behavior::MechanicalState<GeometricalTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_geometryState;
 
