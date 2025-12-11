@@ -63,7 +63,7 @@ protected:
     }
 
     template<class PositionContainer, class ElementType>
-    static PositionContainer::value_type elementCenter(const PositionContainer& position, const ElementType& element)
+    static typename PositionContainer::value_type elementCenter(const PositionContainer& position, const ElementType& element)
     {
         typename PositionContainer::value_type center{};
         for (sofa::Size vId = 0; vId < element.size(); ++vId)
