@@ -50,6 +50,7 @@ set(SOURCE_FILES
     ${SOFAGUICOMMON_ROOT}/FilesRecentlyOpenedManager.cpp
     ${SOFAGUICOMMON_ROOT}/GUIManager.cpp
     ${SOFAGUICOMMON_ROOT}/MouseOperations.cpp
+    ${SOFAGUICOMMON_ROOT}/OperationFactory.cpp
     ${SOFAGUICOMMON_ROOT}/PickHandler.cpp
     ${SOFAGUICOMMON_ROOT}/ViewerFactory.cpp
     ${SOFAGUICOMMON_ROOT}/ArgumentParser.cpp
