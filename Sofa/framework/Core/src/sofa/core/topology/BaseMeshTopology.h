@@ -121,6 +121,18 @@ public:
     virtual Size getNbPrisms()                  { return Size(getPrisms().size()); }
     virtual Size getNbPyramids()                { return Size(getPyramids().size()); }
 
+    /**
+     * @brief Returns the number of elements of a specific type
+     * @tparam ElementType The type of element (e.g., sofa::geometry::Triangle,
+     * sofa::geometry::Tetrahedron)
+     *
+     * Example:
+     * @code
+     * sofa::core::topology::BaseMeshTopology* topology = ...;
+     * Size nbTriangles = topology->getNbElements<sofa::geometry::Triangle>();
+     * Size nbTetrahedra = topology->getNbElements<sofa::geometry::Tetrahedron>();
+     * @endcode
+     */
     template<class ElementType>
     Size getNbElements();
 
