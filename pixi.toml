@@ -59,6 +59,12 @@ PIXI_CURRENT_PLATFORM = "osx-arm64"
 [target.win-64.activation.env]
 PIXI_CURRENT_PLATFORM = "win-64"
 
+# Use clang on GNU/Linux
+[feature.clang]
+platforms = ["linux-64"]
+activation = { env = { CC = "clang", CXX = "clang++" } }
+dependencies = { clangxx = "*" }
+
 [feature.plugin-sofa-python3]
 dependencies = { numpy = ">=1.22.0", pybind11 = ">=2.3.0" }
 activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOFA_FETCH_SOFAPYTHON3=ON -DPython_EXECUTABLE=$SOFA_PYTHON_EXECUTABLE -DPython_FIND_STRATEGY=LOCATION" } }
@@ -292,6 +298,12 @@ conda-core = { features = ["presets-conda-core"] }
 minimal = { features = ["presets-minimal"] }
 minimal-dev = { features = ["presets-minimal-dev"] }
 standard = { features = [
+  "presets-standard",
+  "plugin-sofa-python3",
+  "presets-defaultGUI",
+  "python-supported"] }
+standard-clang = { features = [
+  "clang",
   "presets-standard",
   "plugin-sofa-python3",
   "presets-defaultGUI",
