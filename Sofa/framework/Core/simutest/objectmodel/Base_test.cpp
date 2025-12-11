@@ -36,6 +36,7 @@ using sofa::defaulttype::Rigid3Types;
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
 
+
 namespace customns
 {
 class CustomBaseObject : public sofa::core::objectmodel::BaseComponent
@@ -122,3 +123,59 @@ TEST_F(Base_test , testGetClassName)
     EXPECT_EQ(o.getClass()->className, "CustomBaseObject");
 }
 
+TEST_F(Base_test, testSaveSnapshot)
+{
+    const std::string scene = R"(
+        <?xml version='1.0'?>
+        <Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >
+            <RequiredPlugin name='Sofa.Component.StateContainer'/>
+            <DefaultAnimationLoop />
+            <DefaultVisualManagerLoop />
+            <Node name='child1'>
+                <MechanicalObject />
+                <Node name='child2'>
+                </Node>
+            </Node>
+        </Node>
+    )";
+
+    SceneInstance c("xml", scene) ;
+    c.initScene() ;
+
+    Node* root = c.root.get() ;
+    
+    sofa::core::objectmodel::BaseObject* Obj = root->getTreeObject<sofa::core::objectmodel::BaseObject>();
+    std::vector<sofa::core::objectmodel::BaseObject*> vObj = root->getTreeObjects<sofa::core::objectmodel::BaseObject>();
+
+    // un seul obj
+    // std::cout << "Obj std::cout -> " << Obj->getName() << std::endl;
+    sofa::core::objectmodel::Base* BaseSnap;
+    // BaseSnap->saveSnapshot<BaseObject>(Obj);
+
+    for (auto* comp : vObj)
+    {
+        std::cout << "******************Nouvelle objet******************"<< std::endl;
+        BaseSnap->saveSnapshot<BaseObject>(comp);
+        std::cout << " "<< std::endl;
+        std::cout << " "<< std::endl;
+        std::cout << " "<< std::endl;
+        std::cout << " "<< std::endl;
+        std::cout << " "<< std::endl;
+        std::cout << " "<< std::endl;
+        
+    }
+
+    
+    // for(BaseObject* tree : root->getTreeObjects())
+    // {
+    //     std::cout << tree->getClassName() << std::endl;
+    //      
+    // }
+
+    
+    // std::vector<std::string> tree ;
+    // root->getTreeObject(tree) ;
+
+    // sofa::core::objectmodel::Base* sBase;
+    // sBase->saveSnapshot(RequiredPlugin);
+}

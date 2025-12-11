@@ -40,6 +40,8 @@
 #include <sofa/core/IntrusiveObject.h>
 #include <sofa/type/fwd.h>
 
+#include <sstream>
+
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
 virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
 virtual       CLASSNAME* to##CLASSNAME()       override { return this; }
@@ -355,6 +357,46 @@ public:
     bool isComponentStateInvalid() const { return d_componentState.getValue() == ComponentState::Invalid; }
 
     ///@}
+
+
+public :
+
+    struct SnapshotContainer
+    {
+        std::string dataname;
+        
+        std::string datavalue;
+    };
+
+    template<class T>
+    void saveSnapshot(T* component)
+    {
+        VecData datafield = component->getDataFields();
+        VecLink componentlinks = component->getLinks();
+        int i = 1;
+        // À partir de chq composant, trouver chaque data possible
+        for (auto* data : datafield)
+        {
+            /// ReadAccessor data ? 
+            std::cout << "getName : " << (*data).getName() << std::endl;
+            std::cout << "getValueTypeString : " << (*data).getValueTypeString() << std::endl;
+            std::cout << "getValueString : " << (*data).getValueString() << std::endl;
+            std::cout << "getHelp : " << (*data).getHelp() << std::endl;
+            std::cout << "============================================" << std::endl;
+            i+=1;
+        }
+
+        // for (auto* links : componentlinks)
+        // {
+        //     /// ReadAccessor pour les links ?
+
+        // }
+        
+        SnapshotContainer snapContainer;
+
+        /// Tout regrouper dans le container
+
+    }
 
 
 protected:
