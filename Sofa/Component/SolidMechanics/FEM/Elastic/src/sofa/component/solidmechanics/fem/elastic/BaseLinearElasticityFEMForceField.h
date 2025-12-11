@@ -40,7 +40,7 @@ public:
     using VecReal = typename DataTypes::VecReal;
     using Real = typename DataTypes::Real;
 
-    SOFA_CLASS(SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), core::behavior::TopologyAccessor);
 
     Data<VecReal > d_poissonRatio; ///< FEM Poisson Ratio in Hooke's law [0,0.5[
     Data<VecReal > d_youngModulus; ///< FEM Young's Modulus in Hooke's law

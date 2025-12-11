@@ -42,7 +42,7 @@ template<class DataTypes>
 class QuadBendingFEMForceField : public core::behavior::ForceField<DataTypes>, public virtual core::behavior::TopologyAccessor
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(QuadBendingFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(QuadBendingFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), core::behavior::TopologyAccessor);
 
     typedef core::behavior::ForceField<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
