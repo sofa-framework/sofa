@@ -66,7 +66,7 @@ struct BaseDrawMesh
         const ColorContainer& colors = Derived::defaultColors)
     {
         const auto totalNbElements = topology->getNbElements<typename Derived::ElementType>();
-        const auto elementsToDraw = std::ranges::iota_view(0, totalNbElements);
+        const auto elementsToDraw = std::ranges::iota_view(static_cast<decltype(totalNbElements)>(0), totalNbElements);
         drawSomeElements(drawTool, position, topology, elementsToDraw, colors);
     }
 
