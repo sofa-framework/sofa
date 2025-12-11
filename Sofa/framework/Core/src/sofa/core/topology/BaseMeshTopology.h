@@ -121,6 +121,9 @@ public:
     virtual Size getNbPrisms()                  { return Size(getPrisms().size()); }
     virtual Size getNbPyramids()                { return Size(getPyramids().size()); }
 
+    template<class ElementType>
+    Size getNbElements();
+
     virtual const Edge getEdge(EdgeID i)             { return getEdges()[i]; }
     virtual const Triangle getTriangle(TriangleID i) { return getTriangles()[i]; }
     virtual const Quad getQuad(QuadID i)             { return getQuads()[i]; }

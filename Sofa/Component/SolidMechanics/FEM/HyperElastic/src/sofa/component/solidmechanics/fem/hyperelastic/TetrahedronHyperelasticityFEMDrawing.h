@@ -96,17 +96,28 @@ void selectColors(const std::string& materialName, sofa::type::RGBAColor& color1
     }
 }
 
+template <class DataTypes, class IndicesContainer>
+void drawHyperelasticTets(const core::visual::VisualParams* vparams,
+                          const typename DataTypes::VecCoord& x,
+                          core::topology::BaseMeshTopology* topology,
+                          const std::string& materialName,
+                          const IndicesContainer& indices)
+{
+    std::array<sofa::type::RGBAColor, 4> colors;
+    selectColors<DataTypes>(materialName, colors[0], colors[1], colors[2], colors[3]);
+
+    core::visual::DrawElementMesh<sofa::geometry::Tetrahedron> drawer;
+    drawer.drawSomeElements(vparams->drawTool(), x, topology, indices, colors);
+}
+
 template <class DataTypes>
 void drawHyperelasticTets(const core::visual::VisualParams* vparams,
                           const typename DataTypes::VecCoord& x,
                           core::topology::BaseMeshTopology* topology,
                           const std::string& materialName)
 {
-    std::array<sofa::type::RGBAColor, 4> colors;
-    selectColors<DataTypes>(materialName, colors[0], colors[1], colors[2], colors[3]);
-
-    core::visual::DrawElementMesh<sofa::geometry::Tetrahedron> drawer;
-    drawer.draw(vparams->drawTool(), x, topology, colors);
+    const auto indices = std::ranges::iota_view(static_cast<sofa::Size>(0), topology->getNbTetrahedra());
+    drawHyperelasticTets<DataTypes>(vparams, x, topology, materialName, indices);
 }
 
 

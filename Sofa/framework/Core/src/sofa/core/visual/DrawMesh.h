@@ -26,6 +26,8 @@
 #include <sofa/core/topology/Topology.h>
 #include <sofa/helper/visual/DrawTool.h>
 
+#include <ranges>
+
 namespace sofa::core::visual
 {
 
@@ -38,10 +40,23 @@ struct BaseDrawMesh
     SReal elementSpace { 0.125_sreal };
 
     template<class PositionContainer>
-    void draw(
+    void drawAllElements(
         sofa::helper::visual::DrawTool* drawTool,
         const PositionContainer& position,
         sofa::core::topology::BaseMeshTopology* topology,
+        const ColorContainer& colors = Derived::defaultColors)
+    {
+        const auto totalNbElements = topology->getNbElements<typename Derived::ElementType>();
+        const auto elementsToDraw = std::ranges::iota_view(0, totalNbElements);
+        drawSomeElements(drawTool, position, topology, elementsToDraw, colors);
+    }
+
+    template<class PositionContainer, class IndicesContainer>
+    void drawSomeElements(
+        sofa::helper::visual::DrawTool* drawTool,
+        const PositionContainer& position,
+        sofa::core::topology::BaseMeshTopology* topology,
+        const IndicesContainer& elementIndices,
         const ColorContainer& colors = Derived::defaultColors)
     {
         if (!drawTool)
@@ -52,7 +67,7 @@ struct BaseDrawMesh
         const auto stateLifeCycle = drawTool->makeStateLifeCycle();
         drawTool->disableLighting();
 
-        static_cast<Derived&>(*this).doDraw(drawTool, position, topology, colors);
+        static_cast<Derived&>(*this).doDraw(drawTool, position, topology, elementIndices, colors);
     }
 
 protected:
@@ -84,6 +99,7 @@ template<>
 struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Triangle>
     : public BaseDrawMesh<DrawElementMesh<sofa::geometry::Triangle>, 3>
 {
+    using ElementType = sofa::geometry::Triangle;
     friend BaseDrawMesh;
     static constexpr ColorContainer defaultColors {
         sofa::type::RGBAColor::green(),
@@ -92,11 +108,12 @@ struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Triangle>
     };
 
 private:
-    template<class PositionContainer>
+    template<class PositionContainer, class IndicesContainer>
     void doDraw(
         sofa::helper::visual::DrawTool* drawTool,
         const PositionContainer& position,
         sofa::core::topology::BaseMeshTopology* topology,
+        const IndicesContainer& elementIndices,
         const ColorContainer& colors)
     {
         if (!topology)
@@ -104,14 +121,14 @@ private:
 
         const auto& elements = topology->getTriangles();
 
-        const auto size = (elements.size() / NumberColors + 1) * sofa::geometry::Triangle::NumberOfNodes;
+        const auto size = (elementIndices.size() / NumberColors + 1) * sofa::geometry::Triangle::NumberOfNodes;
         for ( auto& p : renderedPoints)
         {
             p.resize(size);
         }
 
         std::array<std::size_t, NumberColors> renderedPointId {};
-        for (sofa::Size i = 0; i < elements.size(); ++i)
+        for (auto i : elementIndices)
         {
             const auto& element = elements[i];
 
@@ -135,6 +152,7 @@ template<>
 struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Tetrahedron>
     : public BaseDrawMesh<DrawElementMesh<sofa::geometry::Tetrahedron>, 4>
 {
+    using ElementType = sofa::geometry::Tetrahedron;
     friend BaseDrawMesh;
     static constexpr std::size_t NumberTrianglesInTetrahedron = 4;
 
@@ -146,10 +164,11 @@ struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Tetrahedron>
     };
 
 private:
-    template<class PositionContainer>
+    template<class PositionContainer, class IndicesContainer>
     void doDraw(sofa::helper::visual::DrawTool* drawTool,
         const PositionContainer& position,
         sofa::core::topology::BaseMeshTopology* topology,
+        const IndicesContainer& elementIndices,
         const ColorContainer& colors)
     {
         if (!topology)
@@ -160,11 +179,11 @@ private:
 
         for ( auto& p : renderedPoints)
         {
-            p.resize(elements.size() * sofa::geometry::Triangle::NumberOfNodes);
+            p.resize(elementIndices.size() * sofa::geometry::Triangle::NumberOfNodes);
         }
 
         std::size_t renderedPointId {};
-        for (sofa::Size i = 0; i < elements.size(); ++i)
+        for (auto i : elementIndices)
         {
             const auto& element = elements[i];
             const auto& facetsInElement = topology->getTrianglesInTetrahedron(i);
@@ -196,6 +215,7 @@ template<>
 struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Hexahedron>
     : public BaseDrawMesh<DrawElementMesh<sofa::geometry::Hexahedron>, 6>
 {
+    using ElementType = sofa::geometry::Hexahedron;
     friend BaseDrawMesh;
     static constexpr std::size_t NumberQuadsInHexahedron = 6;
 
@@ -209,11 +229,12 @@ struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Hexahedron>
     };
 
 private:
-    template<class PositionContainer>
+    template<class PositionContainer, class IndicesContainer>
     void doDraw(
         sofa::helper::visual::DrawTool* drawTool,
         const PositionContainer& position,
         sofa::core::topology::BaseMeshTopology* topology,
+        const IndicesContainer& elementIndices,
         const ColorContainer& colors)
     {
         if (!topology)
@@ -224,11 +245,11 @@ private:
 
         for ( auto& p : renderedPoints)
         {
-            p.resize(elements.size() * sofa::geometry::Quad::NumberOfNodes);
+            p.resize(elementIndices.size() * sofa::geometry::Quad::NumberOfNodes);
         }
 
         std::size_t renderedPointId {};
-        for (sofa::Size i = 0; i < elements.size(); ++i)
+        for (auto i : elementIndices)
         {
             const auto& element = elements[i];
             const auto& facetsInElement = topology->getQuadsInHexahedron(i);
@@ -267,7 +288,7 @@ public:
         sofa::core::topology::BaseMeshTopology* topology,
         const typename DrawElementMesh<ElementType>::ColorContainer& colors = DrawElementMesh<ElementType>::defaultColors)
     {
-        std::get<DrawElementMesh<ElementType>>(m_meshes).draw(drawTool, position, topology, colors);
+        std::get<DrawElementMesh<ElementType>>(m_meshes).drawAllElements(drawTool, position, topology, colors);
     }
 
     void setElementSpace(SReal elementSpace);
