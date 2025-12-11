@@ -1358,7 +1358,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
             d_drawColor2.getValue(),
             d_drawColor3.getValue(),
             d_drawColor4.getValue()};
-        m_drawMesh.draw(vparams->drawTool(), x, this->l_topology.get(), colors);
+        m_drawMesh.drawAllElements(vparams->drawTool(), x, this->l_topology.get(), colors);
     }
 }
 

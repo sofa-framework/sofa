@@ -552,7 +552,7 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 
     const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
-    m_drawMesh.draw(vparams->drawTool(), x, this->l_topology.get());
+    m_drawMesh.drawAllElements(vparams->drawTool(), x, this->l_topology.get());
 }
  
 

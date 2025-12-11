@@ -667,7 +667,7 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         vparams->drawTool()->setPolygonMode(0, true);
     }
 
-    drawMesh.draw(vparams->drawTool(), x, this->l_topology.get());
+    m_drawMesh.drawAllElements(vparams->drawTool(), x, this->l_topology.get());
 }
 
 } // namespace sofa::component::solidmechanics::fem::elastic

@@ -1220,8 +1220,8 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);
 
-    drawMesh.elementSpace = d_drawPercentageOffset.getValue();
-    drawMesh.draw(vparams->drawTool(), x, this->l_topology.get());
+    m_drawMesh.elementSpace = d_drawPercentageOffset.getValue();
+    m_drawMesh.drawAllElements(vparams->drawTool(), x, this->l_topology.get());
 }
 
 
