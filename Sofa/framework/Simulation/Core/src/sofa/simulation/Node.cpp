@@ -508,19 +508,19 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
         }
         else
         {
-            std::string name;
+            std::string nameStr;
             if (pathStr[ppos] == '\'')
             {
                 std::size_t p2pos = pathStr.find('\'', ppos + 1);
                 if (p2pos == std::string::npos) p2pos = psize;
-                name = pathStr.substr(ppos, p2pos - ppos+1);
+                nameStr = pathStr.substr(ppos, p2pos - ppos+1);
                 ppos = p2pos + 2;
             }
             else
             {
                 std::size_t p2pos = pathStr.find('/',ppos);
                 if (p2pos == std::string::npos) p2pos = psize;
-                name = pathStr.substr(ppos,p2pos-ppos);
+                nameStr = pathStr.substr(ppos,p2pos-ppos);
                 ppos = p2pos+1;
             }
             if (master)
