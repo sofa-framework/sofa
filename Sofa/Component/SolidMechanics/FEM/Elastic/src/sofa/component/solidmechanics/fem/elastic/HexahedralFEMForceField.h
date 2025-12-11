@@ -197,7 +197,7 @@ protected:
 
     type::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
 
-    core::visual::DrawElementMesh<sofa::geometry::Hexahedron> drawMesh;
+    core::visual::DrawElementMesh<sofa::geometry::Hexahedron> m_drawMesh;
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_CPP)
