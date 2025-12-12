@@ -116,7 +116,7 @@ void drawHyperelasticTets(const core::visual::VisualParams* vparams,
                           core::topology::BaseMeshTopology* topology,
                           const std::string& materialName)
 {
-    const auto indices = std::ranges::iota_view(static_cast<sofa::Size>(0), topology->getNbTetrahedra());
+    const auto indices = sofa::helper::IotaView(static_cast<sofa::Size>(0), topology->getNbTetrahedra());
     drawHyperelasticTets<DataTypes>(vparams, x, topology, materialName, indices);
 }
 
