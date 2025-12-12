@@ -17,10 +17,10 @@ on:
         - '["sofa-ci-dev-ubuntu2204-2"]'
         - '["sofa-ci-dev-ubuntu2204-3"]'
         - '["sofa-ci-dev-ubuntu2204-4"]'
-        - '["consortium-macos-2"]'
-        - '["consortium-macos-3"]'
-        - '["sofa-ci-dev-ubuntu2204-0","sofa-ci-dev-ubuntu2204-1","sofa-ci-dev-ubuntu2204-2","sofa-ci-dev-ubuntu2204-3","sofa-ci-dev-ubuntu2204-4","consortium-macos-2","consortium-macos-3"]'
-        default: '["sofa-ci-dev-ubuntu2204-0","sofa-ci-dev-ubuntu2204-1","sofa-ci-dev-ubuntu2204-2","sofa-ci-dev-ubuntu2204-3","sofa-ci-dev-ubuntu2204-4","consortium-macos-2","consortium-macos-3"]'
+        - '["consortium-macos-2-1"]'
+        - '["consortium-macos-3-1"]'
+        - '["sofa-ci-dev-ubuntu2204-0","sofa-ci-dev-ubuntu2204-1","sofa-ci-dev-ubuntu2204-2","sofa-ci-dev-ubuntu2204-3","sofa-ci-dev-ubuntu2204-4","consortium-macos-2-1","consortium-macos-3-1"]'
+        default: '["sofa-ci-dev-ubuntu2204-0","sofa-ci-dev-ubuntu2204-1","sofa-ci-dev-ubuntu2204-2","sofa-ci-dev-ubuntu2204-3","sofa-ci-dev-ubuntu2204-4","consortium-macos-2-1","consortium-macos-3-1"]'
 
 
 
@@ -62,7 +62,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["sofa-ci-dev-ubuntu2204-0","sofa-ci-dev-ubuntu2204-1","sofa-ci-dev-ubuntu2204-2","sofa-ci-dev-ubuntu2204-3","sofa-ci-dev-ubuntu2204-4","consortium-macos-2","consortium-macos-3"]
+        os: ["sofa-ci-dev-ubuntu2204-0","sofa-ci-dev-ubuntu2204-1","sofa-ci-dev-ubuntu2204-2","sofa-ci-dev-ubuntu2204-3","sofa-ci-dev-ubuntu2204-4","consortium-macos-2-1","consortium-macos-3-1"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Clear ccache 
