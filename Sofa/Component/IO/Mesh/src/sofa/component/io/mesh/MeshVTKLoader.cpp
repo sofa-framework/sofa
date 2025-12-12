@@ -51,7 +51,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using sofa::core::objectmodel::ComponentState;
 using sofa::core::objectmodel::BaseData ;
-using sofa::core::objectmodel::BaseObject ;
+
 using sofa::type::Vec3 ;
 using sofa::type::Vec ;
 using std::istringstream;

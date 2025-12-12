@@ -29,7 +29,7 @@ using std::string;
 using sofa::testing::BaseSimulationTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
