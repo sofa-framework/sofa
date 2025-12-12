@@ -51,11 +51,7 @@ public:
     typedef std::map< std::string, OperationCreator* > RegisterStorage;
     RegisterStorage registry;
 
-    static OperationFactory* getInstance()
-    {
-        static OperationFactory instance;
-        return &instance;
-    }
+    static OperationFactory* getInstance();
 
     static std::string GetDescription(const std::string &name)
     {
