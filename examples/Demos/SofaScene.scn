@@ -42,7 +42,7 @@
 
     <!-- Header of the simulation -->
     <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" parallelODESolving="true" parallelCollisionDetectionAndFreeMotion="true"/>
-    <ProjectedGaussSeidelConstraintSolver maxIterations="20" multithreading='true' tolerance="1.0e-4"/>
+    <BlockGaussSeidelConstraintSolver maxIterations="20" multithreading='true' tolerance="1.0e-4"/>
 
     <!-- Definition of the collision pipeline -->
     <CollisionPipeline name="CollisionPipeline" />
