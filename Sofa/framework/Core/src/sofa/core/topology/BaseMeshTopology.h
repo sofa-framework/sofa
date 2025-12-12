@@ -339,4 +339,15 @@ public:
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
+
+template<> SOFA_CORE_API Size BaseMeshTopology::getNbElements<geometry::Edge>();
+template<> SOFA_CORE_API Size BaseMeshTopology::getNbElements<geometry::Triangle>();
+template<> SOFA_CORE_API Size BaseMeshTopology::getNbElements<geometry::Quad>();
+template<> SOFA_CORE_API Size BaseMeshTopology::getNbElements<geometry::Tetrahedron>();
+template<> SOFA_CORE_API Size BaseMeshTopology::getNbElements<geometry::Hexahedron>();
+template<> SOFA_CORE_API Size BaseMeshTopology::getNbElements<geometry::Prism>();
+template<> SOFA_CORE_API Size BaseMeshTopology::getNbElements<geometry::Pyramid>();
+
+
+
 } // namespace sofa::core::topology
