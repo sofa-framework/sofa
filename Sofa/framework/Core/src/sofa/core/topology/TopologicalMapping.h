@@ -145,14 +145,14 @@ public:
             return false;
         }
 
-        if (dynamic_cast<BaseObject*>(stin) == dynamic_cast<BaseObject*>(stout))
+        if (dynamic_cast<BaseComponent*>(stin) == dynamic_cast<BaseComponent*>(stout))
         {
             // we should refuse to create mappings with the same input and output model, which may happen if a State object is missing in the child node
             arg->logError("Both the input mesh and the output mesh points to the same mesh topology ('"+stin->getName()+"').");
             return false;
         }
 
-        return BaseObject::canCreate(obj, context, arg);
+        return BaseComponent::canCreate(obj, context, arg);
     }
 
     /// Construction method called by ObjectFactory.

@@ -28,7 +28,7 @@ namespace sofa::core
 
 template <class DataTypes>
 DataExchange<DataTypes>::DataExchange( const char* from, const char* to )
-    : BaseObject()
+    : BaseComponent()
     , mSource(initData(&mSource,"from","source object to copy"))
     , mDestination(initData(&mDestination,"to","destination object to copy"))
     , mSourcePtr(nullptr)

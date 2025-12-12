@@ -29,7 +29,6 @@ using std::string;
 using sofa::core::execparams::defaultInstance;
 
 #include<sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
 
 #include <sofa/component/collision/detection/algorithm/CollisionPipeline.h>
 using sofa::component::collision::detection::algorithm::CollisionPipeline ;
@@ -111,7 +110,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithNoAttributes()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 
@@ -133,7 +132,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingIntersection()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseComponent* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 
@@ -155,7 +154,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingBroadPhase()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseComponent* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 void TestCollisionPipeline::checkCollisionPipelineWithMissingNarrowPhase()
@@ -176,7 +175,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingNarrowPhase()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseComponent* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 void TestCollisionPipeline::checkCollisionPipelineWithMissingContactManager()
@@ -197,7 +196,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingContactManager()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseComponent* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 
 }

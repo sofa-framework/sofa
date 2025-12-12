@@ -42,7 +42,7 @@ public:
 
     void init() override
     {
-        this->core::objectmodel::BaseObject::init();
+        this->core::objectmodel::BaseComponent::init();
     }
 
 

@@ -29,7 +29,6 @@ using std::string;
 using sofa::testing::BaseTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
@@ -77,7 +76,7 @@ void checkAttributes()
     EXPECT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
+    sofa::core::objectmodel::BaseObject* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
     EXPECT_NE(lm, nullptr) ;
 
     /// List of the supported attributes the user expect to find

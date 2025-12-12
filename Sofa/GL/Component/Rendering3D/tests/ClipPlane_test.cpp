@@ -29,7 +29,6 @@ using std::string;
 using sofa::testing::BaseTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
@@ -89,7 +88,7 @@ void TestClipPlane::checkClipPlaneValidAttributes()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* clp = root->getTreeNode("Level 1")->getObject("clipplane") ;
+    sofa::core::objectmodel::BaseObject* clp = root->getTreeNode("Level 1")->getObject("clipplane") ;
     ASSERT_NE(clp, nullptr) ;
 
     /// List of the supported attributes the user expect to find
@@ -121,7 +120,7 @@ void TestClipPlane::checkClipPlaneAttributesValues(const std::string& dataname, 
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* clp = root->getTreeNode("Level 1")->getObject("clipplane") ;
+    sofa::core::objectmodel::BaseObject* clp = root->getTreeNode("Level 1")->getObject("clipplane") ;
     ASSERT_NE(clp, nullptr) ;
 
     sofa::simulation::node::unload(root);
