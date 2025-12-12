@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -366,7 +366,10 @@ void render_coordinate_frame(const CoordinateFrame& frame, const type::Vec3& cen
         rotAxis.y(),
         rotAxis.z());
 
+    // macOS seems to not allow unbinding vertex array (in compat mode at least)
+#ifndef __APPLE__
     glBindVertexArray(0);
+#endif
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
     constexpr auto gltype = (std::is_same<SReal, double>::value)?GL_DOUBLE:GL_FLOAT;
