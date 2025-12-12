@@ -7,7 +7,7 @@
     <RequiredPlugin pluginName="SofaHAPI" />
 
 	<FreeMotionAnimationLoop />
-	<ProjectedGaussSeidelConstraintSolver />
+	<BlockGaussSeidelConstraintSolver />
 
 	<CollisionPipeline depth="8" />
 	<BruteForceBroadPhase/>

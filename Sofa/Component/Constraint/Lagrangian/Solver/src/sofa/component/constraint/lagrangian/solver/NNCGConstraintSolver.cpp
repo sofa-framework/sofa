@@ -91,7 +91,7 @@ void NNCGConstraintSolver::doSolve(GenericConstraintProblem * problem , SReal ti
     sofa::type::vector<SReal> tabErrors(dimension);
 
     {
-        // perform one iteration of ProjectedGaussSeidel
+        // perform one iteration of BlockGaussSeidel
         bool constraintsAreVerified = true;
 
         std::copy_n(force, dimension, std::begin(problem->m_lam));
