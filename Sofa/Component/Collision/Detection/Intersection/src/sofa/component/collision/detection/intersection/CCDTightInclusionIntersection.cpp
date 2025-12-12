@@ -126,8 +126,6 @@ int CCDTightInclusionIntersection::computeIntersection(Cube&, Cube&, OutputVecto
 
 bool CCDTightInclusionIntersection::testIntersection(Line& e1, Line& e2, const core::collision::Intersection* currentIntersection)
 {
-    std::cout<<"testIntersection Line Line"<<std::endl;
-
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
     {
         return false;
@@ -161,8 +159,6 @@ bool CCDTightInclusionIntersection::testIntersection(Line& e1, Line& e2, const c
 
 int CCDTightInclusionIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    std::cout<<"computeIntersection Line Line"<<std::endl;
-
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
     {
         dmsg_info_when(EMIT_EXTRA_DEBUG_MESSAGE)
@@ -205,9 +201,9 @@ int CCDTightInclusionIntersection::computeIntersection(Line& e1, Line& e2, Outpu
     sofa::core::collision::DetectionOutput detection ;
     detection.elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection.id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
-    detection.point[0] = (1-baryCoords[0]) * e1.p1() + e1.p2();
-    detection.point[1] = (1-baryCoords[1]) * e2.p1() + e2.p2();
-    detection.normal = (1-baryCoords[1]) * Line2AToi + Line2BToi - ((1-baryCoords[0]) * Line1AToi + Line1BToi);
+    detection.point[0] = (1-baryCoords[0]) * e1.p1() + baryCoords[0] * e1.p2();
+    detection.point[1] = (1-baryCoords[1]) * e2.p1() + baryCoords[1] * e2.p2();
+    detection.normal = (1-baryCoords[1]) * Line2AToi + baryCoords[1] * Line2BToi - ((1-baryCoords[0]) * Line1AToi + baryCoords[0] * Line1BToi);
     detection.value = detection.normal.norm();
     detection.normal /= detection.value;
     detection.value -= maxSeparation;
@@ -218,8 +214,6 @@ int CCDTightInclusionIntersection::computeIntersection(Line& e1, Line& e2, Outpu
 
 bool CCDTightInclusionIntersection::testIntersection(Triangle& triangle, Point& point, const core::collision::Intersection* currentIntersection)
 {
-    std::cout<<"testIntersection Triangle Point"<<std::endl;
-
     if(!triangle.isActive(point.getCollisionModel()) || !point.isActive(triangle.getCollisionModel()))
     {
         return false;
