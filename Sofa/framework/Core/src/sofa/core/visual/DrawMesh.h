@@ -24,6 +24,7 @@
 #include <sofa/core/config.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/Topology.h>
+#include <sofa/helper/IotaView.h>
 #include <sofa/helper/visual/DrawTool.h>
 
 #include <ranges>
@@ -66,7 +67,7 @@ struct BaseDrawMesh
         const ColorContainer& colors = Derived::defaultColors)
     {
         const auto totalNbElements = topology->getNbElements<typename Derived::ElementType>();
-        const auto elementsToDraw = std::ranges::iota_view(static_cast<decltype(totalNbElements)>(0), totalNbElements);
+        const auto elementsToDraw = sofa::helper::IotaView(static_cast<decltype(totalNbElements)>(0), totalNbElements);
         drawSomeElements(drawTool, position, topology, elementsToDraw, colors);
     }
 
