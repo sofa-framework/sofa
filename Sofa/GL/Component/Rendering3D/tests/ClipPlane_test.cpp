@@ -89,7 +89,7 @@ void TestClipPlane::checkClipPlaneValidAttributes()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* clp = root->getTreeNode("Level 1")->getObject("clipplane") ;
+    sofa::core::objectmodel::BaseObject* clp = root->getTreeNode("Level 1")->getObject("clipplane") ;
     ASSERT_NE(clp, nullptr) ;
 
     /// List of the supported attributes the user expect to find
@@ -121,7 +121,7 @@ void TestClipPlane::checkClipPlaneAttributesValues(const std::string& dataname, 
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* clp = root->getTreeNode("Level 1")->getObject("clipplane") ;
+    sofa::core::objectmodel::BaseObject* clp = root->getTreeNode("Level 1")->getObject("clipplane") ;
     ASSERT_NE(clp, nullptr) ;
 
     sofa::simulation::node::unload(root);

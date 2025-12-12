@@ -53,11 +53,11 @@ NodeSPtr SOFA_SIMPLEAPI_API createRootNode( Simulation* s, const std::string& na
 ///@brief Create a sofa object in the provided node.
 ///The parameter "params" is for passing specific data argument to the created object including the
 ///object's type.
-sofa::core::sptr<BaseObject> SOFA_SIMPLEAPI_API createObject(NodeSPtr node, BaseObjectDescription& params);
+sofa::core::sptr<sofa::core::objectmodel::BaseObject> SOFA_SIMPLEAPI_API createObject(NodeSPtr node, BaseObjectDescription& params);
 
 ///@brief create a sofa object in the provided node of the given type.
 ///The parameter "params" is for passing specific data argument to the created object.
-sofa::core::sptr<BaseObject> SOFA_SIMPLEAPI_API createObject( NodeSPtr node, const std::string& type,
+sofa::core::sptr<sofa::core::objectmodel::BaseObject> SOFA_SIMPLEAPI_API createObject( NodeSPtr node, const std::string& type,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
 ///@brief create a child to the provided nodeof given name.

@@ -84,13 +84,13 @@ TEST_P(PathResolverToBaseObject, CheckPathToBaseObject)
     auto& t = GetParam();
     if(t[2]=="true")
     {
-        ASSERT_TRUE(PathResolver::CheckPath(node, BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
-        ASSERT_TRUE(PathResolver::CheckPaths(node, BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
+        ASSERT_TRUE(PathResolver::CheckPath(node, sofa::core::objectmodel::BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
+        ASSERT_TRUE(PathResolver::CheckPaths(node, sofa::core::objectmodel::BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
     }
     else
     {
-        ASSERT_FALSE(PathResolver::CheckPath(node, BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
-        ASSERT_FALSE(PathResolver::CheckPaths(node, BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
+        ASSERT_FALSE(PathResolver::CheckPath(node, sofa::core::objectmodel::BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
+        ASSERT_FALSE(PathResolver::CheckPaths(node, sofa::core::objectmodel::BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
     }
 }
 
@@ -111,13 +111,13 @@ TEST_F(PathResolverToBaseObject, DISABLED_CheckPathToBaseObject_tofix)
 
     if (t[2] == "true")
     {
-        ASSERT_TRUE(PathResolver::CheckPath(node, BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
-        ASSERT_TRUE(PathResolver::CheckPaths(node, BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
+        ASSERT_TRUE(PathResolver::CheckPath(node, sofa::core::objectmodel::BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
+        ASSERT_TRUE(PathResolver::CheckPaths(node, sofa::core::objectmodel::BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
     }
     else
     {
-        ASSERT_FALSE(PathResolver::CheckPath(node, BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
-        ASSERT_FALSE(PathResolver::CheckPaths(node, BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
+        ASSERT_FALSE(PathResolver::CheckPath(node, sofa::core::objectmodel::BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
+        ASSERT_FALSE(PathResolver::CheckPaths(node, sofa::core::objectmodel::BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
     }
 }
 
