@@ -227,7 +227,6 @@ private:
             p.resize(elementIndices.size() * sofa::geometry::Triangle::NumberOfNodes);
         }
 
-        std::size_t renderedPointId {};
         for (auto i : elementIndices)
         {
             const auto& element = elements[i];
