@@ -62,10 +62,10 @@ using sofa::core::ExecParams;
 
 #include <sofa/simpleapi/SimpleApi.h>
 
-class ComponentDeprecated : public BaseObject
+class ComponentDeprecated : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(ComponentDeprecated, BaseObject);
+    SOFA_CLASS(ComponentDeprecated, sofa::core::objectmodel::BaseObject);
 public:
 
 };

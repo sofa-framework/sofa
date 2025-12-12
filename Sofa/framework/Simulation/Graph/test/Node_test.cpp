@@ -55,7 +55,7 @@ TEST( Node_test, getPathName)
     const Node::SPtr root = sofa::simpleapi::createNode("A");
     const Node::SPtr B = createChild(root, "B");
     const Node::SPtr D = createChild(B, "D");
-    const BaseObject::SPtr C = core::objectmodel::New<Dummy>("C");
+    const sofa::core::objectmodel::BaseObject::SPtr C = core::objectmodel::New<Dummy>("C");
     root->addObject(C);
 
     EXPECT_STREQ(root->getPathName().c_str(), "/");
@@ -67,8 +67,8 @@ TEST( Node_test, getPathName)
 TEST(Node_test, addObject)
 {
     const sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
-    const BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
-    const BaseObject::SPtr B = core::objectmodel::New<Dummy>("B");
+    const sofa::core::objectmodel::BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
+    const sofa::core::objectmodel::BaseObject::SPtr B = core::objectmodel::New<Dummy>("B");
 
     root->addObject(A);
 
@@ -83,8 +83,8 @@ TEST(Node_test, addObject)
 TEST(Node_test, addObjectAtFront)
 {
     const sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
-    const BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
-    const BaseObject::SPtr B = core::objectmodel::New<Dummy>("B");
+    const sofa::core::objectmodel::BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
+    const sofa::core::objectmodel::BaseObject::SPtr B = core::objectmodel::New<Dummy>("B");
 
     root->addObject(A);
 
@@ -103,8 +103,8 @@ TEST(Node_test, addObjectPreventingSharedContext)
 
     const sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
 
-    const BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
-    const BaseObject::SPtr B = core::objectmodel::New<Dummy>("B");
+    const sofa::core::objectmodel::BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
+    const sofa::core::objectmodel::BaseObject::SPtr B = core::objectmodel::New<Dummy>("B");
 
     const auto child1 = sofa::simpleapi::createChild(root, "child1");
     const auto child2 = sofa::simpleapi::createChild(root, "child2");

@@ -30,11 +30,11 @@ using BaseObject [[deprecated("Use sofa::core::objectmodel::BaseObject instead."
 namespace sofa::component::sceneutility::_apiversion_
 {
 
-class SOFA_COMPONENT_SCENEUTILITY_API APIVersion : public BaseObject
+class SOFA_COMPONENT_SCENEUTILITY_API APIVersion : public sofa::core::objectmodel::BaseObject
 {
 
 public:
-    SOFA_CLASS(APIVersion, BaseObject);
+    SOFA_CLASS(APIVersion, sofa::core::objectmodel::BaseObject);
 
     const std::string& getApiLevel() ;
     void init() override ;
