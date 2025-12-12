@@ -24,7 +24,7 @@
 #include <sofa/component/sceneutility/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+using BaseObject [[deprecated("Use sofa::core::objectmodel::BaseObject instead.")]] = sofa::core::objectmodel::BaseObject;
 
 
 namespace sofa::component::sceneutility::_apiversion_

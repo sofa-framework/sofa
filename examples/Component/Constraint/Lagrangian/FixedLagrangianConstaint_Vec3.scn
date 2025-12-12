@@ -24,7 +24,7 @@
     <ConstraintAttachButtonSetting /> <!-- The presence of this component sets the mouse interaction to Lagrangian-based constraints at the GUI launch -->
 
     <FreeMotionAnimationLoop />
-    <ProjectedGaussSeidelConstraintSolver maxIterations="200" tolerance="1.0e-8"/>
+    <BlockGaussSeidelConstraintSolver maxIterations="200" tolerance="1.0e-8"/>
 
     <!-- $$$$$$$$$$$$$$$$$$$$$$ TOPOLOGY 1 $$$$$$$$$$$$$$$$$$$$$$ -->
     <Node name="BEAMVOLUME">

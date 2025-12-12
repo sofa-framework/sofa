@@ -43,7 +43,7 @@ namespace sofa::component::engine::select::boxroi
     using core::topology::BaseMeshTopology ;
     using core::behavior::MechanicalState ;
     using core::objectmodel::BaseContext ;
-    using core::objectmodel::BaseObject ;
+    using BaseObject [[deprecated("Use sofa::core::objectmodel::BaseObject instead.")]] = sofa::core::objectmodel::BaseObject;
     using core::visual::VisualParams ;
     using core::objectmodel::Event ;
     using core::ExecParams ;

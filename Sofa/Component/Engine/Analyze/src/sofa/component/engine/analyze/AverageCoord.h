@@ -38,7 +38,7 @@ namespace sofa::component::engine::analyze
  * This class computes the average of a set of Coordinates
  */
 template <class DataTypes>
-class AverageCoord : public core::DataEngine, public core::behavior::SingleStateAccessor<DataTypes>
+class AverageCoord : public core::DataEngine, public virtual core::behavior::SingleStateAccessor<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(AverageCoord,DataTypes),core::DataEngine);

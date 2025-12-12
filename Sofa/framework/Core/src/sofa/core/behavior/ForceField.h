@@ -42,7 +42,7 @@ namespace sofa::core::behavior
  *  ( df, given a displacement dx ).
  */
 template<class TDataTypes>
-class ForceField : public BaseForceField, public SingleStateAccessor<TDataTypes>
+class ForceField : public BaseForceField, public virtual SingleStateAccessor<TDataTypes>
 {
 public:
     SOFA_CLASS2(SOFA_TEMPLATE(ForceField, TDataTypes), BaseForceField, SOFA_TEMPLATE(SingleStateAccessor, TDataTypes));

@@ -23,7 +23,7 @@
 
     <!-- # Header of the simulation -->
     <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" parallelODESolving="true" parallelCollisionDetectionAndFreeMotion="true"/>
-    <ProjectedGaussSeidelConstraintSolver maxIterations="1000" tolerance="0.001" />
+    <BlockGaussSeidelConstraintSolver maxIterations="1000" tolerance="0.001" />
 
     <Node name="Box">
         <EulerImplicitSolver name="EulerImplicitScheme" />

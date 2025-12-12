@@ -134,6 +134,7 @@ public:
     bool m_showSelectedObjectSurfaces {false};
     bool m_showSelectedObjectVolumes {false};
     bool m_showSelectedObjectIndices {false};
+    type::RGBAColor m_selectionColor {type::RGBAColor::purple()};
     float m_visualScaling {0.2};
 
 protected:

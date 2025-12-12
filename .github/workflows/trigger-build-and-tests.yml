@@ -107,7 +107,7 @@ jobs:
           PYTHON=${{ github.event.inputs.python_version }}
 
           # Validate branch format (e.g., v25.06)
-          if [ [ ! "$BRANCH" =~ ^v[0-9]{2}\.[0-9]{2}$ ] && [ "$BRANCH" != "master" ] ]; then
+          if [[ ! "$SOFA_BRANCH_NAME" =~ ^v[0-9]{2}\.[0-9]{2}$ && "$SOFA_BRANCH_NAME" != "master" ]]; then
             echo "Error: Invalid branch name format: $BRANCH."
             echo "Branch name should be either master or any release branch (e.g., v25.06)"
             exit 1
@@ -179,7 +179,7 @@ jobs:
         id: export-vars
         run: |
           # Validate branch format (e.g., v25.06)
-          if [ [ ! "$SOFA_BRANCH_NAME" =~ ^v[0-9]{2}\.[0-9]{2}$ ] && [ "$SOFA_BRANCH_NAME" != "master" ] ]; then
+          if [[ ! "$SOFA_BRANCH_NAME" =~ ^v[0-9]{2}\.[0-9]{2}$ && "$SOFA_BRANCH_NAME" != "master" ]]; then
             echo "Error: Invalid branch name format: $SOFA_BRANCH_NAME."
             echo "Branch name should be either master or any release branch (e.g., v25.06)"
             exit 1

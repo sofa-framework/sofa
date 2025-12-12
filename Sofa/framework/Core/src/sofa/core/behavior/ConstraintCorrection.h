@@ -33,7 +33,7 @@ namespace sofa::core::behavior
  * Component computing constraint forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
-class ConstraintCorrection : public BaseConstraintCorrection, public SingleStateAccessor<TDataTypes>
+class ConstraintCorrection : public BaseConstraintCorrection, public virtual SingleStateAccessor<TDataTypes>
 {
 public:
     SOFA_ABSTRACT_CLASS2(SOFA_TEMPLATE(ConstraintCorrection, TDataTypes),

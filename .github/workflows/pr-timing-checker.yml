@@ -11,14 +11,14 @@ on:
 
 jobs:
 
-  check_labels:
-    name: Check labels
+  check_pr_age:
+    name: Check PR age
     runs-on: ubuntu-latest
     if: ${{ github.repository_owner == 'sofa-framework' }}
 
     steps:
-      - name: Check Labels and Age
-        id: check_labels_and_comment
+      - name: Check Age and fast-merge Label
+        id: check_age
         uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
