@@ -121,6 +121,21 @@ public:
     virtual Size getNbPrisms()                  { return Size(getPrisms().size()); }
     virtual Size getNbPyramids()                { return Size(getPyramids().size()); }
 
+    /**
+     * @brief Returns the number of elements of a specific type
+     * @tparam ElementType The type of element (e.g., sofa::geometry::Triangle,
+     * sofa::geometry::Tetrahedron)
+     *
+     * Example:
+     * @code
+     * sofa::core::topology::BaseMeshTopology* topology = ...;
+     * Size nbTriangles = topology->getNbElements<sofa::geometry::Triangle>();
+     * Size nbTetrahedra = topology->getNbElements<sofa::geometry::Tetrahedron>();
+     * @endcode
+     */
+    template<class ElementType>
+    Size getNbElements();
+
     virtual const Edge getEdge(EdgeID i)             { return getEdges()[i]; }
     virtual const Triangle getTriangle(TriangleID i) { return getTriangles()[i]; }
     virtual const Quad getQuad(QuadID i)             { return getQuads()[i]; }
@@ -324,4 +339,15 @@ public:
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
+
+template<> SOFA_CORE_API Size BaseMeshTopology::getNbElements<geometry::Edge>();
+template<> SOFA_CORE_API Size BaseMeshTopology::getNbElements<geometry::Triangle>();
+template<> SOFA_CORE_API Size BaseMeshTopology::getNbElements<geometry::Quad>();
+template<> SOFA_CORE_API Size BaseMeshTopology::getNbElements<geometry::Tetrahedron>();
+template<> SOFA_CORE_API Size BaseMeshTopology::getNbElements<geometry::Hexahedron>();
+template<> SOFA_CORE_API Size BaseMeshTopology::getNbElements<geometry::Prism>();
+template<> SOFA_CORE_API Size BaseMeshTopology::getNbElements<geometry::Pyramid>();
+
+
+
 } // namespace sofa::core::topology
