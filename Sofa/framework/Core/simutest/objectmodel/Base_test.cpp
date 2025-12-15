@@ -36,6 +36,9 @@ using sofa::defaulttype::Rigid3Types;
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
 
+#include <sofa/core/objectmodel/SnapshotFactory.h>
+using sofa::core::objectmodel::SnapshotType;
+
 
 namespace customns
 {
@@ -144,18 +147,15 @@ TEST_F(Base_test, testSaveSnapshot)
 
     Node* root = c.root.get() ;
     
-    sofa::core::objectmodel::BaseObject* Obj = root->getTreeObject<sofa::core::objectmodel::BaseObject>();
     std::vector<sofa::core::objectmodel::BaseObject*> vObj = root->getTreeObjects<sofa::core::objectmodel::BaseObject>();
 
-    // un seul obj
-    // std::cout << "Obj std::cout -> " << Obj->getName() << std::endl;
-    sofa::core::objectmodel::Base* BaseSnap;
-    // BaseSnap->saveSnapshot<BaseObject>(Obj);
+    auto JSONSnapCont = createSnapshot(SnapshotType::JSON);
+    
 
     for (auto* comp : vObj)
     {
         std::cout << "******************Nouvelle objet******************"<< std::endl;
-        BaseSnap->saveSnapshot<BaseObject>(comp);
+        comp->saveSnapshot(*JSONSnapCont);
         std::cout << " "<< std::endl;
         std::cout << " "<< std::endl;
         std::cout << " "<< std::endl;
