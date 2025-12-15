@@ -19,27 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#ifndef IMAGE_IMAGETYPES_MULTITHREAD_H
-#define IMAGE_IMAGETYPES_MULTITHREAD_H
+#include <image_multithread/config.h>
 
-#include <image/ImageTypes.h>
-#include <MultiThreading/DataExchange.h>
-
-namespace sofa::core
+namespace sofa::component
 {
-
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageB>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageC>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUC>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageI>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUI>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageS>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUS>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageL>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUL>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageF>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageD>;
-
+SOFA_IMAGE_MULTITHREAD_API void init();
 }
-#endif

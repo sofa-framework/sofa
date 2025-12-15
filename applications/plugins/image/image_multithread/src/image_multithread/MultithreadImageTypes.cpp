@@ -5,9 +5,7 @@
 
 #include <MultiThreading/DataExchange.inl>
 
-namespace sofa
-{
-namespace defaulttype
+namespace image_multithread
 {
 
 
@@ -31,22 +29,20 @@ void registerDataExchange(sofa::core::ObjectFactory* factory)
     );
 }
 
-}  // namespace defaulttype
+}  // namespace image_multithread
 
-namespace core
+namespace sofa::core
 {
-template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageB>;
-template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageC>;
-template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageUC>;
-template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageI>;
-template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageUI>;
-template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageS>;
-template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageUS>;
-template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageL>;
-template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageUL>;
-template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageF>;
-template class SOFA_IMAGE_API core::DataExchange<sofa::defaulttype::ImageD>;
-
+template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageB>;
+template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageC>;
+template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUC>;
+template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageI>;
+template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUI>;
+template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageS>;
+template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUS>;
+template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageL>;
+template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUL>;
+template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageF>;
+template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageD>;
 
 }
-}  // namespace sofa

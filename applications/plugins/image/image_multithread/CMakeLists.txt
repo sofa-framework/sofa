@@ -3,10 +3,14 @@ project(image_multithread VERSION 0.1)
 
 set(HEADER_FILES
         src/image_multithread/MultithreadImageTypes.h
+        src/image_multithread/config.h.in
+        src/image_multithread/init.h
+
 )
 
 set(SOURCE_FILES
         src/image_multithread/MultithreadImageTypes.cpp
+        src/image_multithread/init.cpp
 )
 
 sofa_find_package(MultiThreading REQUIRED)

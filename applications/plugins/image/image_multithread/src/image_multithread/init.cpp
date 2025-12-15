@@ -19,27 +19,70 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+#include <image_multithread/config.h>
+#include <image_multithread/init.h>
 
-#ifndef IMAGE_IMAGETYPES_MULTITHREAD_H
-#define IMAGE_IMAGETYPES_MULTITHREAD_H
 
-#include <image/ImageTypes.h>
-#include <MultiThreading/DataExchange.h>
-
-namespace sofa::core
+namespace image_multithread
 {
+//Here are just several convenient functions to help user to know what contains the plugin
 
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageB>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageC>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUC>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageI>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUI>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageS>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUS>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageL>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUL>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageF>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageD>;
+extern void registerDataExchange(sofa::core::ObjectFactory* factory);
 
+
+extern "C" {
+    SOFA_IMAGE_MULTITHREAD_API void initExternalModule();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleName();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleVersion();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleLicense();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleDescription();
+    SOFA_IMAGE_MULTITHREAD_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
-#endif
+
+void init()
+{
+    static bool first = true;
+    if (first)
+    {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(image_multithread::MODULE_NAME);
+
+        first = false;
+    }
+}
+
+void initExternalModule()
+{
+    init();
+}
+
+const char* getModuleName()
+{
+    return image_multithread::MODULE_NAME;
+}
+
+const char* getModuleVersion()
+{
+    return image_multithread::MODULE_VERSION;
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+
+const char* getModuleDescription()
+{
+    return "Image support in SOFA with multithread";
+}
+
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+   registerDataExchange(factory);
+}
+
+} // namespace sofa::component
+

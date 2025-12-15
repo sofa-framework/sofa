@@ -29,11 +29,6 @@
     #include "python/Binding_ImageData.h"
 #endif
 
-namespace sofa::defaulttype
-{
-    extern void registerDataExchange(sofa::core::ObjectFactory* factory);
-}
-
 namespace sofa::component
 {
 
@@ -153,7 +148,6 @@ const char* getModuleDescription()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    sofa::defaulttype::registerDataExchange(factory);
     sofa::component::misc::registerImageExporter(factory);
     sofa::component::engine::registerVoronoiToMeshEngine(factory);
     sofa::component::engine::registerTransferFunction(factory);
