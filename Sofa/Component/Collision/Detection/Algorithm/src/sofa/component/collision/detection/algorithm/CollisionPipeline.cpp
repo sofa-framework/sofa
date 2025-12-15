@@ -66,14 +66,6 @@ CollisionPipeline::CollisionPipeline()
     , d_depth(initData(&d_depth, defaultDepthValue, "depth",
                ("Max depth of bounding trees. (default=" + std::to_string(defaultDepthValue) + ", min=?, max=?)").c_str()))
 {
-}
-
-void CollisionPipeline::init()
-{
-    Inherit1::init();
-    
-    msg_info() << "CollisionPipeline is now a wrapper to MultiCollisionPipeline with a single SubCollisionPipeline.";
-    msg_info() << "If you want more flexibility, use directly the components MultiCollisionPipeline and SubCollisionPipeline, with their respective Data.";
     
     m_subCollisionPipeline = sofa::core::objectmodel::New<SubCollisionPipeline>();
     m_subCollisionPipeline->d_depth.setParent(&this->d_depth);
@@ -84,7 +76,34 @@ void CollisionPipeline::init()
     
     this->addSlave(m_subCollisionPipeline);
     this->addSlave(m_multiCollisionPipeline);
+}
 
+void CollisionPipeline::init()
+{
+    Inherit1::init();
+    
+    msg_info() << "CollisionPipeline is now a wrapper to MultiCollisionPipeline with a single SubCollisionPipeline.";
+    msg_info() << "If you want more flexibility, use directly the components MultiCollisionPipeline and SubCollisionPipeline, with their respective Data.";
+
+    auto context = this->getContext();
+    // set the whole collision models list to the sub collision pipeline
+    sofa::type::vector<sofa::core::CollisionModel::SPtr> collisionModels;
+    context->get<sofa::core::CollisionModel, sofa::type::vector<sofa::core::CollisionModel::SPtr>>(&collisionModels, BaseContext::SearchRoot);
+        
+    for(auto collisionModel : collisionModels)
+    {
+        m_subCollisionPipeline->l_collisionModels.add(collisionModel.get());
+    }
+    
+    // set the other component to the sub collision pipeline (which is implcitely searched/set by PipelineImpl)
+    m_subCollisionPipeline->l_intersectionMethod.set(this->intersectionMethod);
+    m_subCollisionPipeline->l_broadPhaseDetection.set(this->broadPhaseDetection);
+    m_subCollisionPipeline->l_narrowPhaseDetection.set(this->narrowPhaseDetection);
+    m_subCollisionPipeline->l_contactManager.set(this->contactManager);
+    
+    m_subCollisionPipeline->init();
+    m_multiCollisionPipeline->init();
+    
     /// Insure that all the value provided by the user are valid and report message if it is not.
     checkDataValues() ;
 }
