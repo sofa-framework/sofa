@@ -33,6 +33,12 @@ public:
     virtual void exportSnapshot() = 0;
     virtual void importSnapshot() = 0;
 
+    virtual void setName(const std::string& name) = 0;
+    virtual std::string getName() const = 0;
+
+    virtual void fillContainer(const std::vector<std::string>& name, int i) = 0;
+    virtual std::vector<std::vector<std::string>> getContainer() const = 0;
+
 
     BaseSnapshot();
     virtual ~BaseSnapshot() = 0;
@@ -41,6 +47,6 @@ public:
     std::string dataName;
     std::string dataValueType;
     std::string valueStr;
-
+    std::vector<std::vector<std::string>> container;
 };
 } // namespace sofa::core::objectmodel

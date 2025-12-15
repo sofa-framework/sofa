@@ -680,22 +680,32 @@ int Base::getInstanciationSourceFilePos() const
     return m_instanciationSourceFilePos;
 }
 
-void Base::saveSnapshot(BaseSnapshot& type)
+void Base::saveSnapshot(BaseSnapshot& type, int i)
     {
         VecData datafield = this->getDataFields();
         VecLink componentlinks = this->getLinks();
-        int i = 1;
         
+        std::vector<std::string> vtemp;
         for (auto* data : datafield)
         {
             /// ReadAccessor data ? 
-            std::cout << "getName : " << (*data).getName() << std::endl;
-            std::cout << "getValueTypeString : " << (*data).getValueTypeString() << std::endl;
-            std::cout << "getValueString : " << (*data).getValueString() << std::endl;
-            std::cout << "getHelp : " << (*data).getHelp() << std::endl;
-            std::cout << "============================================" << std::endl;
-            i+=1;
+            // std::cout << "getName : " << (*data).getName() << std::endl;
+            // std::cout << "getValueTypeString : " << (*data).getValueTypeString() << std::endl;
+            // std::cout << "getValueString : " << (*data).getValueString() << std::endl;
+            // std::cout << "getHelp : " << (*data).getHelp() << std::endl;
+            // std::cout << "============================================" << std::endl;
+            type.setName( (*data).getName() );
+
+            //std::cout << "getName : " << type.getName() << std::endl;
+
+            std::string dataname = type.getName();
+            
+
+            vtemp.push_back(dataname);
+            
+            
         }
+        type.fillContainer(vtemp,i);
 
         // for (auto* links : componentlinks)
         // {
@@ -703,9 +713,10 @@ void Base::saveSnapshot(BaseSnapshot& type)
 
         // }
         // auto SnapshotType = createSnapshot(type);
-        type.printSnapshot() ;
+        // type.printSnapshot() ;
 
-        /// Tout regrouper dans le container
+        
+        
 
     }
 

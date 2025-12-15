@@ -23,6 +23,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseSnapshot.h>
 
+
 namespace sofa::core::objectmodel
 {
 
@@ -34,6 +35,12 @@ public:
     void exportSnapshot() override;
     void importSnapshot() override;
 
+    void setName(const std::string& name) override;
+    std::string getName() const override;
+
+    void fillContainer(const std::vector<std::string>& name, int i) override;
+    std::vector<std::vector<std::string>> getContainer() const override;
+
 
     JSONSnapshot();
     ~JSONSnapshot();
@@ -42,6 +49,6 @@ public:
     std::string dataName;
     std::string dataValueType;
     std::string valueStr;
-
+    std::vector<std::vector<std::string>> container;
 };
 } // namespace sofa::core::objectmodel

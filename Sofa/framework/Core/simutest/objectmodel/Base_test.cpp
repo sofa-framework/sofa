@@ -151,21 +151,29 @@ TEST_F(Base_test, testSaveSnapshot)
 
     auto JSONSnapCont = createSnapshot(SnapshotType::JSON);
     
+    int i = -1;
 
     for (auto* comp : vObj)
     {
         std::cout << "******************Nouvelle objet******************"<< std::endl;
-        comp->saveSnapshot(*JSONSnapCont);
-        std::cout << " "<< std::endl;
-        std::cout << " "<< std::endl;
-        std::cout << " "<< std::endl;
-        std::cout << " "<< std::endl;
-        std::cout << " "<< std::endl;
-        std::cout << " "<< std::endl;
-        
+        std::cout << comp->getPathName() << std::endl;
+        comp->saveSnapshot(*JSONSnapCont,i);
+        i+=1;
     }
+    std::cout <<"i = " << i << std::endl;
+    std::vector<std::vector<std::string>> testcont = JSONSnapCont->getContainer();
+    std::cout << "TEst cont : " << testcont.size() <<std::endl;
 
     
+    for (int j = 0; j< testcont.size(); j++)
+    {
+        std::cout << "Component n°" << j <<std::endl;
+        for(int k = 0; k< testcont[j].size();k++)
+        {
+            std::cout << testcont[j][k] << " ";
+        }
+        std::cout << std::endl;
+    }
     // for(BaseObject* tree : root->getTreeObjects())
     // {
     //     std::cout << tree->getClassName() << std::endl;

@@ -45,4 +45,25 @@ void JSONSnapshot::importSnapshot()
     std::cout << "importSnapshot" << std::endl;
 }
 
+void JSONSnapshot::setName(const std::string& name)
+{
+    dataName = name;
+}
+
+std::string JSONSnapshot::getName() const
+{
+    return dataName;
+}
+
+void JSONSnapshot::fillContainer(const std::vector<std::string>& name, int i)
+{
+    container.push_back(name);
+}
+
+std::vector<std::vector<std::string>> JSONSnapshot::getContainer() const
+{
+    return container;
+}
+
+
 } // namespace sofa::core::objectmodel
