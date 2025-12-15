@@ -92,7 +92,7 @@ public:
         doInit();
     }
 
-    std::set< std::string > getResponseList() const
+    static std::set< std::string > getResponseList()
     {
         std::set< std::string > listResponse;
         core::collision::Contact::Factory::iterator it;
