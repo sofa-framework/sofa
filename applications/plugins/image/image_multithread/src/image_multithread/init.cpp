@@ -19,39 +19,70 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+#include <image_multithread/config.h>
+#include <image_multithread/init.h>
 
-#include <sofa/config.h>
 
-#cmakedefine01 IMAGE_HAVE_SOFAGUIQT
-#cmakedefine01 IMAGE_HAVE_CIMGPLUGIN
-#cmakedefine01 IMAGE_HAVE_NEWMAT
-#cmakedefine01 IMAGE_HAVE_SOFAPYTHON
-#cmakedefine01 IMAGE_HAVE_ZLIB
-#cmakedefine01 IMAGE_HAVE_FREENECT
-#cmakedefine01 IMAGE_HAVE_SOFA_GL
-
-#cmakedefine SOFA_BUILD_TESTS
-#cmakedefine PLUGIN_IMAGE_COMPILE_GUI
-
-#define PLUGIN_IMAGE_COMPILE_SET_NONE 0
-#define PLUGIN_IMAGE_COMPILE_SET_STANDARD 1
-#define PLUGIN_IMAGE_COMPILE_SET_FULL 2
-#define PLUGIN_IMAGE_COMPILE_SET @PLUGIN_IMAGE_COMPILE_SET_VALUE@
-
-#define IMAGE_MAJOR_VERSION ${IMAGE_MAJOR_VERSION}
-#define IMAGE_MINOR_VERSION ${IMAGE_MINOR_VERSION}
-
-#ifdef SOFA_BUILD_IMAGE
-#  define SOFA_TARGET image
-#  define SOFA_IMAGE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_IMAGE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace image
+namespace image_multithread
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace image
+//Here are just several convenient functions to help user to know what contains the plugin
+
+extern void registerDataExchange(sofa::core::ObjectFactory* factory);
+
+
+extern "C" {
+    SOFA_IMAGE_MULTITHREAD_API void initExternalModule();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleName();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleVersion();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleLicense();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleDescription();
+    SOFA_IMAGE_MULTITHREAD_API void registerObjects(sofa::core::ObjectFactory* factory);
+}
+
+void init()
+{
+    static bool first = true;
+    if (first)
+    {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(image_multithread::MODULE_NAME);
+
+        first = false;
+    }
+}
+
+void initExternalModule()
+{
+    init();
+}
+
+const char* getModuleName()
+{
+    return image_multithread::MODULE_NAME;
+}
+
+const char* getModuleVersion()
+{
+    return image_multithread::MODULE_VERSION;
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+
+const char* getModuleDescription()
+{
+    return "Image support in SOFA with multithread";
+}
+
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+   registerDataExchange(factory);
+}
+
+} // namespace sofa::component
 

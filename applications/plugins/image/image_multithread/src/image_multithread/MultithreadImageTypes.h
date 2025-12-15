@@ -19,39 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
-#include <sofa/config.h>
+#ifndef IMAGE_IMAGETYPES_MULTITHREAD_H
+#define IMAGE_IMAGETYPES_MULTITHREAD_H
 
-#cmakedefine01 IMAGE_HAVE_SOFAGUIQT
-#cmakedefine01 IMAGE_HAVE_CIMGPLUGIN
-#cmakedefine01 IMAGE_HAVE_NEWMAT
-#cmakedefine01 IMAGE_HAVE_SOFAPYTHON
-#cmakedefine01 IMAGE_HAVE_ZLIB
-#cmakedefine01 IMAGE_HAVE_FREENECT
-#cmakedefine01 IMAGE_HAVE_SOFA_GL
+#include <image/ImageTypes.h>
+#include <MultiThreading/DataExchange.h>
 
-#cmakedefine SOFA_BUILD_TESTS
-#cmakedefine PLUGIN_IMAGE_COMPILE_GUI
-
-#define PLUGIN_IMAGE_COMPILE_SET_NONE 0
-#define PLUGIN_IMAGE_COMPILE_SET_STANDARD 1
-#define PLUGIN_IMAGE_COMPILE_SET_FULL 2
-#define PLUGIN_IMAGE_COMPILE_SET @PLUGIN_IMAGE_COMPILE_SET_VALUE@
-
-#define IMAGE_MAJOR_VERSION ${IMAGE_MAJOR_VERSION}
-#define IMAGE_MINOR_VERSION ${IMAGE_MINOR_VERSION}
-
-#ifdef SOFA_BUILD_IMAGE
-#  define SOFA_TARGET image
-#  define SOFA_IMAGE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_IMAGE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace image
+namespace sofa::core
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace image
 
+extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageB>;
+extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageC>;
+extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUC>;
+extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageI>;
+extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUI>;
+extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageS>;
+extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUS>;
+extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageL>;
+extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUL>;
+extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageF>;
+extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageD>;
+
+}
+#endif
