@@ -203,16 +203,7 @@ void MultiCollisionPipeline::doCollisionResponse()
 
 std::set< std::string > MultiCollisionPipeline::getResponseList() const
 {
-    std::set< std::string > listResponse;
-    core::collision::Contact::Factory::iterator it;
-
-    for (const auto& subPipeline : m_subCollisionPipelines)
-    {
-        std::set< std::string > subListResponse = subPipeline->getResponseList();
-        listResponse.insert(subListResponse.begin(), subListResponse.end());
-    }
-
-    return listResponse;
+    return AbstractSubCollisionPipeline::getResponseList();
 }
 
 void MultiCollisionPipeline::computeCollisionReset()
