@@ -813,6 +813,7 @@ public:
     }
 
     /// Multiplication operator Matrix * Vector considering the matrix as a transformation.
+    template<sofa::Size NbColumn = C, typename = std::enable_if_t<(NbColumn > 1)>>
     constexpr Vec<C-1,real> transform(const Vec<C-1,real>& v) const noexcept
     {
         Vec<C-1,real> r(NOINIT);
@@ -931,6 +932,13 @@ constexpr real determinant(const Mat<2,2,real>& m) noexcept
 {
     return m(0,0)*m(1,1)
             - m(1,0)*m(0,1);
+}
+
+/// Determinant of a 1x1 matrix.
+template<class real>
+constexpr real determinant(const Mat<1,1,real>& m) noexcept
+{
+    return m(0, 0);
 }
 
 /// Generalized-determinant of a 2x3 matrix.
@@ -1402,6 +1410,9 @@ constexpr Mat<3,3,real> multTranspose(const Mat<3,3,real>& m1, const Mat<3,3,rea
 }
 
 #if not defined(SOFA_TYPE_MAT_CPP)
+
+extern template class SOFA_TYPE_API Mat<1,1,float>;
+extern template class SOFA_TYPE_API Mat<1,1,double>;
 
 extern template class SOFA_TYPE_API Mat<2,2,float>;
 extern template class SOFA_TYPE_API Mat<2,2,double>;

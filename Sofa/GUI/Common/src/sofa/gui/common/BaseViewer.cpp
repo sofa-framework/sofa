@@ -264,18 +264,18 @@ bool BaseViewer::load()
         }
     }
 
+    currentSelection.clear();
 
     if (groot)
     {
-        groot->get(currentCamera);
+        groot->get(currentCamera, core::objectmodel::BaseContext::SearchDown);
         if (!currentCamera)
         {
             currentCamera = sofa::core::objectmodel::New<sofa::component::visual::InteractiveCamera>();
             currentCamera->setName(groot->getNameHelper().resolveName(currentCamera->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
             groot->addObject(currentCamera);
-            //currentCamera->d_position.forceSet();
-            //currentCamera->d_orientation.forceSet();
             currentCamera->bwdInit();
+            msg_info("BaseViewer") << "There is no camera in this scene, I created one. To remove this error message, add a camera in your scene.";
         }
         sofa::component::visual::VisualStyle::SPtr visualStyle = nullptr;
         groot->get(visualStyle);
@@ -352,13 +352,14 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
     if(currentSelection.empty())
         return;
 
+    const float size = 2.f;
+    drawTool->setMaterial(m_selectionColor);
     drawTool->setPolygonMode(0, false);
     float screenHeight = vparams->viewport()[3];
 
     for(auto current : currentSelection)
     {
         using sofa::type::Vec3;
-        using sofa::type::RGBAColor;
         using sofa::defaulttype::RigidCoord;
         using sofa::defaulttype::Rigid3Types;
 
@@ -369,7 +370,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
             if(m_showSelectedNodeBoundingBox)
             {
                 auto box = node->f_bbox.getValue();
-                drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), 2.0);
+                drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), size);
             }
 
             // If it is a node then it is not a BaseObject, so we can continue.
@@ -381,15 +382,17 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
         if(object)
         {
             sofa::type::BoundingBox box;
+
             auto ownerNode = dynamic_cast<sofa::simulation::Node*>(object->getContext());
             if(ownerNode)
             {
                 box = ownerNode->f_bbox.getValue();
             }
+            const bool validBox = box.isValid() && !box.isFlat();
 
-            if(m_showSelectedObjectBoundingBox)
+            if(m_showSelectedObjectBoundingBox && validBox)
             {
-                drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), 2.0);
+                drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), size);
             }
 
             std::vector<Vec3> positions;
@@ -402,19 +405,19 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
                     if(positionsData)
                     {
                         positions = positionsData->getValue();
-                        drawTool->drawPoints(positions, 2.0, RGBAColor::yellow());
+                        drawTool->drawPoints(positions, size*2., m_selectionColor);
                     }
                     else
                     {
                         auto rigidPositions = dynamic_cast<Data<sofa::type::vector<RigidCoord<3, SReal>>>*>(position);
-                        if(rigidPositions)
+                        if(rigidPositions && currentCamera)
                         {
                             for(auto frame : rigidPositions->getValue())
                             {
                                 float targetScreenSize = 50.0;
                                 float distance = (currentCamera->getPosition() - Rigid3Types::getCPos(frame)).norm();
                                 SReal scale = distance * tan(currentCamera->getFieldOfView() / 2.0f) * targetScreenSize / screenHeight;
-                                drawTool->drawFrame(Rigid3Types::getCPos(frame), Rigid3Types::getCRot(frame), {scale, scale,scale});
+                                drawTool->drawFrame(Rigid3Types::getCPos(frame), Rigid3Types::getCRot(frame), {scale, scale,scale}, m_selectionColor);
                                 positions.push_back(Rigid3Types::getCPos(frame));
                             }
                         }
@@ -445,15 +448,15 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
                                 tripoints.push_back(positions[indices[0]]);
                             }
                         }
-                        drawTool->drawLines(tripoints, 1.5, RGBAColor::fromFloat(1.0,1.0,1.0,0.7));
+                        drawTool->drawLines(tripoints, size, m_selectionColor);
                     }
                 }
             }
 
-            if(!positions.empty() && m_showSelectedObjectIndices)
+            if(m_showSelectedObjectIndices && !positions.empty() && validBox)
             {
                 const float scale = (box.maxBBox() - box.minBBox()).norm() * m_visualScaling;
-                drawTool->draw3DText_Indices(positions, scale, RGBAColor::white());
+                drawTool->draw3DText_Indices(positions, scale, m_selectionColor);
             }
 
             continue;

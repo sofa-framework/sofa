@@ -626,7 +626,7 @@ std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
 
     { "GenericConstraintSolver",
         ComponentChange().withCustomMessage("GenericConstraintSolver has been replaced since v25.12 by a set of new components, whose names relate to the method used:\n"
-             "    - ProjectedGaussSeidelConstraintSolver (if you were using this component without setting 'resolutionMethod' or by setting it to 'ProjectedGaussSeidel')\n"
+             "    - BlockGaussSeidelConstraintSolver (if you were using this component without setting 'resolutionMethod' or by setting it to 'ProjectedGaussSeidel')\n"
              "    - UnbuiltGaussSeidelConstraintSolver (if you were using this component while setting 'resolutionMethod=\"UnbuiltGaussSeidel\"')\n"
              "    - NNCGConstraintSolver (if you were using this component while setting 'resolutionMethod=\"NonsmoothNonlinearConjugateGradient\"')\n"
              "      --> For NNCGConstraintSolver, data 'newtonIterations' has been replaced by 'maxIterations'"
@@ -765,7 +765,8 @@ std::map< std::string, Renamed, std::less<> > renamedComponents = {
     {"StiffSpringForceField", Renamed("v24.06","v25.06","SpringForceField")},
     {"ParallelStiffSpringForceField", Renamed("v24.06","v25.06","ParallelSpringForceField")},
     {"ShewchukPCGLinearSolver", Renamed("v24.12","v25.12","PCGLinearSolver")},
-    {"OglCylinderModel", Renamed("v24.12", "v25.06", "CylinderVisualModel")}
+    {"OglCylinderModel", Renamed("v24.12", "v25.06", "CylinderVisualModel")},
+    {"TriangleOctreeModel", Renamed("v25.12", "v26.06", "TriangleOctreeCollisionModel") }
 };
 
 

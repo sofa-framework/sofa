@@ -21,9 +21,9 @@
 ******************************************************************************/
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/collision/geometry/RayModel.h>
-#include <sofa/component/collision/geometry/SphereModel.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/RayCollisionModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
 #include <sofa/component/collision/response/contact/RayContact.h>
 
 #include "DistanceGridCollisionModel.h"
