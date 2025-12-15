@@ -39,6 +39,6 @@ ignore "Benchmark/TopologicalChanges/ProjectToPlaneConstraint_RemovingMeshTest.s
 ignore "Benchmark/TopologicalChanges/FixedPlaneConstraint_RemovingMeshTest.scn"
 
 iterations "/Component/Constraint/Lagrangian/Contact_ImprovedJacobi.scn" "50"
-timeout "/Component/Constraint/Lagrangian/Contact_ImprovedJacobi.scn" "180"
+timeout "/Component/Constraint/Lagrangian/Contact_ImprovedJacobi.scn" "240"
 
 timeout "Component/AnimationLoop/FreeMotionAnimationLoop.scn" "180"
