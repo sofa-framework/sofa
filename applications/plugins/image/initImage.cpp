@@ -122,6 +122,16 @@ void initExternalModule()
         {
             msg_warning("initImage") << "the sub-plugin image_gui was not successfully loaded";
         }
+
+        std::string multithreadPluginPath = sofa::helper::system::PluginManager::getInstance().findPlugin("image_multithread");
+        if (!multithreadPluginPath.empty())
+        {
+            sofa::helper::system::PluginManager::getInstance().loadPluginByPath(multithreadPluginPath);
+        }
+        else
+        {
+            msg_warning("initImage") << "the sub-plugin image_multithread was not successfully loaded";
+        }
     }
 }
 
