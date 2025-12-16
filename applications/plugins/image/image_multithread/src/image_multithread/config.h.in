@@ -24,7 +24,7 @@
 #include <sofa/config.h>
 
 
-#ifdef SOFA_BUILD_IMAGE
+#ifdef SOFA_BUILD_IMAGE_MULTITHREAD
 #  define SOFA_TARGET image_multithread
 #  define SOFA_IMAGE_MULTITHREAD_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
