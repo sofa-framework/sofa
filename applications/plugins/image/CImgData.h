@@ -364,32 +364,32 @@ typedef Image<double> ImageD;
 typedef Image<bool> ImageB;
 typedef Image<SReal> ImageR;
 
-template<> inline const char* SOFA_IMAGE_API ImageC::Name() { return "ImageC"; }
-template<> inline const char* SOFA_IMAGE_API ImageUC::Name() { return "ImageUC"; }
-template<> inline const char* SOFA_IMAGE_API ImageI::Name() { return "ImageI"; }
-template<> inline const char* SOFA_IMAGE_API ImageUI::Name() { return "ImageUI"; }
-template<> inline const char* SOFA_IMAGE_API ImageS::Name() { return "ImageS"; }
-template<> inline const char* SOFA_IMAGE_API ImageUS::Name() { return "ImageUS"; }
-template<> inline const char* SOFA_IMAGE_API ImageL::Name() { return "ImageL"; }
-template<> inline const char* SOFA_IMAGE_API ImageUL::Name() { return "ImageUL"; }
-template<> inline const char* SOFA_IMAGE_API ImageF::Name() { return "ImageF"; }
-template<> inline const char* SOFA_IMAGE_API ImageD::Name() { return "ImageD"; }
-template<> inline const char* SOFA_IMAGE_API ImageB::Name() { return "ImageB"; }
+template<> inline const char* ImageC::Name() { return "ImageC"; }
+template<> inline const char* ImageUC::Name() { return "ImageUC"; }
+template<> inline const char* ImageI::Name() { return "ImageI"; }
+template<> inline const char* ImageUI::Name() { return "ImageUI"; }
+template<> inline const char* ImageS::Name() { return "ImageS"; }
+template<> inline const char* ImageUS::Name() { return "ImageUS"; }
+template<> inline const char* ImageL::Name() { return "ImageL"; }
+template<> inline const char* ImageUL::Name() { return "ImageUL"; }
+template<> inline const char* ImageF::Name() { return "ImageF"; }
+template<> inline const char* ImageD::Name() { return "ImageD"; }
+template<> inline const char* ImageB::Name() { return "ImageB"; }
 
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
 
-template<> struct SOFA_IMAGE_API DataTypeName< defaulttype::ImageC > { static const char* name() { return "ImageC"; } };
-template<> struct SOFA_IMAGE_API DataTypeName< defaulttype::ImageUC > { static const char* name() { return "ImageUC"; } };
-template<> struct SOFA_IMAGE_API DataTypeName< defaulttype::ImageI > { static const char* name() { return "ImageI"; } };
-template<> struct SOFA_IMAGE_API DataTypeName< defaulttype::ImageUI > { static const char* name() { return "ImageUI"; } };
-template<> struct SOFA_IMAGE_API DataTypeName< defaulttype::ImageS > { static const char* name() { return "ImageS"; } };
-template<> struct SOFA_IMAGE_API DataTypeName< defaulttype::ImageUS > { static const char* name() { return "ImageUS"; } };
-template<> struct SOFA_IMAGE_API DataTypeName< defaulttype::ImageL > { static const char* name() { return "ImageL"; } };
-template<> struct SOFA_IMAGE_API DataTypeName< defaulttype::ImageUL > { static const char* name() { return "ImageUL"; } };
-template<> struct SOFA_IMAGE_API DataTypeName< defaulttype::ImageF > { static const char* name() { return "ImageF"; } };
-template<> struct SOFA_IMAGE_API DataTypeName< defaulttype::ImageD > { static const char* name() { return "ImageD"; } };
-template<> struct SOFA_IMAGE_API DataTypeName< defaulttype::ImageB > { static const char* name() { return "ImageB"; } };
+template<> struct DataTypeName< defaulttype::ImageC > { static const char* name() { return "ImageC"; } };
+template<> struct DataTypeName< defaulttype::ImageUC > { static const char* name() { return "ImageUC"; } };
+template<> struct DataTypeName< defaulttype::ImageI > { static const char* name() { return "ImageI"; } };
+template<> struct DataTypeName< defaulttype::ImageUI > { static const char* name() { return "ImageUI"; } };
+template<> struct DataTypeName< defaulttype::ImageS > { static const char* name() { return "ImageS"; } };
+template<> struct DataTypeName< defaulttype::ImageUS > { static const char* name() { return "ImageUS"; } };
+template<> struct DataTypeName< defaulttype::ImageL > { static const char* name() { return "ImageL"; } };
+template<> struct DataTypeName< defaulttype::ImageUL > { static const char* name() { return "ImageUL"; } };
+template<> struct DataTypeName< defaulttype::ImageF > { static const char* name() { return "ImageF"; } };
+template<> struct DataTypeName< defaulttype::ImageD > { static const char* name() { return "ImageD"; } };
+template<> struct DataTypeName< defaulttype::ImageB > { static const char* name() { return "ImageB"; } };
 
 /// \endcond
 
