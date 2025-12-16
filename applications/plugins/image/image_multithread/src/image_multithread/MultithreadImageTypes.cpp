@@ -37,18 +37,18 @@ void registerDataExchange(sofa::core::ObjectFactory* factory)
 
 namespace sofa::core
 {
-template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageB>;
-template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageD>;
-template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUC>;
+template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageB>;
+template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageD>;
+template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageUC>;
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageI>;
-template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUI>;
-template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageS>;
-template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUS>;
-template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageL>;
-template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUL>;
-template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageC>;
-template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageF>;
+template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageI>;
+template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageUI>;
+template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageS>;
+template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageUS>;
+template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageL>;
+template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageUL>;
+template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageC>;
+template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageF>;
 #endif
 
 
