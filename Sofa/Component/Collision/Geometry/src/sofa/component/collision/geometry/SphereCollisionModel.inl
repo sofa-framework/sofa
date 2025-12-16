@@ -225,11 +225,6 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, Co
             TSphere<DataTypes> p(this,i);
             const auto& pt = p.p();
             const auto ptv = (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia) ? pt + p.v()*dt : p.pFree();
-            // if(continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia)
-            //     ptv =  pt + p.v()*dt;
-            // else
-            //     ptv = p.pFree();
-            //
 
             for (int c = 0; c < 3; c++)
             {
