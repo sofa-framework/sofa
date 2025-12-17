@@ -25,7 +25,7 @@ namespace defaulttype
 
 
 /// a virtual, non templated Image class that can be allocated without knowing its exact type
-struct SOFA_IMAGE_API BaseImage
+struct BaseImage
 {
     typedef type::Vec<5,unsigned int> imCoord; // [x,y,z,s,t]
     virtual void setDimensions(const imCoord& dim) = 0;
@@ -42,7 +42,7 @@ struct SOFA_IMAGE_API BaseImage
 
 
 template<typename _T>
-struct SOFA_IMAGE_API Image : public BaseImage
+struct Image : public BaseImage
 {
     typedef _T T;
     typedef cimg_library::CImg<T> CImgT;
@@ -399,7 +399,7 @@ template<> struct DataTypeName< defaulttype::ImageB > { static const char* name(
 
 // generic interface
 template<typename _Real>
-struct SOFA_IMAGE_API ImageTransform
+struct ImageTransform
 {
     typedef _Real Real;
     typedef type::Vec<3,Real> Coord;		// 3d coords
@@ -423,7 +423,7 @@ public:
 
 // abstract class with vector and iostream
 template<int N,typename _Real>
-struct SOFA_IMAGE_API TImageTransform : public ImageTransform<_Real>
+struct TImageTransform : public ImageTransform<_Real>
 {
     typedef ImageTransform<_Real> Inherited;
     typedef typename Inherited::Real Real;
@@ -457,7 +457,7 @@ public:
 //  for perspective transforms (only for 2D images), the pinhole camera is located at ( scalex(dimx-1)/2, scaley(dimy-1)/2, -scalez/2)
 
 template<typename _Real>
-struct SOFA_IMAGE_API ImageLPTransform : public TImageTransform<12,_Real>
+struct ImageLPTransform : public TImageTransform<12,_Real>
 {
     typedef TImageTransform<12,_Real> Inherited; // 12 params : translations,rotations,scales,timeOffset,timeScale,isPerspective
     typedef typename Inherited::Real Real;
@@ -564,14 +564,14 @@ public:
 };
 
 ////// infos for Data
-class SOFA_IMAGE_API BaseImageTypeInfo
+class BaseImageTypeInfo
 {
 public:
     virtual ~BaseImageTypeInfo(){}
 };
 
 template<class TDataType>
-struct SOFA_IMAGE_API ImageTypeInfo : public BaseImageTypeInfo
+struct  ImageTypeInfo : public BaseImageTypeInfo
 {
     typedef TDataType DataType;
     typedef typename DataType::T BaseType;
@@ -636,7 +636,7 @@ struct SOFA_IMAGE_API ImageTypeInfo : public BaseImageTypeInfo
 
 
 template<class T>
-struct SOFA_IMAGE_API DataTypeInfo< Image<T> > : public ImageTypeInfo< Image<T> >
+struct DataTypeInfo< Image<T> > : public ImageTypeInfo< Image<T> >
 {
     static std::string name() { std::ostringstream o; o << "Image<" << DataTypeName<T>::name() << ">"; return o.str(); }
 };
