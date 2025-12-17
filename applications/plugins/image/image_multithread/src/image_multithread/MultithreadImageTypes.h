@@ -24,22 +24,25 @@
 #define IMAGE_IMAGETYPES_MULTITHREAD_H
 
 #include <image/ImageTypes.h>
+#include <image_multithread/config.h>
 #include <MultiThreading/DataExchange.h>
 
 namespace sofa::core
 {
 
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageB>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageC>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUC>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageI>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUI>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageS>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUS>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageL>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageUL>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageF>;
-extern template class SOFA_IMAGE_API DataExchange<sofa::defaulttype::ImageD>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageB>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageD>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageUC>;
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageI>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageUI>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageS>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageUS>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageL>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageUL>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageF>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageC>;
+#endif
 
 }
 #endif

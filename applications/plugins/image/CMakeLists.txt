@@ -143,7 +143,7 @@ if(SofaPython_FOUND)
 endif()
 
 if(MultiThreading_FOUND)
-    add_subdirectory(image_multithread)
+    sofa_add_subdirectory(plugin image_multithread image_multithread ON)
 endif()
 
 if(SOFA_BUILD_TESTS)
