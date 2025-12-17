@@ -143,7 +143,7 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 }
 
 template<class DataTypes>
-void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
+void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag , int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const auto npoints = mstate->getSize();
@@ -169,7 +169,8 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int
         {
             TPoint<DataTypes> p(this,i);
             const type::Vec3& pt = p.p();
-            const type::Vec3 ptv = pt + p.v()*dt;
+            const type::Vec3 ptv = (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia ? pt + p.v()*dt : p.pFree());
+
 
             for (int c = 0; c < 3; c++)
             {

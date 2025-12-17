@@ -30,6 +30,7 @@ extern void registerDiscreteIntersection(sofa::core::ObjectFactory* factory);
 extern void registerLocalMinDistance(sofa::core::ObjectFactory* factory);
 extern void registerMinProximityIntersection(sofa::core::ObjectFactory* factory);
 extern void registerNewProximityIntersection(sofa::core::ObjectFactory* factory);
+extern void registerCCDTightInclusionIntersection(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -59,6 +60,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerLocalMinDistance(factory);
     registerMinProximityIntersection(factory);
     registerNewProximityIntersection(factory);
+    registerCCDTightInclusionIntersection(factory);
 }
 
 void init()
