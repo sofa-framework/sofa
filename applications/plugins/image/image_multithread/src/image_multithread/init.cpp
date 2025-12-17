@@ -19,22 +19,70 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+#include <image_multithread/config.h>
+#include <image_multithread/init.h>
 
-#include <sofa/component/constraint/lagrangian/solver/BuiltConstraintSolver.h>
-#include <sofa/core/behavior/ConstraintResolution.h>
 
-namespace sofa::component::constraint::lagrangian::solver
+namespace image_multithread
 {
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ProjectedGaussSeidelConstraintSolver : public BuiltConstraintSolver
-{
-public:
-    SOFA_CLASS(ProjectedGaussSeidelConstraintSolver, BuiltConstraintSolver);
+//Here are just several convenient functions to help user to know what contains the plugin
 
-protected:
-    virtual void doSolve(GenericConstraintProblem * problem , SReal timeout = 0.0) override;
+extern void registerDataExchange(sofa::core::ObjectFactory* factory);
 
-    void gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool& constraintsAreVerified, SReal& error, std::vector<core::behavior::ConstraintResolution*>& constraintCorrections, sofa::type::vector<SReal>& tabErrors) const;
 
-};
+extern "C" {
+    SOFA_IMAGE_MULTITHREAD_API void initExternalModule();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleName();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleVersion();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleLicense();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleDescription();
+    SOFA_IMAGE_MULTITHREAD_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
+
+void init()
+{
+    static bool first = true;
+    if (first)
+    {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(image_multithread::MODULE_NAME);
+
+        first = false;
+    }
+}
+
+void initExternalModule()
+{
+    init();
+}
+
+const char* getModuleName()
+{
+    return image_multithread::MODULE_NAME;
+}
+
+const char* getModuleVersion()
+{
+    return image_multithread::MODULE_VERSION;
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+
+const char* getModuleDescription()
+{
+    return "Image support in SOFA with multithread";
+}
+
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+   registerDataExchange(factory);
+}
+
+} // namespace sofa::component
+

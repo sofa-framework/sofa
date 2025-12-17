@@ -17,7 +17,7 @@
     <VisualStyle displayFlags="showForceFields showWireFrame showBehavior" />
     <DefaultVisualManagerLoop />
     <FreeMotionAnimationLoop />
-    <ProjectedGaussSeidelConstraintSolver tolerance="0.0001" maxIterations="1000" regularizationTerm="1e-3" useSVDForRegularization="true"/>
+    <BlockGaussSeidelConstraintSolver tolerance="0.0001" maxIterations="1000" regularizationTerm="1e-3" useSVDForRegularization="true"/>
 
 
     <Node name="TargetCubeExtrimities">
