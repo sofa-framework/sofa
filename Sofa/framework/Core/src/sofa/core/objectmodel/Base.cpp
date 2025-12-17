@@ -680,7 +680,7 @@ int Base::getInstanciationSourceFilePos() const
     return m_instanciationSourceFilePos;
 }
 
-void Base::saveSnapshot(BaseSnapshot& type, int i)
+void Base::saveSnapshot(BaseSnapshot& type)
     {
         VecData datafield = this->getDataFields();
         VecLink componentlinks = this->getLinks();
@@ -688,36 +688,17 @@ void Base::saveSnapshot(BaseSnapshot& type, int i)
         std::vector<std::string> vtemp;
         for (auto* data : datafield)
         {
-            /// ReadAccessor data ? 
-            // std::cout << "getName : " << (*data).getName() << std::endl;
-            // std::cout << "getValueTypeString : " << (*data).getValueTypeString() << std::endl;
-            // std::cout << "getValueString : " << (*data).getValueString() << std::endl;
-            // std::cout << "getHelp : " << (*data).getHelp() << std::endl;
-            // std::cout << "============================================" << std::endl;
             type.setName( (*data).getName() );
-
-            //std::cout << "getName : " << type.getName() << std::endl;
-
             std::string dataname = type.getName();
-            
-
-            vtemp.push_back(dataname);
-            
-            
+            vtemp.push_back(dataname);    
         }
-        type.fillContainer(vtemp,i);
+        type.fillContainer(vtemp);
 
         // for (auto* links : componentlinks)
         // {
         //     /// ReadAccessor pour les links ?
 
-        // }
-        // auto SnapshotType = createSnapshot(type);
-        // type.printSnapshot() ;
-
-        
-        
-
+        // }      
     }
 
 } // namespace sofa::core::objectmodel

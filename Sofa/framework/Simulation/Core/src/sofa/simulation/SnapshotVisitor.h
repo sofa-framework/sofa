@@ -19,34 +19,51 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/core/objectmodel/Base.h>
 
-namespace sofa::core::objectmodel
+
+#include <sofa/config.h>
+#include <sofa/simulation/Visitor.h>
+#include <string>
+
+
+namespace sofa::simulation
 {
 
-class SOFA_CORE_API BaseSnapshot 
+
+class SOFA_SIMULATION_CORE_API SnapshotVisitor : public Visitor
 {
-
+protected:
+    int verbose;
+    int level;
+    bool visitingOrder; ///< by default print the graph organisation but can print the graph visiting by setting visitingOrder at true
 public:
-    virtual void printSnapshot() = 0;
-    virtual void exportSnapshot() = 0;
-    virtual void importSnapshot() = 0;
+    SnapshotVisitor(const sofa::core::ExecParams* eparams, bool bVisitingOrder=false) : Visitor(eparams), verbose(0), level(0), visitingOrder(bVisitingOrder) {}
 
-    virtual void setName(const std::string& name) = 0;
-    virtual std::string getName() const = 0;
+    void setVerbose(int v) { verbose = v; }
+    int getVerbose() const { return verbose; }
 
-    virtual void fillContainer(const std::vector<std::string>& name) = 0;
-    virtual std::vector<std::vector<std::string>> getContainer() const = 0;
+    bool treeTraversal( TreeTraversalRepetition& repeat ) override
+    {
+        if( visitingOrder )
+            return Visitor::treeTraversal( repeat ); // run the visitor with a regular traversal
+        else
+        {
+             // run the visitor with a tree traversal
+            repeat=REPEAT_ONCE;
+            return true;
+        }
+    }
 
+    template<class T>
+    void processObject(T obj);
 
-    BaseSnapshot();
-    virtual ~BaseSnapshot() = 0;
+    template<class Seq>
+    void processObjects(Seq& list, const char* name);
 
-public:
-    std::string dataName;
-    std::string dataValueType;
-    std::string valueStr;
-    std::vector<std::vector<std::string>> container;
+    Result processNodeTopDown(simulation::Node* node) override;
+    void processNodeBottomUp(simulation::Node* node) override;
+    const char* getClassName() const override { return "PrintVisitor"; }
 };
-} // namespace sofa::core::objectmodel
+
+} // namespace sofa::simulation
+

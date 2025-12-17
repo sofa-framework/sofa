@@ -31,11 +31,9 @@ namespace sofa::core::objectmodel
 
 std::unique_ptr<BaseSnapshot> createSnapshot(SnapshotType type)
 {
-    std::cout << "CreateSnapshot !" << std::endl;
     switch (type)
     {
         case SnapshotType::JSON:
-            std::cout << "CreateSnapshot : JSON !" << std::endl;
             return std::make_unique<JSONSnapshot>();
 
         default:

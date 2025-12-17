@@ -39,6 +39,8 @@ using sofa::defaulttype::Vec3Types;
 #include <sofa/core/objectmodel/SnapshotFactory.h>
 using sofa::core::objectmodel::SnapshotType;
 
+#include <sofa/simulation/SnapshotVisitor.h>
+using sofa::simulation::SnapshotVisitor;
 
 namespace customns
 {
@@ -146,25 +148,26 @@ TEST_F(Base_test, testSaveSnapshot)
     c.initScene() ;
 
     Node* root = c.root.get() ;
+
+    auto visitor = SnapshotVisitor(nullptr);
+    root->execute(visitor);
     
     std::vector<sofa::core::objectmodel::BaseObject*> vObj = root->getTreeObjects<sofa::core::objectmodel::BaseObject>();
 
     auto JSONSnapCont = createSnapshot(SnapshotType::JSON);
     
-    int i = -1;
+    
 
     for (auto* comp : vObj)
     {
         std::cout << "******************Nouvelle objet******************"<< std::endl;
         std::cout << comp->getPathName() << std::endl;
-        comp->saveSnapshot(*JSONSnapCont,i);
-        i+=1;
+        comp->saveSnapshot(*JSONSnapCont);
+        
     }
-    std::cout <<"i = " << i << std::endl;
     std::vector<std::vector<std::string>> testcont = JSONSnapCont->getContainer();
     std::cout << "TEst cont : " << testcont.size() <<std::endl;
-
-    
+  
     for (int j = 0; j< testcont.size(); j++)
     {
         std::cout << "Component n°" << j <<std::endl;
@@ -174,16 +177,5 @@ TEST_F(Base_test, testSaveSnapshot)
         }
         std::cout << std::endl;
     }
-    // for(BaseObject* tree : root->getTreeObjects())
-    // {
-    //     std::cout << tree->getClassName() << std::endl;
-    //      
-    // }
 
-    
-    // std::vector<std::string> tree ;
-    // root->getTreeObject(tree) ;
-
-    // sofa::core::objectmodel::Base* sBase;
-    // sBase->saveSnapshot(RequiredPlugin);
 }

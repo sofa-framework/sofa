@@ -55,7 +55,7 @@ std::string JSONSnapshot::getName() const
     return dataName;
 }
 
-void JSONSnapshot::fillContainer(const std::vector<std::string>& name, int i)
+void JSONSnapshot::fillContainer(const std::vector<std::string>& name)
 {
     container.push_back(name);
 }

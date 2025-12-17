@@ -38,7 +38,7 @@ public:
     void setName(const std::string& name) override;
     std::string getName() const override;
 
-    void fillContainer(const std::vector<std::string>& name, int i) override;
+    void fillContainer(const std::vector<std::string>& name) override;
     std::vector<std::vector<std::string>> getContainer() const override;
 
 
