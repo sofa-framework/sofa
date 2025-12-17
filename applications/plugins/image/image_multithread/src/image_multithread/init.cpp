@@ -19,40 +19,70 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <sofa/component/collision/geometry/config.h>
-
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/TriangleOctree.h>
-#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+#include <image_multithread/config.h>
+#include <image_multithread/init.h>
 
 
-namespace sofa::component::collision::geometry
+namespace image_multithread
 {
+//Here are just several convenient functions to help user to know what contains the plugin
 
-class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleOctreeCollisionModel : public  TriangleCollisionModel<sofa::defaulttype::Vec3Types>, public helper::TriangleOctreeRoot
+extern void registerDataExchange(sofa::core::ObjectFactory* factory);
+
+
+extern "C" {
+    SOFA_IMAGE_MULTITHREAD_API void initExternalModule();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleName();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleVersion();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleLicense();
+    SOFA_IMAGE_MULTITHREAD_API const char* getModuleDescription();
+    SOFA_IMAGE_MULTITHREAD_API void registerObjects(sofa::core::ObjectFactory* factory);
+}
+
+void init()
 {
-public:
-    SOFA_CLASS(TriangleOctreeCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
-protected:
-    TriangleOctreeCollisionModel();
-    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
-public:
-    Data<bool> d_drawOctree;  ///< draw the octree
+    static bool first = true;
+    if (first)
+    {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(image_multithread::MODULE_NAME);
 
-    /// the normals for each point
-    type::vector<type::Vec3> pNorms;
-    void computeBoundingTree(int maxDepth=0) override;
-    void computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) override;
-    /// init the octree creation
-    void buildOctree ();
-};
+        first = false;
+    }
+}
+
+void initExternalModule()
+{
+    init();
+}
+
+const char* getModuleName()
+{
+    return image_multithread::MODULE_NAME;
+}
+
+const char* getModuleVersion()
+{
+    return image_multithread::MODULE_VERSION;
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
 
-using TriangleOctreeModel SOFA_ATTRIBUTE_DEPRECATED__RENAMED_TRIANGLEOCTREEMODEL() = TriangleOctreeCollisionModel;
+const char* getModuleDescription()
+{
+    return "Image support in SOFA with multithread";
+}
 
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+   registerDataExchange(factory);
+}
 
-} // namespace sofa::component::collision::geometry
+} // namespace sofa::component
+

@@ -143,7 +143,7 @@ if(SofaPython_FOUND)
 endif()
 
 if(MultiThreading_FOUND)
-    target_link_libraries(${PROJECT_NAME} MultiThreading)
+    add_subdirectory(image_multithread)
 endif()
 
 if(SOFA_BUILD_TESTS)
