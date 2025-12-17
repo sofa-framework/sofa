@@ -164,7 +164,8 @@ void BuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cParams
             compliance.assembleMatrix();
         });
 
-    addRegularization(problem->W,  d_regularizationTerm.getValue());
+    if (problem->W.rowSize() || problem->W.colSize())
+        addRegularization(problem->W,  d_regularizationTerm.getValue());
     dmsg_info() << " computeCompliance_done "  ;
 }
 
