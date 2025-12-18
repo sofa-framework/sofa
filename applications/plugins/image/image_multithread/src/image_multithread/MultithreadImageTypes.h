@@ -19,40 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
-#include <sofa/component/collision/geometry/config.h>
+#ifndef IMAGE_IMAGETYPES_MULTITHREAD_H
+#define IMAGE_IMAGETYPES_MULTITHREAD_H
 
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/TriangleOctree.h>
-#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
+#include <image/ImageTypes.h>
+#include <image_multithread/config.h>
+#include <MultiThreading/DataExchange.h>
 
-
-namespace sofa::component::collision::geometry
+namespace sofa::core
 {
 
-class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleOctreeCollisionModel : public  TriangleCollisionModel<sofa::defaulttype::Vec3Types>, public helper::TriangleOctreeRoot
-{
-public:
-    SOFA_CLASS(TriangleOctreeCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
-protected:
-    TriangleOctreeCollisionModel();
-    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
-public:
-    Data<bool> d_drawOctree;  ///< draw the octree
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageB>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageD>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageUC>;
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageI>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageUI>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageS>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageUS>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageL>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageUL>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageF>;
+extern template class SOFA_IMAGE_MULTITHREAD_API DataExchange<sofa::defaulttype::ImageC>;
+#endif
 
-    /// the normals for each point
-    type::vector<type::Vec3> pNorms;
-    void computeBoundingTree(int maxDepth=0) override;
-    void computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) override;
-    /// init the octree creation
-    void buildOctree ();
-};
-
-
-using TriangleOctreeModel SOFA_ATTRIBUTE_DEPRECATED__RENAMED_TRIANGLEOCTREEMODEL() = TriangleOctreeCollisionModel;
-
-
-} // namespace sofa::component::collision::geometry
+}
+#endif

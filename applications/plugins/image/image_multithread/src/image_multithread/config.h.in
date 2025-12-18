@@ -21,38 +21,19 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/collision/geometry/config.h>
-
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/TriangleOctree.h>
-#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
+#include <sofa/config.h>
 
 
-namespace sofa::component::collision::geometry
+#ifdef SOFA_BUILD_IMAGE_MULTITHREAD
+#  define SOFA_TARGET image_multithread
+#  define SOFA_IMAGE_MULTITHREAD_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_IMAGE_MULTITHREAD_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+namespace image_multithread
 {
+	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+} // namespace image
 
-class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleOctreeCollisionModel : public  TriangleCollisionModel<sofa::defaulttype::Vec3Types>, public helper::TriangleOctreeRoot
-{
-public:
-    SOFA_CLASS(TriangleOctreeCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
-protected:
-    TriangleOctreeCollisionModel();
-    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
-public:
-    Data<bool> d_drawOctree;  ///< draw the octree
-
-    /// the normals for each point
-    type::vector<type::Vec3> pNorms;
-    void computeBoundingTree(int maxDepth=0) override;
-    void computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) override;
-    /// init the octree creation
-    void buildOctree ();
-};
-
-
-using TriangleOctreeModel SOFA_ATTRIBUTE_DEPRECATED__RENAMED_TRIANGLEOCTREEMODEL() = TriangleOctreeCollisionModel;
-
-
-} // namespace sofa::component::collision::geometry
