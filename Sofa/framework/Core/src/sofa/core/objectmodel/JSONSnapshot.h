@@ -29,26 +29,19 @@ namespace sofa::core::objectmodel
 
 class SOFA_CORE_API JSONSnapshot : public BaseSnapshot 
 {
-
+    
 public:
     void printSnapshot() override;
     void exportSnapshot() override;
     void importSnapshot() override;
 
-    void setName(const std::string& name) override;
-    std::string getName() const override;
-
-    void fillContainer(const std::vector<std::string>& name) override;
-    std::vector<std::vector<std::string>> getContainer() const override;
-
+    void fillDataSnapshot(BaseData* dat) override;
+    void fillSnapshot(DataSnapshot datasnap) override;
+    void fillLinkSnapshot(BaseLink* link) override;
+    void collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& componentlinks) override;
 
     JSONSnapshot();
     ~JSONSnapshot();
 
-public:
-    std::string dataName;
-    std::string dataValueType;
-    std::string valueStr;
-    std::vector<std::vector<std::string>> container;
 };
 } // namespace sofa::core::objectmodel

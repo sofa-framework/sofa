@@ -26,7 +26,7 @@
 
 namespace sofa::core::objectmodel
 {
- class BaseSnapshot; 
+class BaseSnapshot; 
 enum class SnapshotType
 {
     JSON,

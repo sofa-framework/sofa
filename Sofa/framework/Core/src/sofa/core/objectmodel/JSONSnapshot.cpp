@@ -32,12 +32,12 @@ JSONSnapshot::~JSONSnapshot() = default;
 
 void JSONSnapshot::printSnapshot()
 {
-    std::cout << "printJSONSnapshot" << std::endl;
+    std::cout << "printJSONSnapshot data : " << snapshot.size() << std::endl;
 }
 
 void JSONSnapshot::exportSnapshot()
 {
-    std::cout << "exportSnapshot" << std::endl;
+    std::cout << "exportSnapshot" << std::endl;   
 }
 
 void JSONSnapshot::importSnapshot()
@@ -45,25 +45,33 @@ void JSONSnapshot::importSnapshot()
     std::cout << "importSnapshot" << std::endl;
 }
 
-void JSONSnapshot::setName(const std::string& name)
+void JSONSnapshot::fillDataSnapshot(BaseData* dat)
 {
-    dataName = name;
+    dataSnapshot_.dataContainer.push_back(dat);
 }
 
-std::string JSONSnapshot::getName() const
+void JSONSnapshot::fillSnapshot(DataSnapshot datasnap)
 {
-    return dataName;
+    snapshot.push_back(datasnap);
 }
 
-void JSONSnapshot::fillContainer(const std::vector<std::string>& name)
+void JSONSnapshot::fillLinkSnapshot(BaseLink* link)
 {
-    container.push_back(name);
+    dataSnapshot_.linkContainer.push_back(link);
 }
 
-std::vector<std::vector<std::string>> JSONSnapshot::getContainer() const
+void JSONSnapshot::collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& componentlinks )
 {
-    return container;
+    for (auto* data : datafield)
+    {
+        fillDataSnapshot(data);
+    }
+    
+    for(auto* link : componentlinks)
+    {
+        fillLinkSnapshot(link);
+    }
+    fillSnapshot(dataSnapshot_);
 }
-
 
 } // namespace sofa::core::objectmodel

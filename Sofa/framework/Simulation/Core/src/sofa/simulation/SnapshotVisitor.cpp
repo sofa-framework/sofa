@@ -35,65 +35,40 @@
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/BaseMapping.h>
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/topology/BaseTopologyObject.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/core/visual/Shader.h>
+#include <sofa/core/visual/VisualManager.h>
+//#include <sofa/core/visual/VisualLoop.h>
+#include <sofa/core/visual/BaseVisualStyle.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+// #include <sofa/core/BaseState.h>
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/SnapshotFactory.h>
+using sofa::core::objectmodel::SnapshotType;
 
 
 namespace sofa::simulation
 {
 
-
-template<class T>
-void SnapshotVisitor::processObject(T obj)
+void SnapshotVisitor::processObject(core::objectmodel::BaseObject* obj)
 {
-    std::cout << ' ' << obj->getName() << '(' << sofa::helper::gettypename(typeid(*obj)) << ')';
-}
-
-template<class Seq>
-void SnapshotVisitor::processObjects(Seq& list, const char* name)
-{
-    if (list.empty()) return;
-    for (int i=0; i<=level; i++)
-        std::cout << "| ";
-    std::cout << name << ":";
-    for (typename Seq::iterator it = list.begin(); it != list.end(); ++it)
-    {
-        typename Seq::value_type obj = *it;
-        this->processObject<typename Seq::value_type>(obj);
-    }
-    std::cout << std::endl;
+    obj->saveSnapshot(snapCont_);
 }
 
 Visitor::Result SnapshotVisitor::processNodeTopDown(simulation::Node* node)
-{
-    for (int i=0; i<level; i++)
-        std::cout << "| ";
-    std::cout << "+-";
-    std::cout << node->getName()<<std::endl;
-    ++level;
-    processObjects(node->mechanicalState,"MechanicalState");
-    processObjects(node->mechanicalMapping,"MechanicalMapping");
-    processObjects(node->solver,"Solver");
-    processObjects(node->linearSolver,"LinearSolver");
-    processObjects(node->mass,"Mass");
-    processObjects(node->topology,"Topology");
-    processObjects(node->forceField,"ForceField");
-    processObjects(node->interactionForceField,"InteractionForceField");
-    processObjects(node->projectiveConstraintSet,"ProjectiveConstraintSet");
-    processObjects(node->constraintSet,"ConstraintSet");
-    processObjects(node->contextObject,"ContextObject");
-
-    processObjects(node->mapping,"Mapping");
-    processObjects(node->behaviorModel,"BehaviorModel");
-    processObjects(node->visualModel,"VisualModel");
-    processObjects(node->collisionModel,"CollisionModel");
-    processObjects(node->collisionPipeline,"CollisionPipeline");
-    processObjects(node->unsorted,"unsorted");
-
+{ 
+    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    {
+        this->processObject(it->get());
+    } 
     return RESULT_CONTINUE;
 }
 
 void SnapshotVisitor::processNodeBottomUp(simulation::Node* /*node*/)
 {
-    --level;
 }
 
 

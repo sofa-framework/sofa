@@ -684,21 +684,8 @@ void Base::saveSnapshot(BaseSnapshot& type)
     {
         VecData datafield = this->getDataFields();
         VecLink componentlinks = this->getLinks();
-        
-        std::vector<std::string> vtemp;
-        for (auto* data : datafield)
-        {
-            type.setName( (*data).getName() );
-            std::string dataname = type.getName();
-            vtemp.push_back(dataname);    
-        }
-        type.fillContainer(vtemp);
-
-        // for (auto* links : componentlinks)
-        // {
-        //     /// ReadAccessor pour les links ?
-
-        // }      
+        type.collectData(datafield, componentlinks);
+        // type.printSnapshot();   
     }
 
 } // namespace sofa::core::objectmodel

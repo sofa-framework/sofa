@@ -149,33 +149,33 @@ TEST_F(Base_test, testSaveSnapshot)
 
     Node* root = c.root.get() ;
 
-    auto visitor = SnapshotVisitor(nullptr);
+    auto JSONSnapCont = createSnapshot(SnapshotType::JSON);
+    auto visitor = SnapshotVisitor(nullptr,*JSONSnapCont);
     root->execute(visitor);
     
-    std::vector<sofa::core::objectmodel::BaseObject*> vObj = root->getTreeObjects<sofa::core::objectmodel::BaseObject>();
-
-    auto JSONSnapCont = createSnapshot(SnapshotType::JSON);
+    // std::vector<sofa::core::objectmodel::BaseObject*> vObj = root->getTreeObjects<sofa::core::objectmodel::BaseObject>();
+    
+    
     
     
 
-    for (auto* comp : vObj)
-    {
-        std::cout << "******************Nouvelle objet******************"<< std::endl;
-        std::cout << comp->getPathName() << std::endl;
-        comp->saveSnapshot(*JSONSnapCont);
+    // for (auto* comp : vObj)
+    // {
+    //     std::cout << comp->getPathName() << std::endl;
+    //     comp->saveSnapshot(*JSONSnapCont);
         
-    }
-    std::vector<std::vector<std::string>> testcont = JSONSnapCont->getContainer();
-    std::cout << "TEst cont : " << testcont.size() <<std::endl;
+    // }
+    
+    // std::vector<std::vector<std::string>> testcont = JSONSnapCont->getContainer();
   
-    for (int j = 0; j< testcont.size(); j++)
-    {
-        std::cout << "Component n°" << j <<std::endl;
-        for(int k = 0; k< testcont[j].size();k++)
-        {
-            std::cout << testcont[j][k] << " ";
-        }
-        std::cout << std::endl;
-    }
+    // for (int j = 0; j< testcont.size(); j++)
+    // {
+    //     std::cout << "Component n°" << j <<std::endl;
+    //     for(int k = 0; k< testcont[j].size();k++)
+    //     {
+    //         std::cout << testcont[j][k] << " ";
+    //     }
+    //     std::cout << std::endl;
+    // }
 
 }

@@ -24,6 +24,8 @@
 #include <sofa/config.h>
 #include <sofa/simulation/Visitor.h>
 #include <string>
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/BaseSnapshot.h>
 
 
 namespace sofa::simulation
@@ -33,36 +35,16 @@ namespace sofa::simulation
 class SOFA_SIMULATION_CORE_API SnapshotVisitor : public Visitor
 {
 protected:
-    int verbose;
-    int level;
-    bool visitingOrder; ///< by default print the graph organisation but can print the graph visiting by setting visitingOrder at true
+    core::objectmodel::BaseSnapshot& snapCont_; 
 public:
-    SnapshotVisitor(const sofa::core::ExecParams* eparams, bool bVisitingOrder=false) : Visitor(eparams), verbose(0), level(0), visitingOrder(bVisitingOrder) {}
+    SnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::BaseSnapshot& snapCont) : Visitor(eparams), snapCont_(snapCont) {}
 
-    void setVerbose(int v) { verbose = v; }
-    int getVerbose() const { return verbose; }
-
-    bool treeTraversal( TreeTraversalRepetition& repeat ) override
-    {
-        if( visitingOrder )
-            return Visitor::treeTraversal( repeat ); // run the visitor with a regular traversal
-        else
-        {
-             // run the visitor with a tree traversal
-            repeat=REPEAT_ONCE;
-            return true;
-        }
-    }
-
-    template<class T>
-    void processObject(T obj);
-
-    template<class Seq>
-    void processObjects(Seq& list, const char* name);
+    void processObject(core::objectmodel::BaseObject* obj);
 
     Result processNodeTopDown(simulation::Node* node) override;
     void processNodeBottomUp(simulation::Node* node) override;
-    const char* getClassName() const override { return "PrintVisitor"; }
+    const char* getClassName() const override { return "SnapshotVisitor"; }
+
 };
 
 } // namespace sofa::simulation

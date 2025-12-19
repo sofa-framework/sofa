@@ -20,33 +20,41 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/core/objectmodel/Base.h>
+// #include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/core/objectmodel/BaseLink.h>
 
 namespace sofa::core::objectmodel
 {
-
+class Base;
 class SOFA_CORE_API BaseSnapshot 
 {
+    
+protected:
+
+    struct DataSnapshot
+    {
+        std::vector<BaseData*> dataContainer;
+        std::vector<BaseLink*> linkContainer;
+    };
+
+    DataSnapshot dataSnapshot_;
+
+    std::vector<DataSnapshot> snapshot;
 
 public:
     virtual void printSnapshot() = 0;
     virtual void exportSnapshot() = 0;
     virtual void importSnapshot() = 0;
-
-    virtual void setName(const std::string& name) = 0;
-    virtual std::string getName() const = 0;
-
-    virtual void fillContainer(const std::vector<std::string>& name) = 0;
-    virtual std::vector<std::vector<std::string>> getContainer() const = 0;
-
+    virtual void fillDataSnapshot(BaseData* dat) = 0 ;
+    virtual void fillSnapshot(DataSnapshot datasnap) = 0;
+    virtual void fillLinkSnapshot(BaseLink* link) = 0;
+    virtual void collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& componentlinks) = 0;
 
     BaseSnapshot();
     virtual ~BaseSnapshot() = 0;
 
-public:
-    std::string dataName;
-    std::string dataValueType;
-    std::string valueStr;
-    std::vector<std::vector<std::string>> container;
+
+    
 };
 } // namespace sofa::core::objectmodel

@@ -28,4 +28,6 @@ BaseSnapshot::BaseSnapshot()
 {}
 BaseSnapshot::~BaseSnapshot() = default;
 
+
+
 } // namespace sofa::core::objectmodel
