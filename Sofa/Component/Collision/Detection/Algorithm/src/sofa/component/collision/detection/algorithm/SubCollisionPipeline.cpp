@@ -118,6 +118,7 @@ void SubCollisionPipeline::computeCollisionDetection()
         SCOPED_TIMER_VARNAME(bboxtimer, "ComputeBoundingTree");
 
         const bool continuous = l_intersectionMethod->useContinuous();
+        const auto continuousIntersectionType = l_intersectionMethod->continuousIntersectionType();
         const SReal dt       = getContext()->getDt();
 
         int nActive = 0;
@@ -138,7 +139,7 @@ void SubCollisionPipeline::computeCollisionDetection()
             {
                 const std::string msg = "Compute Continuous BoundingTree: " + (*it)->getName();
                 ScopedAdvancedTimer continuousBoundingTreeTimer(msg.c_str());
-                (*it)->computeContinuousBoundingTree(dt, used_depth);
+                (*it)->computeContinuousBoundingTree(dt, continuousIntersectionType, used_depth);
             }
             else
             {
@@ -153,7 +154,7 @@ void SubCollisionPipeline::computeCollisionDetection()
 
 
         msg_info()
-                << "doCollisionDetection, Computed "<<nActive<<" BBoxs" ;
+                << "doCollisionDetection, Computed "<<nActive<<" Bounding Boxes." ;
     }
 
     msg_info()

@@ -76,6 +76,9 @@ public:
     sofa::Data<bool> d_parallelDetection;
     sofa::Data<bool> d_parallelResponse;
     sofa::MultiLink < MultiCollisionPipeline, AbstractSubCollisionPipeline, sofa::BaseLink::FLAG_DUPLICATE > l_subCollisionPipelines;
+    
+    
+    friend class CollisionPipeline; // to be able to call do*()
 };
 
 } // namespace sofa::component::collision::detection::algorithm
