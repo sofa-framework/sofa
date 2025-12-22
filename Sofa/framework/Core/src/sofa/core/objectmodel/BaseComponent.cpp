@@ -227,7 +227,7 @@ void BaseComponent::addSlave(BaseComponent::SPtr s)
         previous->l_slaves.remove(s);
     l_slaves.add(s.get());
         previous->l_slaves.remove(s.get());
-    l_slaves.add(s);
+    l_slaves.add(s.get());
     if (previous)
         this->getContext()->notifyMoveSlave(previous.get(), this, s.get());
     else
