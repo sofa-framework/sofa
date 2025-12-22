@@ -23,6 +23,8 @@
 #include <sofa/component/collision/detection/algorithm/config.h>
 
 #include <sofa/simulation/PipelineImpl.h>
+#include <sofa/component/collision/detection/algorithm/MultiCollisionPipeline.h>
+#include <sofa/component/collision/detection/algorithm/SubCollisionPipeline.h>
 
 namespace sofa::component::collision::detection::algorithm
 {
@@ -35,6 +37,7 @@ public:
     Data<bool> d_doPrintInfoMessage;
     Data<bool> d_doDebugDraw;
     Data<int>  d_depth;
+    
 protected:
     CollisionPipeline();
 public:
@@ -52,6 +55,9 @@ protected:
     void doCollisionResponse() override;
 
     virtual void checkDataValues() ;
+    
+    MultiCollisionPipeline::SPtr m_multiCollisionPipeline;
+    SubCollisionPipeline::SPtr m_subCollisionPipeline;
 
 public:
     static const int defaultDepthValue;
