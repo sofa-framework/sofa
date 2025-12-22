@@ -38,6 +38,8 @@ using sofa::scenechecking::SceneCheckMissingRequiredPlugin;
 using sofa::scenechecking::SceneCheckDuplicatedName;
 #include <SceneChecking/SceneCheckUsingAlias.h>
 using sofa::scenechecking::SceneCheckUsingAlias;
+#include <SceneChecking/SceneCheckCollisionPipelineAndModels.h>
+using sofa::scenechecking::SceneCheckCollisionPipelineAndModels;
 
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager;
@@ -238,6 +240,74 @@ struct SceneChecker_test : public BaseSimulationTest
             checker.validate(root.get(), &sceneLoader);
         }
     }
+    
+    void checkCollisionPipelineModels(bool withPipeline, bool withCollisionModel)
+    {
+        std::string scenePrefix = R"("
+<Node name='root'>
+    <DefaultAnimationLoop/>
+    <RequiredPlugin name='Sofa.Component.Collision.Detection.Algorithm' />
+    <RequiredPlugin name='Sofa.Component.Collision.Detection.Intersection' />
+    <RequiredPlugin name='Sofa.Component.Collision.Geometry' />
+    <RequiredPlugin name='Sofa.Component.Collision.Response.Contact' />
+)";
+        std::string scenePipeline = R"("
+    <CollisionPipeline verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <CollisionResponse name="Response" response="PenalityContactForceField" />
+    <DiscreteIntersection />
+)";
+        std::string sceneModel = R"("
+    <Node name='Collision'>
+        <MechanicalObject position="1 1 1" />
+        <SphereCollisionModel name="Floor" radius="1" />
+    </Node>
+)";
+        std::string sceneSuffix = R"("
+</Node>
+)";
+        std::string scene = scenePrefix;
+        if(withPipeline)
+        {
+            scene += scenePipeline;
+        }
+        if(withCollisionModel)
+        {
+            scene += sceneModel;
+        }
+        scene += sceneSuffix;
+        
+        SceneCheckerVisitor checker(sofa::core::execparams::defaultInstance());
+        checker.addCheck( SceneCheckCollisionPipelineAndModels::newSPtr() );
+
+        SceneLoaderXML sceneLoader;
+        const Node::SPtr root = sceneLoader.doLoadFromMemory("testscene", scene.c_str());
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
+
+        if(!withPipeline && !withCollisionModel)
+        {
+            EXPECT_MSG_NOEMIT(Warning);
+            checker.validate(root.get(), &sceneLoader);
+        }
+        if(withPipeline && !withCollisionModel)
+        {
+            EXPECT_MSG_EMIT(Warning);
+            checker.validate(root.get(), &sceneLoader);
+        }
+        if(!withPipeline && withCollisionModel)
+        {
+            EXPECT_MSG_EMIT(Warning);
+            checker.validate(root.get(), &sceneLoader);
+        }
+        if(withPipeline && withCollisionModel)
+        {
+            EXPECT_MSG_NOEMIT(Warning);
+            checker.validate(root.get(), &sceneLoader);
+        }
+        
+    }
 };
 
 TEST_F(SceneChecker_test, checkMissingRequiredPlugin )
@@ -278,4 +348,21 @@ TEST_F(SceneChecker_test, checkUsingAlias_withAlias )
 TEST_F(SceneChecker_test, checkUsingAlias_withoutAlias )
 {
     checkUsingAlias(false);
+}
+
+TEST_F(SceneChecker_test, checkCollisionPipelineModels_nothing )
+{
+    checkCollisionPipelineModels(false, false);
+}
+TEST_F(SceneChecker_test, checkCollisionPipelineModels_onlyPipeline )
+{
+    checkCollisionPipelineModels(true, false);
+}
+TEST_F(SceneChecker_test, checkCollisionPipelineModels_onlyModel )
+{
+    checkCollisionPipelineModels(false, true);
+}
+TEST_F(SceneChecker_test, checkCollisionPipelineModels_both )
+{
+    checkCollisionPipelineModels(true, true);
 }
