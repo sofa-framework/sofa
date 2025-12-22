@@ -20,11 +20,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/JSONSnapshot.h>
+#include <nlohmann/json.hpp>
 
+#include <fstream>
+#include <string>
+#include <stdexcept>
 #include <iostream>
+#include <sofa/helper/system/SetDirectory.h>
 
 namespace sofa::core::objectmodel
 {
+
 
 JSONSnapshot::JSONSnapshot()
 {}
@@ -35,9 +41,82 @@ void JSONSnapshot::printSnapshot()
     std::cout << "printJSONSnapshot data : " << snapshot.size() << std::endl;
 }
 
-void JSONSnapshot::exportSnapshot()
+void to_json(nlohmann::json& j, const BaseSnapshot::DataInfo& di )
 {
-    std::cout << "exportSnapshot" << std::endl;   
+    j.clear();
+    j["name"]  = di.name;
+    j["type"]  = di.type;
+    j["value"] = di.value;
+}
+
+void to_json(nlohmann::json& j, const BaseSnapshot::LinkInfo& li )
+{
+    j.clear();
+    j["name"]       = li.name;
+    j["linkedpath"] = li.linkedpath;
+    j["path"]       = li.path;
+}
+
+void to_json(nlohmann::json& j, const BaseSnapshot::SparseDataSnapshot& sds )
+{
+    j.clear();
+    j["datas"] = sds.dataContainer;
+    j["links"] = sds.linkContainer;
+}
+
+void JSONSnapshot::exportSnapshot(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield)
+{
+    std::cout << "exportSnapshot" << std::endl;
+    
+    DataInfo dinfo;
+    for (auto* data : datafield)
+    {
+        
+        dinfo.name = data->getName();
+        dinfo.type = data->getValueTypeString();
+        dinfo.value = data->getValueString();
+        SparseDataSnapshot_.dataContainer.push_back(dinfo); 
+    }
+    LinkInfo linfo;
+    for (auto* link : linkfield)
+    {
+        
+        linfo.name = link->getName();
+        linfo.linkedpath = link->getLinkedPath();
+        linfo.path = link->getPath();
+        SparseDataSnapshot_.linkContainer.push_back(linfo);
+    }
+
+    // nlohmann::json j = sdsSnap;
+    // std::ofstream file("output.json");
+    // file << j.dump(4);
+    // file.close();
+}
+
+// std::vector<BaseData*> JSONSnapshot::getDataField() const
+// {
+//     return dataSnapshot_.dataContainer;
+// }
+
+// std::vector<BaseLink*> JSONSnapshot::getLinkField() const
+// {
+//     return dataSnapshot_.linkContainer;
+// }
+
+
+// void JSONSnapshot::from_json(const nlohmann::json& j, DataSnapshot& ds )
+// {
+//     j.at("Data").get_to(ds.dataContainer);
+//     j.at("Link").get_to(ds.linkContainer);
+// }
+
+void JSONSnapshot::exportToJSON()
+{
+    std::cout << "exportToJSON" << std::endl;
+    nlohmann::json j = SparseDataSnapshot_;
+    std::ofstream file("output.json");
+    file << j.dump(4);
+    file.close();
 }
 
 void JSONSnapshot::importSnapshot()

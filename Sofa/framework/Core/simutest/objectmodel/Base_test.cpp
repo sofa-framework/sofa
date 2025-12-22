@@ -137,7 +137,7 @@ TEST_F(Base_test, testSaveSnapshot)
             <DefaultAnimationLoop />
             <DefaultVisualManagerLoop />
             <Node name='child1'>
-                <MechanicalObject />
+                <MechanicalObject name='MO1' />
                 <Node name='child2'>
                 </Node>
             </Node>
@@ -152,6 +152,7 @@ TEST_F(Base_test, testSaveSnapshot)
     auto JSONSnapCont = createSnapshot(SnapshotType::JSON);
     auto visitor = SnapshotVisitor(nullptr,*JSONSnapCont);
     root->execute(visitor);
+    JSONSnapCont->exportToJSON();
     
     // std::vector<sofa::core::objectmodel::BaseObject*> vObj = root->getTreeObjects<sofa::core::objectmodel::BaseObject>();
     

@@ -41,15 +41,40 @@ protected:
     DataSnapshot dataSnapshot_;
 
     std::vector<DataSnapshot> snapshot;
+public:
+    struct DataInfo
+    {
+        std::string name;
+        std::string type;
+        std::string value;
+    };
+
+    struct LinkInfo
+    {
+        std::string name;
+        std::string linkedpath;
+        std::string path;
+    };
+
+    struct SparseDataSnapshot
+    {
+        std::vector<DataInfo> dataContainer;
+        std::vector<LinkInfo> linkContainer;
+    };
+
+    SparseDataSnapshot SparseDataSnapshot_;
+
+    std::vector<SparseDataSnapshot> SparseSnapshot;
 
 public:
     virtual void printSnapshot() = 0;
-    virtual void exportSnapshot() = 0;
+    virtual void exportSnapshot(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield) = 0;
     virtual void importSnapshot() = 0;
     virtual void fillDataSnapshot(BaseData* dat) = 0 ;
     virtual void fillSnapshot(DataSnapshot datasnap) = 0;
     virtual void fillLinkSnapshot(BaseLink* link) = 0;
     virtual void collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& componentlinks) = 0;
+    virtual void exportToJSON() = 0;
 
     BaseSnapshot();
     virtual ~BaseSnapshot() = 0;

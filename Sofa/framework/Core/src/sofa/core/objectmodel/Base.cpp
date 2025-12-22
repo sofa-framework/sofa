@@ -684,8 +684,9 @@ void Base::saveSnapshot(BaseSnapshot& type)
     {
         VecData datafield = this->getDataFields();
         VecLink componentlinks = this->getLinks();
-        type.collectData(datafield, componentlinks);
-        // type.printSnapshot();   
+        //type.collectData(datafield, componentlinks);
+        // type.printSnapshot();
+        type.exportSnapshot(datafield, componentlinks);
     }
 
 } // namespace sofa::core::objectmodel

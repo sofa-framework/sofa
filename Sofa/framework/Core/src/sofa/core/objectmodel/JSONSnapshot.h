@@ -22,6 +22,8 @@
 #pragma once
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseSnapshot.h>
+#include <nlohmann/json.hpp>
+
 
 
 namespace sofa::core::objectmodel
@@ -29,19 +31,25 @@ namespace sofa::core::objectmodel
 
 class SOFA_CORE_API JSONSnapshot : public BaseSnapshot 
 {
-    
+
 public:
     void printSnapshot() override;
-    void exportSnapshot() override;
+    void exportSnapshot(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield) override;
     void importSnapshot() override;
 
     void fillDataSnapshot(BaseData* dat) override;
     void fillSnapshot(DataSnapshot datasnap) override;
     void fillLinkSnapshot(BaseLink* link) override;
     void collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& componentlinks) override;
-
+        
+        // std::vector<BaseLink*> getLinkField() const;
+        // std::vector<BaseLink*> getLinkField() const;
+    void exportToJSON();
     JSONSnapshot();
     ~JSONSnapshot();
+
+
+
 
 };
 } // namespace sofa::core::objectmodel
