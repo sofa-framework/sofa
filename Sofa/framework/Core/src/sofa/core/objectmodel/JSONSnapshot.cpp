@@ -64,14 +64,11 @@ void to_json(nlohmann::json& j, const BaseSnapshot::SparseDataSnapshot& sds )
     j["links"] = sds.linkContainer;
 }
 
-void JSONSnapshot::exportSnapshot(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield)
+void JSONSnapshot::collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield)
 {
-    std::cout << "exportSnapshot" << std::endl;
-    
     DataInfo dinfo;
     for (auto* data : datafield)
     {
-        
         dinfo.name = data->getName();
         dinfo.type = data->getValueTypeString();
         dinfo.value = data->getValueString();
@@ -80,41 +77,17 @@ void JSONSnapshot::exportSnapshot(const std::vector<BaseData*>& datafield, const
     LinkInfo linfo;
     for (auto* link : linkfield)
     {
-        
         linfo.name = link->getName();
         linfo.linkedpath = link->getLinkedPath();
         linfo.path = link->getPath();
         SparseDataSnapshot_.linkContainer.push_back(linfo);
     }
-
-    // nlohmann::json j = sdsSnap;
-    // std::ofstream file("output.json");
-    // file << j.dump(4);
-    // file.close();
 }
 
-// std::vector<BaseData*> JSONSnapshot::getDataField() const
-// {
-//     return dataSnapshot_.dataContainer;
-// }
-
-// std::vector<BaseLink*> JSONSnapshot::getLinkField() const
-// {
-//     return dataSnapshot_.linkContainer;
-// }
-
-
-// void JSONSnapshot::from_json(const nlohmann::json& j, DataSnapshot& ds )
-// {
-//     j.at("Data").get_to(ds.dataContainer);
-//     j.at("Link").get_to(ds.linkContainer);
-// }
-
-void JSONSnapshot::exportToJSON()
+void JSONSnapshot::exportToJSON(const std::string filename)
 {
-    std::cout << "exportToJSON" << std::endl;
     nlohmann::json j = SparseDataSnapshot_;
-    std::ofstream file("output.json");
+    std::ofstream file(filename);
     file << j.dump(4);
     file.close();
 }
@@ -139,18 +112,18 @@ void JSONSnapshot::fillLinkSnapshot(BaseLink* link)
     dataSnapshot_.linkContainer.push_back(link);
 }
 
-void JSONSnapshot::collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& componentlinks )
-{
-    for (auto* data : datafield)
-    {
-        fillDataSnapshot(data);
-    }
+// void JSONSnapshot::collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& componentlinks )
+// {
+//     for (auto* data : datafield)
+//     {
+//         fillDataSnapshot(data);
+//     }
     
-    for(auto* link : componentlinks)
-    {
-        fillLinkSnapshot(link);
-    }
-    fillSnapshot(dataSnapshot_);
-}
+//     for(auto* link : componentlinks)
+//     {
+//         fillLinkSnapshot(link);
+//     }
+//     fillSnapshot(dataSnapshot_);
+// }
 
 } // namespace sofa::core::objectmodel

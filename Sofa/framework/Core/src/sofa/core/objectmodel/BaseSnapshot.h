@@ -68,13 +68,12 @@ public:
 
 public:
     virtual void printSnapshot() = 0;
-    virtual void exportSnapshot(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield) = 0;
     virtual void importSnapshot() = 0;
     virtual void fillDataSnapshot(BaseData* dat) = 0 ;
     virtual void fillSnapshot(DataSnapshot datasnap) = 0;
     virtual void fillLinkSnapshot(BaseLink* link) = 0;
-    virtual void collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& componentlinks) = 0;
-    virtual void exportToJSON() = 0;
+    virtual void collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield) = 0;
+    virtual void exportToJSON(const std::string filename) = 0;
 
     BaseSnapshot();
     virtual ~BaseSnapshot() = 0;

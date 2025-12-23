@@ -686,7 +686,7 @@ void Base::saveSnapshot(BaseSnapshot& type)
         VecLink componentlinks = this->getLinks();
         //type.collectData(datafield, componentlinks);
         // type.printSnapshot();
-        type.exportSnapshot(datafield, componentlinks);
+        type.collectData(datafield, componentlinks);
     }
 
 } // namespace sofa::core::objectmodel
