@@ -36,10 +36,10 @@ using sofa::testing::BaseTest ;
  * inhertited type
  ***********************************************************************************/
 template<class Link>
-class FakeObject : public BaseObject
+class FakeObject : public sofa::core::objectmodel::BaseObject
 {
 public:
-    FakeObject() : BaseObject()
+    FakeObject() : sofa::core::objectmodel::BaseObject()
     {       
     }
 };
