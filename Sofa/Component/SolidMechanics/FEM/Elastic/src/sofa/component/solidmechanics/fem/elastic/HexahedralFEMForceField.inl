@@ -659,9 +659,6 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (!this->mstate) return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-    vparams->drawTool()->disableLighting();
-    std::vector<sofa::type::RGBAColor> colorVector;
-    std::vector<sofa::type::Vec3> vertices;
 
     const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
@@ -670,92 +667,7 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         vparams->drawTool()->setPolygonMode(0, true);
     }
 
-    for(size_t i = 0 ; i<this->l_topology->getNbHexahedra(); ++i)
-    {
-        const core::topology::BaseMeshTopology::Hexahedron &t=this->l_topology->getHexahedron(i);
-
-        Index a = t[0];
-        Index b = t[1];
-        Index d = t[2];
-        Index c = t[3];
-        Index e = t[4];
-        Index f = t[5];
-        Index h = t[6];
-        Index g = t[7];
-
-        Coord center = (x[a]+x[b]+x[c]+x[d]+x[e]+x[g]+x[f]+x[h])*0.125;
-        Real percentage = (Real) 0.15;
-        Coord p0 = x[a]-(x[a]-center)*percentage;
-        Coord p1 = x[b]-(x[b]-center)*percentage;
-        Coord p2 = x[c]-(x[c]-center)*percentage;
-        Coord p3 = x[d]-(x[d]-center)*percentage;
-        Coord p4 = x[e]-(x[e]-center)*percentage;
-        Coord p5 = x[f]-(x[f]-center)*percentage;
-        Coord p6 = x[g]-(x[g]-center)*percentage;
-        Coord p7 = x[h]-(x[h]-center)*percentage;
-
-        constexpr sofa::type::RGBAColor color1(0.7f, 0.7f, 0.1f, 1.0f);
-        colorVector.push_back(color1);
-        colorVector.push_back(color1);
-        colorVector.push_back(color1);
-        colorVector.push_back(color1);
-        vertices.push_back(DataTypes::getCPos(p5));
-        vertices.push_back(DataTypes::getCPos(p1));
-        vertices.push_back(DataTypes::getCPos(p3));
-        vertices.push_back(DataTypes::getCPos(p7));
-
-        constexpr sofa::type::RGBAColor color2(0.7f, 0.0f, 0.0f, 1.0f);
-        colorVector.push_back(color2);
-        colorVector.push_back(color2);
-        colorVector.push_back(color2);
-        colorVector.push_back(color2);
-        vertices.push_back(DataTypes::getCPos(p1));
-        vertices.push_back(DataTypes::getCPos(p0));
-        vertices.push_back(DataTypes::getCPos(p2));
-        vertices.push_back(DataTypes::getCPos(p3));
-
-        constexpr sofa::type::RGBAColor color3(0.0f, 0.7f, 0.0f, 1.0f);
-        colorVector.push_back(color3);
-        colorVector.push_back(color3);
-        colorVector.push_back(color3);
-        colorVector.push_back(color3);
-        vertices.push_back(DataTypes::getCPos(p0));
-        vertices.push_back(DataTypes::getCPos(p4));
-        vertices.push_back(DataTypes::getCPos(p6));
-        vertices.push_back(DataTypes::getCPos(p2));
-
-        constexpr sofa::type::RGBAColor color4(0.0f, 0.0f, 0.7f, 1.0f);
-        colorVector.push_back(color4);
-        colorVector.push_back(color4);
-        colorVector.push_back(color4);
-        colorVector.push_back(color4);
-        vertices.push_back(DataTypes::getCPos(p4));
-        vertices.push_back(DataTypes::getCPos(p5));
-        vertices.push_back(DataTypes::getCPos(p7));
-        vertices.push_back(DataTypes::getCPos(p6));
-
-        constexpr sofa::type::RGBAColor color5(0.1f, 0.7f, 0.7f, 1.0f);
-        colorVector.push_back(color5);
-        colorVector.push_back(color5);
-        colorVector.push_back(color5);
-        colorVector.push_back(color5);
-        vertices.push_back(DataTypes::getCPos(p7));
-        vertices.push_back(DataTypes::getCPos(p3));
-        vertices.push_back(DataTypes::getCPos(p2));
-        vertices.push_back(DataTypes::getCPos(p6));
-
-        constexpr sofa::type::RGBAColor color6(0.1f, 0.7f, 0.7f, 1.0f);
-        colorVector.push_back(color6);
-        colorVector.push_back(color6);
-        colorVector.push_back(color6);
-        colorVector.push_back(color6);
-        vertices.push_back(DataTypes::getCPos(p1));
-        vertices.push_back(DataTypes::getCPos(p5));
-        vertices.push_back(DataTypes::getCPos(p4));
-        vertices.push_back(DataTypes::getCPos(p0));
-    }
-    vparams->drawTool()->drawQuads(vertices,colorVector);
-
+    m_drawMesh.drawAllElements(vparams->drawTool(), x, this->l_topology.get());
 }
 
 } // namespace sofa::component::solidmechanics::fem::elastic
