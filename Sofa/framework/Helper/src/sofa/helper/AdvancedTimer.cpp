@@ -242,7 +242,7 @@ void AdvancedTimer::end(IdTimer id, std::ostream& result)
     }
     if (id != curTimer.top())
     {
-        msg_error("AdvancedTimer::end") << "timer[" << id << "] does not correspond to last call to begin(" << curTimer.top() << ")" ;
+        msg_error("AdvancedTimer") << "Trying to end the timer \"" << id << "\" but the last call to 'begin' was for timer \"" << curTimer.top() << "\"";
         return;
     }
     type::vector<Record>* curRecords = getCurRecords();
@@ -286,7 +286,7 @@ void AdvancedTimer::end(IdTimer id)
     }
     if (id != curTimer.top())
     {
-        msg_error("AdvancedTimer::end") << "timer[" << id << "] does not correspond to last call to begin(" << curTimer.top() << ")" ;
+        msg_error("AdvancedTimer") << "Trying to end the timer \"" << id << "\" but the last call to 'begin' was for timer \"" << curTimer.top() << "\"";
         return;
     }
 
