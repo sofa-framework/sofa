@@ -22,45 +22,39 @@
 #pragma once
 #include <sofa/component/collision/detection/algorithm/config.h>
 
-#include <sofa/simulation/PipelineImpl.h>
-#include <sofa/component/collision/detection/algorithm/MultiCollisionPipeline.h>
-#include <sofa/component/collision/detection/algorithm/SubCollisionPipeline.h>
+#include <sofa/component/collision/detection/algorithm/AbstractSubCollisionPipeline.h>
+
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/collision/BroadPhaseDetection.h>
+#include <sofa/core/collision/NarrowPhaseDetection.h>
+
+#include <set>
+#include <string>
 
 namespace sofa::component::collision::detection::algorithm
 {
 
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API CollisionPipeline : public sofa::simulation::PipelineImpl
+class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API SubCollisionPipeline : public AbstractSubCollisionPipeline
 {
 public:
-    SOFA_CLASS(CollisionPipeline,sofa::simulation::PipelineImpl);
-
-    Data<bool> d_doPrintInfoMessage;
-    Data<bool> d_doDebugDraw;
-    Data<int>  d_depth;
-    
+    using Inherited = AbstractSubCollisionPipeline;
+    SOFA_CLASS(SubCollisionPipeline, AbstractSubCollisionPipeline);
 protected:
-    CollisionPipeline();
+    SubCollisionPipeline();
 public:
-    void init() override;
+    virtual ~SubCollisionPipeline() override = default;
+    void doInit() override;
+    void doHandleEvent(sofa::core::objectmodel::Event*) override {}
 
-    /// get the set of response available with the current collision pipeline
-    std::set< std::string > getResponseList() const override;
-protected:
-    // -- Pipeline interface
-    /// Remove collision response from last step
-    void doCollisionReset() override;
-    /// Detect new collisions. Note that this step must not modify the simulation graph
-    void doCollisionDetection(const sofa::type::vector<core::CollisionModel*>& collisionModels) override;
-    /// Add collision response in the simulation graph
-    void doCollisionResponse() override;
+    void computeCollisionReset() override;
+    void computeCollisionDetection() override;
+    void computeCollisionResponse() override;
 
-    virtual void checkDataValues() ;
-    
-    MultiCollisionPipeline::SPtr m_multiCollisionPipeline;
-    SubCollisionPipeline::SPtr m_subCollisionPipeline;
+    sofa::Data<unsigned int>  d_depth;
+    sofa::SingleLink< SubCollisionPipeline, sofa::core::collision::BroadPhaseDetection, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_broadPhaseDetection;
+    sofa::SingleLink< SubCollisionPipeline, sofa::core::collision::NarrowPhaseDetection, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_narrowPhaseDetection;
 
-public:
-    static const int defaultDepthValue;
+    static inline constexpr unsigned int s_defaultDepthValue = 6;
 };
 
 } // namespace sofa::component::collision::detection::algorithm
