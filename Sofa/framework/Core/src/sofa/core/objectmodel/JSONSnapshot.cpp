@@ -97,6 +97,54 @@ void JSONSnapshot::importSnapshot()
     std::cout << "importSnapshot" << std::endl;
 }
 
+
+void from_json(const nlohmann::json& j,BaseSnapshot::DataInfo& di )
+{
+    j.at("name").get_to(di.name);
+    j.at("type").get_to(di.type);
+    j.at("value").get_to(di.value);
+}
+
+void from_json(const nlohmann::json& j,BaseSnapshot::LinkInfo& li )
+{
+    j.at("name").get_to(li.name);
+    j.at("linkedpath").get_to(li.linkedpath);
+    j.at("path").get_to(li.path);
+}
+
+void from_json(const nlohmann::json& j,BaseSnapshot::SparseDataSnapshot& sds )
+{
+    j.at("datas").get_to(sds.dataContainer);
+    j.at("links").get_to(sds.linkContainer);
+}
+
+void JSONSnapshot::importFromJSON(const std::string filename, nlohmann::json& j)
+{
+    std::ifstream file(filename);
+    file >> j;
+}
+
+void JSONSnapshot::putData(std::vector<BaseData*>& datafield, std::vector<BaseLink*>& linkfield)
+{
+    DataInfo dinfo;
+    for (auto* data : datafield)
+    {
+        dinfo.name = data->getName();
+        dinfo.type = data->getValueTypeString();
+        dinfo.value = data->getValueString();
+        SparseDataSnapshot_.dataContainer.push_back(dinfo); 
+    }
+    LinkInfo linfo;
+    for (auto* link : linkfield)
+    {
+        linfo.name = link->getName();
+        linfo.linkedpath = link->getLinkedPath();
+        linfo.path = link->getPath();
+        SparseDataSnapshot_.linkContainer.push_back(linfo);
+    }
+}
+
+
 void JSONSnapshot::fillDataSnapshot(BaseData* dat)
 {
     dataSnapshot_.dataContainer.push_back(dat);

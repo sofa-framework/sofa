@@ -73,6 +73,7 @@ public:
     virtual void fillSnapshot(DataSnapshot datasnap) = 0;
     virtual void fillLinkSnapshot(BaseLink* link) = 0;
     virtual void collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield) = 0;
+    virtual void putData(std::vector<BaseData*>& datafield, std::vector<BaseLink*>& linkfield) = 0;
     virtual void exportToJSON(const std::string filename) = 0;
 
     BaseSnapshot();

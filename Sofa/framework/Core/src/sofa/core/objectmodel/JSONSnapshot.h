@@ -41,10 +41,11 @@ public:
     void fillSnapshot(DataSnapshot datasnap) override;
     void fillLinkSnapshot(BaseLink* link) override;
     void collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield) override;
-        
+    void putData(std::vector<BaseData*>& datafield, std::vector<BaseLink*>& linkfield) override;
         // std::vector<BaseLink*> getLinkField() const;
         // std::vector<BaseLink*> getLinkField() const;
     void exportToJSON(const std::string filename) override;
+    void importFromJSON(const std::string filename,nlohmann::json& j);
     JSONSnapshot();
     ~JSONSnapshot();
 
