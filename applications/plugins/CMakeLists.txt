@@ -13,23 +13,23 @@ sofa_add_subdirectory(plugin SofaCUDA SofaCUDA)
 sofa_add_subdirectory(plugin CollisionOBBCapsule CollisionOBBCapsule)
 sofa_add_subdirectory(plugin HeadlessRecorder HeadlessRecorder)
 
-sofa_add_external(directory SofaHighOrder GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/SofaHighOrder.git)
+sofa_add_external(directory SofaHighOrder GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/sofa-framework/SofaHighOrder.git)
 
 sofa_add_subdirectory(plugin CImgPlugin CImgPlugin) # Define first as it is used by other plugins.
 sofa_add_subdirectory(plugin ArticulatedSystemPlugin ArticulatedSystemPlugin)
 sofa_add_subdirectory(plugin SofaEulerianFluid SofaEulerianFluid)
-sofa_add_external(plugin SofaSphFluid GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/SofaSphFluid.git)
+sofa_add_external(plugin SofaSphFluid GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/sofa-framework/SofaSphFluid.git)
 sofa_add_subdirectory(plugin MultiThreading MultiThreading ON)
 sofa_add_subdirectory(plugin DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
 sofa_add_subdirectory(plugin image image) # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
 sofa_add_subdirectory(plugin SofaNewmat SofaNewmat)
 
-sofa_add_external(plugin CGALPlugin GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/CGALPlugin.git)     # Depends on image
-sofa_add_external(plugin Registration GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/Registration.git) # Depends on image, SofaPython, SofaGui and SofaDistanceGrid
+sofa_add_external(plugin CGALPlugin GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/sofa-framework/CGALPlugin.git)     # Depends on image
+sofa_add_external(plugin Registration GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/sofa-framework/Registration.git) # Depends on image, SofaPython, SofaGui and SofaDistanceGrid
 sofa_add_subdirectory(plugin BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant and LMConstraint
-sofa_add_external(plugin MeshSTEPLoader GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/MeshSTEPLoader.git)
-sofa_add_external(plugin PluginExample GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/PluginExample.git)
-sofa_add_external(plugin ManifoldTopologies GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/ManifoldTopologies.git)
+sofa_add_external(plugin MeshSTEPLoader GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/sofa-framework/MeshSTEPLoader.git)
+sofa_add_external(plugin PluginExample GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/sofa-framework/PluginExample.git)
+sofa_add_external(plugin ManifoldTopologies v25.12 master GIT_REPOSITORY https://www.github.com/sofa-framework/ManifoldTopologies.git)
 sofa_add_subdirectory(plugin SixenseHydra SixenseHydra)
 sofa_add_subdirectory(plugin SofaOpenCL SofaOpenCL)
 sofa_add_subdirectory(plugin Xitact Xitact)
@@ -40,25 +40,25 @@ sofa_add_subdirectory(plugin SofaHAPI SofaHAPI)
 sofa_add_subdirectory(plugin SofaCarving SofaCarving)
 sofa_add_subdirectory(plugin LeapMotion LeapMotion)
 sofa_add_subdirectory(plugin Geomagic Geomagic)
-sofa_add_external(plugin SofaAssimp GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/SofaAssimp.git) # ColladaSceneLoader Depends on Flexible and image
+sofa_add_external(plugin SofaAssimp GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/sofa-framework/SofaAssimp.git) # ColladaSceneLoader Depends on Flexible and image
 sofa_add_subdirectory(plugin SofaMatrix SofaMatrix) # Depends on image, CImgPlugin
-sofa_add_external(plugin BeamAdapter GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/BeamAdapter.git)
-sofa_add_external(plugin STLIB GIT_REF master GIT_REPOSITORY https://www.github.com/SofaDefrost/STLIB.git)
-sofa_add_external(plugin SoftRobots GIT_REF master GIT_REPOSITORY https://www.github.com/SofaDefrost/SoftRobots.git)
-sofa_add_external(plugin SoftRobots.Inverse GIT_REF main GIT_REPOSITORY https://www.github.com/SofaDefrost/SoftRobots.Inverse.git)
-sofa_add_external(plugin Cosserat GIT_REF master GIT_REPOSITORY https://www.github.com/SofaDefrost/Cosserat.git) # Cosserat has an optional dependency on SoftRobots
-sofa_add_external(plugin SofaViscoElastic GIT_REF main GIT_REPOSITORY https://www.github.com/SofaDefrost/SofaViscoElastic.git)
-sofa_add_external(plugin CollisionAlgorithm GIT_REF master GIT_REPOSITORY https://forge.icube.unistra.fr/sofa/CollisionAlgorithm.git)
-sofa_add_external(plugin ConstraintGeometry GIT_REF master GIT_REPOSITORY https://forge.icube.unistra.fr/sofa/ConstraintGeometry.git)
-sofa_add_external(plugin ShapeMatchingPlugin GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/ShapeMatchingPlugin.git)
-sofa_add_external(plugin CSparseSolvers GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/CSparseSolvers.git)
-sofa_add_external(plugin ModelOrderReduction GIT_REF master GIT_REPOSITORY https://www.github.com/SofaDefrost/ModelOrderReduction.git)
-sofa_add_external(plugin Sofa.Metis GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/Sofa.Metis.git)
-sofa_add_external(plugin SofaValidation GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/SofaValidation.git)
+sofa_add_external(plugin BeamAdapter GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/sofa-framework/BeamAdapter.git)
+sofa_add_external(plugin STLIB GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/SofaDefrost/STLIB.git)
+sofa_add_external(plugin SoftRobots GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/SofaDefrost/SoftRobots.git)
+sofa_add_external(plugin SoftRobots.Inverse GIT_REF v25.12  GIT_REPOSITORY https://www.github.com/SofaDefrost/SoftRobots.Inverse.git)
+sofa_add_external(plugin Cosserat GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/SofaDefrost/Cosserat.git) # Cosserat has an optional dependency on SoftRobots
+sofa_add_external(plugin SofaViscoElastic GIT_REF v25.12  GIT_REPOSITORY https://www.github.com/SofaDefrost/SofaViscoElastic.git)
+sofa_add_external(plugin CollisionAlgorithm GIT_REF v25.12 GIT_REPOSITORY https://forge.icube.unistra.fr/sofa/CollisionAlgorithm.git)
+sofa_add_external(plugin ConstraintGeometry GIT_REF v25.12 GIT_REPOSITORY https://forge.icube.unistra.fr/sofa/ConstraintGeometry.git)
+sofa_add_external(plugin ShapeMatchingPlugin GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/sofa-framework/ShapeMatchingPlugin.git)
+sofa_add_external(plugin CSparseSolvers GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/sofa-framework/CSparseSolvers.git)
+sofa_add_external(plugin ModelOrderReduction GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/SofaDefrost/ModelOrderReduction.git)
+sofa_add_external(plugin Sofa.Metis GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/sofa-framework/Sofa.Metis.git)
+sofa_add_external(plugin SofaValidation GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/sofa-framework/SofaValidation.git)
 
 
 
-sofa_add_external(plugin PSL GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/PSL.git)
+sofa_add_external(plugin PSL GIT_REF v25.12 GIT_REPOSITORY https://www.github.com/sofa-framework/PSL.git)
 
 if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
     sofa_add_subdirectory(plugin SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc
