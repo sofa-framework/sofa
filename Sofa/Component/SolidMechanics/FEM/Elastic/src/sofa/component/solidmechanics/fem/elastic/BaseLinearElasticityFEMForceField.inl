@@ -88,8 +88,11 @@ void BaseLinearElasticityFEMForceField<DataTypes>::init()
     core::behavior::ForceField<DataTypes>::init();
     this->validateTopology();
 
-    checkYoungModulus();
-    checkPoissonRatio();
+    if (!this->isComponentStateInvalid())
+    {
+        checkYoungModulus();
+        checkPoissonRatio();
+    }
 }
 
 template <class DataTypes>
