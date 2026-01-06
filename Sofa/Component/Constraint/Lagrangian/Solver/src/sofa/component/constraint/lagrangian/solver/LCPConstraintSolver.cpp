@@ -52,21 +52,14 @@ LCPConstraintSolver::LCPConstraintSolver()
     , d_mu(initData(&d_mu, 0.6_sreal, "mu", "Friction coefficient"))
     , d_minW(initData(&d_minW, 0.0_sreal, "minW", "If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored"))
     , d_maxF(initData(&d_maxF, 0.0_sreal, "maxF", "If not zero, constraints whose response force becomes larger than this threshold will be ignored"))
-    , d_multi_grid(initData(&d_multi_grid, false, "multi_grid", "activate multi_grid resolution (NOT STABLE YET)"))
-    , d_multi_grid_levels(initData(&d_multi_grid_levels, 2, "multi_grid_levels", "if multi_grid is active: how many levels to create (>=2)"))
-    , d_merge_method(initData(&d_merge_method, 0, "merge_method", "if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)"))
-    , d_merge_spatial_step(initData(&d_merge_spatial_step, 2, "merge_spatial_step", "if merge_method is 1: grid size reduction between multigrid levels"))
-    , d_merge_local_levels(initData(&d_merge_local_levels, 2, "merge_local_levels", "if merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs."))
     , d_constraintForces(initData(&d_constraintForces,"constraintForces","OUTPUT: constraint forces (stored only if computeConstraintForces=True)"))
     , d_computeConstraintForces(initData(&d_computeConstraintForces,false,
                                         "computeConstraintForces",
                                         "enable the storage of the constraintForces."))
     , d_constraintGroups(initData(&d_constraintGroups, "group", "list of ID of groups of constraints to be handled by this solver."))
     , d_graph(initData(&d_graph, "graph", "Graph of residuals at each iteration"))
-    , d_showLevels(initData(&d_showLevels, 0, "showLevels", "Number of constraint levels to display"))
     , d_showCellWidth(initData(&d_showCellWidth, "showCellWidth", "Distance between each constraint cells"))
     , d_showTranslation(initData(&d_showTranslation, "showTranslation", "Position of the first cell"))
-    , d_showLevelTranslation(initData(&d_showLevelTranslation, "showLevelTranslation", "Translation between levels"))
     , current_cp(&lcp1)
     , last_cp(nullptr)
     , _W(&lcp1.W)
@@ -157,7 +150,8 @@ void LCPConstraintSolver::buildSystem()
         _Wdiag.resize(_numConstraints,_numConstraints);
     }
 
-    buildHierarchy();
+    m_constraintBlockInfo.clear();
+    m_constraintIds.clear();
 
     getConstraintInfo(cparams);
 
@@ -180,40 +174,17 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
         {
             current_cp->tolerance = _tol;
 
-            if (d_multi_grid.getValue())
+            sofa::type::vector<SReal>& graph_error = graph["Error"];
+            graph_error.clear();
+            sofa::type::vector<SReal>& graph_violations = graph["Violation"];
+            graph_violations.clear();
+
             {
-                {
-                    SCOPED_TIMER("ConstraintsMerge");
-                    MultigridConstraintsMerge();
-                }
-
-                sofa::type::vector<SReal>& graph_residuals = graph["Error"];
-                graph_residuals.clear();
-                sofa::type::vector<SReal>& graph_violations = graph["Violation"];
-                graph_violations.clear();
-                sofa::type::vector<SReal>& graph_levels = graph["Level"];
-                graph_levels.clear();
-
-                {
-                    SCOPED_TIMER("NLCP MultiGrid");
-                    helper::nlcp_multiGrid_Nlevels(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, d_initial_guess.getValue(),
-                                                   hierarchy_contact_group, hierarchy_num_group, hierarchy_constraint_group, hierarchy_constraint_group_fact, notMuted(), &graph_residuals, &graph_levels, &graph_violations);
-                }
-
+                SCOPED_TIMER("NLCP GaussSeidel");
+                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, d_initial_guess.getValue(),
+                                         notMuted(), _minW, _maxF, &graph_error, &graph_violations);
             }
-            else
-            {
-                sofa::type::vector<SReal>& graph_error = graph["Error"];
-                graph_error.clear();
-                sofa::type::vector<SReal>& graph_violations = graph["Violation"];
-                graph_violations.clear();
 
-                {
-                    SCOPED_TIMER("NLCP GaussSeidel");
-                    helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, d_initial_guess.getValue(),
-                                             notMuted(), _minW, _maxF, &graph_error, &graph_violations);
-                }
-             }
         }
         else
         {
@@ -291,36 +262,15 @@ bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cPara
     return true;
 }
 
-void LCPConstraintSolver::buildHierarchy()
-{
-    int nLevels = 1;
-    if (d_multi_grid.getValue())
-    {
-        nLevels = d_multi_grid_levels.getValue();
-        if (nLevels < 2) nLevels = 2;
-    }
-    hierarchy_constraintBlockInfo.resize(nLevels);
-    hierarchy_constraintIds.resize(nLevels);
-    hierarchy_constraintPositions.resize(nLevels);
-    hierarchy_constraintDirections.resize(nLevels);
-    hierarchy_constraintAreas.resize(nLevels);
-    for (int l=0; l<nLevels; ++l)
-    {
-        hierarchy_constraintBlockInfo[l].clear();
-        hierarchy_constraintIds[l].clear();
-        hierarchy_constraintPositions[l].clear();
-        hierarchy_constraintDirections[l].clear();
-        hierarchy_constraintAreas[l].clear();
-    }
-}
+
 
 void LCPConstraintSolver::getConstraintInfo(core::ConstraintParams cparams)
 {
-    if ((d_initial_guess.getValue() || d_multi_grid.getValue() || d_showLevels.getValue()) && (_numConstraints != 0))
+    if (d_initial_guess.getValue() && (_numConstraints != 0))
     {
         {
             SCOPED_TIMER("Get Constraint Info");
-            MechanicalGetConstraintInfoVisitor(&cparams, hierarchy_constraintBlockInfo[0], hierarchy_constraintIds[0], hierarchy_constraintPositions[0], hierarchy_constraintDirections[0], hierarchy_constraintAreas[0]).execute(getContext());
+            MechanicalGetConstraintInfoVisitor(&cparams, m_constraintBlockInfo, m_constraintIds).execute(getContext());
         }
         if (d_initial_guess.getValue())
         {
@@ -361,303 +311,13 @@ void LCPConstraintSolver::build_Coarse_Compliance(std::vector<int> &constraint_m
     }
 }
 
-void LCPConstraintSolver::MultigridConstraintsMerge()
-{
-    switch(d_merge_method.getValue())
-    {
-    case 0:
-        MultigridConstraintsMerge_Compliance();
-        break;
-    case 1:
-        MultigridConstraintsMerge_Spatial();
-        break;
-    default:
-        msg_error() << "Unsupported merge method " << d_merge_method.getValue();
-    }
-}
-
-void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
-{
-    const SReal criterion=0.0;
-    const int numContacts = _numConstraints/3;
-
-    hierarchy_contact_group.resize(1);
-    hierarchy_constraint_group.resize(1);
-    hierarchy_constraint_group_fact.resize(1);
-    hierarchy_num_group.resize(1);
-    std::vector<int> group_lead;
-    std::vector<int>& contact_group = hierarchy_contact_group[0];
-    std::vector<int>& constraint_group = hierarchy_constraint_group[0];
-    std::vector<SReal>& constraint_group_fact = hierarchy_constraint_group_fact[0];
-    unsigned int& num_group = hierarchy_num_group[0];
-    contact_group.clear();
-    contact_group.resize(numContacts);
-    group_lead.clear();
-    constraint_group.clear();
-    constraint_group.resize(_numConstraints);
-    constraint_group_fact.clear();
-    constraint_group_fact.resize(_numConstraints);
-
-    for (int c=0; c<numContacts; c++)
-    {
-        bool new_group = true;
-        for(int g=0; g<(int)group_lead.size() ; g++)
-        {
-            if (_W->lptr()[3*c][3*group_lead[g]] > criterion * (_W->lptr()[3*c][3*c] +_W->lptr()[3*group_lead[g]][3*group_lead[g]]) )  // on regarde les couplages selon la normale...
-            {
-                new_group =false;
-                contact_group[c] = g;
-            }
-        }
-        if (new_group)
-        {
-            contact_group[c]=group_lead.size();
-            group_lead.push_back(c);
-        }
-    }
-    num_group = group_lead.size();
-    dmsg_info() << "contacts merged in "<<num_group<<" list(s)" ;
-
-    for (int c=0; c<numContacts; c++)
-    {
-        constraint_group[3*c  ] = 3*contact_group[c]  ; constraint_group_fact[3*c  ] = 1.0;
-        constraint_group[3*c+1] = 3*contact_group[c]+1; constraint_group_fact[3*c+1] = 1.0;
-        constraint_group[3*c+2] = 3*contact_group[c]+2; constraint_group_fact[3*c+2] = 1.0;
-    }
-}
-
-void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
-{
-    const int merge_spatial_step = this->d_merge_spatial_step.getValue();
-    constexpr int merge_spatial_shift = 0; // d_merge_spatial_step/2
-    const int merge_local_levels = this->d_merge_local_levels.getValue();
-    int numConstraints = _numConstraints;
-    int numContacts = numConstraints/3;
-    int nLevels = d_multi_grid_levels.getValue();
-    if (nLevels < 2) nLevels = 2;
-
-    msg_info() << "Multigrid merge from " << numContacts << " contacts.";
-
-    hierarchy_contact_group.resize(nLevels-1);
-    hierarchy_constraint_group.resize(nLevels-1);
-    hierarchy_constraint_group_fact.resize(nLevels-1);
-    hierarchy_num_group.resize(nLevels-1);
-
-    hierarchy_constraintBlockInfo.resize(nLevels);
-    hierarchy_constraintPositions.resize(nLevels);
-    hierarchy_constraintDirections.resize(nLevels);
-    hierarchy_constraintAreas.resize(nLevels);
-
-    for (int level = 1; level < nLevels; ++level)
-    {
-        std::vector<int>& contact_group = hierarchy_contact_group[level-1];
-        std::vector<int>& constraint_group = hierarchy_constraint_group[level-1];
-        std::vector<SReal>& constraint_group_fact = hierarchy_constraint_group_fact[level-1];
-        unsigned int& num_group = hierarchy_num_group[level-1];
-
-        contact_group.clear();
-        contact_group.resize(numContacts);
-        constraint_group.clear();
-        constraint_group.resize(numConstraints);
-        constraint_group_fact.clear();
-        constraint_group_fact.resize(numConstraints);
-        num_group = 0;
-
-        const VecConstraintBlockInfo& constraintBlockInfo = hierarchy_constraintBlockInfo[level-1];
-        const VecConstCoord&          constraintPositions = hierarchy_constraintPositions[level-1];
-        const VecConstDeriv&          constraintDirections = hierarchy_constraintDirections[level-1];
-        const VecConstArea&           constraintAreas = hierarchy_constraintAreas[level-1];
-
-        VecConstraintBlockInfo& newConstraintBlockInfo = hierarchy_constraintBlockInfo[level];
-        VecConstCoord&          newConstraintPositions = hierarchy_constraintPositions[level];
-        VecConstDeriv&          newConstraintDirections = hierarchy_constraintDirections[level];
-        VecConstArea&           newConstraintAreas = hierarchy_constraintAreas[level];
-
-        newConstraintBlockInfo.clear();
-        newConstraintPositions.clear();
-        newConstraintDirections.clear();
-        newConstraintAreas.clear();
-
-        std::map<ConstCoord, int> coord2coarseId;
-
-        for (unsigned cb = 0; cb < constraintBlockInfo.size(); ++cb)
-        {
-            const ConstraintBlockInfo& info = constraintBlockInfo[cb];
-            msg_info() << "MultigridConstraintsMerge_Spatial level " << level-1 << " constraint block " << cb << " from " << (info.parent ? info.parent->getName() : std::string("nullptr"))
-                    << " : c0 = " << info.const0 << " nbl = " << info.nbLines << " nbg = " << info.nbGroups << " offsetPosition = " << info.offsetPosition << " offsetDirection = " << info.offsetDirection << " offsetArea = " << info.offsetArea;
-            if (!info.hasPosition)
-            {
-                msg_error() << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " have no position data";
-                continue;
-            }
-            if (!info.hasDirection)
-            {
-                msg_error() << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " have no direction data";
-                continue;
-            }
-            ConstraintBlockInfo newInfo;
-            newInfo = info;
-            newInfo.hasArea = true;
-            newInfo.offsetPosition = newConstraintPositions.size();
-            newInfo.offsetDirection = newConstraintDirections.size();
-            newInfo.offsetArea = newConstraintAreas.size();
-            newInfo.const0 = num_group * 3;
-            const int c0 = info.const0;
-            const int nbl = info.nbLines;
-            for (int c = 0; c < info.nbGroups; ++c)
-            {
-                int idFine = c0 + c*nbl;
-                if (idFine + 2 >= numConstraints)
-                {
-                    msg_error() << "MultigridConstraintsMerge_Spatial level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " has invalid index";
-                    break;
-                }
-                if ((unsigned)(info.offsetPosition + c) >= constraintPositions.size())
-                {
-                    msg_error() << "MultigridConstraintsMerge_Spatial level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " has invalid position index";
-                    break;
-                }
-                ConstCoord posFine = constraintPositions[info.offsetPosition + c];
-                ConstDeriv dirFineN  = constraintDirections[info.offsetDirection + 3*c + 0];
-                ConstDeriv dirFineT1 = constraintDirections[info.offsetDirection + 3*c + 1];
-                ConstDeriv dirFineT2 = constraintDirections[info.offsetDirection + 3*c + 2];
-                ConstArea area = (info.hasArea) ? constraintAreas[info.offsetArea + c] : (ConstArea)1.0;
-                ConstCoord posCoarse;
-                for (int i=0; i<3; ++i)
-                {
-                    int p = posFine[i]+merge_spatial_shift;
-                    if (p < 0)
-                        p -= merge_spatial_step-1;
-                    p = p / merge_spatial_step;
-                    posCoarse[i] = p;
-                }
-                auto [insertIt, insertSuccess] = coord2coarseId.insert(std::map<ConstCoord,int>::value_type(posCoarse, (int)num_group));
-                int idCoarse = insertIt->second * 3;
-                if (insertSuccess)
-                {
-                    // new group
-                    newConstraintPositions.push_back(posCoarse);
-                    newConstraintDirections.push_back(dirFineN*area);
-                    newConstraintDirections.push_back(dirFineT1*area);
-                    newConstraintDirections.push_back(dirFineT2*area);
-                    newConstraintAreas.push_back(area);
-                    ++num_group;
-                }
-                else
-                {
-                    // add to existing group
-                    newConstraintAreas[idCoarse/3] += area;
-                    ConstDeriv& dirCoarseN  = newConstraintDirections[idCoarse+0];
-                    ConstDeriv& dirCoarseT1 = newConstraintDirections[idCoarse+1];
-                    ConstDeriv& dirCoarseT2 = newConstraintDirections[idCoarse+2];
-                    SReal dotNN   = dirCoarseN  * dirFineN;
-                    SReal dotT1T1 = dirCoarseT1 * dirFineT1;
-                    SReal dotT2T2 = dirCoarseT2 * dirFineT2;
-                    SReal dotT2T1 = dirCoarseT2 * dirFineT1;
-                    SReal dotT1T2 = dirCoarseT1 * dirFineT2;
-                    dirCoarseN  += dirFineN  * ((dotNN < 0) ? -area : area);
-                    if (fabs(dotT1T1) + fabs(dotT2T2) > fabs(dotT1T2) + fabs(dotT2T1))
-                    {
-                        // friction axes are aligned
-                        dirCoarseT1 += dirFineT1 * ((dotT1T1 < 0) ? -area : area);
-                        dirCoarseT2 += dirFineT2 * ((dotT2T2 < 0) ? -area : area);
-                    }
-                    else
-                    {
-                        // friction axes are swapped
-                        dirCoarseT1 += dirFineT2 * ((dotT1T2 < 0) ? -area : area);
-                        dirCoarseT2 += dirFineT1 * ((dotT2T1 < 0) ? -area : area);
-                    }
-                }
-                contact_group[idFine/3] = idCoarse/3;
-            }
-            newInfo.nbGroups = num_group - newInfo.const0 / 3;
-            newConstraintBlockInfo.push_back(newInfo);
-            if (level < merge_local_levels)
-            {
-                // the following line clears the coarse group map between blocks
-                // of constraints, hence disallowing any merging of constraints
-                // not created by the same BaseConstraint component
-                coord2coarseId.clear();
-            }
-        }
-        // Finalize
-        msg_info() << "Multigrid merge level " << level << ": " << num_group << " groups.";
-
-        // Normalize and orthogonalize constraint directions
-        for (unsigned int g=0; g<num_group; ++g)
-        {
-            int idCoarse = g*3;
-            ConstDeriv& dirCoarseN  = newConstraintDirections[idCoarse+0];
-            ConstDeriv& dirCoarseT1 = newConstraintDirections[idCoarse+1];
-            ConstDeriv& dirCoarseT2 = newConstraintDirections[idCoarse+2];
-            dirCoarseT2 = dirCoarseN.cross(dirCoarseT1);
-            dirCoarseT1 = dirCoarseT2.cross(dirCoarseN);
-            dirCoarseN.normalize();
-            dirCoarseT1.normalize();
-            dirCoarseT2.normalize();
-        }
-
-        // Compute final constraint associations, accounting for possible friction axis flips and swaps
-        for (int c=0; c<numContacts; ++c)
-        {
-            int g = contact_group[c];
-            int idFine = c*3;
-            int idCoarse = g*3;
-
-            ConstDeriv dirFineN  = constraintDirections[idFine+0];
-            ConstDeriv dirFineT1 = constraintDirections[idFine+1];
-            ConstDeriv dirFineT2 = constraintDirections[idFine+2];
-            ConstDeriv& dirCoarseN  = newConstraintDirections[idCoarse+0];
-            ConstDeriv& dirCoarseT1 = newConstraintDirections[idCoarse+1];
-            ConstDeriv& dirCoarseT2 = newConstraintDirections[idCoarse+2];
-            SReal dotNN   = dirCoarseN  * dirFineN;
-            if (dotNN < 0)
-            {
-                // constraint direction is flipped, so relative velocities for friction are reversed
-                dirFineT1 = -dirFineT1;
-                dirFineT2 = -dirFineT2;
-            }
-
-            SReal dotT1T1 = dirCoarseT1 * dirFineT1;
-            SReal dotT2T2 = dirCoarseT2 * dirFineT2;
-            SReal dotT2T1 = dirCoarseT2 * dirFineT1;
-            SReal dotT1T2 = dirCoarseT1 * dirFineT2;
-            constraint_group[idFine+0] = idCoarse+0;  constraint_group_fact[idFine+0] = 1.0;
-
-            if (fabs(dotT1T1) + fabs(dotT2T2) > fabs(dotT1T2) + fabs(dotT2T1))
-            {
-                // friction axes are aligned
-                constraint_group[idFine+1] = idCoarse+1;  constraint_group_fact[idFine+1] = ((dotT1T1 < 0) ? -1.0 : 1.0);
-                constraint_group[idFine+2] = idCoarse+2;  constraint_group_fact[idFine+2] = ((dotT2T2 < 0) ? -1.0 : 1.0);
-            }
-            else
-            {
-                // friction axes are swapped
-                constraint_group[idFine+1] = idCoarse+2;  constraint_group_fact[idFine+1] = ((dotT2T1 < 0) ? -1.0 : 1.0);
-                constraint_group[idFine+2] = idCoarse+1;  constraint_group_fact[idFine+2] = ((dotT1T2 < 0) ? -1.0 : 1.0);
-            }
-        }
-
-        numContacts = num_group;
-        numConstraints = numContacts*3;
-    }
-    const VecConstraintBlockInfo& constraintBlockInfo = hierarchy_constraintBlockInfo[nLevels-1];
-    for (unsigned cb = 0; cb < constraintBlockInfo.size(); ++cb)
-    {
-        const ConstraintBlockInfo& info = constraintBlockInfo[cb];
-        msg_info() << "MultigridConstraintsMerge_Spatial level " << nLevels-1 << " constraint block " << cb << " from " << (info.parent ? info.parent->getName() : std::string("nullptr"))
-                << " : c0 = " << info.const0 << " nbl = " << info.nbLines << " nbg = " << info.nbGroups << " offsetPosition = " << info.offsetPosition << " offsetDirection = " << info.offsetDirection << " offsetArea = " << info.offsetArea;
-    }
-}
-
 void LCPConstraintSolver::computeInitialGuess()
 {
     sofa::helper::AdvancedTimer::StepVar vtimer("InitialGuess");
 
     const auto _mu = d_mu.getValue();
-    const VecConstraintBlockInfo& constraintBlockInfo = hierarchy_constraintBlockInfo[0];
-    const VecPersistentID& constraintIds = hierarchy_constraintIds[0];
+    const VecConstraintBlockInfo& constraintBlockInfo = m_constraintBlockInfo;
+    const VecPersistentID& constraintIds = m_constraintIds;
     const int numContact = (_mu > 0.0) ? _numConstraints/3 : _numConstraints;
 
     for (int c=0; c<numContact; c++)
@@ -676,7 +336,7 @@ void LCPConstraintSolver::computeInitialGuess()
     for (const ConstraintBlockInfo& info : constraintBlockInfo)
     {
         if (!info.hasId) continue;
-        std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf>::const_iterator previt = _previousConstraints.find(info.parent);
+        std::map<core::behavior::BaseLagrangianConstraint*, ConstraintBlockBuf>::const_iterator previt = _previousConstraints.find(info.parent);
         if (previt == _previousConstraints.end()) continue;
         const ConstraintBlockBuf& buf = previt->second;
         const int c0 = info.const0;
@@ -698,8 +358,8 @@ void LCPConstraintSolver::computeInitialGuess()
 void LCPConstraintSolver::keepContactForcesValue()
 {
     sofa::helper::AdvancedTimer::StepVar vtimer("KeepForces");
-    const VecConstraintBlockInfo& constraintBlockInfo = hierarchy_constraintBlockInfo[0];
-    const VecPersistentID& constraintIds = hierarchy_constraintIds[0];
+    const VecConstraintBlockInfo& constraintBlockInfo = m_constraintBlockInfo;
+    const VecPersistentID& constraintIds = m_constraintIds;
     // store current force
     _previousForces.resize(_numConstraints);
     for (unsigned int c=0; c<_numConstraints; ++c)
@@ -1217,119 +877,6 @@ void LCPConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::BaseObj
     _result = &current_cp->f;
 }
 
-
-void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
-{
-    unsigned int showLevels = (unsigned int) this->d_showLevels.getValue();
-    if (showLevels > hierarchy_constraintBlockInfo.size()) showLevels = hierarchy_constraintBlockInfo.size();
-    if (!showLevels) return;
-    const SReal showCellWidth = this->d_showCellWidth.getValue();
-    const type::Vec3 showTranslation = this->d_showTranslation.getValue();
-    const type::Vec3 showLevelTranslation = this->d_showLevelTranslation.getValue();
-
-    const int merge_spatial_step = this->d_merge_spatial_step.getValue();
-    constexpr int merge_spatial_shift = 0; // d_merge_spatial_step/2
-    const int merge_local_levels = this->d_merge_local_levels.getValue();
-    const auto _mu = d_mu.getValue();
-
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-
-    // from http://colorexplorer.com/colormatch.aspx
-    const unsigned int colors[72]= { 0x2F2FBA, 0x111145, 0x2FBA8C, 0x114534, 0xBA8C2F, 0x453411, 0x2F72BA, 0x112A45,
-        0x2FBA48, 0x11451B, 0xBA2F5B, 0x451122, 0x2FB1BA, 0x114145, 0x79BA2F, 0x2D4511, 0x9E2FBA, 0x3B1145, 0x2FBA79, 
-        0x11452D, 0xBA662F, 0x452611, 0x2F41BA, 0x111845, 0x2FBA2F, 0x114511, 0xBA2F8C, 0x451134, 0x2F8CBA, 0x113445, 
-        0x6DBA2F, 0x284511, 0xAA2FBA, 0x3F1145, 0x2FAABA, 0x113F45, 0xAFBA2F, 0x414511, 0x692FBA, 0x271145, 0x2FBAAA, 
-        0x11453F, 0xBA892F, 0x453311, 0x2F31BA, 0x111245, 0x2FBA89, 0x114533, 0xBA4F2F, 0x451D11, 0x2F4DBA, 0x111C45, 
-        0x2FBA6D, 0x114528, 0xBA2F56, 0x451120, 0x2F72BA, 0x112A45, 0x2FBA48, 0x11451B, 0xBA2F9A, 0x451139, 0x2F93BA, 
-        0x113645, 0x3FBA2F, 0x174511, 0x662FBA, 0x261145, 0x2FBAA8, 0x11453E, 0xB1BA2F, 0x414511};
-
-    union
-    {
-        int i;
-        unsigned char b[4];
-    } color;
-
-    int coord0 = 0;
-    int coordFact = 1;
-    for (unsigned int level = 0; level < showLevels; ++level)
-    {
-        const VecConstraintBlockInfo& constraintBlockInfo = hierarchy_constraintBlockInfo[level];
-        const VecConstCoord&          constraintPositions = hierarchy_constraintPositions[level];
-        const VecConstDeriv&          constraintDirections = hierarchy_constraintDirections[level];
-        const VecConstArea&           constraintAreas = hierarchy_constraintAreas[level];
-
-        for (unsigned cb = 0; cb < constraintBlockInfo.size(); ++cb)
-        {
-            const ConstraintBlockInfo& info = constraintBlockInfo[cb];
-            if (!info.hasPosition)
-                continue;
-            if (!info.hasDirection)
-                continue;
-
-            const int c0 = info.const0;
-            const int nbl = info.nbLines;
-            for (int c = 0; c < info.nbGroups; ++c)
-            {
-                int idFine = c0 + c*nbl;
-                if ((unsigned)(info.offsetPosition + c) >= constraintPositions.size())
-                {
-                    msg_info() << "Level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " has invalid position index" ;
-                    break;
-                }
-                if ((unsigned)(info.offsetDirection + 3*c) >= constraintDirections.size())
-                {
-                    msg_info() << "Level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("nullptr")) << " has invalid direction index" ;
-                    break;
-                }
-                ConstCoord posFine = constraintPositions[info.offsetPosition + c];
-                ConstDeriv dirFineN  = constraintDirections[info.offsetDirection + 3*c + 0];
-                ConstDeriv dirFineT1 = constraintDirections[info.offsetDirection + 3*c + 1];
-                ConstDeriv dirFineT2 = constraintDirections[info.offsetDirection + 3*c + 2];
-                const ConstArea area = (info.hasArea) ? constraintAreas[info.offsetArea + c] : (ConstArea)(2*coordFact*coordFact*showCellWidth*showCellWidth);
-
-                type::Vec3 centerFine = showTranslation + showLevelTranslation*level;
-                for (int i=0; i<3; ++i) centerFine[i] += ((posFine[i]+0.5)*coordFact + coord0) * showCellWidth;
-                const SReal radius = sqrt(area*0.5);
-
-                const unsigned int colid = (level * 12 + ((int)level < merge_local_levels ? (cb % 2) : 0)) % 72;
-                color.i = (int) colors[colid + 0];
-                vparams->drawTool()->drawArrow(
-                    centerFine,centerFine+dirFineN*radius*2.0f,
-                    (float)radius*2.0f*0.03f,
-                    sofa::type::RGBAColor(
-                            (float)(color.b[0]) * (1.0f/255.0f),
-                            (float)(color.b[1]) * (1.0f/255.0f),
-                            (float)(color.b[2]) * (1.0f/255.0f),
-                            1.0f));
-                if (_mu > 1.0e-6)
-                {
-                    color.i = (int) colors[colid + 2];
-                    vparams->drawTool()->drawArrow(
-                        centerFine-dirFineT1*radius*_mu,centerFine+dirFineT1*radius*_mu,
-                        (float)(radius*_mu*0.03f),
-                        sofa::type::RGBAColor(
-                                (float)(color.b[0]) * (1.0f/255.0f),
-                                (float)(color.b[1]) * (1.0f/255.0f),
-                                (float)(color.b[2]) * (1.0f/255.0f),
-                                1.0f));
-                    color.i = (int) colors[colid + 4];
-                    vparams->drawTool()->drawArrow(
-                        centerFine-dirFineT2*radius*_mu,centerFine+dirFineT2*radius*_mu,
-                        (float)(radius*_mu*0.03f),
-                        sofa::type::RGBAColor(
-                                color.b[0] * (1.0f/255.0f),
-                                color.b[1] * (1.0f/255.0f),
-                                color.b[2] * (1.0f/255.0f),
-                                1.0f));
-                }
-            }
-        }
-        coord0 = (coord0 - merge_spatial_shift) * merge_spatial_step;
-        coordFact *= merge_spatial_step;
-
-    }
-
-}
 
 void registerLCPConstraintSolver(sofa::core::ObjectFactory* factory)
 {

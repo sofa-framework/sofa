@@ -66,6 +66,8 @@ public:
 protected:
     VisualStyle();
 public:
+    void init() override;
+    void bwdInit() override;
     void updateVisualFlags(VisualParams* ) override;
     void applyBackupFlags(VisualParams* ) override;
 

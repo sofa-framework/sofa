@@ -14,8 +14,6 @@
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -550,7 +548,6 @@ void LabelPointsBySectionImageToolBoxAction::saveFileData()
 
 
 
-}
 }
 }
 

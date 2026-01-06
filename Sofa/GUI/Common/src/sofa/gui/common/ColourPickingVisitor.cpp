@@ -24,8 +24,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Node.h>
 
-#include <sofa/component/collision/geometry/SphereModel.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
 
 #if SOFA_GUI_COMMON_HAVE_SOFA_GL == 1
 #include <sofa/gl/gl.h>

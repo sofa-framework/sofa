@@ -471,8 +471,8 @@ void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualPara
                         {
                             spring.m1 = topology->point(x,y,z);
                             spring.m2 = topology->point(x+1,y,z);
-                            point1 = DataTypes::getCPos(p1[spring.m1]);
-                            point2 = DataTypes::getCPos(p2[spring.m2]);
+                            point1 = toVec3(DataTypes::getCPos(p1[spring.m1]));
+                            point2 = toVec3(DataTypes::getCPos(p2[spring.m2]));
                             points.push_back(point1);
                             points.push_back(point2);
                         }
@@ -486,8 +486,8 @@ void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualPara
                         {
                             spring.m1 = topology->point(x,y,z);
                             spring.m2 = topology->point(x,y+1,z);
-                            point1 = DataTypes::getCPos(p1[spring.m1]);
-                            point2 = DataTypes::getCPos(p2[spring.m2]);
+                            point1 = toVec3(DataTypes::getCPos(p1[spring.m1]));
+                            point2 = toVec3(DataTypes::getCPos(p2[spring.m2]));
                             points.push_back(point1);
                             points.push_back(point2);
                         }
@@ -501,8 +501,8 @@ void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualPara
                         {
                             spring.m1 = topology->point(x,y,z);
                             spring.m2 = topology->point(x,y,z+1);
-                            point1 = DataTypes::getCPos(p1[spring.m1]);
-                            point2 = DataTypes::getCPos(p2[spring.m2]);
+                            point1 = toVec3(DataTypes::getCPos(p1[spring.m1]));
+                            point2 = toVec3(DataTypes::getCPos(p2[spring.m2]));
                             points.push_back(point1);
                             points.push_back(point2);
                         }

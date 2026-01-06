@@ -102,7 +102,7 @@ void OBBCollisionModel<DataTypes>::computeBoundingTree(int maxDepth){
     cubeModel->resize(size);
     if (!empty())
     {
-        const typename OBBCollisionModel<DataTypes>::Real distance = (typename OBBCollisionModel<DataTypes>::Real)this->proximity.getValue();
+        const typename OBBCollisionModel<DataTypes>::Real distance = (typename OBBCollisionModel<DataTypes>::Real)this->d_contactDistance.getValue();
 
         std::vector<Coord> vs;
         vs.reserve(8);
@@ -195,20 +195,17 @@ void OBBCollisionModel<DataTypes>::draw(const sofa::core::visual::VisualParams* 
 }
 
 template<class DataTypes>
-void OBBCollisionModel<DataTypes>::draw(const sofa::core::visual::VisualParams* vparams){
-    if (vparams->displayFlags().getShowCollisionModels())
+void OBBCollisionModel<DataTypes>::drawCollisionModel(const sofa::core::visual::VisualParams* vparams)
+{
+    vparams->drawTool()->setPolygonMode(0, vparams->displayFlags().getShowWireFrame());
+
+    const auto npoints = _mstate->getSize();
+    vparams->drawTool()->setLightingEnabled(true);  // Enable lightning
+    for (sofa::Size i = 0; i < npoints; ++i)
     {
-        vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
-
-        const auto npoints = _mstate->getSize();
-        vparams->drawTool()->setLightingEnabled(true); //Enable lightning
-        for(sofa::Size i = 0 ; i < npoints ; ++i )
-            draw(vparams,i);
-        vparams->drawTool()->setLightingEnabled(false); //Disable lightning
+        draw(vparams, i);
     }
-
-    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
-        getPrevious()->draw(vparams);
+    vparams->drawTool()->setLightingEnabled(false);  // Disable lightning
 
     vparams->drawTool()->setPolygonMode(0,false);
 }

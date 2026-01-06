@@ -25,9 +25,9 @@
 
 #include <sofa/core/collision/Intersection.h>
 
-#include <sofa/component/collision/geometry/LineModel.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
-#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/LineCollisionModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
 
 namespace sofa::component::collision::detection::intersection
 {
@@ -45,19 +45,6 @@ public:
     template<class T> int computeIntersection(collision::geometry::TSphere<T>&, collision::geometry::Triangle&, OutputVector*, const core::collision::Intersection* currentIntersection);
     bool testIntersection(collision::geometry::Triangle&, collision::geometry::Line&, const core::collision::Intersection* currentIntersection);
     int computeIntersection(collision::geometry::Triangle& e1, collision::geometry::Line& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection);
-
-
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Line&) = delete;
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::TSphere<T>&, collision::geometry::Triangle&) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Triangle& e1, collision::geometry::Line& e2, OutputVector* contacts) = delete;
-    template<class T> 
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::TSphere<T>&, collision::geometry::Triangle&, OutputVector*) = delete;
 };
 
 } // namespace sofa::component::collision::detection::intersection

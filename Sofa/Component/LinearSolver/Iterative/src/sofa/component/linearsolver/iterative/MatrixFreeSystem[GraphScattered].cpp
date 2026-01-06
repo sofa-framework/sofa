@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_MATRIXFREESYSTEM_GRAPHSCATTERED_CPP
 #include <sofa/component/linearsolver/iterative/MatrixFreeSystem[GraphScattered].h>
+#include <sofa/component/linearsystem/CompositeLinearSystem.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsystem
@@ -30,11 +31,14 @@ using sofa::component::linearsolver::GraphScatteredMatrix;
 using sofa::component::linearsolver::GraphScatteredVector;
 
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixFreeSystem<linearsolver::GraphScatteredMatrix, GraphScatteredVector>;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CompositeLinearSystem<linearsolver::GraphScatteredMatrix, GraphScatteredVector>;
 
 void registerMatrixFreeSystemGraphScattered(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Matrix-free (unbuilt) linear system.")
-        .add< MatrixFreeSystem<GraphScatteredMatrix, GraphScatteredVector> >());
+        .add< MatrixFreeSystem<GraphScatteredMatrix, GraphScatteredVector> >(true));
+    factory->registerObjects(core::ObjectRegistrationData("Matrix-free (unbuilt) linear system.")
+        .add< CompositeLinearSystem<GraphScatteredMatrix, GraphScatteredVector> >());
 }
 
 } //namespace sofa::component::linearsystem
