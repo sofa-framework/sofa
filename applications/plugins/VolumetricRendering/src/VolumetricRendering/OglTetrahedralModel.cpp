@@ -25,15 +25,17 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::visualmodel
+namespace volumetricrendering
 {
 
 using namespace sofa::defaulttype;
 
-int OglTetrahedralModelClass = sofa::core::RegisterObject("Tetrahedral model for OpenGL display")
-        .add< OglTetrahedralModel<Vec3Types> >()
-        ;
+void registerOglTetrahedralModel(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Tetrahedral model for OpenGL display.")
+    .add< OglTetrahedralModel<Vec3Types> >());
+}
 
 template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<Vec3Types>;
 
-}
+} // namespace volumetricrendering

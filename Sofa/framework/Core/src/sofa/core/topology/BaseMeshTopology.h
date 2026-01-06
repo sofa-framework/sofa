@@ -34,11 +34,13 @@ public:
     SOFA_ABSTRACT_CLASS(BaseMeshTopology, core::topology::Topology);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseMeshTopology)
 
-    typedef sofa::type::vector<Edge> 		        SeqEdges;
-    typedef sofa::type::vector<Triangle>		    SeqTriangles;
-    typedef sofa::type::vector<Quad>		        SeqQuads;
-    typedef sofa::type::vector<Tetra>		        SeqTetrahedra;
-    typedef sofa::type::vector<Hexa>		        SeqHexahedra;
+    using SeqEdges = sofa::type::vector<Edge>;
+    using SeqTriangles = sofa::type::vector<Triangle>;
+    using SeqQuads = sofa::type::vector<Quad>;
+    using SeqTetrahedra = sofa::type::vector<Tetra>;
+    using SeqHexahedra = sofa::type::vector<Hexa>;
+    using SeqPrisms = sofa::type::vector<Prism>;
+    using SeqPyramids = sofa::type::vector<Pyramid>;
 
     /// @name Deprecated types, for backward-compatibility
     /// @{
@@ -104,6 +106,8 @@ public:
     virtual const SeqQuads& getQuads() = 0;
     virtual const SeqTetrahedra& getTetrahedra() = 0;
     virtual const SeqHexahedra& getHexahedra() = 0;
+    virtual const SeqPrisms& getPrisms() = 0;
+    virtual const SeqPyramids& getPyramids() = 0;
     /// @}
 
     /// Random accessors
@@ -113,14 +117,18 @@ public:
     virtual Size getNbTriangles()               { return Size(getTriangles().size()); }
     virtual Size getNbQuads()                   { return Size(getQuads().size()); }
     virtual Size getNbTetrahedra()              { return Size(getTetrahedra().size()); }
-    virtual Size getNbHexahedra()	              { return Size(getHexahedra().size()); }
+    virtual Size getNbHexahedra()               { return Size(getHexahedra().size()); }
+    virtual Size getNbPrisms()                  { return Size(getPrisms().size()); }
+    virtual Size getNbPyramids()                { return Size(getPyramids().size()); }
 
     virtual const Edge getEdge(EdgeID i)             { return getEdges()[i]; }
     virtual const Triangle getTriangle(TriangleID i) { return getTriangles()[i]; }
     virtual const Quad getQuad(QuadID i)             { return getQuads()[i]; }
     virtual const Tetra getTetrahedron(TetraID i)    { return getTetrahedra()[i]; }
-    virtual const Hexa getHexahedron(HexaID i)       { return getHexahedra()[i]; }   
-	   
+    virtual const Hexa getHexahedron(HexaID i)       { return getHexahedra()[i]; }
+    virtual const Prism getPrism(PrismID i)          { return getPrisms()[i]; }
+    virtual const Pyramid getPyramid(PyramidID i)    { return getPyramids()[i]; }
+
     /// Type of higher topology element contains in this container @see ElementType
     virtual sofa::geometry::ElementType getTopologyType() const = 0;
     /// @}

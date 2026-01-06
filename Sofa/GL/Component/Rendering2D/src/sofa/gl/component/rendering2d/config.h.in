@@ -37,3 +37,9 @@ namespace sofa::gl::component::rendering2d
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::gl::component::rendering2d
 
+#ifdef SOFA_BUILD_SOFA_GL_COMPONENT_RENDERING2D
+#define SOFA_ATTRIBUTE_DEPRECATED__OGLCOLORMAPGETDEFAULT()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__OGLCOLORMAPGETDEFAULT() \
+    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "")
+#endif

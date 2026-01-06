@@ -43,5 +43,7 @@ public:
     PrimitiveGroup(int p0, int nbp, std::string materialName, std::string groupName, int materialId);
 };
 
+SOFA_TYPE_API std::ostream& operator<<(std::ostream& out, const PrimitiveGroup &g);
+SOFA_TYPE_API std::istream& operator>>(std::istream& in, PrimitiveGroup &g);
 
 } // namespace sofa::type

@@ -190,11 +190,11 @@ public:
     static void printNode(const char* type);
     static void printCloseNode(const char* type);
 
-    static void printVector(core::behavior::BaseMechanicalState *mm, core::ConstVecId id);
+    static void printVector(sofa::core::behavior::BaseMechanicalState *mm, sofa::core::ConstVecId id);
 
-    virtual void printInfo(const core::objectmodel::BaseContext* context, bool dirDown);
+    virtual void printInfo(const sofa::core::objectmodel::BaseContext* context, bool dirDown);
 
-    void setNode(core::objectmodel::Base* c);
+    void setNode(sofa::core::objectmodel::Base* c);
 
     static void EnableExportStateVector(bool activation) {outputStateVector=activation;}
     static void SetFirstIndexStateVector(unsigned int first) {firstIndexStateVector=first;}
@@ -213,7 +213,7 @@ protected:
     static ctime_t initDumpTime;
     static std::vector< ctime_t > initNodeTime;
 
-    core::objectmodel::Base* enteringBase;
+    sofa::core::objectmodel::Base* enteringBase;
     bool infoPrinted;
 
 private:

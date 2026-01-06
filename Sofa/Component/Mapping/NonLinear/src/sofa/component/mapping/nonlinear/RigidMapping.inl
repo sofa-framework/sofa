@@ -618,7 +618,7 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
 
                 if( block(j, k) != static_cast<OutReal>(0))
                 {
-                    m_geometricStiffnessMatrix.add(row, col, (InReal)block[j][k]);
+                    m_geometricStiffnessMatrix.add(row, col, (InReal)block(j,k));
                 }
             }
         }
@@ -738,9 +738,9 @@ struct RigidMappingMatrixHelper<2, Real>
     static void setMatrix(Matrix& mat,
                           const Vector& vec)
     {
-        mat[0][0] = (Real) 1     ;    mat[1][0] = (Real) 0     ;
-        mat[0][1] = (Real) 0     ;    mat[1][1] = (Real) 1     ;
-        mat[0][2] = (Real)-vec[1];    mat[1][2] = (Real) vec[0];
+        mat(0,0) = (Real) 1     ;    mat(1,0) = (Real) 0     ;
+        mat(0,1) = (Real) 0     ;    mat(1,1) = (Real) 1     ;
+        mat(0,2) = (Real)-vec[1];    mat(1,2) = (Real) vec[0];
     }
 };
 
@@ -753,12 +753,12 @@ struct RigidMappingMatrixHelper<3, Real>
     {
         // out = J in
         // J = [ I -OM^ ]
-        mat[0][0] = (Real) 1     ;    mat[1][0] = (Real) 0     ;    mat[2][0] = (Real) 0     ;
-        mat[0][1] = (Real) 0     ;    mat[1][1] = (Real) 1     ;    mat[2][1] = (Real) 0     ;
-        mat[0][2] = (Real) 0     ;    mat[1][2] = (Real) 0     ;    mat[2][2] = (Real) 1     ;
-        mat[0][3] = (Real) 0     ;    mat[1][3] = (Real)-vec[2];    mat[2][3] = (Real) vec[1];
-        mat[0][4] = (Real) vec[2];    mat[1][4] = (Real) 0     ;    mat[2][4] = (Real)-vec[0];
-        mat[0][5] = (Real)-vec[1];    mat[1][5] = (Real) vec[0];    mat[2][5] = (Real) 0     ;
+        mat(0,0) = (Real) 1     ;    mat(1,0) = (Real) 0     ;    mat(2,0) = (Real) 0     ;
+        mat(0,1) = (Real) 0     ;    mat(1,1) = (Real) 1     ;    mat(2,1) = (Real) 0     ;
+        mat(0,2) = (Real) 0     ;    mat(1,2) = (Real) 0     ;    mat(2,2) = (Real) 1     ;
+        mat(0,3) = (Real) 0     ;    mat(1,3) = (Real)-vec[2];    mat(2,3) = (Real) vec[1];
+        mat(0,4) = (Real) vec[2];    mat(1,4) = (Real) 0     ;    mat(2,4) = (Real)-vec[0];
+        mat(0,5) = (Real)-vec[1];    mat(1,5) = (Real) vec[0];    mat(2,5) = (Real) 0     ;
     }
 };
 
@@ -778,12 +778,11 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     [[maybe_unused]] const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     std::vector<type::Vec3> points;
-    type::Vec3 point;
 
     const OutVecCoord& x =this->toModel->read(core::vec_id::read_access::position)->getValue();
     for (unsigned int i = 0; i < x.size(); i++)
     {
-        point = Out::getCPos(x[i]);
+        const type::Vec3 point = toVec3(Out::getCPos(x[i]));
         points.push_back(point);
     }
     vparams->drawTool()->drawPoints(points, 7, sofa::type::RGBAColor::yellow() );
