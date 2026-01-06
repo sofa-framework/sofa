@@ -68,27 +68,6 @@ void CGLinearSolver<TMatrix,TVector>::init()
     equilibriumReached = false;
 }
 
-/// Clear graph and clean the RHS / LHS vectors
-template<class TMatrix, class TVector>
-void CGLinearSolver<TMatrix,TVector>::resetSystem()
-{
-    d_graph.beginEdit()->clear();
-    d_graph.endEdit();
-
-    Inherit::resetSystem();
-}
-
-/// For unbuilt approach (e.g. with GraphScattered types),
-/// it passes the coefficients multiplying the matrices M, B and K from the ODE to the LinearSolver (MechanicalOperations::setKFactor) and includes a resetSystem
-/// In other cases
-/// the global system matrix is setup (pass coefficients with MechanicalOperations::setKFactor) and built it by calling the addMBKToMatrix visitor
-template<class TMatrix, class TVector>
-void CGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
-{
-    SCOPED_TIMER("CG-setSystemMBKMatrix");
-    Inherit::setSystemMBKMatrix(mparams);
-}
-
 /// Solve iteratively the linear system Ax=b following a conjugate gradient descent
 template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)

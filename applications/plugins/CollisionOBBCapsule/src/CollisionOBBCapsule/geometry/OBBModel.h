@@ -147,6 +147,7 @@ public:
 protected:
     OBBCollisionModel();
     OBBCollisionModel(sofa::core::behavior::MechanicalState<TDataTypes>* mstate );
+    void drawCollisionModel(const sofa::core::visual::VisualParams* vparams) override;
 public:
     void init() override;
 
@@ -159,8 +160,6 @@ public:
     //virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0);
 
     void draw(const sofa::core::visual::VisualParams* vparams, sofa::Index index) override;
-
-    void draw(const sofa::core::visual::VisualParams* vparams) override;
 
     sofa::core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return _mstate; }
 

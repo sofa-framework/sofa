@@ -18,10 +18,14 @@ namespace component
 namespace engine
 {
 
-int DepthImageToolBox_Class = core::RegisterObject("DepthImageToolBox")
-.add< DepthImageToolBox >()
-.addLicense("LGPL")
-.addAuthor("Vincent Majorczyk");
+void registerDepthImageToolBox(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("DepthImageToolBox")
+    .add< DepthImageToolBox >()
+    .addLicense("LGPL")
+    .addAuthor("Vincent Majorczyk")
+    );
+}
 
 }}}
 

@@ -39,12 +39,6 @@ JacobiPreconditioner<TMatrix,TVector>::JacobiPreconditioner()
 {
 }
 
-template<class TMatrix, class TVector>
-void JacobiPreconditioner<TMatrix,TVector>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
-{
-    Inherit::setSystemMBKMatrix(mparams);
-}
-
 /// Solve P^-1 Mx= P^-1 b
 // P[i][j] = M[i][j] ssi i=j
 //P^-1[i][j] = 1/M[i][j]

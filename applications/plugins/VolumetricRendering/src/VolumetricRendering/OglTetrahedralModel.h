@@ -33,7 +33,7 @@
 #include <sofa/gl/component/shader/OglVariable.h>
 
 
-namespace sofa::component::visualmodel
+namespace volumetricrendering
 {
 
 /**
@@ -94,7 +94,7 @@ extern template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<defaultty
 
 #endif
 
-} // namespace sofa::component::visualmodel
+} // namespace volumetricrendering
 
 
 #endif /*OGLTETRAHEDRALMODEL_H_*/

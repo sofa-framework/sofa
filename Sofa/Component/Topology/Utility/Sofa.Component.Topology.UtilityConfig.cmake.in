@@ -3,12 +3,13 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(Sofa.Simulation.Core QUIET REQUIRED)
-find_package(Sofa.Component.Topology.Container.Dynamic QUIET REQUIRED)
+find_package(Sofa.Config QUIET REQUIRED)
+sofa_find_package(Sofa.Simulation.Core QUIET REQUIRED)
+sofa_find_package(Sofa.Component.Topology.Container.Dynamic QUIET REQUIRED)
 
 set(SOFA_COMPONENT_TOPOLOGY_UTILITY_HAVE_ZLIB @SOFA_COMPONENT_TOPOLOGY_UTILITY_HAVE_ZLIB@)
 if (SOFA_COMPONENT_TOPOLOGY_UTILITY_HAVE_ZLIB)
-    find_package(ZLIB QUIET REQUIRED)
+    sofa_find_package(ZLIB QUIET REQUIRED)
 endif()
 
 if(NOT TARGET @PROJECT_NAME@)

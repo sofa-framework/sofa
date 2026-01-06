@@ -61,8 +61,6 @@ public:
     typedef typename DataTypes::Coord Coord;
     /// Derivative values (velocity, forces, displacements).
     typedef typename DataTypes::Deriv Deriv;
-    /// Container of scalar values with the same API as sofa::type::vector.
-    typedef typename DataTypes::VecReal VecReal;
     /// Container of Coord values with the same API as sofa::type::vector.
     typedef typename DataTypes::VecCoord VecCoord;
     /// Container of Deriv values with the same API as sofa::type::vector.
@@ -76,8 +74,6 @@ public:
     //@{
     typedef helper::ReadAccessor <Data<Real> >    ReadReal;
     typedef helper::WriteAccessor<Data<Real> >    WriteReal;
-    typedef helper::ReadAccessor <Data<VecReal> > ReadVecReal;
-    typedef helper::WriteAccessor<Data<VecReal> > WriteVecReal;
 
     typedef helper::ReadAccessor     <Data<Coord> >    ReadCoord;
     typedef helper::WriteAccessor    <Data<Coord> >    WriteCoord;
@@ -154,7 +150,7 @@ public:
     /// @}
 
     /// Compute the bounding box independently from the visibility parameters
-    sofa::type::TBoundingBox<Real> computeBBox() const;
+    sofa::type::BoundingBox computeBBox() const;
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 };

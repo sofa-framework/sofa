@@ -149,6 +149,7 @@ void CollisionPipeline::doCollisionDetection(const type::vector<core::CollisionM
         simulation::Visitor::printNode("ComputeBoundingTree");
 #endif
         const bool continuous = intersectionMethod->useContinuous();
+        const auto continuousIntersectionType = intersectionMethod->continuousIntersectionType();
         const SReal dt       = getContext()->getDt();
 
         type::vector<CollisionModel*>::const_iterator it;
@@ -171,7 +172,7 @@ void CollisionPipeline::doCollisionDetection(const type::vector<core::CollisionM
             {
                 const std::string msg = "Compute Continuous BoundingTree: " + (*it)->getName();
                 ScopedAdvancedTimer continuousBoundingTreeTimer(msg.c_str());
-                (*it)->computeContinuousBoundingTree(dt, used_depth);
+                (*it)->computeContinuousBoundingTree(dt, continuousIntersectionType, used_depth);
             }
             else
             {

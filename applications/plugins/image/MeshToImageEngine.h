@@ -322,8 +322,7 @@ protected:
             M/=(Real)nbpTotal;
 
             // get eigen vectors of the covariance matrix
-            Eigen::Matrix<Real, -1, -1> e;
-            e.resize(3, 3);
+            Eigen::Matrix<Real, 3, 3> e;
             e.setZero();
             for (size_t j = 0; j < 3; j++) 
             { 
@@ -334,7 +333,7 @@ protected:
             }
 
             //compute eigenvalues and eigenvectors
-            Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
+            Eigen::JacobiSVD<Eigen::Matrix<Real, 3, 3>> svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
             auto V = svd.matrixV();
 
             for(size_t j=0; j<3; j++) for(size_t k=0; k<3; k++) M[j][k]=V(j,k);

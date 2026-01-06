@@ -25,18 +25,15 @@
 namespace sofa::component::mapping::linear
 {
 
-using sofa::type::Mat3x3d;
-using sofa::type::Vec3;
-using sofa::defaulttype::Vec3Types;
-
-typedef typename sofa::core::topology::BaseMeshTopology::Quad Quad;
-
 /// Class allowing barycentric mapping computation on a QuadSetTopology
 template<class In, class Out>
-class BarycentricMapperQuadSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData2D, Quad>
+class BarycentricMapperQuadSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData2D, sofa::core::topology::BaseMeshTopology::Quad>
 {
     typedef typename BarycentricMapper<In,Out>::MappingData2D MappingData;
+    using Quad = sofa::core::topology::BaseMeshTopology::Quad;
 
+    using Vec3 = sofa::type::Vec3;
+    using Mat3x3 = sofa::type::Mat3x3;
     using Index = sofa::Index;
 
 public:
@@ -53,9 +50,8 @@ protected:
         core::topology::BaseMeshTopology* toTopology);
 
     virtual type::vector<Quad> getElements() override;
-    virtual type::vector<SReal> getBaryCoef(const Real* f) override;
-    type::vector<SReal> getBaryCoef(const Real fx, const Real fy);
-    void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Quad& element) override;
+    virtual std::array<Real, Quad::NumberOfNodes>getBarycentricCoefficients(const std::array<Real, MappingData::NumberOfCoordinates>& barycentricCoordinates) override;
+    void computeBase(Mat3x3& base, const typename In::VecCoord& in, const Quad& element) override;
     void computeCenter(Vec3& center, const typename In::VecCoord& in, const Quad& element) override;
     void computeDistance(SReal& d, const Vec3& v) override;
     void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
@@ -67,7 +63,7 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERQUADSETTOPOLOGY_CPP)
-extern template class SOFA_COMPONENT_MAPPING_LINEAR_API BarycentricMapperQuadSetTopology< Vec3Types, Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_LINEAR_API BarycentricMapperQuadSetTopology< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types >;
 
 
 #endif
