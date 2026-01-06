@@ -37,7 +37,7 @@ protected:
     int level;
     bool visitingOrder; ///< by default print the graph organisation but can print the graph visiting by setting visitingOrder at true
 public:
-    PrintVisitor(const sofa::core::ExecParams* params, bool visitingOrder=false) : Visitor(params), verbose(0), level(0), visitingOrder(visitingOrder) {}
+    PrintVisitor(const sofa::core::ExecParams* eparams, bool bVisitingOrder=false) : Visitor(eparams), verbose(0), level(0), visitingOrder(bVisitingOrder) {}
 
     void setVerbose(int v) { verbose = v; }
     int getVerbose() const { return verbose; }

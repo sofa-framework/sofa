@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <sofa/component/collision/response/contact/RayContact.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/geometry/RayModel.h>
-#include <sofa/component/collision/geometry/TetrahedronModel.h>
+#include <sofa/component/collision/geometry/RayCollisionModel.h>
+#include <sofa/component/collision/geometry/TetrahedronCollisionModel.h>
 #include <sofa/helper/Factory.inl>
 
 namespace sofa::component::collision::response::contact

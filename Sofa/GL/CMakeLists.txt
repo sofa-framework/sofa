@@ -22,6 +22,7 @@ set(HEADER_FILES
     ${SOFAGLSRC_ROOT}/RAII.h
     ${SOFAGLSRC_ROOT}/template.h
     ${SOFAGLSRC_ROOT}/Axis.h
+    ${SOFAGLSRC_ROOT}/Frame.h
     ${SOFAGLSRC_ROOT}/BasicShapes.h
     ${SOFAGLSRC_ROOT}/BasicShapesGL.h
     ${SOFAGLSRC_ROOT}/BasicShapesGL.inl
@@ -37,6 +38,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SOFAGLSRC_ROOT}/initSofa.GL.cpp
     ${SOFAGLSRC_ROOT}/Axis.cpp
+    ${SOFAGLSRC_ROOT}/Frame.cpp
     ${SOFAGLSRC_ROOT}/BasicShapesGL.cpp
     ${SOFAGLSRC_ROOT}/Cylinder.cpp
     ${SOFAGLSRC_ROOT}/glText.cpp

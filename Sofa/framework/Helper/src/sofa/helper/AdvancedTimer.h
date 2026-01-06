@@ -127,8 +127,40 @@ namespace sofa::helper
 class Record
 {
 public:
+    /**
+     * @brief High-resolution timestamp of the timer event in clock ticks
+     *
+     * This timestamp records the number of clock ticks since some reference point (not absolute time).
+     *
+     * **Important usage note**: When converting to seconds, you should only use time differences (e.g., `time2 - time1`).
+     * Absolute values of this type cannot be directly converted to seconds without knowing the reference point.
+     */
     sofa::helper::system::thread::ctime_t time;
-    enum Type { RNONE, RBEGIN, REND, RSTEP_BEGIN, RSTEP_END, RSTEP, RVAL_SET, RVAL_ADD } type;
+
+    /**
+     * @enum Record::Type
+     * @brief Type of record in the timer data.
+     *
+     * This enum defines the different types of records that can be stored in the timer data stream.
+     * Each record type represents a specific timing operation or value tracking operation.
+     *
+     * @note The values are used to distinguish between different types of timer operations and value tracking operations.
+     *
+     * @{
+     */
+    enum Type {
+        RNONE,     ///< No record (used for initialization)
+        RBEGIN,    ///< Begin timer operation (e.g., when a timer starts)
+        REND,      ///< End timer operation (e.g., when a timer stops)
+        RSTEP_BEGIN,  ///< Begin of a step operation (e.g., when a step starts)
+        RSTEP_END,    ///< End of a step operation (e.g., when a step ends)
+        RSTEP,        ///< Step operation (e.g., when a step is executed)
+        RVAL_SET,     ///< Set a value operation (e.g., when a value is set)
+        RVAL_ADD      ///< Add to a value operation (e.g., when a value is added)
+    };
+    /// @}
+
+    Type type;
     std::string label;
     unsigned int id;
     unsigned int obj;
@@ -238,7 +270,7 @@ public:
         }
 
         /// This constructor should be used only if really necessary
-        Id(unsigned int id) : id(id) {}
+        Id(unsigned int idTimer) : id(idTimer) {}
 
         /// Any operation requiring an int can be used on an id using this conversion
         operator unsigned int() const { return id; }
@@ -380,7 +412,7 @@ public:
     {
     public:
         IdTimer id;
-        TimerVar(IdTimer id) : id(id)
+        TimerVar(IdTimer idtimer) : id(idtimer)
         {
             begin(id);
         }
@@ -451,29 +483,29 @@ public:
         const char* idStr;
         const IdObj obj;
         const char* objStr;
-        StepVar(IdStep id) : id(id), idStr(nullptr), objStr(nullptr)
+        StepVar(IdStep idTimer) : id(idTimer), idStr(nullptr), objStr(nullptr)
         {
             stepBegin(id);
         }
-        StepVar(const char* idStr) : idStr(idStr), objStr(nullptr)
+        StepVar(const char* idTimerStr) : idStr(idTimerStr), objStr(nullptr)
         {
             stepBegin(idStr);
         }
-        StepVar(IdStep id, IdObj obj) : id(id), idStr(nullptr), obj(obj), objStr(nullptr)
+        StepVar(IdStep idTimer, IdObj objTimer) : id(idTimer), idStr(nullptr), obj(objTimer), objStr(nullptr)
         {
             stepBegin(id, obj);
         }
-        StepVar(const char* idStr, const char* objStr) : idStr(idStr), objStr(objStr)
+        StepVar(const char* idTimerStr, const char* objTimerStr) : idStr(idTimerStr), objStr(objTimerStr)
         {
             stepBegin(idStr, objStr);
         }
         template<class T>
-        StepVar(IdStep id, T* obj) : id(id), idStr(nullptr), obj(IdObj(obj->getName())), objStr(nullptr)
+        StepVar(IdStep idTimer, T* objTimer) : id(idTimer), idStr(nullptr), obj(IdObj(objTimer->getName())), objStr(nullptr)
         {
             stepBegin(id, obj);
         }
         template<class T>
-        StepVar(const char* idStr, T* obj) : idStr(idStr), objStr(obj->getName().c_str())
+        StepVar(const char* idTimerStr, T* objTimer) : idStr(idTimerStr), objStr(objTimer->getName().c_str())
         {
             stepBegin(idStr, objStr);
         }

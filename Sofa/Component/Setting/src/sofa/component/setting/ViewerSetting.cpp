@@ -41,7 +41,27 @@ ViewerSetting::ViewerSetting()
     , d_fullscreen(initData(&d_fullscreen, false, "fullscreen", "Fullscreen mode"))
     , d_cameraMode(initData(&d_cameraMode, {"Perspective", "Orthographic"}, "cameraMode", "Camera mode"))
     , d_objectPickingMethod(initData(&d_objectPickingMethod, {"Ray casting", "Selection buffer"}, "objectPickingMethod", "The method used to pick objects"))
+    , d_showSelectedNodeBoundingBox(initData(&d_showSelectedNodeBoundingBox, true, "showSelectedNodeBoundingBox", "Show the bounding box of selected nodes"))
+    , d_showSelectedObjectBoundingBox(initData(&d_showSelectedObjectBoundingBox, true, "showSelectedObjectBoundingBox", "Show the bounding box when components selected"))
+    , d_showSelectedObjectPositions(initData(&d_showSelectedObjectPositions, true, "showSelectedObjectPositions", "Show the positions when a components with 'position' are selected"))
+    , d_showSelectedObjectSurfaces(initData(&d_showSelectedObjectSurfaces, true, "showSelectedObjectSurfaces", "Show the surfaces when components with surface topology are selected"))
+    , d_showSelectedObjectVolumes(initData(&d_showSelectedObjectVolumes, true, "showSelectedObjectVolumes", "Show the volumes when components with volume topology are selected"))
+    , d_showSelectedObjectIndices(initData(&d_showSelectedObjectIndices, true, "showSelectedObjectIndices", "Show the position's indices for components with positions are selected"))
+    , d_selectedVisualScaling(initData(&d_selectedVisualScaling, 0.02, "showSelectedVisualScaling", "Scale factor for the rendering of selected object"))
 {
+    d_resolution.setGroup("Viewport");
+    d_fullscreen.setGroup("Viewport");
+
+    d_cameraMode.setGroup("Camera");
+
+    d_objectPickingMethod.setGroup("Selection");
+    d_showSelectedNodeBoundingBox.setGroup("Selection");
+    d_showSelectedObjectBoundingBox.setGroup("Selection");
+    d_showSelectedObjectPositions.setGroup("Selection");
+    d_showSelectedObjectSurfaces.setGroup("Selection");
+    d_showSelectedObjectVolumes.setGroup("Selection");
+    d_showSelectedObjectIndices.setGroup("Selection");
+    d_selectedVisualScaling.setGroup("Selection");
 }
 
 } // namespace sofa::component::setting

@@ -118,7 +118,7 @@ void MatrixProjectionMethod<TMatrix>::addMappedMatrixToGlobalMatrixEigen(
     for (const auto& [a, b] : uniquePairs)
     {
         const sofa::type::fixed_array<std::shared_ptr<TMatrix>, 2> J
-        { jacobians[0].getJacobianFrom(a), jacobians[1].getJacobianFrom(b) };
+        ({ jacobians[0].getJacobianFrom(a), jacobians[1].getJacobianFrom(b) });
 
         if (J[0])
         {
@@ -213,7 +213,7 @@ void MatrixProjectionMethod<TMatrix>::computeMatrixJacobians(const core::Mechani
                 (this->l_mechanicalStates[0] == this->l_mechanicalStates[1]) ?
                     J0 : computeJacobiansFrom(this->l_mechanicalStates[1], mparams, mappingGraph, matrixToProject);
 
-        m_mappingJacobians.emplace(J0, J1);
+        m_mappingJacobians.emplace(sofa::type::fixed_array<MappingJacobians<TMatrix>, 2>({J0, J1}));
     }
 }
 

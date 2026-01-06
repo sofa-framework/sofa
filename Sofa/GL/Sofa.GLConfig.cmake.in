@@ -5,10 +5,11 @@
 
 set(SOFA_GL_HAVE_GLEW @SOFA_GL_HAVE_GLEW@)
 
-find_package(Sofa.Helper QUIET REQUIRED)
-find_package(Sofa.DefaultType QUIET REQUIRED)
-find_package(OpenGL QUIET REQUIRED)
-find_package(GLEW QUIET REQUIRED)
+find_package(Sofa.Config QUIET REQUIRED)
+sofa_find_package(Sofa.Helper QUIET REQUIRED)
+sofa_find_package(Sofa.DefaultType QUIET REQUIRED)
+sofa_find_package(OpenGL QUIET REQUIRED)
+sofa_find_package(GLEW QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

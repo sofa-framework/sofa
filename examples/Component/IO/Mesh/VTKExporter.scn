@@ -20,5 +20,6 @@
         exportAtBegin="1" 
         exportAtEnd="1"
         exportEveryNumberOfSteps="2"
+        printLog="true"
     />
 </Node>

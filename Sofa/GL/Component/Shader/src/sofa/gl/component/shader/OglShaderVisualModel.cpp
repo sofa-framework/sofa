@@ -164,7 +164,7 @@ void OglShaderVisualModel::computeRestPositions()
     vrestpos.resize ( restpositions.size() );
     for ( unsigned int i = 0; i < restpositions.size(); i++ )
     {
-        vrestpos[i] = restpositions[i];
+        vrestpos[i] = toVecN<3, float>(restpositions[i]); // vec3 to vec3f
     }
     vrestpositions->endEdit();
     computeRestNormals();
@@ -228,10 +228,10 @@ void OglShaderVisualModel::computeRestNormals()
     {
         if (triangles[i][0] >= vrestpos.size() || triangles[i][1] >= vrestpos.size() || triangles[i][2] >= vrestpos.size())
             continue;
-        const Coord  v1 = vrestpos[triangles[i][0]];
-        const Coord  v2 = vrestpos[triangles[i][1]];
-        const Coord  v3 = vrestpos[triangles[i][2]];
-        Coord n = cross(v2-v1, v3-v1);
+        const auto& v1 = vrestpos[triangles[i][0]];
+        const auto& v2 = vrestpos[triangles[i][1]];
+        const auto& v3 = vrestpos[triangles[i][2]];
+        auto n = cross(v2-v1, v3-v1);
 
         n.normalize();
         restNormals[triangles[i][0]] += n;
@@ -242,14 +242,14 @@ void OglShaderVisualModel::computeRestNormals()
     {
         if (quads[i][0] >= vrestpos.size() || quads[i][1] >= vrestpos.size() || quads[i][2] >= vrestpos.size() || quads[i][3] >= vrestpos.size())
             continue;
-        const Coord & v1 = vrestpos[quads[i][0]];
-        const Coord & v2 = vrestpos[quads[i][1]];
-        const Coord & v3 = vrestpos[quads[i][2]];
-        const Coord & v4 = vrestpos[quads[i][3]];
-        Coord n1 = cross(v2-v1, v4-v1);
-        Coord n2 = cross(v3-v2, v1-v2);
-        Coord n3 = cross(v4-v3, v2-v3);
-        Coord n4 = cross(v1-v4, v3-v4);
+        const auto& v1 = vrestpos[quads[i][0]];
+        const auto& v2 = vrestpos[quads[i][1]];
+        const auto& v3 = vrestpos[quads[i][2]];
+        const auto& v4 = vrestpos[quads[i][3]];
+        auto n1 = cross(v2-v1, v4-v1);
+        auto n2 = cross(v3-v2, v1-v2);
+        auto n3 = cross(v4-v3, v2-v3);
+        auto n4 = cross(v1-v4, v3-v4);
         n1.normalize(); n2.normalize(); n3.normalize(); n4.normalize();
         restNormals[quads[i][0]] += n1;
         restNormals[quads[i][1]] += n2;
