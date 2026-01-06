@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <MultiThreading/component/animationloop/AnimationLoopParallelScheduler.h>
 
-#include <sofa/simulation/TaskScheduler.h>
-#include <sofa/simulation/InitTasks.h>
+#include <sofa/simulation/task/TaskScheduler.h>
+#include <sofa/simulation/task/InitTasks.h>
 #include <MultiThreading/DataExchange.h>
 
 #include <sofa/core/ObjectFactory.h>
@@ -33,8 +33,8 @@
 #include <sofa/simulation/common/xml/NodeElement.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/ParallelForEach.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/ParallelForEach.h>
 
 namespace multithreading::component::animationloop
 {

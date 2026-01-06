@@ -43,7 +43,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/behavior/BaseConstraint.h> ///< ConstraintResolution.
+#include <sofa/core/behavior/BaseLagrangianConstraint.h> ///< ConstraintResolution.
 
 #include <sofa/helper/AdvancedTimer.h>
 
@@ -164,7 +164,7 @@ void ConstraintProblem::gaussSeidelConstraintTimed(SReal &timeout, int numItMax)
             //   (b) contribution of forces are added to d
             for(int k=0; k<_dim; k++)
                 for(int l=0; l<nb; l++)
-                    _d[j+l] += _W[j+l][k] * _force[k];
+                    _d[j+l] += _W(j+l,k) * _force[k];
 
 
 
@@ -181,14 +181,14 @@ void ConstraintProblem::gaussSeidelConstraintTimed(SReal &timeout, int numItMax)
                     SReal terr2 = 0;
                     for (int m=0; m<nb; m++)
                     {
-                        terr2 += _W[j+l][j+m] * (_force[j+m] - errF[m]);
+                        terr2 += _W(j+l,j+m) * (_force[j+m] - errF[m]);
                     }
                     terr += terr2 * terr2;
                 }
                 error += sqrt(terr);
             }
             else
-                error += fabs(_W[j][j] * (_force[j] - errF[0]));
+                error += fabs(_W(j,j) * (_force[j] - errF[0]));
 
             j += nb;
         }

@@ -21,15 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/config.h>
-
 #include <sofa/geometry/ElementType.h>
-
-#include <sofa/topology/Point.h>
 #include <sofa/topology/Edge.h>
-#include <sofa/topology/Triangle.h>
-#include <sofa/topology/Quad.h>
-#include <sofa/topology/Pentahedron.h>
-#include <sofa/topology/Tetrahedron.h>
-#include <sofa/topology/Pyramid.h>
 #include <sofa/topology/Hexahedron.h>
+#include <sofa/topology/Point.h>
+#include <sofa/topology/Prism.h>
+#include <sofa/topology/Pyramid.h>
+#include <sofa/topology/Quad.h>
+#include <sofa/topology/Tetrahedron.h>
+#include <sofa/topology/Triangle.h>
+#include <sofa/topology/config.h>

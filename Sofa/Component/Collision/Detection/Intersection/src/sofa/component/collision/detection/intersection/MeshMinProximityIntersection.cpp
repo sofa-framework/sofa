@@ -82,7 +82,7 @@ MeshMinProximityIntersection::MeshMinProximityIntersection(MinProximityIntersect
 
 bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getContactDistance() + e2.getContactDistance();
     using Real = Line::Coord::value_type;
 
     const auto& positions_e1 = e1.model->getMechanicalState()->read(core::vec_id::read_access::position)->getValue();
@@ -100,9 +100,9 @@ bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2, const co
     MatNoInit<2, 2, Real> A;
     VecNoInit<2, Real> b;
 
-    A[0][0] = AB * AB;
-    A[1][1] = CD * CD;
-    A[0][1] = A[1][0] = -CD*AB;
+    A(0,0) = AB * AB;
+    A(1,1) = CD * CD;
+    A(0,1) = A(1,0) = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
 
@@ -113,8 +113,8 @@ bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2, const co
 
     if (det < -1.0e-18 || det > 1.0e-18)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+        alpha = (b[0]*A(1,1) - b[1]*A(0,1))/det;
+        beta  = (b[1]*A(0,0) - b[0]*A(1,0))/det;
         if (alpha < 0.000001 || alpha > 0.999999 ||
             beta  < 0.000001 || beta  > 0.999999 )
             return false;
@@ -126,7 +126,7 @@ bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2, const co
 
 int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getContactDistance() + e2.getContactDistance();
     using Real = Line::Coord::value_type;
 
     const auto& positions_e1 = e1.model->getMechanicalState()->read(core::vec_id::read_access::position)->getValue();
@@ -143,9 +143,9 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     MatNoInit<2, 2, Real> A;
     VecNoInit<2, Real> b;
 
-    A[0][0] = AB*AB;
-    A[1][1] = CD*CD;
-    A[0][1] = A[1][0] = -CD*AB;
+    A(0,0) = AB*AB;
+    A(1,1) = CD*CD;
+    A(0,1) = A(1,0) = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
     const Real det = type::determinant(A);
@@ -155,8 +155,8 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
 
     if (det < -1.0e-15 || det > 1.0e-15)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+        alpha = (b[0]*A(1,1) - b[1]*A(0,1))/det;
+        beta  = (b[1]*A(0,0) - b[0]*A(1,0))/det;
         if (alpha < 0.000001 || alpha > 0.999999 ||
             beta  < 0.000001 || beta  > 0.999999 )
             return 0;
@@ -186,7 +186,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     }
 #endif
 
-    const SReal contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+    const SReal contactDist = currentIntersection->getContactDistance() + e1.getContactDistance() + e2.getContactDistance();
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
@@ -214,7 +214,7 @@ bool MeshMinProximityIntersection::testIntersection(Triangle& e2, Point& e1, con
     static_assert(std::is_same_v<Triangle::Coord, Point::Coord>, "Data mismatch");
     using Real = Triangle::Coord::value_type;
 
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getContactDistance() + e2.getContactDistance();
 
     const auto& positions_e1 = e1.model->getMechanicalState()->read(core::vec_id::read_access::position)->getValue();
     const auto& positions_e2 = e2.model->getMechanicalState()->read(core::vec_id::read_access::position)->getValue();
@@ -243,15 +243,15 @@ bool MeshMinProximityIntersection::testIntersection(Triangle& e2, Point& e1, con
     // AB.AC*alpha + AC.AC*beta = AP.AC
     //
     // A . [alpha beta] = b
-    A[0][0] = AB*AB;
-    A[1][1] = AC*AC;
-    A[0][1] = A[1][0] = AB*AC;
+    A(0,0) = AB*AB;
+    A(1,1) = AC*AC;
+    A(0,1) = A(1,0) = AB*AC;
     b[0] = AP*AB;
     b[1] = AP*AC;
     const Real det = type::determinant(A);
 
-    const Real alpha=(b[0]*A[1][1]-b[1]*A[0][1])/det;
-    const Real beta=(b[1]*A[0][0]-b[0]*A[1][0])/det;
+    const Real alpha=(b[0]*A(1,1)-b[1]*A(0,1))/det;
+    const Real beta=(b[1]*A(0,0)-b[0]*A(1,0))/det;
     if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)
@@ -270,7 +270,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     
     using Real = Triangle::Coord::value_type;
 
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getContactDistance() + e2.getContactDistance();
 
     const auto& positions_e1 = e1.model->getMechanicalState()->read(core::vec_id::read_access::position)->getValue();
     const auto& positions_e2 = e2.model->getMechanicalState()->read(core::vec_id::read_access::position)->getValue();
@@ -287,16 +287,16 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     MatNoInit<2, 2, Real> A;
     VecNoInit<2, Real> b;
 
-    A[0][0] = AB*AB;
-    A[1][1] = AC*AC;
-    A[0][1] = A[1][0] = AB*AC;
+    A(0,0) = AB*AB;
+    A(1,1) = AC*AC;
+    A(0,1) = A(1,0) = AB*AC;
     b[0] = AP*AB;
     b[1] = AP*AC;
 
     const Real det = type::determinant(A);
 
-    const Real alpha=(b[0]*A[1][1]-b[1]*A[0][1])/det;
-    const Real beta=(b[1]*A[0][0]-b[0]*A[1][0])/det;
+    const Real alpha=(b[0]*A(1,1)-b[1]*A(0,1))/det;
+    const Real beta=(b[1]*A(0,0)-b[0]*A(1,0))/det;
     if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)
@@ -328,7 +328,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     }
 #endif
 
-    const SReal contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+    const SReal contactDist = currentIntersection->getContactDistance() + e1.getContactDistance() + e2.getContactDistance();
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
@@ -358,7 +358,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
 
 bool MeshMinProximityIntersection::testIntersection(Line& e2, Point& e1, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getContactDistance() + e2.getContactDistance();
     using Real = Line::Coord::value_type;
 
     const auto& positions_e1 = e1.model->getMechanicalState()->read(core::vec_id::read_access::position)->getValue();
@@ -389,7 +389,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
 {
     static_assert(std::is_same_v<Line::Coord, Point::Coord>, "Data mismatch");
 
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getContactDistance() + e2.getContactDistance();
 
     const auto& positions_e1 = e1.model->getMechanicalState()->read(core::vec_id::read_access::position)->getValue();
     const auto& positions_e2 = e2.model->getMechanicalState()->read(core::vec_id::read_access::position)->getValue();
@@ -438,7 +438,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
     }
 #endif
 
-    const SReal contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+    const SReal contactDist = currentIntersection->getContactDistance() + e1.getContactDistance() + e2.getContactDistance();
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
@@ -462,7 +462,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
 
 bool MeshMinProximityIntersection::testIntersection(Point& e1, Point& e2, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getContactDistance() + e2.getContactDistance();
 
     const Point::Coord PQ = e2.p()-e1.p();
     return PQ.norm2() < alarmDist * alarmDist;
@@ -470,7 +470,7 @@ bool MeshMinProximityIntersection::testIntersection(Point& e1, Point& e2, const 
 
 int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts, const core::collision::Intersection* currentIntersection)
 {
-    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = currentIntersection->getAlarmDistance() + e1.getContactDistance() + e2.getContactDistance();
 
     Vec3 P,Q,PQ;
     P = e1.p();
@@ -495,7 +495,7 @@ int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
     }
 #endif
 
-    const SReal contactDist = currentIntersection->getContactDistance() + e1.getProximity() + e2.getProximity();
+    const SReal contactDist = currentIntersection->getContactDistance() + e1.getContactDistance() + e2.getContactDistance();
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();

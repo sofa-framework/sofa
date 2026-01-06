@@ -43,9 +43,9 @@
 #include <sofa/simulation/CollisionVisitor.h>
 #include <sofa/simulation/IntegrateBeginEvent.h>
 #include <sofa/simulation/IntegrateEndEvent.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/SolveVisitor.h>
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>

@@ -76,7 +76,7 @@ public:
     typedef component::solidmechanics::fem::nonuniform::HexahedronCompositeFEMForceFieldAndMass<In> HexahedronCompositeFEMForceFieldAndMassT;
 
 
-    typedef type::Mat<3,8*3> Weight;
+    typedef type::Mat<3,8*3, SReal> Weight;
     typedef typename HexahedronCompositeFEMForceFieldAndMassT::Transformation Transformation;
     typedef type::fixed_array< InCoord, 8 > Nodes;
 

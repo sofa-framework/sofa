@@ -43,12 +43,9 @@
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 class SOFA_IMAGE_GUI_API LabelImageToolBoxAction;
-}
 }
 }
 
@@ -114,7 +111,7 @@ protected:
 
 public:
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget* /*parent*/=nullptr )=0;
+    virtual sofa::qt::LabelImageToolBoxAction* createTBAction(QWidget* /*parent*/=nullptr )=0;
 
 };
 

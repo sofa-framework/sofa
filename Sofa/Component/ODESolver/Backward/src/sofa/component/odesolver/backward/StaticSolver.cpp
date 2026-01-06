@@ -150,9 +150,10 @@ struct StaticResidualFunction : newton_raphson::BaseNonLinearFunction
     {
         SCOPED_TIMER("MBKSolve");
 
-        linearSolver->setSystemLHVector(dx);
-        linearSolver->setSystemRHVector(force);
+        linearSolver->getLinearSystem()->setSystemSolution(dx);
+        linearSolver->getLinearSystem()->setRHS(force);
         linearSolver->solveSystem();
+        linearSolver->getLinearSystem()->dispatchSystemSolution(dx);
     }
 
     SReal squaredNormDx() override
@@ -187,6 +188,9 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, core::MultiVe
     {
         return;
     }
+
+    SOFA_UNUSED(dt);
+    SOFA_UNUSED(vResult);
 
     // Create the vector and mechanical operations tools. These are used to execute special
     // operations (multiplication, additions, etc.) on multi-vectors (a vector that is stored
