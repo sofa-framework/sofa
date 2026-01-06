@@ -204,30 +204,30 @@ void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*
     {
         Mat M;
         Mp1p2.writeRotationMatrix(M);
-        Real crossnorm=sqrt(M[1][0]*M[1][0]+M[2][0]*M[2][0]);
-        Real thet=atan2(crossnorm,M[0][0]);
+        Real crossnorm=sqrt(M(1,0)*M(1,0)+M(2,0)*M(2,0));
+        Real thet=atan2(crossnorm,M(0,0));
         fR0[0]=spring.torsion[0]*spring.KR[0]; // soft constraint
-        fR0[1]=-M[2][0]*thet*spring.KR[1];
-        fR0[2]=M[1][0]*thet*spring.KR[2];
+        fR0[1]=-M(2,0)*thet*spring.KR[1];
+        fR0[2]=M(1,0)*thet*spring.KR[2];
     }
     else if(!spring.freeMovements[3] && spring.freeMovements[4] && !spring.freeMovements[5] && spring.torsion[1]>spring.limitAngles[2] && spring.torsion[1]<spring.limitAngles[3]) // pivot /y
     {
         Mat M;
         Mp1p2.writeRotationMatrix(M);
-        Real crossnorm=sqrt(M[0][1]*M[0][1]+M[2][1]*M[2][1]);
-        Real thet=atan2(crossnorm,M[1][1]);
-        fR0[0]=M[2][1]*thet*spring.KR[0];
+        Real crossnorm=sqrt(M(0,1)*M(0,1)+M(2,1)*M(2,1));
+        Real thet=atan2(crossnorm,M(1,1));
+        fR0[0]=M(2,1)*thet*spring.KR[0];
         fR0[1]=spring.torsion[1]*spring.KR[1]; // soft constraint
-        fR0[2]=-M[0][1]*thet*spring.KR[2];
+        fR0[2]=-M(0,1)*thet*spring.KR[2];
     }
     else if(!spring.freeMovements[3] && !spring.freeMovements[4] && spring.freeMovements[5] && spring.torsion[2]>spring.limitAngles[4] && spring.torsion[2]<spring.limitAngles[5]) // pivot /z
     {
         Mat M;
         Mp1p2.writeRotationMatrix(M);
-        Real crossnorm=sqrt(M[1][2]*M[1][2]+M[0][2]*M[0][2]);
-        Real thet=atan2(crossnorm,M[2][2]);
-        fR0[0]=-M[1][2]*thet*spring.KR[0];
-        fR0[1]=M[0][2]*thet*spring.KR[1];
+        Real crossnorm=sqrt(M(1,2)*M(1,2)+M(0,2)*M(0,2));
+        Real thet=atan2(crossnorm,M(2,2));
+        fR0[0]=-M(1,2)*thet*spring.KR[0];
+        fR0[1]=M(0,2)*thet*spring.KR[1];
         fR0[2]=spring.torsion[2]*spring.KR[2]; // soft constraint
     }
     else // general case
@@ -461,32 +461,23 @@ void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  para
 {
     SOFA_UNUSED(params);
 
-    const Real max_real = std::numeric_limits<Real>::max();
-    const Real min_real = std::numeric_limits<Real>::lowest(); //not min() !
-    Real maxBBox[3] = { min_real,min_real,min_real };
-    Real minBBox[3] = { max_real,max_real,max_real };
-
     const VecCoord& p1 = this->mstate1->read(core::vec_id::read_access::position)->getValue();
     const VecCoord& p2 = this->mstate2->read(core::vec_id::read_access::position)->getValue();
 
     const type::vector<Spring>& springs = d_springs.getValue();
 
+    type::BoundingBox bbox;
+
     for (sofa::Index i = 0, iend = sofa::Size(springs.size()); i<iend; ++i)
     {
         const Spring& s = springs[i];
+        const auto& c1 = p1[s.m1].getCenter();
+        const auto& c2 = p2[s.m2].getCenter();
 
-        Vec3 v0 = p1[s.m1].getCenter();
-        Vec3 v1 = p2[s.m2].getCenter();
-
-        for (sofa::Index c = 0; c<3; c++)
-        {
-            if (v0[c] > maxBBox[c]) maxBBox[c] = (Real)v0[c];
-            if (v0[c] < minBBox[c]) minBBox[c] = (Real)v0[c];
-            if (v1[c] > maxBBox[c]) maxBBox[c] = (Real)v1[c];
-            if (v1[c] < minBBox[c]) minBBox[c] = (Real)v1[c];
-        }
+        bbox.include(c1);
+        bbox.include(c2);
     }
-    this->f_bbox.setValue( sofa::type::TBoundingBox<Real>(minBBox, maxBBox));
+    this->f_bbox.setValue(bbox);
 }
 
 template <class DataTypes>

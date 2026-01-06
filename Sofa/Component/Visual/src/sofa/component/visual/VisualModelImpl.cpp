@@ -398,7 +398,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             if (d_useNormals.getValue() && n < normalsImport.size())
                 vnormals[j] = normalsImport[n];
             if (t < texCoordsImport.size())
-                vtexcoords[j] = texCoordsImport[t];
+                vtexcoords[j] = type::toVecN<2, float>(texCoordsImport[t]); // vec3 to vec2f
 
             if (vsplit)
             {
@@ -1166,20 +1166,15 @@ void VisualModelImpl::computeTangents()
 
 void VisualModelImpl::computeBBox(const core::ExecParams*, bool)
 {
-    const VecCoord& x = getVertices(); //m_vertices.getValue();
+    const VecCoord& vertices = getVertices();
 
-    SReal minBBox[3] = {std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max()};
-    SReal maxBBox[3] = {-std::numeric_limits<Real>::max(),-std::numeric_limits<Real>::max(),-std::numeric_limits<Real>::max()};
-    for (std::size_t i = 0; i < x.size(); i++)
+    type::BoundingBox bbox;
+
+    for (const auto& v : vertices )
     {
-        const Coord& p = x[i];
-        for (int c=0; c<3; c++)
-        {
-            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
-            if (p[c] < minBBox[c]) minBBox[c] = p[c];
-        }
+        bbox.include(v);
     }
-    this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox,maxBBox));
+    this->f_bbox.setValue(bbox);
 }
 
 

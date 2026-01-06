@@ -211,9 +211,9 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
                     {
                         for (unsigned int j = 0 ; j < 3; j++)
                         {
-                            mat[i][j] = values[i*3+j];//rotation matrix
+                            mat(i,j) = values[i*3+j];//rotation matrix
                         }
-                        mat[i][3] = values[values.size()-1-i];//translation
+                        mat(i,3) = values[values.size()-1-i];//translation
                     }
                 }
             }
@@ -285,7 +285,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
                 Coord tr;
                 for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)3); i++)
                 {
-                    tr[i] = mat[i][3] = (Real)atof(vLine[i].c_str());
+                    tr[i] = mat(i,3) = (Real)atof(vLine[i].c_str());
                 }
                 f_translation.setValue(tr);
 
@@ -294,7 +294,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
             {
                 //rotation matrix
                 for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)3); i++)
-                    mat[nbLines-2][i] = (Real)atof(vLine[i].c_str());
+                    mat(nbLines-2,i) = (Real)atof(vLine[i].c_str());
             }
 
         }
@@ -358,7 +358,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
             else if (vLine.size()<4) {msg_error() << "Matrix is not 4x4.";continue;}
 
             for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)4); i++)
-                mat[nbLines-1][i] = (Real)atof(vLine[i].c_str());
+                mat(nbLines-1,i) = (Real)atof(vLine[i].c_str());
         }
         f_affineMatrix.setValue(mat);
 
@@ -455,7 +455,7 @@ void TransformPosition<DataTypes>::doUpdate()
         {
             Vec4 coord = affineMatrix.ref()*Vec4(in[i], 1);
             if ( fabs(coord[3]) > 1e-10)
-                out[i]=coord/coord[3];
+                out[i]=type::toVec3(coord/coord[3]);
         }
         break;
     }

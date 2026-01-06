@@ -35,21 +35,24 @@ namespace engine
 
 using namespace defaulttype;
 
-int MarchingCubesEngineClass = core::RegisterObject("Compute an isosurface from an image using marching cubes algorithm")
-        .add<MarchingCubesEngine<ImageUC> >(true)
-        .add<MarchingCubesEngine<ImageD> >()
-        .add<MarchingCubesEngine<ImageB> >()
+void registerMarchingCubesEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Compute an isosurface from an image using marching cubes algorithm")
+    .add<MarchingCubesEngine<ImageUC> >(true)
+    .add<MarchingCubesEngine<ImageD> >()
+    .add<MarchingCubesEngine<ImageB> >()
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-        .add<MarchingCubesEngine<ImageC> >()
-        .add<MarchingCubesEngine<ImageI> >()
-        .add<MarchingCubesEngine<ImageUI> >()
-        .add<MarchingCubesEngine<ImageS> >()
-        .add<MarchingCubesEngine<ImageUS> >()
-        .add<MarchingCubesEngine<ImageL> >()
-        .add<MarchingCubesEngine<ImageUL> >()
-        .add<MarchingCubesEngine<ImageF> >()
+    .add<MarchingCubesEngine<ImageC> >()
+    .add<MarchingCubesEngine<ImageI> >()
+    .add<MarchingCubesEngine<ImageUI> >()
+    .add<MarchingCubesEngine<ImageS> >()
+    .add<MarchingCubesEngine<ImageUS> >()
+    .add<MarchingCubesEngine<ImageL> >()
+    .add<MarchingCubesEngine<ImageUL> >()
+    .add<MarchingCubesEngine<ImageF> >()
 #endif
-        ;
+    );
+}
 
 template class SOFA_IMAGE_API MarchingCubesEngine<ImageUC>;
 template class SOFA_IMAGE_API MarchingCubesEngine<ImageD>;

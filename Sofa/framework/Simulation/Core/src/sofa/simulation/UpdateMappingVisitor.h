@@ -33,7 +33,7 @@ namespace sofa::simulation
 class SOFA_SIMULATION_CORE_API UpdateMappingVisitor : public Visitor
 {
 public:
-    UpdateMappingVisitor(const sofa::core::ExecParams* params) : Visitor(params) {}
+    UpdateMappingVisitor(const sofa::core::ExecParams* eparams) : Visitor(eparams) {}
     void processMapping(simulation::Node* node, core::BaseMapping* obj);
     void processMechanicalMapping(simulation::Node*, core::BaseMapping* obj);
 

@@ -33,7 +33,7 @@ namespace sofa::simulation
 class SOFA_SIMULATION_CORE_API BaseCollisionVisitor : public Visitor
 {
    public:
-    BaseCollisionVisitor(const core::ExecParams* params) :Visitor(params) , m_primitiveTestCount(0) {}
+    BaseCollisionVisitor(const core::ExecParams* eparams) :Visitor(eparams) , m_primitiveTestCount(0) {}
 
     virtual void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
 
@@ -52,7 +52,7 @@ class SOFA_SIMULATION_CORE_API BaseCollisionVisitor : public Visitor
 class SOFA_SIMULATION_CORE_API ProcessGeometricalDataVisitor : public Visitor
 {
    public:
-    ProcessGeometricalDataVisitor(const core::ExecParams* params) :Visitor(params) {}
+    ProcessGeometricalDataVisitor(const core::ExecParams* eparams) :Visitor(eparams) {}
 
     virtual void fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet);
     Result processNodeTopDown(simulation::Node* node) override;
@@ -68,7 +68,7 @@ class SOFA_SIMULATION_CORE_API ProcessGeometricalDataVisitor : public Visitor
 class SOFA_SIMULATION_CORE_API CollisionVisitor :  public BaseCollisionVisitor
 {
 public:
-    CollisionVisitor(const core::ExecParams* params) : BaseCollisionVisitor(params) {}
+    CollisionVisitor(const core::ExecParams* eparams) : BaseCollisionVisitor(eparams) {}
 
     virtual void fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet);
     Result processNodeTopDown(simulation::Node* node) override;
@@ -85,7 +85,7 @@ class SOFA_SIMULATION_CORE_API CollisionResetVisitor : public BaseCollisionVisit
 {
 
 public:
-    CollisionResetVisitor(const core::ExecParams* params) : BaseCollisionVisitor(params) {}
+    CollisionResetVisitor(const core::ExecParams* eparams) : BaseCollisionVisitor(eparams) {}
     void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj) override;
     const char* getClassName() const override { return "CollisionResetVisitor"; }
 };
@@ -94,7 +94,7 @@ public:
 class SOFA_SIMULATION_CORE_API CollisionDetectionVisitor : public BaseCollisionVisitor
 {
 public:
-    CollisionDetectionVisitor(const core::ExecParams* params) : BaseCollisionVisitor(params) {}
+    CollisionDetectionVisitor(const core::ExecParams* eparams) : BaseCollisionVisitor(eparams) {}
     void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj) override;
     const char* getClassName() const override { return "CollisionDetectionVisitor"; }
 };
@@ -103,7 +103,7 @@ public:
 class SOFA_SIMULATION_CORE_API CollisionResponseVisitor : public BaseCollisionVisitor
 {
 public:
-    CollisionResponseVisitor(const core::ExecParams* params) : BaseCollisionVisitor(params) {}
+    CollisionResponseVisitor(const core::ExecParams* eparams) : BaseCollisionVisitor(eparams) {}
     void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj) override;
     const char* getClassName() const override { return "CollisionResponseVisitor"; }
 };

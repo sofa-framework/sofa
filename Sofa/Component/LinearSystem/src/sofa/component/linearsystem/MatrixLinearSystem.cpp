@@ -59,7 +59,11 @@ void registerMatrixLinearSystem(sofa::core::ObjectFactory* factory)
         .add<MatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<3, 3, SReal> >, FullVector<SReal> > >()
         .add<MatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<4, 4, SReal> >, FullVector<SReal> > >()
         .add<MatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<6, 6, SReal> >, FullVector<SReal> > >()
-        .add<MatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<8, 8, SReal> >, FullVector<SReal> > >());
+        .add<MatrixLinearSystem< CompressedRowSparseMatrix<type::Mat<8, 8, SReal> >, FullVector<SReal> > >()
+        .add<MatrixLinearSystem< DiagonalMatrix<SReal>, FullVector<SReal> > >()
+        .add<MatrixLinearSystem< BlockDiagonalMatrix<3,SReal>, FullVector<SReal> > >()
+        .add<MatrixLinearSystem< RotationMatrix<SReal>, FullVector<SReal> > >()
+    );
 }
 
 } //namespace sofa::component::linearsystem

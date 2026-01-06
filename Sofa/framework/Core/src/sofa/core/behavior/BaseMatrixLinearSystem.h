@@ -24,6 +24,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/core/MultiVecId.h>
 
 namespace sofa::core::behavior
 {
@@ -40,12 +41,13 @@ public:
 protected:
     BaseMatrixLinearSystem();
 
+public:
+
     /// Size of the linear system
     Data< sofa::type::Vec2u > d_matrixSize;
 
-public:
+    Data< bool > d_enableAssembly;
 
-    /**
      * !!! WARNING since v25.12 !!!
      * 
      * The template method pattern has been applied to this part of the API.
@@ -61,15 +63,27 @@ public:
         return this->doGetSystemBaseMatrix();
     }
 
-    /// Construct and assemble the linear system matrix
-    virtual void buildSystemMatrix(const core::MechanicalParams* mparams) final {
-        //TODO (SPRINT SED 2025): Component state mechamism
-        preAssembleSystem(mparams);
-        assembleSystem(mparams);
-        postAssembleSystem(mparams);
-    }
+    virtual linearalgebra::BaseVector* getSystemRHSBaseVector() const { return nullptr; }
+    virtual linearalgebra::BaseVector* getSystemSolutionBaseVector() const { return nullptr; }
+
+    virtual void buildSystemMatrix(const core::MechanicalParams* mparams);
 
     sofa::type::Vec2u getMatrixSize() const { return d_matrixSize.getValue(); }
+
+    /// Set the size of the matrix to n x n, and the size of RHS and solution to n
+    virtual void resizeSystem(sofa::Size n) = 0;
+
+    virtual void clearSystem() = 0;
+
+    /// Assemble the right-hand side of the linear system from the values contained in the (Mechanical/Physical)State objects
+    virtual void setRHS(core::MultiVecDerivId v) = 0;
+
+    /// Set the initial estimate of the linear system solution vector, from the values contained in the (Mechanical/Physical)State objects
+    /// This vector will be replaced by the solution of the system once the system is solved
+    virtual void setSystemSolution(core::MultiVecDerivId v) = 0;
+
+    virtual void dispatchSystemSolution(core::MultiVecDerivId v) = 0;
+    virtual void dispatchSystemRHS(core::MultiVecDerivId v) = 0;
 
 protected:
     virtual linearalgebra::BaseMatrix* doGetSystemBaseMatrix() const 

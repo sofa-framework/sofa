@@ -131,6 +131,12 @@ void IntersectorMap::insert(const helper::TypeInfo& t1, const helper::TypeInfo& 
     }
 }
 
+Intersection::Intersection()
+{
+
+}
+
+
 Intersection::~Intersection()
 {
 }
