@@ -34,15 +34,11 @@ void BaseLagrangianConstraint::setGroup(int g)
 }
 
 void BaseLagrangianConstraint::getConstraintInfo(const ConstraintParams* cParams, VecConstraintBlockInfo& blocks,
-    VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
+    VecPersistentID& ids)
 {
     SOFA_UNUSED(cParams);
     SOFA_UNUSED(blocks);
     SOFA_UNUSED(ids);
-    SOFA_UNUSED(positions);
-    SOFA_UNUSED(directions);
-    SOFA_UNUSED(areas);
-
 }
 
 void BaseLagrangianConstraint::getConstraintResolution(const ConstraintParams* cParams,

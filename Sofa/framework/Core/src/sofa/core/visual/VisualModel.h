@@ -52,9 +52,6 @@ public:
 
     /**
      *  \brief Display the VisualModel object.
-     *
-     *  TODO(dmarchal, 2023-06-09): Deprecate VI and use NVI design pattern: In one year, remove the virtual keyword so that everyone
-     *  will have to override doDrawVisual;
      */
     virtual void drawVisual(const VisualParams* /*vparams*/) final;
     

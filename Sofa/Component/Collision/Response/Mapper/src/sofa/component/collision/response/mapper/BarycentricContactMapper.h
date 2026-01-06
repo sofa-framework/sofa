@@ -25,8 +25,8 @@
 #include <sofa/component/mapping/linear/BarycentricMapping.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
-#include <sofa/component/collision/geometry/LineModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
+#include <sofa/component/collision/geometry/LineCollisionModel.h>
 
 namespace sofa::component::collision::response::mapper
 {

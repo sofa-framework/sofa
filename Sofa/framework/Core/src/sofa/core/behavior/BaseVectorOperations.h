@@ -36,8 +36,8 @@ protected:
     SReal result;
 
 public:
-    BaseVectorOperations(const core::ExecParams* params, core::objectmodel::BaseContext* ctx)
-        : params(params),ctx(ctx)
+    BaseVectorOperations(const core::ExecParams* eparams, core::objectmodel::BaseContext* context)
+        : params(eparams),ctx(context)
     {}
 
     virtual ~BaseVectorOperations()

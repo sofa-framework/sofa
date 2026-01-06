@@ -60,9 +60,9 @@ struct DataTypeInfo< sofa::topology::Pyramid > : public FixedArrayTypeInfo<sofa:
 };
 
 template<>
-struct DataTypeInfo< sofa::topology::Pentahedron > : public FixedArrayTypeInfo<sofa::topology::Pentahedron>
+struct DataTypeInfo< sofa::topology::Prism > : public FixedArrayTypeInfo<sofa::topology::Prism>
 {
-    static std::string name() { return sofa::geometry::ElementInfo<sofa::geometry::Pentahedron>::name(); }
+    static std::string name() { return sofa::geometry::ElementInfo<sofa::geometry::Prism>::name(); }
 };
 
 template<>

@@ -34,6 +34,7 @@ namespace sofa::component::linearsolver::iterative
 extern void registerCGLinearSolver(sofa::core::ObjectFactory* factory);
 extern void registerMinResLinearSolver(sofa::core::ObjectFactory* factory);
 extern void registerPCGLinearSolver(sofa::core::ObjectFactory* factory);
+extern void registerPreconditionedMatrixFreeSystem(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -63,6 +64,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     linearsystem::registerMatrixFreeSystemGraphScattered(factory);
     registerMinResLinearSolver(factory);
     registerPCGLinearSolver(factory);
+    registerPreconditionedMatrixFreeSystem(factory);
 }
 
 void init()

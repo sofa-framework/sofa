@@ -130,7 +130,6 @@ void Context::copyContext(const Context& c)
     // *this = c;
 
     copySimulationContext(c);
-
 }
 
 
@@ -140,9 +139,6 @@ void Context::copySimulationContext(const Context& c)
     setDt(c.getDt());
     setTime(c.getTime());
     setAnimate(c.getAnimate());
-
-
-
 }
 } // namespace sofa::core::objectmodel
 

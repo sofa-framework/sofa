@@ -128,11 +128,12 @@ public:
         * which is the method to override from now on.
         *
     **/
-    virtual void rebuildSystem(SReal massFactor, SReal forceFactor) final
+    SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM() virtual void rebuildSystem(SReal massFactor, SReal forceFactor) final
     {
         //TODO (SPRINT SED 2025): Component state mechanism
         doRebuildSystem(massFactor, forceFactor);
     }
+
 
     /**
      * Use the system previously built and solve it with the appropriate algorithm
@@ -180,6 +181,7 @@ public:
         * which is the method to override from now on.
         *
     **/
+    SOFA_ATTRIBUTE_DEPRECATED__COMPUTERESIDUAL()
     virtual void computeResidual(const core::ExecParams* cParams) final
     {
         //TODO (SPRINT SED 2025): Component state mechanism

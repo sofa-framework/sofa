@@ -29,7 +29,7 @@
 namespace sofa::defaulttype
 {
 
-template<class T, sofa::Size N>
+template<class T, std::size_t N>
 struct DataTypeInfo< sofa::type::fixed_array<T,N> > : public FixedArrayTypeInfo<sofa::type::fixed_array<T,N> >
 {
     static std::string name() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::name() << "," << N << ">"; return o.str(); }
