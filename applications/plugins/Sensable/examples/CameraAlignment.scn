@@ -46,7 +46,7 @@
 
             <MechanicalObject src="@loader" template="Vec3d" name="toothState" />
 
-            <DistanceGrid fileRigidDistanceGrid="data/mesh/tooth.obj" scale ="2" usePoints="0" proximity="0.3" contactStiffness="1"  />
+            <DistanceGrid fileRigidDistanceGrid="data/mesh/tooth.obj" scale ="2" usePoints="0" contactDistance="0.3" contactStiffness="1"  />
 
 
         </Node>

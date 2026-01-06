@@ -413,8 +413,8 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::computeBaryEdgePoint(PointID p0
 {
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::vec_id::read_access::position)->getValue());
 
-    sofa::type::Vec<3,Real> c0; c0 = vect_c[p0];
-    sofa::type::Vec<3,Real> c1; c1 = vect_c[p1];
+    const sofa::type::Vec<3,Real> c0 = type::toVecN<3, Real>(vect_c[p0]);
+    const sofa::type::Vec<3,Real> c1 = type::toVecN<3, Real>(vect_c[p1]);
     return c0*(1-coord_p) + c1*coord_p;
 }
 
@@ -423,9 +423,9 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::computeBaryTrianglePoint(PointI
 {
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::vec_id::read_access::position)->getValue());
 
-    sofa::type::Vec<3,Real> c0; c0 = vect_c[p0];
-    sofa::type::Vec<3,Real> c1; c1 = vect_c[p1];
-    sofa::type::Vec<3,Real> c2; c2 = vect_c[p2];
+    sofa::type::Vec<3,Real> c0 = type::toVecN<3, Real>(vect_c[p0]);
+    sofa::type::Vec<3,Real> c1 = type::toVecN<3, Real>(vect_c[p1]);
+    sofa::type::Vec<3,Real> c2 = type::toVecN<3, Real>(vect_c[p2]);
     return c0*coord_p[0] + c1*coord_p[1] + c2*coord_p[2];
 }
 
@@ -1988,7 +1988,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangulationInte
             sofa::type::vector<Real> tmp_baryCoefs;
 
             const typename DataTypes::Coord cG = computeTriangleCenter(ind_ta);
-            const sofa::type::Vec<3, Real> pG{ cG[0], cG[1], cG[2] };
+            const sofa::type::Vec<3, Real> pG = type::toVec3(cG);
 
             computeSegmentTriangleIntersectionInPlane(pG, ptB, current_triID, tmp_intersectedEdges, tmp_baryCoefs);
             if (tmp_intersectedEdges.size() != 1) // only one edge should be intersected to find the next edge in cut direction
@@ -2182,7 +2182,7 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
             const PointID localVId = snapVertexStatus[i];
             const PointID vId = theTris[i][localVId];           
 
-            pathPts[i] = vect_c[vId];
+            pathPts[i] = type::toVec3(vect_c[vId]);
             _elemBorders[i] = sofa::geometry::ElementType::POINT;
 
             // check if point need to be subdivided at start: yes if on border of mesh, otherwise false.
@@ -2224,7 +2224,7 @@ type::vector< std::shared_ptr<PointToAdd> > TriangleSetGeometryAlgorithms< DataT
             newCoefs[0] = newCoefs[0] / sum;
             newCoefs[1] = newCoefs[1] / sum;
 
-            pathPts[i] = vect_c[edge[0]] * newCoefs[0] + vect_c[edge[1]] * newCoefs[1];
+            pathPts[i] = type::toVec3(vect_c[edge[0]] * newCoefs[0] + vect_c[edge[1]] * newCoefs[1]);
 
             _elemBorders[i] = sofa::geometry::ElementType::EDGE;
 
@@ -5349,8 +5349,8 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             Coord vertex1 = coords[ _tri[0] ];
             Coord vertex2 = coords[ _tri[1] ];
             Coord vertex3 = coords[ _tri[2] ];
-            sofa::type::Vec3d center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3))/3;
-            sofa::type::Vec3d point2 = center + normal*normalLength;
+            const sofa::type::Vec3 center = type::toVec3((DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3))/3);
+            const sofa::type::Vec3 point2 = center + normal*normalLength;
 
             for(unsigned int j=0; j<3; j++)
                 color[j] = (float)fabs(normal[j]);

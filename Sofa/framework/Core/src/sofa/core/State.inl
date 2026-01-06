@@ -72,7 +72,7 @@ const objectmodel::BaseData* State<DataTypes>::baseRead(ConstVecId v) const
 }
 
 template<class DataTypes>
-auto State<DataTypes>::computeBBox() const -> sofa::type::TBoundingBox<Real>
+auto State<DataTypes>::computeBBox() const -> sofa::type::BoundingBox
 {
     const VecCoord& x = read(vec_id::read_access::position)->getValue();
     const size_t xSize = x.size();
@@ -80,25 +80,19 @@ auto State<DataTypes>::computeBBox() const -> sofa::type::TBoundingBox<Real>
     if (xSize <= 0)
         return {};
 
-    Real p[3];
+    type::Vec3 p;
     DataTypes::get(p[0], p[1], p[2], x[0]);
-    Real maxBBox[3] = {p[0], p[1], p[2]};
-    Real minBBox[3] = {p[0], p[1], p[2]};
+
+    type::BoundingBox bbox;
+    bbox.include(p);
 
     for (size_t i = 1; i < xSize; i++)
     {
         DataTypes::get(p[0], p[1], p[2], x[i]);
-        for (int c = 0; c < 3; c++)
-        {
-            if (p[c] > maxBBox[c])
-                maxBBox[c] = p[c];
-
-            else if (p[c] < minBBox[c])
-                minBBox[c] = p[c];
-        }
+        bbox.include(p);
     }
 
-    return sofa::type::TBoundingBox<Real>(minBBox,maxBBox);
+    return bbox;
 }
 
 template<class DataTypes>

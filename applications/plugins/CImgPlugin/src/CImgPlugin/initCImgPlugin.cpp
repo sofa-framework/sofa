@@ -18,7 +18,10 @@
 /// and export it.
 namespace cimg_library::cimg
 {
+// Since CImg version 3.5.0 mutex class is already implemented as singleton
+#if cimg_version < 350
     Mutex_static& Mutex_attr() { static Mutex_static val; return val; }
+#endif
 }
 
 
@@ -27,7 +30,9 @@ namespace sofa::component
 
 
 extern "C" {
+#if cimg_version < 350
     cimg_library::cimg::Mutex_static& tmp = cimg_library::cimg::Mutex_attr() ;
+#endif
 
     SOFA_CIMGPLUGIN_API void initExternalModule();
     SOFA_CIMGPLUGIN_API const char* getModuleName();

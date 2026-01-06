@@ -28,9 +28,9 @@ namespace sofa::component::linearsystem
 {
 
 /**
- * Component acting like a linear system, but delegates the linear system functionalities to a list of real linear systems.
+ * Component acting like a linear system, but delegating the linear system functionalities to a list of real linear systems.
  *
- * Using this component allows to assemble more than one global matrix. It is useful when only a partial assembly is
+ * Using this component allows assembling more than one global matrix. It is useful when only a partial assembly is
  * necessary. For example, the first linear system is the global one, and the second one could be only the stiffness
  * matrix.
  */
@@ -50,6 +50,7 @@ public:
     TVector* getRHSVector() const override;
     TVector* getSolutionVector() const override;
     [[nodiscard]] sofa::linearalgebra::BaseMatrix* getSystemBaseMatrix() const override;
+    void buildSystemMatrix(const core::MechanicalParams* mparams) override;
     void resizeSystem(sofa::Size n) override;
     void clearSystem() override;
     void setRHS(core::MultiVecDerivId v) override;
@@ -58,15 +59,8 @@ public:
     void dispatchSystemRHS(core::MultiVecDerivId v) override;
 
 protected:
-    void allocateSystem() override;
-    void resizeVectors(sofa::Size n) override;
-
-    void preAssembleSystem(const core::MechanicalParams* /*mparams*/) override;
-    void assembleSystem(const core::MechanicalParams* /*mparams*/) override;
-    void postAssembleSystem(const core::MechanicalParams* /*mparams*/) override;
-
     ///< List of linear systems to assemble
-    MultiLink < MyType, TypedMatrixLinearSystem<TMatrix, TVector>, BaseLink::FLAG_DUPLICATE > l_linearSystems;
+    MultiLink < MyType, sofa::core::behavior::BaseMatrixLinearSystem, BaseLink::FLAG_DUPLICATE > l_linearSystems;
 
     ///< Among the list of linear systems, which one is to be used by the linear solver
     SingleLink < MyType, TypedMatrixLinearSystem<TMatrix, TVector>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > l_solverLinearSystem;

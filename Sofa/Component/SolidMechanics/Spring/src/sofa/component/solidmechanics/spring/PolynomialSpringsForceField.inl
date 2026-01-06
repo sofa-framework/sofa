@@ -291,17 +291,17 @@ void PolynomialSpringsForceField<DataTypes>::ComputeJacobian(unsigned int stiffn
     {
         for(unsigned int secondIndex = 0; secondIndex < m_dimension; secondIndex++)
         {
-            jacobMatrix[firstIndex][secondIndex] = (polynomialDerivativeRes - polynomialForceRes) *
+            jacobMatrix(firstIndex,secondIndex) = (polynomialDerivativeRes - polynomialForceRes) *
                     m_weightedCoordinateDifference[springIndex][firstIndex] * m_weightedCoordinateDifference[springIndex][secondIndex];
         }
-        jacobMatrix[firstIndex][firstIndex] += polynomialForceRes;
+        jacobMatrix(firstIndex,firstIndex) += polynomialForceRes;
     }
 
     for(unsigned int firstIndex = 0; firstIndex < m_dimension; firstIndex++)
     {
         for(unsigned int secondIndex = 0; secondIndex < m_dimension; secondIndex++)
         {
-            msg_info() << "for indices " << firstIndex << " and " << secondIndex << " the values is: " << jacobMatrix[firstIndex][secondIndex];
+            msg_info() << "for indices " << firstIndex << " and " << secondIndex << " the values is: " << jacobMatrix(firstIndex,secondIndex);
         }
     }
 }
@@ -422,7 +422,7 @@ void PolynomialSpringsForceField<DataTypes>::addKToMatrix(const core::Mechanical
             {
                 for (unsigned int j = 0; j < m_dimension; j++)
                 {
-                    Real stiffnessDeriv = jacobMatrix[i][j] * kFact;
+                    Real stiffnessDeriv = jacobMatrix(i,j) * kFact;
                     mat->add(offset + m_dimension * firstIndex + i, offset + m_dimension * firstIndex + j, -stiffnessDeriv);
                     mat->add(offset + m_dimension * firstIndex + i, offset + m_dimension * secondIndex + j, stiffnessDeriv);
                     mat->add(offset + m_dimension * secondIndex + i, offset + m_dimension * firstIndex + j, stiffnessDeriv);
@@ -447,7 +447,7 @@ void PolynomialSpringsForceField<DataTypes>::addKToMatrix(const core::Mechanical
             {
                 for (unsigned int j = 0; j < m_dimension; j++)
                 {
-                    Real stiffnessDeriv = jacobMatrix[i][j] * kFact;
+                    Real stiffnessDeriv = jacobMatrix(i,j) * kFact;
                     mref11.matrix->add(mref11.offset + m_dimension * firstIndex + i, mref11.offset + m_dimension * firstIndex + j, -stiffnessDeriv);
                     mref12.matrix->add(mref12.offRow + m_dimension * firstIndex + i, mref12.offCol + m_dimension * secondIndex + j, stiffnessDeriv);
                     mref21.matrix->add(mref21.offRow + m_dimension * secondIndex + i, mref21.offCol + m_dimension * firstIndex + j, stiffnessDeriv);
@@ -479,7 +479,7 @@ void PolynomialSpringsForceField<DataTypes>::buildStiffnessMatrix(core::behavior
             {
                 for (unsigned int j = 0; j < m_dimension; j++)
                 {
-                    Real stiffnessDeriv = jacobMatrix[i][j];
+                    Real stiffnessDeriv = jacobMatrix(i,j);
                     dfdx(m_dimension * firstIndex + i, m_dimension * firstIndex + j) += - stiffnessDeriv;
                     dfdx(m_dimension * firstIndex + i, m_dimension * secondIndex + j) += stiffnessDeriv;
                     dfdx(m_dimension * secondIndex + i, m_dimension * firstIndex + j) += stiffnessDeriv;
@@ -513,7 +513,7 @@ void PolynomialSpringsForceField<DataTypes>::buildStiffnessMatrix(core::behavior
             {
                 for (unsigned int j = 0; j < m_dimension; j++)
                 {
-                    Real stiffnessDeriv = jacobMatrix[i][j];
+                    Real stiffnessDeriv = jacobMatrix(i,j);
                     df1_dx1(m_dimension * firstIndex + i, m_dimension * firstIndex + j) += -stiffnessDeriv;
                     df1_dx2(m_dimension * firstIndex + i, m_dimension * secondIndex + j) +=  stiffnessDeriv;
                     df2_dx1(m_dimension * secondIndex + i, m_dimension * firstIndex + j) +=  stiffnessDeriv;

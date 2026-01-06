@@ -33,45 +33,45 @@ namespace engine
 
 using namespace defaulttype;
 
-int TransferFunctionClass = core::RegisterObject("Transforms pixel intensities")
-        .add<TransferFunction<ImageUC,ImageUC    > >(true)
-        .add<TransferFunction<ImageD ,ImageD     > >()
-        .add<TransferFunction<ImageUC,ImageD    > >()
-        .add<TransferFunction<ImageD,ImageUC    > >()
-        .add<TransferFunction<ImageUC,ImageUI    > >()
-        .add<TransferFunction<ImageUC,ImageUS    > >()
-        .add<TransferFunction<ImageUS,ImageUC    > >()
-        .add<TransferFunction<ImageUC,ImageB    > >()
-        .add<TransferFunction<ImageUC,ImageF    > >()
+void registerTransferFunction(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Transforms pixel intensities")
+    .add<TransferFunction<ImageUC,ImageUC    > >(true)
+    .add<TransferFunction<ImageD ,ImageD     > >()
+    .add<TransferFunction<ImageUC,ImageD    > >()
+    .add<TransferFunction<ImageD,ImageUC    > >()
+    .add<TransferFunction<ImageUC,ImageUI    > >()
+    .add<TransferFunction<ImageUC,ImageUS    > >()
+    .add<TransferFunction<ImageUS,ImageUC    > >()
+    .add<TransferFunction<ImageUC,ImageB    > >()
+    .add<TransferFunction<ImageUC,ImageF    > >()
 
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-        .add<TransferFunction<ImageC ,ImageC     > >()
-        .add<TransferFunction<ImageI ,ImageI     > >()
-        .add<TransferFunction<ImageUI,ImageUI    > >()
-        .add<TransferFunction<ImageS ,ImageS     > >()
-        .add<TransferFunction<ImageUS,ImageUS    > >()
-        .add<TransferFunction<ImageL ,ImageL     > >()
-        .add<TransferFunction<ImageUL,ImageUL    > >()
-        .add<TransferFunction<ImageF ,ImageF     > >()
-        .add<TransferFunction<ImageB ,ImageB     > >()
-
-        .add<TransferFunction<ImageC ,ImageD     > >()
-        .add<TransferFunction<ImageI ,ImageD     > >()
-        .add<TransferFunction<ImageUI,ImageD    > >()
-        .add<TransferFunction<ImageS ,ImageD     > >()
-        .add<TransferFunction<ImageUS,ImageD    > >()
-        .add<TransferFunction<ImageL ,ImageD     > >()
-        .add<TransferFunction<ImageUL,ImageD    > >()
-        .add<TransferFunction<ImageF ,ImageD     > >()
-        .add<TransferFunction<ImageB ,ImageD     > >()
+    .add<TransferFunction<ImageC ,ImageC     > >()
+    .add<TransferFunction<ImageI ,ImageI     > >()
+    .add<TransferFunction<ImageUI,ImageUI    > >()
+    .add<TransferFunction<ImageS ,ImageS     > >()
+    .add<TransferFunction<ImageUS,ImageUS    > >()
+    .add<TransferFunction<ImageL ,ImageL     > >()
+    .add<TransferFunction<ImageUL,ImageUL    > >()
+    .add<TransferFunction<ImageF ,ImageF     > >()
+    .add<TransferFunction<ImageB ,ImageB     > >()
+    .add<TransferFunction<ImageC ,ImageD     > >()
+    .add<TransferFunction<ImageI ,ImageD     > >()
+    .add<TransferFunction<ImageUI,ImageD    > >()
+    .add<TransferFunction<ImageS ,ImageD     > >()
+    .add<TransferFunction<ImageUS,ImageD    > >()
+    .add<TransferFunction<ImageL ,ImageD     > >()
+    .add<TransferFunction<ImageUL,ImageD    > >()
+    .add<TransferFunction<ImageF ,ImageD     > >()
+    .add<TransferFunction<ImageB ,ImageD     > >()
 #endif
-        ;
+    );
+}
 
 template class SOFA_IMAGE_API TransferFunction<ImageUC  ,ImageUC    >;
 template class SOFA_IMAGE_API TransferFunction<ImageD   ,ImageD     >;
-
 template class SOFA_IMAGE_API TransferFunction<ImageUC  ,ImageD    >;
-
 template class SOFA_IMAGE_API TransferFunction<ImageD  ,ImageUC    >;
 template class SOFA_IMAGE_API TransferFunction<ImageUC   ,ImageUI     >;
 template class SOFA_IMAGE_API TransferFunction<ImageUC   ,ImageUS     >;

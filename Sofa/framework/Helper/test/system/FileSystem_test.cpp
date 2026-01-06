@@ -143,18 +143,16 @@ TEST(FileSystemTest, createDirectory_alreadyExists)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-    {
-        EXPECT_MSG_NOEMIT(Error) ;
-        FileSystem::createDirectory("createDirectoryTestDir");
-    }
-    {
-        EXPECT_MSG_EMIT(Error) ;
-        EXPECT_TRUE(FileSystem::createDirectory("createDirectoryTestDir"));
-    }
-    {
-        EXPECT_MSG_NOEMIT(Error) ;
-        FileSystem::removeDirectory("createDirectoryTestDir");
-    }
+    EXPECT_MSG_NOEMIT(Error) ;
+
+    EXPECT_FALSE(FileSystem::createDirectory("createDirectoryTestDir"));
+    EXPECT_TRUE(FileSystem::exists("createDirectoryTestDir"));
+    EXPECT_TRUE(FileSystem::isDirectory("createDirectoryTestDir"));
+    EXPECT_FALSE(FileSystem::createDirectory("createDirectoryTestDir"));
+
+    // Cleanup
+    FileSystem::removeDirectory("createDirectoryTestDir");
+
 }
 
 TEST(FileSystemTest, removeDirectory)

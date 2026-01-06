@@ -115,6 +115,21 @@ public:
         //TODO (SPRINT SED 2025): Component state mechanism
         this->doRotateWorldAroundPoint(rotation, point, orientationCam);
     }
+    
+    
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doRotateWorldAroundPoint" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+    virtual void rotateWorldAroundPoint(Quat& rotation, const type::Vec3& point, Quat orientationCam, type::Vec3 positionCam) final {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        this->doRotateWorldAroundPoint(rotation, point, orientationCam, positionCam);
+    }
+    
 
     type::Vec3 screenToViewportPoint(const type::Vec3& p) const;
     type::Vec3 screenToWorldPoint(const type::Vec3& p);
@@ -332,6 +347,7 @@ protected:
     void updateOutputData();
 
     virtual void doRotateWorldAroundPoint(Quat& rotation, const type::Vec3& point, Quat orientationCam);
+    virtual void doRotateWorldAroundPoint(Quat& rotation, const type::Vec3& point, Quat orientationCam, type::Vec3 positionCam);
 
     virtual void doManageEvent(core::objectmodel::Event* event) = 0;
 
