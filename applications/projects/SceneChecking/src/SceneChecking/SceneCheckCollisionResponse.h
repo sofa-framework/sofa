@@ -47,6 +47,7 @@ private:
     std::stringstream m_message;
 
     void checkIfContactStiffnessIsSet(const core::objectmodel::BaseContext *root);
+    void checkIfContactStiffnessIsNotSet(const core::objectmodel::BaseContext *root);
 };
 
 } // namespace sofa::_scenechecking_

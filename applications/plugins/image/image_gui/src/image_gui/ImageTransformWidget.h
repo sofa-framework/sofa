@@ -23,9 +23,9 @@
 #define SOFA_IMAGE_IMAGETRANSFORMWIDGET_H
 
 #include <image_gui/config.h>
-#include <sofa/gui/qt/DataWidget.h>
-#include <sofa/gui/qt/SimpleDataWidget.h>
-#include <sofa/gui/qt/WDoubleLineEdit.h>
+#include <sofa/qt/DataWidget.h>
+#include <sofa/qt/SimpleDataWidget.h>
+#include <sofa/qt/WDoubleLineEdit.h>
 
 #include <QTextEdit>
 #include <QGroupBox>
@@ -45,8 +45,6 @@
 
 
 namespace sofa
-{
-namespace gui
 {
 namespace qt
 {
@@ -87,8 +85,6 @@ protected:
 
 };
 
-
-}
 
 }
 

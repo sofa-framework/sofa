@@ -52,7 +52,13 @@ public :
         {
             context->addObject(obj);
             sofa::helper::OptionsGroup options = initializeResponseOptions(context);
-            obj->d_response.setValue(options);
+            const std::string responseName = arg->getAttribute("response","");
+            // Check if the response is valid and not empty, only then set the response
+            if(options.isInOptionsList(responseName) >= 0 && responseName != "")
+            {
+                options.setSelectedItem(responseName);
+                obj->d_response.setValue(options);
+            }
         }
 
         if (arg)
@@ -112,7 +118,6 @@ protected:
     /// The number of contacts corresponds to the number of collision models
     /// currently in contact with a collision model.
     void setNumberOfContacts() const;
-
 };
 
 

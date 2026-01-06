@@ -146,10 +146,30 @@ bool FileSystem::createDirectory(const std::string& path)
         return true;
     }
 #else
-    if (mkdir(path.c_str(), 0755))
+    int status = mkdir(path.c_str(), 0755);
+    if(status)
     {
-        msg_error(error) << path << ": " << strerror(errno);
-        return true;
+        if (errno != EEXIST)
+        {
+            msg_error(error) << path << ": " << strerror(errno);
+            return true;
+        }
+        else
+        {
+            struct stat st_buf;
+            if (stat(path.c_str(), &st_buf) == 0)
+            {
+                if ((st_buf.st_mode & S_IFMT) != S_IFDIR) {
+                    msg_error(error) << path << ": File exists and is not a directoy";
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+        }
     }
 #endif
     else
@@ -374,18 +394,6 @@ std::string FileSystem::removeExtraBackSlashes(const std::string& path)
     }
 
     return str;
-}
-
-
-std::string FileSystem::findOrCreateAValidPath(const std::string path)
-{
-    if( FileSystem::exists(path) )
-        return path ;
-
-    const std::string parentPath = FileSystem::getParentDirectory(path) ;
-    const std::string currentFile = FileSystem::stripDirectory(path) ;
-    FileSystem::createDirectory(append(findOrCreateAValidPath( parentPath ), currentFile)) ;
-    return path ;
 }
 
 void FileSystem::ensureFolderExists(const std::string& pathToFolder)

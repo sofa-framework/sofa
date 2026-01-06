@@ -23,15 +23,13 @@
 using sofa::testing::BaseTest;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/MutationListener.h>
 using sofa::simulation::MutationListener;
 using sofa::core::objectmodel::BaseObject;
 using sofa::simulation::Simulation;
 using sofa::simulation::Node;
-using sofa::simulation::graph::DAGNode;
-
 
 class TestMutationListener : public MutationListener
 {
@@ -291,8 +289,8 @@ struct MutationListener_test : public BaseTest
 
     void test_addChildWithDescendency()
     {
-        const DAGNode::SPtr node1 = sofa::core::objectmodel::New<DAGNode>("node1");
-        const DAGNode::SPtr node2 = sofa::core::objectmodel::New<DAGNode>("node2");
+        const Node::SPtr node1 = sofa::core::objectmodel::New<Node>("node1");
+        const Node::SPtr node2 = sofa::core::objectmodel::New<Node>("node2");
         node1->addChild(node2);
         sofa::core::objectmodel::BaseObjectDescription bod1("obj1", "BaseObject");
         obj1 = sofa::core::objectmodel::New<BaseObject>();
@@ -313,8 +311,8 @@ struct MutationListener_test : public BaseTest
 
     void test_removeChildWithDescendency()
     {
-        const DAGNode::SPtr node1 = sofa::core::objectmodel::New<DAGNode>("node1");
-        const DAGNode::SPtr node2 = sofa::core::objectmodel::New<DAGNode>("node2");
+        const Node::SPtr node1 = sofa::core::objectmodel::New<Node>("node1");
+        const Node::SPtr node2 = sofa::core::objectmodel::New<Node>("node2");
         node1->addChild(node2);
         sofa::core::objectmodel::BaseObjectDescription bod1("obj1", "BaseObject");
         obj1 = sofa::core::objectmodel::New<BaseObject>();
@@ -336,8 +334,8 @@ struct MutationListener_test : public BaseTest
 
     void test_moveChildWithDescendency()
     {
-        const DAGNode::SPtr node1 = sofa::core::objectmodel::New<DAGNode>("node1");
-        const DAGNode::SPtr node2 = sofa::core::objectmodel::New<DAGNode>("node2");
+        const Node::SPtr node1 = sofa::core::objectmodel::New<Node>("node1");
+        const Node::SPtr node2 = sofa::core::objectmodel::New<Node>("node2");
         node1->addChild(node2);
         sofa::core::objectmodel::BaseObjectDescription bod1("obj1", "BaseObject");
         obj1 = sofa::core::objectmodel::New<BaseObject>();
@@ -362,14 +360,14 @@ struct MutationListener_test : public BaseTest
 
     void test_moveChildWithDescendencyAndMultipleParents()
     {
-        const DAGNode::SPtr node1 = sofa::core::objectmodel::New<DAGNode>("node1");
-        const DAGNode::SPtr node2 = sofa::core::objectmodel::New<DAGNode>("node2");
-        const DAGNode::SPtr node3 = sofa::core::objectmodel::New<DAGNode>("node3");
-        const DAGNode::SPtr node4 = sofa::core::objectmodel::New<DAGNode>("node4");
-        const DAGNode::SPtr node5 = sofa::core::objectmodel::New<DAGNode>("node5");
-        const DAGNode::SPtr node6 = sofa::core::objectmodel::New<DAGNode>("node6");
-        const DAGNode::SPtr node7 = sofa::core::objectmodel::New<DAGNode>("node7");
-        const DAGNode::SPtr node8 = sofa::core::objectmodel::New<DAGNode>("node8");
+        const Node::SPtr node1 = sofa::core::objectmodel::New<Node>("node1");
+        const Node::SPtr node2 = sofa::core::objectmodel::New<Node>("node2");
+        const Node::SPtr node3 = sofa::core::objectmodel::New<Node>("node3");
+        const Node::SPtr node4 = sofa::core::objectmodel::New<Node>("node4");
+        const Node::SPtr node5 = sofa::core::objectmodel::New<Node>("node5");
+        const Node::SPtr node6 = sofa::core::objectmodel::New<Node>("node6");
+        const Node::SPtr node7 = sofa::core::objectmodel::New<Node>("node7");
+        const Node::SPtr node8 = sofa::core::objectmodel::New<Node>("node8");
 
         sofa::core::objectmodel::BaseObjectDescription bod1("obj1", "BaseObject");
         obj1 = sofa::core::objectmodel::New<BaseObject>();

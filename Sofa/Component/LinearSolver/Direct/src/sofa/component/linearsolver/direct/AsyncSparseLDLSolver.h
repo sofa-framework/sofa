@@ -62,21 +62,19 @@ public:
     bool isAsyncSolver() override { return true; }
 
     void init() override;
+    void reset() override;
 
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     void solveSystem() override;
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(TMatrix& M) override;
     bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, SReal fact) override;
 
-    bool hasUpdatedMatrix() override;
-    void updateSystemMatrix() override;
-
+    AsyncSparseLDLSolver();
     ~AsyncSparseLDLSolver() override;
 
 protected:
 
-    /// A second instantiation is needed to differentiate the one which is computed asynchronously, and the one which
+    /// A second instantiation is needed to differentiate the one that is computed asynchronously and the one that
     /// is used to solve the system in the main thread
     InvertData m_secondInvertData;
 
@@ -99,7 +97,7 @@ protected:
 
     std::atomic<bool> newInvertDataReady { false };
 
-    bool m_hasUpdatedMatrix { false };
+    Data< bool > d_enableAssembly;
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_ASYNCSPARSELDLSOLVER_CPP)

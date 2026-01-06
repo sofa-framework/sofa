@@ -60,6 +60,17 @@ VisualStyle::VisualStyle()
     d_displayFlags.setWidget("widget_displayFlags");
 }
 
+void VisualStyle::init()
+{
+    updateVisualFlags(sofa::core::visual::VisualParams::defaultInstance());
+}
+
+void VisualStyle::bwdInit()
+{
+    applyBackupFlags(sofa::core::visual::VisualParams::defaultInstance());
+}
+
+  
 void VisualStyle::doUpdateVisualFlags(VisualParams* vparams)
 {
     backupFlags = vparams->displayFlags();
