@@ -73,7 +73,7 @@ void SceneCheckCollisionPipelineAndModels::doCheckOn(Node* node)
             // there is a collision pipeline but no collision model.
             // Either the collision pipeline is superfluous;
             // or the collision model(s) has been forgotten.
-            m_message = "There is no collision model in this scene, but there is a collision pipeline. Either add one collision model or remove the collision pipeline.";
+            m_message = "There is no collision model in this scene, but there is a collision pipeline. Either add a collision model or remove the collision pipeline.";
         }
     }
     else
@@ -83,7 +83,7 @@ void SceneCheckCollisionPipelineAndModels::doCheckOn(Node* node)
             // At least one collision model has been detected but without any pipeline.
             // Either the collision pipeline has been forgotten;
             // or the collision model(s) is useless.
-            m_message = "At least one collision model has been found, but there is no collision pipeline. You may add a collision pipeline (or remove the collision model if it is not used).";
+            m_message = "At least one collision model has been found, but there is no collision pipeline. You may add a collision pipeline (or remove the collision model if no collision detection is expected).";
         }
         else
         {
