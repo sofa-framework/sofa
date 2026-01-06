@@ -34,9 +34,9 @@ class SOFA_SIMULATION_CORE_API MechanicalApplyConstraintsVisitor : public Mechan
 public:
     sofa::core::MultiVecDerivId res;
     double **W;
-    MechanicalApplyConstraintsVisitor(const sofa::core::MechanicalParams* mparams,
+    MechanicalApplyConstraintsVisitor(const sofa::core::MechanicalParams* eparams,
                                       sofa::core::MultiVecDerivId res, double **W = nullptr)
-            : MechanicalVisitor(mparams) , res(res), W(W)
+            : MechanicalVisitor(eparams) , res(res), W(W)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

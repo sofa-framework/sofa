@@ -69,10 +69,10 @@ protected:
         meshLoader.addPosition((my_positions.wref()), 0.,0.,1.);
 
         MeshTestLoader::waTtriangles my_triangles(meshLoader.d_triangles);
-        meshLoader.addTriangle((my_triangles.wref()), MeshLoader::Triangle(0,1,2));
+        meshLoader.addTriangle((my_triangles.wref()), topology::Triangle(0,1,2));
 
         MeshTestLoader::waTetrahedra my_tetrahedra(meshLoader.d_tetrahedra);
-        meshLoader.addTetrahedron((my_tetrahedra.wref()), MeshLoader::Tetrahedron(0,1,2,3) );
+        meshLoader.addTetrahedron((my_tetrahedra.wref()), topology::Tetrahedron(0,1,2,3) );
 
     }
 

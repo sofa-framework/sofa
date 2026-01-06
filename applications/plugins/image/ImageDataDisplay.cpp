@@ -35,11 +35,13 @@ namespace engine
 
 using namespace defaulttype;
 
-int ImageDataDisplayClass = core::RegisterObject("Store custom data in an image. A template input image with non zero voxels (where data will be stored) has to be provided")
-        .add<ImageDataDisplay<ImageUC, ImageD> >(true)
-        .add<ImageDataDisplay<ImageD, ImageD> >()
-        .add<ImageDataDisplay<ImageB, ImageD> >()
-        ;
+void registerImageDataDisplay(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Store custom data in an image. A template input image with non zero voxels (where data will be stored) has to be provided")
+    .add<ImageDataDisplay<ImageUC, ImageD> >(true)
+    .add<ImageDataDisplay<ImageD, ImageD> >()
+    .add<ImageDataDisplay<ImageB, ImageD> >());
+}
 
 template class SOFA_IMAGE_API ImageDataDisplay<ImageUC, ImageD>;
 template class SOFA_IMAGE_API ImageDataDisplay<ImageD, ImageD>;

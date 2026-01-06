@@ -32,6 +32,8 @@ namespace sofa::component::_vtkexporter_
 
 VTKExporter::VTKExporter() 
     : sofa::simulation::BaseSimulationExporter()
+    , m_topology(initLink("topology", "topology to export"))
+    , m_mstate(initLink("mstate", "mechanical state to export"))
     , m_outfile(nullptr)
     , d_fileFormat(initData(&d_fileFormat, (bool) true, "XMLformat", "Set to true to use XML format"))
     , d_position(initData(&d_position, "position", "points position (will use points from topology or mechanical state if this is empty)"))
@@ -51,21 +53,42 @@ VTKExporter::~VTKExporter(){}
 void VTKExporter::doInit() 
 { 
     const sofa::core::objectmodel::BaseContext* context = this->getContext();
-    context->get(m_topology);
-    context->get(m_mstate);
 
-    // if not set, set the printLog to true to read the msg_info()
-    if(!this->f_printLog.isSet())
-        f_printLog.setValue(true);
+    if (!m_mstate.get())
+    {
+        m_mstate.set(context->getMechanicalState());
+    }
+
+    if (m_mstate && !d_position.isSet())
+    {
+        if (core::BaseData* data = m_mstate->findData("position"))
+        {
+            msg_info() << "found position data in mechanical state";
+            d_position.setParent(data);
+        }
+    }
+
+    if (!m_topology.get())
+    {
+        m_topology.set(context->getMeshTopology());
+    }
 
     if (!m_topology)
     {
-        msg_error() << "VTKExporter : error, no topology ." ;
+        msg_error() << "no topology.";
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    else
+
+    msg_info() << "found topology " << m_topology->getName();
+
+    if (!d_position.isSet())
     {
-        msg_info() << "VTKExporter: found topology " << m_topology->getName() ;
+        if (core::BaseData* data = m_topology->findData("position"))
+        {
+            msg_info() << "found position data in topology";
+            d_position.setParent(data);
+        }
     }
 
     nbFiles = 0;
@@ -116,7 +139,7 @@ void VTKExporter::fetchDataFields(const type::vector<std::string>& strData, type
         }
         else
         {
-            msg_error() << "VTKExporter : error while parsing dataField names" ;
+            msg_error() << "error while parsing dataField names" ;
             continue;
         }
         if (name.empty()) name = dataFieldName;
@@ -142,11 +165,11 @@ void VTKExporter::writeData(const type::vector<std::string>& objects, const type
         if (!obj || !field)
         {
             if (!obj)
-                msg_error() << "VTKExporter : error while fetching data field '" << msgendl
+                msg_error() << "error while fetching data field '" << msgendl
                             << fields[i] << "' of object '" << objects[i] << msgendl
                             << "', check object name"  << msgendl;
             else if (!field)
-                msg_error() << "VTKExporter : error while fetching data field " << msgendl
+                msg_error() << "error while fetching data field " << msgendl
                             << fields[i] << " of object '" << objects[i] << msgendl
                             << "', check field name " << msgendl;
         }
@@ -224,11 +247,11 @@ void VTKExporter::writeDataArray(const type::vector<std::string>& objects, const
         if (!obj || !field)
         {
             if (!obj)
-                msg_error() << "VTKExporter : error while fetching data field '" << msgendl
+                msg_error() << "error while fetching data field '" << msgendl
                             << fields[i] << "' of object '" << objects[i] << msgendl
                             << "', check object name" << msgendl;
             else if (!field)
-                msg_error()  << "VTKExporter : error while fetching data field " << msgendl
+                msg_error()  << "error while fetching data field " << msgendl
                              << fields[i] << " of object '" << objects[i] << msgendl
                              << "', check field name " << msgendl;
         }
@@ -421,20 +444,6 @@ bool VTKExporter::writeVTKSimple()
             *m_outfile << pointsPos[i] << std::endl;
         }
     }
-    else if (m_mstate && m_mstate->getSize() == (size_t)nbp)
-    {
-        for (size_t i=0 ; i<m_mstate->getSize() ; i++)
-        {
-            *m_outfile << m_mstate->getPX(i) << " " << m_mstate->getPY(i) << " " << m_mstate->getPZ(i) << std::endl;
-        }
-    }
-    else
-    {
-        for (size_t i=0 ; i<nbp ; i++)
-        {
-            *m_outfile << m_topology->getPX(i) << " " << m_topology->getPY(i) << " " << m_topology->getPZ(i) << std::endl;
-        }
-    }
 
     *m_outfile << std::endl;
 
@@ -622,16 +631,7 @@ bool VTKExporter::writeVTKXML()
             *m_outfile << "\t" << pointsPos[i] << std::endl;
         }
     }
-    else if (m_mstate && m_mstate->getSize() == (size_t)nbp)
-    {
-        for (size_t i = 0; i < m_mstate->getSize(); i++)
-            *m_outfile << "          " << m_mstate->getPX(i) << " " << m_mstate->getPY(i) << " " << m_mstate->getPZ(i) << std::endl;
-    }
-    else
-    {
-        for (size_t i = 0; i < nbp; i++)
-            *m_outfile << "          " << m_topology->getPX(i) << " " << m_topology->getPY(i) << " " << m_topology->getPZ(i) << std::endl;
-    }
+
     *m_outfile << "        </DataArray>" << std::endl;
     *m_outfile << "      </Points>" << std::endl;
 
@@ -792,11 +792,11 @@ void VTKExporter::writeParallelFile()
             if (!obj || !field)
             {
                 if (!obj)
-                    msg_error() << "VTKExporter : error while fetching data field '" << msgendl
+                    msg_error() << "error while fetching data field '" << msgendl
                                 << pointsDataField[i] << "' of object '" << pointsDataObject[i] << msgendl
                                 << "', check object name" << msgendl;
                 else if (!field)
-                    msg_error() << "VTKExporter : error while fetching data field '" << msgendl
+                    msg_error() << "error while fetching data field '" << msgendl
                                 << pointsDataField[i] << "' of object '" << pointsDataObject[i] << msgendl
                                 << "', check field name " << msgendl;
             }
@@ -865,11 +865,11 @@ void VTKExporter::writeParallelFile()
             if (!obj || !field)
             {
                 if (!obj)
-                    msg_error() << "VTKExporter : error while fetching data field '"
+                    msg_error() << "error while fetching data field '"
                          << cellsDataField[i] << "' of object '" << cellsDataObject[i]
                             << "', check object name" << msgendl;
                 else if (!field)
-                    msg_error() << "VTKExporter : error while fetching data field '" << msgendl
+                    msg_error() << "error while fetching data field '" << msgendl
                                 << cellsDataField[i] << "' of object '" << cellsDataObject[i] << msgendl
                                 << "', check field name " << msgendl;
             }

@@ -110,6 +110,7 @@ class BaseInteractionForceField;
 class BaseProjectiveConstraintSet;
 class BaseInteractionProjectiveConstraintSet;
 class BaseInteractionConstraint;
+class BaseMechanicalState;
 class LinearSolver;
 class MultiMatrixAccessor;
 
@@ -209,6 +210,9 @@ sofa::core::objectmodel::Base* castToBase(Source*b){ return b; }
 /// Dynamic cast from Base* into the type parameter Dest
 template<class Dest>
 Dest castTo(sofa::core::objectmodel::Base* base){ return dynamic_cast<Dest>(base); }
+
+template<class Dest>
+const Dest castTo(const sofa::core::objectmodel::Base* base){ return dynamic_cast<const Dest>(base); }
 
 namespace objectmodel::base
 {

@@ -33,7 +33,7 @@ namespace sofa::component::collision::response::mapper
 using namespace defaulttype;
 
 std::string GenerateStringID::generate(){
-    static std::string alphanum = "0123456789!@#$%^&*ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    constexpr std::string_view alphanum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     std::string result;
     result.resize(length);
     for (int i = 0; i < length; i++)

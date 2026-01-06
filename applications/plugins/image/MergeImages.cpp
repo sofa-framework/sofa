@@ -35,21 +35,24 @@ namespace engine
 
 using namespace defaulttype;
 
-int MergeImagesClass = core::RegisterObject("Merge images")
-        .add<MergeImages<ImageUC> >(true)
-        .add<MergeImages<ImageD> >()
-        .add<MergeImages<ImageB> >()
+void registerMergeImages(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Merge images")
+    .add<MergeImages<ImageUC> >(true)
+    .add<MergeImages<ImageD> >()
+    .add<MergeImages<ImageB> >()
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-        .add<MergeImages<ImageC> >()
-        .add<MergeImages<ImageI> >()
-        .add<MergeImages<ImageUI> >()
-        .add<MergeImages<ImageS> >()
-        .add<MergeImages<ImageUS> >()
-        .add<MergeImages<ImageL> >()
-        .add<MergeImages<ImageUL> >()
-        .add<MergeImages<ImageF> >()
+    .add<MergeImages<ImageC> >()
+    .add<MergeImages<ImageI> >()
+    .add<MergeImages<ImageUI> >()
+    .add<MergeImages<ImageS> >()
+    .add<MergeImages<ImageUS> >()
+    .add<MergeImages<ImageL> >()
+    .add<MergeImages<ImageUL> >()
+    .add<MergeImages<ImageF> >()
 #endif
-        ;
+    );
+}
 
 template class SOFA_IMAGE_API MergeImages<ImageUC>;
 template class SOFA_IMAGE_API MergeImages<ImageD>;

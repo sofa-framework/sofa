@@ -214,7 +214,7 @@ bool MeshVTKLoader::setInputsMesh()
             if (inPoints)
                 for (int i = 0; i < vtkpf->dataSize; i += 3)
                 {
-                    my_positions.push_back(Vec3f (inPoints[i + 0], inPoints[i + 1], inPoints[i + 2]));
+                    my_positions.push_back(Vec3 (inPoints[i + 0], inPoints[i + 1], inPoints[i + 2]));
                 }
             else
             {
@@ -257,7 +257,7 @@ bool MeshVTKLoader::setInputsMesh()
             if (inNormals)
                 for (int i = 0; i < vtkpf->dataSize; i += 3)
                 {
-                    my_normals.push_back(Vec3f (inNormals[i + 0], inNormals[i + 1], inNormals[i + 2]));
+                    my_normals.push_back(Vec3 (inNormals[i + 0], inNormals[i + 1], inNormals[i + 2]));
                 }
             else
             {
@@ -349,7 +349,7 @@ bool MeshVTKLoader::setInputsMesh()
 
         const unsigned int edgesInQuadraticTriangle[3][2] = {{0, 1}, {1, 2}, {2, 0}};
         const unsigned int edgesInQuadraticTetrahedron[6][2] = {{0, 1}, {1, 2}, {0, 2}, {0, 3}, {1, 3}, {2, 3}};
-        std::set<Edge> edgeSet;
+        std::set<topology::Edge> edgeSet;
         size_t j;
         int nbf = reader->numberOfCells;
         int i = 0;
@@ -448,7 +448,7 @@ bool MeshVTKLoader::setInputsMesh()
                             inFP[i + edgesInQuadraticTriangle[j][1]]);
                     sofa::Index v1 = std::max( inFP[i + edgesInQuadraticTriangle[j][0]],
                             inFP[i + edgesInQuadraticTriangle[j][1]]);
-                    Edge e(v0, v1);
+                    topology::Edge e(v0, v1);
                     if (!edgeSet.contains(e))
                     {
                         edgeSet.insert(e);
@@ -472,7 +472,7 @@ bool MeshVTKLoader::setInputsMesh()
                             inFP[i + edgesInQuadraticTetrahedron[j][1]]);
                     sofa::Index v1 = std::max( inFP[i + edgesInQuadraticTetrahedron[j][0]],
                             inFP[i + edgesInQuadraticTetrahedron[j][1]]);
-                    Edge e(v0, v1);
+                    topology::Edge e(v0, v1);
                     if (!edgeSet.contains(e))
                     {
                         edgeSet.insert(e);

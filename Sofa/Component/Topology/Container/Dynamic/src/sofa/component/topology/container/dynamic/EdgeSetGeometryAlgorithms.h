@@ -169,10 +169,6 @@ public:
     /** return a pointer to the container of cubature points */
     NumericalIntegrationDescriptor<Real,1> &getEdgeNumericalIntegrationDescriptor();
 
-
-    SOFA_ATTRIBUTE_DISABLED("v24.06", "v24.12", "Use the method computeEdgeSegmentIntersection returning a Coord")
-    bool computeEdgeSegmentIntersection(EdgeID edgeID, const type::Vec3& a, const type::Vec3& b, Real &baryCoef) = delete;
-
 protected:
     Data<bool> showEdgeIndices; ///< Debug : view Edge indices.
     Data<bool>  d_drawEdges; ///< if true, draw the edges in the topology.

@@ -30,7 +30,7 @@ namespace sofa::component::linearsolver::iterative
 
 void registerPCGLinearSolver(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Linear system solver using the Shewchuk conjugate gradient iterative algorithm.")
+    factory->registerObjects(core::ObjectRegistrationData("Linear solver using the preconditioned conjugate gradient iterative algorithm.")
         .add< PCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector> >());
 }
 

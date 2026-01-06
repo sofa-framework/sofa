@@ -26,7 +26,7 @@
 #include <sofa/gpu/cuda/CudaTypes.h>
 
 
-namespace sofa::component::visualmodel
+namespace volumetricrendering
 {
 
 template<class TCoord, class TDeriv, class TReal>
@@ -101,6 +101,6 @@ protected:
 };
 
 #endif /*OGLTETRAHEDRALMODEL_H_*/
-}
+} // namespace volumetricrendering
 
 

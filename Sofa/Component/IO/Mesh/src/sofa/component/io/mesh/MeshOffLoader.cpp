@@ -81,8 +81,8 @@ bool MeshOffLoader::readOFF (std::ifstream &file, const char* /* filename */ )
     size_t numberOfVertices = 0, numberOfFaces = 0, numberOfEdges = 0;
     size_t currentNumberOfVertices = 0, currentNumberOfFaces = 0;
     Vec3d vertex;
-    Triangle triangle;
-    Quad quad;
+    topology::Triangle triangle;
+    topology::Quad quad;
     std::string line;
 
     while( !file.eof() && (numberOfVertices == 0) )

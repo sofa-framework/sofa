@@ -3,9 +3,10 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(Sofa.Helper QUIET REQUIRED)
-find_package(Sofa.LinearAlgebra REQUIRED)
-find_package(Eigen3 QUIET REQUIRED)
+find_package(Sofa.Config QUIET REQUIRED)
+sofa_find_package(Sofa.Helper QUIET REQUIRED)
+sofa_find_package(Sofa.LinearAlgebra REQUIRED)
+sofa_find_package(Eigen3 QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

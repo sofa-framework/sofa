@@ -35,7 +35,7 @@ namespace sofa::core::behavior
  *  bodies given their current positions and velocities.
  *
  */
-class SOFA_CORE_API BaseInteractionProjectiveConstraintSet : public BaseProjectiveConstraintSet, public virtual StateAccessor
+class SOFA_CORE_API BaseInteractionProjectiveConstraintSet : public BaseProjectiveConstraintSet
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseInteractionProjectiveConstraintSet, BaseProjectiveConstraintSet);

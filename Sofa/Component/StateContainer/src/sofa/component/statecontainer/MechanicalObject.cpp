@@ -210,32 +210,34 @@ void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::Visual
             vparams->drawTool()->multMatrix( glTransform );
             vparams->drawTool()->scale ( scale );
 
+            constexpr type::Vec3f sizes ( 1.f,1.f,1.f );
+
 			if (getContext()->isSleeping())
 			{
-				vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ), sofa::type::RGBAColor::gray());
+                vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), sizes, sofa::type::RGBAColor::gray());
 			}
 			else switch( drawMode.getValue() )
             {
                 case 1:
-                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ), sofa::type::RGBAColor::green());
+                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), sizes, sofa::type::RGBAColor::green());
                     break;
                 case 2:
-                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ), sofa::type::RGBAColor::red());
+                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), sizes, sofa::type::RGBAColor::red());
                     break;
                 case 3:
-                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ), sofa::type::RGBAColor::blue());
+                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), sizes, sofa::type::RGBAColor::blue());
                     break;
                 case 4:
-                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ), sofa::type::RGBAColor::yellow());
+                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), sizes, sofa::type::RGBAColor::yellow());
                     break;
                 case 5:
-                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ), sofa::type::RGBAColor::magenta());
+                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), sizes, sofa::type::RGBAColor::magenta());
                     break;
                 case 6:
-                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ), sofa::type::RGBAColor::cyan());
+                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), sizes, sofa::type::RGBAColor::cyan());
                     break;
                 default:
-                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), type::Vec3 ( 1_sreal,1_sreal,1_sreal ) );
+                    vparams->drawTool()->drawFrame ( type::Vec3(), type::Quat<SReal>(), sizes );
             }
 
             vparams->drawTool()->popMatrix();

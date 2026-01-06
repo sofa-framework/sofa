@@ -45,11 +45,13 @@ class SimplePointTopology: public BaseMeshTopology
         m_data.createTopologyHandler(this);
     }
 
-    virtual const SeqEdges& getEdges() { return m_edges; }
-    virtual const SeqTriangles& getTriangles() { return m_triangles; }
-    virtual const SeqQuads& getQuads() { return m_quads; }
-    virtual const SeqTetrahedra& getTetrahedra() { return m_tetra; }
-    virtual const SeqHexahedra& getHexahedra() { return m_hexa; }
+    const SeqEdges& getEdges() override { return m_edges; }
+    const SeqTriangles& getTriangles() override { return m_triangles; }
+    const SeqQuads& getQuads() override { return m_quads; }
+    const SeqTetrahedra& getTetrahedra() override { return m_tetra; }
+    const SeqHexahedra& getHexahedra() override { return m_hexa; }
+    const SeqPrisms& getPrisms() override { return m_prisms; }
+    const SeqPyramids& getPyramids() override { return m_pyramids; }
 
     virtual sofa::geometry::ElementType getTopologyType() const
     {
@@ -78,6 +80,8 @@ class SimplePointTopology: public BaseMeshTopology
     sofa::type::vector<Quad> m_quads;
     sofa::type::vector<Tetra> m_tetra;
     sofa::type::vector<Hexa> m_hexa;
+    sofa::type::vector<Prism> m_prisms;
+    sofa::type::vector<Pyramid> m_pyramids;
 
     TopologySubsetIndices m_data;
     type::vector<sofa::Index> m_points;

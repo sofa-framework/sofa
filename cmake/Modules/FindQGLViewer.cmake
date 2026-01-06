@@ -34,7 +34,7 @@ if(NOT TARGET QGLViewer)
     endif()
   endif()
 
-  # Same checks as Sofa.GUI.Qt
+  # Same checks as Sofa.Qt
   # i.e find Qt6, then if not, Qt5, then if not error
   find_package(Qt6 COMPONENTS Core CoreTools QUIET)
   if (NOT Qt6Core_FOUND)

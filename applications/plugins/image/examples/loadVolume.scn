@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node 	name="root" gravity="0 0 0" dt="1"  >
+<Node name="root" gravity="0 0 0" dt="1">
     <Node name="plugins">
         <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
         <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -9,13 +9,16 @@
         <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
         <RequiredPlugin name="image"/> <!-- Needed to use components [ImageContainer ImageViewer] -->
     </Node>
-  <ImageContainer  name="image" filename="data/pelvis_f.raw"/>
-  <ImageViewer  name="viewer" src="@image" plane="50 50 20"/>
-  
-  <EulerImplicitSolver name="cg_odesolver"  printLog="0" rayleighStiffness="0.5"  rayleighMass="0.5" />
-  <CGLinearSolver name="linear solver"  iterations="50"  tolerance="1e-009"  threshold="1e-009" />
-  <MechanicalObject template="Rigid3d" name="DOFs"  rest_position="	0 0 0 0 0 0 1"/>
-  <MeshOBJLoader name="meshLoader_0" filename="data/pelvis_f.obj" handleSeams="1" />
-  <OglModel name="Visual" src="@meshLoader_0" color="1 .4 0.5 1" />
-  <RigidMapping template="Rigid,Vec3d"  input='@.'  output='@Visual' />
+
+    <ImageContainer name="image" filename="data/pelvis_f.raw"/>
+    <ImageViewer name="viewer" src="@image" plane="50 50 20"/>
+
+    <EulerImplicitSolver name="cg_odesolver" printLog="0" rayleighStiffness="0.5" rayleighMass="0.5"/>
+    <CGLinearSolver name="linear solver" iterations="50" tolerance="1e-009" threshold="1e-009"/>
+    <MechanicalObject template="Rigid3d" name="DOFs" rest_position="0 0 0 0 0 0 1"/>
+    <Node name="visual">
+        <MeshOBJLoader name="meshLoader_0" filename="data/pelvis_f.obj" handleSeams="1"/>
+        <OglModel name="Visual" src="@meshLoader_0" color="1 .4 0.5 1"/>
+        <RigidMapping template="Rigid,Vec3d" input='@../DOFs' output='@Visual'/>
+    </Node>
 </Node>
