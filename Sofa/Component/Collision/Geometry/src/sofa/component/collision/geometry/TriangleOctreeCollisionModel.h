@@ -40,13 +40,16 @@ public:
 protected:
     TriangleOctreeCollisionModel();
     void drawCollisionModel(const core::visual::VisualParams* vparams) override;
+
+
+    void doComputeBoundingTree(int maxDepth=0) override;
+    void doComputeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) override;
 public:
     Data<bool> d_drawOctree;  ///< draw the octree
 
     /// the normals for each point
     type::vector<type::Vec3> pNorms;
-    void computeBoundingTree(int maxDepth=0) override;
-    void computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) override;
+    void draw(const core::visual::VisualParams* vparams) override;
     /// init the octree creation
     void buildOctree ();
 };

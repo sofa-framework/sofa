@@ -55,10 +55,6 @@ public:
     virtual void initBullet();
     virtual void updateBullet();
 
-    inline virtual void computeBoundingTree(int/* maxDepth*/){
-        _bt_cshape->recalculateLocalAabb();
-    }
-
     inline virtual ~TBulletCapsuleModel();
 
     virtual void init();
@@ -79,6 +75,10 @@ protected:
     void cleanGarbage();
 
     static void makeBtQuat(const Coord & dir,btQuaternion & quat);
+
+    inline virtual void doComputeBoundingTree(int/* maxDepth*/) override {
+        _bt_cshape->recalculateLocalAabb();
+    }
 };
 
 typedef TBulletCapsuleModel<defaulttype::Vec3Types> BulletCapsuleModel;

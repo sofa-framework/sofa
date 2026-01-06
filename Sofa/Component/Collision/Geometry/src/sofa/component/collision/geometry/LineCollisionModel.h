@@ -104,6 +104,21 @@ protected:
 
     void drawCollisionModel(const core::visual::VisualParams* vparams) override;
 
+    // -- CollisionModel interface
+
+    void doResize(sofa::Size size) override;
+
+    void doComputeBoundingTree(int maxDepth=0) override;
+
+    void doComputeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag, int maxDepth=0) override;
+
+    bool doCanCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
+
+    sofa::core::topology::BaseMeshTopology* doGetCollisionTopology() override
+    {
+        return l_topology.get();
+    }
+    
 public:
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
@@ -118,17 +133,7 @@ public:
 
     void init() override;
 
-    // -- CollisionModel interface
-
-    void resize(sofa::Size size) override;
-
-    void computeBoundingTree(int maxDepth=0) override;
-
-    void computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) override;
-
     void handleTopologyChange() override;
-
-    bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
@@ -152,11 +157,6 @@ public:
             return false;
         }
         return BaseObject::canCreate(obj, context, arg);
-    }
-
-    sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
-    {
-        return l_topology.get();
     }
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;

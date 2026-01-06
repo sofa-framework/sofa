@@ -90,8 +90,22 @@ protected:
     CubeCollisionModel();
 
     void drawCollisionModel(const core::visual::VisualParams* vparams) override;
+    void doResize(sofa::Size size) override;
+
+    // -- CollisionModel interface
+
+    /**
+      *Here we make up the hierarchy (a tree) of bounding boxes which contain final CollisionElements like Spheres or Triangles.
+      *The leafs of the tree contain final CollisionElements. This hierarchy is made up from the top to the bottom, i.e., we begin
+      *to compute a bounding box containing all CollisionElements, then we divide this big bounding box into two boxes.
+      *These new two boxes inherit from the root box and have depth 1. Then we can do the same operation for the new boxes.
+      *The division is done only if the box contains more than 4 final CollisionElements and if the depth doesn't exceed
+      *the max depth. The division is made along an axis. This axis corresponds to the biggest dimension of the current bounding box.
+      *Note : a bounding box is a Cube here.
+      */
+    void doComputeBoundingTree(int maxDepth=0) override;
+
 public:
-    void resize(sofa::Size size) override;
 
     void setParentOf(sofa::Index childIndex, const sofa::type::Vec3& min, const sofa::type::Vec3& max);
     void setParentOf(sofa::Index childIndex, const sofa::type::Vec3& min, const sofa::type::Vec3& max, const sofa::type::Vec3& normal, const SReal angle=0);
@@ -120,19 +134,6 @@ public:
     }
 
     const CubeData & getCubeData(sofa::Index index)const{return elems[index];}
-
-    // -- CollisionModel interface
-
-    /**
-      *Here we make up the hierarchy (a tree) of bounding boxes which contain final CollisionElements like Spheres or Triangles.
-      *The leafs of the tree contain final CollisionElements. This hierarchy is made up from the top to the bottom, i.e., we begin
-      *to compute a bounding box containing all CollisionElements, then we divide this big bounding box into two boxes.
-      *These new two boxes inherit from the root box and have depth 1. Then we can do the same operation for the new boxes.
-      *The division is done only if the box contains more than 4 final CollisionElements and if the depth doesn't exceed
-      *the max depth. The division is made along an axis. This axis corresponds to the biggest dimension of the current bounding box.
-      *Note : a bounding box is a Cube here.
-      */
-    void computeBoundingTree(int maxDepth=0) override;
 
     std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getInternalChildren(sofa::Index index) const override;
 

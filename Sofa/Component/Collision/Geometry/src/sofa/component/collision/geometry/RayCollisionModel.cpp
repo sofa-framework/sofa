@@ -44,9 +44,9 @@ RayCollisionModel::RayCollisionModel(SReal length)
     this->contactResponse.setValue("RayContact"); // use RayContact response class
 }
 
-void RayCollisionModel::resize(sofa::Size size)
+void RayCollisionModel::doResize(sofa::Size size)
 {
-    this->core::CollisionModel::resize(size);
+    this->core::CollisionModel::doResize(size);
 
     if (length.size() < size)
     {
@@ -110,7 +110,7 @@ void RayCollisionModel::draw(const core::visual::VisualParams* vparams, sofa::In
 
 }
 
-void RayCollisionModel::computeBoundingTree(int maxDepth)
+void RayCollisionModel::doComputeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
 

@@ -66,14 +66,6 @@ public:
 
     virtual void init() override;
 
-    // -- CollisionModel interface
-
-    virtual void resize(Size size) override;
-
-    virtual void computeBoundingTree(int maxDepth=0) override;
-
-    //virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
-
     void draw(const core::visual::VisualParams*,Index index) override;
 
     core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return mstate; }
@@ -82,6 +74,14 @@ protected:
 
     void drawCollisionModel(const core::visual::VisualParams*) override;
     core::behavior::MechanicalState<InDataTypes>* mstate;
+
+    // -- CollisionModel interface
+
+    virtual void doResize(Size size) override;
+
+    virtual void doComputeBoundingTree(int maxDepth=0) override;
+
+    //virtual void doComputeContinuousBoundingTree(double dt, int maxDepth=0);
 };
 
 inline CudaPoint::CudaPoint(CudaPointCollisionModel* model, Index index)
