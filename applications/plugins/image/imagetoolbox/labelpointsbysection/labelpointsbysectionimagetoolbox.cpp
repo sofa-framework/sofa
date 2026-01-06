@@ -13,10 +13,14 @@ namespace component
 namespace engine
 {
 
-int LabelPointsBySectionImageToolBox_Class = core::RegisterObject("LabelPointsBySectionImageToolBox")
-.add< LabelPointsBySectionImageToolBox >()
-.addLicense("LGPL")
-.addAuthor("Vincent Majorczyk");
+void registerLabelPointsBySectionImageToolBox(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("LabelPointsBySectionImageToolBox")
+    .add< LabelPointsBySectionImageToolBox >()
+    .addLicense("LGPL")
+    .addAuthor("Vincent Majorczyk")
+    );
+}
 
 }}}
 

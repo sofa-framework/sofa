@@ -21,9 +21,13 @@
 ******************************************************************************/
 #include <VolumetricRendering/initVolumetricRendering.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
 
 namespace volumetricrendering
 {
+
+extern void registerOglTetrahedralModel(sofa::core::ObjectFactory* factory);
+extern void registerOglVolumetricModel(sofa::core::ObjectFactory* factory);
 
 //Here are just several convenient functions to help user to know what contains the plugin
 
@@ -33,7 +37,7 @@ extern "C" {
     SOFA_VOLUMETRICRENDERING_API const char* getModuleVersion();
     SOFA_VOLUMETRICRENDERING_API const char* getModuleLicense();
     SOFA_VOLUMETRICRENDERING_API const char* getModuleDescription();
-    SOFA_VOLUMETRICRENDERING_API const char* getModuleComponentList();
+    SOFA_VOLUMETRICRENDERING_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void init()
@@ -43,6 +47,9 @@ void init()
 
 void initExternalModule()
 {
+    // make sure that this plugin is registered into the PluginManager
+    sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
     static bool first = true;
     if (first)
     {
@@ -71,11 +78,10 @@ const char* getModuleDescription()
     return "A plugin for volumetric rendering (tetrahedron, hexahedron)";
 }
 
-const char* getModuleComponentList()
+void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(volumetricrendering::MODULE_NAME);
-    return classes.c_str();
+    registerOglTetrahedralModel(factory);
+    registerOglVolumetricModel(factory);
 }
-
 
 } // namespace volumetricrendering

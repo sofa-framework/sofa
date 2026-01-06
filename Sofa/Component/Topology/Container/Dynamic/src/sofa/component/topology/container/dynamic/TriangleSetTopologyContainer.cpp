@@ -52,6 +52,8 @@ void TriangleSetTopologyContainer::addTriangle(Index a, Index b, Index c )
 
 void TriangleSetTopologyContainer::init()
 {
+    core::topology::TopologyContainer::init();
+
     const helper::ReadAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
 
     if (d_initPoints.isSet())
@@ -544,7 +546,7 @@ const TriangleSetTopologyContainer::EdgesInTriangle &TriangleSetTopologyContaine
     if (id < m_edgesInTriangle.size())
         return m_edgesInTriangle[id];
 
-    return InvalidTriangle;
+    return InvalidEdgesInTriangles;
 }
 
 int TriangleSetTopologyContainer::getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const

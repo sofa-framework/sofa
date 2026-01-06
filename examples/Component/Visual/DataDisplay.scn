@@ -16,7 +16,6 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering2D"/> <!-- Needed to use components [OglColorMap] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [DataDisplay] -->
-    <RequiredPlugin name="SofaValidation"/> <!-- Needed to use components [EvalPointsDistance] -->
     
     <VisualStyle displayFlags="showVisual hideBehavior hideCollision hideMapping" />
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
@@ -35,19 +34,21 @@
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <RegularGridTopology src="@/Mesh/Grid" />
-        <MechanicalObject />
+        <MechanicalObject name="dofs"/>
         <UniformMass vertexMass="0.1" />
         <FixedProjectiveConstraint indices="0 9 99" />
         <TriangleFEMForceField name="FEM3" youngModulus="5000" poissonRatio="0.3" method="large" />
         <TriangleBendingSprings name="FEM-Bend" stiffness="100" damping="0.1" />
         <TriangleCollisionModel />
 
-        <EvalPointsDistance name="dist" object1="@/Mesh/MO" object2="@." listening="true" period="0.05" draw="false" />
-
+        <Node name="distances">
+            <MechanicalObject template="Vec1" name="dofs"/>
+            <DistanceFromTargetMapping input="@../dofs" output="@dofs" targetPositions="@../dofs.rest_position"/>
+        </Node>
         
         <Node name="Data">
-            <DataDisplay pointData="@../dist.distance" />
-            <OglColorMap colorScheme="Blue to Red" />
+            <DataDisplay pointData="@../distances/dofs.position" name="data"/>
+            <OglColorMap colorScheme="Blue to Red" showLegend="true" min="@data.currentMin" max="@data.currentMax"/>
             <IdentityMapping input="@.." output="@."/>
         </Node>
 

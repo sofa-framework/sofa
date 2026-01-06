@@ -35,8 +35,8 @@ void registerWriteTopology(sofa::core::ObjectFactory* factory)
         .add< WriteTopology >());
 }
 
-WriteTopologyCreator::WriteTopologyCreator(const core::ExecParams* params)
-    :Visitor(params)
+WriteTopologyCreator::WriteTopologyCreator(const core::ExecParams* eparams)
+    :Visitor(eparams)
     ,sceneName("")
 #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
@@ -50,8 +50,8 @@ WriteTopologyCreator::WriteTopologyCreator(const core::ExecParams* params)
 {
 }
 
-WriteTopologyCreator::WriteTopologyCreator(const std::string &n, bool _writeContainers, bool _writeShellContainers, bool _createInMapping, const core::ExecParams* params, int c)
-    :Visitor(params)
+WriteTopologyCreator::WriteTopologyCreator(const std::string &n, bool _writeContainers, bool _writeShellContainers, bool _createInMapping, const core::ExecParams* eparams, int c)
+    :Visitor(eparams)
     , sceneName(n)
 #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")

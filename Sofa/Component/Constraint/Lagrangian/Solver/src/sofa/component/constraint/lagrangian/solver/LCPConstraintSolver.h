@@ -70,7 +70,7 @@ public:
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
 
-    void draw(const core::visual::VisualParams* vparams) override;
+
 
     Data<bool> d_displayDebug; ///< Display debug information.
     Data<bool> d_initial_guess; ///< activate LCP results history to improve its resolution performances.
@@ -81,11 +81,11 @@ public:
     Data<SReal> d_mu; ///< Friction coefficient
     Data<SReal> d_minW; ///< If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored
     Data<SReal> d_maxF; ///< If not zero, constraints whose response force becomes larger than this threshold will be ignored
-    Data<bool> d_multi_grid; ///< activate multi_grid resolution (NOT STABLE YET)
-    Data<int> d_multi_grid_levels; ///< if multi_grid is active: how many levels to create (>=2)
-    Data<int> d_merge_method; ///< if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)
-    Data<int> d_merge_spatial_step; ///< if merge_method is 1: grid size reduction between multigrid levels
-    Data<int> d_merge_local_levels; ///< if merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs.
+    DeprecatedAndRemoved d_multi_grid; ///< activate multi_grid resolution (NOT STABLE YET)
+    DeprecatedAndRemoved d_multi_grid_levels; ///< if multi_grid is active: how many levels to create (>=2)
+    DeprecatedAndRemoved d_merge_method; ///< if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)
+    DeprecatedAndRemoved d_merge_spatial_step; ///< if merge_method is 1: grid size reduction between multigrid levels
+    DeprecatedAndRemoved d_merge_local_levels; ///< if merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs.
     Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: constraint forces (stored only if computeConstraintForces=True)
     Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field
 
@@ -93,10 +93,10 @@ public:
 
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_graph; ///< Graph of residuals at each iteration
 
-    Data<int> d_showLevels; ///< Number of constraint levels to display
+    DeprecatedAndRemoved d_showLevels; ///< Number of constraint levels to display
     Data<SReal> d_showCellWidth; ///< Distance between each constraint cells
     Data<type::Vec3> d_showTranslation; ///< Position of the first cell
-    Data<type::Vec3> d_showLevelTranslation; ///< Translation between levels
+    DeprecatedAndRemoved d_showLevelTranslation; ///< Translation between levels
 
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurrent access to the LCP when using a LCPForceFeedback through an haptic thread
@@ -108,8 +108,6 @@ private:
 
     unsigned int _numConstraints;
 
-    /// Multigrid hierarchy is resized and cleared
-    void buildHierarchy();
     /// Call the method getConstraintInfo on all the BaseConstraintSet
     void getConstraintInfo(core::ConstraintParams cparams);
     /// Call the method addComplianceInConstraintSpace on all the BaseConstraintCorrection
@@ -121,16 +119,13 @@ private:
     sofa::linearalgebra::LPtrFullMatrix<SReal>  *_W;
 
     /// multi-grid approach ///
-    void MultigridConstraintsMerge();
-    void MultigridConstraintsMerge_Compliance();
-    void MultigridConstraintsMerge_Spatial();
     void build_Coarse_Compliance(std::vector<int> &/*constraint_merge*/, int /*sizeCoarseSystem*/);
     sofa::linearalgebra::LPtrFullMatrix<SReal>  _Wcoarse;
 
-    std::vector< std::vector< int > > hierarchy_contact_group;
-    std::vector< std::vector< int > > hierarchy_constraint_group;
-    std::vector< std::vector< SReal > > hierarchy_constraint_group_fact;
-    std::vector< unsigned int > hierarchy_num_group;
+    std::vector< int >  m_contact_group;
+    std::vector< int >  m_constraint_group;
+    std::vector< SReal >  m_constraint_group_fact;
+    unsigned int  m_num_group;
 
 
     /// common built-unbuilt
@@ -149,15 +144,9 @@ private:
 
     typedef core::behavior::BaseLagrangianConstraint::ConstraintBlockInfo ConstraintBlockInfo;
     typedef core::behavior::BaseLagrangianConstraint::PersistentID PersistentID;
-    typedef core::behavior::BaseLagrangianConstraint::ConstCoord ConstCoord;
-    typedef core::behavior::BaseLagrangianConstraint::ConstDeriv ConstDeriv;
-    typedef core::behavior::BaseLagrangianConstraint::ConstArea ConstArea;
 
     typedef core::behavior::BaseLagrangianConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
     typedef core::behavior::BaseLagrangianConstraint::VecPersistentID VecPersistentID;
-    typedef core::behavior::BaseLagrangianConstraint::VecConstCoord VecConstCoord;
-    typedef core::behavior::BaseLagrangianConstraint::VecConstDeriv VecConstDeriv;
-    typedef core::behavior::BaseLagrangianConstraint::VecConstArea VecConstArea;
 
     class ConstraintBlockBuf
     {
@@ -169,11 +158,8 @@ private:
     std::map<core::behavior::BaseLagrangianConstraint*, ConstraintBlockBuf> _previousConstraints;
     type::vector< SReal > _previousForces;
 
-    type::vector< VecConstraintBlockInfo > hierarchy_constraintBlockInfo;
-    type::vector< VecPersistentID > hierarchy_constraintIds;
-    type::vector< VecConstCoord > hierarchy_constraintPositions;
-    type::vector< VecConstDeriv > hierarchy_constraintDirections;
-    type::vector< VecConstArea > hierarchy_constraintAreas;
+    VecConstraintBlockInfo  m_constraintBlockInfo;
+    VecPersistentID  m_constraintIds;
 
     // for gaussseidel_unbuilt
     type::vector< helper::LocalBlock33 > unbuilt_W33;

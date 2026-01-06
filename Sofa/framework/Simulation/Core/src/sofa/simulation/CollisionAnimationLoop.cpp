@@ -23,7 +23,6 @@
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/CollisionVisitor.h>
 #include <sofa/simulation/CollisionBeginEvent.h>

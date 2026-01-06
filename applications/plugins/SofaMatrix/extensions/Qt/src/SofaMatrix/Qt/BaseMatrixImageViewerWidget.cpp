@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaMatrix/Qt/BaseMatrixImageViewerWidget.h>
 
-namespace sofa::gui::qt
+namespace sofa::qt
 {
 
 // Add the widget in the DataWidgetFactory with the key 'matrixbitmap', so that a Data< type::BaseMatrixProxy > can call setWidget("matrixbitmap")
@@ -172,4 +172,4 @@ void BaseMatrixImageViewerWidget::readFromData()
     dirty = false;
     counter = baseData->getCounter();
 }
-} // namespace sofa::gui::qt
+} // namespace sofa::qt

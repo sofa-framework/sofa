@@ -76,14 +76,19 @@ OglColorMap::OglColorMap()
     d_colorScheme.beginEdit()->setSelectedItem("HSV");
     d_colorScheme.endEdit();
 
+    c_colorSchemeCallback.addInput(&d_colorScheme);
+    c_colorSchemeCallback.addCallback([this]()
+    {
+        m_colorMap.setColorScheme(d_colorScheme.getValue().getSelectedItem());
+        m_colorMap.reinit();
+
+        deleteTexture();
+    });
 }
 
-OglColorMap::~OglColorMap() {
-    // Some components may use OglColorMap internally, in which case an OpenGL
-    // context might not exist.  That's why this 'if' is here, to avoid calling
-    // an OpenGL function in a destructor unless strictly necessary.
-    if (texture != 0)
-        glDeleteTextures(1, &texture);
+OglColorMap::~OglColorMap()
+{
+    deleteTexture();
 }
 
 void OglColorMap::init()
@@ -91,23 +96,29 @@ void OglColorMap::init()
     reinit();
 }
 
-
 void OglColorMap::reinit()
 {
     m_colorMap.setPaletteSize(d_paletteSize.getValue());
     m_colorMap.setColorScheme(d_colorScheme.getValue().getSelectedItem());
     m_colorMap.reinit();
-    }
+}
 
 OglColorMap* OglColorMap::getDefault()
 {
     static OglColorMap::SPtr defaultOglColorMap;
-    if (defaultOglColorMap == nullptr) {
-        defaultOglColorMap = sofa::core::objectmodel::New< OglColorMap >();
-        std::string tmp("");
+    if (defaultOglColorMap == nullptr)
+    {
+        defaultOglColorMap = sofa::core::objectmodel::New<OglColorMap>();
         defaultOglColorMap->init();
     }
     return defaultOglColorMap.get();
+}
+
+void OglColorMap::deleteTexture()
+{
+    if (texture != 0)
+        glDeleteTextures(1, &texture);
+    texture = 0;
 }
 
 void OglColorMap::doDrawVisual(const core::visual::VisualParams* vparams)

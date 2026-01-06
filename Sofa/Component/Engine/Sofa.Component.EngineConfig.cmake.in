@@ -5,8 +5,9 @@
 
 set(SOFACOMPONENTENGINE_TARGETS @SOFACOMPONENTENGINE_TARGETS@)
 
+find_package(Sofa.Config QUIET REQUIRED)
 foreach(target ${SOFACOMPONENTENGINE_TARGETS})
-    find_package(${target} QUIET REQUIRED)
+    sofa_find_package(${target} QUIET REQUIRED)
 endforeach()
 
 if(NOT TARGET @PROJECT_NAME@)
