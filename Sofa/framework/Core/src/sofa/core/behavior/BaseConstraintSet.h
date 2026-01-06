@@ -45,7 +45,19 @@ private:
     BaseConstraintSet& operator=(const BaseConstraintSet& n) = delete;
 
 public:
-    virtual void resetConstraint() {}
+    /**
+     * !!! WARNING since v26.06 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
+    virtual void resetConstraint() final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doResetConstraint();
+    }
 
     /// Set the id of the constraint (this id is build in the getConstraintViolation function)
     ///
@@ -55,39 +67,93 @@ public:
         d_constraintIndex.setValue(cId);
     }
 
+    /**
+    * !!! WARNING since v26.06 !!!
+    *
+    * The template method pattern has been applied to this part of the API.
+    * This method calls the newly introduced method "doFunctionName" internally,
+    * which is the method to override from now on.
+    *
+    **/
     /// Process geometrical data.
     ///
     /// This function is called by the CollisionVisitor, it can be used to process a collision detection specific for the constraint
-    virtual void processGeometricalData() {}
+    virtual void processGeometricalData() final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doProcessGeometricalData();
+    }
 
+    /**
+     * !!! WARNING since v26.06 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Construct the Jacobian Matrix
     ///
     /// \param cId is the result constraint sparse matrix Id
     /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex) = 0;
+    virtual void buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex) final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doBuildConstraintMatrix(cParams, cId, cIndex);
+    }
 
+    /**
+     * !!! WARNING since v26.06 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Construct the Constraint violations vector
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
+    virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v) final
     {
-        getConstraintViolation(cParams, v, d_constraintIndex.getValue());
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doGetConstraintViolation(cParams, v);
     }
 
+
+    /**
+     * !!! WARNING since v26.06 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Construct the Constraint violations vector
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cIndex is the index of the next constraint equation
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(const ConstraintParams* /*cParams*/, linearalgebra::BaseVector * /*v*/, unsigned int /*cIndex*/) {
-        dmsg_error() << "getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v, const unsigned int cIndex) is not implemented while it should";
+    virtual void getConstraintViolation(const ConstraintParams* /*cParams*/, linearalgebra::BaseVector * /*v*/, unsigned int /*cIndex*/) final
+    {
+
     }
 
 protected:
-
+    virtual void doResetConstraint() {}
+    virtual void doProcessGeometricalData() {}
+    virtual void doBuildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex) = 0;
+    virtual void doGetConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
+    {
+        getConstraintViolation(cParams, v, d_constraintIndex.getValue());
+    }
+    virtual void doGetConstraintViolation(const ConstraintParams* /*cParams*/, linearalgebra::BaseVector * /*v*/, unsigned int /*cIndex*/)
+    {
+        dmsg_error() << "getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v, const unsigned int cIndex) is not implemented while it should";
+    }
     Data< int > group; ///< ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
+
 public:
     Data< sofa::Index > d_constraintIndex; ///< Constraint index (first index in the right hand term resolution vector)
 

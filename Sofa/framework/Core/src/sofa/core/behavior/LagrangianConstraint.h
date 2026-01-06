@@ -62,17 +62,27 @@ protected:
     ~LagrangianConstraint() override;
 
     virtual void init() override;
+
+    /// Construct the Constraint violations vector of each constraint
+    ///
+    /// \param v is the result vector that contains the whole constraints violations
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    void doGetConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v) override;
+
+    /// Construct the Jacobian Matrix
+    ///
+    /// \param cId is the result constraint sparse matrix Id
+    /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    void doBuildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex) override;
+
+
 public:
     Data<Real> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
     using BaseConstraintSet::getConstraintViolation;
 
-    /// Construct the Constraint violations vector of each constraint
-    ///
-    /// \param v is the result vector that contains the whole constraints violations
-    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v) override;
 
     /// Construct the Constraint violations vector of each constraint
     ///
@@ -84,13 +94,6 @@ public:
     /// This is the method that should be implemented by the component
     virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v) = 0;
 
-
-    /// Construct the Jacobian Matrix
-    ///
-    /// \param cId is the result constraint sparse matrix Id
-    /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
-    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    void buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex) override;
 
     /// Construct the Jacobian Matrix
     ///
