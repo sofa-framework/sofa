@@ -197,7 +197,7 @@ ctime_t CTime::getTime()
 
 double CTime::toSecond(const ctime_t t)
 {
-    return 1.0*t/CTime::getTicksPerSec() ;
+    return static_cast<double>(t) / CTime::getTicksPerSec();
 }
 
 } // namespace sofa::helper::system::thread

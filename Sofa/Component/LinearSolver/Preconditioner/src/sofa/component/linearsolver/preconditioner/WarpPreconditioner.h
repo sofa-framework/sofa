@@ -53,49 +53,37 @@ public:
     using Index = typename TMatrix::Index;
 
     SingleLink<WarpPreconditioner, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used to build the warp conditioner
-
-    Data<unsigned> d_useRotationFinder; ///< Which rotation Finder to use
-    Data<unsigned> d_updateStep; ///< Number of steps before the next refresh of the system matrix in the main solver
+    core::objectmodel::lifecycle::DeprecatedData d_useRotationFinder;
+    core::objectmodel::lifecycle::DeprecatedData d_updateStep;
 
 protected:
     WarpPreconditioner();
 
 public:
-    ~WarpPreconditioner();
 
     void init() override;
     void bwdInit() override;
 
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
-
     void invert(Matrix& M) override;
 
-    void solve(Matrix& M, Vector& solution, Vector& rh) override;
+    void solve(Matrix& R, Vector& solution, Vector& rhs) override;
 
     bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
 
     bool addMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
 
-    Index getSystemDimention(const sofa::core::MechanicalParams* mparams);
-
     void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* /*f*/) override;
-
-    void updateSystemMatrix() override;
 
 protected:
 
     void checkLinearSystem() override;
+    void ensureRequiredLinearSystemType();
 
 private :
 
     int updateSystemSize,currentSystemSize;
 
-    int indexwork;
-    bool first;
     unsigned nextRefreshStep {};
-
-    TRotationMatrix * rotationWork[2];
-    std::vector<sofa::core::behavior::BaseRotationFinder *> rotationFinders;
 
     JMatrixType j_local;
 };

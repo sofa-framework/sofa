@@ -16,7 +16,7 @@
     <CollisionPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <CollisionResponse name="Response" />
+    <CollisionResponse name="Response" response="PenalityContactForceField"/>
     <DefaultAnimationLoop/>
     <NewProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
     <Node name="SquareCloth1">

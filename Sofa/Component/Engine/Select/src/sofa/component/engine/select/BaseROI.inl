@@ -38,7 +38,6 @@ using core::objectmodel::BaseData ;
 using core::objectmodel::Event ;
 using core::loader::MeshLoader ;
 using core::ExecParams ;
-using type::TBoundingBox ;
 using type::Vec3 ;
 using type::Vec4f ;
 using helper::WriteOnlyAccessor ;

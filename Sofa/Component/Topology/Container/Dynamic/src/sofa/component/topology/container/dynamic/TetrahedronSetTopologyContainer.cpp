@@ -59,6 +59,8 @@ void TetrahedronSetTopologyContainer::addTetra(Index a, Index b, Index c, Index 
 
 void TetrahedronSetTopologyContainer::init()
 {
+    core::topology::TopologyContainer::init();
+
     const helper::ReadAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
 
     if (d_initPoints.isSet())
@@ -564,12 +566,13 @@ const TetrahedronSetTopologyContainer::EdgesInTetrahedron &TetrahedronSetTopolog
     return InvalidEdgesInTetrahedron;
 }
 
-const TetrahedronSetTopologyContainer::TrianglesInTetrahedron &TetrahedronSetTopologyContainer::getTrianglesInTetrahedron(const TriangleID id)
+const TetrahedronSetTopologyContainer::TrianglesInTetrahedron&
+TetrahedronSetTopologyContainer::getTrianglesInTetrahedron(const TriangleID id)
 {
     if (id < m_trianglesInTetrahedron.size())
         return m_trianglesInTetrahedron[id];
 
-    return InvalidTetrahedron;
+    return InvalidTrianglesInTetrahedron;
 }
 
 int TetrahedronSetTopologyContainer::getVertexIndexInTetrahedron(const Tetrahedron &t,
