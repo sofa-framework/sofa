@@ -367,19 +367,21 @@ public:
 
 public :
 
-    struct SnapshotContainer
-    {
-        std::string dataname;
+    // struct SnapshotContainer
+    // {
+    //     std::string dataname;
         
-        std::string datavalue;
-    };
+    //     std::string datavalue;
+    // };
 
-    void setSnapshot(BaseSnapshot* impl)
-    {
-        Snapshot_impl = impl;
-    }
+    // void setSnapshot(BaseSnapshot* impl)
+    // {
+    //     Snapshot_impl = impl;
+    // }
 
     void saveSnapshot(BaseSnapshot& type);
+
+    void loadSnapshot(BaseSnapshot& type);
 
 private :
     BaseSnapshot* Snapshot_impl; 

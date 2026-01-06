@@ -19,68 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-// #include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/core/objectmodel/BaseLink.h>
 
-namespace sofa::core::objectmodel
+
+#include <sofa/config.h>
+#include <sofa/simulation/Visitor.h>
+#include <string>
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/BaseSnapshot.h>
+
+
+namespace sofa::simulation
 {
-class Base;
-class SOFA_CORE_API BaseSnapshot 
+
+
+class SOFA_SIMULATION_CORE_API LoadSnapshotVisitor : public Visitor
 {
-    
 protected:
-
-    struct DataSnapshot
-    {
-        std::vector<BaseData*> dataContainer;
-        std::vector<BaseLink*> linkContainer;
-    };
-
-    DataSnapshot dataSnapshot_;
-
-    std::vector<DataSnapshot> snapshot;
+    core::objectmodel::BaseSnapshot& snapCont_; 
 public:
-    struct DataInfo
-    {
-        std::string name;
-        std::string type;
-        std::string value;
-        std::string pathname;
-    };
+    LoadSnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::BaseSnapshot& snapCont) : Visitor(eparams), snapCont_(snapCont) {}
 
-    struct LinkInfo
-    {
-        std::string name;
-        std::string linkedpath;
-        std::string path;
-    };
+    void processObject(core::objectmodel::BaseObject* obj);
 
-    struct SparseDataSnapshot
-    {
-        std::vector<DataInfo> dataContainer;
-        std::vector<LinkInfo> linkContainer;
-    };
+    Result processNodeTopDown(simulation::Node* node) override;
+    void processNodeBottomUp(simulation::Node* node) override;
+    const char* getClassName() const override { return "SnapshotVisitor"; }
 
-    SparseDataSnapshot SparseDataSnapshot_;
-
-    std::vector<SparseDataSnapshot> SparseSnapshot;
-
-public:
-    virtual void printSnapshot() = 0;
-    virtual void importSnapshot() = 0;
-    virtual void fillDataSnapshot(BaseData* dat) = 0 ;
-    virtual void fillSnapshot(DataSnapshot datasnap) = 0;
-    virtual void fillLinkSnapshot(BaseLink* link) = 0;
-    virtual void collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield) = 0;
-    virtual void putData(std::vector<BaseData*>& datafield, std::vector<BaseLink*>& linkfield) = 0;
-    virtual void exportToJSON(const std::string filename) = 0;
-
-    BaseSnapshot();
-    virtual ~BaseSnapshot() = 0;
-
-
-    
 };
-} // namespace sofa::core::objectmodel
+
+} // namespace sofa::simulation
+

@@ -47,6 +47,7 @@ void to_json(nlohmann::json& j, const BaseSnapshot::DataInfo& di )
     j["name"]  = di.name;
     j["type"]  = di.type;
     j["value"] = di.value;
+    j["pathname"] = di.pathname;
 }
 
 void to_json(nlohmann::json& j, const BaseSnapshot::LinkInfo& li )
@@ -72,6 +73,7 @@ void JSONSnapshot::collectData(const std::vector<BaseData*>& datafield, const st
         dinfo.name = data->getName();
         dinfo.type = data->getValueTypeString();
         dinfo.value = data->getValueString();
+        dinfo.pathname = data->getPathName();
         SparseDataSnapshot_.dataContainer.push_back(dinfo); 
     }
     LinkInfo linfo;
@@ -88,7 +90,7 @@ void JSONSnapshot::exportToJSON(const std::string filename)
 {
     nlohmann::json j = SparseDataSnapshot_;
     std::ofstream file(filename);
-    file << j.dump(4);
+    file << j.dump(5);
     file.close();
 }
 
@@ -126,6 +128,7 @@ void JSONSnapshot::importFromJSON(const std::string filename, nlohmann::json& j)
 
 void JSONSnapshot::putData(std::vector<BaseData*>& datafield, std::vector<BaseLink*>& linkfield)
 {
+    // idea -> while-loop with conditions like : while dataname are same, just set the data. if not 
     DataInfo dinfo;
     for (auto* data : datafield)
     {

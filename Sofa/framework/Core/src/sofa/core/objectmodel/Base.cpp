@@ -681,13 +681,20 @@ int Base::getInstanciationSourceFilePos() const
 }
 
 void Base::saveSnapshot(BaseSnapshot& type)
-    {
-        VecData datafield = this->getDataFields();
-        VecLink componentlinks = this->getLinks();
-        //type.collectData(datafield, componentlinks);
-        // type.printSnapshot();
-        type.collectData(datafield, componentlinks);
-    }
+{
+    VecData datafield = this->getDataFields();
+    VecLink componentlinks = this->getLinks();
+    //type.collectData(datafield, componentlinks);
+    // type.printSnapshot();
+    type.collectData(datafield, componentlinks);
+}
+
+void Base::loadSnapshot(BaseSnapshot& type)
+{
+    VecData datafield = this->getDataFields();
+    VecLink componentlinks = this->getLinks();
+    
+}    
 
 } // namespace sofa::core::objectmodel
 
