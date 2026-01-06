@@ -16,7 +16,9 @@ namespace component
 namespace engine
 {
 
-int ContourImageToolBox_Class = core::RegisterObject("ContourImageToolBox")
+void registerContourImageToolBox(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("ContourImageToolBox")
         .add<ContourImageToolBox<ImageUC> >()
         .add<ContourImageToolBox<ImageD> >(true)
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
@@ -31,7 +33,9 @@ int ContourImageToolBox_Class = core::RegisterObject("ContourImageToolBox")
         .add<ContourImageToolBox<ImageB> >()
 #endif
         .addLicense("LGPL")
-        .addAuthor("Vincent Majorczyk");
+        .addAuthor("Vincent Majorczyk")
+        );
+}
 
 template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageUC>;
 template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageD>;

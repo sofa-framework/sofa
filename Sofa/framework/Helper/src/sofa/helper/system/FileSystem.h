@@ -101,8 +101,8 @@ static bool removeFile(const std::string& path);
 /// @brief check that all element in the path exists or create them. (This function accepts relative paths)
 ///
 /// @return the valid path.
-SOFA_HELPER_FILESYSTEM_FINDORCREATEAVALIDPATH_DEPRECATED()
-static std::string findOrCreateAValidPath(const std::string path);
+SOFA_HELPER_FILESYSTEM_FINDORCREATEAVALIDPATH_DISABLED()
+static std::string findOrCreateAValidPath(const std::string path) = delete;
 
 /// @brief Ensures that a folder exists at the specified path. If the folder does not exist, it will be created.
 ///

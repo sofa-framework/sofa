@@ -68,9 +68,9 @@ void RepulsiveSpringForceField<DataTypes>::addForce(const sofa::core::Mechanical
             {
                 for( int k=0; k<N; ++k )
                 {
-                    m[j][k] = ((Real)springs[i].ks-tgt) * u[j] * u[k];
+                    m(j,k) = ((Real)springs[i].ks-tgt) * u[j] * u[k];
                 }
-                m[j][j] += tgt;
+                m(j,j) += tgt;
             }
         }
         else
@@ -78,7 +78,7 @@ void RepulsiveSpringForceField<DataTypes>::addForce(const sofa::core::Mechanical
             Mat& m = this->dfdx[i];
             for( int j=0; j<N; ++j )
                 for( int k=0; k<N; ++k )
-                    m[j][k] = 0.0;
+                    m(j,k) = 0.0;
         }
     }
 

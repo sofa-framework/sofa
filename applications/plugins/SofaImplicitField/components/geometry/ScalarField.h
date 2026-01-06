@@ -38,7 +38,7 @@ namespace sofa::component::geometry
 namespace _scalarfield_
 {
 
-using sofa::core::objectmodel::BaseObject ;
+using BaseObject [[deprecated("Use sofa::core::objectmodel::BaseObject instead.")]] = sofa::core::objectmodel::BaseObject;
 using sofa::type::Vec3d ;
 using sofa::type::Mat3x3 ;
 
@@ -49,6 +49,8 @@ public:
     SOFA_CLASS(ScalarField, BaseObject);
 
 public:
+    void init() override;
+
     /// Compute the gradient using a first order finite-difference scheme.
     /// This is of lower precision compared to analytical gradient computed by derivating
     /// the equations.

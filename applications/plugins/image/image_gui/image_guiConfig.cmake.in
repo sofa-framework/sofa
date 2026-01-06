@@ -3,6 +3,6 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(Sofa.GUI.Qt QUIET REQUIRED)
+find_package(Sofa.Qt QUIET REQUIRED)
 
 check_required_components(image_gui)

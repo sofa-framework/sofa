@@ -159,7 +159,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     ff->clear(size);
     mapper1.resize(size);
     mapper2.resize(size);
-    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
+    const double d0 = intersectionMethod->getContactDistance() + model1->getContactDistance() + model2->getContactDistance(); // - 0.001;
     for (int i=0; i<insize; i++)
     {
         int index = oldIndex[i];

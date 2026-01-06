@@ -26,7 +26,7 @@
 #include <sofa/helper/Factory.h>
 
 //TODO: use fwd declaration
-#include <sofa/component/collision/geometry/RayModel.h>
+#include <sofa/component/collision/geometry/RayCollisionModel.h>
 
 namespace sofa::component::collision::response::contact
 {

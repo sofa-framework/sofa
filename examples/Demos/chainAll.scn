@@ -36,7 +36,9 @@
         <TriangleCollisionModel moving="0" simulated="0" />
         <LineCollisionModel moving="0" simulated="0" />
         <PointCollisionModel moving="0" simulated="0" />
-        <OglModel color="0.500 0.500 0.500" src="@../loader_torus2" name="Visual" />
+        <Node name="Visu">
+            <OglModel color="0.500 0.500 0.500" src="@../../loader_torus2" name="Visual" />
+        </Node>
     </Node>
     <Node name="TorusFEM">
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1"/>
@@ -363,7 +365,9 @@
         <TriangleCollisionModel moving="0" simulated="0" />
         <LineCollisionModel moving="0" simulated="0" />
         <PointCollisionModel moving="0" simulated="0" />
-        <OglModel color="0.500 0.500 0.500" dx="0.0000" dy="0.0000" dz="24.0000" src="@../loader_torus2" name="Visual" rx="0.0000" ry="0.0000" rz="0.0000" />
+        <Node name="Visu">
+            <OglModel color="0.500 0.500 0.500" dx="0.0000" dy="0.0000" dz="24.0000" src="@../../loader_torus2" name="Visual" rx="0.0000" ry="0.0000" rz="0.0000" />
+        </Node>
     </Node>
     <Node name="CRigid_Torus_1">
         <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01"/>

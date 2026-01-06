@@ -37,9 +37,6 @@ class SOFA_TESTING_API BaseSimulationTest : public virtual BaseTest
 public:
     BaseSimulationTest() ;
 
-    SOFA_ATTRIBUTE_DISABLED__TESTING_IMPORT_PLUGIN()
-    bool importPlugin(const std::string& name) = delete;
-
     class SOFA_TESTING_API SceneInstance
     {
     public:

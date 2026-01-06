@@ -25,7 +25,7 @@
 
 
     <FreeMotionAnimationLoop/>
-    <GenericConstraintSolver maxIt="500" tolerance="0.0002" scaleTolerance='false' printLog="false" computeConstraintForces="true"/>
+    <BlockGaussSeidelConstraintSolver maxIt="500" tolerance="0.0002" scaleTolerance='false' printLog="false" computeConstraintForces="true"/>
 
 
     <Node name="Topology">
@@ -39,7 +39,8 @@
 
     <Node name="FEM">
         <EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.1" _velocityDamping="0.5"/>
-        <PCGLinearSolver preconditioner="@precond" update_step="15"/>
+        <PreconditionedMatrixFreeSystem name="matrixFreeSystem" assemblingRate="15"/>
+        <PCGLinearSolver preconditioner="@precond"/>
         <SparseLDLSolver name="precond" template="CompressedRowSparseMatrixMat3x3"/>
 
         <TetrahedronSetTopologyContainer name="Container" position="@../Topology/HexaTop.position" tetrahedra="@../Topology/Container.tetrahedra"/>
