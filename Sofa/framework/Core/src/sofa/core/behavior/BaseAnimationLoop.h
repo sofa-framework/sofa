@@ -83,7 +83,7 @@ public:
      **/  
     virtual void step(const core::ExecParams* params, SReal dt) final {
         //TODO (SPRINT SED 2025): Component state mechamism
-        this->doStep(params, dt);
+        doStep(params, dt);
     };
 
     /// Returns starting time of the simulation
