@@ -43,7 +43,7 @@ public:
     virtual void getRotations(linearalgebra::BaseMatrix * m, int offset = 0) final
     {
         //TODO (SPRINT SED 2025): Component state mechamism
-        this->doGetRotations(m,offset);
+        doGetRotations(m,offset);
     }
 
 protected:
