@@ -63,30 +63,30 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
     , data(new HexahedronFEMForceFieldInternalData<DataTypes>())
 {
     data->initPtrData(this);
-    _coef[0][0]=-1;
-    _coef[1][0]=1;
-    _coef[2][0]=1;
-    _coef[3][0]=-1;
-    _coef[4][0]=-1;
-    _coef[5][0]=1;
-    _coef[6][0]=1;
-    _coef[7][0]=-1;
-    _coef[0][1]=-1;
-    _coef[1][1]=-1;
-    _coef[2][1]=1;
-    _coef[3][1]=1;
-    _coef[4][1]=-1;
-    _coef[5][1]=-1;
-    _coef[6][1]=1;
-    _coef[7][1]=1;
-    _coef[0][2]=-1;
-    _coef[1][2]=-1;
-    _coef[2][2]=-1;
-    _coef[3][2]=-1;
-    _coef[4][2]=1;
-    _coef[5][2]=1;
-    _coef[6][2]=1;
-    _coef[7][2]=1;
+    _coef(0,0)=-1;
+    _coef(1,0)=1;
+    _coef(2,0)=1;
+    _coef(3,0)=-1;
+    _coef(4,0)=-1;
+    _coef(5,0)=1;
+    _coef(6,0)=1;
+    _coef(7,0)=-1;
+    _coef(0,1)=-1;
+    _coef(1,1)=-1;
+    _coef(2,1)=1;
+    _coef(3,1)=1;
+    _coef(4,1)=-1;
+    _coef(5,1)=-1;
+    _coef(6,1)=1;
+    _coef(7,1)=1;
+    _coef(0,2)=-1;
+    _coef(1,2)=-1;
+    _coef(2,2)=-1;
+    _coef(3,2)=-1;
+    _coef(4,2)=1;
+    _coef(5,2)=1;
+    _coef(6,2)=1;
+    _coef(7,2)=1;
 
     _alreadyInit=false;
 }
@@ -325,8 +325,8 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
     // with Bi = part of B related to node i: Bi = [ [ dNi/dx 0 0 ] [ 0 dNi/dy 0 ] [ 0 0 dNi/dz ] [ dNi/dy dNi/dx 0 ] [ 0 dNi/dz dNi/dy ] [ dNi/dz 0 dNi/dx ] ]
     // This integral can be estimated using 8 gauss quadrature points (x1,x2,x3)=(+-1/sqrt(3),+-1/sqrt(3),+-sqrt(3))
     K.fill( 0.0 );
-    Mat33 J; // J[i][j] = dXi/dxj
-    Mat33 J_1; // J_1[i][j] = dxi/dXj
+    Mat33 J; // J(i,j) = dXi/dxj
+    Mat33 J_1; // J_1(i,j) = dxi/dXj
     Mat33 J_1t;
     Real detJ = (Real)1.0;
     // check if the hexaedra is a parallelepiped
@@ -339,9 +339,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
         isParallel = true;
         for (int c=0; c<3; ++c)
         {
-            J[c][0] = lx[c]/2;
-            J[c][1] = ly[c]/2;
-            J[c][2] = lz[c]/2;
+            J(c,0) = lx[c]/2;
+            J(c,1) = ly[c]/2;
+            J(c,2) = lz[c]/2;
         }
         detJ = type::determinant(J);
         const bool canInvert = J_1.invert(J);
@@ -353,12 +353,12 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                                 << "invJ = "  << J_1 << msgendl
                                 << "detJ = " << detJ << msgendl;
     }
-    const Real U = M[0][0];
-    const Real V = M[0][1];
+    const Real U = M(0,0);
+    const Real V = M(0,1);
 #ifdef MAT_STIFFNESS_USE_W
-    const Real W = M[3][3];
+    const Real W = M(3,3);
 #else
-    const Real W = M[2][2];
+    const Real W = M(2,2);
 #endif
     const double inv_sqrt3 = 1.0/sqrt(3.0);
     for (int gx1=-1; gx1<=1; gx1+=2)
@@ -367,17 +367,17 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
             {
                 double x1 = gx1*inv_sqrt3;
                 double x2 = gx2*inv_sqrt3;
-                double x3 = gx3*inv_sqrt3;
+                double x3 = gx3*inv_sqrt3; 
                 // compute jacobian matrix
-                //Mat33 J; // J[i][j] = dXi/dxj
-                //Mat33 J_1; // J_1[i][j] = dxi/dXj
+                //Mat33 J; // J(i,j) = dXi/dxj
+                //Mat33 J_1; // J_1(i,j) = dxi/dXj
                 if (!isParallel)
                 {
                     for (int c=0; c<3; ++c)
                     {
-                        J[c][0] = (Real)( (nodes[1][c]-nodes[0][c])*(1-x2)*(1-x3)/8+(nodes[2][c]-nodes[3][c])*(1+x2)*(1-x3)/8+(nodes[5][c]-nodes[4][c])*(1-x2)*(1+x3)/8+(nodes[6][c]-nodes[7][c])*(1+x2)*(1+x3)/8);
-                        J[c][1] =(Real)( (nodes[3][c]-nodes[0][c])*(1-x1)*(1-x3)/8+(nodes[2][c]-nodes[1][c])*(1+x1)*(1-x3)/8+(nodes[7][c]-nodes[4][c])*(1-x1)*(1+x3)/8+(nodes[6][c]-nodes[5][c])*(1+x1)*(1+x3)/8);
-                        J[c][2] =(Real)( (nodes[4][c]-nodes[0][c])*(1-x1)*(1-x2)/8+(nodes[5][c]-nodes[1][c])*(1+x1)*(1-x2)/8+(nodes[6][c]-nodes[2][c])*(1+x1)*(1+x2)/8+(nodes[7][c]-nodes[3][c])*(1-x1)*(1+x2)/8);
+                        J(c,0) = (Real)( (nodes[1][c]-nodes[0][c])*(1-x2)*(1-x3)/8+(nodes[2][c]-nodes[3][c])*(1+x2)*(1-x3)/8+(nodes[5][c]-nodes[4][c])*(1-x2)*(1+x3)/8+(nodes[6][c]-nodes[7][c])*(1+x2)*(1+x3)/8);
+                        J(c,1) =(Real)( (nodes[3][c]-nodes[0][c])*(1-x1)*(1-x3)/8+(nodes[2][c]-nodes[1][c])*(1+x1)*(1-x3)/8+(nodes[7][c]-nodes[4][c])*(1-x1)*(1+x3)/8+(nodes[6][c]-nodes[5][c])*(1+x1)*(1+x3)/8);
+                        J(c,2) =(Real)( (nodes[4][c]-nodes[0][c])*(1-x1)*(1-x2)/8+(nodes[5][c]-nodes[1][c])*(1+x1)*(1-x2)/8+(nodes[6][c]-nodes[2][c])*(1+x1)*(1+x2)/8+(nodes[7][c]-nodes[3][c])*(1-x1)*(1+x2)/8);
                     }
                     detJ = type::determinant(J);
                     const bool canInvert = J_1.invert(J);
@@ -394,16 +394,16 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                 Real qz[8];
                 for(int i=0; i<8; ++i)
                 {
-                    // Ni = 1/8 (1+_coef[i][0]x1)(1+_coef[i][1]x2)(1+_coef[i][2]x3)
+                    // Ni = 1/8 (1+_coef(i,0)x1)(1+_coef(i,1)x2)(1+_coef(i,2)x3)
                     // qxi = dNi/dx = dNi/dx1 dx1/dx + dNi/dx2 dx2/dx + dNi/dx3 dx3/dx
-                    Real dNi_dx1 =(Real)( (_coef[i][0])*(1+_coef[i][1]*x2)*(1+_coef[i][2]*x3)/8.0);
-                    Real dNi_dx2 =(Real)((1+_coef[i][0]*x1)*(_coef[i][1])*(1+_coef[i][2]*x3)/8.0);
-                    Real dNi_dx3 =(Real)((1+_coef[i][0]*x1)*(1+_coef[i][1]*x2)*(_coef[i][2])/8.0);
+                    Real dNi_dx1 =(Real)( (_coef(i,0))*(1+_coef(i,1)*x2)*(1+_coef(i,2)*x3)/8.0);
+                    Real dNi_dx2 =(Real)((1+_coef(i,0)*x1)*(_coef(i,1))*(1+_coef(i,2)*x3)/8.0);
+                    Real dNi_dx3 =(Real)((1+_coef(i,0)*x1)*(1+_coef(i,1)*x2)*(_coef(i,2))/8.0);
                     dmsg_info_when(verbose) << "dN"<<i<<"/dxi = "<<dNi_dx1<<" "<<dNi_dx2<<" "<<dNi_dx3;
 #ifdef DN_USE_J
-                    qx[i] = dNi_dx1*J_1[0][0] + dNi_dx2*J_1[1][0] + dNi_dx3*J_1[2][0];
-                    qy[i] = dNi_dx1*J_1[0][1] + dNi_dx2*J_1[1][1] + dNi_dx3*J_1[2][1];
-                    qz[i] = dNi_dx1*J_1[0][2] + dNi_dx2*J_1[1][2] + dNi_dx3*J_1[2][2];
+                    qx[i] = dNi_dx1*J_1(0,0) + dNi_dx2*J_1(1,0) + dNi_dx3*J_1(2,0);
+                    qy[i] = dNi_dx1*J_1(0,1) + dNi_dx2*J_1(1,1) + dNi_dx3*J_1(2,1);
+                    qz[i] = dNi_dx1*J_1(0,2) + dNi_dx2*J_1(1,2) + dNi_dx3*J_1(2,2);
                     dmsg_info_when(verbose) << "q"<<i<<" = "<<qx[i]<<" "<<qy[i]<<" "<<qz[i]<<"";
 #else
                     qx[i] = dNi_dx1;
@@ -414,29 +414,29 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                 for(int i=0; i<8; ++i)
                 {
                     type::Mat<6,3,Real> MBi;
-                    MBi[0][0] = U * qx[i]; MBi[0][1] = V * qy[i]; MBi[0][2] = V * qz[i];
-                    MBi[1][0] = V * qx[i]; MBi[1][1] = U * qy[i]; MBi[1][2] = V * qz[i];
-                    MBi[2][0] = V * qx[i]; MBi[2][1] = V * qy[i]; MBi[2][2] = U * qz[i];
-                    MBi[3][0] = W * qy[i]; MBi[3][1] = W * qx[i]; MBi[3][2] = (Real)0;
-                    MBi[4][0] = (Real)0;   MBi[4][1] = W * qz[i]; MBi[4][2] = W * qy[i];
-                    MBi[5][0] = W * qz[i]; MBi[5][1] = (Real)0;   MBi[5][2] = W * qx[i];
+                    MBi(0,0) = U * qx[i]; MBi(0,1) = V * qy[i]; MBi(0,2) = V * qz[i];
+                    MBi(1,0) = V * qx[i]; MBi(1,1) = U * qy[i]; MBi(1,2) = V * qz[i];
+                    MBi(2,0) = V * qx[i]; MBi(2,1) = V * qy[i]; MBi(2,2) = U * qz[i];
+                    MBi(3,0) = W * qy[i]; MBi(3,1) = W * qx[i]; MBi(3,2) = (Real)0;
+                    MBi(4,0) = (Real)0;   MBi(4,1) = W * qz[i]; MBi(4,2) = W * qy[i];
+                    MBi(5,0) = W * qz[i]; MBi(5,1) = (Real)0;   MBi(5,2) = W * qx[i];
 
                     dmsg_info_when(verbose) << "MB"<<i<<" = "<<MBi<<"";
 
                     for(int j=i; j<8; ++j)
                     {
                         Mat33 k; // k = BjtMBi
-                        k[0][0] = qx[j]*MBi[0][0]   + qy[j]*MBi[3][0]   + qz[j]*MBi[5][0];
-                        k[0][1] = qx[j]*MBi[0][1]   + qy[j]*MBi[3][1] /*+ qz[j]*MBi[5][1]*/;
-                        k[0][2] = qx[j]*MBi[0][2] /*+ qy[j]*MBi[3][2]*/ + qz[j]*MBi[5][2];
+                        k(0,0) = qx[j]*MBi(0,0)   + qy[j]*MBi(3,0)   + qz[j]*MBi(5,0);
+                        k(0,1) = qx[j]*MBi(0,1)   + qy[j]*MBi(3,1) /*+ qz[j]*MBi(5,1)*/;
+                        k(0,2) = qx[j]*MBi(0,2) /*+ qy[j]*MBi(3,2)*/ + qz[j]*MBi(5,2);
 
-                        k[1][0] = qy[j]*MBi[1][0]   + qx[j]*MBi[3][0] /*+ qz[j]*MBi[4][0]*/;
-                        k[1][1] = qy[j]*MBi[1][1]   + qx[j]*MBi[3][1]   + qz[j]*MBi[4][1];
-                        k[1][2] = qy[j]*MBi[1][2] /*+ qx[j]*MBi[3][2]*/ + qz[j]*MBi[4][2];
+                        k(1,0) = qy[j]*MBi(1,0)   + qx[j]*MBi(3,0) /*+ qz[j]*MBi(4,0)*/;
+                        k(1,1) = qy[j]*MBi(1,1)   + qx[j]*MBi(3,1)   + qz[j]*MBi(4,1);
+                        k(1,2) = qy[j]*MBi(1,2) /*+ qx[j]*MBi(3,2)*/ + qz[j]*MBi(4,2);
 
-                        k[2][0] = qz[j]*MBi[2][0] /*+ qy[j]*MBi[4][0]*/ + qx[j]*MBi[5][0];
-                        k[2][1] = qz[j]*MBi[2][1]   + qy[j]*MBi[4][1] /*+ qx[j]*MBi[5][1]*/;
-                        k[2][2] = qz[j]*MBi[2][2]   + qy[j]*MBi[4][2]   + qx[j]*MBi[5][2];
+                        k(2,0) = qz[j]*MBi(2,0) /*+ qy[j]*MBi(4,0)*/ + qx[j]*MBi(5,0);
+                        k(2,1) = qz[j]*MBi(2,1)   + qy[j]*MBi(4,1) /*+ qx[j]*MBi(5,1)*/;
+                        k(2,2) = qz[j]*MBi(2,2)   + qy[j]*MBi(4,2)   + qx[j]*MBi(5,2);
 #ifndef DN_USE_J
                         k = J_1t*k*J_1;
 #endif
@@ -445,7 +445,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                         for(int m=0; m<3; ++m)
                             for(int l=0; l<3; ++l)
                             {
-                                K[i*3+m][j*3+l] += k[l][m];
+                                K(i*3+m,j*3+l) += k(l,m);
                             }
                     }
                 }
@@ -453,7 +453,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
     for(int i=0; i<24; ++i)
         for(int j=i+1; j<24; ++j)
         {
-            K[j][i] = K[i][j];
+            K(j,i) = K(i,j);
         }
     ElementStiffness K1 = K;
     K.fill( 0.0 );
@@ -461,9 +461,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
     //Mat33 J_1; // only accurate for orthogonal regular hexa
     J_1.fill( 0.0 );
     Coord l = nodes[6] - nodes[0];
-    J_1[0][0]=2.0f / l[0];
-    J_1[1][1]=2.0f / l[1];
-    J_1[2][2]=2.0f / l[2];
+    J_1(0,0)=2.0f / l[0];
+    J_1(1,1)=2.0f / l[1];
+    J_1(2,2)=2.0f / l[2];
 
 
     Real vol = ((nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm());
@@ -475,24 +475,24 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 
     for(int i=0; i<8; ++i)
     {
-        Mat33 k = integrateStiffness(  _coef[i][0], _coef[i][1],_coef[i][2],  _coef[i][0], _coef[i][1],_coef[i][2], M[0][0], M[0][1],M[3][3], J_1  )*vol;
+        Mat33 k = integrateStiffness(  _coef(i,0), _coef(i,1),_coef(i,2),  _coef(i,0), _coef(i,1),_coef(i,2), M(0,0), M(0,1),M(3,3), J_1  )*vol;
 
 
         for(int m=0; m<3; ++m)
             for(int l=0; l<3; ++l)
             {
-                K[i*3+m][i*3+l] += k[m][l];
+                K(i*3+m,i*3+l) += k(m,l);
             }
 
         for(int j=i+1; j<8; ++j)
         {
-            Mat33 k = integrateStiffness(  _coef[i][0], _coef[i][1],_coef[i][2],  _coef[j][0], _coef[j][1],_coef[j][2], M[0][0], M[0][1],M[3][3], J_1  )*vol;
+            Mat33 k = integrateStiffness(  _coef(i,0), _coef(i,1),_coef(i,2),  _coef(j,0), _coef(j,1),_coef(j,2), M(0,0), M(0,1),M(3,3), J_1  )*vol;
 
 
             for(int m=0; m<3; ++m)
                 for(int l=0; l<3; ++l)
                 {
-                    K[i*3+m][j*3+l] += k[m][l];
+                    K(i*3+m,j*3+l) += k(m,l);
                 }
         }
     }
@@ -500,7 +500,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
     for(int i=0; i<24; ++i)
         for(int j=i+1; j<24; ++j)
         {
-            K[j][i] = K[i][j];
+            K(j,i) = K(i,j);
         }
 
 #ifdef GENERIC_STIFFNESS_MATRIX
@@ -525,7 +525,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                     for(int jcomp=0; jcomp<3; jcomp++)
                     {
                         int jmatrix=jnode*3+jcomp;
-                        tmp<<K[imatrix][jmatrix]<<" ";
+                        tmp<<K(imatrix,jmatrix)<<" ";
                     }
                 }
                 tmp<<" |  "<<std::endl;
@@ -545,7 +545,7 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
 {
     Mat33 K;
 
-    Real t1 = J_1[0][0]*J_1[0][0];                // m^-2            (J0J0             )
+    Real t1 = J_1(0,0)*J_1(0,0);                // m^-2            (J0J0             )
     Real t2 = t1*signx0;                          // m^-2            (J0J0    sx0      )
     Real t3 = Real(signy0)* Real(signz0);              //                 (           sy0sz0)
     Real t4 = t2*t3;                              // m^-2            (J0J0    sx0sy0sz0)
@@ -564,27 +564,27 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
     Real t28 = t5*signy1;                         // kg m^-4 s^-2    (W       sx1sy1   )
     Real t32 = w*signz1;                          // kg m^-4 s^-2    (W             sz1)
     Real t37 = t5*signz1;                         // kg m^-4 s^-2    (W       sx1   sz1)
-    Real t43 = J_1[0][0]*signx0;                  // m^-1            (J0      sx0      )
-    Real t45 = v*J_1[1][1];                       // kg m^-5 s^-2    (VJ1              )
-    Real t49 = J_1[0][0]*signy0;                  // m^-1            (J0         sy0   )
+    Real t43 = J_1(0,0)*signx0;                  // m^-1            (J0      sx0      )
+    Real t45 = v*J_1(1,1);                       // kg m^-5 s^-2    (VJ1              )
+    Real t49 = J_1(0,0)*signy0;                  // m^-1            (J0         sy0   )
     Real t50 = t49*signz0;                        // m^-1            (J0         sy0sz0)
-    Real t51 = w*J_1[1][1];                       // kg m^-5 s^-2    (WJ1              )
+    Real t51 = w*J_1(1,1);                       // kg m^-5 s^-2    (WJ1              )
     Real t52 = Real(signx1)* Real(signz1);             //                 (        sx1   sz1)
     Real t53 = t51*t52;                           // kg m^-5 s^-2    (WJ1     sx1   sz1)
     Real t56 = t45*signy1;                        // kg m^-5 s^-2    (VJ1        sy1   )
-    Real t64 = v*J_1[2][2];                       // kg m^-5 s^-2    (VJ2              )
-    Real t68 = w*J_1[2][2];                       // kg m^-5 s^-2    (WJ2              )
+    Real t64 = v*J_1(2,2);                       // kg m^-5 s^-2    (VJ2              )
+    Real t68 = w*J_1(2,2);                       // kg m^-5 s^-2    (WJ2              )
     Real t69 = Real(signx1)* Real(signy1);             //                 (        sx1sy1   )
     Real t70 = t68*t69;                           // kg m^-5 s^-2    (WJ2     sx1sy1   )
     Real t73 = t64*signz1;                        // kg m^-5 s^-2    (VJ2           sz1)
-    Real t81 = J_1[1][1]*signy0;                  // m^-1            (J1         sy0   )
-    Real t83 = v*J_1[0][0];                       // kg m^-5 s^-2    (VJ0              )
-    Real t87 = J_1[1][1]*signx0;                  // m^-1            (J1      sx0      )
+    Real t81 = J_1(1,1)*signy0;                  // m^-1            (J1         sy0   )
+    Real t83 = v*J_1(0,0);                       // kg m^-5 s^-2    (VJ0              )
+    Real t87 = J_1(1,1)*signx0;                  // m^-1            (J1      sx0      )
     Real t88 = t87*signz0;                        // m^-1            (J1      sx0   sz0)
-    Real t89 = w*J_1[0][0];                       // kg m^-5 s^-2    (WJ0              )
+    Real t89 = w*J_1(0,0);                       // kg m^-5 s^-2    (WJ0              )
     Real t90 = t89*t6;                            // kg m^-5 s^-2    (WJ0        sy1sz1)
     Real t93 = t83*signx1;                        // kg m^-5 s^-2    (VJ0     sx1      )
-    Real t100 = J_1[1][1]*J_1[1][1];              // m^-2            (J1J1             )
+    Real t100 = J_1(1,1)*J_1(1,1);              // m^-2            (J1J1             )
     Real t101 = t100*signx0;                      // m^-2            (J1J1    sx0      )
     Real t102 = t101*t3;                          // m^-2            (J1J1    sx0sy0sz0)
     Real t110 = t100*signy0;                      // m^-2            (J1J1       sy0   )
@@ -592,18 +592,18 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
     Real t112 = u*signy1;                         // kg m^-4 s^-2    (U          sy1   )
     Real t113 = t112*signz1;                      // kg m^-4 s^-2    (U          sy1sz1)
     Real t116 = t101*signy0;                      // m^-2            (J1J1    sx0sy0   )
-    Real t144 = J_1[2][2]*signy0;                 // m^-1            (J2         sy0   )
-    Real t149 = J_1[2][2]*signx0;                 // m^-1            (J2      sx0      )
+    Real t144 = J_1(2,2)*signy0;                 // m^-1            (J2         sy0   )
+    Real t149 = J_1(2,2)*signx0;                 // m^-1            (J2      sx0      )
     Real t150 = t149*signy0;                      // m^-1            (J2      sx0sy0   )
-    Real t153 = J_1[2][2]*signz0;                 // m^-1            (J2            sz0)
-    Real t172 = J_1[2][2]*J_1[2][2];              // m^-2            (J2J2             )
+    Real t153 = J_1(2,2)*signz0;                 // m^-1            (J2            sz0)
+    Real t172 = J_1(2,2)*J_1(2,2);              // m^-2            (J2J2             )
     Real t173 = t172*signx0;                      // m^-2            (J2J2    sx0      )
     Real t174 = t173*t3;                          // m^-2            (J2J2    sx0sy0sz0)
     Real t177 = t173*signz0;                      // m^-2            (J2J2    sx0   sz0)
     Real t180 = t172*signy0;                      // m^-2            (J2J2       sy0   )
     Real t181 = t180*signz0;                      // m^-2            (J2J2       sy0sz0)
     // kg m^-6 s^-2
-    K[0][0] = (float)(t4*t7/36.0+t10*signz0*t13/12.0+t16*t18/24.0+t4*t21/72.0+
+    K(0,0) = (float)(t4*t7/36.0+t10*signz0*t13/12.0+t16*t18/24.0+t4*t21/72.0+
             t24*t25/24.0+t24*t28/24.0+t1*signz0*t32/8.0+t10*t12/8.0+t16*t37/24.0+t2*t17/8.0);
     // K00 = (J0J0    sx0sy0sz0)(W       sx1sy1sz1)/36
     //     + (J0J0       sy0sz0)(W          sy1sz1)/12
@@ -615,25 +615,25 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
     //     + (J0J0       sy0   )(W          sy1   )/8
     //     + (J0J0    sx0   sz0)(W       sx1   sz1)/24
     //     + (J0J0    sx0      )(U       sx1      )/8
-    K[0][1] = (float)(t43*signz0*t45*t6/24.0+t50*t53/24.0+t43*t56/8.0+t49*t51*
+    K(0,1) = (float)(t43*signz0*t45*t6/24.0+t50*t53/24.0+t43*t56/8.0+t49*t51*
             signx1/8.0);
     // K01 = (J0      sx0   sz0)(VJ1        sy1sz1)/24
     //     + (J0         sy0sz0)(WJ1     sx1   sz1)/24
     //     + (J0      sx0      )(VJ1        sy1   )/8
     //     + (J0         sy0   )(WJ1     sx1      )/8
-    K[0][2] = (float)(t43*signy0*t64*t6/24.0+t50*t70/24.0+t43*t73/8.0+J_1[0][0]*signz0
+    K(0,2) = (float)(t43*signy0*t64*t6/24.0+t50*t70/24.0+t43*t73/8.0+J_1(0,0)*signz0
             *t68*signx1/8.0);
     // K02 = (J0      sx0sy0   )(VJ2        sy1sz1)/24
     //     + (J0         sy0sz0)(WJ2     sx1sy1   )/24
     //     + (J0      sx0      )(VJ2           sz1)/8
     //     + (J0            sz0)(WJ2     sx1      )/8
-    K[1][0] = (float)(t81*signz0*t83*t52/24.0+t88*t90/24.0+t81*t93/8.0+t87*t89*
+    K(1,0) = (float)(t81*signz0*t83*t52/24.0+t88*t90/24.0+t81*t93/8.0+t87*t89*
             signy1/8.0);
     // K10 = (J1         sy0sz0)(VJ0     sx1   sz1)/24
     //     + (J1      sx0   sz0)(WJ0        sy1sz1)/24
     //     + (J1         sy0   )(VJ0     sx1      )/8
     //     + (J1      sx0      )(WJ0        sy1   )/8
-    K[1][1] = (float)(t102*t7/36.0+t102*t21/72.0+t101*signz0*t37/12.0+t111*t113
+    K(1,1) = (float)(t102*t7/36.0+t102*t21/72.0+t101*signz0*t37/12.0+t111*t113
             /24.0+t116*t28/24.0+t100*signz0*t32/8.0+t111*t13/24.0+t116*t25/24.0+t110*t112/
             8.0+t101*t5/8.0);
     // K11 = (J1J1    sx0sy0sz0)(W       sx1sy1sz1)/36
@@ -646,25 +646,25 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
     //     + (J1J1    sx0sy0   )(U       sx1sy1   )/24
     //     + (J1J1       sy0   )(U          sy1   )/8
     //     + (J1J1    sx0      )(W       sx1      )/8
-    K[1][2] = (float)(t87*signy0*t64*t52/24.0+t88*t70/24.0+t81*t73/8.0+J_1[1][1]*
+    K(1,2) = (float)(t87*signy0*t64*t52/24.0+t88*t70/24.0+t81*t73/8.0+J_1(1,1)*
             signz0*t68*signy1/8.0);
     // K12 = (J1      sx0sy0   )(VJ2     sx1   sz1)/24
     //     + (J1      sx0   sz0)(WJ2     sx1sy1   )/24
     //     + (J1         sy0   )(VJ2           sz1)/8
     //     + (J1            sz0)(WJ2        sy1   )/8
-    K[2][0] = (float)(t144*signz0*t83*t69/24.0+t150*t90/24.0+t153*t93/8.0+t149*
+    K(2,0) = (float)(t144*signz0*t83*t69/24.0+t150*t90/24.0+t153*t93/8.0+t149*
             t89*signz1/8.0);
     // K20 = (J2         sy0sz0)(VJ0     sx1sy1   )/24
     //     + (J2      sx0sy0   )(WJ0        sy1sz1)/24
     //     + (J2            sz0)(VJ0     sx1      )/8
     //     + (J2      sx0      )(WJ0           sz1)/8
-    K[2][1] = (float)(t149*signz0*t45*t69/24.0+t150*t53/24.0+t153*t56/8.0+t144*
+    K(2,1) = (float)(t149*signz0*t45*t69/24.0+t150*t53/24.0+t153*t56/8.0+t144*
             t51*signz1/8.0);
     // K21 = (J2      sx0   sz0)(VJ1     sx1sy1   )/24
     //     + (J2      sx0sy0   )(WJ1     sx1   sz1)/24
     //     + (J2            sz0)(VJ1        sy1   )/8
     //     + (J2         sy0   )(WJ1           sz1)/8
-    K[2][2] = (float)(t174*t7/36.0+t177*t37/24.0+t181*t13/24.0+t174*t21/72.0+
+    K(2,2) = (float)(t174*t7/36.0+t177*t37/24.0+t181*t13/24.0+t174*t21/72.0+
             t173*signy0*t28/12.0+t180*t12/8.0+t181*t113/24.0+t177*t18/24.0+t172*signz0*u*
             signz1/8.0+t173*t5/8.0);
     // K22 = (J2J2    sx0sy0sz0)(W       sx1sy1sz1)/36
@@ -678,7 +678,7 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
     //     + (J2J2          sz0)(U             sz1)/8
     //     + (J2J2    sx0      )(W       sx1      )/8
 
-    return K /*/(J_1[0][0]*J_1[1][1]*J_1[2][2])*/;
+    return K /*/(J_1(0,0)*J_1(1,1)*J_1(2,2))*/;
 }
 
 
@@ -687,17 +687,17 @@ template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::computeMaterialStiffness(sofa::Index i)
 {
     const auto poissonRatio = this->getPoissonRatioInElement(i);
-    _materialsStiffnesses[i][0][0] = _materialsStiffnesses[i][1][1] = _materialsStiffnesses[i][2][2] = 1;
-    _materialsStiffnesses[i][0][1] = _materialsStiffnesses[i][0][2] = _materialsStiffnesses[i][1][0]
-            = _materialsStiffnesses[i][1][2] = _materialsStiffnesses[i][2][0] =
-                    _materialsStiffnesses[i][2][1] = poissonRatio / (1 - poissonRatio);
-    _materialsStiffnesses[i][0][3] = _materialsStiffnesses[i][0][4] =	_materialsStiffnesses[i][0][5] = 0;
-    _materialsStiffnesses[i][1][3] = _materialsStiffnesses[i][1][4] =	_materialsStiffnesses[i][1][5] = 0;
-    _materialsStiffnesses[i][2][3] = _materialsStiffnesses[i][2][4] =	_materialsStiffnesses[i][2][5] = 0;
-    _materialsStiffnesses[i][3][0] = _materialsStiffnesses[i][3][1] = _materialsStiffnesses[i][3][2] = _materialsStiffnesses[i][3][4] =	_materialsStiffnesses[i][3][5] = 0;
-    _materialsStiffnesses[i][4][0] = _materialsStiffnesses[i][4][1] = _materialsStiffnesses[i][4][2] = _materialsStiffnesses[i][4][3] =	_materialsStiffnesses[i][4][5] = 0;
-    _materialsStiffnesses[i][5][0] = _materialsStiffnesses[i][5][1] = _materialsStiffnesses[i][5][2] = _materialsStiffnesses[i][5][3] =	_materialsStiffnesses[i][5][4] = 0;
-    _materialsStiffnesses[i][3][3] = _materialsStiffnesses[i][4][4] = _materialsStiffnesses[i][5][5] = (1- 2 * poissonRatio) / (2 * (1 - poissonRatio));
+    _materialsStiffnesses[i](0,0) = _materialsStiffnesses[i](1,1) = _materialsStiffnesses[i](2,2) = 1;
+    _materialsStiffnesses[i](0,1) = _materialsStiffnesses[i](0,2) = _materialsStiffnesses[i](1,0)
+            = _materialsStiffnesses[i](1,2) = _materialsStiffnesses[i](2,0) =
+                    _materialsStiffnesses[i](2,1) = poissonRatio / (1 - poissonRatio);
+    _materialsStiffnesses[i](0,3) = _materialsStiffnesses[i](0,4) =	_materialsStiffnesses[i](0,5) = 0;
+    _materialsStiffnesses[i](1,3) = _materialsStiffnesses[i](1,4) =	_materialsStiffnesses[i](1,5) = 0;
+    _materialsStiffnesses[i](2,3) = _materialsStiffnesses[i](2,4) =	_materialsStiffnesses[i](2,5) = 0;
+    _materialsStiffnesses[i](3,0) = _materialsStiffnesses[i](3,1) = _materialsStiffnesses[i](3,2) = _materialsStiffnesses[i](3,4) =	_materialsStiffnesses[i](3,5) = 0;
+    _materialsStiffnesses[i](4,0) = _materialsStiffnesses[i](4,1) = _materialsStiffnesses[i](4,2) = _materialsStiffnesses[i](4,3) =	_materialsStiffnesses[i](4,5) = 0;
+    _materialsStiffnesses[i](5,0) = _materialsStiffnesses[i](5,1) = _materialsStiffnesses[i](5,2) = _materialsStiffnesses[i](5,3) =	_materialsStiffnesses[i](5,4) = 0;
+    _materialsStiffnesses[i](3,3) = _materialsStiffnesses[i](4,4) = _materialsStiffnesses[i](5,5) = (1- 2 * poissonRatio) / (2 * (1 - poissonRatio));
     _materialsStiffnesses[i] *= (this->getYoungModulusInElement(i) * (1 - poissonRatio)) / ((1 + poissonRatio) * (1 - 2 * poissonRatio));
     // S = [ U V V 0 0 0 ]
     //     [ V U V 0 0 0 ]
@@ -824,15 +824,15 @@ void HexahedronFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
 
     edgey = cross( edgez, edgex ); //edgey is unit vector because edgez and edgex are orthogonal unit vectors
 
-    r[0][0] = edgex[0];
-    r[0][1] = edgex[1];
-    r[0][2] = edgex[2];
-    r[1][0] = edgey[0];
-    r[1][1] = edgey[1];
-    r[1][2] = edgey[2];
-    r[2][0] = edgez[0];
-    r[2][1] = edgez[1];
-    r[2][2] = edgez[2];
+    r(0,0) = edgex[0];
+    r(0,1) = edgex[1];
+    r(0,2) = edgex[2];
+    r(1,0) = edgey[0];
+    r(1,1) = edgey[1];
+    r(1,2) = edgey[2];
+    r(2,0) = edgez[0];
+    r(2,1) = edgez[1];
+    r(2,2) = edgez[2];
 }
 
 template<class DataTypes>
@@ -922,27 +922,27 @@ void HexahedronFEMForceField<DataTypes>::computeRotationPolar( Transformation &r
 {
     Transformation A;
     Coord Edge =(nodes[1]-nodes[0] + nodes[2]-nodes[3] + nodes[5]-nodes[4] + nodes[6]-nodes[7])*.25;
-    A[0][0] = Edge[0];
-    A[0][1] = Edge[1];
-    A[0][2] = Edge[2];
+    A(0,0) = Edge[0];
+    A(0,1) = Edge[1];
+    A(0,2) = Edge[2];
     Edge = (nodes[3]-nodes[0] + nodes[2]-nodes[1] + nodes[7]-nodes[4] + nodes[6]-nodes[5])*.25;
 
-    A[1][0] = Edge[0];
-    A[1][1] = Edge[1];
-    A[1][2] = Edge[2];
+    A(1,0) = Edge[0];
+    A(1,1) = Edge[1];
+    A(1,2) = Edge[2];
     Edge = (nodes[4]-nodes[0] + nodes[5]-nodes[1] + nodes[7]-nodes[3] + nodes[6]-nodes[2])*.25;
 
-    A[2][0] = Edge[0];
-    A[2][1] = Edge[1];
-    A[2][2] = Edge[2];
+    A(2,0) = Edge[0];
+    A(2,1) = Edge[1];
+    A(2,2) = Edge[2];
 
     Mat33 HT;
     for(int k=0; k<3; ++k)
         for(int j=0; j<3; ++j)
-            HT[k][j]=A[k][j];
+            HT(k,j)=A(k,j);
 
     helper::Decompose<Real>::polarDecomposition(HT, r);
-}
+} 
 
 
 template<class DataTypes>
@@ -950,8 +950,8 @@ void HexahedronFEMForceField<DataTypes>::getNodeRotation(Transformation& R, unsi
 {
     core::topology::BaseMeshTopology::HexahedraAroundVertex liste_hexa = this->l_topology->getHexahedraAroundVertex(nodeIdx);
 
-    R[0][0] = R[1][1] = R[2][2] = 1.0 ;
-    R[0][1] = R[0][2] = R[1][0] = R[1][2] = R[2][0] = R[2][1] = 0.0 ;
+    R(0,0) = R(1,1) = R(2,2) = 1.0 ;
+    R(0,1) = R(0,2) = R(1,0) = R(1,2) = R(2,0) = R(2,1) = 0.0 ;
 
     std::size_t numHexa=liste_hexa.size();
 
@@ -964,9 +964,9 @@ void HexahedronFEMForceField<DataTypes>::getNodeRotation(Transformation& R, unsi
     }
 
     // on "moyenne"
-    R[0][0] = R[0][0]/numHexa ; R[0][1] = R[0][1]/numHexa ; R[0][2] = R[0][2]/numHexa ;
-    R[1][0] = R[1][0]/numHexa ; R[1][1] = R[1][1]/numHexa ; R[1][2] = R[1][2]/numHexa ;
-    R[2][0] = R[2][0]/numHexa ; R[2][1] = R[2][1]/numHexa ; R[2][2] = R[2][2]/numHexa ;
+    R(0,0) = R(0,0)/numHexa ; R(0,1) = R(0,1)/numHexa ; R(0,2) = R(0,2)/numHexa ;
+    R(1,0) = R(1,0)/numHexa ; R(1,1) = R(1,1)/numHexa ; R(1,2) = R(1,2)/numHexa ;
+    R(2,0) = R(2,0)/numHexa ; R(2,1) = R(2,1)/numHexa ; R(2,2) = R(2,2)/numHexa ;
 
     type::Mat<3,3,Real> Rmoy;
     helper::Decompose<Real>::polarDecomposition( R, Rmoy );
@@ -990,7 +990,7 @@ void HexahedronFEMForceField<DataTypes>::getRotations(linearalgebra::BaseMatrix 
                 for(sofa::Index i=0; i<3; i++)
                 {
                     const sofa::Index ind = e * 9 + j * 3 + i;
-                    diag->getVector()[ind] = float(R[j][i]);
+                    diag->getVector()[ind] = float(R(j,i));
                 }
             }
         }
@@ -1006,7 +1006,7 @@ void HexahedronFEMForceField<DataTypes>::getRotations(linearalgebra::BaseMatrix 
                 for(sofa::Index i=0; i<3; i++)
                 {
                     const sofa::Index ind = e * 9 + j * 3 + i;
-                    diag->getVector()[ind] = R[j][i];
+                    diag->getVector()[ind] = R(j,i);
                 }
             }
         }
@@ -1018,9 +1018,9 @@ void HexahedronFEMForceField<DataTypes>::getRotations(linearalgebra::BaseMatrix 
             Transformation t;
             getNodeRotation(t,i);
             const int e = offset+i*3;
-            rotations->set(e+0,e+0,t[0][0]); rotations->set(e+0,e+1,t[0][1]); rotations->set(e+0,e+2,t[0][2]);
-            rotations->set(e+1,e+0,t[1][0]); rotations->set(e+1,e+1,t[1][1]); rotations->set(e+1,e+2,t[1][2]);
-            rotations->set(e+2,e+0,t[2][0]); rotations->set(e+2,e+1,t[2][1]); rotations->set(e+2,e+2,t[2][2]);
+            rotations->set(e+0,e+0,t(0,0)); rotations->set(e+0,e+1,t(0,1)); rotations->set(e+0,e+2,t(0,2));
+            rotations->set(e+1,e+0,t(1,0)); rotations->set(e+1,e+1,t(1,1)); rotations->set(e+1,e+2,t(1,2));
+            rotations->set(e+2,e+0,t(2,0)); rotations->set(e+2,e+1,t(2,1)); rotations->set(e+2,e+2,t(2,2));
         }
     }
 }
@@ -1135,9 +1135,9 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseM
                 const auto node2 = element[n2];
 
                 const Mat33 tmp = Rot.multTranspose( Mat33(
-                        Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
-                        Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
-                        Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * Rot;
+                        Coord(Ke(3*n1+0,3*n2+0),Ke(3*n1+0,3*n2+1),Ke(3*n1+0,3*n2+2)),
+                        Coord(Ke(3*n1+1,3*n2+0),Ke(3*n1+1,3*n2+1),Ke(3*n1+1,3*n2+2)),
+                        Coord(Ke(3*n1+2,3*n2+0),Ke(3*n1+2,3*n2+1),Ke(3*n1+2,3*n2+2))) ) * Rot;
 
                 matrix->add( offset + 3 * node1, offset + 3 * node2, tmp * (-kFact));
             }
@@ -1170,9 +1170,9 @@ void HexahedronFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::St
                 const auto node2 = element[n2];
 
                 const Mat33 tmp = Rot.multTranspose( Mat33(
-                        Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
-                        Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
-                        Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * Rot;
+                        Coord(Ke(3*n1+0,3*n2+0),Ke(3*n1+0,3*n2+1),Ke(3*n1+0,3*n2+2)),
+                        Coord(Ke(3*n1+1,3*n2+0),Ke(3*n1+1,3*n2+1),Ke(3*n1+1,3*n2+2)),
+                        Coord(Ke(3*n1+2,3*n2+0),Ke(3*n1+2,3*n2+1),Ke(3*n1+2,3*n2+2))) ) * Rot;
 
                 dfdx(3 * node1, 3 * node2) += - tmp;
             }
@@ -1189,20 +1189,13 @@ void HexahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams* par
 
     helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::vec_id::write_access::position);
 
-    static const Real max_real = std::numeric_limits<Real>::max();
-    static const Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
-    for (size_t i=0; i<x.size(); i++)
+    type::BoundingBox bbox;
+    for (const auto& p : x )
     {
-        for (int c=0; c<3; c++)
-        {
-            if (x[i][c] > maxBBox[c]) maxBBox[c] = (Real)x[i][c];
-            else if (x[i][c] < minBBox[c]) minBBox[c] = (Real)x[i][c];
-        }
+        bbox.include(p);
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(bbox);
 }
 
 

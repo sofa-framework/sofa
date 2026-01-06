@@ -57,14 +57,14 @@ HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
     , d_hexahedronInfo(initData(&d_hexahedronInfo, "hexahedronInfo", "Internal hexahedron data"))
 {
 
-    _coef[0][0]= -1;		_coef[0][1]= -1;		_coef[0][2]= -1;
-    _coef[1][0]=  1;		_coef[1][1]= -1;		_coef[1][2]= -1;
-    _coef[2][0]=  1;		_coef[2][1]=  1;		_coef[2][2]= -1;
-    _coef[3][0]= -1;		_coef[3][1]=  1;		_coef[3][2]= -1;
-    _coef[4][0]= -1;		_coef[4][1]= -1;		_coef[4][2]=  1;
-    _coef[5][0]=  1;		_coef[5][1]= -1;		_coef[5][2]=  1;
-    _coef[6][0]=  1;		_coef[6][1]=  1;		_coef[6][2]=  1;
-    _coef[7][0]= -1;		_coef[7][1]=  1;		_coef[7][2]=  1;
+    _coef(0,0)= -1;		_coef(0,1)= -1;		_coef(0,2)= -1;
+    _coef(1,0)=  1;		_coef(1,1)= -1;		_coef(1,2)= -1;
+    _coef(2,0)=  1;		_coef(2,1)=  1;		_coef(2,2)= -1;
+    _coef(3,0)= -1;		_coef(3,1)=  1;		_coef(3,2)= -1;
+    _coef(4,0)= -1;		_coef(4,1)= -1;		_coef(4,2)=  1;
+    _coef(5,0)=  1;		_coef(5,1)= -1;		_coef(5,2)=  1;
+    _coef(6,0)=  1;		_coef(6,1)=  1;		_coef(6,2)=  1;
+    _coef(7,0)= -1;		_coef(7,1)=  1;		_coef(7,2)=  1;
 }
 
 template <class DataTypes>
@@ -214,9 +214,9 @@ void HexahedralFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
     Mat33 J_1; // only accurate for orthogonal regular hexa
     J_1.fill( 0.0 );
     Coord l = nodes[6] - nodes[0];
-    J_1[0][0]=2.0f / l[0];
-    J_1[1][1]=2.0f / l[1];
-    J_1[2][2]=2.0f / l[2];
+    J_1(0,0)=2.0f / l[0];
+    J_1(1,1)=2.0f / l[1];
+    J_1(2,2)=2.0f / l[2];
 
     Real vol = ((nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm());
     vol /= 8.0; // ???
@@ -226,24 +226,24 @@ void HexahedralFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 
     for(int i=0; i<8; ++i)
     {
-        Mat33 k = vol*integrateStiffness(  _coef[i][0], _coef[i][1],_coef[i][2],  _coef[i][0], _coef[i][1],_coef[i][2], M[0][0], M[0][1],M[3][3], J_1  );
+        Mat33 k = vol*integrateStiffness(  _coef(i,0), _coef(i,1),_coef(i,2),  _coef(i,0), _coef(i,1),_coef(i,2), M(0,0), M(0,1),M(3,3), J_1  );
 
         for(int m=0; m<3; ++m)
         {
             for(int l=0; l<3; ++l)
             {
-                K[i*3+m][i*3+l] += k[m][l];
+                K(i*3+m,i*3+l) += k(m,l);
             }
         }
 
         for(int j=i+1; j<8; ++j)
         {
-            Mat33 k = vol*integrateStiffness(  _coef[i][0], _coef[i][1],_coef[i][2],  _coef[j][0], _coef[j][1],_coef[j][2], M[0][0], M[0][1],M[3][3], J_1  );
+            Mat33 k = vol*integrateStiffness(  _coef(i,0), _coef(i,1),_coef(i,2),  _coef(j,0), _coef(j,1),_coef(j,2), M(0,0), M(0,1),M(3,3), J_1  );
 
             for(int m=0; m<3; ++m)
                 for(int l=0; l<3; ++l)
                 {
-                    K[i*3+m][j*3+l] += k[m][l];
+                    K(i*3+m,j*3+l) += k(m,l);
                 }
         }
     }
@@ -251,19 +251,19 @@ void HexahedralFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
     for(int i=0; i<24; ++i)
         for(int j=i+1; j<24; ++j)
         {
-            K[j][i] = K[i][j];
+            K(j,i) = K(i,j);
         }
 }
 
 
-
+ 
 
 template<class DataTypes>
 typename HexahedralFEMForceField<DataTypes>::Mat33 HexahedralFEMForceField<DataTypes>::integrateStiffness( int signx0, int signy0, int signz0, int signx1, int signy1, int signz1, const Real u, const Real v, const Real w, const Mat33& J_1  )
 {
     Mat33 K;
 
-    Real t1 = J_1[0][0]*J_1[0][0];
+    Real t1 = J_1(0,0)*J_1(0,0);
     Real t2 = t1*signx0;
     Real t3 = (Real)(signy0*signz0);
     Real t4 = t2*t3;
@@ -282,27 +282,27 @@ typename HexahedralFEMForceField<DataTypes>::Mat33 HexahedralFEMForceField<DataT
     Real t28 = t5*signy1;
     Real t32 = w*signz1;
     Real t37 = t5*signz1;
-    Real t43 = J_1[0][0]*signx0;
-    Real t45 = v*J_1[1][1];
-    Real t49 = J_1[0][0]*signy0;
+    Real t43 = J_1(0,0)*signx0;
+    Real t45 = v*J_1(1,1);
+    Real t49 = J_1(0,0)*signy0;
     Real t50 = t49*signz0;
-    Real t51 = w*J_1[1][1];
+    Real t51 = w*J_1(1,1);
     Real t52 = (Real)(signx1*signz1);
     Real t53 = t51*t52;
     Real t56 = t45*signy1;
-    Real t64 = v*J_1[2][2];
-    Real t68 = w*J_1[2][2];
+    Real t64 = v*J_1(2,2);
+    Real t68 = w*J_1(2,2);
     Real t69 = (Real)(signx1*signy1);
     Real t70 = t68*t69;
     Real t73 = t64*signz1;
-    Real t81 = J_1[1][1]*signy0;
-    Real t83 = v*J_1[0][0];
-    Real t87 = J_1[1][1]*signx0;
+    Real t81 = J_1(1,1)*signy0;
+    Real t83 = v*J_1(0,0);
+    Real t87 = J_1(1,1)*signx0;
     Real t88 = t87*signz0;
-    Real t89 = w*J_1[0][0];
+    Real t89 = w*J_1(0,0);
     Real t90 = t89*t6;
     Real t93 = t83*signx1;
-    Real t100 = J_1[1][1]*J_1[1][1];
+    Real t100 = J_1(1,1)*J_1(1,1);
     Real t101 = t100*signx0;
     Real t102 = t101*t3;
     Real t110 = t100*signy0;
@@ -310,53 +310,53 @@ typename HexahedralFEMForceField<DataTypes>::Mat33 HexahedralFEMForceField<DataT
     Real t112 = u*signy1;
     Real t113 = t112*signz1;
     Real t116 = t101*signy0;
-    Real t144 = J_1[2][2]*signy0;
-    Real t149 = J_1[2][2]*signx0;
+    Real t144 = J_1(2,2)*signy0;
+    Real t149 = J_1(2,2)*signx0;
     Real t150 = t149*signy0;
-    Real t153 = J_1[2][2]*signz0;
-    Real t172 = J_1[2][2]*J_1[2][2];
+    Real t153 = J_1(2,2)*signz0;
+    Real t172 = J_1(2,2)*J_1(2,2);
     Real t173 = t172*signx0;
     Real t174 = t173*t3;
     Real t177 = t173*signz0;
     Real t180 = t172*signy0;
     Real t181 = t180*signz0;
-    K[0][0] = (float)(t4*t7/36.0+t10*signz0*t13/12.0+t16*t18/24.0+t4*t21/72.0+
+    K(0,0) = (float)(t4*t7/36.0+t10*signz0*t13/12.0+t16*t18/24.0+t4*t21/72.0+
             t24*t25/24.0+t24*t28/24.0+t1*signz0*t32/8.0+t10*t12/8.0+t16*t37/24.0+t2*t17/8.0);
-    K[0][1] = (float)(t43*signz0*t45*t6/24.0+t50*t53/24.0+t43*t56/8.0+t49*t51*
+    K(0,1) = (float)(t43*signz0*t45*t6/24.0+t50*t53/24.0+t43*t56/8.0+t49*t51*
             signx1/8.0);
-    K[0][2] = (float)(t43*signy0*t64*t6/24.0+t50*t70/24.0+t43*t73/8.0+J_1[0][0]*signz0
+    K(0,2) = (float)(t43*signy0*t64*t6/24.0+t50*t70/24.0+t43*t73/8.0+J_1(0,0)*signz0
             *t68*signx1/8.0);
-    K[1][0] = (float)(t81*signz0*t83*t52/24.0+t88*t90/24.0+t81*t93/8.0+t87*t89*
+    K(1,0) = (float)(t81*signz0*t83*t52/24.0+t88*t90/24.0+t81*t93/8.0+t87*t89*
             signy1/8.0);
-    K[1][1] = (float)(t102*t7/36.0+t102*t21/72.0+t101*signz0*t37/12.0+t111*t113
+    K(1,1) = (float)(t102*t7/36.0+t102*t21/72.0+t101*signz0*t37/12.0+t111*t113
             /24.0+t116*t28/24.0+t100*signz0*t32/8.0+t111*t13/24.0+t116*t25/24.0+t110*t112/
             8.0+t101*t5/8.0);
-    K[1][2] = (float)(t87*signy0*t64*t52/24.0+t88*t70/24.0+t81*t73/8.0+J_1[1][1]*
+    K(1,2) = (float)(t87*signy0*t64*t52/24.0+t88*t70/24.0+t81*t73/8.0+J_1(1,1)*
             signz0*t68*signy1/8.0);
-    K[2][0] = (float)(t144*signz0*t83*t69/24.0+t150*t90/24.0+t153*t93/8.0+t149*
+    K(2,0) = (float)(t144*signz0*t83*t69/24.0+t150*t90/24.0+t153*t93/8.0+t149*
             t89*signz1/8.0);
-    K[2][1] = (float)(t149*signz0*t45*t69/24.0+t150*t53/24.0+t153*t56/8.0+t144*
+    K(2,1) = (float)(t149*signz0*t45*t69/24.0+t150*t53/24.0+t153*t56/8.0+t144*
             t51*signz1/8.0);
-    K[2][2] = (float)(t174*t7/36.0+t177*t37/24.0+t181*t13/24.0+t174*t21/72.0+
+    K(2,2) = (float)(t174*t7/36.0+t177*t37/24.0+t181*t13/24.0+t174*t21/72.0+
             t173*signy0*t28/12.0+t180*t12/8.0+t181*t113/24.0+t177*t18/24.0+t172*signz0*u*
             signz1/8.0+t173*t5/8.0);
 
-    return K /*/(J_1[0][0]*J_1[1][1]*J_1[2][2])*/;
+    return K /*/(J_1(0,0)*J_1(1,1)*J_1(2,2))*/;
 }
 
 
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiffness &m, double youngModulus, double poissonRatio)
 {
-    m[0][0] = m[1][1] = m[2][2] = 1;
-    m[0][1] = m[0][2] = m[1][0]= m[1][2] = m[2][0] =  m[2][1] = (Real)(poissonRatio/(1-poissonRatio));
-    m[0][3] = m[0][4] =	m[0][5] = 0;
-    m[1][3] = m[1][4] =	m[1][5] = 0;
-    m[2][3] = m[2][4] =	m[2][5] = 0;
-    m[3][0] = m[3][1] = m[3][2] = m[3][4] =	m[3][5] = 0;
-    m[4][0] = m[4][1] = m[4][2] = m[4][3] =	m[4][5] = 0;
-    m[5][0] = m[5][1] = m[5][2] = m[5][3] =	m[5][4] = 0;
-    m[3][3] = m[4][4] = m[5][5] = (Real)((1-2*poissonRatio)/(2*(1-poissonRatio)));
+    m(0,0) = m(1,1) = m(2,2) = 1;
+    m(0,1) = m(0,2) = m(1,0)= m(1,2) = m(2,0) =  m(2,1) = (Real)(poissonRatio/(1-poissonRatio));
+    m(0,3) = m(0,4) =	m(0,5) = 0;
+    m(1,3) = m(1,4) =	m(1,5) = 0;
+    m(2,3) = m(2,4) =	m(2,5) = 0;
+    m(3,0) = m(3,1) = m(3,2) = m(3,4) =	m(3,5) = 0;
+    m(4,0) = m(4,1) = m(4,2) = m(4,3) =	m(4,5) = 0;
+    m(5,0) = m(5,1) = m(5,2) = m(5,3) =	m(5,4) = 0;
+    m(3,3) = m(4,4) = m(5,5) = (Real)((1-2*poissonRatio)/(2*(1-poissonRatio)));
     m *= (Real)((youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio)));
 }
 
@@ -416,15 +416,15 @@ void HexahedralFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
 
     edgey = cross( edgez, edgex ); //edgey is unit vector because edgez and edgex are orthogonal unit vectors
 
-    r[0][0] = edgex[0];
-    r[0][1] = edgex[1];
-    r[0][2] = edgex[2];
-    r[1][0] = edgey[0];
-    r[1][1] = edgey[1];
-    r[1][2] = edgey[2];
-    r[2][0] = edgez[0];
-    r[2][1] = edgez[1];
-    r[2][2] = edgez[2];
+    r(0,0) = edgex[0];
+    r(0,1) = edgex[1];
+    r(0,2) = edgex[2];
+    r(1,0) = edgey[0];
+    r(1,1) = edgey[1];
+    r(1,2) = edgey[2];
+    r(2,0) = edgez[0];
+    r(2,1) = edgez[1];
+    r(2,2) = edgez[2];
 }
 
 template<class DataTypes>
@@ -510,22 +510,22 @@ void HexahedralFEMForceField<DataTypes>::computeRotationPolar( Transformation &r
 {
     Transformation A;
     Coord Edge =(nodes[1]-nodes[0] + nodes[2]-nodes[3] + nodes[5]-nodes[4] + nodes[6]-nodes[7])*.25;
-    A[0][0] = Edge[0];
-    A[0][1] = Edge[1];
-    A[0][2] = Edge[2];
+    A(0,0) = Edge[0];
+    A(0,1) = Edge[1];
+    A(0,2) = Edge[2];
     Edge = (nodes[3]-nodes[0] + nodes[2]-nodes[1] + nodes[7]-nodes[4] + nodes[6]-nodes[5])*.25;
-    A[1][0] = Edge[0];
-    A[1][1] = Edge[1];
-    A[1][2] = Edge[2];
+    A(1,0) = Edge[0];
+    A(1,1) = Edge[1];
+    A(1,2) = Edge[2];
     Edge = (nodes[4]-nodes[0] + nodes[5]-nodes[1] + nodes[7]-nodes[3] + nodes[6]-nodes[2])*.25;
-    A[2][0] = Edge[0];
-    A[2][1] = Edge[1];
-    A[2][2] = Edge[2];
+    A(2,0) = Edge[0];
+    A(2,1) = Edge[1];
+    A(2,2) = Edge[2];
 
     Mat33 HT;
     for(int k=0; k<3; ++k)
         for(int j=0; j<3; ++j)
-            HT[k][j]=A[k][j];
+            HT(k,j)=A(k,j);
 
     helper::Decompose<Real>::polarDecomposition(HT, r);
 }
@@ -601,12 +601,12 @@ void HexahedralFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseM
             for (n2=0; n2<8; n2++)
             {
                 node2 = this->l_topology->getHexahedron(e)[n2];
-                Mat33 tmp = hexahedronInf[e].rotation.multTranspose( Mat33(Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
-                        Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
-                        Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * hexahedronInf[e].rotation;
+                Mat33 tmp = hexahedronInf[e].rotation.multTranspose( Mat33(Coord(Ke(3*n1+0,3*n2+0),Ke(3*n1+0,3*n2+1),Ke(3*n1+0,3*n2+2)),
+                        Coord(Ke(3*n1+1,3*n2+0),Ke(3*n1+1,3*n2+1),Ke(3*n1+1,3*n2+2)),
+                        Coord(Ke(3*n1+2,3*n2+0),Ke(3*n1+2,3*n2+1),Ke(3*n1+2,3*n2+2))) ) * hexahedronInf[e].rotation;
                 for(i=0; i<3; i++)
                     for (j=0; j<3; j++)
-                        matrix->add(offset+3*node1+i, offset+3*node2+j, - tmp[i][j]*kFact);
+                        matrix->add(offset+3*node1+i, offset+3*node2+j, - tmp(i,j)*kFact);
             }
         }
     }
@@ -636,9 +636,9 @@ void HexahedralFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::St
             {
                 const Index node2 = hexahedra[e][n2];
                 const Mat33 tmp = hexahedronInf[e].rotation.multTranspose(
-                            Mat33(Coord(Ke[3 * n1 + 0][3 * n2 + 0], Ke[3 * n1 + 0][3 * n2 + 1], Ke[3 * n1 + 0][3 * n2 + 2]),
-                                  Coord(Ke[3 * n1 + 1][3 * n2 + 0], Ke[3 * n1 + 1][3 * n2 + 1], Ke[3 * n1 + 1][3 * n2 + 2]),
-                                  Coord(Ke[3 * n1 + 2][3 * n2 + 0], Ke[3 * n1 + 2][3 * n2 + 1], Ke[3 * n1 + 2][3 * n2 + 2])))
+                            Mat33(Coord(Ke(3 * n1 + 0,3 * n2 + 0), Ke(3 * n1 + 0,3 * n2 + 1), Ke(3 * n1 + 0,3 * n2 + 2)),
+                                  Coord(Ke(3 * n1 + 1,3 * n2 + 0), Ke(3 * n1 + 1,3 * n2 + 1), Ke(3 * n1 + 1,3 * n2 + 2)),
+                                  Coord(Ke(3 * n1 + 2,3 * n2 + 0), Ke(3 * n1 + 2,3 * n2 + 1), Ke(3 * n1 + 2,3 * n2 + 2))))
                             * hexahedronInf[e].rotation;
                 dfdx(3 * node1, 3 * node2) += - tmp;
             }

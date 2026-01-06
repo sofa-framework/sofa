@@ -36,3 +36,13 @@ namespace sofa::component::collision::geometry
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::collision::geometry
+
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_COLLISION_GEOMETRY
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAMED_TRIANGLEOCTREEMODEL()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAMED_TRIANGLEOCTREEMODEL() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v25.12", "v26.06", \
+        "TriangleOctreeModel has been renamed to TriangleOctreeCollisionModel in PR5766")
+#endif

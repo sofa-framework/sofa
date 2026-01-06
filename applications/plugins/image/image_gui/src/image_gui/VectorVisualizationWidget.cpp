@@ -8,9 +8,6 @@
 namespace sofa
 {
 
-namespace gui
-{
-
 namespace qt
 {
 
@@ -24,5 +21,4 @@ template class SOFA_IMAGE_GUI_API TDataWidget<VectorVis>;
 helper::Creator<DataWidgetFactory, VectorVisualizationDataWidget< VectorVis > >	DWClass_VectorVis("vectorvis",true);
 
 } // qt
-} // gui
 } // sofa

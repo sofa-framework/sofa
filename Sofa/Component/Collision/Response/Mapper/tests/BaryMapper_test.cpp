@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
 #include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperMeshTopology.h>
 #include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
@@ -84,7 +84,7 @@ MeshTopology* BaryMapperTest::initMesh(NodePtr &father){
 
 bool BaryMapperTest::test_inside(SReal alpha,SReal beta){
     initTriPts();
-    sofa::simulation::Node::SPtr father = New<sofa::simulation::graph::DAGNode>();
+    sofa::simulation::Node::SPtr father = New<sofa::simulation::Node>();
     MeshTopology * topo = initMesh(father);
     //makeTri()
     const component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo, (component::topology::container::dynamic::PointSetTopologyContainer*)0x0);
@@ -103,7 +103,7 @@ bool BaryMapperTest::test_inside(SReal alpha,SReal beta){
 
 bool BaryMapperTest::test_outside(int index){
     initTriPts();
-    sofa::simulation::Node::SPtr father = New<sofa::simulation::graph::DAGNode>();
+    sofa::simulation::Node::SPtr father = New<sofa::simulation::Node>();
     MeshTopology * topo = initMesh(father);
     //makeTri()
     const component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::container::dynamic::PointSetTopologyContainer*)0x0);

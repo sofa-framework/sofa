@@ -28,7 +28,7 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 
 #include <sofa/simulation/Simulation.h>
-#include <sofa/gui/qt/FileManagement.h> //static functions to manage opening/ saving of files
+#include <sofa/qt/FileManagement.h> //static functions to manage opening/ saving of files
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -623,7 +623,7 @@ void GraphModeler::globalModification()
     type::vector< Base* > allComponentsSelected;
     for (size_t i=0; i<hierarchySelection.size(); ++i) allComponentsSelected.push_back(getComponent(hierarchySelection[i]));
 
-    sofa::gui::qt::GlobalModification *window=new sofa::gui::qt::GlobalModification(allComponentsSelected, historyManager);
+    sofa::qt::GlobalModification *window=new sofa::qt::GlobalModification(allComponentsSelected, historyManager);
 
     connect(window, SIGNAL(displayMessage(const std::string&)), this, SIGNAL(displayMessage(const std::string&)));
 
@@ -657,7 +657,7 @@ void GraphModeler::linkComponent()
         items.push_back(item);
 
     // create and show the LinkComponent dialog box
-    sofa::gui::qt::LinkComponent *window=new sofa::gui::qt::LinkComponent(this, items, fromItem);
+    sofa::qt::LinkComponent *window=new sofa::qt::LinkComponent(this, items, fromItem);
 
     if(window->loaderNumber() == 0)
     {
@@ -899,7 +899,7 @@ void GraphModeler::updatePresetNode(xml::BaseElement &elem, std::string meshFile
 
 bool GraphModeler::getSaveFilename(std::string &filename)
 {
-    QString s = sofa::gui::qt::getSaveFileName ( this, nullptr, "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
+    QString s = sofa::qt::getSaveFileName ( this, nullptr, "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
     {
         std::string extension=sofa::helper::system::SetDirectory::GetExtension(s.toStdString().c_str());

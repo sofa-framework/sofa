@@ -24,9 +24,9 @@
 
 #include <sofa/core/collision/Intersection.h>
 
-#include <sofa/component/collision/geometry/PointModel.h>
-#include <sofa/component/collision/geometry/RayModel.h>
-#include <sofa/component/collision/geometry/TetrahedronModel.h>
+#include <sofa/component/collision/geometry/PointCollisionModel.h>
+#include <sofa/component/collision/geometry/RayCollisionModel.h>
+#include <sofa/component/collision/geometry/TetrahedronCollisionModel.h>
 #include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 
 namespace sofa::component::collision::detection::intersection
@@ -43,17 +43,6 @@ public:
 
     int computeIntersection(collision::geometry::Tetrahedron&, collision::geometry::Point&, OutputVector*, const core::collision::Intersection* currentIntersection);
     int computeIntersection(collision::geometry::Ray&, collision::geometry::Tetrahedron&, OutputVector*, const core::collision::Intersection* currentIntersection);
-
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Tetrahedron&, collision::geometry::Point&) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    bool testIntersection(collision::geometry::Ray&, collision::geometry::Tetrahedron&) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Tetrahedron&, collision::geometry::Point&, OutputVector*) = delete;
-    SOFA_ATTRIBUTE_DISABLED__COLLISION_DETECTION_INTERSECTION_AS_PARAMETER()
-    int computeIntersection(collision::geometry::Ray&, collision::geometry::Tetrahedron&, OutputVector*) = delete;
-
 };
 
 } // namespace sofa::component::collision::detection::intersection

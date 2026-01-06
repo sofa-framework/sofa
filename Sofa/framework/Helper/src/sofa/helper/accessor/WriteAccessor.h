@@ -83,7 +83,7 @@ public:
     }
 };
 
-template<type::trait::is_fixed_array FixedArrayLikeType>
+template<type::trait::FixedArrayLike FixedArrayLikeType>
 class WriteAccessor<FixedArrayLikeType>
     : public WriteAccessorFixedArray< FixedArrayLikeType >
 {
